@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit an agent</title>
+<link rel="stylesheet" href="../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · Edit: Farmers' coordinator, its model<span class="cap-mcp">Filled by: ai_get_role, ai_list_accounts, ai_map_role</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SF</span><span class="hub-text"><span class="hub-name">Siaya Farmers' Group</span><span class="hub-meta"><span class="dot ok" aria-hidden="true"></span>Ready<span class="tag mute">Farmers</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Users &amp; Agents / <a href="agents.html">Agents</a> / <span class="crumb-now">Farmers' coordinator</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="../agency/profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="../agency/agency.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="../agency/roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="../agency/risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="agents.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/farm-orders.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22V9"/><path d="M12 9c-2.8 0-4.5-1.7-4.5-4.5 2.8 0 4.5 1.7 4.5 4.5z"/><path d="M12 9c2.8 0 4.5-1.7 4.5-4.5-2.8 0-4.5 1.7-4.5 4.5z"/><path d="M12 15c-2.8 0-4.5-1.7-4.5-4.5 2.8 0 4.5 1.7 4.5 4.5z"/><path d="M12 15c2.8 0 4.5-1.7 4.5-4.5-2.8 0-4.5 1.7-4.5 4.5z"/><path d="M12 5V2"/></svg></span>Farm orders</a>
+<a class="nav-link" href="../work/produce.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12v9"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M8 5.25l8 4.5"/></svg></span>Produce</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmers' coordinator</h1>
+<div class="top-end"><button type="button" class="btn primary">Save changes</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="agent-edit.html#s1" aria-current="page">Model</a><a class="tab" href="agent-edit.html#s5">Limits</a><a class="tab" href="agent-instructions.html">Instructions</a></nav><div class="card">
+<div class="settings"><div class="setting"><span class="setting-label">Model</span><div class="setting-control"><span class="control ctl"><select><option selected>Hugging Face · GLM-5.3</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></div></div></div>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Agents</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to change on the Farmers' coordinator?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Raise its daily tokens</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Give it a monthly limit</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did it stop?</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Agents…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">GLM-5.3<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s2">
+<figcaption class="cap">2 · Form: Model, no model yet<span class="cap-mcp">Filled by: ai_get_role, ai_list_accounts, ai_map_role</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SB</span><span class="hub-text"><span class="hub-name">Siaya Boda Boda Riders</span><span class="hub-meta"><span class="dot ok" aria-hidden="true"></span>Ready<span class="tag mute">Riders</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Users &amp; Agents / <a href="agents.html">Agents</a> / <span class="crumb-now">Assets Keeper</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="../agency/profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="../agency/agency.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="../agency/roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="../agency/risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="agents.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/approvals.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Approvals</a>
+<a class="nav-link" href="../work/operations.html" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 3 5-6"/></svg></span>Operations<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+<a class="nav-link" href="../work/equipment.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span>Equipment</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Knowledge</div>
+<a class="nav-link" href="../knowledge/documents.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>Documents</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assets Keeper</h1>
+<div class="top-end"><button type="button" class="btn primary">Save changes</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="agent-edit.html#s2" aria-current="page">Model</a><a class="tab" href="agent-edit.html#s3">Limits</a><a class="tab" href="agent-instructions.html">Instructions</a></nav><div class="stack"><div class="tile warn"><span class="tile-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v7"/><path d="M12 17.5v.5"/></svg></span><span class="tile-text"><span class="tile-label"></span><span class="tile-value">No model: this agent cannot speak.</span></span></div><div class="card">
+<div class="settings"><div class="setting"><span class="setting-label">Model</span><div class="setting-control"><span class="control ctl"><select><option selected>Choose a model</option><option>Hugging Face · GLM-5.3</option><option>Acme AI · Core 5.5</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></div></div></div>
+</div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Agents</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to change on the Assets Keeper?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Map it to GLM-5.3</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Give it a daily limit</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which models can it use?</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Agents…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">Fast<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s3">
+<figcaption class="cap">3 · Edit: Assets Keeper, only the weekly tokens limit applies, the model's ceiling beside each<span class="cap-mcp">Filled by: ai_resolve_role, ai_set_limits</span><span class="cap-note">Seven limits, each with an Applies switch: off saves null (the limit does not apply), zero means none</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SB</span><span class="hub-text"><span class="hub-name">Siaya Boda Boda Riders</span><span class="hub-meta"><span class="dot ok" aria-hidden="true"></span>Ready<span class="tag mute">Riders</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Users &amp; Agents / <a href="agents.html">Agents</a> / <span class="crumb-now">Assets Keeper</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="../agency/profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="../agency/agency.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="../agency/roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="../agency/risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="agents.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/approvals.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Approvals</a>
+<a class="nav-link" href="../work/operations.html" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 3 5-6"/></svg></span>Operations<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+<a class="nav-link" href="../work/equipment.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span>Equipment</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Knowledge</div>
+<a class="nav-link" href="../knowledge/documents.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>Documents</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assets Keeper</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="agent-edit.html#s2">Model</a><a class="tab" href="agent-edit.html#s3" aria-current="page">Limits</a><a class="tab" href="agent-instructions.html">Instructions</a></nav><div class="card">
+<span class="form-tool">ai_set_limits</span><div class="settings"><div class="setting"><span class="setting-label">Tokens per call<br><span class="muted">model max 8,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per day<br><span class="muted">model max 200,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per week</span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="500,000" placeholder="0"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per month<br><span class="muted">model max 4,000,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per minute<br><span class="muted">model max 30</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per day<br><span class="muted">model max 1,500</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per week</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div></div><div class="form-foot"><button type="button" class="btn primary">Save limits</button><button type="button" class="btn quiet">Cancel</button></div>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Agents</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to change on the Assets Keeper?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Map it to GLM-5.3</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Give it a monthly limit</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did it stop?</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Agents…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">Fast<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s4">
+<figcaption class="cap">4 · After asking: Why did the Assets Keeper stop?<span class="cap-mcp">Filled by: ai_resolve_role, ai_list_usage, ai_check_limits</span><span class="cap-note">Example data: names, dates and counts are drawn for this page. Proposed: the weekly limit</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SB</span><span class="hub-text"><span class="hub-name">Siaya Boda Boda Riders</span><span class="hub-meta"><span class="dot ok" aria-hidden="true"></span>Ready<span class="tag mute">Riders</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Users &amp; Agents / <a href="agents.html">Agents</a> / <span class="crumb-now">Assets Keeper</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="../agency/profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="../agency/agency.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="../agency/roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="../agency/risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="agents.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/approvals.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Approvals</a>
+<a class="nav-link" href="../work/operations.html" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 3 5-6"/></svg></span>Operations<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+<a class="nav-link" href="../work/equipment.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span>Equipment</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Knowledge</div>
+<a class="nav-link" href="../knowledge/documents.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>Documents</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assets Keeper</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="agent-edit.html#s2">Model</a><a class="tab" href="agent-edit.html#s3" aria-current="page">Limits</a><a class="tab" href="agent-instructions.html">Instructions</a></nav><section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Why did the Assets Keeper stop?</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><div class="stack"><div class="tile warn"><span class="tile-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v7"/><path d="M12 17.5v.5"/></svg></span><span class="tile-text"><span class="tile-label">Stopped</span><span class="tile-value">This AI role's weekly token limit is reached.</span></span></div><section class="card" aria-label="Why the Assets Keeper stopped">
+<div class="card-head"><h2>Why the Assets Keeper stopped</h2></div>
+<dl class="kv"><dt>Limit</dt><dd>Tokens per week, 500,000 of 500,000</dd><dt>Set on</dt><dd>The role</dd><dt>Posted in the room</dt><dd>Once, at 09:12</dd></dl>
+</section></div></div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Agents</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Why did the Assets Keeper stop?</div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">Its own weekly token limit is reached.</div></div><div class="tools collapsed"><div class="tools-head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Called 4 tools</span><span class="muted">446 ms</span></div><div class="tool"><span class="tool-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/></svg></span><span class="tool-name">ai_get_role</span><span class="tool-state"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tool-ms">92 ms</span><span class="tool-sum">Assets Keeper · Hugging Face · GLM-5.3</span></div><div class="tool"><span class="tool-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/></svg></span><span class="tool-name">ai_resolve_role</span><span class="tool-state"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tool-ms">150 ms</span><span class="tool-sum">Tokens per week in force: 500,000, from the role</span></div><div class="tool"><span class="tool-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/></svg></span><span class="tool-name">ai_list_usage</span><span class="tool-state"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tool-ms">121 ms</span><span class="tool-sum">tokens per week 500,000 of 500,000</span></div><div class="tool"><span class="tool-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/></svg></span><span class="tool-name">ai_check_limits</span><span class="tool-state"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tool-ms">83 ms</span><span class="tool-sum">refused: this AI role's weekly token limit is reached</span></div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="ref-title">Why the Assets Keeper stopped</span><span class="tag mute">3 items</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div></div></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Agents…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">Fast<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s5">
+<figcaption class="cap">5 · Edit: Farmers' coordinator, its limits<span class="cap-mcp">Filled by: ai_resolve_role, ai_set_limits</span><span class="cap-note">Seven limits, each with an Applies switch: off saves null (the limit does not apply), zero means none</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SF</span><span class="hub-text"><span class="hub-name">Siaya Farmers' Group</span><span class="hub-meta"><span class="dot ok" aria-hidden="true"></span>Ready<span class="tag mute">Farmers</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Users &amp; Agents / <a href="agents.html">Agents</a> / <span class="crumb-now">Farmers' coordinator</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="../agency/profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="../agency/agency.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="../agency/roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="../agency/risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="agents.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/farm-orders.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22V9"/><path d="M12 9c-2.8 0-4.5-1.7-4.5-4.5 2.8 0 4.5 1.7 4.5 4.5z"/><path d="M12 9c2.8 0 4.5-1.7 4.5-4.5-2.8 0-4.5 1.7-4.5 4.5z"/><path d="M12 15c-2.8 0-4.5-1.7-4.5-4.5 2.8 0 4.5 1.7 4.5 4.5z"/><path d="M12 15c2.8 0 4.5-1.7 4.5-4.5-2.8 0-4.5 1.7-4.5 4.5z"/><path d="M12 5V2"/></svg></span>Farm orders</a>
+<a class="nav-link" href="../work/produce.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12v9"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M8 5.25l8 4.5"/></svg></span>Produce</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmers' coordinator</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="agent-edit.html#s1">Model</a><a class="tab" href="agent-edit.html#s5" aria-current="page">Limits</a><a class="tab" href="agent-instructions.html">Instructions</a></nav><div class="card">
+<span class="form-tool">ai_set_limits</span><div class="settings"><div class="setting"><span class="setting-label">Tokens per call<br><span class="muted">model max 8,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="4,000" placeholder="0"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per day<br><span class="muted">model max 200,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="100,000" placeholder="0"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per week</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per month<br><span class="muted">model max 4,000,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per minute<br><span class="muted">model max 30</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per day<br><span class="muted">model max 1,500</span></span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="500" placeholder="0"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per week</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div></div><div class="form-foot"><button type="button" class="btn primary">Save changes</button><button type="button" class="btn quiet">Cancel</button></div>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Agents</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to change on the Farmers' coordinator?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Raise its daily tokens</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Give it a monthly limit</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did it stop?</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Agents…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">GLM-5.3<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s6">
+<figcaption class="cap">6 · Edit: Assets Keeper, its model, after Save: the notice under the title<span class="cap-mcp">Filled by: ai_map_role, ai_get_role</span><span class="cap-note">Example data: the saved values and the notice are drawn for this page. The green notice goes away after 6 seconds</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SB</span><span class="hub-text"><span class="hub-name">Siaya Boda Boda Riders</span><span class="hub-meta"><span class="dot ok" aria-hidden="true"></span>Ready<span class="tag mute">Riders</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Users &amp; Agents / <a href="agents.html">Agents</a> / <span class="crumb-now">Assets Keeper</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="../agency/profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="../agency/agency.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="../agency/roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="../agency/risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="agents.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/approvals.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Approvals</a>
+<a class="nav-link" href="../work/operations.html" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 3 5-6"/></svg></span>Operations<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+<a class="nav-link" href="../work/equipment.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span>Equipment</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Knowledge</div>
+<a class="nav-link" href="../knowledge/documents.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>Documents</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assets Keeper</h1>
+<div class="top-end"><button type="button" class="btn primary">Save changes</button></div>
+</div>
+
+<div class="notice ok" role="status"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="notice-text">The agent's settings were saved.</span><button type="button" class="notice-close" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="agent-edit.html#s2" aria-current="page">Model</a><a class="tab" href="agent-edit.html#s3">Limits</a><a class="tab" href="agent-instructions.html">Instructions</a></nav><div class="card">
+<div class="settings"><div class="setting"><span class="setting-label">Model</span><div class="setting-control"><span class="control ctl"><select><option selected>Hugging Face · GLM-5.3</option><option>Acme AI · Core 5.5</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></div></div></div>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Agents</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to change on the Assets Keeper?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Map it to GLM-5.3</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Give it a monthly limit</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did it stop?</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Agents…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">Fast<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s7">
+<figcaption class="cap">7 · Edit: Assets Keeper, its limits, after Save: the notice under the title<span class="cap-mcp">Filled by: ai_set_limits, ai_resolve_role</span><span class="cap-note">Example data: the saved values and the notice are drawn for this page. The green notice goes away after 6 seconds. Seven limits, each with an Applies switch: off saves null (the limit does not apply), zero means none</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SB</span><span class="hub-text"><span class="hub-name">Siaya Boda Boda Riders</span><span class="hub-meta"><span class="dot ok" aria-hidden="true"></span>Ready<span class="tag mute">Riders</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Users &amp; Agents / <a href="agents.html">Agents</a> / <span class="crumb-now">Assets Keeper</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="../agency/profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="../agency/agency.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="../agency/roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="../agency/risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="agents.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/approvals.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Approvals</a>
+<a class="nav-link" href="../work/operations.html" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 3 5-6"/></svg></span>Operations<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+<a class="nav-link" href="../work/equipment.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span>Equipment</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Knowledge</div>
+<a class="nav-link" href="../knowledge/documents.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>Documents</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assets Keeper</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="notice ok" role="status"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="notice-text">The agent's settings were saved.</span><button type="button" class="notice-close" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="agent-edit.html#s2">Model</a><a class="tab" href="agent-edit.html#s3" aria-current="page">Limits</a><a class="tab" href="agent-instructions.html">Instructions</a></nav><div class="card">
+<span class="form-tool">ai_set_limits</span><div class="settings"><div class="setting"><span class="setting-label">Tokens per call<br><span class="muted">model max 8,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per day<br><span class="muted">model max 200,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per week</span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="500,000" placeholder="0"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per month<br><span class="muted">model max 4,000,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per minute<br><span class="muted">model max 30</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per day<br><span class="muted">model max 1,500</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per week</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div></div><div class="form-foot"><button type="button" class="btn primary">Save limits</button><button type="button" class="btn quiet">Cancel</button></div>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Agents</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to change on the Assets Keeper?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Map it to GLM-5.3</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Give it a monthly limit</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did it stop?</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Agents…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">Fast<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s8">
+<figcaption class="cap">8 · Edit: Assets Keeper, its limits, the change could not be sent: the red notice stays<span class="cap-mcp">Filled by: ai_set_limits</span><span class="cap-note">Example data: the failed save and the notice are drawn for this page. The red notice stays until it is dismissed, and the form keeps what was typed. Seven limits, each with an Applies switch: off saves null (the limit does not apply), zero means none</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SB</span><span class="hub-text"><span class="hub-name">Siaya Boda Boda Riders</span><span class="hub-meta"><span class="dot ok" aria-hidden="true"></span>Ready<span class="tag mute">Riders</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Users &amp; Agents / <a href="agents.html">Agents</a> / <span class="crumb-now">Assets Keeper</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="../agency/profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="../agency/agency.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="../agency/roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="../agency/risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="agents.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/approvals.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Approvals</a>
+<a class="nav-link" href="../work/operations.html" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 3 5-6"/></svg></span>Operations<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+<a class="nav-link" href="../work/equipment.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span>Equipment</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Knowledge</div>
+<a class="nav-link" href="../knowledge/documents.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>Documents</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assets Keeper</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="notice bad" role="alert"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><span class="notice-text">The change could not be sent.</span><button type="button" class="notice-close" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="agent-edit.html#s2">Model</a><a class="tab" href="agent-edit.html#s3" aria-current="page">Limits</a><a class="tab" href="agent-instructions.html">Instructions</a></nav><div class="card">
+<span class="form-tool">ai_set_limits</span><div class="settings"><div class="setting"><span class="setting-label">Tokens per call<br><span class="muted">model max 8,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per day<br><span class="muted">model max 200,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per week</span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="500,000" placeholder="0"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens per month<br><span class="muted">model max 4,000,000</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per minute<br><span class="muted">model max 30</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per day<br><span class="muted">model max 1,500</span></span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Requests per week</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div></div><div class="form-foot"><button type="button" class="btn primary">Save limits</button><button type="button" class="btn quiet">Cancel</button></div>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Agents</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to change on the Assets Keeper?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Map it to GLM-5.3</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Give it a monthly limit</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did it stop?</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Agents…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">Fast<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+</body>
+</html>

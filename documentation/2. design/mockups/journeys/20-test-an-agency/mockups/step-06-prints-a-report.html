@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prints a report or opens an earlier run</title>
+<style>
+:root{font-size:112.5%;--mono:'JetBrains Mono',ui-monospace,monospace;--display:'Bricolage Grotesque',system-ui,sans-serif}
+:root,[data-theme="dark"]{--bg:#0F0E0C;--side:#141210;--card:#1A1815;--chip:#26221D;--sel:#241F18;--line:#2A2621;--line2:#3A342C;--text:#F2EEE6;--text2:#C9C1B3;--text3:#A39C8F;--text4:#7D766B;--accent:#E8A33D;--accent-line:rgba(232,163,61,.4);--ink:#1A1306;--ok:#7FD6A8;--okbg:#1F3329;--bad:#FFB1A5;--badbg:#3A2420;--link:#F0B860;--link-hover:#FFD9A0;--shadow:rgba(0,0,0,.5);--m1:#3987e5;--m2:#d95926;--m3:#199e70;--k1:#9085e9;--k2:#c98500;--k3:#d55181;--k4:#008300}
+[data-theme="light"]{--bg:#F6F2EA;--side:#EFE9DD;--card:#FFFFFF;--chip:#ECE5D8;--sel:#F3ECDD;--line:#E2DACB;--line2:#CDC1AB;--text:#1F1B14;--text2:#463E31;--text3:#625948;--text4:#7A705F;--accent:#9F4D06;--accent-line:rgba(159,77,6,.45);--ink:#FFFFFF;--ok:#17613F;--okbg:#DDF1E5;--bad:#9E2416;--badbg:#FBE3DE;--link:#8F4308;--link-hover:#5E2A03;--shadow:rgba(60,40,10,.18);--m1:#2a78d6;--m2:#eb6834;--m3:#1baf7a;--k1:#6250d6;--k2:#eda100;--k3:#e87ba4;--k4:#008300}
+[data-theme="midnight"]{--bg:#0A0F1C;--side:#0D1424;--card:#121A2E;--chip:#1B2540;--sel:#17213A;--line:#1F2A44;--line2:#30406A;--text:#E8EEFA;--text2:#B9C5DD;--text3:#8FA0C0;--text4:#6C7C9E;--accent:#5CB8F5;--accent-line:rgba(92,184,245,.45);--ink:#04121F;--ok:#7FD6A8;--okbg:#14302A;--bad:#FFB1A5;--badbg:#3A1F2A;--link:#7CC8F8;--link-hover:#B5E0FC;--shadow:rgba(0,0,0,.55);--m1:#3987e5;--m2:#d95926;--m3:#199e70;--k1:#9085e9;--k2:#c98500;--k3:#d55181;--k4:#008300}
+[data-theme="forest"]{--bg:#08110C;--side:#0C1710;--card:#101E16;--chip:#1A2B20;--sel:#162619;--line:#1E3125;--line2:#2F4A3A;--text:#E6F0E8;--text2:#B7C9BC;--text3:#8CA394;--text4:#6B8274;--accent:#8FD19E;--accent-line:rgba(143,209,158,.45);--ink:#07140B;--ok:#8FD19E;--okbg:#1A3A28;--bad:#FFB1A5;--badbg:#3A2420;--link:#9BDDAA;--link-hover:#C6EED0;--shadow:rgba(0,0,0,.55);--m1:#3987e5;--m2:#d95926;--m3:#199e70;--k1:#9085e9;--k2:#c98500;--k3:#d55181;--k4:#008300}
+[data-theme="contrast"]{--bg:#000000;--side:#000000;--card:#0A0A0A;--chip:#1C1C1C;--sel:#141414;--line:#8C8C8C;--line2:#E6E6E6;--text:#FFFFFF;--text2:#F2F2F2;--text3:#D9D9D9;--text4:#B3B3B3;--accent:#FFE600;--accent-line:rgba(255,230,0,.6);--ink:#000000;--ok:#5CFF9D;--okbg:#00331A;--bad:#FF8A80;--badbg:#3D0A06;--link:#FFF176;--link-hover:#FFFFFF;--shadow:rgba(0,0,0,.8);--m1:#3987e5;--m2:#d95926;--m3:#199e70;--k1:#9085e9;--k2:#c98500;--k3:#d55181;--k4:#008300}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:1rem}
+a{color:var(--link)}
+a:hover{color:var(--link-hover)}
+button,input,select,textarea{font:inherit}
+input::placeholder,textarea::placeholder{color:var(--text4)}
+select option{background:var(--card);color:var(--text)}
+h1,h2,h3,p{margin:0}
+h1,h2,h3,.brand{font-family:var(--display)}
+h2{font-size:1.125rem;font-weight:600}
+h3{font-size:1rem;font-weight:600}
+figure{margin:0 0 40px}
+.jnav,.index-bar{position:sticky;top:0;z-index:10;display:flex;flex-direction:column;gap:4px;padding:8px clamp(16px,2.2vw,32px);background:var(--chip);border-bottom:1px solid var(--line2);font-size:.8125rem}
+.jrow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px}
+.jlist,.jsteps{display:flex;flex-wrap:wrap;gap:4px;margin:0;padding:0;list-style:none}
+.jnav a,.index-bar a{display:inline-flex;align-items:center;gap:6px;min-height:2rem;padding:0 12px;border-radius:999px;color:var(--text3);text-decoration:none}
+.jnav a:hover,.index-bar a:hover{color:var(--text)}
+.jnav a[aria-current]{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-line)}
+.jnext{margin-left:auto}
+.cap{padding:24px 16px 10px;font-family:var(--mono);font-size:.75rem;color:var(--text3)}
+.cap-mcp,.cap-note{display:block;margin-top:4px;color:var(--text4)}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
+.control:has(:focus-visible),.search:has(:focus-visible),.composer:has(:focus-visible),.lang:has(:focus-visible),.toggle:has(:focus-visible) .track{outline:1px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.muted{font-size:.8125rem;color:var(--text3)}
+.soft{color:var(--text2)}
+.count{font-family:var(--mono);font-size:.8125rem;color:var(--text3)}
+.eyebrow{padding:0 10px 6px;font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.app{box-sizing:border-box;min-height:1060px;max-width:1440px;margin:0 auto;display:flex;flex-direction:column;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.cols{flex:1 1 auto;display:flex;flex-wrap:wrap;align-items:stretch}
+.side{flex:1 1 260px;max-width:100%;box-sizing:border-box;padding:24px 16px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:20px}
+.brand-row{display:flex;flex:none;align-items:center;gap:10px}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--accent);color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none}
+.brand{font-weight:700;font-size:1.1875rem;letter-spacing:-.01em;white-space:nowrap}
+.demo{padding:3px 8px;border-radius:999px;border:1px solid var(--line2);font-size:.6875rem;color:var(--text2)}
+.switch{position:relative;flex:none}
+.drop{position:absolute;top:calc(100% + 8px);left:0;width:22rem;max-width:90vw;z-index:5;box-sizing:border-box;padding:8px;border-radius:14px;background:var(--card);border:1px solid var(--line2);box-shadow:0 12px 32px var(--shadow);display:flex;flex-direction:column;gap:12px}
+.drop .search{background:var(--bg)}
+.drop .hub{padding:6px 8px}
+.hubs{display:flex;flex-direction:column;gap:4px}
+.hub{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;box-sizing:border-box;padding:6px 10px;border:0;border-radius:10px;text-align:left;cursor:pointer;text-decoration:none;font-size:.875rem;font-weight:500;color:var(--text);background:var(--sel);box-shadow:inset 0 0 0 1px var(--line2)}
+.hub svg{flex:none}
+.chev{color:var(--text3)}
+.tick{color:var(--accent)}
+.hub-text{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
+.hub.compact{flex:none;width:auto;min-height:40px;padding:4px 10px}
+.hub.compact .hub-text{flex:none;flex-direction:row;align-items:center;gap:10px}
+.hub.compact .hub-name{white-space:nowrap}
+.hub-name{overflow-wrap:anywhere}
+.hub.other{background:transparent;box-shadow:none}
+.hub-go{display:inline-flex;align-items:center;gap:4px;font-size:.8125rem;color:var(--link)}
+.hub-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.75rem;color:var(--text3)}
+.hub-meta .tag{padding:1px 6px}
+.dot{width:8px;height:8px;flex:none;border-radius:50%;background:var(--accent)}
+.dot.ok{background:var(--ok)}
+.menu{display:flex;flex-direction:column;gap:14px}
+.menu-group{display:flex;flex-direction:column;gap:2px}
+.menu-rule{height:1px;margin:8px 0;background:var(--line)}
+.menu-group.divided{padding-top:14px;border-top:1px solid var(--line)}
+.nav-link{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 10px;border-radius:10px;color:var(--text2);text-decoration:none;font-size:.875rem}
+.nav-link[aria-current]{color:var(--accent)}
+.nav-icon{width:30px;height:30px;flex:none;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.nav-icon.new{border:1px dashed var(--line2)}
+.nav-icon.page{background:var(--chip)}
+.nav-end{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-chev{display:flex;color:var(--text3)}
+.sub{padding-left:30px}
+.sub.deep{padding-left:50px}
+.sub .nav-icon{width:24px;height:24px;border-radius:7px}
+.nav-badge{min-width:20px;box-sizing:border-box;padding:1px 6px;border-radius:999px;background:var(--accent);color:var(--ink);font-size:.6875rem;font-weight:600;text-align:center}
+.side-foot{margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
+.main{flex:999 1 560px;min-width:0;box-sizing:border-box;display:flex;flex-direction:column;container-type:inline-size}
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px clamp(16px,2.2vw,32px);border-bottom:1px solid var(--line)}
+.strip{position:relative;z-index:3;display:flex;align-items:center;gap:16px;box-sizing:border-box;min-height:3.5rem;padding:0 clamp(16px,2.2vw,32px);background:var(--chip);border-bottom:1px solid var(--line2)}
+.top-end{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.strip-end{display:flex;flex:none;align-items:center;margin-left:auto}
+.strip-div{width:1px;height:24px;flex:none;background:var(--line2)}
+.crumb{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:.8125rem;color:var(--text3)}
+.crumb a{color:inherit;text-decoration:none}
+.crumb a:hover{color:var(--text)}
+.crumb-now{font-weight:500;color:var(--text)}
+@media (max-width:60rem){.hub.compact .tag{display:none}.strip{flex-wrap:wrap;gap:6px 16px;padding-top:8px;padding-bottom:8px}.strip-end{order:2}.strip .crumb{order:3;flex:1 1 100%}.strip-div{display:none}}
+h1{font-weight:700;font-size:clamp(1.5rem,2.6vw,2rem);letter-spacing:-.02em}
+.lang{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text2);font-size:.875rem;font-weight:500}
+.lang select{padding-right:10px;border:0;background:transparent;color:var(--text);outline:none;cursor:pointer}
+.content{flex:1 1 auto;padding:28px clamp(16px,2.2vw,32px) 40px;display:flex;flex-direction:column;gap:24px}
+.bare-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px clamp(16px,3vw,40px)}
+.bare-body{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:32px 16px}
+.stack{--stack-gap:16px;display:flex;flex-direction:column;gap:var(--stack-gap)}
+.row{--row-gap:12px;display:flex;flex-wrap:wrap;align-items:center;gap:var(--row-gap)}
+.grid{--grid-min:16rem;--grid-gap:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--grid-min)),1fr));gap:var(--grid-gap)}
+.two-col{--cols:2fr 1fr;display:grid;grid-template-columns:var(--cols);gap:20px;align-items:start}
+.two-col>*{min-width:0}
+@container (max-width:700px){.two-col{grid-template-columns:1fr}}
+.section-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px}
+.panel,.card{box-sizing:border-box;min-width:0;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column}
+.panel{border-radius:18px}
+.card{padding:24px;gap:18px;border-radius:14px}
+.card.tight{padding:16px;gap:12px}
+.q-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rule-head{display:flex;align-items:center;gap:12px}
+.rule-head .ctl{width:8rem}
+.rule{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr) minmax(0,2fr) auto;gap:8px;align-items:center}
+.rule-end{display:flex;gap:8px}
+.rule .btn{padding:0 12px}
+.step{padding:0;gap:0}
+.step>summary{display:flex;align-items:center;gap:12px;padding:16px 24px;cursor:pointer;list-style:none}
+.step>summary::-webkit-details-marker{display:none}
+.step[open]>summary{border-bottom:1px solid var(--line)}
+.step[open]>summary .chev{transform:rotate(180deg)}
+.step-sum{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-left:auto;min-width:0}
+.step-body{padding:24px;display:flex;flex-direction:column}
+.card-head{display:flex;align-items:center;gap:12px}
+.card-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tile{display:flex;gap:12px;align-items:center;padding:16px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.tile.warn{border-color:var(--accent)}
+.tile.bad{border-color:var(--bad)}
+.tile-arrow{margin-left:auto;flex:none;color:var(--text3)}
+.tile.warn .tile-arrow{color:var(--accent)}
+.tile-badge{width:28px;height:28px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--okbg);color:var(--ok)}
+.tile.warn .tile-badge{background:var(--accent);color:var(--ink)}
+.tile.bad .tile-badge{background:var(--badbg);color:var(--bad)}
+.tile.mute .tile-badge{background:var(--chip);color:var(--text3)}
+.tile-text{display:flex;flex-direction:column;gap:3px;min-width:0}
+.tile-label{font-size:.8125rem;color:var(--text3)}
+.tile-value{font-weight:600;font-size:.9375rem}
+.stat{display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.stat-label{font-size:.8125rem;color:var(--text3)}
+.stat-value{font-family:var(--display);font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
+.stat-sub{font-size:.8125rem;color:var(--text3)}
+.progress{display:flex;align-items:center;gap:12px}
+.bar{flex:1 1 auto;height:6px;border-radius:3px;background:var(--chip);overflow:hidden}
+.fill{height:100%;background:var(--accent);border-radius:3px}
+.kv{margin:0;display:grid;grid-template-columns:auto 1fr;gap:12px 16px;font-size:.875rem}
+.kv dt{color:var(--text3)}
+.kv dd{margin:0;text-align:right}
+.kv.left dd{text-align:left}
+.card-toggle{display:flex;align-items:center;gap:8px;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.card-toggle[aria-expanded="false"] svg{transform:rotate(-90deg)}
+.divider{margin:0;border:0;border-top:1px solid var(--line)}
+.note{padding:14px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:.8125rem;line-height:1.55;color:var(--text2)}
+.glyph{flex:none;width:40px;height:40px;border-radius:12px;background:var(--chip);display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.badge{width:30px;height:30px;flex:none;border-radius:8px;background:var(--chip);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600}
+.badge.avatar{border-radius:50%}
+.badge.accent{background:var(--accent);color:var(--ink)}
+.badge.chat-mark{color:var(--accent)}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;background:var(--chip);font-size:.6875rem;color:var(--text2);white-space:nowrap}
+.tag.use,.tag.ok{background:var(--okbg);color:var(--ok)}
+.tag.warn{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.tag.bad{background:var(--badbg);color:var(--bad)}
+.tag.mute{background:transparent;color:var(--text3);box-shadow:inset 0 0 0 1px var(--line2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;box-sizing:border-box;padding:0 22px;border:1px solid transparent;border-radius:12px;font-size:.9375rem;font-weight:600;text-decoration:none;cursor:pointer}
+.btn.sm{min-height:40px;padding:0 18px}
+.btn.xs{min-height:32px;padding:0 12px;font-size:.8125rem}
+.btn.act{width:100%}
+.btn.primary{background:var(--accent);color:var(--ink)}
+.btn.quiet{background:transparent;border-color:var(--line2);color:var(--text)}
+.btn.danger{background:transparent;border-color:var(--bad);color:var(--bad)}
+.btn:disabled{background:transparent;border-color:var(--line);color:var(--text4);cursor:default}
+.btn.primary:disabled{background:var(--line2);border-color:transparent;color:var(--text3)}
+.link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none}
+.link:hover{text-decoration:underline}
+.link.sm{font-size:.8125rem}
+.field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.field-label{font-size:.8125rem;font-weight:600;color:var(--text2)}
+.field-value{font-size:.9375rem}
+.hint{display:flex;align-items:center;gap:8px;font-size:.8125rem;color:var(--text3)}
+.control{display:flex;align-items:center;gap:8px;min-height:52px;box-sizing:border-box;padding:0 14px;border-radius:12px;background:var(--bg);border:1px solid var(--line2);font-size:.9375rem}
+.control svg{flex:none;color:var(--text3)}
+.control input,.control select,.control textarea{flex:1 1 auto;min-width:0;border:0;background:transparent;color:var(--text);outline:none}
+.control input{min-height:44px}
+.control select{appearance:none;min-height:44px;cursor:pointer}
+.control textarea{min-height:4.5rem;padding:10px 0;resize:none}
+.search{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);color:var(--text3);font-size:.875rem}
+.search input{flex:1 1 auto;min-width:0;border:0;background:transparent;color:var(--text);outline:none}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.toolbar-group{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.toolbar-group:first-child{flex:1 1 auto}
+.toolbar .search{flex:0 1 280px}
+.filter{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 6px 0 12px;border-radius:999px;background:var(--sel);box-shadow:inset 0 0 0 1px var(--line2);font-size:.8125rem}
+.filter button{width:24px;height:24px;border:0;border-radius:50%;background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.tabs{display:flex;flex-wrap:wrap;gap:24px;border-bottom:1px solid var(--line)}
+.tab{display:flex;align-items:center;min-height:44px;margin-bottom:-1px;border-bottom:2px solid transparent;color:var(--text2);text-decoration:none;font-size:.875rem;font-weight:500}
+.tab[aria-current]{color:var(--accent);border-bottom-color:var(--accent)}
+.table-card{overflow-x:auto}
+.table{width:100%;border-collapse:collapse;font-size:.875rem}
+.table th{padding:14px 12px;white-space:nowrap;border-bottom:1px solid var(--line);font-size:.6875rem;font-weight:400;letter-spacing:.08em;text-align:left;text-transform:uppercase;color:var(--text3)}
+.table td{height:40px;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.table tr:last-child td{border-bottom:0}
+.table td.row-act,.table th.row-act{position:sticky;right:0;width:1%;background:var(--card);text-align:right;white-space:nowrap}
+.cell{display:flex;align-items:center;gap:12px}
+.cell-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cell-name{font-size:.9375rem;font-weight:600}
+a.cell-name{color:var(--text);text-decoration:none}
+a.cell-name:hover{color:var(--accent);text-decoration:underline}
+.cell-sub{font-size:.8125rem;color:var(--text3)}
+.empty{display:flex;flex-direction:column;align-items:center;gap:14px;padding:32px 24px;border:1px dashed var(--line2);border-radius:14px;background:var(--card);text-align:center;color:var(--text2);font-size:.9375rem}
+.panel .empty{border:0;background:transparent}
+.add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:160px;padding:16px;box-sizing:border-box;border:1.5px dashed var(--line2);border-radius:14px;color:var(--text2);text-decoration:none;font-size:.875rem;text-align:center}
+.add-note{font-size:.8125rem;color:var(--text3)}
+.toggle{display:flex;align-items:center;gap:12px;font-size:.875rem;color:var(--text2);cursor:pointer}
+.track{position:relative;width:40px;height:24px;flex:none;border-radius:999px;background:var(--line2)}
+.track::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--text)}
+input:checked+.track{background:var(--accent)}
+input:checked+.track::after{left:19px;background:var(--ink)}
+input:disabled+.track{opacity:.45}
+.toggle:has(input:disabled){cursor:default}
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tl-item{position:relative;display:flex;gap:14px;padding-bottom:20px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item:not(:last-child)::before{content:"";position:absolute;left:9px;top:22px;bottom:2px;width:2px;background:var(--line)}
+.tl-dot{width:20px;height:20px;flex:none;box-sizing:border-box;border-radius:50%;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.tl-item.done .tl-dot{background:var(--ok);border-color:var(--ok)}
+.tl-item.now .tl-dot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px var(--sel)}
+.tl-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tl-title{font-size:.9375rem;font-weight:600}
+.tl-item.next .tl-title{color:var(--text2);font-weight:500}
+.tl-meta{font-size:.8125rem;color:var(--text3)}
+.chat{flex:0 0 22rem;box-sizing:border-box;max-width:100%;display:flex;flex-direction:column;background:var(--side);border-left:1px solid var(--line)}
+.chat.rail{flex:0 0 3.5rem;align-items:center;gap:16px;padding:14px 0}
+.chat-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.chat-ctx{display:inline-flex;align-items:center;gap:8px;margin-left:auto;min-height:30px;padding:0 12px;border-radius:999px;background:var(--sel);box-shadow:inset 0 0 0 1px var(--line2);font-size:.8125rem;color:var(--text)}
+.chat-ctx svg{flex:none;color:var(--accent)}
+.chat-collapse{width:32px;height:32px;flex:none;border:0;border-radius:8px;background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.rail-ico{position:relative;display:flex;color:var(--accent)}
+.rail-dot{position:absolute;top:-3px;right:-4px;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--side)}
+.thread{flex:1 1 auto;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column-reverse}
+.thread-in{display:flex;flex-direction:column;gap:12px}
+.chat-chips{display:flex;flex-wrap:wrap;gap:8px;padding:8px 16px 0}
+.sugg{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border:1px solid var(--line2);border-radius:999px;background:var(--sel);color:var(--text2);font-size:.8125rem;cursor:pointer}
+.sugg svg{color:var(--accent)}
+.chat-input{padding:16px}
+.composer{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:var(--card);border:1px solid var(--line2);font-size:.9375rem}
+.composer textarea{box-sizing:border-box;width:100%;min-height:5.5rem;padding:0;border:0;background:transparent;color:var(--text);outline:none;resize:none}
+.composer-bar{display:flex;align-items:center;justify-content:space-between}
+.chat-tools{display:flex;align-items:center;gap:4px;min-width:0}
+.chat-model{position:relative;font-size:.8125rem}
+.chat-model:empty{display:none}
+.chat-model>button{display:inline-flex;align-items:center;gap:4px;min-height:32px;padding:0 10px;border:0;border-radius:999px;background:var(--chip);color:var(--text2);cursor:pointer}
+.chat-model-list{position:absolute;left:0;bottom:calc(100% + 8px);z-index:2;box-sizing:border-box;min-width:12rem;width:max-content;max-width:calc(100vw - 2rem);margin:0;padding:6px;list-style:none;border:1px solid var(--line2);border-radius:12px;background:var(--card);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.chat-model-list li{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:36px;padding:0 10px;white-space:nowrap;border-radius:8px;color:var(--text2);font-size:.875rem}
+.chat-model-list li[aria-selected=true]{background:var(--sel);color:var(--text)}
+.chat-model-list svg{color:var(--accent)}
+.act-wrap{position:relative;display:inline-block}
+.act-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:2;box-sizing:border-box;display:flex;flex-direction:column;min-width:9rem;padding:6px;border:1px solid var(--line2);border-radius:12px;background:var(--card);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.act-item{display:flex;align-items:center;min-height:2.25rem;padding:0 .625rem;border:0;border-radius:8px;background:none;color:var(--text2);font:inherit;font-size:.875rem;text-align:left;white-space:nowrap}
+.act-item{text-decoration:none}
+.act-item.bad{color:var(--bad)}
+.table-card:has(.act-menu){overflow:visible}
+.act-wrap:has(.act-menu){z-index:4}
+.sc-head{display:flex;align-items:center;gap:12px}
+.sc-head .cell{flex:1;min-width:0}
+.sc-end{display:flex;align-items:center;gap:8px;flex:none}
+.sc-head.sc-top{align-items:flex-start}
+.sc-meta{margin:0;color:var(--text3);font-size:.875rem}
+.chat-attach{width:40px;height:40px;flex:none;border:0;border-radius:50%;background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.chat-send{width:40px;height:40px;flex:none;border:0;border-radius:50%;background:var(--accent);color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.msg{display:flex;gap:10px;font-size:.875rem}
+.msg.user{align-self:flex-end;max-width:85%}
+.bubble{padding:10px 14px;border-radius:14px 14px 4px 14px;background:var(--sel);border:1px solid var(--accent-line);color:var(--text)}
+.msg.bot{align-items:flex-start;color:var(--text2);line-height:1.5}
+.bot-badge{width:26px;height:26px;flex:none;border-radius:8px;background:var(--chip);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.bot-text{min-width:0;padding-top:3px}
+.msg-card{box-sizing:border-box;max-width:40rem;padding:12px;border-radius:14px;background:var(--card);border:1px solid var(--line2);display:flex;flex-direction:column;gap:10px;font-size:.875rem}
+.msg-card.bad{border-color:var(--bad)}
+.msg-card.wide{max-width:none}
+.msg-title{display:flex;align-items:center;gap:8px;font-weight:600}
+.msg-title svg{flex:none;color:var(--accent)}
+.msg-title.ok svg{color:var(--ok)}
+.msg-title.bad svg{color:var(--bad)}
+.msg-detail{line-height:1.5;color:var(--text2)}
+.msg-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.msg-note{font-size:.75rem;color:var(--text3)}
+.msg-done{display:flex;align-items:center;gap:8px;color:var(--ok);font-weight:500}
+.msg-form{display:flex;flex-direction:column;gap:12px}
+.msg-card .control{min-height:40px;font-size:.875rem}
+.msg-card .control input,.msg-card .control select{min-height:36px}
+.ref-title{flex:1 1 auto;min-width:0}
+.ref-go{display:flex;align-items:center;gap:6px}
+.list-row{display:flex;align-items:center;gap:12px;min-height:44px;padding:8px 0;border-top:1px solid var(--line)}
+.list-text{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
+.list-name{font-weight:600}
+.list-meta{font-size:.8125rem;color:var(--text3)}
+.mini{width:100%;border-collapse:collapse;font-size:.8125rem}
+.mini th{padding:0 12px 8px 0;font-size:.6875rem;font-weight:400;letter-spacing:.08em;text-align:left;text-transform:uppercase;color:var(--text3)}
+.mini td{padding:8px 12px 8px 0;border-top:1px solid var(--line);vertical-align:middle}
+.tools{box-sizing:border-box;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden}
+.tools-head{display:flex;align-items:center;gap:8px;min-height:36px;padding:0 12px;border-bottom:1px solid var(--line);font-size:.8125rem;color:var(--text2)}
+.tools.collapsed .tool{display:none}
+.tools.collapsed .tools-head{border-bottom:0}
+.tools.collapsed .tools-head svg{transform:rotate(-90deg)}
+.tools .tool{border-bottom:1px solid var(--line)}
+.tools .tool:last-child{border-bottom:0}
+.thread-in>.tool{box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.tool{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:2px 8px;padding:6px 10px;font-size:.8125rem}
+.tool-ico{display:flex;color:var(--text3)}
+.tool-name{justify-self:start;padding:2px 8px;border-radius:6px;background:var(--chip);font-family:var(--mono);font-size:.75rem;color:var(--text);overflow-wrap:anywhere}
+.tool-state{display:flex;color:var(--ok)}
+.tool.error .tool-state{color:var(--bad)}
+.tool-spin{width:12px;height:12px;box-sizing:border-box;border-radius:50%;border:2px solid var(--line2);border-top-color:var(--accent)}
+.tool-ms{min-width:3.5rem;font-family:var(--mono);font-size:.6875rem;text-align:right;color:var(--text4)}
+.tool-sum{grid-column:2 / -1;min-width:0;overflow-wrap:anywhere;font-size:.75rem;color:var(--text3)}
+.nav-div{display:flex;align-items:center;gap:12px;color:var(--text3);font-size:.75rem;text-decoration:none}
+.nav-div::before,.nav-div::after{content:"";flex:1 1 auto;height:1px;background:var(--line)}
+.nav-div span{display:inline-flex;align-items:center;gap:6px}
+.from-chat{display:flex;flex-direction:column;gap:16px}
+.from-chat-body{display:flex;flex-direction:column;gap:20px}
+.main>.answer-bar{padding:0 clamp(16px,2.2vw,32px)}
+.tab.answer{gap:8px}
+.tab.answer a{color:inherit;text-decoration:none}
+.tab.answer button{display:flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:0;border-radius:6px;background:none;color:inherit;cursor:pointer}
+.draft{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:10px 12px 10px 18px;border-radius:14px;border:1px solid var(--accent-line);background:var(--sel)}
+.draft-text{flex:1 1 16rem;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+.notice{display:flex;align-items:center;gap:12px;padding:12px clamp(16px,2.2vw,32px);border-bottom:1px solid var(--line);background:var(--okbg);color:var(--ok)}
+.notice.bad{background:var(--badbg);color:var(--bad)}
+.notice svg{flex:none}
+.notice-text{flex:1 1 auto;min-width:0;font-weight:500;color:var(--text)}
+.notice-close{flex:none;display:flex;padding:4px;border:0;border-radius:8px;background:transparent;color:inherit;cursor:pointer}
+.notice-close:hover{background:var(--line)}
+.publish .tool-spin{width:14px;height:14px;border-color:var(--ink);border-top-color:transparent}
+.list-row .link{flex:none;white-space:nowrap}
+.settings{display:flex;flex-direction:column}
+.setting{display:grid;grid-template-columns:11rem minmax(0,1fr);align-items:center;gap:8px 20px;padding:1.25rem 0;border-top:1px solid var(--line)}
+.setting:first-child{padding-top:0;border-top:0}
+.setting:last-child{padding-bottom:0}
+.setting-label{font-size:.9375rem;font-weight:600;color:var(--text)}
+.setting-control{min-width:0;display:flex;align-items:center;gap:12px}
+.setting-control .toggle{min-height:44px}
+.ctl{flex:1 1 auto;min-height:44px;width:100%}
+.ctl input,.ctl select{min-height:40px}
+.ctl textarea{min-height:5rem}
+@container (max-width:560px){.setting{grid-template-columns:1fr}}
+.ctl-btn{width:36px;height:36px;flex:none;border:0;border-radius:9px;background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.req{margin-left:4px;color:var(--bad)}
+.field-error{font-size:.8125rem;color:var(--bad)}
+.ctl.bad{border-color:var(--bad)}
+.ctl.off{opacity:.55}
+.unit{flex:none;font-size:.8125rem;color:var(--text3)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{display:inline-flex;align-items:center;gap:8px;min-height:44px;box-sizing:border-box;padding:0 14px;border:1px solid var(--line2);border-radius:12px;background:var(--bg);color:var(--text2);font-size:.875rem;cursor:pointer}
+.opt.on{border-color:var(--accent);background:var(--sel);color:var(--text)}
+.opt.off{opacity:.55;cursor:default}
+.opt:has(input:focus-visible){outline:1px solid var(--accent);outline-offset:2px}
+.opt-dot{width:16px;height:16px;flex:none;box-sizing:border-box;border:2px solid var(--line2);border-radius:50%}
+.opt.on .opt-dot{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px var(--sel)}
+.opt-box{width:16px;height:16px;flex:none;box-sizing:border-box;border:2px solid var(--line2);border-radius:5px}
+.opt.on .opt-box{border-color:var(--accent);background:var(--accent)}
+.applies{display:flex;align-items:center;gap:16px;width:100%}
+.applies .toggle{flex:none;min-height:44px}
+.form-tool{font-family:var(--mono);font-size:.75rem;color:var(--text3)}
+.form-foot{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.pick-wrap{display:flex;flex-direction:column;gap:6px}
+.ctl.open{border-color:var(--accent)}
+.ctl.ph select{color:var(--text3)}
+.pick{box-sizing:border-box;padding:6px;border-radius:12px;background:var(--card);border:1px solid var(--line2);display:flex;flex-direction:column;gap:2px}
+.pick-item{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:40px;padding:0 10px;border-radius:8px;font-size:.9375rem;color:var(--text2)}
+.pick-item.on{background:var(--sel);color:var(--text)}
+.pick-text{display:flex;flex-direction:column;gap:2px}
+.pick-note{font-size:.8125rem;color:var(--text3)}
+.pick-head{padding:8px 10px 2px;font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.pick-rule{height:1px;margin:4px 0;background:var(--line)}
+.theme-picker{display:grid;grid-template-columns:repeat(auto-fit,minmax(7rem,1fr));gap:10px;width:100%}
+.theme-card{position:relative;display:flex;flex-direction:column;gap:6px;min-width:0;box-sizing:border-box;padding:10px 12px;border-radius:12px;background:var(--card);border:1.5px solid var(--line2);color:var(--text);font-size:.875rem;cursor:pointer}
+.theme-card.on{background:var(--sel);border-color:var(--accent)}
+.theme-card:has(input:focus-visible){outline:1px solid var(--accent);outline-offset:2px}
+.theme-dots{display:flex;gap:6px}
+.theme-dots i{width:14px;height:14px;border-radius:50%;border:1px solid var(--line2)}
+.theme-check{position:absolute;top:10px;right:10px;color:var(--accent)}
+.ix-lead{max-width:62ch;font-size:.9375rem;line-height:1.6;color:var(--text2)}
+.ix-tree{margin:0;padding:0;list-style:none;column-width:17rem;column-gap:32px;font-size:.875rem}
+.ix-tree ul{margin:2px 0 0;padding:0 0 0 14px;list-style:none;border-left:1px solid var(--line)}
+.ix-tree li{padding:3px 0}
+.ix-sec{break-inside:avoid;padding-bottom:14px}
+.ix-sec>.eyebrow{padding:0 0 4px}
+.ix-route{font-family:var(--mono);font-size:.75rem;color:var(--text3)}
+.ix-tree .ix-route{margin-left:8px}
+.ix-tree .tag{margin-left:6px}
+.ix-lead code{font-family:var(--mono);font-size:.8125rem;color:var(--text)}
+.ix-planned{color:var(--text3)}
+.ix-head{display:flex;align-items:center;gap:12px}
+.ix-title{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ix-serves{display:flex;flex-wrap:wrap;gap:6px}
+.ix-serves .tag{white-space:normal}
+.seg{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:12px;background:var(--bg);border:1px solid var(--line2)}
+.seg-label{font-size:.8125rem;color:var(--text3)}
+.seg-item{display:inline-flex;align-items:center;min-height:32px;padding:0 14px;border:0;border-radius:9px;background:transparent;color:var(--text2);font-size:.8125rem;font-weight:500;text-decoration:none;cursor:pointer}
+.seg-item[aria-current],.seg-item[aria-pressed=true]{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-line)}
+.chart{display:flex;flex-direction:column;gap:14px;min-width:0}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;padding:0;list-style:none;font-size:.8125rem;color:var(--text2)}
+.chart-legend li{display:inline-flex;align-items:center;gap:6px}
+.chart-legend .count{color:var(--text3)}
+.swatch{width:10px;height:10px;flex:none;border-radius:3px;background:var(--c)}
+.swatch.part{background:color-mix(in srgb,var(--accent) 45%,var(--card))}
+.ch-grid{stroke:var(--line);stroke-width:1}
+.ch-base{stroke:var(--line2);stroke-width:1}
+.ch-tick,.ch-axis{fill:var(--text3);font-size:.6875rem}
+.ch-peak{fill:var(--text);font-size:.6875rem;font-weight:600}
+.ch-seg{stroke:var(--card);stroke-width:1.5}
+.ch-total{fill:var(--text);font-family:var(--display);font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+.ch-sub{fill:var(--text3);font-size:.75rem}
+.ch-slice{fill:none;stroke:var(--c)}
+.donut{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.donut svg{flex:none;width:11rem}
+.donut-list{flex:1 1 9rem;margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:.8125rem}
+.donut-list li{display:flex;align-items:center;gap:8px;color:var(--text)}
+.donut-list .count{margin-left:auto}
+.rank{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px}
+.rank-row{display:flex;flex-direction:column;gap:6px;border-radius:8px;color:var(--text);text-decoration:none}
+a.rank-row:hover .rank-name{color:var(--accent);text-decoration:underline}
+.rank-line{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:.875rem}
+.rank-name{font-weight:600}
+.rank-track{display:flex;gap:2px;height:12px}
+.rank-in,.rank-out{height:100%;background:var(--accent);min-width:2px}
+.rank-in{border-radius:3px 0 0 3px}
+.rank-out{border-radius:0 3px 3px 0;background:color-mix(in srgb,var(--accent) 45%,var(--card))}
+.heat{width:100%;border-collapse:separate;border-spacing:3px;font-size:.8125rem}
+.heat th{padding:6px 8px;font-weight:500;color:var(--text2);text-align:left}
+.heat thead th,.heat tbody th{white-space:nowrap}
+.heat thead th{font-size:.75rem}
+.heat thead .swatch{display:inline-block;margin-right:6px}
+.heat td{height:2.5rem;padding:0 6px;border-radius:6px;text-align:center;font-family:var(--mono);color:var(--text)}
+.heat .h0{color:var(--text4);box-shadow:inset 0 0 0 1px var(--line)}
+.heat .h1{background:color-mix(in srgb,var(--accent) 14%,var(--card))}
+.heat .h2{background:color-mix(in srgb,var(--accent) 28%,var(--card))}
+.heat .h3{background:color-mix(in srgb,var(--accent) 44%,var(--card))}
+.heat .h4{background:color-mix(in srgb,var(--accent) 66%,var(--card));color:var(--ink)}
+.heat .h5{background:var(--accent);color:var(--ink)}
+.heat-key{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--text3)}
+.heat-key i{width:1.25rem;height:.75rem;border-radius:3px;background:color-mix(in srgb,var(--accent) var(--p),var(--card))}
+.apv-act{display:flex;flex-direction:column;gap:8px}
+.apv-t td{padding-top:.75rem;padding-bottom:.75rem}
+.cmp-sheet{box-sizing:border-box;max-width:1440px;margin:0 auto;padding:24px;display:flex;flex-direction:column;gap:32px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.cmp-item{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cmp-name{font-family:var(--mono);font-size:.75rem;color:var(--text3)}
+.cmp-row{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.cmp-col{flex:none;width:22rem;display:flex;flex-direction:column;gap:12px}
+.cmp-wide{flex:none;width:34rem;display:flex;flex-direction:column;gap:12px}
+.cmp-tall{min-height:25rem}
+.cmp-frame{border:1px solid var(--line);border-radius:12px;overflow:visible}
+.cmp-bar{max-width:48rem}
+.cmp-item .cmp-sheet{margin:0}
+.cmp-schema{margin:0;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text2);font-family:var(--mono);font-size:.75rem;overflow:auto;white-space:pre}
+.cmp-anatomy :is(.strip,.side,.main,.chat){position:relative;outline:2px dashed var(--accent);outline-offset:-2px}
+.cmp-anatomy :is(.strip,.side,.main,.chat)::after{position:absolute;left:10px;bottom:8px;z-index:6;padding:3px 8px;border-radius:6px;background:var(--accent);color:var(--ink);font-family:var(--mono);font-size:.6875rem}
+.cmp-anatomy .strip::after{content:"Header strip: header_strip()";left:50%;bottom:-12px;transform:translateX(-50%)}
+.cmp-anatomy .side::after{content:"Menu: menu()"}
+.cmp-anatomy .main::after{content:"Content area: title_row() and the page content"}
+.cmp-anatomy .chat::after{content:"Chat column: chat_column()"}
+.app.ent-win{min-height:760px}
+.ent-mark{display:flex;align-items:center;gap:14px}
+.ent-mark .logo{width:52px;height:52px;border-radius:14px}
+.ent-mark .brand{font-size:2.25rem}
+.ent-card{width:min(100%,30rem)}
+.ent-card.ent-wide{width:min(100%,48rem)}
+.ent-start{align-items:center;text-align:center}
+.ent-start .row{justify-content:center}
+.ent-headline{max-width:22ch;font-size:clamp(1.375rem,3vw,1.75rem);line-height:1.25;color:var(--text2);font-weight:600}
+.ent-error{display:flex;align-items:center;gap:8px;margin:0;padding:12px 14px;border-radius:12px;background:var(--badbg);color:var(--bad);font-size:.875rem}
+.ent-error svg{flex:none}
+.ent-head{display:flex;align-items:center;gap:12px}
+.ent-badge{width:28px;height:28px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--okbg);color:var(--ok)}
+.ent-badge.bad{background:var(--badbg);color:var(--bad)}
+.ent-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:12px}
+.ent-pick{position:relative;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:14px;background:var(--bg);border:1px solid var(--line2);cursor:pointer}
+.ent-pick.on{background:var(--sel);border-color:var(--accent)}
+.ent-pick-top{display:flex;align-items:center;justify-content:space-between}
+.ent-radio{width:22px;height:22px;box-sizing:border-box;border-radius:50%;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.ent-pick.on .ent-radio{background:var(--accent);border-color:var(--accent)}
+.ent-pick-name{font-family:var(--display);font-weight:700}
+.ent-failed .tl-item.now .tl-dot{background:var(--badbg);border-color:var(--bad);box-shadow:none;color:var(--bad)}
+.ent-failed .tl-item.now .tl-title{color:var(--bad)}
+.ent-list{width:min(100%,72rem);display:flex;flex-direction:column;gap:20px}
+.ent-hub-head{display:flex;align-items:flex-start;gap:12px;min-height:5.25rem}
+.ent-hub-name{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.mk-connect{padding:clamp(20px,2.4vw,32px);gap:22px}
+.mk-connect h2{font-size:1.5rem;font-weight:700;letter-spacing:-.01em}
+.mk-off{opacity:.55}
+.mk-intro{display:flex;flex-direction:column;gap:8px}
+.mk-intro p{font-size:.9375rem;line-height:1.6;color:var(--text2);max-width:62ch}
+.mk-hold{font-size:.875rem;color:var(--accent)}
+.mk-narrow{max-width:520px}
+.mk-select{position:relative;display:flex;align-items:center;font-size:.9375rem;font-weight:500}
+.mk-select select{appearance:none;width:100%;min-height:52px;padding:0 48px 0 16px;border-radius:12px;background:var(--bg);border:1px solid var(--line2);color:var(--text);cursor:pointer;outline-color:var(--accent)}
+.mk-select svg{position:absolute;right:16px;pointer-events:none;color:var(--text2)}
+.mk-key{padding-right:6px;font-family:var(--mono);font-weight:500}
+.mk-reveal{width:44px;height:44px;flex:none;border:0;border-radius:9px;background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mk-result{display:flex;align-items:center;gap:8px;font-size:.875rem;color:var(--ok)}
+.mk-result.bad{color:var(--bad)}
+.mk-test{display:flex;flex-direction:column;gap:8px}
+.mk-testing{display:flex;align-items:center;gap:8px;font-size:.875rem;color:var(--text2)}
+.mk-nowrap{white-space:nowrap}
+.mk-quiet{opacity:.8}
+.tr-json{display:block;box-sizing:border-box;padding:.5rem .75rem;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-family:var(--mono);font-size:.8125rem;line-height:1.5;color:var(--text2);text-align:left;white-space:pre-wrap;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<figure id="j1-s4">
+<figcaption class="cap">4 · An earlier run, opened from the Runs list: the same view as a run, marked with the draft it ran on, and it can be printed; the latest run stays the one the list shows<span class="cap-mcp">Filled by: agency_get_test_run (illustrative), agency_list_drafts</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SF</span><span class="hub-text"><span class="hub-name">Siaya Farmers' Group</span><span class="hub-meta"><span class="dot ok" aria-hidden="true"></span>Ready<span class="tag mute">Farmers</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Agency / <a href="#">Test</a> / <span class="crumb-now">Group order: farmers join and the coordinator sends</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg></span>Objectives</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-9"/><path d="M8 12H3"/><path d="M21 20h-5"/><path d="M12 20H3"/><path d="M14 2v4"/><path d="M8 10v4"/><path d="M16 18v4"/></svg></span>Workflows</a>
+<a class="nav-link" href="#" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></span>Test</a>
+<a class="nav-link" href="#" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12v9"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M8 5.25l8 4.5"/></svg></span>Modules</a>
+<div class="menu-rule" role="separator"></div>
+<a class="nav-link" href="#" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Review<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></span>Publish</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="#" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="#"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Group order: farmers join and the coordinator sends</h1>
+<div class="top-end"><a class="btn primary" href="#" title="Opens: Report of a run" aria-label="Print report, opens: Report of a run"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>Print report</a></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:24px"><section class="card" aria-label="Scenario">
+<div class="card-head"><h2>Scenario</h2><div class="card-actions"><button type="button" class="btn quiet sm">Edit</button></div></div>
+<dl class="kv"><dt>Blocks</dt><dd>1. Fill a form, 2. Say yes or no, 3. Say yes or no, 4. Fill a form, 5. Fill a form, 6. Notify, 7. Say yes or no, 8. Fill a form</dd><dt>Played by</dt><dd>Test agent, as Coordinator, Farmer 1, Farmer 2 and Supplier</dd><dt>Last run</dt><dd>Yesterday, 17:40</dd><dt>Result</dt><dd><span class="tag bad">Failed</span></dd><dt>Tokens</dt><dd>12,000 of 30,000</dd><dt>On draft</dt><dd>Before the RU-3 edit</dd></dl>
+</section><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>What transpired</h2></div><span class="muted">Each wait is acted out: the Test agent answers for the person at once and no time passes in the run.</span><div class="stack"><section class="card" aria-label="Start · Coordinator">
+<div class="card-head"><h2>Start · Coordinator</h2><div class="card-actions"><div class="row" style="--row-gap:8px"><span class="tag ok">RU-2 held</span><span class="soft">3,100 tokens</span></div></div></div>
+<dl class="kv"><dt>Played by</dt><dd>Test agent · Fill a form</dd><dt>Did</dt><dd>Started a group order from the Supplier's posted bulk price for urea and set the minimum</dd><dt>Recorded</dt><dd>The group order with the terms it started with, KES 3,600 a bag from 20 bags, and the minimum, 20 bags. It keeps the draft's Group order workflow.</dd><dt>Endpoint</dt><dd><span class="count">market_start_group_order</span> <span class="muted">market</span></dd><dt>Sent</dt><dd><code class="tr-json">{"poster_id": "poster-1", "minimum": 20}</code></dd><dt>Answered</dt><dd><code class="tr-json">{"id": "go-1", "poster_id": "poster-1", "product": "urea", "price": 3600, "minimum": 20, "terms_version": 1, "workflow_version": 4, "state": "open", "direction": "buy"}</code></dd><dt>Trail line</dt><dd><span class="count">market_group_order_trail</span> Coordinator started</dd><dt>Rows written</dt><dd>group_order +1, trail +1</dd></dl>
+</section><section class="card" aria-label="Start · Suppliers' agent">
+<div class="card-head"><h2>Start · Suppliers' agent</h2><div class="card-actions"><div class="row" style="--row-gap:8px"><span class="soft">1,400 tokens</span></div></div></div>
+<dl class="kv"><dt>Did</dt><dd>Told the Supplier of the group order</dd><dt>Recorded</dt><dd>A message to the Supplier in the group's thread</dd><dt>Endpoint</dt><dd><span class="count">comm_chat_message_post</span> <span class="muted">comm</span></dd><dt>Sent</dt><dd><code class="tr-json">{"structure_id": "group-1", "thread_id": "thread-1", "body": "A group order for urea has started: 20 bags at KES 3,600 a bag."}</code></dd><dt>Answered</dt><dd><code class="tr-json">{"id": "msg-1", "thread_id": "thread-1", "author_id": "suppliers-agent", "body": "A group order for urea has started: 20 bags at KES 3,600 a bag."}</code></dd><dt>Trail line</dt><dd><span class="count">comm_chat_message_post</span> <code class="tr-json">{"id": "msg-1", "thread_id": "thread-1", "author_id": "suppliers-agent", "body": "A group order for urea has started: 20 bags at KES 3,600 a bag."}</code></dd><dt>Rows written</dt><dd>message +1</dd></dl>
+</section><section class="card" aria-label="Send the invitation · Farmers' agent">
+<div class="card-head"><h2>Send the invitation · Farmers' agent</h2><div class="card-actions"><div class="row" style="--row-gap:8px"><span class="soft">800 tokens</span></div></div></div>
+<dl class="kv"><dt>Did</dt><dd>Sent the invitation to the group</dd><dt>Recorded</dt><dd>An invitation to every member of the group, with a yes or no to answer</dd><dt>Endpoint</dt><dd><span class="count">forms_form_publish</span> <span class="muted">forms</span></dd><dt>Sent</dt><dd><code class="tr-json">{"form_id": "form-1", "publishing_authority": "Siaya Farmers' Group"}</code></dd><dt>Answered</dt><dd><code class="tr-json">{"form": {"id": "form-1", "title": "Invitation", "state": "open"}, "public_link": ""}</code></dd><dt>Trail line</dt><dd><span class="count">forms_form_publish</span> <code class="tr-json">{"form": {"id": "form-1", "title": "Invitation", "state": "open"}, "public_link": ""}</code></dd><dt>Rows written</dt><dd>form changed</dd></dl>
+</section><section class="card" aria-label="Answer the invitation · Farmer 1">
+<div class="card-head"><h2>Answer the invitation · Farmer 1</h2><div class="card-actions"><div class="row" style="--row-gap:8px"><span class="tag mute">Wait acted out</span><span class="soft">700 tokens</span></div></div></div>
+<dl class="kv"><dt>Played by</dt><dd>Test agent · Say yes or no</dd><dt>Did</dt><dd>Said yes to joining the order</dd><dt>Recorded</dt><dd>Farmer 1's answer to the invitation: yes</dd><dt>Endpoint</dt><dd><span class="count">forms_answer_submit</span> <span class="muted">forms</span></dd><dt>Sent</dt><dd><code class="tr-json">{"form_id": "form-1", "answers": [{"prompt_id": "join", "value": "yes"}]}</code></dd><dt>Answered</dt><dd><code class="tr-json">{"form_id": "form-1", "answers": [{"prompt_id": "join", "value": "yes", "send_id": "send-1"}]}</code></dd><dt>Trail line</dt><dd><span class="count">forms_answer_submit</span> <code class="tr-json">{"form_id": "form-1", "answers": [{"prompt_id": "join", "value": "yes", "send_id": "send-1"}]}</code></dd><dt>Rows written</dt><dd>answer +1</dd></dl>
+</section><section class="card" aria-label="Answer the invitation · Farmer 2">
+<div class="card-head"><h2>Answer the invitation · Farmer 2</h2><div class="card-actions"><div class="row" style="--row-gap:8px"><span class="tag mute">Wait acted out</span><span class="soft">700 tokens</span></div></div></div>
+<dl class="kv"><dt>Played by</dt><dd>Test agent · Say yes or no</dd><dt>Did</dt><dd>Said yes to joining the order</dd><dt>Recorded</dt><dd>Farmer 2's answer to the invitation: yes</dd><dt>Endpoint</dt><dd><span class="count">forms_answer_submit</span> <span class="muted">forms</span></dd><dt>Sent</dt><dd><code class="tr-json">{"form_id": "form-1", "answers": [{"prompt_id": "join", "value": "yes"}]}</code></dd><dt>Answered</dt><dd><code class="tr-json">{"form_id": "form-1", "answers": [{"prompt_id": "join", "value": "yes", "send_id": "send-2"}]}</code></dd><dt>Trail line</dt><dd><span class="count">forms_answer_submit</span> <code class="tr-json">{"form_id": "form-1", "answers": [{"prompt_id": "join", "value": "yes", "send_id": "send-2"}]}</code></dd><dt>Rows written</dt><dd>answer +1</dd></dl>
+</section><section class="card" aria-label="Open · Farmer 1">
+<div class="card-head"><h2>Open · Farmer 1</h2><div class="card-actions"><div class="row" style="--row-gap:8px"><span class="tag bad">Failed</span><span class="tag bad">RU-4 failed</span><a class="link sm" href="#" title="Opens: Roles" aria-label="Open the rule, opens: Roles">Open the rule<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a><span class="soft">5,300 tokens</span></div></div></div>
+<dl class="kv"><dt>Played by</dt><dd>Test agent · Fill a form</dd><dt>Did</dt><dd>Joined with 12 bags</dd><dt>Expected</dt><dd>Farmer 1 is in the order only after saying yes to its terms</dd><dt>Found</dt><dd>A line for Farmer 1 with no answer yet</dd><dt>Endpoint</dt><dd><span class="count">market_join_group_order</span> <span class="muted">market</span></dd><dt>Sent</dt><dd><code class="tr-json">{"group_order_id": "go-1", "quantity": 12}</code></dd><dt>Answered</dt><dd><code class="tr-json">{"id": "line-1", "group_order_id": "go-1", "picker": "farmer-1", "quantity": 12, "answer": "waiting", "answered_version": 0}</code></dd><dt>Trail line</dt><dd><span class="count">market_group_order_trail</span> Farmer 1 joined</dd><dt>Rows written</dt><dd>line +1, trail +1</dd></dl>
+</section></div></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Stored in the test copy</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Record</th><th>What it holds</th><th>Rows</th></tr></thead>
+<tbody>
+<tr><td><span class="count">offer</span></td><td>The Supplier's posted price for urea, KES 3,600 a bag, set up for the run</td><td>1</td></tr>
+<tr><td><span class="count">group_order</span></td><td>The terms it started with, the minimum of 20 bags and the draft's workflow version</td><td>1</td></tr>
+<tr><td><span class="count">trail</span></td><td>Who did what to the order, and when</td><td>1</td></tr>
+<tr><td><span class="count">form</span></td><td>The invitation, open for answers</td><td>1</td></tr>
+<tr><td><span class="count">answer</span></td><td>Each farmer's answer to the invitation</td><td>2</td></tr>
+<tr><td><span class="count">message</span></td><td>Each message posted to the group's thread</td><td>1</td></tr>
+</tbody>
+</table>
+</div></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Runs</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>When</th><th>Draft</th><th>Result</th><th>Tokens</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td>Today, 10:05</td><td>Latest edit</td><td><span class="tag ok">Passed</span></td><td>16,200</td><td class="row-act"></td></tr>
+<tr><td>Today, 09:12</td><td>Before the RU-3 edit</td><td><span class="tag ok">Passed</span></td><td>14,100</td><td class="row-act"><a class="link sm" href="#" title="Opens: Group order: farmers join and the coordinator sends, run" aria-label="Open, opens: Group order: farmers join and the coordinator sends, run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+<tr><td>Yesterday, 17:40</td><td>Before the RU-3 edit</td><td><span class="tag bad">Failed</span></td><td>9,800</td><td class="row-act"><a class="link sm" href="#" title="Opens: Group order: farmers join and the coordinator sends, an earlier run" aria-label="Open, opens: Group order: farmers join and the coordinator sends, an earlier run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>Test</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to know about this run?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run this scenario again</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did this fail?</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about this run…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">Muse Spark 1.3<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="j2-s5">
+<figcaption class="cap">5 · After Print report: the report of one run in the content area, ready to print: the run's details, the script and who played whom, what transpired, what was stored, the rules held and the draft version with the date and time. The browser's print makes it a page<span class="cap-mcp">Filled by: agency_get_test_run (illustrative), agency_list_rules</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SF</span><span class="hub-text"><span class="hub-name">Siaya Farmers' Group</span><span class="hub-meta"><span class="dot ok" aria-hidden="true"></span>Ready<span class="tag mute">Farmers</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Agency / <a href="#">Test</a> / <a href="#">Group order: farmers join and the coordinator sends</a> / <span class="crumb-now">Report</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg></span>Objectives</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-9"/><path d="M8 12H3"/><path d="M21 20h-5"/><path d="M12 20H3"/><path d="M14 2v4"/><path d="M8 10v4"/><path d="M16 18v4"/></svg></span>Workflows</a>
+<a class="nav-link" href="#" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></span>Test</a>
+<a class="nav-link" href="#" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12v9"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M8 5.25l8 4.5"/></svg></span>Modules</a>
+<div class="menu-rule" role="separator"></div>
+<a class="nav-link" href="#" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Review<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></span>Publish</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="#"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="#" aria-expanded="false"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models<span class="nav-end"><span class="nav-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span></a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="#"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Report</h1>
+<div class="top-end"><button type="button" class="btn primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>Print</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:24px"><section class="card" aria-label="Report">
+<div class="card-head"><h2>Report</h2></div>
+<dl class="kv"><dt>Agency</dt><dd>Siaya Farmers' Group</dd><dt>Scenario</dt><dd>Group order: farmers join and the coordinator sends</dd><dt>Run</dt><dd>Today, 10:05</dd><dt>Draft</dt><dd>Latest edit, 3 changes not published</dd><dt>Result</dt><dd><span class="tag ok">Passed</span></dd><dt>Tokens</dt><dd>16,200 of 30,000</dd></dl>
+</section><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Blocks</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>#</th><th>Actor</th><th>Kind</th><th>Action</th><th>Then</th><th>Endpoint (suggested, changeable)</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Coordinator</td><td><span class="tag mute">Fill a form</span></td><td>Group order form: urea from the Supplier's posted bulk price, minimum 20 bags</td><td>The group order starts with the terms it started with</td><td><span class="muted">market_start_group_order</span></td></tr>
+<tr><td>2</td><td>Farmer 1</td><td><span class="tag mute">Say yes or no</span></td><td>Yes to joining the order</td><td>Farmer 1 can give an amount</td><td><span class="muted">forms_answer_submit</span></td></tr>
+<tr><td>3</td><td>Farmer 2</td><td><span class="tag mute">Say yes or no</span></td><td>Yes to joining the order</td><td>Farmer 2 can give an amount</td><td><span class="muted">forms_answer_submit</span></td></tr>
+<tr><td>4</td><td>Farmer 1</td><td><span class="tag mute">Fill a form</span></td><td>Join form: 12 bags</td><td>A line for Farmer 1 is in the order</td><td><span class="muted">market_start_group_order</span></td></tr>
+<tr><td>5</td><td>Farmer 2</td><td><span class="tag mute">Fill a form</span></td><td>Join form: 8 bags</td><td>The total reaches 20 of 20 bags</td><td><span class="muted">market_start_group_order</span></td></tr>
+<tr><td>6</td><td>Coordinator</td><td><span class="tag mute">Notify</span></td><td>The order is ready</td><td>Send opens and one ask goes to the Supplier, once</td><td><span class="muted">comm_chat_message_post</span></td></tr>
+<tr><td>7</td><td>Supplier</td><td><span class="tag mute">Say yes or no</span></td><td>Yes, with the date Friday, 6 Nov</td><td>Each farmer is told their share, price and date</td><td><span class="muted">forms_answer_submit</span></td></tr>
+<tr><td>8</td><td>Coordinator</td><td><span class="tag mute">Fill a form</span></td><td>Payment form in the app: Farmer 1 and Farmer 2, the amount paid</td><td>Each farmer has a row in Payments</td><td><span class="muted">market_start_group_order</span></td></tr>
+</tbody>
+</table>
+</div></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>What transpired</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Actor</th><th>What they did</th><th>What the agency recorded</th><th>Step</th><th>Tokens</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Coordinator</span><span class="cell-sub">Test agent · Fill a form</span></span></div></td><td>Started a group order from the Supplier's posted bulk price for urea and set the minimum</td><td>The group order with the terms it started with, KES 3,600 a bag from 20 bags, and the minimum, 20 bags. It keeps the draft's Group order workflow. <span class="tag ok">RU-2 held</span><br><span class="muted">Endpoint: market_start_group_order</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Start</span></span></div></td><td>2,400</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Suppliers' agent</span></span></div></td><td>Told the Supplier of the group order</td><td>A message to the Supplier in the group's thread<br><span class="muted">Endpoint: comm_chat_message_post</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Start</span></span></div></td><td>600</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmers' agent</span></span></div></td><td>Sent the invitation to the group</td><td>An invitation to every member of the group, with a yes or no to answer<br><span class="muted">Endpoint: forms_form_publish</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Send the invitation</span></span></div></td><td>800</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmer 1</span><span class="cell-sub">Test agent · Say yes or no</span></span></div></td><td>Said yes to joining the order</td><td>Farmer 1's answer to the invitation: yes<br><span class="muted">Endpoint: forms_answer_submit</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Answer the invitation</span></span></div> <span class="tag mute">Wait acted out</span></td><td>700</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmer 2</span><span class="cell-sub">Test agent · Say yes or no</span></span></div></td><td>Said yes to joining the order</td><td>Farmer 2's answer to the invitation: yes<br><span class="muted">Endpoint: forms_answer_submit</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Answer the invitation</span></span></div> <span class="tag mute">Wait acted out</span></td><td>700</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmers' agent</span></span></div></td><td>Sorted the answers: the farmers who said yes go on to Open</td><td>Each yes goes on; anything else would be thanked at once<br><span class="muted">Endpoint: forms_answer_list</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Sort the answers</span></span></div></td><td>500</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmer 1</span><span class="cell-sub">Test agent · Fill a form</span></span></div></td><td>Joined with 12 bags and said yes to the terms</td><td>A line for Farmer 1: 12 bags, joined <span class="tag ok">RU-4 held</span><br><span class="muted">Endpoint: market_join_group_order</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Open</span></span></div></td><td>1,900</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmer 2</span><span class="cell-sub">Test agent · Fill a form</span></span></div></td><td>Joined with 8 bags and said yes to the terms</td><td>A line for Farmer 2: 8 bags, joined. The total is 20 of 20 bags<br><span class="muted">Endpoint: market_join_group_order</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Open</span></span></div></td><td>1,700</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Coordinator</span><span class="cell-sub">Test agent · Notify</span></span></div></td><td>Said the order is ready</td><td>Send is open because the total has reached the minimum<br><span class="muted">Endpoint: market_send_group_order</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Send</span></span></div></td><td>1,500</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Suppliers' agent</span></span></div></td><td>Asked the Supplier to fill the order, once</td><td>A message to the Supplier asking him to fill the order, answer waiting <span class="tag ok">RU-7 held</span><br><span class="muted">Endpoint: comm_chat_message_post</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Send</span></span></div></td><td>800</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Supplier</span><span class="cell-sub">Test agent · Say yes or no</span></span></div></td><td>Said yes with a date</td><td>The Supplier's yes: 20 bags of urea for Farmer 1 and Farmer 2, Friday, 6 Nov<br><span class="muted">Endpoint: market_promise_group_order</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Answered</span></span></div> <span class="tag mute">Wait acted out</span></td><td>2,100</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmers' agent</span></span></div></td><td>Told each farmer their share, price and date</td><td>Farmer 1: 12 bags, KES 43,200. Farmer 2: 8 bags, KES 28,800. At KES 3,600 a bag, Friday, 6 Nov<br><span class="muted">Endpoint: comm_chat_message_post</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Answered</span></span></div></td><td>1,200</td><td class="row-act"></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Coordinator</span><span class="cell-sub">Test agent · Fill a form</span></span></div></td><td>Added a payment for each farmer in the app</td><td>A row in Payments for Farmer 1 and for Farmer 2, added in the app<br><span class="muted">Endpoint: market_mark_line_paid</span></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Payments</span></span></div></td><td>1,300</td><td class="row-act"></td></tr>
+</tbody>
+</table>
+</div></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>What was stored</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Record</th><th>What it holds</th><th>Rows</th></tr></thead>
+<tbody>
+<tr><td><span class="count">offer</span></td><td>The Supplier's posted price for urea, KES 3,600 a bag, set up for the run</td><td>1</td></tr>
+<tr><td><span class="count">group_order</span></td><td>The terms it started with, the minimum of 20 bags and the draft's workflow version</td><td>1</td></tr>
+<tr><td><span class="count">line</span></td><td>Each farmer's amount, with the answer to the terms and paid</td><td>2</td></tr>
+<tr><td><span class="count">trail</span></td><td>Who did what to the order, and when</td><td>7</td></tr>
+<tr><td><span class="count">form</span></td><td>The invitation, open for answers</td><td>1</td></tr>
+<tr><td><span class="count">answer</span></td><td>Each farmer's answer to the invitation</td><td>2</td></tr>
+<tr><td><span class="count">message</span></td><td>Each message posted to the group's thread</td><td>3</td></tr>
+</tbody>
+</table>
+</div></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Rules held</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Code</th><th>Rule</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><span class="count">RU-2</span></td><td>A group order starts from a posted bulk price, and the Coordinator sets its minimum before it starts.</td><td><span class="tag ok">RU-2 held</span></td></tr>
+<tr><td><span class="count">RU-4</span></td><td>A farmer is in a group order only after they have said yes to its terms.</td><td><span class="tag ok">RU-4 held</span></td></tr>
+<tr><td><span class="count">RU-7</span></td><td>The agents ask only the supplier or buyer a person picked or ticked, once each, and they never say yes for a person.</td><td><span class="tag ok">RU-7 held</span></td></tr>
+</tbody>
+</table>
+</div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>Test</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to know about this run?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Print again</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run this scenario again</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about this run…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">Muse Spark 1.3<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+</body>
+</html>

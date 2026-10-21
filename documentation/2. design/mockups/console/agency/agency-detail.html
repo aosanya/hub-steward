@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agency, a goal and an objective open</title>
+<link rel="stylesheet" href="../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">Detail: one goal open in the farmers' agency, its key/value card and one table of its objectives; the objective added in the draft is marked New; the primary button adds an objective to it.<span class="cap-mcp">Filled by: agency_get_goal, agency_list_objectives, agency_list_measures, agency_list_drafts, agency_list_approvals</span><span class="cap-note">Example data: names, dates and counts are drawn for this page. Proposed: the count and the list of what the draft changed since the last version, with who approved each change and when.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SF</span><span class="hub-text"><span class="hub-name">Siaya Farmers' Group</span><span class="hub-meta"><span class="dot" aria-hidden="true"></span>Setting up<span class="tag mute">Farmers</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Agency / <a href="agency.html">Goals</a> / <span class="crumb-now">Farmers buy inputs together</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="agency.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="../people/members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="../people/groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="../people/agents.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/farm-orders.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22V9"/><path d="M12 9c-2.8 0-4.5-1.7-4.5-4.5 2.8 0 4.5 1.7 4.5 4.5z"/><path d="M12 9c2.8 0 4.5-1.7 4.5-4.5-2.8 0-4.5 1.7-4.5 4.5z"/><path d="M12 15c-2.8 0-4.5-1.7-4.5-4.5 2.8 0 4.5 1.7 4.5 4.5z"/><path d="M12 15c2.8 0 4.5-1.7 4.5-4.5-2.8 0-4.5 1.7-4.5 4.5z"/><path d="M12 5V2"/></svg></span>Farm orders</a>
+<a class="nav-link" href="../work/produce.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12v9"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M8 5.25l8 4.5"/></svg></span>Produce</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmers buy inputs together</h1>
+<div class="top-end"><a class="btn primary" href="agency-add-objective.html#s1" title="Opens: Add an objective" aria-label="Add an objective, opens: Add an objective">Add an objective</a></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="agency-draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section>
+
+<div class="stack" style="--stack-gap:20px"><section class="card" aria-label="Goal G-1">
+<div class="card-head"><h2>Goal G-1</h2></div>
+<div class="note">The group's input needs reach a supplier as one order, so each farmer buys on the group's terms.</div><dl class="kv"><dt>Objectives</dt><dd>3</dd><dt>Progress</dt><dd>56 %</dd><dt>Status</dt><dd><span class="tag ok">On track</span></dd></dl>
+</section><div class="section-head"><h2>Objectives</h2><span class="tag mute">Proposed: progress and status</span></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Objective</th><th>Measure, now / target</th><th>Responsible</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="cell-text"><a class="cell-name" href="agency-detail.html#s2" title="Opens: Objective, detail" aria-label="Gather the farmers' needs into one order, opens: Objective, detail">Gather the farmers' needs into one order</a><span class="cell-sub">O-1 <span class="tag ok">Met</span></span></span></div></td><td><div class="cell"><span class="cell-text"><span>Farmers in the pooled order</span><span class="cell-sub">3 / 3 farmers</span></span></div></td><td><div class="row" style="--row-gap:6px"><a class="link" href="roles.html" title="Opens: Roles" aria-label="Farmers' coordinator, opens: Roles"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Farmers' coordinator</span></a></div></td><td class="row-act"><a class="link sm" href="agency-detail.html#s2" title="Opens: Objective, detail" aria-label="Open, opens: Objective, detail">Open</a></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><a class="cell-name" href="agency-detail.html#s2" title="Opens: Objective, detail" aria-label="Get the supplier's answer to the farmers, opens: Objective, detail">Get the supplier's answer to the farmers</a><span class="cell-sub">O-2 <span class="tag ok">On track</span></span></span></div></td><td><div class="cell"><span class="cell-text"><span>Farmers who said yes to their share</span><span class="cell-sub">2 / 3 farmers</span></span></div></td><td><div class="row" style="--row-gap:6px"><a class="link" href="roles.html" title="Opens: Roles" aria-label="Supplier, opens: Roles"><span class="tag">Supplier</span></a><a class="link" href="roles.html" title="Opens: Roles" aria-label="Farmers' coordinator, opens: Roles"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Farmers' coordinator</span></a></div></td><td class="row-act"><a class="link sm" href="agency-detail.html#s2" title="Opens: Objective, detail" aria-label="Open, opens: Objective, detail">Open</a></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><a class="cell-name" href="agency-detail.html#s3" title="Opens: Objective, detail" aria-label="Record each farmer's payment, opens: Objective, detail">Record each farmer's payment</a><span class="cell-sub">O-4 <span class="tag use">New</span></span></span></div></td><td><div class="cell"><span class="cell-text"><span>Farmers marked paid</span><span class="cell-sub">0 / 3 farmers</span></span></div></td><td><div class="row" style="--row-gap:6px"><a class="link" href="roles.html" title="Opens: Roles" aria-label="Group coordinator, opens: Roles"><span class="tag">Group coordinator</span></a></div></td><td class="row-act"><a class="link sm" href="agency-detail.html#s3" title="Opens: Objective, detail" aria-label="Open, opens: Objective, detail">Open</a></td></tr>
+</tbody>
+</table>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Goals?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show the agency goals</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Goals…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s2">
+<figcaption class="cap">Detail: one objective open, its key/value card and a small RACI table; the AI role carries the robot badge.<span class="cap-mcp">Filled by: agency_get_objective, agency_list_role_assignments_for_objective, agency_list_roles, agency_list_drafts, agency_list_approvals</span><span class="cap-note">Example data: names, dates and counts are drawn for this page. Proposed: the count and the list of what the draft changed since the last version, with who approved each change and when.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SF</span><span class="hub-text"><span class="hub-name">Siaya Farmers' Group</span><span class="hub-meta"><span class="dot" aria-hidden="true"></span>Setting up<span class="tag mute">Farmers</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Agency / <a href="agency.html">Goals</a> / <a href="agency-detail.html#s1">G-1</a> / <span class="crumb-now">O-1</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="agency.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="../people/members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="../people/groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="../people/agents.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/farm-orders.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22V9"/><path d="M12 9c-2.8 0-4.5-1.7-4.5-4.5 2.8 0 4.5 1.7 4.5 4.5z"/><path d="M12 9c2.8 0 4.5-1.7 4.5-4.5-2.8 0-4.5 1.7-4.5 4.5z"/><path d="M12 15c-2.8 0-4.5-1.7-4.5-4.5 2.8 0 4.5 1.7 4.5 4.5z"/><path d="M12 15c2.8 0 4.5-1.7 4.5-4.5-2.8 0-4.5 1.7-4.5 4.5z"/><path d="M12 5V2"/></svg></span>Farm orders</a>
+<a class="nav-link" href="../work/produce.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12v9"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M8 5.25l8 4.5"/></svg></span>Produce</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Objective O-1</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="agency-draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section>
+
+<div class="stack" style="--stack-gap:20px"><section class="card" aria-label="Gather the farmers' needs into one order">
+<div class="card-head"><h2>Gather the farmers' needs into one order</h2><div class="card-actions"><a class="btn quiet sm" href="../work/farm-orders.html" title="Opens: Farm orders" aria-label="Farm orders, opens: Farm orders">Farm orders<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div></div>
+<div class="note">The coordinator collects each farmer's input question and combines them into one pooled order for a supplier.</div><dl class="kv"><dt>Goal</dt><dd>G-1 · Farmers buy inputs together</dd><dt>Measure</dt><dd>Farmers in the pooled order</dd><dt>Now / target</dt><dd><span class="count"><b>3</b> / 3 farmers</span></dd><dt>Status</dt><dd><span class="tag ok">Met</span></dd><dt>Work items</dt><dd>3 items in Pooled input order: WI-1 to WI-3</dd></dl>
+</section><div class="section-head"><h2>Who is answerable</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Role</th><th>R</th><th>A</th><th>C</th><th>I</th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="cell-text"><a class="cell-name" href="roles.html" title="Opens: Roles" aria-label="Farmers' coordinator, opens: Roles">Farmers' coordinator</a><span class="cell-sub">AI role</span></span></div></td><td><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></td><td></td><td></td><td></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">GC</span><span class="cell-text"><a class="cell-name" href="roles.html" title="Opens: Roles" aria-label="Group coordinator, opens: Roles">Group coordinator</a><span class="cell-sub">Human</span></span></div></td><td></td><td><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></td><td></td><td></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">F</span><span class="cell-text"><a class="cell-name" href="roles.html" title="Opens: Roles" aria-label="Farmer, opens: Roles">Farmer</a><span class="cell-sub">Human</span></span></div></td><td></td><td></td><td><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></td><td></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">S</span><span class="cell-text"><a class="cell-name" href="roles.html" title="Opens: Roles" aria-label="Supplier, opens: Roles">Supplier</a><span class="cell-sub">Human</span></span></div></td><td></td><td></td><td></td><td><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></td></tr>
+</tbody>
+</table>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Goals?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show the agency goals</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Goals…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s3">
+<figcaption class="cap">Detail: the objective added in the draft (O-4); nobody is accountable for it yet, which is what the check before publishing finds.<span class="cap-mcp">Filled by: agency_get_objective, agency_list_role_assignments_for_objective, agency_list_roles, agency_list_drafts, agency_list_approvals</span><span class="cap-note">Example data: names, dates and counts are drawn for this page. Proposed: the count and the list of what the draft changed since the last version, with who approved each change and when.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip">
+<div class="brand-row"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5"/><path d="M12 12v9"/><path d="M12 12L4 7.5"/></svg></div><div class="brand">Hub Steward</div><span class="demo">Demo</span></div>
+<div class="switch">
+<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="false"><span class="badge">SF</span><span class="hub-text"><span class="hub-name">Siaya Farmers' Group</span><span class="hub-meta"><span class="dot" aria-hidden="true"></span>Setting up<span class="tag mute">Farmers</span></span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chev" aria-hidden="true"><path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/></svg></button>
+</div>
+<span class="strip-div"></span>
+<div class="crumb">Agency / <a href="agency.html">Goals</a> / <a href="agency-detail.html#s1">G-1</a> / <span class="crumb-now">O-4</span></div>
+<div class="strip-end"><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="sr">Language</span><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option></select></label></div>
+</header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub">
+<div class="menu">
+<div class="menu-group">
+<a class="nav-link" href="../status/status.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Status</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Agency</div>
+<a class="nav-link" href="profile.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>Profile</a>
+<a class="nav-link" href="agency.html" aria-current="page"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Goals</a>
+<a class="nav-link" href="roles.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Roles</a>
+<a class="nav-link" href="risks.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Risks</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Users &amp; Agents</div>
+<a class="nav-link" href="../people/members.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Users</a>
+<a class="nav-link" href="../people/groups.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Groups</a>
+<a class="nav-link" href="../people/agents.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span>Agents</a>
+</div>
+<div class="menu-group">
+<div class="eyebrow">Generated</div>
+<a class="nav-link" href="../work/farm-orders.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22V9"/><path d="M12 9c-2.8 0-4.5-1.7-4.5-4.5 2.8 0 4.5 1.7 4.5 4.5z"/><path d="M12 9c2.8 0 4.5-1.7 4.5-4.5-2.8 0-4.5 1.7-4.5 4.5z"/><path d="M12 15c-2.8 0-4.5-1.7-4.5-4.5 2.8 0 4.5 1.7 4.5 4.5z"/><path d="M12 15c2.8 0 4.5-1.7 4.5-4.5-2.8 0-4.5 1.7-4.5 4.5z"/><path d="M12 5V2"/></svg></span>Farm orders</a>
+<a class="nav-link" href="../work/produce.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12v9"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M8 5.25l8 4.5"/></svg></span>Produce</a>
+</div>
+<div class="menu-group divided">
+<div class="eyebrow">Settings</div>
+<a class="nav-link" href="../settings/general.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>General</a>
+<a class="nav-link" href="../settings/models.html"><span class="nav-icon page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>Models</a>
+</div>
+</div>
+
+<div class="side-foot"><a class="nav-link" href="../entry/sign-in.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></span>Sign out</a></div>
+</nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Objective O-4</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="agency-draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section>
+
+<div class="stack" style="--stack-gap:20px"><section class="card" aria-label="Record each farmer's payment">
+<div class="card-head"><h2>Record each farmer's payment</h2><div class="card-actions"><a class="btn quiet sm" href="../work/farm-orders.html" title="Opens: Farm orders" aria-label="Farm orders, opens: Farm orders">Farm orders<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div></div>
+<div class="note">The group coordinator records which farmers have paid their share. Nothing here takes a payment.</div><dl class="kv"><dt>Goal</dt><dd>G-1 · Farmers buy inputs together</dd><dt>Measure</dt><dd>Farmers marked paid</dd><dt>Now / target</dt><dd><span class="count"><b>0</b> / 3 farmers</span></dd><dt>Status</dt><dd><span class="tag mute">Not started</span></dd><dt>Accountable</dt><dd><span class="tag warn">Nobody yet</span></dd><dt>Work items</dt><dd>None yet</dd></dl>
+</section><div class="section-head"><h2>Who is answerable</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Role</th><th>R</th><th>A</th><th>C</th><th>I</th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="badge avatar">GC</span><span class="cell-text"><a class="cell-name" href="roles.html" title="Opens: Roles" aria-label="Group coordinator, opens: Roles">Group coordinator</a><span class="cell-sub">Human</span></span></div></td><td><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Goals?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show the agency goals</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Message</span><textarea rows="3" placeholder="Ask about Goals…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"></span></span><button type="button" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Demo agencies
+
+Eight synthetic agencies, each a folder with an `agency.json` template that imports with `POST /instances/import`. Every organization, person, number and address in them is invented, and each template marks itself illustrative. How to load one is in [Load the demo agencies](../documentation/3.%20implementation/guides/load-demo-agencies.md).
+
+The Siaya computer lab is the worked example: it is the only folder with documents, which its agent answers from, in English, Swahili and German. The other seven show what else the same platform runs.
+
+| Folder | Agency | What it is for | Roles | Workflows | Modules switched on | Documents |
+|---|---|---|---|---|---|---|
+| [siaya-lab](siaya-lab/README.md) | Siaya Community Computer Lab | A computer lab planned in Siaya, Kenya, run by a lab manager with Hub Steward answering members | 3: Lab manager, Member, Hub Steward | 5: access request, seat booking, answering in the chat, network watch, join a group | comm, taskmanager | Four, in three languages |
+| [boda-boda-riders](boda-boda-riders/README.md) | Siaya Boda Boda Riders | The riders around the planned Siaya hub: ride requests, rider availability, assets, network | 8, four of them AI roles: Hub Steward, Dispatcher, Assets Keeper, Network Watcher | 6, including ride request and pick a rider | comm, taskmanager, forms, digitaltwin, market | None; one standing form, Ask for a ride |
+| [farmers](farmers/README.md) | Siaya Farmers' Group | The agricultural ministry of Siaya County serving the farmers around the hub: group orders, suppliers, buyers, advice, registers, reports | 9, two of them AI roles: Farmers' agent, Suppliers' agent | 30, from group orders and sales to registrations, permits and relief | comm, taskmanager, forms, market | None |
+| [clinical-research-organization](clinical-research-organization/README.md) | Meridian Clinical Research | A contract research organization running sponsor-outsourced trials | 13, from VP of Clinical Operations to Clinical Trial Assistant | 5, including adverse event and safety reporting | auth, actor, taskmanager, custody, forms | None |
+| [electric-grid-utility](electric-grid-utility/README.md) | Highline Electric Grid Utility | An electric power utility: generation, transmission, distribution, reliability and compliance | 11, from Chief Operating Officer to Outage Management Coordinator | 5, including outage detection and restoration | auth, taskmanager, agency, actor, comm, digitaltwin | None |
+| [logistics-freight-company](logistics-freight-company/README.md) | Meridian Freight & Logistics | A freight company: warehouse, fleet, customs and trade compliance, customer service | 11, from VP of Operations to Driver/Courier | 5, including customs and customer claims | auth, taskmanager, agency, actor, custody, forms | None |
+| [mobile-money-operator](mobile-money-operator/README.md) | Mobile Money Operator | A mobile money service with an agent network, AML and KYC compliance and customer transfers | 10, from Managing Director to Customer Care Agent | 5, including transaction monitoring and platform incident response | auth, actor, comm, custody, forms, accounting | None |
+| [agricultural-drone-crop-spraying-service](agricultural-drone-crop-spraying-service/README.md) | AgroWing Aerial Spraying Services | A drone operator spraying, seeding and monitoring crops for farms under contract | 11, from Chief Pilot to Risk Owner | 5, including spray job intake and fleet maintenance | auth, actor, forms, digitaltwin, accounting | None |
+
+The counts and module lists are read from each `agency.json`; the modules column lists only the modules a template enables.
+
+The five organization templates (clinical research, grid utility, freight, mobile money, drone spraying) each end with a Risk review workflow and a Risk owner role (the drone service spells it Risk Owner). None of the eight switches on the risk manager module, which the API can mount.

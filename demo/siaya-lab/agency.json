@@ -1,0 +1,771 @@
+{
+  "_template": {
+    "sector": "community",
+    "archetype": "community computer lab",
+    "illustrative": true,
+    "note": "Synthetic template for a community computer lab planned in Siaya, Kenya. The lab is not open; seat counts, hours and limits come from the illustrative demo documents beside this file."
+  },
+  "agency": {
+    "id": "56af4999-1de9-535f-beaa-b1824294c82f",
+    "name": "Siaya Community Computer Lab",
+    "description": "A community computer lab planned in Siaya, Kenya, run by a lab manager with Hub Steward, its AI agent, answering members in the lab's chat. The lab is not open yet; its rules here are the illustrative demo rules.",
+    "enabled": true
+  },
+  "modules": [
+    {
+      "id": "bf6fbba6-305a-5b17-b384-c91372d7a467",
+      "code": "comm",
+      "name": "comm",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-26T00:00:00Z",
+      "last_updated": "2026-10-26T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0248ef59-7e8e-5cac-910f-e4e985edc413",
+      "code": "taskmanager",
+      "name": "taskmanager",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-26T00:00:00Z",
+      "last_updated": "2026-10-26T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "objective_modules": [
+    {
+      "id": "ee6ecfe7-315d-57f7-bb0c-808a21772045",
+      "objective_id": "ccbc4679-489e-5e8f-a66b-4adad2019528",
+      "module_id": "0248ef59-7e8e-5cac-910f-e4e985edc413",
+      "rationale": "Access requests Hub Steward drafts wait on the board for the lab manager to approve.",
+      "created_at": "2026-10-26T00:00:00Z",
+      "last_updated": "2026-10-26T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ae45d80f-b372-5492-abde-6a6ae432936d",
+      "objective_id": "aa6d973e-44c1-523a-9590-7c3d7acc0330",
+      "module_id": "0248ef59-7e8e-5cac-910f-e4e985edc413",
+      "rationale": "Seat bookings Hub Steward drafts wait on the board for the lab manager to confirm.",
+      "created_at": "2026-10-26T00:00:00Z",
+      "last_updated": "2026-10-26T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "bb903bc0-2e78-5e2f-a0a8-df874370d4b0",
+      "objective_id": "22359637-1ebe-5b2f-aab0-454a9c9ed0b4",
+      "module_id": "bf6fbba6-305a-5b17-b384-c91372d7a467",
+      "rationale": "Members ask Hub Steward in the lab's chat, and it answers in the thread.",
+      "created_at": "2026-10-26T00:00:00Z",
+      "last_updated": "2026-10-26T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "roles": [
+    {
+      "id": "6d2d8afd-0e8b-5597-a92c-8dcaa2089362",
+      "code": "R-1",
+      "name": "Lab manager",
+      "permissions": [
+        "chat.archive",
+        "group.join",
+        "mount.list"
+      ],
+      "description": "Runs the lab. Approves access requests, confirms seat bookings drafted by Hub Steward, may reserve seats for a course or a member group, and acts on network problems Hub Steward reports. Access requests and bookings made outside opening hours are confirmed on the next opening day. This role is held by a person.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "bd63bab3-d3dc-5eb5-93a2-98506d478b4a",
+      "code": "R-2",
+      "name": "Member",
+      "permissions": [
+        "chat.archive",
+        "group.join",
+        "mount.list"
+      ],
+      "description": "A registered member of the lab. Uses the lab during opening hours, books seats, connects to the members' Wi-Fi with a personal login and asks Hub Steward in the lab's chat.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "26e27223-8575-5f10-b335-86619874dd0f",
+      "code": "R-3",
+      "name": "Hub Steward",
+      "permissions": [
+        "ai.use",
+        "chat.post",
+        "chat.thread",
+        "document.read",
+        "document.search",
+        "form.answers.read",
+        "form.compose",
+        "form.send",
+        "group.read",
+        "member.read",
+        "risk.read"
+      ],
+      "description": "The lab's AI agent. Answers members in the lab's chat from the lab's documents, in the language the member writes in (English, Swahili or German), at any time. Drafts access requests and seat bookings for the lab manager to approve, and watches the lab's network. It never approves its own drafts.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "goals": [
+    {
+      "id": "bef8f0e6-6f97-5467-8953-7fd585bd3afa",
+      "code": "G-1",
+      "title": "Members get access to the lab",
+      "description": "A person who asks for access becomes a member with a seat, a Wi-Fi login and a member barcode, after the lab manager approves.",
+      "ordinality": 1,
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0f3a5e5a-1b6a-5591-94b7-ac545ceb3921",
+      "code": "G-2",
+      "title": "Seats are shared fairly",
+      "description": "The lab's seats are booked within the booking rules, and seats nobody booked are open to walk-ins.",
+      "ordinality": 2,
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "9e4d4306-45ed-56d1-af4a-eadc5773934a",
+      "code": "G-3",
+      "title": "Members get answers from the lab's own documents",
+      "description": "Questions in the lab's chat are answered from the house rules, the Wi-Fi guide, the booking rules and the opening hours, in the member's language.",
+      "ordinality": 3,
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "17614be0-916d-544c-9b1d-0c55fc978d8f",
+      "code": "G-4",
+      "title": "The lab's network works",
+      "description": "Problems with the lab's network are seen and reported to the staff before members have to chase them.",
+      "ordinality": 4,
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "objectives": [
+    {
+      "id": "ccbc4679-489e-5e8f-a66b-4adad2019528",
+      "code": "O-1",
+      "goal_id": "bef8f0e6-6f97-5467-8953-7fd585bd3afa",
+      "title": "Turn an access request into a set-up member",
+      "description": "Hub Steward drafts the request from the chat, the lab manager approves it, and the member finishes set-up at the lab terminal, where they receive their member barcode and Wi-Fi login.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "aa6d973e-44c1-523a-9590-7c3d7acc0330",
+      "code": "O-2",
+      "goal_id": "0f3a5e5a-1b6a-5591-94b7-ac545ceb3921",
+      "title": "Book seats within the booking rules",
+      "description": "Hub Steward drafts a booking for one or two hours, within each member's weekly hours and how far ahead they may book; the lab manager confirms it and the member is told.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "22359637-1ebe-5b2f-aab0-454a9c9ed0b4",
+      "code": "O-3",
+      "goal_id": "9e4d4306-45ed-56d1-af4a-eadc5773934a",
+      "title": "Answer questions from the lab's documents",
+      "description": "Hub Steward answers in the language the member writes in, from the lab's documents, and says when a question is not covered by them.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4caf2f73-10fd-5df7-b8ed-867e31a4c08d",
+      "code": "O-4",
+      "goal_id": "17614be0-916d-544c-9b1d-0c55fc978d8f",
+      "title": "Watch the network and report problems",
+      "description": "Hub Steward can see whether the lab's network has a problem, tells the staff on duty, and posts in the lab's room when the lab closes early.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "values": [
+    {
+      "id": "115246ef-e6dc-584d-9f44-eb71178e5ef3",
+      "code": "V-1",
+      "text": "The lab is shared by everyone who comes; its rules keep it open, safe and useful for all members.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "a4efea8f-6025-53f8-a9d7-3427e6e3c8d3",
+      "code": "RU-1",
+      "text": "Any registered member may use the lab during opening hours; a new member is approved by the lab manager and finishes set-up at the lab terminal.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cbf53194-af33-5236-8544-7a584c8f13d3",
+      "code": "RU-2",
+      "text": "Members sign in at the desk when they arrive, showing their member barcode, and sign out when they leave.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "357fa839-86be-5edc-9d4c-f5d84fe23846",
+      "code": "RU-3",
+      "text": "Use only the seat you booked; one seat per member at a time.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "22d9329f-1715-5cb8-a258-54a040880b9d",
+      "code": "RU-4",
+      "text": "No food at the seats; water in a closed bottle is fine.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "35eec5a8-15a6-5ade-a3d1-119579c56920",
+      "code": "RU-5",
+      "text": "Do not unplug, open or move equipment, and do not install software on the lab computers; report faults to the staff on duty or to Hub Steward.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "eb81337f-cda2-5956-8e29-43043a18b491",
+      "code": "RU-6",
+      "text": "The lab computers are cleared at the end of each day; members save their work to their own account or a USB stick.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0b2a214e-a342-55e7-8b80-5456687707fb",
+      "code": "RU-7",
+      "text": "Children under 14 come with an adult member.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b889cc60-1765-52e4-a100-c706be28a815",
+      "code": "RU-8",
+      "text": "Harassment, threats and discrimination are not allowed, and nobody uses another member's account, barcode or Wi-Fi login.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d097ea4c-4e17-5bef-93f9-e4e6ec92ad84",
+      "code": "RU-9",
+      "text": "A booking is for one or two hours, up to six hours a week per member, made up to seven days ahead.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "aea2d1f7-c45e-5d63-a7db-13384e685613",
+      "code": "RU-10",
+      "text": "A seat is given to someone else when its member is more than 15 minutes late without telling the lab; a member who misses three bookings in a month without cancelling may not book the following week.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3fd25c42-56f7-5706-9468-612413782144",
+      "code": "RU-11",
+      "text": "Unbooked seats are free to walk-in members for one hour at a time; booked members go first; the lab manager may reserve seats for a course or a member group.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0ffe99fc-3dbe-57da-b4ad-69a72cb962e0",
+      "code": "RU-12",
+      "text": "Up to two devices per member on the members' Wi-Fi, a fair-use allowance of 2 GB a day, and no large downloads, film streaming or file sharing during opening hours.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "489c3463-f44c-5e6e-89ea-f008b95f732a",
+      "code": "RU-13",
+      "text": "Hub Steward drafts access requests and bookings; only the lab manager approves them.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6136b121-d18c-575f-b4a4-0b1fd5b19325",
+      "code": "RU-14",
+      "text": "Hub Steward answers in the language the member writes in, from the lab's documents.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "value_attachments": [
+    {
+      "id": "d6a38fd0-80f3-544f-93f5-3ffcb6403dfb",
+      "value_code": "V-1",
+      "target_type": "objective",
+      "target_code": "O-3",
+      "created_at": "2026-10-21T00:00:00Z"
+    }
+  ],
+  "rule_attachments": [
+    {
+      "id": "5b9e4d1f-7ae8-5264-911b-baf93fcf8a03",
+      "rule_code": "RU-1",
+      "target_type": "objective",
+      "target_code": "O-1",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "252aea72-56d9-5e66-85cd-7922cd226b8e",
+      "rule_code": "RU-2",
+      "target_type": "role",
+      "target_code": "R-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "0bb6224a-8cef-50af-b193-6ddae29c4887",
+      "rule_code": "RU-3",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "60d7ad43-670f-5218-b464-0f7173e6bc2b",
+      "rule_code": "RU-3",
+      "target_type": "role",
+      "target_code": "R-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "e64d155b-414b-5f82-bb6c-370a5f7e27f1",
+      "rule_code": "RU-4",
+      "target_type": "role",
+      "target_code": "R-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "68eeab14-3465-5336-b8d2-cf0d8a85d4fe",
+      "rule_code": "RU-5",
+      "target_type": "role",
+      "target_code": "R-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "0d8715e3-9a8f-52f0-9484-7cb8a4da71e1",
+      "rule_code": "RU-5",
+      "target_type": "objective",
+      "target_code": "O-4",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "a42ed46f-83c7-5bbf-9061-9545e2040ad4",
+      "rule_code": "RU-6",
+      "target_type": "role",
+      "target_code": "R-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "b856b074-cbff-517a-a385-96b8b66d65ce",
+      "rule_code": "RU-7",
+      "target_type": "role",
+      "target_code": "R-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "323b9732-dea0-5023-9c63-7970a419bdb9",
+      "rule_code": "RU-8",
+      "target_type": "role",
+      "target_code": "R-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "8da5ef46-368c-5569-aff8-4db55dcb7818",
+      "rule_code": "RU-9",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "c00982b7-0d85-529b-acb0-bcae8d466278",
+      "rule_code": "RU-10",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "8239cdb6-97e6-5104-8721-e846dd9ef600",
+      "rule_code": "RU-11",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "237a6750-f593-53a0-ae2d-41c933f9d6fa",
+      "rule_code": "RU-11",
+      "target_type": "role",
+      "target_code": "R-1",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "ed7e635a-8c90-5fba-b591-652cda3920de",
+      "rule_code": "RU-12",
+      "target_type": "objective",
+      "target_code": "O-4",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "00a1e6ee-db5e-5376-a103-8319513199cc",
+      "rule_code": "RU-12",
+      "target_type": "role",
+      "target_code": "R-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "a03cc911-d4e8-5689-bcef-2f6dabb83178",
+      "rule_code": "RU-13",
+      "target_type": "role",
+      "target_code": "R-3",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "46629e2f-a9a5-5a06-b6e6-b8c612b59421",
+      "rule_code": "RU-13",
+      "target_type": "objective",
+      "target_code": "O-1",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "921edb70-eb1b-5f16-a35d-3a68a6456778",
+      "rule_code": "RU-13",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "e94601d9-1573-5dfb-9652-47998e8472e4",
+      "rule_code": "RU-14",
+      "target_type": "role",
+      "target_code": "R-3",
+      "created_at": "2026-10-21T00:00:00Z"
+    },
+    {
+      "id": "386b47ec-b9d9-5785-894f-7a389dd659f9",
+      "rule_code": "RU-14",
+      "target_type": "objective",
+      "target_code": "O-3",
+      "created_at": "2026-10-21T00:00:00Z"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "afaecde1-8092-55a9-b316-fb57e30c2773",
+      "code": "W-1",
+      "name": "Access request",
+      "description": "From a request in the lab's chat to a member with a barcode and a Wi-Fi login.",
+      "ordinality": 1,
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a75df51d-685d-58c7-a365-290250981858",
+      "code": "W-2",
+      "name": "Seat booking",
+      "description": "From a request in the chat or at the desk to a confirmed booking.",
+      "ordinality": 2,
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fee233cd-982c-5fe5-af4e-c553a5a6d998",
+      "code": "W-3",
+      "name": "Answering in the chat",
+      "description": "How a member's question in the lab's chat is answered.",
+      "ordinality": 3,
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "edd7c95a-1fb9-5ca5-967a-00e31eb0d170",
+      "code": "W-4",
+      "name": "Network watch",
+      "description": "How a network problem reaches the staff on duty and the members.",
+      "ordinality": 4,
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "5f9bf003-70ec-5e82-a138-17b0357a8829",
+      "code": "W-5",
+      "name": "Join a group",
+      "description": "A member asks to join a group of the lab, with the group's code if she has one.",
+      "ordinality": 5,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "aad98470-13a7-5dce-8ac6-c725685eb0a3",
+      "code": "WI-1",
+      "workflow_id": "afaecde1-8092-55a9-b316-fb57e30c2773",
+      "objective_id": "ccbc4679-489e-5e8f-a66b-4adad2019528",
+      "title": "Draft the access request",
+      "description": "Take the member's request from the lab's chat and draft it for the lab manager, with what the member asked for.",
+      "prompt": "Take the member's request from the lab's chat and draft it for the lab manager, with what the member asked for.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "5f53690b-e71a-5d98-94e0-afe2ed26b95d",
+      "code": "WI-2",
+      "workflow_id": "afaecde1-8092-55a9-b316-fb57e30c2773",
+      "objective_id": "ccbc4679-489e-5e8f-a66b-4adad2019528",
+      "title": "Approve or decline the request",
+      "description": "The lab manager decides on the draft; outside opening hours, on the next opening day.",
+      "prompt": "The lab manager decides on the draft; outside opening hours, on the next opening day.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b05c42aa-1e1a-5647-8b8c-a29910753902",
+      "code": "WI-3",
+      "workflow_id": "afaecde1-8092-55a9-b316-fb57e30c2773",
+      "objective_id": "ccbc4679-489e-5e8f-a66b-4adad2019528",
+      "title": "Set the member up at the lab terminal",
+      "description": "The approved member finishes set-up at the lab terminal and receives their member barcode and personal Wi-Fi login.",
+      "prompt": "The approved member finishes set-up at the lab terminal and receives their member barcode and personal Wi-Fi login.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8a1a986f-3668-582f-a6f0-d864db6a89a4",
+      "code": "WI-4",
+      "workflow_id": "a75df51d-685d-58c7-a365-290250981858",
+      "objective_id": "aa6d973e-44c1-523a-9590-7c3d7acc0330",
+      "title": "Draft the booking",
+      "description": "Check the request against the booking rules and draft it for the lab manager.",
+      "prompt": "Check the request against the booking rules and draft it for the lab manager.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b0803c55-ad89-5d12-8550-9e56368451ad",
+      "code": "WI-5",
+      "workflow_id": "a75df51d-685d-58c7-a365-290250981858",
+      "objective_id": "aa6d973e-44c1-523a-9590-7c3d7acc0330",
+      "title": "Confirm the booking and tell the member",
+      "description": "The lab manager confirms; the member gets a message when it is confirmed.",
+      "prompt": "The lab manager confirms; the member gets a message when it is confirmed.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3449d32f-b5af-5813-aa1f-ae4a383b308d",
+      "code": "WI-6",
+      "workflow_id": "fee233cd-982c-5fe5-af4e-c553a5a6d998",
+      "objective_id": "22359637-1ebe-5b2f-aab0-454a9c9ed0b4",
+      "title": "Answer from the lab's documents",
+      "description": "Answer in the member's language from the house rules, Wi-Fi guide, booking rules and opening hours; say so when the documents do not cover the question.",
+      "prompt": "Answer in the member's language from the house rules, Wi-Fi guide, booking rules and opening hours; say so when the documents do not cover the question.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4996f103-0ed2-5b8e-a871-368c46c4e825",
+      "code": "WI-7",
+      "workflow_id": "edd7c95a-1fb9-5ca5-967a-00e31eb0d170",
+      "objective_id": "4caf2f73-10fd-5df7-b8ed-867e31a4c08d",
+      "title": "Check the network when a member reports a problem",
+      "description": "See whether the lab's network has a problem and tell the member what was found.",
+      "prompt": "See whether the lab's network has a problem and tell the member what was found.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b38f1561-f950-5ded-aff0-abe552805c76",
+      "code": "WI-8",
+      "workflow_id": "edd7c95a-1fb9-5ca5-967a-00e31eb0d170",
+      "objective_id": "4caf2f73-10fd-5df7-b8ed-867e31a4c08d",
+      "title": "Tell the staff and the room",
+      "description": "Tell the staff on duty about a network problem, and post in the lab's room when the lab closes early.",
+      "prompt": "Tell the staff on duty about a network problem, and post in the lab's room when the lab closes early.",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "89139886-7223-5a33-9ed7-ce980515848f",
+      "code": "WI-9",
+      "workflow_id": "5f9bf003-70ec-5e82-a138-17b0357a8829",
+      "objective_id": "ccbc4679-489e-5e8f-a66b-4adad2019528",
+      "title": "Join a group",
+      "description": "The member says which group she wants to join by its code. The code is optional.",
+      "prompt": "The member says which group she wants to join by its code. The code is optional.",
+      "ordinality": 1,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "role_id": "bd63bab3-d3dc-5eb5-93a2-98506d478b4a",
+      "form_name": "Join a group",
+      "questions": [
+        {
+          "prompt": "Group code",
+          "answer_type": "free_text",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "work_plans": [],
+  "role_assignments": [
+    {
+      "id": "fbfd49aa-b1e2-549e-87ff-1be30c9648f7",
+      "role_id": "6d2d8afd-0e8b-5597-a92c-8dcaa2089362",
+      "objective_id": "ccbc4679-489e-5e8f-a66b-4adad2019528",
+      "label": "accountable",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f085fd17-3478-54e1-91c8-51ddd5e90e23",
+      "role_id": "26e27223-8575-5f10-b335-86619874dd0f",
+      "objective_id": "ccbc4679-489e-5e8f-a66b-4adad2019528",
+      "label": "responsible",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f961249a-8f31-5dc9-880a-9b250b7318d7",
+      "role_id": "bd63bab3-d3dc-5eb5-93a2-98506d478b4a",
+      "objective_id": "ccbc4679-489e-5e8f-a66b-4adad2019528",
+      "label": "informed",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "dd3952b1-a1e3-5392-8c60-f94c89ccbeff",
+      "role_id": "6d2d8afd-0e8b-5597-a92c-8dcaa2089362",
+      "objective_id": "aa6d973e-44c1-523a-9590-7c3d7acc0330",
+      "label": "accountable",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "9d5af60b-5680-5182-8caa-67409b62c7d0",
+      "role_id": "26e27223-8575-5f10-b335-86619874dd0f",
+      "objective_id": "aa6d973e-44c1-523a-9590-7c3d7acc0330",
+      "label": "responsible",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fcd23a4c-d949-5496-bd3a-5515f0de02b5",
+      "role_id": "bd63bab3-d3dc-5eb5-93a2-98506d478b4a",
+      "objective_id": "aa6d973e-44c1-523a-9590-7c3d7acc0330",
+      "label": "informed",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "40130cff-33a3-5793-9550-16b994cffdcf",
+      "role_id": "6d2d8afd-0e8b-5597-a92c-8dcaa2089362",
+      "objective_id": "22359637-1ebe-5b2f-aab0-454a9c9ed0b4",
+      "label": "accountable",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "476e9771-e829-589f-ac7c-8097a1b4d6f3",
+      "role_id": "26e27223-8575-5f10-b335-86619874dd0f",
+      "objective_id": "22359637-1ebe-5b2f-aab0-454a9c9ed0b4",
+      "label": "responsible",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "66c0f86f-e9ad-580f-961c-4f05e5690988",
+      "role_id": "bd63bab3-d3dc-5eb5-93a2-98506d478b4a",
+      "objective_id": "22359637-1ebe-5b2f-aab0-454a9c9ed0b4",
+      "label": "informed",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "13c55c81-b707-5cea-9083-970b9109d705",
+      "role_id": "6d2d8afd-0e8b-5597-a92c-8dcaa2089362",
+      "objective_id": "4caf2f73-10fd-5df7-b8ed-867e31a4c08d",
+      "label": "accountable",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a710b84d-c1ca-5445-84be-d254505e7536",
+      "role_id": "26e27223-8575-5f10-b335-86619874dd0f",
+      "objective_id": "4caf2f73-10fd-5df7-b8ed-867e31a4c08d",
+      "label": "responsible",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cc780e9f-c895-56c6-9ae1-88e4475723f9",
+      "role_id": "bd63bab3-d3dc-5eb5-93a2-98506d478b4a",
+      "objective_id": "4caf2f73-10fd-5df7-b8ed-867e31a4c08d",
+      "label": "informed",
+      "created_at": "2026-10-21T00:00:00Z",
+      "last_updated": "2026-10-21T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "drafts": [],
+  "publications": []
+}

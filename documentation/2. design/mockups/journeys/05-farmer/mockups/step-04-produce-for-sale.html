@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Farmer step 4</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #EDF0EC;
+  --surface: #FBFCFA;
+  --ink: #1B2430;
+  --ink-soft: #3D4652;
+  --line: rgba(27, 36, 48, 0.16);
+  --line-strong: rgba(27, 36, 48, 0.4);
+  --accent: #703C0F;
+  --accent-wash: rgba(112, 60, 15, 0.1);
+  --on-accent: #FFFCF9;
+  --display: "Arial Narrow", "Helvetica Neue", sans-serif;
+  --sans: ui-sans-serif, system-ui, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12161C;
+    --surface: #1B222B;
+    --ink: #E7E9E4;
+    --ink-soft: #A7B0B8;
+    --line: rgba(231, 233, 228, 0.16);
+    --line-strong: rgba(231, 233, 228, 0.36);
+    --accent: #DD9350;
+    --accent-wash: rgba(221, 147, 80, 0.14);
+    --on-accent: #1B140C;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.45;
+}
+.sprite { position: absolute; width: 0; height: 0; }
+h2.state {
+  margin: 0 auto;
+  padding: 24px 16px 0;
+  max-width: 420px;
+  font: 600 12px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.screen {
+  max-width: 420px;
+  min-height: 560px;
+  margin: 12px auto 32px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+.ab {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+}
+.ic {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.thread,
+.form {
+  flex: 1;
+  min-height: 0;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.thread { justify-content: flex-end; }
+.form { gap: 14px; }
+.ftitle {
+  margin: 0;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--line-strong);
+  font: 800 22px/1.1 var(--display);
+}
+.subline {
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--line-strong);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.thread > .subline + .day { margin-top: auto; }
+.day {
+  text-align: center;
+  font: 10px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.msg {
+  max-width: 88%;
+  display: grid;
+  gap: 4px;
+}
+.msg .who {
+  font: 10px/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.bubble {
+  padding: 9px 11px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 2px 10px 10px 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.bubble p { margin: 0; }
+.msg.me { align-self: flex-end; justify-items: end; }
+.msg.me.wide { width: 88%; justify-items: stretch; }
+.msg.me.wide .who { justify-self: end; }
+.sent {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.sent dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+.sent dl div {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+.sent dt { margin: 0; }
+.sent dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.sent .foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.sent .closes {
+  min-width: 0;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+.group {
+  display: grid;
+  gap: 6px;
+}
+.label {
+  font: 500 10px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+}
+.field input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 16px/1.4 var(--sans);
+  -moz-appearance: textfield;
+}
+.field input::-webkit-inner-spin-button,
+.field input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.field .unit {
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+.b {
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--ink);
+  font: 500 14px/1 var(--sans);
+}
+.b.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.send {
+  margin-top: auto;
+  width: 100%;
+}
+.comp {
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+}
+.comp span {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  background: var(--bg);
+  font-size: 15px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.comp b {
+  width: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 3px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+@media (max-width: 480px) {
+  .screen { border-left: 0; border-right: 0; }
+}
+</style>
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+  </defs>
+</svg>
+
+<h2 class="state">Filling in</h2>
+<section class="screen" id="filling-in">
+  <div class="ab"><span class="back"><svg class="ic"><use href="#i-back"/></svg>Forms</span></div>
+  <div class="form">
+    <h3 class="ftitle">What do you have to sell?</h3>
+    <div class="group">
+      <label class="label" for="crop">Crop</label>
+      <div class="field">
+        <input id="crop" type="text" value="maize">
+      </div>
+    </div>
+    <div class="group">
+      <label class="label" for="amount">Amount</label>
+      <div class="field">
+        <input id="amount" type="number" inputmode="numeric" step="1" value="200">
+        <span class="unit">kg</span>
+      </div>
+    </div>
+    <div class="group">
+      <label class="label" for="ready-by">Ready by</label>
+      <div class="field">
+        <input id="ready-by" type="text" inputmode="numeric" value="2026-11-20">
+      </div>
+    </div>
+    <button class="b primary send" type="button">Send</button>
+  </div>
+</section>
+
+<h2 class="state">Sent</h2>
+<section class="screen" id="sent">
+  <div class="ab"><span class="back"><svg class="ic"><use href="#i-back"/></svg>Chat</span></div>
+  <div class="thread">
+    <h3 class="ftitle">Siaya Farmers' Group</h3>
+    <span class="subline">Asha Otieno</span>
+    <div class="day">Today</div>
+    <div class="msg me wide">
+      <span class="who">Asha Otieno · 11:30</span>
+      <div class="sent">
+        <dl>
+          <div><dt class="label">Crop</dt><dd>maize</dd></div>
+          <div><dt class="label">Amount</dt><dd>200 kg</dd></div>
+          <div><dt class="label">Ready by</dt><dd>2026-11-20</dd></div>
+        </dl>
+        <div class="foot">
+          <span class="closes">Changes close 2026-11-19 18:00 UTC</span>
+          <button class="b" type="button">Edit</button>
+        </div>
+      </div>
+    </div>
+    <div class="msg">
+      <span class="who">Farmers' coordinator · 11:30</span>
+      <div class="bubble"><p>Recorded: 200 kg of maize ready by 2026-11-20. I will tell you if a buyer wants it.</p></div>
+    </div>
+  </div>
+  <div class="comp"><span>Write to the coordinator</span><b><svg class="ic"><use href="#i-send"/></svg></b></div>
+</section>
+</body>
+</html>
