@@ -1,0 +1,15 @@
+{
+  "forms": [
+    {
+      "title": "Ask for a ride",
+      "language": "en",
+      "standing": true,
+      "landing": "thread",
+      "group": "customers",
+      "questions": [
+        { "prompt": "Pickup", "answer_type": "free_text", "required": true },
+        { "prompt": "Destination", "answer_type": "free_text", "required": true }
+      ]
+    }
+  ]
+}
