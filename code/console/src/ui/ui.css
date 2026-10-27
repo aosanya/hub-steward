@@ -1,0 +1,51 @@
+.error,.foot.error,.empty.error{color:var(--bad)}
+.empty.error{border-color:var(--bad);background:var(--badbg)}
+button.link,button.add,button.tools-head,button.card-toggle{background:transparent;cursor:pointer}
+button.card-toggle{display:flex;align-items:center;gap:.5rem;padding:0;border:0;font:inherit;color:inherit;text-align:left}
+.card.closed .card-toggle svg{transform:rotate(-90deg)}
+button.link{padding:0;border:0}
+button.add{width:100%}
+button.tools-head{width:100%;border-width:0 0 1px;border-style:solid;border-color:var(--line);text-align:left}
+.tool-spin{animation:tool-spin 1s linear infinite}
+@keyframes tool-spin{to{transform:rotate(360deg)}}
+.btn.flash{animation:save-flash 1.4s ease-out 2}
+@keyframes save-flash{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}70%,100%{box-shadow:0 0 0 .5rem transparent}}
+@media (prefers-reduced-motion:reduce){.tool-spin,.btn.flash{animation:none}}
+.loading{display:grid;place-items:center;min-height:40vh;animation:loading-in .2s ease .2s backwards}
+.loading .tool-spin,.progress-spin.tool-spin{width:32px;height:32px;border-width:3px}
+@keyframes loading-in{from{opacity:0}}
+.setting-control>.field{flex:1 1 auto}
+.control input[type="date"]{position:relative}
+.control input[type="date"]::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:auto;height:auto;opacity:0;cursor:pointer}
+.badge.accent{background:var(--accent);color:var(--ink)}
+
+.icon-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.icon-action.danger {
+  color: var(--bad);
+}
+
+.icon-action:hover {
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.icon-action:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.icon-action + .icon-action {
+  margin-left: 0.5rem;
+}
