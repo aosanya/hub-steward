@@ -1,0 +1,133 @@
+import { Navigate, Outlet, Route, Routes, useParams } from "react-router-dom";
+import { AnswerPage } from "./pages/forms/AnswerPage";
+import { FormsPage } from "./pages/forms/FormsPage";
+import { AgenciesPage } from "./pages/entry/AgenciesPage";
+import { InAgency, ToOpenAgency, ToOpenAgencyScreen } from "./pages/entry/OpenAgency";
+import { SignInLinkPage } from "./pages/entry/SignInLinkPage";
+import { SignInPage } from "./pages/entry/SignInPage";
+import { InboxPage } from "./pages/InboxPage";
+import { AskPage } from "./pages/chat/AskPage";
+import { ChatPage } from "./pages/chat/ChatPage";
+import { MarketPage } from "./pages/market/MarketPage";
+import { ProductPage } from "./pages/market/ProductPage";
+import { AsksPage } from "./supply/asks/AsksPage";
+import { JoinPage } from "./pages/join/JoinPage";
+import { TabPage } from "./pages/TabPage";
+import { ApplyPage } from "./pages/supply/ApplyPage";
+import { OfferFormPage } from "./pages/supply/OfferFormPage";
+import { OffersPage } from "./pages/supply/OffersPage";
+import { OrderPage } from "./supply/orders/OrderPage";
+import { OrdersPage } from "./supply/orders/OrdersPage";
+import { SupplierHome } from "./supply/SupplierHome";
+import { StockPage } from "./supply/stock/StockPage";
+import { GroupOrderPage, GroupOrdersPage, ReviseGroupOrderPage } from "./supply/groupOrder/GroupOrderPages";
+import { AddPaymentPage, CoordinatorOrderPage, ManagePaymentsPage } from "./coordinator/payments/PaymentsPages";
+import { BuyNowPage } from "./buy/now/BuyNowPage";
+import { BuyOrderPage } from "./buy/now/BuyOrderPage";
+import { BoughtOrderPage } from "./buy/join/BoughtOrderPage";
+import { GroupOrderPage as BuyGroupOrderPage } from "./buy/join/GroupOrderPage";
+import { JoinPage as JoinGroupOrderPage } from "./buy/join/JoinPage";
+import { AskShopsPage } from "./buy/wanted/AskShopsPage";
+import { AskedPage } from "./buy/wanted/AskedPage";
+import { NoticePage } from "./buy/wanted/NoticePage";
+import { WantedPage } from "./buy/wanted/WantedPage";
+import { MyOrderPage } from "./buy/orders/MyOrderPage";
+import { MyOrdersPage } from "./buy/orders/MyOrdersPage";
+import { sellNowRoutes } from "./sell/now/routes";
+import { JoinSalePage } from "./sell/group/JoinSalePage";
+import { AskRoutePage, BuyerAskPage, BuyerAsksPage } from "./sell/group/BuyerAsksPages";
+import { AppThreadPage } from "./apps/thread/AppThreadPage";
+import { buyInputsSource } from "./apps/thread/marketSource";
+import { sellHarvestSource } from "./apps/thread/sellSource";
+import { RoomThreadPage } from "./chat/rooms/RoomThreadPage";
+import { RoomThreadsPage } from "./chat/rooms/RoomThreadsPage";
+import { StartPage } from "./coordinator/start/StartPages";
+import { SessionGate } from "./entry/SessionGate";
+import { agencyHomePath } from "./agency/open";
+import { allScreens, routes } from "./routes";
+import { agencyRoute, retiredStartedRoute, tabRoute, tabs, type Tab } from "./tabs";
+
+
+function ToAgencyHome() {
+  const { agencyId = "" } = useParams();
+  return <Navigate to={agencyHomePath(agencyId)} replace />;
+}
+
+function tabElement(tab: Tab) {
+  if (tab.id === "do-something") return <SupplierHome />;
+  if (tab.id === "chat") return <ChatPage />;
+  if (tab.id === "inbox") return <InboxPage />;
+  return <TabPage tab={tab} />;
+}
+
+export function App() {
+  return (
+    <SessionGate>
+    <Routes>
+      {tabs.map((tab) => (
+        <Route key={tab.id} path={tab.path} element={<ToOpenAgency tab={tab} />} />
+      ))}
+      <Route path={agencyRoute} element={<InAgency><Outlet /></InAgency>}>
+        <Route index element={<ToAgencyHome />} />
+        <Route path={retiredStartedRoute} element={<ToAgencyHome />} />
+        {tabs.map((tab) => (
+          <Route key={`in-${tab.id}`} path={tabRoute(tab)} element={tabElement(tab)} />
+        ))}
+        <Route path={routes.join.pattern} element={<JoinPage />} />
+        <Route path={routes.start.pattern} element={<StartPage />} />
+        <Route path={routes.market.pattern} element={<MarketPage />} />
+        <Route path={routes.product.pattern} element={<ProductPage />} />
+        <Route path={routes.buyNow.pattern} element={<BuyNowPage />} />
+        <Route path={routes.marketOrder.pattern} element={<BuyOrderPage />} />
+        <Route path={routes.boughtOrder.pattern} element={<BoughtOrderPage />} />
+        <Route path={routes.groupOrder.pattern} element={<BuyGroupOrderPage />} />
+        <Route path={routes.joinGroupOrder.pattern} element={<JoinGroupOrderPage />} />
+        <Route path={routes.forms.pattern} element={<FormsPage />} />
+        <Route path={routes.form.pattern} element={<AnswerPage />} />
+        <Route path={routes.roomThreads.pattern} element={<RoomThreadsPage />} />
+        <Route path={routes.roomThread.pattern} element={<RoomThreadPage heading="thread" />} />
+        <Route path={routes.ask.pattern} element={<AskPage />} />
+      </Route>
+      {allScreens.map((screen) => (
+        <Route key={screen.retired} path={screen.retired} element={<ToOpenAgencyScreen screen={screen} />} />
+      ))}
+      <Route path="/buy/wanted" element={<WantedPage />} />
+      <Route path="/buy/wanted/:requestId/ask" element={<AskShopsPage />} />
+      <Route path="/buy/wanted/:requestId" element={<AskedPage />} />
+      <Route path="/buy/notices/:noticeId" element={<NoticePage />} />
+      <Route path="/my-orders" element={<MyOrdersPage />} />
+      <Route path="/my-orders/:orderId" element={<MyOrderPage />} />
+      <Route path="/my-orders/group/:groupOrderId" element={<MyOrderPage group />} />
+      {sellNowRoutes}
+      <Route path="/sell/group/:orderId" element={<JoinSalePage />} />
+      <Route path="/sell/asks" element={<BuyerAsksPage />} />
+      <Route path="/sell/asks/:askId" element={<BuyerAskPage />} />
+      <Route path="/apps/buy" element={<AppThreadPage appName="Buy inputs" source={buyInputsSource} backTo="/" backLabel="Do Something" />} />
+      <Route path="/apps/sell" element={<AppThreadPage appName="Sell harvest" source={sellHarvestSource} backTo="/" backLabel="Do Something" />} />
+      <Route path="/asks" element={<AsksPage />} />
+      <Route path="/asks/:askId" element={<AskRoutePage />} />
+      <Route path="/supply/apply" element={<ApplyPage />} />
+      <Route path="/offers" element={<OffersPage />} />
+      <Route path="/prices" element={<OffersPage buyer />} />
+      <Route path="/prices/new" element={<OfferFormPage buyer />} />
+      <Route path="/prices/:offerId" element={<OfferFormPage buyer />} />
+      <Route path="/stock" element={<StockPage />} />
+      <Route path="/offers/new"element={<OfferFormPage />} />
+      <Route path="/offers/:offerId" element={<OfferFormPage />} />
+      <Route path="/orders" element={<OrdersPage />} />
+      <Route path="/orders/:orderId" element={<OrderPage />} />
+      <Route path="/coordinator/orders/:orderId" element={<CoordinatorOrderPage />} />
+      <Route path="/coordinator/orders/:orderId/payments" element={<ManagePaymentsPage />} />
+      <Route path="/coordinator/orders/:orderId/payments/new" element={<AddPaymentPage />} />
+      <Route path="/coordinator/orders/:orderId/payments/:rowId/correct" element={<AddPaymentPage />} />
+      <Route path="/group-orders" element={<GroupOrdersPage />} />
+      <Route path="/group-orders/:orderId" element={<GroupOrderPage />} />
+      <Route path="/group-orders/:orderId/revise" element={<ReviseGroupOrderPage />} />
+      <Route path="/sign-in" element={<SignInPage />} />
+      <Route path="/sign-in/link" element={<SignInLinkPage />} />
+      <Route path="/agencies" element={<AgenciesPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+    </SessionGate>
+  );
+}
