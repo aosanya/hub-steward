@@ -1,0 +1,5 @@
+{
+  "wakala": "http://localhost:8082",
+  "mcp": "http://localhost:8082/mcp",
+  "template": "siaya-lab"
+}
