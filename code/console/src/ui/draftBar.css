@@ -1,0 +1,5 @@
+.draft{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:10px 12px 10px 18px;border-radius:14px;border:1px solid var(--accent-line);background:var(--sel)}
+.draft-text{flex:1 1 16rem;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+.draft-problems{max-height:16rem;overflow-y:auto}
+.content.draft-slot{order:-1;flex:none;padding-bottom:0;margin-bottom:-4px}
+.app.console .main>.top{order:-2}

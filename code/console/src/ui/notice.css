@@ -1,0 +1,6 @@
+.notice{display:flex;align-items:center;gap:12px;padding:12px clamp(16px,2.2vw,32px);border-bottom:1px solid var(--line);background:var(--okbg);color:var(--ok)}
+.notice.bad{background:var(--badbg);color:var(--bad)}
+.notice svg{flex:none}
+.notice-text{flex:1 1 auto;min-width:0;font-weight:500;color:var(--text)}
+.notice-close{flex:none;display:flex;padding:4px;border:0;border-radius:8px;background:transparent;color:inherit;cursor:pointer}
+.notice-close:hover{background:var(--line)}
