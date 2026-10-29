@@ -1,0 +1,8 @@
+.thread-page { display: flex; flex-direction: column; height: 100dvh; background: var(--bg); }
+.thread-page > .head { padding: 1rem 1rem 0; }
+.thread-scroll { flex: 1; display: flex; flex-direction: column; gap: .5rem; overflow-y: auto; padding: 1rem; }
+.thread-composer { display: flex; align-items: center; gap: .5rem; padding: .75rem 1rem 1rem; background: var(--surface); border-top: 1px solid var(--line); }
+.thread-composer .cfield { flex: 1; min-width: 0; display: flex; align-items: center; min-height: 3rem; padding: 0 1rem; background: var(--bg); border: 1px solid var(--line-strong); border-radius: var(--r-pill); }
+.thread-composer input { flex: 1; min-width: 0; padding: 0; border: 0; outline: 0; background: transparent; }
+.thread-composer .send { flex: none; min-width: 3rem; height: 3rem; padding: 0 1rem; border: 0; border-radius: var(--r-pill); background: var(--bg-alt); color: var(--ink-soft); font-weight: 600; }
+.thread-composer .send.ready { background: var(--accent); color: var(--on-accent); }
