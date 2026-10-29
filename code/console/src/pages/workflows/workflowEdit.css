@@ -1,0 +1,3 @@
+.wf-questions{display:flex;flex-direction:column;gap:12px}
+.wf-question{border-color:var(--line2)}.wf-rule{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px}
+.wf-rule>.field{flex:1 1 10rem}
