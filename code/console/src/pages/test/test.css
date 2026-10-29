@@ -1,0 +1,13 @@
+.sc-head{display:flex;align-items:center;gap:12px}
+.sc-head .cell{flex:1;min-width:0}
+.sc-end{display:flex;align-items:center;gap:8px;flex:none}
+.sc-meta{margin:0;color:var(--text3);font-size:.875rem}
+.act-wrap{position:relative;display:inline-block}
+.act-wrap.end{margin-left:auto}
+.act-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:4;box-sizing:border-box;display:flex;flex-direction:column;min-width:9rem;padding:6px;border:1px solid var(--line2);border-radius:12px;background:var(--card)}
+.act-item{display:flex;align-items:center;min-height:2.25rem;padding:0 .625rem;border:0;border-radius:8px;background:none;color:var(--text2);font:inherit;text-align:left;text-decoration:none;white-space:nowrap;cursor:pointer}
+.act-item.bad{color:var(--bad)}
+.json{margin:0;text-align:left;font-family:var(--mono);font-size:.8125rem;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text2)}
+.json-key{color:var(--text)}
+.json-string{color:var(--ok)}
+.json-number,.json-word{color:var(--accent)}
