@@ -1,0 +1,4 @@
+.btn.danger { border-color: var(--danger); color: var(--danger); }
+.agent-says { display: flex; flex-direction: column; gap: .125rem; }
+.agent-says .who { display: flex; align-items: center; gap: .5rem; font-size: .8125rem; color: var(--ink-soft); }
+.agent-says .who b { font-weight: 600; color: var(--ink); }
