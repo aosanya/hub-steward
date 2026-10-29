@@ -1,0 +1,2 @@
+.roster { display: flex; flex-direction: column; gap: .75rem; }
+.roster-note { margin: 0; text-align: center; color: var(--ink-soft); font-size: .875rem; }
