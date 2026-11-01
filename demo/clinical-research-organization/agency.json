@@ -1,0 +1,1369 @@
+{
+  "_template": {
+    "sector": "health",
+    "archetype": "clinical research organization",
+    "illustrative": true,
+    "note": "Synthetic template for a clinical research organization. The organization is not real; roles, goals, rules and workflows are illustrative values for the demo."
+  },
+  "agency": {
+    "id": "3719e474-34b0-4e9d-9623-a2053117accf",
+    "name": "Meridian Clinical Research",
+    "description": "A contract research organization (CRO) running sponsor-outsourced clinical trials for pharmaceutical and biotech clients across the full study lifecycle: protocol/site feasibility, site initiation, informed-consent and case-report-form collection, adverse-event reporting, GCP monitoring visits, data integrity, and regulatory submission packages.",
+    "enabled": true,
+    "default_failure_pipeline_budget": 0,
+    "inactivity_timeout_seconds": 0,
+    "created_at": "2026-09-18T09:59:21Z",
+    "last_updated": "2026-09-18T09:59:21Z",
+    "deleted": false
+  },
+  "modules": [
+    {
+      "id": "94fd0f51-6fcf-47dd-92ba-0d1fb8a49355",
+      "code": "auth",
+      "name": "auth",
+      "description": "",
+      "enabled": true,
+      "locked": true,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "c0954bea-d1c0-4e1f-b405-bca6c6322464",
+      "code": "git",
+      "name": "git",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "e3a69038-586c-45e5-bf6a-c3ce17a7b3d3",
+      "code": "taskmanager",
+      "name": "taskmanager",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "b1c37ce6-5723-4002-a586-537a4d683515",
+      "code": "agency",
+      "name": "agency",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "1715c0c1-a1cb-44ea-989f-a0df7a689d11",
+      "code": "actor",
+      "name": "actor",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "6aa8e92d-e104-4f0d-b13b-d9cf5e512765",
+      "code": "comm",
+      "name": "comm",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "2b8cc4c3-b3a3-4190-b530-2ce1c68fc2fe",
+      "code": "custody",
+      "name": "custody",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "10ea7e08-35a4-4378-a030-6622a7be7c23",
+      "code": "forms",
+      "name": "forms",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "305accb5-77bb-47b7-80b2-416ade0a2895",
+      "code": "digitaltwin",
+      "name": "digitaltwin",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "ee728146-eed1-45f9-86e5-62aa7dcffdd3",
+      "code": "accounting",
+      "name": "accounting",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    }
+  ],
+  "roles": [
+    {
+      "id": "538296b6-f21d-4916-849d-4b82570f1d59",
+      "code": "R-1",
+      "name": "VP, Clinical Operations",
+      "description": "Owns delivery across every active study — resourcing, sponsor escalation, and final accountability for GCP compliance.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "84678d2a-1220-47e8-a97b-816e924a0de7",
+      "code": "R-2",
+      "name": "Clinical Project Manager",
+      "description": "Owns one study's budget, timeline and cross-functional delivery from start-up through closeout.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "7f901bff-7944-4042-a993-48844fadba59",
+      "code": "R-3",
+      "name": "Feasibility & Site Selection Lead",
+      "description": "Runs protocol/site feasibility assessments and scores candidate investigator sites before selection.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "f786063a-2db5-4896-81e4-5a02be519047",
+      "code": "R-4",
+      "name": "Site Start-Up Specialist",
+      "description": "Assembles each site's regulatory/essential-document package and runs Site Initiation Visits (SIVs).",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "391bae47-dc20-464d-9f89-5e3e54c47aad",
+      "code": "R-5",
+      "name": "Senior Clinical Research Associate (Lead CRA)",
+      "description": "Oversees the monitoring plan across a study's sites; mentors CRAs and signs off on monitoring-visit reports.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "77df5a78-98a0-43c0-9918-ff59f7f0524a",
+      "code": "R-6",
+      "name": "Clinical Research Associate (CRA / Monitor)",
+      "description": "The sponsor's on-site or remote representative — verifies protocol/GCP conduct, performs source data verification, and resolves site queries.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "2e65fae5-266b-450b-b294-dfbca8ae7729",
+      "code": "R-7",
+      "name": "Data Manager",
+      "description": "Owns the EDC/eCRF build, query management, and reconciliation between clinical and safety databases.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "e8403371-8e6e-49a1-9e69-c30d1abd250e",
+      "code": "R-8",
+      "name": "Biostatistician",
+      "description": "Designs the statistical analysis plan and reviews data quality signals ahead of database lock.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "d4653771-7822-4fce-bc73-6e7feac04afe",
+      "code": "R-9",
+      "name": "Regulatory Affairs Manager",
+      "description": "Assembles and files regulatory submission packages and tracks IRB/Ethics Committee approvals per site.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "fdbdd3bf-a3e6-4429-b882-1315bb927382",
+      "code": "R-10",
+      "name": "Pharmacovigilance & Safety Officer",
+      "description": "Triages incoming adverse-event reports, grades seriousness, and files SAE reports to sponsor/regulator within deadline.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "799099ee-0ebd-4ba7-8b44-28bcc94e0e18",
+      "code": "R-11",
+      "name": "GCP Quality Assurance & Compliance Auditor",
+      "description": "Runs internal GCP audits, maintains the Trial Master File index, and prepares sites for sponsor/regulatory inspection.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "d49d3806-bb31-4ff0-8907-f7b2c06fe18d",
+      "code": "R-12",
+      "name": "Clinical Trial Assistant (CTA)",
+      "description": "Administrative backbone of the study team — document filing, meeting logistics, and TMF housekeeping.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "dd6281d6-71b9-5bd5-b550-1b5dcf7bf43d",
+      "code": "R-13",
+      "name": "Risk owner",
+      "permissions": [
+        "risk.read"
+      ],
+      "description": "Reads the study risk register for every active study, runs the quarterly risk review, and makes sure each gap becomes tracked closing work. Holds risk.read only; it changes no study record.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "goals": [
+    {
+      "id": "b1ccec6e-5153-4949-a426-b1210d9072a8",
+      "code": "G-1",
+      "title": "Pass every sponsor and regulatory audit with an inspection-ready Trial Master File",
+      "description": "Every study's Trial Master File and data trail is complete enough to pass a sponsor or regulator inspection at any time.",
+      "ordinality": 1,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "73c4952e-d44e-4613-9ae0-93b647c45beb",
+      "code": "G-2",
+      "title": "Start up and activate sites on schedule across every study",
+      "description": "Sites are assessed, initiated and activated on schedule, ready to consent patients and collect case report forms.",
+      "ordinality": 2,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "9a9884c8-49ad-4d8b-8174-afa62cd20656",
+      "code": "G-3",
+      "title": "Protect patient safety through timely adverse-event detection and reporting",
+      "description": "Serious adverse events are caught and reported within regulatory deadlines, and monitoring findings are closed out.",
+      "ordinality": 3,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    }
+  ],
+  "objectives": [
+    {
+      "id": "234e377b-1c9e-419e-be24-6b630ad0be6d",
+      "code": "O-1",
+      "goal_id": "b1ccec6e-5153-4949-a426-b1210d9072a8",
+      "title": "Maintain an audit-ready Trial Master File for every study",
+      "description": "TMF documents are filed, indexed and current enough that an unannounced inspection finds no gaps.",
+      "ordinality": 1,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "4fac3e52-409f-4930-bd82-3c862b9c56f4",
+      "code": "O-2",
+      "goal_id": "b1ccec6e-5153-4949-a426-b1210d9072a8",
+      "title": "Run internal GCP quality assurance audits across active sites",
+      "description": "Independent, scheduled audits verify site and study-team conduct against protocol, SOPs and GCP.",
+      "ordinality": 2,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "5b46313f-e90a-4a27-8e71-327c066a092f",
+      "code": "O-3",
+      "goal_id": "b1ccec6e-5153-4949-a426-b1210d9072a8",
+      "title": "Manage regulatory submission packages for study milestones",
+      "description": "IND/CTA amendments, annual reports and IRB/EC renewals are filed complete and on time.",
+      "ordinality": 3,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "a69e1882-17dd-4f5a-a5f7-6a4e7b3bc247",
+      "code": "O-4",
+      "goal_id": "b1ccec6e-5153-4949-a426-b1210d9072a8",
+      "title": "Maintain data integrity and audit trail across the eCRF/EDC system",
+      "description": "Every data point traces to source, every change is attributable, and the audit trail is never edited out of band.",
+      "ordinality": 4,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "6ffb2aad-45f3-4d69-948e-3d0c6c0ec390",
+      "code": "O-5",
+      "goal_id": "73c4952e-d44e-4613-9ae0-93b647c45beb",
+      "title": "Complete protocol/site feasibility assessment before site selection",
+      "description": "Every candidate site is scored on PI capability, patient population and prior performance before it is selected.",
+      "ordinality": 1,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "1f29fa70-0cca-425f-917e-04746c8d1b1c",
+      "code": "O-6",
+      "goal_id": "73c4952e-d44e-4613-9ae0-93b647c45beb",
+      "title": "Execute Site Initiation Visits and activate sites",
+      "description": "Each selected site is trained, documented and activated to enroll before its first subject.",
+      "ordinality": 2,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "d5a630c4-e299-4a6a-835c-4918f2d9bc3b",
+      "code": "O-7",
+      "goal_id": "73c4952e-d44e-4613-9ae0-93b647c45beb",
+      "title": "Deliver informed-consent and case-report-form collection at each site",
+      "description": "Subjects consent on the current IRB-approved ICF version and CRFs are captured completely and on time.",
+      "ordinality": 3,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "9ea893f2-0dca-4df6-a70d-3e457efb6693",
+      "code": "O-8",
+      "goal_id": "9a9884c8-49ad-4d8b-8174-afa62cd20656",
+      "title": "Detect, triage and report serious adverse events within regulatory deadlines",
+      "description": "Every SAE is graded, escalated and reported to sponsor and regulator inside the ICH E6(R2)/21 CFR 312.32 clock.",
+      "ordinality": 1,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "d6dc4c94-b258-4258-a549-a2755426e0eb",
+      "code": "O-9",
+      "goal_id": "9a9884c8-49ad-4d8b-8174-afa62cd20656",
+      "title": "Track and close corrective and preventive actions from monitoring findings",
+      "description": "Every monitoring or audit finding becomes a tracked CAPA with a verified closure, not a note that goes stale.",
+      "ordinality": 2,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "5ad6f24e-9b55-4aca-a192-fe7da1af05cf",
+      "code": "O-10",
+      "goal_id": "9a9884c8-49ad-4d8b-8174-afa62cd20656",
+      "title": "Conduct routine GCP monitoring visits and verify source data",
+      "description": "Scheduled and for-cause visits confirm protocol conduct, informed consent, and drug accountability at every site.",
+      "ordinality": 3,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "cdf524c2-9c4b-5ec2-ab70-596cf10c9772",
+      "code": "O-11",
+      "goal_id": "b1ccec6e-5153-4949-a426-b1210d9072a8",
+      "title": "Review the risks of every active study each quarter",
+      "description": "Threats, controls and gaps are listed per study and every gap becomes tracked work with an owner.",
+      "ordinality": 5,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "values": [
+    {
+      "id": "6c7265ce-40a1-4258-b4e1-084819e7fe11",
+      "code": "V-1",
+      "text": "Patient safety and data integrity take precedence over enrollment speed or study timelines.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "b03f98dd-9810-4d00-983e-9546955985c7",
+      "code": "V-2",
+      "text": "Every case report form entry must be traceable to verifiable source data — if it isn't documented, it didn't happen.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "c3816411-a2d1-46ca-9992-b4e2c299f4a1",
+      "code": "V-3",
+      "text": "Protocol deviations and adverse events are disclosed and escalated promptly, never minimized to protect a site relationship or a study timeline.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "4c8126e4-3e67-44b0-a6d3-22b3eedbe387",
+      "code": "V-4",
+      "text": "Trial documentation is kept inspection-ready continuously — never assembled retroactively once an inspection is announced.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "78f274cf-5e87-4b20-b74e-13630e498ccf",
+      "code": "RU-1",
+      "text": "Serious adverse events must be reported to the sponsor and, where required, the regulatory authority within 24 hours of awareness for fatal/life-threatening events, or 15 calendar days otherwise, per ICH E6(R2) and 21 CFR 312.32.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "6dc0431c-e15d-44bb-9647-480d962cfd87",
+      "code": "RU-2",
+      "text": "No site may enroll a subject before its Site Initiation Visit is complete, its regulatory document package is fully executed, and current IRB/Ethics Committee approval is on file.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "c86d2c93-e2fc-47a8-9a6a-eca47908d12c",
+      "code": "RU-3",
+      "text": "Source data verification during a monitoring visit must cover 100% of informed consent forms and all primary/safety endpoint data — these fields are never sampled.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "fd969ae9-c421-4fbb-98ea-d9bf8f766577",
+      "code": "RU-4",
+      "text": "Trial Master File documents may not be altered once filed; a correction is made via a dated, signed amendment note, never by replacing the original document.",
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "2acaae79-bee8-5da5-a825-8470c54ad36e",
+      "code": "RU-5",
+      "text": "A serious adverse event that is not triaged by the Pharmacovigilance & Safety Officer within 4 working hours of the site report is escalated to the VP, Clinical Operations, so the 24 hour and 15 day regulatory clocks are never missed.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "80ae642c-f54c-5d1d-9183-6af61d1875a3",
+      "code": "RU-6",
+      "text": "A site's activation checklist is signed by the Site Start-Up Specialist and countersigned by the Lead CRA; enrolment is blocked in the EDC until both signatures are on file.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2482d9b4-7dbf-5c31-86da-f74846394740",
+      "code": "RU-7",
+      "text": "Any change to eCRF data after entry carries a reason and the user who made it; the Data Manager reviews the audit trail report monthly and no one edits the audit trail itself.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d36e8227-4696-54b4-a2b8-f1061143f6b3",
+      "code": "RU-8",
+      "text": "A subject is consented only on the informed-consent version currently approved by the IRB or Ethics Committee; a new version is not used until the site's approval letter is filed.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "626a776c-5e14-5ad0-8a43-a4900c24009c",
+      "code": "RU-9",
+      "text": "Every finding from a monitoring visit or audit becomes a CAPA within 5 working days, and a CAPA is closed only when the GCP Quality Assurance Auditor has seen the evidence.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "10508aec-b019-5d9c-a4db-cd469591b871",
+      "code": "RU-10",
+      "text": "The Risk owner reviews each active study's risks every quarter, and any gap found is raised as closing work to the study's Clinical Project Manager before the review is closed.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "value_attachments": [
+    {
+      "id": "66a994d6-c9c9-475f-b0d3-f9941cba1d73",
+      "value_code": "V-3",
+      "target_type": "workflow",
+      "target_code": "W-3",
+      "created_at": "2026-09-18T09:59:21Z"
+    },
+    {
+      "id": "e46c10f5-38c9-4c61-90fb-17a631067cda",
+      "value_code": "V-2",
+      "target_type": "workflow",
+      "target_code": "W-2",
+      "created_at": "2026-09-18T09:59:21Z"
+    },
+    {
+      "id": "dfade024-be36-489f-9a28-e2148edf948e",
+      "value_code": "V-4",
+      "target_type": "objective",
+      "target_code": "O-1",
+      "created_at": "2026-09-18T09:59:21Z"
+    }
+  ],
+  "rule_attachments": [
+    {
+      "id": "35aaba92-701a-4fb4-9f6b-62cb9e9d44c6",
+      "rule_code": "RU-1",
+      "target_type": "objective",
+      "target_code": "O-8",
+      "created_at": "2026-09-18T09:59:21Z"
+    },
+    {
+      "id": "7bddbb70-1f2c-4a0d-bb26-365d41b27f80",
+      "rule_code": "RU-2",
+      "target_type": "objective",
+      "target_code": "O-6",
+      "created_at": "2026-09-18T09:59:21Z"
+    },
+    {
+      "id": "1127427a-634e-4385-ae20-003cd51047ad",
+      "rule_code": "RU-3",
+      "target_type": "objective",
+      "target_code": "O-10",
+      "created_at": "2026-09-18T09:59:21Z"
+    },
+    {
+      "id": "5c1cb2b3-db38-4945-bcb1-327ee7134479",
+      "rule_code": "RU-4",
+      "target_type": "objective",
+      "target_code": "O-1",
+      "created_at": "2026-09-18T09:59:21Z"
+    },
+    {
+      "id": "914e3ab5-1b54-4c83-ad39-099b4419331a",
+      "rule_code": "RU-4",
+      "target_type": "role",
+      "target_code": "R-11",
+      "created_at": "2026-09-18T09:59:21Z"
+    },
+    {
+      "id": "e7ee8cb7-f650-589a-b06b-f7729d14ad2c",
+      "rule_code": "RU-5",
+      "target_type": "objective",
+      "target_code": "O-8",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "a7b57f5a-1d3d-5e87-88ee-bc0f3b0a22e6",
+      "rule_code": "RU-5",
+      "target_type": "role",
+      "target_code": "R-10",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "d5fc3200-1f0d-502d-9aaa-6ab66663cf54",
+      "rule_code": "RU-6",
+      "target_type": "objective",
+      "target_code": "O-6",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "6a225cdf-faa3-5072-b49f-9aee08889e71",
+      "rule_code": "RU-6",
+      "target_type": "role",
+      "target_code": "R-4",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "6a98c6d2-3ce6-5d9f-bbbd-05df82bf99d1",
+      "rule_code": "RU-7",
+      "target_type": "objective",
+      "target_code": "O-4",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "1bdf3067-799b-5ccf-b9ab-f4cb856b6b0c",
+      "rule_code": "RU-7",
+      "target_type": "role",
+      "target_code": "R-7",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "cc3393d3-0650-57ef-9c53-407ef3365476",
+      "rule_code": "RU-8",
+      "target_type": "objective",
+      "target_code": "O-7",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "381f9dff-43f8-5cd8-8c54-f20ff722ebd1",
+      "rule_code": "RU-9",
+      "target_type": "objective",
+      "target_code": "O-9",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "799d6448-5bd4-5d21-bb9c-b2e5a3a9157e",
+      "rule_code": "RU-9",
+      "target_type": "role",
+      "target_code": "R-11",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "8b53f27d-31fd-55f1-b982-5950efcce43d",
+      "rule_code": "RU-10",
+      "target_type": "objective",
+      "target_code": "O-11",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "808e96ce-e931-57c0-b647-d74d6dbef0fa",
+      "rule_code": "RU-10",
+      "target_type": "role",
+      "target_code": "R-13",
+      "created_at": "2026-11-01T00:00:00Z"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "042e3de9-383e-4728-af74-ac0d9ca582fc",
+      "code": "W-1",
+      "name": "Site Feasibility & Initiation",
+      "description": "From protocol receipt to a site's first enrolled subject.",
+      "ordinality": 1,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "1b6a818f-5a1c-4f45-8083-821fb3f45940",
+      "code": "W-2",
+      "name": "Trial Monitoring & Data Management",
+      "description": "The recurring cycle of monitoring visits, CRF review, reconciliation and CAPA closure across a live study.",
+      "ordinality": 2,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "585118f8-2ba1-4b4e-b8b6-168e4ca405e1",
+      "code": "W-3",
+      "name": "Adverse Event & Safety Reporting",
+      "description": "From an AE report landing to SAE filing and safety-database reconciliation.",
+      "ordinality": 3,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "be6e5216-888d-45fa-9869-12dcc9a2d5da",
+      "code": "W-4",
+      "name": "Regulatory Submission & Audit Readiness",
+      "description": "TMF maintenance, internal GCP audits, and regulatory submission packages across the study lifecycle.",
+      "ordinality": 4,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "d764e626-8149-5fe4-afb2-ff95e1e5e5df",
+      "code": "W-5",
+      "name": "Risk review",
+      "description": "The quarterly cycle that lists each study's threats, checks the controls, finds the gaps and raises the closing work.",
+      "ordinality": 5,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "fc61daad-3893-4662-878a-f2db150d0dcd",
+      "code": "WI-1",
+      "workflow_id": "042e3de9-383e-4728-af74-ac0d9ca582fc",
+      "objective_id": "6ffb2aad-45f3-4d69-948e-3d0c6c0ec390",
+      "title": "Conduct site feasibility questionnaire and PI capability assessment",
+      "description": "Send and collect the protocol-specific feasibility questionnaire from each candidate site.",
+      "prompt": "Send the protocol-specific feasibility questionnaire to the candidate site's Principal Investigator. Confirm the PI's prior trial experience, eligible-patient volume estimate, staff availability and equipment/lab capability. Record the completed questionnaire against the site's feasibility file before scoring.",
+      "ordinality": 1,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "c43e34dd-d468-4152-9f16-e0130c44251d",
+      "code": "WI-2",
+      "workflow_id": "042e3de9-383e-4728-af74-ac0d9ca582fc",
+      "objective_id": "6ffb2aad-45f3-4d69-948e-3d0c6c0ec390",
+      "title": "Score and shortlist candidate sites for the study",
+      "description": "Rank candidate sites on capability, enrollment potential and prior performance; recommend the selected set.",
+      "prompt": "Using every returned feasibility questionnaire, score each candidate site on PI experience, projected enrollment rate, staffing and facility readiness. Produce a ranked shortlist with a written rationale and flag any site scoring below the study's minimum threshold for exclusion.",
+      "ordinality": 2,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "3355d04f-8ffa-44f5-b843-fd36d67e7589",
+      "code": "WI-3",
+      "workflow_id": "042e3de9-383e-4728-af74-ac0d9ca582fc",
+      "objective_id": "1f29fa70-0cca-425f-917e-04746c8d1b1c",
+      "title": "Prepare site regulatory & essential document package",
+      "description": "Assemble the IRB/EC approval, 1572/CVs, licenses and financial disclosures required before activation.",
+      "prompt": "Collect and verify every essential document required before activation: current IRB/EC approval, signed 1572 (or local equivalent), investigator and sub-investigator CVs, medical licenses, lab certifications/normal ranges, and financial disclosure forms. Confirm each document is current, signed and correctly filed in the TMF before scheduling the SIV.",
+      "ordinality": 3,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "f64911c4-5dbb-47e4-83df-ad97f3baeff4",
+      "code": "WI-4",
+      "workflow_id": "042e3de9-383e-4728-af74-ac0d9ca582fc",
+      "objective_id": "1f29fa70-0cca-425f-917e-04746c8d1b1c",
+      "title": "Conduct Site Initiation Visit (SIV) and train site staff",
+      "description": "Deliver protocol, GCP and system training on-site; confirm readiness to enroll.",
+      "prompt": "Conduct the Site Initiation Visit: walk the site team through the protocol, the informed-consent process, AE/SAE reporting timelines, source-document requirements and the EDC system. Verify drug/device storage and delegation-of-authority log are in place. Do not release the site to enroll until every training item and document is confirmed complete.",
+      "ordinality": 4,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "495e4c75-de25-42a5-80bf-38e78ab92988",
+      "code": "WI-5",
+      "workflow_id": "042e3de9-383e-4728-af74-ac0d9ca582fc",
+      "objective_id": "d5a630c4-e299-4a6a-835c-4918f2d9bc3b",
+      "title": "Configure the informed-consent form for the protocol and site",
+      "description": "Localize and version the IRB-approved ICF for the site's language and jurisdiction.",
+      "prompt": "Take the sponsor's IRB/EC-approved master informed-consent form and localize it for the site's language and local regulatory addenda. Confirm the version number and approval date match the current IRB approval on file before it is used to consent a single subject.",
+      "ordinality": 5,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "bc1ca28d-f637-4b5e-935b-0e2f96544290",
+      "code": "WI-6",
+      "workflow_id": "042e3de9-383e-4728-af74-ac0d9ca582fc",
+      "objective_id": "d5a630c4-e299-4a6a-835c-4918f2d9bc3b",
+      "title": "Capture and file signed informed consent for each subject",
+      "description": "Confirm the consent conversation happened, capture the signed form, and file it before any study procedure.",
+      "prompt": "Confirm the site obtained informed consent using the current approved ICF version before any protocol-specific procedure. Verify the subject's signature, the consenter's signature, and the date are all present and internally consistent, then file the signed ICF in the subject's source file and the TMF.",
+      "ordinality": 6,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "7ebaff65-cbb7-4f6f-9feb-8a698ac08018",
+      "code": "WI-7",
+      "workflow_id": "1b6a818f-5a1c-4f45-8083-821fb3f45940",
+      "objective_id": "5ad6f24e-9b55-4aca-a192-fe7da1af05cf",
+      "title": "Perform routine monitoring visit and source data verification",
+      "description": "Confirm protocol conduct, verify source data, and check drug/device accountability at the site.",
+      "prompt": "Conduct the scheduled (or for-cause) monitoring visit. Verify 100% source data verification on informed consent and all primary/safety endpoint fields; sample-verify the rest per the monitoring plan. Check investigational product accountability and the site delegation log. Write up findings in the monitoring visit report within 5 business days.",
+      "ordinality": 1,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "ed7c0345-3060-43d0-96c4-6f96a808e2f4",
+      "code": "WI-8",
+      "workflow_id": "1b6a818f-5a1c-4f45-8083-821fb3f45940",
+      "objective_id": "a69e1882-17dd-4f5a-a5f7-6a4e7b3bc247",
+      "title": "Review and query case report forms in the EDC",
+      "description": "Review submitted CRFs against source, and raise queries for discrepancies.",
+      "prompt": "Review each newly submitted CRF against the source document. Where a field does not match source, is missing, or is clinically implausible, raise a query in the EDC addressed to the site coordinator with a clear description of what is needed to resolve it.",
+      "ordinality": 2,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "d5087787-036c-4480-957f-4b3f34eb2f27",
+      "code": "WI-9",
+      "workflow_id": "1b6a818f-5a1c-4f45-8083-821fb3f45940",
+      "objective_id": "a69e1882-17dd-4f5a-a5f7-6a4e7b3bc247",
+      "title": "Reconcile eCRF data against source and close outstanding queries",
+      "description": "Drive open queries to closure and confirm the clinical database matches source ahead of any interim or final lock.",
+      "prompt": "Pull the outstanding-query report for the study. For each open query, confirm the site's response resolves the discrepancy against source before marking it closed. Escalate any query open longer than 30 days to the Clinical Project Manager.",
+      "ordinality": 3,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "beb10265-e23a-425d-8112-81c24d8c3104",
+      "code": "WI-10",
+      "workflow_id": "1b6a818f-5a1c-4f45-8083-821fb3f45940",
+      "objective_id": "d6dc4c94-b258-4258-a549-a2755426e0eb",
+      "title": "Log monitoring-visit and audit findings as CAPAs",
+      "description": "Turn every finding into a tracked corrective/preventive action with an owner and a due date.",
+      "prompt": "For every finding recorded in a monitoring visit report or internal audit, open a CAPA with a clear description of the deficiency, an assigned owner at the responsible site or function, a root-cause field, and a due date proportional to the finding's severity.",
+      "ordinality": 4,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "f01b0649-b798-442f-bd77-3c24921ccfcb",
+      "code": "WI-11",
+      "workflow_id": "1b6a818f-5a1c-4f45-8083-821fb3f45940",
+      "objective_id": "d6dc4c94-b258-4258-a549-a2755426e0eb",
+      "title": "Verify CAPA closure evidence before marking it closed",
+      "description": "Confirm the corrective action was actually implemented, not just reported as done.",
+      "prompt": "Before closing a CAPA, review the evidence submitted by the owner (revised SOP, retraining log, corrected source document, etc.) and confirm it actually resolves the root cause. Reopen the CAPA if the evidence is insufficient rather than closing it on the owner's word alone.",
+      "ordinality": 5,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "3979dbb8-e608-4fce-80af-8458596a6105",
+      "code": "WI-12",
+      "workflow_id": "585118f8-2ba1-4b4e-b8b6-168e4ca405e1",
+      "objective_id": "9ea893f2-0dca-4df6-a70d-3e457efb6693",
+      "title": "Triage and grade incoming adverse event reports",
+      "description": "Classify every incoming AE report for seriousness and causality against the protocol's definitions.",
+      "prompt": "On receiving an adverse event report from a site, classify it for seriousness (per ICH E2A criteria — death, life-threatening, hospitalization, disability, congenital anomaly, or other medically important event), severity grade, and investigator causality assessment. Escalate any event meeting the serious threshold immediately.",
+      "ordinality": 1,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "f4598e01-1d21-4233-b318-de0bd1303e9c",
+      "code": "WI-13",
+      "workflow_id": "585118f8-2ba1-4b4e-b8b6-168e4ca405e1",
+      "objective_id": "9ea893f2-0dca-4df6-a70d-3e457efb6693",
+      "title": "File the serious adverse event report to sponsor and regulator within deadline",
+      "description": "Submit the SAE report inside the regulatory clock — 24 hours for fatal/life-threatening events, 15 days otherwise.",
+      "prompt": "Prepare and submit the SAE report to the sponsor's pharmacovigilance function (and the regulator/IRB where required) within the applicable deadline: 24 hours of awareness for a fatal or life-threatening event, 15 calendar days for any other serious event, per ICH E6(R2) and 21 CFR 312.32. Confirm receipt and log the exact submission timestamp.",
+      "ordinality": 2,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "704fbe42-973b-450f-a7a3-487c26b948b4",
+      "code": "WI-14",
+      "workflow_id": "585118f8-2ba1-4b4e-b8b6-168e4ca405e1",
+      "objective_id": "9ea893f2-0dca-4df6-a70d-3e457efb6693",
+      "title": "Reconcile the safety database against the clinical database",
+      "description": "Confirm every SAE recorded in the safety system also appears, consistently, in the clinical database and vice versa.",
+      "prompt": "At the reconciliation interval defined in the Data Management Plan, compare every serious adverse event in the safety database against the clinical database's AE case report forms. Investigate and resolve any event present in one system but not the other, or recorded with inconsistent onset/outcome dates.",
+      "ordinality": 3,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "da9ffd7d-f1cb-4865-b8ac-6deae8465f17",
+      "code": "WI-15",
+      "workflow_id": "be6e5216-888d-45fa-9869-12dcc9a2d5da",
+      "objective_id": "234e377b-1c9e-419e-be24-6b630ad0be6d",
+      "title": "Compile and index the Trial Master File for a study",
+      "description": "Assemble the full TMF index and confirm every required document artifact is present and filed.",
+      "prompt": "Build the study's Trial Master File index against the sponsor's/ICH-recommended TMF reference model. Confirm every required document — protocol and amendments, IRB approvals, essential regulatory documents, monitoring visit reports, CAPA records, and correspondence — is present, correctly filed, and cross-referenced in the index.",
+      "ordinality": 1,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "23893405-9c11-415c-ab76-19909760a71e",
+      "code": "WI-16",
+      "workflow_id": "be6e5216-888d-45fa-9869-12dcc9a2d5da",
+      "objective_id": "234e377b-1c9e-419e-be24-6b630ad0be6d",
+      "title": "Prepare a site or study for sponsor or regulatory inspection",
+      "description": "Run a pre-inspection self-check across TMF completeness and open CAPAs.",
+      "prompt": "Before a scheduled sponsor audit or regulatory inspection, run a self-inspection: confirm the TMF index shows no missing or outstanding documents, every open CAPA has a documented status, and the site's delegation log and training records are current. Brief the site PI and study team on the inspection agenda.",
+      "ordinality": 2,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "396cd64c-a441-4de7-a888-075789af0c44",
+      "code": "WI-17",
+      "workflow_id": "be6e5216-888d-45fa-9869-12dcc9a2d5da",
+      "objective_id": "4fac3e52-409f-4930-bd82-3c862b9c56f4",
+      "title": "Conduct an internal GCP quality assurance audit of a site",
+      "description": "Run an independent audit of site conduct against protocol, SOPs and GCP, separate from routine monitoring.",
+      "prompt": "Conduct an internal GCP audit of the assigned site, independent of the routine monitoring visit cadence. Review a sample of subject source files against the protocol and applicable SOPs, verify informed-consent process compliance, and confirm investigational product accountability. Issue a formal audit report with findings classified as critical, major or minor.",
+      "ordinality": 3,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "796883cb-e3ac-4454-ad9f-57887039e08e",
+      "code": "WI-18",
+      "workflow_id": "be6e5216-888d-45fa-9869-12dcc9a2d5da",
+      "objective_id": "5b46313f-e90a-4a27-8e71-327c066a092f",
+      "title": "Assemble the regulatory submission package for a study milestone",
+      "description": "Compile the IND/CTA amendment, annual report or IRB/EC renewal package for filing.",
+      "prompt": "Assemble the regulatory submission package for the study milestone due (protocol amendment, annual report, or IRB/EC renewal). Confirm every required section — safety update, enrollment status, protocol deviation summary — is complete and cross-checked against the current TMF before it is filed.",
+      "ordinality": 4,
+      "created_at": "2026-09-18T09:59:21Z",
+      "last_updated": "2026-09-18T09:59:21Z",
+      "deleted": false
+    },
+    {
+      "id": "9581f810-99a3-59a2-a80c-0c872dbdda00",
+      "code": "WI-19",
+      "workflow_id": "d764e626-8149-5fe4-afb2-ff95e1e5e5df",
+      "objective_id": "cdf524c2-9c4b-5ec2-ab70-596cf10c9772",
+      "title": "List the threats to each active study",
+      "description": "Read the risk register for each active study with risk.read and list every threat in plain words: missed SAE deadlines, enrolment before activation, altered source data, Trial Master File gaps, and loss of the EDC audit trail.",
+      "prompt": "Read the risk register for each active study with risk.read and list every threat in plain words: missed SAE deadlines, enrolment before activation, altered source data, Trial Master File gaps, and loss of the EDC audit trail. Note the study, the site and the sponsor affected.",
+      "ordinality": 1,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "538afe7c-32d7-5dfe-adf7-6ed636ad0570",
+      "code": "WI-20",
+      "workflow_id": "d764e626-8149-5fe4-afb2-ff95e1e5e5df",
+      "objective_id": "cdf524c2-9c4b-5ec2-ab70-596cf10c9772",
+      "title": "Check the controls against each threat",
+      "description": "For every threat, check that a preventive measure and a mitigating measure exist and were exercised in the last quarter: the SAE clock log, the activation checklist, the EDC audit trail report, the TMF completeness report and the CAPA log.",
+      "prompt": "For every threat, check that a preventive measure and a mitigating measure exist and were exercised in the last quarter: the SAE clock log, the activation checklist, the EDC audit trail report, the TMF completeness report and the CAPA log. Mark each control working, weak or missing.",
+      "ordinality": 2,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f2b8dfa0-d540-5be3-b26e-0047143deaca",
+      "code": "WI-21",
+      "workflow_id": "d764e626-8149-5fe4-afb2-ff95e1e5e5df",
+      "objective_id": "cdf524c2-9c4b-5ec2-ab70-596cf10c9772",
+      "title": "Find the gaps and rank them",
+      "description": "Collect the weak and missing controls into one list.",
+      "prompt": "Collect the weak and missing controls into one list. Rank each gap by the harm to a subject and to data integrity first, then by the sponsor or regulatory consequence, and name the study team that owns it.",
+      "ordinality": 3,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "84cda994-4d33-57b5-b6e4-f0ee84221057",
+      "code": "WI-22",
+      "workflow_id": "d764e626-8149-5fe4-afb2-ff95e1e5e5df",
+      "objective_id": "cdf524c2-9c4b-5ec2-ab70-596cf10c9772",
+      "title": "Raise the closing work for each gap",
+      "description": "For each ranked gap, open a CAPA with an owner, a due date and the evidence that will show it closed, and send the list to the VP, Clinical Operations.",
+      "prompt": "For each ranked gap, open a CAPA with an owner, a due date and the evidence that will show it closed, and send the list to the VP, Clinical Operations. Check the previous review's CAPAs and reopen any whose evidence is thin.",
+      "ordinality": 4,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "132054b9-2cf0-5989-98d0-1d1f7da0bc78",
+      "workflow_id": "042e3de9-383e-4728-af74-ac0d9ca582fc",
+      "objective_id": "6ffb2aad-45f3-4d69-948e-3d0c6c0ec390"
+    },
+    {
+      "id": "55f0d572-7291-5f15-b1e1-1a9c0e6c3719",
+      "workflow_id": "042e3de9-383e-4728-af74-ac0d9ca582fc",
+      "objective_id": "1f29fa70-0cca-425f-917e-04746c8d1b1c"
+    },
+    {
+      "id": "84e1ebb1-9306-5558-804a-7d671f6f13a1",
+      "workflow_id": "042e3de9-383e-4728-af74-ac0d9ca582fc",
+      "objective_id": "d5a630c4-e299-4a6a-835c-4918f2d9bc3b"
+    },
+    {
+      "id": "18664620-4660-5184-b4c9-9d1f28572bd0",
+      "workflow_id": "1b6a818f-5a1c-4f45-8083-821fb3f45940",
+      "objective_id": "5ad6f24e-9b55-4aca-a192-fe7da1af05cf"
+    },
+    {
+      "id": "e8ce53ba-d246-510b-92b2-f9ccde809b10",
+      "workflow_id": "1b6a818f-5a1c-4f45-8083-821fb3f45940",
+      "objective_id": "a69e1882-17dd-4f5a-a5f7-6a4e7b3bc247"
+    },
+    {
+      "id": "476b1d35-e196-56a2-b1de-5888621c4c5f",
+      "workflow_id": "1b6a818f-5a1c-4f45-8083-821fb3f45940",
+      "objective_id": "d6dc4c94-b258-4258-a549-a2755426e0eb"
+    },
+    {
+      "id": "c8f218cd-7563-5c4b-9b98-38412530fa91",
+      "workflow_id": "585118f8-2ba1-4b4e-b8b6-168e4ca405e1",
+      "objective_id": "9ea893f2-0dca-4df6-a70d-3e457efb6693"
+    },
+    {
+      "id": "ba29126f-fa37-56bb-81ad-ed2f9f01eb82",
+      "workflow_id": "be6e5216-888d-45fa-9869-12dcc9a2d5da",
+      "objective_id": "234e377b-1c9e-419e-be24-6b630ad0be6d"
+    },
+    {
+      "id": "5d587871-d842-50dd-9f96-c7185cbb56bd",
+      "workflow_id": "be6e5216-888d-45fa-9869-12dcc9a2d5da",
+      "objective_id": "4fac3e52-409f-4930-bd82-3c862b9c56f4"
+    },
+    {
+      "id": "066af3d1-70f8-5099-bfe8-8bbd2b11f567",
+      "workflow_id": "be6e5216-888d-45fa-9869-12dcc9a2d5da",
+      "objective_id": "5b46313f-e90a-4a27-8e71-327c066a092f"
+    },
+    {
+      "id": "aa8f49b9-6077-5abc-b4eb-606c69cfff94",
+      "workflow_id": "d764e626-8149-5fe4-afb2-ff95e1e5e5df",
+      "objective_id": "cdf524c2-9c4b-5ec2-ab70-596cf10c9772"
+    }
+  ],
+  "work_plans": [],
+  "role_assignments": [
+    {
+      "id": "25bcad8f-587b-50ff-adeb-82454dec4dd2",
+      "role_id": "799099ee-0ebd-4ba7-8b44-28bcc94e0e18",
+      "objective_id": "234e377b-1c9e-419e-be24-6b630ad0be6d",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1a77fd3e-dcb1-5d53-8480-14247835c251",
+      "role_id": "538296b6-f21d-4916-849d-4b82570f1d59",
+      "objective_id": "234e377b-1c9e-419e-be24-6b630ad0be6d",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6d18c788-cfc3-5e90-97c7-465c0ebf118d",
+      "role_id": "d49d3806-bb31-4ff0-8907-f7b2c06fe18d",
+      "objective_id": "234e377b-1c9e-419e-be24-6b630ad0be6d",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a333bfd5-6d53-5dd1-a715-754dbebd735b",
+      "role_id": "799099ee-0ebd-4ba7-8b44-28bcc94e0e18",
+      "objective_id": "4fac3e52-409f-4930-bd82-3c862b9c56f4",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ae2dfbae-0018-58ef-a67a-4ef9171bd6b8",
+      "role_id": "538296b6-f21d-4916-849d-4b82570f1d59",
+      "objective_id": "4fac3e52-409f-4930-bd82-3c862b9c56f4",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f2c16963-470d-51b8-9663-b2459981a878",
+      "role_id": "391bae47-dc20-464d-9f89-5e3e54c47aad",
+      "objective_id": "4fac3e52-409f-4930-bd82-3c862b9c56f4",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "deb9d4cd-342a-558e-8ca9-2b0c5a8fcf67",
+      "role_id": "d4653771-7822-4fce-bc73-6e7feac04afe",
+      "objective_id": "5b46313f-e90a-4a27-8e71-327c066a092f",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0e030adf-5f2a-5c4a-a36f-069c200fc459",
+      "role_id": "538296b6-f21d-4916-849d-4b82570f1d59",
+      "objective_id": "5b46313f-e90a-4a27-8e71-327c066a092f",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f241c300-2afd-5a66-a46b-c6147303adb6",
+      "role_id": "84678d2a-1220-47e8-a97b-816e924a0de7",
+      "objective_id": "5b46313f-e90a-4a27-8e71-327c066a092f",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "9fd20a8b-c9b9-52c1-be5b-b9ab0725a9f6",
+      "role_id": "2e65fae5-266b-450b-b294-dfbca8ae7729",
+      "objective_id": "a69e1882-17dd-4f5a-a5f7-6a4e7b3bc247",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "91fa2c8a-fac5-535a-83fb-ec47de302933",
+      "role_id": "84678d2a-1220-47e8-a97b-816e924a0de7",
+      "objective_id": "a69e1882-17dd-4f5a-a5f7-6a4e7b3bc247",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2090fefa-49e4-59c2-a5b8-9652528a6c59",
+      "role_id": "e8403371-8e6e-49a1-9e69-c30d1abd250e",
+      "objective_id": "a69e1882-17dd-4f5a-a5f7-6a4e7b3bc247",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d473fecc-71a9-5b8c-a0c2-2da2617fdcb6",
+      "role_id": "7f901bff-7944-4042-a993-48844fadba59",
+      "objective_id": "6ffb2aad-45f3-4d69-948e-3d0c6c0ec390",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "39761987-1df9-54b1-ad43-fd40e98ee8a5",
+      "role_id": "84678d2a-1220-47e8-a97b-816e924a0de7",
+      "objective_id": "6ffb2aad-45f3-4d69-948e-3d0c6c0ec390",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e8047f27-a58d-5819-8bf2-f9a27a2419cf",
+      "role_id": "538296b6-f21d-4916-849d-4b82570f1d59",
+      "objective_id": "6ffb2aad-45f3-4d69-948e-3d0c6c0ec390",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "dabfd330-76ba-50cd-8fd0-70c14347cf0e",
+      "role_id": "f786063a-2db5-4896-81e4-5a02be519047",
+      "objective_id": "1f29fa70-0cca-425f-917e-04746c8d1b1c",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a006ede4-b32e-5e62-a00c-5e4511344cae",
+      "role_id": "84678d2a-1220-47e8-a97b-816e924a0de7",
+      "objective_id": "1f29fa70-0cca-425f-917e-04746c8d1b1c",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8518c21e-e42d-5f48-9cc6-ff169488796f",
+      "role_id": "391bae47-dc20-464d-9f89-5e3e54c47aad",
+      "objective_id": "1f29fa70-0cca-425f-917e-04746c8d1b1c",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "07394c61-a174-559d-8f31-67f39b3fd599",
+      "role_id": "77df5a78-98a0-43c0-9918-ff59f7f0524a",
+      "objective_id": "d5a630c4-e299-4a6a-835c-4918f2d9bc3b",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "acc04f5f-7b02-5477-9788-8ea44d3fdbc4",
+      "role_id": "391bae47-dc20-464d-9f89-5e3e54c47aad",
+      "objective_id": "d5a630c4-e299-4a6a-835c-4918f2d9bc3b",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "056ba9b1-ce40-55de-a0f0-8c5fb7371341",
+      "role_id": "f786063a-2db5-4896-81e4-5a02be519047",
+      "objective_id": "d5a630c4-e299-4a6a-835c-4918f2d9bc3b",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8230a756-1635-59ca-b380-39ea72a51ffa",
+      "role_id": "fdbdd3bf-a3e6-4429-b882-1315bb927382",
+      "objective_id": "9ea893f2-0dca-4df6-a70d-3e457efb6693",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3565ff6b-a2f9-507d-8e29-ce1629e9b5ab",
+      "role_id": "538296b6-f21d-4916-849d-4b82570f1d59",
+      "objective_id": "9ea893f2-0dca-4df6-a70d-3e457efb6693",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3d692581-d753-5676-ad50-44b3639fe9d1",
+      "role_id": "77df5a78-98a0-43c0-9918-ff59f7f0524a",
+      "objective_id": "9ea893f2-0dca-4df6-a70d-3e457efb6693",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6c284be7-e210-508e-a7f2-fa5133771cc1",
+      "role_id": "391bae47-dc20-464d-9f89-5e3e54c47aad",
+      "objective_id": "d6dc4c94-b258-4258-a549-a2755426e0eb",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f9aee01a-6489-50d1-b4fc-e4b5b2bda751",
+      "role_id": "538296b6-f21d-4916-849d-4b82570f1d59",
+      "objective_id": "d6dc4c94-b258-4258-a549-a2755426e0eb",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "db2b32c3-14ce-597b-9100-a9c23965e54f",
+      "role_id": "799099ee-0ebd-4ba7-8b44-28bcc94e0e18",
+      "objective_id": "d6dc4c94-b258-4258-a549-a2755426e0eb",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "bd2ca975-4879-55f3-8092-81f244236154",
+      "role_id": "77df5a78-98a0-43c0-9918-ff59f7f0524a",
+      "objective_id": "5ad6f24e-9b55-4aca-a192-fe7da1af05cf",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8413e820-3a73-5024-b9d6-724af43789b5",
+      "role_id": "391bae47-dc20-464d-9f89-5e3e54c47aad",
+      "objective_id": "5ad6f24e-9b55-4aca-a192-fe7da1af05cf",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "326d72f2-534f-53fa-b265-074709238183",
+      "role_id": "84678d2a-1220-47e8-a97b-816e924a0de7",
+      "objective_id": "5ad6f24e-9b55-4aca-a192-fe7da1af05cf",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "56a85cba-d5a3-591d-abe3-db4c8f04ba48",
+      "role_id": "dd6281d6-71b9-5bd5-b550-1b5dcf7bf43d",
+      "objective_id": "cdf524c2-9c4b-5ec2-ab70-596cf10c9772",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "57fa0dc8-e1fd-524d-9eff-515011310fb0",
+      "role_id": "538296b6-f21d-4916-849d-4b82570f1d59",
+      "objective_id": "cdf524c2-9c4b-5ec2-ab70-596cf10c9772",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b64ae09b-896b-50b8-8532-86ea43695456",
+      "role_id": "799099ee-0ebd-4ba7-8b44-28bcc94e0e18",
+      "objective_id": "cdf524c2-9c4b-5ec2-ab70-596cf10c9772",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8d005407-8bb4-53bb-a3cb-8e9cee60d56d",
+      "role_id": "84678d2a-1220-47e8-a97b-816e924a0de7",
+      "objective_id": "cdf524c2-9c4b-5ec2-ab70-596cf10c9772",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "drafts": [],
+  "publications": []
+}

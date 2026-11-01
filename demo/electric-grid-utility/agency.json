@@ -1,0 +1,1316 @@
+{
+  "_template": {
+    "sector": "utilities",
+    "archetype": "electric grid utility",
+    "illustrative": true,
+    "note": "Synthetic template for a electric grid utility. The organization is not real; roles, goals, rules and workflows are illustrative values for the demo."
+  },
+  "agency": {
+    "id": "201fac3b-082a-422b-bd26-97099b7cc1d6",
+    "name": "Highline Electric Grid Utility",
+    "description": "An electric power utility: generation operations, transmission & grid control, distribution operations, and grid reliability & compliance.",
+    "enabled": true,
+    "default_failure_pipeline_budget": 0,
+    "inactivity_timeout_seconds": 0,
+    "created_at": "2026-09-15T15:38:58Z",
+    "last_updated": "2026-09-15T15:38:58Z",
+    "deleted": false
+  },
+  "modules": [
+    {
+      "id": "2f51ce00-0f6a-4c20-ba3e-d1a27753e7af",
+      "code": "auth",
+      "name": "auth",
+      "description": "",
+      "enabled": true,
+      "locked": true,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "91d6644b-c3e1-494f-91d1-017e56c04cc6",
+      "code": "git",
+      "name": "git",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "e67cdcb5-3034-4aec-b52d-1c4359822edc",
+      "code": "taskmanager",
+      "name": "taskmanager",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "2f6727cf-9584-4699-b2a1-fdba62f98195",
+      "code": "agency",
+      "name": "agency",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "6bc53a95-b513-426f-9a12-d35c8446aaf6",
+      "code": "actor",
+      "name": "actor",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "1d94c1ad-cd10-4c4c-9880-4f2570c75534",
+      "code": "comm",
+      "name": "comm",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "8b7f86be-c193-426e-9efa-b39d03bd524c",
+      "code": "custody",
+      "name": "custody",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "2c4d2440-c6f1-4c47-8ca1-b907c90771fc",
+      "code": "forms",
+      "name": "forms",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "a7b1c2e5-6344-4a0e-8ab7-aad852e4077a",
+      "code": "digitaltwin",
+      "name": "digitaltwin",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "a93802e4-aaef-46fb-a82c-797dd01099e2",
+      "code": "accounting",
+      "name": "accounting",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    }
+  ],
+  "levels": [
+    {
+      "id": "8f40fa5c-6370-4333-a717-979410d4b267",
+      "code": "L-1",
+      "name": "Utility",
+      "depth": 1,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "f986d8ac-b6ab-44c3-aa66-ffccb64329b1",
+      "code": "L-2",
+      "name": "Operating Region",
+      "depth": 2,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    }
+  ],
+  "departments": [
+    {
+      "id": "2be8e43c-80a0-4ef4-b579-2378b5701d67",
+      "code": "D-1",
+      "name": "Office of the COO",
+      "level_id": "8f40fa5c-6370-4333-a717-979410d4b267",
+      "parent_id": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "a1fe244e-29a5-4944-a37a-716e90afb866",
+      "code": "D-2",
+      "name": "Generation Operations",
+      "level_id": "f986d8ac-b6ab-44c3-aa66-ffccb64329b1",
+      "parent_id": "2be8e43c-80a0-4ef4-b579-2378b5701d67",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "bedba0b6-134c-40a0-993c-4feea960ae9b",
+      "code": "D-3",
+      "name": "Transmission & Grid Control",
+      "level_id": "f986d8ac-b6ab-44c3-aa66-ffccb64329b1",
+      "parent_id": "2be8e43c-80a0-4ef4-b579-2378b5701d67",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "82339875-b3f8-4ee6-9eab-4769fe5405c1",
+      "code": "D-4",
+      "name": "Distribution Operations",
+      "level_id": "f986d8ac-b6ab-44c3-aa66-ffccb64329b1",
+      "parent_id": "2be8e43c-80a0-4ef4-b579-2378b5701d67",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "4e0b7218-4102-4a9c-9455-97cd289ec7cb",
+      "code": "D-5",
+      "name": "Grid Reliability & Compliance",
+      "level_id": "f986d8ac-b6ab-44c3-aa66-ffccb64329b1",
+      "parent_id": "2be8e43c-80a0-4ef4-b579-2378b5701d67",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    }
+  ],
+  "roles": [
+    {
+      "id": "a9281142-a1c6-4844-bce7-ab8542adab8a",
+      "code": "R-1",
+      "name": "Chief Operating Officer",
+      "description": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "309488e2-968b-4a34-bec2-2d972fbdc52c",
+      "code": "R-2",
+      "name": "Generation Plant Manager",
+      "description": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "2e59f84e-ff61-4945-a7d1-d635d8805f00",
+      "code": "R-3",
+      "name": "Transmission Operations Manager",
+      "description": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "5fd19b1d-a06d-4f15-9899-fe6fae71e430",
+      "code": "R-4",
+      "name": "Grid Control Room Operator",
+      "description": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "55fdca1a-fa33-4148-af33-7a5a498f26cb",
+      "code": "R-5",
+      "name": "Distribution Operations Manager",
+      "description": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "183086c3-dacf-4144-9b30-1d386d4a2ace",
+      "code": "R-6",
+      "name": "Line Crew Supervisor",
+      "description": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "7eea8cc9-6fa9-4dbc-a362-079a27c06cbe",
+      "code": "R-7",
+      "name": "Reliability & Compliance Officer",
+      "description": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "444d176b-91c1-4be8-94af-207bb91f9d88",
+      "code": "R-8",
+      "name": "SCADA/Protection Engineer",
+      "description": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "0bd83b5b-c1db-44db-a4c6-13f3968314eb",
+      "code": "R-9",
+      "name": "Outage Management Coordinator",
+      "description": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "05e19252-cb4b-4163-8018-7ba933d6eb35",
+      "code": "R-10",
+      "name": "Safety Officer",
+      "description": "",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "0ebd5f83-a273-570c-b2fb-42ebfdd6f460",
+      "code": "R-11",
+      "name": "Risk owner",
+      "permissions": [
+        "risk.read"
+      ],
+      "description": "Owns the utility's risk register. Reviews the key risks, asks the agent which threats, controls and gaps are on file, and raises the work that closes each gap. Reads risks only; it changes nothing in the register itself.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "goals": [
+    {
+      "id": "e1678b51-3bc9-4531-ac51-10839660ccf2",
+      "code": "G-1",
+      "title": "Keep the grid stable and within reliability standards",
+      "description": "Grid frequency and load are monitored in real time, reliability compliance metrics are reported, and contingency and blackstart drills are conducted, keeping the grid stable.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "6f9def8a-a831-43b5-a0f2-f67140ceb51c",
+      "code": "G-2",
+      "title": "Restore outages quickly and safely",
+      "description": "Outages are detected and classified, line crews are dispatched to restore service, and affected customers are told restoration status, so power returns quickly and safely.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "a20996b2-57d7-4ec2-9f2c-feb2504c61d6",
+      "code": "G-3",
+      "title": "Maintain generation, transmission, and distribution assets proactively",
+      "description": "Substation and line assets and generation equipment are maintained on a preventive schedule, and equipment failures are investigated, keeping the physical system healthy.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "171ebbb9-d7bf-59dd-a19c-a05d75d34d6f",
+      "code": "G-4",
+      "title": "Know and control the utility's key risks",
+      "description": "Threats to the grid are listed, the controls against them are checked, and gaps are closed with named work.",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "objectives": [
+    {
+      "id": "8a1c5aa1-bc33-483e-858b-3c2ed6fe200c",
+      "code": "O-1",
+      "goal_id": "e1678b51-3bc9-4531-ac51-10839660ccf2",
+      "title": "Monitor real-time grid frequency and load balance",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "3a01ec77-9af1-44fa-8c9d-91fa9e5df293",
+      "code": "O-2",
+      "goal_id": "e1678b51-3bc9-4531-ac51-10839660ccf2",
+      "title": "Report reliability compliance metrics to the regulator",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "42c44976-af16-4eb0-b2c1-2681fa85e47f",
+      "code": "O-3",
+      "goal_id": "e1678b51-3bc9-4531-ac51-10839660ccf2",
+      "title": "Conduct contingency and blackstart drills",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "297ecac5-db6a-4de9-9e61-2b068fd8d378",
+      "code": "O-4",
+      "goal_id": "6f9def8a-a831-43b5-a0f2-f67140ceb51c",
+      "title": "Detect and classify outage events",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "f76460ac-224c-4f40-a91c-a4b937ffe98a",
+      "code": "O-5",
+      "goal_id": "6f9def8a-a831-43b5-a0f2-f67140ceb51c",
+      "title": "Dispatch line crews to restore service",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "b719d3e7-8eb9-49be-9e40-4430637024a4",
+      "code": "O-6",
+      "goal_id": "6f9def8a-a831-43b5-a0f2-f67140ceb51c",
+      "title": "Communicate restoration status to affected customers",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "d71ad1b5-9bbe-4abe-844b-f3bc50a6e95f",
+      "code": "O-7",
+      "goal_id": "a20996b2-57d7-4ec2-9f2c-feb2504c61d6",
+      "title": "Maintain the substation and line asset registry",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "721a118e-d273-40b7-bb2a-74cef26a08ac",
+      "code": "O-8",
+      "goal_id": "a20996b2-57d7-4ec2-9f2c-feb2504c61d6",
+      "title": "Schedule preventive maintenance on generation and grid assets",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "2909e11c-091e-47d1-95d9-bbc3a17515dd",
+      "code": "O-9",
+      "goal_id": "a20996b2-57d7-4ec2-9f2c-feb2504c61d6",
+      "title": "Investigate an equipment failure incident",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "52df3f96-21b9-5114-93c7-87a06d78f5a9",
+      "code": "O-10",
+      "goal_id": "171ebbb9-d7bf-59dd-a19c-a05d75d34d6f",
+      "title": "Review key risks and close control gaps",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "values": [
+    {
+      "id": "253330e3-da9c-4a34-a5e4-d4319c7a13e6",
+      "code": "V-1",
+      "text": "Grid stability decisions in the control room are never delayed for sign-off during an active event.",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "655d27fa-e48c-4174-a18d-ef355f0b5505",
+      "code": "V-2",
+      "text": "A line crew never works a de-energized line without a verified safety clearance.",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "6f9997a7-3f65-4033-8b71-02df9f77a48b",
+      "code": "V-3",
+      "text": "Outage restoration status is communicated to customers proactively, not only on request.",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "1ca1a744-1103-4b4d-b3e3-ce49b352198a",
+      "code": "RU-1",
+      "text": "No line crew is dispatched to a fault without a documented safety clearance (lockout/tagout) first.",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "c517ef98-220e-4053-9eae-28b8775fb2c8",
+      "code": "RU-2",
+      "text": "A reliability compliance report is filed with the regulator on the statutory deadline, with no extensions absent a filed exception.",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "65ea3f8f-93d8-4471-af77-dbea1c7aa4f4",
+      "code": "RU-3",
+      "text": "Any equipment failure causing an outage over 4 hours triggers a mandatory root-cause investigation.",
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "b7582d95-6642-5f8e-8dda-ff29e91189dc",
+      "code": "RU-4",
+      "text": "No transmission line is returned to service after a storm until a patrol has cleared it of damage and debris.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "97c9fe95-03bb-5d34-a7c3-4cfea48b9b60",
+      "code": "RU-5",
+      "text": "Control-room and SCADA accounts use multi-factor sign-in, and remote access to protection relays is disabled outside a logged maintenance window.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d60b57f0-7af2-5bc3-8064-f9c0e7082d89",
+      "code": "RU-6",
+      "text": "Every critical transformer has a tested spare or a mutual-aid loan agreement on file, and its oil is sampled at each maintenance interval.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4c0d4628-7842-5aa2-87ca-564d6f71986a",
+      "code": "RU-7",
+      "text": "A blackstart drill that misses its target restart time raises a corrective action before the next drill.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "20ec1ddd-e73e-5e0e-a94d-5dd906dbeb18",
+      "code": "RU-8",
+      "text": "Vegetation within the clearance distance of a line is cut on the annual cycle, and a missed span is reported to the Risk owner.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8ed57b1c-d943-5eea-8b4a-819ac7e53125",
+      "code": "RU-9",
+      "text": "Every risk with no preventive or no mitigating measure gets a named owner and a due date at the next risk review.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "value_attachments": [
+    {
+      "id": "646c7577-add6-4449-8c3a-171f08cadd71",
+      "value_code": "V-3",
+      "target_type": "objective",
+      "target_code": "O-6",
+      "created_at": "2026-09-15T15:38:58Z"
+    }
+  ],
+  "rule_attachments": [
+    {
+      "id": "4db8ef67-14e9-419e-8930-1fff664a57a3",
+      "rule_code": "RU-1",
+      "target_type": "objective",
+      "target_code": "O-5",
+      "created_at": "2026-09-15T15:38:58Z"
+    },
+    {
+      "id": "ad66061b-dee4-4592-9591-e882e3b8752a",
+      "rule_code": "RU-3",
+      "target_type": "objective",
+      "target_code": "O-9",
+      "created_at": "2026-09-15T15:38:58Z"
+    },
+    {
+      "id": "01b70a02-1e40-54ee-bd8d-5ae2a80c89c4",
+      "rule_code": "RU-4",
+      "target_type": "objective",
+      "target_code": "O-5",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "52a7ae3f-e367-5183-bb32-2b7cb2da64d1",
+      "rule_code": "RU-5",
+      "target_type": "objective",
+      "target_code": "O-1",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "5ac711c2-6d50-5024-8a3d-528289e2df7f",
+      "rule_code": "RU-6",
+      "target_type": "objective",
+      "target_code": "O-8",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "de0f6214-d8a6-53c4-8edf-469b3f949cc7",
+      "rule_code": "RU-7",
+      "target_type": "objective",
+      "target_code": "O-3",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "9fd7a465-3606-5a26-a5b9-85837e2429d8",
+      "rule_code": "RU-8",
+      "target_type": "objective",
+      "target_code": "O-8",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "6746f352-33c7-5fe4-a989-6fdcf3554dc6",
+      "rule_code": "RU-9",
+      "target_type": "objective",
+      "target_code": "O-10",
+      "created_at": "2026-11-01T00:00:00Z"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "890da154-8b0e-423d-8d39-3856cf57c45f",
+      "code": "W-1",
+      "name": "Grid Monitoring & Reliability Compliance",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "fd99e579-d3db-4a7f-9143-c7f1d382d09e",
+      "code": "W-2",
+      "name": "Outage Detection & Restoration",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "6f03302d-20be-4ee4-9214-43b21a0ca02d",
+      "code": "W-3",
+      "name": "Asset Maintenance",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "a4afd17e-5513-4fb0-929d-f94fef9139f4",
+      "code": "W-4",
+      "name": "Equipment Failure Investigation",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false
+    },
+    {
+      "id": "e3a318df-4340-5104-96aa-f346bcdda773",
+      "code": "W-5",
+      "name": "Risk review",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "3ab843db-8fbb-43af-be78-4078c624479a",
+      "code": "WI-1",
+      "workflow_id": "890da154-8b0e-423d-8d39-3856cf57c45f",
+      "title": "Log real-time grid frequency/load readings",
+      "description": "",
+      "prompt": "Monitor and log the grid's real-time frequency and load balance from the control room SCADA feed.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "8a1c5aa1-bc33-483e-858b-3c2ed6fe200c"
+    },
+    {
+      "id": "9582bf38-4320-422d-96a4-db7891969f60",
+      "code": "WI-2",
+      "workflow_id": "890da154-8b0e-423d-8d39-3856cf57c45f",
+      "title": "Compile NERC/reliability compliance report",
+      "description": "",
+      "prompt": "Compile the periodic reliability compliance report from monitoring data and file it with the regulator by the statutory deadline.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "3a01ec77-9af1-44fa-8c9d-91fa9e5df293"
+    },
+    {
+      "id": "9aa3a061-e2a1-4076-b71a-72ce0e11f921",
+      "code": "WI-3",
+      "workflow_id": "890da154-8b0e-423d-8d39-3856cf57c45f",
+      "title": "Conduct a scheduled contingency drill",
+      "description": "",
+      "prompt": "Conduct the scheduled contingency or blackstart drill and document the response time and any gaps found.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "42c44976-af16-4eb0-b2c1-2681fa85e47f"
+    },
+    {
+      "id": "52b801df-025b-4efe-be31-4264a208ca6b",
+      "code": "WI-4",
+      "workflow_id": "fd99e579-d3db-4a7f-9143-c7f1d382d09e",
+      "title": "Detect and classify an outage event",
+      "description": "",
+      "prompt": "Detect the outage event from SCADA alarms or customer reports and classify its scope and likely cause.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "297ecac5-db6a-4de9-9e61-2b068fd8d378"
+    },
+    {
+      "id": "c000cb85-dcfd-4cc8-9ddc-2de4cc338d7e",
+      "code": "WI-5",
+      "workflow_id": "fd99e579-d3db-4a7f-9143-c7f1d382d09e",
+      "title": "Dispatch line crew with safety clearance",
+      "description": "",
+      "prompt": "Dispatch the line crew to the fault location only after a documented safety clearance (lockout/tagout) is issued.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "f76460ac-224c-4f40-a91c-a4b937ffe98a"
+    },
+    {
+      "id": "bdb93822-4867-4c59-8a5b-501e010ec070",
+      "code": "WI-6",
+      "workflow_id": "fd99e579-d3db-4a7f-9143-c7f1d382d09e",
+      "title": "Issue outage restoration status update",
+      "description": "",
+      "prompt": "Issue a restoration status update to affected customers with the current estimated time of restoration.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "b719d3e7-8eb9-49be-9e40-4430637024a4"
+    },
+    {
+      "id": "fdbdc950-0e88-4d13-92c6-d68078a61185",
+      "code": "WI-7",
+      "workflow_id": "6f03302d-20be-4ee4-9214-43b21a0ca02d",
+      "title": "Update substation/line asset registry entry",
+      "description": "",
+      "prompt": "Update the substation or line asset registry entry with current condition data after an inspection or repair.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "d71ad1b5-9bbe-4abe-844b-f3bc50a6e95f"
+    },
+    {
+      "id": "a1147ebb-8a59-437f-84b5-52be8365e102",
+      "code": "WI-8",
+      "workflow_id": "6f03302d-20be-4ee4-9214-43b21a0ca02d",
+      "title": "Schedule preventive maintenance on a grid asset",
+      "description": "",
+      "prompt": "Schedule the next preventive maintenance work order for the generation or grid asset based on its maintenance interval.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "721a118e-d273-40b7-bb2a-74cef26a08ac"
+    },
+    {
+      "id": "a52370a7-c4e1-44aa-8f72-17a0a3ce924c",
+      "code": "WI-9",
+      "workflow_id": "6f03302d-20be-4ee4-9214-43b21a0ca02d",
+      "title": "Close out completed maintenance work order",
+      "description": "",
+      "prompt": "Confirm the scheduled maintenance was completed to spec and close the work order, updating the asset's maintenance history.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "721a118e-d273-40b7-bb2a-74cef26a08ac"
+    },
+    {
+      "id": "a358afc1-8891-4856-9480-db3804fcdbab",
+      "code": "WI-10",
+      "workflow_id": "a4afd17e-5513-4fb0-929d-f94fef9139f4",
+      "title": "Open equipment failure investigation",
+      "description": "",
+      "prompt": "Open an investigation file for any equipment failure that caused or contributed to an outage over the reporting threshold.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "2909e11c-091e-47d1-95d9-bbc3a17515dd"
+    },
+    {
+      "id": "9e7583de-4367-41b5-834a-ef8489017f07",
+      "code": "WI-11",
+      "workflow_id": "a4afd17e-5513-4fb0-929d-f94fef9139f4",
+      "title": "Conduct root-cause analysis",
+      "description": "",
+      "prompt": "Conduct root-cause analysis on the failed equipment, involving the SCADA/Protection Engineer where relevant.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "2909e11c-091e-47d1-95d9-bbc3a17515dd"
+    },
+    {
+      "id": "a4f0db4a-4b1b-4e29-8e88-2fbc78d816d2",
+      "code": "WI-12",
+      "workflow_id": "a4afd17e-5513-4fb0-929d-f94fef9139f4",
+      "title": "Issue corrective action report",
+      "description": "",
+      "prompt": "Issue a corrective action report from the investigation and track its implementation to completion.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "2909e11c-091e-47d1-95d9-bbc3a17515dd"
+    },
+    {
+      "id": "96fcaddc-17d6-40f9-b7ae-6716077e7816",
+      "code": "WI-13",
+      "workflow_id": "a4afd17e-5513-4fb0-929d-f94fef9139f4",
+      "title": "Update asset registry with failure history",
+      "description": "",
+      "prompt": "Update the affected asset's registry entry with the failure history and corrective action taken.",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:38:58Z",
+      "last_updated": "2026-09-15T15:38:58Z",
+      "deleted": false,
+      "objective_id": "d71ad1b5-9bbe-4abe-844b-f3bc50a6e95f"
+    },
+    {
+      "id": "99d45c98-5973-5906-ace8-e79d04ad53ac",
+      "code": "WI-14",
+      "workflow_id": "e3a318df-4340-5104-96aa-f346bcdda773",
+      "title": "List the threats",
+      "description": "",
+      "prompt": "List the threats to the grid on file, such as storm damage, cyber attack on SCADA and transformer failure, with what each would cause.",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "52df3f96-21b9-5114-93c7-87a06d78f5a9"
+    },
+    {
+      "id": "86ad8e23-48e2-51b8-ab8f-63c923ebf193",
+      "code": "WI-15",
+      "workflow_id": "e3a318df-4340-5104-96aa-f346bcdda773",
+      "title": "Check the controls",
+      "description": "",
+      "prompt": "Check, for each threat, the preventive and mitigating measures on file and what relies on each one.",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "52df3f96-21b9-5114-93c7-87a06d78f5a9"
+    },
+    {
+      "id": "fe832e6d-a6a3-5c17-8169-15663cec83e5",
+      "code": "WI-16",
+      "workflow_id": "e3a318df-4340-5104-96aa-f346bcdda773",
+      "title": "Find the gaps",
+      "description": "",
+      "prompt": "Find the threats with no preventive measure, no mitigating measure or a control nobody owns.",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "52df3f96-21b9-5114-93c7-87a06d78f5a9"
+    },
+    {
+      "id": "2f3404d5-79a5-59ba-9229-63e6075160c5",
+      "code": "WI-17",
+      "workflow_id": "e3a318df-4340-5104-96aa-f346bcdda773",
+      "title": "Raise the closing work",
+      "description": "",
+      "prompt": "Draft the work that closes each gap, with an owner and a due date, for the Risk owner to approve.",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "52df3f96-21b9-5114-93c7-87a06d78f5a9"
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "812ba283-0844-5661-8ee8-b087482b3628",
+      "workflow_id": "890da154-8b0e-423d-8d39-3856cf57c45f",
+      "objective_id": "8a1c5aa1-bc33-483e-858b-3c2ed6fe200c"
+    },
+    {
+      "id": "9c53172a-8baa-5500-8e2f-d844e1b67d63",
+      "workflow_id": "890da154-8b0e-423d-8d39-3856cf57c45f",
+      "objective_id": "3a01ec77-9af1-44fa-8c9d-91fa9e5df293"
+    },
+    {
+      "id": "548a3e76-a0ab-5cd2-8f6b-bf28e2612b57",
+      "workflow_id": "890da154-8b0e-423d-8d39-3856cf57c45f",
+      "objective_id": "42c44976-af16-4eb0-b2c1-2681fa85e47f"
+    },
+    {
+      "id": "78ba4d0d-2781-5496-a2fc-741d730c1d5a",
+      "workflow_id": "fd99e579-d3db-4a7f-9143-c7f1d382d09e",
+      "objective_id": "297ecac5-db6a-4de9-9e61-2b068fd8d378"
+    },
+    {
+      "id": "be9ef6ea-711f-58cf-b6c0-ccca54e1c14d",
+      "workflow_id": "fd99e579-d3db-4a7f-9143-c7f1d382d09e",
+      "objective_id": "f76460ac-224c-4f40-a91c-a4b937ffe98a"
+    },
+    {
+      "id": "ef7385f6-0562-5beb-80ed-721033389771",
+      "workflow_id": "fd99e579-d3db-4a7f-9143-c7f1d382d09e",
+      "objective_id": "b719d3e7-8eb9-49be-9e40-4430637024a4"
+    },
+    {
+      "id": "38403f43-7963-5837-a1b0-a43894a28644",
+      "workflow_id": "6f03302d-20be-4ee4-9214-43b21a0ca02d",
+      "objective_id": "d71ad1b5-9bbe-4abe-844b-f3bc50a6e95f"
+    },
+    {
+      "id": "8eb5dd44-2531-5d9a-a008-d0ab73bdda6e",
+      "workflow_id": "6f03302d-20be-4ee4-9214-43b21a0ca02d",
+      "objective_id": "721a118e-d273-40b7-bb2a-74cef26a08ac"
+    },
+    {
+      "id": "53ae73de-fcf1-5ad0-998c-06be5507ce45",
+      "workflow_id": "a4afd17e-5513-4fb0-929d-f94fef9139f4",
+      "objective_id": "2909e11c-091e-47d1-95d9-bbc3a17515dd"
+    },
+    {
+      "id": "5791c1b7-0bb7-5934-873f-b297fc218a41",
+      "workflow_id": "a4afd17e-5513-4fb0-929d-f94fef9139f4",
+      "objective_id": "d71ad1b5-9bbe-4abe-844b-f3bc50a6e95f"
+    },
+    {
+      "id": "551ca775-54cb-53a3-959c-87d6f804a841",
+      "workflow_id": "e3a318df-4340-5104-96aa-f346bcdda773",
+      "objective_id": "52df3f96-21b9-5114-93c7-87a06d78f5a9"
+    }
+  ],
+  "work_plans": [],
+  "role_assignments": [
+    {
+      "id": "e1871d60-48ae-5720-89ea-705375a47741",
+      "role_id": "5fd19b1d-a06d-4f15-9899-fe6fae71e430",
+      "objective_id": "8a1c5aa1-bc33-483e-858b-3c2ed6fe200c",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f2e057c3-50a5-5ac6-a374-f70d8f4d18f3",
+      "role_id": "2e59f84e-ff61-4945-a7d1-d635d8805f00",
+      "objective_id": "8a1c5aa1-bc33-483e-858b-3c2ed6fe200c",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2d478ecf-5d71-557e-85b1-9bd6612f44f0",
+      "role_id": "a9281142-a1c6-4844-bce7-ab8542adab8a",
+      "objective_id": "8a1c5aa1-bc33-483e-858b-3c2ed6fe200c",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7f567e2e-04be-5c90-8699-5488e8420514",
+      "role_id": "7eea8cc9-6fa9-4dbc-a362-079a27c06cbe",
+      "objective_id": "8a1c5aa1-bc33-483e-858b-3c2ed6fe200c",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "346333b1-0082-5b04-a098-50464cbfa4d1",
+      "role_id": "7eea8cc9-6fa9-4dbc-a362-079a27c06cbe",
+      "objective_id": "3a01ec77-9af1-44fa-8c9d-91fa9e5df293",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "60e30d61-e69d-5480-bad1-aa1e61853db0",
+      "role_id": "a9281142-a1c6-4844-bce7-ab8542adab8a",
+      "objective_id": "3a01ec77-9af1-44fa-8c9d-91fa9e5df293",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "21d1fb11-2936-5f92-bd62-6a1336ff56b5",
+      "role_id": "2e59f84e-ff61-4945-a7d1-d635d8805f00",
+      "objective_id": "3a01ec77-9af1-44fa-8c9d-91fa9e5df293",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b744f710-c4bd-5609-8831-32edb1d95114",
+      "role_id": "2e59f84e-ff61-4945-a7d1-d635d8805f00",
+      "objective_id": "42c44976-af16-4eb0-b2c1-2681fa85e47f",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8a7aff03-7853-5156-af68-5cdea9f94fd3",
+      "role_id": "a9281142-a1c6-4844-bce7-ab8542adab8a",
+      "objective_id": "42c44976-af16-4eb0-b2c1-2681fa85e47f",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1ec5da43-a942-529d-8831-8c164c044711",
+      "role_id": "5fd19b1d-a06d-4f15-9899-fe6fae71e430",
+      "objective_id": "42c44976-af16-4eb0-b2c1-2681fa85e47f",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1f797cc7-5d99-5a11-bddb-44406263d2a0",
+      "role_id": "444d176b-91c1-4be8-94af-207bb91f9d88",
+      "objective_id": "42c44976-af16-4eb0-b2c1-2681fa85e47f",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6286f555-675e-5fd0-8292-ab6050c22001",
+      "role_id": "05e19252-cb4b-4163-8018-7ba933d6eb35",
+      "objective_id": "42c44976-af16-4eb0-b2c1-2681fa85e47f",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "13b614a6-7583-5c1b-9729-efa9c9f07e27",
+      "role_id": "0bd83b5b-c1db-44db-a4c6-13f3968314eb",
+      "objective_id": "297ecac5-db6a-4de9-9e61-2b068fd8d378",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ccb9ddd4-4db8-540b-990e-89b8f21e7acc",
+      "role_id": "55fdca1a-fa33-4148-af33-7a5a498f26cb",
+      "objective_id": "297ecac5-db6a-4de9-9e61-2b068fd8d378",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "18537c3e-1223-598a-bb35-95ab21207d28",
+      "role_id": "5fd19b1d-a06d-4f15-9899-fe6fae71e430",
+      "objective_id": "297ecac5-db6a-4de9-9e61-2b068fd8d378",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4db0259d-2bc2-52ba-a319-4decaf1c1079",
+      "role_id": "a9281142-a1c6-4844-bce7-ab8542adab8a",
+      "objective_id": "297ecac5-db6a-4de9-9e61-2b068fd8d378",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a89be9a4-8935-591c-8ef0-1289b6fbb15c",
+      "role_id": "183086c3-dacf-4144-9b30-1d386d4a2ace",
+      "objective_id": "f76460ac-224c-4f40-a91c-a4b937ffe98a",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "aa9ddfea-dd31-5a00-bfe0-70a01351e34e",
+      "role_id": "55fdca1a-fa33-4148-af33-7a5a498f26cb",
+      "objective_id": "f76460ac-224c-4f40-a91c-a4b937ffe98a",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8c1dfcf7-f266-58eb-81ec-deeca3b16437",
+      "role_id": "05e19252-cb4b-4163-8018-7ba933d6eb35",
+      "objective_id": "f76460ac-224c-4f40-a91c-a4b937ffe98a",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "688271d2-599b-5a6c-9aea-24e1e3eff150",
+      "role_id": "0bd83b5b-c1db-44db-a4c6-13f3968314eb",
+      "objective_id": "f76460ac-224c-4f40-a91c-a4b937ffe98a",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d83f46ea-ce80-5714-a144-b7f46a16b38d",
+      "role_id": "0bd83b5b-c1db-44db-a4c6-13f3968314eb",
+      "objective_id": "b719d3e7-8eb9-49be-9e40-4430637024a4",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7da7690b-7a5a-51eb-b66e-7ce7b45f1fc9",
+      "role_id": "55fdca1a-fa33-4148-af33-7a5a498f26cb",
+      "objective_id": "b719d3e7-8eb9-49be-9e40-4430637024a4",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b9311e10-f1a2-5b73-9e96-49b2a4ec7704",
+      "role_id": "a9281142-a1c6-4844-bce7-ab8542adab8a",
+      "objective_id": "b719d3e7-8eb9-49be-9e40-4430637024a4",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "27b75e4b-0524-5dea-983a-061cb459b460",
+      "role_id": "444d176b-91c1-4be8-94af-207bb91f9d88",
+      "objective_id": "d71ad1b5-9bbe-4abe-844b-f3bc50a6e95f",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d08945a4-019f-5e95-9d97-dfdf4ae76f86",
+      "role_id": "2e59f84e-ff61-4945-a7d1-d635d8805f00",
+      "objective_id": "d71ad1b5-9bbe-4abe-844b-f3bc50a6e95f",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "24287bca-fc46-5cbe-8f2d-2ed65d91ef90",
+      "role_id": "55fdca1a-fa33-4148-af33-7a5a498f26cb",
+      "objective_id": "d71ad1b5-9bbe-4abe-844b-f3bc50a6e95f",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "9a77bb56-6f6a-5418-84c0-2fab22ff525e",
+      "role_id": "7eea8cc9-6fa9-4dbc-a362-079a27c06cbe",
+      "objective_id": "d71ad1b5-9bbe-4abe-844b-f3bc50a6e95f",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "be5fccb8-2054-54df-a66f-92ffd5720a13",
+      "role_id": "183086c3-dacf-4144-9b30-1d386d4a2ace",
+      "objective_id": "721a118e-d273-40b7-bb2a-74cef26a08ac",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ac7a8feb-5d92-51e8-810f-1ef5db6152b8",
+      "role_id": "55fdca1a-fa33-4148-af33-7a5a498f26cb",
+      "objective_id": "721a118e-d273-40b7-bb2a-74cef26a08ac",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e5044cb5-337c-502a-b3b1-422facf82383",
+      "role_id": "309488e2-968b-4a34-bec2-2d972fbdc52c",
+      "objective_id": "721a118e-d273-40b7-bb2a-74cef26a08ac",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7bd0c801-a28a-5348-a19b-d36979133074",
+      "role_id": "444d176b-91c1-4be8-94af-207bb91f9d88",
+      "objective_id": "721a118e-d273-40b7-bb2a-74cef26a08ac",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f4a76120-9a85-5c7e-b943-f2332993f491",
+      "role_id": "444d176b-91c1-4be8-94af-207bb91f9d88",
+      "objective_id": "2909e11c-091e-47d1-95d9-bbc3a17515dd",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0d0b4827-eb30-5f2d-b1d2-30756103638a",
+      "role_id": "7eea8cc9-6fa9-4dbc-a362-079a27c06cbe",
+      "objective_id": "2909e11c-091e-47d1-95d9-bbc3a17515dd",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a9459c57-7b65-5725-b61e-90114d1d1162",
+      "role_id": "a9281142-a1c6-4844-bce7-ab8542adab8a",
+      "objective_id": "2909e11c-091e-47d1-95d9-bbc3a17515dd",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f6fefc36-a4f5-5d71-ac77-067a0d54c84f",
+      "role_id": "05e19252-cb4b-4163-8018-7ba933d6eb35",
+      "objective_id": "2909e11c-091e-47d1-95d9-bbc3a17515dd",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c2500d3d-69bf-50d0-a2f3-c94909567049",
+      "role_id": "0ebd5f83-a273-570c-b2fb-42ebfdd6f460",
+      "objective_id": "52df3f96-21b9-5114-93c7-87a06d78f5a9",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fe9ec687-bd3e-5197-bfa5-55814c6d58ab",
+      "role_id": "a9281142-a1c6-4844-bce7-ab8542adab8a",
+      "objective_id": "52df3f96-21b9-5114-93c7-87a06d78f5a9",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7645e22b-0345-5110-bf82-1b3d4297d550",
+      "role_id": "7eea8cc9-6fa9-4dbc-a362-079a27c06cbe",
+      "objective_id": "52df3f96-21b9-5114-93c7-87a06d78f5a9",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "91bdbc4a-f36b-5957-a8bb-8bee135ffcfc",
+      "role_id": "05e19252-cb4b-4163-8018-7ba933d6eb35",
+      "objective_id": "52df3f96-21b9-5114-93c7-87a06d78f5a9",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "drafts": [],
+  "publications": []
+}

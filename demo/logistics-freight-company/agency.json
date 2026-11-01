@@ -1,0 +1,1332 @@
+{
+  "_template": {
+    "sector": "logistics",
+    "archetype": "freight logistics company",
+    "illustrative": true,
+    "note": "Synthetic template for a freight logistics company. The organization is not real; roles, goals, rules and workflows are illustrative values for the demo."
+  },
+  "agency": {
+    "id": "713cdb27-3656-42bb-83b5-f6de96a6e025",
+    "name": "Meridian Freight & Logistics",
+    "description": "A freight logistics company: warehouse & distribution, fleet & transportation, customs & trade compliance, and customer service.",
+    "enabled": true,
+    "default_failure_pipeline_budget": 0,
+    "inactivity_timeout_seconds": 0,
+    "created_at": "2026-09-15T15:36:34Z",
+    "last_updated": "2026-09-15T15:36:34Z",
+    "deleted": false
+  },
+  "modules": [
+    {
+      "id": "09ae868e-8041-4609-b789-01638536060c",
+      "code": "auth",
+      "name": "auth",
+      "description": "",
+      "enabled": true,
+      "locked": true,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "7c7ec39b-c333-4fd1-ba4d-d8ab719fb6ef",
+      "code": "git",
+      "name": "git",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "b092b333-d0bf-4bab-adb5-99dea0dbcc63",
+      "code": "taskmanager",
+      "name": "taskmanager",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "ca5ff0f4-225f-4b62-8a14-d0cd0e514047",
+      "code": "agency",
+      "name": "agency",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "f5d07560-86ee-4740-86d2-70d9871c2fca",
+      "code": "actor",
+      "name": "actor",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "b1ff7737-e741-4242-9132-585761e94a28",
+      "code": "comm",
+      "name": "comm",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "5a922490-264e-4e2c-ac3b-40bce3b29cca",
+      "code": "custody",
+      "name": "custody",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "75a1a695-3f5d-43df-85ca-6980ef9ec97b",
+      "code": "forms",
+      "name": "forms",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "3bb018a6-b129-40c3-bd55-481bcfb97177",
+      "code": "digitaltwin",
+      "name": "digitaltwin",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "9e16bd54-1db9-477a-9608-55bcedc6ea74",
+      "code": "accounting",
+      "name": "accounting",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    }
+  ],
+  "levels": [
+    {
+      "id": "cd493099-d9b0-4ca1-ae3b-16c971c9121c",
+      "code": "L-1",
+      "name": "Company",
+      "depth": 1,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "98c7fbb3-8262-4197-80b6-0e195f35af0d",
+      "code": "L-2",
+      "name": "Regional Hub",
+      "depth": 2,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    }
+  ],
+  "departments": [
+    {
+      "id": "66b42f97-362f-45ec-8f31-50cd7013e5a8",
+      "code": "D-1",
+      "name": "Executive Operations",
+      "level_id": "cd493099-d9b0-4ca1-ae3b-16c971c9121c",
+      "parent_id": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "4d399d34-51c3-43d9-bb6a-9d30ce952168",
+      "code": "D-2",
+      "name": "Warehouse & Distribution",
+      "level_id": "98c7fbb3-8262-4197-80b6-0e195f35af0d",
+      "parent_id": "66b42f97-362f-45ec-8f31-50cd7013e5a8",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "e2902410-c807-47dc-aa92-e2e67e4f8d94",
+      "code": "D-3",
+      "name": "Fleet & Transportation",
+      "level_id": "98c7fbb3-8262-4197-80b6-0e195f35af0d",
+      "parent_id": "66b42f97-362f-45ec-8f31-50cd7013e5a8",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "19291e31-512e-4982-a62e-3931066f4e90",
+      "code": "D-4",
+      "name": "Customs & Trade Compliance",
+      "level_id": "98c7fbb3-8262-4197-80b6-0e195f35af0d",
+      "parent_id": "66b42f97-362f-45ec-8f31-50cd7013e5a8",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "a594d24c-9e6d-4849-91ae-484dda05ee91",
+      "code": "D-5",
+      "name": "Customer Service",
+      "level_id": "98c7fbb3-8262-4197-80b6-0e195f35af0d",
+      "parent_id": "66b42f97-362f-45ec-8f31-50cd7013e5a8",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    }
+  ],
+  "roles": [
+    {
+      "id": "45acd28e-6e54-4ed3-9342-0769878e581e",
+      "code": "R-1",
+      "name": "VP of Operations",
+      "description": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "b83bac25-e14c-42ca-a887-6f34590d9695",
+      "code": "R-2",
+      "name": "Warehouse Manager",
+      "description": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "7d11e80d-1802-4042-88a0-850331cf0634",
+      "code": "R-3",
+      "name": "Inventory Control Supervisor",
+      "description": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "603568d1-138d-4ff2-9444-6d30da8a3e7a",
+      "code": "R-4",
+      "name": "Fleet Manager",
+      "description": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "649b3859-0f57-4e23-82d7-ba287f8ee59d",
+      "code": "R-5",
+      "name": "Dispatcher",
+      "description": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "bb7cac99-df92-4237-8840-b13ecfa82d69",
+      "code": "R-6",
+      "name": "Customs Compliance Officer",
+      "description": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "710d1de4-a9c7-4760-9be8-552e82e74e78",
+      "code": "R-7",
+      "name": "Trade Documentation Specialist",
+      "description": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "ac1645a1-3e34-4189-b82f-ec2e3449fa64",
+      "code": "R-8",
+      "name": "Customer Service Manager",
+      "description": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "a71eabda-99df-48dd-a6b3-627571fc2152",
+      "code": "R-9",
+      "name": "Freight Claims Handler",
+      "description": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "cc6aef25-c85b-4a11-bc06-9529abc87dcd",
+      "code": "R-10",
+      "name": "Driver/Courier",
+      "description": "",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "5d5622ed-7d97-5820-a3b4-3206c857925a",
+      "code": "R-11",
+      "name": "Risk owner",
+      "permissions": [
+        "document.read",
+        "risk.read"
+      ],
+      "description": "Holds the freight company's risk picture. Reads the risks served to the agency, runs the risk review, checks that each control is working and raises the work that closes a gap. Held by a person.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "goals": [
+    {
+      "id": "2a8f2551-1a5e-44b0-b34e-d710cac20240",
+      "code": "G-1",
+      "title": "Move every shipment on time with an unbroken chain of custody",
+      "description": "Every shipment moves on time with unbroken custody, from receipt and staging through route dispatch to confirmed proof of delivery.",
+      "ordinality": 1,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "5cf8d8eb-2020-49ac-b391-fa8a91b7b20a",
+      "code": "G-2",
+      "title": "Clear customs and trade compliance without delay or penalty",
+      "description": "Cross-border shipments clear customs without delay or penalty through prepared documentation, correct tariff classification and declaration, and handled holds and inspections.",
+      "ordinality": 2,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "07ccaf49-b4ec-4d8d-839d-b3713d04b68c",
+      "code": "G-3",
+      "title": "Resolve customer shipment issues and claims fairly",
+      "description": "Customer shipment inquiries are logged and triaged, lost or damaged freight claims investigated, and resolutions and reimbursements issued fairly.",
+      "ordinality": 3,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "f2fccb3b-508f-5e36-a683-860224063b89",
+      "code": "G-4",
+      "title": "Keep known risks controlled",
+      "description": "The risks that can stop a shipment, a customs clearance or a claim are listed, their controls are checked, and gaps become work.",
+      "ordinality": 4,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "objectives": [
+    {
+      "id": "4b5af4fc-0d58-47e0-abe2-01650310fa4b",
+      "code": "O-1",
+      "goal_id": "2a8f2551-1a5e-44b0-b34e-d710cac20240",
+      "title": "Receive and stage inbound shipments",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "8eea0631-a1a7-4001-b1e3-a37fef69aaf8",
+      "code": "O-2",
+      "goal_id": "2a8f2551-1a5e-44b0-b34e-d710cac20240",
+      "title": "Plan and dispatch delivery routes",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "2a962cb8-edc0-4832-93dd-07ef53aa0991",
+      "code": "O-3",
+      "goal_id": "2a8f2551-1a5e-44b0-b34e-d710cac20240",
+      "title": "Confirm proof-of-delivery and custody handoff",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "0a59cf39-9c7e-4ad1-a06a-17bb8b31eda2",
+      "code": "O-4",
+      "goal_id": "5cf8d8eb-2020-49ac-b391-fa8a91b7b20a",
+      "title": "Prepare customs documentation for cross-border shipments",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "0f935e0b-7a16-4c12-be3d-8605e7976994",
+      "code": "O-5",
+      "goal_id": "5cf8d8eb-2020-49ac-b391-fa8a91b7b20a",
+      "title": "Classify and declare tariff codes correctly",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "b12f3605-7bec-46e2-aa44-de0ee1b87a66",
+      "code": "O-6",
+      "goal_id": "5cf8d8eb-2020-49ac-b391-fa8a91b7b20a",
+      "title": "Respond to customs holds and inspections",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "4d823555-9bd8-4952-b319-2e86d4f56209",
+      "code": "O-7",
+      "goal_id": "07ccaf49-b4ec-4d8d-839d-b3713d04b68c",
+      "title": "Log and triage customer shipment inquiries",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "2a558785-d455-425c-8b8e-9cb67dfa1a88",
+      "code": "O-8",
+      "goal_id": "07ccaf49-b4ec-4d8d-839d-b3713d04b68c",
+      "title": "Investigate lost or damaged freight claims",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "eaa0475f-5138-4a6e-a87f-c05ae288545c",
+      "code": "O-9",
+      "goal_id": "07ccaf49-b4ec-4d8d-839d-b3713d04b68c",
+      "title": "Issue claim resolutions and reimbursements",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "85e503e7-d53b-5db1-b225-c5196363060b",
+      "code": "O-10",
+      "goal_id": "f2fccb3b-508f-5e36-a683-860224063b89",
+      "title": "Review risks and close control gaps",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "values": [
+    {
+      "id": "9311f7e4-f584-4af3-bacc-0c65496b97bd",
+      "code": "V-1",
+      "text": "Every shipment's custody handoff is logged — a shipment is never 'somewhere in transit' with no record.",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "a88364c6-5581-4068-bb60-34799b476028",
+      "code": "V-2",
+      "text": "Customs documentation is prepared before the shipment departs, never backfilled after a hold.",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "a8edc073-069a-4235-8bde-b2efd8932137",
+      "code": "V-3",
+      "text": "A freight claim is investigated on the evidence, not settled to make the complaint go away.",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "c881de8b-d100-4150-b32b-f68648eadfb9",
+      "code": "RU-1",
+      "text": "No shipment leaves the warehouse without a signed chain-of-custody handoff record.",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "b7ec6ac0-c483-4c8e-8f21-46b16b1d214d",
+      "code": "RU-2",
+      "text": "A misclassified tariff code is corrected and re-filed within 24 hours of discovery.",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "5c9a387c-e176-453d-b7a8-40b2c7b040c5",
+      "code": "RU-3",
+      "text": "A freight claim is acknowledged within 2 business days of filing.",
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "51987c25-a086-5a63-8242-419fc482db2c",
+      "code": "RU-4",
+      "text": "A driver who finds a seal broken or a load shifted at pickup reports it to the dispatcher before leaving the yard.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cc05a578-10e0-5475-8155-044c344ef70a",
+      "code": "RU-5",
+      "text": "A vehicle with an overdue safety inspection is not assigned to a route until the fleet manager clears it.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "94a6e561-36c5-5d33-8f25-faddde6dd79d",
+      "code": "RU-6",
+      "text": "Restricted or dangerous goods and sanctioned parties are screened before a shipment is accepted for cross-border carriage.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c59010a6-6c15-5369-b5f6-98c1cf945f3d",
+      "code": "RU-7",
+      "text": "Goods of high value are staged in the caged area and moved only with two signatures.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "bd23de93-1846-51ca-9d34-27633be03ad0",
+      "code": "RU-8",
+      "text": "The risk owner reviews the risk list every month, and a control gap raised in the review is closed or re-dated within 30 days.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "value_attachments": [
+    {
+      "id": "d55b3d91-658b-4607-91ce-ccc6c11ee2d0",
+      "value_code": "V-3",
+      "target_type": "objective",
+      "target_code": "O-8",
+      "created_at": "2026-09-15T15:36:34Z"
+    }
+  ],
+  "rule_attachments": [
+    {
+      "id": "805e8439-6c60-4c55-b2ce-fc43def09db8",
+      "rule_code": "RU-1",
+      "target_type": "objective",
+      "target_code": "O-3",
+      "created_at": "2026-09-15T15:36:34Z"
+    },
+    {
+      "id": "b5a95f80-ea7f-494f-aa31-6bb5ef5cf15c",
+      "rule_code": "RU-2",
+      "target_type": "objective",
+      "target_code": "O-5",
+      "created_at": "2026-09-15T15:36:34Z"
+    },
+    {
+      "id": "fc400c1c-ef9e-5645-9ddb-5129938a1004",
+      "rule_code": "RU-4",
+      "target_type": "role",
+      "target_code": "R-10",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "eab124dc-5050-52db-a999-1a4f1ed3ccc9",
+      "rule_code": "RU-4",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "8e61b5b7-3337-54ce-9eab-324775063220",
+      "rule_code": "RU-5",
+      "target_type": "role",
+      "target_code": "R-4",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "cd163ed7-6844-5143-b32e-6d8b82a9c1f0",
+      "rule_code": "RU-5",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "3fcbed4b-e10c-5f35-9c47-9bd48604ddbd",
+      "rule_code": "RU-6",
+      "target_type": "role",
+      "target_code": "R-6",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "cd6dfb99-571c-5d2e-a916-f6a80a604c49",
+      "rule_code": "RU-6",
+      "target_type": "objective",
+      "target_code": "O-4",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "9770c0dc-9821-5ad6-ba75-169cc36762a4",
+      "rule_code": "RU-7",
+      "target_type": "role",
+      "target_code": "R-2",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "245765b9-8791-5d77-93c1-4e4d86fa7a1b",
+      "rule_code": "RU-7",
+      "target_type": "objective",
+      "target_code": "O-1",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "3f46b9cb-9ebf-52c1-a93f-953ed69e7dd3",
+      "rule_code": "RU-8",
+      "target_type": "role",
+      "target_code": "R-11",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "b3872ab9-bf0e-5328-b277-eac558b7d96e",
+      "rule_code": "RU-8",
+      "target_type": "objective",
+      "target_code": "O-10",
+      "created_at": "2026-11-01T00:00:00Z"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "12a9fe83-7893-40c3-bf9e-341aef986adc",
+      "code": "W-1",
+      "name": "Inbound & Warehouse Handling",
+      "description": "",
+      "ordinality": 1,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "02591462-a96e-465c-80c7-6baf6c2e9778",
+      "code": "W-2",
+      "name": "Dispatch & Delivery",
+      "description": "",
+      "ordinality": 2,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "b948c891-3e9f-4200-9a19-cc7b28e3fd2a",
+      "code": "W-3",
+      "name": "Customs & Trade Documentation",
+      "description": "",
+      "ordinality": 3,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "f47d7182-2fa9-4a7d-bed2-538131f00ae9",
+      "code": "W-4",
+      "name": "Customer Claims Resolution",
+      "description": "",
+      "ordinality": 4,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false
+    },
+    {
+      "id": "a4a6ab46-6d75-5327-ae38-15f81b92af31",
+      "code": "W-5",
+      "name": "Risk review",
+      "description": "",
+      "ordinality": 5,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "76982c0d-ebe6-4ca6-a45d-e5802c08b860",
+      "code": "WI-1",
+      "workflow_id": "12a9fe83-7893-40c3-bf9e-341aef986adc",
+      "title": "Receive and inspect inbound shipment",
+      "description": "",
+      "prompt": "Receive the inbound shipment, inspect it for damage, and record the condition against the shipping manifest.",
+      "ordinality": 1,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "4b5af4fc-0d58-47e0-abe2-01650310fa4b"
+    },
+    {
+      "id": "b5917070-9397-4c31-8b9b-d2b86171c0f3",
+      "code": "WI-2",
+      "workflow_id": "12a9fe83-7893-40c3-bf9e-341aef986adc",
+      "title": "Log shipment into warehouse inventory",
+      "description": "",
+      "prompt": "Log the received shipment into warehouse inventory with its storage location and quantity.",
+      "ordinality": 2,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "4b5af4fc-0d58-47e0-abe2-01650310fa4b"
+    },
+    {
+      "id": "d4abf412-7656-484b-8ad2-38368e5a7cc7",
+      "code": "WI-3",
+      "workflow_id": "12a9fe83-7893-40c3-bf9e-341aef986adc",
+      "title": "Stage shipment for outbound routing",
+      "description": "",
+      "prompt": "Stage the shipment in the outbound area matched to its assigned delivery route and time window.",
+      "ordinality": 3,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "4b5af4fc-0d58-47e0-abe2-01650310fa4b"
+    },
+    {
+      "id": "6f31e1a0-2403-429a-892d-dc9985f709fb",
+      "code": "WI-4",
+      "workflow_id": "02591462-a96e-465c-80c7-6baf6c2e9778",
+      "title": "Plan delivery route and assign driver",
+      "description": "",
+      "prompt": "Plan the delivery route for the day's shipments and assign a driver based on capacity and geography.",
+      "ordinality": 1,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "8eea0631-a1a7-4001-b1e3-a37fef69aaf8"
+    },
+    {
+      "id": "82c3e541-c905-4d20-9625-592ec296e3ae",
+      "code": "WI-5",
+      "workflow_id": "02591462-a96e-465c-80c7-6baf6c2e9778",
+      "title": "Dispatch shipment with chain-of-custody log",
+      "description": "",
+      "prompt": "Dispatch the shipment with a signed chain-of-custody handoff record between warehouse and driver.",
+      "ordinality": 2,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "8eea0631-a1a7-4001-b1e3-a37fef69aaf8"
+    },
+    {
+      "id": "029ac85a-ee0b-4645-87e0-ab05038a5a06",
+      "code": "WI-6",
+      "workflow_id": "02591462-a96e-465c-80c7-6baf6c2e9778",
+      "title": "Capture proof-of-delivery signature",
+      "description": "",
+      "prompt": "Capture the recipient's proof-of-delivery signature and timestamp at final drop-off.",
+      "ordinality": 3,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "2a962cb8-edc0-4832-93dd-07ef53aa0991"
+    },
+    {
+      "id": "7fd8ebbc-c675-4ad8-a484-a330388daa98",
+      "code": "WI-7",
+      "workflow_id": "b948c891-3e9f-4200-9a19-cc7b28e3fd2a",
+      "title": "Prepare bill of lading and customs paperwork",
+      "description": "",
+      "prompt": "Prepare the bill of lading and customs declaration paperwork for the cross-border shipment before it departs.",
+      "ordinality": 1,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "0a59cf39-9c7e-4ad1-a06a-17bb8b31eda2"
+    },
+    {
+      "id": "5cd34b8e-e35c-4db9-9405-33e72c9386ba",
+      "code": "WI-8",
+      "workflow_id": "b948c891-3e9f-4200-9a19-cc7b28e3fd2a",
+      "title": "Classify tariff code for the shipment",
+      "description": "",
+      "prompt": "Determine and record the correct tariff classification code for the shipment's declared goods.",
+      "ordinality": 2,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "0f935e0b-7a16-4c12-be3d-8605e7976994"
+    },
+    {
+      "id": "ea1678b3-76bc-460e-9b3e-e965a0fe1f39",
+      "code": "WI-9",
+      "workflow_id": "b948c891-3e9f-4200-9a19-cc7b28e3fd2a",
+      "title": "Respond to a customs inspection hold",
+      "description": "",
+      "prompt": "Respond to a customs inspection hold by providing the requested documentation and coordinating release with the broker.",
+      "ordinality": 3,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "b12f3605-7bec-46e2-aa44-de0ee1b87a66"
+    },
+    {
+      "id": "d1e5ae7d-b778-477a-ab6d-7125f6e57468",
+      "code": "WI-10",
+      "workflow_id": "f47d7182-2fa9-4a7d-bed2-538131f00ae9",
+      "title": "Log customer shipment inquiry",
+      "description": "",
+      "prompt": "Log the customer's shipment inquiry with the shipment reference number and issue description.",
+      "ordinality": 1,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "4d823555-9bd8-4952-b319-2e86d4f56209"
+    },
+    {
+      "id": "303d6da3-7fd0-4b80-9c89-bb59ac61a473",
+      "code": "WI-11",
+      "workflow_id": "f47d7182-2fa9-4a7d-bed2-538131f00ae9",
+      "title": "Open lost/damaged freight claim investigation",
+      "description": "",
+      "prompt": "Open a claim investigation file and trace the shipment's chain-of-custody records to locate where the loss or damage occurred.",
+      "ordinality": 2,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "2a558785-d455-425c-8b8e-9cb67dfa1a88"
+    },
+    {
+      "id": "b0eac359-0a6b-4120-bd1f-78c311dd49cf",
+      "code": "WI-12",
+      "workflow_id": "f47d7182-2fa9-4a7d-bed2-538131f00ae9",
+      "title": "Determine claim liability",
+      "description": "",
+      "prompt": "Determine liability for the claim based on the custody trail and carrier terms, and document the finding.",
+      "ordinality": 3,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "2a558785-d455-425c-8b8e-9cb67dfa1a88"
+    },
+    {
+      "id": "4085a667-aa6a-4bcf-867c-e981e64f39c5",
+      "code": "WI-13",
+      "workflow_id": "f47d7182-2fa9-4a7d-bed2-538131f00ae9",
+      "title": "Issue claim reimbursement",
+      "description": "",
+      "prompt": "Issue the claim reimbursement or denial letter to the customer with the liability finding and supporting evidence.",
+      "ordinality": 4,
+      "created_at": "2026-09-15T15:36:34Z",
+      "last_updated": "2026-09-15T15:36:34Z",
+      "deleted": false,
+      "objective_id": "eaa0475f-5138-4a6e-a87f-c05ae288545c"
+    },
+    {
+      "id": "d95f54df-fd37-551e-8296-bebc86e14a70",
+      "code": "WI-14",
+      "workflow_id": "a4a6ab46-6d75-5327-ae38-15f81b92af31",
+      "objective_id": "85e503e7-d53b-5db1-b225-c5196363060b",
+      "title": "List the threats",
+      "description": "",
+      "prompt": "List the threats to shipments, customs clearance and claims that the risk reader serves to the agency, each with its consequence.",
+      "ordinality": 1,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "21410415-e250-5082-a192-5ad440cc0714",
+      "code": "WI-15",
+      "workflow_id": "a4a6ab46-6d75-5327-ae38-15f81b92af31",
+      "objective_id": "85e503e7-d53b-5db1-b225-c5196363060b",
+      "title": "Check the controls",
+      "description": "",
+      "prompt": "For each listed threat, check that its preventive and mitigating controls exist and were used in the last month.",
+      "ordinality": 2,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0ac4e62a-feed-587e-a713-382c10d76b0e",
+      "code": "WI-16",
+      "workflow_id": "a4a6ab46-6d75-5327-ae38-15f81b92af31",
+      "objective_id": "85e503e7-d53b-5db1-b225-c5196363060b",
+      "title": "Find the gaps",
+      "description": "",
+      "prompt": "Name every threat whose control is missing, weak or unused, and rank the gaps by consequence.",
+      "ordinality": 3,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "67010d37-032e-5d2e-8e2f-d8d5e6c92547",
+      "code": "WI-17",
+      "workflow_id": "a4a6ab46-6d75-5327-ae38-15f81b92af31",
+      "objective_id": "85e503e7-d53b-5db1-b225-c5196363060b",
+      "title": "Raise the closing work",
+      "description": "",
+      "prompt": "Raise one work item for each ranked gap, assign it to the role that owns the control, and record it for the next review.",
+      "ordinality": 4,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "24614aa3-14d8-57cc-9013-5bbd86d8b6ac",
+      "workflow_id": "12a9fe83-7893-40c3-bf9e-341aef986adc",
+      "objective_id": "4b5af4fc-0d58-47e0-abe2-01650310fa4b"
+    },
+    {
+      "id": "b6d815ac-12c4-5555-b4c3-1f5076d1ccb0",
+      "workflow_id": "02591462-a96e-465c-80c7-6baf6c2e9778",
+      "objective_id": "8eea0631-a1a7-4001-b1e3-a37fef69aaf8"
+    },
+    {
+      "id": "f7c59a07-1a51-5f02-a8ea-c2a00bc2b6bf",
+      "workflow_id": "02591462-a96e-465c-80c7-6baf6c2e9778",
+      "objective_id": "2a962cb8-edc0-4832-93dd-07ef53aa0991"
+    },
+    {
+      "id": "a3dd6400-cbab-5175-9bf8-188b99bc549e",
+      "workflow_id": "b948c891-3e9f-4200-9a19-cc7b28e3fd2a",
+      "objective_id": "0a59cf39-9c7e-4ad1-a06a-17bb8b31eda2"
+    },
+    {
+      "id": "d563adef-91f6-51a8-a351-53488f9b26d3",
+      "workflow_id": "b948c891-3e9f-4200-9a19-cc7b28e3fd2a",
+      "objective_id": "0f935e0b-7a16-4c12-be3d-8605e7976994"
+    },
+    {
+      "id": "1c702745-eb1a-5516-b0e6-7602b921fdcc",
+      "workflow_id": "b948c891-3e9f-4200-9a19-cc7b28e3fd2a",
+      "objective_id": "b12f3605-7bec-46e2-aa44-de0ee1b87a66"
+    },
+    {
+      "id": "a907d943-f8a3-5490-8235-d64159a0e22a",
+      "workflow_id": "f47d7182-2fa9-4a7d-bed2-538131f00ae9",
+      "objective_id": "4d823555-9bd8-4952-b319-2e86d4f56209"
+    },
+    {
+      "id": "e48574ae-cf88-5aa0-9dc5-483dcde02433",
+      "workflow_id": "f47d7182-2fa9-4a7d-bed2-538131f00ae9",
+      "objective_id": "2a558785-d455-425c-8b8e-9cb67dfa1a88"
+    },
+    {
+      "id": "79f77b5a-3b27-50c2-96b8-b738a01387a3",
+      "workflow_id": "f47d7182-2fa9-4a7d-bed2-538131f00ae9",
+      "objective_id": "eaa0475f-5138-4a6e-a87f-c05ae288545c"
+    },
+    {
+      "id": "f73115f4-bfc8-5ff1-9dd1-70967994ee6c",
+      "workflow_id": "a4a6ab46-6d75-5327-ae38-15f81b92af31",
+      "objective_id": "85e503e7-d53b-5db1-b225-c5196363060b"
+    }
+  ],
+  "work_plans": [],
+  "role_assignments": [
+    {
+      "id": "d3d940b0-3490-59b8-84ef-decf47094a93",
+      "role_id": "b83bac25-e14c-42ca-a887-6f34590d9695",
+      "objective_id": "4b5af4fc-0d58-47e0-abe2-01650310fa4b",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "62978f0f-aa07-5d62-9288-6a86943d15b7",
+      "role_id": "45acd28e-6e54-4ed3-9342-0769878e581e",
+      "objective_id": "4b5af4fc-0d58-47e0-abe2-01650310fa4b",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d3fe572f-4865-5a9c-8186-7d548d263775",
+      "role_id": "7d11e80d-1802-4042-88a0-850331cf0634",
+      "objective_id": "4b5af4fc-0d58-47e0-abe2-01650310fa4b",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "27c7d7ff-403d-51f2-a795-0d91472a031b",
+      "role_id": "603568d1-138d-4ff2-9444-6d30da8a3e7a",
+      "objective_id": "4b5af4fc-0d58-47e0-abe2-01650310fa4b",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "956a18b0-3a34-5828-8e29-dc031e6e5dc9",
+      "role_id": "649b3859-0f57-4e23-82d7-ba287f8ee59d",
+      "objective_id": "8eea0631-a1a7-4001-b1e3-a37fef69aaf8",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "bcc692c4-6929-5034-98dd-4f5b22f8ed38",
+      "role_id": "603568d1-138d-4ff2-9444-6d30da8a3e7a",
+      "objective_id": "8eea0631-a1a7-4001-b1e3-a37fef69aaf8",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "16a994d9-6347-5254-b8c5-58dd09c45bd0",
+      "role_id": "cc6aef25-c85b-4a11-bc06-9529abc87dcd",
+      "objective_id": "8eea0631-a1a7-4001-b1e3-a37fef69aaf8",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "64212bb4-efd6-513e-867a-ad176eaa231c",
+      "role_id": "b83bac25-e14c-42ca-a887-6f34590d9695",
+      "objective_id": "8eea0631-a1a7-4001-b1e3-a37fef69aaf8",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "56e80308-7298-595e-b41f-bdf8df60ca3c",
+      "role_id": "cc6aef25-c85b-4a11-bc06-9529abc87dcd",
+      "objective_id": "2a962cb8-edc0-4832-93dd-07ef53aa0991",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "70b33ef7-9d7d-5f6e-a5a1-c5276930f9bd",
+      "role_id": "603568d1-138d-4ff2-9444-6d30da8a3e7a",
+      "objective_id": "2a962cb8-edc0-4832-93dd-07ef53aa0991",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4124c0eb-3d6f-5115-98af-6a14ec6e38bb",
+      "role_id": "ac1645a1-3e34-4189-b82f-ec2e3449fa64",
+      "objective_id": "2a962cb8-edc0-4832-93dd-07ef53aa0991",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1d9cd4a5-8a27-50d0-b86c-6fb595a3aa2e",
+      "role_id": "45acd28e-6e54-4ed3-9342-0769878e581e",
+      "objective_id": "2a962cb8-edc0-4832-93dd-07ef53aa0991",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "475b3ff4-ba3f-5b04-ab45-23d1e549d710",
+      "role_id": "710d1de4-a9c7-4760-9be8-552e82e74e78",
+      "objective_id": "0a59cf39-9c7e-4ad1-a06a-17bb8b31eda2",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1b2eba5b-b7a0-5249-8118-d2e6993ce001",
+      "role_id": "bb7cac99-df92-4237-8840-b13ecfa82d69",
+      "objective_id": "0a59cf39-9c7e-4ad1-a06a-17bb8b31eda2",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "75fc02d2-3bc3-572c-bff9-79ec405b5ebd",
+      "role_id": "649b3859-0f57-4e23-82d7-ba287f8ee59d",
+      "objective_id": "0a59cf39-9c7e-4ad1-a06a-17bb8b31eda2",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "178281ba-f672-5cca-9888-98ade1c905b8",
+      "role_id": "45acd28e-6e54-4ed3-9342-0769878e581e",
+      "objective_id": "0a59cf39-9c7e-4ad1-a06a-17bb8b31eda2",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "36f49361-10ef-562b-9597-e708824722a8",
+      "role_id": "bb7cac99-df92-4237-8840-b13ecfa82d69",
+      "objective_id": "0f935e0b-7a16-4c12-be3d-8605e7976994",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d0273bcd-44f5-57b5-95b7-c5e8cf0f0aae",
+      "role_id": "710d1de4-a9c7-4760-9be8-552e82e74e78",
+      "objective_id": "0f935e0b-7a16-4c12-be3d-8605e7976994",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4ada80d4-6e05-559a-aaf4-624cf7b3dde4",
+      "role_id": "45acd28e-6e54-4ed3-9342-0769878e581e",
+      "objective_id": "0f935e0b-7a16-4c12-be3d-8605e7976994",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "87aa5e11-d3c6-5a3b-820e-3c24fd89db6d",
+      "role_id": "bb7cac99-df92-4237-8840-b13ecfa82d69",
+      "objective_id": "b12f3605-7bec-46e2-aa44-de0ee1b87a66",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "001a58f4-c46e-56e4-9eb7-32dca6ac4582",
+      "role_id": "45acd28e-6e54-4ed3-9342-0769878e581e",
+      "objective_id": "b12f3605-7bec-46e2-aa44-de0ee1b87a66",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ac265800-b6e0-52da-8b20-9174d4e84fc1",
+      "role_id": "710d1de4-a9c7-4760-9be8-552e82e74e78",
+      "objective_id": "b12f3605-7bec-46e2-aa44-de0ee1b87a66",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0d409bf4-4dbf-5d66-8baf-3a005768ed0a",
+      "role_id": "ac1645a1-3e34-4189-b82f-ec2e3449fa64",
+      "objective_id": "b12f3605-7bec-46e2-aa44-de0ee1b87a66",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cefae2dc-2b75-5eed-83b9-093b062b0a1c",
+      "role_id": "ac1645a1-3e34-4189-b82f-ec2e3449fa64",
+      "objective_id": "4d823555-9bd8-4952-b319-2e86d4f56209",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2726f216-ae3e-5eb6-88e5-52848916d5ea",
+      "role_id": "ac1645a1-3e34-4189-b82f-ec2e3449fa64",
+      "objective_id": "4d823555-9bd8-4952-b319-2e86d4f56209",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d81f0ec4-e277-5494-b442-7e712c7df4cf",
+      "role_id": "a71eabda-99df-48dd-a6b3-627571fc2152",
+      "objective_id": "4d823555-9bd8-4952-b319-2e86d4f56209",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6e377b10-0182-5cc6-bd6b-040d8ec3ba8a",
+      "role_id": "649b3859-0f57-4e23-82d7-ba287f8ee59d",
+      "objective_id": "4d823555-9bd8-4952-b319-2e86d4f56209",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cea84d8b-89fe-5176-95ad-6cbcb0060f69",
+      "role_id": "a71eabda-99df-48dd-a6b3-627571fc2152",
+      "objective_id": "2a558785-d455-425c-8b8e-9cb67dfa1a88",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e8c6df78-a5ba-5287-9995-4be51a0533cd",
+      "role_id": "ac1645a1-3e34-4189-b82f-ec2e3449fa64",
+      "objective_id": "2a558785-d455-425c-8b8e-9cb67dfa1a88",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1064d86b-cef8-5563-97fd-aeab430df148",
+      "role_id": "b83bac25-e14c-42ca-a887-6f34590d9695",
+      "objective_id": "2a558785-d455-425c-8b8e-9cb67dfa1a88",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "5d6728b8-b14e-5c17-97bb-51088fc78859",
+      "role_id": "45acd28e-6e54-4ed3-9342-0769878e581e",
+      "objective_id": "2a558785-d455-425c-8b8e-9cb67dfa1a88",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "89b5b361-b732-5d64-99ee-96aaf621da4f",
+      "role_id": "a71eabda-99df-48dd-a6b3-627571fc2152",
+      "objective_id": "eaa0475f-5138-4a6e-a87f-c05ae288545c",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cb458df0-8bbb-53fe-ac16-3d51d7cec8fc",
+      "role_id": "ac1645a1-3e34-4189-b82f-ec2e3449fa64",
+      "objective_id": "eaa0475f-5138-4a6e-a87f-c05ae288545c",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6a3cac76-b355-5818-98c3-579079a7da43",
+      "role_id": "45acd28e-6e54-4ed3-9342-0769878e581e",
+      "objective_id": "eaa0475f-5138-4a6e-a87f-c05ae288545c",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "62dd6c40-8914-5fe0-aa6b-55c4da8be976",
+      "role_id": "603568d1-138d-4ff2-9444-6d30da8a3e7a",
+      "objective_id": "eaa0475f-5138-4a6e-a87f-c05ae288545c",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b0b0bd34-7466-581c-b91d-a51b6ee80173",
+      "role_id": "5d5622ed-7d97-5820-a3b4-3206c857925a",
+      "objective_id": "85e503e7-d53b-5db1-b225-c5196363060b",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "41d062ed-1aee-52a6-bafd-0aaa910ec22b",
+      "role_id": "45acd28e-6e54-4ed3-9342-0769878e581e",
+      "objective_id": "85e503e7-d53b-5db1-b225-c5196363060b",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0206e27c-27db-5c0e-b5ba-f7201821a3a0",
+      "role_id": "bb7cac99-df92-4237-8840-b13ecfa82d69",
+      "objective_id": "85e503e7-d53b-5db1-b225-c5196363060b",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "58ca8bc5-54c6-5b8e-9875-abc7c2f0e29a",
+      "role_id": "b83bac25-e14c-42ca-a887-6f34590d9695",
+      "objective_id": "85e503e7-d53b-5db1-b225-c5196363060b",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "drafts": [],
+  "publications": []
+}
