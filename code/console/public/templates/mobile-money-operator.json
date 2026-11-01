@@ -1,0 +1,1246 @@
+{
+  "_template": {
+    "sector": "finance",
+    "archetype": "mobile money operator",
+    "illustrative": true,
+    "note": "Synthetic template for a mobile money operator. The organization is not real; roles, goals, rules and workflows are illustrative values for the demo."
+  },
+  "agency": {
+    "id": "93e54404-c9b9-47ce-aed7-17db787b9343",
+    "name": "Mobile Money Operator",
+    "description": "A telco-led mobile money service running a super-agent/sub-agent distribution network, AML/KYC compliance, and customer money-transfer operations — modeled on the M-PESA/MTN MoMo/Airtel Money shape.",
+    "enabled": true,
+    "default_failure_pipeline_budget": 0,
+    "inactivity_timeout_seconds": 0,
+    "created_at": "2026-09-16T23:37:06Z",
+    "last_updated": "2026-09-16T23:37:06Z",
+    "deleted": false
+  },
+  "modules": [
+    {
+      "id": "98d57437-4661-49ad-aaf6-f8115aeb3adb",
+      "code": "auth",
+      "name": "auth",
+      "description": "",
+      "enabled": true,
+      "locked": true,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "114b1029-4855-49a9-8632-4896f300a191",
+      "code": "git",
+      "name": "git",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "b5d6b6df-b799-46ac-8dd1-a5e39efd0774",
+      "code": "taskmanager",
+      "name": "taskmanager",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "db8c6102-7d60-429b-ac98-45d5a170b6d0",
+      "code": "agency",
+      "name": "agency",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "8f5fc2f8-4d86-42a0-9aad-c9044bc0ab4d",
+      "code": "actor",
+      "name": "actor",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "77026508-a3f4-4d1e-9bc2-c6dd236f9e39",
+      "code": "comm",
+      "name": "comm",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "255cf8c5-31a8-4182-b809-decf77342525",
+      "code": "custody",
+      "name": "custody",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "2be997f6-321a-45d7-9ad3-967ffbf02b07",
+      "code": "forms",
+      "name": "forms",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "192bc3e1-694e-4959-b64f-9d367b8c60cf",
+      "code": "digitaltwin",
+      "name": "digitaltwin",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "e86d9759-b031-4193-afb8-197e085568eb",
+      "code": "accounting",
+      "name": "accounting",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    }
+  ],
+  "levels": [
+    {
+      "id": "8eee0286-54ee-4c7f-bf47-29de661fd0e1",
+      "code": "L-1",
+      "name": "Executive",
+      "depth": 1,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "84bd9e41-78b7-4e65-986b-c6ee02b0d182",
+      "code": "L-2",
+      "name": "Department",
+      "depth": 2,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    }
+  ],
+  "departments": [
+    {
+      "id": "1f94f53d-2c05-49e5-aff4-86e4869524c1",
+      "code": "D-1",
+      "name": "Agent Network Management",
+      "level_id": "84bd9e41-78b7-4e65-986b-c6ee02b0d182",
+      "parent_id": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "2bfe928e-c631-4c89-996c-29f543af2caf",
+      "code": "D-2",
+      "name": "Compliance & AML",
+      "level_id": "84bd9e41-78b7-4e65-986b-c6ee02b0d182",
+      "parent_id": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "7786854a-895f-49c7-b5b8-9ca5bf051f11",
+      "code": "D-3",
+      "name": "Customer Operations",
+      "level_id": "84bd9e41-78b7-4e65-986b-c6ee02b0d182",
+      "parent_id": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "14116fc7-b652-4542-992d-649d5720a895",
+      "code": "D-4",
+      "name": "Technology & Platform",
+      "level_id": "84bd9e41-78b7-4e65-986b-c6ee02b0d182",
+      "parent_id": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    }
+  ],
+  "roles": [
+    {
+      "id": "ad01c9a2-f287-4249-ac79-55ccb8bea796",
+      "code": "R-1",
+      "name": "Managing Director",
+      "description": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "8ef30501-74f5-4a80-bbed-8ccd0b799340",
+      "code": "R-2",
+      "name": "Head of Agent Network",
+      "description": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "93de04a9-d693-46fd-8bf4-882a8b162d6a",
+      "code": "R-3",
+      "name": "Agent Network Manager (Regional)",
+      "description": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "4028527b-91cb-4192-83d3-a91b8a5fab7d",
+      "code": "R-4",
+      "name": "Compliance & AML Officer",
+      "description": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "a8de3765-e9d3-4bd9-b2cf-b93c1412f447",
+      "code": "R-5",
+      "name": "KYC Analyst",
+      "description": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "b1c4a9d0-621f-4544-ae23-eb0cf6caa998",
+      "code": "R-6",
+      "name": "Customer Operations Manager",
+      "description": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "ac152045-d0c8-4c2f-ae7d-2ad38b59d28e",
+      "code": "R-7",
+      "name": "Customer Care Agent",
+      "description": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "e085a554-2646-48b5-af87-555b18caa9b1",
+      "code": "R-8",
+      "name": "Head of Technology & Platform",
+      "description": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "b95e442d-6d47-46e3-947d-88b71f9715f4",
+      "code": "R-9",
+      "name": "Fraud & Risk Analyst",
+      "description": "",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "9c6903f9-c612-5b7b-bce6-c8620453be0e",
+      "code": "R-10",
+      "name": "Risk owner",
+      "permissions": [
+        "risk.read"
+      ],
+      "description": "Holds the operator's risk picture. Reads the recorded threats, checks that each has a preventive and a mitigating control, and raises work for every gap. Does not approve payments or file reports.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "goals": [
+    {
+      "id": "c5328006-31c5-4e08-83f7-0535738a25b9",
+      "code": "G-1",
+      "title": "Grow and govern a compliant agent network",
+      "description": "The agent network grows in underserved areas and stays well governed, with new agents vetted, float and branding monitored, and weak or non-compliant agents retrained or suspended.",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "9c7df655-8c4d-425f-be16-a784b0bca64f",
+      "code": "G-2",
+      "title": "Protect the platform from fraud and financial crime",
+      "description": "The platform is protected from fraud and financial crime through KYC screening, monitoring of suspicious transactions with STRs filed, and investigated fraud complaints.",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "d4d9b71d-3112-4ec2-b738-6c678e2134bf",
+      "code": "G-3",
+      "title": "Deliver reliable, trusted money-transfer service",
+      "description": "Customers can trust the money-transfer service, with the platform reliable, complaints and reversals resolved within SLA and merchant integrations onboarded.",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    }
+  ],
+  "objectives": [
+    {
+      "id": "74e79096-bf24-44a9-b88b-334e22ac1d9f",
+      "code": "O-1",
+      "goal_id": "c5328006-31c5-4e08-83f7-0535738a25b9",
+      "title": "Recruit and vet new agents in underserved areas",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "face116d-2c4e-484b-b6bb-38a2419d03b9",
+      "code": "O-2",
+      "goal_id": "c5328006-31c5-4e08-83f7-0535738a25b9",
+      "title": "Monitor agent float liquidity and branding compliance",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "719f58cd-1694-46b7-9a2b-ebd6b05dfc09",
+      "code": "O-3",
+      "goal_id": "c5328006-31c5-4e08-83f7-0535738a25b9",
+      "title": "Retrain or suspend underperforming or non-compliant agents",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "c177d49e-c85c-4d6a-918e-8e3a8284c2dd",
+      "code": "O-4",
+      "goal_id": "9c7df655-8c4d-425f-be16-a784b0bca64f",
+      "title": "Screen new customer registrations against watchlists (KYC)",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "c07076c9-829e-4c7b-83ac-e26279cf59aa",
+      "code": "O-5",
+      "goal_id": "9c7df655-8c4d-425f-be16-a784b0bca64f",
+      "title": "Monitor transactions for suspicious activity and file STRs",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "63d4539c-87d4-4eaa-89b8-cbc556ccbc12",
+      "code": "O-6",
+      "goal_id": "9c7df655-8c4d-425f-be16-a784b0bca64f",
+      "title": "Investigate and resolve fraud complaints",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "3dc972cc-df6f-4689-bbaa-c36f2e0b7b55",
+      "code": "O-7",
+      "goal_id": "d4d9b71d-3112-4ec2-b738-6c678e2134bf",
+      "title": "Maintain platform uptime and transaction success rate",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "f3e83fef-fedc-44e7-b643-677306c40729",
+      "code": "O-8",
+      "goal_id": "d4d9b71d-3112-4ec2-b738-6c678e2134bf",
+      "title": "Resolve customer complaints and reversals within SLA",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "e4951baa-93fa-48fc-ba39-a14bd6f5e9e3",
+      "code": "O-9",
+      "goal_id": "d4d9b71d-3112-4ec2-b738-6c678e2134bf",
+      "title": "Onboard new merchant paybill/till integrations",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22",
+      "code": "O-10",
+      "goal_id": "9c7df655-8c4d-425f-be16-a784b0bca64f",
+      "title": "Review risks and close control gaps",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "values": [
+    {
+      "id": "43cbf083-7d49-4ecb-b098-4bb3013a10bf",
+      "code": "V-1",
+      "text": "Financial inclusion comes first — no unbanked customer left out",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "2a9cdf55-6eaf-4198-a327-b6b5cb79e120",
+      "code": "V-2",
+      "text": "Zero tolerance for money laundering, however small the transaction",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "f3751c8a-7f5a-417a-bd34-afc84b984107",
+      "code": "V-3",
+      "text": "Agent trust is the network's backbone — protect it",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "8a7e9b73-a7f3-42cf-acc2-cff6422394c5",
+      "code": "RU-1",
+      "text": "No agent may be activated before passing KYC/AML vetting",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "eb9cab0c-a582-427f-89c5-79a814bedc6d",
+      "code": "RU-2",
+      "text": "Suspicious transactions must be reported to the FIU within the regulatory deadline",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "89ff1c91-d359-40f1-a70b-7757231d600f",
+      "code": "RU-3",
+      "text": "Customer float and operating funds are never commingled",
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "7154c0c9-82a2-5247-ba44-ca5820f8fcdf",
+      "code": "RU-4",
+      "text": "A new account may not send or cash out above the daily threshold until its KYC review is complete.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ba0a70e9-833f-587f-86da-6e3ffcac35d1",
+      "code": "RU-5",
+      "text": "A transfer out within 24 hours of a SIM swap needs a second verification from the customer.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "bb1df8ee-347b-5ac2-894d-e54fb409716d",
+      "code": "RU-6",
+      "text": "Agent float is reconciled to the trust account every day, and a shortfall is escalated the same day.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ead620c8-167d-5ff0-846a-69ba25ad1b34",
+      "code": "RU-7",
+      "text": "An outage past 30 minutes is declared an incident and the failover is tested every quarter.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8febb9f2-8cf1-54e6-a2a8-da4a36e2e72d",
+      "code": "RU-8",
+      "text": "Customer ID documents are opened only by the KYC Analyst, and every access is logged.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1065e837-8142-5904-b27e-a31b6ff57582",
+      "code": "RU-9",
+      "text": "Every recorded risk has an owner and a review date, and each gap found raises work within five days.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "value_attachments": [
+    {
+      "id": "75d2e5f7-08ed-4caf-96f7-e310fbc266db",
+      "value_code": "V-2",
+      "target_type": "objective",
+      "target_code": "O-5",
+      "created_at": "2026-09-16T23:37:06Z"
+    },
+    {
+      "id": "dc944509-fd40-475b-8f52-d23c4e2cd814",
+      "value_code": "V-3",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-09-16T23:37:06Z"
+    }
+  ],
+  "rule_attachments": [
+    {
+      "id": "1d736349-2850-4bc4-9ef7-c95d73d430cf",
+      "rule_code": "RU-1",
+      "target_type": "objective",
+      "target_code": "O-4",
+      "created_at": "2026-09-16T23:37:06Z"
+    },
+    {
+      "id": "4d51872b-68d3-420b-86e9-de402f88c037",
+      "rule_code": "RU-2",
+      "target_type": "objective",
+      "target_code": "O-5",
+      "created_at": "2026-09-16T23:37:06Z"
+    },
+    {
+      "id": "9137413f-a983-4c64-9c6b-887d99b50d10",
+      "rule_code": "RU-3",
+      "target_type": "role",
+      "target_code": "R-3",
+      "created_at": "2026-09-16T23:37:06Z"
+    },
+    {
+      "id": "9cb81564-6410-5e8f-922f-908eb1c047b9",
+      "rule_code": "RU-4",
+      "target_type": "objective",
+      "target_code": "O-5",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "78142524-d99a-5b00-8866-4ad10701dbc7",
+      "rule_code": "RU-5",
+      "target_type": "objective",
+      "target_code": "O-6",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "c5ed18d0-4f85-5f64-9c24-bee94e8e110b",
+      "rule_code": "RU-6",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "cc1b7f27-c659-527a-92e1-a5c77815ae32",
+      "rule_code": "RU-7",
+      "target_type": "objective",
+      "target_code": "O-7",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "e3268c29-bef4-5280-b1c0-823b7dacbc55",
+      "rule_code": "RU-8",
+      "target_type": "role",
+      "target_code": "R-5",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "7b4597b9-88a6-5d99-8d24-9fb86a4ead44",
+      "rule_code": "RU-9",
+      "target_type": "objective",
+      "target_code": "O-10",
+      "created_at": "2026-11-01T00:00:00Z"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "4d56dc32-aa2e-456a-8e76-7c4c155292c4",
+      "code": "W-1",
+      "name": "Agent Onboarding & Vetting",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "04a0a1e9-51b3-43fe-a3e5-5a591f0a35bf",
+      "code": "W-2",
+      "name": "Transaction Monitoring & SAR Filing",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "782a2269-211b-412c-90e6-0c0c8d8d8c1a",
+      "code": "W-3",
+      "name": "Customer Complaint Resolution",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "01200486-ff76-45f8-89eb-8d409b3c90e6",
+      "code": "W-4",
+      "name": "Platform Incident Response",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false
+    },
+    {
+      "id": "2c548bda-03b4-5bf9-b1d2-362ce7049fe5",
+      "code": "W-5",
+      "name": "Risk review",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "0d67cec6-fa31-4791-83a6-1856824d7937",
+      "code": "WI-1",
+      "workflow_id": "4d56dc32-aa2e-456a-8e76-7c4c155292c4",
+      "title": "Screen prospective agent application",
+      "description": "",
+      "prompt": "Verify the applicant's business premises, national ID, and float capital before recommending for onboarding.",
+      "ordinality": 1,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "74e79096-bf24-44a9-b88b-334e22ac1d9f"
+    },
+    {
+      "id": "e61fb5b4-ba1e-4499-8051-0a5fab7b8933",
+      "code": "WI-2",
+      "workflow_id": "4d56dc32-aa2e-456a-8e76-7c4c155292c4",
+      "title": "Conduct agent KYC and contract signing",
+      "description": "",
+      "prompt": "Collect agent KYC documents, run watchlist screening, and issue the signed agent agreement.",
+      "ordinality": 2,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "74e79096-bf24-44a9-b88b-334e22ac1d9f"
+    },
+    {
+      "id": "50afadb5-917b-4755-ba40-d2d5cc506945",
+      "code": "WI-3",
+      "workflow_id": "4d56dc32-aa2e-456a-8e76-7c4c155292c4",
+      "title": "Audit agent float and branding compliance",
+      "description": "",
+      "prompt": "Visit or remotely audit the agent's float balance, signage, and till receipts against policy.",
+      "ordinality": 3,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "face116d-2c4e-484b-b6bb-38a2419d03b9"
+    },
+    {
+      "id": "699dc976-47d3-464c-9375-3f818149714f",
+      "code": "WI-4",
+      "workflow_id": "4d56dc32-aa2e-456a-8e76-7c4c155292c4",
+      "title": "Issue corrective action to non-compliant agent",
+      "description": "",
+      "prompt": "Document the violation, issue a warning or suspension, and schedule a retraining session.",
+      "ordinality": 4,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "719f58cd-1694-46b7-9a2b-ebd6b05dfc09"
+    },
+    {
+      "id": "7a95a74b-7620-44ec-9724-df4c2ea51419",
+      "code": "WI-5",
+      "workflow_id": "04a0a1e9-51b3-43fe-a3e5-5a591f0a35bf",
+      "title": "Screen new registration against sanctions list",
+      "description": "",
+      "prompt": "Run the new customer's ID against the watchlist/sanctions database and flag any match for review.",
+      "ordinality": 1,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "c177d49e-c85c-4d6a-918e-8e3a8284c2dd"
+    },
+    {
+      "id": "593e6d5f-883e-49f9-b767-14086f3829c2",
+      "code": "WI-6",
+      "workflow_id": "04a0a1e9-51b3-43fe-a3e5-5a591f0a35bf",
+      "title": "Review flagged transaction pattern",
+      "description": "",
+      "prompt": "Investigate the transaction alert, determine if it is suspicious, and prepare a Suspicious Transaction Report if warranted.",
+      "ordinality": 2,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "c07076c9-829e-4c7b-83ac-e26279cf59aa"
+    },
+    {
+      "id": "fc0531c6-08df-4679-9458-baf73cd97517",
+      "code": "WI-7",
+      "workflow_id": "04a0a1e9-51b3-43fe-a3e5-5a591f0a35bf",
+      "title": "File STR with financial intelligence unit",
+      "description": "",
+      "prompt": "Submit the completed Suspicious Transaction Report to the FIU within the regulatory deadline.",
+      "ordinality": 3,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "c07076c9-829e-4c7b-83ac-e26279cf59aa"
+    },
+    {
+      "id": "c15341e4-bd4e-4046-9b14-cf37a4b67f30",
+      "code": "WI-8",
+      "workflow_id": "04a0a1e9-51b3-43fe-a3e5-5a591f0a35bf",
+      "title": "Investigate customer fraud complaint",
+      "description": "",
+      "prompt": "Trace the disputed transaction, interview involved agents, and determine liability and remedy.",
+      "ordinality": 4,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "63d4539c-87d4-4eaa-89b8-cbc556ccbc12"
+    },
+    {
+      "id": "d56e1e21-d4d2-4e09-888d-fbea90c9d985",
+      "code": "WI-9",
+      "workflow_id": "782a2269-211b-412c-90e6-0c0c8d8d8c1a",
+      "title": "Triage incoming customer complaint",
+      "description": "",
+      "prompt": "Log the complaint, classify severity, and route to the right team within SLA.",
+      "ordinality": 1,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "f3e83fef-fedc-44e7-b643-677306c40729"
+    },
+    {
+      "id": "99bb4ce3-5c6c-4c43-b7c7-3d267af25071",
+      "code": "WI-10",
+      "workflow_id": "782a2269-211b-412c-90e6-0c0c8d8d8c1a",
+      "title": "Process transaction reversal request",
+      "description": "",
+      "prompt": "Verify the erroneous transaction and process a reversal per policy.",
+      "ordinality": 2,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "f3e83fef-fedc-44e7-b643-677306c40729"
+    },
+    {
+      "id": "02e7799d-c445-4e65-9598-bab58b7e7148",
+      "code": "WI-11",
+      "workflow_id": "782a2269-211b-412c-90e6-0c0c8d8d8c1a",
+      "title": "Onboard new merchant paybill integration",
+      "description": "",
+      "prompt": "Configure the merchant's paybill/till number, test the integration, and confirm settlement routing.",
+      "ordinality": 3,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "e4951baa-93fa-48fc-ba39-a14bd6f5e9e3"
+    },
+    {
+      "id": "a486926d-3292-4cd4-8cad-28e03af3b6a1",
+      "code": "WI-12",
+      "workflow_id": "01200486-ff76-45f8-89eb-8d409b3c90e6",
+      "title": "Monitor platform uptime dashboard",
+      "description": "",
+      "prompt": "Watch real-time transaction success-rate and latency metrics; escalate any threshold breach.",
+      "ordinality": 1,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "3dc972cc-df6f-4689-bbaa-c36f2e0b7b55"
+    },
+    {
+      "id": "7de03b53-464a-4d28-bc28-583fc10dd0f8",
+      "code": "WI-13",
+      "workflow_id": "01200486-ff76-45f8-89eb-8d409b3c90e6",
+      "title": "Run post-incident review",
+      "description": "",
+      "prompt": "After an outage or degradation, document root cause, impact, and preventive actions.",
+      "ordinality": 3,
+      "created_at": "2026-09-16T23:37:06Z",
+      "last_updated": "2026-09-16T23:37:06Z",
+      "deleted": false,
+      "objective_id": "3dc972cc-df6f-4689-bbaa-c36f2e0b7b55"
+    },
+    {
+      "id": "d7d22f16-9ae8-52ec-a2f0-c6ce69031844",
+      "code": "WI-14",
+      "workflow_id": "01200486-ff76-45f8-89eb-8d409b3c90e6",
+      "objective_id": "3dc972cc-df6f-4689-bbaa-c36f2e0b7b55",
+      "title": "Declare the incident and restore service",
+      "description": "",
+      "prompt": "Declare the incident when success rate or latency stays past threshold for 30 minutes, fail over to the standby, tell customer care and agents, and confirm transactions settle again.",
+      "ordinality": 2,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "23c9db48-ca97-5b21-a40d-23ea65080aa5",
+      "code": "WI-15",
+      "workflow_id": "2c548bda-03b4-5bf9-b1d2-362ce7049fe5",
+      "objective_id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22",
+      "title": "List the threats",
+      "description": "",
+      "prompt": "Read the recorded risks with risk.read and list each threat to the operator: agent fraud, SIM-swap theft, missed STRs, outages and float shortfalls, with its owner.",
+      "ordinality": 1,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7549acee-55ff-5860-9510-33f7cde39f4f",
+      "code": "WI-16",
+      "workflow_id": "2c548bda-03b4-5bf9-b1d2-362ce7049fe5",
+      "objective_id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22",
+      "title": "Check the controls",
+      "description": "",
+      "prompt": "For each threat, check that a preventive control and a mitigating control exist and were exercised in the last quarter, using the audit and incident records.",
+      "ordinality": 2,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f7695ead-7855-58a4-8dae-aac5a3082d2e",
+      "code": "WI-17",
+      "workflow_id": "2c548bda-03b4-5bf9-b1d2-362ce7049fe5",
+      "objective_id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22",
+      "title": "Find the gaps",
+      "description": "",
+      "prompt": "List every threat with a missing, untested or overdue control, and rank the gaps by the harm to customers' money and to the licence.",
+      "ordinality": 3,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7cac4f97-f650-53e2-97b1-cecf6464dc3d",
+      "code": "WI-18",
+      "workflow_id": "2c548bda-03b4-5bf9-b1d2-362ce7049fe5",
+      "objective_id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22",
+      "title": "Raise the closing work",
+      "description": "",
+      "prompt": "Raise one work item per gap with an owner role and a due date within five days, and report the list to the Managing Director.",
+      "ordinality": 4,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "b84e258d-2954-5c4f-b7f1-db23ea4aec2c",
+      "workflow_id": "4d56dc32-aa2e-456a-8e76-7c4c155292c4",
+      "objective_id": "74e79096-bf24-44a9-b88b-334e22ac1d9f"
+    },
+    {
+      "id": "c1517d07-1829-5e07-b0b0-e68b9c1a6f3a",
+      "workflow_id": "4d56dc32-aa2e-456a-8e76-7c4c155292c4",
+      "objective_id": "face116d-2c4e-484b-b6bb-38a2419d03b9"
+    },
+    {
+      "id": "21620b6c-b27f-5636-a827-3b9f2085558a",
+      "workflow_id": "4d56dc32-aa2e-456a-8e76-7c4c155292c4",
+      "objective_id": "719f58cd-1694-46b7-9a2b-ebd6b05dfc09"
+    },
+    {
+      "id": "c893b96d-0332-57db-8b8e-3cadeb012a3d",
+      "workflow_id": "04a0a1e9-51b3-43fe-a3e5-5a591f0a35bf",
+      "objective_id": "c177d49e-c85c-4d6a-918e-8e3a8284c2dd"
+    },
+    {
+      "id": "6006620a-e65a-534e-8578-4372742429f2",
+      "workflow_id": "04a0a1e9-51b3-43fe-a3e5-5a591f0a35bf",
+      "objective_id": "c07076c9-829e-4c7b-83ac-e26279cf59aa"
+    },
+    {
+      "id": "0870c0f9-b2da-5991-ae3b-2eb623a8784b",
+      "workflow_id": "04a0a1e9-51b3-43fe-a3e5-5a591f0a35bf",
+      "objective_id": "63d4539c-87d4-4eaa-89b8-cbc556ccbc12"
+    },
+    {
+      "id": "fed40da7-c50a-5301-9b6e-b959dd965494",
+      "workflow_id": "782a2269-211b-412c-90e6-0c0c8d8d8c1a",
+      "objective_id": "f3e83fef-fedc-44e7-b643-677306c40729"
+    },
+    {
+      "id": "ede3076a-afd5-596f-bd31-c0cd7a48b1fb",
+      "workflow_id": "782a2269-211b-412c-90e6-0c0c8d8d8c1a",
+      "objective_id": "e4951baa-93fa-48fc-ba39-a14bd6f5e9e3"
+    },
+    {
+      "id": "1c814f9a-2d44-5c3e-bef2-63dbe3298ddb",
+      "workflow_id": "01200486-ff76-45f8-89eb-8d409b3c90e6",
+      "objective_id": "3dc972cc-df6f-4689-bbaa-c36f2e0b7b55"
+    },
+    {
+      "id": "74c8e330-e26a-573b-adf4-e02790733c0c",
+      "workflow_id": "2c548bda-03b4-5bf9-b1d2-362ce7049fe5",
+      "objective_id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22"
+    }
+  ],
+  "work_plans": [],
+  "role_assignments": [
+    {
+      "id": "b7accedc-3784-5256-9c27-e7ccca59cf3f",
+      "role_id": "8ef30501-74f5-4a80-bbed-8ccd0b799340",
+      "objective_id": "74e79096-bf24-44a9-b88b-334e22ac1d9f",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "575c255a-0cc8-5a68-903c-6484410c3b4c",
+      "role_id": "93de04a9-d693-46fd-8bf4-882a8b162d6a",
+      "objective_id": "74e79096-bf24-44a9-b88b-334e22ac1d9f",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f704f3ce-2b3e-583e-81af-cd51f71d56d6",
+      "role_id": "4028527b-91cb-4192-83d3-a91b8a5fab7d",
+      "objective_id": "74e79096-bf24-44a9-b88b-334e22ac1d9f",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c905ea00-9aaf-5f01-9651-2d9e816a667d",
+      "role_id": "8ef30501-74f5-4a80-bbed-8ccd0b799340",
+      "objective_id": "face116d-2c4e-484b-b6bb-38a2419d03b9",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "39801583-d68f-5fca-a834-cd059729c252",
+      "role_id": "93de04a9-d693-46fd-8bf4-882a8b162d6a",
+      "objective_id": "face116d-2c4e-484b-b6bb-38a2419d03b9",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "59116412-d7c1-5cc9-b6ac-b79f5f2910c1",
+      "role_id": "4028527b-91cb-4192-83d3-a91b8a5fab7d",
+      "objective_id": "face116d-2c4e-484b-b6bb-38a2419d03b9",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b6332dbb-c010-53ca-b40e-76af622a61c4",
+      "role_id": "8ef30501-74f5-4a80-bbed-8ccd0b799340",
+      "objective_id": "719f58cd-1694-46b7-9a2b-ebd6b05dfc09",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "56868504-ce4a-5167-8bce-13d380ff889e",
+      "role_id": "93de04a9-d693-46fd-8bf4-882a8b162d6a",
+      "objective_id": "719f58cd-1694-46b7-9a2b-ebd6b05dfc09",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "80b7d49a-10de-5637-80b8-3f25bb4ac922",
+      "role_id": "4028527b-91cb-4192-83d3-a91b8a5fab7d",
+      "objective_id": "719f58cd-1694-46b7-9a2b-ebd6b05dfc09",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "99094b6d-8d6d-5e89-b01d-de0ac01b2e9c",
+      "role_id": "4028527b-91cb-4192-83d3-a91b8a5fab7d",
+      "objective_id": "c177d49e-c85c-4d6a-918e-8e3a8284c2dd",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "689633a9-ff76-52b2-bd23-ec1c80b17b57",
+      "role_id": "a8de3765-e9d3-4bd9-b2cf-b93c1412f447",
+      "objective_id": "c177d49e-c85c-4d6a-918e-8e3a8284c2dd",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8cd76b2f-ffae-5ae9-934e-1615d9ceae8e",
+      "role_id": "b95e442d-6d47-46e3-947d-88b71f9715f4",
+      "objective_id": "c177d49e-c85c-4d6a-918e-8e3a8284c2dd",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "99f416f2-bdd1-58c3-b8f5-bdda0aeee881",
+      "role_id": "4028527b-91cb-4192-83d3-a91b8a5fab7d",
+      "objective_id": "c07076c9-829e-4c7b-83ac-e26279cf59aa",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fe8feae6-a86c-518d-aec2-0046d1e39655",
+      "role_id": "b95e442d-6d47-46e3-947d-88b71f9715f4",
+      "objective_id": "c07076c9-829e-4c7b-83ac-e26279cf59aa",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "81e593f2-21bd-58b3-84b4-df5a990048d0",
+      "role_id": "a8de3765-e9d3-4bd9-b2cf-b93c1412f447",
+      "objective_id": "c07076c9-829e-4c7b-83ac-e26279cf59aa",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "78ae1beb-505f-5911-a945-236230646a06",
+      "role_id": "4028527b-91cb-4192-83d3-a91b8a5fab7d",
+      "objective_id": "63d4539c-87d4-4eaa-89b8-cbc556ccbc12",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2a0366fd-d7eb-5fb3-b741-14c75dbce43a",
+      "role_id": "b95e442d-6d47-46e3-947d-88b71f9715f4",
+      "objective_id": "63d4539c-87d4-4eaa-89b8-cbc556ccbc12",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8064fe0b-16f2-5023-806a-61c256c23685",
+      "role_id": "ac152045-d0c8-4c2f-ae7d-2ad38b59d28e",
+      "objective_id": "63d4539c-87d4-4eaa-89b8-cbc556ccbc12",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0fbafd44-7d52-5544-91e2-408339cf5e48",
+      "role_id": "ad01c9a2-f287-4249-ac79-55ccb8bea796",
+      "objective_id": "3dc972cc-df6f-4689-bbaa-c36f2e0b7b55",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c9d86932-b351-572b-979a-5bd40245dfa1",
+      "role_id": "e085a554-2646-48b5-af87-555b18caa9b1",
+      "objective_id": "3dc972cc-df6f-4689-bbaa-c36f2e0b7b55",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3a8f63b9-c25d-58e4-a9b7-9ff38d20df81",
+      "role_id": "b1c4a9d0-621f-4544-ae23-eb0cf6caa998",
+      "objective_id": "3dc972cc-df6f-4689-bbaa-c36f2e0b7b55",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2bb1777f-cec8-54aa-9d73-d067963d150a",
+      "role_id": "b1c4a9d0-621f-4544-ae23-eb0cf6caa998",
+      "objective_id": "f3e83fef-fedc-44e7-b643-677306c40729",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a51cb4f5-0d99-5f86-b1d6-f1d725efe4e8",
+      "role_id": "ac152045-d0c8-4c2f-ae7d-2ad38b59d28e",
+      "objective_id": "f3e83fef-fedc-44e7-b643-677306c40729",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ecff4e75-7778-55f6-bb0d-3fe3a99c4083",
+      "role_id": "ad01c9a2-f287-4249-ac79-55ccb8bea796",
+      "objective_id": "f3e83fef-fedc-44e7-b643-677306c40729",
+      "label": "informed",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "914693e4-e15a-575a-b49c-2ad0fde65e4a",
+      "role_id": "b1c4a9d0-621f-4544-ae23-eb0cf6caa998",
+      "objective_id": "e4951baa-93fa-48fc-ba39-a14bd6f5e9e3",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "af6088b6-2332-5a42-8ac5-0f7c949cb4c9",
+      "role_id": "e085a554-2646-48b5-af87-555b18caa9b1",
+      "objective_id": "e4951baa-93fa-48fc-ba39-a14bd6f5e9e3",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cc01d5dc-06af-5fed-940a-b59cbd3e3aaf",
+      "role_id": "4028527b-91cb-4192-83d3-a91b8a5fab7d",
+      "objective_id": "e4951baa-93fa-48fc-ba39-a14bd6f5e9e3",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a2ce8e6a-50d7-536e-a207-4583f800acc8",
+      "role_id": "ad01c9a2-f287-4249-ac79-55ccb8bea796",
+      "objective_id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "280a5623-5511-50e0-a3c8-f2ce32608800",
+      "role_id": "9c6903f9-c612-5b7b-bce6-c8620453be0e",
+      "objective_id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ee010d8e-645f-55e9-98b3-4e32acf34d5c",
+      "role_id": "4028527b-91cb-4192-83d3-a91b8a5fab7d",
+      "objective_id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a174f421-a953-53bf-885b-2e3d0bce8b7a",
+      "role_id": "e085a554-2646-48b5-af87-555b18caa9b1",
+      "objective_id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f374ef8c-01af-581e-8238-429590e881c3",
+      "role_id": "b95e442d-6d47-46e3-947d-88b71f9715f4",
+      "objective_id": "2a572a09-e8e7-5453-908e-e1f6d8af2a22",
+      "label": "consulted",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "drafts": [],
+  "publications": []
+}

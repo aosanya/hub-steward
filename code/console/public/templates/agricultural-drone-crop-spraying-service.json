@@ -1,0 +1,1265 @@
+{
+  "_template": {
+    "sector": "agriculture",
+    "archetype": "agricultural drone crop-spraying service",
+    "illustrative": true,
+    "note": "Synthetic template for a agricultural drone crop-spraying service. The organization is not real; roles, goals, rules and workflows are illustrative values for the demo."
+  },
+  "agency": {
+    "id": "27bd57d7-db0f-418b-a04b-923372c4cf8f",
+    "name": "AgroWing Aerial Spraying Services",
+    "description": "A commercial drone operator providing precision aerial crop-spraying, seeding and crop-health monitoring services to farms under contract.",
+    "enabled": true,
+    "default_failure_pipeline_budget": 0,
+    "inactivity_timeout_seconds": 0,
+    "created_at": "2026-09-19T00:58:14Z",
+    "last_updated": "2026-09-19T00:58:14Z",
+    "deleted": false
+  },
+  "modules": [
+    {
+      "id": "b5281831-a535-45fa-a0af-fa3f69c9c03e",
+      "code": "auth",
+      "name": "auth",
+      "description": "",
+      "enabled": true,
+      "locked": true,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "0d9b64b6-3c15-4946-ae6b-f0cbbe256c63",
+      "code": "git",
+      "name": "git",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "1c785e09-ad99-43d4-88c8-083afcc56d48",
+      "code": "taskmanager",
+      "name": "taskmanager",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "4e84e97c-9443-498a-81d5-460f177de8f1",
+      "code": "agency",
+      "name": "agency",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "a431ffc2-a6c0-462a-ac9a-f216854c839b",
+      "code": "actor",
+      "name": "actor",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "08bee978-e446-4f68-9e27-bef015a6b3ec",
+      "code": "comm",
+      "name": "comm",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "185b544c-6269-4bd9-8894-645fbfe0132a",
+      "code": "custody",
+      "name": "custody",
+      "description": "",
+      "enabled": false,
+      "locked": false,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "092750c1-dc0e-4b1a-9ab8-ca612edd61c0",
+      "code": "forms",
+      "name": "forms",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "73e335c8-90a5-4d3a-b4a2-a5b68581c7e8",
+      "code": "digitaltwin",
+      "name": "digitaltwin",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "7964d784-3787-4d1a-b52a-f1d76aeb6bb9",
+      "code": "accounting",
+      "name": "accounting",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    }
+  ],
+  "roles": [
+    {
+      "id": "e19540a7-bc23-4848-8e46-19bec72fa27a",
+      "code": "R-1",
+      "name": "Chief Pilot",
+      "description": "Remote pilot in command; holds and maintains the operator's core flight authorization.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "4198e230-0598-4d09-a714-2b2f1f4d7cc0",
+      "code": "R-2",
+      "name": "Fleet Maintenance Technician",
+      "description": "Keeps every drone airframe, battery and spray system airworthy between jobs.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "b57b2d87-d79e-4a18-8bf0-abdcbd73ec57",
+      "code": "R-3",
+      "name": "Agronomist / Spray Prescription Specialist",
+      "description": "Sets chemical mix, application rate and timing for each job.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "19fe7bb8-4f22-43d3-8900-4c1886d5cf9d",
+      "code": "R-4",
+      "name": "Client Success Manager",
+      "description": "Owns the farmer relationship from first inquiry through repeat contracts.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "00bc94b3-fd33-4ef1-b686-f14a6250f161",
+      "code": "R-5",
+      "name": "Compliance & Airspace Officer",
+      "description": "Manages aviation-authority and pesticide-regulator paperwork, permits and filings.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "a113e8ba-8f41-49fd-b756-d500aed6409c",
+      "code": "R-6",
+      "name": "Ground Crew / Flight Support Technician",
+      "description": "Mixes chemical, loads tanks, spots for the pilot, and recovers the drone on site.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "b05b02cf-579d-438b-a38e-2c526b290769",
+      "code": "R-7",
+      "name": "Operations Dispatcher",
+      "description": "Schedules jobs against weather windows, crew availability and fleet capacity.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "9bf07df3-17bb-465a-b411-623e60bcc87f",
+      "code": "R-8",
+      "name": "Finance & Billing Officer",
+      "description": "Invoices completed jobs and tracks fuel/battery operating cost per hectare.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "b1e7e20c-6de3-41e7-ac19-a669d973962e",
+      "code": "R-9",
+      "name": "Data & Mapping Analyst",
+      "description": "Turns multispectral/NDVI flight data into crop-health reports for clients.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "07fb4bdf-2342-447d-b174-c13816a2f6cc",
+      "code": "R-10",
+      "name": "Safety Officer",
+      "description": "Owns pesticide-handling protocol, PPE compliance and incident/spill response.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "b07969fd-3de3-57d8-8b9d-9c72adaa5e6c",
+      "code": "R-11",
+      "name": "Risk Owner",
+      "permissions": [
+        "document.read",
+        "risk.read"
+      ],
+      "description": "Owns the operator's risk picture. Reads the threats, consequences, preventive and mitigating measures, finds the controls that are missing or weak, and has the closing work raised with a named owner and a due date.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "goals": [
+    {
+      "id": "d584e6d0-9289-4505-9910-768686bd4652",
+      "code": "G-1",
+      "title": "Deliver safe, compliant aerial spray operations",
+      "description": "Every spray and seeding job is flown safely and legally, with authorizations and field boundaries confirmed, the drone fleet airworthy, and incidents and weather holds handled.",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "68fa7f84-2018-4117-a2fb-8736ae2237d3",
+      "code": "G-2",
+      "title": "Grow a sustainable, profitable client base",
+      "description": "Farmer inquiries become signed spray contracts, completed jobs are billed accurately and paid, and crop-health monitoring is added as a further paid service.",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "a605f1ec-a7ec-41ae-9f01-943aeaf8e78e",
+      "code": "G-3",
+      "title": "Maintain full regulatory and safety compliance",
+      "description": "Pilot licenses and aircraft registrations stay current, flight logs and pesticide records reach regulators, and pesticide handling and spill response follow a documented program.",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    }
+  ],
+  "objectives": [
+    {
+      "id": "a69ffd28-2c2f-4748-925a-2f7b4a3aa87c",
+      "code": "O-1",
+      "goal_id": "d584e6d0-9289-4505-9910-768686bd4652",
+      "title": "Confirm flight authorization and field boundaries before every job",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "f222e7d6-7a29-4f7f-b08a-f1d7cd2c8d37",
+      "code": "O-2",
+      "goal_id": "d584e6d0-9289-4505-9910-768686bd4652",
+      "title": "Execute spray and seeding flights within prescribed parameters",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "438c2278-235b-4f76-9942-f0a3c74d6ef5",
+      "code": "O-3",
+      "goal_id": "d584e6d0-9289-4505-9910-768686bd4652",
+      "title": "Keep the drone fleet in airworthy, mission-ready condition",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "499d45de-dbad-4e8b-8ed5-8bd4d0e062ac",
+      "code": "O-4",
+      "goal_id": "d584e6d0-9289-4505-9910-768686bd4652",
+      "title": "Respond safely to in-flight incidents and weather holds",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "bd5414f3-b1fb-413d-b1dd-4fdfe9a5444f",
+      "code": "O-5",
+      "goal_id": "68fa7f84-2018-4117-a2fb-8736ae2237d3",
+      "title": "Convert farmer inquiries into signed spray contracts",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "274e2941-c169-4693-ae20-bcba8622c60f",
+      "code": "O-6",
+      "goal_id": "68fa7f84-2018-4117-a2fb-8736ae2237d3",
+      "title": "Bill every completed job accurately and collect payment",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "16cc9277-5957-42ff-ad3b-a738b796a104",
+      "code": "O-7",
+      "goal_id": "68fa7f84-2018-4117-a2fb-8736ae2237d3",
+      "title": "Expand into crop-health monitoring as an upsell service",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "bec74f46-59f1-41d2-afd4-216e6f344d72",
+      "code": "O-8",
+      "goal_id": "a605f1ec-a7ec-41ae-9f01-943aeaf8e78e",
+      "title": "Keep all remote pilot licenses and aircraft registrations current",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "a568790a-9b7d-4c1a-b097-d6c723103901",
+      "code": "O-9",
+      "goal_id": "a605f1ec-a7ec-41ae-9f01-943aeaf8e78e",
+      "title": "File flight logs and pesticide application records with regulators",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "a9916028-d258-47cd-8448-c8dfd1faafa3",
+      "code": "O-10",
+      "goal_id": "a605f1ec-a7ec-41ae-9f01-943aeaf8e78e",
+      "title": "Run a documented pesticide-handling and spill-response program",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "770a6585-8912-5419-a8d0-bd25a701cf5f",
+      "code": "O-11",
+      "goal_id": "a605f1ec-a7ec-41ae-9f01-943aeaf8e78e",
+      "title": "Review operating risks every quarter and close every gap",
+      "description": "",
+      "ordinality": 0,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "values": [
+    {
+      "id": "751510b0-0299-43b5-a148-cda5d8088965",
+      "code": "V-1",
+      "text": "We never fly outside the authorized permit radius, no exceptions.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "2080989a-16b6-4b2f-8d5c-4b556a1393da",
+      "code": "V-2",
+      "text": "Client fields and farm data belong to the client — we never share flight or yield data without consent.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "7a080eaf-460e-4334-9c10-fc83b1615283",
+      "code": "V-3",
+      "text": "Safety of people and livestock on the ground always outweighs meeting a job deadline.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "13064047-0962-4828-b8da-02c83c8b348b",
+      "code": "V-4",
+      "text": "We only spray what the product label and prescription authorize — no freelancing chemical mixes.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "30e18f4b-50de-48b4-b88d-34f23c260188",
+      "code": "RU-1",
+      "text": "Every flight requires a pre-flight airworthiness checklist signed off before takeoff.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "417bdd59-6105-4ce4-9057-9d3798cb2917",
+      "code": "RU-2",
+      "text": "No spray flight proceeds when wind speed exceeds the product label's maximum or a weather hold is in effect.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "26720f06-8094-4c59-b90c-cab34943d210",
+      "code": "RU-3",
+      "text": "Every completed job must have a post-flight spray log filed within 24 hours, including chemical, rate and area covered.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "b0c2c4f2-1d77-483e-8817-514a7e062e3d",
+      "code": "RU-4",
+      "text": "Pesticide application records are retained for the statutory minimum period and never altered after filing.",
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "fe089702-875b-5427-a424-e33955fc56ad",
+      "code": "RU-5",
+      "text": "No spray pass is flown within the label's drift buffer of a dwelling, a road, a water body or a neighbouring crop that is not on the contract.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0338de6a-175d-5cd6-9174-ec9ab19838e8",
+      "code": "RU-6",
+      "text": "Nobody stands under or within the safety radius of a drone that is armed or in flight; the pilot aborts if anyone enters it.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1f93015d-826f-5f46-bd37-0a9288455ee5",
+      "code": "RU-7",
+      "text": "Lithium batteries are charged only in the fireproof charging area, never left charging unattended, and a swollen or damaged pack is retired the same day.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d3cba906-618f-5d72-ab01-5cff760df5d1",
+      "code": "RU-8",
+      "text": "A pilot whose licence or an airframe whose registration has lapsed is grounded until the renewal is on file.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a18505d5-e71f-5077-b87b-70e12146810a",
+      "code": "RU-9",
+      "text": "Ground crew wear the label's required protective equipment whenever they mix, load or clean, and every spill is reported to the Safety Officer the same day.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "337d487b-6417-503c-a23e-d6e2ee102d3d",
+      "code": "RU-10",
+      "text": "The risk review runs every quarter, and each gap it finds has a named owner and a due date before the review is closed.",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "value_attachments": [
+    {
+      "id": "ac140fa8-4495-472e-b43a-e9e23b45f2e4",
+      "value_code": "V-1",
+      "target_type": "objective",
+      "target_code": "O-1",
+      "created_at": "2026-09-19T00:58:14Z"
+    },
+    {
+      "id": "5ba82dca-168f-4489-b39a-f98a4212508a",
+      "value_code": "V-2",
+      "target_type": "workflow",
+      "target_code": "W-1",
+      "created_at": "2026-09-19T00:58:14Z"
+    },
+    {
+      "id": "8568a219-dacd-4c4c-9a4e-02b2cf11f2c3",
+      "value_code": "V-3",
+      "target_type": "workflow",
+      "target_code": "W-2",
+      "created_at": "2026-09-19T00:58:14Z"
+    }
+  ],
+  "rule_attachments": [
+    {
+      "id": "e945986c-bb8b-4a61-b982-2952ca399a34",
+      "rule_code": "RU-1",
+      "target_type": "work_item",
+      "target_code": "WI-5",
+      "created_at": "2026-09-19T00:58:14Z"
+    },
+    {
+      "id": "14639bec-2676-48f4-9832-e5f8f901917b",
+      "rule_code": "RU-2",
+      "target_type": "objective",
+      "target_code": "O-4",
+      "created_at": "2026-09-19T00:58:14Z"
+    },
+    {
+      "id": "b688ef99-54c2-442c-b62b-4800b2dc6efd",
+      "rule_code": "RU-3",
+      "target_type": "work_item",
+      "target_code": "WI-8",
+      "created_at": "2026-09-19T00:58:14Z"
+    },
+    {
+      "id": "c26208e3-9447-5fe9-9d00-39aaaedce9dc",
+      "rule_code": "RU-5",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "ea6761a6-6a9d-5bda-9916-6aea155d45a1",
+      "rule_code": "RU-6",
+      "target_type": "work_item",
+      "target_code": "WI-6",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "2990065b-fad2-53c1-95a7-4b7d7f9024b9",
+      "rule_code": "RU-7",
+      "target_type": "objective",
+      "target_code": "O-3",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "42558447-80db-550f-bf88-f4028a3d80d6",
+      "rule_code": "RU-8",
+      "target_type": "objective",
+      "target_code": "O-8",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "cb41d4b8-e032-5e1c-9aa0-efc55179e726",
+      "rule_code": "RU-9",
+      "target_type": "objective",
+      "target_code": "O-10",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "28200c08-7cc1-545d-87ef-d36e066d46c2",
+      "rule_code": "RU-10",
+      "target_type": "objective",
+      "target_code": "O-11",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "86c28466-2fc7-5c6b-9a51-3241eb81b12e",
+      "rule_code": "RU-9",
+      "target_type": "role",
+      "target_code": "R-6",
+      "created_at": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "6c4e7ed1-4d7b-5679-9d74-c5ed67c7f7f1",
+      "rule_code": "RU-5",
+      "target_type": "role",
+      "target_code": "R-1",
+      "created_at": "2026-11-01T00:00:00Z"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "code": "W-1",
+      "name": "Spray Job Intake & Flight Planning",
+      "description": "",
+      "ordinality": 1,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "bac550da-96dc-45b5-bf98-d1fcd7868dd8",
+      "code": "W-2",
+      "name": "Flight Execution & Field Operations",
+      "description": "",
+      "ordinality": 2,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "6052641d-4aaa-4051-b1b6-273758244137",
+      "code": "W-3",
+      "name": "Fleet Maintenance & Airworthiness",
+      "description": "",
+      "ordinality": 3,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "3bc20768-3ad5-4b27-a42e-3ed66a7495b4",
+      "code": "W-4",
+      "name": "Billing & Compliance Reporting",
+      "description": "",
+      "ordinality": 4,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-09-19T00:58:14Z",
+      "deleted": false
+    },
+    {
+      "id": "b8177152-69eb-5834-8e37-010f5a0945d5",
+      "code": "W-5",
+      "name": "Risk review",
+      "description": "A quarterly walk through the operator's threats, the controls against them, the gaps, and the work that closes them.",
+      "ordinality": 5,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "1429b792-b5b1-447d-9414-21740bdb3c73",
+      "code": "WI-1",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "title": "Receive and validate a spray job request",
+      "description": "",
+      "prompt": "Log the incoming request from the farmer or Client Success Manager: crop, target pest/weed, requested date, field location. Reject or flag any request missing a usable field boundary before it moves to planning.",
+      "ordinality": 1,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "bd5414f3-b1fb-413d-b1dd-4fdfe9a5444f"
+    },
+    {
+      "id": "0ca4834a-bd53-496a-9bb9-3be471fb698c",
+      "code": "WI-2",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "title": "Confirm field boundary against flight authorization",
+      "description": "",
+      "prompt": "Confirm the client's field boundary GeoJSON matches the flight plan before dispatching the drone; if the area exceeds the authorized permit radius or sits inside restricted airspace, escalate to the Chief Pilot before takeoff.",
+      "ordinality": 2,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "a69ffd28-2c2f-4748-925a-2f7b4a3aa87c"
+    },
+    {
+      "id": "743b24a0-6593-447c-8c7d-e7448e45a7a9",
+      "code": "WI-3",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "title": "Generate the agronomic spray prescription",
+      "description": "",
+      "prompt": "Set the chemical mix, application rate per hectare and nozzle setting for the target crop and pest. Never exceed the product label's maximum rate, and cite the label reference in the prescription record.",
+      "ordinality": 3,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "f222e7d6-7a29-4f7f-b08a-f1d7cd2c8d37"
+    },
+    {
+      "id": "053cfd59-f84f-43af-a79f-bd6eb7f0971c",
+      "code": "WI-4",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "title": "Schedule the flight window against the forecast",
+      "description": "",
+      "prompt": "Pick a flight slot where forecast wind stays under the product label's maximum and no rain is expected within the label's re-entry/wash-off window. Move the job to standby rather than force a marginal window.",
+      "ordinality": 4,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "499d45de-dbad-4e8b-8ed5-8bd4d0e062ac"
+    },
+    {
+      "id": "00f1852f-f6cb-42ac-af92-ae3d7d9d1fa2",
+      "code": "WI-5",
+      "workflow_id": "bac550da-96dc-45b5-bf98-d1fcd7868dd8",
+      "title": "Run the pre-flight safety and airworthiness check",
+      "description": "",
+      "prompt": "Complete the pre-flight checklist: battery charge and health, rotor and frame integrity, spray-system leak check, firmware/GPS lock. Do not clear a drone for takeoff with any open item.",
+      "ordinality": 1,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "438c2278-235b-4f76-9942-f0a3c74d6ef5"
+    },
+    {
+      "id": "cc368bf1-9570-41c4-8878-54bc83d87259",
+      "code": "WI-6",
+      "workflow_id": "bac550da-96dc-45b5-bf98-d1fcd7868dd8",
+      "title": "Execute the spray flight and log telemetry",
+      "description": "",
+      "prompt": "Fly the planned pattern at the prescribed rate, keeping battery and tank level visible throughout. Abort and land if wind exceeds the label threshold mid-flight rather than finishing the pass.",
+      "ordinality": 2,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "f222e7d6-7a29-4f7f-b08a-f1d7cd2c8d37"
+    },
+    {
+      "id": "7c574529-49bc-4bef-a96b-bb1b7c8fe22b",
+      "code": "WI-7",
+      "workflow_id": "bac550da-96dc-45b5-bf98-d1fcd7868dd8",
+      "title": "Handle an in-flight weather hold or abort",
+      "description": "",
+      "prompt": "On a wind, visibility or mechanical trigger, bring the drone to a safe hold or return-to-land immediately, notify the dispatcher, and record the abort reason before any re-attempt is scheduled.",
+      "ordinality": 3,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "499d45de-dbad-4e8b-8ed5-8bd4d0e062ac"
+    },
+    {
+      "id": "dc725ee3-05db-4618-8d3d-152fb972b2e5",
+      "code": "WI-8",
+      "workflow_id": "bac550da-96dc-45b5-bf98-d1fcd7868dd8",
+      "title": "Complete the post-flight spray log and client sign-off",
+      "description": "",
+      "prompt": "File the post-flight log within 24 hours: chemical used, actual rate applied, area covered, start/end time, and any deviation from the prescription. Get the client's or field contact's acknowledgement before closing the job.",
+      "ordinality": 4,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "f222e7d6-7a29-4f7f-b08a-f1d7cd2c8d37"
+    },
+    {
+      "id": "af975bfd-53ab-44f3-bc24-c467c97fab19",
+      "code": "WI-9",
+      "workflow_id": "6052641d-4aaa-4051-b1b6-273758244137",
+      "title": "Perform scheduled maintenance and battery health check",
+      "description": "",
+      "prompt": "Run the maintenance interval checklist for each airframe: motor wear, propeller condition, spray-pump calibration, and battery cycle-count/health. Pull any battery below the health threshold from active rotation.",
+      "ordinality": 1,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "438c2278-235b-4f76-9942-f0a3c74d6ef5"
+    },
+    {
+      "id": "98dad214-fe7c-4003-9261-3f2573e271f5",
+      "code": "WI-10",
+      "workflow_id": "6052641d-4aaa-4051-b1b6-273758244137",
+      "title": "Investigate and repair a fault-flagged drone",
+      "description": "",
+      "prompt": "Diagnose a drone flagged fault or incident before it flies again: inspect the component implicated by the telemetry log, repair or replace it, and re-run the full pre-flight checklist before returning it to service.",
+      "ordinality": 2,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "438c2278-235b-4f76-9942-f0a3c74d6ef5"
+    },
+    {
+      "id": "5b12754c-eb1a-4ac4-85ff-d599c89e90cb",
+      "code": "WI-11",
+      "workflow_id": "3bc20768-3ad5-4b27-a42e-3ed66a7495b4",
+      "title": "Generate the per-hectare invoice for a completed job",
+      "description": "",
+      "prompt": "Invoice the client from the closed job's actual hectares covered and the agreed per-hectare rate, not the originally quoted area — reconcile against the post-flight spray log before sending.",
+      "ordinality": 1,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "274e2941-c169-4693-ae20-bcba8622c60f"
+    },
+    {
+      "id": "dfd4b2a2-19ff-43a2-bdf0-bf28de13066c",
+      "code": "WI-12",
+      "workflow_id": "3bc20768-3ad5-4b27-a42e-3ed66a7495b4",
+      "title": "Reconcile fuel/battery cost against job revenue",
+      "description": "",
+      "prompt": "Post battery-charging and fuel costs for the period against the jobs they served, and confirm gross margin per job is within the expected range before month-end close.",
+      "ordinality": 2,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "274e2941-c169-4693-ae20-bcba8622c60f"
+    },
+    {
+      "id": "fbe73f70-c117-48c2-91e1-ee9ae4c77882",
+      "code": "WI-13",
+      "workflow_id": "3bc20768-3ad5-4b27-a42e-3ed66a7495b4",
+      "title": "File the pesticide application record with the regulator",
+      "description": "",
+      "prompt": "Submit the statutory pesticide-application record for the period to the relevant regulator, cross-checked against every post-flight spray log filed that period.",
+      "ordinality": 3,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "a568790a-9b7d-4c1a-b097-d6c723103901"
+    },
+    {
+      "id": "e82289f3-af37-4c4c-9af3-0ea85d2717f2",
+      "code": "WI-14",
+      "workflow_id": "3bc20768-3ad5-4b27-a42e-3ed66a7495b4",
+      "title": "Renew a remote pilot license or aircraft registration",
+      "description": "",
+      "prompt": "Track every pilot license and aircraft registration expiry date; start the renewal at least 30 days before expiry and ground the affected pilot or airframe if it lapses.",
+      "ordinality": 4,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "bec74f46-59f1-41d2-afd4-216e6f344d72"
+    },
+    {
+      "id": "a089b67d-6f38-42dd-9140-fae8345c0a68",
+      "code": "WI-15",
+      "workflow_id": "3bc20768-3ad5-4b27-a42e-3ed66a7495b4",
+      "title": "Run the quarterly spill-response drill",
+      "description": "",
+      "prompt": "Rehearse the chemical-spill response procedure with ground crew: containment kit location, spill reporting line, and PPE donning. Log attendance and any gaps found.",
+      "ordinality": 5,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "a9916028-d258-47cd-8448-c8dfd1faafa3"
+    },
+    {
+      "id": "d3b49b56-674b-4767-be32-533b1ccbfeaf",
+      "code": "WI-16",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "title": "Onboard a new farmer client with a signed contract",
+      "description": "",
+      "prompt": "Walk a new client through service area, pricing and the field-boundary submission process, and get a signed spray-service contract on file before the first job is scheduled.",
+      "ordinality": 5,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "bd5414f3-b1fb-413d-b1dd-4fdfe9a5444f"
+    },
+    {
+      "id": "76efb430-ea11-4f16-b67c-627290fa4e92",
+      "code": "WI-17",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "title": "Pitch the crop-health monitoring upsell",
+      "description": "",
+      "prompt": "Offer existing spray clients a multispectral/NDVI monitoring add-on using flight data already being collected; quote it as a per-season package, not a one-off flight.",
+      "ordinality": 6,
+      "created_at": "2026-09-19T00:58:14Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false,
+      "objective_id": "16cc9277-5957-42ff-ad3b-a738b796a104"
+    },
+    {
+      "id": "22e95cac-fe3c-53b7-a052-333372ca9a55",
+      "code": "WI-18",
+      "workflow_id": "6052641d-4aaa-4051-b1b6-273758244137",
+      "objective_id": "438c2278-235b-4f76-9942-f0a3c74d6ef5",
+      "title": "Review the maintenance backlog and ground overdue airframes",
+      "description": "",
+      "prompt": "Compare every airframe's maintenance interval and battery cycle count with the schedule. Ground any airframe that is past its interval and tell the dispatcher so no job is booked on it until it is cleared.",
+      "ordinality": 3,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "543c1b4e-3f4d-5c47-8103-a230e759a782",
+      "code": "WI-19",
+      "workflow_id": "b8177152-69eb-5834-8e37-010f5a0945d5",
+      "objective_id": "770a6585-8912-5419-a8d0-bd25a701cf5f",
+      "title": "List the threats to the operation",
+      "description": "",
+      "prompt": "List the threats the operation faces this quarter: drift onto neighbouring land, a loss of control over people or water, a lithium battery fire, a lapsed licence or registration, a pesticide spill or operator exposure. For each, write the consequence if it happens, from the flight logs, incident notes and near misses of the quarter.",
+      "ordinality": 1,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0f3bc189-0e4b-57b4-b039-ded87247bbcf",
+      "code": "WI-20",
+      "workflow_id": "b8177152-69eb-5834-8e37-010f5a0945d5",
+      "objective_id": "770a6585-8912-5419-a8d0-bd25a701cf5f",
+      "title": "Check the controls against each threat",
+      "description": "",
+      "prompt": "For each threat, list the preventive measures that stop it and the mitigating measures that limit the harm, and who holds each. Mark a control as relying on one person, one checklist or one piece of kit.",
+      "ordinality": 2,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ef62f95e-33cb-5c41-b9dd-dbc87376e956",
+      "code": "WI-21",
+      "workflow_id": "b8177152-69eb-5834-8e37-010f5a0945d5",
+      "objective_id": "770a6585-8912-5419-a8d0-bd25a701cf5f",
+      "title": "Find the gaps",
+      "description": "",
+      "prompt": "Name every threat with no preventive measure, no mitigating measure, or a control that was skipped or failed in the quarter. Rank the gaps by consequence and give the reason for each rank.",
+      "ordinality": 3,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d57a92f9-a428-55a0-8830-629a71bcb6d7",
+      "code": "WI-22",
+      "workflow_id": "b8177152-69eb-5834-8e37-010f5a0945d5",
+      "objective_id": "770a6585-8912-5419-a8d0-bd25a701cf5f",
+      "title": "Raise the work that closes each gap",
+      "description": "",
+      "prompt": "Draft one piece of work per gap, with an owner and a due date, for the Safety Officer to approve. Put the closing work on the board and carry open gaps into next quarter's review.",
+      "ordinality": 4,
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "bc545a16-78a6-5be4-8dee-c71acfe07d8d",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "objective_id": "a69ffd28-2c2f-4748-925a-2f7b4a3aa87c"
+    },
+    {
+      "id": "fc9439f1-56b5-5159-9e08-777303a1f0dd",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "objective_id": "f222e7d6-7a29-4f7f-b08a-f1d7cd2c8d37"
+    },
+    {
+      "id": "522ebab8-f6c7-532f-a643-a0b48dd0a9e4",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "objective_id": "bd5414f3-b1fb-413d-b1dd-4fdfe9a5444f"
+    },
+    {
+      "id": "bbaba0e5-ab0e-5587-b37b-d55cb6144a62",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "objective_id": "16cc9277-5957-42ff-ad3b-a738b796a104"
+    },
+    {
+      "id": "cf2bfe62-1962-58f8-ac00-0db8df6ee7a5",
+      "workflow_id": "bac550da-96dc-45b5-bf98-d1fcd7868dd8",
+      "objective_id": "438c2278-235b-4f76-9942-f0a3c74d6ef5"
+    },
+    {
+      "id": "64575598-fa9a-5795-b870-35b513ac9820",
+      "workflow_id": "bac550da-96dc-45b5-bf98-d1fcd7868dd8",
+      "objective_id": "f222e7d6-7a29-4f7f-b08a-f1d7cd2c8d37"
+    },
+    {
+      "id": "a8748f75-72ec-5109-a20f-8d1324b3184d",
+      "workflow_id": "bac550da-96dc-45b5-bf98-d1fcd7868dd8",
+      "objective_id": "499d45de-dbad-4e8b-8ed5-8bd4d0e062ac"
+    },
+    {
+      "id": "f25fa096-c698-5c95-bbb5-e612c21386c0",
+      "workflow_id": "6052641d-4aaa-4051-b1b6-273758244137",
+      "objective_id": "438c2278-235b-4f76-9942-f0a3c74d6ef5"
+    },
+    {
+      "id": "98bde783-7a00-5908-bad5-90a9d177521b",
+      "workflow_id": "6052641d-4aaa-4051-b1b6-273758244137",
+      "objective_id": "499d45de-dbad-4e8b-8ed5-8bd4d0e062ac"
+    },
+    {
+      "id": "f87315c1-c492-5f7d-b734-79203df67193",
+      "workflow_id": "3bc20768-3ad5-4b27-a42e-3ed66a7495b4",
+      "objective_id": "274e2941-c169-4693-ae20-bcba8622c60f"
+    },
+    {
+      "id": "66e0d33c-5aa5-51b9-8f7c-afd70d7b43bd",
+      "workflow_id": "3bc20768-3ad5-4b27-a42e-3ed66a7495b4",
+      "objective_id": "a568790a-9b7d-4c1a-b097-d6c723103901"
+    },
+    {
+      "id": "49bfe0af-e5a2-5f50-a6f1-31ab358e16f4",
+      "workflow_id": "3bc20768-3ad5-4b27-a42e-3ed66a7495b4",
+      "objective_id": "bec74f46-59f1-41d2-afd4-216e6f344d72"
+    },
+    {
+      "id": "26d0fa4c-692f-58b1-bf6b-f92fe85bab53",
+      "workflow_id": "3bc20768-3ad5-4b27-a42e-3ed66a7495b4",
+      "objective_id": "a9916028-d258-47cd-8448-c8dfd1faafa3"
+    },
+    {
+      "id": "e009a305-f449-527f-9d90-b3ed710c605e",
+      "workflow_id": "595a47bf-6b92-4882-b2fc-4afded0971db",
+      "objective_id": "499d45de-dbad-4e8b-8ed5-8bd4d0e062ac"
+    },
+    {
+      "id": "bdbd1630-8d6d-5b05-8415-6c5416d71576",
+      "workflow_id": "b8177152-69eb-5834-8e37-010f5a0945d5",
+      "objective_id": "770a6585-8912-5419-a8d0-bd25a701cf5f"
+    }
+  ],
+  "work_plans": [],
+  "role_assignments": [
+    {
+      "id": "46ea7f6d-68e2-52b5-a344-f4a0fc58c0d2",
+      "role_id": "00bc94b3-fd33-4ef1-b686-f14a6250f161",
+      "objective_id": "a69ffd28-2c2f-4748-925a-2f7b4a3aa87c",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "731a107c-fcb9-54cb-9235-ad48420b1364",
+      "role_id": "e19540a7-bc23-4848-8e46-19bec72fa27a",
+      "objective_id": "a69ffd28-2c2f-4748-925a-2f7b4a3aa87c",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "5882d149-0941-5c74-9da6-266a793f3030",
+      "role_id": "e19540a7-bc23-4848-8e46-19bec72fa27a",
+      "objective_id": "f222e7d6-7a29-4f7f-b08a-f1d7cd2c8d37",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cbeaaefc-2f78-5b41-88d8-7e2ac89f8a86",
+      "role_id": "b57b2d87-d79e-4a18-8bf0-abdcbd73ec57",
+      "objective_id": "f222e7d6-7a29-4f7f-b08a-f1d7cd2c8d37",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a3da646b-ca93-535a-906f-6b0bd9d82a05",
+      "role_id": "a113e8ba-8f41-49fd-b756-d500aed6409c",
+      "objective_id": "f222e7d6-7a29-4f7f-b08a-f1d7cd2c8d37",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "03a24708-7543-5ad0-bb52-b4d4a5e77910",
+      "role_id": "e19540a7-bc23-4848-8e46-19bec72fa27a",
+      "objective_id": "f222e7d6-7a29-4f7f-b08a-f1d7cd2c8d37",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "857e3278-93ca-5fc8-99ee-32045abd8dbd",
+      "role_id": "4198e230-0598-4d09-a714-2b2f1f4d7cc0",
+      "objective_id": "438c2278-235b-4f76-9942-f0a3c74d6ef5",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3bcad56a-dd7a-5498-b824-abcd581aeda1",
+      "role_id": "e19540a7-bc23-4848-8e46-19bec72fa27a",
+      "objective_id": "438c2278-235b-4f76-9942-f0a3c74d6ef5",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "28fa7da0-13da-5ebe-a74f-2f48ba33fc2c",
+      "role_id": "b05b02cf-579d-438b-a38e-2c526b290769",
+      "objective_id": "499d45de-dbad-4e8b-8ed5-8bd4d0e062ac",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1cad8d96-fc00-5fca-a78e-32b090aa8755",
+      "role_id": "e19540a7-bc23-4848-8e46-19bec72fa27a",
+      "objective_id": "499d45de-dbad-4e8b-8ed5-8bd4d0e062ac",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ae7e6845-f053-50c7-b843-34133cf0f7f7",
+      "role_id": "07fb4bdf-2342-447d-b174-c13816a2f6cc",
+      "objective_id": "499d45de-dbad-4e8b-8ed5-8bd4d0e062ac",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fedc162b-0705-567f-9fb0-3cdf4a715cf7",
+      "role_id": "19fe7bb8-4f22-43d3-8900-4c1886d5cf9d",
+      "objective_id": "bd5414f3-b1fb-413d-b1dd-4fdfe9a5444f",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6fba0786-2920-54ef-b832-419903cb51f1",
+      "role_id": "19fe7bb8-4f22-43d3-8900-4c1886d5cf9d",
+      "objective_id": "bd5414f3-b1fb-413d-b1dd-4fdfe9a5444f",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e8be72b3-1678-505b-8aac-ddd2a7960fb1",
+      "role_id": "9bf07df3-17bb-465a-b411-623e60bcc87f",
+      "objective_id": "274e2941-c169-4693-ae20-bcba8622c60f",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cb6d0afa-f0de-542e-b1a7-f5bc9de66d97",
+      "role_id": "9bf07df3-17bb-465a-b411-623e60bcc87f",
+      "objective_id": "274e2941-c169-4693-ae20-bcba8622c60f",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "40e05cc3-5176-5f2a-950e-8894e95cd875",
+      "role_id": "b1e7e20c-6de3-41e7-ac19-a669d973962e",
+      "objective_id": "16cc9277-5957-42ff-ad3b-a738b796a104",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ce10eb37-524f-5af2-b74d-27e8347baf66",
+      "role_id": "19fe7bb8-4f22-43d3-8900-4c1886d5cf9d",
+      "objective_id": "16cc9277-5957-42ff-ad3b-a738b796a104",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d95674be-f33f-5b09-97c5-1c5095e6a2e1",
+      "role_id": "00bc94b3-fd33-4ef1-b686-f14a6250f161",
+      "objective_id": "bec74f46-59f1-41d2-afd4-216e6f344d72",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "be34fa26-fab0-525d-bbff-3fcf25bd3551",
+      "role_id": "e19540a7-bc23-4848-8e46-19bec72fa27a",
+      "objective_id": "bec74f46-59f1-41d2-afd4-216e6f344d72",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "391bdaab-1dd2-5708-8b41-0d900b0ee0ac",
+      "role_id": "00bc94b3-fd33-4ef1-b686-f14a6250f161",
+      "objective_id": "a568790a-9b7d-4c1a-b097-d6c723103901",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ccae1120-0e53-54c2-bc1a-a0639bde8fd9",
+      "role_id": "00bc94b3-fd33-4ef1-b686-f14a6250f161",
+      "objective_id": "a568790a-9b7d-4c1a-b097-d6c723103901",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a4634391-41a6-5f63-b66b-1b70d62282dd",
+      "role_id": "07fb4bdf-2342-447d-b174-c13816a2f6cc",
+      "objective_id": "a9916028-d258-47cd-8448-c8dfd1faafa3",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "af57aa70-648a-5366-9269-d2ad1b089ef3",
+      "role_id": "a113e8ba-8f41-49fd-b756-d500aed6409c",
+      "objective_id": "a9916028-d258-47cd-8448-c8dfd1faafa3",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e1eda808-e4cc-5f6a-8e82-c75c114d5c4b",
+      "role_id": "07fb4bdf-2342-447d-b174-c13816a2f6cc",
+      "objective_id": "a9916028-d258-47cd-8448-c8dfd1faafa3",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "97ef46b1-3af2-5c25-93b1-7117d575a0d9",
+      "role_id": "b07969fd-3de3-57d8-8b9d-9c72adaa5e6c",
+      "objective_id": "770a6585-8912-5419-a8d0-bd25a701cf5f",
+      "label": "responsible",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b8fa017c-4d88-5ce8-8935-a906688a5529",
+      "role_id": "07fb4bdf-2342-447d-b174-c13816a2f6cc",
+      "objective_id": "770a6585-8912-5419-a8d0-bd25a701cf5f",
+      "label": "accountable",
+      "created_at": "2026-11-01T00:00:00Z",
+      "last_updated": "2026-11-01T00:00:00Z",
+      "deleted": false
+    }
+  ],
+  "drafts": [],
+  "publications": []
+}
