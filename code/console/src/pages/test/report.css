@@ -1,0 +1,6 @@
+@media print{
+.app.console:has(.report){--bg:#fff;--side:#fff;--card:#fff;--chip:#eee;--sel:#eee;--line:#ccc;--line2:#999;--text:#000;--text2:#222;--text3:#444;--text4:#555;--accent:#000;--link:#000;--link-hover:#000;--ok:#0a5c36;--okbg:#e3f3ea;--bad:#9e2416;--badbg:#fbe3de;height:auto;overflow:visible}
+.app.console:has(.report) :is(.cols,.main){display:block;overflow:visible}
+.app.console:has(.report) :is(.strip,.side,.chat,.top-end,.notice,.hide-in-print){display:none}
+.app.console:has(.report) tr{break-inside:avoid}
+}
