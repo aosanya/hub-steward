@@ -1,0 +1,4 @@
+.seg{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:12px;background:var(--bg);border:1px solid var(--line2)}
+.seg-label{font-size:.8125rem;color:var(--text3)}
+.seg-item{display:inline-flex;align-items:center;min-height:32px;padding:0 14px;border:0;border-radius:9px;background:transparent;color:var(--text2);font:inherit;font-size:.8125rem;font-weight:500;cursor:pointer}
+.seg-item[aria-pressed=true]{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-line)}
