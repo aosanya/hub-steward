@@ -1,0 +1,220 @@
+{
+  "operations": {
+    "create_source": {
+      "method": "POST",
+      "path": "/sources",
+      "call": "CreateSource",
+      "action": "sources.source.create",
+      "status": 201,
+      "title": "File source",
+      "description": "File a source that content can be grounded in, with whatever properties the domain records about it.",
+      "args": [
+        { "from": "body", "whole": true },
+        {
+          "from": "caller",
+          "as": "created_by",
+          "into": "CreatedBy",
+          "description": "Who filed the source, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "get_source": {
+      "method": "GET",
+      "path": "/sources/{sourceID}",
+      "call": "GetSource",
+      "action": "sources.source.read",
+      "title": "Read source",
+      "description": "Read one source.",
+      "args": [
+        { "from": "path", "as": "sourceID", "refers": "sources.source", "description": "The source to read." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "list_sources": {
+      "method": "GET",
+      "path": "/sources",
+      "call": "ListSources",
+      "action": "sources.source.list",
+      "title": "List sources",
+      "description": "List sources, newest first, optionally narrowed to one kind.",
+      "args": [{ "from": "query", "whole": true }],
+      "returns": [{ "body": true }]
+    },
+    "update_source": {
+      "method": "PUT",
+      "path": "/sources/{sourceID}",
+      "call": "UpdateSource",
+      "action": "sources.source.update",
+      "title": "Revise source",
+      "description": "Replace a source's description and properties. Who filed it and when stay as they were.",
+      "args": [
+        { "from": "body", "whole": true },
+        {
+          "from": "path",
+          "as": "sourceID",
+          "refers": "sources.source",
+          "into": "ID",
+          "description": "The source to revise. The address decides, not the body."
+        }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "create_annotation": {
+      "method": "POST",
+      "path": "/annotations",
+      "call": "CreateAnnotation",
+      "action": "sources.annotation.create",
+      "status": 201,
+      "title": "Annotate content",
+      "description": "Link a passage of content held by another module to the source it rests on.",
+      "args": [
+        { "from": "body", "whole": true },
+        {
+          "from": "caller",
+          "as": "created_by",
+          "into": "CreatedBy",
+          "description": "Who made the annotation, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "get_annotation": {
+      "method": "GET",
+      "path": "/annotations/{annotationID}",
+      "call": "GetAnnotation",
+      "action": "sources.annotation.read",
+      "title": "Read annotation",
+      "description": "Read one annotation.",
+      "args": [
+        { "from": "path", "as": "annotationID", "refers": "sources.annotation", "description": "The annotation to read." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "list_annotations": {
+      "method": "GET",
+      "path": "/annotations",
+      "call": "ListAnnotations",
+      "action": "sources.annotation.list",
+      "title": "List annotations",
+      "description": "List annotations in the order they were made, narrowed to one item of content, one source, or both.",
+      "args": [{ "from": "query", "whole": true }],
+      "returns": [{ "body": true }]
+    },
+    "delete_annotation": {
+      "method": "DELETE",
+      "path": "/annotations/{annotationID}",
+      "call": "DeleteAnnotation",
+      "action": "sources.annotation.delete",
+      "status": 204,
+      "title": "Remove annotation",
+      "description": "Remove an annotation that should never have been made. Its verifications stay on record.",
+      "args": [
+        { "from": "path", "as": "annotationID", "refers": "sources.annotation", "description": "The annotation to remove." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "verify": {
+      "method": "POST",
+      "path": "/verifications",
+      "call": "Verify",
+      "action": "sources.verification.create",
+      "status": 201,
+      "title": "Verify",
+      "description": "Stand behind a source or an annotation, dispute it, or withdraw an earlier word. The verifier is the caller, and their name and role are recorded as they stand now.",
+      "args": [
+        { "from": "body", "whole": true },
+        {
+          "from": "caller",
+          "as": "verified_by",
+          "into": "VerifiedBy",
+          "description": "Who is vouching, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "list_verifications": {
+      "method": "GET",
+      "path": "/verifications",
+      "call": "ListVerifications",
+      "action": "sources.verification.list",
+      "title": "List verifications",
+      "description": "Read the verification history of a source or an annotation, newest first. The first one is the current state.",
+      "args": [{ "from": "query", "whole": true }],
+      "returns": [{ "body": true }]
+    },
+    "add_chunk": {
+      "method": "POST",
+      "path": "/sources/{sourceID}/chunks",
+      "call": "AddChunk",
+      "action": "sources.chunk.create",
+      "status": 201,
+      "title": "Add passage",
+      "description": "Hold one passage of a source's text, with its vector if one was produced, so it can be found by meaning.",
+      "args": [
+        { "from": "body", "whole": true },
+        {
+          "from": "path",
+          "as": "sourceID",
+          "refers": "sources.source",
+          "into": "SourceID",
+          "description": "The source the passage is from. The address decides, not the body."
+        }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "add_document": {
+      "method": "POST",
+      "path": "/sources/{sourceID}/documents",
+      "call": "AddDocument",
+      "action": "sources.document.create",
+      "status": 201,
+      "title": "Add document",
+      "description": "Split a source's text, plain or Markdown, into passages at blank lines and headings, and hold each one with the headings it sits under and where it falls in the text, so an answer can cite the exact words. No vectors are produced.",
+      "args": [
+        { "from": "body", "whole": true },
+        {
+          "from": "path",
+          "as": "sourceID",
+          "refers": "sources.source",
+          "into": "SourceID",
+          "description": "The source the document is the text of. The address decides, not the body."
+        }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "list_chunks": {
+      "method": "GET",
+      "path": "/sources/{sourceID}/chunks",
+      "call": "ListChunks",
+      "action": "sources.chunk.list",
+      "title": "List passages",
+      "description": "Read one source's passages in order.",
+      "args": [
+        { "from": "path", "as": "sourceID", "refers": "sources.source", "description": "The source whose passages to read." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "search_chunks": {
+      "method": "POST",
+      "path": "/chunks/search",
+      "call": "SearchChunks",
+      "action": "sources.chunk.search",
+      "title": "Search passages",
+      "description": "Find the passages closest in meaning to a query vector. Every match carries its source and that source's current verification, so whatever is written from it can say where it came from and who stood behind it.",
+      "args": [{ "from": "body", "whole": true }],
+      "returns": [{ "body": true }]
+    }
+  },
+  "errors": {
+    "ErrSourceNotFound": 404,
+    "ErrAnnotationNotFound": 404,
+    "ErrInvalidSource": 400,
+    "ErrInvalidAnnotation": 400,
+    "ErrInvalidVerification": 400,
+    "ErrUnverifiedCaller": 401,
+    "ErrInvalidChunk": 400,
+    "ErrInvalidDocument": 400,
+    "ErrInvalidQuery": 400
+  }
+}

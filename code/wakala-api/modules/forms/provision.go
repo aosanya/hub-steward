@@ -1,0 +1,291 @@
+package mwanachamaforms
+
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+
+	"wakalaserver/modules/shared/spec"
+)
+
+func Provision(db *gorm.DB, s *spec.Spec) error {
+	if err := renameLegacy(db, s); err != nil {
+		return err
+	}
+	if err := dropOnePerPersonIndexes(db, s); err != nil {
+		return err
+	}
+	if err := spec.Migrate(db, s); err != nil {
+		return err
+	}
+	if err := addMissingColumns(db, s); err != nil {
+		return err
+	}
+	if err := recordEarlierSends(db, s); err != nil {
+		return err
+	}
+	if err := keepStandingFormsAdvisory(db, s); err != nil {
+		return err
+	}
+	return syncConstraints(db, s)
+}
+
+func recordEarlierSends(db *gorm.DB, s *spec.Spec) error {
+	answers, submissions := tableFor(s, roleAnswer), tableFor(s, roleSubmission)
+	stmt := fmt.Sprintf(`insert into %[2]s (id, form_id, member_id, chapter_id, submitted_at, edited_at)
+select a.form_id || ':' || a.member_id || ':' || a.chapter_id, a.form_id, a.member_id, a.chapter_id, min(a.answered_at), max(a.edited_at)
+from %[1]s a
+where not exists (select 1 from %[2]s s where s.form_id = a.form_id and s.member_id = a.member_id and s.chapter_id = a.chapter_id)
+group by a.form_id, a.member_id, a.chapter_id`, answers, submissions)
+	if err := db.Exec(stmt).Error; err != nil {
+		return fmt.Errorf("forms: record earlier sends: %w", err)
+	}
+	return nil
+}
+
+func keepStandingFormsAdvisory(db *gorm.DB, s *spec.Spec) error {
+	table := tableFor(s, roleForm)
+	err := db.Table(table).Where("standing = ? AND window_advisory = ?", true, false).Update("window_advisory", true).Error
+	if err != nil {
+		return fmt.Errorf("forms: make standing forms advisory: %w", err)
+	}
+	return nil
+}
+
+func addMissingColumns(db *gorm.DB, s *spec.Spec) error {
+	for _, o := range s.Objects {
+		table := s.TableFor(o)
+		for _, f := range o.Fields {
+			present, err := hasColumn(db, table, f.Name)
+			if err != nil {
+				return err
+			}
+			if present {
+				continue
+			}
+			definition, ok := addableColumn(f)
+			if !ok {
+				return fmt.Errorf("forms: %s has no column %s, and only an optional text, bool, enum that may be empty or nullable number column can be added to a table that already holds rows", table, f.Name)
+			}
+			stmt := fmt.Sprintf("alter table %s add column %s %s", table, f.Name, definition)
+			if err := db.Exec(stmt).Error; err != nil {
+				return fmt.Errorf("forms: add %s.%s: %w", table, f.Name, err)
+			}
+		}
+	}
+	return nil
+}
+
+func addableColumn(f spec.Field) (string, bool) {
+	if f.Required || f.Primary {
+		return "", false
+	}
+	switch {
+	case f.Type == spec.TypeString, f.Type == spec.TypeText:
+		return "text default ''", true
+	case f.Type == spec.TypeBool && !f.Nullable:
+		return "boolean default false", true
+	case f.Type == spec.TypeEnum && f.Default == "" && declares(f.Values, ""):
+		return "text default ''", true
+	case f.Type == spec.TypeInt && f.Nullable:
+		return "bigint", true
+	case f.Type == spec.TypeFloat && f.Nullable:
+		return "double precision", true
+	default:
+		return "", false
+	}
+}
+
+func legacyTables(s *spec.Spec, o spec.Object) []string {
+	if s.MountName() != spec.DefaultMount {
+		return nil
+	}
+	return []string{s.Instance + "_" + o.Table}
+}
+
+const (
+	legacyTimestampColumn = "updated_at"
+	timestampColumn       = "last_updated"
+)
+
+func renameLegacy(db *gorm.DB, s *spec.Spec) error {
+	m := db.Migrator()
+	for _, o := range s.Objects {
+		declared := s.TableFor(o)
+
+		for _, legacy := range legacyTables(s, o) {
+			if legacy == declared || !m.HasTable(legacy) {
+				continue
+			}
+			if m.HasTable(declared) {
+				stranded, err := rowCount(db, legacy)
+				if err != nil {
+					return err
+				}
+				if stranded > 0 {
+					return fmt.Errorf("forms: %s and %s both exist and %s still holds %d row(s), which no read would ever reach again",
+						legacy, declared, legacy, stranded)
+				}
+				continue
+			}
+			if err := db.Exec(fmt.Sprintf("alter table %s rename to %s", legacy, declared)).Error; err != nil {
+				return fmt.Errorf("forms: rename %s to %s: %w", legacy, declared, err)
+			}
+			if err := dropLegacyIndexes(db, declared); err != nil {
+				return err
+			}
+		}
+
+		if err := renameTimestamp(db, s, o); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func renameTimestamp(db *gorm.DB, s *spec.Spec, o spec.Object) error {
+	declared := s.TableFor(o)
+	if !db.Migrator().HasTable(declared) || !declaresColumn(o, timestampColumn) {
+		return nil
+	}
+	legacy, err := hasColumn(db, declared, legacyTimestampColumn)
+	if err != nil {
+		return err
+	}
+	current, err := hasColumn(db, declared, timestampColumn)
+	if err != nil {
+		return err
+	}
+	if !legacy || current {
+		return nil
+	}
+	stmt := fmt.Sprintf("alter table %s rename column %s to %s",
+		declared, legacyTimestampColumn, timestampColumn)
+	if err := db.Exec(stmt).Error; err != nil {
+		return fmt.Errorf("forms: rename %s.%s: %w", declared, legacyTimestampColumn, err)
+	}
+	return nil
+}
+
+func dropLegacyIndexes(db *gorm.DB, table string) error {
+	query := `select name from sqlite_master where type = 'index' and tbl_name = ?`
+	if db.Dialector.Name() == "postgres" {
+		query = `select indexname from pg_indexes where tablename = ?`
+	}
+	var names []string
+	if err := db.Raw(query, table).Scan(&names).Error; err != nil {
+		return fmt.Errorf("forms: read indexes of %s: %w", table, err)
+	}
+	for _, name := range names {
+		if len(name) < 4 || name[:4] != "idx_" {
+			continue
+		}
+		if err := db.Exec("drop index if exists " + name).Error; err != nil {
+			return fmt.Errorf("forms: drop index %s: %w", name, err)
+		}
+	}
+	return nil
+}
+
+func rowCount(db *gorm.DB, table string) (int64, error) {
+	var n int64
+	if err := db.Table(table).Count(&n).Error; err != nil {
+		return 0, fmt.Errorf("forms: count %s: %w", table, err)
+	}
+	return n, nil
+}
+
+func hasColumn(db *gorm.DB, table, column string) (bool, error) {
+	query := `select 1 from pragma_table_info(?) where name = ?`
+	if db.Dialector.Name() == "postgres" {
+		query = `select 1 from information_schema.columns where table_name = ? and column_name = ?`
+	}
+	var found []int
+	if err := db.Raw(query, table, column).Scan(&found).Error; err != nil {
+		return false, fmt.Errorf("forms: read columns of %s: %w", table, err)
+	}
+	return len(found) > 0, nil
+}
+
+func declaresColumn(o spec.Object, column string) bool {
+	for _, f := range o.Fields {
+		if f.Name == column {
+			return true
+		}
+	}
+	return false
+}
+
+func tableFor(s *spec.Spec, role string) string {
+	o, ok := s.ByRole(role)
+	if !ok {
+		return ""
+	}
+	return s.TableFor(o)
+}
+
+func syncConstraints(db *gorm.DB, s *spec.Spec) error {
+	if db.Dialector.Name() != "postgres" {
+		return nil
+	}
+
+	forms := tableFor(s, roleForm)
+	questions := tableFor(s, roleQuestion)
+	options := tableFor(s, roleQuestionOption)
+	answers := tableFor(s, roleAnswer)
+	approvals := tableFor(s, roleApproval)
+
+	lockFn := options + "_locked"
+	lockTrigger := options + "_lock_trigger"
+	stmts := []string{
+		fmt.Sprintf(`CREATE OR REPLACE FUNCTION %s() RETURNS trigger AS $$
+DECLARE
+	form_status text;
+BEGIN
+	SELECT f.status INTO form_status
+	FROM %s q JOIN %s f ON f.id = q.form_id
+	WHERE q.id = COALESCE(NEW.question_id, OLD.question_id);
+	IF form_status IS DISTINCT FROM 'draft' THEN
+		RAISE EXCEPTION 'cannot modify options once the form has left draft';
+	END IF;
+	RETURN OLD;
+END;
+$$ LANGUAGE plpgsql`, lockFn, questions, forms),
+		fmt.Sprintf(`DROP TRIGGER IF EXISTS %s ON %s`, lockTrigger, options),
+		fmt.Sprintf(`CREATE TRIGGER %s BEFORE UPDATE OR DELETE ON %s FOR EACH ROW EXECUTE FUNCTION %s()`,
+			lockTrigger, options, lockFn),
+
+		fmt.Sprintf(`ALTER TABLE %s DROP CONSTRAINT IF EXISTS %s_has_exactly_one_value`, answers, answers),
+		fmt.Sprintf(`ALTER TABLE %s ADD CONSTRAINT %s_has_exactly_one_value CHECK (
+	(CASE WHEN option_ids IS NOT NULL AND option_ids::text NOT IN ('[]', 'null') THEN 1 ELSE 0 END) +
+	(CASE WHEN value_text <> '' THEN 1 ELSE 0 END) +
+	(CASE WHEN value_number IS NOT NULL THEN 1 ELSE 0 END) +
+	(CASE WHEN value_date <> '' THEN 1 ELSE 0 END) +
+	(CASE WHEN value_time <> '' THEN 1 ELSE 0 END) +
+	(CASE WHEN value_bool IS NOT NULL THEN 1 ELSE 0 END) = 1
+)`, answers, answers),
+
+		fmt.Sprintf(`CREATE UNIQUE INDEX IF NOT EXISTS %s_one_open_idx ON %s (form_id) WHERE decided_at = '' AND form_id <> ''`,
+			approvals, approvals),
+	}
+	for _, sql := range stmts {
+		if err := db.Exec(sql).Error; err != nil {
+			return fmt.Errorf("forms: syncConstraints: %w", err)
+		}
+	}
+	return nil
+}
+
+func dropOnePerPersonIndexes(db *gorm.DB, s *spec.Spec) error {
+	retired := map[string]string{roleAnswer: "question_member", roleSubmission: "form_member"}
+	for role, name := range retired {
+		table := tableFor(s, role)
+		if table == "" {
+			continue
+		}
+		if err := db.Exec("drop index if exists " + table + "_" + name + "_idx").Error; err != nil {
+			return fmt.Errorf("forms: drop %s's one-per-person index: %w", table, err)
+		}
+	}
+	return nil
+}

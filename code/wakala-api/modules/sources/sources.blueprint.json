@@ -1,0 +1,282 @@
+{
+  "module": "sources",
+  "objects": [
+    {
+      "role": "source",
+      "description": "Something that content can be grounded in — a published text, a ruling, a standard, a dataset, a page on the web. It is the thing a reader is pointed at when a passage says where it came from. A source is described here; its full text, if held at all, lives in chunks beside it or in whichever module stores the file.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers. Set when the row is written; a create request that carries one has it ignored.",
+          "primary": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "What the source is called, the way a reader would recognise it in a list. The one thing a source cannot be filed without.",
+          "required": true
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "description": "What sort of source this is, in the mounting domain's own words. Deliberately not a closed set: the words differ completely from one domain to the next, and a domain that needs to filter on them declares an index."
+        },
+        {
+          "name": "citation",
+          "type": "text",
+          "description": "The formal reference a reader would write down to find the source again, in whatever citation style the domain uses. Free text, because the styles are the domain's and not this module's."
+        },
+        {
+          "name": "locator",
+          "type": "string",
+          "description": "Where the source can be reached: a web address, a shelf mark, a register number. Empty when the only copy is the one held in chunks."
+        },
+        {
+          "name": "content_ref",
+          "type": "string",
+          "description": "Where a stored copy of the source lives in another module, as that module identifies it — a file, a commit, a blob. Empty when no copy is held."
+        },
+        {
+          "name": "issued_on",
+          "type": "string",
+          "description": "When the source was issued, published or came into effect, as the source itself states it. Free text, because some sources give only a year."
+        },
+        {
+          "name": "properties",
+          "type": "json",
+          "description": "The domain's own facts about the source — who holds the rights to it, under what licence it may be used, which jurisdiction it applies in, how confidential it is. A document, so a domain adds what it needs without this module learning the words; a domain that filters on one declares an index by path."
+        },
+        {
+          "name": "created_by",
+          "type": "string",
+          "description": "Who filed the source, supplied by the mount. Never read from the request."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the source was filed."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the source's description last changed."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "kind",
+          "description": "Listing one sort of source.",
+          "fields": ["kind"]
+        },
+        {
+          "name": "created",
+          "description": "The newest-first ordering every listing uses.",
+          "fields": ["created_at"]
+        }
+      ]
+    },
+    {
+      "role": "annotation",
+      "description": "A link from a passage of content to the source it rests on. The content lives in another module; the annotation records which part of it, which source, and what the reader should take from the connection.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers. Set when the row is written.",
+          "primary": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "description": "The source the passage rests on. Required, and it must already exist.",
+          "required": true
+        },
+        {
+          "name": "target_module",
+          "type": "string",
+          "description": "Which module holds the annotated content, as the mounting host names its modules.",
+          "required": true
+        },
+        {
+          "name": "target_id",
+          "type": "string",
+          "description": "The annotated content, as the module holding it identifies it.",
+          "required": true
+        },
+        {
+          "name": "anchor",
+          "type": "json",
+          "description": "Which part of the content the annotation is about — a character range, a heading path, a numbered paragraph. A document, because each holding module points inside its content differently. Empty when the annotation is about the whole item."
+        },
+        {
+          "name": "quote",
+          "type": "text",
+          "description": "The words of the source being relied on, copied so a reader can check them without opening it."
+        },
+        {
+          "name": "note",
+          "type": "text",
+          "description": "What the reader should take from the connection — why this source supports, qualifies or contradicts the passage."
+        },
+        {
+          "name": "created_by",
+          "type": "string",
+          "description": "Who made the annotation, supplied by the mount. Never read from the request."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the annotation was made."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "target",
+          "description": "Reading every annotation on one item of content, which is how a screen showing that item lays out its references.",
+          "fields": ["target_module", "target_id"]
+        },
+        {
+          "name": "source",
+          "description": "Finding everything that rests on one source, which is what a reader needs when that source is withdrawn or overruled.",
+          "fields": ["source_id"]
+        }
+      ]
+    },
+    {
+      "role": "verification",
+      "description": "Someone standing behind a source or an annotation — or declining to. Append-only: the most recent one is the current state, and the earlier ones are the record of how it got there.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers. Set when the row is written.",
+          "primary": true
+        },
+        {
+          "name": "subject_role",
+          "type": "enum",
+          "description": "Whether a source or an annotation is being vouched for.",
+          "required": true,
+          "values": ["source", "annotation"]
+        },
+        {
+          "name": "subject_id",
+          "type": "string",
+          "description": "The source or annotation being vouched for. Required, and it must already exist.",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "description": "What the verifier is saying: that it holds, that it does not, or that an earlier word of theirs no longer stands.",
+          "required": true,
+          "values": ["verified", "disputed", "withdrawn"]
+        },
+        {
+          "name": "verified_by",
+          "type": "string",
+          "description": "Who vouched, supplied by the mount. Never read from the request."
+        },
+        {
+          "name": "verifier_name",
+          "type": "string",
+          "description": "The verifier's name as it stood when they vouched, filled in by the mount's profile lookup. Kept so the record still reads correctly after a name changes."
+        },
+        {
+          "name": "verifier_role",
+          "type": "string",
+          "description": "The role the verifier held when they vouched, filled in by the mount's profile lookup. Kept because whether a word counts often depends on the role behind it, and roles change."
+        },
+        {
+          "name": "note",
+          "type": "text",
+          "description": "What the verifier checked, or why they dispute it."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the verifier vouched. The latest one is the current state."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "subject",
+          "description": "Reading the history of one source or annotation, newest first.",
+          "fields": ["subject_role", "subject_id", "created_at"]
+        }
+      ]
+    },
+    {
+      "role": "chunk",
+      "description": "One passage of a source's text, held so it can be found by meaning and handed to whoever is writing with it. A retrieval result is always a chunk with its source, so whatever is written from it can say where it came from.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers. Set when the row is written.",
+          "primary": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "description": "The source this passage is from. Required, and it must already exist.",
+          "required": true
+        },
+        {
+          "name": "position",
+          "type": "int",
+          "description": "Where the passage falls in the source, counting from zero, so passages read back in order."
+        },
+        {
+          "name": "text",
+          "type": "text",
+          "description": "The passage itself.",
+          "required": true
+        },
+        {
+          "name": "heading",
+          "type": "string",
+          "description": "The headings the passage sits under in the document it was split from, outermost first and joined by \" / \", so an answer citing it can name the section. Empty when the passage sits under no heading or was filed on its own."
+        },
+        {
+          "name": "start_offset",
+          "type": "int",
+          "description": "Where the passage begins in the document it was split from, counted in bytes from the start of that document's text, so a citation can point at the exact words. Zero when the passage was filed on its own."
+        },
+        {
+          "name": "end_offset",
+          "type": "int",
+          "description": "Where the passage ends in the document it was split from, in bytes, one past its last byte. Zero when the passage was filed on its own."
+        },
+        {
+          "name": "embedding",
+          "type": "json",
+          "description": "The passage as a vector of numbers, produced by whoever filed it. Searching compares a query's vector with this one, so every chunk searched together must come from the same model."
+        },
+        {
+          "name": "embedding_model",
+          "type": "string",
+          "description": "Which model produced the vector. A search only compares chunks whose model matches the query's."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the passage was filed."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "source",
+          "description": "Reading one source's passages in order.",
+          "fields": ["source_id", "position"]
+        },
+        {
+          "name": "model",
+          "description": "Narrowing a search to the chunks one model produced.",
+          "fields": ["embedding_model"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "operations": {
+    "create_workbook": {
+      "method": "POST",
+      "path": "/workbooks",
+      "call": "CreateWorkbook",
+      "status": 201,
+      "action": "workspace.workbook.create",
+      "title": "Start a workbook",
+      "description": "Start a container of work. It belongs to whoever owns it and is empty until something is touched in it.",
+      "args": [{"from": "body", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "get_workbook": {
+      "method": "GET",
+      "path": "/workbooks/{id}",
+      "call": "GetWorkbook",
+      "action": "workspace.workbook.read",
+      "title": "Open a workbook",
+      "description": "Read one workbook by its id.",
+      "args": [{"from": "path", "as": "id", "description": "The workbook to open."}],
+      "returns": [{"body": true}]
+    },
+    "list_workbooks": {
+      "method": "GET",
+      "path": "/workbooks",
+      "call": "ListWorkbooks",
+      "action": "workspace.workbook.list",
+      "title": "List workbooks",
+      "description": "Every live workbook one person owns, most recently changed first. The owner is required: this never lists anybody else's.",
+      "args": [
+        {"from": "query", "as": "owner", "required": true, "description": "Whose workbooks to list."},
+        {"from": "query", "whole": true}
+      ],
+      "returns": [{"body": true}]
+    },
+    "update_workbook": {
+      "method": "PATCH",
+      "path": "/workbooks/{id}",
+      "call": "UpdateWorkbook",
+      "action": "workspace.workbook.update",
+      "title": "Rename a workbook",
+      "description": "Change a workbook's title or summary. What it holds is changed by working in it, not here.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "id", "into": "ID", "description": "The workbook to change."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "delete_workbook": {
+      "method": "DELETE",
+      "path": "/workbooks/{id}",
+      "call": "DeleteWorkbook",
+      "status": 204,
+      "action": "workspace.workbook.delete",
+      "title": "Retire a workbook",
+      "description": "Retire a workbook from every listing. What it referenced is left alone; the workbook was a record of the work, never the work itself.",
+      "args": [{"from": "path", "as": "id", "description": "The workbook to retire."}],
+      "returns": [{"body": true}]
+    },
+
+    "touch": {
+      "method": "POST",
+      "path": "/workbooks/{workbook_id}/references",
+      "call": "Touch",
+      "status": 201,
+      "action": "workspace.reference.touch",
+      "title": "Note what was touched",
+      "description": "Record that this workbook has met something, or met it again. The same thing is one row whose last-seen moves, not a row per visit.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "workbook_id", "into": "WorkbookID", "description": "The workbook that touched it."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "list_references": {
+      "method": "GET",
+      "path": "/workbooks/{workbook_id}/references",
+      "call": "ListReferences",
+      "action": "workspace.reference.list",
+      "title": "List what a workbook has touched",
+      "description": "Everything one workbook has met, most recent first. A row survives the thing it names being deleted, because the label was captured when it was touched.",
+      "args": [
+        {"from": "path", "as": "workbook_id", "description": "The workbook to read."},
+        {"from": "query", "whole": true}
+      ],
+      "returns": [{"body": true}]
+    },
+    "drop_reference": {
+      "method": "DELETE",
+      "path": "/references/{reference_id}",
+      "call": "DropReference",
+      "status": 204,
+      "action": "workspace.reference.drop",
+      "title": "Drop a reference",
+      "description": "Take one thing off a workbook's list without touching the thing itself.",
+      "args": [{"from": "path", "as": "reference_id", "description": "The reference to drop."}],
+      "returns": [{"body": true}]
+    },
+
+    "record": {
+      "method": "POST",
+      "path": "/workbooks/{workbook_id}/uses",
+      "call": "Record",
+      "status": 201,
+      "action": "workspace.use.record",
+      "title": "Record an act",
+      "description": "Record one act performed in this workbook, named by the declared action of the operation that performed it. The shortcut for that action moves in the same write.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "workbook_id", "into": "WorkbookID", "description": "The workbook it was performed in."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "list_uses": {
+      "method": "GET",
+      "path": "/workbooks/{workbook_id}/uses",
+      "call": "ListUses",
+      "action": "workspace.use.list",
+      "title": "List what was done",
+      "description": "What happened in this workbook, most recent first.",
+      "args": [
+        {"from": "path", "as": "workbook_id", "description": "The workbook to read."},
+        {"from": "query", "whole": true}
+      ],
+      "returns": [{"body": true}]
+    },
+    "list_shortcuts": {
+      "method": "GET",
+      "path": "/workbooks/{workbook_id}/shortcuts",
+      "call": "ListShortcuts",
+      "action": "workspace.shortcut.list",
+      "title": "List a workbook's shortcuts",
+      "description": "The acts worth offering again here, most recently used first. Nothing in this list was authored: an entry exists because somebody did the thing in this workbook.",
+      "args": [{"from": "path", "as": "workbook_id", "description": "The workbook to read."}],
+      "returns": [{"body": true}]
+    },
+
+    "issue_share": {
+      "method": "POST",
+      "path": "/workbooks/{workbook_id}/shares",
+      "call": "IssueShare",
+      "status": 201,
+      "action": "workspace.share.issue",
+      "title": "Share a workbook by key",
+      "description": "Mint a key that opens one workbook for somebody without an account here. The key is returned once and never again; only its hash is kept.",
+      "args": [
+        {"from": "path", "as": "workbook_id", "description": "The workbook to share."},
+        {"from": "body", "as": "label", "description": "What this key is being handed out for."},
+        {"from": "body", "as": "issued_by", "description": "Who is issuing it."}
+      ],
+      "returns": [{"as": "share"}, {"as": "key", "once": true}]
+    },
+    "list_shares": {
+      "method": "GET",
+      "path": "/workbooks/{workbook_id}/shares",
+      "call": "ListShares",
+      "action": "workspace.share.list",
+      "title": "List a workbook's keys",
+      "description": "Every key issued for this workbook, live and retired. Retired ones are kept so a rotation leaves a trail of what was handed out and when it stopped.",
+      "args": [{"from": "path", "as": "workbook_id", "description": "The workbook to read."}],
+      "returns": [{"body": true}]
+    },
+    "retire_share": {
+      "method": "POST",
+      "path": "/shares/{share_id}/retire",
+      "call": "RetireShare",
+      "status": 204,
+      "action": "workspace.share.retire",
+      "title": "Retire a key",
+      "description": "Stop one key opening the workbook. The row is kept rather than deleted.",
+      "args": [{"from": "path", "as": "share_id", "description": "The key to retire."}],
+      "returns": [{"body": true}]
+    },
+    "open_with_key": {
+      "method": "GET",
+      "path": "/workbooks/{workbook_id}/open",
+      "call": "OpenWithKey",
+      "action": "workspace.workbook.open",
+      "title": "Open a shared workbook",
+      "description": "Read one workbook by presenting a live key. A wrong key, a retired key and an unknown workbook are all the same answer, because telling them apart lets anyone probe which workbooks exist.",
+      "args": [
+        {"from": "path", "as": "workbook_id", "description": "The workbook to open."},
+        {"from": "query", "as": "k", "description": "The key it was shared with."}
+      ],
+      "returns": [{"body": true}]
+    }
+  },
+
+  "errors": {
+    "ErrInvalidWorkbook": 400,
+    "ErrWorkbookNotFound": 404,
+    "ErrInvalidReference": 400,
+    "ErrReferenceNotFound": 404,
+    "ErrInvalidUse": 400,
+    "ErrInvalidAction": 400,
+    "ErrInvalidShare": 400,
+    "ErrShareNotFound": 404,
+    "ErrShareRetired": 409
+  }
+}

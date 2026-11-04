@@ -1,0 +1,1619 @@
+{
+  "operations": {
+    "read_chat_activity": {
+      "method": "GET",
+      "path": "/chat/activity",
+      "call": "Activity",
+      "action": "comm.chat.activity.read",
+      "status": 200,
+      "title": "Chat activity",
+      "description": "How much traffic each room has seen, newest post first, with the totals over the whole filtered set rather than over the page.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_chat_threads": {
+      "method": "GET",
+      "path": "/groups/{structure_id}/chat/threads",
+      "call": "ListChatThreadsFor",
+      "action": "comm.chat_thread.list",
+      "status": 200,
+      "title": "A room's threads",
+      "description": "Every thread in one structure's room the caller may read, oldest first, each with its label, its audience, its unread count for the caller (the posts somebody else wrote after the caller's read point) last_message_at, the time of its latest post, and last_message, that post itself (id, author_id, author_kind, body, attachment_kind, attachment_id, created_at), both absent when nobody has posted, so a client orders rooms by the latest across the threads it may read and prints each row's preview from this list alone. A thread still with the leads is listed only to the structure's leads and to the actor who asked for it. Only for a caller the mount says belongs to that structure. A structure the caller does not belong to and one that does not exist answer identically, as a not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_person_chat_reach": {
+      "method": "GET",
+      "path": "/people/{actor_id}/chat/reach",
+      "call": "ChatReachOfPerson",
+      "action": "comm.person_reach.list",
+      "status": 200,
+      "title": "What one person can read",
+      "description": "Every thread, across every room the mount says one named person belongs to, that person may read, each with the structure it is in, its label, its audience, who asked for it when somebody did, and the reason she can read it: group when the thread is open to everybody who belongs, asked when it is still with the leads and she is the one who asked for it, leads when it is still with the leads and she is one of them. It carries no post, no unread count and no read point, and direct messages are never listed. A person who belongs to no room, one the mount does not know and an invented id all answer identically, as a not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "actor_id",
+          "required": true,
+          "description": "The person whose reach this is."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "start_chat_thread": {
+      "method": "POST",
+      "path": "/groups/{structure_id}/chat/threads",
+      "call": "StartChatThreadFor",
+      "action": "comm.chat_thread.create",
+      "status": 201,
+      "title": "Start a thread",
+      "description": "Starts a thread with a label in one structure's room, for any caller the mount says belongs to that structure. The thread begins in the private stage, readable by the callers the mount says lead the structure until one of them opens it to the group. A thread a caller who does not lead the structure starts names them as its requester, so they read and write in it beside the leads, and every lead the mount names for the structure is told through a notification naming the thread. A lead's label the room already has, in any case or spacing, answers with that thread rather than a second one; anybody else's answers with it only when the caller may already read it and tells nobody, and a label held by a thread the caller may not read is given a thread of its own, so starting never reveals one. A caller who does not belong to the structure and a structure that does not exist answer identically, as a not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session, who becomes the thread's requester unless they lead the structure."
+        },
+        {
+          "from": "body",
+          "as": "label",
+          "required": true,
+          "description": "The thread's name, as the room's thread list shows it."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "open_chat_thread": {
+      "method": "POST",
+      "path": "/groups/{structure_id}/chat/threads/{thread_id}/open",
+      "call": "OpenChatThreadFor",
+      "action": "comm.chat_thread.open",
+      "status": 200,
+      "title": "Open a thread to the group",
+      "description": "Opens a thread that only the structure's leads could read to everybody who belongs to the structure, keeping every post written before. Opening a thread that is already the group's answers with it unchanged. Only a caller the mount says leads the structure may open one; anybody else, a thread that was never minted and a thread of another structure all answer the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "path",
+          "as": "thread_id",
+          "refers": "comm.chat_thread",
+          "required": true,
+          "description": "The thread, which must belong to that structure's room."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "decline_chat_thread": {
+      "method": "POST",
+      "path": "/groups/{structure_id}/chat/threads/{thread_id}/decline",
+      "call": "DeclineChatThreadFor",
+      "action": "comm.chat_thread.decline",
+      "status": 200,
+      "title": "Decline a thread request",
+      "description": "Closes a thread somebody asked for, still with the leads, without opening it. From then on it stays listed and readable to the leads and the caller who asked for it, and to nobody else; it is read-only, so a post to it is refused as a conflict, and a lead may still open it to the group, which makes it an ordinary open thread. The caller who asked for it is told through a notification naming the thread and the lead who declined. Declining a thread already declined answers with it unchanged and tells nobody again. A thread that is already the group's, or that nobody asked for, is refused as a conflict. Only a caller the mount says leads the structure may decline one; anybody else, a thread that was never minted and a thread of another structure all answer the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "path",
+          "as": "thread_id",
+          "refers": "comm.chat_thread",
+          "required": true,
+          "description": "The thread, which must belong to that structure's room."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_chat_messages": {
+      "method": "GET",
+      "path": "/groups/{structure_id}/chat/threads/{thread_id}/messages",
+      "call": "ListChatMessagesFor",
+      "action": "comm.chat_message.list",
+      "status": 200,
+      "title": "Posts in a thread",
+      "description": "Every post in one thread of a structure's room, oldest first, for a caller who belongs to that structure. An outsider, a thread that was never minted and a thread of another structure all answer the same not-found. Given after, only the posts that come after that one, so a reader asks for what is new since the last post it holds; given before, only the posts that come before that one. Given limit, only the newest that many of what remains, still oldest first, so a reader opens a long room on its last page and asks for the page before it. An after or a before naming no post of this thread answers the same not-found. Each post carries author_kind when the host named a kind for its author when it was posted, and omits it otherwise.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "path",
+          "as": "thread_id",
+          "refers": "comm.chat_thread",
+          "required": true,
+          "description": "The thread, which must belong to that structure's room."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        },
+        {
+          "from": "query",
+          "as": "after",
+          "refers": "comm.chat_message",
+          "description": "Optional. A post's id in this thread: only posts after it are returned. Omitted, every post is."
+        },
+        {
+          "from": "query",
+          "as": "before",
+          "refers": "comm.chat_message",
+          "description": "Optional. A post's id in this thread: only posts before it are returned."
+        },
+        {
+          "from": "query",
+          "as": "limit",
+          "description": "Optional. How many posts to return: the newest that the other arguments leave, still oldest first. Omitted or 0, all of them; negative is refused."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "post_chat_message": {
+      "method": "POST",
+      "path": "/groups/{structure_id}/chat/threads/{thread_id}/messages",
+      "call": "PostChatMessageFor",
+      "action": "comm.chat_message.post",
+      "status": 201,
+      "title": "Post in a thread",
+      "description": "Posts one message to a thread of a structure's room the caller belongs to. The author is the session's: a body naming another author is ignored, so nobody can post as somebody else. The post is stamped with author_kind, the kind the host names for that author at the moment of posting, and omits it when the host names none; the body has no such field, so a body that sends one is ignored.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "path",
+          "as": "thread_id",
+          "refers": "comm.chat_thread",
+          "required": true,
+          "description": "The thread, which must belong to that structure's room."
+        },
+        {
+          "from": "caller",
+          "as": "author_id",
+          "description": "The author, from the session."
+        },
+        {
+          "from": "body",
+          "as": "body",
+          "required": true,
+          "description": "The post itself, as written."
+        },
+        {
+          "from": "body",
+          "as": "attachment_kind",
+          "description": "What kind of thing the post refers to, in the host's vocabulary. Optional, and only with attachment_id."
+        },
+        {
+          "from": "body",
+          "as": "attachment_id",
+          "description": "The id of the thing the post refers to. Optional, and only with attachment_kind."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_chat_message": {
+      "method": "GET",
+      "path": "/chat/messages/{message_id}",
+      "call": "GetChatMessageFor",
+      "action": "comm.chat_message.read",
+      "status": 200,
+      "title": "A chat message by id",
+      "description": "One message in a structure's room, read by its id, answering its structure_id and thread_id so a notice naming the message can open where it was posted. Its author reads it while they belong to the structure, even once it has been removed; anybody else reads it only while they may read its thread and only while it stands. A message the caller may not read, a removed one read by anybody but its author and an invented id answer identically, as a not-found. It carries author_kind when the host named a kind for its author when it was posted.",
+      "args": [
+        {
+          "from": "path",
+          "as": "message_id",
+          "refers": "comm.chat_message",
+          "required": true,
+          "description": "The message."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "mark_chat_thread_read": {
+      "method": "POST",
+      "path": "/groups/{structure_id}/chat/threads/{thread_id}/read",
+      "call": "MarkChatThreadReadFor",
+      "action": "comm.chat_thread.mark_read",
+      "status": 200,
+      "title": "Mark a thread read",
+      "description": "Moves the caller's own read point in one thread of a structure's room they belong to, up to the post the body names or, naming none, up to now. The point never moves backwards. The reader is the session's: nobody marks a thread read for somebody else. An outsider, a thread that was never minted and a post of another thread all answer the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "path",
+          "as": "thread_id",
+          "refers": "comm.chat_thread",
+          "required": true,
+          "description": "The thread, which must belong to that structure's room."
+        },
+        {
+          "from": "caller",
+          "as": "reader_id",
+          "description": "The reader, from the session."
+        },
+        {
+          "from": "body",
+          "as": "message_id",
+          "refers": "comm.chat_message",
+          "description": "The last post the reader has seen, which must be in this thread. Absent marks everything posted until now as read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_archived_chat_threads": {
+      "method": "GET",
+      "path": "/groups/{structure_id}/chat/threads/archived",
+      "call": "ListArchivedChatThreadsFor",
+      "action": "comm.chat_thread.list_archived",
+      "status": 200,
+      "title": "The threads you archived",
+      "description": "The threads of one structure's room the caller archived for themselves and may still read, oldest first, in the same shape as the room's list, so an archived thread can be found and brought back. Nobody else's archive is ever shown: the reader is the session's. A structure the caller does not belong to and one that does not exist answer identically, as a not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "archive_chat_thread": {
+      "method": "POST",
+      "path": "/groups/{structure_id}/chat/threads/{thread_id}/archive",
+      "call": "ArchiveChatThreadFor",
+      "action": "comm.chat_thread.archive",
+      "status": 200,
+      "title": "Archive a thread for yourself",
+      "description": "Sets one thread of a structure's room the caller may read aside for the caller alone: it leaves their list of the room's threads and stays in everybody else's. Archiving again keeps the first archive. The reader is the session's: nobody archives a thread for somebody else. An outsider and a thread that was never minted answer the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "path",
+          "as": "thread_id",
+          "refers": "comm.chat_thread",
+          "required": true,
+          "description": "The thread, which must belong to that structure's room."
+        },
+        {
+          "from": "caller",
+          "as": "reader_id",
+          "description": "The reader, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "unarchive_chat_thread": {
+      "method": "DELETE",
+      "path": "/groups/{structure_id}/chat/threads/{thread_id}/archive",
+      "call": "UnarchiveChatThreadFor",
+      "action": "comm.chat_thread.unarchive",
+      "status": 204,
+      "title": "Bring an archived thread back",
+      "description": "Removes the caller's own archive of one thread of a structure's room, so the thread is in their list again. A thread the caller never archived is already back and answers the same. An outsider and a thread that was never minted answer the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "path",
+          "as": "thread_id",
+          "refers": "comm.chat_thread",
+          "required": true,
+          "description": "The thread, which must belong to that structure's room."
+        },
+        {
+          "from": "caller",
+          "as": "reader_id",
+          "description": "The reader, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "open_subject_thread": {
+      "method": "POST",
+      "path": "/subjects/{subject_kind}/{subject_id}/threads",
+      "call": "OpenSubjectThreadFor",
+      "action": "comm.subject_thread.open",
+      "status": 200,
+      "title": "Open a thread about a subject",
+      "description": "Returns the caller's private thread on a subject, or the subject's group thread, opening it the first time. A private thread is always the caller's own. A caller the host gives no standing on the subject, and a subject that does not exist, answer the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "subject_kind",
+          "required": true,
+          "description": "What kind of thing the subject is, in the host's own vocabulary."
+        },
+        {
+          "from": "path",
+          "as": "subject_id",
+          "required": true,
+          "description": "Which thing of that kind the conversation is about."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        },
+        {
+          "from": "body",
+          "as": "audience",
+          "required": true,
+          "description": "private, for a thread between the caller and whoever answers for the subject; group, for the thread everyone the subject reached can read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_subject_threads": {
+      "method": "GET",
+      "path": "/subjects/{subject_kind}/{subject_id}/threads",
+      "call": "ListSubjectThreadsFor",
+      "action": "comm.subject_thread.list",
+      "status": 200,
+      "title": "Threads about a subject",
+      "description": "The threads about one subject the caller may read, each with its message count and the time of its last message. Somebody the subject reached sees the group thread and their own private one; whoever answers for the subject sees every thread.",
+      "args": [
+        {
+          "from": "path",
+          "as": "subject_kind",
+          "required": true,
+          "description": "What kind of thing the subject is, in the host's own vocabulary."
+        },
+        {
+          "from": "path",
+          "as": "subject_id",
+          "required": true,
+          "description": "Which thing of that kind the conversation is about."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_subject_thread": {
+      "method": "GET",
+      "path": "/subject-threads/{thread_id}",
+      "call": "GetSubjectThreadFor",
+      "action": "comm.subject_thread.read",
+      "status": 200,
+      "title": "A subject thread by id",
+      "description": "One thread about a subject, read by its id, answering its subject_kind, subject_id and audience (private or group) so a notice naming the thread can open what it is about. Behind the same standing as its messages: a thread the caller may not read and one that was never opened answer the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "refers": "comm.subject_thread",
+          "required": true,
+          "description": "The thread."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_subject_messages": {
+      "method": "GET",
+      "path": "/subject-threads/{thread_id}/messages",
+      "call": "ListSubjectMessagesFor",
+      "action": "comm.subject_message.list",
+      "status": 200,
+      "title": "Messages on a subject thread",
+      "description": "Every message on one thread about a subject, oldest first. A message posted by whoever answers for the subject carries no author for anybody else, so it reads as the answering side's. A thread the caller may not read and one that was never opened answer the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "refers": "comm.subject_thread",
+          "required": true,
+          "description": "The thread."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "post_subject_message": {
+      "method": "POST",
+      "path": "/subject-threads/{thread_id}/messages",
+      "call": "PostSubjectMessageFor",
+      "action": "comm.subject_message.post",
+      "status": 201,
+      "title": "Post on a subject thread",
+      "description": "Posts one message to a thread about a subject the caller may read, and tells everyone it replies to through their notifications: on a private thread, the one it is with when the answering side posts, and everyone the host names as answering for the subject when the one it is with posts; on a group thread, everyone else from the subject's audience who has posted there. The author is the session's.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "refers": "comm.subject_thread",
+          "required": true,
+          "description": "The thread."
+        },
+        {
+          "from": "caller",
+          "as": "author_id",
+          "description": "The author, from the session."
+        },
+        {
+          "from": "body",
+          "as": "body",
+          "required": true,
+          "description": "The message itself, as written."
+        },
+        {
+          "from": "body",
+          "as": "regarding_id",
+          "description": "An optional finer reference inside the subject the message is about. Empty means the subject as a whole."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_dm_threads": {
+      "method": "GET",
+      "path": "/dm/threads",
+      "call": "ListDMThreadsFor",
+      "action": "comm.dm_thread.list",
+      "status": 200,
+      "title": "My conversations",
+      "description": "Every conversation the caller is currently invited to or active in. Each row carries only the caller's own address index, never the other party's.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_dm_thread": {
+      "method": "GET",
+      "path": "/dm/threads/{thread_id}",
+      "call": "GetDMThreadFor",
+      "action": "comm.dm_thread.read",
+      "status": 200,
+      "title": "One conversation",
+      "description": "One conversation the caller is on the roster of. A conversation that exists but the caller is not on, and one that was never minted, answer identically — the status code must not become an enumeration oracle.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "required": true,
+          "description": "The conversation."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_dm_participants": {
+      "method": "GET",
+      "path": "/dm/threads/{thread_id}/participants",
+      "call": "ListDMParticipantsFor",
+      "action": "comm.dm_participant.list",
+      "status": 200,
+      "title": "Who is on a conversation",
+      "description": "Every participant's standing on one conversation, for a caller who is on its roster.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "required": true,
+          "description": "The conversation."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "invite_to_dm_thread": {
+      "method": "POST",
+      "path": "/dm/threads/{thread_id}/invite",
+      "call": "Invite",
+      "action": "comm.dm_participant.invite",
+      "status": 201,
+      "title": "Invite somebody",
+      "description": "Admin-only. Invites one actor onto a conversation, or returns an already-active one to invited without disturbing their admin flag.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "required": true,
+          "description": "The conversation."
+        },
+        {
+          "from": "body",
+          "as": "actor_id",
+          "required": true,
+          "description": "Who to invite."
+        },
+        {
+          "from": "caller",
+          "as": "by",
+          "description": "The admin issuing the invite, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "accept_dm_invite": {
+      "method": "POST",
+      "path": "/dm/threads/{thread_id}/accept",
+      "call": "Accept",
+      "action": "comm.dm_participant.accept",
+      "status": 200,
+      "title": "Accept an invite",
+      "description": "The caller accepts their own invite. Nobody can accept on somebody else's behalf, because the actor is the session's and not the body's.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "required": true,
+          "description": "The conversation."
+        },
+        {
+          "from": "caller",
+          "as": "actor_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "leave_dm_thread": {
+      "method": "POST",
+      "path": "/dm/threads/{thread_id}/leave",
+      "call": "Leave",
+      "action": "comm.dm_participant.leave",
+      "status": 204,
+      "title": "Leave a conversation",
+      "description": "The caller leaves. Refused when the caller is the only active admin and other participants are still active, since every roster write needs an admin and nobody could restore one.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "required": true,
+          "description": "The conversation."
+        },
+        {
+          "from": "caller",
+          "as": "actor_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "kick_from_dm_thread": {
+      "method": "POST",
+      "path": "/dm/threads/{thread_id}/kick",
+      "call": "Kick",
+      "action": "comm.dm_participant.kick",
+      "status": 204,
+      "title": "Remove somebody",
+      "description": "Admin-only, and a self-kick is refused — leaving is the act for that, and it carries the last-admin rule a kick would bypass.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "required": true,
+          "description": "The conversation."
+        },
+        {
+          "from": "body",
+          "as": "actor_id",
+          "required": true,
+          "description": "Who to remove."
+        },
+        {
+          "from": "caller",
+          "as": "by",
+          "description": "The admin issuing it, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "promote_dm_participant": {
+      "method": "POST",
+      "path": "/dm/threads/{thread_id}/promote",
+      "call": "Promote",
+      "action": "comm.dm_participant.promote",
+      "status": 200,
+      "title": "Make somebody an admin",
+      "description": "Admin-only. A plain update rather than an upsert: promoting somebody who was never on the roster is a not-found, never a silently created row.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "required": true,
+          "description": "The conversation."
+        },
+        {
+          "from": "body",
+          "as": "actor_id",
+          "required": true,
+          "description": "Who to promote."
+        },
+        {
+          "from": "caller",
+          "as": "by",
+          "description": "The admin issuing it, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "reenable_dm_participant": {
+      "method": "POST",
+      "path": "/dm/threads/{thread_id}/re-enable",
+      "call": "ReEnableFor",
+      "action": "comm.dm_participant.reenable",
+      "status": 200,
+      "title": "Rejoin or readmit",
+      "description": "An admin returns somebody to invited. A departed participant re-enabling themselves is allowed only while nobody else is active, and that claim is one conditional statement so two of them cannot both win.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "required": true,
+          "description": "The conversation."
+        },
+        {
+          "from": "body",
+          "as": "actor_id",
+          "description": "Who to re-enable. Absent means the caller themselves, which is how a departed participant rejoins."
+        },
+        {
+          "from": "caller",
+          "as": "by",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_dm_messages": {
+      "method": "GET",
+      "path": "/dm/threads/{thread_id}/messages",
+      "call": "ListDMMessagesFor",
+      "action": "comm.dm_message.list",
+      "status": 200,
+      "title": "Messages on a conversation",
+      "description": "Every message still within its deadline, oldest first, for a caller who is active on the roster. The timer is read off the conversation, where it was frozen when the conversation opened.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "required": true,
+          "description": "The conversation."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "publish_dm_device_key": {
+      "method": "POST",
+      "path": "/dm/device-keys",
+      "call": "PublishDMDeviceKeyFor",
+      "action": "comm.dm_device_key.publish",
+      "status": 201,
+      "title": "Publish a device key",
+      "description": "Publishes one of the caller's handset keys. The owner, the publisher and the handset are session facts: a body claiming any of them is overwritten rather than refused.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true,
+          "description": "The key to publish."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The owner, from the session."
+        },
+        {
+          "from": "device",
+          "as": "device_id",
+          "description": "The handset, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "lookup_dm_device_keys": {
+      "method": "POST",
+      "path": "/dm/device-keys/lookup",
+      "call": "LookupDeviceKeys",
+      "action": "comm.dm_device_key.lookup",
+      "status": 200,
+      "title": "Look up device keys",
+      "description": "Every live key for the actors named, so a sender can seal a message to each of their handsets. Retired keys are never returned.",
+      "args": [
+        {
+          "from": "body",
+          "as": "actor_ids",
+          "required": true,
+          "description": "Whose keys to look up."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_dm_reactions": {
+      "method": "GET",
+      "path": "/dm/threads/{thread_id}/reactions",
+      "call": "ListDMReactionsFor",
+      "action": "comm.dm_reaction.list",
+      "status": 200,
+      "title": "Reactions on a conversation",
+      "description": "Every reaction on every message of one conversation, for a caller who is active on the roster.",
+      "args": [
+        {
+          "from": "path",
+          "as": "thread_id",
+          "required": true,
+          "description": "The conversation."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_dm_reaction": {
+      "method": "PUT",
+      "path": "/dm/messages/{message_id}/reaction",
+      "call": "SetDMReactionFor",
+      "action": "comm.dm_reaction.set",
+      "status": 204,
+      "title": "React to a message",
+      "description": "Sets the caller's own reaction to one message, replacing whatever they had on it. The reactor is the session's, so nobody can react as somebody else.",
+      "args": [
+        {
+          "from": "path",
+          "as": "message_id",
+          "required": true,
+          "description": "The message."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The reactor, from the session."
+        },
+        {
+          "from": "body",
+          "as": "emoji",
+          "required": true,
+          "description": "The reaction."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "clear_dm_reaction": {
+      "method": "DELETE",
+      "path": "/dm/messages/{message_id}/reaction",
+      "call": "ClearDMReactionFor",
+      "action": "comm.dm_reaction.clear",
+      "status": 204,
+      "title": "Take a reaction back",
+      "description": "Clears the caller's own reaction to one message, and only their own.",
+      "args": [
+        {
+          "from": "path",
+          "as": "message_id",
+          "required": true,
+          "description": "The message."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The reactor, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_report_queue": {
+      "method": "GET",
+      "path": "/groups/{structure_id}/moderation/reports",
+      "call": "ListReportQueue",
+      "action": "comm.report.queue",
+      "status": 200,
+      "title": "The moderation queue",
+      "description": "Every post somebody has asked the moderators of one structure to look at, newest first.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "Whose queue."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_reports_for_message": {
+      "method": "GET",
+      "path": "/groups/{structure_id}/moderation/messages/{message_id}/reports",
+      "call": "ListReportsForMessage",
+      "action": "comm.report.for_message",
+      "status": 200,
+      "title": "Reports against one post",
+      "description": "Every report filed against one post, newest first.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "ignored": true,
+          "description": "The structure whose queue the post sits in."
+        },
+        {
+          "from": "path",
+          "as": "message_id",
+          "refers": "comm.chat_message",
+          "required": true,
+          "description": "The post."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_my_addresses": {
+      "method": "GET",
+      "path": "/dm/addresses",
+      "call": "ListMyAddresses",
+      "action": "comm.address.list_mine",
+      "status": 200,
+      "title": "My addresses",
+      "description": "The caller's own view of every address they hold, retired ones included. The plaintext comes back only for an address its owner asked to be held.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The owner, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "retire_my_address": {
+      "method": "POST",
+      "path": "/dm/addresses/{index}/retire",
+      "call": "RetireMyAddress",
+      "action": "comm.address.retire",
+      "status": 204,
+      "title": "Retire an address",
+      "description": "Stops one of the caller's own addresses accepting new conversations. Conversations already open under it keep working — retiring must never sever one the other party is in the middle of.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The owner, from the session."
+        },
+        {
+          "from": "path",
+          "as": "index",
+          "required": true,
+          "description": "Which of the caller's own addresses."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_notifications": {
+      "method": "GET",
+      "path": "/notifications",
+      "call": "List",
+      "action": "comm.notification.list",
+      "status": 200,
+      "title": "My notifications",
+      "description": "The caller's own notifications, newest first. There is no stored title or body: a client renders both from the event and the subject it names, and from the display names the raiser gave beside the subject's id, as they were when it was raised.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The recipient, from the session."
+        },
+        {
+          "from": "query",
+          "as": "limit",
+          "description": "How many to return."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "count_unread_notifications": {
+      "method": "GET",
+      "path": "/notifications/unread",
+      "call": "UnreadCount",
+      "action": "comm.notification.unread",
+      "status": 200,
+      "title": "My unread badge",
+      "description": "How many of the caller's own notifications are unread.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The recipient, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "as": "unread"
+        }
+      ]
+    },
+    "mark_notifications_read": {
+      "method": "POST",
+      "path": "/notifications/read",
+      "call": "MarkMyNotificationsRead",
+      "action": "comm.notification.mark_read",
+      "status": 200,
+      "title": "Mark notifications read",
+      "description": "Marks some of the caller's own notifications read, and reports how many it moved. Read is the recipient's own assertion and the only column a client writes.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The recipient, from the session."
+        },
+        {
+          "from": "body",
+          "as": "ids",
+          "refers": "comm.notification",
+          "required": true,
+          "description": "Which notifications."
+        },
+        {
+          "from": "body",
+          "as": "read_at",
+          "description": "When they were read, RFC3339. Absent means now, from the server's clock."
+        }
+      ],
+      "returns": [
+        {
+          "as": "marked"
+        }
+      ]
+    },
+    "acknowledge_notification": {
+      "method": "POST",
+      "path": "/notifications/{notification_id}/acknowledge",
+      "call": "AcknowledgeNotification",
+      "action": "comm.notification.acknowledge",
+      "status": 200,
+      "title": "Acknowledge a notification",
+      "description": "Confirms the caller has acted on one of their own notifications, and answers the acknowledgement. Acknowledging again answers the first one unchanged. It does not mark the notification read. A notification that is somebody else's, or that does not exist, is a not-found.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The recipient, from the session."
+        },
+        {
+          "from": "path",
+          "as": "notification_id",
+          "refers": "comm.notification",
+          "required": true,
+          "description": "Which notification."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_notification_receipts": {
+      "method": "GET",
+      "path": "/notification-receipts",
+      "call": "NotificationReceipts",
+      "action": "comm.notification.receipts",
+      "status": 200,
+      "title": "Who a notification reached and who acted on it",
+      "description": "Every recipient one subject was raised for, each with when the notification was raised, when they read it and when they acknowledged it, oldest id first. A recipient with no acknowledgement has not acted; a recipient who muted the category was never raised for and is not listed. Pass the id of the last receipt as after to read the next page. Who may read it is the mount's to decide.",
+      "args": [
+        {
+          "from": "query",
+          "as": "subject_kind",
+          "required": true,
+          "description": "What kind of thing the notifications were about, in the host's own vocabulary."
+        },
+        {
+          "from": "query",
+          "as": "subject_id",
+          "required": true,
+          "description": "Which thing of that kind."
+        },
+        {
+          "from": "query",
+          "as": "event",
+          "description": "Only the notifications raised for this event."
+        },
+        {
+          "from": "query",
+          "as": "after",
+          "refers": "comm.notification",
+          "description": "The notification id of the last receipt already read."
+        },
+        {
+          "from": "query",
+          "as": "limit",
+          "description": "How many to return."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_notification_preferences": {
+      "method": "GET",
+      "path": "/notification-preferences",
+      "call": "ListPreferences",
+      "action": "comm.notification_preference.list",
+      "status": 200,
+      "title": "My notification settings",
+      "description": "Which categories the caller has muted. A category with no row is on, because absent is on.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The recipient, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_notification_preference": {
+      "method": "PUT",
+      "path": "/notification-preferences/{category}",
+      "call": "SetNotificationPreferenceFor",
+      "action": "comm.notification_preference.set",
+      "status": 200,
+      "title": "Mute or unmute a category",
+      "description": "Mutes or unmutes one category for the caller. A category the mounted domain does not declare is a not-found; one the domain marks exempt is refused with the reason rather than stored as unmuted.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The recipient, from the session."
+        },
+        {
+          "from": "path",
+          "as": "category",
+          "required": true,
+          "description": "Which category."
+        },
+        {
+          "from": "body",
+          "as": "muted",
+          "required": true,
+          "description": "Whether to mute it."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "subscribe_push": {
+      "method": "POST",
+      "path": "/push-subscriptions",
+      "call": "SubscribePushFor",
+      "action": "comm.push_subscription.subscribe",
+      "status": 201,
+      "title": "Subscribe this browser to pushes",
+      "description": "Stores one of the caller's browser push subscriptions, so that every notification raised for the caller is also sent to this browser as a Web Push. The body is the browser's PushSubscription as it serialises it; the subscriber and the handset are session facts, so a body naming anybody else is ignored. Re-subscribing an endpoint replaces it, and an endpoint somebody else held becomes the caller's.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The subscriber, from the session."
+        },
+        {
+          "from": "device",
+          "as": "device_id",
+          "description": "The handset, from the session."
+        },
+        {
+          "from": "body",
+          "as": "endpoint",
+          "required": true,
+          "description": "The push service URL the browser minted."
+        },
+        {
+          "from": "body",
+          "as": "keys",
+          "required": true,
+          "description": "The browser's p256dh public key and auth secret, base64url."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "create_standing_message": {
+      "method": "POST",
+      "path": "/groups/{structure_id}/chat/standing",
+      "call": "CreateStandingMessageFor",
+      "action": "comm.standing_message.create",
+      "status": 201,
+      "title": "Set up a standing message",
+      "description": "Sets up a message the host posts into a structure's room at each occurrence of its schedule until its end or until it is stopped. The author is the session's. Only the room's leads may set one up. A caller who does not belong to the structure, does not lead it, or cannot read the named thread, answers the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "caller",
+          "as": "author_id",
+          "description": "The author, from the session."
+        },
+        {
+          "from": "body",
+          "as": "thread_id",
+          "refers": "comm.chat_thread",
+          "description": "The thread it posts into, which must belong to that structure's room. Absent posts into the room itself."
+        },
+        {
+          "from": "body",
+          "as": "body",
+          "required": true,
+          "description": "The message itself, as written."
+        },
+        {
+          "from": "body",
+          "as": "rule",
+          "description": "The recurrence rule of the schedule, an RFC 5545 RRULE. Give this or dates, exactly one."
+        },
+        {
+          "from": "body",
+          "as": "dates",
+          "description": "The schedule as a list of YYYY-MM-DD dates, each sent at the start's local time. Give this or rule, exactly one."
+        },
+        {
+          "from": "body",
+          "as": "zone",
+          "required": true,
+          "description": "The IANA time zone the schedule is read in."
+        },
+        {
+          "from": "body",
+          "as": "start",
+          "required": true,
+          "description": "The first occurrence, RFC3339. The schedule is read as shared's recur wire shape."
+        },
+        {
+          "from": "body",
+          "as": "end",
+          "description": "When it stops on its own, RFC3339. Absent runs until stopped; a list of dates needs one."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_standing_message": {
+      "method": "GET",
+      "path": "/groups/{structure_id}/chat/standing/{standing_id}",
+      "call": "GetStandingMessageFor",
+      "action": "comm.standing_message.get",
+      "status": 200,
+      "title": "Read a standing message",
+      "description": "Reads one standing message of a structure's room the caller belongs to. An outsider, one never set up and one in a thread the caller cannot read all answer the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "path",
+          "as": "standing_id",
+          "refers": "comm.standing_message",
+          "required": true,
+          "description": "The standing message."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The reader, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_standing_messages": {
+      "method": "GET",
+      "path": "/groups/{structure_id}/chat/standing",
+      "call": "ListStandingMessagesFor",
+      "action": "comm.standing_message.list",
+      "status": 200,
+      "title": "List standing messages",
+      "description": "Lists the standing messages of a structure's room the caller belongs to, stopped ones included, oldest first, leaving out any in a thread the caller cannot read.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The reader, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "stop_standing_message": {
+      "method": "POST",
+      "path": "/groups/{structure_id}/chat/standing/{standing_id}/stop",
+      "call": "StopStandingMessageFor",
+      "action": "comm.standing_message.stop",
+      "status": 200,
+      "title": "Stop a standing message",
+      "description": "Stops a standing message so the host posts it no more. The one who stops it is the session's. Stopping one already stopped is a conflict. Only the room's leads may stop one; anybody else answers the same not-found.",
+      "args": [
+        {
+          "from": "path",
+          "as": "structure_id",
+          "required": true,
+          "description": "The structure whose room this is."
+        },
+        {
+          "from": "path",
+          "as": "standing_id",
+          "refers": "comm.standing_message",
+          "required": true,
+          "description": "The standing message."
+        },
+        {
+          "from": "caller",
+          "as": "stopped_by",
+          "description": "Who stops it, from the session."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "unsubscribe_push": {
+      "method": "POST",
+      "path": "/push-subscriptions/unsubscribe",
+      "call": "UnsubscribePushFor",
+      "action": "comm.push_subscription.unsubscribe",
+      "status": 204,
+      "title": "Stop pushes to this browser",
+      "description": "Removes one of the caller's own push subscriptions by its endpoint. An endpoint the caller does not hold is left alone and answers the same, so the call is safe to repeat.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The subscriber, from the session."
+        },
+        {
+          "from": "body",
+          "as": "endpoint",
+          "required": true,
+          "description": "The push service URL to stop sending to."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_push_deliveries": {
+      "method": "GET",
+      "path": "/notifications/{notification_id}/deliveries",
+      "call": "PushDeliveriesOf",
+      "action": "comm.push_delivery.list",
+      "status": 200,
+      "title": "Whom a notification reached",
+      "description": "Every push attempt one notification made, oldest first: the recipient, the subscription it was sent to, what the push service answered (sent, failed or gone) and when. It is the record of whom the notification reached, kept after the subscriptions are dropped and pruned once older than the retention period. Who may read it is the mount's to decide; an unknown notification answers an empty list.",
+      "args": [
+        {
+          "from": "path",
+          "as": "notification_id",
+          "refers": "comm.notification",
+          "required": true,
+          "description": "The notification whose delivery record this is."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    }
+  },
+  "errors": {
+    "ErrChatNotFound": 404,
+    "ErrChatInvalid": 400,
+    "ErrChatNotDeclinable": 409,
+    "ErrChatThreadDeclined": 409,
+    "ErrSubjectNotFound": 404,
+    "ErrSubjectInvalid": 400,
+    "ErrDMNotFound": 404,
+    "ErrDMAlreadyActive": 409,
+    "ErrDMSelfKick": 409,
+    "ErrDMLastAdmin": 409,
+    "ErrDMNotLastToLeave": 403,
+    "ErrDMNotAdmin": 403,
+    "ErrDMInvalidReaction": 400,
+    "ErrModerationNotFound": 404,
+    "ErrAlreadyDecided": 409,
+    "ErrReviewerIsRemover": 403,
+    "ErrAlreadyRemoved": 409,
+    "ErrAddressNotFound": 404,
+    "ErrAddressBadSettings": 400,
+    "ErrNotificationNotFound": 404,
+    "ErrNotificationNoSuchCategory": 404,
+    "ErrNotificationCategoryExempt": 409,
+    "ErrNotificationCapSpent": 409,
+    "ErrNotificationInvalid": 400,
+    "ErrNotificationMuted": 409,
+    "ErrInvalidReference": 400,
+    "ErrConflict": 409,
+    "ErrPushSubscriptionInvalid": 400,
+    "ErrStandingInvalid": 400,
+    "ErrStandingNotFound": 404,
+    "ErrStandingStopped": 409
+  }
+}

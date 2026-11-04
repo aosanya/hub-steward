@@ -1,0 +1,165 @@
+// Package models holds mwanachamacomm's domain types and the repository
+// interfaces they're read and written through — Chat*, DM*, and
+// moderation's Report/Removal/Dismissal/Dispute. Callers use models.ChatThread
+// etc. directly; the root package holds the GORM-backed implementations
+// (see gormstore/ for row shapes and doc.go for the split rationale).
+package models
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"time"
+)
+
+// ErrChatNotFound is returned when a chat thread or message id has no record.
+var ErrChatNotFound = errors.New("chat: not found")
+
+var ErrChatInvalid = errors.New("chat: invalid")
+
+var ErrChatThreadDeclined = errors.New("chat: a declined thread is read-only")
+
+var ErrChatNotDeclinable = errors.New("chat: only a thread somebody asked for, still with the leads, can be declined")
+
+type ChatThread struct {
+	ID          string       `json:"id"`
+	StructureID string       `json:"structure_id"`
+	TagPath     string       `json:"tag_path"`
+	Label       string       `json:"label"`
+	Audience    ChatAudience `json:"audience"`
+	RequestedBy string       `json:"requested_by,omitempty"`
+	DeclinedAt  *time.Time   `json:"declined_at,omitempty"`
+	DeclinedBy  string       `json:"declined_by,omitempty"`
+	CreatedAt   time.Time    `json:"created_at"`
+}
+
+type ChatAudience string
+
+const (
+	ChatAudienceLeads ChatAudience = "leads"
+	ChatAudienceGroup ChatAudience = "group"
+)
+
+func (t ChatThread) Declined() bool { return t.DeclinedAt != nil }
+
+func (t ChatThread) Declinable() bool {
+	return !t.Declined() && t.Audience == ChatAudienceLeads && t.RequestedBy != ""
+}
+
+type ChatReachReason string
+
+const (
+	ChatReachGroup ChatReachReason = "group"
+	ChatReachAsked ChatReachReason = "asked"
+	ChatReachLeads ChatReachReason = "leads"
+)
+
+func (t ChatThread) ReadableReason(actorID string, leads bool) (ChatReachReason, bool) {
+	switch {
+	case t.Audience != ChatAudienceLeads:
+		return ChatReachGroup, true
+	case leads:
+		return ChatReachLeads, true
+	case actorID != "" && actorID == t.RequestedBy:
+		return ChatReachAsked, true
+	default:
+		return "", false
+	}
+}
+
+func (t ChatThread) ReadableBy(actorID string, leads bool) bool {
+	_, ok := t.ReadableReason(actorID, leads)
+	return ok
+}
+
+type ChatReach struct {
+	StructureID string          `json:"structure_id"`
+	ThreadID    string          `json:"thread_id"`
+	Label       string          `json:"label"`
+	Audience    ChatAudience    `json:"audience"`
+	RequestedBy string          `json:"requested_by,omitempty"`
+	Reason      ChatReachReason `json:"reason"`
+}
+
+type ChatMessage struct {
+	ID          string    `json:"id"`
+	StructureID string    `json:"structure_id"`
+	ThreadID    string    `json:"thread_id,omitempty"`
+	AuthorID    string    `json:"author_id"`
+	AuthorKind  string    `json:"author_kind,omitempty"`
+	Body        string    `json:"body"`
+	CreatedAt   time.Time `json:"created_at"`
+
+	AttachmentKind string `json:"attachment_kind,omitempty"`
+	AttachmentID   string `json:"attachment_id,omitempty"`
+}
+
+func (m ChatMessage) AttachmentIsWhole() error {
+	if (m.AttachmentKind == "") != (m.AttachmentID == "") {
+		return fmt.Errorf("%w: attachment_kind and attachment_id are set together or not at all", ErrChatInvalid)
+	}
+	return nil
+}
+
+type ChatReadMarker struct {
+	ID          string    `json:"id"`
+	StructureID string    `json:"structure_id"`
+	ThreadID    string    `json:"thread_id"`
+	ReaderID    string    `json:"reader_id"`
+	ReadAt      time.Time `json:"read_at"`
+	MarkedAt    time.Time `json:"marked_at"`
+}
+
+type ChatArchive struct {
+	ID          string    `json:"id"`
+	StructureID string    `json:"structure_id"`
+	ThreadID    string    `json:"thread_id"`
+	ReaderID    string    `json:"reader_id"`
+	ArchivedAt  time.Time `json:"archived_at"`
+}
+
+type ChatLastMessage struct {
+	ID             string    `json:"id"`
+	AuthorID       string    `json:"author_id"`
+	AuthorKind     string    `json:"author_kind,omitempty"`
+	Body           string    `json:"body"`
+	AttachmentKind string    `json:"attachment_kind,omitempty"`
+	AttachmentID   string    `json:"attachment_id,omitempty"`
+	CreatedAt      time.Time `json:"created_at"`
+}
+
+type ChatThreadView struct {
+	ChatThread
+	Unread        int              `json:"unread"`
+	LastMessageAt *time.Time       `json:"last_message_at,omitempty"`
+	LastMessage   *ChatLastMessage `json:"last_message,omitempty"`
+}
+
+func (m ChatMessage) Last() ChatLastMessage {
+	return ChatLastMessage{
+		ID:             m.ID,
+		AuthorID:       m.AuthorID,
+		AuthorKind:     m.AuthorKind,
+		Body:           m.Body,
+		AttachmentKind: m.AttachmentKind,
+		AttachmentID:   m.AttachmentID,
+		CreatedAt:      m.CreatedAt,
+	}
+}
+
+// ChatRepository is the persistence boundary for the chat domain.
+type ChatRepository interface {
+	MintThread(ctx context.Context, structureID, tagPath string) (ChatThread, error)
+	// ResolveThread returns the thread for a tag_path, if one exists.
+	ResolveThread(ctx context.Context, structureID, tagPath string) (ChatThread, error)
+	ListThreads(ctx context.Context, structureID string) ([]ChatThread, error)
+
+	Post(ctx context.Context, m ChatMessage) (ChatMessage, error)
+	ListMessages(ctx context.Context, structureID, threadID string) ([]ChatMessage, error)
+	GetMessage(ctx context.Context, id string) (ChatMessage, error)
+
+	// ChatActivityReader adds the one read that is scoped to no room — see
+	// chat_activity.go for what it deliberately does not return, and why the
+	// restraint is the design rather than a first cut.
+	ChatActivityReader
+}

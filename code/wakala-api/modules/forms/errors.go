@@ -1,0 +1,70 @@
+package mwanachamaforms
+
+import "errors"
+
+var (
+	ErrFormNotFound       = errors.New("mwanachamaforms: form not found")
+	ErrQuestionNotFound   = errors.New("mwanachamaforms: question not found")
+	ErrTargetNotFound     = errors.New("mwanachamaforms: target not found")
+	ErrInvalidReference   = errors.New("mwanachamaforms: invalid reference")
+	ErrDuplicateTarget    = errors.New("mwanachamaforms: chapter is already targeted")
+	ErrFormHasTarget      = errors.New("mwanachamaforms: form is already aimed at a group")
+	ErrLinkKeyTaken       = errors.New("mwanachamaforms: public link key is already taken")
+	ErrLinkNotFound       = errors.New("not found")
+	ErrRespondentClaimed  = errors.New("mwanachamaforms: respondent is already claimed by another member")
+	ErrSubmissionNotFound = errors.New("mwanachamaforms: nothing has been sent to this form")
+	ErrReportNotFound     = errors.New("mwanachamaforms: no report is published for this form")
+	ErrNotClosed          = errors.New("mwanachamaforms: form is not closed")
+	ErrNoTarget           = errors.New("mwanachamaforms: form is aimed at no group")
+	ErrInvalidReport      = errors.New("mwanachamaforms: a report needs its path, its commit and who published it")
+)
+
+var (
+	ErrInvalidForm     = errors.New("mwanachamaforms: invalid form")
+	ErrInvalidQuestion = errors.New("mwanachamaforms: invalid question")
+	ErrInvalidAnswer   = errors.New("mwanachamaforms: invalid answer")
+)
+
+var (
+	ErrMissingTitle     = errors.New("mwanachamaforms: title is required")
+	ErrMissingClosesAt  = errors.New("mwanachamaforms: closes_at is required")
+	ErrClosesInPast     = errors.New("mwanachamaforms: closes_at must be in the future")
+	ErrWindowInvalid    = errors.New("mwanachamaforms: opens_at must be before closes_at")
+	ErrAudienceConflict = errors.New("mwanachamaforms: a member-audience form cannot use interviewer collection")
+	ErrScheduleInvalid  = errors.New("mwanachamaforms: the schedule is not a valid repeat")
+)
+
+var (
+	ErrNotDraft            = errors.New("mwanachamaforms: form is not a draft")
+	ErrNotWithdrawable     = errors.New("mwanachamaforms: form cannot be withdrawn from its current status")
+	ErrNotSubmitted        = errors.New("mwanachamaforms: form is not awaiting approval")
+	ErrMissingNote         = errors.New("mwanachamaforms: a note is required to refuse")
+	ErrAwaitingApproval    = errors.New("mwanachamaforms: form is awaiting approval")
+	ErrNotApproved         = errors.New("mwanachamaforms: form has not been cleared to publish")
+	ErrApprovalNotRequired = errors.New("mwanachamaforms: this agency publishes without approval; there is nothing to submit")
+	ErrSelfApproval        = errors.New("mwanachamaforms: a form cannot be cleared by its own author")
+	ErrSlotRequired        = errors.New("mwanachamaforms: this form is cleared slot by slot; name the approval slot")
+	ErrUnknownSlot         = errors.New("mwanachamaforms: the form declares no such approval slot")
+	ErrSlotGranted         = errors.New("mwanachamaforms: that approval slot is already granted in this round")
+	ErrApproverHoldsSlot   = errors.New("mwanachamaforms: one approver may not grant two slots of a round")
+	ErrNotOpen             = errors.New("mwanachamaforms: form is not open")
+	ErrPublished           = errors.New("mwanachamaforms: a published form cannot be deleted")
+	ErrPublicFormNoTargets = errors.New("mwanachamaforms: a public-audience form cannot carry targets")
+)
+
+var (
+	ErrMissingPrompt      = errors.New("mwanachamaforms: prompt is required")
+	ErrMissingOptionLabel = errors.New("mwanachamaforms: every option label is required")
+	ErrFormNotPublished   = errors.New("mwanachamaforms: form has not been published")
+	ErrNotCurrentVersion  = errors.New("mwanachamaforms: question is not the current version")
+)
+
+var (
+	ErrFormNotOpen       = errors.New("mwanachamaforms: form is not open")
+	ErrLockedAfterSend   = errors.New("mwanachamaforms: form does not allow a send to be edited")
+	ErrOutsideWindow     = errors.New("mwanachamaforms: form is not taking answers at this time")
+	ErrPeriodClosed      = errors.New("mwanachamaforms: the period this send was opened for is no longer open")
+	ErrPeriodNotClosed   = errors.New("mwanachamaforms: that period has not closed")
+	ErrNotRepeating      = errors.New("mwanachamaforms: form does not repeat")
+	ErrQuestionNotOnForm = errors.New("mwanachamaforms: question does not belong to this form")
+)

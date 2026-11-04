@@ -1,0 +1,31 @@
+{
+  "module": "sources",
+  "domain": "wakala",
+  "instance": "app",
+  "objects": [
+    {
+      "role": "source",
+      "name": "source",
+      "table": "sources",
+      "description": "Something an agency's content is grounded in."
+    },
+    {
+      "role": "annotation",
+      "name": "annotation",
+      "table": "annotations",
+      "description": "A passage of an agency's content linked to the source it rests on."
+    },
+    {
+      "role": "verification",
+      "name": "verification",
+      "table": "verifications",
+      "description": "A member of the agency standing behind a source or an annotation, or declining to."
+    },
+    {
+      "role": "chunk",
+      "name": "chunk",
+      "table": "chunks",
+      "description": "One passage of a source's text, held for retrieval."
+    }
+  ]
+}

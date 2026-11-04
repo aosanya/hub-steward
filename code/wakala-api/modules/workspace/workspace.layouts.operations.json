@@ -1,0 +1,175 @@
+{
+  "operations": {
+    "list_layouts": {
+      "method": "GET",
+      "path": "/layouts",
+      "call": "ListLayouts",
+      "action": "workspace.layout.list",
+      "title": "List the layouts in one scope",
+      "description": "Every live layout under one scope, most recently changed first. The scope is required: this never lists everything anybody has arranged.",
+      "args": [
+        {"from": "query", "as": "scope", "required": true, "description": "Which scope to list: one workbook, one person's copy, or everything under one instance."},
+        {"from": "query", "whole": true}
+      ],
+      "returns": [{"body": true}]
+    },
+    "read_layout": {
+      "method": "GET",
+      "path": "/layouts/{layout_id}",
+      "call": "ReadLayout",
+      "action": "workspace.layout.read",
+      "title": "Read one layout, resolved",
+      "description": "One layout as the caller would work in it. A patch is applied over its base, every locked path is written back from the base, and anything the patch asked for under a lock comes back as set aside rather than applied.",
+      "args": [
+        {"from": "path", "as": "layout_id", "description": "The layout to read."},
+        {"from": "query", "as": "subject", "description": "Who is reading it. Their own patch is settled against a base that has moved on."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "create_layout": {
+      "method": "POST",
+      "path": "/layouts",
+      "call": "CreateLayout",
+      "status": 201,
+      "action": "workspace.layout.create",
+      "title": "Make a layout",
+      "description": "Make a layout: a whole arrangement, or a patch over one that is already published. It starts as a draft at version 1.",
+      "args": [{"from": "body", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "update_layout": {
+      "method": "PUT",
+      "path": "/layouts/{layout_id}",
+      "call": "UpdateLayout",
+      "action": "workspace.layout.update",
+      "title": "Replace a draft layout",
+      "description": "Replace a draft's title and body wholesale. Supplying the version you read refuses the write if somebody else has changed it since; a published layout is never replaced, only succeeded.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "layout_id", "into": "ID", "description": "The layout to replace."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "publish_layout": {
+      "method": "POST",
+      "path": "/layouts/{layout_id}/publish",
+      "call": "PublishLayout",
+      "action": "workspace.layout.publish",
+      "title": "Publish a draft layout",
+      "description": "Make a whole draft the published one for its scope. Everyone patching it stays on the version they last resolved against until they next read it.",
+      "args": [
+        {"from": "path", "as": "layout_id", "description": "The draft to publish."},
+        {"from": "body", "as": "subject", "description": "Who published it."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "propose_layout": {
+      "method": "POST",
+      "path": "/layouts/{layout_id}/propose",
+      "call": "ProposeLayout",
+      "action": "workspace.layout.propose",
+      "title": "Weigh a change without making it",
+      "description": "Resolve a patch against one layout and answer what it would change, one line per path, with a line for each part held back because the base locks it. Nothing is stored, and nothing the layout is bound to is ever run.",
+      "args": [
+        {"from": "path", "as": "layout_id", "description": "The layout to weigh it against."},
+        {"from": "body", "whole": true}
+      ],
+      "returns": [{"body": true}]
+    },
+    "patch_layout": {
+      "method": "POST",
+      "path": "/layouts/{layout_id}/patch",
+      "call": "PatchLayout",
+      "action": "workspace.layout.patch",
+      "title": "Apply a change to a layout",
+      "description": "Apply a patch and keep its inverse, so it can be undone. Paths the base locks are held back rather than applied, and kept so they apply again if the lock is lifted.",
+      "args": [
+        {"from": "path", "as": "layout_id", "description": "The layout to change."},
+        {"from": "body", "whole": true}
+      ],
+      "returns": [{"body": true}]
+    },
+    "revert_layout": {
+      "method": "POST",
+      "path": "/layouts/{layout_id}/revert",
+      "call": "RevertLayout",
+      "action": "workspace.layout.revert",
+      "title": "Undo a change to a layout",
+      "description": "Undo the last change by applying the inverse stored with it, or clear one path, or clear the whole patch and go back to the base.",
+      "args": [
+        {"from": "path", "as": "layout_id", "description": "The layout to undo a change to."},
+        {"from": "body", "whole": true}
+      ],
+      "returns": [{"body": true}]
+    },
+    "copy_layout": {
+      "method": "POST",
+      "path": "/layouts/{layout_id}/copy",
+      "call": "CopyLayout",
+      "status": 201,
+      "action": "workspace.layout.share",
+      "title": "Copy a layout to somebody",
+      "description": "Snapshot one layout, resolved, into a new draft somebody else owns, or offer it into a scope for whoever reviews drafts there. A copy is a snapshot: later changes to the original do not follow it.",
+      "args": [
+        {"from": "path", "as": "layout_id", "description": "The layout to copy."},
+        {"from": "body", "whole": true}
+      ],
+      "returns": [{"body": true}]
+    },
+    "list_layout_changes": {
+      "method": "GET",
+      "path": "/layouts/{layout_id}/changes",
+      "call": "ListLayoutChanges",
+      "action": "workspace.layout.history",
+      "title": "List a layout's changes",
+      "description": "What has been applied to one layout, most recent first, with what each one would undo. Only the last twenty are kept.",
+      "args": [
+        {"from": "path", "as": "layout_id", "description": "The layout to read."},
+        {"from": "query", "whole": true}
+      ],
+      "returns": [{"body": true}]
+    },
+    "choose_layout": {
+      "method": "PUT",
+      "path": "/workbooks/{workbook_id}/layout",
+      "call": "ChooseLayout",
+      "action": "workspace.layout.choose",
+      "title": "Choose which layout a workbook opens on",
+      "description": "Set which layout one person sees in one workbook. Two people sharing a workbook can each work in their own arrangement of it; naming no layout clears the choice.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "workbook_id", "into": "WorkbookID", "description": "The workbook being opened."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "chosen_layout": {
+      "method": "GET",
+      "path": "/workbooks/{workbook_id}/layout",
+      "call": "ChosenLayout",
+      "action": "workspace.layout.chosen",
+      "title": "Read which layout a workbook opens on",
+      "description": "Which layout one person last chose in one workbook.",
+      "args": [
+        {"from": "path", "as": "workbook_id", "description": "The workbook."},
+        {"from": "query", "as": "subject", "description": "The person."}
+      ],
+      "returns": [{"body": true}]
+    }
+  },
+
+  "errors": {
+    "ErrInvalidLayout": 400,
+    "ErrLayoutNotFound": 404,
+    "ErrLayoutMoved": 409,
+    "ErrLayoutPublished": 409,
+    "ErrLayoutNotWhole": 409,
+    "ErrLayoutNotAPatch": 409,
+    "ErrInvalidPatch": 400,
+    "ErrInvalidPointer": 400,
+    "ErrLayoutChangeNotFound": 404,
+    "ErrLayoutChangeReverted": 409,
+    "ErrInvalidCopy": 400,
+    "ErrInvalidChoice": 400,
+    "ErrChoiceNotFound": 404
+  }
+}

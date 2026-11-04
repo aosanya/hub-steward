@@ -1,0 +1,1566 @@
+{
+  "module": "taskmanager",
+  "objects": [
+    {
+      "role": "task",
+      "description": "One unit of work a person or an agent is accountable for: what is to be done, who holds it, what state it is in, and what it waits on.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "The short human-readable label, distinct from the description."
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "description": "What doing this task actually involves, in prose."
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "description": "Where the task sits in its lifecycle. Every new task lands pending; completed and cancelled are terminal.",
+          "default": "pending",
+          "values": [
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "cancelled",
+            "blocked",
+            "awaiting-direction",
+            "split"
+          ]
+        },
+        {
+          "name": "priority",
+          "type": "enum",
+          "description": "Relative urgency, used to order a queue rather than to gate anything.",
+          "default": "medium",
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        {
+          "name": "due_at",
+          "type": "timestamp",
+          "description": "The deadline. Empty when there is none."
+        },
+        {
+          "name": "tags",
+          "type": "json",
+          "description": "The labels attached to this task, denormalised from the tagging rows so a listing never joins. The tagging rows remain the authority."
+        },
+        {
+          "name": "estimated_hours",
+          "type": "float",
+          "description": "Planned effort to complete the task, in hours. Zero means unestimated."
+        },
+        {
+          "name": "context",
+          "type": "text",
+          "description": "The working memory an agent carries between attempts at this task."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        },
+        {
+          "name": "completed_at",
+          "type": "timestamp",
+          "description": "When the task reached a terminal status."
+        },
+        {
+          "name": "task_name",
+          "type": "string",
+          "description": "The project-scoped human-readable identifier minted at creation, such as MVP-001. Empty for a task in no project."
+        },
+        {
+          "name": "project_name",
+          "type": "string",
+          "description": "The slug of the project this task belongs to, denormalised so a read need not traverse the membership rows."
+        },
+        {
+          "name": "separate_branch",
+          "type": "bool",
+          "description": "Whether work on this task is isolated on a line of its own rather than done in place."
+        },
+        {
+          "name": "branch_name",
+          "type": "string",
+          "description": "The name of that isolated line of work, when there is one."
+        },
+        {
+          "name": "assigned_to",
+          "type": "string",
+          "description": "The worker currently responsible for this task. Empty means unassigned."
+        },
+        {
+          "name": "assignee_kind",
+          "type": "string",
+          "description": "What assigned_to names: agent, actor or role. Empty means unassigned, or a row older than the field, which is read as an agent."
+        },
+        {
+          "name": "workflow_run_id",
+          "type": "string",
+          "description": "The run this task belongs to, denormalised so a run's closure is one query."
+        },
+        {
+          "name": "recovery_runs_used",
+          "type": "int",
+          "description": "How many automatic retry cycles have already been charged against this task's recovery budget."
+        },
+        {
+          "name": "blocker_note",
+          "type": "text",
+          "description": "Why this task was held, written by whoever held it."
+        },
+        {
+          "name": "direction_history",
+          "type": "text",
+          "description": "The directions already given for this task, as a JSON-encoded list, so a reviewer can see what was tried."
+        },
+        {
+          "name": "parent_task_id",
+          "type": "string",
+          "description": "The task that was split to produce this one. Empty for a root task."
+        },
+        {
+          "name": "held_by",
+          "type": "string",
+          "description": "Who outside the board holds a blocked task, as an opaque label or reference the module stores and never resolves. Empty when nothing outside holds it. Kept only while the task is blocked; any other status clears it."
+        },
+        {
+          "name": "linked_ref",
+          "type": "string",
+          "description": "An opaque reference to something another module owns that this task points at, such as the questionnaire it asks its assignee to answer. Empty when the task points at nothing. The module stores it and reads it back; it never resolves it."
+        },
+        {
+          "name": "rank",
+          "type": "int",
+          "description": "The card's place in the board's order, lowest first. Minted at the bottom on creation and changed only by placing the card; an update never touches it. Ties read in creation order."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Soft delete. A deleted row is invisible to every read."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "rank",
+          "description": "Reads the board in the order a person arranged it.",
+          "fields": [
+            "rank"
+          ]
+        },
+        {
+          "name": "status",
+          "description": "Filters the queue by lifecycle state, which is every listing's first narrowing.",
+          "fields": [
+            "status"
+          ]
+        },
+        {
+          "name": "assigned_to",
+          "description": "Finds one worker's open tasks.",
+          "fields": [
+            "assigned_to"
+          ]
+        },
+        {
+          "name": "held_by",
+          "description": "Finds the blocked work one outside holder has.",
+          "fields": [
+            "held_by"
+          ]
+        },
+        {
+          "name": "workflow_run",
+          "description": "Reads one run's closure and resets it on rollback.",
+          "fields": [
+            "workflow_run_id"
+          ]
+        },
+        {
+          "name": "parent_task",
+          "description": "Rolls a split task's children up to their parent.",
+          "fields": [
+            "parent_task_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "assignment",
+      "description": "One stretch of a task being held by one assignee, from when it was handed over until it was taken back. Kept after unassigning, so a task's history of who held it survives.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Unique identifier for the stretch.",
+          "primary": true
+        },
+        {
+          "name": "task_id",
+          "type": "string",
+          "description": "The task that was held.",
+          "required": true
+        },
+        {
+          "name": "assignee_kind",
+          "type": "enum",
+          "values": [
+            "agent",
+            "actor",
+            "role"
+          ],
+          "description": "What the assignee is: a worker, a person named by the host's own id, or a role whose holders the host resolves.",
+          "required": true
+        },
+        {
+          "name": "assignee_id",
+          "type": "string",
+          "description": "The assignee's id, read as the kind says. The module never interprets it.",
+          "required": true
+        },
+        {
+          "name": "assigned_at",
+          "type": "timestamp",
+          "description": "When the task was handed over."
+        },
+        {
+          "name": "unassigned_at",
+          "type": "string",
+          "description": "When the task was taken back or handed to somebody else. Empty while the stretch is current."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "task",
+          "description": "Reads one task's history of holders.",
+          "fields": [
+            "task_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "task_todo",
+      "description": "One ordered step a task was decomposed into. A step is dispatched on its own and may run beside its siblings when nothing precedes it.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Stable human-readable identifier minted once at creation, such as TD-1. It never changes, even when the title is later edited.",
+          "unique": true,
+          "immutable": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "The short label for this step."
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "description": "What this step is for."
+        },
+        {
+          "name": "instructions",
+          "type": "text",
+          "description": "What the worker executing this step is told to do."
+        },
+        {
+          "name": "ordinality",
+          "type": "int",
+          "description": "The 1-based position of this step within its decomposition."
+        },
+        {
+          "name": "can_run_parallel",
+          "type": "bool",
+          "description": "True when nothing precedes this step, so it may be dispatched beside its siblings."
+        },
+        {
+          "name": "depends_on",
+          "type": "json",
+          "description": "The ordinalities of the steps that must finish before this one is dispatched."
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "description": "Where this step sits in its lifecycle. Skipped is terminal and does not fail the parent.",
+          "default": "pending",
+          "values": [
+            "pending",
+            "blocked",
+            "dispatched",
+            "completed",
+            "failed",
+            "skipped"
+          ]
+        },
+        {
+          "name": "parent_task_id",
+          "type": "string",
+          "description": "The task this step was decomposed from.",
+          "required": true
+        },
+        {
+          "name": "decomp_run_id",
+          "type": "string",
+          "description": "The agent run that produced this step."
+        },
+        {
+          "name": "agent_id",
+          "type": "string",
+          "description": "The worker assigned to execute this step."
+        },
+        {
+          "name": "precalls",
+          "type": "text",
+          "description": "The fetches to perform before this step runs, as a JSON-encoded list."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        },
+        {
+          "name": "workflow_run_id",
+          "type": "string",
+          "description": "The run this step belongs to, inherited from the parent task at creation."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Soft delete, set by a run's rollback cleanup. A deleted row is invisible to every read."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "parent_task",
+          "description": "Reads one task's decomposition in order.",
+          "fields": [
+            "parent_task_id"
+          ]
+        },
+        {
+          "name": "workflow_run",
+          "description": "Reads one run's closure and soft-deletes it on rollback.",
+          "fields": [
+            "workflow_run_id"
+          ]
+        },
+        {
+          "name": "code",
+          "description": "Resolves a step by the code a person quotes.",
+          "fields": [
+            "code"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "role": "agent",
+      "description": "A worker that tasks are assigned to and that reports back. At most one row per external identifier, which is what lets an assignment find-or-create.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "agent_id",
+          "type": "string",
+          "description": "The worker's identifier in whatever system runs it. Unique, and the key an upsert matches on.",
+          "required": true,
+          "unique": true
+        },
+        {
+          "name": "display_name",
+          "type": "string",
+          "description": "A human-readable label for the worker."
+        },
+        {
+          "name": "capability",
+          "type": "string",
+          "description": "What this worker is for, such as code or research. Used to route a task to something that can do it."
+        },
+        {
+          "name": "role_name",
+          "type": "string",
+          "description": "The role this worker fulfils, used as a stable filter key when matching an event to a worker."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "agent_id",
+          "description": "Finds a worker by its external identifier, which every upsert and assignment does first.",
+          "fields": [
+            "agent_id"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "role": "project",
+      "description": "A container that groups related tasks — a sprint, a milestone, an epic. Membership is many-to-many, so a task may sit in several.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The short human-readable label.",
+          "required": true
+        },
+        {
+          "name": "project_name",
+          "type": "string",
+          "description": "The URL-safe key derived from the name, and what a task's denormalised project_name holds."
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "description": "What this grouping is for."
+        },
+        {
+          "name": "repo_name",
+          "type": "string",
+          "description": "The working store this project's files are read from, when it has one."
+        },
+        {
+          "name": "github_repo",
+          "type": "string",
+          "description": "The canonical upstream store, as owner/name, when it has one."
+        },
+        {
+          "name": "task_prefix",
+          "type": "string",
+          "description": "What a task name minted in this project is prefixed with. Empty falls back to the project key and a hyphen."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Soft delete. A deleted row is invisible to every read."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "project_name",
+          "description": "Resolves the key a task carries back to the project that minted it.",
+          "fields": [
+            "project_name"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "tag",
+      "description": "A free-form label attachable to any number of tasks. Unique by name.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Stable human-readable identifier minted once at creation, such as TG-1. It never changes, even when the name is later edited.",
+          "unique": true,
+          "immutable": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The label text. Unique, and what an upsert matches on.",
+          "required": true,
+          "unique": true
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "A colour hint for whatever renders the label."
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "description": "What this label means, so two people do not use it for two things."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "name",
+          "description": "Finds a label by text, which every upsert does first.",
+          "fields": [
+            "name"
+          ],
+          "unique": true
+        },
+        {
+          "name": "code",
+          "description": "Resolves a label by the code a person quotes.",
+          "fields": [
+            "code"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "role": "deliverable",
+      "description": "Something a task or one of its steps must produce. A definition and nothing more — it carries no runtime state of its own.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Stable human-readable identifier minted once at creation, such as D-1. It never changes, even when the title is later edited.",
+          "unique": true,
+          "immutable": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "The short label for what must be produced.",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "description": "What producing this actually means."
+        },
+        {
+          "name": "deliverable_type",
+          "type": "string",
+          "description": "What kind of thing this is, so a reviewer knows how to check it."
+        },
+        {
+          "name": "parent_id",
+          "type": "string",
+          "description": "The task or step that owes this. Polymorphic, so it is not a foreign key.",
+          "required": true
+        },
+        {
+          "name": "ordinality",
+          "type": "int",
+          "description": "The 1-based position within the owner's deliverables."
+        },
+        {
+          "name": "workflow_run_id",
+          "type": "string",
+          "description": "The run this belongs to, inherited from the owner at creation."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "parent",
+          "description": "Reads one owner's deliverables in order.",
+          "fields": [
+            "parent_id"
+          ]
+        },
+        {
+          "name": "workflow_run",
+          "description": "Reads one run's closure.",
+          "fields": [
+            "workflow_run_id"
+          ]
+        },
+        {
+          "name": "code",
+          "description": "Resolves a deliverable by the code a person quotes.",
+          "fields": [
+            "code"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "role": "acceptance_criteria",
+      "description": "A verifiable condition that must hold before the task or step owning it counts as done. A reviewer writes the outcome against it.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Stable human-readable identifier minted once at creation, such as AC-1. It never changes, even when the title is later edited.",
+          "unique": true,
+          "immutable": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "The condition, stated so that it can be checked.",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "description": "How to check it, where the title is not enough."
+        },
+        {
+          "name": "parent_id",
+          "type": "string",
+          "description": "The task or step this condition is on. Polymorphic, so it is not a foreign key.",
+          "required": true
+        },
+        {
+          "name": "ordinality",
+          "type": "int",
+          "description": "The 1-based position within the owner's criteria."
+        },
+        {
+          "name": "workflow_run_id",
+          "type": "string",
+          "description": "The run this belongs to, inherited from the owner at creation."
+        },
+        {
+          "name": "result",
+          "type": "enum",
+          "description": "What the reviewer found. Empty until the review runs, which is why it carries no default.",
+          "values": [
+            "passed",
+            "failed",
+            "skipped",
+            "blocked"
+          ]
+        },
+        {
+          "name": "result_notes",
+          "type": "text",
+          "description": "What the reviewer saw, in their own words."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "parent",
+          "description": "Reads one owner's criteria in order.",
+          "fields": [
+            "parent_id"
+          ]
+        },
+        {
+          "name": "workflow_run",
+          "description": "Reads one run's closure.",
+          "fields": [
+            "workflow_run_id"
+          ]
+        },
+        {
+          "name": "code",
+          "description": "Resolves a criterion by the code a person quotes.",
+          "fields": [
+            "code"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "role": "workflow_run",
+      "description": "The anchor of one orchestrated execution: everything it produced hangs off it, and rolling it back is what undoes the whole of it.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The human-readable label for this run. Unique across every run.",
+          "required": true,
+          "unique": true
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "description": "Where the run sits in its lifecycle. Paused is a hold rather than an end; rolled_back is where a compensated run finishes; closed is where a run finishes when the time limit on the step it waited at passed with no answer.",
+          "default": "pending",
+          "values": [
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "rolled_back",
+            "rolling_back",
+            "rollback_failed",
+            "cancelling",
+            "cancelled",
+            "paused",
+            "closed"
+          ]
+        },
+        {
+          "name": "trigger_event",
+          "type": "string",
+          "description": "What started the run."
+        },
+        {
+          "name": "initiator",
+          "type": "string",
+          "description": "Who or what asked for it. Opaque to this module."
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "description": "Anything worth recording about the run that no other field holds."
+        },
+        {
+          "name": "agent_run_ids",
+          "type": "json",
+          "description": "The worker runs linked to this run, as opaque identifiers, so a rollback knows what to compensate."
+        },
+        {
+          "name": "function_job_ids",
+          "type": "json",
+          "description": "The jobs linked to this run, as opaque identifiers."
+        },
+        {
+          "name": "branch_names",
+          "type": "json",
+          "description": "The isolated lines of work linked to this run."
+        },
+        {
+          "name": "terminal_event",
+          "type": "text",
+          "description": "The condition that, when an inbound event matches it, finishes the run on its own."
+        },
+        {
+          "name": "started_at",
+          "type": "timestamp",
+          "description": "When the run first began executing."
+        },
+        {
+          "name": "completed_at",
+          "type": "timestamp",
+          "description": "When the run reached a terminal status."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        },
+        {
+          "name": "parent_workflow_run_id",
+          "type": "string",
+          "description": "The run whose failure spawned this recovery run. Empty on a top-level run."
+        },
+        {
+          "name": "root_workflow_run_id",
+          "type": "string",
+          "description": "The top of this run's chain, denormalised so the shared budget is read and charged in one query."
+        },
+        {
+          "name": "failure_pipeline_budget",
+          "type": "int",
+          "description": "How many recovery activations this lineage is allowed. Meaningful only on the root run."
+        },
+        {
+          "name": "failure_pipelines_used",
+          "type": "int",
+          "description": "How many recovery activations have been charged to this root run."
+        },
+        {
+          "name": "counted_child_run_ids",
+          "type": "json",
+          "description": "The child runs already charged to the budget, so charging the same one twice is a no-op."
+        },
+        {
+          "name": "cancelled_by",
+          "type": "string",
+          "description": "Who issued the cancel."
+        },
+        {
+          "name": "cancel_reason",
+          "type": "text",
+          "description": "Why they cancelled it."
+        },
+        {
+          "name": "cancelling_until",
+          "type": "timestamp",
+          "description": "The deadline by which in-flight work must quiesce before the run is declared cancelled."
+        },
+        {
+          "name": "last_event_at",
+          "type": "timestamp",
+          "description": "When an event last arrived carrying this run. What the watchdog sweeps on."
+        },
+        {
+          "name": "timeout_published",
+          "type": "bool",
+          "description": "Whether a timeout was already announced for this run, so it is announced once."
+        },
+        {
+          "name": "paused_at",
+          "type": "timestamp",
+          "description": "When the run was held. Non-empty suspends the watchdog for it."
+        },
+        {
+          "name": "current_step_id",
+          "type": "string",
+          "description": "The step currently executing, by its plan code."
+        },
+        {
+          "name": "current_step_started_at",
+          "type": "timestamp",
+          "description": "When the current step began."
+        },
+        {
+          "name": "failure_reason",
+          "type": "text",
+          "description": "What went wrong, written when the run fails or its rollback does. Written for whoever reads the row outside this module."
+        },
+        {
+          "name": "workflow_code",
+          "type": "string",
+          "description": "The workflow this run carries out, by the code the agency gave it."
+        },
+        {
+          "name": "workflow_version",
+          "type": "int",
+          "description": "The published version of that workflow the run began on and finishes on, whatever is published after."
+        },
+        {
+          "name": "under_way",
+          "type": "bool",
+          "description": "Whether the run is still going: true from the moment it is opened until it reaches an end status."
+        },
+        {
+          "name": "restarted_from_run_id",
+          "type": "string",
+          "description": "The stopped run this one picks up again on another version. Empty on a run that began fresh."
+        },
+        {
+          "name": "step_due_at",
+          "type": "string",
+          "description": "When, as an RFC 3339 instant in UTC, the time limit on the step the run waits at passes. Empty when the step has no limit. Kept on a closed run so a screen can say when it closed."
+        },
+        {
+          "name": "step_cancel_workflow_code",
+          "type": "string",
+          "description": "The cancel workflow, by its code, that opens when the limit on the current step passes."
+        },
+        {
+          "name": "cancel_run_id",
+          "type": "string",
+          "description": "The run of the cancel workflow that was opened when this run closed. Empty on a run that did not close."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "name",
+          "description": "Resolves a run by the label a caller quotes, and is what makes the label unique.",
+          "fields": [
+            "name"
+          ],
+          "unique": true
+        },
+        {
+          "name": "status",
+          "description": "Finds the runs still in flight.",
+          "fields": [
+            "status"
+          ]
+        },
+        {
+          "name": "parent_workflow_run",
+          "description": "Walks a recovery chain down from a failed run.",
+          "fields": [
+            "parent_workflow_run_id"
+          ]
+        },
+        {
+          "name": "root_workflow_run",
+          "description": "Reads a whole lineage, which the budget is accounted across.",
+          "fields": [
+            "root_workflow_run_id"
+          ]
+        },
+        {
+          "name": "last_event_at",
+          "description": "The watchdog's sweep, which reads every run quiet for too long.",
+          "fields": [
+            "last_event_at"
+          ]
+        },
+        {
+          "name": "under_way_workflow",
+          "description": "Lists the runs still going for one workflow with the version each is on, and finds which versions are still in use.",
+          "fields": [
+            "workflow_code",
+            "workflow_version"
+          ],
+          "where": [
+            {
+              "field": "under_way",
+              "op": "is_true"
+            }
+          ]
+        },
+        {
+          "name": "step_due",
+          "description": "The limit sweep: reads, oldest first, the runs under way whose step has a time limit, and nothing else.",
+          "fields": [
+            "step_due_at"
+          ],
+          "where": [
+            {
+              "field": "under_way",
+              "op": "is_true"
+            },
+            {
+              "field": "step_due_at",
+              "op": "not_empty"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "import_job",
+      "description": "One asynchronous import of a project and its tasks, and what it has managed so far. Its own row so a caller can ask after it once the request that started it has returned.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "description": "Where the import sits in its lifecycle.",
+          "default": "pending",
+          "values": [
+            "pending",
+            "running",
+            "completed",
+            "failed",
+            "cancelled"
+          ]
+        },
+        {
+          "name": "error_message",
+          "type": "text",
+          "description": "Why the import failed. Empty unless it did."
+        },
+        {
+          "name": "progress_steps",
+          "type": "json",
+          "description": "What the import has done so far, a line at a time, so a caller can watch it rather than wait blind."
+        },
+        {
+          "name": "tasks_created",
+          "type": "int",
+          "description": "How many tasks the import created. Meaningful once it completes."
+        },
+        {
+          "name": "deps_created",
+          "type": "int",
+          "description": "How many dependency edges the import wrote. Meaningful once it completes."
+        },
+        {
+          "name": "project_name",
+          "type": "string",
+          "description": "The project the import created. Meaningful once it completes."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "status",
+          "description": "Finds the imports still running, which a restart has to reconcile.",
+          "fields": [
+            "status"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "blocker",
+      "description": "A hard gate between two tasks: the source must reach a terminal status before the target may start. Many-to-many, so it is a row rather than a column.",
+      "fields": [
+        {
+          "name": "from_task_id",
+          "type": "string",
+          "description": "The task that must finish first.",
+          "primary": true
+        },
+        {
+          "name": "to_task_id",
+          "type": "string",
+          "description": "The task held until it does.",
+          "primary": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the gate was put in place."
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "description": "Why one waits on the other."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "to_task",
+          "description": "Answers what is holding this task, which every dispatch check asks.",
+          "fields": [
+            "to_task_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "dependency",
+      "description": "A soft ordering between two tasks: informational, with no gate of its own. Many-to-many, so it is a row rather than a column.",
+      "fields": [
+        {
+          "name": "from_task_id",
+          "type": "string",
+          "description": "The task that depends.",
+          "primary": true
+        },
+        {
+          "name": "to_task_id",
+          "type": "string",
+          "description": "The task depended on.",
+          "primary": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the dependency was recorded."
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "description": "Why one follows the other."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "to_task",
+          "description": "Answers what depends on this task, which a completion has to sweep.",
+          "fields": [
+            "to_task_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "membership",
+      "description": "Records that one task belongs to one project. Many-to-many: a task may sit in several.",
+      "fields": [
+        {
+          "name": "task_id",
+          "type": "string",
+          "description": "The task that belongs.",
+          "primary": true
+        },
+        {
+          "name": "project_id",
+          "type": "string",
+          "description": "The project it belongs to.",
+          "primary": true
+        },
+        {
+          "name": "added_at",
+          "type": "timestamp",
+          "description": "When it was added."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "project",
+          "description": "Reads one project's tasks.",
+          "fields": [
+            "project_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "tagging",
+      "description": "Records that one label is attached to one task. Many-to-many, and the authority behind a task's denormalised tags.",
+      "fields": [
+        {
+          "name": "task_id",
+          "type": "string",
+          "description": "The task labelled.",
+          "primary": true
+        },
+        {
+          "name": "tag_id",
+          "type": "string",
+          "description": "The label attached.",
+          "primary": true
+        },
+        {
+          "name": "tagged_at",
+          "type": "timestamp",
+          "description": "When it was attached."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "tag",
+          "description": "Reads every task carrying one label.",
+          "fields": [
+            "tag_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "code_sequence",
+      "description": "The next number to mint for one kind of thing's stable code, one row per kind. Separate from the things it numbers so the counter can be read and advanced without touching them.",
+      "fields": [
+        {
+          "name": "entity_type",
+          "type": "string",
+          "description": "The kind of thing being numbered, such as deliverable or tag.",
+          "primary": true
+        },
+        {
+          "name": "next_number",
+          "type": "int",
+          "description": "The number the next code for that kind will carry."
+        }
+      ]
+    },
+    {
+      "role": "case",
+      "description": "One request somebody brought, worked through the tasks linked to it. Open until every linked task is completed or cancelled, then done, or until staff end it by hand.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "requester_id",
+          "type": "string",
+          "description": "Who brought the request, taken from the caller who opened it.",
+          "required": true
+        },
+        {
+          "name": "subject_kind",
+          "type": "string",
+          "description": "What kind of thing the case is about, as the host names it. Opaque to this module."
+        },
+        {
+          "name": "subject_id",
+          "type": "string",
+          "description": "Which thing the case is about, as the host identifies it. Opaque to this module."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "A short human-readable label."
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "values": [
+            "open",
+            "done",
+            "cancelled"
+          ],
+          "description": "Where the case stands. Open until every linked task is completed or cancelled.",
+          "required": true
+        },
+        {
+          "name": "opened_at",
+          "type": "timestamp",
+          "description": "When the case was opened."
+        },
+        {
+          "name": "closed_at",
+          "type": "timestamp",
+          "description": "When the case left open, empty while it is open."
+        },
+        {
+          "name": "reply",
+          "type": "string",
+          "description": "What the requester was told when staff ended the case by hand, empty otherwise."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "requester",
+          "description": "Lists one requester's cases.",
+          "fields": [
+            "requester_id"
+          ]
+        },
+        {
+          "name": "subject",
+          "description": "Finds the cases about one thing.",
+          "fields": [
+            "subject_kind",
+            "subject_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "case_task",
+      "description": "Records that one task is worked for one case. A task serves at most one case.",
+      "fields": [
+        {
+          "name": "task_id",
+          "type": "string",
+          "description": "The task worked for the case.",
+          "primary": true
+        },
+        {
+          "name": "case_id",
+          "type": "string",
+          "description": "The case it is worked for.",
+          "required": true
+        },
+        {
+          "name": "linked_at",
+          "type": "timestamp",
+          "description": "When it was linked."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "case",
+          "description": "Reads one case's tasks.",
+          "fields": [
+            "case_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "case_vote",
+      "description": "One member's vote on one case. The key is a digest of the case and the member, so a member votes on a case once however often the vote is cast. The requester's own vote is never stored: it counts by being the requester.",
+      "fields": [
+        {"name": "vote_key", "type": "string", "description": "A digest of the case and the member, unique per member of a case.", "primary": true},
+        {"name": "case_id", "type": "string", "description": "The case voted on.", "required": true},
+        {"name": "member_id", "type": "string", "description": "The member the vote counts for.", "required": true},
+        {"name": "cast_by", "type": "string", "description": "Who cast it: the member, or the agent that cast it for the member who said so.", "required": true},
+        {"name": "voted_at", "type": "timestamp", "description": "When the vote was cast."}
+      ],
+      "indexes": [
+        {"name": "case", "description": "Counts and lists one case's votes.", "fields": ["case_id"]}
+      ]
+    },
+    {
+      "role": "repeating_task",
+      "description": "A task template made again at the start of every period of its schedule, each made task due by that period's end. Stopping it keeps every task it already made.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "The title every made task carries.",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "description": "The description every made task carries."
+        },
+        {
+          "name": "schedule_rule",
+          "type": "string",
+          "description": "The schedule's recurrence rule in RFC 5545 form. Empty when the schedule is a list of dates."
+        },
+        {
+          "name": "schedule_dates",
+          "type": "json",
+          "description": "The schedule's dates as YYYY-MM-DD, when it is a list of dates rather than a rule."
+        },
+        {
+          "name": "schedule_start",
+          "type": "timestamp",
+          "description": "When the schedule starts.",
+          "required": true
+        },
+        {
+          "name": "schedule_end",
+          "type": "timestamp",
+          "description": "When the schedule ends. Empty when it runs on."
+        },
+        {
+          "name": "schedule_zone",
+          "type": "string",
+          "description": "The IANA time zone the schedule's periods are counted in.",
+          "required": true
+        },
+        {
+          "name": "assignee_kind",
+          "type": "string",
+          "description": "What the assignee is: actor, a person named by the host's own id, or role, whose holders the host resolves.",
+          "required": true
+        },
+        {
+          "name": "assignee_id",
+          "type": "string",
+          "description": "The assignee's id, read as the kind says. The module never interprets it.",
+          "required": true
+        },
+        {
+          "name": "stopped_at",
+          "type": "timestamp",
+          "description": "When the template was stopped. Empty while it runs."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "assignee",
+          "description": "Lists one assignee's repeating tasks.",
+          "fields": [
+            "assignee_kind",
+            "assignee_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "repeating_task_period",
+      "description": "One period a repeating task has made its task for. The period key is the primary key, so a period is made once however often the host ticks.",
+      "fields": [
+        {
+          "name": "period_key",
+          "type": "string",
+          "description": "The template id and the period's start, as OccurrenceAt names it.",
+          "primary": true
+        },
+        {
+          "name": "repeating_task_id",
+          "type": "string",
+          "description": "The template the period belongs to.",
+          "required": true
+        },
+        {
+          "name": "task_id",
+          "type": "string",
+          "description": "The task made for the period.",
+          "required": true
+        },
+        {
+          "name": "period_start",
+          "type": "timestamp",
+          "description": "When the period starts."
+        },
+        {
+          "name": "due_at",
+          "type": "timestamp",
+          "description": "When the period ends, which is the made task's due time."
+        },
+        {
+          "name": "made_at",
+          "type": "timestamp",
+          "description": "When the task was made."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "template",
+          "description": "Lists the periods one template has made.",
+          "fields": [
+            "repeating_task_id"
+          ]
+        }
+      ]
+    }
+,
+    {
+      "role": "sourced_task",
+      "description": "One task opened from one item a source listed. The item key is the primary key, so an item opens its task once however often the source is replayed.",
+      "fields": [
+        {"name": "item_key", "type": "string", "description": "A digest of the source and the item's key, unique per item of a source.", "primary": true},
+        {"name": "source", "type": "string", "description": "The opaque reference the host passed for whatever listed the items. The module stores it and never resolves it.", "required": true},
+        {"name": "key", "type": "string", "description": "The item's key within its source: the one the host gave, or its title when it gave none.", "required": true},
+        {"name": "task_id", "type": "string", "description": "The task opened for the item.", "required": true},
+        {"name": "due_at", "type": "timestamp", "description": "The due time the source gave the item, which is the opened task's due time."},
+        {"name": "opened_at", "type": "timestamp", "description": "When the task was opened."}
+      ],
+      "indexes": [
+        {"name": "source", "description": "Lists the tasks one source has opened.", "fields": ["source"]}
+      ]
+    }
+,
+    {
+      "role": "generated_task",
+      "description": "One task generated from a template for one subject key of a run. The subject key is the primary key, so a subject gets its task once per run however often the run is replayed.",
+      "fields": [
+        {"name": "subject_key", "type": "string", "description": "A digest of the run and the subject, unique per subject of a run.", "primary": true},
+        {"name": "run", "type": "string", "description": "The opaque name the host gave this generation. The module stores it and never resolves it.", "required": true},
+        {"name": "subject", "type": "string", "description": "The opaque key the task was generated for, as the host listed it. The module never resolves what it names.", "required": true},
+        {"name": "task_id", "type": "string", "description": "The task generated for the subject.", "required": true},
+        {"name": "generated_at", "type": "timestamp", "description": "When the task was generated."}
+      ],
+      "indexes": [
+        {"name": "run", "description": "Lists the tasks one run has generated.", "fields": ["run"]}
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "name": "task_states",
+      "type": "json",
+      "description": "The states an agency's tasks are read in, in order, each with the lifecycle statuses it covers. A status may sit in one state at most; a status no state covers reads with no state.",
+      "default": [
+        {"name": "To do", "statuses": ["pending"]},
+        {"name": "Doing", "statuses": ["in_progress", "split"]},
+        {"name": "Waiting", "statuses": ["blocked", "awaiting-direction", "failed"]},
+        {"name": "Done", "statuses": ["completed"]},
+        {"name": "Cancelled", "statuses": ["cancelled"]}
+      ]
+    },
+    {
+      "name": "overdue_grace_hours",
+      "type": "int",
+      "description": "How many whole hours past its due date an open task may run before the overdue list carries it. Zero carries a task the moment its due date passes.",
+      "default": 0
+    }
+  ]
+}

@@ -1,0 +1,523 @@
+{
+  "module": "workspace",
+  "objects": [
+    {
+      "role": "workbook",
+      "description": "One container of work. It is opened, worked in, and accumulates what it has touched; it is not scoped to any one capability, which is the whole point of it.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Whoever it belongs to, exactly as they authenticated. Every listing is filtered by this, which is why it is a column rather than something a caller remembers to ask for.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "What it is called in the list.",
+          "required": true
+        },
+        {
+          "name": "summary",
+          "type": "text",
+          "description": "What this work is, in the owner's own words."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was started.",
+          "immutable": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When anything in it last changed."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Whether it has been retired from every listing."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "owner",
+          "description": "The list a person sees when they sign in.",
+          "fields": [
+            "owner",
+            "updated_at"
+          ],
+          "not_deleted": true
+        }
+      ]
+    },
+    {
+      "role": "reference",
+      "description": "One thing a workbook has touched, remembered well enough to render a row for it after the thing itself is gone.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "workbook_id",
+          "type": "string",
+          "description": "The workbook that touched it.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "module",
+          "type": "string",
+          "description": "Which capability it belongs to, in that capability's own name.",
+          "required": true
+        },
+        {
+          "name": "scope",
+          "type": "string",
+          "description": "Where it lives, as an opaque key this module compares and never interprets."
+        },
+        {
+          "name": "item",
+          "type": "string",
+          "description": "What it is, in the owning capability's own key."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "What to call it in a listing, captured when it was touched so a row survives the thing being deleted.",
+          "required": true
+        },
+        {
+          "name": "first_seen",
+          "type": "timestamp",
+          "description": "When this workbook first touched it.",
+          "immutable": true
+        },
+        {
+          "name": "last_seen",
+          "type": "timestamp",
+          "description": "When it last did."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Whether it has been dropped from the workbook."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "workbook",
+          "description": "Everything one workbook has touched, most recent first.",
+          "fields": [
+            "workbook_id",
+            "last_seen"
+          ],
+          "not_deleted": true
+        },
+        {
+          "name": "item",
+          "description": "Which workbooks have touched one thing.",
+          "fields": [
+            "module",
+            "item"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "use",
+      "description": "One act performed in a workbook, named by the action its own declaration carries. This is what a shortcut is computed from, and what makes a workbook a record of work rather than a folder of bookmarks.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "workbook_id",
+          "type": "string",
+          "description": "The workbook it was performed in.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "description": "The declared action performed, compared exactly and never interpreted.",
+          "required": true,
+          "matches": "action"
+        },
+        {
+          "name": "reference_id",
+          "type": "string",
+          "description": "What it was performed on, when it was performed on something."
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "description": "Who performed it. A shared workbook is used by more than one person."
+        },
+        {
+          "name": "at",
+          "type": "timestamp",
+          "description": "When.",
+          "immutable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "workbook_at",
+          "description": "What happened in this workbook, most recent first.",
+          "fields": [
+            "workbook_id",
+            "at"
+          ]
+        },
+        {
+          "name": "workbook_action",
+          "description": "How often one action has been performed here, which is what ranks a shortcut.",
+          "fields": [
+            "workbook_id",
+            "action"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "shortcut",
+      "description": "An act worth offering again. Derived from the uses beside it and never authored: it appears because somebody did the thing here, which is what keeps the list honest and what stops a menu being maintained per capability.",
+      "fields": [
+        {
+          "name": "workbook_id",
+          "type": "string",
+          "description": "The workbook it belongs to.",
+          "primary": true
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "description": "The declared action it offers.",
+          "primary": true,
+          "matches": "action"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "What to call it in the sidebar.",
+          "required": true
+        },
+        {
+          "name": "uses",
+          "type": "int",
+          "description": "How many times it has been performed here."
+        },
+        {
+          "name": "last_used",
+          "type": "timestamp",
+          "description": "When it last was, which is the other half of the ranking."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "rank",
+          "description": "The sidebar's own order: most recently used first.",
+          "fields": [
+            "workbook_id",
+            "last_used"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "share",
+      "description": "A key that opens one workbook for somebody who was sent it. Grants cover a person who already has an account here; this covers the one who does not, and is the shape mwanachama-backend-catalog's share_link already proved.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "workbook_id",
+          "type": "string",
+          "description": "The workbook it opens.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "key_hash",
+          "type": "string",
+          "description": "The key as stored. The key itself is shown once, at issue, and never again.",
+          "required": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "What this key was handed out for, so a rotation can say which one it replaced."
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "description": "Whether it still opens the workbook.",
+          "values": [
+            "active",
+            "retired"
+          ]
+        },
+        {
+          "name": "issued_by",
+          "type": "string",
+          "description": "Who issued it."
+        },
+        {
+          "name": "issued_at",
+          "type": "timestamp",
+          "description": "When.",
+          "immutable": true
+        },
+        {
+          "name": "retired_at",
+          "type": "timestamp",
+          "description": "When it stopped working. A retired key is kept rather than deleted, so a rotation leaves a trail of what was handed out and when it stopped."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "workbook_status",
+          "description": "The keys live on one workbook.",
+          "fields": [
+            "workbook_id",
+            "status"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "layout",
+      "description": "How a workbook is arranged: which regions it has, which blocks sit in them, and which declared actions those blocks are bound to. Stored whole or as a patch over another layout, and never read by this module: it keeps the document and its history, and the caller resolves it.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "scope",
+          "type": "string",
+          "description": "What it arranges, as an opaque key this module compares and never interprets: one workbook, one person's copy, or everything under one instance.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Whoever made it, exactly as they authenticated.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "What it is called where layouts are listed.",
+          "required": true
+        },
+        {
+          "name": "form",
+          "type": "enum",
+          "description": "Whether body is a whole layout or a merge patch over the layout named by base_id.",
+          "values": [
+            "whole",
+            "patch"
+          ]
+        },
+        {
+          "name": "base_id",
+          "type": "string",
+          "description": "The layout a patch applies over. Empty for a whole one."
+        },
+        {
+          "name": "base_version",
+          "type": "int",
+          "description": "The version of the base this patch was last resolved against, so a newer base can be noticed and re-resolved."
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "description": "Where it stands. Only a published layout can be the base of somebody else's patch.",
+          "values": [
+            "draft",
+            "published",
+            "retired"
+          ]
+        },
+        {
+          "name": "version",
+          "type": "int",
+          "description": "Moves on every write, so a caller can refuse to overwrite one it has not seen."
+        },
+        {
+          "name": "body",
+          "type": "json",
+          "description": "The layout, or the patch. Action ids, parameter names and block ids only; the words on screen come from elsewhere at render time."
+        },
+        {
+          "name": "set_aside",
+          "type": "json",
+          "description": "Paths in a patch held back because the base now locks them. Kept rather than dropped, so they apply again if the lock is lifted."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was made.",
+          "immutable": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When it last changed."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Whether it has been retired from every listing."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "scope",
+          "description": "The layouts one workbook, person or instance holds, most recently changed first.",
+          "fields": [
+            "scope",
+            "updated_at"
+          ],
+          "not_deleted": true
+        },
+        {
+          "name": "base",
+          "description": "Every patch over one layout, which is what a publish has to re-resolve.",
+          "fields": [
+            "base_id"
+          ],
+          "not_deleted": true
+        }
+      ]
+    },
+    {
+      "role": "layout_change",
+      "description": "One change applied to a layout, kept with its inverse so it can be undone. A change arrives the same way whether a person dragged something, a model proposed it, or a sketch was read: as a patch somebody chose to apply.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "layout_id",
+          "type": "string",
+          "description": "The layout it changed.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "description": "Who applied it. Proposing is not applying, so this is always a person."
+        },
+        {
+          "name": "via",
+          "type": "enum",
+          "description": "How it was asked for, so a history can say so.",
+          "values": [
+            "direct",
+            "chat",
+            "sketch",
+            "reset"
+          ]
+        },
+        {
+          "name": "patch",
+          "type": "json",
+          "description": "What was applied."
+        },
+        {
+          "name": "inverse",
+          "type": "json",
+          "description": "What undoes it, computed when it was applied rather than when it is undone."
+        },
+        {
+          "name": "at",
+          "type": "timestamp",
+          "description": "When it was applied.",
+          "immutable": true
+        },
+        {
+          "name": "reverted_at",
+          "type": "timestamp",
+          "description": "When it was undone. An undone change is kept, so the history still says it happened."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "layout_at",
+          "description": "One layout's history, most recent first.",
+          "fields": [
+            "layout_id",
+            "at"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "layout_choice",
+      "description": "Which layout one person sees in one workbook. Two people sharing a workbook can each work in their own arrangement of it.",
+      "fields": [
+        {
+          "name": "workbook_id",
+          "type": "string",
+          "description": "The workbook.",
+          "primary": true
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "description": "The person.",
+          "primary": true
+        },
+        {
+          "name": "layout_id",
+          "type": "string",
+          "description": "The layout they see there.",
+          "required": true
+        },
+        {
+          "name": "chosen_at",
+          "type": "timestamp",
+          "description": "When they chose it."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "layout",
+          "description": "Who is looking at one layout, which is who a retirement or a publish affects.",
+          "fields": [
+            "layout_id"
+          ]
+        }
+      ]
+    }
+  ]
+}
