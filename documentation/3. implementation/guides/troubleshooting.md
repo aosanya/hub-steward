@@ -58,7 +58,7 @@ The container keeps its SQLite file in the `wakala-data` volume at `/data`. `doc
 ## The database
 
 **The API exits with `could not open postgres`.**
-`DATABASE_URL` is set but nothing answers. Start the local database (`supabase start --workdir code`, with Docker running) or unset `DATABASE_URL` to use SQLite.
+`DATABASE_URL` is set but nothing answers. For the local database, start it (`supabase start --workdir code`, with Docker running). For a hosted Supabase project, check the connection string, the `wakala_api` password you set after `supabase db push`, and that the project is not paused ([hosted project steps](local-database.md#use-a-hosted-project)). Or unset `DATABASE_URL` to use SQLite.
 
 **`supabase start` fails.**
 Docker is not running, or the Supabase CLI is not installed ([First day](first-day.md)).

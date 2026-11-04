@@ -44,7 +44,7 @@ supabase status
 supabase stop --workdir code
 ```
 
-The first start pulls several images and applies `code/supabase/migrations/`, which creates the `wakala_api` role and the four sign-in functions the API calls. Give the API these settings, with the anon key from `supabase status`: in `.env` for `make up`, or exported in the shell that starts the server:
+The first start pulls several images and applies `code/supabase/migrations/`, which creates the `wakala_api` role and the four sign-in functions the API calls. Give the API these settings, with the anon key from `supabase status`: in `.env` for `make up`, in a `.env` in the directory you start the server from, or exported in the shell that starts it:
 
 ```sh
 DATABASE_URL=postgresql://wakala_api:wakala_local@127.0.0.1:54322/postgres?sslmode=disable

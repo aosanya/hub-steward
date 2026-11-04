@@ -9,9 +9,9 @@ One hour, in order: install the tools, run the API server, sign in to the consol
 | Go | 1.25 or newer | the Wakala API server |
 | Node.js | 22, which CI runs | the console and the phone app |
 | Docker | any recent | `make up`, and the local database |
-| Supabase CLI | optional | the local database, so members can sign in to the phone app by emailed link |
+| Supabase CLI | optional | the database that lets members sign in to the phone app by emailed link: local for developers, or a hosted Supabase project |
 
-The Supabase CLI on macOS with Homebrew: `brew install supabase/tap/supabase`. Other systems: the [Supabase CLI guide](https://supabase.com/docs/guides/cli).
+The Supabase CLI on macOS with Homebrew: `brew install supabase/tap/supabase`. Other systems: the [Supabase CLI guide](https://supabase.com/docs/guides/cli). Developers use the local database, which needs Docker. A hosted project needs the CLI but not Docker; the steps are in [Local database](local-database.md#use-a-hosted-project).
 
 ```sh
 git clone https://github.com/aosanya/hub-steward.git
