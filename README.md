@@ -130,6 +130,10 @@ WAKALA_URL=https://your-server.example npm run dev
 
 The phone app is the same: `cd code/app && npm ci && npm run dev`. Its server address is `code/app/public/config.json`.
 
+## Where it started
+
+Hub Steward was first entered in the Meta Global AI Developer Hackathon, which ran from 26 October to 4 November 2026. Meta and Cerebral Valley hosted it. Baseten, Modal and Fireworks were its partners for model hosting and credits. The project is independent and open source; see [TRADEMARKS.md](TRADEMARKS.md).
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). To report a vulnerability, see [SECURITY.md](SECURITY.md).
