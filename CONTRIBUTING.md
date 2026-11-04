@@ -33,6 +33,23 @@ cd code/app && npm ci && npm test
 
 Once the dependencies are installed, the tests need no network, no keys and no server. The bundled API has no Go test files yet, so `go test` checks only that it compiles. See [documentation/3. implementation/](documentation/3.%20implementation/) for how to run the whole stack.
 
+New here? [First day](documentation/3.%20implementation/guides/first-day.md) takes you from install to a passing `make test` in order, and [Troubleshooting](documentation/3.%20implementation/guides/troubleshooting.md) names the usual causes when a step fails.
+
+## Where things go
+
+| You are changing | It lives in | Read first |
+|---|---|---|
+| The API server: routes, agents, approvals, tools | [code/wakala-api/](code/wakala-api/) | [API server](documentation/3.%20implementation/guides/api-server.md) |
+| The console: the manager's and designer's web app | [code/console/](code/console/) | [Console](documentation/3.%20implementation/guides/console.md) |
+| The phone app | [code/app/](code/app/) | [Phone app](documentation/3.%20implementation/guides/phone-app.md) |
+| A demo agency or the Siaya lab's documents | [demo/](demo/), and the matching copy in `code/console/public/templates/` | [Write an agency](documentation/3.%20implementation/guides/write-an-agency.md) |
+| The local database | [code/supabase/](code/supabase/) | [Local database](documentation/3.%20implementation/guides/local-database.md) |
+| A translation | `code/console/public/i18n.json`, and `words.ts` and `swahili.ts` in `code/app/src/entry/` | [Languages](documentation/3.%20implementation/guides/languages.md) |
+| What the product is for, a user journey | `documentation/1. requirements/` | [Documentation](documentation/README.md) |
+| How it is built, a screen drawing | `documentation/2. design/` | [Technical spec](documentation/2.%20design/technical-spec/README.md) |
+| How to run or build it, a guide | `documentation/3. implementation/` | [Guides](documentation/3.%20implementation/guides/README.md) |
+| A test plan or a recorded result | `documentation/4. qa/` | [Testing](documentation/4.%20qa/testing/README.md) |
+
 ## House rules
 
 - **No comments in code.** A name, a type or a smaller function carries the meaning. If something needs explaining, put it in `documentation/`.
@@ -53,4 +70,14 @@ The phone app lists nine languages but has words for English and Swahili only; t
 4. Run `make test` before you push.
 5. Update the matching page under `documentation/` in the same pull request.
 
-Use the pull request template; it carries the checklist.
+### Before you open a pull request
+
+The pull request template asks for these. Check each one:
+
+- [ ] `make test` passes.
+- [ ] No comments were added to code.
+- [ ] Font sizes are `rem`, set from one root size.
+- [ ] The documentation under `documentation/` is updated, in the right phase folder.
+- [ ] No keys, passwords or real personal data are in the change.
+
+Then say what the change does, why, and how you checked it.
