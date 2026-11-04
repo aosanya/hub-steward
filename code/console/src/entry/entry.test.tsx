@@ -873,7 +873,7 @@ describe("the template choice on the create page", () => {
     expect(within(group).getByLabelText(/Computer lab/)).toBeChecked();
     expect(within(group).getByText("3 roles · 4 goals")).toBeInTheDocument();
     expect(within(group).getByText("9 roles · 4 goals")).toBeInTheDocument();
-    expect(within(group).getByText("8 roles · 5 goals")).toBeInTheDocument();
+    expect(within(group).getByText("7 roles · 4 goals")).toBeInTheDocument();
     expect(within(group).getByLabelText(/Freight and logistics/)).toBeInTheDocument();
     expect(within(group).getByLabelText(/Drone crop spraying/)).toBeInTheDocument();
     expect(within(group).getByLabelText(/Clinical research/)).toBeInTheDocument();

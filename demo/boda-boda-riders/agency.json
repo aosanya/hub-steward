@@ -8,7 +8,7 @@
   "agency": {
     "id": "c61e4358-10fd-539b-89f5-a7ccf4e94479",
     "name": "Siaya Boda Boda Riders",
-    "description": "A group of boda boda riders around a community tech hub planned in Siaya, Kenya. Riders post their fares, customers ask for rides in the Mwanachama app and pick the rider they want, and the hub's other AI roles keep its assets and network. The hub is planned, not open.",
+    "description": "A group of boda boda riders around a community tech hub planned in Siaya, Kenya. Riders post their fares, customers ask for rides in the Mwanachama app and pick the rider they want, and the hub's other AI roles keep its assets. The hub is planned, not open.",
     "enabled": true
   },
   "modules": [
@@ -38,17 +38,6 @@
       "id": "a5683c0c-aceb-5cf3-a859-d5e1b1b0855b",
       "code": "forms",
       "name": "forms",
-      "description": "",
-      "enabled": true,
-      "locked": false,
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": "213c627f-b434-50d4-8ac7-3d6bc7d9cb8c",
-      "code": "digitaltwin",
-      "name": "digitaltwin",
       "description": "",
       "enabled": true,
       "locked": false,
@@ -115,15 +104,6 @@
       "deleted": false
     },
     {
-      "id": "eb2918c4-7af2-5756-a068-fac2a9733848",
-      "objective_id": "993ebf6a-6cf0-5abd-9414-6eac5b21d8aa",
-      "module_id": "213c627f-b434-50d4-8ac7-3d6bc7d9cb8c",
-      "rationale": "The simulated network state is read from the hub's digital twin.",
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
       "id": "10ddc95e-ef63-556c-b228-162c8f7bee50",
       "objective_id": "f9ffe043-e5c3-5f67-b826-62fa1b2a16e7",
       "module_id": "f3137b88-2de9-5a76-a26a-bdac36bf00a3",
@@ -165,7 +145,7 @@
       "id": "8673d0fd-efbf-57ec-bcd5-6e3eabd6a5dd",
       "code": "R-1",
       "name": "Hub manager",
-      "description": "Runs the hub and the riders' group. Approves what the AI roles draft, hears about network faults and sees what every AI role is doing. This role is held by a person.",
+      "description": "Runs the hub and the riders' group. Approves what the AI roles draft and sees what every AI role is doing. This role is held by a person.",
       "created_at": "2026-10-26T00:00:00Z",
       "last_updated": "2026-10-26T00:00:00Z",
       "deleted": false
@@ -241,15 +221,6 @@
       "created_at": "2026-10-26T00:00:00Z",
       "last_updated": "2026-10-26T00:00:00Z",
       "deleted": false
-    },
-    {
-      "id": "ad56beff-3190-5777-a426-af31998a6b10",
-      "code": "R-8",
-      "name": "Network Watcher",
-      "description": "An AI role. Reads the hub's simulated network state and tells the hub manager when a device goes to fault, once per fault.",
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
     }
   ],
   "goals": [
@@ -279,16 +250,6 @@
       "title": "The hub knows who holds what",
       "description": "Every asset the hub lends is registered, and the hub can say who holds it.",
       "ordinality": 3,
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": "7bead251-0366-5e6d-bca1-636535916b52",
-      "code": "G-4",
-      "title": "The hub's network works",
-      "description": "A fault in the hub's network is noticed and reaches the person who can act on it.",
-      "ordinality": 4,
       "created_at": "2026-10-26T00:00:00Z",
       "last_updated": "2026-10-26T00:00:00Z",
       "deleted": false
@@ -344,17 +305,6 @@
       "goal_id": "430ac578-925b-5ab0-935a-7ae5c9366dac",
       "title": "Register assets and record who holds them",
       "description": "The Assets Keeper registers each asset with its type's fields and records the member who holds it, with the hub manager's approval.",
-      "ordinality": 1,
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": "993ebf6a-6cf0-5abd-9414-6eac5b21d8aa",
-      "code": "O-5",
-      "goal_id": "7bead251-0366-5e6d-bca1-636535916b52",
-      "title": "Watch the network and report faults",
-      "description": "The Network Watcher reads the simulated network state and tells the hub manager once when a device goes to fault.",
       "ordinality": 1,
       "created_at": "2026-10-26T00:00:00Z",
       "last_updated": "2026-10-26T00:00:00Z",
@@ -435,14 +385,6 @@
       "id": "2ce66fb4-a057-54ae-a699-1cc6cd540260",
       "code": "RU-7",
       "text": "An asset is registered with the fields its type needs, such as a serial number or a member login, and the Assets Keeper records the member who holds it; changing the holder needs the hub manager's approval.",
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": "5fd8fa11-ca48-5fbc-b583-ceb508c25120",
-      "code": "RU-8",
-      "text": "The Network Watcher alerts the hub manager once for each fault and does not repeat the alert while the fault stands.",
       "created_at": "2026-10-26T00:00:00Z",
       "last_updated": "2026-10-26T00:00:00Z",
       "deleted": false
@@ -689,16 +631,6 @@
       "deleted": false
     },
     {
-      "id": "5d897bdb-a60c-53d6-b1bc-488312c50bc6",
-      "code": "W-4",
-      "name": "Network watch",
-      "description": "From a reading of the simulated network to a told manager.",
-      "ordinality": 4,
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
       "id": "62bdc5d6-bc25-5f4d-961f-736f8595ade5",
       "code": "W-5",
       "name": "Answers and access",
@@ -829,32 +761,6 @@
       "title": "Record the holder",
       "description": "Record the member who holds the asset; the hub manager approves a change of holder.",
       "prompt": "Record the member who holds the asset; the hub manager approves a change of holder.",
-      "ordinality": 2,
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": "e62973c1-eb31-5866-b74f-fc4a94f3f645",
-      "code": "WI-9",
-      "workflow_id": "5d897bdb-a60c-53d6-b1bc-488312c50bc6",
-      "objective_id": "993ebf6a-6cf0-5abd-9414-6eac5b21d8aa",
-      "title": "Read the network state",
-      "description": "Read the hub's simulated devices and their latest states.",
-      "prompt": "Read the hub's simulated devices and their latest states.",
-      "ordinality": 1,
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": "f9cf5cac-7148-59c3-9914-9f50ca437a8f",
-      "code": "WI-10",
-      "workflow_id": "5d897bdb-a60c-53d6-b1bc-488312c50bc6",
-      "objective_id": "993ebf6a-6cf0-5abd-9414-6eac5b21d8aa",
-      "title": "Tell the hub manager",
-      "description": "When a device has gone to fault, tell the hub manager once in the manager's room.",
-      "prompt": "When a device has gone to fault, tell the hub manager once in the manager's room.",
       "ordinality": 2,
       "created_at": "2026-10-26T00:00:00Z",
       "last_updated": "2026-10-26T00:00:00Z",
@@ -1168,33 +1074,6 @@
       "id": "019fcefa-1641-57b7-85f8-742f5d519258",
       "role_id": "8c9b9441-a29a-5fe6-ad66-464b08d8ee10",
       "objective_id": "bff467b1-241b-59aa-9541-29586100bfc6",
-      "label": "informed",
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": "c4e66e04-d5f5-5a31-9eca-5fe2ae9c7b15",
-      "role_id": "8673d0fd-efbf-57ec-bcd5-6e3eabd6a5dd",
-      "objective_id": "993ebf6a-6cf0-5abd-9414-6eac5b21d8aa",
-      "label": "accountable",
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": "8857ad05-23c2-54a6-b47b-42379d372092",
-      "role_id": "ad56beff-3190-5777-a426-af31998a6b10",
-      "objective_id": "993ebf6a-6cf0-5abd-9414-6eac5b21d8aa",
-      "label": "responsible",
-      "created_at": "2026-10-26T00:00:00Z",
-      "last_updated": "2026-10-26T00:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": "e1e6cbcf-74bf-5681-a3de-bdedff96ffa3",
-      "role_id": "8c9b9441-a29a-5fe6-ad66-464b08d8ee10",
-      "objective_id": "993ebf6a-6cf0-5abd-9414-6eac5b21d8aa",
       "label": "informed",
       "created_at": "2026-10-26T00:00:00Z",
       "last_updated": "2026-10-26T00:00:00Z",
