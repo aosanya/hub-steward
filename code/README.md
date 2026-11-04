@@ -5,6 +5,7 @@
 | [app/](app/) | The phone app |
 | [console/](console/) | The console: the designer's and manager's screens |
 | [wakala-api/](wakala-api/) | The API server both apps talk to |
+| [supabase/](supabase/) | Configuration and migration for the local database |
 
 In `app/` or `console/`:
 
