@@ -13,7 +13,6 @@ Every member, message, document and agency in the demo is synthetic. The Siaya l
 | The agency's documents | Mwanachama, per agency | Members of the agency, today; narrowing writes to the manager is not decided |
 | Forms, reports and their answers | Mwanachama, per agency | The group that sent the form; the sender of a report and the people the agency names |
 | Tasks and records (for the lab: Wi-Fi account tasks; seat holds when a bookings module exists) | Mwanachama, per agency | Members of the agency, today; narrowing by role is not decided |
-| Devices (for the lab: terminals, access points, router) | Mwanachama, per agency | Not decided; the twin is not mounted yet |
 | Drafts awaiting approval | Mwanachama, per agency | The agency's owners and agents; only an owner decides |
 | Model accounts and their keys | Mwanachama, per agency, sealed in the API's database | Never shown after they are saved |
 | What the model sees | Sent to the agency's model provider for each turn | The text of the turn and the tool results it needs |

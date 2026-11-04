@@ -19,7 +19,7 @@ Hub Steward runs an agency: a member organization with roles, groups, workflows,
    AI roles of the agency    Model provider (the one the agency's AI account names)
 ```
 
-Which modules an agency has depends on its published definition. A farmers' group switches on the market and group orders; the demo lab switches on comm and tasks, and its seat holds and device readings wait on modules the bundled API does not mount yet (see the lab below).
+Which modules an agency has depends on its published definition. A farmers' group switches on the market and group orders; the demo lab switches on comm and tasks, and its seat holds wait on a module the bundled API does not mount yet (see the lab below).
 
 ## The parts
 
@@ -29,7 +29,7 @@ Which modules an agency has depends on its published definition. A farmers' grou
 | Console | Web app in `code/console` for managers and designers: people, groups, agents, models, documents, workflows, review, tests, approvals, usage | Exists |
 | Phone app | Mobile-first web app in `code/app`: chat in rooms and threads, inbox, forms, groups, market. The member's side; the code folder is `code/app` | Exists; image built, not hosted. Reports have no screen yet |
 | Agencies | Each agency's roles, goals, responsibilities, rules and workflows in one file; eight synthetic ones are in `demo/` | Exist |
-| AI roles | Agents the agency has, such as Hub Steward, Assets Keeper, Network Watcher, Farmers' agent, Suppliers' agent. Each has its own model, limits and instructions | Roles, limits, instructions and the service key exist in the API. The loop that notices a message and replies is not in this repository ([the agent](../03-the-agent/README.md), [hub keys](../hub-keys.md)); enforcement of responsibilities when an agent acts is undecided |
+| AI roles | Agents the agency has, such as Hub Steward, Assets Keeper, Farmers' agent, Suppliers' agent. Each has its own model, limits and instructions | Roles, limits, instructions and the service key exist in the API. The loop that notices a message and replies is not in this repository ([the agent](../03-the-agent/README.md), [hub keys](../hub-keys.md)); enforcement of responsibilities when an agent acts is undecided |
 
 ## Principles
 
@@ -49,7 +49,6 @@ The lab (`demo/siaya-lab`) has three roles: Lab manager, Member and Hub Steward.
 | Seat, Wi-Fi and set-up drafts waiting for the manager | Task manager | Exists; switched on in the lab's file |
 | The lab's documents | Sources | Module exists in the bundled API; not switched on in the lab's file |
 | Seat holds on terminals | A bookings module | To be built; the bundled API has none |
-| Terminals, access points, router and their readings | Digital twin | To be built; a catalog entry that is switched off, with no mount, and no readings source or simulator in this repository |
 
 ```
  Phone app (chat)             Hub Steward agent              Model provider
@@ -60,8 +59,8 @@ The lab (`demo/siaya-lab`) has three roles: Lab manager, Member and Hub Steward.
         ▼                            ▼
  ┌────────────────── Mwanachama API ───────────────────────────────────────┐
  │ agency │ chat    │ documents    │ tasks             │ planned: bookings  │
- │ roles, │ rooms,  │ passages     │ drafts, Wi-Fi     │ and the digital    │
- │ rules  │ threads │ with sources │ account tasks     │ twin (devices)     │
+ │ roles, │ rooms,  │ passages     │ drafts, Wi-Fi     │                    │
+ │ rules  │ threads │ with sources │ account tasks     │                    │
  └─────────────────────────────────────────────────────────────────────────┘
 ```
 

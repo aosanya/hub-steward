@@ -10,7 +10,7 @@ of that agency; anyone else is answered "not found".
 *manager* is the agency's owner. On the bundled API each MCP tool names a
 permission action and is refused when the caller's role does not hold it,
 so narrowing a tool to the roles shown is a matter of the agency's role
-permissions. Which role may call the device tools is not decided yet.
+permissions.
 
 MCP tools that act on an agency take it as an `instance_id` argument and
 check membership on every call, so an agency the caller does not belong to
@@ -20,7 +20,7 @@ reads exactly like one that does not exist.
 
 The sections below are grouped by what an agency's roles do with them. The
 Siaya computer lab is the worked example: it uses chat, documents, bookings,
-devices, members, approvals and tasks. Every agency uses chat, members and
+members, approvals and tasks. Every agency uses chat, members and
 approvals; the rest depend on the modules its published definition switches on.
 
 | Capability | Used by | Lab example |
@@ -28,7 +28,6 @@ approvals; the rest depend on the modules its published definition switches on.
 | [Chat](#chat) | Every agency | Members ask in the lab's room |
 | [Documents](#documents) | Any agency that answers from its own documents | House rules, Wi-Fi guide, booking rules, opening hours |
 | [Bookings](#bookings) | Agencies that hold shared things for a time | Seats as holds on terminals |
-| [Devices](#devices) | Agencies that watch equipment | Terminals, access points, router, solar |
 | [Members](#members) | Every agency | Member set-up |
 | [Approvals, tasks and the agent](#approvals-tasks-and-the-agent) | Every agency | A seat or Wi-Fi draft the manager approves |
 | [Other families on the MCP endpoint](#other-families-on-the-mcp-endpoint) | Agencies that switch the module on | Not used by the lab |
@@ -76,23 +75,6 @@ Paths are relative to `/instances/{agency}/assetmanager`. These are the asset ma
 | List holds | `GET /holds` | reads holds | agent | Exists | Exists: `assetmanager_hold_list` |
 | Hold a terminal | `POST /holds` | writes a hold, optionally with a start and an end; an overlapping slot on the same terminal is refused | agent, after approval | Exists | Exists: `assetmanager_hold_create` |
 | Commit or release a hold | `POST /holds/{hold}/commit`, `/release` | writes the hold's state | manager | Exists | Exists: `assetmanager_hold_commit`, `assetmanager_hold_release` |
-
-## Devices
-
-The digital-twin module belongs to agencies that watch equipment; the lab is the example. The bundled API in `code/wakala-api` does not carry the module, so none of these exist there yet.
-
-| Operation | Method and path | Reads / writes | Who | REST | MCP |
-|---|---|---|---|---|---|
-| List devices | `GET /nodes` | reads nodes | not decided | To be mounted | Defined: `digitaltwin_node_list`, to be registered |
-| Latest readings | `GET /nodes/{node}/observations/latest` | reads readings | not decided | To be mounted | Defined: `digitaltwin_observation_latest`, to be registered |
-| Record readings | `POST /observations/batch` | writes readings | not decided | To be mounted | Defined: `digitaltwin_observation_record_batch`, to be registered |
-| Set a device's status | `POST /nodes/{node}/status` | writes status | not decided | To be mounted | Defined: `digitaltwin_node_set_status`, to be registered |
-
-The device tools exist in the digital-twin module and are tested there with
-an MCP client; they are registered once the twin is mounted per agency. The
-module has nineteen operations, each an MCP tool (counted in its own repository, not here); the newest match places by
-name, point or street number and are not ones Hub Steward needs for its
-devices.
 
 ## Members
 

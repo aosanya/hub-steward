@@ -1,6 +1,6 @@
 # 03 · The agent
 
-An agent is an AI role on an agency. Hub Steward is the front-line role; an agency can also have roles such as Assets Keeper, Network Watcher, Farmers' agent and Suppliers' agent. Each has its own model, limits and instructions, set in the console.
+An agent is an AI role on an agency. Hub Steward is the front-line role; an agency can also have roles such as Assets Keeper, Farmers' agent and Suppliers' agent. Each has its own model, limits and instructions, set in the console.
 
 ## What is built
 
@@ -12,8 +12,6 @@ The API holds everything an agent stands on: the roles and their permissions, th
 2. **Understand.** Send the new message, the thread and the tool list to the model.
 3. **Act.** Run the model's tool calls through Mwanachama's MCP endpoint and return results until it has an answer.
 4. **Reply.** Post the answer in the member's thread, in the member's language, and mark the thread read.
-
-A role that watches rather than answers, such as the Network Watcher, runs beside the loop on its own timer: [network watch](../05-network-watch/README.md).
 
 ## What it calls
 
@@ -42,7 +40,6 @@ The lab calls its approver the Lab manager. The riders call theirs the Hub manag
 | Seat | Find free terminals, draft the hold, the agency manager approves, place the hold | Agency manager | To be built; the bundled API has no bookings module |
 | Wi-Fi account | Draft the request, the agency manager approves, open a task for the agency manager | Agency manager | Task manager exists; the approval does not carry the task out |
 | Member set-up | Draft the set-up, the agency manager approves, the member scans the barcode at the lab terminal and joins | Agency manager | To be built; no barcode screen in the app |
-| Network alert | Read latest device states, then post in the agency manager's room | None | To be built; the digital twin is not mounted |
 
 ## Rules
 

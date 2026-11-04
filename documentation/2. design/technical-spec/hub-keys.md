@@ -17,4 +17,3 @@ An agency also has keys of its own, for callers that act for the agency. They ar
 - The agent that uses the key. Nothing here lists an agency's rooms, notices new messages, runs the model's tool calls or posts a reply. No code reads a service key from `HUBSTEWARD_SERVICE_KEY`, looks up the hubs a key serves, or finds rooms by name. This is the loop in [the agent](03-the-agent/README.md), and it is To be built, or runs outside this repository.
 - A test of the whole way in over MCP. The API copy here has no test files; see [API server tests](../../4.%20qa/testing/02-results/api-tests.md).
 - A route and tool allowlist for service callers. Until it is built, a role's permissions are the only narrowing.
-- A watching role that runs against a hub made in the console. The Network Watcher is a role the riders' and the grid utility's templates declare; nothing here runs it.

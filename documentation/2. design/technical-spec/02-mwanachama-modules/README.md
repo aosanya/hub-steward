@@ -13,7 +13,7 @@ State is for the bundled API in `code/wakala-api`, which mounts the module per a
 | Comm | Rooms, threads, messages, read markers, notifications | Chat between members and with AI roles | Reading members' questions and replying | Exists; the chat tools are registered |
 | Sources | Sources, passages with heading and position, verifications, search | Answers drawn from the agency's own documents, with the citation | The lab's documents and the citation in each answer | Exists; REST and MCP |
 | Asset manager | Assets, locations, movements, holds, time-slot holds | A register of what the agency owns and holds on it for a time | Seat bookings as holds on terminals; the equipment register (how it is shown and looked after is still to be designed) | Exists; REST and MCP |
-| Digital twin | Nodes, links, metrics with limits, readings over time | A picture of devices and their state, for a role that watches them | The lab's devices and their state | Not in the bundled API; who may read and write is not decided; 19 tools in the module (counted in its own repository, not here) |
+| Digital twin | Nodes, links, metrics with limits, readings over time | A picture of the things an agency tracks and their state | Not switched on in the lab's file | Not in the bundled API; who may read and write is not decided; 19 tools in the module (counted in its own repository, not here) |
 | Task manager | Tasks, projects, assignments with history, cases that group tasks, a plain state per task (To do, Doing, Waiting, Done, Cancelled) | Work handed to people and roles, grouped in cases | Wi-Fi accounts and repairs as tasks; one access request as a case holding its tasks | Exists; REST and MCP |
 | Insights | Short notes about a subject | Notes an AI role keeps about one subject | Member memory (stretch) | Tools `insight_create` and `insight_list` registered; who may read a member's notes is not decided |
 | Forms | Forms, questions, answers, publishing to a group | Intake, reports and surveys, answered one question at a time on the phone | Intake and exit surveys for funders' numbers; not in the demo. Turning forms on also brings the catalog and git modules, mounted for the agency's owners and agents only | Exists; REST and MCP; anyone else is answered as if the agency did not exist (self-tests) |
@@ -55,7 +55,6 @@ The changes below were built for the agency and serve any agency. Built and show
 | Asset manager mounted per agency, REST and MCP, behind the membership check | Built |
 | Asset manager: a hold may carry a start and end; overlapping live holds on one asset are refused, back-to-back are allowed | Built |
 | Digital twin: all 19 operations as MCP tools, each naming its agency (counted in its own repository, not here) | Built in the module; not mounted on the API |
-| Digital twin lab example: devices, wiring, readings and samples, 30-day retention, online, throughput and battery metrics with limits | Built; readings are not yet checked against limits |
 | Digital twin places: a node can carry a shape; nodes match by preferred, alternative and hidden names per language (`GET /nodes/matching`); `GET /nodes/holding` finds the innermost node holding a point (a street's shape is its line); `GET /nodes/numbered` matches an address by street name then leading house number. REST and MCP. An area-level group names its node in the twin; old group outlines are retired | Built; not mounted on the API |
 
 ### Mwanachama API
@@ -158,7 +157,6 @@ The changes below were built for the agency and serve any agency. Built and show
 |---|---|---|
 | How residents reach the chat and member tools on the MCP endpoint | Mwanachama API | The tools are registered behind REST's membership and room checks; residents' access is not decided |
 | Embeddings for document passages | Sources | Search takes a vector; model not chosen |
-| Mount the twin per agency and register its tools | API, Digital twin | Who may read and write is not decided |
 | Who may read a member's notes | Insights, API | Stretch; not decided |
 | An agency manager's approve list in the phone app | Phone app | Placement not decided |
 | The lab's member barcode and sign-in at the terminal | Phone app, API | Placement, and sign-in without email, not decided |
