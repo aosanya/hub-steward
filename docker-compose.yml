@@ -1,0 +1,37 @@
+services:
+  wakala-api:
+    build: ./code/wakala-api
+    environment:
+      PORT: "8082"
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      WAKALA_DEV_MODE: ${WAKALA_DEV_MODE:-true}
+      WAKALA_SESSION_SECRET: ${WAKALA_SESSION_SECRET:-}
+      WAKALA_ADMIN_TOKEN: ${WAKALA_ADMIN_TOKEN:-}
+      WAKALA_SQLITE_PATH: /data/wakala.db
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8082}
+      STUDIO_ORIGINS: ${STUDIO_ORIGINS:-http://localhost:8080}
+      MEMBER_APP_ORIGINS: ${MEMBER_APP_ORIGINS:-http://localhost:8081}
+      AI_MASTER_KEY: ${AI_MASTER_KEY:-}
+    ports:
+      - "8082:8082"
+    volumes:
+      - wakala-data:/data
+
+  console:
+    build: ./code/console
+    depends_on:
+      wakala-api:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+
+  app:
+    build: ./code/app
+    depends_on:
+      wakala-api:
+        condition: service_healthy
+    ports:
+      - "8081:80"
+
+volumes:
+  wakala-data:
