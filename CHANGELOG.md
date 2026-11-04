@@ -35,4 +35,5 @@ All notable changes to this project are listed here, grouped by area. The format
 - The See where the tokens go journey drawn, with its four-step walk-through and mockups (2026-11-03); the chat workflow journey's mockups and requirements (2026-11-02).
 - Test results recorded: the console passes 3640 tests and builds; the phone app passes 1905 tests and builds; the bundled API has no test files, so `go test` only compiles it (2026-11-04).
 - Demo index added: `demo/README.md` lists the eight agencies from their `agency.json` files (2026-11-04).
-- Technical spec rewritten around what the bundled API mounts; the digital twin is not mounted in the bundled API and the network simulator is planned, not in this repository (2026-11-04).
+- Technical spec rewritten around what the bundled API mounts (2026-11-04).
+- Network watch removed from the documentation (2026-11-04).

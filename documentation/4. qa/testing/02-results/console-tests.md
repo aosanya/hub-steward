@@ -30,4 +30,4 @@ The tests run in jsdom against fakes, with no network and no API server.
 - No test talks to the API server. The server's side of any journey is untested by this suite.
 - Only the three walks named above run a journey from start to end. The other console journeys are covered page by page, or by the e2e specs, not by a walk in this suite.
 - The phone app (`code/app`) has its own suite, which is not part of this result.
-- The suite does not exercise the lab's own flow: no test books a seat, approves a Wi-Fi request or raises a network alert. Network watch is not built yet (see [what it does](../../../1.%20requirements/product/02-what-it-does/README.md)). Nothing in this suite is written per demo agency; which tests touch the other seven agencies' templates was not checked.
+- The suite does not exercise the lab's own flow: no test books a seat, or approves a Wi-Fi request. Nothing in this suite is written per demo agency; which tests touch the other seven agencies' templates was not checked.

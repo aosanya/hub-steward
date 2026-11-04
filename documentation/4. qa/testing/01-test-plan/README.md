@@ -33,7 +33,6 @@ An agent acts only through declared tools and does nothing that needs approval u
 | Offline unit tests | Planned: the agent's reply loop, with the model and Mwanachama replaced by fakes, running with no network. The loop is not part of this repository |
 | Answers | A question in each language the agency writes in gets a reply in that language naming the right document; a question the documents do not answer gets "I don't know". In the lab: English, Swahili and German, against its four documents, each of which exists in all three. The phone app's own screens have words in English and Swahili only; German is in its language picker but shows English |
 | Approval | A request becomes a draft; nothing is done before approval. In the lab: a seat request is a draft, no seat is held before approval, and a clashing slot is refused |
-| Watching | A change in what an agent watches reaches the person who owns it. In the lab: a device goes offline and one alert reaches the manager's room; this waits on the digital twin being mounted and a readings source, neither of which this repository has yet |
 | Boundary | An agent's key cannot reach a second agency |
 
 ### Where each check stands
@@ -47,13 +46,12 @@ An agent acts only through declared tools and does nothing that needs approval u
 | Offline unit tests | Not run: planned, because the loop they test is not in this repository |
 | Answers | No recorded run; needs a real model and the lab's documents |
 | Approval | Not run. No test drafts a request, holds a seat or refuses a clashing slot |
-| Watching | Not run. Waits on the digital twin and a readings source |
 | Boundary | Not run here. Only the earlier Mwanachama results include a stranger refused |
 
 What was run and what was not is in [Results](../02-results/README.md).
 
 ## The demo
 
-A walk-through on the hosted demo, as a member and as the manager. It covers the features [Demo scope](../../../1.%20requirements/product/03-demo-scope/README.md) lists. For the lab agency those are answers, access requests and, once the digital twin is mounted, network watch.
+A walk-through on the hosted demo, as a member and as the manager. It covers the features [Demo scope](../../../1.%20requirements/product/03-demo-scope/README.md) lists. For the lab agency those are answers and access requests.
 
 [Results](../02-results/README.md) lists only results from real runs.

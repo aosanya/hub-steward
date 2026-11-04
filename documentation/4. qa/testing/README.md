@@ -38,11 +38,10 @@ The full list, with the reason for each, is under "Not covered" in the [results]
 
 - No suite calls a model, so the answers, the three-language replies and the "I don't know" case have no recorded run.
 - The agent's reply loop is not part of this repository, so its fake-based unit tests are planned and not written.
-- Network watch waits on a digital twin and a readings source, neither of which this repository carries.
 - Only the Siaya lab's import has a recorded result. The other seven demo agencies have none, and five of them stop at Create Hub because they declare no AI role.
 - The phone app has not been run on a device, and WhatsApp is not built.
 
-The hackathon repository's submission folder holds code this repository does not yet carry, such as the Network Watcher, and records its own results in its `05-testing` folder.
+The hackathon repository's submission folder holds code this repository does not yet carry, and records its own results in its `05-testing` folder.
 
 ## Record a result
 
