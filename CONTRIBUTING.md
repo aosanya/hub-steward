@@ -6,7 +6,7 @@ By contributing you agree that your contribution is licensed under the Apache Li
 
 ## Set up
 
-You need Go 1.25 or newer and Node.js 20 or newer (the tests run on Node 22). Docker is only needed for `make up`.
+You need Go 1.25 or newer and Node.js 22, which CI runs. Docker is only needed for `make up`.
 
 ```sh
 git clone https://github.com/aosanya/hub-steward.git
