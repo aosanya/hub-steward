@@ -20,7 +20,7 @@ Hub Steward lets an agency manager run a whole organization with AI roles that d
 
 ## One example: the computer lab
 
-The Siaya computer lab is the example the demo uses most. Its agency file declares three roles: Lab manager, Member and the Hub Steward role, which is the lab's front-line AI agent. As declared, the Hub Steward role answers members from the lab's documents, drafts seat bookings, Wi-Fi accounts and member set-up for approval, and tells the manager when a device goes down; [What it does](02-what-it-does/README.md) says which of that is built. The same platform runs the other demo agencies, such as the farmers' group and the boda-boda riders, with different roles, rules and AI roles.
+The Siaya computer lab is one of the examples in the demo. Its agency file declares three roles: Lab manager, Member and the Hub Steward role, which is the lab's front-line AI agent. As declared, the Hub Steward role answers members from the lab's documents, and drafts seat bookings, Wi-Fi accounts and member set-up for approval; [What it does](02-what-it-does/README.md) says which of that is built. The same platform runs the other demo agencies, such as the farmers' group and the boda-boda riders, with different roles, rules and AI roles.
 
 ## Where it started
 

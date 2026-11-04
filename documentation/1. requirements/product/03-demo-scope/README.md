@@ -3,16 +3,16 @@
 The demo shows Hub Steward running agencies. It holds eight synthetic agencies
 ([demo](../../../../demo/)). The Siaya Farmers' Group carries the market and
 group-order journeys and the Siaya computer lab carries access requests and
-network watch; the rest show that the same platform fits other organizations. Every
+member set-up; the rest show that the same platform fits other organizations. Every
 person, organization, number and address is invented.
 
 ## The agencies
 
 | Agency | What it is | Role in the demo |
 |---|---|---|
-| Siaya lab | A community computer lab planned for Siaya, Kenya. Roles: Lab manager, Member, Hub Steward. Modules: comm, task manager. Its documents exist in English, Swahili and German | Access requests and network watch; the only agency with documents |
+| Siaya lab | A community computer lab planned for Siaya, Kenya. Roles: Lab manager, Member, Hub Steward. Modules: comm, task manager. Its documents exist in English, Swahili and German | Access requests and member set-up; the only agency with documents |
 | Farmers | The Siaya Farmers' Group, the county's agricultural ministry serving the farmers around the hub, as one agency: group orders, suppliers, buyers, harvest sales | Market and group-order journeys |
-| Boda-boda riders | The riders' group around the hub: ride requests, rider availability, assets, network watch, picking a rider. Roles: Hub manager, Member, Rider, Customer, Dispatcher, Hub Steward, Assets Keeper, Network Watcher. Modules: comm, task manager, forms, digital twin, market | Template only; the only demo agency that declares Assets Keeper and Network Watcher |
+| Boda-boda riders | The riders' group around the hub: ride requests, rider availability, assets, picking a rider. Roles: Hub manager, Member, Rider, Customer, Dispatcher, Hub Steward, Assets Keeper. Modules: comm, task manager, forms, market | Template only; the only demo agency that declares Assets Keeper |
 | Clinical research organization | A contract research organization running sponsor-outsourced trials | Template only |
 | Electric grid utility | An electric power utility: generation, transmission, distribution, reliability | Template only |
 | Logistics freight company | A freight company: warehouse, fleet, customs, customer service | Template only |
@@ -38,7 +38,6 @@ recorded result ([Results](../../../4.%20qa/testing/02-results/README.md)).
 | Market and group orders | A farmer buys inputs and sells the harvest with others; a supplier fills the order; the coordinator sends it | Exists |
 | The lab's answers | A member asks in the lab's room in English, Swahili or German, and the Hub Steward role replies in a thread in the same language and cites the document | The documents and passage search exist; the agent that replies in a room is not part of this repository |
 | The lab's seat | A member asks for a seat, the lab manager approves, and the seat is held | Declared as a workflow. The bundled API has the asset manager's holds, but the lab's file does not switch the asset manager on |
-| The lab's network watch | A device in the lab goes offline and the lab manager's room is told | To be built: the digital twin is not mounted and there is no readings simulator |
 | Member memory | Hub Steward recalls what a member worked on | Planned (stretch) |
 | Issues and votes | A member raises an issue from the chat, another says "me too", and the manager lists open issues, most-backed first | Planned (stretch) |
 

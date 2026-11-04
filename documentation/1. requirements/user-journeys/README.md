@@ -1,6 +1,6 @@
 # User journeys
 
-What each kind of user does in an agency, step by step, and what happens in response. The journeys apply to any agency run on Hub Steward. The examples are set in a community tech hub in Siaya, Kenya, with a group of boda boda riders and a group of farmers. Two agencies carry most of them: the farmers' group, for buying inputs together and selling the harvest, and the computer lab, for seats, Wi-Fi accounts, member set-up and network alerts. The demo holds eight synthetic agencies in all (the lab, boda boda riders, farmers, a clinical research organisation, an electric grid utility, a logistics company, a mobile money operator and a crop-spraying drone service). Every person and organisation in the examples is invented.
+What each kind of user does in an agency, step by step, and what happens in response. The journeys apply to any agency run on Hub Steward. The examples are set in a community tech hub in Siaya, Kenya, with a group of boda boda riders and a group of farmers. Two agencies carry most of them: the farmers' group, for buying inputs together and selling the harvest, and the computer lab, for seats, Wi-Fi accounts and member set-up. The demo holds eight synthetic agencies in all (the lab, boda boda riders, farmers, a clinical research organisation, an electric grid utility, a logistics company, a mobile money operator and a crop-spraying drone service). Every person and organisation in the examples is invented.
 
 Each journey is one README: a short story, numbered steps and what the screen shows. Drawn screens for a journey are in [2. design/mockups/journeys](../../2.%20design/mockups/journeys/). Journey 26 has none drawn, and the mockup folders of the retired journeys 07 and 15 are still there. The numbers 03, 04 and 17 are not used.
 
@@ -14,7 +14,7 @@ Each journey is one README: a short story, numbered steps and what the screen sh
 
 | Journey | What the user comes to do |
 |---|---|
-| [Agency manager](01-hub-manager/README.md) | Starts an agency from a template, approves what its agents draft, and sees what every AI role is doing. The lab's seat, Wi-Fi and network alerts are the example. |
+| [Agency manager](01-hub-manager/README.md) | Starts an agency from a template, approves what its agents draft, and sees what every AI role is doing. The lab's seat and Wi-Fi requests are the example. |
 | [Agency member](02-member/README.md) | Gets answers and access in an agency without waiting for the one manager. The lab's seat and Wi-Fi are the example. |
 | [Farmer](05-farmer/README.md) | Buys inputs together with other farmers and finds a buyer for the harvest. |
 | [Supplier](06-supplier/README.md) | Receives one order from many farmers instead of many small ones. |
@@ -47,10 +47,9 @@ An agency attaches the AI roles it needs. Three of the eight demo agencies decla
 
 | Role | Works for | Declared in | What it does |
 |---|---|---|---|
-| Hub Steward | Members and the manager | The lab, the riders | Answers from the agency's documents, drafts requests such as a seat or a Wi-Fi account for approval. The lab, the worked example, declares only this role and has it watch the lab's network too |
+| Hub Steward | Members and the manager | The lab, the riders | Answers from the agency's documents, drafts requests such as a seat or a Wi-Fi account for approval. The lab, the worked example, declares only this role |
 | Dispatcher | Customers | The riders | Asks only the rider the customer picked, once, and tells the customer his answer |
 | Assets Keeper | The manager and members | The riders | Registers assets and records who holds what |
-| Network Watcher | The manager | The riders | Reads the network state of the agency's devices and tells the manager when one goes to fault. No live source is mounted in this repository |
 | Farmers' agent | Farmers | The farmers | Looks at posted prices first, asks only the poster a farmer picked, and never says yes for a person |
 | Suppliers' agent | Suppliers | The farmers | Helps a supplier post offers and keep his stock list, and carries the one question a farmer picked him for |
 

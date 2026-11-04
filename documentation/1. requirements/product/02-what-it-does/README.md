@@ -51,10 +51,10 @@ the demo agency declares it and this repository does not run it yet.
 | Roles that act through tools | Each AI role holds a role in the agency and can make only the calls that role's permissions allow | Exists |
 | Models and AI accounts | The agency holds its model keys, tests each one, and gives each agent its model, limits and instructions | Exists |
 | Usage | The manager sees how many tokens were used, for what work and by whom, and can ask why | Exists |
-| Operations | A status page shows counts (devices online, AI roles switched on, open alerts) and what needs attention; an activity page lists each agent by name as switched on or off. Neither shows an agent's last action | Exists |
+| Operations | A status page shows how many AI roles are switched on; an activity page lists each agent by name as switched on or off. Neither shows an agent's last action | Exists |
 
 The demo's AI roles are the Hub Steward role (the lab and the riders), Assets
-Keeper and Network Watcher (the riders), and the Farmers' agent and the
+Keeper (the riders), and the Farmers' agent and the
 Suppliers' agent (the farmers)
 ([user journeys](../../user-journeys/README.md) says what each does).
 
@@ -92,19 +92,6 @@ Seat booking).
 | A Wi-Fi account | Opens a task for the manager to create the account | Declared in the lab template |
 | Member set-up | At the lab terminal, the member gets a barcode that connects them to the lab's agency | Declared in the lab template; the barcode screen is drawn, not built |
 
-### Network watch
-
-The lab declares a Network watch workflow, run by the Hub Steward role; the
-lab declares no Network Watcher role, which is the riders' role. The agent
-keeps a picture of the lab's devices: terminals, access points, the router,
-servers, solar and battery. When a device goes down or a reading crosses its
-limit, it tells the lab manager in the manager's room, once per fault. Which
-real source a lab reads from is not settled.
-
-Status: To be built. The digital twin module is a switchable module in the
-agency catalog, but the bundled API does not mount it and the readings
-simulator is not in this repository.
-
 ### The lab's equipment
 
 The lab's equipment is meant to be kept as a register in the asset manager, the
@@ -138,5 +125,4 @@ assets and records who holds what; the lab declares no such role. How equipment 
 |---|---|
 | Whether a person without email can sign in to an agency | Open; the German lab's residents are the example |
 | Where the manager's approve list and the member's barcode sit in the phone app | Open |
-| Which real network source a lab reads from | Open; no simulator is kept in this repository |
 | How the lab's equipment is registered, shown and looked after | Open |

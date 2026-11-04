@@ -14,7 +14,7 @@ Mockups: [all steps in order](../../../2.%20design/mockups/journeys/11-ai-roles/
 
 ### 1. Sees the agents
 
-The Agents page lists every agentic role in the agency's blueprint: the farmers' agency declares two (the Farmers' agent and the Suppliers' agent) and the riders' agency four (Hub Steward, Dispatcher, Assets Keeper and Network Watcher). Each row shows the agent, who it works for, its model and its state, and a Configure link to its edit page. There is no button to add one. Each row shows its model as a chip; in the drawn example the Farmers' agent has Muse Spark 1.3 and the riders' Hub Steward has Muse Glimmer, models a hub chose for them, as no default model is built in. An agent with no model reads "No model key"; asking "Which agents have no model?" lists them.
+The Agents page lists every agentic role in the agency's blueprint: the farmers' agency declares two (the Farmers' agent and the Suppliers' agent) and the riders' agency three (Hub Steward, Dispatcher and Assets Keeper). Each row shows the agent, who it works for, its model and its state, and a Configure link to its edit page. There is no button to add one. Each row shows its model as a chip; in the drawn example the Farmers' agent has Muse Spark 1.3 and the riders' Hub Steward has Muse Glimmer, models a hub chose for them, as no default model is built in. An agent with no model reads "No model key"; asking "Which agents have no model?" lists them.
 
 Mockup: [step-01-see-the-agents.html](../../../2.%20design/mockups/journeys/11-ai-roles/mockups/step-01-see-the-agents.html)
 

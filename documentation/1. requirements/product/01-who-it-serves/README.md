@@ -19,7 +19,7 @@ synthetic.
 
 Hub Steward is the product. The Hub Steward role is its front-line AI role: it
 answers members and drafts what they ask for, and it is declared by the Siaya
-lab and the boda-boda riders. Dispatcher, Assets Keeper and Network Watcher
+lab and the boda-boda riders. Dispatcher and Assets Keeper
 are the riders' other roles; the Farmers' agent and the Suppliers' agent are
 the farmers'. The other five demo agencies declare no AI roles.
 [User journeys](../../user-journeys/README.md) lists them.
@@ -37,7 +37,7 @@ in the demo, and its two main roles are an example of the table above.
 | Who | What they need from the lab | What Hub Steward does for them |
 |---|---|---|
 | **Lab member** | A seat, Wi-Fi, help, the rules, in their own language | Answers their questions from the lab's documents; takes their request for a seat, a Wi-Fi account or set-up |
-| **Lab manager** | Time for people rather than routine; to know when something breaks | Drafts access requests for the manager to approve; as declared, watches the network and says when a device goes down |
+| **Lab manager** | Time for people rather than routine | Drafts access requests for the manager to approve |
 | **Hub Steward role** | A place in the lab with clear limits | Joins the lab as its agent and acts only through Mwanachama's tools; a guarded change waits for the manager |
 
 - In Siaya, a rural county in western Kenya, members are expected to write

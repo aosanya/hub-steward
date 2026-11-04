@@ -40,6 +40,6 @@ Mockup: [test the key](../../../2.%20design/mockups/journeys/09-model-key/mockup
 
 Checked against the console and the bundled API on 2026-11-04.
 
-- What an agent does in a hub with no key. The API answers "no key is set for this account"; no code here skips the hub with one plain log line, and none sends the Network Watcher's plain alerts (the digital twin is not mounted).
+- What an agent does in a hub with no key. The API answers "no key is set for this account"; no code here skips the hub with one plain log line.
 - A shell variable as a fallback for an agency's key. None was found; `AI_MASTER_KEY` only seals the keys the manager saves.
 - The test-the-key mockup draws "Remove this model" on the model's page and the notice "Model removed". The console has Remove as a link on the Models card and says "… was removed."
