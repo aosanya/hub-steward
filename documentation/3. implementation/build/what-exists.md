@@ -15,7 +15,7 @@ The product runs any member organization; these eight are templates to try it on
 
 | Folder | The agency |
 |---|---|
-| `siaya-lab` | A community computer lab, the example for seats, Wi-Fi accounts, member set-up and network watch. The only one with documents, in three languages |
+| `siaya-lab` | A community computer lab, the example for seats, network management and member set-up. The only one with documents, in three languages |
 | `boda-boda-riders` | The riders' group around the planned Siaya hub |
 | `farmers` | The Siaya agricultural ministry and the farmers it serves: group orders, prices, harvest sale |
 | `clinical-research-organization` | A clinical research organization |

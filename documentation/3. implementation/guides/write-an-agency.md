@@ -38,7 +38,7 @@ A role is a name, a description and a list of permission names. The names come f
 
 ## Goals, objectives, workflows and steps
 
-Siaya has four goals, each with objectives (O-1 "Turn an access request into a set-up member" under G-1), and five workflows: Access request, Seat booking, Answering in the chat, Network watch and Join a group. Each step (`work_items`) names its `workflow_id`, an `objective_id`, a `title` and a `prompt`. A step may carry a `kind`, one of `fill_form`, `send_form`, `notify`, `yes_no`, `route`, `run_workflow` or `chat` (`workitemstep.go`); the other fields in `importWorkItem` (`role_id`, `form_name`, `questions`, `routes`, `time_limit_minutes`) belong to those kinds. Most Siaya steps have no kind; WI-9, "Join a group", is a `fill_form`. The riders' template uses `notify`, `route`, `send_form` and `yes_no` as well, and the farmers' template is the largest, with 30 workflows and 76 steps.
+Siaya has three goals, each with objectives (O-1 "Turn an access request into a set-up member" under G-1), and four workflows: Access request, Seat booking, Answering in the chat and Join a group. Each step (`work_items`) names its `workflow_id`, an `objective_id`, a `title` and a `prompt`. A step may carry a `kind`, one of `fill_form`, `send_form`, `notify`, `yes_no`, `route`, `run_workflow` or `chat` (`workitemstep.go`); the other fields in `importWorkItem` (`role_id`, `form_name`, `questions`, `routes`, `time_limit_minutes`) belong to those kinds. Most Siaya steps have no kind; WI-9, "Join a group", is a `fill_form`. The riders' template uses `notify`, `route`, `send_form` and `yes_no` as well, and the farmers' template is the largest, with 30 workflows and 76 steps.
 
 Rules are text only (RU-1 to RU-14 in Siaya) and are tied to an objective or a role with `rule_attachments`.
 
@@ -55,7 +55,7 @@ The console's Create Hub runs three stages (`code/console/src/entry/hubSetup.ts`
 | Template | AI roles |
 |---|---|
 | siaya-lab | Hub Steward |
-| boda-boda-riders | Hub Steward (the riders also declare Dispatcher, Assets Keeper and Network Watcher as roles) |
+| boda-boda-riders | Hub Steward (the riders also declare Dispatcher and Assets Keeper as roles) |
 | farmers | Farmers' agent, Suppliers' agent |
 | the other five | none |
 

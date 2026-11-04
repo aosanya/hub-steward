@@ -1,11 +1,11 @@
 # Boda boda riders' agency
 
 The riders' group around the planned Siaya hub, written as an agency template
-for Mwanachama-Wakala. It holds eight roles: the hub manager, member, rider
-and customer, and the four AI roles Hub Steward, Dispatcher, Assets Keeper and
-Network Watcher. It has five goals, six objectives, who is accountable,
-responsible, consulted and informed for each, ten rules, and six workflows:
-a ride request, rider availability, assets, network watch, answers and
+for Mwanachama-Wakala. It holds seven roles: the hub manager, member, rider
+and customer, and the three AI roles Hub Steward, Dispatcher and Assets
+Keeper. It has four goals, five objectives, who is accountable,
+responsible, consulted and informed for each, nine rules, and five workflows:
+a ride request, rider availability, assets, answers and
 access, and pick a rider.
 
 Where it sits: one of the eight synthetic demo agencies ([demo index](../README.md)),
@@ -13,11 +13,10 @@ the riders' group beside the farmers' and the Siaya computer lab. Unlike the lab
 it has no documents. Everything in it is invented.
 
 [agency.json](agency.json) imports with `POST /instances/import`. It switches
-on comm, taskmanager, forms, digitaltwin and market and links each to the
-objectives that use it: market to O-1 to O-3, digitaltwin to O-5. The hub is planned, not open, every person is synthetic, and the
+on comm, taskmanager, forms and market and links each to the
+objectives that use it: market to O-1 to O-3. The hub is planned, not open, every person is synthetic, and the
 numbers in the rules (five minutes, three riders) are values chosen for the
-demo. Network watch is written but has no live source in this repository: its
-bundled API does not mount the digital twin.
+demo.
 
 Riders own their bikes, so the template allocates no bikes; the Assets Keeper
 registers the agency's own equipment through the asset manager.
@@ -47,6 +46,6 @@ members (`group.read`, `member.read`) and the market (`market.browse`,
 service, and the console gives every hub the same rooms, so the role carries
 the permissions of all of them; narrow the list in `agency.json` for a hub whose
 agents do less. Proposing a write for an owner to approve, listing proposals
-and amending one need no permission. The Dispatcher, Assets Keeper and Network
-Watcher roles hold no permissions in this template, and the Rider holds
+and amending one need no permission. The Dispatcher and Assets Keeper
+roles hold no permissions in this template, and the Rider holds
 `market.browse` and `market.offer`.
