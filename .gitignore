@@ -7,3 +7,4 @@ playwright-report/
 .env
 .env.*
 *.mp4
+!.env.example
