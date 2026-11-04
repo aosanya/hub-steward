@@ -8,22 +8,77 @@ The demo holds eight synthetic agencies. One is a community computer lab in Siay
 
 | Folder | What it holds |
 |---|---|
+| [code/wakala-api/](code/wakala-api/) | The Wakala API server both apps talk to, with its agents, approvals and tools |
 | [code/console/](code/console/) | The console: the manager's and designer's web app, for building, reviewing, testing and running an agency |
 | [code/app/](code/app/) | The phone app |
-| [code/wakala-api/](code/wakala-api/) | The API server both apps talk to, with its agents, approvals and tools |
 | [code/supabase/](code/supabase/) | Configuration and migration for the local Supabase database |
 | [demo/](demo/) | The eight demo agencies, including the Siaya lab and its documents in three languages, all synthetic |
 | [documentation/](documentation/) | Requirements, design, implementation and QA |
 
 ## Before you start
 
-You need Node.js 22, which is what CI runs, and Go 1.25 or newer for the API server. The console and the app show their sign-in screens without a server. Every page after sign-in needs the API server at the address in their `config.json`.
+You need Go 1.25 or newer for the Wakala API server and Node.js 22, which is what CI runs, for the console and the app. The console and the app show their sign-in screens without a server. Every page after sign-in needs the API server at the address in their `config.json`.
+
+Docker is needed for `make up` and for the local database. The local database is optional: without it the API keeps its data in SQLite and the phone app cannot sign members in by emailed link. It needs the Supabase command-line tool, which runs the database in Docker. On macOS with Homebrew:
+
+```sh
+brew install supabase/tap/supabase
+supabase --version
+```
+
+Other systems: see the [Supabase CLI guide](https://supabase.com/docs/guides/cli).
 
 ## Run it
 
-[documentation/3. implementation/build/02-running-it](documentation/3.%20implementation/build/02-running-it/README.md) starts the API server, the console and the app. The variables are in [.env.example](.env.example).
+Two steps, in this order. The first is optional.
+
+### 1. Local Supabase database (optional)
+
+To try member sign-in by emailed link, start Postgres and the sign-in service before the API server. Run this from the repository root:
+
+```sh
+supabase start --workdir code
+supabase status
+supabase stop --workdir code
+```
+
+The first start pulls several images and applies `code/supabase/migrations/`, which creates the `wakala_api` role and the four sign-in functions the API calls. Give the API these settings, with the anon key from `supabase status`: in `.env` for `make up`, or exported in the shell that starts the server:
+
+```sh
+DATABASE_URL=postgresql://wakala_api:wakala_local@127.0.0.1:54322/postgres?sslmode=disable
+SHOP_SUPABASE_URL=http://127.0.0.1:54321
+SHOP_SUPABASE_ANON_KEY=<the anon key>
+MEMBER_APP_ORIGINS=http://localhost:8081
+```
+
+Sign-in emails arrive in the local inbox at `http://127.0.0.1:54324`. The password and demo keys are for this machine only. [documentation/3. implementation/guides/local-database.md](documentation/3.%20implementation/guides/local-database.md) has the rest, including what is checked and what is not.
+
+Skip this step to use SQLite. The phone app then cannot sign members in.
+
+### 2. The Wakala API server
+
+Start it before the console and the phone app, which both need it.
+
+```sh
+cd code/wakala-api
+go build -o /tmp/wakala-server ./cmd/server
+PORT=8082 WAKALA_SQLITE_PATH=/tmp/wakala.db /tmp/wakala-server
+```
+
+`http://127.0.0.1:8082/healthz` answers `{"status":"ok"}`. The server keeps its data in SQLite unless `DATABASE_URL` is set, and the optional modules stay off until their settings are given. The variables are in [.env.example](.env.example).
+
+To run the API server, the console and the phone app together in Docker, copy `.env.example` to `.env` and run `make up`. The API is on port 8082, the console on 8080 and the phone app on 8081. `make down` stops them.
+
+[documentation/3. implementation/build/02-running-it](documentation/3.%20implementation/build/02-running-it/README.md) has the same steps in full.
 
 ## Test and build
+
+```sh
+cd code/wakala-api
+go build ./...
+go vet ./...
+go test ./...
+```
 
 ```sh
 cd code/console
@@ -39,7 +94,21 @@ npm test
 npm run build
 ```
 
-Each build writes static files to `dist/` that any web server can serve. Once the dependencies are installed, the tests need no network, no keys and no server.
+Each web app build writes static files to `dist/` that any web server can serve. The API server copy in this repository has no test files, so `go test` only compiles it. Once the dependencies are installed, the tests need no network, no keys and no server.
+
+## Makefile
+
+The root `Makefile` wraps the commands above. Run it from the repository root.
+
+| Target | What it does |
+|---|---|
+| `make test` | `go vet` and `go test` for the API server, then `npm ci` and `npm test` for the console and the phone app |
+| `make build` | `npm ci` and `npm run build` for the console and the phone app. It does not build the API server; use `go build` for that |
+| `make dev` | Starts the console's dev server. It does not start the API server |
+| `make up` | `docker compose up --build -d`: the API server on 8082, the console on 8080 and the phone app on 8081 |
+| `make down` | `docker compose down` |
+
+Inside `code/console` or `code/app`, `make run` starts that app's dev server on its own port, 5170 for the console and 5171 for the phone app, and frees the port first if something holds it.
 
 ## Look at the apps
 
