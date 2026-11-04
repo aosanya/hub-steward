@@ -1,0 +1,38 @@
+package mwanachamapermissions
+
+import (
+	_ "embed"
+	"sync"
+
+	"wakalaserver/modules/shared/spec"
+)
+
+//go:embed permissions.blueprint.json
+var blueprintJSON []byte
+
+var loadBlueprint = sync.OnceValues(func() (*spec.Blueprint, error) {
+	return spec.ParseBlueprint(blueprintJSON)
+})
+
+func Blueprint() (*spec.Blueprint, error) { return loadBlueprint() }
+
+func LoadSpec(path string) (*spec.Spec, error) {
+	b, err := Blueprint()
+	if err != nil {
+		return nil, err
+	}
+	return b.Load(path)
+}
+
+func ParseSpec(raw []byte) (*spec.Spec, error) {
+	b, err := Blueprint()
+	if err != nil {
+		return nil, err
+	}
+	return b.Parse(raw)
+}
+
+//go:embed permissions.operations.json
+var operationsJSON []byte
+
+func Operations() []byte { return operationsJSON }

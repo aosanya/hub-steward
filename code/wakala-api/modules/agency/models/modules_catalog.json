@@ -1,0 +1,26 @@
+[
+  {"code": "auth", "name": "auth", "description": "", "enabled": true, "locked": true, "icon": "lock", "mount": "main"},
+  {"code": "git", "name": "git", "description": "", "enabled": false, "locked": false, "icon": "file", "mount": ""},
+  {"code": "taskmanager", "name": "taskmanager", "description": "", "enabled": false, "locked": false, "icon": "check", "mount": "board"},
+  {"code": "agency", "name": "agency", "description": "", "enabled": false, "locked": false, "icon": "grid", "mount": "main"},
+  {"code": "actor", "name": "actor", "description": "", "enabled": true, "locked": true, "icon": "user", "mount": "directory"},
+  {"code": "comm", "name": "comm", "description": "", "enabled": true, "locked": false, "icon": "chat", "mount": "main", "step_kinds": ["notify", "chat"]},
+  {"code": "custody", "name": "custody", "description": "", "enabled": false, "locked": false, "icon": "lock", "mount": ""},
+  {"code": "forms", "name": "forms", "description": "", "enabled": false, "locked": false, "icon": "file", "mount": "main", "requires": ["catalog", "git"], "step_kinds": ["fill_form", "send_form", "yes_no"]},
+  {"code": "digitaltwin", "name": "digitaltwin", "description": "", "enabled": false, "locked": false, "icon": "globe", "mount": ""},
+  {"code": "accounting", "name": "accounting", "description": "", "enabled": false, "locked": false, "icon": "file", "mount": "main"},
+  {"code": "catalog", "name": "catalog", "description": "", "enabled": false, "locked": false, "icon": "grid", "mount": "", "mountable": true},
+  {"code": "voting", "name": "voting", "description": "Polls put to chosen groups, answered inside a window, counted and published.", "enabled": false, "locked": false, "icon": "check", "mount": "polls"},
+  {"code": "engage", "name": "engage", "description": "", "enabled": false, "locked": false, "icon": "bell", "mount": "main"},
+  {"code": "market", "name": "market", "description": "Offers posted by approved posters, asks put to one poster, orders and group orders that wait for a named person's yes.", "enabled": false, "locked": false, "icon": "wheat", "mount": "market", "mountable": true},
+  {
+    "code": "riskmanager",
+    "name": "riskmanager",
+    "description": "A risk register of bow-ties: threats, consequences and the safeguards between them.",
+    "enabled": false,
+    "locked": false,
+    "icon": "alert",
+    "mount": "risks",
+    "mountable": true
+  }
+]

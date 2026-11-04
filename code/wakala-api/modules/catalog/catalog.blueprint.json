@@ -1,0 +1,1127 @@
+{
+  "module": "catalog",
+  "objects": [
+    {
+      "role": "entry",
+      "description": "One catalog document — whatever this domain keeps a record of. The document is the whole of it; only the few fields beside it mean the same in every domain.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "slug",
+          "type": "string",
+          "description": "Stable URL key for this entry. Fixed at creation — the private notes and the share links hang off it.",
+          "required": true,
+          "immutable": true,
+          "matches": "slug"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The document's human-readable title, shown on its card.",
+          "required": true
+        },
+        {
+          "name": "summary",
+          "type": "text",
+          "description": "One-paragraph description for the card, so a listing never parses the document."
+        },
+        {
+          "name": "doc",
+          "type": "json",
+          "description": "The whole document. Queried in place by path rather than parsed per row, so anything domain-shaped lives in here rather than in a column.",
+          "required": true,
+          "matches": "json_object"
+        },
+        {
+          "name": "visibility",
+          "type": "enum",
+          "description": "Who may read the document: nothing outside review sees a pending one, and a private one needs a live share key.",
+          "default": "pending",
+          "values": [
+            "pending",
+            "public",
+            "private"
+          ]
+        },
+        {
+          "name": "submitted_by",
+          "type": "string",
+          "description": "What wrote this revision — a run, or a person."
+        },
+        {
+          "name": "approved_at",
+          "type": "timestamp",
+          "description": "When it last left pending. Cleared whenever the name, summary or document changes, because the reviewed thing no longer exists."
+        },
+        {
+          "name": "publish_at",
+          "type": "timestamp",
+          "description": "When it goes public. Empty means as soon as it is public; a time still to come keeps every anonymous read answering exactly as for a missing entry until then."
+        },
+        {
+          "name": "dispose_at",
+          "type": "timestamp",
+          "description": "When its retention ends. Empty means it is kept until somebody deletes it; once the time has passed, the host's scheduled sweep disposes of it the way a delete would."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Soft delete. A deleted row is invisible to every read."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "slug_live",
+          "description": "One live entry per slug. A deleted entry no longer holds its slug.",
+          "fields": ["slug"],
+          "unique": true,
+          "not_deleted": true
+        },
+        {
+          "name": "visibility",
+          "description": "Filters the review queue and the public listing.",
+          "fields": [
+            "visibility"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "entry_private",
+      "description": "What the operator knows about one entry and no reader of the catalog may see. A separate object because the two have different readers.",
+      "fields": [
+        {
+          "name": "slug",
+          "type": "string",
+          "description": "The entry these notes belong to. One row per entry.",
+          "primary": true,
+          "matches": "slug"
+        },
+        {
+          "name": "readme",
+          "type": "text",
+          "description": "The operator-facing description of the entry."
+        },
+        {
+          "name": "sales",
+          "type": "text",
+          "description": "The prospect list and open bids, as Markdown. Empty wherever an entry is not something being sold."
+        },
+        {
+          "name": "module_configs",
+          "type": "json",
+          "description": "Per-module configuration for this entry, keyed by module code. Never leaves the operator surface.",
+          "matches": "json_object"
+        },
+        {
+          "name": "appeal",
+          "type": "text",
+          "description": "One line saying why this ranks where it does."
+        },
+        {
+          "name": "rank",
+          "type": "int",
+          "description": "Position in the running order, lowest first. Zero means unranked and sorts last."
+        },
+        {
+          "name": "doc",
+          "type": "json",
+          "description": "The domain's own private content for this entry, as one document. A domain that is not a storefront keeps what only operators may read here, the way every other object in this module carries its own document.",
+          "matches": "json_object"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When these notes were last written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "rank",
+          "description": "Orders the catalog for the showcase.",
+          "fields": [
+            "rank"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "share_link",
+      "description": "One key that opens a private entry. An entry may have many, so a rotation can overlap.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "slug",
+          "type": "string",
+          "description": "The entry this key opens.",
+          "required": true,
+          "matches": "slug"
+        },
+        {
+          "name": "key_hash",
+          "type": "string",
+          "description": "SHA-256 of the raw key, hex-encoded. The raw key is returned once at issue and never stored.",
+          "required": true,
+          "unique": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "Optional note about who this link went to."
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "description": "Whether the key still opens its entry. Retired links are kept rather than deleted, so a rotation leaves a trail.",
+          "default": "active",
+          "values": [
+            "active",
+            "retired"
+          ]
+        },
+        {
+          "name": "created_by",
+          "type": "string",
+          "description": "Who issued it."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was issued."
+        },
+        {
+          "name": "retired_at",
+          "type": "timestamp",
+          "description": "When it stopped working. Empty while active."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "slug_status",
+          "description": "Finds the live keys for one entry, which is what a read checks.",
+          "fields": [
+            "slug",
+            "status"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "suggestion",
+      "description": "A proposal that something is worth adding to the catalog, filed cheaply and waiting on a person before anything is built.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "slug",
+          "type": "string",
+          "description": "The slug the entry would take. Checked against the catalog before filing, so the same proposal is never queued twice.",
+          "required": true,
+          "unique": true,
+          "matches": "slug"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "What the entry would be called.",
+          "required": true
+        },
+        {
+          "name": "why",
+          "type": "text",
+          "description": "The case for building it."
+        },
+        {
+          "name": "source",
+          "type": "enum",
+          "description": "What filed it.",
+          "default": "run",
+          "values": [
+            "run",
+            "owner",
+            "stray"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "description": "Where it has got to. Only fulfilling it may set 'built'; the tenth failed attempt stalls it.",
+          "default": "proposed",
+          "values": [
+            "proposed",
+            "approved",
+            "rejected",
+            "built",
+            "stalled"
+          ]
+        },
+        {
+          "name": "priority",
+          "type": "int",
+          "description": "Queue position, lowest first. The gap either side leaves room to reorder without renumbering.",
+          "default": "100"
+        },
+        {
+          "name": "attempts",
+          "type": "int",
+          "description": "How many builds have failed. Cleared when an approval sends a stalled row back for another ten."
+        },
+        {
+          "name": "proposal",
+          "type": "json",
+          "description": "The sketch a build starts from. Anything domain-shaped belongs in here rather than in a column.",
+          "matches": "json_object"
+        },
+        {
+          "name": "run_ref",
+          "type": "string",
+          "description": "The run that filed it."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was filed."
+        },
+        {
+          "name": "decided_at",
+          "type": "timestamp",
+          "description": "When it was approved or rejected. Empty while proposed."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "status_priority",
+          "description": "The routine's queue: approved proposals, best priority first.",
+          "fields": [
+            "status",
+            "priority"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "suggestion_comment",
+      "description": "One note on a proposal: a run saying what is left after a failed build, or a person saying why they decided as they did.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "suggestion_id",
+          "type": "string",
+          "description": "The proposal this note is about.",
+          "required": true
+        },
+        {
+          "name": "author",
+          "type": "string",
+          "description": "Who wrote it: a slug naming a run, a person or a role. 'run' and 'admin' are the module's own.",
+          "default": "run",
+          "matches": "slug"
+        },
+        {
+          "name": "run_ref",
+          "type": "string",
+          "description": "The run that wrote it, when a run did."
+        },
+        {
+          "name": "attempt",
+          "type": "int",
+          "description": "Which build attempt this came out of. Zero for a note that is not about an attempt."
+        },
+        {
+          "name": "body",
+          "type": "text",
+          "description": "The note itself. An attempt without one tells the next run nothing.",
+          "required": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "suggestion_created",
+          "description": "Reads one proposal's notes in order.",
+          "fields": [
+            "suggestion_id",
+            "created_at"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "suggestion_match",
+      "description": "Records that one entry answers one proposal.",
+      "fields": [
+        {
+          "name": "suggestion_id",
+          "type": "string",
+          "description": "The proposal that was met.",
+          "primary": true
+        },
+        {
+          "name": "slug",
+          "type": "string",
+          "description": "The entry that meets it.",
+          "primary": true,
+          "matches": "slug"
+        },
+        {
+          "name": "run_ref",
+          "type": "string",
+          "description": "The run that built it."
+        },
+        {
+          "name": "note",
+          "type": "text",
+          "description": "What the run said about the match."
+        },
+        {
+          "name": "met_at",
+          "type": "timestamp",
+          "description": "When the match was recorded."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "slug",
+          "description": "Finds the proposals one entry answered.",
+          "fields": [
+            "slug"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "run",
+      "description": "One run of the routine that fills the catalog, and its own report of what it did.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "run_ref",
+          "type": "string",
+          "description": "The run's own identifier, as the routine knows it."
+        },
+        {
+          "name": "submitted_by",
+          "type": "string",
+          "description": "What reported it."
+        },
+        {
+          "name": "templates_filed",
+          "type": "int",
+          "description": "How many entries the run wrote."
+        },
+        {
+          "name": "summary",
+          "type": "text",
+          "description": "The run's own report of what it did."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was recorded."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "created",
+          "description": "Lists runs newest first.",
+          "fields": [
+            "created_at"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "setting",
+      "description": "One run-time knob the routine reads, such as the rule it ranks the catalog by. A key/value store because knobs are added faster than a schema should change.",
+      "fields": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "The setting's name.",
+          "primary": true
+        },
+        {
+          "name": "value",
+          "type": "text",
+          "description": "Its current value."
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When it was last written."
+        }
+      ]
+    },
+    {
+      "role": "page_view",
+      "description": "A running count for one page of the catalog.",
+      "fields": [
+        {
+          "name": "page",
+          "type": "enum",
+          "description": "Which kind of page was viewed: the front page, or one entry's.",
+          "primary": true,
+          "values": [
+            "index",
+            "entry"
+          ]
+        },
+        {
+          "name": "slug",
+          "type": "string",
+          "description": "The entry viewed. Empty for the front page.",
+          "primary": true,
+          "matches": "slug"
+        },
+        {
+          "name": "views",
+          "type": "int",
+          "description": "Running total. There are no per-day rows, so nothing here answers a question about a trend."
+        }
+      ]
+    },
+    {
+      "role": "record",
+      "description": "One holder's latest values on one subject, as last sent, with the time of every change. A domain that keeps no records fills no object for this role.",
+      "fields": [
+        {
+          "name": "subject_id",
+          "type": "string",
+          "description": "What the values are about, opaque to this module.",
+          "primary": true
+        },
+        {
+          "name": "holder_id",
+          "type": "string",
+          "description": "Whose values these are, opaque to this module.",
+          "primary": true
+        },
+        {
+          "name": "scope_id",
+          "type": "string",
+          "description": "Which of the holder's standings the values were sent under, opaque to this module; a holder sending under two keeps two records, each counted under its own. Empty when the host keeps one record per holder.",
+          "primary": true
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers, kept across every change."
+        },
+        {
+          "name": "doc",
+          "type": "json",
+          "description": "The holder's latest values, one key per field, replaced whole on every send.",
+          "required": true,
+          "matches": "json_object"
+        },
+        {
+          "name": "changes",
+          "type": "json",
+          "description": "The time of every send, oldest first, the first one included."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the first values were sent."
+        },
+        {
+          "name": "last_updated",
+          "type": "timestamp",
+          "description": "When the latest values were sent."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "subject",
+          "description": "Lists one subject's records and counts them.",
+          "fields": [
+            "subject_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "endorsement",
+      "description": "One holder's say that they share an item already raised, at most one per holder per item. A domain that counts no endorsements fills no object for this role.",
+      "fields": [
+        {
+          "name": "subject_id",
+          "type": "string",
+          "description": "The item endorsed, opaque to this module.",
+          "primary": true
+        },
+        {
+          "name": "holder_id",
+          "type": "string",
+          "description": "Who endorsed it, opaque to this module.",
+          "primary": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the holder first endorsed it."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "subject",
+          "description": "Counts one item's endorsements.",
+          "fields": [
+            "subject_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "slot",
+      "description": "One time a service is offered and how many holders it takes. A domain that books no times fills no object for this role.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "subject_id",
+          "type": "string",
+          "description": "The service offered at this time, opaque to this module.",
+          "required": true
+        },
+        {
+          "name": "starts_at",
+          "type": "string",
+          "description": "When the time starts, RFC 3339 UTC.",
+          "required": true
+        },
+        {
+          "name": "ends_at",
+          "type": "string",
+          "description": "When the time ends, RFC 3339 UTC, after it starts.",
+          "required": true
+        },
+        {
+          "name": "capacity",
+          "type": "int",
+          "description": "How many holders one time takes, at least one."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the time was offered."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "subject",
+          "description": "Lists one service's times.",
+          "fields": [
+            "subject_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "booking",
+      "description": "One holder's place at one offered time, kept after a cancellation with who cancelled and why. A domain that books no times fills no object for this role.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "slot_id",
+          "type": "string",
+          "description": "The time booked.",
+          "required": true
+        },
+        {
+          "name": "subject_id",
+          "type": "string",
+          "description": "The service of the time booked, copied when booked.",
+          "required": true
+        },
+        {
+          "name": "holder_id",
+          "type": "string",
+          "description": "Who booked, taken from the caller and never the body.",
+          "required": true
+        },
+        {
+          "name": "day",
+          "type": "string",
+          "description": "The calendar day of the time booked, YYYY-MM-DD in UTC, copied when booked."
+        },
+        {
+          "name": "starts_at",
+          "type": "string",
+          "description": "When the time booked starts, copied when booked."
+        },
+        {
+          "name": "cancelled_at",
+          "type": "string",
+          "description": "When the booking was cancelled, empty while it stands."
+        },
+        {
+          "name": "cancelled_by",
+          "type": "string",
+          "description": "Who cancelled it, the holder or a member of staff."
+        },
+        {
+          "name": "cancel_reason",
+          "type": "text",
+          "description": "Why it was cancelled; required when staff cancel."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the holder booked."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "slot",
+          "description": "Counts one time's standing bookings.",
+          "fields": [
+            "slot_id"
+          ]
+        },
+        {
+          "name": "holder",
+          "description": "Lists one holder's bookings.",
+          "fields": [
+            "holder_id"
+          ]
+        },
+        {
+          "name": "day",
+          "description": "Lists one day's bookings for staff.",
+          "fields": [
+            "day"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "raised_item",
+      "description": "Something a holder raised for the mounting host to answer, by themselves or filed on their behalf. A domain that takes no raised items fills no object for this role.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "What was raised, in the raiser's words, one line.",
+          "required": true
+        },
+        {
+          "name": "topic",
+          "type": "string",
+          "description": "What it is about, from the domain's own list, opaque to this module."
+        },
+        {
+          "name": "publishable",
+          "type": "bool",
+          "description": "Whether the raiser agreed it may be shown to others; otherwise it stays between the raiser and the host."
+        },
+        {
+          "name": "raised_by",
+          "type": "string",
+          "description": "Whose item this is, opaque to this module.",
+          "required": true
+        },
+        {
+          "name": "filed_by",
+          "type": "string",
+          "description": "Who filed it on the raiser's behalf, empty when the raiser filed it."
+        },
+        {
+          "name": "channel",
+          "type": "string",
+          "description": "How it reached whoever filed it on the raiser's behalf, empty when the raiser filed it."
+        },
+        {
+          "name": "pin",
+          "type": "geometry",
+          "description": "The exact point the raiser dropped, when they dropped one. Only the raiser and the host's staff read it; every other read gets it rounded.",
+          "nullable": true
+        },
+        {
+          "name": "address",
+          "type": "string",
+          "description": "The place as the raiser typed it, empty when they typed none."
+        },
+        {
+          "name": "area",
+          "type": "string",
+          "description": "The host's area the item falls in, resolved by the host from the pin, else the address, else the one the raiser picked; empty when none. Opaque to this module."
+        },
+        {
+          "name": "street",
+          "type": "string",
+          "description": "The street the item is on, resolved by the host from the typed address's matched street, else from the pin's address, else the one the raiser gave; empty when none. Shown with the area to every reader."
+        },
+        {
+          "name": "board_item_id",
+          "type": "string",
+          "description": "The board item this publishable item is grouped under, empty while ungrouped."
+        },
+        {
+          "name": "subject_id",
+          "type": "string",
+          "description": "The id of the entry in this catalog that the raiser is, when the raiser is known to it; empty means the raiser is not in it, and the item is an arrival tied to nobody."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was raised."
+        },
+        {
+          "name": "follow_key_hash",
+          "type": "string",
+          "description": "SHA-256 of the key that lets the raiser follow this item and the replies written to it without signing in, hex-encoded. Empty until a key is issued; the raw key is returned once and never stored, and issuing another retires this one."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "raiser",
+          "description": "Lists one raiser's items.",
+          "fields": [
+            "raised_by"
+          ]
+        },
+        {
+          "name": "board_item",
+          "description": "Counts and lists the items grouped under one board item.",
+          "fields": [
+            "board_item_id"
+          ]
+        },
+        {
+          "name": "subject",
+          "description": "Lists the items raised by one entry's subject.",
+          "fields": [
+            "subject_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "board_item",
+      "description": "One item on the public board, grouping the publishable raised items that say the same thing. A domain without a board fills no object for this role.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "What the grouped items raise, one line, as the board shows it.",
+          "required": true
+        },
+        {
+          "name": "outcome",
+          "type": "string",
+          "description": "What came of it, public text, empty until there is one."
+        },
+        {
+          "name": "hidden",
+          "type": "bool",
+          "description": "Whether staff have taken it off the public board; a hidden board item is left out of every public read and its share link stops opening."
+        },
+        {
+          "name": "assignee_kind",
+          "type": "string",
+          "description": "What assignee_id names: actor, a person named by the host's own id, or role, whose holders the host resolves and any of whom picks the item up. Empty means unassigned."
+        },
+        {
+          "name": "assignee_id",
+          "type": "string",
+          "description": "Who the item is assigned to, read as assignee_kind says, opaque to this module. Empty means unassigned."
+        },
+        {
+          "name": "closed_at",
+          "type": "timestamp",
+          "description": "When it was closed, set once by an explicit Close and by nothing else. Empty while the item is open."
+        },
+        {
+          "name": "closed_by",
+          "type": "string",
+          "description": "Who closed it, the caller of Close, opaque to this module. Empty while the item is open."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was put on the board."
+        }
+      ]
+    },
+    {
+      "role": "reply",
+      "description": "An answer to a raised item, from whoever answers for the mounting host. A domain that sends no replies fills no object for this role.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "raised_item_id",
+          "type": "string",
+          "description": "The raised item this answers.",
+          "required": true
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "description": "The answer, as the raiser reads it.",
+          "required": true
+        },
+        {
+          "name": "replied_by",
+          "type": "string",
+          "description": "Who answered, opaque to this module.",
+          "required": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was sent."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "raised_item",
+          "description": "Lists the replies to one raised item.",
+          "fields": [
+            "raised_item_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "removal",
+      "description": "A raised item taken off the board, with the ground it was taken down on, which its raiser reads. A domain that removes nothing fills no object for this role.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "raised_item_id",
+          "type": "string",
+          "description": "The raised item taken down.",
+          "required": true
+        },
+        {
+          "name": "ground",
+          "type": "string",
+          "description": "Why it was taken down, as its raiser reads it.",
+          "required": true
+        },
+        {
+          "name": "removed_by",
+          "type": "string",
+          "description": "Who took it down, opaque to this module.",
+          "required": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was taken down."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "raised_item",
+          "description": "Finds the removal of one raised item.",
+          "fields": [
+            "raised_item_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "raised_item_file",
+      "description": "One file attached to a raised item, held by its id in the file store the mounting host keeps. Seen by the raiser and by whoever answers for the host; seen by the public only once approved for publishing on a publishable item. A domain that takes no attachments fills no object for this role.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "raised_item_id",
+          "type": "string",
+          "description": "The raised item the file is attached to.",
+          "required": true
+        },
+        {
+          "name": "file_id",
+          "type": "string",
+          "description": "The file's id in the host's file store, opaque to this module.",
+          "required": true
+        },
+        {
+          "name": "attached_by",
+          "type": "string",
+          "description": "Who attached it: the raiser, opaque to this module.",
+          "required": true
+        },
+        {
+          "name": "attached_at",
+          "type": "timestamp",
+          "description": "When it was attached."
+        },
+        {
+          "name": "approved_by",
+          "type": "string",
+          "description": "Who approved it for publishing, opaque to this module; empty until approved."
+        },
+        {
+          "name": "approved_at",
+          "type": "string",
+          "description": "When it was approved for publishing; empty until approved."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "raised_item_file",
+          "description": "One file at most once per raised item.",
+          "fields": [
+            "raised_item_id",
+            "file_id"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "role": "scope_figure",
+      "description": "A dated, sourced figure about a scope, recorded from outside this module so a count of rows has a denominator beside it. Append-only; the newest by as_of is the current figure. A domain that keeps no figures fills no object for this role.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "scope_id",
+          "type": "string",
+          "description": "The scope the figure is about, opaque to this module.",
+          "required": true
+        },
+        {
+          "name": "value",
+          "type": "int",
+          "description": "The figure itself, a whole number."
+        },
+        {
+          "name": "as_of",
+          "type": "timestamp",
+          "description": "When the figure was true, as its source states it.",
+          "required": true
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "description": "Where the figure came from, as a reader would cite it.",
+          "required": true
+        },
+        {
+          "name": "recorded_by",
+          "type": "string",
+          "description": "Who recorded it, opaque to this module.",
+          "required": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When it was recorded."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "scope",
+          "description": "Reads one scope's figures, newest first.",
+          "fields": [
+            "scope_id",
+            "as_of"
+          ]
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "name": "kinds",
+      "type": "json",
+      "description": "The kinds an entry may name in its document's kind key, each with the fields its document carries: a name, a type (string, number, boolean, object or array) and whether it is required. An entry naming no kind, or a mount declaring none, is not checked.",
+      "default": []
+    },
+    {
+      "name": "seeds",
+      "type": "json",
+      "description": "The entries a mount starts with, each a slug, a name, an optional summary and an optional document object. Applying them creates every seed whose slug no entry holds, as pending like any new entry, and leaves an existing or deleted entry alone.",
+      "default": []
+    },
+    {
+      "name": "catalogues",
+      "type": "json",
+      "description": "Every catalogue the agency has, each a mount, a name, an audience (public, members or staff) and whether it holds services. Publishing makes each one exist; a mount not listed answers not found. The forms catalogue and the ideas board are built in and never listed.",
+      "default": []
+    }
+  ]
+}

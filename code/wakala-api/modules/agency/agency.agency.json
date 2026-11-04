@@ -1,0 +1,235 @@
+{
+  "module": "agency",
+  "domain": "agency",
+  "instance": "wakala",
+  "objects": [
+    {
+      "role": "agency",
+      "name": "agency",
+      "table": "agencies",
+      "description": "The organization this mount serves, of which there is one."
+    },
+    {
+      "role": "draft",
+      "name": "draft",
+      "table": "drafts",
+      "description": "An editable copy of the organization, which is the only thing anybody edits."
+    },
+    {
+      "role": "goal",
+      "name": "goal",
+      "table": "goals",
+      "description": "Something the organization is trying to achieve."
+    },
+    {
+      "role": "objective",
+      "name": "objective",
+      "table": "objectives",
+      "description": "One granular thing under a goal, and the unit a seat is answerable for."
+    },
+    {
+      "role": "risk",
+      "name": "risk",
+      "table": "risks",
+      "description": "Something that could go wrong for the organization, named by the event at its centre."
+    },
+    {
+      "role": "risk_pathway",
+      "name": "risk_pathway",
+      "table": "risk_pathways",
+      "description": "One way a risk comes about, or one consequence it leads to."
+    },
+    {
+      "role": "hazard",
+      "name": "hazard",
+      "table": "hazards",
+      "description": "Something that could cause harm, kept once and named by any number of risks."
+    },
+    {
+      "role": "threat",
+      "name": "threat",
+      "table": "threats",
+      "description": "A way a top event can come about, kept once and used by any number of risks."
+    },
+    {
+      "role": "consequence",
+      "name": "consequence",
+      "table": "consequences",
+      "description": "What follows a top event, kept once and used by any number of risks."
+    },
+    {
+      "role": "risk_threat",
+      "name": "risk_threat",
+      "table": "risk_threats",
+      "description": "A risk's use of a library threat."
+    },
+    {
+      "role": "risk_consequence",
+      "name": "risk_consequence",
+      "table": "risk_consequences",
+      "description": "A risk's use of a library consequence."
+    },
+    {
+      "role": "workflow",
+      "name": "workflow",
+      "table": "workflows",
+      "description": "A named sequence of work the organization performs."
+    },
+    {
+      "role": "work_item",
+      "name": "work_item",
+      "table": "work_items",
+      "description": "One step of a workflow, with the instruction it is performed from."
+    },
+    {
+      "role": "event_flow_step",
+      "name": "event_flow_step",
+      "table": "event_flow_steps",
+      "description": "One step of a workflow's event flow, from trigger to handler."
+    },
+    {
+      "role": "role",
+      "name": "role",
+      "table": "roles",
+      "description": "A seat somebody or something holds in this organization."
+    },
+    {
+      "role": "role_assignment",
+      "name": "role_assignment",
+      "table": "role_assignments",
+      "description": "One RACI label: which seat takes part in which step, and how."
+    },
+    {
+      "role": "workflow_objective",
+      "name": "workflow_objective",
+      "table": "workflow_objectives",
+      "description": "One link saying a workflow delivers an objective."
+    },
+    {
+      "role": "module",
+      "name": "module",
+      "table": "modules",
+      "description": "One capability from the platform catalog, switched on or off."
+    },
+    {
+      "role": "value",
+      "name": "value",
+      "table": "values",
+      "description": "Something this organization believes, written down to be read."
+    },
+    {
+      "role": "value_attachment",
+      "name": "value_attachment",
+      "table": "value_attachments",
+      "description": "One place a belief of this organization applies."
+    },
+    {
+      "role": "rule",
+      "name": "rule",
+      "table": "rules",
+      "description": "Something this organization requires or forbids."
+    },
+    {
+      "role": "rule_attachment",
+      "name": "rule_attachment",
+      "table": "rule_attachments",
+      "description": "One place a requirement of this organization applies."
+    },
+    {
+      "role": "control",
+      "name": "control",
+      "table": "controls",
+      "description": "What the agency commits to, advisory or enforced."
+    },
+    {
+      "role": "control_attachment",
+      "name": "control_attachment",
+      "table": "control_attachments",
+      "description": "One place a control stands."
+    },
+    {
+      "role": "issue",
+      "name": "issue",
+      "table": "issues",
+      "description": "Something the validation scan found wrong in a draft."
+    },
+    {
+      "role": "agency_publication",
+      "name": "agency_publication",
+      "table": "publications",
+      "description": "A frozen copy of this organization, and what production runs from."
+    },
+    {
+      "role": "code_sequence",
+      "name": "code_sequence",
+      "table": "code_sequences",
+      "description": "The counter behind each kind of stable handle."
+    },
+    {
+      "role": "measure",
+      "name": "measure",
+      "table": "measures",
+      "description": "One figure an objective is judged by, with its target."
+    },
+    {
+      "role": "record",
+      "name": "record",
+      "table": "records",
+      "description": "A named list a workflow keeps beside its steps."
+    },
+    {
+      "role": "record_row",
+      "name": "record_row",
+      "table": "record_rows",
+      "description": "One row added to a record from the member app."
+    },
+    {
+      "role": "scenario",
+      "name": "scenario",
+      "table": "scenarios",
+      "description": "A path through one workflow that the Test agent plays out."
+    },
+    {
+      "role": "scenario_actor",
+      "name": "scenario_actor",
+      "table": "scenario_actors",
+      "description": "Someone the Test agent plays in one scenario."
+    },
+    {
+      "role": "scenario_input",
+      "name": "scenario_input",
+      "table": "scenario_inputs",
+      "description": "A value fixed for one field of one step in one scenario."
+    },
+    {
+      "role": "test_run",
+      "name": "test_run",
+      "table": "test_runs",
+      "description": "One run of one scenario, kept with what transpired in it."
+    },
+    {
+      "role": "review",
+      "name": "review",
+      "table": "reviews",
+      "description": "One run of the AI reviewers over one draft."
+    },
+    {
+      "role": "review_area",
+      "name": "review_area",
+      "table": "review_areas",
+      "description": "One reviewer's part of a review."
+    },
+    {
+      "role": "review_finding",
+      "name": "review_finding",
+      "table": "review_findings",
+      "description": "One suggestion a reviewer made, with what the designer did with it."
+    },
+    {
+      "role": "review_comment",
+      "name": "review_comment",
+      "table": "review_comments",
+      "description": "The designer's note on a finding."
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "module": "permissions",
+  "objects": [
+    {
+      "role": "role",
+      "description": "A named bundle of permitted actions, such as the one an owner holds or the one a read-only visitor holds. What it permits is the role_actions beside it; this row is only the name and why it exists.",
+      "fields": [
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Stable key for the bundle, such as owner or viewer. Fixed at creation \u2014 every grant names it.",
+          "primary": true,
+          "matches": "code"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "What the bundle is called in a listing.",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "description": "What holding this bundle lets someone do, in the domain's own words. A bundle nobody can explain is the one that grows."
+        },
+        {
+          "name": "seeded",
+          "type": "bool",
+          "description": "Whether a seeding pass owns this bundle's actions and will rewrite them. A hand-made bundle is left alone."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the bundle was declared.",
+          "immutable": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When it last changed."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Whether it has been retired. A retired bundle permits nothing, and the grants naming it are kept so the trail survives."
+        }
+      ]
+    },
+    {
+      "role": "role_action",
+      "description": "One action a bundle permits. Actions are listed one by one and never matched by pattern: a pattern is a permission that widens itself the next time somebody declares an operation.",
+      "fields": [
+        {
+          "name": "role_code",
+          "type": "string",
+          "description": "The bundle this permission belongs to.",
+          "primary": true
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "description": "The declared action it permits, such as the one an operation names. Compared exactly, never interpreted.",
+          "primary": true,
+          "matches": "action"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the permission was added to the bundle.",
+          "immutable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "role_action",
+          "description": "The permission check: does this bundle permit this action.",
+          "fields": [
+            "role_code",
+            "action"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "grant",
+      "description": "One subject holding one bundle in one scope. Grants only ever add: nothing here takes a permission away, because a rule that subtracts needs a precedence order, and a precedence order is where an access-control system stops being possible to reason about.",
+      "fields": [
+        {
+          "name": "subject",
+          "type": "string",
+          "description": "Whoever authenticated, exactly as the caller supplied it. This module never interprets it and never resolves it to a person.",
+          "primary": true
+        },
+        {
+          "name": "scope",
+          "type": "string",
+          "description": "Where the bundle applies, as an opaque key the caller chooses. Compared exactly, with one reserved value: a scope of * applies everywhere. A scope of the form record:<module>/<object>/<id> names one record and answers for that record alone.",
+          "primary": true,
+          "matches": "scope"
+        },
+        {
+          "name": "partition",
+          "type": "string",
+          "description": "Which partition of the deployment the grant holds in, as an opaque key the caller chooses. Empty means every partition, which is what every grant made before partitions existed means. A grant naming one partition never answers a question asked in another, nor one asked in none.",
+          "primary": true
+        },
+        {
+          "name": "role_code",
+          "type": "string",
+          "description": "The bundle held.",
+          "primary": true
+        },
+        {
+          "name": "granted_by",
+          "type": "string",
+          "description": "The subject that made this grant, for the trail. Empty when a bootstrap made it, which is itself worth being able to see."
+        },
+        {
+          "name": "granted_at",
+          "type": "timestamp",
+          "description": "When it was made.",
+          "immutable": true
+        },
+        {
+          "name": "ends_at",
+          "type": "string",
+          "description": "When the grant stops answering, as RFC 3339 text stored in UTC at a fixed width. Empty means it never ends. Past this instant no check honours the grant and no listing shows it, exactly as if it had been withdrawn."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Whether it has been withdrawn. Withdrawn grants are kept rather than removed, so a revocation leaves a trail of what was held and when it stopped."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "subject_scope",
+          "description": "The permission check's first half: every live bundle this subject holds here.",
+          "fields": [
+            "subject",
+            "scope"
+          ],
+          "not_deleted": true
+        }
+      ]
+    },
+    {
+      "role": "permission",
+      "description": "Whether one role kind holds one permission in one partition, as one layer set it. Two layers exist: the published definition's and the owner's override; an override row, when present, is the answer. A permission is an opaque code naming a list of actions elsewhere; this module never learns what it allows.",
+      "fields": [
+        {
+          "name": "partition",
+          "type": "string",
+          "description": "The partition the setting holds in, as an opaque key the caller chooses.",
+          "primary": true
+        },
+        {
+          "name": "permission",
+          "type": "string",
+          "description": "The permission's code, compared exactly and never interpreted.",
+          "primary": true,
+          "matches": "code"
+        },
+        {
+          "name": "role_kind",
+          "type": "string",
+          "description": "The kind of role the setting is for, as an opaque key the caller chooses.",
+          "primary": true,
+          "matches": "code"
+        },
+        {
+          "name": "layer",
+          "type": "enum",
+          "values": [
+            "definition",
+            "override"
+          ],
+          "description": "Which layer set it: the published definition or the owner's override.",
+          "primary": true
+        },
+        {
+          "name": "held",
+          "type": "bool",
+          "description": "Whether that layer ticks the permission for that role kind."
+        },
+        {
+          "name": "set_by",
+          "type": "string",
+          "description": "The subject that set it, from the caller. Empty when a publish or bootstrap set it."
+        },
+        {
+          "name": "set_at",
+          "type": "timestamp",
+          "description": "When it was last set."
+        }
+      ]
+    }
+  ]
+}

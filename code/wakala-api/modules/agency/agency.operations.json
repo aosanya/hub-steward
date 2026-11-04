@@ -1,0 +1,3598 @@
+{
+  "errors": {
+    "ErrHazardNotFound": 404,
+    "ErrThreatNotFound": 404,
+    "ErrConsequenceNotFound": 404,
+    "ErrRiskThreatNotFound": 404,
+    "ErrRiskConsequenceNotFound": 404,
+    "ErrInvalidHazard": 400,
+    "ErrInvalidThreat": 400,
+    "ErrInvalidConsequence": 400,
+    "ErrLibraryPartInUse": 409,
+    "ErrLibraryTitleTaken": 409,
+    "ErrDuplicateRiskThreat": 409,
+    "ErrDuplicateRiskConsequence": 409,
+    "ErrConsequenceOutsideHazard": 409,
+    "ErrAgencyNotFound": 404,
+    "ErrAgencyExists": 409,
+    "ErrCannotEditLive": 409,
+    "ErrConflict": 409,
+    "ErrAmbiguousLookup": 409,
+    "ErrDraftNotFound": 404,
+    "ErrDraftNotOpen": 409,
+    "ErrDraftRequired": 400,
+    "ErrDuplicateRoleAssignment": 409,
+    "ErrDuplicateAttachment": 409,
+    "ErrDuplicateModule": 409,
+    "ErrDuplicateTag": 409,
+    "ErrEventFlowStepNotFound": 404,
+    "ErrGoalNotFound": 404,
+    "ErrInvalidForkSource": 400,
+    "ErrLimitExceeded": 409,
+    "ErrInvalidLookup": 400,
+    "ErrInvalidModule": 400,
+    "ErrInvalidModuleMounts": 400,
+    "ErrInvalidRACILabel": 400,
+    "ErrInvalidRole": 400,
+    "ErrInvalidRule": 400,
+    "ErrInvalidTargetType": 400,
+    "ErrInvalidValue": 400,
+    "ErrInvalidWorkItem": 400,
+    "ErrInvalidWorkflow": 400,
+    "ErrModuleLocked": 409,
+    "ErrModuleNotFound": 404,
+    "ErrNoChangesDetected": 409,
+    "ErrObjectiveNotFound": 404,
+    "ErrWorkflowObjectiveNotFound": 404,
+    "ErrPublicationNotFound": 404,
+    "ErrPublishValidationFailed": 409,
+    "ErrRoleAssignmentNotFound": 404,
+    "ErrRoleNotFound": 404,
+    "ErrRuleAttachmentNotFound": 404,
+    "ErrRuleNotFound": 404,
+    "ErrValueAttachmentNotFound": 404,
+    "ErrValueNotFound": 404,
+    "ErrWorkItemNotFound": 404,
+    "ErrWorkflowNotFound": 404,
+    "ErrInvalidMeasure": 400,
+    "ErrRiskNotFound": 404,
+    "ErrRiskPathwayNotFound": 404,
+    "ErrInvalidRisk": 400,
+    "ErrInvalidRiskPathway": 400,
+    "ErrInvalidRecord": 400,
+    "ErrInvalidRecordRow": 400,
+    "ErrRecordNotFound": 404,
+    "ErrRecordRowRefused": 403,
+    "ErrDuplicateRecordRow": 409,
+    "ErrScenarioNotFound": 404,
+    "ErrInvalidScenario": 400,
+    "ErrScenarioActorNotFound": 404,
+    "ErrDuplicateScenarioActor": 409,
+    "ErrScenarioRunning": 409,
+    "ErrTestRunFinished": 409,
+    "ErrTestRunNotFound": 404,
+    "ErrUsedByScenario": 409,
+    "ErrDuplicateWorkflowObjective": 409,
+    "ErrReviewRunning": 409,
+    "ErrNoReviewAreas": 409,
+    "ErrReviewNotFound": 404,
+    "ErrReviewAreaNotFound": 404,
+    "ErrReviewAreaRecorded": 409,
+    "ErrFindingNotFound": 404,
+    "ErrInvalidReview": 400,
+    "ErrInvalidControl": 400,
+    "ErrControlNotFound": 404,
+    "ErrControlAttachmentNotFound": 404,
+    "ErrDuplicateControlAttachment": 409
+  },
+  "operations": {
+    "create_agency": {
+      "method": "POST",
+      "path": "/agency",
+      "call": "CreateAgency",
+      "action": "agency.agency.create",
+      "status": 201,
+      "title": "Create agency",
+      "description": "Write the one organization this mount serves. Everything else hangs off it, so nothing can be created before it.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_agency"
+    },
+    "get_agency": {
+      "method": "GET",
+      "path": "/agency",
+      "call": "GetAgency",
+      "action": "agency.agency.read",
+      "title": "Read agency",
+      "description": "Read the organization: its name, description and settings.",
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_agency"
+    },
+    "update_agency": {
+      "method": "PATCH",
+      "path": "/agency",
+      "call": "UpdateAgency",
+      "action": "agency.agency.update",
+      "title": "Rename agency",
+      "description": "Change the organization's name and description. Nothing else about it is editable here.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_agency"
+    },
+    "create_draft": {
+      "method": "POST",
+      "path": "/drafts",
+      "call": "CreateDraft",
+      "action": "agency.draft.create",
+      "status": 201,
+      "title": "Start a draft",
+      "description": "Start an editable copy of the organization. An empty forked_from_type starts from nothing; \"draft\" forks another open draft by its id; \"publication\" forks a published tag, materializing its document.",
+      "args": [
+        {
+          "from": "body",
+          "as": "description",
+          "description": "What this round of editing is for."
+        },
+        {
+          "from": "body",
+          "as": "forked_from_id",
+          "description": "The draft's id, or the publication's tag, depending on forked_from_type."
+        },
+        {
+          "from": "body",
+          "as": "forked_from_type",
+          "description": "Empty, \"draft\" or \"publication\"."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_draft"
+    },
+    "list_drafts": {
+      "method": "GET",
+      "path": "/drafts",
+      "call": "ListDrafts",
+      "action": "agency.draft.list",
+      "title": "List drafts",
+      "description": "List every draft, oldest first, narrowed by the filter.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_drafts"
+    },
+    "get_draft": {
+      "method": "GET",
+      "path": "/drafts/{draft_id}",
+      "call": "GetDraft",
+      "action": "agency.draft.read",
+      "title": "Read draft",
+      "description": "Read one draft's header — what it is for, what it was forked from, and whether it is still open.",
+      "args": [
+        {
+          "from": "path",
+          "as": "draft_id",
+          "description": "The draft to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_draft"
+    },
+    "update_draft": {
+      "method": "PATCH",
+      "path": "/drafts/{draft_id}",
+      "call": "UpdateDraftDescription",
+      "action": "agency.draft.update",
+      "title": "Describe draft",
+      "description": "Change what a draft says it is for. Only an open draft may be edited.",
+      "args": [
+        {
+          "from": "path",
+          "as": "draft_id",
+          "description": "The draft to describe."
+        },
+        {
+          "from": "body",
+          "as": "description",
+          "required": true,
+          "description": "What this round of editing is for."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_draft_description"
+    },
+    "archive_draft": {
+      "method": "POST",
+      "path": "/drafts/{draft_id}/archive",
+      "call": "ArchiveDraft",
+      "action": "agency.draft.archive",
+      "title": "Archive draft",
+      "description": "Put a draft away. Archiving is terminal, and an archived draft can still be published from.",
+      "args": [
+        {
+          "from": "path",
+          "as": "draft_id",
+          "description": "The draft to archive."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_archive_draft"
+    },
+    "create_goal": {
+      "method": "POST",
+      "path": "/goals",
+      "call": "CreateGoal",
+      "action": "agency.goal.create",
+      "status": 201,
+      "title": "Create goal",
+      "description": "Add something the organization is trying to achieve. It belongs to the draft named in the body.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_goal"
+    },
+    "list_goals": {
+      "method": "GET",
+      "path": "/goals",
+      "call": "ListGoals",
+      "action": "agency.goal.list",
+      "title": "List goals",
+      "description": "List one draft's goals in their listed order, narrowed by the filter.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose goals to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_goals"
+    },
+    "get_goal": {
+      "method": "GET",
+      "path": "/goals/{goal_id}",
+      "call": "GetGoal",
+      "action": "agency.goal.read",
+      "title": "Read goal",
+      "description": "Read one goal by its id — its code, title, description and the draft it belongs to.",
+      "args": [
+        {
+          "from": "path",
+          "as": "goal_id",
+          "refers": "agency.goal",
+          "description": "The goal to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_goal"
+    },
+    "update_goal": {
+      "method": "PATCH",
+      "path": "/goals/{goal_id}",
+      "call": "UpdateGoal",
+      "action": "agency.goal.update",
+      "title": "Update goal",
+      "description": "Replace a goal's title, description and position. Its code and its draft do not change.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "goal_id",
+          "refers": "agency.goal",
+          "into": "ID",
+          "description": "The goal to update."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_goal"
+    },
+    "create_objective": {
+      "method": "POST",
+      "path": "/objectives",
+      "call": "CreateObjective",
+      "action": "agency.objective.create",
+      "status": 201,
+      "title": "Create objective",
+      "description": "Add a granular thing under a goal. This is the unit a seat is answerable for, so a goal usually has several.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_objective"
+    },
+    "list_objectives": {
+      "method": "GET",
+      "path": "/objectives",
+      "call": "ListObjectives",
+      "action": "agency.objective.list",
+      "title": "List objectives",
+      "description": "List one draft's objectives in their listed order, narrowed by the filter.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose objectives to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_objectives"
+    },
+    "get_objective": {
+      "method": "GET",
+      "path": "/objectives/{objective_id}",
+      "call": "GetObjective",
+      "action": "agency.objective.read",
+      "title": "Read objective",
+      "description": "Read one objective by its id — its code, title, the goal it serves and the draft it belongs to.",
+      "args": [
+        {
+          "from": "path",
+          "as": "objective_id",
+          "refers": "agency.objective",
+          "description": "The objective to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_objective"
+    },
+    "update_objective": {
+      "method": "PATCH",
+      "path": "/objectives/{objective_id}",
+      "call": "UpdateObjective",
+      "action": "agency.objective.update",
+      "title": "Update objective",
+      "description": "Replace an objective's title, description, position and the goal it serves.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "objective_id",
+          "refers": "agency.objective",
+          "into": "ID",
+          "description": "The objective to update."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_objective"
+    },
+    "create_workflow": {
+      "method": "POST",
+      "path": "/workflows",
+      "call": "CreateWorkflow",
+      "action": "agency.workflow.create",
+      "status": 201,
+      "title": "Create workflow",
+      "description": "Add a named sequence of work the organization performs. opens_in says where it starts for the person: chat, or form (the default, so leave it out for a form). A workflow that opens in a chat holds one chat step. cancels_order is true for a workflow that cancels an order, so the picker on a waiting step lists it beside the built-in Cancel (false by default).",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_workflow"
+    },
+    "list_workflows": {
+      "method": "GET",
+      "path": "/workflows",
+      "call": "ListWorkflows",
+      "action": "agency.workflow.list",
+      "title": "List workflows",
+      "description": "List one draft's workflows in their listed order, narrowed by the filter. Each carries in_use (an order is under way on it), orders_under_way, order_versions (the versions those orders are on) and version (the version published now, 0 before the first publish).",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose workflows to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_workflows"
+    },
+    "list_default_workflows": {
+      "method": "GET",
+      "path": "/workflows/defaults",
+      "call": "ListDefaultWorkflows",
+      "action": "agency.workflow.list_defaults",
+      "title": "List default workflows",
+      "description": "List the workflows every agency has built in, such as Cancel, which holds until the agency adds a cancel workflow of its own. Each carries whether an order is under way on it and the versions those orders are on.",
+      "args": [],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_default_workflows"
+    },
+    "get_workflow": {
+      "method": "GET",
+      "path": "/workflows/{workflow_id}",
+      "call": "GetWorkflow",
+      "action": "agency.workflow.read",
+      "title": "Read workflow",
+      "description": "Read one workflow by its id — its code, name, position, its own event-flow definition and whether an order is under way on it (in_use, orders_under_way, order_versions, version).",
+      "args": [
+        {
+          "from": "path",
+          "as": "workflow_id",
+          "refers": "agency.workflow",
+          "description": "The workflow to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_workflow"
+    },
+    "update_workflow": {
+      "method": "PATCH",
+      "path": "/workflows/{workflow_id}",
+      "call": "UpdateWorkflow",
+      "action": "agency.workflow.update",
+      "title": "Update workflow",
+      "description": "Replace a workflow's name, description, position, event-flow definition, opens_in (chat or form; a workflow that holds a chat step stays a chat) and cancels_order (true for a workflow that cancels an order).",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "workflow_id",
+          "refers": "agency.workflow",
+          "into": "ID",
+          "description": "The workflow to update."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_workflow"
+    },
+    "create_workflow_objective": {
+      "method": "POST",
+      "path": "/workflow-objectives",
+      "call": "CreateWorkflowObjective",
+      "action": "agency.workflow_objective.create",
+      "status": 201,
+      "title": "Link workflow to objective",
+      "description": "Say that a workflow serves an objective. A workflow may serve several objectives and an objective may be served by several workflows; the same pair cannot be linked twice. Both ends must be in the same draft.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_link_workflow_objective"
+    },
+    "list_workflow_objectives": {
+      "method": "GET",
+      "path": "/workflow-objectives",
+      "call": "ListWorkflowObjectives",
+      "action": "agency.workflow_objective.list",
+      "title": "List workflow objectives",
+      "description": "List one draft's workflow-to-objective links, narrowed by the filter.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose links to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_workflow_objectives"
+    },
+    "get_workflow_objective": {
+      "method": "GET",
+      "path": "/workflow-objectives/{workflow_objective_id}",
+      "call": "GetWorkflowObjective",
+      "action": "agency.workflow_objective.read",
+      "title": "Read workflow objective",
+      "description": "Read one workflow-to-objective link by its id — which workflow, which objective and the draft it belongs to.",
+      "args": [
+        {
+          "from": "path",
+          "as": "workflow_objective_id",
+          "description": "The link to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_workflow_objective"
+    },
+    "delete_workflow_objective": {
+      "method": "DELETE",
+      "path": "/workflow-objectives/{workflow_objective_id}",
+      "call": "DeleteWorkflowObjective",
+      "action": "agency.workflow_objective.delete",
+      "status": 204,
+      "title": "Unlink workflow from objective",
+      "description": "Remove one workflow-to-objective link, leaving the workflow and the objective in place.",
+      "args": [
+        {
+          "from": "path",
+          "as": "workflow_objective_id",
+          "description": "The link to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_workflow_objective"
+    },
+    "create_work_item": {
+      "method": "POST",
+      "path": "/work-items",
+      "call": "CreateWorkItem",
+      "action": "agency.work_item.create",
+      "status": 201,
+      "title": "Create work item",
+      "description": "Add one step of a workflow, with the instruction whoever performs it works from. A step may also say what it is: its kind (fill_form, send_form, notify, yes_no, route, run_workflow or chat), the one role that acts on it (none when the agency takes it; send_form and route are always the agency's), the form it takes with its questions, the one tool the person uses to do it, by name (tool, on a step a role acts on: a step does one thing, and a test of it lets the person use that tool and nothing else), for run_workflow the workflow it starts, and, for a fill_form or yes_no step a role acts on, a time_limit_minutes with the cancel_workflow_id that runs when it passes with no answer. A chat step (only in a workflow that opens in a chat, one for each) holds the role that opens it in role_id and, boxed in, agent_role_id (the role it chats with), topic, opening_line, up to three prompts, tools (plain names, not checked) and start_workflow_ids (the workflows it may lead to, never its own). A step with more than one role, a run_workflow that names no existing workflow, a time limit with no cancel workflow or on a step nobody waits on, is refused.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_work_item"
+    },
+    "list_work_items": {
+      "method": "GET",
+      "path": "/work-items",
+      "call": "ListWorkItems",
+      "action": "agency.work_item.list",
+      "title": "List work items",
+      "description": "List one draft's work items in their listed order, narrowed by the filter. Each step reads back with its kind, role, form, questions, tool and derived action, such as \"Fills the Group order form\".",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose work items to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_work_items"
+    },
+    "get_work_item": {
+      "method": "GET",
+      "path": "/work-items/{work_item_id}",
+      "call": "GetWorkItem",
+      "action": "agency.work_item.read",
+      "title": "Read work item",
+      "description": "Read one work item by its id — its code, title, prompt, kind, role, form and derived action, and the workflow it belongs to.",
+      "args": [
+        {
+          "from": "path",
+          "as": "work_item_id",
+          "refers": "agency.work_item",
+          "description": "The work item to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_work_item"
+    },
+    "update_work_item": {
+      "method": "PATCH",
+      "path": "/work-items/{work_item_id}",
+      "call": "UpdateWorkItem",
+      "action": "agency.work_item.update",
+      "title": "Update work item",
+      "description": "Replace a work item's title, description, position, prompt, kind, role, form and questions, the workflow it runs, its time limit and cancel workflow, and the workflow it belongs to. The same refusals as creating one apply.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "work_item_id",
+          "refers": "agency.work_item",
+          "into": "ID",
+          "description": "The work item to update."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_work_item"
+    },
+    "list_work_item_raci": {
+      "method": "GET",
+      "path": "/work-items/{work_item_id}/role-assignments",
+      "call": "ListRoleAssignmentsForWorkItem",
+      "action": "agency.work_item.list_raci",
+      "title": "Read work item RACI",
+      "description": "Answer which seats take part in one step, and how. This is the lookup anything asking \"who do I notify\" uses.",
+      "args": [
+        {
+          "from": "path",
+          "as": "work_item_id",
+          "refers": "agency.work_item",
+          "description": "The work item whose seats to read."
+        },
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft to read it in."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_role_assignments_for_work_item"
+    },
+    "create_role": {
+      "method": "POST",
+      "path": "/roles",
+      "call": "CreateRole",
+      "action": "agency.role.create",
+      "status": 201,
+      "title": "Create role",
+      "description": "Add a seat somebody or something holds. A seat needs a name.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_role"
+    },
+    "list_roles": {
+      "method": "GET",
+      "path": "/roles",
+      "call": "ListRoles",
+      "action": "agency.role.list",
+      "title": "List roles",
+      "description": "List one draft's seats, narrowed by the filter.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose seats to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_roles"
+    },
+    "get_role": {
+      "method": "GET",
+      "path": "/roles/{role_id}",
+      "call": "GetRole",
+      "action": "agency.role.read",
+      "title": "Read role",
+      "description": "Read one seat. An unknown id answers with the seats whose code or name look like what was asked for.",
+      "args": [
+        {
+          "from": "path",
+          "as": "role_id",
+          "refers": "agency.role",
+          "description": "The seat to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_role"
+    },
+    "get_role_brief": {
+      "method": "GET",
+      "path": "/roles/{role_id}/brief",
+      "call": "GetRoleBrief",
+      "action": "agency.role.brief",
+      "title": "Read seat brief",
+      "description": "Gather what one seat needs from the production publication: its name and description, the work items it takes part in through RACI with the label it holds on each, the objectives their workflows serve and those objectives' goals, the values and rules attached to it, to those objectives or goals or to the whole organization, and the prompt of each of those work items. Returns plain text and its named parts.",
+      "args": [
+        {
+          "from": "path",
+          "as": "role_id",
+          "refers": "agency.role",
+          "description": "The seat to brief, by id or code."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_role_brief"
+    },
+    "update_role": {
+      "method": "PATCH",
+      "path": "/roles/{role_id}",
+      "call": "UpdateRole",
+      "action": "agency.role.update",
+      "title": "Update role",
+      "description": "Replace a seat's name and description.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "role_id",
+          "refers": "agency.role",
+          "into": "ID",
+          "description": "The seat to update."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_role"
+    },
+    "delete_role": {
+      "method": "DELETE",
+      "path": "/roles/{role_id}",
+      "call": "DeleteRole",
+      "action": "agency.role.delete",
+      "status": 204,
+      "title": "Delete role",
+      "description": "Remove a seat and every RACI link that named it. Refused with 409 while an actor of a scenario holds the seat.",
+      "args": [
+        {
+          "from": "path",
+          "as": "role_id",
+          "refers": "agency.role",
+          "description": "The seat to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_role"
+    },
+    "create_raci": {
+      "method": "POST",
+      "path": "/role-assignments",
+      "call": "CreateRoleAssignment",
+      "action": "agency.raci.create",
+      "status": 201,
+      "title": "Assign RACI",
+      "description": "Give a seat a part in one step of a workflow: responsible, accountable, consulted or informed. Both ends must be in the same draft. A step may have any number of seats under any label; only the same seat with the same label on the same step twice is refused.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_set_raci"
+    },
+    "list_raci": {
+      "method": "GET",
+      "path": "/role-assignments",
+      "call": "ListRoleAssignments",
+      "action": "agency.raci.list",
+      "title": "List RACI",
+      "description": "List one draft's RACI links, narrowed by the filter (label, work item or role).",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose links to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_role_assignments"
+    },
+    "get_raci": {
+      "method": "GET",
+      "path": "/role-assignments/{assignment_id}",
+      "call": "GetRoleAssignment",
+      "action": "agency.raci.read",
+      "title": "Read RACI link",
+      "description": "Read one RACI link by its id — which seat it names, which work item, and how the two relate.",
+      "args": [
+        {
+          "from": "path",
+          "as": "assignment_id",
+          "description": "The link to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_role_assignment"
+    },
+    "update_raci": {
+      "method": "PATCH",
+      "path": "/role-assignments/{assignment_id}",
+      "call": "UpdateRoleAssignment",
+      "action": "agency.raci.update",
+      "title": "Change a RACI link",
+      "description": "Point a RACI link at a different seat or work item, or change how it relates.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "assignment_id",
+          "into": "ID",
+          "description": "The link to change."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_role_assignment"
+    },
+    "delete_raci": {
+      "method": "DELETE",
+      "path": "/role-assignments/{assignment_id}",
+      "call": "DeleteRoleAssignment",
+      "action": "agency.raci.delete",
+      "status": 204,
+      "title": "Remove a RACI link",
+      "description": "Remove one RACI link, leaving both the seat and the work item in place.",
+      "args": [
+        {
+          "from": "path",
+          "as": "assignment_id",
+          "description": "The link to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_role_assignment"
+    },
+    "list_modules": {
+      "method": "GET",
+      "path": "/modules",
+      "call": "ListModules",
+      "action": "agency.module.list",
+      "title": "List capabilities",
+      "description": "List the capability catalog for one draft. Each shows enabled (what runs: locked, or switched on, or needed by a workflow step, plus what those require), explicit (the switch itself, set with agency_set_module_enabled) and needed_by_steps (a workflow step uses it).",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose catalog to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_modules"
+    },
+    "get_module": {
+      "method": "GET",
+      "path": "/modules/{module_id}",
+      "call": "GetModule",
+      "action": "agency.module.read",
+      "title": "Read capability",
+      "description": "Read one capability: enabled (what runs), explicit (the switch itself) and needed_by_steps (a workflow step uses it).",
+      "args": [
+        {
+          "from": "path",
+          "as": "module_id",
+          "description": "The capability to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_module"
+    },
+    "set_module_enabled": {
+      "method": "PUT",
+      "path": "/modules/{module_id}/enabled",
+      "call": "SetModuleEnabled",
+      "action": "agency.module.set_enabled",
+      "title": "Switch a capability on or off",
+      "description": "Set the switch of one capability in a draft. A capability stays on while a workflow step needs it or another capability that is on requires it, whatever this switch says; the returned enabled shows the outcome. A locked capability cannot be switched off. Only in an open draft.",
+      "args": [
+        {
+          "from": "body",
+          "as": "draft_id",
+          "required": true,
+          "description": "The draft the capability is in. A capability of another draft is not found."
+        },
+        {
+          "from": "path",
+          "as": "module_id",
+          "description": "The capability to switch."
+        },
+        {
+          "from": "body",
+          "as": "enabled",
+          "required": true,
+          "description": "true to switch it on, false to switch it off."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_set_module_enabled"
+    },
+    "set_module_mounts": {
+      "method": "PUT",
+      "path": "/modules/{module_id}/mounts",
+      "call": "SetModuleMounts",
+      "action": "agency.module.set_mounts",
+      "title": "Name the mounts of a capability",
+      "description": "Give a capability the names this organization runs it under, such as two markets called Inputs and Harvest. Send the whole list; a name is unique within the capability, one line, at most 60 characters. An entry keeps its mount by carrying the key it was listed with; a new entry has no key and gets one. The first new entry takes the mount the capability has always run under, so nothing already recorded moves. A capability that cannot be run by name accepts one name or none. An empty list returns to the one default mount. Only in an open draft.",
+      "args": [
+        {
+          "from": "path",
+          "as": "module_id",
+          "description": "The capability to name."
+        },
+        {
+          "from": "body",
+          "as": "mounts",
+          "description": "Each mount: name, optional key (copy it from the list you read), optional icon from the shipped set."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_set_module_mounts"
+    },
+    "create_value": {
+      "method": "POST",
+      "path": "/values",
+      "call": "CreateValue",
+      "action": "agency.value.create",
+      "status": 201,
+      "title": "Create value",
+      "description": "Write down something the organization believes. Attaching it somewhere is a separate call.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_value"
+    },
+    "list_values": {
+      "method": "GET",
+      "path": "/values",
+      "call": "ListValues",
+      "action": "agency.value.list",
+      "title": "List values",
+      "description": "List one draft's beliefs, narrowed by the filter — including by what they are attached to.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose beliefs to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_values"
+    },
+    "get_value": {
+      "method": "GET",
+      "path": "/values/{value_id}",
+      "call": "GetValue",
+      "action": "agency.value.read",
+      "title": "Read value",
+      "description": "Read one belief by its id — its code and the text itself.",
+      "args": [
+        {
+          "from": "path",
+          "as": "value_id",
+          "refers": "agency.value",
+          "description": "The belief to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_value"
+    },
+    "update_value": {
+      "method": "PATCH",
+      "path": "/values/{value_id}",
+      "call": "UpdateValue",
+      "action": "agency.value.update",
+      "title": "Update value",
+      "description": "Rewrite a belief. One attached nowhere belongs to the whole organization and is permanently immutable.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "value_id",
+          "refers": "agency.value",
+          "into": "ID",
+          "description": "The belief to rewrite."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_value"
+    },
+    "delete_value": {
+      "method": "DELETE",
+      "path": "/values/{value_id}",
+      "call": "DeleteValue",
+      "action": "agency.value.delete",
+      "status": 204,
+      "title": "Delete value",
+      "description": "Remove a belief. One attached nowhere is permanently immutable and cannot be removed.",
+      "args": [
+        {
+          "from": "path",
+          "as": "value_id",
+          "refers": "agency.value",
+          "description": "The belief to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_value"
+    },
+    "attach_value": {
+      "method": "POST",
+      "path": "/values/{value_id}/attachments",
+      "call": "CreateValueAttachment",
+      "action": "agency.value.attach",
+      "status": 201,
+      "title": "Attach value",
+      "description": "Say where a belief applies — to a role, goal, objective, workflow or work item. Both ends are stored by their stable code, so the attachment survives publishing.",
+      "args": [
+        {
+          "from": "path",
+          "as": "value_id",
+          "refers": "agency.value",
+          "description": "The belief being attached."
+        },
+        {
+          "from": "body",
+          "as": "target_type",
+          "required": true,
+          "field": "ValueAttachment.target_type"
+        },
+        {
+          "from": "body",
+          "as": "target_id",
+          "required": true,
+          "description": "The thing it is attached to, by id."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_attach_value"
+    },
+    "list_value_attachments": {
+      "method": "GET",
+      "path": "/values/{value_id}/attachments",
+      "call": "ListValueAttachments",
+      "action": "agency.value.list_attachments",
+      "title": "List where a value applies",
+      "description": "List everywhere one belief is attached.",
+      "args": [
+        {
+          "from": "path",
+          "as": "value_id",
+          "refers": "agency.value",
+          "description": "The belief whose attachments to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_value_attachments"
+    },
+    "detach_value": {
+      "method": "DELETE",
+      "path": "/values/{value_id}/attachments/{attachment_id}",
+      "call": "DeleteValueAttachment",
+      "action": "agency.value.detach",
+      "status": 204,
+      "title": "Detach value",
+      "description": "Remove one attachment, leaving the belief itself in place.",
+      "args": [
+        {
+          "from": "path",
+          "as": "value_id",
+          "ignored": true,
+          "description": "The belief the attachment hangs off. Part of the address, not of the call."
+        },
+        {
+          "from": "path",
+          "as": "attachment_id",
+          "description": "The attachment to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_detach_value"
+    },
+    "create_rule": {
+      "method": "POST",
+      "path": "/rules",
+      "call": "CreateRule",
+      "action": "agency.rule.create",
+      "status": 201,
+      "title": "Create rule",
+      "description": "Write down something the organization requires or forbids. Attaching it somewhere is a separate call.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_rule"
+    },
+    "list_rules": {
+      "method": "GET",
+      "path": "/rules",
+      "call": "ListRules",
+      "action": "agency.rule.list",
+      "title": "List rules",
+      "description": "List one draft's requirements, narrowed by the filter — including by what they are attached to.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose requirements to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_rules"
+    },
+    "get_rule": {
+      "method": "GET",
+      "path": "/rules/{rule_id}",
+      "call": "GetRule",
+      "action": "agency.rule.read",
+      "title": "Read rule",
+      "description": "Read one requirement by its id — its code and the text itself.",
+      "args": [
+        {
+          "from": "path",
+          "as": "rule_id",
+          "refers": "agency.rule",
+          "description": "The requirement to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_rule"
+    },
+    "update_rule": {
+      "method": "PATCH",
+      "path": "/rules/{rule_id}",
+      "call": "UpdateRule",
+      "action": "agency.rule.update",
+      "title": "Update rule",
+      "description": "Rewrite a requirement. One attached nowhere belongs to the whole organization and is permanently immutable.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "rule_id",
+          "refers": "agency.rule",
+          "into": "ID",
+          "description": "The requirement to rewrite."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_rule"
+    },
+    "delete_rule": {
+      "method": "DELETE",
+      "path": "/rules/{rule_id}",
+      "call": "DeleteRule",
+      "action": "agency.rule.delete",
+      "status": 204,
+      "title": "Delete rule",
+      "description": "Remove a requirement. One attached nowhere is permanently immutable and cannot be removed.",
+      "args": [
+        {
+          "from": "path",
+          "as": "rule_id",
+          "refers": "agency.rule",
+          "description": "The requirement to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_rule"
+    },
+    "attach_rule": {
+      "method": "POST",
+      "path": "/rules/{rule_id}/attachments",
+      "call": "CreateRuleAttachment",
+      "action": "agency.rule.attach",
+      "status": 201,
+      "title": "Attach rule",
+      "description": "Say where a requirement applies — to a role, goal, objective, workflow or work item.",
+      "args": [
+        {
+          "from": "path",
+          "as": "rule_id",
+          "refers": "agency.rule",
+          "description": "The requirement being attached."
+        },
+        {
+          "from": "body",
+          "as": "target_type",
+          "required": true,
+          "field": "RuleAttachment.target_type"
+        },
+        {
+          "from": "body",
+          "as": "target_id",
+          "required": true,
+          "description": "The thing it is attached to, by id."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_attach_rule"
+    },
+    "list_rule_attachments": {
+      "method": "GET",
+      "path": "/rules/{rule_id}/attachments",
+      "call": "ListRuleAttachments",
+      "action": "agency.rule.list_attachments",
+      "title": "List where a rule applies",
+      "description": "List everywhere one requirement is attached.",
+      "args": [
+        {
+          "from": "path",
+          "as": "rule_id",
+          "refers": "agency.rule",
+          "description": "The requirement whose attachments to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_rule_attachments"
+    },
+    "detach_rule": {
+      "method": "DELETE",
+      "path": "/rules/{rule_id}/attachments/{attachment_id}",
+      "call": "DeleteRuleAttachment",
+      "action": "agency.rule.detach",
+      "status": 204,
+      "title": "Detach rule",
+      "description": "Remove one attachment, leaving the requirement itself in place.",
+      "args": [
+        {
+          "from": "path",
+          "as": "rule_id",
+          "ignored": true,
+          "description": "The requirement the attachment hangs off. Part of the address, not of the call."
+        },
+        {
+          "from": "path",
+          "as": "attachment_id",
+          "description": "The attachment to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_detach_rule"
+    },
+    "create_control": {
+      "method": "POST",
+      "path": "/controls",
+      "call": "CreateControl",
+      "action": "agency.control.create",
+      "status": 201,
+      "title": "Create control",
+      "description": "Write down what the agency commits to. Give it an action, an outcome and optionally a condition to make it enforced; leave them out and it is advisory. Attaching it somewhere is a separate call.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_control"
+    },
+    "list_controls": {
+      "method": "GET",
+      "path": "/controls",
+      "call": "ListControls",
+      "action": "agency.control.list",
+      "title": "List controls",
+      "description": "List one draft's controls, narrowed by code, text or the action they guard.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose controls to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_controls"
+    },
+    "get_control": {
+      "method": "GET",
+      "path": "/controls/{control_id}",
+      "call": "GetControl",
+      "action": "agency.control.read",
+      "title": "Read control",
+      "description": "Read one control by its id: its code, its text and, when enforced, the action, condition and outcome.",
+      "args": [
+        {
+          "from": "path",
+          "as": "control_id",
+          "refers": "agency.control",
+          "description": "The control to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_control"
+    },
+    "update_control": {
+      "method": "PATCH",
+      "path": "/controls/{control_id}",
+      "call": "UpdateControl",
+      "action": "agency.control.update",
+      "title": "Update control",
+      "description": "Rewrite a control. Setting or clearing the action, condition and outcome moves it between advisory and enforced.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "control_id",
+          "refers": "agency.control",
+          "into": "ID",
+          "description": "The control to rewrite."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_control"
+    },
+    "delete_control": {
+      "method": "DELETE",
+      "path": "/controls/{control_id}",
+      "call": "DeleteControl",
+      "action": "agency.control.delete",
+      "status": 204,
+      "title": "Delete control",
+      "description": "Remove a control and everywhere it was attached in its draft.",
+      "args": [
+        {
+          "from": "path",
+          "as": "control_id",
+          "refers": "agency.control",
+          "description": "The control to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_control"
+    },
+    "attach_control": {
+      "method": "POST",
+      "path": "/controls/{control_id}/attachments",
+      "call": "CreateControlAttachment",
+      "action": "agency.control.attach",
+      "status": 201,
+      "title": "Attach control",
+      "description": "Say where a control stands: on a role, goal, objective, workflow, work item or risk pathway of the same draft. A control on a threat pathway prevents; on a consequence pathway it mitigates.",
+      "args": [
+        {
+          "from": "path",
+          "as": "control_id",
+          "refers": "agency.control",
+          "description": "The control being attached."
+        },
+        {
+          "from": "body",
+          "as": "target_type",
+          "required": true,
+          "field": "ControlAttachment.target_type"
+        },
+        {
+          "from": "body",
+          "as": "target_id",
+          "required": true,
+          "description": "The thing it is attached to, by id."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_attach_control"
+    },
+    "list_control_attachments": {
+      "method": "GET",
+      "path": "/controls/{control_id}/attachments",
+      "call": "ListControlAttachments",
+      "action": "agency.control.list_attachments",
+      "title": "List where a control stands",
+      "description": "List everywhere one control is attached.",
+      "args": [
+        {
+          "from": "path",
+          "as": "control_id",
+          "refers": "agency.control",
+          "description": "The control whose attachments to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_control_attachments"
+    },
+    "detach_control": {
+      "method": "DELETE",
+      "path": "/controls/{control_id}/attachments/{attachment_id}",
+      "call": "DeleteControlAttachment",
+      "action": "agency.control.detach",
+      "status": 204,
+      "title": "Detach control",
+      "description": "Remove one attachment, leaving the control itself in place.",
+      "args": [
+        {
+          "from": "path",
+          "as": "control_id",
+          "ignored": true,
+          "description": "The control the attachment hangs off. Part of the address, not of the call."
+        },
+        {
+          "from": "path",
+          "as": "attachment_id",
+          "description": "The attachment to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_detach_control"
+    },
+    "publish_agency": {
+      "method": "POST",
+      "path": "/publications",
+      "call": "PublishAgency",
+      "action": "agency.publication.create",
+      "status": 201,
+      "title": "Publish",
+      "description": "Freeze a draft into a publication and put it on a channel. The validation scan runs first and any blocking finding refuses the publish; republishing unchanged content is refused too. An empty tag becomes v<version>, and an empty channel means production.",
+      "args": [
+        {
+          "from": "body",
+          "as": "draft_id",
+          "required": true,
+          "description": "The draft to publish."
+        },
+        {
+          "from": "body",
+          "as": "tag",
+          "description": "The operator's own name for this publication. Must be unused."
+        },
+        {
+          "from": "body",
+          "as": "channel",
+          "description": "The channel it should serve. Empty means production."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_publish_agency"
+    },
+    "list_publications": {
+      "method": "GET",
+      "path": "/publications",
+      "call": "ListPublications",
+      "action": "agency.publication.list",
+      "title": "List publications",
+      "description": "List every publication in version order, narrowed by the filter.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_publications"
+    },
+    "get_publication": {
+      "method": "GET",
+      "path": "/publications/{version}",
+      "call": "GetPublication",
+      "action": "agency.publication.read",
+      "title": "Read publication",
+      "description": "Read one publication, document included.",
+      "args": [
+        {
+          "from": "path",
+          "as": "version",
+          "description": "The publication's version number."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_publication"
+    },
+    "set_publication_channel": {
+      "method": "PATCH",
+      "path": "/publications/{version}",
+      "call": "SetPublicationChannel",
+      "action": "agency.publication.set_channel",
+      "title": "Move a channel",
+      "description": "Move a channel onto this publication, taking it off whichever held it. An empty channel archives this one instead, and re-channelling an archived publication is how a rollback works.",
+      "args": [
+        {
+          "from": "path",
+          "as": "version",
+          "description": "The publication to move."
+        },
+        {
+          "from": "body",
+          "as": "channel",
+          "description": "The channel it should serve, or empty to archive it."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_set_publication_channel"
+    },
+    "list_event_flow_steps": {
+      "method": "GET",
+      "path": "/event-flow-steps",
+      "call": "ListEventFlowSteps",
+      "action": "agency.event_flow_step.list",
+      "title": "List event flow steps",
+      "description": "List one draft's event-flow steps, in flow order, optionally for a single workflow.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose steps to read."
+        },
+        {
+          "from": "query",
+          "as": "workflow_code",
+          "description": "Only this workflow's steps. Empty means all of them."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_event_flow_steps"
+    },
+    "lookup_event_flow_step": {
+      "method": "GET",
+      "path": "/event-flow-steps/lookup",
+      "call": "LookupFlowStep",
+      "action": "agency.event_flow_step.lookup",
+      "title": "Find an event flow step",
+      "description": "Find one step by its handler, by its trigger topic and consumer together, or by its own code — whichever is given, in that order. A handler or topic and consumer shared by several steps is refused with a conflict naming them; look one up by code.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft to look in."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_lookup_event_flow_step"
+    },
+    "list_issues": {
+      "method": "GET",
+      "path": "/drafts/{draft_id}/issues",
+      "call": "ListIssues",
+      "action": "agency.issue.list",
+      "title": "List issues",
+      "description": "Re-run the validation scan over one draft and list what it found. An error-severity finding is what refuses a publish.",
+      "args": [
+        {
+          "from": "path",
+          "as": "draft_id",
+          "description": "The draft to scan."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_issues"
+    },
+    "delete_goal": {
+      "method": "DELETE",
+      "path": "/goals/{goal_id}",
+      "call": "DeleteGoal",
+      "action": "agency.goal.delete",
+      "tool": "agency_delete_goal",
+      "status": 204,
+      "title": "Delete goal",
+      "description": "Remove a goal, every objective under it, and the workflow links under those.",
+      "args": [
+        {
+          "from": "path",
+          "as": "goal_id",
+          "refers": "agency.goal",
+          "description": "The goal to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "delete_objective": {
+      "method": "DELETE",
+      "path": "/objectives/{objective_id}",
+      "call": "DeleteObjective",
+      "action": "agency.objective.delete",
+      "tool": "agency_delete_objective",
+      "status": 204,
+      "title": "Delete objective",
+      "description": "Remove an objective and the workflow links that hang off it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "objective_id",
+          "refers": "agency.objective",
+          "description": "The objective to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "delete_workflow": {
+      "method": "DELETE",
+      "path": "/workflows/{workflow_id}",
+      "call": "DeleteWorkflow",
+      "action": "agency.workflow.delete",
+      "tool": "agency_delete_workflow",
+      "status": 204,
+      "title": "Delete workflow",
+      "description": "Remove a workflow, every work item it owns, its objective links and the RACI links of its steps. Refused with 409 while a scenario mirrors it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "workflow_id",
+          "refers": "agency.workflow",
+          "description": "The workflow to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "delete_work_item": {
+      "method": "DELETE",
+      "path": "/work-items/{work_item_id}",
+      "call": "DeleteWorkItem",
+      "action": "agency.work_item.delete",
+      "tool": "agency_delete_work_item",
+      "status": 204,
+      "title": "Delete work item",
+      "description": "Remove one work item. It carries no RACI of its own, so nothing else goes with it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "work_item_id",
+          "refers": "agency.work_item",
+          "description": "The work item to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_permissions": {
+      "method": "GET",
+      "path": "/permissions",
+      "call": "ListPermissions",
+      "action": "agency.permission.list",
+      "title": "List permissions",
+      "description": "List the permission vocabulary a role may tick, each with the actions it allows and whether it is locked to owners.",
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_permissions"
+    },
+    "list_pickers": {
+      "method": "GET",
+      "path": "/pickers",
+      "call": "ListPickers",
+      "action": "agency.picker.list",
+      "title": "List pickers",
+      "description": "List what the workflow editor's pickers offer for one draft: the agency itself, its roles and its groups as the actors a step, a notice or a record can name, and the forms module's answer types for a question.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose roles to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_pickers"
+    },
+    "create_record": {
+      "method": "POST",
+      "path": "/records",
+      "call": "CreateRecord",
+      "action": "agency.record.create",
+      "title": "Create record",
+      "description": "Add a record to a workflow: a named list the workflow keeps beside its steps, the one role that adds rows, optionally the one role whose members each see their own row (viewer_role_id), and the form each row is added with. The roles and the workflow must be in the draft.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_record",
+      "status": 201
+    },
+    "list_records": {
+      "method": "GET",
+      "path": "/records",
+      "call": "ListRecords",
+      "action": "agency.record.list",
+      "title": "List records",
+      "description": "List one draft's records, narrowed by the filter.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose records to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_records"
+    },
+    "get_record": {
+      "method": "GET",
+      "path": "/records/{record_id}",
+      "call": "GetRecord",
+      "action": "agency.record.read",
+      "title": "Read record",
+      "description": "Read one record by its id, with the role that adds rows, the role that sees its own row, and its form.",
+      "args": [
+        {
+          "from": "path",
+          "as": "record_id",
+          "description": "The record to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_record"
+    },
+    "update_record": {
+      "method": "PATCH",
+      "path": "/records/{record_id}",
+      "call": "UpdateRecord",
+      "action": "agency.record.update",
+      "title": "Update record",
+      "description": "Replace a record's name, workflow, role that adds rows, role that sees its own row (viewer_role_id, empty for none) and form. An update replaces the whole record and does not merge into it: a viewer_role_id left out clears it, so send the current one to keep it. The same refusals as creating one apply.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "record_id",
+          "into": "ID",
+          "description": "The record to update."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_record"
+    },
+    "delete_record": {
+      "method": "DELETE",
+      "path": "/records/{record_id}",
+      "call": "DeleteRecord",
+      "action": "agency.record.delete",
+      "title": "Delete record",
+      "description": "Remove a record and every row that was added to it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "record_id",
+          "description": "The record to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_record",
+      "status": 204
+    },
+    "create_record_row": {
+      "method": "POST",
+      "path": "/record-rows",
+      "call": "CreateRecordRow",
+      "action": "agency.record_row.create",
+      "title": "Add record row",
+      "description": "Add one row to a record, as the member app does. The row is refused unless role_id is the role that adds rows to the record, and its answers must fit the record's form. Rows are kept in the agency and are never copied into a new version.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_record_row",
+      "status": 201
+    },
+    "list_record_rows": {
+      "method": "GET",
+      "path": "/record-rows",
+      "call": "ListRecordRows",
+      "action": "agency.record_row.list",
+      "title": "List record rows",
+      "description": "List the rows added in one draft, narrowed to a record by its id or by its code, which stays the same in every version.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose rows to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_record_rows"
+    },
+    "create_scenario": {
+      "method": "POST",
+      "path": "/scenarios",
+      "call": "CreateScenario",
+      "action": "agency.scenario.create",
+      "status": 201,
+      "title": "Create scenario",
+      "description": "Write a test scenario: one path through one workflow of the draft, which the Test agent plays out. Its blocks are that workflow's steps and it starts Not run yet. Send actors (a name and a role_id each) and inputs (a step_id, a field and a value each) to write the people and the fixed answers in the same call, with no scenario_id or draft_id on the entries; all of it lands or none of it does. Add or change them later with add scenario actor and set scenario input. Thens is a list of step_id and then: the Then line of a block, which the Test agent judges against the test copy once the step has been played. A workflow of another draft is refused.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_scenario"
+    },
+    "list_scenarios": {
+      "method": "GET",
+      "path": "/scenarios",
+      "call": "ListScenarios",
+      "action": "agency.scenario.list",
+      "title": "List scenarios",
+      "description": "List one draft's scenarios in the order they were written, each with its result, the rules its workflow shows, its actors, the fixed inputs and its blocks. The filter narrows by name or result.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose scenarios to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_scenarios"
+    },
+    "get_scenario": {
+      "method": "GET",
+      "path": "/scenarios/{scenario_id}",
+      "call": "GetScenario",
+      "action": "agency.scenario.read",
+      "title": "Read scenario",
+      "description": "Read one scenario with its result, the workflow it mirrors, the rules that workflow shows, its actors including the built-in agents and System, the fixed inputs and one block for each step.",
+      "args": [
+        {
+          "from": "path",
+          "as": "scenario_id",
+          "description": "The scenario to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_scenario"
+    },
+    "update_scenario": {
+      "method": "PATCH",
+      "path": "/scenarios/{scenario_id}",
+      "call": "UpdateScenario",
+      "action": "agency.scenario.update",
+      "title": "Update scenario",
+      "description": "Change a scenario's name and what it tries, and set or clear Then lines with thens (a list of step_id and then; an empty then clears that step's line, a step left out keeps its line). Send actors to set the scenario's whole list of people in one call: each is a name and a role_id, and an actor that already exists carries its id (or the name it has now) so a new name renames it and a new role_id changes its role, without a remove and an add; an actor left out of the list is removed, and the built-in agents and System are never sent. Send inputs to set the whole list of fixed answers: each is a step_id, a field and a value, and a field left out is free again. Leave actors or inputs out to keep them as they are. The whole call is checked before anything is written, and one refused part (a repeated actor name, counting the agents and the System; an unknown role, step or question) changes nothing. It goes back to Not run yet and its old runs stay. The workflow it mirrors cannot change; write a new scenario for another one.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "scenario_id",
+          "into": "ID",
+          "description": "The scenario to update."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_scenario"
+    },
+    "delete_scenario": {
+      "method": "DELETE",
+      "path": "/scenarios/{scenario_id}",
+      "call": "DeleteScenario",
+      "action": "agency.scenario.delete",
+      "status": 204,
+      "title": "Delete scenario",
+      "description": "Remove a scenario with its actors, its fixed inputs and every run it has.",
+      "args": [
+        {
+          "from": "path",
+          "as": "scenario_id",
+          "description": "The scenario to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_scenario"
+    },
+    "run_scenario": {
+      "method": "POST",
+      "path": "/scenarios/{scenario_id}/runs",
+      "call": "RunScenario",
+      "action": "agency.scenario.run",
+      "status": 201,
+      "title": "Run scenario",
+      "description": "Run one scenario on its draft and keep the run. The answer comes at once with the run Running, or Waiting when the hub's Scenarios at once setting is full; the run goes on in the background, writes each step as it finishes and ends Passed, Failed or Stopped. Read it with agency_get_test_run. A scenario already running or waiting refuses a second run.",
+      "args": [
+        {
+          "from": "path",
+          "as": "scenario_id",
+          "description": "The scenario to run."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_run_scenario"
+    },
+    "run_scenarios": {
+      "method": "POST",
+      "path": "/scenario-runs",
+      "call": "RunScenarios",
+      "action": "agency.scenario.run_many",
+      "status": 201,
+      "title": "Run scenarios",
+      "description": "Run the named scenarios of a draft, or every scenario of the draft when none are named, and keep each run. The answer comes at once with each run Running or Waiting, in the order pressed; runs past the hub's Scenarios at once setting wait and start as others end. A name that is not a scenario of the draft refuses the whole batch before anything runs.",
+      "args": [
+        {
+          "from": "body",
+          "as": "draft_id",
+          "required": true,
+          "description": "The draft whose scenarios to run."
+        },
+        {
+          "from": "body",
+          "as": "scenario_ids",
+          "description": "The scenarios to run. Leave empty to run all of them."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_run_scenarios"
+    },
+    "stop_test_run": {
+      "method": "POST",
+      "path": "/test-runs/{test_run_id}/stop",
+      "call": "StopRun",
+      "action": "agency.test_run.stop",
+      "title": "Stop test run",
+      "description": "Stop a run that is Running or Waiting. A waiting run ends at once; a running run ends after its current step. It ends Stopped with the reason Stopped by the designer, keeps the steps and tokens it has and sends the scenario back to Not run yet. A run that has finished is refused with 409.",
+      "args": [
+        {
+          "from": "path",
+          "as": "test_run_id",
+          "description": "The run to stop."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_stop_test_run"
+    },
+    "add_scenario_actor": {
+      "method": "POST",
+      "path": "/scenarios/{scenario_id}/actors",
+      "call": "AddScenarioActor",
+      "action": "agency.scenario_actor.create",
+      "status": 201,
+      "title": "Add scenario actor",
+      "description": "Add someone the Test agent plays in a scenario: a name, unique within the scenario, and the agency role they hold. The agents and the System are always there and cannot be added. The scenario goes back to Not run yet.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "scenario_id",
+          "into": "ScenarioID",
+          "description": "The scenario."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_add_scenario_actor"
+    },
+    "rename_scenario_actor": {
+      "method": "PATCH",
+      "path": "/scenarios/{scenario_id}/actors/{actor_id}",
+      "call": "RenameScenarioActor",
+      "action": "agency.scenario_actor.rename",
+      "title": "Rename scenario actor",
+      "description": "Give a scenario's actor a new name. Names stay unique within the scenario, counting the agents and the System. The scenario goes back to Not run yet.",
+      "args": [
+        {
+          "from": "path",
+          "as": "scenario_id",
+          "ignored": true,
+          "description": "The scenario the actor plays in. Part of the address, not of the call."
+        },
+        {
+          "from": "path",
+          "as": "actor_id",
+          "description": "The actor to rename."
+        },
+        {
+          "from": "body",
+          "as": "name",
+          "required": true,
+          "description": "The new name."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_rename_scenario_actor"
+    },
+    "remove_scenario_actor": {
+      "method": "DELETE",
+      "path": "/scenarios/{scenario_id}/actors/{actor_id}",
+      "call": "RemoveScenarioActor",
+      "action": "agency.scenario_actor.delete",
+      "status": 204,
+      "title": "Remove scenario actor",
+      "description": "Take an actor out of a scenario. The built-in agents and the System cannot be removed. The scenario goes back to Not run yet.",
+      "args": [
+        {
+          "from": "path",
+          "as": "scenario_id",
+          "ignored": true,
+          "description": "The scenario the actor plays in. Part of the address, not of the call."
+        },
+        {
+          "from": "path",
+          "as": "actor_id",
+          "description": "The actor to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_remove_scenario_actor"
+    },
+    "set_scenario_input": {
+      "method": "PUT",
+      "path": "/scenarios/{scenario_id}/inputs",
+      "call": "SetScenarioInput",
+      "action": "agency.scenario_input.set",
+      "title": "Set scenario input",
+      "description": "Fix what one question of one step's form is answered with in a scenario. An empty value frees the field again and the Test agent chooses. The step must belong to the scenario's workflow and ask that question. The scenario goes back to Not run yet.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "scenario_id",
+          "into": "ScenarioID",
+          "description": "The scenario."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_set_scenario_input"
+    },
+    "get_test_run": {
+      "method": "GET",
+      "path": "/test-runs/{test_run_id}",
+      "call": "GetTestRun",
+      "action": "agency.test_run.read",
+      "title": "Read test run",
+      "description": "Read one test run: how it ended, the draft version it ran on and draft_label, its name (Latest edit for the open draft, else the published version label, else the version), what transpired step by step with who acted, what was recorded, the rules checked, whether a wait was acted out (waited) and the tokens used; running_step, the step in progress (empty once the run ended); stored, the records the run left in the test copy as record, holds and rows; and token_budget, the tokens-per-test limit it was started under (0 means none).",
+      "args": [
+        {
+          "from": "path",
+          "as": "test_run_id",
+          "description": "The run to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_test_run"
+    },
+    "list_test_runs": {
+      "method": "GET",
+      "path": "/scenarios/{scenario_id}/runs",
+      "call": "ListTestRuns",
+      "action": "agency.test_run.list",
+      "title": "List test runs",
+      "description": "List every run of one scenario, newest first.",
+      "args": [
+        {
+          "from": "path",
+          "as": "scenario_id",
+          "description": "The scenario whose runs to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_test_runs"
+    },
+    "set_measure": {
+      "method": "PUT",
+      "path": "/measures",
+      "call": "SetMeasure",
+      "action": "agency.measure.set",
+      "title": "Set measure",
+      "description": "Set one measure of an objective: what is measured and the target it should reach, with an optional unit and status. Setting a name the objective already measures replaces that measure and keeps its current reading; the current reading is never set here. The draft is the objective's own. Refused with 404 for an objective that does not exist and 409 once its draft is archived.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_set_measure"
+    },
+    "list_measures": {
+      "method": "GET",
+      "path": "/measures",
+      "call": "ListMeasures",
+      "action": "agency.measure.list",
+      "title": "List measures",
+      "description": "List one draft's measures, each with the objective it belongs to, its current reading, target, unit and status. Narrow to one objective with objective_id.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose measures to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_measures"
+    },
+    "start_review": {
+      "method": "POST",
+      "path": "/reviews",
+      "call": "StartReview",
+      "action": "agency.review.start",
+      "status": 201,
+      "title": "Run review",
+      "description": "Start a review of one draft: write a review in status running with one part for each reviewer, or with just the one part named by area, all reading, and answer at once. previous_review_id is the latest earlier review of the draft. Refused with \"A review of this draft is already running.\" while one is running, and with \"There is no part of this draft to review.\" when no part is read for the draft. The reviewers write their findings with agency_record_review_area.",
+      "args": [
+        {
+          "from": "body",
+          "as": "draft_id",
+          "required": true,
+          "description": "The draft to review."
+        },
+        {
+          "from": "body",
+          "as": "started_by",
+          "description": "The person who pressed Run review."
+        },
+        {
+          "from": "body",
+          "as": "area",
+          "description": "The one part to review: profile, goals, objectives, roles_agents, workflows, risks or tests. Omit it to review every part."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_start_review"
+    },
+    "get_review": {
+      "method": "GET",
+      "path": "/review",
+      "call": "GetReview",
+      "action": "agency.review.read",
+      "title": "Read review",
+      "description": "Read one review with its parts: each part carries its summary, failure_reason, tokens and findings, and each finding its comments. Name the review by review_id, or take the latest review of a draft with draft_id; then every part shows the newest run that covered it, so a part not read in the latest review keeps its earlier findings. Answers {review: null} when the draft has none.",
+      "args": [
+        {
+          "from": "query",
+          "as": "review_id",
+          "description": "The review to read."
+        },
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose latest review to read, when review_id is not given."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_review"
+    },
+    "list_reviews": {
+      "method": "GET",
+      "path": "/reviews",
+      "call": "ListReviews",
+      "action": "agency.review.list",
+      "title": "List reviews",
+      "description": "List every review of one draft, newest first, without parts or findings.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "required": true,
+          "description": "The draft whose reviews to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_reviews"
+    },
+    "list_running_reviews": {
+      "method": "GET",
+      "path": "/running-reviews",
+      "call": "ListRunningReviews",
+      "action": "agency.review.list_running",
+      "title": "List running reviews",
+      "description": "List every review still running, in any draft of this agency, or only in the draft named by draft_id, newest first, without parts or findings. A draft with no running review, or one that does not exist, answers an empty list. A restart reads this to resume the reviews it left running instead of walking every draft.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "Only the running reviews of this draft. Omit it for every draft."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_running_reviews"
+    },
+    "set_finding_status": {
+      "method": "PATCH",
+      "path": "/review-findings/{finding_id}",
+      "call": "SetFindingStatus",
+      "action": "agency.review_finding.set_status",
+      "title": "Answer finding",
+      "description": "Record what the designer did with a finding: open, applied or dismissed. Answers the finding with its comments.",
+      "args": [
+        {
+          "from": "path",
+          "as": "finding_id",
+          "description": "The finding."
+        },
+        {
+          "from": "body",
+          "as": "status",
+          "required": true,
+          "description": "open, applied or dismissed."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_set_finding_status"
+    },
+    "comment_finding": {
+      "method": "POST",
+      "path": "/review-findings/{finding_id}/comments",
+      "call": "CommentFinding",
+      "action": "agency.review_comment.create",
+      "status": 201,
+      "title": "Comment on finding",
+      "description": "Write the designer's note on a finding. The next review reads it. Answers the comment.",
+      "args": [
+        {
+          "from": "path",
+          "as": "finding_id",
+          "description": "The finding to comment on."
+        },
+        {
+          "from": "body",
+          "as": "body",
+          "required": true,
+          "description": "The text of the note."
+        },
+        {
+          "from": "body",
+          "as": "author",
+          "description": "Who wrote it."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_comment_finding"
+    },
+    "review_input": {
+      "method": "GET",
+      "path": "/reviews/{review_id}/input",
+      "call": "ReviewInput",
+      "action": "agency.review.input",
+      "title": "Read review input",
+      "description": "What a reviewer reads before it reads the draft: the findings of the newest earlier review that covered one part, each with its comments, as {previous: [...]}. Empty for a first run.",
+      "args": [
+        {
+          "from": "path",
+          "as": "review_id",
+          "description": "The running review."
+        },
+        {
+          "from": "query",
+          "as": "area",
+          "required": true,
+          "description": "The part: profile, goals, objectives, roles_agents, workflows, risks or tests."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_review_input"
+    },
+    "record_review_area": {
+      "method": "PUT",
+      "path": "/reviews/{review_id}/areas/{area}",
+      "call": "RecordReviewArea",
+      "action": "agency.review_area.record",
+      "title": "Record review part",
+      "description": "A reviewer's one report on its part, once, when it has finished: status done or failed, the two-sentence summary, the reason when it failed, the tokens it spent and its findings. Each finding has title, detail, tool, arguments, then (a list of {tool, arguments}), fate (new, fixed, still_open or withdrawn), fate_reason, carried_from_id (the earlier finding it answers) and reopen. A finding with carried_from_id takes the earlier finding's status, except that an applied one whose fate is still_open comes back open, and a dismissed one comes back open only when reopen is true. The part's tokens are added to the review, and when no part is left reading the review is set to done with finished_at. Answers {area, review_status}.",
+      "args": [
+        {
+          "from": "path",
+          "as": "review_id",
+          "description": "The running review."
+        },
+        {
+          "from": "path",
+          "as": "area",
+          "description": "The part: profile, goals, objectives, roles_agents, workflows, risks or tests."
+        },
+        {
+          "from": "body",
+          "as": "status",
+          "required": true,
+          "description": "done or failed."
+        },
+        {
+          "from": "body",
+          "as": "summary",
+          "description": "The two sentences at the top of the tab."
+        },
+        {
+          "from": "body",
+          "as": "failure_reason",
+          "description": "The sentence shown on a Failed tab."
+        },
+        {
+          "from": "body",
+          "as": "tokens",
+          "description": "What this reviewer spent."
+        },
+        {
+          "from": "body",
+          "as": "findings",
+          "description": "The findings, each with title, detail, tool, arguments, then, fate, fate_reason, carried_from_id and reopen."
+        }
+      ],
+      "returns": [
+        {
+          "as": "area"
+        },
+        {
+          "as": "review_status"
+        }
+      ],
+      "tool": "agency_record_review_area"
+    },
+    "create_risk": {
+      "method": "POST",
+      "path": "/risks",
+      "call": "CreateRisk",
+      "action": "agency.risk.create",
+      "title": "Create risk",
+      "description": "Add a risk to a draft, named by its title and the top event at its centre, with an optional hazard and owner. Its threats and consequences are added as pathways.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_risk",
+      "status": 201
+    },
+    "get_risk": {
+      "method": "GET",
+      "path": "/risks/{risk_id}",
+      "call": "GetRisk",
+      "action": "agency.risk.read",
+      "title": "Read risk",
+      "description": "Read one risk by its id: its code, title, top event, hazard, owner and the draft it belongs to.",
+      "args": [
+        {
+          "from": "path",
+          "as": "risk_id",
+          "refers": "agency.risk",
+          "description": "The risk to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_risk"
+    },
+    "update_risk": {
+      "method": "PATCH",
+      "path": "/risks/{risk_id}",
+      "call": "UpdateRisk",
+      "action": "agency.risk.update",
+      "title": "Update risk",
+      "description": "Replace a risk's title, top event, hazard and owner.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "risk_id",
+          "refers": "agency.risk",
+          "description": "The risk to update.",
+          "into": "ID"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_risk"
+    },
+    "delete_risk": {
+      "method": "DELETE",
+      "path": "/risks/{risk_id}",
+      "call": "DeleteRisk",
+      "action": "agency.risk.delete",
+      "title": "Delete risk",
+      "description": "Remove a risk and every threat and consequence that hangs off it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "risk_id",
+          "refers": "agency.risk",
+          "description": "The risk to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_risk",
+      "status": 204
+    },
+    "list_risks": {
+      "method": "GET",
+      "path": "/risks",
+      "call": "ListRisks",
+      "action": "agency.risk.list",
+      "title": "List risks",
+      "description": "List one draft's risks, oldest first, narrowed by the filter.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose risks to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_risks"
+    },
+    "create_risk_pathway": {
+      "method": "POST",
+      "path": "/risk-pathways",
+      "call": "CreateRiskPathway",
+      "action": "agency.risk_pathway.create",
+      "title": "Create risk pathway",
+      "description": "Add a threat or a consequence to a risk: the side says which, the title names it and the scenario says how it plays out. The risk must exist in the same draft.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_risk_pathway",
+      "status": 201
+    },
+    "get_risk_pathway": {
+      "method": "GET",
+      "path": "/risk-pathways/{risk_pathway_id}",
+      "call": "GetRiskPathway",
+      "action": "agency.risk_pathway.read",
+      "title": "Read risk pathway",
+      "description": "Read one threat or consequence by its id.",
+      "args": [
+        {
+          "from": "path",
+          "as": "risk_pathway_id",
+          "refers": "agency.risk_pathway",
+          "description": "The pathway to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_risk_pathway"
+    },
+    "update_risk_pathway": {
+      "method": "PATCH",
+      "path": "/risk-pathways/{risk_pathway_id}",
+      "call": "UpdateRiskPathway",
+      "action": "agency.risk_pathway.update",
+      "title": "Update risk pathway",
+      "description": "Replace a pathway's side, title and scenario.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "risk_pathway_id",
+          "refers": "agency.risk_pathway",
+          "description": "The pathway to update.",
+          "into": "ID"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_risk_pathway"
+    },
+    "delete_risk_pathway": {
+      "method": "DELETE",
+      "path": "/risk-pathways/{risk_pathway_id}",
+      "call": "DeleteRiskPathway",
+      "action": "agency.risk_pathway.delete",
+      "title": "Delete risk pathway",
+      "description": "Remove one threat or consequence.",
+      "args": [
+        {
+          "from": "path",
+          "as": "risk_pathway_id",
+          "refers": "agency.risk_pathway",
+          "description": "The pathway to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_risk_pathway",
+      "status": 204
+    },
+    "list_risk_pathways": {
+      "method": "GET",
+      "path": "/risk-pathways",
+      "call": "ListRiskPathways",
+      "action": "agency.risk_pathway.list",
+      "title": "List risk pathways",
+      "description": "List one draft's threats and consequences, narrowed by risk_id, side or title.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose threats and consequences to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_risk_pathways"
+    },
+  "create_hazard": {
+      "method": "POST",
+      "path": "/hazards",
+      "call": "CreateHazard",
+      "action": "agency.hazard.create",
+      "status": 201,
+      "title": "Create hazard",
+      "description": "Add a hazard to the draft's library. It gets a code once and any number of bowties can use it; the title must be unused among the draft's live hazards.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_hazard"
+    },
+    "get_hazard": {
+      "method": "GET",
+      "path": "/hazards/{hazard_id}",
+      "call": "GetHazard",
+      "action": "agency.hazard.read",
+      "title": "Read hazard",
+      "description": "Read one hazard by its id, with the risks that use it and the controls on it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "hazard_id",
+          "refers": "agency.hazard",
+          "description": "The hazard to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_hazard"
+    },
+    "update_hazard": {
+      "method": "PATCH",
+      "path": "/hazards/{hazard_id}",
+      "call": "UpdateHazard",
+      "action": "agency.hazard.update",
+      "title": "Update hazard",
+      "description": "Rewrite a hazard's title and description.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "hazard_id",
+          "refers": "agency.hazard",
+          "into": "ID",
+          "description": "The hazard to rewrite."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_hazard"
+    },
+    "delete_hazard": {
+      "method": "DELETE",
+      "path": "/hazards/{hazard_id}",
+      "call": "DeleteHazard",
+      "action": "agency.hazard.delete",
+      "status": 204,
+      "title": "Delete hazard",
+      "description": "Remove a hazard from the library. Refused while a risk still uses it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "hazard_id",
+          "refers": "agency.hazard",
+          "description": "The hazard to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_hazard"
+    },
+    "list_hazards": {
+      "method": "GET",
+      "path": "/hazards",
+      "call": "ListHazards",
+      "action": "agency.hazard.list",
+      "title": "List hazards",
+      "description": "List one draft's hazards, narrowed by code or title, each with the risks that use it and the controls on it.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose hazards to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_hazards"
+    },
+    "create_threat": {
+      "method": "POST",
+      "path": "/threats",
+      "call": "CreateThreat",
+      "action": "agency.threat.create",
+      "status": 201,
+      "title": "Create threat",
+      "description": "Add a threat to the draft's library. It gets a code once and any number of bowties can use it; the title must be unused among the draft's live threats.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_threat"
+    },
+    "get_threat": {
+      "method": "GET",
+      "path": "/threats/{threat_id}",
+      "call": "GetThreat",
+      "action": "agency.threat.read",
+      "title": "Read threat",
+      "description": "Read one threat by its id, with the risks that use it and the controls on it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "threat_id",
+          "refers": "agency.threat",
+          "description": "The threat to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_threat"
+    },
+    "update_threat": {
+      "method": "PATCH",
+      "path": "/threats/{threat_id}",
+      "call": "UpdateThreat",
+      "action": "agency.threat.update",
+      "title": "Update threat",
+      "description": "Rewrite a threat's title and description.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "threat_id",
+          "refers": "agency.threat",
+          "into": "ID",
+          "description": "The threat to rewrite."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_threat"
+    },
+    "delete_threat": {
+      "method": "DELETE",
+      "path": "/threats/{threat_id}",
+      "call": "DeleteThreat",
+      "action": "agency.threat.delete",
+      "status": 204,
+      "title": "Delete threat",
+      "description": "Remove a threat from the library. Refused while a risk still uses it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "threat_id",
+          "refers": "agency.threat",
+          "description": "The threat to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_threat"
+    },
+    "list_threats": {
+      "method": "GET",
+      "path": "/threats",
+      "call": "ListThreats",
+      "action": "agency.threat.list",
+      "title": "List threats",
+      "description": "List one draft's threats, narrowed by code or title, each with the risks that use it and the controls on it.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose threats to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_threats"
+    },
+    "create_consequence": {
+      "method": "POST",
+      "path": "/consequences",
+      "call": "CreateConsequence",
+      "action": "agency.consequence.create",
+      "status": 201,
+      "title": "Create consequence",
+      "description": "Add a consequence to the draft's library. It gets a code once and any number of bowties can use it; it belongs to one hazard of the draft, by hazard_code, and its title must be unused among that hazard's live consequences.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_consequence"
+    },
+    "get_consequence": {
+      "method": "GET",
+      "path": "/consequences/{consequence_id}",
+      "call": "GetConsequence",
+      "action": "agency.consequence.read",
+      "title": "Read consequence",
+      "description": "Read one consequence by its id, with the risks that use it and the controls on it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "consequence_id",
+          "refers": "agency.consequence",
+          "description": "The consequence to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_get_consequence"
+    },
+    "update_consequence": {
+      "method": "PATCH",
+      "path": "/consequences/{consequence_id}",
+      "call": "UpdateConsequence",
+      "action": "agency.consequence.update",
+      "title": "Update consequence",
+      "description": "Rewrite a consequence's hazard, title and description. The hazard stays required.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "consequence_id",
+          "refers": "agency.consequence",
+          "into": "ID",
+          "description": "The consequence to rewrite."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_update_consequence"
+    },
+    "delete_consequence": {
+      "method": "DELETE",
+      "path": "/consequences/{consequence_id}",
+      "call": "DeleteConsequence",
+      "action": "agency.consequence.delete",
+      "status": 204,
+      "title": "Delete consequence",
+      "description": "Remove a consequence from the library. Refused while a risk still uses it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "consequence_id",
+          "refers": "agency.consequence",
+          "description": "The consequence to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_consequence"
+    },
+    "list_consequences": {
+      "method": "GET",
+      "path": "/consequences",
+      "call": "ListConsequences",
+      "action": "agency.consequence.list",
+      "title": "List consequences",
+      "description": "List one draft's consequences, narrowed by code or title, each with the risks that use it and the controls on it.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose consequences to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_consequences"
+    },
+    "create_risk_threat": {
+      "method": "POST",
+      "path": "/risk-threats",
+      "call": "CreateRiskThreat",
+      "action": "agency.risk_threat.create",
+      "status": 201,
+      "title": "Link risk to threat",
+      "description": "Say that a risk uses a threat, by their codes. Both must exist in the draft and the same pair cannot be linked twice.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_risk_threat"
+    },
+    "delete_risk_threat": {
+      "method": "DELETE",
+      "path": "/risk-threats/{risk_threat_id}",
+      "call": "DeleteRiskThreat",
+      "action": "agency.risk_threat.delete",
+      "status": 204,
+      "title": "Unlink risk from threat",
+      "description": "Remove one link, leaving the risk and the threat in place.",
+      "args": [
+        {
+          "from": "path",
+          "as": "risk_threat_id",
+          "refers": "agency.risk_threat",
+          "description": "The link to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_risk_threat"
+    },
+    "list_risk_threats": {
+      "method": "GET",
+      "path": "/risk-threats",
+      "call": "ListRiskThreats",
+      "action": "agency.risk_threat.list",
+      "title": "List risk threat links",
+      "description": "List one draft's links between risks and threats, narrowed by risk_code or threat_code.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose links to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_risk_threats"
+    },
+    "create_risk_consequence": {
+      "method": "POST",
+      "path": "/risk-consequences",
+      "call": "CreateRiskConsequence",
+      "action": "agency.risk_consequence.create",
+      "status": 201,
+      "title": "Link risk to consequence",
+      "description": "Say that a risk uses a consequence, by their codes. Both must exist in the draft and the same pair cannot be linked twice.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_create_risk_consequence"
+    },
+    "delete_risk_consequence": {
+      "method": "DELETE",
+      "path": "/risk-consequences/{risk_consequence_id}",
+      "call": "DeleteRiskConsequence",
+      "action": "agency.risk_consequence.delete",
+      "status": 204,
+      "title": "Unlink risk from consequence",
+      "description": "Remove one link, leaving the risk and the consequence in place.",
+      "args": [
+        {
+          "from": "path",
+          "as": "risk_consequence_id",
+          "refers": "agency.risk_consequence",
+          "description": "The link to remove."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_delete_risk_consequence"
+    },
+    "list_risk_consequences": {
+      "method": "GET",
+      "path": "/risk-consequences",
+      "call": "ListRiskConsequences",
+      "action": "agency.risk_consequence.list",
+      "title": "List risk consequence links",
+      "description": "List one draft's links between risks and consequences, narrowed by risk_code or consequence_code.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft whose links to read."
+        },
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_risk_consequences"
+    },
+    "list_unguarded_parts": {
+      "method": "GET",
+      "path": "/unguarded-parts",
+      "call": "ListUnguardedParts",
+      "action": "agency.unguarded_parts.list",
+      "title": "List unguarded parts",
+      "description": "List every threat and consequence of the draft with no control attached, each once with the risks that use it.",
+      "args": [
+        {
+          "from": "query",
+          "as": "draft_id",
+          "description": "The draft to scan for parts with no control."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_list_unguarded_parts"
+    }
+  }
+}

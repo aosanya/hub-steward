@@ -1,0 +1,1664 @@
+{
+  "operations": {
+    "open_entry": {
+      "method": "GET",
+      "path": "/entries/{slug}",
+      "call": "OpenEntry",
+      "action": "catalog.entry.open",
+      "title": "Open entry",
+      "description": "Read one entry as a public reader. A public entry opens with no key, a private one only with a live share key, and a pending entry, an unknown slug and a wrong key are all the same 'not found'.",
+      "args": [
+        {
+          "from": "path",
+          "as": "slug",
+          "description": "The entry to open."
+        },
+        {
+          "from": "query",
+          "as": "k",
+          "description": "A share link's key, needed only for a private entry."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "record_page_view": {
+      "method": "POST",
+      "path": "/page-views",
+      "call": "RecordPageView",
+      "action": "catalog.page_view.record",
+      "status": 204,
+      "title": "Record page view",
+      "description": "Add one to a page's running total. A view of one entry counts only against a slug that exists.",
+      "args": [
+        {
+          "from": "body",
+          "as": "page",
+          "required": true,
+          "field": "PageView.page"
+        },
+        {
+          "from": "body",
+          "as": "slug",
+          "description": "The entry that was loaded. Empty for the index page."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_entries": {
+      "method": "GET",
+      "path": "/entries",
+      "call": "ListEntries",
+      "action": "catalog.entry.list",
+      "title": "List entries",
+      "description": "List the entry cards matching the filter, ordered by name. A card never carries the document, so read one entry to see it. A large catalog returns a large answer — 634 cards is around 350KB, past what a tool result can carry — so pass a limit, or narrow with a document path or a search term, unless you genuinely need every card.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_entry": {
+      "method": "GET",
+      "path": "/entries/{slug}/admin",
+      "call": "GetEntry",
+      "action": "catalog.entry.read",
+      "title": "Read entry",
+      "description": "Read one entry whatever its visibility, document included. This is the operator's read, not the reader's.",
+      "args": [
+        {
+          "from": "path",
+          "as": "slug",
+          "description": "The entry to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "upsert_entry": {
+      "method": "PUT",
+      "path": "/entries/{slug}",
+      "call": "UpsertEntry",
+      "action": "catalog.entry.upsert",
+      "title": "Write entry",
+      "description": "Create the entry at this slug or replace the document and card of the one already there. Replacing the document of an approved entry returns it to pending, so never re-send a document that has not changed. Visibility is not set here.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "slug",
+          "into": "Slug",
+          "description": "The entry to write. Fixed at creation."
+        },
+        {
+          "from": "caller",
+          "as": "submitted_by",
+          "into": "SubmittedBy",
+          "description": "What wrote this revision, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "delete_entry": {
+      "method": "DELETE",
+      "path": "/entries/{slug}",
+      "call": "DeleteEntry",
+      "action": "catalog.entry.delete",
+      "status": 204,
+      "title": "Delete entry",
+      "description": "Soft-delete one entry. It stops being readable and its row stays.",
+      "args": [
+        {
+          "from": "path",
+          "as": "slug",
+          "description": "The entry to delete."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_visibility": {
+      "method": "POST",
+      "path": "/entries/{slug}/visibility",
+      "call": "SetVisibility",
+      "action": "catalog.entry.set_visibility",
+      "title": "Set visibility",
+      "description": "Move an entry between pending, public and private. Leaving pending stamps the approval time and returning to it clears it; leaving private retires every live share key.",
+      "args": [
+        {
+          "from": "path",
+          "as": "slug",
+          "description": "The entry to move."
+        },
+        {
+          "from": "body",
+          "as": "visibility",
+          "required": true,
+          "field": "Entry.visibility"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_private": {
+      "method": "GET",
+      "path": "/entries/{slug}/private",
+      "call": "GetPrivate",
+      "action": "catalog.entry.read_private",
+      "title": "Read private notes",
+      "description": "Read the operator-only notes on one entry. No reader ever sees these.",
+      "args": [
+        {
+          "from": "path",
+          "as": "slug",
+          "description": "The entry whose notes to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "put_private": {
+      "method": "PUT",
+      "path": "/entries/{slug}/private",
+      "call": "PutPrivate",
+      "action": "catalog.entry.write_private",
+      "title": "Write private notes",
+      "description": "Write the operator-only notes on one entry. An omitted or empty field leaves the stored value alone, so the rank can be changed without re-sending the readme.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "slug",
+          "into": "Slug",
+          "description": "The entry whose notes to write."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_share_links": {
+      "method": "GET",
+      "path": "/entries/{slug}/links",
+      "call": "ListShareLinks",
+      "action": "catalog.share_link.list",
+      "title": "List share links",
+      "description": "Every key issued for one entry, newest first, retired ones included.",
+      "args": [
+        {
+          "from": "path",
+          "as": "slug",
+          "description": "The entry whose keys to list."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "issue_share_link": {
+      "method": "POST",
+      "path": "/entries/{slug}/links",
+      "call": "IssueShareLink",
+      "action": "catalog.share_link.issue",
+      "status": 201,
+      "title": "Issue share link",
+      "description": "Mint a key that opens one private entry. The raw key is returned here and nowhere else — only its hash is stored — so hand it on before discarding the result.",
+      "args": [
+        {
+          "from": "path",
+          "as": "slug",
+          "description": "The private entry the key opens."
+        },
+        {
+          "from": "body",
+          "as": "label",
+          "field": "ShareLink.label"
+        },
+        {
+          "from": "caller",
+          "as": "by",
+          "field": "ShareLink.created_by",
+          "description": "The caller that issued the key, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "as": "link"
+        },
+        {
+          "as": "key",
+          "once": true
+        }
+      ]
+    },
+    "retire_share_link": {
+      "method": "POST",
+      "path": "/links/{linkID}/retire",
+      "call": "RetireShareLink",
+      "action": "catalog.share_link.retire",
+      "title": "Retire share link",
+      "description": "Stop a key opening its entry, keeping the row so a rotation leaves a trail of what was handed out.",
+      "args": [
+        {
+          "from": "path",
+          "as": "linkID",
+          "description": "The share link to retire."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_suggestions": {
+      "method": "GET",
+      "path": "/suggestions",
+      "call": "ListSuggestions",
+      "action": "catalog.suggestion.list",
+      "title": "List suggestions",
+      "description": "Proposals in the given statuses, best priority first. Pass every status you care about in ONE call — status takes a list, so [\"approved\", \"stalled\", \"proposed\"] is one call, not three. No status at all means every status.",
+      "args": [
+        {
+          "from": "query",
+          "as": "status",
+          "repeated": true,
+          "field": "Suggestion.status"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "file_suggestion": {
+      "method": "POST",
+      "path": "/suggestions",
+      "call": "FileSuggestion",
+      "action": "catalog.suggestion.file",
+      "status": 201,
+      "title": "File suggestion",
+      "description": "Propose something worth adding to the catalog. It always lands proposed, and a slug that is already an entry or already proposed is refused.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_suggestion": {
+      "method": "GET",
+      "path": "/suggestions/{suggestionID}",
+      "call": "GetSuggestion",
+      "action": "catalog.suggestion.read",
+      "title": "Read suggestion",
+      "description": "Read one proposal.",
+      "args": [
+        {
+          "from": "path",
+          "as": "suggestionID",
+          "description": "The proposal to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "decide_suggestion": {
+      "method": "POST",
+      "path": "/suggestions/{suggestionID}/decide",
+      "call": "DecideSuggestion",
+      "action": "catalog.suggestion.decide",
+      "title": "Decide suggestion",
+      "description": "Move a proposal between proposed, approved and rejected, optionally reordering it. Approving a stalled proposal clears its failed attempts. This cannot set 'built', and a built proposal cannot be decided again — fulfilling it does the first.",
+      "args": [
+        {
+          "from": "path",
+          "as": "suggestionID",
+          "description": "The proposal to decide."
+        },
+        {
+          "from": "body",
+          "as": "status",
+          "required": true,
+          "field": "Suggestion.status"
+        },
+        {
+          "from": "body",
+          "as": "priority",
+          "description": "A new priority, lowest first; any integer including zero or a negative number. Leave it out to keep the stored one."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "record_suggestion_attempt": {
+      "method": "POST",
+      "path": "/suggestions/{suggestionID}/attempt",
+      "call": "RecordSuggestionAttempt",
+      "action": "catalog.suggestion.record_attempt",
+      "title": "Record failed attempt",
+      "description": "Count a build that did not finish and keep the reason as a comment. Enough failed attempts stall the proposal.",
+      "args": [
+        {
+          "from": "path",
+          "as": "suggestionID",
+          "description": "The proposal that was attempted."
+        },
+        {
+          "from": "body",
+          "as": "run_ref",
+          "description": "The run that tried."
+        },
+        {
+          "from": "body",
+          "as": "comment",
+          "required": true,
+          "description": "Why it did not finish. An attempt with no reason is refused."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "fulfil_suggestion": {
+      "method": "POST",
+      "path": "/suggestions/{suggestionID}/fulfil",
+      "call": "FulfilSuggestion",
+      "action": "catalog.suggestion.fulfil",
+      "title": "Fulfil suggestion",
+      "description": "Record that an entry answers a proposal and mark it built.",
+      "args": [
+        {
+          "from": "path",
+          "as": "suggestionID",
+          "description": "The proposal that was answered."
+        },
+        {
+          "from": "body",
+          "as": "slug",
+          "required": true,
+          "description": "The entry that answers it."
+        },
+        {
+          "from": "body",
+          "as": "run_ref",
+          "description": "The run that built it."
+        },
+        {
+          "from": "body",
+          "as": "note",
+          "description": "What the entry does about the proposal."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_suggestion_comments": {
+      "method": "GET",
+      "path": "/suggestions/{suggestionID}/comments",
+      "call": "ListSuggestionComments",
+      "action": "catalog.suggestion_comment.list",
+      "title": "List suggestion comments",
+      "description": "Every note on a proposal, oldest first, failed attempts included.",
+      "args": [
+        {
+          "from": "path",
+          "as": "suggestionID",
+          "description": "The proposal whose notes to list."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "comment_on_suggestion": {
+      "method": "POST",
+      "path": "/suggestions/{suggestionID}/comments",
+      "call": "CommentOnSuggestion",
+      "action": "catalog.suggestion_comment.create",
+      "status": 201,
+      "title": "Comment on suggestion",
+      "description": "Add a note to a proposal that is not about a failed build attempt.",
+      "args": [
+        {
+          "from": "path",
+          "as": "suggestionID",
+          "description": "The proposal to comment on."
+        },
+        {
+          "from": "body",
+          "as": "author",
+          "required": true,
+          "field": "SuggestionComment.author"
+        },
+        {
+          "from": "body",
+          "as": "body",
+          "required": true,
+          "field": "SuggestionComment.body"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_suggestion_matches": {
+      "method": "GET",
+      "path": "/suggestions/{suggestionID}/matches",
+      "call": "ListSuggestionMatches",
+      "action": "catalog.suggestion_match.list",
+      "title": "List suggestion matches",
+      "description": "The entries that answered a proposal.",
+      "args": [
+        {
+          "from": "path",
+          "as": "suggestionID",
+          "description": "The proposal whose answers to list."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_runs": {
+      "method": "GET",
+      "path": "/runs",
+      "call": "ListRuns",
+      "action": "catalog.run.list",
+      "title": "List runs",
+      "description": "Run reports, newest first.",
+      "args": [
+        {
+          "from": "query",
+          "as": "limit",
+          "description": "How many reports to return. Zero means the default page of 100, and no more than 500 are returned."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "record_run": {
+      "method": "POST",
+      "path": "/runs",
+      "call": "RecordRun",
+      "action": "catalog.run.record",
+      "status": 201,
+      "title": "Record run",
+      "description": "Store one run's report: which run it was, how much it filed, and what it found.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "caller",
+          "as": "submitted_by",
+          "into": "SubmittedBy",
+          "description": "What reported the run, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_setting": {
+      "method": "GET",
+      "path": "/settings/{key}",
+      "call": "GetSetting",
+      "action": "catalog.setting.read",
+      "title": "Read setting",
+      "description": "Read one run-time knob.",
+      "args": [
+        {
+          "from": "path",
+          "as": "key",
+          "description": "The setting to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "put_setting": {
+      "method": "PUT",
+      "path": "/settings/{key}",
+      "call": "PutSetting",
+      "action": "catalog.setting.write",
+      "title": "Write setting",
+      "description": "Write one run-time knob.",
+      "args": [
+        {
+          "from": "path",
+          "as": "key",
+          "description": "The setting to write."
+        },
+        {
+          "from": "body",
+          "as": "value",
+          "field": "Setting.value"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_page_views": {
+      "method": "GET",
+      "path": "/page-views",
+      "call": "ListPageViews",
+      "action": "catalog.page_view.list",
+      "title": "List page views",
+      "description": "Every counted page, most viewed first.",
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "attach_suggestion": {
+      "method": "POST",
+      "path": "/suggestions/{suggestionID}/matches",
+      "call": "AttachSuggestion",
+      "action": "catalog.suggestion_match.attach",
+      "status": 201,
+      "title": "Attach suggestion to entry",
+      "description": "Record that a proposal is part of one entry, without saying anything about whether it has been answered. Grouping and completing are different acts: this is the one that lets an entry report how many proposals it was assembled from, and it leaves the proposal's own status alone, whatever it is. Fulfil is the other one, and it marks the proposal built.",
+      "args": [
+        {
+          "from": "path",
+          "as": "suggestionID",
+          "description": "The proposal to attach."
+        },
+        {
+          "from": "body",
+          "as": "slug",
+          "required": true,
+          "description": "The entry it is part of."
+        },
+        {
+          "from": "body",
+          "as": "note",
+          "description": "Why this proposal was grouped here."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_entry_matches": {
+      "method": "GET",
+      "path": "/entries/{slug}/matches",
+      "call": "ListEntryMatches",
+      "action": "catalog.suggestion_match.list_for_entry",
+      "title": "List the proposals attached to an entry",
+      "description": "The proposals one entry was assembled from, oldest first. Counting them is how a consumer reports how many separate people asked for the same thing, without keeping a second copy of the number that nothing reconciles.",
+      "args": [
+        {
+          "from": "path",
+          "as": "slug",
+          "description": "The entry whose proposals to list."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_public_entries": {
+      "method": "GET",
+      "path": "/public/entries",
+      "call": "ListPublicEntries",
+      "action": "catalog.entry.list_public",
+      "title": "List public entries",
+      "description": "The entries a reader with no credential may see, as cards. Visibility is forced to public and a caller cannot widen it, which is what separates this from the operator's listing: that one answers with whatever visibility the caller asks for, including none, and returns the pending and private rows with it. The result is capped whatever the caller asks for, because this is the one listing an anonymous caller can reach.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_records": {
+      "method": "GET",
+      "path": "/records/{subject_id}",
+      "call": "ListRecords",
+      "action": "catalog.record.list",
+      "title": "List the records on one subject",
+      "description": "Every holder's latest values on one subject, one per holder per standing, oldest first, each with the time of every change. Never anonymous, and a mount grants it only to those who may read everybody's values; a holder's own values are the host's to show.",
+      "args": [
+        {
+          "from": "path",
+          "as": "subject_id",
+          "description": "The subject whose records to read."
+        },
+        {
+          "from": "query",
+          "as": "scope_id",
+          "description": "Only the records sent under this standing; absent means every record, so a holder who sent under two standings is counted once in each."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "count_records": {
+      "method": "GET",
+      "path": "/records/{subject_id}/counts",
+      "call": "CountRecords",
+      "action": "catalog.record.count",
+      "title": "Count the records on one subject",
+      "description": "Per field, worked out from the latest records: yes and no for a true or false value, a tally per option for text and lists of text, and for numbers how many, their average, lowest and highest. Gated like the listing.",
+      "args": [
+        {
+          "from": "path",
+          "as": "subject_id",
+          "description": "The subject whose records to read."
+        },
+        {
+          "from": "query",
+          "as": "scope_id",
+          "description": "Only the records sent under this standing; absent means every record, so a holder who sent under two standings is counted once in each."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "nearby_raised_items": {
+      "method": "GET",
+      "path": "/raised-items/nearby",
+      "call": "NearbyRaisedItems",
+      "action": "catalog.raised_item.list_nearby",
+      "title": "List raised items near a place",
+      "description": "Publishable raised items of one topic whose pin lies within a distance of a point, nearest first. Every item is seen as anybody but its raiser sees it: its area and street, its pin rounded to about a hundred metres, its typed address withheld, whoever is asking. Never anonymous.",
+      "args": [
+        {
+          "from": "query",
+          "as": "topic",
+          "required": true,
+          "description": "The topic to look in, such as streetlights."
+        },
+        {
+          "from": "query",
+          "as": "at",
+          "required": true,
+          "description": "The point to look around, as [longitude, latitude]."
+        },
+        {
+          "from": "query",
+          "as": "within",
+          "required": true,
+          "description": "How far from the point to look, in metres; more than zero."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "overdue_raised_items": {
+      "method": "GET",
+      "path": "/raised-items/overdue",
+      "call": "ListOverdueRaisedItems",
+      "action": "catalog.raised_item.list_overdue",
+      "title": "List overdue raised items",
+      "description": "Raised items still open once the answer clock has run: raised at or before the given time less the days the raised_item.answer_within_days setting holds, with no reply and no removal. Oldest first. The setting unset is 'not found'; a value that is not a whole number of days of at least one is refused. A host's scheduled sweep calls this; the module schedules nothing. Never anonymous.",
+      "args": [
+        {
+          "from": "query",
+          "as": "at",
+          "description": "The time to age the items against, RFC 3339. Empty means now."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "open_shared_board_item": {
+      "method": "GET",
+      "path": "/board-items/{key}/shared",
+      "call": "OpenSharedBoardItem",
+      "action": "catalog.board_item.open_shared",
+      "title": "Open a shared board item",
+      "description": "Read one board item through its share link, without signing in: its title, theme, area, Me too count, status and the files approved for publishing. Never the address, the pin or who raised it. A board item with no publishable item grouped under it, an unknown key and a catalog that keeps no board are all the same 'not found'.",
+      "args": [
+        {
+          "from": "path",
+          "as": "key",
+          "description": "The share link's key, which is the board item's id."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_board_item_hidden": {
+      "method": "PUT",
+      "path": "/board-items/{boardItemID}/hidden",
+      "call": "SetBoardItemHidden",
+      "action": "catalog.board_item.set_hidden",
+      "status": 204,
+      "title": "Hide or show a board item",
+      "description": "Take a board item off the public board, or put it back. A hidden board item is left out of every public read and its share link answers 'not found'. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "boardItemID",
+          "description": "The board item to hide or show."
+        },
+        {
+          "from": "body",
+          "as": "hidden",
+          "field": "BoardItem.hidden"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "raise_item": {
+      "method": "POST",
+      "path": "/raised-items",
+      "call": "RaiseItem",
+      "action": "catalog.raised_item.raise",
+      "status": 201,
+      "title": "Raise an item",
+      "description": "Raise an item as the caller. The raiser is the caller, never the body, and a filer or channel the body claims is dropped. Never anonymous.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "caller",
+          "as": "raised_by",
+          "into": "RaisedBy",
+          "description": "Who raised the item, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "file_raised_item": {
+      "method": "POST",
+      "path": "/raised-items/filed",
+      "call": "FileRaisedItem",
+      "action": "catalog.raised_item.file",
+      "status": 201,
+      "title": "File an item on someone's behalf",
+      "description": "File an item for somebody else: the body names who raised it, by their register entry's id, and the channel it came through; the filer is the caller, never the body. Never anonymous.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "caller",
+          "as": "filed_by",
+          "into": "FiledBy",
+          "description": "Who filed the item, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_my_raised_items": {
+      "method": "GET",
+      "path": "/raised-items/mine",
+      "call": "ListRaisedItems",
+      "action": "catalog.raised_item.list_mine",
+      "title": "List my raised items",
+      "description": "The items the caller raised, newest first. Never anonymous.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "raised_by",
+          "description": "Whose items to list, supplied by the mount."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_subject_raised_items": {
+      "method": "GET",
+      "path": "/raised-items/by-subject",
+      "call": "ListRaisedItemsOfSubject",
+      "action": "catalog.raised_item.list_of_subject",
+      "title": "List the items one subject raised",
+      "description": "The items raised with this entry named as their raiser's subject, oldest first. An item raised by nobody the catalog holds is never among them. Never anonymous.",
+      "args": [
+        {
+          "from": "query",
+          "as": "subject_id",
+          "required": true,
+          "description": "The id of the entry whose raised items to list."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "put_on_board": {
+      "method": "POST",
+      "path": "/board-items",
+      "call": "PutOnBoard",
+      "action": "catalog.board_item.put",
+      "status": 201,
+      "title": "Put an item on the board",
+      "description": "Start a board item that raised items can be grouped under. Never anonymous.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_board_items": {
+      "method": "GET",
+      "path": "/board-items",
+      "call": "ListBoardItems",
+      "action": "catalog.board_item.list",
+      "title": "List board items",
+      "description": "Every board item that is not hidden, with how many raised it and how many said Me too, including one with nothing grouped under it. The staff read. Never anonymous.",
+      "args": [],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_public_board_items": {
+      "method": "GET",
+      "path": "/board-items/public",
+      "call": "ListPublicBoardItems",
+      "action": "catalog.board_item.list_public",
+      "title": "List the public board",
+      "description": "The board as the public sees it: every board item that is not hidden and has at least one publishable item grouped under it, with how many raised it and how many said Me too, oldest first, one page at a time: at most 50 a page whatever the caller asks for, skipping offset items. Never anonymous.",
+      "args": [
+        {
+          "from": "query",
+          "as": "limit",
+          "description": "How many board items a page holds. Zero, a negative or anything over 50 means 50."
+        },
+        {
+          "from": "query",
+          "as": "offset",
+          "description": "How many board items to skip before the page starts. Zero starts at the first."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "group_under_board_item": {
+      "method": "PUT",
+      "path": "/raised-items/{raisedItemID}/board-item",
+      "call": "GroupUnderBoardItem",
+      "action": "catalog.raised_item.group",
+      "title": "Group a raised item under a board item",
+      "description": "Put a raised item under a board item. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "raisedItemID",
+          "description": "The raised item to group."
+        },
+        {
+          "from": "body",
+          "as": "board_item_id",
+          "required": true,
+          "field": "RaisedItem.board_item_id"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 204
+    },
+    "ungroup_from_board_item": {
+      "method": "DELETE",
+      "path": "/raised-items/{raisedItemID}/board-item",
+      "call": "UngroupFromBoardItem",
+      "action": "catalog.raised_item.ungroup",
+      "status": 204,
+      "title": "Ungroup a raised item",
+      "description": "Take a raised item out from under its board item. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "raisedItemID",
+          "description": "The raised item to ungroup."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_board_item_outcome": {
+      "method": "PUT",
+      "path": "/board-items/{boardItemID}/outcome",
+      "call": "SetBoardItemOutcome",
+      "action": "catalog.board_item.set_outcome",
+      "status": 204,
+      "title": "Set a board item's outcome",
+      "description": "Record what came of a board item. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "boardItemID",
+          "description": "The board item."
+        },
+        {
+          "from": "body",
+          "as": "outcome",
+          "required": true,
+          "field": "BoardItem.outcome"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "assign_board_item": {
+      "method": "PUT",
+      "path": "/board-items/{boardItemID}/assignee",
+      "call": "AssignBoardItem",
+      "action": "catalog.board_item.assign",
+      "status": 204,
+      "title": "Assign a board item",
+      "description": "Hand a board item to a person or a role; whoever holds the role picks it up. Assigning again replaces the assignee. Assigning never closes an item, and a closed item is final: assigning it is refused. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "boardItemID",
+          "description": "The board item to assign."
+        },
+        {
+          "from": "body",
+          "as": "assignee_kind",
+          "required": true,
+          "field": "BoardItem.assignee_kind"
+        },
+        {
+          "from": "body",
+          "as": "assignee_id",
+          "required": true,
+          "field": "BoardItem.assignee_id"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "unassign_board_item": {
+      "method": "DELETE",
+      "path": "/board-items/{boardItemID}/assignee",
+      "call": "UnassignBoardItem",
+      "action": "catalog.board_item.unassign",
+      "status": 204,
+      "title": "Unassign a board item",
+      "description": "Take a board item back from whoever it was assigned to, leaving it unassigned and still open. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "boardItemID",
+          "description": "The board item to unassign."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "close_board_item": {
+      "method": "POST",
+      "path": "/board-items/{boardItemID}/close",
+      "call": "CloseBoardItem",
+      "action": "catalog.board_item.close",
+      "status": 204,
+      "title": "Close a board item",
+      "description": "Close a board item. This is the only way an item closes: a reply, a removal, an outcome or grouping never does. The closer is the caller, never the body; closing a closed item answers a conflict. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "boardItemID",
+          "description": "The board item to close."
+        },
+        {
+          "from": "caller",
+          "as": "closed_by",
+          "description": "Who closed it, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "endorse": {
+      "method": "POST",
+      "path": "/endorsements/{subject_id}",
+      "call": "Endorse",
+      "action": "catalog.endorsement.add",
+      "title": "Say Me too",
+      "description": "Add the caller's Me too to a subject, at most once, and answer the count. The holder is the caller, never the body. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "subject_id",
+          "description": "The subject to endorse."
+        },
+        {
+          "from": "caller",
+          "as": "holder_id",
+          "description": "Who says Me too, supplied by the mount."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "count_endorsements": {
+      "method": "GET",
+      "path": "/endorsements/{subject_id}",
+      "call": "CountEndorsements",
+      "action": "catalog.endorsement.count",
+      "title": "Count Me toos",
+      "description": "How many said Me too to a subject. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "subject_id",
+          "description": "The subject to count."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "reply_to_raised_item": {
+      "method": "POST",
+      "path": "/raised-items/{raisedItemID}/replies",
+      "call": "ReplyToRaisedItem",
+      "action": "catalog.reply.send",
+      "status": 201,
+      "title": "Reply to a raised item",
+      "description": "Send a reply on a raised item. The replier is the caller, never the body. Never anonymous.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "raisedItemID",
+          "into": "RaisedItemID",
+          "description": "The raised item replied to."
+        },
+        {
+          "from": "caller",
+          "as": "replied_by",
+          "into": "RepliedBy",
+          "description": "Who replied, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "issue_follow_key": {
+      "method": "POST",
+      "path": "/raised-items/{raisedItemID}/follow-key",
+      "call": "IssueFollowKey",
+      "action": "catalog.raised_item.issue_follow_key",
+      "status": 201,
+      "title": "Issue a follow key",
+      "description": "Mint the key that opens one raised item and the replies written to it, for a raiser who has no account. The raw key is returned once and stored only as its hash; issuing again retires the previous key. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "raisedItemID",
+          "description": "The raised item the key opens."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "open_followed_raised_item": {
+      "method": "GET",
+      "path": "/followed-items/{key}",
+      "call": "OpenFollowedRaisedItem",
+      "action": "catalog.raised_item.open_followed",
+      "title": "Open a followed raised item",
+      "description": "Read one raised item and the replies written to it through its follow key, without signing in. An unknown key, a retired key, a missing item and a catalog that takes no raised items are all the same 'not found'.",
+      "args": [
+        {
+          "from": "path",
+          "as": "key",
+          "description": "The follow key returned when it was issued."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_replies": {
+      "method": "GET",
+      "path": "/raised-items/{raisedItemID}/replies",
+      "call": "ListReplies",
+      "action": "catalog.reply.list",
+      "title": "List replies",
+      "description": "The staff read: the replies on any raised item, oldest first. Who is staff is the mount's grant. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "raisedItemID",
+          "description": "The raised item whose replies to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_my_replies": {
+      "method": "GET",
+      "path": "/raised-items/{raisedItemID}/replies/mine",
+      "call": "ListMyReplies",
+      "action": "catalog.reply.list_mine",
+      "title": "List the replies on my item",
+      "description": "The replies on one raised item, oldest first, answered only to the item's raiser or the clerk who filed it; to anybody else the item answers as not found. The reader is the caller, never the request. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "raisedItemID",
+          "description": "The raised item whose replies to read."
+        },
+        {
+          "from": "caller",
+          "as": "reader",
+          "description": "Who is reading, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "remove_raised_item": {
+      "method": "POST",
+      "path": "/raised-items/{raisedItemID}/removal",
+      "call": "RemoveRaisedItem",
+      "action": "catalog.raised_item.remove",
+      "status": 201,
+      "title": "Remove a raised item",
+      "description": "Remove a raised item with a free-text ground: it becomes unpublishable and leaves any board item in the same write. An item is removed at most once. The remover is the caller, never the body; id and created_at are the store's. Never anonymous; a mount grants it to staff.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "raisedItemID",
+          "into": "RaisedItemID",
+          "description": "The raised item removed."
+        },
+        {
+          "from": "caller",
+          "as": "removed_by",
+          "into": "RemovedBy",
+          "description": "Who removed it, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_my_removals": {
+      "method": "GET",
+      "path": "/raised-items/mine/removals",
+      "call": "ListRemovalsOfMine",
+      "action": "catalog.removal.list_mine",
+      "title": "List removals of my items",
+      "description": "The removals of the items the caller raised, each with its ground and who removed it, and nothing of anybody else's. Never anonymous.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "raised_by",
+          "description": "Whose items' removals to list, supplied by the mount."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "record_scope_figure": {
+      "method": "POST",
+      "path": "/scope-figures",
+      "call": "RecordScopeFigure",
+      "action": "catalog.scope_figure.record",
+      "status": 201,
+      "title": "Record a scope figure",
+      "description": "Record a dated, sourced figure about one scope. Append-only: a newer figure is a new row. The recorder is the caller, never the body; id and created_at are the store's. Never anonymous.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "caller",
+          "as": "recorded_by",
+          "into": "RecordedBy",
+          "description": "Who recorded it, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "current_scope_figure": {
+      "method": "GET",
+      "path": "/scope-figures/{scope_id}",
+      "call": "CurrentScopeFigure",
+      "action": "catalog.scope_figure.read",
+      "title": "Read a scope's current figure",
+      "description": "The figure with the latest as_of for one scope. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "scope_id",
+          "description": "The scope whose figure to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_scope_figures": {
+      "method": "GET",
+      "path": "/scope-figures/{scope_id}/history",
+      "call": "ListScopeFigures",
+      "action": "catalog.scope_figure.list",
+      "title": "List a scope's figures",
+      "description": "Every figure recorded for one scope, newest as_of first, at most one hundred. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "scope_id",
+          "description": "The scope whose figures to list."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "offer_slot": {
+      "method": "POST",
+      "path": "/slots",
+      "call": "OfferSlot",
+      "action": "catalog.slot.offer",
+      "status": 201,
+      "title": "Offer an appointment time",
+      "description": "Offer a time for a service, with how many people it takes. Staff only; refused where this mount keeps no appointment times.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_slots": {
+      "method": "GET",
+      "path": "/slots",
+      "call": "ListSlots",
+      "action": "catalog.slot.list",
+      "title": "List a service's appointment times",
+      "description": "The times offered for one service, earliest first. Never anonymous.",
+      "args": [
+        {
+          "from": "query",
+          "as": "subject_id",
+          "required": true,
+          "description": "The id of the service whose times to list."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "book_slot": {
+      "method": "POST",
+      "path": "/slots/{slot_id}/bookings",
+      "call": "Book",
+      "action": "catalog.booking.book",
+      "status": 201,
+      "title": "Book an appointment time",
+      "description": "Book a place on a time as the caller. Refused when the time is full or the caller already holds a place on it. The holder is the caller, never the body.",
+      "args": [
+        {
+          "from": "path",
+          "as": "slot_id",
+          "description": "The time to book."
+        },
+        {
+          "from": "caller",
+          "as": "holder_id",
+          "description": "Who books, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "cancel_booking": {
+      "method": "POST",
+      "path": "/bookings/{booking_id}/cancel",
+      "call": "CancelBooking",
+      "action": "catalog.booking.cancel",
+      "title": "Cancel my booking",
+      "description": "Cancel one of the caller's own bookings, with an optional reason. Another holder's booking answers exactly as a missing one.",
+      "args": [
+        {
+          "from": "path",
+          "as": "booking_id",
+          "description": "The booking to cancel."
+        },
+        {
+          "from": "caller",
+          "as": "cancelled_by",
+          "description": "Who cancels, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "as": "reason",
+          "description": "Why the booking is cancelled. Optional."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "cancel_booking_as_staff": {
+      "method": "POST",
+      "path": "/bookings/{booking_id}/staff-cancel",
+      "call": "CancelBookingAsStaff",
+      "action": "catalog.booking.cancel_as_staff",
+      "title": "Cancel a booking as staff",
+      "description": "Cancel anybody's booking, with a reason the holder sees. Staff only.",
+      "args": [
+        {
+          "from": "path",
+          "as": "booking_id",
+          "description": "The booking to cancel."
+        },
+        {
+          "from": "caller",
+          "as": "cancelled_by",
+          "description": "Who cancels, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "as": "reason",
+          "required": true,
+          "description": "Why the booking is cancelled."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_my_bookings": {
+      "method": "GET",
+      "path": "/bookings/mine",
+      "call": "ListHolderBookings",
+      "action": "catalog.booking.list_mine",
+      "title": "List my bookings",
+      "description": "The caller's bookings, standing and cancelled, earliest first. Never anonymous.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "holder_id",
+          "description": "Whose bookings to list, supplied by the mount."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_day_bookings": {
+      "method": "GET",
+      "path": "/bookings/by-day",
+      "call": "ListDayBookings",
+      "action": "catalog.booking.list_day",
+      "title": "List a day's bookings",
+      "description": "Every booking on one day, optionally for one service, earliest first. Staff only.",
+      "args": [
+        {
+          "from": "query",
+          "as": "subject_id",
+          "description": "The service whose bookings to list. Empty lists every service."
+        },
+        {
+          "from": "query",
+          "as": "day",
+          "required": true,
+          "description": "The day, as YYYY-MM-DD."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    }
+  },
+  "errors": {
+    "ErrEntryNotFound": 404,
+    "ErrSuggestionNotFound": 404,
+    "ErrShareLinkNotFound": 404,
+    "ErrSettingNotFound": 404,
+    "ErrEntryExists": 409,
+    "ErrSlugImmutable": 409,
+    "ErrNotPrivate": 409,
+    "ErrInvalidShareLink": 400,
+    "ErrSuggestionDuplicate": 409,
+    "ErrSuggestionStatus": 409,
+    "ErrInvalidEntry": 400,
+    "ErrInvalidDocPath": 400,
+    "ErrEntryKind": 400,
+    "ErrInvalidServiceTerms": 400,
+    "ErrInvalidPrivate": 400,
+    "ErrInvalidSuggestion": 400,
+    "ErrAttemptNeedsComment": 400,
+    "ErrInvalidComment": 400,
+    "ErrInvalidRun": 400,
+    "ErrInvalidSetting": 400,
+    "ErrInvalidPageView": 400,
+    "ErrInvalidRecord": 400,
+    "ErrRecordsNotKept": 404,
+    "ErrRecordHolderSpoke": 409,
+    "ErrInvalidRaisedItem": 400,
+    "ErrRaisedItemsNotTaken": 404,
+    "ErrBoardItemNotFound": 404,
+    "ErrBoardItemClosed": 409,
+    "ErrInvalidBoardItem": 400,
+    "ErrBoardNotKept": 404,
+    "ErrRaisedItemNotFound": 404,
+    "ErrInvalidReply": 400,
+    "ErrRepliesNotSent": 404,
+    "ErrInvalidRemoval": 400,
+    "ErrRemovalsNotMade": 404,
+    "ErrRaisedItemAlreadyRemoved": 409,
+    "ErrInvalidScopeFigure": 400,
+    "ErrFiguresNotKept": 404,
+    "ErrScopeFigureNotFound": 404,
+    "ErrInvalidEndorsement": 400,
+    "ErrEndorsementsNotCounted": 404,
+    "ErrRoleNotDeclared": 404,
+    "ErrTimesNotBooked": 404,
+    "ErrInvalidSlot": 400,
+    "ErrSlotNotFound": 404,
+    "ErrSlotFull": 409,
+    "ErrAlreadyBooked": 409,
+    "ErrBookingNotFound": 404,
+    "ErrBookingCancelled": 409,
+    "ErrCancelReasonRequired": 400
+  }
+}

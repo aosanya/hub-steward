@@ -1,0 +1,234 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<body>
+  <h1 id="title">Agency Dashboard</h1>
+  <p class="eyebrow" id="subtitle">Loading…</p>
+
+  <div id="section-menu" class="section active">
+    <div class="menu">
+      <div class="tile" data-goto="roles" data-focus="1">+ Add Role</div>
+      <div class="tile" data-goto="roles">View Roles</div>
+      <div class="tile" data-goto="goals" data-focus="1">+ Add Goal</div>
+      <div class="tile" data-goto="goals">View Goals</div>
+      <div class="tile" data-goto="general" style="grid-column: 1 / -1;">General Information</div>
+    </div>
+  </div>
+
+  <div id="section-general" class="section">
+    <span class="back" data-back="1">&larr; Back</span>
+    <dl id="generalInfo"><dt>Loading</dt></dl>
+  </div>
+
+  <div id="section-roles" class="section">
+    <span class="back" data-back="1">&larr; Back</span>
+    <div class="form-row">
+      <input id="newRoleName" placeholder="e.g. Engineer">
+      <button id="addRoleBtn">+ Add role</button>
+    </div>
+    <table>
+      <thead><tr><th>Code</th><th>Role</th><th></th></tr></thead>
+      <tbody id="rolesRows"><tr><td colspan="3" class="empty">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+  <div id="section-goals" class="section">
+    <span class="back" data-back="1">&larr; Back</span>
+    <div class="form-row">
+      <input id="newGoalTitle" placeholder="e.g. Ship reliable software">
+      <input id="newGoalDescription" placeholder="description (optional)">
+      <button id="addGoalBtn">+ Add goal</button>
+    </div>
+    <table>
+      <thead><tr><th>Code</th><th>Goal</th><th>Description</th></tr></thead>
+      <tbody id="goalsRows"><tr><td colspan="3" class="empty">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+<script>
+(function () {
+  var nextId = 1;
+  var pending = {};
+  var currentArgs = {};
+
+  function send(method, params) {
+    return new Promise(function (resolve, reject) {
+      var id = nextId++;
+      pending[id] = { resolve: resolve, reject: reject };
+      window.parent.postMessage({ jsonrpc: '2.0', id: id, method: method, params: params || {} }, '*');
+    });
+  }
+
+  window.addEventListener('message', function (event) {
+    if (event.source !== window.parent) return;
+    var msg = event.data;
+    if (!msg || msg.jsonrpc !== '2.0') return;
+
+    if (msg.id != null && pending[msg.id]) {
+      var p = pending[msg.id];
+      delete pending[msg.id];
+      if (msg.error) p.reject(msg.error); else p.resolve(msg.result);
+      return;
+    }
+    if (msg.method === 'ui/notifications/tool-input') {
+      var args = (msg.params && msg.params.arguments) || {};
+      if (args.instance_id) {
+        currentArgs = args;
+        document.getElementById('subtitle').textContent = 'instance ' + args.instance_id;
+        fetchGeneral(true);
+      }
+    }
+  });
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function callTool(name, args) {
+    return send('tools/call', { name: name, arguments: args }).then(function (result) {
+      if (result && result.isError) {
+        var text = (result.content && result.content[0] && result.content[0].text) || 'Request failed';
+        throw new Error(text);
+      }
+      return result;
+    });
+  }
+
+  // ---- navigation ----
+  var sections = ['menu', 'general', 'roles', 'goals'];
+  function showSection(name) {
+    sections.forEach(function (s) {
+      document.getElementById('section-' + s).classList.toggle('active', s === name);
+    });
+    if (name === 'general') fetchGeneral(false);
+    if (name === 'roles') refreshRoles();
+    if (name === 'goals') refreshGoals();
+  }
+  document.addEventListener('click', function (event) {
+    var tile = event.target.closest('[data-goto]');
+    if (tile) {
+      showSection(tile.dataset.goto);
+      if (tile.dataset.focus === '1') {
+        setTimeout(function () {
+          var el = tile.dataset.goto === 'roles' ? document.getElementById('newRoleName') : document.getElementById('newGoalTitle');
+          if (el) el.focus();
+        }, 0);
+      }
+      return;
+    }
+    if (event.target.closest('[data-back]')) { showSection('menu'); return; }
+  });
+
+  // ---- general info ----
+  function fetchGeneral(quiet) {
+    return callTool('agency_get_agency', { instance_id: currentArgs.instance_id }).then(function (result) {
+      var a = result.structuredContent || {};
+      document.getElementById('title').textContent = a.name || 'Agency Dashboard';
+      if (!quiet) {
+        var dl = document.getElementById('generalInfo');
+        dl.innerHTML =
+          '<dt>Name</dt><dd>' + esc(a.name) + '</dd>' +
+          '<dt>Description</dt><dd>' + esc(a.description || '—') + '</dd>' +
+          '<dt>Enabled</dt><dd>' + (a.enabled ? 'Yes' : 'No') + '</dd>' +
+          '<dt>Created</dt><dd>' + esc(a.created_at) + '</dd>' +
+          '<dt>Last updated</dt><dd>' + esc(a.last_updated) + '</dd>';
+      }
+    }).catch(function () {});
+  }
+  // ---- roles ----
+  function refreshRoles() {
+    return callTool('agency_list_roles', {
+      instance_id: currentArgs.instance_id,
+      draft_id: currentArgs.draft_id || ''
+    }).then(function (result) {
+      renderRoles((result.structuredContent && result.structuredContent.items) || []);
+    });
+  }
+  function renderRoles(items) {
+    var tbody = document.getElementById('rolesRows');
+    tbody.innerHTML = '';
+    if (!items.length) { tbody.innerHTML = '<tr><td colspan="3" class="empty">No roles yet.</td></tr>'; return; }
+    items.forEach(function (role) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + esc(role.code) + '</td>' +
+        '<td>' + esc(role.name) + '</td>' +
+        '<td><button class="link edit-role" data-id="' + esc(role.id) + '" data-name="' + esc(role.name) + '">Edit</button></td>';
+      tbody.appendChild(tr);
+    });
+  }
+  document.getElementById('addRoleBtn').addEventListener('click', function () {
+    var input = document.getElementById('newRoleName');
+    var name = input.value.trim();
+    if (!name) return;
+    callTool('agency_create_role', { instance_id: currentArgs.instance_id, name: name })
+      .then(function () { input.value = ''; return refreshRoles(); })
+      .catch(function (err) { alert('Could not add role: ' + err.message); });
+  });
+  document.getElementById('rolesRows').addEventListener('click', function (event) {
+    var btn = event.target.closest('button.edit-role');
+    if (!btn) return;
+    var newName = window.prompt('Rename role to:', btn.dataset.name);
+    if (!newName || newName === btn.dataset.name) return;
+    callTool('agency_update_role', { instance_id: currentArgs.instance_id, id: btn.dataset.id, name: newName })
+      .then(refreshRoles)
+      .catch(function (err) {
+        // Live Roles refuse direct edits (ErrCannotEditLiveRACI) — a Draft
+        // must be forked first. Surface that instead of pretending it worked.
+        alert('Could not rename role: ' + err.message);
+      });
+  });
+
+  // ---- goals ----
+  function refreshGoals() {
+    return callTool('agency_list_goals', {
+      instance_id: currentArgs.instance_id,
+      draft_id: currentArgs.draft_id || ''
+    }).then(function (result) {
+      renderGoals((result.structuredContent && result.structuredContent.items) || []);
+    });
+  }
+  function renderGoals(items) {
+    var tbody = document.getElementById('goalsRows');
+    tbody.innerHTML = '';
+    if (!items.length) { tbody.innerHTML = '<tr><td colspan="3" class="empty">No goals yet.</td></tr>'; return; }
+    items.forEach(function (goal) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + esc(goal.code) + '</td>' +
+        '<td>' + esc(goal.title) + '</td>' +
+        '<td>' + esc(goal.description) + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+  document.getElementById('addGoalBtn').addEventListener('click', function () {
+    var titleInput = document.getElementById('newGoalTitle');
+    var descInput = document.getElementById('newGoalDescription');
+    var title = titleInput.value.trim();
+    if (!title) return;
+    callTool('agency_create_goal', { instance_id: currentArgs.instance_id, title: title, description: descInput.value.trim() })
+      .then(function () { titleInput.value = ''; descInput.value = ''; return refreshGoals(); })
+      .catch(function (err) { alert('Could not add goal: ' + err.message); });
+  });
+
+  // ---- handshake ----
+  send('ui/initialize', {
+    capabilities: {},
+    clientInfo: { name: 'wakala-dashboard-view', version: '1.0.0' },
+    protocolVersion: '2026-01-26'
+  }).then(function (result) {
+    var vars = result && result.hostContext && result.hostContext.styles && result.hostContext.styles.variables;
+    if (vars) {
+      Object.keys(vars).forEach(function (k) {
+        document.documentElement.style.setProperty(k, vars[k]);
+      });
+    }
+  }).catch(function () {});
+})();
+</script>
+</body>
+</html>

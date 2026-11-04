@@ -1,0 +1,1190 @@
+{
+  "module": "actor",
+  "objects": [
+    {
+      "role": "actor",
+      "description": "Someone or something that acts — a person, or an agent standing in for one. The persona is the document beside it; only the few fields here mean the same in every domain.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Internal sequential identifier, \"AC-<n>\", minted once at creation and never rewritten. Never shown to a member or accepted from one; public_code is.",
+          "required": true,
+          "unique": true,
+          "immutable": true
+        },
+        {
+          "name": "public_code",
+          "type": "string",
+          "description": "The member code shown and typed: \"M-\" and random groups of three characters with no look-alikes, such as \"M-K7P-4QX-M2T\". Drawn once at creation, or by the backfill for a row older than the column, and never rewritten. Unique within the agency.",
+          "immutable": true
+        },
+        {
+          "name": "display_name",
+          "type": "string",
+          "description": "What to call this actor on screen. The only name the domain promises to show."
+        },
+        {
+          "name": "first_name",
+          "type": "string",
+          "description": "The actor's given name, as they gave it. Empty until they give one. Not what a screen shows by default: display_name is."
+        },
+        {
+          "name": "last_name",
+          "type": "string",
+          "description": "The actor's family name, as they gave it. Empty until they give one. Not what a screen shows by default: display_name is."
+        },
+        {
+          "name": "is_agentic",
+          "type": "bool",
+          "description": "True when the actor is an agent rather than a person, so a caller can tell a human seat from a machine one."
+        },
+        {
+          "name": "attributes",
+          "type": "json",
+          "description": "The persona: everything a domain knows about this actor beyond its name. Queried in place by path, so a domain's own vocabulary never becomes a column here."
+        },
+        {
+          "name": "attribute_sources",
+          "type": "json",
+          "description": "Who last set each attribute and when, keyed by attribute name: set_by is self when the actor corrected it themselves and staff when someone else entered it, set_by_id is whoever did, set_at is the instant. An attribute with no entry predates the record and was entered by staff."
+        },
+        {
+          "name": "forms_week_split",
+          "type": "bool",
+          "description": "The actor's own choice to see their waiting forms split by closing week, those closing this week apart from those closing later. On for every actor until they turn it off, a row older than the column too, and only the actor themselves changes it.",
+          "default": "true"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "last_updated",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Soft delete. A deleted row is invisible to every listing."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "attributes_phone",
+          "description": "One actor per phone number. The database half of the duplicate-attribute refusal, so a write that races past the Go pre-check still fails.",
+          "path": {
+            "field": "attributes",
+            "path": "phone"
+          },
+          "unique": true
+        },
+        {
+          "name": "attributes_email",
+          "description": "One actor per email address, for the same reason the phone index exists.",
+          "path": {
+            "field": "attributes",
+            "path": "email"
+          },
+          "unique": true
+        },
+        {
+          "name": "public_code",
+          "description": "One member per public code, which is also the lookup an invite or a find by code makes. Rows not yet backfilled carry no code and are left out.",
+          "fields": [
+            "public_code"
+          ],
+          "unique": true,
+          "where": [
+            {
+              "field": "public_code",
+              "op": "not_empty"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "group",
+      "description": "A node in the org structure — a department, a cohort, a team. Its parent decides where it sits and its level decides what it is called.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Internal sequential identifier, \"G-<n>\", minted once at creation and never rewritten by an edit. Never shown to a member or accepted from one; public_code is.",
+          "required": true,
+          "unique": true,
+          "immutable": true
+        },
+        {
+          "name": "public_code",
+          "type": "string",
+          "description": "The group code shown and typed: \"G-\" and random groups of three characters with no look-alikes, such as \"G-K7P-4QX-M2T\". Drawn once at creation, or by the backfill for a row older than the column, and never rewritten. Unique within the agency.",
+          "immutable": true
+        },
+        {
+          "name": "hierarchy_id",
+          "type": "string",
+          "description": "The level tree this group belongs to. Fixed at creation — a group does not move between hierarchies."
+        },
+        {
+          "name": "level_id",
+          "type": "string",
+          "description": "The level this group sits at, which is what gives it its depth and its domain noun."
+        },
+        {
+          "name": "parent_id",
+          "type": "string",
+          "description": "The group directly above this one. Empty at the root, and never a group inside this one's own subtree."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The group's human-readable name, shown wherever the structure is drawn."
+        },
+        {
+          "name": "discoverable",
+          "type": "bool",
+          "description": "True when an actor who is not already registered may find this group and ask to join."
+        },
+        {
+          "name": "join_mode",
+          "type": "enum",
+          "description": "How an actor joins: open writes the registration at once, confirmed holds a join request until the group's deciders approve it. A new group starts confirmed.",
+          "values": [
+            "open",
+            "confirmed"
+          ],
+          "default": "confirmed"
+        },
+        {
+          "name": "hidden",
+          "type": "bool",
+          "description": "True when the group is reached only by invitation: it is never listed as joinable and a join or a join request to it answers as a missing group."
+        },
+        {
+          "name": "anchor_level_override_id",
+          "type": "string",
+          "description": "The level that anchors this group's subtree, where it differs from the hierarchy's default anchor. Empty means the default applies."
+        },
+        {
+          "name": "node_type",
+          "type": "string",
+          "description": "The group type this group was created as, carried as a plain label rather than a reference."
+        },
+        {
+          "name": "attributes",
+          "type": "json",
+          "description": "Whatever the domain declares about a group beyond its name, queried in place by path."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        },
+        {
+          "name": "last_updated",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Soft delete. A deleted row is invisible to every listing."
+        },
+        {
+          "name": "area_node_id",
+          "type": "string",
+          "description": "The id of the node in the digital twin that is this group's area. Set only on a group at an area level; empty when the group names no area node."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "parent",
+          "description": "Walks the structure one level down, which is what listing a group's children is.",
+          "fields": [
+            "parent_id"
+          ]
+        },
+        {
+          "name": "hierarchy",
+          "description": "Reads one hierarchy's whole structure without touching another's.",
+          "fields": [
+            "hierarchy_id"
+          ]
+        },
+        {
+          "name": "public_code",
+          "description": "One group per public code, which is also the lookup an invite or a find by code makes. Rows not yet backfilled carry no code and are left out.",
+          "fields": [
+            "public_code"
+          ],
+          "unique": true,
+          "where": [
+            {
+              "field": "public_code",
+              "op": "not_empty"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "actor_group_assignment",
+      "description": "One actor's registration in one group. The pair is the key, so an actor is registered in a group once or not at all.",
+      "fields": [
+        {
+          "name": "actor_id",
+          "type": "string",
+          "description": "The registered actor. Half of the key.",
+          "primary": true
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "description": "The group registered in. The other half of the key.",
+          "primary": true
+        },
+        {
+          "name": "attributes",
+          "type": "json",
+          "description": "Whatever the domain declares about a registration — when it started, what it is for — queried in place by path."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the registration was made. The only date a registration carries."
+        },
+        {
+          "name": "priority",
+          "type": "enum",
+          "description": "How high the registered actor ranks this group among their own. Every registration starts at normal, a newly joined one too, and only the actor themselves changes it.",
+          "values": [
+            "very_high",
+            "high",
+            "normal",
+            "low",
+            "very_low"
+          ],
+          "default": "normal"
+        },
+        {
+          "name": "last_updated",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "description": "Soft delete. A deleted row is invisible to every listing."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "group",
+          "description": "Lists a group's roster, which is the read the structure screen makes per node.",
+          "fields": [
+            "group_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "role_kind",
+      "description": "A kind of seat that can be held — chair, treasurer, delegate. Retiring one stops it being granted without disturbing the seats already held.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Stable human-readable identifier, \"RK-<n>\", minted once at creation and never rewritten.",
+          "required": true,
+          "unique": true,
+          "immutable": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "What the seat is called, in the domain's own words."
+        },
+        {
+          "name": "capabilities",
+          "type": "json",
+          "description": "The capability names this kind confers, as a JSON array. Never null on the way out — a kind created without any reads back as an empty list."
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "description": "What the seat is for, shown wherever a holder is chosen."
+        },
+        {
+          "name": "is_delegate",
+          "type": "bool",
+          "description": "True when the seat stands in for another group rather than governing its own."
+        },
+        {
+          "name": "leads_group",
+          "type": "bool",
+          "description": "True when a seat of this kind makes its holder one of the group's leaders, who decide its join requests and invite to it. Set by the agency; off by default."
+        },
+        {
+          "name": "staff",
+          "type": "bool",
+          "description": "True when the definition ticks this kind as a staff seat, so a holder counts as staff alongside the agency's owners and agents. Carried from the definition; off by default."
+        },
+        {
+          "name": "outsider",
+          "type": "bool",
+          "description": "True when the seat is a narrow outsider one — a client, a guardian, a bidder — whose holder sees only what is linked to them. An actor holding an active seat of such a kind is left out of member lists and counts, and cannot join or be invited to a group. Set by the agency at creation; off by default."
+        },
+        {
+          "name": "level_id",
+          "type": "string",
+          "description": "The level this kind names. Stored with the kind and never compared with a group's level when a seat is granted; the one thing that reads it is deleting a level, which is refused while a kind names it. Empty means the kind names no level."
+        },
+        {
+          "name": "definition_role_id",
+          "type": "string",
+          "description": "The id of the agency definition's role this kind was published from. Empty for a kind made by hand. Publishing the definition renames the kind by this id and retires it when the role leaves the definition, keeping every seat held under it."
+        },
+        {
+          "name": "retired_at",
+          "type": "timestamp",
+          "description": "When the kind was retired. Empty means it is still grantable — this field is what Retired() reads."
+        },
+        {
+          "name": "retired_by",
+          "type": "string",
+          "description": "The actor who retired the kind. A domain fact, not audit dressing, which is why retiring takes an actor and unretiring does not."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "level",
+          "description": "Finds the kinds that name one level, which is what deleting a level checks.",
+          "fields": [
+            "level_id"
+          ]
+        },
+        {
+          "name": "definition_role",
+          "description": "Finds the kind published from one definition role.",
+          "fields": [
+            "definition_role_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "actor_role_assignment",
+      "description": "One held seat: an actor holding a role kind in a group. Granted, then ended — revoked, resigned, evicted or departed — and never deleted, so the history of who held what survives.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key. A seat is granted, revoked and stepped down from by id, unlike a registration, which is keyed by its pair.",
+          "primary": true
+        },
+        {
+          "name": "actor_id",
+          "type": "string",
+          "description": "The actor holding the seat."
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "description": "The group the seat is held in."
+        },
+        {
+          "name": "kind_id",
+          "type": "string",
+          "description": "The kind of seat held."
+        },
+        {
+          "name": "active",
+          "type": "bool",
+          "description": "True while the seat is held. An ended seat stays as a row with this false."
+        },
+        {
+          "name": "granted_at",
+          "type": "timestamp",
+          "description": "When the seat was granted."
+        },
+        {
+          "name": "granted_by",
+          "type": "string",
+          "description": "The actor who granted it."
+        },
+        {
+          "name": "ended_at",
+          "type": "timestamp",
+          "description": "When the seat stopped being held. Empty while it is still active."
+        },
+        {
+          "name": "ended_reason",
+          "type": "enum",
+          "description": "Why the seat ended: taken away, given up, lost with the group seat, lost with the registration, or ended because the definition dropped the role.",
+          "values": [
+            "revoked",
+            "resigned",
+            "evicted",
+            "deregistered",
+            "role_removed"
+          ]
+        }
+      ],
+      "indexes": [
+        {
+          "name": "actor",
+          "description": "Lists every seat one actor holds, across groups.",
+          "fields": [
+            "actor_id"
+          ]
+        },
+        {
+          "name": "group",
+          "description": "Lists every seat held in one group, which is what the dashboard reads.",
+          "fields": [
+            "group_id"
+          ]
+        },
+        {
+          "name": "kind",
+          "description": "Finds the live seats of one kind, which is what refuses the retirement of a kind still held.",
+          "fields": [
+            "kind_id"
+          ]
+        },
+        {
+          "name": "held_once",
+          "description": "One live seat of a kind per actor and group. The database half of the seat-already-held refusal, so two grants that race past the Go check still cannot both land. Ended seats are left out.",
+          "fields": [
+            "actor_id",
+            "group_id",
+            "kind_id"
+          ],
+          "unique": true,
+          "where": [
+            {
+              "field": "active",
+              "op": "is_true"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "hierarchy",
+      "description": "One named tree of levels. A domain may keep several — a governance tree and a delivery tree — and a group belongs to exactly one.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Stable human-readable identifier, \"H-<n>\", minted once at creation and never rewritten by a rename.",
+          "required": true,
+          "unique": true,
+          "immutable": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "What the tree is called."
+        }
+      ]
+    },
+    {
+      "role": "level",
+      "description": "One rung of a hierarchy: how deep it sits, and whether it is the rung a subtree anchors on.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Stable human-readable identifier, \"L-<n>\", minted once at creation and never rewritten by a rename.",
+          "required": true,
+          "unique": true,
+          "immutable": true
+        },
+        {
+          "name": "hierarchy_id",
+          "type": "string",
+          "description": "The tree this rung belongs to."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "What this rung is called, which is the noun a group at it is shown under."
+        },
+        {
+          "name": "depth",
+          "type": "int",
+          "description": "How far down the tree this rung sits, counting from zero at the root."
+        },
+        {
+          "name": "is_default_anchor",
+          "type": "bool",
+          "description": "True on the one rung per hierarchy that a subtree anchors on unless a group overrides it."
+        },
+        {
+          "name": "is_area",
+          "type": "bool",
+          "description": "True on a rung the template marks as an area: a group at it may carry a place, and a pin or an address resolves to one group at it."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "hierarchy",
+          "description": "Reads one tree's rungs in order, which is every read of a hierarchy.",
+          "fields": [
+            "hierarchy_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "group_type",
+      "description": "The domain's own noun for the groups at one level — \"chapter\", \"faculty\", \"squad\" — in both its singular and plural spellings.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "Stable human-readable identifier, \"GT-<n>\", minted once at creation and never rewritten.",
+          "required": true,
+          "unique": true,
+          "immutable": true
+        },
+        {
+          "name": "hierarchy_id",
+          "type": "string",
+          "description": "The tree this noun belongs to."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The type's own name, which is what a group carries as its node type."
+        },
+        {
+          "name": "singular",
+          "type": "string",
+          "description": "How to name one group of this type."
+        },
+        {
+          "name": "plural",
+          "type": "string",
+          "description": "How to name several."
+        },
+        {
+          "name": "level_id",
+          "type": "string",
+          "description": "The level this noun applies at. Empty means it applies anywhere in the tree."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "hierarchy",
+          "description": "Lists one tree's nouns, which is what a structure screen reads to label its nodes.",
+          "fields": [
+            "hierarchy_id"
+          ]
+        },
+        {
+          "name": "level",
+          "description": "Finds the noun for one level, which is the lookup a group's label makes.",
+          "fields": [
+            "level_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "group_join_request",
+      "description": "One actor's request to join one confirmed group. There is at most one per pair: asking again after a decline updates it and marks it an appeal rather than adding another.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store. A request is decided by id.",
+          "primary": true
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "description": "The group the actor asked to join.",
+          "required": true
+        },
+        {
+          "name": "actor_id",
+          "type": "string",
+          "description": "The actor who asked.",
+          "required": true
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "description": "Where the request stands: pending until someone decides it, then approved or declined. Asking again returns it to pending.",
+          "values": [
+            "pending",
+            "approved",
+            "declined"
+          ],
+          "required": true
+        },
+        {
+          "name": "appeal",
+          "type": "bool",
+          "description": "True once the actor has asked again after being declined. It stays true while that appeal is pending and through its decision."
+        },
+        {
+          "name": "message",
+          "type": "text",
+          "description": "What the actor wrote when asking, at most 500 characters. Asking again replaces it."
+        },
+        {
+          "name": "silent",
+          "type": "bool",
+          "description": "True when a decline was made quietly, so the host raises nothing that tells the actor. Meaningless on any other state."
+        },
+        {
+          "name": "requested_at",
+          "type": "timestamp",
+          "description": "When the actor asked. An appeal keeps the first ask's time; asking again after an approval starts a fresh one."
+        },
+        {
+          "name": "asked_at",
+          "type": "timestamp",
+          "description": "When the actor last asked: the first ask, or the latest time they asked again. A decision leaves it alone, so it is the time the actor last saw on a request still pending."
+        },
+        {
+          "name": "decided_by",
+          "type": "string",
+          "description": "The actor who approved or declined the request. Empty while it is pending, and empty on an approval the group's open policy made by itself."
+        },
+        {
+          "name": "decided_at",
+          "type": "timestamp",
+          "description": "When the request was approved or declined. Empty while it is pending."
+        },
+        {
+          "name": "decline_reason",
+          "type": "text",
+          "description": "Why a leader declined the request, at most 500 characters, for the actor to read. Optional, never set on a quiet decline, and cleared when the actor asks again."
+        },
+        {
+          "name": "last_updated",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pair",
+          "description": "One request per actor and group, which is what makes asking again an update rather than a second request.",
+          "fields": [
+            "group_id",
+            "actor_id"
+          ],
+          "unique": true
+        },
+        {
+          "name": "group_state",
+          "description": "Lists one group's pending requests, which is the read its deciders make.",
+          "fields": [
+            "group_id",
+            "state"
+          ]
+        },
+        {
+          "name": "actor",
+          "description": "Lists one actor's requests, which is how the joinable list knows which groups it has already asked.",
+          "fields": [
+            "actor_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "group_removal",
+      "description": "One actor taken out of one group by an operator, kept as its own record after the registration it ended is gone. The actor record stays, so what they wrote keeps its author.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "actor_id",
+          "type": "string",
+          "description": "The actor removed.",
+          "required": true
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "description": "The group they were removed from.",
+          "required": true
+        },
+        {
+          "name": "removed_by",
+          "type": "string",
+          "description": "Who removed them, as the mount names its caller.",
+          "required": true
+        },
+        {
+          "name": "removed_at",
+          "type": "timestamp",
+          "description": "When they were removed."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "actor",
+          "description": "Lists one actor's removals, newest last.",
+          "fields": [
+            "actor_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "join_decision",
+      "description": "One approval or decline made on a join request, kept as its own record. A request decided, appealed and decided again holds one record per decision, and none is ever rewritten.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store. The applicant reads a told decision by id.",
+          "primary": true
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "description": "The join request this decision was made on.",
+          "required": true
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "description": "The group the request was made to.",
+          "required": true
+        },
+        {
+          "name": "actor_id",
+          "type": "string",
+          "description": "The actor who asked, and the only one who may read a told decision.",
+          "required": true
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "description": "What was decided.",
+          "values": [
+            "approved",
+            "declined"
+          ],
+          "required": true
+        },
+        {
+          "name": "silent",
+          "type": "bool",
+          "description": "True when the decision was made quietly. A quiet decision is never shown to the actor, who reads it as missing."
+        },
+        {
+          "name": "decided_by",
+          "type": "string",
+          "description": "The actor who made the decision."
+        },
+        {
+          "name": "decided_at",
+          "type": "timestamp",
+          "description": "When the decision was made."
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "description": "Why a leader declined, at most 500 characters, as written at the time. Empty on an approval and on a quiet decline."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "request",
+          "description": "Lists one request's decisions in order.",
+          "fields": [
+            "request_id"
+          ]
+        },
+        {
+          "name": "actor",
+          "description": "Finds one actor's decisions, the read the applicant makes.",
+          "fields": [
+            "actor_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "group_invitation",
+      "description": "One invitation from a group's leaders to one actor to join that group, which is how a hidden group is reached. There is at most one per pair: inviting again updates it rather than adding another. Accepting registers the actor; declining or letting it lapse registers nothing.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store. An invitation is answered by id.",
+          "primary": true
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "description": "The group the actor is invited to.",
+          "required": true
+        },
+        {
+          "name": "actor_id",
+          "type": "string",
+          "description": "The actor invited. Only this actor may accept or decline.",
+          "required": true
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "description": "Where the invitation stands: pending until the actor answers, then accepted or declined. Inviting again returns it to pending. A lapsed invitation stays pending and is never written to by lapsing.",
+          "values": [
+            "pending",
+            "accepted",
+            "declined"
+          ],
+          "required": true
+        },
+        {
+          "name": "invited_by",
+          "type": "string",
+          "description": "The actor who issued the invitation, taken from the caller. Inviting again replaces it.",
+          "required": true
+        },
+        {
+          "name": "invited_at",
+          "type": "timestamp",
+          "description": "When the invitation was issued. Inviting again replaces it."
+        },
+        {
+          "name": "expires_at",
+          "type": "timestamp",
+          "description": "When the invitation lapses: the issuer's date, or the issue time plus the host's invitation lifetime when the issuer names none. Empty only on a row issued before that default, which never lapses. A lapsed invitation cannot be accepted and is invited again rather than revived."
+        },
+        {
+          "name": "answered_at",
+          "type": "timestamp",
+          "description": "When the actor accepted or declined. Empty while it is pending."
+        },
+        {
+          "name": "last_updated",
+          "type": "timestamp",
+          "description": "When the row was last written."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pair",
+          "description": "One invitation per actor and group, which is what makes inviting again an update rather than a second invitation.",
+          "fields": [
+            "group_id",
+            "actor_id"
+          ],
+          "unique": true
+        },
+        {
+          "name": "group_state",
+          "description": "Lists one group's invitations by state, which is the read its leaders make.",
+          "fields": [
+            "group_id",
+            "state"
+          ]
+        },
+        {
+          "name": "actor",
+          "description": "Lists one actor's invitations, which is the read the invited actor makes.",
+          "fields": [
+            "actor_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "code_sequence",
+      "description": "One counter per coded type, holding the next number its code will take. Written by a compare-and-set so two concurrent creates cannot mint the same code.",
+      "fields": [
+        {
+          "name": "entity_type",
+          "type": "string",
+          "description": "The type being counted — actor, group, hierarchy, level, role_kind, grouptype. One row each.",
+          "primary": true
+        },
+        {
+          "name": "next_number",
+          "type": "int",
+          "description": "The number the next code of this type takes. Read and advanced in one conditional write."
+        }
+      ]
+    },
+    {
+      "role": "code_format",
+      "description": "How this agency's public member and group codes are drawn. At most one row; with none, codes take three groups.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Always \"codes\": the agency holds one format.",
+          "primary": true
+        },
+        {
+          "name": "group_count",
+          "type": "int",
+          "description": "How many groups of three characters a newly drawn code has before any collision adds one. Read each time a code is drawn, so a change applies only to codes drawn afterwards.",
+          "required": true
+        },
+        {
+          "name": "last_updated",
+          "type": "timestamp",
+          "description": "When the format last changed."
+        }
+      ]
+    },
+    {
+      "role": "group_name_translation",
+      "description": "A group's name in one more language than the one it was written in. Members are shown it only once it is reviewed; until then, and for every language without one, they see the original name.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "description": "The group whose name this translates.",
+          "required": true
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "description": "The language of this name, as a lowercase tag such as \"en\" or \"pt-br\". One translation per group and language.",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The group's name in that language.",
+          "required": true
+        },
+        {
+          "name": "reviewed",
+          "type": "bool",
+          "description": "Whether someone has reviewed this translation. Only a reviewed translation reaches members; changing the name clears it."
+        },
+        {
+          "name": "reviewed_by",
+          "type": "string",
+          "description": "Who reviewed it, as the mount names its caller. Empty until reviewed."
+        },
+        {
+          "name": "reviewed_at",
+          "type": "string",
+          "description": "When it was reviewed, RFC 3339. Empty until reviewed."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the translation was first added."
+        },
+        {
+          "name": "last_updated",
+          "type": "timestamp",
+          "description": "When the translation last changed."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "group_language",
+          "description": "One translation per group and language, and the lookup a read in a language makes.",
+          "fields": [
+            "group_id",
+            "language"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "role": "group_population",
+      "description": "An estimate of how many people a group serves, as of a date and from a named source. A group's members are who joined; this is the denominator a coverage figure divides by, which only somebody outside the module can supply. Each figure is kept, so a newer estimate never overwrites an older one.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "description": "The group the figure is for.",
+          "required": true
+        },
+        {
+          "name": "population",
+          "type": "int",
+          "description": "How many people the source says the group serves. Zero or more.",
+          "required": true
+        },
+        {
+          "name": "as_of",
+          "type": "string",
+          "description": "The date the figure describes, as YYYY-MM-DD. The latest figure is the one with the latest date.",
+          "required": true
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "description": "Where the figure comes from, in the recorder's words, such as a census or a register.",
+          "required": true
+        },
+        {
+          "name": "recorded_by",
+          "type": "string",
+          "description": "Who recorded it, as the mount names its caller."
+        },
+        {
+          "name": "withdraws",
+          "type": "string",
+          "description": "Set only on a withdrawn record: the id of the figure it withdraws. The latest read skips both; the history keeps both."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the figure was recorded."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "group_as_of",
+          "description": "A group's figures in date order, which both the history and the latest read walk.",
+          "fields": [
+            "group_id",
+            "as_of"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "delegation",
+      "description": "One actor allowed to act for another, kept as its own record. A grant names who gave it and when; a revocation stamps the record rather than deleting it, so what was done under it keeps its authority.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers and minted by the store.",
+          "primary": true
+        },
+        {
+          "name": "delegate_id",
+          "type": "string",
+          "description": "The actor allowed to act.",
+          "required": true
+        },
+        {
+          "name": "subject_id",
+          "type": "string",
+          "description": "The actor acted for.",
+          "required": true
+        },
+        {
+          "name": "granted_by",
+          "type": "string",
+          "description": "Who granted it, as the mount names its caller.",
+          "required": true
+        },
+        {
+          "name": "granted_at",
+          "type": "timestamp",
+          "description": "When it was granted."
+        },
+        {
+          "name": "ends_at",
+          "type": "timestamp",
+          "description": "When it lapses on its own; empty when it lasts until revoked."
+        },
+        {
+          "name": "revoked_by",
+          "type": "string",
+          "description": "Who revoked it, as the mount names its caller; empty while it stands."
+        },
+        {
+          "name": "revoked_at",
+          "type": "timestamp",
+          "description": "When it was revoked; empty while it stands."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "delegate",
+          "description": "Finds what one actor may act for.",
+          "fields": [
+            "delegate_id"
+          ]
+        },
+        {
+          "name": "subject",
+          "description": "Finds who may act for one actor.",
+          "fields": [
+            "subject_id"
+          ]
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "name": "code_groups",
+      "type": "int",
+      "description": "How many groups of three characters a newly minted public code for an actor or a group carries after its prefix. A code format an operator has set wins over it; codes already minted keep their length.",
+      "default": 3
+    }
+  ]
+}

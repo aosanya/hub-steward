@@ -1,0 +1,272 @@
+{
+  "operations": {
+    "may_perform": {
+      "method": "GET",
+      "path": "/check",
+      "call": "MayPerformIn",
+      "action": "permissions.check.read",
+      "title": "Check a permission",
+      "description": "Answer whether one subject may perform one action in one scope, in one partition or in none. This is the question the gate asks on every call; a caller asking it directly is usually building a screen, not enforcing anything.",
+      "args": [
+        {"from": "query", "as": "subject", "required": true, "description": "Whoever authenticated, exactly as they are recorded."},
+        {"from": "query", "as": "partition", "description": "The partition the question is asked in. Absent asks outside every partition, where only a grant naming none answers."},
+        {"from": "query", "as": "scope", "required": true, "description": "Where the question is asked, such as the instance key."},
+        {"from": "query", "as": "action", "required": true, "description": "The declared action in question."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "actions_for": {
+      "method": "GET",
+      "path": "/subjects/{subject}/actions",
+      "call": "ActionsFor",
+      "action": "permissions.check.list",
+      "title": "List what a subject may do",
+      "description": "Every action one subject may perform in one scope, across all the bundles they hold. This is what a surface filters its offerings by; refusing the call is still what enforces the rule.",
+      "args": [
+        {"from": "path", "as": "subject", "description": "The subject to ask about."},
+        {"from": "query", "as": "scope", "required": true, "description": "The scope to ask about."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "subject_access": {
+      "method": "GET",
+      "path": "/subjects/{subject}/access",
+      "call": "AccessOf",
+      "action": "permissions.subject.access",
+      "title": "Read what a subject can do in one partition",
+      "description": "Every action one subject may perform in one partition, one line per action and grant, each naming the role that gives it, where it applies, who granted it and when, and when it ends. Grants naming no partition apply in every partition and are listed too; a retired role and an ended grant are not. Nothing is cut off at a page size.",
+      "args": [
+        {"from": "path", "as": "subject", "description": "The subject to ask about."},
+        {"from": "query", "as": "partition", "required": true, "description": "The partition to read in. Grants naming another partition are not listed."}
+      ],
+      "returns": [{"body": true}]
+    },
+
+    "create_role": {
+      "method": "POST",
+      "path": "/roles",
+      "call": "CreateRole",
+      "status": 201,
+      "action": "permissions.role.create",
+      "title": "Declare a role",
+      "description": "Declare a named bundle of permitted actions. It permits nothing until actions are added to it.",
+      "args": [{"from": "body", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "get_role": {
+      "method": "GET",
+      "path": "/roles/{code}",
+      "call": "GetRole",
+      "action": "permissions.role.read",
+      "title": "Read a role",
+      "description": "Read one bundle by its code.",
+      "args": [{"from": "path", "as": "code", "description": "The bundle to read."}],
+      "returns": [{"body": true}]
+    },
+    "list_roles": {
+      "method": "GET",
+      "path": "/roles",
+      "call": "ListRoles",
+      "action": "permissions.role.list",
+      "title": "List roles",
+      "description": "List the bundles declared here, newest naming first.",
+      "args": [{"from": "query", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "update_role": {
+      "method": "PATCH",
+      "path": "/roles/{code}",
+      "call": "UpdateRole",
+      "action": "permissions.role.update",
+      "title": "Rename a role",
+      "description": "Change a bundle's name or its description. What it permits is changed through its actions, not here.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "code", "into": "Code", "description": "The bundle to change."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "delete_role": {
+      "method": "DELETE",
+      "path": "/roles/{code}",
+      "call": "DeleteRole",
+      "status": 204,
+      "action": "permissions.role.delete",
+      "title": "Retire a role",
+      "description": "Retire a bundle. Every grant naming it stops permitting anything, and the grants themselves are kept so the trail survives.",
+      "args": [{"from": "path", "as": "code", "description": "The bundle to retire."}],
+      "returns": [{"body": true}]
+    },
+
+    "list_actions": {
+      "method": "GET",
+      "path": "/roles/{role_code}/actions",
+      "call": "ListActions",
+      "action": "permissions.role_action.list",
+      "title": "List a role's actions",
+      "description": "Every action one bundle permits, listed one by one. There are no patterns here on purpose: a pattern widens itself the next time somebody declares an operation.",
+      "args": [{"from": "path", "as": "role_code", "description": "The bundle to read."}],
+      "returns": [{"body": true}]
+    },
+    "add_action": {
+      "method": "POST",
+      "path": "/roles/{role_code}/actions",
+      "call": "AddAction",
+      "status": 201,
+      "action": "permissions.role_action.create",
+      "title": "Permit an action",
+      "description": "Add one action to a bundle. Refused on a bundle a seeding pass owns, because the next pass would silently undo it.",
+      "args": [
+        {"from": "path", "as": "role_code", "description": "The bundle to add to."},
+        {"from": "body", "as": "action", "required": true, "field": "RoleAction.action"}
+      ],
+      "returns": [{"body": true}]
+    },
+    "remove_action": {
+      "method": "DELETE",
+      "path": "/roles/{role_code}/actions/{action}",
+      "call": "RemoveAction",
+      "status": 204,
+      "action": "permissions.role_action.delete",
+      "title": "Stop permitting an action",
+      "description": "Remove one action from a bundle. Refused on a bundle a seeding pass owns.",
+      "args": [
+        {"from": "path", "as": "role_code", "description": "The bundle to remove from."},
+        {"from": "path", "as": "action", "description": "The action to remove."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "set_actions": {
+      "method": "PUT",
+      "path": "/roles/{role_code}/actions",
+      "call": "SetActions",
+      "action": "permissions.role_action.replace",
+      "title": "Replace a role's actions",
+      "description": "Replace a bundle's whole list in one write. It never marks the bundle as owned by a seeding pass; only the host's own seeding call does that.",
+      "args": [
+        {"from": "path", "as": "role_code", "description": "The bundle to replace."},
+        {"from": "body", "as": "actions", "required": true, "description": "The whole list, replacing whatever was there."}
+      ],
+      "returns": [{"body": true}]
+    },
+
+    "create_grant": {
+      "method": "POST",
+      "path": "/grants",
+      "call": "CreateGrant",
+      "status": 201,
+      "action": "permissions.grant.create",
+      "title": "Grant a role",
+      "description": "Give one subject one bundle in one scope. A grant that was withdrawn earlier is reinstated rather than duplicated.",
+      "args": [{"from": "body", "whole": true},
+               {"from": "caller", "as": "granted_by", "into": "GrantedBy",
+                "description": "The subject that made this grant, supplied by the mount. Never read from the request."}],
+      "returns": [{"body": true}]
+    },
+    "list_grants": {
+      "method": "GET",
+      "path": "/grants",
+      "call": "ListGrants",
+      "action": "permissions.grant.list",
+      "title": "List grants",
+      "description": "The live grants matching the filter. Withdrawn ones are kept but never listed.",
+      "args": [{"from": "query", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "withdraw_grant": {
+      "method": "DELETE",
+      "path": "/grants/{subject}/{scope}/{role_code}",
+      "call": "WithdrawGrantIn",
+      "status": 204,
+      "action": "permissions.grant.delete",
+      "title": "Withdraw a grant",
+      "description": "Take a bundle back from a subject in one scope. The row is kept, so a revocation leaves a trail of what was held and when it stopped.",
+      "args": [
+        {"from": "path", "as": "subject", "description": "The subject to withdraw from."},
+        {"from": "query", "as": "partition", "description": "The partition the grant names. Absent withdraws the grant that names none."},
+        {"from": "path", "as": "scope", "description": "The scope to withdraw in."},
+        {"from": "path", "as": "role_code", "description": "The bundle to withdraw."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "list_permissions": {
+      "method": "GET",
+      "path": "/permissions/{partition}",
+      "call": "ListPermissions",
+      "action": "permissions.permission.list",
+      "title": "List permissions",
+      "description": "Every permission and role kind with a tick in one partition, each with the layer that answers it, who set it and when: the owner's override when there is one, else the published definition.",
+      "args": [
+        {"from": "path", "as": "partition", "description": "The partition to list."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "read_permission": {
+      "method": "GET",
+      "path": "/permissions/{partition}/{permission}/{role_kind}",
+      "call": "ReadPermission",
+      "action": "permissions.permission.read",
+      "title": "Read a permission",
+      "description": "Whether one role kind holds one permission in one partition, and which layer said so: the owner's override when there is one, else the published definition.",
+      "args": [
+        {"from": "path", "as": "partition", "description": "The partition to ask in."},
+        {"from": "path", "as": "permission", "description": "The permission's code."},
+        {"from": "path", "as": "role_kind", "description": "The role kind to ask about."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "override_permission": {
+      "method": "PUT",
+      "path": "/permissions/{partition}/{permission}/{role_kind}",
+      "call": "OverridePermission",
+      "action": "permissions.permission.override",
+      "title": "Override a permission",
+      "description": "Tick or untick one permission for one role kind, over whatever the published definition says. Who set it comes from the caller.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "partition", "into": "Partition", "description": "The partition to set it in."},
+        {"from": "path", "as": "permission", "into": "Permission", "description": "The permission's code."},
+        {"from": "path", "as": "role_kind", "into": "RoleKind", "description": "The role kind to set it for."},
+        {"from": "caller", "as": "set_by", "into": "SetBy",
+         "description": "The subject that set it, supplied by the mount. Never read from the request."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "clear_permission_override": {
+      "method": "DELETE",
+      "path": "/permissions/{partition}/{permission}/{role_kind}",
+      "call": "ClearPermissionOverride",
+      "status": 204,
+      "action": "permissions.permission.clear",
+      "title": "Clear a permission override",
+      "description": "Remove the owner's override, so the published definition answers again.",
+      "args": [
+        {"from": "path", "as": "partition", "description": "The partition to clear it in."},
+        {"from": "path", "as": "permission", "description": "The permission's code."},
+        {"from": "path", "as": "role_kind", "description": "The role kind to clear it for."}
+      ],
+      "returns": [{"body": true}]
+    }
+  },
+
+  "errors": {
+    "ErrInvalidRole": 400,
+    "ErrRoleNotFound": 404,
+    "ErrDuplicateRole": 409,
+    "ErrInvalidAction": 400,
+    "ErrInvalidScope": 400,
+    "ErrInvalidPartition": 400,
+    "ErrInvalidGrant": 400,
+    "ErrInvalidEnd": 400,
+    "ErrGrantNotFound": 404,
+    "ErrDuplicateGrant": 409,
+    "ErrSeededRole": 409,
+    "ErrRoleRetired": 409,
+    "ErrActionsRequired": 400,
+    "ErrConflict": 409,
+    "ErrNotPermitted": 403,
+    "ErrInvalidPermission": 400,
+    "ErrPermissionNotFound": 404,
+    "ErrPermissionsNotDeclared": 404
+  }
+}
