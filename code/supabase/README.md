@@ -4,5 +4,5 @@ Configuration and migration for the local database. How to start it and point th
 
 | File | What it does |
 |---|---|
-| `config.toml` | Keeps Postgres, auth, the mail inbox and Studio; everything else is off. Allows the two app addresses as sign-in redirects, with email confirmation off for local use |
+| `config.toml` | Keeps Postgres, the REST API, auth, the mail inbox and Studio; everything else is off. Allows the phone app's two addresses (the container on port 8081, the dev server on 5171) as sign-in redirects, with email confirmation off for local use |
 | `migrations/20261104000000_identity.sql` | Creates the `wakala_api` role and the functions `public.invite_member`, `public.list_sign_in_sessions`, `public.end_sign_in_session` and `public.touch_sign_in_session` |
