@@ -30,7 +30,7 @@ All notable changes to this project are listed here, grouped by area. The format
 - Product, technical spec, user journeys, test plan and results (2026-10-21 onward).
 - Risk library: hazards, threats, consequences and controls (2026-10-31).
 - Reorganised into requirements, design, implementation and qa (2026-11-04).
-- Scope broadened from a community computer lab to running an agency end to end; the Siaya lab stays as the worked example (2026-11-04).
+- Scope broadened from a community computer lab to running an agency end to end; the Siaya lab stays as an example (2026-11-04).
 - User journeys checked against the code: steps and "not yet built" lists corrected in journeys 01, 02, 05, 06, 08, 09, 10, 11, 12, 13, 14, 16, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28 and 29 (2026-11-04).
 - The See where the tokens go journey drawn, with its four-step walk-through and mockups (2026-11-03); the chat workflow journey's mockups and requirements (2026-11-02).
 - Test results recorded: the console passes 3640 tests and builds; the phone app passes 1905 tests and builds; the bundled API has no test files, so `go test` only compiles it (2026-11-04).

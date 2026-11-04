@@ -1,15 +1,16 @@
 # 03 · Demo scope
 
 The demo shows Hub Steward running agencies. It holds eight synthetic agencies
-([demo](../../../../demo/)); the Siaya computer lab is the featured scenario
-and the rest show that the same platform fits other organizations. Every
+([demo](../../../../demo/)). The Siaya Farmers' Group carries the market and
+group-order journeys and the Siaya computer lab carries access requests and
+network watch; the rest show that the same platform fits other organizations. Every
 person, organization, number and address is invented.
 
 ## The agencies
 
 | Agency | What it is | Role in the demo |
 |---|---|---|
-| Siaya lab | A community computer lab planned for Siaya, Kenya. Roles: Lab manager, Member, Hub Steward. Modules: comm, task manager. Its documents exist in English, Swahili and German | Featured scenario |
+| Siaya lab | A community computer lab planned for Siaya, Kenya. Roles: Lab manager, Member, Hub Steward. Modules: comm, task manager. Its documents exist in English, Swahili and German | Access requests and network watch; the only agency with documents |
 | Farmers | The Siaya Farmers' Group, the county's agricultural ministry serving the farmers around the hub, as one agency: group orders, suppliers, buyers, harvest sales | Market and group-order journeys |
 | Boda-boda riders | The riders' group around the hub: ride requests, rider availability, assets, network watch, picking a rider. Roles: Hub manager, Member, Rider, Customer, Dispatcher, Hub Steward, Assets Keeper, Network Watcher. Modules: comm, task manager, forms, digital twin, market | Template only; the only demo agency that declares Assets Keeper and Network Watcher |
 | Clinical research organization | A contract research organization running sponsor-outsourced trials | Template only |

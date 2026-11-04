@@ -2,7 +2,7 @@
 
 Eight synthetic agencies, each a folder with an `agency.json` template that imports with `POST /instances/import`. Every organization, person, number and address in them is invented, and each template marks itself illustrative. How to load one is in [Load the demo agencies](../documentation/3.%20implementation/guides/load-demo-agencies.md).
 
-The Siaya computer lab is the worked example: it is the only folder with documents, which its agent answers from, in English, Swahili and German. The other seven show what else the same platform runs.
+The Siaya computer lab is the only folder with documents, which its agent is meant to answer from, in English, Swahili and German. The Siaya Farmers' Group is the one the market and group-order journeys follow. The other six show what else the same platform runs.
 
 | Folder | Agency | What it is for | Roles | Workflows | Modules switched on | Documents |
 |---|---|---|---|---|---|---|
