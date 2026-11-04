@@ -19,7 +19,7 @@ The demo holds eight synthetic agencies. One is a community computer lab in Siay
 
 You need Go 1.25 or newer for the Wakala API server and Node.js 22, which is what CI runs, for the console and the app. The console and the app show their sign-in screens without a server. Every page after sign-in needs the API server at the address in their `config.json`.
 
-Docker is needed for `make up` and for the local database. The local database is optional: without it the API keeps its data in SQLite and the phone app cannot sign members in by emailed link. It needs the Supabase command-line tool, which runs the database in Docker. On macOS with Homebrew:
+Docker is needed for `make up` and for the local database. The Supabase database is optional: without it the API keeps its data in SQLite and the phone app cannot sign members in by emailed link. Developers run it locally with the Supabase command-line tool, which runs the database in Docker; a hosted Supabase project needs the tool but not Docker. On macOS with Homebrew:
 
 ```sh
 brew install supabase/tap/supabase
@@ -32,9 +32,11 @@ Other systems: see the [Supabase CLI guide](https://supabase.com/docs/guides/cli
 
 Two steps, in this order. The first is optional.
 
-### 1. Local Supabase database (optional)
+### 1. Supabase database (optional)
 
-To try member sign-in by emailed link, start Postgres and the sign-in service before the API server. Run this from the repository root:
+To try member sign-in by emailed link, the API needs a Supabase database. Developers run one locally; a hosted Supabase project works too and suits a shared or online setup (see below).
+
+Local: start Postgres and the sign-in service before the API server. Run this from the repository root:
 
 ```sh
 supabase start --workdir code
@@ -52,6 +54,8 @@ MEMBER_APP_ORIGINS=http://localhost:8081
 ```
 
 Sign-in emails arrive in the local inbox at `http://127.0.0.1:54324`. The password and demo keys are for this machine only. [documentation/3. implementation/guides/local-database.md](documentation/3.%20implementation/guides/local-database.md) has the rest, including what is checked and what is not.
+
+Hosted: create a project at [supabase.com](https://supabase.com), run `supabase link --project-ref <ref> --workdir code` and `supabase db push --workdir code`, then change the `wakala_api` password, because the migration sets one that is written in this repository. Set the same three variables from the project's settings, with `SHOP_SUPABASE_URL` as `https://<ref>.supabase.co`, and add the phone app's sign-in address to the project's allowed redirect URLs. The steps are in the local database guide. They have not been run against a hosted project.
 
 Skip this step to use SQLite. The phone app then cannot sign members in.
 
