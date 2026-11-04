@@ -1,0 +1,1525 @@
+{
+  "operations": {
+    "apply_poster": {
+      "method": "POST",
+      "path": "/posters",
+      "call": "ApplyPoster",
+      "action": "market.poster.apply",
+      "tool": "market_apply_poster",
+      "title": "Apply to post",
+      "description": "A poster applies and waits to be approved. The applicant is the caller. A poster read carries owner_name and approved_by_name when the host supplies names.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "list_posters": {
+      "method": "GET",
+      "path": "/posters",
+      "call": "ListPostersFor",
+      "action": "market.poster.list",
+      "tool": "market_list_posters",
+      "title": "List posters",
+      "description": "List posters, optionally by status. The caller sees the approved posters and their own in any state; the person who decides sees every poster. Each carries owner_name and approved_by_name when the host supplies names.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "query",
+          "as": "status",
+          "description": "Only posters in this status."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "approve_poster": {
+      "method": "POST",
+      "path": "/posters/{posterID}/approve",
+      "call": "ApprovePoster",
+      "action": "market.poster.approve",
+      "tool": "market_approve_poster",
+      "title": "Approve a poster",
+      "description": "The coordinator approves a poster. The host gates who may.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "posterID",
+          "refers": "market.poster",
+          "description": "The poster."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "decline_poster": {
+      "method": "POST",
+      "path": "/posters/{posterID}/decline",
+      "call": "DeclinePoster",
+      "action": "market.poster.decline",
+      "tool": "market_decline_poster",
+      "title": "Decline a poster",
+      "description": "The coordinator declines a poster. The host gates who may.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "posterID",
+          "refers": "market.poster",
+          "description": "The poster."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "remove_poster": {
+      "method": "POST",
+      "path": "/posters/{posterID}/remove",
+      "call": "RemovePoster",
+      "action": "market.poster.remove",
+      "tool": "market_remove_poster",
+      "title": "Remove a poster",
+      "description": "The coordinator removes a poster. The host gates who may.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "posterID",
+          "refers": "market.poster",
+          "description": "The poster."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_availability": {
+      "method": "POST",
+      "path": "/posters/{posterID}/availability",
+      "call": "SetAvailability",
+      "action": "market.poster.set_availability",
+      "tool": "market_set_availability",
+      "title": "Set availability",
+      "description": "A poster says whether he is taking asks.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "posterID",
+          "refers": "market.poster",
+          "description": "The poster."
+        },
+        {
+          "from": "body",
+          "as": "availability",
+          "description": "available or away.",
+          "required": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "create_offer": {
+      "method": "POST",
+      "path": "/offers",
+      "call": "CreateOffer",
+      "action": "market.offer.create",
+      "tool": "market_create_offer",
+      "title": "Post an offer",
+      "description": "An approved poster posts an offer in his own words.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "update_offer": {
+      "method": "PUT",
+      "path": "/offers/{offerID}",
+      "call": "UpdateOffer",
+      "action": "market.offer.update",
+      "tool": "market_update_offer",
+      "title": "Update an offer",
+      "description": "A poster changes his offer. Orders already made keep their price. A product or category left out keeps the offer's own; a new product without a category takes the category of that product.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "offerID",
+          "refers": "market.offer",
+          "into": "ID",
+          "description": "The offer."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "regroup_offer": {
+      "method": "POST",
+      "path": "/offers/{offer_id}/regroup",
+      "call": "RegroupOffer",
+      "action": "market.offer.regroup",
+      "tool": "market_regroup_offer",
+      "title": "Move an offer under another product",
+      "description": "Change the product an offer is grouped under and keep everything else about it. An unknown offer is not found, an empty product is invalid, and a move onto the product the offer already has is refused as a conflict that names it. The host gates who may.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "offer_id",
+          "refers": "market.offer",
+          "description": "The offer."
+        },
+        {
+          "from": "body",
+          "as": "product",
+          "description": "The product to group the offer under.",
+          "required": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "categorise_product": {
+      "method": "POST",
+      "path": "/products/category",
+      "call": "CategoriseProduct",
+      "action": "market.product.categorise",
+      "tool": "market_categorise_product",
+      "title": "Put a product under another category",
+      "description": "Change the category every offer grouped under a product carries, and nothing else about them. A product no offer is grouped under is not found, an empty product or category is invalid, and a product already under that category is refused as a conflict that names it. The host gates who may. The owner has not settled who names the categories: the AI proposes one when it groups an offer and this corrects it.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "as": "product",
+          "description": "The product whose category changes.",
+          "required": true
+        },
+        {
+          "from": "body",
+          "as": "category",
+          "description": "The category to put it under, in free words.",
+          "required": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_kinds": {
+      "method": "GET",
+      "path": "/kinds",
+      "call": "ListKinds",
+      "action": "market.kind.list",
+      "tool": "market_list_kinds",
+      "title": "List the kinds a member is offered",
+      "description": "The few categories members ask for most, so an app can offer them as prompts instead of listing the market. Asks and orders about a product count for its category; a category nobody has asked for yet follows, ranked by how many offers it has. Each carries the product asked for most inside it. Absent or zero limit means 3; the most is 10. Everyone sees them.",
+      "args": [
+        {
+          "from": "query",
+          "as": "limit",
+          "description": "Kinds to return. Absent or zero means 3; the most is 10."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_offers": {
+      "method": "GET",
+      "path": "/offers",
+      "call": "ListOffers",
+      "action": "market.offer.list",
+      "tool": "market_list_offers",
+      "title": "List offers",
+      "description": "Everyone sees the offers.",
+      "args": [
+        {
+          "from": "query",
+          "as": "poster_id",
+          "refers": "market.poster",
+          "description": "Only this poster's offers."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "create_wanted": {
+      "method": "POST",
+      "path": "/requests",
+      "call": "CreateRequest",
+      "action": "market.request.create",
+      "tool": "market_create_wanted",
+      "title": "Say what is wanted",
+      "description": "A picker says what she wants.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "get_request": {
+      "method": "GET",
+      "path": "/requests/{requestID}",
+      "call": "GetRequest",
+      "action": "market.request.read",
+      "tool": "market_get_request",
+      "title": "Read a request",
+      "description": "The picker who made it, or a poster who was asked about it, reads what is wanted.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "requestID",
+          "refers": "market.request",
+          "description": "The request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "ask": {
+      "method": "POST",
+      "path": "/asks",
+      "call": "CreateAsk",
+      "action": "market.ask.create",
+      "tool": "market_ask",
+      "title": "Ask a poster",
+      "description": "Ask one named poster one question, once per request.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "list_asks": {
+      "method": "GET",
+      "path": "/asks",
+      "call": "ListAsksBy",
+      "action": "market.ask.list",
+      "tool": "market_list_asks",
+      "title": "List asks",
+      "description": "The caller's asks, or those put to the caller's posters. Pass request_id for only the asks about one request and answer for only those waiting, yes, no or withdrawn; both are applied in the query.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "query",
+          "as": "request_id",
+          "description": "Only the asks made about this request."
+        },
+        {
+          "from": "query",
+          "as": "answer",
+          "description": "Only asks with this answer: waiting, yes, no or withdrawn."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "answer_ask": {
+      "method": "POST",
+      "path": "/asks/{askID}/answer",
+      "call": "AnswerAskWithMinutes",
+      "action": "market.ask.answer",
+      "tool": "market_answer_ask",
+      "title": "Answer an ask",
+      "description": "The poster answers yes with a date, or no. A yes may point at one of his offers, quote a price or say how many minutes away he is. Silence stays waiting and a reply never opens an order.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "askID",
+          "refers": "market.ask",
+          "description": "The ask."
+        },
+        {
+          "from": "body",
+          "as": "answer",
+          "description": "yes or no.",
+          "required": true
+        },
+        {
+          "from": "body",
+          "as": "date",
+          "description": "The date promised, required with yes."
+        },
+        {
+          "from": "body",
+          "as": "note",
+          "description": "A free note."
+        },
+        {
+          "from": "body",
+          "as": "offer_id",
+          "refers": "market.offer",
+          "description": "One of this poster's offers, with yes."
+        },
+        {
+          "from": "body",
+          "as": "price",
+          "description": "A price quoted with yes."
+        },
+        {
+          "from": "body",
+          "as": "minutes",
+          "description": "Minutes away, with yes."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_yeses": {
+      "method": "GET",
+      "path": "/yeses",
+      "call": "ListYesesBy",
+      "action": "market.yes.list",
+      "tool": "market_list_yeses",
+      "title": "List yeses",
+      "description": "The caller's yeses. Pass request_id for only the yeses to asks about one request and state for only those open, delivered or called_off; both are applied in the query.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "query",
+          "as": "request_id",
+          "description": "Only the yeses to asks made about this request."
+        },
+        {
+          "from": "query",
+          "as": "state",
+          "description": "Only yeses in this state: open, delivered or called_off."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "create_notice": {
+      "method": "POST",
+      "path": "/notices",
+      "call": "CreateNotice",
+      "action": "market.notice.create",
+      "tool": "market_create_notice",
+      "title": "Post a notice",
+      "description": "A picker puts a want in front of every poster until she takes it down.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "withdraw_ask": {
+      "method": "POST",
+      "path": "/asks/{askID}/withdraw",
+      "call": "WithdrawAsk",
+      "action": "market.ask.withdraw",
+      "tool": "market_withdraw_ask",
+      "title": "Withdraw an ask",
+      "description": "The picker takes back an ask that is still waiting, so a ride or a price ask can be cancelled before the poster answers. Once the poster has answered, or the ask is already withdrawn, it is refused as a conflict; anyone but the picker gets not found. A withdrawn ask shows as withdrawn in the lists and cannot be answered.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "askID",
+          "refers": "market.ask",
+          "description": "The ask."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "withdraw_notice": {
+      "method": "POST",
+      "path": "/notices/{noticeID}/withdraw",
+      "call": "WithdrawNotice",
+      "action": "market.notice.withdraw",
+      "tool": "market_withdraw_notice",
+      "title": "Withdraw a notice",
+      "description": "The picker takes her notice down.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "noticeID",
+          "refers": "market.notice",
+          "description": "The notice."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_notices": {
+      "method": "GET",
+      "path": "/notices",
+      "call": "ListNoticesFor",
+      "action": "market.notice.list",
+      "tool": "market_list_notices",
+      "title": "List notices",
+      "description": "Open notices. A notice carries its picker's id and full name only for the picker; for everyone else it carries the picker's first name when the host supplies names, and no id.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "buy_now": {
+      "method": "POST",
+      "path": "/offers/{offerID}/buy",
+      "call": "BuyNow",
+      "action": "market.order.create",
+      "tool": "market_buy_now",
+      "title": "Buy now",
+      "description": "Order at the offer's price, which the order keeps. With yes_id the order is made from the caller's open yes and keeps its id and promised date. The order carries picker_name when the host supplies names.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "offerID",
+          "refers": "market.offer",
+          "description": "The offer."
+        },
+        {
+          "from": "body",
+          "as": "quantity",
+          "description": "How much.",
+          "required": true
+        },
+        {
+          "from": "body",
+          "as": "yes_id",
+          "refers": "market.yes",
+          "description": "The caller's open yes this order is made from."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "cancel_order": {
+      "method": "POST",
+      "path": "/orders/{orderID}/cancel",
+      "call": "CancelOrder",
+      "action": "market.order.cancel",
+      "tool": "market_cancel_order",
+      "title": "Cancel an order",
+      "description": "Cancel at once.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "orderID",
+          "refers": "market.order",
+          "description": "The order."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "mark_paid": {
+      "method": "POST",
+      "path": "/orders/{orderID}/paid",
+      "call": "MarkPaid",
+      "action": "market.order.mark_paid",
+      "tool": "market_mark_paid",
+      "title": "Mark paid",
+      "description": "Only the poster marks an order paid.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "orderID",
+          "refers": "market.order",
+          "description": "The order."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_order": {
+      "method": "GET",
+      "path": "/orders/{orderID}",
+      "call": "GetOrder",
+      "action": "market.order.read",
+      "tool": "market_get_order",
+      "title": "Read an order",
+      "description": "The picker or the poster reads an order.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "orderID",
+          "refers": "market.order",
+          "description": "The order."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_orders": {
+      "method": "GET",
+      "path": "/orders",
+      "call": "ListOrders",
+      "action": "market.order.list",
+      "tool": "market_list_orders",
+      "title": "List orders",
+      "description": "The caller's own orders.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "order_trail": {
+      "method": "GET",
+      "path": "/orders/{orderID}/trail",
+      "call": "OrderTrail",
+      "action": "market.order.trail",
+      "tool": "market_order_trail",
+      "title": "Order trail",
+      "description": "Who did what to an order.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "orderID",
+          "refers": "market.order",
+          "description": "The order."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_stock": {
+      "method": "PUT",
+      "path": "/stock",
+      "call": "SetStock",
+      "action": "market.stock.set",
+      "tool": "market_set_stock",
+      "title": "Set stock",
+      "description": "A poster keeps a private count.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_stock": {
+      "method": "GET",
+      "path": "/posters/{posterID}/stock",
+      "call": "GetStock",
+      "action": "market.stock.read",
+      "tool": "market_get_stock",
+      "title": "Read stock",
+      "description": "Only its poster reads it.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "posterID",
+          "refers": "market.poster",
+          "description": "The poster."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "start_group_order": {
+      "method": "POST",
+      "path": "/group-orders",
+      "call": "StartGroupOrder",
+      "action": "market.group_order.start",
+      "tool": "market_start_group_order",
+      "title": "Start a group order",
+      "description": "A minimum is required. Leave poster_id out to start it with the only approved poster.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "get_group_order_poster": {
+      "method": "GET",
+      "path": "/group-order-poster",
+      "call": "GroupOrderPoster",
+      "action": "market.group_order.poster",
+      "tool": "market_get_group_order_poster",
+      "title": "Which poster a group order buys from",
+      "description": "The poster a group order buys from: the order's own poster when groupOrderID names one, else the only approved poster. With no approved poster or several, it says so and market_start_group_order needs a poster_id.",
+      "args": [
+        {
+          "from": "query",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order, when one exists."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_group_orders": {
+      "method": "GET",
+      "path": "/group-orders",
+      "call": "ListGroupOrdersBy",
+      "action": "market.group_order.list",
+      "tool": "market_list_group_orders",
+      "title": "List group orders",
+      "description": "Each shown as the caller may see it, in pages ordered by id: the first 50 by default. To see more, pass the id of the last group order of the page as after. Pass mine as true for only the group orders the caller has a line in, started or owns the poster of, and state for only those open, revising, sent, closed or cancelled; both are applied before the page is cut.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "query",
+          "as": "limit",
+          "description": "Group orders in the page. Absent or zero means 50; the most is 200."
+        },
+        {
+          "from": "query",
+          "as": "after",
+          "description": "The id of the last group order already shown. Only later ones are returned."
+        },
+        {
+          "from": "query",
+          "as": "mine",
+          "description": "True for only the group orders the caller has a line in, started or owns the poster of."
+        },
+        {
+          "from": "query",
+          "as": "state",
+          "description": "Only group orders in this state: open, revising, sent, closed or cancelled."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "group_order_trail": {
+      "method": "GET",
+      "path": "/group-orders/{groupOrderID}/trail",
+      "call": "GroupOrderTrail",
+      "action": "market.group_order.trail",
+      "tool": "market_group_order_trail",
+      "title": "Group order trail",
+      "description": "Who did what to a group order, oldest first. The coordinator and the poster see all of it; a picker with a line sees her own steps and the coordinator's and poster's.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_group_order": {
+      "method": "GET",
+      "path": "/group-orders/{groupOrderID}",
+      "call": "GetGroupOrder",
+      "action": "market.group_order.read",
+      "tool": "market_get_group_order",
+      "title": "Read a group order",
+      "description": "The coordinator and poster see all lines, a picker her own line and the total, minimum and count.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "join_group_order": {
+      "method": "POST",
+      "path": "/group-orders/{groupOrderID}/join",
+      "call": "JoinGroupOrder",
+      "action": "market.group_order.join",
+      "tool": "market_join_group_order",
+      "title": "Join a group order",
+      "description": "Add or change the caller's line.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        },
+        {
+          "from": "body",
+          "as": "quantity",
+          "description": "How much.",
+          "required": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "ask_revision": {
+      "method": "POST",
+      "path": "/group-orders/{groupOrderID}/revision",
+      "call": "AskRevision",
+      "action": "market.group_order.ask_revision",
+      "tool": "market_ask_revision",
+      "title": "Ask for revised terms",
+      "description": "The poster asks the pickers to revise; the previous terms are kept.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        },
+        {
+          "from": "body",
+          "as": "price",
+          "description": "The new price.",
+          "required": true
+        },
+        {
+          "from": "body",
+          "as": "minimum",
+          "description": "The new minimum.",
+          "required": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "promise_group_order": {
+      "method": "POST",
+      "path": "/group-orders/{groupOrderID}/promise",
+      "call": "PromiseGroupOrder",
+      "action": "market.group_order.promise",
+      "tool": "market_promise_group_order",
+      "title": "Promise a group order",
+      "description": "The poster gives the date he promises for the whole order and a note. Saying it again replaces the first.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        },
+        {
+          "from": "body",
+          "as": "date",
+          "description": "The date promised.",
+          "required": true
+        },
+        {
+          "from": "body",
+          "as": "note",
+          "description": "A free note."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "send_group_order": {
+      "method": "POST",
+      "path": "/group-orders/{groupOrderID}/send",
+      "call": "SendGroupOrder",
+      "action": "market.group_order.send",
+      "tool": "market_send_group_order",
+      "title": "Send a group order",
+      "description": "The step's named actor, the coordinator by default, sends an open group order to the poster. After that nobody joins or changes it.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "mark_line_paid": {
+      "method": "POST",
+      "path": "/group-orders/{groupOrderID}/lines/{lineID}/paid",
+      "call": "MarkLinePaid",
+      "action": "market.group_order.line_paid",
+      "tool": "market_mark_line_paid",
+      "title": "Mark a farmer's line paid",
+      "description": "The step's named actor, the coordinator by default, marks one line of a sent group order paid.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        },
+        {
+          "from": "path",
+          "as": "lineID",
+          "refers": "market.line",
+          "description": "The line."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "decide_silent_line": {
+      "method": "POST",
+      "path": "/group-orders/{groupOrderID}/lines/{lineID}/decision",
+      "call": "DecideSilentLine",
+      "action": "market.group_order.decide_silent_line",
+      "tool": "market_decide_silent_line",
+      "title": "Decide for a silent line",
+      "description": "The step's named actor, the coordinator by default, keeps or takes off a line whose picker has not answered the current terms.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        },
+        {
+          "from": "path",
+          "as": "lineID",
+          "refers": "market.line",
+          "description": "The line."
+        },
+        {
+          "from": "body",
+          "as": "decision",
+          "description": "keep or take_off.",
+          "required": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "reopen_group_order": {
+      "method": "POST",
+      "path": "/group-orders/{groupOrderID}/reopen",
+      "call": "ReopenGroupOrder",
+      "action": "market.group_order.reopen",
+      "tool": "market_reopen",
+      "title": "Take a revised group order back to open",
+      "description": "The step's named actor, the coordinator by default, takes a group order that is revising back to open so it can be sent; a group order in any other state answers 409.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "call_off_group_order": {
+      "method": "POST",
+      "path": "/group-orders/{groupOrderID}/call-off",
+      "call": "CallOffGroupOrder",
+      "action": "market.group_order.call_off",
+      "tool": "market_call_off",
+      "title": "Call a group order off",
+      "description": "The step's named actor, the coordinator by default, calls a group order off at any step before it is closed.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "answer_revision": {
+      "method": "POST",
+      "path": "/group-orders/{groupOrderID}/revision/answer",
+      "call": "AnswerRevision",
+      "action": "market.group_order.answer_revision",
+      "tool": "market_answer_revision",
+      "title": "Answer a revision",
+      "description": "A picker answers yes or no to the current terms.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "groupOrderID",
+          "refers": "market.group_order",
+          "description": "The group order."
+        },
+        {
+          "from": "body",
+          "as": "answer",
+          "description": "yes or no.",
+          "required": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "send_quote": {
+      "method": "POST",
+      "path": "/notices/{noticeID}/quotes",
+      "call": "SendQuote",
+      "action": "market.quote.send",
+      "tool": "market_send_quote",
+      "title": "Send a quote",
+      "description": "A poster prices an open notice. One quote stands per poster on a notice.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "noticeID",
+          "refers": "market.notice",
+          "description": "The notice."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "list_quotes": {
+      "method": "GET",
+      "path": "/notices/{noticeID}/quotes",
+      "call": "ListQuotes",
+      "action": "market.quote.list",
+      "tool": "market_list_quotes",
+      "title": "List quotes",
+      "description": "The notice's picker sees every quote on it; a poster sees only his own.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "noticeID",
+          "refers": "market.notice",
+          "description": "The notice."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "draft_counter": {
+      "method": "POST",
+      "path": "/quotes/{quoteID}/drafts",
+      "call": "DraftCounter",
+      "action": "market.draft.create",
+      "tool": "market_draft_counter",
+      "title": "Draft a counter",
+      "description": "An agent writes a counter for the picker to read. Nothing reaches the poster until the picker sends it.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "quoteID",
+          "refers": "market.quote",
+          "description": "The quote."
+        },
+        {
+          "from": "body",
+          "as": "price",
+          "description": "The price proposed.",
+          "required": true
+        },
+        {
+          "from": "body",
+          "as": "note",
+          "description": "What to say with it."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "list_drafts": {
+      "method": "GET",
+      "path": "/notices/{noticeID}/drafts",
+      "call": "ListDrafts",
+      "action": "market.draft.list",
+      "tool": "market_list_drafts",
+      "title": "List drafts",
+      "description": "The notice's picker and the agent who wrote a draft see it; nobody else does.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "noticeID",
+          "refers": "market.notice",
+          "description": "The notice."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "send_counter": {
+      "method": "POST",
+      "path": "/drafts/{draftID}/send",
+      "call": "SendCounter",
+      "action": "market.counter.send",
+      "tool": "market_send_counter",
+      "title": "Send a counter",
+      "description": "The picker sends a draft to the poster as her counter.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "draftID",
+          "refers": "market.draft",
+          "description": "The draft."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "revise_quote": {
+      "method": "POST",
+      "path": "/quotes/{quoteID}/revise",
+      "call": "ReviseQuote",
+      "action": "market.quote.revise",
+      "tool": "market_revise_quote",
+      "title": "Revise a quote",
+      "description": "The poster answers a counter with a new price.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "quoteID",
+          "refers": "market.quote",
+          "description": "The quote."
+        },
+        {
+          "from": "body",
+          "as": "price",
+          "description": "The new price.",
+          "required": true
+        },
+        {
+          "from": "body",
+          "as": "note",
+          "description": "A free note."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "accept_quote": {
+      "method": "POST",
+      "path": "/quotes/{quoteID}/accept",
+      "call": "AcceptQuote",
+      "action": "market.quote.accept",
+      "tool": "market_accept_quote",
+      "title": "Accept a quote",
+      "description": "The picker accepts one open quote at its price. The notice is sold and the other quotes are declined.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "caller",
+          "description": "Who is acting, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "path",
+          "as": "quoteID",
+          "refers": "market.quote",
+          "description": "The quote."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    }
+  },
+  "errors": {
+    "ErrInvalid": 400,
+    "ErrConflict": 409,
+    "ErrNotFound": 404,
+    "ErrForbidden": 403,
+    "ErrAlreadyAsked": 409,
+    "ErrPosterNotReady": 409,
+    "ErrPosterAway": 409
+  }
+}

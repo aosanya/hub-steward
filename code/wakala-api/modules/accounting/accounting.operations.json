@@ -1,0 +1,296 @@
+{
+  "operations": {
+    "open_account": {
+      "method": "POST",
+      "path": "/accounts",
+      "call": "OpenAccount",
+      "action": "accounting.account.open",
+      "status": 201,
+      "title": "Open account",
+      "description": "Return the account for this (category, holder_id), opening it if it does not exist yet. Opening is lazy and idempotent: an account exists because something was posted to it, never because its holder merely registered, and asking twice returns the same account rather than a second one.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_account": {
+      "method": "GET",
+      "path": "/accounts/{accountID}",
+      "call": "GetAccount",
+      "action": "accounting.account.read",
+      "title": "Read account",
+      "description": "Read one account by its storage id.",
+      "args": [
+        {
+          "from": "path",
+          "as": "accountID",
+          "description": "The account to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_accounts": {
+      "method": "GET",
+      "path": "/accounts",
+      "call": "ListAccounts",
+      "action": "accounting.account.list",
+      "title": "List accounts",
+      "description": "List the chart of accounts, oldest-opened first.",
+      "args": [
+        {
+          "from": "query",
+          "as": "limit",
+          "description": "Cap the accounts returned. Zero or absent means the default page."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "close_account": {
+      "method": "POST",
+      "path": "/accounts/{accountID}/close",
+      "call": "CloseAccount",
+      "action": "accounting.account.close",
+      "title": "Close account",
+      "description": "Stamp an account closed. Refused while it still carries a balance, and refused if it is already closed.",
+      "args": [
+        {
+          "from": "path",
+          "as": "accountID",
+          "description": "The account to close."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "account_balance": {
+      "method": "GET",
+      "path": "/accounts/{accountID}/balance",
+      "call": "Balance",
+      "action": "accounting.account.balance",
+      "title": "Read balance",
+      "description": "Fold one account's balance: everything debited to it minus everything credited from it, over every entry naming it. There is no stored balance anywhere in this module, so this is computed on every call.",
+      "args": [
+        {
+          "from": "path",
+          "as": "accountID",
+          "description": "The account to fold."
+        }
+      ],
+      "returns": [
+        {
+          "as": "balance"
+        }
+      ]
+    },
+    "post_entry": {
+      "method": "POST",
+      "path": "/entries",
+      "call": "Post",
+      "action": "accounting.entry.post",
+      "status": 201,
+      "title": "Post entry",
+      "description": "Append one journal entry, debiting one account and crediting another for the same amount. There is no update and no delete: a mistake is corrected by posting a new entry that names the original in reverses_entry_id, and an entry may be reversed at most once. A reversal keeps its original's dimensions. A payment may name the charge it pays in settles_entry_id, which must be an entry already in the ledger.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_entries": {
+      "method": "GET",
+      "path": "/accounts/{accountID}/entries",
+      "call": "ListEntries",
+      "action": "accounting.entry.list",
+      "title": "List entries",
+      "description": "Read one account's ledger, both sides, ordered on when the event occurred and falling back to when it was posted, oldest first so a running balance can be accumulated down the page.",
+      "args": [
+        {
+          "from": "path",
+          "as": "accountID",
+          "description": "The account whose ledger to read."
+        },
+        {
+          "from": "query",
+          "as": "limit",
+          "description": "Cap the entries returned. Zero or absent means the default page."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_budget": {
+      "method": "PUT",
+      "path": "/budgets",
+      "call": "SetBudget",
+      "action": "accounting.budget.set",
+      "title": "Set budget",
+      "description": "Set what one account is expected to hold over one period. Setting it again for the same account and period replaces the amount. The period runs from period_start, inclusive, to period_end, exclusive.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "variance": {
+      "method": "GET",
+      "path": "/accounts/{accountID}/variance",
+      "call": "Variance",
+      "action": "accounting.budget.variance",
+      "title": "Read variance",
+      "description": "Read one account's budget for a period beside its actual balance over that period, and the difference, actual minus budgeted. The actual folds only entries whose occurred_at, or posted_at where that is absent, falls inside the period.",
+      "args": [
+        {
+          "from": "path",
+          "as": "accountID",
+          "description": "The account to compare."
+        },
+        {
+          "from": "query",
+          "as": "period_start",
+          "description": "The period's first instant, inclusive, exactly as the budget was set."
+        },
+        {
+          "from": "query",
+          "as": "period_end",
+          "description": "The period's end, exclusive, exactly as the budget was set."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "overdue_entries": {
+      "method": "GET",
+      "path": "/accounts/{accountID}/overdue",
+      "call": "Overdue",
+      "action": "accounting.entry.overdue",
+      "title": "List overdue entries",
+      "description": "Read one account's entries whose due_at has passed as of an instant, each with the whole days it is overdue, oldest due first. An entry with no due_at is never listed, nor is an entry that has been reversed or one that reverses another. Unreversed entries naming a charge in settles_entry_id are netted against it: each item carries what is still outstanding, and a charge paid in full is not listed.",
+      "args": [
+        {
+          "from": "path",
+          "as": "accountID",
+          "description": "The account whose overdue entries to read."
+        },
+        {
+          "from": "query",
+          "as": "as_of",
+          "description": "The instant to age against, as an RFC 3339 instant. Absent means now."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_entries_by_dimension": {
+      "method": "GET",
+      "path": "/accounts/{accountID}/entries/by-dimension",
+      "call": "ListEntriesByDimension",
+      "action": "accounting.entry.list_by_dimension",
+      "title": "List entries by dimension",
+      "description": "Read one account's ledger narrowed to the entries whose dimensions carry the named key with exactly the given value, in the same order as the full listing.",
+      "args": [
+        {
+          "from": "path",
+          "as": "accountID",
+          "description": "The account whose ledger to read."
+        },
+        {
+          "from": "query",
+          "as": "key",
+          "description": "The dimension key to narrow by."
+        },
+        {
+          "from": "query",
+          "as": "value",
+          "description": "The value that key must carry."
+        },
+        {
+          "from": "query",
+          "as": "limit",
+          "description": "Cap the entries returned. Zero or absent means the default page."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "dimension_balance": {
+      "method": "GET",
+      "path": "/accounts/{accountID}/balance/by-dimension",
+      "call": "DimensionBalance",
+      "action": "accounting.account.balance_by_dimension",
+      "title": "Read balance by dimension",
+      "description": "Fold one account's debits minus credits over only the entries whose dimensions carry the named key with exactly the given value. The balances of an account under every value of one key sum to its whole balance only when every entry carries that key.",
+      "args": [
+        {
+          "from": "path",
+          "as": "accountID",
+          "description": "The account whose balance to read."
+        },
+        {
+          "from": "query",
+          "as": "key",
+          "description": "The dimension key to narrow by."
+        },
+        {
+          "from": "query",
+          "as": "value",
+          "description": "The value that key must carry."
+        }
+      ],
+      "returns": [
+        {
+          "as": "balance"
+        }
+      ]
+    }
+  },
+  "errors": {
+    "ErrNotFound": 404,
+    "ErrInvalid": 400,
+    "ErrClosed": 409,
+    "ErrNonZeroBalance": 409,
+    "ErrAlreadyReversed": 409,
+    "ErrCodeTaken": 409
+  }
+}

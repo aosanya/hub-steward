@@ -1,0 +1,129 @@
+{
+  "module": "ratings",
+  "objects": [
+    {
+      "role": "rating",
+      "description": "One rater's value for one item. A repeat by the same rater on the same item replaces it, so the table is a matrix and not a log.",
+      "fields": [
+        {
+          "name": "rater",
+          "type": "string",
+          "description": "The key of whoever rated, in the standard's module/instance/identity form, owned elsewhere and never resolved here.",
+          "primary": true,
+          "required": true
+        },
+        {
+          "name": "item",
+          "type": "string",
+          "description": "The key of what was rated, in the same form and owned elsewhere too.",
+          "primary": true,
+          "required": true
+        },
+        {
+          "name": "value",
+          "type": "float",
+          "description": "The rating on the module's one scale, 0 to 1, normalised by the host from whatever scale it shows.",
+          "required": true
+        },
+        {
+          "name": "at",
+          "type": "timestamp",
+          "description": "When this value was written, replaced along with the value on a repeat.",
+          "required": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "item",
+          "description": "Finds every rater of one item, which is the only set a write has to revisit.",
+          "fields": ["item"]
+        }
+      ]
+    },
+    {
+      "role": "similarity",
+      "description": "How alike two keys are by the declared metric over what they both rated. At most K rows per key and kind, so the table is bounded by K and not by the catalog.",
+      "fields": [
+        {
+          "name": "a",
+          "type": "string",
+          "description": "The key whose neighbour this row records.",
+          "primary": true,
+          "required": true
+        },
+        {
+          "name": "kind",
+          "type": "enum",
+          "description": "Whether the two keys are raters alike in taste or items alike in who rated them.",
+          "primary": true,
+          "required": true,
+          "values": ["rater", "item"]
+        },
+        {
+          "name": "b",
+          "type": "string",
+          "description": "The neighbour's key.",
+          "primary": true,
+          "required": true
+        },
+        {
+          "name": "metric",
+          "type": "enum",
+          "description": "Which of the module's closed set of measures produced the score.",
+          "required": true,
+          "values": ["euclidean", "cosine", "jaccard"]
+        },
+        {
+          "name": "score",
+          "type": "float",
+          "description": "The similarity, above 0 and at most 1 for every metric.",
+          "required": true
+        },
+        {
+          "name": "overlap",
+          "type": "int",
+          "description": "How many items both rated when the score was computed, so a reader can weigh a score by its evidence.",
+          "required": true
+        },
+        {
+          "name": "at",
+          "type": "timestamp",
+          "description": "When the score was last computed.",
+          "required": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "rank",
+          "description": "The K neighbours of one key in score order, which is what recommend reads and what the top-K maintenance compares against.",
+          "fields": ["a", "kind", "score"]
+        }
+      ]
+    },
+    {
+      "role": "setting",
+      "description": "One per-instance knob the module reads: the metric, which similarities run, K and the overlap floor. Rows because a declaration cannot carry them and a knob should survive a restart.",
+      "fields": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Which knob this is, from the module's fixed set of names.",
+          "primary": true,
+          "required": true
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "description": "The knob's value as text, parsed by the module against the blueprint's own vocabulary.",
+          "required": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "When the knob was last written.",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

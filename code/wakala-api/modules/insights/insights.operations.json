@@ -1,0 +1,118 @@
+{
+  "operations": {
+    "create_insight": {
+      "method": "POST",
+      "path": "/insights",
+      "call": "CreateInsight",
+      "action": "insights.insight.create",
+      "tool": "insight_create",
+      "status": 201,
+      "title": "Record insight",
+      "description": "Record a summary of a stretch of work's challenges (repetitive tasks, friction points) and suggestions (shortcuts, tooling, or enhancements worth building).",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_insight": {
+      "method": "GET",
+      "path": "/insights/{insightID}",
+      "call": "GetInsight",
+      "action": "insights.insight.read",
+      "title": "Read insight",
+      "description": "Read one recorded insight.",
+      "args": [
+        {
+          "from": "path",
+          "as": "insightID",
+          "description": "The insight to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_insights": {
+      "method": "GET",
+      "path": "/insights",
+      "call": "ListInsights",
+      "action": "insights.insight.list",
+      "tool": "insight_list",
+      "title": "List insights",
+      "description": "List recorded insights, newest first, optionally narrowed to one body of work or one subject.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "create_note": {
+      "method": "POST",
+      "path": "/insights/{insightID}/notes",
+      "call": "CreateInsightNote",
+      "action": "insights.note.create",
+      "tool": "insight_note_create",
+      "status": 201,
+      "title": "Add note",
+      "description": "Add a follow-up remark to an insight already on record, rather than filing a second insight that repeats the first one's summary.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "insightID",
+          "into": "InsightID",
+          "description": "The insight the remark is attached to. The address decides this, not the body."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_notes": {
+      "method": "GET",
+      "path": "/insights/{insightID}/notes",
+      "call": "ListInsightNotes",
+      "action": "insights.note.list",
+      "tool": "insight_note_list",
+      "title": "List notes",
+      "description": "Read every remark on one insight, oldest first, because a thread reads top to bottom.",
+      "args": [
+        {
+          "from": "path",
+          "as": "insightID",
+          "description": "The insight whose remarks to read."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    }
+  },
+  "errors": {
+    "ErrInsightNotFound": 404,
+    "ErrInvalidInsight": 400,
+    "ErrInvalidInsightNote": 400
+  }
+}

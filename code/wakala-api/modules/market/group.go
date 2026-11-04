@@ -1,0 +1,428 @@
+package market
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"gorm.io/gorm/clause"
+
+	"wakalaserver/modules/market/models"
+)
+
+type terms struct {
+	Version int     `json:"version"`
+	Price   float64 `json:"price"`
+	Minimum float64 `json:"minimum"`
+}
+
+func (m *marketManager) StartGroupOrder(ctx context.Context, caller string, g GroupOrder) (GroupOrder, error) {
+	if g.Minimum <= 0 {
+		return g, fmt.Errorf("%w: a group order needs a minimum", ErrInvalid)
+	}
+	posterID, err := m.posterWhenUnnamed(ctx, g.PosterID)
+	if err != nil {
+		return g, err
+	}
+	g.PosterID = posterID
+	var p Poster
+	if err := m.get(ctx, RolePoster, g.PosterID, &p); err != nil {
+		return g, err
+	}
+	if p.Status != models.PosterApproved {
+		return g, ErrPosterNotReady
+	}
+	wf, _, err := m.gate(ctx, WorkflowGroupOrder, 0, StepStart, caller, parties{})
+	if err != nil {
+		return g, err
+	}
+	g.ID, g.Coordinator, g.TermsVersion, g.TermsHistory = newID(), caller, 1, "[]"
+	g.WorkflowVersion, g.State, g.CreatedAt = wf.Version, models.GroupOpen, m.now()
+	if g.Direction == "" {
+		g.Direction = models.DirectionBuy
+	}
+	if err := m.checks(RoleGroupOrder, g); err != nil {
+		return g, err
+	}
+	if err := m.insert(ctx, RoleGroupOrder, g); err != nil {
+		return g, err
+	}
+	return g, m.note(ctx, g.ID, caller, "started")
+}
+
+func (m *marketManager) openGroup(ctx context.Context, id string) (GroupOrder, error) {
+	var g GroupOrder
+	if err := m.get(ctx, RoleGroupOrder, id, &g); err != nil {
+		return g, err
+	}
+	if g.State == models.GroupClosed || g.State == models.GroupCancelled || g.State == models.GroupSent {
+		return g, ErrConflict
+	}
+	return g, nil
+}
+
+func (m *marketManager) SendGroupOrder(ctx context.Context, caller, id string) (GroupOrder, error) {
+	var g GroupOrder
+	if err := m.get(ctx, RoleGroupOrder, id, &g); err != nil {
+		return g, err
+	}
+	if _, _, err := m.gate(ctx, WorkflowGroupOrder, g.WorkflowVersion, StepSent, caller, parties{posterID: g.PosterID, coordinator: g.Coordinator}); err != nil {
+		return g, err
+	}
+	if g.State != models.GroupOpen {
+		return g, ErrConflict
+	}
+	was := g
+	g.State = models.GroupSent
+	if err := m.updateGroupFrom(ctx, was, g); err != nil {
+		return g, err
+	}
+	return g, m.note(ctx, id, caller, "sent")
+}
+
+func (m *marketManager) MarkLinePaid(ctx context.Context, caller, id, lineID string) (Line, error) {
+	var g GroupOrder
+	if err := m.get(ctx, RoleGroupOrder, id, &g); err != nil {
+		return Line{}, err
+	}
+	if _, _, err := m.gate(ctx, WorkflowGroupOrder, g.WorkflowVersion, StepLinePaid, caller, parties{posterID: g.PosterID, coordinator: g.Coordinator}); err != nil {
+		return Line{}, err
+	}
+	var l Line
+	if err := m.get(ctx, RoleLine, lineID, &l); err != nil || l.GroupOrderID != id {
+		return Line{}, ErrNotFound
+	}
+	if g.State != models.GroupSent {
+		return l, ErrConflict
+	}
+	l.Paid = true
+	if err := m.update(ctx, RoleLine, l.ID, l); err != nil {
+		return l, err
+	}
+	return l, m.note(ctx, id, caller, "marked a line paid")
+}
+
+const (
+	DecisionKeep    = "keep"
+	DecisionTakeOff = "take_off"
+)
+
+func (m *marketManager) DecideSilentLine(ctx context.Context, caller, id, lineID, decision string) (Line, error) {
+	var g GroupOrder
+	if err := m.get(ctx, RoleGroupOrder, id, &g); err != nil {
+		return Line{}, err
+	}
+	if _, _, err := m.gate(ctx, WorkflowGroupOrder, g.WorkflowVersion, StepDecided, caller, parties{posterID: g.PosterID, coordinator: g.Coordinator}); err != nil {
+		return Line{}, err
+	}
+	if decision != DecisionKeep && decision != DecisionTakeOff {
+		return Line{}, fmt.Errorf("%w: decide keep or take_off", ErrInvalid)
+	}
+	var l Line
+	if err := m.get(ctx, RoleLine, lineID, &l); err != nil || l.GroupOrderID != id {
+		return Line{}, ErrNotFound
+	}
+	if (g.State != models.GroupOpen && g.State != models.GroupRevising) || l.Answer != models.AnswerWaiting {
+		return l, ErrConflict
+	}
+	l.Answer, l.AnsweredVersion, l.DecidedByCoordinator = models.AnswerYes, g.TermsVersion, true
+	what := "kept a silent line"
+	if decision == DecisionTakeOff {
+		l.Answer, what = models.AnswerNo, "took a silent line off"
+	}
+	if err := m.update(ctx, RoleLine, l.ID, l); err != nil {
+		return l, err
+	}
+	return l, m.note(ctx, id, caller, what)
+}
+
+func (m *marketManager) ReopenGroupOrder(ctx context.Context, caller, id string) (GroupOrder, error) {
+	var g GroupOrder
+	if err := m.get(ctx, RoleGroupOrder, id, &g); err != nil {
+		return g, err
+	}
+	if _, _, err := m.gate(ctx, WorkflowGroupOrder, g.WorkflowVersion, StepReopened, caller, parties{posterID: g.PosterID, coordinator: g.Coordinator}); err != nil {
+		return g, err
+	}
+	if g.State != models.GroupRevising {
+		return g, ErrConflict
+	}
+	was := g
+	g.State = models.GroupOpen
+	if err := m.updateGroupFrom(ctx, was, g); err != nil {
+		return g, err
+	}
+	return g, m.note(ctx, id, caller, "took the revised order back to open")
+}
+
+func (m *marketManager) CallOffGroupOrder(ctx context.Context, caller, id string) (GroupOrder, error) {
+	var g GroupOrder
+	if err := m.get(ctx, RoleGroupOrder, id, &g); err != nil {
+		return g, err
+	}
+	if _, _, err := m.gate(ctx, WorkflowGroupOrder, g.WorkflowVersion, StepCalledOff, caller, parties{posterID: g.PosterID, coordinator: g.Coordinator}); err != nil {
+		return g, err
+	}
+	if g.State == models.GroupClosed || g.State == models.GroupCancelled {
+		return g, ErrConflict
+	}
+	was := g
+	g.State = models.GroupCancelled
+	if err := m.updateGroupFrom(ctx, was, g); err != nil {
+		return g, err
+	}
+	return g, m.note(ctx, id, caller, "called off")
+}
+
+func (m *marketManager) PromiseGroupOrder(ctx context.Context, caller, id, date, note string) (GroupOrder, error) {
+	var g GroupOrder
+	if err := m.get(ctx, RoleGroupOrder, id, &g); err != nil {
+		return g, err
+	}
+	if _, err := m.posterOwnedBy(ctx, caller, g.PosterID); err != nil {
+		return g, err
+	}
+	if date == "" {
+		return g, fmt.Errorf("%w: a promise carries a date", ErrInvalid)
+	}
+	was := g
+	g.PromisedDate, g.Note = date, note
+	if err := m.updateGroupFrom(ctx, was, g); err != nil {
+		return g, err
+	}
+	return g, m.note(ctx, id, caller, "promised "+date)
+}
+
+func (m *marketManager) myLine(ctx context.Context, groupID, caller string) (*Line, error) {
+	ls, err := listOf[Line](m, m.q(ctx, RoleLine).Where("group_order_id = ? AND picker = ?", groupID, caller), RoleLine)
+	if err != nil || len(ls) == 0 {
+		return nil, err
+	}
+	return &ls[0], nil
+}
+
+func (m *marketManager) JoinGroupOrder(ctx context.Context, caller, id string, quantity float64) (Line, error) {
+	g, err := m.openGroup(ctx, id)
+	if err != nil {
+		return Line{}, err
+	}
+	if quantity <= 0 || caller == "" {
+		return Line{}, fmt.Errorf("%w: a line needs a picker and a positive quantity", ErrInvalid)
+	}
+	if l, err := m.myLine(ctx, id, caller); err != nil {
+		return Line{}, err
+	} else if l != nil {
+		l.Quantity = quantity
+		if err := m.update(ctx, RoleLine, l.ID, *l); err != nil {
+			return *l, err
+		}
+		return *l, m.note(ctx, id, caller, "changed the quantity")
+	}
+	l := Line{ID: newID(), GroupOrderID: id, Picker: caller, Quantity: quantity,
+		Answer: models.AnswerYes, AnsweredVersion: g.TermsVersion, CreatedAt: m.now()}
+	if err := m.checks(RoleLine, l); err != nil {
+		return l, err
+	}
+	if err := m.insert(ctx, RoleLine, l); err != nil {
+		return l, err
+	}
+	return l, m.note(ctx, id, caller, "joined")
+}
+
+func (m *marketManager) AskRevision(ctx context.Context, caller, id string, price, minimum float64) (GroupOrder, error) {
+	g, err := m.openGroup(ctx, id)
+	if err != nil {
+		return g, err
+	}
+	if _, err := m.posterOwnedBy(ctx, caller, g.PosterID); err != nil {
+		return g, err
+	}
+	if minimum <= 0 {
+		return g, fmt.Errorf("%w: a group order needs a minimum", ErrInvalid)
+	}
+	was := g
+	var history []terms
+	_ = json.Unmarshal([]byte(g.TermsHistory), &history)
+	history = append(history, terms{g.TermsVersion, g.Price, g.Minimum})
+	raw, _ := json.Marshal(history)
+	g.TermsHistory, g.TermsVersion = string(raw), g.TermsVersion+1
+	g.Price, g.Minimum, g.State = price, minimum, models.GroupRevising
+	if err := m.updateGroupFrom(ctx, was, g); err != nil {
+		return g, err
+	}
+	if err := m.q(ctx, RoleLine).Where("group_order_id = ?", id).Update("answer", models.AnswerWaiting).Error; err != nil {
+		return g, err
+	}
+	return g, m.note(ctx, id, caller, "asked for new terms")
+}
+
+func (m *marketManager) AnswerRevision(ctx context.Context, caller, id, answer string) (Line, error) {
+	g, err := m.openGroup(ctx, id)
+	if err != nil {
+		return Line{}, err
+	}
+	if answer != models.AnswerYes && answer != models.AnswerNo {
+		return Line{}, fmt.Errorf("%w: answer yes or no", ErrInvalid)
+	}
+	l, err := m.myLine(ctx, id, caller)
+	if err != nil {
+		return Line{}, err
+	}
+	if l == nil {
+		return Line{}, ErrNotFound
+	}
+	l.Answer, l.AnsweredVersion = answer, g.TermsVersion
+	if err := m.update(ctx, RoleLine, l.ID, *l); err != nil {
+		return *l, err
+	}
+	return *l, m.note(ctx, id, caller, "answered "+answer)
+}
+
+func (m *marketManager) view(ctx context.Context, caller string, g GroupOrder) (GroupOrderView, error) {
+	views, err := m.viewAll(ctx, caller, []GroupOrder{g})
+	if err != nil {
+		return GroupOrderView{}, err
+	}
+	return views[0], nil
+}
+
+func (m *marketManager) viewAll(ctx context.Context, caller string, gs []GroupOrder) ([]GroupOrderView, error) {
+	views := make([]GroupOrderView, 0, len(gs))
+	if len(gs) == 0 {
+		return views, nil
+	}
+	ids := make([]string, len(gs))
+	for i, g := range gs {
+		ids[i] = g.ID
+	}
+	lines, err := listOf[Line](m, m.q(ctx, RoleLine).Where("group_order_id IN ?", ids), RoleLine)
+	if err != nil {
+		return nil, err
+	}
+	linesOf := map[string][]Line{}
+	for _, l := range lines {
+		linesOf[l.GroupOrderID] = append(linesOf[l.GroupOrderID], l)
+	}
+	owned, err := m.ownedPosters(ctx, caller)
+	if err != nil {
+		return nil, err
+	}
+	coordinates := m.coordinatesOnce(ctx, caller)
+	for _, g := range gs {
+		seesAll := (g.Coordinator == caller && caller != "") || owned[g.PosterID] || coordinates()
+		views = append(views, m.assembleView(ctx, caller, g, linesOf[g.ID], seesAll))
+	}
+	return views, nil
+}
+
+func (m *marketManager) coordinatesOnce(ctx context.Context, caller string) func() bool {
+	var known, coordinates bool
+	return func() bool {
+		if !known {
+			coordinates, known = m.isWho(ctx, WhoCoordinator, caller, parties{}), true
+		}
+		return coordinates
+	}
+}
+
+func (m *marketManager) assembleView(ctx context.Context, caller string, g GroupOrder, lines []Line, seesAll bool) GroupOrderView {
+	v := GroupOrderView{GroupOrder: g, Lines: []Line{}}
+	for _, l := range lines {
+		if l.Answer != models.AnswerNo {
+			v.Total += l.Quantity
+			v.Count++
+		}
+		if seesAll || (l.Picker == caller && caller != "") {
+			l.PickerName = m.nameOf(ctx, l.Picker)
+			v.Lines = append(v.Lines, l)
+		}
+	}
+	return v
+}
+
+func (m *marketManager) GetGroupOrder(ctx context.Context, caller, id string) (GroupOrderView, error) {
+	var g GroupOrder
+	if err := m.get(ctx, RoleGroupOrder, id, &g); err != nil {
+		return GroupOrderView{}, err
+	}
+	return m.view(ctx, caller, g)
+}
+
+const (
+	defaultGroupOrderPage = 50
+	largestGroupOrderPage = 200
+)
+
+func knownGroupState(state string) bool {
+	switch state {
+	case models.GroupOpen, models.GroupRevising, models.GroupSent, models.GroupClosed, models.GroupCancelled:
+		return true
+	}
+	return false
+}
+
+func (m *marketManager) ListGroupOrdersBy(ctx context.Context, caller string, limit int, after string, mine bool, state string) ([]GroupOrderView, error) {
+	if limit < 0 {
+		return nil, fmt.Errorf("%w: a page is not negative", ErrInvalid)
+	}
+	if state != "" && !knownGroupState(state) {
+		return nil, fmt.Errorf("%w: %q is not a group order state", ErrInvalid, state)
+	}
+	if mine && caller == "" {
+		return []GroupOrderView{}, nil
+	}
+	if limit == 0 {
+		limit = defaultGroupOrderPage
+	}
+	if limit > largestGroupOrderPage {
+		limit = largestGroupOrderPage
+	}
+	q := m.q(ctx, RoleGroupOrder).Order("id").Limit(limit)
+	if after != "" {
+		q = q.Where("id > ?", after)
+	}
+	if state != "" {
+		q = q.Where("state = ?", state)
+	}
+	if mine {
+		q = q.Where("(coordinator = ? OR poster_id IN (?) OR id IN (?))", caller,
+			m.q(ctx, RolePoster).Select("id").Where("owner = ?", caller),
+			m.q(ctx, RoleLine).Select("group_order_id").Where("picker = ?", caller))
+	}
+	gs, err := listOf[GroupOrder](m, q, RoleGroupOrder)
+	if err != nil {
+		return nil, err
+	}
+	return m.viewAll(ctx, caller, gs)
+}
+
+func (m *marketManager) GroupOrderTrail(ctx context.Context, caller, id string) ([]Trail, error) {
+	var g GroupOrder
+	if err := m.get(ctx, RoleGroupOrder, id, &g); err != nil {
+		return nil, err
+	}
+	var holder Poster
+	if err := m.get(ctx, RolePoster, g.PosterID, &holder); err != nil {
+		return nil, err
+	}
+	_, ownedErr := m.posterOwnedBy(ctx, caller, g.PosterID)
+	own, err := m.myLine(ctx, id, caller)
+	if err != nil {
+		return nil, err
+	}
+	seesAll := (g.Coordinator == caller && caller != "") || ownedErr == nil || m.isWho(ctx, WhoCoordinator, caller, parties{})
+	if !seesAll && own == nil {
+		return nil, ErrNotFound
+	}
+	rows, err := listOf[Trail](m, m.q(ctx, RoleTrail).Where("order_id = ?", id).Order(clause.OrderByColumn{Column: clause.Column{Name: "at"}}), RoleTrail)
+	if err != nil {
+		return nil, err
+	}
+	out := []Trail{}
+	for _, t := range rows {
+		if seesAll || t.Actor == caller || t.Actor == g.Coordinator || t.Actor == holder.Owner {
+			t.ActorName = m.nameOf(ctx, t.Actor)
+			out = append(out, t)
+		}
+	}
+	return out, nil
+}

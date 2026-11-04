@@ -1,0 +1,81 @@
+{
+  "module": "voting",
+  "objects": [
+    {
+      "role": "poll",
+      "description": "A question put to chosen groups, answered inside a window, with the settings that say how a choice is made.",
+      "fields": [
+        { "name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true },
+        { "name": "question", "type": "string", "description": "The question the poll asks.", "required": true },
+        { "name": "mode", "type": "enum", "description": "How a choice is made: exactly one, up to a number, or votes paid for from a credit budget at the square of their count.", "values": ["one", "up_to", "quadratic"], "required": true },
+        { "name": "max_choices", "type": "int", "description": "The most distinct choices one answer may pick when the mode is up_to." },
+        { "name": "budget", "type": "int", "description": "The credits each answer may spend when the mode is quadratic." },
+        { "name": "change_allowed", "type": "bool", "description": "Whether an answer may be replaced until the poll closes." },
+        { "name": "per_group", "type": "enum", "description": "One answer per person, or one per person for each of the poll's groups they are in.", "values": ["once", "per_group"], "required": true },
+        { "name": "group_ids", "type": "json", "description": "The groups the poll goes to. Opaque ids the host owns." },
+        { "name": "opens_at", "type": "timestamp", "description": "When answers start being taken.", "required": true },
+        { "name": "closes_at", "type": "timestamp", "description": "When answers stop being taken.", "required": true },
+        { "name": "state", "type": "enum", "description": "Where the poll is in its life.", "values": ["draft", "open", "closed"], "required": true },
+        { "name": "published_at", "type": "timestamp", "description": "When the result was published; empty until then." },
+        { "name": "published_by", "type": "string", "description": "Who published the result, supplied by the mount." },
+        { "name": "published_group_ids", "type": "json", "description": "The groups the published result is shown to." },
+        { "name": "created_by", "type": "string", "description": "Who made the poll, supplied by the mount." },
+        { "name": "created_at", "type": "timestamp", "description": "When the poll was made." }
+      ],
+      "indexes": [
+        { "name": "created", "description": "The newest-first ordering every listing uses.", "fields": ["created_at"] }
+      ]
+    },
+    {
+      "role": "choice",
+      "description": "One option on a poll.",
+      "fields": [
+        { "name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true },
+        { "name": "poll_id", "type": "string", "description": "The poll the choice belongs to. The address decides, not the body.", "required": true },
+        { "name": "label", "type": "string", "description": "What the choice says.", "required": true },
+        { "name": "position", "type": "int", "description": "The choice's place in the list, counting from one." },
+        { "name": "created_at", "type": "timestamp", "description": "When the choice was added." }
+      ],
+      "indexes": [
+        { "name": "poll", "description": "A poll's choices, in order.", "fields": ["poll_id", "position"] }
+      ]
+    },
+    {
+      "role": "participation",
+      "description": "Who answered a poll: enough to stop a second answer and to count turnout, and nothing about what was chosen.",
+      "fields": [
+        { "name": "id", "type": "string", "description": "The response id. Set when the row is written.", "primary": true },
+        { "name": "poll_id", "type": "string", "description": "The poll answered.", "required": true },
+        { "name": "answered_by", "type": "string", "description": "Who answered, supplied by the mount. Never read from the request.", "required": true },
+        { "name": "group_id", "type": "string", "description": "The group the answer was given for when the poll counts per group; empty otherwise." },
+        { "name": "answered_at", "type": "timestamp", "description": "When the answer was last given." }
+      ],
+      "indexes": [
+        { "name": "once", "description": "One answer per person, per group when the poll counts per group.", "fields": ["poll_id", "answered_by", "group_id"], "unique": true }
+      ]
+    },
+    {
+      "role": "ballot",
+      "description": "What was chosen: the votes placed on each choice, enough to count, and nothing about who answered beyond an optional link to the response.",
+      "fields": [
+        { "name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true },
+        { "name": "poll_id", "type": "string", "description": "The poll the votes are for.", "required": true },
+        { "name": "response_id", "type": "string", "description": "The participation this ballot belongs to, so its owner can read and change it. A secret ballot leaves it empty." },
+        { "name": "group_id", "type": "string", "description": "The group the votes count towards when the poll counts per group; empty otherwise." },
+        { "name": "votes", "type": "json", "description": "The votes placed on each choice, keyed by choice id." },
+        { "name": "cast_at", "type": "timestamp", "description": "When the votes were cast." }
+      ],
+      "indexes": [
+        { "name": "poll", "description": "Counting one poll.", "fields": ["poll_id"] },
+        { "name": "response", "description": "Finding the ballot a response owns.", "fields": ["response_id"] }
+      ]
+    }
+  ],
+  "settings": [
+    {"name": "mode", "type": "enum", "description": "How members choose on a new poll that names no mode.", "values": ["one", "up_to", "quadratic"], "default": "one"},
+    {"name": "max_choices", "type": "int", "description": "The most distinct choices on a new up_to poll that names none. Zero means none: the poll must name its own.", "default": 0},
+    {"name": "budget", "type": "int", "description": "The credits each answer may spend on a new quadratic poll that names none. Zero means none: the poll must name its own.", "default": 0},
+    {"name": "change_allowed", "type": "bool", "description": "Whether an answer may be replaced until the poll closes, for a new poll.", "default": false},
+    {"name": "per_group", "type": "enum", "description": "One answer per person, or one for each of the poll's groups they are in, on a new poll that names neither.", "values": ["once", "per_group"], "default": "once"}
+  ]
+}

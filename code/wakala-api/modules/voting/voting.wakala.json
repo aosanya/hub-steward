@@ -1,0 +1,11 @@
+{
+  "module": "voting",
+  "domain": "wakala",
+  "instance": "app",
+  "objects": [
+    { "role": "poll", "name": "poll", "table": "polls", "description": "A poll an organisation sends to its groups." },
+    { "role": "choice", "name": "choice", "table": "choices", "description": "One option on a poll." },
+    { "role": "participation", "name": "participation", "table": "participations", "description": "Who took part in a poll." },
+    { "role": "ballot", "name": "ballot", "table": "ballots", "description": "What was chosen on a poll." }
+  ]
+}

@@ -1,0 +1,53 @@
+package routes
+
+import (
+	"wakalaserver/modules/shared/dispatch"
+	"wakalaserver/modules/shared/httpwire"
+
+	ai "wakalaserver/modules/ai"
+)
+
+type Route = httpwire.Route
+
+type Mount = dispatch.Mount
+
+var Sentinels = map[string]error{
+	"ErrAccountNotFound":  ai.ErrAccountNotFound,
+	"ErrInvalidAccount":   ai.ErrInvalidAccount,
+	"ErrDuplicateName":    ai.ErrDuplicateName,
+	"ErrInvalidKey":       ai.ErrInvalidKey,
+	"ErrNoMasterKey":      ai.ErrNoMasterKey,
+	"ErrNoKey":            ai.ErrNoKey,
+	"ErrNoDefaultAccount": ai.ErrNoDefaultAccount,
+	"ErrUnsupportedKind":  ai.ErrUnsupportedKind,
+	"ErrInvalidChat":      ai.ErrInvalidChat,
+	"ErrChatUnsupported":  ai.ErrChatUnsupported,
+	"ErrAccountOff":       ai.ErrAccountOff,
+	"ErrLimitReached":     ai.ErrLimitReached,
+	"ErrModelRefused":     ai.ErrModelRefused,
+	"ErrModelUnreached":   ai.ErrModelUnreached,
+	"ErrModelError":       ai.ErrModelError,
+	"ErrModelRedirected":  ai.ErrModelRedirected,
+	"ErrModelRateLimited": ai.ErrModelRateLimited,
+	"ErrModelForbidden":   ai.ErrModelForbidden,
+
+	"ErrRoleNotFound":      ai.ErrRoleNotFound,
+	"ErrInvalidRole":       ai.ErrInvalidRole,
+	"ErrDuplicateRoleName": ai.ErrDuplicateRoleName,
+	"ErrRevisionNotFound":  ai.ErrRevisionNotFound,
+	"ErrInvalidModelList":  ai.ErrInvalidModelList,
+
+	"ErrChatModelUnavailable": ai.ErrChatModelUnavailable,
+}
+
+var AnonymousActions = []string{}
+
+var Table = dispatch.NewTable(ai.Operations(), Sentinels, AnonymousActions...)
+
+func Build(am ai.AccountManager) ([]Route, error) { return Table.Build(am, Mount{}) }
+
+func BuildFor(am ai.AccountManager, m Mount) ([]Route, error) { return Table.Build(am, m) }
+
+func Routes(am ai.AccountManager) []Route { return Table.Routes(am, Mount{}) }
+
+func Split(am ai.AccountManager, m Mount) dispatch.Split { return Table.Split(am, m) }

@@ -1,0 +1,125 @@
+{
+  "module": "insights",
+  "objects": [
+    {
+      "role": "insight",
+      "description": "One observation put on record — what happened during a stretch of work, what got in the way, and what would be worth building because of it. Append-only: an insight is never edited or removed, and the way it grows is a note beside it.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers. Set when the row is written; a create request that carries one has it ignored.",
+          "primary": true
+        },
+        {
+          "name": "repo",
+          "type": "string",
+          "description": "Which body of work this observation concerned, named the way the people doing it name it. Empty when the work was not scoped to one."
+        },
+        {
+          "name": "subject_id",
+          "type": "string",
+          "description": "The thing the observation is about, as the mounting domain identifies it. Empty for an observation about the work itself rather than about anything it produced."
+        },
+        {
+          "name": "context_id",
+          "type": "string",
+          "description": "Which revision or working copy of the subject was open when this was captured. Empty when the subject has no revisions, or none was open."
+        },
+        {
+          "name": "source",
+          "type": "enum",
+          "description": "Whether this was recorded by something automated or typed by a person. It decides how much the reader should trust the wording, not how much they should trust the observation.",
+          "default": "auto",
+          "values": ["auto", "user"]
+        },
+        {
+          "name": "summary",
+          "type": "text",
+          "description": "A short account of what happened or was observed. The one thing an insight cannot be filed without.",
+          "required": true
+        },
+        {
+          "name": "tags",
+          "type": "string",
+          "description": "Comma-separated free text for grouping, such as \"risk, decision\". Deliberately not a closed set: nothing yet needs to filter on one, and a premature enum would refuse the word somebody actually wanted."
+        },
+        {
+          "name": "challenges",
+          "type": "text",
+          "description": "The repetitive work and friction this stretch ran into. Free prose, because the point is to capture it before it is understood well enough to categorise."
+        },
+        {
+          "name": "suggestions",
+          "type": "text",
+          "description": "The shortcuts, tooling or changes this stretch suggests are worth building. Free prose, for the same reason."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the observation was recorded. The only ordering a feed of these has."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "repo",
+          "description": "Filtering a feed down to one body of work.",
+          "fields": ["repo"]
+        },
+        {
+          "name": "subject",
+          "description": "Filtering a feed down to one subject, which is how a screen showing one thing lists what has been observed about it.",
+          "fields": ["subject_id"]
+        },
+        {
+          "name": "created",
+          "description": "The newest-first ordering every listing uses.",
+          "fields": ["created_at"]
+        }
+      ]
+    },
+    {
+      "role": "note",
+      "description": "A follow-up remark on an insight already on record. It is how an observation grows — someone confirming it, adding detail, or reporting that it happened again — without filing a second insight that repeats the first one's summary.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers. Set when the row is written.",
+          "primary": true
+        },
+        {
+          "name": "insight_id",
+          "type": "string",
+          "description": "The insight this remark is attached to. Required, and it must already exist: a note about nothing is a note nobody will ever read.",
+          "required": true
+        },
+        {
+          "name": "source",
+          "type": "enum",
+          "description": "Whether this remark was recorded by something automated or typed by a person.",
+          "default": "auto",
+          "values": ["auto", "user"]
+        },
+        {
+          "name": "text",
+          "type": "text",
+          "description": "What the remark says.",
+          "required": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the remark was recorded. Notes read oldest-first, unlike the insights feed, because a thread is read top to bottom."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "insight",
+          "description": "Reading every remark on one insight, in order.",
+          "fields": ["insight_id", "created_at"]
+        }
+      ]
+    }
+  ]
+}

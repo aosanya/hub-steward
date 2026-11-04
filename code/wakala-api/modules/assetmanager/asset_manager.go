@@ -1,0 +1,163 @@
+package mwanachamaassetmanager
+
+import (
+	"context"
+	"fmt"
+
+	"gorm.io/gorm"
+
+	"wakalaserver/modules/shared/spec"
+
+	"wakalaserver/modules/assetmanager/models"
+)
+
+// Asset, Location, Movement, Hold and their status/kind enum types are
+// aliases of their models. counterparts, so a caller needs only this
+// package's import, never models's directly — mirrors
+// mwanachama-backend-shared/orgsettings's identical convenience aliases.
+type (
+	Asset             = models.Asset
+	AssetTrackingMode = models.AssetTrackingMode
+	Location          = models.Location
+	Movement          = models.Movement
+	MovementKind      = models.MovementKind
+	Hold              = models.Hold
+	HoldStatus        = models.HoldStatus
+)
+
+const (
+	// AssetTrackingModeSerialized means one Asset row is one physical unit.
+	// See [models.AssetTrackingModeSerialized].
+	AssetTrackingModeSerialized = models.AssetTrackingModeSerialized
+
+	// AssetTrackingModeFungible means one Asset row is a type tracked as a
+	// quantity. See [models.AssetTrackingModeFungible].
+	AssetTrackingModeFungible = models.AssetTrackingModeFungible
+
+	// MovementKindArrived is stock/a unit entering the system from outside.
+	// See [models.MovementKindArrived].
+	MovementKindArrived = models.MovementKindArrived
+
+	// MovementKindTransferred is a move from one Location to another. See
+	// [models.MovementKindTransferred].
+	MovementKindTransferred = models.MovementKindTransferred
+
+	// MovementKindDeparted is stock/a unit leaving the system. See
+	// [models.MovementKindDeparted].
+	MovementKindDeparted = models.MovementKindDeparted
+
+	// MovementKindAdjusted is a counted correction with no corresponding
+	// physical move. See [models.MovementKindAdjusted].
+	MovementKindAdjusted = models.MovementKindAdjusted
+
+	// MovementKindReversed is the mirror of a prior entry. See
+	// [models.MovementKindReversed].
+	MovementKindReversed = models.MovementKindReversed
+
+	// HoldStatusReserved is the initial state of every new hold. See
+	// [models.HoldStatusReserved].
+	HoldStatusReserved = models.HoldStatusReserved
+
+	// HoldStatusCommitted is a terminal state — the full held quantity was
+	// committed. See [models.HoldStatusCommitted].
+	HoldStatusCommitted = models.HoldStatusCommitted
+
+	// HoldStatusReleased is a terminal state — the hold was released with
+	// nothing committed. See [models.HoldStatusReleased].
+	HoldStatusReleased = models.HoldStatusReleased
+
+	// HoldStatusPartiallyCommitted is a terminal state — less than the full
+	// held quantity was committed. See [models.HoldStatusPartiallyCommitted].
+	HoldStatusPartiallyCommitted = models.HoldStatusPartiallyCommitted
+)
+
+// LocationFilter scopes a [AssetManager.ListLocations] query. Zero-value
+// fields are ignored (no filtering applied for that field).
+type LocationFilter struct {
+	ParentLocationID string `query:"parent_location_id"`
+	RootOnly         bool   `query:"root_only"`
+}
+
+// AssetFilter scopes a [AssetManager.ListAssets] query. Zero-value fields
+// are ignored (no filtering applied for that field).
+type AssetFilter struct {
+	Category     string                   `query:"category"`
+	TrackingMode models.AssetTrackingMode `query:"tracking_mode"`
+	LocationID   string                   `query:"location_id"`
+}
+
+// MovementFilter scopes a [AssetManager.ListMovements] query. Zero-value
+// fields are ignored (no filtering applied for that field).
+type MovementFilter struct {
+	AssetID string              `query:"asset_id"`
+	Kind    models.MovementKind `query:"kind"`
+}
+
+// HoldFilter scopes a [AssetManager.ListHolds] query. Zero-value fields are
+// ignored (no filtering applied for that field).
+type HoldFilter struct {
+	AssetID    string            `query:"asset_id"`
+	LocationID string            `query:"location_id"`
+	Status     models.HoldStatus `query:"status"`
+}
+
+// AssetManager is the primary interface for asset/inventory lifecycle
+// management. This is a single-tenant package — one deployment serves one
+// owner, so no method takes a tenant-scoping argument, mirroring
+// mwanachama-backend-actor.UserManager's shape.
+//
+// Implementations must be safe for concurrent use.
+type AssetManager interface {
+	// Location
+
+	CreateLocation(ctx context.Context, l models.Location) (models.Location, error)
+	GetLocation(ctx context.Context, locationID string) (models.Location, error)
+	UpdateLocation(ctx context.Context, l models.Location) (models.Location, error)
+	DeleteLocation(ctx context.Context, locationID string) error
+	ListLocations(ctx context.Context, filter LocationFilter) ([]models.Location, error)
+	ListDescendantLocations(ctx context.Context, locationID string) ([]models.Location, error)
+
+	// Asset
+
+	CreateAsset(ctx context.Context, a models.Asset) (models.Asset, error)
+	GetAsset(ctx context.Context, assetID string) (models.Asset, error)
+	UpdateAsset(ctx context.Context, a models.Asset) (models.Asset, error)
+	DeleteAsset(ctx context.Context, assetID string) error
+	ListAssets(ctx context.Context, filter AssetFilter) ([]models.Asset, error)
+
+	// Movement
+
+	PostMovement(ctx context.Context, mv models.Movement) (models.Movement, error)
+	ReverseMovement(ctx context.Context, movementID, performedBy, note string) (models.Movement, error)
+	GetMovement(ctx context.Context, movementID string) (models.Movement, error)
+	ListMovements(ctx context.Context, filter MovementFilter) ([]models.Movement, error)
+	GetAssetBalance(ctx context.Context, assetID, locationID string) (int64, error)
+
+	// Hold
+
+	CreateHold(ctx context.Context, h models.Hold) (models.Hold, error)
+	GetHold(ctx context.Context, holdID string) (models.Hold, error)
+	CommitHold(ctx context.Context, holdID string, quantity int64, kind models.MovementKind, toLocationID, performedBy string) (models.Hold, models.Movement, error)
+	ReleaseHold(ctx context.Context, holdID string) (models.Hold, error)
+	ListHolds(ctx context.Context, filter HoldFilter) ([]models.Hold, error)
+	ListHoldsExpiredAsOf(ctx context.Context, cutoffRFC3339 string) ([]models.Hold, error)
+}
+
+type assetManager struct {
+	db    *gorm.DB
+	store *store
+}
+
+func NewAssetManager(db *gorm.DB, s *spec.Spec) (AssetManager, error) {
+	st, err := newStore(db, s, map[string]any{
+		roleLocation:     models.Location{},
+		roleAsset:        models.Asset{},
+		roleMovement:     models.Movement{},
+		roleHold:         models.Hold{},
+		roleCodeSequence: codeSequence{},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("NewAssetManager: %w", err)
+	}
+	return &assetManager{db: db, store: st}, nil
+}

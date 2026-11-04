@@ -1,0 +1,137 @@
+{
+  "operations": {
+    "put_rating": {
+      "method": "PUT",
+      "path": "/ratings/{item}",
+      "call": "PutRating",
+      "action": "ratings.rating.put",
+      "title": "Rate an item",
+      "description": "Record the caller's value for one item on the module's 0 to 1 scale. A repeat on the same item replaces the earlier value. The caller is the rater and is never read from the request.",
+      "args": [
+        {
+          "from": "body",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "item",
+          "into": "Item",
+          "description": "The key of the item being rated."
+        },
+        {
+          "from": "caller",
+          "as": "rater",
+          "into": "Rater",
+          "description": "Whose rating this is, supplied by the mount from its caller. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_ratings": {
+      "method": "GET",
+      "path": "/ratings",
+      "call": "ListRatings",
+      "action": "ratings.rating.list",
+      "title": "List ratings",
+      "description": "List ratings by rater, by item, or by both, newest first. A listing names at least one of the two; an unscoped listing is refused.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "delete_rating": {
+      "method": "DELETE",
+      "path": "/ratings/{item}",
+      "call": "DeleteRating",
+      "action": "ratings.rating.delete",
+      "status": 204,
+      "title": "Withdraw a rating",
+      "description": "Remove the caller's own rating of one item. Similarities that rested on it are re-scored.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "rater",
+          "description": "Whose rating to remove, supplied by the mount from its caller."
+        },
+        {
+          "from": "path",
+          "as": "item",
+          "description": "The key of the item whose rating is withdrawn."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_similarities": {
+      "method": "GET",
+      "path": "/similar/{key}",
+      "call": "ListSimilarities",
+      "action": "ratings.similarity.list",
+      "title": "List similar keys",
+      "description": "The stored neighbours of one key, closest first: raters alike in taste by default, or items alike in who rated them when kind is item.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        },
+        {
+          "from": "path",
+          "as": "key",
+          "into": "Key",
+          "description": "The rater or item whose neighbours to list."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "recommend": {
+      "method": "GET",
+      "path": "/recommend",
+      "call": "Recommend",
+      "action": "ratings.recommendation.list",
+      "title": "Recommend items",
+      "description": "Items the caller has not rated, ranked by what the caller's most similar raters gave them. Empty for a caller with no neighbours yet.",
+      "args": [
+        {
+          "from": "caller",
+          "as": "rater",
+          "description": "Who to recommend for, supplied by the mount from its caller."
+        },
+        {
+          "from": "query",
+          "as": "n",
+          "description": "How many items to return. Defaults to 10, at most 100."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    }
+  },
+  "errors": {
+    "ErrRatingNotFound": 404,
+    "ErrSettingNotFound": 404,
+    "ErrInvalidRating": 400,
+    "ErrInvalidSimilarity": 400,
+    "ErrInvalidSetting": 400
+  }
+}

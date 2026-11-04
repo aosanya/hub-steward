@@ -1,0 +1,790 @@
+{
+  "module": "ai",
+  "objects": [
+    {
+      "role": "account",
+      "description": "An agency's standing with one model provider.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers. Minted when the row is written.",
+          "primary": true
+        },
+        {
+          "name": "agency_id",
+          "type": "string",
+          "description": "The opaque id of the agency that owns the account, supplied by the host from the address. Never read from a request body.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "What the agency calls the account. Unique within one agency.",
+          "required": true
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "description": "The provider kind, which decides the adapter used to reach the model. A kind with no adapter is refused when the account is saved. No default.",
+          "required": true
+        },
+        {
+          "name": "base_url",
+          "type": "string",
+          "description": "The address of the provider's API.",
+          "required": true
+        },
+        {
+          "name": "model_name",
+          "type": "string",
+          "description": "The model the account asks for, in the provider's own words.",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "description": "Whether the account may be used.",
+          "required": true,
+          "values": [
+            "enabled",
+            "disabled"
+          ]
+        },
+        {
+          "name": "key_set",
+          "type": "bool",
+          "description": "Whether a key is stored for the account. The key itself is never shown."
+        },
+        {
+          "name": "last_test_result",
+          "type": "string",
+          "description": "The outcome of the last test of the account. Written by the test operation."
+        },
+        {
+          "name": "last_tested_at",
+          "type": "string",
+          "description": "When the account was last tested."
+        },
+        {
+          "name": "last_test_prompt",
+          "type": "string",
+          "description": "The message the last test sent to the model. Written by the test operation; empty when no test has sent one, including a test that found no key."
+        },
+        {
+          "name": "last_test_reply",
+          "type": "string",
+          "description": "What the model answered to the last test, trimmed, without control characters, at most 120 characters. Written by the test operation; empty when the model did not answer. Dropped whole if it holds the account's key."
+        },
+        {
+          "name": "last_test_ms",
+          "type": "int",
+          "description": "How long the last test's call took, in whole milliseconds. Written by the test operation; zero when never tested or when no call was made."
+        },
+        {
+          "name": "chat_enabled",
+          "type": "bool",
+          "description": "Whether the studio's chat may use the account. Off unless switched on. The module never requires one account to be on; the console does."
+        },
+        {
+          "name": "chat_label",
+          "type": "string",
+          "description": "The name the chat's picker shows for the account, at most 60 characters. Empty means the account's model name.",
+          "matches": "chat_label"
+        },
+        {
+          "name": "is_default",
+          "type": "bool",
+          "description": "Whether the agency marked this account as its default. At most one account of an agency is the default; marking another moves it. Written by the set default operation only."
+        },
+        {
+          "name": "tokens_per_call",
+          "type": "int",
+          "description": "The most tokens one call may use. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "tokens_per_day",
+          "type": "int",
+          "description": "The most tokens the account may use in a day. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "tokens_per_month",
+          "type": "int",
+          "description": "The most tokens the account may use in a month. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "requests_per_day",
+          "type": "int",
+          "description": "The most requests the account may make in a day. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "requests_per_minute",
+          "type": "int",
+          "description": "The most requests the account may make in a minute. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "tokens_per_week",
+          "type": "int",
+          "nullable": true,
+          "description": "The most tokens used in a rolling seven days. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "requests_per_week",
+          "type": "int",
+          "nullable": true,
+          "description": "The most requests made in a rolling seven days. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "tokens_per_test",
+          "type": "int",
+          "nullable": true,
+          "description": "The most tokens one test run may use. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "scenarios_at_once",
+          "type": "int",
+          "nullable": true,
+          "description": "The most test scenarios that may run at the same time. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "description": "When the account was added."
+        },
+        {
+          "name": "updated_at",
+          "type": "string",
+          "description": "When the account was last changed."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "agency_name",
+          "description": "One name once per agency.",
+          "fields": [
+            "agency_id",
+            "name"
+          ],
+          "unique": true
+        },
+        {
+          "name": "agency",
+          "description": "Listing one agency's accounts.",
+          "fields": [
+            "agency_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "account_key",
+      "description": "The sealed key of an account, kept apart so that no operation can return it.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The id of the account this key belongs to.",
+          "primary": true
+        },
+        {
+          "name": "agency_id",
+          "type": "string",
+          "description": "The agency that owns the account.",
+          "required": true
+        },
+        {
+          "name": "sealed",
+          "type": "text",
+          "description": "The key sealed with AES-256-GCM under the host's master key. No operation reaches this object.",
+          "required": true
+        },
+        {
+          "name": "updated_at",
+          "type": "string",
+          "description": "When the key was last replaced."
+        }
+      ]
+    },
+    {
+      "role": "usage",
+      "description": "Requests and tokens used by one account, optionally for one AI role, in one minute, day or month window.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, derived from the window.",
+          "primary": true
+        },
+        {
+          "name": "agency_id",
+          "type": "string",
+          "description": "The agency that owns the account.",
+          "required": true
+        },
+        {
+          "name": "account_id",
+          "type": "string",
+          "description": "The account used.",
+          "required": true
+        },
+        {
+          "name": "role_id",
+          "type": "string",
+          "description": "The AI role the use was for. Empty when none."
+        },
+        {
+          "name": "window_kind",
+          "type": "enum",
+          "description": "The window kind.",
+          "required": true,
+          "values": [
+            "minute",
+            "day",
+            "month"
+          ]
+        },
+        {
+          "name": "window_start",
+          "type": "string",
+          "description": "UTC start of the window.",
+          "required": true
+        },
+        {
+          "name": "requests",
+          "type": "int",
+          "description": "Requests counted in the window."
+        },
+        {
+          "name": "tokens_in",
+          "type": "int",
+          "description": "Tokens sent in the window."
+        },
+        {
+          "name": "tokens_out",
+          "type": "int",
+          "description": "Tokens received in the window."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "account_window",
+          "description": "Summing an account's window.",
+          "fields": [
+            "agency_id",
+            "account_id",
+            "window_kind",
+            "window_start"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "usage_day",
+      "description": "Requests and tokens used in one UTC day by one account, optionally one AI role, for one kind of work, started by one person, on the model the account named at that moment. Empty person means the agent started it.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, derived from the agency, account, role, day, model, kind and person.",
+          "primary": true
+        },
+        {
+          "name": "agency_id",
+          "type": "string",
+          "description": "The agency that owns the account.",
+          "required": true
+        },
+        {
+          "name": "account_id",
+          "type": "string",
+          "description": "The account used.",
+          "required": true
+        },
+        {
+          "name": "role_id",
+          "type": "string",
+          "description": "The AI role the use was for. Empty when none."
+        },
+        {
+          "name": "day",
+          "type": "string",
+          "description": "The UTC day, as YYYY-MM-DD.",
+          "required": true
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "description": "The model name the account carried when the call was made."
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "description": "The kind of work: chat, workflow_run, agency_review, test_run or background_job. Empty on rows counted before kinds were kept, read as other."
+        },
+        {
+          "name": "person",
+          "type": "string",
+          "description": "The opaque id of the member or manager who started the work. Empty when the agent started it."
+        },
+        {
+          "name": "requests",
+          "type": "int",
+          "description": "Requests counted that day."
+        },
+        {
+          "name": "tokens_in",
+          "type": "int",
+          "description": "Tokens sent that day."
+        },
+        {
+          "name": "tokens_out",
+          "type": "int",
+          "description": "Tokens received that day."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "agency_day",
+          "description": "Reading an agency's use over a span of days.",
+          "fields": [
+            "agency_id",
+            "day"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "test_run_usage",
+      "description": "Requests and tokens one test run used at one step, by one account and optionally one AI role.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, derived from the agency, the test run and the step.",
+          "primary": true
+        },
+        {
+          "name": "agency_id",
+          "type": "string",
+          "description": "The agency that owns the account.",
+          "required": true
+        },
+        {
+          "name": "account_id",
+          "type": "string",
+          "description": "The account used.",
+          "required": true
+        },
+        {
+          "name": "role_id",
+          "type": "string",
+          "description": "The AI role the use was for. Empty when none."
+        },
+        {
+          "name": "test_run_id",
+          "type": "string",
+          "description": "The opaque id of the test run, supplied by the caller.",
+          "required": true
+        },
+        {
+          "name": "step",
+          "type": "string",
+          "description": "The opaque id of the step of the run. Empty when the caller names none."
+        },
+        {
+          "name": "requests",
+          "type": "int",
+          "description": "Requests counted at the step."
+        },
+        {
+          "name": "tokens_in",
+          "type": "int",
+          "description": "Tokens sent at the step."
+        },
+        {
+          "name": "tokens_out",
+          "type": "int",
+          "description": "Tokens received at the step."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "test_run",
+          "description": "Summing a test run.",
+          "fields": [
+            "agency_id",
+            "test_run_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "ai_role",
+      "description": "A named container for a system prompt: the agency's instructions for a seat, read live, followed by this role's own fine-tuning.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "agency_id",
+          "type": "string",
+          "description": "The opaque id of the owning agency, from the address. Never read from a request body.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "What the agency calls the AI role. Unique within one agency.",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "What the AI role is for."
+        },
+        {
+          "name": "fine_tuning",
+          "type": "text",
+          "description": "The agency's own additions to the prompt, at most 20000 characters. Required when the agency's instructions are switched off."
+        },
+        {
+          "name": "use_agency_instructions",
+          "type": "bool",
+          "description": "Whether the agency's instructions for the seat come first in the prompt. On unless switched off."
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "description": "Whether the AI role may be used.",
+          "required": true,
+          "values": [
+            "enabled",
+            "disabled"
+          ]
+        },
+        {
+          "name": "tokens_per_call",
+          "type": "int",
+          "description": "The most tokens one call may use the AI role. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "tokens_per_day",
+          "type": "int",
+          "description": "The most tokens it may use in a day the AI role. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "tokens_per_month",
+          "type": "int",
+          "description": "The most tokens it may use in a month the AI role. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "requests_per_day",
+          "type": "int",
+          "description": "The most requests it may make in a day the AI role. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "requests_per_minute",
+          "type": "int",
+          "description": "The most requests it may make in a minute the AI role. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "tokens_per_week",
+          "type": "int",
+          "nullable": true,
+          "description": "The most tokens used in a rolling seven days. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "requests_per_week",
+          "type": "int",
+          "nullable": true,
+          "description": "The most requests made in a rolling seven days. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "tokens_per_test",
+          "type": "int",
+          "nullable": true,
+          "description": "The most tokens one test run may use. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "scenarios_at_once",
+          "type": "int",
+          "nullable": true,
+          "description": "The most test scenarios that may run at the same time. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "account_id",
+          "type": "string",
+          "description": "The opaque id of the account this AI role calls the model through. Empty means none is mapped."
+        },
+        {
+          "name": "agency_role_id",
+          "type": "string",
+          "description": "The opaque id of the agency role this AI role speaks for. Empty means none."
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "description": "When the AI role was added."
+        },
+        {
+          "name": "updated_at",
+          "type": "string",
+          "description": "When the AI role was last changed."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "agency_name",
+          "description": "One name once per agency.",
+          "fields": [
+            "agency_id",
+            "name"
+          ],
+          "unique": true
+        },
+        {
+          "name": "agency",
+          "description": "Listing one agency's AI roles.",
+          "fields": [
+            "agency_id"
+          ]
+        },
+        {
+          "name": "agency_role",
+          "description": "Finding the AI role for an agency role.",
+          "fields": [
+            "agency_id",
+            "agency_role_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "ai_role_revision",
+      "description": "The values an AI role held before a save of its fine-tuning, switch or limits.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "agency_id",
+          "type": "string",
+          "description": "The owning agency.",
+          "required": true
+        },
+        {
+          "name": "role_id",
+          "type": "string",
+          "description": "The AI role the revision belongs to.",
+          "required": true
+        },
+        {
+          "name": "fine_tuning",
+          "type": "text",
+          "description": "The fine-tuning before the save."
+        },
+        {
+          "name": "use_agency_instructions",
+          "type": "bool",
+          "description": "The switch before the save."
+        },
+        {
+          "name": "tokens_per_call",
+          "type": "int",
+          "description": "The most tokens one call may use the AI role held before the save. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "tokens_per_day",
+          "type": "int",
+          "description": "The most tokens it may use in a day the AI role held before the save. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "tokens_per_month",
+          "type": "int",
+          "description": "The most tokens it may use in a month the AI role held before the save. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "requests_per_day",
+          "type": "int",
+          "description": "The most requests it may make in a day the AI role held before the save. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "requests_per_minute",
+          "type": "int",
+          "description": "The most requests it may make in a minute the AI role held before the save. Null means it does not apply; zero means none.",
+          "nullable": true
+        },
+        {
+          "name": "tokens_per_week",
+          "type": "int",
+          "nullable": true,
+          "description": "The most tokens used in a rolling seven days. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "requests_per_week",
+          "type": "int",
+          "nullable": true,
+          "description": "The most requests made in a rolling seven days. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "tokens_per_test",
+          "type": "int",
+          "nullable": true,
+          "description": "The most tokens one test run may use. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "scenarios_at_once",
+          "type": "int",
+          "nullable": true,
+          "description": "The most test scenarios that may run at the same time. Null means it does not apply; zero means none."
+        },
+        {
+          "name": "saved_by",
+          "type": "string",
+          "description": "The opaque id of who saved, from the caller. Never read from a request body."
+        },
+        {
+          "name": "saved_at",
+          "type": "string",
+          "description": "When the save happened.",
+          "required": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "role_saved",
+          "description": "Listing one AI role's history.",
+          "fields": [
+            "agency_id",
+            "role_id",
+            "saved_at"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "model_entry",
+      "description": "One model name listed for one provider kind, either on an agency's list from its last refresh or on the standard starting list.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "agency_id",
+          "type": "string",
+          "description": "The agency whose account key listed the model. Empty on the standard starting list, which every agency sees."
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "description": "The provider kind the model belongs to, the same word an account carries.",
+          "required": true
+        },
+        {
+          "name": "model_name",
+          "type": "string",
+          "description": "The model in the provider's own words, as an account's model name takes it.",
+          "required": true
+        },
+        {
+          "name": "source",
+          "type": "enum",
+          "description": "Where the entry came from: the provider's own list, or the standard starting list.",
+          "required": true,
+          "values": [
+            "provider",
+            "starting"
+          ]
+        },
+        {
+          "name": "listed_at",
+          "type": "string",
+          "description": "When the entry was written.",
+          "required": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "provider_listing",
+          "description": "Reading one provider kind's list for one agency.",
+          "fields": [
+            "agency_id",
+            "provider",
+            "source"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "chat_pick",
+      "description": "The model one person picked in the chat box of one agency. One row per person.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, the agency and the person.",
+          "primary": true
+        },
+        {
+          "name": "agency_id",
+          "type": "string",
+          "description": "The agency whose chat the pick is for.",
+          "required": true
+        },
+        {
+          "name": "person_id",
+          "type": "string",
+          "description": "The signed-in person, supplied by the host. Never read from a request.",
+          "required": true
+        },
+        {
+          "name": "account_id",
+          "type": "string",
+          "description": "The account the person picked.",
+          "required": true
+        },
+        {
+          "name": "updated_at",
+          "type": "string",
+          "description": "When the person last picked.",
+          "required": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pick_account",
+          "description": "Removing the picks of an account.",
+          "fields": [
+            "agency_id",
+            "account_id"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "module": "insights",
+  "domain": "wakala",
+  "instance": "app",
+  "objects": [
+    {
+      "role": "insight",
+      "name": "insight",
+      "table": "insights",
+      "description": "One observation from a working session or an agency chat — what the session ran into and what it suggests building."
+    },
+    {
+      "role": "note",
+      "name": "insight_note",
+      "table": "insight_notes",
+      "description": "A follow-up remark on one recorded insight."
+    }
+  ]
+}

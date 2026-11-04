@@ -1,0 +1,142 @@
+{
+  "operations": {
+    "create_poll": {
+      "method": "POST",
+      "path": "/polls",
+      "call": "CreatePoll",
+      "action": "voting.poll.create",
+      "status": 201,
+      "title": "Make poll",
+      "description": "Make a draft poll: its question, how a choice is made, the groups it goes to and its window.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "caller", "as": "created_by", "into": "CreatedBy", "description": "Who made the poll, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "get_poll": {
+      "method": "GET",
+      "path": "/polls/{pollID}",
+      "call": "GetPoll",
+      "action": "voting.poll.read",
+      "title": "Read poll",
+      "description": "Read one poll with its settings and state.",
+      "args": [{ "from": "path", "as": "pollID", "description": "The poll to read." }],
+      "returns": [{ "body": true }]
+    },
+    "add_choice": {
+      "method": "POST",
+      "path": "/polls/{pollID}/choices",
+      "call": "AddChoice",
+      "action": "voting.choice.create",
+      "status": 201,
+      "title": "Add choice",
+      "description": "Add a choice to a draft poll, after the ones it has.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "path", "as": "pollID", "into": "PollID", "description": "The poll the choice belongs to. The address decides, not the body." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "list_choices": {
+      "method": "GET",
+      "path": "/polls/{pollID}/choices",
+      "call": "ListChoices",
+      "action": "voting.choice.list",
+      "title": "List choices",
+      "description": "List a poll's choices in order.",
+      "args": [{ "from": "path", "as": "pollID", "description": "The poll whose choices to list." }],
+      "returns": [{ "body": true }]
+    },
+    "answer_poll": {
+      "method": "POST",
+      "path": "/polls/{pollID}/answers",
+      "call": "AnswerPoll",
+      "action": "voting.answer.create",
+      "status": 201,
+      "title": "Answer poll",
+      "description": "Answer a poll inside its window, from a caller in one of its groups: the votes placed on each choice, keyed by choice id, and under per_group the group the answer is for. Answers with who answered and when; what was chosen is kept apart.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "path", "as": "pollID", "into": "PollID", "description": "The poll answered. The address decides, not the body." },
+        { "from": "caller", "as": "answered_by", "into": "AnsweredBy", "description": "Who answered, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "count_poll": {
+      "method": "GET",
+      "path": "/polls/{pollID}/count",
+      "call": "CountPoll",
+      "action": "voting.count.read",
+      "title": "Count poll",
+      "description": "The holders' count, at any time: the votes on each choice, in order, and how many answered. Computed on every call; who chose what is not in it.",
+      "args": [{ "from": "path", "as": "pollID", "description": "The poll to count." }],
+      "returns": [{ "body": true }]
+    },
+    "publish_result": {
+      "method": "POST",
+      "path": "/polls/{pollID}/result",
+      "call": "PublishResult",
+      "action": "voting.result.publish",
+      "title": "Publish result",
+      "description": "Publish a poll's result to the groups named in group_ids, whose members may then read its count. Publishing again replaces the groups.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "path", "as": "pollID", "into": "PollID", "description": "The poll whose result is published. The address decides, not the body." },
+        { "from": "caller", "as": "published_by", "into": "PublishedBy", "description": "Who published the result, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "read_published_count": {
+      "method": "GET",
+      "path": "/polls/{pollID}/result",
+      "call": "ReadPublishedCount",
+      "action": "voting.result.read",
+      "title": "Read published result",
+      "description": "A member's read of a published result: the votes on each choice and how many answered, once the result is published to one of the caller's groups. A poll not published to the caller answers as a missing one.",
+      "args": [
+        { "from": "path", "as": "pollID", "description": "The poll whose result to read." },
+        { "from": "caller", "as": "reader" }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "list_responses": {
+      "method": "GET",
+      "path": "/polls/{pollID}/responses",
+      "call": "ListResponses",
+      "action": "voting.response.list",
+      "title": "List who chose what",
+      "description": "A holder's read of who chose what: each response with who answered, through which group, when, and the votes it gave each choice. At any time, before or after publishing.",
+      "args": [{ "from": "path", "as": "pollID", "description": "The poll whose responses to list." }],
+      "returns": [{ "body": true }]
+    },
+    "read_own_responses": {
+      "method": "GET",
+      "path": "/polls/{pollID}/responses/mine",
+      "call": "ReadOwnResponses",
+      "action": "voting.response.read_own",
+      "title": "Read my choice",
+      "description": "A member's read of their own response on a poll, with the votes it gave each choice, and nobody else's.",
+      "args": [
+        { "from": "path", "as": "pollID", "description": "The poll whose own response to read." },
+        { "from": "caller", "as": "reader" }
+      ],
+      "returns": [{ "body": true }]
+    }
+  },
+  "errors": {
+    "ErrPollNotFound": 404,
+    "ErrInvalidPoll": 400,
+    "ErrInvalidChoice": 400,
+    "ErrNoCreator": 401,
+    "ErrPollNotDraft": 409,
+    "ErrNoAnswerer": 401,
+    "ErrOutsideWindow": 409,
+    "ErrNotInPollGroups": 404,
+    "ErrInvalidAnswer": 400,
+    "ErrAlreadyAnswered": 409,
+    "ErrNoPublisher": 401,
+    "ErrInvalidPublication": 400,
+    "ErrNoReader": 401
+  }
+}

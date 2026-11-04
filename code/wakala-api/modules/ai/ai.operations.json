@@ -1,0 +1,928 @@
+{
+  "operations": {
+    "create_account": {
+      "method": "POST",
+      "path": "/agencies/{agencyID}/accounts",
+      "call": "CreateAccount",
+      "action": "ai.account.create",
+      "tool": "ai_create_account",
+      "title": "Add account",
+      "description": "Add an account. The key is set separately and never returned. The chat switch starts off and the chat label empty unless sent.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "list_accounts": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/accounts",
+      "call": "ListAccounts",
+      "action": "ai.account.list",
+      "tool": "ai_list_accounts",
+      "title": "List accounts",
+      "description": "List one agency's accounts.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_account": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/accounts/{accountID}",
+      "call": "GetAccount",
+      "action": "ai.account.read",
+      "tool": "ai_get_account",
+      "title": "Read account",
+      "description": "Read one account.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "accountID",
+          "refers": "ai.account",
+          "description": "The account."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "update_account": {
+      "method": "PUT",
+      "path": "/agencies/{agencyID}/accounts/{accountID}",
+      "call": "UpdateAccount",
+      "action": "ai.account.update",
+      "tool": "ai_update_account",
+      "title": "Change account",
+      "description": "Replace an account's settings and limits. The key is untouched. The chat switch and chat label are replaced only when sent. A limit left out of the body is cleared, so send the ones to keep.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "accountID",
+          "refers": "ai.account",
+          "description": "The account."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_limits": {
+      "method": "PUT",
+      "path": "/agencies/{agencyID}/accounts/{accountID}/limits",
+      "call": "SetAccountLimits",
+      "action": "ai.limits.set",
+      "tool": "ai_set_limits",
+      "title": "Set limits",
+      "description": "Replace only the account's nine limits, tokens per test and scenarios at once among them (zero means none, null means the limit does not apply). Name, provider, address, model and key are untouched. A limit left out of the body is cleared, so send the ones to keep.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "accountID",
+          "refers": "ai.account",
+          "description": "The account."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_default_account": {
+      "method": "PUT",
+      "path": "/agencies/{agencyID}/accounts/{accountID}/default",
+      "call": "SetDefaultAccount",
+      "action": "ai.account.default_set",
+      "tool": "ai_set_default_account",
+      "title": "Mark default",
+      "description": "Mark the account as the agency's default. A second mark moves it: only one account of an agency is the default at a time. A test run spends from the default.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "accountID",
+          "refers": "ai.account",
+          "description": "The account to mark."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_default_account": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/default-account",
+      "call": "GetDefaultAccount",
+      "action": "ai.account.default_read",
+      "tool": "ai_get_default_account",
+      "title": "Read default",
+      "description": "Read the agency's default account. With none marked it answers a refusal that says to mark one under Models.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "delete_account": {
+      "method": "DELETE",
+      "path": "/agencies/{agencyID}/accounts/{accountID}",
+      "call": "DeleteAccount",
+      "action": "ai.account.delete",
+      "tool": "ai_delete_account",
+      "title": "Remove account",
+      "description": "Remove an account and its key.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "accountID",
+          "refers": "ai.account",
+          "description": "The account."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 204
+    },
+    "set_account_key": {
+      "method": "PUT",
+      "path": "/agencies/{agencyID}/accounts/{accountID}/key",
+      "call": "SetAccountKey",
+      "action": "ai.account.key_set",
+      "tool": "ai_set_account_key",
+      "title": "Set key",
+      "description": "Replace the account's key. Written, never read back.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "accountID",
+          "refers": "ai.account",
+          "description": "The account."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "test_account": {
+      "method": "POST",
+      "path": "/agencies/{agencyID}/accounts/{accountID}/test",
+      "call": "TestAccount",
+      "action": "ai.account.test",
+      "tool": "ai_test_account",
+      "title": "Test account",
+      "description": "Send one short request and store whether it worked, the message sent, the model's short reply (trimmed, at most 120 characters) and how many milliseconds the call took. Give key to test a key that is not saved yet: it is used for this one request, never stored, and the stored result is left alone. Leave it out to test the saved key. The key is never returned.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "accountID",
+          "refers": "ai.account",
+          "description": "The account."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
+    },
+    "chat_account": {
+      "method": "POST",
+      "path": "/agencies/{agencyID}/accounts/{accountID}/chat",
+      "call": "ChatAccount",
+      "action": "ai.account.chat",
+      "tool": "ai_chat_account",
+      "title": "Chat with account",
+      "description": "Send a conversation to the account's model with its saved key and get back the model's next message. messages is the whole conversation so far, oldest first, each with a role (system, user, assistant or tool) and its content; an assistant message that asked for tools carries tool_calls (id, name, arguments as an object), and a tool message answers one of them with its tool_call_id. tools lists what the model may ask for (name, description, parameters as a JSON schema object). The reply is one assistant message: content, and tool_calls when the model wants a tool run; the caller runs it and sends the whole conversation again with the result. Give role_id to chat as one AI role: that agent's own limits apply and the usage is counted against it as well as the account. Nothing is stored except the usage, which counts against the limits. The key is never returned.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "accountID",
+          "refers": "ai.account",
+          "description": "The account."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
+    },
+    "record_usage": {
+      "method": "POST",
+      "path": "/agencies/{agencyID}/usage",
+      "call": "RecordUsage",
+      "action": "ai.usage.record",
+      "tool": "ai_record_usage",
+      "title": "Record use",
+      "description": "Count one call's requests and tokens. A call made for a test run names the run and the step as test_run_id and step, and is also counted against the run.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "check_limits": {
+      "method": "POST",
+      "path": "/agencies/{agencyID}/limits/check",
+      "call": "CheckLimits",
+      "action": "ai.limits.check",
+      "tool": "ai_check_limits",
+      "title": "Check limits",
+      "description": "Answer whether a call may go ahead, and the most tokens it may use. A call for a test run names it as test_run_id; once the run has used its tokens per test the answer is refused with budget_reached. The answer always carries the tokens per test and scenarios at once in force, zero when no limit applies. A refusal also names the limit by the key it is saved under (limit), whose it is (owner, role or account), its maximum and how much is used, so a raise can be offered.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
+    },
+    "list_usage": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/accounts/{accountID}/usage",
+      "call": "ListUsage",
+      "action": "ai.usage.list",
+      "tool": "ai_list_usage",
+      "title": "List use",
+      "description": "Each limit of an account beside its count.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "accountID",
+          "refers": "ai.account",
+          "description": "The account."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
+    },
+    "usage_breakdown": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/usage/breakdown",
+      "call": "UsageBreakdown",
+      "action": "ai.usage.breakdown",
+      "tool": "ai_usage_breakdown",
+      "title": "Break down use",
+      "description": "Where an agency's tokens went over a span: one row for each day, model, AI role, kind of work (chat, workflow_run, agency_review, test_run, background_job or other) and person (empty when the agent started the work), with the requests, tokens_in and tokens_out of that row. window is today, 7d (this day and the six before), month (the first of this month to today) or last_month. group_by is person or agent and only says which of the two the caller will chart: the rows always carry both. Give role_id or model to keep one agent or one model. Managers only.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "query",
+          "as": "window",
+          "required": true,
+          "description": "The span: today, 7d, month or last_month."
+        },
+        {
+          "from": "query",
+          "as": "group_by",
+          "description": "person or agent. Leave out for agent."
+        },
+        {
+          "from": "query",
+          "as": "role_id",
+          "description": "An AI role to keep. Leave out for every agent."
+        },
+        {
+          "from": "query",
+          "as": "model",
+          "description": "A model name to keep. Leave out for every model."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
+    },
+    "list_test_run_usage": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/test-runs/{testRunID}/usage",
+      "call": "ListTestRunUsage",
+      "action": "ai.usage.list_test_run",
+      "tool": "ai_list_test_run_usage",
+      "title": "List a test run's use",
+      "description": "The tokens one test run used, step by step and in total.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "testRunID",
+          "description": "The test run."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
+    },
+    "create_ai_role": {
+      "method": "POST",
+      "path": "/agencies/{agencyID}/ai-roles",
+      "call": "CreateAIRole",
+      "action": "ai.role.create",
+      "tool": "ai_create_role",
+      "title": "Add AI role",
+      "description": "Add an AI role: a named system prompt made of the agency's instructions and its own fine-tuning.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 201
+    },
+    "list_ai_roles": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/ai-roles",
+      "call": "ListAIRolesOfSeat",
+      "action": "ai.role.list",
+      "tool": "ai_list_roles",
+      "title": "List AI roles",
+      "description": "List one agency's AI roles, oldest first. Give agency_role_id to list only the agents mapped to that seat.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "query",
+          "as": "agency_role_id",
+          "description": "An agency role (seat) to list the agents of. Leave out for every AI role."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_ai_role": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/ai-roles/{roleID}",
+      "call": "GetAIRole",
+      "action": "ai.role.read",
+      "tool": "ai_get_role",
+      "title": "Read AI role",
+      "description": "Read one AI role.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "roleID",
+          "refers": "ai.ai_role",
+          "description": "The AI role."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "update_ai_role": {
+      "method": "PUT",
+      "path": "/agencies/{agencyID}/ai-roles/{roleID}",
+      "call": "UpdateAIRole",
+      "action": "ai.role.update",
+      "tool": "ai_update_role",
+      "title": "Change AI role",
+      "description": "Replace an AI role's settings. A change to the fine-tuning, the switch or a limit takes effect on the next resolve and is kept as a revision. A limit left out of the body is cleared, so send the ones to keep.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "roleID",
+          "refers": "ai.ai_role",
+          "description": "The AI role."
+        },
+        {
+          "from": "caller",
+          "as": "saved_by",
+          "description": "Who saved, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "delete_ai_role": {
+      "method": "DELETE",
+      "path": "/agencies/{agencyID}/ai-roles/{roleID}",
+      "call": "DeleteAIRole",
+      "action": "ai.role.delete",
+      "tool": "ai_delete_role",
+      "title": "Remove AI role",
+      "description": "Remove an AI role and its history.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "roleID",
+          "refers": "ai.ai_role",
+          "description": "The AI role."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_role_revisions": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/ai-roles/{roleID}/revisions",
+      "call": "ListAIRoleRevisions",
+      "action": "ai.revision.list",
+      "tool": "ai_list_role_revisions",
+      "title": "List revisions",
+      "description": "List what an AI role held before each save, newest first.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "roleID",
+          "refers": "ai.ai_role",
+          "description": "The AI role."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "restore_role_revision": {
+      "method": "POST",
+      "path": "/agencies/{agencyID}/ai-roles/{roleID}/revisions/{revisionID}/restore",
+      "call": "RestoreAIRoleRevision",
+      "action": "ai.revision.restore",
+      "tool": "ai_restore_role_revision",
+      "title": "Restore revision",
+      "description": "Put an earlier fine-tuning, switch and limits back. The restore is itself a saved edit.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "roleID",
+          "refers": "ai.ai_role",
+          "description": "The AI role."
+        },
+        {
+          "from": "path",
+          "as": "revisionID",
+          "refers": "ai.ai_role_revision",
+          "description": "The revision."
+        },
+        {
+          "from": "caller",
+          "as": "saved_by",
+          "description": "Who saved, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
+    },
+    "set_ai_role_mapping": {
+      "method": "PUT",
+      "path": "/agencies/{agencyID}/ai-roles/{roleID}/mapping",
+      "call": "SetAIRoleMapping",
+      "action": "ai.role.map",
+      "tool": "ai_map_role",
+      "title": "Map AI role",
+      "description": "Set the account an AI role calls the model through and the agency role it speaks for. The account must belong to the same agency. An empty id clears the mapping.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "roleID",
+          "refers": "ai.ai_role",
+          "description": "The AI role."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "resolve_ai_role": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/ai-roles/{roleID}/resolve",
+      "call": "ResolveAIRole",
+      "action": "ai.role.resolve",
+      "tool": "ai_resolve_role",
+      "title": "Resolve AI role",
+      "description": "The prompt, its parts by source (seat_description, objectives, values_rules, work_item_instructions, agency, fine_tuning), the account without its key, the limit in force for each of the five with whether the role or the account sets it, and the count so far. A role with no account says so in one line.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "roleID",
+          "refers": "ai.ai_role",
+          "description": "The AI role."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "resolve_agency_role": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/agency-roles/{agencyRoleID}/resolve",
+      "call": "ResolveAgencyRole",
+      "action": "ai.role.resolve_agency_role",
+      "tool": "ai_resolve_agency_role",
+      "title": "Resolve by agency role",
+      "description": "Resolve the AI role that speaks for an agency role. The result, parts and limit sources included, is the same as resolving the AI role by its own id.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "agencyRoleID",
+          "refers": "agency.role",
+          "description": "The agency role."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_models": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/models",
+      "call": "ListModels",
+      "action": "ai.model.list",
+      "tool": "ai_list_models",
+      "title": "List models",
+      "description": "The models for the Model dropdown: for each provider kind, the models this agency's last refresh found, then the standard starting list's models not already among them. Give provider to see one kind only.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "query",
+          "as": "provider",
+          "description": "A provider kind to list. Leave out for every kind."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "refresh_models": {
+      "method": "POST",
+      "path": "/agencies/{agencyID}/accounts/{accountID}/models/refresh",
+      "call": "RefreshModels",
+      "action": "ai.model.refresh",
+      "tool": "ai_refresh_models",
+      "title": "Refresh models",
+      "description": "Ask the account's provider, with the account's key, which models the key can use, and replace this agency's list for that provider kind with the answer. An empty or failed answer leaves the list as it was. Answers the provider kind's list as ai_list_models shows it.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "accountID",
+          "refers": "ai.account",
+          "description": "The account whose key is used."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
+    },
+    "list_chat_models": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/chat-models",
+      "call": "ListChatModels",
+      "action": "ai.chat_model.list",
+      "tool": "ai_list_chat_models",
+      "title": "List chat models",
+      "description": "The models the chat box offers: the agency's enabled accounts the admin allowed in the chat, in the Models page's order, each under its chat label or else its model name, with the one the caller picked (else the first) marked picked. No key or address is shown.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "caller",
+          "as": "person_id",
+          "description": "Whose pick, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "pick_chat_model": {
+      "method": "PUT",
+      "path": "/agencies/{agencyID}/chat-models/pick",
+      "call": "PickChatModel",
+      "action": "ai.chat_model.pick",
+      "tool": "ai_pick_chat_model",
+      "title": "Pick chat model",
+      "description": "Keep the caller's choice of model in the chat box. Only a model the chat may use can be picked. Answers the chat models with the pick marked.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the accounts. The address decides, not the body."
+        },
+        {
+          "from": "caller",
+          "as": "person_id",
+          "description": "Whose pick, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
+    },
+    "set_ai_role_limits": {
+      "method": "PUT",
+      "path": "/agencies/{agencyID}/ai-roles/{roleID}/limits",
+      "call": "SetAIRoleLimits",
+      "action": "ai.role.set_limits",
+      "tool": "ai_set_role_limits",
+      "title": "Set AI role limits",
+      "description": "Replace only the AI role's nine limits (zero means none, null means the limit does not apply). Name, prompt, switch and model are untouched. A change is kept as a revision with who saved it and takes effect on the next resolve. A limit left out of the body is cleared, so send the ones to keep.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency that owns the AI roles. The address decides, not the body."
+        },
+        {
+          "from": "path",
+          "as": "roleID",
+          "refers": "ai.ai_role",
+          "description": "The AI role."
+        },
+        {
+          "from": "caller",
+          "as": "saved_by",
+          "description": "Who saved, supplied by the mount. Never read from the request."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
+    }
+  },
+  "errors": {
+    "ErrAccountNotFound": 404,
+    "ErrInvalidAccount": 400,
+    "ErrDuplicateName": 409,
+    "ErrInvalidKey": 400,
+    "ErrNoMasterKey": 409,
+    "ErrNoKey": 404,
+    "ErrNoDefaultAccount": 404,
+    "ErrUnsupportedKind": 400,
+    "ErrInvalidChat": 400,
+    "ErrChatUnsupported": 400,
+    "ErrAccountOff": 409,
+    "ErrLimitReached": 429,
+    "ErrModelRefused": 502,
+    "ErrModelUnreached": 502,
+    "ErrModelError": 502,
+    "ErrModelRedirected": 502,
+    "ErrModelRateLimited": 502,
+    "ErrModelForbidden": 502,
+    "ErrRoleNotFound": 404,
+    "ErrInvalidRole": 400,
+    "ErrDuplicateRoleName": 409,
+    "ErrRevisionNotFound": 404,
+    "ErrInvalidModelList": 400,
+    "ErrChatModelUnavailable": 409
+  }
+}
