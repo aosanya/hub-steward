@@ -1,0 +1,25 @@
+{
+  "module": "permissions",
+  "domain": "wakala",
+  "instance": "wakala",
+  "objects": [
+    {
+      "role": "role",
+      "name": "role",
+      "table": "roles",
+      "description": "A named bundle of what an operator of this studio may do."
+    },
+    {
+      "role": "role_action",
+      "name": "role_action",
+      "table": "role_actions",
+      "description": "One operation a bundle permits, named by the action its declaration carries."
+    },
+    {
+      "role": "grant",
+      "name": "grant",
+      "table": "grants",
+      "description": "One person or routine holding a bundle over one agency instance."
+    }
+  ]
+}

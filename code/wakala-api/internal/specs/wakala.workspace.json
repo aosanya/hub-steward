@@ -1,0 +1,23 @@
+{
+  "module": "workspace",
+  "domain": "wakala",
+  "instance": "wakala",
+  "objects": [
+    {"role": "workbook", "name": "workbook", "table": "workbooks",
+     "description": "One operator's container of work across this studio's capabilities."},
+    {"role": "reference", "name": "reference", "table": "references",
+     "description": "An agency, a catalog entry or a published tag this workbook has touched."},
+    {"role": "use", "name": "use", "table": "uses",
+     "description": "One act performed here, named by the operation's declared action."},
+    {"role": "shortcut", "name": "shortcut", "table": "shortcuts",
+     "description": "An act worth offering again in this workbook's sidebar."},
+    {"role": "share", "name": "share", "table": "shares",
+     "description": "A key that opens one workbook for somebody without an account here."},
+    {"role": "layout", "name": "desk", "table": "desks",
+     "description": "How one workbook in this studio is laid out: its queue, its detail, its pinned actions."},
+    {"role": "layout_change", "name": "desk_change", "table": "desk_changes",
+     "description": "One change to a desk, kept so it can be undone."},
+    {"role": "layout_choice", "name": "desk_choice", "table": "desk_choices",
+     "description": "Which desk one operator sees in one workbook."}
+  ]
+}

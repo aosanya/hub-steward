@@ -1,0 +1,147 @@
+{
+  "module": "catalog",
+  "domain": "agency",
+  "instance": "wakala",
+  "attach": [
+    {
+      "module": "ratings",
+      "items": "catalog.entry"
+    }
+  ],
+  "objects": [
+    {
+      "role": "entry",
+      "name": "agency",
+      "table": "agencies",
+      "description": "A mined organizational archetype: the document an operator would import to run a business of this shape.",
+      "indexes": [
+        {
+          "name": "sector",
+          "description": "The storefront's sector filter, run on every index page.",
+          "path": {
+            "field": "doc",
+            "path": "_template.sector"
+          },
+          "not_deleted": true
+        },
+        {
+          "name": "archetype",
+          "description": "Finds every agency built from one archetype, for dedup during a mining run.",
+          "path": {
+            "field": "doc",
+            "path": "_template.archetype"
+          },
+          "not_deleted": true
+        }
+      ]
+    },
+    {
+      "role": "entry_private",
+      "name": "agency_private",
+      "table": "agency_privates",
+      "description": "What the operator knows about an agency and no storefront reader may see."
+    },
+    {
+      "role": "share_link",
+      "name": "share_link",
+      "table": "share_links",
+      "description": "One key that opens a private agency. An agency may have many, so a rotation can overlap."
+    },
+    {
+      "role": "suggestion",
+      "name": "suggestion",
+      "table": "suggestions",
+      "description": "A proposal that some archetype is worth mining, filed cheaply and waiting on a person before anything is built."
+    },
+    {
+      "role": "suggestion_comment",
+      "name": "suggestion_comment",
+      "table": "suggestion_comments",
+      "description": "One note on a proposal: a run saying what is left after a failed build, or a person saying why they decided as they did."
+    },
+    {
+      "role": "suggestion_match",
+      "name": "suggestion_match",
+      "table": "suggestion_matches",
+      "description": "Records that one agency answers one proposal."
+    },
+    {
+      "role": "run",
+      "name": "mining_run",
+      "table": "mining_runs",
+      "description": "One run of the routine that fills the catalog, and its own report of what it did."
+    },
+    {
+      "role": "setting",
+      "name": "setting",
+      "table": "settings",
+      "description": "One run-time knob the routine reads, such as the rule it ranks the catalog by. A key/value store because knobs are added faster than a schema should change."
+    },
+    {
+      "role": "page_view",
+      "name": "page_view",
+      "table": "page_views",
+      "description": "A running count for one storefront page."
+    },
+    {
+      "role": "record",
+      "name": "form_record",
+      "table": "form_records",
+      "description": "One member's latest answers to one form, as sent."
+    },
+    {
+      "role": "endorsement",
+      "name": "me_too",
+      "table": "me_toos",
+      "description": "A member saying \"me too\" to an item on the public board."
+    },
+    {
+      "role": "slot",
+      "name": "slot",
+      "table": "slots",
+      "description": "A time a service is offered, with how many residents it takes."
+    },
+    {
+      "role": "booking",
+      "name": "booking",
+      "table": "bookings",
+      "description": "A resident's booked time at a service."
+    },
+    {
+      "role": "raised_item",
+      "name": "raised_item",
+      "table": "raised_items",
+      "description": "An idea, report or complaint a resident raised, or a clerk filed on their behalf."
+    },
+    {
+      "role": "board_item",
+      "name": "board_item",
+      "table": "board_items",
+      "description": "An item on the public board, grouping what residents raised about the same thing."
+    },
+    {
+      "role": "reply",
+      "name": "reply",
+      "table": "replies",
+      "description": "An answer to something a resident raised."
+    },
+    {
+      "role": "scope_figure",
+      "name": "scope_figure",
+      "table": "scope_figures",
+      "description": "A dated, sourced estimate of how many people live in a ward, the denominator a coverage count is read against."
+    },
+    {
+      "role": "removal",
+      "name": "removal",
+      "table": "removals",
+      "description": "Something a resident raised that was taken off the board, and why."
+    },
+    {
+      "role": "raised_item_file",
+      "name": "raised_item_file",
+      "table": "raised_item_files",
+      "description": "A photo or file a resident attached to something they raised."
+    }
+  ]
+}

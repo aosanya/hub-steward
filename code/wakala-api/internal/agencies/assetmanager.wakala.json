@@ -1,0 +1,12 @@
+{
+  "module": "assetmanager",
+  "domain": "wakala",
+  "instance": "wakala",
+  "objects": [
+    {"role": "location", "name": "location", "table": "locations", "description": "A place an agency keeps things: a store, a room, a shelf within it."},
+    {"role": "asset", "name": "asset", "table": "assets", "description": "A thing an agency holds: a stock of one kind, or one tagged item."},
+    {"role": "movement", "name": "movement", "table": "movements", "description": "One line of the agency's ledger of what came in, moved or went out."},
+    {"role": "hold", "name": "hold", "table": "holds", "description": "A reservation of an asset's quantity, open until it is committed or released."},
+    {"role": "code_sequence", "name": "code_sequence", "table": "code_sequences", "description": "The counter each asset's readable code is minted from."}
+  ]
+}

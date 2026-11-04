@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env
+.env.*
+*.db
+*.db-*
+*.sqlite
+**/testdata
+**/*_test.go
+Dockerfile
+.dockerignore
+README.md

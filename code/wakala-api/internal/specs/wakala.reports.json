@@ -1,0 +1,155 @@
+{
+  "module": "catalog",
+  "domain": "reports",
+  "instance": "wakala",
+  "mount": "reports",
+  "objects": [
+    {
+      "role": "suggestion",
+      "name": "report",
+      "table": "reports",
+      "description": "One arrival: something a resident brought without being asked — a report about a thing at a place, an idea, a suggestion, an expectation or a complaint. Every arrival is its own row even when forty of them turn out to be the same thing, because the count of people is the fact that moves an item up an agenda and a merge that drops them destroys it. Its proposal document carries what, where, which ward, which theme, which channel it came on, who took it down and who it came from. The channel lives there and not in source, because source is the module’s own enum of run/owner/stray and a domain may not restate a value set.",
+      "indexes": [
+        {
+          "name": "open",
+          "description": "Everything still live, best-ranked first — the queue a moderator works down.",
+          "fields": [
+            "status",
+            "priority"
+          ]
+        },
+        {
+          "name": "ward",
+          "description": "One ward's own arrivals, which is what a councillor is asked about at every meeting and what the quarterly silence sweep counts.",
+          "path": {
+            "field": "proposal",
+            "path": "_report.ward"
+          }
+        },
+        {
+          "name": "theme",
+          "description": "Housing, transport, waste, safety, green space — so that what people keep raising can be followed across years rather than rediscovered each term, and so the ten most-raised themes can be put in front of whoever sets the next round.",
+          "path": {
+            "field": "proposal",
+            "path": "_report.theme"
+          }
+        },
+        {
+          "name": "channel",
+          "description": "Counter, phone, online, meeting, market stall or councillor. A board that only ever fills up from one channel is hearing the same few people a different way.",
+          "path": {
+            "field": "proposal",
+            "path": "_report.channel"
+          }
+        },
+        {
+          "name": "taken_by",
+          "description": "Who filed it where somebody filed it for the resident — the councillor or the outreach team member RU-10 requires to be named.",
+          "path": {
+            "field": "proposal",
+            "path": "_report.taken_by"
+          }
+        },
+        {
+          "name": "due",
+          "description": "The date the answer is owed, so the overdue list RU-7 promises can be read off the queue rather than assembled by hand.",
+          "path": {
+            "field": "proposal",
+            "path": "_report.answer_due"
+          }
+        }
+      ]
+    },
+    {
+      "role": "entry",
+      "name": "board_item",
+      "table": "board_items",
+      "description": "One thing the public board shows, assembled from the arrivals attached to it. Its slug is the reference quoted to everybody who raised it. Its document holds the ward, the theme, the place, the state, the path to any photograph, and the count of people who raised it. Its visibility is the moderation itself: pending until somebody has looked, public once it is on the board, private where it names a person — and criticism of the council is never a reason to make it private.",
+      "indexes": [
+        {
+          "name": "board",
+          "description": "The public board as residents see it: live items, most-raised first.",
+          "fields": [
+            "visibility",
+            "updated_at"
+          ]
+        },
+        {
+          "name": "ward",
+          "description": "One ward's board, which is what a councillor stands in front of.",
+          "path": {
+            "field": "doc",
+            "path": "_item.ward"
+          }
+        },
+        {
+          "name": "with_partner",
+          "description": "Items handed to the service company and not yet closed — the list the monthly partner review is drawn from, and the council's only real check on an outsourced service.",
+          "path": {
+            "field": "doc",
+            "path": "_item.partner_reference"
+          }
+        },
+        {
+          "name": "raised_by_count",
+          "description": "How many people raised it. The board ranks on this, and it is the number a council acts on.",
+          "path": {
+            "field": "doc",
+            "path": "_item.raised_by_count"
+          }
+        }
+      ]
+    },
+    {
+      "role": "suggestion_match",
+      "name": "report_on_board",
+      "table": "report_on_board",
+      "description": "That one arrival belongs to one board item. This is the merge, and it is deliberately the only merge: the item is merged, the people never are. Counting the rows here gives 'raised by 43 people'; reading them gives the 43 channels to answer on. Removing a row un-merges a wrongly matched arrival without losing it, because a wrongly merged complaint reads to the person who made it as a complaint that was buried."
+    },
+    {
+      "role": "entry_private",
+      "name": "board_item_private",
+      "table": "board_item_private",
+      "description": "What the council knows about a board item and no resident sees: how it was matched, the reference the service company gave it, and any note that would identify somebody. One row per item, in its doc. Operator-only is not declared here — it is the mount's gate, because catalog.entry.read_private is not an anonymous action."
+    },
+    {
+      "role": "suggestion_comment",
+      "name": "report_note",
+      "table": "report_notes",
+      "description": "One appended note on an arrival — the councillor's answer, the moderator's reason for a removal, the service company's update. Appended and never edited, so the account a resident is given in month three matches the one they were given in month one."
+    },
+    {
+      "role": "share_link",
+      "name": "report_key",
+      "table": "report_keys",
+      "description": "A time-limited key that opens one board item to somebody with no account. Issued with the acknowledgement to a raiser who gave no contact details, and to the councillor who filed on their behalf. The raw key is handed over once and only its hash is kept, so a key that is lost is reissued rather than recovered."
+    },
+    {
+      "role": "run",
+      "name": "silence_sweep",
+      "table": "silence_sweeps",
+      "description": "One quarterly sweep of the board: how many arrivals each ward produced, which wards produced none, and the sweep's own report. A ward that raises nothing is either content or unreached, and the two look identical in a count — which is why the figure is published per ward and the councillor for that ward accounts for it.",
+      "indexes": [
+        {
+          "name": "quarter",
+          "description": "The sweeps in order, so this quarter's silence can be read against the last.",
+          "fields": [
+            "created_at"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "setting",
+      "name": "board_clock",
+      "table": "board_settings",
+      "description": "The acknowledgement clock in working days, the answer clock, and the quarter the silence sweep covers. Five and ten are this template's suggestion, drawn from ordinary complaint-handling practice rather than from any statute binding on this council, and they are the first two numbers a council changes at mark-up."
+    },
+    {
+      "role": "page_view",
+      "name": "page_view",
+      "table": "page_views",
+      "description": "How often a board item was opened. For a council whose whole claim is that it published what it heard, this is the only evidence that anybody read it."
+    }
+  ]
+}

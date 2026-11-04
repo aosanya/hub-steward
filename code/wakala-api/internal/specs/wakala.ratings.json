@@ -1,0 +1,25 @@
+{
+  "module": "ratings",
+  "domain": "agency",
+  "instance": "wakala",
+  "objects": [
+    {
+      "role": "rating",
+      "name": "rating",
+      "table": "ratings",
+      "description": "One person's value for one catalog entry on the module's 0 to 1 scale."
+    },
+    {
+      "role": "similarity",
+      "name": "similarity",
+      "table": "similarities",
+      "description": "Two raters with alike taste, computed from the entries they both rated."
+    },
+    {
+      "role": "setting",
+      "name": "setting",
+      "table": "settings",
+      "description": "The metric, neighbourhood size and overlap floor this catalog's ratings use."
+    }
+  ]
+}
