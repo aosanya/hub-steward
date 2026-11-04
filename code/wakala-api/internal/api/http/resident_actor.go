@@ -1,0 +1,27 @@
+package http
+
+var residentActorActions = []string{
+	"actor.group.list_joinable",
+	"actor.group.join",
+	"actor.group.find_by_code",
+	"actor.group.join_by_code",
+	"actor.group.list_led",
+	"actor.group.list_leaders",
+	"actor.group.list_mine",
+	"actor.group.set_my_priority",
+	"actor.group.set_join_mode",
+	"actor.group.set_hidden",
+	"actor.join_request.list_mine",
+	"actor.join_decision.read_mine",
+	"actor.join_request.list_for_group",
+	"actor.join_request.approve",
+	"actor.join_request.decline",
+	"actor.invitation.create",
+	"actor.invitation.list_for_group",
+	"actor.invitation.list_mine",
+	"actor.invitation.accept",
+	"actor.invitation.decline",
+	readMyActor,
+	"actor.actor.read_my_forms_week_split",
+	"actor.actor.set_my_forms_week_split",
+}
