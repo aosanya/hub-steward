@@ -31,7 +31,7 @@ cd code/console && npm ci && npm test
 cd code/app && npm ci && npm test
 ```
 
-Tests need no network, no keys and no server. See [documentation/3. implementation/](documentation/3.%20implementation/) for how to run the whole stack.
+Once the dependencies are installed, the tests need no network, no keys and no server. The bundled API has no Go test files yet, so `go test` checks only that it compiles. See [documentation/3. implementation/](documentation/3.%20implementation/) for how to run the whole stack.
 
 ## House rules
 
@@ -43,7 +43,7 @@ Tests need no network, no keys and no server. See [documentation/3. implementati
 
 ## Adding or fixing a language
 
-The phone app speaks English, Swahili and German. How to add a language or fix a translation is in [documentation/3. implementation/guides/languages.md](documentation/3.%20implementation/guides/languages.md).
+The phone app lists nine languages but has words for English and Swahili only; the console has six. How to add a language or fix a translation is in [documentation/3. implementation/guides/languages.md](documentation/3.%20implementation/guides/languages.md).
 
 ## Sending a change
 
