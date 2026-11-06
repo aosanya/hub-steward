@@ -29,6 +29,9 @@ export function StepsTab({ workflow, choices, onChange }: Props) {
   const otherWorkflows = choices.workflows.filter(
     (choice) => choice.value !== workflow.id,
   );
+  const cancels = choices.cancels.filter(
+    (choice) => choice.value !== workflow.id,
+  );
 
   const add = () => {
     const step = emptyStep();
@@ -83,6 +86,7 @@ export function StepsTab({ workflow, choices, onChange }: Props) {
             steps={steps}
             roles={choices.roles}
             workflows={otherWorkflows}
+            cancels={cancels}
             lists={choices.lists}
             answerTypes={choices.answerTypes}
             open={step.key === openKey}

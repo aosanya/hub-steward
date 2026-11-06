@@ -194,6 +194,22 @@ describe("a workflow that opens in a chat", () => {
     expect(emptyWorkflow()).toMatchObject({ opensIn: "form", ordersUnderWay: 0 });
   });
 
+  it("reads which workflows are ticked as a cancel and lists only those as cancels", async () => {
+    answers({
+      ...hub,
+      agency_list_workflows: { items: [{ id: "w1", name: "Buy inputs" }, { id: "w2", name: "Call off", cancels_order: true }] },
+      agency_get_workflow: { id: "w2", name: "Call off", cancels_order: true },
+      agency_list_work_items: { items: [] },
+    });
+
+    const { workflow, choices } = await loadDesign("h", "w2");
+
+    expect(workflow.cancelsOrder).toBe(true);
+    expect(choices.cancels).toEqual([{ value: "w2", label: "Call off" }]);
+    expect(choices.workflows.map((choice) => choice.value)).toEqual(["w1", "w2"]);
+    expect(emptyWorkflow().cancelsOrder).toBe(false);
+  });
+
   it("reads its chat step as a chat step", async () => {
     const workflow = await loaded();
 
@@ -247,6 +263,15 @@ describe("saving a workflow", () => {
     expect(callsTo("agency_create_record")).toEqual([
       expect.objectContaining({ workflow_id: "made-1", name: "Payments", role_id: "r1", viewer_role_id: "", form_name: "Payments", draft_id: "d1" }),
     ]);
+  });
+
+  it("records a ticked cancel on create, and clears the mark when it is unticked", async () => {
+    await saveDesign("h", emptyWorkflow(), { ...emptyWorkflow(), name: "Call off", cancelsOrder: true });
+    expect(callsTo("agency_create_workflow")).toEqual([{ draft_id: "d1", name: "Call off", description: "", cancels_order: true }]);
+
+    const before = { ...emptyWorkflow(), id: "w1", name: "Call off", cancelsOrder: true };
+    await saveDesign("h", before, { ...before, cancelsOrder: false });
+    expect(callsTo("agency_update_workflow")).toEqual([{ draft_id: "d1", name: "Call off", description: "", cancels_order: false, workflow_id: "w1" }]);
   });
 
   it("starts a draft when none is open", async () => {

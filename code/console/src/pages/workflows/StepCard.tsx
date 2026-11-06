@@ -23,6 +23,7 @@ type Props = {
   steps: StepDraft[];
   roles: Choice[];
   workflows: Choice[];
+  cancels: Choice[];
   lists: Choice[];
   answerTypes: AnswerType[];
   open: boolean;
@@ -57,6 +58,7 @@ export function StepCard({
   steps,
   roles,
   workflows,
+  cancels,
   lists,
   answerTypes,
   open,
@@ -83,6 +85,11 @@ export function StepCard({
       value: other.key,
       label: `${steps.indexOf(other) + 1} · ${other.name}`,
     }));
+  const chosen = workflows.find((choice) => choice.value === step.cancelWorkflowId);
+  const cancelOptions =
+    chosen && !cancels.some((choice) => choice.value === chosen.value)
+      ? [...cancels, chosen]
+      : cancels;
   const set = (change: Partial<StepDraft>) => onChange({ ...step, ...change });
   const answers = step.kind === "yes_no" && step.sentKey !== "";
   const heading = `${number} · ${step.name}`;
@@ -264,7 +271,7 @@ export function StepCard({
                 id={id + "-cancel"}
                 label={t("workflows.whenItPasses")}
                 value={step.cancelWorkflowId}
-                options={[{ value: "", label: "" }, ...workflows]}
+                options={[{ value: "", label: "" }, ...cancelOptions]}
                 disabled={step.timeLimit.trim() === ""}
                 onChange={(cancelWorkflowId) => set({ cancelWorkflowId })}
               />

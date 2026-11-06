@@ -64,6 +64,7 @@ export type WorkflowDraft = {
   name: string;
   description: string;
   opensIn: OpensIn;
+  cancelsOrder: boolean;
   ordersUnderWay: number;
   steps: StepDraft[];
   records: RecordDraft[];
@@ -72,7 +73,7 @@ export type WorkflowDraft = {
 
 export type Choice = { value: string; label: string };
 
-export type DesignChoices = { roles: Choice[]; workflows: Choice[]; lists: Choice[]; answerTypes: AnswerType[] };
+export type DesignChoices = { roles: Choice[]; workflows: Choice[]; cancels: Choice[]; lists: Choice[]; answerTypes: AnswerType[] };
 
 export type Design = { workflow: WorkflowDraft; choices: DesignChoices };
 
@@ -119,7 +120,7 @@ export const emptyStep = (kind: StepKind = "fill_form"): StepDraft => ({
 
 export const emptyRecord = (): RecordDraft => ({ key: freshKey(), id: "", name: "", roleId: "", viewerRoleId: "", formName: "", questions: [emptyQuestion()] });
 
-export const emptyWorkflow = (): WorkflowDraft => ({ id: "", name: "", description: "", opensIn: "form", ordersUnderWay: 0, steps: [], records: [] });
+export const emptyWorkflow = (): WorkflowDraft => ({ id: "", name: "", description: "", opensIn: "form", cancelsOrder: false, ordersUnderWay: 0, steps: [], records: [] });
 
 const lowerFirst = (text: string) => (text === "" ? text : text[0].toLowerCase() + text.slice(1));
 
@@ -234,6 +235,7 @@ export async function loadDesign(hubId: string, workflowId: string | null): Prom
   const choices: DesignChoices = {
     roles: roleChoices,
     workflows: choicesOf(itemsOf(workflows), "name"),
+    cancels: choicesOf(itemsOf(workflows).filter((item) => item.cancels_order === true), "name"),
     lists,
     answerTypes,
   };
@@ -255,6 +257,7 @@ export async function loadDesign(hubId: string, workflowId: string | null): Prom
       name: textOf(workflow, "name"),
       description: textOf(workflow, "description"),
       opensIn: textOf(workflow, "opens_in") === "chat" ? "chat" : "form",
+      cancelsOrder: workflow.cancels_order === true,
       ordersUnderWay: Number(workflow.orders_under_way) || 0,
       steps,
       records: itemsOf(records)
@@ -350,6 +353,7 @@ export async function saveDesign(hubId: string, before: WorkflowDraft, after: Wo
     draft_id: draftId,
     name: after.name.trim(),
     description: after.description.trim(),
+    ...(after.cancelsOrder || before.cancelsOrder ? { cancels_order: after.cancelsOrder } : {}),
   };
   const workflowId = before.id
     ? (await callTool(hubId, "agency_update_workflow", { ...workflowBody, workflow_id: before.id }), before.id)

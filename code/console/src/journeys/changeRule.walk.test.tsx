@@ -179,7 +179,7 @@ const handlers: Record<string, (args: Rec) => unknown> = {
   agency_list_records: () => ({ items: records }),
   agency_create_workflow: (args) => {
     const id = nextId("workflow");
-    workflows.push({ id, code: "W-" + (workflows.length + 1), name: args.name, description: args.description, version: 0, in_use: false });
+    workflows.push({ id, code: "W-" + (workflows.length + 1), name: args.name, description: args.description, cancels_order: args.cancels_order === true, version: 0, in_use: false });
     return { id };
   },
   agency_update_workflow: (args) => merge(workflows, args.workflow_id, { name: args.name, description: args.description }),
@@ -584,6 +584,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
       draft_id: "d1",
       name: "Cancel after the Supplier says yes",
       description: "A Farmer calls off an order after the Supplier has said yes",
+      cancels_order: true,
     });
     const stepsMade = callsTo("agency_create_work_item").filter((args) => args.workflow_id === madeCancel);
     expect(stepsMade.map((args) => [args.title, args.kind, args.role_id])).toEqual([
@@ -707,7 +708,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     expect(limit).toHaveValue("");
     expect(picker).toBeDisabled();
     const options = within(picker).getAllByRole("option").map((option) => option.textContent);
-    expect(options).toEqual(["", "Check the delivery", "Cancel after the Supplier says yes"]);
+    expect(options).toEqual(["", "Cancel after the Supplier says yes"]);
 
     const writesBefore = writes().length;
     await user.type(limit, "60");

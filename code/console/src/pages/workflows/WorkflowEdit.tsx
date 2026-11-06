@@ -74,10 +74,13 @@ function WorkflowEditor({
         if (!live) return;
         setLoaded({ kind: "ready", design });
         setOriginal(design.workflow);
+        const start = asked
+          ? applyWorkflowFill(design.workflow, asked, design.choices.roles)
+          : design.workflow;
         setWorkflow(
-          asked
-            ? applyWorkflowFill(design.workflow, asked, design.choices.roles)
-            : design.workflow,
+          cancelKind && workflowId === null
+            ? { ...start, cancelsOrder: true }
+            : start,
         );
       },
       () => live && setLoaded({ kind: "failed" }),
@@ -182,6 +185,13 @@ function WorkflowEditor({
                 }
                 onChange={(opensIn) =>
                   change({ opensIn: opensIn === "chat" ? "chat" : "form" })
+                }
+              />
+              <Field
+                spec={{ name: "cancelsOrder", component: "toggle" }}
+                value={workflow.cancelsOrder}
+                onChange={(cancelsOrder) =>
+                  change({ cancelsOrder: cancelsOrder === true })
                 }
               />
             </Stack>
