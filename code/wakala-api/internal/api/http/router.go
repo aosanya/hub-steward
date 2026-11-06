@@ -37,6 +37,7 @@ func NewRouter(d *Deps) http.Handler {
 	d.registerRiskRoutes(mux, d.Registry, auth)
 	d.registerMarketRoutes(mux, d.Registry, auth)
 	d.registerModuleMountRoutes(mux, d.Registry, auth)
+	d.registerModuleToolsRoutes(mux, d.Registry, auth)
 	d.registerAssetManagerRoutes(mux, d.Registry, auth)
 	d.registerAIRoutes(mux, d.Registry, auth)
 	d.registerAIGateway(mux, d.Registry, auth)

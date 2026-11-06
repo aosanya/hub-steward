@@ -41,6 +41,7 @@ func (d *Deps) registerMarketMCPTools(server *mcp.Server) {
 		return
 	}
 	d.registerModuleMountTool(server)
+	d.registerModuleToolsTool(server)
 	for _, t := range marketShapeTools() {
 		server.AddTool(&mcp.Tool{
 			Name:        t.Name,

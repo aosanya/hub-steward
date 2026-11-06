@@ -28,7 +28,7 @@ type agencyMountsView struct {
 }
 
 func mountToolActions() map[string]string {
-	return map[string]string{listMountsTool: listMountsAction}
+	return map[string]string{listMountsTool: listMountsAction, listModuleToolsTool: listMountsAction}
 }
 
 func (d *Deps) registerModuleMountRoutes(mux *http.ServeMux, reg agencies.Registry, auth callers) {

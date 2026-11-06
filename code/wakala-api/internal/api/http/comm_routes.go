@@ -34,7 +34,7 @@ func (d *Deps) registerInstanceCommRoutes(mux *http.ServeMux, reg agencies.Regis
 				writeInstanceErr(w, err)
 				return
 			}
-			withInvitedGroupNames(reg, action, withScreenNames(reg, action, withAuthorRoles(reg, action, commroutes.OperatorRoutes(cm, mount)[idx].Handler)))(w, r)
+			withGeneralStandingThread(reg, action, withInvitedGroupNames(reg, action, withScreenNames(reg, action, withAuthorRoles(reg, action, commroutes.OperatorRoutes(cm, mount)[idx].Handler))))(w, r)
 		}))
 	}
 }
