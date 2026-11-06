@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { kes } from "../../supply/api";
-import { dayWords } from "../../supply/orders/api";
+import { dayWords } from "../../ui/days";
 import { routes } from "../../routes";
 import { Button } from "../../ui/Button";
 import { LoadFailed } from "../../ui/LoadState";

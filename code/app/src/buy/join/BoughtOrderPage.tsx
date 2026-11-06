@@ -7,7 +7,8 @@ import { Shell } from "../../ui/Shell";
 import { resolveMember } from "../../supply/api";
 import { buyStanding, mcpMyOrdersClient, trailDay, trailWords, type MyOrdersClient } from "../orders/api";
 import { StandingChip } from "../orders/MyOrdersPage";
-import { bags, dayWords, kes, mcpJoinClient, type BoughtOrder, type JoinClient } from "./api";
+import { dayWords } from "../../ui/days";
+import { bags, kes, mcpJoinClient, type BoughtOrder, type JoinClient } from "./api";
 
 type Props = { client?: JoinClient; orders?: Pick<MyOrdersClient, "getOrder" | "getTrail">; me?: string };
 

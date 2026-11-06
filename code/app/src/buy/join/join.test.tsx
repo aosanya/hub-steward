@@ -7,7 +7,6 @@ import { GroupOrderPage } from "./GroupOrderPage";
 import { JoinPage } from "./JoinPage";
 import {
   changedTermsWords,
-  dayWords,
   lastSeenOf,
   groupOrderOf,
   mcpJoinClient,
@@ -459,12 +458,6 @@ describe("tool shapes", () => {
 
   it("reads an order the way the market module sends it", () => {
     expect(orderOf({ id: "o1", poster_id: "p1", product: "Urea 50kg", quantity: 2, unit_price: 3700, state: "placed", promised_date: "2026-11-06" })).toEqual(bought);
-  });
-
-  it("writes a date in words and leaves other text alone", () => {
-    expect(dayWords("2026-11-06")).toBe("Friday, 6 Nov");
-    expect(dayWords("2026-11-06T10:00:00Z")).toBe("Friday, 6 Nov");
-    expect(dayWords("next week")).toBe("next week");
   });
 
   it("reads the date and note of a confirmed group order", () => {

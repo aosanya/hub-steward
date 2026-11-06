@@ -82,8 +82,6 @@ export const mcpOrdersClient: OrdersClient = {
 
 export const orderTotal = (o: SupplyOrder) => o.quantity * o.unitPrice;
 
-export { dayWords };
-
 export const orderMeta = (o: SupplyOrder) => `${o.quantity} of ${o.product} · ${dayWords(o.createdAt)}`;
 
 export const yesMeta = (y: SupplyYes) => `${y.quantity} of ${y.what}${y.date ? ` · ${dayWords(y.date)}` : ""}`;

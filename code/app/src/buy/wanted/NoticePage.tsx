@@ -6,7 +6,7 @@ import { LoadFailed } from "../../ui/LoadState";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { Shell } from "../../ui/Shell";
 import { mcpWantedClient, type WantedClient } from "./api";
-import { dateWords } from "./dates";
+import { dayWords } from "../../ui/days";
 import { buyInputs } from "./buyInputs";
 import "./notice.css";
 
@@ -37,7 +37,7 @@ export function NoticePage({ client = mcpWantedClient }: { client?: WantedClient
           <Rows>
             <ListRow title="What" end={notice.data.what} />
             {notice.data.quantity ? <ListRow title="How much" end={notice.data.quantity} /> : null}
-            {notice.data.neededBy ? <ListRow title="Needed by" end={dateWords(notice.data.neededBy)} /> : null}
+            {notice.data.neededBy ? <ListRow title="Needed by" end={dayWords(notice.data.neededBy)} /> : null}
             <ListRow title="Seen by" end="Every shop" />
           </Rows>
           <Button className="danger" disabled={busy} onClick={takeDown}>

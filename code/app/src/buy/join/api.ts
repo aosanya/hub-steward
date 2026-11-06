@@ -163,4 +163,3 @@ export const changedTermsWords = (now: Terms, started: Terms | null): string => 
   return changed.join(" and ");
 };
 
-export { dayWords } from "../../ui/days";

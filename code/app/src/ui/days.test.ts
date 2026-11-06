@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dayWords, isoDay } from "./days";
+import { dayWords, isoDay, shortDayWords } from "./days";
 
 describe("isoDay", () => {
   it("keeps the date part of a timestamp", () => {
@@ -36,5 +36,16 @@ describe("dayWords", () => {
   it("gives back what it cannot read, and an empty value stays empty", () => {
     expect(dayWords("next week")).toBe("next week");
     expect(dayWords("")).toBe("");
+  });
+});
+
+describe("shortDayWords", () => {
+  it("writes a local date as a short weekday, day and month", () => {
+    expect(shortDayWords(new Date(2026, 10, 7, 9, 0).toISOString())).toBe("Sat 7 Nov");
+  });
+
+  it("answers null for an empty or unreadable value", () => {
+    expect(shortDayWords("")).toBeNull();
+    expect(shortDayWords("soon")).toBeNull();
   });
 });

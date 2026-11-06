@@ -10,7 +10,8 @@ import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { Chip } from "../../ui/Chip";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { Shell } from "../../ui/Shell";
-import { bags, changedTermsWords, dayWords, kes, mcpJoinClient, termsWords, type JoinClient, type OpenGroupOrder } from "./api";
+import { dayWords } from "../../ui/days";
+import { bags, changedTermsWords, kes, mcpJoinClient, termsWords, type JoinClient, type OpenGroupOrder } from "./api";
 
 type Props = { client?: JoinClient; me?: string };
 

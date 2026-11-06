@@ -6,7 +6,8 @@ import { LoadFailed } from "../../ui/LoadState";
 import { Chip } from "../../ui/Chip";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { Shell } from "../../ui/Shell";
-import { dayWords, mcpOrdersClient, priceLine, type OrdersClient, type SupplyOrder } from "./api";
+import { dayWords } from "../../ui/days";
+import { mcpOrdersClient, priceLine, type OrdersClient, type SupplyOrder } from "./api";
 
 export function OrderPage({ client = mcpOrdersClient }: { client?: OrdersClient }) {
   const navigate = useNavigate();

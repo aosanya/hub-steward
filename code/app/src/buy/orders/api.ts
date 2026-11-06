@@ -1,6 +1,7 @@
 import { callTool } from "../../wakala/mcp";
 import { listAllGroupOrders } from "../../market/groupOrders";
 import { productName } from "../../market/productName";
+import { shortDayWords } from "../../ui/days";
 import { offerWordsOf } from "../now/api";
 
 export type Standing = "Paid" | "Cancelled" | "Delivered" | "Yes" | "Confirmed" | "Said yes" | "Said no" | "Waiting";
@@ -170,12 +171,4 @@ export const trailWords = (line: TrailLine, me: string): string => {
   return line.what;
 };
 
-const shortDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-export const trailDay = (line: TrailLine) => {
-  const when = new Date(line.at);
-  return line.at === "" || Number.isNaN(when.getTime())
-    ? line.at
-    : `${shortDays[when.getDay()]} ${when.getDate()} ${shortMonths[when.getMonth()]}`;
-};
+export const trailDay = (line: TrailLine) => shortDayWords(line.at) ?? line.at;

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { kes } from "../../supply/api";
-import { dayWords } from "../../supply/orders/api";
+import { dayWords } from "../../ui/days";
 import { Button } from "../../ui/Button";
 import { LoadFailed } from "../../ui/LoadState";
 import { Chip, type ChipTone } from "../../ui/Chip";

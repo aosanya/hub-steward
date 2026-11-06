@@ -1,6 +1,7 @@
 import { callTool } from "../../wakala/mcp";
 import { mcpWantedClient, wantedBody } from "./api";
-import { dateWords, dayName } from "./dates";
+import { dayWords } from "../../ui/days";
+import { dayName } from "./dates";
 
 vi.mock("../../wakala/mcp", () => ({ callTool: vi.fn() }));
 
@@ -113,11 +114,11 @@ describe("the market tools she calls", () => {
 describe("dates in her words", () => {
   it("names the day and the date", () => {
     expect(dayName("2026-11-06")).toBe("Friday");
-    expect(dateWords("2026-11-06")).toBe("Friday, 6 Nov");
+    expect(dayWords("2026-11-06")).toBe("Friday, 6 Nov");
   });
 
   it("hands back what it cannot read", () => {
     expect(dayName("soon")).toBe("soon");
-    expect(dateWords("soon")).toBe("soon");
+    expect(dayWords("soon")).toBe("soon");
   });
 });

@@ -9,5 +9,3 @@ export const dayName = (iso: string) => {
   const date = parsed(iso);
   return date ? days[date.getUTCDay()] : iso;
 };
-
-export { dayWords as dateWords } from "../../ui/days";

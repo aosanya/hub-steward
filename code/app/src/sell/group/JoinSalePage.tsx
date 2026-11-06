@@ -7,7 +7,7 @@ import { Card } from "../../ui/Card";
 import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { Chip } from "../../ui/Chip";
 import { ListRow, Rows } from "../../ui/ListRow";
-import { dayWords } from "../../buy/join/api";
+import { dayWords } from "../../ui/days";
 import { kes } from "../../market/money";
 import { quantityLabel } from "../../market/unitWords";
 import { JoinForm } from "../../ui/JoinForm";

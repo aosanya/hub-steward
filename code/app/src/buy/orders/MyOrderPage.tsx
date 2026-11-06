@@ -8,7 +8,7 @@ import { ListRow, Rows } from "../../ui/ListRow";
 import { useBackTo } from "../../ui/backTo";
 import { Shell } from "../../ui/Shell";
 import { kes, resolveMember } from "../../supply/api";
-import { dayWords } from "../../supply/orders/api";
+import { dayWords } from "../../ui/days";
 import { canCancelOrder, kindWords, mcpMyOrdersClient, orderTitle, trailDay, trailWords, type MyOrder, type MyOrdersClient, type TrailLine } from "./api";
 import { StandingChip } from "./MyOrdersPage";
 

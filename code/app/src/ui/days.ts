@@ -1,4 +1,5 @@
 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const shortDayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const isoDatePrefix = /^\d{4}-\d{2}-\d{2}/;
@@ -14,4 +15,9 @@ const dayOf = (value: string) => {
 export const dayWords = (value: string) => {
   const date = dayOf(value);
   return date ? `${dayNames[date.getUTCDay()]}, ${date.getUTCDate()} ${monthNames[date.getUTCMonth()]}` : value;
+};
+
+export const shortDayWords = (value: string) => {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : `${shortDayNames[date.getDay()]} ${date.getDate()} ${monthNames[date.getMonth()]}`;
 };

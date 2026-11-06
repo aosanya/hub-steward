@@ -5,7 +5,7 @@ import { Field } from "../../ui/Field";
 import { Card } from "../../ui/Card";
 import { Chip } from "../../ui/Chip";
 import { ListRow, Rows } from "../../ui/ListRow";
-import { dayWords } from "../orders/api";
+import { dayWords } from "../../ui/days";
 import { stockText, type StockLine, type StockReader } from "./stock";
 
 export function AskForm({
