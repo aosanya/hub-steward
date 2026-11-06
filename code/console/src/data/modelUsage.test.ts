@@ -1,6 +1,6 @@
 import { callTool } from "../wakala/mcp";
 import { heldLimitKeys, type HeldLimits, type ModelAccount } from "./modelLimits";
-import { isReached, modelUsage, shareOf } from "./modelUsage";
+import { isReached, modelUsage, shareOf, unassignedRole } from "./modelUsage";
 
 vi.mock("../wakala/mcp");
 
@@ -179,12 +179,28 @@ describe("the use of a model against its limits", () => {
 
 describe("the use of a model by AI role", () => {
   it("lists the roles that use this model, each with today's tokens, this month's tokens and today's requests, the largest user first", async () => {
-    answerWith(standard());
+    answerWith(standard({ ai_list_usage: report({ "daily token": 44900, "monthly token": 1600000, "requests per day": 283 }) }));
     const { roles: found } = await modelUsage("h", account());
     expect(found).toEqual([
       { id: "r2", name: "Hub Steward", today: 17800, month: 960000, requests: 112, share: 60 },
       { id: "r1", name: "Dispatcher", today: 27100, month: 640000, requests: 171, share: 40 },
     ]);
+  });
+
+  it("adds one row for the use no AI role holds, such as the hub's chat, so the roles and that row add up to the account", async () => {
+    answerWith(standard({ ai_list_usage: report({ "daily token": 50000, "monthly token": 2000000, "requests per day": 300 }) }));
+    const { roles: found } = await modelUsage("h", account());
+    expect(found).toEqual([
+      { id: "r2", name: "Hub Steward", today: 17800, month: 960000, requests: 112, share: 48 },
+      { id: "r1", name: "Dispatcher", today: 27100, month: 640000, requests: 171, share: 32 },
+      { id: unassignedRole, name: "", today: 5100, month: 400000, requests: 17, share: 20 },
+    ]);
+  });
+
+  it("shows that row when no AI role holds any use at all", async () => {
+    answerWith(standard({ ai_list_roles: { items: null }, ai_list_usage: report({ "daily token": 12000, "monthly token": 210396, "requests per day": 24 }) }));
+    const { roles: found } = await modelUsage("h", account());
+    expect(found).toEqual([{ id: unassignedRole, name: "", today: 12000, month: 210396, requests: 24, share: 100 }]);
   });
 
   it("reads each role through its own resolution, and no role of another model", async () => {
@@ -194,12 +210,12 @@ describe("the use of a model by AI role", () => {
   });
 
   it("lists no role when none uses the model", async () => {
-    answerWith(standard({ ai_list_roles: { items: null } }));
+    answerWith(standard({ ai_list_roles: { items: null }, ai_list_usage: { counts: [] } }));
     expect((await modelUsage("h", account())).roles).toEqual([]);
   });
 
   it("gives every role a share of zero when nothing has been used this month", async () => {
-    answerWith(standard({ ai_resolve_role: { limits: [] } }));
+    answerWith(standard({ ai_resolve_role: { limits: [] }, ai_list_usage: { counts: [] } }));
     const { roles: found } = await modelUsage("h", account());
     expect(found?.map((role) => role.share)).toEqual([0, 0]);
   });

@@ -1,6 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import { type ModelAccount } from "../../data/modelLimits";
-import { modelUsage, type LimitUse, type ModelUse, type RoleUse } from "../../data/modelUsage";
+import { modelUsage, unassignedRole, type LimitUse, type ModelUse, type RoleUse } from "../../data/modelUsage";
 import type { Hub } from "../../types";
 import { glm, openModel, owner, sonnet, staff } from "./harness";
 
@@ -123,6 +123,14 @@ describe("the Usage tab of a model", () => {
       "Network Watcher",
     ]);
     expect(rowOf(table, "Dispatcher").getByText("43%")).toBeInTheDocument();
+  });
+
+  it("names the use no AI role holds in words, not as an empty row", async () => {
+    await open([glm], { rows, reached: "", roles: [{ id: unassignedRole, name: "", today: 12000, month: 210396, requests: 24, share: 100 }] });
+    const table = tableAfter("By AI role, this month");
+    const row = rowOf(table, "Not tied to an AI role");
+    expect(row.getByText("210,396")).toHaveClass("count");
+    expect(row.getByText("24")).toHaveClass("count");
   });
 
   it("says no AI role uses the model when none does", async () => {

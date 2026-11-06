@@ -1,7 +1,7 @@
 import { hubPath } from "../../api";
 import type { ModelAccount } from "../../data/modelLimits";
 import { isStaff } from "../../data/seat";
-import { isReached, modelUsage, shareOf, type LimitUse, type RoleUse } from "../../data/modelUsage";
+import { isReached, modelUsage, shareOf, unassignedRole, type LimitUse, type RoleUse } from "../../data/modelUsage";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import { Cell, Chip, DataTable, Empty, SectionTitle, Stack, TextLink, Tile } from "../../ui";
@@ -27,10 +27,10 @@ const limitRow = (row: LimitUse, t: (key: string) => string, count: Count) => ({
   ],
 });
 
-const roleRow = (role: RoleUse, count: Count) => ({
+const roleRow = (role: RoleUse, count: Count, t: (key: string) => string) => ({
   key: role.id,
   cells: [
-    <Cell key="name" text={role.name} />,
+    <Cell key="name" text={role.id === unassignedRole ? t("usage.unassigned") : role.name} />,
     <span className="count" key="today">
       {count(role.today)}
     </span>,
@@ -79,7 +79,7 @@ export function UsageBlock({ account }: { account: ModelAccount }) {
         <DataTable
           columns={[t("usage.colRole"), t("usage.colToday"), t("usage.colMonth"), t("usage.colRequests"), t("usage.colShare")]}
           empty={t("usage.noRoles")}
-          rows={roles.map((role) => roleRow(role, count))}
+          rows={roles.map((role) => roleRow(role, count, t))}
         />
       )}
     </Stack>

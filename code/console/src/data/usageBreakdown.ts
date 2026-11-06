@@ -8,7 +8,7 @@ export type UsageSpan = (typeof spans)[number];
 
 export type UsageGroup = "person" | "agent";
 
-export const kinds = ["chat", "workflow_run", "agency_review", "test_run", "background_job", "other"] as const;
+export const kinds = ["chat", "workflow_run", "agency_review", "test_run", "background_job", "connection_test", "other"] as const;
 
 export type UsageKind = (typeof kinds)[number];
 
@@ -38,6 +38,7 @@ export const kindColors: Record<UsageKind, string> = {
   agency_review: "var(--k3)",
   test_run: "var(--k4)",
   background_job: "var(--text4)",
+  connection_test: "var(--sky)",
   other: "var(--text3)",
 };
 
