@@ -42,6 +42,7 @@ import { sellHarvestSource } from "./apps/thread/sellSource";
 import { RoomThreadPage } from "./chat/rooms/RoomThreadPage";
 import { RoomThreadsPage } from "./chat/rooms/RoomThreadsPage";
 import { StartPage } from "./coordinator/start/StartPages";
+import { StepPage } from "./steps/StepPage";
 import { SessionGate } from "./entry/SessionGate";
 import { agencyHomePath } from "./agency/open";
 import { allScreens, routes } from "./routes";
@@ -75,6 +76,7 @@ export function App() {
         ))}
         <Route path={routes.join.pattern} element={<JoinPage />} />
         <Route path={routes.start.pattern} element={<StartPage />} />
+        <Route path={routes.step.pattern} element={<StepPage />} />
         <Route path={routes.market.pattern} element={<MarketPage />} />
         <Route path={routes.product.pattern} element={<ProductPage />} />
         <Route path={routes.buyNow.pattern} element={<BuyNowPage />} />

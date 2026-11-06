@@ -149,7 +149,8 @@ describe("Do Something and the Inbox badge read the same waiting steps", () => {
     openAt(`/a/${hub}`);
     await screen.findByText("Urea group order");
     expect(await screen.findByLabelText("1 unread notifications")).toBeInTheDocument();
-    expect(call.mock.calls.filter(([, tool]) => tool === "agency_list_my_open_steps")).toHaveLength(2);
+    expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && !args?.available)).toHaveLength(2);
+    expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && args?.available === true)).toHaveLength(1);
   });
 
   it("make one read of the steps on the Inbox, with its badge", async () => {

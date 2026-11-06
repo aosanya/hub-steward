@@ -1,7 +1,7 @@
 import { routes } from "../../routes";
 import { callTool } from "../../wakala/mcp";
 
-export type StartQuestion = { prompt: string; answerType: string; helper: string };
+export type StartQuestion = { prompt: string; answerType: string; helper: string; required?: boolean; options?: string[] };
 
 export type OpensIn = "chat" | "form";
 
@@ -46,6 +46,8 @@ export const stepOf = (agencyName: string) => (raw: any): StartStep => ({
     prompt: text(q?.prompt),
     answerType: text(q?.answer_type),
     helper: text(q?.helper),
+    ...(q?.required === true ? { required: true } : {}),
+    ...(Array.isArray(q?.options) && q.options.length > 0 ? { options: q.options.map(text) } : {}),
   })),
 });
 
@@ -54,6 +56,10 @@ const fillsForm = (raw: any) => text(raw?.kind) === "fill_form" && Array.isArray
 const isChatStep = (raw: any) => text(raw?.kind) === "chat" && opensInOf(raw) === "chat";
 
 const groupOrderAnswerTypes = ["free_text", "currency", "number"];
+
+export const groupOrderFormName = "Create group order";
+
+export const isGroupOrderForm = (step: Pick<StartStep, "formName">) => step.formName === groupOrderFormName;
 
 export const isGroupOrderStart = (step: StartStep) => groupOrderAnswerTypes.every((type) => step.questions.some((q) => q.answerType === type));
 

@@ -51,7 +51,7 @@ const show = (entry: string | { pathname: string; state: unknown }, client: MyOr
   render(
     <MemoryRouter initialEntries={[entry]}>
       <Routes>
-        <Route path="/started" element={<p>Ongoing page</p>} />
+        <Route path="/previous" element={<p>Ongoing page</p>} />
         <Route path={routes.market.pattern} element={<p>Market</p>} />
         <Route path={routes.marketOrder.pattern} element={<p>Order card</p>} />
         <Route path="/my-orders" element={<MyOrdersPage client={client} me="m1" />} />
@@ -326,14 +326,14 @@ describe("where the back link of her order goes", () => {
   const back = () => userEvent.click(screen.getByRole("button", { name: "Back" }));
 
   it("goes back to the page she came from when a Buy now was opened with it", async () => {
-    show({ pathname: "/my-orders/or1", state: { backTo: "/started" } }, clientOf([buy]));
+    show({ pathname: "/my-orders/or1", state: { backTo: "/previous" } }, clientOf([buy]));
     await screen.findByText("Kisumu Agro Supplies");
     await back();
     expect(await screen.findByText("Ongoing page")).toBeInTheDocument();
   });
 
   it("goes back to the page she came from when a group line was opened with it", async () => {
-    show({ pathname: "/my-orders/group/g1", state: { backTo: "/started" } }, clientOf([group]));
+    show({ pathname: "/my-orders/group/g1", state: { backTo: "/previous" } }, clientOf([group]));
     await screen.findByText("Your share");
     await back();
     expect(await screen.findByText("Ongoing page")).toBeInTheDocument();
@@ -342,7 +342,7 @@ describe("where the back link of her order goes", () => {
   it("goes back to the page she came from when the order could not be loaded", async () => {
     const client = clientOf([buy]);
     (client.getOrder as any).mockRejectedValue(new Error("gone"));
-    show({ pathname: "/my-orders/or1", state: { backTo: "/started" } }, client);
+    show({ pathname: "/my-orders/or1", state: { backTo: "/previous" } }, client);
     expect(await screen.findByRole("alert")).toHaveTextContent("This order could not be loaded.");
     await back();
     expect(await screen.findByText("Ongoing page")).toBeInTheDocument();
@@ -356,7 +356,7 @@ describe("where the back link of her order goes", () => {
     expect(screen.queryByText("Ongoing page")).not.toBeInTheDocument();
   });
 
-  it.each([["https://x"], ["//x.test/started"], ["started"], [42]])("ignores a back target of %s and goes to My orders", async (target) => {
+  it.each([["https://x"], ["//x.test/previous"], ["previous"], [42]])("ignores a back target of %s and goes to My orders", async (target) => {
     show({ pathname: "/my-orders/or1", state: { backTo: target } }, clientOf([buy]));
     await screen.findByText("Kisumu Agro Supplies");
     await back();

@@ -46,6 +46,7 @@ function screen<P extends string>(retired: P): Screen<P> {
 export const routes = {
   join: screen("/join"),
   start: screen("/start/:stepId"),
+  step: screen("/steps/:stepId"),
   market: screen("/market"),
   product: screen("/market/:productId"),
   buyNow: screen("/market/:productId/buy/:offerId"),

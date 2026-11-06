@@ -15,6 +15,7 @@ describe("a screen's path is built from one definition", () => {
   it.each([
     ["join", () => routes.join.path(), "/join", "/a/{id}/join"],
     ["start", () => routes.start.path({ stepId: "s1" }), "/start/:stepId", "/a/{id}/start/s1"],
+    ["step", () => routes.step.path({ stepId: "s1" }), "/steps/:stepId", "/a/{id}/steps/s1"],
     ["market", () => routes.market.path(), "/market", "/a/{id}/market"],
     ["product", () => routes.product.path({ productId: "urea" }), "/market/:productId", "/a/{id}/market/urea"],
     ["buy now", () => routes.buyNow.path({ productId: "urea", offerId: "o1" }), "/market/:productId/buy/:offerId", "/a/{id}/market/urea/buy/o1"],

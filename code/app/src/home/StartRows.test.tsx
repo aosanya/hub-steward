@@ -7,6 +7,7 @@ import { isGroupOrderStart, startPath, type StartStep } from "../coordinator/sta
 import { homeCardsFor, type AgencyKind } from "./cards";
 import { StartRows } from "./StartRows";
 import { chatTab } from "../tabs";
+import { chatListPath } from "../routes";
 import { applySupplierPath, applySupplierWorkflow, buyInputsChatPath, buyInputsChatWorkflow, joinGroupWorkflow, sellHarvestChatPath, sellHarvestChatWorkflow } from "./workflowScreens";
 
 const kinds: AgencyKind[] = ["farmers", "supplier"];
@@ -48,6 +49,11 @@ const startOf = (openSteps: () => Promise<StartStep[]>, waiting: () => Promise<S
 
 const stepsOf = (steps: StartStep[]) => startOf(async () => steps, async () => steps.filter(isGroupOrderStart));
 
+const holdsAForm = {
+  waiting: async () => [{ form_id: "f1", title: "Survey", closes_at: "", questions: 1, answered: false, unanswered_as: [] }],
+  answered: async () => [],
+};
+
 const view = (codes: string[]): AgencyView => ({ name: "Alego Growers", modules: codes.map((code) => ({ code, name: `${code} app` })) });
 
 let landed = "";
@@ -63,7 +69,7 @@ const show = async (props: Parameters<typeof StartRows>[0]) => {
   await act(async () => {
     shown = render(
       <MemoryRouter>
-        <StartRows {...props} />
+        <StartRows forms={holdsAForm} {...props} />
         <Where />
       </MemoryRouter>,
     );
@@ -120,6 +126,40 @@ describe("the Start rows of Do Something", () => {
     it("draws no Join a group or Apply as a supplier row of its own, since they are workflow steps", async () => {
       await show({ kind: "farmers", start: stepsOf([]) });
       expect(screen.queryByRole("button", { name: /^(Join|Apply)/ })).not.toBeInTheDocument();
+    });
+  });
+
+  describe("the Forms card", () => {
+    const waitingForm = { form_id: "f1", title: "Survey", closes_at: "", questions: 1, answered: false, unanswered_as: [] };
+    const answeredForm = { send_id: "s1", form_id: "f1", title: "Survey", closes_at: "", open: false, answered_at: "" };
+    const formsOf = (waiting: unknown[], answered: unknown[]) => ({ waiting: async () => waiting as never[], answered: async () => answered as never[] });
+    const noForms = { waiting: async () => Promise.reject(new Error("down")), answered: async () => Promise.reject(new Error("down")) };
+
+    it("is left out for a member who has no form waiting and none answered, so a role with one step sees only that step", async () => {
+      await show({ kind: "farmers", start: stepsOf([]), forms: formsOf([], []) });
+      expect(titlesShown()).toEqual([]);
+      expect(screen.getByText("Nothing to start yet")).toBeInTheDocument();
+    });
+
+    it("stays for a member with a form waiting", async () => {
+      await show({ kind: "farmers", start: stepsOf([]), forms: formsOf([waitingForm], []) });
+      expect(titlesShown()).toEqual(["Forms"]);
+    });
+
+    it("stays for a member who has answered a form", async () => {
+      await show({ kind: "farmers", start: stepsOf([]), forms: formsOf([], [answeredForm]) });
+      expect(titlesShown()).toEqual(["Forms"]);
+    });
+
+    it("stays when the forms cannot be read, since nothing says there are none", async () => {
+      await show({ kind: "farmers", start: stepsOf([]), forms: noForms });
+      expect(titlesShown()).toEqual(["Forms"]);
+    });
+
+    it("leaves the other cards and the member's own step where they are", async () => {
+      await show({ kind: "supplier", start: stepsOf([joinGroup]), forms: formsOf([], []) });
+      await rowNamed(joinGroupWorkflow);
+      expect(titlesShown()).toEqual(["Offers", "Asks", "Group order", "Orders", "Your prices", joinGroupWorkflow]);
     });
   });
 
@@ -369,6 +409,28 @@ describe("the Start rows of Do Something", () => {
       const alert = await screen.findByRole("alert");
       expect(alert).toHaveTextContent("Your apps could not be loaded.");
       expect(alert.closest(".card")).toHaveClass("empty");
+    });
+
+    it("carries its act in a card when nothing is left to start: Ask in Chat opens the Chat tab", async () => {
+      const { container } = await show({ kind: "farmers", view: view([]), start: stepsOf([]) });
+      expect(await screen.findByText("Nothing to start yet")).toBeInTheDocument();
+      expect(container.querySelector(".rows")).toBeNull();
+      expect(screen.getByText("Nothing to start yet").closest(".card")).toHaveClass("empty");
+      await userEvent.click(screen.getByRole("button", { name: "Ask in Chat" }));
+      expect(landed).toBe(chatListPath());
+    });
+
+    it("does not draw the empty card while the steps load, when they cannot be read, or when a row is shown", async () => {
+      const pending = new Promise<StartStep[]>(() => undefined);
+      const loading = await show({ kind: "farmers", view: view([]), start: startOf(() => pending) });
+      expect(screen.queryByText("Nothing to start yet")).not.toBeInTheDocument();
+      loading.unmount();
+      const failed = await show({ kind: "farmers", view: view([]), start: startOf(async () => Promise.reject(new Error("down"))) });
+      await screen.findByRole("alert");
+      expect(screen.queryByText("Nothing to start yet")).not.toBeInTheDocument();
+      failed.unmount();
+      await show({ kind: "farmers", view: view(["forms"]), start: stepsOf([]) });
+      expect(screen.queryByText("Nothing to start yet")).not.toBeInTheDocument();
     });
 
     it("renders nothing at all when there are no rows and no error", async () => {
