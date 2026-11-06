@@ -13,3 +13,4 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 | 07 | [Deployment](07-deployment/README.md) | Where the demo runs; its settings |
 | 08 | [Console design](../mockups/console/README.md) | The console's screens |
 |  | [Hub keys](hub-keys.md) | How the agent gets into each agency |
+|  | [Do Something: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |

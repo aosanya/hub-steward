@@ -30,6 +30,7 @@ approvals; the rest depend on the modules its published definition switches on.
 | [Bookings](#bookings) | Agencies that hold shared things for a time | Seats as holds on terminals |
 | [Members](#members) | Every agency | Member set-up |
 | [Approvals, tasks and the agent](#approvals-tasks-and-the-agent) | Every agency | A seat or Wi-Fi draft the manager approves |
+| [Form steps](#form-steps) | Agencies whose workflows have form steps | A member's own form, then the next role's step |
 | [Other families on the MCP endpoint](#other-families-on-the-mcp-endpoint) | Agencies that switch the module on | Not used by the lab |
 
 ## Chat
@@ -105,6 +106,28 @@ but the lab's Hub Steward does so only after the manager has approved its draft.
 | Make a key for an agency's agent | `POST /instances/{agency}/api-keys` | writes a key that acts as an agent of this one agency | manager | Exists | Not offered: a key cannot make a key |
 | The agency's rules | agency rules | reads the agency's rules | member | Exists | Exists: `agency_list_rules` |
 | Notes about a member | `insight_create`, `insight_list` | writes and reads short notes keyed by an opaque member id | agent | — | The tools exist; their use for one member's notes, and who may read them, is not decided yet |
+
+## Form steps
+
+A workflow step of kind fill form names the role that acts on it and the form's questions. A member sees and sends only the steps of the roles they hold, and a send moves the workflow on to the next role. Steps of the farmers' market keep their own tools; the two tools below serve every other fill-form step in any agency.
+
+| Operation | Method and path | Reads / writes | Who | REST | MCP |
+|---|---|---|---|---|---|
+| List the steps I can act on now | `GET /instances/{agency}/my-open-steps?available=true` | reads the live version's fill-form steps whose role the caller holds and that can be acted on now: a workflow's first step (`state` start) and a later step whose run waits for the caller's role (`state` waiting, with its `order_id`), each with its form's questions and the register's code | member | Exists | Exists: `agency_list_my_open_steps` with `available` true |
+| Send a step's answers | `POST /instances/{agency}/steps/{step}/answers` | checks the caller holds the step's role, checks the answers against the step's questions, saves them as a row of the step's register and returns the run's `order_id`, the row and the next step | member, or an AI role seated in the agency | Exists | Exists: `agency_submit_step_answers` |
+
+How it works:
+
+- **A register per form step.** Publishing an agency makes sure each live fill-form step with a form and questions has a register named after the step, in the same workflow, that its role adds rows to and that carries the step's questions. A step that changes between versions updates its register at the next publish. An agency published before this existed has no registers for its steps until it is published again, and a send for such a step is refused with a conflict saying so.
+- **Who may send.** Holding the step's role is the check, the same one the plain list `my-open-steps` makes, so a form that is not a member's is neither listed nor accepted: a member without the role, and the owner without it, are refused with 403.
+- **A run is an order id.** The first step of a workflow starts a new run: the caller leaves `order_id` empty and the answer names a new one. Every later step of that run is sent with the run's `order_id`, and the run must be waiting for exactly that step. Which step a run waits for is read from its rows: the first step, in order, that has no row for that order id. A wrong or missing run is refused with 409 or 400.
+- **Checks.** The answers are checked by the register's own row check: every question the form asks is answered if required, a number or currency is a number, a yes or no is yes or no, a date is a date, a choice is one of the options, and nothing is answered that the form does not ask. The same answers saved twice for one run within a minute are refused.
+- **Multi-select answers.** An answer is a string. For a multi-select question the REST send also takes a list of the chosen options, and the saved answer is the chosen options joined by a comma and a space (`Fever, Cough`); the MCP tool takes only the joined string. A string is read back as one option when it equals an option (so an option that itself holds a comma stays whole) and is otherwise split at each comma and space. Every chosen option must be one the question offers, or the send is refused with 400; a list given for a question that is not multi-select is refused with 400 too.
+- **Two sends at once.** Sends for one run are taken one at a time, so two simultaneous sends of the same later step give one 201 and one 409 (the run is no longer waiting for that step).
+- **What the next role sees.** After a send the response carries the next step (title, role, form name, questions, `order_id`). That role's `available=true` list shows it as waiting, and the sender's list no longer shows that run.
+- **Where the rows go.** The rows are the register's rows, so the register screens and tools read them with the register's own visibility.
+
+Limits: only fill-form steps are moved on by this; a step of another kind in the same workflow is skipped by the run. The run moves in step order and does not branch on an answer.
 
 ## Other families on the MCP endpoint
 
