@@ -626,7 +626,7 @@
     {
       "id": "116b9659-9eec-5f1b-86b0-efb4c7d6d485",
       "code": "RU-14",
-      "text": "Nothing runs on a timer: when someone does not answer the agents do nothing and the person waiting decides.",
+      "text": "Nothing runs on a timer unless a workflow step sets a time limit: when someone does not answer the agents do nothing and the person waiting decides.",
       "created_at": "2026-10-28T00:00:00Z",
       "last_updated": "2026-10-28T00:00:00Z",
       "deleted": false

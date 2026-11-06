@@ -43,7 +43,7 @@ export const sellHarvest: Plan = {
   ],
   rules: [
     "The agents ask only the buyer a farmer picked, once, and they never say yes for a person.",
-    "Nothing runs on a timer: when a buyer does not answer, the agents do nothing and the farmer waiting decides.",
+    "Nothing runs on a timer unless a workflow step sets a time limit: when a buyer does not answer, the agents do nothing and the farmer waiting decides.",
     "A sale keeps the price it was made at, and its total is the bags times that price.",
   ],
   rulesOnTheWorkflow: [0, 1, 2],
@@ -130,7 +130,7 @@ export const groupOrder: Plan = {
     "The group coordinator decides each farmer who stays silent, and the order waits for that decision.",
     "A farmer can cancel an order at once, and the supplier or buyer is told, unless the agency has a cancel workflow.",
     "The agents ask only the supplier or buyer a person picked or ticked, once each, and they never say yes for a person.",
-    "Nothing runs on a timer: when a person does not answer, the agents do nothing and the person waiting decides.",
+    "Nothing runs on a timer unless a workflow step sets a time limit: when a person does not answer, the agents do nothing and the person waiting decides.",
   ],
   rulesOnTheWorkflow: [1, 3, 6],
   scenario: {
