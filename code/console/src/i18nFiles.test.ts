@@ -63,4 +63,15 @@ describe("the translation table the bundle serves", () => {
       for (const key of ["hubNameRequired", "createNoService", "createNoRole", "createNotLinked", "createNoRooms"])
         expect(tables[lang][key], `${lang} ${key}`).not.toBe(tables.en[key]);
   });
+
+  it("says wakala for an agency and never shirika, and kikundi for a group", () => {
+    const agencyKeys = Object.keys(tables.en).filter((key) => /\bagency\b/i.test(tables.en[key]));
+    expect(agencyKeys.length).toBeGreaterThan(0);
+    for (const key of agencyKeys) {
+      expect(tables.sw[key], `sw ${key}`).not.toMatch(/shirika/i);
+      expect(tables.sw[key], `sw ${key}`).toMatch(/wakala/i);
+    }
+    const groupKeys = Object.keys(tables.en).filter((key) => /\bgroups?\b/i.test(tables.en[key]));
+    for (const key of groupKeys) expect(tables.sw[key], `sw ${key}`).not.toMatch(/shirika/i);
+  });
 });
