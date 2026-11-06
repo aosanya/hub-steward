@@ -10,6 +10,13 @@ describe("ListRow", () => {
     spy.mockRestore();
   });
 
+  it("shows a code on its own first meta line marked as code, before the other meta lines", () => {
+    const { container } = render(<ListRow title="Siaya farmers" code="G-S7F-4KM-2RX" meta="Approval needed" />);
+    const lines = Array.from(container.querySelectorAll(".meta"));
+    expect(lines.map((el) => el.textContent)).toEqual(["G-S7F-4KM-2RX", "Approval needed"]);
+    expect(lines.map((el) => el.classList.contains("code"))).toEqual([true, false]);
+  });
+
   it("derives the lead letter from the title only when asked", () => {
     const { container, rerender } = render(<ListRow title="  siaya farmers" lead />);
     expect(container.querySelector(".lead")?.textContent).toBe("S");

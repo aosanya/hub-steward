@@ -86,7 +86,8 @@ export function JoinPage({ client = defaultClient }: { client?: GroupsClient }) 
         key={group.id}
         title={group.name}
         lead
-        meta={group.approvalNeeded ? [group.code, "Approval needed"] : group.code}
+        code={group.code}
+        meta={group.approvalNeeded ? "Approval needed" : undefined}
         end={
           requested.has(group.id) ? (
             <Button disabled>Requested</Button>

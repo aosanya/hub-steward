@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 
-type Props = { title: string; meta?: string | string[]; end?: ReactNode; onClick?: () => void; lead?: boolean; start?: ReactNode; className?: string; role?: string };
+type Props = { title: string; code?: string; meta?: string | string[]; end?: ReactNode; onClick?: () => void; lead?: boolean; start?: ReactNode; className?: string; role?: string };
 
 const chevron = "›";
 
 export const leadLetter = (title: string) => Array.from(title.trim()).find((c) => /[\p{L}\p{N}]/u.test(c))?.toLocaleUpperCase() ?? "";
 
-export function ListRow({ title, meta, end, onClick, lead, start, className, role }: Props) {
+export function ListRow({ title, code, meta, end, onClick, lead, start, className, role }: Props) {
   const letter = lead ? leadLetter(title) : "";
   const rowClass = className ? `row ${className}` : "row";
   const inner = (
@@ -15,6 +15,7 @@ export function ListRow({ title, meta, end, onClick, lead, start, className, rol
       {letter ? <span className="lead" aria-hidden="true">{letter}</span> : null}
       <span className="txt">
         <span className="ttl">{title}</span>
+        {code ? <span className="meta code">{code}</span> : null}
         {[meta ?? []].flat().filter(Boolean).map((line, index) => (
           <span key={index} className="meta">{line}</span>
         ))}

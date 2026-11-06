@@ -110,6 +110,12 @@ describe("join group", () => {
     expect(lines).toEqual(["G-S7F-4KM-2RX", "Approval needed"]);
   });
 
+  it("sets the group code in the code style", async () => {
+    show(fake());
+    const row = (await screen.findByText("Siaya farmers")).closest(".row") as HTMLElement;
+    expect(row.querySelector(".meta.code")?.textContent).toBe("G-S7F-4KM-2RX");
+  });
+
   it("gives every row a lead letter square", async () => {
     const { container } = show(fake({ listMyGroups: async () => [{ id: "g3", name: "Boda riders" }] }));
     await screen.findByText("Siaya farmers");
