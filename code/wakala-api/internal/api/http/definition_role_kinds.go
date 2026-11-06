@@ -23,6 +23,7 @@ type rolesPublished struct {
 }
 
 func (m rolesPublished) PublishAgency(ctx context.Context, draftID, tag, channel string) (agencymodels.AgencyPublication, error) {
+	m.ensureStepRecordsBeforePublish(ctx, draftID)
 	pub, err := m.AgencyManager.PublishAgency(ctx, draftID, tag, channel)
 	agencyMountedSets.forget(m.instanceID)
 	if err == nil {

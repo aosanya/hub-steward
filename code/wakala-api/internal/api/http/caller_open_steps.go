@@ -23,6 +23,9 @@ type openStep struct {
 	RoleName     string                      `json:"role_name"`
 	FormName     string                      `json:"form_name"`
 	Questions    []agencymodels.StepQuestion `json:"questions"`
+	State        string                      `json:"state,omitempty"`
+	OrderID      string                      `json:"order_id,omitempty"`
+	RecordCode   string                      `json:"record_code,omitempty"`
 }
 
 type openSteps struct {
@@ -31,13 +34,14 @@ type openSteps struct {
 
 type mcpOpenStepsParams struct {
 	InstanceID string `json:"instance_id" jsonschema:"the Agency Instance"`
+	Available  bool   `json:"available,omitempty" jsonschema:"true lists only the form steps the caller can act on now: a workflow's first step, and a later step whose run is waiting for the caller's role, each with its state and order_id"`
 }
 
 const callerOpenStepsAction = "instance.my_open_steps.read"
 
 func (d *Deps) registerCallerOpenStepsRoute(mux *http.ServeMux, auth callers) {
 	mux.HandleFunc("GET /instances/{instanceID}/my-open-steps", auth.require(func(w http.ResponseWriter, r *http.Request) {
-		out, err := d.callerOpenSteps(r.Context(), r.PathValue("instanceID"))
+		out, err := d.openStepsFor(r.Context(), r.PathValue("instanceID"), r.URL.Query().Get("available") == "true")
 		if err != nil {
 			writeRecordErr(w, err)
 			return
@@ -50,16 +54,23 @@ func (d *Deps) registerCallerOpenStepsMCPTool(server *mcp.Server) {
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        "agency_list_my_open_steps",
 		Title:       "List My Open Steps",
-		Description: "List the live workflow steps whose role the caller holds in this agency: step id, title, kind, workflow id, name and opens_in (chat or form), role, form name and the form's questions with their answer types. Members only.",
+		Description: "List the live workflow steps whose role the caller holds in this agency: step id, title, kind, workflow id, name and opens_in (chat or form), role, form name and the form's questions with their answer types. Members only. With available true it lists only the form steps the caller can act on now.",
 	}, d.mcpListMyOpenSteps)
 }
 
 func (d *Deps) mcpListMyOpenSteps(ctx context.Context, _ *mcp.CallToolRequest, p mcpOpenStepsParams) (*mcp.CallToolResult, openSteps, error) {
-	out, err := d.callerOpenSteps(ctx, p.InstanceID)
+	out, err := d.openStepsFor(ctx, p.InstanceID, p.Available)
 	if err != nil {
 		return nil, openSteps{}, err
 	}
 	return textResult("Found %d open step(s)", len(out.Items)), out, nil
+}
+
+func (d *Deps) openStepsFor(ctx context.Context, instanceID string, available bool) (openSteps, error) {
+	if available {
+		return d.callerAvailableSteps(ctx, instanceID)
+	}
+	return d.callerOpenSteps(ctx, instanceID)
 }
 
 func (d *Deps) callerOpenSteps(ctx context.Context, instanceID string) (openSteps, error) {

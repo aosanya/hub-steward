@@ -75,6 +75,7 @@ func newMCPServer(d *Deps) *mcp.Server {
 	d.registerRiskMCPTools(server)
 	d.registerLiveRecordMCPTools(server)
 	d.registerCallerOpenStepsMCPTool(server)
+	d.registerSubmitStepAnswersMCPTool(server)
 	return server
 }
 

@@ -26,6 +26,7 @@ func NewRouter(d *Deps) http.Handler {
 	d.registerReviewRunRoutes(mux, auth)
 	d.registerRecordRowRoutes(mux, auth)
 	d.registerCallerOpenStepsRoute(mux, auth)
+	d.registerSubmitStepAnswersRoute(mux, auth)
 	d.registerTaskManagerRoutes(mux, d.Registry, auth, d.endRecordGrantsOf, d.mayOnRecord)
 	registerCaseProgressRoute(mux, d.Registry, auth, d.mayOnRecord)
 	d.registerFormsCatalogRoutes(mux, d.Registry, auth)
