@@ -207,20 +207,25 @@ func GroupLeaders(ctx context.Context, directory mwanachamaactor.UserManager, gr
 }
 
 func (r *registry) OpenGeneralThread(ctx context.Context, instanceID, structureID, callerID string) error {
+	_, err := r.GeneralThreadID(ctx, instanceID, structureID, callerID)
+	return err
+}
+
+func (r *registry) GeneralThreadID(ctx context.Context, instanceID, structureID, callerID string) (string, error) {
 	belongs, err := r.inRoom(ctx, instanceID, callerID, structureID)
 	if err != nil || !belongs {
-		return err
+		return "", err
 	}
 	rooms, err := r.CommManager(ctx, instanceID)
 	if err != nil {
-		return err
+		return "", err
 	}
 	general, err := rooms.ChatStore.StartThread(ctx, structureID, GeneralThreadLabel)
 	if err != nil {
-		return fmt.Errorf("general thread: %w", err)
+		return "", fmt.Errorf("general thread: %w", err)
 	}
 	if _, err := rooms.ChatStore.OpenThread(ctx, structureID, general.ID); err != nil {
-		return fmt.Errorf("general thread: %w", err)
+		return "", fmt.Errorf("general thread: %w", err)
 	}
-	return nil
+	return general.ID, nil
 }

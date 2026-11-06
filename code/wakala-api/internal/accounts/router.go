@@ -325,6 +325,14 @@ func (r *Router) OpenGeneralThread(ctx context.Context, instanceID, structureID,
 	return reg.OpenGeneralThread(ctx, instanceID, structureID, callerID)
 }
 
+func (r *Router) GeneralThreadID(ctx context.Context, instanceID, structureID, callerID string) (string, error) {
+	reg, err := r.pick(ctx)
+	if err != nil {
+		return "", err
+	}
+	return reg.GeneralThreadID(ctx, instanceID, structureID, callerID)
+}
+
 func (r *Router) AddMember(ctx context.Context, instanceID, userID, role string) error {
 	reg, err := r.pick(ctx)
 	if err != nil {

@@ -78,6 +78,7 @@ type Registry interface {
 	IssuingFormManager(ctx context.Context, id string) (mwanachamaforms.FormManager, error)
 	CommManager(ctx context.Context, id string) (*mwanachamacomm.CommManager, error)
 	OpenGeneralThread(ctx context.Context, instanceID, structureID, callerID string) error
+	GeneralThreadID(ctx context.Context, instanceID, structureID, callerID string) (string, error)
 
 	AddMember(ctx context.Context, instanceID, userID, role string) error
 	RemoveMember(ctx context.Context, instanceID, userID string) error
