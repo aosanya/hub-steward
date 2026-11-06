@@ -128,10 +128,7 @@ func buildDeps(logger *slog.Logger) *apihttp.Deps {
 		memberAccounts = identityAccounts(logger, db)
 		memberSessions, memberSessionsSeen = identitySessions(logger, db)
 	} else {
-		dsn := ":memory:"
-		if v := os.Getenv("WAKALA_SQLITE_PATH"); v != "" {
-			dsn = v
-		}
+		dsn := sqliteDSN(os.Getenv("WAKALA_SQLITE_PATH"))
 		db, err = gorm.Open(sqlite.Open(dsn), accounts.GormConfig())
 		if err != nil {
 			logger.Error("could not open sqlite", "dsn", dsn, "error", err.Error())
