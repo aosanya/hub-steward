@@ -366,6 +366,18 @@
       "created_at": "2026-11-07T14:00:00Z",
       "last_updated": "2026-11-07T14:00:00Z",
       "deleted": false
+    },
+    {
+      "id": "6c0dc773-afb3-55b0-8319-90888c25784a",
+      "code": "R-16",
+      "name": "Kockázati vázlatkészítő asszisztens",
+      "description": "Egy új kockázat leírásából vázlatot készít a masnidiagramhoz: okok, következmények és javasolt megelőző és enyhítő intézkedések. Mesterséges intelligencia tölti be; csak vázlatot fogalmaz, a nyilvántartásba nem ír, és semmit nem ment el. A vázlatot az osztályvezető hagyja jóvá, mielőtt bármi mentésre kerül.",
+      "permissions": [
+        "risk.read"
+      ],
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false
     }
   ],
   "goals": [
@@ -726,6 +738,28 @@
       "ordinality": 56,
       "created_at": "2026-11-07T14:00:00Z",
       "last_updated": "2026-11-07T14:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "942bdaa4-497d-5a82-917a-0bad18adc35b",
+      "code": "O-56",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "Minden összeférhetetlenségi nyilatkozat nyilvántartásban van, és a jóváhagyási határt nem lépi át senki",
+      "description": "A képviselők és a jóváhagyó szerepek nyilatkozata egy helyen áll, a jóváhagyási határ a szerephez van írva, és a határ fölötti összeget a rendszer nem engedi jóváhagyni, hanem másik szerephez irányítja.",
+      "ordinality": 57,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c7d73b00-ba18-58bb-8d53-865406045f4d",
+      "code": "O-61",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "Minden új veszély felelőssel és védelmi intézkedésekkel kerül a nyilvántartásba",
+      "description": "Egy osztályvezető felveszi az új kockázatot okokkal, következményekkel és védelmi intézkedésekkel; az MI csak vázlatot ad, a mentés előtt ember hagyja jóvá, és ismeretlen felelőst a nyilvántartás elutasít.",
+      "ordinality": 58,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
       "deleted": false
     }
   ],
@@ -1319,6 +1353,48 @@
       "target_type": "objective",
       "target_code": "O-65",
       "created_at": "2026-11-07T14:00:00Z"
+    },
+    {
+      "id": "a7cdaab8-d03b-5ea7-9da3-f8527798be9d",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-56",
+      "created_at": "2026-11-07T15:00:00Z"
+    },
+    {
+      "id": "4330f1df-abbe-5684-b794-74d065f04b10",
+      "rule_code": "RU-12",
+      "target_type": "objective",
+      "target_code": "O-56",
+      "created_at": "2026-11-07T15:00:00Z"
+    },
+    {
+      "id": "5682e5e0-f52f-58e8-8b68-e356cd98d253",
+      "rule_code": "RU-AI-1",
+      "target_type": "role",
+      "target_code": "R-6",
+      "created_at": "2026-11-07T15:00:00Z"
+    },
+    {
+      "id": "450d35de-3825-56a5-962a-ea7e2c90e150",
+      "rule_code": "RU-AI-1",
+      "target_type": "role",
+      "target_code": "R-4",
+      "created_at": "2026-11-07T15:00:00Z"
+    },
+    {
+      "id": "2dd81955-1298-5cc6-8ee6-4655175a1519",
+      "rule_code": "RU-AI-1",
+      "target_type": "role",
+      "target_code": "R-16",
+      "created_at": "2026-11-07T15:00:00Z"
+    },
+    {
+      "id": "9b79c1a4-d911-507b-9e9b-01c6a012b388",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-61",
+      "created_at": "2026-11-07T15:00:00Z"
     }
   ],
   "workflows": [
@@ -1660,6 +1736,26 @@
       "ordinality": 65,
       "created_at": "2026-11-07T14:00:00Z",
       "last_updated": "2026-11-07T14:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "314fb111-30ff-5c78-8735-b69c26b19744",
+      "code": "W-56",
+      "name": "Összeférhetetlenségi nyilatkozatok és jóváhagyási határok",
+      "description": "Hogyan kerül nyilvántartásba egy képviselő összeférhetetlenségi nyilatkozata, és hogyan marad a jóváhagyás a szerephez rögzített határon belül: a nyilatkozat, a nyilvántartásba vétel, az érintettség elbírálása és a határ rögzítése, az összeg ellenőrzése a határhoz, a hiányzó nyilatkozatok pótlása, majd a polgármester jóváhagyása. A határ fölötti összeget a rendszer megállítja. Az MI-szerep csak fogalmazhat, összegezhet, utánajárhat és számolhat; ami nyilvánosságra kerül, azt mindig ember hagyja jóvá.",
+      "ordinality": 56,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1b6bfa49-2f41-5360-bdb5-6eb301988259",
+      "code": "W-61",
+      "name": "Új kockázat és védelmi intézkedései felvétele",
+      "description": "Hogyan kerül fel egy új kockázat a nyilvántartásba: az osztályvezető leírja a veszélyt és megnevezi a felelőst, az asszisztens vázlatot ad az okokról, a következményekről és a védelmi intézkedésekről, az osztályvezető jóváhagyja, a felelőst a jegyző ellenőrzi (ismeretlen felelős esetén a felvétel elutasításra kerül), majd a kockázat mentésre kerül, és a testületi olvasó látja a nyilvántartásban. Az MI-szerep csak fogalmazhat; amit elment, azt előtte ember hagyja jóvá.",
+      "ordinality": 61,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
       "deleted": false
     }
   ],
@@ -5563,6 +5659,270 @@
           "required": true
         }
       ]
+    },
+    {
+      "id": "6ea9eea2-1b73-5b9d-95cc-b37a95823dcc",
+      "code": "WI-56-1",
+      "workflow_id": "314fb111-30ff-5c78-8735-b69c26b19744",
+      "role_id": "ef9bb2b6-d202-4e54-b249-f7d031fdebce",
+      "title": "Benyújtjuk az összeférhetetlenségi nyilatkozatot",
+      "description": "Az önkormányzati képviselő benyújtja a nyilatkozatát az érdekeltségeiről.",
+      "prompt": "Az Önkormányzati képviselő benyújtja az összeférhetetlenségi nyilatkozatát: megnevezi a vállalkozásait, tisztségeit és közeli hozzátartozóinak érdekeltségeit, például a Malomsori Vízmű Kft.-ben fennálló 12 százalékos tulajdonrészét. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Benyújtjuk az összeférhetetlenségi nyilatkozatot",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "368f8d69-3687-550e-b531-bdf0cf5c828a",
+      "code": "WI-56-2",
+      "workflow_id": "314fb111-30ff-5c78-8735-b69c26b19744",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Nyilvántartásba vesszük, és összevetjük a napirenddel",
+      "description": "Az adatreferens nyilvántartásba veszi a nyilatkozatot, és jelzi, melyik napirendi pontot érinti.",
+      "prompt": "Az Adat- és elemzési referens nyilvántartásba veszi a nyilatkozatot, és összeveti a soron következő ülés napirendjével, jelezve, melyik napirendi pontot érintheti, például a vízmű szerződésének megújítását. Az MI-szerep (RU-AI-1) csak összegezhet és utánajárhat; az érintettségről nem dönt, a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Nyilvántartásba vesszük, és összevetjük a napirenddel",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "598f17d5-b16d-5243-995f-c826c7e4599e",
+      "code": "WI-56-3",
+      "workflow_id": "314fb111-30ff-5c78-8735-b69c26b19744",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "A jegyző elbírálja az érintettséget, és rögzíti a jóváhagyási határt",
+      "description": "A jegyző eldönti, kell-e a képviselőnek kizárnia magát, és a szerephez írja, mekkora összegig hagyhat jóvá.",
+      "prompt": "A Jegyző elbírálja, hogy a képviselőnek ki kell-e zárnia magát az érintett napirendi pontból, és a jóváhagyó szerephez rögzíti, legfeljebb mekkora összeget hagyhat jóvá egy aktusban, például 500 000 forintot. A határ a szerephez van írva, nem valakinek a fejében (RU-12); elhagyása azt jelenti, hogy nincs felső határ, ezért megadása kötelező. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A jegyző elbírálja az érintettséget, és rögzíti a jóváhagyási határt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "69b8ba23-2ca1-5f34-86c7-927c6401dabf",
+      "code": "WI-56-4",
+      "workflow_id": "314fb111-30ff-5c78-8735-b69c26b19744",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "A pénzügyi referens az összeget a rögzített határhoz ellenőrzi",
+      "description": "Jóváhagyás előtt a pénzügyi referens ellenőrzi, hogy az összeg a jóváhagyó szerep határán belül van-e.",
+      "prompt": "A Pénzügyi referens a jóváhagyásra váró összeget, például 720 000 forintot, összeveti a jóváhagyó szerephez aznap rögzített határral (RU-12). Ha az összeg a határ fölött van, a jóváhagyást a rendszer megtagadja, a kérelmet nem hagyhatja jóvá az a szerep, hanem olyan szerephez kerül, amelynek a határa fedezi. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A pénzügyi referens az összeget a rögzített határhoz ellenőrzi",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "12c0f605-f0de-5933-8a5f-d1bf6fc6fb5b",
+      "code": "WI-56-5",
+      "workflow_id": "314fb111-30ff-5c78-8735-b69c26b19744",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Emlékeztetjük, akinek még hiányzik a nyilatkozata",
+      "description": "Az asszisztens megszámolja a hiányzó nyilatkozatokat, és emlékeztetőt fogalmaz.",
+      "prompt": "A Kommunikációs referens megszámolja, hány képviselő nyilatkozata hiányzik még, például 3 a 15-ből, és emlékeztetőt fogalmaz nekik. Az MI-szerep (RU-AI-1) csak számolhat, fogalmazhat és utánajárhat; az emlékeztetőt ember hagyja jóvá, mielőtt kimegy.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Emlékeztetjük, akinek még hiányzik a nyilatkozata",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "71e9030e-2d37-5e18-a1b1-25d7fe044632",
+      "code": "WI-56-6",
+      "workflow_id": "314fb111-30ff-5c78-8735-b69c26b19744",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "A polgármester jóváhagyja a nyilvántartást és a határokat",
+      "description": "A polgármester jóváhagyja a nyilatkozatok nyilvántartását és a szerepekhez írt határokat.",
+      "prompt": "A Polgármester / testületi elnök jóváhagyja a nyilatkozatok nyilvántartását és a szerepekhez rögzített határokat. A saját jóváhagyása is csak a saját szerepéhez írt határig érvényes (RU-12): ami e fölött van, azt nem hagyhatja jóvá, hanem másik szerepet kell megkeresni. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A polgármester jóváhagyja a nyilvántartást és a határokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "1eb30b31-0d8a-5070-9c3a-27a2f9daad93",
+      "code": "WI-61-1",
+      "workflow_id": "1b6bfa49-2f41-5360-bdb5-6eb301988259",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "Leírjuk az új kockázatot és megnevezzük a felelőst",
+      "description": "Az osztályvezető megnevezi a kockázatot, a legrosszabb esetet és a felelőst.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) a telefonos alkalmazásban vagy a csevegőben megnevezi az új kockázatot, például a Zöldhalmi Víztorony téli befagyását, leírja a legrosszabb esetet, és megnevezi a felelőst, például Kovács Dezsőt. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Leírjuk az új kockázatot és megnevezzük a felelőst",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "8cc36fd6-6b77-5a22-b9e8-3dbfd248af21",
+      "code": "WI-61-2",
+      "workflow_id": "1b6bfa49-2f41-5360-bdb5-6eb301988259",
+      "role_id": "6c0dc773-afb3-55b0-8319-90888c25784a",
+      "title": "Vázlatot készítünk az okokról, a következményekről és a védelmi intézkedésekről",
+      "description": "Az asszisztens a leírásból masnidiagram-vázlatot ad.",
+      "prompt": "A Kockázati vázlatkészítő asszisztens a leírásból vázlatot ad az okokra (például tartós fagy, a fűtőkábel kiesése), a következményekre (például vízhiány 400 háztartásban) és a javasolt megelőző és enyhítő intézkedésekre. A vázlatot nem menti el. Az MI-szerep (RU-AI-1) csak fogalmazhat; amit elmentenének, azt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Vázlatot készítünk az okokról, a következményekről és a védelmi intézkedésekről",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "8db67944-355e-5acf-b106-9ac8b7c528a2",
+      "code": "WI-61-3",
+      "workflow_id": "1b6bfa49-2f41-5360-bdb5-6eb301988259",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "Átnézzük és jóváhagyjuk a vázlatot",
+      "description": "Az osztályvezető javít a vázlaton, és jóváhagyja, mielőtt bármi mentésre kerül.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) átnézi a vázlatot, kijavítja, kiegészíti vagy törli a rossz sorokat, és jóváhagyja. Jóváhagyás nélkül semmi nem kerül a nyilvántartásba. Ezt a lépést ember végzi.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Átnézzük és jóváhagyjuk a vázlatot",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "204d8a2b-cfaa-5277-bc1f-67a94a015b36",
+      "code": "WI-61-4",
+      "workflow_id": "1b6bfa49-2f41-5360-bdb5-6eb301988259",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Ellenőrizzük, hogy a felelős ismert-e",
+      "description": "A jegyző ellenőrzi, hogy a megnevezett felelős szerepel a névjegyzékben.",
+      "prompt": "A Jegyző ellenőrzi, hogy a megnevezett felelős ismert személy a névjegyzékben. Ha nem ismert, a felvételt elutasítjuk, a kockázat nem kerül mentésre, és az osztályvezető másik felelőst nevez meg. Ezt a lépést ember végzi.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük, hogy a felelős ismert-e",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "b236638d-8776-58df-9126-76741cb36733",
+      "code": "WI-61-5",
+      "workflow_id": "1b6bfa49-2f41-5360-bdb5-6eb301988259",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "Mentjük a kockázatot, és a védelmi intézkedéseket az okokra és a következményekre helyezzük",
+      "description": "Az osztályvezető menti a kockázatot az okaival, következményeivel és védelmi intézkedéseivel.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) menti a jóváhagyott kockázatot az okaival és következményeivel, majd a védelmi intézkedéseket arra az okra vagy következményre helyezi, amelyet védenek, például a tartalék fűtőkábelt a fagyra. A kockázat piszkozatként kerül a nyilvántartásba. Ezt a lépést ember végzi.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Mentjük a kockázatot, és a védelmi intézkedéseket az okokra és a következményekre helyezzük",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "96ed5939-3fc5-5e93-a121-8bbd060b6bbe",
+      "code": "WI-61-6",
+      "workflow_id": "1b6bfa49-2f41-5360-bdb5-6eb301988259",
+      "role_id": "81af2fd8-896f-50b3-a18e-faa8596e3527",
+      "title": "A testületi olvasó látja a kockázatot a nyilvántartásban",
+      "description": "A testületi kockázatolvasó a nyilvántartásban látja az új kockázatot a felelősével.",
+      "prompt": "A Testületi kockázatolvasó a nyilvántartásban megnézi az új kockázatot a felelősével, az okaival, a következményeivel és a védelmi intézkedéseivel. Ezt a lépést ember végzi.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A testületi olvasó látja a kockázatot a nyilvántartásban",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [
@@ -6075,6 +6435,16 @@
       "id": "b5799f75-3236-5ed3-8af2-ae40afbc2100",
       "workflow_id": "dca98a8d-9aca-53ad-b7cf-821ee9e62847",
       "objective_id": "46056a85-0559-581e-9d91-41360a85ecb2"
+    },
+    {
+      "id": "a5ecfe7a-f72b-5bb6-82b4-f3857ee1c891",
+      "workflow_id": "314fb111-30ff-5c78-8735-b69c26b19744",
+      "objective_id": "942bdaa4-497d-5a82-917a-0bad18adc35b"
+    },
+    {
+      "id": "393b1f33-bb94-5e38-9456-c200bacd4932",
+      "workflow_id": "1b6bfa49-2f41-5360-bdb5-6eb301988259",
+      "objective_id": "c7d73b00-ba18-58bb-8d53-865406045f4d"
     }
   ],
   "work_plans": [],
