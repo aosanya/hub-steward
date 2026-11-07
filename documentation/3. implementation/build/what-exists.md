@@ -30,6 +30,10 @@ The product runs any member organization; these nine are templates to try it on.
 
 The console and the app carry a harvest sale in two jobs. The Suppliers' agent asks the one buyer a farmer picked, once, and holds no farmer threads. The Farmers' agent tells the farmer once that the buyer said yes or no. Neither answers for anyone. The buyer's yes is the market's own record, kept with its date and note. Silence changes nothing. The older produce matcher is gone: a farmer sees buyers' posted prices and picks one.
 
+## Places
+
+The spec language has a `geometry` field type holding a GeoJSON Point, Polygon or MultiPolygon, checked on write. A group carries an optional boundary (Polygon or MultiPolygon), set on creation or with `PUT /groups/{group_id}/boundary`. The geo package finds the ward a point falls in. Not built: finding the group whose boundary holds a point, and drawing boundaries in the console.
+
 ## Not built
 
 - The loop that reads new messages in a room and replies as the Hub Steward role is not in this repository; the API holds the AI role, its instructions, permissions and model accounts.

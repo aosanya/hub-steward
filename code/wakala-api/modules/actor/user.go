@@ -7,6 +7,7 @@ import (
 
 	"gorm.io/gorm"
 
+	"wakalaserver/modules/shared/geo"
 	"wakalaserver/modules/shared/spec"
 
 	"wakalaserver/modules/actor/models"
@@ -56,6 +57,7 @@ type UserManager interface {
 	ForRun(runID string) (UserManager, error)
 
 	SetGroupAreaNode(ctx context.Context, groupID string, areaNodeID string) (Group, error)
+	SetGroupBoundary(ctx context.Context, groupID string, boundary *geo.Geometry) (Group, error)
 
 	CreateActor(ctx context.Context, a Actor) (Actor, error)
 

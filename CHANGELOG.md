@@ -9,6 +9,7 @@ All notable changes to this project are listed here, grouped by area. The format
 - The custody, digitaltwin and engage modules are ported from the Mwanachama backend and mounted like voting, with their routes and operation tables (2026-11-07).
 - The riskmanager module is mounted as `risks` with its routes, MCP tools and operation table, test-copy support and owner checks against the actor directory; an unknown owner is refused as a bad reference (2026-11-07).
 
+- A group can carry a boundary (a GeoJSON Polygon or MultiPolygon), set on creation or with `PUT /groups/{group_id}/boundary`; a point or an unclosed ring is refused (2026-11-07).
 - Custody gains a consent gate and a withdrawal notifier, not yet wired into other modules (2026-11-07).
 - The accounting overdue read can age from the day a charge was raised (`age_from`), and accounting gains contract milestones, payment certificates and retention (2026-11-07).
 - The riskmanager module gains a name-matching tool and a gaps-by-owner filter for the chat agent, and four starter service-failure risk libraries (2026-11-07).
