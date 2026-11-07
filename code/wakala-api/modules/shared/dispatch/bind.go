@@ -190,6 +190,9 @@ func bindOne(a Arg, want reflect.Type, r *http.Request, body map[string]json.Raw
 	case FromPath:
 		return fromText(r.PathValue(a.As), want, a.As)
 	case FromQuery:
+		if a.Required && !r.URL.Query().Has(a.As) {
+			return reflect.Value{}, fmt.Errorf("%s: the query parameter is required", a.As)
+		}
 		if a.Repeated {
 			return fromTexts(r.URL.Query()[a.As], want, a.As)
 		}
