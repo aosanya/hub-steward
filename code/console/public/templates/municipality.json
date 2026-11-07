@@ -343,6 +343,15 @@
       "created_at": "2026-11-07T12:00:00Z",
       "last_updated": "2026-11-07T12:00:00Z",
       "deleted": false
+    },
+    {
+      "id": "0f886e4c-a496-579e-a1d3-617a7baf50a9",
+      "code": "R-50",
+      "name": "Építéshatósági ellenőr",
+      "description": "Helyszínen vagy iratok alapján megvizsgálja a kérelmet, és írásban rögzíti a megállapítását. A megállapítást nem fogalmazza át senki helyette, és ezt a szerepet soha nem tölti be mesterséges intelligencia.",
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
     }
   ],
   "goals": [
@@ -627,6 +636,71 @@
       "ordinality": 21,
       "created_at": "2026-10-01T19:00:00Z",
       "last_updated": "2026-10-01T19:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "54d40736-057f-5a0c-886b-cb7f8baf29d6",
+      "code": "O-47",
+      "goal_id": "67f561ec-ecf2-4ca9-9ab3-70dfa44ed895",
+      "title": "Évente elmondjuk a lakosoknak, mit kérdeztünk, mit hallottunk és mi változott",
+      "description": "Az éves jelentés a körök és a döntések rekordjaiból készül, városrészenkénti bontásban, a felelős nevével; nyilvánosságra csak ember jóváhagyása után kerül.",
+      "ordinality": 47,
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "38f4f1a6-dcbb-544a-b244-17d18de38787",
+      "code": "O-22",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "A díjjegyzéket abban a változatban közöljük, amelyik ma hatályos",
+      "description": "A díj- és illetékjegyzék mindig a hatályos változatot mutatja, a hatálybalépés napjával és a megelőző változat megőrzésével, hogy a testület és a lakos ugyanarra a dátumozott jegyzékre hivatkozhasson.",
+      "ordinality": 22,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3817e453-ebf8-519a-b78a-0a37640a0b08",
+      "code": "O-50",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "Az engedélyt a kérelemtől a döntésig és a lejárati dátumig egy nyomon követhető úton visszük",
+      "description": "A kérelem, az ellenőr megállapítása, a döntés és a lejáratkor esedékes megújítás egyetlen ügyben marad, hogy a kérelmező mindig lássa, hol tart, és a döntés mögött ott legyen az, amit az ellenőr talált.",
+      "ordinality": 50,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z"
+    },
+    {
+      "id": "e04e3a27-9d19-5cb5-bac0-c3d0e812ffa8",
+      "code": "O-54-1",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "A civil támogatási felhívás és a bírálati szempontok előre, nyilvánosan ismertek",
+      "description": "Minden felhívás megjelenése előtt rögzítjük a keretösszeget, a határidőt és a szempontokat, hogy a pályázó és a lakos ugyanazt lássa, mint a bíráló.",
+      "ordinality": 54,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "67946bcf-620b-5427-b3b9-c547531c69cf",
+      "code": "O-54-2",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "A támogatás odaítélése és a beszámoló ugyanabban a nyilvántartásban követhető",
+      "description": "Az odaítélt összeg, a kedvezményezett és a beszámoló állapota egy helyen áll, így a kifizetés mögött mindig ember aláírása és ellenőrizhető elszámolás van.",
+      "ordinality": 55,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "047b6bc2-5292-5011-b1e8-d00d7d2a8a28",
+      "code": "O-55",
+      "goal_id": "629d4de4-dcf2-4a4e-9367-d2d1700c54a8",
+      "title": "A közleményt a megfelelő városrészekhez juttatjuk, és megszámoljuk, kik nyugtázták",
+      "description": "Egy hivatalos közlemény vagy riasztás csak jóváhagyás után megy ki, a városrészeknek, amelyeket érint, legalább egy eszköz nélküli csatornával, és a lezárásig városrészenként közzétesszük, hányan nyugtázták a kiküldöttek közül.",
+      "ordinality": 22,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
       "deleted": false
     }
   ],
@@ -1024,6 +1098,41 @@
       "target_type": "role",
       "target_code": "R-14",
       "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "8e970681-3333-5bbf-afd6-f6f3e803af7f",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-22",
+      "created_at": "2026-11-07T11:00:00Z"
+    },
+    {
+      "id": "78d2eb4d-7233-5751-93a6-02768e7dae0e",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-54-1",
+      "created_at": "2026-11-07T11:00:00Z"
+    },
+    {
+      "id": "7e40baff-64a6-5223-bf1b-4903fca05c5f",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-54-2",
+      "created_at": "2026-11-07T11:00:00Z"
+    },
+    {
+      "id": "749d33f3-1506-5ca2-9956-7e2de48ee96f",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-55",
+      "created_at": "2026-11-07T11:00:00Z"
+    },
+    {
+      "id": "34917c47-03fa-537a-b26f-9ca161d40bd9",
+      "rule_code": "RU-6",
+      "target_type": "objective",
+      "target_code": "O-55",
+      "created_at": "2026-11-07T11:00:00Z"
     }
   ],
   "workflows": [
@@ -1245,6 +1354,96 @@
       "ordinality": 6,
       "created_at": "2026-10-02T10:00:00Z",
       "last_updated": "2026-10-02T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "code": "W-46",
+      "name": "Közérdekű adat iránti kérelem",
+      "description": "Hogyan válaszol az önkormányzat a közérdekű adat iránti kérelemre: iktatás, a kért iratok megkeresése, a nem kiadható részek jelölése, majd válasz a törvényes határidőn belül, vagy indokolt elutasítás. Az MI-szerepek csak fogalmazhatnak, összegezhetnek, utánajárhatnak és számolhatnak; a nyilvánosság elé kerülő dolgot mindig ember hagyja jóvá.",
+      "ordinality": 46,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "code": "W-47",
+      "name": "Az éves jelentés a lakosoknak",
+      "description": "Évente elmondjuk a lakosoknak, mit kérdeztünk, mit hallottunk, és mi változott miatta: számokkal, városrészenként, a felelős nevével.",
+      "ordinality": 47,
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e372e3bd-b335-5cc0-88c5-8b98275abe4e",
+      "code": "W-48",
+      "name": "A háttérirodai működés: mindig kéznél, és csak a testület döntésére bekapcsolva",
+      "description": "Hogyan tartjuk készenlétben a háttérirodát (könyvelés, feladatkezelés, digitális ikerkép), és hogyan kapcsolja be a testület a második fázist akkor, amikor akarja. Az MI-szerepek csak fogalmazhatnak, összegezhetnek, utánajárhatnak és számolhatnak; ami a nyilvánosság elé kerül, azt mindig ember hagyja jóvá.",
+      "ordinality": 48,
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "code": "W-49",
+      "name": "A díjjegyzék közzététele a hatályos változatban",
+      "description": "Hogyan kerül a zöldhalmi önkormányzat díj- és illetékjegyzéke a pénzügyi referenstől a hirdetőtáblára és az oldalra úgy, hogy mindig a hatályos, dátumozott változat látszik, a korábbi pedig megmarad.",
+      "ordinality": 49,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "code": "W-50",
+      "name": "Engedély a kérelemtől a döntésig",
+      "description": "Hogyan jut el egy zöldhalmi építési vagy használati engedély iránti kérelem a befogadástól az ellenőr megállapításán és a döntésen át a megújítás napjáig úgy, hogy a díj, a megállapítás és a döntés ugyanabban az ügyben marad.",
+      "ordinality": 50,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7dec37ea-188c-5d12-a9d6-4e5f296465cb",
+      "code": "W-53",
+      "name": "A felfelé menő jelentés a közzétett számokból",
+      "description": "Hogyan készül az országos szintnek küldött pénzügyi jelentés ugyanabból a főkönyvből és ugyanazokból az eredményekből, amelyeket az önkormányzat helyben közzétett, hogy a lakosnak mutatott és a felfelé küldött szám ne térhessen el.",
+      "ordinality": 53,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "code": "W-54",
+      "name": "Támogatás civil szervezeteknek: felhívás, pályázat, döntés, beszámoló",
+      "description": "Hogyan hirdet meg, bírál el és ellenőriz a zöldhalmi önkormányzat egy civil támogatási keretet úgy, hogy a felhívást, a döntést és a beszámolót a nyilvánosság ugyanabból a nyilvántartásból látja, és a pénz kifizetése embernek az aláírását viseli.",
+      "ordinality": 54,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8141b182-f722-5b5c-ab63-db10dde049a4",
+      "code": "W-55",
+      "name": "Közlemény vagy riasztás: a megfelelő városrészeknek, a megfelelő csatornákon, nyugtázással",
+      "description": "Hogyan jut el egy zöldhalmi hivatalos közlemény vagy veszélyhelyzeti riasztás a megfelelő városrészekhez a megfelelő csatornákon úgy, hogy előbb ember hagyja jóvá, és utána számoljuk, kik nyugtázták.",
+      "ordinality": 55,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "code": "W-57",
+      "name": "Terem, helyiség vagy rendezvényidőpont foglalása",
+      "description": "Hogyan kér, kap és erősít vissza egy zöldhalmi egyesület vagy lakos egy termet, helyiséget vagy rendezvényidőpontot: ütközés nélkül, a közzétett díjjegyzék szerinti díjjal, és úgy, hogy a foglalást a jegyző hagyja jóvá.",
+      "ordinality": 57,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
       "deleted": false
     }
   ],
@@ -2832,6 +3031,630 @@
       "created_at": "2026-10-02T10:00:00Z",
       "last_updated": "2026-10-02T10:00:00Z",
       "deleted": false
+    },
+    {
+      "id": "6dc3f403-372e-5cda-a6c6-266b1330f70f",
+      "code": "WI-46-1",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Iktatjuk a kérelmet és kiszámoljuk a határidőt",
+      "description": "A jegyző iktatószámot ad a közérdekű adat iránti kérelemnek, és rögzíti a törvényes határidőt.",
+      "prompt": "A Jegyző iktatja a beérkezett kérelmet, például Kovács Lilla kérését a Malomsori Piactér felújítási szerződéseiről, iktatószámot ad rá, és rögzíti a beérkezés napját és a válasz határidejét (a beérkezéstől számított 15 napot). Visszaigazolja a kérelmezőnek, hogy megkaptuk. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a3f56975-5cdf-5269-9c73-80101709641a",
+      "code": "WI-46-2",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Megkeressük és megszámoljuk az érintett iratokat",
+      "description": "Az adatos referens megkeresi a nyilvántartásban a kért iratokat, és megszámolja őket.",
+      "prompt": "Az Adat- és elemzési referens a nyilvántartásban megkeresi a kérelemben megnevezett iratokat, megszámolja, hány iratról van szó (például 7 szerződés és 3 teljesítésigazolás), és osztályonként felsorolja, hol vannak. Ahol nem találja, azt megnevezi, nem hagyja ki. Az MI-szerep (RU-AI-1) csak kereshet, összegezhet és számolhat; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "9b353bb2-4b05-51eb-909d-8d0a6d2e51bf",
+      "code": "WI-46-3",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Ellenőrizzük, mi nem adható ki",
+      "description": "Az adatvédelmi felelős végignézi az iratokat személyes adat és üzleti titok szempontjából.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős végignézi az iratokat, és megjelöli, mi nem adható ki: magánszemély adatai, üzleti titok, döntés-előkészítő irat. Minden kihagyáshoz leírja a jogalapot. Ezt a lépést ember végzi, MI-szerep nem dönt arról, mi marad ki.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "601e89e9-0e08-5699-a932-0473092fe919",
+      "code": "WI-46-4",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Megírjuk a választ vagy az indokolt elutasítást",
+      "description": "A jegyző megírja a választ a kiadható iratokkal, vagy az elutasítást a jogalappal.",
+      "prompt": "A Jegyző a kiadható iratokkal megírja a választ, vagy ha valamit nem ad ki, az elutasítást az indokával és a jogorvoslat lehetőségével. Az elutasítás mindig megnevezi a jogalapot, nem csak annyit mond, hogy nem adható ki. Az MI-szerep (RU-AI-1) csak fogalmazványt készíthet a válaszról; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fbb91de5-3501-5249-9494-e391c51c7f52",
+      "code": "WI-46-5",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "A polgármester jóváhagyja és aláírja",
+      "description": "A polgármester elolvassa a választ, és a határidő előtt jóváhagyja és aláírja.",
+      "prompt": "A Polgármester / testületi elnök elolvassa a választ vagy az elutasítást, és a határidő lejárta előtt jóváhagyja és aláírja. Ha költségtérítést kér az irat másolásáért, az összeget forintban megjelöli (például 1 200 Ft). Addig semmi nem megy ki. Az MI-szerep (RU-AI-1) csak emlékeztetőt fogalmazhat a határidőről és utánajárhat, hol akad el az aláírás; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a75e5501-f46f-52ce-add9-19b34528daee",
+      "code": "WI-46-6",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Elküldjük a választ és közzétesszük, ami közérdekű",
+      "description": "A kommunikációs referens elküldi a választ a kérelmezőnek, és közzéteszi a közérdekű adatot.",
+      "prompt": "A Kommunikációs referens a jóváhagyott választ vagy indokolt elutasítást a határidőn belül elküldi a kérelmezőnek, és közzéteszi a kiadott közérdekű adatot is, hogy ugyanazt ne kelljen újra kérni. A kimenő anyagot nem küldi el addig, amíg a polgármester jóvá nem hagyta. Az MI-szerep (RU-AI-1) csak fogalmazhatja a közleményt és utánajárhat, megérkezett-e a válasz; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f2e3f001-c3af-55af-8c56-bc0b6f825114",
+      "code": "WI-47-1",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "ordinality": 1,
+      "title": "Összeszámoljuk, mit kérdeztünk és kitől hallottunk",
+      "description": "Az év összes köréből megszámoljuk, hány kérdést tettünk fel, hányan válaszoltak hányból, városrészenként.",
+      "prompt": "Vegyük elő az év összes körének rekordjait, és számoljuk meg körönként és városrészenként (Óváros, Kertváros, Malomsor, Határrét), mit kérdeztünk, hányan válaszoltak hányból, és hol maradt hiányos a lefedettség. Számot közöljünk, személyt soha; a szűk válaszolói kört írjuk le, ne szépítsük. Az MI-szerep csak számolhat és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "bc1e9e31-97cf-5fb4-98f7-383e4b7d2bf2",
+      "code": "WI-47-2",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "ordinality": 2,
+      "title": "Összegyűjtjük, mi változott a hallottak miatt",
+      "description": "A jegyzői nyilvántartásból kigyűjtjük a döntéseket, vállalásokat és azt, hogy teljesültek-e.",
+      "prompt": "A jegyzői nyilvántartásból gyűjtsük ki az év döntéseit és vállalásait körönként: mit hallottunk, mit döntött a testület, ki a felelős névvel, és teljesült-e határidőre. Ahol egy döntés a hallottak ellen szólt, ezt jelöljük, ne simítsuk el. A lejárt vállalások felelőseit emlékeztessük, de a mulasztást ne mi pótoljuk. Az MI-szerep csak emlékeztethet, számolhat és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fbd63a0c-1871-5de9-bce9-50185525487b",
+      "code": "WI-47-3",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "ordinality": 3,
+      "title": "Megírjuk az éves jelentés fogalmazványát",
+      "description": "A számokból és a változásokból közérthető jelentés-fogalmazvány készül: ezt kérdeztük, ezt hallottuk, ez változott.",
+      "prompt": "Írjunk közérthető jelentés-fogalmazványt az előző két lépés anyagából: mit kérdeztünk, mit hallottunk számokkal, mi változott, és mi nem, ha semmi, ezt is írjuk le. Példával, városrészenkénti bontásban, forintösszegekkel ott, ahol pénzről van szó (például a Malomsori pad 380 000 Ft). A fogalmazvány nem közölhető, amíg a következő lépésben ember nem hagyta jóvá. Az MI-szerep csak csak fogalmazványt készíthet és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3beb2928-a926-5609-b26f-6afd67d07d6b",
+      "code": "WI-47-4",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "ordinality": 4,
+      "title": "A polgármester átnézi és névvel jóváhagyja a jelentést",
+      "description": "A jelentést a polgármester vagy a testületi elnök nézi át, és a saját nevén hagyja jóvá a közzététel előtt.",
+      "prompt": "A polgármester vagy a testületi elnök veti össze a fogalmazványt a számokkal és a nyilvántartással, javít, ha kell, és a nevével vállalja a jelentést. Ezt a lépést csak ember végezheti, mert a nyilvánosság elé kerülő anyagért ember felel; jóváhagyás nélkül a jelentés nem kerül ki. Ne vállaljon olyat, amit a testület nem szavazott meg.",
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4af4c3c5-2b94-502f-af21-da33966e9d45",
+      "code": "WI-47-5",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "ordinality": 5,
+      "title": "Közzétesszük a jelentést, és eljuttatjuk a lakosokhoz",
+      "description": "A jóváhagyott jelentés felkerül a honlapra, a városrészi hirdetőtáblákra, és papíron is eljut a lakosokhoz.",
+      "prompt": "A polgármester jóváhagyása után tegyük közzé a jelentést az Önkormányzat honlapján és a Zöldhalom városrészi hirdetőtábláin, papíron is a kapu és a piaci pult mellett, és küldjük el a körök csoportjainak. A közlés ütemezését és a szöveg végső alakját ember adja le. Az MI-szerep csak csak fogalmazványt készíthet és emlékeztethet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6ce0d612-5324-54c1-bb5a-f8ddc5eccce7",
+      "code": "WI-48-1",
+      "workflow_id": "e372e3bd-b335-5cc0-88c5-8b98275abe4e",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Ellenőrizzük, hogy a könyvelési modul készen áll",
+      "description": "Nézzük át, hogy a könyvelés, a feladatkezelés és a digitális ikerkép modul kikapcsolt, de bekapcsolható állapotban van-e.",
+      "prompt": "Pénzügyi referensként nézzük át a Zöldhalom Város Önkormányzatánál a könyvelési, a feladatkezelő és a digitális ikerkép modult: mindegyik ki van-e kapcsolva, és be lehet-e kapcsolni néhány perc alatt. Számoljuk meg, hány nyitott tétel van a 2026. évi költségvetési soron (például 4 120 000 Ft a Malomsori útjavításra). Az MI-szerep (RU-AI-1) csak fogalmaz, összegez, utánajár vagy számol; ami a nyilvánosság elé kerül, azt előtte ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2d49d3e0-9856-5db2-a364-6f30ce2a1549",
+      "code": "WI-48-2",
+      "workflow_id": "e372e3bd-b335-5cc0-88c5-8b98275abe4e",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Rögzítsük a kiinduló állapotot a digitális ikerképben",
+      "description": "Mentsük el, milyen szolgáltatások és eszközök vannak ma városrészenként, hogy a bekapcsolás után lehessen összevetni.",
+      "prompt": "Adat- és elemzési referensként készítsünk pillanatképet az Óváros, a Kertváros, a Malomsor és a Határrét szolgáltatásairól és eszközeiről. A kiinduló számokat tegyük a testület elé, de ne vegyünk fel új adatot bekapcsolás előtt. Az MI-szerep (RU-AI-1) csak fogalmaz, összegez, utánajár vagy számol; ami a nyilvánosság elé kerül, azt előtte ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0bbefdde-9d88-52fc-af56-03dc7c2e8c28",
+      "code": "WI-48-3",
+      "workflow_id": "e372e3bd-b335-5cc0-88c5-8b98275abe4e",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Ellenőrizzük a jóváhagyási határokat és az adatvédelmet",
+      "description": "Győződjünk meg róla, hogy rögzítve van, ki mit hagyhat jóvá és mekkora összegig, és hogy a kikapcsolt háttérirodai rész nem tárol személyes adatot.",
+      "prompt": "Adatvédelmi és iratkezelési felelősként vessük össze a jóváhagyási határokat (például 500 000 Ft felett a polgármester, alatta a jegyző) azzal, ami a rendszerben rögzítve van. Jelöljük, ha hiányzik egy határ, és ha a kikapcsolt modul bármely személyes adatot tárolna. Az MI-szerep (RU-AI-1) csak fogalmaz, összegez, utánajár vagy számol; ami a nyilvánosság elé kerül, azt előtte ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e82f49d9-f2d8-549a-a9c0-3643a8c282ed",
+      "code": "WI-48-4",
+      "workflow_id": "e372e3bd-b335-5cc0-88c5-8b98275abe4e",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Állítsuk össze a költségösszegzést városrészenként",
+      "description": "Készítsünk városrészenkénti költségösszegzést a testületnek, amely megmutatja, mit nyújtana a bekapcsolt könyvelés.",
+      "prompt": "Pénzügyi referensként készítsük el a 2026. harmadik negyedévi kiadások összegzését városrészenként (összesen 18 760 000 Ft), a forrásrekordokra hivatkozva. A tervezetet küldjük a jegyzőnek; közzétenni csak a jegyző jóváhagyása után lehet. Az MI-szerep (RU-AI-1) csak fogalmaz, összegez, utánajár vagy számol; ami a nyilvánosság elé kerül, azt előtte ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fde1b751-5adc-5b55-8824-30048609208a",
+      "code": "WI-48-5",
+      "workflow_id": "e372e3bd-b335-5cc0-88c5-8b98275abe4e",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Készítsük elő a testületi előterjesztést a bekapcsolásról",
+      "description": "Foglaljuk egy lapra, mi változik, mibe kerül, és mi történik, ha a testület nem kapcsolja be.",
+      "prompt": "Jegyzőként készítsünk egy oldalas előterjesztést: mit kapcsol be a második fázis, milyen költséggel (becsült éves 1 250 000 Ft), és hogy a modulok bekapcsolás nélkül is érintetlenül maradnak. Az előterjesztés a napirendre csak a jegyző aláírásával kerülhet. Az MI-szerep (RU-AI-1) csak fogalmaz, összegez, utánajár vagy számol; ami a nyilvánosság elé kerül, azt előtte ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "012449af-65b9-58d2-88bd-fa598f1c2a4c",
+      "code": "WI-48-6",
+      "workflow_id": "e372e3bd-b335-5cc0-88c5-8b98275abe4e",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "A testület dönt a bekapcsolásról vagy a kikapcsolva hagyásról",
+      "description": "A testület szavaz arról, bekapcsolja-e a háttérirodai modulokat, és a döntést beírjuk a jelentésbe.",
+      "prompt": "Polgármesterként tegyük az előterjesztést a testület elé, és a döntést, a szavazatok számát és az indoklást írjuk be a jelentésbe. A modulok csak a testület döntése után kapcsolhatók be; a döntés indoklására ember nevét kell ráírni. Az MI-szerep (RU-AI-1) csak fogalmaz, összegez, utánajár vagy számol; ami a nyilvánosság elé kerül, azt előtte ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "00a6fbf7-57d0-51be-9435-450958e47e5c",
+      "code": "WI-49-1",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Gyűjtsük össze a hatályos díjtételeket",
+      "description": "A pénzügyi referens összegyűjti a jelenleg érvényes díjakat és a legutóbbi módosításokat.",
+      "prompt": "Gyűjtsük össze a hatályos díjtételeket (például a közterület-használati díj 2 500 Ft/nap, a lakossági hulladékszállítási díj 1 800 Ft/hó) és a testület legutóbbi módosító határozatait Óvárosból, Kertvárosból, Malomsorról és Határrétről, mindegyik mellett a hatálybalépés napjával. Az MI-szerep csak fogalmazhatja meg a tételek tervezett listáját, összefoglalhatja a módosításokat, és megszámolhatja a tételeket; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "205ae2bf-686b-57d7-9dc1-58ba2be2dd32",
+      "code": "WI-49-2",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Vessük össze a tételeket a rendelettel és a határozatokkal",
+      "description": "A jegyző ellenőrzi, hogy minden tétel megegyezik a rendelettel és a testület határozatával.",
+      "prompt": "A jegyző tételenként összeveti a tervezetet a rendelet szövegével és a testületi határozatokkal, felsorolja az eltéréseket, és a hiányzó hivatkozásokat pótoltatja a pénzügyi referenssel. Az MI-szerep csak hívhatja fel a figyelmet a hiányzó hivatkozásokra, összefoglalhatja az eltéréseket, és megszámolhatja az ellenőrzött tételeket; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8f6b20d4-99a0-5e5b-a9e3-2f61f0f02ce3",
+      "code": "WI-49-3",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Hagyjuk jóvá a hatályos díjjegyzéket",
+      "description": "A polgármester jóváhagyja a jegyzéket és a hatálybalépés napját, és csak ezután kerülhet ki bármi.",
+      "prompt": "A polgármester átnézi a díjjegyzéket és a hatálybalépés napját, kijavítja vagy kihúzza, ami nem állja meg a helyét, és saját nevével jóváhagyja. Csak a jóváhagyott változat kerülhet a nyilvánosság elé; a jóváhagyás időpontját és személyét feljegyezzük.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "739e55b1-b416-5bfd-8b79-c93bf000deb2",
+      "code": "WI-49-4",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Tegyük közzé a jegyzéket a hirdetőtáblán és az oldalon",
+      "description": "A kommunikációs referens kiteszi a jóváhagyott változatot, dátummal, a korábbit pedig elavultként jelöli.",
+      "prompt": "A kommunikációs referens a jóváhagyott díjjegyzéket a hirdetőtáblára és az önkormányzat oldalára teszi a hatálybalépés napjával, a korábbi változatot pedig elavultként jelöli meg. Az MI-szerep csak fogalmazhatja meg a közlemény szövegét, és összefoglalhatja a változásokat; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2fa64f93-d279-58fd-8d7c-192e0cb35445",
+      "code": "WI-49-5",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Őrizzük meg a korábbi változatot, és jegyezzük fel a közzétételt",
+      "description": "Az iratkezelési felelős megőrzi a megelőző változatot, és feljegyzi, mikor ment ki a hatályos.",
+      "prompt": "Az iratkezelési felelős megőrzi a megelőző jegyzéket a megőrzési szabály szerint, feljegyzi a közzététel napját és a jóváhagyó nevét, és megszámolja, hány változat van érvényben és hány archiválva. Az MI-szerep csak számolhatja meg a változatokat, és figyelmeztethet, ha a közzététel napja hiányzik; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "63bd651f-536a-5517-b1d7-dfb17cfd6b5c",
+      "code": "WI-50-1",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Fogadjuk be a kérelmet",
+      "description": "A jegyző befogadja a kérelmet, iktatószámot ad, és visszaigazolja a kérelmezőnek.",
+      "prompt": "Vegyük fel a beérkezett kérelmet (kérelmező: Szabó Márta, Malomsor, Fő utca 12., tetőtér-beépítés), adjunk iktatószámot, és igazoljuk vissza a RU-7 szerinti határidőn belül. Az MI-szerep csak a visszaigazolás szövegét fogalmazhatja és a beérkezett kérelmeket megszámolhatja; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d325eede-d426-584e-b1a2-a4c1cce525ac",
+      "code": "WI-50-2",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Ellenőrizzük az illetéket",
+      "description": "A pénzügyi referens a hatályos díj- és illetékjegyzék szerint megállapítja a fizetendő összeget, és követi a befizetést.",
+      "prompt": "Állapítsuk meg a fizetendő illetéket a közzétett jegyzék szerint (például 18 500 Ft), és jegyezzük fel, mikor érkezett meg a befizetés; a RU-11 szerint díjat a jegyzék közzététele előtt nem számítunk fel. Az MI-szerep csak a befizetetlen illetékeket összeszámolhatja és emlékeztetőt fogalmazhat a kérelmezőnek; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cfdbfe52-2a86-5173-8a75-171e0357c4f9",
+      "code": "WI-50-3",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "role_id": "0f886e4c-a496-579e-a1d3-617a7baf50a9",
+      "title": "Rögzítsük az ellenőr megállapítását",
+      "description": "Az építéshatósági ellenőr megvizsgálja a kérelmet és írásban rögzíti a megállapítását.",
+      "prompt": "Vizsgáljuk meg a kérelmet és a helyszínt, és rögzítsük, megfelel-e az előírásoknak, mit kell pótolni, és milyen feltétellel adható meg az engedély. Az MI-szerep csak a megállapítás vázlatát összegezheti és a hiányzó mellékleteket megszámolhatja, magát a megállapítást azonban az ellenőr írja meg; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c2ffea71-3843-54e4-a5f9-d06cefdc2d62",
+      "code": "WI-50-4",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Hozzuk meg a döntést",
+      "description": "A polgármester az ellenőr megállapítása és a befizetett illeték ismeretében megadja vagy megtagadja az engedélyt.",
+      "prompt": "Döntsünk az engedély megadásáról vagy megtagadásáról az ellenőr megállapítása alapján, és indokoljuk meg a döntést; a RU-12 szerint jóváhagyás nélkül engedélyt nem adunk ki. Az MI-szerep csak a döntés indoklásának vázlatát fogalmazhatja, a döntést azonban nem hozhatja meg; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "30b5e574-b56e-5e10-b97f-970ac71c226f",
+      "code": "WI-50-5",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Rögzítsük a megújítás dátumát",
+      "description": "A jegyző az engedély lejárati napját és a megújítás határidejét ügyfeljegyzésbe veszi, és értesíti a kérelmezőt.",
+      "prompt": "Írjuk be az engedély érvényességének végét (például 2031. november 7.) és a megújítási kérelem határidejét, és állítsunk be emlékeztetőt a kérelmezőnek. Az MI-szerep csak az emlékeztetőt fogalmazhatja és a közelgő lejáratokat megszámolhatja; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6bab246d-904d-5573-b2b5-4dd9f472e0a6",
+      "code": "WI-53-1",
+      "workflow_id": "7dec37ea-188c-5d12-a9d6-4e5f296465cb",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Jelöljük ki a visszaadandó időszakot és a jelentés fajtáját",
+      "description": "A pénzügyi referens megnyitja a felfelé menő jelentést, és kiválasztja az időszakot (például 2026 harmadik negyedéve) és az országos szint által kért jelentést.",
+      "prompt": "Rögzítsük, melyik időszakról és melyik országos jelentésről van szó, és melyik közzétett főkönyvi állapotból és eredményekből készül (például a 48 650 000 Ft-os negyedéves kiadási összesítésből). Ezt a lépést ember végzi, nem automatika indítja.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "21d265ab-f538-5be6-af9f-cc65e95eba98",
+      "code": "WI-53-2",
+      "workflow_id": "7dec37ea-188c-5d12-a9d6-4e5f296465cb",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Állítsuk össze a jelentés tervezetét a közzétett számokból",
+      "description": "Az adat- és elemzési referens a közzétett főkönyvből és eredményekből kigyűjti a jelentés soraira jutó összegeket.",
+      "prompt": "Vegyük a közzétett főkönyvi sorokat és eredményeket, és soroljuk őket a jelentés soraihoz osztályonként és településrészenként (Óváros, Kertváros, Malomsor, Határrét); minden sornál szerepeljen a forrás. Az MI-szerep csak a sorokat fogalmazhatja meg, összegezheti és megszámolhatja; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2d918416-b830-56af-8c10-22c5cd3132eb",
+      "code": "WI-53-3",
+      "workflow_id": "7dec37ea-188c-5d12-a9d6-4e5f296465cb",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Vessük össze a jelentést a helyben közzétett számokkal",
+      "description": "Az adat- és elemzési referens soronként összeveti a tervezetet azzal, amit az önkormányzat helyben közzétett, és megkeresi az eltéréseket.",
+      "prompt": "Hasonlítsuk össze a tervezet minden összegét a közzétett számmal, számoljuk meg az eltérő sorokat, és kérjük be a magyarázatot a sor gazdájától. Az MI-szerep csak összehasonlíthat, megszámolhat és emlékeztethet; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c77a09ae-0fe8-5020-8926-4c26154742ab",
+      "code": "WI-53-4",
+      "workflow_id": "7dec37ea-188c-5d12-a9d6-4e5f296465cb",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Ellenőrizzük, hogy a jelentés nem tartalmaz személyes adatot",
+      "description": "Az adatvédelmi és iratkezelési felelős átnézi a jelentést, mielőtt az elhagyná a hivatalt.",
+      "prompt": "Nézzük át a jelentést: csak összesített összeg szerepelhet benne, név, cím vagy egyedi tétel nem. Az eltérések és a javítások maradjanak a nyilvántartásban. Ezt a lépést ember végzi.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c05e4ad8-00aa-5034-97d6-72f8de5403ba",
+      "code": "WI-53-5",
+      "workflow_id": "7dec37ea-188c-5d12-a9d6-4e5f296465cb",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Hagyjuk jóvá és küldjük fel a jelentést",
+      "description": "A jegyző aláírja a jelentést, és elküldi az országos szintnek; ettől kezdve a jelentés nyilvános.",
+      "prompt": "A jegyző nevével hagyja jóvá a jelentést, és küldje el az országos szintnek, a helyben közzétett számok mellé téve a másolatát. Az MI-szerep nem hagyhatja jóvá és nem küldheti el; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "55a36264-5576-5ba1-910d-0b7f80dc7168",
+      "code": "WI-54-1",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Összeállítjuk a pályázati felhívás tervezetét",
+      "description": "A pénzügyi referens rögzíti a keretet, a határidőt és a bírálati szempontokat.",
+      "prompt": "Rögzítsük a civil támogatási keret összegét (például 4 800 000 Ft), a beadási határidőt és a bírálati szempontokat, és állítsuk össze a felhívás szövegét településrészenként (Óváros, Kertváros, Malomsor, Határrét) egyenlő eséllyel. Az MI-szerep csak fogalmazhatja a felhívás tervezetét; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8e44a34e-80ec-5f9b-b575-a2b3e160e2ea",
+      "code": "WI-54-2",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Közzétesszük a felhívást",
+      "description": "A kommunikációs referens a jóváhagyott szöveget közzéteszi és közérthetően összefoglalja.",
+      "prompt": "Tegyük közzé a jóváhagyott felhívást a hivatal oldalán és a hirdetőtáblákon, és készítsünk belőle rövid, közérthető összefoglalót. Az MI-szerep csak fogalmazhatja és összegezheti a közleményt; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "58c1497f-ffcb-5ab7-9476-4050623b560c",
+      "code": "WI-54-3",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Fogadjuk a pályázatokat, és hiánypótlásra szólítunk",
+      "description": "A jegyző nyilvántartásba veszi a beérkezett pályázatokat, és pótoltatja a hiányzókat.",
+      "prompt": "Vegyük nyilvántartásba a beérkezett pályázatokat (például a Malomsori Kertbarátok Egyesülete 350 000 Ft-os kérelmét), és ha valami hiányzik, szólítsuk fel a pályázót a határidő előtt. Az MI-szerep csak számolhatja a beérkezett pályázatokat, és utánajárhat a hiányzó mellékleteknek; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c8a4aa16-ad2e-5046-8ee1-bac624cdacb2",
+      "code": "WI-54-4",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Összesítjük a pályázatokat a bírálathoz",
+      "description": "Az adat- és elemzési referens táblázatba rendezi a kérelmeket a szempontok szerint.",
+      "prompt": "Készítsünk áttekintő táblázatot a pályázatokról: kérelmezett összeg, településrész, szempontonkénti pontok; a keret és a kért összegek különbségét külön mutassuk. Az MI-szerep csak összegezheti a pályázatokat és számolhat; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3bfc1718-1f20-5147-b3bb-830701b951c2",
+      "code": "WI-54-5",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "A testület dönt a támogatásokról",
+      "description": "A polgármester a testület elé viszi a javaslatot, és a döntést ember viszi tovább.",
+      "prompt": "A testület ülésén döntsünk az odaítélt összegekről, és a döntést indoklással rögzítsük; a határozatra ember írja rá a nevét. Ezt a lépést mesterséges intelligencia nem végzi. Ez a lépés emberé: a döntést és a kifizetés engedélyezését soha nem végzi MI-szerep.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "35aa47ff-4bc3-5cfa-9f2b-f48b688509bd",
+      "code": "WI-54-6",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Nyomon követjük a beszámolókat",
+      "description": "A pénzügyi referens emlékeztet a beszámolókra, és ellenőrzi az elszámolást.",
+      "prompt": "Kövessük, hogy a kedvezményezettek határidőre beadták-e az elszámolást (például a 350 000 Ft felhasználásáról), és ha elmarad, emlékeztessük őket; az elszámolás elfogadását ember írja alá. Az MI-szerep csak emlékeztethet, számolhat és összegezheti a beszámolókat; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "15ddb438-9054-5881-86ed-cb362e85412f",
+      "code": "WI-55-1",
+      "workflow_id": "8141b182-f722-5b5c-ab63-db10dde049a4",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Fogalmazzuk meg a közlemény tervezetét",
+      "description": "A kommunikációs referens a kiváltó eseményből és a hivatalos forrásból megírja a közlemény tervezetét.",
+      "prompt": "Írjuk le röviden, mi történt vagy mi várható (például a Malomsori vízvezeték-törés miatt holnap 8 és 14 óra között szünetel a vízszolgáltatás), mit kell tenni, kit lehet hívni, és meddig érvényes. Veszélyhelyzetben a hivatalos forrás megnevezése kötelező. Az MI-szerep csak fogalmazhat tervezetet és egyszerűbb nyelvű változatot készíthet; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "88df0ce2-fd2a-52f8-95d7-17243e6e2933",
+      "code": "WI-55-2",
+      "workflow_id": "8141b182-f722-5b5c-ab63-db10dde049a4",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Válasszuk ki az érintett városrészeket és a csatornákat",
+      "description": "Az adat- és elemzési referens a nyilvántartásból megmutatja, hány háztartást érint, és minden városrészhez csatornákat rendel.",
+      "prompt": "Nevezzük meg az érintett városrészeket (Óváros, Kertváros, Malomsor, Határrét), és számoljuk meg városrészenként a nyilvántartott háztartásokat, például Malomsorban 412-t. Minden közleményhez tartozzon legalább egy eszköz nélküli csatorna is (hirdetőtábla, hangosbemondó, kézbesítés), a RU-6 szabály szerint. Az MI-szerep csak számolhatja meg az érintett háztartásokat és javasolhat csatornákat; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "53802005-1770-5cdc-9f02-426eba478a43",
+      "code": "WI-55-3",
+      "workflow_id": "8141b182-f722-5b5c-ab63-db10dde049a4",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Hagyjuk jóvá a közleményt, mielőtt kimegy",
+      "description": "A polgármester átnézi a tervezetet, a városrészeket és a csatornákat, és saját nevével jóváhagyja.",
+      "prompt": "A polgármester kijavítja vagy kihúzza, ami nem állja meg a helyét, és a nevével jóváhagyja a végleges szöveget, a városrészeket és a csatornákat. Jóváhagyás nélkül semmi nem kerül ki a lakosság elé; a jóváhagyás időpontját és személyét feljegyezzük. Ezt a lépést csak ember végezheti.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4b6b17e0-2851-5b5b-91b0-68536529d5ce",
+      "code": "WI-55-4",
+      "workflow_id": "8141b182-f722-5b5c-ab63-db10dde049a4",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Küldjük ki a jóváhagyott közleményt a kijelölt csatornákon",
+      "description": "A kommunikációs referens a jóváhagyott szöveget elküldi a kijelölt városrészeknek, és kifüggeszti a hirdetőtáblán.",
+      "prompt": "Csak a jóváhagyott szöveg megy ki, szó szerint, a kijelölt városrészek címzettjeinek, a jóváhagyott csatornákon (SMS, e-mail, hirdetőtábla, hangosbemondó). Jegyezzük fel az indítás időpontját és csatornánként a kiküldött üzenetek számát. Az elküldést ember indítja, és ebben a lépésben automatikus küldés nincs.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0661be71-59c0-5c4e-9ca9-42a250c21234",
+      "code": "WI-55-5",
+      "workflow_id": "8141b182-f722-5b5c-ab63-db10dde049a4",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Kövessük a nyugtázásokat, és járjunk utána a hiányzóknak",
+      "description": "A közösségi kapcsolattartó számolja, kik nyugtázták, és személyesen is utánajár azoknak, akik nem.",
+      "prompt": "Számoljuk meg városrészenként, hányan nyugtázták a közleményt a kiküldöttek közül, és a nyugtázatlan háztartásoknál kérdezzünk rá másik csatornán vagy személyesen. A lezáráskor tegyük közzé városrészenként a nyugtázottak és a kiküldöttek arányát, és nevezzük meg a városrészeket, ahol 80 százalék alatt maradt. Az MI-szerep csak számolhatja a nyugtázásokat, összegezheti az arányokat és emlékeztetőt fogalmazhat a nyugtázatlanoknak; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c8f9d3c1-ade4-5352-8bd2-1b4d588e3e79",
+      "code": "WI-57-1",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Vegyük fel a foglalási kérelmet",
+      "description": "A közösségi kapcsolattartó felveszi a terem, a helyiség vagy az esemény időpontjára érkezett kérelmet.",
+      "prompt": "Vegyük fel a kérelmet az űrlapon: ki kéri (például a Malomsori Kertbarátok Köre), melyik helyiséget (a Zöldhalmi Városháza nagyterme, az Óvárosi Közösségi Ház kisterme, a Kertvárosi sportcsarnok), melyik napon és hány órától hány óráig, hány főre és milyen célra. Az MI-szerep csak a beérkezett kérelem összefoglalóját fogalmazhatja, és megszámolhatja a függő kérelmeket; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7703c31e-789c-5886-8033-c51403eb5092",
+      "code": "WI-57-2",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Ellenőrizzük az ütközéseket, és javasoljunk időpontot",
+      "description": "Az adat- és elemzési referens megnézi, szabad-e a helyiség, és ha nem, szabad időpontot javasol.",
+      "prompt": "Vessük össze a kérelmet a már rögzített foglalásokkal és a testületi ülések naptárával; ha az időpont foglalt, javasoljunk két szabad időpontot ugyanabban a helyiségben. Az MI-szerep csak megszámolhatja az ütköző foglalásokat, és javaslatot fogalmazhat a kérelmezőnek; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ac4acc43-175f-5380-b894-d448869b827a",
+      "code": "WI-57-3",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Határozzuk meg a díjat a díjjegyzék szerint",
+      "description": "A pénzügyi referens a közzétett díjjegyzék alapján kiszámolja a bérleti díjat forintban.",
+      "prompt": "A közzétett díjjegyzék szerint számoljuk ki a díjat: a nagyterem óránként 6 500 forint, a kisterem óránként 3 200 forint, a sportcsarnok óránként 8 000 forint, a közhasznú helyi egyesületeknek 50 százalék kedvezmény jár. A kedvezményt és az esetleges díjmentességet ember dönti el. Az MI-szerep csak a díj tervezetét fogalmazhatja, és megszámolhatja a foglalt órákat; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2b197e6a-0df6-5bad-9cb3-01b1e3d1920d",
+      "code": "WI-57-4",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Hagyjuk jóvá a foglalást",
+      "description": "A jegyző jóváhagyja a foglalást és a díjat, és csak ezután lesz a foglalás végleges.",
+      "prompt": "A jegyző átnézi a kérelmet, az ütközés-ellenőrzést és a díjat, kijavítja vagy elutasítja, ami nem állja meg a helyét, és saját nevével jóváhagyja. Csak a jóváhagyott foglalás kerül a helyiségnaptárba és a könyvelésbe; a jóváhagyás időpontját és személyét feljegyezzük. Ezt a lépést nem végzi mesterséges intelligencia.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7e23168d-7b4f-52fc-9bca-d3322c382387",
+      "code": "WI-57-5",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Küldjük ki a visszaigazolást",
+      "description": "A kommunikációs referens a jóváhagyott foglalásról visszaigazolást küld a kérelmezőnek.",
+      "prompt": "A jóváhagyott foglalásról küldjünk visszaigazolást a kérelmezőnek: helyiség, nap, időtartam, fizetendő díj forintban, a befizetés határideje és a lemondás szabálya. Az MI-szerep csak a visszaigazolás szövegét fogalmazhatja, a fizetetlen díjakra emlékeztetőt írhat, és megszámolhatja a kiküldött visszaigazolásokat; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
     }
   ],
   "workflow_objectives": [
@@ -3184,6 +4007,131 @@
       "id": "061f6757-0204-520b-8d17-c86e21540a5b",
       "workflow_id": "ceec897e-6bab-538f-8b86-a26c8f58b1f6",
       "objective_id": "db8aa6ec-2fd6-46d7-a73c-542bd8308f45"
+    },
+    {
+      "id": "52573558-e144-559f-971d-3f60cd7f0c48",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "objective_id": "1ec7cfb5-bedb-4aa1-8ba8-750246c5baf5"
+    },
+    {
+      "id": "9e1c0472-bb4e-5bdf-b901-4ff04a7d9e51",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "objective_id": "8b21b0cf-2a3d-49cd-93af-cb46fe888e31"
+    },
+    {
+      "id": "2ae5f7e8-841b-554b-bd76-871e462fe3fc",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "objective_id": "54d40736-057f-5a0c-886b-cb7f8baf29d6"
+    },
+    {
+      "id": "64fa1abd-b988-544e-a74c-3ef8e96926b4",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "objective_id": "8b21b0cf-2a3d-49cd-93af-cb46fe888e31"
+    },
+    {
+      "id": "75cd41fd-bdb3-583c-8c39-286cbb72243e",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "objective_id": "db8aa6ec-2fd6-46d7-a73c-542bd8308f45"
+    },
+    {
+      "id": "de3fd352-7e7b-5a48-9d5e-d93d17f13886",
+      "workflow_id": "e372e3bd-b335-5cc0-88c5-8b98275abe4e",
+      "objective_id": "cef6d5a1-9ad9-4533-bae0-135a299334f1"
+    },
+    {
+      "id": "8a9b0843-ffdc-57c6-a199-7b50f19fab99",
+      "workflow_id": "e372e3bd-b335-5cc0-88c5-8b98275abe4e",
+      "objective_id": "b7df40cb-c79e-429f-9842-9e6e5ff2bf69"
+    },
+    {
+      "id": "053c97f0-a621-5831-a5a5-7806dccd7594",
+      "workflow_id": "e372e3bd-b335-5cc0-88c5-8b98275abe4e",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
+    },
+    {
+      "id": "107a5821-3bc3-5f46-836a-6a0c5bf95996",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "objective_id": "38f4f1a6-dcbb-544a-b244-17d18de38787"
+    },
+    {
+      "id": "c7ca39fe-8599-5f9c-9c55-d0ffff6dd394",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
+    },
+    {
+      "id": "c0f23c8c-d475-58f8-a6f0-a330264bb075",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "objective_id": "8709cc2a-9404-55a2-b637-b7dadfdf986d"
+    },
+    {
+      "id": "933304c9-1d8c-5b1d-9832-187c0e150107",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "objective_id": "cef6d5a1-9ad9-4533-bae0-135a299334f1"
+    },
+    {
+      "id": "7c8f6e28-3774-50a1-b8da-1068229270ba",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
+    },
+    {
+      "id": "bb957457-6065-5a0b-8075-84482f962a21",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "objective_id": "3817e453-ebf8-519a-b78a-0a37640a0b08"
+    },
+    {
+      "id": "2cbf5453-6696-5076-9242-791619bc1ab5",
+      "workflow_id": "7dec37ea-188c-5d12-a9d6-4e5f296465cb",
+      "objective_id": "8709cc2a-9404-55a2-b637-b7dadfdf986d"
+    },
+    {
+      "id": "8adb186a-2de7-56ee-8900-b07dd9b2a08f",
+      "workflow_id": "7dec37ea-188c-5d12-a9d6-4e5f296465cb",
+      "objective_id": "b7df40cb-c79e-429f-9842-9e6e5ff2bf69"
+    },
+    {
+      "id": "a5ad1af0-ce3c-5d1b-b5b1-311a21925a3f",
+      "workflow_id": "7dec37ea-188c-5d12-a9d6-4e5f296465cb",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
+    },
+    {
+      "id": "de29052a-1a86-5e22-9798-956e3e6e5f49",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "objective_id": "e04e3a27-9d19-5cb5-bac0-c3d0e812ffa8"
+    },
+    {
+      "id": "63c00bf9-62e8-5b7a-aac2-68e659bd545a",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "objective_id": "67946bcf-620b-5427-b3b9-c547531c69cf"
+    },
+    {
+      "id": "995cb34c-264e-5b1c-b5b9-126bc70096e2",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "objective_id": "b7df40cb-c79e-429f-9842-9e6e5ff2bf69"
+    },
+    {
+      "id": "a08bb79c-e69a-56cc-80be-12a6a3d0bcbe",
+      "workflow_id": "8141b182-f722-5b5c-ab63-db10dde049a4",
+      "objective_id": "047b6bc2-5292-5011-b1e8-d00d7d2a8a28"
+    },
+    {
+      "id": "dd714ac9-b883-52d5-9e26-34fe0cbb3f84",
+      "workflow_id": "8141b182-f722-5b5c-ab63-db10dde049a4",
+      "objective_id": "b55af650-b34f-4932-bfa0-c4ee89fe8cc8"
+    },
+    {
+      "id": "14f34731-e52a-56d9-97c6-4b64b621ad74",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "objective_id": "745e334b-3b7f-43b1-b326-4c76f15eb3cb"
+    },
+    {
+      "id": "47138df2-fdd8-535b-b1f5-8673c529b377",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "objective_id": "cef6d5a1-9ad9-4533-bae0-135a299334f1"
+    },
+    {
+      "id": "801de320-7b35-5643-a4b6-d87311bd6a5b",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
     }
   ],
   "work_plans": [],

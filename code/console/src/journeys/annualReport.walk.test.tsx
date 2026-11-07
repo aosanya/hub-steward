@@ -20,14 +20,7 @@ vi.mock("../wakala/mcp", async (importOriginal) => ({
 type Rec = Record<string, any>;
 
 const base = JSON.parse(readFileSync(resolve(__dirname, "../../../../demo/municipality.json"), "utf8")) as Record<string, Rec[] & Rec>;
-const fragment = JSON.parse(readFileSync(resolve(__dirname, "fixtures/MUN47.json"), "utf8")) as Record<string, Rec[]>;
-const file = {
-  ...base,
-  objectives: [...base.objectives, ...fragment.objectives],
-  workflows: [...base.workflows, ...fragment.workflows],
-  work_items: [...base.work_items, ...fragment.work_items],
-  workflow_objectives: [...base.workflow_objectives, ...fragment.workflow_objectives],
-} as Record<string, Rec[] & Rec>;
+const file = base;
 
 const workflow = file.workflows.find((entry: Rec) => entry.code === "W-47") as Rec;
 const stepCodes = ["WI-47-1", "WI-47-2", "WI-47-3", "WI-47-4", "WI-47-5"];

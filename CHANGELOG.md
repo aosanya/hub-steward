@@ -8,7 +8,13 @@ All notable changes to this project are listed here, grouped by area. The format
 - The custody, digitaltwin and engage modules are ported from the Mwanachama backend and mounted like voting, with their routes and operation tables (2026-11-07).
 - The riskmanager module is mounted as `risks` with its routes, MCP tools and operation table, test-copy support and owner checks against the actor directory; an unknown owner is refused as a bad reference (2026-11-07).
 
+- Custody gains a consent gate and a withdrawal notifier, not yet wired into other modules (2026-11-07).
+- The accounting overdue read can age from the day a charge was raised (`age_from`), and accounting gains contract milestones, payment certificates and retention (2026-11-07).
+- The riskmanager module gains a name-matching tool and a gaps-by-owner filter for the chat agent, and four starter service-failure risk libraries (2026-11-07).
+
 ### Demo agencies (`demo`)
+- `municipality.json` grows to 31 workflows and 172 work items (W-46 to W-50, W-53 to W-55, W-57) and mounts the risk module with a department-head and a council read role (2026-11-07).
+- The Siaya lab's four documents are also in Hungarian (2026-11-07).
 - `municipality.json`, an invented Hungarian town council with 12 roles and 5 workflows, and its copy in the console's templates (2026-11-07).
 - `municipality.json` grows to 22 workflows and 124 work items, with the rule that an AI role only drafts, summarises, chases or counts (2026-11-07).
 

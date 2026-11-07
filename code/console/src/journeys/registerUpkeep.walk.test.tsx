@@ -136,7 +136,7 @@ describe("workflow W-1, register upkeep: the officer opens each step", () => {
     expect(aiRule.text).toMatch(/ember hagyja jóvá/);
     const attached = file.rule_attachments.filter((entry: Rec) => entry.rule_code === "RU-AI-1");
     const workflowObjectives = file.workflow_objectives.filter((link: Rec) => link.workflow_id === workflow.id).map((link: Rec) => file.objectives.find((objective: Rec) => objective.id === link.objective_id).code);
-    expect(attached.map((entry: Rec) => entry.target_code).sort()).toEqual([...workflowObjectives].sort());
+    expect(attached.map((entry: Rec) => entry.target_code)).toEqual(expect.arrayContaining(workflowObjectives));
 
     expect(writes()).toEqual([]);
     expect(calls.filter((call) => /publish/.test(call.tool))).toEqual([]);
