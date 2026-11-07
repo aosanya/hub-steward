@@ -26,6 +26,7 @@ All notable changes to this project are listed here, grouped by area. The format
 - The riskmanager module gains a name-matching tool and a gaps-by-owner filter for the chat agent, and four starter service-failure risk libraries (2026-11-07).
 
 ### Demo agencies (`demo`)
+- `municipality.json` grows to 41 workflows and 231 work items with W-22 (assign an address to a ward) and W-39 (a sensitive or anonymous report) (2026-11-07).
 - `municipality.json` grows to 31 workflows and 172 work items (W-46 to W-50, W-53 to W-55, W-57) and mounts the risk module with a department-head and a council read role (2026-11-07).
 - The Siaya lab's four documents are also in Hungarian (2026-11-07).
 - `municipality.json`, an invented Hungarian town council with 12 roles and 5 workflows, and its copy in the console's templates (2026-11-07).
