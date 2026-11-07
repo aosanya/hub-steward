@@ -1,0 +1,28 @@
+{
+  "workflow": "W-62",
+  "title": "an officer attaches evidence and the safeguard standing changes",
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    { "code": "WI-62-1", "role": "R-13", "ai": false },
+    { "code": "WI-62-2", "role": "R-15", "ai": true },
+    { "code": "WI-62-3", "role": "R-13", "ai": false },
+    { "code": "WI-62-4", "role": "R-15", "ai": true },
+    { "code": "WI-62-5", "role": "R-14", "ai": false },
+    { "code": "WI-62-6", "role": "R-13", "ai": false }
+  ],
+  "checks": {
+    "firstActor": "Osztályvezető (kockázat felelőse)",
+    "itemCount": 6,
+    "objectives": ["O-62"],
+    "ruleAttachedToAllObjectives": true,
+    "stepText": [
+      { "step": "WI-62-2", "match": ["Az eredményt nem rögzíti", "csak fogalmazhat"] },
+      { "step": "WI-62-3", "match": ["jóváhagyja", "Jóváhagyás nélkül semmi nem kerül", "bizonyítatlanból bizonyított"] },
+      { "step": "WI-62-4", "match": ["bizonyított, gyenge, bizonyítatlan és sikertelen", "csak olvas és számol"] },
+      { "step": "WI-62-6", "match": ["csak hiányként jelenik meg", "senkinek nem megy üzenet"] }
+    ],
+    "order": [["WI-62-1", "WI-62-2"], ["WI-62-2", "WI-62-3"], ["WI-62-3", "WI-62-4"], ["WI-62-4", "WI-62-5"], ["WI-62-5", "WI-62-6"]]
+  }
+}
