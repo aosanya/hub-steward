@@ -5,6 +5,7 @@ All notable changes to this project are listed here, grouped by area. The format
 ## [Unreleased] - 2026-11-04
 
 ### API (`code/wakala-api`)
+- Every role step of the municipality agency has a kind and a done form, so the agency imports whole (184 steps).
 - A seat's approval limit can be changed on a live seat, and `AuthoriseApproval` refuses an amount over a seat's limit with a clear error (2026-11-07).
 - A published poll count and the insight counts per subject apply the minimum count: a small cell is suppressed, a lone suppressed cell is covered, and the answered total is withheld when anything is hidden (2026-11-07).
 - The custody, digitaltwin and engage modules are ported from the Mwanachama backend and mounted like voting, with their routes and operation tables (2026-11-07).

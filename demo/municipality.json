@@ -1619,7 +1619,16 @@
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
       "deleted": false,
-      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986"
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "kind": "fill_form",
+      "form_name": "Építsük fel a nyilvántartást abból, amit az önkormányzat már tart",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "8a85b2ee-0781-43c5-991d-97250bf50d7c",
@@ -1632,7 +1641,16 @@
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
       "deleted": false,
-      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8"
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "kind": "fill_form",
+      "form_name": "Engedjük, hogy mindenki kijavítsa a saját rekordját",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "070b7309-a0e2-486d-a171-cb22c0b66fca",
@@ -1645,7 +1663,16 @@
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
       "deleted": false,
-      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986"
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "kind": "fill_form",
+      "form_name": "Jelentsük, hol vékony a nyilvántartás",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "ff2b30a0-8de5-4fe5-a654-b460b72e3ee9",
@@ -1658,7 +1685,16 @@
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
       "deleted": false,
-      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8"
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "kind": "fill_form",
+      "form_name": "A hozzájárulást verzióként rögzítsük, ne pipaként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "8c99e143-7acf-497a-af1d-4326ef7eecb0",
@@ -1671,7 +1707,16 @@
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
       "deleted": false,
-      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8"
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "kind": "fill_form",
+      "form_name": "A visszavonást még aznap hajtsuk végre",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "17c9844f-f79b-401b-8a24-f43fc61f5e2d",
@@ -2020,7 +2065,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Számoljuk meg, mit hoztak a városrészek az elmúlt hónapban",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "74788a22-25ad-5f1c-9aa0-3f9e1f3097eb",
@@ -2033,7 +2087,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogalmazzuk meg városrészenként a havi meghívót",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "1513ec9a-8132-53a9-9b1a-8e4e708d3bd5",
@@ -2046,7 +2109,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá és tegyük ki a hirdetményt minden városrészben",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "782586ac-95b9-58f3-a449-66a779bfd3ed",
@@ -2059,7 +2131,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Menjünk el oda, ahová a hirdetmény nem jut el",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "feb14bf3-d35c-5d0c-86b4-139656a32620",
@@ -2072,7 +2153,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Számoljuk meg a válaszokat és mutassuk meg, melyik városrész hallgatott",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "049edc08-cbb0-585c-817b-6f6004718f59",
@@ -2085,7 +2175,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Az ellenőrző bizottság elnöke kijelöli a lejáró ígéreteket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "1ba7bbb5-daaa-5b0b-8ef1-25772298f1a3",
@@ -2098,7 +2197,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összegyűjtjük, mit hallottunk az ígérettel kapcsolatban",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "cea31a65-876c-5ad9-abdc-260ec73532ff",
@@ -2111,7 +2219,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A jegyző ellenőrzi, teljesült-e az ígéret",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "37ea83bb-cceb-52ad-9af1-1bcd824720de",
@@ -2124,7 +2241,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megfogalmazzuk a közérthető beszámolót az ígéretről",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "179b43b5-0bd4-5a62-ba50-31e17cca28bd",
@@ -2137,7 +2263,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A polgármester jóváhagyja és közzéteszi a jelölést",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "46add3d5-cdc9-53f4-980d-f930c14a0063",
@@ -2150,7 +2285,16 @@
       "ordinality": 1,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogadjuk be a kérelmet és azonosítsuk a kérelmezőt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "1dbf03e1-967c-519c-9af0-f24c8fd3dfce",
@@ -2163,7 +2307,16 @@
       "ordinality": 2,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Gyűjtsük össze, mit tart rólunk a nyilvántartás",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "be267612-fa10-526f-8f14-106d761df78e",
@@ -2176,7 +2329,16 @@
       "ordinality": 3,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Döntsük el, mit adunk ki, és mit nem törölhetünk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "2f84a1d2-a456-5881-8b06-7f617505c6d5",
@@ -2189,7 +2351,16 @@
       "ordinality": 4,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Készítsük el a választ és a kiadandó másolatot",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c4b4ef96-867b-5647-a2c2-1656f137f905",
@@ -2202,7 +2373,16 @@
       "ordinality": 5,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Küldjük el a keltezett választ és jegyezzük fel, mi történt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "d20d4e3d-b760-514e-b211-3c7f2e65930b",
@@ -2215,7 +2395,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Kiválasztjuk a vizsgálandó döntést és a kérdést",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "8d2b9a65-77d1-5f9f-9d90-8b73fc4a078f",
@@ -2228,7 +2417,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összeszámoljuk, mit hallottunk a döntés előtt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c69d24b5-ca4d-5535-a283-dcdb77d71091",
@@ -2241,7 +2439,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összevetjük a döntést azzal, amit hallottunk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "a98fb59a-6846-5057-9896-8c0bbfb98550",
@@ -2254,7 +2461,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Leírjuk a megállapítást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "43ffaccd-b07a-509a-ab90-955de72c98fe",
@@ -2267,7 +2483,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A testület megválaszolja a megállapítást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "64a4c8ec-c14d-5666-af85-2adc9890bf2b",
@@ -2280,7 +2505,16 @@
       "ordinality": 6,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Közzétesszük a vizsgálatot, a megállapítást és a választ",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "e41a7671-17ad-58bd-97d1-d197340ac370",
@@ -2293,7 +2527,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Kimutatjuk, mely városrészekben vékony a nyilvántartás",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "2e57e69e-ccbe-5689-a5e3-bf3e76f9fbfe",
@@ -2306,7 +2549,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Városrészenként elérési csapatot alakítunk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "956f7079-3e5d-559c-8179-d087db654e20",
@@ -2319,7 +2571,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megfogalmazzuk a felhívást a vékony városrészeknek",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "580c386d-df0e-5926-8621-53b9b0bdc9fd",
@@ -2332,7 +2593,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megkeressük, és emlékeztetjük azokat, akik még nem válaszoltak",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "3db3fee3-1795-5785-bd38-8dd293770f60",
@@ -2345,7 +2615,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Újraszámoljuk a lefedettséget, és közzétesszük",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "28a73414-058d-5310-81ca-1599e4bfc21e",
@@ -2358,7 +2637,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Foglaljuk össze, mit jeleztek a lakosok, településrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "079eff5d-4aa5-5fe6-8606-267041cbd658",
@@ -2371,7 +2659,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá az átadást és a keretet forintban",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "09523fff-bbcd-54a2-9a6b-5331cef84086",
@@ -2384,7 +2681,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogalmazzuk meg az átadást, és nyissuk meg a munkát a cégnél",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6baa082a-5ec0-5399-b298-97c4cc811c67",
@@ -2397,7 +2703,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Sürgessük a szolgáltató céget, ha lejár a határidő",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "eda26a67-dba1-5ff2-ac0a-5e65b3125cb5",
@@ -2410,7 +2725,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük a helyszínen, hogy a munka elkészült",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "e9a3bbac-2679-537a-b5d5-7424df8d37fe",
@@ -2423,7 +2747,16 @@
       "ordinality": 6,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Értesítsük a bejelentőket, és zárjuk le a munkát a bejelentéssel szemben",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "87f2279a-dc57-5065-b6a5-a3694bc5bead",
@@ -2436,7 +2769,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Gyűjtsük egy helyre a két kör között érkezett bejelentéseket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "81928067-5f6a-5fa9-9ae0-74fc35fc3bc2",
@@ -2449,7 +2791,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Javasoljunk összevonást az ugyanarról szóló bejelentések között",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "333e7b34-6e03-54db-bbcb-43721df01e74",
@@ -2462,7 +2813,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Számoljuk meg személyenként egyszer, hányan jeleztek egy témát",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6c1325d2-9cf9-5675-9b48-6955a14cfcb2",
@@ -2475,7 +2835,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük, hogy a szám nem fed fel senkit",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "85d210de-ab7f-5f01-96d4-d946d31b93b3",
@@ -2488,7 +2857,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Tegyük közzé a témát és a mögötte álló lakosok számát",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c343fb1c-2e60-5033-826f-1150d5f0b921",
@@ -2501,7 +2879,16 @@
       "prompt": "Egyetlen kérdést tegyünk fel, olyat, amelyre a testület ténylegesen hajlandó a válasz szerint cselekedni, és adjunk hozzá néhány zárt válaszlehetőséget meg egy „nem tudom” lehetőséget. Írjuk le, meddig tart a szavazás, és milyen módszerrel olvassuk a válaszokat, még mielőtt az első válasz beérkezik. Ne tegyünk fel vezető kérdést, és ne kérdezzünk kettőt egyszerre. Az MI-szerep (a RU-AI-1 szabály szerint) csak megfogalmazhatja a kérdés és a válaszlehetőségek változatait; a kérdést és a módszerleírást az Egyeztetésvezető mint ember hagyja jóvá, mielőtt bármi a nyilvánosság elé kerülne.",
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Válasszuk ki az egyetlen kérdést és a válaszlehetőségeket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "e10ef8d6-daf0-5e07-8f1c-67e5ca940565",
@@ -2514,7 +2901,16 @@
       "prompt": "Küldjük el a kérdést minden városrésznek, Óvárosnak, Kertvárosnak, Malomsornak és Határrétnek is, a nyilvántartásban szereplő elérhetőségeken és a papíros csatornán egyaránt, ugyanazzal a szöveggel. Jegyezzük fel csatornánként, hány emberhez jutott el. Az MI-szerep (RU-AI-1) csak a kiküldendő szöveg és az emlékeztető tervezetét fogalmazhatja meg; a kimenő üzenetet név szerint megnevezett ember hagyja jóvá, mielőtt elmegy.",
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Juttassuk el a kérdést Zöldhalom minden városrészébe",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "2aa96609-ef17-545f-82e9-0b27cebb33ac",
@@ -2527,7 +2923,16 @@
       "prompt": "A szavazás ideje alatt nézzük meg, melyik városrészből érkezik kevés válasz, és oda menjünk személyesen: a piacra, a könyvtárba, a szomszédsági találkozóra, ahol papíron is lehet válaszolni. Az MI-szerep (RU-AI-1) csak emlékeztető-tervezetet fogalmazhat és a megkeresendők listáját állíthatja össze; a megkeresésre és a nyilvános emlékeztető kiküldésére ember hagyja jóvá a szöveget, és ember megy el.",
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Keressük meg azokat, akik online soha nem válaszolnak",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "40a75d26-75a5-5009-95aa-b012710af2e7",
@@ -2540,7 +2945,16 @@
       "prompt": "Minden személy válaszát egyszer számoljuk, bármennyi csatornán küldte be, és rögzítsük a válaszokat rekordként városrészenként. Mellé írjuk a nevezőt: hányan szavaztak hányhoz képest, akiket a nyilvántartás az adott városrészben tart. Az MI-szerep (RU-AI-1) csak számolhat és összegezhet; a számokat és az összegzést a közzététel előtt ember hagyja jóvá, és a kétes válaszról is ember dönt.",
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Számoljuk meg a válaszokat személyenként egyszer",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "94611978-62ee-5a83-82a4-906e33810174",
@@ -2553,7 +2967,16 @@
       "prompt": "Az eredményt egyetlen rövid oldalon tegyük közzé, dátummal, a kérdés szó szerinti szövegével, a válaszok számával városrészenként és a nevezővel, valamint megnevezve azt a városrészt, ahonnan alig jött válasz. Írjuk meg azt is, mit tesz a testület az eredménnyel. Az MI-szerep (RU-AI-1) csak az eredményoldal tervezetét fogalmazhatja meg; közzététel előtt ember hagyja jóvá a szöveget, és a közzétételt a Kommunikációs referens mint ember végzi el.",
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Tegyük közzé a rövid, keltezett eredményt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b2ae8f3f-e9e6-5cea-91eb-637b68e4ca85",
@@ -2566,7 +2989,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Döntsük el, mely városrészt hívjuk össze, és mit kérdezünk tőle",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "e63a5dd5-337a-52a8-bc01-bc4f6ec3f5ce",
@@ -2579,7 +3011,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogalmazzuk meg a meghívót, és küldjük ki a jóváhagyás után",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "295febb3-f99f-55c3-b981-b8526d231a25",
@@ -2592,7 +3033,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Keressük meg személyesen azokat, akik nem szoktak eljönni",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "cdf77209-ab94-5124-b9bc-5e23ad127032",
@@ -2605,7 +3055,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Számoljuk meg a megjelenteket személyenként és városrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "a445e40b-957c-53c8-97e4-78e69ad49b3e",
@@ -2618,7 +3077,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Írjuk meg a jegyzőkönyvet, és rögzítsük, mi hangzott el",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "ee7f7955-2a60-5acc-bb63-85fdf717e600",
@@ -2631,7 +3099,16 @@
       "ordinality": 6,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Tegyük közzé, mit hallottunk, és mi lesz belőle",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4c880161-f049-5594-a4b4-df311ef38348",
@@ -2644,7 +3121,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hirdessük meg a fogadóórát a teljes városrészben",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "00cbb4ba-4f32-5e9f-a153-f8948aa2eff5",
@@ -2657,7 +3143,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogadjuk a lakosokat személyesen",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6fe00006-b155-5351-9b60-38037a8bfca4",
@@ -2670,7 +3165,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Írjuk be a hallottakat bejelentésként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "0797bfa8-b38e-5dac-b850-58a9670c602f",
@@ -2683,7 +3187,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Számoljuk meg és soroljuk témákba a bejelentéseket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "1e5ebe62-3d94-5aab-bf24-fead5f2f64cf",
@@ -2696,7 +3209,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Írjuk meg a visszajelzést a városrésznek",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "cbd2e255-fe42-5b00-a3cb-7290be83a8a7",
@@ -2709,7 +3231,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Számoljuk meg a határidőn túli bejelentéseket városrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "8aa87fa5-8c1e-5fc3-9761-42c5b5a20cc0",
@@ -2722,7 +3253,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Kérdezzük meg a felelőst minden késő ügynél",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c0fa2265-f155-55bd-8c9c-8f9de0566e92",
@@ -2735,7 +3275,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Állítsuk össze az ülés elé a késő ügyek listáját",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "90201aea-9fe5-5023-86fd-24c790069524",
@@ -2748,7 +3297,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá a listát, és mondjuk el az ülésen",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "023cd258-c460-5272-92b8-9bd924327489",
@@ -2761,7 +3319,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Tegyük közzé az elfogadott listát, és kövessük a következőt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "3f019253-6bc2-52e5-ba26-f3377450cf7f",
@@ -2774,7 +3341,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Gyűjtsük össze az egyező rekordpárokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "16f47e00-eace-557a-b844-db52e70d2cc6",
@@ -2787,7 +3363,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Rangsoroljuk a jelölteket a biztonság szerint",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "ae128ade-8d25-5c5e-8de7-f9a6dbd0c275",
@@ -2800,7 +3385,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük az adatvédelmi és iratkezelési szempontokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4dcef301-bc42-5a45-bc0f-e554ef4de13d",
@@ -2813,7 +3407,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Kérdezzük meg az érintettet, ha a pár nem egyértelmű",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "fc9aa960-d892-5c2d-bf0a-6784cb5283b0",
@@ -2826,7 +3429,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá és hajtsuk végre az összevonást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "5254e826-9f54-56b8-a499-844ba79b27a2",
@@ -2839,7 +3451,16 @@
       "ordinality": 6,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Számoljuk meg az eredményt és tegyük közzé városrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "f717c011-fe7a-5bf3-8746-ce350e359f0d",
@@ -2852,7 +3473,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Állítsuk össze a napirend tervezetét",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c40e0c1c-36cc-5c7c-b5aa-510f09c10033",
@@ -2865,7 +3495,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Gyűjtsük össze az előterjesztéseket, és foglaljuk össze őket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "273a0608-6dc9-54dd-ae6a-085769db2da4",
@@ -2878,7 +3517,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá a napirendet, és tegyük közzé a meghívót",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c083c54e-f857-5557-815c-0140e647d615",
@@ -2891,7 +3539,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Készítsük el a jegyzőkönyv tervezetét",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "cceda6e5-451f-5e44-b3c8-65bd3bcf6929",
@@ -2904,7 +3561,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Rögzítsük a határozatokat, és őrizzük meg csendes átírás nélkül",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "cca45763-ebe3-5ed3-9f39-fe44c1c2ae19",
@@ -2917,7 +3583,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összegezzük a beérkezett bejelentést a moderátornak",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c4006686-82c2-5643-b8db-2327a4b4dab2",
@@ -2930,7 +3605,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A moderátor dönt: közzététel, visszatartás vagy elutasítás",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "fe170d5c-b252-54a3-a99a-b097af021a1f",
@@ -2943,7 +3627,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Az adatvédelmi felelős átnézi, mi azonosít bárkit",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "5f2c3c5b-fbbc-5a2e-a00a-ad83ea272a0a",
@@ -2956,7 +3649,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megfogalmazzuk a bejelentőnek szóló választ az indokkal",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "1b63a8a3-4142-5166-840b-f2f03c32e39a",
@@ -2969,7 +3671,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megszámoljuk, mi lett a bejelentésekből, településrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "f17da197-47b6-581e-b376-429a552208fc",
@@ -2982,7 +3693,16 @@
       "prompt": "Az MI-szerep az előző kör témáiból és a települési bejelentések leggyakoribb tárgyaiból megfogalmazza a kérdéssor első vázlatát, településrészenként jelölve, melyik kérdés kinek szól. Csak vázlatot ad, semmit nem tesz közzé. A RU-AI-1 szabály szerint minden vázlatot ember hagyja jóvá, mielőtt bármi a nyilvánosság elé kerül.",
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Az előző kör témáiból fogalmazzunk kérdéssort",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "9dc01b00-8d9f-5a8e-9b79-940e20ce28c5",
@@ -2995,7 +3715,16 @@
       "prompt": "Az egyeztetésvezető soronként végigolvassa a vázlatot: kizár minden sugalmazó, kettős értelmű vagy két dolgot egyszerre kérdező mondatot, és azt is, amelyre a testület nem hajlandó érdemben válaszolni. Amit elutasít, indoklással visszaadja. Ezt a lépést ember végzi.",
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Vizsgáljuk meg, nem vezet-e félre egyetlen kérdés sem",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "78cc3800-b57a-557c-ae67-0162b261c2bc",
@@ -3008,7 +3737,16 @@
       "prompt": "A közösségi kapcsolattartó településrészenként, Óvárosban, Kertvárosban, Malomsoron és Határréten néhány lakossal papíron végigmegy a kérdéseken, és szóban felírja, hol akadtak el, mit értettek másként. Nem kér nevet, és nem rögzít személyes adatot.",
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Próbáljuk ki papíron a lakosokkal mind a négy településrészen",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4395f5e5-89c2-5527-b45b-d3a52ad9971b",
@@ -3021,7 +3759,16 @@
       "prompt": "Az MI-szerep megszámolja, kérdésenként és településrészenként hányan akadtak el, és összegzi a felírt észrevételeket. Csak számol és összegez, javítást nem vezet át. A RU-AI-1 szabály szerint az összegzést ember hagyja jóvá, mielőtt az alapján bármi módosul vagy megjelenik.",
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Számoljuk meg és összegezzük a próbakör észrevételeit",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4c87cc20-3cc4-5ac2-915e-63c6e94c2326",
@@ -3034,7 +3781,16 @@
       "prompt": "Az MI-szerep a jóváhagyott kérdéssorból megfogalmazza a papíralapú lap szövegét, szó szerint ugyanazokkal a kérdésekkel és ugyanabban a sorrendben, és egyenként jelzi az eltéréseket. Csak vázlatot készít, nyomdába nem ad semmit. A RU-AI-1 szabály szerint a lapot név szerint megnevezett ember hagyja jóvá.",
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogalmazzuk meg a papíralapú lapot ugyanazokkal a kérdésekkel",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "cca4a166-e80e-5497-8b18-1af19b91b4c2",
@@ -3047,7 +3803,16 @@
       "prompt": "Az adatvédelmi és iratkezelési felelős végignézi, hogy a kérdéssor és a lap nem kér szükségtelen személyes adatot, és hogy a két változat egyezik. Az eltérést visszaküldi, az egyezőt kiadásra aláírja. Az aláírás ember dolga.",
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük az adatkezelést, és engedjük ki a kérdéssort",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "cfcc65d4-6d4c-51a5-9727-9b7e6f494015",
@@ -3060,7 +3825,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Gyűjtsük össze, mit jeleztek a lakosok városrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "31c80135-5d62-5802-b8cd-944e6bc1d896",
@@ -3073,7 +3847,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Gyűjtsük be a képviselők javaslatait a saját körzetükből",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "61b27007-b393-5278-8f9e-246e4206c692",
@@ -3086,7 +3869,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Vessük össze a javaslatokat a lakosok jelzéseivel",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "950768af-d464-589d-a1ea-af7eab778907",
@@ -3099,7 +3891,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogalmazzuk meg a rövid lista kérdéseit, és válasszuk ki, mit vállal a testület",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "0a0c25b0-f821-5406-84be-7728ae0b6e6f",
@@ -3112,7 +3913,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Válasszuk ki a kör kérdését, és írjuk rá a nevünket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "f09dc504-1e8a-5312-b1ea-5a14ec343ac8",
@@ -3125,7 +3935,16 @@
       "ordinality": 6,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Tegyük közzé, mit kérdez a testület, és miért ezt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "79ad5cd0-22d0-5c4b-91e1-46823f417c44",
@@ -3138,7 +3957,16 @@
       "prompt": "Vegyük elő a döntéshez tartozó kör rekordjait, és számoljuk meg, városrészenként (Óváros, Kertváros, Malomsor, Határrét) és témánként, hányan mit mondtak, a nevezővel és a lefedettség hiányaival együtt. Számot közöljünk, személyt soha. Ne rendezzük át a számokat úgy, hogy a döntés jobban nézzen ki; ahol a válaszolók köre szűk volt, ezt írjuk le. Az MI-szerep csak összegezhet és számolhat; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
       "created_at": "2026-10-02T10:00:00Z",
       "last_updated": "2026-10-02T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összeszámoljuk, mit hallottunk a döntés témájában",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "5f953d5d-23ac-5789-8e8e-a856c7b09412",
@@ -3151,7 +3979,16 @@
       "prompt": "Az előterjesztésből és a jegyzőkönyvből vegyük ki a meghozott döntést, és tegyük mellé az előző lépés számait. Pontonként jelöljük, hol megy a döntés a hallottak ellen, hol velük egy irányban, és hol nincs rá válasz. Az eltérést nevezzük meg, ne simítsuk el. Az összevetés a körhöz iktatott jegyzék része marad, hogy később is vissza lehessen követni. Az MI-szerep csak fogalmazványt készíthet és összevethet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
       "created_at": "2026-10-02T10:00:00Z",
       "last_updated": "2026-10-02T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Egymás mellé tesszük a döntést és a hallottakat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "0eb48918-0c2d-51fc-bd72-664ee6360450",
@@ -3164,7 +4001,16 @@
       "prompt": "Az indokot a polgármester vagy a testületi elnök fogalmazza meg és vállalja a nevével: miért döntött a testület másképp, mint ahogy a lakosok többsége mondta, és mit mérlegelt helyette. Ezt a lépést csak ember végezheti, mert egy döntés mellett csak ember állhat ki. Az indok rövid és érthető legyen, hivatkozzon az előző lépés összevetésére, és ne ígérjen olyat, amit a testület nem szavazott meg.",
       "created_at": "2026-10-02T10:00:00Z",
       "last_updated": "2026-10-02T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A polgármester névvel kimondja az indokot",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "2a294224-b05d-5102-bd08-bd9e3709cd0f",
@@ -3177,7 +4023,16 @@
       "prompt": "Készüljön egy közérthető közlemény az Önkormányzat honlapjára és a Zöldhalom városrészi hirdetőtábláira: mit hallottunk számokkal, mit döntött a testület, mi az indok, és kinek a nevén áll. Kerüljön bele az is, mi változott a hallottak miatt, ha semmi, akkor ezt is írjuk le. A kapu és a piaci pult mellé papíron is kerüljön ki, mert nem mindenki olvas online. Az MI-szerep csak fogalmazványt készíthet és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
       "created_at": "2026-10-02T10:00:00Z",
       "last_updated": "2026-10-02T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Közzétesszük: ezt hallottuk, ezt tettük, ezért",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "481bda6a-b746-5eb8-b07c-bfdf51530d96",
@@ -3190,7 +4045,16 @@
       "prompt": "Írjuk be az ügyhöz a felelőst névvel és a határidőt, és vezessük a jegyzői nyilvántartásban, hogy a testület következő ülésén szerepeljen a visszajelzés. Ha a határidő közeledik és nincs mozgás, a felelőst emlékeztessük, de a mulasztást ne mi pótoljuk. A felelős nevét a közleményen is tegyük láthatóvá. Az MI-szerep csak emlékeztethet és fogalmazványt készíthet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
       "created_at": "2026-10-02T10:00:00Z",
       "last_updated": "2026-10-02T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megnevezzük a felelőst, és emlékeztetünk a határidőre",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6dc3f403-372e-5cda-a6c6-266b1330f70f",
@@ -3203,7 +4067,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Iktatjuk a kérelmet és kiszámoljuk a határidőt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "a3f56975-5cdf-5269-9c73-80101709641a",
@@ -3216,7 +4089,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megkeressük és megszámoljuk az érintett iratokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "9b353bb2-4b05-51eb-909d-8d0a6d2e51bf",
@@ -3229,7 +4111,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük, mi nem adható ki",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "601e89e9-0e08-5699-a932-0473092fe919",
@@ -3242,7 +4133,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megírjuk a választ vagy az indokolt elutasítást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "fbb91de5-3501-5249-9494-e391c51c7f52",
@@ -3255,7 +4155,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A polgármester jóváhagyja és aláírja",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "a75e5501-f46f-52ce-add9-19b34528daee",
@@ -3268,7 +4177,16 @@
       "ordinality": 6,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Elküldjük a választ és közzétesszük, ami közérdekű",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "f2e3f001-c3af-55af-8c56-bc0b6f825114",
@@ -3281,7 +4199,16 @@
       "prompt": "Vegyük elő az év összes körének rekordjait, és számoljuk meg körönként és városrészenként (Óváros, Kertváros, Malomsor, Határrét), mit kérdeztünk, hányan válaszoltak hányból, és hol maradt hiányos a lefedettség. Számot közöljünk, személyt soha; a szűk válaszolói kört írjuk le, ne szépítsük. Az MI-szerep csak számolhat és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összeszámoljuk, mit kérdeztünk és kitől hallottunk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "bc1e9e31-97cf-5fb4-98f7-383e4b7d2bf2",
@@ -3294,7 +4221,16 @@
       "prompt": "A jegyzői nyilvántartásból gyűjtsük ki az év döntéseit és vállalásait körönként: mit hallottunk, mit döntött a testület, ki a felelős névvel, és teljesült-e határidőre. Ahol egy döntés a hallottak ellen szólt, ezt jelöljük, ne simítsuk el. A lejárt vállalások felelőseit emlékeztessük, de a mulasztást ne mi pótoljuk. Az MI-szerep csak emlékeztethet, számolhat és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összegyűjtjük, mi változott a hallottak miatt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "fbd63a0c-1871-5de9-bce9-50185525487b",
@@ -3307,7 +4243,16 @@
       "prompt": "Írjunk közérthető jelentés-fogalmazványt az előző két lépés anyagából: mit kérdeztünk, mit hallottunk számokkal, mi változott, és mi nem, ha semmi, ezt is írjuk le. Példával, városrészenkénti bontásban, forintösszegekkel ott, ahol pénzről van szó (például a Malomsori pad 380 000 Ft). A fogalmazvány nem közölhető, amíg a következő lépésben ember nem hagyta jóvá. Az MI-szerep csak csak fogalmazványt készíthet és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megírjuk az éves jelentés fogalmazványát",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "3beb2928-a926-5609-b26f-6afd67d07d6b",
@@ -3320,7 +4265,16 @@
       "prompt": "A polgármester vagy a testületi elnök veti össze a fogalmazványt a számokkal és a nyilvántartással, javít, ha kell, és a nevével vállalja a jelentést. Ezt a lépést csak ember végezheti, mert a nyilvánosság elé kerülő anyagért ember felel; jóváhagyás nélkül a jelentés nem kerül ki. Ne vállaljon olyat, amit a testület nem szavazott meg.",
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A polgármester átnézi és névvel jóváhagyja a jelentést",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4af4c3c5-2b94-502f-af21-da33966e9d45",
@@ -3333,7 +4287,16 @@
       "prompt": "A polgármester jóváhagyása után tegyük közzé a jelentést az Önkormányzat honlapján és a Zöldhalom városrészi hirdetőtábláin, papíron is a kapu és a piaci pult mellett, és küldjük el a körök csoportjainak. A közlés ütemezését és a szöveg végső alakját ember adja le. Az MI-szerep csak csak fogalmazványt készíthet és emlékeztethet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Közzétesszük a jelentést, és eljuttatjuk a lakosokhoz",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6ce0d612-5324-54c1-bb5a-f8ddc5eccce7",
@@ -3346,7 +4309,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T12:00:00Z",
       "last_updated": "2026-11-07T12:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük, hogy a könyvelési modul készen áll",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "2d49d3e0-9856-5db2-a364-6f30ce2a1549",
@@ -3359,7 +4331,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T12:00:00Z",
       "last_updated": "2026-11-07T12:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Rögzítsük a kiinduló állapotot a digitális ikerképben",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "0bbefdde-9d88-52fc-af56-03dc7c2e8c28",
@@ -3372,7 +4353,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T12:00:00Z",
       "last_updated": "2026-11-07T12:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük a jóváhagyási határokat és az adatvédelmet",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "e82f49d9-f2d8-549a-a9c0-3643a8c282ed",
@@ -3385,7 +4375,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T12:00:00Z",
       "last_updated": "2026-11-07T12:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Állítsuk össze a költségösszegzést városrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "fde1b751-5adc-5b55-8824-30048609208a",
@@ -3398,7 +4397,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T12:00:00Z",
       "last_updated": "2026-11-07T12:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Készítsük elő a testületi előterjesztést a bekapcsolásról",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "012449af-65b9-58d2-88bd-fa598f1c2a4c",
@@ -3411,7 +4419,16 @@
       "ordinality": 6,
       "created_at": "2026-11-07T12:00:00Z",
       "last_updated": "2026-11-07T12:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A testület dönt a bekapcsolásról vagy a kikapcsolva hagyásról",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "00a6fbf7-57d0-51be-9435-450958e47e5c",
@@ -3424,7 +4441,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Gyűjtsük össze a hatályos díjtételeket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "205ae2bf-686b-57d7-9dc1-58ba2be2dd32",
@@ -3437,7 +4463,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Vessük össze a tételeket a rendelettel és a határozatokkal",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "8f6b20d4-99a0-5e5b-a9e3-2f61f0f02ce3",
@@ -3450,7 +4485,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá a hatályos díjjegyzéket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "739e55b1-b416-5bfd-8b79-c93bf000deb2",
@@ -3463,7 +4507,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Tegyük közzé a jegyzéket a hirdetőtáblán és az oldalon",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "2fa64f93-d279-58fd-8d7c-192e0cb35445",
@@ -3476,7 +4529,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Őrizzük meg a korábbi változatot, és jegyezzük fel a közzétételt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "63bd651f-536a-5517-b1d7-dfb17cfd6b5c",
@@ -3489,7 +4551,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogadjuk be a kérelmet",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "d325eede-d426-584e-b1a2-a4c1cce525ac",
@@ -3502,7 +4573,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük az illetéket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "cfdbfe52-2a86-5173-8a75-171e0357c4f9",
@@ -3515,7 +4595,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Rögzítsük az ellenőr megállapítását",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c2ffea71-3843-54e4-a5f9-d06cefdc2d62",
@@ -3528,7 +4617,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hozzuk meg a döntést",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "30b5e574-b56e-5e10-b97f-970ac71c226f",
@@ -3541,7 +4639,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Rögzítsük a megújítás dátumát",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6bab246d-904d-5573-b2b5-4dd9f472e0a6",
@@ -3554,7 +4661,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Jelöljük ki a visszaadandó időszakot és a jelentés fajtáját",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "21d265ab-f538-5be6-af9f-cc65e95eba98",
@@ -3567,7 +4683,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Állítsuk össze a jelentés tervezetét a közzétett számokból",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "2d918416-b830-56af-8c10-22c5cd3132eb",
@@ -3580,7 +4705,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Vessük össze a jelentést a helyben közzétett számokkal",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c77a09ae-0fe8-5020-8926-4c26154742ab",
@@ -3593,7 +4727,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük, hogy a jelentés nem tartalmaz személyes adatot",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c05e4ad8-00aa-5034-97d6-72f8de5403ba",
@@ -3606,7 +4749,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá és küldjük fel a jelentést",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "55a36264-5576-5ba1-910d-0b7f80dc7168",
@@ -3619,7 +4771,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összeállítjuk a pályázati felhívás tervezetét",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "8e44a34e-80ec-5f9b-b575-a2b3e160e2ea",
@@ -3632,7 +4793,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Közzétesszük a felhívást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "58c1497f-ffcb-5ab7-9476-4050623b560c",
@@ -3645,7 +4815,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogadjuk a pályázatokat, és hiánypótlásra szólítunk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c8a4aa16-ad2e-5046-8ee1-bac624cdacb2",
@@ -3658,7 +4837,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összesítjük a pályázatokat a bírálathoz",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "3bfc1718-1f20-5147-b3bb-830701b951c2",
@@ -3671,7 +4859,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A testület dönt a támogatásokról",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "35aa47ff-4bc3-5cfa-9f2b-f48b688509bd",
@@ -3684,7 +4881,16 @@
       "ordinality": 6,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Nyomon követjük a beszámolókat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "15ddb438-9054-5881-86ed-cb362e85412f",
@@ -3697,7 +4903,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogalmazzuk meg a közlemény tervezetét",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "88df0ce2-fd2a-52f8-95d7-17243e6e2933",
@@ -3710,7 +4925,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Válasszuk ki az érintett városrészeket és a csatornákat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "53802005-1770-5cdc-9f02-426eba478a43",
@@ -3723,7 +4947,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá a közleményt, mielőtt kimegy",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4b6b17e0-2851-5b5b-91b0-68536529d5ce",
@@ -3736,7 +4969,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Küldjük ki a jóváhagyott közleményt a kijelölt csatornákon",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "0661be71-59c0-5c4e-9ca9-42a250c21234",
@@ -3749,7 +4991,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Kövessük a nyugtázásokat, és járjunk utána a hiányzóknak",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c8f9d3c1-ade4-5352-8bd2-1b4d588e3e79",
@@ -3762,7 +5013,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Vegyük fel a foglalási kérelmet",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "7703c31e-789c-5886-8033-c51403eb5092",
@@ -3775,7 +5035,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük az ütközéseket, és javasoljunk időpontot",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "ac4acc43-175f-5380-b894-d448869b827a",
@@ -3788,7 +5057,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Határozzuk meg a díjat a díjjegyzék szerint",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "2b197e6a-0df6-5bad-9cb3-01b1e3d1920d",
@@ -3801,7 +5079,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá a foglalást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "7e23168d-7b4f-52fc-9bca-d3322c382387",
@@ -3814,7 +5101,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Küldjük ki a visszaigazolást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "1b61b184-74c3-538a-bc09-ba2ac0371c21",
@@ -3827,7 +5123,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Szabjuk ki a díjat, és nyissunk követelést fizetőnként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "930b7896-4221-54fb-8587-124f503b9419",
@@ -3840,7 +5145,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá a kiszabást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "795fe65b-14d5-5f6f-ac44-64a639bfe1e1",
@@ -3853,7 +5167,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Küldjük ki a fizetési értesítést",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b60f9a4c-0f01-5961-a12a-539b78d7f41b",
@@ -3866,7 +5189,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Rögzítsük a befizetéseket, és vessük össze a követelésekkel",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "0903f7be-21be-55d9-a58f-0d1bbb5f42ee",
@@ -3879,7 +5211,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Készítsük el a kor szerinti listát, és kövessük a hátralékot",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "8fa1a8c6-add5-5732-81f5-62fc71a08354",
@@ -3892,7 +5233,16 @@
       "ordinality": 6,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá a felszólításokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "ddb17576-b263-594c-be30-30e5f63aaef1",
@@ -3905,7 +5255,16 @@
       "ordinality": 1,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Gyűjtsük össze a költségvetési mérföldköveket településrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "abbb50e9-e981-5a5c-9907-16e2f9a9b23c",
@@ -3918,7 +5277,16 @@
       "ordinality": 2,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Csoportosítsuk a kiadásokat településrészek szerint",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "eb5d7968-6853-5a7d-8d6b-a4799417d654",
@@ -3931,7 +5299,16 @@
       "ordinality": 3,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük a teljesítésigazolásokat és a visszatartást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "2998590b-da4d-55b6-9942-8418c7393b46",
@@ -3944,7 +5321,16 @@
       "ordinality": 4,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hagyjuk jóvá a településrészenkénti kimutatást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "7aed090c-9969-555d-959a-cd7a7111b8e3",
@@ -3957,7 +5343,16 @@
       "ordinality": 5,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Tegyük közzé a költségvetési és kiadási kimutatást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "407e1cdc-e28f-5266-b2df-9a4d781e231f",
@@ -3970,7 +5365,16 @@
       "ordinality": 6,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Gyűjtsük a lakosi kérdéseket a kimutatásról",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [
