@@ -1,0 +1,151 @@
+{
+  "workflows": [
+    {
+      "id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "code": "W-54",
+      "name": "Támogatás civil szervezeteknek: felhívás, pályázat, döntés, beszámoló",
+      "description": "Hogyan hirdet meg, bírál el és ellenőriz a zöldhalmi önkormányzat egy civil támogatási keretet úgy, hogy a felhívást, a döntést és a beszámolót a nyilvánosság ugyanabból a nyilvántartásból látja, és a pénz kifizetése embernek az aláírását viseli.",
+      "ordinality": 54,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    }
+  ],
+  "objectives": [
+    {
+      "id": "e04e3a27-9d19-5cb5-bac0-c3d0e812ffa8",
+      "code": "O-54-1",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "A civil támogatási felhívás és a bírálati szempontok előre, nyilvánosan ismertek",
+      "description": "Minden felhívás megjelenése előtt rögzítjük a keretösszeget, a határidőt és a szempontokat, hogy a pályázó és a lakos ugyanazt lássa, mint a bíráló.",
+      "ordinality": 54,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "67946bcf-620b-5427-b3b9-c547531c69cf",
+      "code": "O-54-2",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "A támogatás odaítélése és a beszámoló ugyanabban a nyilvántartásban követhető",
+      "description": "Az odaítélt összeg, a kedvezményezett és a beszámoló állapota egy helyen áll, így a kifizetés mögött mindig ember aláírása és ellenőrizhető elszámolás van.",
+      "ordinality": 55,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "de29052a-1a86-5e22-9798-956e3e6e5f49",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "objective_id": "e04e3a27-9d19-5cb5-bac0-c3d0e812ffa8"
+    },
+    {
+      "id": "63c00bf9-62e8-5b7a-aac2-68e659bd545a",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "objective_id": "67946bcf-620b-5427-b3b9-c547531c69cf"
+    },
+    {
+      "id": "995cb34c-264e-5b1c-b5b9-126bc70096e2",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "objective_id": "b7df40cb-c79e-429f-9842-9e6e5ff2bf69"
+    }
+  ],
+  "rule_attachments": [
+    {
+      "id": "78d2eb4d-7233-5751-93a6-02768e7dae0e",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-54-1",
+      "created_at": "2026-11-07T11:00:00Z"
+    },
+    {
+      "id": "7e40baff-64a6-5223-bf1b-4903fca05c5f",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-54-2",
+      "created_at": "2026-11-07T11:00:00Z"
+    }
+  ],
+  "work_items": [
+    {
+      "id": "55a36264-5576-5ba1-910d-0b7f80dc7168",
+      "code": "WI-54-1",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Összeállítjuk a pályázati felhívás tervezetét",
+      "description": "A pénzügyi referens rögzíti a keretet, a határidőt és a bírálati szempontokat.",
+      "prompt": "Rögzítsük a civil támogatási keret összegét (például 4 800 000 Ft), a beadási határidőt és a bírálati szempontokat, és állítsuk össze a felhívás szövegét településrészenként (Óváros, Kertváros, Malomsor, Határrét) egyenlő eséllyel. Az MI-szerep csak fogalmazhatja a felhívás tervezetét; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8e44a34e-80ec-5f9b-b575-a2b3e160e2ea",
+      "code": "WI-54-2",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Közzétesszük a felhívást",
+      "description": "A kommunikációs referens a jóváhagyott szöveget közzéteszi és közérthetően összefoglalja.",
+      "prompt": "Tegyük közzé a jóváhagyott felhívást a hivatal oldalán és a hirdetőtáblákon, és készítsünk belőle rövid, közérthető összefoglalót. Az MI-szerep csak fogalmazhatja és összegezheti a közleményt; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "58c1497f-ffcb-5ab7-9476-4050623b560c",
+      "code": "WI-54-3",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Fogadjuk a pályázatokat, és hiánypótlásra szólítunk",
+      "description": "A jegyző nyilvántartásba veszi a beérkezett pályázatokat, és pótoltatja a hiányzókat.",
+      "prompt": "Vegyük nyilvántartásba a beérkezett pályázatokat (például a Malomsori Kertbarátok Egyesülete 350 000 Ft-os kérelmét), és ha valami hiányzik, szólítsuk fel a pályázót a határidő előtt. Az MI-szerep csak számolhatja a beérkezett pályázatokat, és utánajárhat a hiányzó mellékleteknek; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c8a4aa16-ad2e-5046-8ee1-bac624cdacb2",
+      "code": "WI-54-4",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Összesítjük a pályázatokat a bírálathoz",
+      "description": "Az adat- és elemzési referens táblázatba rendezi a kérelmeket a szempontok szerint.",
+      "prompt": "Készítsünk áttekintő táblázatot a pályázatokról: kérelmezett összeg, településrész, szempontonkénti pontok; a keret és a kért összegek különbségét külön mutassuk. Az MI-szerep csak összegezheti a pályázatokat és számolhat; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3bfc1718-1f20-5147-b3bb-830701b951c2",
+      "code": "WI-54-5",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "A testület dönt a támogatásokról",
+      "description": "A polgármester a testület elé viszi a javaslatot, és a döntést ember viszi tovább.",
+      "prompt": "A testület ülésén döntsünk az odaítélt összegekről, és a döntést indoklással rögzítsük; a határozatra ember írja rá a nevét. Ezt a lépést mesterséges intelligencia nem végzi. Ez a lépés emberé: a döntést és a kifizetés engedélyezését soha nem végzi MI-szerep.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "35aa47ff-4bc3-5cfa-9f2b-f48b688509bd",
+      "code": "WI-54-6",
+      "workflow_id": "3cadc7ec-4adb-53e0-94b6-46c16ebc714c",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Nyomon követjük a beszámolókat",
+      "description": "A pénzügyi referens emlékeztet a beszámolókra, és ellenőrzi az elszámolást.",
+      "prompt": "Kövessük, hogy a kedvezményezettek határidőre beadták-e az elszámolást (például a 350 000 Ft felhasználásáról), és ha elmarad, emlékeztessük őket; az elszámolás elfogadását ember írja alá. Az MI-szerep csak emlékeztethet, számolhat és összegezheti a beszámolókat; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    }
+  ]
+}
