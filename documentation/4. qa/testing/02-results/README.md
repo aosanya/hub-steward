@@ -11,6 +11,7 @@ These are the only results anyone can reproduce from this repository.
 | Console | `code/console` | 3640 tests in 251 files passed, 0 failed; the build passes | [Console tests](console-tests.md) |
 | Phone app | `code/app` | 1905 tests in 124 files passed, 0 failed; the build passes | [App tests](app-tests.md) |
 | API server | `code/wakala-api` | Builds and vets clean; no test files in any of its 96 packages, so nothing was tested | [API server tests](api-tests.md) |
+| Municipality import | `demo/municipality.json` | Imports on the local database (201); custody, digitaltwin and engage mount | [Municipality import](municipality-import.md) |
 
 ## Earlier results, from the Mwanachama repositories
 
