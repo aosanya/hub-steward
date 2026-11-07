@@ -19,3 +19,7 @@ Import of the grown file: 201; read back from the draft 38 workflows, 214 work i
 ## After wave 4
 
 Import of the grown file: 201; read back from the draft 39 workflows, 220 work items. `go vet ./...` and `go test ./...` clean; console 3906 passed, 1 failed (`templates.test.ts`, MUN68).
+
+## Run 6 (cloud, 2026-11-07)
+
+Import of the grown file after W-22 and W-39 were merged: 201; 41 workflows, 231 work items, 17 roles, 33 objectives, 110 workflow objectives, 65 control attachments. Read back from the draft with `?draft_id=`: 41 workflows, 231 work items, 17 roles; the step count of every workflow equals the agency file, W-22 reads back with 5 steps and W-39 with 6. The login was made with `POST /auth/credentials` and a session taken with `POST /auth/signin`, not an emailed link. The console walk harness passes for W-22 and W-39. Postgres-backed tests for the ward fill, the withdrawal fan-out, the voting and insights minimum and the department routing pass on the native database.
