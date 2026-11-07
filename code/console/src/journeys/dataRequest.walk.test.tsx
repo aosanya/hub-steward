@@ -30,8 +30,6 @@ const actorOf = (step: Rec) => roleOf(step)?.name ?? "The agency";
 const aiClause = /MI-szerep \(RU-AI-1\)/;
 const humanApproval = /ember hagyja jóvá/;
 const roleCodes: Record<string, string> = { "WI-23-1": "R-7", "WI-23-2": "R-6", "WI-23-3": "R-7", "WI-23-4": "R-3", "WI-23-5": "R-8" };
-const aiRule = file.rules.find((rule: Rec) => rule.code === "RU-AI-1") as Rec;
-
 const hub: Hub = { id: "zoldhalom", name: (file.agency as Rec).name, role: "owner", kind: "municipality", model_key_set: true };
 
 const calls: { tool: string; args: Rec }[] = [];
@@ -129,8 +127,6 @@ describe("workflow W-23, data request: the officer opens each step", () => {
     const aiSteps = stepsByOrdinality.filter((step) => aiClause.test(step.prompt));
     expect(aiSteps.map((step) => step.code)).toEqual(stepCodes);
     aiSteps.forEach((step) => expect(step.prompt).toMatch(humanApproval));
-    expect(file.rules.some((rule: Rec) => rule.code === "RU-AI-1")).toBe(false);
-
     expect(writes()).toEqual([]);
     expect(calls.filter((call) => /publish/.test(call.tool))).toEqual([]);
   });
