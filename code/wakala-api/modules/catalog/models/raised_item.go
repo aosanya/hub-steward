@@ -15,6 +15,8 @@ type RaisedItem struct {
 	Area          string        `json:"area"`
 	AreaMismatch  string        `json:"area_mismatch"`
 	Street        string        `json:"street"`
+	Department    string        `json:"department"`
+	DepartmentBy  string        `json:"department_by"`
 	BoardItemID   string        `json:"board_item_id"`
 	SubjectID     string        `json:"subject_id"`
 	CreatedAt     string        `json:"created_at"`
@@ -44,7 +46,13 @@ type FollowKey struct {
 	Key          string `json:"key"`
 }
 
+type MyRaisedItem struct {
+	RaisedItem
+	Status string `json:"status"`
+}
+
 type FollowedRaisedItem struct {
 	Item    RaisedItem `json:"item"`
+	Status  string     `json:"status"`
 	Replies []Reply    `json:"replies"`
 }

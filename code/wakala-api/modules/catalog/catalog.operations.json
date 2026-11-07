@@ -904,7 +904,7 @@
       "call": "ListRaisedItems",
       "action": "catalog.raised_item.list_mine",
       "title": "List my raised items",
-      "description": "The items the caller raised, newest first. Never anonymous.",
+      "description": "The items the caller raised, newest first, each with the department that holds it and its status (received, open, closed, or the outcome the board gave). Never anonymous.",
       "args": [
         {
           "from": "caller",
@@ -1024,6 +1024,33 @@
         }
       ],
       "status": 204
+    },
+    "reassign_raised_item": {
+      "method": "PUT",
+      "path": "/raised-items/{raisedItemID}/department",
+      "call": "ReassignRaisedItem",
+      "action": "catalog.raised_item.reassign",
+      "status": 204,
+      "title": "Reassign a raised item to a department",
+      "description": "Hand a raised item to a department. The routing setting only fills a department when an item is filed; one an officer sets here is kept. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "raisedItemID",
+          "description": "The raised item to reassign."
+        },
+        {
+          "from": "body",
+          "as": "department",
+          "required": true,
+          "field": "RaisedItem.department"
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
     },
     "ungroup_from_board_item": {
       "method": "DELETE",
@@ -1257,7 +1284,7 @@
       "call": "OpenFollowedRaisedItem",
       "action": "catalog.raised_item.open_followed",
       "title": "Open a followed raised item",
-      "description": "Read one raised item and the replies written to it through its follow key, without signing in. An unknown key, a retired key, a missing item and a catalog that takes no raised items are all the same 'not found'.",
+      "description": "Read one raised item, its department and status, and the replies written to it through its follow key, without signing in. An unknown key, a retired key, a missing item and a catalog that takes no raised items are all the same 'not found'.",
       "args": [
         {
           "from": "path",

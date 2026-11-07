@@ -811,6 +811,16 @@
           "description": "The street the item is on, resolved by the host from the typed address's matched street, else from the pin's address, else the one the raiser gave; empty when none. Shown with the area to every reader."
         },
         {
+          "name": "department",
+          "type": "string",
+          "description": "The department that holds the item, set by the routing setting from the topic when it is filed, or by an officer; empty when none. Opaque to this module."
+        },
+        {
+          "name": "department_by",
+          "type": "string",
+          "description": "Who set the department: rule when the routing setting did, officer when a person did, empty while none is set. An officer's choice is never replaced by a rule."
+        },
+        {
           "name": "board_item_id",
           "type": "string",
           "description": "The board item this publishable item is grouped under, empty while ungrouped."
@@ -1127,6 +1137,12 @@
       "type": "json",
       "description": "Every catalogue the agency has, each a mount, a name, an audience (public, members or staff) and whether it holds services. Publishing makes each one exist; a mount not listed answers not found. The forms catalogue and the ideas board are built in and never listed.",
       "default": []
+    },
+    {
+      "name": "routing",
+      "type": "json",
+      "description": "Which department holds a raised item: a default department and rules, each a topic and the department it goes to. An item filed with a topic a rule names goes to that department, any other goes to the default, and one an officer assigned is never moved by a rule.",
+      "default": {}
     }
   ]
 }

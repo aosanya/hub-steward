@@ -11,6 +11,7 @@ func (m *catalogManager) RaiseItem(ctx context.Context, r RaisedItem) (RaisedIte
 	r.FiledBy = ""
 	r.Channel = ""
 	r.SubjectID = ""
+	r.Department = ""
 	return m.FileRaisedItem(ctx, r)
 }
 
@@ -38,6 +39,10 @@ func (m *catalogManager) FileRaisedItem(ctx context.Context, r RaisedItem) (Rais
 		return RaisedItem{}, err
 	}
 	r.Street = street
+	r.Department, r.DepartmentBy, err = m.departmentOf(ctx, r)
+	if err != nil {
+		return RaisedItem{}, err
+	}
 	r.ID = newID()
 	r.CreatedAt = m.now()
 	row, err := encode(m.st.Object(roleRaisedItem), r)
@@ -50,7 +55,7 @@ func (m *catalogManager) FileRaisedItem(ctx context.Context, r RaisedItem) (Rais
 	return r, nil
 }
 
-func (m *catalogManager) ListRaisedItems(ctx context.Context, raisedBy string) ([]RaisedItem, error) {
+func (m *catalogManager) ListRaisedItems(ctx context.Context, raisedBy string) ([]MyRaisedItem, error) {
 	if !m.takesRaisedItems() {
 		return nil, ErrRaisedItemsNotTaken
 	}
@@ -65,5 +70,17 @@ func (m *catalogManager) ListRaisedItems(ctx context.Context, raisedBy string) (
 	if len(linked) > 0 {
 		q = m.q(ctx, roleRaisedItem).Where("raised_by = ? OR subject_id IN ?", raisedBy, linked)
 	}
-	return listOf[RaisedItem](m, q.Order("created_at DESC, id DESC"), roleRaisedItem)
+	items, err := listOf[RaisedItem](m, q.Order("created_at DESC, id DESC"), roleRaisedItem)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]MyRaisedItem, len(items))
+	for i, item := range items {
+		status, err := m.statusOf(ctx, item)
+		if err != nil {
+			return nil, err
+		}
+		out[i] = MyRaisedItem{RaisedItem: item, Status: status}
+	}
+	return out, nil
 }

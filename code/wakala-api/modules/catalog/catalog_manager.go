@@ -42,6 +42,7 @@ type (
 	Reply              = models.Reply
 	FollowKey          = models.FollowKey
 	FollowedRaisedItem = models.FollowedRaisedItem
+	MyRaisedItem       = models.MyRaisedItem
 	Removal            = models.Removal
 	RaisedItemFile     = models.RaisedItemFile
 	FieldTally         = models.FieldTally
@@ -272,7 +273,8 @@ type CatalogManager interface {
 	RaiseItem(ctx context.Context, r RaisedItem) (RaisedItem, error)
 	FileRaisedItem(ctx context.Context, r RaisedItem) (RaisedItem, error)
 
-	ListRaisedItems(ctx context.Context, raisedBy string) ([]RaisedItem, error)
+	ListRaisedItems(ctx context.Context, raisedBy string) ([]MyRaisedItem, error)
+	ReassignRaisedItem(ctx context.Context, raisedItemID, department string) error
 	ListRaisedItemsOfSubject(ctx context.Context, subjectID string) ([]RaisedItem, error)
 
 	UseAreaResolver(resolve AreaResolver)

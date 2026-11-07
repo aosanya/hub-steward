@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	"wakalaserver/modules/catalog/models"
 	"wakalaserver/modules/shared/spec"
 )
 
@@ -39,6 +40,11 @@ func CheckSettings(settings json.RawMessage) []string {
 	}
 	if problems := spec.CheckSettings(blueprint.Settings, values); len(problems) > 0 {
 		return problems
+	}
+	if raw, present := values[routingSetting]; present {
+		if _, err := models.ParseRouting(raw); err != nil {
+			return []string{routingSetting + ": a default department and rules, each a topic and a department, no topic twice"}
+		}
 	}
 	raw, present := values[cataloguesSetting]
 	if !present {

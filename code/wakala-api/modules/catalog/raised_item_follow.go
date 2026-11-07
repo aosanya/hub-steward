@@ -36,7 +36,11 @@ func (m *catalogManager) OpenFollowedRaisedItem(ctx context.Context, key string)
 		}
 		return FollowedRaisedItem{}, err
 	}
-	followed := FollowedRaisedItem{Item: raised, Replies: []Reply{}}
+	status, err := m.statusOf(ctx, raised)
+	if err != nil {
+		return FollowedRaisedItem{}, err
+	}
+	followed := FollowedRaisedItem{Item: raised, Status: status, Replies: []Reply{}}
 	if m.sendsReplies() {
 		replies, err := m.ListReplies(ctx, raised.ID)
 		if err != nil {
