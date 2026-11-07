@@ -1,0 +1,106 @@
+{
+  "workflows": [
+    {
+      "id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "code": "W-46",
+      "name": "Közérdekű adat iránti kérelem",
+      "description": "Hogyan válaszol az önkormányzat a közérdekű adat iránti kérelemre: iktatás, a kért iratok megkeresése, a nem kiadható részek jelölése, majd válasz a törvényes határidőn belül, vagy indokolt elutasítás. Az MI-szerepek csak fogalmazhatnak, összegezhetnek, utánajárhatnak és számolhatnak; a nyilvánosság elé kerülő dolgot mindig ember hagyja jóvá.",
+      "ordinality": 46,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "6dc3f403-372e-5cda-a6c6-266b1330f70f",
+      "code": "WI-46-1",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Iktatjuk a kérelmet és kiszámoljuk a határidőt",
+      "description": "A jegyző iktatószámot ad a közérdekű adat iránti kérelemnek, és rögzíti a törvényes határidőt.",
+      "prompt": "A Jegyző iktatja a beérkezett kérelmet, például Kovács Lilla kérését a Malomsori Piactér felújítási szerződéseiről, iktatószámot ad rá, és rögzíti a beérkezés napját és a válasz határidejét (a beérkezéstől számított 15 napot). Visszaigazolja a kérelmezőnek, hogy megkaptuk. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a3f56975-5cdf-5269-9c73-80101709641a",
+      "code": "WI-46-2",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Megkeressük és megszámoljuk az érintett iratokat",
+      "description": "Az adatos referens megkeresi a nyilvántartásban a kért iratokat, és megszámolja őket.",
+      "prompt": "Az Adat- és elemzési referens a nyilvántartásban megkeresi a kérelemben megnevezett iratokat, megszámolja, hány iratról van szó (például 7 szerződés és 3 teljesítésigazolás), és osztályonként felsorolja, hol vannak. Ahol nem találja, azt megnevezi, nem hagyja ki. Az MI-szerep (RU-AI-1) csak kereshet, összegezhet és számolhat; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "9b353bb2-4b05-51eb-909d-8d0a6d2e51bf",
+      "code": "WI-46-3",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Ellenőrizzük, mi nem adható ki",
+      "description": "Az adatvédelmi felelős végignézi az iratokat személyes adat és üzleti titok szempontjából.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős végignézi az iratokat, és megjelöli, mi nem adható ki: magánszemély adatai, üzleti titok, döntés-előkészítő irat. Minden kihagyáshoz leírja a jogalapot. Ezt a lépést ember végzi, MI-szerep nem dönt arról, mi marad ki.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "601e89e9-0e08-5699-a932-0473092fe919",
+      "code": "WI-46-4",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Megírjuk a választ vagy az indokolt elutasítást",
+      "description": "A jegyző megírja a választ a kiadható iratokkal, vagy az elutasítást a jogalappal.",
+      "prompt": "A Jegyző a kiadható iratokkal megírja a választ, vagy ha valamit nem ad ki, az elutasítást az indokával és a jogorvoslat lehetőségével. Az elutasítás mindig megnevezi a jogalapot, nem csak annyit mond, hogy nem adható ki. Az MI-szerep (RU-AI-1) csak fogalmazványt készíthet a válaszról; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fbb91de5-3501-5249-9494-e391c51c7f52",
+      "code": "WI-46-5",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "A polgármester jóváhagyja és aláírja",
+      "description": "A polgármester elolvassa a választ, és a határidő előtt jóváhagyja és aláírja.",
+      "prompt": "A Polgármester / testületi elnök elolvassa a választ vagy az elutasítást, és a határidő lejárta előtt jóváhagyja és aláírja. Ha költségtérítést kér az irat másolásáért, az összeget forintban megjelöli (például 1 200 Ft). Addig semmi nem megy ki. Az MI-szerep (RU-AI-1) csak emlékeztetőt fogalmazhat a határidőről és utánajárhat, hol akad el az aláírás; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a75e5501-f46f-52ce-add9-19b34528daee",
+      "code": "WI-46-6",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Elküldjük a választ és közzétesszük, ami közérdekű",
+      "description": "A kommunikációs referens elküldi a választ a kérelmezőnek, és közzéteszi a közérdekű adatot.",
+      "prompt": "A Kommunikációs referens a jóváhagyott választ vagy indokolt elutasítást a határidőn belül elküldi a kérelmezőnek, és közzéteszi a kiadott közérdekű adatot is, hogy ugyanazt ne kelljen újra kérni. A kimenő anyagot nem küldi el addig, amíg a polgármester jóvá nem hagyta. Az MI-szerep (RU-AI-1) csak fogalmazhatja a közleményt és utánajárhat, megérkezett-e a válasz; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "52573558-e144-559f-971d-3f60cd7f0c48",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "objective_id": "1ec7cfb5-bedb-4aa1-8ba8-750246c5baf5"
+    },
+    {
+      "id": "9e1c0472-bb4e-5bdf-b901-4ff04a7d9e51",
+      "workflow_id": "f9840ab4-add1-5aa6-9fd5-9b220969b3b5",
+      "objective_id": "8b21b0cf-2a3d-49cd-93af-cb46fe888e31"
+    }
+  ]
+}
