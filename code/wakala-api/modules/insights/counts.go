@@ -50,6 +50,10 @@ func DiscloseBySubject(items []models.Insight, minimum int) (SubjectCounts, erro
 	for i, k := range keys {
 		cells[i] = disclosure.Cell{Key: k, Count: tally[k]}
 	}
+	cells, _, err := disclosure.FoldSmall(cells, minimum)
+	if err != nil {
+		return SubjectCounts{}, err
+	}
 	res, err := disclosure.Apply(cells, minimum)
 	if err != nil {
 		return SubjectCounts{}, err

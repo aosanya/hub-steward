@@ -15,9 +15,15 @@ type ChoiceCount struct {
 	Suppressed bool   `json:"suppressed,omitempty"`
 }
 
+type OtherCount struct {
+	Votes      int  `json:"votes"`
+	Suppressed bool `json:"suppressed,omitempty"`
+}
+
 type Count struct {
 	PollID             string        `json:"poll_id"`
 	Choices            []ChoiceCount `json:"choices"`
+	Other              *OtherCount   `json:"other,omitempty"`
 	Answered           int           `json:"answered"`
 	AnsweredSuppressed bool          `json:"answered_suppressed,omitempty"`
 	Minimum            int           `json:"minimum,omitempty"`

@@ -96,3 +96,34 @@ func TestSetMinimumCountOnManager(t *testing.T) {
 		t.Fatal("accepted 1")
 	}
 }
+
+func TestSmallChoicesFoldIntoOneOtherCell(t *testing.T) {
+	got, err := Disclose(count(30, 20, 4, 3, 3), 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Other == nil || got.Other.Suppressed || got.Other.Votes != 10 {
+		t.Fatalf("%+v", got.Other)
+	}
+	for _, c := range got.Choices[1:] {
+		if !c.Suppressed || c.Votes != 0 {
+			t.Fatalf("%+v", c)
+		}
+	}
+	if got.Choices[0].Votes != 20 {
+		t.Fatalf("%+v", got.Choices[0])
+	}
+}
+
+func TestOtherCellIsWithheldWhileStillBelowTheMinimum(t *testing.T) {
+	got, err := Disclose(count(30, 20, 6, 4), 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Other == nil || !got.Other.Suppressed || got.Other.Votes != 0 {
+		t.Fatalf("%+v", got.Other)
+	}
+	if !got.Choices[1].Suppressed || got.Choices[0].Suppressed || got.Choices[0].Votes != 20 {
+		t.Fatalf("%+v", got.Choices)
+	}
+}

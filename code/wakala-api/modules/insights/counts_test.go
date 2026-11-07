@@ -54,3 +54,48 @@ func TestLargeSubjectsPublishedAsIs(t *testing.T) {
 		t.Fatalf("total = %d", got.Total)
 	}
 }
+
+func TestSmallSubjectsFoldIntoOneOtherItem(t *testing.T) {
+	var in []models.Insight
+	in = append(in, many("ward-a", 9)...)
+	in = append(in, many("ward-b", 3)...)
+	in = append(in, many("ward-c", 4)...)
+	got, err := DiscloseBySubject(in, 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got.Items) != 2 {
+		t.Fatalf("%+v", got.Items)
+	}
+	if got.Items[0].SubjectID != "ward-a" || got.Items[0].Count != 9 {
+		t.Fatalf("%+v", got.Items)
+	}
+	if got.Items[1].SubjectID != "other" || got.Items[1].Suppressed || got.Items[1].Count != 7 {
+		t.Fatalf("%+v", got.Items)
+	}
+	if got.Total != 16 || !got.TotalPublished {
+		t.Fatalf("%+v", got)
+	}
+}
+
+func TestOtherItemIsWithheldWhileStillBelowTheMinimum(t *testing.T) {
+	var in []models.Insight
+	in = append(in, many("ward-a", 9)...)
+	in = append(in, many("ward-b", 2)...)
+	in = append(in, many("ward-c", 6)...)
+	got, err := DiscloseBySubject(in, 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range got.Items {
+		if c.SubjectID == "ward-b" {
+			t.Fatal("small subject listed on its own")
+		}
+		if c.SubjectID == "other" && (!c.Suppressed || c.Count != 0) {
+			t.Fatalf("%+v", c)
+		}
+	}
+	if !got.TotalPublished || got.Total != 17 {
+		t.Fatalf("%+v", got)
+	}
+}

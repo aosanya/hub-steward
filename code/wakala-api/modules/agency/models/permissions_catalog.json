@@ -10,6 +10,7 @@
   {"code": "member.invite", "name": "Invite", "locked": false, "actions": ["actor.invitation.create", "actor.invitation.check_batch", "actor.invitation.send_batch"]},
   {"code": "promise.record_outcome", "name": "Record a promise's outcome", "locked": false},
   {"code": "poll.run", "name": "Run a poll", "locked": false, "module": "voting", "actions": ["voting.poll.create", "voting.choice.create"]},
+  {"code": "insight.count", "name": "Count insights by subject", "locked": false, "module": "insights", "actions": ["insights.insight.count"]},
   {"code": "market.browse", "name": "Browse the market", "locked": false, "module": "market", "actions": ["market.poster.list", "market.offer.list", "market.notice.list", "market.group_order.list", "market.group_order.read", "market.group_order.trail", "market.order.trail", "market.kind.list"]},
   {"code": "market.categorise", "name": "Put a product under another category", "locked": false, "module": "market", "actions": ["market.product.categorise"]},
   {"code": "market.offer", "name": "Post offers and keep stock", "locked": false, "module": "market", "actions": ["market.offer.create", "market.offer.update", "market.stock.set", "market.stock.read"]},
