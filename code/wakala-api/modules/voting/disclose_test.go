@@ -2,6 +2,8 @@ package voting
 
 import (
 	"context"
+	"encoding/json"
+	"strings"
 	"testing"
 )
 
@@ -44,10 +46,13 @@ func TestSmallChoiceNeverShownAndTotalWithheld(t *testing.T) {
 			t.Fatalf("small count shown: %+v", c)
 		}
 	}
-	if !got.Choices[2].Suppressed {
-		t.Fatal("2 votes shown")
+	if len(got.Choices) != 2 {
+		t.Fatalf("folded choice still listed: %+v", got.Choices)
 	}
 	hidden := 0
+	if got.Other != nil && got.Other.Suppressed {
+		hidden++
+	}
 	for _, c := range got.Choices {
 		if c.Suppressed {
 			hidden++
@@ -105,10 +110,8 @@ func TestSmallChoicesFoldIntoOneOtherCell(t *testing.T) {
 	if got.Other == nil || got.Other.Suppressed || got.Other.Votes != 10 {
 		t.Fatalf("%+v", got.Other)
 	}
-	for _, c := range got.Choices[1:] {
-		if !c.Suppressed || c.Votes != 0 {
-			t.Fatalf("%+v", c)
-		}
+	if len(got.Choices) != 1 {
+		t.Fatalf("%+v", got.Choices)
 	}
 	if got.Choices[0].Votes != 20 {
 		t.Fatalf("%+v", got.Choices[0])
@@ -125,5 +128,42 @@ func TestOtherCellIsWithheldWhileStillBelowTheMinimum(t *testing.T) {
 	}
 	if !got.Choices[1].Suppressed || got.Choices[0].Suppressed || got.Choices[0].Votes != 20 {
 		t.Fatalf("%+v", got.Choices)
+	}
+}
+
+func TestFoldedChoicesAreNotListedAndZeroChoicesAreIndistinguishable(t *testing.T) {
+	got, err := Disclose(count(40, 30, 7, 3, 0), 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got.Choices) != 2 || got.Choices[0].ChoiceID != "a" || got.Choices[1].ChoiceID != "b" {
+		t.Fatalf("%+v", got.Choices)
+	}
+	if got.Other == nil || !got.Other.Suppressed {
+		t.Fatalf("%+v", got.Other)
+	}
+	raw, err := json.Marshal(got)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, id := range []string{`"c"`, `"d"`} {
+		if strings.Contains(string(raw), id) {
+			t.Fatalf("folded choice %s named in %s", id, raw)
+		}
+	}
+}
+
+func TestSmallRunListsEveryChoiceAlikeAndNamesNoOtherCell(t *testing.T) {
+	got, err := Disclose(count(4, 3, 1, 0), 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Other != nil || len(got.Choices) != 3 {
+		t.Fatalf("%+v", got)
+	}
+	for _, c := range got.Choices {
+		if !c.Suppressed {
+			t.Fatalf("%+v", c)
+		}
 	}
 }

@@ -121,5 +121,8 @@
         }
       ]
     }
+  ],
+  "settings": [
+    {"name": "minimum_count", "type": "int", "description": "The fewest insights a published count per subject may rest on before it is withheld. Below two it is ignored and the built-in five applies.", "default": 5}
   ]
 }

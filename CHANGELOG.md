@@ -5,7 +5,9 @@ All notable changes to this project are listed here, grouped by area. The format
 ## [Unreleased] - 2026-11-04
 
 ### API (`code/wakala-api`)
+- The insights minimum count is a declared setting (`minimum_count`, readable with `MinimumCount`), and a published poll count leaves out folded choices instead of listing them as suppressed (2026-11-07).
 - Counts below the minimum are folded into one `other` cell in poll counts and `GET /insights/counts`, and that cell is withheld while it is still below the minimum; the insight count action has the `insight.count` permission (2026-11-07).
+- A raised item with a pin and no area, and a catalog entry with a `location` point and no `ward`, get the ward from group boundaries; a typed one is kept and a mismatch is flagged (2026-11-07).
 - `GET /groups/at-point?lon=&lat=` lists the groups whose boundary holds a point, a ward index is built from group boundaries, and a point or other non-area boundary now answers 400 on `PUT /groups/{group_id}/boundary` (2026-11-07).
 - Every role step of the municipality agency has a kind and a done form, so the agency imports whole (184 steps).
 - A form carries an amount, and clearing it (plain or by slot) is refused unless the approver holds a live seat whose approval limit covers it; setting a limit and checking an amount are routes and tools (2026-11-07).

@@ -24,6 +24,8 @@ type InsightManager interface {
 	GetInsight(ctx context.Context, insightID string) (models.Insight, error)
 	ListInsights(ctx context.Context, filter InsightFilter) ([]models.Insight, error)
 	CountInsightsBySubject(ctx context.Context) (SubjectCounts, error)
+	MinimumCount(ctx context.Context) (int, error)
+	UseSettings(layers SettingsLayers)
 
 	CreateInsightNote(ctx context.Context, in models.InsightNote) (models.InsightNote, error)
 	ListInsightNotes(ctx context.Context, insightID string) ([]models.InsightNote, error)
@@ -33,6 +35,9 @@ type insightManager struct {
 	db  *gorm.DB
 	st  *store
 	now func() string
+
+	settings SettingsLayers
+	minimum  int
 }
 
 func NewInsightManager(db *gorm.DB, s *spec.Spec) (InsightManager, error) {

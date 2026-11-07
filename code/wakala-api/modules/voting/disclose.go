@@ -57,21 +57,27 @@ func Disclose(c Count, minimum int) (Count, error) {
 	for _, k := range folded {
 		isFolded[k] = true
 	}
-	out := Count{PollID: c.PollID, Answered: c.Answered, Minimum: minimum, Choices: make([]ChoiceCount, len(c.Choices))}
+	foldAny := len(folded) > 0 && !smallRun
+	out := Count{PollID: c.PollID, Answered: c.Answered, Minimum: minimum, Choices: make([]ChoiceCount, 0, len(c.Choices))}
 	anyHidden := smallRun
-	for i, ch := range c.Choices {
-		hide := smallRun || isFolded[ch.ChoiceID] || !outcome[ch.ChoiceID].Published
-		out.Choices[i] = ChoiceCount{ChoiceID: ch.ChoiceID, Label: ch.Label, Position: ch.Position}
-		if hide {
-			out.Choices[i].Suppressed = true
+	for _, ch := range c.Choices {
+		if foldAny && ch.Votes < minimum {
 			anyHidden = true
 			continue
 		}
-		out.Choices[i].Votes = ch.Votes
+		hide := smallRun || isFolded[ch.ChoiceID] || !outcome[ch.ChoiceID].Published
+		cc := ChoiceCount{ChoiceID: ch.ChoiceID, Label: ch.Label, Position: ch.Position}
+		if hide {
+			cc.Suppressed = true
+			anyHidden = true
+		} else {
+			cc.Votes = ch.Votes
+		}
+		out.Choices = append(out.Choices, cc)
 	}
-	if len(folded) > 0 {
+	if foldAny {
 		o := outcome[disclosure.OtherKey]
-		out.Other = &OtherCount{Suppressed: smallRun || !o.Published}
+		out.Other = &OtherCount{Suppressed: !o.Published}
 		if !out.Other.Suppressed {
 			out.Other.Votes = o.Count
 		}

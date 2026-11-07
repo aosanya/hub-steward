@@ -70,7 +70,19 @@ func (s *membershipScopedInsights) ListInsights(ctx context.Context, filter mwan
 }
 
 func (s *membershipScopedInsights) CountInsightsBySubject(ctx context.Context) (mwanachamainsights.SubjectCounts, error) {
-	return mwanachamainsights.CountBySubject(ctx, s, mwanachamainsights.DefaultMinimumCount)
+	minimum, err := s.inner.MinimumCount(ctx)
+	if err != nil {
+		return mwanachamainsights.SubjectCounts{}, err
+	}
+	return mwanachamainsights.CountBySubject(ctx, s, minimum)
+}
+
+func (s *membershipScopedInsights) MinimumCount(ctx context.Context) (int, error) {
+	return s.inner.MinimumCount(ctx)
+}
+
+func (s *membershipScopedInsights) UseSettings(layers mwanachamainsights.SettingsLayers) {
+	s.inner.UseSettings(layers)
 }
 
 func (s *membershipScopedInsights) CreateInsightNote(ctx context.Context, in models.InsightNote) (models.InsightNote, error) {

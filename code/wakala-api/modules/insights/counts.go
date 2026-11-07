@@ -25,7 +25,11 @@ type SubjectCounts struct {
 const DefaultMinimumCount = 5
 
 func (m *insightManager) CountInsightsBySubject(ctx context.Context) (SubjectCounts, error) {
-	return CountBySubject(ctx, m, DefaultMinimumCount)
+	minimum, err := m.MinimumCount(ctx)
+	if err != nil {
+		return SubjectCounts{}, err
+	}
+	return CountBySubject(ctx, m, minimum)
 }
 
 func CountBySubject(ctx context.Context, im InsightManager, minimum int) (SubjectCounts, error) {

@@ -2,6 +2,7 @@ package voting
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
@@ -124,5 +125,32 @@ func TestDeclaredMinimumCountSettingChangesWhatIsPublished(t *testing.T) {
 	}
 	if got.Minimum != 3 || got.AnsweredSuppressed || got.Answered != 6 || got.Choices[0].Votes != 3 {
 		t.Fatalf("%+v", got)
+	}
+}
+
+func TestFoldedChoiceIsNotNamedInThePublishedCountFromTheDatabase(t *testing.T) {
+	pm, db, s, id := publishedPollFixture(t)
+	answerAll(t, pm, id, 0, 0, 0, 0, 0, 0, 0, 1, 1)
+	if _, err := spec.StoreOverride(db, s, "minimum_count", 3, "clerk", time.Now().UTC().Format(time.RFC3339)); err != nil {
+		t.Fatal(err)
+	}
+	got, err := pm.ReadPublishedCount(context.Background(), id, "resident-0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Other == nil || !got.Other.Suppressed || got.Other.Votes != 0 {
+		t.Fatalf("%+v", got.Other)
+	}
+	raw, err := json.Marshal(got)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(raw), "Orchard Lane") {
+		t.Fatalf("folded choice named: %s", raw)
+	}
+	for _, c := range got.Choices {
+		if c.Votes != 0 && c.Votes < 3 {
+			t.Fatalf("%+v", c)
+		}
 	}
 }
