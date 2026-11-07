@@ -1,0 +1,111 @@
+{
+  "objectives": [
+    {
+      "id": "54d40736-057f-5a0c-886b-cb7f8baf29d6",
+      "code": "O-47",
+      "goal_id": "67f561ec-ecf2-4ca9-9ab3-70dfa44ed895",
+      "title": "Évente elmondjuk a lakosoknak, mit kérdeztünk, mit hallottunk és mi változott",
+      "description": "Az éves jelentés a körök és a döntések rekordjaiból készül, városrészenkénti bontásban, a felelős nevével; nyilvánosságra csak ember jóváhagyása után kerül.",
+      "ordinality": 47,
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflows": [
+    {
+      "id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "code": "W-47",
+      "name": "Az éves jelentés a lakosoknak",
+      "description": "Évente elmondjuk a lakosoknak, mit kérdeztünk, mit hallottunk, és mi változott miatta: számokkal, városrészenként, a felelős nevével.",
+      "ordinality": 47,
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "f2e3f001-c3af-55af-8c56-bc0b6f825114",
+      "code": "WI-47-1",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "ordinality": 1,
+      "title": "Összeszámoljuk, mit kérdeztünk és kitől hallottunk",
+      "description": "Az év összes köréből megszámoljuk, hány kérdést tettünk fel, hányan válaszoltak hányból, városrészenként.",
+      "prompt": "Vegyük elő az év összes körének rekordjait, és számoljuk meg körönként és városrészenként (Óváros, Kertváros, Malomsor, Határrét), mit kérdeztünk, hányan válaszoltak hányból, és hol maradt hiányos a lefedettség. Számot közöljünk, személyt soha; a szűk válaszolói kört írjuk le, ne szépítsük. Az MI-szerep csak számolhat és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "bc1e9e31-97cf-5fb4-98f7-383e4b7d2bf2",
+      "code": "WI-47-2",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "ordinality": 2,
+      "title": "Összegyűjtjük, mi változott a hallottak miatt",
+      "description": "A jegyzői nyilvántartásból kigyűjtjük a döntéseket, vállalásokat és azt, hogy teljesültek-e.",
+      "prompt": "A jegyzői nyilvántartásból gyűjtsük ki az év döntéseit és vállalásait körönként: mit hallottunk, mit döntött a testület, ki a felelős névvel, és teljesült-e határidőre. Ahol egy döntés a hallottak ellen szólt, ezt jelöljük, ne simítsuk el. A lejárt vállalások felelőseit emlékeztessük, de a mulasztást ne mi pótoljuk. Az MI-szerep csak emlékeztethet, számolhat és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fbd63a0c-1871-5de9-bce9-50185525487b",
+      "code": "WI-47-3",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "ordinality": 3,
+      "title": "Megírjuk az éves jelentés fogalmazványát",
+      "description": "A számokból és a változásokból közérthető jelentés-fogalmazvány készül: ezt kérdeztük, ezt hallottuk, ez változott.",
+      "prompt": "Írjunk közérthető jelentés-fogalmazványt az előző két lépés anyagából: mit kérdeztünk, mit hallottunk számokkal, mi változott, és mi nem, ha semmi, ezt is írjuk le. Példával, városrészenkénti bontásban, forintösszegekkel ott, ahol pénzről van szó (például a Malomsori pad 380 000 Ft). A fogalmazvány nem közölhető, amíg a következő lépésben ember nem hagyta jóvá. Az MI-szerep csak csak fogalmazványt készíthet és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3beb2928-a926-5609-b26f-6afd67d07d6b",
+      "code": "WI-47-4",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "ordinality": 4,
+      "title": "A polgármester átnézi és névvel jóváhagyja a jelentést",
+      "description": "A jelentést a polgármester vagy a testületi elnök nézi át, és a saját nevén hagyja jóvá a közzététel előtt.",
+      "prompt": "A polgármester vagy a testületi elnök veti össze a fogalmazványt a számokkal és a nyilvántartással, javít, ha kell, és a nevével vállalja a jelentést. Ezt a lépést csak ember végezheti, mert a nyilvánosság elé kerülő anyagért ember felel; jóváhagyás nélkül a jelentés nem kerül ki. Ne vállaljon olyat, amit a testület nem szavazott meg.",
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4af4c3c5-2b94-502f-af21-da33966e9d45",
+      "code": "WI-47-5",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "ordinality": 5,
+      "title": "Közzétesszük a jelentést, és eljuttatjuk a lakosokhoz",
+      "description": "A jóváhagyott jelentés felkerül a honlapra, a városrészi hirdetőtáblákra, és papíron is eljut a lakosokhoz.",
+      "prompt": "A polgármester jóváhagyása után tegyük közzé a jelentést az Önkormányzat honlapján és a Zöldhalom városrészi hirdetőtábláin, papíron is a kapu és a piaci pult mellett, és küldjük el a körök csoportjainak. A közlés ütemezését és a szöveg végső alakját ember adja le. Az MI-szerep csak csak fogalmazványt készíthet és emlékeztethet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "created_at": "2026-11-07T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "2ae5f7e8-841b-554b-bd76-871e462fe3fc",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "objective_id": "54d40736-057f-5a0c-886b-cb7f8baf29d6"
+    },
+    {
+      "id": "64fa1abd-b988-544e-a74c-3ef8e96926b4",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "objective_id": "8b21b0cf-2a3d-49cd-93af-cb46fe888e31"
+    },
+    {
+      "id": "75cd41fd-bdb3-583c-8c39-286cbb72243e",
+      "workflow_id": "e1dd5a2f-b908-56e4-ad2b-3e6634567eb6",
+      "objective_id": "db8aa6ec-2fd6-46d7-a73c-542bd8308f45"
+    }
+  ]
+}
