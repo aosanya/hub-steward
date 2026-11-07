@@ -28,6 +28,9 @@ describe("a screen's path is built from one definition", () => {
     ["room threads", () => routes.roomThreads.path({ roomId: "r1" }), "/chat/:roomId/threads", "/a/{id}/chat/r1/threads"],
     ["room thread", () => routes.roomThread.path({ roomId: "r1", threadId: "t1" }), "/chat/:roomId/:threadId", "/a/{id}/chat/r1/t1"],
     ["ask", () => routes.ask.path({ roomId: "r1", threadId: "t1", askId: "a1" }), "/chat/:roomId/:threadId/asks/:askId", "/a/{id}/chat/r1/t1/asks/a1"],
+    ["risks", () => routes.risks.path(), "/risks", "/a/{id}/risks"],
+    ["risk", () => routes.risk.path({ riskId: "r1" }), "/risks/:riskId", "/a/{id}/risks/r1"],
+    ["risk evidence", () => routes.riskEvidence.path({ riskId: "r1", barrierId: "b1" }), "/risks/:riskId/safeguards/:barrierId/evidence", "/a/{id}/risks/r1/safeguards/b1/evidence"],
   ])("names the open agency in the %s path and keeps the old path as its retired one", (_, build, retired, built) => {
     openAgency(riders);
     expect(build()).toBe(built.replace("{id}", riders));

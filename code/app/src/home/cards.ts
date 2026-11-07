@@ -3,7 +3,7 @@ import { routes } from "../routes";
 
 export type AgencyKind = "farmers" | "supplier";
 
-export type HomeCard = { title: string; path: string };
+export type HomeCard = { title: string; path: string; titleKey?: "risksTitle" };
 
 const forms = (): HomeCard => ({ title: "Forms", path: routes.forms.path() });
 const yourPrices: HomeCard = { title: "Your prices", path: "/prices" };
@@ -34,11 +34,16 @@ const moduleOfMarketPath: Record<string, string> = {
 
 const moduleOfPath = (path: string) => (path === routes.forms.path() ? "forms" : moduleOfMarketPath[path]);
 
+const risksModule = "riskmanager";
+
 export const homeCardsFor = (kind: AgencyKind, view?: AgencyView | null): HomeCard[] => {
   const cards = agencyCards[kind];
   if (!view || view.modulesUnread) return cards;
   const on = new Set(view.modules.map((module) => module.code));
-  return cards
+  const risks: HomeCard[] = on.has(risksModule)
+    ? [{ title: view.modules.find((module) => module.code === risksModule)?.name ?? risksModule, path: routes.risks.path(), titleKey: "risksTitle" }]
+    : [];
+  return [...cards, ...risks]
     .filter((card) => !moduleOfPath(card.path) || on.has(moduleOfPath(card.path)))
     .map((card) => {
       const named = moduleOfPath(card.path) === "forms" ? view.modules.find((module) => module.code === "forms")?.name : "";

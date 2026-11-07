@@ -59,6 +59,9 @@ export const routes = {
   roomThreads: screen("/chat/:roomId/threads"),
   roomThread: screen("/chat/:roomId/:threadId"),
   ask: screen("/chat/:roomId/:threadId/asks/:askId"),
+  risks: screen("/risks"),
+  risk: screen("/risks/:riskId"),
+  riskEvidence: screen("/risks/:riskId/safeguards/:barrierId/evidence"),
 };
 
 export const allScreens: AgencyScreen[] = Object.values(routes);

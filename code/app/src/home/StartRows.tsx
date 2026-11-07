@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../entry/language";
 import type { AgencyView } from "../agency/modules";
 import { openAgencyId } from "../agency/open";
 import { isGroupOrderForm, mcpStartClient, startPath, type StartClient, type StartStep } from "../coordinator/start/api";
@@ -66,6 +67,7 @@ export function StartRows({
   forms?: Pick<FormsClient, "waiting" | "answered">;
 }) {
   const navigate = useNavigate();
+  const { words } = useLanguage();
   const waitingRead = useStartWaiting(start);
   const waiting = waitingRead ?? [];
   const steps = useLoad(() => start.openSteps(), `start-rows:${openAgencyId()}`);
@@ -92,7 +94,7 @@ export function StartRows({
           {rows.map((row) => (
             <ListRow
               key={row.chat ? `chat:${row.title}` : row.path}
-              title={row.title}
+              title={row.titleKey ? words[row.titleKey] : row.title}
               start={row.chat ? <span className="mark" aria-hidden="true">{chatTab.glyph}</span> : undefined}
               end={row.sent ? "Sent" : "›"}
               onClick={row.sent ? undefined : () => navigate(row.path)}

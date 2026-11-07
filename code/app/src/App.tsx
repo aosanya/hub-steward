@@ -6,6 +6,9 @@ import { InAgency, ToOpenAgency, ToOpenAgencyScreen } from "./pages/entry/OpenAg
 import { SignInLinkPage } from "./pages/entry/SignInLinkPage";
 import { SignInPage } from "./pages/entry/SignInPage";
 import { InboxPage } from "./pages/InboxPage";
+import { EvidencePage } from "./risks/EvidencePage";
+import { RiskPage } from "./risks/RiskPage";
+import { RisksPage } from "./risks/RisksPage";
 import { AskPage } from "./pages/chat/AskPage";
 import { ChatPage } from "./pages/chat/ChatPage";
 import { MarketPage } from "./pages/market/MarketPage";
@@ -89,6 +92,9 @@ export function App() {
         <Route path={routes.roomThreads.pattern} element={<RoomThreadsPage />} />
         <Route path={routes.roomThread.pattern} element={<RoomThreadPage heading="thread" />} />
         <Route path={routes.ask.pattern} element={<AskPage />} />
+        <Route path={routes.risks.pattern} element={<RisksPage />} />
+        <Route path={routes.risk.pattern} element={<RiskPage />} />
+        <Route path={routes.riskEvidence.pattern} element={<EvidencePage />} />
       </Route>
       {allScreens.map((screen) => (
         <Route key={screen.retired} path={screen.retired} element={<ToOpenAgencyScreen screen={screen} />} />

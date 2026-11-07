@@ -123,6 +123,11 @@ describe("the Start rows of Do Something", () => {
       expect(await rowsShown()).toEqual([["forms app", "/a/farmers/forms"]]);
     });
 
+    it("draws a Risks row to the risk screens when the agency has the riskmanager module", async () => {
+      await show({ kind: "farmers", view: view(["riskmanager"]), start: stepsOf([]) });
+      expect(await rowsShown()).toEqual([["Risks", "/a/farmers/risks"]]);
+    });
+
     it("draws no Join a group or Apply as a supplier row of its own, since they are workflow steps", async () => {
       await show({ kind: "farmers", start: stepsOf([]) });
       expect(screen.queryByRole("button", { name: /^(Join|Apply)/ })).not.toBeInTheDocument();

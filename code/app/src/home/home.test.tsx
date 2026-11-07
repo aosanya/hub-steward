@@ -134,6 +134,13 @@ describe("home cards read from the agency's modules", () => {
     expect(titles).toContain("forms name");
   });
 
+  it("adds the risks card only when the agency has the riskmanager module", () => {
+    const withRisks = homeCardsFor("farmers", view(["forms", "riskmanager"]));
+    expect(withRisks.find((c) => c.titleKey === "risksTitle")).toMatchObject({ title: "riskmanager name", path: "/risks" });
+    expect(homeCardsFor("farmers", view(["forms"])).some((c) => c.titleKey)).toBe(false);
+    expect(agencyCards.farmers.some((c) => c.titleKey)).toBe(false);
+  });
+
   it("keeps the literal cards when the read failed", () => {
     expect(homeCardsFor("farmers", { name: "", modules: [], modulesUnread: true })).toEqual(agencyCards.farmers);
     expect(homeCardsFor("farmers", null)).toEqual(agencyCards.farmers);
