@@ -783,6 +783,17 @@
       "created_at": "2026-11-07T15:00:00Z",
       "last_updated": "2026-11-07T15:00:00Z",
       "deleted": false
+    },
+    {
+      "id": "4060f82b-189c-5d01-a819-c60c0ae52f54",
+      "code": "O-64",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "A testületi ülés anyagában ott vannak a kockázatok: a hibás védelmi intézkedések, a súlyos hiányok és a lejárt intézkedések felelőssel",
+      "description": "A jegyző az ülés napján összeállíttatja az ülés csomagjának kockázati részét a nyilvántartásból; az MI csak gyűjt, számol és vázlatot fogalmaz, a csomagba és a nyilvánosság elé ember hagyja jóvá.",
+      "ordinality": 61,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false
     }
   ],
   "values": [
@@ -1431,6 +1442,13 @@
       "target_type": "objective",
       "target_code": "O-63",
       "created_at": "2026-11-07T15:00:00Z"
+    },
+    {
+      "id": "80a0a9a1-f898-57d6-b8fc-db5b1792d6d5",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-64",
+      "created_at": "2026-11-07T15:00:00Z"
     }
   ],
   "workflows": [
@@ -1810,6 +1828,16 @@
       "name": "A hiányból feladat lesz a testület táblán, és lezárul",
       "description": "Hogyan lesz egy hiányból feladat: az osztályvezető megnézi a saját hiányait, az asszisztens javaslatot ad az intézkedésre és a határidőre, az osztályvezető jóváhagyja és létrehozza az intézkedést, amely a testület táblájának rendes feladata lesz felelőssel és határidővel, a felelős a táblán elvégzi, az osztályvezető lezárja az intézkedést és értékeli a védelmi intézkedést, a jegyző pedig a testületi ülésen a lejárt feladatok listáján látja, hogy lezárult. Az MI-szerep csak fogalmazhat és számolhat; a feladat létrehozását mindig ember hagyja jóvá.",
       "ordinality": 63,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6611ca35-30b5-506e-be02-e40a62cd0518",
+      "code": "W-64",
+      "name": "A testületi ülés csomagja megmutatja a kockázatokat",
+      "description": "Hogyan kerülnek a kockázatok a testület elé: a jegyző az ülés napján kéri a kockázati részt, az asszisztens a nyilvántartásból összegyűjti a hibás védelmi intézkedéseket, a súlyos hiányokat és a lejárt intézkedéseket felelőssel, és vázlatot fogalmaz, az osztályvezetők a saját soraikat javítják, a testületi kockázatolvasó érthetőségre átnézi, a jegyző jóváhagyja és az ülés anyagához csatolja, a polgármester pedig az ülésen végigmegy rajta. Az MI-szerep csak gyűjthet, számolhat és vázlatot fogalmazhat; a csomagba és a nyilvánosság elé mindig ember hagyja jóvá.",
+      "ordinality": 64,
       "created_at": "2026-11-07T15:00:00Z",
       "last_updated": "2026-11-07T15:00:00Z",
       "deleted": false
@@ -6243,6 +6271,138 @@
           "required": true
         }
       ]
+    },
+    {
+      "id": "7d8d4b17-6d7a-5510-b7d6-946c341864d6",
+      "code": "WI-64-1",
+      "workflow_id": "6611ca35-30b5-506e-be02-e40a62cd0518",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Kérjük a kockázati részt az ülés csomagjába",
+      "description": "A jegyző az ülés napján kéri a csomag kockázati részét.",
+      "prompt": "A Jegyző az ülés napján megnyitja a testületi ülés csomagját, és kéri a kockázati részt, például a május 12-i ülésre. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Kérjük a kockázati részt az ülés csomagjába",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "b2b1ee95-7c75-54c3-b361-14eeb5f0c57d",
+      "code": "WI-64-2",
+      "workflow_id": "6611ca35-30b5-506e-be02-e40a62cd0518",
+      "role_id": "1a2e0075-7b7e-5326-bfd2-29c49c21f4ae",
+      "title": "Összegyűjtjük a kockázatokat és vázlatot írunk",
+      "description": "Az asszisztens felsorolja a hibás védelmi intézkedéseket, a súlyos hiányokat és a lejárt intézkedéseket.",
+      "prompt": "A Csevegő kockázati asszisztens a nyilvántartásból felsorolja a hibás védelmi intézkedéseket, a súlyos hiányokat és a lejárt intézkedéseket felelőssel, például hogy a Zöldhalmi Víztorony tartalék fűtőkábelének intézkedése 9 napja lejárt, megszámolja őket, és vázlatot fogalmaz. A vázlatot nem teszi közzé, a csomagba nem teszi be. Az MI-szerep (RU-AI-1) csak gyűjthet, számolhat és fogalmazhat; a közzétételt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összegyűjtjük a kockázatokat és vázlatot írunk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "c169c91f-b418-5473-aeb7-46c4175d70f0",
+      "code": "WI-64-3",
+      "workflow_id": "6611ca35-30b5-506e-be02-e40a62cd0518",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "A felelősök átnézik a saját soraikat",
+      "description": "Az osztályvezetők kijavítják a saját soraikat a vázlatban.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) átnézi a vázlatban a saját sorait, kijavítja a felelőst vagy a határidőt, ha eltér a valóságtól, és jelzi, ha egy intézkedés közben elkészült. Ezt a lépést ember végzi.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A felelősök átnézik a saját soraikat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "238bb22e-0595-5a97-b8d6-cb0617d85aab",
+      "code": "WI-64-4",
+      "workflow_id": "6611ca35-30b5-506e-be02-e40a62cd0518",
+      "role_id": "81af2fd8-896f-50b3-a18e-faa8596e3527",
+      "title": "Érthetőségre átnézzük a kockázati részt",
+      "description": "A testületi kockázatolvasó átnézi, hogy a testület érti-e.",
+      "prompt": "A Testületi kockázatolvasó átolvassa a kockázati részt, és jelzi, ha egy sor a képviselőknek nem érthető, vagy ha hiányzik mellőle a felelős neve. Ezt a lépést ember végzi.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Érthetőségre átnézzük a kockázati részt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "d4cd6dd3-497e-5749-80f6-37b1d319ae78",
+      "code": "WI-64-5",
+      "workflow_id": "6611ca35-30b5-506e-be02-e40a62cd0518",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Jóváhagyjuk és csatoljuk az ülés anyagához",
+      "description": "A jegyző jóváhagyja a kockázati részt, és az ülés napirendi anyagához csatolja.",
+      "prompt": "A Jegyző átnézi a kockázati részt, jóváhagyja, és az ülés napirendi anyagához csatolja. Jóváhagyás nélkül semmi nem kerül a csomagba, és nem lesz nyilvános. Ezt a lépést ember végzi.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Jóváhagyjuk és csatoljuk az ülés anyagához",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "8191baeb-2b62-5198-a0a9-85381a34ae3c",
+      "code": "WI-64-6",
+      "workflow_id": "6611ca35-30b5-506e-be02-e40a62cd0518",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Az ülésen végigmegyünk a kockázatokon",
+      "description": "A polgármester az ülésen bemutatja a hibás védelmi intézkedéseket és a lejárt intézkedéseket.",
+      "prompt": "A Polgármester / testületi elnök az ülésen végigmegy a kockázati részen, és megkérdezi a felelősöket a lejárt intézkedésekről. Ezt a lépést ember végzi.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Az ülésen végigmegyünk a kockázatokon",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [
@@ -6775,6 +6935,11 @@
       "id": "81b694dc-9645-5eef-afb5-401fefee6061",
       "workflow_id": "22b7117e-6df6-57dd-8822-303b0f179ff7",
       "objective_id": "973fb31a-b8f9-506b-b3be-5991b8666752"
+    },
+    {
+      "id": "53ff36f8-227c-5222-8d9a-cc03251aa8d6",
+      "workflow_id": "6611ca35-30b5-506e-be02-e40a62cd0518",
+      "objective_id": "4060f82b-189c-5d01-a819-c60c0ae52f54"
     }
   ],
   "work_plans": [],
