@@ -1,0 +1,49 @@
+{
+  "workflow": "W-45",
+  "title": "scrutiny review of a decision",
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-45-1",
+      "role": "R-9",
+      "ai": false
+    },
+    {
+      "code": "WI-45-2",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-45-3",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-45-4",
+      "role": "R-9",
+      "ai": false
+    },
+    {
+      "code": "WI-45-5",
+      "role": "R-1",
+      "ai": true
+    },
+    {
+      "code": "WI-45-6",
+      "role": "R-4",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "roleText": [
+      {
+        "role": "R-9",
+        "match": [
+          "Betöltheti mesterséges intelligencia"
+        ]
+      }
+    ]
+  }
+}

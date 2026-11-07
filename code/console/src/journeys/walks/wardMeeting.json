@@ -1,0 +1,56 @@
+{
+  "workflow": "W-32",
+  "title": "public hearing or ward meeting",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "nonAiPromptMentionsAi": true,
+  "steps": [
+    {
+      "code": "WI-32-1",
+      "role": "R-2",
+      "ai": false
+    },
+    {
+      "code": "WI-32-2",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-32-3",
+      "role": "R-5",
+      "ai": false
+    },
+    {
+      "code": "WI-32-4",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-32-5",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-32-6",
+      "role": "R-4",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "stepText": [
+      {
+        "step": "WI-32-1",
+        "match": [
+          "mesterséges intelligencia nem tölti be"
+        ]
+      },
+      {
+        "step": "WI-32-3",
+        "match": [
+          "mesterséges intelligencia nem tölti be"
+        ]
+      }
+    ]
+  }
+}

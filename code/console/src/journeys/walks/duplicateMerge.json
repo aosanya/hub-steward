@@ -1,0 +1,39 @@
+{
+  "workflow": "W-21",
+  "title": "find and merge duplicate records",
+  "aiClause": "MI-szerep \\(RU-AI-1\\) csak",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-21-1",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-21-2",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-21-3",
+      "role": "R-7",
+      "ai": true
+    },
+    {
+      "code": "WI-21-4",
+      "role": "R-5",
+      "ai": true
+    },
+    {
+      "code": "WI-21-5",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-21-6",
+      "role": "R-6",
+      "ai": true
+    }
+  ]
+}

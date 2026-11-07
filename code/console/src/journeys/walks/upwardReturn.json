@@ -1,0 +1,60 @@
+{
+  "workflow": "W-53",
+  "title": "upward return",
+  "sources": [
+    "MUN53"
+  ],
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-53-1",
+      "role": "R-12",
+      "ai": false
+    },
+    {
+      "code": "WI-53-2",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-53-3",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-53-4",
+      "role": "R-7",
+      "ai": false
+    },
+    {
+      "code": "WI-53-5",
+      "role": "R-8",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "stepText": [
+      {
+        "step": "WI-53-5",
+        "match": [
+          "nem hagyhatja jóvá"
+        ]
+      }
+    ],
+    "roleText": [
+      {
+        "role": "R-12",
+        "match": [
+          "[Ss]oha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ],
+    "objectives": [
+      "O-21",
+      "O-19",
+      "O-20"
+    ]
+  }
+}

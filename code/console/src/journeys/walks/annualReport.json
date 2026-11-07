@@ -1,0 +1,69 @@
+{
+  "workflow": "W-47",
+  "title": "the annual report to residents",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-47-1",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-47-2",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-47-3",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-47-4",
+      "role": "R-1",
+      "ai": false
+    },
+    {
+      "code": "WI-47-5",
+      "role": "R-4",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "stepText": [
+      {
+        "step": "WI-47-4",
+        "match": [
+          "jóváhagyás nélkül a jelentés nem kerül ki"
+        ]
+      },
+      {
+        "step": "WI-47-3",
+        "match": [
+          "nem közölhető, amíg"
+        ]
+      }
+    ],
+    "roleText": [
+      {
+        "role": "R-1",
+        "match": [
+          "i:soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ],
+    "order": [
+      [
+        "WI-47-4",
+        "WI-47-5"
+      ]
+    ],
+    "objectives": [
+      "O-47",
+      "O-8",
+      "O-10"
+    ]
+  }
+}

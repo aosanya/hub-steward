@@ -1,0 +1,44 @@
+{
+  "workflow": "W-27",
+  "title": "reviewing the instrument before it is fielded",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá|név szerint megnevezett ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-27-1",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-27-2",
+      "role": "R-3",
+      "ai": false
+    },
+    {
+      "code": "WI-27-3",
+      "role": "R-5",
+      "ai": false
+    },
+    {
+      "code": "WI-27-4",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-27-5",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-27-6",
+      "role": "R-7",
+      "ai": false
+    }
+  ],
+  "checks": {
+    "aiRoleText": [
+      "Betöltheti mesterséges intelligencia"
+    ]
+  }
+}

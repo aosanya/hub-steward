@@ -1,0 +1,45 @@
+{
+  "workflow": "W-35",
+  "title": "the monthly invitation to a ward",
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-35-1",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-35-2",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-35-3",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-35-4",
+      "role": "R-5",
+      "ai": true
+    },
+    {
+      "code": "WI-35-5",
+      "role": "R-6",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "roleText": [
+      {
+        "role": "R-4",
+        "match": [
+          "Betöltheti mesterséges intelligencia",
+          "minden kimenő anyagot .* jóvá"
+        ]
+      }
+    ]
+  }
+}

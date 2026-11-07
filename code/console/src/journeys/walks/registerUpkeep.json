@@ -1,0 +1,45 @@
+{
+  "workflow": "W-1",
+  "title": "register upkeep",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "steps": [
+    {
+      "code": "WI-1",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-2",
+      "role": "R-7",
+      "ai": true
+    },
+    {
+      "code": "WI-3",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-4",
+      "role": "R-7",
+      "ai": false
+    },
+    {
+      "code": "WI-5",
+      "role": "R-7",
+      "ai": false
+    }
+  ],
+  "checks": {
+    "roleText": [
+      {
+        "role": "R-4",
+        "match": [
+          "Betöltheti mesterséges intelligencia",
+          "minden kimenő anyagot .* jóvá"
+        ]
+      }
+    ],
+    "ruleAttachedToAllObjectives": true
+  }
+}

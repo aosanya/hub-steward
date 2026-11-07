@@ -1,0 +1,34 @@
+{
+  "workflow": "W-30",
+  "title": "a quick poll on one question",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-30-1",
+      "role": "R-3",
+      "ai": true
+    },
+    {
+      "code": "WI-30-2",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-30-3",
+      "role": "R-5",
+      "ai": true
+    },
+    {
+      "code": "WI-30-4",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-30-5",
+      "role": "R-4",
+      "ai": true
+    }
+  ]
+}

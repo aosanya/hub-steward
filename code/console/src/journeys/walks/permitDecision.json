@@ -1,0 +1,60 @@
+{
+  "workflow": "W-50",
+  "title": "permit",
+  "sources": [
+    "MUN50"
+  ],
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-50-1",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-50-2",
+      "role": "R-12",
+      "ai": true
+    },
+    {
+      "code": "WI-50-3",
+      "role": "R-50",
+      "ai": true
+    },
+    {
+      "code": "WI-50-4",
+      "role": "R-1",
+      "ai": true
+    },
+    {
+      "code": "WI-50-5",
+      "role": "R-8",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "roleText": [
+      {
+        "role": "R-50",
+        "match": [
+          "soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ],
+    "stepText": [
+      {
+        "step": "WI-50-4",
+        "match": [
+          "nem hozhatja meg"
+        ]
+      }
+    ],
+    "objectives": [
+      "O-18",
+      "O-20",
+      "O-50"
+    ]
+  }
+}

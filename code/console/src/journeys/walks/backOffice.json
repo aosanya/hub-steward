@@ -1,0 +1,45 @@
+{
+  "workflow": "W-48",
+  "title": "the back office",
+  "sources": [
+    "MUN48"
+  ],
+  "aiClause": "MI-szerep \\(RU-AI-1\\) csak",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-48-1",
+      "role": "R-12",
+      "ai": true
+    },
+    {
+      "code": "WI-48-2",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-48-3",
+      "role": "R-7",
+      "ai": true
+    },
+    {
+      "code": "WI-48-4",
+      "role": "R-12",
+      "ai": true
+    },
+    {
+      "code": "WI-48-5",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-48-6",
+      "role": "R-1",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "workflowText": "ember hagyja jóvá"
+  }
+}

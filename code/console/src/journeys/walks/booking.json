@@ -1,0 +1,60 @@
+{
+  "workflow": "W-57",
+  "title": "book a hall, room or event slot",
+  "sources": [
+    "MUN57"
+  ],
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "nonAiPromptMentionsAi": true,
+  "steps": [
+    {
+      "code": "WI-57-1",
+      "role": "R-5",
+      "ai": true
+    },
+    {
+      "code": "WI-57-2",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-57-3",
+      "role": "R-12",
+      "ai": true
+    },
+    {
+      "code": "WI-57-4",
+      "role": "R-8",
+      "ai": false
+    },
+    {
+      "code": "WI-57-5",
+      "role": "R-4",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "aiPromptText": "csak .*(fogalmazhat|összefoglal|számolhat|megszámolhat)",
+    "stepText": [
+      {
+        "step": "WI-57-4",
+        "match": [
+          "Ezt a lépést nem végzi mesterséges intelligencia",
+          "saját nevével jóváhagyja"
+        ]
+      }
+    ],
+    "order": [
+      [
+        "WI-57-3",
+        "WI-57-4"
+      ],
+      [
+        "WI-57-4",
+        "WI-57-5"
+      ]
+    ]
+  }
+}

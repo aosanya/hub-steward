@@ -1,0 +1,44 @@
+{
+  "workflow": "W-43",
+  "title": "a decision that goes against what was heard",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-43-1",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-43-2",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-43-3",
+      "role": "R-1",
+      "ai": false
+    },
+    {
+      "code": "WI-43-4",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-43-5",
+      "role": "R-8",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "roleText": [
+      {
+        "role": "R-1",
+        "match": [
+          "i:soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ]
+  }
+}

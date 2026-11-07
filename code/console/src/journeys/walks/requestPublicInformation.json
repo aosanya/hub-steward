@@ -1,0 +1,66 @@
+{
+  "workflow": "W-46",
+  "title": "a request for public information",
+  "sources": [
+    "MUN46"
+  ],
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-46-1",
+      "role": "R-8",
+      "ai": false
+    },
+    {
+      "code": "WI-46-2",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-46-3",
+      "role": "R-7",
+      "ai": false
+    },
+    {
+      "code": "WI-46-4",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-46-5",
+      "role": "R-1",
+      "ai": true
+    },
+    {
+      "code": "WI-46-6",
+      "role": "R-4",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "roleText": [
+      {
+        "role": "R-7",
+        "match": [
+          "Soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ],
+    "stepText": [
+      {
+        "step": "WI-46-1",
+        "match": [
+          "15 nap"
+        ]
+      },
+      {
+        "step": "WI-46-4",
+        "match": [
+          "jogalap"
+        ]
+      }
+    ]
+  }
+}

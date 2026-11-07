@@ -23,6 +23,7 @@ All notable changes to this project are listed here, grouped by area. The format
 - `municipality.json` grows to 22 workflows and 124 work items, with the rule that an AI role only drafts, summarises, chases or counts (2026-11-07).
 
 ### Console (`code/console`)
+- The 28 copied workflow walk tests in `src/journeys/` are one data-driven harness, `workflow.walk.test.tsx`, reading a small fixture per workflow from `src/journeys/walks/` (codes, role per step, which steps are AI steps, the approval wording and any extra text checks), with the RU-AI-1 meaning checked on every workflow (2026-11-07).
 - Agency manager's web app: sign-in, create a hub, and the pages for approvals, people, groups, agents, documents and operations (2026-10-27). The Equipment page is drawn, not built.
 - Model choice per agent, with limits, usage and instructions tabs (2026-10-27, 2026-11-03).
 - Hub management and a hub switcher; six interface languages.

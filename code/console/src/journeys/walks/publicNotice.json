@@ -1,0 +1,75 @@
+{
+  "workflow": "W-55",
+  "title": "public notice or emergency alert",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-55-1",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-55-2",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-55-3",
+      "role": "R-1",
+      "ai": false
+    },
+    {
+      "code": "WI-55-4",
+      "role": "R-4",
+      "ai": false
+    },
+    {
+      "code": "WI-55-5",
+      "role": "R-5",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "itemCount": 5,
+    "objectives": [
+      "O-55",
+      "O-3"
+    ],
+    "ruleAttached": [
+      {
+        "rule": "RU-AI-1",
+        "target": "O-55"
+      }
+    ],
+    "stepText": [
+      {
+        "step": "WI-55-3",
+        "match": [
+          "Ezt a lépést csak ember végezheti"
+        ]
+      },
+      {
+        "step": "WI-55-4",
+        "match": [
+          "ember indítja"
+        ]
+      },
+      {
+        "step": "WI-55-2",
+        "match": [
+          "eszköz nélküli csatorna"
+        ]
+      }
+    ],
+    "roleText": [
+      {
+        "role": "R-1",
+        "match": [
+          "soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ]
+  }
+}

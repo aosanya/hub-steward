@@ -1,0 +1,68 @@
+{
+  "workflow": "W-54",
+  "title": "grants to civil organisations",
+  "sources": [
+    "MUN54"
+  ],
+  "aiClause": "Az MI-szerep csak",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "nonAiPromptMentionsAi": true,
+  "steps": [
+    {
+      "code": "WI-54-1",
+      "role": "R-12",
+      "ai": true
+    },
+    {
+      "code": "WI-54-2",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-54-3",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-54-4",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-54-5",
+      "role": "R-1",
+      "ai": false
+    },
+    {
+      "code": "WI-54-6",
+      "role": "R-12",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "stepText": [
+      {
+        "step": "WI-54-5",
+        "match": [
+          "ember írja rá a nevét",
+          "nem végzi"
+        ]
+      }
+    ],
+    "roleText": [
+      {
+        "role": "R-12",
+        "match": [
+          "[Ss]oha nem tölti be mesterséges intelligencia"
+        ]
+      },
+      {
+        "role": "R-1",
+        "match": [
+          "soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ]
+  }
+}

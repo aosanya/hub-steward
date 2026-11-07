@@ -1,0 +1,44 @@
+{
+  "workflow": "W-38",
+  "title": "service company hand-over",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-38-1",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-38-2",
+      "role": "R-12",
+      "ai": false
+    },
+    {
+      "code": "WI-38-3",
+      "role": "R-11",
+      "ai": true
+    },
+    {
+      "code": "WI-38-4",
+      "role": "R-11",
+      "ai": true
+    },
+    {
+      "code": "WI-38-5",
+      "role": "R-5",
+      "ai": false
+    },
+    {
+      "code": "WI-38-6",
+      "role": "R-4",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "aiRoleText": [
+      "Betöltheti mesterséges intelligencia"
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "workflow": "W-26",
+  "title": "choosing what the council will ask",
+  "aiClause": "MI-szerep",
+  "humanApproval": "RU-AI-1 szabály szerint .* ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "nonAiPromptMentionsAi": true,
+  "steps": [
+    {
+      "code": "WI-26-1",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-26-2",
+      "role": "R-2",
+      "ai": false
+    },
+    {
+      "code": "WI-26-3",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-26-4",
+      "role": "R-3",
+      "ai": true
+    },
+    {
+      "code": "WI-26-5",
+      "role": "R-1",
+      "ai": false
+    },
+    {
+      "code": "WI-26-6",
+      "role": "R-4",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "stepText": [
+      {
+        "step": "WI-26-2",
+        "match": [
+          "nem tölti be mesterséges intelligencia"
+        ]
+      },
+      {
+        "step": "WI-26-5",
+        "match": [
+          "nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ],
+    "roleText": [
+      {
+        "role": "R-4",
+        "match": [
+          "Betöltheti mesterséges intelligencia",
+          "minden kimenő anyagot .* jóvá"
+        ]
+      }
+    ]
+  }
+}

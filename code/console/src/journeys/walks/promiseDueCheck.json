@@ -1,0 +1,55 @@
+{
+  "workflow": "W-44",
+  "title": "check a promise when it falls due",
+  "aiClause": "mesterséges intelligencia szerepkör \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "ruleRefOnEveryStep": true,
+  "nonAiPromptMentionsAi": true,
+  "steps": [
+    {
+      "code": "WI-44-1",
+      "role": "R-9",
+      "ai": true
+    },
+    {
+      "code": "WI-44-2",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-44-3",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-44-4",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-44-5",
+      "role": "R-1",
+      "ai": false
+    }
+  ],
+  "checks": {
+    "firstActor": "Ellenőrző bizottság elnöke",
+    "stepText": [
+      {
+        "step": "WI-44-5",
+        "match": [
+          "Ezt a lépést nem végzi mesterséges intelligencia"
+        ]
+      }
+    ],
+    "roleText": [
+      {
+        "role": "R-1",
+        "match": [
+          "soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ]
+  }
+}

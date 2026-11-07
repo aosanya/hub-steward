@@ -1,0 +1,76 @@
+{
+  "workflow": "W-49",
+  "title": "fee schedule in force",
+  "sources": [
+    "MUN49"
+  ],
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-49-1",
+      "role": "R-12",
+      "ai": true
+    },
+    {
+      "code": "WI-49-2",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-49-3",
+      "role": "R-1",
+      "ai": false
+    },
+    {
+      "code": "WI-49-4",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-49-5",
+      "role": "R-7",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "aiPromptText": "csak .*(fogalmazhatja|hívhatja|számolhatja)",
+    "stepText": [
+      {
+        "step": "WI-49-3",
+        "match": [
+          "saját nevével jóváhagyja"
+        ],
+        "absent": [
+          "MI-szerep"
+        ]
+      }
+    ],
+    "roleText": [
+      {
+        "role": "R-1",
+        "match": [
+          "soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ],
+    "order": [
+      [
+        "WI-49-3",
+        "WI-49-4"
+      ]
+    ],
+    "objectives": [
+      "O-22",
+      "O-20",
+      "O-21"
+    ],
+    "ruleAttached": [
+      {
+        "rule": "RU-AI-1",
+        "target": "O-22"
+      }
+    ]
+  }
+}

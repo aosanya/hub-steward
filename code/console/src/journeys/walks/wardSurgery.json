@@ -1,0 +1,44 @@
+{
+  "workflow": "W-33",
+  "title": "a councillor's ward surgery",
+  "aiClause": "MI-szerep",
+  "humanApproval": "(ember|képviselő) hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "ruleRefOnEveryStep": true,
+  "steps": [
+    {
+      "code": "WI-33-1",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-33-2",
+      "role": "R-2",
+      "ai": false
+    },
+    {
+      "code": "WI-33-3",
+      "role": "R-2",
+      "ai": false
+    },
+    {
+      "code": "WI-33-4",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-33-5",
+      "role": "R-4",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "aiRoleText": [
+      "Betöltheti mesterséges intelligencia"
+    ],
+    "nonAiRoleText": [
+      "Soha nem tölti be mesterséges intelligencia"
+    ]
+  },
+  "nonAiPromptMentionsAi": true
+}

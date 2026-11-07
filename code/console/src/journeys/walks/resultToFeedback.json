@@ -1,0 +1,44 @@
+{
+  "workflow": "W-4",
+  "title": "from result to decision to feedback",
+  "aiClause": "(MI|mesterséges intelligencia) szerepkör",
+  "humanApproval": "személy hagyja jóvá|személy rögzíti",
+  "steps": [
+    {
+      "code": "WI-24",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-25",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-26",
+      "role": null,
+      "ai": false
+    },
+    {
+      "code": "WI-27",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-28",
+      "role": null,
+      "ai": true
+    }
+  ],
+  "checks": {
+    "roleText": [
+      {
+        "role": "R-4",
+        "match": [
+          "Betöltheti mesterséges intelligencia",
+          "minden kimenő anyagot .* jóvá"
+        ]
+      }
+    ]
+  }
+}
