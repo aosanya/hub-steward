@@ -41,6 +41,7 @@ type PostManager interface {
 	Unpick(ctx context.Context, postID, pickID, callerID string) (Picked, error)
 	UseGroups(g Groups)
 	UseConsentGate(g consent.Gate)
+	ReleaseParticipant(ctx context.Context, participantID string) error
 }
 
 type postManager struct {

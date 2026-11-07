@@ -16,6 +16,7 @@ All notable changes to this project are listed here, grouped by area. The format
 - A group can carry a boundary (a GeoJSON Polygon or MultiPolygon), set on creation or with `PUT /groups/{group_id}/boundary`; a point or an unclosed ring is refused (2026-11-07).
 - Custody gains a consent gate and a withdrawal notifier, not yet wired into other modules (2026-11-07).
 - The consent gate now refuses chat and direct-message posts, RSVPs, offers of help and form answers without a live consent when custody is mounted; `POST /consent/withdraw` records a withdrawal in a database ledger (2026-11-07).
+- A consent withdrawal now reaches engage (RSVPs and unpicked offers removed), forms (link answers unlinked from the member) and comm (push subscriptions dropped), and the per-account router gates the same acts (2026-11-07).
 - The accounting overdue read can age from the day a charge was raised (`age_from`), and accounting gains contract milestones, payment certificates and retention (2026-11-07).
 - The riskmanager module gains a name-matching tool and a gaps-by-owner filter for the chat agent, and four starter service-failure risk libraries (2026-11-07).
 

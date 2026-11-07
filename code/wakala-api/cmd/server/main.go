@@ -155,7 +155,7 @@ func buildDeps(logger *slog.Logger) *apihttp.Deps {
 	atOnce := func(ctx context.Context, instanceID string) (int, error) { return scenariosAtOnce(ctx, instanceID) }
 	testSeat := &testRunSeat{logger: logger}
 	var consentReg agencies.Registry
-	reg, err := agencies.NewRegistry(db, append(testSeat.options(), agencies.WithConsentRequired(apihttp.ConsentRequired(func() agencies.Registry { return consentReg })), agencies.WithScenariosAtOnce(atOnce), agencies.WithEpochs(epochs), lifetime, webPush(logger), agencies.WithMutability(notifyRules.Mutable), agencies.WithRules(notifyRules.Rule), agencies.WithFormsApproval(formsSettings.Required), agencies.WithRecordGrants(apihttp.RecordGrants(permissionsManager)))...)
+	reg, err := agencies.NewRegistry(db, append(testSeat.options(), agencies.WithConsentRequired(apihttp.ConsentRequired(func() agencies.Registry { return consentReg })), agencies.WithModuleMounted(apihttp.ModuleMounted(func() agencies.Registry { return consentReg })), agencies.WithScenariosAtOnce(atOnce), agencies.WithEpochs(epochs), lifetime, webPush(logger), agencies.WithMutability(notifyRules.Mutable), agencies.WithRules(notifyRules.Rule), agencies.WithFormsApproval(formsSettings.Required), agencies.WithRecordGrants(apihttp.RecordGrants(permissionsManager)))...)
 	if err != nil {
 		logger.Error("could not build agencies.Registry", "error", err.Error())
 		os.Exit(1)
@@ -202,7 +202,9 @@ func buildDeps(logger *slog.Logger) *apihttp.Deps {
 		}
 		return conn, true, nil
 	}
-	acctRouter := accounts.NewRouter(reg, resolve, accounts.OpenPostgres, 32, append(testSeat.options(), lifetime, agencies.WithFormsApproval(formsSettings.Required), agencies.WithScenariosAtOnce(atOnce))...)
+	var acctReg agencies.Registry
+	acctRouter := accounts.NewRouter(reg, resolve, accounts.OpenPostgres, 32, append(testSeat.options(), agencies.WithConsentRequired(apihttp.ConsentRequired(func() agencies.Registry { return acctReg })), agencies.WithModuleMounted(apihttp.ModuleMounted(func() agencies.Registry { return acctReg })), lifetime, agencies.WithFormsApproval(formsSettings.Required), agencies.WithScenariosAtOnce(atOnce))...)
+	acctReg = acctRouter
 
 	authRaw, err := specs.Raw("auth")
 	if err != nil {

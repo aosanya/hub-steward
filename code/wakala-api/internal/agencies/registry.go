@@ -134,6 +134,7 @@ type registry struct {
 	adopted         *authz.Cache[bool]
 	formsApproval   FormsApprovalOf
 	consentRequired ConsentRequiredOf
+	moduleMounted   ModuleMountedOf
 	recordGrants    RecordGrantOf
 
 	actorOptions []mwanachamaactor.Option
@@ -477,8 +478,8 @@ func (r *registry) buildFormManager(ctx context.Context, id string) (mwanachamaf
 	built.UseStandingAudience(r.standingAudienceIn(id))
 	built.UseNames(r.namesIn(id))
 	built.UseMembers(r.membersIn(id))
-	if r.formsApproval != nil {
 	built.UseApprovalLimits(r.approvalLimitsIn(id))
+	if r.formsApproval != nil {
 		required, err := r.formsApproval(ctx, id)
 		if err != nil {
 			return nil, fmt.Errorf("FormManager: approval setting for instance %s: %w", id, err)
@@ -593,7 +594,12 @@ func (r *registry) buildCustodyManager(ctx context.Context, id string) (*mwanach
 	if err := mwanachamacustody.Provision(r.db, s); err != nil {
 		return nil, fmt.Errorf("CustodyManager: migrate instance %s: %w", id, err)
 	}
-	return mwanachamacustody.NewCustodyManager(r.db, s, mwanachamacustody.SystemClock, nil)
+	built, err := mwanachamacustody.NewCustodyManager(r.db, s, mwanachamacustody.SystemClock, nil)
+	if err != nil {
+		return nil, err
+	}
+	r.subscribeWithdrawals(built.ConsentGate(), id)
+	return built, nil
 }
 
 func (r *registry) TwinManager(ctx context.Context, id string) (mwanachamadigitaltwin.TwinManager, error) {
