@@ -110,7 +110,7 @@
         "member.read",
         "risk.read"
       ],
-      "description": "The lab's AI agent. Answers members in the lab's chat from the lab's documents, in the language the member writes in (English, Swahili or German), at any time. Drafts access requests and seat bookings for the lab manager to approve, and watches the lab's network. It never approves its own drafts.",
+      "description": "The lab's AI agent. Answers members in the lab's chat from the lab's documents, in the language the member writes in (English, Swahili, German or Hungarian), at any time. Drafts access requests and seat bookings for the lab manager to approve, and watches the lab's network. It never approves its own drafts.",
       "created_at": "2026-10-21T00:00:00Z",
       "last_updated": "2026-10-21T00:00:00Z",
       "deleted": false

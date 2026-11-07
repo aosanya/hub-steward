@@ -9,18 +9,18 @@ every document is synthetic: the hours, the seat count, the network names and
 the limits are illustrative values chosen for the demo, not the lab's decided
 rules.
 
-Each document exists in English, Swahili and German, so one set serves the
+Each document exists in English, Swahili, German and Hungarian, so one set serves the
 German lab named as the next site as well as Siaya's members, who are expected
 to write in Swahili or English. Hub Steward answers in the language a member
-writes in. The Swahili and German versions are translations of the English and
+writes in. The Swahili, German and Hungarian versions are translations of the English and
 still need review by native speakers.
 
-| Document | English | Kiswahili | Deutsch |
-|----------|---------|-----------|---------|
-| House rules | [en](en/house-rules.md) | [sw](sw/house-rules.md) | [de](de/house-rules.md) |
-| Wi-Fi guide | [en](en/wifi-guide.md) | [sw](sw/wifi-guide.md) | [de](de/wifi-guide.md) |
-| Booking rules | [en](en/booking-rules.md) | [sw](sw/booking-rules.md) | [de](de/booking-rules.md) |
-| Opening hours | [en](en/opening-hours.md) | [sw](sw/opening-hours.md) | [de](de/opening-hours.md) |
+| Document | English | Kiswahili | Deutsch | Magyar |
+|----------|---------|-----------|---------|--------|
+| House rules | [en](en/house-rules.md) | [sw](sw/house-rules.md) | [de](de/house-rules.md) | [hu](hu/house-rules.md) |
+| Wi-Fi guide | [en](en/wifi-guide.md) | [sw](sw/wifi-guide.md) | [de](de/wifi-guide.md) | [hu](hu/wifi-guide.md) |
+| Booking rules | [en](en/booking-rules.md) | [sw](sw/booking-rules.md) | [de](de/booking-rules.md) | [hu](hu/booking-rules.md) |
+| Opening hours | [en](en/opening-hours.md) | [sw](sw/opening-hours.md) | [de](de/opening-hours.md) | [hu](hu/opening-hours.md) |
 
 ## The lab as an agency
 
