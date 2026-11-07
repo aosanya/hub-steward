@@ -1,0 +1,27 @@
+{
+  "workflow": "W-64",
+  "title": "the council meeting pack shows risks",
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    { "code": "WI-64-1", "role": "R-8", "ai": false },
+    { "code": "WI-64-2", "role": "R-15", "ai": true },
+    { "code": "WI-64-3", "role": "R-13", "ai": false },
+    { "code": "WI-64-4", "role": "R-14", "ai": false },
+    { "code": "WI-64-5", "role": "R-8", "ai": false },
+    { "code": "WI-64-6", "role": "R-1", "ai": false }
+  ],
+  "checks": {
+    "firstActor": "Jegyző",
+    "itemCount": 6,
+    "objectives": ["O-64"],
+    "ruleAttachedToAllObjectives": true,
+    "stepText": [
+      { "step": "WI-64-2", "match": ["hibás védelmi intézkedéseket", "lejárt intézkedéseket", "csak gyűjthet, számolhat és fogalmazhat"] },
+      { "step": "WI-64-5", "match": ["jóváhagyja", "Jóváhagyás nélkül semmi nem kerül a csomagba, és nem lesz nyilvános"] },
+      { "step": "WI-64-6", "match": ["lejárt intézkedésekről"] }
+    ],
+    "order": [["WI-64-2", "WI-64-3"], ["WI-64-3", "WI-64-4"], ["WI-64-4", "WI-64-5"], ["WI-64-5", "WI-64-6"]]
+  }
+}
