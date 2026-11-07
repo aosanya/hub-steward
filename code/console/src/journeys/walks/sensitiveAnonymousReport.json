@@ -1,0 +1,30 @@
+{
+  "workflow": "W-39",
+  "title": "a sensitive or anonymous report",
+  "sources": ["MUN39"],
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    { "code": "WI-39-1", "role": "R-7", "ai": false },
+    { "code": "WI-39-2", "role": "R-5", "ai": false },
+    { "code": "WI-39-3", "role": "R-7", "ai": false },
+    { "code": "WI-39-4", "role": "R-7", "ai": false },
+    { "code": "WI-39-5", "role": "R-6", "ai": true },
+    { "code": "WI-39-6", "role": "R-6", "ai": true }
+  ],
+  "checks": {
+    "firstActor": "Adatvédelmi és iratkezelési felelős",
+    "itemCount": 6,
+    "objectives": ["O-11", "O-13"],
+    "ruleAttachedToAllObjectives": true,
+    "stepText": [
+      { "step": "WI-39-1", "match": ["név, cím vagy elérhetőség|nem kérdez nevet", "nem kerülnek az ügy mellé"] },
+      { "step": "WI-39-2", "match": ["nyugtakód", "nem köti névhez"] },
+      { "step": "WI-39-4", "match": ["eltávolítja a neveket", "csak a megtisztított változat"] },
+      { "step": "WI-39-5", "match": ["csak vázlatot fogalmazhat, összegezhet", "Az eredeti szöveget nem kapja meg"] },
+      { "step": "WI-39-6", "match": ["minimum alatt marad", "csak számolhat"] }
+    ],
+    "order": [["WI-39-1", "WI-39-2"], ["WI-39-2", "WI-39-3"], ["WI-39-3", "WI-39-4"], ["WI-39-4", "WI-39-5"], ["WI-39-5", "WI-39-6"]]
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "workflows": [
+    {
+      "id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "code": "W-39",
+      "name": "Érzékeny vagy névtelen bejelentés",
+      "description": "Hogyan kezeljük azt, amit a lakosok a körök között hoznak, ha érzékeny vagy névtelen: a bejelentés személyazonosság nélkül érkezik, a beküldő névtelen nyugtakódot kap, az adatvédelmi és iratkezelési felelős megítéli az érzékenységet, az azonosító részleteket ember távolítja el, az ügy a megfelelő osztályhoz kerül, és közzététel előtt a kis számok szabálya dönt. Az MI-szerep csak vázlatot fogalmazhat, összegezhet és számolhat; a nyilvánosság elé mindig ember hagyja jóvá.",
+      "ordinality": 66,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "7fb91704-e2fa-5373-9122-6b5539972a5b",
+      "code": "WI-39-1",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Fogadjuk a bejelentést személyazonosság nélkül",
+      "description": "Az adatvédelmi és iratkezelési felelős fogadja a bejelentést név, fiók és elérhetőség nélkül.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős fogadja a bejelentést bármelyik csatornán, például a Malomsori kapunál elhelyezett dobozból vagy a telefonos ügyfélvonalról, és nem kérdez nevet, címet vagy elérhetőséget. A bejelentő fiókja és a küldés adatai nem kerülnek az ügy mellé. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogadjuk a bejelentést személyazonosság nélkül",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "7dc2c4e6-eb1c-5eb2-9dda-1e428f748b37",
+      "code": "WI-39-2",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "A beküldő nyugtakódot kap, nem nevet",
+      "description": "A közösségi kapcsolattartó átadja a nyugtakódot, amellyel a beküldő később megnézheti az ügy állapotát.",
+      "prompt": "A Közösségi kapcsolattartó átad egy véletlen nyugtakódot, például az NY-4821-et, amellyel a beküldő név nélkül rákérdezhet az ügy állapotára. A kód nem tartalmaz személyes adatot, és a nyilvántartás nem köti névhez. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A beküldő nyugtakódot kap, nem nevet",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "6a6b435e-29d5-5c52-826f-11639145e73e",
+      "code": "WI-39-3",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Megítéljük a bejelentés érzékenységét",
+      "description": "A felelős eldönti, hogy a bejelentés érzékeny-e, és ki láthatja.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős elolvassa a bejelentést, és eldönti, hogy érzékeny-e: például egy közalkalmazott magatartásáról, egy szomszéd egészségi állapotáról vagy a Kertvárosi Közösségi Ház pénzkezeléséről szól. Az érzékeny bejelentést csak a felelős és a címzett osztályvezető olvashatja. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megítéljük a bejelentés érzékenységét",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "5b2933f3-f3d1-5aa9-8f2d-a602637d1248",
+      "code": "WI-39-4",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Ember eltávolítja az azonosító részleteket",
+      "description": "A felelős kiszedi a szövegből azt, amiből a beküldő vagy az érintett kitalálható.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős soronként átnézi a szöveget, és eltávolítja a neveket, a címeket, a rendszámokat, a pontos időpontokat és azokat a fordulatokat, amelyekből a beküldő kitalálható. Az eredeti szöveg nem megy tovább, csak a megtisztított változat. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ember eltávolítja az azonosító részleteket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "56d3b3d6-71d9-57e1-af12-485eaa1d1102",
+      "code": "WI-39-5",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Javaslat a megfelelő osztályra",
+      "description": "Az asszisztens a megtisztított szövegből vázlatot ír, és javaslatot tesz, melyik osztályhoz tartozik az ügy.",
+      "prompt": "Az Adat- és elemzési referens a megtisztított szövegből rövid összefoglalót ír, és javaslatot tesz, melyik osztályhoz tartozik az ügy, például az Óvárosi útkezelőhöz vagy a szociális irodához. Az eredeti szöveget nem kapja meg, a beküldőt nem keresi. Az MI-szerep (RU-AI-1) csak vázlatot fogalmazhat, összegezhet és javaslatot tehet; az irányítást a felelős hagyja jóvá, és jóváhagyás nélkül semmi nem kerül az osztályhoz, és nem lesz nyilvános.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Javaslat a megfelelő osztályra",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "aec189b7-58f2-52e9-bd00-4b2b05a1b9bf",
+      "code": "WI-39-6",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Közzététel előtt a kis számok szabálya",
+      "description": "Az asszisztens megszámolja, hány bejelentés tartozik egy témához és településrészhez, és jelzi, hol kevés.",
+      "prompt": "Az Adat- és elemzési referens megszámolja, hány bejelentés tartozik egy témához és településrészhez, például Malomsorról hány. Ahol a szám a testület által beállított minimum alatt marad (alapértelmezés szerint öt), ott a bontást nem mutatja, hanem összevonja a többivel, mert abból kitalálható lenne a beküldő. Az MI-szerep (RU-AI-1) csak számolhat és vázlatot fogalmazhat; a közzétételt a felelős hagyja jóvá, és jóváhagyás nélkül semmi nem lesz nyilvános.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Közzététel előtt a kis számok szabálya",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "8df6afbd-9a6e-5ae5-aa4e-42648619ad7f",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "objective_id": "73050afb-50f5-4699-9d29-d15eda0960e1"
+    },
+    {
+      "id": "b079e71f-5137-5f5b-83e5-ea32cb503d6c",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "objective_id": "1ec7cfb5-bedb-4aa1-8ba8-750246c5baf5"
+    }
+  ]
+}
