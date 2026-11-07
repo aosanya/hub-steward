@@ -1,21 +1,8 @@
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { useEffect, useState, type ReactNode } from "react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import type { Reply } from "../data/chatAnswer";
 import { askModel } from "../data/modelChat";
-import { I18nProvider } from "../i18n";
-import { PublishView } from "../pages/views/PublishView";
-import { RolesView } from "../pages/views/RolesView";
-import { TestView } from "../pages/views/TestView";
-import { WorkflowsView } from "../pages/views/WorkflowsView";
-import { WorkflowEdit } from "../pages/workflows/WorkflowEdit";
-import { Frame } from "../shell/Frame";
-import { SessionProvider, useSession } from "../session";
-import type { Hub } from "../types";
 import { McpError, callTool } from "../wakala/mcp";
+import { cardNamed, cardShown, cards, chat, chipsOf, goTo, heading, main, mountConsole, pairsOf, user } from "./walkSupport";
 
 vi.hoisted(() => {
   process.env.RTL_SKIP_AUTO_CLEANUP = "true";
@@ -31,10 +18,6 @@ vi.mock("../wakala/mcp", async (importOriginal) => ({
 vi.mock("../data/modelChat", () => ({ askModel: vi.fn() }));
 
 type Rec = Record<string, unknown>;
-
-const words = JSON.parse(readFileSync(resolve(__dirname, "../../public/i18n.json"), "utf8"));
-
-const siaya: Hub = { id: "siaya", name: "Siaya Farmers", role: "owner", kind: "farmers' group", model_key_set: true };
 
 const roles: Rec[] = [
   { id: "r1", code: "R-1", name: "Group coordinator", description: "Runs the group order." },
@@ -249,64 +232,7 @@ const writes = () => calls.filter((call) => /^agency_(create|update|delete|propo
 
 const askModelMock = vi.mocked(askModel);
 
-function Seed({ children }: { children: ReactNode }) {
-  const { startSession } = useSession();
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    startSession([siaya]);
-    setReady(true);
-  }, [startSession]);
-  return ready ? <>{children}</> : null;
-}
-
-const mountConsole = () => {
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(async (input: RequestInfo | URL) => {
-      const path = new URL(String(input), "http://console.test").pathname;
-      const data = path === "/instances" ? [{ id: "siaya", name: siaya.name, role: "owner", kind: siaya.kind }] : {};
-      return { ok: true, status: 200, json: async () => data };
-    }),
-  );
-  return render(
-    <MemoryRouter initialEntries={["/h/siaya/status"]}>
-      <I18nProvider initial={words}>
-        <SessionProvider>
-          <Seed>
-            <Routes>
-              <Route path="/h/:hubId" element={<Frame />}>
-                <Route path="status" element={<h1>Status</h1>} />
-                <Route path="roles" element={<RolesView />} />
-                <Route path="workflows" element={<WorkflowsView />} />
-                <Route path="workflow-edit/:id/:tab" element={<WorkflowEdit />} />
-                <Route path="test" element={<TestView />} />
-                <Route path="publish" element={<PublishView />} />
-              </Route>
-            </Routes>
-          </Seed>
-        </SessionProvider>
-      </I18nProvider>
-    </MemoryRouter>,
-  );
-};
-
-const user = userEvent.setup();
-
-const main = () => within(document.querySelector("main") as HTMLElement);
-const chat = () => within(screen.getByRole("complementary", { name: "Chat" }));
-const cards = () => [...document.querySelectorAll<HTMLElement>("main .card")];
-const cardNamed = (name: string) => cards().find((card) => within(card).queryByText(name) !== null)!;
-const cardShown = (name: string) => waitFor(() => expect(cards().some((card) => within(card).queryByText(name) !== null)).toBe(true));
-const pairsOf = (root: HTMLElement) =>
-  Object.fromEntries([...root.querySelectorAll("dt")].map((term) => [term.textContent, term.nextElementSibling?.textContent ?? ""]));
-const chipsOf = (root: HTMLElement) => [...root.querySelectorAll(".tag")].map((chip) => chip.textContent);
-const heading = (name: string, level = 1) => screen.findByRole("heading", { level, name });
 const noticeText = () => document.querySelector(".notice-text")?.textContent;
-
-const goTo = async (page: string) => {
-  await user.click(within(screen.getByRole("navigation", { name: "Menu" })).getByRole("link", { name: new RegExp("^" + page) }));
-  await heading(page);
-};
 
 const chooseFromActions = async (card: HTMLElement, item: string) => {
   await user.click(within(card).getByRole("button", { name: "Actions" }));
