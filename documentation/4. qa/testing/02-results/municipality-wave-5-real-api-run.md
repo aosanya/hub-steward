@@ -11,3 +11,7 @@ Date: 2026-11-07. Native Postgres 16 on 127.0.0.1:54322 with a stand-in `auth` s
 ## After wave 2
 
 `POST /instances/import` of the grown file: 201, 30 objectives, 17 roles, 36 workflows, 202 work items, 104 workflow objectives; read back from the draft 36 workflows, 202 work items, 17 roles. `go vet ./...` and `go test ./...` clean; console 3885 passed, 1 failed (`templates.test.ts`, MUN68).
+
+## After wave 3
+
+Import of the grown file: 201; read back from the draft 38 workflows, 214 work items, 17 roles. `go vet ./...` and `go test ./...` clean; console 3899 passed, 1 failed (`templates.test.ts`, MUN68).

@@ -761,6 +761,28 @@
       "created_at": "2026-11-07T15:00:00Z",
       "last_updated": "2026-11-07T15:00:00Z",
       "deleted": false
+    },
+    {
+      "id": "1488dbe2-dac4-5dfe-aca2-4e88335beaef",
+      "code": "O-62",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "Minden védelmi intézkedésről látszik, hogy működik-e, vagy megszűnt működni",
+      "description": "Az osztályvezető bizonyítékot csatol egy védelmi intézkedéshez, és látja, hogy az állapota bizonyítatlanról bizonyítottra változik; a sikertelen vagy elavult bizonyíték visszaállítja az állapotot, az elavulás pedig hiányként jelenik meg a hiánylistán. Az MI csak összefoglal és számol; az értékelést ember hagyja jóvá.",
+      "ordinality": 59,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "973fb31a-b8f9-506b-b3be-5991b8666752",
+      "code": "O-63",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "Minden hiányból felelőssel és határidővel ellátott feladat lesz a testület táblán, és látjuk, amikor lezárul",
+      "description": "Egy védelmi intézkedés hiányából az osztályvezető intézkedést indít, amely a testület táblájának rendes feladata lesz felelőssel és határidővel; az MI csak javaslatot fogalmaz, a létrehozást ember hagyja jóvá, és a hiány akkor kerül le a listáról, ha a feladat elkészült és az intézkedést értékelték.",
+      "ordinality": 60,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false
     }
   ],
   "values": [
@@ -1395,6 +1417,20 @@
       "target_type": "objective",
       "target_code": "O-61",
       "created_at": "2026-11-07T15:00:00Z"
+    },
+    {
+      "id": "2ded895c-6e87-5ed1-add3-44caa4c2b02d",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-62",
+      "created_at": "2026-11-07T16:00:00Z"
+    },
+    {
+      "id": "fa124e46-74f2-58ae-bbf1-858caa97ae31",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-63",
+      "created_at": "2026-11-07T15:00:00Z"
     }
   ],
   "workflows": [
@@ -1754,6 +1790,26 @@
       "name": "Új kockázat és védelmi intézkedései felvétele",
       "description": "Hogyan kerül fel egy új kockázat a nyilvántartásba: az osztályvezető leírja a veszélyt és megnevezi a felelőst, az asszisztens vázlatot ad az okokról, a következményekről és a védelmi intézkedésekről, az osztályvezető jóváhagyja, a felelőst a jegyző ellenőrzi (ismeretlen felelős esetén a felvétel elutasításra kerül), majd a kockázat mentésre kerül, és a testületi olvasó látja a nyilvántartásban. Az MI-szerep csak fogalmazhat; amit elment, azt előtte ember hagyja jóvá.",
       "ordinality": 61,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "07952012-b3bc-58fa-ab26-765d60ae4948",
+      "code": "W-62",
+      "name": "Bizonyíték csatolása és a védelmi intézkedés állapotának követése",
+      "description": "Hogyan változik egy védelmi intézkedés állapota a bizonyíték hatására: az osztályvezető jelentést csatol az intézkedéshez, az asszisztens összefoglalja a jelentést és javaslatot ad az eredményre, az osztályvezető jóváhagyja és rögzíti a bizonyítékot, az asszisztens megszámolja az intézkedéseket állapot szerint (bizonyított, gyenge, bizonyítatlan, sikertelen), a testületi olvasó látja az új állapotot, az osztályvezető pedig átnézi az elavult bizonyítékok miatti hiányokat. Az elavulás csak hiányként jelenik meg; senkinek nem megy üzenet, és feladat sem jön létre magától. Az MI-szerep csak fogalmazhat és számolhat; amit rögzítenek, azt ember hagyja jóvá.",
+      "ordinality": 62,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "22b7117e-6df6-57dd-8822-303b0f179ff7",
+      "code": "W-63",
+      "name": "A hiányból feladat lesz a testület táblán, és lezárul",
+      "description": "Hogyan lesz egy hiányból feladat: az osztályvezető megnézi a saját hiányait, az asszisztens javaslatot ad az intézkedésre és a határidőre, az osztályvezető jóváhagyja és létrehozza az intézkedést, amely a testület táblájának rendes feladata lesz felelőssel és határidővel, a felelős a táblán elvégzi, az osztályvezető lezárja az intézkedést és értékeli a védelmi intézkedést, a jegyző pedig a testületi ülésen a lejárt feladatok listáján látja, hogy lezárult. Az MI-szerep csak fogalmazhat és számolhat; a feladat létrehozását mindig ember hagyja jóvá.",
+      "ordinality": 63,
       "created_at": "2026-11-07T15:00:00Z",
       "last_updated": "2026-11-07T15:00:00Z",
       "deleted": false
@@ -5923,6 +5979,270 @@
           "required": true
         }
       ]
+    },
+    {
+      "id": "2dcc3515-4baa-5053-85ef-ee0001ede8bb",
+      "code": "WI-62-1",
+      "workflow_id": "07952012-b3bc-58fa-ab26-765d60ae4948",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "Jelentést csatolunk a védelmi intézkedéshez",
+      "description": "Az osztályvezető kiválasztja a védelmi intézkedést, és csatolja hozzá a próba vagy az ellenőrzés jelentését.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) a telefonos alkalmazásban kiválasztja a védelmi intézkedést, például a Zöldhalmi Víztorony tartalék fűtőkábelét, amely most bizonyítatlan, és csatolja hozzá a téli próba jelentését. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Jelentést csatolunk a védelmi intézkedéshez",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "5a9eb48d-eda9-5432-8cfb-a0a4053e696a",
+      "code": "WI-62-2",
+      "workflow_id": "07952012-b3bc-58fa-ab26-765d60ae4948",
+      "role_id": "1a2e0075-7b7e-5326-bfd2-29c49c21f4ae",
+      "title": "Összefoglaljuk a jelentést, és javaslatot adunk az eredményre",
+      "description": "Az asszisztens a jelentésből rövid összefoglalót és javasolt eredményt (megfelelt vagy nem felelt meg) ad.",
+      "prompt": "A Csevegő kockázati asszisztens a csatolt jelentésből rövid összefoglalót és javasolt eredményt (megfelelt vagy nem felelt meg) fogalmaz, például: a fűtőkábel a próbán három órán át tartotta a hőmérsékletet. Az eredményt nem rögzíti. Az MI-szerep (RU-AI-1) csak fogalmazhat; amit rögzítenének, azt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összefoglaljuk a jelentést, és javaslatot adunk az eredményre",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "b323fa7a-657a-5f77-a23a-eae4bcc562be",
+      "code": "WI-62-3",
+      "workflow_id": "07952012-b3bc-58fa-ab26-765d60ae4948",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "Jóváhagyjuk az értékelést, és rögzítjük a bizonyítékot",
+      "description": "Az osztályvezető jóváhagyja vagy javítja az összefoglalót és az eredményt, majd rögzíti a bizonyítékot.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) átnézi az összefoglalót és a javasolt eredményt, szükség esetén javítja, majd jóváhagyja, és rögzíti a bizonyítékot a védelmi intézkedésnél. Jóváhagyás nélkül semmi nem kerül a nyilvántartásba. Sikeres eredménynél az intézkedés bizonyítatlanból bizonyított lesz; sikertelen eredménynél sikertelen. Ezt a lépést ember végzi.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Jóváhagyjuk az értékelést, és rögzítjük a bizonyítékot",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "e301424a-2f93-5262-97cf-fe1e11c6af51",
+      "code": "WI-62-4",
+      "workflow_id": "07952012-b3bc-58fa-ab26-765d60ae4948",
+      "role_id": "1a2e0075-7b7e-5326-bfd2-29c49c21f4ae",
+      "title": "Megszámoljuk az intézkedéseket állapot szerint",
+      "description": "Az asszisztens megszámolja a kockázat védelmi intézkedéseit: hány bizonyított, gyenge, bizonyítatlan és sikertelen.",
+      "prompt": "A Csevegő kockázati asszisztens a nyilvántartásból megszámolja a kockázat védelmi intézkedéseit állapot szerint: hány bizonyított, gyenge, bizonyítatlan és sikertelen, és megmutatja, melyik változott. Az MI-szerep (RU-AI-1) csak olvas és számol; semmit nem módosít, és nem talál ki számot. Amit nyilvánosan közölnének, azt előtte ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megszámoljuk az intézkedéseket állapot szerint",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "24372284-b754-5c8d-8458-33d36ad27260",
+      "code": "WI-62-5",
+      "workflow_id": "07952012-b3bc-58fa-ab26-765d60ae4948",
+      "role_id": "81af2fd8-896f-50b3-a18e-faa8596e3527",
+      "title": "A testületi olvasó látja az új állapotot",
+      "description": "A testületi kockázatolvasó a nyilvántartásban látja a védelmi intézkedés új állapotát.",
+      "prompt": "A Testületi kockázatolvasó a nyilvántartásban megnézi a védelmi intézkedés új állapotát és a hozzá csatolt bizonyítékot. Ezt a lépést ember végzi.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A testületi olvasó látja az új állapotot",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "78dcc826-001c-55eb-9447-807f13f5a3c7",
+      "code": "WI-62-6",
+      "workflow_id": "07952012-b3bc-58fa-ab26-765d60ae4948",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "Átnézzük az elavult bizonyítékok miatti hiányokat",
+      "description": "Az osztályvezető a hiánylistán látja azokat az intézkedéseket, amelyek utolsó bizonyítéka régebbi a beállított napszámnál.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) a hiánylistán megnézi azokat az intézkedéseket, amelyek utolsó bizonyítéka régebbi a beállított napszámnál, például 30 napnál; ezek bizonyítatlanra esnek vissza. Az elavulás csak hiányként jelenik meg: senkinek nem megy üzenet, és feladat sem jön létre magától. Ezt a lépést ember végzi.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Átnézzük az elavult bizonyítékok miatti hiányokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "b4fc119d-776f-5a44-b7cc-e65549e7d1e2",
+      "code": "WI-63-1",
+      "workflow_id": "22b7117e-6df6-57dd-8822-303b0f179ff7",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "Megnézzük a saját hiányainkat",
+      "description": "Az osztályvezető megnyitja a hiányok listáját a saját kockázataira szűrve.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) megnyitja a hiányok listáját a saját kockázataira szűrve, és kiválaszt egyet, például hogy a Zöldhalmi Víztorony tartalék fűtőkábelét még nem értékelték. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megnézzük a saját hiányainkat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "73c3b358-debc-5aad-a5a9-801e91e8ace8",
+      "code": "WI-63-2",
+      "workflow_id": "22b7117e-6df6-57dd-8822-303b0f179ff7",
+      "role_id": "1a2e0075-7b7e-5326-bfd2-29c49c21f4ae",
+      "title": "Javaslatot készítünk az intézkedésre és a határidőre",
+      "description": "Az asszisztens a hiányból intézkedést és határidőt javasol.",
+      "prompt": "A Csevegő kockázati asszisztens a kiválasztott hiányból javaslatot fogalmaz az intézkedés címére, a felelősre és a határidőre, és megszámolja, hány nyitott intézkedése van már a felelősnek. A javaslatot nem menti el, feladatot nem hoz létre. Az MI-szerep (RU-AI-1) csak fogalmazhat és számolhat; a létrehozást ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Javaslatot készítünk az intézkedésre és a határidőre",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "19ff607e-3be8-54ca-8a14-08e62813e66c",
+      "code": "WI-63-3",
+      "workflow_id": "22b7117e-6df6-57dd-8822-303b0f179ff7",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "Jóváhagyjuk és létrehozzuk az intézkedést",
+      "description": "Az osztályvezető jóváhagyja a javaslatot, és létrehozza az intézkedést a feladat hivatkozásával.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) átnézi a javaslatot, kijavítja a címet vagy a határidőt, jóváhagyja, és létrehozza az intézkedést. Az intézkedés a testület táblájának rendes feladatát hozza létre, felelőssel és határidővel, és hivatkozik rá. Jóváhagyás nélkül semmi nem jön létre. Ezt a lépést ember végzi.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Jóváhagyjuk és létrehozzuk az intézkedést",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "b32dd09a-11a8-5a8a-91e7-e46eeaf74bfe",
+      "code": "WI-63-4",
+      "workflow_id": "22b7117e-6df6-57dd-8822-303b0f179ff7",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "A felelős elvégzi a feladatot a táblán",
+      "description": "A felelős a testület táblán elvégzi és lezárja a feladatot.",
+      "prompt": "A felelős, például Kovács Dezső, a testület táblán megnyitja a feladatot, elvégzi a tartalék fűtőkábel ellenőrzését, és késznek jelöli. Ezt a lépést ember végzi.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A felelős elvégzi a feladatot a táblán",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "f71911cd-bc1d-553f-aa31-1fd03b3c0318",
+      "code": "WI-63-5",
+      "workflow_id": "22b7117e-6df6-57dd-8822-303b0f179ff7",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "Lezárjuk az intézkedést és értékeljük a védelmi intézkedést",
+      "description": "Az osztályvezető az intézkedést késznek jelöli, és értékeli a védelmi intézkedést.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) az elkészült feladat alapján az intézkedést késznek jelöli, majd megadja a védelmi intézkedés tervezésének és lefedettségének értékelését. Az értékelés után a hiány lekerül a listáról. Ezt a lépést ember végzi.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Lezárjuk az intézkedést és értékeljük a védelmi intézkedést",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "bd173067-5533-53c7-b894-16dae19ba7d2",
+      "code": "WI-63-6",
+      "workflow_id": "22b7117e-6df6-57dd-8822-303b0f179ff7",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "A testületi ülésen látjuk, hogy a feladat lezárult",
+      "description": "A jegyző a lejárt feladatok listáján látja, hogy a feladat már nem szerepel rajta.",
+      "prompt": "A Jegyző a testületi ülésen megnézi a lejárt feladatok listáját, és látja, hogy a lezárt feladat már nem szerepel rajta, a hiány pedig kikerült a hiányok listájából. Ezt a lépést ember végzi.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T15:00:00Z",
+      "last_updated": "2026-11-07T15:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A testületi ülésen látjuk, hogy a feladat lezárult",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [
@@ -6445,6 +6765,16 @@
       "id": "393b1f33-bb94-5e38-9456-c200bacd4932",
       "workflow_id": "1b6bfa49-2f41-5360-bdb5-6eb301988259",
       "objective_id": "c7d73b00-ba18-58bb-8d53-865406045f4d"
+    },
+    {
+      "id": "aaeef644-35d6-561b-9a36-37b5aa63233a",
+      "workflow_id": "07952012-b3bc-58fa-ab26-765d60ae4948",
+      "objective_id": "1488dbe2-dac4-5dfe-aca2-4e88335beaef"
+    },
+    {
+      "id": "81b694dc-9645-5eef-afb5-401fefee6061",
+      "workflow_id": "22b7117e-6df6-57dd-8822-303b0f179ff7",
+      "objective_id": "973fb31a-b8f9-506b-b3be-5991b8666752"
     }
   ],
   "work_plans": [],
