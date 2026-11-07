@@ -1,0 +1,28 @@
+{
+  "workflow": "W-22",
+  "title": "assign an address to a ward",
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    { "code": "WI-22-1", "role": "R-6", "ai": true },
+    { "code": "WI-22-2", "role": "R-6", "ai": true },
+    { "code": "WI-22-3", "role": "R-6", "ai": true },
+    { "code": "WI-22-4", "role": "R-6", "ai": false },
+    { "code": "WI-22-5", "role": "R-6", "ai": true }
+  ],
+  "checks": {
+    "firstActor": "Adat- és elemzési referens",
+    "itemCount": 5,
+    "objectives": ["O-1"],
+    "ruleAttachedToAllObjectives": true,
+    "stepText": [
+      { "step": "WI-22-1", "match": ["városrész mezőjük üres", "csak gyűjthet, számolhat és vázlatot fogalmazhat"] },
+      { "step": "WI-22-2", "match": ["melyik városrész", "legbelső határt"] },
+      { "step": "WI-22-3", "match": ["egyik városrész határán belül sincs", "nem írja át"] },
+      { "step": "WI-22-4", "match": ["beírt vagy a kiszámolt városrész", "ember végzi"] },
+      { "step": "WI-22-5", "match": ["városrészenként megszámolja", "addig nem kerül sehová, amíg ember jóvá nem hagyta"] }
+    ],
+    "order": [["WI-22-1", "WI-22-2"], ["WI-22-2", "WI-22-3"], ["WI-22-3", "WI-22-4"], ["WI-22-4", "WI-22-5"]]
+  }
+}
