@@ -24,9 +24,7 @@ const (
 	// CategoryChat — a removal receipt.
 	CategoryChat       NotificationCategory = "chat"
 	CategoryMembership NotificationCategory = "membership"
-	// CategorySecurity — OTP, device recovery, duplicate-ID case notices.
-	// The only category with an SMS channel, and exempt from muting.
-	CategorySecurity NotificationCategory = "security"
+	CategorySecurity   NotificationCategory = "security"
 	// CategoryApproval — an agent-proposed write is waiting on the actor
 	// named Accountable for it (mwanachama-backend-api-kazi's K6).
 	CategoryApproval NotificationCategory = "approval"
@@ -79,7 +77,36 @@ func notificationExempt(c NotificationCategory) bool {
 
 func IsNotificationCategoryExempt(c NotificationCategory) bool { return notificationExempt(c) }
 
-func NotificationSMSChannel(c NotificationCategory) bool { return c == CategorySecurity }
+func NotificationSMSChannel(c NotificationCategory) bool { return screenless(c) }
+
+func NotificationVoiceChannel(c NotificationCategory) bool { return screenless(c) }
+
+func NotificationChannels(c NotificationCategory) []NotificationChannel {
+	if !screenless(c) {
+		return nil
+	}
+	return []NotificationChannel{ChannelSMS, ChannelVoice}
+}
+
+func screenless(c NotificationCategory) bool {
+	for _, k := range screenlessCategories {
+		if k == c {
+			return true
+		}
+	}
+	return false
+}
+
+type NotificationChannel string
+
+const (
+	ChannelSMS   NotificationChannel = "sms"
+	ChannelVoice NotificationChannel = "voice"
+)
+
+var screenlessCategories = []NotificationCategory{
+	CategorySecurity, CategorySurvey, CategoryResults, CategoryContribution,
+}
 
 // NotificationEvent is the specific act a row is the by-product of. The
 // title and body are rendered from this and the subject, never stored as

@@ -209,8 +209,15 @@ func IsNotificationCategoryExempt(c NotificationCategory) bool {
 	return models.IsNotificationCategoryExempt(c)
 }
 
-// NotificationSMSChannel forwards to [models.NotificationSMSChannel].
 func NotificationSMSChannel(c NotificationCategory) bool { return models.NotificationSMSChannel(c) }
+
+func NotificationVoiceChannel(c NotificationCategory) bool { return models.NotificationVoiceChannel(c) }
+
+type NotificationChannel = models.NotificationChannel
+
+func NotificationChannels(c NotificationCategory) []NotificationChannel {
+	return models.NotificationChannels(c)
+}
 
 type (
 	PushSubscription = models.PushSubscription
