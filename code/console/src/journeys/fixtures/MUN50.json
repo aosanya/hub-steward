@@ -1,0 +1,121 @@
+{
+  "roles": [
+    {
+      "id": "0f886e4c-a496-579e-a1d3-617a7baf50a9",
+      "code": "R-50",
+      "name": "Építéshatósági ellenőr",
+      "description": "Helyszínen vagy iratok alapján megvizsgálja a kérelmet, és írásban rögzíti a megállapítását. A megállapítást nem fogalmazza át senki helyette, és ezt a szerepet soha nem tölti be mesterséges intelligencia.",
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "objectives": [
+    {
+      "id": "3817e453-ebf8-519a-b78a-0a37640a0b08",
+      "code": "O-50",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "Az engedélyt a kérelemtől a döntésig és a lejárati dátumig egy nyomon követhető úton visszük",
+      "description": "A kérelem, az ellenőr megállapítása, a döntés és a lejáratkor esedékes megújítás egyetlen ügyben marad, hogy a kérelmező mindig lássa, hol tart, és a döntés mögött ott legyen az, amit az ellenőr talált.",
+      "ordinality": 50,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "code": "W-50",
+      "name": "Engedély a kérelemtől a döntésig",
+      "description": "Hogyan jut el egy zöldhalmi építési vagy használati engedély iránti kérelem a befogadástól az ellenőr megállapításán és a döntésen át a megújítás napjáig úgy, hogy a díj, a megállapítás és a döntés ugyanabban az ügyben marad.",
+      "ordinality": 50,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "63bd651f-536a-5517-b1d7-dfb17cfd6b5c",
+      "code": "WI-50-1",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Fogadjuk be a kérelmet",
+      "description": "A jegyző befogadja a kérelmet, iktatószámot ad, és visszaigazolja a kérelmezőnek.",
+      "prompt": "Vegyük fel a beérkezett kérelmet (kérelmező: Szabó Márta, Malomsor, Fő utca 12., tetőtér-beépítés), adjunk iktatószámot, és igazoljuk vissza a RU-7 szerinti határidőn belül. Az MI-szerep csak a visszaigazolás szövegét fogalmazhatja és a beérkezett kérelmeket megszámolhatja; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d325eede-d426-584e-b1a2-a4c1cce525ac",
+      "code": "WI-50-2",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Ellenőrizzük az illetéket",
+      "description": "A pénzügyi referens a hatályos díj- és illetékjegyzék szerint megállapítja a fizetendő összeget, és követi a befizetést.",
+      "prompt": "Állapítsuk meg a fizetendő illetéket a közzétett jegyzék szerint (például 18 500 Ft), és jegyezzük fel, mikor érkezett meg a befizetés; a RU-11 szerint díjat a jegyzék közzététele előtt nem számítunk fel. Az MI-szerep csak a befizetetlen illetékeket összeszámolhatja és emlékeztetőt fogalmazhat a kérelmezőnek; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cfdbfe52-2a86-5173-8a75-171e0357c4f9",
+      "code": "WI-50-3",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "role_id": "0f886e4c-a496-579e-a1d3-617a7baf50a9",
+      "title": "Rögzítsük az ellenőr megállapítását",
+      "description": "Az építéshatósági ellenőr megvizsgálja a kérelmet és írásban rögzíti a megállapítását.",
+      "prompt": "Vizsgáljuk meg a kérelmet és a helyszínt, és rögzítsük, megfelel-e az előírásoknak, mit kell pótolni, és milyen feltétellel adható meg az engedély. Az MI-szerep csak a megállapítás vázlatát összegezheti és a hiányzó mellékleteket megszámolhatja, magát a megállapítást azonban az ellenőr írja meg; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c2ffea71-3843-54e4-a5f9-d06cefdc2d62",
+      "code": "WI-50-4",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Hozzuk meg a döntést",
+      "description": "A polgármester az ellenőr megállapítása és a befizetett illeték ismeretében megadja vagy megtagadja az engedélyt.",
+      "prompt": "Döntsünk az engedély megadásáról vagy megtagadásáról az ellenőr megállapítása alapján, és indokoljuk meg a döntést; a RU-12 szerint jóváhagyás nélkül engedélyt nem adunk ki. Az MI-szerep csak a döntés indoklásának vázlatát fogalmazhatja, a döntést azonban nem hozhatja meg; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "30b5e574-b56e-5e10-b97f-970ac71c226f",
+      "code": "WI-50-5",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Rögzítsük a megújítás dátumát",
+      "description": "A jegyző az engedély lejárati napját és a megújítás határidejét ügyfeljegyzésbe veszi, és értesíti a kérelmezőt.",
+      "prompt": "Írjuk be az engedély érvényességének végét (például 2031. november 7.) és a megújítási kérelem határidejét, és állítsunk be emlékeztetőt a kérelmezőnek. Az MI-szerep csak az emlékeztetőt fogalmazhatja és a közelgő lejáratokat megszámolhatja; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "933304c9-1d8c-5b1d-9832-187c0e150107",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "objective_id": "cef6d5a1-9ad9-4533-bae0-135a299334f1"
+    },
+    {
+      "id": "7c8f6e28-3774-50a1-b8da-1068229270ba",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
+    },
+    {
+      "id": "bb957457-6065-5a0b-8075-84482f962a21",
+      "workflow_id": "d27310f7-2c0b-5f9c-82d8-fcdaa7f12d30",
+      "objective_id": "3817e453-ebf8-519a-b78a-0a37640a0b08"
+    }
+  ]
+}
