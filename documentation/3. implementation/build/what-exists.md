@@ -34,6 +34,10 @@ The console and the app carry a harvest sale in two jobs. The Suppliers' agent a
 
 The spec language has a `geometry` field type holding a GeoJSON Point, Polygon or MultiPolygon, checked on write. A group carries an optional boundary (Polygon or MultiPolygon), set on creation or with `PUT /groups/{group_id}/boundary`. The geo package finds the ward a point falls in. Not built: finding the group whose boundary holds a point, and drawing boundaries in the console.
 
+## Approval limits
+
+A seat can carry an `approval_limit`, set when it is granted or changed on a live seat with `SetApprovalLimit` (a negative one, or an ended seat, is refused). `AuthoriseApproval` loads the seat and refuses an amount over its limit with `ErrOverApprovalLimit` (403). Not built: the forms approval flow does not call it yet, because a form carries no amount; no HTTP route or MCP tool for the setter or the check.
+
 ## Not built
 
 - The loop that reads new messages in a room and replies as the Hub Steward role is not in this repository; the API holds the AI role, its instructions, permissions and model accounts.

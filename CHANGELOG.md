@@ -5,6 +5,7 @@ All notable changes to this project are listed here, grouped by area. The format
 ## [Unreleased] - 2026-11-04
 
 ### API (`code/wakala-api`)
+- A seat's approval limit can be changed on a live seat, and `AuthoriseApproval` refuses an amount over a seat's limit with a clear error (2026-11-07).
 - A published poll count and the insight counts per subject apply the minimum count: a small cell is suppressed, a lone suppressed cell is covered, and the answered total is withheld when anything is hidden (2026-11-07).
 - The custody, digitaltwin and engage modules are ported from the Mwanachama backend and mounted like voting, with their routes and operation tables (2026-11-07).
 - The riskmanager module is mounted as `risks` with its routes, MCP tools and operation table, test-copy support and owner checks against the actor directory; an unknown owner is refused as a bad reference (2026-11-07).
