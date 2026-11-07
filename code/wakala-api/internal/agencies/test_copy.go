@@ -15,6 +15,7 @@ import (
 	mwanachamaengage "wakalaserver/modules/engage"
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamamarket "wakalaserver/modules/market"
+	mwanachamariskmanager "wakalaserver/modules/riskmanager"
 	"wakalaserver/modules/shared/spec"
 	"wakalaserver/modules/shared/specstore"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
@@ -31,6 +32,7 @@ const (
 	moduleCustody     = "custody"
 	moduleDigitaltwin = "digitaltwin"
 	moduleEngage      = "engage"
+	moduleRiskmanager = "riskmanager"
 )
 
 type TestCopy struct {
@@ -147,6 +149,8 @@ func (c TestCopy) specsOf(m TouchedModule) ([]*spec.Spec, error) {
 		return mounted(mwanachamadigitaltwin.SpecForMount)
 	case moduleEngage:
 		return mounted(mwanachamaengage.SpecForMount)
+	case moduleRiskmanager:
+		return mounted(mwanachamariskmanager.SpecForMount)
 	case moduleComm:
 		return single(mwanachamacomm.SpecFor)
 	}

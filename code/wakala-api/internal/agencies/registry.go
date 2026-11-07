@@ -675,7 +675,8 @@ func (r *registry) buildRiskManager(ctx context.Context, id string) (mwanachamar
 	if err := mwanachamariskmanager.Provision(r.db, s); err != nil {
 		return nil, fmt.Errorf("RiskManager: migrate instance %s: %w", id, err)
 	}
-	return mwanachamariskmanager.NewRiskManager(r.db, s)
+	owners := actorOwners{actors: func(ctx context.Context) (mwanachamaactor.UserManager, error) { return r.ActorManager(ctx, id) }}
+	return mwanachamariskmanager.NewRiskManager(r.db, s, mwanachamariskmanager.WithOwners(owners, actorObject))
 }
 
 func (r *registry) MarketManager(ctx context.Context, id, mount string) (mwanachamamarket.MarketManager, error) {
