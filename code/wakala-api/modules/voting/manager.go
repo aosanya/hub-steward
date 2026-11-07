@@ -48,6 +48,7 @@ type pollManager struct {
 	groups   Groups
 	spec     *spec.Spec
 	settings SettingsLayers
+	minimum  int
 }
 
 func NewPollManager(db *gorm.DB, s *spec.Spec) (PollManager, error) {

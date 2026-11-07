@@ -57,7 +57,11 @@ func (m *pollManager) ReadPublishedCount(ctx context.Context, pollID, caller str
 	}
 	for _, g := range groups {
 		if slices.Contains(p.PublishedGroupIDs, g) {
-			return m.CountPoll(ctx, p.ID)
+			raw, err := m.CountPoll(ctx, p.ID)
+			if err != nil {
+				return Count{}, err
+			}
+			return Disclose(raw, m.minimumCount())
 		}
 	}
 	return Count{}, ErrPollNotFound

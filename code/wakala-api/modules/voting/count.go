@@ -8,16 +8,19 @@ import (
 )
 
 type ChoiceCount struct {
-	ChoiceID string `json:"choice_id"`
-	Label    string `json:"label"`
-	Position int    `json:"position"`
-	Votes    int    `json:"votes"`
+	ChoiceID   string `json:"choice_id"`
+	Label      string `json:"label"`
+	Position   int    `json:"position"`
+	Votes      int    `json:"votes"`
+	Suppressed bool   `json:"suppressed,omitempty"`
 }
 
 type Count struct {
-	PollID   string        `json:"poll_id"`
-	Choices  []ChoiceCount `json:"choices"`
-	Answered int           `json:"answered"`
+	PollID             string        `json:"poll_id"`
+	Choices            []ChoiceCount `json:"choices"`
+	Answered           int           `json:"answered"`
+	AnsweredSuppressed bool          `json:"answered_suppressed,omitempty"`
+	Minimum            int           `json:"minimum,omitempty"`
 }
 
 func (m *pollManager) CountPoll(ctx context.Context, pollID string) (Count, error) {
