@@ -110,30 +110,31 @@ type Registry interface {
 type registry struct {
 	db *gorm.DB
 
-	epochs        *authz.Epochs
-	cacheEntries  int
-	managers      *authz.Cache[mwanachamaagency.AgencyManager]
-	ledgers       *authz.Cache[mwanachamaaccounting.LedgerRepository]
-	boards        *authz.Cache[mwanachamataskmanager.TaskManager]
-	catalogs      *authz.Cache[mwanachamacatalog.CatalogManager]
-	gits          *authz.Cache[mwanachamagit.GitManager]
-	sources       *authz.Cache[mwanachamasources.SourceManager]
-	polls         *authz.Cache[mwanachamavoting.PollManager]
-	custody       *authz.Cache[*mwanachamacustody.CustodyManager]
-	twins         *authz.Cache[mwanachamadigitaltwin.TwinManager]
-	posts         *authz.Cache[mwanachamaengage.PostManager]
-	risks         *authz.Cache[mwanachamariskmanager.RiskManager]
-	markets       *authz.Cache[mwanachamamarket.MarketManager]
-	approvals     *authz.Cache[*approvals.Store]
-	assets        *authz.Cache[mwanachamaassetmanager.AssetManager]
-	directories   *authz.Cache[mwanachamaactor.UserManager]
-	forms         *authz.Cache[mwanachamaforms.FormManager]
-	rooms         *authz.Cache[*mwanachamacomm.CommManager]
-	standings     *authz.Cache[Standing]
-	instances     *authz.Cache[Instance]
-	adopted       *authz.Cache[bool]
-	formsApproval FormsApprovalOf
-	recordGrants  RecordGrantOf
+	epochs          *authz.Epochs
+	cacheEntries    int
+	managers        *authz.Cache[mwanachamaagency.AgencyManager]
+	ledgers         *authz.Cache[mwanachamaaccounting.LedgerRepository]
+	boards          *authz.Cache[mwanachamataskmanager.TaskManager]
+	catalogs        *authz.Cache[mwanachamacatalog.CatalogManager]
+	gits            *authz.Cache[mwanachamagit.GitManager]
+	sources         *authz.Cache[mwanachamasources.SourceManager]
+	polls           *authz.Cache[mwanachamavoting.PollManager]
+	custody         *authz.Cache[*mwanachamacustody.CustodyManager]
+	twins           *authz.Cache[mwanachamadigitaltwin.TwinManager]
+	posts           *authz.Cache[mwanachamaengage.PostManager]
+	risks           *authz.Cache[mwanachamariskmanager.RiskManager]
+	markets         *authz.Cache[mwanachamamarket.MarketManager]
+	approvals       *authz.Cache[*approvals.Store]
+	assets          *authz.Cache[mwanachamaassetmanager.AssetManager]
+	directories     *authz.Cache[mwanachamaactor.UserManager]
+	forms           *authz.Cache[mwanachamaforms.FormManager]
+	rooms           *authz.Cache[*mwanachamacomm.CommManager]
+	standings       *authz.Cache[Standing]
+	instances       *authz.Cache[Instance]
+	adopted         *authz.Cache[bool]
+	formsApproval   FormsApprovalOf
+	consentRequired ConsentRequiredOf
+	recordGrants    RecordGrantOf
 
 	actorOptions []mwanachamaactor.Option
 	pushSender   mwanachamacomm.PushSender
@@ -472,6 +473,7 @@ func (r *registry) buildFormManager(ctx context.Context, id string) (mwanachamaf
 		return nil, err
 	}
 	built.UseGroups(r.groupsIn(id))
+	built.UseConsentGate(r.consentGateIn(id))
 	built.UseStandingAudience(r.standingAudienceIn(id))
 	built.UseNames(r.namesIn(id))
 	built.UseMembers(r.membersIn(id))
@@ -536,6 +538,7 @@ func (r *registry) buildCommManager(ctx context.Context, id string) (*mwanachama
 		return nil, err
 	}
 	built.UseBelonging(r.belongingIn(id))
+	built.UseConsentGate(r.consentGateIn(id))
 	built.UseLeading(r.leadingIn(id))
 	built.UseRoomsOf(r.roomsOfIn(id))
 	built.UseLeads(r.roomLeadsIn(id))
@@ -632,6 +635,7 @@ func (r *registry) buildPostManager(ctx context.Context, id string) (mwanachamae
 		return nil, err
 	}
 	built.UseGroups(mwanachamaengage.Groups(r.groupsIn(id)))
+	built.UseConsentGate(r.consentGateIn(id))
 	return built, nil
 }
 

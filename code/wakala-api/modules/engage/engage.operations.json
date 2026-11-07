@@ -203,6 +203,8 @@
     }
   },
   "errors": {
+    "ErrConsentRequired": 403,
+    "ErrConsentWithdrawn": 403,
     "ErrPostNotFound": 404,
     "ErrInvalidPost": 400,
     "ErrNoPoster": 401,

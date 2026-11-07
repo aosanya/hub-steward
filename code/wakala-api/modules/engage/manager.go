@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"wakalaserver/modules/shared/consent"
 
 	"gorm.io/gorm"
 
@@ -39,13 +40,15 @@ type PostManager interface {
 	WithdrawOffer(ctx context.Context, postID, participantID string) (Offer, error)
 	Unpick(ctx context.Context, postID, pickID, callerID string) (Picked, error)
 	UseGroups(g Groups)
+	UseConsentGate(g consent.Gate)
 }
 
 type postManager struct {
-	db     *gorm.DB
-	st     *store
-	now    func() string
-	groups Groups
+	db      *gorm.DB
+	st      *store
+	now     func() string
+	groups  Groups
+	consent consent.Gate
 }
 
 func NewPostManager(db *gorm.DB, s *spec.Spec) (PostManager, error) {

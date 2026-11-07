@@ -6,19 +6,20 @@ import (
 	"sync"
 
 	"wakalaserver/modules/custody/models"
+	"wakalaserver/modules/shared/consent"
 )
 
-var ErrConsentRequired = errors.New("custody: no consent on record for this actor")
+var ErrConsentRequired = consent.ErrRequired
 
-var ErrConsentWithdrawn = errors.New("custody: consent was withdrawn")
+var ErrConsentWithdrawn = consent.ErrWithdrawn
 
 type ConsentGate interface {
 	Check(ctx context.Context, actorID string) error
 }
 
 type Withdrawal struct {
-	ActorID     string
-	WithdrawnAt string
+	ActorID     string `json:"actor_id"`
+	WithdrawnAt string `json:"withdrawn_at"`
 }
 
 type WithdrawalSubscriber func(ctx context.Context, w Withdrawal) error

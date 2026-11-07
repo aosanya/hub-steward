@@ -13,6 +13,8 @@ type Mount = dispatch.Mount
 
 var Sentinels = map[string]error{
 	"ErrNotFound":            custody.ErrNotFound,
+	"ErrConsentRequired":     custody.ErrConsentRequired,
+	"ErrConsentWithdrawn":    custody.ErrConsentWithdrawn,
 	"ErrAlreadyPublished":    custody.ErrAlreadyPublished,
 	"ErrUnknownScope":        custody.ErrUnknownScope,
 	"ErrUnknownActClass":     custody.ErrUnknownActClass,

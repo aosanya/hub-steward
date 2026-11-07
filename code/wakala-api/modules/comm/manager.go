@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"wakalaserver/modules/shared/consent"
 
 	"gorm.io/gorm"
 
@@ -38,6 +39,7 @@ type CommManager struct {
 	audience   Audience
 	push       *pushDelivery
 	runID      string
+	consent    consent.Gate
 }
 
 func NewCommManager(db *gorm.DB, s *spec.Spec, clock Clock, actWriter models.ActWriter, actorsTable string) (*CommManager, error) {
@@ -89,10 +91,15 @@ func NewCommManager(db *gorm.DB, s *spec.Spec, clock Clock, actWriter models.Act
 
 func (m *CommManager) Spec() *spec.Spec { return m.spec }
 
+func (m *CommManager) UseConsentGate(g consent.Gate) { m.consent = g }
+
 // Three method names are on both ChatStore and DMStore, so a promoted
 // selector would be ambiguous. Each domain's is named for its own object.
 
 func (m *CommManager) PostChatMessage(ctx context.Context, msg models.ChatMessage) (models.ChatMessage, error) {
+	if err := consent.Require(ctx, m.consent, msg.AuthorID); err != nil {
+		return models.ChatMessage{}, err
+	}
 	return m.ChatStore.Post(ctx, msg)
 }
 
@@ -105,6 +112,9 @@ func (m *CommManager) ListChatMessages(ctx context.Context, structureID, threadI
 }
 
 func (m *CommManager) PostDMMessage(ctx context.Context, msg models.DMMessage) (models.DMMessage, error) {
+	if err := consent.Require(ctx, m.consent, msg.SenderID); err != nil {
+		return models.DMMessage{}, err
+	}
 	return m.DMStore.Post(ctx, msg)
 }
 

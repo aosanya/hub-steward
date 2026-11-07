@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"wakalaserver/modules/shared/consent"
 
 	"wakalaserver/modules/engage/models"
 )
@@ -11,6 +12,9 @@ import (
 func (m *postManager) AnswerRSVP(ctx context.Context, in RSVP) (RSVP, error) {
 	if in.ParticipantID == "" {
 		return RSVP{}, ErrNoResponder
+	}
+	if err := consent.Require(ctx, m.consent, in.ParticipantID); err != nil {
+		return RSVP{}, err
 	}
 	if err := m.checks(objectRSVP, in, ErrInvalidRSVP); err != nil {
 		return RSVP{}, err

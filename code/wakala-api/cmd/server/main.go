@@ -154,11 +154,13 @@ func buildDeps(logger *slog.Logger) *apihttp.Deps {
 	scenariosAtOnce := agencies.ScenariosAtOnce(func(context.Context, string) (int, error) { return 0, nil })
 	atOnce := func(ctx context.Context, instanceID string) (int, error) { return scenariosAtOnce(ctx, instanceID) }
 	testSeat := &testRunSeat{logger: logger}
-	reg, err := agencies.NewRegistry(db, append(testSeat.options(), agencies.WithScenariosAtOnce(atOnce), agencies.WithEpochs(epochs), lifetime, webPush(logger), agencies.WithMutability(notifyRules.Mutable), agencies.WithRules(notifyRules.Rule), agencies.WithFormsApproval(formsSettings.Required), agencies.WithRecordGrants(apihttp.RecordGrants(permissionsManager)))...)
+	var consentReg agencies.Registry
+	reg, err := agencies.NewRegistry(db, append(testSeat.options(), agencies.WithConsentRequired(apihttp.ConsentRequired(func() agencies.Registry { return consentReg })), agencies.WithScenariosAtOnce(atOnce), agencies.WithEpochs(epochs), lifetime, webPush(logger), agencies.WithMutability(notifyRules.Mutable), agencies.WithRules(notifyRules.Rule), agencies.WithFormsApproval(formsSettings.Required), agencies.WithRecordGrants(apihttp.RecordGrants(permissionsManager)))...)
 	if err != nil {
 		logger.Error("could not build agencies.Registry", "error", err.Error())
 		os.Exit(1)
 	}
+	consentReg = reg
 
 	// wakala-api keeps no store of its own (architecture-agency-launch.md): a
 	// launch's connection lives in the website's database, reached through the

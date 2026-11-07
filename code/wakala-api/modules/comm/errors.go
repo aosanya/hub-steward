@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"wakalaserver/modules/shared/consent"
 
 	"github.com/jackc/pgx/v5/pgconn"
 	"gorm.io/gorm"
@@ -162,3 +163,8 @@ func (f *flexTime) scanString(s string) error {
 	}
 	return fmt.Errorf("flexTime: parsing %q: %w", s, lastErr)
 }
+
+var (
+	ErrConsentRequired  = consent.ErrRequired
+	ErrConsentWithdrawn = consent.ErrWithdrawn
+)

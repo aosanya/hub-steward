@@ -12,6 +12,8 @@ type Route = httpwire.Route
 type Mount = dispatch.Mount
 
 var Sentinels = map[string]error{
+	"ErrConsentRequired":            mwanachamacomm.ErrConsentRequired,
+	"ErrConsentWithdrawn":           mwanachamacomm.ErrConsentWithdrawn,
 	"ErrChatNotFound":               mwanachamacomm.ErrChatNotFound,
 	"ErrChatInvalid":                mwanachamacomm.ErrChatInvalid,
 	"ErrChatNotDeclinable":          mwanachamacomm.ErrChatNotDeclinable,

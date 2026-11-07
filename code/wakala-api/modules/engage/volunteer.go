@@ -3,6 +3,7 @@ package engage
 import (
 	"context"
 	"fmt"
+	"wakalaserver/modules/shared/consent"
 
 	"wakalaserver/modules/shared/specstore"
 
@@ -22,6 +23,9 @@ type Filled struct {
 func (m *postManager) OfferHelp(ctx context.Context, postID, participantID string) (Offer, error) {
 	if participantID == "" {
 		return Offer{}, ErrNoVolunteer
+	}
+	if err := consent.Require(ctx, m.consent, participantID); err != nil {
+		return Offer{}, err
 	}
 	p, err := m.GetPost(ctx, postID)
 	if err != nil {
