@@ -1,0 +1,29 @@
+{
+  "workflow": "W-63",
+  "title": "a gap becomes a task on the board and closes",
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    { "code": "WI-63-1", "role": "R-13", "ai": false },
+    { "code": "WI-63-2", "role": "R-15", "ai": true },
+    { "code": "WI-63-3", "role": "R-13", "ai": false },
+    { "code": "WI-63-4", "role": "R-13", "ai": false },
+    { "code": "WI-63-5", "role": "R-13", "ai": false },
+    { "code": "WI-63-6", "role": "R-8", "ai": false }
+  ],
+  "checks": {
+    "firstActor": "Osztályvezető (kockázat felelőse)",
+    "itemCount": 6,
+    "objectives": ["O-63"],
+    "ruleAttachedToAllObjectives": true,
+    "stepText": [
+      { "step": "WI-63-2", "match": ["nem menti el", "csak fogalmazhat és számolhat"] },
+      { "step": "WI-63-3", "match": ["jóváhagyja", "Jóváhagyás nélkül semmi nem jön létre", "testület táblájának rendes feladatát"] },
+      { "step": "WI-63-4", "match": ["a testület táblán", "késznek jelöli"] },
+      { "step": "WI-63-5", "match": ["intézkedést késznek jelöli", "a hiány lekerül a listáról"] },
+      { "step": "WI-63-6", "match": ["lejárt feladatok listáját", "kikerült a hiányok listájából"] }
+    ],
+    "order": [["WI-63-2", "WI-63-3"], ["WI-63-3", "WI-63-4"], ["WI-63-4", "WI-63-5"], ["WI-63-5", "WI-63-6"]]
+  }
+}
