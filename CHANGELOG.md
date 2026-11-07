@@ -4,6 +4,9 @@ All notable changes to this project are listed here, grouped by area. The format
 
 ## [Unreleased] - 2026-11-04
 
+### Demo agencies (`demo`)
+- `municipality.json`, an invented Hungarian town council with 12 roles and 5 workflows, and its copy in the console's templates (2026-11-07).
+
 ### Console (`code/console`)
 - Agency manager's web app: sign-in, create a hub, and the pages for approvals, people, groups, agents, documents and operations (2026-10-27). The Equipment page is drawn, not built.
 - Model choice per agent, with limits, usage and instructions tabs (2026-10-27, 2026-11-03).

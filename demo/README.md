@@ -1,8 +1,8 @@
 # Demo agencies
 
-Eight synthetic agencies, each a folder with an `agency.json` template that imports with `POST /instances/import`. Every organization, person, number and address in them is invented, and each template marks itself illustrative. How to load one is in [Load the demo agencies](../documentation/3.%20implementation/guides/load-demo-agencies.md).
+Nine synthetic agencies, eight of them a folder with an `agency.json` template and one a single file, `municipality.json`, all importing with `POST /instances/import`. Every organization, person, number and address in them is invented, and each template marks itself illustrative. How to load one is in [Load the demo agencies](../documentation/3.%20implementation/guides/load-demo-agencies.md).
 
-The Siaya computer lab is the only folder with documents, which its agent is meant to answer from, in English, Swahili and German. The Siaya Farmers' Group is the one the market and group-order journeys follow. The other six show what else the same platform runs.
+The Siaya computer lab is the only folder with documents, which its agent is meant to answer from, in English, Swahili and German. The Siaya Farmers' Group is the one the market and group-order journeys follow. The other six folders and the municipality show what else the same platform runs.
 
 | Folder | Agency | What it is for | Roles | Workflows | Modules switched on | Documents |
 |---|---|---|---|---|---|---|
@@ -14,7 +14,8 @@ The Siaya computer lab is the only folder with documents, which its agent is mea
 | [logistics-freight-company](logistics-freight-company/README.md) | Meridian Freight & Logistics | A freight company: warehouse, fleet, customs and trade compliance, customer service | 11, from VP of Operations to Driver/Courier | 5, including customs and customer claims | auth, taskmanager, agency, actor, custody, forms | None |
 | [mobile-money-operator](mobile-money-operator/README.md) | Mobile Money Operator | A mobile money service with an agent network, AML and KYC compliance and customer transfers | 10, from Managing Director to Customer Care Agent | 5, including transaction monitoring and platform incident response | auth, actor, comm, custody, forms, accounting | None |
 | [agricultural-drone-crop-spraying-service](agricultural-drone-crop-spraying-service/README.md) | AgroWing Aerial Spraying Services | A drone operator spraying, seeding and monitoring crops for farms under contract | 11, from Chief Pilot to Risk Owner | 5, including spray job intake and fleet maintenance | auth, actor, forms, digitaltwin, accounting | None |
+| [municipality.json](municipality.json) | Zöldhalom Város Önkormányzata | An invented Hungarian town council: a register of residents by ward, consultation rounds, reports and complaints, decisions that come back as feedback, and the back office | 12, from the mayor to the finance officer | 5: register upkeep, a consultation round, what people bring us, from result to decision to feedback, the back office | auth, git, taskmanager, agency, actor, comm, custody, forms, digitaltwin, accounting, catalog, voting, engage | None |
 
 The counts and module lists are read from each `agency.json`; the modules column lists only the modules a template enables.
 
-The five organization templates (clinical research, grid utility, freight, mobile money, drone spraying) each end with a Risk review workflow and a Risk owner role (the drone service spells it Risk Owner). None of the eight switches on the risk manager module, which the API can mount.
+The five organization templates (clinical research, grid utility, freight, mobile money, drone spraying) each end with a Risk review workflow and a Risk owner role (the drone service spells it Risk Owner). None of the nine switches on the risk manager module, which the API can mount.

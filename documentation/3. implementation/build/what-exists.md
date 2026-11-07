@@ -7,11 +7,11 @@ A one-line status per area. The dated history is in [CHANGELOG.md](../../../CHAN
 | Console | `code/console` | Built. React app for an agency's manager and designer: sign-in, create a hub, approvals, people, groups, agents, models, documents, workflows, review, tests, usage. Six interface languages. Every page after sign-in needs the API |
 | Phone app | `code/app` | Built. Mobile-first React app for an agency's members: Home, chat with the agents, market, group orders, forms, inbox, groups, harvest sale |
 | Bundled API | `code/wakala-api` | Built, trimmed copy of the Mwanachama API server. Go, SQLite by default, port 8082 in the container |
-| Demo agencies | `demo/` | Built. Eight synthetic agencies as `agency.json`, listed below, plus the Siaya lab's documents in English, Swahili and German |
+| Demo agencies | `demo/` | Built. Nine synthetic agencies (eight `agency.json` folders and `municipality.json`), listed below, plus the Siaya lab's documents in English, Swahili and German |
 
 ## Demo agencies
 
-The product runs any member organization; these eight are templates to try it on. All are synthetic.
+The product runs any member organization; these nine are templates to try it on. All are synthetic.
 
 | Folder | The agency |
 |---|---|
@@ -23,6 +23,7 @@ The product runs any member organization; these eight are templates to try it on
 | `logistics-freight-company` | A freight logistics company |
 | `mobile-money-operator` | A mobile money operator |
 | `agricultural-drone-crop-spraying-service` | A drone crop-spraying service |
+| `municipality.json` | An invented Hungarian town council, in Hungarian; a single file with a copy in `code/console/public/templates/` |
 
 ## Harvest sale
 

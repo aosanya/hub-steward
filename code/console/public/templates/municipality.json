@@ -1,0 +1,1501 @@
+{
+  "_template": {
+    "sector": "public-sector",
+    "archetype": "municipality",
+    "illustrative": true,
+    "note": "Szintetikus sablon egy kitalált magyar kisváros, Zöldhalom önkormányzatához. A város, a településrészek és minden személy kitalált; a szabályokban szereplő számok a bemutatóhoz választott értékek."
+  },
+  "agency": {
+    "id": "44ee61bd-531b-4a88-a7d2-efa0eb217d50",
+    "name": "Zöldhalom Város Önkormányzata",
+    "description": "Egy önkormányzat választott testülete, amely bizonyítékokkal politizál: egyetlen nyilvántartás arról, ki lakik, dolgozik és kereskedik a közigazgatási határon belül; egyeztetések, amelyek a leghangosabbakon és a legtöbbet online lévőkön túl is elérnek; a kéretlenül érkező bejelentések, amelyeket az önkormányzat meghív, határidőn belül megválaszol és megszámol; és minden eredmény közzététele azzal a döntéssel együtt, amelyhez vezetett, arra az esetre is, ha a képviselő-testület másként döntött. A háttérirodai működés – díjak, engedélyek, beruházások, vagyon – is itt van, de második felvonásként, amelyet a testület akkor kapcsol be, ha akarja, nem ez az, amire a sablon épült.",
+    "enabled": false,
+    "default_failure_pipeline_budget": 0,
+    "inactivity_timeout_seconds": 0,
+    "created_at": "2026-10-01T10:00:00Z",
+    "last_updated": "2026-10-01T18:00:00Z",
+    "deleted": false
+  },
+  "modules": [
+    {
+      "id": "ed6fd22a-8b4e-4907-a4ea-0c543ec0f0e3",
+      "code": "auth",
+      "name": "auth",
+      "description": "",
+      "enabled": true,
+      "locked": true,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "594f7f62-6b3d-4901-bfd0-28f6bda28b84",
+      "code": "git",
+      "name": "git",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "104f4358-5c59-46ae-a8e3-c0576e88d264",
+      "code": "taskmanager",
+      "name": "taskmanager",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0064010e-f3a9-4135-9ff1-032c3e890a9d",
+      "code": "agency",
+      "name": "agency",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "9e807834-97da-4a7d-884d-ee33d688664c",
+      "code": "actor",
+      "name": "actor",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b4596b12-b9aa-441c-9b08-9619aab75a18",
+      "code": "comm",
+      "name": "comm",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "67f5a423-4871-46b5-a8bd-94131d2cb984",
+      "code": "custody",
+      "name": "custody",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6c6a01a7-d972-4120-b3b3-56cce000c7ad",
+      "code": "forms",
+      "name": "forms",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a52a6115-9cde-4b12-8157-eb8d6ee0661b",
+      "code": "digitaltwin",
+      "name": "digitaltwin",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fac76909-1207-4806-ab7d-e46946e2e1c8",
+      "code": "accounting",
+      "name": "accounting",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "9bab47a0-bb56-4a4f-a54e-ca43bd5ff806",
+      "code": "catalog",
+      "name": "catalog",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4901c211-22f5-53e0-a17e-6b41a6202e20",
+      "code": "voting",
+      "name": "voting",
+      "description": "Polls put to chosen groups, answered inside a window, counted and published.",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-23T06:30:00Z",
+      "last_updated": "2026-10-23T06:30:00Z",
+      "deleted": false
+    },
+    {
+      "id": "34f455af-d792-5062-ad5a-7d7ed4fdf954",
+      "code": "engage",
+      "name": "engage",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-10-23T06:30:00Z",
+      "last_updated": "2026-10-23T06:30:00Z",
+      "deleted": false
+    }
+  ],
+  "roles": [
+    {
+      "id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "code": "R-1",
+      "name": "Polgármester / testületi elnök",
+      "description": "Vezeti a választott testületet, és viszi azt, amit a testület megkérdezett a lakosoktól, és amit a válasszal tett. Az a szerep, amelynek ki kell állnia és el kell mondania, miért alakult úgy egy döntés. Ezt a szerepet soha nem tölti be mesterséges intelligencia. A meghallgatott vélemények súlya ellen hozott döntésre egy ember nevét kell ráírni.",
+      "powers": [
+        "report.publish"
+      ],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ef9bb2b6-d202-4e54-b249-f7d031fdebce",
+      "code": "R-2",
+      "name": "Önkormányzati képviselő",
+      "description": "Egy településrész választott képviselője. Azt hozza, amit a körzete ténylegesen mondott, nem azt, amit a telefonálók: és felel azért, hogy a körzetét egyáltalán elérték-e. Soha nem tölti be mesterséges intelligencia. A szerep választott.",
+      "powers": [
+        "join_request.decide",
+        "member.invite",
+        "poll.run",
+        "notice.post",
+        "event.post"
+      ],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f615dda6-3f1d-4ff6-862b-a60b0281ccca",
+      "code": "R-3",
+      "name": "Egyeztetésvezető",
+      "description": "Megtervezi az egyes köröket: a kérdést, hogy kikhez jut el, mennyi idő alatt, milyen csatornákon és milyen módszerrel olvassák a válaszokat. Övé a kérdőív, és elutasít olyat, amely félrevezetné a testületet. Soha nem tölti be mesterséges intelligencia: annak eldöntése, mit hajlandó a testület megtenni, politikai ítélet, nem fogalmazási feladat. A mesterséges intelligencia megfogalmazza a kérdőívet és a módszerleírást, amelyet ez a szerep jóváhagy.",
+      "powers": [
+        "form.approve",
+        "poll.run"
+      ],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "code": "R-4",
+      "name": "Kommunikációs referens",
+      "description": "Eljuttatja a kérdést az emberekhez, és a választ vissza hozzájuk. Övé a közzététel arról, mit hallottunk és mi következett belőle. Betöltheti mesterséges intelligencia, amely megfogalmazza a közzétételt, a visszaigazolást és a „ti mondtátok, mi meghallgattuk” üzenetet, de minden kimenő anyagot név szerint megnevezett személy hagy jóvá.",
+      "powers": [
+        "report.publish",
+        "notice.post"
+      ],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "code": "R-5",
+      "name": "Közösségi kapcsolattartó",
+      "description": "Az az elérés, amely nem kér eszközt: piacok, kapuk, imaházak, egyesületek, a bolt előtti pad. Papíron és beszélgetésben gyűjt, és egyben hozza vissza. Soha nem tölti be mesterséges intelligencia. Ez a kapu, a piaci pult és a beszélgetés.",
+      "powers": [
+        "member.invite",
+        "event.post",
+        "volunteer_call.post"
+      ],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "code": "R-6",
+      "name": "Adat- és elemzési referens",
+      "description": "Rekordként rögzíti a válaszokat, településrészenként és témánként jelent róluk, és világosan megmondja, mennyire volt reprezentatív a kör. Számot tesz közzé, soha nem személyt. Betöltheti mesterséges intelligencia: a válaszok rögzítése, a szabad szöveg témákba sorolása, a településrészenkénti lefedettség és a táblán látható számok előállítása olyan munka, amelyet a mesterséges intelligencia gyorsabban és egyenletesebben végez, mint egy ember. Az azonosítható válasz megnyitása a RU-4 szerint ember dolga marad.",
+      "powers": [],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "code": "R-7",
+      "name": "Adatvédelmi és iratkezelési felelős",
+      "description": "Őrzi a hozzájárulást, a megőrzést és a feljegyzést arról, ki olvasta az azonosítható válaszokat. Az a szerep, amely leállíthat egy kört, amely többet kérdez a szükségesnél. Soha nem tölti be mesterséges intelligencia. A szerep azért létezik, hogy le tudjon állítani egy kört.",
+      "powers": [
+        "form.approve"
+      ],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "code": "R-8",
+      "name": "Jegyző",
+      "description": "Az eredményt előterjesztésként a testület elé teszi, rögzíti a meghozott döntést, és fenntartja a kapcsolatot a döntés és az azt megalapozó egyeztetés között. Betöltheti mesterséges intelligencia az előterjesztés összeállítására és a döntés iktatására a követett körhöz. Azt, hogy mi volt a döntés, ember rögzíti.",
+      "powers": [
+        "join_request.decide",
+        "member.invite"
+      ],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "357d590b-55c0-4ae1-9c60-cd46dffe2fe5",
+      "code": "R-9",
+      "name": "Ellenőrző bizottság elnöke",
+      "description": "Utólag vizsgálja, hogy egy döntés tükrözte-e a meghallgatott véleményeket, és hogy a visszajelzésben tett ígéretek valóban megvalósultak-e. Betöltheti mesterséges intelligencia annak az átvizsgálására, hogy a közzétett ígéretet betartották-e. Hogy mi legyen a megszegettel, az az elnök dolga.",
+      "powers": [
+        "promise.record_outcome"
+      ],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "513ea7ed-e80a-4ed8-86c9-bacda9b55e47",
+      "code": "R-10",
+      "name": "Közösségi moderátor",
+      "description": "Használhatóan tartja az ötlettáblát: eltávolítja a visszaélést, összevonja az ismétlődéseket, és érintetlenül hagyja az önkormányzat bírálatát, ami az egész értelme. Betöltheti mesterséges intelligencia az első körben – visszaélés, ismétlődés és az összevonás, amely minden bejelentőt megtart –, minden eltávolítás ember előtt megfellebbezhető, az önkormányzat bírálatát pedig soha nem távolítják el.",
+      "powers": [],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "69df9114-1c76-4b7d-a1f5-6a8a8743675a",
+      "code": "R-11",
+      "name": "Szolgáltató céges kapcsolattartó",
+      "description": "Az önkormányzat kapcsolata azzal a céggel, amelyre a működtetési szolgáltatásait kiszervezte. Átadja, amit a lakosok jeleztek, és visszahozza, mi történt velük. Betöltheti mesterséges intelligencia az átadási lista követésére és korának nyomon követésére. A szerződéses egyeztetés emberé.",
+      "powers": [
+        "promise.record_outcome"
+      ],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "code": "R-12",
+      "name": "Pénzügyi referens",
+      "description": "Őrzi a díj- és illetékjegyzéket és a településrészenkénti kiadási képet. Része annak a működési bővítménynek, amelyet a sablon deklarál, nem a meghallgatásnak, amelyre épült. Soha nem tölti be mesterséges intelligencia. A pénz be- és kimenetele embernek az aláírását viseli.",
+      "powers": [],
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    }
+  ],
+  "goals": [
+    {
+      "id": "8b6c5693-023e-49a1-9e33-366a47dee59d",
+      "code": "G-1",
+      "title": "Tudjuk, kiket képviselünk",
+      "description": "Egyetlen nyilvántartás a határon belül élő emberekről, háztartásokról, vállalkozásokról és kereskedőkről, amely elég jó ahhoz, hogy ne csak azt mondja meg, ki válaszolt, hanem azt is, ki nem – mert az az önkormányzat, amely nem tudja megnevezni a településrészeket, ahonnan nem hallott, nem állíthatja, hogy egyeztetett.",
+      "ordinality": 1,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "629d4de4-dcf2-4a4e-9367-d2d1700c54a8",
+      "code": "G-2",
+      "title": "A teljes településrészt kérdezzük, nem a leghangosabbat",
+      "description": "Körök, amelyek elérik azokat is, akik eddig nem írtak: a kör megnyitása előtt rögzített módszer, okostelefon nélküli csatornák és minden eredménnyel együtt közzétett lefedettségi szám.",
+      "ordinality": 2,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "67f561ec-ecf2-4ca9-9ab3-70dfa44ed895",
+      "code": "G-3",
+      "title": "Elmondjuk, mit hallottunk, és mit változtatott",
+      "description": "Minden kör nyilvánosan zárul: a feltett kérdés, a számok, a követő döntés, és az indok, ha a testület másként döntött.",
+      "ordinality": 3,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "52009277-4757-460d-a02c-804a273fb209",
+      "code": "G-4",
+      "title": "Befogadjuk, amit az emberek a körök között hoznak",
+      "description": "Amit a lakosok kéretlenül jeleznek – a bejelentést, az ötletet, a panaszt – meghívjuk, nem várjuk; határidőn belül megválaszoljuk, megszámoljuk, ha sokan mondják ugyanazt, és ebből állapítjuk meg, mit kérdezünk legközelebb.",
+      "ordinality": 4,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "code": "G-5",
+      "title": "A háttérirodai működés elérhető marad, és kikapcsolt",
+      "description": "A díjak, engedélyek, településrészenkénti kiadások és a szolgáltató cég által karbantartott vagyon azért szerepelnek itt, hogy az önkormányzat lássa működni őket, és bekapcsolhassa, ha úgy dönt. Szándékosan ez a második felvonás.",
+      "ordinality": 5,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    }
+  ],
+  "objectives": [
+    {
+      "id": "3d7a5d84-fcae-4016-a298-2ba76e33fb42",
+      "code": "O-1",
+      "goal_id": "8b6c5693-023e-49a1-9e33-366a47dee59d",
+      "title": "Felépítjük a határon belüli személyek és dolgok nyilvántartását, és hagyjuk, hogy az emberek kijavítsák a saját rekordjukat",
+      "description": "Személyek, háztartások, vállalkozások és nem hivatalos kereskedők, valamint az ingatlanok és helyrajzi számok, amelyeken élnek, ahonnan kereskednek és amelyek után fizetnek – mindegyik településrészhez kötve, abból épülve, amit az önkormányzat már tart, nem népszámlálásból, és az abban szereplők javítják, minden rekordon feltüntetve a forrását. Egy nyilvántartás, nem tizenkét, osztályonként vezetett táblázat.",
+      "ordinality": 1,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T19:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8c5da11d-2fa4-40a9-a0a9-9e178b07c8b0",
+      "code": "O-2",
+      "goal_id": "8b6c5693-023e-49a1-9e33-366a47dee59d",
+      "title": "Jelentjük, mely településrészeken alig fedi le a nyilvántartás",
+      "description": "A nyilvántartás állítás arról, ki létezik, és a hiányos helyek pontosan azok, amelyeket egy egyeztetés elhibáz. Akkor teljesül, ha minden településrész lefedettsége a kör megnyitása előtt közzé van téve, és a hiányosakat megnevezik, nem pedig a rosszul sikerült kör után fedezik fel.",
+      "ordinality": 2,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b55af650-b34f-4932-bfa0-c4ee89fe8cc8",
+      "code": "O-3",
+      "goal_id": "8b6c5693-023e-49a1-9e33-366a47dee59d",
+      "title": "Együtt tartjuk az elérhetőséget és a hozzájárulást",
+      "description": "Az, hogy tudjuk, hogyan érjünk el valakit, csak akkor hasznos, ha ez a megkeresés jogszerű és bizonyítható. Akkor teljesül, ha az adott hozzájárulás úgy állítható elő, ahogy az megadásának napján volt, és a visszavonást az érkezésével azonos munkanapon végrehajtják.",
+      "ordinality": 3,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "45fbd76a-54fd-438a-8729-4e7bb09769a5",
+      "code": "O-4",
+      "goal_id": "629d4de4-dcf2-4a4e-9367-d2d1700c54a8",
+      "title": "Úgy indítunk kört, hogy a módszere előre le van írva",
+      "description": "Minden kör hordozza a kérdését, közönségét, időszakát, csatornáit és azt, hogyan olvassák a válaszokat – a megnyitás előtt rögzítve, hogy a módszert utólag ne lehessen az eredményhez igazítani. Akkor teljesül, ha a kör legalább négy hétig fut, vagy rögzíti, miért volt arányos a rövidebb időszak azzal, amit kérdez.",
+      "ordinality": 4,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a884d46f-3fed-4b21-9eef-a30916c10f2d",
+      "code": "O-5",
+      "goal_id": "629d4de4-dcf2-4a4e-9367-d2d1700c54a8",
+      "title": "Elérjük azokat, akik soha nem válaszolnak online",
+      "description": "Idősebb lakosok, adatforgalom nélküliek, az önkormányzatban nem bízók és akik egyszerűen nem olvasnak hirdetményt – papíron, piacokon és a kapuban elérve, és ugyanúgy megszámolva, mint mindenki mást. Akkor teljesül, ha minden kör megnevez legalább egy eszköz nélküli csatornát, és külön jelenti, mit hozott be.",
+      "ordinality": 5,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f75d2eac-f436-4d77-858a-4807c59abdd1",
+      "code": "O-6",
+      "goal_id": "629d4de4-dcf2-4a4e-9367-d2d1700c54a8",
+      "title": "Személyenként egyszer számolunk, és közzétesszük a nevezőt",
+      "description": "Személyenként egy hang, az ismétlődések indoklással elvetve, és minden eredmény számként a számból, hogy senkinek ne kelljen találgatnia, hogy negyven válasz felhatalmazás-e. A válaszarány, amelyet egy településrésznek el kell érnie, az önkormányzat saját küszöbe, a kör megnyitása előtt megnevezve és az eredménnyel együtt közzétéve.",
+      "ordinality": 6,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "91522658-9669-4ef0-b6c9-721ccf1e3bbd",
+      "code": "O-7",
+      "goal_id": "67f561ec-ecf2-4ca9-9ab3-70dfa44ed895",
+      "title": "Rekordként rögzítjük a válaszokat, településrészenként és témánként olvashatóan",
+      "description": "A válaszok az önkormányzat saját nyilvántartásába tartoznak, ahol körökön és településrészeken át is lehet kérdezni, nem abba az űrlapba, amelyik véletlenül begyűjtötte őket.",
+      "ordinality": 7,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8b21b0cf-2a3d-49cd-93af-cb46fe888e31",
+      "code": "O-8",
+      "goal_id": "67f561ec-ecf2-4ca9-9ab3-70dfa44ed895",
+      "title": "Az eredményt mindazzal közzétesszük, ami a megítéléséhez kell",
+      "description": "A feltett kérdés, az időszak, a csatornák, hányan válaszoltak hányból, a településrészenkénti bontás, és a szabad szöveg összefoglalva, megszépítés nélkül.",
+      "ordinality": 8,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c3e5fc5c-a753-4245-b5cf-f5f11c755dd6",
+      "code": "O-9",
+      "goal_id": "67f561ec-ecf2-4ca9-9ab3-70dfa44ed895",
+      "title": "A döntést beírjuk a kör jelentésébe",
+      "description": "Az önkormányzat döntése egy körről magába a kör jelentésébe kerül, az indoklással együtt, ha a meghallgatott vélemények súlya ellen szólt. Nincs külön döntési nyilvántartás.",
+      "ordinality": 9,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "db8aa6ec-2fd6-46d7-a73c-542bd8308f45",
+      "code": "O-10",
+      "goal_id": "67f561ec-ecf2-4ca9-9ab3-70dfa44ed895",
+      "title": "Elmondjuk a jelentés csoportjainak, mi történt",
+      "description": "Az eredmény eljut azokhoz a csoportokhoz, amelyeknek a kör jelentését közzéteszik, mint bármely jelentés. Aki nyilvános hivatkozáson át válaszolt és egyik csoportban sincs, azt nem értesítik. Nincs rá határidő, de az az egyeztetés, amely sosem jelent vissza, megtanítja az embereket, hogy ne válaszoljanak legközelebb.",
+      "ordinality": 10,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "73050afb-50f5-4699-9d29-d15eda0960e1",
+      "code": "O-11",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "Bárkitől, bármely csatornán, fiók nélkül fogadunk bejelentést",
+      "description": "Az ügyfélszolgálaton, telefonon, online, értekezleten, piaci pultnál vagy képviselőn át – mindkét esetben ugyanaz a rekord. A lakos maga adja be, a képviselő az ő nevében, vagy a terepi segítő rögzíti, a felvevő nevét feltüntetve.",
+      "ordinality": 11,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a86d61fc-5e11-511d-a253-cbef063febef",
+      "code": "O-12",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "Kérünk bejelentéseket a körök között, nem várunk rájuk",
+      "description": "Az az önkormányzat, amely csak azoktól hall, akik keresik, ugyanazt a keveset hallja. Akkor teljesül, ha minden településrészt megadott időközönként megkérdeznek, mit szeretne felvetni – azokon a csatornákon, amelyeket a lakosai valóban használnak, köztük egy eszköz nélkülin.",
+      "ordinality": 12,
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1ec7cfb5-bedb-4aa1-8ba8-750246c5baf5",
+      "code": "O-13",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "Visszaigazoljuk, iktatószámot adunk, és láthatóvá tartjuk, amíg él",
+      "description": "Aki bejelentést tett, öt munkanapon belül iktatószámot, tíz munkanapon belül választ kap; mindenki más láthatja, mit jeleztek, mit vizsgálnak és mit döntöttek, az elutasításokat is. Ami lejárt határidejű, az a lejártak listáján áll, amelyet a testület minden ülésen lát.",
+      "ordinality": 13,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "23ba0eed-2551-588f-80b8-8d377b5df514",
+      "code": "O-14",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "Megszámoljuk, hányan jeleztek ugyanazt, és megnevezzük a településrészeket, amelyek semmit sem jeleznek",
+      "description": "Negyven ember, aki ugyanazt jelzi, az a szám, amely a táblát politikailag hasznossá teszi, ezért az ismétlődések összevonása minden jelzőt megtart, nem eldobja őket. És a hallgatás is információ: azok a településrészek, amelyek ebben a negyedévben semmit sem jeleztek, a tábla mellett közzé vannak téve, ugyanazért, amiért egy kör közzéteszi a lefedettségét.",
+      "ordinality": 14,
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fe3f3fe5-ef4a-446a-8904-f0327c93f2db",
+      "code": "O-15",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "Átadjuk az üzemeltetési ügyeket, és követjük, mi jött vissza",
+      "description": "A lakosok jelzéseinek többsége annak a cégnek a munkája, amelyre az önkormányzat kiszervezte a szolgáltatásait. A testület dolga: továbbadni, tudni, mi történt, és ezt nyilvánosan el tudni mondani.",
+      "ordinality": 15,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "165a04e2-5aa8-5eaf-a7a1-c1ddab558a2a",
+      "code": "O-16",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "Hagyjuk, hogy amit az emberek folyton jeleznek, meghatározza, mit kérdezünk legközelebb",
+      "description": "A tábla a legolcsóbb napirend, amit egy önkormányzat valaha kaphat. Akkor teljesül, ha egy kör kérdése meg tudja nevezni a jelzéseket, amelyekből származik, és a negyedévben leggyakrabban jelzett témák annak elé kerülnek, aki eldönti, mit kérdez a következő kör.",
+      "ordinality": 16,
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "745e334b-3b7f-43b1-b326-4c76f15eb3cb",
+      "code": "O-17",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "Közzétesszük a díj- és illetékjegyzéket",
+      "description": "A háttérirodai működés legkönnyebb és politikailag legsúlyosabb része: amit az önkormányzat felszámít, közzétéve a hatályos változatban, mielőtt alkalmazzák.",
+      "ordinality": 17,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cef6d5a1-9ad9-4533-bae0-135a299334f1",
+      "code": "O-18",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "Kérelmeket és engedélyeket kezelünk, ha a testület bekapcsolja",
+      "description": "Kérelem, ellenőrzés, döntés megjelölt indokkal, díj és megújítás – benne van és bemutatható, arra a testületre várva, amelyik a zárt kört akarja.",
+      "ordinality": 18,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b7df40cb-c79e-429f-9842-9e6e5ff2bf69",
+      "code": "O-19",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "Megmutatjuk, mennyit költöttünk településrészenként, ha a testület bekapcsolja",
+      "description": "Költségvetés a tényhez képest településrészenként és szolgáltatásonként, ami az a válasz, amellyel minden közmeghallgatás végződik. A költségvetés településrészenként és szolgáltatásonként saját számlakészletként van vezetve, így a megszavazott és az elköltött ugyanolyan rekord, és egymás mellett olvasható.",
+      "ordinality": 19,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T19:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c3c61c36-001c-59ac-b982-585548693471",
+      "code": "O-20",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "Rögzítjük, ki mit hagyhat jóvá, és mekkora összegig",
+      "description": "Melyik szerep engedélyezhet kifizetést, engedélyt vagy szerződést, és mekkora az a határ, amely fölött mást kell megkeresni. A szerephez írva, nem valakinek a fejében hordva, hogy a jóváhagyás utólag ellenőrizhető legyen az aznap érvényes határhoz.",
+      "ordinality": 20,
+      "created_at": "2026-10-01T19:00:00Z",
+      "last_updated": "2026-10-01T19:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8709cc2a-9404-55a2-b637-b7dadfdf986d",
+      "code": "O-21",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "A felfelé menő jelentést ugyanazokból a számokból készítjük, amelyeket közzétettünk",
+      "description": "Testületi jelentések, költségvetés a tényhez képest osztályonként és településrészenként, és az országos szint által kért jelentések – ugyanazokból a rekordokból, amelyeket az önkormányzat helyben közzétett, hogy a lakosnak adott szám és a felfelé küldött szám ne térhessen el.",
+      "ordinality": 21,
+      "created_at": "2026-10-01T19:00:00Z",
+      "last_updated": "2026-10-01T19:00:00Z",
+      "deleted": false
+    }
+  ],
+  "values": [
+    {
+      "id": "bd6895e6-099a-40e3-b06a-f2df703cc793",
+      "code": "V-1",
+      "text": "Az az egyeztetés, amely csak a hangosakat hallja, jobban félrevezeti a testületet, mint ha nem is lett volna egyeztetés, mert egy szám tekintélyében érkezik.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "9d511392-1672-4f6c-97e8-57294026a26e",
+      "code": "V-2",
+      "text": "Elmondjuk, mi változott azért, mert az emberek megszólaltak – és akkor is, ha semmi sem, és miért. A második fajta válasz az, ami elhitetővé teszi az elsőt.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "43018dbc-730b-4de9-a5b5-4f4487c8721c",
+      "code": "V-3",
+      "text": "Számot teszünk közzé, nem személyt. Minden, amit ez az ügynökség gyűjt, valamilyen fokú bizalommal adatik, és ez a bizalom a vagyon.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "0c1775d7-bd45-45f2-8e7d-c06b447e88fa",
+      "code": "V-4",
+      "text": "A testület csak azt kérdezi, amire hajlandó cselekedni, vagy világosan kimondja, hogy azért kérdez, hogy tanuljon. Az a kérdés, amelynek a válasza semmit sem változtat, az emberek megtanítása arra, hogy a válaszadásnak nincs értelme.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "22bcd033-479d-49b9-a656-7423b849d7b9",
+      "code": "V-5",
+      "text": "Senkinek ne kelljen okostelefon ahhoz, hogy meghallgassák. Az online legnehezebben elérhető lakosoknak van gyakran a legtöbb tétjük a döntésben.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4a2f8b9b-08c1-580f-b208-cb77f62c4cf9",
+      "code": "V-6",
+      "text": "A nyilvántartás állítás arról, ki létezik. A testület legalább annyira felel azokért, akik hiányoznak belőle, mint azokért, akik benne vannak.",
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "21f038bf-d3cc-52e2-9778-0b94ec12ad4c",
+      "code": "V-7",
+      "text": "Amit valaki kérés nélkül hoz, az többet ér annak, amit kérésre mond, mert ő választotta a témát. Az a testület, amely csak a saját kérdéseire kap választ, soha nem tudja meg, mit felejtett el megkérdezni.",
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "67e2a84a-9134-5530-a790-5a910c9d5993",
+      "code": "V-8",
+      "text": "Amit az önkormányzat felszámít, és amit egy településrészen költött, az nyilvános, mielőtt bárkinek kérnie kellene. A háttérirodai működés azért sötét ebben a sablonban, mert a testület nem kérte, nem azért, mert a számok bárki titkai.",
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "81feaea0-b58e-5387-ac91-dd5771ce6da2",
+      "code": "V-9",
+      "text": "A szám, amelyet a lakos kap, és a szám, amelyet az országos szintre küldenek, ugyanaz a szám. Az az önkormányzat, amely felfelé egy számot jelent, lefelé pedig másikat, két könyvelést vezet, bárminek is nevezze.",
+      "created_at": "2026-10-01T19:00:00Z",
+      "last_updated": "2026-10-01T19:00:00Z",
+      "deleted": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "07cb6fb8-0504-45eb-8b7b-dd6eb3e4c281",
+      "code": "RU-1",
+      "text": "A kör lefedettségének közzétételével zárul: településrészenként hányan válaszoltak hányhoz képest, akiket a nyilvántartás ott tart, a kör saját minimuma alatti minden településrészt megnevezve.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4751cad1-95f0-46c9-afa2-1f6c8516c74e",
+      "code": "RU-2",
+      "text": "A válasz személyenként egyszer számít. Az ismétlődést indoklással elvetjük, és az elvetések számát az eredménnyel együtt közzétesszük.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "9cb7488c-c3ae-4867-a588-4daa87a33443",
+      "code": "RU-3",
+      "text": "A közzétett eredmény hordozza a feltett kérdést, az időszakot, a használt csatornákat, és azt, hogy hányan válaszoltak hányból, akik válaszolhattak volna.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "5bf2fe00-4074-4569-9fa4-7453e3d8200d",
+      "code": "RU-4",
+      "text": "Az azonosítható válaszokat csak az Adat- és elemzési referens és az Adatvédelmi és iratkezelési felelős olvashatja, csak annak a körnek a keretében, amelyben adták, és csak rögzített cél ellenében.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ccef07f4-8b6c-4ceb-a614-4e72df015ede",
+      "code": "RU-5",
+      "text": "A meghallgatott vélemények súlya ellen hozott döntés az indokát magába a kör jelentésébe írja, ugyanabba a jelentésbe, amely az eredményt hordozza.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "5908e80e-eef7-48bb-b75d-19419043aa0a",
+      "code": "RU-6",
+      "text": "Egy kör sem fut kizárólag digitális csatornákon. Minden kör megnevez legalább egy eszköz nélküli csatornát, és jelenti, mit hozott be.",
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "93c3ccd1-00a3-58ac-8e39-a523ae757eeb",
+      "code": "RU-7",
+      "text": "A bejelentést öt munkanapon belül visszaigazoljuk, és tíz munkanapon belül megválaszoljuk. Ami túllépi a határidőt, az a lejártak listáján áll, amelyet a testület minden ülésen lát.",
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "588182e5-684e-53ec-ae3d-89c16984c9b0",
+      "code": "RU-8",
+      "text": "A tábla közzéteszi a saját számait: hányan jeleztek egy-egy dolgot, és mely településrészek nem jeleztek semmit ebben a negyedévben.",
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "44fcfded-e6ce-59c6-b612-7d9aa85a3594",
+      "code": "RU-9",
+      "text": "A nyilvántartás lefedettsége a kör megnyitása előtt településrészenként közzé van téve, és egyetlen településrész sem számít megkérdezettnek ott, ahol a nyilvántartás a testület saját küszöbe alatt van.",
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e8bbc7fd-cecf-528a-aab2-256bd681ea19",
+      "code": "RU-10",
+      "text": "A valaki nevében tett bejelentés megnevezi, ki tette, és kitől származik, és akitől származik, azt értesítik, hogy bejelentették.",
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c37efea6-de11-52f5-8304-e5eb3d1b6745",
+      "code": "RU-11",
+      "text": "Díjat csak azután számítunk fel, hogy a jegyzékét a hatályos változatban közzétettük.",
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f3cff6d5-efad-5c58-a1d1-220524a22a0a",
+      "code": "RU-12",
+      "text": "Kifizetést, engedélyt vagy szerződést nem hagyunk jóvá a jóváhagyó szerephez rögzített határ fölött, és az aznap érvényes határhoz ellenőrizzük.",
+      "created_at": "2026-10-01T19:00:00Z",
+      "last_updated": "2026-10-01T19:00:00Z",
+      "deleted": false
+    }
+  ],
+  "value_attachments": [
+    {
+      "id": "6ce89b92-61ad-417b-834a-e003886a083c",
+      "value_code": "V-1",
+      "target_type": "objective",
+      "target_code": "O-5",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "e4540e8f-e22f-4ec5-811e-02ce4464ed3f",
+      "value_code": "V-2",
+      "target_type": "objective",
+      "target_code": "O-10",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "7fb3e684-6b93-4512-96e1-fd6ab46bcbed",
+      "value_code": "V-3",
+      "target_type": "objective",
+      "target_code": "O-8",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "6c68ff92-95f2-4dca-8177-93deca402bd2",
+      "value_code": "V-4",
+      "target_type": "objective",
+      "target_code": "O-4",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "35c73455-5f73-4c47-a033-c79f18dec42a",
+      "value_code": "V-5",
+      "target_type": "objective",
+      "target_code": "O-5",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "2a30c3e8-abdd-5d8b-90a6-940b0900e03b",
+      "value_code": "V-6",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-10-01T18:00:00Z"
+    },
+    {
+      "id": "312b6f1b-f084-5df3-a81b-4ebb14c38b7a",
+      "value_code": "V-7",
+      "target_type": "objective",
+      "target_code": "O-11",
+      "created_at": "2026-10-01T18:00:00Z"
+    },
+    {
+      "id": "11ac3352-b487-53aa-a541-7715c46e8e0c",
+      "value_code": "V-3",
+      "target_type": "objective",
+      "target_code": "O-3",
+      "created_at": "2026-10-01T18:00:00Z"
+    },
+    {
+      "id": "b25819de-9f6b-595e-9a4f-ce797aeb24c0",
+      "value_code": "V-8",
+      "target_type": "objective",
+      "target_code": "O-17",
+      "created_at": "2026-10-01T18:00:00Z"
+    },
+    {
+      "id": "b9d0e8b7-f636-5a63-a4aa-6a768fe2d232",
+      "value_code": "V-2",
+      "target_type": "objective",
+      "target_code": "O-13",
+      "created_at": "2026-10-01T18:00:00Z"
+    },
+    {
+      "id": "98779baa-9422-5614-bcca-e4b742436961",
+      "value_code": "V-9",
+      "target_type": "objective",
+      "target_code": "O-21",
+      "created_at": "2026-10-01T19:00:00Z"
+    }
+  ],
+  "rule_attachments": [
+    {
+      "id": "f4c020da-c6c2-42b4-b0a5-e999e068d592",
+      "rule_code": "RU-1",
+      "target_type": "objective",
+      "target_code": "O-6",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "f107d4bd-d17a-43ff-8abf-ee00a3c1185e",
+      "rule_code": "RU-2",
+      "target_type": "objective",
+      "target_code": "O-6",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "1c79d231-ea4c-455e-a294-7d37528232bb",
+      "rule_code": "RU-3",
+      "target_type": "objective",
+      "target_code": "O-8",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "e4443093-e419-4e5b-ae1f-98df55f57720",
+      "rule_code": "RU-4",
+      "target_type": "objective",
+      "target_code": "O-7",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "e38b87b4-8fe7-40d7-9a9f-acb4f46b97a1",
+      "rule_code": "RU-5",
+      "target_type": "objective",
+      "target_code": "O-9",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "0d9fae83-d6cf-49b3-ae83-524fec11e6af",
+      "rule_code": "RU-6",
+      "target_type": "objective",
+      "target_code": "O-4",
+      "created_at": "2026-10-01T10:00:00Z"
+    },
+    {
+      "id": "aa3f4808-7e9d-573a-83af-3bf594f4793f",
+      "rule_code": "RU-7",
+      "target_type": "objective",
+      "target_code": "O-13",
+      "created_at": "2026-10-01T18:00:00Z"
+    },
+    {
+      "id": "5846a00c-8074-5f8e-8b10-6aa271396841",
+      "rule_code": "RU-8",
+      "target_type": "objective",
+      "target_code": "O-14",
+      "created_at": "2026-10-01T18:00:00Z"
+    },
+    {
+      "id": "41f0d85a-ff54-5142-b585-a3bc1bc98083",
+      "rule_code": "RU-9",
+      "target_type": "objective",
+      "target_code": "O-2",
+      "created_at": "2026-10-01T18:00:00Z"
+    },
+    {
+      "id": "6733eb99-d91d-548e-8ec5-976513d5eea5",
+      "rule_code": "RU-10",
+      "target_type": "objective",
+      "target_code": "O-11",
+      "created_at": "2026-10-01T18:00:00Z"
+    },
+    {
+      "id": "e2162218-f2e8-5ee0-ae34-0b994fe605cc",
+      "rule_code": "RU-11",
+      "target_type": "objective",
+      "target_code": "O-17",
+      "created_at": "2026-10-01T18:00:00Z"
+    },
+    {
+      "id": "0968c472-7728-571a-b2af-99dd0c5c330f",
+      "rule_code": "RU-12",
+      "target_type": "objective",
+      "target_code": "O-20",
+      "created_at": "2026-10-01T19:00:00Z"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "11873309-3e5a-49fe-9a9c-bde15a396b4b",
+      "code": "W-1",
+      "name": "Nyilvántartás karbantartása",
+      "description": "Hogyan épül fel a személyek, háztartások és vállalkozók nyilvántartása, hogyan javíthatják ki a benne szereplők a saját adataikat, és hogyan jelentjük, hol vékony a lefedettség.",
+      "ordinality": 1,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "code": "W-2",
+      "name": "Konzultációs kör az elejétől a végéig",
+      "description": "Attól kezdve, hogy az önkormányzat úgy dönt, megkérdezi a lakosokat, a kérdőíven, a csatornákon és a kitöltési időszakon át a beérkezett, megszámolt és közzétett eredményig.",
+      "ordinality": 2,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "code": "W-3",
+      "name": "Amit a lakosok hozzánk hoznak",
+      "description": "Attól a pillanattól, hogy egy bejelentés bármelyik csatornán megérkezik – a lakos maga teszi, egy képviselő a nevében rögzíti, vagy a terepen dolgozó kapcsolattartó csapat veszi fel –, a visszaigazoláson és a nyilvános kimeneten át annak megszámolásáig, hányan jelezték ugyanazt, egészen a következő kör kérdéséig. Az MI-szerepek csak fogalmazhatnak, összegezhetnek, utánajárhatnak és számolhatnak; a nyilvánosság elé kerülő dolgot mindig ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "cbf93209-e58f-481d-b852-771875a8e196",
+      "code": "W-4",
+      "name": "Az eredménytől a döntésen át a visszajelzésig",
+      "description": "Hogyan lesz a közzétett eredményből testületi előterjesztés, rögzített döntés és üzenet azoknak, akik válaszoltak.",
+      "ordinality": 4,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "code": "W-5",
+      "name": "Az ügyintézés háttere",
+      "description": "Az ügyintézés háttere, amelyet az önkormányzat később kapcsolhat be: mit számláz, a kérelmek és engedélyek az elejétől a végéig, a költségvetés és a tényleges kiadás városrészenként, ki mit hagyhat jóvá és mekkora összeghatárig, valamint a felfelé küldött beszámoló.",
+      "ordinality": 5,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T19:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "737fb031-0765-4f43-a673-4d475e822b79",
+      "code": "WI-1",
+      "workflow_id": "11873309-3e5a-49fe-9a9c-bde15a396b4b",
+      "title": "Építsük fel a nyilvántartást abból, amit az önkormányzat már tart",
+      "description": "Az első változatot a meglévő listákból állítsuk össze, ne népszámlálásból.",
+      "prompt": "Abból dolgozzunk, ami a Zöldhalom Város Önkormányzatánál már megvan: a választói névjegyzék, az ingatlan- vagy helyrajzi szám lista, a vállalkozói és piaci jegyzékek, valamint az egyes osztályok levelezési listái. Az ingatlanokat önálló rekordként töltsük be, ne egy személyhez gépelt címként, mert a díj, a háztartás és a vállalkozó végül mind az ingatlanra mutat. Minden rekordot rendeljünk városrészhez (Óváros, Kertváros, Malomsor vagy Határrét), és jegyezzük fel, melyik forrásból származik, mert az ismeretlen eredetű rekordot később nem lehet sem kijavítani, sem megvédeni. Két forrást ne vonjunk össze egy személlyé, hacsak nem azonosítja őket valóban valami ugyanannak a személynek; a duplikátussal könnyebb együtt élni, mint egy tévesen összevont rekorddal. Az MI-szerep csak összegezhet, számolhat és összevonási javaslatot fogalmazhat; az összevonást és a nyilvános közlést ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8a85b2ee-0781-43c5-991d-97250bf50d7c",
+      "code": "WI-2",
+      "workflow_id": "11873309-3e5a-49fe-9a9c-bde15a396b4b",
+      "title": "Engedjük, hogy mindenki kijavítsa a saját rekordját",
+      "description": "Adjuk meg a lakosnak a lehetőséget, hogy kijavítsa, amit az önkormányzat róla tart.",
+      "prompt": "Mutassuk meg a lakosnak, mit tart róla a nyilvántartás – a városrészét, az elérhetőségét, azt, hogyan szeretné, ha megkeresnék –, és hagyjuk, hogy fiók nélkül, indoklás nélkül kijavítsa. Jegyezzük fel, hogy a módosítás a személytől jött, nem a hivataltól. Csak a nyilvánosan javítható nyilvántartás marad igaz. Az MI-szerep legfeljebb emlékeztetőt fogalmazhat vagy a beérkezett javításokat megszámolhatja; a rekord átírását ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "070b7309-a0e2-486d-a171-cb22c0b66fca",
+      "code": "WI-3",
+      "workflow_id": "11873309-3e5a-49fe-9a9c-bde15a396b4b",
+      "title": "Jelentsük, hol vékony a nyilvántartás",
+      "description": "Tegyük közzé magának a nyilvántartásnak a lefedettségét városrészenként.",
+      "prompt": "Minden városrészre jelentsük, hány személyt tart nyilván a rendszer az ott élők legjobb külső becsléséhez képest, és ezek közül hány rekordhoz tartozik használható elérhetőség. Negyedévente nevezzük meg a három legvékonyabb városrészt. Ezekben kell a kapcsolattartó munkát (O-5) elvégezni a következő kör előtt, nem utána. A számokat az MI-szerep összeszámolhatja és szövegesen összegezheti; a közzétételt ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ff2b30a0-8de5-4fe5-a654-b460b72e3ee9",
+      "code": "WI-4",
+      "workflow_id": "11873309-3e5a-49fe-9a9c-bde15a396b4b",
+      "title": "A hozzájárulást verzióként rögzítsük, ne pipaként",
+      "description": "Rögzítsük, mibe egyezett bele valaki, azokkal a szavakkal, amelyeket látott.",
+      "prompt": "Jegyezzük fel, melyik hozzájárulási szöveget, melyik nyelven és melyik verzióban látta a személy, amikor beleegyezett, és mire terjedt ki: konzultációs megkeresésre, azonosított válasz elolvasására, közzétett idézetben való szereplésre. Magát a szöveget őrizzük meg, ne az „adatvédelmi tájékoztatóra” való hivatkozást, mert a tájékoztató változni fog, a kérdés pedig, hogy mibe egyeztek bele, azon a napon lesz feltéve, amikor beleegyeztek.",
+      "ordinality": 4,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8c99e143-7acf-497a-af1d-4326ef7eecb0",
+      "code": "WI-5",
+      "workflow_id": "11873309-3e5a-49fe-9a9c-bde15a396b4b",
+      "title": "A visszavonást még aznap hajtsuk végre",
+      "description": "Tegyük könnyűvé a leállítást, és bizonyítsuk, hogy leállt.",
+      "prompt": "Fogadjunk el visszavonást bármely csatornán, a képviselőnek szóban elmondottat is, és még aznap alkalmazzuk minden csatornán. Jegyezzük fel, mikor érkezett és mikor lépett hatályba. Igazoljuk vissza a személynek. Az az önkormányzat, amely lassan hagyja abba valaki megkeresését, már elvesztette a vitát arról, rábízható-e az illető véleménye.",
+      "ordinality": 5,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "17c9844f-f79b-401b-8a24-f43fc61f5e2d",
+      "code": "WI-6",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "title": "Fogalmazzuk meg azt a kérdést, amelyre az önkormányzat valóban hajlandó cselekedni",
+      "description": "A politikai szándékból olyan kérdést csinálunk, amelyet érdemes feltenni.",
+      "prompt": "A kérdést úgy írják meg, hogy minden válasz olyan irányba vigyen, amerre az önkormányzat valóban elindulhat. A kör saját dokumentációjában rögzítsék, mit tesz az önkormányzat a valószínű kimenetelek mindegyikével, és ha a döntést törvény, pénz vagy szerződés már korlátozza, ezt magában a kérdésben mondják ki. Ha az őszinte válasz az, hogy az önkormányzat tanulni akar, nem pedig kötelezettséget vállalni, ezt írják le, és a kérdéssel együtt tegyék közzé.",
+      "ordinality": 1,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "06084f8f-999b-4f45-8313-5eb2810b4f9b",
+      "code": "WI-7",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "title": "Az eljárást írásban rögzítjük, mielőtt a kör megnyílik",
+      "description": "Rögzítjük, hogyan olvassuk majd a válaszokat, amíg a válaszokat még nem ismerjük.",
+      "prompt": "Rögzítsék a célközönséget, az időszakot, a csatornákat, a kör által célzott legalacsonyabb elérést, a szabad szöveg témákba rendezésének módját és az eredmény közlésének módját. A kör megnyitása előtt az Ellenőrző bizottság elnöke is lássa. Ez a dokumentum különbözteti meg a konzultációt az egyetértés keresésétől.",
+      "ordinality": 2,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f6beb45e-c307-4b3f-b45a-874010018ccb",
+      "code": "WI-8",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "title": "A kérdőívet ellenőriztetjük, mielőtt kiküldjük",
+      "description": "Ellenőrizzük, hogy a kör nem kér többet, mint amennyi szükséges.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős a kör céljához méri a kérdőívet: minden azonosító kérdésnek ki kell érdemelnie a helyét, és ami egy kis városrész válaszait egyetlen háztartáshoz kötné, azt durvítani vagy el kell hagyni. Az ellenőrzést és az ennek nyomán történt változtatásokat rögzítsék.",
+      "ordinality": 3,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "1d6dac0c-7120-4285-b441-0b715658c76f",
+      "code": "WI-9",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "title": "Kijelöljük a csatornákat, köztük egy olyat is, amelyhez nem kell eszköz",
+      "description": "Még a kérdés kiküldése előtt megtervezzük az elérést.",
+      "prompt": "Soroljanak fel minden csatornát, amelyet a kör használni fog, és hogy kiket kíván elérni. Legalább az egyiknek okostelefon nélkül és a hivatalos nyelv ismerete nélkül is használhatónak kell lennie: papír a piacon, asztal egy lakossági fórumon, kopogtatás a kapukon, telefonvonal. Nevezzék meg a csatornák felelősét és azt, hány embert várnak elérni vele.",
+      "ordinality": 4,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b1d037ac-626c-4c66-892e-522e7f4608c8",
+      "code": "WI-10",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "title": "Személyesen gyűjtünk, és hiánytalanul visszahozzuk",
+      "description": "Lebonyolítjuk a kör papíralapú felét, és ugyanabba a nyilvántartásba visszük, mint a többit.",
+      "prompt": "Papíron vagy beszélgetésben, ugyanazokkal a kérdésekkel, ugyanabban a sorrendben gyűjtsenek, mint az online kérdőíven. Rögzítsék, hol, mikor és ki gyűjtötte az egyes köteget. A köteget a kör időszakán belül vigyék be, soha nem a lezárása után, és a papírt őrizzék meg a kör megőrzési idejének végéig. A későn bevitt válasz olyan válasz, amely csendben nem számított.",
+      "ordinality": 5,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d7f39d65-9066-4051-be01-65357163f048",
+      "code": "WI-11",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "title": "Személyenként egyszer számolunk, és rögzítjük, mit hagytunk ki",
+      "description": "A számolást védhetővé tesszük, mielőtt közzétesszük.",
+      "prompt": "A válaszokat, ahol lehet, párosítsák a nyilvántartáshoz, a duplikátumokat pedig az indok rögzítésével hagyják el. A kihagyott válaszok számát az eredmény mellett közöljék. Ahol egy válasz nem párosítható senkivel a nyilvántartásban, azt is számolják meg, és mondják meg, hány ilyen volt: a nem párosítható válasz egy olyan lakos, akit a nyilvántartás nem ismer, ami az O-2 célhoz tartozó megállapítás, nem ok arra, hogy eldobjuk, amit mondott.",
+      "ordinality": 6,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "10ed3795-5012-46ae-926a-edcffa2ccc0d",
+      "code": "WI-12",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "title": "A válaszokat betöltjük a nyilvántartásba",
+      "description": "A válaszokat kivesszük a kérdőívből, és olyan nyilvántartásba tesszük, amely túléli azt.",
+      "prompt": "Minden választ az önkormányzat saját nyilvántartásába írjanak be, a körhöz, a városrészhez és vagy egy személyhez, vagy egy kifejezett névtelen jelöléshez kötve. A szabad szöveget rendezzék témákba, és az eredeti szavakat tartsák meg a téma mellett. Mielőtt bárki számot közölne, vessék össze a betöltött és a begyűjtött darabszámot, és ami nem tölthető be, azt sorolják fel ahelyett, hogy csendben elhagynák. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "ordinality": 7,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "af6298f9-42a7-47c6-9d39-1121438732cc",
+      "code": "WI-13",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "title": "Közzétesszük a lefedettséget, városrészenként",
+      "description": "Ugyanabban a lélegzetben mondjuk meg, kiket hallottunk meg és kiket nem, mint az eredményt.",
+      "prompt": "Városrészenként közöljék, hányan válaszoltak a nyilvántartásban szereplők közül, és jelöljenek meg minden olyan városrészt, amely a kör saját minimuma alá esett. Mondják ki egyenesen, hol nem reprezentatív az eredmény. Egy négy meg nem hallgatott városrésszel zárult kör is hasznos, ha senki, aki olvassa, nem hiszi, hogy e négy nevében beszél, például Óváros, Kertváros, Malomsor vagy Határrét. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "ordinality": 8,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e7e289ed-1b8a-4412-9734-b664c48a129b",
+      "code": "WI-14",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "title": "Vegyünk fel bejelentést bármely csatornán, a lakostól vagy a nevében",
+      "description": "Rögzítsük, amit valaki hozott, anélkül hogy dolgoztatnánk érte, és nevezzük meg, ki vette fel.",
+      "prompt": "Fogadjuk el, bármilyen formában érkezik: a nyilvános űrlapba gépelve, a pénztárnál telefonon felolvasva, a piaci standon papírlapra írva vagy ülésen egy képviselőnek átadva. Csak négy dolgot kérdezzünk: mi, hol, melyik városrészben, és hogyan érhető el – az utolsót hagyjuk megtagadni. Ahol fénykép segít, vegyük fel; egy beomlott víznyelő képe eldönt egy vitát, amit egy bekezdés nem. Ha más rögzíti a nevében, nevezzük meg a rekordon őt és azt is, kitől származik a bejelentés, majd értesítsük az illetőt, hogy rögzítették, ugyanazzal az azonosítóval. Soha ne kérjünk fiókot, mielőtt meghallgatnánk a lakost. Az MI-szerep a beérkezett bejelentést csak összegezheti és besorolási javaslatot fogalmazhat; ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "97727df1-5fea-5cc2-863b-6ac2c7bb48f3",
+      "code": "WI-15",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "title": "Kérdezzük meg a városrészt, mit szeretne napirendre tűzni",
+      "description": "Menjünk ki és kérdezzünk meghatározott ütemben, ne az ügyfélszolgálaton várjunk.",
+      "prompt": "Olyan ütemet válasszunk, amelyet az önkormányzat tartani tud – a havi jobban tartható, mint a heti –, és tartsuk is, mert a kétszer érkező, aztán elmaradó felhívás rosszabb a semminél. Állandó közleményként tegyük közzé minden városrésznek külön, nem az egész településnek, hogy a válasz már eleve hozzárendelhető legyen; a lakosok a közlemény szálában válaszolnak, a városrész szobájában. Azt a csatornát használjuk, amelyet az adott városrész lakói valóban használnak, és legyen köztük olyan is, amelyhez nem kell eszköz: közlemény a piacon, egy szó az imaházban, egy lap, amelyet a kapcsolattartó csapat magával visz. Mondjuk ki világosan, mire képes és mire nem képes az önkormányzat, és mondjuk el, mi lett az előző csomaggal – a látható eredményt követő felhívásra válaszolnak, a csendet követőre nem. Az MI-szerep csak megfogalmazhatja és kiküldésre előkészítheti a felhívást, majd összeszámolhatja a válaszokat; a kiküldést ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-23T06:30:00Z",
+      "deleted": false
+    },
+    {
+      "id": "918ab0aa-62aa-5eb1-a11e-d68c4a95dba1",
+      "code": "WI-16",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "title": "Igazoljuk vissza határidőn belül",
+      "description": "Adjunk a személynek azonosítót és dátumot öt munkanapon belül.",
+      "prompt": "A visszaigazolás nem a válasz, és nem is szabad annak látszania: azt mondja, hogy megvan, ez az azonosítója, ez tartja kézben, és ekkor kap választ. Azon a csatornán küldjük, amelyen érkezett. Ahol a bejelentő nem adott elérhetőséget, az azonosító akkor is létezik, és a nyilvános tábláról megnyitja az ügyet, így az is követheti, aki semmit nem adott meg. Ugyanabban a pillanatban indítsuk el a tartalmi válaszra szóló tíz munkanapos órát, és hagyjuk nyilvánosan járni. Az MI-szerep a visszaigazolás szövegét előkészítheti és a határidőket figyelheti; a kiküldést ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6fe19625-38d5-42d7-9eda-acdac8249b1e",
+      "code": "WI-17",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "title": "Moderáljunk anélkül, hogy elnémítanánk",
+      "description": "Tartsuk használhatóan a táblát, és hagyjuk rajta a kritikát.",
+      "prompt": "Töröljük a gyalázkodást, a személyes támadásokat és mindent, ami magánszemélyt azonosít. Vonjuk össze a duplikátumokat, és mondjuk ki ezt nyilvánosan. Az önkormányzat, döntései és tisztviselői elleni kritikát hagyjuk a helyén. Minden törlést indokkal együtt jegyezzünk fel, és hagyjuk, hogy aki közzétette, lássa az indokot. Az MI-szerep csak megjelölhet és javaslatot fogalmazhat; a törlésről ember dönt.",
+      "ordinality": 4,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b329dbe3-c294-45c5-95c0-75f843127034",
+      "code": "WI-18",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "title": "Irányítsuk, és tartsuk láthatóan",
+      "description": "Adjunk gazdát, és hagyjuk, hogy a nyilvánosság lássa, hogyan halad.",
+      "prompt": "Rendeljünk minden tételt ahhoz a képviselőhöz vagy tisztviselőhöz, aki válaszolni fog rá, és tűzzük ki a dátumot, amelyre válaszol. Mutassuk meg a nyilvánosságnak, milyen állapotban van. Ahol a válasz nem, tegyük közzé a nemet az indokával együtt – a nyitott tételek tábláját, amelyen soha semmit nem utasítanak el, senki nem hiszi el. Az MI-szerep csak emlékeztethet és utánajárhat a határidőkre; az elutasítást és annak közzétételét ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "edbc8405-988f-5f16-96e0-29b16cd83651",
+      "code": "WI-19",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "title": "Számoljuk meg, hányan jelezték ugyanazt",
+      "description": "Vonjuk össze a duplikátumokat úgy, hogy egyetlen jelzőt se veszítsünk el.",
+      "prompt": "Kétszáz bejelentés egyetlen kereszteződésről a legerősebb politikai tény, amit a tábla valaha előállít, és abban a pillanatban megsemmisül, amikor az összevonás elveszíti a második jelzőt. Ezért a tételt vonjuk össze, soha nem a személyeket: minden jelző csatolva marad, megtartja a saját azonosítóját, és egyenként értesül az eredményről. Tegyük közzé a számot a táblán – a „43 ember jelezte” az, ami előrébb visz egy tételt a napirenden. Ha az összevonás téves, legyen visszafordítható, mert a tévesen összevont panasz annak, aki tette, elásott panasznak látszik. Az MI-szerep összevonási javaslatot fogalmazhat és számolhat; az összevonást ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6ee7de52-da85-5f03-a62e-74f9c1696f79",
+      "code": "WI-20",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "title": "Jelentsük azokat a városrészeket, amelyek semmit nem jeleznek",
+      "description": "Tegyük közzé a csendet a tábla mellett, ahogy egy kör közzéteszi a lefedettségét.",
+      "prompt": "Az a városrész, amely semmit nem jelez, vagy elégedett, vagy nem érik el, és ez a kettő egy számban egyformának látszik. Negyedévente tegyük közzé városrészenként a számot, és hagyjuk, hogy az adott városrész képviselője számot adjon róla – ez az a beszélgetés, amelyet a szám elindítani hivatott. Ne tekintsük a csendet jóváhagyásnak semmilyen, a képviselő-testület elé kerülő iratban. Ahol egy városrész következetesen néma, oda kell először vinni a következő kör eszköz nélküli csatornáját. Az MI-szerep csak számolhat és összegezhet; a közzétételt ember hagyja jóvá.",
+      "ordinality": 7,
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b4af7bce-ca5b-4485-ab6d-a376f2db6a16",
+      "code": "WI-21",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "title": "Adjuk át a műveleti ügyeket a szolgáltató cégnek",
+      "description": "Adjuk tovább, ami nem az önkormányzat saját munkája, és tartsuk kézben a szálat.",
+      "prompt": "Küldjük el a tételt a szolgáltató cégnek a helyszínnel és a bejelentett tartalommal, és jegyezzük fel a tőlük kapott azonosítót. Az önkormányzat saját rekordját tartsuk nyitva, amíg be nem jelentik a teljesítést. A lakos az önkormányzatot kérdezte, ezért az önkormányzat válaszol, nem a vállalkozó. Az MI-szerep csak összefoglalót fogalmazhat az átadáshoz és utánajárhat a teljesítésnek; az átadást ember hagyja jóvá.",
+      "ordinality": 8,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "e7b5af79-a40a-4f70-abca-36ca76e1b5ae",
+      "code": "WI-22",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "title": "Nézzük át nyilvánosan, mi jött vissza",
+      "description": "Tegyük láthatóvá a kiszervezett felet azoknak, akik fizetnek érte.",
+      "prompt": "Havonta jelentsük, hány tétel ment a szolgáltató cégnek, hány jött vissza elvégezve, és mennyi idő alatt. Tegyük közzé. Ahol a szolgáltató saját adatai és a lakosok bejelentései eltérnek, mondjuk ki, ne egyeztessük csendben – az önkormányzat befolyása egy kiszervezett szolgáltatás felett nagyrészt ez a jelentés. Az MI-szerep összeszámolhatja és szövegesen összegezheti a havi adatokat; a közzétételt ember hagyja jóvá.",
+      "ordinality": 9,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6b5f88dc-1e6a-53b5-88d1-766416512e81",
+      "code": "WI-23",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "title": "Vigyük a rendszeresen visszatérő témákat a következő kör kérdésébe",
+      "description": "Alakítsuk a negyedév leggyakoribb témáit a következő kérdéssé.",
+      "prompt": "Negyedévente tegyük a leggyakrabban jelzett tíz témát annak elé, aki a konzultációs programot összeállítja, a számokkal és azokkal a városrészekkel együtt, ahonnan jöttek. A legtöbbből nem lesz kör, és ez rendben van – az számít, hogy a kérdezés mellőzéséről valaki döntött, a bizonyítékok előtt, nem senki. Ahol egy téma körré válik, nevezzük meg magán a körön a bejelentéseket, amelyekből származik, hogy akik jelezték, lássák: az ő bejelentésük lett a kérdés. Az MI-szerep csak összegezhet és számolhat; a program összeállításáról ember dönt.",
+      "ordinality": 10,
+      "created_at": "2026-10-01T18:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3fd7aea9-86b5-43db-830f-457a4fdd3d09",
+      "code": "WI-24",
+      "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
+      "title": "Teljes terjedelmében közzétesszük az eredményt",
+      "description": "Oda tesszük a megállapítást, ahol bárki ellenőrizheti.",
+      "prompt": "Tegyék közzé a kérdést pontosan úgy, ahogy feltették, az időszakot, a csatornákat, a számokat a nevezővel és a kihagyott válaszokkal együtt, a városrészenkénti bontást, valamint a témákat olyan jellemző idézetekkel, amelyek senkit nem azonosítanak. Az eljárásleírást is tegyék közzé mellette. Az eredményt akkor is közzé kell tenni, ha kényelmetlen, és különösen akkor. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "5b23222c-f653-4228-89a0-71195a12749d",
+      "code": "WI-25",
+      "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
+      "title": "Az eredményt előterjesztésként a testület elé visszük",
+      "description": "A megállapításból olyan döntést csinálunk, amelyet valakinek meg kell hoznia.",
+      "prompt": "Az előterjesztés tartalmazza az eredményt, a testület valós lehetőségeit és azt, mennyibe kerül mindegyik. Csatolják az eljárásleírást és a lefedettségi számokat, hogy a képviselő lássa, mekkora súlya van a megállapításnak. Nevezzék meg a döntésért felelős szerepkört. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "45365715-5cae-4163-9db4-4e550ee780e4",
+      "code": "WI-26",
+      "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
+      "title": "A döntést beírjuk a jelentésbe",
+      "description": "A döntés a kör jelentésében él, nem külön nyilvántartásban és nem csak a jegyzőkönyvben.",
+      "prompt": "A kör jelentésébe írják be, mit döntöttek, ki és melyik napon. Ha a döntés a meghallgatottak többségének súlya ellen szól, az indokot is írják a jelentésbe: pénz, törvény, szerződés, hosszabb távú terv vagy olyan mérlegelés, amelyet a testület vállal. Külön döntési nyilvántartást nem kell vezetni.",
+      "ordinality": 3,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "dc50324b-71b8-42b9-a69a-c6c6c216a1ef",
+      "code": "WI-27",
+      "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
+      "title": "Értesítjük a jelentés csoportjait",
+      "description": "Az eredményről a jelentés csoportjai úgy értesülnek, mint bármely jelentésről.",
+      "prompt": "A jelentést tegyék közzé azoknak a csoportoknak, amelyeknek a kör szólt, így úgy értesülnek az eredményről, mint bármely jelentésről. Aki nyilvános hivatkozáson válaszolt, és egyik csoportban sincs, azt nem értesítjük. Mondják meg, mit döntöttek és mi történik ezután, és ha még nem történik semmi, ezt is. Legyen elég rövid ahhoz, hogy telefonon elolvassák, és elég egyszerű ahhoz, hogy fel lehessen olvasni. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f12e5c3f-3e3c-4259-b1df-aa991b79547d",
+      "code": "WI-28",
+      "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
+      "title": "Az ígéretek kimenetelét rögzítjük, amikor lejár a határidő",
+      "description": "A jelentés minden ígérete egy határidős feladat.",
+      "prompt": "A közzétételkor soroljanak fel minden ígéretet a jelentésből, mindegyiket határidővel; mindegyikből feladat lesz. Amikor egy feladat határideje lejár, rögzítsék a kimenetelét: teljesítve, részben teljesítve vagy nem teljesítve. A kimenetel a jelentés mellett látszik mindenkinek, aki a jelentést olvashatja. Az emlékeztetők és a határidők számlálását az MI szerepkör végezheti, a kimenetelt személy rögzíti.",
+      "ordinality": 5,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "038e3513-8859-462b-8823-2537f2097985",
+      "code": "WI-29",
+      "workflow_id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "title": "Közzétesszük a díjszabást az érvényes változatban",
+      "description": "Nyilvánosan és keltezve tartjuk, mit számláz az önkormányzat.",
+      "prompt": "A díj- és illetékszabást még az alkalmazása előtt tegyék közzé, minden évi változatot őrizzenek meg, és tegyék lehetővé, hogy bármely múltbeli napra visszakereshető legyen az akkor érvényes változat. Ez a legkönnyebb ügyviteli elem, és az, amelyről a legvalószínűbb, hogy kérdezni fognak egy testületi ülésen, például a bérleti díjakról forintban (Ft). A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "3af1308c-cc6c-43c0-a5d1-98d7e83db6f8",
+      "code": "WI-30",
+      "workflow_id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "title": "Egy kérelmet végigvezetünk a döntésig",
+      "description": "Megmutatjuk a zárt kört, amelyet az önkormányzat még nem kért.",
+      "prompt": "Egy valódi kérelmet vezessenek végig a menetrenden: érkezéskor dátummal rögzítve, szűrve, helyszíni szemlén soronkénti eredménnyel, a döntés indokának megjelölésével, a díj kiszabásával, a lejárattal kiadott engedéllyel. Ebből látszik, mit ad a zárt kör, és legyenek őszinték: csak akkor térül meg, ha az önkormányzat készen áll működtetni.",
+      "ordinality": 2,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "66a10c9f-9909-4252-9ba8-4580ac9d39a2",
+      "code": "WI-31",
+      "workflow_id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "title": "Bemutatjuk a kiadásokat városrészenként",
+      "description": "Megválaszoljuk a kérdést, amelyre minden nyilvános ülés kilyukad.",
+      "prompt": "Mutassák be a költségvetést és a tényleges kiadást városrészenként és szolgáltatásonként, azt is, mennyit fizettek a szolgáltató társaságnak. Ahol az önkormányzat nem rendelkezik az ehhez szükséges adattal, a vázat mutassák meg, és nevezzék meg pontosan, mit kell betáplálni: az őszinte hiány többet ér egy kitöltött példánál, amelyet senki nem tud reprodukálni. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T10:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "5c069732-51e5-55bd-9fe7-0cb0a0108f5e",
+      "code": "WI-32",
+      "workflow_id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "title": "Leírjuk, ki mit hagyhat jóvá, és mekkora összeghatárig",
+      "description": "A felhatalmazást a szerepkörre írjuk, a határával együtt, mielőtt bárkinek szüksége lenne rá.",
+      "prompt": "Vegyék az önkormányzat meglévő hatásköri rendjét, és minden sort szerepkörhöz írjanak, ne személyhez: mit engedélyezhet ez a szerepkör, legfeljebb mekkora összegig (Ft), és kihez kerül az ügy az fölött. Rögzítsék, melyik napon lépett hatályba az egyes határ, és őrizzék meg a régieket, mert a jóváhagyást az aznap érvényes határhoz mérik, nem a maihoz. Ahol az önkormányzat ezt sosem írta le, ami gyakori, mondják ki egyenesen ahelyett, hogy összeget találnának ki, és a hiányt tegyék a testület elé döntésként.",
+      "ordinality": 4,
+      "created_at": "2026-10-01T19:00:00Z",
+      "last_updated": "2026-10-01T19:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "02f04ffe-aa25-5c70-917b-7b5f882b1e02",
+      "code": "WI-33",
+      "workflow_id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "title": "A felfelé küldött beszámolót a közzétett számokból készítjük",
+      "description": "Az országos beszámolót ugyanazokból a nyilvántartásokból építjük, amelyeket helyben közzétettünk.",
+      "prompt": "A beszámolót a főkönyvből és a közzétett eredményekből állítsák elő újragépelés helyett, és az elküldött változatot tartsák meg az elküldés dátumával. Ahol a beszámoló olyan adatot kér, amelyet az önkormányzat helyben még nem tett közzé, helyben is tegyék közzé: az országos szintnek elég jó szám elég jó annak a városrésznek is, ahonnan származik. Ahol a kettő valóban eltér, az okot magán a beszámolón rögzítsék. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-10-01T19:00:00Z",
+      "last_updated": "2026-10-01T19:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "10c4a308-441d-597e-bc7a-d3cca4df7cc0",
+      "workflow_id": "11873309-3e5a-49fe-9a9c-bde15a396b4b",
+      "objective_id": "3d7a5d84-fcae-4016-a298-2ba76e33fb42"
+    },
+    {
+      "id": "90d56a18-e0f5-5a19-a87f-11b7a8f4980e",
+      "workflow_id": "11873309-3e5a-49fe-9a9c-bde15a396b4b",
+      "objective_id": "8c5da11d-2fa4-40a9-a0a9-9e178b07c8b0"
+    },
+    {
+      "id": "cf8cd366-3b7c-5416-9ce3-b883c5f4cce1",
+      "workflow_id": "11873309-3e5a-49fe-9a9c-bde15a396b4b",
+      "objective_id": "b55af650-b34f-4932-bfa0-c4ee89fe8cc8"
+    },
+    {
+      "id": "29dad492-cfe7-5bff-8885-667d97ba57c6",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "objective_id": "45fbd76a-54fd-438a-8729-4e7bb09769a5"
+    },
+    {
+      "id": "e9dc312d-a946-5a2d-8d38-50ae82edcb2d",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "objective_id": "b55af650-b34f-4932-bfa0-c4ee89fe8cc8"
+    },
+    {
+      "id": "3d814706-fd16-50ce-b735-2a4c6e7214b1",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "objective_id": "a884d46f-3fed-4b21-9eef-a30916c10f2d"
+    },
+    {
+      "id": "e9178425-9c75-53a3-8917-97e8fcd6ce7d",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "objective_id": "f75d2eac-f436-4d77-858a-4807c59abdd1"
+    },
+    {
+      "id": "83b2ec04-5dcb-5ff1-b51b-400e738e533f",
+      "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
+      "objective_id": "91522658-9669-4ef0-b6c9-721ccf1e3bbd"
+    },
+    {
+      "id": "58bfcc27-d555-5fc4-817e-800f262b8dd5",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "objective_id": "73050afb-50f5-4699-9d29-d15eda0960e1"
+    },
+    {
+      "id": "e6ce9618-bb8e-5026-a9d7-602a0c5838c8",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "objective_id": "a86d61fc-5e11-511d-a253-cbef063febef"
+    },
+    {
+      "id": "32b67d3b-4f1c-55dd-be47-c19b35c141c3",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "objective_id": "1ec7cfb5-bedb-4aa1-8ba8-750246c5baf5"
+    },
+    {
+      "id": "a27b7c65-7099-5e59-a11e-d6a91f3b31b1",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "objective_id": "23ba0eed-2551-588f-80b8-8d377b5df514"
+    },
+    {
+      "id": "23c3f0be-ca3b-5571-8bbb-fa59b128b378",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "objective_id": "fe3f3fe5-ef4a-446a-8904-f0327c93f2db"
+    },
+    {
+      "id": "e30cdcb9-1bc2-5c4c-ac44-6755f59dbd11",
+      "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
+      "objective_id": "165a04e2-5aa8-5eaf-a7a1-c1ddab558a2a"
+    },
+    {
+      "id": "0e28bdb1-600e-599e-85ea-582c49ffe5a1",
+      "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
+      "objective_id": "8b21b0cf-2a3d-49cd-93af-cb46fe888e31"
+    },
+    {
+      "id": "6a69784e-7237-5716-aa76-ba124578d23d",
+      "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
+      "objective_id": "c3e5fc5c-a753-4245-b5cf-f5f11c755dd6"
+    },
+    {
+      "id": "27f5e440-dc1f-50aa-a057-7d87a144f3ce",
+      "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
+      "objective_id": "db8aa6ec-2fd6-46d7-a73c-542bd8308f45"
+    },
+    {
+      "id": "977fe648-b22c-5bc7-b2e7-9328028593e6",
+      "workflow_id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "objective_id": "745e334b-3b7f-43b1-b326-4c76f15eb3cb"
+    },
+    {
+      "id": "28dc3e2e-6d1c-5b40-ba64-18460a5787ec",
+      "workflow_id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "objective_id": "cef6d5a1-9ad9-4533-bae0-135a299334f1"
+    },
+    {
+      "id": "595b4eb8-a13c-5d19-b0f9-cf3da55c92d4",
+      "workflow_id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "objective_id": "b7df40cb-c79e-429f-9842-9e6e5ff2bf69"
+    },
+    {
+      "id": "d2f2c55f-98b8-5488-83c2-86f199c93763",
+      "workflow_id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
+    },
+    {
+      "id": "ca9cc89e-baa4-5871-a45e-e69f8d79405b",
+      "workflow_id": "f666a4df-39cc-48b1-bc99-6da3227f1703",
+      "objective_id": "8709cc2a-9404-55a2-b637-b7dadfdf986d"
+    }
+  ],
+  "work_plans": [],
+  "role_assignments": [],
+  "drafts": [],
+  "publications": []
+}
