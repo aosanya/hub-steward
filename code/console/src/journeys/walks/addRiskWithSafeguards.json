@@ -1,0 +1,34 @@
+{
+  "workflow": "W-61",
+  "title": "an officer adds a risk and its safeguards",
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    { "code": "WI-61-1", "role": "R-13", "ai": false },
+    { "code": "WI-61-2", "role": "R-16", "ai": true },
+    { "code": "WI-61-3", "role": "R-13", "ai": false },
+    { "code": "WI-61-4", "role": "R-8", "ai": false },
+    { "code": "WI-61-5", "role": "R-13", "ai": false },
+    { "code": "WI-61-6", "role": "R-14", "ai": false }
+  ],
+  "checks": {
+    "firstActor": "Osztályvezető (kockázat felelőse)",
+    "itemCount": 6,
+    "objectives": ["O-61"],
+    "ruleAttachedToAllObjectives": true,
+    "ruleAttached": [
+      { "rule": "RU-AI-1", "target": "R-16" }
+    ],
+    "roleText": [
+      { "role": "R-16", "match": ["Mesterséges intelligencia tölti be", "semmit nem ment el", "osztályvezető hagyja jóvá"] }
+    ],
+    "stepText": [
+      { "step": "WI-61-2", "match": ["nem menti el", "csak fogalmazhat"] },
+      { "step": "WI-61-3", "match": ["jóváhagyja", "Jóváhagyás nélkül semmi nem kerül"] },
+      { "step": "WI-61-4", "match": ["nem ismert", "elutasítjuk"] },
+      { "step": "WI-61-5", "match": ["okaival és következményeivel", "védelmi intézkedéseket"] }
+    ],
+    "order": [["WI-61-2", "WI-61-3"], ["WI-61-3", "WI-61-5"], ["WI-61-4", "WI-61-5"], ["WI-61-5", "WI-61-6"]]
+  }
+}
