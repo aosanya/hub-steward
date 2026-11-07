@@ -5,6 +5,7 @@ import { beforeEach } from "vitest";
 import { App } from "../App";
 import { provideEntryClient, type EntryClient } from "./api";
 import { wordsFor } from "./language";
+import { magyar } from "./magyar";
 import { swahili } from "./swahili";
 import { words } from "./words";
 
@@ -91,6 +92,24 @@ describe("choosing a language", () => {
     expect(screen.getByRole("heading", { name: swahili.signInTitle })).toBeInTheDocument();
     refuse.mockRestore();
     set.mockRestore();
+  });
+
+  it("shows Sign in in Hungarian after choosing Magyar and keeps the choice", async () => {
+    const first = mount();
+    await userEvent.click(screen.getByRole("button", { name: words.changeLanguage }));
+    await userEvent.click(screen.getByRole("button", { name: "Magyar" }));
+    expect(screen.getByRole("heading", { name: magyar.signInTitle })).toBeInTheDocument();
+    expect(screen.getByLabelText(magyar.signInEmail)).toBeInTheDocument();
+    first.unmount();
+    expect(window.localStorage.getItem("hub.language")).toBe("hu");
+    mount();
+    expect(screen.getByRole("heading", { name: magyar.signInTitle })).toBeInTheDocument();
+    expect(wordsFor("hu")).toBe(magyar);
+  });
+
+  it("has a Hungarian word for every English word", () => {
+    expect(Object.keys(magyar).sort()).toEqual(Object.keys(words).sort());
+    Object.values(magyar).forEach((w) => expect(w.length).toBeGreaterThan(0));
   });
 
   it("has a Kiswahili word for every English word", () => {
