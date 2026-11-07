@@ -1,0 +1,13 @@
+{
+  "module": "engage",
+  "domain": "wakala",
+  "instance": "app",
+  "objects": [
+    { "role": "post", "name": "post", "table": "posts", "description": "Something an organisation sends to its groups." },
+    { "role": "rsvp", "name": "rsvp", "table": "rsvps", "description": "An answer to an event." },
+    { "role": "attendance", "name": "attendance", "table": "attendances", "description": "A check-in at an event." },
+    { "role": "offer", "name": "offer", "table": "offers", "description": "An offer to help with a volunteer call." },
+    { "role": "pick", "name": "pick", "table": "picks", "description": "An offer chosen for a volunteer call." },
+    { "role": "read_marker", "name": "read_marker", "table": "read_markers", "description": "That a notice was read." }
+  ]
+}

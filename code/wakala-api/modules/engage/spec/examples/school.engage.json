@@ -1,0 +1,13 @@
+{
+  "module": "engage",
+  "domain": "school",
+  "instance": "campus",
+  "objects": [
+    { "role": "post", "name": "bulletin", "table": "bulletins", "description": "A notice, school event or call for parent helpers sent to classes." },
+    { "role": "rsvp", "name": "rsvp", "table": "rsvps", "description": "An answer to an event." },
+    { "role": "attendance", "name": "attendance", "table": "attendances", "description": "A check-in at an event." },
+    { "role": "offer", "name": "offer", "table": "offers", "description": "An offer to help with a volunteer call." },
+    { "role": "pick", "name": "pick", "table": "picks", "description": "An offer chosen for a volunteer call." },
+    { "role": "read_marker", "name": "read_marker", "table": "read_markers", "description": "That a notice was read." }
+  ]
+}

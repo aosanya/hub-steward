@@ -1,0 +1,226 @@
+{
+  "operations": {
+    "create_post": {
+      "method": "POST",
+      "path": "/posts",
+      "call": "CreatePost",
+      "action": "engage.post.create",
+      "status": 201,
+      "title": "Send post",
+      "description": "Send a notice, an event or a volunteer call to chosen groups. It is read-only once sent.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "caller", "as": "posted_by", "into": "PostedBy", "description": "Who sent the post, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "get_post": {
+      "method": "GET",
+      "path": "/posts/{postID}",
+      "call": "GetPost",
+      "action": "engage.post.read",
+      "title": "Read post",
+      "description": "Read one post with its kind, details and state.",
+      "args": [{ "from": "path", "as": "postID", "description": "The post to read." }],
+      "returns": [{ "body": true }]
+    },
+    "mark_read": {
+      "method": "POST",
+      "path": "/posts/{postID}/read",
+      "call": "MarkRead",
+      "action": "engage.read_marker.create",
+      "status": 201,
+      "title": "Mark notice read",
+      "description": "Record that the caller has read a sent notice to one of their groups. Marking it again returns the first marker.",
+      "args": [
+        { "from": "path", "as": "postID", "description": "The notice read." },
+        { "from": "caller", "as": "participant_id", "description": "Who read it, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "count_unread": {
+      "method": "GET",
+      "path": "/notices/unread",
+      "call": "CountUnread",
+      "action": "engage.notice.count_unread",
+      "title": "Unread notices",
+      "description": "How many sent notices to the caller's groups the caller has not read. The groups come from the mount, never from the request, and a mount that supplies none reaches nothing.",
+      "args": [
+        { "from": "caller", "as": "participant_id", "description": "Who is counting, supplied by the mount." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "answer_rsvp": {
+      "method": "PUT",
+      "path": "/posts/{postID}/rsvp",
+      "call": "AnswerRSVP",
+      "action": "engage.rsvp.answer",
+      "title": "Answer event",
+      "description": "Answer a sent event to one of the caller's groups with going or not_going. Answering again replaces the answer until the event starts.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "path", "as": "postID", "into": "PostID", "description": "The event answered. The address decides, not the body." },
+        { "from": "caller", "as": "participant_id", "into": "ParticipantID", "description": "Who answered, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "offer_help": {
+      "method": "POST",
+      "path": "/posts/{postID}/offers",
+      "call": "OfferHelp",
+      "action": "engage.offer.create",
+      "status": 201,
+      "title": "Offer help",
+      "description": "Say I can help to a sent volunteer call to one of the caller's groups. Offering again returns the first offer.",
+      "args": [
+        { "from": "path", "as": "postID", "description": "The volunteer call offered to." },
+        { "from": "caller", "as": "participant_id", "description": "Who offered, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "pick_offer": {
+      "method": "POST",
+      "path": "/posts/{postID}/picks",
+      "call": "PickOffer",
+      "action": "engage.pick.create",
+      "status": 201,
+      "title": "Pick volunteer",
+      "description": "The poster picks one offer, up to as many as the call needs. Answers the pick and who was picked, for the host to tell them.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "path", "as": "postID", "into": "PostID", "description": "The volunteer call. The address decides, not the body." },
+        { "from": "caller", "as": "picked_by", "into": "PickedBy", "description": "Who picked, supplied by the mount. Must be the poster." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "fill_call": {
+      "method": "POST",
+      "path": "/posts/{postID}/filled",
+      "call": "FillCall",
+      "action": "engage.post.fill",
+      "title": "Close volunteer call",
+      "description": "The poster closes the call, with as many picks as it needs or fewer: with at least one pick it becomes filled, with none it becomes cancelled, and either way it takes no more offers. Answers the call and who was picked, for the host to tell them.",
+      "args": [
+        { "from": "path", "as": "postID", "description": "The volunteer call confirmed." },
+        { "from": "caller", "as": "posted_by", "description": "Who confirmed, supplied by the mount. Must be the poster." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "change_event": {
+      "method": "PATCH",
+      "path": "/posts/{postID}/event",
+      "call": "ChangeEvent",
+      "action": "engage.event.change",
+      "title": "Change event",
+      "description": "Change a sent event's time or place; an empty field is kept. Answers the event and everyone going, for the host to tell them. Who may change it is the host's gate.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "path", "as": "postID", "into": "PostID", "description": "The event changed. The address decides, not the body." },
+        { "from": "caller", "as": "changed_by", "into": "ChangedBy", "description": "Who changed it, supplied by the mount." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "cancel_event": {
+      "method": "POST",
+      "path": "/posts/{postID}/cancelled",
+      "call": "CancelEvent",
+      "action": "engage.event.cancel",
+      "title": "Cancel event",
+      "description": "Cancel a sent event. Answers the event and everyone going, for the host to tell them. Who may cancel it is the host's gate.",
+      "args": [
+        { "from": "path", "as": "postID", "description": "The event. The address decides, not the body." },
+        { "from": "caller", "as": "cancelled_by", "description": "Who cancelled it, supplied by the mount." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "check_in_self": {
+      "method": "POST",
+      "path": "/posts/{postID}/checkin",
+      "call": "CheckInSelf",
+      "action": "engage.attendance.check_in_self",
+      "title": "Check in",
+      "description": "The caller checks themselves in to a sent event to one of their groups, only between starts_at and ends_at, with no proof.",
+      "args": [
+        { "from": "path", "as": "postID", "description": "The event. The address decides, not the body." },
+        { "from": "caller", "as": "participant_id", "description": "Who checks in, supplied by the mount." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "check_in": {
+      "method": "PUT",
+      "path": "/posts/{postID}/attendance/{participantID}",
+      "call": "CheckIn",
+      "action": "engage.attendance.check_in",
+      "title": "Check someone in",
+      "description": "Check in anyone in the event's groups on the event's day, read in its time zone. Checking in again after an untick ticks again.",
+      "args": [
+        { "from": "path", "as": "postID", "description": "The event. The address decides, not the body." },
+        { "from": "path", "as": "participantID", "description": "Who is checked in or unticked." },
+        { "from": "caller", "as": "checked_in_by", "description": "Who made the check-in, supplied by the mount." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "untick": {
+      "method": "DELETE",
+      "path": "/posts/{postID}/attendance/{participantID}",
+      "call": "Untick",
+      "action": "engage.attendance.untick",
+      "title": "Untick check-in",
+      "description": "Take back someone's check-in. The row is kept, unticked; a later check-in ticks it again.",
+      "args": [
+        { "from": "path", "as": "postID", "description": "The event. The address decides, not the body." },
+        { "from": "path", "as": "participantID", "description": "Who is checked in or unticked." },
+        { "from": "caller", "as": "unticked_by", "description": "Who unticked, supplied by the mount." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "withdraw_offer": {
+      "method": "DELETE",
+      "path": "/posts/{postID}/offers/mine",
+      "call": "WithdrawOffer",
+      "action": "engage.offer.withdraw",
+      "title": "Withdraw offer",
+      "description": "Take back the caller's own offer to an open volunteer call, until it is picked. Answers the offer withdrawn.",
+      "args": [
+        { "from": "path", "as": "postID", "description": "The volunteer call offered to." },
+        { "from": "caller", "as": "participant_id", "description": "Who withdraws, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "unpick": {
+      "method": "DELETE",
+      "path": "/posts/{postID}/picks/{pickID}",
+      "call": "Unpick",
+      "action": "engage.pick.delete",
+      "title": "Unpick volunteer",
+      "description": "The poster takes back one pick on an open volunteer call; the offer stays. Answers the pick removed and who it was, for the host to tell them.",
+      "args": [
+        { "from": "path", "as": "postID", "description": "The volunteer call." },
+        { "from": "path", "as": "pickID", "description": "The pick taken back." },
+        { "from": "caller", "as": "posted_by", "description": "Who unpicks, supplied by the mount. Must be the poster." }
+      ],
+      "returns": [{ "body": true }]
+    }
+  },
+  "errors": {
+    "ErrPostNotFound": 404,
+    "ErrInvalidPost": 400,
+    "ErrNoPoster": 401,
+    "ErrNoReader": 401,
+    "ErrNotANotice": 409,
+    "ErrNoResponder": 401,
+    "ErrInvalidRSVP": 400,
+    "ErrNotAnOpenEvent": 409,
+    "ErrEventStarted": 409,
+    "ErrNoVolunteer": 401,
+    "ErrNotAnOpenCall": 409,
+    "ErrNotThePoster": 403,
+    "ErrOfferNotFound": 404,
+    "ErrCallFull": 409,
+    "ErrNoAttendee": 401,
+    "ErrOutsideEvent": 409,
+    "ErrNotCheckedIn": 404,
+    "ErrOfferPicked": 409,
+    "ErrPickNotFound": 404
+  }
+}

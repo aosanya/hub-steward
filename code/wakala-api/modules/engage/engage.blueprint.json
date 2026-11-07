@@ -1,0 +1,98 @@
+{
+  "module": "engage",
+  "objects": [
+    {
+      "role": "post",
+      "description": "Something sent to chosen groups: a notice, an event or a call for volunteers. Read-only once sent.",
+      "fields": [
+        { "name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true },
+        { "name": "kind", "type": "enum", "description": "What the post is: a notice to read, an event to attend, or a call for volunteers.", "values": ["notice", "event", "volunteer_call"], "required": true },
+        { "name": "title", "type": "string", "description": "The post's headline.", "required": true },
+        { "name": "body", "type": "string", "description": "The post's text." },
+        { "name": "group_ids", "type": "json", "description": "The groups the post goes to. Opaque ids the host owns." },
+        { "name": "posted_by", "type": "string", "description": "Who sent the post, supplied by the mount. Never read from the request." },
+        { "name": "posted_at", "type": "timestamp", "description": "When the post was sent." },
+        { "name": "state", "type": "enum", "description": "Where the post is in its life; filled applies to a volunteer call only.", "values": ["sent", "cancelled", "filled"], "required": true },
+        { "name": "starts_at", "type": "timestamp", "description": "When an event starts, or when a volunteer call's help is needed from." },
+        { "name": "ends_at", "type": "timestamp", "description": "When an event ends, or when a volunteer call's help is needed until; optional for a call." },
+        { "name": "time_zone", "type": "string", "description": "The IANA time zone an event's day is read in." },
+        { "name": "place", "type": "string", "description": "Where an event happens, as free text." },
+        { "name": "task", "type": "string", "description": "What a volunteer call asks people to do." },
+        { "name": "needed_count", "type": "int", "description": "How many people a volunteer call picks." }
+      ],
+      "indexes": [
+        { "name": "posted", "description": "The newest-first ordering every listing uses.", "fields": ["posted_at"] },
+        { "name": "kind", "description": "Listing one kind of post.", "fields": ["kind", "posted_at"] }
+      ]
+    },
+    {
+      "role": "rsvp",
+      "description": "One person's answer to an event: going or not going. Replaced until the event starts.",
+      "fields": [
+        { "name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true },
+        { "name": "post_id", "type": "string", "description": "The event answered. The address decides, not the body.", "required": true },
+        { "name": "participant_id", "type": "string", "description": "Who answered, supplied by the mount. Never read from the request.", "required": true },
+        { "name": "answer", "type": "enum", "description": "The answer given.", "values": ["going", "not_going"], "required": true },
+        { "name": "answered_at", "type": "timestamp", "description": "When the answer was last given." }
+      ],
+      "indexes": [
+        { "name": "once", "description": "One answer per person per event.", "fields": ["post_id", "participant_id"], "unique": true }
+      ]
+    },
+    {
+      "role": "attendance",
+      "description": "A check-in at an event, by the person themselves or by a holder; unticking keeps the row.",
+      "fields": [
+        { "name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true },
+        { "name": "post_id", "type": "string", "description": "The event attended.", "required": true },
+        { "name": "participant_id", "type": "string", "description": "Who was checked in.", "required": true },
+        { "name": "checked_in_at", "type": "timestamp", "description": "When the check-in was last made." },
+        { "name": "checked_in_by", "type": "string", "description": "Who made the check-in, supplied by the mount: the person themselves or a holder." },
+        { "name": "unticked", "type": "bool", "description": "Whether the check-in was taken back. A later check-in ticks it again." }
+      ],
+      "indexes": [
+        { "name": "once", "description": "One check-in row per person per event.", "fields": ["post_id", "participant_id"], "unique": true }
+      ]
+    },
+    {
+      "role": "offer",
+      "description": "One person's offer to help with a volunteer call. Withdrawable while the call is open and the offer is not picked.",
+      "fields": [
+        { "name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true },
+        { "name": "post_id", "type": "string", "description": "The volunteer call offered to.", "required": true },
+        { "name": "participant_id", "type": "string", "description": "Who offered, supplied by the mount. Never read from the request.", "required": true },
+        { "name": "offered_at", "type": "timestamp", "description": "When the offer was made." }
+      ],
+      "indexes": [
+        { "name": "once", "description": "One offer per person per call.", "fields": ["post_id", "participant_id"], "unique": true }
+      ]
+    },
+    {
+      "role": "pick",
+      "description": "An offer the poster chose for a volunteer call.",
+      "fields": [
+        { "name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true },
+        { "name": "post_id", "type": "string", "description": "The volunteer call the pick is for.", "required": true },
+        { "name": "offer_id", "type": "string", "description": "The offer picked.", "required": true },
+        { "name": "picked_at", "type": "timestamp", "description": "When the offer was picked." },
+        { "name": "picked_by", "type": "string", "description": "Who picked it, supplied by the mount." }
+      ],
+      "indexes": [
+        { "name": "once", "description": "An offer is picked at most once.", "fields": ["post_id", "offer_id"], "unique": true }
+      ]
+    },
+    {
+      "role": "read_marker",
+      "description": "That one person has read a notice. Its absence is what makes a notice unread.",
+      "fields": [
+        { "name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true },
+        { "name": "post_id", "type": "string", "description": "The notice read.", "required": true },
+        { "name": "participant_id", "type": "string", "description": "Who read it, supplied by the mount. Never read from the request.", "required": true },
+        { "name": "read_at", "type": "timestamp", "description": "When it was first read." }
+      ],
+      "indexes": [
+        { "name": "once", "description": "One marker per person per notice.", "fields": ["post_id", "participant_id"], "unique": true }
+      ]
+    }
+  ]
+}
