@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useI18n } from "../../i18n";
 import { Button, Detail, Empty, Stack } from "../../ui";
+import { GroupBoundary } from "../groups/GroupBoundary";
 import { JoinModeForm } from "./groupsJoinMode";
 import { AiRoleChip, JoinChip } from "./groupsTable";
 import { rowsOf } from "./usersLoad";
@@ -54,6 +55,7 @@ export function GroupDetail({ hubId, group, onChanged }: GroupDetailProps) {
         ]}
       />
       {changing ? <JoinModeForm hubId={hubId} group={current} onOutcome={changed} onCancel={() => setChanging(false)} /> : null}
+      <GroupBoundary hubId={hubId} groupId={group.id} />
       {state.kind === "failed" ? <Empty text={t("loadFailed")} failed /> : null}
       {state.kind === "ready" ? <UsersTable hubId={hubId} lines={state.value} asMembers /> : null}
     </Stack>

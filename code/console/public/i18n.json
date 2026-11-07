@@ -1253,7 +1253,15 @@
     "objectives.search": "Search objectives",
     "modules.search": "Search modules",
     "test.search": "Search scenarios",
-    "models.search": "Search models"
+    "models.search": "Search models",
+    "groups.boundary": "Ward boundary",
+    "groups.boundaryNone": "No boundary is set for this group.",
+    "groups.boundaryDrawing": "Boundary drawing",
+    "groups.boundaryCorners": "Corners, one per line as longitude, latitude",
+    "groups.boundarySave": "Save boundary",
+    "groups.boundaryClear": "Clear boundary",
+    "groups.boundarySaved": "The boundary was saved.",
+    "groups.boundaryInvalid": "Give at least three corners, each as longitude, latitude."
   },
   "de": {
     "headline": "Willkommen bei Hub Steward! Gründe deine Gemeinschaft und leite sie mit Leichtigkeit!",
@@ -2509,7 +2517,15 @@
     "objectives.search": "Ziele suchen",
     "modules.search": "Module suchen",
     "test.search": "Szenarien suchen",
-    "models.search": "Modelle suchen"
+    "models.search": "Modelle suchen",
+    "groups.boundary": "Gebietsgrenze",
+    "groups.boundaryNone": "Für diese Gruppe ist keine Grenze festgelegt.",
+    "groups.boundaryDrawing": "Zeichnung der Grenze",
+    "groups.boundaryCorners": "Eckpunkte, einer pro Zeile als Längengrad, Breitengrad",
+    "groups.boundarySave": "Grenze speichern",
+    "groups.boundaryClear": "Grenze entfernen",
+    "groups.boundarySaved": "Die Grenze wurde gespeichert.",
+    "groups.boundaryInvalid": "Geben Sie mindestens drei Eckpunkte an, jeweils als Längengrad, Breitengrad."
   },
   "sw": {
     "headline": "Karibu Hub Steward! Anzisha jumuiya yako na uiendeshe kwa urahisi!",
@@ -3765,7 +3781,15 @@
     "objectives.search": "Tafuta malengo",
     "modules.search": "Tafuta moduli",
     "test.search": "Tafuta matukio",
-    "models.search": "Tafuta miundo"
+    "models.search": "Tafuta miundo",
+    "groups.boundary": "Mpaka wa kata",
+    "groups.boundaryNone": "Hakuna mpaka ulioweka kwa kikundi hiki.",
+    "groups.boundaryDrawing": "Mchoro wa mpaka",
+    "groups.boundaryCorners": "Pembe, moja kwa mstari kama longitudo, latitudo",
+    "groups.boundarySave": "Hifadhi mpaka",
+    "groups.boundaryClear": "Futa mpaka",
+    "groups.boundarySaved": "Mpaka umehifadhiwa.",
+    "groups.boundaryInvalid": "Toa pembe angalau tatu, kila moja kama longitudo, latitudo."
   },
   "es": {
     "headline": "¡Bienvenido a Hub Steward! ¡Crea tu comunidad y gestiónala con facilidad!",
@@ -5021,7 +5045,15 @@
     "objectives.search": "Buscar objetivos",
     "modules.search": "Buscar módulos",
     "test.search": "Buscar escenarios",
-    "models.search": "Buscar modelos"
+    "models.search": "Buscar modelos",
+    "groups.boundary": "Límite del distrito",
+    "groups.boundaryNone": "Este grupo no tiene límite definido.",
+    "groups.boundaryDrawing": "Dibujo del límite",
+    "groups.boundaryCorners": "Vértices, uno por línea como longitud, latitud",
+    "groups.boundarySave": "Guardar límite",
+    "groups.boundaryClear": "Quitar límite",
+    "groups.boundarySaved": "El límite se guardó.",
+    "groups.boundaryInvalid": "Indique al menos tres vértices, cada uno como longitud, latitud."
   },
   "fr": {
     "headline": "Bienvenue sur Hub Steward ! Créez votre communauté et gérez-la sans effort !",
@@ -6277,7 +6309,15 @@
     "objectives.search": "Rechercher des objectifs",
     "modules.search": "Rechercher des modules",
     "test.search": "Rechercher des scénarios",
-    "models.search": "Rechercher des modèles"
+    "models.search": "Rechercher des modèles",
+    "groups.boundary": "Limite du quartier",
+    "groups.boundaryNone": "Aucune limite n'est définie pour ce groupe.",
+    "groups.boundaryDrawing": "Tracé de la limite",
+    "groups.boundaryCorners": "Sommets, un par ligne sous la forme longitude, latitude",
+    "groups.boundarySave": "Enregistrer la limite",
+    "groups.boundaryClear": "Effacer la limite",
+    "groups.boundarySaved": "La limite a été enregistrée.",
+    "groups.boundaryInvalid": "Indiquez au moins trois sommets, chacun sous la forme longitude, latitude."
   },
   "zh": {
     "headline": "欢迎使用 Hub Steward！创建你的社区，轻松运营！",
@@ -7533,7 +7573,15 @@
     "objectives.search": "搜索目标",
     "modules.search": "搜索模块",
     "test.search": "搜索场景",
-    "models.search": "搜索模型"
+    "models.search": "搜索模型",
+    "groups.boundary": "辖区边界",
+    "groups.boundaryNone": "此群组尚未设置边界。",
+    "groups.boundaryDrawing": "边界图",
+    "groups.boundaryCorners": "顶点,每行一个,格式为经度,纬度",
+    "groups.boundarySave": "保存边界",
+    "groups.boundaryClear": "清除边界",
+    "groups.boundarySaved": "边界已保存。",
+    "groups.boundaryInvalid": "请至少给出三个顶点,每个为经度,纬度。"
   },
   "hu": {
     "headline": "Üdvözöl a Hub Steward! Hozd létre a közösségedet, és vezesd könnyedén!",
@@ -8789,6 +8837,14 @@
     "objectives.search": "Célkitűzések keresése",
     "modules.search": "Modulok keresése",
     "test.search": "Forgatókönyvek keresése",
-    "models.search": "Modellek keresése"
+    "models.search": "Modellek keresése",
+    "groups.boundary": "Körzethatár",
+    "groups.boundaryNone": "Ehhez a csoporthoz nincs határ megadva.",
+    "groups.boundaryDrawing": "A határ rajza",
+    "groups.boundaryCorners": "Csúcsok soronként egy, hosszúság, szélesség formában",
+    "groups.boundarySave": "Határ mentése",
+    "groups.boundaryClear": "Határ törlése",
+    "groups.boundarySaved": "A határ el lett mentve.",
+    "groups.boundaryInvalid": "Adjon meg legalább három csúcsot, mindegyiket hosszúság, szélesség formában."
   }
 }

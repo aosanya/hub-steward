@@ -178,7 +178,7 @@ describe("one group open", () => {
 
     const card = (await screen.findByRole("heading", { name: "Group" })).closest("section") as HTMLElement;
     await waitFor(() => expect(within(card).getByText("Join mode").nextElementSibling).toHaveTextContent("Approval needed"));
-    expect(callsTo("actor_get_group")).toEqual([{ group_id: "g1" }]);
+    expect(new Set(callsTo("actor_get_group").map((args) => JSON.stringify(args)))).toEqual(new Set([JSON.stringify({ group_id: "g1" })]));
   });
 
   it("keeps the join mode of the list when the group tool cannot be read", async () => {

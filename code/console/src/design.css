@@ -421,3 +421,4 @@ input:checked+.track::after{left:19px;background:var(--ink)}
 .mk-result{display:flex;align-items:center;gap:8px;font-size:.875rem;color:var(--ok)}
 .mk-result.bad{color:var(--bad)}
 .mk-nowrap{white-space:nowrap}
+.boundary-shape{width:15rem;max-width:100%;height:auto;color:var(--accent,currentColor)}
