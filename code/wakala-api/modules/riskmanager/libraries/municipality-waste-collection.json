@@ -1,0 +1,84 @@
+{
+  "library": "Települési szolgáltatáskiesési kockázatok: Hulladékszállítás kiesése",
+  "note": "Induló, kitalált kockázat a település nyilvántartásához; valós településre nem utal.",
+  "risk": {
+    "title": "Hulladékszállítás kiesése",
+    "top_event": "A települési hulladékgyűjtés a kijelölt napon nem történik meg.",
+    "hazard": "Hulladékgyűjtő jármű, amelynek kiesése megállítja a gyűjtést."
+  },
+  "pathways": [
+    {
+      "title": "Szállítójármű meghibásodása",
+      "scenario": "A gyűjtőautó útközben vagy a telephelyen üzemképtelenné válik.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Járműkarbantartási terv",
+          "description": "Negyedéves megelőző szerviz minden gyűjtőautóra.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Gépkocsivezetői hiány",
+      "scenario": "Betegség vagy kilépés miatt nincs elég sofőr a körzetekre.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Helyettesítő sofőrlista",
+          "description": "Betanított tartalék sofőrök névsora körzetenként.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Vita a szállítási vállalkozóval",
+      "scenario": "A szerződéses vita miatt a vállalkozó felfüggeszti a szolgáltatást.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Szolgáltatásbiztosítási szerződéses kikötés",
+          "description": "Folyamatos teljesítési kötelezettség vita esetén is.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Lakossági panaszok halmozódása",
+      "scenario": "A kimaradt ürítés után napokon belül sok bejelentés érkezik.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Panaszkezelési gyorsút",
+          "description": "Kimaradt ürítésre külön bejelentési ág és két napos határidő.",
+          "stage": "mitigate"
+        }
+      ]
+    },
+    {
+      "title": "Egészségügyi kockázat a településen",
+      "scenario": "A nyári melegben a gyűjtetlen hulladék kártevőket vonz.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Pótürítési és fertőtlenítési csapat",
+          "description": "Soron kívüli ürítés és fertőtlenítés a kimaradt körzetben.",
+          "stage": "mitigate"
+        }
+      ]
+    },
+    {
+      "title": "Bírság a szolgáltatási kötelezettség miatt",
+      "scenario": "A hatóság bírságot szab ki a kimaradt szolgáltatásért.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Szerződéses kötbér érvényesítése",
+          "description": "A vállalkozóra hárítható kötbér határidős érvényesítése.",
+          "stage": "mitigate"
+        }
+      ]
+    }
+  ],
+  "drilldowns": []
+}

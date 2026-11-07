@@ -1,0 +1,84 @@
+{
+  "library": "Települési szolgáltatáskiesési kockázatok: Ivóvízellátás megszakadása",
+  "note": "Induló, kitalált kockázat a település nyilvántartásához; valós településre nem utal.",
+  "risk": {
+    "title": "Ivóvízellátás megszakadása",
+    "top_event": "A hálózatból nem érkezik ivóvíz a fogyasztókhoz.",
+    "hazard": "Ivóvízhálózat, amelynek folytonossága megszűnik."
+  },
+  "pathways": [
+    {
+      "title": "Gerincvezeték-csőtörés",
+      "scenario": "Az elöregedett főnyomóvezeték megreped.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Hálózatfelújítási ütemterv",
+          "description": "Az életkor szerint sorolt vezetékszakaszok évenkénti cseréje.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Szivattyú meghibásodása",
+      "scenario": "A fő átemelő szivattyú leáll.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Tartalék szivattyú automatikus átkapcsolással",
+          "description": "Párhuzamos szivattyú, amely hiba esetén átveszi a terhelést.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Vízszennyeződés",
+      "scenario": "Fertőzés vagy vegyi anyag kerül a hálózatba.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Rendszeres vízminőség-mintavétel",
+          "description": "Heti mintavétel a kijelölt pontokon.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Teljes ellátáskiesés",
+      "scenario": "Háztartások és intézmények víz nélkül maradnak.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Tartálykocsis vészellátás",
+          "description": "Ivóvíztartályos kiszolgálás kijelölt pontokon.",
+          "stage": "mitigate"
+        }
+      ]
+    },
+    {
+      "title": "Közegészségügyi riasztás",
+      "scenario": "Szennyezés miatt főzési tilalmat kell kihirdetni.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Lakossági riasztási lánc",
+          "description": "SMS és hangosbemondó értesítés a vízhasználati korlátozásról.",
+          "stage": "mitigate"
+        }
+      ]
+    },
+    {
+      "title": "Kártalanítási igények",
+      "scenario": "A fogyasztók díjvisszatérítést és kártérítést kérnek.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Kártalanítási eljárásrend",
+          "description": "Kötött menet az igények fogadására és elbírálására.",
+          "stage": "mitigate"
+        }
+      ]
+    }
+  ],
+  "drilldowns": []
+}

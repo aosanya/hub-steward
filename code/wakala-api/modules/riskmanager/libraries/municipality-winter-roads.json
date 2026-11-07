@@ -1,0 +1,84 @@
+{
+  "library": "Települési szolgáltatáskiesési kockázatok: Közúti és téli üzemeltetés kudarca",
+  "note": "Induló, kitalált kockázat a település nyilvántartásához; valós településre nem utal.",
+  "risk": {
+    "title": "Közúti és téli üzemeltetés kudarca",
+    "top_event": "A hóesés vagy ónos eső után a közutak nincsenek járhatóvá téve.",
+    "hazard": "Települési közutak téli járhatósága."
+  },
+  "pathways": [
+    {
+      "title": "Sószükséglet fedezetlensége",
+      "scenario": "A téli sókészlet a szezon közepén elfogy.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Téli sókészlet-nyilvántartás",
+          "description": "Havi készletszámlálás és előre rögzített minimumszint.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Hiányzó hóeke",
+      "scenario": "A hóeke üzemképtelen vagy nincs kijelölve a szakaszra.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Eszköz- és szakaszbeosztás",
+          "description": "Minden szakaszhoz név szerinti eszköz és tartalék.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Vállalkozó késése",
+      "scenario": "A téli szerződéses vállalkozó nem érkezik meg időben.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Készenléti szerződés kiegészítő vállalkozóval",
+          "description": "Második vállalkozó előzetesen lekötve.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Közlekedési balesetek",
+      "scenario": "A csúszós úton balesetek történnek.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Veszélyes szakaszok elsőbbségi sorrendje",
+          "description": "A buszvonalak és lejtők kezelése elsőként.",
+          "stage": "mitigate"
+        }
+      ]
+    },
+    {
+      "title": "Elzárt megközelíthetőség",
+      "scenario": "Települési részek és intézmények elérhetetlenné válnak.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Mentők és segélyszolgálat útvonalbiztosítása",
+          "description": "Kijelölt útvonalak soron kívüli megnyitása.",
+          "stage": "mitigate"
+        }
+      ]
+    },
+    {
+      "title": "Üzemeltetői felelősség",
+      "scenario": "Balesetből kártérítési felelősség keletkezik a községre.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Felelősségbiztosítás és naplózás",
+          "description": "Elvégzett munkák időbélyeges naplója és biztosítás.",
+          "stage": "mitigate"
+        }
+      ]
+    }
+  ],
+  "drilldowns": []
+}

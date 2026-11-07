@@ -1,0 +1,84 @@
+{
+  "library": "Települési szolgáltatáskiesési kockázatok: Közvilágítás és iskolaépület biztonsága",
+  "note": "Induló, kitalált kockázat a település nyilvántartásához; valós településre nem utal.",
+  "risk": {
+    "title": "Közvilágítás és iskolaépület biztonsága",
+    "top_event": "Műszaki hiba vagy elmaradt ellenőrzés miatt a használók sérülésveszélybe kerülnek.",
+    "hazard": "Közvilágítási berendezések és iskolaépület műszaki állapota."
+  },
+  "pathways": [
+    {
+      "title": "Berendezések elöregedése",
+      "scenario": "A lámpatestek és a fűtési vagy villamos hálózat elavult.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Eszközállapot-nyilvántartás",
+          "description": "Életkor és állapot szerinti felújítási sorrend.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Elhalasztott felülvizsgálat",
+      "scenario": "A kötelező tűz- és érintésvédelmi felülvizsgálat elmarad.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Felülvizsgálati naptár",
+          "description": "Határidőkkel és felelősökkel rögzített éves naptár.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Karbantartási kapacitás hiánya",
+      "scenario": "Nincs szabad karbantartó a hibák elhárítására.",
+      "side": "threat",
+      "controls": [
+        {
+          "name": "Hibabejelentési és javítási sor",
+          "description": "Bejelentés nyomon követése a javításig.",
+          "stage": "prevent"
+        }
+      ]
+    },
+    {
+      "title": "Személyi sérülés",
+      "scenario": "Gyermek vagy járókelő megsérül a sötét vagy hibás épületrészen.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Elsősegély- és kiürítési rend",
+          "description": "Begyakorolt kiürítés és elsősegélyhelyek.",
+          "stage": "mitigate"
+        }
+      ]
+    },
+    {
+      "title": "Épület bezárása",
+      "scenario": "Hatósági tiltás miatt az iskola vagy egy szárnya bezár.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Átmeneti oktatási helyszín",
+          "description": "Előre kijelölt tartalék tanterem és szállítás.",
+          "stage": "mitigate"
+        }
+      ]
+    },
+    {
+      "title": "Felelősségi eljárás",
+      "scenario": "Baleset után a község felelősségét vizsgálják.",
+      "side": "consequence",
+      "controls": [
+        {
+          "name": "Felülvizsgálati iratok megőrzése",
+          "description": "Dokumentált ellenőrzések a felelősség igazolására.",
+          "stage": "mitigate"
+        }
+      ]
+    }
+  ],
+  "drilldowns": []
+}
