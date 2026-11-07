@@ -29,6 +29,8 @@ const roleOf = (step: Rec) => file.roles.find((role: Rec) => role.id === step.ro
 const actorOf = (step: Rec) => roleOf(step)?.name ?? "The agency";
 const aiClause = /MI-szerep/;
 const humanApproval = /ember hagyja jóvá/;
+const roleCodes: Record<string, string> = { "WI-1": "R-6", "WI-2": "R-7", "WI-3": "R-6", "WI-4": "R-7", "WI-5": "R-7" };
+const aiRule = file.rules.find((rule: Rec) => rule.code === "RU-AI-1") as Rec;
 
 const hub: Hub = { id: "zoldhalom", name: (file.agency as Rec).name, role: "owner", kind: "municipality", model_key_set: true };
 
@@ -115,6 +117,7 @@ describe("workflow W-1, register upkeep: the officer opens each step", () => {
     stepsByOrdinality.forEach((step, index) => {
       expect(pairsOf(stepCard(index + 1, step.title)).Actor).toBe(actorOf(step));
     });
+    stepsByOrdinality.forEach((step) => expect(roleOf(step)?.code).toBe(roleCodes[step.code]));
     expect(file.role_assignments.filter((entry: Rec) => stepsInFile.some((step) => step.id === entry.work_item_id))).toEqual([]);
 
     const design = await loadDesign(hub.id, workflow.id);
@@ -128,6 +131,12 @@ describe("workflow W-1, register upkeep: the officer opens each step", () => {
     const publisher = file.roles.find((role: Rec) => role.code === "R-4") as Rec;
     expect(publisher.description).toMatch(/Betöltheti mesterséges intelligencia/);
     expect(publisher.description).toMatch(/minden kimenő anyagot .* jóvá/);
+
+    expect(aiRule.text).toMatch(/csak fogalmaz, összegez, utánajár vagy számol/);
+    expect(aiRule.text).toMatch(/ember hagyja jóvá/);
+    const attached = file.rule_attachments.filter((entry: Rec) => entry.rule_code === "RU-AI-1");
+    const workflowObjectives = file.workflow_objectives.filter((link: Rec) => link.workflow_id === workflow.id).map((link: Rec) => file.objectives.find((objective: Rec) => objective.id === link.objective_id).code);
+    expect(attached.map((entry: Rec) => entry.target_code).sort()).toEqual([...workflowObjectives].sort());
 
     expect(writes()).toEqual([]);
     expect(calls.filter((call) => /publish/.test(call.tool))).toEqual([]);
