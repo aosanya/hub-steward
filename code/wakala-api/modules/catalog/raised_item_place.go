@@ -3,6 +3,7 @@ package mwanachamacatalog
 import (
 	"context"
 	"sort"
+	"strings"
 
 	"wakalaserver/modules/shared/geo"
 )
@@ -41,24 +42,36 @@ func (m *catalogManager) streetOf(ctx context.Context, r RaisedItem) (string, er
 	return r.Street, nil
 }
 
-func (m *catalogManager) placeOf(ctx context.Context, r RaisedItem) (string, error) {
+func (m *catalogManager) derivedArea(ctx context.Context, pin *geo.Geometry, address string) (string, error) {
 	if m.resolveArea == nil {
-		return r.Area, nil
+		return "", nil
 	}
-	if r.Pin != nil {
-		at := r.Pin.Point
+	if pin != nil {
+		at := pin.Point
 		area, err := m.resolveArea(ctx, &at, "")
 		if err != nil || area != "" {
 			return area, err
 		}
 	}
-	if r.Address != "" {
-		area, err := m.resolveArea(ctx, nil, r.Address)
-		if err != nil || area != "" {
-			return area, err
-		}
+	if address != "" {
+		return m.resolveArea(ctx, nil, address)
 	}
-	return r.Area, nil
+	return "", nil
+}
+
+func (m *catalogManager) placeOf(ctx context.Context, r RaisedItem) (string, string, error) {
+	typed := strings.TrimSpace(r.Area)
+	derived, err := m.derivedArea(ctx, r.Pin, r.Address)
+	if err != nil {
+		return "", "", err
+	}
+	if typed == "" {
+		return derived, "", nil
+	}
+	if derived != "" && !strings.EqualFold(derived, typed) {
+		return typed, derived, nil
+	}
+	return typed, "", nil
 }
 
 func (m *catalogManager) NearbyRaisedItems(ctx context.Context, topic string, at geo.Position, withinMetres float64) ([]RaisedItem, error) {

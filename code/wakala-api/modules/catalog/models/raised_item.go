@@ -13,6 +13,7 @@ type RaisedItem struct {
 	Pin           *geo.Geometry `json:"pin"`
 	Address       string        `json:"address"`
 	Area          string        `json:"area"`
+	AreaMismatch  string        `json:"area_mismatch"`
 	Street        string        `json:"street"`
 	BoardItemID   string        `json:"board_item_id"`
 	SubjectID     string        `json:"subject_id"`

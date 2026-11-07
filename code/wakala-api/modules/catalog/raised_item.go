@@ -27,11 +27,12 @@ func (m *catalogManager) FileRaisedItem(ctx context.Context, r RaisedItem) (Rais
 	if err := m.subjectIsAnEntry(ctx, r.SubjectID); err != nil {
 		return RaisedItem{}, err
 	}
-	area, err := m.placeOf(ctx, r)
+	area, mismatch, err := m.placeOf(ctx, r)
 	if err != nil {
 		return RaisedItem{}, err
 	}
 	r.Area = area
+	r.AreaMismatch = mismatch
 	street, err := m.streetOf(ctx, r)
 	if err != nil {
 		return RaisedItem{}, err

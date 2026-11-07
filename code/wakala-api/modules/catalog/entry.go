@@ -47,6 +47,9 @@ func (m *catalogManager) findEntry(ctx context.Context, slug string) (Entry, err
 func (m *catalogManager) CreateEntry(ctx context.Context, e Entry) (Entry, error) {
 	e.Visibility = models.VisibilityPending
 	e.ApprovedAt = ""
+	if err := m.fillWard(ctx, &e); err != nil {
+		return Entry{}, err
+	}
 	if err := m.checkEntry(&e); err != nil {
 		return Entry{}, err
 	}
@@ -87,6 +90,9 @@ func reviewedContentChanged(existing, sent Entry) bool {
 }
 
 func (m *catalogManager) rewriteEntry(ctx context.Context, existing, e Entry) (Entry, error) {
+	if err := m.fillWard(ctx, &e); err != nil {
+		return Entry{}, err
+	}
 	reviewReset := reviewedContentChanged(existing, e)
 	e.Visibility, e.ApprovedAt = existing.Visibility, existing.ApprovedAt
 	if reviewReset {

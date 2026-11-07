@@ -798,7 +798,12 @@
         {
           "name": "area",
           "type": "string",
-          "description": "The host's area the item falls in, resolved by the host from the pin, else the address, else the one the raiser picked; empty when none. Opaque to this module."
+          "description": "The host's area the item falls in. The one the raiser typed is kept; when none was typed it is resolved by the host from the pin, else the address; empty when none. Opaque to this module."
+        },
+        {
+          "name": "area_mismatch",
+          "type": "string",
+          "description": "The area the host resolved from the pin or address when it differs from the one the raiser typed, which is kept as it was; empty when they agree or nothing was resolved."
         },
         {
           "name": "street",

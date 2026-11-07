@@ -37,5 +37,10 @@ func (r *registry) buildCatalogManager(ctx context.Context, id, mount string) (m
 	if err != nil {
 		return nil, err
 	}
+	um, err := r.ActorManager(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	built.UseAreaResolver(wardAreaResolver(um))
 	return built, nil
 }
