@@ -159,6 +159,17 @@
       "created_at": "2026-10-23T06:30:00Z",
       "last_updated": "2026-10-23T06:30:00Z",
       "deleted": false
+    },
+    {
+      "id": "5fb2bb27-1794-5609-bef1-1562ad09f8c2",
+      "code": "riskmanager",
+      "name": "riskmanager",
+      "description": "",
+      "enabled": true,
+      "locked": false,
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
     }
   ],
   "roles": [
@@ -307,6 +318,30 @@
       "powers": [],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "code": "R-13",
+      "name": "Osztályvezető (kockázat felelőse)",
+      "description": "Annak a szolgáltatásnak az osztályvezetője, amelyet egy kockázat érint, és a kockázat felelőse. Csak a saját szolgáltatásának kockázatait látja és olvassa; a nyilvántartást nem változtatja meg.",
+      "permissions": [
+        "risk.read"
+      ],
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "81af2fd8-896f-50b3-a18e-faa8596e3527",
+      "code": "R-14",
+      "name": "Testületi kockázatolvasó",
+      "description": "A képviselő-testület és a polgármesteri hivatal tagja, aki a teljes kockázati nyilvántartást olvassa, minden szolgáltatásét. Csak olvas; a nyilvántartást nem változtatja meg.",
+      "permissions": [
+        "risk.read"
+      ],
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
       "deleted": false
     }
   ],
@@ -773,6 +808,22 @@
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
       "deleted": false
+    },
+    {
+      "id": "528e3be4-7c44-5f19-93a3-41b3480dce07",
+      "code": "RU-RISK-1",
+      "text": "Egy kockázat felelőse annak a szolgáltatásnak az osztályvezetője, amelyet a kockázat érint; ő csak a saját szolgáltatásának kockázatait látja.",
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "650d6819-efc2-5ec5-b951-fc8cc8ec5251",
+      "code": "RU-RISK-2",
+      "text": "A képviselő-testület és a polgármesteri hivatal a teljes kockázati nyilvántartást olvassa.",
+      "created_at": "2026-11-07T12:00:00Z",
+      "last_updated": "2026-11-07T12:00:00Z",
+      "deleted": false
     }
   ],
   "value_attachments": [
@@ -959,6 +1010,20 @@
       "target_type": "objective",
       "target_code": "O-3",
       "created_at": "2026-11-07T10:00:00Z"
+    },
+    {
+      "id": "9581563b-02a4-5593-9400-d988f704ae7b",
+      "rule_code": "RU-RISK-1",
+      "target_type": "role",
+      "target_code": "R-13",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "ca12beda-d867-5afe-9dd4-6f1fd993f799",
+      "rule_code": "RU-RISK-2",
+      "target_type": "role",
+      "target_code": "R-14",
+      "created_at": "2026-11-07T12:00:00Z"
     }
   ],
   "workflows": [
