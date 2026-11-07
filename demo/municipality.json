@@ -178,147 +178,147 @@
       "code": "R-1",
       "name": "Polgármester / testületi elnök",
       "description": "Vezeti a választott testületet, és viszi azt, amit a testület megkérdezett a lakosoktól, és amit a válasszal tett. Az a szerep, amelynek ki kell állnia és el kell mondania, miért alakult úgy egy döntés. Ezt a szerepet soha nem tölti be mesterséges intelligencia. A meghallgatott vélemények súlya ellen hozott döntésre egy ember nevét kell ráírni.",
-      "powers": [
-        "report.publish"
-      ],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "permissions": [
+        "report.publish"
+      ]
     },
     {
       "id": "ef9bb2b6-d202-4e54-b249-f7d031fdebce",
       "code": "R-2",
       "name": "Önkormányzati képviselő",
       "description": "Egy településrész választott képviselője. Azt hozza, amit a körzete ténylegesen mondott, nem azt, amit a telefonálók: és felel azért, hogy a körzetét egyáltalán elérték-e. Soha nem tölti be mesterséges intelligencia. A szerep választott.",
-      "powers": [
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false,
+      "permissions": [
         "join_request.decide",
         "member.invite",
         "poll.run",
         "notice.post",
         "event.post"
-      ],
-      "created_at": "2026-10-01T10:00:00Z",
-      "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      ]
     },
     {
       "id": "f615dda6-3f1d-4ff6-862b-a60b0281ccca",
       "code": "R-3",
       "name": "Egyeztetésvezető",
       "description": "Megtervezi az egyes köröket: a kérdést, hogy kikhez jut el, mennyi idő alatt, milyen csatornákon és milyen módszerrel olvassák a válaszokat. Övé a kérdőív, és elutasít olyat, amely félrevezetné a testületet. Soha nem tölti be mesterséges intelligencia: annak eldöntése, mit hajlandó a testület megtenni, politikai ítélet, nem fogalmazási feladat. A mesterséges intelligencia megfogalmazza a kérdőívet és a módszerleírást, amelyet ez a szerep jóváhagy.",
-      "powers": [
-        "form.approve",
-        "poll.run"
-      ],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "permissions": [
+        "form.approve",
+        "poll.run"
+      ]
     },
     {
       "id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
       "code": "R-4",
       "name": "Kommunikációs referens",
       "description": "Eljuttatja a kérdést az emberekhez, és a választ vissza hozzájuk. Övé a közzététel arról, mit hallottunk és mi következett belőle. Betöltheti mesterséges intelligencia, amely megfogalmazza a közzétételt, a visszaigazolást és a „ti mondtátok, mi meghallgattuk” üzenetet, de minden kimenő anyagot név szerint megnevezett személy hagy jóvá.",
-      "powers": [
-        "report.publish",
-        "notice.post"
-      ],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "permissions": [
+        "report.publish",
+        "notice.post"
+      ]
     },
     {
       "id": "471deb4a-862e-4d91-ade6-138446d04f54",
       "code": "R-5",
       "name": "Közösségi kapcsolattartó",
       "description": "Az az elérés, amely nem kér eszközt: piacok, kapuk, imaházak, egyesületek, a bolt előtti pad. Papíron és beszélgetésben gyűjt, és egyben hozza vissza. Soha nem tölti be mesterséges intelligencia. Ez a kapu, a piaci pult és a beszélgetés.",
-      "powers": [
+      "created_at": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-10-01T18:00:00Z",
+      "deleted": false,
+      "permissions": [
         "member.invite",
         "event.post",
         "volunteer_call.post"
-      ],
-      "created_at": "2026-10-01T10:00:00Z",
-      "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      ]
     },
     {
       "id": "96114fa7-3f83-43d6-9054-5a6470e36986",
       "code": "R-6",
       "name": "Adat- és elemzési referens",
       "description": "Rekordként rögzíti a válaszokat, településrészenként és témánként jelent róluk, és világosan megmondja, mennyire volt reprezentatív a kör. Számot tesz közzé, soha nem személyt. Betöltheti mesterséges intelligencia: a válaszok rögzítése, a szabad szöveg témákba sorolása, a településrészenkénti lefedettség és a táblán látható számok előállítása olyan munka, amelyet a mesterséges intelligencia gyorsabban és egyenletesebben végez, mint egy ember. Az azonosítható válasz megnyitása a RU-4 szerint ember dolga marad.",
-      "powers": [],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "permissions": []
     },
     {
       "id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
       "code": "R-7",
       "name": "Adatvédelmi és iratkezelési felelős",
       "description": "Őrzi a hozzájárulást, a megőrzést és a feljegyzést arról, ki olvasta az azonosítható válaszokat. Az a szerep, amely leállíthat egy kört, amely többet kérdez a szükségesnél. Soha nem tölti be mesterséges intelligencia. A szerep azért létezik, hogy le tudjon állítani egy kört.",
-      "powers": [
-        "form.approve"
-      ],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "permissions": [
+        "form.approve"
+      ]
     },
     {
       "id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
       "code": "R-8",
       "name": "Jegyző",
       "description": "Az eredményt előterjesztésként a testület elé teszi, rögzíti a meghozott döntést, és fenntartja a kapcsolatot a döntés és az azt megalapozó egyeztetés között. Betöltheti mesterséges intelligencia az előterjesztés összeállítására és a döntés iktatására a követett körhöz. Azt, hogy mi volt a döntés, ember rögzíti.",
-      "powers": [
-        "join_request.decide",
-        "member.invite"
-      ],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "permissions": [
+        "join_request.decide",
+        "member.invite"
+      ]
     },
     {
       "id": "357d590b-55c0-4ae1-9c60-cd46dffe2fe5",
       "code": "R-9",
       "name": "Ellenőrző bizottság elnöke",
       "description": "Utólag vizsgálja, hogy egy döntés tükrözte-e a meghallgatott véleményeket, és hogy a visszajelzésben tett ígéretek valóban megvalósultak-e. Betöltheti mesterséges intelligencia annak az átvizsgálására, hogy a közzétett ígéretet betartották-e. Hogy mi legyen a megszegettel, az az elnök dolga.",
-      "powers": [
-        "promise.record_outcome"
-      ],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "permissions": [
+        "promise.record_outcome"
+      ]
     },
     {
       "id": "513ea7ed-e80a-4ed8-86c9-bacda9b55e47",
       "code": "R-10",
       "name": "Közösségi moderátor",
       "description": "Használhatóan tartja az ötlettáblát: eltávolítja a visszaélést, összevonja az ismétlődéseket, és érintetlenül hagyja az önkormányzat bírálatát, ami az egész értelme. Betöltheti mesterséges intelligencia az első körben – visszaélés, ismétlődés és az összevonás, amely minden bejelentőt megtart –, minden eltávolítás ember előtt megfellebbezhető, az önkormányzat bírálatát pedig soha nem távolítják el.",
-      "powers": [],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "permissions": []
     },
     {
       "id": "69df9114-1c76-4b7d-a1f5-6a8a8743675a",
       "code": "R-11",
       "name": "Szolgáltató céges kapcsolattartó",
       "description": "Az önkormányzat kapcsolata azzal a céggel, amelyre a működtetési szolgáltatásait kiszervezte. Átadja, amit a lakosok jeleztek, és visszahozza, mi történt velük. Betöltheti mesterséges intelligencia az átadási lista követésére és korának nyomon követésére. A szerződéses egyeztetés emberé.",
-      "powers": [
-        "promise.record_outcome"
-      ],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "permissions": [
+        "promise.record_outcome"
+      ]
     },
     {
       "id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
       "code": "R-12",
       "name": "Pénzügyi referens",
       "description": "Őrzi a díj- és illetékjegyzéket és a településrészenkénti kiadási képet. Része annak a működési bővítménynek, amelyet a sablon deklarál, nem a meghallgatásnak, amelyre épült. Soha nem tölti be mesterséges intelligencia. A pénz be- és kimenetele embernek az aláírását viseli.",
-      "powers": [],
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "permissions": []
     },
     {
       "id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
@@ -1133,6 +1133,146 @@
       "target_type": "objective",
       "target_code": "O-55",
       "created_at": "2026-11-07T11:00:00Z"
+    },
+    {
+      "id": "78b68d84-5687-5c74-a374-092662e3e382",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-4",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "aac95009-6435-50ca-bc2b-ba5f9ce7db4b",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-5",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "207c6323-d3ae-5b8d-9672-acc4c4fe0e1c",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-6",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "915157d0-0af3-5385-929b-2ae648632cd0",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-7",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "ba759a38-34d1-5d13-ab46-83c87e7b0c86",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-8",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "3580ca3d-82d2-5d79-a09a-018b12a07da5",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-9",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "d7c6eb57-64c6-5306-980f-f9402ccfc5aa",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-10",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "73ba7e8e-ebea-57fe-aabe-c8761812ce9c",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-11",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "d26e9883-99fe-5fdd-9e2c-04379253c3c9",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-12",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "9a651a3e-f7a1-5796-a9e2-786204c665ae",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-13",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "2513c959-38d7-5fb9-bb99-dfc06eda146d",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-14",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "0930c205-b42b-5598-8b25-a9c47fe111d9",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-15",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "363abcff-383d-5e1d-a6ab-8b330e650ed7",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-16",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "7421b439-eb61-5923-80d3-d865b4989f26",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-17",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "986e6567-884d-5422-af19-4b8fabd39200",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-18",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "784fa13b-d9d4-5f06-9e54-7094c0656f1e",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-19",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "c13ad104-72fe-57a0-a570-5e0aba9f5fc7",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-20",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "17f67df9-0113-553a-bce7-cfab3559e204",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-21",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "9e5c9186-8e55-5519-ad84-3843af592352",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-47",
+      "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "cb5c2d2e-7b09-5c37-b314-9c7d3054c16d",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-50",
+      "created_at": "2026-11-07T12:00:00Z"
     }
   ],
   "workflows": [
@@ -1201,7 +1341,7 @@
       "code": "W-44",
       "name": "Ígéret ellenőrzése lejáratkor",
       "description": "Amikor a testület által vállalt ígéret határideje lejár, megnézzük, teljesült-e, és közzétesszük, mit hallottunk a lakosoktól és mit változtatott ez: minden ígéret teljesített, részben teljesített vagy nem teljesített jelölést kap.",
-      "ordinality": 6,
+      "ordinality": 44,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
       "deleted": false
@@ -1251,7 +1391,7 @@
       "code": "W-37",
       "name": "Az azonos bejelentések összevonása és a bejelentők megszámolása",
       "description": "Hogyan vonjuk össze a lakosok által kéretlenül hozott, ugyanarról szóló bejelentéseket egyetlen témává, és hogyan számoljuk meg személyenként egyszer, hányan állnak mögötte.",
-      "ordinality": 6,
+      "ordinality": 37,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
       "deleted": false
@@ -1271,7 +1411,7 @@
       "code": "W-32",
       "name": "Lakossági fórum vagy városrészi gyűlés",
       "description": "A fórum összehívásától a meghívón, a jelenlét megszámolásán és a jegyzőkönyvön át addig, hogy a városrész megtudja, mit hallottunk tőle, és mi lesz belőle.",
-      "ordinality": 6,
+      "ordinality": 32,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
       "deleted": false
@@ -1281,7 +1421,7 @@
       "code": "W-33",
       "name": "A képviselő településrészi fogadóórája",
       "description": "Attól kezdve, hogy a képviselő meghirdeti a fogadóóráját a városrészében, a személyesen elmondottak bejelentésként való rögzítésén át a visszajelzésig: az egész városrészt kérdezzük meg, ne a leghangosabbat.",
-      "ordinality": 6,
+      "ordinality": 33,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
       "deleted": false
@@ -1291,7 +1431,7 @@
       "code": "W-40",
       "name": "A késő ügyek listája minden testületi ülésen",
       "description": "Minden ülésre kigyűjtjük a vállalt határidőn túli bejelentéseket városrészenként, névvel ellátott felelőssel, és jóváhagyás után közzétesszük őket.",
-      "ordinality": 6,
+      "ordinality": 40,
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
       "deleted": false
@@ -1321,7 +1461,7 @@
       "code": "W-36",
       "name": "Bejelentés moderálása, elnémítás nélkül",
       "description": "Hogyan kezeli a közösségi moderátor azt, amit az emberek a körök között hoznak: a bejelentés közzétételét, visszatartását vagy elutasítását, az indok rögzítésével, úgy, hogy az önkormányzat bírálata soha nem tűnik el.",
-      "ordinality": 6,
+      "ordinality": 36,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
       "deleted": false
@@ -1341,7 +1481,7 @@
       "code": "W-26",
       "name": "Kiválasztjuk, mit kérdez a testület",
       "description": "Attól kezdve, hogy a polgármester úgy dönt, új kört indít, addig, amíg a testület egyetlen, vállalható kérdést tesz közzé, a képviselők javaslataiból és abból, amit a lakosok a városrészekben jeleztek.",
-      "ordinality": 6,
+      "ordinality": 26,
       "created_at": "2026-11-07T10:00:00Z",
       "last_updated": "2026-11-07T10:00:00Z",
       "deleted": false
@@ -1351,7 +1491,7 @@
       "code": "W-43",
       "name": "Amikor a döntés ellenkezik azzal, amit hallottunk",
       "description": "Hogyan mondjuk meg nyilvánosan, mit hallottunk a lakosoktól, miben döntött a testület másképp, mi az indok, és ki viszi tovább az ügyet.",
-      "ordinality": 6,
+      "ordinality": 43,
       "created_at": "2026-10-02T10:00:00Z",
       "last_updated": "2026-10-02T10:00:00Z",
       "deleted": false
