@@ -1841,6 +1841,26 @@
       "created_at": "2026-11-07T15:00:00Z",
       "last_updated": "2026-11-07T15:00:00Z",
       "deleted": false
+    },
+    {
+      "id": "b8efbb03-5cd7-5b2e-ae32-69bedab72a84",
+      "code": "W-22",
+      "name": "Címet rendelünk a városrészhez",
+      "description": "Hogyan kerül minden rekord a megfelelő városrész számába: az adat- és elemzési referens összegyűjti a városrész nélküli címeket, a helyükből megkeresi a városrészt, jelzi, ahol a beírt és a kiszámolt városrész eltér, vagy a pont egyik határon sincs belül, a döntést ember hozza meg, és a rekordok városrészenként számolódnak. Az MI-szerep csak gyűjthet, számolhat és vázlatot fogalmazhat; ami a nyilvánosság elé kerül, azt előtte ember hagyja jóvá.",
+      "ordinality": 66,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "code": "W-39",
+      "name": "Érzékeny vagy névtelen bejelentés",
+      "description": "Hogyan kezeljük azt, amit a lakosok a körök között hoznak, ha érzékeny vagy névtelen: a bejelentés személyazonosság nélkül érkezik, a beküldő névtelen nyugtakódot kap, az adatvédelmi és iratkezelési felelős megítéli az érzékenységet, az azonosító részleteket ember távolítja el, az ügy a megfelelő osztályhoz kerül, és közzététel előtt a kis számok szabálya dönt. Az MI-szerep csak vázlatot fogalmazhat, összegezhet és számolhat; a nyilvánosság elé mindig ember hagyja jóvá.",
+      "ordinality": 67,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false
     }
   ],
   "work_items": [
@@ -6403,6 +6423,248 @@
           "required": true
         }
       ]
+    },
+    {
+      "id": "e93b3acf-326c-5daf-a307-386f591901fb",
+      "code": "WI-22-1",
+      "workflow_id": "b8efbb03-5cd7-5b2e-ae32-69bedab72a84",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Összegyűjtjük a városrész nélküli címeket",
+      "description": "Kigyűjtjük azokat a rekordokat, amelyeknek van címük vagy pontjuk, de városrészük nincs.",
+      "prompt": "Az Adat- és elemzési referens kigyűjti a nyilvántartásból azokat a személyeket, háztartásokat és vállalkozásokat, amelyeknek van címük vagy térképi pontjuk, de a városrész mezőjük üres, például a Gyár utca 14. és a Malom köz 3. Megszámolja őket, és mellé írja a forrást és a kigyűjtés dátumát. Az MI-szerep (RU-AI-1) csak gyűjthet, számolhat és vázlatot fogalmazhat; a nyilvánosság elé kerülő számot az RU-AI-1 szabály szerint ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összegyűjtjük a városrész nélküli címeket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "b2d66f81-6299-5cfb-8d0e-2c11f5cc5873",
+      "code": "WI-22-2",
+      "workflow_id": "b8efbb03-5cd7-5b2e-ae32-69bedab72a84",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "A pont alapján megkeressük a városrészt",
+      "description": "Minden gyűjtött rekord pontjához megkeressük a határát tartalmazó városrészt.",
+      "prompt": "Az Adat- és elemzési referens minden gyűjtött rekord pontjára lekéri, melyik városrész (Óváros, Kertváros, Malomsor vagy Határrét) határa tartalmazza, a legbelső határt véve, és a kiszámolt városrészt a rekord mellé írja javaslatként. Az MI-szerep (RU-AI-1) csak gyűjthet, számolhat és vázlatot fogalmazhat; a nyilvánosság elé kerülő számot az RU-AI-1 szabály szerint ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A pont alapján megkeressük a városrészt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "0440034e-8eb8-5e84-94b8-4ad2176bcd94",
+      "code": "WI-22-3",
+      "workflow_id": "b8efbb03-5cd7-5b2e-ae32-69bedab72a84",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Jelezzük az eltéréseket és a határon kívüli pontokat",
+      "description": "Külön listára tesszük, ahol a beírt és a kiszámolt városrész eltér, vagy a pont egyik határban sincs.",
+      "prompt": "Az Adat- és elemzési referens külön listára teszi azokat a rekordokat, ahol a kézzel beírt városrész eltér a pont alapján kiszámolttól, és azokat is, amelyek pontja egyik városrész határán belül sincs, például a Határrét melletti földút végén. A beírt városrészt nem írja át, csak jelzi az eltérést. Az MI-szerep (RU-AI-1) csak gyűjthet, számolhat és vázlatot fogalmazhat; a nyilvánosság elé kerülő számot az RU-AI-1 szabály szerint ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Jelezzük az eltéréseket és a határon kívüli pontokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "9c006c07-4fd8-5bec-9cef-200d43e77793",
+      "code": "WI-22-4",
+      "workflow_id": "b8efbb03-5cd7-5b2e-ae32-69bedab72a84",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "A referens dönt az eltérésekről",
+      "description": "A referens rekordonként eldönti, melyik városrész marad, vagy a rekord a helyszíni ellenőrzésre vár.",
+      "prompt": "Az Adat- és elemzési referens végigmegy a jelzett rekordokon, és mindegyiknél eldönti, hogy a beírt vagy a kiszámolt városrész marad-e, vagy a határon kívüli rekord helyszíni ellenőrzésre vár; a döntést és az indokát a rekordon rögzíti. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A referens dönt az eltérésekről",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "c1531189-ada4-5877-92b9-8b3061f927c3",
+      "code": "WI-22-5",
+      "workflow_id": "b8efbb03-5cd7-5b2e-ae32-69bedab72a84",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "A rekordokat városrészenként megszámoljuk",
+      "description": "A döntés után városrészenként megszámoljuk a rekordokat, és a számot ember hagyja jóvá.",
+      "prompt": "Az Adat- és elemzési referens a döntések után városrészenként megszámolja a rekordokat, külön sorba téve a még városrész nélkülieket, és vázlatot fogalmaz a számokról; a vázlat addig nem kerül sehová, amíg ember jóvá nem hagyta. Az MI-szerep (RU-AI-1) csak gyűjthet, számolhat és vázlatot fogalmazhat; a nyilvánosság elé kerülő számot az RU-AI-1 szabály szerint ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A rekordokat városrészenként megszámoljuk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "7fb91704-e2fa-5373-9122-6b5539972a5b",
+      "code": "WI-39-1",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Fogadjuk a bejelentést személyazonosság nélkül",
+      "description": "Az adatvédelmi és iratkezelési felelős fogadja a bejelentést név, fiók és elérhetőség nélkül.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős fogadja a bejelentést bármelyik csatornán, például a Malomsori kapunál elhelyezett dobozból vagy a telefonos ügyfélvonalról, és nem kérdez nevet, címet vagy elérhetőséget. A bejelentő fiókja és a küldés adatai nem kerülnek az ügy mellé. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Fogadjuk a bejelentést személyazonosság nélkül",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "7dc2c4e6-eb1c-5eb2-9dda-1e428f748b37",
+      "code": "WI-39-2",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "A beküldő nyugtakódot kap, nem nevet",
+      "description": "A közösségi kapcsolattartó átadja a nyugtakódot, amellyel a beküldő később megnézheti az ügy állapotát.",
+      "prompt": "A Közösségi kapcsolattartó átad egy véletlen nyugtakódot, például az NY-4821-et, amellyel a beküldő név nélkül rákérdezhet az ügy állapotára. A kód nem tartalmaz személyes adatot, és a nyilvántartás nem köti névhez. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A beküldő nyugtakódot kap, nem nevet",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "6a6b435e-29d5-5c52-826f-11639145e73e",
+      "code": "WI-39-3",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Megítéljük a bejelentés érzékenységét",
+      "description": "A felelős eldönti, hogy a bejelentés érzékeny-e, és ki láthatja.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős elolvassa a bejelentést, és eldönti, hogy érzékeny-e: például egy közalkalmazott magatartásáról, egy szomszéd egészségi állapotáról vagy a Kertvárosi Közösségi Ház pénzkezeléséről szól. Az érzékeny bejelentést csak a felelős és a címzett osztályvezető olvashatja. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megítéljük a bejelentés érzékenységét",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "5b2933f3-f3d1-5aa9-8f2d-a602637d1248",
+      "code": "WI-39-4",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Ember eltávolítja az azonosító részleteket",
+      "description": "A felelős kiszedi a szövegből azt, amiből a beküldő vagy az érintett kitalálható.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős soronként átnézi a szöveget, és eltávolítja a neveket, a címeket, a rendszámokat, a pontos időpontokat és azokat a fordulatokat, amelyekből a beküldő kitalálható. Az eredeti szöveg nem megy tovább, csak a megtisztított változat. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ember eltávolítja az azonosító részleteket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "56d3b3d6-71d9-57e1-af12-485eaa1d1102",
+      "code": "WI-39-5",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Javaslat a megfelelő osztályra",
+      "description": "Az asszisztens a megtisztított szövegből vázlatot ír, és javaslatot tesz, melyik osztályhoz tartozik az ügy.",
+      "prompt": "Az Adat- és elemzési referens a megtisztított szövegből rövid összefoglalót ír, és javaslatot tesz, melyik osztályhoz tartozik az ügy, például az Óvárosi útkezelőhöz vagy a szociális irodához. Az eredeti szöveget nem kapja meg, a beküldőt nem keresi. Az MI-szerep (RU-AI-1) csak vázlatot fogalmazhat, összegezhet és javaslatot tehet; az irányítást a felelős hagyja jóvá, és jóváhagyás nélkül semmi nem kerül az osztályhoz, és nem lesz nyilvános.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Javaslat a megfelelő osztályra",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "aec189b7-58f2-52e9-bd00-4b2b05a1b9bf",
+      "code": "WI-39-6",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Közzététel előtt a kis számok szabálya",
+      "description": "Az asszisztens megszámolja, hány bejelentés tartozik egy témához és településrészhez, és jelzi, hol kevés.",
+      "prompt": "Az Adat- és elemzési referens megszámolja, hány bejelentés tartozik egy témához és településrészhez, például Malomsorról hány. Ahol a szám a testület által beállított minimum alatt marad (alapértelmezés szerint öt), ott a bontást nem mutatja, hanem összevonja a többivel, mert abból kitalálható lenne a beküldő. Az MI-szerep (RU-AI-1) csak számolhat és vázlatot fogalmazhat; a közzétételt a felelős hagyja jóvá, és jóváhagyás nélkül semmi nem lesz nyilvános.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T16:00:00Z",
+      "last_updated": "2026-11-07T16:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Közzététel előtt a kis számok szabálya",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [
@@ -6940,6 +7202,21 @@
       "id": "53ff36f8-227c-5222-8d9a-cc03251aa8d6",
       "workflow_id": "6611ca35-30b5-506e-be02-e40a62cd0518",
       "objective_id": "4060f82b-189c-5d01-a819-c60c0ae52f54"
+    },
+    {
+      "id": "dce8c09e-78e1-5cd9-afdd-f8d885993c1a",
+      "workflow_id": "b8efbb03-5cd7-5b2e-ae32-69bedab72a84",
+      "objective_id": "3d7a5d84-fcae-4016-a298-2ba76e33fb42"
+    },
+    {
+      "id": "8df6afbd-9a6e-5ae5-aa4e-42648619ad7f",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "objective_id": "73050afb-50f5-4699-9d29-d15eda0960e1"
+    },
+    {
+      "id": "b079e71f-5137-5f5b-83e5-ea32cb503d6c",
+      "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
+      "objective_id": "1ec7cfb5-bedb-4aa1-8ba8-750246c5baf5"
     }
   ],
   "work_plans": [],
