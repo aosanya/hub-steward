@@ -1,8 +1,8 @@
 {
   "workflow": "W-4",
   "title": "from result to decision to feedback",
-  "aiClause": "(MI|mesterséges intelligencia) szerepkör",
-  "humanApproval": "személy hagyja jóvá|személy rögzíti",
+  "aiClause": "mesterséges intelligencia szerepkör \\(RU-AI-1\\) csak",
+  "humanApproval": "egy személy hagyja jóvá",
   "steps": [
     {
       "code": "WI-24",
@@ -17,7 +17,7 @@
     {
       "code": "WI-26",
       "role": null,
-      "ai": false
+      "ai": true
     },
     {
       "code": "WI-27",
@@ -39,6 +39,27 @@
           "minden kimenő anyagot .* jóvá"
         ]
       }
+    ],
+    "stepText": [
+      {
+        "step": "WI-28",
+        "match": [
+          "személy hagyja jóvá"
+        ],
+        "absent": [
+          "személy rögzíti",
+          "MI szerepkör"
+        ]
+      },
+      {
+        "step": "WI-26",
+        "match": [
+          "mesterséges intelligencia szerepkör \\(RU-AI-1\\)",
+          "személy hagyja jóvá"
+        ]
+      }
     ]
-  }
+  },
+  "ruleRef": "RU-AI-1",
+  "ruleRefOnEveryStep": true
 }
