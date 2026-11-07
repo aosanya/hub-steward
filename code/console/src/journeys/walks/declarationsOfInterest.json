@@ -1,0 +1,36 @@
+{
+  "workflow": "W-56",
+  "title": "declarations of interest and approval limits",
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    { "code": "WI-56-1", "role": "R-2", "ai": false },
+    { "code": "WI-56-2", "role": "R-6", "ai": true },
+    { "code": "WI-56-3", "role": "R-8", "ai": false },
+    { "code": "WI-56-4", "role": "R-12", "ai": false },
+    { "code": "WI-56-5", "role": "R-4", "ai": true },
+    { "code": "WI-56-6", "role": "R-1", "ai": false }
+  ],
+  "checks": {
+    "firstActor": "Önkormányzati képviselő",
+    "itemCount": 6,
+    "objectives": ["O-56"],
+    "ruleAttachedToAllObjectives": true,
+    "ruleAttached": [
+      { "rule": "RU-AI-1", "target": "R-6" },
+      { "rule": "RU-AI-1", "target": "R-4" },
+      { "rule": "RU-12", "target": "O-56" }
+    ],
+    "roleText": [
+      { "role": "R-12", "match": ["Soha nem tölti be mesterséges intelligencia"] }
+    ],
+    "stepText": [
+      { "step": "WI-56-3", "match": ["RU-12", "mekkora összeget"] },
+      { "step": "WI-56-4", "match": ["RU-12", "megtagadja", "határ fölött"] },
+      { "step": "WI-56-5", "match": ["3 a 15-ből"] },
+      { "step": "WI-56-6", "match": ["jóváhagyja", "RU-12"] }
+    ],
+    "order": [["WI-56-2", "WI-56-3"], ["WI-56-3", "WI-56-4"], ["WI-56-4", "WI-56-6"]]
+  }
+}
