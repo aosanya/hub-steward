@@ -38,6 +38,8 @@ The spec language has a `geometry` field type holding a GeoJSON Point, Polygon o
 
 A seat can carry an `approval_limit`, set when it is granted or changed on a live seat with `SetApprovalLimit` (a negative one, or an ended seat, is refused). `AuthoriseApproval` loads the seat and refuses an amount over its limit with `ErrOverApprovalLimit` (403). Not built: the forms approval flow does not call it yet, because a form carries no amount; no HTTP route or MCP tool for the setter or the check.
 
+A form carries an `amount` (zero means it commits nothing; a negative one is refused). When it is above zero, `Approve` and `ApproveSlot` refuse with `ErrOverApprovalLimit` (403) unless the approver holds a live seat whose limit covers it, and refuse the same way when the host wired no seat source. The agency registry wires the check from the approver's live seats. `SetApprovalLimit` and `AuthoriseApproval` are also routes (`PUT /role-assignments/{id}/approval-limit`, `POST /role-assignments/{id}/authorise-approval`) and MCP tools (`actor_set_approval_limit`, `actor_authorise_approval`); setting a limit sits under the `role.assign` permission.
+
 ## Not built
 
 - The loop that reads new messages in a room and replies as the Hub Steward role is not in this repository; the API holds the AI role, its instructions, permissions and model accounts.

@@ -5,7 +5,7 @@
   {"code": "join_request.operate", "name": "Read join requests and decide them as the operator", "locked": false, "actions": ["actor.join_request.list_for_group", "actor.join_request.read", "actor.join_request.operator_approve", "actor.join_request.operator_decline"]},
   {"code": "mount.list", "name": "See the agency's modules and their names", "locked": false, "actions": ["instance.mount.list"]},
   {"code": "member.view", "name": "See a member, their groups and their roles", "locked": false, "actions": ["actor.actor.read", "actor.actor.read_many", "actor.assignment.list_for_actor", "actor.assignment.list_for_group", "actor.role_assignment.read", "actor.role_assignment.list_for_actor", "actor.role_assignment.list_for_group", "actor.actor.read_screen_name_by_code", "actor.actor.standing"]},
-  {"code": "role.assign", "name": "Give a role and take it back", "locked": false, "actions": ["actor.role_assignment.create", "actor.role_assignment.revoke"]},
+  {"code": "role.assign", "name": "Give a role and take it back", "locked": false, "actions": ["actor.role_assignment.create", "actor.role_assignment.revoke", "actor.role_assignment.set_approval_limit"]},
   {"code": "invitation.read", "name": "See the invitations a group has sent", "locked": false, "actions": ["actor.invitation.list_for_group", "actor.invitation.read"]},
   {"code": "member.invite", "name": "Invite", "locked": false, "actions": ["actor.invitation.create", "actor.invitation.check_batch", "actor.invitation.send_batch"]},
   {"code": "promise.record_outcome", "name": "Record a promise's outcome", "locked": false},

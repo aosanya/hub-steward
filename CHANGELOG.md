@@ -7,6 +7,7 @@ All notable changes to this project are listed here, grouped by area. The format
 ### API (`code/wakala-api`)
 - `GET /groups/at-point?lon=&lat=` lists the groups whose boundary holds a point, a ward index is built from group boundaries, and a point or other non-area boundary now answers 400 on `PUT /groups/{group_id}/boundary` (2026-11-07).
 - Every role step of the municipality agency has a kind and a done form, so the agency imports whole (184 steps).
+- A form carries an amount, and clearing it (plain or by slot) is refused unless the approver holds a live seat whose approval limit covers it; setting a limit and checking an amount are routes and tools (2026-11-07).
 - A seat's approval limit can be changed on a live seat, and `AuthoriseApproval` refuses an amount over a seat's limit with a clear error (2026-11-07).
 - A published poll count and the insight counts per subject apply the minimum count: a small cell is suppressed, a lone suppressed cell is covered, and the answered total is withheld when anything is hidden (2026-11-07).
 - The custody, digitaltwin and engage modules are ported from the Mwanachama backend and mounted like voting, with their routes and operation tables (2026-11-07).

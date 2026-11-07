@@ -478,6 +478,7 @@ func (r *registry) buildFormManager(ctx context.Context, id string) (mwanachamaf
 	built.UseNames(r.namesIn(id))
 	built.UseMembers(r.membersIn(id))
 	if r.formsApproval != nil {
+	built.UseApprovalLimits(r.approvalLimitsIn(id))
 		required, err := r.formsApproval(ctx, id)
 		if err != nil {
 			return nil, fmt.Errorf("FormManager: approval setting for instance %s: %w", id, err)
