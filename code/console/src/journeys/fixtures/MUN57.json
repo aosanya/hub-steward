@@ -1,0 +1,98 @@
+{
+  "workflows": [
+    {
+      "id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "code": "W-57",
+      "name": "Terem, helyiség vagy rendezvényidőpont foglalása",
+      "description": "Hogyan kér, kap és erősít vissza egy zöldhalmi egyesület vagy lakos egy termet, helyiséget vagy rendezvényidőpontot: ütközés nélkül, a közzétett díjjegyzék szerinti díjjal, és úgy, hogy a foglalást a jegyző hagyja jóvá.",
+      "ordinality": 57,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "c8f9d3c1-ade4-5352-8bd2-1b4d588e3e79",
+      "code": "WI-57-1",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Vegyük fel a foglalási kérelmet",
+      "description": "A közösségi kapcsolattartó felveszi a terem, a helyiség vagy az esemény időpontjára érkezett kérelmet.",
+      "prompt": "Vegyük fel a kérelmet az űrlapon: ki kéri (például a Malomsori Kertbarátok Köre), melyik helyiséget (a Zöldhalmi Városháza nagyterme, az Óvárosi Közösségi Ház kisterme, a Kertvárosi sportcsarnok), melyik napon és hány órától hány óráig, hány főre és milyen célra. Az MI-szerep csak a beérkezett kérelem összefoglalóját fogalmazhatja, és megszámolhatja a függő kérelmeket; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7703c31e-789c-5886-8033-c51403eb5092",
+      "code": "WI-57-2",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Ellenőrizzük az ütközéseket, és javasoljunk időpontot",
+      "description": "Az adat- és elemzési referens megnézi, szabad-e a helyiség, és ha nem, szabad időpontot javasol.",
+      "prompt": "Vessük össze a kérelmet a már rögzített foglalásokkal és a testületi ülések naptárával; ha az időpont foglalt, javasoljunk két szabad időpontot ugyanabban a helyiségben. Az MI-szerep csak megszámolhatja az ütköző foglalásokat, és javaslatot fogalmazhat a kérelmezőnek; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "ac4acc43-175f-5380-b894-d448869b827a",
+      "code": "WI-57-3",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Határozzuk meg a díjat a díjjegyzék szerint",
+      "description": "A pénzügyi referens a közzétett díjjegyzék alapján kiszámolja a bérleti díjat forintban.",
+      "prompt": "A közzétett díjjegyzék szerint számoljuk ki a díjat: a nagyterem óránként 6 500 forint, a kisterem óránként 3 200 forint, a sportcsarnok óránként 8 000 forint, a közhasznú helyi egyesületeknek 50 százalék kedvezmény jár. A kedvezményt és az esetleges díjmentességet ember dönti el. Az MI-szerep csak a díj tervezetét fogalmazhatja, és megszámolhatja a foglalt órákat; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2b197e6a-0df6-5bad-9cb3-01b1e3d1920d",
+      "code": "WI-57-4",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Hagyjuk jóvá a foglalást",
+      "description": "A jegyző jóváhagyja a foglalást és a díjat, és csak ezután lesz a foglalás végleges.",
+      "prompt": "A jegyző átnézi a kérelmet, az ütközés-ellenőrzést és a díjat, kijavítja vagy elutasítja, ami nem állja meg a helyét, és saját nevével jóváhagyja. Csak a jóváhagyott foglalás kerül a helyiségnaptárba és a könyvelésbe; a jóváhagyás időpontját és személyét feljegyezzük. Ezt a lépést nem végzi mesterséges intelligencia.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7e23168d-7b4f-52fc-9bca-d3322c382387",
+      "code": "WI-57-5",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Küldjük ki a visszaigazolást",
+      "description": "A kommunikációs referens a jóváhagyott foglalásról visszaigazolást küld a kérelmezőnek.",
+      "prompt": "A jóváhagyott foglalásról küldjünk visszaigazolást a kérelmezőnek: helyiség, nap, időtartam, fizetendő díj forintban, a befizetés határideje és a lemondás szabálya. Az MI-szerep csak a visszaigazolás szövegét fogalmazhatja, a fizetetlen díjakra emlékeztetőt írhat, és megszámolhatja a kiküldött visszaigazolásokat; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T09:00:00Z",
+      "last_updated": "2026-11-07T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "14f34731-e52a-56d9-97c6-4b64b621ad74",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "objective_id": "745e334b-3b7f-43b1-b326-4c76f15eb3cb"
+    },
+    {
+      "id": "47138df2-fdd8-535b-b1f5-8673c529b377",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "objective_id": "cef6d5a1-9ad9-4533-bae0-135a299334f1"
+    },
+    {
+      "id": "801de320-7b35-5643-a4b6-d87311bd6a5b",
+      "workflow_id": "0501fe18-03d2-587c-9fa8-f9e162d4b5a5",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
+    }
+  ]
+}
