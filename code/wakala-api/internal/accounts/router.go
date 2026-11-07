@@ -18,6 +18,9 @@ import (
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacustody "wakalaserver/modules/custody"
+	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
+	mwanachamaengage "wakalaserver/modules/engage"
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamagit "wakalaserver/modules/git"
 	mwanachamamarket "wakalaserver/modules/market"
@@ -483,6 +486,30 @@ func (r *Router) Approvals(ctx context.Context, id string) (*approvals.Store, er
 		return nil, err
 	}
 	return reg.Approvals(ctx, id)
+}
+
+func (r *Router) CustodyManager(ctx context.Context, id string) (*mwanachamacustody.CustodyManager, error) {
+	reg, err := r.pick(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return reg.CustodyManager(ctx, id)
+}
+
+func (r *Router) TwinManager(ctx context.Context, id string) (mwanachamadigitaltwin.TwinManager, error) {
+	reg, err := r.pick(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return reg.TwinManager(ctx, id)
+}
+
+func (r *Router) PostManager(ctx context.Context, id string) (mwanachamaengage.PostManager, error) {
+	reg, err := r.pick(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return reg.PostManager(ctx, id)
 }
 
 func (r *Router) PollManager(ctx context.Context, id string) (mwanachamavoting.PollManager, error) {

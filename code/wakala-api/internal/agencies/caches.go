@@ -11,6 +11,9 @@ import (
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacustody "wakalaserver/modules/custody"
+	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
+	mwanachamaengage "wakalaserver/modules/engage"
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamagit "wakalaserver/modules/git"
 	mwanachamamarket "wakalaserver/modules/market"
@@ -73,6 +76,9 @@ func (r *registry) openCaches() {
 	r.gits = authz.NewCache[mwanachamagit.GitManager]("gits", nil, authz.WithTTL[mwanachamagit.GitManager](0), authz.WithMaxEntries[mwanachamagit.GitManager](n))
 	r.sources = authz.NewCache[mwanachamasources.SourceManager]("sources", nil, authz.WithTTL[mwanachamasources.SourceManager](0), authz.WithMaxEntries[mwanachamasources.SourceManager](n))
 	r.polls = authz.NewCache[mwanachamavoting.PollManager]("polls", nil, authz.WithTTL[mwanachamavoting.PollManager](0), authz.WithMaxEntries[mwanachamavoting.PollManager](n))
+	r.custody = authz.NewCache[*mwanachamacustody.CustodyManager]("custody", nil, authz.WithTTL[*mwanachamacustody.CustodyManager](0), authz.WithMaxEntries[*mwanachamacustody.CustodyManager](n))
+	r.twins = authz.NewCache[mwanachamadigitaltwin.TwinManager]("twins", nil, authz.WithTTL[mwanachamadigitaltwin.TwinManager](0), authz.WithMaxEntries[mwanachamadigitaltwin.TwinManager](n))
+	r.posts = authz.NewCache[mwanachamaengage.PostManager]("posts", nil, authz.WithTTL[mwanachamaengage.PostManager](0), authz.WithMaxEntries[mwanachamaengage.PostManager](n))
 	r.risks = authz.NewCache[mwanachamariskmanager.RiskManager]("risks", nil, authz.WithTTL[mwanachamariskmanager.RiskManager](0), authz.WithMaxEntries[mwanachamariskmanager.RiskManager](n))
 	r.markets = authz.NewCache[mwanachamamarket.MarketManager]("markets", nil, authz.WithTTL[mwanachamamarket.MarketManager](0), authz.WithMaxEntries[mwanachamamarket.MarketManager](n))
 	r.approvals = authz.NewCache[*approvals.Store]("approvals", nil, authz.WithTTL[*approvals.Store](0), authz.WithMaxEntries[*approvals.Store](n))

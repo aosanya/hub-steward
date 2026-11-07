@@ -10,6 +10,9 @@ import (
 	mwanachamaagency "wakalaserver/modules/agency"
 	"wakalaserver/modules/agency/models"
 	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacustody "wakalaserver/modules/custody"
+	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
+	mwanachamaengage "wakalaserver/modules/engage"
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamamarket "wakalaserver/modules/market"
 	"wakalaserver/modules/shared/spec"
@@ -25,6 +28,9 @@ const (
 	moduleActor       = "actor"
 	moduleForms       = "forms"
 	moduleComm        = "comm"
+	moduleCustody     = "custody"
+	moduleDigitaltwin = "digitaltwin"
+	moduleEngage      = "engage"
 )
 
 type TestCopy struct {
@@ -135,6 +141,12 @@ func (c TestCopy) specsOf(m TouchedModule) ([]*spec.Spec, error) {
 		return mounted(mwanachamaactor.SpecForMount)
 	case moduleForms:
 		return single(mwanachamaforms.SpecFor)
+	case moduleCustody:
+		return mounted(mwanachamacustody.SpecForMount)
+	case moduleDigitaltwin:
+		return mounted(mwanachamadigitaltwin.SpecForMount)
+	case moduleEngage:
+		return mounted(mwanachamaengage.SpecForMount)
 	case moduleComm:
 		return single(mwanachamacomm.SpecFor)
 	}

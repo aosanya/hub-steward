@@ -1,10 +1,8 @@
 package http
 
 import (
-	"context"
 	"net/http"
 
-	custody "wakalaserver/modules/custody"
 	custodyroutes "wakalaserver/modules/custody/routes"
 
 	"wakalaserver/internal/accounts"
@@ -12,24 +10,6 @@ import (
 )
 
 const custodyInstancePrefix = "/instances/{instanceID}/custody"
-
-type custodyManagers interface {
-	CustodyManager(ctx context.Context, id string) (*custody.CustodyManager, error)
-}
-
-func custodyManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (*custody.CustodyManager, error) {
-	if err := mustBeMounted(ctx, reg, instanceID, "custody"); err != nil {
-		return nil, err
-	}
-	if err := mustBeMember(ctx, reg, instanceID); err != nil {
-		return nil, err
-	}
-	managers, ok := reg.(custodyManagers)
-	if !ok {
-		return nil, agencies.ErrInstanceNotFound
-	}
-	return managers.CustodyManager(ctx, instanceID)
-}
 
 func custodyMount() custodyroutes.Mount {
 	return custodyroutes.Mount{Caller: accounts.IDFromContext}

@@ -9,6 +9,9 @@ import (
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
 	catalog "wakalaserver/modules/catalog"
+	custody "wakalaserver/modules/custody"
+	digitaltwin "wakalaserver/modules/digitaltwin"
+	engage "wakalaserver/modules/engage"
 	market "wakalaserver/modules/market"
 	riskmanager "wakalaserver/modules/riskmanager"
 	"wakalaserver/modules/shared/dispatch"
@@ -57,6 +60,9 @@ func mountedOperations(d *Deps) []mountedModule {
 		{module: "taskmanager", mount: agencies.MountBoard, prefix: taskmanagerInstancePrefix, operations: taskmanager.Operations()},
 		{module: "actor", mount: agencies.MountDirectory, prefix: actorInstancePrefix, operations: mwanachamaactor.Operations()},
 		{module: "voting", mount: agencies.MountPolls, prefix: votingInstancePrefix, operations: voting.Operations()},
+		{module: "custody", mount: agencies.MountCustody, prefix: custodyInstancePrefix, operations: custody.Operations()},
+		{module: "digitaltwin", mount: agencies.MountTwin, prefix: digitaltwinInstancePrefix, operations: digitaltwin.Operations()},
+		{module: "engage", mount: agencies.MountPosts, prefix: engageInstancePrefix, operations: engage.Operations()},
 		{module: "riskmanager", mount: agencies.MountRisks, prefix: riskInstancePrefix, operations: riskmanager.Operations()},
 		{module: "market", mount: agencies.MountMarket, prefix: marketInstancePrefix, operations: market.Operations()},
 	}

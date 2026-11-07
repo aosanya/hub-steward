@@ -9,6 +9,9 @@ import (
 	mwanachamaagency "wakalaserver/modules/agency"
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacustody "wakalaserver/modules/custody"
+	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
+	mwanachamaengage "wakalaserver/modules/engage"
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
 	mwanachamasources "wakalaserver/modules/sources"
@@ -157,6 +160,36 @@ func pollManagerFor(ctx context.Context, reg agencies.Registry, instanceID strin
 		return nil, err
 	}
 	return reg.PollManager(ctx, instanceID)
+}
+
+func twinManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamadigitaltwin.TwinManager, error) {
+	if err := mustBeMounted(ctx, reg, instanceID, "digitaltwin"); err != nil {
+		return nil, err
+	}
+	if err := mustBeMember(ctx, reg, instanceID); err != nil {
+		return nil, err
+	}
+	return reg.TwinManager(ctx, instanceID)
+}
+
+func postManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamaengage.PostManager, error) {
+	if err := mustBeMounted(ctx, reg, instanceID, "engage"); err != nil {
+		return nil, err
+	}
+	if err := mustBeMember(ctx, reg, instanceID); err != nil {
+		return nil, err
+	}
+	return reg.PostManager(ctx, instanceID)
+}
+
+func custodyManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (*mwanachamacustody.CustodyManager, error) {
+	if err := mustBeMounted(ctx, reg, instanceID, "custody"); err != nil {
+		return nil, err
+	}
+	if err := mustBeMember(ctx, reg, instanceID); err != nil {
+		return nil, err
+	}
+	return reg.CustodyManager(ctx, instanceID)
 }
 
 func riskManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamariskmanager.RiskManager, error) {

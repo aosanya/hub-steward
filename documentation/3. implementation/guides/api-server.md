@@ -31,7 +31,7 @@ PORT=8082 WAKALA_SQLITE_PATH=/tmp/wakala.db /tmp/wakala-server
 | `internal/approvals/` | The proposal store behind approvals |
 | `internal/authz/`, `internal/session/`, `internal/apikeys/` | Permission caches, signed sessions, API and service keys |
 | `internal/shopauth/` | Sending and checking the emailed sign-in link |
-| `modules/` | One folder per module: `agency`, `actor`, `comm`, `forms`, `catalog`, `market`, `riskmanager`, `voting`, `taskmanager`, `sources`, `assetmanager`, `ai` and others |
+| `modules/` | One folder per module: `agency`, `actor`, `comm`, `forms`, `catalog`, `market`, `riskmanager`, `voting`, `custody`, `digitaltwin`, `engage`, `taskmanager`, `sources`, `assetmanager`, `ai` and others |
 | `modules/shared/` | The engine the modules share: `spec`, `specstore`, `dispatch`, `httpwire` |
 
 ## How a module becomes routes and tools

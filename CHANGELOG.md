@@ -4,6 +4,9 @@ All notable changes to this project are listed here, grouped by area. The format
 
 ## [Unreleased] - 2026-11-04
 
+### API (`code/wakala-api`)
+- The custody, digitaltwin and engage modules are ported from the Mwanachama backend and mounted like voting, with their routes and operation tables (2026-11-07).
+
 ### Demo agencies (`demo`)
 - `municipality.json`, an invented Hungarian town council with 12 roles and 5 workflows, and its copy in the console's templates (2026-11-07).
 
