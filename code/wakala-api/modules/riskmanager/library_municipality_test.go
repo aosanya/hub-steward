@@ -217,7 +217,7 @@ func TestStarterLibrariesImportIdempotentlyIntoPostgres(t *testing.T) {
 	if err != nil {
 		t.Fatalf("gorm.Open: %v", err)
 	}
-	instance := fmt.Sprintf("mun60_%d", os.Getpid())
+	instance := fmt.Sprintf("mun60x%d", os.Getpid())
 	s := starterSpec(t, instance)
 	t.Cleanup(func() {
 		var names []string

@@ -352,6 +352,20 @@
       "created_at": "2026-11-07T09:00:00Z",
       "last_updated": "2026-11-07T09:00:00Z",
       "deleted": false
+    },
+    {
+      "id": "1a2e0075-7b7e-5326-bfd2-29c49c21f4ae",
+      "code": "R-15",
+      "name": "Csevegő kockázati asszisztens",
+      "description": "Az önkormányzat csevegőjében válaszol a kockázati nyilvántartásból: mik a veszélyek, mik a következmények, mik a megelőző és az enyhítő intézkedések, mi támaszkodik egy ellenőrzésre, és melyek a legnagyobb hiányok. Mesterséges intelligencia tölti be; csak a nyilvántartást olvassa, abból válaszol, és nem talál ki semmit. Ha két kockázat vagy ellenőrzés neve egyezik, választógombokat kínál. Amit nyilvánosan közölnének, azt előtte ember hagyja jóvá.",
+      "permissions": [
+        "chat.post",
+        "chat.thread",
+        "risk.read"
+      ],
+      "created_at": "2026-11-07T14:00:00Z",
+      "last_updated": "2026-11-07T14:00:00Z",
+      "deleted": false
     }
   ],
   "goals": [
@@ -701,6 +715,17 @@
       "ordinality": 22,
       "created_at": "2026-11-07T11:00:00Z",
       "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "46056a85-0559-581e-9d91-41360a85ecb2",
+      "code": "O-65",
+      "goal_id": "52009277-4757-460d-a02c-804a273fb209",
+      "title": "A kockázati kérdésekre a nyilvántartásból válaszolunk, nem találgatásból",
+      "description": "A csevegő az öt egyszerű kérdésre és a legnagyobb hiányokra élő adatból felel; ha egy név két kockázatra vagy ellenőrzésre illik, választógombokat kínál, és semmit nem talál ki.",
+      "ordinality": 56,
+      "created_at": "2026-11-07T14:00:00Z",
+      "last_updated": "2026-11-07T14:00:00Z",
       "deleted": false
     }
   ],
@@ -1273,6 +1298,27 @@
       "target_type": "objective",
       "target_code": "O-50",
       "created_at": "2026-11-07T12:00:00Z"
+    },
+    {
+      "id": "0a84a7d0-5814-5904-97bd-738537da4101",
+      "rule_code": "RU-AI-1",
+      "target_type": "role",
+      "target_code": "R-15",
+      "created_at": "2026-11-07T14:00:00Z"
+    },
+    {
+      "id": "fbd0f4ad-7a68-52fe-9e70-161695d9c156",
+      "rule_code": "RU-RISK-2",
+      "target_type": "role",
+      "target_code": "R-15",
+      "created_at": "2026-11-07T14:00:00Z"
+    },
+    {
+      "id": "67f84e76-b78f-5aa5-a181-b59530da0769",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-65",
+      "created_at": "2026-11-07T14:00:00Z"
     }
   ],
   "workflows": [
@@ -1604,6 +1650,16 @@
       "ordinality": 52,
       "created_at": "2026-11-07T13:00:00Z",
       "last_updated": "2026-11-07T13:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "dca98a8d-9aca-53ad-b7cf-821ee9e62847",
+      "code": "W-65",
+      "name": "Kérdés a csevegő asszisztenshez a kockázatokról",
+      "description": "Hogyan kap választ egy osztályvezető vagy a testület egy kockázati kérdésre a csevegőben: a kérdés, a keresés a nyilvántartásban, a választógombok névegyezésnél, a legnagyobb hiányok felelősönként, majd a felelős ellenőrzése. Az MI-szerep csak fogalmazhat, összegezhet, utánajárhat és számolhat; ami nyilvánosságra kerül, azt mindig ember hagyja jóvá.",
+      "ordinality": 65,
+      "created_at": "2026-11-07T14:00:00Z",
+      "last_updated": "2026-11-07T14:00:00Z",
       "deleted": false
     }
   ],
@@ -1940,10 +1996,10 @@
       "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
       "title": "Teljes terjedelmében közzétesszük az eredményt",
       "description": "Oda tesszük a megállapítást, ahol bárki ellenőrizheti.",
-      "prompt": "Tegyék közzé a kérdést pontosan úgy, ahogy feltették, az időszakot, a csatornákat, a számokat a nevezővel és a kihagyott válaszokkal együtt, a városrészenkénti bontást, valamint a témákat olyan jellemző idézetekkel, amelyek senkit nem azonosítanak. Az eljárásleírást is tegyék közzé mellette. Az eredményt akkor is közzé kell tenni, ha kényelmetlen, és különösen akkor. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "prompt": "Tegyék közzé a kérdést pontosan úgy, ahogy feltették, az időszakot, a csatornákat, a számokat a nevezővel és a kihagyott válaszokkal együtt, a városrészenkénti bontást, valamint a témákat olyan jellemző idézetekkel, amelyek senkit nem azonosítanak. Az eljárásleírást is tegyék közzé mellette. Az eredményt akkor is közzé kell tenni, ha kényelmetlen, és különösen akkor. A mesterséges intelligencia szerepkör (RU-AI-1) csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
       "ordinality": 1,
       "created_at": "2026-10-01T10:00:00Z",
-      "last_updated": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
       "deleted": false
     },
     {
@@ -1952,10 +2008,10 @@
       "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
       "title": "Az eredményt előterjesztésként a testület elé visszük",
       "description": "A megállapításból olyan döntést csinálunk, amelyet valakinek meg kell hoznia.",
-      "prompt": "Az előterjesztés tartalmazza az eredményt, a testület valós lehetőségeit és azt, mennyibe kerül mindegyik. Csatolják az eljárásleírást és a lefedettségi számokat, hogy a képviselő lássa, mekkora súlya van a megállapításnak. Nevezzék meg a döntésért felelős szerepkört. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "prompt": "Az előterjesztés tartalmazza az eredményt, a testület valós lehetőségeit és azt, mennyibe kerül mindegyik. Csatolják az eljárásleírást és a lefedettségi számokat, hogy a képviselő lássa, mekkora súlya van a megállapításnak. Nevezzék meg a döntésért felelős szerepkört. A mesterséges intelligencia szerepkör (RU-AI-1) csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
       "ordinality": 2,
       "created_at": "2026-10-01T10:00:00Z",
-      "last_updated": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
       "deleted": false
     },
     {
@@ -1964,10 +2020,10 @@
       "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
       "title": "A döntést beírjuk a jelentésbe",
       "description": "A döntés a kör jelentésében él, nem külön nyilvántartásban és nem csak a jegyzőkönyvben.",
-      "prompt": "A kör jelentésébe írják be, mit döntöttek, ki és melyik napon. Ha a döntés a meghallgatottak többségének súlya ellen szól, az indokot is írják a jelentésbe: pénz, törvény, szerződés, hosszabb távú terv vagy olyan mérlegelés, amelyet a testület vállal. Külön döntési nyilvántartást nem kell vezetni.",
+      "prompt": "A kör jelentésébe írják be, mit döntöttek, ki és melyik napon. Ha a döntés a meghallgatottak többségének súlya ellen szól, az indokot is írják a jelentésbe: pénz, törvény, szerződés, hosszabb távú terv vagy olyan mérlegelés, amelyet a testület vállal. Külön döntési nyilvántartást nem kell vezetni. A bejegyzés szövegét a mesterséges intelligencia szerepkör (RU-AI-1) csak fogalmazványként készítheti elő; a jelentésbe kerülő döntést és az indokot mindig egy személy hagyja jóvá.",
       "ordinality": 3,
       "created_at": "2026-10-01T10:00:00Z",
-      "last_updated": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
       "deleted": false
     },
     {
@@ -1976,10 +2032,10 @@
       "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
       "title": "Értesítjük a jelentés csoportjait",
       "description": "Az eredményről a jelentés csoportjai úgy értesülnek, mint bármely jelentésről.",
-      "prompt": "A jelentést tegyék közzé azoknak a csoportoknak, amelyeknek a kör szólt, így úgy értesülnek az eredményről, mint bármely jelentésről. Aki nyilvános hivatkozáson válaszolt, és egyik csoportban sincs, azt nem értesítjük. Mondják meg, mit döntöttek és mi történik ezután, és ha még nem történik semmi, ezt is. Legyen elég rövid ahhoz, hogy telefonon elolvassák, és elég egyszerű ahhoz, hogy fel lehessen olvasni. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "prompt": "A jelentést tegyék közzé azoknak a csoportoknak, amelyeknek a kör szólt, így úgy értesülnek az eredményről, mint bármely jelentésről. Aki nyilvános hivatkozáson válaszolt, és egyik csoportban sincs, azt nem értesítjük. Mondják meg, mit döntöttek és mi történik ezután, és ha még nem történik semmi, ezt is. Legyen elég rövid ahhoz, hogy telefonon elolvassák, és elég egyszerű ahhoz, hogy fel lehessen olvasni. A mesterséges intelligencia szerepkör (RU-AI-1) csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
       "ordinality": 4,
       "created_at": "2026-10-01T10:00:00Z",
-      "last_updated": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
       "deleted": false
     },
     {
@@ -1987,11 +2043,11 @@
       "code": "WI-28",
       "workflow_id": "cbf93209-e58f-481d-b852-771875a8e196",
       "title": "Az ígéretek kimenetelét rögzítjük, amikor lejár a határidő",
-      "description": "A jelentés minden ígérete egy határidős feladat.",
-      "prompt": "A közzétételkor soroljanak fel minden ígéretet a jelentésből, mindegyiket határidővel; mindegyikből feladat lesz. Amikor egy feladat határideje lejár, rögzítsék a kimenetelét: teljesítve, részben teljesítve vagy nem teljesítve. A kimenetel a jelentés mellett látszik mindenkinek, aki a jelentést olvashatja. Az emlékeztetők és a határidők számlálását az MI szerepkör végezheti, a kimenetelt személy rögzíti.",
+      "description": "A jelentés minden ígérete egy határidős feladat; a kimenetelét személy hagyja jóvá.",
+      "prompt": "A közzétételkor soroljanak fel minden ígéretet a jelentésből, mindegyiket határidővel; mindegyikből feladat lesz. Amikor egy feladat határideje lejár, rögzítsék a kimenetelét: teljesítve, részben teljesítve vagy nem teljesítve. A kimenetel a jelentés mellett látszik mindenkinek, aki a jelentést olvashatja. Az emlékeztetők és a határidők számlálását a mesterséges intelligencia szerepkör (RU-AI-1) csak számolhat és emlékeztethet; a kimenetelt egy személy hagyja jóvá, mielőtt az a jelentés mellett láthatóvá válik.",
       "ordinality": 5,
       "created_at": "2026-10-01T10:00:00Z",
-      "last_updated": "2026-10-01T10:00:00Z",
+      "last_updated": "2026-11-07T10:00:00Z",
       "deleted": false
     },
     {
@@ -5375,6 +5431,138 @@
           "required": true
         }
       ]
+    },
+    {
+      "id": "2237e20d-43e5-5383-8771-8aaa4fd8b509",
+      "code": "WI-65-1",
+      "workflow_id": "dca98a8d-9aca-53ad-b7cf-821ee9e62847",
+      "role_id": "81af2fd8-896f-50b3-a18e-faa8596e3527",
+      "title": "Feltesszük a kérdést a csevegőben",
+      "description": "A testületi kockázatolvasó leírja a kérdését a csevegőben.",
+      "prompt": "A Testületi kockázatolvasó a csevegőben leírja, mit szeretne tudni, például: mik a veszélyei a Malomsori Piactér vízellátásának, vagy mi támaszkodik a tartalék szivattyúra. Az öt egyszerű kérdés egyike vagy a legnagyobb hiányok kérése. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T14:00:00Z",
+      "last_updated": "2026-11-07T14:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Feltesszük a kérdést a csevegőben",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "18899178-1651-5a74-b8a7-6e821f7175c1",
+      "code": "WI-65-2",
+      "workflow_id": "dca98a8d-9aca-53ad-b7cf-821ee9e62847",
+      "role_id": "1a2e0075-7b7e-5326-bfd2-29c49c21f4ae",
+      "title": "Megkeressük a választ a nyilvántartásban",
+      "description": "Az asszisztens a nyilvántartásból válaszol az öt egyszerű kérdésre.",
+      "prompt": "A Csevegő kockázati asszisztens a nyilvántartásban megkeresi a kérdéshez tartozó veszélyeket, következményeket, megelőző és enyhítő intézkedéseket vagy azt, mi támaszkodik egy ellenőrzésre, és ezeket a nyilvántartásból válaszolja meg. Ami nincs benne, azt megmondja, nem találja ki. Az MI-szerep (RU-AI-1) csak összegezhet és utánajárhat; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T14:00:00Z",
+      "last_updated": "2026-11-07T14:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megkeressük a választ a nyilvántartásban",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "15354289-9d98-561c-b840-0da7f13a83ae",
+      "code": "WI-65-3",
+      "workflow_id": "dca98a8d-9aca-53ad-b7cf-821ee9e62847",
+      "role_id": "1a2e0075-7b7e-5326-bfd2-29c49c21f4ae",
+      "title": "Választógombokat kínálunk, ha két név egyezik",
+      "description": "Ha két kockázat vagy ellenőrzés neve illik a kérdésre, az asszisztens gombokat kínál.",
+      "prompt": "Ha a kérdésben szereplő név két kockázatra vagy két ellenőrzésre illik, például a Tartalék szivattyú és a Tartalék szivattyú telep, a Csevegő kockázati asszisztens választógombokat kínál, és a választás után válaszol. Nem tippel. Az MI-szerep (RU-AI-1) csak fogalmazhat és utánajárhat; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T14:00:00Z",
+      "last_updated": "2026-11-07T14:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Választógombokat kínálunk, ha két név egyezik",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "15dfd74e-f93f-578d-aa0e-4e36bc61333c",
+      "code": "WI-65-4",
+      "workflow_id": "dca98a8d-9aca-53ad-b7cf-821ee9e62847",
+      "role_id": "1a2e0075-7b7e-5326-bfd2-29c49c21f4ae",
+      "title": "Felsoroljuk és megszámoljuk a legnagyobb hiányokat",
+      "description": "Az asszisztens felelősönként felsorolja és megszámolja a legnagyobb hiányokat.",
+      "prompt": "A Csevegő kockázati asszisztens felelősönként felsorolja a legnagyobb hiányokat, és megszámolja, hány hiány van osztályonként, például 3 hiányt a Városüzemeltetési osztályon. Az MI-szerep (RU-AI-1) csak számolhat és összegezhet; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T14:00:00Z",
+      "last_updated": "2026-11-07T14:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Felsoroljuk és megszámoljuk a legnagyobb hiányokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "7d772282-d579-53da-9b11-a758aa49fd33",
+      "code": "WI-65-5",
+      "workflow_id": "dca98a8d-9aca-53ad-b7cf-821ee9e62847",
+      "role_id": "8e83080c-922f-5000-8140-3bfd9eb09d64",
+      "title": "Az osztályvezető ellenőrzi a saját szolgáltatására vonatkozó választ",
+      "description": "Az osztályvezető összeveti a választ a saját szolgáltatásának kockázataival.",
+      "prompt": "Az Osztályvezető (kockázat felelőse) összeveti a kapott választ a saját szolgáltatásának kockázataival, és jelzi, ha valami hiányzik vagy elavult. Csak a saját szolgáltatását látja. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T14:00:00Z",
+      "last_updated": "2026-11-07T14:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Az osztályvezető ellenőrzi a saját szolgáltatására vonatkozó választ",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "cf887ad6-158e-58c0-851d-1f16c77033b0",
+      "code": "WI-65-6",
+      "workflow_id": "dca98a8d-9aca-53ad-b7cf-821ee9e62847",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "A polgármester jóváhagyja, ami a testületi anyagba kerül",
+      "description": "A polgármester jóváhagyja, mielőtt a válasz a testület elé vagy a nyilvánosság elé kerül.",
+      "prompt": "A Polgármester / testületi elnök elolvassa a választ és a hiánylistát, és jóváhagyja, mielőtt azok a testületi anyagba vagy a nyilvánosság elé kerülnek. Addig semmi nem megy ki. Az MI-szerep (RU-AI-1) csak emlékeztetőt fogalmazhat a jóváhagyásra váró válaszokról és utánajárhat, hol akadtak el; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-07T14:00:00Z",
+      "last_updated": "2026-11-07T14:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A polgármester jóváhagyja, ami a testületi anyagba kerül",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [
@@ -5882,6 +6070,11 @@
       "id": "7207ddc7-09f5-5331-9f7f-042bc79706f3",
       "workflow_id": "e00c05a5-3bd6-5d93-8ef2-50d784481767",
       "objective_id": "8709cc2a-9404-55a2-b637-b7dadfdf986d"
+    },
+    {
+      "id": "b5799f75-3236-5ed3-8af2-ae40afbc2100",
+      "workflow_id": "dca98a8d-9aca-53ad-b7cf-821ee9e62847",
+      "objective_id": "46056a85-0559-581e-9d91-41360a85ecb2"
     }
   ],
   "work_plans": [],
