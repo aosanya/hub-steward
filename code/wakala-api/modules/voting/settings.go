@@ -15,6 +15,7 @@ type Settings struct {
 	Budget        int              `json:"budget,omitempty"`
 	ChangeAllowed bool             `json:"change_allowed"`
 	PerGroup      string           `json:"per_group"`
+	MinimumCount  int              `json:"minimum_count"`
 	Effective     []spec.Effective `json:"effective"`
 }
 
@@ -41,6 +42,8 @@ func (m *pollManager) Settings(ctx context.Context) (Settings, error) {
 			out.ChangeAllowed, _ = e.Value.(bool)
 		case "max_choices":
 			out.MaxChoices = wholeNumber(e.Value)
+		case "minimum_count":
+			out.MinimumCount = wholeNumber(e.Value)
 		case "budget":
 			out.Budget = wholeNumber(e.Value)
 		}

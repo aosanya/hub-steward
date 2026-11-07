@@ -1,6 +1,9 @@
 package voting
 
-import "testing"
+import (
+	"context"
+	"testing"
+)
 
 func count(answered int, votes ...int) Count {
 	c := Count{PollID: "p", Answered: answered}
@@ -75,11 +78,18 @@ func TestMinimumBelowTwoIsRejected(t *testing.T) {
 }
 
 func TestSetMinimumCountOnManager(t *testing.T) {
-	m := &pollManager{}
-	if m.minimumCount() != DefaultMinimumCount {
+	sp, err := SpecFor("test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := &pollManager{spec: sp}
+	if n, err := m.minimumCount(context.Background()); err != nil || n != DefaultMinimumCount {
 		t.Fatal("default")
 	}
-	if err := SetMinimumCount(m, 8); err != nil || m.minimumCount() != 8 {
+	if err := SetMinimumCount(m, 8); err != nil {
+		t.Fatal("set")
+	}
+	if n, err := m.minimumCount(context.Background()); err != nil || n != 8 {
 		t.Fatal("set")
 	}
 	if err := SetMinimumCount(m, 1); err == nil {

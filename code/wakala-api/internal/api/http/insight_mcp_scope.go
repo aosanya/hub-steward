@@ -69,6 +69,10 @@ func (s *membershipScopedInsights) ListInsights(ctx context.Context, filter mwan
 	return out, nil
 }
 
+func (s *membershipScopedInsights) CountInsightsBySubject(ctx context.Context) (mwanachamainsights.SubjectCounts, error) {
+	return mwanachamainsights.CountBySubject(ctx, s, mwanachamainsights.DefaultMinimumCount)
+}
+
 func (s *membershipScopedInsights) CreateInsightNote(ctx context.Context, in models.InsightNote) (models.InsightNote, error) {
 	if _, err := s.GetInsight(ctx, in.InsightID); err != nil {
 		return models.InsightNote{}, err

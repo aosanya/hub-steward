@@ -76,6 +76,7 @@
     {"name": "max_choices", "type": "int", "description": "The most distinct choices on a new up_to poll that names none. Zero means none: the poll must name its own.", "default": 0},
     {"name": "budget", "type": "int", "description": "The credits each answer may spend on a new quadratic poll that names none. Zero means none: the poll must name its own.", "default": 0},
     {"name": "change_allowed", "type": "bool", "description": "Whether an answer may be replaced until the poll closes, for a new poll.", "default": false},
-    {"name": "per_group", "type": "enum", "description": "One answer per person, or one for each of the poll's groups they are in, on a new poll that names neither.", "values": ["once", "per_group"], "default": "once"}
+    {"name": "per_group", "type": "enum", "description": "One answer per person, or one for each of the poll's groups they are in, on a new poll that names neither.", "values": ["once", "per_group"], "default": "once"},
+    {"name": "minimum_count", "type": "int", "description": "The fewest answers a published count may rest on before it is withheld, for every poll. Below two it is ignored and the built-in five applies.", "default": 5}
   ]
 }

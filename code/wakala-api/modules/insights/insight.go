@@ -23,6 +23,7 @@ type InsightManager interface {
 	CreateInsight(ctx context.Context, in models.Insight) (models.Insight, error)
 	GetInsight(ctx context.Context, insightID string) (models.Insight, error)
 	ListInsights(ctx context.Context, filter InsightFilter) ([]models.Insight, error)
+	CountInsightsBySubject(ctx context.Context) (SubjectCounts, error)
 
 	CreateInsightNote(ctx context.Context, in models.InsightNote) (models.InsightNote, error)
 	ListInsightNotes(ctx context.Context, insightID string) ([]models.InsightNote, error)

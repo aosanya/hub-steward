@@ -61,7 +61,11 @@ func (m *pollManager) ReadPublishedCount(ctx context.Context, pollID, caller str
 			if err != nil {
 				return Count{}, err
 			}
-			return Disclose(raw, m.minimumCount())
+			minimum, err := m.minimumCount(ctx)
+			if err != nil {
+				return Count{}, err
+			}
+			return Disclose(raw, minimum)
 		}
 	}
 	return Count{}, ErrPollNotFound

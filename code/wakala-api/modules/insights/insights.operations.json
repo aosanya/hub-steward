@@ -61,6 +61,21 @@
         }
       ]
     },
+    "count_insights": {
+      "method": "GET",
+      "path": "/insights/counts",
+      "call": "CountInsightsBySubject",
+      "action": "insights.insight.count",
+      "tool": "insight_count",
+      "title": "Count insights by subject",
+      "description": "How many insights are recorded about each subject, safe to publish: a subject with fewer than the minimum is withheld, and so is another to cover it, so a hidden count cannot be worked out from the total.",
+      "args": [],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
     "create_note": {
       "method": "POST",
       "path": "/insights/{insightID}/notes",

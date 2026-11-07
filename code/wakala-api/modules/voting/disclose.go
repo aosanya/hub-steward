@@ -1,6 +1,7 @@
 package voting
 
 import (
+	"context"
 	"fmt"
 
 	"wakalaserver/modules/shared/disclosure"
@@ -20,11 +21,18 @@ func SetMinimumCount(pm PollManager, minimum int) error {
 	return nil
 }
 
-func (m *pollManager) minimumCount() int {
-	if m.minimum < 2 {
-		return DefaultMinimumCount
+func (m *pollManager) minimumCount(ctx context.Context) (int, error) {
+	if m.minimum >= 2 {
+		return m.minimum, nil
 	}
-	return m.minimum
+	s, err := m.Settings(ctx)
+	if err != nil {
+		return 0, err
+	}
+	if s.MinimumCount < 2 {
+		return DefaultMinimumCount, nil
+	}
+	return s.MinimumCount, nil
 }
 
 func Disclose(c Count, minimum int) (Count, error) {
