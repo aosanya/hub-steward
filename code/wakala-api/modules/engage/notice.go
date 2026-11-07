@@ -24,6 +24,9 @@ func (m *postManager) MarkRead(ctx context.Context, postID, participantID string
 	if participantID == "" {
 		return ReadMarker{}, ErrNoReader
 	}
+	if err := consent.Require(ctx, m.consent, participantID); err != nil {
+		return ReadMarker{}, err
+	}
 	p, err := m.GetPost(ctx, postID)
 	if err != nil {
 		return ReadMarker{}, err

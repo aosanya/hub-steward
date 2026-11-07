@@ -46,3 +46,33 @@ func TestAnOfferOfHelpNeedsALiveConsent(t *testing.T) {
 		t.Fatalf("offer without consent = %v, want ErrConsentRequired", err)
 	}
 }
+
+func TestCheckInAndReadMarkersNeedALiveConsent(t *testing.T) {
+	ctx := context.Background()
+	pm := newTestManager(t)
+	pm.UseGroups(groupsFixed(map[string][]string{"p-1": {"g-1"}, "p-2": {"g-1"}}))
+	pm.UseConsentGate(gateFor{"p-2": consent.ErrWithdrawn})
+	ev, err := pm.CreatePost(ctx, anEventOnNow())
+	if err != nil {
+		t.Fatalf("CreatePost: %v", err)
+	}
+	if _, err := pm.CheckInSelf(ctx, ev.ID, "p-2"); !errors.Is(err, engage.ErrConsentWithdrawn) {
+		t.Fatalf("self check-in after withdrawal = %v, want ErrConsentWithdrawn", err)
+	}
+	if _, err := pm.CheckIn(ctx, ev.ID, "p-2", "steward-1"); !errors.Is(err, engage.ErrConsentWithdrawn) {
+		t.Fatalf("steward check-in after withdrawal = %v, want ErrConsentWithdrawn", err)
+	}
+	if _, err := pm.CheckInSelf(ctx, ev.ID, "p-1"); err != nil {
+		t.Fatalf("consenting check-in = %v", err)
+	}
+	notice, err := pm.CreatePost(ctx, aNoticeTo("g-1"))
+	if err != nil {
+		t.Fatalf("CreatePost notice: %v", err)
+	}
+	if _, err := pm.MarkRead(ctx, notice.ID, "p-2"); !errors.Is(err, engage.ErrConsentWithdrawn) {
+		t.Fatalf("read marker after withdrawal = %v, want ErrConsentWithdrawn", err)
+	}
+	if _, err := pm.MarkRead(ctx, notice.ID, "p-1"); err != nil {
+		t.Fatalf("consenting read marker = %v", err)
+	}
+}

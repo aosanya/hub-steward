@@ -92,6 +92,8 @@ type ChatMessage struct {
 
 	AttachmentKind string `json:"attachment_kind,omitempty"`
 	AttachmentID   string `json:"attachment_id,omitempty"`
+
+	WithdrawnAt string `json:"withdrawn_at,omitempty"`
 }
 
 func (m ChatMessage) AttachmentIsWhole() error {

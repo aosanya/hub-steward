@@ -5,6 +5,7 @@ All notable changes to this project are listed here, grouped by area. The format
 ## [Unreleased] - 2026-11-04
 
 ### API (`code/wakala-api`)
+- Consent gates check-in, notice and chat read markers and declarations too, and a withdrawal marks the member's survey answers and chat and direct messages withdrawn and stops listing them without deleting them (`WithWithdrawalPolicy`, default `keep_hidden`); a Postgres test covers the fan-out from custody to engage, forms and comm (2026-11-07).
 - The insights minimum count is a declared setting (`minimum_count`, readable with `MinimumCount`), and a published poll count leaves out folded choices instead of listing them as suppressed (2026-11-07).
 - Counts below the minimum are folded into one `other` cell in poll counts and `GET /insights/counts`, and that cell is withheld while it is still below the minimum; the insight count action has the `insight.count` permission (2026-11-07).
 - A raised item with a pin and no area, and a catalog entry with a `location` point and no `ward`, get the ward from group boundaries; a typed one is kept and a mismatch is flagged (2026-11-07).

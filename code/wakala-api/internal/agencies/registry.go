@@ -135,7 +135,9 @@ type registry struct {
 	formsApproval   FormsApprovalOf
 	consentRequired ConsentRequiredOf
 	moduleMounted   ModuleMountedOf
-	recordGrants    RecordGrantOf
+
+	withdrawalPolicy WithdrawalPolicy
+	recordGrants     RecordGrantOf
 
 	actorOptions []mwanachamaactor.Option
 	pushSender   mwanachamacomm.PushSender
@@ -199,7 +201,7 @@ func NewRegistry(db *gorm.DB, opts ...Option) (Registry, error) {
 	if err := migrateMembers(db); err != nil {
 		return nil, fmt.Errorf("NewRegistry: migrate members: %w", err)
 	}
-	r := &registry{db: db, cacheEntries: authz.DefaultMaxEntries}
+	r := &registry{db: db, cacheEntries: authz.DefaultMaxEntries, withdrawalPolicy: WithdrawalKeepsHidden}
 	for _, opt := range opts {
 		opt(r)
 	}

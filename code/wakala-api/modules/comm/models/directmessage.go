@@ -95,6 +95,7 @@ type DMMessage struct {
 	PayloadCiphertext string            `json:"payload_ciphertext"`
 	PerRecipientKeys  map[string]string `json:"per_recipient_keys"`
 	CreatedAt         time.Time         `json:"created_at"`
+	WithdrawnAt       string            `json:"withdrawn_at,omitempty"`
 }
 
 type DMReaction struct {
