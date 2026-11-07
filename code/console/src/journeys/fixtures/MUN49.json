@@ -1,0 +1,120 @@
+{
+  "objectives": [
+    {
+      "id": "38f4f1a6-dcbb-544a-b244-17d18de38787",
+      "code": "O-22",
+      "goal_id": "b3792e6b-4d8c-4355-a6c3-b43e10f7659c",
+      "title": "A díjjegyzéket abban a változatban közöljük, amelyik ma hatályos",
+      "description": "A díj- és illetékjegyzék mindig a hatályos változatot mutatja, a hatálybalépés napjával és a megelőző változat megőrzésével, hogy a testület és a lakos ugyanarra a dátumozott jegyzékre hivatkozhasson.",
+      "ordinality": 22,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflows": [
+    {
+      "id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "code": "W-49",
+      "name": "A díjjegyzék közzététele a hatályos változatban",
+      "description": "Hogyan kerül a zöldhalmi önkormányzat díj- és illetékjegyzéke a pénzügyi referenstől a hirdetőtáblára és az oldalra úgy, hogy mindig a hatályos, dátumozott változat látszik, a korábbi pedig megmarad.",
+      "ordinality": 49,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "00a6fbf7-57d0-51be-9435-450958e47e5c",
+      "code": "WI-49-1",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Gyűjtsük össze a hatályos díjtételeket",
+      "description": "A pénzügyi referens összegyűjti a jelenleg érvényes díjakat és a legutóbbi módosításokat.",
+      "prompt": "Gyűjtsük össze a hatályos díjtételeket (például a közterület-használati díj 2 500 Ft/nap, a lakossági hulladékszállítási díj 1 800 Ft/hó) és a testület legutóbbi módosító határozatait Óvárosból, Kertvárosból, Malomsorról és Határrétről, mindegyik mellett a hatálybalépés napjával. Az MI-szerep csak fogalmazhatja meg a tételek tervezett listáját, összefoglalhatja a módosításokat, és megszámolhatja a tételeket; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "205ae2bf-686b-57d7-9dc1-58ba2be2dd32",
+      "code": "WI-49-2",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Vessük össze a tételeket a rendelettel és a határozatokkal",
+      "description": "A jegyző ellenőrzi, hogy minden tétel megegyezik a rendelettel és a testület határozatával.",
+      "prompt": "A jegyző tételenként összeveti a tervezetet a rendelet szövegével és a testületi határozatokkal, felsorolja az eltéréseket, és a hiányzó hivatkozásokat pótoltatja a pénzügyi referenssel. Az MI-szerep csak hívhatja fel a figyelmet a hiányzó hivatkozásokra, összefoglalhatja az eltéréseket, és megszámolhatja az ellenőrzött tételeket; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "8f6b20d4-99a0-5e5b-a9e3-2f61f0f02ce3",
+      "code": "WI-49-3",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Hagyjuk jóvá a hatályos díjjegyzéket",
+      "description": "A polgármester jóváhagyja a jegyzéket és a hatálybalépés napját, és csak ezután kerülhet ki bármi.",
+      "prompt": "A polgármester átnézi a díjjegyzéket és a hatálybalépés napját, kijavítja vagy kihúzza, ami nem állja meg a helyét, és saját nevével jóváhagyja. Csak a jóváhagyott változat kerülhet a nyilvánosság elé; a jóváhagyás időpontját és személyét feljegyezzük.",
+      "ordinality": 3,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "739e55b1-b416-5bfd-8b79-c93bf000deb2",
+      "code": "WI-49-4",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Tegyük közzé a jegyzéket a hirdetőtáblán és az oldalon",
+      "description": "A kommunikációs referens kiteszi a jóváhagyott változatot, dátummal, a korábbit pedig elavultként jelöli.",
+      "prompt": "A kommunikációs referens a jóváhagyott díjjegyzéket a hirdetőtáblára és az önkormányzat oldalára teszi a hatálybalépés napjával, a korábbi változatot pedig elavultként jelöli meg. Az MI-szerep csak fogalmazhatja meg a közlemény szövegét, és összefoglalhatja a változásokat; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "2fa64f93-d279-58fd-8d7c-192e0cb35445",
+      "code": "WI-49-5",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Őrizzük meg a korábbi változatot, és jegyezzük fel a közzétételt",
+      "description": "Az iratkezelési felelős megőrzi a megelőző változatot, és feljegyzi, mikor ment ki a hatályos.",
+      "prompt": "Az iratkezelési felelős megőrzi a megelőző jegyzéket a megőrzési szabály szerint, feljegyzi a közzététel napját és a jóváhagyó nevét, és megszámolja, hány változat van érvényben és hány archiválva. Az MI-szerep csak számolhatja meg a változatokat, és figyelmeztethet, ha a közzététel napja hiányzik; a RU-AI-1 szabály szerint a nyilvános közlés előtt ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-07T11:00:00Z",
+      "last_updated": "2026-11-07T11:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "107a5821-3bc3-5f46-836a-6a0c5bf95996",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "objective_id": "38f4f1a6-dcbb-544a-b244-17d18de38787"
+    },
+    {
+      "id": "c7ca39fe-8599-5f9c-9c55-d0ffff6dd394",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
+    },
+    {
+      "id": "c0f23c8c-d475-58f8-a6f0-a330264bb075",
+      "workflow_id": "f811cbfa-54b2-5ebf-b049-d63eddc05006",
+      "objective_id": "8709cc2a-9404-55a2-b637-b7dadfdf986d"
+    }
+  ],
+  "rule_attachments": [
+    {
+      "id": "8e970681-3333-5bbf-afd6-f6f3e803af7f",
+      "rule_code": "RU-AI-1",
+      "target_type": "objective",
+      "target_code": "O-22",
+      "created_at": "2026-11-07T11:00:00Z"
+    }
+  ]
+}
