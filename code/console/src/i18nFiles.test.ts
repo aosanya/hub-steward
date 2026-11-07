@@ -5,10 +5,10 @@ import { describe, expect, it } from "vitest";
 const consoleDir = resolve(__dirname, "..");
 const publicFile = join(consoleDir, "public", "i18n.json");
 
-const languages = ["en", "de", "sw", "es", "fr", "zh"];
+const languages = ["en", "de", "sw", "es", "fr", "zh", "hu"];
 
 const unitsThatStay = ["title", "models.testMs", "models.metaProvider", "models.metaBrand"];
-const cognateLanguages = ["de", "es", "fr"];
+const cognateLanguages = ["de", "es", "fr", "hu"];
 
 const wordsOf = (text: string) => text.replace(/\{[^}]*\}/g, "").split(/\s+/).filter((word) => /\p{L}/u.test(word));
 
@@ -25,7 +25,7 @@ const literalKeys = (source: string) =>
   [...source.matchAll(/\bt\(\s*(?:"([^"\\]*)"|'([^'\\]*)'|`([^`$\\]*)`)\s*[,)]/g)].map((m) => m[1] ?? m[2] ?? m[3]);
 
 describe("the translation table the bundle serves", () => {
-  it("comes in the six languages", () => {
+  it("comes in the seven languages", () => {
     expect(Object.keys(tables)).toEqual(languages);
   });
 
@@ -34,7 +34,7 @@ describe("the translation table the bundle serves", () => {
       for (const key of Object.keys(tables.en)) expect((tables[lang][key] ?? "").trim(), `${lang} ${key}`).not.toBe("");
   });
 
-  it("has no value left in English, except names and one-word cognates in German, Spanish and French", () => {
+  it("has no value left in English, except names and one-word cognates in German, Spanish, French and Hungarian", () => {
     for (const lang of languages.filter((l) => l !== "en"))
       for (const key of Object.keys(tables.en)) {
         if (unitsThatStay.includes(key) || tables[lang][key] !== tables.en[key]) continue;
@@ -59,7 +59,7 @@ describe("the translation table the bundle serves", () => {
   });
 
   it("is translated, not copied from English, for the sentences create-hub shows", () => {
-    for (const lang of ["de", "sw", "es", "fr", "zh"])
+    for (const lang of ["de", "sw", "es", "fr", "zh", "hu"])
       for (const key of ["hubNameRequired", "createNoService", "createNoRole", "createNotLinked", "createNoRooms"])
         expect(tables[lang][key], `${lang} ${key}`).not.toBe(tables.en[key]);
   });

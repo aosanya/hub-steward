@@ -289,13 +289,13 @@ describe("the start page", () => {
     expect(screen.queryByLabelText("Hub name")).not.toBeInTheDocument();
   });
 
-  it("offers the six languages in a select with English chosen", () => {
+  it("offers the seven languages in a select with English chosen", () => {
     renderEntry("/start");
     const select = screen.getByRole("combobox", { name: "Language" });
     const names = within(select)
       .getAllByRole("option")
       .map((o) => o.textContent);
-    expect(names).toEqual(["English", "Deutsch", "Kiswahili", "Español", "Français", "中文"]);
+    expect(names).toEqual(["English", "Deutsch", "Kiswahili", "Español", "Français", "中文", "Magyar"]);
     expect(select).toHaveValue("en");
   });
 

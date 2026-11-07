@@ -1,6 +1,6 @@
 # Languages
 
-**Console.** `code/console/public/i18n.json` holds six languages (en, de, sw, es, fr, zh), each with the same keys. To fix a string, edit it there. To add a language, add its code to `languages` in `src/i18n.tsx` and to the test, and translate every key.
+**Console.** `code/console/public/i18n.json` holds seven languages (en, de, sw, es, fr, zh, hu), each with the same keys. To fix a string, edit it there. To add a language, add its code to `languages` in `src/i18n.tsx` and to the test, its name to `languageNames` in `src/shell/Strip.tsx` (the entry screen reads the same list), and translate every key. Hungarian says "ügynökség" for an agency and "ügynök" for an agent.
 
 **Phone app.** Sign-in, agency lists and the inbox are translated in `code/app/src/entry/words.ts` (English) and `swahili.ts`. The language picker lists nine languages, but only English and Swahili have words; the rest show English. To add one, copy `swahili.ts` and register it in `translations` in `language.ts`.
 

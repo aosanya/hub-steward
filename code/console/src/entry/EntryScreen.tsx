@@ -1,20 +1,12 @@
 import { useEffect, type ReactNode } from "react";
 import { languages, useI18n, type Language } from "../i18n";
+import { languageNames } from "../shell/Strip";
 import { useTheme } from "../shell/theme";
 import { Button, Chip, SelectField } from "../ui";
 import { Icon } from "../ui/Icon";
 import "./entry.css";
 
-const names: Record<Language, string> = {
-  en: "English",
-  de: "Deutsch",
-  sw: "Kiswahili",
-  es: "Español",
-  fr: "Français",
-  zh: "中文",
-};
-
-const languageOptions = languages.map((code) => ({ value: code, label: names[code] }));
+const languageOptions = languages.map((code) => ({ value: code, label: languageNames[code] }));
 
 function useTranslatedTitle() {
   const { t } = useI18n();

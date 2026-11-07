@@ -29,6 +29,9 @@ import (
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacustody "wakalaserver/modules/custody"
+	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
+	mwanachamaengage "wakalaserver/modules/engage"
 	commmodels "wakalaserver/modules/comm/models"
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamagit "wakalaserver/modules/git"
@@ -67,6 +70,9 @@ type Registry interface {
 	GitManager(ctx context.Context, id string) (mwanachamagit.GitManager, error)
 	SourceManager(ctx context.Context, id string) (mwanachamasources.SourceManager, error)
 	PollManager(ctx context.Context, id string) (mwanachamavoting.PollManager, error)
+	CustodyManager(ctx context.Context, id string) (*mwanachamacustody.CustodyManager, error)
+	TwinManager(ctx context.Context, id string) (mwanachamadigitaltwin.TwinManager, error)
+	PostManager(ctx context.Context, id string) (mwanachamaengage.PostManager, error)
 	RiskManager(ctx context.Context, id string) (mwanachamariskmanager.RiskManager, error)
 	MarketManager(ctx context.Context, id, mount string) (mwanachamamarket.MarketManager, error)
 	TestCopy(ctx context.Context, id string) (TestCopy, error)
@@ -113,6 +119,9 @@ type registry struct {
 	gits          *authz.Cache[mwanachamagit.GitManager]
 	sources       *authz.Cache[mwanachamasources.SourceManager]
 	polls         *authz.Cache[mwanachamavoting.PollManager]
+	custody       *authz.Cache[*mwanachamacustody.CustodyManager]
+	twins         *authz.Cache[mwanachamadigitaltwin.TwinManager]
+	posts         *authz.Cache[mwanachamaengage.PostManager]
 	risks         *authz.Cache[mwanachamariskmanager.RiskManager]
 	markets       *authz.Cache[mwanachamamarket.MarketManager]
 	approvals     *authz.Cache[*approvals.Store]
@@ -562,6 +571,68 @@ func (r *registry) mutableIn(instanceID string) mwanachamacomm.Mutable {
 	return func(ctx context.Context, event commmodels.NotificationEvent) (bool, bool) {
 		return r.mutability(ctx, instanceID, event)
 	}
+}
+
+func (r *registry) CustodyManager(ctx context.Context, id string) (*mwanachamacustody.CustodyManager, error) {
+	return pooled(ctx, r.custody, id, r.buildCustodyManager)
+}
+
+func (r *registry) buildCustodyManager(ctx context.Context, id string) (*mwanachamacustody.CustodyManager, error) {
+	inst, err := r.GetInstance(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	s, err := mwanachamacustody.SpecForMount(inst.TableSlug, MountCustody)
+	if err != nil {
+		return nil, fmt.Errorf("CustodyManager: spec for instance %s: %w", id, err)
+	}
+	if err := mwanachamacustody.Provision(r.db, s); err != nil {
+		return nil, fmt.Errorf("CustodyManager: migrate instance %s: %w", id, err)
+	}
+	return mwanachamacustody.NewCustodyManager(r.db, s, mwanachamacustody.SystemClock, nil)
+}
+
+func (r *registry) TwinManager(ctx context.Context, id string) (mwanachamadigitaltwin.TwinManager, error) {
+	return pooled(ctx, r.twins, id, r.buildTwinManager)
+}
+
+func (r *registry) buildTwinManager(ctx context.Context, id string) (mwanachamadigitaltwin.TwinManager, error) {
+	inst, err := r.GetInstance(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	s, err := mwanachamadigitaltwin.SpecForMount(inst.TableSlug, MountTwin)
+	if err != nil {
+		return nil, fmt.Errorf("TwinManager: spec for instance %s: %w", id, err)
+	}
+	if err := mwanachamadigitaltwin.Provision(r.db, s); err != nil {
+		return nil, fmt.Errorf("TwinManager: migrate instance %s: %w", id, err)
+	}
+	return mwanachamadigitaltwin.NewTwinManager(r.db, s)
+}
+
+func (r *registry) PostManager(ctx context.Context, id string) (mwanachamaengage.PostManager, error) {
+	return pooled(ctx, r.posts, id, r.buildPostManager)
+}
+
+func (r *registry) buildPostManager(ctx context.Context, id string) (mwanachamaengage.PostManager, error) {
+	inst, err := r.GetInstance(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	s, err := mwanachamaengage.SpecForMount(inst.TableSlug, MountPosts)
+	if err != nil {
+		return nil, fmt.Errorf("PostManager: spec for instance %s: %w", id, err)
+	}
+	if err := mwanachamaengage.Provision(r.db, s); err != nil {
+		return nil, fmt.Errorf("PostManager: migrate instance %s: %w", id, err)
+	}
+	built, err := mwanachamaengage.NewPostManager(r.db, s)
+	if err != nil {
+		return nil, err
+	}
+	built.UseGroups(mwanachamaengage.Groups(r.groupsIn(id)))
+	return built, nil
 }
 
 func (r *registry) PollManager(ctx context.Context, id string) (mwanachamavoting.PollManager, error) {

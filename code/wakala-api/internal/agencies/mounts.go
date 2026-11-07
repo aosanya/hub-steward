@@ -21,4 +21,10 @@ const (
 	MountMarket = "market"
 
 	MountRisks = "risks"
+
+	MountCustody = "custody"
+
+	MountTwin = "twin"
+
+	MountPosts = "posts"
 )

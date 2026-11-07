@@ -18,6 +18,7 @@ export const languageNames: Record<Language, string> = {
   es: "Español",
   fr: "Français",
   zh: "中文",
+  hu: "Magyar",
 };
 
 const languageOptions = languages.map((code) => ({ value: code, label: languageNames[code] }));

@@ -27,10 +27,10 @@ describe("the chat chips of the workflow edit pages", () => {
     expect(hintKeys("workflows", true, { step: "Send" }).map(english)).toEqual(["Show the workflows", "Add a cancel workflow", "What is not published?"]);
   });
 
-  it("are in the six languages, the step chip naming where the step goes", () => {
+  it("are in the seven languages, the step chip naming where the step goes", () => {
     const keys = hintKeys("workflow-edit", true, { step: "Send" });
 
-    for (const language of ["en", "de", "sw", "es", "fr", "zh"]) {
+    for (const language of ["en", "de", "sw", "es", "fr", "zh", "hu"]) {
       for (const key of keys) expect(translations[language][key], `${language} lacks ${key}`).toBeTruthy();
       expect(translations[language][keys[1]], `${language} step chip`).toContain("{step}");
     }

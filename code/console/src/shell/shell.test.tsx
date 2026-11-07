@@ -421,6 +421,7 @@ describe("the strip", () => {
       "Español",
       "Français",
       "中文",
+      "Magyar",
     ]);
     expect(select).toHaveValue("en");
     expect(select.closest("label")?.querySelector("svg")).not.toBeNull();

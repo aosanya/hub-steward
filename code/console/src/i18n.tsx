@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
-export const languages = ["en", "de", "sw", "es", "fr", "zh"] as const;
+export const languages = ["en", "de", "sw", "es", "fr", "zh", "hu"] as const;
 export type Language = (typeof languages)[number];
 
 type Table = Record<string, Record<string, string>>;

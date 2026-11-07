@@ -70,10 +70,10 @@ describe("the general page", () => {
     ]);
   });
 
-  it("offers exactly the six languages when the hub has only some of them", async () => {
+  it("offers exactly the seven languages when the hub has only some of them", async () => {
     await open({ instance_get_languages: { studio_default: "en", content: ["en"], content_default: "en", languages: [{ code: "en", default: true }] } });
 
-    expect(optionsOf("Default language").map(([code]) => code)).toEqual(["en", "de", "sw", "es", "fr", "zh"]);
+    expect(optionsOf("Default language").map(([code]) => code)).toEqual(["en", "de", "sw", "es", "fr", "zh", "hu"]);
   });
 
   it("shows approval required when the hub is approval-only", async () => {
