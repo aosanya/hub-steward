@@ -1,0 +1,47 @@
+{
+  "workflow": "W-51",
+  "title": "charge, collect, chase arrears",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja j\u00f3v\u00e1",
+  "ruleRef": "RU-AI-1",
+  "nonAiPromptMentionsAi": true,
+  "steps": [
+    {
+      "code": "WI-51-1",
+      "role": "R-12",
+      "ai": true
+    },
+    {
+      "code": "WI-51-2",
+      "role": "R-8",
+      "ai": false
+    },
+    {
+      "code": "WI-51-3",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-51-4",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-51-5",
+      "role": "R-12",
+      "ai": true
+    },
+    {
+      "code": "WI-51-6",
+      "role": "R-8",
+      "ai": false
+    }
+  ],
+  "checks": {
+    "objectives": [
+      "O-17",
+      "O-19",
+      "O-20"
+    ]
+  }
+}

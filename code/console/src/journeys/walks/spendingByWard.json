@@ -1,0 +1,47 @@
+{
+  "workflow": "W-52",
+  "title": "budget and spending by ward",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja j\u00f3v\u00e1",
+  "ruleRef": "RU-AI-1",
+  "nonAiPromptMentionsAi": true,
+  "steps": [
+    {
+      "code": "WI-52-1",
+      "role": "R-12",
+      "ai": true
+    },
+    {
+      "code": "WI-52-2",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-52-3",
+      "role": "R-12",
+      "ai": true
+    },
+    {
+      "code": "WI-52-4",
+      "role": "R-8",
+      "ai": false
+    },
+    {
+      "code": "WI-52-5",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-52-6",
+      "role": "R-5",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "objectives": [
+      "O-19",
+      "O-20",
+      "O-21"
+    ]
+  }
+}
