@@ -1,0 +1,119 @@
+{
+  "workflows": [
+    {
+      "id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "code": "W-20",
+      "name": "Hozzájárulás megadása és visszavonása",
+      "description": "Hogyan kér és őriz hozzájárulást az önkormányzat: a hozzájárulás szövegének számozott változatai, az, hogy ki melyik változatot fogadta el és mikor, és a visszavonás, amelyet ugyanazon a napon végre kell hajtani: az illető válaszait és üzeneteit elrejtjük, de nem töröljük. Az MI-szerepek csak fogalmazhatnak, összegezhetnek, utánajárhatnak és számolhatnak; a nyilvánosság elé kerülő dolgot mindig ember hagyja jóvá.",
+      "ordinality": 20,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "69144221-448e-52e7-a458-14143b254d25",
+      "code": "WI-20-1",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Megnevezzük, mire kérünk hozzájárulást, és meddig őrizzük",
+      "description": "Az adatvédelmi felelős leírja, mire kér hozzájárulást az önkormányzat, mennyi ideig őrzi, és mi változott az előző változathoz képest.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős összeírja, mire kér hozzájárulást az önkormányzat (például a Malomsori városrészi felmérés válaszainak azonosítható megőrzésére), meddig őrzi azokat (például 24 hónapig), és mi változik az előző változathoz képest. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4ad541af-16dd-5c95-b7d8-fb7aa3b056f3",
+      "code": "WI-20-2",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Megírjuk a hozzájárulás szövegének új változatát",
+      "description": "A jegyző az összeírásból közérthető szöveget készít, és megmutatja, miben tér el az előző változattól.",
+      "prompt": "A Jegyző az összeírás alapján megfogalmazza a hozzájárulás szövegének új, 3. változatát, közérthetően, és mellétesz egy rövid listát arról, miben tér el a 2. változattól. Az MI-szerep (RU-AI-1) csak fogalmazványt készíthet és összehasonlíthatja a két változatot; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7d4a3935-1e24-5a33-9d96-0d572bb78b19",
+      "code": "WI-20-3",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Jóváhagyjuk és közzétesszük a szöveget",
+      "description": "A polgármester névvel jóváhagyja az új változatot, és csak ezután lép érvénybe.",
+      "prompt": "A Polgármester / testületi elnök elolvassa a 3. változatot, jóváhagyja és névvel aláírja, és csak ezután kerül ki új, számozott változatként a hozzájárulások közé; a régi változatok megmaradnak. Addig senkitől nem kérünk hozzájárulást az új szöveggel. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 3,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b32b878c-b2ba-5df6-8f0a-d982dd24189d",
+      "code": "WI-20-4",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Hozzájárulást kérünk, és rögzítjük, melyik változatra",
+      "description": "A kapcsolattartó elmondja, mire szól a hozzájárulás, és a nyilvántartásba kerül, ki melyik változatot fogadta el és mikor.",
+      "prompt": "A Közösségi kapcsolattartó a piacon, a kapunál vagy papíron elmondja, mire szól a hozzájárulás, és csak azután kéri, hogy Szabó Mária és a többiek igent mondjanak. A nyilvántartásban rögzítjük, ki melyik változatot fogadta el és mikor. Hozzájárulás nélkül az azonosítható válaszhoz senki nem nyúl. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 4,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6422787c-74e8-5cbf-a2d2-91459f541073",
+      "code": "WI-20-5",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "A visszavonást még aznap végrehajtjuk",
+      "description": "Ha valaki visszavonja a hozzájárulását, az adatvédelmi felelős ugyanazon a napon elrejti a válaszait és az üzeneteit.",
+      "prompt": "Ha valaki, például Horváth Amani, bármely csatornán visszavonja a hozzájárulását, az Adatvédelmi és iratkezelési felelős ugyanazon a napon rögzíti, és elrejtjük az illető válaszait és üzeneteit: a jelentés többé nem számolja őket, a beszélgetésben nem látszanak. Semmit nem törlünk: visszaállítható, és jogi kérésre előállítható. Ezt a lépést ember végzi, MI-szerep nem dönt a visszavonásról.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "175e47cd-3c6f-5ce3-a5c2-118c6144f447",
+      "code": "WI-20-6",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Megszámoljuk, mit rejtettünk el",
+      "description": "Az elemző megszámolja, hány választ és üzenetet rejtettünk el, és ellenőrzi, hogy a jelentés már nélkülük számol.",
+      "prompt": "Az Adat- és elemzési referens megszámolja, hány választ és hány üzenetet rejtett el a visszavonás, településrészenként (például 4 üzenet és 2 válasz Malomsoron), és ellenőrzi, hogy a jelentés összesítései már nélkülük szólnak. Számot közöl, személyt soha. Az MI-szerep (RU-AI-1) csak számolhat és összegezhet; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "17ff7258-b24a-59cc-a5c0-204ef5d5889c",
+      "code": "WI-20-7",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Még aznap visszaigazoljuk a visszavonást",
+      "description": "A kommunikációs referens megírja annak, aki visszavonta, hogy megtörtént, és hogy visszaállítható.",
+      "prompt": "A Kommunikációs referens még aznap megírja a visszaigazolást annak, aki visszavonta: megtörtént, mit rejtettünk el, hogy nem töröltük, és hogy kérésére visszaállítható. A kimenő levelet nem küldi el, amíg az Adatvédelmi és iratkezelési felelős jóvá nem hagyta. Az MI-szerep (RU-AI-1) csak fogalmazványt készíthet és utánajárhat, megérkezett-e; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 7,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "d5d331df-54f0-576f-a178-c1a1d307b421",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "objective_id": "b55af650-b34f-4932-bfa0-c4ee89fe8cc8"
+    },
+    {
+      "id": "d3bf0386-7bc7-5fb6-b72f-7bb4195d574a",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "objective_id": "3d7a5d84-fcae-4016-a298-2ba76e33fb42"
+    }
+  ]
+}

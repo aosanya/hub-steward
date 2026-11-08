@@ -1,0 +1,95 @@
+{
+  "workflow": "W-20",
+  "title": "consent given and withdrawn",
+  "sources": [
+    "MUN20"
+  ],
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-20-1",
+      "role": "R-7",
+      "ai": false
+    },
+    {
+      "code": "WI-20-2",
+      "role": "R-8",
+      "ai": true
+    },
+    {
+      "code": "WI-20-3",
+      "role": "R-1",
+      "ai": false
+    },
+    {
+      "code": "WI-20-4",
+      "role": "R-5",
+      "ai": false
+    },
+    {
+      "code": "WI-20-5",
+      "role": "R-7",
+      "ai": false
+    },
+    {
+      "code": "WI-20-6",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-20-7",
+      "role": "R-4",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "roleText": [
+      {
+        "role": "R-7",
+        "match": [
+          "Soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ],
+    "stepText": [
+      {
+        "step": "WI-20-2",
+        "match": [
+          "3. változat"
+        ]
+      },
+      {
+        "step": "WI-20-5",
+        "match": [
+          "ugyanazon a napon",
+          "nem törlünk"
+        ]
+      },
+      {
+        "step": "WI-20-7",
+        "match": [
+          "nem töröltük"
+        ]
+      }
+    ],
+    "order": [
+      [
+        "WI-20-4",
+        "WI-20-5"
+      ],
+      [
+        "WI-20-5",
+        "WI-20-6"
+      ]
+    ],
+    "objectives": [
+      "O-3",
+      "O-1"
+    ],
+    "ruleAttachedToAllObjectives": true,
+    "itemCount": 7,
+    "workflowText": "visszavon"
+  }
+}
