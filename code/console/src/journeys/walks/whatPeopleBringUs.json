@@ -1,0 +1,165 @@
+{
+  "workflow": "W-3",
+  "title": "what people bring us",
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember (hagyja jóvá|dönt)",
+  "steps": [
+    {
+      "code": "WI-14",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-15",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-16",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-17",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-18",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-19",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-20",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-21",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-22",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-23",
+      "role": null,
+      "ai": true
+    }
+  ],
+  "checks": {
+    "itemCount": 10,
+    "objectives": [
+      "O-11",
+      "O-12",
+      "O-13",
+      "O-14",
+      "O-15",
+      "O-16"
+    ],
+    "ruleAttachedToAllObjectives": true,
+    "ruleAttached": [
+      {
+        "rule": "RU-AI-1",
+        "target": "O-11"
+      },
+      {
+        "rule": "RU-AI-1",
+        "target": "O-12"
+      },
+      {
+        "rule": "RU-AI-1",
+        "target": "O-13"
+      },
+      {
+        "rule": "RU-AI-1",
+        "target": "O-14"
+      },
+      {
+        "rule": "RU-AI-1",
+        "target": "O-15"
+      },
+      {
+        "rule": "RU-AI-1",
+        "target": "O-16"
+      }
+    ],
+    "workflowText": "ember hagyja jóvá",
+    "roleText": [
+      {
+        "role": "R-4",
+        "match": [
+          "Betöltheti mesterséges intelligencia",
+          "minden kimenő anyagot .* jóvá"
+        ]
+      }
+    ],
+    "stepText": [
+      {
+        "step": "WI-16",
+        "match": [
+          "tíz munkanapos"
+        ]
+      },
+      {
+        "step": "WI-17",
+        "match": [
+          "ember dönt",
+          "Töröljük a gyalázkodást"
+        ]
+      },
+      {
+        "step": "WI-19",
+        "match": [
+          "tételt vonjuk össze, soha nem a személyeket"
+        ]
+      },
+      {
+        "step": "WI-21",
+        "match": [
+          "a lakos az önkormányzatot kérdezte|A lakos az önkormányzatot kérdezte"
+        ]
+      },
+      {
+        "step": "WI-23",
+        "match": [
+          "ember dönt"
+        ]
+      }
+    ],
+    "order": [
+      [
+        "WI-14",
+        "WI-16"
+      ],
+      [
+        "WI-16",
+        "WI-18"
+      ],
+      [
+        "WI-17",
+        "WI-19"
+      ],
+      [
+        "WI-19",
+        "WI-20"
+      ],
+      [
+        "WI-21",
+        "WI-22"
+      ],
+      [
+        "WI-22",
+        "WI-23"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "workflow": "W-2",
+  "title": "a consultation round, end to end",
+  "aiClause": "A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat",
+  "humanApproval": "személy hagyja jóvá",
+  "steps": [
+    {
+      "code": "WI-6",
+      "role": null,
+      "ai": false
+    },
+    {
+      "code": "WI-7",
+      "role": null,
+      "ai": false
+    },
+    {
+      "code": "WI-8",
+      "role": null,
+      "ai": false
+    },
+    {
+      "code": "WI-9",
+      "role": null,
+      "ai": false
+    },
+    {
+      "code": "WI-10",
+      "role": null,
+      "ai": false
+    },
+    {
+      "code": "WI-11",
+      "role": null,
+      "ai": false
+    },
+    {
+      "code": "WI-12",
+      "role": null,
+      "ai": true
+    },
+    {
+      "code": "WI-13",
+      "role": null,
+      "ai": true
+    }
+  ],
+  "checks": {
+    "itemCount": 8,
+    "objectives": [
+      "O-4",
+      "O-3",
+      "O-5",
+      "O-6",
+      "O-7"
+    ],
+    "ruleAttachedToAllObjectives": true,
+    "ruleAttached": [
+      {
+        "rule": "RU-AI-1",
+        "target": "O-3"
+      },
+      {
+        "rule": "RU-AI-1",
+        "target": "O-4"
+      },
+      {
+        "rule": "RU-AI-1",
+        "target": "O-5"
+      },
+      {
+        "rule": "RU-AI-1",
+        "target": "O-6"
+      },
+      {
+        "rule": "RU-AI-1",
+        "target": "O-7"
+      }
+    ],
+    "workflowText": "megszámolt és közzétett eredményig",
+    "roleText": [
+      {
+        "role": "R-4",
+        "match": [
+          "Betöltheti mesterséges intelligencia",
+          "minden kimenő anyagot .* jóvá"
+        ]
+      }
+    ],
+    "stepText": [
+      {
+        "step": "WI-6",
+        "match": [
+          "tanulni akar"
+        ]
+      },
+      {
+        "step": "WI-7",
+        "match": [
+          "Ellenőrző bizottság elnöke",
+          "a kör megnyitása előtt|A kör megnyitása előtt"
+        ]
+      },
+      {
+        "step": "WI-9",
+        "match": [
+          "okostelefon nélkül"
+        ]
+      },
+      {
+        "step": "WI-10",
+        "match": [
+          "soha nem a lezárása után"
+        ]
+      },
+      {
+        "step": "WI-11",
+        "match": [
+          "a nem párosítható válasz",
+          "O-2"
+        ]
+      },
+      {
+        "step": "WI-12",
+        "match": [
+          "nem tölthető be",
+          "személy hagyja jóvá"
+        ]
+      },
+      {
+        "step": "WI-13",
+        "match": [
+          "Városrészenként közöljék",
+          "Óváros, Kertváros, Malomsor vagy Határrét"
+        ]
+      }
+    ],
+    "order": [
+      [
+        "WI-6",
+        "WI-7"
+      ],
+      [
+        "WI-7",
+        "WI-9"
+      ],
+      [
+        "WI-9",
+        "WI-10"
+      ],
+      [
+        "WI-10",
+        "WI-11"
+      ],
+      [
+        "WI-11",
+        "WI-12"
+      ],
+      [
+        "WI-12",
+        "WI-13"
+      ]
+    ]
+  }
+}
