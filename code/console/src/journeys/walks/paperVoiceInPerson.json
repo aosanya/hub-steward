@@ -26,7 +26,27 @@
     },
     {
       "code": "WI-28-4",
-      "role": "R-8",
+      "role": null,
+      "ai": false
+    },
+    {
+      "code": "WI-28-7",
+      "role": null,
+      "ai": false
+    },
+    {
+      "code": "WI-28-8",
+      "role": "R-17",
+      "ai": false
+    },
+    {
+      "code": "WI-28-9",
+      "role": "R-17",
+      "ai": false
+    },
+    {
+      "code": "WI-28-10",
+      "role": "R-17",
       "ai": false
     },
     {
@@ -54,6 +74,34 @@
         "match": [
           "mesterséges intelligencia nem tölti be"
         ]
+      },
+      {
+        "step": "WI-28-7",
+        "match": [
+          "melyik rögzítési lépés következik",
+          "képernyőn érkezett"
+        ]
+      },
+      {
+        "step": "WI-28-8",
+        "match": [
+          "papíron",
+          "kinek a nevében"
+        ]
+      },
+      {
+        "step": "WI-28-9",
+        "match": [
+          "telefonon",
+          "kinek a nevében"
+        ]
+      },
+      {
+        "step": "WI-28-10",
+        "match": [
+          "személyesen",
+          "kinek a nevében"
+        ]
       }
     ],
     "order": [
@@ -67,9 +115,38 @@
       ],
       [
         "WI-28-4",
+        "WI-28-7"
+      ],
+      [
+        "WI-28-7",
+        "WI-28-8"
+      ],
+      [
+        "WI-28-7",
+        "WI-28-9"
+      ],
+      [
+        "WI-28-7",
+        "WI-28-10"
+      ],
+      [
+        "WI-28-10",
+        "WI-28-5"
+      ],
+      [
+        "WI-28-5",
         "WI-28-6"
       ]
     ],
-    "itemCount": 6
+    "itemCount": 10,
+    "roleText": [
+      {
+        "role": "R-17",
+        "match": [
+          "Soha nem tölti be mesterséges intelligencia",
+          "kinek a nevében"
+        ]
+      }
+    ]
   }
 }

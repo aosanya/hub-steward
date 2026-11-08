@@ -1,57 +1,57 @@
 {
   "workflow": "W-3",
   "title": "what people bring us",
-  "aiClause": "MI-szerep",
-  "humanApproval": "ember (hagyja jóvá|dönt)",
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
   "steps": [
     {
       "code": "WI-14",
-      "role": null,
+      "role": "R-6",
       "ai": true
     },
     {
       "code": "WI-15",
-      "role": null,
+      "role": "R-4",
       "ai": true
     },
     {
       "code": "WI-16",
-      "role": null,
+      "role": "R-4",
       "ai": true
     },
     {
       "code": "WI-17",
-      "role": null,
+      "role": "R-10",
       "ai": true
     },
     {
       "code": "WI-18",
-      "role": null,
+      "role": "R-8",
       "ai": true
     },
     {
       "code": "WI-19",
-      "role": null,
+      "role": "R-6",
       "ai": true
     },
     {
       "code": "WI-20",
-      "role": null,
+      "role": "R-6",
       "ai": true
     },
     {
       "code": "WI-21",
-      "role": null,
+      "role": "R-11",
       "ai": true
     },
     {
       "code": "WI-22",
-      "role": null,
+      "role": "R-4",
       "ai": true
     },
     {
       "code": "WI-23",
-      "role": null,
+      "role": "R-6",
       "ai": true
     }
   ],
@@ -112,7 +112,7 @@
       {
         "step": "WI-17",
         "match": [
-          "ember dönt",
+          "ember hagyja jóvá",
           "Töröljük a gyalázkodást"
         ]
       },
@@ -131,7 +131,7 @@
       {
         "step": "WI-23",
         "match": [
-          "ember dönt"
+          "ember hagyja jóvá"
         ]
       }
     ],
@@ -161,5 +161,7 @@
         "WI-23"
       ]
     ]
-  }
+  },
+  "ruleRef": "RU-AI-1",
+  "ruleRefOnEveryStep": true
 }

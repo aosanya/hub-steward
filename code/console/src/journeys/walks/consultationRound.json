@@ -1,47 +1,47 @@
 {
   "workflow": "W-2",
   "title": "a consultation round, end to end",
-  "aiClause": "A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat",
-  "humanApproval": "személy hagyja jóvá",
+  "aiClause": "MI-szerep \\(RU-AI-1\\) csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat",
+  "humanApproval": "ember hagyja jóvá",
   "steps": [
     {
       "code": "WI-6",
-      "role": null,
+      "role": "R-3",
       "ai": false
     },
     {
       "code": "WI-7",
-      "role": null,
+      "role": "R-3",
       "ai": false
     },
     {
       "code": "WI-8",
-      "role": null,
+      "role": "R-7",
       "ai": false
     },
     {
       "code": "WI-9",
-      "role": null,
+      "role": "R-3",
       "ai": false
     },
     {
       "code": "WI-10",
-      "role": null,
+      "role": "R-5",
       "ai": false
     },
     {
       "code": "WI-11",
-      "role": null,
+      "role": "R-6",
       "ai": false
     },
     {
       "code": "WI-12",
-      "role": null,
+      "role": "R-6",
       "ai": true
     },
     {
       "code": "WI-13",
-      "role": null,
+      "role": "R-4",
       "ai": true
     }
   ],
@@ -85,6 +85,24 @@
           "Betöltheti mesterséges intelligencia",
           "minden kimenő anyagot .* jóvá"
         ]
+      },
+      {
+        "role": "R-3",
+        "match": [
+          "Soha nem tölti be mesterséges intelligencia"
+        ]
+      },
+      {
+        "role": "R-5",
+        "match": [
+          "Soha nem tölti be mesterséges intelligencia"
+        ]
+      },
+      {
+        "role": "R-7",
+        "match": [
+          "Soha nem tölti be mesterséges intelligencia"
+        ]
       }
     ],
     "stepText": [
@@ -124,14 +142,17 @@
         "step": "WI-12",
         "match": [
           "nem tölthető be",
-          "személy hagyja jóvá"
+          "ember hagyja jóvá",
+          "RU-AI-1"
         ]
       },
       {
         "step": "WI-13",
         "match": [
           "Városrészenként közöljék",
-          "Óváros, Kertváros, Malomsor vagy Határrét"
+          "Óváros, Kertváros, Malomsor vagy Határrét",
+          "RU-AI-1",
+          "ember hagyja jóvá"
         ]
       }
     ],
@@ -161,5 +182,6 @@
         "WI-13"
       ]
     ]
-  }
+  },
+  "ruleRef": "RU-AI-1"
 }

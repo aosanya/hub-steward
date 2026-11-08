@@ -378,6 +378,18 @@
       "created_at": "2026-11-07T15:00:00Z",
       "last_updated": "2026-11-07T15:00:00Z",
       "deleted": false
+    },
+    {
+      "id": "a05b719c-8adb-57b5-a870-c560f2673155",
+      "code": "R-17",
+      "name": "Körzeti ügyintéző",
+      "description": "A jegyző kijelölt ügyintézője a városrészekben: a papíron, telefonon vagy személyesen érkezett válaszokat a kör saját űrlapján rögzíti, a „kinek a nevében” mezővel és az érkezés módjának jelzésével. Soha nem tölti be mesterséges intelligencia: a más nevében rögzített válasz hitelességét ember vállalja.",
+      "created_at": "2026-11-08T12:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
+      "deleted": false,
+      "permissions": [
+        "form.answer"
+      ]
     }
   ],
   "goals": [
@@ -2034,7 +2046,17 @@
       "ordinality": 1,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "f615dda6-3f1d-4ff6-862b-a60b0281ccca",
+      "kind": "fill_form",
+      "form_name": "Fogalmazzuk meg azt a kérdést, amelyre az önkormányzat valóban hajlandó cselekedni",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "06084f8f-999b-4f45-8313-5eb2810b4f9b",
@@ -2046,7 +2068,17 @@
       "ordinality": 2,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "f615dda6-3f1d-4ff6-862b-a60b0281ccca",
+      "kind": "fill_form",
+      "form_name": "Az eljárást írásban rögzítjük, mielőtt a kör megnyílik",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "f6beb45e-c307-4b3f-b45a-874010018ccb",
@@ -2058,7 +2090,17 @@
       "ordinality": 3,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "kind": "fill_form",
+      "form_name": "A kérdőívet ellenőriztetjük, mielőtt kiküldjük",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "1d6dac0c-7120-4285-b441-0b715658c76f",
@@ -2070,7 +2112,17 @@
       "ordinality": 4,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "f615dda6-3f1d-4ff6-862b-a60b0281ccca",
+      "kind": "fill_form",
+      "form_name": "Kijelöljük a csatornákat, köztük egy olyat is, amelyhez nem kell eszköz",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b1d037ac-626c-4c66-892e-522e7f4608c8",
@@ -2082,7 +2134,17 @@
       "ordinality": 5,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "kind": "fill_form",
+      "form_name": "Személyesen gyűjtünk, és hiánytalanul visszahozzuk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "d7f39d65-9066-4051-be01-65357163f048",
@@ -2094,7 +2156,17 @@
       "ordinality": 6,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "kind": "fill_form",
+      "form_name": "Személyenként egyszer számolunk, és rögzítjük, mit hagytunk ki",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "10ed3795-5012-46ae-926a-edcffa2ccc0d",
@@ -2102,11 +2174,21 @@
       "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
       "title": "A válaszokat betöltjük a nyilvántartásba",
       "description": "A válaszokat kivesszük a kérdőívből, és olyan nyilvántartásba tesszük, amely túléli azt.",
-      "prompt": "Minden választ az önkormányzat saját nyilvántartásába írjanak be, a körhöz, a városrészhez és vagy egy személyhez, vagy egy kifejezett névtelen jelöléshez kötve. A szabad szöveget rendezzék témákba, és az eredeti szavakat tartsák meg a téma mellett. Mielőtt bárki számot közölne, vessék össze a betöltött és a begyűjtött darabszámot, és ami nem tölthető be, azt sorolják fel ahelyett, hogy csendben elhagynák. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "prompt": "Minden választ az önkormányzat saját nyilvántartásába írjanak be, a körhöz, a városrészhez és vagy egy személyhez, vagy egy kifejezett névtelen jelöléshez kötve. A szabad szöveget rendezzék témákba, és az eredeti szavakat tartsák meg a téma mellett. Mielőtt bárki számot közölne, vessék össze a betöltött és a begyűjtött darabszámot, és ami nem tölthető be, azt sorolják fel ahelyett, hogy csendben elhagynák. Az MI-szerep (RU-AI-1) csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
       "ordinality": 7,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "kind": "fill_form",
+      "form_name": "A válaszokat betöltjük a nyilvántartásba",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "af6298f9-42a7-47c6-9d39-1121438732cc",
@@ -2114,11 +2196,21 @@
       "workflow_id": "a76a1ac4-9bb0-4de7-aa5b-15892194ec5d",
       "title": "Közzétesszük a lefedettséget, városrészenként",
       "description": "Ugyanabban a lélegzetben mondjuk meg, kiket hallottunk meg és kiket nem, mint az eredményt.",
-      "prompt": "Városrészenként közöljék, hányan válaszoltak a nyilvántartásban szereplők közül, és jelöljenek meg minden olyan városrészt, amely a kör saját minimuma alá esett. Mondják ki egyenesen, hol nem reprezentatív az eredmény. Egy négy meg nem hallgatott városrésszel zárult kör is hasznos, ha senki, aki olvassa, nem hiszi, hogy e négy nevében beszél, például Óváros, Kertváros, Malomsor vagy Határrét. A mesterséges intelligencia szerepkör csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig egy személy hagyja jóvá.",
+      "prompt": "Városrészenként közöljék, hányan válaszoltak a nyilvántartásban szereplők közül, és jelöljenek meg minden olyan városrészt, amely a kör saját minimuma alá esett. Mondják ki egyenesen, hol nem reprezentatív az eredmény. Egy négy meg nem hallgatott városrésszel zárult kör is hasznos, ha senki, aki olvassa, nem hiszi, hogy e négy nevében beszél, például Óváros, Kertváros, Malomsor vagy Határrét. Az MI-szerep (RU-AI-1) csak fogalmazványt készíthet, összegezhet, emlékeztethet vagy számolhat; a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
       "ordinality": 8,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "kind": "fill_form",
+      "form_name": "Közzétesszük a lefedettséget, városrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "e7e289ed-1b8a-4412-9734-b664c48a129b",
@@ -2126,11 +2218,21 @@
       "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
       "title": "Vegyünk fel bejelentést bármely csatornán, a lakostól vagy a nevében",
       "description": "Rögzítsük, amit valaki hozott, anélkül hogy dolgoztatnánk érte, és nevezzük meg, ki vette fel.",
-      "prompt": "Fogadjuk el, bármilyen formában érkezik: a nyilvános űrlapba gépelve, a pénztárnál telefonon felolvasva, a piaci standon papírlapra írva vagy ülésen egy képviselőnek átadva. Csak négy dolgot kérdezzünk: mi, hol, melyik városrészben, és hogyan érhető el – az utolsót hagyjuk megtagadni. Ahol fénykép segít, vegyük fel; egy beomlott víznyelő képe eldönt egy vitát, amit egy bekezdés nem. Ha más rögzíti a nevében, nevezzük meg a rekordon őt és azt is, kitől származik a bejelentés, majd értesítsük az illetőt, hogy rögzítették, ugyanazzal az azonosítóval. Soha ne kérjünk fiókot, mielőtt meghallgatnánk a lakost. Az MI-szerep a beérkezett bejelentést csak összegezheti és besorolási javaslatot fogalmazhat; ember hagyja jóvá.",
+      "prompt": "Fogadjuk el, bármilyen formában érkezik: a nyilvános űrlapba gépelve, a pénztárnál telefonon felolvasva, a piaci standon papírlapra írva vagy ülésen egy képviselőnek átadva. Csak négy dolgot kérdezzünk: mi, hol, melyik városrészben, és hogyan érhető el – az utolsót hagyjuk megtagadni. Ahol fénykép segít, vegyük fel; egy beomlott víznyelő képe eldönt egy vitát, amit egy bekezdés nem. Ha más rögzíti a nevében, nevezzük meg a rekordon őt és azt is, kitől származik a bejelentés, majd értesítsük az illetőt, hogy rögzítették, ugyanazzal az azonosítóval. Soha ne kérjünk fiókot, mielőtt meghallgatnánk a lakost. Az MI-szerep (RU-AI-1) a beérkezett bejelentést csak összegezheti és besorolási javaslatot fogalmazhat; ember hagyja jóvá.",
       "ordinality": 1,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "kind": "fill_form",
+      "form_name": "Vegyünk fel bejelentést bármely csatornán, a lakostól vagy a nevében",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "97727df1-5fea-5cc2-863b-6ac2c7bb48f3",
@@ -2138,11 +2240,21 @@
       "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
       "title": "Kérdezzük meg a városrészt, mit szeretne napirendre tűzni",
       "description": "Menjünk ki és kérdezzünk meghatározott ütemben, ne az ügyfélszolgálaton várjunk.",
-      "prompt": "Olyan ütemet válasszunk, amelyet az önkormányzat tartani tud – a havi jobban tartható, mint a heti –, és tartsuk is, mert a kétszer érkező, aztán elmaradó felhívás rosszabb a semminél. Állandó közleményként tegyük közzé minden városrésznek külön, nem az egész településnek, hogy a válasz már eleve hozzárendelhető legyen; a lakosok a közlemény szálában válaszolnak, a városrész szobájában. Azt a csatornát használjuk, amelyet az adott városrész lakói valóban használnak, és legyen köztük olyan is, amelyhez nem kell eszköz: közlemény a piacon, egy szó az imaházban, egy lap, amelyet a kapcsolattartó csapat magával visz. Mondjuk ki világosan, mire képes és mire nem képes az önkormányzat, és mondjuk el, mi lett az előző csomaggal – a látható eredményt követő felhívásra válaszolnak, a csendet követőre nem. Az MI-szerep csak megfogalmazhatja és kiküldésre előkészítheti a felhívást, majd összeszámolhatja a válaszokat; a kiküldést ember hagyja jóvá.",
+      "prompt": "Olyan ütemet válasszunk, amelyet az önkormányzat tartani tud – a havi jobban tartható, mint a heti –, és tartsuk is, mert a kétszer érkező, aztán elmaradó felhívás rosszabb a semminél. Állandó közleményként tegyük közzé minden városrésznek külön, nem az egész településnek, hogy a válasz már eleve hozzárendelhető legyen; a lakosok a közlemény szálában válaszolnak, a városrész szobájában. Azt a csatornát használjuk, amelyet az adott városrész lakói valóban használnak, és legyen köztük olyan is, amelyhez nem kell eszköz: közlemény a piacon, egy szó az imaházban, egy lap, amelyet a kapcsolattartó csapat magával visz. Mondjuk ki világosan, mire képes és mire nem képes az önkormányzat, és mondjuk el, mi lett az előző csomaggal – a látható eredményt követő felhívásra válaszolnak, a csendet követőre nem. Az MI-szerep (RU-AI-1) csak megfogalmazhatja és kiküldésre előkészítheti a felhívást, majd összeszámolhatja a válaszokat; a kiküldést ember hagyja jóvá.",
       "ordinality": 2,
       "created_at": "2026-10-01T18:00:00Z",
       "last_updated": "2026-10-23T06:30:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "kind": "fill_form",
+      "form_name": "Kérdezzük meg a városrészt, mit szeretne napirendre tűzni",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "918ab0aa-62aa-5eb1-a11e-d68c4a95dba1",
@@ -2150,11 +2262,21 @@
       "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
       "title": "Igazoljuk vissza határidőn belül",
       "description": "Adjunk a személynek azonosítót és dátumot öt munkanapon belül.",
-      "prompt": "A visszaigazolás nem a válasz, és nem is szabad annak látszania: azt mondja, hogy megvan, ez az azonosítója, ez tartja kézben, és ekkor kap választ. Azon a csatornán küldjük, amelyen érkezett. Ahol a bejelentő nem adott elérhetőséget, az azonosító akkor is létezik, és a nyilvános tábláról megnyitja az ügyet, így az is követheti, aki semmit nem adott meg. Ugyanabban a pillanatban indítsuk el a tartalmi válaszra szóló tíz munkanapos órát, és hagyjuk nyilvánosan járni. Az MI-szerep a visszaigazolás szövegét előkészítheti és a határidőket figyelheti; a kiküldést ember hagyja jóvá.",
+      "prompt": "A visszaigazolás nem a válasz, és nem is szabad annak látszania: azt mondja, hogy megvan, ez az azonosítója, ez tartja kézben, és ekkor kap választ. Azon a csatornán küldjük, amelyen érkezett. Ahol a bejelentő nem adott elérhetőséget, az azonosító akkor is létezik, és a nyilvános tábláról megnyitja az ügyet, így az is követheti, aki semmit nem adott meg. Ugyanabban a pillanatban indítsuk el a tartalmi válaszra szóló tíz munkanapos órát, és hagyjuk nyilvánosan járni. Az MI-szerep (RU-AI-1) a visszaigazolás szövegét előkészítheti és a határidőket figyelheti; a kiküldést ember hagyja jóvá.",
       "ordinality": 3,
       "created_at": "2026-10-01T18:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "kind": "fill_form",
+      "form_name": "Igazoljuk vissza határidőn belül",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6fe19625-38d5-42d7-9eda-acdac8249b1e",
@@ -2162,11 +2284,21 @@
       "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
       "title": "Moderáljunk anélkül, hogy elnémítanánk",
       "description": "Tartsuk használhatóan a táblát, és hagyjuk rajta a kritikát.",
-      "prompt": "Töröljük a gyalázkodást, a személyes támadásokat és mindent, ami magánszemélyt azonosít. Vonjuk össze a duplikátumokat, és mondjuk ki ezt nyilvánosan. Az önkormányzat, döntései és tisztviselői elleni kritikát hagyjuk a helyén. Minden törlést indokkal együtt jegyezzünk fel, és hagyjuk, hogy aki közzétette, lássa az indokot. Az MI-szerep csak megjelölhet és javaslatot fogalmazhat; a törlésről ember dönt.",
+      "prompt": "Töröljük a gyalázkodást, a személyes támadásokat és mindent, ami magánszemélyt azonosít. Vonjuk össze a duplikátumokat, és mondjuk ki ezt nyilvánosan. Az önkormányzat, döntései és tisztviselői elleni kritikát hagyjuk a helyén. Minden törlést indokkal együtt jegyezzünk fel, és hagyjuk, hogy aki közzétette, lássa az indokot. Az MI-szerep (RU-AI-1) csak megjelölhet és javaslatot fogalmazhat; a törlést ember hagyja jóvá.",
       "ordinality": 4,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "513ea7ed-e80a-4ed8-86c9-bacda9b55e47",
+      "kind": "fill_form",
+      "form_name": "Moderáljunk anélkül, hogy elnémítanánk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b329dbe3-c294-45c5-95c0-75f843127034",
@@ -2174,11 +2306,21 @@
       "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
       "title": "Irányítsuk, és tartsuk láthatóan",
       "description": "Adjunk gazdát, és hagyjuk, hogy a nyilvánosság lássa, hogyan halad.",
-      "prompt": "Rendeljünk minden tételt ahhoz a képviselőhöz vagy tisztviselőhöz, aki válaszolni fog rá, és tűzzük ki a dátumot, amelyre válaszol. Mutassuk meg a nyilvánosságnak, milyen állapotban van. Ahol a válasz nem, tegyük közzé a nemet az indokával együtt – a nyitott tételek tábláját, amelyen soha semmit nem utasítanak el, senki nem hiszi el. Az MI-szerep csak emlékeztethet és utánajárhat a határidőkre; az elutasítást és annak közzétételét ember hagyja jóvá.",
+      "prompt": "Rendeljünk minden tételt ahhoz a képviselőhöz vagy tisztviselőhöz, aki válaszolni fog rá, és tűzzük ki a dátumot, amelyre válaszol. Mutassuk meg a nyilvánosságnak, milyen állapotban van. Ahol a válasz nem, tegyük közzé a nemet az indokával együtt – a nyitott tételek tábláját, amelyen soha semmit nem utasítanak el, senki nem hiszi el. Az MI-szerep (RU-AI-1) csak emlékeztethet és utánajárhat a határidőkre; az elutasítást és annak közzétételét ember hagyja jóvá.",
       "ordinality": 5,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "kind": "fill_form",
+      "form_name": "Irányítsuk, és tartsuk láthatóan",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "edbc8405-988f-5f16-96e0-29b16cd83651",
@@ -2186,11 +2328,21 @@
       "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
       "title": "Számoljuk meg, hányan jelezték ugyanazt",
       "description": "Vonjuk össze a duplikátumokat úgy, hogy egyetlen jelzőt se veszítsünk el.",
-      "prompt": "Kétszáz bejelentés egyetlen kereszteződésről a legerősebb politikai tény, amit a tábla valaha előállít, és abban a pillanatban megsemmisül, amikor az összevonás elveszíti a második jelzőt. Ezért a tételt vonjuk össze, soha nem a személyeket: minden jelző csatolva marad, megtartja a saját azonosítóját, és egyenként értesül az eredményről. Tegyük közzé a számot a táblán – a „43 ember jelezte” az, ami előrébb visz egy tételt a napirenden. Ha az összevonás téves, legyen visszafordítható, mert a tévesen összevont panasz annak, aki tette, elásott panasznak látszik. Az MI-szerep összevonási javaslatot fogalmazhat és számolhat; az összevonást ember hagyja jóvá.",
+      "prompt": "Kétszáz bejelentés egyetlen kereszteződésről a legerősebb politikai tény, amit a tábla valaha előállít, és abban a pillanatban megsemmisül, amikor az összevonás elveszíti a második jelzőt. Ezért a tételt vonjuk össze, soha nem a személyeket: minden jelző csatolva marad, megtartja a saját azonosítóját, és egyenként értesül az eredményről. Tegyük közzé a számot a táblán – a „43 ember jelezte” az, ami előrébb visz egy tételt a napirenden. Ha az összevonás téves, legyen visszafordítható, mert a tévesen összevont panasz annak, aki tette, elásott panasznak látszik. Az MI-szerep (RU-AI-1) összevonási javaslatot fogalmazhat és számolhat; az összevonást ember hagyja jóvá.",
       "ordinality": 6,
       "created_at": "2026-10-01T18:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "kind": "fill_form",
+      "form_name": "Számoljuk meg, hányan jelezték ugyanazt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6ee7de52-da85-5f03-a62e-74f9c1696f79",
@@ -2198,11 +2350,21 @@
       "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
       "title": "Jelentsük azokat a városrészeket, amelyek semmit nem jeleznek",
       "description": "Tegyük közzé a csendet a tábla mellett, ahogy egy kör közzéteszi a lefedettségét.",
-      "prompt": "Az a városrész, amely semmit nem jelez, vagy elégedett, vagy nem érik el, és ez a kettő egy számban egyformának látszik. Negyedévente tegyük közzé városrészenként a számot, és hagyjuk, hogy az adott városrész képviselője számot adjon róla – ez az a beszélgetés, amelyet a szám elindítani hivatott. Ne tekintsük a csendet jóváhagyásnak semmilyen, a képviselő-testület elé kerülő iratban. Ahol egy városrész következetesen néma, oda kell először vinni a következő kör eszköz nélküli csatornáját. Az MI-szerep csak számolhat és összegezhet; a közzétételt ember hagyja jóvá.",
+      "prompt": "Az a városrész, amely semmit nem jelez, vagy elégedett, vagy nem érik el, és ez a kettő egy számban egyformának látszik. Negyedévente tegyük közzé városrészenként a számot, és hagyjuk, hogy az adott városrész képviselője számot adjon róla – ez az a beszélgetés, amelyet a szám elindítani hivatott. Ne tekintsük a csendet jóváhagyásnak semmilyen, a képviselő-testület elé kerülő iratban. Ahol egy városrész következetesen néma, oda kell először vinni a következő kör eszköz nélküli csatornáját. Az MI-szerep (RU-AI-1) csak számolhat és összegezhet; a közzétételt ember hagyja jóvá.",
       "ordinality": 7,
       "created_at": "2026-10-01T18:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "kind": "fill_form",
+      "form_name": "Jelentsük azokat a városrészeket, amelyek semmit nem jeleznek",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b4af7bce-ca5b-4485-ab6d-a376f2db6a16",
@@ -2210,11 +2372,21 @@
       "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
       "title": "Adjuk át a műveleti ügyeket a szolgáltató cégnek",
       "description": "Adjuk tovább, ami nem az önkormányzat saját munkája, és tartsuk kézben a szálat.",
-      "prompt": "Küldjük el a tételt a szolgáltató cégnek a helyszínnel és a bejelentett tartalommal, és jegyezzük fel a tőlük kapott azonosítót. Az önkormányzat saját rekordját tartsuk nyitva, amíg be nem jelentik a teljesítést. A lakos az önkormányzatot kérdezte, ezért az önkormányzat válaszol, nem a vállalkozó. Az MI-szerep csak összefoglalót fogalmazhat az átadáshoz és utánajárhat a teljesítésnek; az átadást ember hagyja jóvá.",
+      "prompt": "Küldjük el a tételt a szolgáltató cégnek a helyszínnel és a bejelentett tartalommal, és jegyezzük fel a tőlük kapott azonosítót. Az önkormányzat saját rekordját tartsuk nyitva, amíg be nem jelentik a teljesítést. A lakos az önkormányzatot kérdezte, ezért az önkormányzat válaszol, nem a vállalkozó. Az MI-szerep (RU-AI-1) csak összefoglalót fogalmazhat az átadáshoz és utánajárhat a teljesítésnek; az átadást ember hagyja jóvá.",
       "ordinality": 8,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "69df9114-1c76-4b7d-a1f5-6a8a8743675a",
+      "kind": "fill_form",
+      "form_name": "Adjuk át a műveleti ügyeket a szolgáltató cégnek",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "e7b5af79-a40a-4f70-abca-36ca76e1b5ae",
@@ -2222,11 +2394,21 @@
       "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
       "title": "Nézzük át nyilvánosan, mi jött vissza",
       "description": "Tegyük láthatóvá a kiszervezett felet azoknak, akik fizetnek érte.",
-      "prompt": "Havonta jelentsük, hány tétel ment a szolgáltató cégnek, hány jött vissza elvégezve, és mennyi idő alatt. Tegyük közzé. Ahol a szolgáltató saját adatai és a lakosok bejelentései eltérnek, mondjuk ki, ne egyeztessük csendben – az önkormányzat befolyása egy kiszervezett szolgáltatás felett nagyrészt ez a jelentés. Az MI-szerep összeszámolhatja és szövegesen összegezheti a havi adatokat; a közzétételt ember hagyja jóvá.",
+      "prompt": "Havonta jelentsük, hány tétel ment a szolgáltató cégnek, hány jött vissza elvégezve, és mennyi idő alatt. Tegyük közzé. Ahol a szolgáltató saját adatai és a lakosok bejelentései eltérnek, mondjuk ki, ne egyeztessük csendben – az önkormányzat befolyása egy kiszervezett szolgáltatás felett nagyrészt ez a jelentés. Az MI-szerep (RU-AI-1) összeszámolhatja és szövegesen összegezheti a havi adatokat; a közzétételt ember hagyja jóvá.",
       "ordinality": 9,
       "created_at": "2026-10-01T10:00:00Z",
       "last_updated": "2026-10-01T10:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "kind": "fill_form",
+      "form_name": "Nézzük át nyilvánosan, mi jött vissza",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6b5f88dc-1e6a-53b5-88d1-766416512e81",
@@ -2234,11 +2416,21 @@
       "workflow_id": "be6c4b03-4e03-44e4-8352-b22753c93da3",
       "title": "Vigyük a rendszeresen visszatérő témákat a következő kör kérdésébe",
       "description": "Alakítsuk a negyedév leggyakoribb témáit a következő kérdéssé.",
-      "prompt": "Negyedévente tegyük a leggyakrabban jelzett tíz témát annak elé, aki a konzultációs programot összeállítja, a számokkal és azokkal a városrészekkel együtt, ahonnan jöttek. A legtöbbből nem lesz kör, és ez rendben van – az számít, hogy a kérdezés mellőzéséről valaki döntött, a bizonyítékok előtt, nem senki. Ahol egy téma körré válik, nevezzük meg magán a körön a bejelentéseket, amelyekből származik, hogy akik jelezték, lássák: az ő bejelentésük lett a kérdés. Az MI-szerep csak összegezhet és számolhat; a program összeállításáról ember dönt.",
+      "prompt": "Negyedévente tegyük a leggyakrabban jelzett tíz témát annak elé, aki a konzultációs programot összeállítja, a számokkal és azokkal a városrészekkel együtt, ahonnan jöttek. A legtöbbből nem lesz kör, és ez rendben van – az számít, hogy a kérdezés mellőzéséről valaki döntött, a bizonyítékok előtt, nem senki. Ahol egy téma körré válik, nevezzük meg magán a körön a bejelentéseket, amelyekből származik, hogy akik jelezték, lássák: az ő bejelentésük lett a kérdés. Az MI-szerep (RU-AI-1) csak összegezhet és számolhat; a program összeállítását ember hagyja jóvá.",
       "ordinality": 10,
       "created_at": "2026-10-01T18:00:00Z",
       "last_updated": "2026-10-01T18:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "kind": "fill_form",
+      "form_name": "Vigyük a rendszeresen visszatérő témákat a következő kör kérdésébe",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "3fd7aea9-86b5-43db-830f-457a4fdd3d09",
@@ -6727,7 +6919,16 @@
       "ordinality": 1,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megnézzük, hogy az űrlap minden kérdésének van mezője a nyilvántartásban",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b2651ad9-e700-57e1-acdc-92d6da910223",
@@ -6740,7 +6941,16 @@
       "ordinality": 2,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Meghívjuk a lakost, hogy ellenőrzött elérhetőséggel töltse ki",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "feb65e1d-2ca3-5a81-a1e6-ab470a2e9706",
@@ -6753,7 +6963,16 @@
       "ordinality": 3,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A válasz bekerül a nyilvántartásba, forrása a lakos",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "fac0e8ea-04d5-5345-ab2f-d546d4d03f54",
@@ -6766,7 +6985,16 @@
       "ordinality": 4,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Együtt őrizzük az elérhetőséget és a hozzájárulást, és megmutatjuk, mit tárolunk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "055118f1-7bd8-55bf-bc65-4b924ce96153",
@@ -6779,7 +7007,16 @@
       "ordinality": 5,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A személyazonosító adatok javítását ember hagyja jóvá",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "69144221-448e-52e7-a458-14143b254d25",
@@ -6792,7 +7029,16 @@
       "ordinality": 1,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megnevezzük, mire kérünk hozzájárulást, és meddig őrizzük",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4ad541af-16dd-5c95-b7d8-fb7aa3b056f3",
@@ -6805,7 +7051,16 @@
       "ordinality": 2,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megírjuk a hozzájárulás szövegének új változatát",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "7d4a3935-1e24-5a33-9d96-0d572bb78b19",
@@ -6818,7 +7073,16 @@
       "ordinality": 3,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Jóváhagyjuk és közzétesszük a szöveget",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b32b878c-b2ba-5df6-8f0a-d982dd24189d",
@@ -6831,7 +7095,16 @@
       "ordinality": 4,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hozzájárulást kérünk, és rögzítjük, melyik változatra",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6422787c-74e8-5cbf-a2d2-91459f541073",
@@ -6844,7 +7117,16 @@
       "ordinality": 5,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A visszavonást még aznap végrehajtjuk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "175e47cd-3c6f-5ce3-a5c2-118c6144f447",
@@ -6857,7 +7139,16 @@
       "ordinality": 6,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megszámoljuk, mit rejtettünk el",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "17ff7258-b24a-59cc-a5c0-204ef5d5889c",
@@ -6870,7 +7161,16 @@
       "ordinality": 7,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Még aznap visszaigazoljuk a visszavonást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4f7ba054-0139-511f-8b71-44e0c112f299",
@@ -6942,33 +7242,34 @@
       "id": "86bf62d7-a2fe-5dbc-9418-1fb32151d384",
       "code": "WI-28-4",
       "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
-      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
-      "title": "Az ügyintéző rögzíti a visszaérkezett lapokat a kör saját űrlapján",
-      "description": "A papíron, telefonon vagy személyesen érkezett válaszokat az ügyintéző gépeli be a kör űrlapjára, „kinek a nevében” mezővel és papírjelzéssel.",
-      "prompt": "A visszaérkezett papírlapokat (például negyvenet a Malomsori gyűlésről) a jegyző kijelölt ügyintézője a kör saját űrlapján rögzíti: minden válasznál kitölti, kinek a nevében rögzíti, és megjelöli, hogy papíron, telefonon vagy személyesen érkezett. Új képernyőt nem használ, a válaszok ugyanoda kerülnek, ahová a képernyőn adottak. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "title": "Elküldjük a visszaérkezett lapok űrlapját a körzeti ügyintézőnek",
+      "description": "A rendszer elküldi az ügyintézőnek a lapok űrlapját; ő lapoként megadja, kinek a nevében kell rögzíteni a választ és hogyan érkezett.",
+      "prompt": "A rendszer elküldi a körzeti ügyintézőnek a begyűjtött papírlapok űrlapját: a lapokat (például negyvenet a Malomsori gyűlésről) a közösségi kapcsolattartó hozta vissza. Az ügyintéző mindegyik lapnál megadja, kinek a nevében kell rögzíteni a választ, és azt is, hogy papíron, telefonon vagy személyesen érkezett. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
       "ordinality": 4,
       "created_at": "2026-11-08T08:00:00Z",
-      "last_updated": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
       "deleted": false,
-      "kind": "fill_form",
-      "form_name": "Az ügyintéző rögzíti a visszaérkezett lapokat a kör saját űrlapján",
+      "kind": "send_form",
+      "form_name": "A visszaérkezett lapok átadása",
       "questions": [
         {
-          "prompt": "Kinek a nevében rögzítettük a választ?",
+          "prompt": "Kinek a nevében kell rögzíteni a választ?",
           "answer_type": "free_text",
           "required": true
         },
         {
-          "prompt": "Papíron, telefonon vagy személyesen érkezett?",
-          "answer_type": "yes_no",
-          "required": true
-        },
-        {
-          "prompt": "Elvégeztük a lépést?",
-          "answer_type": "yes_no",
-          "required": true
+          "prompt": "Hogyan érkezett a válasz?",
+          "answer_type": "single_choice",
+          "required": true,
+          "options": [
+            "Papíron",
+            "Telefonon",
+            "Személyesen",
+            "Képernyőn"
+          ]
         }
-      ]
+      ],
+      "recipient_role_id": "a05b719c-8adb-57b5-a870-c560f2673155"
     },
     {
       "id": "a81b1b6d-5824-566f-92a4-52fc21613e1e",
@@ -6978,7 +7279,7 @@
       "title": "Ellenőrizzük a hozzájárulást minden lapon",
       "description": "Az adatvédelmi és iratkezelési felelős ellenőrzi, hogy minden lapon szerepel a hozzájárulás, és a visszavont hozzájárulásúakat elrejti.",
       "prompt": "Az Adatvédelmi és iratkezelési felelős végigmegy a rögzített lapokon: mindegyiken látszik-e a hozzájárulás, és aki visszavonta, annak válaszát elrejti, nem törli. Ahol hiányzik a hozzájárulás, a lapot nem számoljuk, amíg pótolják. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
-      "ordinality": 5,
+      "ordinality": 9,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
       "deleted": false,
@@ -7000,7 +7301,7 @@
       "title": "Személyenként egyszer megszámoljuk, és közzétesszük a lefedettséget",
       "description": "Az adat- és elemzési referens összeveti a papíros, telefonos és személyes válaszokat a képernyőn adottakkal, személyenként egyszer számolja őket, és megmondja, mely városrész hiányzik.",
       "prompt": "Számoljuk meg a papíron, telefonon, személyesen és a képernyőn érkezett válaszokat együtt, személyenként egyszer, városrészenként bontva, és vessük össze a háztartások számával, hogy lássuk, mely városrész maradt ki. Az MI-szerep (RU-AI-1) csak számolhat és összevethet, névsort nem közölhet; a nyilvánosság elé vagy a rekordok közé kerülő anyagot mindig ember hagyja jóvá.",
-      "ordinality": 6,
+      "ordinality": 10,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
       "deleted": false,
@@ -7025,7 +7326,16 @@
       "ordinality": 1,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megszámoljuk, hányat hívtunk meg, városrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "260a1d02-4714-52ae-9168-7a3896d7cca6",
@@ -7038,7 +7348,16 @@
       "ordinality": 2,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Személyenként egyszer számoljuk a válaszokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "93486ee1-cae9-5369-b09c-b072bff9d717",
@@ -7051,7 +7370,16 @@
       "ordinality": 3,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük, hogy a szám senkit nem tesz azonosíthatóvá",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "25173ec6-ee5c-55a9-988e-11acbdb37bb5",
@@ -7064,7 +7392,16 @@
       "ordinality": 4,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megírjuk a lefedettségi közleményt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "466ff870-fb1b-580d-b317-ba8fb4e2712a",
@@ -7077,7 +7414,16 @@
       "ordinality": 5,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Vállaljuk a közleményt a nevünkkel",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "dc3e4224-1417-5501-912b-a0367c265166",
@@ -7090,7 +7436,16 @@
       "ordinality": 6,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Közzétesszük a lefedettséget a nevezővel együtt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "f96bdd4c-4587-5f69-89af-777c56329569",
@@ -7103,7 +7458,16 @@
       "ordinality": 1,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összeget rendelünk a városrész szavazásához",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b0eae43d-52af-51ea-b7f6-2307cbe8c925",
@@ -7116,7 +7480,16 @@
       "ordinality": 2,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összegyűjtjük a lakók javaslatait",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "7b457e6d-7be5-504d-82da-abd3585148e9",
@@ -7129,7 +7502,16 @@
       "ordinality": 3,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Átnézzük, mennyibe kerülnek és megvalósíthatók-e",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4cd410f7-e882-5d9e-9bbb-4d9bfe1f5282",
@@ -7142,7 +7524,16 @@
       "ordinality": 4,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Meghívjuk a lakókat a szavazásra mindenhol",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "936889d6-6280-5628-a61c-0e4512575690",
@@ -7155,7 +7546,16 @@
       "ordinality": 5,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Személyenként egyszer számolunk és sorba állítjuk a javaslatokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c9f5e639-4473-54a9-81a9-fd7908fa5ed4",
@@ -7168,7 +7568,16 @@
       "ordinality": 6,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Döntünk a sorrendről, és közzétesszük a nyerteseket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "d0f719e1-0940-5fd0-b17e-0e59854825ff",
@@ -7181,7 +7590,147 @@
       "ordinality": 7,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Elszámolunk a városrész költésével",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "bc300bd8-4df8-58da-8dfc-c34a34accceb",
+      "code": "WI-28-7",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "title": "Szétválogatjuk a lapokat az érkezés módja szerint",
+      "description": "Az érkezés módja dönti el, melyik rögzítési lépés következik; ami a képernyőn érkezett, azt nem kell kulcsolni.",
+      "prompt": "Az érkezés módja dönti el, melyik rögzítési lépés következik: papír, telefon vagy személyes beszélgetés. Ami a képernyőn érkezett, azt senkinek nem kell begépelnie, az megy tovább az ellenőrzéshez. Ezt a lépést a rendszer végzi a megadott válasz alapján, mesterséges intelligencia nem tölti be.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T12:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
+      "deleted": false,
+      "kind": "route",
+      "sent_step_id": "86bf62d7-a2fe-5dbc-9418-1fb32151d384",
+      "routes": [
+        {
+          "match": "all",
+          "rules": [
+            {
+              "question": "Hogyan érkezett a válasz?",
+              "operator": "is",
+              "value": "Papíron"
+            }
+          ],
+          "go_to_step_id": "a29eede3-23b3-50d8-9ad3-a49eadcebdd0"
+        },
+        {
+          "match": "all",
+          "rules": [
+            {
+              "question": "Hogyan érkezett a válasz?",
+              "operator": "is",
+              "value": "Telefonon"
+            }
+          ],
+          "go_to_step_id": "c2be65e4-79fb-5fc1-bec0-5a8ed3f56b2f"
+        },
+        {
+          "match": "all",
+          "rules": [
+            {
+              "question": "Hogyan érkezett a válasz?",
+              "operator": "is",
+              "value": "Személyesen"
+            }
+          ],
+          "go_to_step_id": "e09f2c02-e5e2-5c42-9ee4-971fb3915a2a"
+        }
+      ],
+      "otherwise_step_id": "a81b1b6d-5824-566f-92a4-52fc21613e1e"
+    },
+    {
+      "id": "a29eede3-23b3-50d8-9ad3-a49eadcebdd0",
+      "code": "WI-28-8",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "title": "Rögzítjük a papíron érkezett válaszokat",
+      "description": "A körzeti ügyintéző a papíron érkezett válaszokat a kör saját űrlapján rögzíti, a „kinek a nevében” mezővel.",
+      "prompt": "A körzeti ügyintéző a papíron érkezett válaszokat (például negyven lapot a Malomsori gyűlésről) a kör saját űrlapján rögzíti: minden válasznál kitölti, kinek a nevében rögzíti, és jelzi az érkezés módját. Új képernyőt nem használ, a válaszok ugyanoda kerülnek, ahová a képernyőn adottak. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 6,
+      "created_at": "2026-11-08T12:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
+      "deleted": false,
+      "role_id": "a05b719c-8adb-57b5-a870-c560f2673155",
+      "kind": "fill_form",
+      "form_name": "Rögzítjük a papíron érkezett válaszokat",
+      "questions": [
+        {
+          "prompt": "Kinek a nevében rögzítettük a választ?",
+          "answer_type": "free_text",
+          "required": true
+        },
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "c2be65e4-79fb-5fc1-bec0-5a8ed3f56b2f",
+      "code": "WI-28-9",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "title": "Rögzítjük a telefonon érkezett válaszokat",
+      "description": "A körzeti ügyintéző a telefonon érkezett válaszokat a kör saját űrlapján rögzíti, a „kinek a nevében” mezővel.",
+      "prompt": "A körzeti ügyintéző a telefonon érkezett válaszokat (a hívószámról visszahívott lakosok válaszait) a kör saját űrlapján rögzíti: minden válasznál kitölti, kinek a nevében rögzíti, és jelzi az érkezés módját. Új képernyőt nem használ, a válaszok ugyanoda kerülnek, ahová a képernyőn adottak. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 7,
+      "created_at": "2026-11-08T12:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
+      "deleted": false,
+      "role_id": "a05b719c-8adb-57b5-a870-c560f2673155",
+      "kind": "fill_form",
+      "form_name": "Rögzítjük a telefonon érkezett válaszokat",
+      "questions": [
+        {
+          "prompt": "Kinek a nevében rögzítettük a választ?",
+          "answer_type": "free_text",
+          "required": true
+        },
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "e09f2c02-e5e2-5c42-9ee4-971fb3915a2a",
+      "code": "WI-28-10",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "title": "Rögzítjük a személyesen érkezett válaszokat",
+      "description": "A körzeti ügyintéző a személyesen érkezett válaszokat a kör saját űrlapján rögzíti, a „kinek a nevében” mezővel.",
+      "prompt": "A körzeti ügyintéző a személyesen érkezett válaszokat (a piaci pultnál és a kapunál elmondottakat) a kör saját űrlapján rögzíti: minden válasznál kitölti, kinek a nevében rögzíti, és jelzi az érkezés módját. Új képernyőt nem használ, a válaszok ugyanoda kerülnek, ahová a képernyőn adottak. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 8,
+      "created_at": "2026-11-08T12:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
+      "deleted": false,
+      "role_id": "a05b719c-8adb-57b5-a870-c560f2673155",
+      "kind": "fill_form",
+      "form_name": "Rögzítjük a személyesen érkezett válaszokat",
+      "questions": [
+        {
+          "prompt": "Kinek a nevében rögzítettük a választ?",
+          "answer_type": "free_text",
+          "required": true
+        },
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [

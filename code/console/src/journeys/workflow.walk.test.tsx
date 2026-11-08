@@ -182,3 +182,34 @@ const walk = (fixture: WalkFixture) => {
 };
 
 walkFixtures().forEach(({ fixture }) => walk(fixture));
+
+describe("the steps of the municipality agency, all workflows", () => {
+  const file = agencyWith();
+  const steps = file.work_items as Rec[];
+
+  it("every step with a role names a kind, and a step that takes a form names the form and its questions", () => {
+    const withRole = steps.filter((step) => step.role_id);
+    expect(withRole.length).toBeGreaterThan(0);
+    expect(withRole.filter((step) => !step.kind).map((step) => step.code)).toEqual([]);
+    const takingForm = steps.filter((step) => step.kind === "fill_form" || step.kind === "send_form");
+    expect(takingForm.filter((step) => !step.form_name || !(step.questions ?? []).length).map((step) => step.code)).toEqual([]);
+    expect(steps.filter((step) => step.kind === "send_form" && !step.recipient_role_id).map((step) => step.code)).toEqual([]);
+    expect(steps.filter((step) => step.kind === "send_form" && step.role_id).map((step) => step.code)).toEqual([]);
+  });
+
+  it("every route step sorts the answers of a send_form step of its own workflow and goes only to steps of that workflow", () => {
+    const byId = new Map(steps.map((step) => [step.id, step]));
+    const routes = steps.filter((step) => step.kind === "route");
+    expect(routes.length).toBeGreaterThan(0);
+    routes.forEach((step) => {
+      const sent = byId.get(step.sent_step_id);
+      expect([step.code, sent?.kind, sent?.workflow_id]).toEqual([step.code, "send_form", step.workflow_id]);
+      const asked = new Set((sent?.questions ?? []).map((question: Rec) => question.prompt));
+      (step.routes ?? []).forEach((route: Rec) => {
+        expect([step.code, byId.get(route.go_to_step_id)?.workflow_id]).toEqual([step.code, step.workflow_id]);
+        route.rules.forEach((rule: Rec) => expect([step.code, asked.has(rule.question)]).toEqual([step.code, true]));
+      });
+      if (step.otherwise_step_id) expect([step.code, byId.get(step.otherwise_step_id)?.workflow_id]).toEqual([step.code, step.workflow_id]);
+    });
+  });
+});

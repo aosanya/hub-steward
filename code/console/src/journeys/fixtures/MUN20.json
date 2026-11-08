@@ -23,7 +23,16 @@
       "ordinality": 1,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megnevezzük, mire kérünk hozzájárulást, és meddig őrizzük",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4ad541af-16dd-5c95-b7d8-fb7aa3b056f3",
@@ -36,7 +45,16 @@
       "ordinality": 2,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megírjuk a hozzájárulás szövegének új változatát",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "7d4a3935-1e24-5a33-9d96-0d572bb78b19",
@@ -49,7 +67,16 @@
       "ordinality": 3,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Jóváhagyjuk és közzétesszük a szöveget",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b32b878c-b2ba-5df6-8f0a-d982dd24189d",
@@ -62,7 +89,16 @@
       "ordinality": 4,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Hozzájárulást kérünk, és rögzítjük, melyik változatra",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "6422787c-74e8-5cbf-a2d2-91459f541073",
@@ -75,7 +111,16 @@
       "ordinality": 5,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A visszavonást még aznap végrehajtjuk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "175e47cd-3c6f-5ce3-a5c2-118c6144f447",
@@ -88,7 +133,16 @@
       "ordinality": 6,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megszámoljuk, mit rejtettünk el",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "17ff7258-b24a-59cc-a5c0-204ef5d5889c",
@@ -101,7 +155,16 @@
       "ordinality": 7,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Még aznap visszaigazoljuk a visszavonást",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [

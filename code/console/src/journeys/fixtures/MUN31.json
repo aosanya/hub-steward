@@ -23,7 +23,16 @@
       "ordinality": 1,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összeget rendelünk a városrész szavazásához",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b0eae43d-52af-51ea-b7f6-2307cbe8c925",
@@ -36,7 +45,16 @@
       "ordinality": 2,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Összegyűjtjük a lakók javaslatait",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "7b457e6d-7be5-504d-82da-abd3585148e9",
@@ -49,7 +67,16 @@
       "ordinality": 3,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Átnézzük, mennyibe kerülnek és megvalósíthatók-e",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "4cd410f7-e882-5d9e-9bbb-4d9bfe1f5282",
@@ -62,7 +89,16 @@
       "ordinality": 4,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Meghívjuk a lakókat a szavazásra mindenhol",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "936889d6-6280-5628-a61c-0e4512575690",
@@ -75,7 +111,16 @@
       "ordinality": 5,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Személyenként egyszer számolunk és sorba állítjuk a javaslatokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "c9f5e639-4473-54a9-81a9-fd7908fa5ed4",
@@ -88,7 +133,16 @@
       "ordinality": 6,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Döntünk a sorrendről, és közzétesszük a nyerteseket",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "d0f719e1-0940-5fd0-b17e-0e59854825ff",
@@ -101,7 +155,16 @@
       "ordinality": 7,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Elszámolunk a városrész költésével",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [

@@ -82,16 +82,99 @@
       "id": "86bf62d7-a2fe-5dbc-9418-1fb32151d384",
       "code": "WI-28-4",
       "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
-      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
-      "title": "Az ügyintéző rögzíti a visszaérkezett lapokat a kör saját űrlapján",
-      "description": "A papíron, telefonon vagy személyesen érkezett válaszokat az ügyintéző gépeli be a kör űrlapjára, „kinek a nevében” mezővel és papírjelzéssel.",
-      "prompt": "A visszaérkezett papírlapokat (például negyvenet a Malomsori gyűlésről) a jegyző kijelölt ügyintézője a kör saját űrlapján rögzíti: minden válasznál kitölti, kinek a nevében rögzíti, és megjelöli, hogy papíron, telefonon vagy személyesen érkezett. Új képernyőt nem használ, a válaszok ugyanoda kerülnek, ahová a képernyőn adottak. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "title": "Elküldjük a visszaérkezett lapok űrlapját a körzeti ügyintézőnek",
+      "description": "A rendszer elküldi az ügyintézőnek a lapok űrlapját; ő lapoként megadja, kinek a nevében kell rögzíteni a választ és hogyan érkezett.",
+      "prompt": "A rendszer elküldi a körzeti ügyintézőnek a begyűjtött papírlapok űrlapját: a lapokat (például negyvenet a Malomsori gyűlésről) a közösségi kapcsolattartó hozta vissza. Az ügyintéző mindegyik lapnál megadja, kinek a nevében kell rögzíteni a választ, és azt is, hogy papíron, telefonon vagy személyesen érkezett. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
       "ordinality": 4,
       "created_at": "2026-11-08T08:00:00Z",
-      "last_updated": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
       "deleted": false,
+      "kind": "send_form",
+      "form_name": "A visszaérkezett lapok átadása",
+      "questions": [
+        {
+          "prompt": "Kinek a nevében kell rögzíteni a választ?",
+          "answer_type": "free_text",
+          "required": true
+        },
+        {
+          "prompt": "Hogyan érkezett a válasz?",
+          "answer_type": "single_choice",
+          "required": true,
+          "options": [
+            "Papíron",
+            "Telefonon",
+            "Személyesen",
+            "Képernyőn"
+          ]
+        }
+      ],
+      "recipient_role_id": "a05b719c-8adb-57b5-a870-c560f2673155"
+    },
+    {
+      "id": "bc300bd8-4df8-58da-8dfc-c34a34accceb",
+      "code": "WI-28-7",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "title": "Szétválogatjuk a lapokat az érkezés módja szerint",
+      "description": "Az érkezés módja dönti el, melyik rögzítési lépés következik; ami a képernyőn érkezett, azt nem kell kulcsolni.",
+      "prompt": "Az érkezés módja dönti el, melyik rögzítési lépés következik: papír, telefon vagy személyes beszélgetés. Ami a képernyőn érkezett, azt senkinek nem kell begépelnie, az megy tovább az ellenőrzéshez. Ezt a lépést a rendszer végzi a megadott válasz alapján, mesterséges intelligencia nem tölti be.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T12:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
+      "deleted": false,
+      "kind": "route",
+      "sent_step_id": "86bf62d7-a2fe-5dbc-9418-1fb32151d384",
+      "routes": [
+        {
+          "match": "all",
+          "rules": [
+            {
+              "question": "Hogyan érkezett a válasz?",
+              "operator": "is",
+              "value": "Papíron"
+            }
+          ],
+          "go_to_step_id": "a29eede3-23b3-50d8-9ad3-a49eadcebdd0"
+        },
+        {
+          "match": "all",
+          "rules": [
+            {
+              "question": "Hogyan érkezett a válasz?",
+              "operator": "is",
+              "value": "Telefonon"
+            }
+          ],
+          "go_to_step_id": "c2be65e4-79fb-5fc1-bec0-5a8ed3f56b2f"
+        },
+        {
+          "match": "all",
+          "rules": [
+            {
+              "question": "Hogyan érkezett a válasz?",
+              "operator": "is",
+              "value": "Személyesen"
+            }
+          ],
+          "go_to_step_id": "e09f2c02-e5e2-5c42-9ee4-971fb3915a2a"
+        }
+      ],
+      "otherwise_step_id": "a81b1b6d-5824-566f-92a4-52fc21613e1e"
+    },
+    {
+      "id": "a29eede3-23b3-50d8-9ad3-a49eadcebdd0",
+      "code": "WI-28-8",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "title": "Rögzítjük a papíron érkezett válaszokat",
+      "description": "A körzeti ügyintéző a papíron érkezett válaszokat a kör saját űrlapján rögzíti, a „kinek a nevében” mezővel.",
+      "prompt": "A körzeti ügyintéző a papíron érkezett válaszokat (például negyven lapot a Malomsori gyűlésről) a kör saját űrlapján rögzíti: minden válasznál kitölti, kinek a nevében rögzíti, és jelzi az érkezés módját. Új képernyőt nem használ, a válaszok ugyanoda kerülnek, ahová a képernyőn adottak. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 6,
+      "created_at": "2026-11-08T12:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
+      "deleted": false,
+      "role_id": "a05b719c-8adb-57b5-a870-c560f2673155",
       "kind": "fill_form",
-      "form_name": "Az ügyintéző rögzíti a visszaérkezett lapokat a kör saját űrlapján",
+      "form_name": "Rögzítjük a papíron érkezett válaszokat",
       "questions": [
         {
           "prompt": "Kinek a nevében rögzítettük a választ?",
@@ -99,8 +182,57 @@
           "required": true
         },
         {
-          "prompt": "Papíron, telefonon vagy személyesen érkezett?",
+          "prompt": "Elvégeztük a lépést?",
           "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "c2be65e4-79fb-5fc1-bec0-5a8ed3f56b2f",
+      "code": "WI-28-9",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "title": "Rögzítjük a telefonon érkezett válaszokat",
+      "description": "A körzeti ügyintéző a telefonon érkezett válaszokat a kör saját űrlapján rögzíti, a „kinek a nevében” mezővel.",
+      "prompt": "A körzeti ügyintéző a telefonon érkezett válaszokat (a hívószámról visszahívott lakosok válaszait) a kör saját űrlapján rögzíti: minden válasznál kitölti, kinek a nevében rögzíti, és jelzi az érkezés módját. Új képernyőt nem használ, a válaszok ugyanoda kerülnek, ahová a képernyőn adottak. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 7,
+      "created_at": "2026-11-08T12:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
+      "deleted": false,
+      "role_id": "a05b719c-8adb-57b5-a870-c560f2673155",
+      "kind": "fill_form",
+      "form_name": "Rögzítjük a telefonon érkezett válaszokat",
+      "questions": [
+        {
+          "prompt": "Kinek a nevében rögzítettük a választ?",
+          "answer_type": "free_text",
+          "required": true
+        },
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "e09f2c02-e5e2-5c42-9ee4-971fb3915a2a",
+      "code": "WI-28-10",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "title": "Rögzítjük a személyesen érkezett válaszokat",
+      "description": "A körzeti ügyintéző a személyesen érkezett válaszokat a kör saját űrlapján rögzíti, a „kinek a nevében” mezővel.",
+      "prompt": "A körzeti ügyintéző a személyesen érkezett válaszokat (a piaci pultnál és a kapunál elmondottakat) a kör saját űrlapján rögzíti: minden válasznál kitölti, kinek a nevében rögzíti, és jelzi az érkezés módját. Új képernyőt nem használ, a válaszok ugyanoda kerülnek, ahová a képernyőn adottak. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 8,
+      "created_at": "2026-11-08T12:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
+      "deleted": false,
+      "role_id": "a05b719c-8adb-57b5-a870-c560f2673155",
+      "kind": "fill_form",
+      "form_name": "Rögzítjük a személyesen érkezett válaszokat",
+      "questions": [
+        {
+          "prompt": "Kinek a nevében rögzítettük a választ?",
+          "answer_type": "free_text",
           "required": true
         },
         {
@@ -118,7 +250,7 @@
       "title": "Ellenőrizzük a hozzájárulást minden lapon",
       "description": "Az adatvédelmi és iratkezelési felelős ellenőrzi, hogy minden lapon szerepel a hozzájárulás, és a visszavont hozzájárulásúakat elrejti.",
       "prompt": "Az Adatvédelmi és iratkezelési felelős végigmegy a rögzített lapokon: mindegyiken látszik-e a hozzájárulás, és aki visszavonta, annak válaszát elrejti, nem törli. Ahol hiányzik a hozzájárulás, a lapot nem számoljuk, amíg pótolják. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
-      "ordinality": 5,
+      "ordinality": 9,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
       "deleted": false,
@@ -140,7 +272,7 @@
       "title": "Személyenként egyszer megszámoljuk, és közzétesszük a lefedettséget",
       "description": "Az adat- és elemzési referens összeveti a papíros, telefonos és személyes válaszokat a képernyőn adottakkal, személyenként egyszer számolja őket, és megmondja, mely városrész hiányzik.",
       "prompt": "Számoljuk meg a papíron, telefonon, személyesen és a képernyőn érkezett válaszokat együtt, személyenként egyszer, városrészenként bontva, és vessük össze a háztartások számával, hogy lássuk, mely városrész maradt ki. Az MI-szerep (RU-AI-1) csak számolhat és összevethet, névsort nem közölhet; a nyilvánosság elé vagy a rekordok közé kerülő anyagot mindig ember hagyja jóvá.",
-      "ordinality": 6,
+      "ordinality": 10,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
       "deleted": false,
@@ -170,6 +302,20 @@
       "id": "d66dc8e5-a6e1-5ec5-b16f-840ac7d37c46",
       "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
       "objective_id": "91522658-9669-4ef0-b6c9-721ccf1e3bbd"
+    }
+  ],
+  "roles": [
+    {
+      "id": "a05b719c-8adb-57b5-a870-c560f2673155",
+      "code": "R-17",
+      "name": "Körzeti ügyintéző",
+      "description": "A jegyző kijelölt ügyintézője a városrészekben: a papíron, telefonon vagy személyesen érkezett válaszokat a kör saját űrlapján rögzíti, a „kinek a nevében” mezővel és az érkezés módjának jelzésével. Soha nem tölti be mesterséges intelligencia: a más nevében rögzített válasz hitelességét ember vállalja.",
+      "created_at": "2026-11-08T12:00:00Z",
+      "last_updated": "2026-11-08T12:00:00Z",
+      "deleted": false,
+      "permissions": [
+        "form.answer"
+      ]
     }
   ]
 }

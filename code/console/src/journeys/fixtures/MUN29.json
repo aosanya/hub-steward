@@ -23,7 +23,16 @@
       "ordinality": 1,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megszámoljuk, hányat hívtunk meg, városrészenként",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "260a1d02-4714-52ae-9168-7a3896d7cca6",
@@ -36,7 +45,16 @@
       "ordinality": 2,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Személyenként egyszer számoljuk a válaszokat",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "93486ee1-cae9-5369-b09c-b072bff9d717",
@@ -49,7 +67,16 @@
       "ordinality": 3,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük, hogy a szám senkit nem tesz azonosíthatóvá",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "25173ec6-ee5c-55a9-988e-11acbdb37bb5",
@@ -62,7 +89,16 @@
       "ordinality": 4,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megírjuk a lefedettségi közleményt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "466ff870-fb1b-580d-b317-ba8fb4e2712a",
@@ -75,7 +111,16 @@
       "ordinality": 5,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Vállaljuk a közleményt a nevünkkel",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "dc3e4224-1417-5501-912b-a0367c265166",
@@ -88,7 +133,16 @@
       "ordinality": 6,
       "created_at": "2026-11-08T08:00:00Z",
       "last_updated": "2026-11-08T08:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Közzétesszük a lefedettséget a nevezővel együtt",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [

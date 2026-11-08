@@ -23,7 +23,16 @@
       "ordinality": 1,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megnézzük, hogy az űrlap minden kérdésének van mezője a nyilvántartásban",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "b2651ad9-e700-57e1-acdc-92d6da910223",
@@ -36,7 +45,16 @@
       "ordinality": 2,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Meghívjuk a lakost, hogy ellenőrzött elérhetőséggel töltse ki",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "feb65e1d-2ca3-5a81-a1e6-ab470a2e9706",
@@ -49,7 +67,16 @@
       "ordinality": 3,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A válasz bekerül a nyilvántartásba, forrása a lakos",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "fac0e8ea-04d5-5345-ab2f-d546d4d03f54",
@@ -62,7 +89,16 @@
       "ordinality": 4,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Együtt őrizzük az elérhetőséget és a hozzájárulást, és megmutatjuk, mit tárolunk",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     },
     {
       "id": "055118f1-7bd8-55bf-bc65-4b924ce96153",
@@ -75,7 +111,16 @@
       "ordinality": 5,
       "created_at": "2026-11-08T09:00:00Z",
       "last_updated": "2026-11-08T09:00:00Z",
-      "deleted": false
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "A személyazonosító adatok javítását ember hagyja jóvá",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
     }
   ],
   "workflow_objectives": [
