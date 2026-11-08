@@ -1,0 +1,54 @@
+# What exists
+
+A one-line status per area. The dated history is in [CHANGELOG.md](../../../CHANGELOG.md).
+
+| Area | Where | Status |
+|---|---|---|
+| Console | `code/console` | Built. React app for an agency's manager and designer: sign-in, create a hub, approvals, people, groups, agents, models, documents, workflows, review, tests, usage. Six interface languages. Municipality workflow walks run through one harness (`src/journeys/workflow.walk.test.tsx`) that reads a fixture per workflow from `src/journeys/walks/`. Every page after sign-in needs the API |
+| Phone app | `code/app` | Built. Mobile-first React app for an agency's members: Home, chat with the agents, market, group orders, forms, inbox, groups, harvest sale |
+| Bundled API | `code/wakala-api` | Built, trimmed copy of the Mwanachama API server. Go, SQLite by default, port 8082 in the container. Mounts the custody, digitaltwin and engage modules beside voting, each under `/instances/{instanceID}/<module>`. The riskmanager module (risks, bow-tie pathways, controls, barriers, evidence, assessments, actions) is mounted at `risks`, with owners checked against the directory. Custody consent gates the comm (chat and direct-message posts), engage (RSVP, offer of help) and forms (answers) modules: with custody mounted, an actor without a live consent is refused with 403, and `POST .../custody/consent/withdraw` records a withdrawal in a database ledger (`<consent_record table>_withdrawal`, created with the instance). A withdrawal travels to engage (RSVPs and unpicked offers marked `withdrawn_at` and left out of the going list and of picking, kept), forms (link answers unlinked from the member) and comm (push subscriptions dropped); the gate also covers check-in, notice read markers, chat read markers and declarations from a claimed respondent; a withdrawal keeps a member's survey answers and chat and direct messages but marks them withdrawn (`withdrawn_at`) and stops listing or counting them (submission answer counts, chat activity counts), set by `WithWithdrawalPolicy` (default `keep_hidden`; erasing is an open policy question); engage, comm and forms each restore and list one person's hidden rows, and the agency registry's `HiddenRowsOf` and `RestoreWithdrawn` gather them across the three (no route yet); a Postgres test runs the whole fan-out and skips unless `DATABASE_URL` is local; the per-account router gates and propagates the same way |
+| Minimum count | `code/wakala-api/modules/shared/disclosure`, `voting/disclose.go`, `insights/counts.go` | Built. A published poll count (`ReadPublishedCount`) hides any choice below the minimum (default 5, `voting.SetMinimumCount`), hides the answered total when anything is hidden, and covers a lone hidden cell. Cells below the minimum are folded into one `other` cell (`disclosure.FoldSmall`), which is itself withheld while still below the minimum. Insight counts per subject have the same rule (`CountBySubject`, `GET /insights/counts`, permission `insight.count`). `minimum_count` is a declared setting of both voting and insights (`insights.SetMinimumCount`, `InsightManager.MinimumCount`). A folded choice is left out of the published count, with every choice below the minimum, so the list does not say which were folded; the `other` cell stands for them. The rows stay closed behind `ListResponses`. Tested against a database and over HTTP |
+| Demo agencies | `demo/` | Built. Nine synthetic agencies (eight `agency.json` folders and `municipality.json`), listed below, plus the Siaya lab's documents in English, Swahili and German |
+
+## Demo agencies
+
+The product runs any member organization; these nine are agencies to try it on; the eight folders are in the console's template picker. All are synthetic.
+
+| Folder | The agency |
+|---|---|
+| `siaya-lab` | A community computer lab, the example for seats, network management and member set-up. The only one with documents, in three languages |
+| `boda-boda-riders` | The riders' group around the planned Siaya hub |
+| `farmers` | The Siaya agricultural ministry and the farmers it serves: group orders, prices, harvest sale |
+| `clinical-research-organization` | A clinical research organization |
+| `electric-grid-utility` | An electric grid utility |
+| `logistics-freight-company` | A freight logistics company |
+| `mobile-money-operator` | A mobile money operator |
+| `agricultural-drone-crop-spraying-service` | A drone crop-spraying service |
+| `municipality.json` | An invented Hungarian town council, in Hungarian; a single file, not offered in the console's template picker and with no copy under `code/console/public/templates/`; load it with `POST /instances/import` |
+
+## Harvest sale
+
+The console and the app carry a harvest sale in two jobs. The Suppliers' agent asks the one buyer a farmer picked, once, and holds no farmer threads. The Farmers' agent tells the farmer once that the buyer said yes or no. Neither answers for anyone. The buyer's yes is the market's own record, kept with its date and note. Silence changes nothing. The older produce matcher is gone: a farmer sees buyers' posted prices and picks one.
+
+## Places
+
+The spec language has a `geometry` field type holding a GeoJSON Point, Polygon or MultiPolygon, checked on write. A group carries an optional boundary (Polygon or MultiPolygon), set on creation or with `PUT /groups/{group_id}/boundary`. The geo package finds the ward a point falls in, and `GET /groups/at-point?lon=&lat=` lists the groups whose boundary holds a point (a ward index built from the boundaries). A raised item with a pin and no area, and a catalog entry whose doc has a `location` point and no `ward`, get the innermost group boundary holding the point (the host wires it through the catalog's area resolver); a typed area or ward is kept and a disagreement is flagged in `area_mismatch` or `ward_mismatch`. Not built: drawing boundaries in the console.
+
+A raised item carries a `department` and a `department_by` (`rule` or `officer`). The catalog `routing` setting (`{"default": ..., "rules": [{"topic": ..., "department": ...}]}`) fills the department from the topic when the item is filed; a department an officer typed when filing on someone's behalf, or set with `PUT /raised-items/{raisedItemID}/department` (`catalog.raised_item.reassign`, a tool like its siblings, granted by `board.manage`), is kept. A resident's `GET /raised-items/mine` and the follow-key read show the department and a status (`received` until grouped under a board item, then `open`, the board's outcome, or `closed`). Not built: re-running the rules on existing items when the setting changes.
+
+## Approval limits
+
+A seat can carry an `approval_limit`, set when it is granted or changed on a live seat with `SetApprovalLimit` (a negative one, or an ended seat, is refused). `AuthoriseApproval` loads the seat and refuses an amount over its limit with `ErrOverApprovalLimit` (403). Not built: the forms approval flow does not call it yet, because a form carries no amount; no HTTP route or MCP tool for the setter or the check.
+
+A form carries an `amount` (zero means it commits nothing; a negative one is refused). When it is above zero, `Approve` and `ApproveSlot` refuse with `ErrOverApprovalLimit` (403) unless the approver holds a live seat whose limit covers it, and refuse the same way when the host wired no seat source. The agency registry wires the check from the approver's live seats. `SetApprovalLimit` and `AuthoriseApproval` are also routes (`PUT /role-assignments/{id}/approval-limit`, `POST /role-assignments/{id}/authorise-approval`) and MCP tools (`actor_set_approval_limit`, `actor_authorise_approval`); setting a limit sits under the `role.assign` permission.
+
+## Answers that land in a record
+
+A form can declare `lands_in` (`record` written `<module>.<record>`, `keyed_by`, `field_map` from question to field), editable while the form is a draft. `Publish` is refused with `ErrUnmappedQuestions` (409), naming the questions, while any current question has no field in `field_map`, and with `ErrNoRecordWriter` (409, "no writer for module X") while no writer is wired for the record's module, so residents never meet the gap. Each send is composed with `LandsIn.Land` (key context: `form`, `member`, `send`, `period`, plus the mapped fields) and written through the `RecordWriter` that `UseRecordWriters` returns for the module; a failed write answers `ErrLandingFailed` (502) after the answers are kept. Only the catalog has a writer: it puts a catalog record on the `forms` mount (`PutRecord`: subject is the record name, holder is the key as JSON, so a resend on the same key updates the one record). A test run (`ForRun`) composes the record and publishes under the same refusals but writes nothing. Not built: writers for accounting, ratings or any other module; a resend after `ErrLandingFailed` is the only retry.
+
+## Not built
+
+- The loop that reads new messages in a room and replies as the Hub Steward role is not in this repository; the API holds the AI role, its instructions, permissions and model accounts.
+- The Farmers' agent keeps which answers it has told in memory, so a restart tells a farmer her answered asks once more.
+- Nothing calls the "tell the farmer" step on a timer yet.
+- Dated gaps for each user journey are listed at the end of that journey's page in [user journeys](../../1.%20requirements/user-journeys/README.md).
