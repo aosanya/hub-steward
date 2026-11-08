@@ -1,0 +1,93 @@
+{
+  "workflow": "W-29",
+  "title": "count once per person and publish the coverage",
+  "sources": [
+    "MUN29"
+  ],
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-29-1",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-29-2",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-29-3",
+      "role": "R-7",
+      "ai": false
+    },
+    {
+      "code": "WI-29-4",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-29-5",
+      "role": "R-1",
+      "ai": false
+    },
+    {
+      "code": "WI-29-6",
+      "role": "R-4",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "stepText": [
+      {
+        "step": "WI-29-2",
+        "match": [
+          "ne számoljuk kétszer"
+        ]
+      },
+      {
+        "step": "WI-29-3",
+        "match": [
+          "soha személyt"
+        ]
+      },
+      {
+        "step": "WI-29-5",
+        "match": [
+          "jóváhagyás nélkül a lefedettség nem kerül ki"
+        ]
+      }
+    ],
+    "roleText": [
+      {
+        "role": "R-7",
+        "match": [
+          "i:soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ],
+    "order": [
+      [
+        "WI-29-1",
+        "WI-29-2"
+      ],
+      [
+        "WI-29-3",
+        "WI-29-4"
+      ],
+      [
+        "WI-29-5",
+        "WI-29-6"
+      ]
+    ],
+    "objectives": [
+      "O-6",
+      "O-8",
+      "O-2"
+    ],
+    "itemCount": 6,
+    "firstActor": "Adat- és elemzési referens"
+  }
+}
