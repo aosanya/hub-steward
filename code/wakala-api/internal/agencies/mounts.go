@@ -27,4 +27,6 @@ const (
 	MountTwin = "twin"
 
 	MountPosts = "posts"
+
+	MountFormRecords = "forms"
 )

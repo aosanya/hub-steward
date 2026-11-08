@@ -12,7 +12,7 @@ import (
 	"wakalaserver/internal/agencies"
 )
 
-const formsCatalogMount = "forms"
+const formsCatalogMount = agencies.MountFormRecords
 
 const formsCatalogInstancePrefix = "/instances/{instanceID}/forms-catalog"
 

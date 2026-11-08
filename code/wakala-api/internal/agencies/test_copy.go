@@ -9,6 +9,7 @@ import (
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
 	"wakalaserver/modules/agency/models"
+	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamacomm "wakalaserver/modules/comm"
 	mwanachamacustody "wakalaserver/modules/custody"
 	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
@@ -23,6 +24,7 @@ import (
 )
 
 const (
+	moduleCatalog     = "catalog"
 	moduleMarket      = "market"
 	moduleTaskmanager = "taskmanager"
 	moduleVoting      = "voting"
@@ -133,6 +135,8 @@ func (c TestCopy) specsOf(m TouchedModule) ([]*spec.Spec, error) {
 		return []*spec.Spec{s}, nil
 	}
 	switch m.Code {
+	case moduleCatalog:
+		return mounted(mwanachamacatalog.SpecFor)
 	case moduleMarket:
 		return mounted(mwanachamamarket.SpecForMount)
 	case moduleTaskmanager:
