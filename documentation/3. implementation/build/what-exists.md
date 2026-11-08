@@ -42,6 +42,10 @@ A seat can carry an `approval_limit`, set when it is granted or changed on a liv
 
 A form carries an `amount` (zero means it commits nothing; a negative one is refused). When it is above zero, `Approve` and `ApproveSlot` refuse with `ErrOverApprovalLimit` (403) unless the approver holds a live seat whose limit covers it, and refuse the same way when the host wired no seat source. The agency registry wires the check from the approver's live seats. `SetApprovalLimit` and `AuthoriseApproval` are also routes (`PUT /role-assignments/{id}/approval-limit`, `POST /role-assignments/{id}/authorise-approval`) and MCP tools (`actor_set_approval_limit`, `actor_authorise_approval`); setting a limit sits under the `role.assign` permission.
 
+## Answers that land in a record
+
+A form can declare `lands_in` (`record` written `<module>.<record>`, `keyed_by`, `field_map` from question to field), editable while the form is a draft. `Publish` is refused with `ErrUnmappedQuestions` (409), naming the questions, while any current question has no field in `field_map`, and with `ErrNoRecordWriter` (409, "no writer for module X") while no writer is wired for the record's module, so residents never meet the gap. Each send is composed with `LandsIn.Land` (key context: `form`, `member`, `send`, `period`, plus the mapped fields) and written through the `RecordWriter` that `UseRecordWriters` returns for the module; a failed write answers `ErrLandingFailed` (502) after the answers are kept. Only the catalog has a writer: it puts a catalog record on the `forms` mount (`PutRecord`: subject is the record name, holder is the key as JSON, so a resend on the same key updates the one record). A test run (`ForRun`) composes the record and publishes under the same refusals but writes nothing. Not built: writers for accounting, ratings or any other module; a resend after `ErrLandingFailed` is the only retry.
+
 ## Not built
 
 - The loop that reads new messages in a room and replies as the Hub Steward role is not in this repository; the API holds the AI role, its instructions, permissions and model accounts.
