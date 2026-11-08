@@ -1,0 +1,124 @@
+{
+  "workflows": [
+    {
+      "id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "code": "W-31",
+      "name": "Részvételi költségvetési szavazás",
+      "description": "Hogyan kérdezzük meg a teljes városrészt, nem a leghangosabbakat, arról, mire költsön a testület: a Pénzügyi referens összeget rendel a városrészhez, a lakók javasolnak, a jegyző költségvetési és jogi szempontból átnézi a javaslatokat, mindenki szavazhat személyenként egyszer, és a sorrendből a testület dönt. Az MI-szerepek csak fogalmazhatnak, összegezhetnek, utánajárhatnak és számolhatnak; a nyilvánosság elé kerülő dolgot mindig ember hagyja jóvá.",
+      "ordinality": 31,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "f96bdd4c-4587-5f69-89af-777c56329569",
+      "code": "WI-31-1",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Összeget rendelünk a városrész szavazásához",
+      "description": "A Pénzügyi referens kijelöli a költségvetési sort, és megállapítja, mekkora összegről dönthetnek a lakók.",
+      "prompt": "A Pénzügyi referens a 2026. évi költségvetésből kijelöli azt a sort, amelyről a lakók szavazhatnak, például a Malomsori városrész 6 000 000 Ft-ját, és rögzíti, mennyi marad belőle a testület kötelező kiadásaira. Az összeget és a sort a könyvelésben veszi fel, hogy a szavazás után ugyanabból lehessen fizetni. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b0eae43d-52af-51ea-b7f6-2307cbe8c925",
+      "code": "WI-31-2",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "f615dda6-3f1d-4ff6-862b-a60b0281ccca",
+      "title": "Összegyűjtjük a lakók javaslatait",
+      "description": "Az Egyeztetésvezető felhívást indít, és városrészenként összegyűjti, mire költenének a lakók.",
+      "prompt": "Az Egyeztetésvezető felhívást indít Óváros, Kertváros, Malomsor és Határrét lakóinak: mire költenék a városrész összegét. A javaslatokat úgy fogadjuk, hogy papíron is be lehessen adni a kapunál és a piaci pultnál. A beérkezett javaslatokat összesíteni, városrészenként megszámolni és egységes lapra fogalmazni lehet. Az MI-szerep (RU-AI-1) csak fogalmaz, összegez, utánajár vagy számol; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7b457e6d-7be5-504d-82da-abd3585148e9",
+      "code": "WI-31-3",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Átnézzük, mennyibe kerülnek és megvalósíthatók-e",
+      "description": "A Jegyző minden javaslatnál megállapítja a költséget és azt, hogy a testület megtehető-e.",
+      "prompt": "A Jegyző minden javaslatnál ellenőrzi, hogy az önkormányzat feladata-e, mennyibe kerül forintban (például 1 850 000 Ft a Malomsori játszótér felújítása), és belefér-e a kijelölt összegbe. Amelyiket nem veszi fel a szavazólapra, annak indokát leírja és közli a javaslattevővel. A szavazólapra csak az kerülhet, amit a Jegyző megnézett. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 3,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4cd410f7-e882-5d9e-9bbb-4d9bfe1f5282",
+      "code": "WI-31-4",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Meghívjuk a lakókat a szavazásra mindenhol",
+      "description": "A Kommunikációs referens eljuttatja a szavazólapot minden városrészbe, papíron is.",
+      "prompt": "A Kommunikációs referens a jóváhagyott szavazólapot eljuttatja minden városrész lakóihoz: a honlapra, a hirdetőtáblákra és papíron a kapuhoz és a piaci pulthoz, és emlékeztet a szavazás határidejére. Az MI-szerep (RU-AI-1) csak fogalmazza a meghívót és az emlékeztetőt, és számolja, melyik városrészből hányan szavaztak már; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "936889d6-6280-5628-a61c-0e4512575690",
+      "code": "WI-31-5",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Személyenként egyszer számolunk és sorba állítjuk a javaslatokat",
+      "description": "Az Adat- és elemzési referens megszámolja a szavazatokat, és közli a részvételt városrészenként.",
+      "prompt": "Az Adat- és elemzési referens személyenként egyetlen szavazatot számol (a második szavazatot ugyanattól a személytől megjelöli, nem számolja bele), a javaslatokat a kapott szavazatok szerint sorba állítja, és városrészenként közli, hányan szavaztak a jogosultak közül, például 412 szavazat Malomsorban. Az MI-szerep (RU-AI-1) csak számol és összegez; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c9f5e639-4473-54a9-81a9-fd7908fa5ed4",
+      "code": "WI-31-6",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Döntünk a sorrendről, és közzétesszük a nyerteseket",
+      "description": "A Polgármester a sorrend alapján dönt arról, mit fedez az összeg, és közzéteszi.",
+      "prompt": "A Polgármester a lakók sorrendjét átnézve dönt arról, melyik javaslatokat fedezi a kijelölt összeg, és a saját nevével közzéteszi a nyerteseket és az összeget. Ha eltér a lakók sorrendjétől, leírja az indokot a közzétett jelentésben. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 6,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d0f719e1-0940-5fd0-b17e-0e59854825ff",
+      "code": "WI-31-7",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Elszámolunk a városrész költésével",
+      "description": "A Pénzügyi referens a nyertes javaslatokat felveszi a könyvelésbe, és közli, mennyit költöttünk városrészenként.",
+      "prompt": "A Pénzügyi referens a nyertes javaslatokat a könyvelésben a városrész költségvetési sorára veszi fel, és jelenti, mennyit költöttünk a megszavazott tételekre városrészenként, és mennyi maradt az összegből. Utalványozni csak a jóváhagyott összeghatárig lehet. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 7,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "807d41af-043a-5be1-8ee4-338a15178d98",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "objective_id": "f75d2eac-f436-4d77-858a-4807c59abdd1"
+    },
+    {
+      "id": "2ee44cd9-54c7-565d-b466-af583693be7b",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "objective_id": "b7df40cb-c79e-429f-9842-9e6e5ff2bf69"
+    },
+    {
+      "id": "ba62ee6a-3f88-5a94-8820-6e04510495b6",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
+    }
+  ]
+}

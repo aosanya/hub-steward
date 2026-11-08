@@ -1,0 +1,83 @@
+{
+  "workflow": "W-31",
+  "title": "a participatory budget vote",
+  "sources": [
+    "MUN31"
+  ],
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-31-1",
+      "role": "R-12",
+      "ai": false
+    },
+    {
+      "code": "WI-31-2",
+      "role": "R-3",
+      "ai": true
+    },
+    {
+      "code": "WI-31-3",
+      "role": "R-8",
+      "ai": false
+    },
+    {
+      "code": "WI-31-4",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-31-5",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-31-6",
+      "role": "R-1",
+      "ai": false
+    },
+    {
+      "code": "WI-31-7",
+      "role": "R-12",
+      "ai": false
+    }
+  ],
+  "checks": {
+    "objectives": [
+      "O-6",
+      "O-19",
+      "O-20"
+    ],
+    "itemCount": 7,
+    "order": [
+      [
+        "WI-31-1",
+        "WI-31-2"
+      ],
+      [
+        "WI-31-3",
+        "WI-31-4"
+      ],
+      [
+        "WI-31-5",
+        "WI-31-6"
+      ]
+    ],
+    "stepText": [
+      {
+        "step": "WI-31-5",
+        "match": [
+          "személyenként egyetlen szavazatot"
+        ]
+      },
+      {
+        "step": "WI-31-7",
+        "match": [
+          "városrészenként"
+        ]
+      }
+    ]
+  }
+}
