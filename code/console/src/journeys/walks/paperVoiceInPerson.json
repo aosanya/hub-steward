@@ -1,0 +1,75 @@
+{
+  "workflow": "W-28",
+  "title": "field a round on paper, by voice or in person",
+  "sources": [
+    "MUN28"
+  ],
+  "aiClause": "MI-szerep",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "nonAiPromptMentionsAi": true,
+  "steps": [
+    {
+      "code": "WI-28-1",
+      "role": "R-5",
+      "ai": false
+    },
+    {
+      "code": "WI-28-2",
+      "role": "R-4",
+      "ai": true
+    },
+    {
+      "code": "WI-28-3",
+      "role": "R-5",
+      "ai": false
+    },
+    {
+      "code": "WI-28-4",
+      "role": "R-8",
+      "ai": false
+    },
+    {
+      "code": "WI-28-5",
+      "role": "R-7",
+      "ai": false
+    },
+    {
+      "code": "WI-28-6",
+      "role": "R-6",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "stepText": [
+      {
+        "step": "WI-28-4",
+        "match": [
+          "kinek a nevében",
+          "papíron, telefonon vagy személyesen"
+        ]
+      },
+      {
+        "step": "WI-28-1",
+        "match": [
+          "mesterséges intelligencia nem tölti be"
+        ]
+      }
+    ],
+    "order": [
+      [
+        "WI-28-1",
+        "WI-28-2"
+      ],
+      [
+        "WI-28-3",
+        "WI-28-4"
+      ],
+      [
+        "WI-28-4",
+        "WI-28-6"
+      ]
+    ],
+    "itemCount": 6
+  }
+}

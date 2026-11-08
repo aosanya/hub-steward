@@ -1,0 +1,175 @@
+{
+  "workflows": [
+    {
+      "id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "code": "W-28",
+      "name": "Kör papíron, telefonon vagy személyesen",
+      "description": "Hogyan jut el a kör kérdése azokhoz, akiknek nincs okostelefonjuk: az elérés módját háztartásonként választjuk, ugyanazokkal a kérdésekkel papírlap, telefonos forgatókönyv és személyes beszélgetés készül, a visszaérkezett lapokat egy ügyintéző a kör saját űrlapján, „kinek a nevében” mezővel és papírjelzéssel rögzíti, és a számlálásban ugyanúgy egyszer számít mindenki. Az MI-szerep csak fogalmaz, számol és emlékeztet; ami a nyilvánosság elé kerül, azt ember hagyja jóvá.",
+      "ordinality": 28,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "4f7ba054-0139-511f-8b71-44e0c112f299",
+      "code": "WI-28-1",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Megválasztjuk, kit hogyan érünk el",
+      "description": "A közösségi kapcsolattartó háztartásonként feljegyzi, ki kér papírlapot, kit hívunk telefonon, és kivel beszélünk személyesen.",
+      "prompt": "A Közösségi kapcsolattartó a Határréti kapuknál és a Malomsori piacon beszélgetve feljegyzi, kinek nincs okostelefonja vagy kinek nem kényelmes a képernyő, és mindegyikükkel megbeszéli, hogyan válaszolna: papírlapon, telefonhívásban vagy személyesen. Városrészenként (Óváros, Kertváros, Malomsor, Határrét) összesíti, hány háztartásnak melyik út kell. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 1,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megválasztjuk, kit hogyan érünk el",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "50df73be-3c9c-5d11-b214-1a2a7b4b1dbd",
+      "code": "WI-28-2",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Ugyanazokkal a kérdésekkel elkészítjük a lapot és a telefonos forgatókönyvet",
+      "description": "A kommunikációs referens megfogalmazza a nyomtatott lapot, a telefonos forgatókönyvet és a rövid SMS-emlékeztetőt.",
+      "prompt": "Fogalmazzuk meg a kör kérdéseit egyszerű mondatokkal, ugyanabban a sorrendben a nyomtatott lapra, a telefonos forgatókönyvre és a rövid SMS-emlékeztetőre, hogy a papíron, a telefonon és a képernyőn válaszoló ugyanazt kapja. Az MI-szerep (RU-AI-1) csak fogalmazhatja a lapot, a forgatókönyvet és az emlékeztetőt; a nyilvánosság elé vagy a rekordok közé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ugyanazokkal a kérdésekkel elkészítjük a lapot és a telefonos forgatókönyvet",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "60509a86-572b-51b2-baec-235c00c6acdc",
+      "code": "WI-28-3",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Kiosztjuk és begyűjtjük a lapokat, felhívjuk, akit kell",
+      "description": "A közösségi kapcsolattartó kiosztja a lapokat, telefonon és személyesen is felvesz válaszokat, és jelzi, kit nem ért el.",
+      "prompt": "A Közösségi kapcsolattartó a Malomsori piaci pultnál, a kertvárosi egyesületekben és a Határréti kapuknál kiosztja a papírlapokat, a kért embereket felhívja a forgatókönyv szerint (a telefonos és a hangcsatorna már működik), a személyes beszélgetésekről ugyanazon a lapon vezet jegyzetet, és városrészenként feljegyzi, kit nem ért el. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 3,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Kiosztjuk és begyűjtjük a lapokat, felhívjuk, akit kell",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "86bf62d7-a2fe-5dbc-9418-1fb32151d384",
+      "code": "WI-28-4",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Az ügyintéző rögzíti a visszaérkezett lapokat a kör saját űrlapján",
+      "description": "A papíron, telefonon vagy személyesen érkezett válaszokat az ügyintéző gépeli be a kör űrlapjára, „kinek a nevében” mezővel és papírjelzéssel.",
+      "prompt": "A visszaérkezett papírlapokat (például negyvenet a Malomsori gyűlésről) a jegyző kijelölt ügyintézője a kör saját űrlapján rögzíti: minden válasznál kitölti, kinek a nevében rögzíti, és megjelöli, hogy papíron, telefonon vagy személyesen érkezett. Új képernyőt nem használ, a válaszok ugyanoda kerülnek, ahová a képernyőn adottak. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 4,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Az ügyintéző rögzíti a visszaérkezett lapokat a kör saját űrlapján",
+      "questions": [
+        {
+          "prompt": "Kinek a nevében rögzítettük a választ?",
+          "answer_type": "free_text",
+          "required": true
+        },
+        {
+          "prompt": "Papíron, telefonon vagy személyesen érkezett?",
+          "answer_type": "yes_no",
+          "required": true
+        },
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "a81b1b6d-5824-566f-92a4-52fc21613e1e",
+      "code": "WI-28-5",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Ellenőrizzük a hozzájárulást minden lapon",
+      "description": "Az adatvédelmi és iratkezelési felelős ellenőrzi, hogy minden lapon szerepel a hozzájárulás, és a visszavont hozzájárulásúakat elrejti.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős végigmegy a rögzített lapokon: mindegyiken látszik-e a hozzájárulás, és aki visszavonta, annak válaszát elrejti, nem törli. Ahol hiányzik a hozzájárulás, a lapot nem számoljuk, amíg pótolják. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük a hozzájárulást minden lapon",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "84bca3d0-c96f-5a01-bc50-e253f5adab1d",
+      "code": "WI-28-6",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Személyenként egyszer megszámoljuk, és közzétesszük a lefedettséget",
+      "description": "Az adat- és elemzési referens összeveti a papíros, telefonos és személyes válaszokat a képernyőn adottakkal, személyenként egyszer számolja őket, és megmondja, mely városrész hiányzik.",
+      "prompt": "Számoljuk meg a papíron, telefonon, személyesen és a képernyőn érkezett válaszokat együtt, személyenként egyszer, városrészenként bontva, és vessük össze a háztartások számával, hogy lássuk, mely városrész maradt ki. Az MI-szerep (RU-AI-1) csak számolhat és összevethet, névsort nem közölhet; a nyilvánosság elé vagy a rekordok közé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Személyenként egyszer megszámoljuk, és közzétesszük a lefedettséget",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "e5a5119b-276d-5b3e-b6ba-2539273bd95d",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "objective_id": "45fbd76a-54fd-438a-8729-4e7bb09769a5"
+    },
+    {
+      "id": "52f634e8-58b8-5327-b53b-7e006ff05432",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "objective_id": "a884d46f-3fed-4b21-9eef-a30916c10f2d"
+    },
+    {
+      "id": "d66dc8e5-a6e1-5ec5-b16f-840ac7d37c46",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "objective_id": "91522658-9669-4ef0-b6c9-721ccf1e3bbd"
+    }
+  ]
+}
