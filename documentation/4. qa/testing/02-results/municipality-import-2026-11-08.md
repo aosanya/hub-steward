@@ -28,3 +28,30 @@ Every one is the same message, for a step of W-19, W-20, W-29 or W-31: `CreateWo
 Sign-in by emailed link; the forms and catalog list addresses; any run of a step by an agent. The grown file was imported once and nothing was removed from the database afterwards.
 
 Walk fixtures for W-19, W-20, W-29 and W-31 pass in the console because the fake replies do not check `kind`; this run is the first check against the real importer.
+
+## Second import (daa89ce)
+
+Run on 2026-11-08 the same way as the first: the API built from a clean `git archive` of commit `daa89ce`, run on port 8084 against the local database (`127.0.0.1:54322`), the console login made with `POST /auth/credentials` and the admin token, then `POST /auth/signin`. The file imported is `demo/municipality.json` as committed in `daa89ce` (46 workflows, 266 work items). The new instance was identified by the id in the import reply and read back through its draft.
+
+| Check | Result |
+|---|---|
+| `POST /instances/import` | 201, no errors in the reply |
+| Created | 18 roles, 5 goals, 33 objectives, 46 workflows, 266 work items, 123 workflow objectives, 12 modules, 24 controls, 65 control attachments |
+| Draft scope: workflows | 46, names equal to the file's |
+| Draft scope: work items | 266 of 266; no workflow differs in step count from the file |
+| W-2 (consultation round) | 8 of 8 steps, all `fill_form`, all with a role |
+| W-3 (what people bring us) | 10 of 10, all `fill_form`, all with a role |
+| W-19 | 5 of 5, all `fill_form`, all with a role |
+| W-20 | 7 of 7, all `fill_form`, all with a role |
+| W-28 (paper, voice or in person) | 10 of 10: 8 `fill_form`, 1 `send_form`, 1 `route`; the 8 steps that have a role carry it, the send and the route have none |
+| W-29 | 6 of 6, all `fill_form`, all with a role |
+| W-31 | 7 of 7, all `fill_form`, all with a role |
+| Steps with a role but no `kind` | 0 |
+
+The 25 refused steps of the first import now arrive.
+
+### Still open
+
+- 10 imported steps have an empty `kind` and no role: the template's own W-4 (5) and W-5 (5).
+- Sign-in by emailed link, the forms and catalog list addresses and any run of a step by an agent were not covered.
+- The first import left a "Zöldhalom" instance in the local database and this one made a second; nothing was removed.
