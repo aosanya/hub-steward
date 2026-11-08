@@ -1861,6 +1861,56 @@
       "created_at": "2026-11-07T16:00:00Z",
       "last_updated": "2026-11-07T16:00:00Z",
       "deleted": false
+    },
+    {
+      "id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "code": "W-19",
+      "name": "Lakos saját rekordjának regisztrálása vagy javítása",
+      "description": "Hogyan regisztrálhatja vagy javíthatja a lakos a saját rekordját: az űrlap csak akkor nyílik meg, ha minden kérdéséhez van mező a nyilvántartásban, a válasz abba a modulba kerül, amelyik az adatot őrzi, a forrás a lakos, az elérhetőség és a hozzájárulás együtt marad, és a személyazonosító adatok javítását ember hagyja jóvá. Az MI-szerepek csak fogalmazhatnak, összegezhetnek, utánajárhatnak és számolhatnak; a nyilvánosság elé kerülő dolgot mindig ember hagyja jóvá.",
+      "ordinality": 19,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "code": "W-20",
+      "name": "Hozzájárulás megadása és visszavonása",
+      "description": "Hogyan kér és őriz hozzájárulást az önkormányzat: a hozzájárulás szövegének számozott változatai, az, hogy ki melyik változatot fogadta el és mikor, és a visszavonás, amelyet ugyanazon a napon végre kell hajtani: az illető válaszait és üzeneteit elrejtjük, de nem töröljük. Az MI-szerepek csak fogalmazhatnak, összegezhetnek, utánajárhatnak és számolhatnak; a nyilvánosság elé kerülő dolgot mindig ember hagyja jóvá.",
+      "ordinality": 20,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "code": "W-28",
+      "name": "Kör papíron, telefonon vagy személyesen",
+      "description": "Hogyan jut el a kör kérdése azokhoz, akiknek nincs okostelefonjuk: az elérés módját háztartásonként választjuk, ugyanazokkal a kérdésekkel papírlap, telefonos forgatókönyv és személyes beszélgetés készül, a visszaérkezett lapokat egy ügyintéző a kör saját űrlapján, „kinek a nevében” mezővel és papírjelzéssel rögzíti, és a számlálásban ugyanúgy egyszer számít mindenki. Az MI-szerep csak fogalmaz, számol és emlékeztet; ami a nyilvánosság elé kerül, azt ember hagyja jóvá.",
+      "ordinality": 28,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "02b461cf-413e-5d17-8060-54810b76f7da",
+      "code": "W-29",
+      "name": "Személyenként egyszer számolunk, és közzétesszük a lefedettséget",
+      "description": "Hogyan számolja meg az önkormányzat egy kör válaszait személyenként egyszer: a nevező a nyilvántartásból, az ismétlődő válasz kiszűrése ugyanattól az ellenőrzött elérhetőségtől, a túl kicsi csoportok összevonása vagy elhagyása, majd a lefedettség közzététele azzal együtt, hogy kik nem válaszoltak és mit hagytunk ki. Az MI-szerepek csak fogalmazhatnak, számolhatnak, összegezhetnek és emlékeztethetnek; a nyilvánosság elé kerülő dolgot mindig ember hagyja jóvá.",
+      "ordinality": 29,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "code": "W-31",
+      "name": "Részvételi költségvetési szavazás",
+      "description": "Hogyan kérdezzük meg a teljes városrészt, nem a leghangosabbakat, arról, mire költsön a testület: a Pénzügyi referens összeget rendel a városrészhez, a lakók javasolnak, a jegyző költségvetési és jogi szempontból átnézi a javaslatokat, mindenki szavazhat személyenként egyszer, és a sorrendből a testület dönt. Az MI-szerepek csak fogalmazhatnak, összegezhetnek, utánajárhatnak és számolhatnak; a nyilvánosság elé kerülő dolgot mindig ember hagyja jóvá.",
+      "ordinality": 31,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
     }
   ],
   "work_items": [
@@ -6665,6 +6715,473 @@
           "required": true
         }
       ]
+    },
+    {
+      "id": "16dbc12e-2808-5d87-bdc8-25ac9f493804",
+      "code": "WI-19-1",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Megnézzük, hogy az űrlap minden kérdésének van mezője a nyilvántartásban",
+      "description": "Az űrlap addig nem nyílik meg, amíg valamelyik kérdése mező nélkül marad.",
+      "prompt": "Az Adat- és elemzési referens megnyitás előtt végignézi a regisztrációs és javító űrlap kérdéseit (például a név, a cím, a helyrajzi szám, a telefonszám és a háztartás tagjainak száma), és mindegyikhez megnevezi a nyilvántartás mezőjét. Ha akár egy kérdésnek sincs mezője, az űrlap nem nyílik meg, és a hiányt név szerint visszajelzi, így a lakos nem találkozik vele. Az MI-szerep (RU-AI-1) csak megszámolhatja a mező nélküli kérdéseket és fogalmazhat a hiányról; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b2651ad9-e700-57e1-acdc-92d6da910223",
+      "code": "WI-19-2",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Meghívjuk a lakost, hogy ellenőrzött elérhetőséggel töltse ki",
+      "description": "A lakos a saját telefonjáról, a megerősített telefonszámával vagy e-mail-címével adja meg és javítja a saját adatait.",
+      "prompt": "A Közösségi kapcsolattartó a piacon, a kapunál és az ügyfélfogadáson megmutatja a lakosoknak, hogyan regisztrálhatnak vagy javíthatják a saját adataikat, például Szabó Réka a Malomsori városrészből, és elküldi neki a megerősítő üzenetet a telefonszámára. Aki nem tud telefonon kitölteni, annak segít, és közben végig ő marad a válasz forrása. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 2,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "feb65e1d-2ca3-5a81-a1e6-ab470a2e9706",
+      "code": "WI-19-3",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "A válasz bekerül a nyilvántartásba, forrása a lakos",
+      "description": "A beérkezett válasz új nyilvántartási rekordot hoz létre vagy a meglévőt frissíti, és a forrás mezőben a lakos szerepel.",
+      "prompt": "Az Adat- és elemzési referens a beérkezett választ a kérdés mezőjébe teszi a nyilvántartásban: ha a lakos már szerepel benne, a meglévő rekordot frissíti, ha nem, újat hoz létre, például egy új háztartást a Kertvárosban. A rekord forrása mindig a lakos maga, az időpontjával együtt. Megszámolja, hány rekord jött létre és hány frissült településrészenként. Az MI-szerep (RU-AI-1) csak rögzítheti a választ, megszámolhatja a létrejött és frissült rekordokat, és összegezhet; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fac0e8ea-04d5-5345-ab2f-d546d4d03f54",
+      "code": "WI-19-4",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Együtt őrizzük az elérhetőséget és a hozzájárulást, és megmutatjuk, mit tárolunk",
+      "description": "A lakos látja a saját rekordját, és a hozzájárulása ugyanott van, ahol az elérhetősége.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős ellenőrzi, hogy a lakos elérhetősége és a hozzájárulása egy helyen, egymás mellett van rögzítve, és hogy a lakos bármikor megnézheti, mit tárol róla a nyilvántartás. Ha a lakos visszavonja a hozzájárulását, a válasza megmarad, de a számokban és a listákban nem jelenik meg. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 4,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "055118f1-7bd8-55bf-bc65-4b924ce96153",
+      "code": "WI-19-5",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "A személyazonosító adatok javítását ember hagyja jóvá",
+      "description": "A név, a cím és a helyrajzi szám javítása csak jóváhagyás után kerül át a meglévő rekordba.",
+      "prompt": "A Jegyző átnézi azokat a javításokat, amelyek a meglévő rekord nevét, címét vagy helyrajzi számát megváltoztatják, és jóváhagyja vagy visszautasítja őket, mielőtt a nyilvántartásban átíródnak; a lakos visszaigazolást kap, például hogy a 2026. november 8-i javítása érvénybe lépett. Addig a régi adat marad, és a javítás vázlatként látszik. Az MI-szerep (RU-AI-1) csak összefoglalhatja, miben tér el az új adat a régitől, és emlékeztetőt fogalmazhat a lakosnak; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "69144221-448e-52e7-a458-14143b254d25",
+      "code": "WI-20-1",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Megnevezzük, mire kérünk hozzájárulást, és meddig őrizzük",
+      "description": "Az adatvédelmi felelős leírja, mire kér hozzájárulást az önkormányzat, mennyi ideig őrzi, és mi változott az előző változathoz képest.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős összeírja, mire kér hozzájárulást az önkormányzat (például a Malomsori városrészi felmérés válaszainak azonosítható megőrzésére), meddig őrzi azokat (például 24 hónapig), és mi változik az előző változathoz képest. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4ad541af-16dd-5c95-b7d8-fb7aa3b056f3",
+      "code": "WI-20-2",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Megírjuk a hozzájárulás szövegének új változatát",
+      "description": "A jegyző az összeírásból közérthető szöveget készít, és megmutatja, miben tér el az előző változattól.",
+      "prompt": "A Jegyző az összeírás alapján megfogalmazza a hozzájárulás szövegének új, 3. változatát, közérthetően, és mellétesz egy rövid listát arról, miben tér el a 2. változattól. Az MI-szerep (RU-AI-1) csak fogalmazványt készíthet és összehasonlíthatja a két változatot; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7d4a3935-1e24-5a33-9d96-0d572bb78b19",
+      "code": "WI-20-3",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Jóváhagyjuk és közzétesszük a szöveget",
+      "description": "A polgármester névvel jóváhagyja az új változatot, és csak ezután lép érvénybe.",
+      "prompt": "A Polgármester / testületi elnök elolvassa a 3. változatot, jóváhagyja és névvel aláírja, és csak ezután kerül ki új, számozott változatként a hozzájárulások közé; a régi változatok megmaradnak. Addig senkitől nem kérünk hozzájárulást az új szöveggel. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 3,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b32b878c-b2ba-5df6-8f0a-d982dd24189d",
+      "code": "WI-20-4",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Hozzájárulást kérünk, és rögzítjük, melyik változatra",
+      "description": "A kapcsolattartó elmondja, mire szól a hozzájárulás, és a nyilvántartásba kerül, ki melyik változatot fogadta el és mikor.",
+      "prompt": "A Közösségi kapcsolattartó a piacon, a kapunál vagy papíron elmondja, mire szól a hozzájárulás, és csak azután kéri, hogy Szabó Mária és a többiek igent mondjanak. A nyilvántartásban rögzítjük, ki melyik változatot fogadta el és mikor. Hozzájárulás nélkül az azonosítható válaszhoz senki nem nyúl. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 4,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "6422787c-74e8-5cbf-a2d2-91459f541073",
+      "code": "WI-20-5",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "A visszavonást még aznap végrehajtjuk",
+      "description": "Ha valaki visszavonja a hozzájárulását, az adatvédelmi felelős ugyanazon a napon elrejti a válaszait és az üzeneteit.",
+      "prompt": "Ha valaki, például Horváth Amani, bármely csatornán visszavonja a hozzájárulását, az Adatvédelmi és iratkezelési felelős ugyanazon a napon rögzíti, és elrejtjük az illető válaszait és üzeneteit: a jelentés többé nem számolja őket, a beszélgetésben nem látszanak. Semmit nem törlünk: visszaállítható, és jogi kérésre előállítható. Ezt a lépést ember végzi, MI-szerep nem dönt a visszavonásról.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "175e47cd-3c6f-5ce3-a5c2-118c6144f447",
+      "code": "WI-20-6",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Megszámoljuk, mit rejtettünk el",
+      "description": "Az elemző megszámolja, hány választ és üzenetet rejtettünk el, és ellenőrzi, hogy a jelentés már nélkülük számol.",
+      "prompt": "Az Adat- és elemzési referens megszámolja, hány választ és hány üzenetet rejtett el a visszavonás, településrészenként (például 4 üzenet és 2 válasz Malomsoron), és ellenőrzi, hogy a jelentés összesítései már nélkülük szólnak. Számot közöl, személyt soha. Az MI-szerep (RU-AI-1) csak számolhat és összegezhet; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "17ff7258-b24a-59cc-a5c0-204ef5d5889c",
+      "code": "WI-20-7",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Még aznap visszaigazoljuk a visszavonást",
+      "description": "A kommunikációs referens megírja annak, aki visszavonta, hogy megtörtént, és hogy visszaállítható.",
+      "prompt": "A Kommunikációs referens még aznap megírja a visszaigazolást annak, aki visszavonta: megtörtént, mit rejtettünk el, hogy nem töröltük, és hogy kérésére visszaállítható. A kimenő levelet nem küldi el, amíg az Adatvédelmi és iratkezelési felelős jóvá nem hagyta. Az MI-szerep (RU-AI-1) csak fogalmazványt készíthet és utánajárhat, megérkezett-e; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 7,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4f7ba054-0139-511f-8b71-44e0c112f299",
+      "code": "WI-28-1",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Megválasztjuk, kit hogyan érünk el",
+      "description": "A közösségi kapcsolattartó háztartásonként feljegyzi, ki kér papírlapot, kit hívunk telefonon, és kivel beszélünk személyesen.",
+      "prompt": "A Közösségi kapcsolattartó a Határréti kapuknál és a Malomsori piacon beszélgetve feljegyzi, kinek nincs okostelefonja vagy kinek nem kényelmes a képernyő, és mindegyikükkel megbeszéli, hogyan válaszolna: papírlapon, telefonhívásban vagy személyesen. Városrészenként (Óváros, Kertváros, Malomsor, Határrét) összesíti, hány háztartásnak melyik út kell. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 1,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Megválasztjuk, kit hogyan érünk el",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "50df73be-3c9c-5d11-b214-1a2a7b4b1dbd",
+      "code": "WI-28-2",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Ugyanazokkal a kérdésekkel elkészítjük a lapot és a telefonos forgatókönyvet",
+      "description": "A kommunikációs referens megfogalmazza a nyomtatott lapot, a telefonos forgatókönyvet és a rövid SMS-emlékeztetőt.",
+      "prompt": "Fogalmazzuk meg a kör kérdéseit egyszerű mondatokkal, ugyanabban a sorrendben a nyomtatott lapra, a telefonos forgatókönyvre és a rövid SMS-emlékeztetőre, hogy a papíron, a telefonon és a képernyőn válaszoló ugyanazt kapja. Az MI-szerep (RU-AI-1) csak fogalmazhatja a lapot, a forgatókönyvet és az emlékeztetőt; a nyilvánosság elé vagy a rekordok közé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ugyanazokkal a kérdésekkel elkészítjük a lapot és a telefonos forgatókönyvet",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "60509a86-572b-51b2-baec-235c00c6acdc",
+      "code": "WI-28-3",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Kiosztjuk és begyűjtjük a lapokat, felhívjuk, akit kell",
+      "description": "A közösségi kapcsolattartó kiosztja a lapokat, telefonon és személyesen is felvesz válaszokat, és jelzi, kit nem ért el.",
+      "prompt": "A Közösségi kapcsolattartó a Malomsori piaci pultnál, a kertvárosi egyesületekben és a Határréti kapuknál kiosztja a papírlapokat, a kért embereket felhívja a forgatókönyv szerint (a telefonos és a hangcsatorna már működik), a személyes beszélgetésekről ugyanazon a lapon vezet jegyzetet, és városrészenként feljegyzi, kit nem ért el. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 3,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Kiosztjuk és begyűjtjük a lapokat, felhívjuk, akit kell",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "86bf62d7-a2fe-5dbc-9418-1fb32151d384",
+      "code": "WI-28-4",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Az ügyintéző rögzíti a visszaérkezett lapokat a kör saját űrlapján",
+      "description": "A papíron, telefonon vagy személyesen érkezett válaszokat az ügyintéző gépeli be a kör űrlapjára, „kinek a nevében” mezővel és papírjelzéssel.",
+      "prompt": "A visszaérkezett papírlapokat (például negyvenet a Malomsori gyűlésről) a jegyző kijelölt ügyintézője a kör saját űrlapján rögzíti: minden válasznál kitölti, kinek a nevében rögzíti, és megjelöli, hogy papíron, telefonon vagy személyesen érkezett. Új képernyőt nem használ, a válaszok ugyanoda kerülnek, ahová a képernyőn adottak. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 4,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Az ügyintéző rögzíti a visszaérkezett lapokat a kör saját űrlapján",
+      "questions": [
+        {
+          "prompt": "Kinek a nevében rögzítettük a választ?",
+          "answer_type": "free_text",
+          "required": true
+        },
+        {
+          "prompt": "Papíron, telefonon vagy személyesen érkezett?",
+          "answer_type": "yes_no",
+          "required": true
+        },
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "a81b1b6d-5824-566f-92a4-52fc21613e1e",
+      "code": "WI-28-5",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Ellenőrizzük a hozzájárulást minden lapon",
+      "description": "Az adatvédelmi és iratkezelési felelős ellenőrzi, hogy minden lapon szerepel a hozzájárulás, és a visszavont hozzájárulásúakat elrejti.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős végigmegy a rögzített lapokon: mindegyiken látszik-e a hozzájárulás, és aki visszavonta, annak válaszát elrejti, nem törli. Ahol hiányzik a hozzájárulás, a lapot nem számoljuk, amíg pótolják. Ezt a lépést ember végzi, mesterséges intelligencia nem tölti be.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Ellenőrizzük a hozzájárulást minden lapon",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "84bca3d0-c96f-5a01-bc50-e253f5adab1d",
+      "code": "WI-28-6",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Személyenként egyszer megszámoljuk, és közzétesszük a lefedettséget",
+      "description": "Az adat- és elemzési referens összeveti a papíros, telefonos és személyes válaszokat a képernyőn adottakkal, személyenként egyszer számolja őket, és megmondja, mely városrész hiányzik.",
+      "prompt": "Számoljuk meg a papíron, telefonon, személyesen és a képernyőn érkezett válaszokat együtt, személyenként egyszer, városrészenként bontva, és vessük össze a háztartások számával, hogy lássuk, mely városrész maradt ki. Az MI-szerep (RU-AI-1) csak számolhat és összevethet, névsort nem közölhet; a nyilvánosság elé vagy a rekordok közé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false,
+      "kind": "fill_form",
+      "form_name": "Személyenként egyszer megszámoljuk, és közzétesszük a lefedettséget",
+      "questions": [
+        {
+          "prompt": "Elvégeztük a lépést?",
+          "answer_type": "yes_no",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "f38f959a-1414-5994-9e21-cffecfd72d0c",
+      "code": "WI-29-1",
+      "workflow_id": "02b461cf-413e-5d17-8060-54810b76f7da",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Megszámoljuk, hányat hívtunk meg, városrészenként",
+      "description": "A nevező a nyilvántartásból jön: hány személynek küldtük ki a kört.",
+      "prompt": "Számoljuk meg a nyilvántartásból városrészenként (Óváros, Kertváros, Malomsor, Határrét), hány személyt hívtunk meg a körbe; ez a nevező, e nélkül a lefedettség nem mondható ki. Például a Kertvárosban 1 240, a Malomsoron 860 meghívott van. Ahol a nyilvántartás vékony, ott ezt is írjuk le. Az MI-szerep csak számolhat és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "260a1d02-4714-52ae-9168-7a3896d7cca6",
+      "code": "WI-29-2",
+      "workflow_id": "02b461cf-413e-5d17-8060-54810b76f7da",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Személyenként egyszer számoljuk a válaszokat",
+      "description": "Ugyanattól az ellenőrzött elérhetőségtől ugyanabban a körben csak egy válasz számít.",
+      "prompt": "Vessük össze a beérkezett válaszokat az ellenőrzött telefonszámokkal és elérhetőségekkel. Ha ugyanattól az elérhetőségtől ugyanabban a körben második válasz érkezik, utasítsuk vissza vagy jelöljük meg, ne számoljuk kétszer. Írjuk fel, mit hagytunk ki és miért: ismétlődés, hiányos válasz, más körhöz tartozó válasz. Például Malomsoron 412 érkezett válaszból 391 számít, 21 ismétlődés. Az MI-szerep csak számolhat és összegezhet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "93486ee1-cae9-5369-b09c-b072bff9d717",
+      "code": "WI-29-3",
+      "workflow_id": "02b461cf-413e-5d17-8060-54810b76f7da",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Ellenőrizzük, hogy a szám senkit nem tesz azonosíthatóvá",
+      "description": "A legkisebb megengedett létszám alatti csoportot összevonjuk vagy elhagyjuk.",
+      "prompt": "Az adatvédelmi felelős végignézi a közzétenni szánt számokat: a legkisebb megengedett létszám alatti csoportot, például egy utca három válaszát, vonjuk össze a szomszédos csoporttal vagy hagyjuk el, és mondjuk ki, hogy ezt tettük. Számot teszünk közzé, soha személyt. Ezt a lépést csak ember végezheti; ha a kör többet kérdezne a szükségesnél, a szerep leállíthatja.",
+      "ordinality": 3,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "25173ec6-ee5c-55a9-988e-11acbdb37bb5",
+      "code": "WI-29-4",
+      "workflow_id": "02b461cf-413e-5d17-8060-54810b76f7da",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Megírjuk a lefedettségi közleményt",
+      "description": "A nevező, a válaszolók, a nem válaszolók és a kihagyott válaszok egy helyen.",
+      "prompt": "Írjuk meg a lefedettségi közleményt: a nevezőt, hányan válaszoltak városrészenként, kik nem válaszoltak (számban, névvel soha), és mit hagytunk ki az előző lépésekben. Ahol egy városrész lefedettsége vékony, mondjuk ki, ne szépítsük: ne a leghangosabbak hangja számítson az egész városrészére. Az MI-szerep csak fogalmazványt készíthet és számolhat; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "466ff870-fb1b-580d-b317-ba8fb4e2712a",
+      "code": "WI-29-5",
+      "workflow_id": "02b461cf-413e-5d17-8060-54810b76f7da",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Vállaljuk a közleményt a nevünkkel",
+      "description": "A polgármester vagy a testületi elnök jóváhagyja, mielőtt a lefedettség kikerül.",
+      "prompt": "A polgármester vagy a testületi elnök összeveti a közleményt a számokkal és az adatvédelmi ellenőrzés eredményével, javít, ha kell, és a nevével vállalja. Ezt a lépést csak ember végezheti, mert a nyilvánosság elé kerülő anyagért ember felel; jóváhagyás nélkül a lefedettség nem kerül ki.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "dc3e4224-1417-5501-912b-a0367c265166",
+      "code": "WI-29-6",
+      "workflow_id": "02b461cf-413e-5d17-8060-54810b76f7da",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Közzétesszük a lefedettséget a nevezővel együtt",
+      "description": "Honlapon és a városrészi hirdetőtáblákon, papíron is.",
+      "prompt": "A jóváhagyás után tegyük közzé a lefedettséget az Önkormányzat honlapján és a Zöldhalom városrészi hirdetőtábláin, papíron is a kapu és a piaci pult mellett, a nevezővel együtt, és küldjük el azoknak a csoportoknak, amelyeket a kör elért. A közlés ütemezését és a szöveg végső alakját ember adja le. Az MI-szerep csak fogalmazványt készíthet és emlékeztethet; a szabályt (RU-AI-1) betartva a nyilvánosság elé kerülő anyagot mindig ember hagyja jóvá.",
+      "ordinality": 6,
+      "created_at": "2026-11-08T08:00:00Z",
+      "last_updated": "2026-11-08T08:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "f96bdd4c-4587-5f69-89af-777c56329569",
+      "code": "WI-31-1",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Összeget rendelünk a városrész szavazásához",
+      "description": "A Pénzügyi referens kijelöli a költségvetési sort, és megállapítja, mekkora összegről dönthetnek a lakók.",
+      "prompt": "A Pénzügyi referens a 2026. évi költségvetésből kijelöli azt a sort, amelyről a lakók szavazhatnak, például a Malomsori városrész 6 000 000 Ft-ját, és rögzíti, mennyi marad belőle a testület kötelező kiadásaira. Az összeget és a sort a könyvelésben veszi fel, hogy a szavazás után ugyanabból lehessen fizetni. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 1,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b0eae43d-52af-51ea-b7f6-2307cbe8c925",
+      "code": "WI-31-2",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "f615dda6-3f1d-4ff6-862b-a60b0281ccca",
+      "title": "Összegyűjtjük a lakók javaslatait",
+      "description": "Az Egyeztetésvezető felhívást indít, és városrészenként összegyűjti, mire költenének a lakók.",
+      "prompt": "Az Egyeztetésvezető felhívást indít Óváros, Kertváros, Malomsor és Határrét lakóinak: mire költenék a városrész összegét. A javaslatokat úgy fogadjuk, hogy papíron is be lehessen adni a kapunál és a piaci pultnál. A beérkezett javaslatokat összesíteni, városrészenként megszámolni és egységes lapra fogalmazni lehet. Az MI-szerep (RU-AI-1) csak fogalmaz, összegez, utánajár vagy számol; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 2,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "7b457e6d-7be5-504d-82da-abd3585148e9",
+      "code": "WI-31-3",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "Átnézzük, mennyibe kerülnek és megvalósíthatók-e",
+      "description": "A Jegyző minden javaslatnál megállapítja a költséget és azt, hogy a testület megtehető-e.",
+      "prompt": "A Jegyző minden javaslatnál ellenőrzi, hogy az önkormányzat feladata-e, mennyibe kerül forintban (például 1 850 000 Ft a Malomsori játszótér felújítása), és belefér-e a kijelölt összegbe. Amelyiket nem veszi fel a szavazólapra, annak indokát leírja és közli a javaslattevővel. A szavazólapra csak az kerülhet, amit a Jegyző megnézett. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 3,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "4cd410f7-e882-5d9e-9bbb-4d9bfe1f5282",
+      "code": "WI-31-4",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "15f617ab-2b43-4d02-b4be-0b65ef5cb264",
+      "title": "Meghívjuk a lakókat a szavazásra mindenhol",
+      "description": "A Kommunikációs referens eljuttatja a szavazólapot minden városrészbe, papíron is.",
+      "prompt": "A Kommunikációs referens a jóváhagyott szavazólapot eljuttatja minden városrész lakóihoz: a honlapra, a hirdetőtáblákra és papíron a kapuhoz és a piaci pulthoz, és emlékeztet a szavazás határidejére. Az MI-szerep (RU-AI-1) csak fogalmazza a meghívót és az emlékeztetőt, és számolja, melyik városrészből hányan szavaztak már; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 4,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "936889d6-6280-5628-a61c-0e4512575690",
+      "code": "WI-31-5",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Személyenként egyszer számolunk és sorba állítjuk a javaslatokat",
+      "description": "Az Adat- és elemzési referens megszámolja a szavazatokat, és közli a részvételt városrészenként.",
+      "prompt": "Az Adat- és elemzési referens személyenként egyetlen szavazatot számol (a második szavazatot ugyanattól a személytől megjelöli, nem számolja bele), a javaslatokat a kapott szavazatok szerint sorba állítja, és városrészenként közli, hányan szavaztak a jogosultak közül, például 412 szavazat Malomsorban. Az MI-szerep (RU-AI-1) csak számol és összegez; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "c9f5e639-4473-54a9-81a9-fd7908fa5ed4",
+      "code": "WI-31-6",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
+      "title": "Döntünk a sorrendről, és közzétesszük a nyerteseket",
+      "description": "A Polgármester a sorrend alapján dönt arról, mit fedez az összeg, és közzéteszi.",
+      "prompt": "A Polgármester a lakók sorrendjét átnézve dönt arról, melyik javaslatokat fedezi a kijelölt összeg, és a saját nevével közzéteszi a nyerteseket és az összeget. Ha eltér a lakók sorrendjétől, leírja az indokot a közzétett jelentésben. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 6,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "d0f719e1-0940-5fd0-b17e-0e59854825ff",
+      "code": "WI-31-7",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "role_id": "0c52b853-24bc-4bc5-b3ba-4c244a0171b7",
+      "title": "Elszámolunk a városrész költésével",
+      "description": "A Pénzügyi referens a nyertes javaslatokat felveszi a könyvelésbe, és közli, mennyit költöttünk városrészenként.",
+      "prompt": "A Pénzügyi referens a nyertes javaslatokat a könyvelésben a városrész költségvetési sorára veszi fel, és jelenti, mennyit költöttünk a megszavazott tételekre városrészenként, és mennyi maradt az összegből. Utalványozni csak a jóváhagyott összeghatárig lehet. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 7,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
     }
   ],
   "workflow_objectives": [
@@ -7217,6 +7734,71 @@
       "id": "b079e71f-5137-5f5b-83e5-ea32cb503d6c",
       "workflow_id": "5d086206-9879-5388-a2bb-e21221fdbce6",
       "objective_id": "1ec7cfb5-bedb-4aa1-8ba8-750246c5baf5"
+    },
+    {
+      "id": "d63a84c8-2f1c-5b4d-a8e8-8e519d94514d",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "objective_id": "3d7a5d84-fcae-4016-a298-2ba76e33fb42"
+    },
+    {
+      "id": "7657050b-a209-530b-82c1-81e4211a1293",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "objective_id": "b55af650-b34f-4932-bfa0-c4ee89fe8cc8"
+    },
+    {
+      "id": "d5d331df-54f0-576f-a178-c1a1d307b421",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "objective_id": "b55af650-b34f-4932-bfa0-c4ee89fe8cc8"
+    },
+    {
+      "id": "d3bf0386-7bc7-5fb6-b72f-7bb4195d574a",
+      "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
+      "objective_id": "3d7a5d84-fcae-4016-a298-2ba76e33fb42"
+    },
+    {
+      "id": "e5a5119b-276d-5b3e-b6ba-2539273bd95d",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "objective_id": "45fbd76a-54fd-438a-8729-4e7bb09769a5"
+    },
+    {
+      "id": "52f634e8-58b8-5327-b53b-7e006ff05432",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "objective_id": "a884d46f-3fed-4b21-9eef-a30916c10f2d"
+    },
+    {
+      "id": "d66dc8e5-a6e1-5ec5-b16f-840ac7d37c46",
+      "workflow_id": "01ba3504-e4d0-5a86-9eff-0547fa1a6aaa",
+      "objective_id": "91522658-9669-4ef0-b6c9-721ccf1e3bbd"
+    },
+    {
+      "id": "db0a2bae-fc44-526c-9395-823cbee24767",
+      "workflow_id": "02b461cf-413e-5d17-8060-54810b76f7da",
+      "objective_id": "f75d2eac-f436-4d77-858a-4807c59abdd1"
+    },
+    {
+      "id": "44eebc77-2ba9-54b8-8b3c-4c4843864167",
+      "workflow_id": "02b461cf-413e-5d17-8060-54810b76f7da",
+      "objective_id": "8b21b0cf-2a3d-49cd-93af-cb46fe888e31"
+    },
+    {
+      "id": "c7b09cbb-e676-5be0-9b9f-8ca627a6611f",
+      "workflow_id": "02b461cf-413e-5d17-8060-54810b76f7da",
+      "objective_id": "8c5da11d-2fa4-40a9-a0a9-9e178b07c8b0"
+    },
+    {
+      "id": "807d41af-043a-5be1-8ee4-338a15178d98",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "objective_id": "f75d2eac-f436-4d77-858a-4807c59abdd1"
+    },
+    {
+      "id": "2ee44cd9-54c7-565d-b466-af583693be7b",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "objective_id": "b7df40cb-c79e-429f-9842-9e6e5ff2bf69"
+    },
+    {
+      "id": "ba62ee6a-3f88-5a94-8820-6e04510495b6",
+      "workflow_id": "27a0f0ee-7be5-5d49-bde6-e074b4d15cef",
+      "objective_id": "c3c61c36-001c-59ac-b982-585548693471"
     }
   ],
   "work_plans": [],
