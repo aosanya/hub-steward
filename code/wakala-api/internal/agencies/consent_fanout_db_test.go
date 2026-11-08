@@ -111,6 +111,7 @@ func TestAWithdrawalTravelsFromCustodyToEngageFormsAndCommInPostgres(t *testing.
 	for _, who := range []string{"mem-1", "mem-2"} {
 		mustExec(t, db, es, "rsvp", "insert into %s (id, post_id, participant_id, answer, answered_at) values (?, 'p-1', ?, 'going', '2026-01-01T00:00:00Z')", "rsvp-"+who, who)
 		mustExec(t, db, fs, "answer", "insert into %s (id, form_id, question_id, member_id, value_text, answered_at) values (?, 'f-1', 'q-1', ?, 'yes', '2026-01-01T00:00:00Z')", "ans-"+who, who)
+		mustExec(t, db, fs, "submission", "insert into %s (id, form_id, member_id, submitted_at) values (?, 'f-1', ?, '2026-01-01T00:00:00Z')", "sub-"+who, who)
 		mustExec(t, db, fs, "respondent", "insert into %s (id, public_key, first_seen_at, claimed_by_member_id, claimed_at) values (?, ?, '2026-01-01T00:00:00Z', ?, '2026-01-02T00:00:00Z')", "resp-"+who, "key-"+who, who)
 		if _, err := rm.PostChatMessage(ctx, models.ChatMessage{StructureID: "s-1", ThreadID: "t-1", AuthorID: who, Body: "hello from " + who}); err != nil {
 			t.Fatalf("PostChatMessage %s: %v", who, err)
@@ -142,6 +143,24 @@ func TestAWithdrawalTravelsFromCustodyToEngageFormsAndCommInPostgres(t *testing.
 	}
 	if n := rowCount(t, db, fs, "answer", "member_id = 'mem-1' and withdrawn_at <> ''"); n != 1 {
 		t.Errorf("forms: withdrawn answers kept = %d, want 1 (kept, not erased)", n)
+	}
+	submissions, err := fm.ListSubmissions(ctx, "f-1", "", "")
+	if err != nil {
+		t.Fatalf("ListSubmissions: %v", err)
+	}
+	answerCounts := map[string]int{}
+	for _, sub := range submissions {
+		answerCounts[sub.MemberID] = sub.Answers
+	}
+	if answerCounts["mem-1"] != 0 || answerCounts["mem-2"] != 1 {
+		t.Errorf("forms: report answer counts = %v, want mem-1 0 and mem-2 1", answerCounts)
+	}
+	activity, err := rm.Activity(ctx, models.ChatActivityQuery{StructureID: "s-1"})
+	if err != nil {
+		t.Fatalf("Activity: %v", err)
+	}
+	if activity.Messages != 1 {
+		t.Errorf("comm: activity counts %d messages, want 1 (the withdrawn one left the count)", activity.Messages)
 	}
 	shown, err := rm.ListChatMessages(ctx, "s-1", "t-1")
 	if err != nil {

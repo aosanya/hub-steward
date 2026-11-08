@@ -5,6 +5,7 @@ All notable changes to this project are listed here, grouped by area. The format
 ## [Unreleased] - 2026-11-04
 
 ### API (`code/wakala-api`)
+- A withdrawn member's answers leave the answer count on each submission and their chat messages leave the chat activity counts (messages and last post), while the rows stay stored and come back when `withdrawn_at` is cleared; tests cover it in forms, comm and the Postgres fan-out (2026-11-08).
 - Consent gates check-in, notice and chat read markers and declarations too, and a withdrawal marks the member's survey answers and chat and direct messages withdrawn and stops listing them without deleting them (`WithWithdrawalPolicy`, default `keep_hidden`); a Postgres test covers the fan-out from custody to engage, forms and comm (2026-11-07).
 - The insights minimum count is a declared setting (`minimum_count`, readable with `MinimumCount`), and a published poll count leaves out folded choices instead of listing them as suppressed (2026-11-07).
 - Counts below the minimum are folded into one `other` cell in poll counts and `GET /insights/counts`, and that cell is withheld while it is still below the minimum; the insight count action has the `insight.count` permission (2026-11-07).
