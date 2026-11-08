@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { Button } from "../../ui/Button";
@@ -32,14 +32,9 @@ export function StockPage({
   const [typed, setTyped] = useState<Record<string, string>>({});
   const [state, setState] = useState<"idle" | "saving" | "saved" | "failed">("idle");
 
-  useEffect(() => {
-    if (sheet.state !== "ready" || !sheet.data) return;
-    const start: Record<string, string> = {};
-    for (const p of sheet.data.products) start[p] = String(sheet.data.counts[p] ?? 0);
-    setTyped(start);
-  }, [sheet.state]);
+  const shown = (p: string) => typed[p] ?? String(sheet.state === "ready" && sheet.data ? (sheet.data.counts[p] ?? 0) : 0);
 
-  const valid = (p: string) => /^\d+$/.test((typed[p] ?? "").trim());
+  const valid = (p: string) => /^\d+$/.test(shown(p).trim());
 
   const save = async () => {
     if (sheet.state !== "ready" || !sheet.data) return;
@@ -50,7 +45,7 @@ export function StockPage({
     }
     setState("saving");
     try {
-      for (const p of data.products) await stock.setStock(data.supplierId, { product: p, count: Number(typed[p].trim()) });
+      for (const p of data.products) await stock.setStock(data.supplierId, { product: p, count: Number(shown(p).trim()) });
       setState("saved");
     } catch {
       setState("failed");
@@ -77,7 +72,7 @@ export function StockPage({
               key={p}
               label={`${p} (bags)`}
               inputMode="numeric"
-              value={typed[p] ?? ""}
+              value={shown(p)}
               error={valid(p) ? undefined : "Use a whole number"}
               onChange={(e) => {
                 setTyped({ ...typed, [p]: e.target.value });
