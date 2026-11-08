@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 
+	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaratings "wakalaserver/modules/ratings"
 )
 
 type catalogRecordWriter struct {
@@ -39,6 +41,14 @@ func (r *registry) recordWritersIn(id string) mwanachamaforms.RecordWriters {
 		case moduleCatalog:
 			return catalogRecordWriter{catalog: func(ctx context.Context) (mwanachamacatalog.CatalogManager, error) {
 				return r.CatalogManager(ctx, id, MountFormRecords)
+			}}, true
+		case moduleAccounting:
+			return ledgerEntryWriter{ledger: func(ctx context.Context) (mwanachamaaccounting.LedgerRepository, error) {
+				return r.LedgerRepository(ctx, id)
+			}}, true
+		case moduleRatings:
+			return ratingWriter{ratings: func(ctx context.Context) (mwanachamaratings.RatingsManager, error) {
+				return r.ratingsManagerFor(ctx, id)
 			}}, true
 		}
 		return nil, false

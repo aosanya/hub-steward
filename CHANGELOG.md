@@ -5,6 +5,7 @@ All notable changes to this project are listed here, grouped by area. The format
 ## [Unreleased] - 2026-11-04
 
 ### API (`code/wakala-api`)
+- A form can land its answers in the ledger (`accounting.entry`, one posting per key, a resend posts nothing twice) and in ratings (`ratings.rating`, given as the member who answered), as well as in the catalog (MUN71, 2026-11-08).
 - A form declares `lands_in` (a `<module>.<record>` target, a key and a question-to-field map): opening is refused while a question has no field or the module has no writer, each send is written through a per-module record writer (catalog first, on the `forms` mount, a resend updating the same record), and a test run writes nothing (MUN7, 2026-11-08).
 - A form can declare `one_voice` (`refuse` or `flag`): a second send from the same member in the same round, as the same group or another, answers 409 `ErrSecondVoice` with the first answer standing, or is stored beside it as a repeat that no listing or count includes; and a re-answer after a withdrawal is stored beside the hidden answer instead of overwriting or deleting it (MUN9, 2026-11-08).
 - A withdrawal now hides a member's event answers and unpicked offers of help instead of deleting them (`withdrawn_at` on both, left out of the going list and of picking), and each of engage, comm and forms can restore one person's hidden rows and list them; `HiddenRowsOf` and `RestoreWithdrawn` on the agency registry gather the three for a legal request, and the Postgres fan-out test covers hide, list and restore (MUN8, 2026-11-08).

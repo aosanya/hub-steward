@@ -84,7 +84,7 @@ func TestARegistryFormLandsItsAnswersInTheCatalogInPostgres(t *testing.T) {
 		t.Fatalf("doc = %q (%v), want ward South", records[0].Doc, err)
 	}
 
-	other, _ := compose("accounting.invoice")
+	other, _ := compose("taskmanager.task")
 	if _, _, err := fm.Publish(ctx, other.ID, "", "author-1", ""); !errors.Is(err, mwanachamaforms.ErrNoRecordWriter) {
 		t.Fatalf("Publish for a module with no writer = %v, want ErrNoRecordWriter", err)
 	}

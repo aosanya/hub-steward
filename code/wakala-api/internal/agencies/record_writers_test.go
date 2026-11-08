@@ -90,12 +90,14 @@ func TestCatalogWriterRefusesARecordNotNamedForAModule(t *testing.T) {
 	}
 }
 
-func TestOnlyTheCatalogHasAWriterForNow(t *testing.T) {
+func TestOnlyTheCatalogTheLedgerAndRatingsHaveAWriter(t *testing.T) {
 	writers := (&registry{}).recordWritersIn("landing")
-	if _, found := writers("catalog"); !found {
-		t.Fatal("catalog has no writer")
+	for _, module := range []string{"catalog", "accounting", "ratings"} {
+		if _, found := writers(module); !found {
+			t.Fatalf("module %q has no writer", module)
+		}
 	}
-	for _, module := range []string{"accounting", "ratings", ""} {
+	for _, module := range []string{"taskmanager", "voting", ""} {
 		if _, found := writers(module); found {
 			t.Fatalf("module %q has a writer", module)
 		}
