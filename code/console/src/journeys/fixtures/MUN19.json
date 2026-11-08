@@ -1,0 +1,93 @@
+{
+  "workflows": [
+    {
+      "id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "code": "W-19",
+      "name": "Lakos saját rekordjának regisztrálása vagy javítása",
+      "description": "Hogyan regisztrálhatja vagy javíthatja a lakos a saját rekordját: az űrlap csak akkor nyílik meg, ha minden kérdéséhez van mező a nyilvántartásban, a válasz abba a modulba kerül, amelyik az adatot őrzi, a forrás a lakos, az elérhetőség és a hozzájárulás együtt marad, és a személyazonosító adatok javítását ember hagyja jóvá. Az MI-szerepek csak fogalmazhatnak, összegezhetnek, utánajárhatnak és számolhatnak; a nyilvánosság elé kerülő dolgot mindig ember hagyja jóvá.",
+      "ordinality": 19,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "work_items": [
+    {
+      "id": "16dbc12e-2808-5d87-bdc8-25ac9f493804",
+      "code": "WI-19-1",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "Megnézzük, hogy az űrlap minden kérdésének van mezője a nyilvántartásban",
+      "description": "Az űrlap addig nem nyílik meg, amíg valamelyik kérdése mező nélkül marad.",
+      "prompt": "Az Adat- és elemzési referens megnyitás előtt végignézi a regisztrációs és javító űrlap kérdéseit (például a név, a cím, a helyrajzi szám, a telefonszám és a háztartás tagjainak száma), és mindegyikhez megnevezi a nyilvántartás mezőjét. Ha akár egy kérdésnek sincs mezője, az űrlap nem nyílik meg, és a hiányt név szerint visszajelzi, így a lakos nem találkozik vele. Az MI-szerep (RU-AI-1) csak megszámolhatja a mező nélküli kérdéseket és fogalmazhat a hiányról; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 1,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "b2651ad9-e700-57e1-acdc-92d6da910223",
+      "code": "WI-19-2",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "role_id": "471deb4a-862e-4d91-ade6-138446d04f54",
+      "title": "Meghívjuk a lakost, hogy ellenőrzött elérhetőséggel töltse ki",
+      "description": "A lakos a saját telefonjáról, a megerősített telefonszámával vagy e-mail-címével adja meg és javítja a saját adatait.",
+      "prompt": "A Közösségi kapcsolattartó a piacon, a kapunál és az ügyfélfogadáson megmutatja a lakosoknak, hogyan regisztrálhatnak vagy javíthatják a saját adataikat, például Szabó Réka a Malomsori városrészből, és elküldi neki a megerősítő üzenetet a telefonszámára. Aki nem tud telefonon kitölteni, annak segít, és közben végig ő marad a válasz forrása. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 2,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "feb65e1d-2ca3-5a81-a1e6-ab470a2e9706",
+      "code": "WI-19-3",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "role_id": "96114fa7-3f83-43d6-9054-5a6470e36986",
+      "title": "A válasz bekerül a nyilvántartásba, forrása a lakos",
+      "description": "A beérkezett válasz új nyilvántartási rekordot hoz létre vagy a meglévőt frissíti, és a forrás mezőben a lakos szerepel.",
+      "prompt": "Az Adat- és elemzési referens a beérkezett választ a kérdés mezőjébe teszi a nyilvántartásban: ha a lakos már szerepel benne, a meglévő rekordot frissíti, ha nem, újat hoz létre, például egy új háztartást a Kertvárosban. A rekord forrása mindig a lakos maga, az időpontjával együtt. Megszámolja, hány rekord jött létre és hány frissült településrészenként. Az MI-szerep (RU-AI-1) csak rögzítheti a választ, megszámolhatja a létrejött és frissült rekordokat, és összegezhet; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 3,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "fac0e8ea-04d5-5345-ab2f-d546d4d03f54",
+      "code": "WI-19-4",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "role_id": "6f6c5c6e-8102-4091-afc0-035023f0b9a8",
+      "title": "Együtt őrizzük az elérhetőséget és a hozzájárulást, és megmutatjuk, mit tárolunk",
+      "description": "A lakos látja a saját rekordját, és a hozzájárulása ugyanott van, ahol az elérhetősége.",
+      "prompt": "Az Adatvédelmi és iratkezelési felelős ellenőrzi, hogy a lakos elérhetősége és a hozzájárulása egy helyen, egymás mellett van rögzítve, és hogy a lakos bármikor megnézheti, mit tárol róla a nyilvántartás. Ha a lakos visszavonja a hozzájárulását, a válasza megmarad, de a számokban és a listákban nem jelenik meg. Ezt a lépést ember végzi, MI-szerep nincs benne.",
+      "ordinality": 4,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    },
+    {
+      "id": "055118f1-7bd8-55bf-bc65-4b924ce96153",
+      "code": "WI-19-5",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "role_id": "8d30b9a4-c761-4bfc-9496-b719e04d3a5e",
+      "title": "A személyazonosító adatok javítását ember hagyja jóvá",
+      "description": "A név, a cím és a helyrajzi szám javítása csak jóváhagyás után kerül át a meglévő rekordba.",
+      "prompt": "A Jegyző átnézi azokat a javításokat, amelyek a meglévő rekord nevét, címét vagy helyrajzi számát megváltoztatják, és jóváhagyja vagy visszautasítja őket, mielőtt a nyilvántartásban átíródnak; a lakos visszaigazolást kap, például hogy a 2026. november 8-i javítása érvénybe lépett. Addig a régi adat marad, és a javítás vázlatként látszik. Az MI-szerep (RU-AI-1) csak összefoglalhatja, miben tér el az új adat a régitől, és emlékeztetőt fogalmazhat a lakosnak; a nyilvánosság elé kerülő anyagot ember hagyja jóvá.",
+      "ordinality": 5,
+      "created_at": "2026-11-08T09:00:00Z",
+      "last_updated": "2026-11-08T09:00:00Z",
+      "deleted": false
+    }
+  ],
+  "workflow_objectives": [
+    {
+      "id": "d63a84c8-2f1c-5b4d-a8e8-8e519d94514d",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "objective_id": "3d7a5d84-fcae-4016-a298-2ba76e33fb42"
+    },
+    {
+      "id": "7657050b-a209-530b-82c1-81e4211a1293",
+      "workflow_id": "4bc9219a-523f-5ad2-bef9-486eaf2782bd",
+      "objective_id": "b55af650-b34f-4932-bfa0-c4ee89fe8cc8"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "workflow": "W-19",
+  "title": "a resident registers or corrects their own record",
+  "sources": [
+    "MUN19"
+  ],
+  "aiClause": "MI-szerep \\(RU-AI-1\\)",
+  "humanApproval": "ember hagyja jóvá",
+  "ruleRef": "RU-AI-1",
+  "steps": [
+    {
+      "code": "WI-19-1",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-19-2",
+      "role": "R-5",
+      "ai": false
+    },
+    {
+      "code": "WI-19-3",
+      "role": "R-6",
+      "ai": true
+    },
+    {
+      "code": "WI-19-4",
+      "role": "R-7",
+      "ai": false
+    },
+    {
+      "code": "WI-19-5",
+      "role": "R-8",
+      "ai": true
+    }
+  ],
+  "checks": {
+    "roleText": [
+      {
+        "role": "R-5",
+        "match": [
+          "Soha nem tölti be mesterséges intelligencia"
+        ]
+      },
+      {
+        "role": "R-7",
+        "match": [
+          "Soha nem tölti be mesterséges intelligencia"
+        ]
+      }
+    ],
+    "stepText": [
+      {
+        "step": "WI-19-1",
+        "match": [
+          "mezője",
+          "nem nyílik meg"
+        ]
+      },
+      {
+        "step": "WI-19-3",
+        "match": [
+          "forrása mindig a lakos"
+        ]
+      },
+      {
+        "step": "WI-19-4",
+        "match": [
+          "hozzájárulás"
+        ]
+      },
+      {
+        "step": "WI-19-5",
+        "match": [
+          "jóváhagyja vagy visszautasítja"
+        ]
+      }
+    ],
+    "order": [
+      [
+        "WI-19-1",
+        "WI-19-3"
+      ],
+      [
+        "WI-19-3",
+        "WI-19-5"
+      ]
+    ],
+    "objectives": [
+      "O-1",
+      "O-3"
+    ],
+    "ruleAttachedToAllObjectives": true,
+    "itemCount": 5,
+    "workflowText": "minden kérdéséhez van mező",
+    "firstActor": "Adat- és elemzési referens"
+  }
+}
