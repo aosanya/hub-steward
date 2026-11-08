@@ -29,6 +29,7 @@ All notable changes to this project are listed here, grouped by area. The format
 - `municipality.json` grows to 41 workflows and 231 work items with W-22 (assign an address to a ward) and W-39 (a sensitive or anonymous report) (2026-11-07).
 - `municipality.json` grows to 31 workflows and 172 work items (W-46 to W-50, W-53 to W-55, W-57) and mounts the risk module with a department-head and a council read role (2026-11-07).
 - The Siaya lab's four documents are also in Hungarian (2026-11-07).
+- The municipality agency is not offered in the console's template picker: a person sees only the agency their own user set belongs to. Its copy under `code/console/public/templates/` is removed and `demo/municipality.json` is its only file (2026-11-08).
 - `municipality.json`, an invented Hungarian town council with 12 roles and 5 workflows, and its copy in the console's templates (2026-11-07).
 - `municipality.json` grows to 22 workflows and 124 work items, with the rule that an AI role only drafts, summarises, chases or counts (2026-11-07).
 

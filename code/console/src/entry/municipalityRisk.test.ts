@@ -7,7 +7,6 @@ type Rec = Record<string, any>;
 const read = (path: string) => JSON.parse(readFileSync(resolve(__dirname, path), "utf8")) as Record<string, Rec[]>;
 
 const demo = read("../../../../demo/municipality.json");
-const copy = read("../../public/templates/municipality.json");
 
 const catalog = JSON.parse(readFileSync(resolve(__dirname, "../../../wakala-api/modules/agency/models/modules_catalog.json"), "utf8")) as Rec[];
 const permissions = JSON.parse(readFileSync(resolve(__dirname, "../../../wakala-api/modules/agency/models/permissions_catalog.json"), "utf8")) as Rec[];
@@ -25,10 +24,6 @@ describe("the municipality agency switches on the risk module", () => {
     expect(mounts).toHaveLength(1);
     expect(mounts[0]).toMatchObject({ enabled: true, locked: false, deleted: false });
     expect(catalog.find((module) => module.code === "riskmanager")).toMatchObject({ mountable: true, locked: false });
-  });
-
-  it("keeps the console's template copy identical to the demo file", () => {
-    expect(copy).toEqual(demo);
   });
 
   it("gives the department head the risk.read permission and a rule that limits them to their own service", () => {
