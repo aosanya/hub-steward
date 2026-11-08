@@ -33,7 +33,8 @@
         { "name": "post_id", "type": "string", "description": "The event answered. The address decides, not the body.", "required": true },
         { "name": "participant_id", "type": "string", "description": "Who answered, supplied by the mount. Never read from the request.", "required": true },
         { "name": "answer", "type": "enum", "description": "The answer given.", "values": ["going", "not_going"], "required": true },
-        { "name": "answered_at", "type": "timestamp", "description": "When the answer was last given." }
+        { "name": "answered_at", "type": "timestamp", "description": "When the answer was last given." },
+        { "name": "withdrawn_at", "type": "string", "description": "When the person withdrew their consent. Empty means they have not. The answer is kept and no longer counted or listed." }
       ],
       "indexes": [
         { "name": "once", "description": "One answer per person per event.", "fields": ["post_id", "participant_id"], "unique": true }
@@ -61,7 +62,8 @@
         { "name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true },
         { "name": "post_id", "type": "string", "description": "The volunteer call offered to.", "required": true },
         { "name": "participant_id", "type": "string", "description": "Who offered, supplied by the mount. Never read from the request.", "required": true },
-        { "name": "offered_at", "type": "timestamp", "description": "When the offer was made." }
+        { "name": "offered_at", "type": "timestamp", "description": "When the offer was made." },
+        { "name": "withdrawn_at", "type": "string", "description": "When the person withdrew their consent. Empty means they have not. The offer is kept and no longer listed or open to picking." }
       ],
       "indexes": [
         { "name": "once", "description": "One offer per person per call.", "fields": ["post_id", "participant_id"], "unique": true }

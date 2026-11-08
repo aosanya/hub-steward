@@ -42,7 +42,7 @@ func (m *postManager) AnswerRSVP(ctx context.Context, in RSVP) (RSVP, error) {
 	if err := m.st.Take(q, objectRSVP, &existing, ErrPostNotFound); err == nil {
 		in.ID = existing.ID
 		upd := m.st.Query(ctx, objectRSVP).Where("id = ?", existing.ID)
-		if err := upd.Updates(map[string]any{"answer": in.Answer, "answered_at": in.AnsweredAt}).Error; err != nil {
+		if err := upd.Updates(map[string]any{"answer": in.Answer, "answered_at": in.AnsweredAt, "withdrawn_at": ""}).Error; err != nil {
 			return RSVP{}, fmt.Errorf("AnswerRSVP: %w", err)
 		}
 		return in, nil

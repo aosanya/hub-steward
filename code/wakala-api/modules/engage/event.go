@@ -80,7 +80,7 @@ func (m *postManager) settle(ctx context.Context, p Post, cols map[string]any) (
 	if err := upd.Updates(cols).Error; err != nil {
 		return Changed{}, fmt.Errorf("settle: %w", err)
 	}
-	q := m.st.Query(ctx, objectRSVP).Where("post_id = ? AND answer = ?", p.ID, models.AnswerGoing)
+	q := m.st.Query(ctx, objectRSVP).Where("post_id = ? AND answer = ? AND withdrawn_at = ''", p.ID, models.AnswerGoing)
 	going, err := specstore.List[RSVP](m.st, q, objectRSVP)
 	if err != nil {
 		return Changed{}, fmt.Errorf("settle: %w", err)

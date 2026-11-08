@@ -23,6 +23,7 @@ type RSVP struct {
 	ParticipantID string `json:"participant_id"`
 	Answer        string `json:"answer"`
 	AnsweredAt    string `json:"answered_at"`
+	WithdrawnAt   string `json:"withdrawn_at,omitempty"`
 }
 
 type Attendance struct {
@@ -39,6 +40,7 @@ type Offer struct {
 	PostID        string `json:"post_id"`
 	ParticipantID string `json:"participant_id"`
 	OfferedAt     string `json:"offered_at"`
+	WithdrawnAt   string `json:"withdrawn_at,omitempty"`
 }
 
 type Pick struct {

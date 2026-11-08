@@ -33,21 +33,21 @@ func (r *registry) subscribeWithdrawals(n mwanachamacustody.WithdrawalNotifier, 
 	}
 	n.Subscribe(func(ctx context.Context, w mwanachamacustody.Withdrawal) error {
 		return errors.Join(
-			r.releaseIn(ctx, id, "engage", func() error {
+			r.whenMounted(ctx, id, "engage", func() error {
 				pm, err := r.PostManager(ctx, id)
 				if err != nil {
 					return err
 				}
 				return pm.ReleaseParticipant(ctx, w.ActorID)
 			}),
-			r.releaseIn(ctx, id, "forms", func() error {
+			r.whenMounted(ctx, id, "forms", func() error {
 				fm, err := r.FormManager(ctx, id)
 				if err != nil {
 					return err
 				}
 				return errors.Join(fm.ReleaseMember(ctx, w.ActorID), r.hideAnswers(ctx, fm, w.ActorID))
 			}),
-			r.releaseIn(ctx, id, "comm", func() error {
+			r.whenMounted(ctx, id, "comm", func() error {
 				rm, err := r.CommManager(ctx, id)
 				if err != nil {
 					return err
@@ -58,12 +58,19 @@ func (r *registry) subscribeWithdrawals(n mwanachamacustody.WithdrawalNotifier, 
 	})
 }
 
-func (r *registry) releaseIn(ctx context.Context, id, module string, release func() error) error {
-	mounted, err := r.moduleMounted(ctx, id, module)
+func (r *registry) whenMounted(ctx context.Context, id, module string, release func() error) error {
+	mounted, err := r.isMounted(ctx, id, module)
 	if err != nil || !mounted {
 		return err
 	}
 	return release()
+}
+
+func (r *registry) isMounted(ctx context.Context, id, module string) (bool, error) {
+	if r.moduleMounted == nil {
+		return true, nil
+	}
+	return r.moduleMounted(ctx, id, module)
 }
 
 func (r *registry) hideAnswers(ctx context.Context, fm mwanachamaforms.FormManager, actorID string) error {

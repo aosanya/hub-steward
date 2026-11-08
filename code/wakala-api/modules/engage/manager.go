@@ -42,6 +42,8 @@ type PostManager interface {
 	UseGroups(g Groups)
 	UseConsentGate(g consent.Gate)
 	ReleaseParticipant(ctx context.Context, participantID string) error
+	RestoreParticipant(ctx context.Context, participantID string) error
+	ListHidden(ctx context.Context, participantID string) (Hidden, error)
 }
 
 type postManager struct {

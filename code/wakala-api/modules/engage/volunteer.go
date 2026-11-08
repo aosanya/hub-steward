@@ -44,6 +44,13 @@ func (m *postManager) OfferHelp(ctx context.Context, postID, participantID strin
 	var existing Offer
 	q := m.st.Query(ctx, objectOffer).Where("post_id = ? AND participant_id = ?", postID, participantID)
 	if err := m.st.Take(q, objectOffer, &existing, ErrPostNotFound); err == nil {
+		if existing.WithdrawnAt != "" {
+			shown := map[string]any{"withdrawn_at": ""}
+			if err := m.st.Query(ctx, objectOffer).Where("id = ?", existing.ID).Updates(shown).Error; err != nil {
+				return Offer{}, fmt.Errorf("OfferHelp: %w", err)
+			}
+			existing.WithdrawnAt = ""
+		}
 		return existing, nil
 	}
 	o := Offer{ID: newID(), PostID: postID, ParticipantID: participantID, OfferedAt: m.now()}
@@ -59,7 +66,7 @@ func (m *postManager) PickOffer(ctx context.Context, in Pick) (Picked, error) {
 		return Picked{}, err
 	}
 	var offer Offer
-	q := m.st.Query(ctx, objectOffer).Where("id = ? AND post_id = ?", in.OfferID, p.ID)
+	q := m.st.Query(ctx, objectOffer).Where("id = ? AND post_id = ? AND withdrawn_at = ''", in.OfferID, p.ID)
 	if err := m.st.Take(q, objectOffer, &offer, ErrOfferNotFound); err != nil {
 		return Picked{}, err
 	}
@@ -147,7 +154,7 @@ func (m *postManager) WithdrawOffer(ctx context.Context, postID, participantID s
 		return Offer{}, ErrNotAnOpenCall
 	}
 	var offer Offer
-	q := m.st.Query(ctx, objectOffer).Where("post_id = ? AND participant_id = ?", postID, participantID)
+	q := m.st.Query(ctx, objectOffer).Where("post_id = ? AND participant_id = ? AND withdrawn_at = ''", postID, participantID)
 	if err := m.st.Take(q, objectOffer, &offer, ErrOfferNotFound); err != nil {
 		return Offer{}, err
 	}

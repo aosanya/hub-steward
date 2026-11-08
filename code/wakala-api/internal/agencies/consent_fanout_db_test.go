@@ -122,8 +122,11 @@ func TestAWithdrawalTravelsFromCustodyToEngageFormsAndCommInPostgres(t *testing.
 		t.Fatalf("WithdrawConsent: %v", err)
 	}
 
-	if n := rowCount(t, db, es, "rsvp", "participant_id = 'mem-1'"); n != 0 {
-		t.Errorf("engage: withdrawn member keeps %d answers, want 0", n)
+	if n := rowCount(t, db, es, "rsvp", "participant_id = 'mem-1' and withdrawn_at <> ''"); n != 1 {
+		t.Errorf("engage: withdrawn member has %d hidden answers, want 1 (kept, not erased)", n)
+	}
+	if n := rowCount(t, db, es, "rsvp", "participant_id = 'mem-2' and withdrawn_at <> ''"); n != 0 {
+		t.Errorf("engage: other member has %d hidden answers, want 0", n)
 	}
 	if n := rowCount(t, db, es, "rsvp", "participant_id = 'mem-2'"); n != 1 {
 		t.Errorf("engage: other member has %d answers, want 1", n)
@@ -175,6 +178,46 @@ func TestAWithdrawalTravelsFromCustodyToEngageFormsAndCommInPostgres(t *testing.
 	_, err = rm.PostChatMessage(ctx, models.ChatMessage{StructureID: "s-1", ThreadID: "t-1", AuthorID: "mem-1", Body: "again"})
 	if !errors.Is(err, mwanachamacomm.ErrConsentWithdrawn) {
 		t.Errorf("comm: post after withdrawal = %v, want ErrConsentWithdrawn", err)
+	}
+
+	reader, ok := reg.(WithdrawalReader)
+	if !ok {
+		t.Fatal("registry does not read hidden rows")
+	}
+	hidden, err := reader.HiddenRowsOf(ctx, inst.ID, "mem-1")
+	if err != nil {
+		t.Fatalf("HiddenRowsOf: %v", err)
+	}
+	if hidden.Engage == nil || len(hidden.Engage.RSVPs) != 1 || hidden.Engage.RSVPs[0].Answer != "going" {
+		t.Errorf("hidden engage = %+v, want mem-1's going answer", hidden.Engage)
+	}
+	if len(hidden.Forms) != 1 || hidden.Forms[0].MemberID != "mem-1" || hidden.Forms[0].ValueText != "yes" {
+		t.Errorf("hidden forms = %+v, want mem-1's answer with its text", hidden.Forms)
+	}
+	if hidden.Comm == nil || len(hidden.Comm.Chat) != 1 || hidden.Comm.Chat[0].Body != "hello from mem-1" {
+		t.Errorf("hidden comm = %+v, want mem-1's message with its text", hidden.Comm)
+	}
+	other, err := reader.HiddenRowsOf(ctx, inst.ID, "mem-2")
+	if err != nil || len(other.Forms) != 0 || len(other.Engage.RSVPs) != 0 || len(other.Comm.Chat) != 0 {
+		t.Errorf("hidden rows of a member who did not withdraw = %+v (%v), want none", other, err)
+	}
+
+	if err := reader.RestoreWithdrawn(ctx, inst.ID, "mem-1"); err != nil {
+		t.Fatalf("RestoreWithdrawn: %v", err)
+	}
+	if n := rowCount(t, db, es, "rsvp", "withdrawn_at <> ''"); n != 0 {
+		t.Errorf("engage: %d answers still hidden after restore, want 0", n)
+	}
+	listed, err = fm.ListAllAnswers(ctx, "f-1", "", "")
+	if err != nil || len(listed) != 2 {
+		t.Errorf("forms: listed answers after restore = %+v (%v), want both members'", listed, err)
+	}
+	shown, err = rm.ListChatMessages(ctx, "s-1", "t-1")
+	if err != nil || len(shown) != 2 {
+		t.Errorf("comm: listed messages after restore = %+v (%v), want both members'", shown, err)
+	}
+	if after, err := reader.HiddenRowsOf(ctx, inst.ID, "mem-1"); err != nil || len(after.Forms) != 0 || len(after.Comm.Chat) != 0 || len(after.Engage.RSVPs) != 0 {
+		t.Errorf("hidden rows after restore = %+v (%v), want none", after, err)
 	}
 }
 
