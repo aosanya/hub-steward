@@ -12,7 +12,7 @@ A one-line status per area. The dated history is in [CHANGELOG.md](../../../CHAN
 
 ## Demo agencies
 
-The product runs any member organization; these nine are templates to try it on. All are synthetic.
+The product runs any member organization; these nine are agencies to try it on; the eight folders are in the console's template picker. All are synthetic.
 
 | Folder | The agency |
 |---|---|
@@ -24,7 +24,7 @@ The product runs any member organization; these nine are templates to try it on.
 | `logistics-freight-company` | A freight logistics company |
 | `mobile-money-operator` | A mobile money operator |
 | `agricultural-drone-crop-spraying-service` | A drone crop-spraying service |
-| `municipality.json` | An invented Hungarian town council, in Hungarian; a single file with a copy in `code/console/public/templates/` |
+| `municipality.json` | An invented Hungarian town council, in Hungarian; a single file, not offered in the console's template picker and with no copy under `code/console/public/templates/`; load it with `POST /instances/import` |
 
 ## Harvest sale
 

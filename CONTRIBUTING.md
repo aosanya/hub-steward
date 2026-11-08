@@ -42,7 +42,7 @@ New here? [First day](documentation/3.%20implementation/guides/first-day.md) tak
 | The API server: routes, agents, approvals, tools | [code/wakala-api/](code/wakala-api/) | [API server](documentation/3.%20implementation/guides/api-server.md) |
 | The console: the manager's and designer's web app | [code/console/](code/console/) | [Console](documentation/3.%20implementation/guides/console.md) |
 | The phone app | [code/app/](code/app/) | [Phone app](documentation/3.%20implementation/guides/phone-app.md) |
-| A demo agency or the Siaya lab's documents | [demo/](demo/), and the matching copy in `code/console/public/templates/` | [Write an agency](documentation/3.%20implementation/guides/write-an-agency.md) |
+| A demo agency or the Siaya lab's documents | [demo/](demo/), and for the eight folders the matching copy in `code/console/public/templates/` | [Write an agency](documentation/3.%20implementation/guides/write-an-agency.md) |
 | The local database | [code/supabase/](code/supabase/) | [Local database](documentation/3.%20implementation/guides/local-database.md) |
 | A translation | `code/console/public/i18n.json`, and `words.ts` and `swahili.ts` in `code/app/src/entry/` | [Languages](documentation/3.%20implementation/guides/languages.md) |
 | What the product is for, a user journey | `documentation/1. requirements/` | [Documentation](documentation/README.md) |
