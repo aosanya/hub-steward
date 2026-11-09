@@ -25,6 +25,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/shared/specstore"
+	"wakalaserver/modules/taskmanager/models"
 )
 
 // RollbackWorkflowRun implements [TaskManager.RollbackWorkflowRun].
@@ -88,6 +89,10 @@ func (m *taskManager) DeleteWorkflowRunArtifacts(ctx context.Context, runID stri
 			ErrRollbackNotInProgress, runID, run.Status)
 	}
 
+	backlogs, err := m.backlogs(ctx)
+	if err != nil {
+		return fmt.Errorf("DeleteWorkflowRunArtifacts: %w", err)
+	}
 	var resetTaskIDs []string
 	txErr := m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		tasks, err := specstore.List[Task](m.store,
@@ -124,11 +129,17 @@ func (m *taskManager) DeleteWorkflowRunArtifacts(ctx context.Context, runID stri
 		// started_task edge's removal — see file doc.
 		now := time.Now().UTC().Format(time.RFC3339)
 		for _, task := range tasks {
+			placedBacklog, placedStep := "", ""
+			if task.Backlog != "" {
+				placedBacklog, placedStep = models.StepAfterStatusChange(backlogs, Task{Backlog: task.Backlog, Step: task.Step, Status: TaskStatusPending})
+			}
 			if err := m.within(tx, roleTask).Where("id = ?", task.ID).Updates(map[string]any{
 				"status":          string(TaskStatusPending),
 				"workflow_run_id": "",
 				"completed_at":    "",
 				"updated_at":      now,
+				"backlog":         placedBacklog,
+				"step":            placedStep,
 			}).Error; err != nil {
 				return fmt.Errorf("reset task %s: %w", task.ID, err)
 			}
