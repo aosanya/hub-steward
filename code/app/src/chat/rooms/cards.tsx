@@ -3,6 +3,7 @@ import { useLoad } from "../../forms/useLoad";
 import { routes } from "../../routes";
 import { bags, termsWords } from "../../supply/groupOrder/api";
 import { Button } from "../../ui/Button";
+import { Card } from "../../ui/Card";
 import { BacklogViewCard } from "../backlogCards/BacklogViewCard";
 import { backlogViewKind } from "../backlogCards/views";
 import { attachmentKinds, type RoomAsk, type RoomMessage, type RoomOrder, type RoomsClient } from "./api";
@@ -74,22 +75,26 @@ function GroupOrderCard({ orderId, client }: { orderId: string; client: RoomsCli
   const order = useLoad(() => client.getOrder(orderId), `${orderId}/${round}`);
   if (order.state !== "ready") return null;
   return (
-    <div className="rm-card">
-      <OrderBody order={order.data} client={client} onAnswered={() => setRound(round + 1)} />
+    <div className="rm-slot">
+      <Card>
+        <OrderBody order={order.data} client={client} onAnswered={() => setRound(round + 1)} />
+      </Card>
     </div>
   );
 }
 
 function RequestCard({ requestId, title }: { requestId: string; title: string }) {
   return (
-    <div className="rm-card">
-      <span className="rm-ttl">{title}</span>
-      <div className="rm-btns">
-        <Button to={noticePath}>Put up a notice</Button>
-        <Button kind="primary" to={askShopsPath(requestId, title)}>
-          Ask shops
-        </Button>
-      </div>
+    <div className="rm-slot">
+      <Card>
+        <span className="rm-ttl">{title}</span>
+        <div className="rm-btns">
+          <Button to={noticePath}>Put up a notice</Button>
+          <Button kind="primary" to={askShopsPath(requestId, title)}>
+            Ask shops
+          </Button>
+        </div>
+      </Card>
     </div>
   );
 }
@@ -98,16 +103,18 @@ function FoundBody({ ask, title }: { ask: RoomAsk; title: string }) {
   const found = [ask.posterName, ask.detail].filter((part) => part !== "").join(" · ");
   const buy = buyNowPath(ask);
   return (
-    <div className="rm-card">
-      <span className="rm-ttl">{title}</span>
-      {found ? <span className="rm-line">{found}</span> : null}
-      {buy ? (
-        <div className="rm-btns">
-          <Button kind="primary" to={buy}>
-            Buy now
-          </Button>
-        </div>
-      ) : null}
+    <div className="rm-slot">
+      <Card>
+        <span className="rm-ttl">{title}</span>
+        {found ? <span className="rm-line">{found}</span> : null}
+        {buy ? (
+          <div className="rm-btns">
+            <Button kind="primary" to={buy}>
+              Buy now
+            </Button>
+          </div>
+        ) : null}
+      </Card>
     </div>
   );
 }

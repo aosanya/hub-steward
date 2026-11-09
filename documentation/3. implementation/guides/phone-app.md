@@ -66,6 +66,8 @@ Everything is under `code/app/src`.
 
 Use `ui/` before writing markup: `Shell` (with `TopBar`, `ScreenHead`, `TabBar` and the account `DrawerFrame`), `LoadState` (`EmptyCard`, `LoadingLine`, `LoadFailed`), `Button`, `Card`, `Chip`, `ListRow` and `Rows`, `Segmented`, `Field`, `ChoiceRow`, `SearchSelect`, `SectionHeading`, `JoinForm` and `ProductRows`. Do not add a second copy.
 
+`Card` is the one card surface. `<Card>` alone is the plain card and `<Card empty>` the centred empty one. `<Card title="...">` adds a header row with the title; add `collapsible` to make the header a button with a chevron (`aria-expanded`, Enter and Space toggle) and `defaultOpen={false}` to start closed. The content sits in a body below the header, so a footer can be added later without changing callers. In a chat thread, put a card in a `rm-slot` wrapper for its width and side, never a second copy of the surface.
+
 ## Look and feel in the code
 
 - The root is `font-size: 112.5%` (`tokens.css`) and the body is `1rem`. Every font size in `app.css` is in `rem`; there are none in pixels.

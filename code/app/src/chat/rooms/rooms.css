@@ -8,6 +8,7 @@
 .rm-who b { font-weight: 600; color: var(--ink); }
 .rm-bubble { padding: .625rem .875rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); overflow-wrap: anywhere; white-space: pre-line; }
 .mine .rm-bubble { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.rm-slot { align-self: flex-start; width: 90%; }
 .rm-card { align-self: flex-start; width: 90%; display: flex; flex-direction: column; gap: .75rem; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 1px 2px var(--line); }
 .rm-ttl { font-weight: 600; }
 .rm-line { font-size: .8125rem; color: var(--ink-soft); }
