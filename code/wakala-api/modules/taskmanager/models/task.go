@@ -161,6 +161,9 @@ type Task struct {
 
 	LinkedRef string `json:"linked_ref,omitempty"`
 
+	Backlog string `json:"backlog,omitempty"`
+	Step    string `json:"step,omitempty"`
+
 	Rank int `json:"rank"`
 
 	Deleted bool `json:"deleted"`
