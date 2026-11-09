@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
 import { mcpBacklogManageClient } from "../backlogManage/api";
@@ -14,17 +14,29 @@ import { ListRow, Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
 import { mcpBacklogAccessClient } from "./api";
-import { groupsWithoutAccess, levelItems, levelWords, rowsOf, withGroup, withLevel, withoutGroup } from "./levels";
+import { groupsOfOwnerHierarchy, groupsWithoutAccess, levelItems, levelWords, rowsOf, withGroup, withLevel, withoutGroup } from "./levels";
 import { refusalWords, type AccessRow, type AgencyGroup, type BacklogAccessClient, type ChoiceLevel } from "./types";
 
-type FormProps = { client: BacklogAccessClient; backlogId: string; first: AccessRow[]; groups: AgencyGroup[] };
+type FormProps = { client: BacklogAccessClient; backlogId: string; first: AccessRow[]; firstOwner: string; groups: AgencyGroup[] };
 
-function Form({ client, backlogId, first, groups }: FormProps) {
+function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
   const [rows, setRows] = useState(first);
+  const [owner, setOwner] = useState(firstOwner);
   const [choosing, setChoosing] = useState(false);
+  const [leaving, setLeaving] = useState<AccessRow | null>(null);
   const [problem, setProblem] = useState("");
   const [busy, setBusy] = useState(false);
-  const others = groupsWithoutAccess(groups, rows);
+  const others = groupsWithoutAccess(groupsOfOwnerHierarchy(groups, owner), rows);
+
+  const refresh = async () => {
+    try {
+      const reading = await client.read(backlogId);
+      setOwner(reading.ownerGroup);
+      setRows(rowsOf(reading, groups));
+    } catch {
+      return;
+    }
+  };
 
   const attempt = async (act: () => Promise<void>, done: () => void) => {
     setBusy(true);
@@ -34,14 +46,20 @@ function Form({ client, backlogId, first, groups }: FormProps) {
       done();
     } catch (error) {
       setProblem(refusalWords(error, "The access could not be changed. Try again."));
+      await refresh();
     }
     setBusy(false);
   };
 
   const choose = (row: AccessRow, level: ChoiceLevel) =>
     level === "none"
-      ? attempt(() => client.remove(backlogId, row.groupId), () => setRows((now) => withoutGroup(now, row.groupId)))
+      ? setLeaving(row)
       : attempt(() => client.set(backlogId, row.groupId, level), () => setRows((now) => withLevel(now, row.groupId, level)));
+
+  const takeAway = (row: AccessRow) => {
+    setLeaving(null);
+    return attempt(() => client.remove(backlogId, row.groupId), () => setRows((now) => withoutGroup(now, row.groupId)));
+  };
 
   const add = (group: AgencyGroup) =>
     attempt(() => client.set(backlogId, group.id, "see"), () => {
@@ -49,16 +67,47 @@ function Form({ client, backlogId, first, groups }: FormProps) {
       setChoosing(false);
     });
 
+  const nameOwner = (group: AgencyGroup) =>
+    attempt(() => client.setOwnerGroup(group.id), () => {
+      setOwner(group.id);
+      setRows((now) => [{ groupId: group.id, name: group.name, level: "move", fixed: true }, ...now.filter((row) => row.groupId !== group.id)]);
+    });
+
   return (
     <>
+      {owner === "" ? (
+        <Card>
+          <p className="sub">Nobody is restricted yet: choose the Product owner group first.</p>
+          <Rows>
+            {groups.map((group) => (
+              <ListRow key={group.id} title={group.name} onClick={() => !busy && nameOwner(group)} />
+            ))}
+          </Rows>
+        </Card>
+      ) : null}
       {rows.map((row) => (
         <Card key={row.groupId}>
           <span className="ttl">{row.name}</span>
-          {row.fixed ? <Chip tone="accent">{levelWords("move")}</Chip> : <Segmented items={levelItems} current={row.level} onChange={(level) => !busy && choose(row, level)} />}
+          {row.fixed ? (
+            <Chip tone="accent">{levelWords("move")}</Chip>
+          ) : (
+            <Segmented items={levelItems} current={row.level} label={`Access for ${row.name}`} disabled={busy} onChange={(level) => choose(row, level)} />
+          )}
         </Card>
       ))}
+      {leaving ? (
+        <Card>
+          <p>Take away {leaving.name}?</p>
+          <Button kind="danger" onClick={() => takeAway(leaving)} disabled={busy}>
+            Take away
+          </Button>
+          <Button onClick={() => setLeaving(null)}>
+            Cancel
+          </Button>
+        </Card>
+      ) : null}
       {problem ? <p className="ferr" role="alert">{problem}</p> : null}
-      {choosing ? (
+      {owner === "" ? null : choosing ? (
         others.length === 0 ? (
           <EmptyCard words="Every group already has access." />
         ) : (
@@ -78,25 +127,49 @@ function Form({ client, backlogId, first, groups }: FormProps) {
   );
 }
 
-type Props = { client?: BacklogAccessClient; manage?: BacklogManageClient };
+type FrameProps = { title: string; backlogId: string; children: ReactNode };
 
-export function BacklogAccessScreen({ client = mcpBacklogAccessClient, manage = mcpBacklogManageClient }: Props) {
+function Frame({ title, backlogId, children }: FrameProps) {
   const navigate = useNavigate();
-  const { backlogId = "" } = useParams();
-  const may = useMayManage(manage);
+  return (
+    <Shell title={title} sub="Backlog" onBack={() => navigate(backlogPagePath(backlogId))}>
+      {children}
+    </Shell>
+  );
+}
+
+type LoadedProps = { client: BacklogAccessClient; manage: BacklogManageClient; backlogId: string; onName: (name: string) => void };
+
+function Loaded({ client, manage, backlogId, onName }: LoadedProps) {
   const loaded = useLoad(
     () => Promise.all([manage.read(backlogId), client.read(backlogId), client.groups()]),
     `backlog-access:${openAgencyId()}:${backlogId}`,
   );
   const name = loaded.state === "ready" ? loaded.data[0].name : "";
+  useEffect(() => onName(name), [name]);
   return (
-    <Shell title={name ? `Access to ${name}` : "Access to a backlog"} sub="Backlog" onBack={() => navigate(backlogPagePath(backlogId))}>
-      {may.state === "loading" || loaded.state === "loading" ? <LoadingLine /> : null}
-      {may.state === "error" || loaded.state === "error" ? <LoadFailed words="The access could not be loaded." /> : null}
-      {may.state === "ready" && !may.data ? <EmptyCard words="Your role cannot change who has access to backlogs." /> : null}
-      {may.state === "ready" && may.data && loaded.state === "ready" ? (
-        <Form client={client} backlogId={backlogId} first={rowsOf(loaded.data[1], loaded.data[2])} groups={loaded.data[2]} />
+    <>
+      {loaded.state === "loading" ? <LoadingLine /> : null}
+      {loaded.state === "error" ? <LoadFailed words="The access could not be loaded." /> : null}
+      {loaded.state === "ready" ? (
+        <Form client={client} backlogId={backlogId} first={rowsOf(loaded.data[1], loaded.data[2])} firstOwner={loaded.data[1].ownerGroup} groups={loaded.data[2]} />
       ) : null}
-    </Shell>
+    </>
+  );
+}
+
+type Props = { client?: BacklogAccessClient; manage?: BacklogManageClient };
+
+export function BacklogAccessScreen({ client = mcpBacklogAccessClient, manage = mcpBacklogManageClient }: Props) {
+  const { backlogId = "" } = useParams();
+  const [name, setName] = useState("");
+  const may = useMayManage(manage);
+  return (
+    <Frame title={name ? `Access to ${name}` : "Access to a backlog"} backlogId={backlogId}>
+      {may.state === "loading" ? <LoadingLine /> : null}
+      {may.state === "error" ? <LoadFailed words="The access could not be loaded." /> : null}
+      {may.state === "ready" && !may.data ? <EmptyCard words="Your role cannot change who has access to backlogs." /> : null}
+      {may.state === "ready" && may.data ? <Loaded client={client} manage={manage} backlogId={backlogId} onName={setName} /> : null}
+    </Frame>
   );
 }

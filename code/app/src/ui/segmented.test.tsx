@@ -36,4 +36,17 @@ describe("Segmented", () => {
     await userEvent.click(screen.getByRole("button", { name: "Waiting · 2" }));
     expect(onChange).not.toHaveBeenCalled();
   });
+
+  it("names the group when a label is given", () => {
+    render(<Segmented items={items} current="waiting" onChange={() => undefined} label="Access for Core team" />);
+    expect(screen.getByRole("group", { name: "Access for Core team" })).toBeInTheDocument();
+  });
+
+  it("disables every button and calls nothing while disabled", async () => {
+    const onChange = vi.fn();
+    render(<Segmented items={items} current="waiting" onChange={onChange} disabled />);
+    expect(screen.getByRole("button", { name: "Answered" })).toBeDisabled();
+    await userEvent.click(screen.getByRole("button", { name: "Answered" }));
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });

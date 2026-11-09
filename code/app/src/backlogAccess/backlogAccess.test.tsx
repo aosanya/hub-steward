@@ -22,10 +22,11 @@ const reading: AccessReading = {
 };
 
 const groups = [
-  { id: "po", name: "Product owner" },
-  { id: "core", name: "Core team" },
-  { id: "contrib", name: "Contributors" },
-  { id: "guests", name: "Guests" },
+  { id: "po", name: "Product owner", hierarchyId: "h1" },
+  { id: "core", name: "Core team", hierarchyId: "h1" },
+  { id: "contrib", name: "Contributors", hierarchyId: "h1" },
+  { id: "guests", name: "Guests", hierarchyId: "h1" },
+  { id: "other", name: "Other hierarchy", hierarchyId: "h2" },
 ];
 
 const manageFake = (allowed = true): BacklogManageClient => ({
@@ -41,6 +42,7 @@ const accessFake = (over: Partial<BacklogAccessClient> = {}): BacklogAccessClien
   groups: vi.fn().mockResolvedValue(groups),
   set: vi.fn().mockResolvedValue(undefined),
   remove: vi.fn().mockResolvedValue(undefined),
+  setOwnerGroup: vi.fn().mockResolvedValue(undefined),
   ...over,
 });
 
@@ -80,6 +82,7 @@ describe("access to a backlog", () => {
     const client = accessFake();
     show(client);
     await userEvent.click(within(await cardOf("Contributors")).getByRole("button", { name: "No access" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Take away" }));
     await waitFor(() => expect(client.remove).toHaveBeenCalledWith("software", "contrib"));
     await waitFor(() => expect(screen.queryByText("Contributors")).toBeNull());
     await userEvent.click(screen.getByRole("button", { name: "Add a group" }));
@@ -146,16 +149,107 @@ describe("reading the tool replies", () => {
   });
 
   it("reads a group from id and name", () => {
-    expect(groupOf({ id: "g1", name: "Core team" })).toEqual({ id: "g1", name: "Core team" });
+    expect(groupOf({ id: "g1", name: "Core team", hierarchy_id: "h1" })).toEqual({ id: "g1", name: "Core team", hierarchyId: "h1" });
   });
 });
 
 describe("joining grants to group names", () => {
-  it("puts the owner group first, once, at Can move, and falls back to the id for an unknown group", () => {
+  it("puts the owner group first, once, at Can move, and calls an unknown group a group that no longer exists", () => {
     const rows = rowsOf({ ownerGroup: "po", grants: [{ groupId: "po", level: "see" }, { groupId: "x9", level: "see" }] }, groups);
     expect(rows).toEqual([
       { groupId: "po", name: "Product owner", level: "move", fixed: true },
-      { groupId: "x9", name: "x9", level: "see", fixed: false },
+      { groupId: "x9", name: "A group that no longer exists", level: "see", fixed: false },
     ]);
+  });
+});
+
+describe("fixes from the review", () => {
+  it("does not load the access for a role that may not manage, so only one message shows", async () => {
+    const client = accessFake({ read: vi.fn().mockRejectedValue(new Error("down")) });
+    show(client, manageFake(false));
+    expect(await screen.findByText("Your role cannot change who has access to backlogs.")).toBeInTheDocument();
+    expect(screen.queryByText("The access could not be loaded.")).toBeNull();
+    expect(client.read).not.toHaveBeenCalled();
+  });
+
+  it("names each group's switch after the group", async () => {
+    show(accessFake());
+    expect(await screen.findByRole("group", { name: "Access for Contributors" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Access for Core team" })).toBeInTheDocument();
+  });
+
+  it("disables the switches while a save is in flight", async () => {
+    let finish: () => void = () => undefined;
+    const client = accessFake({ set: vi.fn().mockReturnValue(new Promise<void>((resolve) => (finish = resolve))) });
+    show(client);
+    await userEvent.click(within(await cardOf("Contributors")).getByRole("button", { name: "Can move" }));
+    await waitFor(() => expect(within(screen.getByRole("group", { name: "Access for Core team" })).getByRole("button", { name: "Can see" })).toBeDisabled());
+    finish();
+    await waitFor(() => expect(within(screen.getByRole("group", { name: "Access for Core team" })).getByRole("button", { name: "Can see" })).toBeEnabled());
+  });
+
+  it("calls a group that is no longer in the list a group that no longer exists, never its id", async () => {
+    show(accessFake({ read: vi.fn().mockResolvedValue({ ownerGroup: "po", grants: [{ groupId: "x9", level: "see" }] }) }));
+    expect(await screen.findByText("A group that no longer exists")).toBeInTheDocument();
+    expect(screen.queryByText("x9")).toBeNull();
+  });
+
+  it("offers only groups of the Product owner group's hierarchy under Add a group", async () => {
+    show(accessFake());
+    await userEvent.click(await screen.findByRole("button", { name: "Add a group" }));
+    expect(screen.getByRole("button", { name: "Guests" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Other hierarchy" })).toBeNull();
+  });
+
+  it("asks before taking a group away and keeps it when cancelled", async () => {
+    const client = accessFake();
+    show(client);
+    await userEvent.click(within(await cardOf("Contributors")).getByRole("button", { name: "No access" }));
+    expect(await screen.findByText("Take away Contributors?")).toBeInTheDocument();
+    expect(client.remove).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByText("Take away Contributors?")).toBeNull();
+    expect(client.remove).not.toHaveBeenCalled();
+    expect(await cardOf("Contributors")).toBeInTheDocument();
+  });
+
+  it("reads the access again after a refused save so the list shows what the hub holds", async () => {
+    const read = vi
+      .fn()
+      .mockResolvedValueOnce(reading)
+      .mockResolvedValue({ ownerGroup: "po", grants: [{ groupId: "core", level: "move" }, { groupId: "contrib", level: "move" }] });
+    const client = accessFake({ read, set: vi.fn().mockRejectedValue(new AccessRefused("Someone else changed this.")) });
+    show(client);
+    await userEvent.click(within(await cardOf("Contributors")).getByRole("button", { name: "Can move" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Someone else changed this.");
+    await waitFor(() => expect(within(screen.getByRole("group", { name: "Access for Contributors" })).getByRole("button", { name: "Can move" })).toHaveAttribute("aria-pressed", "true"));
+  });
+});
+
+describe("a hub with no Product owner group", () => {
+  const noOwner = (over: Partial<BacklogAccessClient> = {}) => accessFake({ read: vi.fn().mockResolvedValue({ ownerGroup: "", grants: [] }), ...over });
+
+  it("says nobody is restricted, offers the groups to choose from and hides Add a group", async () => {
+    show(noOwner());
+    expect(await screen.findByText("Nobody is restricted yet: choose the Product owner group first.")).toBeInTheDocument();
+    expect(screen.getByText("Core team")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Add a group" })).toBeNull();
+  });
+
+  it("names the chosen group as the Product owner group and then shows it fixed at Can move", async () => {
+    const client = noOwner();
+    show(client);
+    await userEvent.click(await screen.findByText("Product owner"));
+    await waitFor(() => expect(client.setOwnerGroup).toHaveBeenCalledWith("po"));
+    await waitFor(() => expect(screen.queryByText("Nobody is restricted yet: choose the Product owner group first.")).toBeNull());
+    expect(within(await cardOf("Product owner")).getByText("Can move")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add a group" })).toBeInTheDocument();
+  });
+
+  it("shows the hub's refusal in words when naming the group fails", async () => {
+    show(noOwner({ setOwnerGroup: vi.fn().mockRejectedValue(new AccessRefused("That group does not exist.")) }));
+    await userEvent.click(await screen.findByText("Core team"));
+    expect(await screen.findByRole("alert")).toHaveTextContent("That group does not exist.");
+    expect(screen.getByText("Nobody is restricted yet: choose the Product owner group first.")).toBeInTheDocument();
   });
 });

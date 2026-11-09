@@ -5,6 +5,7 @@ export const accessTools = {
   list: "taskmanager_backlog_access_list",
   give: "taskmanager_backlog_access_give",
   take: "taskmanager_backlog_access_take",
+  ownerGroup: "taskmanager_backlog_set_owner_group",
   groups: "actor_list_groups",
 };
 
@@ -19,7 +20,7 @@ export const readingOf = (raw: any): AccessReading => ({
   grants: (Array.isArray(raw?.groups) ? raw.groups : []).map(grantOf).filter((grant: Grant) => grant.groupId !== ""),
 });
 
-export const groupOf = (raw: any): AgencyGroup => ({ id: text(raw?.id ?? raw?.group_id), name: text(raw?.name) });
+export const groupOf = (raw: any): AgencyGroup => ({ id: text(raw?.id ?? raw?.group_id), name: text(raw?.name), hierarchyId: text(raw?.hierarchy_id) });
 
 const refusalText = (error: unknown) => {
   const message = error instanceof McpError ? error.message : "";
@@ -47,5 +48,8 @@ export const mcpBacklogAccessClient: BacklogAccessClient = {
   },
   async remove(backlogId, groupId) {
     await refused(callTool("", accessTools.take, { backlogID: backlogId, groupID: groupId }));
+  },
+  async setOwnerGroup(groupId) {
+    await refused(callTool("", accessTools.ownerGroup, { group_id: groupId }));
   },
 };

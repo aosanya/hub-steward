@@ -9,7 +9,9 @@ export const levelItems: SegmentedItem<ChoiceLevel>[] = [
 
 export const levelWords = (level: ChoiceLevel) => levelItems.find((item) => item.id === level)?.label ?? "";
 
-const nameOf = (groups: AgencyGroup[], groupId: string) => groups.find((group) => group.id === groupId)?.name ?? groupId;
+export const goneGroupWords = "A group that no longer exists";
+
+const nameOf = (groups: AgencyGroup[], groupId: string) => groups.find((group) => group.id === groupId)?.name ?? goneGroupWords;
 
 export const rowsOf = (reading: AccessReading, groups: AgencyGroup[]): AccessRow[] => {
   const owner: AccessRow[] = reading.ownerGroup === "" ? [] : [{ groupId: reading.ownerGroup, name: nameOf(groups, reading.ownerGroup), level: "move", fixed: true }];
@@ -17,6 +19,11 @@ export const rowsOf = (reading: AccessReading, groups: AgencyGroup[]): AccessRow
     .filter((grant) => grant.groupId !== reading.ownerGroup)
     .map((grant): AccessRow => ({ groupId: grant.groupId, name: nameOf(groups, grant.groupId), level: grant.level, fixed: false }));
   return [...owner, ...others];
+};
+
+export const groupsOfOwnerHierarchy = (groups: AgencyGroup[], ownerGroup: string) => {
+  const hierarchyId = groups.find((group) => group.id === ownerGroup)?.hierarchyId ?? "";
+  return hierarchyId === "" ? groups : groups.filter((group) => group.hierarchyId === hierarchyId);
 };
 
 export const groupsWithoutAccess = (groups: AgencyGroup[], rows: AccessRow[]) => groups.filter((group) => !rows.some((row) => row.groupId === group.id));

@@ -4,7 +4,7 @@ export type ChoiceLevel = AccessLevel | "none";
 
 export type AccessRow = { groupId: string; name: string; level: AccessLevel; fixed: boolean };
 
-export type AgencyGroup = { id: string; name: string };
+export type AgencyGroup = { id: string; name: string; hierarchyId: string };
 
 export type Grant = { groupId: string; level: AccessLevel };
 
@@ -15,6 +15,7 @@ export type BacklogAccessClient = {
   groups: () => Promise<AgencyGroup[]>;
   set: (backlogId: string, groupId: string, level: AccessLevel) => Promise<void>;
   remove: (backlogId: string, groupId: string) => Promise<void>;
+  setOwnerGroup: (groupId: string) => Promise<void>;
 };
 
 export class AccessRefused extends Error {}
