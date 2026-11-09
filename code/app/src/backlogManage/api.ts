@@ -5,14 +5,14 @@ import { savedStep, type DraftStep } from "./stepsDraft";
 import { ManageRefused, type BacklogDetail, type BacklogManageClient } from "./types";
 
 export const backlogTools = {
-  list: "taskmanager_list_backlogs",
-  create: "taskmanager_create_backlog",
-  rename: "taskmanager_rename_backlog",
-  remove: "taskmanager_delete_backlog",
-  addStep: "taskmanager_add_backlog_step",
-  removeStep: "taskmanager_remove_backlog_step",
-  reorder: "taskmanager_reorder_backlog_steps",
-  mayPerform: "permissions_may_perform",
+  list: "taskmanager_backlog_list",
+  create: "taskmanager_backlog_create",
+  rename: "taskmanager_backlog_rename",
+  remove: "taskmanager_backlog_delete",
+  addStep: "taskmanager_backlog_step_add",
+  removeStep: "taskmanager_backlog_step_remove",
+  reorder: "taskmanager_backlog_step_reorder",
+  mayPerform: "permissions_check_read",
 };
 
 export const manageAction = "taskmanager.backlog.manage";

@@ -34,6 +34,19 @@ describe("backlog manage client", () => {
     expect(detailOf(summary([["a", "To do", 2]]))).toEqual({ id: "software", name: "Software", steps: [savedStep("a", "To do", 2)] });
   });
 
+  it("names each tool after its action with the dots turned to underscores", () => {
+    expect(backlogTools).toEqual({
+      list: "taskmanager_backlog_list",
+      create: "taskmanager_backlog_create",
+      rename: "taskmanager_backlog_rename",
+      remove: "taskmanager_backlog_delete",
+      addStep: "taskmanager_backlog_step_add",
+      removeStep: "taskmanager_backlog_step_remove",
+      reorder: "taskmanager_backlog_step_reorder",
+      mayPerform: "permissions_check_read",
+    });
+  });
+
   it("reads the permission answer whether it is bare or wrapped", () => {
     expect(allowedIn(true)).toBe(true);
     expect(allowedIn({ allowed: true })).toBe(true);
@@ -71,7 +84,7 @@ describe("backlog manage client", () => {
 
   it("turns a tool refusal into words without the tool name", async () => {
     answer = async () => {
-      throw new McpError("taskmanager_delete_backlog: backlog holds issues: Software");
+      throw new McpError("taskmanager_backlog_delete: backlog holds issues: Software");
     };
     let words = "";
     let refusedByClient = false;
