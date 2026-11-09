@@ -42,15 +42,12 @@ func agentPermissioned(role string, reg agencies.Registry, permissions rolePermi
 		return authorize
 	}
 	return func(ctx context.Context, action string) error {
-		roleID, err := links.AgencyRoleOf(ctx, partitionOf(ctx), accounts.IDFromContext(ctx))
-		if err != nil {
-			return dispatch.ErrForbidden
-		}
-		if roleID == "" {
+		roleIDs, err := agentRoleIDs(ctx, reg, links)
+		if err != nil || len(roleIDs) == 0 {
 			return dispatch.ErrForbidden
 		}
 		if !slices.Contains(seatedMay, action) && !everySeatedAgentMay(action) {
-			codes, err := permissions(ctx, roleID)
+			codes, err := unionPermissions(ctx, permissions, roleIDs)
 			if err != nil || !permissionsAllow(codes, action) {
 				return dispatch.ErrForbidden
 			}
@@ -60,6 +57,39 @@ func agentPermissioned(role string, reg agencies.Registry, permissions rolePermi
 		}
 		return authorize(ctx, action)
 	}
+}
+
+func agentRoleIDs(ctx context.Context, reg agencies.Registry, links agencies.AgencyRoleLinks) ([]string, error) {
+	instanceID := partitionOf(ctx)
+	caller := accounts.IDFromContext(ctx)
+	seat, err := links.AgencyRoleOf(ctx, instanceID, caller)
+	if err != nil {
+		return nil, err
+	}
+	roleIDs := []string{}
+	if seat != "" {
+		roleIDs = append(roleIDs, seat)
+	}
+	if groupRoles, ok := reg.(agencies.GroupRoles); ok {
+		through, err := groupRoles.RoleIDsThroughGroups(ctx, instanceID, caller)
+		if err != nil {
+			return nil, err
+		}
+		roleIDs = append(roleIDs, through...)
+	}
+	return roleIDs, nil
+}
+
+func unionPermissions(ctx context.Context, permissions rolePermissions, roleIDs []string) ([]string, error) {
+	codes := []string{}
+	for _, id := range roleIDs {
+		granted, err := permissions(ctx, id)
+		if err != nil {
+			return nil, err
+		}
+		codes = append(codes, granted...)
+	}
+	return codes, nil
 }
 
 func (d *Deps) requireAgentMay(ctx context.Context, instanceID, action string) error {
