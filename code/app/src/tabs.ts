@@ -8,23 +8,23 @@ export const chatTab: Tab = { id: "chat", path: "/chat", segment: "chat", label:
 
 export const doSomethingTab: Tab = { id: "do-something", path: "/do-something", segment: doSomethingSegment, label: "Do Something", glyph: "▦" };
 
-export const inboxTab: Tab = { id: "inbox", path: "/inbox", segment: "inbox", label: "Inbox", glyph: "▤" };
-
 export const startTab: Tab = { ...doSomethingTab, id: "start", label: "Start", glyph: "▶" };
 
 export const ongoingTab: Tab = { id: "ongoing", path: "/ongoing", segment: ongoingSegment, label: "Ongoing", glyph: "◔" };
 
 export const backlogsTab: Tab = { id: "backlogs", path: "/backlogs", segment: backlogsSegment, label: "Backlogs", glyph: "☰" };
 
-export const homeBar: Tab[] = [homeTab, chatTab, doSomethingTab, inboxTab];
+export const homeBar: Tab[] = [homeTab, chatTab, doSomethingTab];
 
 export const doSomethingBar: Tab[] = [homeTab, startTab, ongoingTab, backlogsTab];
 
-export const tabs: Tab[] = [homeTab, chatTab, doSomethingTab, inboxTab, ongoingTab];
+export const tabs: Tab[] = [homeTab, chatTab, doSomethingTab, ongoingTab];
 
 export const agencyRoute = "/a/:agencyId";
 
 export const retiredStartedRoute = `${agencyRoute}/started`;
+
+export const retiredInboxRoute = `${agencyRoute}/inbox`;
 
 export const tabPathIn = (tab: Tab, agencyId: string) => (agencyId ? `${agencyBasePath(agencyId)}/${tab.segment}` : tab.path);
 

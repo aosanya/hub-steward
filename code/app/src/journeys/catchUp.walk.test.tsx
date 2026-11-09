@@ -103,7 +103,7 @@ describe("journey 23, step 1: opens the Inbox", () => {
     seedFarmers();
     open("/inbox");
 
-    expect(await screen.findByRole("heading", { name: "Inbox" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
     expect(await screen.findByText("You joined Siaya Farmers' Group")).toBeInTheDocument();
     expect(screen.getByText("New form")).toBeInTheDocument();
     expect(screen.getByText("You are approved as a supplier")).toBeInTheDocument();
@@ -116,7 +116,7 @@ describe("journey 23, step 1: opens the Inbox", () => {
     open("/inbox");
 
     expect(await screen.findByLabelText("2 unread notifications")).toHaveTextContent("2");
-    expect(screen.getByRole("link", { name: /Inbox/ })).toContainElement(screen.getByLabelText("2 unread notifications"));
+    expect(screen.getByRole("link", { name: /Home/ })).toContainElement(screen.getByLabelText("2 unread notifications"));
     expect(callsTo(world, "comm_notification_list")).toHaveLength(1);
   });
 

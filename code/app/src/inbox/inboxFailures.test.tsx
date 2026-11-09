@@ -35,7 +35,7 @@ const show = (client: InboxClient) =>
 describe("the Inbox when a call fails", () => {
   it("draws the failure alone when the invitations cannot be read and nothing else is there", async () => {
     show(fake({ listInvitations: vi.fn().mockRejectedValue(new Error("actor down")) }));
-    await screen.findByText("The Inbox could not be loaded.");
+    await screen.findByText("Home could not be loaded.");
     expect(screen.queryByText("You are all caught up")).toBeNull();
   });
 

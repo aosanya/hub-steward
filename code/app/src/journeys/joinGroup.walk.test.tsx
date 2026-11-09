@@ -269,7 +269,7 @@ describe("journey 22, step 4: is invited from the Inbox", () => {
     await heading("Invitation");
     await press("Decline");
 
-    await heading("Inbox");
+    await heading("Home");
     expect(screen.queryByText(/You are invited to Supplier/)).toBeNull();
     expect(world.called("actor_decline_invitation")).toEqual([{ invitation_id: "i1" }]);
     expect(world.called("actor_accept_invitation")).toHaveLength(0);

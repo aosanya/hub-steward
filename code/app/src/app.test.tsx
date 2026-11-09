@@ -48,8 +48,8 @@ describe("tab bar", () => {
     await userEvent.click(screen.getByRole("link", { name: /Chat/ }));
     expect(screen.getByRole("heading", { name: "Chat" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Chat/ })).toHaveAttribute("aria-current", "page");
-    await userEvent.click(screen.getByRole("link", { name: /Inbox/ }));
-    expect(screen.getByRole("heading", { name: "Inbox" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("link", { name: /Home/ }));
+    expect(screen.getByRole("heading", { name: "Home" })).toBeInTheDocument();
     await userEvent.click(screen.getByRole("link", { name: /Do Something/ }));
     expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
   });
@@ -63,23 +63,23 @@ describe("tab bar", () => {
     expect(screen.getByRole("link", { name: /Start/ })).not.toHaveAttribute("aria-current");
     await userEvent.click(screen.getByRole("link", { name: /Home/ }));
     expect(screen.getByRole("heading", { name: "Home" })).toBeInTheDocument();
-    expect(barLabels()).toEqual(["Home", "Chat", "Do Something", "Inbox"]);
+    expect(barLabels()).toEqual(["Home", "Chat", "Do Something"]);
   });
 
-  it("holds Home, Chat, Do Something and Inbox and keeps no Apps or Started tab", () => {
-    expect(homeBar.map((tab) => tab.label)).toEqual(["Home", "Chat", "Do Something", "Inbox"]);
+  it("holds Home, Chat and Do Something and keeps no Inbox, Apps or Started tab", () => {
+    expect(homeBar.map((tab) => tab.label)).toEqual(["Home", "Chat", "Do Something"]);
     expect(doSomethingBar.map((tab) => tab.label)).toEqual(["Home", "Start", "Ongoing", "Backlogs"]);
   });
 
-  it("draws four labels in the home bar", () => {
+  it("draws three labels in the home bar", () => {
     at("/");
-    expect(barLabels()).toEqual(["Home", "Chat", "Do Something", "Inbox"]);
+    expect(barLabels()).toEqual(["Home", "Chat", "Do Something"]);
   });
 
-  it("draws nothing in the home screen's body", () => {
+  it("draws the inbox as the home screen", () => {
     at("/a/walk-agency/home");
-    expect(within(screen.getByRole("main")).queryAllByRole("button")).toEqual([]);
-    expect(screen.getByRole("main")).toHaveTextContent("");
+    expect(screen.getByRole("heading", { name: "Home" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Inbox" })).not.toBeInTheDocument();
   });
 
   it("sends the agency's old started address to its Ongoing screen", async () => {
@@ -126,14 +126,20 @@ describe("tab bar", () => {
     expect(screen.getByRole("heading", { name: "Your agencies" })).toBeInTheDocument();
   });
 
-  it("still opens a known route rather than the fallback", () => {
+  it("sends the old inbox path to the home screen, which is the inbox", () => {
     at("/inbox");
-    expect(screen.getByRole("heading", { name: "Inbox" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Home" })).toBeInTheDocument();
   });
 
   it("opens straight onto a tab route", () => {
-    at("/inbox");
-    expect(screen.getByRole("link", { name: /Inbox/ })).toHaveAttribute("aria-current", "page");
+    at("/home");
+    expect(screen.getByRole("link", { name: /Home/ })).toHaveAttribute("aria-current", "page");
+  });
+
+  it("sends the old agency inbox path to the agency's home screen", () => {
+    at("/a/walk-agency/inbox");
+    expect(screen.getByRole("heading", { name: "Home" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Home/ })).toHaveAttribute("aria-current", "page");
   });
 });
 

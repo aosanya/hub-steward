@@ -52,7 +52,7 @@ function Bar({ items, badge, current, reserve }: BarProps) {
 function HomeBar({ inbox, start }: { inbox: InboxClient; start: StartClient }) {
   const waiting = useStartWaiting(start) ?? [];
   const unread = unreadLabel(unreadOf(useNotifications(inbox).items).length + waiting.length);
-  return <Bar items={homeBar} badge={{ id: "inbox", label: unread }} />;
+  return <Bar items={homeBar} badge={{ id: "home", label: unread }} />;
 }
 
 const taskModuleKnown = new Map<string, boolean>();

@@ -332,8 +332,8 @@ describe("journey 14, supply inputs", () => {
     walk.approve();
 
     await goTab(/Home/);
-    await goTab(/Inbox/);
-    await heading("Inbox");
+    await goTab(/Home/);
+    await heading("Home");
     expect(await screen.findByText("You are approved as a supplier")).toBeInTheDocument();
     expect(screen.getByText("Grace Adhiambo · Siaya Farmers' Group")).toBeInTheDocument();
     await press("Mark all read");

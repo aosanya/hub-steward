@@ -16,7 +16,6 @@ import { ProductPage } from "./pages/market/ProductPage";
 import { AsksPage } from "./supply/asks/AsksPage";
 import { JoinPage } from "./pages/join/JoinPage";
 import { BacklogsRoutes } from "./backlogs";
-import { AgencyHomePage } from "./pages/AgencyHomePage";
 import { TabPage } from "./pages/TabPage";
 import { ApplyPage } from "./pages/supply/ApplyPage";
 import { OfferFormPage } from "./pages/supply/OfferFormPage";
@@ -51,7 +50,7 @@ import { StepPage } from "./steps/StepPage";
 import { SessionGate } from "./entry/SessionGate";
 import { agencyHomePath } from "./agency/open";
 import { allScreens, routes } from "./routes";
-import { agencyRoute, backlogsTab, ongoingTab, retiredStartedRoute, tabPathIn, tabRoute, tabs, type Tab } from "./tabs";
+import { agencyRoute, backlogsTab, homeTab, ongoingTab, retiredInboxRoute, retiredStartedRoute, tabPathIn, tabRoute, tabs, type Tab } from "./tabs";
 
 
 function ToAgencyOngoing() {
@@ -65,11 +64,10 @@ function ToAgencyHome() {
 }
 
 function tabElement(tab: Tab) {
-  if (tab.id === "home") return <AgencyHomePage />;
+  if (tab.id === "home") return <InboxPage />;
   if (tab.id === "do-something") return <SupplierHome segment="start" />;
   if (tab.id === "ongoing") return <SupplierHome segment="ongoing" />;
   if (tab.id === "chat") return <ChatPage />;
-  if (tab.id === "inbox") return <InboxPage />;
   return <TabPage tab={tab} />;
 }
 
@@ -82,9 +80,11 @@ export function App() {
       ))}
       <Route path={backlogsTab.path} element={<ToOpenAgency tab={backlogsTab} />} />
       <Route path="/started" element={<ToOpenAgency tab={ongoingTab} />} />
+      <Route path="/inbox" element={<ToOpenAgency tab={homeTab} />} />
       <Route path={agencyRoute} element={<InAgency><Outlet /></InAgency>}>
         <Route index element={<ToAgencyHome />} />
         <Route path={retiredStartedRoute} element={<ToAgencyOngoing />} />
+        <Route path={retiredInboxRoute} element={<ToAgencyHome />} />
         {tabs.map((tab) => (
           <Route key={`in-${tab.id}`} path={tabRoute(tab)} element={tabElement(tab)} />
         ))}

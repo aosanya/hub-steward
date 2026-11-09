@@ -75,7 +75,7 @@ describe("a member in two agencies opens one", () => {
     await screen.findByRole("heading", { name: "Home" });
     const hrefs = tabLinks().map((link) => link.getAttribute("href"));
     const base = agencyBasePath(riders.id);
-    expect(hrefs).toEqual([agencyHomePath(riders.id), `${base}/chat`, `${base}/do-something`, `${base}/inbox`]);
+    expect(hrefs).toEqual([agencyHomePath(riders.id), `${base}/chat`, `${base}/do-something`]);
     expect(hrefs[0]).toBe(`${base}/home`);
   });
 
@@ -89,8 +89,8 @@ describe("a member in two agencies opens one", () => {
     await userEvent.click(screen.getByRole("link", { name: /Chat/ }));
     expect(await screen.findByRole("heading", { name: "Chat" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Chat/ })).toHaveAttribute("aria-current", "page");
-    await userEvent.click(screen.getByRole("link", { name: /Inbox/ }));
-    expect(await screen.findByRole("heading", { name: "Inbox" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("link", { name: /Home/ }));
+    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
     await userEvent.click(screen.getByRole("link", { name: /Do Something/ }));
     expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
     tabLinks().forEach((link) => expect(link.getAttribute("href")).toContain(agencyBasePath(farmers.id)));
@@ -108,7 +108,7 @@ describe("a member in two agencies opens one", () => {
     fetcher.mockClear();
     openAgency(riders.id);
     at(`/a/${riders.id}/inbox`, [farmers, riders]);
-    await screen.findAllByRole("heading", { name: "Inbox" });
+    await screen.findAllByRole("heading", { name: "Home" });
     toolCalls(fetcher).forEach((call) => expect(call.instance, call.tool).toBe(riders.id));
   });
 });
@@ -117,7 +117,7 @@ describe("the old tab paths", () => {
   it.each([
     ["/", "/home"],
     ["/chat", "/chat"],
-    ["/inbox", "/inbox"],
+    ["/inbox", "/home"],
   ])("send %s to the open agency's own page", async (path, tail) => {
     stubWakala();
     openAgency(riders.id);

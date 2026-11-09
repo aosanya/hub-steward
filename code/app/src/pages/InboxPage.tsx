@@ -124,8 +124,8 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: {
   const empty = !failed && items !== null && waiting !== null && items.length === 0 && invitations.length === 0 && waiting.length === 0;
 
   return (
-    <Shell title="Inbox" inbox={client} action={anythingUnread ? <Button onClick={markAll}>Mark all read</Button> : undefined}>
-      {failed ? <LoadFailed words="The Inbox could not be loaded." /> : null}
+    <Shell title="Home" inbox={client} action={anythingUnread ? <Button onClick={markAll}>Mark all read</Button> : undefined}>
+      {failed ? <LoadFailed words="Home could not be loaded." /> : null}
       {problem ? <LoadFailed words={problem} /> : null}
       {empty ? (
         <Card empty>

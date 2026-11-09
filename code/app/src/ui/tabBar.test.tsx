@@ -29,14 +29,14 @@ afterEach(() => {
 });
 
 describe("tab bar", () => {
-  it("shows Home, Chat, Do Something and Inbox in that order on the home screen", () => {
+  it("shows Home, Chat and Do Something in that order on the home screen", () => {
     open();
-    expect(labels()).toEqual(["Home", "Chat", "Do Something", "Inbox"]);
+    expect(labels()).toEqual(["Home", "Chat", "Do Something"]);
   });
 
-  it("keeps the home bar on Chat and the Inbox", () => {
+  it("keeps the home bar on Chat", () => {
     open("/a/walk-siaya/chat");
-    expect(labels()).toEqual(["Home", "Chat", "Do Something", "Inbox"]);
+    expect(labels()).toEqual(["Home", "Chat", "Do Something"]);
   });
 
   it("points Home and Do Something at their retired paths when no agency is open", () => {
@@ -48,7 +48,7 @@ describe("tab bar", () => {
   it("has no Apps tab and no Started tab", () => {
     open();
     expect(screen.queryByRole("link", { name: /Apps|Started/ })).not.toBeInTheDocument();
-    expect(screen.getAllByRole("link")).toHaveLength(4);
+    expect(screen.getAllByRole("link")).toHaveLength(3);
   });
 
   it("points every tab at the open agency's own pages", () => {
@@ -58,7 +58,6 @@ describe("tab bar", () => {
       "/a/walk-siaya/home",
       "/a/walk-siaya/chat",
       "/a/walk-siaya/do-something",
-      "/a/walk-siaya/inbox",
     ]);
   });
 
@@ -135,11 +134,11 @@ describe("tab bar", () => {
     expect(doSomethingBackPath()).toBe("/a/walk-siaya/do-something");
   });
 
-  it("keeps the home bar on the chat, the inbox and the home screen", async () => {
+  it("keeps the home bar on the chat and the home screen, and on the old inbox path", async () => {
     openAgency("walk-siaya");
     for (const path of ["/a/walk-siaya/home", "/a/walk-siaya/chat", "/a/walk-siaya/inbox", "/a/walk-siaya/risks"]) {
       const view = open(path);
-      expect(labels()).toEqual(["Home", "Chat", "Do Something", "Inbox"]);
+      expect(labels()).toEqual(["Home", "Chat", "Do Something"]);
       view.unmount();
     }
   });

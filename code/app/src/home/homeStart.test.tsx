@@ -134,7 +134,7 @@ describe("the Create group order row on Start, whatever the module read says", (
   });
 });
 
-describe("Do Something and the Inbox badge read the same waiting steps", () => {
+describe("Do Something and the Home badge read the same waiting steps", () => {
   it("draw the one step on both when the module read says nothing", async () => {
     answering(async () => ({ modules: [] }));
     openAt(`/a/${hub}/do-something`);
@@ -142,7 +142,6 @@ describe("Do Something and the Inbox badge read the same waiting steps", () => {
     await goHome();
     const nav = screen.getByRole("navigation", { name: "Main" });
     expect(await within(nav).findByLabelText("1 unread notifications")).toBeInTheDocument();
-    await userEvent.click(within(nav).getByRole("link", { name: /Inbox/ }));
     expect(await screen.findByText(startStep.title)).toBeInTheDocument();
     expect(within(screen.getByRole("navigation", { name: "Main" })).getByLabelText("1 unread notifications")).toBeInTheDocument();
   });
@@ -157,9 +156,9 @@ describe("Do Something and the Inbox badge read the same waiting steps", () => {
     expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && args?.available === true)).toHaveLength(1);
   });
 
-  it("make one read of the steps on the Inbox, with its badge", async () => {
+  it("make one read of the steps on the home screen, with its badge", async () => {
     const call = answering(async () => ({ modules: [] }));
-    openAt(`/a/${hub}/inbox`);
+    openAt(`/a/${hub}/home`);
     await screen.findByText(startStep.title);
     expect(await screen.findByLabelText("1 unread notifications")).toBeInTheDocument();
     expect(call.mock.calls.filter(([, tool]) => tool === "agency_list_my_open_steps")).toHaveLength(1);
@@ -176,7 +175,7 @@ describe("a workflow step that is not the group order Start", () => {
     expect(where()).toBe(`/a/${hub}/join`);
   });
 
-  it("counts for no unread badge on the Inbox", async () => {
+  it("counts for no unread badge on Home", async () => {
     answering(async () => ({ modules: [] }), { steps: [joinStep] });
     openAt(`/a/${hub}/do-something`);
     await screen.findByRole("button", { name: /^Join a group/ });
