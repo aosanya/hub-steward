@@ -11,7 +11,7 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { LoadFailed } from "../ui/LoadState";
 import { isoDay } from "../ui/days";
-import { ListRow, Rows, SelectableRow } from "../ui/ListRow";
+import { Rows, SelectableRow } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
 import { orderPath } from "../coordinator/payments/OrderCards";
 import { mcpStartClient, type StartClient } from "../coordinator/start/api";
@@ -163,8 +163,9 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: {
         <Rows>
           <StartWaitingRows client={start} />
           {invitations.map((i) => (
-            <ListRow
+            <SelectableRow
               key={`invitation-${i.id}`}
+              selection={null}
               title={`You are invited to ${i.groupName}`}
               start={<span className="dot" role="img" aria-label="Unread" />}
               onClick={() => setOpened({ invitation: i, joined: false })}
