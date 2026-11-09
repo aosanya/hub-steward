@@ -18,6 +18,7 @@ export const grantOf = (raw: any): Grant => ({
   groupId: text(raw?.group_id),
   level: raw?.level === "move" ? "move" : "see",
   roleTooSmall: raw?.role_too_small === true,
+  noRole: raw?.no_role === true,
   roles: (Array.isArray(raw?.roles) ? raw.roles : []).filter((code: unknown) => typeof code === "string" && code !== ""),
 });
 

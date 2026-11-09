@@ -26,7 +26,7 @@ export const rowsOf = (reading: AccessReading, groups: AgencyGroup[]): AccessRow
       : [{ groupId: reading.ownerGroup, name: nameOf(groups, reading.ownerGroup), level: "move", fixed: true, roleName: "", roleTooSmall: false }];
   const others = reading.grants
     .filter((grant) => grant.groupId !== reading.ownerGroup)
-    .map((grant): AccessRow => ({ groupId: grant.groupId, name: nameOf(groups, grant.groupId), level: grant.level, fixed: false, roleName: roleWords(grant.roles), roleTooSmall: grant.roleTooSmall }));
+    .map((grant): AccessRow => ({ groupId: grant.groupId, name: nameOf(groups, grant.groupId), level: grant.level, fixed: false, roleName: grant.noRole ? "" : roleWords(grant.roles), roleTooSmall: grant.roleTooSmall }));
   return [...owner, ...others];
 };
 

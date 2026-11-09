@@ -16,8 +16,8 @@ afterEach(() => forgetOpenAgency());
 const reading: AccessReading = {
   ownerGroup: "po",
   grants: [
-    { groupId: "core", level: "move", roleTooSmall: false, roles: [] },
-    { groupId: "contrib", level: "see", roleTooSmall: false, roles: [] },
+    { groupId: "core", level: "move", roleTooSmall: false, noRole: false, roles: [] },
+    { groupId: "contrib", level: "see", roleTooSmall: false, noRole: false, roles: [] },
   ],
 };
 
@@ -138,8 +138,8 @@ describe("reading the tool replies", () => {
     expect(readingOf({ backlog_id: "software", owner_group: "po", groups: [{ group_id: "core", level: "move" }, { group_id: "contrib", level: "see" }, { level: "see" }] })).toEqual({
       ownerGroup: "po",
       grants: [
-        { groupId: "core", level: "move", roleTooSmall: false, roles: [] },
-        { groupId: "contrib", level: "see", roleTooSmall: false, roles: [] },
+        { groupId: "core", level: "move", roleTooSmall: false, noRole: false, roles: [] },
+        { groupId: "contrib", level: "see", roleTooSmall: false, noRole: false, roles: [] },
       ],
     });
   });
@@ -155,7 +155,7 @@ describe("reading the tool replies", () => {
 
 describe("joining grants to group names", () => {
   it("puts the owner group first, once, at Can move, and calls an unknown group a group that no longer exists", () => {
-    const rows = rowsOf({ ownerGroup: "po", grants: [{ groupId: "po", level: "see", roleTooSmall: false, roles: [] }, { groupId: "x9", level: "see", roleTooSmall: false, roles: [] }] }, groups);
+    const rows = rowsOf({ ownerGroup: "po", grants: [{ groupId: "po", level: "see", roleTooSmall: false, noRole: false, roles: [] }, { groupId: "x9", level: "see", roleTooSmall: false, noRole: false, roles: [] }] }, groups);
     expect(rows).toEqual([
       { groupId: "po", name: "Product owner", level: "move", fixed: true, roleName: "", roleTooSmall: false },
       { groupId: "x9", name: "A group that no longer exists", level: "see", fixed: false, roleName: "", roleTooSmall: false },
@@ -189,7 +189,7 @@ describe("fixes from the review", () => {
   });
 
   it("calls a group that is no longer in the list a group that no longer exists, never its id", async () => {
-    show(accessFake({ read: vi.fn().mockResolvedValue({ ownerGroup: "po", grants: [{ groupId: "x9", level: "see", roleTooSmall: false, roles: [] }] }) }));
+    show(accessFake({ read: vi.fn().mockResolvedValue({ ownerGroup: "po", grants: [{ groupId: "x9", level: "see", roleTooSmall: false, noRole: false, roles: [] }] }) }));
     expect(await screen.findByText("A group that no longer exists")).toBeInTheDocument();
     expect(screen.queryByText("x9")).toBeNull();
   });
@@ -217,7 +217,7 @@ describe("fixes from the review", () => {
     const read = vi
       .fn()
       .mockResolvedValueOnce(reading)
-      .mockResolvedValue({ ownerGroup: "po", grants: [{ groupId: "core", level: "move", roleTooSmall: false, roles: [] }, { groupId: "contrib", level: "move", roleTooSmall: false, roles: [] }] });
+      .mockResolvedValue({ ownerGroup: "po", grants: [{ groupId: "core", level: "move", roleTooSmall: false, noRole: false, roles: [] }, { groupId: "contrib", level: "move", roleTooSmall: false, noRole: false, roles: [] }] });
     const client = accessFake({ read, set: vi.fn().mockRejectedValue(new AccessRefused("Someone else changed this.")) });
     show(client);
     await userEvent.click(within(await cardOf("Contributors")).getByRole("button", { name: "Can move" }));
@@ -255,7 +255,7 @@ describe("a hub with no Product owner group", () => {
 });
 
 describe("the role of each group", () => {
-  const grant = (groupId: string, level: "see" | "move", roles: string[], roleTooSmall = false) => ({ groupId, level, roles, roleTooSmall });
+  const grant = (groupId: string, level: "see" | "move", roles: string[], roleTooSmall = false, noRole = false) => ({ groupId, level, roles, roleTooSmall, noRole });
 
   const readOf = (...grants: ReturnType<typeof grant>[]): AccessReading => ({ ownerGroup: "po", grants });
 
@@ -302,12 +302,17 @@ describe("the role of each group", () => {
     await waitFor(() => expect(screen.queryByText("This group's role is too small to move issues")).toBeNull());
   });
 
+  it("says 'no role yet' for a group whose only role cannot read the Backlogs, whatever the role's code", async () => {
+    show(accessFake({ read: vi.fn().mockResolvedValue(readOf(grant("core", "see", ["R-9"], false, true))) }));
+    expect(within(await cardOf("Core team")).getByText("Uses the Backlogs as: no role yet")).toBeInTheDocument();
+  });
+
   it("reads the roles and the too-small flag of a group from the access list", () => {
-    expect(readingOf({ owner_group: "po", groups: [{ group_id: "g1", level: "move", roles: ["backlog_member", ""], role_too_small: true }, { group_id: "g2", level: "see" }] })).toEqual({
+    expect(readingOf({ owner_group: "po", groups: [{ group_id: "g1", level: "move", roles: ["backlog_member", ""], role_too_small: true }, { group_id: "g2", level: "see", no_role: true }] })).toEqual({
       ownerGroup: "po",
       grants: [
-        { groupId: "g1", level: "move", roleTooSmall: true, roles: ["backlog_member"] },
-        { groupId: "g2", level: "see", roleTooSmall: false, roles: [] },
+        { groupId: "g1", level: "move", roleTooSmall: true, noRole: false, roles: ["backlog_member"] },
+        { groupId: "g2", level: "see", roleTooSmall: false, noRole: true, roles: [] },
       ],
     });
   });

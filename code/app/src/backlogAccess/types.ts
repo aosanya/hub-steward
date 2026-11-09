@@ -6,7 +6,7 @@ export type AccessRow = { groupId: string; name: string; level: AccessLevel; fix
 
 export type AgencyGroup = { id: string; name: string; hierarchyId: string };
 
-export type Grant = { groupId: string; level: AccessLevel; roleTooSmall: boolean; roles: string[] };
+export type Grant = { groupId: string; level: AccessLevel; roleTooSmall: boolean; noRole: boolean; roles: string[] };
 
 export type AccessReading = { ownerGroup: string; grants: Grant[] };
 
