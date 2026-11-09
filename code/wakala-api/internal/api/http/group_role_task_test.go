@@ -232,6 +232,9 @@ func TestGroupRoles_TheOwnerGivesAndTakesAGroupRoleThroughTheRoutes(t *testing.T
 	if rec.Code != http.StatusOK || len(items) != 1 {
 		t.Fatalf("list the group's roles: %d %s", rec.Code, rec.Body.String())
 	}
+	if first, _ := items[0].(map[string]any); first["role_name"] != "Reader" || first["group_id"] != group {
+		t.Fatalf("listed group role = %v, want the group and the role name Reader", items[0])
+	}
 	rec = w.call(t, "DELETE", w.groupRolesPath()+"/"+group+"/"+w.roles["Reader"], nil, w.owner)
 	if rec.Code != http.StatusOK {
 		t.Fatalf("owner takes the role: %d %s", rec.Code, rec.Body.String())

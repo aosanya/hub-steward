@@ -26,8 +26,14 @@ type groupRoleRequest struct {
 	AgencyRoleID string `json:"agency_role_id"`
 }
 
+type groupRoleItem struct {
+	agencies.GroupRole
+	RoleName string `json:"role_name,omitempty"`
+	RoleCode string `json:"role_code,omitempty"`
+}
+
 type groupRoleList struct {
-	Items []agencies.GroupRole `json:"items"`
+	Items []groupRoleItem `json:"items"`
 }
 
 type groupRoleParams struct {
@@ -149,11 +155,20 @@ func (d *Deps) listGroupRoles(ctx context.Context, instanceID, groupID string) (
 	if err != nil {
 		return groupRoleList{}, err
 	}
-	items := make([]agencies.GroupRole, 0, len(all))
+	items := make([]groupRoleItem, 0, len(all))
+	manager, err := d.Registry.AgencyManager(ctx, instanceID)
+	if err != nil {
+		return groupRoleList{}, err
+	}
 	for _, gr := range all {
-		if groupID == "" || gr.GroupID == groupID {
-			items = append(items, gr)
+		if groupID != "" && gr.GroupID != groupID {
+			continue
 		}
+		item := groupRoleItem{GroupRole: gr}
+		if role, err := manager.GetRole(ctx, gr.AgencyRoleID); err == nil {
+			item.RoleName, item.RoleCode = role.Name, role.Code
+		}
+		items = append(items, item)
 	}
 	return groupRoleList{Items: items}, nil
 }
