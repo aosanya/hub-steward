@@ -5,7 +5,6 @@
 .chosen:empty { display: none; }
 .issue-body { font-size: var(--content); overflow-wrap: anywhere; }
 .issue-body code { font-size: .9em; }
-.issue-heading { font-size: 1.25rem; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
 .issue-body > :last-child { margin-bottom: 0; }
 .issue-body p, .issue-body ul, .issue-body ol { margin: 0 0 .5rem; }
 .issue-source { white-space: pre-wrap; overflow-wrap: anywhere; }

@@ -1,17 +1,27 @@
 import type { Issue } from "./api";
 import { IssueTags, IssueTitle, openUnlessTag } from "./IssueTitle";
 
-type Props = { issue: Issue; chosen: string[]; onOpen: () => void; onTag: (tag: string) => void };
+type Props = { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; onOpen?: () => void; chevron?: boolean; facts?: string[] };
 
-export function IssueRow({ issue, chosen, onOpen, onTag }: Props) {
+export function IssueRow({ issue, chosen, onTag, onOpen, chevron, facts }: Props) {
+  const title = <IssueTitle title={issue.title} />;
   return (
-    <div className="row issue-row" onClick={openUnlessTag(onOpen)}>
+    <div className={onOpen ? "row issue-row" : "row issue-row static"} onClick={onOpen ? openUnlessTag(onOpen) : undefined}>
       <span className="txt">
-        <button type="button" className="open">
-          <IssueTitle title={issue.title} />
-        </button>
-        <IssueTags issue={issue} chosen={chosen} onTag={onTag} />
+        {onOpen ? (
+          <button type="button" className="open">
+            {title}
+          </button>
+        ) : (
+          <span className="open">{title}</span>
+        )}
+        <IssueTags issue={issue} chosen={chosen} onTag={onTag} extra={facts} />
       </span>
+      {chevron ? (
+        <span className="end" aria-hidden="true">
+          ›
+        </span>
+      ) : null}
     </div>
   );
 }

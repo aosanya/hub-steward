@@ -29,7 +29,7 @@ export type Issue = {
   priority?: string;
 };
 
-export type IssueDetail = Issue & { waitsOn: { id: string; title: string }[] };
+export type IssueDetail = Issue & { waitsOn: Issue[]; waitedOnBy: Issue[] };
 
 export type Backlog = { id: string; name: string; steps: string[]; issues: number };
 
@@ -132,15 +132,20 @@ export const mcpBacklogsClient: BacklogsClient = {
     return issueList(backlogId, await hubBacklogs());
   },
   async issue(id) {
-    const [raw, edges, hub] = await Promise.all([
+    const [raw, outbound, inbound, hub] = await Promise.all([
       callTool("", taskTools.get, { taskID: id }),
       callTool("", taskTools.edges, { vertex_id: id, label: "depends_on", direction: "outbound" }),
+      callTool("", taskTools.edges, { vertex_id: id, label: "depends_on", direction: "inbound" }).catch(() => []),
       hubBacklogs(),
     ]);
-    const targets: string[] = itemsOf(edges).map((edge) => text(edge?.to_id)).filter((target) => target !== "");
-    const waitsOn = await Promise.all(
-      targets.map(async (target) => ({ id: target, title: issueOf(await callTool("", taskTools.get, { taskID: target })).title })),
-    );
-    return { ...issueOf(raw, hub), waitsOn };
+    const read = (edges: unknown, end: string) =>
+      Promise.all(
+        itemsOf(edges)
+          .map((edge) => text(edge?.[end]))
+          .filter((target) => target !== "")
+          .map(async (target) => issueOf(await callTool("", taskTools.get, { taskID: target }), hub)),
+      );
+    const [waitsOn, waitedOnBy] = await Promise.all([read(outbound, "to_id"), read(inbound, "from_id")]);
+    return { ...issueOf(raw, hub), waitsOn, waitedOnBy };
   },
 };

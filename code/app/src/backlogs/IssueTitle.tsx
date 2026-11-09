@@ -26,17 +26,21 @@ export function IssueTitle({ title }: { title: string }) {
 }
 
 export const openUnlessTag = (open: () => void) => (event: { target: EventTarget }) => {
-  if (!(event.target as HTMLElement).closest(".issue-tags")) open();
+  if (!(event.target as HTMLElement).closest(".issue-tags button")) open();
 };
 
-export function IssueTags({ issue, chosen, onTag }: { issue: Issue; chosen: string[]; onTag: (tag: string) => void }) {
+export function IssueTags({ issue, chosen, onTag, extra = [] }: { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; extra?: string[] }) {
   const tags = tagsOf(issue);
-  return tags.length === 0 ? null : (
+  const facts = extra.filter((fact) => fact !== "");
+  return tags.length + facts.length === 0 ? null : (
     <span className="issue-tags">
       {tags.map((tag) => (
-        <Chip key={tag} tone={toneOf(tag, issue)} pressed={chosen.includes(tag)} onClick={() => onTag(tag)}>
+        <Chip key={tag} tone={toneOf(tag, issue)} pressed={onTag ? chosen.includes(tag) : undefined} onClick={onTag ? () => onTag(tag) : undefined}>
           {tag}
         </Chip>
+      ))}
+      {facts.map((fact) => (
+        <Chip key={fact}>{fact}</Chip>
       ))}
     </span>
   );

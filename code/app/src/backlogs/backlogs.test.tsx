@@ -171,16 +171,19 @@ describe("the list of issues", () => {
     expect(await screen.findByText("A paragraph that belongs on the detail page only.")).toBeInTheDocument();
   });
 
-  it("filters to a tag tapped on an issue's page and clears it from the chosen chips", async () => {
+  it("draws the pills of the issue's page and of its Waits-on rows as plain pills that do nothing", async () => {
     answering(board);
-    openAt(issuePath("t1"));
-    await userEvent.click(await screen.findByRole("button", { name: "Docs" }));
-    await screen.findByText("1 of 3 issues");
-    expect(titles()).toEqual(["Fix mirrored board drift"]);
-    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Docs");
-    await userEvent.click(screen.getByRole("button", { name: "Docs ✕" }));
-    expect(titles()).toHaveLength(3);
-    expect(where()).toBe("/a/hub-1/backlogs/all");
+    openAt(issuePath("t2"));
+    await screen.findByText("Waits on");
+    const top = document.querySelector(".issue-row.static") as HTMLElement;
+    const pill = within(top).getByText("Blocked");
+    expect(pill.tagName).toBe("SPAN");
+    await userEvent.click(pill);
+    expect(where()).toBe(issuePath("t2"));
+    const waited = (document.querySelector(".issue-list .issue-row") as HTMLElement).querySelector(".chip") as HTMLElement;
+    expect(waited.tagName).toBe("SPAN");
+    await userEvent.click(waited);
+    await waitFor(() => expect(where()).toBe(issuePath("t1")));
   });
 
   it("adds a tapped bubble to the filter without opening the issue, and a chosen bubble is selected and removes itself", async () => {
@@ -309,12 +312,17 @@ describe("one issue", () => {
       }),
     ]);
     openAt(issuePath("t9"));
-    const heading = await screen.findByRole("heading", { level: 2, name: /DEV-009/ });
-    expect(heading).toHaveTextContent("DEV-009 Create the party plane's tables");
-    expect(heading.querySelector(".issue-code")?.textContent).toBe("DEV-009");
+    await screen.findByText("Docs");
+    const top = document.querySelector(".issue-row.static") as HTMLElement;
+    expect(top).toHaveTextContent("DEV-009 Create the party plane's tables");
+    expect(top.querySelector(".issue-code")?.textContent).toBe("DEV-009");
+    expect(top.closest(".rows")).not.toBeNull();
+    expect(within(top).queryByRole("link")).toBeNull();
+    expect(top.querySelector(".open")?.tagName).toBe("SPAN");
+    expect(Array.from(top.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(expect.arrayContaining(["Docs", "Backlog · To do"]));
     expect(within(screen.getByRole("banner")).getByRole("heading", { level: 1 })).toHaveTextContent("DEV-009");
-    expect(screen.getByRole("button", { name: "Docs" })).toBeInTheDocument();
-    const detailTags = Array.from(document.querySelectorAll(".issue-tags > *"));
+    expect(screen.queryByRole("button", { name: "Docs" })).toBeNull();
+    const detailTags = Array.from(document.querySelectorAll(".issue-row.static .issue-tags > *"));
     expect(detailTags.length).toBeGreaterThan(1);
     expect(detailTags.every((one) => one.classList.contains("chip"))).toBe(true);
     const text = document.body.textContent ?? "";
@@ -333,6 +341,17 @@ describe("one issue", () => {
     expect(screen.getByText("Load the English template.")).toBeInTheDocument();
     expect(screen.getByText("Waits on")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /Fix mirrored board drift/ }));
+    await waitFor(() => expect(where()).toBe(issuePath("t1")));
+  });
+
+  it("lists what it waits on as rows of one card, the same row as the lists, and a row opens its issue", async () => {
+    answering(board);
+    openAt(issuePath("t2"));
+    await screen.findByText("Waits on");
+    const card = screen.getByText("Waits on").parentElement?.querySelector(".rows") as HTMLElement;
+    expect(card.querySelectorAll(".issue-row")).toHaveLength(1);
+    expect(card.querySelector(".end")).toHaveTextContent("›");
+    await userEvent.click(within(card).getByRole("button", { name: /Fix mirrored board drift/ }));
     await waitFor(() => expect(where()).toBe(issuePath("t1")));
   });
 

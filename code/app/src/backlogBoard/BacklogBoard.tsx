@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from "../backlogs/api";
-import { IssueTags, IssueTitle, openUnlessTag } from "../backlogs/IssueTitle";
+import { IssueRow } from "../backlogs/IssueRow";
 import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam } from "../backlogs/paths";
 import { narrowed, toggled } from "../backlogs/tags";
 import { backlogPagePath } from "../backlogPage/paths";
@@ -91,11 +91,8 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
                   <span>{column.issues.length}</span>
                 </h3>
                 {column.issues.map((issue) => (
-                  <div key={issue.id} className="bb-card" onClick={openUnlessTag(() => navigate(issuePath(issue.id)))}>
-                    <button type="button" className="bb-open">
-                      <IssueTitle title={issue.title} />
-                    </button>
-                    <IssueTags issue={issue} chosen={chosen} onTag={toggle} />
+                  <div key={issue.id} className="bb-card">
+                    <IssueRow issue={issue} chosen={chosen} onTag={toggle} onOpen={() => navigate(issuePath(issue.id))} />
                   </div>
                 ))}
                 {column.issues.length === 0 ? <p className="bb-none">Nothing here</p> : null}
