@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { doSomethingPath } from "../../routes";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { bags, termsWords } from "../../supply/groupOrder/api";
@@ -85,7 +86,7 @@ export function JoinSalePage({ client = mcpSaleClient, me }: Props) {
     return { sale, member, collection };
   }, `sale${orderId}`);
   return (
-    <Shell title="Group sale" onBack={() => navigate("/")}>
+    <Shell title="Group sale" onBack={() => navigate(doSomethingPath())}>
       {loaded.state === "error" ? <LoadFailed words="This group sale could not be opened." /> : null}
       {loaded.state === "ready" ? <SaleView client={client} first={loaded.data.sale} me={loaded.data.member} collection={loaded.data.collection} /> : null}
     </Shell>

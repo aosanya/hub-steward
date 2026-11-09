@@ -8,7 +8,7 @@ Everything is under `code/app/src`.
 
 | Folder | What it holds |
 |---|---|
-| `tabs.ts`, `routes.ts`, `App.tsx` | The three tabs, every screen's path, and the route table |
+| `tabs.ts`, `routes.ts`, `App.tsx` | The two bottom bars, every screen's path, and the route table |
 | `agency/` | Which agency is open (`open.ts`) and which modules it has switched on (`modules.ts`) |
 | `wakala/` | The API client: runtime address (`config.ts`), token (`token.ts`, `renewal.ts`), the signed-in person (`me.ts`), tool calls (`mcp.ts`) |
 | `entry/` | Sign-in, the agency list, the language picker and the words (`words.ts`, `swahili.ts`, `language.ts`) |
@@ -21,7 +21,8 @@ Everything is under `code/app/src`.
 
 ## Routes and tabs
 
-- `tabs.ts` defines three tabs: Do Something, Chat and Inbox. A tab's path is `/a/<agency id>/<segment>` (`tabPathIn`).
+- `tabs.ts` defines two bottom bars (decisions 66 to 68 of hub-steward-swe). The home bar is Home, Chat, Do Something and Inbox; the Do Something bar is Home, Start, Ongoing and Backlogs. `TabBar` picks the bar from the path (`inDoSomething`: the segments `do-something`, `ongoing` and `backlogs`), shows Backlogs only when the agency has the `taskmanager` module, and an open chat hides the bar. A tab's path is `/a/<agency id>/<segment>` (`tabPathIn`).
+- The home screen is `/a/<agency id>/home`, empty for now (`pages/AgencyHomePage.tsx`); an agency's address, a sign-in and choosing an agency all land there. Start is `/do-something` and Ongoing is `/ongoing`; the backlog screens are mounted under `/backlogs/*` by `BacklogsRoutes`. A back button that means Do Something uses `doSomethingPath()`, never `"/"`, which is the home screen.
 - `routes.ts` builds the path of 14 agency screens from one definition each: `screen("/market/:productId")`. Call `routes.product.path({ productId })`; never write the string by hand. `pattern` is `/a/:agencyId` plus the path, and `retired` is the old path without the agency.
 - `App.tsx` registers each `pattern` inside the `/a/:agencyId` block, and registers every `retired` path as a redirect to the open agency (`ToOpenAgencyScreen`), or to `/agencies` when none is open.
 - Many screens are not in `routes.ts` yet: `App.tsx` declares `/buy/wanted`, `/my-orders`, `/sell/...`, `/asks`, `/offers`, `/orders`, `/coordinator/...` and `/group-orders` as plain paths outside the agency block.

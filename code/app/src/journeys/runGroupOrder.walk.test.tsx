@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "../App";
-import { agencyHomePath, openAgency } from "../agency/open";
+import { doSomethingPathIn, openAgency } from "../agency/open";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 import * as mcp from "../wakala/mcp";
 import { forgetSubject } from "../wakala/me";
@@ -32,12 +32,12 @@ const ongoingRowsShown = () =>
     row.querySelector(".meta")?.textContent ?? "",
   ]);
 
-const ongoingSegment = () => within(screen.getByRole("main")).findByRole("button", { name: "Ongoing" });
+const ongoingSegment = () => within(screen.getByRole("navigation", { name: "Main" })).findByRole("link", { name: /Ongoing$/ });
 
 const atOngoing = async () => {
-  at(agencyHomePath(agency.id));
+  at(doSomethingPathIn(agency.id));
   await userEvent.click(await ongoingSegment());
-  expect(await ongoingSegment()).toHaveAttribute("aria-pressed", "true");
+  expect(await ongoingSegment()).toHaveAttribute("aria-current", "page");
 };
 
 const liveOrder = (id: string, product: string) => ({
@@ -83,7 +83,7 @@ describe("journey 18, steps 1 to 4: the Group coordinator runs a group order", (
     const [asha, baraka, chebet, kisumu] = farmers;
     const [product, price, minimum] = ["Urea 50kg", "3600", "20"];
 
-    at(agencyHomePath(agency.id));
+    at(doSomethingPathIn(agency.id));
     expect(await screen.findByText(startStep.form_name)).toBeInTheDocument();
     expect(firstStartRow()).toBe(startStep.form_name);
     expect(screen.queryByText("Waiting on you")).not.toBeInTheDocument();
@@ -176,7 +176,7 @@ describe("journey 18, what a farmer and a called-off order show", () => {
     world.groupOrders.push({ id: "g1", poster_id: poster.id, coordinator: coordinator.id, product: "Urea 50kg", direction: "buy", state: "open", price: 3600, minimum: 20, total: 8, count: 3 });
     walkAs(farmers[0].id);
 
-    at(agencyHomePath(agency.id));
+    at(doSomethingPathIn(agency.id));
     expect(await screen.findByText(agency.name)).toBeInTheDocument();
     await waitFor(() => expect(callsTo(world, "agency_list_my_open_steps")).not.toHaveLength(0));
     expect(screen.queryByText(startStep.form_name)).not.toBeInTheDocument();
@@ -247,9 +247,9 @@ describe("journey 18, the Ongoing segment", () => {
     expect(ongoingRowsShown()).toEqual([]);
 
     await tapped("Go to Start");
-    expect(within(screen.getByRole("main")).getByRole("button", { name: "Start" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(screen.getByRole("navigation", { name: "Main" })).getByRole("link", { name: /Start$/ })).toHaveAttribute("aria-current", "page");
     expect(screen.queryByText("Nothing ongoing yet")).not.toBeInTheDocument();
-    expect(where()).toBe(agencyHomePath(agency.id));
+    expect(where()).toBe(doSomethingPathIn(agency.id));
   });
 });
 
@@ -271,7 +271,7 @@ describe("journey 18, the Start step on Do Something and in the Inbox", () => {
     world.groupOrders.push(liveOrder("g1", "Urea 50kg"));
     walkAs(coordinator.id);
 
-    at(agencyHomePath(agency.id));
+    at(doSomethingPathIn(agency.id));
     expect(await screen.findByText(startStep.form_name)).toBeInTheDocument();
     expect(screen.queryByText("Urea 50kg")).not.toBeInTheDocument();
     expect(screen.queryByText("Waiting on you")).not.toBeInTheDocument();
@@ -285,7 +285,7 @@ describe("journey 18, a second order", () => {
     world.groupOrders.push({ id: "g0", poster_id: poster.id, coordinator: coordinator.id, product: "Maize seed", direction: "buy", state, price: 5000, minimum: 10, total: 12, count: 4 });
     walkAs(coordinator.id);
 
-    at(agencyHomePath(agency.id));
+    at(doSomethingPathIn(agency.id));
     await userEvent.click(await screen.findByText(startStep.form_name));
     await userEvent.type(await screen.findByLabelText(startStep.questions[0].prompt), "Urea 50kg");
     await userEvent.type(screen.getByLabelText(startStep.questions[1].prompt), "3600");

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { doSomethingPath } from "../../routes";
 import { AccountMenu } from "../../ui/AccountMenu";
 import { DrawerFrame } from "../../ui/DrawerFrame";
 import { ScreenHead } from "../../ui/ScreenHead";
@@ -18,7 +19,7 @@ type Props = {
 
 const failure: Block = { kind: "text", from: "agent", text: "The agent could not answer. Try again." };
 
-export function AppThreadPage({ appName, agentName = "", source, backTo = "/", backLabel = "Do Something" }: Props) {
+export function AppThreadPage({ appName, agentName = "", source, backTo = doSomethingPath(), backLabel = "Do Something" }: Props) {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);

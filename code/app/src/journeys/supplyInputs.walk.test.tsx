@@ -261,12 +261,14 @@ const world = () => {
 
 const walk = world();
 
-const open = () =>
+const open = async () => {
   render(
     <MemoryRouter initialEntries={["/"]}>
       <App />
     </MemoryRouter>,
   );
+  await userEvent.click(await screen.findByRole("link", { name: /Do Something/ }));
+};
 
 const press = (name: string | RegExp) => userEvent.click(screen.getByRole("button", { name }));
 
@@ -304,7 +306,7 @@ describe("journey 14, supply inputs", () => {
   });
 
   it("step 1: applies as a supplier, waits, and is approved", async () => {
-    open();
+    await open();
     await openStartRow(/^Apply as a supplier/);
     await heading("Apply as a supplier");
     await fillForm({ "Shop name": "Kisumu Agro Supplies", Area: "Kisumu", "What you sell": "Fertiliser and seed" });
@@ -329,6 +331,7 @@ describe("journey 14, supply inputs", () => {
 
     walk.approve();
 
+    await goTab(/Home/);
     await goTab(/Inbox/);
     await heading("Inbox");
     expect(await screen.findByText("You are approved as a supplier")).toBeInTheDocument();
@@ -350,7 +353,7 @@ describe("journey 14, supply inputs", () => {
   });
 
   it("step 2: posts prices, opens a row to change it, and keeps a private stock list", async () => {
-    open();
+    await open();
     await openStartRow(/^Offers/);
     await heading("Offers");
     expect(await screen.findByText("No offers yet")).toBeInTheDocument();
@@ -403,7 +406,7 @@ describe("journey 14, supply inputs", () => {
   });
 
   it("step 3: opens the asks waiting, answers one Yes with a date and a note and another No", async () => {
-    open();
+    await open();
     await openStartRow(/^Asks/);
     await heading("Asks");
     expect(await screen.findByRole("button", { name: /2 bags of Urea 50kg/ })).toBeInTheDocument();
@@ -447,7 +450,7 @@ describe("journey 14, supply inputs", () => {
   });
 
   it("step 4: sees the open group order and asks the farmers to revise", async () => {
-    open();
+    await open();
     await openStartRow(/^Group order/);
     await heading("Group orders");
     await pressWhenShown(/KES 3,600 a bag from 20 bags/);
@@ -485,7 +488,7 @@ describe("journey 14, supply inputs", () => {
   });
 
   it("step 5: lists the open yeses and orders, marks one order paid", async () => {
-    open();
+    await open();
     await openStartRow(/^Orders/);
     await heading("Orders");
     expect(await screen.findByRole("button", { name: "Open · 4" })).toBeInTheDocument();

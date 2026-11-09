@@ -64,6 +64,8 @@ const Where = () => <span data-testid="where">{useLocation().pathname}</span>;
 
 const where = () => screen.getByTestId("where").textContent;
 
+const goHome = async () => userEvent.click(await screen.findByRole("link", { name: /Home/ }));
+
 const startRowTitles = () => Array.from(document.querySelectorAll<HTMLElement>("main > .rows > .row .ttl")).map((title) => title.textContent);
 
 const openAt = (path: string) =>
@@ -97,7 +99,7 @@ const modulesThatSay: Array<[string, Modules]> = [
 describe("the Create group order row on Start, whatever the module read says", () => {
   it.each(modulesThatSay)("is drawn when agency_list_mounts %s", async (_name, modules) => {
     answering(modules);
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
     expect(startRowTitles()[0]).toBe("Urea group order");
     expect(screen.queryByText("Waiting on you")).not.toBeInTheDocument();
@@ -105,20 +107,20 @@ describe("the Create group order row on Start, whatever the module read says", (
 
   it("is drawn when the agency's own read fails too", async () => {
     answering(async () => Promise.reject(new Error("down")), { agency: async () => Promise.reject(new Error("down")) });
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
   });
 
   it("is drawn while the module read has not answered, beside the loading line", async () => {
     answering(() => new Promise<never>(() => undefined));
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("Loading your agency");
   });
 
   it("opens the Start form from the row", async () => {
     answering(async () => ({ modules: [] }));
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     await userEvent.click(await screen.findByText("Urea group order"));
     expect(await screen.findByRole("heading", { name: startStep.title })).toBeInTheDocument();
     expect(where()).toBe(`/a/${hub}/start/${startStep.id}`);
@@ -126,7 +128,7 @@ describe("the Create group order row on Start, whatever the module read says", (
 
   it.each(["open", "revising"])("stays while her %s group order is live, so she can start another", async (state) => {
     answering(async () => ({ modules: [] }), { orders: [{ ...beganOrder, state }] });
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
     expect(startRowTitles()[0]).toBe("Urea group order");
   });
@@ -135,8 +137,9 @@ describe("the Create group order row on Start, whatever the module read says", (
 describe("Do Something and the Inbox badge read the same waiting steps", () => {
   it("draw the one step on both when the module read says nothing", async () => {
     answering(async () => ({ modules: [] }));
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
+    await goHome();
     const nav = screen.getByRole("navigation", { name: "Main" });
     expect(await within(nav).findByLabelText("1 unread notifications")).toBeInTheDocument();
     await userEvent.click(within(nav).getByRole("link", { name: /Inbox/ }));
@@ -144,12 +147,13 @@ describe("Do Something and the Inbox badge read the same waiting steps", () => {
     expect(within(screen.getByRole("navigation", { name: "Main" })).getByLabelText("1 unread notifications")).toBeInTheDocument();
   });
 
-  it("reads the steps once for the Start row and the badge and once for the other Start rows, which callTool answers from one request", async () => {
+  it("reads the steps for the Start row, again for the badge once Home is back, and once for the other Start rows, which callTool answers from one request", async () => {
     const call = answering(async () => ({ modules: [] }));
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     await screen.findByText("Urea group order");
+    await goHome();
     expect(await screen.findByLabelText("1 unread notifications")).toBeInTheDocument();
-    expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && !args?.available)).toHaveLength(2);
+    expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && !args?.available)).toHaveLength(3);
     expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && args?.available === true)).toHaveLength(1);
   });
 
@@ -165,7 +169,7 @@ describe("Do Something and the Inbox badge read the same waiting steps", () => {
 describe("a workflow step that is not the group order Start", () => {
   it("is a row of the Start tab after the Create group order row", async () => {
     answering(async () => ({ modules: [] }), { steps: [startStep, joinStep] });
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     const join = await screen.findByRole("button", { name: /^Join a group/ });
     expect(startRowTitles()).toEqual(["Urea group order", "Join a group"]);
     await userEvent.click(join);
@@ -174,18 +178,19 @@ describe("a workflow step that is not the group order Start", () => {
 
   it("counts for no unread badge on the Inbox", async () => {
     answering(async () => ({ modules: [] }), { steps: [joinStep] });
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     await screen.findByRole("button", { name: /^Join a group/ });
+    await goHome();
     expect(screen.queryByLabelText(/unread notifications/)).not.toBeInTheDocument();
   });
 });
 
-const chooseOngoing = async () => userEvent.click(await screen.findByRole("button", { name: "Ongoing" }));
+const chooseOngoing = async () => userEvent.click(await screen.findByRole("link", { name: /Ongoing/ }));
 
 describe("the order she began", () => {
   it("is listed in the Ongoing rows with its workflow and state", async () => {
     answering(async () => ({ modules: [] }), { orders: [beganOrder] });
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     await chooseOngoing();
     expect(await screen.findByText("Create group order · Open")).toBeInTheDocument();
     expect(screen.getByText(beganOrder.product)).toBeInTheDocument();
@@ -194,7 +199,7 @@ describe("the order she began", () => {
 
   it("is not listed on Start, which keeps the Create group order row", async () => {
     answering(async () => ({ modules: [] }), { orders: [beganOrder] });
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
     expect(screen.queryByText("Create group order · Open")).not.toBeInTheDocument();
   });
@@ -203,31 +208,31 @@ describe("the order she began", () => {
 describe("Ongoing on the Do Something page", () => {
   it("opens on Start and puts the agency name under the title", async () => {
     answering(async () => ({ modules: [] }));
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Start" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("link", { name: /Start/ })).toHaveAttribute("aria-current", "page");
     expect(await screen.findByText("Alego Growers")).toHaveClass("sub");
   });
 
   it("offers Go to Start when nothing is ongoing, and Start comes back with its rows", async () => {
     answering(async () => ({ modules: [] }));
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     await chooseOngoing();
     expect(await screen.findByText("Nothing ongoing yet")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Go to Start" }));
-    expect(screen.getByRole("button", { name: "Start" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("link", { name: /Start/ })).toHaveAttribute("aria-current", "page");
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
     expect(where()).toBe(`/a/${hub}/do-something`);
   });
 
   it("opens an Ongoing row where the work left off, and back from it lands on Start", async () => {
     answering(async () => ({ modules: [] }), { orders: [beganOrder] });
-    openAt(`/a/${hub}`);
+    openAt(`/a/${hub}/do-something`);
     await chooseOngoing();
     await userEvent.click(await screen.findByText("Create group order · Open"));
     expect(where()).toBe(`/coordinator/orders/${beganOrder.id}`);
     await userEvent.click(await screen.findByRole("button", { name: "Back" }));
     expect(where()).toBe(`/a/${hub}/do-something`);
-    expect(await screen.findByRole("button", { name: "Start" })).toHaveAttribute("aria-pressed", "true");
+    expect(await screen.findByRole("link", { name: /Start/ })).toHaveAttribute("aria-current", "page");
   });
 });

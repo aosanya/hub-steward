@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "../App";
-import { agencyHomePath, openAgency } from "../agency/open";
+import { doSomethingPathIn, openAgency } from "../agency/open";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 import { farmerChatSteps } from "./chatSteps";
 import * as mcp from "../wakala/mcp";
@@ -232,7 +232,7 @@ const visit = (path: string) => {
 
 const where = () => screen.getByTestId("where").textContent ?? "";
 
-const doSomethingOf = agencyHomePath;
+const doSomethingOf = doSomethingPathIn;
 
 const pressed = (name: string | RegExp) => userEvent.click(screen.getByRole("button", { name }));
 
@@ -242,7 +242,7 @@ const heading = (name: string, level = 1) => screen.findByRole("heading", { name
 
 const tabsBar = () => within(screen.getByRole("navigation", { name: "Main" }));
 
-const doSomethingTab = () => tabsBar().getByRole("link", { name: /Do Something/ });
+const doSomethingTab = () => tabsBar().getByRole("link", { name: /Start$/ });
 
 const farmerStartRows = ["Buy inputs", "Sell harvest", modules[1].name, joinStep.form_name, supplierStep.form_name];
 
@@ -268,14 +268,14 @@ const ongoingRowsAre = async (expected: string[][]) => {
   expect(screen.queryByText("Nothing ongoing yet")).toBeNull();
 };
 
-const startSegment = () => within(screen.getByRole("main")).getByRole("button", { name: "Start" });
+const startSegment = () => tabsBar().getByRole("link", { name: /Start$/ });
 
-const ongoingSegment = () => within(screen.getByRole("main")).getByRole("button", { name: "Ongoing" });
+const ongoingSegment = () => tabsBar().getByRole("link", { name: /Ongoing$/ });
 
 const ongoingOpened = async () => {
   await userEvent.click(ongoingSegment());
-  expect(ongoingSegment()).toHaveAttribute("aria-pressed", "true");
-  expect(startSegment()).toHaveAttribute("aria-pressed", "false");
+  expect(ongoingSegment()).toHaveAttribute("aria-current", "page");
+  expect(startSegment()).not.toHaveAttribute("aria-current");
 };
 
 const rowTitled = (title: string) => screen.getByText(title).closest(".row") as HTMLElement;
@@ -329,9 +329,9 @@ const step1AFarmerOpensHome = async () => {
   expect(screen.getAllByRole("heading", { level: 1 }).map((title) => title.textContent)).toEqual(["Do Something"]);
   expect(within(screen.getByRole("main")).getByText(siaya.name)).toHaveClass("sub");
   expect(within(screen.getByRole("main")).queryAllByRole("heading")).toEqual([]);
-  expect(within(screen.getByRole("main")).getAllByRole("button").slice(0, 2).map((control) => control.textContent)).toEqual(["Start", "Ongoing"]);
-  expect(startSegment()).toHaveAttribute("aria-pressed", "true");
-  expect(ongoingSegment()).toHaveAttribute("aria-pressed", "false");
+  expect(tabsBar().getAllByRole("link").slice(0, 3).map((link) => link.textContent?.replace(/[^A-Za-z ]/g, ""))).toEqual(["Home", "Start", "Ongoing"]);
+  expect(startSegment()).toHaveAttribute("aria-current", "page");
+  expect(ongoingSegment()).not.toHaveAttribute("aria-current");
   expect(screen.queryByText("Nothing ongoing yet")).toBeNull();
   expect(fakes.called("agency_list_my_open_steps")).not.toHaveLength(0);
   expect(startRowsShown()).toEqual(farmerStartRows);
@@ -346,7 +346,7 @@ const step1AFarmerOpensHome = async () => {
   expect(screen.queryByRole("button", { name: "Account" })).toBeNull();
   expect(screen.queryByRole("menu")).toBeNull();
 
-  expect(tabsBar().getAllByRole("link").map((tab) => tab.textContent)).toEqual(["⌂Do Something", "✉Chat", "▤Inbox"]);
+  expect(tabsBar().getAllByRole("link").map((tab) => tab.textContent)).toEqual(["⌂Home", "▶Start", "◔Ongoing"]);
   expect(doSomethingTab()).toHaveAttribute("aria-current", "page");
 };
 
@@ -388,7 +388,7 @@ const step3SheAsksToJoinAGroup = async () => {
   await startStillListsEveryStep();
   await ongoingOpened();
   await ongoingRowsAre(pendingJoinRows());
-  expect(where()).toBe(doSomethingOf(siaya.id));
+  expect(where()).toBe(`/a/${siaya.id}/ongoing`);
   expect(rowsShown()).toContainEqual(joinRowOf(siayaFarmers));
 
   await userEvent.click(rowTitled(siayaFarmers.name));
@@ -513,8 +513,8 @@ const step6NothingBegunShowsTheEmptyCard = async () => {
   await pressed("Go to Start");
   await heading("Do Something");
   expect(where()).toBe(doSomethingOf(siaya.id));
-  expect(startSegment()).toHaveAttribute("aria-pressed", "true");
-  expect(ongoingSegment()).toHaveAttribute("aria-pressed", "false");
+  expect(startSegment()).toHaveAttribute("aria-current", "page");
+  expect(ongoingSegment()).not.toHaveAttribute("aria-current");
   expect(within(screen.getByRole("main")).getByText(siaya.name)).toHaveClass("sub");
   expect(await startRow(joinStep.form_name)).toBeInTheDocument();
   expect(startRowsShown()).toEqual(farmerStartRows);

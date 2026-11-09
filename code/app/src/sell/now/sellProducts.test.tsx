@@ -23,7 +23,7 @@ const showPage = (client: SellClient) =>
   render(
     <MemoryRouter initialEntries={["/sell"]}>
       <Routes>
-        <Route path="/" element={<p>Do Something page</p>} />
+        <Route path="/do-something" element={<p>Do Something page</p>} />
         <Route path="/sell" element={<SellProductsPage client={client} />} />
         <Route path="/sell/:productId" element={<p>The prices page</p>} />
       </Routes>

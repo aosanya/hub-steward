@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { doSomethingPath } from "../../routes";
 import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { Button } from "../../ui/Button";
@@ -19,7 +20,7 @@ export function OrdersPage({ client = mcpOrdersClient }: { client?: OrdersClient
   const yeses = loaded.state === "ready" ? loaded.data.yeses.filter((y) => y.state === "open") : [];
   const openCount = open.length + yeses.length;
   return (
-    <Shell title="Orders" onBack={() => navigate("/")}>
+    <Shell title="Orders" onBack={() => navigate(doSomethingPath())}>
       <Segmented
         items={[
           { id: "open", label: `Open · ${openCount}` },

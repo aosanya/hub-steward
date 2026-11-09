@@ -1,16 +1,26 @@
-import { agencyBasePath, doSomethingSegment } from "./agency/open";
+import { agencyBasePath, backlogsSegment, doSomethingSegment, homeSegment, ongoingSegment } from "./agency/open";
 
 export type Tab = { id: string; path: string; segment: string; label: string; glyph: string };
 
+export const homeTab: Tab = { id: "home", path: "/", segment: homeSegment, label: "Home", glyph: "⌂" };
+
 export const chatTab: Tab = { id: "chat", path: "/chat", segment: "chat", label: "Chat", glyph: "✉" };
 
-export const doSomethingTab: Tab = { id: "do-something", path: "/", segment: doSomethingSegment, label: "Do Something", glyph: "⌂" };
+export const doSomethingTab: Tab = { id: "do-something", path: "/do-something", segment: doSomethingSegment, label: "Do Something", glyph: "▦" };
 
-export const tabs: Tab[] = [
-  doSomethingTab,
-  chatTab,
-  { id: "inbox", path: "/inbox", segment: "inbox", label: "Inbox", glyph: "▤" },
-];
+export const inboxTab: Tab = { id: "inbox", path: "/inbox", segment: "inbox", label: "Inbox", glyph: "▤" };
+
+export const startTab: Tab = { ...doSomethingTab, id: "start", label: "Start", glyph: "▶" };
+
+export const ongoingTab: Tab = { id: "ongoing", path: "/ongoing", segment: ongoingSegment, label: "Ongoing", glyph: "◔" };
+
+export const backlogsTab: Tab = { id: "backlogs", path: "/backlogs", segment: backlogsSegment, label: "Backlogs", glyph: "☰" };
+
+export const homeBar: Tab[] = [homeTab, chatTab, doSomethingTab, inboxTab];
+
+export const doSomethingBar: Tab[] = [homeTab, startTab, ongoingTab, backlogsTab];
+
+export const tabs: Tab[] = [homeTab, chatTab, doSomethingTab, inboxTab, ongoingTab];
 
 export const agencyRoute = "/a/:agencyId";
 
@@ -19,3 +29,10 @@ export const retiredStartedRoute = `${agencyRoute}/started`;
 export const tabPathIn = (tab: Tab, agencyId: string) => (agencyId ? `${agencyBasePath(agencyId)}/${tab.segment}` : tab.path);
 
 export const tabRoute = (tab: Tab) => `${agencyRoute}/${tab.segment}`;
+
+const doSomethingSegments = [doSomethingSegment, ongoingSegment, backlogsSegment];
+
+export const inDoSomething = (pathname: string) => {
+  const [, prefix, , segment = ""] = pathname.split("/");
+  return prefix === "a" && doSomethingSegments.includes(segment);
+};

@@ -61,7 +61,7 @@ const show = (source: AgentSource) =>
   render(
     <MemoryRouter initialEntries={["/apps/buy"]}>
       <Routes>
-        <Route path="/" element={<p>Do Something page</p>} />
+        <Route path="/a/farmers/do-something" element={<p>Do Something page</p>} />
         <Route path="/apps/buy" element={<AppThreadPage appName="Buy inputs" agentName="Farmers' agent" source={source} />} />
       </Routes>
     </MemoryRouter>,

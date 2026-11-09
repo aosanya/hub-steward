@@ -139,7 +139,7 @@ describe("journey 21: sign in and choose an agency", () => {
     await heading(words.agenciesTitle);
 
     await userEvent.click(await screen.findByRole("button", { name: new RegExp(farmers.name) }));
-    await heading("Do Something");
+    await heading("Home");
     expect(openAgencyId()).toBe(farmers.id);
 
     server.answering = false;

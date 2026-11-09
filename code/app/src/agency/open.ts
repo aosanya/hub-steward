@@ -30,8 +30,16 @@ export const forgetOpenAgency = () => {
   }
 };
 
+export const homeSegment = "home";
+
 export const doSomethingSegment = "do-something";
+
+export const ongoingSegment = "ongoing";
+
+export const backlogsSegment = "backlogs";
 
 export const agencyBasePath = (id: string) => `/a/${encodeURIComponent(id)}`;
 
-export const agencyHomePath = (id: string) => `${agencyBasePath(id)}/${doSomethingSegment}`;
+export const agencyHomePath = (id: string) => `${agencyBasePath(id)}/${homeSegment}`;
+
+export const doSomethingPathIn = (id: string) => `${agencyBasePath(id)}/${doSomethingSegment}`;

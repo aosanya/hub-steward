@@ -72,11 +72,11 @@ describe("a member in two agencies opens one", () => {
     stubWakala();
     at("/agencies", [farmers, riders]);
     await userEvent.click(await screen.findByRole("button", { name: new RegExp(riders.name) }));
-    await screen.findByRole("heading", { name: "Do Something" });
+    await screen.findByRole("heading", { name: "Home" });
     const hrefs = tabLinks().map((link) => link.getAttribute("href"));
     const base = agencyBasePath(riders.id);
-    expect(hrefs).toEqual([agencyHomePath(riders.id), `${base}/chat`, `${base}/inbox`]);
-    expect(hrefs[0]).toBe(`${base}/do-something`);
+    expect(hrefs).toEqual([agencyHomePath(riders.id), `${base}/chat`, `${base}/do-something`, `${base}/inbox`]);
+    expect(hrefs[0]).toBe(`${base}/home`);
   });
 
   it("stays in the agency on every tab and every call", async () => {
@@ -85,7 +85,7 @@ describe("a member in two agencies opens one", () => {
     const row = await screen.findByRole("button", { name: new RegExp(farmers.name) });
     fetcher.mockClear();
     await userEvent.click(row);
-    await screen.findByRole("heading", { name: "Do Something" });
+    await screen.findByRole("heading", { name: "Home" });
     await userEvent.click(screen.getByRole("link", { name: /Chat/ }));
     expect(await screen.findByRole("heading", { name: "Chat" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Chat/ })).toHaveAttribute("aria-current", "page");
@@ -115,7 +115,7 @@ describe("a member in two agencies opens one", () => {
 
 describe("the old tab paths", () => {
   it.each([
-    ["/", "/do-something"],
+    ["/", "/home"],
     ["/chat", "/chat"],
     ["/inbox", "/inbox"],
   ])("send %s to the open agency's own page", async (path, tail) => {
@@ -143,20 +143,20 @@ describe("an agency the member does not belong to", () => {
 });
 
 describe("the retired Started address", () => {
-  it("sends /a/{id}/started to that agency's Do Something", async () => {
+  it("sends /a/{id}/started to that agency's home screen", async () => {
     stubWakala();
     at(`/a/${riders.id}/started`, [farmers, riders]);
-    expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
     expect(tabLinks()[0]).toHaveAttribute("href", agencyHomePath(riders.id));
     expect(tabLinks()[0]).toHaveAttribute("aria-current", "page");
     expect(openAgencyId()).toBe(riders.id);
   });
 
-  it("sends /started to the open agency's Do Something", async () => {
+  it("sends /started to the open agency's home screen", async () => {
     stubWakala();
     openAgency(riders.id);
     at("/started", [farmers, riders]);
-    expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
     expect(tabLinks()[0]).toHaveAttribute("href", agencyHomePath(riders.id));
   });
 
@@ -168,20 +168,20 @@ describe("the retired Started address", () => {
 });
 
 describe("landing in an agency", () => {
-  it("sends /a/{id} to that agency's Do Something", async () => {
+  it("sends /a/{id} to that agency's home screen", async () => {
     stubWakala();
     at(`/a/${riders.id}`, [farmers, riders]);
-    expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
     expect(tabLinks()[0]).toHaveAttribute("href", agencyHomePath(riders.id));
     expect(tabLinks()[0]).toHaveAttribute("aria-current", "page");
     expect(openAgencyId()).toBe(riders.id);
   });
 
-  it("leaves a stranger's /a/not-mine without Do Something and with no agency open", async () => {
+  it("leaves a stranger's /a/not-mine without the home screen and with no agency open", async () => {
     stubWakala();
     at("/a/not-mine", [farmers, riders]);
     expect(await screen.findByRole("heading", { name: words.agenciesTitle })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Do Something" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Home" })).not.toBeInTheDocument();
     expect(openAgencyId()).toBe("");
   });
 
@@ -189,11 +189,11 @@ describe("landing in an agency", () => {
     beforeEach(() => forgetSubject());
     afterEach(() => forgetToken());
 
-    it("lands on the open agency's Do Something", async () => {
+    it("lands on the open agency's home screen", async () => {
       stubWakala();
       openAgency(riders.id);
       at("/sign-in/link#access_token=t1&expires_in=3600&refresh_token=r1&token_type=bearer&type=magiclink", [farmers, riders]);
-      expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
+      expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
       expect(tabLinks()[0]).toHaveAttribute("href", agencyHomePath(riders.id));
     });
   });

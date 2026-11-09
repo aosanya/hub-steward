@@ -26,6 +26,11 @@ const open = (path = "/") =>
     </MemoryRouter>,
   );
 
+const openDoSomething = async () => {
+  open();
+  await userEvent.click(await screen.findByRole("link", { name: /Do Something/ }));
+};
+
 const press = async (name: string | RegExp) => userEvent.click(await screen.findByRole("button", { name }));
 
 const startRow = async (name: string | RegExp) => userEvent.click(await screen.findByRole("button", { name }));
@@ -50,7 +55,7 @@ afterAll(() => {
 describe("journey 16, sell the harvest", () => {
   it("step 1: Start carries a Sell harvest row", async () => {
     as(farmer.id);
-    open("/");
+    await openDoSomething();
     await doSomethingShown();
     await startRow(/Sell harvest/);
     expect(await screen.findByRole("heading", { name: "Sell harvest", level: 1 })).toBeInTheDocument();
@@ -136,14 +141,14 @@ describe("journey 16, sell the harvest", () => {
 
   it("step 3: Start carries a Your prices row for the buyer", async () => {
     as(buyer.id);
-    open("/");
+    await openDoSomething();
     await doSomethingShown();
     await startRow(/Your prices/);
   });
 
   it("step 3: the buyer's Asks row in Start leads to the asks waiting for an answer", async () => {
     as(buyer.id);
-    open("/");
+    await openDoSomething();
     await doSomethingShown();
     await startRow(/^Asks/);
     expect(await screen.findByRole("heading", { name: "Asks" })).toBeInTheDocument();
@@ -190,7 +195,7 @@ describe("journey 16, sell the harvest", () => {
 
   it("step 3: answers the ask with Yes, a date and a note, and the sale shows his date to Asha", async () => {
     as(buyer.id);
-    open("/");
+    await openDoSomething();
     await startRow(/^Asks/);
     await userEvent.click(await screen.findByRole("button", { name: /Asha Otieno/ }));
     expect(walk.store.asks[0].answer).toBe("waiting");

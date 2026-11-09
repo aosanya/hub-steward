@@ -15,6 +15,8 @@ import { MarketPage } from "./pages/market/MarketPage";
 import { ProductPage } from "./pages/market/ProductPage";
 import { AsksPage } from "./supply/asks/AsksPage";
 import { JoinPage } from "./pages/join/JoinPage";
+import { BacklogsRoutes } from "./backlogs";
+import { AgencyHomePage } from "./pages/AgencyHomePage";
 import { TabPage } from "./pages/TabPage";
 import { ApplyPage } from "./pages/supply/ApplyPage";
 import { OfferFormPage } from "./pages/supply/OfferFormPage";
@@ -49,7 +51,7 @@ import { StepPage } from "./steps/StepPage";
 import { SessionGate } from "./entry/SessionGate";
 import { agencyHomePath } from "./agency/open";
 import { allScreens, routes } from "./routes";
-import { agencyRoute, retiredStartedRoute, tabRoute, tabs, type Tab } from "./tabs";
+import { agencyRoute, backlogsTab, retiredStartedRoute, tabRoute, tabs, type Tab } from "./tabs";
 
 
 function ToAgencyHome() {
@@ -58,7 +60,9 @@ function ToAgencyHome() {
 }
 
 function tabElement(tab: Tab) {
-  if (tab.id === "do-something") return <SupplierHome />;
+  if (tab.id === "home") return <AgencyHomePage />;
+  if (tab.id === "do-something") return <SupplierHome segment="start" />;
+  if (tab.id === "ongoing") return <SupplierHome segment="ongoing" />;
   if (tab.id === "chat") return <ChatPage />;
   if (tab.id === "inbox") return <InboxPage />;
   return <TabPage tab={tab} />;
@@ -71,12 +75,14 @@ export function App() {
       {tabs.map((tab) => (
         <Route key={tab.id} path={tab.path} element={<ToOpenAgency tab={tab} />} />
       ))}
+      <Route path={backlogsTab.path} element={<ToOpenAgency tab={backlogsTab} />} />
       <Route path={agencyRoute} element={<InAgency><Outlet /></InAgency>}>
         <Route index element={<ToAgencyHome />} />
         <Route path={retiredStartedRoute} element={<ToAgencyHome />} />
         {tabs.map((tab) => (
           <Route key={`in-${tab.id}`} path={tabRoute(tab)} element={tabElement(tab)} />
         ))}
+        <Route path={`${backlogsTab.segment}/*`} element={<BacklogsRoutes />} />
         <Route path={routes.join.pattern} element={<JoinPage />} />
         <Route path={routes.start.pattern} element={<StartPage />} />
         <Route path={routes.step.pattern} element={<StepPage />} />
@@ -110,8 +116,8 @@ export function App() {
       <Route path="/sell/group/:orderId" element={<JoinSalePage />} />
       <Route path="/sell/asks" element={<BuyerAsksPage />} />
       <Route path="/sell/asks/:askId" element={<BuyerAskPage />} />
-      <Route path="/apps/buy" element={<AppThreadPage appName="Buy inputs" source={buyInputsSource} backTo="/" backLabel="Do Something" />} />
-      <Route path="/apps/sell" element={<AppThreadPage appName="Sell harvest" source={sellHarvestSource} backTo="/" backLabel="Do Something" />} />
+      <Route path="/apps/buy" element={<AppThreadPage appName="Buy inputs" source={buyInputsSource} backTo="/do-something" backLabel="Do Something" />} />
+      <Route path="/apps/sell" element={<AppThreadPage appName="Sell harvest" source={sellHarvestSource} backTo="/do-something" backLabel="Do Something" />} />
       <Route path="/asks" element={<AsksPage />} />
       <Route path="/asks/:askId" element={<AskRoutePage />} />
       <Route path="/supply/apply" element={<ApplyPage />} />

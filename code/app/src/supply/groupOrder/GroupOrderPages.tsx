@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { doSomethingPath } from "../../routes";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { Button } from "../../ui/Button";
@@ -26,7 +27,7 @@ export function GroupOrdersPage({ client = mcpGroupOrderClient, supply = mcpSupp
     return (await client.listGroupOrders()).filter((o) => o.posterId === mine!.id && isLive(o));
   }, "group-orders");
   return (
-    <Shell title="Group orders" onBack={() => navigate("/")}>
+    <Shell title="Group orders" onBack={() => navigate(doSomethingPath())}>
       {orders.state === "error" ? <LoadFailed words="Your group orders could not be loaded." /> : null}
       {orders.state === "ready" && orders.data.length === 0 ? (
         <EmptyCard words="No open group orders">

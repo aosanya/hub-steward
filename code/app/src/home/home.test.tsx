@@ -1,9 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { agencyCards, homeCardsFor, type AgencyKind } from "./cards";
 import type { AgencyView } from "../agency/modules";
-import { HomePage } from "../pages/HomePage";
+import { HomePage, type DoSomethingSegment } from "../pages/HomePage";
 
 type RowsProps = { kind?: string; view?: { modules: { code: string }[] } | null };
 
@@ -27,28 +27,29 @@ const kinds: AgencyKind[] = ["farmers", "supplier"];
 
 const read: AgencyView = { name: "Alego Growers", modules: [{ code: "forms", name: "Forms" }, { code: "market", name: "Market" }], modulesUnread: false };
 
-const home = (kind?: AgencyKind, view?: AgencyView) => (
-  <MemoryRouter>
-    <HomePage kind={kind} view={view} />
+const home = (kind?: AgencyKind, view?: AgencyView, segment?: DoSomethingSegment) => (
+  <MemoryRouter initialEntries={[segment === "ongoing" ? "/ongoing" : "/do-something"]}>
+    <Routes>
+      <Route path="/do-something" element={<HomePage kind={kind} view={view} segment="start" />} />
+      <Route path="*" element={<HomePage kind={kind} view={view} segment="ongoing" />} />
+    </Routes>
   </MemoryRouter>
 );
 
-const renderHome = (kind?: AgencyKind, view?: AgencyView) => render(home(kind, view));
+const renderHome = (kind?: AgencyKind, view?: AgencyView, segment?: DoSomethingSegment) => render(home(kind, view, segment));
 
 const pageParts = () => Array.from(screen.getByRole("main").children).map((part) => part.textContent);
 
-const segment = (name: string) => screen.getByRole("button", { name });
-
 describe("home composition", () => {
-  it.each(kinds)("lays the %s Do Something out as title, name, Start and Ongoing, rows", (kind) => {
+  it.each(kinds)("lays the %s Do Something out as title, name, rows", (kind) => {
     renderHome(kind, read);
     expect(screen.getByRole("heading", { level: 1, name: "Do Something" })).toBeInTheDocument();
-    expect(pageParts()).toEqual(["Alego Growers", "StartOngoing", `rows: ${kind}, forms market`]);
+    expect(pageParts()).toEqual(["Alego Growers", `rows: ${kind}, forms market`]);
   });
 
   it("draws the Start rows at once and the loading line under them while the agency kind is unknown", () => {
     renderHome();
-    expect(pageParts()).toEqual(["StartOngoing", "rows: undefined, no read", "Loading your agency…"]);
+    expect(pageParts()).toEqual(["rows: undefined, no read", "Loading your agency…"]);
   });
 
   it.each(kinds)("draws no order cards and no buyer home on the %s Do Something", (kind) => {
@@ -87,40 +88,30 @@ describe("home composition", () => {
 describe("Start and Ongoing", () => {
   it("opens on Start", () => {
     renderHome("farmers", read);
-    expect(segment("Start")).toHaveAttribute("aria-pressed", "true");
-    expect(segment("Ongoing")).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByText("rows: farmers, forms market")).toBeInTheDocument();
     expect(screen.queryByText("ongoing rows")).not.toBeInTheDocument();
   });
 
-  it("swaps the Start rows for the Ongoing rows when she chooses Ongoing, and back", async () => {
-    renderHome("farmers", read);
-    await userEvent.click(segment("Ongoing"));
-    expect(segment("Ongoing")).toHaveAttribute("aria-pressed", "true");
-    expect(pageParts()).toEqual(["Alego Growers", "StartOngoing", "ongoing rows"]);
-    await userEvent.click(segment("Start"));
-    expect(pageParts()).toEqual(["Alego Growers", "StartOngoing", "rows: farmers, forms market"]);
+  it("draws the Ongoing rows on the Ongoing segment, under the title and the name", () => {
+    renderHome("farmers", read, "ongoing");
+    expect(pageParts()).toEqual(["Alego Growers", "ongoing rows"]);
   });
 
-  it("returns to Start when the Ongoing rows ask for it", async () => {
-    renderHome("farmers", read);
-    await userEvent.click(segment("Ongoing"));
+  it("takes the Ongoing rows' Go to Start to the Do Something page", async () => {
+    renderHome("farmers", read, "ongoing");
     await userEvent.click(screen.getByRole("button", { name: "ongoing rows" }));
-    expect(segment("Start")).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByText("rows: farmers, forms market")).toBeInTheDocument();
   });
 
-  it("draws no loading line under the Ongoing rows while the agency kind is unknown", async () => {
-    renderHome();
-    await userEvent.click(segment("Ongoing"));
+  it("draws no loading line under the Ongoing rows while the agency kind is unknown", () => {
+    renderHome(undefined, undefined, "ongoing");
     expect(screen.queryByText("Loading your agency…")).not.toBeInTheDocument();
   });
 
-  it("keeps her choice when the agency kind arrives", async () => {
-    const { rerender } = renderHome();
-    await userEvent.click(segment("Ongoing"));
-    rerender(home("farmers", read));
-    expect(segment("Ongoing")).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText("ongoing rows")).toBeInTheDocument();
+  it("draws no Start and Ongoing buttons in the page, they are tabs in the bar", () => {
+    renderHome("farmers", read);
+    expect(screen.queryByRole("button", { name: "Start" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Ongoing" })).not.toBeInTheDocument();
   });
 });
 

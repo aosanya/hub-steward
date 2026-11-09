@@ -71,22 +71,22 @@ describe("your agencies with forms waiting", () => {
     call.mockRestore();
   });
 
-  it("opens that agency's Do Something from its row and keeps it open", async () => {
+  it("opens that agency's home screen from its row and keeps it open", async () => {
     at("/agencies", [lab, farmers, riders]);
     await userEvent.click(await screen.findByRole("button", { name: new RegExp(riders.name) }));
-    expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
     expect(openAgencyId()).toBe(riders.id);
   });
 
   it("opens the agency named in the route", async () => {
     at(`/a/${farmers.id}`, [farmers, riders]);
-    expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
     expect(openAgencyId()).toBe(farmers.id);
   });
 
-  it("sends a member of exactly one agency straight to its Do Something", async () => {
+  it("sends a member of exactly one agency straight to its home screen", async () => {
     at("/agencies", [farmers]);
-    expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: words.agenciesTitle })).not.toBeInTheDocument();
     expect(openAgencyId()).toBe(farmers.id);
   });
