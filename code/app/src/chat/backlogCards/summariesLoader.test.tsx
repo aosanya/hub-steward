@@ -43,7 +43,7 @@ describe("backlog summaries loader", () => {
 
   it("gives a button for each backlog the hub returns", async () => {
     show([backlogViewKind], loaded, "backlogs");
-    expect(await screen.findByRole("link", { name: /Backlog/ })).toHaveAttribute("href", "/a/hub-steward-swe/backlogs/default");
+    expect(await screen.findByRole("link", { name: /Backlog/ })).toHaveAttribute("href", "/a/hub-steward-swe/backlogs/default/board");
   });
 
   it("asks the hub for nothing when no message is a backlog view", () => {

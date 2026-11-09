@@ -52,13 +52,13 @@ describe("backlog view cards", () => {
     show("backlog:b1");
     expect(screen.getByText("Software")).toBeInTheDocument();
     expect(screen.getByText("5 issues in 6 steps")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Open" })).toHaveAttribute("href", "/a/hub-steward-swe/backlogs/b1");
+    expect(screen.getByRole("link", { name: "Open" })).toHaveAttribute("href", "/a/hub-steward-swe/backlogs/b1/board");
   });
 
   it("gives a button for each backlog", () => {
     show("backlogs");
-    expect(screen.getByRole("link", { name: /Software/ })).toHaveAttribute("href", "/a/hub-steward-swe/backlogs/b1");
-    expect(screen.getByRole("link", { name: /Documentation/ })).toHaveAttribute("href", "/a/hub-steward-swe/backlogs/b2");
+    expect(screen.getByRole("link", { name: /Software/ })).toHaveAttribute("href", "/a/hub-steward-swe/backlogs/b1/board");
+    expect(screen.getByRole("link", { name: /Documentation/ })).toHaveAttribute("href", "/a/hub-steward-swe/backlogs/b2/board");
     expect(screen.getByText("1 issue in 5 steps")).toBeInTheDocument();
   });
 

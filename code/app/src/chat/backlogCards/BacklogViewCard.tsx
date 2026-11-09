@@ -1,6 +1,7 @@
 import { Button } from "../../ui/Button";
 import { openAgencyId } from "../../agency/open";
-import { allIssuesPath, backlogPath } from "./paths";
+import { boardPath } from "../../backlogBoard/paths";
+import { allIssuesPath } from "./paths";
 import { useBacklogSummaries } from "./summaries";
 import { backlogViewOf } from "./views";
 import { backlogLine, issuesWords } from "./words";
@@ -20,7 +21,7 @@ function OpenCard({ title, line, to }: { title: string; line: string; to: string
   );
 }
 
-function BacklogButtons({ agencyId }: { agencyId: string }) {
+function BacklogButtons() {
   const { backlogs } = useBacklogSummaries();
   if (backlogs.length === 0) return null;
   return (
@@ -28,7 +29,7 @@ function BacklogButtons({ agencyId }: { agencyId: string }) {
       <span className="rm-ttl">Backlogs</span>
       <div className="rm-btns rm-stack">
         {backlogs.map((backlog) => (
-          <Button key={backlog.id} to={backlogPath(agencyId, backlog.id)}>
+          <Button key={backlog.id} to={boardPath(backlog.id)}>
             <span className="rm-pick">{backlog.name}</span>
             <span className="rm-line">{backlogLine(backlog)}</span>
           </Button>
@@ -46,8 +47,8 @@ export function BacklogViewCard({ targetId }: { targetId: string }) {
   if (target.view === "all") {
     return <OpenCard title="All issues" line={totals === null ? "" : issuesWords(totals.issues)} to={allIssuesPath(agencyId)} />;
   }
-  if (target.view === "backlogs") return <BacklogButtons agencyId={agencyId} />;
+  if (target.view === "backlogs") return <BacklogButtons />;
   const backlog = backlogs.find((candidate) => candidate.id === target.backlogId);
   if (backlog === undefined) return null;
-  return <OpenCard title={backlog.name} line={backlogLine(backlog)} to={backlogPath(agencyId, backlog.id)} />;
+  return <OpenCard title={backlog.name} line={backlogLine(backlog)} to={boardPath(backlog.id)} />;
 }
