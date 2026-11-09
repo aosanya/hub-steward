@@ -38,7 +38,7 @@ func (m *taskManager) CreateTask(ctx context.Context, task Task) (Task, error) {
 		task.Priority = TaskPriorityMedium
 	}
 	task.CompletedAt = ""
-	if task.Rank == 0 {
+	if task.Rank <= 0 {
 		if task.Rank, err = m.nextRank(ctx); err != nil {
 			return Task{}, fmt.Errorf("CreateTask: %w", err)
 		}
