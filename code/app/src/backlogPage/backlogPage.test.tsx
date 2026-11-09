@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { defaultBacklogId } from "../backlogs/api";
+import type { BacklogManageClient } from "../backlogManage";
 import { BacklogPage } from "./BacklogPage";
 import { productOwnerGroup, stepOfIssue, stepsWithCounts, type BacklogPageClient } from "./api";
 import { BacklogPageRoutes } from "./index";
@@ -48,13 +49,15 @@ const Where = () => {
 
 const clientOf = (page: BacklogPageClient["page"]): BacklogPageClient => ({ page });
 
-const show = async (client: BacklogPageClient, backlogId = defaultBacklogId) => {
+const manager = (may: boolean) => ({ mayManage: vi.fn().mockResolvedValue(may) }) as unknown as BacklogManageClient;
+
+const show = async (client: BacklogPageClient, backlogId = defaultBacklogId, manage = manager(false)) => {
   landed = "";
   await act(async () => {
     render(
       <MemoryRouter initialEntries={[backlogPagePath(backlogId)]}>
         <Routes>
-          <Route path="/a/:agencyId/backlogs/:backlogId/page" element={<BacklogPage client={client} />} />
+          <Route path="/a/:agencyId/backlogs/:backlogId/page" element={<BacklogPage client={client} manage={manage} />} />
           <Route path="*" element={<Where />} />
         </Routes>
       </MemoryRouter>,
@@ -114,10 +117,16 @@ describe("the backlog page", () => {
     expect(screen.queryByText("No other groups have access.")).toBeNull();
   });
 
-  it("offers no edit or access links, since the app does not know a role's permissions yet", async () => {
-    await show(software);
+  it("offers no edit link to a role that may not manage backlogs", async () => {
+    await show(software, defaultBacklogId, manager(false));
     await screen.findByText("Who has access");
-    expect(screen.queryByRole("link", { name: /edit|access/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /edit/i })).toBeNull();
+  });
+
+  it("offers an edit link to a role that may manage backlogs", async () => {
+    await show(software, defaultBacklogId, manager(true));
+    const link = await screen.findByRole("link", { name: "Edit this backlog" });
+    expect(link).toHaveAttribute("href", `/a/hub1/backlogs/${defaultBacklogId}/edit`);
   });
 
   it("says so when the backlog is unknown", async () => {

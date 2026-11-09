@@ -1,7 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
+import { editBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
+import { mcpBacklogManageClient } from "../backlogManage/api";
 import { issuesPath } from "../backlogs/paths";
 import { useLoad } from "../forms/useLoad";
+import { Button } from "../ui/Button";
 import { Chip } from "../ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { ListRow, Rows } from "../ui/ListRow";
@@ -13,10 +16,13 @@ const issuesWords = (count: number) => `${count} ${count === 1 ? "issue" : "issu
 
 const stepsWords = (count: number) => `Backlog · ${count} ${count === 1 ? "step" : "steps"}`;
 
-export function BacklogPage({ client = mcpBacklogPageClient }: { client?: BacklogPageClient }) {
+type Props = { client?: BacklogPageClient; manage?: BacklogManageClient };
+
+export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklogManageClient }: Props) {
   const navigate = useNavigate();
   const { backlogId = "" } = useParams();
   const loaded = useLoad(() => client.page(backlogId), `backlog-page:${openAgencyId()}:${backlogId}`);
+  const mayManage = useMayManage(manage);
   const back = () => navigate(issuesPath(backlogId));
 
   if (loaded.state === "loading") {
@@ -37,6 +43,7 @@ export function BacklogPage({ client = mcpBacklogPageClient }: { client?: Backlo
   const { name, steps, groups } = loaded.data;
   return (
     <Shell title={name} sub={stepsWords(steps.length)} onBack={back}>
+      {mayManage.state === "ready" && mayManage.data ? <Button to={editBacklogPath(backlogId)}>Edit this backlog</Button> : null}
       <SectionHeading>Steps, in order</SectionHeading>
       <Rows>
         {steps.map((step) => (
