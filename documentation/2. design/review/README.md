@@ -1,0 +1,162 @@
+# Review log
+
+- [workflows.md](workflows.md): the workflow, its versions, draft and publish
+- [step-kinds.md](step-kinds.md): fill a form, send a form, notify and attachments, say yes or no, run another workflow
+- [router.md](router.md): the Route step and its rules
+- [records.md](records.md): records, the Payments record, the catalog entries behind them
+- [app-pages.md](app-pages.md): the pages the member app draws from the design, such as Manage payments
+- [tests.md](tests.md): scenarios, blocks, runs
+- [agent-access.md](agent-access.md): how an AI agent reaches each feature and what it may do
+- [app-gaps.md](app-gaps.md): the fill list of gaps inside the member app design
+- [options.md](options.md): where every list of choices comes from
+- [definition.md](definition.md): the premise: workflows, records, scenarios in the published definition
+- [engine.md](engine.md): how a workflow runs
+- [test-runs.md](test-runs.md): how a test runs through the API
+- [backends.md](backends.md): module by module
+- [performance.md](performance.md): risks and hot paths
+- [indexes.md](indexes.md): keys, foreign keys, indexes
+- [front-end.md](front-end.md): the studio and the member app screens
+
+## Coverage
+
+Last traced (UTC date); never means not yet.
+
+Framework areas
+- options (where every list comes from): 2026-10-29
+- step kinds: 2026-10-29
+- workflows, versions, publish: 2026-10-29
+- router rules: 2026-10-29
+- records and catalog entries: 2026-10-29
+- tests (scenarios, blocks, runs): 2026-10-29
+- agent access: 2026-10-29
+- agency publish, hash, issue scan, version reads: 2026-10-29
+- task manager blueprint: 2026-10-29
+- forms, comm (lists, unread, blueprints): 2026-10-29
+- catalog indexes: 2026-10-29
+- actor, shared engine (specstore, spec migrate): 2026-10-29; migrations: 2026-10-29 (wakala-api only)
+- how a module is mounted and named: 2026-10-29 (registry builders and caches)
+- rights (agent permissions, caches): 2026-10-29; storage: never
+- task manager runs, sweep and indexes (workflow_run, watchdog): 2026-10-29
+- test twins in the shared engine (spec/migrate.go): 2026-10-29
+- AI limits (wakala-api ai_*; the ai module is not checked out): 2026-10-29 (partial)
+App journeys
+- 01-entry (agencies, sign-in), 02-member steps 1, 2, 4: 2026-10-29
+- 13-buy-inputs step 3, 14-supply-inputs steps 4 and 5: 2026-10-29
+- 16-sell-the-harvest screens: 2026-10-29
+- 13-buy-inputs other steps, 14 steps 1 to 3: 2026-10-29 (screens walked)
+- 05-inbox, 06-forms: 2026-10-29
+- 04-chat rooms list: 2026-10-29; farm and trade rooms: 2026-10-29
+- 02-home, 03-apps: 2026-10-29
+- 15-run-the-market (Group coordinator, against the app folders): 2026-10-29
+- 18-run-a-group-order steps 1 to 4, Manage payments rows end to end: 2026-10-30
+- 13-buy-inputs steps 2 and 3, 17 steps 1 and 2 as redrawn chats, 03-apps form-app: 2026-10-29
+- Member app opening: Home calls, unread refresh, live-records read from the draft: 2026-10-30
+Studio pages
+- workflow-steps.html, workflow-records.html: 2026-10-29
+- notification fan-out to an audience (comm Raise, results announcement): 2026-10-30
+- Route step reading form answers (forms ListAllAnswers, answer indexes): 2026-10-30
+- workflows, workflow-detail, workflow-edit, workflow-cancel, test pages: 2026-10-29 (earlier runs)
+- payment row names (record_rows.go): 2026-10-30
+- Publish path with scenario objects (hash, document build, gate, new-draft pass), test run list, code counter: 2026-10-30
+- Test agent runner (wakala-api internal/testruns, stage, judge, run board and resume): 2026-10-30
+- Sign-in token check and per-agency database gate (wakala-api middleware.go, internal/dbpool): 2026-10-30
+- Rights storage (permissions module not checked out): never
+- Rollback channel switch and the step-start pin read (agency publication_impl.go, wakala-api step_limit.go): 2026-10-30
+- Approvals (propose, amend, decide, apply) and notification rules (wakala-api internal/approvals, internal/notifyrules): 2026-10-30
+- throttle, apikeys (windows, strikes, verify, key table): 2026-10-30; notifyrules audience resolve: 2026-10-30 (earlier run)
+
+- App journeys 21 to 25 (send a report: reference and dates, forms send fields, reports mount): 2026-10-31
+- run-another-workflow step: draft save, scan, runtime guard: 2026-10-31
+- catalog entry listing (entry_list.go, listcap.go, blueprint indexes): 2026-10-30
+- Modules page switch, production gate and cache (module_switch.go, module_impl.go): 2026-10-31
+- Review page (decision 105): run, resume at boot, tables and indexes (reviewruns, agency review_*_impl.go): 2026-10-31
+- Agency launch into the customer's own project (launch.go, shopdb grants, launch route): 2026-10-31
+- Decision 106 / AGD-009 (workflow_objective, step RACI labels, scan rule): 2026-10-31
+- Stale-status check of step-kinds.md against the work_item blueprint: 2026-10-31
+- Agency draft picking and the draft cap (limits.go, draft_impl.go, console, approvals, import): 2026-10-31
+- 06-forms answer screen against the forms answer types and validation: 2026-10-31
+- Decision 112/113 open-steps read, person-to-role link, ask run starter (member.go, agency_role_link.go, ask_run.go, market_ask_run.go): 2026-11-01
+- 03-apps landing against decision 113: 2026-11-01
+- Private messages (comm dm_thread list and messages, deferred in the member app): 2026-11-01
+- App journey 22 join-a-group screens against actor join, decline, appeal and joinable list: 2026-11-02
+- Step `tool` field, test run trail and runs list, publish wrapper role sync (agency 94ead5e, wakala-api definition_role_kinds.go, testruns act.go): 2026-11-02
+- Test stage permissions (Derive, allowedActions), forms provisioning backfill and approval index, shared InsertOnce (wakala-api f9f1013, forms d8798da, shared bad8d22): 2026-11-02
+- Built Apps page and tab bar against decision 113, Apps open cost (AppsPage.tsx, coordinator/start/api.ts): 2026-11-02
+- Sign-in link, Your agencies, Sign out against decisions 115 to 117 (GET /me cost, GET /me/agencies, forms waiting per agency): 2026-11-02
+- Started page (03-started, decision 115) against its five lists, market_announced.go poster and notice scans: 2026-11-02
+- Inbox rows against comm events, push-tap landing, notification list and unread (notification_impl.go, notification-text.ts, inbox.tsx): 2026-11-02
+- Chat step of a chat workflow (workflow-chat.html, decision 123) against work_item and agent permissions: 2026-11-02
+- Group roles in actor (leads_group, capabilities, join decide race), market coordinator check, decisions 118 and 121 to 133 against the app: 2026-11-02
+- Do Something Ongoing segment against caller_open_steps.go and the five lists (decision 118): 2026-11-02
+- Group page and Leave group (group-page.html, actor Deregister and RemoveFromGroup, room checks inRoom and leadsRoom): 2026-11-02
+- Publication retention and document size (agency publication_impl.go, agency.operations.json): 2026-11-02
+- Studio routes against the workflow design, mwanachama-frontend-shared (Flutter kernel, nothing to trace): 2026-11-02
+- Approvals decide and apply after HS737 (approvals.go, approvals_apply.go): 2026-11-02, no new gap
+- Controls page against wakala-api controlenforce, formsettings store (launchlog, operatorrole, languages, invitemail still never traced): 2026-11-03
+- Member invitations (single and batch, invitemail, SMTP sender) and the launch journal: 2026-11-03
+- Languages and translations (languages package, language_routes.go, translation_routes.go, forms translation role); operatorrole and launchlog journal storage: operatorrole never, launchlog 2026-11-03 (earlier run). Languages traced 2026-11-03
+- Studio operator role seed (operatorrole, cmd/seedrole, cached ActionsAnywhere): 2026-11-03; permissions storage still never (module not checked out)
+- Standing forms (06-forms detail screen against MF160; forms ListSubmissions, standing audience, period keys): 2026-11-03
+- Usage pages (decision 162) against the AI gateway callers in wakala-api (reviewruns, testruns, token_budget): 2026-11-03; the AI module itself never (not checked out)
+- Call-off of a group order and its notices (market_announced_calledoff.go, raiseNamed, toldOf): 2026-11-03; mwanachama-backend-market join and send never (module not checked out)
+- Agency `nextCode` against actor ACT77 and ACT78 (counter seed race, counter behind the data); comm person-reach cost (HS691): 2026-11-03
+- Account router pool and session check (wakala-api internal/accounts, internal/session): 2026-11-03; the auth module's session ledger table never (not checked out)
+- MCP session binding and session cap (mcp_session_binding.go, session.go, commits 9e4388c and 6db3e0b): 2026-11-03
+- Opt-in request log for MCP tool calls (cmd/server/requestlog.go, commit 1c42dfc): 2026-11-03
+- REST import document against the published document (import caps, duplicate keys, scenarios section; wakala-api 5da089d, instance_import*.go): 2026-11-03
+- 13-buy-inputs step 5 (her orders, Paid chip) against decisions 90 and 145 and the built app's status words: 2026-11-04
+- Add payment picker (payment-new.tsx, payments.ts loadPeople, actor ListActors) and the demo farmers document against the import caps (agency 0b154f9): 2026-11-04
+- Task manager overdue list, cases and votes (overdue.go, case.go, case_vote.go, blueprint indexes): 2026-11-04
+- Schedule sweep, repeating tasks and standing messages (schedule_sweep.go, repeating_store.go, standing_impl.go, recur): 2026-11-04
+- Sign-in token check cold cache, session seen write per request, shopauth and supabasemgmt clients (middleware.go, shopauth, supabasemgmt; `mwanachama-backend-auth` LastSeen never, not checked out): 2026-11-04
+- Risk pages (bowties, hazards, threats, consequences) against agency risk, risk_pathway, library parts, links, bow-tie scan and usage (risk_impl.go, risk_threat_impl.go, bowtie_scan.go, library_usage.go): 2026-11-04
+- Roles page (roles.html) against actor role kinds and seats, ListRoleHolders, definition role sync on publish and rollback (definition_role_impl.go, definition_role_kinds.go): 2026-11-04; permissions storage still never
+- Notification settings screen and the mute path (inbox-preferences.tsx, comm Raise and IsMuted, notifyrules Mutable): 2026-11-04
+- Built member routes with no drawn page (Profile, Signed-in devices, group settings) against GET /me/sessions, /owner/member-sessions and actor join mode and hidden (session_routes.go, join_impl.go, group_leaders.go): 2026-11-04
+- MCP body guard, batch cap and body limit against the per-agency gate (mcp_body_guard.go, limits.go, bodylimit.go, dbpool/gate.go): 2026-11-04
+- 16-sell-the-harvest step 2 and 13 step 3 join, change and send against the built join page (GroupOrderPage.tsx, api.ts); market module never (not checked out): 2026-11-04
+- Offer card in the trade thread (share-offer.ts, ShareCard.tsx, chat_message pointer columns); agent that writes the message never (not checked out): 2026-11-04
+- 02-member step 4 (Assets Keeper), assetmanager mount and asset.manage permission (assetmanager module never, not checked out): 2026-11-05
+- Chat read path: ThreadView 5 second poll, roomOf last post, comm ListChatMessagesFor paging (api/chat.ts, while-visible.ts, manager_chat.go, chat_impl.go): 2026-11-05
+- Shared engine list cap (specstore CapLists, DefaultListCap) against its callers in comm, actor, taskmanager, agency, catalog: 2026-11-05
+- Agency review runs (review rows, StartReview, RecordReviewArea, reviewruns Runner and Resume, resumeReviews): 2026-11-05; the AI module's own timeout never (not checked out)
+- Web Push delivery (comm push_delivery, push_impl, webpush; push_delivery and push_subscription indexes; wakala-api prune in schedule sweep): 2026-11-05
+- Catalog slot booking (slot.go Book, booking blueprint indexes, mounted in wakala-api catalog spec): 2026-11-05
+- Comm moderation (reports, queue, removal, dispute) against the member app: 2026-11-05
+- Forms public links (anonymous door, respondent and declaration rows, link open and questions reads; forms public_impl.go, wakala-api anonymous_door.go, throttle/window.go): 2026-11-05
+- Task placement and card order (taskmanager task_rank.go, place_task, rank index, CreateTask and ListTasks): 2026-11-05
+- Member removal from an agency and template mint (member_removal.go, agencies/removal.go, actor removal_impl.go, templates/build.go, mcp_tools_template.go): 2026-11-05
+- Comm retention (notification, notification_acknowledgement, chat_message have no prune; only push_delivery does): 2026-11-05
+- Payment row correction and duplicate guard (record_row_correction.go, CreateRecordRow, record_row indexes; api-shared audit module not used by wakala-api): 2026-11-05
+- Member app offline send, outbox and service worker (drafts.ts, send.ts, outbox.ts, pwa/worker.ts, forms SubmitAnswersFor): 2026-11-06
+- Insights gate and list (wakala-api insight_scope.go, insight_mcp_scope.go, migrations 4 and 5; the insights module itself never, not checked out): 2026-11-06
+- Workspace mount (workbooks, shares, desks; wakala-api workspace.go, workspace_routes.go; the workspace module itself never, not checked out): 2026-11-06
+- Project lock-down SQL, row-level security timing and the seed user function (provision.go, launch.go `secure`, registry.go lazy `Provision`): 2026-11-06
+- Chat post write path (PostChatMessageFor, belongingIn, authorKindIn, body length rule): 2026-11-06
+- Step limit sweep (limitedBoard, SweepStepLimits, CloseWorkflowRunsPastLimit, saveRun, step_due index): 2026-11-06
+- Task manager list paths and join tables (ListTasks, ListTasksInProject, GetTaskByName, loadTagNames, membership, tagging, blocker, dependency); agency 8f712a9 test-scenarios design note: 2026-11-06
+- Answered forms read-back, Edit send, Final tag and history page (form-answers.tsx, answered.tsx, forms.ts fetchFormAnswers, forms options route): 2026-11-06
+- Catalog page-view counter, anonymous record on the reports mount (run.go RecordPageView, reports_routes.go, page_view blueprint): 2026-11-06
+- Forms results publish and read (results_impl.go, results_announcements.go, member app has no read): 2026-11-06
+- Paid mark on a form send against a resend (forms paid_impl.go, submission_impl.go, manager.go replace): 2026-11-06
+- Report promises, case message thread standing and closed-ask notice (report_promises.go, case_threads.go, ask_closed.go; taskmanager ListTasks, ListOverdueTasks, CanTransitionTo; market module never, not checked out): 2026-11-07
+- Actor delegations (delegation_impl.go, ActsFor has no caller, grant gate open): 2026-11-07
+- Draft step update path: studio chat Edit Work Item to agency UpdateWorkItem and writeUpdate (replace, no version compare): 2026-11-07
+- Studio Objectives and Add objective pages against agency measure (blueprint, set_measure, hash, document): 2026-11-07
+- Studio Profile page rename against UpdateAgency, approval apply, document and hash (profile.html, agency_impl.go, approvals_apply.go): 2026-11-07
+- Step actor pickers against the Start list (actor_pick_impl.go, picker_impl.go, picker_groups.go, caller_open_steps.go; agency conflict.go, control_changes.go and control_gaps.go read, ChangedEnforcedControls has no caller): 2026-11-07
+- Shared dispatch error handling and required-argument check (dispatch.go handlerFor, tools.go invokerFor, requestlog.go): 2026-11-07
+- Who sees rows on a record (workflow-records.html, viewer_role_id, record_rows.go liveRowsOf): 2026-11-07
+- Home Forms card (HS1021) and Forms page reads (home.tsx, api/forms.ts, forms waiting_impl.go, answered_impl.go); Ask in Chat to the chat agent (decision 147, HS643, ai_weekly_limits_test.go): 2026-11-07
+- Photo and file answers (forms files.go, answer.go, blueprint; member app controls.tsx and answers.ts; no files module checked out): 2026-11-07
+- Agency join, leave and boot grant seed (agencies/join.go, join_routes.go, resident_grants.go, main.go line 88): 2026-11-07
+- Catalog ratings attachment (ratings.go, catalog_ratings_routes.go, attach block; ratings module never, not checked out): 2026-11-08
+- Forms register and stable identity (register_impl.go, manager.go listOf, identity_owner.go; accounting and git modules never, not checked out): 2026-11-08
+- Voting (polls) mount and member app absence (voting_routes.go, membership.go, registry.go, modules.html): 2026-11-08; voting module never, not checked out
+- Engage module (notices, events, volunteer calls; blueprint, operations, post.go, notice.go, volunteer.go; mount WK209): 2026-11-08; no list operation, no mount, no phone screen
+- Permissions module (grant, role_action, role, permission; access.go, grant.go, action.go, permissions_manager.go; wakala-api caches.go, record_grants.go): 2026-11-08; storage of permission rows beyond the blueprint never
+- Market module (group.go, manager.go updateGroupFrom, line and group_order indexes, names lookup), AI module usage and limits (usage.go, usage_hold.go, usage_day.go, chat.go), auth LastSeen throttle (last_seen.go): 2026-11-08; market quotes.go, orders.go, asks.go never read, ai provider adapters never read
+- Market orders, quotes, asks and yeses against the published workflow pin and the lists (orders.go, quotes.go, asks.go, workflows.go; wakala-api registry.go market mount): 2026-11-08; market tests never read
+- Accounting module (ledger_store.go Balance, CloseAccount, Post, blueprint and provision indexes; wakala-api accounting_routes.go): 2026-11-08; budget_store.go, overdue_store.go and dimensions.go never
+- Sources module (search.go SearchChunks, chunk.go, verification.go standing, blueprint indexes; wakala-api sources_routes.go; specstore listCap): 2026-11-08; custody, context and digitaltwin are not imported by wakala-api (go.mod), riskmanager mount not re-read: never
+- Risk manager register mount (riskmanager Gaps, bowtiesOf, queries, blueprint indexes; wakala-api riskManagerFor, mount page): 2026-11-08; riskmanager routes/mcp adapters and the studio risk pages' use of the register never
