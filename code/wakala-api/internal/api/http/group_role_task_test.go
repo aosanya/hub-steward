@@ -8,6 +8,7 @@ import (
 
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
+	agencymodels "wakalaserver/modules/agency/models"
 
 	"wakalaserver/internal/agencies"
 )
@@ -279,5 +280,157 @@ func TestGroupRoles_AGroupRoleNeedsARealGroupAndARealRole(t *testing.T) {
 	}
 	if rec := w.call(t, "POST", w.groupRolesPath(), map[string]any{"group_id": group}, w.owner); rec.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("no role: %d %s, want 422", rec.Code, rec.Body.String())
+	}
+}
+
+func (w groupRoleWalk) backlogRoles(t *testing.T) (member, worker string) {
+	t.Helper()
+	ctx := context.Background()
+	mgr, err := w.deps.Registry.AgencyManager(ctx, w.instance)
+	if err != nil {
+		t.Fatalf("AgencyManager: %v", err)
+	}
+	m, err := mgr.CreateRole(ctx, agencymodels.Role{DraftID: w.draftID, Name: "Backlog member", Permissions: []string{"task.read"}})
+	if err != nil {
+		t.Fatalf("CreateRole member: %v", err)
+	}
+	k, err := mgr.CreateRole(ctx, agencymodels.Role{DraftID: w.draftID, Name: "Backlog worker", Permissions: []string{"task.read", "task.edit"}})
+	if err != nil {
+		t.Fatalf("CreateRole worker: %v", err)
+	}
+	w.publish(t)
+	perms := map[string][]string{m.ID: {"task.read"}, k.ID: {"task.read", "task.edit"}}
+	before := w.deps.rolePermissionsOverride
+	w.deps.rolePermissionsOverride = func(ctx context.Context, roleID string) ([]string, error) {
+		if codes, ok := perms[roleID]; ok {
+			return codes, nil
+		}
+		return before(ctx, roleID)
+	}
+	return m.ID, k.ID
+}
+
+func (w groupRoleWalk) tm(path string) string {
+	return "/instances/" + w.instance + "/taskmanager" + path
+}
+
+func (w groupRoleWalk) access(t *testing.T, backlog, group string) map[string]any {
+	t.Helper()
+	rec := w.call(t, "GET", w.tm("/backlogs/"+backlog+"/access"), nil, w.owner)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("list access: %d %s", rec.Code, rec.Body.String())
+	}
+	groups, _ := decodeObject(t, rec)["groups"].([]any)
+	for _, g := range groups {
+		if m, ok := g.(map[string]any); ok && m["group_id"] == group {
+			return m
+		}
+	}
+	return nil
+}
+
+func TestGroupRoles_GivingAccessAlsoGivesTheMatchingRoleAndTakingItAwayTakesTheRoleAway(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	member, worker := w.backlogRoles(t)
+	staff, support := w.group(t, "Staff"), w.group(t, "Support")
+	_, amina := w.resident(t, "Amina", "Support")
+
+	if rec := w.call(t, "PUT", w.tm("/backlog-owner-group"), map[string]any{"group_id": staff}, w.owner); rec.Code != http.StatusNoContent {
+		t.Fatalf("set owner group: %d %s", rec.Code, rec.Body.String())
+	}
+	if code := w.list(t, amina); code != http.StatusNotFound {
+		t.Fatalf("before any access: %d, want 404", code)
+	}
+
+	if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+support), map[string]any{"level": "see"}, w.owner); rec.Code != http.StatusOK {
+		t.Fatalf("give Can see: %d %s", rec.Code, rec.Body.String())
+	}
+	held, _ := w.deps.Registry.(agencies.GroupRoles).GroupRoleIDs(context.Background(), w.instance, support)
+	if !slices.Equal(held, []string{member}) {
+		t.Fatalf("after Can see the group holds %v, want only the Backlog member role %s", held, member)
+	}
+	if got := w.access(t, "backlog", support); got == nil || got["no_role"] == true || got["role_too_small"] == true {
+		t.Fatalf("access entry after Can see = %v, want a role and no warning", got)
+	}
+	if code := w.list(t, amina); code != http.StatusOK {
+		t.Fatalf("after Can see: list %d, want 200", code)
+	}
+	if code := w.create(t, amina); code != http.StatusForbidden {
+		t.Fatalf("after Can see: create %d, want 403", code)
+	}
+
+	if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+support), map[string]any{"level": "move"}, w.owner); rec.Code != http.StatusOK {
+		t.Fatalf("give Can move: %d %s", rec.Code, rec.Body.String())
+	}
+	held, _ = w.deps.Registry.(agencies.GroupRoles).GroupRoleIDs(context.Background(), w.instance, support)
+	if !slices.Equal(held, []string{worker}) {
+		t.Fatalf("after Can move the group holds %v, want only the Backlog worker role %s", held, worker)
+	}
+	if code := w.create(t, amina); code != http.StatusCreated {
+		t.Fatalf("after Can move: create %d, want 201", code)
+	}
+
+	if rec := w.call(t, "DELETE", w.tm("/backlogs/backlog/access/"+support), nil, w.owner); rec.Code != http.StatusOK {
+		t.Fatalf("take access: %d %s", rec.Code, rec.Body.String())
+	}
+	held, _ = w.deps.Registry.(agencies.GroupRoles).GroupRoleIDs(context.Background(), w.instance, support)
+	if len(held) != 0 {
+		t.Fatalf("after the last access is taken the group still holds %v", held)
+	}
+	if code := w.list(t, amina); code != http.StatusNotFound {
+		t.Fatalf("after access and role are taken: %d, want 404", code)
+	}
+}
+
+func TestGroupRoles_AReadOnlyRoleWithCanMoveCanOnlyLook(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	member, _ := w.backlogRoles(t)
+	staff, support := w.group(t, "Staff"), w.group(t, "Support")
+	_, amina := w.resident(t, "Amina", "Support")
+	if rec := w.call(t, "PUT", w.tm("/backlog-owner-group"), map[string]any{"group_id": staff}, w.owner); rec.Code != http.StatusNoContent {
+		t.Fatalf("set owner group: %d", rec.Code)
+	}
+	if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+support), map[string]any{"level": "move"}, w.owner); rec.Code != http.StatusOK {
+		t.Fatalf("give Can move: %d %s", rec.Code, rec.Body.String())
+	}
+	held := w.deps.Registry.(agencies.GroupRoles)
+	ctx := context.Background()
+	ids, _ := held.GroupRoleIDs(ctx, w.instance, support)
+	for _, id := range ids {
+		if err := held.TakeGroupRole(ctx, w.instance, support, id); err != nil {
+			t.Fatalf("TakeGroupRole: %v", err)
+		}
+	}
+	if err := held.GiveGroupRole(ctx, w.instance, support, member); err != nil {
+		t.Fatalf("GiveGroupRole: %v", err)
+	}
+
+	entry := w.access(t, "backlog", support)
+	if entry == nil || entry["role_too_small"] != true {
+		t.Fatalf("access entry = %v, want role_too_small", entry)
+	}
+	if code := w.list(t, amina); code != http.StatusOK {
+		t.Fatalf("a read-only role with Can move lists: %d, want 200", code)
+	}
+	if code := w.create(t, amina); code != http.StatusForbidden {
+		t.Fatalf("a read-only role with Can move creates: %d, want 403", code)
+	}
+}
+
+func TestGroupRoles_TheHighestLevelAcrossAPersonsGroupsWins(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	w.backlogRoles(t)
+	staff, support, dev := w.group(t, "Staff"), w.group(t, "Support"), w.group(t, "Dev")
+	_, kofi := w.resident(t, "Kofi", "Support", "Dev")
+	if rec := w.call(t, "PUT", w.tm("/backlog-owner-group"), map[string]any{"group_id": staff}, w.owner); rec.Code != http.StatusNoContent {
+		t.Fatalf("set owner group: %d", rec.Code)
+	}
+	for group, level := range map[string]string{support: "see", dev: "move"} {
+		if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+group), map[string]any{"level": level}, w.owner); rec.Code != http.StatusOK {
+			t.Fatalf("give %s: %d %s", level, rec.Code, rec.Body.String())
+		}
+	}
+	if code := w.create(t, kofi); code != http.StatusCreated {
+		t.Fatalf("in Support (Can see) and Dev (Can move): create %d, want 201", code)
 	}
 }
