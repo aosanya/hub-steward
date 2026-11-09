@@ -1,7 +1,7 @@
 import { Chip } from "../ui/Chip";
 import type { Issue } from "./api";
 import "./backlogs.css";
-import { tagsOf } from "./tags";
+import { tagsOf, toneOf } from "./tags";
 
 const idLike = /^[A-Za-z]+-?\d+[A-Za-z]?$/;
 
@@ -34,7 +34,7 @@ export function IssueTags({ issue, chosen, onTag }: { issue: Issue; chosen: stri
   return tags.length === 0 ? null : (
     <span className="issue-tags">
       {tags.map((tag) => (
-        <Chip key={tag} pressed={chosen.includes(tag)} onClick={() => onTag(tag)}>
+        <Chip key={tag} tone={toneOf(tag, issue)} pressed={chosen.includes(tag)} onClick={() => onTag(tag)}>
           {tag}
         </Chip>
       ))}

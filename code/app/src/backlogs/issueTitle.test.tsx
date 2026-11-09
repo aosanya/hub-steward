@@ -32,4 +32,14 @@ describe("an issue's title on a row or card", () => {
     rerender(<IssueTags issue={issue({})} chosen={[]} onTag={() => {}} />);
     expect(container.querySelectorAll(".chip")).toHaveLength(0);
   });
+
+  it("draws every tag, Ready and Blocked too, as the same pill with its own tint", () => {
+    const { container } = render(<IssueTags issue={issue({ mark: "Blocked", repo: "hub-steward", topics: ["Docs"], backlog: "Backlog" })} chosen={[]} onTag={() => {}} />);
+    const pills = Array.from(container.querySelectorAll(".issue-tags > *"));
+    expect(pills.map((one) => one.textContent)).toEqual(["Blocked", "hub-steward", "Docs", "Backlog"]);
+    expect(pills.every((one) => one.classList.contains("chip"))).toBe(true);
+    expect(pills[0]).toHaveClass("danger");
+    expect(pills[3]).toHaveClass("accent");
+    expect(container.textContent).toBe("Blockedhub-stewardDocsBacklog");
+  });
 });

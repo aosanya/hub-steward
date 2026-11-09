@@ -23,8 +23,8 @@ input::placeholder { color: var(--ink-soft); }
 .chip { display: inline-flex; align-items: center; gap: .25rem; padding: 0 .625rem; border: 0; border-radius: var(--r-pill); background: var(--bg-alt); color: var(--ink-soft); font-family: inherit; font-size: .8125rem; font-weight: 500; line-height: 1.5rem; white-space: nowrap; }
 .chip.accent { background: var(--accent-wash); color: var(--accent-strong); }
 .chip.info { background: var(--info-wash); color: var(--info); }
-.chip.success { background: transparent; color: var(--success); }
-.chip.danger { background: transparent; color: var(--danger); }
+.chip.success { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
+.chip.danger { background: color-mix(in srgb, var(--danger) 14%, transparent); color: var(--danger); }
 .chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
 .btn { display: flex; align-items: center; justify-content: center; gap: .5rem; width: 100%; min-height: 3rem; padding: 0 1.25rem; background: transparent; border: 1px solid transparent; border-radius: var(--r-md); font-weight: 600; text-align: center; }
 .btn.primary { background: var(--accent); color: var(--on-accent); }

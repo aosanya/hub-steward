@@ -268,6 +268,9 @@ describe("one issue", () => {
     expect(heading.querySelector(".issue-code")?.textContent).toBe("DEV-009");
     expect(within(screen.getByRole("banner")).getByRole("heading", { level: 1 })).toHaveTextContent("DEV-009");
     expect(screen.getByRole("button", { name: "Docs" })).toBeInTheDocument();
+    const detailTags = Array.from(document.querySelectorAll(".issue-tags > *"));
+    expect(detailTags.length).toBeGreaterThan(1);
+    expect(detailTags.every((one) => one.classList.contains("chip"))).toBe(true);
     const text = document.body.textContent ?? "";
     expect(text).not.toContain("**");
     expect(text).not.toContain("`");
