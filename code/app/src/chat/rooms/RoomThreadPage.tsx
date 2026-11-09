@@ -6,6 +6,7 @@ import { Button } from "../../ui/Button";
 import { LoadFailed } from "../../ui/LoadState";
 import { Shell } from "../../ui/Shell";
 import { generalOf, mcpRoomsClient, type RoomMessage, type RoomsClient } from "./api";
+import { BacklogSummariesLoader } from "../backlogCards/SummariesLoader";
 import { askPath } from "./cards";
 import { Composer } from "./Composer";
 import { Timeline } from "./Timeline";
@@ -55,7 +56,9 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
       {thread?.audience === "leads" ? <p className="rm-note">Leaders only · members cannot see this yet</p> : null}
       {failed ? <LoadFailed words="The room could not be loaded." /> : null}
       {messages ? (
-        <Timeline messages={messages} threadLabel={label} client={client} openAsk={(askId) => navigate(askPath(roomId, threadId, askId))} />
+        <BacklogSummariesLoader kinds={messages.map((m) => m.kind)}>
+          <Timeline messages={messages} threadLabel={label} client={client} openAsk={(askId) => navigate(askPath(roomId, threadId, askId))} />
+        </BacklogSummariesLoader>
       ) : null}
       {thread?.declined ? (
         <p className="rm-note">This request was declined. You can read it, not write in it.</p>
