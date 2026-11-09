@@ -3,7 +3,7 @@ import { mcpMarketClient, type MarketClient } from "../../market/api";
 import { useLoad } from "../../forms/useLoad";
 import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { ListRow, Rows } from "../../ui/ListRow";
-import { doSomethingPath, routes } from "../../routes";
+import { doSomethingBackPath, routes } from "../../routes";
 import { ProductRows } from "../../ui/ProductRows";
 import { Shell } from "../../ui/Shell";
 
@@ -11,7 +11,7 @@ export function MarketPage({ client = mcpMarketClient }: { client?: MarketClient
   const navigate = useNavigate();
   const products = useLoad(() => client.listProducts(), "products");
   return (
-    <Shell title="Market" onBack={() => navigate(doSomethingPath())}>
+    <Shell title="Market" onBack={() => navigate(doSomethingBackPath())}>
       {products.state === "error" ? <LoadFailed words="The market could not be loaded." /> : null}
       {products.state === "ready" && products.data.length === 0 ? <EmptyCard words="Nothing is listed yet." /> : null}
       {products.state === "ready" && products.data.length > 0 ? (

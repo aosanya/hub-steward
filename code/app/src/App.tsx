@@ -51,8 +51,13 @@ import { StepPage } from "./steps/StepPage";
 import { SessionGate } from "./entry/SessionGate";
 import { agencyHomePath } from "./agency/open";
 import { allScreens, routes } from "./routes";
-import { agencyRoute, backlogsTab, retiredStartedRoute, tabRoute, tabs, type Tab } from "./tabs";
+import { agencyRoute, backlogsTab, ongoingTab, retiredStartedRoute, tabPathIn, tabRoute, tabs, type Tab } from "./tabs";
 
+
+function ToAgencyOngoing() {
+  const { agencyId = "" } = useParams();
+  return <Navigate to={tabPathIn(ongoingTab, agencyId)} replace />;
+}
 
 function ToAgencyHome() {
   const { agencyId = "" } = useParams();
@@ -76,9 +81,10 @@ export function App() {
         <Route key={tab.id} path={tab.path} element={<ToOpenAgency tab={tab} />} />
       ))}
       <Route path={backlogsTab.path} element={<ToOpenAgency tab={backlogsTab} />} />
+      <Route path="/started" element={<ToOpenAgency tab={ongoingTab} />} />
       <Route path={agencyRoute} element={<InAgency><Outlet /></InAgency>}>
         <Route index element={<ToAgencyHome />} />
-        <Route path={retiredStartedRoute} element={<ToAgencyHome />} />
+        <Route path={retiredStartedRoute} element={<ToAgencyOngoing />} />
         {tabs.map((tab) => (
           <Route key={`in-${tab.id}`} path={tabRoute(tab)} element={tabElement(tab)} />
         ))}

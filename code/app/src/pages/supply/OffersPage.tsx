@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { doSomethingPath } from "../../routes";
+import { doSomethingBackPath } from "../../routes";
 import { useLoad } from "../../forms/useLoad";
 import { isApproved, mcpSupplyClient, mySupplier, buyerPriceWords, priceWords, resolveMember, type SupplyClient } from "../../supply/api";
 import { Button } from "../../ui/Button";
@@ -21,7 +21,7 @@ export function OffersPage({ client = mcpSupplyClient, asks = mcpBuyerAskClient,
   }, "offers");
   const waiting = useLoad(async () => (buyer ? waitingAsks(await asks.list(me).catch(() => [])) : []), "offers-waiting-asks");
   return (
-    <Shell title={buyer ? "Your prices" : "Offers"} onBack={() => navigate(doSomethingPath())}>
+    <Shell title={buyer ? "Your prices" : "Offers"} onBack={() => navigate(doSomethingBackPath())}>
       {buyer ? <BuyerTabs active="prices" /> : null}
       {waiting.state === "ready" && waiting.data.length > 0 ? (
         <>

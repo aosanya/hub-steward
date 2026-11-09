@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { doSomethingPath } from "../../routes";
+import { doSomethingBackPath } from "../../routes";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { Button } from "../../ui/Button";
@@ -60,7 +60,7 @@ export function CoordinatorOrderPage({ orders = mcpGroupOrderClient, payments = 
     }
   };
   return (
-    <Shell title={order.state === "ready" ? order.data.order.productWords : "Group order"} sub={order.state === "ready" ? orderFormName : undefined} onBack={() => navigate(doSomethingPath())}>
+    <Shell title={order.state === "ready" ? order.data.order.productWords : "Group order"} sub={order.state === "ready" ? orderFormName : undefined} onBack={() => navigate(doSomethingBackPath())}>
       {order.state === "error" ? <LoadFailed words="This group order could not be opened." /> : null}
       {order.state === "ready" ? (
         <>

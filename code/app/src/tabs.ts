@@ -30,9 +30,39 @@ export const tabPathIn = (tab: Tab, agencyId: string) => (agencyId ? `${agencyBa
 
 export const tabRoute = (tab: Tab) => `${agencyRoute}/${tab.segment}`;
 
-const doSomethingSegments = [doSomethingSegment, ongoingSegment, backlogsSegment];
+const flowSegments = ["join", "start", "steps", "market", "forms"];
+
+const retiredDoSomethingScreens = ["apps", "asks", "supply", "offers", "prices", "stock", "orders", "coordinator", "group-orders", "sell", "buy", "my-orders"];
+
+const tabScreens = [doSomethingSegment, ongoingSegment, backlogsSegment];
+
+const screenOf = (pathname: string) => {
+  const [, first = "", , third = ""] = pathname.split("/");
+  return first === "a" ? third : first;
+};
 
 export const inDoSomething = (pathname: string) => {
-  const [, prefix, , segment = ""] = pathname.split("/");
-  return prefix === "a" && doSomethingSegments.includes(segment);
+  const screen = screenOf(pathname);
+  return pathname.startsWith("/a/") ? [...tabScreens, ...flowSegments].includes(screen) : [...tabScreens, ...retiredDoSomethingScreens].includes(screen);
 };
+
+export const inFlow = (pathname: string) => inDoSomething(pathname) && !tabScreens.includes(screenOf(pathname));
+
+export type Side = "start" | "ongoing";
+
+let reached: Side = "start";
+
+export const sideReached = () => reached;
+
+export const sideOf = (pathname: string): Side | undefined => {
+  const screen = screenOf(pathname);
+  if (screen === doSomethingSegment) return "start";
+  if (screen === ongoingSegment) return "ongoing";
+  return undefined;
+};
+
+export const rememberSide = (side: Side) => {
+  reached = side;
+};
+
+export const sideTab = (side: Side) => (side === "ongoing" ? ongoingTab : startTab);

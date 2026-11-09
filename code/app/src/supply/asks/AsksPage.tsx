@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { doSomethingPath } from "../../routes";
+import { doSomethingBackPath } from "../../routes";
 import { useNavigate, useParams } from "react-router-dom";
 import { listAsks, mcpChatClient, isWaiting, type Ask, type ChatClient } from "../../chat/api";
 import { useLoad } from "../../forms/useLoad";
@@ -19,7 +19,7 @@ export function AsksPage({ source = listAsks }: { source?: Source }) {
   const waitingCount = asks.state === "ready" ? asks.data.filter(isWaiting).length : 0;
   const shown = asks.state === "ready" ? asks.data.filter((ask) => isWaiting(ask) === (tab === "waiting")) : [];
   return (
-    <Shell title="Asks" onBack={() => navigate(doSomethingPath())}>
+    <Shell title="Asks" onBack={() => navigate(doSomethingBackPath())}>
       <Segmented
         items={[
           { id: "waiting", label: waitingCount > 0 ? `Waiting · ${waitingCount}` : "Waiting" },

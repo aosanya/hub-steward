@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { doSomethingPath } from "../../routes";
+import { doSomethingBackPath } from "../../routes";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { kes } from "../../supply/api";
@@ -65,7 +65,7 @@ export function SalePage({ client = mcpSellClient, actions = mcpSaleActions }: {
   };
 
   return (
-    <Shell title={sale ? `${quantityWords(sale.quantity, sale.unit)} of ${name || sale.product}` : "Sale"} onBack={() => navigate(sale ? `/sell/${sale.product}` : doSomethingPath())}>
+    <Shell title={sale ? `${quantityWords(sale.quantity, sale.unit)} of ${name || sale.product}` : "Sale"} onBack={() => navigate(sale ? `/sell/${sale.product}` : doSomethingBackPath())}>
       {loaded.state === "error" ? <LoadFailed words="This sale could not be loaded." /> : null}
       {sale && status ? (
         <>

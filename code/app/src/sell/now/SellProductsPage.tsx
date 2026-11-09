@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { doSomethingPath } from "../../routes";
+import { doSomethingBackPath } from "../../routes";
 import { useLoad } from "../../forms/useLoad";
 import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { ProductRows } from "../../ui/ProductRows";
@@ -10,7 +10,7 @@ export function SellProductsPage({ client = mcpSellClient }: { client?: SellClie
   const navigate = useNavigate();
   const products = useLoad(() => client.listProducts(), "sell-products");
   return (
-    <Shell title="Sell harvest" onBack={() => navigate(doSomethingPath())}>
+    <Shell title="Sell harvest" onBack={() => navigate(doSomethingBackPath())}>
       {products.state === "error" ? <LoadFailed words="The buyers' prices could not be loaded." /> : null}
       {products.state === "ready" && products.data.length === 0 ? <EmptyCard words="No buyer has posted a price yet." /> : null}
       {products.state === "ready" && products.data.length > 0 ? (

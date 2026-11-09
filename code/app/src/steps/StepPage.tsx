@@ -4,7 +4,7 @@ import type { FormQuestion } from "../forms/api";
 import { QuestionInput } from "../forms/QuestionInput";
 import { useLoad } from "../forms/useLoad";
 import { filled, given, type Draft, type Given } from "../pages/forms/answers";
-import { doSomethingPath } from "../routes";
+import { doSomethingBackPath } from "../routes";
 import { BottomBar } from "../ui/BottomBar";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
@@ -34,7 +34,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
   const [status, setStatus] = useState<"idle" | "sending">("idle");
   const [refusal, setRefusal] = useState("");
   const step = loaded.state === "ready" ? loaded.data.find((s) => s.id === stepId && s.orderId === order) : undefined;
-  const back = () => navigate(doSomethingPath());
+  const back = () => navigate(doSomethingBackPath());
 
   if (loaded.state === "loading") {
     return (
@@ -65,7 +65,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
     try {
       const reply = await steps.submit(step, answersOf(questions, draft));
       markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title });
-      navigate(doSomethingPath());
+      navigate(doSomethingBackPath());
     } catch (e) {
       setRefusal(e instanceof StepRefused ? e.message : refusalWords.failed);
       setStatus("idle");

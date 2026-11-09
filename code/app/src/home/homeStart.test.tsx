@@ -225,14 +225,15 @@ describe("Ongoing on the Do Something page", () => {
     expect(where()).toBe(`/a/${hub}/do-something`);
   });
 
-  it("opens an Ongoing row where the work left off, and back from it lands on Start", async () => {
+  it("opens an Ongoing row where the work left off, and back from it lands on Ongoing", async () => {
     answering(async () => ({ modules: [] }), { orders: [beganOrder] });
     openAt(`/a/${hub}/do-something`);
     await chooseOngoing();
     await userEvent.click(await screen.findByText("Create group order · Open"));
     expect(where()).toBe(`/coordinator/orders/${beganOrder.id}`);
+    expect(screen.getByRole("link", { name: /Ongoing/ })).toHaveAttribute("aria-current", "page");
     await userEvent.click(await screen.findByRole("button", { name: "Back" }));
-    expect(where()).toBe(`/a/${hub}/do-something`);
-    expect(await screen.findByRole("link", { name: /Start/ })).toHaveAttribute("aria-current", "page");
+    expect(where()).toBe(`/a/${hub}/ongoing`);
+    expect(await screen.findByRole("link", { name: /Ongoing/ })).toHaveAttribute("aria-current", "page");
   });
 });

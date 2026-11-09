@@ -82,18 +82,17 @@ describe("tab bar", () => {
     expect(screen.getByRole("main")).toHaveTextContent("");
   });
 
-  it("ends the agency's old started address on its home screen", async () => {
+  it("sends the agency's old started address to its Ongoing screen", async () => {
     at("/a/other-agency/started");
-    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: /Ongoing/ })).toHaveAttribute("aria-current", "page");
     expect(screen.queryByRole("heading", { name: "Started" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Home/ })).toHaveAttribute("href", "/a/other-agency/home");
-    expect(screen.getByRole("link", { name: /Home/ })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: /Ongoing/ })).toHaveAttribute("href", "/a/other-agency/ongoing");
   });
 
-  it("ends the agency-less /started on the open agency's home screen", async () => {
+  it("sends the agency-less /started to the open agency's Ongoing screen", async () => {
     at("/started");
-    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Home/ })).toHaveAttribute("href", "/a/walk-agency/home");
+    expect(await screen.findByRole("link", { name: /Ongoing/ })).toHaveAttribute("href", "/a/walk-agency/ongoing");
+    expect(screen.getByRole("link", { name: /Ongoing/ })).toHaveAttribute("aria-current", "page");
   });
 
   it("has no page at the old apps tab route", () => {

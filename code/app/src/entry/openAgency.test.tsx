@@ -143,21 +143,20 @@ describe("an agency the member does not belong to", () => {
 });
 
 describe("the retired Started address", () => {
-  it("sends /a/{id}/started to that agency's home screen", async () => {
+  it("sends /a/{id}/started to that agency's Ongoing screen", async () => {
     stubWakala();
     at(`/a/${riders.id}/started`, [farmers, riders]);
-    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
-    expect(tabLinks()[0]).toHaveAttribute("href", agencyHomePath(riders.id));
-    expect(tabLinks()[0]).toHaveAttribute("aria-current", "page");
+    const tab = await screen.findByRole("link", { name: /Ongoing/ });
+    expect(tab).toHaveAttribute("href", `${agencyBasePath(riders.id)}/ongoing`);
+    expect(tab).toHaveAttribute("aria-current", "page");
     expect(openAgencyId()).toBe(riders.id);
   });
 
-  it("sends /started to the open agency's home screen", async () => {
+  it("sends /started to the open agency's Ongoing screen", async () => {
     stubWakala();
     openAgency(riders.id);
     at("/started", [farmers, riders]);
-    expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
-    expect(tabLinks()[0]).toHaveAttribute("href", agencyHomePath(riders.id));
+    expect(await screen.findByRole("link", { name: /Ongoing/ })).toHaveAttribute("href", `${agencyBasePath(riders.id)}/ongoing`);
   });
 
   it("sends /started to Your agencies when no agency is open", async () => {

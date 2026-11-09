@@ -6,7 +6,7 @@ import { Button } from "../../ui/Button";
 import { EmptyCard } from "../../ui/LoadState";
 import { Field } from "../../ui/Field";
 import { ListRow, Rows } from "../../ui/ListRow";
-import { chatListPath, doSomethingPath, routes } from "../../routes";
+import { chatListPath, doSomethingBackPath, routes } from "../../routes";
 import { Shell } from "../../ui/Shell";
 
 const defaultClient = mcpGroupsClient();
@@ -99,7 +99,7 @@ export function JoinPage({ client = defaultClient }: { client?: GroupsClient }) 
     );
 
   return (
-    <Shell title={joinGroupWorkflow} onBack={() => navigate(doSomethingPath())}>
+    <Shell title={joinGroupWorkflow} onBack={() => navigate(doSomethingBackPath())}>
       <Field
         label="Have a group code?"
         placeholder="G-XXX-XXX-XXX"

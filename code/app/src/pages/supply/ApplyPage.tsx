@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { doSomethingPath } from "../../routes";
+import { doSomethingBackPath } from "../../routes";
 import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { isApproved, mcpSupplyClient, mySupplier, resolveMember, waitingWords, type SupplyClient } from "../../supply/api";
@@ -41,7 +41,7 @@ export function ApplyPage({ client = mcpSupplyClient, me }: { client?: SupplyCli
   };
 
   return (
-    <Shell title={mine ? "Your application" : "Apply as a supplier"} onBack={() => navigate(doSomethingPath())}>
+    <Shell title={mine ? "Your application" : "Apply as a supplier"} onBack={() => navigate(doSomethingBackPath())}>
       {suppliers.state === "error" ? <LoadFailed words="Your application could not be loaded." /> : null}
       {mine ? (
         <Rows>
