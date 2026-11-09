@@ -211,3 +211,73 @@ func TestGroupRoles_MyRolesCountsTheRolesOfTheCallersGroups(t *testing.T) {
 		t.Fatalf("permissions = %v, want [task.edit task.read]", got)
 	}
 }
+
+func (w groupRoleWalk) groupRolesPath() string { return "/instances/" + w.instance + "/group-roles" }
+
+func TestGroupRoles_TheOwnerGivesAndTakesAGroupRoleThroughTheRoutes(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	_, amina := w.resident(t, "Amina", "Support")
+	group := w.group(t, "Support")
+
+	rec := w.call(t, "POST", w.groupRolesPath(), map[string]any{"group_id": group, "agency_role_id": w.roles["Reader"]}, w.owner)
+	if rec.Code != http.StatusCreated {
+		t.Fatalf("owner gives the role: %d %s", rec.Code, rec.Body.String())
+	}
+	if code := w.list(t, amina); code != http.StatusOK {
+		t.Fatalf("after the role is given: %d, want 200", code)
+	}
+	rec = w.call(t, "GET", w.groupRolesPath()+"?group_id="+group, nil, w.owner)
+	items, _ := decodeObject(t, rec)["items"].([]any)
+	if rec.Code != http.StatusOK || len(items) != 1 {
+		t.Fatalf("list the group's roles: %d %s", rec.Code, rec.Body.String())
+	}
+	rec = w.call(t, "DELETE", w.groupRolesPath()+"/"+group+"/"+w.roles["Reader"], nil, w.owner)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("owner takes the role: %d %s", rec.Code, rec.Body.String())
+	}
+	if code := w.list(t, amina); code != http.StatusNotFound {
+		t.Fatalf("after the role is taken: %d, want 404", code)
+	}
+}
+
+func TestGroupRoles_OnlyTheOwnerHandsOutGroupRoles(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	group := w.group(t, "Support")
+	body := map[string]any{"group_id": group, "agency_role_id": w.roles["Reader"]}
+
+	agent := w.cookieFor(t, "agent-manager")
+	if rec := w.call(t, "POST", "/instances/"+w.instance+"/agents", map[string]any{"user_id": "agent-manager"}, w.owner); rec.Code != http.StatusCreated {
+		t.Fatalf("owner adds the agent: %d", rec.Code)
+	}
+	if rec := w.call(t, "POST", w.groupRolesPath(), body, agent); rec.Code != http.StatusForbidden {
+		t.Fatalf("an agent gives a group role: %d, want 403", rec.Code)
+	}
+	_, resident := w.resident(t, "Amina", "Support")
+	if rec := w.call(t, "POST", w.groupRolesPath(), body, resident); rec.Code != http.StatusNotFound {
+		t.Fatalf("a resident gives a group role: %d, want 404", rec.Code)
+	}
+	stranger := w.cookieFor(t, "a-stranger")
+	if rec := w.call(t, "GET", w.groupRolesPath(), nil, stranger); rec.Code != http.StatusNotFound {
+		t.Fatalf("a stranger lists group roles: %d, want 404", rec.Code)
+	}
+}
+
+func TestGroupRoles_AGroupRoleNeedsARealGroupAndARealRole(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	group := w.group(t, "Support")
+	w.deps.rolePermissionsOverride = func(_ context.Context, roleID string) ([]string, error) {
+		if roleID == w.roles["Reader"] {
+			return []string{"task.read"}, nil
+		}
+		return nil, errUnknownAgencyRole
+	}
+	if rec := w.call(t, "POST", w.groupRolesPath(), map[string]any{"group_id": "no-such-group", "agency_role_id": w.roles["Reader"]}, w.owner); rec.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("unknown group: %d %s, want 422", rec.Code, rec.Body.String())
+	}
+	if rec := w.call(t, "POST", w.groupRolesPath(), map[string]any{"group_id": group, "agency_role_id": "no-such-role"}, w.owner); rec.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("unknown role: %d %s, want 422", rec.Code, rec.Body.String())
+	}
+	if rec := w.call(t, "POST", w.groupRolesPath(), map[string]any{"group_id": group}, w.owner); rec.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("no role: %d %s, want 422", rec.Code, rec.Body.String())
+	}
+}

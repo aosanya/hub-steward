@@ -28,6 +28,7 @@ func (d *Deps) registerInstanceMCPTools(server *mcp.Server) {
 	d.registerInstanceSettingsMCPTools(server)
 	d.registerServiceGrantMCPTools(server)
 	d.registerCallerRolesMCPTool(server)
+	d.registerGroupRoleMCPTools(server)
 }
 
 type mcpCreateInstanceParams struct {

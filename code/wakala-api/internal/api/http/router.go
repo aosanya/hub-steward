@@ -49,6 +49,7 @@ func NewRouter(d *Deps) http.Handler {
 	registerMemberRemovalRoutes(mux, d.Registry, auth)
 	registerAgencyRoleLinkRoute(mux, d, auth)
 	registerCallerRolesRoute(mux, d, auth)
+	registerGroupRoleRoutes(mux, d, auth)
 	d.registerJoinRequestsAcrossGroups(mux, d.Registry, auth)
 	registerAuthRoutes(mux, d.Operators, d.Sessions, d.AdminToken, d.SessionCookie)
 	registerStudioSessionRoutes(mux, d)
