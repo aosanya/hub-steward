@@ -3,7 +3,10 @@ package reviewruns
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"regexp"
+	"sync"
 
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
@@ -19,6 +22,13 @@ const (
 	workflowRole = "workflow"
 	workItemRole = "work_item"
 )
+
+const (
+	workflowsBatchSize     = 4
+	workflowsBatchesAtOnce = 4
+)
+
+var workflowCode = regexp.MustCompile(`\bW-[0-9]+\b`)
 
 var identityKeys = []string{"draft_id", "workflow_id"}
 
@@ -65,11 +75,7 @@ func (r *WorkflowsReviewer) Area() string {
 }
 
 func (r *WorkflowsReviewer) Review(ctx context.Context, in AreaInput) (AreaResult, error) {
-	draft, err := r.Reader.Read(ctx, in.DraftID)
-	if err != nil {
-		return AreaResult{}, err
-	}
-	result, err := ReadArea(ctx, r.Model, workflowsSystemPrompt, draft, in)
+	result, err := r.read(ctx, in)
 	if err != nil {
 		return AreaResult{}, err
 	}
@@ -81,6 +87,122 @@ func (r *WorkflowsReviewer) Review(ctx context.Context, in AreaInput) (AreaResul
 		result.Findings[i] = stored.carried(result.Findings[i])
 	}
 	return result, nil
+}
+
+func (r *WorkflowsReviewer) read(ctx context.Context, in AreaInput) (AreaResult, error) {
+	if batched, ok := r.Reader.(BatchedReader); ok {
+		batches, err := batched.ReadBatches(ctx, in.DraftID, workflowsBatchSize)
+		if err != nil {
+			return AreaResult{}, err
+		}
+		if len(batches) > 1 {
+			return r.readBatches(ctx, in, batches)
+		}
+	}
+	draft, err := r.Reader.Read(ctx, in.DraftID)
+	if err != nil {
+		return AreaResult{}, err
+	}
+	return ReadArea(ctx, r.Model, workflowsSystemPrompt, draft, in)
+}
+
+type batchOutcome struct {
+	result AreaResult
+	err    error
+}
+
+func (r *WorkflowsReviewer) readBatches(ctx context.Context, in AreaInput, batches []WorkflowBatch) (AreaResult, error) {
+	owned := previousByBatch(in.Previous, batches)
+	ctx, stop := context.WithCancel(ctx)
+	defer stop()
+	outcomes := make([]batchOutcome, len(batches))
+	slots := make(chan struct{}, workflowsBatchesAtOnce)
+	var parts sync.WaitGroup
+	for i := range batches {
+		text, previous := batches[i].Text, owned[i]
+		parts.Add(1)
+		go func() {
+			defer parts.Done()
+			slots <- struct{}{}
+			defer func() { <-slots }()
+			if err := ctx.Err(); err != nil {
+				outcomes[i].err = err
+				return
+			}
+			part := AreaInput{ReviewID: in.ReviewID, Area: in.Area, DraftID: in.DraftID, Previous: previous}
+			outcomes[i].result, outcomes[i].err = ReadArea(ctx, r.Model, workflowsSystemPrompt, text, part)
+			if outcomes[i].err != nil {
+				stop()
+			}
+		}()
+	}
+	parts.Wait()
+	return mergedBatches(batches, outcomes)
+}
+
+func mergedBatches(batches []WorkflowBatch, outcomes []batchOutcome) (AreaResult, error) {
+	if err := firstBatchError(outcomes); err != nil {
+		return AreaResult{}, err
+	}
+	merged := AreaResult{}
+	workflows := 0
+	for i, outcome := range outcomes {
+		workflows += len(batches[i].WorkflowIDs)
+		merged.Findings = append(merged.Findings, outcome.result.Findings...)
+		merged.Tokens += outcome.result.Tokens
+	}
+	merged.Summary = fmt.Sprintf("%d workflows were read in %d parts. They hold %s in all.", workflows, len(batches), countOf(len(merged.Findings), "finding"))
+	return merged, nil
+}
+
+func firstBatchError(outcomes []batchOutcome) error {
+	var cancelled error
+	for _, outcome := range outcomes {
+		if outcome.err == nil {
+			continue
+		}
+		if !errors.Is(outcome.err, context.Canceled) {
+			return outcome.err
+		}
+		cancelled = outcome.err
+	}
+	return cancelled
+}
+
+func countOf(n int, noun string) string {
+	if n == 1 {
+		return fmt.Sprintf("1 %s", noun)
+	}
+	return fmt.Sprintf("%d %ss", n, noun)
+}
+
+func previousByBatch(previous []PreviousFinding, batches []WorkflowBatch) [][]PreviousFinding {
+	owned := make([][]PreviousFinding, len(batches))
+	for _, p := range previous {
+		i := batchHolding(p, batches)
+		owned[i] = append(owned[i], p)
+	}
+	return owned
+}
+
+func batchHolding(p PreviousFinding, batches []WorkflowBatch) int {
+	workflowID, _ := p.Arguments["workflow_id"].(string)
+	stepID, _ := p.Arguments["work_item_id"].(string)
+	for i, b := range batches {
+		if (workflowID != "" && b.WorkflowIDs[workflowID]) || (stepID != "" && b.StepIDs[stepID]) {
+			return i
+		}
+	}
+	for _, text := range []string{p.Title, p.Detail} {
+		for _, code := range workflowCode.FindAllString(text, -1) {
+			for i, b := range batches {
+				if b.Codes[code] {
+					return i
+				}
+			}
+		}
+	}
+	return 0
 }
 
 type workflowRowSource interface {

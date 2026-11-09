@@ -3,6 +3,7 @@ package reviewruns
 import (
 	"context"
 	"errors"
+	"time"
 
 	mwanachamaai "wakalaserver/modules/ai"
 	aimodels "wakalaserver/modules/ai/models"
@@ -15,7 +16,10 @@ var (
 	ErrCutOff           = errors.New("The AI account used its whole answer allowance before it finished the answer")
 )
 
-const reviewMaxTokens = 16384
+const (
+	reviewMaxTokens   = 16384
+	reviewCallTimeout = 10 * time.Minute
+)
 
 type Completion struct {
 	Text   string
@@ -43,7 +47,7 @@ func (m AIModel) Complete(ctx context.Context, system, user string) (Completion,
 	reply, err := m.Manager.ChatAccount(ctx, m.AgencyID, account.ID, mwanachamaai.ChatInput{Messages: []mwanachamaai.ChatMessage{
 		{Role: "system", Content: system},
 		{Role: "user", Content: user},
-	}, MaxTokens: reviewMaxTokens, Kind: aimodels.KindAgencyReview, Person: m.Person})
+	}, MaxTokens: reviewMaxTokens, Timeout: reviewCallTimeout, Kind: aimodels.KindAgencyReview, Person: m.Person})
 	if err != nil {
 		return Completion{}, err
 	}

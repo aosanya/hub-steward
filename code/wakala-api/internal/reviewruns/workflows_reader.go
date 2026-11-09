@@ -26,28 +26,79 @@ func NewWorkflowsReader(agency WorkflowsAgency) DraftReader {
 	return workflowsReader{agency: agency}
 }
 
+type workflowsDraft struct {
+	workflows  []agencymodels.Workflow
+	steps      []agencymodels.WorkItem
+	roles      []agencymodels.Role
+	objectives []agencymodels.Objective
+	links      []agencymodels.WorkflowObjective
+}
+
+func (r workflowsReader) load(ctx context.Context, draftID string) (workflowsDraft, error) {
+	var d workflowsDraft
+	var err error
+	if d.workflows, err = r.agency.ListWorkflows(ctx, draftID, mwanachamaagency.WorkflowFilter{}); err != nil {
+		return workflowsDraft{}, workflowsReadError("workflows", err)
+	}
+	if d.steps, err = r.agency.ListWorkItems(ctx, draftID, mwanachamaagency.WorkItemFilter{}); err != nil {
+		return workflowsDraft{}, workflowsReadError("steps", err)
+	}
+	if d.roles, err = r.agency.ListRoles(ctx, draftID, mwanachamaagency.RoleFilter{}); err != nil {
+		return workflowsDraft{}, workflowsReadError("roles", err)
+	}
+	if d.objectives, err = r.agency.ListObjectives(ctx, draftID, mwanachamaagency.ObjectiveFilter{}); err != nil {
+		return workflowsDraft{}, workflowsReadError("objectives", err)
+	}
+	if d.links, err = r.agency.ListWorkflowObjectives(ctx, draftID, mwanachamaagency.WorkflowObjectiveFilter{}); err != nil {
+		return workflowsDraft{}, workflowsReadError("objective links", err)
+	}
+	return d, nil
+}
+
 func (r workflowsReader) Read(ctx context.Context, draftID string) (string, error) {
-	workflows, err := r.agency.ListWorkflows(ctx, draftID, mwanachamaagency.WorkflowFilter{})
+	d, err := r.load(ctx, draftID)
 	if err != nil {
-		return "", workflowsReadError("workflows", err)
+		return "", err
 	}
-	steps, err := r.agency.ListWorkItems(ctx, draftID, mwanachamaagency.WorkItemFilter{})
+	return workflowsText(draftID, d.workflows, d.steps, d.roles, d.objectives, d.links), nil
+}
+
+type WorkflowBatch struct {
+	Text        string
+	WorkflowIDs map[string]bool
+	StepIDs     map[string]bool
+	Codes       map[string]bool
+}
+
+type BatchedReader interface {
+	DraftReader
+	ReadBatches(ctx context.Context, draftID string, size int) ([]WorkflowBatch, error)
+}
+
+func (r workflowsReader) ReadBatches(ctx context.Context, draftID string, size int) ([]WorkflowBatch, error) {
+	d, err := r.load(ctx, draftID)
 	if err != nil {
-		return "", workflowsReadError("steps", err)
+		return nil, err
 	}
-	roles, err := r.agency.ListRoles(ctx, draftID, mwanachamaagency.RoleFilter{})
-	if err != nil {
-		return "", workflowsReadError("roles", err)
+	var batches []WorkflowBatch
+	for start := 0; start < len(d.workflows); start += size {
+		shown := d.workflows[start:min(start+size, len(d.workflows))]
+		batch := WorkflowBatch{
+			Text:        workflowsTextOf(draftID, shown, d.workflows, d.steps, d.roles, d.objectives, d.links),
+			WorkflowIDs: map[string]bool{},
+			StepIDs:     map[string]bool{},
+			Codes:       map[string]bool{},
+		}
+		for _, w := range shown {
+			batch.WorkflowIDs[w.ID] = true
+			batch.Codes[w.Code] = true
+			for _, s := range workflowsStepsOf(w.ID, d.steps) {
+				batch.StepIDs[s.ID] = true
+			}
+		}
+		batches = append(batches, batch)
 	}
-	objectives, err := r.agency.ListObjectives(ctx, draftID, mwanachamaagency.ObjectiveFilter{})
-	if err != nil {
-		return "", workflowsReadError("objectives", err)
-	}
-	links, err := r.agency.ListWorkflowObjectives(ctx, draftID, mwanachamaagency.WorkflowObjectiveFilter{})
-	if err != nil {
-		return "", workflowsReadError("objective links", err)
-	}
-	return workflowsText(draftID, workflows, steps, roles, objectives, links), nil
+	return batches, nil
 }
 
 func workflowsReadError(what string, err error) error {
@@ -55,6 +106,10 @@ func workflowsReadError(what string, err error) error {
 }
 
 func workflowsText(draftID string, workflows []agencymodels.Workflow, steps []agencymodels.WorkItem, roles []agencymodels.Role, objectives []agencymodels.Objective, links []agencymodels.WorkflowObjective) string {
+	return workflowsTextOf(draftID, workflows, workflows, steps, roles, objectives, links)
+}
+
+func workflowsTextOf(draftID string, shown, all []agencymodels.Workflow, steps []agencymodels.WorkItem, roles []agencymodels.Role, objectives []agencymodels.Objective, links []agencymodels.WorkflowObjective) string {
 	roleNames := map[string]string{}
 	var b strings.Builder
 	fmt.Fprintf(&b, "Draft id: %s\n\nRoles:\n", draftID)
@@ -75,14 +130,18 @@ func workflowsText(draftID string, workflows []agencymodels.Workflow, steps []ag
 		b.WriteString("- none\n")
 	}
 	workflowNames := map[string]string{}
-	for _, w := range workflows {
+	for _, w := range all {
 		workflowNames[w.ID] = fmt.Sprintf("%s %s", w.Code, w.Name)
 	}
-	fmt.Fprintf(&b, "\nWorkflows (%d):\n", len(workflows))
-	if len(workflows) == 0 {
+	if len(shown) == len(all) {
+		fmt.Fprintf(&b, "\nWorkflows (%d):\n", len(shown))
+	} else {
+		fmt.Fprintf(&b, "\nWorkflows (%d of %d, the others are read in other parts):\n", len(shown), len(all))
+	}
+	if len(shown) == 0 {
 		b.WriteString("- none\n")
 	}
-	for _, w := range workflows {
+	for _, w := range shown {
 		workflowText(&b, w, workflowsStepsOf(w.ID, steps), roleNames, workflowNames, workflowsServedBy(w.ID, links, objectiveTitles))
 	}
 	return b.String()

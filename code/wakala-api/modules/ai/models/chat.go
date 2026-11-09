@@ -1,6 +1,9 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"time"
+)
 
 type ChatToolCall struct {
 	ID        string          `json:"id"`
@@ -28,6 +31,7 @@ type ChatInput struct {
 	RoleID    string        `json:"role_id,omitempty"`
 	Kind      string        `json:"kind,omitempty"`
 	Person    string        `json:"person,omitempty"`
+	Timeout   time.Duration `json:"-"`
 }
 
 type ChatReply struct {

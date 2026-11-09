@@ -44,6 +44,16 @@ func (m *accountManager) chatClient() *http.Client {
 	return &http.Client{Timeout: chatTimeout}
 }
 
+func (m *accountManager) clientFor(in ChatInput) *http.Client {
+	client := m.chatClient()
+	if in.Timeout <= 0 {
+		return client
+	}
+	longer := *client
+	longer.Timeout = in.Timeout
+	return &longer
+}
+
 func (m *accountManager) ChatAccount(ctx context.Context, agencyID, accountID string, in ChatInput) (ChatReply, error) {
 	held, err := m.GetAccount(ctx, agencyID, accountID)
 	if err != nil {
@@ -67,7 +77,7 @@ func (m *accountManager) ChatAccount(ctx context.Context, agencyID, accountID st
 		return ChatReply{}, fmt.Errorf("%w: %s", ErrLimitReached, decision.Reason)
 	}
 	defer hold.Release()
-	reply, outcome := Call(ctx, m.chatClient(), held, key, chatRequest(in, decision.MaxTokens))
+	reply, outcome := Call(ctx, m.clientFor(in), held, key, chatRequest(in, decision.MaxTokens))
 	if err := outcomeError(outcome); err != nil {
 		return ChatReply{}, err
 	}
