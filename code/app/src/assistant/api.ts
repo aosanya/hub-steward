@@ -1,10 +1,13 @@
+import { issueOf, itemsOf, type Issue } from "../backlogs/api";
 import { callTool, listTools, type ToolInfo } from "../wakala/mcp";
 
-export type Turn = { role: "user" | "assistant"; content: string };
+export type Turn = { role: "user" | "assistant"; content: string; issues?: Issue[] };
+
+export type Answer = { text: string; issues: Issue[] };
 
 export type AssistantClient = {
   model: () => Promise<string>;
-  ask: (accountId: string, turns: Turn[]) => Promise<string>;
+  ask: (accountId: string, turns: Turn[], onStep?: (words: string) => void) => Promise<Answer>;
 };
 
 type Call = { id: string; name: string; arguments: Record<string, unknown> };
@@ -25,7 +28,19 @@ export const maxRounds = 6;
 
 export const maxResultLength = 8000;
 
-export const replyTokens = 2048;
+export const replyTokens = 4096;
+
+export const listTool = "taskmanager_task_list";
+
+export const maxIssuesShown = 10;
+
+export const stepWords: Record<string, string> = {
+  taskmanager_task_list: "Searching the issues",
+  taskmanager_task_read: "Opening an issue",
+  taskmanager_backlog_list: "Reading the backlogs",
+  taskmanager_task_state_list: "Reading the steps",
+  taskmanager_relationship_traverse: "Following what waits on what",
+};
 
 export const noAnswerSentence = "The assistant sent no answer.";
 
@@ -63,9 +78,10 @@ const resultText = (result: unknown) => {
   return raw.length > maxResultLength ? `${raw.slice(0, maxResultLength)} (cut)` : raw;
 };
 
-export async function askAssistant(accountId: string, turns: Turn[]): Promise<string> {
+export async function askAssistant(accountId: string, turns: Turn[], onStep: (words: string) => void = () => undefined): Promise<Answer> {
   const tools = await offeredOf();
   const messages: Wire[] = [{ role: "system", content: systemPrompt }, ...turns.map(({ role, content }) => ({ role, content }))];
+  let found: Issue[] = [];
   for (let round = 0; round < maxRounds; round++) {
     const args: Record<string, unknown> = { accountID: accountId, messages: [...messages], max_tokens: replyTokens };
     if (tools.length > 0) args.tools = tools;
@@ -75,18 +91,26 @@ export async function askAssistant(accountId: string, turns: Turn[]): Promise<st
     const content = text(message.content).trim();
     if (calls.length === 0) {
       if (content === "") throw new Error(noAnswerSentence);
-      return content;
+      return { text: content, issues: found.slice(0, maxIssuesShown) };
     }
     messages.push({ role: "assistant", content, tool_calls: calls });
     for (const call of calls) {
       const allowed = offeredNames.includes(call.name);
-      const result = allowed
-        ? await callTool("", call.name, call.arguments).then(resultText, (failure: Error) => `The call failed: ${failure.message}`)
-        : "That tool is not available.";
+      let result = "That tool is not available.";
+      if (allowed) {
+        onStep(stepWords[call.name] ?? "Looking it up");
+        try {
+          const read = await callTool("", call.name, call.arguments);
+          if (call.name === listTool) found = itemsOf(read).map((raw) => issueOf(raw));
+          result = resultText(read);
+        } catch (failure) {
+          result = `The call failed: ${failure instanceof Error ? failure.message : "unknown"}`;
+        }
+      }
       messages.push({ role: "tool", tool_call_id: call.id, content: result });
     }
   }
-  return tooManyRoundsSentence;
+  return { text: tooManyRoundsSentence, issues: [] };
 }
 
 export const mcpAssistantClient: AssistantClient = {

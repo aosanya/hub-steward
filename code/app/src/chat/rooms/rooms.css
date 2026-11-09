@@ -6,6 +6,7 @@
 .rm-msg.mine { align-self: flex-end; align-items: flex-end; }
 .rm-who { display: flex; align-items: center; gap: .5rem; margin-top: .5rem; font-size: .8125rem; color: var(--ink-soft); }
 .rm-who b { font-weight: 600; color: var(--ink); }
+.rm-msg.mine .rm-who b { font-weight: 400; color: var(--ink-soft); }
 .rm-bubble { font-size: var(--content); padding: .625rem .875rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); overflow-wrap: anywhere; white-space: pre-line; }
 .mine .rm-bubble { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .rm-slot { align-self: flex-start; width: 90%; }

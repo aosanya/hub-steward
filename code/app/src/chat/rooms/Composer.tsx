@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type Props = { placeholder: string; onSend: (body: string) => Promise<void> };
 
 export function Composer({ placeholder, onSend }: Props) {
+  const field = useRef<HTMLInputElement>(null);
   const [body, setBody] = useState("");
   const [problem, setProblem] = useState("");
   const ready = body.trim() !== "";
@@ -12,6 +13,7 @@ export function Composer({ placeholder, onSend }: Props) {
     try {
       await onSend(body.trim());
       setBody("");
+      field.current?.focus();
     } catch {
       setProblem("Your message was not sent. Try again.");
     }
@@ -21,6 +23,7 @@ export function Composer({ placeholder, onSend }: Props) {
       {problem ? <p className="ferr">{problem}</p> : null}
       <div className="rm-compose-row">
         <input
+          ref={field}
           className="rm-field"
           type="text"
           placeholder={placeholder}

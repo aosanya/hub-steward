@@ -1,80 +1,194 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { IssueRow } from "../backlogs/IssueRow";
+import { issuePath } from "../backlogs/paths";
 import { Composer } from "../chat/rooms/Composer";
 import "../chat/rooms/rooms.css";
 import { useLoad } from "../forms/useLoad";
 import { chatListPath } from "../routes";
+import { Button } from "../ui/Button";
+import { Card } from "../ui/Card";
 import { Chip } from "../ui/Chip";
 import { EmptyCard } from "../ui/LoadState";
 import { Markdown } from "../ui/Markdown";
 import { Shell } from "../ui/Shell";
-import { mcpAssistantClient, type AssistantClient, type Turn } from "./api";
+import { mcpAssistantClient, type AssistantClient } from "./api";
+import { answerAfter, historyUpTo, markSent, nextQueued, withoutItem, type Item } from "./queue";
+import "./assistant.css";
 
 export const assistantName = "Hub Steward";
 
 export const unavailableWords = "The assistant is not available yet.";
 
-export const failedWords = "The assistant could not answer. Try again.";
+export const failedWords = "That did not work. Try again.";
+
+export const workingWords = "Looking it up";
+
+export const retryWords = "Try again";
+
+export const slowAfter = 60_000;
+
+export const queuedWords = "Queued";
+
+export const unqueueWords = "Remove from the queue";
 
 export const askPlaceholder = "Ask about the backlogs";
 
-function Bubbles({ turns }: { turns: Turn[] }) {
+type Phase = "idle" | "working" | "failed";
+
+function Who() {
   return (
-    <div className="rm-thread">
-      {turns.map((turn, index) =>
-        turn.role === "user" ? (
-          <div key={index} className="rm-msg mine">
-            <span className="rm-who">
-              <b>You</b>
-            </span>
-            <p className="rm-bubble">{turn.content}</p>
-          </div>
-        ) : (
-          <div key={index} className="rm-msg">
-            <span className="rm-who">
-              <b>{assistantName}</b>
-              <Chip>Agent</Chip>
-            </span>
-            <div className="rm-bubble">
-              <Markdown text={turn.content} />
-            </div>
-          </div>
-        ),
-      )}
+    <span className="rm-who">
+      <b>{assistantName}</b>
+      <Chip>Agent</Chip>
+    </span>
+  );
+}
+
+function Working({ step }: { step: string }) {
+  return (
+    <div className="rm-msg" role="status">
+      <Who />
+      <div className="rm-bubble">
+        <span className="assistant-working">
+          <span className="assistant-dots" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          {workingWords}
+        </span>
+        {step ? <span className="assistant-step">{step}</span> : null}
+      </div>
     </div>
   );
 }
 
-export function AssistantPage({ client = mcpAssistantClient }: { client?: AssistantClient }) {
+function Failed({ retry }: { retry: () => void }) {
+  return (
+    <div className="rm-msg" role="alert">
+      <Who />
+      <div className="rm-bubble">
+        <p>{failedWords}</p>
+        <Button onClick={retry}>{retryWords}</Button>
+      </div>
+    </div>
+  );
+}
+
+type BubblesProps = { items: Item[]; phase: Phase; current: number; step: string; retry: () => void; open: (id: string) => void; unqueue: (id: number) => void };
+
+function Bubbles({ items, phase, current, step, retry, open, unqueue }: BubblesProps) {
+  return (
+    <div className="rm-thread">
+      {items.map((item) => (
+        <div key={item.id} className="rm-entry">
+          {item.role === "user" ? (
+            <div className="rm-msg mine">
+              <span className="rm-who">
+                <b>You</b>
+                {item.queued ? (
+                  <>
+                    <span className="assistant-queued">{queuedWords}</span>
+                    <button type="button" className="assistant-unqueue" aria-label={`${unqueueWords}: ${item.content}`} onClick={() => unqueue(item.id)}>
+                      ×
+                    </button>
+                  </>
+                ) : null}
+              </span>
+              <p className="rm-bubble">{item.content}</p>
+            </div>
+          ) : (
+            <div className="rm-msg">
+              <Who />
+              <div className="rm-bubble">
+                <Markdown text={item.content} />
+              </div>
+              {item.issues && item.issues.length > 0 ? (
+                <div className="rows">
+                  {item.issues.map((issue) => (
+                    <IssueRow key={issue.id} issue={issue} chosen={[]} onOpen={() => open(issue.id)} chevron />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          )}
+          {item.id === current && phase === "working" ? <Working step={step} /> : null}
+          {item.id === current && phase === "failed" ? <Failed retry={retry} /> : null}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAfter }: { client?: AssistantClient; timeoutMs?: number }) {
   const navigate = useNavigate();
   const model = useLoad(() => client.model(), "assistant/model");
-  const [turns, setTurns] = useState<Turn[]>([]);
-  const [busy, setBusy] = useState(false);
+  const [items, setItems] = useState<Item[]>([]);
+  const [phase, setPhase] = useState<Phase>("idle");
+  const [current, setCurrent] = useState(0);
+  const [step, setStep] = useState("");
+  const run = useRef(0);
+  const last = useRef(0);
+  const end = useRef<HTMLDivElement>(null);
   const accountId = model.state === "ready" ? model.data : "";
   const unavailable = model.state === "error" || (model.state === "ready" && accountId === "");
-  const send = async (body: string) => {
-    const asked: Turn[] = [...turns, { role: "user", content: body }];
-    setTurns(asked);
-    setBusy(true);
+  useEffect(() => {
+    end.current?.scrollIntoView?.({ block: "end" });
+  }, [items, phase, step]);
+  const answerTo = async (history: Item[], id: number) => {
+    const mine = ++run.current;
+    setCurrent(id);
+    setPhase("working");
+    setStep("");
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const tooSlow = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error("slow")), timeoutMs);
+    });
     try {
-      const answer = await client.ask(accountId, asked);
-      setTurns([...asked, { role: "assistant", content: answer }]);
+      const answer = await Promise.race([client.ask(accountId, historyUpTo(history, id), (words) => mine === run.current && setStep(words)), tooSlow]);
+      if (mine !== run.current) return;
+      last.current += 1;
+      setItems((now) => answerAfter(now, id, { id: last.current, role: "assistant", content: answer.text, issues: answer.issues }));
+      setPhase("idle");
     } catch {
-      setTurns([...asked, { role: "assistant", content: failedWords }]);
+      if (mine === run.current) setPhase("failed");
     } finally {
-      setBusy(false);
+      clearTimeout(timer);
     }
+  };
+  useEffect(() => {
+    if (phase !== "idle" || accountId === "") return;
+    const next = nextQueued(items);
+    if (!next) return;
+    const sent = markSent(items, next.id);
+    setItems(sent);
+    void answerTo(sent, next.id);
+  }, [items, phase, accountId]);
+  const send = async (body: string) => {
+    last.current += 1;
+    setItems((now) => [...now, { id: last.current, role: "user", content: body, queued: true }]);
   };
   return (
     <Shell title={assistantName} backLabel="Chat" tabless onBack={() => navigate(chatListPath())}>
       {unavailable ? <EmptyCard words={unavailableWords} /> : null}
-      {!unavailable ? <Bubbles turns={turns} /> : null}
-      {busy ? (
-        <p className="rm-note" role="status">
-          Looking it up
-        </p>
+      {!unavailable ? (
+        <div className="assistant-panel">
+          <Card>
+            {items.length === 0 ? (
+              <p className="assistant-empty">{askPlaceholder}</p>
+            ) : (
+              <Bubbles items={items} phase={phase} current={current} step={step} retry={() => void answerTo(items, current)} open={(id) => navigate(issuePath(id))} unqueue={(id) => setItems((now) => withoutItem(now, id))} />
+            )}
+            <div ref={end} />
+          </Card>
+        </div>
       ) : null}
-      {model.state === "ready" && !unavailable ? <Composer placeholder={askPlaceholder} onSend={send} /> : null}
+      {model.state === "ready" && !unavailable ? (
+        <div className="assistant-compose">
+          <Composer placeholder={askPlaceholder} onSend={send} />
+        </div>
+      ) : null}
     </Shell>
   );
 }
