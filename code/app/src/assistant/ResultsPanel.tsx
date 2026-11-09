@@ -4,7 +4,7 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
-import { chatTabWords, emptyResultsWords, labelOf, newResultsWords, noIssuesWords, pageSize, resultsOf, resultsTabWords, showMoreWords, type ResultList } from "./results";
+import { chatTabWords, emptyResultsWords, labelOf, newResultsWords, pageSize, resultsOf, resultsTabWords, showMoreWords, type ResultList } from "./results";
 import "./results.css";
 
 export type Tab = "chat" | "results";
@@ -83,15 +83,11 @@ export function ResultsPanel({ results, picked, onPick, onOpen }: PanelProps) {
         </select>
       </label>
       <Card title={labelOf(list)} flush>
-        {list.issues.length === 0 ? (
-          <p className="assistant-empty">{noIssuesWords}</p>
-        ) : (
-          <Rows>
-            {list.issues.slice(0, shown).map((issue) => (
-              <IssueRow key={issue.id} issue={issue} chosen={[]} onOpen={() => onOpen(issue.id)} chevron />
-            ))}
-          </Rows>
-        )}
+        <Rows>
+          {list.issues.slice(0, shown).map((issue) => (
+            <IssueRow key={issue.id} issue={issue} chosen={[]} onOpen={() => onOpen(issue.id)} chevron />
+          ))}
+        </Rows>
         {list.total > list.issues.length ? <p className="assistant-count">{`Showing ${list.issues.length} of ${list.total}`}</p> : null}
         {list.issues.length > shown ? <Button onClick={() => setVisible({ ...visible, [list.id]: shown + pageSize })}>{showMoreWords}</Button> : null}
       </Card>

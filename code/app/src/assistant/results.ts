@@ -18,8 +18,6 @@ export const newResultsWords = "New results";
 
 export const emptyResultsWords = "Results appear here";
 
-export const noIssuesWords = "No issues";
-
 export const showMoreWords = "Show more";
 
 export const pageSize = 50;
@@ -55,4 +53,16 @@ export const draftOf = (tool: string, args: Record<string, unknown>, reply: unkn
 
 export const resultsOf = (items: { lists?: ResultList[] }[]): ResultList[] => [...items].reverse().flatMap((item) => item.lists ?? []);
 
-export const withIds = (drafts: ResultDraft[], answerId: number): ResultList[] => drafts.map((draft, index) => ({ ...draft, id: `${answerId}:${index}` }));
+const sameItems = (draft: ResultDraft) => `${draft.title}|${draft.total}|${draft.issues.map((issue) => issue.id).join(",")}`;
+
+export const worthKeeping = (drafts: ResultDraft[]): ResultDraft[] => {
+  const seen = new Set<string>();
+  return drafts.filter((draft) => {
+    const key = sameItems(draft);
+    if (draft.issues.length === 0 || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
+export const withIds = (drafts: ResultDraft[], answerId: number): ResultList[] => worthKeeping(drafts).map((draft, index) => ({ ...draft, id: `${answerId}:${index}` }));

@@ -120,6 +120,41 @@ describe("the lists the tools return", () => {
     expect(within(tab("Results")).queryByRole("img", { name: "New results" })).toBeNull();
   });
 
+  it("adds no entry, option or dot for lists with nothing in them, so the Results tab keeps saying Results appear here", async () => {
+    show([{ text: "Nothing found for shoe.", lists: [draft("Shoe issues", 0), draft("Shoe issues", 0), draft("Shoes issues", 0)] }]);
+    await say("shoe");
+    await screen.findByText("Nothing found for shoe.");
+    expect(screen.queryByRole("button", { name: /issues · 0/ })).toBeNull();
+    expect(within(tab("Results")).queryByRole("img", { name: "New results" })).toBeNull();
+    await userEvent.click(tab("Results"));
+    expect(screen.getByText("Results appear here")).toBeInTheDocument();
+    expect(screen.queryByRole("combobox")).toBeNull();
+  });
+
+  it("keeps the earlier lists when a later answer finds nothing", async () => {
+    show([
+      { text: "Found some.", lists: [draft("Pending issues", 2)] },
+      { text: "Nothing for shoe.", lists: [draft("Shoe issues", 0)] },
+    ]);
+    await say("pending");
+    await screen.findByText("Found some.");
+    await say("shoe");
+    await screen.findByText("Nothing for shoe.");
+    await userEvent.click(tab("Results"));
+    expect(screen.getByRole("combobox", { name: "Results" })).toHaveDisplayValue("Pending issues · 2");
+    expect(within(screen.getByRole("combobox", { name: "Results" })).getAllByRole("option")).toHaveLength(1);
+  });
+
+  it("collapses two identical lists in one answer into one entry", async () => {
+    show([{ text: "Twice.", lists: [draft("Blocked issues", 2), draft("Blocked issues", 2), draft("Ready issues", 3)] }]);
+    await say("blocked");
+    await screen.findByText("Twice.");
+    expect(screen.getAllByRole("button", { name: /Blocked issues · 2/ })).toHaveLength(1);
+    expect(screen.getAllByRole("button", { name: /Ready issues · 3/ })).toHaveLength(1);
+    await userEvent.click(tab("Results"));
+    expect(within(screen.getByRole("combobox", { name: "Results" })).getAllByRole("option")).toHaveLength(2);
+  });
+
   it("says Results appear here when nothing has been returned", async () => {
     show([]);
     await userEvent.click(await screen.findByRole("button", { name: /^Results/ }));
