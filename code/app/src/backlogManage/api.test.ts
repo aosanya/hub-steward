@@ -43,16 +43,24 @@ describe("backlog manage client", () => {
       addStep: "taskmanager_backlog_step_add",
       removeStep: "taskmanager_backlog_step_remove",
       reorder: "taskmanager_backlog_step_reorder",
-      mayPerform: "permissions_check_read",
+      myRoles: "agency_get_my_roles",
     });
   });
 
-  it("reads the permission answer whether it is bare or wrapped", () => {
-    expect(allowedIn(true)).toBe(true);
-    expect(allowedIn({ allowed: true })).toBe(true);
-    expect(allowedIn({ result: true })).toBe(true);
-    expect(allowedIn({ result: false })).toBe(false);
+  it("may manage only when the caller's role permissions include backlog.manage", async () => {
+    expect(allowedIn({ permissions: ["task.read", "backlog.manage"] })).toBe(true);
+    expect(allowedIn({ permissions: ["task.read"] })).toBe(false);
+    expect(allowedIn({ permissions: [] })).toBe(false);
     expect(allowedIn({})).toBe(false);
+    expect(allowedIn(true)).toBe(false);
+  });
+
+  it("asks the caller's own roles, with no arguments", async () => {
+    answer = async () => ({ permissions: ["backlog.manage"] });
+    expect(await mcpBacklogManageClient.mayManage()).toBe(true);
+    expect(calls()).toEqual([[backlogTools.myRoles, undefined]]);
+    answer = async () => ({ permissions: [] });
+    expect(await mcpBacklogManageClient.mayManage()).toBe(false);
   });
 
   it("creates a backlog with its steps in order", async () => {

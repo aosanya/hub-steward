@@ -1,6 +1,4 @@
-import { openAgencyId } from "../agency/open";
 import { callTool, McpError } from "../wakala/mcp";
-import { loadSubject } from "../wakala/me";
 import { savedStep, type DraftStep } from "./stepsDraft";
 import { ManageRefused, type BacklogDetail, type BacklogManageClient } from "./types";
 
@@ -12,10 +10,10 @@ export const backlogTools = {
   addStep: "taskmanager_backlog_step_add",
   removeStep: "taskmanager_backlog_step_remove",
   reorder: "taskmanager_backlog_step_reorder",
-  mayPerform: "permissions_check_read",
+  myRoles: "agency_get_my_roles",
 };
 
-export const manageAction = "taskmanager.backlog.manage";
+export const managePermission = "backlog.manage";
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
 
@@ -25,7 +23,7 @@ export const detailOf = (raw: any): BacklogDetail => ({
   steps: (Array.isArray(raw?.steps) ? raw.steps : []).map((step: any) => savedStep(text(step?.id), text(step?.name), typeof step?.issues === "number" ? step.issues : 0)),
 });
 
-export const allowedIn = (reply: any) => reply === true || [reply?.allowed, reply?.may, reply?.result, reply?.value].includes(true);
+export const allowedIn = (reply: any) => Array.isArray(reply?.permissions) && reply.permissions.includes(managePermission);
 
 export const refusalText = (error: unknown) => {
   const message = error instanceof McpError ? error.message : "";
@@ -91,10 +89,7 @@ const readBacklog = async (id: string) => {
 };
 
 async function askMayManage(): Promise<boolean> {
-  const subject = await loadSubject();
-  if (subject === "") return false;
-  const reply = await callTool("", backlogTools.mayPerform, { subject, scope: openAgencyId(), action: manageAction });
-  return allowedIn(reply);
+  return allowedIn(await callTool("", backlogTools.myRoles));
 }
 
 export const mcpBacklogManageClient: BacklogManageClient = {
