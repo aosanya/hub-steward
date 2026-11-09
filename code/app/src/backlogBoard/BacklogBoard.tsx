@@ -3,11 +3,12 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { useLanguage } from "../entry/language";
 import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from "../backlogs/api";
 import { IssueTags, IssueTitle, openUnlessTag } from "../backlogs/IssueTitle";
-import { backlogsHomePath, issuePath, issuesPath, tagParam } from "../backlogs/paths";
-import { toggled, withAllTags } from "../backlogs/tags";
+import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam } from "../backlogs/paths";
+import { narrowed, toggled } from "../backlogs/tags";
 import { backlogPagePath } from "../backlogPage/paths";
 import { Chip } from "../ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
+import { SearchBox } from "../ui/SearchBox";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
 import { columnsOf } from "./board";
@@ -30,6 +31,7 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
   const { words } = useLanguage();
   const [search, setSearch] = useSearchParams();
   const chosen = search.getAll(tagParam);
+  const query = search.get(queryParam) ?? "";
   const [read, setRead] = useState<Read>({ state: "loading" });
 
   useEffect(() => {
@@ -44,12 +46,13 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
     };
   }, [client, backlogId]);
 
-  const choose = (next: string[]) => setSearch(new URLSearchParams(next.map((tag) => [tagParam, tag])), { replace: true });
+  const choose = (next: string[]) => setSearch(searchOf(next, query), { replace: true });
+  const typed = (text: string) => setSearch(searchOf(chosen, text), { replace: true });
   const toggle = (tag: string) => choose(toggled(chosen, tag));
 
   const loaded = read.state === "ready" ? read : null;
   const backlog = loaded?.backlog ?? null;
-  const shown = loaded ? withAllTags(loaded.issues, chosen) : [];
+  const shown = loaded ? narrowed(loaded.issues, chosen, query) : [];
   const title = backlog?.name ?? "Backlog";
   const sub = backlog ? countWords(shown.length, backlog.steps.length) : undefined;
   const action = (
@@ -59,13 +62,15 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
   );
 
   return (
-    <Shell title={title} sub={sub} onBack={() => navigate(backlogsHomePath())} backLabel={words.backBacklogs} action={backlog ? action : undefined}>
+    <Shell title={title} onBack={() => navigate(backlogsHomePath())} backLabel={words.backBacklogs} action={backlog ? action : undefined}>
       {read.state === "loading" ? <LoadingLine /> : null}
       {read.state === "failed" ? <LoadFailed words="The board could not be read. Try again." /> : null}
       {loaded && !backlog ? <EmptyCard words="This backlog could not be found." /> : null}
       {loaded && backlog ? (
         <>
-          <Segmented items={[...views]} current="board" onChange={() => navigate(issuesPath(backlogId, chosen))} />
+          <SearchBox label="Search issues" value={query} onChange={typed} />
+          {sub ? <p className="sub">{sub}</p> : null}
+          <Segmented items={[...views]} current="board" onChange={() => navigate(issuesPath(backlogId, chosen, query))} />
           {chosen.length > 0 ? (
             <div className="bb-chosen">
               {chosen.map((tag) => (

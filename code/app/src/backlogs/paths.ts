@@ -3,17 +3,25 @@ import { allIssuesId } from "./api";
 
 export const tagParam = "tag";
 
+export const queryParam = "q";
+
 const backlogsPath = () => `${agencyBasePath(openAgencyId())}/backlogs`;
 
-const withTags = (path: string, tags: string[]) => {
-  const search = new URLSearchParams(tags.map((tag) => [tagParam, tag])).toString();
+export const searchOf = (tags: string[], query = "") => {
+  const params = new URLSearchParams(tags.map((tag) => [tagParam, tag]));
+  if (query.trim() !== "") params.set(queryParam, query);
+  return params;
+};
+
+const withTags = (path: string, tags: string[], query = "") => {
+  const search = searchOf(tags, query).toString();
   return search ? `${path}?${search}` : path;
 };
 
 export const backlogsHomePath = () => backlogsPath();
 
-export const issuesPath = (backlogId: string = allIssuesId, tags: string[] = []) => withTags(`${backlogsPath()}/${encodeURIComponent(backlogId)}`, tags);
+export const issuesPath = (backlogId: string = allIssuesId, tags: string[] = [], query = "") => withTags(`${backlogsPath()}/${encodeURIComponent(backlogId)}`, tags, query);
 
-export const boardPath = (backlogId: string, tags: string[] = []) => withTags(`${backlogsPath()}/${encodeURIComponent(backlogId)}/board`, tags);
+export const boardPath = (backlogId: string, tags: string[] = [], query = "") => withTags(`${backlogsPath()}/${encodeURIComponent(backlogId)}/board`, tags, query);
 
 export const issuePath = (id: string) => `${backlogsPath()}/issue/${encodeURIComponent(id)}`;

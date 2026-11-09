@@ -122,6 +122,17 @@ describe("BacklogBoard", () => {
     expect(await screen.findByText("Record the clips")).toBeInTheDocument();
   });
 
+  it("filters every column by the search typed under the title and keeps it in the address", async () => {
+    const user = userEvent.setup();
+    open(client());
+    await screen.findByText("Record the clips");
+    await user.type(screen.getByRole("searchbox", { name: "Search issues" }), "municipality");
+    expect(screen.queryByText("Record the clips")).not.toBeInTheDocument();
+    expect(within(column("Waiting")).getByText("Import the municipality")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Clear search" }));
+    expect(await screen.findByText("Record the clips")).toBeInTheDocument();
+  });
+
   it("opens the list of this backlog from the List switch and keeps the chosen tags", async () => {
     const user = userEvent.setup();
     open(client(), "/a/x/backlogs/default/board?tag=Ready");

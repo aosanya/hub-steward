@@ -175,7 +175,7 @@ describe("the list of issues", () => {
     answering(board);
     openAt(issuePath("t1"));
     await userEvent.click(await screen.findByRole("button", { name: "Docs" }));
-    await screen.findByText("1 issue of 3");
+    await screen.findByText("1 of 3 issues");
     expect(titles()).toEqual(["Fix mirrored board drift"]);
     expect(where()).toBe("/a/hub-1/backlogs/all?tag=Docs");
     await userEvent.click(screen.getByRole("button", { name: "Docs ✕" }));
@@ -210,10 +210,56 @@ describe("the list of issues", () => {
     expect(where()).toContain("/issue/");
   });
 
+  it("finds an issue by its code or by every word typed, not by its description or tags", async () => {
+    answering(board);
+    openAt("/a/hub-1/backlogs/all");
+    await screen.findByText("Fix mirrored board drift");
+    const box = screen.getByRole("searchbox", { name: "Search issues" });
+    await userEvent.type(box, "MUNICIPALITY");
+    expect(titles()).toEqual(["Import the municipality"]);
+    expect(screen.getByText("1 of 3 issues")).toBeInTheDocument();
+    expect(where()).toBe("/a/hub-1/backlogs/all?q=MUNICIPALITY");
+    await userEvent.clear(box);
+    await userEvent.type(box, "import muni");
+    expect(titles()).toEqual(["Import the municipality"]);
+    await userEvent.clear(box);
+    await userEvent.type(box, "import drift");
+    expect(screen.getByText("No issues match")).toBeInTheDocument();
+    await userEvent.clear(box);
+    await userEvent.type(box, "Docs");
+    expect(screen.getByText("No issues match")).toBeInTheDocument();
+    await userEvent.clear(box);
+    await userEvent.type(box, "Load the English");
+    expect(screen.getByText("No issues match")).toBeInTheDocument();
+  });
+
+  it("combines the search with the chosen tags, and the clear button restores the full list", async () => {
+    answering(board);
+    openAt("/a/hub-1/backlogs/all?tag=Docs");
+    await screen.findByText("Fix mirrored board drift");
+    expect(titles()).toEqual(["Fix mirrored board drift"]);
+    await userEvent.type(screen.getByRole("searchbox", { name: "Search issues" }), "municipality");
+    expect(screen.getByText("No issues match")).toBeInTheDocument();
+    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Docs&q=municipality");
+    await userEvent.click(screen.getByRole("button", { name: "Clear search" }));
+    expect(titles()).toEqual(["Fix mirrored board drift"]);
+    await userEvent.click(screen.getByRole("button", { name: "Docs ✕" }));
+    expect(titles()).toHaveLength(3);
+    expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
+  });
+
+  it("keeps the search in the address when a tag is chosen and the tags when the search changes", async () => {
+    answering(board);
+    openAt("/a/hub-1/backlogs/all?q=the");
+    await screen.findByText("Import the municipality");
+    await userEvent.click(within(document.querySelector(".issue-row") as HTMLElement).getByRole("button", { name: "Blocked" }));
+    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Blocked&q=the");
+  });
+
   it("narrows by tags chosen together and says when none match", async () => {
     answering(board);
     openAt(issuesPath("all", ["Docs", "Blocked"]));
-    expect(await screen.findByText("No issues have all of those tags.")).toBeInTheDocument();
+    expect(await screen.findByText("No issues match")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Blocked ✕" }));
     expect(titles()).toEqual(["Fix mirrored board drift"]);
   });
@@ -327,7 +373,7 @@ describe("reading the task module's answers", () => {
     expect(withAllTags([issue], ["Missing"])).toHaveLength(0);
     expect(toggled(["a"], "b")).toEqual(["a", "b"]);
     expect(toggled(["a", "b"], "a")).toEqual(["b"]);
-    expect(countWords(1, 3, true)).toBe("1 issue of 3");
+    expect(countWords(1, 3, true)).toBe("1 of 3 issues");
     expect(countWords(2, 2, false)).toBe("2 issues");
   });
 });
@@ -420,7 +466,7 @@ describe("talking to the hub", () => {
   it("filters by a tag across the whole set, not the first 500", async () => {
     pagedHub(1400);
     openAt("/a/hub-1/backlogs/all?tag=Docs");
-    expect(await screen.findByText("14 issues of 1400")).toBeInTheDocument();
+    expect(await screen.findByText("14 of 1400 issues")).toBeInTheDocument();
   });
 
   it("takes the backlogs, their steps and their counts from the hub", async () => {

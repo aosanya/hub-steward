@@ -5,13 +5,14 @@ import { openAgencyId } from "../agency/open";
 import { Chip } from "../ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Rows } from "../ui/ListRow";
+import { SearchBox } from "../ui/SearchBox";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { IssueRow } from "./IssueRow";
-import { backlogsHomePath, boardPath, issuePath, tagParam } from "./paths";
-import { countWords, toggled, withAllTags } from "./tags";
+import { backlogsHomePath, boardPath, issuePath, queryParam, searchOf, tagParam } from "./paths";
+import { countWords, narrowed, toggled } from "./tags";
 
 export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {
   const navigate = useNavigate();
@@ -19,16 +20,19 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
   const backlogId = useParams().backlogId ?? allIssuesId;
   const [search, setSearch] = useSearchParams();
   const chosen = search.getAll(tagParam);
+  const query = search.get(queryParam) ?? "";
   const key = `issues:${openAgencyId()}:${backlogId}`;
   const issues = useLoad(() => client.issues(backlogId), key);
   const backlogs = useLoad(() => client.backlogs(), `backlogs:${openAgencyId()}`);
   const title = backlogId === allIssuesId ? "All issues" : backlogs.state === "ready" ? (backlogs.data.find((one) => one.id === backlogId)?.name ?? "Backlog") : "Backlog";
-  const choose = (tag: string) => setSearch({ [tagParam]: toggled(chosen, tag) }, { replace: true });
-  const shown = issues.state === "ready" ? withAllTags(issues.data, chosen) : [];
+  const choose = (tag: string) => setSearch(searchOf(toggled(chosen, tag), query), { replace: true });
+  const typed = (text: string) => setSearch(searchOf(chosen, text), { replace: true });
+  const filtering = chosen.length > 0 || query.trim() !== "";
+  const shown = issues.state === "ready" ? narrowed(issues.data, chosen, query) : [];
   const total = issues.state === "ready" ? issues.data.length : 0;
-  const sub = issues.state === "ready" && total > 0 ? countWords(shown.length, total, chosen.length > 0) : undefined;
+  const sub = issues.state === "ready" && total > 0 ? countWords(shown.length, total, filtering) : undefined;
   return (
-    <Shell title={title} sub={sub} onBack={() => navigate(backlogsHomePath())} backLabel={words.backBacklogs}>
+    <Shell title={title} onBack={() => navigate(backlogsHomePath())} backLabel={words.backBacklogs}>
       {backlogId !== allIssuesId ? (
         <Segmented
           items={[
@@ -36,9 +40,11 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
             { id: "board", label: "Board" },
           ]}
           current="list"
-          onChange={() => navigate(boardPath(backlogId, chosen))}
+          onChange={() => navigate(boardPath(backlogId, chosen, query))}
         />
       ) : null}
+      <SearchBox label="Search issues" value={query} onChange={typed} />
+      {sub ? <p className="sub">{sub}</p> : null}
       {issues.state === "loading" ? <LoadingLine /> : null}
       {issues.state === "error" ? <LoadFailed words="The issues could not be loaded." /> : null}
       {issues.state === "ready" && total === 0 ? (
@@ -60,7 +66,7 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
           ))}
         </Rows>
       ) : null}
-      {total > 0 && shown.length === 0 ? <EmptyCard words="No issues have all of those tags." /> : null}
+      {total > 0 && shown.length === 0 ? <EmptyCard words="No issues match" /> : null}
     </Shell>
   );
 }

@@ -89,7 +89,7 @@ describe("journey 02, browse the backlog", () => {
 
   it("3. tags no issue has all of show one line saying so", async () => {
     inFarmers("/backlogs/all?tag=Software&tag=Blocked");
-    expect(await screen.findByText("No issues have all of those tags.")).toBeInTheDocument();
+    expect(await screen.findByText("No issues match")).toBeInTheDocument();
   });
 
   it("4. an issue opens with its description and a button for each issue it waits on", async () => {
