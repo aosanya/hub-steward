@@ -51,7 +51,7 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
     reload();
   };
   return (
-    <Shell title={title || "Chat"} sub={sub} onBack={() => navigate(chatListPath())}>
+    <Shell title={title || "Chat"} sub={sub} tabless onBack={() => navigate(chatListPath())}>
       {threads.state === "ready" ? <Button onClick={() => navigate(routes.roomThreads.path({ roomId }))}>Threads · {list.length}</Button> : null}
       {thread?.audience === "leads" ? <p className="rm-note">Leaders only · members cannot see this yet</p> : null}
       {failed ? <LoadFailed words="The room could not be loaded." /> : null}

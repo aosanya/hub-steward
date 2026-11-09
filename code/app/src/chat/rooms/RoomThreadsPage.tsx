@@ -62,7 +62,7 @@ export function RoomThreadsPage({ client = mcpRoomsClient }: { client?: RoomsCli
   const open = (threadId: string) => navigate(routes.roomThread.path({ roomId, threadId }));
   const start = async (label: string) => open(await client.startThread(roomId, label));
   return (
-    <Shell title="Threads" onBack={() => navigate(general ? routes.roomThread.path({ roomId, threadId: general.id }) : chatListPath())}>
+    <Shell title="Threads" tabless onBack={() => navigate(general ? routes.roomThread.path({ roomId, threadId: general.id }) : chatListPath())}>
       {threads.state === "error" ? <LoadFailed words="The threads could not be loaded." /> : null}
       {list.length > 0 ? (
         <Rows>

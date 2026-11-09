@@ -12,7 +12,7 @@ export function AskPage({ client = mcpChatClient, readStock = noStock }: { clien
   const navigate = useNavigate();
   const ask = useLoad(() => client.getAsk(askId), askId);
   return (
-    <Shell title="Ask" onBack={() => navigate(routes.roomThread.path({ roomId, threadId }))}>
+    <Shell title="Ask" tabless onBack={() => navigate(routes.roomThread.path({ roomId, threadId }))}>
       {ask.state === "error" || (ask.state === "ready" && ask.data === null) ? <LoadFailed words="The ask could not be found." /> : null}
       {ask.state === "ready" && ask.data ? (
         <AskForm ask={ask.data} readStock={readStock} onAnswer={(reply) => client.answerAsk(askId, reply)} />
