@@ -376,6 +376,7 @@ func (r *registry) buildTaskManager(ctx context.Context, id string) (mwanachamat
 	if err != nil {
 		return nil, err
 	}
+	built.UseGroups(mwanachamataskmanager.Groups(r.groupsIn(id)))
 	built = limitedBoard{TaskManager: built, publications: func(ctx context.Context) (publicationReader, error) {
 		return r.AgencyManager(ctx, id)
 	}}

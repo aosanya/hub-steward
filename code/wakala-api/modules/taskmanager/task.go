@@ -57,6 +57,13 @@ type TaskManager interface {
 	RemoveBacklogStep(ctx context.Context, backlogID, stepID string) (BacklogSummary, error)
 	ReplaceBacklogs(ctx context.Context, backlogs []Backlog) (BacklogList, error)
 	MoveTaskToStep(ctx context.Context, taskID, backlogID, stepID string) (Task, error)
+	MoveTaskToStepAs(ctx context.Context, requesterID, taskID, backlogID, stepID string) (Task, error)
+	ListBacklogsFor(ctx context.Context, requesterID string) (BacklogList, error)
+	ListBacklogAccess(ctx context.Context, backlogID string) (BacklogAccess, error)
+	GiveBacklogAccess(ctx context.Context, backlogID, groupID, level string) (BacklogAccess, error)
+	TakeBacklogAccess(ctx context.Context, backlogID, groupID string) (BacklogAccess, error)
+	SetBacklogOwnerGroup(ctx context.Context, groupID string) error
+	UseGroups(g Groups)
 
 	PlaceTask(ctx context.Context, taskID, afterID, beforeID string) (Task, error)
 
@@ -464,6 +471,7 @@ type taskManager struct {
 	publisher    events.Publisher
 	spec         *spec.Spec
 	overdueGrace time.Duration
+	groups       Groups
 }
 
 func NewTaskManager(db *gorm.DB, s *spec.Spec, pub events.Publisher) (TaskManager, error) {
