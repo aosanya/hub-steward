@@ -231,3 +231,24 @@ func TestACardCreatedWithARankKeepsItAndListsInThatOrder(t *testing.T) {
 		t.Fatalf("list = %s", got)
 	}
 }
+
+func TestACardSentWithARankBelowOneGetsAMintedRankAtTheBottom(t *testing.T) {
+	mgr := newTestManager(t)
+	ctx := context.Background()
+	for _, rank := range []int{1, 7, 500} {
+		made, err := mgr.CreateTask(ctx, mwanachamataskmanager.Task{Title: fmt.Sprintf("kept %d", rank), Rank: rank})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if made.Rank != rank {
+			t.Fatalf("rank %d came back as %d", rank, made.Rank)
+		}
+	}
+	minted, err := mgr.CreateTask(ctx, mwanachamataskmanager.Task{Title: "negative", Rank: -4})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if minted.Rank <= 500 {
+		t.Fatalf("a negative rank became %d, want one below the bottom card (above 500)", minted.Rank)
+	}
+}
