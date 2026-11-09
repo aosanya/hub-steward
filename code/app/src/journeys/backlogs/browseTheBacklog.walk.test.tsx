@@ -70,10 +70,10 @@ describe("journey 02, browse the backlog", () => {
     expect(where()).toBe(`/a/${farmers.id}/home`);
   });
 
-  it("3. tapping a tag on an issue's page opens the list narrowed to it, with the tag as a chip with a cross", async () => {
+  it("3. tapping a tag bubble on a row narrows the list to it, with the tag as a chip with a cross", async () => {
     inFarmers("/backlogs/all");
-    await userEvent.click(await screen.findByRole("button", { name: /^Write the manual/ }));
-    await userEvent.click(await screen.findByRole("button", { name: "Docs" }));
+    await screen.findByRole("button", { name: /^Write the manual/ });
+    await userEvent.click(screen.getAllByRole("button", { name: "Docs" })[0]);
     expect(await screen.findByRole("button", { name: "Docs ✕" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /^Write the loader/ })).toBeNull();
     expect(where()).toContain("tag=Docs");
