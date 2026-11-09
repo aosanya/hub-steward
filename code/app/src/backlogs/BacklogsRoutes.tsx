@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { BacklogBoard } from "../backlogBoard/BacklogBoard";
 import { BacklogPage, backlogPageRoutePath } from "../backlogPage";
 import { AddBacklogScreen, EditBacklogScreen } from "../backlogManage";
+import { BacklogAccessScreen, backlogAccessRoutePath } from "../backlogAccess";
 import { BacklogsPage } from "./BacklogsPage";
 import { IssuePage } from "./IssuePage";
 import { IssuesPage } from "./IssuesPage";
@@ -13,6 +14,7 @@ export function BacklogsRoutes() {
       <Route path="issue/:issueId" element={<IssuePage />} />
       <Route path="new" element={<AddBacklogScreen />} />
       <Route path=":backlogId/edit" element={<EditBacklogScreen />} />
+      <Route path={backlogAccessRoutePath} element={<BacklogAccessScreen />} />
       <Route path=":backlogId/board" element={<BacklogBoard />} />
       <Route path={backlogPageRoutePath} element={<BacklogPage />} />
       <Route path=":backlogId" element={<IssuesPage />} />
