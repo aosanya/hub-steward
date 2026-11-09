@@ -1,10 +1,11 @@
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
 import { openAgencyId } from "../agency/open";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
+import { backState } from "../ui/backTo";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
@@ -15,6 +16,7 @@ import { countWords, narrowed, toggled } from "./tags";
 
 export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {
   const navigate = useNavigate();
+  const here = useLocation();
   const { words } = useLanguage();
   const backlogId = useParams().backlogId ?? allIssuesId;
   const [search, setSearch] = useSearchParams();
@@ -51,7 +53,7 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
       {shown.length > 0 ? (
         <Rows>
           {shown.map((issue) => (
-            <IssueRow key={issue.id} issue={issue} chosen={chosen} onOpen={() => navigate(issuePath(issue.id))} onTag={choose} />
+            <IssueRow key={issue.id} issue={issue} chosen={chosen} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, title))} onTag={choose} />
           ))}
         </Rows>
       ) : null}

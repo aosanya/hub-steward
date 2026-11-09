@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { issuePath } from "../backlogs/paths";
 import { Composer } from "../chat/rooms/Composer";
 import "../chat/rooms/rooms.css";
 import { useLoad } from "../forms/useLoad";
@@ -12,6 +11,8 @@ import { EmptyCard } from "../ui/LoadState";
 import { Markdown } from "../ui/Markdown";
 import { Shell } from "../ui/Shell";
 import { mcpAssistantClient, type AssistantClient } from "./api";
+import { OptionButtons } from "./OptionButtons";
+import { splitOptions } from "./optionLines";
 import { answerAfter, historyUpTo, markSent, nextQueued, withoutItem, type Item } from "./queue";
 import { ListEntries, ResultsPanel, ResultTabs, useResults } from "./ResultsPanel";
 import { withIds } from "./results";
@@ -77,9 +78,9 @@ function Failed({ retry }: { retry: () => void }) {
   );
 }
 
-type BubblesProps = { items: Item[]; phase: Phase; current: number; step: string; retry: () => void; pick: (id: string) => void; unqueue: (id: number) => void };
+type BubblesProps = { items: Item[]; phase: Phase; current: number; step: string; retry: () => void; pick: (id: string) => void; unqueue: (id: number) => void; ask: (words: string) => void };
 
-function Bubbles({ items, phase, current, step, retry, pick, unqueue }: BubblesProps) {
+function Bubbles({ items, phase, current, step, retry, pick, unqueue, ask }: BubblesProps) {
   return (
     <div className="rm-thread">
       {items.map((item) => (
@@ -103,8 +104,9 @@ function Bubbles({ items, phase, current, step, retry, pick, unqueue }: BubblesP
             <div className="rm-msg">
               <Who />
               <div className="rm-bubble">
-                <Markdown text={item.content} />
+                <Markdown text={splitOptions(item.content).text} />
               </div>
+              {item === items[items.length - 1] && splitOptions(item.content).options.length > 0 ? <OptionButtons options={splitOptions(item.content).options} onPick={ask} /> : null}
               {item.lists && item.lists.length > 0 ? <ListEntries lists={item.lists} onPick={pick} /> : null}
             </div>
           )}
@@ -172,13 +174,13 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
         <div className="assistant-panel">
           <ResultTabs tab={found.tab} onTab={found.setTab} unseen={found.unseen} />
           {found.tab === "results" ? (
-            <ResultsPanel results={found.results} picked={found.picked} onPick={found.setPicked} onOpen={(id) => navigate(issuePath(id))} />
+            <ResultsPanel results={found.results} picked={found.picked} onPick={found.setPicked} />
           ) : (
             <Card>
               {items.length === 0 ? (
                 <p className="assistant-empty">{askPlaceholder}</p>
               ) : (
-                <Bubbles items={items} phase={phase} current={current} step={step} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} />
+                <Bubbles items={items} phase={phase} current={current} step={step} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
               )}
               <div ref={end} />
             </Card>

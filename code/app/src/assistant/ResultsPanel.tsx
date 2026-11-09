@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { openAgencyId } from "../agency/open";
+import { useLoad } from "../forms/useLoad";
+import { mcpBacklogsClient } from "../backlogs/api";
+import { issuePath } from "../backlogs/paths";
+import { backState } from "../ui/backTo";
 import { IssueRow } from "../backlogs/IssueRow";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
-import { chatTabWords, emptyResultsWords, labelOf, newResultsWords, pageSize, resultsOf, resultsTabWords, showMoreWords, type ResultList } from "./results";
+import { assistantBackWords, chatTabWords, emptyResultsWords, labelOf, newResultsWords, pageSize, resultsOf, resultsTabWords, showMoreWords, type ResultList } from "./results";
 import "./results.css";
 
 export type Tab = "chat" | "results";
@@ -58,11 +64,17 @@ export function ListEntries({ lists, onPick }: { lists: ResultList[]; onPick: (i
   );
 }
 
-type PanelProps = { results: ResultList[]; picked: string; onPick: (id: string) => void; onOpen: (id: string) => void };
+type PanelProps = { results: ResultList[]; picked: string; onPick: (id: string) => void; onOpen?: (id: string) => void };
 
 export function ResultsPanel({ results, picked, onPick, onOpen }: PanelProps) {
   const [visible, setVisible] = useState<Record<string, number>>({});
+  const navigate = useNavigate();
+  const here = useLocation();
   const list = results.find((one) => one.id === picked) ?? results[0];
+  const unnamed = list?.issues.some((issue) => issue.backlog === "" && (issue.backlogId ?? "") !== "") ?? false;
+  const backlogs = useLoad(() => (unnamed ? mcpBacklogsClient.backlogs() : Promise.resolve([])), `result-backlogs:${openAgencyId()}:${unnamed}`);
+  const names = new Map(backlogs.state === "ready" ? backlogs.data.map((one) => [one.id, one.name]) : []);
+  const open = onOpen ?? ((id: string) => navigate(issuePath(id), backState(here.pathname + here.search, assistantBackWords)));
   if (!list) {
     return (
       <Card>
@@ -85,7 +97,7 @@ export function ResultsPanel({ results, picked, onPick, onOpen }: PanelProps) {
       <Card title={labelOf(list)} flush>
         <Rows>
           {list.issues.slice(0, shown).map((issue) => (
-            <IssueRow key={issue.id} issue={issue} chosen={[]} onOpen={() => onOpen(issue.id)} chevron />
+            <IssueRow key={issue.id} issue={issue.backlog === "" ? { ...issue, backlog: names.get(issue.backlogId ?? "") ?? "" } : issue} chosen={[]} onOpen={() => open(issue.id)} chevron />
           ))}
         </Rows>
         {list.total > list.issues.length ? <p className="assistant-count">{`Showing ${list.issues.length} of ${list.total}`}</p> : null}

@@ -12,6 +12,8 @@ export const readTool = "taskmanager_task_read";
 
 export const chatTabWords = "Chat";
 
+export const assistantBackWords = "Hub Steward";
+
 export const resultsTabWords = "Results";
 
 export const newResultsWords = "New results";

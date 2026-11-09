@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
 import { openAgencyId } from "../agency/open";
@@ -6,6 +6,7 @@ import { Card } from "../ui/Card";
 import { LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Rows } from "../ui/ListRow";
 import { Markdown } from "../ui/Markdown";
+import { backState, useBackLabel, useBackTo } from "../ui/backTo";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
 import { mcpBacklogsClient, type BacklogsClient } from "./api";
@@ -16,7 +17,10 @@ import { splitSource } from "./source";
 
 export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {
   const navigate = useNavigate();
+  const here = useLocation();
   const { words } = useLanguage();
+  const backTo = useBackTo(issuesPath());
+  const backLabel = useBackLabel(words.backAllIssues);
   const id = useParams().issueId ?? "";
   const issue = useLoad(() => client.issue(id), `issue:${openAgencyId()}:${id}`);
   const ready = issue.state === "ready" ? issue.data : null;
@@ -24,7 +28,7 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
   const parts = ready ? titleParts(ready.title) : null;
   const { body, source } = splitSource(ready?.description ?? "");
   return (
-    <Shell title={parts?.code || "Issue"} onBack={() => navigate(issuesPath())} backLabel={words.backAllIssues}>
+    <Shell title={parts?.code || "Issue"} onBack={() => navigate(backTo)} backLabel={backLabel}>
       {issue.state === "loading" ? <LoadingLine /> : null}
       {issue.state === "error" ? <LoadFailed words="This issue could not be loaded." /> : null}
       {ready && parts ? (
@@ -45,7 +49,7 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
               <Card key={heading} title={heading} collapsible flush>
                 <Rows>
                   {issues.map((one) => (
-                    <IssueRow key={one.id} issue={one} chosen={[]} chevron onOpen={() => navigate(issuePath(one.id))} />
+                    <IssueRow key={one.id} issue={one} chosen={[]} chevron onOpen={() => navigate(issuePath(one.id), backState(here.pathname + here.search, parts.code))} />
                   ))}
                 </Rows>
               </Card>

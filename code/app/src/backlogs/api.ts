@@ -24,6 +24,7 @@ export type Issue = {
   repo: string;
   topics: string[];
   backlog: string;
+  backlogId?: string;
   mark: Mark;
   rank: number;
   priority?: string;
@@ -54,6 +55,14 @@ const settled = new Set(["completed", "cancelled"]);
 const marks: Mark[] = ["Blocked", "Ready"];
 
 const derivedMark = (status: string): Mark => (settled.has(status) ? "" : status === "blocked" ? "Blocked" : "Ready");
+
+const markOf = (raw: any, status: string): Mark => {
+  if (typeof raw?.blocked !== "boolean") return derivedMark(status);
+  if (settled.has(status)) return "";
+  if (raw.blocked) return "Blocked";
+  const state = text(raw?.state).toLowerCase();
+  return state === "" || state === "to do" ? "Ready" : "";
+};
 
 const rankOf = (raw: any) => (typeof raw?.rank === "number" && raw.rank > 0 ? raw.rank : Number.MAX_SAFE_INTEGER);
 
@@ -90,7 +99,8 @@ export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
     repo: text(raw?.project_name),
     topics: tags.filter((tag) => !marks.includes(tag as Mark)),
     backlog: backlog?.name ?? "",
-    mark: own ?? derivedMark(status),
+    backlogId: text(raw?.backlog),
+    mark: own ?? markOf(raw, status),
     rank: rankOf(raw),
     priority: text(raw?.priority),
   };

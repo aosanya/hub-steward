@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from "../backlogs/api";
 import { FilterBar } from "../backlogs/FilterBar";
@@ -8,6 +8,7 @@ import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam
 import { narrowed, toggled } from "../backlogs/tags";
 import { backlogPagePath } from "../backlogPage/paths";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
+import { backState } from "../ui/backTo";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
 import { columnsOf } from "./board";
@@ -27,6 +28,7 @@ const countWords = (shown: number, steps: number) => `${shown} ${shown === 1 ? "
 export function BacklogBoard({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {
   const { backlogId = "" } = useParams();
   const navigate = useNavigate();
+  const here = useLocation();
   const { words } = useLanguage();
   const [search, setSearch] = useSearchParams();
   const chosen = search.getAll(tagParam);
@@ -78,7 +80,7 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
                 </h3>
                 {column.issues.map((issue) => (
                   <div key={issue.id} className="bb-card">
-                    <IssueRow issue={issue} chosen={chosen} onTag={toggle} onOpen={() => navigate(issuePath(issue.id))} />
+                    <IssueRow issue={issue} chosen={chosen} onTag={toggle} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
                   </div>
                 ))}
                 {column.issues.length === 0 ? <p className="bb-none">Nothing here</p> : null}
