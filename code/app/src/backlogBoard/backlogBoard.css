@@ -1,7 +1,8 @@
 .bb-board { display: flex; gap: .75rem; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -1rem; padding: 0 1rem .5rem; }
 .bb-col { flex: none; width: 15rem; scroll-snap-align: start; display: flex; flex-direction: column; gap: .5rem; padding: .5rem; background: var(--bg-alt); border: 1px solid var(--line); border-radius: var(--r-md); }
 .bb-col h3 { display: flex; justify-content: space-between; margin: 0; padding: .25rem .5rem; font-size: .875rem; font-weight: 600; color: var(--ink-soft); }
-.bb-card { display: flex; flex-direction: column; gap: .375rem; padding: .75rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 1px 2px var(--line); color: var(--ink); font: inherit; font-size: .9rem; text-align: left; overflow-wrap: anywhere; }
+.bb-card { display: flex; flex-direction: column; gap: .375rem; padding: .75rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 1px 2px var(--line); color: var(--ink); font-size: .9rem; overflow-wrap: anywhere; cursor: pointer; }
+.bb-open { padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; }
 .bb-none { margin: 0; padding: .5rem; color: var(--ink-soft); font-size: .8125rem; }
 .bb-chosen { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
 .bb-clear { min-height: 2.5rem; padding: 0 .875rem; border: 1px solid var(--line-strong); border-radius: var(--r-pill); background: var(--surface); color: var(--accent); font: inherit; font-weight: 500; }

@@ -25,12 +25,18 @@ export function IssueTitle({ title }: { title: string }) {
   );
 }
 
-export function IssueTags({ issue }: { issue: Issue }) {
+export const openUnlessTag = (open: () => void) => (event: { target: EventTarget }) => {
+  if (!(event.target as HTMLElement).closest(".issue-tags")) open();
+};
+
+export function IssueTags({ issue, chosen, onTag }: { issue: Issue; chosen: string[]; onTag: (tag: string) => void }) {
   const tags = tagsOf(issue);
   return tags.length === 0 ? null : (
     <span className="issue-tags">
       {tags.map((tag) => (
-        <Chip key={tag}>{tag}</Chip>
+        <Chip key={tag} pressed={chosen.includes(tag)} onClick={() => onTag(tag)}>
+          {tag}
+        </Chip>
       ))}
     </span>
   );

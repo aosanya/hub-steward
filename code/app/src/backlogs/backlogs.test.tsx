@@ -154,8 +154,7 @@ describe("the list of issues", () => {
     await screen.findByText("Fix mirrored board drift");
     expect(titles()).toEqual(["Fix mirrored board drift", "Import the municipality", "Record the voice clips"]);
     const first = document.querySelector(".issue-row") as HTMLElement;
-    expect(within(first).getAllByRole("button")).toHaveLength(1);
-    expect(within(first).getAllByRole("button")).toHaveLength(1);
+    expect(within(first).getAllByRole("button")).toHaveLength(5);
     expect(first.querySelector(".issue-title")?.textContent).toBe("Fix mirrored board drift");
     expect(Array.from(first.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Ready", "mwanachama-web", "Docs", "Backlog"]);
     expect(screen.getByText("3 issues")).toBeInTheDocument();
@@ -182,6 +181,33 @@ describe("the list of issues", () => {
     await userEvent.click(screen.getByRole("button", { name: "Docs ✕" }));
     expect(titles()).toHaveLength(3);
     expect(where()).toBe("/a/hub-1/backlogs/all");
+  });
+
+  it("adds a tapped bubble to the filter without opening the issue, and a chosen bubble is selected and removes itself", async () => {
+    answering(board);
+    openAt("/a/hub-1/backlogs/all");
+    await screen.findByText("Fix mirrored board drift");
+    const bubble = (name: string) => within(document.querySelector(".issue-row") as HTMLElement).getByRole("button", { name });
+    await userEvent.click(bubble("Ready"));
+    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Ready");
+    await userEvent.click(bubble("Docs"));
+    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Ready&tag=Docs");
+    expect(titles()).toEqual(["Fix mirrored board drift"]);
+    expect(bubble("Docs")).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(bubble("Docs"));
+    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Ready");
+    expect(bubble("Docs")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("opens the issue from a tap on the row but not from a tap on a bubble", async () => {
+    answering(board);
+    openAt("/a/hub-1/backlogs/all");
+    await screen.findByText("Fix mirrored board drift");
+    const row = document.querySelector(".issue-row") as HTMLElement;
+    await userEvent.click(within(row).getByRole("button", { name: "Docs" }));
+    expect(where()).not.toContain("/issue/");
+    await userEvent.click(document.querySelector(".issue-row") as HTMLElement);
+    expect(where()).toContain("/issue/");
   });
 
   it("narrows by tags chosen together and says when none match", async () => {

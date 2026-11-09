@@ -50,7 +50,6 @@ describe("journey 02, browse the backlog", () => {
     const titles = Array.from(document.querySelectorAll(".issue-row .issue-title")).map((one) => one.textContent);
     expect(titles).toEqual(["Write the manual", "Import the boards", "Write the loader"]);
     const row = first.closest(".row") as HTMLElement;
-    expect(within(row).getAllByRole("button")).toHaveLength(1);
     expect(row.querySelector(".issue-title")?.textContent).toBe("Write the manual");
     expect(Array.from(row.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(expect.arrayContaining(["Ready", "mwanachama-docs", "Docs"]));
     expect(screen.queryByText(/P[1-4]|critical|priority/i)).toBeNull();

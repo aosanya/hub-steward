@@ -20,11 +20,12 @@ input::placeholder { color: var(--ink-soft); }
 .tab[aria-current="page"] .pill { background: var(--accent-wash); }
 .card { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 1px 2px var(--line); }
 .card.empty { align-items: center; text-align: center; color: var(--ink-soft); min-height: 8rem; justify-content: center; }
-.chip { display: inline-flex; align-items: center; gap: .25rem; padding: 0 .625rem; border-radius: var(--r-pill); background: var(--bg-alt); color: var(--ink-soft); font-size: .8125rem; font-weight: 500; line-height: 1.5rem; white-space: nowrap; }
+.chip { display: inline-flex; align-items: center; gap: .25rem; padding: 0 .625rem; border: 0; border-radius: var(--r-pill); background: var(--bg-alt); color: var(--ink-soft); font-family: inherit; font-size: .8125rem; font-weight: 500; line-height: 1.5rem; white-space: nowrap; }
 .chip.accent { background: var(--accent-wash); color: var(--accent-strong); }
 .chip.info { background: var(--info-wash); color: var(--info); }
 .chip.success { background: transparent; color: var(--success); }
 .chip.danger { background: transparent; color: var(--danger); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
 .btn { display: flex; align-items: center; justify-content: center; gap: .5rem; width: 100%; min-height: 3rem; padding: 0 1.25rem; background: transparent; border: 1px solid transparent; border-radius: var(--r-md); font-weight: 600; text-align: center; }
 .btn.primary { background: var(--accent); color: var(--on-accent); }
 .btn.quiet { border-color: var(--line-strong); color: var(--ink); }

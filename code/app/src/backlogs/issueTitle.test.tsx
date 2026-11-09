@@ -27,9 +27,9 @@ describe("an issue's title on a row or card", () => {
   });
 
   it("shows one bubble for each tag, three for three, and none for none", () => {
-    const { container, rerender } = render(<IssueTags issue={issue({ repo: "hub-steward", topics: ["Docs"], backlog: "Backlog" })} />);
+    const { container, rerender } = render(<IssueTags issue={issue({ repo: "hub-steward", topics: ["Docs"], backlog: "Backlog" })} chosen={[]} onTag={() => {}} />);
     expect(container.querySelectorAll(".chip")).toHaveLength(3);
-    rerender(<IssueTags issue={issue({})} />);
+    rerender(<IssueTags issue={issue({})} chosen={[]} onTag={() => {}} />);
     expect(container.querySelectorAll(".chip")).toHaveLength(0);
   });
 });

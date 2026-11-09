@@ -91,11 +91,25 @@ describe("BacklogBoard", () => {
     open(client());
     await screen.findByText("Record the clips");
     const card = within(column("Waiting")).getByRole("button", { name: /^Import the municipality/ });
-    expect(card.querySelector(".issue-title")?.textContent).toBe("Import the municipality");
-    expect(Array.from(card.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Blocked", "hub-steward", "Docs", "Backlog"]);
-    expect(within(column("To do")).getByRole("button", { name: /Record the clips/ }).querySelectorAll(".chip")).toHaveLength(3);
+    const whole = card.closest(".bb-card") as HTMLElement;
+    expect(whole.querySelector(".issue-title")?.textContent).toBe("Import the municipality");
+    expect(Array.from(whole.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Blocked", "hub-steward", "Docs", "Backlog"]);
+    expect((within(column("To do")).getByRole("button", { name: /Record the clips/ }).closest(".bb-card") as HTMLElement).querySelectorAll(".chip")).toHaveLength(3);
     await user.click(card);
     await waitFor(() => expect(screen.getByTestId("where").textContent).toMatch(/\/backlogs\/issue\/3$/));
+  });
+
+  it("filters every column when a bubble is tapped, without opening the issue, and a chosen bubble removes it", async () => {
+    const user = userEvent.setup();
+    open(client());
+    await screen.findByText("Record the clips");
+    const bubble = () => within(column("Waiting")).getByRole("button", { name: "Docs" });
+    await user.click(bubble());
+    expect(screen.queryByText("Record the clips")).not.toBeInTheDocument();
+    expect(bubble()).toHaveAttribute("aria-pressed", "true");
+    await user.click(bubble());
+    expect(await screen.findByText("Record the clips")).toBeInTheDocument();
+    expect(bubble()).toHaveAttribute("aria-pressed", "false");
   });
 
   it("filters every column by the tags in the address and clears them again", async () => {
