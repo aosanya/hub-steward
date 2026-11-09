@@ -4,7 +4,9 @@ import { openAgencyId } from "../agency/open";
 import { Chip } from "../ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Rows } from "../ui/ListRow";
+import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
+import { boardPath } from "../backlogBoard/paths";
 import { Button } from "../ui/Button";
 import { chatListPath } from "../routes";
 import "./backlogs.css";
@@ -28,6 +30,16 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
   const sub = issues.state === "ready" && total > 0 ? countWords(shown.length, total, chosen.length > 0) : undefined;
   return (
     <Shell title={title} sub={sub} onBack={() => navigate(backlogsHomePath())}>
+      {backlogId !== allIssuesId ? (
+        <Segmented
+          items={[
+            { id: "list", label: "List" },
+            { id: "board", label: "Board" },
+          ]}
+          current="list"
+          onChange={() => navigate(boardPath(backlogId, chosen))}
+        />
+      ) : null}
       {issues.state === "loading" ? <LoadingLine /> : null}
       {issues.state === "error" ? <LoadFailed words="The issues could not be loaded." /> : null}
       {issues.state === "ready" && total === 0 ? (

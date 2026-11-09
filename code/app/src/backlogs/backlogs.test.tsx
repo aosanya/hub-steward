@@ -81,11 +81,18 @@ describe("the Backlogs screen", () => {
     expect(await screen.findByText("Hub Steward SWE")).toBeInTheDocument();
   });
 
-  it("opens the list of one backlog from its row", async () => {
+  it("opens the board of one backlog from its row", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs");
     await userEvent.click(await screen.findByText("5 steps · 3 issues"));
-    expect(where()).toBe("/a/hub-1/backlogs/default");
+    expect(where()).toBe("/a/hub-1/backlogs/default/board");
+  });
+
+  it("opens the list of every issue from the All issues row", async () => {
+    answering(board);
+    openAt("/a/hub-1/backlogs");
+    await userEvent.click(await screen.findByText("3 issues"));
+    expect(where()).toBe("/a/hub-1/backlogs/all");
   });
 
   it("shows the empty card with an Open Chat button before the first load", async () => {
@@ -147,6 +154,20 @@ describe("the list of issues", () => {
     answering([]);
     openAt("/a/hub-1/backlogs/all");
     expect(await screen.findByText("No issues yet. Ask in Chat to load the boards.")).toBeInTheDocument();
+  });
+
+  it("has a List | Board switch on a backlog's list that keeps the chosen tags", async () => {
+    answering(board);
+    openAt("/a/hub-1/backlogs/default?tag=Blocked");
+    await userEvent.click(await screen.findByRole("button", { name: "Board" }));
+    expect(where()).toBe("/a/hub-1/backlogs/default/board?tag=Blocked");
+  });
+
+  it("has no List | Board switch on All issues", async () => {
+    answering(board);
+    openAt("/a/hub-1/backlogs/all");
+    await screen.findByText("Fix mirrored board drift");
+    expect(screen.queryByRole("button", { name: "Board" })).not.toBeInTheDocument();
   });
 
   it("opens an issue from its title", async () => {

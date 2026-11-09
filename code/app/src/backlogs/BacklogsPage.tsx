@@ -8,6 +8,7 @@ import { ListRow, Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
 import { chatListPath } from "../routes";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
+import { boardPath } from "../backlogBoard/paths";
 import { issuesPath } from "./paths";
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -26,7 +27,7 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
           <ListRow title="All issues" meta={plural(issues, "issue")} end="›" onClick={() => navigate(issuesPath(allIssuesId))} />
           {issues > 0
             ? rows.map((one) => (
-                <ListRow key={one.id} title={one.name} meta={`${plural(one.steps.length, "step")} · ${plural(one.issues, "issue")}`} end="›" onClick={() => navigate(issuesPath(one.id))} />
+                <ListRow key={one.id} title={one.name} meta={`${plural(one.steps.length, "step")} · ${plural(one.issues, "issue")}`} end="›" onClick={() => navigate(boardPath(one.id))} />
               ))
             : null}
         </Rows>
