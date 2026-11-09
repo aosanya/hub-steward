@@ -52,7 +52,7 @@ func (m *agencyManager) ListRoles(ctx context.Context, draftID string, filter Ro
 }
 
 func (m *agencyManager) UpdateRole(ctx context.Context, r models.Role) (models.Role, error) {
-	if r.Name == "" {
+	if !r.FromRequest() && r.Name == "" {
 		return models.Role{}, fmt.Errorf("%w: Role.Name is required", ErrInvalidRole)
 	}
 	var out models.Role
@@ -63,6 +63,21 @@ func (m *agencyManager) UpdateRole(ctx context.Context, r models.Role) (models.R
 		}
 		if err := m.requireOpenDraft(ctx, tx, existing.DraftID); err != nil {
 			return err
+		}
+		if !r.Carries("name") {
+			r.Name = existing.Name
+		}
+		if !r.Carries("description") {
+			r.Description = existing.Description
+		}
+		if !r.Carries("permissions") {
+			r.Permissions = existing.Permissions
+		}
+		if !r.Carries("staff") {
+			r.Staff = existing.Staff
+		}
+		if r.Name == "" {
+			return fmt.Errorf("%w: Role.Name is required", ErrInvalidRole)
 		}
 		r.Code = existing.Code
 		r.DraftID = existing.DraftID
