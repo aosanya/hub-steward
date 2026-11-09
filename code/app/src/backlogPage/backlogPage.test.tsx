@@ -7,7 +7,8 @@ import { defaultBacklogId, taskTools } from "../backlogs/api";
 import * as mcp from "../wakala/mcp";
 import type { BacklogManageClient } from "../backlogManage";
 import { BacklogPage } from "./BacklogPage";
-import { mcpBacklogPageClient, productOwnerGroup, type BacklogPageClient } from "./api";
+import { mcpBacklogPageClient, type BacklogPageClient } from "./api";
+import { accessTools } from "../backlogAccess/api";
 import { BacklogPageRoutes } from "./index";
 import { isValidElement } from "react";
 import { backlogPagePath } from "./paths";
@@ -28,24 +29,66 @@ const hubReply = {
   ],
 };
 
+const accessReply = { owner_group: "g-owner", groups: [{ group_id: "g-owner", level: "move" }, { group_id: "g-support", level: "see" }] };
+
+const groupsReply = { items: [{ id: "g-owner", name: "Maintainers" }, { id: "g-support", name: "Support" }] };
+
+const hubAnswering = (access: unknown = accessReply, reply: unknown = hubReply) =>
+  vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string) => {
+    if (tool === taskTools.backlogs) return reply;
+    if (tool === accessTools.list) {
+      if (access instanceof Error) throw access;
+      return access;
+    }
+    if (tool === accessTools.groups) return groupsReply;
+    return { items: [] };
+  }) as never);
+
 describe("the page read from the hub", () => {
   it("takes the steps and their counts from the backlog list, past the 500 a list call returns", async () => {
-    const call = vi.spyOn(mcp, "callTool").mockResolvedValue(hubReply as never);
-    expect(await mcpBacklogPageClient.page("backlog")).toEqual({
-      name: "Backlog",
-      steps: [
-        { name: "To do", issues: 900 },
-        { name: "Doing", issues: 80 },
-        { name: "Done", issues: 413 },
+    const call = hubAnswering();
+    const data = await mcpBacklogPageClient.page("backlog");
+    expect(data?.name).toBe("Backlog");
+    expect(data?.steps).toEqual([
+      { name: "To do", issues: 900 },
+      { name: "Doing", issues: 80 },
+      { name: "Done", issues: 413 },
+    ]);
+    expect(call.mock.calls.filter((one) => one[1] === taskTools.backlogs)).toHaveLength(1);
+  });
+
+  it("counts the issues at no step from what the backlog holds beyond its steps", async () => {
+    hubAnswering(accessReply, { items: [{ id: "backlog", name: "Backlog", issues: 1450, steps: hubReply.items[0].steps }] });
+    expect((await mcpBacklogPageClient.page("backlog"))?.noStep).toBe(57);
+    hubAnswering();
+    expect((await mcpBacklogPageClient.page("backlog"))?.noStep).toBe(0);
+  });
+
+  it("reads who has access from the hub, with the group names, the owner group first", async () => {
+    hubAnswering();
+    expect((await mcpBacklogPageClient.page("backlog"))?.access).toEqual({
+      restricted: true,
+      groups: [
+        { name: "Maintainers", level: "Can move" },
+        { name: "Support", level: "Can see" },
       ],
-      groups: [productOwnerGroup],
     });
-    expect(call).toHaveBeenCalledTimes(1);
-    expect(call.mock.calls[0][1]).toBe(taskTools.backlogs);
+  });
+
+  it("says nobody is restricted when the hub has no owner group, and invents no group", async () => {
+    hubAnswering({ owner_group: "", groups: [] });
+    expect((await mcpBacklogPageClient.page("backlog"))?.access).toEqual({ restricted: false, groups: [] });
+  });
+
+  it("leaves the access out when the person may not read it", async () => {
+    hubAnswering(new Error("403"));
+    const data = await mcpBacklogPageClient.page("backlog");
+    expect(data?.name).toBe("Backlog");
+    expect(data?.access).toBeUndefined();
   });
 
   it("reads another backlog by its id and refuses one the hub does not list", async () => {
-    vi.spyOn(mcp, "callTool").mockResolvedValue(hubReply as never);
+    hubAnswering();
     expect((await mcpBacklogPageClient.page("software"))?.steps).toEqual([{ name: "Idea", issues: 0 }]);
     expect(await mcpBacklogPageClient.page("missing")).toBeUndefined();
   });
@@ -91,7 +134,8 @@ const software = clientOf(async () => ({
     { name: "Doing", issues: 1 },
     { name: "Done", issues: 0 },
   ],
-  groups: [productOwnerGroup],
+  noStep: 0,
+  access: { restricted: true, groups: [{ name: "Product owner", level: "Can move" }] },
 }));
 
 describe("the route", () => {
@@ -115,6 +159,27 @@ describe("the backlog page", () => {
     expect(rows).toEqual(["To do3 issues", "Doing1 issue", "Done0 issues"]);
   });
 
+  it("shows a No step row for issues at no step, and none when every issue has a step", async () => {
+    await show(clientOf(async () => ({ name: "Software", steps: [{ name: "To do", issues: 3 }], noStep: 2, access: undefined })));
+    const row = (await screen.findByText("No step")).closest(".row") as HTMLElement;
+    expect(within(row).getByText("2 issues")).toBeVisible();
+    cleanup();
+    await show(software);
+    await screen.findByText("Steps, in order");
+    expect(screen.queryByText("No step")).toBeNull();
+  });
+
+  it("says nobody is restricted yet when the hub has no owner group", async () => {
+    await show(clientOf(async () => ({ name: "Software", steps: [], noStep: 0, access: { restricted: false, groups: [] } })));
+    expect(await screen.findByText("Nobody is restricted yet.")).toBeVisible();
+  });
+
+  it("leaves the access section out when the person may not read it", async () => {
+    await show(clientOf(async () => ({ name: "Software", steps: [], noStep: 0, access: undefined })));
+    await screen.findByText("Steps, in order");
+    expect(screen.queryByText("Who has access")).toBeNull();
+  });
+
   it("shows the Product owner group at Can move and says no other group has access", async () => {
     await show(software);
     const row = (await screen.findByText("Product owner")).closest(".row") as HTMLElement;
@@ -123,7 +188,7 @@ describe("the backlog page", () => {
   });
 
   it("shows another group with its level", async () => {
-    await show(clientOf(async () => ({ name: "Software", steps: [], groups: [productOwnerGroup, { name: "Contributors", level: "Can see" }] })));
+    await show(clientOf(async () => ({ name: "Software", steps: [], noStep: 0, access: { restricted: true, groups: [{ name: "Product owner", level: "Can move" }, { name: "Contributors", level: "Can see" }] } })));
     const row = (await screen.findByText("Contributors")).closest(".row") as HTMLElement;
     expect(within(row).getByText("Can see")).toBeVisible();
     expect(screen.queryByText("No other groups have access.")).toBeNull();

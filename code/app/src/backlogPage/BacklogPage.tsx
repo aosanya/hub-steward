@@ -41,7 +41,7 @@ export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklog
     );
   }
 
-  const { name, steps, groups } = loaded.data;
+  const { name, steps, noStep, access } = loaded.data;
   return (
     <Shell title={name} sub={stepsWords(steps.length)} onBack={back}>
       {mayManage.state === "ready" && mayManage.data ? <Button to={editBacklogPath(backlogId)}>Edit this backlog</Button> : null}
@@ -50,14 +50,23 @@ export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklog
         {steps.map((step) => (
           <ListRow key={step.name} title={step.name} end={issuesWords(step.issues)} />
         ))}
+        {noStep > 0 ? <ListRow key="no-step" title="No step" end={issuesWords(noStep)} /> : null}
       </Rows>
-      <SectionHeading>Who has access</SectionHeading>
-      <Rows>
-        {groups.map((group) => (
-          <ListRow key={group.name} title={group.name} end={<Chip tone={group.level === "Can move" ? "accent" : undefined}>{group.level}</Chip>} />
-        ))}
-      </Rows>
-      {groups.length === 1 ? <EmptyCard words="No other groups have access." /> : null}
+      {access ? (
+        <>
+          <SectionHeading>Who has access</SectionHeading>
+          {access.restricted ? (
+            <Rows>
+              {access.groups.map((group) => (
+                <ListRow key={group.name} title={group.name} end={<Chip tone={group.level === "Can move" ? "accent" : undefined}>{group.level}</Chip>} />
+              ))}
+            </Rows>
+          ) : (
+            <EmptyCard words="Nobody is restricted yet." />
+          )}
+          {access.restricted && access.groups.length === 1 ? <EmptyCard words="No other groups have access." /> : null}
+        </>
+      ) : null}
       {mayManage.state === "ready" && mayManage.data ? <Button to={backlogAccessPath(backlogId)}>Change who has access</Button> : null}
       <p className="sub">Change steps and access by asking in Chat. A group that can move issues can also see them.</p>
     </Shell>

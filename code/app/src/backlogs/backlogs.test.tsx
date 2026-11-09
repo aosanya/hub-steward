@@ -243,6 +243,12 @@ describe("reading the task module's answers", () => {
     expect(issueOf({ id: "a", rank: 0 }).rank).toBeGreaterThan(issueOf({ id: "b", rank: 5 }).rank);
   });
 
+  it("leaves an issue the hub placed at no step with no step, not at the state's name", () => {
+    const hub = hubBacklogsOf({ items: [{ id: "backlog", name: "Backlog", steps: [{ id: "to-do", name: "To do", issues: 1 }] }] });
+    expect(issueOf({ id: "a", backlog: "backlog", state: "To do" }, hub).step).toBe("");
+    expect(issueOf({ id: "b", state: "To do" }, hub).step).toBe("To do");
+  });
+
   it("reads step names from a list or from items", () => {
     expect(stepsOf([{ name: "To do" }, { name: "" }])).toEqual(["To do"]);
     expect(stepsOf({ items: [{ name: "Doing" }] })).toEqual(["Doing"]);
@@ -309,6 +315,46 @@ describe("talking to the hub", () => {
     expect(new Set(issues.map((one) => one.id)).size).toBe(1400);
     expect(call.mock.calls.filter((one) => one[1] === taskTools.list).length).toBeLessThanOrEqual(12);
     expect(issues.map((one) => one.rank)).toEqual([...issues.map((one) => one.rank)].sort((a, b) => a - b));
+  });
+
+  const noStepHub = (total: number, atNoStep: number) => {
+    const all = Array.from({ length: total }, (_, at) => ({
+      id: `t${at}`,
+      title: `Issue ${at}`,
+      rank: at + 1,
+      status: "pending",
+      state: "To do",
+      backlog: "backlog",
+      step: at < atNoStep ? "" : at % 2 === 0 ? "to-do" : "doing",
+      priority: ["critical", "high", "medium", "low"][at % 4],
+      project_name: "hub-steward",
+      tags: [],
+    }));
+    return vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string, args: Record<string, unknown> = {}) => {
+      if (tool === taskTools.backlogs) {
+        const steps = ["to-do", "doing"].map((id) => ({ id, name: id, issues: all.filter((one) => one.step === id).length }));
+        return { items: [{ id: "backlog", name: "Backlog", issues: all.length, steps }] };
+      }
+      if (tool !== taskTools.list) return { items: [] };
+      const rows = all.filter((one) => (!args.step || one.step === args.step) && (!args.priority || one.priority === args.priority));
+      return { items: rows.slice(0, Math.min(Number(args.limit ?? 500), 500)) };
+    }) as never);
+  };
+
+  it("loads the issues at no step too when a backlog holds more than a page", async () => {
+    const call = noStepHub(1400, 100);
+    const issues = await mcpBacklogsClient.issues("backlog");
+    expect(issues).toHaveLength(1400);
+    expect(new Set(issues.map((one) => one.id)).size).toBe(1400);
+    expect(issues.filter((one) => one.step === "")).toHaveLength(100);
+    expect(call.mock.calls.filter((one) => one[1] === taskTools.list).length).toBeLessThanOrEqual(16);
+  });
+
+  it("splits by priority only when the backlog holds issues beyond its steps", async () => {
+    const call = noStepHub(1400, 0);
+    expect(await mcpBacklogsClient.issues("backlog")).toHaveLength(1400);
+    const asked = call.mock.calls.filter((one) => one[1] === taskTools.list).map((one) => one[2] as Record<string, unknown>);
+    expect(asked.some((one) => one.priority && !one.step)).toBe(false);
   });
 
   it("asks once when everything fits in one page", async () => {

@@ -79,12 +79,13 @@ export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
   const own = settled.has(status) ? undefined : marks.find((mark) => tags.includes(mark));
   const backlog = hub.find((one) => one.id === text(raw?.backlog)) ?? hub[0];
   const step = backlog?.steps.find((one) => one.id === text(raw?.step) || one.name === text(raw?.step));
+  const placed = text(raw?.backlog) !== "";
   return {
     id: text(raw?.id),
     title: text(raw?.title) || text(raw?.task_name),
     description: text(raw?.description),
     status,
-    step: step?.name ?? text(raw?.state),
+    step: step?.name ?? (placed ? "" : text(raw?.state)),
     repo: text(raw?.project_name),
     topics: tags.filter((tag) => !marks.includes(tag as Mark)),
     backlog: backlog?.name ?? "",
@@ -107,11 +108,19 @@ const fetchPage = async (query: Query) => itemsOf(await callTool("", taskTools.l
 
 const worth = (steps: HubStep[]) => (steps.some((step) => step.issues > 0) ? steps.filter((step) => step.issues > 0) : steps);
 
+const byPriority = (query: Query): Query[] => priorities.map((priority) => ({ ...query, priority }));
+
+const byStep = (query: Query, backlog: HubBacklog | undefined): Query[] => {
+  const parts = worth(backlog?.steps ?? []).map((step) => ({ ...query, step: step.id || step.name }));
+  const atNoStep = (backlog?.issues ?? 0) - (backlog?.steps ?? []).reduce((sum, step) => sum + step.issues, 0);
+  return atNoStep > 0 && !query.priority ? [...parts, ...byPriority(query)] : parts;
+};
+
 const splits = (query: Query, hub: HubBacklog[]): Query[] => {
   if (!query.backlog && hub.length > 1) return hub.map((one) => ({ ...query, backlog: one.id }));
   if (!query.backlog) return splits({ ...query, backlog: hub[0]?.id ?? defaultBacklogId }, hub);
-  if (!query.step) return worth(hub.find((one) => one.id === query.backlog)?.steps ?? []).map((step) => ({ ...query, step: step.id || step.name }));
-  if (!query.priority) return priorities.map((priority) => ({ ...query, priority }));
+  if (!query.step) return byStep(query, hub.find((one) => one.id === query.backlog));
+  if (!query.priority) return byPriority(query);
   return [];
 };
 

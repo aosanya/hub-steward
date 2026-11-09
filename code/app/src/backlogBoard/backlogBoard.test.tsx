@@ -60,9 +60,9 @@ describe("board columns", () => {
     expect(columns.map((c) => [c.step, c.issues.map((i) => i.id)])).toEqual([["To do", ["1"]], ["Done", []], [unplacedStep, ["2"]]]);
   });
 
-  it("puts an issue with no step at the first step, not in Unplaced", () => {
+  it("puts an issue at no step in Unplaced, as the hub leaves it, never in the first column", () => {
     const columns = columnsOf(["To do", "Done"], [issue("1", "A", "")]);
-    expect(columns.map((c) => [c.step, c.issues.map((i) => i.id)])).toEqual([["To do", ["1"]], ["Done", []]]);
+    expect(columns.map((c) => [c.step, c.issues.map((i) => i.id)])).toEqual([["To do", []], ["Done", []], [unplacedStep, ["1"]]]);
   });
 
   it("adds no Unplaced column when every issue sits at a step", () => {

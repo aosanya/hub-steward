@@ -1,5 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { accessTools } from "../../backlogAccess/api";
 import { taskTools } from "../../backlogs/api";
 import { beforeEachJourney, endInAgencies, farmers, inFarmers, issueRow, states, where } from "./backlogs.test-support";
 
@@ -55,7 +56,11 @@ describe("journey 03, work the backlogs", () => {
   });
 
   it("2. the page shows the groups with access", async () => {
-    inFarmers("/backlogs/backlog/page", world);
+    inFarmers("/backlogs/backlog/page", {
+      ...world,
+      [accessTools.list]: () => ({ owner_group: "g1", groups: [{ group_id: "g1", level: "move" }] }),
+      [accessTools.groups]: () => ({ items: [{ id: "g1", name: "Product owner" }] }),
+    });
     expect(await screen.findByText("Who has access")).toBeInTheDocument();
     expect(screen.getByText("Product owner")).toBeInTheDocument();
     expect(screen.getByText("Can move")).toBeInTheDocument();
