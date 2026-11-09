@@ -89,7 +89,7 @@ describe("forms lists announce their state", () => {
 describe("nothing waiting", () => {
   it("carries its act, which switches to Answered", async () => {
     at("/a/farmers/forms", fake({ answered: async () => [{ send_id: "s1", form_id: "f0", title: "Water levy", closes_at: "", open: true, answered_at: "2026-10-12T10:00:00Z" }] }));
-    expect(await screen.findByText("New forms from your groups show up here and in your Inbox.")).toBeInTheDocument();
+    expect(await screen.findByText("New forms from your groups show up here and on Home.")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "See what you answered" }));
     expect(await screen.findByText("Water levy")).toBeInTheDocument();
   });

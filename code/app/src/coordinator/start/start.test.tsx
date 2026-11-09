@@ -8,7 +8,7 @@ import { StartRows } from "../../home/StartRows";
 import * as mcp from "../../wakala/mcp";
 import { draftOf, isGroupOrderStart, mcpStartClient, unitOf, type PosterChoice, type StartClient, type StartStep } from "./api";
 import { StartPage } from "./StartPages";
-import { StartInboxRows } from "./Waiting";
+import { StartWaitingRows } from "./Waiting";
 
 const step: StartStep = {
   id: "w1",
@@ -110,7 +110,7 @@ describe("the Group coordinator starts the group order", () => {
     render(
       <MemoryRouter>
         <Routes>
-          <Route path="/" element={<StartInboxRows client={clientOf([step])} />} />
+          <Route path="/" element={<StartWaitingRows client={clientOf([step])} />} />
           <Route path={routes.start.pattern} element={<p>form opened</p>} />
         </Routes>
       </MemoryRouter>,
@@ -133,7 +133,7 @@ describe("the Group coordinator starts the group order", () => {
     const failing = { ...clientOf([step]), waiting: async () => Promise.reject(new Error("down")) };
     const { container } = render(
       <MemoryRouter>
-        <StartInboxRows client={failing} />
+        <StartWaitingRows client={failing} />
       </MemoryRouter>,
     );
     await act(async () => undefined);
@@ -189,7 +189,7 @@ describe("the Group coordinator starts the group order", () => {
   it("the Inbox row carries the agency and the role", async () => {
     render(
       <MemoryRouter>
-        <StartInboxRows client={clientOf([step])} />
+        <StartWaitingRows client={clientOf([step])} />
       </MemoryRouter>,
     );
     expect(await screen.findByText("Siaya Farmers' Group · Group coordinator")).toBeInTheDocument();
@@ -449,7 +449,7 @@ describe("the Start row in the Inbox", () => {
   it("carries the unread dot first and no time, because the step tool carries none", async () => {
     render(
       <MemoryRouter>
-        <StartInboxRows client={clientOf([step])} />
+        <StartWaitingRows client={clientOf([step])} />
       </MemoryRouter>,
     );
     const row = (await screen.findByText("Start the urea group order")).closest(".row") as HTMLElement;

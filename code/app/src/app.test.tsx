@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "./App";
 import { forgetOpenAgency, openAgency } from "./agency/open";
 import { doSomethingBar, homeBar } from "./tabs";
@@ -18,6 +18,12 @@ const at = (path: string) =>
       <App />
     </MemoryRouter>,
   );
+
+function Where({ seen }: { seen: string[] }) {
+  const { pathname, search } = useLocation();
+  seen.push(`${pathname}${search}`);
+  return null;
+}
 
 const barLabels = () =>
   within(screen.getByRole("navigation", { name: "Main" }))
@@ -129,6 +135,28 @@ describe("tab bar", () => {
   it("sends the old inbox path to the home screen, which is the inbox", () => {
     at("/inbox");
     expect(screen.getByRole("heading", { name: "Home" })).toBeInTheDocument();
+  });
+
+  it("keeps the query string when the old inbox paths go home", () => {
+    const seen: string[] = [];
+    render(
+      <MemoryRouter initialEntries={["/a/walk-agency/inbox?from=push"]}>
+        <App />
+        <Where seen={seen} />
+      </MemoryRouter>,
+    );
+    expect(seen.at(-1)).toBe("/a/walk-agency/home?from=push");
+  });
+
+  it("keeps the query string when the agency-less inbox path goes home", () => {
+    const seen: string[] = [];
+    render(
+      <MemoryRouter initialEntries={["/inbox?from=push"]}>
+        <App />
+        <Where seen={seen} />
+      </MemoryRouter>,
+    );
+    expect(seen.at(-1)).toBe("/a/walk-agency/home?from=push");
   });
 
   it("opens straight onto a tab route", () => {

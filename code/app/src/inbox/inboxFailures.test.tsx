@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import type { StartClient } from "../coordinator/start/api";
 import { InboxPage } from "../pages/InboxPage";
+import { McpError } from "../wakala/mcp";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
 
 const note: NotificationItem = {
@@ -32,7 +33,34 @@ const show = (client: InboxClient) =>
     </MemoryRouter>,
   );
 
-describe("the Inbox when a call fails", () => {
+describe("Home when a call fails", () => {
+  it("stays calm when the agency has no comm module", async () => {
+    show(
+      fake({
+        listNotifications: vi.fn().mockRejectedValue(new McpError("comm_notification_list: unknown tool")),
+        listInvitations: vi.fn().mockRejectedValue(new McpError("actor_list_invitations: unknown tool")),
+      }),
+    );
+    expect(await screen.findByText("You are all caught up")).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Try again" })).toBeNull();
+  });
+
+  it("offers Try again for a real outage and reloads", async () => {
+    const list = vi.fn().mockRejectedValueOnce(new McpError("wakala answered 503: down")).mockResolvedValue([note]);
+    show(fake({ listNotifications: list }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Home could not be loaded.");
+    await userEvent.click(screen.getByRole("button", { name: "Try again" }));
+    expect(await screen.findByText(/Siaya farmers/)).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(list).toHaveBeenCalledTimes(2);
+  });
+
+  it("treats a network failure as an outage", async () => {
+    show(fake({ listNotifications: vi.fn().mockRejectedValue(new TypeError("Failed to fetch")) }));
+    expect(await screen.findByRole("button", { name: "Try again" })).toBeInTheDocument();
+  });
+
   it("draws the failure alone when the invitations cannot be read and nothing else is there", async () => {
     show(fake({ listInvitations: vi.fn().mockRejectedValue(new Error("actor down")) }));
     await screen.findByText("Home could not be loaded.");

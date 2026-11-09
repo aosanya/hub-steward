@@ -1,6 +1,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { type InboxClient, mcpInboxClient, type NotificationItem } from "./api";
 import { unreadLabel } from "../chat/unread";
+import { isOutage } from "./outage";
 
 export const unreadOf = (items: NotificationItem[] | null) => (items ?? []).filter((n) => !n.read);
 
@@ -60,14 +61,29 @@ const load = (client: InboxClient) => {
 export function useNotifications(client: InboxClient = mcpInboxClient) {
   const items = useSyncExternalStore(subscribe, () => current);
   const [failed, setFailed] = useState(false);
+  const [outage, setOutage] = useState(false);
+
+  const fetch = (live: () => boolean) =>
+    load(client).catch((error) => {
+      if (!live()) return;
+      setFailed(true);
+      setOutage(isOutage(error));
+    });
 
   useEffect(() => {
     let live = true;
-    load(client).catch(() => live && setFailed(true));
+    fetch(() => live);
     return () => {
       live = false;
     };
   }, [client]);
+
+  const retry = () => {
+    loading = null;
+    setFailed(false);
+    setOutage(false);
+    fetch(() => true);
+  };
 
   const markAllRead = async () => {
     try {
@@ -81,5 +97,5 @@ export function useNotifications(client: InboxClient = mcpInboxClient) {
 
   const markOneRead = (id: string) => markOne(client, id);
 
-  return { items, failed, markAllRead, markOneRead };
+  return { items, failed, outage, retry, markAllRead, markOneRead };
 }

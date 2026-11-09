@@ -209,7 +209,7 @@ describe("journey 24, Answer a form", () => {
     state.waiting = [];
     open(client);
     expect(await screen.findByText("Nothing is waiting for you")).toBeInTheDocument();
-    expect(screen.getByText("New forms from your groups show up here and in your Inbox.")).toBeInTheDocument();
+    expect(screen.getByText("New forms from your groups show up here and on Home.")).toBeInTheDocument();
     await click("See what you answered");
     expect(await screen.findByText("Welcome form")).toBeInTheDocument();
     expect(screen.queryByText("Nothing is waiting for you")).not.toBeInTheDocument();

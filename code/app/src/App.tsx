@@ -1,4 +1,4 @@
-import { Navigate, Outlet, Route, Routes, useParams } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { AnswerPage } from "./pages/forms/AnswerPage";
 import { FormsPage } from "./pages/forms/FormsPage";
 import { AgenciesPage } from "./pages/entry/AgenciesPage";
@@ -60,7 +60,8 @@ function ToAgencyOngoing() {
 
 function ToAgencyHome() {
   const { agencyId = "" } = useParams();
-  return <Navigate to={agencyHomePath(agencyId)} replace />;
+  const { search, state } = useLocation();
+  return <Navigate to={`${agencyHomePath(agencyId)}${search}`} state={state} replace />;
 }
 
 function tabElement(tab: Tab) {

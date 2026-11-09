@@ -30,7 +30,8 @@ export function InAgency({ children }: { children: ReactNode }) {
 
 export function ToOpenAgency({ tab }: { tab: Tab }) {
   const agencyId = openAgencyId();
-  return <Navigate to={agencyId ? tabPathIn(tab, agencyId) : "/agencies"} replace />;
+  const { search, state } = useLocation();
+  return <Navigate to={agencyId ? `${tabPathIn(tab, agencyId)}${search}` : "/agencies"} state={state} replace />;
 }
 
 export function ToOpenAgencyScreen({ screen }: { screen: AgencyScreen }) {

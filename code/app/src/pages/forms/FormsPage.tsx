@@ -60,7 +60,7 @@ export function FormsPage() {
           {waiting.state === "error" ? <LoadFailed words="Forms could not be loaded" /> : null}
           {waiting.state === "ready" && waiting.data.length === 0 ? (
             <EmptyCard words="Nothing is waiting for you">
-              <p className="meta">New forms from your groups show up here and in your Inbox.</p>
+              <p className="meta">New forms from your groups show up here and on Home.</p>
               <Button onClick={() => setView("answered")}>See what you answered</Button>
             </EmptyCard>
           ) : null}

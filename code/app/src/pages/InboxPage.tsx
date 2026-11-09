@@ -5,6 +5,7 @@ import { useLanguage } from "../entry/language";
 import { mcpInboxClient, type InboxClient, type InvitationItem, type NotificationItem } from "../inbox/api";
 import { chatMetaOf, chatTitleOf, threadPathOf } from "../inbox/chatNotice";
 import { noticeMetaOf, noticeTitleOf } from "../inbox/notice";
+import { isOutage } from "../inbox/outage";
 import { unreadOf, useNotifications } from "../inbox/useNotifications";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
@@ -15,7 +16,7 @@ import { Shell } from "../ui/Shell";
 import { orderPath } from "../coordinator/payments/OrderCards";
 import { mcpStartClient, type StartClient } from "../coordinator/start/api";
 import { useStartWaiting } from "../coordinator/start/startWaiting";
-import { StartInboxRows } from "../coordinator/start/Waiting";
+import { StartWaitingRows } from "../coordinator/start/Waiting";
 
 const titleOf = (n: NotificationItem, words: Words) => noticeTitleOf(n, words) ?? chatTitleOf(n, words) ?? words.inboxNotification;
 
@@ -30,23 +31,36 @@ type Opened = { invitation: InvitationItem; joined: boolean };
 export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: { client?: InboxClient; start?: StartClient }) {
   const navigate = useNavigate();
   const { words } = useLanguage();
-  const { items, failed: notificationsFailed, markAllRead, markOneRead } = useNotifications(client);
+  const { items, failed: notificationsFailed, outage: notificationsOutage, retry: retryNotifications, markAllRead, markOneRead } = useNotifications(client);
   const [invitations, setInvitations] = useState<InvitationItem[]>([]);
   const [opened, setOpened] = useState<Opened | null>(null);
   const [invitationsFailed, setInvitationsFailed] = useState(false);
+  const [invitationsOutage, setInvitationsOutage] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [problem, setProblem] = useState("");
-  const failed = notificationsFailed || invitationsFailed;
+  const outage = (notificationsFailed && notificationsOutage) || (invitationsFailed && invitationsOutage);
 
   useEffect(() => {
     let live = true;
     client
       .listInvitations()
       .then((i) => live && setInvitations(i))
-      .catch(() => live && setInvitationsFailed(true));
+      .catch((error) => {
+        if (!live) return;
+        setInvitationsFailed(true);
+        setInvitationsOutage(isOutage(error));
+      });
     return () => {
       live = false;
     };
-  }, [client]);
+  }, [client, attempt]);
+
+  const tryAgain = () => {
+    setInvitationsFailed(false);
+    setInvitationsOutage(false);
+    setAttempt(attempt + 1);
+    retryNotifications();
+  };
 
   const waiting = useStartWaiting(start);
   const unread = unreadOf(items);
@@ -121,11 +135,17 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: {
     setProblem((await markAllRead()) ? "" : "Could not mark the notifications read. Try again.");
   };
 
-  const empty = !failed && items !== null && waiting !== null && items.length === 0 && invitations.length === 0 && waiting.length === 0;
+  const settled = items !== null || (notificationsFailed && !notificationsOutage);
+  const empty = !outage && settled && waiting !== null && (items ?? []).length === 0 && invitations.length === 0 && waiting.length === 0;
 
   return (
     <Shell title="Home" inbox={client} action={anythingUnread ? <Button onClick={markAll}>Mark all read</Button> : undefined}>
-      {failed ? <LoadFailed words="Home could not be loaded." /> : null}
+      {outage ? (
+        <>
+          <LoadFailed words="Home could not be loaded." />
+          <Button onClick={tryAgain}>Try again</Button>
+        </>
+      ) : null}
       {problem ? <LoadFailed words={problem} /> : null}
       {empty ? (
         <Card empty>
@@ -135,7 +155,7 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: {
       ) : null}
       {invitations.length > 0 || (items ?? []).length > 0 || (waiting ?? []).length > 0 ? (
         <Rows>
-          <StartInboxRows client={start} />
+          <StartWaitingRows client={start} />
           {invitations.map((i) => (
             <ListRow
               key={`invitation-${i.id}`}
