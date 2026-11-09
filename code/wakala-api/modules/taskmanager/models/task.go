@@ -173,6 +173,11 @@ type TaskFilter struct {
 	Priority      TaskPriority `query:"priority"`
 	WorkflowRunID string       `query:"workflow_run_id"`
 	HeldBy        string       `query:"held_by"`
+	Tag           string       `query:"tag"`
+	Repo          string       `query:"repo"`
+	Backlog       string       `query:"backlog"`
+	Step          string       `query:"step"`
+	UntouchedDays int          `query:"untouched_days"`
 
 	// Limit caps the number of tasks returned, up to maxListPage. 0 (or
 	// anything above maxListPage) falls back to maxListPage.

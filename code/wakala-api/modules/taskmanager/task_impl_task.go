@@ -198,7 +198,6 @@ func (m *taskManager) DeleteTask(ctx context.Context, taskID string) error {
 	return nil
 }
 
-// ListTasks returns all non-deleted Task rows that match the filter.
 func (m *taskManager) ListTasks(ctx context.Context, filter TaskFilter) ([]Task, error) {
 	q := m.store.Query(ctx, roleTask).Where("deleted = ?", false)
 	if filter.Status != "" {
@@ -213,16 +212,20 @@ func (m *taskManager) ListTasks(ctx context.Context, filter TaskFilter) ([]Task,
 	if filter.HeldBy != "" {
 		q = q.Where("held_by = ?", filter.HeldBy)
 	}
+	states, err := m.taskStates(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("ListTasks: %w", err)
+	}
+	q, err = m.narrowList(ctx, q, filter, states, time.Now().UTC())
+	if err != nil {
+		return nil, fmt.Errorf("ListTasks: %w", err)
+	}
 
 	limit := filter.Limit
 	if limit <= 0 || limit > maxListPage {
 		limit = maxListPage
 	}
 	tasks, err := specstore.List[Task](m.store, q.Limit(limit), roleTask)
-	if err != nil {
-		return nil, fmt.Errorf("ListTasks: %w", err)
-	}
-	states, err := m.taskStates(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("ListTasks: %w", err)
 	}

@@ -11,7 +11,7 @@
     "list_tasks": {
       "method": "GET", "path": "/tasks", "call": "ListTasks", "action": "taskmanager.task.list",
       "title": "List tasks",
-      "description": "List the tasks matching the filter. Narrow by status, priority, run or the outside holder of blocked work (held_by), and pass a limit unless you genuinely need the whole board.",
+      "description": "List the tasks matching the filter. Narrow by status, priority, run, the outside holder of blocked work (held_by), tag, repo (the task's project_name), backlog, step (a task state name) or untouched_days (not changed for more than that many days), and pass a limit unless you genuinely need the whole board.",
       "args": [{"from": "query", "whole": true}],
       "returns": [{"body": true}]
     },
@@ -730,6 +730,7 @@
 
   "errors": {
     "ErrUnknownTaskState": 400,
+    "ErrUnknownBacklog": 400,
     "ErrNoPathToState": 409,
     "ErrInvalidPlacement": 400,
     "ErrCaseNotFound": 404,
