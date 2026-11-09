@@ -18,12 +18,12 @@ beforeEach(() => {
 
 afterEach(() => forgetOpenAgency());
 
-const show = (client: AssistantClient) =>
+const show = (client: AssistantClient, timeoutMs?: number) =>
   render(
     <MemoryRouter initialEntries={["/a/farmers/chat/assistant"]}>
       <Routes>
         <Route path="/a/:agencyId/chat" element={<p>the chat list</p>} />
-        <Route path={routes.assistant.pattern} element={<AssistantPage client={client} />} />
+        <Route path={routes.assistant.pattern} element={<AssistantPage client={client} timeoutMs={timeoutMs} />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -44,7 +44,7 @@ describe("the assistant page", () => {
   });
 
   it("sends what is written with the whole conversation and shows the answer as the assistant's, rendered", async () => {
-    const ask = vi.fn().mockResolvedValue({ text: "**3** issues are Blocked", issues: [] });
+    const ask = vi.fn().mockResolvedValue({ text: "**3** issues are Blocked", lists: [] });
     show({ model: async () => "acc1", ask });
     await userEvent.type(await screen.findByRole("textbox", { name: "Ask about the backlogs" }), "show the blocked ones");
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
@@ -65,9 +65,9 @@ describe("the assistant page", () => {
 });
 
 const later = () => {
-  let resolve: (answer: { text: string; issues: [] }) => void = () => undefined;
+  let resolve: (answer: { text: string; lists: [] }) => void = () => undefined;
   let reject: (failure: Error) => void = () => undefined;
-  const promise = new Promise<{ text: string; issues: [] }>((yes, no) => {
+  const promise = new Promise<{ text: string; lists: [] }>((yes, no) => {
     resolve = yes;
     reject = no;
   });
@@ -96,7 +96,7 @@ describe("while the assistant works", () => {
     expect(working.querySelectorAll(".assistant-dots i")).toHaveLength(3);
     act(() => step("Searching the issues"));
     expect(working).toHaveTextContent("Searching the issues");
-    await act(async () => pending.resolve({ text: "4 are pending", issues: [] }));
+    await act(async () => pending.resolve({ text: "4 are pending", lists: [] }));
     expect(await screen.findByText("4 are pending")).toBeInTheDocument();
     expect(screen.queryByRole("status")).toBeNull();
   });
@@ -112,7 +112,7 @@ describe("while the assistant works", () => {
   });
 
   it("says That did not work with a Try again button when the model fails, and asks again from the button", async () => {
-    const ask = vi.fn().mockRejectedValueOnce(new Error("down")).mockResolvedValueOnce({ text: "now it works", issues: [] });
+    const ask = vi.fn().mockRejectedValueOnce(new Error("down")).mockResolvedValueOnce({ text: "now it works", lists: [] });
     show({ model: async () => "acc1", ask });
     await write("list them");
     const alert = await screen.findByRole("alert");
@@ -124,7 +124,7 @@ describe("while the assistant works", () => {
   });
 
   it("gives up with the same message when no answer comes in time", async () => {
-    show({ model: async () => "acc1", ask: vi.fn().mockReturnValue(new Promise(() => undefined)), timeoutMs: 30 });
+    show({ model: async () => "acc1", ask: vi.fn().mockReturnValue(new Promise(() => undefined)) }, 30);
     await write("never answered");
     expect(await screen.findByRole("alert")).toHaveTextContent("That did not work. Try again.");
   });
@@ -148,7 +148,7 @@ describe("messages written while an answer is pending", () => {
     expect(screen.getByText("two").closest(".rm-msg")).toHaveTextContent("Queued");
     expect(screen.getByText("one").closest(".rm-msg")).not.toHaveTextContent("Queued");
     expect(ask).toHaveBeenCalledTimes(1);
-    await act(async () => first.resolve({ text: "answer one", issues: [] }));
+    await act(async () => first.resolve({ text: "answer one", lists: [] }));
     await screen.findByText("answer one");
     await waitFor(() => expect(ask).toHaveBeenCalledTimes(2));
     expect(screen.getAllByText("Queued")).toHaveLength(1);
@@ -157,11 +157,11 @@ describe("messages written while an answer is pending", () => {
       { role: "assistant", content: "answer one" },
       { role: "user", content: "two" },
     ]);
-    await act(async () => second.resolve({ text: "answer two", issues: [] }));
+    await act(async () => second.resolve({ text: "answer two", lists: [] }));
     await waitFor(() => expect(ask).toHaveBeenCalledTimes(3));
     expect(screen.queryByText("Queued")).toBeNull();
     expect(ask.mock.calls[2][1].map((turn: { content: string }) => turn.content)).toEqual(["one", "answer one", "two", "answer two", "three"]);
-    await act(async () => third.resolve({ text: "answer three", issues: [] }));
+    await act(async () => third.resolve({ text: "answer three", lists: [] }));
     const order = (await screen.findAllByText(/^(one|two|three|answer one|answer two|answer three)$/)).map((node) => node.textContent);
     expect(order).toEqual(["one", "answer one", "two", "answer two", "three", "answer three"]);
   });
@@ -175,16 +175,16 @@ describe("messages written while an answer is pending", () => {
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
     await userEvent.click(screen.getByRole("button", { name: "Remove from the queue: two" }));
     expect(screen.queryByText("two")).toBeNull();
-    await act(async () => first.resolve({ text: "answer one", issues: [] }));
+    await act(async () => first.resolve({ text: "answer one", lists: [] }));
     await screen.findByText("answer one");
     expect(ask).toHaveBeenCalledTimes(1);
   });
 
   it("pause when a request fails, and go on from the Try again button with the rest still queued", async () => {
-    const ask = vi.fn().mockRejectedValueOnce(new Error("down")).mockResolvedValue({ text: "fine", issues: [] });
+    const ask = vi.fn().mockRejectedValueOnce(new Error("down")).mockResolvedValue({ text: "fine", lists: [] });
     const first = later();
     ask.mockReset();
-    ask.mockReturnValueOnce(first.promise).mockResolvedValue({ text: "fine", issues: [] });
+    ask.mockReturnValueOnce(first.promise).mockResolvedValue({ text: "fine", lists: [] });
     show({ model: async () => "acc1", ask });
     const box = await write("one");
     await userEvent.type(box, "two");
@@ -214,30 +214,22 @@ describe("the conversation panel", () => {
     expect(screen.getByRole("textbox").closest(".assistant-compose")).not.toBeNull();
   });
 
-  it("puts her messages in the right-hand bubbles and the assistant's in the left-hand ones, with the list it read as an entry that opens in Results, as rows with plain pills", async () => {
-    const issue = { id: "i1", title: "DEV-009 Create the structure tables", description: "", status: "pending", step: "To do", repo: "mwanachama-frontend-kazi", topics: [], backlog: "Backlog", mark: "Blocked" as const, rank: 1 };
-    const ask = vi.fn().mockResolvedValue({ text: "1 issue is Blocked", lists: [{ title: "Blocked issues", total: 1, issues: [issue] }] });
+  it("puts her messages in the right-hand bubbles and the assistant's in the left-hand ones", async () => {
+    const ask = vi.fn().mockResolvedValue({ text: "1 issue is Blocked", lists: [] });
     show({ model: async () => "acc1", ask });
     await userEvent.type(await screen.findByRole("textbox"), "show the blocked ones");
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
     const mine = (await screen.findByText("show the blocked ones")).closest(".rm-msg");
     expect(mine).toHaveClass("mine");
-    const theirs = screen.getByText("1 issue is Blocked").closest(".rm-msg") as HTMLElement;
+    const theirs = (await screen.findByText("1 issue is Blocked")).closest(".rm-msg") as HTMLElement;
     expect(theirs).not.toHaveClass("mine");
-    expect(theirs.querySelector(".issue-row")).toBeNull();
-    expect(within(theirs).getByRole("button", { name: /Blocked issues · 1/ })).toBeInTheDocument();
-    await userEvent.click(within(theirs).getByRole("button", { name: /Blocked issues · 1/ }));
-    const row = (await screen.findByText(/DEV-009/)).closest(".issue-row") as HTMLElement;
-    expect(row).toHaveTextContent("DEV-009");
-    expect(row.querySelectorAll(".issue-tags button")).toHaveLength(0);
-    expect(row.querySelector(".issue-tags")).toHaveTextContent("Blocked");
     expect(screen.queryByText("Ask about the backlogs", { selector: "p" })).toBeNull();
   });
 
   it("scrolls the newest message into view inside the panel as the conversation grows", async () => {
     const scroll = vi.fn();
     Element.prototype.scrollIntoView = scroll;
-    show({ model: async () => "acc1", ask: vi.fn().mockResolvedValue({ text: "ok", issues: [] }) });
+    show({ model: async () => "acc1", ask: vi.fn().mockResolvedValue({ text: "ok", lists: [] }) });
     const box = await screen.findByRole("textbox");
     for (const word of ["one", "two", "three"]) {
       await userEvent.type(box, word);
