@@ -1,4 +1,5 @@
 import { callTool, McpError } from "../wakala/mcp";
+import { savePlan, type Rename } from "./savePlan";
 import { savedStep, type DraftStep } from "./stepsDraft";
 import { ManageRefused, type BacklogDetail, type BacklogManageClient } from "./types";
 
@@ -8,6 +9,7 @@ export const backlogTools = {
   rename: "taskmanager_backlog_rename",
   remove: "taskmanager_backlog_delete",
   addStep: "taskmanager_backlog_step_add",
+  renameStep: "taskmanager_backlog_step_rename",
   removeStep: "taskmanager_backlog_step_remove",
   reorder: "taskmanager_backlog_step_reorder",
   myRoles: "agency_get_my_roles",
@@ -57,10 +59,18 @@ const step = async <T>(progress: Progress, done: string, failed: string, call: P
   }
 };
 
-async function removeSteps(progress: Progress, id: string, draft: DraftStep[], original: BacklogDetail, current: BacklogDetail): Promise<BacklogDetail> {
+async function removeSteps(progress: Progress, id: string, removed: DraftStep[], current: BacklogDetail): Promise<BacklogDetail> {
   let latest = current;
-  for (const gone of original.steps.filter((saved) => !draft.some((kept) => kept.id === saved.id))) {
+  for (const gone of removed) {
     latest = detailOf(await step(progress, `removed ${gone.name}`, `Could not remove ${gone.name}`, callTool("", backlogTools.removeStep, { ...ofBacklog(id), stepID: gone.id })));
+  }
+  return latest;
+}
+
+async function renameSteps(progress: Progress, id: string, renames: Rename[], current: BacklogDetail): Promise<BacklogDetail> {
+  let latest = current;
+  for (const one of renames) {
+    latest = detailOf(await step(progress, `renamed ${one.from} to ${one.to}`, `Could not rename ${one.from}`, callTool("", backlogTools.renameStep, { ...ofBacklog(id), stepID: one.id, name: one.to })));
   }
   return latest;
 }
@@ -74,9 +84,10 @@ async function addSteps(progress: Progress, id: string, draft: DraftStep[], curr
       continue;
     }
     const before = latest.steps;
+    const name = wanted.name.trim();
     const after = order[order.length - 1] ?? "";
-    latest = detailOf(await step(progress, `added ${wanted.name}`, `Could not add ${wanted.name}`, callTool("", backlogTools.addStep, { ...ofBacklog(id), name: wanted.name, after })));
-    order.push(idOfNewest(before, latest, wanted.name));
+    latest = detailOf(await step(progress, `added ${name}`, `Could not add ${name}`, callTool("", backlogTools.addStep, { ...ofBacklog(id), name, after })));
+    order.push(idOfNewest(before, latest, name));
   }
   return { latest, order };
 }
@@ -101,12 +112,20 @@ export const mcpBacklogManageClient: BacklogManageClient = {
   },
   async save(id, name, draft) {
     const current = await readBacklog(id);
+    const plan = savePlan(current, draft);
+    if (plan.problem !== "") throw new ManageRefused(`${plan.problem} Nothing was saved.`);
     const progress: Progress = { saved: [] };
     if (name !== current.name) await step(progress, "renamed the backlog", "Could not rename the backlog", callTool("", backlogTools.rename, { ...ofBacklog(id), name }));
-    const { latest, order } = await addSteps(progress, id, draft, current);
-    const afterRemoval = await removeSteps(progress, id, draft, current, latest);
-    const currentOrder = afterRemoval.steps.map((one) => one.id);
-    if (order.join() !== currentOrder.join()) await step(progress, "reordered the steps", "Could not reorder the steps", callTool("", backlogTools.reorder, { ...ofBacklog(id), steps: order }));
+    let latest: BacklogDetail = current;
+    if (!plan.replacesAll) {
+      latest = await removeSteps(progress, id, plan.removed, latest);
+      latest = await renameSteps(progress, id, plan.renames, latest);
+    }
+    const added = await addSteps(progress, id, plan.draft, latest);
+    latest = added.latest;
+    if (plan.replacesAll) latest = await removeSteps(progress, id, plan.removed, latest);
+    const currentOrder = latest.steps.map((one) => one.id);
+    if (added.order.join() !== currentOrder.join()) await step(progress, "reordered the steps", "Could not reorder the steps", callTool("", backlogTools.reorder, { ...ofBacklog(id), steps: added.order }));
   },
   async remove(id) {
     await refused(callTool("", backlogTools.remove, ofBacklog(id)));

@@ -111,6 +111,30 @@ describe("edit a backlog", () => {
     expect(await screen.findByText("Backlogs screen")).toBeInTheDocument();
   });
 
+  it("renames a step on the screen and saves the new name", async () => {
+    const client = fake();
+    show(`${base}/software/edit`, client);
+    await userEvent.click(await screen.findByRole("button", { name: "Rename Review" }));
+    const field = screen.getByLabelText("New name for Review");
+    await userEvent.clear(field);
+    await userEvent.type(field, "QA");
+    await userEvent.click(screen.getByRole("button", { name: "Use this name" }));
+    expect(screen.getByText("QA")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(client.save).toHaveBeenCalled());
+    const steps = (client.save as ReturnType<typeof vi.fn>).mock.calls[0][2];
+    expect(steps.map((step: { id: string; name: string }) => [step.id, step.name])).toEqual([["to-do", "To do"], ["doing", "Doing"], ["review", "QA"], ["done", "Done"]]);
+  });
+
+  it("keeps the old name when the rename is dropped", async () => {
+    show(`${base}/software/edit`, fake());
+    await userEvent.click(await screen.findByRole("button", { name: "Rename Review" }));
+    await userEvent.type(screen.getByLabelText("New name for Review"), "x");
+    await userEvent.click(screen.getByRole("button", { name: "Keep the old name" }));
+    expect(screen.getByText("Review")).toBeInTheDocument();
+    expect(screen.queryByLabelText("New name for Review")).toBeNull();
+  });
+
   it("asks before deleting an empty backlog and deletes on Delete", async () => {
     const empty = { id: "support", name: "Support", steps: [savedStep("new", "New", 0)] };
     const client = fake({ read: vi.fn().mockResolvedValue(empty) });

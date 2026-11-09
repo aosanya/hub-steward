@@ -1,4 +1,5 @@
-import { callTool, McpError } from "../wakala/mcp";
+import { callTool } from "../wakala/mcp";
+import { refusalText } from "../backlogManage/api";
 import { AccessRefused, type AccessReading, type AgencyGroup, type BacklogAccessClient, type Grant } from "./types";
 
 export const accessTools = {
@@ -21,12 +22,6 @@ export const readingOf = (raw: any): AccessReading => ({
 });
 
 export const groupOf = (raw: any): AgencyGroup => ({ id: text(raw?.id ?? raw?.group_id), name: text(raw?.name), hierarchyId: text(raw?.hierarchy_id) });
-
-const refusalText = (error: unknown) => {
-  const message = error instanceof McpError ? error.message : "";
-  const colon = message.indexOf(": ");
-  return colon >= 0 ? message.slice(colon + 2) : message;
-};
 
 const refused = async <T>(call: Promise<T>): Promise<T> => {
   try {
