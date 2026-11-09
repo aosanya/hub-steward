@@ -9,9 +9,13 @@ import (
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+
+	mwanachamaactor "wakalaserver/modules/actor"
 )
 
 var ErrGroupRoleInvalid = errors.New("agencies: a group role needs an instance, a group and a role")
+
+var ErrOpenGroupRole = errors.New("An open group cannot hold a role: anyone could join it. Make it invite-only first.")
 
 type GroupRole struct {
 	InstanceID   string    `json:"instance_id"`
@@ -88,10 +92,38 @@ func (r *registry) ListGroupRoles(ctx context.Context, instanceID string) ([]Gro
 	return out, nil
 }
 
+func (r *registry) groupIsOpen(ctx context.Context, instanceID, groupID string) (bool, error) {
+	directory, err := r.ActorManager(ctx, instanceID)
+	if err != nil {
+		return false, err
+	}
+	group, err := directory.GetGroup(ctx, groupID)
+	if errors.Is(err, mwanachamaactor.ErrGroupNotFound) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return group.Open(), nil
+}
+
 func (r *registry) RoleIDsThroughGroups(ctx context.Context, instanceID, userID string) ([]string, error) {
-	groups, err := r.groupsOf(ctx, instanceID, userID)
-	if err != nil || len(groups) == 0 {
+	held, err := r.groupsOf(ctx, instanceID, userID)
+	if err != nil || len(held) == 0 {
 		return []string{}, err
+	}
+	groups := make([]string, 0, len(held))
+	for _, groupID := range held {
+		open, err := r.groupIsOpen(ctx, instanceID, groupID)
+		if err != nil {
+			return nil, err
+		}
+		if !open {
+			groups = append(groups, groupID)
+		}
+	}
+	if len(groups) == 0 {
+		return []string{}, nil
 	}
 	var ids []string
 	err = r.db.WithContext(ctx).Model(&groupRoleRow{}).

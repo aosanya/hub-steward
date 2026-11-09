@@ -55,6 +55,13 @@ func backlogRoleCodeOf(role agencymodels.DocumentRole) string {
 }
 
 func (b backlogRoles) SetBacklogRole(ctx context.Context, groupID, roleCode string) error {
+	open, err := b.r.groupIsOpen(ctx, b.instanceID, groupID)
+	if err != nil {
+		return err
+	}
+	if open {
+		roleCode = ""
+	}
 	roles, err := b.published(ctx)
 	if err != nil {
 		return err
@@ -80,6 +87,10 @@ func (b backlogRoles) SetBacklogRole(ctx context.Context, groupID, roleCode stri
 }
 
 func (b backlogRoles) GroupRoleState(ctx context.Context, groupID string) (mwanachamataskmanager.RoleState, error) {
+	open, err := b.r.groupIsOpen(ctx, b.instanceID, groupID)
+	if err != nil || open {
+		return mwanachamataskmanager.RoleState{}, err
+	}
 	held, err := b.r.GroupRoleIDs(ctx, b.instanceID, groupID)
 	if err != nil || len(held) == 0 {
 		return mwanachamataskmanager.RoleState{}, err

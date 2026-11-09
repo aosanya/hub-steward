@@ -83,11 +83,15 @@ func (d *Deps) checkGroupRoleTarget(ctx context.Context, instanceID, groupID, ro
 	if err != nil {
 		return err
 	}
-	if _, err := directory.GetGroup(ctx, groupID); err != nil {
+	group, err := directory.GetGroup(ctx, groupID)
+	if err != nil {
 		if errors.Is(err, mwanachamaactor.ErrGroupNotFound) {
 			return errUnknownGroup
 		}
 		return err
+	}
+	if group.Open() {
+		return agencies.ErrOpenGroupRole
 	}
 	if _, err := d.agencyRolePermissions(withPartitionContext(ctx, instanceID), roleID); err != nil {
 		return errUnknownAgencyRole
@@ -103,7 +107,7 @@ func groupRoleStatus(err error) int {
 		return http.StatusForbidden
 	case errors.Is(err, errGroupRolesNotServed):
 		return http.StatusNotImplemented
-	case errors.Is(err, errUnknownGroup), errors.Is(err, errUnknownAgencyRole), errors.Is(err, errGroupRoleNeedsIDs):
+	case errors.Is(err, errUnknownGroup), errors.Is(err, agencies.ErrOpenGroupRole), errors.Is(err, errUnknownAgencyRole), errors.Is(err, errGroupRoleNeedsIDs):
 		return http.StatusUnprocessableEntity
 	}
 	return http.StatusInternalServerError
