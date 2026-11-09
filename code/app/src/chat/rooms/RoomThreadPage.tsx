@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { chatListPath, routes } from "../../routes";
-import { Button } from "../../ui/Button";
+import { Card } from "../../ui/Card";
+import { Chip } from "../../ui/Chip";
 import { LoadFailed } from "../../ui/LoadState";
 import { Shell } from "../../ui/Shell";
 import { generalOf, mcpRoomsClient, type RoomMessage, type RoomsClient } from "./api";
 import { BacklogSummariesLoader } from "../backlogCards/SummariesLoader";
 import { askPath } from "./cards";
 import { Composer } from "./Composer";
+import { ThreadRows } from "./ThreadRows";
 import { Timeline } from "./Timeline";
 import "./rooms.css";
 
@@ -39,6 +41,7 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
   const { messages, failed, reload } = useMessages(client, roomId, threadId);
   const threads = useLoad(() => client.listThreads(roomId), `threads/${roomId}`);
   const roomName = useLoad(() => client.roomName(roomId), `name/${roomId}`);
+  const subject = useLoad(async () => client.subject(), "subject");
   const list = threads.state === "ready" ? threads.data : [];
   const thread = list.find((t) => t.id === threadId);
   const room = roomName.state === "ready" ? roomName.data : "";
@@ -46,13 +49,23 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
   const roomFirst = heading === "room" || (thread !== undefined && thread === generalOf(list));
   const title = roomFirst ? room : label;
   const sub = roomFirst ? label : room;
+  const me = subject.state === "ready" ? subject.data : "";
   const send = async (body: string) => {
     await client.post(roomId, threadId, body);
     reload();
   };
   return (
-    <Shell title={title || "Chat"} sub={sub} tabless onBack={() => navigate(chatListPath())}>
-      {threads.state === "ready" ? <Button onClick={() => navigate(routes.roomThreads.path({ roomId }))}>Threads · {list.length}</Button> : null}
+    <Shell title={title || "Chat"} backLabel="Chat" tabless onBack={() => navigate(chatListPath())}>
+      {sub ? (
+        <div>
+          <Chip>{sub}</Chip>
+        </div>
+      ) : null}
+      {threads.state === "ready" && list.length > 0 ? (
+        <Card title={`Threads · ${list.length}`} collapsible flush>
+          <ThreadRows threads={list} subject={me} onOpen={(id) => navigate(routes.roomThread.path({ roomId, threadId: id }))} />
+        </Card>
+      ) : null}
       {thread?.audience === "leads" ? <p className="rm-note">Leaders only · members cannot see this yet</p> : null}
       {failed ? <LoadFailed words="The room could not be loaded." /> : null}
       {messages ? (

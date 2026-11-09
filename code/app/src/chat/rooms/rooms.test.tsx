@@ -239,20 +239,43 @@ describe("the farmers' room", () => {
     const agent = message({ id: "m2", agent: true, author: "Farmers' agent", body: "No shop has listed it." });
     show(fake({ messages: [own, agent], threads: [thread({ label: "Hybrid maize seed 614" })] }), "/a/farmers/chat/r1/t1");
     expect(await screen.findByRole("heading", { name: "Siaya farmers" })).toBeInTheDocument();
-    expect(screen.getByText("Hybrid maize seed 614")).toBeInTheDocument();
+    expect(await screen.findAllByText("Hybrid maize seed 614")).not.toHaveLength(0);
     expect(screen.getByText("You")).toBeInTheDocument();
     expect(screen.getByText("Agent")).toBeInTheDocument();
   });
 
-  it("puts the room's name under the bar with the thread's name beneath it, and only the back link in the bar", async () => {
+  it("centres the room's name in the bar between a Chat back label and the menu, with the thread's name as a plain pill beneath", async () => {
     show(fake({ messages: [message({})], threads: [thread({ label: "Hybrid maize seed 614" })] }), "/a/farmers/chat/r1/t1");
     const title = await screen.findByRole("heading", { level: 1, name: "Siaya farmers" });
-    const sub = await screen.findByText("Hybrid maize seed 614");
     const bar = screen.getByRole("banner");
-    expect(bar).not.toContainElement(title);
-    expect(within(bar).queryByRole("heading")).toBeNull();
-    expect(title.parentElement).toBe(sub.parentElement);
+    expect(bar).toContainElement(title);
+    expect(within(bar).getByRole("button", { name: "‹ Chat" })).toBeInTheDocument();
+    expect(within(bar).getByRole("button", { name: "Menu" })).toBeInTheDocument();
+    const main = screen.getByRole("main");
+    const pill = main.querySelector(".chip");
+    expect(pill).toHaveTextContent("Hybrid maize seed 614");
+    expect(pill?.tagName).toBe("SPAN");
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+
+  it("holds the threads in a card whose header says how many, open at first and collapsible", async () => {
+    const threads = [thread({ preview: "hello" }), thread({ id: "t2", label: "Seeds", unread: 2 })];
+    show(fake({ threads }), "/a/farmers/chat/r1/t1");
+    const header = await screen.findByRole("button", { name: "Threads · 2" });
+    expect(header).toHaveAttribute("aria-expanded", "true");
+    const card = header.closest(".card") as HTMLElement;
+    expect(within(card).getByRole("button", { name: /Seeds/ })).toBeInTheDocument();
+    expect(card.querySelectorAll("button.row.room")).toHaveLength(2);
+    await userEvent.click(header);
+    expect(header).toHaveAttribute("aria-expanded", "false");
+    expect(card.querySelectorAll("button.row.room")).toHaveLength(0);
+  });
+
+  it("opens another thread from a row of the threads card", async () => {
+    const client = fake({ threads: [thread({}), thread({ id: "t2", label: "Seeds" })] });
+    show(client, "/a/farmers/chat/r1/t1");
+    await userEvent.click(await screen.findByRole("button", { name: /Seeds/ }));
+    expect(client.listMessages).toHaveBeenCalledWith("r1", "t2");
   });
 
   it("sends what she writes to the thread and reads the thread again", async () => {
@@ -270,7 +293,8 @@ describe("what heads a thread page when the app routes it by thread", () => {
 
   const headOf = async () => {
     const title = await screen.findByRole("heading", { level: 1 });
-    return { title: title.textContent, sub: title.parentElement?.querySelector("p")?.textContent };
+    await screen.findByRole("button", { name: /^Threads/ });
+    return { title: title.textContent, sub: screen.getByRole("main").querySelector(".chip")?.textContent };
   };
 
   it("heads General with the room's name from the member's groups and puts General beneath it", async () => {
@@ -396,7 +420,7 @@ describe("the lab's room", () => {
     const client = fake({ ...lab, threads: [thread({ id: "g1" }), thread({ id: "t2", label: "Ask", audience: "leads" })] });
     show(client, "/a/farmers/chat/r1/threads");
     await screen.findByText("Ask");
-    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+    await userEvent.click(await screen.findByRole("button", { name: "‹ Siaya Community Computer Lab" }));
     expect(client.listMessages).toHaveBeenCalledWith("r1", "g1");
   });
 });

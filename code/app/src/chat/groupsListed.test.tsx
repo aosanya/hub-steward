@@ -136,6 +136,7 @@ describe("the threads page of a group nobody has written in", () => {
       </MemoryRouter>,
     );
     expect(await screen.findByText("No messages yet.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Start a thread" })).toBeInTheDocument();
+    const action = screen.getByRole("button", { name: "Start a thread" });
+    expect(action.closest(".card")).toHaveClass("empty");
   });
 });
