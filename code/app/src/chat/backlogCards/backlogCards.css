@@ -1,0 +1,3 @@
+.rm-stack { flex-direction: column; }
+.rm-stack .btn { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+.rm-pick { font-weight: 600; }

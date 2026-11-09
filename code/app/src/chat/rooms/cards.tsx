@@ -3,6 +3,8 @@ import { useLoad } from "../../forms/useLoad";
 import { routes } from "../../routes";
 import { bags, termsWords } from "../../supply/groupOrder/api";
 import { Button } from "../../ui/Button";
+import { BacklogViewCard } from "../backlogCards/BacklogViewCard";
+import { backlogViewKind } from "../backlogCards/views";
 import { attachmentKinds, type RoomAsk, type RoomMessage, type RoomOrder, type RoomsClient } from "./api";
 
 const titleOf = (productWords: string) => (productWords === "" ? "Group order" : `${productWords} group order`);
@@ -132,6 +134,7 @@ type Props = { message: RoomMessage; threadLabel: string; client: RoomsClient; o
 
 export function Attachment({ message, threadLabel, client, openAsk }: Props) {
   if (message.targetId === "") return null;
+  if (message.kind === backlogViewKind) return <BacklogViewCard targetId={message.targetId} />;
   if (message.kind === attachmentKinds.groupOrder) return <GroupOrderCard orderId={message.targetId} client={client} />;
   if (message.kind === attachmentKinds.request) return <RequestCard requestId={message.targetId} title={threadLabel} />;
   if (message.kind === attachmentKinds.ask) {
