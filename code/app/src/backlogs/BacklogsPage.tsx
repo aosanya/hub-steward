@@ -8,15 +8,19 @@ import { ListRow, Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
 import { chatListPath } from "../routes";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
-import { boardPath } from "../backlogBoard/paths";
+import { addBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
+import { mcpBacklogManageClient } from "../backlogManage/api";
 import { issuesPath } from "./paths";
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
-export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyClient }: { client?: BacklogsClient; agency?: AgencyClient }) {
+type Props = { client?: BacklogsClient; agency?: AgencyClient; manage?: BacklogManageClient };
+
+export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyClient, manage = mcpBacklogManageClient }: Props) {
   const navigate = useNavigate();
   const backlogs = useLoad(() => client.backlogs(), `backlogs:${openAgencyId()}`);
   const named = useLoad(() => agency.read(), `backlogs-agency:${openAgencyId()}`);
+  const mayManage = useMayManage(manage);
   const rows = backlogs.state === "ready" ? backlogs.data : [];
   const issues = rows.reduce((sum, one) => sum + one.issues, 0);
   return (
@@ -31,6 +35,9 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
               ))
             : null}
         </Rows>
+      ) : null}
+      {backlogs.state === "ready" && mayManage.state === "ready" && mayManage.data ? (
+        <Button onClick={() => navigate(addBacklogPath())}>Add a backlog</Button>
       ) : null}
       {backlogs.state === "ready" && issues === 0 ? (
         <EmptyCard words="No backlog yet">

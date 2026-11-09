@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../agency/open";
 import * as mcp from "../wakala/mcp";
+import { BacklogsPage } from "./BacklogsPage";
 import { BacklogsRoutes } from "./BacklogsRoutes";
 import { issuePath, issuesPath } from "./paths";
 import { issueOf, stepsOf } from "./api";
@@ -93,6 +94,27 @@ describe("the Backlogs screen", () => {
     openAt("/a/hub-1/backlogs");
     await userEvent.click(await screen.findByText("3 issues"));
     expect(where()).toBe("/a/hub-1/backlogs/all");
+  });
+
+  it("shows Add a backlog only to a role that may manage backlogs", async () => {
+    answering(board);
+    const may = (allowed: boolean) => ({ mayManage: async () => allowed }) as never;
+    const { unmount } = render(
+      <MemoryRouter initialEntries={["/a/hub-1/backlogs"]}>
+        <BacklogsPage client={{ backlogs: async () => [], issues: async () => [], issue: async () => ({}) as never }} manage={may(true)} />
+        <Where />
+      </MemoryRouter>,
+    );
+    await userEvent.click(await screen.findByRole("button", { name: "Add a backlog" }));
+    expect(where()).toBe("/a/hub-1/backlogs/new");
+    unmount();
+    render(
+      <MemoryRouter initialEntries={["/a/hub-1/backlogs"]}>
+        <BacklogsPage manage={may(false)} />
+      </MemoryRouter>,
+    );
+    await screen.findByText("3 issues");
+    expect(screen.queryByRole("button", { name: "Add a backlog" })).not.toBeInTheDocument();
   });
 
   it("shows the empty card with an Open Chat button before the first load", async () => {
