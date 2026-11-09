@@ -9,6 +9,7 @@ import { unreadOf, useNotifications } from "../inbox/useNotifications";
 import { unreadLabel } from "../chat/unread";
 import { mcpStartClient, type StartClient } from "../coordinator/start/api";
 import { useStartWaiting } from "../coordinator/start/startWaiting";
+import { Icon } from "./Icon";
 import { backlogsTab, doSomethingBar, homeBar, inDoSomething, inFlow, rememberSide, sideOf, sideReached, sideTab, tabPathIn, type Tab } from "../tabs";
 
 type Props = { inbox?: InboxClient; start?: StartClient; agency?: AgencyClient };
@@ -25,7 +26,7 @@ function Bar({ items, badge, current, reserve }: BarProps) {
         const inside = (
           <>
             <span className="pill">
-              <span aria-hidden="true">{tab.glyph}</span>
+              <Icon name={tab.icon} />
               {badge?.id === tab.id && badge.label ? (
                 <span className="unread-num" aria-label={`${badge.label} unread notifications`}>
                   {badge.label}

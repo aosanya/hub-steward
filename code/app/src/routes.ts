@@ -56,6 +56,7 @@ export const routes = {
   joinGroupOrder: screen("/market/:productId/group-orders/:groupOrderId/join"),
   forms: screen("/forms"),
   form: screen("/forms/:id"),
+  assistant: screen("/chat/assistant"),
   roomThreads: screen("/chat/:roomId/threads"),
   roomThread: screen("/chat/:roomId/:threadId"),
   ask: screen("/chat/:roomId/:threadId/asks/:askId"),

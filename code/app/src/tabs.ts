@@ -1,18 +1,19 @@
+import type { IconName } from "./ui/Icon";
 import { agencyBasePath, backlogsSegment, doSomethingSegment, homeSegment, ongoingSegment } from "./agency/open";
 
-export type Tab = { id: string; path: string; segment: string; label: string; glyph: string };
+export type Tab = { id: string; path: string; segment: string; label: string; icon: IconName };
 
-export const homeTab: Tab = { id: "home", path: "/", segment: homeSegment, label: "Home", glyph: "⌂" };
+export const homeTab: Tab = { id: "home", path: "/", segment: homeSegment, label: "Home", icon: "home" };
 
-export const chatTab: Tab = { id: "chat", path: "/chat", segment: "chat", label: "Chat", glyph: "✉" };
+export const chatTab: Tab = { id: "chat", path: "/chat", segment: "chat", label: "Chat", icon: "chat" };
 
-export const doSomethingTab: Tab = { id: "do-something", path: "/do-something", segment: doSomethingSegment, label: "Do Something", glyph: "▦" };
+export const doSomethingTab: Tab = { id: "do-something", path: "/do-something", segment: doSomethingSegment, label: "Do Something", icon: "grid" };
 
-export const startTab: Tab = { ...doSomethingTab, id: "start", label: "Start", glyph: "▶" };
+export const startTab: Tab = { ...doSomethingTab, id: "start", label: "Start", icon: "play" };
 
-export const ongoingTab: Tab = { id: "ongoing", path: "/ongoing", segment: ongoingSegment, label: "Ongoing", glyph: "◔" };
+export const ongoingTab: Tab = { id: "ongoing", path: "/ongoing", segment: ongoingSegment, label: "Ongoing", icon: "clock" };
 
-export const backlogsTab: Tab = { id: "backlogs", path: "/backlogs", segment: backlogsSegment, label: "Backlogs", glyph: "☰" };
+export const backlogsTab: Tab = { id: "backlogs", path: "/backlogs", segment: backlogsSegment, label: "Backlogs", icon: "list" };
 
 export const homeBar: Tab[] = [homeTab, chatTab, doSomethingTab];
 

@@ -14,7 +14,8 @@ input::placeholder { color: var(--ink-soft); }
 .tabs { position: sticky; bottom: 0; display: flex; gap: .25rem; padding: .5rem .75rem 1rem; background: var(--surface); border-top: 1px solid var(--line); }
 .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .125rem; min-height: 3rem; color: var(--ink-soft); font-size: .8125rem; font-weight: 500; }
 .tabs.reserve .tab { flex: 0 1 calc(25% - .1875rem); }
-.tab .pill { position: relative; display: grid; place-items: center; width: 3.5rem; height: 2rem; border-radius: var(--r-pill); font-size: 1.125rem; }
+.tab .pill { position: relative; display: grid; place-items: center; width: 3.5rem; height: 2rem; border-radius: var(--r-pill); }
+.icon { flex: none; width: 1.5rem; height: 1.5rem; }
 .tab .unread-num { position: absolute; top: -.125rem; left: calc(50% + .25rem); }
 .tab[aria-current="page"] { color: var(--accent); font-weight: 600; }
 .tab[aria-current="page"] .pill { background: var(--accent-wash); }

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { assistantName, askPlaceholder } from "../../assistant/AssistantPage";
 import { joinGroupWorkflow } from "../../home/workflowScreens";
 import { unreadLabel } from "../../chat/unread";
 import "../../chat/unread.css";
@@ -14,25 +15,28 @@ import { Shell } from "../../ui/Shell";
 export function ChatPage({ client = mcpChatClient }: { client?: ChatClient }) {
   const navigate = useNavigate();
   const rooms = useLoad(() => client.listRooms(), "rooms");
+  const empty = rooms.state === "ready" && rooms.data.length === 0;
+  const join = <Button onClick={() => navigate(routes.join.path())}>{joinGroupWorkflow}</Button>;
   return (
-    <Shell title="Chat" action={<Button onClick={() => navigate(routes.join.path())}>{joinGroupWorkflow}</Button>}>
+    <Shell title="Chat">
+      <Rows>
+        <ListRow title={assistantName} lead className="room" meta={askPlaceholder} end={<span aria-hidden="true">›</span>} onClick={() => navigate(routes.assistant.path())} />
+        {rooms.state === "ready"
+          ? rooms.data.map((room) => (
+              <ListRow
+                key={`${room.id}-${room.threadId}`}
+                title={room.name}
+                lead
+                className="room"
+                meta={room.preview || room.threadName || "No messages yet"}
+                end={<RoomEnd room={room} />}
+                onClick={() => navigate(room.threadId === "" ? routes.roomThreads.path({ roomId: room.id }) : routes.roomThread.path({ roomId: room.id, threadId: room.threadId }))}
+              />
+            ))
+          : null}
+      </Rows>
       {rooms.state === "error" ? <LoadFailed words="Chat could not be loaded." /> : null}
-      {rooms.state === "ready" && rooms.data.length === 0 ? <EmptyCard words="No rooms yet." /> : null}
-      {rooms.state === "ready" && rooms.data.length > 0 ? (
-        <Rows>
-          {rooms.data.map((room) => (
-            <ListRow
-              key={`${room.id}-${room.threadId}`}
-              title={room.name}
-              lead
-              className="room"
-              meta={room.preview || room.threadName || "No messages yet"}
-              end={<RoomEnd room={room} />}
-              onClick={() => navigate(room.threadId === "" ? routes.roomThreads.path({ roomId: room.id }) : routes.roomThread.path({ roomId: room.id, threadId: room.threadId }))}
-            />
-          ))}
-        </Rows>
-      ) : null}
+      {empty ? <EmptyCard words="No rooms yet.">{join}</EmptyCard> : join}
     </Shell>
   );
 }

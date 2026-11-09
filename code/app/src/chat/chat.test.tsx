@@ -47,6 +47,7 @@ const show = (client: ChatClient, entry: string) =>
     <MemoryRouter initialEntries={[entry]}>
       <Routes>
         <Route path="/chat" element={<ChatPage client={client} />} />
+        <Route path={routes.assistant.pattern} element={<p>the assistant page</p>} />
         <Route path={routes.roomThread.pattern} element={<Opened />} />
         <Route path={routes.ask.pattern} element={<AskPage client={client} />} />
         <Route path={routes.join.pattern} element={<p>Join page</p>} />
@@ -163,12 +164,34 @@ describe("the empty Chat tab and Join a group", () => {
     expect(screen.getByRole("button", { name: "Join a group" })).toBeInTheDocument();
   });
 
-  it("puts Join a group in the app bar, not the page body", async () => {
+  it("keeps only the title and the menu in the bar and puts Join a group in the empty card", async () => {
     const client = fake([]);
     client.listRooms = vi.fn().mockResolvedValue([]);
     show(client, "/chat");
     await screen.findByText("No rooms yet.");
-    expect(screen.getByRole("banner")).toContainElement(screen.getByRole("button", { name: "Join a group" }));
+    const join = screen.getByRole("button", { name: "Join a group" });
+    expect(screen.getByRole("banner")).not.toContainElement(join);
+    expect(join.closest(".card")).toHaveClass("empty");
+  });
+
+  it("puts Join a group after the last row, not in the bar", async () => {
+    show(fake([]), "/chat");
+    const last = await screen.findByText("Suppliers");
+    const join = screen.getByRole("button", { name: "Join a group" });
+    expect(screen.getByRole("banner")).not.toContainElement(join);
+    expect(last.compareDocumentPosition(join) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(join.closest(".rows")).toBeNull();
+  });
+
+  it("pins the assistant as the first row, above the group rows, and opens its conversation", async () => {
+    const { container } = show(fake([]), "/chat");
+    await screen.findByText("Kisumu Agro Supplies");
+    const rows = container.querySelectorAll("button.row.room");
+    expect(rows[0]).toHaveTextContent("Hub Steward");
+    expect(rows[0]).toHaveTextContent("Ask about the backlogs");
+    expect(rows[1]).toHaveTextContent("Kisumu Agro Supplies");
+    await userEvent.click(rows[0]);
+    expect(await screen.findByText("the assistant page")).toBeInTheDocument();
   });
 
   it("draws a lead letter from the group name and clips the preview by class", async () => {
@@ -176,7 +199,7 @@ describe("the empty Chat tab and Join a group", () => {
     client.listRooms = vi.fn().mockResolvedValue([{ id: "s1", name: "siaya farmers", threadId: "t1", threadName: "Farmers", unread: 0, preview: "Hello" }]);
     const { container } = show(client, "/chat");
     await screen.findByText("Hello");
-    expect(container.querySelector(".row.room .lead")?.textContent).toBe("S");
+    expect(container.querySelectorAll(".row.room .lead")[1]?.textContent).toBe("S");
   });
 
   it("opens the join page from Join a group on a list with rooms", async () => {

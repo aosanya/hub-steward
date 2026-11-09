@@ -9,6 +9,7 @@ import { InboxPage } from "./pages/InboxPage";
 import { EvidencePage } from "./risks/EvidencePage";
 import { RiskPage } from "./risks/RiskPage";
 import { RisksPage } from "./risks/RisksPage";
+import { AssistantPage } from "./assistant/AssistantPage";
 import { AskPage } from "./pages/chat/AskPage";
 import { ChatPage } from "./pages/chat/ChatPage";
 import { MarketPage } from "./pages/market/MarketPage";
@@ -102,6 +103,7 @@ export function App() {
         <Route path={routes.joinGroupOrder.pattern} element={<JoinGroupOrderPage />} />
         <Route path={routes.forms.pattern} element={<FormsPage />} />
         <Route path={routes.form.pattern} element={<AnswerPage />} />
+        <Route path={routes.assistant.pattern} element={<AssistantPage />} />
         <Route path={routes.roomThreads.pattern} element={<RoomThreadsPage />} />
         <Route path={routes.roomThread.pattern} element={<RoomThreadPage heading="thread" />} />
         <Route path={routes.ask.pattern} element={<AskPage />} />

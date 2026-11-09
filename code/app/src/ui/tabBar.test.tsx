@@ -28,7 +28,28 @@ afterEach(() => {
   rememberSide("start");
 });
 
+const iconsShown = () => screen.getAllByRole("link").map((link) => link.querySelector("svg")?.getAttribute("data-icon"));
+
 describe("tab bar", () => {
+  it("draws each tab with an icon, not a text glyph", () => {
+    open();
+    expect(iconsShown()).toEqual(["home", "chat", "grid"]);
+    screen.getAllByRole("link").forEach((link) => {
+      expect(link.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+      expect(link.querySelector(".pill")?.textContent).toBe("");
+    });
+  });
+
+  it("draws the Do Something tabs Home, Start and Ongoing with their own icons", () => {
+    open("/a/walk-siaya/do-something", agencyWith("taskmanager"));
+    return waitFor(() => expect(iconsShown()).toEqual(["home", "play", "clock", "list"]));
+  });
+
+  it("leaves the label of every tab as it was", () => {
+    open();
+    expect(labels()).toEqual(["Home", "Chat", "Do Something"]);
+  });
+
   it("shows Home, Chat and Do Something in that order on the home screen", () => {
     open();
     expect(labels()).toEqual(["Home", "Chat", "Do Something"]);

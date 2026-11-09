@@ -208,7 +208,7 @@ describe("the Start rows of Do Something", () => {
       expect(marked.map(titleOf)).toEqual(["Plant advice"]);
       const mark = marked[0].querySelector(".mark")!;
       expect(marked[0].firstElementChild).toBe(mark);
-      expect(mark).toHaveTextContent(chatTab.glyph);
+      expect(mark.querySelector("svg")).toHaveAttribute("data-icon", chatTab.icon);
       expect(mark).toHaveAttribute("aria-hidden", "true");
     });
 

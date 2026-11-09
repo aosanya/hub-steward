@@ -15,6 +15,7 @@ import { mcpStepsClient, type MemberStep, type StepsClient } from "../steps/api"
 import { sentSteps, wasSent } from "../steps/sent";
 import { homeCardsFor, type AgencyKind, type HomeCard } from "./cards";
 import { chatScreenOf, hasScreen, screenOf } from "./workflowScreens";
+import { Icon } from "../ui/Icon";
 
 const waitingRowOf = (step: StartStep): HomeCard => ({ title: step.formName || step.title, path: startPath(step.id) });
 
@@ -95,7 +96,7 @@ export function StartRows({
             <ListRow
               key={row.chat ? `chat:${row.title}` : row.path}
               title={row.titleKey ? words[row.titleKey] : row.title}
-              start={row.chat ? <span className="mark" aria-hidden="true">{chatTab.glyph}</span> : undefined}
+              start={row.chat ? <span className="mark" aria-hidden="true"><Icon name={chatTab.icon} /></span> : undefined}
               end={row.sent ? "Sent" : "›"}
               onClick={row.sent ? undefined : () => navigate(row.path)}
             />
