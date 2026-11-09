@@ -27,7 +27,7 @@ export const detailOf = (raw: any): BacklogDetail => ({
 
 export const allowedIn = (reply: any) => reply === true || [reply?.allowed, reply?.may, reply?.result, reply?.value].includes(true);
 
-const refusalText = (error: unknown) => {
+export const refusalText = (error: unknown) => {
   const message = error instanceof McpError ? error.message : "";
   const colon = message.indexOf(": ");
   return colon >= 0 ? message.slice(colon + 2) : message;
@@ -46,25 +46,39 @@ const ofBacklog = (id: string) => ({ backlogID: id });
 const idOfNewest = (before: DraftStep[], after: BacklogDetail, name: string) =>
   [...after.steps].reverse().find((step) => step.name === name && !before.some((known) => known.id === step.id))?.id ?? "";
 
-async function removeSteps(id: string, draft: DraftStep[], current: BacklogDetail): Promise<BacklogDetail> {
+type Progress = { saved: string[] };
+
+const step = async <T>(progress: Progress, done: string, failed: string, call: Promise<T>): Promise<T> => {
+  try {
+    const reply = await call;
+    progress.saved.push(done);
+    return reply;
+  } catch (error) {
+    const saved = progress.saved.length === 0 ? "Nothing was saved." : `Saved so far: ${progress.saved.join(", ")}.`;
+    throw new ManageRefused(`${failed}: ${refusalText(error)} ${saved}`);
+  }
+};
+
+async function removeSteps(progress: Progress, id: string, draft: DraftStep[], original: BacklogDetail, current: BacklogDetail): Promise<BacklogDetail> {
   let latest = current;
-  for (const step of current.steps.filter((saved) => !draft.some((kept) => kept.id === saved.id))) {
-    latest = detailOf(await refused(callTool("", backlogTools.removeStep, { ...ofBacklog(id), stepID: step.id })));
+  for (const gone of original.steps.filter((saved) => !draft.some((kept) => kept.id === saved.id))) {
+    latest = detailOf(await step(progress, `removed ${gone.name}`, `Could not remove ${gone.name}`, callTool("", backlogTools.removeStep, { ...ofBacklog(id), stepID: gone.id })));
   }
   return latest;
 }
 
-async function addSteps(id: string, draft: DraftStep[], current: BacklogDetail): Promise<{ latest: BacklogDetail; order: string[] }> {
+async function addSteps(progress: Progress, id: string, draft: DraftStep[], current: BacklogDetail): Promise<{ latest: BacklogDetail; order: string[] }> {
   let latest = current;
   const order: string[] = [];
-  for (const step of draft) {
-    if (step.id !== "") {
-      order.push(step.id);
+  for (const wanted of draft) {
+    if (wanted.id !== "") {
+      order.push(wanted.id);
       continue;
     }
     const before = latest.steps;
-    latest = detailOf(await refused(callTool("", backlogTools.addStep, { ...ofBacklog(id), name: step.name, after: order[order.length - 1] ?? "" })));
-    order.push(idOfNewest(before, latest, step.name));
+    const after = order[order.length - 1] ?? "";
+    latest = detailOf(await step(progress, `added ${wanted.name}`, `Could not add ${wanted.name}`, callTool("", backlogTools.addStep, { ...ofBacklog(id), name: wanted.name, after })));
+    order.push(idOfNewest(before, latest, wanted.name));
   }
   return { latest, order };
 }
@@ -76,13 +90,15 @@ const readBacklog = async (id: string) => {
   return found;
 };
 
+async function askMayManage(): Promise<boolean> {
+  const subject = await loadSubject();
+  if (subject === "") return false;
+  const reply = await callTool("", backlogTools.mayPerform, { subject, scope: openAgencyId(), action: manageAction });
+  return allowedIn(reply);
+}
+
 export const mcpBacklogManageClient: BacklogManageClient = {
-  async mayManage() {
-    const subject = await loadSubject();
-    if (subject === "") return false;
-    const reply = await callTool("", backlogTools.mayPerform, { subject, scope: openAgencyId(), action: manageAction });
-    return allowedIn(reply);
-  },
+  mayManage: askMayManage,
   read: readBacklog,
   async create(name, steps) {
     const reply = await refused(callTool("", backlogTools.create, { name, steps }));
@@ -90,11 +106,12 @@ export const mcpBacklogManageClient: BacklogManageClient = {
   },
   async save(id, name, draft) {
     const current = await readBacklog(id);
-    if (name !== current.name) await refused(callTool("", backlogTools.rename, { ...ofBacklog(id), name }));
-    const afterRemoval = await removeSteps(id, draft, current);
-    const { latest, order } = await addSteps(id, draft, afterRemoval);
-    const currentOrder = latest.steps.map((step) => step.id);
-    if (order.join() !== currentOrder.join()) await refused(callTool("", backlogTools.reorder, { ...ofBacklog(id), steps: order }));
+    const progress: Progress = { saved: [] };
+    if (name !== current.name) await step(progress, "renamed the backlog", "Could not rename the backlog", callTool("", backlogTools.rename, { ...ofBacklog(id), name }));
+    const { latest, order } = await addSteps(progress, id, draft, current);
+    const afterRemoval = await removeSteps(progress, id, draft, current, latest);
+    const currentOrder = afterRemoval.steps.map((one) => one.id);
+    if (order.join() !== currentOrder.join()) await step(progress, "reordered the steps", "Could not reorder the steps", callTool("", backlogTools.reorder, { ...ofBacklog(id), steps: order }));
   },
   async remove(id) {
     await refused(callTool("", backlogTools.remove, ofBacklog(id)));

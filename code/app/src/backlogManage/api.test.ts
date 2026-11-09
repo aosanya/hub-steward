@@ -1,5 +1,5 @@
 import { McpError } from "../wakala/mcp";
-import { allowedIn, backlogTools, detailOf, mcpBacklogManageClient } from "./api";
+import { allowedIn, backlogTools,  detailOf, mcpBacklogManageClient, refusalText } from "./api";
 import { savedStep } from "./stepsDraft";
 import { ManageRefused } from "./types";
 
@@ -61,19 +61,63 @@ describe("backlog manage client", () => {
     expect(calls()).toEqual([[backlogTools.create, { name: "Support", steps: ["New", "Closed"] }]]);
   });
 
-  it("saves a rename, a removal, an addition after its neighbour and the new order", async () => {
+  it("saves in a safe order: rename, add, remove last, then the new order", async () => {
     answer = async (_hub, name, args) => {
       if (name === backlogTools.list) return { items: [summary([["a", "To do", 0], ["b", "Doing", 0], ["c", "Done", 0]])] };
-      if (name === backlogTools.removeStep) return summary([["a", "To do", 0], ["c", "Done", 0]]);
-      if (name === backlogTools.addStep) return summary([["a", "To do", 0], ["r", args.name, 0], ["c", "Done", 0]]);
+      if (name === backlogTools.addStep) return summary([["a", "To do", 0], ["r", args.name, 0], ["b", "Doing", 0], ["c", "Done", 0]]);
+      if (name === backlogTools.removeStep) return summary([["a", "To do", 0], ["r", "Review", 0], ["c", "Done", 0]]);
       return summary([]);
     };
     await mcpBacklogManageClient.save("software", "Engineering", [savedStep("a", "To do", 0), { key: "n", id: "", name: "Review", held: 0 }, savedStep("c", "Done", 0)]);
     expect(calls().slice(1)).toEqual([
       [backlogTools.rename, { backlogID: "software", name: "Engineering" }],
-      [backlogTools.removeStep, { backlogID: "software", stepID: "b" }],
       [backlogTools.addStep, { backlogID: "software", name: "Review", after: "a" }],
+      [backlogTools.removeStep, { backlogID: "software", stepID: "b" }],
     ]);
+  });
+
+  it("never passes through zero steps when every step is replaced", async () => {
+    let steps: [string, string, number][] = [["a", "Open", 0]];
+    answer = async (_hub, name, args) => {
+      if (name === backlogTools.list) return { items: [summary(steps)] };
+      if (name === backlogTools.addStep) steps = [...steps, ["z", args.name, 0]];
+      if (name === backlogTools.removeStep) steps = steps.filter(([id]) => id !== args.stepID);
+      expect(steps.length).toBeGreaterThan(0);
+      return summary(steps);
+    };
+    await mcpBacklogManageClient.save("software", "Software", [{ key: "n", id: "", name: "New", held: 0 }]);
+    expect(calls().slice(1).map(([name]) => name)).toEqual([backlogTools.addStep, backlogTools.removeStep]);
+  });
+
+  it("adds a step at the end without a reorder call", async () => {
+    answer = async (_hub, name, args) => {
+      if (name === backlogTools.list) return { items: [summary([["a", "To do", 0]])] };
+      if (name === backlogTools.addStep) return summary([["a", "To do", 0], ["z", args.name, 0]]);
+      return summary([]);
+    };
+    await mcpBacklogManageClient.save("software", "Software", [savedStep("a", "To do", 0), { key: "n", id: "", name: "Done", held: 0 }]);
+    expect(calls().slice(1)).toEqual([[backlogTools.addStep, { backlogID: "software", name: "Done", after: "a" }]]);
+  });
+
+  it("says what was saved and which step failed when a later call is refused", async () => {
+    answer = async (_hub, name, args) => {
+      if (name === backlogTools.list) return { items: [summary([["a", "To do", 0], ["b", "Doing", 2]])] };
+      if (name === backlogTools.addStep) return summary([["a", "To do", 0], ["b", "Doing", 2], ["z", args.name, 0]]);
+      if (name === backlogTools.removeStep) throw new McpError("taskmanager_backlog_step_remove: step holds issues: Doing");
+      return summary([]);
+    };
+    let words = "";
+    try {
+      await mcpBacklogManageClient.save("software", "Engineering", [savedStep("a", "To do", 0), { key: "n", id: "", name: "Review", held: 0 }]);
+    } catch (error) {
+      words = (error as Error).message;
+    }
+    expect(words).toBe("Could not remove Doing: step holds issues: Doing Saved so far: renamed the backlog, added Review.");
+  });
+
+  it("reads the refusal without the tool name", () => {
+    expect(refusalText(new McpError("taskmanager_backlog_delete: backlog holds issues: Software"))).toBe("backlog holds issues: Software");
+    expect(refusalText(new Error("other"))).toBe("");
   });
 
   it("reorders when only the order changed", async () => {

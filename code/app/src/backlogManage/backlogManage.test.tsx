@@ -91,6 +91,7 @@ describe("edit a backlog", () => {
     expect(screen.getByRole("button", { name: "Remove Review" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Move To do up" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Delete the backlog" })).toBeDisabled();
+    expect(screen.getByText("It still holds 6 issues.")).toBeInTheDocument();
   });
 
   it("saves a rename, a removed step and a new order", async () => {
@@ -110,12 +111,25 @@ describe("edit a backlog", () => {
     expect(await screen.findByText("Backlogs screen")).toBeInTheDocument();
   });
 
-  it("deletes an empty backlog", async () => {
+  it("asks before deleting an empty backlog and deletes on Delete", async () => {
     const empty = { id: "support", name: "Support", steps: [savedStep("new", "New", 0)] };
     const client = fake({ read: vi.fn().mockResolvedValue(empty) });
     show(`${base}/support/edit`, client);
     await userEvent.click(await screen.findByRole("button", { name: "Delete the backlog" }));
+    expect(screen.getByRole("alert")).toHaveTextContent("Delete Support?");
+    expect(client.remove).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole("button", { name: "Delete" }));
     await waitFor(() => expect(client.remove).toHaveBeenCalledWith("support"));
+  });
+
+  it("keeps the backlog when Cancel is chosen", async () => {
+    const empty = { id: "support", name: "Support", steps: [savedStep("new", "New", 0)] };
+    const client = fake({ read: vi.fn().mockResolvedValue(empty) });
+    show(`${base}/support/edit`, client);
+    await userEvent.click(await screen.findByRole("button", { name: "Delete the backlog" }));
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(client.remove).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Delete the backlog" })).toBeEnabled();
   });
 
   it("shows a refused removal in words and keeps the screen", async () => {

@@ -7,7 +7,7 @@ import { Field } from "../ui/Field";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Shell } from "../ui/Shell";
 import { StepsEditor } from "./StepsEditor";
-import { draftProblem, type DraftStep } from "./stepsDraft";
+import { draftProblem, heldWords, type DraftStep } from "./stepsDraft";
 import { mcpBacklogManageClient } from "./api";
 import { refusalWords, type BacklogDetail, type BacklogManageClient } from "./types";
 import { useMayManage } from "./useMayManage";
@@ -18,7 +18,9 @@ function Form({ client, backlog }: { client: BacklogManageClient; backlog: Backl
   const [steps, setSteps] = useState<DraftStep[]>(backlog.steps);
   const [problem, setProblem] = useState("");
   const [busy, setBusy] = useState(false);
-  const holding = backlog.steps.some((step) => step.held > 0);
+  const [confirming, setConfirming] = useState(false);
+  const held = backlog.steps.reduce((total, step) => total + step.held, 0);
+  const holding = held > 0;
   const back = () => navigate(backlogsHomePath());
 
   useEffect(() => {
@@ -51,9 +53,22 @@ function Form({ client, backlog }: { client: BacklogManageClient; backlog: Backl
       <Button kind="primary" onClick={save} disabled={busy}>
         Save
       </Button>
-      <Button kind="danger" onClick={() => attempt(() => client.remove(backlog.id), "The backlog could not be deleted. Try again.")} disabled={busy || holding}>
-        Delete the backlog
-      </Button>
+      {confirming ? (
+        <>
+          <p className="ferr" role="alert">{`Delete ${backlog.name}?`}</p>
+          <Button kind="danger" onClick={() => attempt(() => client.remove(backlog.id), "The backlog could not be deleted. Try again.")} disabled={busy}>
+            Delete
+          </Button>
+          <Button onClick={() => setConfirming(false)} disabled={busy}>
+            Cancel
+          </Button>
+        </>
+      ) : (
+        <Button kind="danger" onClick={() => setConfirming(true)} disabled={busy || holding}>
+          Delete the backlog
+        </Button>
+      )}
+      {holding ? <p className="sub">{`It still holds ${heldWords(held)}.`}</p> : null}
       <p className="sub">A step that holds issues cannot be removed, and a backlog that holds issues cannot be deleted.</p>
     </>
   );
