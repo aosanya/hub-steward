@@ -1,13 +1,15 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../forms/useLoad";
 import { openAgencyId } from "../agency/open";
+import { Chip } from "../ui/Chip";
 import { LoadFailed, LoadingLine } from "../ui/LoadState";
 import { ListRow, Rows } from "../ui/ListRow";
 import { SectionHeading } from "../ui/SectionHeading";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
-import { mcpBacklogsClient, type BacklogsClient } from "./api";
+import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { issuePath, issuesPath } from "./paths";
+import { tagsOf, toneOf } from "./tags";
 
 export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {
   const navigate = useNavigate();
@@ -19,6 +21,15 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
     <Shell title={ready?.title ?? "Issue"} sub={place} onBack={() => navigate(issuesPath())}>
       {issue.state === "loading" ? <LoadingLine /> : null}
       {issue.state === "error" ? <LoadFailed words="This issue could not be loaded." /> : null}
+      {ready ? (
+        <div className="issue-tags">
+          {tagsOf(ready).map((tag) => (
+            <Chip key={tag} tone={toneOf(tag, ready)} onClick={() => navigate(issuesPath(allIssuesId, [tag]))}>
+              {tag}
+            </Chip>
+          ))}
+        </div>
+      ) : null}
       {ready?.description ? <p className="issue-body">{ready.description}</p> : null}
       {ready && ready.waitsOn.length > 0 ? (
         <>

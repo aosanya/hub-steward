@@ -44,14 +44,14 @@ describe("journey 02, browse the backlog", () => {
     expect(screen.getByTestId("here")).toHaveTextContent(`/a/${farmers.id}/backlogs/all`);
   });
 
-  it("2. Open lists all issues in the rank the script gave, with the mark and the repo as tags and no priority", async () => {
+  it("2. Open lists all issues in the rank the script gave, each row only its title", async () => {
     inFarmers("/backlogs/all");
     const first = await screen.findByRole("button", { name: "Write the manual" });
     const titles = screen.getAllByRole("button").map((one) => one.textContent).filter((text) => ["Write the manual", "Import the boards", "Write the loader"].includes(text ?? ""));
     expect(titles).toEqual(["Write the manual", "Import the boards", "Write the loader"]);
     const row = first.closest(".row") as HTMLElement;
-    expect(within(row).getByRole("button", { name: "Ready" })).toBeInTheDocument();
-    expect(within(row).getByRole("button", { name: "mwanachama-docs" })).toBeInTheDocument();
+    expect(within(row).getAllByRole("button")).toHaveLength(1);
+    expect(row.textContent).toBe("Write the manual");
     expect(screen.queryByText(/P[1-4]|critical|priority/i)).toBeNull();
   });
 
@@ -70,21 +70,18 @@ describe("journey 02, browse the backlog", () => {
     expect(where()).toBe(`/a/${farmers.id}/home`);
   });
 
-  it("3. tapping a tag in the list narrows it and chosen tags show as chips with a cross", async () => {
+  it("3. tapping a tag on an issue's page opens the list narrowed to it, with the tag as a chip with a cross", async () => {
     inFarmers("/backlogs/all");
-    await screen.findByRole("button", { name: "Write the manual" });
-    await userEvent.click(screen.getAllByRole("button", { name: "Docs" })[0]);
+    await userEvent.click(await screen.findByRole("button", { name: "Write the manual" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Docs" }));
+    expect(await screen.findByRole("button", { name: "Docs ✕" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Write the loader" })).toBeNull();
-    expect(screen.getByRole("button", { name: "Docs ✕" })).toBeInTheDocument();
     expect(where()).toContain("tag=Docs");
   });
 
   it("3. tags chosen together narrow the list and clearing a chip widens it", async () => {
-    inFarmers("/backlogs/all");
-    await screen.findByRole("button", { name: "Write the manual" });
-    await userEvent.click(screen.getAllByRole("button", { name: "Docs" })[0]);
-    await userEvent.click(screen.getAllByRole("button", { name: "Blocked" })[0]);
-    expect(screen.getByRole("button", { name: "Import the boards" })).toBeInTheDocument();
+    inFarmers("/backlogs/all?tag=Docs&tag=Blocked");
+    expect(await screen.findByRole("button", { name: "Import the boards" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Write the manual" })).toBeNull();
     await userEvent.click(screen.getByRole("button", { name: "Blocked ✕" }));
     expect(await screen.findByRole("button", { name: "Write the manual" })).toBeInTheDocument();

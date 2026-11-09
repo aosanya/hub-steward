@@ -86,13 +86,21 @@ describe("BacklogBoard", () => {
     expect(within(column("Done")).getByText("Nothing here")).toBeInTheDocument();
   });
 
-  it("filters every column when a tag is tapped and clears it again", async () => {
+  it("shows only the title on a card and opens the issue when it is tapped", async () => {
     const user = userEvent.setup();
     open(client());
     await screen.findByText("Record the clips");
-    await user.click(within(column("Waiting")).getByRole("button", { name: "Docs" }));
+    const card = within(column("Waiting")).getByRole("button", { name: "Import the municipality" });
+    expect(card.textContent).toBe("Import the municipality");
+    await user.click(card);
+    await waitFor(() => expect(screen.getByTestId("where").textContent).toMatch(/\/backlogs\/issue\/3$/));
+  });
+
+  it("filters every column by the tags in the address and clears them again", async () => {
+    const user = userEvent.setup();
+    open(client(), "/a/x/backlogs/default/board?tag=Docs");
+    await screen.findByText("Import the municipality");
     expect(screen.queryByText("Record the clips")).not.toBeInTheDocument();
-    expect(within(column("Waiting")).getByText("Import the municipality")).toBeInTheDocument();
     expect(screen.getByText("1 issue · 4 steps")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Clear" }));
     expect(await screen.findByText("Record the clips")).toBeInTheDocument();

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from "../backlogs/api";
-import { backlogsHomePath, issuesPath, tagParam } from "../backlogs/paths";
-import { tagsOf, toggled, toneOf, withAllTags } from "../backlogs/tags";
+import { IssueTitle } from "../backlogs/IssueTitle";
+import { backlogsHomePath, issuePath, issuesPath, tagParam } from "../backlogs/paths";
+import { toggled, withAllTags } from "../backlogs/tags";
 import { backlogPagePath } from "../backlogPage/paths";
 import { Chip } from "../ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
@@ -83,16 +84,9 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
                   <span>{column.issues.length}</span>
                 </h3>
                 {column.issues.map((issue) => (
-                  <article key={issue.id} className="bb-card">
-                    <span className="bb-title">{issue.title}</span>
-                    <span className="bb-meta">
-                      {tagsOf(issue).map((tag) => (
-                        <Chip key={tag} tone={toneOf(tag, issue)} pressed={chosen.includes(tag)} onClick={() => toggle(tag)}>
-                          {tag}
-                        </Chip>
-                      ))}
-                    </span>
-                  </article>
+                  <button key={issue.id} type="button" className="bb-card" onClick={() => navigate(issuePath(issue.id))}>
+                    <IssueTitle title={issue.title} />
+                  </button>
                 ))}
                 {column.issues.length === 0 ? <p className="bb-none">Nothing here</p> : null}
               </section>

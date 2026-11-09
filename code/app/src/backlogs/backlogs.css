@@ -1,7 +1,6 @@
-.issue-row { align-items: flex-start; }
-.issue-row .rank { flex: none; min-width: 1.5rem; color: var(--ink-soft); font-size: .8125rem; font-weight: 600; line-height: 1.5rem; }
-.issue-row .open { padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 600; text-align: left; overflow-wrap: anywhere; }
-.issue-row .tags { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .25rem; }
+.issue-row .open { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: left; overflow-wrap: anywhere; }
+.issue-tags { display: flex; flex-wrap: wrap; gap: .375rem; }
 .chosen { display: flex; flex-wrap: wrap; gap: .5rem; }
 .chosen:empty { display: none; }
 .issue-body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.issue-code { color: var(--accent); font-weight: 500; }

@@ -53,8 +53,8 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
       ) : null}
       {shown.length > 0 ? (
         <Rows>
-          {shown.map((issue, at) => (
-            <IssueRow key={issue.id} issue={issue} place={at + 1} chosen={chosen} onOpen={() => navigate(issuePath(issue.id))} onTag={choose} />
+          {shown.map((issue) => (
+            <IssueRow key={issue.id} issue={issue} onOpen={() => navigate(issuePath(issue.id))} />
           ))}
         </Rows>
       ) : null}
