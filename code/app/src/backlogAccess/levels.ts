@@ -13,11 +13,20 @@ export const goneGroupWords = "A group that no longer exists";
 
 const nameOf = (groups: AgencyGroup[], groupId: string) => groups.find((group) => group.id === groupId)?.name ?? goneGroupWords;
 
+export const noRoleWords = "no role yet";
+
+const roleNames: Record<string, string> = { backlog_member: "Backlog member", backlog_worker: "Backlog worker" };
+
+export const roleWords = (codes: string[]) => codes.map((code) => roleNames[code] ?? code).join(", ");
+
 export const rowsOf = (reading: AccessReading, groups: AgencyGroup[]): AccessRow[] => {
-  const owner: AccessRow[] = reading.ownerGroup === "" ? [] : [{ groupId: reading.ownerGroup, name: nameOf(groups, reading.ownerGroup), level: "move", fixed: true }];
+  const owner: AccessRow[] =
+    reading.ownerGroup === ""
+      ? []
+      : [{ groupId: reading.ownerGroup, name: nameOf(groups, reading.ownerGroup), level: "move", fixed: true, roleName: "", roleTooSmall: false }];
   const others = reading.grants
     .filter((grant) => grant.groupId !== reading.ownerGroup)
-    .map((grant): AccessRow => ({ groupId: grant.groupId, name: nameOf(groups, grant.groupId), level: grant.level, fixed: false }));
+    .map((grant): AccessRow => ({ groupId: grant.groupId, name: nameOf(groups, grant.groupId), level: grant.level, fixed: false, roleName: roleWords(grant.roles), roleTooSmall: grant.roleTooSmall }));
   return [...owner, ...others];
 };
 
@@ -31,6 +40,6 @@ export const groupsWithoutAccess = (groups: AgencyGroup[], rows: AccessRow[]) =>
 export const withLevel = (rows: AccessRow[], groupId: string, level: "see" | "move") =>
   rows.map((row) => (row.groupId === groupId && !row.fixed ? { ...row, level } : row));
 
-export const withGroup = (rows: AccessRow[], group: AgencyGroup): AccessRow[] => [...rows, { groupId: group.id, name: group.name, level: "see", fixed: false }];
+export const withGroup = (rows: AccessRow[], group: AgencyGroup): AccessRow[] => [...rows, { groupId: group.id, name: group.name, level: "see", fixed: false, roleName: "", roleTooSmall: false }];
 
 export const withoutGroup = (rows: AccessRow[], groupId: string) => rows.filter((row) => row.groupId !== groupId || row.fixed);

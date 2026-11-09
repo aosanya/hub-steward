@@ -2,11 +2,11 @@ export type AccessLevel = "see" | "move";
 
 export type ChoiceLevel = AccessLevel | "none";
 
-export type AccessRow = { groupId: string; name: string; level: AccessLevel; fixed: boolean };
+export type AccessRow = { groupId: string; name: string; level: AccessLevel; fixed: boolean; roleName: string; roleTooSmall: boolean };
 
 export type AgencyGroup = { id: string; name: string; hierarchyId: string };
 
-export type Grant = { groupId: string; level: AccessLevel };
+export type Grant = { groupId: string; level: AccessLevel; roleTooSmall: boolean; roles: string[] };
 
 export type AccessReading = { ownerGroup: string; grants: Grant[] };
 

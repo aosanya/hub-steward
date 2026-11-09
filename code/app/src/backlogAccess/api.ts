@@ -14,7 +14,12 @@ const text = (value: unknown) => (typeof value === "string" ? value : "");
 
 const itemsOf = (reply: any): any[] => (Array.isArray(reply) ? reply : Array.isArray(reply?.items) ? reply.items : []);
 
-export const grantOf = (raw: any): Grant => ({ groupId: text(raw?.group_id), level: raw?.level === "move" ? "move" : "see" });
+export const grantOf = (raw: any): Grant => ({
+  groupId: text(raw?.group_id),
+  level: raw?.level === "move" ? "move" : "see",
+  roleTooSmall: raw?.role_too_small === true,
+  roles: (Array.isArray(raw?.roles) ? raw.roles : []).filter((code: unknown) => typeof code === "string" && code !== ""),
+});
 
 export const readingOf = (raw: any): AccessReading => ({
   ownerGroup: text(raw?.owner_group),

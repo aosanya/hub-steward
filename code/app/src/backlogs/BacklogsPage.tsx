@@ -9,6 +9,7 @@ import { Shell } from "../ui/Shell";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { addBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
 import { mcpBacklogManageClient } from "../backlogManage/api";
+import { nothingSharedWords } from "./access";
 import { boardPath, issuesPath } from "./paths";
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -25,7 +26,8 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
   return (
     <Shell title="Backlogs" sub={named.state === "ready" && named.data.name ? named.data.name : undefined}>
       {backlogs.state === "error" ? <LoadFailed words="The backlogs could not be loaded." /> : null}
-      {backlogs.state === "ready" ? (
+      {backlogs.state === "ready" && rows.length === 0 ? <EmptyCard words={nothingSharedWords} /> : null}
+      {backlogs.state === "ready" && rows.length > 0 ? (
         <Rows>
           <ListRow title="All issues" meta={plural(issues, "issue")} end="›" onClick={() => navigate(issuesPath(allIssuesId))} />
           {issues > 0
@@ -38,7 +40,7 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
       {backlogs.state === "ready" && mayManage.state === "ready" && mayManage.data ? (
         <Button onClick={() => navigate(addBacklogPath())}>Add a backlog</Button>
       ) : null}
-      {backlogs.state === "ready" && issues === 0 ? (
+      {backlogs.state === "ready" && rows.length > 0 && issues === 0 ? (
         <EmptyCard words="No backlog yet">
           <p>Run the loader on your laptop to load the boards</p>
         </EmptyCard>

@@ -14,7 +14,7 @@ import { ListRow, Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
 import { mcpBacklogAccessClient } from "./api";
-import { groupsOfOwnerHierarchy, groupsWithoutAccess, levelItems, levelWords, rowsOf, withGroup, withLevel, withoutGroup } from "./levels";
+import { groupsOfOwnerHierarchy, groupsWithoutAccess, levelItems, levelWords, noRoleWords, rowsOf, withGroup, withLevel, withoutGroup } from "./levels";
 import { refusalWords, type AccessRow, type AgencyGroup, type BacklogAccessClient, type ChoiceLevel } from "./types";
 
 type FormProps = { client: BacklogAccessClient; backlogId: string; first: AccessRow[]; firstOwner: string; groups: AgencyGroup[] };
@@ -38,12 +38,27 @@ function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
     }
   };
 
+  const refreshRoles = async () => {
+    try {
+      const fresh = rowsOf(await client.read(backlogId), groups);
+      setRows((now) =>
+        now.map((row) => {
+          const found = fresh.find((one) => one.groupId === row.groupId);
+          return found ? { ...row, roleName: found.roleName, roleTooSmall: found.roleTooSmall } : row;
+        }),
+      );
+    } catch {
+      return;
+    }
+  };
+
   const attempt = async (act: () => Promise<void>, done: () => void) => {
     setBusy(true);
     setProblem("");
     try {
       await act();
       done();
+      await refreshRoles();
     } catch (error) {
       setProblem(refusalWords(error, "The access could not be changed. Try again."));
       await refresh();
@@ -70,7 +85,7 @@ function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
   const nameOwner = (group: AgencyGroup) =>
     attempt(() => client.setOwnerGroup(group.id), () => {
       setOwner(group.id);
-      setRows((now) => [{ groupId: group.id, name: group.name, level: "move", fixed: true }, ...now.filter((row) => row.groupId !== group.id)]);
+      setRows((now) => [{ groupId: group.id, name: group.name, level: "move", fixed: true, roleName: "", roleTooSmall: false }, ...now.filter((row) => row.groupId !== group.id)]);
     });
 
   return (
@@ -93,6 +108,8 @@ function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
           ) : (
             <Segmented items={levelItems} current={row.level} label={`Access for ${row.name}`} disabled={busy} onChange={(level) => choose(row, level)} />
           )}
+          {row.fixed && row.roleName === "" ? null : <p className="sub">Uses the Backlogs as: {row.roleName === "" ? noRoleWords : row.roleName}</p>}
+          {row.roleTooSmall ? <p className="ferr">This group's role is too small to move issues</p> : null}
         </Card>
       ))}
       {leaving ? (

@@ -7,7 +7,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../agency/open";
 import * as mcp from "../wakala/mcp";
 import { BacklogsPage } from "./BacklogsPage";
+import { mayReadIn, noRoleWords, nothingSharedWords } from "./access";
 import { BacklogsRoutes } from "./BacklogsRoutes";
+import { NeedsRole } from "./NeedsRole";
 import { issuePath, issuesPath } from "./paths";
 import { allIssuesId, hubBacklogsOf, issueOf, listCap, mcpBacklogsClient, stepsOf, taskTools } from "./api";
 import { countWords, tagsOf, toggled, withAllTags } from "./tags";
@@ -381,5 +383,73 @@ describe("talking to the hub", () => {
     expect(tagsOf(issue).filter((tag) => tag === "Ready" || tag === "Blocked")).toEqual(["Blocked"]);
     expect(issueOf({ id: "b", status: "in_progress", tags: ["Ready", "Blocked"] }).mark).toBe("Blocked");
     expect(issueOf({ id: "c", status: "completed", tags: ["Ready"] }).mark).toBe("");
+  });
+});
+
+describe("a member who holds no role, or whose group shares nothing", () => {
+  const withRoles = (permissions: string[] | undefined, tasks: unknown[] = board, backlogs?: unknown) =>
+    vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string) => {
+      switch (tool) {
+        case "agency_get_my_roles":
+          return permissions === undefined ? {} : { permissions };
+        case taskTools.backlogs:
+          return backlogs ?? hubBacklogs(tasks);
+        case taskTools.list:
+          return { items: tasks };
+        case "agency_get_agency":
+          return { id: hub, name: "Hub Steward SWE" };
+        default:
+          return { items: [] };
+      }
+    }) as never);
+
+  it("says there is no access yet, once, when the member's roles hold no task.read", async () => {
+    withRoles([]);
+    openAt("/a/hub-1/backlogs");
+    expect(await screen.findByText(noRoleWords)).toBeInTheDocument();
+    expect(screen.queryByText("All issues")).not.toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("says the same on a link to a board, a list or an issue", async () => {
+    withRoles(["chat.post"]);
+    openAt("/a/hub-1/backlogs/backlog/board");
+    expect(await screen.findByText(noRoleWords)).toBeInTheDocument();
+  });
+
+  it("opens the Backlogs for a member whose role holds task.read", async () => {
+    withRoles(["task.read"]);
+    openAt("/a/hub-1/backlogs");
+    expect(await screen.findByText("All issues")).toBeInTheDocument();
+    expect(screen.queryByText(noRoleWords)).not.toBeInTheDocument();
+  });
+
+  it("says no backlogs are shared yet when the hub shows a member none", async () => {
+    withRoles(["task.read"], [], { items: [] });
+    openAt("/a/hub-1/backlogs");
+    expect(await screen.findByText(nothingSharedWords)).toBeInTheDocument();
+    expect(screen.queryByText("All issues")).not.toBeInTheDocument();
+    expect(screen.queryByText("No backlog yet")).not.toBeInTheDocument();
+  });
+
+  it("lets the screens speak when the roles cannot be read or carry no permission list", async () => {
+    withRoles(undefined);
+    openAt("/a/hub-1/backlogs");
+    expect(await screen.findByText("All issues")).toBeInTheDocument();
+    expect(mayReadIn({})).toBe(true);
+    expect(mayReadIn({ permissions: ["task.read"] })).toBe(true);
+    expect(mayReadIn({ permissions: [] })).toBe(false);
+  });
+
+  it("shows the screens when the roles read fails", async () => {
+    vi.spyOn(mcp, "callTool").mockRejectedValue(new Error("down"));
+    render(
+      <MemoryRouter>
+        <NeedsRole>
+          <p>The screens</p>
+        </NeedsRole>
+      </MemoryRouter>,
+    );
+    expect(await screen.findByText("The screens")).toBeInTheDocument();
   });
 });
