@@ -1,4 +1,5 @@
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
 import { openAgencyId } from "../agency/open";
 import { Chip } from "../ui/Chip";
@@ -14,6 +15,7 @@ import { countWords, toggled, withAllTags } from "./tags";
 
 export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {
   const navigate = useNavigate();
+  const { words } = useLanguage();
   const backlogId = useParams().backlogId ?? allIssuesId;
   const [search, setSearch] = useSearchParams();
   const chosen = search.getAll(tagParam);
@@ -26,7 +28,7 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
   const total = issues.state === "ready" ? issues.data.length : 0;
   const sub = issues.state === "ready" && total > 0 ? countWords(shown.length, total, chosen.length > 0) : undefined;
   return (
-    <Shell title={title} sub={sub} onBack={() => navigate(backlogsHomePath())}>
+    <Shell title={title} sub={sub} onBack={() => navigate(backlogsHomePath())} backLabel={words.backBacklogs}>
       {backlogId !== allIssuesId ? (
         <Segmented
           items={[

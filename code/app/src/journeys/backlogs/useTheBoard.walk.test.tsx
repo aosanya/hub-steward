@@ -90,7 +90,7 @@ describe("journey 06, use the board", () => {
     inFarmers(board, withPlacedIssues);
     await screen.findByRole("region", { name: "To do" });
     expect(screen.getByRole("navigation", { name: "Main" })).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+    await userEvent.click(screen.getByRole("button", { name: "‹ Backlogs" }));
     expect(where()).toBe(`/a/${farmers.id}/backlogs`);
   });
 

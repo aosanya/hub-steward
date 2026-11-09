@@ -26,6 +26,7 @@ export type Issue = {
   backlog: string;
   mark: Mark;
   rank: number;
+  priority?: string;
 };
 
 export type IssueDetail = Issue & { waitsOn: { id: string; title: string }[] };
@@ -91,6 +92,7 @@ export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
     backlog: backlog?.name ?? "",
     mark: own ?? derivedMark(status),
     rank: rankOf(raw),
+    priority: text(raw?.priority),
   };
 };
 

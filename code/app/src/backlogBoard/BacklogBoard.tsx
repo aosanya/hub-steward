@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useLanguage } from "../entry/language";
 import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from "../backlogs/api";
 import { IssueTags, IssueTitle, openUnlessTag } from "../backlogs/IssueTitle";
 import { backlogsHomePath, issuePath, issuesPath, tagParam } from "../backlogs/paths";
@@ -26,6 +27,7 @@ const countWords = (shown: number, steps: number) => `${shown} ${shown === 1 ? "
 export function BacklogBoard({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {
   const { backlogId = "" } = useParams();
   const navigate = useNavigate();
+  const { words } = useLanguage();
   const [search, setSearch] = useSearchParams();
   const chosen = search.getAll(tagParam);
   const [read, setRead] = useState<Read>({ state: "loading" });
@@ -57,7 +59,7 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
   );
 
   return (
-    <Shell title={title} sub={sub} onBack={() => navigate(backlogsHomePath())} action={backlog ? action : undefined}>
+    <Shell title={title} sub={sub} onBack={() => navigate(backlogsHomePath())} backLabel={words.backBacklogs} action={backlog ? action : undefined}>
       {read.state === "loading" ? <LoadingLine /> : null}
       {read.state === "failed" ? <LoadFailed words="The board could not be read. Try again." /> : null}
       {loaded && !backlog ? <EmptyCard words="This backlog could not be found." /> : null}

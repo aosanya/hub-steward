@@ -4,6 +4,7 @@ import { backlogAccessPath } from "../backlogAccess/paths";
 import { editBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
 import { mcpBacklogManageClient } from "../backlogManage/api";
 import { issuesPath } from "../backlogs/paths";
+import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
 import { Button } from "../ui/Button";
 import { Chip } from "../ui/Chip";
@@ -21,6 +22,7 @@ type Props = { client?: BacklogPageClient; manage?: BacklogManageClient };
 
 export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklogManageClient }: Props) {
   const navigate = useNavigate();
+  const { words } = useLanguage();
   const { backlogId = "" } = useParams();
   const loaded = useLoad(() => client.page(backlogId), `backlog-page:${openAgencyId()}:${backlogId}`);
   const mayManage = useMayManage(manage);
@@ -28,14 +30,14 @@ export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklog
 
   if (loaded.state === "loading") {
     return (
-      <Shell title="" onBack={back}>
+      <Shell title="" onBack={back} backLabel={words.backList}>
         <LoadingLine />
       </Shell>
     );
   }
   if (loaded.state === "error" || !loaded.data) {
     return (
-      <Shell title="" onBack={back}>
+      <Shell title="" onBack={back} backLabel={words.backList}>
         <LoadFailed words="This could not be opened." />
       </Shell>
     );
@@ -43,7 +45,7 @@ export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklog
 
   const { name, steps, noStep, access } = loaded.data;
   return (
-    <Shell title={name} sub={stepsWords(steps.length)} onBack={back}>
+    <Shell title={name} sub={stepsWords(steps.length)} onBack={back} backLabel={words.backList}>
       {mayManage.state === "ready" && mayManage.data ? <Button to={editBacklogPath(backlogId)}>Edit this backlog</Button> : null}
       <SectionHeading>Steps, in order</SectionHeading>
       <Rows>

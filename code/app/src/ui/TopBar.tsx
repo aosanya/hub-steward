@@ -2,11 +2,11 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useDrawer } from "./DrawerFrame";
 
-export type TopBarBack = { onClick: () => void } | { to: string; label: string };
+export type TopBarBack = { onClick: () => void; label?: string } | { to: string; label: string };
 
 type Extras = { action?: ReactNode; menu?: boolean };
 
-type Props = ({ title: string; back?: undefined } | { title?: undefined; back: TopBarBack }) & Extras;
+type Props = ({ title: string; back?: undefined } | { title?: string; back: TopBarBack }) & Extras;
 
 function BackLink({ back }: { back: TopBarBack }) {
   if ("to" in back) {
@@ -17,8 +17,8 @@ function BackLink({ back }: { back: TopBarBack }) {
     );
   }
   return (
-    <button type="button" className="back" onClick={back.onClick} aria-label="Back">
-      ‹
+    <button type="button" className="back" onClick={back.onClick} aria-label={back.label ? undefined : "Back"}>
+      {back.label ? `‹ ${back.label}` : "‹"}
     </button>
   );
 }
@@ -44,6 +44,7 @@ export function TopBar({ title, back, action, menu }: Props) {
   return (
     <header className="bar">
       {back ? <BackLink back={back} /> : <h1 className="title">{title}</h1>}
+      {back && title ? <h1 className="bar-title">{title}</h1> : null}
       {action || menu ? (
         <div className="bar-action">
           {action}

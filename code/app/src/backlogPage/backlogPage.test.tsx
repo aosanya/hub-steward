@@ -226,7 +226,7 @@ describe("the backlog page", () => {
   it("goes back to the backlog's list", async () => {
     await show(software);
     await screen.findByText("Steps, in order");
-    await userEvent.click(screen.getByRole("button", { name: /back/i }));
+    await userEvent.click(screen.getByRole("button", { name: "‹ List" }));
     expect(landed).toBe(`/a/hub1/backlogs/${defaultBacklogId}`);
   });
 });

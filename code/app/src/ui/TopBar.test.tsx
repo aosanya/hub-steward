@@ -40,6 +40,23 @@ describe("top bar", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it("shows a back label, takes it as the button's name, and puts the title in the middle part", async () => {
+    const onClick = vi.fn();
+    render(
+      <MemoryRouter>
+        <TopBar back={{ onClick, label: "Backlogs" }} title="Software" menu />
+      </MemoryRouter>,
+    );
+    const banner = screen.getByRole("banner");
+    await userEvent.click(within(banner).getByRole("button", { name: "‹ Backlogs" }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(banner.children).toHaveLength(3);
+    expect(banner.children[0]).toHaveTextContent("‹ Backlogs");
+    expect(banner.children[1]).toHaveTextContent("Software");
+    expect(banner.children[1].tagName).toBe("H1");
+    expect(banner.children[2]).toContainElement(within(banner).getByRole("button", { name: "Menu" }));
+  });
+
   it("holds the back button alone, with no title, when it has a back link", () => {
     backedBar({ onClick: () => undefined });
     const banner = screen.getByRole("banner");

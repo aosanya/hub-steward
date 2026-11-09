@@ -3,6 +3,9 @@
 .issue-tags { display: flex; flex-wrap: wrap; gap: .375rem; }
 .chosen { display: flex; flex-wrap: wrap; gap: .5rem; }
 .chosen:empty { display: none; }
-.issue-body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.issue-body { overflow-wrap: anywhere; }
+.issue-body > :last-child { margin-bottom: 0; }
+.issue-body p, .issue-body ul, .issue-body ol { margin: 0 0 .5rem; }
+.issue-source { white-space: pre-wrap; overflow-wrap: anywhere; }
 .issue-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .issue-code { color: var(--accent); font-weight: 500; }

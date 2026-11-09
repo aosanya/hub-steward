@@ -255,6 +255,28 @@ describe("the list of issues", () => {
 });
 
 describe("one issue", () => {
+  it("opens on its title, code first, with its tags, the description without markdown marks and the source apart", async () => {
+    answering([
+      task("t9", "DEV-009 Create the party plane's tables", 1, {
+        tags: ["Docs"],
+        description: "Make **three** tables like `chapter`.\n- first\n- second\n\nRead from mwanachama-backend/todo.md\nAlso on the boards of: mwanachama-web",
+      }),
+    ]);
+    openAt(issuePath("t9"));
+    const heading = await screen.findByRole("heading", { level: 2, name: /DEV-009/ });
+    expect(heading).toHaveTextContent("DEV-009 Create the party plane's tables");
+    expect(heading.querySelector(".issue-code")?.textContent).toBe("DEV-009");
+    expect(within(screen.getByRole("banner")).getByRole("heading", { level: 1 })).toHaveTextContent("DEV-009");
+    expect(screen.getByRole("button", { name: "Docs" })).toBeInTheDocument();
+    const text = document.body.textContent ?? "";
+    expect(text).not.toContain("**");
+    expect(text).not.toContain("`");
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    expect(screen.getByRole("heading", { name: "Source" })).toBeInTheDocument();
+    expect(document.querySelector(".issue-body")?.textContent).not.toContain("Read from");
+    expect(document.querySelector(".issue-source")?.textContent).toContain("Also on the boards of: mwanachama-web");
+  });
+
   it("shows its tags, its backlog and step, its description and what it waits on", async () => {
     answering(board);
     openAt(issuePath("t2"));

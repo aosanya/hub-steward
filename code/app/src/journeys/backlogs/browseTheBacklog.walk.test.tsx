@@ -58,7 +58,7 @@ describe("journey 02, browse the backlog", () => {
   it("2. the back arrow returns to Backlogs", async () => {
     inFarmers("/backlogs/all");
     await screen.findByRole("button", { name: /^Write the manual/ });
-    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+    await userEvent.click(screen.getByRole("button", { name: "‹ Backlogs" }));
     expect(where()).toBe(`/a/${farmers.id}/backlogs`);
     expect(await screen.findByText("All issues")).toBeInTheDocument();
   });
