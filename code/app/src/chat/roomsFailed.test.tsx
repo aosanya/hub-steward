@@ -49,9 +49,11 @@ describe("chat tab when thread lists fail", () => {
     expect(screen.queryByText("Chat could not be loaded.")).toBeNull();
   });
 
-  it("says No rooms yet when the groups have no threads at all", async () => {
+  it("lists the groups even when none has a thread yet, and says No rooms yet only for a member of no group", async () => {
     answer(async () => ({ items: [] }));
     show();
-    expect(await screen.findByText("No rooms yet.")).toBeInTheDocument();
+    expect(await screen.findByText("Siaya farmers")).toBeInTheDocument();
+    expect(screen.getByText("Suppliers")).toBeInTheDocument();
+    expect(screen.queryByText("No rooms yet.")).toBeNull();
   });
 });

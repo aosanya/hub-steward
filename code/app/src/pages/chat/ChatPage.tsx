@@ -26,9 +26,9 @@ export function ChatPage({ client = mcpChatClient }: { client?: ChatClient }) {
               title={room.name}
               lead
               className="room"
-              meta={room.preview || room.threadName}
+              meta={room.preview || room.threadName || "No messages yet"}
               end={<RoomEnd room={room} />}
-              onClick={() => navigate(routes.roomThread.path({ roomId: room.id, threadId: room.threadId }))}
+              onClick={() => navigate(room.threadId === "" ? routes.roomThreads.path({ roomId: room.id }) : routes.roomThread.path({ roomId: room.id, threadId: room.threadId }))}
             />
           ))}
         </Rows>

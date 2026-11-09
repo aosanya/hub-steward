@@ -63,6 +63,7 @@ const openedThreadOf = (threads: any[]): any => {
 };
 
 const roomOf = (group: any, threads: any[], subject: string): Room => {
+  if (threads.length === 0) return { id: text(group?.id), name: text(group?.name), threadId: "", threadName: "", unread: 0, preview: "", lastAt: "" };
   const opened = openedThreadOf(threads);
   return {
     id: text(group?.id),
@@ -77,13 +78,12 @@ const roomOf = (group: any, threads: any[], subject: string): Room => {
 
 const newestFirst = (a: Room, b: Room) => {
   const [left, right] = [momentOfStamp(a.lastAt ?? ""), momentOfStamp(b.lastAt ?? "")];
-  return left < right ? 1 : left > right ? -1 : 0;
+  return left < right ? 1 : left > right ? -1 : a.name.localeCompare(b.name);
 };
 
 export const roomsOf = (groups: any[], threadsByGroup: any[][], subject = ""): Room[] =>
   groups
     .map((group, i) => ({ group, threads: threadsByGroup[i] ?? [] }))
-    .filter(({ threads }) => threads.length > 0)
     .map(({ group, threads }) => roomOf(group, threads, subject))
     .sort(newestFirst);
 
@@ -117,7 +117,8 @@ export const mcpChatClient: ChatClient = {
       loadSubject().catch(() => ""),
     ]);
     if (reads.length > 0 && reads.every((read) => read === null)) throw new Error("comm_chat_thread_list failed for every group");
-    return roomsOf(groups, reads.map((read) => read ?? []), subject);
+    const answered = groups.map((group, i) => ({ group, read: reads[i] })).filter(({ read }) => read !== null);
+    return roomsOf(answered.map(({ group }) => group), answered.map(({ read }) => read as any[]), subject);
   },
   async listMessages(roomId, threadId) {
     const [reply, subject] = await Promise.all([

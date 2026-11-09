@@ -4,7 +4,7 @@ import { useLoad } from "../../forms/useLoad";
 import { chatListPath, routes } from "../../routes";
 import { Button } from "../../ui/Button";
 import { Card } from "../../ui/Card";
-import { LoadFailed } from "../../ui/LoadState";
+import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { Chip } from "../../ui/Chip";
 import { Field } from "../../ui/Field";
 import { ListRow, Rows } from "../../ui/ListRow";
@@ -64,6 +64,7 @@ export function RoomThreadsPage({ client = mcpRoomsClient }: { client?: RoomsCli
   return (
     <Shell title="Threads" tabless onBack={() => navigate(general ? routes.roomThread.path({ roomId, threadId: general.id }) : chatListPath())}>
       {threads.state === "error" ? <LoadFailed words="The threads could not be loaded." /> : null}
+      {threads.state === "ready" && list.length === 0 ? <EmptyCard words="No messages yet." /> : null}
       {list.length > 0 ? (
         <Rows>
           {list.map((thread) => (
