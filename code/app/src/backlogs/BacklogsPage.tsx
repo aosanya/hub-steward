@@ -6,7 +6,6 @@ import { Button } from "../ui/Button";
 import { EmptyCard, LoadFailed } from "../ui/LoadState";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
-import { chatListPath } from "../routes";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { addBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
 import { mcpBacklogManageClient } from "../backlogManage/api";
@@ -41,10 +40,7 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
       ) : null}
       {backlogs.state === "ready" && issues === 0 ? (
         <EmptyCard words="No backlog yet">
-          <p>Ask in Chat to load the boards</p>
-          <Button kind="primary" onClick={() => navigate(chatListPath())}>
-            Open Chat
-          </Button>
+          <p>Run the loader on your laptop to load the boards</p>
         </EmptyCard>
       ) : null}
     </Shell>

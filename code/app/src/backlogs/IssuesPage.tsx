@@ -6,8 +6,6 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
-import { Button } from "../ui/Button";
-import { chatListPath } from "../routes";
 import "./backlogs.css";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { IssueRow } from "./IssueRow";
@@ -42,11 +40,7 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
       {issues.state === "loading" ? <LoadingLine /> : null}
       {issues.state === "error" ? <LoadFailed words="The issues could not be loaded." /> : null}
       {issues.state === "ready" && total === 0 ? (
-        <EmptyCard words="No issues yet. Ask in Chat to load the boards.">
-          <Button kind="primary" onClick={() => navigate(chatListPath())}>
-            Open Chat
-          </Button>
-        </EmptyCard>
+        <EmptyCard words="No issues yet. Run the loader on your laptop to load the boards." />
       ) : null}
       {chosen.length > 0 ? (
         <div className="chosen">

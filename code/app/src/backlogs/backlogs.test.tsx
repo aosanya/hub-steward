@@ -130,12 +130,12 @@ describe("the Backlogs screen", () => {
     expect(screen.queryByRole("button", { name: "Add a backlog" })).not.toBeInTheDocument();
   });
 
-  it("shows the empty card with an Open Chat button before the first load", async () => {
+  it("shows the empty card, with no Open Chat button, before the first load", async () => {
     answering([]);
     openAt("/a/hub-1/backlogs");
     expect(await screen.findByText("No backlog yet")).toBeInTheDocument();
-    expect(screen.getByText("Ask in Chat to load the boards")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Open Chat" })).toBeInTheDocument();
+    expect(screen.getByText("Run the loader on your laptop to load the boards")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Open Chat" })).not.toBeInTheDocument();
   });
 
   it("says so when the backlogs cannot be read", async () => {
@@ -188,7 +188,7 @@ describe("the list of issues", () => {
   it("shows the empty card when nothing is loaded", async () => {
     answering([]);
     openAt("/a/hub-1/backlogs/all");
-    expect(await screen.findByText("No issues yet. Ask in Chat to load the boards.")).toBeInTheDocument();
+    expect(await screen.findByText("No issues yet. Run the loader on your laptop to load the boards.")).toBeInTheDocument();
   });
 
   it("has a List | Board switch on a backlog's list that keeps the chosen tags", async () => {
