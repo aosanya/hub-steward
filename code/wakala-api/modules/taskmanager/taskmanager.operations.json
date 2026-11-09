@@ -20,14 +20,16 @@
       "method": "GET", "path": "/overdue-tasks", "call": "ListOverdueTasks", "action": "taskmanager.task.list_overdue",
       "title": "List overdue tasks",
       "description": "List the open tasks whose due date passed more than the agency's overdue_grace_hours ago, the longest overdue first, each with how many whole hours it is overdue. as_of reads the board at another instant (RFC 3339); a scheduled routine opens follow-up work from this list.",
-      "args": [{"from": "query", "whole": true}],
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
       "returns": [{"body": true}]
     },
     "get_task": {
-      "method": "GET", "path": "/tasks/{taskID}", "call": "GetTask", "action": "taskmanager.task.read",
+      "method": "GET", "path": "/tasks/{taskID}", "call": "GetTaskFor", "action": "taskmanager.task.read",
       "title": "Read task",
       "description": "Read one task, its labels resolved.",
-      "args": [{"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The task to read."}],
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The task to read."}],
       "returns": [{"body": true}]
     },
     "update_task": {
@@ -194,10 +196,11 @@
       "returns": [{"body": true}]
     },
     "get_task_by_name": {
-      "method": "GET", "path": "/projects/{projectName}/tasks/by-name/{taskName}", "call": "GetTaskByName", "action": "taskmanager.task.read_by_name",
+      "method": "GET", "path": "/projects/{projectName}/tasks/by-name/{taskName}", "call": "GetTaskByNameFor", "action": "taskmanager.task.read_by_name",
       "title": "Read task by name",
       "description": "Read one task by the project-scoped name a person quotes, such as MVP-001.",
-      "args": [{"from": "path", "as": "projectName", "description": "The project the name is scoped to."},
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "projectName", "description": "The project the name is scoped to."},
                {"from": "path", "as": "taskName", "description": "The task's project-scoped name."}],
       "returns": [{"body": true}]
     },
@@ -240,11 +243,12 @@
       "returns": [{"body": true}]
     },
     "list_task_assignments": {
-      "method": "GET", "path": "/tasks/{taskID}/assignments", "call": "ListTaskAssignments", "action": "taskmanager.task.list_assignments",
+      "method": "GET", "path": "/tasks/{taskID}/assignments", "call": "ListTaskAssignmentsFor", "action": "taskmanager.task.list_assignments",
       "status": 200,
       "title": "List task assignments",
       "description": "Every stretch one task was held, oldest first, including the ones that ended when it was unassigned or handed on.",
-      "args": [{"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The task whose history to read."}],
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The task whose history to read."}],
       "returns": [{"body": true}]
     },
     "unblock_dependents": {
@@ -322,10 +326,11 @@
       "returns": [{"body": true}]
     },
     "list_tasks_in_project": {
-      "method": "GET", "path": "/projects/{projectID}/tasks", "call": "ListTasksInProject", "action": "taskmanager.project.list_tasks",
+      "method": "GET", "path": "/projects/{projectID}/tasks", "call": "ListTasksInProjectFor", "action": "taskmanager.project.list_tasks",
       "title": "List a project's tasks",
       "description": "List the tasks that are members of one project.",
-      "args": [{"from": "path", "as": "projectID", "refers": "taskmanager.project", "description": "The project whose tasks to list."}],
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "projectID", "refers": "taskmanager.project", "description": "The project whose tasks to list."}],
       "returns": [{"body": true}]
     },
     "add_task_to_project": {
@@ -373,10 +378,11 @@
       "returns": [{"body": true}]
     },
     "traverse_relationships": {
-      "method": "GET", "path": "/relationships/traverse", "call": "TraverseRelationships", "action": "taskmanager.relationship.traverse",
+      "method": "GET", "path": "/relationships/traverse", "call": "TraverseRelationshipsFor", "action": "taskmanager.relationship.traverse",
       "title": "Traverse edges",
       "description": "List the edges of one label touching one thing, in the direction asked for. Anything other than inbound reads as outbound.",
-      "args": [{"from": "query", "as": "vertex_id", "required": true, "description": "The thing to traverse from."},
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "query", "as": "vertex_id", "required": true, "description": "The thing to traverse from."},
                {"from": "query", "as": "label", "required": true, "description": "The edge label to follow."},
                {"from": "query", "as": "direction", "description": "inbound for edges pointing at it, outbound for edges leading away."}],
       "returns": [{"body": true}]
@@ -605,10 +611,11 @@
       "returns": [{"body": true}]
     },
     "list_tasks_for_run": {
-      "method": "GET", "path": "/workflow-runs/{runID}/tasks", "call": "ListTasksForRun", "action": "taskmanager.workflow_run.list_tasks",
+      "method": "GET", "path": "/workflow-runs/{runID}/tasks", "call": "ListTasksForRunFor", "action": "taskmanager.workflow_run.list_tasks",
       "title": "List a run's tasks",
       "description": "List the tasks belonging to one run.",
-      "args": [{"from": "path", "as": "runID", "refers": "taskmanager.workflow_run", "description": "The run whose tasks to list."}],
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "runID", "refers": "taskmanager.workflow_run", "description": "The run whose tasks to list."}],
       "returns": [{"body": true}]
     },
     "link_task_to_run": {
@@ -788,10 +795,11 @@
       "returns": [{"body": true}]
     },
     "list_case_tasks": {
-      "method": "GET", "path": "/cases/{caseID}/tasks", "call": "ListCaseTasks", "action": "taskmanager.case.list_tasks",
+      "method": "GET", "path": "/cases/{caseID}/tasks", "call": "ListCaseTasksFor", "action": "taskmanager.case.list_tasks",
       "title": "List case tasks",
       "description": "List the tasks worked for one case.",
-      "args": [{"from": "path", "as": "caseID", "refers": "taskmanager.case", "description": "The case."}],
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "caseID", "refers": "taskmanager.case", "description": "The case."}],
       "returns": [{"body": true}]
     },
     "end_case": {
