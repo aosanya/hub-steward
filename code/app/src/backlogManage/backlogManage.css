@@ -1,0 +1,2 @@
+.icb { display: grid; place-items: center; flex: none; width: 2.75rem; height: 2.75rem; padding: 0; border: 0; border-radius: var(--r-pill); background: transparent; color: var(--accent); }
+.icb:disabled { color: var(--ink-soft); opacity: .4; }
