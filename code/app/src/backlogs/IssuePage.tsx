@@ -31,7 +31,7 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
       {issue.state === "error" ? <LoadFailed words="This issue could not be loaded." /> : null}
       {ready && parts ? (
         <>
-          <h2 className="headline">
+          <h2 className="issue-heading">
             {parts.code ? <span className="issue-code">{parts.code}</span> : null}
             {parts.code ? " " : null}
             {parts.rest}
