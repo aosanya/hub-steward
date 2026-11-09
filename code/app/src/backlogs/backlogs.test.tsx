@@ -285,39 +285,7 @@ describe("talking to the hub", () => {
     expect(lists).toEqual([{ backlog: "backlog", limit: listCap }, { limit: listCap }]);
   });
 
-  const cappedHub = (total: number) => {
-    const all = Array.from({ length: total }, (_, at) => ({
-      id: `t${at}`,
-      title: `Issue ${at}`,
-      rank: at + 1,
-      status: "pending",
-      state: "To do",
-      step: at % 5 < 3 ? "to-do" : "doing",
-      priority: ["critical", "high", "medium", "low"][at % 4],
-      project_name: "hub-steward",
-      tags: at % 100 === 0 ? ["Docs"] : [],
-    }));
-    return vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string, args: Record<string, unknown> = {}) => {
-      if (tool === taskTools.backlogs) {
-        const steps = ["to-do", "doing", "waiting", "done", "cancelled"].map((id) => ({ id, name: id, issues: all.filter((one) => one.step === id).length }));
-        return { items: [{ id: "backlog", name: "Backlog", issues: all.length, steps }] };
-      }
-      if (tool !== taskTools.list) return { items: [] };
-      const rows = all.filter((one) => (!args.step || one.step === args.step) && (!args.priority || one.priority === args.priority));
-      return { items: rows.slice(0, Math.min(Number(args.limit ?? 500), 500)) };
-    }) as never);
-  };
-
-  it("loads every issue past the hub's 500-row page by splitting on step and priority", async () => {
-    const call = cappedHub(1400);
-    const issues = await mcpBacklogsClient.issues(allIssuesId);
-    expect(issues).toHaveLength(1400);
-    expect(new Set(issues.map((one) => one.id)).size).toBe(1400);
-    expect(call.mock.calls.filter((one) => one[1] === taskTools.list).length).toBeLessThanOrEqual(12);
-    expect(issues.map((one) => one.rank)).toEqual([...issues.map((one) => one.rank)].sort((a, b) => a - b));
-  });
-
-  const noStepHub = (total: number, atNoStep: number) => {
+  const pagedHub = (total: number, atNoStep = 0) => {
     const all = Array.from({ length: total }, (_, at) => ({
       id: `t${at}`,
       title: `Issue ${at}`,
@@ -325,10 +293,10 @@ describe("talking to the hub", () => {
       status: "pending",
       state: "To do",
       backlog: "backlog",
-      step: at < atNoStep ? "" : at % 2 === 0 ? "to-do" : "doing",
+      step: at < atNoStep ? "" : at % 5 < 3 ? "to-do" : "doing",
       priority: ["critical", "high", "medium", "low"][at % 4],
       project_name: "hub-steward",
-      tags: [],
+      tags: at % 100 === 0 ? ["Docs"] : [],
     }));
     return vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string, args: Record<string, unknown> = {}) => {
       if (tool === taskTools.backlogs) {
@@ -336,35 +304,55 @@ describe("talking to the hub", () => {
         return { items: [{ id: "backlog", name: "Backlog", issues: all.length, steps }] };
       }
       if (tool !== taskTools.list) return { items: [] };
-      const rows = all.filter((one) => (!args.step || one.step === args.step) && (!args.priority || one.priority === args.priority));
-      return { items: rows.slice(0, Math.min(Number(args.limit ?? 500), 500)) };
+      const from = Number(args.offset ?? 0);
+      return { items: all.slice(from, from + Math.min(Number(args.limit ?? 500), 500)) };
     }) as never);
   };
 
-  it("loads the issues at no step too when a backlog holds more than a page", async () => {
-    const call = noStepHub(1400, 100);
-    const issues = await mcpBacklogsClient.issues("backlog");
+  const listCalls = (call: ReturnType<typeof pagedHub>) => call.mock.calls.filter((one) => one[1] === taskTools.list).map((one) => one[2] as Record<string, unknown>);
+
+  it("loads every issue past the hub's 500-row page by asking for the next pages", async () => {
+    const call = pagedHub(1400);
+    const issues = await mcpBacklogsClient.issues(allIssuesId);
     expect(issues).toHaveLength(1400);
     expect(new Set(issues.map((one) => one.id)).size).toBe(1400);
-    expect(issues.filter((one) => one.step === "")).toHaveLength(100);
-    expect(call.mock.calls.filter((one) => one[1] === taskTools.list).length).toBeLessThanOrEqual(16);
+    expect(listCalls(call).map((one) => one.offset)).toEqual([undefined, 500, 1000]);
+    expect(issues.map((one) => one.rank)).toEqual([...issues.map((one) => one.rank)].sort((a, b) => a - b));
   });
 
-  it("splits by priority only when the backlog holds issues beyond its steps", async () => {
-    const call = noStepHub(1400, 0);
-    expect(await mcpBacklogsClient.issues("backlog")).toHaveLength(1400);
-    const asked = call.mock.calls.filter((one) => one[1] === taskTools.list).map((one) => one[2] as Record<string, unknown>);
-    expect(asked.some((one) => one.priority && !one.step)).toBe(false);
+  it("loads the issues at no step too, in the same pages", async () => {
+    const call = pagedHub(1400, 100);
+    const issues = await mcpBacklogsClient.issues("backlog");
+    expect(issues).toHaveLength(1400);
+    expect(issues.filter((one) => one.step === "")).toHaveLength(100);
+    expect(listCalls(call)).toHaveLength(3);
   });
 
   it("asks once when everything fits in one page", async () => {
-    const call = cappedHub(300);
+    const call = pagedHub(300);
     expect(await mcpBacklogsClient.issues("backlog")).toHaveLength(300);
-    expect(call.mock.calls.filter((one) => one[1] === taskTools.list)).toHaveLength(1);
+    expect(listCalls(call)).toHaveLength(1);
+  });
+
+  it("stops when a hub that ignores offset sends the same page again", async () => {
+    const first = Array.from({ length: 500 }, (_, at) => ({ id: `t${at}`, title: `Issue ${at}`, rank: at + 1, status: "pending", backlog: "backlog", tags: [] }));
+    const call = vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string) => (tool === taskTools.backlogs ? { items: [] } : { items: first })) as never);
+    expect(await mcpBacklogsClient.issues(allIssuesId)).toHaveLength(500);
+    expect(call.mock.calls.filter((one) => one[1] === taskTools.list)).toHaveLength(2);
+  });
+
+  it("fails the whole list when one page fails", async () => {
+    pagedHub(1400);
+    const inner = vi.mocked(mcp.callTool).getMockImplementation() as (...args: any[]) => Promise<unknown>;
+    vi.spyOn(mcp, "callTool").mockImplementation((async (hub: string, tool: string, args: Record<string, unknown> = {}) => {
+      if (tool === taskTools.list && args.offset === 500) throw new Error("page failed");
+      return inner(hub, tool, args);
+    }) as never);
+    await expect(mcpBacklogsClient.issues(allIssuesId)).rejects.toThrow("page failed");
   });
 
   it("filters by a tag across the whole set, not the first 500", async () => {
-    cappedHub(1400);
+    pagedHub(1400);
     openAt("/a/hub-1/backlogs/all?tag=Docs");
     expect(await screen.findByText("14 issues of 1400")).toBeInTheDocument();
   });

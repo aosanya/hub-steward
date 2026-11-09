@@ -100,44 +100,26 @@ export const stepsOf = (reply: any): string[] => itemsOf(reply).map((raw) => tex
 
 const hubBacklogs = async () => hubBacklogsOf(await callTool("", taskTools.backlogs, {}));
 
-const priorities = ["critical", "high", "medium", "low"];
-
 type Query = Record<string, string>;
 
-const fetchPage = async (query: Query) => itemsOf(await callTool("", taskTools.list, { ...query, limit: listCap }));
+const pageOf = async (query: Query, offset: number) =>
+  itemsOf(await callTool("", taskTools.list, offset === 0 ? { ...query, limit: listCap } : { ...query, limit: listCap, offset }));
 
-const worth = (steps: HubStep[]) => (steps.some((step) => step.issues > 0) ? steps.filter((step) => step.issues > 0) : steps);
-
-const byPriority = (query: Query): Query[] => priorities.map((priority) => ({ ...query, priority }));
-
-const byStep = (query: Query, backlog: HubBacklog | undefined): Query[] => {
-  const parts = worth(backlog?.steps ?? []).map((step) => ({ ...query, step: step.id || step.name }));
-  const atNoStep = (backlog?.issues ?? 0) - (backlog?.steps ?? []).reduce((sum, step) => sum + step.issues, 0);
-  return atNoStep > 0 && !query.priority ? [...parts, ...byPriority(query)] : parts;
-};
-
-const splits = (query: Query, hub: HubBacklog[]): Query[] => {
-  if (!query.backlog && hub.length > 1) return hub.map((one) => ({ ...query, backlog: one.id }));
-  if (!query.backlog) return splits({ ...query, backlog: hub[0]?.id ?? defaultBacklogId }, hub);
-  if (!query.step) return byStep(query, hub.find((one) => one.id === query.backlog));
-  if (!query.priority) return byPriority(query);
-  return [];
-};
-
-const fetchAll = async (query: Query, hub: HubBacklog[]): Promise<any[]> => {
-  const page = await fetchPage(query);
-  if (page.length < listCap) return page;
-  const parts = splits(query, hub);
-  if (parts.length === 0) return page;
-  const rest = await Promise.all(parts.map((part) => fetchAll(part, hub)));
-  return rest.flat();
+const fetchAll = async (query: Query): Promise<any[]> => {
+  const rows: any[] = [];
+  const seen = new Set<string>();
+  for (let offset = 0; ; offset += listCap) {
+    const page = await pageOf(query, offset);
+    const fresh = page.filter((raw) => !seen.has(text(raw?.id)));
+    fresh.forEach((raw) => seen.add(text(raw?.id)));
+    rows.push(...fresh);
+    if (page.length < listCap || fresh.length === 0) return rows;
+  }
 };
 
 const issueList = async (backlogId: string, hub: HubBacklog[]) => {
-  const rows = await fetchAll(backlogId === allIssuesId ? {} : { backlog: backlogId }, hub);
-  const seen = new Set<string>();
-  const issues = rows.map((raw) => issueOf(raw, hub)).filter((issue) => issue.id !== "" && !seen.has(issue.id) && seen.add(issue.id));
-  return inRankOrder(issues);
+  const rows = await fetchAll(backlogId === allIssuesId ? {} : { backlog: backlogId });
+  return inRankOrder(rows.map((raw) => issueOf(raw, hub)).filter((issue) => issue.id !== ""));
 };
 
 export const mcpBacklogsClient: BacklogsClient = {
