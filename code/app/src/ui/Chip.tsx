@@ -2,6 +2,15 @@ import type { ReactNode } from "react";
 
 export type ChipTone = "accent" | "info" | "success" | "danger";
 
-export function Chip({ children, tone }: { children: ReactNode; tone?: ChipTone }) {
-  return <span className={tone ? `chip ${tone}` : "chip"}>{children}</span>;
+type Props = { children: ReactNode; tone?: ChipTone; onClick?: () => void; pressed?: boolean };
+
+export function Chip({ children, tone, onClick, pressed }: Props) {
+  const className = tone ? `chip ${tone}` : "chip";
+  return onClick ? (
+    <button type="button" className={className} aria-pressed={pressed ?? false} onClick={onClick}>
+      {children}
+    </button>
+  ) : (
+    <span className={className}>{children}</span>
+  );
 }
