@@ -28,6 +28,7 @@ func managerWithTwoBacklogs(t *testing.T) mwanachamataskmanager.TaskManager {
 	t.Helper()
 	mgr := newTestManager(t)
 	mgr.UseGroups(groupsOfPeople())
+	mgr.UseGroupExists(knownGroups(ownerGroup, devGroup, docsGroup))
 	if _, err := mgr.CreateBacklog(context.Background(), "Software", []string{"Open", "Shipped"}); err != nil {
 		t.Fatal(err)
 	}
@@ -102,6 +103,7 @@ func TestBacklogAccess_AGroupSeesOnlyTheBacklogsItWasGiven(t *testing.T) {
 func TestBacklogAccess_GivingAgainChangesTheLevelAndTakingRemovesIt(t *testing.T) {
 	mgr := managerWithTwoBacklogs(t)
 	ctx := context.Background()
+	mgr.SetBacklogOwnerGroup(ctx, ownerGroup)
 	mgr.GiveBacklogAccess(ctx, "software", devGroup, "see")
 	got, err := mgr.GiveBacklogAccess(ctx, "software", devGroup, "move")
 	if err != nil {
@@ -122,6 +124,7 @@ func TestBacklogAccess_GivingAgainChangesTheLevelAndTakingRemovesIt(t *testing.T
 func TestBacklogAccess_RefusesAnUnknownLevelBacklogOrEmptyGroup(t *testing.T) {
 	mgr := managerWithTwoBacklogs(t)
 	ctx := context.Background()
+	mgr.SetBacklogOwnerGroup(ctx, ownerGroup)
 	if _, err := mgr.GiveBacklogAccess(ctx, "software", devGroup, "edit"); !errors.Is(err, mwanachamataskmanager.ErrInvalidBacklog) {
 		t.Fatalf("level: %v", err)
 	}
@@ -173,6 +176,7 @@ func TestBacklogAccess_CallsWithoutAPersonAreNotNarrowed(t *testing.T) {
 func TestBacklogAccess_DeletingABacklogDropsItsGrants(t *testing.T) {
 	mgr := managerWithTwoBacklogs(t)
 	ctx := context.Background()
+	mgr.SetBacklogOwnerGroup(ctx, ownerGroup)
 	mgr.GiveBacklogAccess(ctx, "software", devGroup, "move")
 	if err := mgr.DeleteBacklog(ctx, "software"); err != nil {
 		t.Fatal(err)

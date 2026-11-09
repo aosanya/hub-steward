@@ -71,6 +71,14 @@ type TaskManager interface {
 	TakeBacklogAccess(ctx context.Context, backlogID, groupID string) (BacklogAccess, error)
 	SetBacklogOwnerGroup(ctx context.Context, groupID string) error
 	UseGroups(g Groups)
+	UseGroupExists(g GroupExists)
+	CreateTaskAs(ctx context.Context, requesterID string, task Task) (Task, error)
+	UpdateTaskAs(ctx context.Context, requesterID string, task Task) (Task, error)
+	MoveTaskToStateAs(ctx context.Context, requesterID, taskID, state string) (Task, error)
+	PlaceTaskAs(ctx context.Context, requesterID, taskID, afterID, beforeID string) (Task, error)
+	DeleteTaskAs(ctx context.Context, requesterID, taskID string) error
+	CreateRelationshipAs(ctx context.Context, requesterID string, rel Relationship) (Relationship, error)
+	DeleteRelationshipAs(ctx context.Context, requesterID, fromID, toID, label string) error
 
 	PlaceTask(ctx context.Context, taskID, afterID, beforeID string) (Task, error)
 
@@ -479,6 +487,7 @@ type taskManager struct {
 	spec         *spec.Spec
 	overdueGrace time.Duration
 	groups       Groups
+	groupExists  GroupExists
 }
 
 func NewTaskManager(db *gorm.DB, s *spec.Spec, pub events.Publisher) (TaskManager, error) {

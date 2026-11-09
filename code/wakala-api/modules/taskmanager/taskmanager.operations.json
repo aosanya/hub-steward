@@ -1,11 +1,12 @@
 {
   "operations": {
     "create_task": {
-      "method": "POST", "path": "/tasks", "call": "CreateTask", "action": "taskmanager.task.create",
+      "method": "POST", "path": "/tasks", "call": "CreateTaskAs", "action": "taskmanager.task.create",
       "status": 201,
       "title": "Create task",
-      "description": "Create one task. It lands pending whatever status the caller asked for, and its id is server-minted.",
-      "args": [{"from": "body", "whole": true}],
+      "description": "Create one task. It lands pending whatever status the caller asked for, and its id is server-minted. A person needs Can move on the backlog it lands in (the first backlog when none is named).",
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is writing, from the session; a person needs Can move on the backlog the issue is in."},
+               {"from": "body", "whole": true}],
       "returns": [{"body": true}]
     },
     "list_tasks": {
@@ -33,10 +34,11 @@
       "returns": [{"body": true}]
     },
     "update_task": {
-      "method": "PUT", "path": "/tasks/{taskID}", "call": "UpdateTask", "action": "taskmanager.task.update",
+      "method": "PUT", "path": "/tasks/{taskID}", "call": "UpdateTaskAs", "action": "taskmanager.task.update",
       "title": "Update task",
       "description": "Replace the mutable fields of one task. A status change is checked against the lifecycle, and moving from pending to in_progress is refused while anything still blocks it.",
-      "args": [{"from": "body", "whole": true},
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is writing, from the session; a person needs Can move on the backlog the issue is in."},
+               {"from": "body", "whole": true},
                {"from": "path", "as": "taskID", "refers": "taskmanager.task", "into": "ID", "description": "The task to update."}],
       "returns": [{"body": true}]
     },
@@ -47,10 +49,11 @@
       "returns": [{"body": true}]
     },
     "move_task_to_state": {
-      "method": "POST", "path": "/tasks/{taskID}/move", "call": "MoveTaskToState", "action": "taskmanager.task.move",
+      "method": "POST", "path": "/tasks/{taskID}/move", "call": "MoveTaskToStateAs", "action": "taskmanager.task.move",
       "title": "Move task to state",
       "description": "Move one task into a named state. The task walks the shortest legal path of lifecycle statuses into that state; a task already in it is left alone, and a state it cannot reach is refused with the reason.",
-      "args": [{"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The task to move."},
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is writing, from the session; a person needs Can move on the backlog the issue is in."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The task to move."},
                {"from": "body", "as": "state", "required": true, "description": "The name of the state to move it into, as the agency's task states list it."}],
       "returns": [{"body": true}]
     },
@@ -171,20 +174,22 @@
       "returns": [{"body": true}]
     },
     "place_task": {
-      "method": "POST", "path": "/tasks/{taskID}/place", "call": "PlaceTask", "action": "taskmanager.task.place",
+      "method": "POST", "path": "/tasks/{taskID}/place", "call": "PlaceTaskAs", "action": "taskmanager.task.place",
       "title": "Place task",
       "description": "Put one task at a chosen place in the board's order: directly after the task named in after, directly before the one named in before, or between them when both are given. Name at least one; the task is refused as its own neighbour, and after must sit above before.",
-      "args": [{"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The task to place."},
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is writing, from the session; a person needs Can move on the backlog the issue is in."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The task to place."},
                {"from": "body", "as": "after", "description": "The task it goes directly below."},
                {"from": "body", "as": "before", "description": "The task it goes directly above."}],
       "returns": [{"body": true}]
     },
     "delete_task": {
-      "method": "DELETE", "path": "/tasks/{taskID}", "call": "DeleteTask", "action": "taskmanager.task.delete",
+      "method": "DELETE", "path": "/tasks/{taskID}", "call": "DeleteTaskAs", "action": "taskmanager.task.delete",
       "status": 204,
       "title": "Delete task",
       "description": "Soft-delete one task. It stops being readable and its row stays.",
-      "args": [{"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The task to delete."}],
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is writing, from the session; a person needs Can move on the backlog the issue is in."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The task to delete."}],
       "returns": [{"body": true}]
     },
     "unblock_task": {
@@ -360,19 +365,21 @@
     },
 
     "create_relationship": {
-      "method": "POST", "path": "/relationships", "call": "CreateRelationship", "action": "taskmanager.relationship.create",
+      "method": "POST", "path": "/relationships", "call": "CreateRelationshipAs", "action": "taskmanager.relationship.create",
       "status": 201,
       "title": "Create edge",
-      "description": "Write one directed edge between two things. Re-writing an edge that already exists returns it unchanged rather than writing a second.",
-      "args": [{"from": "body", "whole": true}],
+      "description": "Write one directed edge between two things. Re-writing an edge that already exists returns it unchanged rather than writing a second. A person needs Can move on the backlog of the issue the edge starts from and Can see on the backlog of the issue it points to.",
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is writing, from the session; a person needs Can move on the backlog the issue is in."},
+               {"from": "body", "whole": true}],
       "returns": [{"body": true}]
     },
     "delete_relationship": {
-      "method": "DELETE", "path": "/relationships", "call": "DeleteRelationship", "action": "taskmanager.relationship.delete",
+      "method": "DELETE", "path": "/relationships", "call": "DeleteRelationshipAs", "action": "taskmanager.relationship.delete",
       "status": 204,
       "title": "Delete edge",
       "description": "Remove the one edge identified by its two ends and its label.",
-      "args": [{"from": "query", "as": "from_id", "required": true, "description": "The edge's source."},
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is writing, from the session; a person needs Can move on the backlog the issue is in."},
+               {"from": "query", "as": "from_id", "required": true, "description": "The edge's source."},
                {"from": "query", "as": "to_id", "required": true, "description": "The edge's target."},
                {"from": "query", "as": "label", "required": true, "description": "The edge's label."}],
       "returns": [{"body": true}]
@@ -861,6 +868,7 @@
     "ErrInvalidBacklog": 400,
     "ErrBacklogHoldsIssues": 409,
     "ErrBacklogForbidden": 403,
+    "ErrOwnerGroupNotSet": 409,
     "ErrNoPathToState": 409,
     "ErrInvalidPlacement": 400,
     "ErrCaseNotFound": 404,

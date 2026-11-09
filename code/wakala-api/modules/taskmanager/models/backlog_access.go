@@ -22,6 +22,7 @@ type BacklogGrant struct {
 type GroupAccess struct {
 	GroupID string      `json:"group_id"`
 	Level   AccessLevel `json:"level"`
+	Gone    bool        `json:"gone,omitempty"`
 }
 
 type BacklogAccess struct {

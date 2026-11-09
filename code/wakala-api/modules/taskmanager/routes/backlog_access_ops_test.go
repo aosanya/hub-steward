@@ -55,6 +55,13 @@ func newAccessHub(t *testing.T, groupsOf map[string][]string) *accessHub {
 		t.Fatal(err)
 	}
 	mgr.UseGroups(func(_ context.Context, callerID string) ([]string, error) { return groupsOf[callerID], nil })
+	known := map[string]bool{"owners": true, "contributors": true, "g-owner": true, "g-dev": true}
+	for _, held := range groupsOf {
+		for _, g := range held {
+			known[g] = true
+		}
+	}
+	mgr.UseGroupExists(func(_ context.Context, groupID string) (bool, error) { return known[groupID], nil })
 	built, err := routes.BuildFor(mgr, routes.Mount{Caller: func(ctx context.Context) string {
 		id, _ := ctx.Value(callerKey{}).(string)
 		return id
@@ -130,6 +137,9 @@ func TestAccessOperationsAreDeclaredWithTheirActions(t *testing.T) {
 
 func TestAGroupIsGivenAndLosesAccessThroughTheRoutes(t *testing.T) {
 	h := newAccessHub(t, nil)
+	h.expect(http.StatusConflict, "", "PUT", "/backlogs/backlog/access/contributors", map[string]string{"level": "see"})
+	h.expect(http.StatusBadRequest, "", "PUT", "/backlog-owner-group", map[string]string{"group_id": "g-nowhere"})
+	h.expect(http.StatusNoContent, "", "PUT", "/backlog-owner-group", map[string]string{"group_id": "owners"})
 	h.expect(http.StatusOK, "", "PUT", "/backlogs/backlog/access/contributors", map[string]string{"level": "see"})
 	access := h.expect(http.StatusOK, "", "GET", "/backlogs/backlog/access", nil)
 	if groups := access["groups"].([]any); len(groups) != 1 || groups[0].(map[string]any)["level"] != "see" {

@@ -15,9 +15,10 @@ func (m *taskManager) narrowToVisible(ctx context.Context, q *gorm.DB, requester
 	if err != nil {
 		return nil, err
 	}
-	var ids []string
+	var ids, existing []string
 	unplacedVisible := false
 	for i, b := range backlogs {
+		existing = append(existing, b.ID)
 		if !visible.Sees(b.ID) {
 			continue
 		}
@@ -28,7 +29,7 @@ func (m *taskManager) narrowToVisible(ctx context.Context, q *gorm.DB, requester
 	case len(ids) == 0:
 		return q.Where("1 = 0"), nil
 	case unplacedVisible:
-		return q.Where("(backlog IN ? OR backlog = '' OR backlog IS NULL)", ids), nil
+		return q.Where("(backlog IN ? OR backlog = '' OR backlog IS NULL OR backlog NOT IN ?)", ids, existing), nil
 	}
 	return q.Where("backlog IN ?", ids), nil
 }
