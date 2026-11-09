@@ -57,7 +57,19 @@ describe("every place that shows an issue draws it through the one shared row", 
     at("/a/hub-1/backlogs/issue/1", <IssuePage client={client} />, "/a/:agencyId/backlogs/issue/:issueId");
     await screen.findByText("Waits on");
     expect(document.querySelectorAll(".issue-row.static")).toHaveLength(1);
-    expect(document.querySelectorAll(".issue-list .issue-row")).toHaveLength(2);
+    expect(document.querySelectorAll(".card.flush .rows .issue-row")).toHaveLength(2);
     expect(screen.getByText("Waited on by")).toBeInTheDocument();
+  });
+
+  it("the top of an issue's page and its description are one card, and the row stays static", async () => {
+    at("/a/hub-1/backlogs/issue/1", <IssuePage client={client} />, "/a/:agencyId/backlogs/issue/:issueId");
+    await screen.findByText("Waits on");
+    const row = document.querySelector(".issue-row.static") as HTMLElement;
+    const card = row.closest("section") as HTMLElement;
+    expect(card).toHaveClass("card");
+    expect(card.querySelector(".issue-description")).toHaveTextContent("Text");
+    expect(document.querySelectorAll("section.card")).toHaveLength(3);
+    expect(row.closest("a, button")).toBeNull();
+    expect(row.querySelector("a, button")).toBeNull();
   });
 });

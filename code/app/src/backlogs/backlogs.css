@@ -10,3 +10,4 @@
 .issue-source { white-space: pre-wrap; overflow-wrap: anywhere; }
 .issue-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .issue-code { color: var(--accent); font-weight: 500; }
+.issue-description { padding: 1rem; border-top: 1px solid var(--line); }

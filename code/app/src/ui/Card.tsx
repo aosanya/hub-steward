@@ -7,12 +7,13 @@ type Props = {
   title?: string;
   collapsible?: boolean;
   defaultOpen?: boolean;
+  flush?: boolean;
 };
 
-export function Card({ children, empty = false, title, collapsible = false, defaultOpen = true }: Props) {
+export function Card({ children, empty = false, title, collapsible = false, defaultOpen = true, flush = false }: Props) {
   const [open, setOpen] = useState(defaultOpen);
   const bodyId = useId();
-  const className = empty ? "card empty" : "card";
+  const className = ["card", empty ? "empty" : "", flush ? "flush" : ""].filter(Boolean).join(" ");
   if (title === undefined) return <section className={className}>{children}</section>;
   const shown = !collapsible || open;
   return (

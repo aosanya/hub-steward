@@ -76,4 +76,9 @@ describe("Card", () => {
     expect(id).toBeTruthy();
     expect(document.getElementById(id!)).toHaveTextContent("Body");
   });
+
+  it("draws a flush card with no inner padding so rows can run edge to edge under the header", () => {
+    const { container } = render(<Card title="Rows" collapsible flush>Body</Card>);
+    expect(container.querySelector("section")).toHaveClass("card", "flush");
+  });
 });

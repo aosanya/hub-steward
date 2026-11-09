@@ -3,3 +3,7 @@
 .card-chevron { color: var(--ink-soft); font-size: 1.125rem; line-height: 1; transition: transform .15s; }
 .card-head.closed .card-chevron { transform: rotate(-90deg); }
 .card-body { display: flex; flex-direction: column; gap: .75rem; }
+.card.flush { padding: 0; gap: 0; }
+.card.flush > .card-head { padding: 1rem; }
+.card.flush .rows { border: 0; border-radius: 0; box-shadow: none; background: transparent; border-top: 1px solid var(--line); }
+.card.flush > .row:first-child { border-top: 0; }

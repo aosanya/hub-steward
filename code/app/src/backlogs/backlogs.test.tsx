@@ -180,7 +180,7 @@ describe("the list of issues", () => {
     expect(pill.tagName).toBe("SPAN");
     await userEvent.click(pill);
     expect(where()).toBe(issuePath("t2"));
-    const waited = (document.querySelector(".issue-list .issue-row") as HTMLElement).querySelector(".chip") as HTMLElement;
+    const waited = (document.querySelector(".card.flush .rows .issue-row") as HTMLElement).querySelector(".chip") as HTMLElement;
     expect(waited.tagName).toBe("SPAN");
     await userEvent.click(waited);
     await waitFor(() => expect(where()).toBe(issuePath("t1")));
@@ -316,7 +316,7 @@ describe("one issue", () => {
     const top = document.querySelector(".issue-row.static") as HTMLElement;
     expect(top).toHaveTextContent("DEV-009 Create the party plane's tables");
     expect(top.querySelector(".issue-code")?.textContent).toBe("DEV-009");
-    expect(top.closest(".rows")).not.toBeNull();
+    expect(top.closest(".card")).not.toBeNull();
     expect(within(top).queryByRole("link")).toBeNull();
     expect(top.querySelector(".open")?.tagName).toBe("SPAN");
     expect(Array.from(top.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(expect.arrayContaining(["Docs", "Backlog · To do"]));
@@ -329,7 +329,7 @@ describe("one issue", () => {
     expect(text).not.toContain("**");
     expect(text).not.toContain("`");
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
-    expect(screen.getByRole("heading", { name: "Source" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Source" })).toHaveAttribute("aria-expanded", "true");
     expect(document.querySelector(".issue-body")?.textContent).not.toContain("Read from");
     expect(document.querySelector(".issue-source")?.textContent).toContain("Also on the boards of: mwanachama-web");
   });
@@ -348,9 +348,26 @@ describe("one issue", () => {
     answering(board);
     openAt(issuePath("t2"));
     await screen.findByText("Waits on");
-    const card = screen.getByText("Waits on").parentElement?.querySelector(".rows") as HTMLElement;
+    const card = screen.getByText("Waits on").closest("section")?.querySelector(".rows") as HTMLElement;
     expect(card.querySelectorAll(".issue-row")).toHaveLength(1);
     expect(card.querySelector(".end")).toHaveTextContent("›");
+    await userEvent.click(within(card).getByRole("button", { name: /Fix mirrored board drift/ }));
+    await waitFor(() => expect(where()).toBe(issuePath("t1")));
+  });
+
+  it("makes Waits on the header of the card that holds its rows, and collapses them when the header is tapped", async () => {
+    answering(board);
+    openAt(issuePath("t2"));
+    const head = await screen.findByRole("button", { name: "Waits on" });
+    const card = head.closest("section") as HTMLElement;
+    expect(card).toHaveClass("card");
+    expect(head).toHaveAttribute("aria-expanded", "true");
+    expect(card.querySelectorAll(".issue-row")).toHaveLength(1);
+    expect(screen.queryByRole("heading", { name: "Waits on" })).toBeNull();
+    await userEvent.click(head);
+    expect(head).toHaveAttribute("aria-expanded", "false");
+    expect(card.querySelectorAll(".issue-row")).toHaveLength(0);
+    await userEvent.click(head);
     await userEvent.click(within(card).getByRole("button", { name: /Fix mirrored board drift/ }));
     await waitFor(() => expect(where()).toBe(issuePath("t1")));
   });

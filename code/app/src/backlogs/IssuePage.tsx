@@ -6,7 +6,6 @@ import { Card } from "../ui/Card";
 import { LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Rows } from "../ui/ListRow";
 import { Markdown } from "../ui/Markdown";
-import { SectionHeading } from "../ui/SectionHeading";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
 import { mcpBacklogsClient, type BacklogsClient } from "./api";
@@ -30,36 +29,32 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
       {issue.state === "error" ? <LoadFailed words="This issue could not be loaded." /> : null}
       {ready && parts ? (
         <>
-          <Rows>
+          <Card flush>
             <IssueRow issue={ready} chosen={[]} facts={[place, ready.priority ?? ""]} />
-          </Rows>
-          {body ? (
-            <Card>
-              <Markdown text={body} className="issue-body" />
-            </Card>
-          ) : null}
+            {body ? (
+              <div className="issue-description">
+                <Markdown text={body} className="issue-body" />
+              </div>
+            ) : null}
+          </Card>
           {[
             { heading: "Waits on", issues: ready.waitsOn },
             { heading: "Waited on by", issues: ready.waitedOnBy },
           ].map(({ heading, issues }) =>
             issues.length > 0 ? (
-              <section key={heading} className="issue-list">
-                <SectionHeading>{heading}</SectionHeading>
+              <Card key={heading} title={heading} collapsible flush>
                 <Rows>
                   {issues.map((one) => (
                     <IssueRow key={one.id} issue={one} chosen={[]} chevron onOpen={() => navigate(issuePath(one.id))} />
                   ))}
                 </Rows>
-              </section>
+              </Card>
             ) : null,
           )}
           {source ? (
-            <>
-              <SectionHeading>Source</SectionHeading>
-              <Card>
-                <p className="sub issue-source">{source}</p>
-              </Card>
-            </>
+            <Card title="Source" collapsible>
+              <p className="sub issue-source">{source}</p>
+            </Card>
           ) : null}
         </>
       ) : null}
