@@ -1,8 +1,9 @@
 .issue-row .txt { display: flex; flex-direction: column; gap: .375rem; }
 .issue-row .open { padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: var(--content); text-align: left; overflow-wrap: anywhere; }
 .issue-tags { display: flex; flex-wrap: wrap; gap: .375rem; }
-.chosen { display: flex; flex-wrap: wrap; gap: .5rem; }
-.chosen:empty { display: none; }
+.filter-bar { position: sticky; top: 3rem; z-index: 1; display: flex; flex-direction: column; gap: .5rem; padding: .5rem 0; background: var(--bg); }
+.chosen { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.chosen .chip { cursor: pointer; }
 .issue-body { font-size: var(--content); overflow-wrap: anywhere; }
 .issue-body code { font-size: .9em; }
 .issue-body > :last-child { margin-bottom: 0; }

@@ -7,7 +7,7 @@ export const withAllTags = (issues: Issue[], chosen: string[]) => issues.filter(
 
 export const matchesQuery = (issue: Issue, query: string) => {
   const words = query.toLowerCase().split(/\s+/).filter((word) => word !== "");
-  const text = issue.title.replace(/[`*]/g, "").toLowerCase();
+  const text = [issue.title.replace(/[`*]/g, ""), ...tagsOf(issue)].join(" ").toLowerCase();
   return words.every((word) => text.includes(word));
 };
 

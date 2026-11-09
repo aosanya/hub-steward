@@ -122,6 +122,14 @@ describe("BacklogBoard", () => {
     expect(await screen.findByText("Record the clips")).toBeInTheDocument();
   });
 
+  it("has the same pinned filter bar as the list", async () => {
+    open(client(), "/a/x/backlogs/default/board?tag=Docs");
+    await screen.findByText("Import the municipality");
+    const bar = document.querySelector(".filter-bar") as HTMLElement;
+    expect(within(bar).getByRole("searchbox", { name: "Search issues" })).toBeInTheDocument();
+    expect(within(bar).getByRole("button", { name: "Docs ✕" })).toBeInTheDocument();
+  });
+
   it("filters every column by the search typed under the title and keeps it in the address", async () => {
     const user = userEvent.setup();
     open(client());

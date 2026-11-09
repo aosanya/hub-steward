@@ -2,14 +2,13 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
 import { openAgencyId } from "../agency/open";
-import { Chip } from "../ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Rows } from "../ui/ListRow";
-import { SearchBox } from "../ui/SearchBox";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
+import { FilterBar } from "./FilterBar";
 import { IssueRow } from "./IssueRow";
 import { backlogsHomePath, boardPath, issuePath, queryParam, searchOf, tagParam } from "./paths";
 import { countWords, narrowed, toggled } from "./tags";
@@ -33,6 +32,7 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
   const sub = issues.state === "ready" && total > 0 ? countWords(shown.length, total, filtering) : undefined;
   return (
     <Shell title={title} onBack={() => navigate(backlogsHomePath())} backLabel={words.backBacklogs}>
+      <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={choose} />
       {backlogId !== allIssuesId ? (
         <Segmented
           items={[
@@ -43,21 +43,10 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
           onChange={() => navigate(boardPath(backlogId, chosen, query))}
         />
       ) : null}
-      <SearchBox label="Search issues" value={query} onChange={typed} />
-      {sub ? <p className="sub">{sub}</p> : null}
       {issues.state === "loading" ? <LoadingLine /> : null}
       {issues.state === "error" ? <LoadFailed words="The issues could not be loaded." /> : null}
       {issues.state === "ready" && total === 0 ? (
         <EmptyCard words="No issues yet. Run the loader on your laptop to load the boards." />
-      ) : null}
-      {chosen.length > 0 ? (
-        <div className="chosen">
-          {chosen.map((tag) => (
-            <Chip key={tag} tone="accent" pressed onClick={() => choose(tag)}>
-              {tag} ✕
-            </Chip>
-          ))}
-        </div>
       ) : null}
       {shown.length > 0 ? (
         <Rows>

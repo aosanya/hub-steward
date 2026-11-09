@@ -213,7 +213,7 @@ describe("the list of issues", () => {
     expect(where()).toContain("/issue/");
   });
 
-  it("finds an issue by its code or by every word typed, not by its description or tags", async () => {
+  it("finds an issue by every word typed in its code, title or tags, but not its description", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs/all");
     await screen.findByText("Fix mirrored board drift");
@@ -229,11 +229,35 @@ describe("the list of issues", () => {
     await userEvent.type(box, "import drift");
     expect(screen.getByText("No issues match")).toBeInTheDocument();
     await userEvent.clear(box);
-    await userEvent.type(box, "Docs");
-    expect(screen.getByText("No issues match")).toBeInTheDocument();
-    await userEvent.clear(box);
     await userEvent.type(box, "Load the English");
     expect(screen.getByText("No issues match")).toBeInTheDocument();
+  });
+
+  it("finds a row by its repo tag, by Blocked, and by words that fall across the title and a tag", async () => {
+    answering(board);
+    openAt("/a/hub-1/backlogs/all");
+    await screen.findByText("Fix mirrored board drift");
+    const box = screen.getByRole("searchbox", { name: "Search issues" });
+    await userEvent.type(box, "mwanachama-web");
+    expect(titles()).toEqual(["Fix mirrored board drift"]);
+    await userEvent.clear(box);
+    await userEvent.type(box, "blocked");
+    expect(titles()).toEqual(["Import the municipality"]);
+    await userEvent.clear(box);
+    await userEvent.type(box, "mirrored docs");
+    expect(titles()).toEqual(["Fix mirrored board drift"]);
+  });
+
+  it("keeps the search, the count and the chosen tags in one filter bar pinned under the header", async () => {
+    answering(board);
+    openAt("/a/hub-1/backlogs/all?tag=Docs");
+    await screen.findByText("Fix mirrored board drift");
+    const bar = document.querySelector(".filter-bar") as HTMLElement;
+    expect(within(bar).getByRole("searchbox", { name: "Search issues" })).toBeInTheDocument();
+    expect(within(bar).getByText("1 of 3 issues")).toBeInTheDocument();
+    expect(within(bar).getByRole("button", { name: "Docs ✕" })).toBeInTheDocument();
+    const css = readFileSync(resolve(__dirname, "backlogs.css"), "utf8");
+    expect(css).toMatch(/\.filter-bar \{[^}]*position: sticky;[^}]*top: 3rem;[^}]*background: var\(--bg\)/);
   });
 
   it("combines the search with the chosen tags, and the clear button restores the full list", async () => {

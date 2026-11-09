@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from "../backlogs/api";
+import { FilterBar } from "../backlogs/FilterBar";
 import { IssueRow } from "../backlogs/IssueRow";
 import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam } from "../backlogs/paths";
 import { narrowed, toggled } from "../backlogs/tags";
 import { backlogPagePath } from "../backlogPage/paths";
-import { Chip } from "../ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
-import { SearchBox } from "../ui/SearchBox";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
 import { columnsOf } from "./board";
@@ -68,21 +67,8 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
       {loaded && !backlog ? <EmptyCard words="This backlog could not be found." /> : null}
       {loaded && backlog ? (
         <>
-          <SearchBox label="Search issues" value={query} onChange={typed} />
-          {sub ? <p className="sub">{sub}</p> : null}
+          <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={toggle} onClear={() => choose([])} />
           <Segmented items={[...views]} current="board" onChange={() => navigate(issuesPath(backlogId, chosen, query))} />
-          {chosen.length > 0 ? (
-            <div className="bb-chosen">
-              {chosen.map((tag) => (
-                <Chip key={tag} tone="accent" pressed onClick={() => toggle(tag)}>
-                  {tag} ×
-                </Chip>
-              ))}
-              <button type="button" className="bb-clear" onClick={() => choose([])}>
-                Clear
-              </button>
-            </div>
-          ) : null}
           <div className="bb-board">
             {columnsOf(backlog.steps, shown).map((column) => (
               <section key={column.step} className="bb-col" aria-label={column.step}>

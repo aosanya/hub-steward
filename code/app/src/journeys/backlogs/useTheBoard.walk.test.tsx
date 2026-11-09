@@ -98,15 +98,15 @@ describe("journey 06, use the board", () => {
     inFarmers(`${board}?tag=Docs`, withPlacedIssues);
     await screen.findByRole("region", { name: "To do" });
     expect(document.querySelectorAll(".bb-card")).toHaveLength(2);
-    expect(screen.getByRole("button", { name: "Docs ×" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Docs ✕" })).toBeInTheDocument();
     expect(within(column("Doing")).getByText("Nothing here")).toBeInTheDocument();
     expect(screen.getByText(/^2 issues · 5 steps$/)).toBeInTheDocument();
   });
 
   it("4. clearing a chip brings the cards back", async () => {
     inFarmers(`${board}?tag=Docs`, withPlacedIssues);
-    await screen.findByRole("button", { name: "Docs ×" });
-    await userEvent.click(screen.getByRole("button", { name: "Docs ×" }));
+    await screen.findByRole("button", { name: "Docs ✕" });
+    await userEvent.click(screen.getByRole("button", { name: "Docs ✕" }));
     await waitFor(() => expect(document.querySelectorAll(".bb-card")).toHaveLength(4));
   });
 
