@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
@@ -7,7 +9,7 @@ import * as mcp from "../wakala/mcp";
 import { BacklogsPage } from "./BacklogsPage";
 import { BacklogsRoutes } from "./BacklogsRoutes";
 import { issuePath, issuesPath } from "./paths";
-import { issueOf, stepsOf } from "./api";
+import { allIssuesId, hubBacklogsOf, issueOf, listCap, mcpBacklogsClient, stepsOf, taskTools } from "./api";
 import { countWords, tagsOf, toggled, withAllTags } from "./tags";
 
 const hub = "hub-1";
@@ -29,18 +31,29 @@ const board = [
   task("t2", "Import the municipality", 2, { status: "blocked", state: "Waiting", description: "Load the English template." }),
 ];
 
-const states = [{ name: "To do" }, { name: "Doing" }, { name: "Waiting" }, { name: "Done" }, { name: "Cancelled" }];
+const stepNames = ["To do", "Doing", "Waiting", "Done", "Cancelled"];
+
+const hubBacklogs = (tasks: unknown[]) => ({
+  items: [
+    {
+      id: "backlog",
+      name: "Backlog",
+      issues: tasks.length,
+      steps: stepNames.map((name) => ({ id: name.toLowerCase().replace(" ", "-"), name, issues: 0 })),
+    },
+  ],
+});
 
 const answering = (tasks: unknown[]) =>
   vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string, args: Record<string, unknown> = {}) => {
     switch (tool) {
-      case "taskmanager_list_tasks":
+      case taskTools.list:
         return { items: tasks };
-      case "taskmanager_list_task_states":
-        return { items: states };
-      case "taskmanager_get_task":
+      case taskTools.backlogs:
+        return hubBacklogs(tasks);
+      case taskTools.get:
         return tasks.find((one: any) => one.id === args.taskID);
-      case "taskmanager_traverse_relationships":
+      case taskTools.edges:
         return { items: args.vertex_id === "t2" ? [{ from_id: "t2", to_id: "t1", label: "depends_on" }] : [] };
       case "agency_get_agency":
         return { id: hub, name: "Hub Steward SWE" };
@@ -86,7 +99,7 @@ describe("the Backlogs screen", () => {
     answering(board);
     openAt("/a/hub-1/backlogs");
     await userEvent.click(await screen.findByText("5 steps · 3 issues"));
-    expect(where()).toBe("/a/hub-1/backlogs/default/board");
+    expect(where()).toBe("/a/hub-1/backlogs/backlog/board");
   });
 
   it("opens the list of every issue from the All issues row", async () => {
@@ -166,7 +179,7 @@ describe("the list of issues", () => {
 
   it("starts with the tags a chat card asked for", async () => {
     answering(board);
-    openAt("/a/hub-1/backlogs/default?tag=Blocked");
+    openAt("/a/hub-1/backlogs/backlog?tag=Blocked");
     await screen.findByText("Import the municipality");
     expect(titles()).toEqual(["Import the municipality"]);
     expect(screen.getByRole("heading", { name: "Backlog" })).toBeInTheDocument();
@@ -180,9 +193,9 @@ describe("the list of issues", () => {
 
   it("has a List | Board switch on a backlog's list that keeps the chosen tags", async () => {
     answering(board);
-    openAt("/a/hub-1/backlogs/default?tag=Blocked");
+    openAt("/a/hub-1/backlogs/backlog?tag=Blocked");
     await userEvent.click(await screen.findByRole("button", { name: "Board" }));
-    expect(where()).toBe("/a/hub-1/backlogs/default/board?tag=Blocked");
+    expect(where()).toBe("/a/hub-1/backlogs/backlog/board?tag=Blocked");
   });
 
   it("has no List | Board switch on All issues", async () => {
@@ -236,7 +249,7 @@ describe("reading the task module's answers", () => {
   });
 
   it("builds tags without repeats and toggles them", () => {
-    const issue = issueOf({ id: "a", project_name: "Docs", tags: ["Docs", "Writing"], status: "pending" });
+    const issue = issueOf({ id: "a", project_name: "Docs", tags: ["Docs", "Writing"], status: "pending" }, hubBacklogsOf(hubBacklogs([])));
     expect(tagsOf(issue)).toEqual(["Ready", "Docs", "Writing", "Backlog"]);
     expect(withAllTags([issue], ["Docs", "Writing"])).toHaveLength(1);
     expect(withAllTags([issue], ["Missing"])).toHaveLength(0);
@@ -244,5 +257,51 @@ describe("reading the task module's answers", () => {
     expect(toggled(["a", "b"], "a")).toEqual(["b"]);
     expect(countWords(1, 3, true)).toBe("1 issue of 3");
     expect(countWords(2, 2, false)).toBe("2 issues");
+  });
+});
+
+describe("talking to the hub", () => {
+  const actions = () => {
+    const operations = JSON.parse(readFileSync(resolve(process.cwd(), "../wakala-api/modules/taskmanager/taskmanager.operations.json"), "utf8"));
+    return new Set<string>(Object.values<any>(operations.operations ?? operations).map((one) => String(one.action).replaceAll(".", "_")));
+  };
+
+  it("calls only tools the task module declares", () => {
+    const declared = actions();
+    for (const tool of Object.values(taskTools)) expect(declared.has(tool), tool).toBe(true);
+  });
+
+  it("asks for the issues of one backlog by its id and for all of them with no backlog", async () => {
+    const call = answering(board);
+    await mcpBacklogsClient.issues("backlog");
+    await mcpBacklogsClient.issues(allIssuesId);
+    const lists = call.mock.calls.filter((one) => one[1] === taskTools.list).map((one) => one[2]);
+    expect(lists).toEqual([{ backlog: "backlog", limit: listCap }, { limit: listCap }]);
+  });
+
+  it("takes the backlogs, their steps and their counts from the hub", async () => {
+    answering(board);
+    expect(await mcpBacklogsClient.backlogs()).toEqual([{ id: "backlog", name: "Backlog", steps: stepNames, issues: 3 }]);
+  });
+
+  it("reads the backlog and step an issue is placed in, by id", () => {
+    const hub = hubBacklogsOf({
+      items: [
+        { id: "backlog", name: "Backlog", steps: [{ id: "to-do", name: "To do", issues: 1 }] },
+        { id: "software", name: "Software", steps: [{ id: "idea", name: "Idea", issues: 0 }] },
+      ],
+    });
+    const placed = issueOf({ id: "a", backlog: "software", step: "idea", state: "To do" }, hub);
+    expect([placed.backlog, placed.step]).toEqual(["Software", "Idea"]);
+    const unplaced = issueOf({ id: "b", step: "to-do" }, hub);
+    expect([unplaced.backlog, unplaced.step]).toEqual(["Backlog", "To do"]);
+  });
+
+  it("shows one Ready or Blocked chip, the loader's own tag first", () => {
+    const issue = issueOf({ id: "a", status: "pending", tags: ["Blocked", "Docs"] });
+    expect(issue.mark).toBe("Blocked");
+    expect(tagsOf(issue).filter((tag) => tag === "Ready" || tag === "Blocked")).toEqual(["Blocked"]);
+    expect(issueOf({ id: "b", status: "in_progress", tags: ["Ready", "Blocked"] }).mark).toBe("Blocked");
+    expect(issueOf({ id: "c", status: "completed", tags: ["Ready"] }).mark).toBe("");
   });
 });

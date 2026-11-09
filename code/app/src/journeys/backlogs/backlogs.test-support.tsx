@@ -27,14 +27,27 @@ export const loaderIssue = issueRow({ id: "t3", title: "Write the loader", rank:
 
 export const issues = [importIssue, docsIssue, loaderIssue];
 
-export const backlogWorld = (over: Record<string, (args: Record<string, unknown>) => unknown> = {}) =>
-  stubWakala({
-    [taskTools.list]: () => ({ items: issues }),
-    [taskTools.states]: () => ({ items: states.map((name) => ({ name })) }),
+export const hubBacklogsFor = (items: Raw[]) => ({
+  items: [
+    {
+      id: "backlog",
+      name: "Backlog",
+      issues: items.length,
+      steps: states.map((name) => ({ id: name.toLowerCase().replace(" ", "-"), name, issues: items.filter((one) => one.state === name).length })),
+    },
+  ],
+});
+
+export const backlogWorld = (over: Record<string, (args: Record<string, unknown>) => unknown> = {}) => {
+  const list = over[taskTools.list] ?? (() => ({ items: issues }));
+  return stubWakala({
+    [taskTools.list]: list,
+    [taskTools.backlogs]: (args) => hubBacklogsFor((list(args) as { items: Raw[] }).items),
     [taskTools.get]: (args) => issues.find((one) => one.id === args.taskID) ?? {},
     [taskTools.edges]: (args) => ({ items: args.vertex_id === "t1" ? [{ to_id: "t2" }, { to_id: "t3" }] : [] }),
     ...over,
   });
+};
 
 export const inFarmers = (path: string, over?: Parameters<typeof backlogWorld>[0]) => {
   const world = backlogWorld(over);

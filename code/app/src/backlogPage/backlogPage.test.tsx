@@ -3,40 +3,51 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import { defaultBacklogId } from "../backlogs/api";
+import { defaultBacklogId, taskTools } from "../backlogs/api";
+import * as mcp from "../wakala/mcp";
 import type { BacklogManageClient } from "../backlogManage";
 import { BacklogPage } from "./BacklogPage";
-import { productOwnerGroup, stepOfIssue, stepsWithCounts, type BacklogPageClient } from "./api";
+import { mcpBacklogPageClient, productOwnerGroup, type BacklogPageClient } from "./api";
 import { BacklogPageRoutes } from "./index";
 import { isValidElement } from "react";
 import { backlogPagePath } from "./paths";
 
-const states = [
-  { name: "To do", statuses: ["pending"] },
-  { name: "Doing", statuses: ["in_progress", "split"] },
-  { name: "Done", statuses: ["completed"] },
-];
+const hubReply = {
+  items: [
+    {
+      id: "backlog",
+      name: "Backlog",
+      issues: 1393,
+      steps: [
+        { id: "to-do", name: "To do", issues: 900 },
+        { id: "doing", name: "Doing", issues: 80 },
+        { id: "done", name: "Done", issues: 413 },
+      ],
+    },
+    { id: "software", name: "Software", issues: 0, steps: [{ id: "idea", name: "Idea", issues: 0 }] },
+  ],
+};
 
-describe("steps with counts", () => {
-  it("puts an issue in the step that covers its status", () => {
-    expect(stepOfIssue(states, { step: "", status: "split" })?.name).toBe("Doing");
+describe("the page read from the hub", () => {
+  it("takes the steps and their counts from the backlog list, past the 500 a list call returns", async () => {
+    const call = vi.spyOn(mcp, "callTool").mockResolvedValue(hubReply as never);
+    expect(await mcpBacklogPageClient.page("backlog")).toEqual({
+      name: "Backlog",
+      steps: [
+        { name: "To do", issues: 900 },
+        { name: "Doing", issues: 80 },
+        { name: "Done", issues: 413 },
+      ],
+      groups: [productOwnerGroup],
+    });
+    expect(call).toHaveBeenCalledTimes(1);
+    expect(call.mock.calls[0][1]).toBe(taskTools.backlogs);
   });
 
-  it("prefers the step an issue names", () => {
-    expect(stepOfIssue(states, { step: "Done", status: "pending" })?.name).toBe("Done");
-  });
-
-  it("counts the issues at each step in order, including empty steps", () => {
-    const issues = [
-      { step: "", status: "pending" },
-      { step: "", status: "pending" },
-      { step: "", status: "in_progress" },
-    ];
-    expect(stepsWithCounts(states, issues)).toEqual([
-      { name: "To do", issues: 2 },
-      { name: "Doing", issues: 1 },
-      { name: "Done", issues: 0 },
-    ]);
+  it("reads another backlog by its id and refuses one the hub does not list", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue(hubReply as never);
+    expect((await mcpBacklogPageClient.page("software"))?.steps).toEqual([{ name: "Idea", issues: 0 }]);
+    expect(await mcpBacklogPageClient.page("missing")).toBeUndefined();
   });
 });
 
@@ -68,6 +79,7 @@ const show = async (client: BacklogPageClient, backlogId = defaultBacklogId, man
 beforeEach(() => openAgency("hub1"));
 
 afterEach(() => {
+  vi.restoreAllMocks();
   cleanup();
   forgetOpenAgency();
 });
@@ -121,12 +133,19 @@ describe("the backlog page", () => {
     await show(software, defaultBacklogId, manager(false));
     await screen.findByText("Who has access");
     expect(screen.queryByRole("link", { name: /edit/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /who has access/i })).toBeNull();
   });
 
   it("offers an edit link to a role that may manage backlogs", async () => {
     await show(software, defaultBacklogId, manager(true));
     const link = await screen.findByRole("link", { name: "Edit this backlog" });
     expect(link).toHaveAttribute("href", `/a/hub1/backlogs/${defaultBacklogId}/edit`);
+  });
+
+  it("offers the access screen to a role that may manage backlogs", async () => {
+    await show(software, defaultBacklogId, manager(true));
+    const link = await screen.findByRole("link", { name: "Change who has access" });
+    expect(link).toHaveAttribute("href", `/a/hub1/backlogs/${defaultBacklogId}/access`);
   });
 
   it("says so when the backlog is unknown", async () => {

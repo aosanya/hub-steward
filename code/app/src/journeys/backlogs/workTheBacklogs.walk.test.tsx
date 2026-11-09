@@ -7,14 +7,6 @@ beforeEach(beforeEachJourney);
 
 afterEach(endInAgencies);
 
-const stateRows = [
-  { name: "To do", statuses: ["pending"] },
-  { name: "Doing", statuses: ["in_progress"] },
-  { name: "Waiting", statuses: ["blocked"] },
-  { name: "Done", statuses: ["completed"] },
-  { name: "Cancelled", statuses: ["cancelled"] },
-];
-
 const placed = [
   issueRow({ id: "t1", title: "Import the boards", rank: 2, status: "blocked", state: "Waiting" }),
   issueRow({ id: "t2", title: "Write the manual", rank: 1, state: "To do" }),
@@ -24,7 +16,6 @@ const placed = [
 
 const world = {
   [taskTools.list]: () => ({ items: placed }),
-  [taskTools.states]: () => ({ items: stateRows }),
 };
 
 describe("journey 03, work the backlogs", () => {
@@ -37,13 +28,13 @@ describe("journey 03, work the backlogs", () => {
   });
 
   it("1. a new hub has one backlog with To do, Doing, Waiting, Done and Cancelled", async () => {
-    inFarmers("/backlogs/default/board", world);
+    inFarmers("/backlogs/backlog/board", world);
     await screen.findByRole("region", { name: "To do" });
     expect(screen.getAllByRole("region").map((one) => one.getAttribute("aria-label"))).toEqual(states);
   });
 
   it("1. a freshly loaded issue is at its first step", async () => {
-    inFarmers("/backlogs/default/board", { [taskTools.list]: () => ({ items: [issueRow({ id: "n1", title: "Fresh", state: "" })] }), [taskTools.states]: world[taskTools.states] });
+    inFarmers("/backlogs/backlog/board", { [taskTools.list]: () => ({ items: [issueRow({ id: "n1", title: "Fresh", state: "", step: "to-do", backlog: "backlog" })] }) });
     const first = await screen.findByRole("region", { name: "To do" });
     expect(within(first).getByText("Fresh")).toBeInTheDocument();
   });
@@ -51,20 +42,20 @@ describe("journey 03, work the backlogs", () => {
   it("2. tapping a backlog opens its board, and the Backlog link opens its page", async () => {
     inFarmers("/backlogs", world);
     await userEvent.click(await screen.findByText("Backlog"));
-    expect(where()).toBe(`/a/${farmers.id}/backlogs/default/board`);
+    expect(where()).toBe(`/a/${farmers.id}/backlogs/backlog/board`);
     await userEvent.click(await screen.findByRole("link", { name: "Backlog" }));
-    expect(where()).toBe(`/a/${farmers.id}/backlogs/default/page`);
+    expect(where()).toBe(`/a/${farmers.id}/backlogs/backlog/page`);
   });
 
   it("2. the page shows the steps in order with the counts of the board", async () => {
-    inFarmers("/backlogs/default/page", world);
+    inFarmers("/backlogs/backlog/page", world);
     await screen.findByText("Steps, in order");
     const rows = states.map((name) => screen.getByText(name).closest(".row") as HTMLElement);
     expect(rows.map((row) => row.textContent)).toEqual(["To do2 issues", "Doing1 issue", "Waiting1 issue", "Done0 issues", "Cancelled0 issues"]);
   });
 
   it("2. the page shows the groups with access", async () => {
-    inFarmers("/backlogs/default/page", world);
+    inFarmers("/backlogs/backlog/page", world);
     expect(await screen.findByText("Who has access")).toBeInTheDocument();
     expect(screen.getByText("Product owner")).toBeInTheDocument();
     expect(screen.getByText("Can move")).toBeInTheDocument();

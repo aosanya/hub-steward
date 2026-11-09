@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
+import { backlogAccessPath } from "../backlogAccess/paths";
 import { editBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
 import { mcpBacklogManageClient } from "../backlogManage/api";
 import { issuesPath } from "../backlogs/paths";
@@ -57,6 +58,7 @@ export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklog
         ))}
       </Rows>
       {groups.length === 1 ? <EmptyCard words="No other groups have access." /> : null}
+      {mayManage.state === "ready" && mayManage.data ? <Button to={backlogAccessPath(backlogId)}>Change who has access</Button> : null}
       <p className="sub">Change steps and access by asking in Chat. A group that can move issues can also see them.</p>
     </Shell>
   );

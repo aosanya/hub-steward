@@ -1,17 +1,17 @@
 import { callTool } from "../wakala/mcp";
 
 export const taskTools = {
-  list: "taskmanager_list_tasks",
-  states: "taskmanager_list_task_states",
-  get: "taskmanager_get_task",
-  edges: "taskmanager_traverse_relationships",
+  list: "taskmanager_task_list",
+  get: "taskmanager_task_read",
+  edges: "taskmanager_relationship_traverse",
+  backlogs: "taskmanager_backlog_list",
 };
+
+export const listCap = 500;
 
 export const allIssuesId = "all";
 
-export const defaultBacklogId = "default";
-
-export const defaultBacklogName = "Backlog";
+export const defaultBacklogId = "backlog";
 
 export type Mark = "Ready" | "Blocked" | "";
 
@@ -38,28 +38,57 @@ export type BacklogsClient = {
   issue: (id: string) => Promise<IssueDetail>;
 };
 
+export type HubStep = { id: string; name: string; issues: number };
+
+export type HubBacklog = { id: string; name: string; steps: HubStep[]; issues: number };
+
 const text = (value: unknown) => (typeof value === "string" ? value : "");
 
-const itemsOf = (reply: any): any[] => (Array.isArray(reply) ? reply : Array.isArray(reply?.items) ? reply.items : Array.isArray(reply?.tasks) ? reply.tasks : []);
+const count = (value: unknown) => (typeof value === "number" && value > 0 ? value : 0);
+
+export const itemsOf = (reply: any): any[] => (Array.isArray(reply) ? reply : Array.isArray(reply?.items) ? reply.items : Array.isArray(reply?.tasks) ? reply.tasks : []);
 
 const settled = new Set(["completed", "cancelled"]);
 
-const markOf = (status: string): Mark => (settled.has(status) ? "" : status === "blocked" ? "Blocked" : "Ready");
+const marks: Mark[] = ["Blocked", "Ready"];
+
+const derivedMark = (status: string): Mark => (settled.has(status) ? "" : status === "blocked" ? "Blocked" : "Ready");
 
 const rankOf = (raw: any) => (typeof raw?.rank === "number" && raw.rank > 0 ? raw.rank : Number.MAX_SAFE_INTEGER);
 
-export const issueOf = (raw: any): Issue => {
+export const hubBacklogOf = (raw: any): HubBacklog => ({
+  id: text(raw?.id),
+  name: text(raw?.name),
+  issues: count(raw?.issues),
+  steps: itemsOfSteps(raw?.steps),
+});
+
+function itemsOfSteps(raw: unknown): HubStep[] {
+  return (Array.isArray(raw) ? raw : [])
+    .map((step: any) => ({ id: text(step?.id), name: text(step?.name), issues: count(step?.issues) }))
+    .filter((step) => step.name !== "");
+}
+
+export const hubBacklogsOf = (reply: any): HubBacklog[] => itemsOf(reply).map(hubBacklogOf).filter((one) => one.id !== "");
+
+export const backlogOf = (one: HubBacklog): Backlog => ({ id: one.id, name: one.name, steps: one.steps.map((step) => step.name), issues: one.issues });
+
+export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
   const status = text(raw?.status);
+  const tags: string[] = Array.isArray(raw?.tags) ? raw.tags.filter((tag: unknown) => typeof tag === "string" && tag !== "") : [];
+  const own = settled.has(status) ? undefined : marks.find((mark) => tags.includes(mark));
+  const backlog = hub.find((one) => one.id === text(raw?.backlog)) ?? hub[0];
+  const step = backlog?.steps.find((one) => one.id === text(raw?.step) || one.name === text(raw?.step));
   return {
     id: text(raw?.id),
     title: text(raw?.title) || text(raw?.task_name),
     description: text(raw?.description),
     status,
-    step: text(raw?.state),
+    step: step?.name ?? text(raw?.state),
     repo: text(raw?.project_name),
-    topics: Array.isArray(raw?.tags) ? raw.tags.filter((tag: unknown) => typeof tag === "string" && tag !== "") : [],
-    backlog: defaultBacklogName,
-    mark: markOf(status),
+    topics: tags.filter((tag) => !marks.includes(tag as Mark)),
+    backlog: backlog?.name ?? "",
+    mark: own ?? derivedMark(status),
     rank: rankOf(raw),
   };
 };
@@ -68,25 +97,30 @@ export const inRankOrder = (issues: Issue[]) => [...issues].sort((a, b) => a.ran
 
 export const stepsOf = (reply: any): string[] => itemsOf(reply).map((raw) => text(raw?.name)).filter((name) => name !== "");
 
-const issueList = async () => inRankOrder(itemsOf(await callTool("", taskTools.list, {})).map(issueOf).filter((issue) => issue.id !== ""));
+const hubBacklogs = async () => hubBacklogsOf(await callTool("", taskTools.backlogs, {}));
+
+const issueList = async (backlogId: string, hub: HubBacklog[]) => {
+  const args = backlogId === allIssuesId ? { limit: listCap } : { backlog: backlogId, limit: listCap };
+  return inRankOrder(itemsOf(await callTool("", taskTools.list, args)).map((raw) => issueOf(raw, hub)).filter((issue) => issue.id !== ""));
+};
 
 export const mcpBacklogsClient: BacklogsClient = {
   async backlogs() {
-    const [states, issues] = await Promise.all([callTool("", taskTools.states, {}), issueList()]);
-    return [{ id: defaultBacklogId, name: defaultBacklogName, steps: stepsOf(states), issues: issues.length }];
+    return (await hubBacklogs()).map(backlogOf);
   },
-  async issues() {
-    return issueList();
+  async issues(backlogId = allIssuesId) {
+    return issueList(backlogId, await hubBacklogs());
   },
   async issue(id) {
-    const [raw, edges] = await Promise.all([
+    const [raw, edges, hub] = await Promise.all([
       callTool("", taskTools.get, { taskID: id }),
       callTool("", taskTools.edges, { vertex_id: id, label: "depends_on", direction: "outbound" }),
+      hubBacklogs(),
     ]);
     const targets: string[] = itemsOf(edges).map((edge) => text(edge?.to_id)).filter((target) => target !== "");
     const waitsOn = await Promise.all(
       targets.map(async (target) => ({ id: target, title: issueOf(await callTool("", taskTools.get, { taskID: target })).title })),
     );
-    return { ...issueOf(raw), waitsOn };
+    return { ...issueOf(raw, hub), waitsOn };
   },
 };

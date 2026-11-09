@@ -12,7 +12,7 @@ beforeEach(beforeEachJourney);
 
 afterEach(endInAgencies);
 
-const board = "/backlogs/default/board";
+const board = "/backlogs/backlog/board";
 
 const placed = [
   issueRow({ id: "t1", title: "Import the boards", rank: 2, status: "blocked", state: "Waiting", project_name: "hub-steward-swe", tags: ["Docs"] }),
@@ -33,7 +33,7 @@ const boardCard: RoomMessage = {
   body: "",
   at: "2026-11-09T09:12:00Z",
   kind: "backlog_view",
-  targetId: "backlog:default",
+  targetId: "backlog:backlog",
 };
 
 function Here() {
@@ -46,7 +46,7 @@ describe("journey 06, use the board", () => {
     openAgency(farmers.id);
     render(
       <MemoryRouter initialEntries={[`/a/${farmers.id}/chat/r1`]}>
-        <BacklogSummariesProvider backlogs={[{ id: "default", name: "Backlog", steps: 5, issues: 4 }]} totals={{ issues: 4 }}>
+        <BacklogSummariesProvider backlogs={[{ id: "backlog", name: "Backlog", steps: 5, issues: 4 }]} totals={{ issues: 4 }}>
           <Attachment message={boardCard} threadLabel="General" client={{} as RoomsClient} openAsk={() => {}} />
         </BacklogSummariesProvider>
         <Here />
@@ -54,13 +54,13 @@ describe("journey 06, use the board", () => {
     );
     expect(screen.getByTestId("here")).toHaveTextContent(`/a/${farmers.id}/chat/r1`);
     await userEvent.click(screen.getByRole("link", { name: "Open" }));
-    expect(screen.getByTestId("here")).toHaveTextContent(`/a/${farmers.id}/backlogs/default/board`);
+    expect(screen.getByTestId("here")).toHaveTextContent(`/a/${farmers.id}/backlogs/backlog/board`);
   });
 
   it("1. tapping a backlog's row on the Backlogs screen opens that backlog's board", async () => {
     inFarmers("/backlogs", withPlacedIssues);
     await userEvent.click(await screen.findByText("Backlog"));
-    expect(where()).toBe(`/a/${farmers.id}/backlogs/default/board`);
+    expect(where()).toBe(`/a/${farmers.id}/backlogs/backlog/board`);
   });
 
   it("1. the board of the backlog opens at its board path", async () => {
@@ -115,14 +115,14 @@ describe("journey 06, use the board", () => {
     inFarmers(board, withPlacedIssues);
     await screen.findByRole("region", { name: "To do" });
     await userEvent.click(screen.getByRole("button", { name: "List" }));
-    expect(where()).toBe(`/a/${farmers.id}/backlogs/default`);
+    expect(where()).toBe(`/a/${farmers.id}/backlogs/backlog`);
     for (const title of placed.map((one) => String(one.title))) {
       expect(await screen.findByRole("button", { name: title })).toBeInTheDocument();
     }
   });
 
   it("5. the list has the same List | Board switch and Board returns to the board", async () => {
-    inFarmers("/backlogs/default", withPlacedIssues);
+    inFarmers("/backlogs/backlog", withPlacedIssues);
     await userEvent.click(await screen.findByRole("button", { name: "Board" }));
     expect(where()).toBe(`/a/${farmers.id}${board}`);
   });
@@ -131,7 +131,7 @@ describe("journey 06, use the board", () => {
     inFarmers(board, withPlacedIssues);
     await screen.findByRole("region", { name: "To do" });
     await userEvent.click(screen.getByRole("link", { name: "Backlog" }));
-    expect(where()).toBe(`/a/${farmers.id}/backlogs/default/page`);
+    expect(where()).toBe(`/a/${farmers.id}/backlogs/backlog/page`);
   });
 
   it.todo("3. another backlog's row opens its board with its own steps and no issue in two backlogs (needs more than one backlog: SW15 and SW20 in the module)");
