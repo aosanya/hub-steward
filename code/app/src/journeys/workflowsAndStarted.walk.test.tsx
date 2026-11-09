@@ -346,7 +346,7 @@ const step1AFarmerOpensHome = async () => {
   expect(screen.queryByRole("button", { name: "Account" })).toBeNull();
   expect(screen.queryByRole("menu")).toBeNull();
 
-  expect(tabsBar().getAllByRole("link").map((tab) => tab.textContent)).toEqual(["⌂Home", "▶Start", "◔Ongoing"]);
+  expect(tabsBar().getAllByRole("link").map((tab) => tab.textContent)).toEqual(["Home", "Start", "Ongoing"]);
   expect(doSomethingTab()).toHaveAttribute("aria-current", "page");
 };
 
