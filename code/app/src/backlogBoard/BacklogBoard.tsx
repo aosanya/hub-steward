@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from "../backlogs/api";
 import { backlogsHomePath, issuesPath, tagParam } from "../backlogs/paths";
+import { tagsOf, toggled, toneOf, withAllTags } from "../backlogs/tags";
+import { backlogPagePath } from "../backlogPage/paths";
 import { Chip } from "../ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
-import { backlogPagePath } from "./paths";
-import { columnsOf, tagsOf, toneOf, visibleIssues } from "./board";
+import { columnsOf } from "./board";
 import "./backlogBoard.css";
 
 type Loaded = { backlog: Backlog | null; issues: Issue[] };
@@ -41,11 +42,11 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
   }, [client, backlogId]);
 
   const choose = (next: string[]) => setSearch(new URLSearchParams(next.map((tag) => [tagParam, tag])), { replace: true });
-  const toggle = (tag: string) => choose(chosen.includes(tag) ? chosen.filter((one) => one !== tag) : [...chosen, tag]);
+  const toggle = (tag: string) => choose(toggled(chosen, tag));
 
   const loaded = read.state === "ready" ? read : null;
   const backlog = loaded?.backlog ?? null;
-  const shown = loaded ? visibleIssues(loaded.issues, chosen) : [];
+  const shown = loaded ? withAllTags(loaded.issues, chosen) : [];
   const title = backlog?.name ?? "Backlog";
   const sub = backlog ? countWords(shown.length, backlog.steps.length) : undefined;
   const action = (
@@ -86,7 +87,7 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
                     <span className="bb-title">{issue.title}</span>
                     <span className="bb-meta">
                       {tagsOf(issue).map((tag) => (
-                        <Chip key={tag} tone={toneOf(tag)} pressed={chosen.includes(tag)} onClick={() => toggle(tag)}>
+                        <Chip key={tag} tone={toneOf(tag, issue)} pressed={chosen.includes(tag)} onClick={() => toggle(tag)}>
                           {tag}
                         </Chip>
                       ))}

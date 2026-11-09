@@ -21,10 +21,10 @@ const message = (targetId: string): RoomMessage => ({
   targetId,
 });
 
-const show = (targetId: string, totals: { issues: number } | null = { issues: 83 }) =>
+const show = (targetId: string, totals: { issues: number } | null = { issues: 83 }, ready = true) =>
   render(
     <MemoryRouter>
-      <BacklogSummariesProvider backlogs={[software, documentation]} totals={totals}>
+      <BacklogSummariesProvider backlogs={[software, documentation]} totals={totals} ready={ready}>
         <Attachment message={message(targetId)} threadLabel="General" client={{} as RoomsClient} openAsk={() => {}} />
       </BacklogSummariesProvider>
     </MemoryRouter>,
@@ -62,11 +62,23 @@ describe("backlog view cards", () => {
     expect(screen.getByText("1 issue in 5 steps")).toBeInTheDocument();
   });
 
-  it("shows nothing for a backlog it does not know or a target it cannot read", () => {
-    const { container } = show("backlog:gone");
+  it("says it could not be opened for a backlog it does not know or a target it cannot read", () => {
+    const { unmount } = show("backlog:gone");
+    expect(screen.getByText("This could not be opened.")).toBeInTheDocument();
+    unmount();
+    show("nonsense");
+    expect(screen.getByText("This could not be opened.")).toBeInTheDocument();
+  });
+
+  it("says it could not be opened when no agency is open", () => {
+    forgetOpenAgency();
+    show("all");
+    expect(screen.getByText("This could not be opened.")).toBeInTheDocument();
+  });
+
+  it("shows nothing for a backlog while the backlogs are still being read", () => {
+    const { container } = show("backlog:gone", null, false);
     expect(container).toBeEmptyDOMElement();
-    const other = show("nonsense");
-    expect(other.container).toBeEmptyDOMElement();
   });
 });
 

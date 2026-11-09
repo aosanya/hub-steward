@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import type { Backlog, BacklogsClient, Issue } from "../backlogs/api";
 import { BacklogBoard } from "./BacklogBoard";
-import { columnsOf, tagsOf, visibleIssues } from "./board";
+import { tagsOf, withAllTags } from "../backlogs/tags";
+import { columnsOf, unplacedStep } from "./board";
 
 const issue = (id: string, title: string, step: string, over: Partial<Issue> = {}): Issue => ({
   id,
@@ -54,15 +55,24 @@ const open = (c: BacklogsClient, at = "/a/x/backlogs/default/board") =>
 const column = (name: string) => screen.getByRole("region", { name });
 
 describe("board columns", () => {
-  it("makes one column per step and puts an issue with an unknown step in the first", () => {
+  it("makes one column per step and puts an issue with an unknown step in an Unplaced column", () => {
     const columns = columnsOf(["To do", "Done"], [issue("1", "A", "To do"), issue("2", "B", "Review")]);
-    expect(columns.map((c) => [c.step, c.issues.map((i) => i.id)])).toEqual([["To do", ["1", "2"]], ["Done", []]]);
+    expect(columns.map((c) => [c.step, c.issues.map((i) => i.id)])).toEqual([["To do", ["1"]], ["Done", []], [unplacedStep, ["2"]]]);
+  });
+
+  it("puts an issue with no step at the first step, not in Unplaced", () => {
+    const columns = columnsOf(["To do", "Done"], [issue("1", "A", "")]);
+    expect(columns.map((c) => [c.step, c.issues.map((i) => i.id)])).toEqual([["To do", ["1"]], ["Done", []]]);
+  });
+
+  it("adds no Unplaced column when every issue sits at a step", () => {
+    expect(columnsOf(["To do"], [issue("1", "A", "To do")]).map((c) => c.step)).toEqual(["To do"]);
   });
 
   it("filters to the issues that carry every chosen tag", () => {
-    expect(visibleIssues(issues, ["Blocked", "Docs"]).map((i) => i.id)).toEqual(["3"]);
-    expect(visibleIssues(issues, [])).toHaveLength(3);
-    expect(tagsOf(issues[2])).toEqual(["Blocked", "hub-steward", "Docs"]);
+    expect(withAllTags(issues, ["Blocked", "Docs"]).map((i) => i.id)).toEqual(["3"]);
+    expect(withAllTags(issues, [])).toHaveLength(3);
+    expect(tagsOf(issues[2])).toEqual(["Blocked", "hub-steward", "Docs", "Backlog"]);
   });
 });
 
@@ -94,6 +104,12 @@ describe("BacklogBoard", () => {
     await screen.findByText("Record the clips");
     await user.click(screen.getByRole("button", { name: "List" }));
     await waitFor(() => expect(screen.getByTestId("where").textContent).toMatch(/\/backlogs\/default\?tag=Ready$/));
+  });
+
+  it("shows the Unplaced column on the screen for an issue whose step is not in the backlog", async () => {
+    open(client({ issues: async () => [...issues, issue("4", "Lost one", "Review")] }));
+    expect(await within(await screen.findByRole("region", { name: "Unplaced" })).findByText("Lost one")).toBeInTheDocument();
+    expect(within(column("To do")).queryByText("Lost one")).not.toBeInTheDocument();
   });
 
   it("links to the backlog page from the top bar", async () => {

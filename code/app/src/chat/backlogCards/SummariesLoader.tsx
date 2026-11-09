@@ -12,12 +12,21 @@ type Props = {
 export function BacklogSummariesLoader({ kinds, client = mcpBacklogsClient, children }: Props) {
   const wanted = kinds.includes(backlogViewKind);
   const [backlogs, setBacklogs] = useState<BacklogSummary[]>([]);
+  const [ready, setReady] = useState(!wanted);
   useEffect(() => {
     if (!wanted) return;
     let live = true;
     client.backlogs().then(
-      (found) => live && setBacklogs(found.map((b) => ({ id: b.id, name: b.name, steps: b.steps.length, issues: b.issues }))),
-      () => live && setBacklogs([]),
+      (found) => {
+        if (!live) return;
+        setBacklogs(found.map((b) => ({ id: b.id, name: b.name, steps: b.steps.length, issues: b.issues })));
+        setReady(true);
+      },
+      () => {
+        if (!live) return;
+        setBacklogs([]);
+        setReady(true);
+      },
     );
     return () => {
       live = false;
@@ -25,7 +34,7 @@ export function BacklogSummariesLoader({ kinds, client = mcpBacklogsClient, chil
   }, [wanted]);
   const totals = backlogs.length === 0 ? null : { issues: backlogs.reduce((sum, b) => sum + b.issues, 0) };
   return (
-    <BacklogSummariesProvider backlogs={backlogs} totals={totals}>
+    <BacklogSummariesProvider backlogs={backlogs} totals={totals} ready={ready}>
       {children}
     </BacklogSummariesProvider>
   );

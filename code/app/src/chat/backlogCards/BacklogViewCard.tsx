@@ -1,7 +1,6 @@
 import { Button } from "../../ui/Button";
 import { openAgencyId } from "../../agency/open";
-import { boardPath } from "../../backlogBoard/paths";
-import { allIssuesPath } from "./paths";
+import { boardPath, issuesPath } from "../../backlogs/paths";
 import { useBacklogSummaries } from "./summaries";
 import { backlogViewOf } from "./views";
 import { backlogLine, issuesWords } from "./words";
@@ -21,9 +20,17 @@ function OpenCard({ title, line, to }: { title: string; line: string; to: string
   );
 }
 
+function NotOpenable() {
+  return (
+    <div className="rm-card">
+      <span className="rm-line">This could not be opened.</span>
+    </div>
+  );
+}
+
 function BacklogButtons() {
-  const { backlogs } = useBacklogSummaries();
-  if (backlogs.length === 0) return null;
+  const { backlogs, ready } = useBacklogSummaries();
+  if (backlogs.length === 0) return ready ? <NotOpenable /> : null;
   return (
     <div className="rm-card">
       <span className="rm-ttl">Backlogs</span>
@@ -40,15 +47,14 @@ function BacklogButtons() {
 }
 
 export function BacklogViewCard({ targetId }: { targetId: string }) {
-  const { backlogs, totals } = useBacklogSummaries();
-  const agencyId = openAgencyId();
+  const { backlogs, totals, ready } = useBacklogSummaries();
   const target = backlogViewOf(targetId);
-  if (target === null || agencyId === "") return null;
+  if (target === null || openAgencyId() === "") return <NotOpenable />;
   if (target.view === "all") {
-    return <OpenCard title="All issues" line={totals === null ? "" : issuesWords(totals.issues)} to={allIssuesPath(agencyId)} />;
+    return <OpenCard title="All issues" line={totals === null ? "" : issuesWords(totals.issues)} to={issuesPath()} />;
   }
   if (target.view === "backlogs") return <BacklogButtons />;
   const backlog = backlogs.find((candidate) => candidate.id === target.backlogId);
-  if (backlog === undefined) return null;
+  if (backlog === undefined) return ready ? <NotOpenable /> : null;
   return <OpenCard title={backlog.name} line={backlogLine(backlog)} to={boardPath(backlog.id)} />;
 }

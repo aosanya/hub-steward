@@ -10,7 +10,7 @@ import { chatListPath } from "../routes";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { addBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
 import { mcpBacklogManageClient } from "../backlogManage/api";
-import { issuesPath } from "./paths";
+import { boardPath, issuesPath } from "./paths";
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 

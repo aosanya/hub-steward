@@ -4,4 +4,5 @@ import { BacklogBoard } from "./BacklogBoard";
 
 export const BacklogBoardRoutes = () => createElement(Routes, null, createElement(Route, { path: ":backlogId/board", element: createElement(BacklogBoard) }));
 
-export { boardPath, backlogPagePath } from "./paths";
+export { boardPath } from "../backlogs/paths";
+export { backlogPagePath } from "../backlogPage/paths";

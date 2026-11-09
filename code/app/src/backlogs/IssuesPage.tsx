@@ -6,13 +6,12 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
-import { boardPath } from "../backlogBoard/paths";
 import { Button } from "../ui/Button";
 import { chatListPath } from "../routes";
 import "./backlogs.css";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { IssueRow } from "./IssueRow";
-import { backlogsHomePath, issuePath, tagParam } from "./paths";
+import { backlogsHomePath, boardPath, issuePath, tagParam } from "./paths";
 import { countWords, toggled, withAllTags } from "./tags";
 
 export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {

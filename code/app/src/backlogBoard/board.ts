@@ -2,14 +2,12 @@ import type { Issue } from "../backlogs/api";
 
 export type Column = { step: string; issues: Issue[] };
 
-export const tagsOf = (issue: Issue) => [issue.mark, issue.repo, ...issue.topics].filter((tag) => tag !== "");
+export const unplacedStep = "Unplaced";
 
-export const visibleIssues = (issues: Issue[], chosen: string[]) => issues.filter((issue) => chosen.every((tag) => tagsOf(issue).includes(tag)));
+const stepOf = (steps: string[], issue: Issue) => (issue.step === "" ? steps[0] : issue.step);
 
-export const columnsOf = (steps: string[], issues: Issue[]): Column[] =>
-  steps.map((step, index) => ({
-    step,
-    issues: issues.filter((issue) => (steps.includes(issue.step) ? issue.step === step : index === 0)),
-  }));
-
-export const toneOf = (tag: string) => (tag === "Ready" ? "success" : tag === "Blocked" ? "danger" : undefined);
+export const columnsOf = (steps: string[], issues: Issue[]): Column[] => {
+  const columns = steps.map((step) => ({ step, issues: issues.filter((issue) => stepOf(steps, issue) === step) }));
+  const unplaced = issues.filter((issue) => !steps.includes(stepOf(steps, issue)));
+  return unplaced.length > 0 ? [...columns, { step: unplacedStep, issues: unplaced }] : columns;
+};
