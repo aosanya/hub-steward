@@ -85,17 +85,19 @@ export function useNotifications(client: InboxClient = mcpInboxClient) {
     fetch(() => true);
   };
 
-  const markAllRead = async () => {
+  const markIdsRead = async (ids: string[]) => {
     try {
-      await client.markRead(unreadOf(current).map((n) => n.id));
+      await client.markRead(ids);
     } catch {
       return false;
     }
-    publish((current ?? []).map((n) => ({ ...n, read: true })));
+    markLocally(ids);
     return true;
   };
 
+  const markAllRead = () => markIdsRead(unreadOf(current).map((n) => n.id));
+
   const markOneRead = (id: string) => markOne(client, id);
 
-  return { items, failed, outage, retry, markAllRead, markOneRead };
+  return { items, failed, outage, retry, markAllRead, markIdsRead, markOneRead };
 }

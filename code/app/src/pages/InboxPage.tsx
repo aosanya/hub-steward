@@ -11,7 +11,7 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { LoadFailed } from "../ui/LoadState";
 import { isoDay } from "../ui/days";
-import { ListRow, Rows } from "../ui/ListRow";
+import { ListRow, Rows, SelectableRow } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
 import { orderPath } from "../coordinator/payments/OrderCards";
 import { mcpStartClient, type StartClient } from "../coordinator/start/api";
@@ -31,7 +31,8 @@ type Opened = { invitation: InvitationItem; joined: boolean };
 export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: { client?: InboxClient; start?: StartClient }) {
   const navigate = useNavigate();
   const { words } = useLanguage();
-  const { items, failed: notificationsFailed, outage: notificationsOutage, retry: retryNotifications, markAllRead, markOneRead } = useNotifications(client);
+  const { items, failed: notificationsFailed, outage: notificationsOutage, retry: retryNotifications, markAllRead, markIdsRead, markOneRead } = useNotifications(client);
+  const [ticked, setTicked] = useState<string[]>([]);
   const [invitations, setInvitations] = useState<InvitationItem[]>([]);
   const [opened, setOpened] = useState<Opened | null>(null);
   const [invitationsFailed, setInvitationsFailed] = useState(false);
@@ -65,6 +66,7 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: {
   const waiting = useStartWaiting(start);
   const unread = unreadOf(items);
   const anythingUnread = unread.length > 0;
+  const chosen = unread.filter((n) => ticked.includes(n.id)).map((n) => n.id);
 
   if (opened) {
     const { invitation, joined } = opened;
@@ -131,15 +133,19 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: {
     );
   }
 
-  const markAll = async () => {
-    setProblem((await markAllRead()) ? "" : "Could not mark the notifications read. Try again.");
+  const markRead = async () => {
+    const done = await (chosen.length > 0 ? markIdsRead(chosen) : markAllRead());
+    setProblem(done ? "" : "Could not mark the notifications read. Try again.");
+    if (done) setTicked([]);
   };
+
+  const tick = (id: string, on: boolean) => setTicked(on ? [...ticked, id] : ticked.filter((t) => t !== id));
 
   const settled = items !== null || (notificationsFailed && !notificationsOutage);
   const empty = !outage && settled && waiting !== null && (items ?? []).length === 0 && invitations.length === 0 && waiting.length === 0;
 
   return (
-    <Shell title="Home" inbox={client} action={anythingUnread ? <Button onClick={markAll}>Mark all read</Button> : undefined}>
+    <Shell title="Home" inbox={client} action={anythingUnread ? <Button onClick={markRead}>{chosen.length > 0 ? "Mark read" : "Mark all read"}</Button> : undefined}>
       {outage ? (
         <>
           <LoadFailed words="Home could not be loaded." />
@@ -167,8 +173,9 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: {
           {(items ?? []).map((n) => {
             const path = pathOf(n);
             return (
-              <ListRow
+              <SelectableRow
                 key={n.id}
+                selection={n.read ? null : { checked: chosen.includes(n.id), onChange: (on) => tick(n.id, on), label: `Select ${titleOf(n, words)}` }}
                 title={titleOf(n, words)}
                 meta={metaOf(n, words)}
                 start={n.read ? <span className="dot off" aria-hidden="true" /> : <span className="dot" role="img" aria-label="Unread" />}
