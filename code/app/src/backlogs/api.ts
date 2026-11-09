@@ -99,9 +99,36 @@ export const stepsOf = (reply: any): string[] => itemsOf(reply).map((raw) => tex
 
 const hubBacklogs = async () => hubBacklogsOf(await callTool("", taskTools.backlogs, {}));
 
+const priorities = ["critical", "high", "medium", "low"];
+
+type Query = Record<string, string>;
+
+const fetchPage = async (query: Query) => itemsOf(await callTool("", taskTools.list, { ...query, limit: listCap }));
+
+const worth = (steps: HubStep[]) => (steps.some((step) => step.issues > 0) ? steps.filter((step) => step.issues > 0) : steps);
+
+const splits = (query: Query, hub: HubBacklog[]): Query[] => {
+  if (!query.backlog && hub.length > 1) return hub.map((one) => ({ ...query, backlog: one.id }));
+  if (!query.backlog) return splits({ ...query, backlog: hub[0]?.id ?? defaultBacklogId }, hub);
+  if (!query.step) return worth(hub.find((one) => one.id === query.backlog)?.steps ?? []).map((step) => ({ ...query, step: step.id || step.name }));
+  if (!query.priority) return priorities.map((priority) => ({ ...query, priority }));
+  return [];
+};
+
+const fetchAll = async (query: Query, hub: HubBacklog[]): Promise<any[]> => {
+  const page = await fetchPage(query);
+  if (page.length < listCap) return page;
+  const parts = splits(query, hub);
+  if (parts.length === 0) return page;
+  const rest = await Promise.all(parts.map((part) => fetchAll(part, hub)));
+  return rest.flat();
+};
+
 const issueList = async (backlogId: string, hub: HubBacklog[]) => {
-  const args = backlogId === allIssuesId ? { limit: listCap } : { backlog: backlogId, limit: listCap };
-  return inRankOrder(itemsOf(await callTool("", taskTools.list, args)).map((raw) => issueOf(raw, hub)).filter((issue) => issue.id !== ""));
+  const rows = await fetchAll(backlogId === allIssuesId ? {} : { backlog: backlogId }, hub);
+  const seen = new Set<string>();
+  const issues = rows.map((raw) => issueOf(raw, hub)).filter((issue) => issue.id !== "" && !seen.has(issue.id) && seen.add(issue.id));
+  return inRankOrder(issues);
 };
 
 export const mcpBacklogsClient: BacklogsClient = {
