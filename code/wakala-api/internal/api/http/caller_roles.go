@@ -60,6 +60,7 @@ func (d *Deps) mcpGetCallerRoles(ctx context.Context, _ *mcp.CallToolRequest, p 
 }
 
 func (d *Deps) callerRolesIn(ctx context.Context, instanceID string) (callerRoles, error) {
+	ctx = withPartitionContext(ctx, instanceID)
 	if err := d.requireAgentMay(ctx, instanceID, callerRolesAction); err != nil {
 		return callerRoles{}, err
 	}
