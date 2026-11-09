@@ -1,6 +1,7 @@
+import type { ReactNode } from "react";
 import "./segmented.css";
 
-export type SegmentedItem<Id extends string = string> = { id: Id; label: string };
+export type SegmentedItem<Id extends string = string> = { id: Id; label: ReactNode };
 
 type Props<Id extends string> = { items: SegmentedItem<Id>[]; current: Id; onChange: (id: Id) => void; label?: string; disabled?: boolean };
 

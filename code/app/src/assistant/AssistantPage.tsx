@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IssueRow } from "../backlogs/IssueRow";
 import { issuePath } from "../backlogs/paths";
 import { Composer } from "../chat/rooms/Composer";
 import "../chat/rooms/rooms.css";
@@ -14,6 +13,8 @@ import { Markdown } from "../ui/Markdown";
 import { Shell } from "../ui/Shell";
 import { mcpAssistantClient, type AssistantClient } from "./api";
 import { answerAfter, historyUpTo, markSent, nextQueued, withoutItem, type Item } from "./queue";
+import { ListEntries, ResultsPanel, ResultTabs, useResults } from "./ResultsPanel";
+import { withIds } from "./results";
 import "./assistant.css";
 
 export const assistantName = "Hub Steward";
@@ -76,9 +77,9 @@ function Failed({ retry }: { retry: () => void }) {
   );
 }
 
-type BubblesProps = { items: Item[]; phase: Phase; current: number; step: string; retry: () => void; open: (id: string) => void; unqueue: (id: number) => void };
+type BubblesProps = { items: Item[]; phase: Phase; current: number; step: string; retry: () => void; pick: (id: string) => void; unqueue: (id: number) => void };
 
-function Bubbles({ items, phase, current, step, retry, open, unqueue }: BubblesProps) {
+function Bubbles({ items, phase, current, step, retry, pick, unqueue }: BubblesProps) {
   return (
     <div className="rm-thread">
       {items.map((item) => (
@@ -104,13 +105,7 @@ function Bubbles({ items, phase, current, step, retry, open, unqueue }: BubblesP
               <div className="rm-bubble">
                 <Markdown text={item.content} />
               </div>
-              {item.issues && item.issues.length > 0 ? (
-                <div className="rows">
-                  {item.issues.map((issue) => (
-                    <IssueRow key={issue.id} issue={issue} chosen={[]} onOpen={() => open(issue.id)} chevron />
-                  ))}
-                </div>
-              ) : null}
+              {item.lists && item.lists.length > 0 ? <ListEntries lists={item.lists} onPick={pick} /> : null}
             </div>
           )}
           {item.id === current && phase === "working" ? <Working step={step} /> : null}
@@ -131,11 +126,12 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
   const run = useRef(0);
   const last = useRef(0);
   const end = useRef<HTMLDivElement>(null);
+  const found = useResults(items);
   const accountId = model.state === "ready" ? model.data : "";
   const unavailable = model.state === "error" || (model.state === "ready" && accountId === "");
   useEffect(() => {
     end.current?.scrollIntoView?.({ block: "end" });
-  }, [items, phase, step]);
+  }, [items, phase, step, found.tab]);
   const answerTo = async (history: Item[], id: number) => {
     const mine = ++run.current;
     setCurrent(id);
@@ -149,7 +145,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
       const answer = await Promise.race([client.ask(accountId, historyUpTo(history, id), (words) => mine === run.current && setStep(words)), tooSlow]);
       if (mine !== run.current) return;
       last.current += 1;
-      setItems((now) => answerAfter(now, id, { id: last.current, role: "assistant", content: answer.text, issues: answer.issues }));
+      setItems((now) => answerAfter(now, id, { id: last.current, role: "assistant", content: answer.text, lists: withIds(answer.lists ?? [], last.current) }));
       setPhase("idle");
     } catch {
       if (mine === run.current) setPhase("failed");
@@ -174,14 +170,19 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
       {unavailable ? <EmptyCard words={unavailableWords} /> : null}
       {!unavailable ? (
         <div className="assistant-panel">
-          <Card>
-            {items.length === 0 ? (
-              <p className="assistant-empty">{askPlaceholder}</p>
-            ) : (
-              <Bubbles items={items} phase={phase} current={current} step={step} retry={() => void answerTo(items, current)} open={(id) => navigate(issuePath(id))} unqueue={(id) => setItems((now) => withoutItem(now, id))} />
-            )}
-            <div ref={end} />
-          </Card>
+          <ResultTabs tab={found.tab} onTab={found.setTab} unseen={found.unseen} />
+          {found.tab === "results" ? (
+            <ResultsPanel results={found.results} picked={found.picked} onPick={found.setPicked} onOpen={(id) => navigate(issuePath(id))} />
+          ) : (
+            <Card>
+              {items.length === 0 ? (
+                <p className="assistant-empty">{askPlaceholder}</p>
+              ) : (
+                <Bubbles items={items} phase={phase} current={current} step={step} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} />
+              )}
+              <div ref={end} />
+            </Card>
+          )}
         </div>
       ) : null}
       {model.state === "ready" && !unavailable ? (

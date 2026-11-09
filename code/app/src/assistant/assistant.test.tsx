@@ -193,7 +193,8 @@ describe("messages written while an answer is pending", () => {
     const alert = await screen.findByRole("alert");
     expect(screen.getByText("two").closest(".rm-msg")).toHaveTextContent("Queued");
     expect(ask).toHaveBeenCalledTimes(1);
-    await userEvent.click(within(alert).getByRole("button", { name: "Try again" }));
+    const retry = within(alert).getByRole("button", { name: "Try again" });
+    await act(async () => retry.click());
     await waitFor(() => expect(ask).toHaveBeenCalledTimes(3));
     expect(screen.queryByText("Queued")).toBeNull();
   });
@@ -205,15 +206,17 @@ describe("the conversation panel", () => {
     const line = await screen.findByText("Ask about the backlogs", { selector: "p" });
     const panel = line.closest(".assistant-panel") as HTMLElement;
     expect(panel).not.toBeNull();
-    expect(line.closest(".card")).not.toBeNull();
-    expect(panel.querySelectorAll("button, a")).toHaveLength(0);
-    expect(panel.textContent).toBe("Ask about the backlogs");
+    const card = line.closest(".card") as HTMLElement;
+    expect(card).not.toBeNull();
+    expect(card.querySelectorAll("button, a")).toHaveLength(0);
+    expect(card.textContent).toBe("Ask about the backlogs");
+    expect(within(panel).getAllByRole("button").map((button) => button.textContent)).toEqual(["Chat", "Results"]);
     expect(screen.getByRole("textbox").closest(".assistant-compose")).not.toBeNull();
   });
 
-  it("puts her messages in the right-hand bubbles and the assistant's in the left-hand ones, with the issues it read as rows with plain pills that open the issue", async () => {
+  it("puts her messages in the right-hand bubbles and the assistant's in the left-hand ones, with the list it read as an entry that opens in Results, as rows with plain pills", async () => {
     const issue = { id: "i1", title: "DEV-009 Create the structure tables", description: "", status: "pending", step: "To do", repo: "mwanachama-frontend-kazi", topics: [], backlog: "Backlog", mark: "Blocked" as const, rank: 1 };
-    const ask = vi.fn().mockResolvedValue({ text: "1 issue is Blocked", issues: [issue] });
+    const ask = vi.fn().mockResolvedValue({ text: "1 issue is Blocked", lists: [{ title: "Blocked issues", total: 1, issues: [issue] }] });
     show({ model: async () => "acc1", ask });
     await userEvent.type(await screen.findByRole("textbox"), "show the blocked ones");
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
@@ -221,7 +224,10 @@ describe("the conversation panel", () => {
     expect(mine).toHaveClass("mine");
     const theirs = screen.getByText("1 issue is Blocked").closest(".rm-msg") as HTMLElement;
     expect(theirs).not.toHaveClass("mine");
-    const row = theirs.querySelector(".issue-row") as HTMLElement;
+    expect(theirs.querySelector(".issue-row")).toBeNull();
+    expect(within(theirs).getByRole("button", { name: /Blocked issues · 1/ })).toBeInTheDocument();
+    await userEvent.click(within(theirs).getByRole("button", { name: /Blocked issues · 1/ }));
+    const row = (await screen.findByText(/DEV-009/)).closest(".issue-row") as HTMLElement;
     expect(row).toHaveTextContent("DEV-009");
     expect(row.querySelectorAll(".issue-tags button")).toHaveLength(0);
     expect(row.querySelector(".issue-tags")).toHaveTextContent("Blocked");
@@ -268,8 +274,10 @@ describe("how the assistant answers through the tools", () => {
     });
     const answer = await askAssistant("acc1", [{ role: "user", content: "show the blocked ones" }]);
     expect(answer.text).toBe("1 issue is Blocked: DEV-009 Create the structure tables");
-    expect(answer.issues.map((issue) => issue.title)).toEqual(["DEV-009 Create the structure tables"]);
-    expect(answer.issues[0].mark).toBe("Blocked");
+    expect(answer.lists).toHaveLength(1);
+    expect(answer.lists[0]).toMatchObject({ title: "Blocked issues", total: 1 });
+    expect(answer.lists[0].issues.map((issue) => issue.title)).toEqual(["DEV-009 Create the structure tables"]);
+    expect(answer.lists[0].issues[0].mark).toBe("Blocked");
     expect(mcp.callTool).toHaveBeenCalledWith("", "taskmanager_task_list", { tag: "Blocked" });
     const chats = mcp.callTool.mock.calls.filter((call) => call[1] === "ai_chat_account");
     expect(chats).toHaveLength(2);

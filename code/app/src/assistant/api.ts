@@ -1,9 +1,9 @@
-import { issueOf, itemsOf, type Issue } from "../backlogs/api";
 import { callTool, listTools, type ToolInfo } from "../wakala/mcp";
+import { draftOf, pendingTool, type ResultDraft, type ResultList } from "./results";
 
-export type Turn = { role: "user" | "assistant"; content: string; issues?: Issue[] };
+export type Turn = { role: "user" | "assistant"; content: string; lists?: ResultList[] };
 
-export type Answer = { text: string; issues: Issue[] };
+export type Answer = { text: string; lists: ResultDraft[] };
 
 export type AssistantClient = {
   model: () => Promise<string>;
@@ -17,6 +17,7 @@ type Wire = { role: "system" | "user" | "assistant" | "tool"; content: string; t
 export const chatTool = "ai_chat_account";
 
 export const offeredNames = [
+  pendingTool,
   "taskmanager_task_list",
   "taskmanager_task_read",
   "taskmanager_backlog_list",
@@ -30,11 +31,8 @@ export const maxResultLength = 8000;
 
 export const replyTokens = 4096;
 
-export const listTool = "taskmanager_task_list";
-
-export const maxIssuesShown = 10;
-
 export const stepWords: Record<string, string> = {
+  [pendingTool]: "Counting what is pending",
   taskmanager_task_list: "Searching the issues",
   taskmanager_task_read: "Opening an issue",
   taskmanager_backlog_list: "Reading the backlogs",
@@ -47,7 +45,7 @@ export const noAnswerSentence = "The assistant sent no answer.";
 export const tooManyRoundsSentence = "I looked things up for several steps and still have no answer. Ask again with a narrower question.";
 
 export const systemPrompt =
-  "You are the Triager of this hub's backlogs: the issues loaded from the todo boards, each in one backlog at one step, with tags such as Ready, Blocked and the repo name. Answer the owner's questions by calling the tools you are given, and never name an issue you did not read from a tool. To find issues use taskmanager_task_list with its filters (tag, repo, backlog, step, untouched_days); a tag filter is case-insensitive and several tags must all match. Answer briefly in the language the owner writes in: how many there are, then one line for each issue with its code and title, at most ten, and say when there are more.";
+  "You are the Triager of this hub's backlogs: the issues loaded from the todo boards, each in one backlog at one step, with tags such as Ready, Blocked and the repo name. Answer the owner's questions by calling the tools you are given, and never name an issue you did not read from a tool. For what is pending, open or left call taskmanager_task_pending first: it returns the total, the counts by step and priority and the top issues in one call. To find other issues use taskmanager_task_list with its filters (tag, repo, backlog, step, untouched_days); a tag filter is case-insensitive and several tags must all match. The issues you read are shown to the owner in a Results tab, so do not list them in your reply: answer briefly in the language the owner writes in, with how many there are and what stands out.";
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 
@@ -81,7 +79,7 @@ const resultText = (result: unknown) => {
 export async function askAssistant(accountId: string, turns: Turn[], onStep: (words: string) => void = () => undefined): Promise<Answer> {
   const tools = await offeredOf();
   const messages: Wire[] = [{ role: "system", content: systemPrompt }, ...turns.map(({ role, content }) => ({ role, content }))];
-  let found: Issue[] = [];
+  const found: ResultDraft[] = [];
   for (let round = 0; round < maxRounds; round++) {
     const args: Record<string, unknown> = { accountID: accountId, messages: [...messages], max_tokens: replyTokens };
     if (tools.length > 0) args.tools = tools;
@@ -91,7 +89,7 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
     const content = text(message.content).trim();
     if (calls.length === 0) {
       if (content === "") throw new Error(noAnswerSentence);
-      return { text: content, issues: found.slice(0, maxIssuesShown) };
+      return { text: content, lists: found };
     }
     messages.push({ role: "assistant", content, tool_calls: calls });
     for (const call of calls) {
@@ -101,7 +99,8 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
         onStep(stepWords[call.name] ?? "Looking it up");
         try {
           const read = await callTool("", call.name, call.arguments);
-          if (call.name === listTool) found = itemsOf(read).map((raw) => issueOf(raw));
+          const draft = draftOf(call.name, call.arguments, read);
+          if (draft) found.push(draft);
           result = resultText(read);
         } catch (failure) {
           result = `The call failed: ${failure instanceof Error ? failure.message : "unknown"}`;
@@ -110,7 +109,7 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
       messages.push({ role: "tool", tool_call_id: call.id, content: result });
     }
   }
-  return { text: tooManyRoundsSentence, issues: [] };
+  return { text: tooManyRoundsSentence, lists: found };
 }
 
 export const mcpAssistantClient: AssistantClient = {

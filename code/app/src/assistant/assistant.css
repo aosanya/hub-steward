@@ -1,5 +1,6 @@
-.assistant-panel { flex: 1; display: flex; min-height: 12rem; max-height: calc(100dvh - 13rem); }
+.assistant-panel { flex: 1; display: flex; flex-direction: column; gap: .5rem; min-height: 12rem; max-height: calc(100dvh - 13rem); }
 .assistant-panel > .card { flex: 1; min-width: 0; overflow-y: auto; }
+.assistant-panel > .seg { flex: none; }
 .assistant-empty { margin: auto; color: var(--ink-soft); }
 .assistant-panel .rm-thread { margin-top: auto; }
 .assistant-panel .rm-msg { max-width: 100%; }
