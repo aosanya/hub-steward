@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"slices"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
@@ -27,9 +28,10 @@ type heldAgencyRole struct {
 }
 
 type callerRoles struct {
-	InstanceID string           `json:"instance_id"`
-	Membership string           `json:"membership"`
-	Roles      []heldAgencyRole `json:"roles"`
+	InstanceID  string           `json:"instance_id"`
+	Membership  string           `json:"membership"`
+	Roles       []heldAgencyRole `json:"roles"`
+	Permissions []string         `json:"permissions"`
 }
 
 func registerCallerRolesRoute(mux *http.ServeMux, d *Deps, auth callers) {
@@ -37,7 +39,7 @@ func registerCallerRolesRoute(mux *http.ServeMux, d *Deps, auth callers) {
 }
 
 func (d *Deps) registerCallerRolesMCPTool(server *mcp.Server) {
-	mcp.AddTool(server, &mcp.Tool{Name: "agency_get_my_roles", Title: "My Agency Roles", Description: "Read which agency roles the caller holds in an Agency Instance, with the caller's membership (owner, agent or resident). Members only."}, d.mcpGetCallerRoles)
+	mcp.AddTool(server, &mcp.Tool{Name: "agency_get_my_roles", Title: "My Agency Roles", Description: "Read which agency roles the caller holds in an Agency Instance, the permission codes those roles carry (the owner holds every code), and the caller's membership (owner, agent or resident). Members only."}, d.mcpGetCallerRoles)
 }
 
 func (d *Deps) getCallerRoles(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +67,10 @@ func (d *Deps) callerRolesIn(ctx context.Context, instanceID string) (callerRole
 	if err != nil {
 		return callerRoles{}, err
 	}
-	out := callerRoles{InstanceID: instanceID, Membership: membership, Roles: []heldAgencyRole{}}
+	out := callerRoles{InstanceID: instanceID, Membership: membership, Roles: []heldAgencyRole{}, Permissions: []string{}}
+	if membership == agencies.RoleOwner {
+		out.Permissions = allPermissionCodes()
+	}
 	m, err := d.Registry.AgencyManager(ctx, instanceID)
 	if err != nil {
 		return callerRoles{}, err
@@ -82,7 +87,37 @@ func (d *Deps) callerRolesIn(ctx context.Context, instanceID string) (callerRole
 			out.Roles = append(out.Roles, heldAgencyRole{ID: role.ID, Code: role.Code, Name: role.Name})
 		}
 	}
+	if membership != agencies.RoleOwner {
+		out.Permissions, err = d.heldPermissionCodes(ctx, out.Roles)
+		if err != nil {
+			return callerRoles{}, err
+		}
+	}
 	return out, nil
+}
+
+func allPermissionCodes() []string {
+	catalog := agencymodels.PermissionCatalog()
+	codes := make([]string, 0, len(catalog))
+	for _, p := range catalog {
+		codes = append(codes, p.Code)
+	}
+	slices.Sort(codes)
+	return codes
+}
+
+func (d *Deps) heldPermissionCodes(ctx context.Context, roles []heldAgencyRole) ([]string, error) {
+	codes := []string{}
+	for _, role := range roles {
+		granted, err := d.agencyRolePermissions(ctx, role.ID)
+		if err != nil {
+			return nil, err
+		}
+		codes = append(codes, granted...)
+	}
+	codes = agencymodels.DistinctPermissions(codes)
+	slices.Sort(codes)
+	return codes, nil
 }
 
 type heldRoles struct {
