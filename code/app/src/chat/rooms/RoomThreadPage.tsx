@@ -10,6 +10,7 @@ import { generalOf, mcpRoomsClient, type RoomMessage, type RoomsClient } from ".
 import { BacklogSummariesLoader } from "../backlogCards/SummariesLoader";
 import { askPath } from "./cards";
 import { Composer } from "./Composer";
+import { StartThread } from "./StartThread";
 import { ThreadRows } from "./ThreadRows";
 import { Timeline } from "./Timeline";
 import "./rooms.css";
@@ -64,6 +65,9 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
       {threads.state === "ready" && list.length > 0 ? (
         <Card title={`Threads · ${list.length}`} collapsible flush>
           <ThreadRows threads={list} subject={me} onOpen={(id) => navigate(routes.roomThread.path({ roomId, threadId: id }))} />
+          <div className="rm-start">
+            <StartThread bare onStart={async (label) => navigate(routes.roomThread.path({ roomId, threadId: await client.startThread(roomId, label) }))} />
+          </div>
         </Card>
       ) : null}
       {thread?.audience === "leads" ? <p className="rm-note">Leaders only · members cannot see this yet</p> : null}

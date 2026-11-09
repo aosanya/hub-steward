@@ -1,3 +1,4 @@
+.rm-start { padding: 1rem; border-top: 1px solid var(--line); }
 .rm-note { font-size: .8125rem; color: var(--ink-soft); }
 .rm-thread { display: flex; flex-direction: column; gap: .25rem; margin-top: auto; }
 .rm-entry { display: flex; flex-direction: column; gap: .25rem; }

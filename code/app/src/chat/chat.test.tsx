@@ -183,6 +183,14 @@ describe("the empty Chat tab and Join a group", () => {
     expect(join.closest(".rows")).toBeNull();
   });
 
+  it("shows Join a group only once the rooms are known, so a tap never lands on a button that moves into the empty card", async () => {
+    const client = fake([]);
+    client.listRooms = vi.fn().mockReturnValue(new Promise(() => undefined));
+    show(client, "/chat");
+    await screen.findByText("Hub Steward");
+    expect(screen.queryByRole("button", { name: "Join a group" })).toBeNull();
+  });
+
   it("pins the assistant as the first row, above the group rows, and opens its conversation", async () => {
     const { container } = show(fake([]), "/chat");
     await screen.findByText("Kisumu Agro Supplies");

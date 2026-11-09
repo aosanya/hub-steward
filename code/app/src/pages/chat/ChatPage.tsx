@@ -36,7 +36,7 @@ export function ChatPage({ client = mcpChatClient }: { client?: ChatClient }) {
           : null}
       </Rows>
       {rooms.state === "error" ? <LoadFailed words="Chat could not be loaded." /> : null}
-      {empty ? <EmptyCard words="No rooms yet.">{join}</EmptyCard> : join}
+      {empty ? <EmptyCard words="No rooms yet.">{join}</EmptyCard> : rooms.state === "loading" ? null : join}
     </Shell>
   );
 }

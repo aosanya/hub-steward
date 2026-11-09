@@ -1,39 +1,12 @@
-import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { chatListPath, routes } from "../../routes";
-import { Button } from "../../ui/Button";
-import { Card } from "../../ui/Card";
 import { EmptyCard, LoadFailed } from "../../ui/LoadState";
-import { Field } from "../../ui/Field";
 import { Shell } from "../../ui/Shell";
 import { generalOf, mcpRoomsClient, type RoomsClient } from "./api";
+import { StartThread } from "./StartThread";
 import { ThreadRows } from "./ThreadRows";
 import "./rooms.css";
-
-function StartThread({ onStart, bare = false }: { onStart: (label: string) => Promise<void>; bare?: boolean }) {
-  const [open, setOpen] = useState(false);
-  const [label, setLabel] = useState("");
-  const [problem, setProblem] = useState("");
-  const start = async () => {
-    setProblem("");
-    try {
-      await onStart(label.trim());
-    } catch {
-      setProblem("The thread was not started. Try again.");
-    }
-  };
-  if (!open) return <Button onClick={() => setOpen(true)}>Start a thread</Button>;
-  const form = (
-    <>
-      <Field label="What is the thread about?" value={label} onChange={(e) => setLabel(e.target.value)} error={problem} />
-      <Button kind="primary" disabled={label.trim() === ""} onClick={start}>
-        Start
-      </Button>
-    </>
-  );
-  return bare ? form : <Card>{form}</Card>;
-}
 
 export function RoomThreadsPage({ client = mcpRoomsClient }: { client?: RoomsClient }) {
   const { roomId = "" } = useParams();

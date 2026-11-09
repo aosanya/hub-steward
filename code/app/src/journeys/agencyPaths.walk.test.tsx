@@ -148,17 +148,15 @@ describe("forms: a member goes in by the new path and by the old one", () => {
 });
 
 describe("chat: a member goes in by the new path and by the old one", () => {
-  it.each(enteredBy)("opens a room, its threads and another thread, and comes back to Chat, entering by %s", async (_, enter) => {
+  it.each(enteredBy)("opens a room, another thread from its Threads card, and comes back to Chat, entering by %s", async (_, enter) => {
     const world = stubWakala(chattingInARoom);
     const base = `/a/${riders.id}/chat`;
     openAgency(riders.id);
     openApp(enter("/chat/r1/t1"));
     await waitFor(() => expect(where()).toBe(`${base}/r1/t1`));
-    await userEvent.click(await screen.findByRole("button", { name: /Threads/ }));
-    await waitFor(() => expect(where()).toBe(`${base}/r1/threads`));
     await userEvent.click(await screen.findByRole("button", { name: /Water levy/ }));
     await waitFor(() => expect(where()).toBe(`${base}/r1/t2`));
-    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+    await userEvent.click(await screen.findByRole("button", { name: "‹ Chat" }));
     await waitFor(() => expect(where()).toBe(base));
     await userEvent.click(await screen.findByRole("button", { name: /Siaya farmers/ }));
     await waitFor(() => expect(where()).toMatch(new RegExp(`^${base}/r1/t[12]$`)));

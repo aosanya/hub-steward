@@ -73,15 +73,15 @@ describe("forms: every call names the agency in the address", () => {
 });
 
 describe("chat: every call names the agency in the address", () => {
-  it("opens a room, writes in it and opens its threads in the agency of the address, not in the one opened before", async () => {
+  it("opens a room, writes in it and opens another of its threads in the agency of the address, not in the one opened before", async () => {
     const world = stubWakala(chattingInARoom);
     openAgency(farmers.id);
     openApp(`/a/${riders.id}/chat/r1/t1`);
     await userEvent.type(await screen.findByLabelText("Write to Siaya farmers"), "Hello");
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
     await waitFor(() => expect(world.named("comm_chat_message_post")).toHaveLength(1));
-    await userEvent.click(await screen.findByRole("button", { name: /Threads/ }));
-    await screen.findByRole("heading", { name: "Threads" });
+    await userEvent.click(await screen.findByRole("button", { name: /Water levy/ }));
+    await screen.findByRole("heading", { name: "Water levy" });
     everyCallNames(world.sent, riders);
     expect(openAgencyId()).toBe(riders.id);
   });

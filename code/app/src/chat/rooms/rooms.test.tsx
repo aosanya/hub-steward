@@ -1,4 +1,4 @@
-import { act, render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useParams, useSearchParams } from "react-router-dom";
 import type { GroupOrder } from "../../supply/groupOrder/api";
@@ -269,6 +269,16 @@ describe("the farmers' room", () => {
     await userEvent.click(header);
     expect(header).toHaveAttribute("aria-expanded", "false");
     expect(card.querySelectorAll("button.row.room")).toHaveLength(0);
+  });
+
+  it("starts a new thread from the threads card and opens it", async () => {
+    const client = fake({ threads: [thread({})] });
+    show(client, "/a/farmers/chat/r1/t1");
+    await userEvent.click(await screen.findByRole("button", { name: "Start a thread" }));
+    await userEvent.type(screen.getByLabelText("What is the thread about?"), "Printing");
+    await userEvent.click(screen.getByRole("button", { name: "Start" }));
+    expect(client.startThread).toHaveBeenCalledWith("r1", "Printing");
+    await waitFor(() => expect(client.listMessages).toHaveBeenCalledWith("r1", "t9"));
   });
 
   it("opens another thread from a row of the threads card", async () => {
