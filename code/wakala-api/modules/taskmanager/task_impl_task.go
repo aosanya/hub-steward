@@ -223,7 +223,7 @@ func (m *taskManager) ListTasks(ctx context.Context, filter TaskFilter) ([]Task,
 	if err != nil {
 		return nil, fmt.Errorf("ListTasks: %w", err)
 	}
-	q, err = m.narrowList(ctx, q, filter, states, time.Now().UTC())
+	q, err = m.narrowList(ctx, q, filter, time.Now().UTC())
 	if err != nil {
 		return nil, fmt.Errorf("ListTasks: %w", err)
 	}

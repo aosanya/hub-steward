@@ -136,7 +136,8 @@ func TestListTasksHTTP_UnknownValuesReturnNothingNotEverything(t *testing.T) {
 	b := seededBoard(t)
 	b.wantTitles("?tag=Nonexistent")
 	b.wantTitles("?repo=no-such-repo")
-	b.wantTitles("?tag=docs")
+	b.wantTitles("?tag=docs", "docs hub", "docs swe")
+	b.wantTitles("?tag=Docs&tag=Blocked&tag=Missing")
 	b.wantTitles("?repo=hub")
 }
 
@@ -145,8 +146,8 @@ func TestListTasksHTTP_AgeFilter(t *testing.T) {
 	b.wantTitles("?untouched_days=1")
 	b.wantTitles("?untouched_days=0", "docs hub", "docs swe", "plain hub")
 	code, _ := b.call(http.MethodGet, "/tasks?untouched_days=-3", nil)
-	if code >= 500 {
-		t.Fatalf("negative untouched_days = %d, want a client error or an empty list", code)
+	if code != http.StatusBadRequest {
+		t.Fatalf("negative untouched_days = %d, want 400", code)
 	}
 	code, _ = b.call(http.MethodGet, "/tasks?untouched_days=abc", nil)
 	if code != http.StatusBadRequest {

@@ -53,9 +53,9 @@ func TestListTasks_NarrowsByTag(t *testing.T) {
 	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "docs two", Tags: []string{"Docs", "P1"}})
 	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "plain"})
 
-	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: "Docs"}), "docs one", "docs two")
-	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: "P1"}), "docs two")
-	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: "Nothing"}))
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: []string{"Docs"}}), "docs one", "docs two")
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: []string{"P1"}}), "docs two")
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: []string{"Nothing"}}))
 }
 
 func TestListTasks_NarrowsByRepo(t *testing.T) {
@@ -81,16 +81,17 @@ func TestListTasks_NarrowsByStep(t *testing.T) {
 	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Step: "doing"}), "being done")
 
 	_, err := mgr.ListTasks(ctx, mwanachamataskmanager.TaskFilter{Step: "Imaginary"})
-	if !errors.Is(err, mwanachamataskmanager.ErrUnknownTaskState) {
-		t.Fatalf("unknown step error = %v, want ErrUnknownTaskState", err)
+	if !errors.Is(err, mwanachamataskmanager.ErrUnknownBacklogStep) {
+		t.Fatalf("unknown step error = %v, want ErrUnknownBacklogStep", err)
 	}
 }
 
-func TestListTasks_BacklogIsTheDefaultOneUntilMoreExist(t *testing.T) {
+func TestListTasks_BacklogIsTheFirstOneUntilMoreExist(t *testing.T) {
 	mgr := newTestManager(t)
 	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "only"})
 
-	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "default"}), "only")
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "backlog"}), "only")
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "BACKLOG"}), "only")
 	_, err := mgr.ListTasks(context.Background(), mwanachamataskmanager.TaskFilter{Backlog: "Other"})
 	if !errors.Is(err, mwanachamataskmanager.ErrUnknownBacklog) {
 		t.Fatalf("unknown backlog error = %v, want ErrUnknownBacklog", err)
@@ -117,5 +118,51 @@ func TestListTasks_FiltersCombine(t *testing.T) {
 	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "wrong repo", Tags: []string{"Docs"}, ProjectName: "b"})
 	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "no tag", ProjectName: "a"})
 
-	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: "Docs", Repo: "a", Step: "To do"}), "match")
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: []string{"Docs"}, Repo: "a", Step: "To do"}), "match")
+}
+
+func TestListTasks_SeveralTagsMeanEveryTag(t *testing.T) {
+	mgr := newTestManager(t)
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "both", Tags: []string{"Docs", "Blocked"}})
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "docs only", Tags: []string{"Docs"}})
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "blocked only", Tags: []string{"Blocked"}})
+
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: []string{"Docs", "Blocked"}}), "both")
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: []string{"Docs", "Missing"}}))
+}
+
+func TestListTasks_TagMatchingIgnoresCase(t *testing.T) {
+	mgr := newTestManager(t)
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "docs", Tags: []string{"Docs"}})
+
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: []string{"docs"}}), "docs")
+}
+
+func TestListTasks_NegativeUntouchedDaysIsRefused(t *testing.T) {
+	mgr := newTestManager(t)
+
+	_, err := mgr.ListTasks(context.Background(), mwanachamataskmanager.TaskFilter{UntouchedDays: -5})
+	if !errors.Is(err, mwanachamataskmanager.ErrInvalidFilter) {
+		t.Fatalf("negative untouched_days error = %v, want ErrInvalidFilter", err)
+	}
+}
+
+func TestListTasks_BacklogAndStepFollowTheStoredPlace(t *testing.T) {
+	mgr := newTestManager(t)
+	ctx := context.Background()
+	if _, err := mgr.CreateBacklog(ctx, "Release", []string{"Plan", "Ship"}); err != nil {
+		t.Fatalf("CreateBacklog: %v", err)
+	}
+	first := mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "unplaced"})
+	moved := mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "moved"})
+	if _, err := mgr.MoveTaskToStep(ctx, moved.ID, "release", "ship"); err != nil {
+		t.Fatalf("MoveTaskToStep: %v", err)
+	}
+	_ = first
+
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "Release"}), "moved")
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "Release", Step: "ship"}), "moved")
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "Release", Step: "Plan"}))
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "backlog"}), "unplaced")
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "backlog", Step: "To do"}), "unplaced")
 }

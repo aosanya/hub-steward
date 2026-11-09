@@ -12,26 +12,24 @@ import (
 	"wakalaserver/modules/taskmanager/models"
 )
 
-const defaultBacklogName = "default"
+var (
+	ErrUnknownBacklog = errors.New("unknown backlog")
+	ErrInvalidFilter  = errors.New("invalid list filter")
+)
 
-var ErrUnknownBacklog = errors.New("unknown backlog")
-
-func (m *taskManager) narrowList(ctx context.Context, q *gorm.DB, filter TaskFilter, states []models.TaskState, now time.Time) (*gorm.DB, error) {
+func (m *taskManager) narrowList(ctx context.Context, q *gorm.DB, filter TaskFilter, now time.Time) (*gorm.DB, error) {
+	if filter.UntouchedDays < 0 {
+		return nil, fmt.Errorf("%w: untouched_days %d", ErrInvalidFilter, filter.UntouchedDays)
+	}
 	if filter.Repo != "" {
 		q = q.Where("project_name = ?", filter.Repo)
 	}
-	if filter.Backlog != "" && !strings.EqualFold(filter.Backlog, defaultBacklogName) {
-		return nil, fmt.Errorf("%w: %q", ErrUnknownBacklog, filter.Backlog)
+	q, err := m.narrowToPlace(ctx, q, filter)
+	if err != nil {
+		return nil, err
 	}
-	if filter.Step != "" {
-		statuses, ok := statusesOfStep(states, filter.Step)
-		if !ok {
-			return nil, fmt.Errorf("%w: %q", ErrUnknownTaskState, filter.Step)
-		}
-		q = q.Where("status IN ?", statuses)
-	}
-	if filter.Tag != "" {
-		q = q.Where("id IN ?", m.taskIDsWithTag(ctx, filter.Tag))
+	for _, tag := range filter.Tag {
+		q = q.Where("id IN (?)", m.taskIDsWithTag(ctx, tag))
 	}
 	if filter.UntouchedDays > 0 {
 		cutoff := now.AddDate(0, 0, -filter.UntouchedDays).Format(time.RFC3339)
@@ -40,28 +38,66 @@ func (m *taskManager) narrowList(ctx context.Context, q *gorm.DB, filter TaskFil
 	return q, nil
 }
 
-func statusesOfStep(states []models.TaskState, step string) ([]string, bool) {
-	for _, s := range states {
-		if !strings.EqualFold(s.Name, step) {
-			continue
-		}
-		out := make([]string, 0, len(s.Statuses))
-		for _, status := range s.Statuses {
-			out = append(out, string(status))
-		}
-		return out, true
+func (m *taskManager) narrowToPlace(ctx context.Context, q *gorm.DB, filter TaskFilter) (*gorm.DB, error) {
+	if filter.Backlog == "" && filter.Step == "" {
+		return q, nil
 	}
-	return nil, false
+	backlogs, err := m.backlogs(ctx)
+	if err != nil {
+		return nil, err
+	}
+	backlog := backlogs[0]
+	if filter.Backlog != "" {
+		found, ok := backlogNamed(backlogs, filter.Backlog)
+		if !ok {
+			return nil, fmt.Errorf("%w: %q", ErrUnknownBacklog, filter.Backlog)
+		}
+		backlog = found
+	}
+	isFirst := backlog.ID == backlogs[0].ID
+	if filter.Step == "" {
+		return q.Where(inBacklog(isFirst), backlog.ID), nil
+	}
+	step, ok := stepNamed(backlog, filter.Step)
+	if !ok {
+		return nil, fmt.Errorf("%w: %q in %q", ErrUnknownBacklogStep, filter.Step, backlog.Name)
+	}
+	if !isFirst || len(step.Statuses) == 0 {
+		return q.Where("backlog = ? AND step = ?", backlog.ID, step.ID), nil
+	}
+	statuses := make([]string, len(step.Statuses))
+	for i, status := range step.Statuses {
+		statuses[i] = string(status)
+	}
+	return q.Where("(backlog = ? AND step = ?) OR ((backlog = '' OR backlog IS NULL) AND status IN ?)", backlog.ID, step.ID, statuses), nil
 }
 
-func (m *taskManager) taskIDsWithTag(ctx context.Context, name string) []string {
-	var tagIDs []string
-	if err := m.store.Query(ctx, roleTag).Where("name = ?", name).Pluck("id", &tagIDs).Error; err != nil || len(tagIDs) == 0 {
-		return []string{""}
+func inBacklog(isFirst bool) string {
+	if isFirst {
+		return "(backlog = ? OR backlog = '' OR backlog IS NULL)"
 	}
-	var taskIDs []string
-	if err := m.store.Query(ctx, roleTagging).Where("tag_id IN ?", tagIDs).Pluck("task_id", &taskIDs).Error; err != nil || len(taskIDs) == 0 {
-		return []string{""}
+	return "backlog = ?"
+}
+
+func backlogNamed(backlogs []models.Backlog, name string) (models.Backlog, bool) {
+	for _, b := range backlogs {
+		if strings.EqualFold(b.ID, name) || strings.EqualFold(b.Name, name) {
+			return b, true
+		}
 	}
-	return taskIDs
+	return models.Backlog{}, false
+}
+
+func stepNamed(b models.Backlog, name string) (models.BacklogStep, bool) {
+	for _, s := range b.Steps {
+		if strings.EqualFold(s.ID, name) || strings.EqualFold(s.Name, name) {
+			return s, true
+		}
+	}
+	return models.BacklogStep{}, false
+}
+
+func (m *taskManager) taskIDsWithTag(ctx context.Context, name string) *gorm.DB {
+	tagIDs := m.store.Query(ctx, roleTag).Select("id").Where("LOWER(name) = ?", strings.ToLower(name))
+	return m.store.Query(ctx, roleTagging).Select("task_id").Where("tag_id IN (?)", tagIDs)
 }
