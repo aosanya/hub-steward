@@ -54,13 +54,13 @@ describe("journey 06, use the board", () => {
     );
     expect(screen.getByTestId("here")).toHaveTextContent(`/a/${farmers.id}/chat/r1`);
     await userEvent.click(screen.getByRole("link", { name: "Open" }));
-    expect(screen.getByTestId("here")).toHaveTextContent(`/a/${farmers.id}/backlogs/default`);
+    expect(screen.getByTestId("here")).toHaveTextContent(`/a/${farmers.id}/backlogs/default/board`);
   });
 
-  it("1. tapping a backlog's row on the Backlogs screen opens that backlog", async () => {
+  it("1. tapping a backlog's row on the Backlogs screen opens that backlog's board", async () => {
     inFarmers("/backlogs", withPlacedIssues);
     await userEvent.click(await screen.findByText("Backlog"));
-    expect(where()).toBe(`/a/${farmers.id}/backlogs/default`);
+    expect(where()).toBe(`/a/${farmers.id}/backlogs/default/board`);
   });
 
   it("1. the board of the backlog opens at its board path", async () => {
@@ -119,6 +119,12 @@ describe("journey 06, use the board", () => {
     for (const title of placed.map((one) => String(one.title))) {
       expect(await screen.findByRole("button", { name: title })).toBeInTheDocument();
     }
+  });
+
+  it("5. the list has the same List | Board switch and Board returns to the board", async () => {
+    inFarmers("/backlogs/default", withPlacedIssues);
+    await userEvent.click(await screen.findByRole("button", { name: "Board" }));
+    expect(where()).toBe(`/a/${farmers.id}${board}`);
   });
 
   it("5. the Backlog link opens the backlog's page", async () => {
