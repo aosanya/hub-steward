@@ -79,7 +79,7 @@ const openAt = (path: string) =>
     </MemoryRouter>,
   );
 
-const titles = () => Array.from(document.querySelectorAll(".issue-row .open")).map((one) => one.textContent);
+const titles = () => Array.from(document.querySelectorAll(".issue-row .issue-title")).map((one) => one.textContent);
 
 const where = () => screen.getByTestId("where").textContent;
 
@@ -148,14 +148,16 @@ describe("the Backlogs screen", () => {
 });
 
 describe("the list of issues", () => {
-  it("shows the issues in rank order with the title alone on each row", async () => {
+  it("shows the issues in rank order with the title and the tags as bubbles on each row", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs/all");
     await screen.findByText("Fix mirrored board drift");
     expect(titles()).toEqual(["Fix mirrored board drift", "Import the municipality", "Record the voice clips"]);
     const first = document.querySelector(".issue-row") as HTMLElement;
     expect(within(first).getAllByRole("button")).toHaveLength(1);
-    expect(first.textContent).toBe("Fix mirrored board drift");
+    expect(within(first).getAllByRole("button")).toHaveLength(1);
+    expect(first.querySelector(".issue-title")?.textContent).toBe("Fix mirrored board drift");
+    expect(Array.from(first.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Ready", "mwanachama-web", "Docs", "Backlog"]);
     expect(screen.getByText("3 issues")).toBeInTheDocument();
   });
 
@@ -163,10 +165,10 @@ describe("the list of issues", () => {
     const long = "DEV-009 Create the party plane's structure tables";
     answering([task("t9", long, 1, { description: "A paragraph that belongs on the detail page only." })]);
     openAt("/a/hub-1/backlogs/all");
-    await screen.findByRole("button", { name: long });
+    await screen.findByRole("button", { name: new RegExp(`^${long}`) });
     expect(screen.queryByText("A paragraph that belongs on the detail page only.")).not.toBeInTheDocument();
-    expect(document.querySelector(".issue-row .open")?.textContent).toBe(long);
-    await userEvent.click(screen.getByRole("button", { name: long }));
+    expect(document.querySelector(".issue-row .issue-title")?.textContent).toBe(long);
+    await userEvent.click(screen.getByRole("button", { name: new RegExp(`^${long}`) }));
     expect(await screen.findByText("A paragraph that belongs on the detail page only.")).toBeInTheDocument();
   });
 
@@ -221,7 +223,7 @@ describe("the list of issues", () => {
   it("opens an issue from its title", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs/all");
-    await userEvent.click(await screen.findByRole("button", { name: "Import the municipality" }));
+    await userEvent.click(await screen.findByRole("button", { name: /^Import the municipality/ }));
     expect(where()).toBe(issuePath("t2"));
   });
 });

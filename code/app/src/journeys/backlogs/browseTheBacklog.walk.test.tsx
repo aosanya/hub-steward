@@ -44,20 +44,21 @@ describe("journey 02, browse the backlog", () => {
     expect(screen.getByTestId("here")).toHaveTextContent(`/a/${farmers.id}/backlogs/all`);
   });
 
-  it("2. Open lists all issues in the rank the script gave, each row only its title", async () => {
+  it("2. Open lists all issues in the rank the script gave, each row its title and its tags as bubbles", async () => {
     inFarmers("/backlogs/all");
-    const first = await screen.findByRole("button", { name: "Write the manual" });
-    const titles = screen.getAllByRole("button").map((one) => one.textContent).filter((text) => ["Write the manual", "Import the boards", "Write the loader"].includes(text ?? ""));
+    const first = await screen.findByRole("button", { name: /^Write the manual/ });
+    const titles = Array.from(document.querySelectorAll(".issue-row .issue-title")).map((one) => one.textContent);
     expect(titles).toEqual(["Write the manual", "Import the boards", "Write the loader"]);
     const row = first.closest(".row") as HTMLElement;
     expect(within(row).getAllByRole("button")).toHaveLength(1);
-    expect(row.textContent).toBe("Write the manual");
+    expect(row.querySelector(".issue-title")?.textContent).toBe("Write the manual");
+    expect(Array.from(row.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(expect.arrayContaining(["Ready", "mwanachama-docs", "Docs"]));
     expect(screen.queryByText(/P[1-4]|critical|priority/i)).toBeNull();
   });
 
   it("2. the back arrow returns to Backlogs", async () => {
     inFarmers("/backlogs/all");
-    await screen.findByRole("button", { name: "Write the manual" });
+    await screen.findByRole("button", { name: /^Write the manual/ });
     await userEvent.click(screen.getByRole("button", { name: "Back" }));
     expect(where()).toBe(`/a/${farmers.id}/backlogs`);
     expect(await screen.findByText("All issues")).toBeInTheDocument();
@@ -65,26 +66,26 @@ describe("journey 02, browse the backlog", () => {
 
   it("2. Home returns to the home screen", async () => {
     inFarmers("/backlogs/all");
-    await screen.findByRole("button", { name: "Write the manual" });
+    await screen.findByRole("button", { name: /^Write the manual/ });
     await userEvent.click(within(screen.getByRole("navigation", { name: "Main" })).getByRole("link", { name: /Home/ }));
     expect(where()).toBe(`/a/${farmers.id}/home`);
   });
 
   it("3. tapping a tag on an issue's page opens the list narrowed to it, with the tag as a chip with a cross", async () => {
     inFarmers("/backlogs/all");
-    await userEvent.click(await screen.findByRole("button", { name: "Write the manual" }));
+    await userEvent.click(await screen.findByRole("button", { name: /^Write the manual/ }));
     await userEvent.click(await screen.findByRole("button", { name: "Docs" }));
     expect(await screen.findByRole("button", { name: "Docs ✕" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Write the loader" })).toBeNull();
+    expect(screen.queryByRole("button", { name: /^Write the loader/ })).toBeNull();
     expect(where()).toContain("tag=Docs");
   });
 
   it("3. tags chosen together narrow the list and clearing a chip widens it", async () => {
     inFarmers("/backlogs/all?tag=Docs&tag=Blocked");
-    expect(await screen.findByRole("button", { name: "Import the boards" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Write the manual" })).toBeNull();
+    expect(await screen.findByRole("button", { name: /^Import the boards/ })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^Write the manual/ })).toBeNull();
     await userEvent.click(screen.getByRole("button", { name: "Blocked ✕" }));
-    expect(await screen.findByRole("button", { name: "Write the manual" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /^Write the manual/ })).toBeInTheDocument();
   });
 
   it("3. tags no issue has all of show one line saying so", async () => {

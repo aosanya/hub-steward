@@ -1,6 +1,7 @@
-.issue-row .open { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: left; overflow-wrap: anywhere; }
+.issue-row .open { display: flex; flex-direction: column; gap: .375rem; padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: .9rem; text-align: left; overflow-wrap: anywhere; }
 .issue-tags { display: flex; flex-wrap: wrap; gap: .375rem; }
 .chosen { display: flex; flex-wrap: wrap; gap: .5rem; }
 .chosen:empty { display: none; }
 .issue-body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.issue-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .issue-code { color: var(--accent); font-weight: 500; }

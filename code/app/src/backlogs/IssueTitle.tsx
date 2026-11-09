@@ -1,4 +1,7 @@
+import { Chip } from "../ui/Chip";
+import type { Issue } from "./api";
 import "./backlogs.css";
+import { tagsOf } from "./tags";
 
 const idLike = /^[A-Za-z]+-?\d+[A-Za-z]?$/;
 
@@ -14,10 +17,21 @@ export const titleParts = (title: string) => {
 export function IssueTitle({ title }: { title: string }) {
   const { code, rest } = titleParts(title);
   return (
-    <>
+    <span className="issue-title">
       {code ? <span className="issue-code">{code}</span> : null}
       {code ? " " : null}
       {rest}
-    </>
+    </span>
+  );
+}
+
+export function IssueTags({ issue }: { issue: Issue }) {
+  const tags = tagsOf(issue);
+  return tags.length === 0 ? null : (
+    <span className="issue-tags">
+      {tags.map((tag) => (
+        <Chip key={tag}>{tag}</Chip>
+      ))}
+    </span>
   );
 }

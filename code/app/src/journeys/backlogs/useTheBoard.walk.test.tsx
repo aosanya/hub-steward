@@ -116,7 +116,7 @@ describe("journey 06, use the board", () => {
     await userEvent.click(screen.getByRole("button", { name: "List" }));
     expect(where()).toBe(`/a/${farmers.id}/backlogs/backlog`);
     for (const title of placed.map((one) => String(one.title))) {
-      expect(await screen.findByRole("button", { name: title })).toBeInTheDocument();
+      expect(await screen.findByRole("button", { name: new RegExp(`^${title}`) })).toBeInTheDocument();
     }
   });
 

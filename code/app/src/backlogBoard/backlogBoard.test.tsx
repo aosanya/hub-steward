@@ -86,12 +86,14 @@ describe("BacklogBoard", () => {
     expect(within(column("Done")).getByText("Nothing here")).toBeInTheDocument();
   });
 
-  it("shows only the title on a card and opens the issue when it is tapped", async () => {
+  it("shows the title and the tags as bubbles on a card and opens the issue when it is tapped", async () => {
     const user = userEvent.setup();
     open(client());
     await screen.findByText("Record the clips");
-    const card = within(column("Waiting")).getByRole("button", { name: "Import the municipality" });
-    expect(card.textContent).toBe("Import the municipality");
+    const card = within(column("Waiting")).getByRole("button", { name: /^Import the municipality/ });
+    expect(card.querySelector(".issue-title")?.textContent).toBe("Import the municipality");
+    expect(Array.from(card.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Blocked", "hub-steward", "Docs", "Backlog"]);
+    expect(within(column("To do")).getByRole("button", { name: /Record the clips/ }).querySelectorAll(".chip")).toHaveLength(3);
     await user.click(card);
     await waitFor(() => expect(screen.getByTestId("where").textContent).toMatch(/\/backlogs\/issue\/3$/));
   });
