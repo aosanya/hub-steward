@@ -19,7 +19,7 @@ var taskmanagerMount = taskmanagerroutes.Mount{Caller: accounts.IDFromContext}
 
 func (d *Deps) instanceTaskManagerMount(role string) taskmanagerroutes.Mount {
 	mount := taskmanagerMount
-	mount.Authorize = agentPermissioned(role, d.Registry, d.agencyRolePermissions, mount.Authorize)
+	mount.Authorize = d.taskPermissioned(role, mount.Authorize)
 	return mount
 }
 
@@ -30,7 +30,7 @@ func (d *Deps) registerTaskManagerRoutes(mux *http.ServeMux, reg agencies.Regist
 		action := rt.Action
 		mux.HandleFunc(rt.Pattern(taskmanagerInstancePrefix), auth.require(func(w http.ResponseWriter, r *http.Request) {
 			r = withPartition(r, r.PathValue("instanceID"))
-			m, err := taskManagerFor(r.Context(), reg, r.PathValue("instanceID"))
+			m, err := d.taskManagerFor(r.Context(), reg, r.PathValue("instanceID"))
 			if err != nil && errors.Is(err, agencies.ErrInstanceNotFound) && recordReadableActions[action] && onRecord != nil {
 				m, err = taskManagerThroughRecord(r, reg, action, onRecord)
 			}

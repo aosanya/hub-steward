@@ -18,7 +18,7 @@ import (
 type taskManagerResolver func(ctx context.Context, instanceID string) (mwanachamataskmanager.TaskManager, error)
 
 func (d *Deps) resolveTaskManager(ctx context.Context, instanceID string) (mwanachamataskmanager.TaskManager, error) {
-	return taskManagerFor(ctx, d.Registry, instanceID)
+	return d.taskManagerFor(ctx, d.Registry, instanceID)
 }
 
 func (d *Deps) registerTaskManagerMCPTools(server *mcp.Server, resolve taskManagerResolver) {
@@ -33,7 +33,7 @@ func (d *Deps) registerTaskManagerMCPTools(server *mcp.Server, resolve taskManag
 			InputSchema: withInstanceID(t.Name, t.InputSchema),
 		}, taskManagerToolHandler(i, t.Name, resolve, reg))
 	}
-	d.guardToolPermissions(server, actions)
+	d.guardTaskToolPermissions(server, actions)
 }
 
 func withInstanceID(name string, raw json.RawMessage) map[string]any {

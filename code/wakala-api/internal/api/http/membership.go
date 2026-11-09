@@ -53,6 +53,16 @@ func taskManagerFor(ctx context.Context, reg agencies.Registry, instanceID strin
 	return reg.TaskManager(ctx, instanceID)
 }
 
+func (d *Deps) taskManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamataskmanager.TaskManager, error) {
+	if err := mustBeMounted(ctx, reg, instanceID, "taskmanager"); err != nil {
+		return nil, err
+	}
+	if err := d.taskManagerAdmitted(ctx, instanceID); err != nil {
+		return nil, err
+	}
+	return reg.TaskManager(ctx, instanceID)
+}
+
 func sourceManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamasources.SourceManager, error) {
 	if err := mustBeMember(ctx, reg, instanceID); err != nil {
 		return nil, err

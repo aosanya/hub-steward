@@ -163,6 +163,18 @@ func heldRoleKeys(ctx context.Context, reg agencies.Registry, instanceID string,
 			}
 		}
 	}
+	if groupRoles, ok := reg.(agencies.GroupRoles); ok {
+		through, err := groupRoles.RoleIDsThroughGroups(ctx, instanceID, caller)
+		if err != nil {
+			return nil, err
+		}
+		for _, id := range through {
+			held[id] = true
+			if role, err := m.GetRole(ctx, id); err == nil && role.Code != "" {
+				held[role.Code] = true
+			}
+		}
+	}
 	directory, err := reg.ActorManager(ctx, instanceID)
 	if err != nil {
 		return nil, err
