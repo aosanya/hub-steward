@@ -2,6 +2,7 @@ package mwanachamataskmanager_test
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"testing"
 	"time"
@@ -165,4 +166,27 @@ func TestListTasks_BacklogAndStepFollowTheStoredPlace(t *testing.T) {
 	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "Release", Step: "Plan"}))
 	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "backlog"}), "unplaced")
 	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Backlog: "backlog", Step: "To do"}), "unplaced")
+}
+
+func TestTaskFilter_TagAcceptsOneNameOrAList(t *testing.T) {
+	for raw, want := range map[string]int{`{"tag":"Docs"}`: 1, `{"tag":["Docs","Blocked"]}`: 2, `{}`: 0} {
+		var filter mwanachamataskmanager.TaskFilter
+		if err := json.Unmarshal([]byte(raw), &filter); err != nil {
+			t.Fatalf("%s: %v", raw, err)
+		}
+		if len(filter.Tag) != want {
+			t.Fatalf("%s gave %v, want %d tags", raw, filter.Tag, want)
+		}
+	}
+	var bad mwanachamataskmanager.TaskFilter
+	if err := json.Unmarshal([]byte(`{"tag":5}`), &bad); err == nil {
+		t.Fatal("a number is not a tag")
+	}
+}
+
+func TestListTasks_EmptyTagIsIgnored(t *testing.T) {
+	mgr := newTestManager(t)
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "any"})
+
+	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: []string{""}}), "any")
 }
