@@ -31,7 +31,7 @@ describe("a message that only asks to show a backlog by its name", () => {
   it("reads the backlog list itself and answers with the backlogs card, without the model's issue search", async () => {
     modelSays("No issues match 'walk-09b' with the Ready tag.");
     const answer = await askAssistant("acc1", [{ role: "user", content: "show walk-09b ready" }]);
-    expect(answer.lists.map((list) => list.view)).toEqual(["backlogs"]);
+    expect(answer.lists.map((list) => list.view)).toEqual(["backlog:s1"]);
     expect(answer.text).toContain("walk-09b ready");
     expect(answer.text).not.toContain("No issues match");
     expect(modelCalls()).toEqual([]);

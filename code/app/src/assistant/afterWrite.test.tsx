@@ -45,7 +45,7 @@ describe("the lists and cards after a write", () => {
   it("keeps the lists of a read-only answer", async () => {
     script(lookups, replies);
     const answer = await askAssistant("acc1", [{ role: "user", content: "what is pending for issue A" }], () => undefined, async () => true);
-    expect(answer.lists.map((list) => list.title)).toEqual(["Pending walk-06 issue A issues", "Backlogs"]);
+    expect(answer.lists.map((list) => list.title)).toEqual(["Pending walk-06 issue A issues"]);
   });
 
   it("drops the lookups that only led to a confirmed write", async () => {
@@ -58,7 +58,7 @@ describe("the lists and cards after a write", () => {
   it("keeps the lookups when the person cancelled the write", async () => {
     script([...lookups, moveCall], replies);
     const answer = await askAssistant("acc1", [{ role: "user", content: "move issue A to Doing" }], () => undefined, async () => false);
-    expect(answer.lists.map((list) => list.title)).toEqual(["Pending walk-06 issue A issues", "Backlogs"]);
+    expect(answer.lists.map((list) => list.title)).toEqual(["Pending walk-06 issue A issues"]);
   });
 
   it("ends the ask with the hub's refusal when the write itself failed", async () => {

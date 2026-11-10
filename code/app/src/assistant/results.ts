@@ -129,6 +129,14 @@ export const worthKeeping = (drafts: ResultDraft[]): ResultDraft[] =>
 
 export const withIds = (drafts: ResultDraft[], answerId: number): ResultList[] => worthKeeping(drafts).map((draft, index) => ({ ...draft, id: `${answerId}:${index}` }));
 
+const countsAsked = (message: string): number[] => (message.match(/\b\d+\b/g) ?? []).map(Number);
+
+export const askedCountFirst = (drafts: ResultDraft[], message: string): ResultDraft[] => {
+  const counts = countsAsked(message);
+  const asked = drafts.filter((draft) => draft.issues.length > 0 && counts.includes(draft.total));
+  return asked.length === 0 ? drafts : [...asked, ...drafts.filter((draft) => !asked.includes(draft))];
+};
+
 export const viewsOf = (drafts: ResultDraft[]): string[] => [...new Set(drafts.flatMap((draft) => (draft.view ? [draft.view] : [])))];
 
 export const questionOptions = (text: string, lists: ResultDraft[]): string[] => {

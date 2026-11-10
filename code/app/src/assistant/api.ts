@@ -1,7 +1,8 @@
+import { taskTools } from "../backlogs/api";
 import { callTool, listTools, type ToolInfo } from "../wakala/mcp";
 import { cancelledResult, moveTool, createTool, rulesTool, resolveMove, unconfirmedResult, writeNames, writeProblem, type Confirm } from "./confirm";
-import { showNamedBacklog } from "./namedBacklog";
-import { draftOf, pendingTool, readTool, type ResultDraft, type ResultList } from "./results";
+import { backlogDraftsFor, showNamedBacklog } from "./namedBacklog";
+import { askedCountFirst, draftOf, pendingTool, readTool, type ResultDraft, type ResultList } from "./results";
 import { backlogByNameRule, blockedIsATagRule, lookUpBeforeMoveRule, manyMatchesRule, promptFrom, triagerDescription } from "./triager";
 
 export type Turn = { role: "user" | "assistant"; content: string; lists?: ResultList[] };
@@ -139,9 +140,10 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
   const prompt = promptFrom(await triagerDescription(), systemPrompt);
   const messages: Wire[] = [{ role: "system", content: prompt }, ...turns.map(({ role, content }) => ({ role, content }))];
   const found: ResultDraft[] = [];
+  const lastUserWords = [...turns].reverse().find((turn) => turn.role === "user")?.content ?? "";
   let wrote = false;
   let askedAgain = false;
-  const lists = () => (wrote ? [] : found);
+  const lists = () => (wrote ? [] : askedCountFirst(found, lastUserWords));
   for (let round = 0; round < maxRounds; round++) {
     const args: Record<string, unknown> = { accountID: accountId, messages: [...messages], max_tokens: replyTokens };
     if (tools.length > 0) args.tools = tools;
@@ -166,8 +168,8 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
         onStep(stepWords[call.name] ?? "Looking it up");
         try {
           const read = await callTool("", call.name, call.arguments);
-          const draft = draftOf(call.name, call.arguments, read);
-          if (draft) found.push(draft);
+          const drafts = call.name === taskTools.backlogs ? backlogDraftsFor(lastUserWords, read) : [draftOf(call.name, call.arguments, read)].flatMap((one) => (one ? [one] : []));
+          found.push(...drafts);
           result = resultText(read);
           if (writeNames.includes(call.name)) wrote = true;
         } catch (failure) {
