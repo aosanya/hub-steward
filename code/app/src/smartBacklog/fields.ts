@@ -7,11 +7,11 @@ type Operator = { id: OperatorId; label: string };
 
 type FieldSpec = { id: FieldId; label: string; operators: Operator[]; value: ValueKind };
 
-const has: Operator[] = [{ id: "has", label: "has" }, { id: "not_has", label: "does not have" }];
+const has: Operator[] = [{ id: "has", label: "has" }, { id: "does_not_have", label: "does not have" }];
 const is: Operator[] = [{ id: "is", label: "is" }, { id: "is_not", label: "is not" }];
-const contains: Operator[] = [{ id: "contains", label: "contains" }, { id: "not_contains", label: "does not contain" }];
+const contains: Operator[] = [{ id: "contains", label: "contains" }, { id: "does_not_contain", label: "does not contain" }];
 const waits: Operator[] = [{ id: "has_something", label: "has something" }, { id: "has_nothing", label: "has nothing" }];
-const recent: Operator[] = [{ id: "in_last", label: "is in the last" }, { id: "not_in_last", label: "is not in the last" }];
+const recent: Operator[] = [{ id: "in_the_last", label: "is in the last" }, { id: "not_in_the_last", label: "is not in the last" }];
 
 const specs: FieldSpec[] = [
   { id: "tag", label: "Tag", operators: has, value: "choice" },

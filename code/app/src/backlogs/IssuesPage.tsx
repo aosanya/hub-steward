@@ -9,6 +9,16 @@ import { Segmented } from "../ui/Segmented";
 import { backState } from "../ui/backTo";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
+import { mcpBacklogManageClient } from "../backlogManage/api";
+import { useMayManage } from "../backlogManage/useMayManage";
+import type { BacklogManageClient } from "../backlogManage/types";
+import { listSmartBacklogs } from "../smartBacklog/api";
+import { filterDraft } from "../smartBacklog/fromFilter";
+import { addSmartBacklogPath, smartBacklogPath } from "../smartBacklog/paths";
+import { sameRules } from "../smartBacklog/rulesKey";
+import { toRuleSet } from "../smartBacklog/rulesDraft";
+import type { SmartBacklog } from "../smartBacklog/types";
+import { Button } from "../ui/Button";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { FilterBar } from "./FilterBar";
 import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../sendToBacklog";
@@ -16,7 +26,9 @@ import { IssueRow } from "./IssueRow";
 import { backlogsHomePath, boardPath, issuePath, queryParam, searchOf, tagParam } from "./paths";
 import { countWords, narrowed, toggled } from "./tags";
 
-export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {
+type Props = { client?: BacklogsClient; manage?: BacklogManageClient; smartBacklogs?: () => Promise<SmartBacklog[]> };
+
+export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogManageClient, smartBacklogs = listSmartBacklogs }: Props) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -32,6 +44,8 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
   const key = `issues:${openAgencyId()}:${backlogId}:${version}`;
   const issues = useLoad(() => client.issues(backlogId), key);
   const backlogs = useLoad(() => client.backlogs(), `backlogs:${openAgencyId()}`);
+  const mayManage = useMayManage(manage);
+  const smart = useLoad(() => smartBacklogs(), `smart-sets:${openAgencyId()}`);
   const title = backlogId === allIssuesId ? "All issues" : backlogs.state === "ready" ? (backlogs.data.find((one) => one.id === backlogId)?.name ?? "Backlog") : "Backlog";
   const choose = (tag: string) => setSearch(searchOf(toggled(chosen, tag), query), { replace: true });
   const typed = (text: string) => setSearch(searchOf(chosen, text), { replace: true });
@@ -39,13 +53,21 @@ export function IssuesPage({ client = mcpBacklogsClient }: { client?: BacklogsCl
   const shown = issues.state === "ready" ? narrowed(issues.data, chosen, query) : [];
   const total = issues.state === "ready" ? issues.data.length : 0;
   const sub = issues.state === "ready" && total > 0 ? countWords(shown.length, total, filtering) : undefined;
+  const draft = filterDraft(chosen, query, backlogs.state === "ready" ? backlogs.data.filter((one) => one.kind !== "smart").map((one) => one.name) : []);
+  const existing = smart.state === "ready" ? smart.data.find((one) => sameRules(one.set, toRuleSet(draft))) : undefined;
+  const mayAdd = filtering && mayManage.state === "ready" && mayManage.data && smart.state === "ready";
+  const save = !mayAdd ? undefined : existing ? (
+    <Button to={smartBacklogPath(existing.id)}>Open {existing.name}</Button>
+  ) : (
+    <Button onClick={() => navigate(addSmartBacklogPath(), { state: { draft } })}>Save as smart backlog</Button>
+  );
   const canSend = targets.state === "ready" && targets.data.length > 0 && shown.length > 0;
   const shell = selecting.on
     ? selectingShell(selecting, shown.map((issue) => issue.id))
     : { title, onBack: () => navigate(backlogsHomePath()), backLabel: words.backBacklogs, action: canSend ? <SelectButton onStart={selecting.start} /> : undefined };
   return (
     <Shell {...shell} tabless={selecting.on}>
-      <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={choose} />
+      <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={choose} save={save} />
       {backlogId !== allIssuesId ? (
         <Segmented
           items={[

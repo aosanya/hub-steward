@@ -1,7 +1,7 @@
 export const FIELD_IDS = ["tag", "mark", "backlog", "step", "priority", "title", "description", "waits_on", "last_changed"] as const;
 export type FieldId = (typeof FIELD_IDS)[number];
 
-export type OperatorId = "has" | "not_has" | "is" | "is_not" | "contains" | "not_contains" | "has_something" | "has_nothing" | "in_last" | "not_in_last";
+export type OperatorId = "has" | "does_not_have" | "is" | "is_not" | "contains" | "does_not_contain" | "has_something" | "has_nothing" | "in_the_last" | "not_in_the_last";
 
 export type Match = "all" | "any";
 

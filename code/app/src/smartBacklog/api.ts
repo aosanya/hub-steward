@@ -44,6 +44,11 @@ const duplicateOf = (error: unknown): DuplicateRules | null => {
   }
 };
 
+export async function listSmartBacklogs(): Promise<SmartBacklog[]> {
+  const items: any[] = ((await callTool("", smartTools.list, {})) as any)?.items ?? [];
+  return items.filter((raw) => raw?.kind === "smart").map(smartOf);
+}
+
 export const mcpSmartBacklogClient: SmartBacklogClient = {
   async choices() {
     return choicesOf(await mcpBacklogsClient.issues());

@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { backlogsHomePath } from "../backlogs/paths";
 import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
@@ -14,6 +14,7 @@ type Props = { client?: SmartBacklogClient };
 
 export function AddSmartBacklogScreen({ client = mcpSmartBacklogClient }: Props) {
   const navigate = useNavigate();
+  const initial = (useLocation().state as { draft?: Draft } | null)?.draft;
   const choices = useLoad(() => client.choices(), `smart-choices:${openAgencyId()}`);
   const back = () => navigate(backlogsHomePath());
   if (choices.state === "loading") return <Shell title="Add a smart backlog" onBack={back} tabless><LoadingLine /></Shell>;
@@ -22,6 +23,7 @@ export function AddSmartBacklogScreen({ client = mcpSmartBacklogClient }: Props)
     <RulesScreen
       choices={choices.data}
       count={client.count}
+      initial={initial}
       onBack={back}
       onCreate={async (name, set) => navigate(smartBacklogPath(await client.create(name, set)))}
       onOpenExisting={(id) => navigate(smartBacklogPath(id))}

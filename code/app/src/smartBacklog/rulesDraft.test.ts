@@ -14,15 +14,15 @@ describe("fields", () => {
     expect(blankRule("mark", choices)).toEqual({ field: "mark", operator: "is", value: "Ready" });
     expect(blankRule("title", choices)).toEqual({ field: "title", operator: "contains", value: "" });
     expect(blankRule("waits_on", choices)).toEqual({ field: "waits_on", operator: "has_something", value: "" });
-    expect(blankRule("last_changed", choices)).toEqual({ field: "last_changed", operator: "in_last", value: "30 days" });
+    expect(blankRule("last_changed", choices)).toEqual({ field: "last_changed", operator: "in_the_last", value: "30 days" });
   });
 
   it("needs typed words for a title and a whole number for a date", () => {
     expect(ruleComplete({ field: "title", operator: "contains", value: " " })).toBe(false);
     expect(ruleComplete({ field: "title", operator: "contains", value: "voice" })).toBe(true);
-    expect(ruleComplete({ field: "last_changed", operator: "in_last", value: " days" })).toBe(false);
-    expect(ruleComplete({ field: "last_changed", operator: "in_last", value: "0 days" })).toBe(false);
-    expect(ruleComplete({ field: "last_changed", operator: "not_in_last", value: "2 weeks" })).toBe(true);
+    expect(ruleComplete({ field: "last_changed", operator: "in_the_last", value: " days" })).toBe(false);
+    expect(ruleComplete({ field: "last_changed", operator: "in_the_last", value: "0 days" })).toBe(false);
+    expect(ruleComplete({ field: "last_changed", operator: "not_in_the_last", value: "2 weeks" })).toBe(true);
     expect(ruleComplete({ field: "waits_on", operator: "has_nothing", value: "" })).toBe(true);
   });
 });

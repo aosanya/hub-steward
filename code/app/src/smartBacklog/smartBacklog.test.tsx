@@ -72,7 +72,7 @@ describe("the rules screen", () => {
     await addRuleOn("Mark");
     await userEvent.click(screen.getByRole("button", { name: "Field of rule 1" }));
     await userEvent.click(within(screen.getByRole("dialog", { name: "Rule on" })).getByRole("button", { name: "Last changed" }));
-    expect(screen.getByLabelText("Operator of rule 1")).toHaveValue("in_last");
+    expect(screen.getByLabelText("Operator of rule 1")).toHaveValue("in_the_last");
     expect(screen.getByLabelText("Number of rule 1")).toHaveValue("30");
     expect(screen.getByLabelText("Unit of rule 1")).toHaveValue("days");
     await userEvent.click(screen.getByRole("button", { name: "Remove rule 1" }));
