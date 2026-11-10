@@ -17,5 +17,6 @@
 @media (prefers-reduced-motion: reduce) { .assistant-dots i { animation: none; opacity: .6; } }
 .assistant-working { display: flex; align-items: center; gap: .5rem; color: var(--ink-soft); }
 .assistant-step { display: block; margin-top: .25rem; font-size: .8125rem; color: var(--ink-soft); }
+.assistant-reason { font-size: .8125rem; color: var(--ink-soft); }
 .assistant-queued { font-size: .8125rem; color: var(--ink-soft); }
 .assistant-unqueue { padding: 0 .25rem; border: 0; background: transparent; color: var(--ink-soft); line-height: 1; }

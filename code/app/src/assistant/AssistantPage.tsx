@@ -16,6 +16,7 @@ import { Markdown } from "../ui/Markdown";
 import { Shell } from "../ui/Shell";
 import { LimitReached, mcpAssistantClient, type AssistantClient, type LimitSpan } from "./api";
 import { ConfirmCard, useConfirmation } from "./ConfirmCard";
+import { failureReason } from "./failureReason";
 import { OptionButtons } from "./OptionButtons";
 import { splitOptions } from "./optionLines";
 import { answerAfter, historyUpTo, markSent, nextQueued, requeueUnanswered, withoutItem, type Item } from "./queue";
@@ -78,12 +79,13 @@ function Working({ step }: { step: string }) {
   );
 }
 
-function Failed({ retry }: { retry: () => void }) {
+function Failed({ retry, reason }: { retry: () => void; reason: string }) {
   return (
     <div className="rm-msg" role="alert">
       <Who />
       <div className="rm-bubble">
         <p>{failedWords}</p>
+        {reason === "" ? null : <p className="assistant-reason">{reason}</p>}
         <Button onClick={retry}>{retryWords}</Button>
       </div>
     </div>
@@ -95,9 +97,9 @@ const optionsOf = (item: Item) => {
   return written.length > 0 ? written : questionOptions(item.content, item.lists ?? []);
 };
 
-type BubblesProps = { items: Item[]; phase: Phase; current: number; step: string; retry: () => void; pick: (id: string) => void; unqueue: (id: number) => void; ask: (words: string) => void };
+type BubblesProps = { items: Item[]; phase: Phase; current: number; step: string; reason: string; retry: () => void; pick: (id: string) => void; unqueue: (id: number) => void; ask: (words: string) => void };
 
-function Bubbles({ items, phase, current, step, retry, pick, unqueue, ask }: BubblesProps) {
+function Bubbles({ items, phase, current, step, reason, retry, pick, unqueue, ask }: BubblesProps) {
   return (
     <div className="rm-thread">
       {items.map((item) => (
@@ -131,7 +133,7 @@ function Bubbles({ items, phase, current, step, retry, pick, unqueue, ask }: Bub
             </div>
           )}
           {item.id === current && phase === "working" ? <Working step={step} /> : null}
-          {item.id === current && phase === "failed" ? <Failed retry={retry} /> : null}
+          {item.id === current && phase === "failed" ? <Failed retry={retry} reason={reason} /> : null}
         </div>
       ))}
     </div>
@@ -145,6 +147,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
   const [phase, setPhase] = useState<Phase>("idle");
   const [current, setCurrent] = useState(0);
   const [step, setStep] = useState("");
+  const [reason, setReason] = useState("");
   const [limit, setLimit] = useState<LimitSpan | "">("");
   const confirmation = useConfirmation();
   const run = useRef(0);
@@ -201,7 +204,10 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
         setLimit(failure.span);
         setItems((now) => now.filter((item) => !item.queued));
         setPhase("idle");
-      } else setPhase("failed");
+      } else {
+        setReason(failureReason(failure));
+        setPhase("failed");
+      }
     } finally {
       clearTimeout(timer);
     }
@@ -232,7 +238,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
                 <p className="assistant-empty">{askPlaceholder}</p>
               ) : (
                 <BacklogSummariesLoader kinds={items.some((item) => (item.views ?? []).length > 0) ? [backlogViewKind] : []} client={backlogs}>
-                  <Bubbles items={items} phase={phase} current={current} step={step} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
+                  <Bubbles items={items} phase={phase} current={current} step={step} reason={reason} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
                 </BacklogSummariesLoader>
               )}
               {confirmation.pending ? <ConfirmCard write={confirmation.pending.write} settle={confirmation.pending.settle} held={found.results} client={backlogs} /> : null}
