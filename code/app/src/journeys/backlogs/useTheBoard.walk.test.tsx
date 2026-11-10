@@ -15,7 +15,7 @@ afterEach(endInAgencies);
 const board = "/backlogs/backlog/board";
 
 const placed = [
-  issueRow({ id: "t1", title: "Import the boards", rank: 2, status: "blocked", state: "Waiting", project_name: "hub-steward-swe", tags: ["Docs"] }),
+  issueRow({ id: "t1", title: "Import the boards", rank: 2, status: "blocked", state: "Waiting", project_name: "hub-steward-swe", tags: ["Docs", "Blocked"] }),
   issueRow({ id: "t2", title: "Write the manual", rank: 1, state: "To do", project_name: "mwanachama-docs", tags: ["Docs"] }),
   issueRow({ id: "t3", title: "Write the loader", rank: 3, state: "Doing", project_name: "hub-steward-swe", tags: ["Software"] }),
   issueRow({ id: "t4", title: "Close the sprint", rank: 4, status: "completed", state: "Done", project_name: "hub-steward-swe" }),

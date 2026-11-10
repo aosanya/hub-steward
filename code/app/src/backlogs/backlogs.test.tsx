@@ -30,7 +30,7 @@ const task = (id: string, title: string, rank: number, extra: Record<string, unk
 const board = [
   task("t3", "Record the voice clips", 3, { project_name: "community-hubs" }),
   task("t1", "Fix mirrored board drift", 1, { project_name: "mwanachama-web", tags: ["Docs"] }),
-  task("t2", "Import the municipality", 2, { status: "blocked", state: "Waiting", description: "Load the English template." }),
+  task("t2", "Import the municipality", 2, { status: "blocked", state: "Waiting", tags: ["Blocked"], description: "Load the English template." }),
 ];
 
 const stepNames = ["To do", "Doing", "Waiting", "Done", "Cancelled"];
@@ -444,10 +444,16 @@ describe("one issue", () => {
 });
 
 describe("reading the task module's answers", () => {
-  it("marks settled work with no tag and blocked work Blocked", () => {
+  it("marks settled work with no tag and tagged work Blocked", () => {
     expect(issueOf({ id: "a", status: "completed" }).mark).toBe("");
-    expect(issueOf({ id: "a", status: "blocked" }).mark).toBe("Blocked");
+    expect(issueOf({ id: "a", status: "pending", tags: ["Blocked"] }).mark).toBe("Blocked");
     expect(issueOf({ id: "a", status: "in_progress" }).mark).toBe("Ready");
+  });
+
+  it("does not call a paused row Blocked unless it carries the Blocked tag", () => {
+    expect(issueOf({ id: "a", status: "blocked" }).mark).toBe("");
+    expect(issueOf({ id: "a", status: "blocked", blocked: false, state: "Waiting" }).mark).toBe("");
+    expect(issueOf({ id: "a", status: "blocked", blocked: true, tags: ["Blocked"] }).mark).toBe("Blocked");
   });
 
   it("sends unranked issues to the end", () => {

@@ -19,7 +19,7 @@ export const issueRow = (over: Raw): Raw => ({
   ...over,
 });
 
-export const importIssue = issueRow({ id: "t1", title: "Import the boards", rank: 2, status: "blocked", project_name: "hub-steward-swe", tags: ["Docs"], description: "Read every board." });
+export const importIssue = issueRow({ id: "t1", title: "Import the boards", rank: 2, status: "blocked", project_name: "hub-steward-swe", tags: ["Docs", "Blocked"], description: "Read every board." });
 
 export const docsIssue = issueRow({ id: "t2", title: "Write the manual", rank: 1, project_name: "mwanachama-docs", tags: ["Docs"] });
 

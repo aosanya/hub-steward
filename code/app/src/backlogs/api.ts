@@ -57,7 +57,7 @@ const settled = new Set(["completed", "cancelled"]);
 
 const marks: Mark[] = ["Blocked", "Ready"];
 
-const derivedMark = (status: string): Mark => (settled.has(status) ? "" : status === "blocked" ? "Blocked" : "Ready");
+const derivedMark = (status: string): Mark => (settled.has(status) || status === "blocked" ? "" : "Ready");
 
 const markOf = (raw: any, status: string): Mark => {
   if (typeof raw?.blocked !== "boolean") return derivedMark(status);
