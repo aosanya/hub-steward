@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { mcpAgencyClient, type AgencyClient } from "../agency/modules";
 import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
@@ -10,6 +10,7 @@ import { addSmartBacklogPath, smartBacklogPath } from "../smartBacklog/paths";
 import { EmptyCard, LoadFailed } from "../ui/LoadState";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
+import { useOnceNotice } from "../ui/onceNotice";
 import { allIssuesId, issuesHeld, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { addBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
 import { mcpBacklogManageClient } from "../backlogManage/api";
@@ -22,7 +23,7 @@ type Props = { client?: BacklogsClient; agency?: AgencyClient; manage?: BacklogM
 
 export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyClient, manage = mcpBacklogManageClient }: Props) {
   const navigate = useNavigate();
-  const notice = (useLocation().state as { notice?: string } | null)?.notice;
+  const notice = useOnceNotice();
   const [adding, setAdding] = useState(false);
   const backlogs = useLoad(() => client.backlogs(), `backlogs:${openAgencyId()}`);
   const named = useLoad(() => agency.read(), `backlogs-agency:${openAgencyId()}`);
