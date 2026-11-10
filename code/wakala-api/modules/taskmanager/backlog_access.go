@@ -43,6 +43,13 @@ func (v backlogVisibility) Sees(backlogID string) bool {
 	return v.all || v.levels[backlogID] != ""
 }
 
+func (v backlogVisibility) LevelOf(backlogID string) models.AccessLevel {
+	if v.all {
+		return models.AccessEdit
+	}
+	return v.levels[backlogID]
+}
+
 func (v backlogVisibility) Moves(backlogID string) bool {
 	level := v.levels[backlogID]
 	return v.all || level == models.AccessMove || level == models.AccessEdit
@@ -139,6 +146,7 @@ func (m *taskManager) ListBacklogsFor(ctx context.Context, requesterID string) (
 	kept := make([]models.BacklogSummary, 0, len(list.Items))
 	for _, item := range list.Items {
 		if visible.Sees(item.ID) {
+			item.Level = visible.LevelOf(item.ID)
 			kept = append(kept, item)
 		}
 	}

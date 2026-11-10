@@ -30,6 +30,7 @@ type BacklogSummary struct {
 	Name   string        `json:"name"`
 	Issues int           `json:"issues"`
 	Steps  []StepSummary `json:"steps"`
+	Level  AccessLevel   `json:"level,omitempty"`
 }
 
 type BacklogList struct {
