@@ -1,5 +1,6 @@
 import { callTool, listTools, type ToolInfo } from "../wakala/mcp";
 import { draftOf, pendingTool, type ResultDraft, type ResultList } from "./results";
+import { promptFrom, triagerDescription } from "./triager";
 
 export type Turn = { role: "user" | "assistant"; content: string; lists?: ResultList[] };
 
@@ -78,7 +79,8 @@ const resultText = (result: unknown) => {
 
 export async function askAssistant(accountId: string, turns: Turn[], onStep: (words: string) => void = () => undefined): Promise<Answer> {
   const tools = await offeredOf();
-  const messages: Wire[] = [{ role: "system", content: systemPrompt }, ...turns.map(({ role, content }) => ({ role, content }))];
+  const prompt = promptFrom(await triagerDescription(), systemPrompt);
+  const messages: Wire[] = [{ role: "system", content: prompt }, ...turns.map(({ role, content }) => ({ role, content }))];
   const found: ResultDraft[] = [];
   for (let round = 0; round < maxRounds; round++) {
     const args: Record<string, unknown> = { accountID: accountId, messages: [...messages], max_tokens: replyTokens };

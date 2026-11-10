@@ -283,7 +283,7 @@ describe("how the assistant answers through the tools", () => {
     mcp.listTools.mockResolvedValue([...offeredNames, "taskmanager_task_delete", "taskmanager_task_create"].map(tool));
     mcp.callTool.mockResolvedValue({ message: { content: "ok" } });
     await askAssistant("acc1", [{ role: "user", content: "hi" }]);
-    const sent = mcp.callTool.mock.calls[0][2];
+    const sent = mcp.callTool.mock.calls.find((call) => call[1] === "ai_chat_account")![2];
     expect(sent.tools.map((spec: { name: string }) => spec.name)).toEqual(offeredNames);
     expect(Object.keys(sent.tools[0].parameters.properties)).toEqual(["tag"]);
     expect(sent.tools[0].parameters.required).toEqual([]);
