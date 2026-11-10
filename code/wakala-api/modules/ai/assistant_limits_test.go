@@ -24,6 +24,7 @@ type limitsHub struct {
 	account Account
 	calls   *atomic.Int32
 	clock   *time.Time
+	owners  map[string]bool
 }
 
 func newLimitsHub(t *testing.T) *limitsHub {
@@ -47,11 +48,12 @@ func newLimitsHub(t *testing.T) *limitsHub {
 		t.Fatal(err)
 	}
 	now := time.Date(2026, 11, 10, 15, 0, 0, 0, time.UTC)
-	h := &limitsHub{calls: calls, clock: &now}
+	h := &limitsHub{calls: calls, clock: &now, owners: map[string]bool{}}
 	m, err := NewManager(db, s,
 		WithMasterKey([]byte("0123456789abcdef0123456789abcdef")),
 		WithChatClient(server.Client()),
 		WithClock(func() time.Time { return *h.clock }),
+		WithOwnerCheck(func(_ context.Context, person string) (bool, error) { return h.owners[person], nil }),
 	)
 	if err != nil {
 		t.Fatal(err)

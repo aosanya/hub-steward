@@ -788,7 +788,7 @@
     },
     {
       "role": "assistant_limits",
-      "description": "The most tokens one person may spend on the assistant in a day and in a month in one agency. One row for each agency; zero means no limit.",
+      "description": "The most tokens one person, and the owner on their own, may spend on the assistant in a day and in a month in one agency. One row for each agency; zero means no limit.",
       "fields": [
         {
           "name": "id",
@@ -813,6 +813,16 @@
           "type": "int",
           "description": "The most tokens one person may use in a month. Zero means no limit.",
           "required": true
+        },
+        {
+          "name": "owner_tokens_per_person_day",
+          "type": "int",
+          "description": "The most tokens the owner may use on the assistant in a day. Zero means no limit for the owner, whatever the people's number is."
+        },
+        {
+          "name": "owner_tokens_per_person_month",
+          "type": "int",
+          "description": "The most tokens the owner may use on the assistant in a month. Zero means no limit for the owner, whatever the people's number is."
         },
         {
           "name": "updated_at",

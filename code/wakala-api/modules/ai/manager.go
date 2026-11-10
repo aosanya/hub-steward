@@ -53,6 +53,10 @@ type Manager interface {
 
 type Option func(*accountManager)
 
+func WithOwnerCheck(isOwner func(ctx context.Context, personID string) (bool, error)) Option {
+	return func(m *accountManager) { m.isOwner = isOwner }
+}
+
 func WithMasterKey(master []byte) Option {
 	return func(m *accountManager) { m.master = master }
 }
@@ -72,6 +76,7 @@ type accountManager struct {
 	baseURLPolicy func(string) error
 	chat          chatSettings
 	holds         requestHolds
+	isOwner       func(ctx context.Context, personID string) (bool, error)
 }
 
 type accountKeyRow struct {

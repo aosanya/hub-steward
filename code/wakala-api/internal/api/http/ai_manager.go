@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -47,10 +48,23 @@ func openAIManager(ctx context.Context, db *gorm.DB, reg agencies.Registry, mast
 		return nil, err
 	}
 	src := &seatBriefSource{reg: reg}
-	built, err := ai.NewManager(db, s, append(append([]ai.Option(nil), guard...), ai.WithMasterKey(masterKey), ai.WithInstructionSource(src))...)
+	built, err := ai.NewManager(db, s, append(append([]ai.Option(nil), guard...), ai.WithMasterKey(masterKey), ai.WithInstructionSource(src), ai.WithOwnerCheck(registryOwnerCheck(reg, instanceID)))...)
 	if err != nil {
 		return nil, err
 	}
 	src.ai = built
 	return built, nil
+}
+
+func registryOwnerCheck(reg agencies.Registry, instanceID string) func(context.Context, string) (bool, error) {
+	return func(ctx context.Context, personID string) (bool, error) {
+		role, err := reg.RoleOf(ctx, instanceID, personID)
+		if errors.Is(err, agencies.ErrInstanceNotFound) {
+			return false, nil
+		}
+		if err != nil {
+			return false, err
+		}
+		return role == agencies.RoleOwner, nil
+	}
 }

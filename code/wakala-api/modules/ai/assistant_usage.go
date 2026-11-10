@@ -23,30 +23,28 @@ func (m *accountManager) MyAssistantUsage(ctx context.Context, agencyID, personI
 	if err != nil {
 		return AssistantUsage{}, err
 	}
-	today := m.instant().Format(models.UsageDayLayout)
-	firstOfMonth := m.instant().Format("2006-01") + "-01"
-	day, err := m.personTokens(ctx, agencyID, personID, today, today)
+	dayLimit, monthLimit, err := m.shareLimitsFor(ctx, limits, personID)
 	if err != nil {
 		return AssistantUsage{}, err
 	}
-	month, err := m.personTokens(ctx, agencyID, personID, firstOfMonth, today)
+	day, month, err := m.personShareUsed(ctx, agencyID, personID)
 	if err != nil {
 		return AssistantUsage{}, err
 	}
 	return AssistantUsage{
 		DayTokens:   day,
 		MonthTokens: month,
-		DayLimit:    limits.TokensPerPersonDay,
-		MonthLimit:  limits.TokensPerPersonMonth,
-		Reached:     reachedFor(day, month, limits),
+		DayLimit:    dayLimit,
+		MonthLimit:  monthLimit,
+		Reached:     reachedFor(day, month, dayLimit, monthLimit),
 	}, nil
 }
 
-func reachedFor(day, month int, limits AssistantLimits) string {
+func reachedFor(day, month, dayLimit, monthLimit int) string {
 	switch {
-	case limits.TokensPerPersonDay > 0 && day >= limits.TokensPerPersonDay:
+	case dayLimit > 0 && day >= dayLimit:
 		return reachedDay
-	case limits.TokensPerPersonMonth > 0 && month >= limits.TokensPerPersonMonth:
+	case monthLimit > 0 && month >= monthLimit:
 		return reachedMonth
 	}
 	return reachedNothing

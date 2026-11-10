@@ -32,10 +32,15 @@ func (m *accountManager) GetAssistantLimits(ctx context.Context, agencyID string
 }
 
 func (m *accountManager) SetAssistantLimits(ctx context.Context, agencyID string, in AssistantLimits) (AssistantLimits, error) {
-	if in.TokensPerPersonDay < 0 || in.TokensPerPersonMonth < 0 {
+	if in.TokensPerPersonDay < 0 || in.TokensPerPersonMonth < 0 || in.OwnerTokensPerPersonDay < 0 || in.OwnerTokensPerPersonMonth < 0 {
 		return AssistantLimits{}, fmt.Errorf("%w: an assistant limit cannot be negative", ErrInvalidAccount)
 	}
-	row := AssistantLimits{ID: agencyID, AgencyID: agencyID, TokensPerPersonDay: in.TokensPerPersonDay, TokensPerPersonMonth: in.TokensPerPersonMonth, UpdatedAt: m.now()}
+	row := AssistantLimits{
+		ID: agencyID, AgencyID: agencyID,
+		TokensPerPersonDay: in.TokensPerPersonDay, TokensPerPersonMonth: in.TokensPerPersonMonth,
+		OwnerTokensPerPersonDay: in.OwnerTokensPerPersonDay, OwnerTokensPerPersonMonth: in.OwnerTokensPerPersonMonth,
+		UpdatedAt: m.now(),
+	}
 	if err := m.st.Query(ctx, roleAssistantLimits).Where("id = ?", agencyID).Delete(&struct{}{}).Error; err != nil {
 		return AssistantLimits{}, fmt.Errorf("SetAssistantLimits: %w", err)
 	}
@@ -60,28 +65,22 @@ func (m *accountManager) checkPersonShare(ctx context.Context, agencyID, personI
 	if err != nil {
 		return err
 	}
-	if limits.TokensPerPersonDay == 0 && limits.TokensPerPersonMonth == 0 {
+	dayLimit, monthLimit, err := m.shareLimitsFor(ctx, limits, personID)
+	if err != nil {
+		return err
+	}
+	if dayLimit == 0 && monthLimit == 0 {
 		return nil
 	}
-	today := m.instant().Format(models.UsageDayLayout)
-	if limits.TokensPerPersonDay > 0 {
-		used, err := m.personTokens(ctx, agencyID, personID, today, today)
-		if err != nil {
-			return err
-		}
-		if used >= limits.TokensPerPersonDay {
-			return fmt.Errorf("%w: day, %s", ErrAssistantLimit, assistantDaySentence)
-		}
+	day, month, err := m.personShareUsed(ctx, agencyID, personID)
+	if err != nil {
+		return err
 	}
-	if limits.TokensPerPersonMonth > 0 {
-		first := m.instant().Format("2006-01") + "-01"
-		used, err := m.personTokens(ctx, agencyID, personID, first, today)
-		if err != nil {
-			return err
-		}
-		if used >= limits.TokensPerPersonMonth {
-			return fmt.Errorf("%w: month, %s", ErrAssistantLimit, assistantMonthSentence)
-		}
+	if dayLimit > 0 && day >= dayLimit {
+		return fmt.Errorf("%w: day, %s", ErrAssistantLimit, assistantDaySentence)
+	}
+	if monthLimit > 0 && month >= monthLimit {
+		return fmt.Errorf("%w: month, %s", ErrAssistantLimit, assistantMonthSentence)
 	}
 	return nil
 }

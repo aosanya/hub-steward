@@ -910,7 +910,7 @@
       "action": "ai.assistant_limits.get",
       "tool": "ai_get_assistant_limits",
       "title": "Get assistant limits",
-      "description": "The most tokens one person may spend on the assistant in a day and in a month in this agency. Zero means no limit. Never shows what any person has used.",
+      "description": "The most tokens one person may spend on the assistant in a day and in a month in this agency (tokens_per_person_day, tokens_per_person_month), and the owner's own pair (owner_tokens_per_person_day, owner_tokens_per_person_month). Zero means no limit. Never shows what any person has used.",
       "args": [
         {
           "from": "path",
@@ -931,7 +931,7 @@
       "action": "ai.assistant_usage.mine",
       "tool": "ai_get_my_assistant_usage",
       "title": "Get my assistant usage",
-      "description": "The caller's own tokens on the assistant today and this month, beside the day and month limits (zero means no limit), and which limit is reached: day, month or empty. It takes no person: it is always the caller, and nobody can read another person's count.",
+      "description": "The caller's own tokens on the assistant today and this month, beside the day and month limits that apply to the caller (the owner's own pair for the owner; zero means no limit), and which limit is reached: day, month or empty. It takes no person: it is always the caller, and nobody can read another person's count.",
       "args": [
         {
           "from": "path",
@@ -957,7 +957,7 @@
       "action": "ai.assistant_limits.set",
       "tool": "ai_set_assistant_limits",
       "title": "Set assistant limits",
-      "description": "Replace the most tokens one person may spend on the assistant in a day (tokens_per_person_day) and in a month (tokens_per_person_month). Zero or absent means no limit; a negative number is refused. Each person's own count is checked before the model is called.",
+      "description": "Replace the most tokens one person may spend on the assistant in a day (tokens_per_person_day) and in a month (tokens_per_person_month). Also replace the owner's own pair (owner_tokens_per_person_day, owner_tokens_per_person_month): the owner is held to that pair instead of the people's pair, and with the owner's pair at zero or absent the owner has no limit. Zero or absent means no limit; a negative number is refused. Each person's own count is checked before the model is called.",
       "args": [
         {
           "from": "path",
