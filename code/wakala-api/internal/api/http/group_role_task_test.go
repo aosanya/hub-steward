@@ -448,21 +448,55 @@ func (w groupRoleWalk) toolRefusal(t *testing.T, person, action string) error {
 	return w.deps.taskToolRefusal(accounts.WithID(context.Background(), person), raw, action)
 }
 
-func TestGroupRoles_AReaderWhoMovesAnIssueIsToldMovingNeedsCanMove(t *testing.T) {
+func TestGroupRoles_AReaderWhoMovesAnIssueIsToldTheRoleIsTooSmall(t *testing.T) {
 	w := newGroupRoleWalk(t)
 	w.giveRole(t, "Members", "Reader")
 	w.giveRole(t, "Workers", "Worker")
 	member, _ := w.resident(t, "Mia", "Members")
 	worker, _ := w.resident(t, "Wanda", "Workers")
 	err := w.toolRefusal(t, member, "taskmanager.task.move_to_step")
-	if err == nil || !strings.Contains(err.Error(), "moving needs Can move") {
-		t.Fatalf("a reader moving an issue is told %v, want moving needs Can move", err)
+	if err == nil || !strings.Contains(err.Error(), "role is too small to move issues") {
+		t.Fatalf("a reader moving an issue is told %v, want the role is too small to move issues", err)
 	}
 	if !errors.Is(err, mwanachamataskmanager.ErrBacklogForbidden) {
 		t.Fatalf("a reader moving an issue gets %v, want a backlog access refusal", err)
 	}
 	if err := w.toolRefusal(t, worker, "taskmanager.task.move_to_step"); err != nil {
 		t.Fatalf("a worker moving an issue is refused: %v", err)
+	}
+}
+
+func TestGroupRoles_ACanMoveGroupWithAReadOnlyRoleIsBlamedOnTheRoleNotTheLevel(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	member, _ := w.backlogRoles(t)
+	staff, support := w.group(t, "Staff"), w.group(t, "Support")
+	amina, _ := w.resident(t, "Amina", "Support")
+	if rec := w.call(t, "PUT", w.tm("/backlog-owner-group"), map[string]any{"group_id": staff}, w.owner); rec.Code != http.StatusNoContent {
+		t.Fatalf("set owner group: %d", rec.Code)
+	}
+	if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+support), map[string]any{"level": "move"}, w.owner); rec.Code != http.StatusOK {
+		t.Fatalf("give Can move: %d %s", rec.Code, rec.Body.String())
+	}
+	held := w.deps.Registry.(agencies.GroupRoles)
+	ctx := context.Background()
+	ids, _ := held.GroupRoleIDs(ctx, w.instance, support)
+	for _, id := range ids {
+		if err := held.TakeGroupRole(ctx, w.instance, support, id); err != nil {
+			t.Fatalf("TakeGroupRole: %v", err)
+		}
+	}
+	if err := held.GiveGroupRole(ctx, w.instance, support, member); err != nil {
+		t.Fatalf("GiveGroupRole: %v", err)
+	}
+	err := w.toolRefusal(t, amina, "taskmanager.task.move_to_step")
+	if err == nil || !strings.Contains(err.Error(), "your role is too small to move issues") {
+		t.Fatalf("a Can move group with a read-only role is told %v, want the role is too small to move issues", err)
+	}
+	if strings.Contains(err.Error(), "Can move on both backlogs") {
+		t.Fatalf("the refusal %q blames the level, which is Can move", err)
+	}
+	if !errors.Is(err, mwanachamataskmanager.ErrBacklogForbidden) {
+		t.Fatalf("the refusal %v is not a backlog access refusal", err)
 	}
 }
 

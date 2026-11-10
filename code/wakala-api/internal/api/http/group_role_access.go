@@ -120,6 +120,8 @@ var taskMoveActions = map[string]bool{
 
 const taskListAction = "taskmanager.task.list"
 
+const roleTooSmallToMove = "your role is too small to move issues"
+
 func (d *Deps) guardTaskToolPermissions(server *mcp.Server, actions map[string]string) {
 	server.AddReceivingMiddleware(func(next mcp.MethodHandler) mcp.MethodHandler {
 		return func(ctx context.Context, method string, req mcp.Request) (mcp.Result, error) {
@@ -160,7 +162,7 @@ func (d *Deps) taskToolRefusal(ctx context.Context, raw json.RawMessage, action 
 		return agencies.ErrInstanceNotFound
 	}
 	if taskMoveActions[action] {
-		return fmt.Errorf("%w: moving needs Can move on both backlogs", mwanachamataskmanager.ErrBacklogForbidden)
+		return fmt.Errorf("%w: %s", mwanachamataskmanager.ErrBacklogForbidden, roleTooSmallToMove)
 	}
 	return fmt.Errorf("%w: your role can look at the backlogs but not change them", mwanachamataskmanager.ErrBacklogForbidden)
 }
