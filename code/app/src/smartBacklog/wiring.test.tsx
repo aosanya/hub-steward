@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { BacklogsPage } from "../backlogs/BacklogsPage";
-import type { Issue } from "../backlogs/api";
+import { taskTools, type Issue } from "../backlogs/api";
+import { sendTools } from "../sendToBacklog";
 import { McpError } from "../wakala/mcp";
 import { choicesOf, mcpSmartBacklogClient, setOf, smartOf, smartTools } from "./api";
 import { AddSmartBacklogScreen, EditSmartBacklogScreen } from "./SmartScreens";
@@ -119,6 +120,29 @@ describe("one smart backlog opened", () => {
     const card = (await screen.findByText("Nothing matches yet")).closest("section, div") as HTMLElement;
     await userEvent.click(within(card.parentElement as HTMLElement).getAllByRole("button", { name: "Edit rules" }).at(-1) as HTMLElement);
     expect(where()).toBe("/a/hub-1/backlogs/ready/rules");
+  });
+
+  const documentation = { items: [{ id: "b2", name: "Documentation", issues: 0, steps: [{ id: "d1", name: "Draft" }] }] };
+
+  it("selects issues on a smart backlog and sends them to a backlog with steps", async () => {
+    answer = async (name) => (name === taskTools.backlogs ? documentation : {});
+    open(fake(), [issue("t1", "Record the voice clips"), issue("t2", "Add the backlog tools")]);
+    await userEvent.click(await screen.findByRole("button", { name: "Select" }));
+    await userEvent.click(screen.getByRole("button", { name: "All" }));
+    expect(screen.getByText("2 selected")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Send to backlog" }));
+    const sheet = await screen.findByRole("dialog", { name: "Send 2 issues to" });
+    await userEvent.click(within(sheet).getByText("Documentation"));
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("2 issues sent to Documentation"));
+    expect(calls).toContainEqual([sendTools.move, { taskID: "t1", backlog: "b2", step: "d1" }]);
+    expect(calls).toContainEqual([sendTools.move, { taskID: "t2", backlog: "b2", step: "d1" }]);
+  });
+
+  it("offers no Select on a smart backlog when there is no backlog to send to", async () => {
+    answer = async (name) => (name === taskTools.backlogs ? { items: [] } : {});
+    open(fake(), [issue("t1", "Record the voice clips")]);
+    await screen.findByText(/Record the voice clips/);
+    expect(screen.queryByRole("button", { name: "Select" })).toBeNull();
   });
 
   it("hides Edit rules from a role that may not manage backlogs", async () => {
