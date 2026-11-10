@@ -120,6 +120,7 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
   const messages: Wire[] = [{ role: "system", content: prompt }, ...turns.map(({ role, content }) => ({ role, content }))];
   const found: ResultDraft[] = [];
   let wrote = false;
+  let askedAgain = false;
   const lists = () => (wrote ? [] : found);
   for (let round = 0; round < maxRounds; round++) {
     const args: Record<string, unknown> = { accountID: accountId, messages: [...messages], max_tokens: replyTokens };
@@ -129,6 +130,10 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
     const calls = callsOf(message.tool_calls);
     const content = text(message.content).trim();
     if (calls.length === 0) {
+      if (content === "" && !askedAgain) {
+        askedAgain = true;
+        continue;
+      }
       if (content === "") throw new Error(noAnswerSentence);
       return { text: content, lists: lists() };
     }
