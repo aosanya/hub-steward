@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Composer } from "../chat/rooms/Composer";
 import "../chat/rooms/rooms.css";
 import { useLoad } from "../forms/useLoad";
+import { mcpBacklogsClient, type BacklogsClient } from "../backlogs/api";
+import { BacklogViewCard } from "../chat/backlogCards/BacklogViewCard";
+import { BacklogSummariesLoader } from "../chat/backlogCards/SummariesLoader";
+import { backlogViewKind } from "../chat/backlogCards/views";
 import { chatListPath } from "../routes";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
@@ -11,11 +15,12 @@ import { EmptyCard } from "../ui/LoadState";
 import { Markdown } from "../ui/Markdown";
 import { Shell } from "../ui/Shell";
 import { mcpAssistantClient, type AssistantClient } from "./api";
+import { ConfirmCard, useConfirmation } from "./ConfirmCard";
 import { OptionButtons } from "./OptionButtons";
 import { splitOptions } from "./optionLines";
 import { answerAfter, historyUpTo, markSent, nextQueued, withoutItem, type Item } from "./queue";
 import { ListEntries, ResultsPanel, ResultTabs, useResults } from "./ResultsPanel";
-import { withIds } from "./results";
+import { questionOptions, viewsOf, withIds } from "./results";
 import "./assistant.css";
 
 export const assistantName = "Hub Steward";
@@ -78,6 +83,11 @@ function Failed({ retry }: { retry: () => void }) {
   );
 }
 
+const optionsOf = (item: Item) => {
+  const written = splitOptions(item.content).options;
+  return written.length > 0 ? written : questionOptions(item.content, item.lists ?? []);
+};
+
 type BubblesProps = { items: Item[]; phase: Phase; current: number; step: string; retry: () => void; pick: (id: string) => void; unqueue: (id: number) => void; ask: (words: string) => void };
 
 function Bubbles({ items, phase, current, step, retry, pick, unqueue, ask }: BubblesProps) {
@@ -106,7 +116,10 @@ function Bubbles({ items, phase, current, step, retry, pick, unqueue, ask }: Bub
               <div className="rm-bubble">
                 <Markdown text={splitOptions(item.content).text} />
               </div>
-              {item === items[items.length - 1] && splitOptions(item.content).options.length > 0 ? <OptionButtons options={splitOptions(item.content).options} onPick={ask} /> : null}
+              {(item.views ?? []).map((view) => (
+                <BacklogViewCard key={view} targetId={view} />
+              ))}
+              {item === items[items.length - 1] && optionsOf(item).length > 0 ? <OptionButtons options={optionsOf(item)} onPick={ask} /> : null}
               {item.lists && item.lists.length > 0 ? <ListEntries lists={item.lists} onPick={pick} /> : null}
             </div>
           )}
@@ -118,13 +131,14 @@ function Bubbles({ items, phase, current, step, retry, pick, unqueue, ask }: Bub
   );
 }
 
-export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAfter }: { client?: AssistantClient; timeoutMs?: number }) {
+export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAfter, backlogs = mcpBacklogsClient }: { client?: AssistantClient; timeoutMs?: number; backlogs?: BacklogsClient }) {
   const navigate = useNavigate();
   const model = useLoad(() => client.model(), "assistant/model");
   const [items, setItems] = useState<Item[]>([]);
   const [phase, setPhase] = useState<Phase>("idle");
   const [current, setCurrent] = useState(0);
   const [step, setStep] = useState("");
+  const confirmation = useConfirmation();
   const run = useRef(0);
   const last = useRef(0);
   const end = useRef<HTMLDivElement>(null);
@@ -133,21 +147,33 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
   const unavailable = model.state === "error" || (model.state === "ready" && accountId === "");
   useEffect(() => {
     end.current?.scrollIntoView?.({ block: "end" });
-  }, [items, phase, step, found.tab]);
+  }, [items, phase, step, found.tab, confirmation.pending]);
   const answerTo = async (history: Item[], id: number) => {
     const mine = ++run.current;
     setCurrent(id);
     setPhase("working");
     setStep("");
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let giveUp: () => void = () => undefined;
     const tooSlow = new Promise<never>((_, reject) => {
-      timer = setTimeout(() => reject(new Error("slow")), timeoutMs);
+      giveUp = () => reject(new Error("slow"));
     });
+    const startTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(giveUp, timeoutMs);
+    };
+    startTimer();
+    const confirmWrite: typeof confirmation.confirm = async (write) => {
+      clearTimeout(timer);
+      const confirmed = await confirmation.confirm(write);
+      startTimer();
+      return confirmed;
+    };
     try {
-      const answer = await Promise.race([client.ask(accountId, historyUpTo(history, id), (words) => mine === run.current && setStep(words)), tooSlow]);
+      const answer = await Promise.race([client.ask(accountId, historyUpTo(history, id), (words) => mine === run.current && setStep(words), confirmWrite), tooSlow]);
       if (mine !== run.current) return;
       last.current += 1;
-      setItems((now) => answerAfter(now, id, { id: last.current, role: "assistant", content: answer.text, lists: withIds(answer.lists ?? [], last.current) }));
+      setItems((now) => answerAfter(now, id, { id: last.current, role: "assistant", content: answer.text, lists: withIds(answer.lists ?? [], last.current), views: viewsOf(answer.lists ?? []) }));
       setPhase("idle");
     } catch {
       if (mine === run.current) setPhase("failed");
@@ -180,8 +206,11 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
               {items.length === 0 ? (
                 <p className="assistant-empty">{askPlaceholder}</p>
               ) : (
-                <Bubbles items={items} phase={phase} current={current} step={step} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
+                <BacklogSummariesLoader kinds={items.some((item) => (item.views ?? []).length > 0) ? [backlogViewKind] : []} client={backlogs}>
+                  <Bubbles items={items} phase={phase} current={current} step={step} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
+                </BacklogSummariesLoader>
               )}
+              {confirmation.pending ? <ConfirmCard write={confirmation.pending.write} settle={confirmation.pending.settle} /> : null}
               <div ref={end} />
             </Card>
           )}

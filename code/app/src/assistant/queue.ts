@@ -1,6 +1,6 @@
 import type { Turn } from "./api";
 
-export type Item = Turn & { id: number; queued?: boolean };
+export type Item = Turn & { id: number; queued?: boolean; views?: string[] };
 
 export const nextQueued = (items: Item[]) => items.find((item) => item.queued);
 

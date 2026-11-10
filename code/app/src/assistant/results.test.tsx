@@ -216,6 +216,6 @@ describe("turning a tool result into a list", () => {
   it("makes a one-issue list of a read issue and nothing of other tools", () => {
     expect(draftOf("taskmanager_task_read", {}, { id: "a", title: "DEV-009 Create", tags: [] })?.issues).toHaveLength(1);
     expect(draftOf("taskmanager_task_read", {}, {})).toBeNull();
-    expect(draftOf("taskmanager_backlog_list", {}, { items: [] })).toBeNull();
+    expect(draftOf("taskmanager_task_state_list", {}, { items: [] })).toBeNull();
   });
 });

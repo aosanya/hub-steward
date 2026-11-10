@@ -1,6 +1,7 @@
-import { issueOf, itemsOf, type Issue } from "../backlogs/api";
+import { issueOf, itemsOf, taskTools, type Issue } from "../backlogs/api";
+import { splitOptions } from "./optionLines";
 
-export type ResultDraft = { title: string; total: number; issues: Issue[] };
+export type ResultDraft = { title: string; total: number; issues: Issue[]; view?: string };
 
 export type ResultList = ResultDraft & { id: string };
 
@@ -26,6 +27,14 @@ export const pageSize = 50;
 
 const filterKeys = ["tag", "repo", "backlog", "step", "priority", "q"];
 
+const pagingKeys = ["limit", "offset", "page", "cursor"];
+
+export const allView = "all";
+
+export const backlogsView = "backlogs";
+
+export const optionLimit = 6;
+
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 
 const wordsOf = (args: Record<string, unknown>) => filterKeys.flatMap((key) => [args[key]].flat().filter((word): word is string => typeof word === "string" && word.trim() !== "").map((word) => word.trim()));
@@ -38,14 +47,18 @@ export const titleOf = (tool: string, args: Record<string, unknown>) => {
   return words === "" ? "Issues" : capital(`${words} issues`);
 };
 
+const isFiltered = (args: Record<string, unknown>) => Object.entries(args).some(([key, value]) => !pagingKeys.includes(key) && value !== undefined && value !== null && value !== "" && !(Array.isArray(value) && value.length === 0));
+
 export const labelOf = (list: ResultDraft) => `${list.title} · ${list.total}`;
 
 export const draftOf = (tool: string, args: Record<string, unknown>, reply: unknown): ResultDraft | null => {
   if (tool === listTool || tool === pendingTool) {
     const issues = itemsOf(reply).map((raw) => issueOf(raw));
     const reported = isObject(reply) && typeof reply.total === "number" ? reply.total : issues.length;
-    return { title: titleOf(tool, args), total: Math.max(reported, issues.length), issues };
+    const unfiltered = !isFiltered(args);
+    return { title: titleOf(tool, args), total: Math.max(reported, issues.length), issues, ...(unfiltered ? { view: allView } : {}) };
   }
+  if (tool === taskTools.backlogs) return { title: "Backlogs", total: itemsOf(reply).length, issues: [], view: backlogsView };
   if (tool === readTool && isObject(reply) && typeof reply.id === "string") {
     const issue = issueOf(reply);
     return { title: issue.title, total: 1, issues: [issue] };
@@ -68,3 +81,13 @@ export const worthKeeping = (drafts: ResultDraft[]): ResultDraft[] => {
 };
 
 export const withIds = (drafts: ResultDraft[], answerId: number): ResultList[] => worthKeeping(drafts).map((draft, index) => ({ ...draft, id: `${answerId}:${index}` }));
+
+export const viewsOf = (drafts: ResultDraft[]): string[] => [...new Set(drafts.flatMap((draft) => (draft.view ? [draft.view] : [])))];
+
+export const questionOptions = (text: string, lists: ResultDraft[]): string[] => {
+  const { text: words, options } = splitOptions(text);
+  const found = lists[lists.length - 1];
+  if (options.length > 0 || !words.endsWith("?") || !found) return [];
+  const titles = [...new Set(found.issues.map((issue) => issue.title))];
+  return titles.length >= 2 && titles.length <= optionLimit ? titles : [];
+};

@@ -32,6 +32,17 @@ describe("options in an answer", () => {
     expect(splitOptions("Which do you mean?\n[[Issues tagged shoe]]\n[[Issues with shoe in the title]]\n")).toEqual({ text: "Which do you mean?", options: ["Issues tagged shoe", "Issues with shoe in the title"] });
     expect(splitOptions("Nothing here.")).toEqual({ text: "Nothing here.", options: [] });
   });
+
+  it("are one button each when the model writes several markers on one line", () => {
+    expect(splitOptions("Which do you mean?\n[[Issues tagged shoe]] [[Issues with shoe in the title]]  [[A repo called shoe]]")).toEqual({
+      text: "Which do you mean?",
+      options: ["Issues tagged shoe", "Issues with shoe in the title", "A repo called shoe"],
+    });
+  });
+
+  it("stay words when a marker sits inside a sentence", () => {
+    expect(splitOptions("Try [[this]] one")).toEqual({ text: "Try [[this]] one", options: [] });
+  });
 });
 
 const show = (client: AssistantClient) =>
