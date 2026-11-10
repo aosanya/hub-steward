@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Chip } from "../ui/Chip";
 import type { Issue } from "./api";
 import "./backlogs.css";
@@ -42,6 +43,46 @@ export function IssueTags({ issue, chosen, onTag, extra = [] }: { issue: Issue; 
       {facts.map((fact) => (
         <Chip key={fact}>{fact}</Chip>
       ))}
+    </span>
+  );
+}
+
+const shortRepo = (repo: string) => repo.split("/").pop() ?? repo;
+
+type Word = { tag: string; label: string };
+
+export const lineWords = (issue: Issue): Word[] =>
+  [
+    { tag: issue.repo, label: shortRepo(issue.repo) },
+    { tag: issue.backlog, label: issue.backlog },
+  ].filter((word, at, all) => word.label !== "" && all.findIndex((one) => one.label === word.label) === at);
+
+export function IssueLine({ issue, chosen, onTag }: { issue: Issue; chosen: string[]; onTag?: (tag: string) => void }) {
+  const blocked = issue.mark === "Blocked";
+  const words = lineWords(issue);
+  return !blocked && words.length === 0 ? null : (
+    <span className="issue-tags issue-line">
+      {blocked ? (
+        <Chip tone="danger" pressed={onTag ? chosen.includes("Blocked") : undefined} onClick={onTag ? () => onTag("Blocked") : undefined}>
+          Blocked
+        </Chip>
+      ) : null}
+      {words.length > 0 ? (
+        <span className="issue-words">
+          {words.map((word, at) => (
+            <Fragment key={word.tag}>
+              {at > 0 ? " · " : null}
+              {onTag ? (
+                <button type="button" className="issue-word" aria-pressed={chosen.includes(word.tag)} onClick={() => onTag(word.tag)}>
+                  {word.label}
+                </button>
+              ) : (
+                word.label
+              )}
+            </Fragment>
+          ))}
+        </span>
+      ) : null}
     </span>
   );
 }

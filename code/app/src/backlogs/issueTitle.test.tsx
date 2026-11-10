@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Issue } from "./api";
-import { IssueTags, IssueTitle, titleParts } from "./IssueTitle";
+import { IssueTags, IssueTitle, lineWords, titleParts } from "./IssueTitle";
 
 const issue = (over: Partial<Issue>): Issue => ({ id: "a", title: "t", description: "", status: "pending", step: "", repo: "", topics: [], backlog: "", mark: "", rank: 1, ...over });
 
@@ -41,5 +41,14 @@ describe("an issue's title on a row or card", () => {
     expect(pills[0]).toHaveClass("danger");
     expect(pills[3]).toHaveClass("accent");
     expect(container.textContent).toBe("Blockedhub-stewardDocsBacklog");
+  });
+
+  it("names the repo once by its last path segment, and drops the backlog when it reads the same", () => {
+    expect(lineWords(issue({ repo: "projects/hub-steward-agency_creator", backlog: "Backlog" }))).toEqual([
+      { tag: "projects/hub-steward-agency_creator", label: "hub-steward-agency_creator" },
+      { tag: "Backlog", label: "Backlog" },
+    ]);
+    expect(lineWords(issue({ repo: "backlog", backlog: "backlog" })).map((word) => word.label)).toEqual(["backlog"]);
+    expect(lineWords(issue({}))).toEqual([]);
   });
 });

@@ -1,5 +1,5 @@
 import type { Issue } from "./api";
-import { IssueTags, IssueTitle, openUnlessTag } from "./IssueTitle";
+import { IssueLine, IssueTags, IssueTitle, openUnlessTag } from "./IssueTitle";
 
 type Props = { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; onOpen?: () => void; chevron?: boolean; facts?: string[] };
 
@@ -15,7 +15,7 @@ export function IssueRow({ issue, chosen, onTag, onOpen, chevron, facts }: Props
         ) : (
           <span className="open">{title}</span>
         )}
-        <IssueTags issue={issue} chosen={chosen} onTag={onTag} extra={facts} />
+        {onOpen ? <IssueLine issue={issue} chosen={chosen} onTag={onTag} /> : <IssueTags issue={issue} chosen={chosen} onTag={onTag} extra={facts} />}
       </span>
       {chevron ? (
         <span className="end" aria-hidden="true">

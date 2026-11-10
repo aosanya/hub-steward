@@ -148,15 +148,18 @@ describe("the Backlogs screen", () => {
 });
 
 describe("the list of issues", () => {
-  it("shows the issues in rank order with the title and the tags as bubbles on each row", async () => {
+  it("shows the issues in rank order with the title, the repo and the backlog on each row", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs/all");
     await screen.findByText("Fix mirrored board drift");
     expect(titles()).toEqual(["Fix mirrored board drift", "Import the municipality", "Record the voice clips"]);
     const first = document.querySelector(".issue-row") as HTMLElement;
-    expect(within(first).getAllByRole("button")).toHaveLength(5);
+    expect(within(first).getAllByRole("button")).toHaveLength(3);
     expect(first.querySelector(".issue-title")?.textContent).toBe("Fix mirrored board drift");
-    expect(Array.from(first.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Ready", "mwanachama-web", "Docs", "Backlog"]);
+    expect(first.querySelectorAll(".chip")).toHaveLength(0);
+    expect(first.querySelector(".issue-words")?.textContent).toBe("mwanachama-web · Backlog");
+    expect(document.querySelectorAll(".issue-row .chip")).toHaveLength(1);
+    expect(within(document.querySelectorAll(".issue-row")[1] as HTMLElement).getByRole("button", { name: "Blocked" })).toBeInTheDocument();
     expect(screen.getByText("3 issues")).toBeInTheDocument();
   });
 
@@ -180,8 +183,9 @@ describe("the list of issues", () => {
     expect(pill.tagName).toBe("SPAN");
     await userEvent.click(pill);
     expect(where()).toBe(issuePath("t2"));
-    const waited = (document.querySelector(".card.flush .rows .issue-row") as HTMLElement).querySelector(".chip") as HTMLElement;
+    const waited = (document.querySelector(".card.flush .rows .issue-row") as HTMLElement).querySelector(".issue-words") as HTMLElement;
     expect(waited.tagName).toBe("SPAN");
+    expect(within(waited).queryByRole("button")).toBeNull();
     await userEvent.click(waited);
     await waitFor(() => expect(where()).toBe(issuePath("t1")));
   });
@@ -191,15 +195,15 @@ describe("the list of issues", () => {
     openAt("/a/hub-1/backlogs/all");
     await screen.findByText("Fix mirrored board drift");
     const bubble = (name: string) => within(document.querySelector(".issue-row") as HTMLElement).getByRole("button", { name });
-    await userEvent.click(bubble("Ready"));
-    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Ready");
-    await userEvent.click(bubble("Docs"));
-    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Ready&tag=Docs");
+    await userEvent.click(bubble("mwanachama-web"));
+    expect(where()).toBe("/a/hub-1/backlogs/all?tag=mwanachama-web");
+    await userEvent.click(bubble("Backlog"));
+    expect(where()).toBe("/a/hub-1/backlogs/all?tag=mwanachama-web&tag=Backlog");
     expect(titles()).toEqual(["Fix mirrored board drift"]);
-    expect(bubble("Docs")).toHaveAttribute("aria-pressed", "true");
-    await userEvent.click(bubble("Docs"));
-    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Ready");
-    expect(bubble("Docs")).toHaveAttribute("aria-pressed", "false");
+    expect(bubble("Backlog")).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(bubble("Backlog"));
+    expect(where()).toBe("/a/hub-1/backlogs/all?tag=mwanachama-web");
+    expect(bubble("Backlog")).toHaveAttribute("aria-pressed", "false");
   });
 
   it("opens the issue from a tap on the row but not from a tap on a bubble", async () => {
@@ -207,7 +211,7 @@ describe("the list of issues", () => {
     openAt("/a/hub-1/backlogs/all");
     await screen.findByText("Fix mirrored board drift");
     const row = document.querySelector(".issue-row") as HTMLElement;
-    await userEvent.click(within(row).getByRole("button", { name: "Docs" }));
+    await userEvent.click(within(row).getByRole("button", { name: "mwanachama-web" }));
     expect(where()).not.toContain("/issue/");
     await userEvent.click(document.querySelector(".issue-row") as HTMLElement);
     expect(where()).toContain("/issue/");

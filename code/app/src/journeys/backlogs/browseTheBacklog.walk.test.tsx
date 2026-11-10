@@ -44,14 +44,15 @@ describe("journey 02, browse the backlog", () => {
     expect(screen.getByTestId("here")).toHaveTextContent(`/a/${farmers.id}/backlogs/all`);
   });
 
-  it("2. Open lists all issues in the rank the script gave, each row its title and its tags as bubbles", async () => {
+  it("2. Open lists all issues in the rank the script gave, each row its title and one line with its repo and backlog", async () => {
     inFarmers("/backlogs/all");
     const first = await screen.findByRole("button", { name: /^Write the manual/ });
     const titles = Array.from(document.querySelectorAll(".issue-row .issue-title")).map((one) => one.textContent);
     expect(titles).toEqual(["Write the manual", "Import the boards", "Write the loader"]);
     const row = first.closest(".row") as HTMLElement;
     expect(row.querySelector(".issue-title")?.textContent).toBe("Write the manual");
-    expect(Array.from(row.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(expect.arrayContaining(["Ready", "mwanachama-docs", "Docs"]));
+    expect(row.querySelector(".issue-words")?.textContent).toContain("mwanachama-docs");
+    expect(row.querySelector(".chip")).toBeNull();
     expect(screen.queryByText(/P[1-4]|critical|priority/i)).toBeNull();
   });
 
@@ -70,13 +71,13 @@ describe("journey 02, browse the backlog", () => {
     expect(where()).toBe(`/a/${farmers.id}/home`);
   });
 
-  it("3. tapping a tag bubble on a row narrows the list to it, with the tag as a chip with a cross", async () => {
+  it("3. tapping the repo on a row narrows the list to it, with the tag as a chip with a cross", async () => {
     inFarmers("/backlogs/all");
     await screen.findByRole("button", { name: /^Write the manual/ });
-    await userEvent.click(screen.getAllByRole("button", { name: "Docs" })[0]);
-    expect(await screen.findByRole("button", { name: "Docs ✕" })).toBeInTheDocument();
+    await userEvent.click(screen.getAllByRole("button", { name: "mwanachama-docs" })[0]);
+    expect(await screen.findByRole("button", { name: "mwanachama-docs ✕" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /^Write the loader/ })).toBeNull();
-    expect(where()).toContain("tag=Docs");
+    expect(where()).toContain("tag=mwanachama-docs");
   });
 
   it("3. tags chosen together narrow the list and clearing a chip widens it", async () => {

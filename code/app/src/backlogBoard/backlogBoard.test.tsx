@@ -86,15 +86,18 @@ describe("BacklogBoard", () => {
     expect(within(column("Done")).getByText("Nothing here")).toBeInTheDocument();
   });
 
-  it("shows the title and the tags as bubbles on a card and opens the issue when it is tapped", async () => {
+  it("shows the title, the repo and the backlog on a card, a Blocked bubble only when blocked, and opens the issue when it is tapped", async () => {
     const user = userEvent.setup();
     open(client());
     await screen.findByText("Record the clips");
     const card = within(column("Waiting")).getByRole("button", { name: /^Import the municipality/ });
     const whole = card.closest(".bb-card") as HTMLElement;
     expect(whole.querySelector(".issue-title")?.textContent).toBe("Import the municipality");
-    expect(Array.from(whole.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Blocked", "hub-steward", "Docs", "Backlog"]);
-    expect((within(column("To do")).getByRole("button", { name: /Record the clips/ }).closest(".bb-card") as HTMLElement).querySelectorAll(".chip")).toHaveLength(3);
+    expect(Array.from(whole.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Blocked"]);
+    expect(whole.querySelector(".issue-words")?.textContent).toBe("hub-steward · Backlog");
+    const ready = within(column("To do")).getByRole("button", { name: /Record the clips/ }).closest(".bb-card") as HTMLElement;
+    expect(ready.querySelectorAll(".chip")).toHaveLength(0);
+    expect(ready.querySelector(".issue-words")?.textContent).toBe("community-hubs · Backlog");
     await user.click(card);
     await waitFor(() => expect(screen.getByTestId("where").textContent).toMatch(/\/backlogs\/issue\/3$/));
   });
@@ -103,7 +106,7 @@ describe("BacklogBoard", () => {
     const user = userEvent.setup();
     open(client());
     await screen.findByText("Record the clips");
-    const bubble = () => within(column("Waiting")).getByRole("button", { name: "Docs" });
+    const bubble = () => within(column("Waiting")).getByRole("button", { name: "Blocked" });
     await user.click(bubble());
     expect(screen.queryByText("Record the clips")).not.toBeInTheDocument();
     expect(bubble()).toHaveAttribute("aria-pressed", "true");
