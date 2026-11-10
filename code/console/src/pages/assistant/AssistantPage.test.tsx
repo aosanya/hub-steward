@@ -64,6 +64,21 @@ describe("the console's Assistant page", () => {
     expect(await screen.findByText("The assistant settings were saved.")).toBeInTheDocument();
   });
 
+  it("says the switches take effect when the agency is published, after a switch was saved", async () => {
+    await open();
+    await userEvent.click(switchOf("Backlog worker"));
+    await pressSave();
+    expect(await screen.findByText("The switches take effect when the agency is published.")).toBeInTheDocument();
+  });
+
+  it("says nothing about publishing when only the numbers changed", async () => {
+    await open();
+    await userEvent.type(fieldOf("Tokens a day for each person"), "5");
+    await pressSave();
+    expect(await screen.findByText("The assistant settings were saved.")).toBeInTheDocument();
+    expect(screen.queryByText("The switches take effect when the agency is published.")).not.toBeInTheDocument();
+  });
+
   it("sends no approval card: Save writes straight away", async () => {
     await open();
     await pressSave();

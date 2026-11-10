@@ -20,9 +20,10 @@ const settingsOf = (form: Form): AssistantSettings => ({ ...form.settings, limit
 
 function AssistantForm({ held }: { held: AssistantSettings }) {
   const { t } = useI18n();
-  const { hub } = useConsole();
+  const { hub, refreshMenu } = useConsole();
   const { show } = useNotice();
   const [saved, setSaved] = useState(held);
+  const [switchesSaved, setSwitchesSaved] = useState(false);
   const [form, setForm] = useState(() => formOf(held));
   const [busy, setBusy] = useState(false);
 
@@ -38,7 +39,9 @@ function AssistantForm({ held }: { held: AssistantSettings }) {
     );
     setBusy(false);
     if (!ok) return show(t("submitFailed"), "bad");
+    setSwitchesSaved(after.roles.some((role) => saved.roles.find((held) => held.id === role.id)?.may !== role.may));
     setSaved(after);
+    refreshMenu();
     show(t("assistant.saved"));
   };
 
@@ -71,6 +74,7 @@ function AssistantForm({ held }: { held: AssistantSettings }) {
           {t("cancel")}
         </Button>
       </div>
+      {switchesSaved ? <p className="muted">{t("assistant.publishNeeded")}</p> : null}
     </Stack>
   );
 }

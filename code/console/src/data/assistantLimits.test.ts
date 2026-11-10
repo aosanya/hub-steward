@@ -1,4 +1,5 @@
 import { callTool } from "../wakala/mcp";
+import { showsDraftBar } from "./draft";
 import { loadAssistantSettings, saveAssistantSettings } from "./assistantLimits";
 
 vi.mock("../wakala/mcp", () => ({ callTool: vi.fn() }));
@@ -82,5 +83,11 @@ describe("saving the assistant settings", () => {
     await expect(saveAssistantSettings("h1", before, { ...before, limits: { day: -1, month: null } })).rejects.toThrow("a limit cannot be below zero");
     expect(callsTo("ai_set_assistant_limits")).toEqual([]);
     expect(callsTo("agency_update_role")).toEqual([]);
+  });
+});
+
+describe("the draft bar on the Assistant page", () => {
+  it("shows on the Assistant page, because the switches change the working draft", () => {
+    expect(showsDraftBar("assistant")).toBe(true);
   });
 });
