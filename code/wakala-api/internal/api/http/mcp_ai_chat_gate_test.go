@@ -46,3 +46,19 @@ func TestAIUseStillOpensTheUsageRecordingTool(t *testing.T) {
 		t.Fatal("a caller holding ai.use does not see ai_record_usage: the test above proves nothing")
 	}
 }
+
+func TestACallerWithOnlyAIChatMayReadButNotSetTheAssistantLimits(t *testing.T) {
+	chat, ok := agencymodels.LookupPermission("ai.chat")
+	if !ok {
+		t.Fatal("no ai.chat permission in the catalog")
+	}
+	w := newGroupRoleWalk(t)
+	withAITools(w.deps)
+	hidden := newMCPServers(w.deps).hiddenTools(chat.Actions, nil)
+	if slices.Contains(hidden, "ai_get_assistant_limits") {
+		t.Error("a caller holding only ai.chat does not see ai_get_assistant_limits")
+	}
+	if !slices.Contains(hidden, "ai_set_assistant_limits") {
+		t.Error("a caller holding only ai.chat sees ai_set_assistant_limits")
+	}
+}

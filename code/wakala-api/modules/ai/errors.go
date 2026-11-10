@@ -23,6 +23,7 @@ var (
 	ErrChatUnsupported  = errors.New("this provider cannot chat with tools yet")
 	ErrAccountOff       = errors.New("this account is turned off")
 	ErrLimitReached     = errors.New("this account is at its limit")
+	ErrAssistantLimit   = errors.New("assistant limit")
 	ErrModelRefused     = errors.New(TestRefused)
 	ErrModelUnreached   = errors.New(TestUnreached)
 	ErrModelError       = errors.New(TestModelError)

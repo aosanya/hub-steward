@@ -24,6 +24,7 @@ var Sentinels = map[string]error{
 	"ErrChatUnsupported":  ai.ErrChatUnsupported,
 	"ErrAccountOff":       ai.ErrAccountOff,
 	"ErrLimitReached":     ai.ErrLimitReached,
+	"ErrAssistantLimit":   ai.ErrAssistantLimit,
 	"ErrModelRefused":     ai.ErrModelRefused,
 	"ErrModelUnreached":   ai.ErrModelUnreached,
 	"ErrModelError":       ai.ErrModelError,

@@ -31,6 +31,9 @@ type AccountManager interface {
 	SetAccountKey(ctx context.Context, agencyID, accountID string, in KeyInput) (Account, error)
 	TestAccount(ctx context.Context, agencyID, accountID string, in KeyInput) (Account, error)
 	ChatAccount(ctx context.Context, agencyID, accountID string, in ChatInput) (ChatReply, error)
+	ChatAccountAs(ctx context.Context, agencyID, accountID, personID string, in ChatInput) (ChatReply, error)
+	GetAssistantLimits(ctx context.Context, agencyID string) (AssistantLimits, error)
+	SetAssistantLimits(ctx context.Context, agencyID string, in AssistantLimits) (AssistantLimits, error)
 }
 
 type KeyReader interface {
@@ -82,15 +85,16 @@ func NewManager(db *gorm.DB, s *spec.Spec, opts ...Option) (Manager, error) {
 		return nil, fmt.Errorf("NewManager: db must not be nil")
 	}
 	st, err := newStore(db, s, map[string]any{
-		roleAccount:      models.Account{},
-		roleAccountKey:   accountKeyRow{},
-		roleUsage:        models.Usage{},
-		roleUsageDay:     models.UsageDay{},
-		roleTestRunUsage: models.TestRunUsage{},
-		roleAIRole:       models.AIRole{},
-		roleRevision:     models.AIRoleRevision{},
-		roleModelEntry:   models.ModelEntry{},
-		roleChatPick:     models.ChatPick{},
+		roleAccount:         models.Account{},
+		roleAccountKey:      accountKeyRow{},
+		roleUsage:           models.Usage{},
+		roleUsageDay:        models.UsageDay{},
+		roleTestRunUsage:    models.TestRunUsage{},
+		roleAIRole:          models.AIRole{},
+		roleRevision:        models.AIRoleRevision{},
+		roleModelEntry:      models.ModelEntry{},
+		roleChatPick:        models.ChatPick{},
+		roleAssistantLimits: models.AssistantLimits{},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("NewManager: %w", err)

@@ -278,11 +278,11 @@
     "chat_account": {
       "method": "POST",
       "path": "/agencies/{agencyID}/accounts/{accountID}/chat",
-      "call": "ChatAccount",
+      "call": "ChatAccountAs",
       "action": "ai.account.chat",
       "tool": "ai_chat_account",
       "title": "Chat with account",
-      "description": "Send a conversation to the account's model with its saved key and get back the model's next message. messages is the whole conversation so far, oldest first, each with a role (system, user, assistant or tool) and its content; an assistant message that asked for tools carries tool_calls (id, name, arguments as an object), and a tool message answers one of them with its tool_call_id. tools lists what the model may ask for (name, description, parameters as a JSON schema object). The reply is one assistant message: content, and tool_calls when the model wants a tool run; the caller runs it and sends the whole conversation again with the result. Give role_id to chat as one AI role: that agent's own limits apply and the usage is counted against it as well as the account. Nothing is stored except the usage, which counts against the limits. The key is never returned.",
+      "description": "Send a conversation to the account's model with its saved key and get back the model's next message. messages is the whole conversation so far, oldest first, each with a role (system, user, assistant or tool) and its content; an assistant message that asked for tools carries tool_calls (id, name, arguments as an object), and a tool message answers one of them with its tool_call_id. tools lists what the model may ask for (name, description, parameters as a JSON schema object). The reply is one assistant message: content, and tool_calls when the model wants a tool run; the caller runs it and sends the whole conversation again with the result. Give role_id to chat as one AI role: that agent's own limits apply and the usage is counted against it as well as the account. Nothing is stored except the usage, which counts against the limits. The key is never returned. A person with a day or month limit for the assistant (set with ai_set_assistant_limits) is refused with 'assistant limit: day' or 'assistant limit: month' once their own count reaches it.",
       "args": [
         {
           "from": "path",
@@ -294,6 +294,11 @@
           "as": "accountID",
           "refers": "ai.account",
           "description": "The account."
+        },
+        {
+          "from": "caller",
+          "as": "person_id",
+          "description": "Whose share of the assistant the call counts against, supplied by the mount. Never read from the request."
         },
         {
           "from": "body",
@@ -897,6 +902,53 @@
         }
       ],
       "status": 200
+    },
+    "get_assistant_limits": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/assistant-limits",
+      "call": "GetAssistantLimits",
+      "action": "ai.assistant_limits.get",
+      "tool": "ai_get_assistant_limits",
+      "title": "Get assistant limits",
+      "description": "The most tokens one person may spend on the assistant in a day and in a month in this agency. Zero means no limit. Never shows what any person has used.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency. The address decides, not the body."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "set_assistant_limits": {
+      "method": "PUT",
+      "path": "/agencies/{agencyID}/assistant-limits",
+      "call": "SetAssistantLimits",
+      "action": "ai.assistant_limits.set",
+      "tool": "ai_set_assistant_limits",
+      "title": "Set assistant limits",
+      "description": "Replace the most tokens one person may spend on the assistant in a day (tokens_per_person_day) and in a month (tokens_per_person_month). Zero or absent means no limit; a negative number is refused. Each person's own count is checked before the model is called.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency. The address decides, not the body."
+        },
+        {
+          "from": "body",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "status": 200
     }
   },
   "errors": {
@@ -923,6 +975,7 @@
     "ErrDuplicateRoleName": 409,
     "ErrRevisionNotFound": 404,
     "ErrInvalidModelList": 400,
-    "ErrChatModelUnavailable": 409
+    "ErrChatModelUnavailable": 409,
+    "ErrAssistantLimit": 429
   }
 }
