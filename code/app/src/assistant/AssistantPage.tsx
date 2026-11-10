@@ -14,7 +14,7 @@ import { Chip } from "../ui/Chip";
 import { EmptyCard } from "../ui/LoadState";
 import { Markdown } from "../ui/Markdown";
 import { Shell } from "../ui/Shell";
-import { mcpAssistantClient, type AssistantClient } from "./api";
+import { LimitReached, mcpAssistantClient, type AssistantClient, type LimitSpan } from "./api";
 import { ConfirmCard, useConfirmation } from "./ConfirmCard";
 import { OptionButtons } from "./OptionButtons";
 import { splitOptions } from "./optionLines";
@@ -27,6 +27,12 @@ import "./assistant.css";
 export const assistantName = "Hub Steward";
 
 export const unavailableWords = "The assistant is not available yet.";
+
+export const dayLimitWords = "You have used today's share of the assistant. It comes back tomorrow.";
+
+export const monthLimitWords = "You have used this month's share of the assistant. It comes back on the 1st.";
+
+const limitWords: Record<LimitSpan, string> = { day: dayLimitWords, month: monthLimitWords };
 
 export const failedWords = "That did not work. Try again.";
 
@@ -139,6 +145,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
   const [phase, setPhase] = useState<Phase>("idle");
   const [current, setCurrent] = useState(0);
   const [step, setStep] = useState("");
+  const [limit, setLimit] = useState<LimitSpan | "">("");
   const confirmation = useConfirmation();
   const run = useRef(0);
   const last = useRef(keptConversation().last);
@@ -177,20 +184,25 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
       last.current += 1;
       setItems((now) => answerAfter(now, id, { id: last.current, role: "assistant", content: answer.text, lists: withIds(answer.lists ?? [], last.current), views: viewsOf(answer.lists ?? []) }));
       setPhase("idle");
-    } catch {
-      if (mine === run.current) setPhase("failed");
+    } catch (failure) {
+      if (mine !== run.current) return;
+      if (failure instanceof LimitReached) {
+        setLimit(failure.span);
+        setItems((now) => now.filter((item) => !item.queued));
+        setPhase("idle");
+      } else setPhase("failed");
     } finally {
       clearTimeout(timer);
     }
   };
   useEffect(() => {
-    if (phase !== "idle" || accountId === "") return;
+    if (phase !== "idle" || accountId === "" || limit !== "") return;
     const next = nextQueued(items);
     if (!next) return;
     const sent = markSent(items, next.id);
     setItems(sent);
     void answerTo(sent, next.id);
-  }, [items, phase, accountId]);
+  }, [items, phase, accountId, limit]);
   const send = async (body: string) => {
     last.current += 1;
     setItems((now) => [...now, { id: last.current, role: "user", content: body, queued: true }]);
@@ -216,9 +228,10 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
               <div ref={end} />
             </Card>
           )}
+          {limit !== "" ? <EmptyCard words={limitWords[limit]} /> : null}
         </div>
       ) : null}
-      {model.state === "ready" && !unavailable ? (
+      {model.state === "ready" && !unavailable && limit === "" ? (
         <div className="assistant-compose">
           <Composer placeholder={askPlaceholder} onSend={send} />
         </div>

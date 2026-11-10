@@ -49,6 +49,28 @@ export const stepWords: Record<string, string> = {
 
 export const noAnswerSentence = "The assistant sent no answer.";
 
+export type LimitSpan = "day" | "month";
+
+export class LimitReached extends Error {
+  constructor(readonly span: LimitSpan) {
+    super(`assistant limit: ${span}`);
+  }
+}
+
+const limitSpanIn = (failure: unknown): LimitSpan | null => {
+  const found = /assistant limit: (day|month)/.exec(failure instanceof Error ? failure.message : "");
+  return found ? (found[1] as LimitSpan) : null;
+};
+
+const chat = async (args: Record<string, unknown>) => {
+  try {
+    return await callTool("", chatTool, args);
+  } catch (failure) {
+    const span = limitSpanIn(failure);
+    throw span ? new LimitReached(span) : failure;
+  }
+};
+
 export const tooManyRoundsSentence = "I looked things up for several steps and still have no answer. Ask again with a narrower question.";
 
 export const systemPrompt =
@@ -97,7 +119,7 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
   for (let round = 0; round < maxRounds; round++) {
     const args: Record<string, unknown> = { accountID: accountId, messages: [...messages], max_tokens: replyTokens };
     if (tools.length > 0) args.tools = tools;
-    const answer = await callTool("", chatTool, args);
+    const answer = await chat(args);
     const message = isObject(answer?.message) ? answer.message : {};
     const calls = callsOf(message.tool_calls);
     const content = text(message.content).trim();
