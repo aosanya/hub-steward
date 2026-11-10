@@ -18,5 +18,7 @@ export const toggled = (chosen: string[], tag: string) => (chosen.includes(tag) 
 export const toneOf = (tag: string, issue: Issue): ChipTone | undefined =>
   tag === "Ready" ? "success" : tag === "Blocked" ? "danger" : tag === issue.backlog ? "accent" : undefined;
 
+export const issuesWords = (count: number) => `${count} ${count === 1 ? "issue" : "issues"}`;
+
 export const countWords = (shown: number, total: number, narrowed: boolean) =>
-  narrowed ? `${shown} of ${total} ${total === 1 ? "issue" : "issues"}` : `${shown} ${shown === 1 ? "issue" : "issues"}`;
+  narrowed ? `${shown} of ${issuesWords(total)}` : issuesWords(shown);

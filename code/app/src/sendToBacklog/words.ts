@@ -1,3 +1,4 @@
+import { issuesWords } from "../backlogs/tags";
 import type { SendResult, Target } from "./types";
 
 export const sendWords = "Send to backlog";
@@ -9,10 +10,6 @@ export const cancelWords = "Cancel";
 export const allWords = "All";
 
 export const noTargetsWords = "No backlog to send to";
-
-export const targetsFailedWords = "The backlogs could not be loaded.";
-
-export const issuesWords = (count: number) => `${count} ${count === 1 ? "issue" : "issues"}`;
 
 export const selectedWords = (count: number) => `${count} selected`;
 

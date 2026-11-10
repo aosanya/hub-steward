@@ -12,9 +12,8 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { ListRow, Rows } from "../ui/ListRow";
 import { SectionHeading } from "../ui/SectionHeading";
 import { Shell } from "../ui/Shell";
+import { issuesWords } from "../backlogs/tags";
 import { mcpBacklogPageClient, type BacklogPageClient } from "./api";
-
-const issuesWords = (count: number) => `${count} ${count === 1 ? "issue" : "issues"}`;
 
 const stepsWords = (count: number) => `Backlog · ${count} ${count === 1 ? "step" : "steps"}`;
 
