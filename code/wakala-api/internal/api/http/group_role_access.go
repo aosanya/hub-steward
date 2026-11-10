@@ -4,11 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"slices"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	dispatch "wakalaserver/modules/shared/dispatch"
+	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
@@ -82,6 +84,14 @@ func (d *Deps) taskPermissioned(role string, authorize dispatch.Authorizer) disp
 	return agentPermissioned(role, d.Registry, d.agencyRolePermissions, authorize)
 }
 
+var taskMoveActions = map[string]bool{
+	"taskmanager.task.place":        true,
+	"taskmanager.task.move":         true,
+	"taskmanager.task.move_to_step": true,
+}
+
+const taskListAction = "taskmanager.task.list"
+
 func (d *Deps) guardTaskToolPermissions(server *mcp.Server, actions map[string]string) {
 	server.AddReceivingMiddleware(func(next mcp.MethodHandler) mcp.MethodHandler {
 		return func(ctx context.Context, method string, req mcp.Request) (mcp.Result, error) {
@@ -90,28 +100,39 @@ func (d *Deps) guardTaskToolPermissions(server *mcp.Server, actions map[string]s
 				return next(ctx, method, req)
 			}
 			action, guarded := actions[call.Params.Name]
-			if guarded && d.taskToolRefused(ctx, call.Params.Arguments, action) {
-				return toolError(agencies.ErrInstanceNotFound), nil
+			if guarded {
+				if refusal := d.taskToolRefusal(ctx, call.Params.Arguments, action); refusal != nil {
+					return toolError(refusal), nil
+				}
 			}
 			return next(ctx, method, req)
 		}
 	})
 }
 
-func (d *Deps) taskToolRefused(ctx context.Context, raw json.RawMessage, action string) bool {
+func (d *Deps) taskToolRefusal(ctx context.Context, raw json.RawMessage, action string) error {
 	args := map[string]json.RawMessage{}
 	if json.Unmarshal(raw, &args) != nil {
-		return false
+		return nil
 	}
 	var instanceID string
 	if json.Unmarshal(args["instance_id"], &instanceID) != nil || instanceID == "" {
-		return false
+		return nil
 	}
 	role, err := d.Registry.RoleOf(ctx, instanceID, accounts.IDFromContext(ctx))
 	if err != nil {
-		return false
+		return nil
 	}
 	ctx = withPartitionContext(ctx, instanceID)
 	authorize := d.taskPermissioned(role, nil)
-	return authorize != nil && authorize(ctx, action) != nil
+	if authorize == nil || authorize(ctx, action) == nil {
+		return nil
+	}
+	if authorize(ctx, taskListAction) != nil {
+		return agencies.ErrInstanceNotFound
+	}
+	if taskMoveActions[action] {
+		return fmt.Errorf("%w: moving needs Can move on both backlogs", mwanachamataskmanager.ErrBacklogForbidden)
+	}
+	return fmt.Errorf("%w: your role can look at the backlogs but not change them", mwanachamataskmanager.ErrBacklogForbidden)
 }

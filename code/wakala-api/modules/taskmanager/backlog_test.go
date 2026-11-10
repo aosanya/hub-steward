@@ -3,6 +3,7 @@ package mwanachamataskmanager_test
 import (
 	"context"
 	"errors"
+	"strings"
 	"testing"
 
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
@@ -189,5 +190,39 @@ func TestMoveTaskToStep_AnEmptyStepIsRefusedAndTheIssueStaysPut(t *testing.T) {
 	}
 	if got, err := mgr.GetTask(ctx, task.ID); err != nil || got.Step != task.Step {
 		t.Fatalf("the issue moved: %+v %v", got, err)
+	}
+}
+
+func TestBacklogManager_TheRefusalNamesHowManyIssuesAStepOrBacklogHolds(t *testing.T) {
+	mgr := newTestManager(t)
+	ctx := context.Background()
+	if _, err := mgr.CreateBacklog(ctx, "Research", []string{"Ideas", "Reading"}); err != nil {
+		t.Fatal(err)
+	}
+	for _, title := range []string{"a", "b", "c"} {
+		task := mustCreate(t, mgr, mwanachamataskmanager.Task{Title: title})
+		if _, err := mgr.MoveTaskToStep(ctx, task.ID, "research", "reading"); err != nil {
+			t.Fatal(err)
+		}
+	}
+	_, err := mgr.RemoveBacklogStep(ctx, "research", "reading")
+	if err == nil || !strings.Contains(err.Error(), `step "Reading" of "Research" still holds 3 issues, move them first`) {
+		t.Fatalf("removing a step with three issues: %v", err)
+	}
+	err = mgr.DeleteBacklog(ctx, "research")
+	if err == nil || !strings.Contains(err.Error(), `"Research" still holds 3 issues, move them first`) {
+		t.Fatalf("deleting a backlog with three issues: %v", err)
+	}
+	last, err := mgr.CreateBacklog(ctx, "Notes", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	task := mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "d"})
+	if _, err := mgr.MoveTaskToStep(ctx, task.ID, last.ID, "to-do"); err != nil {
+		t.Fatal(err)
+	}
+	err = mgr.DeleteBacklog(ctx, last.ID)
+	if err == nil || !strings.Contains(err.Error(), `"Notes" still holds 1 issue, move it first`) {
+		t.Fatalf("deleting a backlog with one issue: %v", err)
 	}
 }

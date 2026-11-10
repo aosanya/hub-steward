@@ -2,14 +2,18 @@ package http
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"slices"
+	"strings"
 	"testing"
 
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
+	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
+	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 )
 
@@ -435,5 +439,40 @@ func TestGroupRoles_TheHighestLevelAcrossAPersonsGroupsWins(t *testing.T) {
 	}
 	if code := w.create(t, kofi); code != http.StatusCreated {
 		t.Fatalf("in Support (Can see) and Dev (Can move): create %d, want 201", code)
+	}
+}
+
+func (w groupRoleWalk) toolRefusal(t *testing.T, person, action string) error {
+	t.Helper()
+	raw := []byte(`{"instance_id":"` + w.instance + `"}`)
+	return w.deps.taskToolRefusal(accounts.WithID(context.Background(), person), raw, action)
+}
+
+func TestGroupRoles_AReaderWhoMovesAnIssueIsToldMovingNeedsCanMove(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	w.giveRole(t, "Members", "Reader")
+	w.giveRole(t, "Workers", "Worker")
+	member, _ := w.resident(t, "Mia", "Members")
+	worker, _ := w.resident(t, "Wanda", "Workers")
+	err := w.toolRefusal(t, member, "taskmanager.task.move_to_step")
+	if err == nil || !strings.Contains(err.Error(), "moving needs Can move") {
+		t.Fatalf("a reader moving an issue is told %v, want moving needs Can move", err)
+	}
+	if !errors.Is(err, mwanachamataskmanager.ErrBacklogForbidden) {
+		t.Fatalf("a reader moving an issue gets %v, want a backlog access refusal", err)
+	}
+	if err := w.toolRefusal(t, worker, "taskmanager.task.move_to_step"); err != nil {
+		t.Fatalf("a worker moving an issue is refused: %v", err)
+	}
+}
+
+func TestGroupRoles_APersonWhoCannotSeeTasksIsStillToldNothingAboutBacklogs(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	amina, _ := w.resident(t, "Amina", "Support")
+	for _, action := range []string{"taskmanager.task.move_to_step", "taskmanager.task.list"} {
+		err := w.toolRefusal(t, amina, action)
+		if !errors.Is(err, agencies.ErrInstanceNotFound) {
+			t.Fatalf("a person with no role asking for %s gets %v, want instance not found", action, err)
+		}
 	}
 }

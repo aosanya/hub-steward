@@ -247,17 +247,38 @@ func refuseRemovalsHoldingIssues(current, next []models.Backlog, rows []taskPlac
 			names[b.ID+"/"+s.ID] = s.Name
 		}
 	}
+	held := map[string]int{}
+	var order []string
 	for _, row := range rows {
 		bid, sid := models.PlaceOf(current, row.task())
 		steps, backlogKept := kept[bid]
-		switch {
-		case !backlogKept:
-			return fmt.Errorf("%w: %q still holds issues", ErrBacklogHoldsIssues, names[bid])
-		case sid != "" && !steps[sid]:
-			return fmt.Errorf("%w: step %q of %q still holds issues", ErrBacklogHoldsIssues, names[bid+"/"+sid], names[bid])
+		if backlogKept && (sid == "" || steps[sid]) {
+			continue
 		}
+		key := bid
+		if backlogKept {
+			key = bid + "/" + sid
+		}
+		if held[key] == 0 {
+			order = append(order, key)
+		}
+		held[key]++
+	}
+	for _, key := range order {
+		bid, _, isStep := strings.Cut(key, "/")
+		if isStep {
+			return fmt.Errorf("%w: step %q of %q still holds %s", ErrBacklogHoldsIssues, names[key], names[bid], issuesToMove(held[key]))
+		}
+		return fmt.Errorf("%w: %q still holds %s", ErrBacklogHoldsIssues, names[key], issuesToMove(held[key]))
 	}
 	return nil
+}
+
+func issuesToMove(n int) string {
+	if n == 1 {
+		return "1 issue, move it first"
+	}
+	return fmt.Sprintf("%d issues, move them first", n)
 }
 
 func (m *taskManager) ReplaceBacklogs(ctx context.Context, backlogs []models.Backlog) (models.BacklogList, error) {
