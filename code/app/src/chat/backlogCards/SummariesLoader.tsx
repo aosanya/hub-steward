@@ -19,7 +19,7 @@ export function BacklogSummariesLoader({ kinds, client = mcpBacklogsClient, chil
     client.backlogs().then(
       (found) => {
         if (!live) return;
-        setBacklogs(found.map((b) => ({ id: b.id, name: b.name, steps: b.steps.length, issues: b.issues })));
+        setBacklogs(found.map((b) => ({ id: b.id, name: b.name, steps: b.steps.length, issues: b.issues, ...(b.kind === "smart" ? { smart: true } : {}) })));
         setReady(true);
       },
       () => {

@@ -6,4 +6,5 @@ export const issuesWords = (n: number) => count(n, "issue", "issues");
 
 export const stepsWords = (n: number) => count(n, "step", "steps");
 
-export const backlogLine = (backlog: BacklogSummary) => `${issuesWords(backlog.issues)} in ${stepsWords(backlog.steps)}`;
+export const backlogLine = (backlog: BacklogSummary) =>
+  backlog.smart ? issuesWords(backlog.issues) : `${issuesWords(backlog.issues)} in ${stepsWords(backlog.steps)}`;

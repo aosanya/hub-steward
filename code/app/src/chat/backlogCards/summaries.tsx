@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react";
 
-export type BacklogSummary = { id: string; name: string; steps: number; issues: number };
+export type BacklogSummary = { id: string; name: string; steps: number; issues: number; smart?: boolean };
 
 export type BacklogTotals = { issues: number };
 

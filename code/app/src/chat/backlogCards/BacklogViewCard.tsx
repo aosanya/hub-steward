@@ -1,6 +1,8 @@
 import { Button } from "../../ui/Button";
 import { openAgencyId } from "../../agency/open";
 import { boardPath, issuesPath } from "../../backlogs/paths";
+import { smartBacklogPath } from "../../smartBacklog/paths";
+import { Chip } from "../../ui/Chip";
 import { useBacklogSummaries } from "./summaries";
 import { backlogViewOf } from "./views";
 import { backlogLine, issuesWords } from "./words";
@@ -36,9 +38,12 @@ function BacklogButtons() {
       <span className="rm-ttl">Backlogs</span>
       <div className="rm-btns rm-stack">
         {backlogs.map((backlog) => (
-          <Button key={backlog.id} to={boardPath(backlog.id)}>
+          <Button key={backlog.id} to={backlog.smart ? smartBacklogPath(backlog.id) : boardPath(backlog.id)}>
             <span className="rm-pick">{backlog.name}</span>
-            <span className="rm-line">{backlogLine(backlog)}</span>
+            <span className="rm-line">
+              {backlog.smart ? <Chip tone="info">Smart</Chip> : null}
+              {backlogLine(backlog)}
+            </span>
           </Button>
         ))}
       </div>
@@ -56,5 +61,5 @@ export function BacklogViewCard({ targetId }: { targetId: string }) {
   if (target.view === "backlogs") return <BacklogButtons />;
   const backlog = backlogs.find((candidate) => candidate.id === target.backlogId);
   if (backlog === undefined) return ready ? <NotOpenable /> : null;
-  return <OpenCard title={backlog.name} line={backlogLine(backlog)} to={boardPath(backlog.id)} />;
+  return <OpenCard title={backlog.name} line={backlogLine(backlog)} to={backlog.smart ? smartBacklogPath(backlog.id) : boardPath(backlog.id)} />;
 }
