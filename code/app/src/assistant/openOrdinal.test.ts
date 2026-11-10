@@ -42,4 +42,17 @@ describe("Open N in the history sent to the model", () => {
     const sent = historyUpTo([asked(1, "Open 2")], 1);
     expect(sent[0].content).toBe("Open 2");
   });
+
+  it("names the row of the list picked in the Results tab, not the newest", () => {
+    const items = [asked(1, "show all"), answered(2, "Here.", [earlier]), asked(3, "show blocked"), answered(4, "Here.", [blocked]), asked(5, "open 1")];
+    const sent = historyUpTo(items, 5, "1:0");
+    expect(sent[4].content).toContain("u-9");
+    expect(sent[4].content).toContain('"Issues"');
+    expect(sent[4].content).not.toContain("u-1");
+  });
+
+  it("falls back to the newest list when the picked list is not in the history", () => {
+    const items = [asked(1, "show blocked"), answered(2, "Here.", [blocked]), asked(3, "open 1")];
+    expect(historyUpTo(items, 3, "9:9")[2].content).toContain("u-1");
+  });
 });

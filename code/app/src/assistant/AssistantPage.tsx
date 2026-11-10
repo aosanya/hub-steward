@@ -154,6 +154,8 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
   const last = useRef(keptConversation().last);
   const end = useRef<HTMLDivElement>(null);
   const found = useResults(items);
+  const pickedNow = useRef(found.picked);
+  pickedNow.current = found.picked;
   useEffect(() => keepConversation({ items, last: last.current }), [items]);
   const [answered, setAnswered] = useState(0);
   const accountId = model.state === "ready" ? model.data : "";
@@ -192,7 +194,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
       return confirmed;
     };
     try {
-      const answer = await Promise.race([client.ask(accountId, historyUpTo(history, id), (words) => mine === run.current && setStep(words), confirmWrite), tooSlow]);
+      const answer = await Promise.race([client.ask(accountId, historyUpTo(history, id, pickedNow.current), (words) => mine === run.current && setStep(words), confirmWrite), tooSlow]);
       if (mine !== run.current) return;
       last.current += 1;
       setItems((now) => answerAfter(now, id, { id: last.current, role: "assistant", content: answer.text, lists: withIds(answer.lists ?? [], last.current), views: viewsOf(answer.lists ?? []) }));
