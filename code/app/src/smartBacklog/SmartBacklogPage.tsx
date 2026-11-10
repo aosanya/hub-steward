@@ -6,6 +6,7 @@ import { useMayManage } from "../backlogManage/useMayManage";
 import type { BacklogManageClient } from "../backlogManage/types";
 import { mcpBacklogsClient, type BacklogsClient } from "../backlogs/api";
 import { IssueRow } from "../backlogs/IssueRow";
+import { backlogAccessPath } from "../backlogAccess/paths";
 import { backlogsHomePath, issuePath } from "../backlogs/paths";
 import { openAgencyId } from "../agency/open";
 import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../sendToBacklog";
@@ -49,6 +50,7 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
         <span className="sub">{rulesWords(backlog.set)}</span>
       </div>
       {mayEdit ? <Button onClick={edit}>Edit rules</Button> : null}
+      {mayEdit ? <Button to={backlogAccessPath(backlogId)}>Change who has access</Button> : null}
       {rows.length === 0 ? (
         <EmptyCard words="Nothing matches yet">{mayEdit ? <Button kind="primary" onClick={edit}>Edit rules</Button> : null}</EmptyCard>
       ) : (
@@ -70,7 +72,7 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
           {outcome}
         </p>
       ) : null}
-      {selecting.on ? <SendBar count={selecting.count} onSend={() => setSending(true)} /> : null}
+      {selecting.on ? <SendBar count={selecting.count} from={selecting.ids.map((id) => rows.find((one) => one.id === id)?.backlogId ?? "")} onSend={() => setSending(true)} /> : null}
       {sending ? (
         <SendToBacklog
           ids={selecting.ids}

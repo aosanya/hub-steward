@@ -147,6 +147,20 @@ describe("one smart backlog opened", () => {
     expect(screen.queryByRole("button", { name: "Select" })).toBeNull();
   });
 
+  it("offers Change who has access to a manager and opens the Access address", async () => {
+    open(fake(), [issue("t1", "Record the voice clips")]);
+    const link = await screen.findByRole("link", { name: "Change who has access" });
+    expect(link).toHaveAttribute("href", "/a/hub-1/backlogs/ready/access");
+    await userEvent.click(link);
+    expect(where()).toBe("/a/hub-1/backlogs/ready/access");
+  });
+
+  it("hides Change who has access from a role that may not manage backlogs", async () => {
+    open(fake(), [issue("t1", "Record the voice clips")], false);
+    await screen.findByText("Mark is Ready · Step is To do");
+    expect(screen.queryByRole("link", { name: "Change who has access" })).toBeNull();
+  });
+
   it("hides Edit rules from a role that may not manage backlogs", async () => {
     open(fake(), [issue("t1", "Record the voice clips")], false);
     await screen.findByText("Mark is Ready · Step is To do");
