@@ -341,7 +341,7 @@ describe("the pages of one model and of one agent", () => {
 });
 
 describe("the pages the menu lists", () => {
-  const routed = ["models", "models-configure", "approvals", "usage", "usage-overview", "usage-work", "usage-agents"];
+  const routed = ["models", "models-configure", "assistant", "approvals", "usage", "usage-overview", "usage-work", "usage-agents"];
   const drawnNotBuilt = ["equipment"];
   const listed = [...new Set(hubKinds.flatMap(pagesOf))];
 
@@ -357,17 +357,25 @@ describe("the pages the menu lists", () => {
 });
 
 describe("the Models rows in the menu", () => {
-  it("open into Configure and Usage, Usage opening into its three pages", () => {
+  it("open into Configure, Assistant and Usage, Usage opening into its three pages", () => {
     const models = rowOf(buildMenu("farmers", "usage-work", {}, "owner"), "models")!;
     expect(models.expanded).toBe(true);
-    expect(models.children?.map((row) => row.id)).toEqual(["models-configure", "usage"]);
-    expect(models.children?.[1].children?.map((row) => row.id)).toEqual(["usage-overview", "usage-work", "usage-agents"]);
+    expect(models.children?.map((row) => row.id)).toEqual(["models-configure", "assistant", "usage"]);
+    expect(models.children?.[2].children?.map((row) => row.id)).toEqual(["usage-overview", "usage-work", "usage-agents"]);
   });
 
   it("stay folded away from Models, with the chevron", () => {
     const models = rowOf(buildMenu("farmers", "general", {}, "owner"), "models")!;
     expect(models.expanded).toBe(false);
     expect(models.children).toBeUndefined();
+  });
+
+  it("show the owner an Assistant row under Models and keep it from a staff seat", () => {
+    const ownerRows = rowOf(buildMenu("farmers", "assistant", {}, "owner"), "models")!;
+    expect(ownerRows.children?.map((row) => row.id)).toContain("assistant");
+    expect(rowOf(buildMenu("farmers", "assistant", {}, "owner"), "assistant")?.current).toBe(true);
+    const staffRows = rowOf(buildMenu("farmers", "models", {}, "agent"), "models")!;
+    expect(staffRows.children?.map((row) => row.id)).not.toContain("assistant");
   });
 
   it("show a staff seat Configure alone", () => {

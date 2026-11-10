@@ -26,6 +26,7 @@ import { ThreatsView } from "./views/ThreatsView";
 import { ConsequencesView } from "./views/ConsequencesView";
 import { UsageAgentsView, UsageOverviewView, UsageRedirect, UsageWorkView } from "./usage/usageViews";
 import { ModelsPage } from "./ModelsPage";
+import { AssistantPage } from "./assistant/AssistantPage";
 import type { ComponentType } from "react";
 
 export const views: Record<string, ComponentType> = {
@@ -40,6 +41,7 @@ export const views: Record<string, ComponentType> = {
   consequences: ConsequencesView,
   controls: ControlsView,
   "models-configure": ModelsPage,
+  assistant: AssistantPage,
   usage: UsageRedirect,
   "usage-overview": UsageOverviewView,
   "usage-work": UsageWorkView,

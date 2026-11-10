@@ -1261,7 +1261,16 @@
     "groups.boundarySave": "Save boundary",
     "groups.boundaryClear": "Clear boundary",
     "groups.boundarySaved": "The boundary was saved.",
-    "groups.boundaryInvalid": "Give at least three corners, each as longitude, latitude."
+    "groups.boundaryInvalid": "Give at least three corners, each as longitude, latitude.",
+    "menu.assistant": "Assistant",
+    "assistant.who": "Who may ask the assistant",
+    "assistant.mayAsk": "May ask the assistant",
+    "assistant.share": "Each person's share of the assistant",
+    "assistant.tokensDay": "Tokens a day for each person",
+    "assistant.tokensMonth": "Tokens a month for each person",
+    "assistant.noRoles": "No Backlog roles are in the draft yet.",
+    "assistant.save": "Save",
+    "assistant.saved": "The assistant settings were saved."
   },
   "de": {
     "headline": "Willkommen bei Hub Steward! Gründe deine Gemeinschaft und leite sie mit Leichtigkeit!",
@@ -2525,7 +2534,16 @@
     "groups.boundarySave": "Grenze speichern",
     "groups.boundaryClear": "Grenze entfernen",
     "groups.boundarySaved": "Die Grenze wurde gespeichert.",
-    "groups.boundaryInvalid": "Geben Sie mindestens drei Eckpunkte an, jeweils als Längengrad, Breitengrad."
+    "groups.boundaryInvalid": "Geben Sie mindestens drei Eckpunkte an, jeweils als Längengrad, Breitengrad.",
+    "menu.assistant": "Assistent",
+    "assistant.who": "Wer den Assistenten fragen darf",
+    "assistant.mayAsk": "Darf den Assistenten fragen",
+    "assistant.share": "Anteil jeder Person am Assistenten",
+    "assistant.tokensDay": "Tokens pro Tag für jede Person",
+    "assistant.tokensMonth": "Tokens pro Monat für jede Person",
+    "assistant.noRoles": "Im Entwurf gibt es noch keine Backlog-Rollen.",
+    "assistant.save": "Speichern",
+    "assistant.saved": "Die Einstellungen des Assistenten wurden gespeichert."
   },
   "sw": {
     "headline": "Karibu Hub Steward! Anzisha jumuiya yako na uiendeshe kwa urahisi!",
@@ -3789,7 +3807,16 @@
     "groups.boundarySave": "Hifadhi mpaka",
     "groups.boundaryClear": "Futa mpaka",
     "groups.boundarySaved": "Mpaka umehifadhiwa.",
-    "groups.boundaryInvalid": "Toa pembe angalau tatu, kila moja kama longitudo, latitudo."
+    "groups.boundaryInvalid": "Toa pembe angalau tatu, kila moja kama longitudo, latitudo.",
+    "menu.assistant": "Msaidizi",
+    "assistant.who": "Nani anaweza kumuuliza msaidizi",
+    "assistant.mayAsk": "Anaweza kumuuliza msaidizi",
+    "assistant.share": "Sehemu ya kila mtu ya msaidizi",
+    "assistant.tokensDay": "Tokeni kwa siku kwa kila mtu",
+    "assistant.tokensMonth": "Tokeni kwa mwezi kwa kila mtu",
+    "assistant.noRoles": "Bado hakuna majukumu ya Backlog kwenye rasimu.",
+    "assistant.save": "Hifadhi",
+    "assistant.saved": "Mipangilio ya msaidizi imehifadhiwa."
   },
   "es": {
     "headline": "¡Bienvenido a Hub Steward! ¡Crea tu comunidad y gestiónala con facilidad!",
@@ -5053,7 +5080,16 @@
     "groups.boundarySave": "Guardar límite",
     "groups.boundaryClear": "Quitar límite",
     "groups.boundarySaved": "El límite se guardó.",
-    "groups.boundaryInvalid": "Indique al menos tres vértices, cada uno como longitud, latitud."
+    "groups.boundaryInvalid": "Indique al menos tres vértices, cada uno como longitud, latitud.",
+    "menu.assistant": "Asistente",
+    "assistant.who": "Quién puede preguntar al asistente",
+    "assistant.mayAsk": "Puede preguntar al asistente",
+    "assistant.share": "La parte de cada persona del asistente",
+    "assistant.tokensDay": "Tokens al día para cada persona",
+    "assistant.tokensMonth": "Tokens al mes para cada persona",
+    "assistant.noRoles": "Todavía no hay roles de Backlog en el borrador.",
+    "assistant.save": "Guardar",
+    "assistant.saved": "Se guardaron los ajustes del asistente."
   },
   "fr": {
     "headline": "Bienvenue sur Hub Steward ! Créez votre communauté et gérez-la sans effort !",
@@ -6317,7 +6353,16 @@
     "groups.boundarySave": "Enregistrer la limite",
     "groups.boundaryClear": "Effacer la limite",
     "groups.boundarySaved": "La limite a été enregistrée.",
-    "groups.boundaryInvalid": "Indiquez au moins trois sommets, chacun sous la forme longitude, latitude."
+    "groups.boundaryInvalid": "Indiquez au moins trois sommets, chacun sous la forme longitude, latitude.",
+    "menu.assistant": "Assistant",
+    "assistant.who": "Qui peut interroger l'assistant",
+    "assistant.mayAsk": "Peut interroger l'assistant",
+    "assistant.share": "La part de chaque personne de l'assistant",
+    "assistant.tokensDay": "Jetons par jour pour chaque personne",
+    "assistant.tokensMonth": "Jetons par mois pour chaque personne",
+    "assistant.noRoles": "Il n'y a pas encore de rôles Backlog dans le brouillon.",
+    "assistant.save": "Enregistrer",
+    "assistant.saved": "Les réglages de l'assistant ont été enregistrés."
   },
   "zh": {
     "headline": "欢迎使用 Hub Steward！创建你的社区，轻松运营！",
@@ -7581,7 +7626,16 @@
     "groups.boundarySave": "保存边界",
     "groups.boundaryClear": "清除边界",
     "groups.boundarySaved": "边界已保存。",
-    "groups.boundaryInvalid": "请至少给出三个顶点,每个为经度,纬度。"
+    "groups.boundaryInvalid": "请至少给出三个顶点,每个为经度,纬度。",
+    "menu.assistant": "助手",
+    "assistant.who": "谁可以向助手提问",
+    "assistant.mayAsk": "可以向助手提问",
+    "assistant.share": "每个人可使用助手的额度",
+    "assistant.tokensDay": "每人每天的令牌数",
+    "assistant.tokensMonth": "每人每月的令牌数",
+    "assistant.noRoles": "草稿中还没有待办角色。",
+    "assistant.save": "保存",
+    "assistant.saved": "助手设置已保存。"
   },
   "hu": {
     "headline": "Üdvözöl a Hub Steward! Hozd létre a közösségedet, és vezesd könnyedén!",
@@ -8845,6 +8899,15 @@
     "groups.boundarySave": "Határ mentése",
     "groups.boundaryClear": "Határ törlése",
     "groups.boundarySaved": "A határ el lett mentve.",
-    "groups.boundaryInvalid": "Adjon meg legalább három csúcsot, mindegyiket hosszúság, szélesség formában."
+    "groups.boundaryInvalid": "Adjon meg legalább három csúcsot, mindegyiket hosszúság, szélesség formában.",
+    "menu.assistant": "Asszisztens",
+    "assistant.who": "Ki kérdezheti az asszisztenst",
+    "assistant.mayAsk": "Kérdezhet az asszisztenstől",
+    "assistant.share": "Mindenki saját kerete az asszisztensből",
+    "assistant.tokensDay": "Tokenek naponta személyenként",
+    "assistant.tokensMonth": "Tokenek havonta személyenként",
+    "assistant.noRoles": "A tervezetben még nincs Backlog-szerepkör.",
+    "assistant.save": "Mentés",
+    "assistant.saved": "Az asszisztens beállításait elmentettük."
   }
 }

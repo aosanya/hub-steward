@@ -135,9 +135,10 @@ const entries: Entry[] = [
     icon: "grid",
     section: "settings",
     kinds: everyKind,
-    children: ["models-configure", "usage"],
+    children: ["models-configure", "assistant", "usage"],
   },
   { id: "models-configure", icon: "gear", section: "settings", kinds: everyKind },
+  { id: "assistant", icon: "robot", section: "settings", kinds: everyKind, managersOnly: true },
   {
     id: "usage",
     icon: "chart",
@@ -229,7 +230,7 @@ const ownHints = new Map<string, (words: ChipWords) => string[]>([
 
 const hintOwnerOf = (page: string): string =>
   details.get(page)?.parent ??
-  (page === "models-configure" ? "models" : undefined) ??
+  (page === "models-configure" || page === "assistant" ? "models" : undefined) ??
   (reviewAreaPages.includes(page) ? "publish-review" : page);
 
 export const hintKeys = (

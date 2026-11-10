@@ -931,7 +931,7 @@ describe("moving between pages", () => {
     const user = userEvent.setup();
     openConsole("/h/siaya/models");
     await modelsOfLab();
-    const folding = ["Configure", "Usage"];
+    const folding = ["Configure", "Assistant", "Usage"];
     const links = within(menu())
       .getAllByRole("link")
       .filter((link) => !folding.includes(link.textContent ?? ""));
