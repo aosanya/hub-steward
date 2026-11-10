@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { mcpAgencyClient, type AgencyClient } from "../agency/modules";
 import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
 import { Button } from "../ui/Button";
+import { Chip } from "../ui/Chip";
+import { Sheet } from "../ui/Sheet";
+import { addSmartBacklogPath, smartBacklogPath } from "../smartBacklog/paths";
 import { EmptyCard, LoadFailed } from "../ui/LoadState";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
@@ -18,6 +22,7 @@ type Props = { client?: BacklogsClient; agency?: AgencyClient; manage?: BacklogM
 
 export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyClient, manage = mcpBacklogManageClient }: Props) {
   const navigate = useNavigate();
+  const [adding, setAdding] = useState(false);
   const backlogs = useLoad(() => client.backlogs(), `backlogs:${openAgencyId()}`);
   const named = useLoad(() => agency.read(), `backlogs-agency:${openAgencyId()}`);
   const mayManage = useMayManage(manage);
@@ -31,19 +36,31 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
         <Rows>
           <ListRow title="All issues" meta={plural(issues, "issue")} end="›" onClick={() => navigate(issuesPath(allIssuesId))} />
           {issues > 0
-            ? rows.map((one) => (
-                <ListRow key={one.id} title={one.name} meta={`${plural(one.steps.length, "step")} · ${plural(one.issues, "issue")}`} end="›" onClick={() => navigate(boardPath(one.id))} />
-              ))
+            ? rows.map((one) =>
+                one.kind === "smart" ? (
+                  <ListRow key={one.id} title={one.name} meta={plural(one.issues, "issue")} end={<><Chip tone="info">Smart</Chip> ›</>} onClick={() => navigate(smartBacklogPath(one.id))} />
+                ) : (
+                  <ListRow key={one.id} title={one.name} meta={`${plural(one.steps.length, "step")} · ${plural(one.issues, "issue")}`} end="›" onClick={() => navigate(boardPath(one.id))} />
+                ),
+              )
             : null}
         </Rows>
       ) : null}
       {backlogs.state === "ready" && mayManage.state === "ready" && mayManage.data ? (
-        <Button onClick={() => navigate(addBacklogPath())}>Add a backlog</Button>
+        <Button onClick={() => setAdding(true)}>Add a backlog</Button>
       ) : null}
       {backlogs.state === "ready" && rows.length > 0 && issues === 0 ? (
         <EmptyCard words="No backlog yet">
           <p>Run the loader on your laptop to load the boards</p>
         </EmptyCard>
+      ) : null}
+      {adding ? (
+        <Sheet title="Add a backlog" onClose={() => setAdding(false)}>
+          <Rows>
+            <ListRow title="Backlog with steps" end="›" onClick={() => navigate(addBacklogPath())} />
+            <ListRow title="Smart backlog" end="›" onClick={() => navigate(addSmartBacklogPath())} />
+          </Rows>
+        </Sheet>
       ) : null}
     </Shell>
   );

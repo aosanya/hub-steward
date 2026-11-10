@@ -32,7 +32,7 @@ export type Issue = {
 
 export type IssueDetail = Issue & { waitsOn: Issue[]; waitedOnBy: Issue[] };
 
-export type Backlog = { id: string; name: string; steps: string[]; issues: number };
+export type Backlog = { id: string; name: string; steps: string[]; issues: number; kind?: "smart" };
 
 export type BacklogsClient = {
   backlogs: () => Promise<Backlog[]>;
@@ -42,7 +42,7 @@ export type BacklogsClient = {
 
 export type HubStep = { id: string; name: string; issues: number };
 
-export type HubBacklog = { id: string; name: string; steps: HubStep[]; issues: number };
+export type HubBacklog = { id: string; name: string; steps: HubStep[]; issues: number; kind?: "smart" };
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
 
@@ -71,6 +71,7 @@ export const hubBacklogOf = (raw: any): HubBacklog => ({
   name: text(raw?.name),
   issues: count(raw?.issues),
   steps: itemsOfSteps(raw?.steps),
+  ...(raw?.kind === "smart" ? { kind: "smart" as const } : {}),
 });
 
 function itemsOfSteps(raw: unknown): HubStep[] {
@@ -81,7 +82,7 @@ function itemsOfSteps(raw: unknown): HubStep[] {
 
 export const hubBacklogsOf = (reply: any): HubBacklog[] => itemsOf(reply).map(hubBacklogOf).filter((one) => one.id !== "");
 
-export const backlogOf = (one: HubBacklog): Backlog => ({ id: one.id, name: one.name, steps: one.steps.map((step) => step.name), issues: one.issues });
+export const backlogOf = (one: HubBacklog): Backlog => ({ id: one.id, name: one.name, steps: one.steps.map((step) => step.name), issues: one.issues, ...(one.kind ? { kind: one.kind } : {}) });
 
 export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
   const status = text(raw?.status);

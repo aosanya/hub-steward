@@ -121,6 +121,7 @@ describe("the Backlogs screen", () => {
       </MemoryRouter>,
     );
     await userEvent.click(await screen.findByRole("button", { name: "Add a backlog" }));
+    await userEvent.click(within(screen.getByRole("dialog", { name: "Add a backlog" })).getByRole("button", { name: /Backlog with steps/ }));
     expect(where()).toBe("/a/hub-1/backlogs/new");
     unmount();
     render(

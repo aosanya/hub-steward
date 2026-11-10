@@ -16,3 +16,22 @@ export type FieldChoices = Record<ChoiceFieldId, string[]>;
 export type CountMatches = (set: RuleSet) => Promise<number>;
 
 export type CreateSmartBacklog = (name: string, set: RuleSet) => Promise<void>;
+
+export type SmartBacklog = { id: string; name: string; set: RuleSet; issues: number };
+
+export class DuplicateRules extends Error {
+  constructor(
+    public readonly existingId: string,
+    public readonly existingName: string,
+  ) {
+    super(`${existingName} already has these rules.`);
+  }
+}
+
+export type SmartBacklogClient = {
+  choices: () => Promise<FieldChoices>;
+  count: CountMatches;
+  create: (name: string, set: RuleSet) => Promise<string>;
+  read: (backlogId: string) => Promise<SmartBacklog>;
+  update: (backlogId: string, name: string, set: RuleSet) => Promise<void>;
+};

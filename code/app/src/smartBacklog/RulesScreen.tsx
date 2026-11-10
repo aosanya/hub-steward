@@ -9,9 +9,9 @@ import { Shell } from "../ui/Shell";
 import { Sheet } from "../ui/Sheet";
 import { DURATION_UNITS, choicesFor, fieldSpec, fieldSpecs, joinDuration, parseDuration, ruleComplete } from "./fields";
 import { addRule, changeField, changeOperator, changeValue, countWords, draftProblem, emptyDraft, removeRule, toRuleSet, type Draft } from "./rulesDraft";
-import type { CountMatches, CreateSmartBacklog, FieldChoices, FieldId, Match } from "./types";
+import { DuplicateRules, type CountMatches, type CreateSmartBacklog, type FieldChoices, type FieldId, type Match } from "./types";
 
-type Props = { choices: FieldChoices; count: CountMatches; onCreate: CreateSmartBacklog; onBack: () => void; initial?: Draft };
+type Props = { choices: FieldChoices; count: CountMatches; onCreate: CreateSmartBacklog; onBack: () => void; initial?: Draft; title?: string; submitLabel?: string; onOpenExisting?: (backlogId: string) => void };
 
 type Picking = { at: number | "new" } | null;
 
@@ -92,12 +92,13 @@ function FieldSheet({ onPick, onClose }: { onPick: (field: FieldId) => void; onC
   );
 }
 
-export function RulesScreen({ choices, count, onCreate, onBack, initial }: Props) {
+export function RulesScreen({ choices, count, onCreate, onBack, initial, title = "Add a smart backlog", submitLabel = "Create smart backlog", onOpenExisting }: Props) {
   const [draft, setDraft] = useState<Draft>(initial ?? emptyDraft());
   const [picking, setPicking] = useState<Picking>(null);
   const [matching, setMatching] = useState<number | null>(null);
   const [problem, setProblem] = useState("");
   const [saving, setSaving] = useState(false);
+  const [existing, setExisting] = useState<DuplicateRules | null>(null);
   const countable = draft.rules.length > 0 && draft.rules.every(ruleComplete);
   const wanted = JSON.stringify(toRuleSet(draft));
 
@@ -125,18 +126,20 @@ export function RulesScreen({ choices, count, onCreate, onBack, initial }: Props
   const create = async () => {
     const found = draftProblem(draft);
     setProblem(found);
+    setExisting(null);
     if (found !== "") return;
     setSaving(true);
     try {
       await onCreate(draft.name.trim(), toRuleSet(draft));
     } catch (error) {
+      if (error instanceof DuplicateRules) setExisting(error);
       setProblem(error instanceof Error && error.message !== "" ? error.message : "The smart backlog could not be created. Try again.");
       setSaving(false);
     }
   };
 
   return (
-    <Shell title="Add a smart backlog" onBack={onBack} tabless>
+    <Shell title={title} onBack={onBack} tabless>
       <Field label="Name" value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} />
       <div className="field">
         <span className="flabel">Match</span>
@@ -160,8 +163,9 @@ export function RulesScreen({ choices, count, onCreate, onBack, initial }: Props
         </Card>
       ) : null}
       {problem ? <p className="ferr" role="alert">{problem}</p> : null}
+      {existing && onOpenExisting ? <Button onClick={() => onOpenExisting(existing.existingId)}>{`Open ${existing.existingName}`}</Button> : null}
       <Button kind="primary" onClick={create} disabled={saving}>
-        Create smart backlog
+        {submitLabel}
       </Button>
       {picking ? <FieldSheet onPick={pick} onClose={() => setPicking(null)} /> : null}
     </Shell>
