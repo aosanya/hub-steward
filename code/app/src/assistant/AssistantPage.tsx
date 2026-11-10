@@ -240,7 +240,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
                 <p className="assistant-empty">{askPlaceholder}</p>
               ) : (
                 <BacklogSummariesLoader kinds={items.some((item) => (item.views ?? []).length > 0) ? [backlogViewKind] : []} client={backlogs}>
-                  <Bubbles items={items} phase={phase} current={current} step={step} reason={reason} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
+                  <Bubbles items={items} phase={phase === "working" && confirmation.pending ? "idle" : phase} current={current} step={step} reason={reason} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
                 </BacklogSummariesLoader>
               )}
               {confirmation.pending ? <ConfirmCard write={confirmation.pending.write} settle={confirmation.pending.settle} held={[...found.results, ...confirmation.pending.seen]} client={backlogs} /> : null}
