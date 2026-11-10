@@ -32,6 +32,10 @@ var operationsNotBoundToABacklog = map[string]bool{
 	"take_back_vote": true,
 }
 
+var readsSentAsPost = map[string]bool{
+	"count_backlog_rules": true,
+}
+
 func operationsTakingTheCallerThatWrite(t *testing.T) []string {
 	t.Helper()
 	raw, err := os.ReadFile("../taskmanager.operations.json")
@@ -52,7 +56,7 @@ func operationsTakingTheCallerThatWrite(t *testing.T) []string {
 	}
 	var names []string
 	for name, op := range file.Operations {
-		if op.Method == http.MethodGet || operationsNotBoundToABacklog[name] {
+		if op.Method == http.MethodGet || readsSentAsPost[name] || operationsNotBoundToABacklog[name] {
 			continue
 		}
 		for _, arg := range op.Args {
