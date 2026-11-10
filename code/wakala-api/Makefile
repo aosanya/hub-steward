@@ -31,6 +31,6 @@ restartQA:
 		WAKALA_ADMIN_TOKEN=local-admin-token \
 		WAKALA_SESSION_SECRET=local-only-session-secret-change-before-sharing \
 		AI_MASTER_KEY=local-only-master-key-change-me0 \
-		STUDIO_ORIGINS=http://localhost:5180,http://127.0.0.1:5180,http://localhost:5173,http://127.0.0.1:5173 \
-		MEMBER_APP_ORIGINS=http://localhost:5181,http://127.0.0.1:5181,http://localhost:5174,http://127.0.0.1:5174 \
+		STUDIO_ORIGINS=http://localhost:5180,http://127.0.0.1:5180,http://localhost:5181,http://127.0.0.1:5181,http://localhost:5173,http://127.0.0.1:5173 \
+		MEMBER_APP_ORIGINS=http://localhost:5174,http://127.0.0.1:5174 \
 		go run ./cmd/server
