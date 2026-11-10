@@ -18,6 +18,7 @@ PORT=8082 WAKALA_SQLITE_PATH=/tmp/wakala.db /tmp/wakala-server
 - **`.env`.** On a normal start the server reads `.env` from the working directory and applies each entry that is not already in the environment (`cmd/server/env.go`). Start it from a directory with no `.env` unless you want one read. A staging run reads none (`cmd/server/staging.go`).
 - **Database.** With `DATABASE_URL` set it opens Postgres. Without it, SQLite at `WAKALA_SQLITE_PATH`, or in memory when that is unset (`buildDeps` in `cmd/server/main.go`). Member accounts and sign-in sessions are built only on the Postgres path.
 - **Settings.** The names are in [.env.example](../../../.env.example). The ones the server reads are the `os.Getenv` calls in `cmd/server`.
+- **Signing in.** `POST /auth/signin` takes `{"email","password"}`, sets the session cookie and answers 201; without the cookie `/me` and `/instances` answer 401. The accounts come from `enrol` in the hub-steward-swe loader. A wrong password five times in a row locks that email from that address for 15 minutes (`internal/throttle/limits.go`, `signin_guard.go`); a right one clears the count. The QA hub, its fixed ports, the people and where their passwords are kept: `hub-steward-swe/documentation/4. qa/qa-environment.md`.
 - **Health.** `GET /healthz` answers `{"status":"ok"}` (`internal/api/http/router.go`).
 
 ## How the repository is laid out
