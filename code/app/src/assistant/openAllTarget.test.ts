@@ -36,6 +36,12 @@ describe("where Open all goes", () => {
     expect(openAllTarget(draftFor({ priority: "P1" }), backlogs)).toMatchObject({ to: issuesPath(), whole: true });
   });
 
+  it("labels a list that already holds all its issues Open these in the List", () => {
+    const rows = Array.from({ length: 3 }, (_, at) => ({ id: `i${at}`, title: `DEV-${at} A` }));
+    const whole = draftOf(listTool, { tag: "Blocked" }, { total: 3, items: rows }) as ResultDraft;
+    expect(openAllTarget(whole, backlogs)).toEqual({ label: "Open these in the List", to: issuesPath("all", ["Blocked"]), whole: false, note: "" });
+  });
+
   it("opens All issues with the count when the call had no filter", () => {
     expect(openAllTarget(draftFor({}, 724), backlogs)).toEqual({ label: "Open all 724 issues", to: issuesPath(), whole: false, note: "" });
   });

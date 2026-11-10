@@ -84,7 +84,8 @@ export function ResultsPanel({ results, picked, onPick, onOpen }: PanelProps) {
   const backlogs = useLoad(() => (wanted ? mcpBacklogsClient.backlogs() : Promise.resolve([])), `result-backlogs:${openAgencyId()}:${wanted}`);
   const known = backlogs.state === "ready" ? backlogs.data : [];
   const names = new Map(known.map((one) => [one.id, one.name]));
-  const openAll = cutShort ? openAllTarget(list, known) : null;
+  const target = list !== undefined && list.view !== backlogsView ? openAllTarget(list, known) : null;
+  const openAll = target !== null && (cutShort || !target.whole) ? target : null;
   const open = onOpen ?? ((id: string) => navigate(issuePath(id), backState(here.pathname + here.search, assistantBackWords)));
   if (!list) {
     return (

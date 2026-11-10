@@ -101,8 +101,9 @@ export const openAllTarget = (list: ResultDraft, backlogs: Backlog[]): OpenAll =
   const filter = list.filter;
   if (!filter || filter.other) return whole;
   const narrows = filter.tags.length > 0 || filter.query !== "" || filter.backlog !== "";
-  if (filter.openOnly && !narrows) return whole;
-  const label = filter.openOnly ? openAllOpenOnlyWords : openAllWords(list.total);
+  const complete = list.total <= list.issues.length;
+  if (!narrows && (filter.openOnly || complete)) return whole;
+  const label = filter.openOnly || complete ? openAllOpenOnlyWords : openAllWords(list.total);
   const note = filter.openOnly ? openAllOpenOnlyNote : "";
   const found = (to: string): OpenAll => ({ label, to, whole: false, note });
   if (filter.backlog === "") return found(issuesPath("all", filter.tags, filter.query));

@@ -78,9 +78,16 @@ describe("reaching the rest of a long list", () => {
     expect(await screen.findByText(`at ${issuesPath()}`)).toBeInTheDocument();
   });
 
-  it("shows no such button when every issue of the list is already shown", async () => {
+  it("ends a tagged list that holds all its issues with Open these in the List, which opens the List with the tag applied", async () => {
     await open(draft(3, 3, { tags: ["mwanachama-frontend-kazi"], query: "", backlog: "", other: false }));
-    expect(screen.queryByRole("button", { name: /^Open all/ })).toBeNull();
     expect(screen.queryByText(/Showing/)).toBeNull();
+    expect(screen.queryByRole("button", { name: /^Open all/ })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: "Open these in the List" }));
+    expect(await screen.findByText(`at ${issuesPath("all", ["mwanachama-frontend-kazi"])}`)).toBeInTheDocument();
+  });
+
+  it("shows no button for a list with no tag, words or backlog that holds all its issues", async () => {
+    await open(draft(3, 3, { tags: [], query: "", backlog: "", other: false }));
+    expect(screen.queryByRole("button", { name: /^Open/ })).toBeNull();
   });
 });
