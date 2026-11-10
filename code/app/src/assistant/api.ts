@@ -144,6 +144,7 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
           result = resultText(read);
           if (writeNames.includes(call.name)) wrote = true;
         } catch (failure) {
+          if (writeNames.includes(call.name)) throw failure;
           result = `The call failed: ${failure instanceof Error ? failure.message : "unknown"}`;
         }
       }
