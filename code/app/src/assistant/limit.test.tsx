@@ -1,10 +1,9 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import { routes } from "../routes";
-import { AssistantPage, dayLimitWords, failedWords, monthLimitWords } from "./AssistantPage";
+import { dayLimitWords, failedWords, monthLimitWords } from "./AssistantPage";
 import { askAssistant, LimitReached, type AssistantClient } from "./api";
+import { say, showAssistant } from "./assistantScreen";
 import { forgetConversations } from "./session";
 
 const mcp = vi.hoisted(() => ({ callTool: vi.fn(), listTools: vi.fn() }));
@@ -22,20 +21,7 @@ afterEach(() => {
   forgetConversations();
 });
 
-const show = (ask: AssistantClient["ask"]) =>
-  render(
-    <MemoryRouter initialEntries={["/a/farmers/chat/assistant"]}>
-      <Routes>
-        <Route path={routes.assistant.pattern} element={<AssistantPage client={{ model: async () => "acc1", ask }} />} />
-        <Route path="*" element={<p>elsewhere</p>} />
-      </Routes>
-    </MemoryRouter>,
-  );
-
-const say = async (words: string) => {
-  await userEvent.type(await screen.findByRole("textbox", { name: "Ask about the backlogs" }), words);
-  await userEvent.click(screen.getByRole("button", { name: "Send" }));
-};
+const show = (ask: AssistantClient["ask"]) => showAssistant({ ask });
 
 describe("the model refuses because the person's share is used", () => {
   it("raises the day limit when the chat call is refused with the day sentence", async () => {

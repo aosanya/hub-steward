@@ -1,10 +1,8 @@
-import { act, render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { act, screen, within } from "@testing-library/react";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import { routes } from "../routes";
-import { AssistantPage, failedWords } from "./AssistantPage";
+import { failedWords } from "./AssistantPage";
 import type { AssistantClient } from "./api";
+import { say, showAssistant } from "./assistantScreen";
 import { forgetConversations } from "./session";
 
 vi.mock("../wakala/mcp", () => ({ callTool: vi.fn(), listTools: vi.fn(), McpError: class extends Error {} }));
@@ -16,20 +14,7 @@ afterEach(() => {
   forgetConversations();
 });
 
-const show = (ask: AssistantClient["ask"]) =>
-  render(
-    <MemoryRouter initialEntries={["/a/farmers/chat/assistant"]}>
-      <Routes>
-        <Route path={routes.assistant.pattern} element={<AssistantPage client={{ model: async () => "acc1", ask }} />} />
-        <Route path="*" element={<p>elsewhere</p>} />
-      </Routes>
-    </MemoryRouter>,
-  );
-
-const say = async (words: string) => {
-  await userEvent.type(await screen.findByRole("textbox", { name: "Ask about the backlogs" }), words);
-  await userEvent.click(screen.getByRole("button", { name: "Send" }));
-};
+const show = (ask: AssistantClient["ask"]) => showAssistant({ ask });
 
 const tryAgain = async () => {
   const alert = await screen.findByRole("alert");

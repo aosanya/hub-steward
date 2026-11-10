@@ -1,10 +1,9 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import { routes } from "../routes";
-import { AssistantPage, dayLimitWords, monthLimitWords } from "./AssistantPage";
-import { mcpAssistantClient, type AssistantClient, type LimitSpan } from "./api";
+import { dayLimitWords, monthLimitWords } from "./AssistantPage";
+import { mcpAssistantClient, type LimitSpan } from "./api";
+import { showAssistant } from "./assistantScreen";
 import { forgetConversations } from "./session";
 
 const mcp = vi.hoisted(() => ({ callTool: vi.fn(), listTools: vi.fn() }));
@@ -22,15 +21,7 @@ afterEach(() => {
   forgetConversations();
 });
 
-const show = (client: Partial<AssistantClient>) =>
-  render(
-    <MemoryRouter initialEntries={["/a/farmers/chat/assistant"]}>
-      <Routes>
-        <Route path={routes.assistant.pattern} element={<AssistantPage client={{ model: async () => "acc1", ask: async () => ({ text: "ok", lists: [] }), ...client }} />} />
-        <Route path="*" element={<p>elsewhere</p>} />
-      </Routes>
-    </MemoryRouter>,
-  );
+const show = showAssistant;
 
 const writingBox = () => screen.queryByRole("textbox", { name: "Ask about the backlogs" });
 

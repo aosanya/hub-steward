@@ -1,11 +1,9 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import type { Issue } from "../backlogs/api";
-import { routes } from "../routes";
-import { AssistantPage } from "./AssistantPage";
 import type { AssistantClient } from "./api";
+import { say, showAssistant } from "./assistantScreen";
 import type { ResultDraft } from "./results";
 import { forgetConversations } from "./session";
 
@@ -45,20 +43,7 @@ const later = () => {
   return { promise, resolve, reject };
 };
 
-const show = (ask: AssistantClient["ask"]) =>
-  render(
-    <MemoryRouter initialEntries={["/a/farmers/chat/assistant"]}>
-      <Routes>
-        <Route path={routes.assistant.pattern} element={<AssistantPage client={{ model: async () => "acc1", ask }} />} />
-        <Route path="*" element={<p>elsewhere</p>} />
-      </Routes>
-    </MemoryRouter>,
-  );
-
-const say = async (words: string) => {
-  await userEvent.type(await screen.findByRole("textbox", { name: "Ask about the backlogs" }), words);
-  await userEvent.click(screen.getByRole("button", { name: "Send" }));
-};
+const show = (ask: AssistantClient["ask"]) => showAssistant({ ask });
 
 const turnsOf = (ask: ReturnType<typeof vi.fn>, call: number) => (ask.mock.calls[call][1] as { content: string }[]).map((turn) => turn.content);
 
