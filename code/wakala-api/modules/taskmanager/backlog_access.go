@@ -144,6 +144,13 @@ func (m *taskManager) ListBacklogsFor(ctx context.Context, requesterID string) (
 		return models.BacklogList{}, err
 	}
 	kept := make([]models.BacklogSummary, 0, len(list.Items))
+	backlogs, err := m.backlogs(ctx)
+	if err != nil {
+		return models.BacklogList{}, err
+	}
+	if err := m.countSmartIssues(ctx, requesterID, &list, backlogs); err != nil {
+		return models.BacklogList{}, err
+	}
 	for _, item := range list.Items {
 		if visible.Sees(item.ID) {
 			item.Level = visible.LevelOf(item.ID)
@@ -240,6 +247,9 @@ func (m *taskManager) GiveBacklogAccess(ctx context.Context, backlogID, groupID,
 		return models.BacklogAccess{}, fmt.Errorf("%w: %s", ErrInvalidBacklog, err)
 	}
 	if _, err := m.accessOf(ctx, backlogID); err != nil {
+		return models.BacklogAccess{}, err
+	}
+	if err := m.refuseMoveOnSmart(ctx, backlogID, grant.Level); err != nil {
 		return models.BacklogAccess{}, err
 	}
 	if err := m.requireGroup(ctx, groupID); err != nil {

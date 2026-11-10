@@ -117,7 +117,7 @@ func summarize(backlogs []models.Backlog, tasks []Task) models.BacklogList {
 	}
 	out := models.BacklogList{Items: make([]models.BacklogSummary, len(backlogs))}
 	for i, b := range backlogs {
-		item := models.BacklogSummary{ID: b.ID, Name: b.Name, Issues: totals[b.ID], Steps: make([]models.StepSummary, len(b.Steps))}
+		item := models.BacklogSummary{ID: b.ID, Name: b.Name, Issues: totals[b.ID], Steps: make([]models.StepSummary, len(b.Steps)), Kind: b.Kind, Rules: b.Rules}
 		for j, s := range b.Steps {
 			item.Steps[j] = models.StepSummary{ID: s.ID, Name: s.Name, Issues: counts[b.ID][s.ID]}
 		}
@@ -135,7 +135,11 @@ func (m *taskManager) ListBacklogs(ctx context.Context) (models.BacklogList, err
 	if err != nil {
 		return models.BacklogList{}, fmt.Errorf("ListBacklogs: %w", err)
 	}
-	return summarize(backlogs, tasks), nil
+	list := summarize(backlogs, tasks)
+	if err := m.countSmartIssues(ctx, "", &list, backlogs); err != nil {
+		return models.BacklogList{}, err
+	}
+	return list, nil
 }
 
 func (m *taskManager) summaryOf(ctx context.Context, backlogID string) (models.BacklogSummary, error) {

@@ -51,6 +51,9 @@ type TaskManager interface {
 
 	ListBacklogs(ctx context.Context) (BacklogList, error)
 	CreateBacklog(ctx context.Context, name string, steps []string) (BacklogSummary, error)
+	CreateBacklogWithRules(ctx context.Context, name string, steps []string, rules *BacklogRules) (BacklogSummary, error)
+	SetBacklogRules(ctx context.Context, backlogID string, rules *BacklogRules) (BacklogSummary, error)
+	CountBacklogRules(ctx context.Context, requesterID string, rules *BacklogRules) (RulesCount, error)
 	RenameBacklog(ctx context.Context, backlogID, name string) (BacklogSummary, error)
 	DeleteBacklog(ctx context.Context, backlogID string) error
 	AddBacklogStep(ctx context.Context, backlogID, name, after string) (BacklogSummary, error)
