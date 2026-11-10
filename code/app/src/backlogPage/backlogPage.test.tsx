@@ -213,6 +213,16 @@ describe("the backlog page", () => {
     expect(link).toHaveAttribute("href", `/a/hub1/backlogs/${defaultBacklogId}/access`);
   });
 
+  it("does not send a person to Chat for what the page buttons do", async () => {
+    await show(software, defaultBacklogId, manager(true));
+    await screen.findByRole("link", { name: "Edit this backlog" });
+    expect(screen.queryByText(/asking in Chat/i)).toBeNull();
+    cleanup();
+    await show(software, defaultBacklogId, manager(false));
+    await screen.findByText("Who has access");
+    expect(screen.queryByText(/asking in Chat/i)).toBeNull();
+  });
+
   it("says so when the backlog is unknown", async () => {
     await show(clientOf(async () => undefined), "missing");
     expect(await screen.findByRole("alert")).toHaveTextContent("This could not be opened.");

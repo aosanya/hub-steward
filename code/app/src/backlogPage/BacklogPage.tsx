@@ -69,7 +69,7 @@ export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklog
         </>
       ) : null}
       {mayManage.state === "ready" && mayManage.data ? <Button to={backlogAccessPath(backlogId)}>Change who has access</Button> : null}
-      <p className="sub">Change steps and access by asking in Chat. A group that can edit can also move and see.</p>
+      <p className="sub">A group that can edit can also move and see.</p>
     </Shell>
   );
 }
