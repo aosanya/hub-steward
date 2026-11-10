@@ -43,4 +43,24 @@ describe("markdown", () => {
     const { container } = render(<Markdown text="a ** b" />);
     expect(container.textContent).toBe("a ** b");
   });
+
+  it("shows emphasis written with single asterisks and leaves stray asterisks alone", () => {
+    const { container } = render(<Markdown text={"the *hash* of it, 2 * 3 * 4 and a lone * star"} />);
+    expect(container.querySelector("em")?.textContent).toBe("hash");
+    expect(container.textContent).toBe("the hash of it, 2 * 3 * 4 and a lone * star");
+  });
+
+  it("shows only the words of a link that points at a file or any other address that is not http or https", () => {
+    const { container } = render(<Markdown text={"see [the spec](../../developer/documentation/2.%20design/a.md) and [mail](mailto:a@b.c)"} />);
+    expect(container.querySelector("a")).toBeNull();
+    expect(container.textContent).toBe("see the spec and mail");
+  });
+
+  it("keeps a javascript link and a script tag inert", () => {
+    const { container } = render(<Markdown text={"[go](javascript:alert(1)) <script>alert(2)</script> *<img src=x onerror=alert(3)>*"} />);
+    expect(container.querySelector("a")).toBeNull();
+    expect(container.querySelector("script")).toBeNull();
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.textContent).toContain("<script>alert(2)</script>");
+  });
 });

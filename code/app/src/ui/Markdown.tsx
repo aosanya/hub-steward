@@ -1,21 +1,28 @@
 import type { ReactNode } from "react";
 
 const codeSpan = /(`[^`]+`)/;
-const links = /(\[[^\]]+\]\(https?:\/\/[^)\s]+\))/;
-const link = /^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/;
+const links = /(\[[^\]]+\]\([^)\s]+\))/;
+const link = /^\[([^\]]+)\]\(([^)\s]+)\)$/;
+const web = /^https?:\/\//i;
+const emphasis = /(\*[^*\s](?:[^*]*[^*\s])?\*)/;
 const bullet = /^\s*[-*]\s+(.*)$/;
 const numbered = /^\s*\d+[.)]\s+(.*)$/;
 
+const emphasised = (text: string, at: string): ReactNode[] =>
+  text.split(emphasis).map((part, index) =>
+    index % 2 === 1 ? <em key={`${at}-${index}`}>{part.slice(1, -1)}</em> : part,
+  );
+
 const atoms = (text: string, at: number): ReactNode[] =>
-  text.split(links).map((part, index) => {
+  text.split(links).flatMap<ReactNode>((part, index) => {
     const found = link.exec(part);
-    return found ? (
-      <a key={`${at}-${index}`} href={found[2]} target="_blank" rel="noreferrer">
+    if (!found) return emphasised(part, `${at}-${index}`);
+    if (!web.test(found[2])) return emphasised(found[1], `${at}-${index}`);
+    return [
+      <a key={`${at}-${index}`} href={found[2]} target="_blank" rel="noopener noreferrer">
         {found[1]}
-      </a>
-    ) : (
-      part
-    );
+      </a>,
+    ];
   });
 
 const inline = (text: string): ReactNode[] => {
