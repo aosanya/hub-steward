@@ -32,16 +32,20 @@ export function ListRow({ title, code, meta, end, onClick, lead, start, classNam
   );
 }
 
-type Selection = { checked: boolean; onChange: (checked: boolean) => void; label: string };
+export type Selection = { checked: boolean; onChange: (checked: boolean) => void; label: string };
+
+export function SelectionBox({ selection }: { selection: Selection | null }) {
+  return selection ? (
+    <input type="checkbox" aria-label={selection.label} checked={selection.checked} onChange={(event) => selection.onChange(event.target.checked)} />
+  ) : (
+    <span className="selgap" aria-hidden="true" />
+  );
+}
 
 export function SelectableRow({ selection, ...row }: Props & { selection: Selection | null }) {
   return (
     <div className="selrow">
-      {selection ? (
-        <input type="checkbox" aria-label={selection.label} checked={selection.checked} onChange={(event) => selection.onChange(event.target.checked)} />
-      ) : (
-        <span className="selgap" aria-hidden="true" />
-      )}
+      <SelectionBox selection={selection} />
       <ListRow {...row} />
     </div>
   );

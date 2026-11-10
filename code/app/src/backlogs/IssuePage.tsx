@@ -10,6 +10,7 @@ import { backState, useBackLabel, useBackTo } from "../ui/backTo";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
 import { mcpBacklogsClient, type BacklogsClient } from "./api";
+import { SendToBacklogButton } from "../sendToBacklog";
 import { IssueRow } from "./IssueRow";
 import { titleParts } from "./IssueTitle";
 import { issuePath, issuesPath } from "./paths";
@@ -41,6 +42,7 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
               </div>
             ) : null}
           </Card>
+          <SendToBacklogButton issueId={ready.id} />
           {[
             { heading: "Waits on", issues: ready.waitsOn },
             { heading: "Waited on by", issues: ready.waitedOnBy },
