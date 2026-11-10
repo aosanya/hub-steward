@@ -37,7 +37,7 @@ describe("a group sale", () => {
     const read = saleOf(
       { id: "g1", poster_id: "b1", product: "maize", price: "4100", minimum: 20, state: "open", total: 5, count: 1, promised_date: "2026-11-09", note: "Bring sacks", lines: [{ picker: "amina", quantity: "5" }, null] },
       "Kisumu Grain Traders",
-      [{ posterId: "b1", product: "maize", words: "Dry maize 90kg", price: "4100" }],
+      [{ poster: "b1", product: "maize", words: "Dry maize 90kg", price: "4100" }],
     );
     expect(read).toMatchObject({ id: "g1", buyer: "Kisumu Grain Traders", price: 4100, minimum: 20, total: 5, count: 1, date: "2026-11-09", note: "Bring sacks", posterId: "b1" });
     expect(read.lines).toEqual([
