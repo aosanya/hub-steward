@@ -1,4 +1,4 @@
-import type { BacklogsClient } from "../backlogs/api";
+import { issueOf, type BacklogsClient } from "../backlogs/api";
 import type { ResultDraft } from "./results";
 import { fieldSpec, operatorLabel } from "../smartBacklog/fields";
 import { FIELD_IDS, type FieldId } from "../smartBacklog/types";
@@ -89,7 +89,7 @@ export const nameWrite = async (write: Write, held: Held, client: Pick<BacklogsC
   const issueId = write.tool === moveTool ? text(write.arguments.taskID) : "";
   const backlogId = backlogIdOf(write);
   const [issue, backlogs] = await Promise.all([issueId === "" ? undefined : issueTitle(issueId, held, client), backlogId === "" ? undefined : attempt(() => client.backlogs())]);
-  const found = backlogs?.find((one) => one.id === backlogId);
+  const found = backlogs?.find((one) => one.id === backlogId) ?? backlogs?.find((one) => backlogId !== "" && spelled(one.name) === spelled(backlogId));
   const step = write.tool === moveTool ? stepNameOf(found?.steps, text(write.arguments.step)) : undefined;
   return { ...(issue ? { issue } : {}), ...(found?.name ? { backlog: found.name } : {}), ...(step ? { step } : {}) };
 };
@@ -100,16 +100,28 @@ export type FoundIssue = { id: string; title: string };
 
 export type FindIssues = (words: string) => Promise<FoundIssue[]>;
 
+export type ReadIssue = (id: string) => Promise<FoundIssue | undefined>;
+
+export type Resolved = { write: Write; seen: ResultDraft[]; problem: string };
+
 const swapped = (write: Write, id: string): Write => ({ ...write, arguments: { ...write.arguments, taskID: id } });
 
-export const resolveMove = async (write: Write, seen: ResultDraft[], find: FindIssues): Promise<{ write: Write; problem: string }> => {
+const withIssue = (seen: ResultDraft[], found: FoundIssue): ResultDraft[] => [...seen, { title: found.title, total: 1, issues: [issueOf({ id: found.id, title: found.title })] }];
+
+export const resolveMove = async (write: Write, seen: ResultDraft[], find: FindIssues, read: ReadIssue): Promise<Resolved> => {
   const asked = write.tool === moveTool ? text(write.arguments.taskID) : "";
-  if (!keyShaped.test(asked)) return { write, problem: "" };
+  const unchanged = { write, seen, problem: "" };
+  if (asked === "") return unchanged;
   const known = seen.flatMap((list) => list.issues);
+  if (!keyShaped.test(asked)) {
+    if (known.some((issue) => issue.id === asked)) return unchanged;
+    const found = await attempt(() => read(asked));
+    return found ? { ...unchanged, seen: withIssue(seen, found) } : unchanged;
+  }
   const held = known.find((issue) => issue.key?.toLowerCase() === asked.toLowerCase());
-  if (held) return { write: swapped(write, held.id), problem: "" };
-  const found = await attempt(() => find(asked));
-  if (found === undefined) return { write, problem: "" };
-  const hit = found.find((issue) => issue.title.toLowerCase().split(/\s+/).includes(asked.toLowerCase()));
-  return hit ? { write: swapped(write, hit.id), problem: "" } : { write, problem: `I could not find ${asked}.` };
+  if (held) return { ...unchanged, write: swapped(write, held.id) };
+  const matches = await attempt(() => find(asked));
+  if (matches === undefined) return unchanged;
+  const hit = matches.find((issue) => issue.title.toLowerCase().split(/\s+/).includes(asked.toLowerCase()));
+  return hit ? { write: swapped(write, hit.id), seen: withIssue(seen, hit), problem: "" } : { ...unchanged, problem: `I could not find ${asked}.` };
 };

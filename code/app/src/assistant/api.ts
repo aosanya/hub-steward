@@ -1,6 +1,6 @@
 import { callTool, listTools, type ToolInfo } from "../wakala/mcp";
 import { cancelledResult, moveTool, createTool, rulesTool, resolveMove, unconfirmedResult, writeNames, writeProblem, type Confirm } from "./confirm";
-import { draftOf, pendingTool, type ResultDraft, type ResultList } from "./results";
+import { draftOf, pendingTool, readTool, type ResultDraft, type ResultList } from "./results";
 import { blockedIsATagRule, lookUpBeforeMoveRule, manyMatchesRule, promptFrom, triagerDescription } from "./triager";
 
 export type Turn = { role: "user" | "assistant"; content: string; lists?: ResultList[] };
@@ -111,15 +111,20 @@ const findIssues = async (words: string) => {
   return (isObject(reply) && Array.isArray(reply.items) ? reply.items : []).filter(isObject).map((item) => ({ id: text(item.id), title: text(item.title) })).filter((item) => item.id !== "");
 };
 
+const readIssue = async (id: string) => {
+  const raw = await callTool("", readTool, { taskID: id });
+  return isObject(raw) && text(raw.id) !== "" ? { id: text(raw.id), title: text(raw.title) || text(raw.task_name) } : undefined;
+};
+
 const refusalOf = async (call: Call, seen: ResultDraft[], confirm?: Confirm): Promise<string | null> => {
   if (!writeNames.includes(call.name)) return null;
   if (!confirm) return unconfirmedResult;
   const problem = writeProblem({ tool: call.name, arguments: call.arguments });
   if (problem !== "") return `${problem} Nothing was done.`;
-  const resolved = await resolveMove({ tool: call.name, arguments: call.arguments }, seen, findIssues);
+  const resolved = await resolveMove({ tool: call.name, arguments: call.arguments }, seen, findIssues, readIssue);
   if (resolved.problem !== "") return `${resolved.problem} Nothing was done.`;
   call.arguments = resolved.write.arguments;
-  return (await confirm(resolved.write, seen)) ? null : cancelledResult;
+  return (await confirm(resolved.write, resolved.seen)) ? null : cancelledResult;
 };
 
 export async function askAssistant(accountId: string, turns: Turn[], onStep: (words: string) => void = () => undefined, confirm?: Confirm): Promise<Answer> {
