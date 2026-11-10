@@ -86,6 +86,7 @@ type TaskManager interface {
 	SetBacklogOwnerGroup(ctx context.Context, groupID string) error
 	UseGroups(g Groups)
 	UseGroupExists(g GroupExists)
+	UseInstanceOwner(o InstanceOwner)
 	UseRoleSync(r RoleSync)
 	CreateTaskAs(ctx context.Context, requesterID string, task Task) (Task, error)
 	UpdateTaskAs(ctx context.Context, requesterID string, task Task) (Task, error)
@@ -511,14 +512,15 @@ type Publisher = events.Publisher
 
 // taskManager is the concrete implementation of [TaskManager].
 type taskManager struct {
-	db           *gorm.DB
-	store        *store
-	publisher    events.Publisher
-	spec         *spec.Spec
-	overdueGrace time.Duration
-	groups       Groups
-	groupExists  GroupExists
-	roleSync     RoleSync
+	db            *gorm.DB
+	store         *store
+	publisher     events.Publisher
+	spec          *spec.Spec
+	overdueGrace  time.Duration
+	groups        Groups
+	groupExists   GroupExists
+	instanceOwner InstanceOwner
+	roleSync      RoleSync
 }
 
 func NewTaskManager(db *gorm.DB, s *spec.Spec, pub events.Publisher) (TaskManager, error) {

@@ -9,6 +9,7 @@ import (
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamacomm "wakalaserver/modules/comm"
 	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
 
 var ErrNoActLog = errors.New("comm: no act log is mounted, so a moderation act cannot be recorded")
@@ -66,5 +67,15 @@ func (r *registry) namesIn(instanceID string) mwanachamaforms.Names {
 			return "", fmt.Errorf("namesIn: %w", err)
 		}
 		return held.DisplayName, nil
+	}
+}
+
+func (r *registry) ownerIn(instanceID string) mwanachamataskmanager.InstanceOwner {
+	return func(ctx context.Context, callerID string) (bool, error) {
+		role, err := r.RoleOf(ctx, instanceID, callerID)
+		if err != nil {
+			return false, err
+		}
+		return role == RoleOwner, nil
 	}
 }

@@ -28,9 +28,13 @@ type Groups func(ctx context.Context, callerID string) ([]string, error)
 
 type GroupExists func(ctx context.Context, groupID string) (bool, error)
 
+type InstanceOwner func(ctx context.Context, callerID string) (bool, error)
+
 func (m *taskManager) UseGroups(g Groups) { m.groups = g }
 
 func (m *taskManager) UseGroupExists(g GroupExists) { m.groupExists = g }
+
+func (m *taskManager) UseInstanceOwner(o InstanceOwner) { m.instanceOwner = o }
 
 func (m *taskManager) UseRoleSync(r RoleSync) { m.roleSync = r }
 
@@ -57,7 +61,7 @@ func (v backlogVisibility) Moves(backlogID string) bool {
 
 func (v backlogVisibility) Edits(backlogID string) bool {
 	level := v.levels[backlogID]
-	return v.all || level == "" || level == models.AccessEdit
+	return v.all || level == models.AccessEdit
 }
 
 func (m *taskManager) storedGrants(ctx context.Context) ([]models.BacklogGrant, error) {
@@ -102,6 +106,15 @@ func (m *taskManager) storeSetting(ctx context.Context, name string, value any) 
 func (m *taskManager) backlogVisibility(ctx context.Context, requesterID string) (backlogVisibility, error) {
 	if requesterID == "" {
 		return backlogVisibility{all: true}, nil
+	}
+	if m.instanceOwner != nil {
+		owns, err := m.instanceOwner(ctx, requesterID)
+		if err != nil {
+			return backlogVisibility{}, fmt.Errorf("backlog access: owner: %w", err)
+		}
+		if owns {
+			return backlogVisibility{all: true}, nil
+		}
 	}
 	grants, err := m.storedGrants(ctx)
 	if err != nil {
