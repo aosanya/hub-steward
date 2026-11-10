@@ -179,3 +179,15 @@ func TestBacklogManager_ReplaceKeepsAtLeastOneBacklog(t *testing.T) {
 		t.Fatalf("got %v", err)
 	}
 }
+
+func TestMoveTaskToStep_AnEmptyStepIsRefusedAndTheIssueStaysPut(t *testing.T) {
+	mgr := managerWithTwoBacklogs(t)
+	ctx := context.Background()
+	task := softwareTask(t, mgr)
+	if _, err := mgr.MoveTaskToStep(ctx, task.ID, "software", ""); !errors.Is(err, mwanachamataskmanager.ErrUnknownBacklogStep) {
+		t.Fatalf("an empty step: %v", err)
+	}
+	if got, err := mgr.GetTask(ctx, task.ID); err != nil || got.Step != task.Step {
+		t.Fatalf("the issue moved: %+v %v", got, err)
+	}
+}

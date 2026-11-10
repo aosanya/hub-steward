@@ -175,3 +175,40 @@ func TestSmartBacklog_TwoCallersSeeDifferentCounts(t *testing.T) {
 		t.Fatalf("owner %d, dev %d: the dev group sees the smart backlog but none of the issues in other backlogs", owner, dev)
 	}
 }
+
+func TestSmartBacklog_SetRulesNeedsRules(t *testing.T) {
+	mgr := smartManager(t)
+	ctx := context.Background()
+	guides, err := mgr.CreateBacklogWithRules(ctx, "Guides", nil, rulesOf("all", titleHas("guide")))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := mgr.SetBacklogRules(ctx, guides.ID, nil); !errors.Is(err, mwanachamataskmanager.ErrInvalidBacklog) {
+		t.Fatalf("no rules: %v", err)
+	}
+	if _, err := mgr.CountBacklogRules(ctx, "", nil); !errors.Is(err, mwanachamataskmanager.ErrInvalidBacklog) {
+		t.Fatalf("counting no rules: %v", err)
+	}
+}
+
+func TestSmartBacklog_AWaitsOnRuleSeparatesTheIssuesThatWaitFromTheOnesThatDoNot(t *testing.T) {
+	mgr := smartManager(t)
+	ctx := context.Background()
+	waiting := mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "Waits on the route"})
+	blocker := mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "The route"})
+	edge := mwanachamataskmanager.Relationship{Label: "depends_on", FromID: waiting.ID, ToID: blocker.ID}
+	if _, err := mgr.CreateRelationship(ctx, edge); err != nil {
+		t.Fatal(err)
+	}
+	waits, err := mgr.CreateBacklogWithRules(ctx, "Waiting", nil, rulesOf("all", models.BacklogRule{Field: "waits_on", Operator: "has_something"}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	free, err := mgr.CreateBacklogWithRules(ctx, "Free", nil, rulesOf("all", models.BacklogRule{Field: "waits_on", Operator: "has_nothing"}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if waits.Issues != 1 || free.Issues != 4 {
+		t.Fatalf("waiting %d, free %d, want 1 and 4", waits.Issues, free.Issues)
+	}
+}

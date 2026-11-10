@@ -228,3 +228,26 @@ func TestRuleSet_TagRuleAgreesWithTheListFilter(t *testing.T) {
 	wantTitles(t, got, "docs one", "docs two")
 	wantTitles(t, listTitles(t, mgr, mwanachamataskmanager.TaskFilter{Tag: []string{"Docs"}}), "docs one", "docs two")
 }
+
+func TestRuleSet_LastChangedSpansUseTheirUnit(t *testing.T) {
+	tenDays := mwanachamataskmanager.Task{UpdatedAt: rulesNow.AddDate(0, 0, -10).Format(time.RFC3339)}
+	fortyDays := mwanachamataskmanager.Task{UpdatedAt: rulesNow.AddDate(0, 0, -40).Format(time.RFC3339)}
+	cases := []struct {
+		name   string
+		task   mwanachamataskmanager.Task
+		span   string
+		inLast bool
+	}{
+		{"ten days is not in the last week", tenDays, "1 week", false},
+		{"ten days is in the last two weeks", tenDays, "2 weeks", true},
+		{"forty days is not in the last month", fortyDays, "1 month", false},
+		{"forty days is in the last two months", fortyDays, "2 months", true},
+		{"forty days is not in the last thirty days", fortyDays, "30 days", false},
+	}
+	for _, c := range cases {
+		got, err := ruleSet("all", rule("last_changed", "in_the_last", c.span)).Matches(subject(c.task), rulesNow)
+		if err != nil || got != c.inLast {
+			t.Errorf("%s: got %v %v", c.name, got, err)
+		}
+	}
+}

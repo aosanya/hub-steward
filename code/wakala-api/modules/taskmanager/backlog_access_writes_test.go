@@ -335,3 +335,16 @@ func TestBacklogAccess_AGrantToAGroupThatNoLongerExistsIsListedAsGone(t *testing
 		t.Fatalf("got %+v, want the dev grant marked gone", got.Groups)
 	}
 }
+
+func TestBacklogEdit_APersonWithNoLevelOnABacklogFallsThroughToTheRolePermission(t *testing.T) {
+	ctx := context.Background()
+	mgr := restrictedManager(t)
+	if _, err := mgr.GiveBacklogAccess(ctx, "software", devGroup, "move"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := mgr.RenameBacklogAs(ctx, "none", "software", "Software team"); err != nil {
+		t.Fatalf("a person in no group is left to the role permission: %v", err)
+	}
+	_, err := mgr.RenameBacklogAs(ctx, "dev", "software", "Again")
+	wantForbidden(t, "a group that only moves", err)
+}
