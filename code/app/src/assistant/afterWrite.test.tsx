@@ -61,7 +61,7 @@ describe("the lists and cards after a write", () => {
     expect(answer.lists.map((list) => list.title)).toEqual(["Pending walk-06 issue A issues", "Backlogs"]);
   });
 
-  it("keeps the lookups when the write itself failed", async () => {
+  it("ends the ask with the hub's refusal when the write itself failed", async () => {
     script([...lookups, moveCall], replies);
     mcp.callTool.mockImplementation(async (_hub: string, name: string, args: Record<string, unknown>) => {
       if (name === "ai_chat_account") {
@@ -71,7 +71,6 @@ describe("the lists and cards after a write", () => {
       if (name === moveTool) throw new Error("refused");
       return (replies as Record<string, unknown>)[name] ?? { ok: true };
     });
-    const answer = await askAssistant("acc1", [{ role: "user", content: "move issue A to Doing" }], () => undefined, async () => true);
-    expect(answer.lists.map((list) => list.title)).toEqual(["Pending walk-06 issue A issues", "Backlogs"]);
+    await expect(askAssistant("acc1", [{ role: "user", content: "move issue A to Doing" }], () => undefined, async () => true)).rejects.toThrow("refused");
   });
 });
