@@ -12,9 +12,9 @@ const mcp = vi.hoisted(() => ({ callTool: vi.fn(), listTools: vi.fn() }));
 
 vi.mock("../wakala/mcp", () => ({ callTool: mcp.callTool, listTools: mcp.listTools, McpError: class extends Error {} }));
 
-const refusal = 'taskmanager_backlog_rules_set: last_changed does not take "is in the last"';
+const refusal = 'taskmanager_backlog_rules_set: the hub is not reachable';
 
-const rulesCall = { id: "c1", name: rulesTool, arguments: { backlog: "b1", rules: { match: "all", rules: [{ field: "Last changed", operator: "is in the last", value: "14 days" }] } } };
+const rulesCall = { id: "c1", name: rulesTool, arguments: { backlog: "b1", rules: { match: "all", rules: [{ field: "last_changed", operator: "in_the_last", value: "14 days" }] } } };
 
 const tool = (name: string) => ({ name, description: name, inputSchema: { type: "object", properties: { instance_id: { type: "string" } }, required: ["instance_id"] } });
 
@@ -57,7 +57,7 @@ describe("a write the hub refuses after the person confirmed it", () => {
     await confirmTheChange();
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(failedWords);
-    expect(alert).toHaveTextContent('last_changed does not take "is in the last"');
+    expect(alert).toHaveTextContent('the hub is not reachable');
     expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
 

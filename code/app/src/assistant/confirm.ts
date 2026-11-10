@@ -2,6 +2,7 @@ import type { BacklogsClient } from "../backlogs/api";
 import type { ResultDraft } from "./results";
 import { fieldSpec, operatorLabel } from "../smartBacklog/fields";
 import { FIELD_IDS, type FieldId } from "../smartBacklog/types";
+import { rulesProblem } from "./ruleCodes";
 
 export const moveTool = "taskmanager_task_move_to_step";
 
@@ -82,7 +83,9 @@ const spelled = (words: string) => words.trim().toLowerCase().replace(/[-_\s]+/g
 
 const stepNameOf = (steps: string[] | undefined, asked: string): string | undefined => (asked === "" ? undefined : steps?.find((name) => spelled(name) === spelled(asked)));
 
-export const nameWrite = async (write: Write, held: Held, client: Pick<BacklogsClient, "backlogs" | "issue">): Promise<Names> => {
+export const writeProblem = ({ tool, arguments: args }: Write): string => (tool === createTool || tool === rulesTool ? rulesProblem(args.rules) : "");
+
+export const nameWrite =async (write: Write, held: Held, client: Pick<BacklogsClient, "backlogs" | "issue">): Promise<Names> => {
   const issueId = write.tool === moveTool ? text(write.arguments.taskID) : "";
   const backlogId = backlogIdOf(write);
   const [issue, backlogs] = await Promise.all([issueId === "" ? undefined : issueTitle(issueId, held, client), backlogId === "" ? undefined : attempt(() => client.backlogs())]);

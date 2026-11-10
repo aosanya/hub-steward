@@ -1,7 +1,7 @@
 import { callTool, listTools, type ToolInfo } from "../wakala/mcp";
-import { cancelledResult, moveTool, createTool, rulesTool, unconfirmedResult, writeNames, type Confirm } from "./confirm";
+import { cancelledResult, moveTool, createTool, rulesTool, unconfirmedResult, writeNames, writeProblem, type Confirm } from "./confirm";
 import { draftOf, pendingTool, type ResultDraft, type ResultList } from "./results";
-import { manyMatchesRule, promptFrom, triagerDescription } from "./triager";
+import { blockedIsATagRule, manyMatchesRule, promptFrom, triagerDescription } from "./triager";
 
 export type Turn = { role: "user" | "assistant"; content: string; lists?: ResultList[] };
 
@@ -75,7 +75,7 @@ const chat = async (args: Record<string, unknown>) => {
 export const tooManyRoundsSentence = "I looked things up for several steps and still have no answer. Ask again with a narrower question.";
 
 export const systemPrompt =
-  `You are the Triager of this hub's backlogs: the issues loaded from the todo boards, each in one backlog at one step, with tags such as Ready, Blocked and the repo name. Answer the owner's questions by calling the tools you are given, and never name an issue you did not read from a tool. For what is pending, open or left call taskmanager_task_pending first: it returns the total, the counts by step and priority and the top issues in one call. To find other issues use taskmanager_task_list with its filters (tag, repo, backlog, step, untouched_days); a tag filter is case-insensitive and several tags must all match. The issues you read are shown to the owner in a Results tab, so do not list them in your reply: answer briefly in the language the owner writes in, with how many there are and what stands out. If the owner's message is vague, a bare word or phrase such as 'shoe' with no clear intent or filter (it could be a tag, a repo, a title word or a code), call no tool: ask one short question and give the readings as options, each on its own line as [[option]]. For a clear ask call the tool at once. To look up a bare word make one taskmanager_task_pending call with q (words in the title or tags), never several guessed calls. When a result is empty, say so in one sentence. To move an issue, create a backlog or change a smart backlog's rules call the write tool: the owner is shown the change as a card and nothing happens until they tap it, so do not ask them to confirm in words. ${manyMatchesRule}`;
+  `You are the Triager of this hub's backlogs: the issues loaded from the todo boards, each in one backlog at one step, with tags such as Ready, Blocked and the repo name. Answer the owner's questions by calling the tools you are given, and never name an issue you did not read from a tool. For what is pending, open or left call taskmanager_task_pending first: it returns the total, the counts by step and priority and the top issues in one call. To find other issues use taskmanager_task_list with its filters (tag, repo, backlog, step, untouched_days); a tag filter is case-insensitive and several tags must all match. The issues you read are shown to the owner in a Results tab, so do not list them in your reply: answer briefly in the language the owner writes in, with how many there are and what stands out. If the owner's message is vague, a bare word or phrase such as 'shoe' with no clear intent or filter (it could be a tag, a repo, a title word or a code), call no tool: ask one short question and give the readings as options, each on its own line as [[option]]. For a clear ask call the tool at once. To look up a bare word make one taskmanager_task_pending call with q (words in the title or tags), never several guessed calls. When a result is empty, say so in one sentence. To move an issue, create a backlog or change a smart backlog's rules call the write tool: the owner is shown the change as a card and nothing happens until they tap it, so do not ask them to confirm in words. ${manyMatchesRule} ${blockedIsATagRule}`;
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 
@@ -109,6 +109,8 @@ const resultText = (result: unknown) => {
 const refusalOf = async (call: Call, seen: ResultDraft[], confirm?: Confirm): Promise<string | null> => {
   if (!writeNames.includes(call.name)) return null;
   if (!confirm) return unconfirmedResult;
+  const problem = writeProblem({ tool: call.name, arguments: call.arguments });
+  if (problem !== "") return `${problem} Nothing was done.`;
   return (await confirm({ tool: call.name, arguments: call.arguments }, seen)) ? null : cancelledResult;
 };
 
