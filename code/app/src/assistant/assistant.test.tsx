@@ -48,7 +48,7 @@ describe("the assistant page", () => {
     show({ model: async () => "acc1", ask });
     await userEvent.type(await screen.findByRole("textbox", { name: "Ask about the backlogs" }), "show the blocked ones");
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
-    expect(ask).toHaveBeenCalledWith("acc1", [{ role: "user", content: "show the blocked ones" }], expect.any(Function));
+    expect(ask).toHaveBeenCalledWith("acc1", [{ role: "user", content: "show the blocked ones" }], expect.any(Function), expect.any(Function));
     const answer = await screen.findByText("3");
     expect(answer.tagName).toBe("STRONG");
     expect(within(screen.getByRole("main")).getByText("Hub Steward")).toBeInTheDocument();
@@ -279,7 +279,7 @@ describe("how the assistant answers through the tools", () => {
     expect(chats[0][2].accountID).toBe("acc1");
   });
 
-  it("offers only the reading task tools, without the hub id argument", async () => {
+  it("offers only the reading and the three write task tools, without the hub id argument", async () => {
     mcp.listTools.mockResolvedValue([...offeredNames, "taskmanager_task_delete", "taskmanager_task_create"].map(tool));
     mcp.callTool.mockResolvedValue({ message: { content: "ok" } });
     await askAssistant("acc1", [{ role: "user", content: "hi" }]);
