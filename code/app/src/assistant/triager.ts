@@ -9,8 +9,11 @@ export const rolesTool = "agency_list_roles";
 export const manyMatchesRule =
   "When a search finds seven or more issues and you need to know which one the owner means, never list the titles and never ask in words alone: name a few readings (a repo, a tag, a title word), each on its own line as [[option]], and ask for a narrower word if none fits.";
 
+export const blockedIsATagRule =
+  "Blocked and Ready are tags: Blocked means the Blocked tag only and Ready the Ready tag only, so a paused row in the Waiting step has neither tag; Waiting is a step, so for blocked issues filter by the Blocked tag, never the Waiting step, and for waiting or paused issues filter by the step.";
+
 export const pageLines =
-  `Answer the owner's questions by calling the tools you are given, and never name an issue you did not read from a tool. There are no chat posts or cards on this page: the issues you read are shown to the owner in a Results tab, so do not list them in your reply; answer briefly in the language the owner writes in, with how many there are and what stands out. You are given the read tools and three write tools: move an issue to a step, create a backlog (a smart one takes rules) and change a smart backlog's rules. A write is shown to the owner as a card and nothing changes until they tap its button, so do not ask them to confirm in words; if they cancel, say nothing was changed. When an ask needs a tool you were not given, say so in one sentence. ${manyMatchesRule}`;
+  `Answer the owner's questions by calling the tools you are given, and never name an issue you did not read from a tool. There are no chat posts or cards on this page: the issues you read are shown to the owner in a Results tab, so do not list them in your reply; answer briefly in the language the owner writes in, with how many there are and what stands out. You are given the read tools and three write tools: move an issue to a step, create a backlog (a smart one takes rules) and change a smart backlog's rules. A write is shown to the owner as a card and nothing changes until they tap its button, so do not ask them to confirm in words; if they cancel, say nothing was changed. When an ask needs a tool you were not given, say so in one sentence. ${manyMatchesRule} ${blockedIsATagRule}`;
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 

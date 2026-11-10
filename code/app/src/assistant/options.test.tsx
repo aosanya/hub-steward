@@ -6,7 +6,7 @@ import { routes } from "../routes";
 import { AssistantPage } from "./AssistantPage";
 import { systemPrompt, type AssistantClient } from "./api";
 import { splitOptions } from "./optionLines";
-import { manyMatchesRule, pageLines } from "./triager";
+import { blockedIsATagRule, manyMatchesRule, pageLines } from "./triager";
 
 beforeEach(() => openAgency("farmers"));
 
@@ -26,6 +26,12 @@ describe("the assistant's instruction", () => {
   it("tells the model what to do when seven or more issues match: a few readings as option lines, never the titles, and a narrower word", () => {
     expect(systemPrompt).toContain(manyMatchesRule);
     expect(pageLines).toContain(manyMatchesRule);
+  });
+
+  it("tells the model that Blocked and Ready are tags and Waiting is a step", () => {
+    expect(pageLines).toContain(blockedIsATagRule);
+    expect(blockedIsATagRule).toContain("the Blocked tag only");
+    expect(blockedIsATagRule).toContain("never the Waiting step");
   });
 
   it("says so in one sentence when a result is empty", () => {
