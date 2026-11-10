@@ -1,5 +1,7 @@
 package http
 
+var residentRoleActorActions = []string{"actor.group.list"}
+
 var residentActorActions = []string{
 	"actor.group.list_joinable",
 	"actor.group.join",

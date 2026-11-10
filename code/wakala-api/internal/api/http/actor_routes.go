@@ -57,7 +57,7 @@ func checkedActorMount() actorroutes.Mount {
 func (d *Deps) actorMount(role string) actorroutes.Mount {
 	mount := checkedActorMount()
 	if role == agencies.RoleResident {
-		mount.Authorize = d.authorizeResident(actorScope)
+		mount.Authorize = d.residentOrRoleHolding(d.authorizeResident(actorScope), residentRoleActorActions)
 	}
 	mount.Authorize = operatorOnlyActor(role, ownerOnlyActor(role, mount.Authorize))
 	mount.Authorize = agentPermissioned(role, d.Registry, d.agencyRolePermissions, mount.Authorize)

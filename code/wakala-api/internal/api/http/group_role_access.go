@@ -89,6 +89,22 @@ func (d *Deps) residentPermissioned(authorize dispatch.Authorizer) dispatch.Auth
 	}
 }
 
+func (d *Deps) residentOrRoleHolding(authorize dispatch.Authorizer, actions []string) dispatch.Authorizer {
+	return func(ctx context.Context, action string) error {
+		if authorize != nil && authorize(ctx, action) == nil {
+			return nil
+		}
+		if !slices.Contains(actions, action) {
+			return dispatch.ErrForbidden
+		}
+		codes, err := d.callerPermissionCodes(ctx, partitionOf(ctx))
+		if err != nil || !permissionsAllow(codes, action) {
+			return dispatch.ErrForbidden
+		}
+		return nil
+	}
+}
+
 func (d *Deps) taskPermissioned(role string, authorize dispatch.Authorizer) dispatch.Authorizer {
 	if role == agencies.RoleResident {
 		return d.residentPermissioned(authorize)
