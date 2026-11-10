@@ -37,6 +37,11 @@ const isChoiceField = (field: FieldId): field is ChoiceFieldId => fieldSpec(fiel
 
 export const choicesFor = (field: FieldId, choices: FieldChoices): string[] => (isChoiceField(field) ? choices[field] : []);
 
+export const choiceSpelling = (value: string, options: string[]): string => {
+  const wanted = value.trim().toLowerCase();
+  return options.find((option) => option.toLowerCase() === wanted) ?? value;
+};
+
 export const operatorLabel = (rule: Rule): string => fieldSpec(rule.field).operators.find((operator) => operator.id === rule.operator)?.label ?? rule.operator;
 
 export const parseDuration = (value: string): { amount: string; unit: string } => {

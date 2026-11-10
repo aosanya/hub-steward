@@ -1,4 +1,4 @@
-import { blankRule, fieldSpec, ruleComplete } from "./fields";
+import { blankRule, choiceSpelling, choicesFor, fieldSpec, ruleComplete } from "./fields";
 import type { FieldChoices, FieldId, Match, OperatorId, Rule, RuleSet } from "./types";
 
 export type Draft = { name: string; match: Match; rules: Rule[] };
@@ -26,5 +26,10 @@ export const draftProblem = (draft: Draft): string => {
 };
 
 export const toRuleSet = (draft: Draft): RuleSet => ({ match: draft.match, rules: draft.rules.map((rule) => ({ ...rule, value: fieldSpec(rule.field).value === "none" ? "" : rule.value.trim() })) });
+
+export const inChoiceSpelling = (draft: Draft, choices: FieldChoices): Draft => ({
+  ...draft,
+  rules: draft.rules.map((rule) => (fieldSpec(rule.field).value === "choice" ? { ...rule, value: choiceSpelling(rule.value, choicesFor(rule.field, choices)) } : rule)),
+});
 
 export const countWords = (count: number): string => `${count} ${count === 1 ? "issue matches" : "issues match"} now`;

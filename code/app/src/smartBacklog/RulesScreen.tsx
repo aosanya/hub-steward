@@ -8,7 +8,7 @@ import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
 import { Sheet } from "../ui/Sheet";
 import { DURATION_UNITS, choicesFor, fieldSpec, fieldSpecs, joinDuration, parseDuration, ruleComplete } from "./fields";
-import { addRule, changeField, changeOperator, changeValue, countWords, draftProblem, emptyDraft, removeRule, toRuleSet, type Draft } from "./rulesDraft";
+import { addRule, changeField, changeOperator, changeValue, countWords, draftProblem, emptyDraft, inChoiceSpelling, removeRule, toRuleSet, type Draft } from "./rulesDraft";
 import { DuplicateRules, type CountMatches, type CreateSmartBacklog, type FieldChoices, type FieldId, type Match } from "./types";
 
 type Props = { choices: FieldChoices; count: CountMatches; onCreate: CreateSmartBacklog; onBack: () => void; initial?: Draft; title?: string; submitLabel?: string; onOpenExisting?: (backlogId: string) => void };
@@ -23,7 +23,8 @@ function ValueControl({ draft, index, choices, onChange }: { draft: Draft; index
   const set = (value: string) => onChange(changeValue(draft, index, value));
   if (kind === "none") return null;
   if (kind === "choice") {
-    const options = choicesFor(rule.field, choices);
+    const held = choicesFor(rule.field, choices);
+    const options = rule.value === "" || held.includes(rule.value) ? held : [...held, rule.value];
     return (
       <select className="pick val" aria-label={`Value of rule ${index + 1}`} value={rule.value} onChange={(event) => set(event.target.value)}>
         {options.map((option) => (
@@ -93,7 +94,7 @@ function FieldSheet({ onPick, onClose }: { onPick: (field: FieldId) => void; onC
 }
 
 export function RulesScreen({ choices, count, onCreate, onBack, initial, title = "Add a smart backlog", submitLabel = "Create smart backlog", onOpenExisting }: Props) {
-  const [draft, setDraft] = useState<Draft>(initial ?? emptyDraft());
+  const [draft, setDraft] = useState<Draft>(initial ? inChoiceSpelling(initial, choices) : emptyDraft());
   const [picking, setPicking] = useState<Picking>(null);
   const [matching, setMatching] = useState<number | null>(null);
   const [problem, setProblem] = useState("");
