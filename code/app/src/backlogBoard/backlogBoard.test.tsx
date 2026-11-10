@@ -218,6 +218,17 @@ describe("sending from the board", () => {
     expect(read).toHaveBeenCalledTimes(2);
   });
 
+  it("leaves the board's own backlog out of the sheet", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue(hubBacklogs as never);
+    open(client({ backlogs: async () => [{ ...backlog, id: "b1" }] }), "/a/x/backlogs/b1/board");
+    await userEvent.click(await screen.findByRole("button", { name: "Select" }));
+    await userEvent.click(screen.getByRole("checkbox", { name: "Select Record the clips" }));
+    await userEvent.click(screen.getByRole("button", { name: "Send to backlog" }));
+    const sheet = await screen.findByRole("dialog", { name: "Send 1 issue to" });
+    expect(within(sheet).getByText("Documentation")).toBeTruthy();
+    expect(within(sheet).queryByText("Software")).toBeNull();
+  });
+
   it("ticks every card with All and leaves selecting with Cancel", async () => {
     vi.spyOn(mcp, "callTool").mockResolvedValue(hubBacklogs as never);
     open(client());

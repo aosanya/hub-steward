@@ -113,6 +113,7 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
       {sending ? (
         <SendToBacklog
           ids={selecting.ids}
+          from={selecting.ids.map(() => backlogId)}
           onClose={() => setSending(false)}
           onDone={(words, moved) => {
             setSending(false);
