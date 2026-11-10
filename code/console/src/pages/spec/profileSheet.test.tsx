@@ -106,7 +106,7 @@ describe("the Profile sheet", () => {
 
   it("saves by itself after a pause when Autosave is on, and shows no Save changes button", async () => {
     localStorage.setItem("autosave", "on");
-    const run = vi.fn(async () => "done");
+    const run = vi.fn(async (_hub: string, _values: Record<string, unknown>) => "done");
     profileWith(run);
     open();
     expect(screen.queryByRole("button", { name: "Save changes" })).not.toBeInTheDocument();
