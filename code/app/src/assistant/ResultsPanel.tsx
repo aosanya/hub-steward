@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
@@ -11,20 +11,26 @@ import { Card } from "../ui/Card";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
 import { assistantBackWords, chatTabWords, emptyResultsWords, labelOf, newResultsWords, pageSize, resultsOf, resultsTabWords, showMoreWords, type ResultList } from "./results";
+import { keepConversation, keptConversation, type Tab } from "./session";
 import "./results.css";
 
-export type Tab = "chat" | "results";
+export type { Tab };
 
 export function useResults(items: { lists?: ResultList[] }[]) {
   const results = resultsOf(items);
-  const [tab, setTab] = useState<Tab>("chat");
-  const [picked, setPicked] = useState("");
-  const [seen, setSeen] = useState(0);
+  const [tab, setTab] = useState<Tab>(() => keptConversation().tab);
+  const [picked, setPicked] = useState(() => keptConversation().picked);
+  const [seen, setSeen] = useState(() => keptConversation().seen);
+  const restored = useRef(results.some((one) => one.id === picked));
   const newest = results[0]?.id ?? "";
-  useEffect(() => setPicked(newest), [newest]);
+  useEffect(() => {
+    if (restored.current) restored.current = false;
+    else setPicked(newest);
+  }, [newest]);
   useEffect(() => {
     if (tab === "results") setSeen(results.length);
   }, [tab, results.length]);
+  useEffect(() => keepConversation({ tab, picked, seen }), [tab, picked, seen]);
   const pick = (id: string) => {
     setPicked(id);
     setTab("results");

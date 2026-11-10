@@ -18,9 +18,10 @@ import { mcpAssistantClient, type AssistantClient } from "./api";
 import { ConfirmCard, useConfirmation } from "./ConfirmCard";
 import { OptionButtons } from "./OptionButtons";
 import { splitOptions } from "./optionLines";
-import { answerAfter, historyUpTo, markSent, nextQueued, withoutItem, type Item } from "./queue";
+import { answerAfter, historyUpTo, markSent, nextQueued, requeueUnanswered, withoutItem, type Item } from "./queue";
 import { ListEntries, ResultsPanel, ResultTabs, useResults } from "./ResultsPanel";
 import { questionOptions, viewsOf, withIds } from "./results";
+import { keepConversation, keptConversation } from "./session";
 import "./assistant.css";
 
 export const assistantName = "Hub Steward";
@@ -134,15 +135,16 @@ function Bubbles({ items, phase, current, step, retry, pick, unqueue, ask }: Bub
 export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAfter, backlogs = mcpBacklogsClient }: { client?: AssistantClient; timeoutMs?: number; backlogs?: BacklogsClient }) {
   const navigate = useNavigate();
   const model = useLoad(() => client.model(), "assistant/model");
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<Item[]>(() => requeueUnanswered(keptConversation().items));
   const [phase, setPhase] = useState<Phase>("idle");
   const [current, setCurrent] = useState(0);
   const [step, setStep] = useState("");
   const confirmation = useConfirmation();
   const run = useRef(0);
-  const last = useRef(0);
+  const last = useRef(keptConversation().last);
   const end = useRef<HTMLDivElement>(null);
   const found = useResults(items);
+  useEffect(() => keepConversation({ items, last: last.current }), [items]);
   const accountId = model.state === "ready" ? model.data : "";
   const unavailable = model.state === "error" || (model.state === "ready" && accountId === "");
   useEffect(() => {

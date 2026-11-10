@@ -14,3 +14,5 @@ export const answerAfter = (items: Item[], id: number, answer: Item): Item[] => 
 };
 
 export const withoutItem = (items: Item[], id: number) => items.filter((item) => item.id !== id);
+
+export const requeueUnanswered = (items: Item[]): Item[] => items.map((item, at) => (item.role === "user" && !item.queued && items[at + 1]?.role !== "assistant" ? { ...item, queued: true } : item));

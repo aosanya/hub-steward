@@ -68,17 +68,13 @@ export const draftOf = (tool: string, args: Record<string, unknown>, reply: unkn
 
 export const resultsOf = (items: { lists?: ResultList[] }[]): ResultList[] => [...items].reverse().flatMap((item) => item.lists ?? []);
 
-const sameItems = (draft: ResultDraft) => `${draft.title}|${draft.total}|${draft.issues.map((issue) => issue.id).join(",")}`;
-
-export const worthKeeping = (drafts: ResultDraft[]): ResultDraft[] => {
-  const seen = new Set<string>();
-  return drafts.filter((draft) => {
-    const key = sameItems(draft);
-    if (draft.issues.length === 0 || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+const narrowedBy = (draft: ResultDraft, later: ResultDraft) => {
+  const held = new Set(draft.issues.map((issue) => issue.id));
+  return later.issues.length > 0 && later.issues.every((issue) => held.has(issue.id));
 };
+
+export const worthKeeping = (drafts: ResultDraft[]): ResultDraft[] =>
+  drafts.filter((draft, at) => draft.issues.length > 0 && !drafts.slice(at + 1).some((later) => narrowedBy(draft, later)));
 
 export const withIds = (drafts: ResultDraft[], answerId: number): ResultList[] => worthKeeping(drafts).map((draft, index) => ({ ...draft, id: `${answerId}:${index}` }));
 
