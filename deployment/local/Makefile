@@ -1,6 +1,6 @@
 COMPOSE = docker compose --env-file .env
 
-.PHONY: env master up down reset logs ps urls
+.PHONY: env master up down logs ps urls
 
 env:
 	@sh scripts/make-env.sh
@@ -11,12 +11,10 @@ master:
 up: master env
 	$(COMPOSE) up --build -d --wait
 	@$(MAKE) --no-print-directory urls
+	@sh scripts/seed-swe.sh
 
 down:
 	$(COMPOSE) down
-
-reset:
-	$(COMPOSE) down -v
 
 logs:
 	$(COMPOSE) logs -f --tail=100

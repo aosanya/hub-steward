@@ -10,16 +10,27 @@ The files are in [deployment/local/](../../../deployment/local/). Docker Compose
 cd deployment/local
 make up
 make down
-make reset
 ```
 
-From the repository root, `make deploy-local`, `make deploy-local-down` and `make deploy-local-reset` run the same three.
+From the repository root, `make deploy-local` and `make deploy-local-down` run the same two.
 
-`make up` refuses to run unless the checkout is on `master`. It writes `.env` on the first run, with fresh random passwords, a signing secret and an anon key signed with it, then builds and starts everything and prints the addresses. `make down` stops the containers and keeps the data. `make reset` also deletes the database volume. `make logs` and `make ps` show what is running.
+`make up` refuses to run unless the checkout is on `master`. It writes `.env` on the first run, with fresh random passwords, a signing secret and an anon key signed with it, then builds and starts everything and prints the addresses. `make down` stops the containers and keeps the data. There is no reset target; the database volume is deleted only by hand. `make logs` and `make ps` show what is running.
 
 ## Error log
 
 The API appends every error-level record, including each request that ends in a 5xx, as one JSON line to `deployment/local/logs/api-errors.log` (the container's `WAKALA_ERROR_LOG`). Everything else stays on the container's output, which `make logs` shows. The `.log` files are ignored by git.
+
+## The SWE hub and its todos
+
+When `OWNER_EMAIL` and `OWNER_PASSWORD` are set in `deployment/local/.env`, `make up` ends by running `scripts/seed-swe.sh`:
+
+1. It creates that owner sign-in if it does not exist, with the admin token, and signs in. The password must be at least 12 characters.
+2. It imports `hub-steward-swe/agency/agency.json` as the hub "Hub Steward SWE" and publishes it as `v1` on the production channel. A hub with that name already owned by this sign-in is left alone.
+3. It mints an API key, runs the `hub-steward-swe` loader over every `todo.md` and `todo_*.md` in every `mwanachama-*` repo and under `projects/`, then revokes the key. A second run creates no issue twice.
+
+The script expects `hub-steward-swe` as a sibling of this repository and the repos in the folder above `projects/`, and needs `go` and `jq`. Missing any of these, or the two settings, it says so and `make up` still succeeds. `SWE_AGENCY_FILE`, `SWE_LOADER_DIR` and `BOARDS_ROOT` point it elsewhere.
+
+Not done by this script: the Product owner group and the Triager's seat in it ([the loader page](../../../../hub-steward-swe/documentation/3.%20implementation/loader.md) says why), and people, groups or forms.
 
 ## Addresses
 
