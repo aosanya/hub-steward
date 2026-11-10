@@ -178,9 +178,13 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
     setPhase("working");
     setStep("");
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let abandoned = false;
     let giveUp: () => void = () => undefined;
     const tooSlow = new Promise<never>((_, reject) => {
-      giveUp = () => reject(new Error("slow"));
+      giveUp = () => {
+        abandoned = true;
+        reject(new Error("slow"));
+      };
     });
     const startTimer = () => {
       clearTimeout(timer);
@@ -188,6 +192,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
     };
     startTimer();
     const confirmWrite: typeof confirmation.confirm = async (write, seen) => {
+      if (abandoned || mine !== run.current) return false;
       clearTimeout(timer);
       const confirmed = await confirmation.confirm(write, seen);
       startTimer();
