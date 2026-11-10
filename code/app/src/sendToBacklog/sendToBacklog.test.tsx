@@ -41,6 +41,11 @@ describe("targets", () => {
     const reply = { items: [{ ...backlogsReply.items[0], level: "see" }, { ...backlogsReply.items[1], level: "move" }] };
     expect(targetsOf(reply)).toEqual([documentation]);
   });
+
+  it("counts Can edit as Can move, since editing includes moving", () => {
+    const reply = { items: [{ ...backlogsReply.items[0], level: "edit" }, { ...backlogsReply.items[1], level: "see" }] };
+    expect(targetsOf(reply)).toEqual([software]);
+  });
 });
 
 describe("sending", () => {

@@ -5,7 +5,7 @@ import type { SendClient, SendResult, Target } from "./types";
 
 export const sendTools = { move: "taskmanager_task_move_to_step" };
 
-const mayMoveIn = (raw: any) => raw?.level === undefined || raw.level === "move";
+const mayMoveIn = (raw: any) => raw?.level === undefined || raw.level === "move" || raw.level === "edit";
 
 export const targetsOf = (reply: any): Target[] =>
   itemsOf(reply)
