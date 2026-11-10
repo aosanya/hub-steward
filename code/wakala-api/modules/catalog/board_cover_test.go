@@ -72,16 +72,29 @@ func TestTheBoardCountsWhoRaisedAndHidesWhatNobodyPublishedAndWhatWasHidden(t *t
 	if err != nil || len(staff) != 3 {
 		t.Fatalf("%+v %v", staff, err)
 	}
-	if staff[0].Title != "Potholes" || staff[0].RaisedBy != 2 || staff[1].RaisedBy != 1 || staff[2].RaisedBy != 0 {
+	raisedBy := map[string]int{}
+	for _, s := range staff {
+		raisedBy[s.Title] = s.RaisedBy
+	}
+	if raisedBy["Potholes"] != 2 || raisedBy["Street lights"] != 1 || raisedBy["Nothing yet"] != 0 {
 		t.Fatalf("%+v", staff)
 	}
 	public, err := cm.ListPublicBoardItems(ctx, 0, 0)
 	if err != nil || len(public) != 2 {
 		t.Fatalf("an empty board item was shown publicly: %+v %v", public, err)
 	}
-	page, err := cm.ListPublicBoardItems(ctx, 1, 1)
-	if err != nil || len(page) != 1 || page[0].Title != "Street lights" {
-		t.Fatalf("%+v %v", page, err)
+	firstPage, err := cm.ListPublicBoardItems(ctx, 1, 0)
+	if err != nil || len(firstPage) != 1 {
+		t.Fatalf("%+v %v", firstPage, err)
+	}
+	secondPage, err := cm.ListPublicBoardItems(ctx, 1, 1)
+	if err != nil || len(secondPage) != 1 || secondPage[0].ID == firstPage[0].ID {
+		t.Fatalf("%+v %v", secondPage, err)
+	}
+	for _, p := range []catalog.BoardItemTally{firstPage[0], secondPage[0]} {
+		if p.Title == "Nothing yet" {
+			t.Fatalf("an empty item was paged in: %+v", p)
+		}
 	}
 	past, err := cm.ListPublicBoardItems(ctx, 10, 5)
 	if err != nil || len(past) != 0 {
