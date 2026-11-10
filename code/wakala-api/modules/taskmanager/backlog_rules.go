@@ -299,8 +299,7 @@ func ruleMatches(r Rule, s RuleSubject, now time.Time) bool {
 		has := containsFold(subjectTags(s), r.Value)
 		return has == (r.Operator == RuleOpHas)
 	case RuleFieldMark:
-		blocked := isBlocked(s.Task.Tags)
-		is := blocked == (strings.ToLower(r.Value) == markBlocked)
+		is := markOfTags(s.Task.Tags) == strings.ToLower(r.Value)
 		return is == (r.Operator == RuleOpIs)
 	case RuleFieldBacklog:
 		is := nameOrID(s.BacklogName, s.Task.Backlog, r.Value)

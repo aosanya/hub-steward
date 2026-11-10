@@ -208,8 +208,22 @@ func (m *taskManager) tagNamesOf(ctx context.Context, taskIDs []string) map[stri
 }
 
 func isBlocked(tags []string) bool {
+	return hasTagFold(tags, markBlocked)
+}
+
+func markOfTags(tags []string) string {
+	switch {
+	case isBlocked(tags):
+		return markBlocked
+	case hasTagFold(tags, markReady):
+		return markReady
+	}
+	return ""
+}
+
+func hasTagFold(tags []string, name string) bool {
 	for _, t := range tags {
-		if strings.EqualFold(t, "blocked") {
+		if strings.EqualFold(t, name) {
 			return true
 		}
 	}
