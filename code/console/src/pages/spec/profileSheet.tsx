@@ -41,7 +41,7 @@ export function ProfileSheet({ hubId, row, reload }: ProfileSheetProps) {
     setSending(true);
     const result = await sendAction("profile", "profile", hubId, { name, description: purpose });
     setSending(false);
-    if (result === "failed") {
+    if (result !== "done") {
       setRefused(edit);
       return report(result);
     }
