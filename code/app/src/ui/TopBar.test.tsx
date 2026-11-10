@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
@@ -114,5 +116,10 @@ describe("top bar", () => {
   it("draws no menu button unless asked", () => {
     bar({ action: <button type="button">Join a group</button> });
     expect(screen.queryByRole("button", { name: "Menu" })).toBeNull();
+  });
+  it("keeps the two outer columns of the bar equal in width so a title between them is centred, and lets them grow for the actions", () => {
+    const css = readFileSync(resolve(process.cwd(), "src/app.css"), "utf8");
+    const rule = css.split("\n").find((line) => line.startsWith(".bar {")) ?? "";
+    expect(rule).toContain("grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);");
   });
 });
