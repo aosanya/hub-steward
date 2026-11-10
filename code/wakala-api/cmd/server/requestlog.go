@@ -80,7 +80,11 @@ func withRequestLog(next http.Handler, logger *slog.Logger) http.Handler {
 				}
 			}
 		}
-		logger.Info("request", attrs...)
+		outcome := slog.LevelInfo
+		if lw.status >= http.StatusInternalServerError {
+			outcome = slog.LevelError
+		}
+		logger.Log(r.Context(), outcome, "request", attrs...)
 	})
 }
 

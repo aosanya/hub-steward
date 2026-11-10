@@ -41,8 +41,6 @@ The full list, with the reason for each, is under "Not covered" in the [results]
 - Only the Siaya lab's import has a recorded result. The other seven demo agencies have none, and five of them stop at Create Hub because they declare no AI role.
 - The phone app has not been run on a device, and WhatsApp is not built.
 
-The hackathon repository's submission folder holds code this repository does not yet carry, and records its own results in its `05-testing` folder.
-
 ## Record a result
 
 1. Run the suite once and keep its output.

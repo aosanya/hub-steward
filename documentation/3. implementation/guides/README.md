@@ -19,3 +19,4 @@ How it fits and how to run it:
 - [Run with another model](other-models.md): add a model account
 - [Languages](languages.md): fix or add a translation
 - [Local database](local-database.md): Postgres and sign-in by emailed link, local for developers or a hosted Supabase project
+- [Deploy locally in Docker](deploy-local.md): the database, API, console and phone app as one separate Docker environment under `deployment/local/`

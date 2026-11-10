@@ -1,4 +1,4 @@
-.PHONY: test build dev up down
+.PHONY: test build dev up down deploy-local deploy-local-down deploy-local-reset
 
 test:
 	cd code/wakala-api && go vet ./... && go test ./...
@@ -17,3 +17,12 @@ up:
 
 down:
 	docker compose down
+
+deploy-local:
+	$(MAKE) -C deployment/local up
+
+deploy-local-down:
+	$(MAKE) -C deployment/local down
+
+deploy-local-reset:
+	$(MAKE) -C deployment/local reset

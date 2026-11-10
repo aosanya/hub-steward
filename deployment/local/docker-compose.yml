@@ -1,0 +1,153 @@
+name: hubsteward-local
+
+x-wakala-build: &wakala-build
+  context: ../../code/wakala-api
+
+services:
+  db:
+    image: public.ecr.aws/supabase/postgres:17.6.1.140
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./supabase/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:ro
+    ports:
+      - "127.0.0.1:${DB_PORT:-54422}:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  mail:
+    image: public.ecr.aws/supabase/mailpit:v1.30.2
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${INBOX_PORT:-8093}:8025"
+
+  auth:
+    image: public.ecr.aws/supabase/gotrue:v2.192.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      mail:
+        condition: service_started
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: "9999"
+      API_EXTERNAL_URL: http://localhost:${SUPABASE_PORT:-54421}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/postgres
+      GOTRUE_SITE_URL: http://localhost:${APP_PORT:-8091}
+      GOTRUE_URI_ALLOW_LIST: http://localhost:${APP_PORT:-8091}/**
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: "3600"
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_SMTP_ADMIN_EMAIL: steward@hubsteward.local
+      GOTRUE_SMTP_HOST: mail
+      GOTRUE_SMTP_PORT: "1025"
+      GOTRUE_SMTP_SENDER_NAME: Hub Steward
+      GOTRUE_RATE_LIMIT_EMAIL_SENT: "30"
+      GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: "true"
+      GOTRUE_SECURITY_REFRESH_TOKEN_REUSE_INTERVAL: "10"
+
+  rest:
+    image: public.ecr.aws/supabase/postgrest:v14.14
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/postgres
+      PGRST_DB_SCHEMAS: public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_MAX_ROWS: "1000"
+
+  supabase-gateway:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      - auth
+      - rest
+    volumes:
+      - ./supabase/gateway.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "127.0.0.1:${SUPABASE_PORT:-54421}:8000"
+
+  migrate:
+    image: public.ecr.aws/supabase/postgres:17.6.1.140
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+      auth:
+        condition: service_started
+    environment:
+      PGHOST: db
+      PGUSER: postgres
+      PGDATABASE: postgres
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      WAKALA_API_DB_PASSWORD: ${WAKALA_API_DB_PASSWORD}
+    volumes:
+      - ../../code/supabase/migrations:/migrations:ro
+      - ./scripts/migrate.sh:/migrate.sh:ro
+    entrypoint: ["sh", "/migrate.sh"]
+
+  wakala-api:
+    build: *wakala-build
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      supabase-gateway:
+        condition: service_started
+    environment:
+      PORT: "8082"
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      WAKALA_ERROR_LOG: /logs/api-errors.log
+      WAKALA_DEV_MODE: ${WAKALA_DEV_MODE:-false}
+      WAKALA_SESSION_SECRET: ${WAKALA_SESSION_SECRET}
+      WAKALA_ADMIN_TOKEN: ${WAKALA_ADMIN_TOKEN}
+      AI_MASTER_KEY: ${AI_MASTER_KEY}
+      DATABASE_URL: postgresql://wakala_api:${WAKALA_API_DB_PASSWORD}@db:5432/postgres?sslmode=disable
+      SHOP_SUPABASE_URL: http://supabase-gateway:8000
+      SHOP_SUPABASE_ANON_KEY: ${ANON_KEY}
+      PUBLIC_BASE_URL: http://localhost:${API_PORT:-8092}
+      STUDIO_ORIGINS: http://localhost:${CONSOLE_PORT:-8090}
+      MEMBER_APP_ORIGINS: http://localhost:${APP_PORT:-8091}
+    volumes:
+      - ./logs:/logs
+    ports:
+      - "127.0.0.1:${API_PORT:-8092}:8082"
+
+  console:
+    build:
+      context: ../../code/console
+    restart: unless-stopped
+    depends_on:
+      wakala-api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${CONSOLE_PORT:-8090}:80"
+
+  app:
+    build:
+      context: ../../code/app
+    restart: unless-stopped
+    depends_on:
+      wakala-api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${APP_PORT:-8091}:80"
+
+volumes:
+  db-data:

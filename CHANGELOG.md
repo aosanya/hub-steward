@@ -5,41 +5,28 @@ All notable changes to this project are listed here, grouped by area. The format
 ## [Unreleased] - 2026-11-04
 
 ### API (`code/wakala-api`)
-- A form can land its answers in the ledger (`accounting.entry`, one posting per key, a resend posts nothing twice) and in ratings (`ratings.rating`, given as the member who answered), as well as in the catalog (MUN71, 2026-11-08).
-- A form declares `lands_in` (a `<module>.<record>` target, a key and a question-to-field map): opening is refused while a question has no field or the module has no writer, each send is written through a per-module record writer (catalog first, on the `forms` mount, a resend updating the same record), and a test run writes nothing (MUN7, 2026-11-08).
-- A form can declare `one_voice` (`refuse` or `flag`): a second send from the same member in the same round, as the same group or another, answers 409 `ErrSecondVoice` with the first answer standing, or is stored beside it as a repeat that no listing or count includes; and a re-answer after a withdrawal is stored beside the hidden answer instead of overwriting or deleting it (MUN9, 2026-11-08).
-- A withdrawal now hides a member's event answers and unpicked offers of help instead of deleting them (`withdrawn_at` on both, left out of the going list and of picking), and each of engage, comm and forms can restore one person's hidden rows and list them; `HiddenRowsOf` and `RestoreWithdrawn` on the agency registry gather the three for a legal request, and the Postgres fan-out test covers hide, list and restore (MUN8, 2026-11-08).
-- A withdrawn member's answers leave the answer count on each submission and their chat messages leave the chat activity counts (messages and last post), while the rows stay stored and come back when `withdrawn_at` is cleared; tests cover it in forms, comm and the Postgres fan-out (2026-11-08).
-- Consent gates check-in, notice and chat read markers and declarations too, and a withdrawal marks the member's survey answers and chat and direct messages withdrawn and stops listing them without deleting them (`WithWithdrawalPolicy`, default `keep_hidden`); a Postgres test covers the fan-out from custody to engage, forms and comm (2026-11-07).
-- The insights minimum count is a declared setting (`minimum_count`, readable with `MinimumCount`), and a published poll count leaves out folded choices instead of listing them as suppressed (2026-11-07).
-- Counts below the minimum are folded into one `other` cell in poll counts and `GET /insights/counts`, and that cell is withheld while it is still below the minimum; the insight count action has the `insight.count` permission (2026-11-07).
-- A raised item carries a department, filled from a `routing` catalog setting (topic to department, with a default) and kept when an officer set it; `PUT /raised-items/{raisedItemID}/department` (`catalog.raised_item.reassign`, under `board.manage`) reassigns it, and a resident's own list and the follow read show the department and a status (2026-11-07).
-- A raised item with a pin and no area, and a catalog entry with a `location` point and no `ward`, get the ward from group boundaries; a typed one is kept and a mismatch is flagged (2026-11-07).
-- `GET /groups/at-point?lon=&lat=` lists the groups whose boundary holds a point, a ward index is built from group boundaries, and a point or other non-area boundary now answers 400 on `PUT /groups/{group_id}/boundary` (2026-11-07).
-- Every role step of the municipality agency has a kind and a done form, so the agency imports whole (184 steps).
-- A form carries an amount, and clearing it (plain or by slot) is refused unless the approver holds a live seat whose approval limit covers it; setting a limit and checking an amount are routes and tools (2026-11-07).
-- A seat's approval limit can be changed on a live seat, and `AuthoriseApproval` refuses an amount over a seat's limit with a clear error (2026-11-07).
-- A published poll count and the insight counts per subject apply the minimum count: a small cell is suppressed, a lone suppressed cell is covered, and the answered total is withheld when anything is hidden (2026-11-07).
-- The custody, digitaltwin and engage modules are ported from the Mwanachama backend and mounted like voting, with their routes and operation tables (2026-11-07).
-- The riskmanager module is mounted as `risks` with its routes, MCP tools and operation table, test-copy support and owner checks against the actor directory; an unknown owner is refused as a bad reference (2026-11-07).
+- Forms can declare where their answers land (`lands_in`): the catalog, the ledger (one posting per key, a resend posts nothing twice) or ratings (given as the member who answered). Opening is refused while a question has no field or the module has no writer, a resend updates the same record, and a test run writes nothing (2026-11-08).
+- Forms can declare `one_voice` (`refuse` or `flag`): a second send from the same member in the same round answers 409 `ErrSecondVoice` with the first answer standing, or is stored beside it as a repeat that no listing or count includes (2026-11-08).
+- Form amounts: clearing a form with an amount is refused unless the approver holds a live seat whose approval limit covers it. A seat's limit can be changed on a live seat, and setting a limit and checking an amount are routes and tools (2026-11-07).
+- Role-checked form steps: `agency_list_my_open_steps` with `available` lists the steps a caller can act on now, and `agency_submit_step_answers` checks the caller's role and the answers, saves them to the step's register and returns the next step. Publishing makes a register for each fill-form step. Two sends of one run's step at the same moment give one 201 and one 409, a multi-select answer may be a list of options each checked against the question's options, and steps with the same title in one workflow get their own registers (2026-11-05). See [Form steps](documentation/2.%20design/technical-spec/04-tools-and-apis/README.md#form-steps).
+- Consent and withdrawal:
 
-- A group can carry a boundary (a GeoJSON Polygon or MultiPolygon), set on creation or with `PUT /groups/{group_id}/boundary`; a point or an unclosed ring is refused (2026-11-07).
-- Custody gains a consent gate and a withdrawal notifier, not yet wired into other modules (2026-11-07).
-- The consent gate now refuses chat and direct-message posts, RSVPs, offers of help and form answers without a live consent when custody is mounted; `POST /consent/withdraw` records a withdrawal in a database ledger (2026-11-07).
-- A consent withdrawal now reaches engage (RSVPs and unpicked offers removed), forms (link answers unlinked from the member) and comm (push subscriptions dropped), and the per-account router gates the same acts (2026-11-07).
-- The accounting overdue read can age from the day a charge was raised (`age_from`), and accounting gains contract milestones, payment certificates and retention (2026-11-07).
-- The riskmanager module gains a name-matching tool and a gaps-by-owner filter for the chat agent, and four starter service-failure risk libraries (2026-11-07).
+  - Custody gains a consent gate and a withdrawal notifier. The gate refuses chat and direct-message posts, RSVPs, offers of help and form answers without a live consent, and also gates check-in, notice and chat read markers and declarations; `POST /consent/withdraw` records a withdrawal in a database ledger (2026-11-07).
+  - A withdrawal reaches engage, forms and comm, and the per-account router gates the same acts (2026-11-07).
+  - A withdrawal hides a member's survey answers, event answers, unpicked offers of help and messages instead of deleting them (`WithWithdrawalPolicy`, default `keep_hidden`). Hidden rows leave counts and listings and come back when `withdrawn_at` is cleared; engage, comm and forms can list and restore one person's hidden rows, and `HiddenRowsOf` and `RestoreWithdrawn` on the agency registry gather the three for a legal request. A Postgres fan-out test covers hide, list and restore (2026-11-07, 2026-11-08).
+  - A re-answer after a withdrawal is stored beside the hidden answer instead of overwriting or deleting it (2026-11-08).
+- Insights minimum count:
 
-### Demo agencies (`demo`)
-- `municipality.json` grows to 41 workflows and 231 work items with W-22 (assign an address to a ward) and W-39 (a sensitive or anonymous report) (2026-11-07).
-- `municipality.json` grows to 31 workflows and 172 work items (W-46 to W-50, W-53 to W-55, W-57) and mounts the risk module with a department-head and a council read role (2026-11-07).
-- The Siaya lab's four documents are also in Hungarian (2026-11-07).
-- The municipality agency is not offered in the console's template picker: a person sees only the agency their own user set belongs to. Its copy under `code/console/public/templates/` is removed and `demo/municipality.json` is its only file (2026-11-08).
-- `municipality.json`, an invented Hungarian town council with 12 roles and 5 workflows, and its copy in the console's templates (2026-11-07).
-- `municipality.json` grows to 22 workflows and 124 work items, with the rule that an AI role only drafts, summarises, chases or counts (2026-11-07).
+  - The minimum is a declared setting (`minimum_count`, readable with `MinimumCount`); the insight count action has the `insight.count` permission (2026-11-07).
+  - Counts below the minimum are folded into one `other` cell in poll counts and `GET /insights/counts`, and that cell is withheld while it is still below the minimum. A published poll count leaves out folded choices, and the answered total is withheld when anything is hidden (2026-11-07).
+- Raised items carry a group, filled from a `routing` catalog setting (topic to group, with a default) and kept when a person set it. `PUT /raised-items/{raisedItemID}/department` (`catalog.raised_item.reassign`, under `board.manage`) reassigns it, and a member's own list and the follow read show the group and a status (2026-11-07).
+- Group boundaries: a group can carry a boundary (a GeoJSON Polygon or MultiPolygon), set on creation or with `PUT /groups/{group_id}/boundary`; a point or an unclosed ring is refused with 400. `GET /groups/at-point?lon=&lat=` lists the groups whose boundary holds a point, and an area index is built from boundaries. A raised item with a pin and no area, and a catalog entry with a `location` point and no area, get the area from the boundaries; a typed one is kept and a mismatch is flagged (2026-11-07).
+- The custody, digitaltwin and engage modules are ported from the Mwanachama backend and mounted with their routes and operation tables (2026-11-07).
+- The riskmanager module is mounted as `risks` with its routes, MCP tools and operation table, test-copy support and owner checks against the actor directory; an unknown owner is refused as a bad reference. It gains a name-matching tool, a gaps-by-owner filter for the chat agent and starter risk libraries (2026-11-07).
+- The accounting overdue read can age from the day a charge was raised (`age_from`), and accounting gains milestones, payment certificates and retention (2026-11-07).
+- Trimmed copy of the Mwanachama API server the console and app talk to, with a Dockerfile (SQLite at `/data`, port 8082).
 
 ### Console (`code/console`)
-- The 28 copied workflow walk tests in `src/journeys/` are one data-driven harness, `workflow.walk.test.tsx`, reading a small fixture per workflow from `src/journeys/walks/` (codes, role per step, which steps are AI steps, the approval wording and any extra text checks), with the RU-AI-1 meaning checked on every workflow (2026-11-07).
 - Agency manager's web app: sign-in, create a hub, and the pages for approvals, people, groups, agents, documents and operations (2026-10-27). The Equipment page is drawn, not built.
 - Model choice per agent, with limits, usage and instructions tabs (2026-10-27, 2026-11-03).
 - Hub management and a hub switcher; six interface languages.
@@ -47,32 +34,31 @@ All notable changes to this project are listed here, grouped by area. The format
 - Chat actions, role limits, limit raises and the test budget with their approval views; the objective flow, test report, user cards, suggestions and workflow chat step pages; the first Usage pages (2026-11-02).
 - Usage pages with chart components and the answer tab for a why question; sign-in redirect when the session expires, staff seats kept out of Usage, and the reason a page failed (2026-11-03).
 - The workflow tab has a "Cancels an order" toggle in all six languages, saved as `cancels_order`; the "When it passes, run" picker lists only the ticked workflows and the one already chosen. This is the console half of HS674; the wakala-api half is still open (2026-11-06).
+- The copied workflow walk tests in `src/journeys/` are one data-driven harness, `workflow.walk.test.tsx`, reading a small fixture per workflow from `src/journeys/walks/` (codes, role per step, which steps are AI steps, the approval wording and any extra text checks) (2026-11-07).
+- An agency can be kept out of the template picker: a person sees only the agency their own user set belongs to (2026-11-08).
 
 ### Phone app (`code/app`)
 - Mobile-first shell with app bar, tab bar and a small component kit (2026-10-28).
-- Market screens: products, shops, prices, buy now and group orders.
-- Sign-in, Home tiles and the shop's own wording on screen (2026-11-01).
+- Market screens for browsing, buying and group orders.
+- Sign-in, Home tiles and the agency's own wording on screen (2026-11-01).
 - Chat-workflow, form-answering, catch-up and report journeys.
 - Shared controls, sign-in renewal, the sign-in link page and inbox notices; group orders, unit words and the Ongoing page, with journey walks (2026-11-02).
-- Do Something lists a member only the fill-form steps whose role she holds. Any such step in any agency opens a step page that builds the form from the step's questions and sends it; the row then shows Sent, and the next role's step appears in that person's Do Something (2026-11-05). Sent is kept per agency and per run, so a first step can start again; the group-order screen is chosen by the form's name, not its questions (2026-11-05). See [Do Something: each member's own steps](documentation/2.%20design/technical-spec/do-something-own-steps.md).
+- Do Something lists a member only the fill-form steps whose role they hold. Any such step in any agency opens a step page that builds the form from the step's questions and sends it; the row then shows Sent, and the next role's step appears in that person's Do Something (2026-11-05). Sent is kept per agency and per run, so a first step can start again; the group-order screen is chosen by the form's name, not its questions (2026-11-05). See [Do Something: each member's own steps](documentation/2.%20design/technical-spec/do-something-own-steps.md).
 - After a member sends a workflow's first step, the Start list shows that step once, as Sent, and not also as an open row; a repeat start returns after an app reload (HS1020, 2026-11-06). The Forms card is hidden for a member with no form waiting and none answered, so a role with one step sees only that step; it stays if the read of forms fails (HS1021, 2026-11-06).
 
 ### Demo agencies (`demo`)
-- Eight synthetic agencies: the Siaya lab (2026-10-21), boda-boda riders and farmers (2026-10-26), and the clinical research organization, electric grid utility, logistics freight company, mobile money operator and crop-spraying drone service (2026-11-01).
-- The Siaya lab's house rules, booking rules, opening hours and Wi-Fi guide in English, Swahili and German.
-
-### Bundled API (`code/wakala-api`)
-- Trimmed copy of the Mwanachama API server the console and app talk to, with a Dockerfile (SQLite at `/data`, port 8082).
-- Role-checked form steps: `agency_list_my_open_steps` with `available` lists the steps a caller can act on now, and `agency_submit_step_answers` checks the caller's role and the answers, saves them to the step's register and returns the next step; publishing makes a register for each fill-form step (2026-11-05). Two sends of one run's step at the same moment give one 201 and one 409; a multi-select answer may be a list of options, each checked against the question's options; steps with the same title in one workflow get their own registers (2026-11-05). See [Form steps](documentation/2.%20design/technical-spec/04-tools-and-apis/README.md#form-steps).
+- Synthetic agencies from different sectors, each described by an `agency.json`, with their documents in several languages (2026-10-21 to 2026-11-01).
+- Agencies import whole: every role step has a kind and a done form.
+- Demo agencies follow the rule that an AI role only drafts, summarises, chases or counts, and can mount the risk module with read roles (2026-11-07).
 
 ### Documentation
 - Product, technical spec, user journeys, test plan and results (2026-10-21 onward).
 - Risk library: hazards, threats, consequences and controls (2026-10-31).
 - Reorganised into requirements, design, implementation and qa (2026-11-04).
-- Scope broadened from a community computer lab to running an agency end to end; the Siaya lab stays as an example (2026-11-04).
-- User journeys checked against the code: steps and "not yet built" lists corrected in journeys 01, 02, 05, 06, 08, 09, 10, 11, 12, 13, 14, 16, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28 and 29 (2026-11-04).
+- Scope broadened from a single community venue to running an agency end to end (2026-11-04).
+- User journeys checked against the code: steps and "not yet built" lists corrected across the journeys (2026-11-04).
 - The See where the tokens go journey drawn, with its four-step walk-through and mockups (2026-11-03); the chat workflow journey's mockups and requirements (2026-11-02).
 - Test results recorded: the console passes 3640 tests and builds; the phone app passes 1905 tests and builds; the bundled API has no test files, so `go test` only compiles it (2026-11-04).
-- Demo index added: `demo/README.md` lists the eight agencies from their `agency.json` files (2026-11-04).
+- Demo index added: `demo/README.md` lists the agencies from their `agency.json` files (2026-11-04).
 - Technical spec rewritten around what the bundled API mounts (2026-11-04).
 - Network watch removed from the documentation (2026-11-04).

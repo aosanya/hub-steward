@@ -87,9 +87,9 @@ Files in `code/app/`. Tests: 1949 pass.
 
 `mwanachama-wakala-api`, session-related: `scripts/staging-env.sh` and `internal/api/http/staging_origins_test.go` (new) for HS1002 (the phone app's origin allowed after a restart); `documentation/2. design/ai-mount.md`, `internal/accounts/router.go`, `internal/agencies/registry.go`, `internal/agencies/rooms.go`, `internal/api/http/comm_routes.go`, `mcp_tools_market.go`, `module_mounts.go`, `router.go`, `module_tools.go` (new), `module_tools_test.go` (new), `standing_general.go` (new) are being edited by the HS731 and HS752 lanes or other sessions (live). `internal/api/http/market_revision_settles_test.go` was already modified by someone else. An untracked file named `server` sits in the repo root and looks like a built binary; do not commit it.
 
-`meta-global-ai-hackathon-community-hubs` (the hub repo), clips: `.claude/skills/short-clips/`, `.claude/skills/make-social-videos/` (new), `hackathon/socialvideos/` (24 clip folders, `register.md`, `README.md`, `1.ReadyForStudio/`), `hackathon/social-posts.md` (new).
+the working repo, clips: `.claude/skills/short-clips/`, `.claude/skills/make-social-videos/` (new), `socialvideos/` (24 clip folders, `register.md`, `README.md`, `1.ReadyForStudio/`), `social-posts.md` (new).
 Hub repo, documentation: `documentation/3. implementation/` (`todo.md`, `test-runner.md`, `agency-test-method.md`), `documentation/1. requirements/decisions.md`, `documentation/2. design/app/02-do-something/do-something.html` and `_generator/pages_do_something.py` (screen 7, HS566, live), `submission/documentation/06-user-journeys/` (13, 14, 16, 18, 21; HS609), `submission/documentation/07-diary/README.md`.
-`hackathon/socialvideos/co-operative-officers/clip.json` shows as deleted: check it before committing.
+`socialvideos/co-operative-officers/clip.json` shows as deleted: check it before committing.
 
 ## Suggested commits
 

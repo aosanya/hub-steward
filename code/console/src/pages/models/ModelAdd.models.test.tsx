@@ -27,7 +27,7 @@ describe("Add a model: the Provider dropdown", () => {
     expect(optionsOf("Provider")).toEqual([
       "Choose a provider",
       "Meta Model API",
-      "Meta open weights (Baseten, Modal or your own server)",
+      "Meta open weights (your own server)",
       "Hugging Face",
       "Claude",
       "Other (OpenAI-compatible)",

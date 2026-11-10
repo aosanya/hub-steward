@@ -53,7 +53,8 @@ func main() {
 	if strings.EqualFold(os.Getenv("LOG_LEVEL"), "debug") {
 		level = slog.LevelDebug
 	}
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level}))
+	logger := newLogger(level)
+	slog.SetDefault(logger)
 
 	prepareEnvironment(logger)
 

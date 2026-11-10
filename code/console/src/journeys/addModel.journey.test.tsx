@@ -136,7 +136,7 @@ describe("journey 10, steps 1 and 2: the manager adds a model with a random key 
 
     expect(screen.getByRole("heading", { level: 2, name: "Available to add" })).toBeInTheDocument();
     const groups = [...document.querySelectorAll("strong")].map((group) => group.textContent);
-    expect(groups).toEqual(["Meta Model API", "Meta open weights (Baseten, Modal or your own server)", "Hugging Face", "Claude"]);
+    expect(groups).toEqual(["Meta Model API", "Meta open weights (your own server)", "Hugging Face", "Claude"]);
     const firstAdd = screen.getAllByRole("link", { name: "Add" })[0].closest("tr") as HTMLElement;
     expect(within(firstAdd).getByText("Muse Spark 1.3")).toBeInTheDocument();
     expect(within(firstAdd).getByText("muse-spark-1.3")).toBeInTheDocument();

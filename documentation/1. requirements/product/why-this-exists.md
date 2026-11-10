@@ -22,10 +22,6 @@ Hub Steward lets an agency manager run a whole organization with AI roles that d
 
 The Siaya computer lab is one of the examples in the demo. Its agency file declares three roles: Lab manager, Member and the Hub Steward role, which is the lab's front-line AI agent. As declared, the Hub Steward role answers members from the lab's documents, and drafts seat bookings, Wi-Fi accounts and member set-up for approval; [What it does](02-what-it-does/README.md) says which of that is built. The same platform runs the other demo agencies, such as the farmers' group and the boda-boda riders, with different roles, rules and AI roles.
 
-## Where it started
-
-Hub Steward was first entered in the Meta Global AI Developer Hackathon (26 October to 4 November 2026), hosted by Meta and Cerebral Valley, with Baseten, Modal and Fireworks as its partners for model hosting and credits. The entry was the Siaya computer lab and its agent. The project has since grown into the agency platform described on these pages, and it is independent of the event and its sponsors.
-
 ## Where it runs
 
 Each agency runs on Mwanachama, a set of modules for member organizations: roles and permissions, approvals, chat, forms and tools an AI agent calls. Wakala is the name of the API server and agency builder that mounts those modules for each agency, and the bundled API in this repository is a trimmed copy of it. Members use the phone app; managers and designers use the console.

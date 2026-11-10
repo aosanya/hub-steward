@@ -4,8 +4,6 @@ Every source a question's research used, kept after the question is settled,
 one section per question. **Official** is the owner's own page (Meta, a
 regulator, a statute); **secondary** is a blog, vendor or press report and is
 to be confirmed against an official page before a decision rests on it.
-The hackathon's own rules and event facts are in
-[hackathon/details/sources.md](../../hackathon/details/sources.md).
 
 ## Q58 · WhatsApp's Meta AI options
 
@@ -44,8 +42,8 @@ Checked 2026-10-28. [HS184](../3.%20implementation/todo.md)
 | Muse Glimmer is a 30-billion-parameter open-weight model released in August 2026 under Apache 2.0 | [Campus Technology](https://campustechnology.com/articles/2026/08/26/meta-releases-muse-glimmer-an-open-weight-ai-model-designed-to-run-on-consumer-hardware.aspx?p=1) | Secondary |
 | LiteLLM lists `muse-spark-1.1` as supporting function calling, parallel function calling, structured outputs and prompt caching | [LiteLLM, Meta Model API](https://docs.litellm.ai/docs/providers/meta) | Secondary |
 
-Not found yet: one tool call with a key from dev.meta.ai, and whether a hosting
-provider such as Baseten or Modal serves Muse Spark Open or Muse Glimmer with
+Not found yet: one tool call with a key from dev.meta.ai, and whether a third-party
+host serves Muse Spark Open or Muse Glimmer with
 tool calling and under which model id.
 
 ## HS57 · How Muse Image is called
@@ -517,7 +515,7 @@ Checked 2026-11-02. [Decision 123](decisions.md). Five read-only research report
 ## Q118
 - mwanachama-backend-agency/agency.blueprint.json: work_item kind enum has no chat value; tool is a single string; workflow has no opens-in field (checked 2026-11-02).
 - mwanachama-wakala-api/internal/api/http/ai_gateway.go (aiGatewayCaller, seatBriefSource) and agent_permissions.go (allowedActions, agentPermissioned): an agent's reach is its role's permission codes, its brief is the role brief; no step is read.
-- meta-global-ai-hackathon-community-hubs documentation/2. design/studio/agency/workflow-chat.html screens 2 and 3 and decisions 123, 131, 122.
+- the working repo documentation/2. design/studio/agency/workflow-chat.html screens 2 and 3 and decisions 123, 131, 122.
 - Chain: screen (drawn, illustrative tools) exists; tool agency_list_module_tools is illustrative and exists nowhere; blueprint has no field for the chat step's tool list, can-start list or opens-in; the chat runtime (ai module) is not checked out, so how a turn chooses its tools is unverified.
 
 ## Q119
@@ -627,7 +625,7 @@ Checked 2026-11-02. [Decision 123](decisions.md). Five read-only research report
 ## Q134
 
 - mwanachama-frontend-member: app/routes.ts, app/routes/group-order.tsx (the only group-order route is the priority picker, not a join page).
-- meta-global-ai-hackathon-community-hubs: submission/code/app/src/buy/join/api.ts (join, answerRevision, findMyOrder), GroupOrderPage.tsx (OpenOrder, Revision, Confirmed).
+- the working repo: submission/code/app/src/buy/join/api.ts (join, answerRevision, findMyOrder), GroupOrderPage.tsx (OpenOrder, Revision, Confirmed).
 - 2. design/app/16-sell-the-harvest/step-02-sells-together.html, 13-buy-inputs step 3, decisions 69 and 70.
 - mwanachama-wakala-api: internal/testruns/endpoint.go (market_join_group_order), internal/api/http/approvals_apply_groupgate.go (the send, call-off and paid appliers).
 - Chain: screen caption (market_join_group_order) -> built page button 'Change my bags' -> tool call to the market module -> market module not checked out, so the order-state check on a join is unread. Exists: the button and the revise step. Missing: any drawn state for a change or a withdrawal, and any statement of what Send freezes.
@@ -636,14 +634,14 @@ Checked 2026-11-02. [Decision 123](decisions.md). Five read-only research report
 
 - mwanachama-frontend-member: app/chat/share-offer.ts, app/chat/ShareCard.tsx, app/chat/ThreadView.tsx (line 178), app/languages.ts.
 - mwanachama-backend-comm: comm.blueprint.json (chat_message fields attachment_kind, attachment_id, indexes thread_created).
-- meta-global-ai-hackathon-community-hubs: 2. design/app/components.html, _generator/pages_components.py (line 110), 3. implementation/todo_done.md (HS70, HS94).
+- the working repo: 2. design/app/components.html, _generator/pages_components.py (line 110), 3. implementation/todo_done.md (HS70, HS94).
 - Chain: offer message in the trade thread (text from the farmers agent, not checked out) -> app regex reads quantity, price, currency and close time out of the sentence -> ShareCard buttons post plain words back -> the agent reads the words. Exists: the card, the pointer columns on the message. Missing: any decision that the sentence is a contract, any translation of it, any server-side closing time the card reads. Unverified: whether the agent can set the pointer.
 
 ## Q136
 
 - mwanachama-wakala-api: documentation/2. design/assetmanager-mount.md, documentation/2. design/agent-role-permissions.md (Not built; the asset tools line), internal/api/http/assetmanager_routes.go, mcp_assets_permissions.go, internal/api/http/testdata/agencies/siaya-lab/agency.json.
 - mwanachama-backend-agency: models/permissions_catalog.json (line 65, asset.manage).
-- meta-global-ai-hackathon-community-hubs: 2. design/app/02-member/step-04-asks-which-equipment-is-theirs.html, _generator/pages_chat_lab.py (lines 8, 29, 123), decisions 16 and 25.
+- the working repo: 2. design/app/02-member/step-04-asks-which-equipment-is-theirs.html, _generator/pages_chat_lab.py (lines 8, 29, 123), decisions 16 and 25.
 - Chain: chat question -> Assets Keeper agent (not a role of the lab's agency.json) -> assetmanager tool (exists on /mcp as assetmanager tools, guarded by guardToolPermissions) -> permission asset.manage (only permission; read and write bundled) -> holds/movements read (module not checked out; holder filter unverified). Exists: the mount, the tools, one bundled permission. Missing: the Assets Keeper role, a read-only permission, a caller-bound read. Illustrative: the caption names only chat tools.
 
 
@@ -651,7 +649,7 @@ Checked 2026-11-02. [Decision 123](decisions.md). Five read-only research report
 
 - mwanachama-backend-agency: agency.blueprint.json (roles review, review_area, review_finding, indexes draft and running_unique, lines 692 to 745), review_start_impl.go (StartReview), review_record_impl.go (RecordReviewArea, settleReview), review_read_impl.go (ListRunningReviews), review_areas.go.
 - mwanachama-wakala-api: internal/reviewruns/service.go (Start, Resume), runner.go (Launch, claim, review, settleFailure), cmd/server/reviewruns.go (resumeReviews, reviewResumeDelay 10 seconds).
-- meta-global-ai-hackathon-community-hubs: decisions 105 and 107, 2. design/agency-review.md.
+- the working repo: decisions 105 and 107, 2. design/agency-review.md.
 - Chain: Run review button -> StartReview inserts review (running) and one review_area per part (reading) -> Runner.Launch runs one reviewer per part in the process -> RecordReviewArea writes findings and settles the review when no part is reading. Exists: all of it, plus a resume at boot. Missing: a stop time for a part that never answers, and a claim that works across replicas. Not read: the AI module (not checked out), so whether the model call has its own timeout is unknown.
 
 ## Q138

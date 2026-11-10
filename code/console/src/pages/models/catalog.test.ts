@@ -2,7 +2,7 @@ import { addStartOf, availableToAdd, choiceLabel, firstAddStart, modelNameOf, mo
 
 const words: Record<string, string> = {
   "models.metaProvider": "Meta Model API",
-  "models.metaOpenProvider": "Meta open weights (Baseten, Modal or your own server)",
+  "models.metaOpenProvider": "Meta open weights (your own server)",
   "models.otherProvider": "Other (OpenAI-compatible)",
 };
 const t = (key: string) => words[key] ?? key;
@@ -10,7 +10,7 @@ const t = (key: string) => words[key] ?? key;
 describe("the providers a hub can use", () => {
   it("are Meta Model API, Meta open weights, Hugging Face, Claude and Other, in that order", () => {
     expect(providers.map((p) => p.id)).toEqual(["meta", "meta_open", "huggingface", "claude", "custom"]);
-    expect(providers.map((p) => providerName(t, p))).toEqual(["Meta Model API", "Meta open weights (Baseten, Modal or your own server)", "Hugging Face", "Claude", "Other (OpenAI-compatible)"]);
+    expect(providers.map((p) => providerName(t, p))).toEqual(["Meta Model API", "Meta open weights (your own server)", "Hugging Face", "Claude", "Other (OpenAI-compatible)"]);
   });
 
   it("list the models of Hugging Face and Claude with their ids, the Muse Spark models for Meta Model API, and none for Other", () => {
