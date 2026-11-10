@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
 import { RolesPage } from "./rolesPage";
-import { answering, clearPages, clearShown, failing, installPage, renderSpec } from "./specHarness.test-helper";
+import { answering, clearPages, clearShown, failing, installPage, renderSpec, type PageSetup } from "./specHarness.test-helper";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -152,7 +152,7 @@ describe("a role's card on the list", () => {
 });
 
 describe("adding a role", () => {
-  const begin = async (actions: Parameters<typeof installPage>[1]["actions"]) => {
+  const begin = async (actions: PageSetup["actions"]) => {
     const rows = installPage("roles", { rows: roleRows, actions });
     open();
     await screen.findByText("Auditor");
@@ -187,7 +187,7 @@ describe("adding a role", () => {
 });
 
 describe("one role opened", () => {
-  const openRole = async (actions?: Parameters<typeof installPage>[1]["actions"]) => {
+  const openRole = async (actions?: PageSetup["actions"]) => {
     installPage("roles", { rows: detailRows, actions });
     open("/?open=r1");
     await screen.findByText("What it may do");

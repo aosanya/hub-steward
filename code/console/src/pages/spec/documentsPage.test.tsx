@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DocumentsList } from "./documentsList";
 import { UploadForm, readText } from "./documentsUpload";
-import { answering, clearPages, failing, installPage, renderSpec } from "./specHarness.test-helper";
+import { answering, clearPages, failing, installPage, renderSpec, type PageSetup } from "./specHarness.test-helper";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -115,7 +115,7 @@ const charter = (name = "charter.txt", body = "Seeds are shared.") => new File([
 
 const fileInput = () => globalThis.document.querySelector("input[type=file]") as HTMLInputElement;
 
-const form = async (actions?: Parameters<typeof installPage>[1]["actions"]) => {
+const form = async (actions?: PageSetup["actions"]) => {
   installPage("general", languagePage);
   installPage("documents", { actions });
   const outcome = vi.fn();

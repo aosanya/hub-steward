@@ -7,6 +7,7 @@ import { I18nProvider } from "../../i18n";
 import { NoticeCtx, type NoticeApi } from "../../ui";
 
 export { answering, clearPages, failing, installPage, pages } from "./testing";
+export type { PageSetup } from "./testing";
 
 export const words = JSON.parse(readFileSync(resolve(__dirname, "../../../public/i18n.json"), "utf8"));
 

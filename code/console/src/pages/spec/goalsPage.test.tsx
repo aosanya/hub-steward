@@ -6,7 +6,7 @@ import { callTool } from "../../wakala/mcp";
 import { AddGoalPage } from "./goalsAdd";
 import { GoalPage } from "./goalsDetail";
 import { GoalList } from "./goalsList";
-import { answering, clearPages, clearShown, failing, installPage, renderSpec } from "./specHarness.test-helper";
+import { answering, clearPages, clearShown, failing, installPage, renderSpec, type PageSetup } from "./specHarness.test-helper";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -38,7 +38,7 @@ beforeEach(() => {
   answer();
 });
 
-const list = (route = "/h/h1/goals", state?: unknown) =>
+const list = (route = "/h/h1/goals") =>
   renderSpec(
     <Routes>
       <Route path="/h/:hubId/goals" element={<GoalList hubId="h1" />} />
@@ -110,7 +110,7 @@ describe("the Goals list", () => {
 });
 
 describe("adding a goal", () => {
-  const begin = async (actions: Parameters<typeof installPage>[1]["actions"]) => {
+  const begin = async (actions: PageSetup["actions"]) => {
     installPage("goals", { rows: goalRows, actions });
     list("/h/h1/goals/new");
     await screen.findByText("New goal");
