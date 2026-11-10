@@ -192,16 +192,35 @@ func TestACallWithNoCallerPersonIsNotLimitedPerPerson(t *testing.T) {
 	}
 }
 
-func TestACallForAnAIRoleIsNotLimitedPerPerson(t *testing.T) {
-	h := newLimitsHub(t)
-	h.set(t, 1, 1)
-	h.spend(t, "ana", 100)
+func (h *limitsHub) askAs(person, roleID string) error {
+	in := ChatInput{Messages: []ChatMessage{{Role: "user", Content: "hello"}}, RoleID: roleID, Kind: models.KindChat}
+	_, err := h.m.ChatAccountAs(context.Background(), limitsAgency, h.account.ID, person, in)
+	return err
+}
+
+func (h *limitsHub) role(t *testing.T) AIRole {
+	t.Helper()
 	role, err := h.m.CreateAIRole(context.Background(), limitsAgency, models.AIRoleInput{Name: "triager", Status: "enabled"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	in := ChatInput{Messages: []ChatMessage{{Role: "user", Content: "hello"}}, RoleID: role.ID, Kind: models.KindChat}
-	if _, err := h.m.ChatAccountAs(context.Background(), limitsAgency, h.account.ID, "ana", in); err != nil {
-		t.Fatalf("an AI role's call = %v, want the role's own limits only", err)
+	return role
+}
+
+func TestAPersonNamingAnAIRoleIsStillHeldToTheirOwnShare(t *testing.T) {
+	h := newLimitsHub(t)
+	h.set(t, 1, 1)
+	h.spend(t, "ana", 100)
+	if err := h.askAs("ana", h.role(t).ID); !errors.Is(err, ErrAssistantLimit) {
+		t.Fatalf("a person naming an AI role = %v, want their own limit to apply", err)
+	}
+}
+
+func TestACallForAnAIRoleWithNoCallerPersonIsNotLimitedPerPerson(t *testing.T) {
+	h := newLimitsHub(t)
+	h.set(t, 1, 1)
+	h.spend(t, "ana", 100)
+	if err := h.askAs("", h.role(t).ID); err != nil {
+		t.Fatalf("an AI role's call with no person = %v, want the role's own limits only", err)
 	}
 }

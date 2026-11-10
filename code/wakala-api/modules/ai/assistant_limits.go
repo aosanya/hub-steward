@@ -48,10 +48,8 @@ func (m *accountManager) SetAssistantLimits(ctx context.Context, agencyID string
 func (m *accountManager) ChatAccountAs(ctx context.Context, agencyID, accountID, personID string, in ChatInput) (ChatReply, error) {
 	if personID != "" {
 		in.Person = personID
-		if in.RoleID == "" {
-			if err := m.checkPersonShare(ctx, agencyID, personID); err != nil {
-				return ChatReply{}, err
-			}
+		if err := m.checkPersonShare(ctx, agencyID, personID); err != nil {
+			return ChatReply{}, err
 		}
 	}
 	return m.ChatAccount(ctx, agencyID, accountID, in)
