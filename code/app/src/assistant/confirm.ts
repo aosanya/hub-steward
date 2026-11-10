@@ -1,5 +1,5 @@
 import { issueOf, type BacklogsClient } from "../backlogs/api";
-import type { ResultDraft } from "./results";
+import { optionLimit, type ResultDraft } from "./results";
 import { fieldSpec, operatorLabel } from "../smartBacklog/fields";
 import { FIELD_IDS, type FieldId } from "../smartBacklog/types";
 import { rulesProblem } from "./ruleCodes";
@@ -108,10 +108,24 @@ const swapped = (write: Write, id: string): Write => ({ ...write, arguments: { .
 
 const withIssue = (seen: ResultDraft[], found: FoundIssue): ResultDraft[] => [...seen, { title: found.title, total: 1, issues: [issueOf({ id: found.id, title: found.title })] }];
 
-export const resolveMove = async (write: Write, seen: ResultDraft[], find: FindIssues, read: ReadIssue): Promise<Resolved> => {
+const namedBy = (said: string, issue: { key?: string; title: string }) => {
+  const words = said.toLowerCase();
+  return words.includes(issue.title.toLowerCase()) || (issue.key !== undefined && words.includes(issue.key.toLowerCase()));
+};
+
+const tooManyFit = (asked: string, seen: ResultDraft[], said: string): string => {
+  const list = seen.find((one) => one.total > optionLimit && (one.filter?.query ?? "") !== "" && one.issues.some((issue) => issue.id === asked || issue.key?.toLowerCase() === asked.toLowerCase()));
+  const issue = list?.issues.find((one) => one.id === asked || one.key?.toLowerCase() === asked.toLowerCase());
+  if (!list || !issue || namedBy(said, issue)) return "";
+  return `${list.total} issues fit "${list.filter?.query}", so no issue was chosen. Ask the person in one plain sentence for a narrower word from the title, like a number, and offer no choices.`;
+};
+
+export const resolveMove = async (write: Write, seen: ResultDraft[], find: FindIssues, read: ReadIssue, said = ""): Promise<Resolved> => {
   const asked = write.tool === moveTool ? text(write.arguments.taskID) : "";
   const unchanged = { write, seen, problem: "" };
   if (asked === "") return unchanged;
+  const crowded = tooManyFit(asked, seen, said);
+  if (crowded !== "") return { ...unchanged, problem: crowded };
   const known = seen.flatMap((list) => list.issues);
   if (!keyShaped.test(asked)) {
     if (known.some((issue) => issue.id === asked)) return unchanged;

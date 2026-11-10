@@ -118,12 +118,12 @@ const readIssue = async (id: string) => {
   return isObject(raw) && text(raw.id) !== "" ? { id: text(raw.id), title: text(raw.title) || text(raw.task_name) } : undefined;
 };
 
-const refusalOf = async (call: Call, seen: ResultDraft[], confirm?: Confirm): Promise<string | null> => {
+const refusalOf = async (call: Call, seen: ResultDraft[], said: string, confirm?: Confirm): Promise<string | null> => {
   if (!writeNames.includes(call.name)) return null;
   if (!confirm) return unconfirmedResult;
   const problem = writeProblem({ tool: call.name, arguments: call.arguments });
   if (problem !== "") return `${problem} Nothing was done.`;
-  const resolved = await resolveMove({ tool: call.name, arguments: call.arguments }, seen, findIssues, readIssue);
+  const resolved = await resolveMove({ tool: call.name, arguments: call.arguments }, seen, findIssues, readIssue, said);
   if (resolved.problem !== "") return `${resolved.problem} Nothing was done.`;
   call.arguments = resolved.write.arguments;
   return (await confirm(resolved.write, resolved.seen)) ? null : cancelledResult;
@@ -163,7 +163,7 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
     for (const call of calls) {
       const allowed = offeredNames.includes(call.name);
       let result = "That tool is not available.";
-      const refusal = allowed ? await refusalOf(call, found, confirm) : null;
+      const refusal = allowed ? await refusalOf(call, found, lastUserWords, confirm) : null;
       if (allowed && refusal === null) {
         onStep(stepWords[call.name] ?? "Looking it up");
         try {
