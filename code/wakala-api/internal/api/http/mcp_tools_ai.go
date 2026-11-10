@@ -78,7 +78,7 @@ func (d *Deps) aiToolHandler(name, action string) mcp.ToolHandler {
 			stampChat(args, accounts.IDFromContext(ctx))
 		}
 		raw, _ := json.Marshal(args)
-		for _, t := range airoutes.ToolsFor(m, airoutes.Mount{Caller: accounts.IDFromContext}) {
+		for _, t := range airoutes.ToolsFor(m, aiMountFor(role, action)) {
 			if t.Name != name {
 				continue
 			}

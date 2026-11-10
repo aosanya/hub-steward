@@ -80,7 +80,7 @@ func (d *Deps) registerAIRoutes(mux *http.ServeMux, reg agencies.Registry, auth 
 				writeInstanceErr(w, err)
 				return
 			}
-			routes, err := airoutes.BuildFor(m, airoutes.Mount{Caller: accounts.IDFromContext})
+			routes, err := airoutes.BuildFor(m, aiMountFor(role, action))
 			if err != nil {
 				writeInstanceErr(w, err)
 				return

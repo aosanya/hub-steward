@@ -2,11 +2,15 @@ package http
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
 
+	"wakalaserver/internal/accounts"
+	"wakalaserver/internal/agencies"
 	aimodels "wakalaserver/modules/ai/models"
+	airoutes "wakalaserver/modules/ai/routes"
 )
 
 const aiChatAction = "ai.account.chat"
@@ -38,4 +42,11 @@ func stampChatRequest(r *http.Request, person string) error {
 	r.Body = io.NopCloser(bytes.NewReader(stamped))
 	r.ContentLength = int64(len(stamped))
 	return nil
+}
+
+func aiMountFor(role, action string) airoutes.Mount {
+	if action == aiChatAction && role == agencies.RoleAgent {
+		return airoutes.Mount{Caller: func(context.Context) string { return "" }}
+	}
+	return airoutes.Mount{Caller: accounts.IDFromContext}
 }
