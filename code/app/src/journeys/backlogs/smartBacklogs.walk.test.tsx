@@ -288,7 +288,7 @@ describe("journey 09, smart backlogs", () => {
     expect(world.smarts[1].rules.match).toBe("any");
   });
 
-  it("5. selects two issues on the list and sends them: the sheet lists backlogs with steps and no smart backlog, and each lands at the first step of Documentation", async () => {
+  it("5. selects two issues on the list and sends them: the sheet lists backlogs with steps except the one the issues are in, and no smart backlog, and each lands at the first step of Documentation", async () => {
     const world = walk("/backlogs/ready/smart");
     await userEvent.click(await screen.findByRole("button", { name: "Select" }));
     await userEvent.click(screen.getByLabelText("Select Record the voice clips"));
@@ -296,7 +296,7 @@ describe("journey 09, smart backlogs", () => {
     expect(screen.getByText("2 selected")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Send to backlog" }));
     const sheet = await screen.findByRole("dialog", { name: "Send 2 issues to" });
-    expect(within(sheet).getByText("Software")).toBeInTheDocument();
+    expect(within(sheet).queryByText("Software")).toBeNull();
     expect(within(sheet).getByText("Support")).toBeInTheDocument();
     expect(within(sheet).queryByText("Ready to start")).toBeNull();
     await userEvent.click(within(sheet).getByText("Documentation"));
@@ -304,13 +304,13 @@ describe("journey 09, smart backlogs", () => {
     expect(world.rows.filter((one) => one.backlog === "documentation").map((one) => [one.id, one.step])).toEqual([["t1", "draft"], ["t2", "draft"]]);
   });
 
-  it("5. a role that may move only on Software sees only Software in the sheet", async () => {
+  it("5. a role that may move only on Software, holding issues already there, has no backlog to send to", async () => {
     walk("/backlogs/ready/smart", { permissions: worker, levels: workerLevels });
     await userEvent.click(await screen.findByRole("button", { name: "Select" }));
     await userEvent.click(screen.getByLabelText("Select Record the voice clips"));
     await userEvent.click(screen.getByRole("button", { name: "Send to backlog" }));
     const sheet = await screen.findByRole("dialog", { name: "Send 1 issue to" });
-    expect(within(sheet).getByText("Software")).toBeInTheDocument();
+    expect(within(sheet).getByText("No backlog to send to")).toBeInTheDocument();
     expect(within(sheet).queryByText("Documentation")).toBeNull();
     expect(within(sheet).queryByText("Support")).toBeNull();
   });

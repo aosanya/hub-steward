@@ -9,9 +9,14 @@ describe("the pill of a pending result", () => {
     expect(draft.issues[0].mark).toBe("Blocked");
   });
 
-  it("is Ready for a To do issue the hub does not call blocked", () => {
-    const draft = draftOf("taskmanager_task_pending", {}, { total: 1, items: [item({ blocked: false })] })!;
+  it("is Ready for a To do issue that carries the Ready tag", () => {
+    const draft = draftOf("taskmanager_task_pending", {}, { total: 1, items: [item({ blocked: false, tags: ["mwanachama-web", "Ready"] })] })!;
     expect(draft.issues[0].mark).toBe("Ready");
+  });
+
+  it("is no pill for a To do issue with neither the Ready nor the Blocked tag", () => {
+    const draft = draftOf("taskmanager_task_pending", {}, { total: 1, items: [item({ blocked: false })] })!;
+    expect(draft.issues[0].mark).toBe("");
   });
 
   it("is no pill for a pending issue that is already Doing", () => {
