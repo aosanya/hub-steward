@@ -35,21 +35,19 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
       {backlogs.state === "ready" && rows.length > 0 ? (
         <Rows>
           <ListRow title="All issues" meta={plural(issues, "issue")} end="›" onClick={() => navigate(issuesPath(allIssuesId))} />
-          {issues > 0
-            ? rows.map((one) =>
-                one.kind === "smart" ? (
-                  <ListRow key={one.id} title={one.name} meta={plural(one.issues, "issue")} end={<><Chip tone="info">Smart</Chip> ›</>} onClick={() => navigate(smartBacklogPath(one.id))} />
-                ) : (
-                  <ListRow key={one.id} title={one.name} meta={`${plural(one.steps.length, "step")} · ${plural(one.issues, "issue")}`} end="›" onClick={() => navigate(boardPath(one.id))} />
-                ),
-              )
-            : null}
+          {rows.map((one) =>
+            one.kind === "smart" ? (
+              <ListRow key={one.id} title={one.name} meta={plural(one.issues, "issue")} end={<><Chip tone="info">Smart</Chip> ›</>} onClick={() => navigate(smartBacklogPath(one.id))} />
+            ) : (
+              <ListRow key={one.id} title={one.name} meta={`${plural(one.steps.length, "step")} · ${plural(one.issues, "issue")}`} end="›" onClick={() => navigate(boardPath(one.id))} />
+            ),
+          )}
         </Rows>
       ) : null}
       {backlogs.state === "ready" && mayManage.state === "ready" && mayManage.data ? (
         <Button onClick={() => setAdding(true)}>Add a backlog</Button>
       ) : null}
-      {backlogs.state === "ready" && rows.length > 0 && issues === 0 ? (
+      {backlogs.state === "ready" && rows.length > 0 && issues === 0 && mayManage.state === "ready" && mayManage.data ? (
         <EmptyCard words="No backlog yet">
           <p>Run the loader on your laptop to load the boards</p>
         </EmptyCard>

@@ -153,10 +153,26 @@ describe("the Backlogs screen", () => {
 
   it("shows the empty card, with no Open Chat button, before the first load", async () => {
     answering([]);
-    openAt("/a/hub-1/backlogs");
+    render(
+      <MemoryRouter initialEntries={["/a/hub-1/backlogs"]}>
+        <BacklogsPage manage={{ mayManage: async () => true } as never} />
+      </MemoryRouter>,
+    );
     expect(await screen.findByText("No backlog yet")).toBeInTheDocument();
     expect(screen.getByText("Run the loader on your laptop to load the boards")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Open Chat" })).not.toBeInTheDocument();
+  });
+
+  it("lists a shared backlog that holds no issues, with no loader card, for a person who cannot manage backlogs", async () => {
+    answering([]);
+    render(
+      <MemoryRouter initialEntries={["/a/hub-1/backlogs"]}>
+        <BacklogsPage manage={{ mayManage: async () => false } as never} />
+      </MemoryRouter>,
+    );
+    expect(await screen.findByText("Backlog")).toBeInTheDocument();
+    expect(screen.getByText("5 steps · 0 issues")).toBeInTheDocument();
+    expect(screen.queryByText("No backlog yet")).not.toBeInTheDocument();
   });
 
   it("says so when the backlogs cannot be read", async () => {
