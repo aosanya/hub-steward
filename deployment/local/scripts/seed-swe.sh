@@ -14,6 +14,8 @@ if [ ! -f "$file" ] || [ ! -d "$loader" ]; then
   exit 0
 fi
 
+boards_root=$(cd "$boards_root" && pwd)
+
 if [ -z "${OWNER_EMAIL:-}" ] || [ -z "${OWNER_PASSWORD:-}" ]; then
   echo "SWE hub skipped: set OWNER_EMAIL and OWNER_PASSWORD in .env"
   exit 0
