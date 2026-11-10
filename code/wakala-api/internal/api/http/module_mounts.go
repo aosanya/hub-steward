@@ -70,7 +70,7 @@ func (d *Deps) registerModuleMountTool(server *mcp.Server) {
 }
 
 func (d *Deps) agencyMounts(ctx context.Context, reg agencies.Registry, instanceID string) (agencyMountsView, error) {
-	if err := mustBeMember(ctx, reg, instanceID); err != nil {
+	if err := d.admittedHoldingAction(ctx, instanceID, listMountsAction); err != nil {
 		return agencyMountsView{}, err
 	}
 	set, err := mountedSetOf(ctx, reg, instanceID)

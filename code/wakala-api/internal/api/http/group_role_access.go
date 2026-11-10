@@ -40,6 +40,18 @@ func (d *Deps) callerPermissionCodes(ctx context.Context, instanceID string) ([]
 }
 
 func (d *Deps) taskManagerAdmitted(ctx context.Context, instanceID string) error {
+	return d.admittedHolding(ctx, instanceID, func(codes []string) bool {
+		return slices.Contains(codes, taskReadPermission)
+	})
+}
+
+func (d *Deps) admittedHoldingAction(ctx context.Context, instanceID, action string) error {
+	return d.admittedHolding(ctx, instanceID, func(codes []string) bool {
+		return permissionsAllow(codes, action)
+	})
+}
+
+func (d *Deps) admittedHolding(ctx context.Context, instanceID string, holds func(codes []string) bool) error {
 	err := mustBeMember(ctx, d.Registry, instanceID)
 	if err == nil || !errors.Is(err, agencies.ErrInstanceNotFound) {
 		return err
@@ -53,7 +65,7 @@ func (d *Deps) taskManagerAdmitted(ctx context.Context, instanceID string) error
 		return agencies.ErrInstanceNotFound
 	}
 	codes, cerr := d.callerPermissionCodes(withPartitionContext(ctx, instanceID), instanceID)
-	if cerr != nil || !slices.Contains(codes, taskReadPermission) {
+	if cerr != nil || !holds(codes) {
 		return agencies.ErrInstanceNotFound
 	}
 	return opaqueMembershipError(adoptCallerAsActor(ctx, d.Registry, instanceID, caller))

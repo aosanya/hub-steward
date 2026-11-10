@@ -56,15 +56,8 @@ func (d *Deps) aiToolHandler(name, action string) mcp.ToolHandler {
 		}
 		delete(args, "instance_id")
 		args["agencyID"], _ = json.Marshal(instanceID)
-		if err := mustBeMember(ctx, d.Registry, instanceID); err != nil {
-			return toolError(agencies.ErrInstanceNotFound), nil
-		}
-		role, err := d.Registry.RoleOf(ctx, instanceID, accounts.IDFromContext(ctx))
+		role, err := d.aiAdmitted(ctx, instanceID, action)
 		if err != nil {
-			return toolError(agencies.ErrInstanceNotFound), nil
-		}
-		pctx := context.WithValue(ctx, partitionKey{}, instanceID)
-		if d.aiPermissioned(role, d.Registry, aiAuthorize(role))(pctx, action) != nil {
 			if line, ok := aiRefusalLines[action]; ok && role == agencies.RoleAgent {
 				return toolError(errors.New(line)), nil
 			}
@@ -100,4 +93,19 @@ func aiEnvelope(name string, out any) (any, string) {
 		return map[string]any{"items": list}, fmt.Sprintf("Found %d item(s)", len(list))
 	}
 	return out, name + " completed"
+}
+
+func (d *Deps) aiAdmitted(ctx context.Context, instanceID, action string) (string, error) {
+	if err := d.admittedHoldingAction(ctx, instanceID, action); err != nil {
+		return "", agencies.ErrInstanceNotFound
+	}
+	role, err := d.Registry.RoleOf(ctx, instanceID, accounts.IDFromContext(ctx))
+	if err != nil {
+		return "", agencies.ErrInstanceNotFound
+	}
+	pctx := context.WithValue(ctx, partitionKey{}, instanceID)
+	if d.aiAuthorizer(role)(pctx, action) != nil {
+		return role, agencies.ErrInstanceNotFound
+	}
+	return role, nil
 }

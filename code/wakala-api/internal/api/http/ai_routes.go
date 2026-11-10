@@ -43,6 +43,20 @@ func aiAuthorize(role string) dispatch.Authorizer {
 	}
 }
 
+func aiResidentAuthorize(_ context.Context, action string) error {
+	if aiOwnerOnlyActions[action] {
+		return dispatch.ErrForbidden
+	}
+	return nil
+}
+
+func (d *Deps) aiAuthorizer(role string) dispatch.Authorizer {
+	if role == agencies.RoleResident {
+		return d.residentPermissioned(aiResidentAuthorize)
+	}
+	return d.aiPermissioned(role, d.Registry, aiAuthorize(role))
+}
+
 func (d *Deps) aiPermissioned(role string, reg agencies.Registry, authorize dispatch.Authorizer) dispatch.Authorizer {
 	return agentPermissioned(role, reg, d.agencyRolePermissions, authorize)
 }
@@ -67,7 +81,7 @@ func (d *Deps) registerAIRoutes(mux *http.ServeMux, reg agencies.Registry, auth 
 				return
 			}
 			pctx := context.WithValue(r.Context(), partitionKey{}, instanceID)
-			if err := d.aiPermissioned(role, reg, aiAuthorize(role))(pctx, action); err != nil {
+			if err := d.aiAuthorizer(role)(pctx, action); err != nil {
 				if line, ok := aiRefusalLines[action]; ok && role == agencies.RoleAgent {
 					http.Error(w, line, http.StatusForbidden)
 					return
