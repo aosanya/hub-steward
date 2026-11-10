@@ -216,13 +216,13 @@ describe("the smart backlog client", () => {
     expect(setOf(undefined)).toEqual({ match: "all", rules: [] });
   });
 
-  it("offers the values that exist on the issues, and Ready and Blocked", () => {
-    expect(choicesOf([{ topics: ["Docs"], repo: "hub-steward", step: "To do", backlog: "Software", priority: "P1" }, { topics: [], repo: "hub-steward", step: "", backlog: "Software" }])).toEqual({
+  it("offers the values that exist on the issues, Ready and Blocked, and the priorities the server accepts", () => {
+    expect(choicesOf([{ topics: ["Docs"], repo: "hub-steward", step: "To do", backlog: "Software" }, { topics: [], repo: "hub-steward", step: "", backlog: "Software" }])).toEqual({
       tag: ["Docs", "hub-steward"],
       mark: ["Ready", "Blocked"],
       backlog: ["Software"],
       step: ["To do"],
-      priority: ["P1"],
+      priority: ["critical", "high", "medium", "low"],
     });
   });
 

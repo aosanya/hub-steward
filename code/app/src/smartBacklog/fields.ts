@@ -25,6 +25,8 @@ const specs: FieldSpec[] = [
   { id: "last_changed", label: "Last changed", operators: recent, value: "duration" },
 ];
 
+export const PRIORITIES = ["critical", "high", "medium", "low"] as const;
+
 export const DURATION_UNITS = ["days", "weeks", "months"] as const;
 
 export const fieldSpec = (field: FieldId): FieldSpec => specs.find((spec) => spec.id === field) ?? specs[0];

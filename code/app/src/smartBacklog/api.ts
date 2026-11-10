@@ -1,6 +1,7 @@
 import { mcpBacklogsClient } from "../backlogs/api";
 import { backlogTools, refusalText } from "../backlogManage/api";
 import { callTool, McpError } from "../wakala/mcp";
+import { PRIORITIES } from "./fields";
 import { DuplicateRules, type FieldChoices, type Match, type Rule, type RuleSet, type SmartBacklog, type SmartBacklogClient } from "./types";
 
 export const smartTools = {
@@ -24,12 +25,12 @@ export const smartOf = (raw: any): SmartBacklog => ({ id: text(raw?.id), name: t
 
 const unique = (values: string[]) => [...new Set(values.filter((value) => value !== ""))].sort();
 
-export const choicesOf = (issues: { topics: string[]; repo: string; priority?: string; step: string; backlog: string }[]): FieldChoices => ({
+export const choicesOf = (issues: { topics: string[]; repo: string; step: string; backlog: string }[]): FieldChoices => ({
   tag: unique(issues.flatMap((issue) => [...issue.topics, issue.repo])),
   mark: ["Ready", "Blocked"],
   backlog: unique(issues.map((issue) => issue.backlog)),
   step: unique(issues.map((issue) => issue.step)),
-  priority: unique(issues.map((issue) => issue.priority ?? "")),
+  priority: [...PRIORITIES],
 });
 
 const duplicateOf = (error: unknown): DuplicateRules | null => {
