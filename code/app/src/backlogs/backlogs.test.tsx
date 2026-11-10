@@ -447,7 +447,14 @@ describe("reading the task module's answers", () => {
   it("marks settled work with no tag and tagged work Blocked", () => {
     expect(issueOf({ id: "a", status: "completed" }).mark).toBe("");
     expect(issueOf({ id: "a", status: "pending", tags: ["Blocked"] }).mark).toBe("Blocked");
-    expect(issueOf({ id: "a", status: "in_progress" }).mark).toBe("Ready");
+    expect(issueOf({ id: "a", status: "pending", tags: ["Ready"] }).mark).toBe("Ready");
+  });
+
+  it("gives Ready only to a row carrying the Ready tag, and no mark to any other", () => {
+    expect(issueOf({ id: "a", status: "in_progress" }).mark).toBe("");
+    expect(issueOf({ id: "a", status: "pending", tags: ["Docs"], blocked: false }).mark).toBe("");
+    expect(issueOf({ id: "a", status: "pending", state: "To do", blocked: false }).mark).toBe("");
+    expect(issueOf({ id: "a", status: "pending", tags: ["Ready", "Blocked"] }).mark).toBe("Blocked");
   });
 
   it("does not call a paused row Blocked unless it carries the Blocked tag", () => {
@@ -472,7 +479,7 @@ describe("reading the task module's answers", () => {
   });
 
   it("builds tags without repeats and toggles them", () => {
-    const issue = issueOf({ id: "a", project_name: "Docs", tags: ["Docs", "Writing"], status: "pending" }, hubBacklogsOf(hubBacklogs([])));
+    const issue = issueOf({ id: "a", project_name: "Docs", tags: ["Ready", "Docs", "Writing"], status: "pending" }, hubBacklogsOf(hubBacklogs([])));
     expect(tagsOf(issue)).toEqual(["Ready", "Docs", "Writing", "Backlog"]);
     expect(withAllTags([issue], ["Docs", "Writing"])).toHaveLength(1);
     expect(withAllTags([issue], ["Missing"])).toHaveLength(0);

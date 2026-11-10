@@ -57,15 +57,7 @@ const settled = new Set(["completed", "cancelled"]);
 
 const marks: Mark[] = ["Blocked", "Ready"];
 
-const derivedMark = (status: string): Mark => (settled.has(status) || status === "blocked" ? "" : "Ready");
-
-const markOf = (raw: any, status: string): Mark => {
-  if (typeof raw?.blocked !== "boolean") return derivedMark(status);
-  if (settled.has(status)) return "";
-  if (raw.blocked) return "Blocked";
-  const state = text(raw?.state).toLowerCase();
-  return state === "" || state === "to do" ? "Ready" : "";
-};
+const markOf = (raw: any, status: string): Mark => (!settled.has(status) && raw?.blocked === true ? "Blocked" : "");
 
 const rankOf = (raw: any) => (typeof raw?.rank === "number" && raw.rank > 0 ? raw.rank : Number.MAX_SAFE_INTEGER);
 
