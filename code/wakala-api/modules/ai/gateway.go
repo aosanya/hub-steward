@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -76,6 +77,16 @@ func (g *gateway) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if res.Account.Status != "enabled" || !gatewayKinds[res.Account.Provider] {
 		refuse(w, http.StatusConflict, "this AI role's account cannot be used through the gateway")
 		return
+	}
+	if person != "" {
+		if err := g.m.CheckPersonShare(r.Context(), agencyID, person); err != nil {
+			if errors.Is(err, ErrAssistantLimit) {
+				refuse(w, http.StatusTooManyRequests, err.Error())
+				return
+			}
+			refuse(w, http.StatusInternalServerError, "the limits could not be checked")
+			return
+		}
 	}
 	d, hold, err := g.m.HoldRequest(r.Context(), agencyID, CheckInput{AccountID: res.Account.ID, RoleID: res.AIRoleID})
 	if err != nil {

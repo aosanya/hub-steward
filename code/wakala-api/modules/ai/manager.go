@@ -35,6 +35,7 @@ type AccountManager interface {
 	GetAssistantLimits(ctx context.Context, agencyID string) (AssistantLimits, error)
 	SetAssistantLimits(ctx context.Context, agencyID string, in AssistantLimits) (AssistantLimits, error)
 	MyAssistantUsage(ctx context.Context, agencyID, personID string) (AssistantUsage, error)
+	CheckPersonShare(ctx context.Context, agencyID, personID string) error
 }
 
 type KeyReader interface {
