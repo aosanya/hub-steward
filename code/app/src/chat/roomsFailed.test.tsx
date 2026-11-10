@@ -8,7 +8,7 @@ beforeEach(() => openAgency("farmers"));
 
 afterEach(() => forgetOpenAgency());
 
-vi.mock("../wakala/mcp", () => ({ callTool: vi.fn() }));
+vi.mock("../wakala/mcp", async () => ({ ...(await vi.importActual<typeof import("../wakala/mcp")>("../wakala/mcp")), callTool: vi.fn() }));
 vi.mock("../wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
 
 const thread = { id: "t1", label: "General", audience: "group", unread: 0, last_message_at: new Date().toISOString() };

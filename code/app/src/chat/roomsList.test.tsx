@@ -8,7 +8,7 @@ beforeEach(() => openAgency("farmers"));
 
 afterEach(() => forgetOpenAgency());
 
-vi.mock("../wakala/mcp", () => ({ callTool: vi.fn() }));
+vi.mock("../wakala/mcp", async () => ({ ...(await vi.importActual<typeof import("../wakala/mcp")>("../wakala/mcp")), callTool: vi.fn() }));
 vi.mock("../wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
 
 const today = (hours: number, minutes: number) => {
