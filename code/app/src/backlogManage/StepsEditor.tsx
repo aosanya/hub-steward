@@ -12,7 +12,7 @@ type ControlProps = { steps: DraftStep[]; index: number; onChange: (steps: Draft
 function Controls({ steps, index, onChange, onRename }: ControlProps) {
   const step = steps[index];
   return (
-    <>
+    <span className="icbs">
       <button type="button" className="icb" aria-label={`Rename ${step.name}`} onClick={() => onRename(index)}>
         ✎
       </button>
@@ -25,7 +25,7 @@ function Controls({ steps, index, onChange, onRename }: ControlProps) {
       <button type="button" className="icb" aria-label={`Remove ${step.name}`} disabled={!canRemove(step)} onClick={() => onChange(removeStep(steps, index))}>
         ×
       </button>
-    </>
+    </span>
   );
 }
 
