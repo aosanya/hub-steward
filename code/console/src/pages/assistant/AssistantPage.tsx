@@ -8,15 +8,25 @@ import { NumberControl } from "../agent/NumberControl";
 
 type Digits = { applies: boolean; digits: string };
 
-type Form = { settings: AssistantSettings; day: Digits; month: Digits };
+type LimitKey = "day" | "month" | "ownerDay" | "ownerMonth";
+
+type Form = { settings: AssistantSettings; digits: Record<LimitKey, Digits> };
+
+const limitKeys: LimitKey[] = ["day", "month", "ownerDay", "ownerMonth"];
 
 const digitsOf = (value: number | null): Digits => ({ applies: value !== null, digits: String(value ?? 0) });
 
-const formOf = (settings: AssistantSettings): Form => ({ settings, day: digitsOf(settings.limits.day), month: digitsOf(settings.limits.month) });
+const formOf = (settings: AssistantSettings): Form => ({
+  settings,
+  digits: Object.fromEntries(limitKeys.map((key) => [key, digitsOf(settings.limits[key])])) as Record<LimitKey, Digits>,
+});
 
 const valueOf = ({ applies, digits }: Digits): number | null => (applies ? Number(digits || 0) : null);
 
-const settingsOf = (form: Form): AssistantSettings => ({ ...form.settings, limits: { day: valueOf(form.day), month: valueOf(form.month) } });
+const settingsOf = (form: Form): AssistantSettings => ({
+  ...form.settings,
+  limits: Object.fromEntries(limitKeys.map((key) => [key, valueOf(form.digits[key])])) as AssistantSettings["limits"],
+});
 
 function AssistantForm({ held }: { held: AssistantSettings }) {
   const { t } = useI18n();
@@ -45,12 +55,14 @@ function AssistantForm({ held }: { held: AssistantSettings }) {
     show(t("assistant.saved"));
   };
 
-  const numberRow = (label: string, key: "day" | "month") => ({
+  const setDigits = (key: LimitKey, change: Partial<Digits>) => setForm({ ...form, digits: { ...form.digits, [key]: { ...form.digits[key], ...change } } });
+
+  const numberRow = (label: string, key: LimitKey) => ({
     label,
     control: (
       <div className="applies">
-        <NumberControl label={label} digits={form[key].digits} applies={form[key].applies} onChange={(digits) => setForm({ ...form, [key]: { ...form[key], digits } })} />
-        <Toggle label={t("agentApplies")} on={form[key].applies} onChange={(applies) => setForm({ ...form, [key]: { ...form[key], applies } })} />
+        <NumberControl label={label} digits={form.digits[key].digits} applies={form.digits[key].applies} onChange={(digits) => setDigits(key, { digits })} />
+        <Toggle label={t("agentApplies")} on={form.digits[key].applies} onChange={(applies) => setDigits(key, { applies })} />
       </div>
     ),
   });
@@ -64,7 +76,14 @@ function AssistantForm({ held }: { held: AssistantSettings }) {
     <Stack>
       <Card title={t("assistant.who")}>{roleRows.length === 0 ? <Empty text={t("assistant.noRoles")} /> : <SettingRows rows={roleRows} />}</Card>
       <Card title={t("assistant.share")}>
-        <SettingRows rows={[numberRow(t("assistant.tokensDay"), "day"), numberRow(t("assistant.tokensMonth"), "month")]} />
+        <SettingRows
+          rows={[
+            numberRow(t("assistant.tokensDay"), "day"),
+            numberRow(t("assistant.tokensMonth"), "month"),
+            numberRow(t("assistant.ownerTokensDay"), "ownerDay"),
+            numberRow(t("assistant.ownerTokensMonth"), "ownerMonth"),
+          ]}
+        />
       </Card>
       <div className="form-foot">
         <Button disabled={busy} onClick={save}>

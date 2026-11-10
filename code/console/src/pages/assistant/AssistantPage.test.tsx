@@ -16,7 +16,7 @@ const held: AssistantSettings = {
     { id: "r2", name: "Backlog worker", permissions: ["task.read"], may: false },
     { id: "r3", name: "Backlog manager", permissions: ["task.read", "ai.chat"], may: true },
   ],
-  limits: { day: 20000, month: null },
+  limits: { day: 20000, month: null, ownerDay: null, ownerMonth: 90000 },
 };
 
 const open = async (settings: AssistantSettings | Error = held) => {
@@ -49,6 +49,31 @@ describe("the console's Assistant page", () => {
     expect(fieldOf("Tokens a month for each person")).toHaveValue("No limit");
   });
 
+  it("shows the owner's own day and month numbers under the people's pair, an empty one reading no limit", async () => {
+    await open();
+    expect(fieldOf("Tokens a day for you")).toHaveValue("No limit");
+    expect(fieldOf("Tokens a month for you")).toHaveValue("90,000");
+    const labels = Array.from(document.querySelectorAll(".setting-label")).map((node) => node.textContent);
+    expect(labels.indexOf("Tokens a day for you")).toBeGreaterThan(labels.indexOf("Tokens a month for each person"));
+  });
+
+  it("saves the owner's numbers with the same Save", async () => {
+    await open();
+    await userEvent.click(within(rowOf("Tokens a day for you")).getByRole("switch"));
+    await userEvent.type(fieldOf("Tokens a day for you"), "4000");
+    await pressSave();
+    expect(saveAssistantSettings).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(saveAssistantSettings).mock.calls[0][2].limits).toEqual({ day: 20000, month: null, ownerDay: 4000, ownerMonth: 90000 });
+  });
+
+  it("puts the owner's numbers back as saved when Cancel is pressed", async () => {
+    await open();
+    await userEvent.click(within(rowOf("Tokens a day for you")).getByRole("switch"));
+    await userEvent.type(fieldOf("Tokens a day for you"), "4000");
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(fieldOf("Tokens a day for you")).toHaveValue("No limit");
+  });
+
   it("saves the switches and both numbers with one press of Save", async () => {
     await open();
     await userEvent.click(switchOf("Backlog worker"));
@@ -60,7 +85,7 @@ describe("the console's Assistant page", () => {
     expect(hubId).toBe("h1");
     expect(before).toEqual(held);
     expect(after.roles.map((role) => role.may)).toEqual([true, true, true]);
-    expect(after.limits).toEqual({ day: 20000, month: 500000 });
+    expect(after.limits).toEqual({ day: 20000, month: 500000, ownerDay: null, ownerMonth: 90000 });
     expect(await screen.findByText("The assistant settings were saved.")).toBeInTheDocument();
   });
 

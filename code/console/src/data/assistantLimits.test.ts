@@ -16,7 +16,7 @@ const replies: Record<string, unknown> = {
       roleRow("r4", "Triager", ["task.read", "ai.use"]),
     ],
   },
-  ai_get_assistant_limits: { tokens_per_person_day: 20000, tokens_per_person_month: 0 },
+  ai_get_assistant_limits: { tokens_per_person_day: 20000, tokens_per_person_month: 0, owner_tokens_per_person_day: 0, owner_tokens_per_person_month: 90000 },
 };
 
 const answer = (overrides: Record<string, unknown> = {}) =>
@@ -39,9 +39,15 @@ describe("the assistant settings the console reads", () => {
     ]);
   });
 
-  it("reads the two numbers, with zero meaning no limit", async () => {
+  it("reads the people's two numbers and the owner's two, with zero meaning no limit", async () => {
     const settings = await loadAssistantSettings("h1");
-    expect(settings.limits).toEqual({ day: 20000, month: null });
+    expect(settings.limits).toEqual({ day: 20000, month: null, ownerDay: null, ownerMonth: 90000 });
+  });
+
+  it("reads an older hub that sends no owner numbers as no limit for the owner", async () => {
+    answer({ ai_get_assistant_limits: { tokens_per_person_day: 20000, tokens_per_person_month: 0 } });
+    const settings = await loadAssistantSettings("h1");
+    expect(settings.limits).toEqual({ day: 20000, month: null, ownerDay: null, ownerMonth: null });
   });
 
   it("reads the open draft the roles are listed in", async () => {
@@ -72,17 +78,25 @@ describe("saving the assistant settings", () => {
     expect(callsTo("agency_update_role")).toEqual([]);
   });
 
-  it("sends the two numbers, writing no limit as zero", async () => {
+  it("sends the four numbers, writing no limit as zero", async () => {
     const before = await loadAssistantSettings("h1");
-    await saveAssistantSettings("h1", before, { ...before, limits: { day: null, month: 500000 } });
-    expect(callsTo("ai_set_assistant_limits")).toEqual([{ tokens_per_person_day: 0, tokens_per_person_month: 500000 }]);
+    await saveAssistantSettings("h1", before, { ...before, limits: { day: null, month: 500000, ownerDay: 4000, ownerMonth: null } });
+    expect(callsTo("ai_set_assistant_limits")).toEqual([
+      { tokens_per_person_day: 0, tokens_per_person_month: 500000, owner_tokens_per_person_day: 4000, owner_tokens_per_person_month: 0 },
+    ]);
   });
 
   it("refuses a negative number before anything is sent", async () => {
     const before = await loadAssistantSettings("h1");
-    await expect(saveAssistantSettings("h1", before, { ...before, limits: { day: -1, month: null } })).rejects.toThrow("a limit cannot be below zero");
+    await expect(saveAssistantSettings("h1", before, { ...before, limits: { ...before.limits, day: -1 } })).rejects.toThrow("a limit cannot be below zero");
     expect(callsTo("ai_set_assistant_limits")).toEqual([]);
     expect(callsTo("agency_update_role")).toEqual([]);
+  });
+
+  it("refuses a negative number for the owner before anything is sent", async () => {
+    const before = await loadAssistantSettings("h1");
+    await expect(saveAssistantSettings("h1", before, { ...before, limits: { ...before.limits, ownerMonth: -5 } })).rejects.toThrow("a limit cannot be below zero");
+    expect(callsTo("ai_set_assistant_limits")).toEqual([]);
   });
 });
 

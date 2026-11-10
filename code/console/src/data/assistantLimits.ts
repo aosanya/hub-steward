@@ -12,7 +12,7 @@ export const setAssistantLimitsTool = "ai_set_assistant_limits";
 
 export type AskingRole = { id: string; name: string; permissions: string[]; may: boolean };
 
-export type AssistantLimits = { day: number | null; month: number | null };
+export type AssistantLimits = { day: number | null; month: number | null; ownerDay: number | null; ownerMonth: number | null };
 
 export type AssistantSettings = { draftId: string; roles: AskingRole[]; limits: AssistantLimits };
 
@@ -29,7 +29,12 @@ const numberOrNull = (value: unknown): number | null => (typeof value === "numbe
 
 const limitsOf = (raw: unknown): AssistantLimits => {
   const held = (typeof raw === "object" && raw !== null ? raw : {}) as Loose;
-  return { day: numberOrNull(held.tokens_per_person_day), month: numberOrNull(held.tokens_per_person_month) };
+  return {
+    day: numberOrNull(held.tokens_per_person_day),
+    month: numberOrNull(held.tokens_per_person_month),
+    ownerDay: numberOrNull(held.owner_tokens_per_person_day),
+    ownerMonth: numberOrNull(held.owner_tokens_per_person_month),
+  };
 };
 
 export async function loadAssistantSettings(hubId: string): Promise<AssistantSettings> {
@@ -51,7 +56,7 @@ const permissionsAfter = (role: AskingRole, may: boolean): string[] => {
 };
 
 export async function saveAssistantSettings(hubId: string, before: AssistantSettings, after: AssistantSettings): Promise<void> {
-  if ([after.limits.day, after.limits.month].some((value) => value !== null && value < 0)) throw new Error(negativeLimitWords);
+  if (Object.values(after.limits).some((value) => value !== null && value < 0)) throw new Error(negativeLimitWords);
   for (const role of after.roles) {
     const was = before.roles.find((held) => held.id === role.id);
     if (!was || was.may === role.may) continue;
@@ -65,5 +70,7 @@ export async function saveAssistantSettings(hubId: string, before: AssistantSett
   await callTool(hubId, setAssistantLimitsTool, {
     tokens_per_person_day: after.limits.day ?? 0,
     tokens_per_person_month: after.limits.month ?? 0,
+    owner_tokens_per_person_day: after.limits.ownerDay ?? 0,
+    owner_tokens_per_person_month: after.limits.ownerMonth ?? 0,
   });
 }
