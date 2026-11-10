@@ -10,6 +10,7 @@ export type Answer = { text: string; lists: ResultDraft[] };
 export type AssistantClient = {
   model: () => Promise<string>;
   ask: (accountId: string, turns: Turn[], onStep?: (words: string) => void, confirm?: Confirm) => Promise<Answer>;
+  reached?: () => Promise<LimitSpan | "">;
 };
 
 type Call = { id: string; name: string; arguments: Record<string, unknown> };
@@ -150,6 +151,13 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
   return { text: tooManyRoundsSentence, lists: found };
 }
 
+export const usageTool = "ai_get_my_assistant_usage";
+
+const reachedOf = (usage: unknown): LimitSpan | "" => {
+  const value = isObject(usage) ? usage.reached : "";
+  return value === "day" || value === "month" ? value : "";
+};
+
 export const mcpAssistantClient: AssistantClient = {
   async model() {
     const reply = await callTool("", "ai_list_chat_models", {});
@@ -158,4 +166,11 @@ export const mcpAssistantClient: AssistantClient = {
     return text(picked?.id);
   },
   ask: askAssistant,
+  async reached() {
+    try {
+      return reachedOf(await callTool("", usageTool, {}));
+    } catch {
+      return "";
+    }
+  },
 };

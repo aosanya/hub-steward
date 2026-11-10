@@ -152,11 +152,21 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
   const end = useRef<HTMLDivElement>(null);
   const found = useResults(items);
   useEffect(() => keepConversation({ items, last: last.current }), [items]);
+  const [answered, setAnswered] = useState(0);
   const accountId = model.state === "ready" ? model.data : "";
   const unavailable = model.state === "error" || (model.state === "ready" && accountId === "");
   useEffect(() => {
     end.current?.scrollIntoView?.({ block: "end" });
   }, [items, phase, step, found.tab, confirmation.pending]);
+  useEffect(() => {
+    let current = true;
+    void Promise.resolve(client.reached?.())
+      .then((span) => current && span && setLimit(span))
+      .catch(() => undefined);
+    return () => {
+      current = false;
+    };
+  }, [client, answered]);
   const answerTo = async (history: Item[], id: number) => {
     const mine = ++run.current;
     setCurrent(id);
@@ -184,6 +194,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
       last.current += 1;
       setItems((now) => answerAfter(now, id, { id: last.current, role: "assistant", content: answer.text, lists: withIds(answer.lists ?? [], last.current), views: viewsOf(answer.lists ?? []) }));
       setPhase("idle");
+      setAnswered((count) => count + 1);
     } catch (failure) {
       if (mine !== run.current) return;
       if (failure instanceof LimitReached) {
