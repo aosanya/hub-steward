@@ -7,6 +7,7 @@ import { Shell } from "../ui/Shell";
 import { mcpSmartBacklogClient } from "./api";
 import { RulesScreen } from "./RulesScreen";
 import { smartBacklogPath } from "./paths";
+import { deletedWords } from "./words";
 import type { Draft } from "./rulesDraft";
 import type { SmartBacklogClient } from "./types";
 
@@ -34,11 +35,11 @@ export function AddSmartBacklogScreen({ client = mcpSmartBacklogClient }: Props)
 export function EditSmartBacklogScreen({ client = mcpSmartBacklogClient }: Props) {
   const navigate = useNavigate();
   const backlogId = useParams().backlogId ?? "";
-  const loaded = useLoad(async () => ({ choices: await client.choices(), backlog: await client.read(backlogId) }), `smart-edit:${openAgencyId()}:${backlogId}`);
+  const loaded = useLoad(async () => ({ choices: await client.choices(), backlog: await client.read(backlogId), may: await client.mayManage().catch(() => false) }), `smart-edit:${openAgencyId()}:${backlogId}`);
   const back = () => navigate(smartBacklogPath(backlogId));
   if (loaded.state === "loading") return <Shell title="Edit rules" onBack={back} tabless><LoadingLine /></Shell>;
   if (loaded.state === "error") return <Shell title="Edit rules" onBack={back} tabless><LoadFailed words="The smart backlog could not be loaded." /></Shell>;
-  const { choices, backlog } = loaded.data;
+  const { choices, backlog, may } = loaded.data;
   const initial: Draft = { name: backlog.name, match: backlog.set.match, rules: backlog.set.rules };
   return (
     <RulesScreen
@@ -53,6 +54,14 @@ export function EditSmartBacklogScreen({ client = mcpSmartBacklogClient }: Props
         navigate(smartBacklogPath(backlogId));
       }}
       onOpenExisting={(id) => navigate(smartBacklogPath(id))}
+      onDelete={
+        may
+          ? async () => {
+              await client.remove(backlogId);
+              navigate(backlogsHomePath(), { state: { notice: deletedWords(backlog.name) } });
+            }
+          : undefined
+      }
     />
   );
 }

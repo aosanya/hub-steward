@@ -47,6 +47,8 @@ const fake = (over: Partial<SmartBacklogClient> = {}): SmartBacklogClient => ({
   create: async () => "smart-1",
   read: async (id) => ({ id, name: "Ready to start", set: readySet, issues: 2 }),
   update: async () => undefined,
+  mayManage: async () => true,
+  remove: async () => undefined,
   ...over,
 });
 

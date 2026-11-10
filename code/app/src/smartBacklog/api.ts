@@ -1,5 +1,5 @@
 import { mcpBacklogsClient } from "../backlogs/api";
-import { backlogTools, refusalText } from "../backlogManage/api";
+import { backlogTools, mcpBacklogManageClient, refusalText } from "../backlogManage/api";
 import { callTool, McpError } from "../wakala/mcp";
 import { PRIORITIES } from "./fields";
 import { DuplicateRules, type FieldChoices, type Match, type Rule, type RuleSet, type SmartBacklog, type SmartBacklogClient } from "./types";
@@ -79,4 +79,6 @@ export const mcpSmartBacklogClient: SmartBacklogClient = {
       throw duplicateOf(error) ?? new Error(refusalText(error));
     }
   },
+  mayManage: () => mcpBacklogManageClient.mayManage(),
+  remove: (backlogId) => mcpBacklogManageClient.remove(backlogId),
 };

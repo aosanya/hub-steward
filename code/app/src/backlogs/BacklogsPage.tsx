@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { mcpAgencyClient, type AgencyClient } from "../agency/modules";
 import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
@@ -22,6 +22,7 @@ type Props = { client?: BacklogsClient; agency?: AgencyClient; manage?: BacklogM
 
 export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyClient, manage = mcpBacklogManageClient }: Props) {
   const navigate = useNavigate();
+  const notice = (useLocation().state as { notice?: string } | null)?.notice;
   const [adding, setAdding] = useState(false);
   const backlogs = useLoad(() => client.backlogs(), `backlogs:${openAgencyId()}`);
   const named = useLoad(() => agency.read(), `backlogs-agency:${openAgencyId()}`);
@@ -30,6 +31,7 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
   const issues = issuesHeld(rows);
   return (
     <Shell title="Backlogs" sub={named.state === "ready" && named.data.name ? named.data.name : undefined}>
+      {notice ? <p role="status" className="sub">{notice}</p> : null}
       {backlogs.state === "error" ? <LoadFailed words="The backlogs could not be loaded." /> : null}
       {backlogs.state === "ready" && rows.length === 0 ? <EmptyCard words={nothingSharedWords} /> : null}
       {backlogs.state === "ready" && rows.length > 0 ? (

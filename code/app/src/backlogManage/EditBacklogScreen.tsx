@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { backlogsHomePath } from "../backlogs/paths";
 import { useLoad } from "../forms/useLoad";
 import { Button } from "../ui/Button";
+import { ConfirmDelete } from "../ui/ConfirmDelete";
 import { Field } from "../ui/Field";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Shell } from "../ui/Shell";
@@ -18,7 +19,6 @@ function Form({ client, backlog }: { client: BacklogManageClient; backlog: Backl
   const [steps, setSteps] = useState<DraftStep[]>(backlog.steps);
   const [problem, setProblem] = useState("");
   const [busy, setBusy] = useState(false);
-  const [confirming, setConfirming] = useState(false);
   const held = backlog.steps.reduce((total, step) => total + step.held, 0);
   const holding = held > 0;
   const back = () => navigate(backlogsHomePath());
@@ -53,21 +53,13 @@ function Form({ client, backlog }: { client: BacklogManageClient; backlog: Backl
       <Button kind="primary" onClick={save} disabled={busy}>
         Save
       </Button>
-      {confirming ? (
-        <>
-          <p className="ferr" role="alert">{`Delete ${backlog.name}?`}</p>
-          <Button kind="danger" onClick={() => attempt(() => client.remove(backlog.id), "The backlog could not be deleted. Try again.")} disabled={busy}>
-            Delete
-          </Button>
-          <Button onClick={() => setConfirming(false)} disabled={busy}>
-            Cancel
-          </Button>
-        </>
-      ) : (
-        <Button kind="danger" onClick={() => setConfirming(true)} disabled={busy || holding}>
-          Delete the backlog
-        </Button>
-      )}
+      <ConfirmDelete
+        label="Delete the backlog"
+        question={`Delete ${backlog.name}?`}
+        onDelete={() => attempt(() => client.remove(backlog.id), "The backlog could not be deleted. Try again.")}
+        busy={busy}
+        disabled={holding}
+      />
       {holding ? <p className="sub">{`It still holds ${heldWords(held)}.`}</p> : null}
       <p className="sub">A step that holds issues cannot be removed, and a backlog that holds issues cannot be deleted.</p>
     </>

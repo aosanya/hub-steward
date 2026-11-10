@@ -34,4 +34,6 @@ export type SmartBacklogClient = {
   create: (name: string, set: RuleSet) => Promise<string>;
   read: (backlogId: string) => Promise<SmartBacklog>;
   update: (backlogId: string, name: string, set: RuleSet) => Promise<void>;
+  mayManage: () => Promise<boolean>;
+  remove: (backlogId: string) => Promise<void>;
 };

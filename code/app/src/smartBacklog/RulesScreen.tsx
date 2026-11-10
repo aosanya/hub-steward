@@ -2,6 +2,7 @@ import "./smartBacklog.css";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
+import { ConfirmDelete } from "../ui/ConfirmDelete";
 import { Field } from "../ui/Field";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
@@ -11,7 +12,7 @@ import { DURATION_UNITS, choicesFor, fieldSpec, fieldSpecs, joinDuration, parseD
 import { addRule, changeField, changeOperator, changeValue, countWords, draftProblem, emptyDraft, inChoiceSpelling, removeRule, toRuleSet, type Draft } from "./rulesDraft";
 import { DuplicateRules, type CountMatches, type CreateSmartBacklog, type FieldChoices, type FieldId, type Match } from "./types";
 
-type Props = { choices: FieldChoices; count: CountMatches; onCreate: CreateSmartBacklog; onBack: () => void; initial?: Draft; title?: string; submitLabel?: string; onOpenExisting?: (backlogId: string) => void };
+type Props = { choices: FieldChoices; count: CountMatches; onCreate: CreateSmartBacklog; onBack: () => void; initial?: Draft; title?: string; submitLabel?: string; onOpenExisting?: (backlogId: string) => void; onDelete?: () => Promise<void> };
 
 type Picking = { at: number | "new" } | null;
 
@@ -93,7 +94,7 @@ function FieldSheet({ onPick, onClose }: { onPick: (field: FieldId) => void; onC
   );
 }
 
-export function RulesScreen({ choices, count, onCreate, onBack, initial, title = "Add a smart backlog", submitLabel = "Create smart backlog", onOpenExisting }: Props) {
+export function RulesScreen({ choices, count, onCreate, onBack, initial, title = "Add a smart backlog", submitLabel = "Create smart backlog", onOpenExisting, onDelete }: Props) {
   const [draft, setDraft] = useState<Draft>(initial ? inChoiceSpelling(initial, choices) : emptyDraft());
   const [picking, setPicking] = useState<Picking>(null);
   const [matching, setMatching] = useState<number | null>(null);
@@ -139,6 +140,16 @@ export function RulesScreen({ choices, count, onCreate, onBack, initial, title =
     }
   };
 
+  const remove = async () => {
+    setSaving(true);
+    try {
+      await onDelete?.();
+    } catch {
+      setProblem("The smart backlog could not be deleted. Try again.");
+      setSaving(false);
+    }
+  };
+
   return (
     <Shell title={title} onBack={onBack} tabless>
       <Field label="Name" value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} />
@@ -168,6 +179,7 @@ export function RulesScreen({ choices, count, onCreate, onBack, initial, title =
       <Button kind="primary" onClick={create} disabled={saving}>
         {submitLabel}
       </Button>
+      {onDelete ? <ConfirmDelete label="Delete this smart backlog" question={`Delete ${initial?.name ?? draft.name}?`} onDelete={remove} busy={saving} /> : null}
       {picking ? <FieldSheet onPick={pick} onClose={() => setPicking(null)} /> : null}
     </Shell>
   );

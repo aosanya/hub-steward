@@ -25,6 +25,8 @@ const smartClient: SmartBacklogClient = {
   create: async () => "s1",
   read: async () => ({ id: "s1", name: "x", set: { match: "all", rules: [] }, issues: 0 }),
   update: async () => undefined,
+  mayManage: async () => true,
+  remove: async () => undefined,
 };
 
 const manage = (allowed: boolean) => ({ mayManage: async () => allowed }) as never;
