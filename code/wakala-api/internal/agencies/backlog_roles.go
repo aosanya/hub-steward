@@ -47,7 +47,7 @@ func (b backlogRoles) published(ctx context.Context) ([]agencymodels.DocumentRol
 
 func backlogRoleCodeOf(role agencymodels.DocumentRole) string {
 	for _, candidate := range []string{role.Code, strings.ReplaceAll(strings.ToLower(strings.TrimSpace(role.Name)), " ", "_")} {
-		if candidate == mwanachamataskmanager.RoleCodeBacklogMember || candidate == mwanachamataskmanager.RoleCodeBacklogWorker {
+		if candidate == mwanachamataskmanager.RoleCodeBacklogMember || candidate == mwanachamataskmanager.RoleCodeBacklogWorker || candidate == mwanachamataskmanager.RoleCodeBacklogManager {
 			return candidate
 		}
 	}

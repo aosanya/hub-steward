@@ -100,6 +100,9 @@ func TestEveryWriteThatTakesTheCallerIsProbedForCanSee(t *testing.T) {
 	f := newMoreWritesFixture(t)
 	other := f.h.expect(http.StatusCreated, "boss", "POST", "/tasks", map[string]any{"title": "second", "backlog": f.docs, "step": "write"})["id"].(string)
 	probed := writesOnAnIssue(f, other)
+	for name, call := range writesOnABacklog(f.docs, "steps") {
+		probed[name] = call
+	}
 	var have []string
 	for name := range probed {
 		have = append(have, name)

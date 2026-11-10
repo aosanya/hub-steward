@@ -44,7 +44,13 @@ func (v backlogVisibility) Sees(backlogID string) bool {
 }
 
 func (v backlogVisibility) Moves(backlogID string) bool {
-	return v.all || v.levels[backlogID] == models.AccessMove
+	level := v.levels[backlogID]
+	return v.all || level == models.AccessMove || level == models.AccessEdit
+}
+
+func (v backlogVisibility) Edits(backlogID string) bool {
+	level := v.levels[backlogID]
+	return v.all || level == "" || level == models.AccessEdit
 }
 
 func (m *taskManager) storedGrants(ctx context.Context) ([]models.BacklogGrant, error) {
