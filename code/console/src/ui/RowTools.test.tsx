@@ -77,8 +77,8 @@ describe("EnhanceTool", () => {
 
   it("stays busy until the chat settles the ask, then frees the button", async () => {
     let settle: () => void = () => {};
-    const ask = vi.fn((_m: unknown, _b: unknown, _c: unknown, settled: () => void) => {
-      settle = settled;
+    const ask = vi.fn((...args: unknown[]) => {
+      settle = args[3] as () => void;
     });
     show(ask, <EnhanceTool message="Fix it" />);
     const button = screen.getByRole("button", { name: "Enhance" });
