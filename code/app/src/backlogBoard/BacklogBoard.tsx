@@ -7,6 +7,7 @@ import { IssueRow } from "../backlogs/IssueRow";
 import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam } from "../backlogs/paths";
 import { narrowed, toggled } from "../backlogs/tags";
 import { backlogPagePath } from "../backlogPage/paths";
+import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../sendToBacklog";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { backState } from "../ui/backTo";
 import { Segmented } from "../ui/Segmented";
@@ -34,6 +35,11 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
   const chosen = search.getAll(tagParam);
   const query = search.get(queryParam) ?? "";
   const [read, setRead] = useState<Read>({ state: "loading" });
+  const [version, setVersion] = useState(0);
+  const [sending, setSending] = useState(false);
+  const [outcome, setOutcome] = useState("");
+  const selecting = useSelection();
+  const targets = useTargets();
 
   useEffect(() => {
     let current = true;
@@ -45,7 +51,7 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
     return () => {
       current = false;
     };
-  }, [client, backlogId]);
+  }, [client, backlogId, version]);
 
   const choose = (next: string[]) => setSearch(searchOf(next, query), { replace: true });
   const typed = (text: string) => setSearch(searchOf(chosen, text), { replace: true });
@@ -56,14 +62,21 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
   const shown = loaded ? narrowed(loaded.issues, chosen, query) : [];
   const title = backlog?.name ?? "Backlog";
   const sub = backlog ? countWords(shown.length, backlog.steps.length) : undefined;
+  const canSend = targets.state === "ready" && targets.data.length > 0 && shown.length > 0;
   const action = (
-    <Link className="act" to={backlogPagePath(backlogId)}>
-      Backlog
-    </Link>
+    <>
+      {canSend ? <SelectButton onStart={selecting.start} /> : null}
+      <Link className="act" to={backlogPagePath(backlogId)}>
+        Backlog
+      </Link>
+    </>
   );
+  const shell = selecting.on
+    ? selectingShell(selecting, shown.map((issue) => issue.id))
+    : { title, onBack: () => navigate(backlogsHomePath()), backLabel: words.backBacklogs, action: backlog ? action : undefined };
 
   return (
-    <Shell title={title} onBack={() => navigate(backlogsHomePath())} backLabel={words.backBacklogs} action={backlog ? action : undefined}>
+    <Shell {...shell} tabless={selecting.on}>
       {read.state === "loading" ? <LoadingLine /> : null}
       {read.state === "failed" ? <LoadFailed words="The board could not be read. Try again." /> : null}
       {loaded && !backlog ? <EmptyCard words="This backlog could not be found." /> : null}
@@ -80,14 +93,36 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
                 </h3>
                 {column.issues.map((issue) => (
                   <div key={issue.id} className="bb-card">
-                    <IssueRow issue={issue} chosen={chosen} onTag={toggle} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
+                    {selecting.on ? (
+                      <SelectableIssueRow issue={issue} chosen={chosen} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
+                    ) : (
+                      <IssueRow issue={issue} chosen={chosen} onTag={toggle} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
+                    )}
                   </div>
                 ))}
                 {column.issues.length === 0 ? <p className="bb-none">Nothing here</p> : null}
               </section>
             ))}
           </div>
+          {outcome && !selecting.on ? (
+            <p className="sub" role="status">
+              {outcome}
+            </p>
+          ) : null}
         </>
+      ) : null}
+      {selecting.on ? <SendBar count={selecting.count} onSend={() => setSending(true)} /> : null}
+      {sending ? (
+        <SendToBacklog
+          ids={selecting.ids}
+          onClose={() => setSending(false)}
+          onDone={(words, moved) => {
+            setSending(false);
+            selecting.cancel();
+            setOutcome(words);
+            if (moved > 0) setVersion((now) => now + 1);
+          }}
+        />
       ) : null}
     </Shell>
   );

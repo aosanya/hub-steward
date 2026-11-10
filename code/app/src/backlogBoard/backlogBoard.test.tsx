@@ -2,6 +2,9 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import type { Backlog, BacklogsClient, Issue } from "../backlogs/api";
+import { openAgency } from "../agency/open";
+import { sendTools } from "../sendToBacklog";
+import * as mcp from "../wakala/mcp";
 import { BacklogBoard } from "./BacklogBoard";
 import { tagsOf, withAllTags } from "../backlogs/tags";
 import { columnsOf, unplacedStep } from "./board";
@@ -172,5 +175,53 @@ describe("BacklogBoard", () => {
   it("shows the failure line when reading fails", async () => {
     open(client({ issues: async () => Promise.reject(new Error("down")) }));
     expect(await screen.findByRole("alert")).toHaveTextContent("The board could not be read");
+  });
+});
+
+describe("sending from the board", () => {
+  const hubBacklogs = {
+    items: [
+      { id: "b1", name: "Software", issues: 3, steps: [{ id: "s1", name: "To do" }] },
+      { id: "b2", name: "Documentation", issues: 0, steps: [{ id: "d1", name: "Draft" }] },
+    ],
+  };
+
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    openAgency("hub-1");
+  });
+
+  it("selects two cards, sends them to a backlog, confirms in one line and reloads the board", async () => {
+    const call = vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string) => (tool === sendTools.move ? {} : hubBacklogs)) as never);
+    const read = vi.fn(async () => issues);
+    open(client({ issues: read }));
+    await userEvent.click(await screen.findByRole("button", { name: "Select" }));
+    await userEvent.click(screen.getByRole("checkbox", { name: "Select Record the clips" }));
+    await userEvent.click(screen.getByRole("checkbox", { name: "Select Fix the import route" }));
+    expect(screen.getByText("2 selected")).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Send to backlog" }));
+    const sheet = await screen.findByRole("dialog", { name: "Send 2 issues to" });
+    await userEvent.click(within(sheet).getByText("Documentation"));
+    await waitFor(() => expect(screen.getByRole("status").textContent).toBe("2 issues sent to Documentation"));
+    expect(call).toHaveBeenCalledWith("", sendTools.move, { taskID: "1", backlog: "b2", step: "d1" });
+    expect(call).toHaveBeenCalledWith("", sendTools.move, { taskID: "2", backlog: "b2", step: "d1" });
+    expect(read).toHaveBeenCalledTimes(2);
+  });
+
+  it("ticks every card with All and leaves selecting with Cancel", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue(hubBacklogs as never);
+    open(client());
+    await userEvent.click(await screen.findByRole("button", { name: "Select" }));
+    await userEvent.click(screen.getByRole("button", { name: "All" }));
+    expect(screen.getByText("3 selected")).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: /Cancel/ }));
+    expect(screen.queryByText("3 selected")).toBeNull();
+  });
+
+  it("offers no Select when there is nowhere to send", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [] } as never);
+    open(client());
+    await screen.findByRole("region", { name: "To do" });
+    expect(screen.queryByRole("button", { name: "Select" })).toBeNull();
   });
 });
