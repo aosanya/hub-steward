@@ -6,6 +6,7 @@ import { routes } from "../routes";
 import { AssistantPage } from "./AssistantPage";
 import { systemPrompt, type AssistantClient } from "./api";
 import { splitOptions } from "./optionLines";
+import { manyMatchesRule, pageLines } from "./triager";
 
 beforeEach(() => openAgency("farmers"));
 
@@ -20,6 +21,11 @@ describe("the assistant's instruction", () => {
     expect(systemPrompt).toContain("For a clear ask call the tool at once");
     expect(systemPrompt).toContain("one taskmanager_task_pending call with q");
     expect(systemPrompt).toContain("never several guessed calls");
+  });
+
+  it("tells the model what to do when seven or more issues match: a few readings as option lines, never the titles, and a narrower word", () => {
+    expect(systemPrompt).toContain(manyMatchesRule);
+    expect(pageLines).toContain(manyMatchesRule);
   });
 
   it("says so in one sentence when a result is empty", () => {
