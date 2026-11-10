@@ -62,3 +62,19 @@ func TestACallerWithOnlyAIChatMayReadButNotSetTheAssistantLimits(t *testing.T) {
 		t.Error("a caller holding only ai.chat sees ai_set_assistant_limits")
 	}
 }
+
+func TestACallerWithOnlyAIChatSeesTheirOwnAssistantUsageAndACallerWithNothingDoesNot(t *testing.T) {
+	chat, ok := agencymodels.LookupPermission("ai.chat")
+	if !ok {
+		t.Fatal("no ai.chat permission in the catalog")
+	}
+	w := newGroupRoleWalk(t)
+	withAITools(w.deps)
+	m := newMCPServers(w.deps)
+	if hidden := m.hiddenTools(chat.Actions, nil); slices.Contains(hidden, "ai_get_my_assistant_usage") {
+		t.Error("a caller holding only ai.chat does not see ai_get_my_assistant_usage")
+	}
+	if hidden := m.hiddenTools(nil, nil); !slices.Contains(hidden, "ai_get_my_assistant_usage") {
+		t.Error("a caller holding no permission sees ai_get_my_assistant_usage")
+	}
+}

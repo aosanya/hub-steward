@@ -34,6 +34,7 @@ type AccountManager interface {
 	ChatAccountAs(ctx context.Context, agencyID, accountID, personID string, in ChatInput) (ChatReply, error)
 	GetAssistantLimits(ctx context.Context, agencyID string) (AssistantLimits, error)
 	SetAssistantLimits(ctx context.Context, agencyID string, in AssistantLimits) (AssistantLimits, error)
+	MyAssistantUsage(ctx context.Context, agencyID, personID string) (AssistantUsage, error)
 }
 
 type KeyReader interface {

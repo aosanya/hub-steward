@@ -924,6 +924,32 @@
         }
       ]
     },
+    "get_my_assistant_usage": {
+      "method": "GET",
+      "path": "/agencies/{agencyID}/assistant-usage/mine",
+      "call": "MyAssistantUsage",
+      "action": "ai.assistant_usage.mine",
+      "tool": "ai_get_my_assistant_usage",
+      "title": "Get my assistant usage",
+      "description": "The caller's own tokens on the assistant today and this month, beside the day and month limits (zero means no limit), and which limit is reached: day, month or empty. It takes no person: it is always the caller, and nobody can read another person's count.",
+      "args": [
+        {
+          "from": "path",
+          "as": "agencyID",
+          "description": "The agency. The address decides, not the body."
+        },
+        {
+          "from": "caller",
+          "as": "person_id",
+          "description": "Whose count is read, supplied by the mount. Never read from the request."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
     "set_assistant_limits": {
       "method": "PUT",
       "path": "/agencies/{agencyID}/assistant-limits",
