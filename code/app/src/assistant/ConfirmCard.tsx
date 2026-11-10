@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import type { BacklogsClient } from "../backlogs/api";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
-import { cancelWords, confirmWords, writeLines, type Confirm, type Write } from "./confirm";
+import { cancelWords, confirmWords, nameWrite, writeLines, type Confirm, type Held, type Names, type Write } from "./confirm";
 
 type Pending = { write: Write; settle: (confirmed: boolean) => void };
 
@@ -23,10 +24,18 @@ export function useConfirmation(): { pending: Pending | null; confirm: Confirm }
   return { pending, confirm };
 }
 
-export function ConfirmCard({ write, settle }: { write: Write; settle: (confirmed: boolean) => void }) {
+export function ConfirmCard({ write, settle, held, client }: { write: Write; settle: (confirmed: boolean) => void; held: Held; client: Pick<BacklogsClient, "backlogs" | "issue"> }) {
+  const [names, setNames] = useState<Names>({});
+  useEffect(() => {
+    let current = true;
+    void nameWrite(write, held, client).then((found) => current && setNames(found));
+    return () => {
+      current = false;
+    };
+  }, [write]);
   return (
     <Card>
-      {writeLines(write).map((line) => (
+      {writeLines(write, names).map((line) => (
         <p key={line}>{line}</p>
       ))}
       <div className="rm-btns">

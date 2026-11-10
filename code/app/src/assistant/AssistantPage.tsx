@@ -212,7 +212,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
                   <Bubbles items={items} phase={phase} current={current} step={step} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
                 </BacklogSummariesLoader>
               )}
-              {confirmation.pending ? <ConfirmCard write={confirmation.pending.write} settle={confirmation.pending.settle} /> : null}
+              {confirmation.pending ? <ConfirmCard write={confirmation.pending.write} settle={confirmation.pending.settle} held={found.results} client={backlogs} /> : null}
               <div ref={end} />
             </Card>
           )}
