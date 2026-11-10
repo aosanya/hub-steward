@@ -72,7 +72,7 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
           {outcome}
         </p>
       ) : null}
-      {selecting.on ? <SendBar count={selecting.count} onSend={() => setSending(true)} /> : null}
+      {selecting.on ? <SendBar count={selecting.count} from={selecting.ids.map((id) => rows.find((one) => one.id === id)?.backlogId ?? "")} onSend={() => setSending(true)} /> : null}
       {sending ? (
         <SendToBacklog
           ids={selecting.ids}

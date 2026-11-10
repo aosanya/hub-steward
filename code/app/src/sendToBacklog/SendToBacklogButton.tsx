@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "../ui/Button";
 import { mcpSendClient } from "./api";
-import { withoutCurrent } from "./leftOut";
+import { canSendFrom, withoutCurrent } from "./leftOut";
 import { SendToBacklog } from "./SendToBacklog";
 import type { SendClient } from "./types";
 import { useTargets } from "./useTargets";
@@ -14,7 +14,7 @@ export function SendToBacklogButton({ issueId, from = [], onSent, onOutcome, cli
   const targets = useTargets(client);
   const [open, setOpen] = useState(false);
   const [outcome, setOutcome] = useState("");
-  if (targets.state !== "ready" || withoutCurrent(targets.data, from).length === 0) return null;
+  if (targets.state !== "ready" || !canSendFrom(targets.data, from) || withoutCurrent(targets.data, from).length === 0) return null;
   return (
     <>
       <Button onClick={() => setOpen(true)}>{sendWords}</Button>

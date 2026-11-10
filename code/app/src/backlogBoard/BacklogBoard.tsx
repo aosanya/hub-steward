@@ -109,7 +109,7 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
           ) : null}
         </>
       ) : null}
-      {selecting.on ? <SendBar count={selecting.count} onSend={() => setSending(true)} /> : null}
+      {selecting.on ? <SendBar count={selecting.count} from={selecting.ids.map(() => backlogId)} onSend={() => setSending(true)} /> : null}
       {sending ? (
         <SendToBacklog
           ids={selecting.ids}

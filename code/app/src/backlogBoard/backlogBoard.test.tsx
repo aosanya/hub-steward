@@ -204,7 +204,7 @@ describe("sending from the board", () => {
   it("selects two cards, sends them to a backlog, confirms in one line and reloads the board", async () => {
     const call = vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string) => (tool === sendTools.move ? {} : hubBacklogs)) as never);
     const read = vi.fn(async () => issues);
-    open(client({ issues: read }));
+    open(client({ issues: read, backlogs: async () => [{ ...backlog, id: "b1" }] }), "/a/x/backlogs/b1/board");
     await userEvent.click(await screen.findByRole("button", { name: "Select" }));
     await userEvent.click(screen.getByRole("checkbox", { name: "Select Record the clips" }));
     await userEvent.click(screen.getByRole("checkbox", { name: "Select Fix the import route" }));

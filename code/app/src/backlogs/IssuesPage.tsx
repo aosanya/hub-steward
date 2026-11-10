@@ -101,7 +101,7 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
           {outcome}
         </p>
       ) : null}
-      {selecting.on ? <SendBar count={selecting.count} onSend={() => setSending(true)} /> : null}
+      {selecting.on ? <SendBar count={selecting.count} from={selecting.ids.map((id) => loadedIssues.find((one) => one.id === id)?.backlogId ?? "")} onSend={() => setSending(true)} /> : null}
       {sending ? (
         <SendToBacklog
           ids={selecting.ids}

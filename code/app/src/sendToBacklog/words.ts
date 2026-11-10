@@ -11,6 +11,8 @@ export const allWords = "All";
 
 export const noTargetsWords = "No backlog to send to";
 
+export const someOnlySeenWords = "Some chosen issues are in a backlog you can only see.";
+
 export const selectedWords = (count: number) => `${count} selected`;
 
 export const sheetTitleWords = (count: number) => `Send ${issuesWords(count)} to`;
