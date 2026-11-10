@@ -42,6 +42,7 @@ Everything is under `code/app/src`.
 - **Address.** `wakala/config.ts` fetches `/config.json` once. `public/config.json` holds `{"wakala":"http://localhost:8082"}`. With no file the app uses the same origin and `/mcp`.
 - **Builds.** `demoConfig.ts` writes `config.json` into `dist/` from `HUBSTEWARD_WAKALA_URL` (`vite.config.ts`). `npm run build:demo` stops when the variable is unset (`scripts/build-demo.mjs`).
 - **Token.** The bearer token is kept in `localStorage` under `hubsteward.token`. `authHeaders()` returns `Authorization: Bearer ...`, and `renewal.ts` swaps an expiring token by posting to `/auth/refresh`.
+- **Password sign-in on a local hub.** The Sign in screen also shows an email and password form when `entry/localHub.ts` finds that both the page and the hub address are on this machine (a loopback host); a deployed app never shows it. `entry/passwordSignIn.ts` posts the address and password to the hub's `/auth/signin` with the cookie, and a good answer sends the person to the app home. A wrong pair says so, and a locked-out address says the hub is busy.
 - **Calls.** Features call `callTool(hubId, tool, args)` in `wakala/mcp.ts`. It adds `instance_id` from the open agency. Reads are reused for 10 or 60 seconds, and any other call clears them.
 - **Clients.** A feature's `api.ts` defines a client type and a live client. `forms/context.tsx` shows the pattern: a provider and a hook, so a test hands the screen a fake client.
 

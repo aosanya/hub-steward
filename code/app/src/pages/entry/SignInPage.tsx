@@ -1,11 +1,15 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { entryClient, type LinkOutcome } from "../../entry/api";
 import { useLanguage } from "../../entry/language";
+import { hubIsLocal } from "../../entry/localHub";
+import { signInWithPassword, type PasswordOutcome } from "../../entry/passwordSignIn";
 import { languages } from "../../entry/words";
 import { Button } from "../../ui/Button";
 import { Field } from "../../ui/Field";
 import { Shell } from "../../ui/Shell";
+import { resetMcp } from "../../wakala/mcp";
+import { forgetSubject } from "../../wakala/me";
 
 export function SignInPage() {
   const arrival = new URLSearchParams(useLocation().search);
@@ -14,7 +18,19 @@ export function SignInPage() {
   const [email, setEmail] = useState("");
   const [outcome, setOutcome] = useState<LinkOutcome | null>(null);
   const [choosing, setChoosing] = useState(false);
+  const [local, setLocal] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordOutcome, setPasswordOutcome] = useState<PasswordOutcome | null>(null);
+  const navigate = useNavigate();
   const { code: language, setLanguage, words } = useLanguage();
+  useEffect(() => {
+    let alive = true;
+    hubIsLocal().then((yes) => alive && setLocal(yes));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   const refusal: Record<Exclude<LinkOutcome, "sent">, string> = {
     invalid: words.signInInvalid,
     busy: words.signInBusy,
@@ -43,6 +59,24 @@ export function SignInPage() {
     );
   }
 
+  const passwordRefusal: Record<Exclude<PasswordOutcome, "in">, string> = {
+    wrong: words.signInWrong,
+    busy: words.signInBusy,
+    unavailable: words.signInUnavailable,
+    offline: words.signInOffline,
+  };
+
+  const signInHere = async () => {
+    const outcome = await signInWithPassword(email.trim(), password);
+    if (outcome !== "in") {
+      setPasswordOutcome(outcome);
+      return;
+    }
+    forgetSubject();
+    resetMcp();
+    navigate("/", { replace: true });
+  };
+
   const send = async () => setOutcome(await entryClient().sendSignInLink(email.trim(), `${window.location.origin}/sign-in/link`));
 
   return (
@@ -59,6 +93,18 @@ export function SignInPage() {
         {words.signInSend}
       </Button>
       {outcome === "sent" ? <p className="note">{words.signInSent}</p> : null}
+      {local ? (
+        <>
+          <Field
+            label={words.signInPassword}
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={passwordOutcome && passwordOutcome !== "in" ? passwordRefusal[passwordOutcome] : undefined}
+          />
+          <Button onClick={signInHere}>{words.signInWithPassword}</Button>
+        </>
+      ) : null}
       <Button onClick={() => setChoosing(true)}>{words.changeLanguage}</Button>
     </Shell>
   );
