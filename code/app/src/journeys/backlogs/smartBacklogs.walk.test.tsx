@@ -63,7 +63,7 @@ const readyRules: RuleSet = { match: "all", rules: [{ field: "mark", operator: "
 
 const keyOf = (set: RuleSet) => JSON.stringify({ match: set.match, rules: [...set.rules].map((rule) => JSON.stringify(rule)).sort() });
 
-const hub = (over: { permissions?: string[]; levels?: Levels; withReady?: boolean } = {}) => {
+const hub = (over: { permissions?: string[]; levels?: Levels; withReady?: boolean; seeded?: Smart[] } = {}) => {
   const permissions = over.permissions ?? owner;
   const levels = over.levels ?? ownerLevels;
   const rows: Row[] = [
@@ -73,12 +73,24 @@ const hub = (over: { permissions?: string[]; levels?: Levels; withReady?: boolea
     row("t4", "Fix the import route", 4, { step: "doing" }),
     row("t5", "Import the municipality", 5, { status: "blocked" }),
   ];
-  const smarts: Smart[] = over.withReady === false ? [] : [{ id: "ready", name: "Ready to start", rules: readyRules }];
+  const smarts: Smart[] = [...(over.withReady === false ? [] : [{ id: "ready", name: "Ready to start", rules: readyRules }]), ...(over.seeded ?? [])];
   const grants: { group_id: string; level: string }[] = [{ group_id: "po", level: "edit" }];
   const stepName = (one: Row) => stepsOf[one.backlog].find((step) => step.id === one.step)?.name ?? "";
   const holds = (one: Row, rule: Rule) => {
-    const have = rule.field === "mark" ? (one.status === "blocked" ? "Blocked" : "Ready") : rule.field === "step" ? stepName(one) : "";
-    return rule.operator === "is_not" ? have !== rule.value : have === rule.value;
+    const negative = ["is_not", "does_not_have", "does_not_contain"].includes(rule.operator);
+    const hit =
+      rule.field === "mark"
+        ? (one.status === "blocked" ? "Blocked" : "Ready") === rule.value
+        : rule.field === "step"
+          ? stepName(one) === rule.value
+          : rule.field === "backlog"
+            ? names[one.backlog] === rule.value
+            : rule.field === "tag"
+              ? [one.project_name, names[one.backlog]].includes(rule.value)
+              : rule.field === "title"
+                ? one.title.toLowerCase().includes(rule.value.toLowerCase())
+                : false;
+    return negative ? !hit : hit;
   };
   const matching = (set: RuleSet) => rows.filter((one) => (set.match === "any" ? set.rules.some((rule) => holds(one, rule)) : set.rules.every((rule) => holds(one, rule))));
   const raw = (one: Row) => ({ ...one, tags: [] as string[] });
@@ -174,7 +186,52 @@ const listed = (...titles: string[]) => titles.forEach((title) => expect(screen.
 const absent = (...titles: string[]) => titles.forEach((title) => expect(screen.queryByText(new RegExp(title))).toBeNull());
 
 describe("journey 09, smart backlogs", () => {
-  it.todo("1. saves a filter as a smart backlog: the Save as smart backlog button opens the rules screen already filled (SW71, take-up-19)");
+  const filterRules: RuleSet = {
+    match: "all",
+    rules: [{ field: "tag", operator: "has", value: "hub-steward" }, { field: "backlog", operator: "is", value: "Software" }, { field: "title", operator: "contains", value: "custody" }],
+  };
+
+  const filterByTwoTagsAndAWord = async () => {
+    await screen.findByText(/Record the voice clips/);
+    await userEvent.click(screen.getAllByRole("button", { name: "hub-steward" })[0]);
+    await userEvent.click(screen.getAllByRole("button", { name: "Software" })[0]);
+    await userEvent.type(screen.getByLabelText("Search issues"), "custody");
+  };
+
+  it("1. saves a filter as a smart backlog: two tags and a word fill the rules screen, and the new backlog is on the Backlogs screen with the same count", async () => {
+    const world = walk("/backlogs/all");
+    await filterByTwoTagsAndAWord();
+    expect(await screen.findByText("1 of 5 issues")).toBeInTheDocument();
+    listed("Switch on the custody module");
+    absent("Record the voice clips", "Import the municipality");
+    await userEvent.click(screen.getByRole("button", { name: "Save as smart backlog" }));
+    expect(where()).toBe(`/a/${farmers.id}/backlogs/new/smart`);
+    expect(await screen.findByDisplayValue('hub-steward Software "custody"')).toBeInTheDocument();
+    expect(screen.getByLabelText("Value of rule 1")).toHaveValue("hub-steward");
+    expect(screen.getByLabelText("Value of rule 2")).toHaveValue("Software");
+    expect(screen.getByLabelText("Value of rule 3")).toHaveValue("custody");
+    expect(await screen.findByText("1 issue matches now")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Create smart backlog" }));
+    await waitFor(() => expect(where()).toBe(`/a/${farmers.id}/backlogs/smart-2/smart`));
+    expect(world.named(smartTools.create)[0]?.args).toMatchObject({ name: 'hub-steward Software "custody"', rules: filterRules });
+    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+    const entry = (await screen.findByText('hub-steward Software "custody"')).closest("button") as HTMLElement;
+    expect(within(entry).getByText("Smart")).toBeInTheDocument();
+    expect(within(entry).getByText("1 issue")).toBeInTheDocument();
+  });
+
+  it("1. an unfiltered list has no Save as smart backlog button", async () => {
+    walk("/backlogs/all");
+    await screen.findByText(/Record the voice clips/);
+    expect(screen.queryByRole("button", { name: "Save as smart backlog" })).toBeNull();
+  });
+
+  it("1. once a smart backlog has the same rules the Save button becomes a link to it", async () => {
+    walk("/backlogs/all", { seeded: [{ id: "same", name: "Custody work", rules: { match: "all", rules: [...filterRules.rules].reverse() } }] });
+    await filterByTwoTagsAndAWord();
+    expect(await screen.findByRole("link", { name: "Open Custody work" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Save as smart backlog" })).toBeNull();
+  });
 
   it("2. builds one from rules: the line under the rules, the count on the Backlogs row and the rows of the opened list are the same number", async () => {
     const world = walk("/backlogs", { withReady: false });
