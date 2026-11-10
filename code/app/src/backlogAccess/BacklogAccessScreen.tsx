@@ -15,12 +15,12 @@ import { ListRow, Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
 import { mcpBacklogAccessClient } from "./api";
-import { groupsOfOwnerHierarchy, groupsWithoutAccess, levelItems, levelWords, noRoleWords, rowsOf, withGroup, withLevel, withoutGroup } from "./levels";
+import { groupsOfOwnerHierarchy, groupsWithoutAccess, levelItems, levelWords, smartLevelItems, noRoleWords, rowsOf, withGroup, withLevel, withoutGroup } from "./levels";
 import { refusalWords, type AccessLevel, type AccessRow, type AgencyGroup, type BacklogAccessClient } from "./types";
 
-type FormProps = { client: BacklogAccessClient; backlogId: string; first: AccessRow[]; firstOwner: string; groups: AgencyGroup[] };
+type FormProps = { client: BacklogAccessClient; backlogId: string; first: AccessRow[]; firstOwner: string; groups: AgencyGroup[]; smart: boolean };
 
-function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
+function Form({ client, backlogId, first, firstOwner, groups, smart }: FormProps) {
   const [rows, setRows] = useState(first);
   const [owner, setOwner] = useState(firstOwner);
   const [choosing, setChoosing] = useState(false);
@@ -112,7 +112,7 @@ function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
           {row.fixed ? (
             <Chip tone="accent">{levelWords("edit")}</Chip>
           ) : (
-            <Segmented items={levelItems} current={row.level} label={`Access for ${row.name}`} disabled={busy} onChange={(level) => choose(row, level)} />
+            <Segmented items={smart ? smartLevelItems : levelItems} current={row.level} label={`Access for ${row.name}`} disabled={busy} onChange={(level) => choose(row, level)} />
           )}
           {row.fixed && row.roleName === "" ? null : <p className="sub">Uses the Backlogs as: {row.roleName === "" ? noRoleWords : row.roleName}</p>}
           {row.roleTooSmall ? <p className="ferr">This group's role is too small to move issues</p> : null}
@@ -145,7 +145,7 @@ function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
           Add a group
         </Button>
       )}
-      <p className="sub">Access is given to groups, to the whole backlog. The Product owner group always has Can edit. A group that can edit can also move and see.</p>
+      <p className="sub">Access is given to groups, to the whole backlog. The Product owner group always has Can edit. {smart ? "A smart backlog has nothing to move, so a group can see it or edit it." : "A group that can edit can also move and see."}</p>
     </>
   );
 }
@@ -165,7 +165,7 @@ type LoadedProps = { client: BacklogAccessClient; manage: BacklogManageClient; b
 
 function Loaded({ client, manage, backlogId, onName }: LoadedProps) {
   const loaded = useLoad(
-    () => Promise.all([manage.read(backlogId), client.read(backlogId), client.groups()]),
+    () => Promise.all([manage.read(backlogId), client.read(backlogId), client.groups(), client.isSmart(backlogId)]),
     `backlog-access:${openAgencyId()}:${backlogId}`,
   );
   const name = loaded.state === "ready" ? loaded.data[0].name : "";
@@ -175,7 +175,7 @@ function Loaded({ client, manage, backlogId, onName }: LoadedProps) {
       {loaded.state === "loading" ? <LoadingLine /> : null}
       {loaded.state === "error" ? <LoadFailed words="The access could not be loaded." /> : null}
       {loaded.state === "ready" ? (
-        <Form client={client} backlogId={backlogId} first={rowsOf(loaded.data[1], loaded.data[2])} firstOwner={loaded.data[1].ownerGroup} groups={loaded.data[2]} />
+        <Form client={client} backlogId={backlogId} first={rowsOf(loaded.data[1], loaded.data[2])} firstOwner={loaded.data[1].ownerGroup} groups={loaded.data[2]} smart={loaded.data[3]} />
       ) : null}
     </>
   );

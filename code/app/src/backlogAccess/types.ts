@@ -14,6 +14,7 @@ export type BacklogAccessClient = {
   set: (backlogId: string, groupId: string, level: AccessLevel) => Promise<void>;
   remove: (backlogId: string, groupId: string) => Promise<void>;
   setOwnerGroup: (groupId: string) => Promise<void>;
+  isSmart: (backlogId: string) => Promise<boolean>;
 };
 
 export class AccessRefused extends Error {}

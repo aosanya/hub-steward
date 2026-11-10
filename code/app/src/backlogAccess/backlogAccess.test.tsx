@@ -43,6 +43,7 @@ const accessFake = (over: Partial<BacklogAccessClient> = {}): BacklogAccessClien
   set: vi.fn().mockResolvedValue(undefined),
   remove: vi.fn().mockResolvedValue(undefined),
   setOwnerGroup: vi.fn().mockResolvedValue(undefined),
+  isSmart: vi.fn().mockResolvedValue(false),
   ...over,
 });
 
@@ -68,6 +69,20 @@ describe("access to a backlog", () => {
     expect(within(await cardOf("Product owner")).queryByRole("button")).toBeNull();
     expect(within(await cardOf("Contributors")).getByRole("button", { name: "Can see" })).toHaveAttribute("aria-pressed", "true");
     expect(within(await cardOf("Core team")).getByRole("button", { name: "Can move" })).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("offers a smart backlog only Can see and Can edit, since it has nothing to move", async () => {
+    show(accessFake({ read: vi.fn().mockResolvedValue({ ownerGroup: "po", grants: [{ groupId: "contrib", level: "see", roleTooSmall: false, noRole: false, roles: [] }] }), isSmart: vi.fn().mockResolvedValue(true) }));
+    const card = await cardOf("Contributors");
+    expect(within(card).getByRole("button", { name: "Can see" })).toBeInTheDocument();
+    expect(within(card).getByRole("button", { name: "Can edit" })).toBeInTheDocument();
+    expect(within(card).queryByRole("button", { name: "Can move" })).toBeNull();
+  });
+
+  it("keeps all three levels on a backlog with steps", async () => {
+    show(accessFake());
+    const card = await cardOf("Contributors");
+    expect(within(card).getByRole("button", { name: "Can move" })).toBeInTheDocument();
   });
 
   it("saves a level as soon as it is chosen", async () => {

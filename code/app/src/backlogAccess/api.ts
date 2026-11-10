@@ -1,5 +1,5 @@
 import { callTool } from "../wakala/mcp";
-import { refusalText } from "../backlogManage/api";
+import { backlogTools, refusalText } from "../backlogManage/api";
 import { AccessRefused, type AccessReading, type AgencyGroup, type BacklogAccessClient, type Grant } from "./types";
 
 export const accessTools = {
@@ -49,6 +49,9 @@ export const mcpBacklogAccessClient: BacklogAccessClient = {
   },
   async remove(backlogId, groupId) {
     await refused(callTool("", accessTools.take, { backlogID: backlogId, groupID: groupId }));
+  },
+  async isSmart(backlogId) {
+    return itemsOf(await callTool("", backlogTools.list, {})).some((raw) => text(raw?.id) === backlogId && raw?.kind === "smart");
   },
   async setOwnerGroup(groupId) {
     await refused(callTool("", accessTools.ownerGroup, { group_id: groupId }));

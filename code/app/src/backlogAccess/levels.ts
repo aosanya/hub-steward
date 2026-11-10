@@ -7,6 +7,8 @@ export const levelItems: SegmentedItem<AccessLevel>[] = [
   { id: "edit", label: "Can edit" },
 ];
 
+export const smartLevelItems = levelItems.filter((item) => item.id !== "move");
+
 export const levelWords = (level: AccessLevel) => levelItems.find((item) => item.id === level)?.label ?? "";
 
 export const goneGroupWords = "A group that no longer exists";
