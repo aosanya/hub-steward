@@ -1,7 +1,11 @@
-import { issueOf, itemsOf, taskTools, type Issue } from "../backlogs/api";
+import { issueOf, itemsOf, taskTools, type Backlog, type Issue } from "../backlogs/api";
+import { issuesPath } from "../backlogs/paths";
+import { smartBacklogPath } from "../smartBacklog/paths";
 import { splitOptions } from "./optionLines";
 
-export type ResultDraft = { title: string; total: number; issues: Issue[]; view?: string };
+export type ListFilter = { tags: string[]; query: string; backlog: string; other: boolean };
+
+export type ResultDraft = { title: string; total: number; issues: Issue[]; view?: string; filter?: ListFilter };
 
 export type ResultList = ResultDraft & { id: string };
 
@@ -22,6 +26,12 @@ export const newResultsWords = "New results";
 export const emptyResultsWords = "Results appear here";
 
 export const showMoreWords = "Show more";
+
+export const openAllWholeWords = "Open all issues";
+
+export const openAllWholeNote = "Opens every issue, not only these.";
+
+export const openAllWords = (total: number) => `Open all ${total} issues`;
 
 export const pageSize = 50;
 
@@ -47,6 +57,17 @@ export const titleOf = (tool: string, args: Record<string, unknown>) => {
   return words === "" ? "Issues" : capital(`${words} issues`);
 };
 
+const wordsOfKeys = (args: Record<string, unknown>, keys: string[]) => keys.flatMap((key) => [args[key]].flat().filter((word): word is string => typeof word === "string" && word.trim() !== "").map((word) => word.trim()));
+
+const isSet = (value: unknown) => value !== undefined && value !== null && value !== "" && !(Array.isArray(value) && value.length === 0);
+
+const filterOf = (tool: string, args: Record<string, unknown>): ListFilter => ({
+  tags: wordsOfKeys(args, ["tag", "repo"]),
+  query: wordsOfKeys(args, ["q"]).join(" "),
+  backlog: wordsOfKeys(args, ["backlog"])[0] ?? "",
+  other: tool === pendingTool || Object.entries(args).some(([key, value]) => ![...filterKeys, ...pagingKeys].includes(key) && isSet(value)) || isSet(args.step) || isSet(args.priority),
+});
+
 const isFiltered = (args: Record<string, unknown>) => Object.entries(args).some(([key, value]) => !pagingKeys.includes(key) && value !== undefined && value !== null && value !== "" && !(Array.isArray(value) && value.length === 0));
 
 export const labelOf = (list: ResultDraft) => `${list.title} · ${list.total}`;
@@ -56,7 +77,7 @@ export const draftOf = (tool: string, args: Record<string, unknown>, reply: unkn
     const issues = itemsOf(reply).map((raw) => issueOf(raw));
     const reported = isObject(reply) && typeof reply.total === "number" ? reply.total : issues.length;
     const unfiltered = !isFiltered(args);
-    return { title: titleOf(tool, args), total: Math.max(reported, issues.length), issues, ...(unfiltered ? { view: allView } : {}) };
+    return { title: titleOf(tool, args), total: Math.max(reported, issues.length), issues, ...(unfiltered ? { view: allView } : {}), filter: filterOf(tool, args) };
   }
   if (tool === taskTools.backlogs) return { title: "Backlogs", total: itemsOf(reply).length, issues: [], view: backlogsView };
   if (tool === readTool && isObject(reply) && typeof reply.id === "string") {
@@ -64,6 +85,23 @@ export const draftOf = (tool: string, args: Record<string, unknown>, reply: unkn
     return { title: issue.title, total: 1, issues: [issue] };
   }
   return null;
+};
+
+export type OpenAll = { label: string; to: string; whole: boolean };
+
+const sameWords = (left: string, right: string) => left.trim().toLowerCase() === right.trim().toLowerCase();
+
+export const openAllTarget = (list: ResultDraft, backlogs: Backlog[]): OpenAll => {
+  const whole: OpenAll = { label: openAllWholeWords, to: issuesPath(), whole: true };
+  const filter = list.filter;
+  if (!filter) return whole;
+  if (filter.other) return whole;
+  const label = openAllWords(list.total);
+  if (filter.backlog === "") return { label, to: issuesPath("all", filter.tags, filter.query), whole: false };
+  const backlog = backlogs.find((one) => one.id === filter.backlog) ?? backlogs.find((one) => sameWords(one.name, filter.backlog));
+  if (!backlog) return whole;
+  if (backlog.kind === "smart") return filter.tags.length === 0 && filter.query === "" ? { label, to: smartBacklogPath(backlog.id), whole: false } : whole;
+  return { label, to: issuesPath(backlog.id, filter.tags, filter.query), whole: false };
 };
 
 export const resultsOf = (items: { lists?: ResultList[] }[]): ResultList[] => [...items].reverse().flatMap((item) => item.lists ?? []);
