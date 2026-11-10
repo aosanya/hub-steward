@@ -11,7 +11,7 @@ export const smartLevelItems = levelItems.filter((item) => item.id !== "move");
 
 export const levelWords = (level: AccessLevel) => levelItems.find((item) => item.id === level)?.label ?? "";
 
-export const goneGroupWords = "A group that no longer exists";
+const goneGroupWords = "A group that no longer exists";
 
 const nameOf = (groups: AgencyGroup[], groupId: string) => groups.find((group) => group.id === groupId)?.name ?? goneGroupWords;
 
@@ -19,7 +19,7 @@ export const noRoleWords = "no role yet";
 
 const roleNames: Record<string, string> = { backlog_member: "Backlog member", backlog_worker: "Backlog worker", backlog_manager: "Backlog manager" };
 
-export const roleWords = (codes: string[]) => codes.map((code) => roleNames[code] ?? code).join(", ");
+const roleWords = (codes: string[]) => codes.map((code) => roleNames[code] ?? code).join(", ");
 
 export const rowsOf = (reading: AccessReading, groups: AgencyGroup[]): AccessRow[] => {
   const owner: AccessRow[] =

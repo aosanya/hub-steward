@@ -3,7 +3,7 @@ import type { Rule } from "./types";
 
 const marks = ["Ready", "Blocked"];
 
-export const ruleOfTag = (tag: string, backlogs: string[]): Rule =>
+const ruleOfTag = (tag: string, backlogs: string[]): Rule =>
   marks.includes(tag) ? { field: "mark", operator: "is", value: tag } : backlogs.includes(tag) ? { field: "backlog", operator: "is", value: tag } : { field: "tag", operator: "has", value: tag };
 
 export const wordsOf = (query: string): string[] => query.split(/\s+/).filter((word) => word !== "");

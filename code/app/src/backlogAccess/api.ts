@@ -14,7 +14,7 @@ const text = (value: unknown) => (typeof value === "string" ? value : "");
 
 const itemsOf = (reply: any): any[] => (Array.isArray(reply) ? reply : Array.isArray(reply?.items) ? reply.items : []);
 
-export const grantOf = (raw: any): Grant => ({
+const grantOf = (raw: any): Grant => ({
   groupId: text(raw?.group_id),
   level: raw?.level === "edit" ? "edit" : raw?.level === "move" ? "move" : "see",
   roleTooSmall: raw?.role_too_small === true,

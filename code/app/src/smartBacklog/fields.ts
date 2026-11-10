@@ -1,7 +1,7 @@
 import type { ChoiceFieldId, FieldChoices, FieldId, OperatorId, Rule } from "./types";
 import { FIELD_IDS } from "./types";
 
-export type ValueKind = "choice" | "text" | "none" | "duration";
+type ValueKind = "choice" | "text" | "none" | "duration";
 
 type Operator = { id: OperatorId; label: string };
 
@@ -33,7 +33,7 @@ export const fieldSpec = (field: FieldId): FieldSpec => specs.find((spec) => spe
 
 export const fieldSpecs = (): FieldSpec[] => FIELD_IDS.map(fieldSpec);
 
-export const isChoiceField = (field: FieldId): field is ChoiceFieldId => fieldSpec(field).value === "choice";
+const isChoiceField = (field: FieldId): field is ChoiceFieldId => fieldSpec(field).value === "choice";
 
 export const choicesFor = (field: FieldId, choices: FieldChoices): string[] => (isChoiceField(field) ? choices[field] : []);
 
