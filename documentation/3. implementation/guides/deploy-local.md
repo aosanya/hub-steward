@@ -10,11 +10,12 @@ The files are in [deployment/local/](../../../deployment/local/). Docker Compose
 cd deployment/local
 make up
 make down
+make backup
 ```
 
-From the repository root, `make deploy-local` and `make deploy-local-down` run the same two.
+From the repository root, `make deploy-local`, `make deploy-local-down` and `make deploy-local-backup` run the same three.
 
-`make up` refuses to run unless the checkout is on `master`. It writes `.env` on the first run, with fresh random passwords, a signing secret and an anon key signed with it, then builds and starts everything and prints the addresses. `make down` stops the containers and keeps the data. There is no reset target; the database volume is deleted only by hand. `make logs` and `make ps` show what is running.
+`make up` refuses to run unless the checkout is on `master`. It writes `.env` on the first run, with fresh random passwords, a signing secret and an anon key signed with it, then builds and starts everything and prints the addresses. `make down` stops the containers and keeps the data. There is no reset target; the database volume is deleted only by hand. `make backup` writes the whole database, sign-in accounts included, as a gzipped SQL file in `deployment/local/backups/` named with the date and time, which git ignores; the stack must be running. `make logs` and `make ps` show what is running.
 
 ## Error log
 

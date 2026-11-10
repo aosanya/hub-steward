@@ -1,4 +1,4 @@
-.PHONY: test build dev up down deploy-local deploy-local-down
+.PHONY: test build dev up down deploy-local deploy-local-down deploy-local-backup
 
 test:
 	cd code/wakala-api && go vet ./... && go test ./...
@@ -23,3 +23,6 @@ deploy-local:
 
 deploy-local-down:
 	$(MAKE) -C deployment/local down
+
+deploy-local-backup:
+	$(MAKE) -C deployment/local backup

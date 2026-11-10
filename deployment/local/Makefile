@@ -1,6 +1,6 @@
 COMPOSE = docker compose --env-file .env
 
-.PHONY: env master up down logs ps urls
+.PHONY: env master up down backup logs ps urls
 
 env:
 	@sh scripts/make-env.sh
@@ -15,6 +15,12 @@ up: master env
 
 down:
 	$(COMPOSE) down
+
+backup:
+	@mkdir -p backups && chmod 700 backups
+	@file=backups/hubsteward-$$(date +%Y%m%d-%H%M%S).sql; \
+	$(COMPOSE) exec -T db pg_dump -U postgres postgres > $$file && gzip $$file || { rm -f $$file $$file.gz; exit 1; }; \
+	echo "backup written: $$file.gz"
 
 logs:
 	$(COMPOSE) logs -f --tail=100
