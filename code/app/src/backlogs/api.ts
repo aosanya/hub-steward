@@ -40,6 +40,9 @@ export type BacklogsClient = {
   issue: (id: string) => Promise<IssueDetail>;
 };
 
+export const issuesHeld = (backlogs: { issues: number; kind?: "smart" }[]) =>
+  backlogs.reduce((sum, one) => (one.kind === "smart" ? sum : sum + one.issues), 0);
+
 export type HubStep = { id: string; name: string; issues: number };
 
 export type HubBacklog = { id: string; name: string; steps: HubStep[]; issues: number; kind?: "smart" };

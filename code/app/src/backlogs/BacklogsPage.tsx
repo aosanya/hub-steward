@@ -10,7 +10,7 @@ import { addSmartBacklogPath, smartBacklogPath } from "../smartBacklog/paths";
 import { EmptyCard, LoadFailed } from "../ui/LoadState";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
-import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
+import { allIssuesId, issuesHeld, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { addBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
 import { mcpBacklogManageClient } from "../backlogManage/api";
 import { nothingSharedWords } from "./access";
@@ -27,7 +27,7 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
   const named = useLoad(() => agency.read(), `backlogs-agency:${openAgencyId()}`);
   const mayManage = useMayManage(manage);
   const rows = backlogs.state === "ready" ? backlogs.data : [];
-  const issues = rows.reduce((sum, one) => sum + one.issues, 0);
+  const issues = issuesHeld(rows);
   return (
     <Shell title="Backlogs" sub={named.state === "ready" && named.data.name ? named.data.name : undefined}>
       {backlogs.state === "error" ? <LoadFailed words="The backlogs could not be loaded." /> : null}

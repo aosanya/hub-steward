@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { mcpBacklogsClient, type BacklogsClient } from "../../backlogs/api";
+import { issuesHeld, mcpBacklogsClient, type BacklogsClient } from "../../backlogs/api";
 import { BacklogSummariesProvider, type BacklogSummary } from "./summaries";
 import { backlogViewKind } from "./views";
 
@@ -32,7 +32,7 @@ export function BacklogSummariesLoader({ kinds, client = mcpBacklogsClient, chil
       live = false;
     };
   }, [wanted]);
-  const totals = backlogs.length === 0 ? null : { issues: backlogs.reduce((sum, b) => sum + b.issues, 0) };
+  const totals = backlogs.length === 0 ? null : { issues: issuesHeld(backlogs) };
   return (
     <BacklogSummariesProvider backlogs={backlogs} totals={totals} ready={ready}>
       {children}

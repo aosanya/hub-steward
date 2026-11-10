@@ -97,6 +97,24 @@ describe("the Backlogs screen", () => {
     expect(await screen.findByText("Hub Steward SWE")).toBeInTheDocument();
   });
 
+  it("counts only the issues the backlogs with steps hold, not a smart backlog's matches", async () => {
+    vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string) => {
+      if (tool === taskTools.backlogs) {
+        return {
+          items: [
+            { id: "backlog", name: "Backlog", issues: 1682, steps: [{ id: "todo", name: "To do", issues: 1682 }] },
+            { id: "ready", name: "Ready to start", issues: 334, kind: "smart", steps: [] },
+          ],
+        };
+      }
+      return { items: [], modules: [] };
+    }) as never);
+    openAt("/a/hub-1/backlogs");
+    expect(await screen.findByText("Ready to start")).toBeInTheDocument();
+    expect(screen.getByText("1682 issues")).toBeInTheDocument();
+    expect(screen.queryByText("2016 issues")).toBeNull();
+  });
+
   it("opens the board of one backlog from its row", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs");
