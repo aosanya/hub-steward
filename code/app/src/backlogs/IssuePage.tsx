@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
@@ -23,7 +24,8 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
   const backTo = useBackTo(issuesPath());
   const backLabel = useBackLabel(words.backAllIssues);
   const id = useParams().issueId ?? "";
-  const issue = useLoad(() => client.issue(id), `issue:${openAgencyId()}:${id}`);
+  const [version, setVersion] = useState(0);
+  const issue = useLoad(() => client.issue(id), `issue:${openAgencyId()}:${id}:${version}`);
   const ready = issue.state === "ready" ? issue.data : null;
   const place = ready ? [ready.backlog, ready.step].filter((part) => part !== "").join(" · ") : "";
   const parts = ready ? titleParts(ready.title) : null;
@@ -42,7 +44,7 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
               </div>
             ) : null}
           </Card>
-          <SendToBacklogButton issueId={ready.id} />
+          <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} onSent={() => setVersion((now) => now + 1)} />
           {[
             { heading: "Waits on", issues: ready.waitsOn },
             { heading: "Waited on by", issues: ready.waitedOnBy },

@@ -1,4 +1,5 @@
 export { mcpSendClient, sendTools, targetsOf } from "./api";
+export { withoutCurrent } from "./leftOut";
 export { SelectableIssueRow } from "./SelectableIssueRow";
 export { SelectButton, selectingShell, SendBar } from "./SelectionControls";
 export { useSelection, type Selecting } from "./selection";

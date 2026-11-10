@@ -50,6 +50,7 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
   const choose = (tag: string) => setSearch(searchOf(toggled(chosen, tag), query), { replace: true });
   const typed = (text: string) => setSearch(searchOf(chosen, text), { replace: true });
   const filtering = chosen.length > 0 || query.trim() !== "";
+  const loadedIssues = issues.state === "ready" ? issues.data : [];
   const shown = issues.state === "ready" ? narrowed(issues.data, chosen, query) : [];
   const total = issues.state === "ready" ? issues.data.length : 0;
   const sub = issues.state === "ready" && total > 0 ? countWords(shown.length, total, filtering) : undefined;
@@ -104,6 +105,7 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
       {sending ? (
         <SendToBacklog
           ids={selecting.ids}
+          from={selecting.ids.map((id) => loadedIssues.find((one) => one.id === id)?.backlogId ?? "")}
           onClose={() => setSending(false)}
           onDone={(words, moved) => {
             setSending(false);

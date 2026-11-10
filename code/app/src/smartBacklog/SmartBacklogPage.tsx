@@ -74,6 +74,7 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
       {sending ? (
         <SendToBacklog
           ids={selecting.ids}
+          from={selecting.ids.map((id) => rows.find((one) => one.id === id)?.backlogId ?? "")}
           onClose={() => setSending(false)}
           onDone={(words, moved) => {
             setSending(false);
