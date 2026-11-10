@@ -117,6 +117,8 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
   const prompt = promptFrom(await triagerDescription(), systemPrompt);
   const messages: Wire[] = [{ role: "system", content: prompt }, ...turns.map(({ role, content }) => ({ role, content }))];
   const found: ResultDraft[] = [];
+  let wrote = false;
+  const lists = () => (wrote ? [] : found);
   for (let round = 0; round < maxRounds; round++) {
     const args: Record<string, unknown> = { accountID: accountId, messages: [...messages], max_tokens: replyTokens };
     if (tools.length > 0) args.tools = tools;
@@ -126,7 +128,7 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
     const content = text(message.content).trim();
     if (calls.length === 0) {
       if (content === "") throw new Error(noAnswerSentence);
-      return { text: content, lists: found };
+      return { text: content, lists: lists() };
     }
     messages.push({ role: "assistant", content, tool_calls: calls });
     for (const call of calls) {
@@ -140,6 +142,7 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
           const draft = draftOf(call.name, call.arguments, read);
           if (draft) found.push(draft);
           result = resultText(read);
+          if (writeNames.includes(call.name)) wrote = true;
         } catch (failure) {
           result = `The call failed: ${failure instanceof Error ? failure.message : "unknown"}`;
         }
@@ -148,7 +151,7 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
       messages.push({ role: "tool", tool_call_id: call.id, content: result });
     }
   }
-  return { text: tooManyRoundsSentence, lists: found };
+  return { text: tooManyRoundsSentence, lists: lists() };
 }
 
 export const usageTool = "ai_get_my_assistant_usage";
