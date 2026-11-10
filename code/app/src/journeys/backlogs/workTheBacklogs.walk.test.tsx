@@ -1,6 +1,7 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { accessTools } from "../../backlogAccess/api";
+import { backlogTools } from "../../backlogManage/api";
 import { taskTools } from "../../backlogs/api";
 import { beforeEachJourney, endInAgencies, farmers, inFarmers, issueRow, states, where } from "./backlogs.test-support";
 
@@ -18,6 +19,15 @@ const placed = [
 const world = {
   [taskTools.list]: () => ({ items: placed }),
 };
+
+const manager = { [backlogTools.myRoles]: () => ({ permissions: ["task.read", "task.edit", "backlog.manage"] }) };
+
+const supportBacklog = (held: number[]) => ({
+  id: "support",
+  name: "Support",
+  issues: held.reduce((sum, one) => sum + one, 0),
+  steps: ["New", "Answering", "Closed"].slice(0, held.length).map((name, at) => ({ id: name.toLowerCase(), name, issues: held[at] })),
+});
 
 describe("journey 03, work the backlogs", () => {
   it("1. the Backlogs screen lists All issues and a row for each backlog with its number of steps and issues", async () => {
@@ -66,15 +76,79 @@ describe("journey 03, work the backlogs", () => {
     expect(screen.getByText("Can edit")).toBeInTheDocument();
   });
 
-  it.todo("3. the manage screens add a backlog with its steps in order (take-up-11, SW34)");
+  it("3. the owner adds a backlog from the Backlogs screen with its steps in order", async () => {
+    const world = inFarmers("/backlogs", { ...manager, [backlogTools.create]: () => ({ id: "support" }) });
+    await userEvent.click(await screen.findByRole("button", { name: "Add a backlog" }));
+    await userEvent.click(screen.getByText("Backlog with steps"));
+    await userEvent.type(await screen.findByLabelText("Name"), "Support");
+    for (const step of ["New", "Answering", "Closed"]) {
+      await userEvent.type(screen.getByLabelText("New step"), step);
+      await userEvent.click(screen.getByRole("button", { name: "Add a step" }));
+    }
+    await userEvent.click(screen.getByRole("button", { name: "Create the backlog" }));
+    await waitFor(() => expect(world.named(backlogTools.create)[0]?.args).toMatchObject({ name: "Support", steps: ["New", "Answering", "Closed"] }));
+    expect(await screen.findByText("All issues")).toBeInTheDocument();
+  });
 
-  it.todo("3. the new backlog is seen only by the Product owner group until another group is given access (SW32, Q13 open)");
+  it("3. a step is added on a backlog's Edit screen", async () => {
+    const world = inFarmers("/backlogs/support/edit", { ...manager, [backlogTools.list]: () => ({ items: [supportBacklog([0, 0, 0])] }), [backlogTools.addStep]: () => supportBacklog([0, 0, 0]) });
+    await userEvent.type(await screen.findByLabelText("New step"), "Escalated");
+    await userEvent.click(screen.getByRole("button", { name: "Add a step" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(world.named(backlogTools.addStep)[0]?.args).toMatchObject({ backlogID: "support", name: "Escalated" }));
+  });
 
-  it.todo("4. 'move 2 to Doing' and 'move 4 to Software' leave the issue at one step of one backlog with its mark unchanged (Triager and the move tool, SW17)");
+  it("5. a step that holds issues cannot be removed and a backlog that holds issues cannot be deleted, and the screen says how many", async () => {
+    inFarmers("/backlogs/support/edit", { ...manager, [backlogTools.list]: () => ({ items: [supportBacklog([0, 3, 0])] }) });
+    expect(await screen.findByText("3 issues")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Remove Answering" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Delete the backlog" })).toBeDisabled();
+    expect(screen.getByText("It still holds 3 issues.")).toBeInTheDocument();
+  });
 
-  it.todo("5. removing a step or deleting a backlog that holds issues is refused naming the number, then works once empty (SW20 and the Edit screen)");
+  it("5. once the step is empty the removal works", async () => {
+    const world = inFarmers("/backlogs/support/edit", { ...manager, [backlogTools.list]: () => ({ items: [supportBacklog([0, 0, 0])] }), [backlogTools.removeStep]: () => supportBacklog([0, 0]) });
+    await userEvent.click(await screen.findByRole("button", { name: "Remove Answering" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(world.named(backlogTools.removeStep)[0]?.args).toMatchObject({ backlogID: "support", stepID: "answering" }));
+  });
 
-  it.todo("6. a group's level shows on the access screen and a Contributor's Backlogs screen lists no Documentation backlog (SW32, SW33, Q13 open)");
+  it("6. the access screen offers Can see, Can move and Can edit, and choosing a level gives it to the group", async () => {
+    const world = inFarmers("/backlogs/support/access", {
+      ...manager,
+      [backlogTools.list]: () => ({ items: [supportBacklog([0, 0, 0])] }),
+      [accessTools.groups]: () => ({ items: [{ id: "po", name: "Product owner", hierarchy_id: "h1" }, { id: "members", name: "Backlog members", hierarchy_id: "h1" }] }),
+      [accessTools.list]: () => ({ owner_group: "po", groups: [{ group_id: "members", level: "see", roles: ["backlog_member"] }] }),
+    });
+    const group = await screen.findByRole("group", { name: "Access for Backlog members" });
+    expect(within(group).getAllByRole("button").map((one) => one.textContent)).toEqual(["Can see", "Can move", "Can edit"]);
+    await userEvent.click(within(group).getByRole("button", { name: "Can edit" }));
+    await waitFor(() => expect(world.named(accessTools.give)[0]?.args).toMatchObject({ backlogID: "support", groupID: "members", level: "edit" }));
+  });
 
-  it.todo("7. a role without the permission is refused by the module and sees the read-only pages (SW26)");
+  it("7. a role without the manage permission sees the Backlogs and no Add a backlog button", async () => {
+    const reader = { [backlogTools.myRoles]: () => ({ permissions: ["task.read"] }) };
+    inFarmers("/backlogs", reader);
+    await screen.findByText("All issues");
+    expect(screen.queryByRole("button", { name: "Add a backlog" })).toBeNull();
+  });
+
+  it("7. the Edit screen says that the role cannot change backlogs", async () => {
+    inFarmers("/backlogs/support/edit", { [backlogTools.myRoles]: () => ({ permissions: ["task.read"] }) });
+    expect(await screen.findByText("Your role cannot change backlogs.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Save" })).toBeNull();
+  });
+
+  it("7. the Access screen says that the role cannot change who has access", async () => {
+    inFarmers("/backlogs/support/access", { [backlogTools.myRoles]: () => ({ permissions: ["task.read"] }) });
+    expect(await screen.findByText("Your role cannot change who has access to backlogs.")).toBeInTheDocument();
+  });
+
+  it.todo("3. the new backlog is seen only by the Product owner group until another group is given access; the hub decides it and journey 03's walk record has it on the hub, no app test");
+
+  it.todo("4. 'move 2 to Doing' and 'move 4 to Documentation' leave the issue at one step of one backlog with its mark unchanged; the assistant page offers no move tool yet (SW98, SW101)");
+
+  it.todo("6. a Backlog member sees the Documentation backlog after it is given and still not the Support backlog; the hub filters the list, the screen shows what it is sent");
+
+  it.todo("7. the task module refuses a Backlog worker's manage call and a Backlog member's move; the refusal is the hub's and is walked on the hub, no app test");
 });
