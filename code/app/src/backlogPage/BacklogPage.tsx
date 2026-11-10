@@ -60,7 +60,7 @@ export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklog
           {access.restricted ? (
             <Rows>
               {access.groups.map((group) => (
-                <ListRow key={group.name} title={group.name} end={<Chip tone={group.level === "Can move" ? "accent" : undefined}>{group.level}</Chip>} />
+                <ListRow key={group.name} title={group.name} end={<Chip tone={group.level === "Can see" ? undefined : "accent"}>{group.level}</Chip>} />
               ))}
             </Rows>
           ) : (
@@ -70,7 +70,7 @@ export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklog
         </>
       ) : null}
       {mayManage.state === "ready" && mayManage.data ? <Button to={backlogAccessPath(backlogId)}>Change who has access</Button> : null}
-      <p className="sub">Change steps and access by asking in Chat. A group that can move issues can also see them.</p>
+      <p className="sub">Change steps and access by asking in Chat. A group that can edit can also move and see.</p>
     </Shell>
   );
 }

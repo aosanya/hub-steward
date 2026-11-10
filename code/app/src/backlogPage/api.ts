@@ -5,7 +5,7 @@ import { callTool } from "../wakala/mcp";
 
 export type PageStep = { name: string; issues: number };
 
-export type AccessLevel = "Can move" | "Can see";
+export type AccessLevel = "Can edit" | "Can move" | "Can see";
 
 export type PageGroup = { name: string; level: AccessLevel };
 

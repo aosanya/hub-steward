@@ -61,10 +61,10 @@ const show = (client: BacklogAccessClient, manage = manageFake()) =>
 const cardOf = async (name: string) => (await screen.findByText(name)).closest("section") as HTMLElement;
 
 describe("access to a backlog", () => {
-  it("lists each group with its level and keeps the Product owner group fixed at Can move", async () => {
+  it("lists each group with its level and keeps the Product owner group fixed at Can edit", async () => {
     show(accessFake());
     expect(await screen.findByRole("heading", { name: "Access to Software" })).toBeInTheDocument();
-    expect(within(await cardOf("Product owner")).getByText("Can move")).toBeInTheDocument();
+    expect(within(await cardOf("Product owner")).getByText("Can edit")).toBeInTheDocument();
     expect(within(await cardOf("Product owner")).queryByRole("button")).toBeNull();
     expect(within(await cardOf("Contributors")).getByRole("button", { name: "Can see" })).toHaveAttribute("aria-pressed", "true");
     expect(within(await cardOf("Core team")).getByRole("button", { name: "Can move" })).toHaveAttribute("aria-pressed", "true");
@@ -78,10 +78,10 @@ describe("access to a backlog", () => {
     expect(within(await cardOf("Contributors")).getByRole("button", { name: "Can move" })).toHaveAttribute("aria-pressed", "true");
   });
 
-  it("takes access away with No access and offers the group again under Add a group", async () => {
+  it("takes access away with the cross and offers the group again under Add a group", async () => {
     const client = accessFake();
     show(client);
-    await userEvent.click(within(await cardOf("Contributors")).getByRole("button", { name: "No access" }));
+    await userEvent.click(within(await cardOf("Contributors")).getByRole("button", { name: "Take away access from Contributors" }));
     await userEvent.click(await screen.findByRole("button", { name: "Take away" }));
     await waitFor(() => expect(client.remove).toHaveBeenCalledWith("software", "contrib"));
     await waitFor(() => expect(screen.queryByText("Contributors")).toBeNull());
@@ -154,10 +154,10 @@ describe("reading the tool replies", () => {
 });
 
 describe("joining grants to group names", () => {
-  it("puts the owner group first, once, at Can move, and calls an unknown group a group that no longer exists", () => {
+  it("puts the owner group first, once, at Can edit, and calls an unknown group a group that no longer exists", () => {
     const rows = rowsOf({ ownerGroup: "po", grants: [{ groupId: "po", level: "see", roleTooSmall: false, noRole: false, roles: [] }, { groupId: "x9", level: "see", roleTooSmall: false, noRole: false, roles: [] }] }, groups);
     expect(rows).toEqual([
-      { groupId: "po", name: "Product owner", level: "move", fixed: true, roleName: "", roleTooSmall: false },
+      { groupId: "po", name: "Product owner", level: "edit", fixed: true, roleName: "", roleTooSmall: false },
       { groupId: "x9", name: "A group that no longer exists", level: "see", fixed: false, roleName: "", roleTooSmall: false },
     ]);
   });
@@ -204,7 +204,7 @@ describe("fixes from the review", () => {
   it("asks before taking a group away and keeps it when cancelled", async () => {
     const client = accessFake();
     show(client);
-    await userEvent.click(within(await cardOf("Contributors")).getByRole("button", { name: "No access" }));
+    await userEvent.click(within(await cardOf("Contributors")).getByRole("button", { name: "Take away access from Contributors" }));
     expect(await screen.findByText("Take away Contributors?")).toBeInTheDocument();
     expect(client.remove).not.toHaveBeenCalled();
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
@@ -236,13 +236,13 @@ describe("a hub with no Product owner group", () => {
     expect(screen.queryByRole("button", { name: "Add a group" })).toBeNull();
   });
 
-  it("names the chosen group as the Product owner group and then shows it fixed at Can move", async () => {
+  it("names the chosen group as the Product owner group and then shows it fixed at Can edit", async () => {
     const client = noOwner();
     show(client);
     await userEvent.click(await screen.findByText("Product owner"));
     await waitFor(() => expect(client.setOwnerGroup).toHaveBeenCalledWith("po"));
     await waitFor(() => expect(screen.queryByText("Nobody is restricted yet: choose the Product owner group first.")).toBeNull());
-    expect(within(await cardOf("Product owner")).getByText("Can move")).toBeInTheDocument();
+    expect(within(await cardOf("Product owner")).getByText("Can edit")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Add a group" })).toBeInTheDocument();
   });
 
@@ -255,7 +255,7 @@ describe("a hub with no Product owner group", () => {
 });
 
 describe("the role of each group", () => {
-  const grant = (groupId: string, level: "see" | "move", roles: string[], roleTooSmall = false, noRole = false) => ({ groupId, level, roles, roleTooSmall, noRole });
+  const grant = (groupId: string, level: "see" | "move" | "edit", roles: string[], roleTooSmall = false, noRole = false) => ({ groupId, level, roles, roleTooSmall, noRole });
 
   const readOf = (...grants: ReturnType<typeof grant>[]): AccessReading => ({ ownerGroup: "po", grants });
 
@@ -315,5 +315,36 @@ describe("the role of each group", () => {
         { groupId: "g2", level: "see", roleTooSmall: false, noRole: true, roles: [] },
       ],
     });
+  });
+});
+
+describe("the Can edit level", () => {
+  it("offers Can see, Can move and Can edit and no No access segment", async () => {
+    show(accessFake());
+    const group = await screen.findByRole("group", { name: "Access for Contributors" });
+    expect(within(group).getAllByRole("button").map((one) => one.textContent)).toEqual(["Can see", "Can move", "Can edit"]);
+  });
+
+  it("saves Can edit as soon as it is chosen", async () => {
+    const client = accessFake();
+    show(client);
+    await userEvent.click(within(await cardOf("Core team")).getByRole("button", { name: "Can edit" }));
+    await waitFor(() => expect(client.set).toHaveBeenCalledWith("software", "core", "edit"));
+    expect(within(await cardOf("Core team")).getByRole("button", { name: "Can edit" })).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("shows a group the hub holds at Can edit and names the Backlog manager role", async () => {
+    show(accessFake({ read: vi.fn().mockResolvedValue({ ownerGroup: "po", grants: [{ groupId: "core", level: "edit", roleTooSmall: false, noRole: false, roles: ["backlog_manager"] }] }) }));
+    expect(within(await cardOf("Core team")).getByRole("button", { name: "Can edit" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(await cardOf("Core team")).getByText("Uses the Backlogs as: Backlog manager")).toBeInTheDocument();
+  });
+
+  it("reads the edit level from the access list", () => {
+    expect(readingOf({ owner_group: "po", groups: [{ group_id: "g1", level: "edit" }] }).grants[0].level).toBe("edit");
+  });
+
+  it("gives the fixed Product owner group no cross", async () => {
+    show(accessFake());
+    expect(within(await cardOf("Product owner")).queryByRole("button", { name: /Take away access/ })).toBeNull();
   });
 });

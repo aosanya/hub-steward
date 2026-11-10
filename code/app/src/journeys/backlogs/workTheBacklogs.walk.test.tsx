@@ -63,7 +63,7 @@ describe("journey 03, work the backlogs", () => {
     });
     expect(await screen.findByText("Who has access")).toBeInTheDocument();
     expect(screen.getByText("Product owner")).toBeInTheDocument();
-    expect(screen.getByText("Can move")).toBeInTheDocument();
+    expect(screen.getByText("Can edit")).toBeInTheDocument();
   });
 
   it.todo("3. the manage screens add a backlog with its steps in order (take-up-11, SW34)");

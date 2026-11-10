@@ -69,7 +69,7 @@ describe("the page read from the hub", () => {
     expect((await mcpBacklogPageClient.page("backlog"))?.access).toEqual({
       restricted: true,
       groups: [
-        { name: "Maintainers", level: "Can move" },
+        { name: "Maintainers", level: "Can edit" },
         { name: "Support", level: "Can see" },
       ],
     });
@@ -135,7 +135,7 @@ const software = clientOf(async () => ({
     { name: "Done", issues: 0 },
   ],
   noStep: 0,
-  access: { restricted: true, groups: [{ name: "Product owner", level: "Can move" }] },
+  access: { restricted: true, groups: [{ name: "Product owner", level: "Can edit" }] },
 }));
 
 describe("the route", () => {
@@ -180,15 +180,15 @@ describe("the backlog page", () => {
     expect(screen.queryByText("Who has access")).toBeNull();
   });
 
-  it("shows the Product owner group at Can move and says no other group has access", async () => {
+  it("shows the Product owner group at Can edit and says no other group has access", async () => {
     await show(software);
     const row = (await screen.findByText("Product owner")).closest(".row") as HTMLElement;
-    expect(within(row).getByText("Can move")).toBeVisible();
+    expect(within(row).getByText("Can edit")).toBeVisible();
     expect(screen.getByText("No other groups have access.")).toBeVisible();
   });
 
   it("shows another group with its level", async () => {
-    await show(clientOf(async () => ({ name: "Software", steps: [], noStep: 0, access: { restricted: true, groups: [{ name: "Product owner", level: "Can move" }, { name: "Contributors", level: "Can see" }] } })));
+    await show(clientOf(async () => ({ name: "Software", steps: [], noStep: 0, access: { restricted: true, groups: [{ name: "Product owner", level: "Can edit" }, { name: "Contributors", level: "Can see" }] } })));
     const row = (await screen.findByText("Contributors")).closest(".row") as HTMLElement;
     expect(within(row).getByText("Can see")).toBeVisible();
     expect(screen.queryByText("No other groups have access.")).toBeNull();

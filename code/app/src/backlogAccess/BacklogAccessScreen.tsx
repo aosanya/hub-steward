@@ -1,3 +1,4 @@
+import "../backlogManage/backlogManage.css";
 import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
@@ -15,7 +16,7 @@ import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
 import { mcpBacklogAccessClient } from "./api";
 import { groupsOfOwnerHierarchy, groupsWithoutAccess, levelItems, levelWords, noRoleWords, rowsOf, withGroup, withLevel, withoutGroup } from "./levels";
-import { refusalWords, type AccessRow, type AgencyGroup, type BacklogAccessClient, type ChoiceLevel } from "./types";
+import { refusalWords, type AccessLevel, type AccessRow, type AgencyGroup, type BacklogAccessClient } from "./types";
 
 type FormProps = { client: BacklogAccessClient; backlogId: string; first: AccessRow[]; firstOwner: string; groups: AgencyGroup[] };
 
@@ -66,10 +67,8 @@ function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
     setBusy(false);
   };
 
-  const choose = (row: AccessRow, level: ChoiceLevel) =>
-    level === "none"
-      ? setLeaving(row)
-      : attempt(() => client.set(backlogId, row.groupId, level), () => setRows((now) => withLevel(now, row.groupId, level)));
+  const choose = (row: AccessRow, level: AccessLevel) =>
+    attempt(() => client.set(backlogId, row.groupId, level), () => setRows((now) => withLevel(now, row.groupId, level)));
 
   const takeAway = (row: AccessRow) => {
     setLeaving(null);
@@ -85,7 +84,7 @@ function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
   const nameOwner = (group: AgencyGroup) =>
     attempt(() => client.setOwnerGroup(group.id), () => {
       setOwner(group.id);
-      setRows((now) => [{ groupId: group.id, name: group.name, level: "move", fixed: true, roleName: "", roleTooSmall: false }, ...now.filter((row) => row.groupId !== group.id)]);
+      setRows((now) => [{ groupId: group.id, name: group.name, level: "edit", fixed: true, roleName: "", roleTooSmall: false }, ...now.filter((row) => row.groupId !== group.id)]);
     });
 
   return (
@@ -102,9 +101,16 @@ function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
       ) : null}
       {rows.map((row) => (
         <Card key={row.groupId}>
-          <span className="ttl">{row.name}</span>
+          <div className="card-head">
+            <span className="ttl">{row.name}</span>
+            {row.fixed ? null : (
+              <button type="button" className="icb" aria-label={`Take away access from ${row.name}`} disabled={busy} onClick={() => setLeaving(row)}>
+                ×
+              </button>
+            )}
+          </div>
           {row.fixed ? (
-            <Chip tone="accent">{levelWords("move")}</Chip>
+            <Chip tone="accent">{levelWords("edit")}</Chip>
           ) : (
             <Segmented items={levelItems} current={row.level} label={`Access for ${row.name}`} disabled={busy} onChange={(level) => choose(row, level)} />
           )}
@@ -139,7 +145,7 @@ function Form({ client, backlogId, first, firstOwner, groups }: FormProps) {
           Add a group
         </Button>
       )}
-      <p className="sub">Access is given to groups, to the whole backlog. The Product owner group always has Can move. A group that can move issues can also see them.</p>
+      <p className="sub">Access is given to groups, to the whole backlog. The Product owner group always has Can edit. A group that can edit can also move and see.</p>
     </>
   );
 }

@@ -1,6 +1,4 @@
-export type AccessLevel = "see" | "move";
-
-export type ChoiceLevel = AccessLevel | "none";
+export type AccessLevel = "see" | "move" | "edit";
 
 export type AccessRow = { groupId: string; name: string; level: AccessLevel; fixed: boolean; roleName: string; roleTooSmall: boolean };
 

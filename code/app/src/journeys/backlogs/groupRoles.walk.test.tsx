@@ -99,7 +99,7 @@ describe("journey 07, group roles", () => {
 
   it("7. taking the group's access away removes its card and offers the group again under Add a group", async () => {
     const world = inFarmers("/backlogs/software/access", hubWithGrants([{ group_id: "support", level: "see", roles: ["backlog_member"] }]));
-    await userEvent.click(within(await cardOf("Support")).getByRole("button", { name: "No access" }));
+    await userEvent.click(within(await cardOf("Support")).getByRole("button", { name: "Take away access from Support" }));
     await userEvent.click(await screen.findByRole("button", { name: "Take away" }));
     await waitFor(() => expect(world.named(accessTools.take)[0]?.args).toMatchObject({ backlogID: "software", groupID: "support" }));
     await waitFor(() => expect(screen.queryByText("Support")).toBeNull());
