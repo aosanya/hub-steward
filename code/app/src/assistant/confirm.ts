@@ -85,11 +85,31 @@ const stepNameOf = (steps: string[] | undefined, asked: string): string | undefi
 
 export const writeProblem = ({ tool, arguments: args }: Write): string => (tool === createTool || tool === rulesTool ? rulesProblem(args.rules) : "");
 
-export const nameWrite =async (write: Write, held: Held, client: Pick<BacklogsClient, "backlogs" | "issue">): Promise<Names> => {
+export const nameWrite = async (write: Write, held: Held, client: Pick<BacklogsClient, "backlogs" | "issue">): Promise<Names> => {
   const issueId = write.tool === moveTool ? text(write.arguments.taskID) : "";
   const backlogId = backlogIdOf(write);
   const [issue, backlogs] = await Promise.all([issueId === "" ? undefined : issueTitle(issueId, held, client), backlogId === "" ? undefined : attempt(() => client.backlogs())]);
   const found = backlogs?.find((one) => one.id === backlogId);
   const step = write.tool === moveTool ? stepNameOf(found?.steps, text(write.arguments.step)) : undefined;
   return { ...(issue ? { issue } : {}), ...(found?.name ? { backlog: found.name } : {}), ...(step ? { step } : {}) };
+};
+
+const keyShaped = /^[A-Za-z][A-Za-z0-9]*-\d+$/;
+
+export type FoundIssue = { id: string; title: string };
+
+export type FindIssues = (words: string) => Promise<FoundIssue[]>;
+
+const swapped = (write: Write, id: string): Write => ({ ...write, arguments: { ...write.arguments, taskID: id } });
+
+export const resolveMove = async (write: Write, seen: ResultDraft[], find: FindIssues): Promise<{ write: Write; problem: string }> => {
+  const asked = write.tool === moveTool ? text(write.arguments.taskID) : "";
+  if (!keyShaped.test(asked)) return { write, problem: "" };
+  const known = seen.flatMap((list) => list.issues);
+  const held = known.find((issue) => issue.key?.toLowerCase() === asked.toLowerCase());
+  if (held) return { write: swapped(write, held.id), problem: "" };
+  const found = await attempt(() => find(asked));
+  if (found === undefined) return { write, problem: "" };
+  const hit = found.find((issue) => issue.title.toLowerCase().split(/\s+/).includes(asked.toLowerCase()));
+  return hit ? { write: swapped(write, hit.id), problem: "" } : { write, problem: `I could not find ${asked}.` };
 };

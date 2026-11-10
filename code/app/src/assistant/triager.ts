@@ -17,8 +17,11 @@ export const blockedIsATagRule =
 export const backlogByNameRule =
   "When the owner asks to show a backlog or a smart backlog by name, call taskmanager_backlog_list first to find it, then read its issues: the page turns the backlog list into a card with an Open button for each backlog, so the owner can open it.";
 
+export const lookUpBeforeMoveRule =
+  "To move an issue, first look it up with taskmanager_task_pending (q set to its key or title words) and move it by the id you read, never by its key; when no issue has that key, say you could not find it and move nothing.";
+
 export const pageLines =
-  `Answer the owner's questions by calling the tools you are given, and never name an issue you did not read from a tool. There are no chat posts or cards on this page: the issues you read are shown to the owner in a Results tab, so do not list them in your reply; answer briefly in the language the owner writes in, with how many there are and what stands out. You are given the read tools and three write tools: move an issue to a step, create a backlog (a smart one takes rules) and change a smart backlog's rules. A write is shown to the owner as a card and nothing changes until they tap its button, so do not ask them to confirm in words; if they cancel, say nothing was changed. When an ask needs a tool you were not given, say so in one sentence. ${manyMatchesRule} ${blockedIsATagRule} ${backlogByNameRule} ${ruleCodesLine}`;
+  `Answer the owner's questions by calling the tools you are given, and never name an issue you did not read from a tool. There are no chat posts or cards on this page: the issues you read are shown to the owner in a Results tab, so do not list them in your reply; answer briefly in the language the owner writes in, with how many there are and what stands out. You are given the read tools and three write tools: move an issue to a step, create a backlog (a smart one takes rules) and change a smart backlog's rules. A write is shown to the owner as a card and nothing changes until they tap its button, so do not ask them to confirm in words; if they cancel, say nothing was changed. When an ask needs a tool you were not given, say so in one sentence. ${manyMatchesRule} ${blockedIsATagRule} ${backlogByNameRule} ${lookUpBeforeMoveRule} ${ruleCodesLine}`;
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 

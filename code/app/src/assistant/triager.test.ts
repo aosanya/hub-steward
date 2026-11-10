@@ -82,4 +82,11 @@ describe("the Triager's description reaches the model", () => {
     expect(await triagerDescription()).toBe("");
     expect(promptFrom("", "fallback")).toBe("fallback");
   });
+
+  it("tells the model to look an issue up and move it by its id, in the page lines and the fallback prompt", () => {
+    for (const lines of [pageLines, systemPrompt]) {
+      expect(lines).toContain("first look it up with taskmanager_task_pending");
+      expect(lines).toContain("move it by the id you read, never by its key");
+    }
+  });
 });
