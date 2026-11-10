@@ -8,9 +8,9 @@ import { useTargets } from "./useTargets";
 import { sendWords } from "./words";
 import "./sendToBacklog.css";
 
-type Props = { issueId: string; from?: string[]; onSent?: () => void; client?: SendClient };
+type Props = { issueId: string; from?: string[]; onSent?: () => void; onOutcome?: (words: string) => void; client?: SendClient };
 
-export function SendToBacklogButton({ issueId, from = [], onSent, client = mcpSendClient }: Props) {
+export function SendToBacklogButton({ issueId, from = [], onSent, onOutcome, client = mcpSendClient }: Props) {
   const targets = useTargets(client);
   const [open, setOpen] = useState(false);
   const [outcome, setOutcome] = useState("");
@@ -18,7 +18,7 @@ export function SendToBacklogButton({ issueId, from = [], onSent, client = mcpSe
   return (
     <>
       <Button onClick={() => setOpen(true)}>{sendWords}</Button>
-      {outcome ? (
+      {outcome && !onOutcome ? (
         <p className="sub" role="status">
           {outcome}
         </p>
@@ -32,6 +32,7 @@ export function SendToBacklogButton({ issueId, from = [], onSent, client = mcpSe
           onDone={(words, moved) => {
             setOpen(false);
             setOutcome(words);
+            onOutcome?.(words);
             if (moved > 0) onSent?.();
           }}
         />

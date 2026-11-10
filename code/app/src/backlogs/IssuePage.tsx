@@ -12,12 +12,13 @@ import { Shell } from "../ui/Shell";
 import "./backlogs.css";
 import { mcpBacklogsClient, type BacklogsClient } from "./api";
 import { SendToBacklogButton } from "../sendToBacklog";
+import type { SendClient } from "../sendToBacklog/types";
 import { IssueRow } from "./IssueRow";
 import { titleParts } from "./IssueTitle";
 import { issuePath, issuesPath } from "./paths";
 import { splitSource } from "./source";
 
-export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {
+export function IssuePage({ client = mcpBacklogsClient, sendClient }: { client?: BacklogsClient; sendClient?: SendClient }) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -25,6 +26,7 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
   const backLabel = useBackLabel(words.backAllIssues);
   const id = useParams().issueId ?? "";
   const [version, setVersion] = useState(0);
+  const [sent, setSent] = useState("");
   const issue = useLoad(() => client.issue(id), `issue:${openAgencyId()}:${id}:${version}`);
   const ready = issue.state === "ready" ? issue.data : null;
   const place = ready ? [ready.backlog, ready.step].filter((part) => part !== "").join(" · ") : "";
@@ -34,6 +36,11 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
     <Shell title={parts?.code || "Issue"} onBack={() => navigate(backTo)} backLabel={backLabel}>
       {issue.state === "loading" ? <LoadingLine /> : null}
       {issue.state === "error" ? <LoadFailed words="This issue could not be loaded." /> : null}
+      {sent ? (
+        <p className="sub" role="status">
+          {sent}
+        </p>
+      ) : null}
       {ready && parts ? (
         <>
           <Card flush>
@@ -44,7 +51,7 @@ export function IssuePage({ client = mcpBacklogsClient }: { client?: BacklogsCli
               </div>
             ) : null}
           </Card>
-          <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} onSent={() => setVersion((now) => now + 1)} />
+          <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />
           {[
             { heading: "Waits on", issues: ready.waitsOn },
             { heading: "Waited on by", issues: ready.waitedOnBy },

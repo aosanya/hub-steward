@@ -338,10 +338,11 @@ describe("the list of issues", () => {
     expect(screen.getByRole("heading", { name: "Backlog" })).toBeInTheDocument();
   });
 
-  it("shows the empty card when nothing is loaded", async () => {
+  it("shows the empty card to a person who cannot manage backlogs when nothing is loaded", async () => {
     answering([]);
     openAt("/a/hub-1/backlogs/all");
-    expect(await screen.findByText("No issues yet. Run the loader on your laptop to load the boards.")).toBeInTheDocument();
+    expect(await screen.findByText("Nothing here yet.")).toBeInTheDocument();
+    expect(screen.queryByText(/Run the loader/)).not.toBeInTheDocument();
   });
 
   it("has a List | Board switch on a backlog's list that keeps the chosen tags", async () => {

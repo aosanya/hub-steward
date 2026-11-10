@@ -19,7 +19,7 @@ import { sameRules } from "../smartBacklog/rulesKey";
 import { toRuleSet } from "../smartBacklog/rulesDraft";
 import type { SmartBacklog } from "../smartBacklog/types";
 import { Button } from "../ui/Button";
-import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "./api";
+import { allIssuesId, issuesHeld, mcpBacklogsClient, type BacklogsClient } from "./api";
 import { FilterBar } from "./FilterBar";
 import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../sendToBacklog";
 import { IssueRow } from "./IssueRow";
@@ -81,8 +81,8 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
       ) : null}
       {issues.state === "loading" ? <LoadingLine /> : null}
       {issues.state === "error" ? <LoadFailed words="The issues could not be loaded." /> : null}
-      {issues.state === "ready" && total === 0 ? (
-        <EmptyCard words="No issues yet. Run the loader on your laptop to load the boards." />
+      {issues.state === "ready" && total === 0 && mayManage.state === "ready" && backlogs.state === "ready" ? (
+        <EmptyCard words={mayManage.data && issuesHeld(backlogs.data) === 0 ? "No issues yet. Run the loader on your laptop to load the boards." : "Nothing here yet."} />
       ) : null}
       {shown.length > 0 ? (
         <Rows>
