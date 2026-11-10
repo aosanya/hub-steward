@@ -43,13 +43,13 @@ describe("the names on a confirmation card", () => {
   it("takes the title from a list the page holds without reading the issue", async () => {
     const client = clientOf();
     const held = [{ id: "r1", title: "x", total: 1, issues: [issueNamed("Held title")] }];
-    expect(await nameWrite(move, held, client)).toEqual({ issue: "Held title", backlog: "Software" });
+    expect(await nameWrite(move, held, client)).toEqual({ issue: "Held title", backlog: "Software", step: "Doing" });
     expect(client.issue).not.toHaveBeenCalled();
   });
 
   it("reads the issue once when no list holds it", async () => {
     const client = clientOf();
-    expect(await nameWrite(move, [], client)).toEqual({ issue: "Fix the drift", backlog: "Software" });
+    expect(await nameWrite(move, [], client)).toEqual({ issue: "Fix the drift", backlog: "Software", step: "Doing" });
     expect(client.issue).toHaveBeenCalledTimes(1);
   });
 

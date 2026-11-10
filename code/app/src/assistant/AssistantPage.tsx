@@ -185,9 +185,9 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
       timer = setTimeout(giveUp, timeoutMs);
     };
     startTimer();
-    const confirmWrite: typeof confirmation.confirm = async (write) => {
+    const confirmWrite: typeof confirmation.confirm = async (write, seen) => {
       clearTimeout(timer);
-      const confirmed = await confirmation.confirm(write);
+      const confirmed = await confirmation.confirm(write, seen);
       startTimer();
       return confirmed;
     };
@@ -241,7 +241,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
                   <Bubbles items={items} phase={phase} current={current} step={step} reason={reason} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
                 </BacklogSummariesLoader>
               )}
-              {confirmation.pending ? <ConfirmCard write={confirmation.pending.write} settle={confirmation.pending.settle} held={found.results} client={backlogs} /> : null}
+              {confirmation.pending ? <ConfirmCard write={confirmation.pending.write} settle={confirmation.pending.settle} held={[...found.results, ...confirmation.pending.seen]} client={backlogs} /> : null}
               <div ref={end} />
             </Card>
           )}

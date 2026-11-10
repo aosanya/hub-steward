@@ -106,10 +106,10 @@ const resultText = (result: unknown) => {
   return raw.length > maxResultLength ? `${raw.slice(0, maxResultLength)} (cut)` : raw;
 };
 
-const refusalOf = async (call: Call, confirm?: Confirm): Promise<string | null> => {
+const refusalOf = async (call: Call, seen: ResultDraft[], confirm?: Confirm): Promise<string | null> => {
   if (!writeNames.includes(call.name)) return null;
   if (!confirm) return unconfirmedResult;
-  return (await confirm({ tool: call.name, arguments: call.arguments })) ? null : cancelledResult;
+  return (await confirm({ tool: call.name, arguments: call.arguments }, seen)) ? null : cancelledResult;
 };
 
 export async function askAssistant(accountId: string, turns: Turn[], onStep: (words: string) => void = () => undefined, confirm?: Confirm): Promise<Answer> {
@@ -134,7 +134,7 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
     for (const call of calls) {
       const allowed = offeredNames.includes(call.name);
       let result = "That tool is not available.";
-      const refusal = allowed ? await refusalOf(call, confirm) : null;
+      const refusal = allowed ? await refusalOf(call, found, confirm) : null;
       if (allowed && refusal === null) {
         onStep(stepWords[call.name] ?? "Looking it up");
         try {

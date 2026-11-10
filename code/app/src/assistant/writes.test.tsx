@@ -55,7 +55,7 @@ describe("the assistant's write tools", () => {
     modelWanting(move);
     const confirm = vi.fn().mockResolvedValue(true);
     await askAssistant("acc1", [{ role: "user", content: "move 4 to Doing" }], () => undefined, confirm);
-    expect(confirm).toHaveBeenCalledWith({ tool: moveTool, arguments: move.arguments });
+    expect(confirm).toHaveBeenCalledWith({ tool: moveTool, arguments: move.arguments }, []);
     expect(writesSent()).toEqual([["", moveTool, move.arguments]]);
   });
 

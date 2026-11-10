@@ -2,17 +2,19 @@ import { useCallback, useEffect, useState } from "react";
 import type { BacklogsClient } from "../backlogs/api";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
+import type { ResultDraft } from "./results";
 import { cancelWords, confirmWords, nameWrite, writeLines, type Confirm, type Held, type Names, type Write } from "./confirm";
 
-type Pending = { write: Write; settle: (confirmed: boolean) => void };
+type Pending = { write: Write; seen: ResultDraft[]; settle: (confirmed: boolean) => void };
 
 export function useConfirmation(): { pending: Pending | null; confirm: Confirm } {
   const [pending, setPending] = useState<Pending | null>(null);
   const confirm = useCallback<Confirm>(
-    (write) =>
+    (write, seen = []) =>
       new Promise<boolean>((resolve) =>
         setPending({
           write,
+          seen,
           settle: (confirmed) => {
             setPending(null);
             resolve(confirmed);

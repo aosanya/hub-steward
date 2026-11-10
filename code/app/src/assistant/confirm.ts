@@ -1,4 +1,5 @@
 import type { BacklogsClient } from "../backlogs/api";
+import type { ResultDraft } from "./results";
 import { fieldSpec, operatorLabel } from "../smartBacklog/fields";
 import { FIELD_IDS, type FieldId } from "../smartBacklog/types";
 
@@ -12,11 +13,11 @@ export const writeNames = [moveTool, createTool, rulesTool];
 
 export type Write = { tool: string; arguments: Record<string, unknown> };
 
-export type Names = { issue?: string; backlog?: string };
+export type Names = { issue?: string; backlog?: string; step?: string };
 
-export type Held = { issues: { id: string; title: string }[] }[];
+export type Held = { issues: { id: string; key?: string; title: string }[] }[];
 
-export type Confirm = (write: Write) => Promise<boolean>;
+export type Confirm = (write: Write, seen?: ResultDraft[]) => Promise<boolean>;
 
 export const cancelWords = "Cancel";
 
@@ -52,7 +53,7 @@ const ruleLines = (raw: unknown): string[] => {
 };
 
 export const writeLines = ({ tool, arguments: args }: Write, names: Names = {}): string[] => {
-  if (tool === moveTool) return [`Move ${names.issue ? `"${names.issue}"` : `issue ${text(args.taskID)}`} to step ${text(args.step)} of ${names.backlog ?? `backlog ${text(args.backlog)}`}`];
+  if (tool === moveTool) return [`Move ${names.issue ? `"${names.issue}"` : `issue ${text(args.taskID)}`} to step ${names.step ?? text(args.step)} of ${names.backlog ?? `backlog ${text(args.backlog)}`}`];
   if (tool === createTool) {
     const steps = Array.isArray(args.steps) ? args.steps.map((step) => text(isObject(step) ? step.name : step)).filter(Boolean) : [];
     return [`Create the backlog "${text(args.name)}"`, ...(steps.length > 0 ? [`Steps: ${steps.join(", ")}`] : []), ...ruleLines(args.rules)];
@@ -72,15 +73,20 @@ const attempt = async <T>(read: () => Promise<T>): Promise<T | undefined> => {
 const backlogIdOf = ({ tool, arguments: args }: Write) => text(tool === moveTool ? args.backlog : tool === rulesTool ? args.backlogID : "");
 
 const issueTitle = async (id: string, held: Held, client: Pick<BacklogsClient, "issue">): Promise<string | undefined> => {
-  const known = held.flatMap((list) => list.issues).find((issue) => issue.id === id);
+  const known = held.flatMap((list) => list.issues).find((issue) => issue.id === id || issue.key === id);
   if (known) return known.title;
   return (await attempt(() => client.issue(id)))?.title;
 };
+
+const spelled = (words: string) => words.trim().toLowerCase().replace(/[-_\s]+/g, " ");
+
+const stepNameOf = (steps: string[] | undefined, asked: string): string | undefined => (asked === "" ? undefined : steps?.find((name) => spelled(name) === spelled(asked)));
 
 export const nameWrite = async (write: Write, held: Held, client: Pick<BacklogsClient, "backlogs" | "issue">): Promise<Names> => {
   const issueId = write.tool === moveTool ? text(write.arguments.taskID) : "";
   const backlogId = backlogIdOf(write);
   const [issue, backlogs] = await Promise.all([issueId === "" ? undefined : issueTitle(issueId, held, client), backlogId === "" ? undefined : attempt(() => client.backlogs())]);
-  const backlog = backlogs?.find((one) => one.id === backlogId)?.name;
-  return { ...(issue ? { issue } : {}), ...(backlog ? { backlog } : {}) };
+  const found = backlogs?.find((one) => one.id === backlogId);
+  const step = write.tool === moveTool ? stepNameOf(found?.steps, text(write.arguments.step)) : undefined;
+  return { ...(issue ? { issue } : {}), ...(found?.name ? { backlog: found.name } : {}), ...(step ? { step } : {}) };
 };
