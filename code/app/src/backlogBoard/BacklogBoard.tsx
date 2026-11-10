@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useLanguage } from "../entry/language";
 import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from "../backlogs/api";
 import { FilterBar } from "../backlogs/FilterBar";
 import { IssueRow } from "../backlogs/IssueRow";
@@ -30,7 +29,6 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
   const { backlogId = "" } = useParams();
   const navigate = useNavigate();
   const here = useLocation();
-  const { words } = useLanguage();
   const [search, setSearch] = useSearchParams();
   const chosen = search.getAll(tagParam);
   const query = search.get(queryParam) ?? "";
@@ -73,7 +71,7 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
   );
   const shell = selecting.on
     ? selectingShell(selecting, shown.map((issue) => issue.id))
-    : { title, onBack: () => navigate(backlogsHomePath()), backLabel: words.backBacklogs, action: backlog ? action : undefined };
+    : { title, onBack: () => navigate(backlogsHomePath()), action: backlog ? action : undefined };
 
   return (
     <Shell {...shell} tabless={selecting.on}>

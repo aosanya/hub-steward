@@ -161,6 +161,16 @@ describe("BacklogBoard", () => {
     expect(within(column("To do")).queryByText("Lost one")).not.toBeInTheDocument();
   });
 
+  it("keeps the top bar to a bare back arrow and its actions, and puts the title under it so nothing overlaps on a phone", async () => {
+    open(client());
+    await screen.findByText("Record the clips");
+    const bar = screen.getByRole("banner");
+    expect(within(bar).getByRole("button", { name: "Back" })).toHaveTextContent(/^‹$/);
+    expect(within(bar).queryByRole("heading", { level: 1 })).toBeNull();
+    expect(screen.getByRole("heading", { level: 1, name: "Software" })).toBeInTheDocument();
+    expect(within(bar).getByRole("link", { name: "Backlog" })).toBeInTheDocument();
+  });
+
   it("links to the backlog page from the top bar", async () => {
     open(client());
     await screen.findByText("Record the clips");
