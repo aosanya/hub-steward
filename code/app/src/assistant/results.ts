@@ -3,7 +3,7 @@ import { issuesPath } from "../backlogs/paths";
 import { smartBacklogPath } from "../smartBacklog/paths";
 import { splitOptions } from "./optionLines";
 
-export type ListFilter = { tags: string[]; query: string; backlog: string; other: boolean };
+export type ListFilter = { tags: string[]; query: string; backlog: string; other: boolean; openOnly?: boolean };
 
 export type ResultDraft = { title: string; total: number; issues: Issue[]; view?: string; filter?: ListFilter };
 
@@ -32,6 +32,10 @@ export const openAllWholeWords = "Open all issues";
 export const openAllWholeNote = "Opens every issue, not only these.";
 
 export const openAllWords = (total: number) => `Open all ${total} issues`;
+
+export const openAllOpenOnlyWords = "Open these in the List";
+
+export const openAllOpenOnlyNote = "The List also shows closed issues.";
 
 export const pageSize = 50;
 
@@ -65,7 +69,8 @@ const filterOf = (tool: string, args: Record<string, unknown>): ListFilter => ({
   tags: wordsOfKeys(args, ["tag", "repo"]),
   query: wordsOfKeys(args, ["q"]).join(" "),
   backlog: wordsOfKeys(args, ["backlog"])[0] ?? "",
-  other: tool === pendingTool || Object.entries(args).some(([key, value]) => ![...filterKeys, ...pagingKeys].includes(key) && isSet(value)) || isSet(args.step) || isSet(args.priority),
+  other: Object.entries(args).some(([key, value]) => ![...filterKeys, ...pagingKeys].includes(key) && isSet(value)) || isSet(args.step) || isSet(args.priority),
+  openOnly: tool === pendingTool,
 });
 
 const isFiltered = (args: Record<string, unknown>) => Object.entries(args).some(([key, value]) => !pagingKeys.includes(key) && value !== undefined && value !== null && value !== "" && !(Array.isArray(value) && value.length === 0));
@@ -87,32 +92,40 @@ export const draftOf = (tool: string, args: Record<string, unknown>, reply: unkn
   return null;
 };
 
-export type OpenAll = { label: string; to: string; whole: boolean };
+export type OpenAll = { label: string; to: string; whole: boolean; note: string };
 
 const sameWords = (left: string, right: string) => left.trim().toLowerCase() === right.trim().toLowerCase();
 
 export const openAllTarget = (list: ResultDraft, backlogs: Backlog[]): OpenAll => {
-  const whole: OpenAll = { label: openAllWholeWords, to: issuesPath(), whole: true };
+  const whole: OpenAll = { label: openAllWholeWords, to: issuesPath(), whole: true, note: openAllWholeNote };
   const filter = list.filter;
-  if (!filter) return whole;
-  if (filter.other) return whole;
-  const label = openAllWords(list.total);
-  if (filter.backlog === "") return { label, to: issuesPath("all", filter.tags, filter.query), whole: false };
+  if (!filter || filter.other) return whole;
+  const narrows = filter.tags.length > 0 || filter.query !== "" || filter.backlog !== "";
+  if (filter.openOnly && !narrows) return whole;
+  const label = filter.openOnly ? openAllOpenOnlyWords : openAllWords(list.total);
+  const note = filter.openOnly ? openAllOpenOnlyNote : "";
+  const found = (to: string): OpenAll => ({ label, to, whole: false, note });
+  if (filter.backlog === "") return found(issuesPath("all", filter.tags, filter.query));
   const backlog = backlogs.find((one) => one.id === filter.backlog) ?? backlogs.find((one) => sameWords(one.name, filter.backlog));
   if (!backlog) return whole;
-  if (backlog.kind === "smart") return filter.tags.length === 0 && filter.query === "" ? { label, to: smartBacklogPath(backlog.id), whole: false } : whole;
-  return { label, to: issuesPath(backlog.id, filter.tags, filter.query), whole: false };
+  if (backlog.kind === "smart") return !filter.openOnly && filter.tags.length === 0 && filter.query === "" ? found(smartBacklogPath(backlog.id)) : whole;
+  return found(issuesPath(backlog.id, filter.tags, filter.query));
 };
 
 export const resultsOf = (items: { lists?: ResultList[] }[]): ResultList[] => [...items].reverse().flatMap((item) => item.lists ?? []);
 
-const narrowedBy = (draft: ResultDraft, later: ResultDraft) => {
-  const held = new Set(draft.issues.map((issue) => issue.id));
-  return later.issues.length > 0 && later.issues.every((issue) => held.has(issue.id));
+const holds = (wide: ResultDraft, narrow: ResultDraft) => {
+  const held = new Set(wide.issues.map((issue) => issue.id));
+  return narrow.issues.length > 0 && narrow.issues.every((issue) => held.has(issue.id));
 };
 
+const replacedBy = (draft: ResultDraft, later: ResultDraft) =>
+  (holds(draft, later) && (later.total < draft.total || (later.total === draft.total && later.issues.length >= draft.issues.length))) || (later.total === draft.total && holds(later, draft));
+
+const shorterPageOf = (draft: ResultDraft, earlier: ResultDraft) => holds(earlier, draft) && earlier.total === draft.total && draft.issues.length < earlier.issues.length;
+
 export const worthKeeping = (drafts: ResultDraft[]): ResultDraft[] =>
-  drafts.filter((draft, at) => draft.issues.length > 0 && !drafts.slice(at + 1).some((later) => narrowedBy(draft, later)));
+  drafts.filter((draft, at) => draft.issues.length > 0 && !drafts.slice(at + 1).some((later) => replacedBy(draft, later)) && !drafts.slice(0, at).some((earlier) => shorterPageOf(draft, earlier)));
 
 export const withIds = (drafts: ResultDraft[], answerId: number): ResultList[] => worthKeeping(drafts).map((draft, index) => ({ ...draft, id: `${answerId}:${index}` }));
 

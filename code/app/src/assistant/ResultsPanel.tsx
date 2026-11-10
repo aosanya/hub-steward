@@ -10,7 +10,7 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Segmented } from "../ui/Segmented";
-import { assistantBackWords, chatTabWords, emptyResultsWords, labelOf, newResultsWords, backlogsView, openAllTarget, openAllWholeNote, pageSize, resultsOf, resultsTabWords, showMoreWords, type ResultList } from "./results";
+import { assistantBackWords, chatTabWords, emptyResultsWords, labelOf, newResultsWords, backlogsView, openAllTarget, pageSize, resultsOf, resultsTabWords, showMoreWords, type ResultList } from "./results";
 import { keepConversation, keptConversation, type Tab } from "./session";
 import "./results.css";
 
@@ -115,7 +115,7 @@ export function ResultsPanel({ results, picked, onPick, onOpen }: PanelProps) {
         {list.issues.length > shown ? <Button onClick={() => setVisible({ ...visible, [list.id]: shown + pageSize })}>{showMoreWords}</Button> : null}
         {openAll ? (
           <>
-            {openAll.whole ? <p className="assistant-count">{openAllWholeNote}</p> : null}
+            {openAll.note !== "" ? <p className="assistant-count">{openAll.note}</p> : null}
             <Button onClick={() => navigate(openAll.to, backState(here.pathname + here.search, assistantBackWords))}>{openAll.label}</Button>
           </>
         ) : null}
