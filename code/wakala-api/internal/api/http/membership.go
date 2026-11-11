@@ -167,7 +167,7 @@ func pollManagerFor(ctx context.Context, reg agencies.Registry, instanceID strin
 	if err := mustBeMounted(ctx, reg, instanceID, "voting"); err != nil {
 		return nil, err
 	}
-	if err := mustBeMember(ctx, reg, instanceID); err != nil {
+	if _, err := admittedRole(ctx, reg, instanceID); err != nil {
 		return nil, err
 	}
 	return reg.PollManager(ctx, instanceID)

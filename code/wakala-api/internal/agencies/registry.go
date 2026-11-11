@@ -677,6 +677,7 @@ func (r *registry) buildPollManager(ctx context.Context, id string) (mwanachamav
 	if err != nil {
 		return nil, err
 	}
+	built.UseGroups(mwanachamavoting.Groups(r.groupsIn(id)))
 	built.UseGroupExists(mwanachamavoting.GroupExists(r.groupExistsIn(id)))
 	return built, nil
 }

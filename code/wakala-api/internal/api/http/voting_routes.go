@@ -17,6 +17,9 @@ func votingMount() votingroutes.Mount {
 
 func (d *Deps) instanceVotingMount(role string) votingroutes.Mount {
 	mount := votingMount()
+	if role == agencies.RoleResident {
+		mount.Authorize = authorizeResidentVoting
+	}
 	mount.Authorize = agentPermissioned(role, d.Registry, d.agencyRolePermissions, mount.Authorize)
 	return mount
 }
