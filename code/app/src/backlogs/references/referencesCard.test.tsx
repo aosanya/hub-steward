@@ -2,7 +2,12 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { fakeReferences, fakeRepos, openIssue, reference } from "./referenceFixtures";
 
-const section = async () => (await screen.findByText("References")).closest("section") as HTMLElement;
+const section = async () => {
+  const card = (await screen.findByText("References")).closest("section") as HTMLElement;
+  const head = within(card).getByRole("button", { name: "References" });
+  if (head.getAttribute("aria-expanded") === "false") await userEvent.click(head);
+  return card;
+};
 
 describe("the References section of an issue's page", () => {
   it("sits in the sections column under the description and above the Log", async () => {

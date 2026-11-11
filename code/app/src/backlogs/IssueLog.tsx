@@ -68,7 +68,7 @@ export function IssueLog({ issueId, client }: { issueId: string; client: NotesCl
     }
   };
   return (
-    <Card title="Log" collapsible flush>
+    <Card title="Log" collapsible defaultOpen={false} flush>
       {notes.state === "ready" && held.length === 0 ? <p className="log-none">Nothing logged yet.</p> : null}
       {notes.state === "error" ? <p className="log-none" role="alert">The Log could not be loaded.</p> : null}
       {held.map((note) => (

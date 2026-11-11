@@ -146,7 +146,11 @@ describe("journey 03, work the backlogs", () => {
 
   describe("8. reads and adds to the Log of an issue", () => {
     const entry = (id: string, kind: string, author: string, text: string, at: string, links: string[] = []) => ({ id, task_id: "t1", kind, author_id: author, text, links, created_at: at });
-    const logSection = async () => (await screen.findByText("Log")).closest("section") as HTMLElement;
+    const logSection = async () => {
+      const card = (await screen.findByText("Log")).closest("section") as HTMLElement;
+      await userEvent.click(within(card).getByRole("button", { name: "Log" }));
+      return card;
+    };
     const people = { items: [{ id: "w1", display_name: "Backlog worker" }, { id: "o1", display_name: "Owner" }] };
     const logged = () => [
       entry("n1", "worker", "w1", "Took the issue and moved it to Doing.", "2026-11-10T14:02:00Z"),

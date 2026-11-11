@@ -45,7 +45,12 @@ const worldWith = (rows: Held[]) => ({
   [taskTools.pending]: (args: Record<string, unknown>) => ({ items: args.q === "HS-005" ? [{ id: "t2", code: "HS-005", title: "Write the manual" }] : [] }),
 });
 
-const section = async () => (await screen.findByText("References")).closest("section") as HTMLElement;
+const section = async () => {
+  const card = (await screen.findByText("References")).closest("section") as HTMLElement;
+  const head = within(card).getByRole("button", { name: "References" });
+  if (head.getAttribute("aria-expanded") === "false") await userEvent.click(head);
+  return card;
+};
 
 describe("journey 03, step 9, names what an issue is about", () => {
   it("an issue with no entries says Nothing referenced yet. above Add a reference, under the description and above the Log", async () => {
@@ -60,7 +65,7 @@ describe("journey 03, step 9, names what an issue is about", () => {
   it("adds a file by repo, folder and tap, then a board row and a website link by one typed line", async () => {
     const rows: Held[] = [];
     const world = inFarmers("/backlogs/issue/t1", worldWith(rows));
-    await userEvent.click(await screen.findByRole("link", { name: "Add a reference" }));
+    await userEvent.click(within(await section()).getByRole("link", { name: "Add a reference" }));
     expect(where()).toBe(`/a/${farmers.id}/backlogs/issue/t1/references/add`);
     await userEvent.click(await screen.findByRole("button", { name: /^File/ }));
     await userEvent.type(screen.getByRole("searchbox", { name: "Find a repo" }), "hub-steward-swe");
@@ -91,6 +96,7 @@ describe("journey 03, step 9, names what an issue is about", () => {
 
   it("a board row entry opens that issue", async () => {
     inFarmers("/backlogs/issue/t1", worldWith([held({ id: "i", kind: "issue", target: "HS-005" })]));
+    await section();
     await userEvent.click(await screen.findByRole("button", { name: /HS-005/ }));
     await waitFor(() => expect(where()).toBe(`/a/${farmers.id}/backlogs/issue/t2`));
   });

@@ -77,7 +77,7 @@ export function ReferencesCard({ issueId, client, repoClient }: { issueId: strin
     if (id) navigate(issuePath(id), backState(here.pathname + here.search));
   };
   return (
-    <Card title="References" collapsible flush>
+    <Card title="References" collapsible defaultOpen={false} flush>
       {loaded.state === "error" ? (
         <p className="ref-none" role="alert">
           The references could not be loaded.
