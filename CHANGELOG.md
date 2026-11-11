@@ -5,6 +5,7 @@ All notable changes to this project are listed here, grouped by area. The format
 ## [Unreleased] - 2026-11-04
 
 ### API (`code/wakala-api`)
+- Under `one_voice` `refuse` or `flag`, a person holds one voice per form and period whichever group they send as, enforced by a `voice_key` column and the unique index `one_voice_slot` (sends kept from before the key are left out, so a database holding two voices still starts); fifteen sends at once as two groups keep one voice. A form locked after send refuses a second send even when the first carried no answers (MUN191, 2026-11-11).
 - Forms can declare where their answers land (`lands_in`): the catalog, the ledger (one posting per key, a resend posts nothing twice) or ratings (given as the member who answered). Opening is refused while a question has no field or the module has no writer, a resend updates the same record, and a test run writes nothing (2026-11-08).
 - A form edit that leaves out `lands_in` keeps it instead of clearing it, and opening a form is refused when a mapped field is not one the target module (accounting entry, ratings rating) lets a form fill (2026-11-11).
 - Forms can declare `one_voice` (`refuse` or `flag`): a second send from the same member in the same round answers 409 `ErrSecondVoice` with the first answer standing, or is stored beside it as a repeat that no listing or count includes (2026-11-08).
