@@ -1,6 +1,6 @@
 # Screenshots from the test runs
 
-Taken on 4 November 2026 while running the journeys in [the results](../02-results/README.md): the console and the phone app against a local Supabase database, with the Siaya lab and the Siaya Farmers' Group imported by `scripts/local-setup.sh --demos`, and the Meta model Muse Spark 1.3 set as the hub's model. No key appears in any picture.
+Taken on 4 November 2026 while running the journeys in [the results](../02-results/README.md): the console and the phone app against a local Supabase database, with the Siaya lab and the Siaya Farmers' Group imported by `scripts/local-setup.sh --demos` (the script is in the repository from 11 November 2026; the run of 4 November made the same calls by hand), and the Meta model Muse Spark 1.3 set as the hub's model on the console's Models page. No key appears in any picture.
 
 ## Console
 

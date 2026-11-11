@@ -24,7 +24,7 @@ The product runs any member organization; these nine are agencies to try it on; 
 | `logistics-freight-company` | A freight logistics company |
 | `mobile-money-operator` | A mobile money operator |
 | `agricultural-drone-crop-spraying-service` | A drone crop-spraying service |
-| `municipality.json` | An invented Hungarian town council, in Hungarian; a single file, not offered in the console's template picker and with no copy under `code/console/public/templates/`; load it with `POST /instances/import` |
+| `municipality.json` | An invented Hungarian town council, in Hungarian; a single file, not offered in the console's template picker and with no copy under `code/console/public/templates/`; load it with `POST /instances/import`, or with every other demo by `sh scripts/local-setup.sh --demos` ([guide](../guides/import-a-demo-agency.md)) |
 
 ## Harvest sale
 

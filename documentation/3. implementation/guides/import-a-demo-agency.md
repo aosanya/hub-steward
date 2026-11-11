@@ -1,6 +1,6 @@
 # Import a demo agency and get a login
 
-A runbook for a person or an agent. At the end there is a local console login and the two demo agencies (the Siaya lab and the Siaya Farmers' Group) imported into your own local database. Every command here was run on 4 November 2026 on a Mac with Docker Desktop, Go 1.25 or newer and Node 22.
+A runbook for a person or an agent. At the end there is a local console login and the demo agencies (the Siaya lab and the Siaya Farmers' Group among them) imported into your own local database. Every command here was run on 4 November 2026 on a Mac with Docker Desktop, Go 1.25 or newer and Node 22.
 
 ## Rules
 
@@ -72,12 +72,13 @@ Expected output, one line per step:
 ```
 made the console login judge@example.com        (or: console login already there: ...)
 registered the hub-steward service              (or: service hub-steward already registered)
-imported demo hub: Siaya lab                    (or: demo hub already there: Siaya lab)
+imported demo hub: Siaya Community Computer Lab (or: demo hub already there: ...)
 imported demo hub: Siaya Farmers' Group
-console: http://localhost:3000  log in with judge@example.com and the password ...
+...one line for each of the ten files under demo/
+console: http://localhost:3000  log in with judge@example.com and the password you set
 ```
 
-The script is safe to run again: a second run creates nothing twice.
+The script imports `demo/*/agency.json` and every `demo/*.json`. It is safe to run again: a second run creates nothing twice, because a hub whose name is already in the list is skipped. `API_URL` defaults to `http://127.0.0.1:8082` and `CONSOLE_URL` to `http://localhost:3000`. `sh scripts/local-setup.test.sh` runs the documented command twice against a stand-in API on a spare port, touching no running stack, and CI runs it.
 
 Check it worked:
 
@@ -88,7 +89,7 @@ curl -s -c /tmp/hs.jar -o /dev/null -w '%{http_code}\n' -X POST http://127.0.0.1
 curl -s -b /tmp/hs.jar http://127.0.0.1:8082/instances
 ```
 
-Expected: `201`, then a list with both hubs.
+Expected: `201`, then a list with every hub the script imported.
 
 ## 5. Open the console
 
@@ -99,14 +100,14 @@ cd code/console && npm ci
 WAKALA_URL=http://localhost:8082 npm run dev
 ```
 
-Open `http://localhost:5173` (use `localhost`, not `127.0.0.1`) and press Log in with the email and password from step 4. The hub list shows both hubs.
+Open `http://localhost:5173` (use `localhost`, not `127.0.0.1`) and press Log in with the email and password from step 4. The hub list shows the imported hubs.
 
 ## What you will see, and what you will not
 
 - Saving a change files an approval; the change appears once someone presses Approve. Nothing is lost.
 - The imports build each hub's structure: roles, goals, objectives, workflows, controls. They create no people, groups or forms.
-- Chat answers need a model. Without one the chat says no model is ready. To add a Meta key safely, see `scripts/local-setup.sh --model` in the README: put the key in your own `.env`, never in chat.
-- The phone app's emailed sign-in link needs the local Supabase from step 2. Invite a member with `sh scripts/local-setup.sh --invite=member@example.com` and read the email in the inbox at `http://127.0.0.1:54324`.
+- Chat answers need a model. Without one the chat says no model is ready. Add a model on the console's Models page: paste the key there yourself, never into chat, a file you commit or a command.
+- The phone app's emailed sign-in link needs the local Supabase from step 2. Invite a member into the first hub in the list with the same environment as step 4 and `sh scripts/local-setup.sh --invite=member@example.com`, and read the email in the inbox at `http://127.0.0.1:54324`.
 
 ## If something fails
 

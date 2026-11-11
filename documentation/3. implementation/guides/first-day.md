@@ -56,7 +56,7 @@ npm ci
 make run
 ```
 
-Open `http://localhost:5170`. The console reads the API address from `code/console/public/config.json`, which already says `http://localhost:8082`. Log in with the email and password from step 3. Create Hub imports one of the eight demo agencies from [`demo/`](../../../demo/); start with the Siaya lab. [Console](console.md) says how the console is built.
+Open `http://localhost:5170`. The console reads the API address from `code/console/public/config.json`, which already says `http://localhost:8082`. Log in with the email and password from step 3. Create Hub imports one of the eight demo agencies from [`demo/`](../../../demo/); start with the Siaya lab. To make the login and import every demo in one go instead, run `sh scripts/local-setup.sh --demos` as [Import a demo agency](import-a-demo-agency.md) shows. [Console](console.md) says how the console is built.
 
 ## 5. Run the phone app
 
