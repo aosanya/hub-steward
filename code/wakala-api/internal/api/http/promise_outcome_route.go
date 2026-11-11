@@ -10,6 +10,8 @@ import (
 	"wakalaserver/internal/agencies"
 )
 
+const promiseOutcomeAction = "forms.results.promise_outcome"
+
 const promiseOutcomePattern = "PUT " + formsInstancePrefix + "/forms/{form_id}/results/promises/{task_id}/outcome"
 
 type promiseOutcomeBody struct {
@@ -25,6 +27,10 @@ func (d *Deps) registerPromiseOutcomeRoute(mux *http.ServeMux, reg agencies.Regi
 		instanceID := r.PathValue("instanceID")
 		board, ok := promiseBoardForOperator(w, r, reg, instanceID)
 		if !ok {
+			return
+		}
+		if d.requireAgentMay(withPartition(r, instanceID).Context(), instanceID, promiseOutcomeAction) != nil {
+			writeErr(w, http.StatusForbidden, "forbidden")
 			return
 		}
 		var body promiseOutcomeBody
