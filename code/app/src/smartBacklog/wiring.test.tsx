@@ -115,7 +115,7 @@ describe("one smart backlog opened", () => {
   it("reads the rules back, counts the issues and offers Edit rules to a manager, with a List | Board switch on Board", async () => {
     open(fake(), [issue("t1", "Record the voice clips"), issue("t2", "Add the backlog tools")]);
     expect(await screen.findByText("Mark is Ready")).toBeInTheDocument();
-    expect(screen.getByText("Smart")).toBeInTheDocument();
+    expect(screen.getByText("Smart backlog")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "+1 more" })).toBeInTheDocument();
     expect(screen.getByText("2 issues")).toBeInTheDocument();
     expect(screen.getByText(/Record the voice clips/)).toBeInTheDocument();

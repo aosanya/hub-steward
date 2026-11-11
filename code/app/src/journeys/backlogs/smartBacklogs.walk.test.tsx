@@ -254,7 +254,7 @@ describe("journey 09, smart backlogs", () => {
   it("3. opens it: the Smart pill, the first rule read back with a +1 more bubble, the count, Edit rules and Select, a List | Board switch opening on the board, and only Ready issues at To do", async () => {
     walk("/backlogs/ready/smart");
     expect(await screen.findByText("Mark is Ready")).toBeInTheDocument();
-    expect(screen.getByText("Smart")).toBeInTheDocument();
+    expect(screen.getByText("Smart backlog")).toBeInTheDocument();
     expect(screen.getByText("3 issues")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Actions" }));
     expect(screen.getByRole("button", { name: "Edit rules" })).toBeInTheDocument();

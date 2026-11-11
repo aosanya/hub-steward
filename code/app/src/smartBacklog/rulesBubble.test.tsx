@@ -47,6 +47,13 @@ const open = (set: RuleSet) => {
 };
 
 describe("the rules in the header of a smart backlog", () => {
+  it("says in words what a smart backlog is, for someone who has never seen one", async () => {
+    open({ match: "all", rules: [fiveRules.rules[0]] });
+    const rule = await screen.findByText("Tag has hub-steward-swe");
+    expect(screen.getByText("Smart backlog")).toBeInTheDocument();
+    expect(rule.parentElement?.textContent).toBe("Issues where Tag has hub-steward-swe");
+  });
+
   it("shows one rule and no bubble", async () => {
     open({ match: "all", rules: [fiveRules.rules[0]] });
     expect(await screen.findByText("Tag has hub-steward-swe")).toBeInTheDocument();
@@ -90,7 +97,7 @@ describe("the rules in the header of a smart backlog", () => {
 
   it("keeps today's look for a smart backlog with no rules: the Smart chip and no bubble", async () => {
     open({ match: "all", rules: [] });
-    expect(await screen.findByText("Smart")).toBeInTheDocument();
+    expect(await screen.findByText("Smart backlog")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /more/ })).toBeNull();
   });
 });
