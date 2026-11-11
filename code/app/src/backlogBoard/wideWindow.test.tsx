@@ -121,7 +121,7 @@ describe("the backlog screens on a wide window", () => {
     );
     await screen.findByRole("group", { name: "View" });
     expect(frame()).toHaveClass("frame");
-    expect(screen.queryByRole("searchbox")).toBeNull();
+    expect(screen.getByRole("searchbox", { name: "Search issues" })).toBeInTheDocument();
   });
 });
 

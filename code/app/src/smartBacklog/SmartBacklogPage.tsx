@@ -1,14 +1,16 @@
 import "./smartBacklog.css";
 import { Fragment, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { mcpBacklogManageClient } from "../backlogManage/api";
 import { useMayManage } from "../backlogManage/useMayManage";
 import type { BacklogManageClient } from "../backlogManage/types";
 import { mcpBacklogsClient, type BacklogsClient, type Issue } from "../backlogs/api";
+import { FilterBar } from "../backlogs/FilterBar";
 import { IssueRow } from "../backlogs/IssueRow";
 import { backlogAccessPath } from "../backlogAccess/paths";
 import { BoardColumns, columnsOf, stepsOfIssues, useView, ViewSwitch } from "../backlogBoard";
-import { backlogsHomePath, issuePath } from "../backlogs/paths";
+import { backlogsHomePath, issuePath, queryParam, searchOf } from "../backlogs/paths";
+import { countWords, narrowed } from "../backlogs/tags";
 import { openAgencyId } from "../agency/open";
 import { useLanguage } from "../entry/language";
 import { backState } from "../ui/backTo";
@@ -35,6 +37,8 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
   const [sending, setSending] = useState(false);
   const [outcome, setOutcome] = useState("");
   const [view, chooseView] = useView();
+  const [search, setSearch] = useSearchParams();
+  const query = search.get(queryParam) ?? "";
   const selecting = useSelection();
   const targets = useTargets();
   const loaded = useLoad(async () => ({ backlog: await client.read(backlogId), rows: await issues.issues(backlogId), all: await issues.backlogs() }), `smart:${openAgencyId()}:${backlogId}:${version}`);
@@ -43,7 +47,8 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
   const back = () => navigate(backlogsHomePath());
   if (loaded.state === "loading") return <Shell title="Backlog" onBack={back} backLabel={words.backBacklogs}><LoadingLine /></Shell>;
   if (loaded.state === "error") return <Shell title="Backlog" onBack={back} backLabel={words.backBacklogs}><LoadFailed words="This smart backlog could not be loaded." /></Shell>;
-  const { backlog, rows, all } = loaded.data;
+  const { backlog, rows: held, all } = loaded.data;
+  const rows = narrowed(held, [], query);
   const rowOf = (issue: Issue) =>
     selecting.on ? (
       <SelectableIssueRow issue={issue} chosen={[]} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
@@ -58,13 +63,13 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
   return (
     <Shell {...shell} headEnd={mayEdit ? <ActionsMenu actions={[{ label: "Edit rules", onSelect: edit }, { label: "Change who has access", to: backlogAccessPath(backlogId) }]} /> : undefined} tabless={selecting.on}>
       <RulesHead set={backlog.set} />
-      {rows.length === 0 ? (
+      {held.length === 0 ? (
         <EmptyCard words="Nothing matches yet">{mayEdit ? <Button kind="primary" onClick={edit}>Edit rules</Button> : null}</EmptyCard>
       ) : (
         <>
-          <p className="sub count">{rows.length === 1 ? "1 issue" : `${rows.length} issues`}</p>
+          <FilterBar query={query} onQuery={(text) => setSearch(searchOf([], text), { replace: true })} count={countWords(rows.length, held.length, query.trim() !== "")} chosen={[]} onTag={() => undefined} />
           <ViewSwitch current={view} onChange={chooseView} />
-          {view === "board" ? (
+          {rows.length === 0 ? <EmptyCard words="No issues match" /> : view === "board" ? (
             <BoardColumns columns={columnsOf(stepsOfIssues(all, rows), rows)} renderCard={rowOf} />
           ) : (
             <Rows>{rows.map((issue) => <Fragment key={issue.id}>{rowOf(issue)}</Fragment>)}</Rows>
