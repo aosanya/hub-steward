@@ -3,12 +3,15 @@ package agencies
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 	"unicode/utf8"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+
+	"wakalaserver/modules/shared/plaintext"
 )
 
 const (
@@ -85,10 +88,20 @@ func (r *registry) SetJoinMode(ctx context.Context, instanceID, mode string) (In
 
 const MaxInstanceNameLength = 120
 
+func CheckInstanceName(name string) error {
+	if problem := plaintext.Problem("name", name); problem != "" {
+		return fmt.Errorf("%w: %s", ErrInvalidInstanceName, problem)
+	}
+	return nil
+}
+
 func (r *registry) RenameInstance(ctx context.Context, instanceID, name string) (Instance, error) {
 	name = strings.TrimSpace(name)
 	if name == "" || utf8.RuneCountInString(name) > MaxInstanceNameLength {
 		return Instance{}, ErrInvalidInstanceName
+	}
+	if err := CheckInstanceName(name); err != nil {
+		return Instance{}, err
 	}
 	if _, err := r.GetInstance(ctx, instanceID); err != nil {
 		return Instance{}, err

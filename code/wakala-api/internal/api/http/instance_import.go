@@ -501,7 +501,7 @@ func importInstance(reg agencies.Registry) http.HandlerFunc {
 		}
 		if err := checkInstanceRoom(r.Context(), reg, caller, name); err != nil {
 			switch {
-			case errors.Is(err, errInstanceNameTooLong):
+			case errors.Is(err, errInstanceNameTooLong), errors.Is(err, agencies.ErrInvalidInstanceName):
 				writeErr(w, http.StatusBadRequest, err.Error())
 			case errors.Is(err, errTooManyInstances):
 				writeErr(w, http.StatusConflict, err.Error())

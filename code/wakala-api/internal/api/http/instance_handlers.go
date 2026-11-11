@@ -37,7 +37,7 @@ func createInstance(reg agencies.Registry) http.HandlerFunc {
 			return
 		}
 		if err := checkInstanceRoom(r.Context(), reg, caller, in.Name); err != nil {
-			if errors.Is(err, errInstanceNameTooLong) {
+			if errors.Is(err, errInstanceNameTooLong) || errors.Is(err, agencies.ErrInvalidInstanceName) {
 				writeErr(w, http.StatusBadRequest, err.Error())
 				return
 			}

@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/agency/models"
+	"wakalaserver/modules/shared/plaintext"
 )
 
 const agentPermission = "ai.use"
@@ -432,6 +433,9 @@ func (m *agencyManager) resetScenario(ctx context.Context, tx *gorm.DB, id strin
 func (m *agencyManager) checkActorName(ctx context.Context, tx *gorm.DB, s models.Scenario, name, exceptID string) error {
 	if strings.TrimSpace(name) == "" {
 		return invalidScenario("an actor needs a name")
+	}
+	if problem := plaintext.Problem("scenario actor name", name); problem != "" {
+		return invalidScenario("%s", problem)
 	}
 	stored, err := m.storedActors(ctx, tx, s.ID)
 	if err != nil {

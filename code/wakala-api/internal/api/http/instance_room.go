@@ -17,6 +17,9 @@ func checkInstanceRoom(ctx context.Context, reg agencies.Registry, caller, name 
 	if len(name) > throttle.MaxInstanceNameBytes {
 		return errInstanceNameTooLong
 	}
+	if err := agencies.CheckInstanceName(name); err != nil {
+		return err
+	}
 	held, err := reg.MembershipsFor(ctx, caller)
 	if err != nil {
 		return err
