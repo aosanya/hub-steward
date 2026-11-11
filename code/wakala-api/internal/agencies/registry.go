@@ -479,6 +479,7 @@ func (r *registry) buildFormManager(ctx context.Context, id string) (mwanachamaf
 	if err := mwanachamaforms.Provision(r.db, s); err != nil {
 		return nil, fmt.Errorf("FormManager: provision instance %s: %w", id, err)
 	}
+	r.hideEarlierWithdrawals(ctx, id, s)
 	built, err := mwanachamaforms.NewFormManager(r.db, s)
 	if err != nil {
 		return nil, err
