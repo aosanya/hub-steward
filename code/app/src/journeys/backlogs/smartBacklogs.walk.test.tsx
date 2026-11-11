@@ -256,7 +256,9 @@ describe("journey 09, smart backlogs", () => {
     expect(await screen.findByText("Mark is Ready · Step is To do")).toBeInTheDocument();
     expect(screen.getByText("Smart")).toBeInTheDocument();
     expect(screen.getByText("3 issues")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Actions" }));
     expect(screen.getByRole("button", { name: "Edit rules" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Change who has access" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Select" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Board" })).toHaveAttribute("aria-pressed", "true");
     listed("Record the voice clips", "Add the backlog tools", "Switch on the custody module");
@@ -266,6 +268,7 @@ describe("journey 09, smart backlogs", () => {
   it("3. a role that may not manage backlogs sees the list without the Edit rules link", async () => {
     walk("/backlogs/ready/smart", { permissions: worker, levels: workerLevels });
     expect(await screen.findByText("Mark is Ready · Step is To do")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Actions" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Edit rules" })).toBeNull();
   });
 

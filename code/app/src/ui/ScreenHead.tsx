@@ -1,10 +1,20 @@
-type Props = { title?: string; sub?: string };
+import type { ReactNode } from "react";
 
-export function ScreenHead({ title, sub }: Props) {
+type Props = { title?: string; sub?: string; end?: ReactNode };
+
+export function ScreenHead({ title, sub, end }: Props) {
   if (!title && !sub) return null;
+  const headline = title ? <h1 className="headline">{title}</h1> : null;
   return (
     <div className="head">
-      {title ? <h1 className="headline">{title}</h1> : null}
+      {headline && end ? (
+        <div className="head-line">
+          {headline}
+          {end}
+        </div>
+      ) : (
+        headline
+      )}
       {sub ? <p className="sub">{sub}</p> : null}
     </div>
   );

@@ -13,6 +13,7 @@ import { openAgencyId } from "../agency/open";
 import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../sendToBacklog";
 import { useLoad } from "../forms/useLoad";
 import { Button } from "../ui/Button";
+import { ActionsMenu } from "../ui/ActionsMenu";
 import { Chip } from "../ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Rows } from "../ui/ListRow";
@@ -52,13 +53,11 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
     ? selectingShell(selecting, rows.map((issue) => issue.id))
     : { title: backlog.name, onBack: back, action: canSend ? <SelectButton onStart={selecting.start} /> : undefined };
   return (
-    <Shell {...shell} tabless={selecting.on}>
+    <Shell {...shell} headEnd={mayEdit ? <ActionsMenu actions={[{ label: "Edit rules", onSelect: edit }, { label: "Change who has access", to: backlogAccessPath(backlogId) }]} /> : undefined} tabless={selecting.on}>
       <div className="smart-head">
         <Chip tone="info">Smart</Chip>
         <span className="sub">{rulesWords(backlog.set)}</span>
       </div>
-      {mayEdit ? <Button onClick={edit}>Edit rules</Button> : null}
-      {mayEdit ? <Button to={backlogAccessPath(backlogId)}>Change who has access</Button> : null}
       {rows.length === 0 ? (
         <EmptyCard words="Nothing matches yet">{mayEdit ? <Button kind="primary" onClick={edit}>Edit rules</Button> : null}</EmptyCard>
       ) : (

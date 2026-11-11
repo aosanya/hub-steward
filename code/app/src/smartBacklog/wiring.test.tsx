@@ -118,6 +118,8 @@ describe("one smart backlog opened", () => {
     expect(screen.getByText("Smart")).toBeInTheDocument();
     expect(screen.getByText("2 issues")).toBeInTheDocument();
     expect(screen.getByText(/Record the voice clips/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Edit rules" })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: "Actions" }));
     expect(screen.getByRole("button", { name: "Edit rules" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Board" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("button", { name: "List" })).toHaveAttribute("aria-pressed", "false");
@@ -174,7 +176,8 @@ describe("one smart backlog opened", () => {
 
   it("offers Change who has access to a manager and opens the Access address", async () => {
     open(fake(), [issue("t1", "Record the voice clips")]);
-    const link = await screen.findByRole("link", { name: "Change who has access" });
+    await userEvent.click(await screen.findByRole("button", { name: "Actions" }));
+    const link = screen.getByRole("link", { name: "Change who has access" });
     expect(link).toHaveAttribute("href", "/a/hub-1/backlogs/ready/access");
     await userEvent.click(link);
     expect(where()).toBe("/a/hub-1/backlogs/ready/access");
@@ -183,12 +186,14 @@ describe("one smart backlog opened", () => {
   it("hides Change who has access from a role that may not manage backlogs", async () => {
     open(fake(), [issue("t1", "Record the voice clips")], false);
     await screen.findByText("Mark is Ready · Step is To do");
+    expect(screen.queryByRole("button", { name: "Actions" })).toBeNull();
     expect(screen.queryByRole("link", { name: "Change who has access" })).toBeNull();
   });
 
   it("hides Edit rules from a role that may not manage backlogs", async () => {
     open(fake(), [issue("t1", "Record the voice clips")], false);
     await screen.findByText("Mark is Ready · Step is To do");
+    expect(screen.queryByRole("button", { name: "Actions" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Edit rules" })).toBeNull();
   });
 });

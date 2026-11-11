@@ -1,0 +1,5 @@
+.actions { position: relative; flex: none; }
+.actions-btn { display: flex; align-items: center; gap: .375rem; min-height: 2.5rem; padding: 0 .875rem; border: 1px solid var(--line-strong); border-radius: var(--r-pill); background: var(--surface); color: var(--ink); font: inherit; font-weight: 500; }
+.actions-list { position: absolute; top: calc(100% + .25rem); right: 0; z-index: 10; min-width: 13rem; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r-md); box-shadow: 0 .25rem 1rem var(--line); overflow: hidden; }
+.actions-list > * { display: block; min-height: 3rem; padding: .75rem 1rem; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: left; text-decoration: none; }
+.actions-list > * + * { border-top: 1px solid var(--line); }
