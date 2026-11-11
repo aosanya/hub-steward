@@ -2623,9 +2623,9 @@
           "description": "The draft to review."
         },
         {
-          "from": "body",
+          "from": "caller",
           "as": "started_by",
-          "description": "The person who pressed Run review."
+          "description": "The person who pressed Run review, resolved from the session rather than the request."
         },
         {
           "from": "body",
@@ -2757,9 +2757,9 @@
           "description": "The text of the note."
         },
         {
-          "from": "body",
+          "from": "caller",
           "as": "author",
-          "description": "Who wrote it."
+          "description": "Who wrote it, resolved from the session rather than the request."
         }
       ],
       "returns": [

@@ -41,8 +41,8 @@ func (t CallerTools) call(ctx context.Context, instanceID, tool string, args map
 	return t.Caller.Call(ctx, tool, with)
 }
 
-func (t CallerTools) StartReview(ctx context.Context, instanceID, draftID, startedBy, area string) (Page, error) {
-	args := map[string]any{"draft_id": draftID, "started_by": startedBy}
+func (t CallerTools) StartReview(ctx context.Context, instanceID, draftID, _, area string) (Page, error) {
+	args := map[string]any{"draft_id": draftID}
 	if area != "" {
 		args["area"] = area
 	}
