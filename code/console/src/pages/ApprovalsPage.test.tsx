@@ -44,6 +44,7 @@ const words = {
     approvalsAllText: "Each request is decided in turn and logged.",
     approvalsAllButton: "Approve all",
     approvalsAllDone: "Approved all of {name}'s requests",
+    approvalsChangedSinceRead: "This request changed after you opened it. Read it again, then decide.",
     cancel: "Cancel",
     colTime: "Time",
     "chat.colTool": "Tool",
@@ -265,6 +266,28 @@ describe("the approvals page", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("The change could not be sent.");
     expect(screen.getByText("Wi-Fi account for Achieng")).toBeInTheDocument();
     expect(listings(calls)).toHaveLength(1);
+    expect(refreshMenu).not.toHaveBeenCalled();
+  });
+
+  it("sends the amendment count of the row the approver is looking at", async () => {
+    const amended: PageRow = { ...wifi, amendments: JSON.stringify([{ by: "agent" }, { by: "agent" }]) };
+    const calls = startBackend({ rows: { pending: [amended] } });
+    renderApprovals("/h/h1/approvals/pending");
+    await screen.findByText("Wi-Fi account for Achieng");
+    await userEvent.click(screen.getByRole("button", { name: "Approve" }));
+    await waitFor(() => expect(decisions(calls)).toHaveLength(1));
+    expect(decisions(calls)[0].args).toEqual({ approval_id: "a1", decision: "approved", seen_amendments: 2 });
+  });
+
+  it("tells the approver to read the request again and lists it afresh when it changed after it was read", async () => {
+    const changed = new McpError("agency_decide_approval: the approval changed after it was read, so read it again before deciding");
+    const calls = startBackend({ rows: { pending: [wifi] }, decideFailure: changed });
+    const { refreshMenu } = renderApprovals("/h/h1/approvals/pending");
+    await screen.findByText("Wi-Fi account for Achieng");
+    await userEvent.click(screen.getByRole("button", { name: "Approve" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("This request changed after you opened it. Read it again, then decide.");
+    await waitFor(() => expect(listings(calls)).toHaveLength(2));
+    expect(screen.getByText("Wi-Fi account for Achieng")).toBeInTheDocument();
     expect(refreshMenu).not.toHaveBeenCalled();
   });
 

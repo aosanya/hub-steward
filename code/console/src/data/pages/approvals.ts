@@ -1,5 +1,5 @@
 import type { PageRow } from "../../types";
-import { callTool } from "../../wakala/mcp";
+import { McpError, callTool } from "../../wakala/mcp";
 import type { ActionRun, PageModule, Query } from "../types";
 import { roleItems, text, type Item } from "./agents";
 
@@ -33,11 +33,16 @@ const listApprovals = async (hubId: string, query: Query): Promise<PageRow[]> =>
   return items.filter((item) => !query.requester || isRequester(item, query.requester));
 };
 
-const decideApproval = async (hubId: string, id: string, decision: string, reason: string) => {
+const decideApproval = async (hubId: string, id: string, decision: string, reason: string, seenAmendments?: number) => {
   const args: Record<string, unknown> = { approval_id: id, decision };
   if (reason !== "") args.reason = reason;
+  if (seenAmendments !== undefined) args.seen_amendments = seenAmendments;
   await callTool(hubId, "agency_decide_approval", args);
 };
+
+export const amendmentsSeen = (row: PageRow): number | undefined => (row.amendments === undefined ? undefined : listIn(row, "amendments").length);
+
+export const isChangedSinceRead = (error: unknown) => error instanceof McpError && error.message.includes("changed after it was read");
 
 const failureText = (error: unknown) => (error instanceof Error ? error.message : String(error));
 
@@ -53,7 +58,7 @@ export const decideAllPending = async (
     const id = text(row.id);
     if (id === "") continue;
     try {
-      await decideApproval(hubId, id, decision, reason);
+      await decideApproval(hubId, id, decision, reason, amendmentsSeen(row));
       out.decided.push(id);
     } catch (error) {
       out.failed.push({ id, error: failureText(error) });
@@ -68,7 +73,8 @@ const decide: ActionRun = async (hubId, values) => {
   const reason = text(values.reason);
   const id = text(values.id);
   if (id.trim() !== "") {
-    await decideApproval(hubId, id, decision, reason);
+    const seen = typeof values.seen_amendments === "number" ? values.seen_amendments : undefined;
+    await decideApproval(hubId, id, decision, reason, seen);
     return "done";
   }
   const requester = text(values.requester);

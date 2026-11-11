@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
 import { pageModule } from "../registry";
-import { approvalFacts, approvalKindLabel, approvalLog, approvalsPage, decideAllPending } from "./approvals";
+import { approvalFacts, approvalKindLabel, approvalLog, approvalsPage, decideAllPending, isChangedSinceRead } from "./approvals";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -136,6 +136,42 @@ describe("deciding approvals", () => {
     await expect(decide({ decision: "approved" })).rejects.toThrow("id or requester is required");
     await expect(decide({ id: "  ", requester: " ", decision: "approved" })).rejects.toThrow("id or requester is required");
     expect(calls()).toEqual([]);
+  });
+
+  it("binds a single decision to the amendment count the approver read", async () => {
+    await decide({ id: "a1", decision: "approved", seen_amendments: 2 });
+    expect(decideCalls()[0].args).toEqual({ approval_id: "a1", decision: "approved", seen_amendments: 2 });
+  });
+
+  it("binds a decision of zero amendments too", async () => {
+    await decide({ id: "a1", decision: "approved", seen_amendments: 0 });
+    expect(decideCalls()[0].args).toEqual({ approval_id: "a1", decision: "approved", seen_amendments: 0 });
+  });
+
+  it("binds each request decided together to the amendments its own listing row carries", async () => {
+    vi.mocked(callTool).mockImplementation(async (_hubId, tool) => {
+      if (tool === "agency_list_approvals") {
+        return {
+          items: [
+            { id: "a1", status: "pending", proposed_by: "akinyi", amendments: "" },
+            { id: "a2", status: "pending", proposed_by: "akinyi", amendments: JSON.stringify([{ by: "agent" }, { by: "agent" }]) },
+          ],
+        } as never;
+      }
+      return {} as never;
+    });
+    await decideAllPending("h1", "akinyi", "approved", "");
+    expect(decideCalls().map((call) => call.args)).toEqual([
+      { approval_id: "a1", decision: "approved", seen_amendments: 0 },
+      { approval_id: "a2", decision: "approved", seen_amendments: 2 },
+    ]);
+  });
+
+  it("recognises the answer that says the request changed after it was read", () => {
+    const refusal = new McpError("agency_decide_approval: the approval changed after it was read, so read it again before deciding");
+    expect(isChangedSinceRead(refusal)).toBe(true);
+    expect(isChangedSinceRead(new McpError("agency_decide_approval: already decided"))).toBe(false);
+    expect(isChangedSinceRead(new TypeError("network down"))).toBe(false);
   });
 
   it("fails when the tool refuses the decision", async () => {

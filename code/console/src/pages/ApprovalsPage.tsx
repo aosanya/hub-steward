@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { hubPath } from "../api";
 import { ErrorLine } from "../entry/ErrorLine";
-import { approvalFacts, approvalLog, decideAllPending, type ApprovalFacts } from "../data/pages/approvals";
+import { amendmentsSeen, approvalFacts, approvalLog, decideAllPending, isChangedSinceRead, type ApprovalFacts } from "../data/pages/approvals";
 import { pageModule } from "../data/registry";
 import { useI18n } from "../i18n";
 import { useConsole } from "../shell/context";
@@ -82,21 +82,24 @@ function ApprovalRows({ hubId, tab, requester, onPending }: { hubId: string; tab
   const { t } = useI18n();
   const { refreshMenu } = useConsole();
   const { state, reload } = useLoaded(() => approvals().rows(hubId, { state: tab, requester }), [hubId, tab, requester]);
-  const [sendFailed, setSendFailed] = useState(false);
+  const [sendFailed, setSendFailed] = useState<"" | "failed" | "changed">("");
 
   useEffect(() => {
     if (state.kind === "ready" && tab === "pending" && requester === "") onPending(state.value.length);
   }, [state, tab, requester, onPending]);
 
-  const decide = async (id: string, decision: Decision) => {
-    const sent = await approvals().actions!.decide(hubId, { id, decision }).then(
-      () => true,
-      () => false,
-    );
-    setSendFailed(!sent);
-    if (!sent) return;
+  const decide = async (row: PageRow, decision: Decision) => {
+    const seen = amendmentsSeen(row);
+    const outcome = await approvals()
+      .actions!.decide(hubId, { id: shown(row.id), decision, ...(seen === undefined ? {} : { seen_amendments: seen }) })
+      .then(
+        () => "sent" as const,
+        (error) => (isChangedSinceRead(error) ? ("changed" as const) : ("failed" as const)),
+      );
+    setSendFailed(outcome === "sent" ? "" : outcome);
+    if (outcome === "failed") return;
     reload();
-    refreshMenu();
+    if (outcome === "sent") refreshMenu();
   };
 
   if (state.kind === "loading") return null;
@@ -151,10 +154,10 @@ function ApprovalRows({ hubId, tab, requester, onPending }: { hubId: string; tab
       actions:
         tab === "pending" ? (
           <div className="apv-act">
-            <Button kind="quiet" size="sm" icon="check" onClick={() => decide(id, "approved")}>
+            <Button kind="quiet" size="sm" icon="check" onClick={() => decide(row, "approved")}>
               {t("approve")}
             </Button>
-            <Button kind="quiet" size="sm" onClick={() => decide(id, "refused")}>
+            <Button kind="quiet" size="sm" onClick={() => decide(row, "refused")}>
               {t("decline")}
             </Button>
           </div>
@@ -164,7 +167,7 @@ function ApprovalRows({ hubId, tab, requester, onPending }: { hubId: string; tab
 
   return (
     <>
-      {sendFailed && <ErrorLine>{t("submitFailed")}</ErrorLine>}
+      {sendFailed !== "" && <ErrorLine>{t(sendFailed === "changed" ? "approvalsChangedSinceRead" : "submitFailed")}</ErrorLine>}
       {requester !== "" && (
         <ApproveAll
           hubId={hubId}
