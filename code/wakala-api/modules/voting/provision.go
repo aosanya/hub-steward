@@ -7,5 +7,9 @@ import (
 )
 
 func Provision(db *gorm.DB, s *spec.Spec) error {
-	return spec.Migrate(db, s)
+	if err := spec.Migrate(db, s); err != nil {
+		return err
+	}
+	_, err := keepLatestBallotOfEachResponse(db, s)
+	return err
 }
