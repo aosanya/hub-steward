@@ -1,10 +1,13 @@
 import { callTool } from "../wakala/mcp";
+import { noteOf, type IssueNote } from "./issueNotes";
 
 export const taskTools = {
   list: "taskmanager_task_list",
   get: "taskmanager_task_read",
   edges: "taskmanager_relationship_traverse",
   backlogs: "taskmanager_backlog_list",
+  notes: "taskmanager_task_note_list",
+  addNote: "taskmanager_task_note_add",
 };
 
 export const listCap = 500;
@@ -39,6 +42,11 @@ export type BacklogsClient = {
   backlogs: () => Promise<Backlog[]>;
   issues: (backlogId?: string) => Promise<Issue[]>;
   issue: (id: string) => Promise<IssueDetail>;
+};
+
+export type NotesClient = {
+  notes: (id: string) => Promise<IssueNote[]>;
+  addNote: (id: string, text: string) => Promise<IssueNote>;
 };
 
 export const issuesHeld = (backlogs: { issues: number; kind?: "smart" }[]) =>
@@ -155,5 +163,14 @@ export const mcpBacklogsClient: BacklogsClient = {
       );
     const [waitsOn, waitedOnBy] = await Promise.all([read(outbound, "to_id"), read(inbound, "from_id")]);
     return { ...issueOf(raw, hub), waitsOn, waitedOnBy };
+  },
+};
+
+export const mcpNotesClient: NotesClient = {
+  async notes(id) {
+    return itemsOf(await callTool("", taskTools.notes, { taskID: id })).map(noteOf);
+  },
+  async addNote(id, text) {
+    return noteOf(await callTool("", taskTools.addNote, { taskID: id, text, kind: "person" }));
   },
 };

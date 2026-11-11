@@ -68,7 +68,7 @@ describe("every place that shows an issue draws it through the one shared row", 
     const card = row.closest("section") as HTMLElement;
     expect(card).toHaveClass("card");
     expect(card.querySelector(".issue-description")).toHaveTextContent("Text");
-    expect(document.querySelectorAll("section.card")).toHaveLength(3);
+    expect(document.querySelectorAll("section.card")).toHaveLength(4);
     expect(row.closest("a, button")).toBeNull();
     expect(row.querySelector("a, button")).toBeNull();
   });

@@ -10,15 +10,16 @@ import { Markdown } from "../ui/Markdown";
 import { backState, useBackLabel, useBackTo } from "../ui/backTo";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
-import { mcpBacklogsClient, type BacklogsClient } from "./api";
+import { mcpBacklogsClient, mcpNotesClient, type BacklogsClient, type NotesClient } from "./api";
 import { SendToBacklogButton } from "../sendToBacklog";
 import type { SendClient } from "../sendToBacklog/types";
+import { IssueLog } from "./IssueLog";
 import { IssueRow } from "./IssueRow";
 import { titleParts } from "./IssueTitle";
 import { issuePath, issuesPath } from "./paths";
 import { splitSource } from "./source";
 
-export function IssuePage({ client = mcpBacklogsClient, sendClient }: { client?: BacklogsClient; sendClient?: SendClient }) {
+export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesClient, sendClient }: { client?: BacklogsClient; notesClient?: NotesClient; sendClient?: SendClient }) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -51,6 +52,7 @@ export function IssuePage({ client = mcpBacklogsClient, sendClient }: { client?:
               </div>
             ) : null}
           </Card>
+          <IssueLog issueId={ready.id} client={notesClient} />
           <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />
           {[
             { heading: "Waits on", issues: ready.waitsOn },

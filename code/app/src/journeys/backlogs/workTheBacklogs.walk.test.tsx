@@ -144,6 +144,77 @@ describe("journey 03, work the backlogs", () => {
     expect(await screen.findByText("Your role cannot change who has access to backlogs.")).toBeInTheDocument();
   });
 
+  describe("8. reads and adds to the Log of an issue", () => {
+    const entry = (id: string, kind: string, author: string, text: string, at: string, links: string[] = []) => ({ id, task_id: "t1", kind, author_id: author, text, links, created_at: at });
+    const logSection = async () => (await screen.findByText("Log")).closest("section") as HTMLElement;
+    const people = { items: [{ id: "w1", display_name: "Backlog worker" }, { id: "o1", display_name: "Owner" }] };
+    const logged = () => [
+      entry("n1", "worker", "w1", "Took the issue and moved it to Doing.", "2026-11-10T14:02:00Z"),
+      entry("n2", "worker", "w1", "Fixed the importer.", "2026-11-10T15:05:00Z", ["commit 3f9a1c2 https://example.test/commit/3f9a1c2", "loader/importer.go"]),
+      entry("n3", "person", "o1", "Checked the list on a phone.", "2026-11-11T08:40:00Z"),
+    ];
+    const withLog = (held: ReturnType<typeof entry>[]) => ({
+      [taskTools.notes]: () => ({ items: held }),
+      [taskTools.addNote]: (args: Record<string, unknown>) => {
+        const added = entry(`n${held.length + 1}`, String(args.kind), "o1", String(args.text), "2026-11-11T09:00:00Z");
+        held.push(added);
+        return added;
+      },
+      actor_list_actors: () => people,
+    });
+
+    it("shows the entries under the description, oldest first, each with its writer, kind and links", async () => {
+      inFarmers("/backlogs/issue/t1", withLog(logged()));
+      const log = await logSection();
+      const texts = Array.from(log.querySelectorAll(".log-entry p")).map((one) => one.textContent);
+      expect(texts).toEqual(["Took the issue and moved it to Doing.", "Fixed the importer.", "Checked the list on a phone."]);
+      const fixed = within(log).getByText("Fixed the importer.").closest(".log-entry") as HTMLElement;
+      expect(within(fixed).getByText("Backlog worker")).toBeInTheDocument();
+      expect(within(fixed).getByText("Worker")).toBeInTheDocument();
+      expect(within(fixed).getByRole("link", { name: "commit 3f9a1c2" })).toHaveAttribute("href", "https://example.test/commit/3f9a1c2");
+      expect(within(fixed).getByText("loader/importer.go")).toBeInTheDocument();
+      const last = within(log).getByText("Checked the list on a phone.").closest(".log-entry") as HTMLElement;
+      expect(within(last).getByText("Owner")).toBeInTheDocument();
+      expect(within(last).getByText("Person")).toBeInTheDocument();
+    });
+
+    it("an issue with no entries says Nothing logged yet. above the same box", async () => {
+      inFarmers("/backlogs/issue/t1", withLog([]));
+      const log = await logSection();
+      expect(within(log).getByText("Nothing logged yet.")).toBeInTheDocument();
+      expect(within(log).getByLabelText("Add a note")).toBeInTheDocument();
+    });
+
+    it("a note typed in the box is added last and the earlier entries are unchanged", async () => {
+      const held = logged();
+      const world = inFarmers("/backlogs/issue/t1", withLog(held));
+      const log = await logSection();
+      const add = within(log).getByRole("button", { name: "Add" });
+      expect(add).toBeDisabled();
+      await userEvent.type(within(log).getByLabelText("Add a note"), "All 46 workflows show.");
+      expect(add).toBeEnabled();
+      await userEvent.click(add);
+      await waitFor(() => expect(world.named(taskTools.addNote)[0]?.args).toMatchObject({ taskID: "t1", text: "All 46 workflows show.", kind: "person" }));
+      await waitFor(() => expect(Array.from(log.querySelectorAll(".log-entry p")).map((one) => one.textContent)).toEqual([...held.map((one) => one.text)]));
+      expect(held).toHaveLength(4);
+      expect(Array.from(log.querySelectorAll(".log-entry p")).slice(-1)[0]?.textContent).toBe("All 46 workflows show.");
+      expect(within(log).getByLabelText("Add a note")).toHaveValue("");
+    });
+
+    it("a reader who cannot move the issue still gets the box", async () => {
+      inFarmers("/backlogs/issue/t1", { ...withLog([]), [backlogTools.myRoles]: () => ({ permissions: ["task.read"] }) });
+      const log = await logSection();
+      expect(within(log).getByRole("button", { name: "Add" })).toBeInTheDocument();
+    });
+
+    it("the list shows nothing of the Log", async () => {
+      inFarmers("/backlogs/issues", { ...world, ...withLog(logged()) });
+      await screen.findByText("Import the boards");
+      expect(screen.queryByText("Took the issue and moved it to Doing.")).toBeNull();
+      expect(screen.queryByText("Log")).toBeNull();
+    });
+  });
+
   it.todo("3. the new backlog is seen only by the Product owner group until another group is given access; the hub decides it and journey 03's walk record has it on the hub, no app test");
 
   it.todo("4. 'move 2 to Doing' and 'move 4 to Documentation' leave the issue at one step of one backlog with its mark unchanged; the assistant page offers no move tool yet (SW98, SW101)");

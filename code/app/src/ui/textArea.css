@@ -1,0 +1,1 @@
+.textarea { min-height: 4.5rem; padding: .625rem .875rem; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r-md); resize: vertical; font: inherit; color: inherit; }
