@@ -100,15 +100,17 @@ function Form({ client, backlogId, first, firstOwner, groups, smart }: FormProps
         </Card>
       ) : null}
       {rows.map((row) => (
-        <Card key={row.groupId}>
-          <div className="card-head">
-            <span className="ttl">{row.name}</span>
-            {row.fixed ? null : (
+        <Card
+          key={row.groupId}
+          title={row.name}
+          action={
+            row.fixed ? undefined : (
               <button type="button" className="icb" aria-label={`Take away access from ${row.name}`} disabled={busy} onClick={() => setLeaving(row)}>
                 ×
               </button>
-            )}
-          </div>
+            )
+          }
+        >
           {row.fixed ? (
             <Chip tone="accent">{levelWords("edit")}</Chip>
           ) : (

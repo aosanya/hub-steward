@@ -363,3 +363,14 @@ describe("the Can edit level", () => {
     expect(within(await cardOf("Product owner")).queryByRole("button", { name: /Take away access/ })).toBeNull();
   });
 });
+
+describe("each group's access card is the shared Card", () => {
+  it("heads the card with the group's name and puts the take-away button at the right of the header", async () => {
+    show(accessFake());
+    const head = (await screen.findByText("Contributors", { selector: ".card-title" })).closest(".card-head") as HTMLElement;
+    expect(within(head).getByRole("button", { name: "Take away access from Contributors" })).toBeInTheDocument();
+    expect(head.closest("section")).toHaveClass("card");
+    expect(document.querySelectorAll(".card > .card-head .ttl")).toHaveLength(0);
+  });
+});
+
