@@ -54,7 +54,7 @@ func (m *agencyManager) refuseDuplicate(ctx context.Context, row models.RecordRo
 		}
 	}
 	for _, r := range recent {
-		if !replaced[r.ID] && r.OrderID == row.OrderID && maps.Equal(r.Answers, row.Answers) {
+		if !replaced[r.ID] && r.AddedBy == row.AddedBy && r.OrderID == row.OrderID && maps.Equal(r.Answers, row.Answers) {
 			return ErrDuplicateRecordRow
 		}
 	}
