@@ -67,13 +67,15 @@ export const lineWords = (issue: Issue): Word[] =>
     { tag: issue.backlog, label: issue.backlog },
   ].filter((word, at, all) => word.label !== "" && all.findIndex((one) => one.label === word.label) === at);
 
-export function IssueLine({ issue, chosen, onTag }: { issue: Issue; chosen: string[]; onTag?: (tag: string) => void }) {
+export function IssueLine({ issue, chosen, onTag, showStep }: { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; showStep?: boolean }) {
   const words = [...(issue.mark === "Blocked" || issue.mark === "Waiting" ? [{ tag: issue.mark, label: issue.mark }] : []), ...lineWords(issue)];
-  return words.length === 0 && !issue.priority && !issue.createdAt ? null : (
+  const step = showStep ? issue.step : "";
+  return words.length === 0 && !step && !issue.priority && !issue.createdAt ? null : (
     <span className="issue-tags issue-line">
       {words.map((word) => (
         <TextChip key={word.tag} text={word.label} pressed={onTag ? chosen.includes(word.tag) : undefined} onClick={onTag ? () => onTag(word.tag) : undefined} />
       ))}
+      {step ? <TextChip text={step} /> : null}
       {issue.priority ? <Chip>{issue.priority}</Chip> : null}
       <IssueAge issue={issue} />
     </span>

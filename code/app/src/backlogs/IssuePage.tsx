@@ -86,7 +86,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
                 <Card key={heading} title={heading} collapsible flush>
                   <Rows>
                     {issues.map((one) => (
-                      <IssueRow key={one.id} issue={one} chosen={[]} chevron onOpen={() => navigate(issuePath(one.id), backState(here.pathname + here.search, parts.code))} />
+                      <IssueRow key={one.id} issue={one} chosen={[]} chevron showStep onOpen={() => navigate(issuePath(one.id), backState(here.pathname + here.search, parts.code))} />
                     ))}
                   </Rows>
                 </Card>
