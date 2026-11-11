@@ -442,46 +442,36 @@ describe("the answer for any client", () => {
 });
 
 describe("an agency with no market mounted", () => {
-  const noMarket = { modules: [{ module: "taskmanager", mounts: [{ name: "Tasks", key: "main" }] }] };
-  const marketMounted = { modules: [{ module: "market", mounts: [{ name: "Market", key: "main" }] }] };
-  const marketRefusal = new Error("market_list_group_orders: agencies: instance not found");
+  const noMarket = new mcp.McpError("market_list_group_orders: agencies: instance not found");
 
   const refusingMarket: Replies = {
-    market_list_group_orders: marketRefusal,
-    market_list_posters: marketRefusal,
+    market_list_group_orders: noMarket,
+    market_list_posters: noMarket,
     actor_list_my_join_requests: { items: [] },
   };
 
-  it("lists nothing and names no failed source when only the market tools refuse", async () => {
-    answering({ ...refusingMarket, agency_list_mounts: noMarket });
+  it("lists nothing and names no failed source when only the market tools say instance not found", async () => {
+    answering(refusingMarket);
     expect(await mcpStartedClient.listWithFailures!()).toEqual({ items: [], failed: [] });
-  });
-
-  it("does not ask the market tools at all", async () => {
-    const spy = answering({ ...refusingMarket, agency_list_mounts: noMarket });
-    await mcpStartedClient.list();
-    const asked = spy.mock.calls.map((call) => call[1]);
-    expect(asked).not.toContain("market_list_group_orders");
-    expect(asked).not.toContain("market_list_posters");
   });
 
   it("keeps the pending join request row", async () => {
     answering({
       ...refusingMarket,
-      agency_list_mounts: noMarket,
       actor_list_my_join_requests: { items: [{ group_id: "grp1", state: "pending" }] },
       actor_list_joinable_groups: { items: [{ id: "grp1", name: "Siaya farmers" }] },
     });
     expect((await mcpStartedClient.listWithFailures!()).items.map((row) => row.workflow)).toEqual(["Join a group"]);
   });
 
-  it("still names the market sources as failed when the market is mounted and refuses", async () => {
-    answering({ ...refusingMarket, agency_list_mounts: marketMounted });
+  it("still names the market sources as failed for any other refusal", async () => {
+    const down = new mcp.McpError("market_list_group_orders: wakala answered 500");
+    answering({ ...refusingMarket, market_list_group_orders: down, market_list_posters: down });
     expect((await mcpStartedClient.listWithFailures!()).failed).toEqual(["orders", "supplier"]);
   });
 
-  it("still asks the market when the mounts cannot be read", async () => {
-    answering({ ...refusingMarket, agency_list_mounts: new Error("agency_list_mounts: refused") });
-    expect((await mcpStartedClient.listWithFailures!()).failed).toEqual(["orders", "supplier"]);
+  it("still names the join requests as failed when they cannot be read", async () => {
+    answering({ ...refusingMarket, actor_list_my_join_requests: new Error("boom") });
+    expect((await mcpStartedClient.listWithFailures!()).failed).toEqual(["joinRequests"]);
   });
 });

@@ -1,4 +1,3 @@
-import { agencyTools, modulesOf } from "../agency/modules";
 import { coordinatorOrderPath, isLiveBuyOrder } from "../coordinator/start/api";
 import { mcpGroupsClient, type GroupsClient } from "../groups/api";
 import { applySupplierPath, applySupplierWorkflow, joinGroupPath, joinGroupWorkflow } from "../home/workflowScreens";
@@ -96,23 +95,17 @@ const supplierRows = async (supply: SupplyClient, me: string): Promise<StartedIt
 
 const sourceNames = ["orders", "joinRequests", "supplier"] as const;
 
-const marketModule = "market";
+const marketAbsent = (reason: unknown) => reason instanceof Error && reason.message.includes("instance not found");
 
-const marketIsMounted = (): Promise<boolean> =>
-  callTool("", agencyTools.modules, {}).then(
-    (reply) => {
-      const mounted = modulesOf(reply);
-      return mounted.length === 0 || mounted.some((module) => module.code === marketModule);
-    },
-    () => true,
-  );
+const emptyWhenNoMarket = <T>(rows: Promise<T[]>): Promise<T[]> =>
+  rows.catch((reason) => (marketAbsent(reason) ? [] : Promise.reject(reason)));
 
 const listWithFailures = async (): Promise<StartedAnswer> => {
-  const [me, market] = await Promise.all([resolveMember(), marketIsMounted()]);
+  const me = await resolveMember();
   const settled = await Promise.allSettled([
-    market ? groupOrderRows(me) : [],
+    emptyWhenNoMarket(groupOrderRows(me)),
     joinRequestRows(mcpGroupsClient()),
-    market ? supplierRows(mcpSupplyClient, me) : [],
+    emptyWhenNoMarket(supplierRows(mcpSupplyClient, me)),
   ]);
   const failures = settled.filter((outcome): outcome is PromiseRejectedResult => outcome.status === "rejected");
   if (failures.length === settled.length) throw failures[0].reason;
