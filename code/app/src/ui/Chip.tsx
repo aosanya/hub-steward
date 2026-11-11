@@ -2,11 +2,11 @@ import type { CSSProperties, ReactNode } from "react";
 
 export type ChipTone = "accent" | "info" | "success" | "danger";
 
-type Props = { children: ReactNode; tone?: ChipTone; hue?: number; onClick?: () => void; pressed?: boolean };
+type Props = { children: ReactNode; tone?: ChipTone; hue?: number; shade?: number; onClick?: () => void; pressed?: boolean };
 
-export function Chip({ children, tone, hue, onClick, pressed }: Props) {
+export function Chip({ children, tone, hue, shade = 0, onClick, pressed }: Props) {
   const className = tone ? `chip ${tone}` : hue === undefined ? "chip" : "chip hued";
-  const style = hue === undefined ? undefined : ({ "--hue": hue } as CSSProperties);
+  const style = hue === undefined ? undefined : ({ "--hue": hue, "--shade": shade } as CSSProperties);
   return onClick ? (
     <button type="button" className={className} style={style} aria-pressed={pressed ?? false} onClick={onClick}>
       {children}

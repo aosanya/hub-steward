@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Issue } from "./api";
 import { IssueLine, IssueTags, IssueTitle, lineWords, titleParts } from "./IssueTitle";
-import { hueOf } from "./tags";
+import { hueOf, shadeOf } from "./tags";
 
 const issue = (over: Partial<Issue>): Issue => ({ id: "a", title: "t", description: "", status: "pending", step: "", repo: "", topics: [], backlog: "", mark: "", rank: 1, ...over });
 
@@ -67,9 +67,22 @@ describe("an issue's title on a row or card", () => {
     const sample = Array.from({ length: 720 }, (_, at) => `tag-${at}`);
     for (const word of [...words, ...sample]) {
       const hue = hueOf(word);
-      expect(hue).toBeGreaterThanOrEqual(110);
-      expect(hue).toBeLessThan(250);
+      expect(hue).toBeGreaterThanOrEqual(100);
+      expect(hue).toBeLessThan(255);
     }
+  });
+
+  it("varies the shade of a bubble as well as its hue, from its text, in five steps", () => {
+    const sample = Array.from({ length: 720 }, (_, at) => `tag-${at}`);
+    const shades = new Set(sample.map(shadeOf));
+    expect([...shades].sort()).toEqual([0, 1, 2, 3, 4]);
+    expect(shadeOf("hub-steward-swe")).toBe(shadeOf("hub-steward-swe"));
+    const hues = new Set(sample.map(hueOf));
+    expect(hues.size).toBeGreaterThan(100);
+    expect(Math.abs(hueOf("hub-steward-swe") - hueOf("Backlog"))).toBeGreaterThanOrEqual(60);
+    const { container } = render(<IssueLine issue={issue({ repo: "hub-steward-swe", backlog: "Backlog" })} chosen={[]} />);
+    const first = container.querySelector<HTMLElement>(".chip");
+    expect(first?.style.getPropertyValue("--shade")).toBe(String(shadeOf("hub-steward-swe")));
   });
 
   it("colours a bubble from its own text, the same every time, and leaves Ready and Blocked their tones", () => {

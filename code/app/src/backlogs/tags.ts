@@ -17,14 +17,19 @@ export const toggled = (chosen: string[], tag: string) => (chosen.includes(tag) 
 
 export const toneOf = (tag: string): ChipTone | undefined => (tag === "Ready" ? "success" : tag === "Blocked" ? "danger" : undefined);
 
-const firstHue = 110;
-const hueSpan = 140;
+const firstHue = 100;
+const hueSpan = 155;
+const shades = 5;
 
-export const hueOf = (tag: string) => firstHue + [...tag].reduce((sum, letter) => (sum * 31 + letter.charCodeAt(0)) % hueSpan, 7);
+const hashOf = (tag: string) => [...tag].reduce((sum, letter) => (Math.imul(sum, 6875) + letter.charCodeAt(0)) >>> 0, 2166136261);
+
+export const hueOf = (tag: string) => firstHue + (hashOf(tag) % hueSpan);
+
+export const shadeOf = (tag: string) => Math.floor(hashOf(tag) / hueSpan) % shades;
 
 export const chipLook = (tag: string) => {
   const tone = toneOf(tag);
-  return tone ? { tone } : { hue: hueOf(tag) };
+  return tone ? { tone } : { hue: hueOf(tag), shade: shadeOf(tag) };
 };
 
 export const issuesWords = (count: number) => `${count} ${count === 1 ? "issue" : "issues"}`;
