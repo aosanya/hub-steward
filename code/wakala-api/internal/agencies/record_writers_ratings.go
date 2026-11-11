@@ -57,6 +57,10 @@ func (w ratingWriter) Write(ctx context.Context, landed mwanachamaforms.LandedRe
 	return err
 }
 
+func (ratingWriter) CheckFields(record string, fields []string) error {
+	return checkFormFields(moduleRatings, recordRating, record, ratingFormFields, fields)
+}
+
 func ratingValueOf(raw any) (float64, error) {
 	switch v := raw.(type) {
 	case float64:

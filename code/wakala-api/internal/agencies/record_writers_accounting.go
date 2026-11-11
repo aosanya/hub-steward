@@ -73,6 +73,10 @@ func (w ledgerEntryWriter) Write(ctx context.Context, landed mwanachamaforms.Lan
 	return err
 }
 
+func (ledgerEntryWriter) CheckFields(record string, fields []string) error {
+	return checkFormFields(moduleAccounting, recordLedgerEntry, record, ledgerEntryFormFields, fields)
+}
+
 func ledgerEntryOf(landed mwanachamaforms.LandedRecord) (mwanachamaaccounting.Entry, error) {
 	fields := make(map[string]any, len(landed.Fields))
 	for name, value := range landed.Fields {
@@ -155,4 +159,16 @@ func contains(list []string, name string) bool {
 		}
 	}
 	return false
+}
+
+func checkFormFields(module, name, record string, allowed, fields []string) error {
+	if record != module+"."+name {
+		return fmt.Errorf("%s takes the record %s.%s from a form, not %s", module, module, name, record)
+	}
+	for _, field := range fields {
+		if !contains(allowed, field) {
+			return fmt.Errorf("%s.%s has no field %q a form may fill; the fields are %s", module, name, field, strings.Join(allowed, ", "))
+		}
+	}
+	return nil
 }

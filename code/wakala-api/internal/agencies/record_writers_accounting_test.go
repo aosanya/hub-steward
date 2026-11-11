@@ -138,3 +138,17 @@ func TestLedgerWriterKeepsTheFormsOwnDimensionToItself(t *testing.T) {
 		t.Fatalf("entries = %+v, want one carrying ward north", entries)
 	}
 }
+
+func TestLedgerWriterChecksTheFieldsAFormMapsBeforeAnyoneAnswers(t *testing.T) {
+	w := ledgerEntryWriter{}
+	if err := w.CheckFields("accounting.entry", []string{"amount", "debit_account_id", "credit_account_id", "narration"}); err != nil {
+		t.Fatalf("known fields = %v, want none", err)
+	}
+	err := w.CheckFields("accounting.entry", []string{"amount", "ammount"})
+	if err == nil || !strings.Contains(err.Error(), "ammount") {
+		t.Fatalf("ammount = %v, want a refusal naming ammount", err)
+	}
+	if err := w.CheckFields("accounting.invoice", []string{"amount"}); err == nil {
+		t.Fatalf("accounting.invoice = nil, want a refusal")
+	}
+}

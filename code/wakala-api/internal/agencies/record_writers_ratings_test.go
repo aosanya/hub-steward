@@ -92,3 +92,17 @@ func TestRatingWriterRefusesWhatIsNotAnItemAndAValueInRange(t *testing.T) {
 		t.Fatal("a record this writer does not take was written")
 	}
 }
+
+func TestRatingWriterChecksTheFieldsAFormMapsBeforeAnyoneAnswers(t *testing.T) {
+	w := ratingWriter{}
+	if err := w.CheckFields("ratings.rating", []string{"item", "value"}); err != nil {
+		t.Fatalf("item and value = %v, want none", err)
+	}
+	err := w.CheckFields("ratings.rating", []string{"item", "score"})
+	if err == nil || !strings.Contains(err.Error(), "score") {
+		t.Fatalf("score = %v, want a refusal naming score", err)
+	}
+	if err := w.CheckFields("ratings.review", []string{"item"}); err == nil {
+		t.Fatalf("ratings.review = nil, want a refusal")
+	}
+}
