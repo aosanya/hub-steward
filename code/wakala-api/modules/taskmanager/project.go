@@ -27,10 +27,29 @@ func (m *taskManager) CreateProject(ctx context.Context, p Project) (Project, er
 	p.CreatedAt = now
 	p.UpdatedAt = now
 
+	if err := m.checkProjectNameFree(ctx, p.ProjectName, ""); err != nil {
+		return Project{}, err
+	}
 	if err := m.store.Insert(ctx, roleProject, p); err != nil {
 		return Project{}, fmt.Errorf("CreateProject: %w", err)
 	}
 	return p, nil
+}
+
+func (m *taskManager) checkProjectNameFree(ctx context.Context, projectName, exceptID string) error {
+	q := m.store.Query(ctx, roleProject).
+		Where("project_name = ? AND deleted = ?", projectName, false)
+	if exceptID != "" {
+		q = q.Where("id <> ?", exceptID)
+	}
+	var holders int64
+	if err := q.Count(&holders).Error; err != nil {
+		return fmt.Errorf("checkProjectNameFree: %w", err)
+	}
+	if holders > 0 {
+		return fmt.Errorf("%w: %q", ErrProjectAlreadyExists, projectName)
+	}
+	return nil
 }
 
 // GetProject reads a single Project by its ID.
@@ -71,6 +90,9 @@ func (m *taskManager) UpdateProject(ctx context.Context, p Project) (Project, er
 	}
 	if p.Name == "" {
 		return Project{}, fmt.Errorf("%w: Project.Name is required", ErrInvalidTask)
+	}
+	if err := m.checkProjectNameFree(ctx, toSlug(p.Name), p.ID); err != nil {
+		return Project{}, err
 	}
 	p.CreatedAt = current.CreatedAt
 	p.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
