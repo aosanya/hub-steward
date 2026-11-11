@@ -19,7 +19,9 @@ func (r *registry) declarableIn(instanceID string) mwanachamaforms.Declarable {
 		}
 		out := make([]string, 0, len(held))
 		for _, g := range held {
-			out = append(out, g.ID)
+			if !g.Hidden {
+				out = append(out, g.ID)
+			}
 		}
 		return out, nil
 	}
