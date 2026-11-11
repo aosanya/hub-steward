@@ -40,7 +40,7 @@ beforeEach(() => openAgency({ id: "hub-1", name: "Hub" } as never));
 
 describe("every place that shows an issue draws it through the one shared row", () => {
   it("the list of all issues and a search result", async () => {
-    at("/a/hub-1/backlogs/all?q=route", <IssuesPage client={client} />, "/a/:agencyId/backlogs/:backlogId");
+    at("/a/hub-1/backlogs/all?q=route&view=list", <IssuesPage client={client} />, "/a/:agencyId/backlogs/:backlogId");
     await screen.findByText("DEV-010");
     expect(document.querySelectorAll(".rows > .issue-row")).toHaveLength(1);
   });

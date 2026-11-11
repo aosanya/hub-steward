@@ -251,14 +251,14 @@ describe("journey 09, smart backlogs", () => {
     expect(within(entry).getByText("3 issues")).toBeInTheDocument();
   });
 
-  it("3. opens it: the Smart pill, the rules read back, the count, Edit rules and Select, no Board switch, and only Ready issues at To do", async () => {
+  it("3. opens it: the Smart pill, the rules read back, the count, Edit rules and Select, a List | Board switch opening on the board, and only Ready issues at To do", async () => {
     walk("/backlogs/ready/smart");
     expect(await screen.findByText("Mark is Ready · Step is To do")).toBeInTheDocument();
     expect(screen.getByText("Smart")).toBeInTheDocument();
     expect(screen.getByText("3 issues")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Edit rules" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Select" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Board" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Board" })).toHaveAttribute("aria-pressed", "true");
     listed("Record the voice clips", "Add the backlog tools", "Switch on the custody module");
     absent("Fix the import route", "Import the municipality");
   });

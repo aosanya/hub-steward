@@ -6,3 +6,6 @@ export const BacklogBoardRoutes = () => createElement(Routes, null, createElemen
 
 export { boardPath } from "../backlogs/paths";
 export { backlogPagePath } from "../backlogPage/paths";
+export { BoardColumns } from "./BoardColumns";
+export { columnsOf, stepsOfIssues } from "./board";
+export { useView, ViewSwitch, type View } from "./ViewSwitch";

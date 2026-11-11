@@ -9,19 +9,15 @@ import { backlogPagePath } from "../backlogPage/paths";
 import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../sendToBacklog";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { backState } from "../ui/backTo";
-import { Segmented } from "../ui/Segmented";
 import { Shell } from "../ui/Shell";
+import { BoardColumns } from "./BoardColumns";
+import { ViewSwitch } from "./ViewSwitch";
 import { columnsOf } from "./board";
 import "./backlogBoard.css";
 
 type Loaded = { backlog: Backlog | null; issues: Issue[] };
 
 type Read = { state: "loading" } | { state: "failed" } | ({ state: "ready" } & Loaded);
-
-const views = [
-  { id: "list", label: "List" },
-  { id: "board", label: "Board" },
-] as const;
 
 const countWords = (shown: number, steps: number) => `${shown} ${shown === 1 ? "issue" : "issues"} · ${steps} ${steps === 1 ? "step" : "steps"}`;
 
@@ -81,27 +77,17 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
       {loaded && backlog ? (
         <>
           <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={toggle} onClear={() => choose([])} />
-          <Segmented items={[...views]} current="board" onChange={() => navigate(issuesPath(backlogId, chosen, query))} />
-          <div className="bb-board">
-            {columnsOf(backlog.steps, shown).map((column) => (
-              <section key={column.step} className="bb-col" aria-label={column.step}>
-                <h3>
-                  <span>{column.step}</span>
-                  <span>{column.issues.length}</span>
-                </h3>
-                {column.issues.map((issue) => (
-                  <div key={issue.id} className="bb-card">
-                    {selecting.on ? (
-                      <SelectableIssueRow issue={issue} chosen={chosen} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
-                    ) : (
-                      <IssueRow issue={issue} chosen={chosen} onTag={toggle} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
-                    )}
-                  </div>
-                ))}
-                {column.issues.length === 0 ? <p className="bb-none">Nothing here</p> : null}
-              </section>
-            ))}
-          </div>
+          <ViewSwitch current="board" onChange={() => navigate(issuesPath(backlogId, chosen, query))} />
+          <BoardColumns
+            columns={columnsOf(backlog.steps, shown)}
+            renderCard={(issue) =>
+              selecting.on ? (
+                <SelectableIssueRow issue={issue} chosen={chosen} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
+              ) : (
+                <IssueRow issue={issue} chosen={chosen} onTag={toggle} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
+              )
+            }
+          />
           {outcome && !selecting.on ? (
             <p className="sub" role="status">
               {outcome}

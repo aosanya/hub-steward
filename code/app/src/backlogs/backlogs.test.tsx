@@ -352,11 +352,17 @@ describe("the list of issues", () => {
     expect(where()).toBe("/a/hub-1/backlogs/backlog/board?tag=Blocked");
   });
 
-  it("has no List | Board switch on All issues", async () => {
+  it("opens All issues on the board, with a List | Board switch that goes to the list and back", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs/all");
     await screen.findByText("Fix mirrored board drift");
-    expect(screen.queryByRole("button", { name: "Board" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Board" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getAllByRole("region").length).toBeGreaterThan(0);
+    await userEvent.click(screen.getByRole("button", { name: "List" }));
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "List" })).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(screen.getByRole("button", { name: "Board" }));
+    expect(screen.getAllByRole("region").length).toBeGreaterThan(0);
   });
 
   it("opens an issue from its title", async () => {

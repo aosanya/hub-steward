@@ -39,7 +39,12 @@ const choices: FieldChoices = { tag: ["Docs"], mark: ["Ready", "Blocked"], backl
 
 const readySet: RuleSet = { match: "all", rules: [{ field: "mark", operator: "is", value: "Ready" }, { field: "step", operator: "is", value: "To do" }] };
 
-const issue = (id: string, title: string): Issue => ({ id, title, description: "", status: "pending", step: "To do", repo: "hub-steward", topics: [], backlog: "Software", mark: "Ready", rank: 1 });
+const issue = (id: string, title: string, step = "To do", backlogId?: string): Issue => ({ id, ...(backlogId ? { backlogId } : {}), title, description: "", status: "pending", step, repo: "hub-steward", topics: [], backlog: "Software", mark: "Ready", rank: 1 });
+
+const ownBacklogs = [
+  { id: "software", name: "Software", steps: ["To do", "Doing", "Waiting"], issues: 3 },
+  { id: "ready", name: "Ready to start", steps: [], issues: 3, kind: "smart" as const },
+];
 
 const fake = (over: Partial<SmartBacklogClient> = {}): SmartBacklogClient => ({
   choices: async () => choices,
@@ -101,20 +106,40 @@ describe("one smart backlog opened", () => {
     render(
       <MemoryRouter initialEntries={["/a/hub-1/backlogs/ready/smart"]}>
         <Routes>
-          <Route path="/a/:agencyId/backlogs/:backlogId/smart" element={<SmartBacklogPage client={client} issues={{ issues: async () => issues } as never} manage={may(allowed)} />} />
+          <Route path="/a/:agencyId/backlogs/:backlogId/smart" element={<SmartBacklogPage client={client} issues={{ issues: async () => issues, backlogs: async () => ownBacklogs } as never} manage={may(allowed)} />} />
           <Route path="*" element={<Where />} />
         </Routes>
       </MemoryRouter>,
     );
 
-  it("reads the rules back, counts the issues and offers Edit rules to a manager, with no Board switch", async () => {
+  it("reads the rules back, counts the issues and offers Edit rules to a manager, with a List | Board switch on Board", async () => {
     open(fake(), [issue("t1", "Record the voice clips"), issue("t2", "Add the backlog tools")]);
     expect(await screen.findByText("Mark is Ready · Step is To do")).toBeInTheDocument();
     expect(screen.getByText("Smart")).toBeInTheDocument();
     expect(screen.getByText("2 issues")).toBeInTheDocument();
     expect(screen.getByText(/Record the voice clips/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Edit rules" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Board" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Board" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "List" })).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("draws one column per step of the issues' own backlog, in its order", async () => {
+    open(fake(), [issue("t1", "Record the voice clips", "To do", "software"), issue("t2", "Add the backlog tools", "Waiting", "software")]);
+    await screen.findByRole("region", { name: "To do" });
+    expect(screen.getAllByRole("region").map((column) => column.getAttribute("aria-label"))).toEqual(["To do", "Doing", "Waiting"]);
+    expect(within(screen.getByRole("region", { name: "To do" })).getByText(/Record the voice clips/)).toBeInTheDocument();
+    expect(within(screen.getByRole("region", { name: "Waiting" })).getByText(/Add the backlog tools/)).toBeInTheDocument();
+    expect(within(screen.getByRole("region", { name: "Doing" })).getByText("Nothing here")).toBeInTheDocument();
+    expect(screen.getByText("2 issues")).toBeInTheDocument();
+  });
+
+  it("goes to the list when List is tapped and back when Board is", async () => {
+    open(fake(), [issue("t1", "Record the voice clips", "To do", "software")]);
+    await userEvent.click(await screen.findByRole("button", { name: "List" }));
+    expect(screen.queryByRole("region", { name: "To do" })).toBeNull();
+    expect(screen.getByText(/Record the voice clips/)).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Board" }));
+    expect(screen.getByRole("region", { name: "To do" })).toBeInTheDocument();
   });
 
   it("shows the empty card with Edit rules inside it when nothing matches", async () => {
