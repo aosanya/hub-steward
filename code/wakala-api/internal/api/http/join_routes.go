@@ -18,11 +18,11 @@ type joinModeRequest struct {
 	JoinMode string `json:"join_mode"`
 }
 
-func registerJoinRoutes(mux *http.ServeMux, reg agencies.Registry, auth callers, residents residentGrants, mayDecide func(http.HandlerFunc) http.HandlerFunc) {
+func registerJoinRoutes(mux *http.ServeMux, reg agencies.Registry, auth callers, residents residentGrants, mayDecide func(http.HandlerFunc) http.HandlerFunc, mayChange func(string, http.HandlerFunc) http.HandlerFunc) {
 	mux.HandleFunc("POST /instances/{instanceID}/join", auth.require(joinInstance(reg, residents)))
 	mux.HandleFunc("POST /instances/{instanceID}/leave", auth.require(leaveInstance(reg, residents)))
-	mux.HandleFunc("PUT /instances/{instanceID}/join-mode", auth.require(setJoinMode(reg)))
-	mux.HandleFunc("PUT /instances/{instanceID}/name", auth.require(renameInstance(reg)))
+	mux.HandleFunc("PUT /instances/{instanceID}/join-mode", auth.require(mayChange(setJoinModeAction, setJoinMode(reg))))
+	mux.HandleFunc("PUT /instances/{instanceID}/name", auth.require(mayChange(renameAction, renameInstance(reg))))
 	mux.HandleFunc("GET /instances/{instanceID}/join-requests", auth.require(mayDecide(listJoinRequests(reg))))
 	mux.HandleFunc("POST /instances/{instanceID}/join-requests/{userID}/approve", auth.require(mayDecide(decideJoinRequest(reg, residents, true))))
 	mux.HandleFunc("POST /instances/{instanceID}/join-requests/{userID}/refuse", auth.require(mayDecide(decideJoinRequest(reg, residents, false))))

@@ -117,12 +117,12 @@ func writeInternalErr(w http.ResponseWriter, err error) {
 	writeErr(w, http.StatusInternalServerError, "internal error")
 }
 
-func registerInstanceRoutes(mux *http.ServeMux, reg agencies.Registry, auth callers, residents residentGrants, mayDecide func(http.HandlerFunc) http.HandlerFunc) {
+func registerInstanceRoutes(mux *http.ServeMux, reg agencies.Registry, auth callers, residents residentGrants, mayDecide func(http.HandlerFunc) http.HandlerFunc, mayChange func(string, http.HandlerFunc) http.HandlerFunc) {
 	mux.HandleFunc("POST /instances", auth.require(createInstance(reg)))
 	mux.HandleFunc("GET /instances", auth.require(listInstances(reg)))
 	mux.HandleFunc("GET /instances/{instanceID}", auth.require(getInstance(reg)))
 	mux.HandleFunc("PUT /instances/{instanceID}/kind", auth.require(setKind(reg)))
 	mux.HandleFunc("POST /instances/{instanceID}/agents", auth.require(addAgentRoute(reg)))
-	registerJoinRoutes(mux, reg, auth, residents, mayDecide)
+	registerJoinRoutes(mux, reg, auth, residents, mayDecide, mayChange)
 	registerDirectoryRoutes(mux, reg, auth)
 }

@@ -19,7 +19,7 @@ func NewRouter(d *Deps) http.Handler {
 		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 	})
 
-	registerInstanceRoutes(mux, d.Registry, auth, d.residentGrants(), d.agentMayDecideJoinRequests)
+	registerInstanceRoutes(mux, d.Registry, auth, d.residentGrants(), d.agentMayDecideJoinRequests, d.agentMayChangeInstanceSettings)
 	registerInstanceImportRoute(mux, d.Registry, auth)
 	registerTranslationRoutes(mux, d.Registry, auth, d.Translator, agencyContentLanguages(d.Languages))
 	d.registerAgencyRoutes(mux, d.Registry, auth)
