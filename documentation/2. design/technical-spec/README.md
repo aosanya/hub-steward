@@ -14,3 +14,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 | 08 | [Console design](../mockups/console/README.md) | The console's screens |
 |  | [Hub keys](hub-keys.md) | How the agent gets into each agency |
 |  | [Do Something: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |
+
+## The phone app's top bar
+
+Inside an agency, the phone app's top bar shows the agency's name in a small line under the screen title, so a member with several agencies can tell which one is open. The agency-picker screens leave it off. An app can also be limited to one agency by name, which is how a single agency is shown on its own. The files and settings are in the [app's README](../../../code/app/README.md).
