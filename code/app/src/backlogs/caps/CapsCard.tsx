@@ -96,7 +96,7 @@ function updatedWords(reading: CapsReading) {
   return when === null ? null : `updated ${when}`;
 }
 
-export function CapsCard({ issueId, client = mcpCapsClient, running = false }: { issueId: string; client?: CapsClient; running?: boolean }) {
+export function CapsCard({ issueId, client = mcpCapsClient, running = false, onReading }: { issueId: string; client?: CapsClient; running?: boolean; onReading?: (reading: CapsReading) => void }) {
   const [saved, setSaved] = useState<CapsReading | null>(null);
   const [editing, setEditing] = useState(false);
   const loaded = useLoad(() => client.read(issueId), `caps:${openAgencyId()}:${issueId}`);
@@ -106,6 +106,9 @@ export function CapsCard({ issueId, client = mcpCapsClient, running = false }: {
     const timer = setInterval(() => client.read(issueId).then(setSaved, () => undefined), refreshMilliseconds);
     return () => clearInterval(timer);
   }, [running, editing, issueId, client]);
+  useEffect(() => {
+    if (reading) onReading?.(reading);
+  }, [reading]);
   const updated = reading ? updatedWords(reading) : null;
   return (
     <Card title="Caps" collapsible defaultOpen={false} flush>

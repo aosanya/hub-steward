@@ -11,12 +11,14 @@ import { backState, useBackLabel, useBackTo } from "../ui/backTo";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
 import "./issueWide.css";
-import { mcpBacklogsClient, mcpNotesClient, type BacklogsClient, type NotesClient } from "./api";
+import { mcpBacklogsClient, mcpNotesClient, settled, type BacklogsClient, type NotesClient } from "./api";
 import { SendToBacklogButton } from "../sendToBacklog";
 import type { SendClient } from "../sendToBacklog/types";
 import { IssueLog } from "./IssueLog";
-import { mcpCapsClient, type CapsClient } from "./caps/api";
+import { mcpCapsClient, type CapsClient, type CapsReading } from "./caps/api";
 import { CapsCard } from "./caps/CapsCard";
+import { CapTintChip } from "./caps/CapTintChip";
+import { tintOf, tintStyle } from "./caps/capTint";
 import { mcpReferencesClient, mcpRepoClient, type ReferencesClient, type RepoClient } from "./references/api";
 import { ReferencesCard } from "./references/ReferencesCard";
 import { IssueRow } from "./IssueRow";
@@ -37,10 +39,12 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
   const [version, setVersion] = useState(0);
   const [sent, setSent] = useState("");
   const [failed, setFailed] = useState(false);
+  const [caps, setCaps] = useState<{ issueId: string; reading: CapsReading } | null>(null);
   const issue = useLoad(() => client.issue(id), `issue:${openAgencyId()}:${id}:${version}`);
   const ready = issue.state === "ready" ? issue.data : null;
   const place = ready ? [ready.backlog, ready.step].filter((part) => part !== "").join(" · ") : "";
   const parts = ready ? titleParts(ready.title, ready.code) : null;
+  const found = ready && !settled.has(ready.status) && caps?.issueId === ready.id ? tintOf(caps.reading) : null;
   const { body, source } = splitSource(ready?.description ?? "");
   const setPriority = client.setPriority;
   const pick = (priority: string) => {
@@ -66,15 +70,20 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
       ) : null}
       {ready && parts ? (
         <div className="issue-wide">
-          <div className="issue-main">
+          <div className={found ? "issue-main cap-tinted" : "issue-main"} style={tintStyle(found)}>
             <Card title={<IssueTitle title={ready.title} code={ready.code} />} action={setPriority ? <PriorityMenu priority={ready.priority ?? ""} onPick={pick} /> : undefined}>
               <IssueTags issue={ready} chosen={[]} extra={[place]} />
+              {found ? (
+                <span className="issue-tags">
+                  <CapTintChip found={found} />
+                </span>
+              ) : null}
               {body ? <Markdown text={body} className="issue-body" /> : null}
             </Card>
           </div>
           <div className="issue-side">
             <ReferencesCard key={ready.id} issueId={ready.id} client={referencesClient} repoClient={repoClient} />
-            <CapsCard key={ready.id} issueId={ready.id} client={capsClient} running={ready.step === "Doing"} />
+            <CapsCard key={ready.id} issueId={ready.id} client={capsClient} running={ready.step === "Doing"} onReading={(reading) => setCaps({ issueId: ready.id, reading })} />
             <IssueLog key={ready.id} issueId={ready.id} client={notesClient} />
             <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />
             {[
