@@ -2,7 +2,6 @@ package mwanachamaagency
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"sort"
 
@@ -60,14 +59,15 @@ func (m *agencyManager) withUse(ctx context.Context, workflows []models.Workflow
 }
 
 func (m *agencyManager) publishedVersion(ctx context.Context) (int, error) {
-	p, err := m.GetPublicationForChannel(ctx, models.DefaultChannel)
-	if errors.Is(err, ErrPublicationNotFound) {
-		return 0, nil
-	}
+	published, err := m.ListPublications(ctx, PublicationFilter{Channel: models.DefaultChannel})
 	if err != nil {
 		return 0, fmt.Errorf("the published version: %w", err)
 	}
-	return p.Version, nil
+	version := 0
+	for _, p := range published {
+		version = max(version, p.Version)
+	}
+	return version, nil
 }
 
 func distinctSorted(in []int) []int {

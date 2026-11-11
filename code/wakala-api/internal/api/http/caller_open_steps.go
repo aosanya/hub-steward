@@ -89,7 +89,14 @@ func (d *Deps) callerOpenSteps(ctx context.Context, instanceID string) (openStep
 		}
 		return openSteps{}, err
 	}
-	steps, err := m.ListWorkItems(ctx, held.DraftID, mwanachamaagency.WorkItemFilter{})
+	if len(held.Roles) == 0 {
+		return openSteps{Items: []openStep{}}, nil
+	}
+	roleIDs := make([]string, 0, len(held.Roles))
+	for _, r := range held.Roles {
+		roleIDs = append(roleIDs, r.ID)
+	}
+	steps, err := m.ListWorkItems(ctx, held.DraftID, mwanachamaagency.WorkItemFilter{RoleIDs: roleIDs})
 	if err != nil {
 		return openSteps{}, err
 	}
@@ -109,7 +116,7 @@ func (d *Deps) callerOpenSteps(ctx context.Context, instanceID string) (openStep
 	})
 	items := []openStep{}
 	for _, s := range steps {
-		role, ok := roleByID[s.RoleID]
+		role, ok := roleByID[stepActorRoleID(s)]
 		if s.Deleted || !ok {
 			continue
 		}

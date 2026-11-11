@@ -135,6 +135,9 @@ func heldAgencyRoles(ctx context.Context, reg agencies.Registry, instanceID stri
 	if err != nil {
 		return heldRoles{}, err
 	}
+	if len(keys) == 0 {
+		return heldRoles{DraftID: draftID, Roles: []agencymodels.Role{}}, nil
+	}
 	live, err := m.ListRoles(ctx, draftID, mwanachamaagency.RoleFilter{})
 	if err != nil {
 		return heldRoles{}, err

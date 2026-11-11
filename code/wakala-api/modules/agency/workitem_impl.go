@@ -47,6 +47,9 @@ func (m *agencyManager) ListWorkItems(ctx context.Context, draftID string, filte
 	q = likeFilter(q, "code", filter.Code)
 	q = likeFilter(q, "title", filter.Title)
 	q = likeFilter(q, "description", filter.Description)
+	if filter.RoleIDs != nil {
+		q = q.Where("role_id IN ? OR recipient_role_id IN ?", filter.RoleIDs, filter.RoleIDs)
+	}
 
 	found, err := list[models.WorkItem](m, q, roleWorkItem)
 	if err != nil {

@@ -50,6 +50,7 @@ type stepRunWalk struct {
 	steps    map[string]string
 	workflow string
 	people   map[string]*http.Cookie
+	db       *gorm.DB
 }
 
 func (w stepRunWalk) call(t *testing.T, method, path string, body any, as *http.Cookie) *httptest.ResponseRecorder {
@@ -126,7 +127,7 @@ func newStepRunWalk(t *testing.T, plan []stepSpec, people ...string) stepRunWalk
 	}
 	deps := &Deps{Registry: reg, Insights: insights, Sessions: session.NewHMACManager([]byte("test-secret"), nil, nil), AdminToken: "test-admin-token"}
 	ApplyCaches(deps)
-	w := stepRunWalk{handler: NewRouter(deps), deps: deps, roles: map[string]string{}, steps: map[string]string{}, people: map[string]*http.Cookie{}}
+	w := stepRunWalk{handler: NewRouter(deps), deps: deps, roles: map[string]string{}, steps: map[string]string{}, people: map[string]*http.Cookie{}, db: db}
 	w.owner = w.cookieFor(t, "test-owner")
 
 	rec := w.call(t, "POST", "/instances", map[string]any{"name": "Health program"}, w.owner)

@@ -25,9 +25,10 @@ type WorkflowFilter struct {
 }
 
 type WorkItemFilter struct {
-	Code        string `query:"code"`
-	Title       string `query:"title"`
-	Description string `query:"description"`
+	Code        string   `query:"code"`
+	Title       string   `query:"title"`
+	Description string   `query:"description"`
+	RoleIDs     []string `query:"-"`
 }
 
 // DraftFilter's Status is exact-match against [models.DraftStatus]'s
