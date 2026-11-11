@@ -13,7 +13,7 @@ import (
 )
 
 func stepKeepsRecord(s agencymodels.WorkItem) bool {
-	return !s.Deleted && s.Kind == agencymodels.StepKindFillForm && s.RoleID != "" && s.FormName != "" && len(s.Questions) > 0
+	return !s.Deleted && stepTakesAnswers(s) && stepActorRoleID(s) != "" && s.FormName != "" && len(s.Questions) > 0
 }
 
 func stepRecordKey(workflowID, name string) string {
@@ -53,7 +53,7 @@ func recordOfStep(records []agencymodels.Record, s agencymodels.WorkItem, name s
 }
 
 func recordMatchesStep(r agencymodels.Record, s agencymodels.WorkItem) bool {
-	return r.RoleID == s.RoleID && r.FormName == s.FormName && reflect.DeepEqual(r.Questions, s.Questions)
+	return r.RoleID == stepActorRoleID(s) && r.FormName == s.FormName && reflect.DeepEqual(r.Questions, s.Questions)
 }
 
 func (m rolesPublished) ensureStepRecords(ctx context.Context, draftID string) error {
@@ -75,14 +75,14 @@ func (m rolesPublished) ensureStepRecords(ctx context.Context, draftID string) e
 		case !ok:
 			created, err := m.AgencyManager.CreateRecord(ctx, agencymodels.Record{
 				DraftID: draftID, WorkflowID: s.WorkflowID, Name: names[s.ID],
-				RoleID: s.RoleID, FormName: s.FormName, Questions: s.Questions,
+				RoleID: stepActorRoleID(s), FormName: s.FormName, Questions: s.Questions,
 			})
 			if err != nil {
 				return err
 			}
 			records = append(records, created)
 		case !recordMatchesStep(have, s):
-			have.RoleID, have.FormName, have.Questions = s.RoleID, s.FormName, s.Questions
+			have.RoleID, have.FormName, have.Questions = stepActorRoleID(s), s.FormName, s.Questions
 			if _, err := m.AgencyManager.UpdateRecord(ctx, have); err != nil {
 				return err
 			}

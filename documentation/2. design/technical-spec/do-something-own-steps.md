@@ -1,12 +1,14 @@
 # Do Something: each member's own steps
 
-Decided with the owner on 2026-11-05, after the phone app proved to open only the farmers' Create group order step. It applies to every `fill_form` step of every agency.
+Decided with the owner on 2026-11-05, after the phone app proved to open only the farmers' Create group order step. It applies to every `fill_form` step of every agency, and from 2026-11-11 to every `send_form` step and `route` fork.
 
 ## The rules
 
 1. **Only your own steps.** The Start list in Do Something shows a member the fill-form steps whose role the workflow names for a role she holds. A form that is not hers is neither listed nor accepted: the API refuses a send from a member without the step's role with 403, whoever else she is in the agency.
 2. **Send moves the workflow on.** A send saves the answers as a row of the step's register. The row on the sender's list then shows `Sent`, and the run now waits for the next role: that person's Do Something lists the next step.
-3. **Any step, any agency.** The step's role and questions come from the published workflow, so no screen or tool is written per agency. Publishing makes a register for each fill-form step; an agency published earlier has none until it is published again, and a send for such a step is refused with a conflict that says so.
+3. **A sent form is answered by its recipient.** A `send_form` step names no role of its own; the role it is sent to (`recipient_role_id`) is the role that lists it, answers it and owns its register.
+4. **A route sends the run down one branch.** A `route` step is the agency's own and is never listed. Once its sent form is answered, the run is offered the one step the first matching route goes to; the steps its other routes go to are skipped, and the run rejoins at the step after them. When no route matches, all of those steps are skipped, which is how the step named as the otherwise is reached.
+5. **Any step, any agency.** The step's role and questions come from the published workflow, so no screen or tool is written per agency. Publishing makes a register for each fill-form step; an agency published earlier has none until it is published again, and a send for such a step is refused with a conflict that says so.
 
 An earlier plan, one form per step aimed at the hub's root group, was dropped: a form reaches every member of the group it is aimed at, so anyone in the hub could have filled any form.
 
@@ -37,6 +39,7 @@ The two tools, the register, the run's `order_id` and the checks are described i
 - A question answered with a photo or a file: the step page cannot send one. A required photo or file question stops the send with a sentence saying so.
 - `Sent` is kept in the phone app's memory only. After a reload a waiting step's row is gone from the sender's list, because the API no longer lists the run for her; a first step comes back as a fresh start.
 - The phone app still sends a multi-select answer as one string of its labels joined by a comma and a space; a label that holds a comma is split in two and refused, so only a list is exact.
-- The run moves in step order and does not branch on an answer; a step of another kind inside the workflow is skipped by the run.
+- A step of a kind other than `fill_form` and `send_form` (a notice, a yes or no, a chat) is still skipped by the run.
+- A branch is chosen from the first row of the sent form in a run; a second row for the same step does not change it.
 - Agencies published before this change need publishing again before their steps can be sent.
 - The same change is not yet carried into Mwanachama's own wakala-api repository.

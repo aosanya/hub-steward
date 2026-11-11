@@ -105,6 +105,16 @@ func decodeObjects(t *testing.T, rec *httptest.ResponseRecorder) []map[string]an
 type stepSpec struct {
 	title, form, role string
 	questions         []agencymodels.StepQuestion
+	kind              agencymodels.StepKind
+	fork              *forkSpec
+}
+
+type forkSpec struct {
+	sentTitle     string
+	question      string
+	cases         map[string]string
+	caseOrder     []string
+	otherwiseStep string
 }
 
 func newStepRunWalk(t *testing.T, plan []stepSpec, people ...string) stepRunWalk {
@@ -163,21 +173,52 @@ func newStepRunWalk(t *testing.T, plan []stepSpec, people ...string) stepRunWalk
 			t.Fatalf("CreateWorkflowObjective: %v", err)
 		}
 		for i, s := range plan {
-			if _, ok := w.roles[s.role]; !ok {
+			if _, ok := w.roles[s.role]; !ok && s.role != "" {
 				role, err := mgr.CreateRole(ctx, agencymodels.Role{DraftID: draft.ID, Name: s.role})
 				if err != nil {
 					t.Fatalf("CreateRole %s: %v", s.role, err)
 				}
 				w.roles[s.role] = role.ID
 			}
-			step, err := mgr.CreateWorkItem(ctx, agencymodels.WorkItem{
+			item := agencymodels.WorkItem{
 				DraftID: draft.ID, WorkflowID: workflow.ID, Title: s.title, Ordinality: i + 1,
 				Kind: agencymodels.StepKindFillForm, RoleID: w.roles[s.role], FormName: s.form, Questions: s.questions,
-			})
+			}
+			if s.kind != "" {
+				item.Kind = s.kind
+			}
+			if item.Kind.AgencyOnly() {
+				item.RoleID = ""
+			}
+			if item.Kind == agencymodels.StepKindSendForm {
+				item.RecipientRoleID = w.roles[s.role]
+			}
+			step, err := mgr.CreateWorkItem(ctx, item)
 			if err != nil {
 				t.Fatalf("CreateWorkItem %s: %v", s.title, err)
 			}
 			w.steps[s.title] = step.ID
+		}
+		for _, s := range plan {
+			if s.fork == nil {
+				continue
+			}
+			route, err := mgr.GetWorkItem(ctx, w.steps[s.title])
+			if err != nil {
+				t.Fatalf("GetWorkItem %s: %v", s.title, err)
+			}
+			route.SentStepID = w.steps[s.fork.sentTitle]
+			for _, answer := range s.fork.caseOrder {
+				route.Routes = append(route.Routes, agencymodels.StepRoute{
+					Match:    agencymodels.RouteMatchAll,
+					Rules:    []agencymodels.RouteRule{{Question: s.fork.question, Operator: agencymodels.RouteIs, Value: answer}},
+					GoToStep: w.steps[s.fork.cases[answer]],
+				})
+			}
+			route.OtherwiseStepID = w.steps[s.fork.otherwiseStep]
+			if _, err := mgr.UpdateWorkItem(ctx, route); err != nil {
+				t.Fatalf("UpdateWorkItem %s: %v", s.title, err)
+			}
 		}
 		w.publish(t)
 

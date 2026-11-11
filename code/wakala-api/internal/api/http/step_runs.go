@@ -34,8 +34,9 @@ var (
 )
 
 type formStep struct {
-	step   agencymodels.WorkItem
-	record agencymodels.Record
+	step     agencymodels.WorkItem
+	record   agencymodels.Record
+	routedBy []agencymodels.WorkItem
 }
 
 type stepAnswer struct {
@@ -207,12 +208,13 @@ func writeStepErr(w http.ResponseWriter, err error) {
 func formStepsByWorkflow(steps []agencymodels.WorkItem, records []agencymodels.Record) map[string][]formStep {
 	out := map[string][]formStep{}
 	names := stepRecordNames(steps)
+	routed := routesTo(steps)
 	for _, s := range steps {
 		if !stepKeepsRecord(s) {
 			continue
 		}
 		if r, ok := recordOfStep(records, s, names[s.ID]); ok {
-			out[s.WorkflowID] = append(out[s.WorkflowID], formStep{step: s, record: r})
+			out[s.WorkflowID] = append(out[s.WorkflowID], formStep{step: s, record: r, routedBy: routed[s.ID]})
 		}
 	}
 	for id := range out {
@@ -227,11 +229,13 @@ type stepRun struct {
 	orderID string
 	since   string
 	done    []bool
+	skipped []bool
+	answers []map[string]string
 }
 
 func (r stepRun) next() int {
 	for i, done := range r.done {
-		if !done {
+		if !done && !r.skipped[i] {
 			return i
 		}
 	}
@@ -256,10 +260,11 @@ func runsOf(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formS
 				}
 				run, ok := byOrder[row.OrderID]
 				if !ok {
-					run = &stepRun{orderID: row.OrderID, since: row.CreatedAt, done: make([]bool, len(chain))}
+					run = &stepRun{orderID: row.OrderID, since: row.CreatedAt, done: make([]bool, len(chain)), answers: make([]map[string]string, len(chain))}
 					byOrder[row.OrderID] = run
 				}
 				run.done[i] = true
+				run.answers[i] = row.Answers
 				if row.CreatedAt < run.since {
 					run.since = row.CreatedAt
 				}
@@ -268,6 +273,7 @@ func runsOf(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formS
 	}
 	runs := make([]stepRun, 0, len(byOrder))
 	for _, run := range byOrder {
+		run.settle(chain)
 		runs = append(runs, *run)
 	}
 	sort.SliceStable(runs, func(i, j int) bool {
@@ -355,11 +361,11 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 		return stepAnswersResult{}, err
 	}
 	at := slices.IndexFunc(steps, func(s agencymodels.WorkItem) bool { return s.ID == stepID && !s.Deleted })
-	if at < 0 || steps[at].Kind != agencymodels.StepKindFillForm {
+	if at < 0 || !stepTakesAnswers(steps[at]) {
 		return stepAnswersResult{}, errStepNotFound
 	}
 	step := steps[at]
-	if !slices.ContainsFunc(held.Roles, func(r agencymodels.Role) bool { return r.ID == step.RoleID }) {
+	if !slices.ContainsFunc(held.Roles, func(r agencymodels.Role) bool { return r.ID == stepActorRoleID(step) }) {
 		return stepAnswersResult{}, errRowForbidden
 	}
 	records, err := m.ListRecords(ctx, held.DraftID, mwanachamaagency.RecordFilter{})
@@ -391,14 +397,31 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 		return stepAnswersResult{}, err
 	}
 	out := stepAnswersResult{StepID: step.ID, OrderID: orderID, RecordCode: chain[index].record.Code, RowID: row.ID, Done: true}
-	if index+1 < len(chain) {
-		next, err := nextStepOf(ctx, m, held.DraftID, chain[index+1], orderID)
+	following, err := followingStep(ctx, m, chain, orderID)
+	if err != nil {
+		return stepAnswersResult{}, err
+	}
+	if following >= 0 {
+		next, err := nextStepOf(ctx, m, held.DraftID, chain[following], orderID)
 		if err != nil {
 			return stepAnswersResult{}, err
 		}
 		out.NextStep = &next
 	}
 	return out, nil
+}
+
+func followingStep(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formStep, orderID string) (int, error) {
+	runs, err := runsOf(ctx, m, chain)
+	if err != nil {
+		return -1, err
+	}
+	for _, run := range runs {
+		if run.orderID == orderID {
+			return run.next(), nil
+		}
+	}
+	return -1, nil
 }
 
 func runForSubmit(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formStep, index int, orderID string) (string, error) {
@@ -435,11 +458,11 @@ func nextStepOf(ctx context.Context, m mwanachamaagency.AgencyManager, draftID s
 	next := openStep{
 		ID: link.step.ID, Title: link.step.Title, Kind: string(link.step.Kind), WorkflowID: link.step.WorkflowID,
 		WorkflowName: workflows[link.step.WorkflowID].Name, OpensIn: opensInOf(workflows[link.step.WorkflowID]),
-		RoleID: link.step.RoleID, FormName: link.step.FormName, Questions: link.step.Questions,
+		RoleID: link.record.RoleID, FormName: link.step.FormName, Questions: link.step.Questions,
 		State: stepStateWaiting, OrderID: orderID, RecordCode: link.record.Code,
 	}
 	for _, r := range roles {
-		if r.ID == link.step.RoleID {
+		if r.ID == link.record.RoleID {
 			next.RoleName = r.Name
 		}
 	}
