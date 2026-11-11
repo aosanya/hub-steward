@@ -32,6 +32,13 @@ func (g instanceConsentGate) Check(ctx context.Context, actorID string) error {
 	if !required {
 		return nil
 	}
+	role, err := g.r.RoleOf(ctx, g.id, actorID)
+	if err != nil {
+		return err
+	}
+	if role == RoleAgent {
+		return nil
+	}
 	cm, err := g.r.CustodyManager(ctx, g.id)
 	if err != nil {
 		return err
