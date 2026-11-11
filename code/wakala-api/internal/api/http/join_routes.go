@@ -80,6 +80,13 @@ func leaveInstance(reg agencies.Registry, residents residentGrants) http.Handler
 			return
 		}
 		err := reg.Leave(r.Context(), instanceID, caller)
+		if err == nil {
+			err = leaveGroups(r.Context(), reg, instanceID, caller)
+			if err != nil {
+				writeErr(w, http.StatusInternalServerError, "internal error")
+				return
+			}
+		}
 		switch {
 		case err == nil:
 			w.WriteHeader(http.StatusNoContent)
@@ -91,6 +98,14 @@ func leaveInstance(reg agencies.Registry, residents residentGrants) http.Handler
 			writeInstanceErr(w, err)
 		}
 	}
+}
+
+func leaveGroups(ctx context.Context, reg agencies.Registry, instanceID, actorID string) error {
+	directory, err := reg.ActorManager(ctx, instanceID)
+	if err != nil {
+		return err
+	}
+	return directory.LeaveAllGroups(ctx, actorID)
 }
 
 func setJoinMode(reg agencies.Registry) http.HandlerFunc {
