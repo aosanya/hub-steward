@@ -62,15 +62,18 @@ func TestStepNames_ADecomposedTwinOfAStepNameIsASecondStep(t *testing.T) {
 	}
 }
 
-func TestCheckBacklogs_ADecomposedTwinIsDeclaredTwice(t *testing.T) {
+func TestCheckChangedNames_ATwinIsRefusedOnlyWhereTheNameIsNew(t *testing.T) {
 	steps := []models.BacklogStep{{ID: "open", Name: "Open"}}
 	first := models.Backlog{ID: "a", Name: composedName, Steps: steps}
 	second := models.Backlog{ID: "b", Name: decomposedName, Steps: steps}
-	if err := models.CheckBacklogs([]models.Backlog{first, second}); err == nil {
-		t.Fatal("two backlogs whose names differ only in Unicode form were accepted")
+	if err := models.CheckChangedNames([]models.Backlog{first}, []models.Backlog{first, second}); err == nil {
+		t.Fatal("a new backlog whose name differs only in Unicode form was accepted")
+	}
+	if err := models.CheckChangedNames([]models.Backlog{first, second}, []models.Backlog{first, second}); err != nil {
+		t.Fatalf("twins already stored must stay loadable and savable: %v", err)
 	}
 	twinSteps := []models.BacklogStep{{ID: "x", Name: composedName}, {ID: "y", Name: decomposedName}}
-	if err := models.CheckBacklogs([]models.Backlog{{ID: "a", Name: "A", Steps: twinSteps}}); err == nil {
+	if err := models.CheckChangedNames(nil, []models.Backlog{{ID: "a", Name: "A", Steps: twinSteps}}); err == nil {
 		t.Fatal("two steps whose names differ only in Unicode form were accepted")
 	}
 }

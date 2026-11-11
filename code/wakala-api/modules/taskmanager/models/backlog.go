@@ -106,11 +106,10 @@ func CheckBacklogs(backlogs []Backlog) error {
 		if strings.TrimSpace(b.Name) == "" || b.ID == "" {
 			return fmt.Errorf("backlogs: a backlog has no name or id")
 		}
-		name := plaintext.FoldName(b.Name)
-		if ids[b.ID] || names[name] {
+		if ids[b.ID] || names[b.Name] {
 			return fmt.Errorf("backlogs: %q is declared twice", b.Name)
 		}
-		ids[b.ID], names[name] = true, true
+		ids[b.ID], names[b.Name] = true, true
 		if b.Smart() {
 			if err := checkSmart(b); err != nil {
 				return err
@@ -134,6 +133,9 @@ func CheckChangedNames(current, next []Backlog) error {
 			if problem := plaintext.Problem("backlog name", b.Name); problem != "" {
 				return fmt.Errorf("backlogs: %s", problem)
 			}
+			if err := checkBacklogNameFree(next, b); err != nil {
+				return err
+			}
 		}
 		for _, s := range b.Steps {
 			if i, ok := FindStep(before, s.ID); existed && ok && before.Steps[i].Name == s.Name {
@@ -142,6 +144,27 @@ func CheckChangedNames(current, next []Backlog) error {
 			if problem := plaintext.Problem("step name", s.Name); problem != "" {
 				return fmt.Errorf("backlogs: %s", problem)
 			}
+			if err := checkStepNameFree(b, s); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func checkBacklogNameFree(backlogs []Backlog, changed Backlog) error {
+	for _, other := range backlogs {
+		if other.ID != changed.ID && plaintext.SameName(other.Name, changed.Name) {
+			return fmt.Errorf("backlogs: %q is declared twice", changed.Name)
+		}
+	}
+	return nil
+}
+
+func checkStepNameFree(b Backlog, changed BacklogStep) error {
+	for _, other := range b.Steps {
+		if other.ID != changed.ID && plaintext.SameName(other.Name, changed.Name) {
+			return fmt.Errorf("backlogs: step %q of %q is declared twice", changed.Name, b.Name)
 		}
 	}
 	return nil
@@ -175,11 +198,10 @@ func checkSteps(b Backlog) error {
 		if strings.TrimSpace(s.Name) == "" || s.ID == "" {
 			return fmt.Errorf("backlogs: a step of %q has no name or id", b.Name)
 		}
-		name := plaintext.FoldName(s.Name)
-		if ids[s.ID] || names[name] {
+		if ids[s.ID] || names[s.Name] {
 			return fmt.Errorf("backlogs: step %q of %q is declared twice", s.Name, b.Name)
 		}
-		ids[s.ID], names[name] = true, true
+		ids[s.ID], names[s.Name] = true, true
 		for _, status := range s.Statuses {
 			if !knownTaskStatuses[status] {
 				return fmt.Errorf("backlogs: step %q maps %q, which is not a task status", s.Name, status)
