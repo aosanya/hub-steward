@@ -50,6 +50,10 @@ type (
 	TaskUsage          = models.TaskUsage
 	TaskUsageWrite     = models.TaskUsageWrite
 	TaskCaps           = models.TaskCaps
+	CapsNearestFilter  = models.CapsNearestFilter
+	NearestCap         = models.NearestCap
+	CapsNearest        = models.CapsNearest
+	CapsNearestList    = models.CapsNearestList
 	TaskReference      = models.TaskReference
 	TaskPatch          = models.TaskPatch
 	RankedCase         = models.RankedCase

@@ -86,6 +86,14 @@
                {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The issue."}],
       "returns": [{"body": true}]
     },
+    "get_caps_nearest": {
+      "method": "GET", "path": "/caps-nearest", "call": "NearestCaps", "action": "taskmanager.task.caps_nearest",
+      "title": "Read the nearest cap of many issues",
+      "description": "For a list of issues (task_id, repeated) or every issue of a backlog (backlog, id or name; at most 500, in rank order) return, in one call, each issue's caps in force (its own numbers, else the default) and nearest: the cap its last or current run is closest to, with key (input_tokens, output_tokens or runtime_seconds), used, cap and ratio (used over cap, above 1 once past the cap). nearest is absent when no worker has run on the issue. An id that does not exist or that the caller cannot see is left out. Send task_id or backlog, at most 500 ids. To read one issue's caps and consumption in full use taskmanager_task_caps_read.",
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
+      "returns": [{"body": true}]
+    },
     "set_task_caps": {
       "method": "PUT", "path": "/tasks/{taskID}/caps", "call": "SetTaskCaps", "action": "taskmanager.task.caps_set",
       "title": "Give an issue its own caps",

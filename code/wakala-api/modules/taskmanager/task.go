@@ -261,6 +261,7 @@ type TaskManager interface {
 	SetTaskCaps(ctx context.Context, requesterID, taskID string, change TaskCapsChange) (TaskCaps, error)
 	ClearTaskCaps(ctx context.Context, requesterID, taskID string) (TaskCaps, error)
 	WriteTaskUsage(ctx context.Context, requesterID, taskID string, usage TaskUsageWrite) (TaskCaps, error)
+	NearestCaps(ctx context.Context, filter CapsNearestFilter) (CapsNearestList, error)
 	AddTaskReference(ctx context.Context, requesterID, taskID, kind, repo, target string) (TaskReference, error)
 	ProposeTaskReference(ctx context.Context, requesterID, taskID, kind, repo, target string) (TaskReference, error)
 	ConfirmTaskReference(ctx context.Context, requesterID, taskID, referenceID string) (TaskReference, error)

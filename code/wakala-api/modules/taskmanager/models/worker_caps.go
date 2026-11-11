@@ -44,3 +44,27 @@ type TaskCaps struct {
 	InForce WorkerCaps  `json:"in_force"`
 	Used    *TaskUsage  `json:"used,omitempty"`
 }
+
+type CapsNearestFilter struct {
+	TaskIDs TagList `query:"task_id"`
+	Backlog string  `query:"backlog"`
+
+	RequesterID string `query:"-" json:"-"`
+}
+
+type NearestCap struct {
+	Key   string  `json:"key"`
+	Used  int64   `json:"used"`
+	Cap   int64   `json:"cap"`
+	Ratio float64 `json:"ratio"`
+}
+
+type CapsNearest struct {
+	TaskID  string      `json:"task_id"`
+	InForce WorkerCaps  `json:"in_force"`
+	Nearest *NearestCap `json:"nearest,omitempty"`
+}
+
+type CapsNearestList struct {
+	Items []CapsNearest `json:"items"`
+}
