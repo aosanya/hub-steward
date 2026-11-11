@@ -22,7 +22,7 @@ func NewRouter(d *Deps) http.Handler {
 	registerInstanceRoutes(mux, d.Registry, auth, d.residentGrants(), d.agentMayDecideJoinRequests)
 	registerInstanceImportRoute(mux, d.Registry, auth)
 	registerTranslationRoutes(mux, d.Registry, auth, d.Translator, agencyContentLanguages(d.Languages))
-	registerAgencyRoutes(mux, d.Registry, auth)
+	d.registerAgencyRoutes(mux, d.Registry, auth)
 	d.registerReviewRunRoutes(mux, auth)
 	d.registerRecordRowRoutes(mux, auth)
 	d.registerCallerOpenStepsRoute(mux, auth)

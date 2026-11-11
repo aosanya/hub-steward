@@ -8,30 +8,38 @@ import (
 	"wakalaserver/internal/agencies"
 )
 
-// agencyInstancePrefix is where every mwanachama-backend-agency route is
-// mounted, scoped to one registered Instance (decision #15) — e.g.
-// "/instances/{instanceID}/agency", ".../goals", ".../goals/{goalID}".
 const agencyInstancePrefix = "/instances/{instanceID}"
 
-// registerAgencyRoutes mounts every address agency declares, scoped per
-// Instance and requireCaller-gated (decision #4, WK8). Unlike
-// mwanachama-backend-api-gateway's own mount (a single fixed AgencyManager
-// passed once at boot), this repo holds many Agencies, so which manager
-// answers a request is decided per request, off the URL's {instanceID} —
-// agencyroutes.Shape() reads the declared Method/Path/Action without a
-// manager, and the handlers are built fresh per request against the real
-// one, in the same declared order.
-func registerAgencyRoutes(mux *http.ServeMux, reg agencies.Registry, auth callers) {
+func (d *Deps) registerAgencyRoutes(mux *http.ServeMux, reg agencies.Registry, auth callers) {
 	shape := agencyroutes.Shape()
 	for i, rt := range shape {
 		idx := i
+		action := rt.Action
 		mux.HandleFunc(rt.Pattern(agencyInstancePrefix), auth.require(func(w http.ResponseWriter, r *http.Request) {
-			m, err := agencyManagerFor(r.Context(), reg, r.PathValue("instanceID"))
+			instanceID := r.PathValue("instanceID")
+			m, err := agencyManagerFor(r.Context(), reg, instanceID)
 			if err != nil {
 				writeInstanceErr(w, err)
+				return
+			}
+			r = withPartition(r, instanceID)
+			if !d.agentMayDesign(r, instanceID, action) {
+				writeErr(w, http.StatusForbidden, "forbidden")
 				return
 			}
 			agencyroutes.Routes(m)[idx].Handler(w, r)
 		}))
 	}
+}
+
+func (d *Deps) agentMayDesign(r *http.Request, instanceID, action string) bool {
+	if r.Method == http.MethodGet || r.Method == http.MethodHead {
+		return true
+	}
+	role := d.callerRole(r, instanceID)
+	if role != agencies.RoleAgent {
+		return true
+	}
+	gate := agentPermissioned(role, d.Registry, d.agencyRolePermissions, nil)
+	return gate(r.Context(), action) == nil
 }
