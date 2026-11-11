@@ -8,6 +8,7 @@ import (
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
+	"wakalaserver/modules/shared/plaintext"
 )
 
 // createInstanceRequest is the wire shape for POST /instances.
@@ -113,6 +114,10 @@ func writeInstanceErr(w http.ResponseWriter, err error) {
 }
 
 func writeInternalErr(w http.ResponseWriter, err error) {
+	if refusal := plaintext.Unstorable(err); refusal != nil {
+		writeErr(w, http.StatusBadRequest, refusal.Error())
+		return
+	}
 	logInstanceFailure(w, err)
 	writeErr(w, http.StatusInternalServerError, "internal error")
 }

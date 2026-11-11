@@ -13,7 +13,7 @@ import (
 const reportPromisesPattern = "GET " + formsInstancePrefix + "/forms/{form_id}/results/latest/promises"
 
 type reportWithPromises struct {
-	Report   formsmodels.ResultReport     `json:"report"`
+	Report   formsmodels.ResultReportView `json:"report"`
 	Promises []agencies.ReportPromiseRead `json:"promises"`
 }
 
@@ -49,7 +49,7 @@ func (d *Deps) registerReportPromisesRoute(mux *http.ServeMux, reg agencies.Regi
 		if promises == nil {
 			promises = []agencies.ReportPromiseRead{}
 		}
-		writeJSON(w, http.StatusOK, reportWithPromises{Report: report, Promises: promises})
+		writeJSON(w, http.StatusOK, reportWithPromises{Report: report.RespondentView(), Promises: promises})
 	}))
 }
 

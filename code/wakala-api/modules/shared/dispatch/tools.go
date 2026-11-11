@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"wakalaserver/modules/shared/httpwire"
+	"wakalaserver/modules/shared/plaintext"
 )
 
 type FieldDoc struct {
@@ -176,6 +177,9 @@ func invokerFor(op Operation, plan []slot, props []property, method reflect.Valu
 		results := method.Call(append([]reflect.Value{reflect.ValueOf(ctx)}, args...))
 		if last := results[len(results)-1]; !last.IsNil() {
 			callErr := last.Interface().(error)
+			if refusal := plaintext.Unstorable(callErr); refusal != nil {
+				return nil, httpwire.PlainError{Cause: refusal}
+			}
 			if resolve(callErr, table, fallback).code == fallback {
 				logFailure(publishedName(op), callErr)
 				return nil, errors.New(opaque)

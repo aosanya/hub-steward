@@ -46,6 +46,7 @@ type (
 	Submission            = models.Submission
 	Send                  = models.Send
 	ResultReport          = models.ResultReport
+	ResultReportView      = models.ResultReportView
 	QuestionDraft         = models.QuestionDraft
 	ResolvedLink          = models.ResolvedLink
 	ResolvedLinkView      = models.ResolvedLinkView
@@ -157,6 +158,7 @@ type FormManager interface {
 	HideMemberAnswers(ctx context.Context, memberID string) error
 	RestoreMemberAnswers(ctx context.Context, memberID string) error
 	ListHiddenAnswers(ctx context.Context, memberID string) ([]models.Answer, error)
+	ListHiddenSends(ctx context.Context, memberID string) ([]models.Submission, error)
 
 	UseStandingAudience(a StandingAudience)
 
@@ -196,6 +198,8 @@ type FormManager interface {
 	PublishResults(ctx context.Context, formID, gitPath, gitCommit string, chapterIDs []string, publishedBy string) (models.ResultReport, error)
 
 	LatestResults(ctx context.Context, formID, callerID string) (models.ResultReport, error)
+
+	ShowLatestResults(ctx context.Context, formID, callerID string) (models.ResultReportView, error)
 
 	AddQuestion(ctx context.Context, in models.QuestionDraft) (models.Question, []models.QuestionOption, error)
 
