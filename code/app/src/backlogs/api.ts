@@ -1,11 +1,13 @@
 import { callTool } from "../wakala/mcp";
 import { noteOf, type IssueNote } from "./issueNotes";
+import { pendingCountsOf, type StepCount } from "./stepCounts";
 
 export const taskTools = {
   list: "taskmanager_task_list",
   get: "taskmanager_task_read",
   edges: "taskmanager_relationship_traverse",
   backlogs: "taskmanager_backlog_list",
+  pending: "taskmanager_task_pending",
   notes: "taskmanager_task_note_list",
   addNote: "taskmanager_task_note_add",
 };
@@ -36,12 +38,13 @@ export type Issue = {
 
 export type IssueDetail = Issue & { waitsOn: Issue[]; waitedOnBy: Issue[] };
 
-export type Backlog = { id: string; name: string; steps: string[]; issues: number; kind?: "smart" };
+export type Backlog = { id: string; name: string; steps: string[]; issues: number; kind?: "smart"; counts?: StepCount[] };
 
 export type BacklogsClient = {
   backlogs: () => Promise<Backlog[]>;
   issues: (backlogId?: string) => Promise<Issue[]>;
   issue: (id: string) => Promise<IssueDetail>;
+  smartCounts?: (smarts: Backlog[]) => Promise<Record<string, StepCount[]>>;
 };
 
 export type NotesClient = {
@@ -86,7 +89,14 @@ function itemsOfSteps(raw: unknown): HubStep[] {
 
 export const hubBacklogsOf = (reply: any): HubBacklog[] => itemsOf(reply).map(hubBacklogOf).filter((one) => one.id !== "");
 
-export const backlogOf = (one: HubBacklog): Backlog => ({ id: one.id, name: one.name, steps: one.steps.map((step) => step.name), issues: one.issues, ...(one.kind ? { kind: one.kind } : {}) });
+export const backlogOf = (one: HubBacklog): Backlog => ({
+  id: one.id,
+  name: one.name,
+  steps: one.steps.map((step) => step.name),
+  issues: one.issues,
+  counts: one.steps.map((step) => ({ name: step.name, issues: step.issues })),
+  ...(one.kind ? { kind: one.kind } : {}),
+});
 
 export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
   const status = text(raw?.status);
@@ -143,6 +153,16 @@ const issueList = async (backlogId: string, hub: HubBacklog[]) => {
 export const mcpBacklogsClient: BacklogsClient = {
   async backlogs() {
     return (await hubBacklogs()).map(backlogOf);
+  },
+  async smartCounts(smarts) {
+    const read = async (one: Backlog) => {
+      try {
+        return pendingCountsOf(await callTool("", taskTools.pending, { backlog: one.id, limit: 1 }), one.issues);
+      } catch {
+        return [];
+      }
+    };
+    return Object.fromEntries(await Promise.all(smarts.map(async (one) => [one.id, await read(one)] as const)));
   },
   async issues(backlogId = allIssuesId) {
     return issueList(backlogId, await hubBacklogs());

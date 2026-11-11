@@ -15,3 +15,4 @@
 .frame.fluid .issue-row .txt { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: .75rem; }
 .frame.fluid .issue-row .open { flex: 1 1 24rem; }
 .frame.fluid .issue-row .issue-tags { flex: 0 1 auto; }
+.step-counts { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .25rem; }

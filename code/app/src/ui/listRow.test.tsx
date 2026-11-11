@@ -35,6 +35,12 @@ describe("ListRow", () => {
     expect(screen.getByRole("button", { name: "Costs KES 500" })).toBeInTheDocument();
   });
 
+  it("puts what is given below the meta lines, inside the row's text", () => {
+    const { container } = render(<ListRow title="A" meta="Two issues" below={<span className="under">Bubbles</span>} />);
+    const text = container.querySelector(".txt")!;
+    expect(Array.from(text.children).map((el) => el.className)).toEqual(["ttl", "meta", "under"]);
+  });
+
   it("puts a given class on the row, button or not", () => {
     const { container, rerender } = render(<ListRow title="A" className="room" />);
     expect(container.querySelector("div.row.room")).not.toBeNull();

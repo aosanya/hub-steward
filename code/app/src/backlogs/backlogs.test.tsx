@@ -589,7 +589,9 @@ describe("talking to the hub", () => {
 
   it("takes the backlogs, their steps and their counts from the hub", async () => {
     answering(board);
-    expect(await mcpBacklogsClient.backlogs()).toEqual([{ id: "backlog", name: "Backlog", steps: stepNames, issues: 3 }]);
+    expect(await mcpBacklogsClient.backlogs()).toEqual([
+      { id: "backlog", name: "Backlog", steps: stepNames, issues: 3, counts: stepNames.map((name) => ({ name, issues: 0 })) },
+    ]);
   });
 
   it("reads the backlog and step an issue is placed in, by id", () => {

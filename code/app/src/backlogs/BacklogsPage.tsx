@@ -15,6 +15,8 @@ import { allIssuesId, issuesHeld, mcpBacklogsClient, type BacklogsClient } from 
 import { addBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
 import { mcpBacklogManageClient } from "../backlogManage/api";
 import { nothingSharedWords } from "./access";
+import { StepBubbles } from "./StepBubbles";
+import { stepTotals, type StepCount } from "./stepCounts";
 import { boardPath, issuesPath } from "./paths";
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -30,6 +32,9 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
   const mayManage = useMayManage(manage);
   const rows = backlogs.state === "ready" ? backlogs.data : [];
   const issues = issuesHeld(rows);
+  const smarts = rows.filter((one) => one.kind === "smart");
+  const smartCounts = useLoad(() => (client.smartCounts ? client.smartCounts(smarts) : Promise.resolve<Record<string, StepCount[]>>({})), `backlogs-smart-counts:${openAgencyId()}:${smarts.map((one) => one.id).join(",")}:${backlogs.state}`);
+  const smartCountsOf = (id: string) => (smartCounts.state === "ready" ? smartCounts.data[id] ?? [] : []);
   return (
     <Shell title="Backlogs" sub={named.state === "ready" && named.data.name ? named.data.name : undefined}>
       {notice ? <p role="status" className="sub">{notice}</p> : null}
@@ -37,12 +42,12 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
       {backlogs.state === "ready" && rows.length === 0 ? <EmptyCard words={nothingSharedWords} /> : null}
       {backlogs.state === "ready" && rows.length > 0 ? (
         <Rows>
-          <ListRow title="All issues" meta={plural(issues, "issue")} end="›" onClick={() => navigate(issuesPath(allIssuesId))} />
+          <ListRow title="All issues" meta={plural(issues, "issue")} below={<StepBubbles counts={stepTotals(rows)} />} end="›" onClick={() => navigate(issuesPath(allIssuesId))} />
           {rows.map((one) =>
             one.kind === "smart" ? (
-              <ListRow key={one.id} title={one.name} meta={plural(one.issues, "issue")} end={<><Chip tone="info">Smart</Chip> ›</>} onClick={() => navigate(smartBacklogPath(one.id))} />
+              <ListRow key={one.id} title={one.name} meta={plural(one.issues, "issue")} below={<StepBubbles counts={smartCountsOf(one.id)} />} end={<><Chip tone="info">Smart</Chip> ›</>} onClick={() => navigate(smartBacklogPath(one.id))} />
             ) : (
-              <ListRow key={one.id} title={one.name} meta={`${plural(one.steps.length, "step")} · ${plural(one.issues, "issue")}`} end="›" onClick={() => navigate(boardPath(one.id))} />
+              <ListRow key={one.id} title={one.name} meta={`${plural(one.steps.length, "step")} · ${plural(one.issues, "issue")}`} below={<StepBubbles counts={one.counts ?? []} />} end="›" onClick={() => navigate(boardPath(one.id))} />
             ),
           )}
         </Rows>

@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 
-type Props = { title: string; code?: string; meta?: string | string[]; end?: ReactNode; onClick?: () => void; lead?: boolean; start?: ReactNode; className?: string; role?: string };
+type Props = { title: string; code?: string; meta?: string | string[]; end?: ReactNode; onClick?: () => void; lead?: boolean; start?: ReactNode; below?: ReactNode; className?: string; role?: string };
 
 const chevron = "›";
 
 export const leadLetter = (title: string) => Array.from(title.trim()).find((c) => /[\p{L}\p{N}]/u.test(c))?.toLocaleUpperCase() ?? "";
 
-export function ListRow({ title, code, meta, end, onClick, lead, start, className, role }: Props) {
+export function ListRow({ title, code, meta, end, onClick, lead, start, below, className, role }: Props) {
   const letter = lead ? leadLetter(title) : "";
   const rowClass = className ? `row ${className}` : "row";
   const inner = (
@@ -19,6 +19,7 @@ export function ListRow({ title, code, meta, end, onClick, lead, start, classNam
         {[meta ?? []].flat().filter(Boolean).map((line, index) => (
           <span key={index} className="meta">{line}</span>
         ))}
+        {below}
       </span>
       {end ? <span className="end" aria-hidden={end === chevron ? true : undefined}>{end}</span> : null}
     </>
