@@ -25,3 +25,5 @@ export const issuesPath = (backlogId: string = allIssuesId, tags: string[] = [],
 export const boardPath = (backlogId: string, tags: string[] = [], query = "") => withTags(`${backlogsPath()}/${encodeURIComponent(backlogId)}/board`, tags, query);
 
 export const issuePath = (id: string) => `${backlogsPath()}/issue/${encodeURIComponent(id)}`;
+
+export const addReferencePath = (id: string) => `${issuePath(id)}/references/add`;

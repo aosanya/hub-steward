@@ -15,12 +15,16 @@ import { mcpBacklogsClient, mcpNotesClient, type BacklogsClient, type NotesClien
 import { SendToBacklogButton } from "../sendToBacklog";
 import type { SendClient } from "../sendToBacklog/types";
 import { IssueLog } from "./IssueLog";
+import { mcpReferencesClient, mcpRepoClient, type ReferencesClient, type RepoClient } from "./references/api";
+import { ReferencesCard } from "./references/ReferencesCard";
 import { IssueRow } from "./IssueRow";
 import { titleParts } from "./IssueTitle";
 import { issuePath, issuesPath } from "./paths";
 import { splitSource } from "./source";
 
-export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesClient, sendClient }: { client?: BacklogsClient; notesClient?: NotesClient; sendClient?: SendClient }) {
+type Props = { client?: BacklogsClient; notesClient?: NotesClient; sendClient?: SendClient; referencesClient?: ReferencesClient; repoClient?: RepoClient };
+
+export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesClient, sendClient, referencesClient = mcpReferencesClient, repoClient = mcpRepoClient }: Props) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -56,6 +60,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
             </Card>
           </div>
           <div className="issue-side">
+            <ReferencesCard issueId={ready.id} client={referencesClient} repoClient={repoClient} />
             <IssueLog issueId={ready.id} client={notesClient} />
             <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />
             {[
