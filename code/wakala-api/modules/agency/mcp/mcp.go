@@ -20,6 +20,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	mwanachamaagency "wakalaserver/modules/agency"
+	"wakalaserver/modules/shared/dispatch"
 )
 
 // ManagerResolver turns a caller-supplied id into the AgencyManager that id
@@ -29,10 +30,12 @@ import (
 // resolves it per call.
 type ManagerResolver func(ctx context.Context, id string) (mwanachamaagency.AgencyManager, error)
 
-// RegisterTools registers every tool this package exposes onto server,
-// each one resolving its manager via resolve.
 func RegisterTools(server *mcp.Server, resolve ManagerResolver) {
-	if err := registerDeclaredTools(server, resolve); err != nil {
+	RegisterToolsAs(server, resolve, nil)
+}
+
+func RegisterToolsAs(server *mcp.Server, resolve ManagerResolver, caller dispatch.Caller) {
+	if err := registerDeclaredTools(server, resolve, caller); err != nil {
 		panic(fmt.Sprintf("agency tools: %v", err))
 	}
 	registerCompositeTools(server, resolve)

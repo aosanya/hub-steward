@@ -66,7 +66,7 @@ func newRoleToolWalk(t *testing.T) roleToolWalk {
 	if err != nil {
 		t.Fatalf("CreateRole: %v", err)
 	}
-	tools, err := toolsFor(manager)
+	tools, err := toolsFor(manager, nil)
 	if err != nil {
 		t.Fatalf("toolsFor: %v", err)
 	}

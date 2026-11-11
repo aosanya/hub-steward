@@ -30,6 +30,7 @@ import (
 	insightsmcp "wakalaserver/modules/insights/mcp"
 	mwanachamasources "wakalaserver/modules/sources"
 
+	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/dbpool"
 )
 
@@ -60,7 +61,7 @@ func newMCPServer(d *Deps) *mcp.Server {
 	d.registerCatalogMCPTools(server)
 	d.registerReportsMCPTools(server)
 	d.registerTemplateMCPTools(server)
-	agencymcp.RegisterTools(server, d.resolveAgencyManager)
+	agencymcp.RegisterToolsAs(server, d.resolveAgencyManager, accounts.IDFromContext)
 	d.registerReviewRunMCPTools(server)
 	d.registerTaskManagerMCPTools(server, d.resolveTaskManager)
 	insightsmcp.RegisterTools(server, scopeInsightsToCaller(d.Insights, d.Registry))

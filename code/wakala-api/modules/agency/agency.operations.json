@@ -2174,11 +2174,17 @@
       "call": "CreateRecordRow",
       "action": "agency.record_row.create",
       "title": "Add record row",
-      "description": "Add one row to a record, as the member app does. The row is refused unless role_id is the role that adds rows to the record, and its answers must fit the record's form. Rows are kept in the agency and are never copied into a new version.",
+      "description": "Add one row to a record, as the member app does. The row is refused unless role_id is the role that adds rows to the record, and its answers must fit the record's form. The row is signed by the caller; an added_by in the request is ignored. Rows are kept in the agency and are never copied into a new version.",
       "args": [
         {
           "from": "body",
           "whole": true
+        },
+        {
+          "from": "caller",
+          "as": "added_by",
+          "into": "AddedBy",
+          "description": "Who adds the row, resolved from the session rather than the request."
         }
       ],
       "returns": [

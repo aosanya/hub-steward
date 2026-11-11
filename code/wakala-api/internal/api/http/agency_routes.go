@@ -5,6 +5,7 @@ import (
 
 	agencyroutes "wakalaserver/modules/agency/routes"
 
+	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 )
 
@@ -27,7 +28,7 @@ func (d *Deps) registerAgencyRoutes(mux *http.ServeMux, reg agencies.Registry, a
 				writeErr(w, http.StatusForbidden, "forbidden")
 				return
 			}
-			agencyroutes.Routes(m)[idx].Handler(w, r)
+			agencyroutes.Routes(m, accounts.IDFromContext)[idx].Handler(w, r)
 		}))
 	}
 }

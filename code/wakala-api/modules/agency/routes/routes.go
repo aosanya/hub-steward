@@ -103,16 +103,16 @@ var sentinels = map[string]error{
 	"ErrConsequenceOutsideHazard":   mwanachamaagency.ErrConsequenceOutsideHazard, "ErrLibraryTitleTaken": mwanachamaagency.ErrLibraryTitleTaken,
 }
 
-func Build(m mwanachamaagency.AgencyManager) ([]Route, error) {
+func Build(m mwanachamaagency.AgencyManager, caller dispatch.Caller) ([]Route, error) {
 	s, err := operations()
 	if err != nil {
 		return nil, err
 	}
-	return dispatch.Dispatch(s, dispatch.Deps{Manager: m, Errors: sentinels})
+	return dispatch.Dispatch(s, dispatch.Deps{Manager: m, Errors: sentinels, Caller: caller})
 }
 
-func Routes(m mwanachamaagency.AgencyManager) []Route {
-	out, err := Build(m)
+func Routes(m mwanachamaagency.AgencyManager, caller dispatch.Caller) []Route {
+	out, err := Build(m, caller)
 	if err != nil {
 		panic(fmt.Sprintf("agency routes: %v", err))
 	}

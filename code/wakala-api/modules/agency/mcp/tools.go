@@ -97,7 +97,7 @@ func fields() (map[string]dispatch.FieldDoc, error) {
 	return out, nil
 }
 
-func toolsFor(m mwanachamaagency.AgencyManager) ([]dispatch.Tool, error) {
+func toolsFor(m mwanachamaagency.AgencyManager, caller dispatch.Caller) ([]dispatch.Tool, error) {
 	s, err := operations()
 	if err != nil {
 		return nil, err
@@ -106,11 +106,11 @@ func toolsFor(m mwanachamaagency.AgencyManager) ([]dispatch.Tool, error) {
 	if err != nil {
 		return nil, err
 	}
-	return dispatch.Tools(s, dispatch.Deps{Manager: m, Errors: sentinels, Fields: f})
+	return dispatch.Tools(s, dispatch.Deps{Manager: m, Errors: sentinels, Fields: f, Caller: caller})
 }
 
-func registerDeclaredTools(server *mcp.Server, resolve ManagerResolver) error {
-	shapes, err := toolsFor(mwanachamaagency.ManagerShape())
+func registerDeclaredTools(server *mcp.Server, resolve ManagerResolver, caller dispatch.Caller) error {
+	shapes, err := toolsFor(mwanachamaagency.ManagerShape(), caller)
 	if err != nil {
 		return err
 	}
@@ -124,7 +124,7 @@ func registerDeclaredTools(server *mcp.Server, resolve ManagerResolver) error {
 			Title:       shape.Title,
 			Description: shape.Description,
 			InputSchema: schema,
-		}, declaredHandler(shape.Name, resolve))
+		}, declaredHandler(shape.Name, resolve, caller))
 	}
 	return nil
 }
@@ -150,7 +150,7 @@ func withInstance(schema json.RawMessage) (json.RawMessage, error) {
 	return json.Marshal(doc)
 }
 
-func declaredHandler(name string, resolve ManagerResolver) func(context.Context, *mcp.CallToolRequest, map[string]any) (*mcp.CallToolResult, any, error) {
+func declaredHandler(name string, resolve ManagerResolver, caller dispatch.Caller) func(context.Context, *mcp.CallToolRequest, map[string]any) (*mcp.CallToolResult, any, error) {
 	return func(ctx context.Context, req *mcp.CallToolRequest, in map[string]any) (*mcp.CallToolResult, any, error) {
 		instance, _ := in[instanceArg].(string)
 		delete(in, instanceArg)
@@ -159,7 +159,7 @@ func declaredHandler(name string, resolve ManagerResolver) func(context.Context,
 		if err != nil {
 			return nil, nil, err
 		}
-		tools, err := toolsFor(m)
+		tools, err := toolsFor(m, caller)
 		if err != nil {
 			return nil, nil, err
 		}
