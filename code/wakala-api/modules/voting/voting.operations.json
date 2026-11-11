@@ -137,6 +137,7 @@
     "ErrAlreadyAnswered": 409,
     "ErrNoPublisher": 401,
     "ErrInvalidPublication": 400,
+    "ErrAlreadyPublished": 409,
     "ErrNoReader": 401
   }
 }

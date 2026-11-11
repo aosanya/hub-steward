@@ -24,6 +24,7 @@ var Sentinels = map[string]error{
 	"ErrAlreadyAnswered":    voting.ErrAlreadyAnswered,
 	"ErrNoPublisher":        voting.ErrNoPublisher,
 	"ErrInvalidPublication": voting.ErrInvalidPublication,
+	"ErrAlreadyPublished":   voting.ErrAlreadyPublished,
 	"ErrNoReader":           voting.ErrNoReader,
 }
 

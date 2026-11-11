@@ -29,6 +29,7 @@ type PollManager interface {
 
 	AnswerPoll(ctx context.Context, in Answer) (Participation, error)
 	UseGroups(fn Groups)
+	UseGroupExists(fn GroupExists)
 	ForRun(runID string) (PollManager, error)
 
 	CountPoll(ctx context.Context, pollID string) (Count, error)
@@ -46,6 +47,7 @@ type pollManager struct {
 	st       *store
 	now      func() string
 	groups   Groups
+	exists   GroupExists
 	spec     *spec.Spec
 	settings SettingsLayers
 	minimum  int

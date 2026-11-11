@@ -19,7 +19,11 @@ type Answer struct {
 
 type Groups func(ctx context.Context, caller string) ([]string, error)
 
+type GroupExists func(ctx context.Context, groupID string) (bool, error)
+
 func (m *pollManager) UseGroups(fn Groups) { m.groups = fn }
+
+func (m *pollManager) UseGroupExists(fn GroupExists) { m.exists = fn }
 
 func (m *pollManager) callerGroups(ctx context.Context, caller string) ([]string, error) {
 	if m.groups == nil {

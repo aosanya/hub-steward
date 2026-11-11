@@ -25,6 +25,14 @@ func (m *pollManager) PublishResult(ctx context.Context, in Publication) (Poll, 
 	if err != nil {
 		return Poll{}, err
 	}
+	if p.PublishedAt != "" {
+		return Poll{}, ErrAlreadyPublished
+	}
+	for _, g := range in.GroupIDs {
+		if !slices.Contains(p.GroupIDs, g) {
+			return Poll{}, fmt.Errorf("%w: group %q is not a group the poll went to", ErrInvalidPublication, g)
+		}
+	}
 	p.PublishedAt, p.PublishedBy, p.PublishedGroupIDs = m.now(), in.PublishedBy, in.GroupIDs
 	row, err := specstore.Encode(m.st.Object(objectPoll), p)
 	if err != nil {

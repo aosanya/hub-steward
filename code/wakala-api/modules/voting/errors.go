@@ -21,5 +21,6 @@ var (
 var (
 	ErrNoPublisher        = errors.New("a result needs a caller to publish it")
 	ErrInvalidPublication = errors.New("invalid publication")
+	ErrAlreadyPublished   = errors.New("this poll's result is already published")
 	ErrNoReader           = errors.New("a published result is read by a caller")
 )

@@ -3,6 +3,7 @@ package voting
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"wakalaserver/modules/shared/specstore"
 
@@ -25,6 +26,9 @@ func (m *pollManager) CreatePoll(ctx context.Context, in Poll) (Poll, error) {
 	if err := settingsHold(in); err != nil {
 		return Poll{}, fmt.Errorf("%w: %s", ErrInvalidPoll, err)
 	}
+	if err := m.groupsBelong(ctx, in.GroupIDs); err != nil {
+		return Poll{}, err
+	}
 	choices, err := m.choicesHold(in)
 	if err != nil {
 		return Poll{}, err
@@ -46,6 +50,25 @@ func (m *pollManager) CreatePoll(ctx context.Context, in Poll) (Poll, error) {
 	}
 	in.Choices = choices
 	return in, nil
+}
+
+func (m *pollManager) groupsBelong(ctx context.Context, groupIDs []string) error {
+	for _, g := range groupIDs {
+		if strings.TrimSpace(g) == "" {
+			return fmt.Errorf("%w: a poll goes to groups that have an id", ErrInvalidPoll)
+		}
+		if m.exists == nil {
+			continue
+		}
+		found, err := m.exists(ctx, g)
+		if err != nil {
+			return fmt.Errorf("CreatePoll: %w", err)
+		}
+		if !found {
+			return fmt.Errorf("%w: group %q is not a group of this agency", ErrInvalidPoll, g)
+		}
+	}
+	return nil
 }
 
 func (m *pollManager) choicesHold(p Poll) ([]Choice, error) {
