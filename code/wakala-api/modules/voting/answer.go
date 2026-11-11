@@ -173,6 +173,9 @@ func (m *pollManager) record(ctx context.Context, pollID, by, group string, vote
 	ballot := Ballot{ID: newID(), PollID: pollID, ResponseID: part.ID, GroupID: group, Votes: votes, CastAt: now}
 	err := m.st.InTransaction(ctx, func(tx *store) error {
 		if prior != nil {
+			if err := lockParticipation(ctx, tx, prior.ID); err != nil {
+				return err
+			}
 			if err := forget(ctx, tx, prior.ID); err != nil {
 				return err
 			}
@@ -189,6 +192,17 @@ func (m *pollManager) record(ctx context.Context, pollID, by, group string, vote
 		return Participation{}, err
 	}
 	return part, nil
+}
+
+func lockParticipation(ctx context.Context, tx *store, responseID string) error {
+	q := tx.Query(ctx, objectParticipation)
+	if q.Dialector.Name() != "postgres" {
+		return nil
+	}
+	if err := q.Exec("select pg_advisory_xact_lock(hashtext(?))", tx.Table(objectParticipation)+":"+responseID).Error; err != nil {
+		return fmt.Errorf("AnswerPoll: %w", err)
+	}
+	return nil
 }
 
 func forget(ctx context.Context, tx *store, responseID string) error {

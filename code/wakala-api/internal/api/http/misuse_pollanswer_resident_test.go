@@ -6,6 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"gorm.io/gorm"
+
 	mwanachamaactor "wakalaserver/modules/actor"
 
 	"wakalaserver/internal/agencies"
@@ -23,7 +25,12 @@ type pollAnswerWalk struct {
 
 func newPollAnswerWalk(t *testing.T) pollAnswerWalk {
 	t.Helper()
-	w := newStepRunWalk(t, nil)
+	return newPollAnswerWalkOn(t, stepRunDB(t))
+}
+
+func newPollAnswerWalkOn(t *testing.T, db *gorm.DB) pollAnswerWalk {
+	t.Helper()
+	w := newStepRunWalkOn(t, db, nil)
 	ctx := context.Background()
 	um, err := w.deps.Registry.ActorManager(ctx, w.instance)
 	if err != nil {
