@@ -1,3 +1,4 @@
+import { agencyTools, modulesOf } from "../agency/modules";
 import { coordinatorOrderPath, isLiveBuyOrder } from "../coordinator/start/api";
 import { mcpGroupsClient, type GroupsClient } from "../groups/api";
 import { applySupplierPath, applySupplierWorkflow, joinGroupPath, joinGroupWorkflow } from "../home/workflowScreens";
@@ -95,12 +96,23 @@ const supplierRows = async (supply: SupplyClient, me: string): Promise<StartedIt
 
 const sourceNames = ["orders", "joinRequests", "supplier"] as const;
 
+const marketModule = "market";
+
+const marketIsMounted = (): Promise<boolean> =>
+  callTool("", agencyTools.modules, {}).then(
+    (reply) => {
+      const mounted = modulesOf(reply);
+      return mounted.length === 0 || mounted.some((module) => module.code === marketModule);
+    },
+    () => true,
+  );
+
 const listWithFailures = async (): Promise<StartedAnswer> => {
-  const me = await resolveMember();
+  const [me, market] = await Promise.all([resolveMember(), marketIsMounted()]);
   const settled = await Promise.allSettled([
-    groupOrderRows(me),
+    market ? groupOrderRows(me) : [],
     joinRequestRows(mcpGroupsClient()),
-    supplierRows(mcpSupplyClient, me),
+    market ? supplierRows(mcpSupplyClient, me) : [],
   ]);
   const failures = settled.filter((outcome): outcome is PromiseRejectedResult => outcome.status === "rejected");
   if (failures.length === settled.length) throw failures[0].reason;
