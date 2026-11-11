@@ -72,7 +72,7 @@ func (b limitedBoard) checkedStep(ctx context.Context, run mwanachamataskmanager
 		return nil
 	}
 	current := slices.IndexFunc(steps, func(s agencymodels.DocumentWorkItem) bool { return s.Code == run.CurrentStepID })
-	if at != current+1 {
+	if !followsInOrder(steps, current, at) {
 		return fmt.Errorf("%w: %s after %q", mwanachamataskmanager.ErrStepOutOfOrder, stepCode, run.CurrentStepID)
 	}
 	return nil
