@@ -59,3 +59,16 @@ func TestCreateConsentVersion_DuplicateNaturalKeyReturns500NotConflict(t *testin
 		t.Fatalf("expected the generic masked message, got %+v", out)
 	}
 }
+
+func TestCreateConsentVersionRefusesUnknownScopeAndLanguageWith400(t *testing.T) {
+	srv := newConsentTestServer(t)
+	for name, body := range map[string]string{
+		"unknown scope":    `{"scope":"x","version":"1","language":"en"}`,
+		"unknown language": `{"scope":"mechanics","version":"1","language":"fr"}`,
+		"empty body":       `{}`,
+	} {
+		if status, out := postJSON(t, srv.URL+"/consent/versions", body); status != http.StatusBadRequest {
+			t.Errorf("%s = %d (%v), want 400", name, status, out)
+		}
+	}
+}
