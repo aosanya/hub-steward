@@ -66,13 +66,13 @@ func newTwoAgencies(t *testing.T) twoAgencies {
 	return twoAgencies{stepRunWalk: w, ownerA: w.owner, ownerB: ownerB, idA: w.instance, idB: idB}
 }
 
-func entryBody(slug, name string) map[string]any {
+func perAgencyEntryBody(slug, name string) map[string]any {
 	return map[string]any{"slug": slug, "name": name, "summary": "s", "doc": "{}", "visibility": "pending"}
 }
 
 func TestReportsMount_EachAgencyHasItsOwnEntries(t *testing.T) {
 	a := newTwoAgencies(t)
-	put := a.call(t, "PUT", "/reports/entries/lights?instance_id="+a.idA, entryBody("lights", "Agency A lights"), a.ownerA)
+	put := a.call(t, "PUT", "/reports/entries/lights?instance_id="+a.idA, perAgencyEntryBody("lights", "Agency A lights"), a.ownerA)
 	if put.Code != http.StatusOK {
 		t.Fatalf("agency A owner writes its entry: got %d %s", put.Code, put.Body.String())
 	}
@@ -84,7 +84,7 @@ func TestReportsMount_EachAgencyHasItsOwnEntries(t *testing.T) {
 	if reach.Code != http.StatusNotFound {
 		t.Errorf("agency B owner names agency A's reports: got %d %s, want 404", reach.Code, reach.Body.String())
 	}
-	own := a.call(t, "PUT", "/reports/entries/lights?instance_id="+a.idB, entryBody("lights", "Agency B lights"), a.ownerB)
+	own := a.call(t, "PUT", "/reports/entries/lights?instance_id="+a.idB, perAgencyEntryBody("lights", "Agency B lights"), a.ownerB)
 	if own.Code != http.StatusOK {
 		t.Fatalf("agency B owner writes the same slug in its own reports: got %d %s", own.Code, own.Body.String())
 	}
@@ -96,7 +96,7 @@ func TestReportsMount_EachAgencyHasItsOwnEntries(t *testing.T) {
 
 func TestReportsMount_AMemberOfOneAgencyNeedsNoInstanceID(t *testing.T) {
 	a := newTwoAgencies(t)
-	put := a.call(t, "PUT", "/reports/entries/lights", entryBody("lights", "Agency A lights"), a.ownerA)
+	put := a.call(t, "PUT", "/reports/entries/lights", perAgencyEntryBody("lights", "Agency A lights"), a.ownerA)
 	if put.Code != http.StatusOK {
 		t.Fatalf("agency A owner writes without naming the agency: got %d %s", put.Code, put.Body.String())
 	}
@@ -108,7 +108,7 @@ func TestReportsMount_AMemberOfOneAgencyNeedsNoInstanceID(t *testing.T) {
 
 func TestReportsMount_PublicReadsNameTheAgency(t *testing.T) {
 	a := newTwoAgencies(t)
-	body := entryBody("lights", "Agency A lights")
+	body := perAgencyEntryBody("lights", "Agency A lights")
 	body["visibility"] = "public"
 	if put := a.call(t, "PUT", "/reports/entries/lights?instance_id="+a.idA, body, a.ownerA); put.Code != http.StatusOK {
 		t.Fatalf("write public entry: %d %s", put.Code, put.Body.String())
@@ -141,7 +141,7 @@ func TestFormsMount_EachAgencyHasItsOwnForms(t *testing.T) {
 
 func TestCatalogMount_EachAgencyHasItsOwnEntries(t *testing.T) {
 	a := newTwoAgencies(t)
-	put := a.call(t, "PUT", "/catalog/entries/lights?instance_id="+a.idA, entryBody("lights", "Agency A lights"), a.ownerA)
+	put := a.call(t, "PUT", "/catalog/entries/lights?instance_id="+a.idA, perAgencyEntryBody("lights", "Agency A lights"), a.ownerA)
 	if put.Code != http.StatusOK {
 		t.Fatalf("agency A owner writes a catalog entry: got %d %s", put.Code, put.Body.String())
 	}
