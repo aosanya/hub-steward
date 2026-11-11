@@ -7,8 +7,11 @@
       "status": 201,
       "action": "workspace.workbook.create",
       "title": "Start a workbook",
-      "description": "Start a container of work. It belongs to whoever owns it and is empty until something is touched in it.",
-      "args": [{"from": "body", "whole": true}],
+      "description": "Start a container of work. It belongs to the signed-in caller and is empty until something is touched in it.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "caller", "as": "owner", "into": "Owner", "description": "Whoever starts it owns it, resolved from the session rather than the request."}
+      ],
       "returns": [{"body": true}]
     },
     "get_workbook": {
@@ -27,9 +30,9 @@
       "call": "ListWorkbooks",
       "action": "workspace.workbook.list",
       "title": "List workbooks",
-      "description": "Every live workbook one person owns, most recently changed first. The owner is required: this never lists anybody else's.",
+      "description": "Every live workbook the signed-in caller owns, most recently changed first. This never lists anybody else's.",
       "args": [
-        {"from": "query", "as": "owner", "required": true, "description": "Whose workbooks to list."},
+        {"from": "caller", "as": "owner", "description": "Whose workbooks to list, resolved from the session rather than the request."},
         {"from": "query", "whole": true}
       ],
       "returns": [{"body": true}]
@@ -108,7 +111,8 @@
       "description": "Record one act performed in this workbook, named by the declared action of the operation that performed it. The shortcut for that action moves in the same write.",
       "args": [
         {"from": "body", "whole": true},
-        {"from": "path", "as": "workbook_id", "into": "WorkbookID", "description": "The workbook it was performed in."}
+        {"from": "path", "as": "workbook_id", "into": "WorkbookID", "description": "The workbook it was performed in."},
+        {"from": "caller", "as": "subject", "into": "Subject", "description": "Who performed it, resolved from the session rather than the request."}
       ],
       "returns": [{"body": true}]
     },

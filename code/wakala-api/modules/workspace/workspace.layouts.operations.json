@@ -22,7 +22,7 @@
       "description": "One layout as the caller would work in it. A patch is applied over its base, every locked path is written back from the base, and anything the patch asked for under a lock comes back as set aside rather than applied.",
       "args": [
         {"from": "path", "as": "layout_id", "description": "The layout to read."},
-        {"from": "query", "as": "subject", "description": "Who is reading it. Their own patch is settled against a base that has moved on."}
+        {"from": "caller", "as": "subject", "description": "Who is reading it, resolved from the session rather than the request. Their own patch is settled against a base that has moved on."}
       ],
       "returns": [{"body": true}]
     },
@@ -34,7 +34,10 @@
       "action": "workspace.layout.create",
       "title": "Make a layout",
       "description": "Make a layout: a whole arrangement, or a patch over one that is already published. It starts as a draft at version 1.",
-      "args": [{"from": "body", "whole": true}],
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "caller", "as": "owner", "into": "Owner", "description": "Whoever makes it owns it, resolved from the session rather than the request."}
+      ],
       "returns": [{"body": true}]
     },
     "update_layout": {
@@ -59,7 +62,7 @@
       "description": "Make a whole draft the published one for its scope. Everyone patching it stays on the version they last resolved against until they next read it.",
       "args": [
         {"from": "path", "as": "layout_id", "description": "The draft to publish."},
-        {"from": "body", "as": "subject", "description": "Who published it."}
+        {"from": "caller", "as": "subject", "description": "Who published it, resolved from the session rather than the request."}
       ],
       "returns": [{"body": true}]
     },
@@ -72,7 +75,8 @@
       "description": "Resolve a patch against one layout and answer what it would change, one line per path, with a line for each part held back because the base locks it. Nothing is stored, and nothing the layout is bound to is ever run.",
       "args": [
         {"from": "path", "as": "layout_id", "description": "The layout to weigh it against."},
-        {"from": "body", "whole": true}
+        {"from": "body", "whole": true},
+        {"from": "caller", "as": "subject", "into": "Subject", "description": "Who is acting, resolved from the session rather than the request."}
       ],
       "returns": [{"body": true}]
     },
@@ -85,7 +89,8 @@
       "description": "Apply a patch and keep its inverse, so it can be undone. Paths the base locks are held back rather than applied, and kept so they apply again if the lock is lifted.",
       "args": [
         {"from": "path", "as": "layout_id", "description": "The layout to change."},
-        {"from": "body", "whole": true}
+        {"from": "body", "whole": true},
+        {"from": "caller", "as": "subject", "into": "Subject", "description": "Who is acting, resolved from the session rather than the request."}
       ],
       "returns": [{"body": true}]
     },
@@ -98,7 +103,8 @@
       "description": "Undo the last change by applying the inverse stored with it, or clear one path, or clear the whole patch and go back to the base.",
       "args": [
         {"from": "path", "as": "layout_id", "description": "The layout to undo a change to."},
-        {"from": "body", "whole": true}
+        {"from": "body", "whole": true},
+        {"from": "caller", "as": "subject", "into": "Subject", "description": "Who is acting, resolved from the session rather than the request."}
       ],
       "returns": [{"body": true}]
     },
@@ -112,7 +118,8 @@
       "description": "Snapshot one layout, resolved, into a new draft somebody else owns, or offer it into a scope for whoever reviews drafts there. A copy is a snapshot: later changes to the original do not follow it.",
       "args": [
         {"from": "path", "as": "layout_id", "description": "The layout to copy."},
-        {"from": "body", "whole": true}
+        {"from": "body", "whole": true},
+        {"from": "caller", "as": "subject", "into": "Subject", "description": "Who is acting, resolved from the session rather than the request."}
       ],
       "returns": [{"body": true}]
     },
@@ -138,7 +145,8 @@
       "description": "Set which layout one person sees in one workbook. Two people sharing a workbook can each work in their own arrangement of it; naming no layout clears the choice.",
       "args": [
         {"from": "body", "whole": true},
-        {"from": "path", "as": "workbook_id", "into": "WorkbookID", "description": "The workbook being opened."}
+        {"from": "path", "as": "workbook_id", "into": "WorkbookID", "description": "The workbook being opened."},
+        {"from": "caller", "as": "subject", "into": "Subject", "description": "Who is acting, resolved from the session rather than the request."}
       ],
       "returns": [{"body": true}]
     },
@@ -151,7 +159,7 @@
       "description": "Which layout one person last chose in one workbook.",
       "args": [
         {"from": "path", "as": "workbook_id", "description": "The workbook."},
-        {"from": "query", "as": "subject", "description": "The person."}
+        {"from": "caller", "as": "subject", "description": "The person, resolved from the session rather than the request."}
       ],
       "returns": [{"body": true}]
     }

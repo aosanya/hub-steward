@@ -30,7 +30,7 @@ func (d *Deps) registerWorkspaceRoutes(mux *http.ServeMux, auth callers) {
 	if d.Layouts == nil {
 		return
 	}
-	for _, rt := range workspaceroutes.LayoutRoutesWith(d.Layouts, d.authorizer(workspaceScope)) {
+	for _, rt := range workspaceroutes.LayoutRoutesFor(d.Layouts, d.workspaceMount()) {
 		mux.HandleFunc(rt.Pattern(workspacePrefix), auth.require(rt.Handler))
 	}
 }

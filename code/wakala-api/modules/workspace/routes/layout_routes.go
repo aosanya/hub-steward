@@ -30,17 +30,25 @@ var layoutSentinels = map[string]error{
 }
 
 func BuildLayoutRoutes(lm workspace.LayoutManager, authorize dispatch.Authorizer) ([]Route, error) {
+	return BuildLayoutRoutesFor(lm, Mount{Authorize: authorize})
+}
+
+func BuildLayoutRoutesFor(lm workspace.LayoutManager, m Mount) ([]Route, error) {
 	s, err := layoutOperations()
 	if err != nil {
 		return nil, err
 	}
-	return dispatch.Dispatch(s, dispatch.Deps{Manager: lm, Errors: layoutSentinels, Authorize: authorize})
+	return dispatch.Dispatch(s, dispatch.Deps{Manager: lm, Errors: layoutSentinels, Authorize: m.Authorize, Caller: m.Caller, Device: m.Device})
 }
 
 func LayoutRoutes(lm workspace.LayoutManager) []Route { return LayoutRoutesWith(lm, nil) }
 
 func LayoutRoutesWith(lm workspace.LayoutManager, authorize dispatch.Authorizer) []Route {
-	out, err := BuildLayoutRoutes(lm, authorize)
+	return LayoutRoutesFor(lm, Mount{Authorize: authorize})
+}
+
+func LayoutRoutesFor(lm workspace.LayoutManager, m Mount) []Route {
+	out, err := BuildLayoutRoutesFor(lm, m)
 	if err != nil {
 		panic(fmt.Sprintf("workspace layout routes: %v", err))
 	}
@@ -48,6 +56,10 @@ func LayoutRoutesWith(lm workspace.LayoutManager, authorize dispatch.Authorizer)
 }
 
 func BuildLayoutTools(lm workspace.LayoutManager, authorize dispatch.Authorizer) ([]Tool, error) {
+	return BuildLayoutToolsFor(lm, Mount{Authorize: authorize})
+}
+
+func BuildLayoutToolsFor(lm workspace.LayoutManager, m Mount) ([]Tool, error) {
 	s, err := layoutOperations()
 	if err != nil {
 		return nil, err
@@ -57,7 +69,7 @@ func BuildLayoutTools(lm workspace.LayoutManager, authorize dispatch.Authorizer)
 		return nil, err
 	}
 	return dispatch.Tools(s, dispatch.Deps{
-		Manager: lm, Errors: layoutSentinels, Fields: fields, Authorize: authorize,
+		Manager: lm, Errors: layoutSentinels, Fields: fields, Authorize: m.Authorize, Caller: m.Caller, Device: m.Device,
 	})
 }
 
