@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"slices"
 	"sort"
 	"strings"
 
@@ -42,6 +43,23 @@ type badRowError string
 func (e badRowError) Error() string { return string(e) }
 
 var errRowForbidden = errors.New("forbidden")
+
+var errRowKeptByStep = errors.New("this record is filled through its workflow step")
+
+func recordKeptByStep(ctx context.Context, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record) (bool, error) {
+	if record.WorkflowID == "" {
+		return false, nil
+	}
+	steps, err := m.ListWorkItems(ctx, draftID, mwanachamaagency.WorkItemFilter{})
+	if err != nil {
+		return false, err
+	}
+	names := stepRecordNames(steps)
+	want := stepRecordKey(record.WorkflowID, record.Name)
+	return slices.ContainsFunc(steps, func(s agencymodels.WorkItem) bool {
+		return stepKeepsRecord(s) && stepRecordKey(s.WorkflowID, names[s.ID]) == want
+	}), nil
+}
 
 func (d *Deps) registerRecordRowRoutes(mux *http.ServeMux, auth callers) {
 	base := "/instances/{instanceID}/live-records"
@@ -125,7 +143,7 @@ func writeRecordErr(w http.ResponseWriter, err error) {
 		writeErr(w, http.StatusNotFound, err.Error())
 	case errors.Is(err, errRowForbidden), errors.Is(err, dispatch.ErrForbidden):
 		writeErr(w, http.StatusForbidden, "forbidden")
-	case errors.Is(err, mwanachamaagency.ErrRecordRowRefused):
+	case errors.Is(err, errRowKeptByStep), errors.Is(err, mwanachamaagency.ErrRecordRowRefused):
 		writeErr(w, http.StatusForbidden, err.Error())
 	case errors.Is(err, mwanachamaagency.ErrDuplicateRecordRow):
 		writeErr(w, http.StatusConflict, err.Error())
@@ -155,9 +173,13 @@ func (d *Deps) liveRecordsOf(ctx context.Context, instanceID string) ([]liveReco
 	}
 	out := make([]liveRecord, 0, len(records))
 	for _, rec := range records {
+		kept, err := recordKeptByStep(ctx, m, draftID, rec)
+		if err != nil {
+			return nil, err
+		}
 		out = append(out, liveRecord{
 			Code: rec.Code, Name: rec.Name, WorkflowID: rec.WorkflowID, FormName: rec.FormName,
-			Questions: rec.Questions, CanAddRows: callerMayAddRows(ctx, reg, instanceID, m, rec),
+			Questions: rec.Questions, CanAddRows: !kept && callerMayAddRows(ctx, reg, instanceID, m, rec),
 		})
 	}
 	return out, nil
@@ -229,6 +251,13 @@ func (d *Deps) addLiveRow(ctx context.Context, instanceID, recordCode string, re
 	}
 	if !callerMayAddRows(ctx, reg, instanceID, m, record) {
 		return agencymodels.RecordRow{}, errRowForbidden
+	}
+	kept, err := recordKeptByStep(ctx, m, draftID, record)
+	if err != nil {
+		return agencymodels.RecordRow{}, err
+	}
+	if kept {
+		return agencymodels.RecordRow{}, errRowKeptByStep
 	}
 	if msg := namesAStranger(ctx, reg, instanceID, record, req.Answers); msg != "" {
 		return agencymodels.RecordRow{}, badRowError(msg)
