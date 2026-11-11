@@ -235,3 +235,7 @@ Added the `chunk` and `verification` entry at the top; read the sources blueprin
 
 ## 2026-11-08 UTC (riskmanager)
 Register tables read from `riskmanager.blueprint.json`: every filter used by `bowtiesOf`, `summarisePathways` and `rankedBarriersOn` has an index; no gap opened. Evidence has no bound on growth (append-only, no prune).
+
+## 2026-11-08 UTC (files)
+
+`files.blueprint.json`: `folder.created` (created_at) used by `ListFolders` (order only, capped by the engine); `file.folder` (folder_id) has no query behind it, since no operation lists a folder's files (unused, costs a write per file; it will be needed the day that list is declared); `version.file` unique (file_id, number) serves `ListVersions` and is the guard against two uploads taking the same number (the compare-and-swap on `current_version` in `AddVersion` is the second guard). No foreign keys, as everywhere in the declared modules. No gap opened.

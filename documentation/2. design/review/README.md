@@ -160,3 +160,6 @@ Studio pages
 - Accounting module (ledger_store.go Balance, CloseAccount, Post, blueprint and provision indexes; wakala-api accounting_routes.go): 2026-11-08; budget_store.go, overdue_store.go and dimensions.go never
 - Sources module (search.go SearchChunks, chunk.go, verification.go standing, blueprint indexes; wakala-api sources_routes.go; specstore listCap): 2026-11-08; custody, context and digitaltwin are not imported by wakala-api (go.mod), riskmanager mount not re-read: never
 - Risk manager register mount (riskmanager Gaps, bowtiesOf, queries, blueprint indexes; wakala-api riskManagerFor, mount page): 2026-11-08; riskmanager routes/mcp adapters and the studio risk pages' use of the register never
+- Files module (mwanachama-backend-files: AddVersion, Reader, blueprint indexes) against the host's request limits and the photo answers (file.go, read.go, limits.go, bodylimit.go): 2026-11-08; byte store beyond the disk store never
+- Per-request route table build in the mounts (risk_routes.go and nine siblings; shared dispatch Dispatch, Validate, statusTable): 2026-11-09
+- Time limits on request, statement, gate and phone (main.go, write_deadline.go, dbpool.go, gate.go, accounts/connection.go; member app fetch): 2026-11-09

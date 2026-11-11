@@ -244,3 +244,7 @@ Entry 71 added (polls module has routes and no phone screen); turned into Q155.
 ## 2026-11-08 UTC (fourth run)
 
 Engage module traced; app gap 72 opened, turned into Q156.
+
+## 2026-11-08 UTC (files)
+
+Entry 70 (photo and file answers) gains its missing evidence: the files module exists but is not mounted and its upload cannot pass the host's body limit. The size part is Q163; the control itself stays with Q154.

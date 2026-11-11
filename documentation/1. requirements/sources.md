@@ -804,3 +804,16 @@ Repos and files read: mwanachama-backend-market (`orders.go`, `asks.go` `AnswerA
 Repos and files read: mwanachama-backend-riskmanager (`riskmanager.blueprint.json` objects and indexes, `gaps.go`, `gaps_bulk.go`, `queries.go`, `manager.go` `listOf`, `documentation/2. design/gaps.md` Scale), mwanachama-wakala-api (`internal/api/http/membership.go` `riskManagerFor`, `mcp_tools_risk.go`, `documentation/3. implementation/risk-manager-mount.md`), mwanachama-backend-agency (`models/modules_catalog.json`).
 
 Chain: studio Risks pages, then agency draft `risk` and `risk_pathway` objects, then the publication document: exists (mount page, Risks inside the draft). Register: `/instances/{id}/risks/...` and `riskmanager_*` tools, per agency tables, members only: exists. Link between the two: missing; the register blueprint names no agency code, publication or version. App screen for the register: none drawn. The mount page's 'module code not yet in the catalogue' is stale (`modules_catalog.json` line 17). The plain-language question was checked against decisions.md: no decision on the register.
+
+## Q163
+
+Repos and files read: mwanachama-backend-files (`files.blueprint.json`, `files.operations.json`, `file.go`, `read.go`, `bytestore.go`, `folder.go`, `models/models.go`, `photocheck.go`), mwanachama-wakala-api (`internal/api/http/limits.go`, `bodylimit.go`, `cmd/server/main.go` line 96, `go.mod`), mwanachama-frontend-member (`app/forms/outbox.ts`, `send.ts`).
+
+Chain: photo question in a form (Q154, not drawn) -> phone shrinks the picture (nothing does; the module only publishes `photo_longest_side`) -> upload as `POST /files/{fileID}/versions` with the bytes in the JSON body (declared, exists in the module, not mounted in wakala-api) -> request body cap of 1 MiB and read timeout of 10 seconds (exist, apply to every route) -> `AddVersion` holds the file in memory, checks type and capture time and place, writes the bytes then the row (exists) -> answer holds the file id (forms, exists). Missing: any mount, any phone code, any route to list a folder's files or to download (`Reader.Link` and `Open` are Go only, not declared operations).
+
+## Q164
+
+Repos and files read: mwanachama-wakala-api (`cmd/server/main.go` lines 92 to 98, `cmd/server/dbpool.go`, `internal/api/http/write_deadline.go`, `limits.go`, `internal/dbpool/gate.go`, `internal/store/postgres/conn.go`, `internal/accounts/connection.go` and `router.go`), mwanachama-frontend-member (grep of `app` for timeout and abort handling).
+
+Chain: a list screen on the phone -> fetch with no time limit (exists, nothing cancels) -> server handler with no deadline (exists; only a connection write deadline) -> per-agency gate that admits after 10 seconds (exists) -> shared pool of 12 -> statement with no `statement_timeout` (missing). The database address is built by code on port 5432 of the hosted pooler, which is session mode, so prepared statements are fine; the member's own statements and the pooler mode are not the issue, the missing limits are.
+
