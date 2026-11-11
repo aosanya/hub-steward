@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"slices"
 	"testing"
 
 	"wakalaserver/internal/agencies"
@@ -20,14 +19,6 @@ type voteWithdrawalWalk struct {
 func newVoteWithdrawalWalk(t *testing.T) voteWithdrawalWalk {
 	t.Helper()
 	w := newTaskAuthorWalk(t)
-	allowed := permissionsAllow
-	permissionsAllow = func(codes []string, action string) bool {
-		if action == takeBackVoteAction {
-			return slices.Contains(codes, taskReadPermission)
-		}
-		return allowed(codes, action)
-	}
-	t.Cleanup(func() { permissionsAllow = allowed })
 	caseID := w.openCase(t)
 	if rec := w.call(t, "POST", w.tm()+"/cases/"+caseID+"/votes", map[string]any{}, w.people["Volunteer"]); rec.Code != http.StatusOK {
 		t.Fatalf("resident votes: %d %s", rec.Code, rec.Body.String())

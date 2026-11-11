@@ -26,11 +26,11 @@ func newTaskAuthorWalk(t *testing.T) taskAuthorWalk {
 	t.Helper()
 	w := runEngineWalk(t)
 	w.deps.rolePermissionsOverride = func(context.Context, string) ([]string, error) {
-		return []string{taskReadPermission}, nil
+		return []string{taskReadPermission, caseVotePermission}, nil
 	}
 	allowed := permissionsAllow
 	permissionsAllow = func(codes []string, action string) bool {
-		if action == caseVoteAction || action == "taskmanager.workflow_run.cancel" {
+		if action == "taskmanager.workflow_run.cancel" {
 			return slices.Contains(codes, taskReadPermission)
 		}
 		return allowed(codes, action)
