@@ -10,7 +10,9 @@ export const hueOf = (text: string) => firstHue + (hashOf(text) % hueSpan);
 
 export const shadeOf = (text: string) => Math.floor(hashOf(text) / hueSpan) % shades;
 
-const toneOf = (text: string): ChipTone | undefined => (text === "Ready" ? "success" : text === "Blocked" ? "danger" : undefined);
+const tones: Record<string, ChipTone> = { Ready: "success", Waiting: "waiting", Sinbin: "sinbin", Blocked: "danger" };
+
+const toneOf = (text: string): ChipTone | undefined => tones[text];
 
 export const textLook = (text: string) => {
   const tone = toneOf(text);

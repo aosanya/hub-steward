@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 
-export type ChipTone = "accent" | "info" | "success" | "danger";
+export type ChipTone = "accent" | "info" | "success" | "danger" | "waiting" | "sinbin";
 
 type Props = { children: ReactNode; tone?: ChipTone; hue?: number; shade?: number; onClick?: () => void; pressed?: boolean; title?: string };
 

@@ -323,6 +323,25 @@ func TestPendingTasks_BlockedMeansTheBlockedTagOnly(t *testing.T) {
 	}
 }
 
+func TestPendingTasks_WaitingIsItsOwnMarkAndNeverBesideBlocked(t *testing.T) {
+	mgr := newTestManager(t)
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "waits", Tags: []string{"Waiting"}})
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "both", Tags: []string{"Waiting", "Blocked"}})
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "ready", Tags: []string{"Ready"}})
+
+	type flags struct{ blocked, waiting bool }
+	got := map[string]flags{}
+	for _, item := range pendingOf(t, mgr, mwanachamataskmanager.PendingFilter{}).Items {
+		got[item.Title] = flags{item.Blocked, item.Waiting}
+	}
+	want := map[string]flags{"waits": {false, true}, "both": {true, false}, "ready": {false, false}}
+	for title, w := range want {
+		if got[title] != w {
+			t.Fatalf("%s flags %+v, want %+v (all %v)", title, got[title], w, got)
+		}
+	}
+}
+
 func TestPendingTasks_CountsDoneAndCancelledByStepOnlyWhenAsked(t *testing.T) {
 	mgr := newTestManager(t)
 	seedPending(t, mgr)

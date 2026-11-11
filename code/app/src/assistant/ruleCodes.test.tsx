@@ -52,9 +52,9 @@ describe("a rule is checked before the card", () => {
     expect(problem).toContain("in_the_last, not_in_the_last");
   });
 
-  it("refuses a duration that is not a number and a unit, a mark that is not Ready or Blocked and an unknown priority", () => {
+  it("refuses a duration that is not a number and a unit, a mark that is not Ready, Waiting or Blocked and an unknown priority", () => {
     expect(rulesProblem([{ field: "last_changed", operator: "in_the_last", value: "fortnight" }])).not.toBe("");
-    expect(rulesProblem([{ field: "mark", operator: "is", value: "Waiting" }])).not.toBe("");
+    expect(rulesProblem([{ field: "mark", operator: "is", value: "Stale" }])).not.toBe("");
     expect(rulesProblem([{ field: "priority", operator: "is", value: "urgent" }])).not.toBe("");
   });
 

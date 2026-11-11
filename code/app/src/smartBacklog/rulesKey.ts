@@ -1,3 +1,4 @@
+import { markNames } from "../backlogs/marks";
 import { FIELD_IDS, type Rule, type RuleSet } from "./types";
 
 const token = (text: string) => text.trim().toLowerCase().replace(/ /g, "_");
@@ -11,7 +12,7 @@ const span = (value: string) => {
 
 const valueOf = (field: string, value: string) => {
   if (field === "waits_on") return "";
-  if (field === "mark") return value.trim().toLowerCase() === "ready" ? "Ready" : "Blocked";
+  if (field === "mark") return markNames.find((mark) => mark.toLowerCase() === value.trim().toLowerCase()) ?? "Blocked";
   if (field === "last_changed") return span(value);
   return value.trim().toLowerCase();
 };

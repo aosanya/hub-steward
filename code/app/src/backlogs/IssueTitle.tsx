@@ -68,7 +68,7 @@ export const lineWords = (issue: Issue): Word[] =>
   ].filter((word, at, all) => word.label !== "" && all.findIndex((one) => one.label === word.label) === at);
 
 export function IssueLine({ issue, chosen, onTag }: { issue: Issue; chosen: string[]; onTag?: (tag: string) => void }) {
-  const words = [...(issue.mark === "Blocked" ? [{ tag: "Blocked", label: "Blocked" }] : []), ...lineWords(issue)];
+  const words = [...(issue.mark === "Blocked" || issue.mark === "Waiting" ? [{ tag: issue.mark, label: issue.mark }] : []), ...lineWords(issue)];
   return words.length === 0 && !issue.priority && !issue.createdAt ? null : (
     <span className="issue-tags issue-line">
       {words.map((word) => (

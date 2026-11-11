@@ -21,6 +21,8 @@
   --success: #3F7D45;
   --info: #35618F;
   --info-wash: rgba(53, 97, 143, 0.1);
+  --waiting: #9A6000;
+  --sinbin: #BC4A0C;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -40,6 +42,8 @@
     --success: #7BC47F;
     --info: #7FB0DE;
     --info-wash: rgba(127, 176, 222, 0.14);
+    --waiting: #EBB255;
+    --sinbin: #F08A4B;
     color-scheme: dark;
   }
 }

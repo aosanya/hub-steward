@@ -1,5 +1,6 @@
 import { callTool } from "../wakala/mcp";
 import { noteOf, type IssueNote } from "./issueNotes";
+import { markPrecedence, type Mark } from "./marks";
 import { pendingCountsOf, type StepCount } from "./stepCounts";
 
 export const taskTools = {
@@ -18,8 +19,6 @@ export const listCap = 500;
 export const allIssuesId = "all";
 
 export const defaultBacklogId = "backlog";
-
-export type Mark = "Ready" | "Blocked" | "";
 
 export type Issue = {
   id: string;
@@ -72,9 +71,8 @@ export const itemsOf = (reply: any): any[] => (Array.isArray(reply) ? reply : Ar
 
 export const settled = new Set(["completed", "cancelled"]);
 
-const marks: Mark[] = ["Blocked", "Ready"];
-
-const markOf = (raw: any, status: string): Mark => (!settled.has(status) && raw?.blocked === true ? "Blocked" : "");
+const markOf = (raw: any, status: string): Mark =>
+  settled.has(status) ? "" : raw?.blocked === true ? "Blocked" : raw?.waiting === true ? "Waiting" : "";
 
 const rankOf = (raw: any) => (typeof raw?.rank === "number" && raw.rank > 0 ? raw.rank : Number.MAX_SAFE_INTEGER);
 
@@ -106,7 +104,7 @@ export const backlogOf = (one: HubBacklog): Backlog => ({
 export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
   const status = text(raw?.status);
   const tags: string[] = Array.isArray(raw?.tags) ? raw.tags.filter((tag: unknown) => typeof tag === "string" && tag !== "") : [];
-  const own = settled.has(status) ? undefined : marks.find((mark) => tags.includes(mark));
+  const own = settled.has(status) ? undefined : markPrecedence.find((mark) => tags.includes(mark));
   const backlog = hub.find((one) => one.id === text(raw?.backlog)) ?? hub[0];
   const step = backlog?.steps.find((one) => one.id === text(raw?.step) || one.name === text(raw?.step));
   const placed = text(raw?.backlog) !== "";
@@ -119,7 +117,7 @@ export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
     status,
     step: step?.name ?? (placed ? "" : text(raw?.state)),
     repo: text(raw?.project_name),
-    topics: tags.filter((tag) => !marks.includes(tag as Mark)),
+    topics: tags.filter((tag) => !markPrecedence.includes(tag as Mark)),
     backlog: backlog?.name ?? "",
     backlogId: text(raw?.backlog),
     mark: own ?? markOf(raw, status),

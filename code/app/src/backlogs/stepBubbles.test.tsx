@@ -106,13 +106,13 @@ describe("step bubbles on the Backlogs list", () => {
     expect(spy.mock.calls.some((call) => call[1] === taskTools.list)).toBe(false);
   });
 
-  it("colours every bubble from its step name, so the same step has the same colour on every row", async () => {
+  it("colours every bubble from its step name, so the same step has the same colour on every row, and a Waiting step the Waiting amber", async () => {
     answering();
     openList();
     await screen.findByText("Docs");
     const chips = Array.from(screen.getByText("Backlog").closest(".row")!.querySelectorAll(".step-counts .chip"));
     expect(chips.length).toBeGreaterThan(0);
-    chips.forEach((chip) => expect(chip.className).toBe("chip hued"));
+    chips.forEach((chip) => expect(chip.className).toBe(chip.textContent?.startsWith("Waiting:") ? "chip waiting" : "chip hued"));
     const hueOfStep = (title: string, step: string) => Array.from(screen.getByText(title).closest(".row")!.querySelectorAll<HTMLElement>(".step-counts .chip")).find((chip) => chip.textContent?.startsWith(`${step}:`))?.style.getPropertyValue("--hue");
     expect(hueOfStep("Backlog", "To do")).toBe(hueOfStep("All issues", "To do"));
     expect(hueOfStep("Backlog", "To do")).toBe(String(hueOf("To do")));

@@ -1,4 +1,5 @@
 import { mcpBacklogsClient } from "../backlogs/api";
+import { markNames } from "../backlogs/marks";
 import { backlogTools, mcpBacklogManageClient, refusalText } from "../backlogManage/api";
 import { callTool, McpError } from "../wakala/mcp";
 import { PRIORITIES } from "./fields";
@@ -27,7 +28,7 @@ const unique = (values: string[]) => [...new Set(values.filter((value) => value 
 
 export const choicesOf = (issues: { topics: string[]; repo: string; step: string; backlog: string }[]): FieldChoices => ({
   tag: unique(issues.flatMap((issue) => [...issue.topics, issue.repo])),
-  mark: ["Ready", "Blocked"],
+  mark: [...markNames],
   backlog: unique(issues.map((issue) => issue.backlog)),
   step: unique(issues.map((issue) => issue.step)),
   priority: [...PRIORITIES],

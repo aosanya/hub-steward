@@ -30,6 +30,7 @@ type PendingItem struct {
 	Tags     []string     `json:"tags"`
 	Rank     int          `json:"rank"`
 	Blocked  bool         `json:"blocked"`
+	Waiting  bool         `json:"waiting"`
 }
 
 type PendingTasks struct {

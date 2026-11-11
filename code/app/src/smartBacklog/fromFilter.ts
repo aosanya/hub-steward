@@ -1,7 +1,8 @@
+import { markNames } from "../backlogs/marks";
 import type { Draft } from "./rulesDraft";
 import type { Rule } from "./types";
 
-const marks = ["Ready", "Blocked"];
+const marks: readonly string[] = markNames;
 
 const ruleOfTag = (tag: string, backlogs: string[]): Rule =>
   marks.includes(tag) ? { field: "mark", operator: "is", value: tag } : backlogs.includes(tag) ? { field: "backlog", operator: "is", value: tag } : { field: "tag", operator: "has", value: tag };

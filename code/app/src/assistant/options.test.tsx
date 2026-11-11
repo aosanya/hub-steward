@@ -28,10 +28,10 @@ describe("the assistant's instruction", () => {
     expect(pageLines).toContain(manyMatchesRule);
   });
 
-  it("tells the model that Blocked and Ready are tags and Waiting is a step", () => {
+  it("tells the model that Ready, Waiting and Blocked are tags of their own", () => {
     expect(pageLines).toContain(blockedIsATagRule);
     expect(blockedIsATagRule).toContain("the Blocked tag only");
-    expect(blockedIsATagRule).toContain("never the Waiting step");
+    expect(blockedIsATagRule).toContain("the Waiting tag only");
   });
 
   it("says so in one sentence when a result is empty", () => {
