@@ -9,13 +9,14 @@ The files are in [deployment/local/](../../../deployment/local/). Docker Compose
 ```sh
 cd deployment/local
 make up
+make api
 make down
 make backup
 ```
 
-From the repository root, `make deploy-local`, `make deploy-local-down` and `make deploy-local-backup` run the same three.
+From the repository root, `make deploy-local`, `make deploy-local-api`, `make deploy-local-down` and `make deploy-local-backup` run the same four.
 
-`make up` refuses to run unless the checkout is on `master`. It writes `.env` on the first run, with fresh random passwords, a signing secret and an anon key signed with it, then builds and starts everything and prints the addresses. `make down` stops the containers and keeps the data. There is no reset target; the database volume is deleted only by hand. `make backup` writes the whole database, sign-in accounts included, as a gzipped SQL file in `deployment/local/backups/` named with the date and time, which git ignores; the stack must be running. `make logs` and `make ps` show what is running.
+`make up` and `make api` refuse to run unless the checkout is on `master`. `make up` writes `.env` on the first run, with fresh random passwords, a signing secret and an anon key signed with it, then builds and starts everything and prints the addresses. `make api` rebuilds and restarts only the API container, `wakala-api`, and leaves the database, console and phone app running as they are; use it after a change under `code/wakala-api` (a new tool, for example), and `make up` when the console or the phone app changed too. `make down` stops the containers and keeps the data. There is no reset target; the database volume is deleted only by hand. `make backup` writes the whole database, sign-in accounts included, as a gzipped SQL file in `deployment/local/backups/` named with the date and time, which git ignores; the stack must be running. `make logs` and `make ps` show what is running.
 
 ## Error log
 
@@ -23,13 +24,13 @@ The API appends every error-level record, including each request that ends in a 
 
 ## The SWE hub and its todos
 
-When `OWNER_EMAIL` and `OWNER_PASSWORD` are set in `deployment/local/.env`, `make up` ends by running `scripts/seed-swe.sh`:
+`make up` does not seed anything. With `OWNER_EMAIL` and `OWNER_PASSWORD` set in `deployment/local/.env` and the stack running, run `sh scripts/seed-swe.sh` from `deployment/local` yourself, once, to load the hub:
 
 1. It creates that owner sign-in if it does not exist, with the admin token, and signs in. The password must be at least 12 characters.
 2. It imports `hub-steward-swe/agency/agency.json` as the hub "Hub Steward SWE" and publishes it as `v1` on the production channel. A hub with that name already owned by this sign-in is left alone.
 3. It mints an API key, runs the `hub-steward-swe` loader over every `todo.md` and `todo_*.md` in every `mwanachama-*` repo and under `projects/`, then revokes the key. A second run creates no issue twice.
 
-The script expects `hub-steward-swe` as a sibling of this repository and the repos in the folder above `projects/`, and needs `go` and `jq`. Missing any of these, or the two settings, it says so and `make up` still succeeds. `SWE_AGENCY_FILE`, `SWE_LOADER_DIR` and `BOARDS_ROOT` point it elsewhere.
+The script expects `hub-steward-swe` as a sibling of this repository and the repos in the folder above `projects/`, and needs `go` and `jq`. Missing any of these, or the two settings, it says so and exits without loading anything. `SWE_AGENCY_FILE`, `SWE_LOADER_DIR` and `BOARDS_ROOT` point it elsewhere.
 
 Not done by this script: the Product owner group and the Triager's seat in it ([the loader page](../../../../hub-steward-swe/documentation/3.%20implementation/loader.md) says why), and people, groups or forms.
 
