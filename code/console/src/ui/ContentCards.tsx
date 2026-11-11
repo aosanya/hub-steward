@@ -4,14 +4,14 @@ import { Button } from "./Button";
 import { Chip } from "./Chip";
 import { initials } from "./marks";
 import type { EditCardProps, ListCardProps, ResultCardProps, RowsCardProps } from "./props";
-import { MsgButtons } from "./chat/MsgButtons";
+import { msgButtonItems } from "./chat/MsgButtons";
 import { MsgCard } from "./chat/MsgCard";
 import { TextLink } from "./TextLink";
 
 export function ListCard({ title, items, nav }: ListCardProps) {
   const { t } = useI18n();
   return (
-    <MsgCard icon="filter" title={title} className="wide">
+    <MsgCard icon="filter" title={title} className="wide" footer={nav ? msgButtonItems([nav]) : undefined}>
       <div>
         {items.map((item, i) => (
           <div className="list-row" key={i}>
@@ -29,7 +29,6 @@ export function ListCard({ title, items, nav }: ListCardProps) {
           </div>
         ))}
       </div>
-      {nav ? <MsgButtons buttons={[nav]} /> : null}
     </MsgCard>
   );
 }
@@ -91,7 +90,18 @@ export function EditCard({ title, rows, onSave, onCancel }: EditCardProps) {
   const { t } = useI18n();
   const [values, setValues] = useState(() => rows.map((row) => row.value));
   return (
-    <MsgCard icon="edit" title={title}>
+    <MsgCard
+      icon="edit"
+      title={title}
+      footer={[
+        <Button key="save" size="sm" onClick={() => onSave?.(values)}>
+          {t("save")}
+        </Button>,
+        <Button key="cancel" kind="quiet" size="sm" onClick={onCancel}>
+          {t("cancel")}
+        </Button>,
+      ]}
+    >
       <div className="msg-form">
         {rows.map((row, i) => (
           <label className="field" key={i}>
@@ -105,14 +115,6 @@ export function EditCard({ title, rows, onSave, onCancel }: EditCardProps) {
             </span>
           </label>
         ))}
-      </div>
-      <div className="msg-buttons">
-        <Button size="sm" onClick={() => onSave?.(values)}>
-          {t("save")}
-        </Button>
-        <Button kind="quiet" size="sm" onClick={onCancel}>
-          {t("cancel")}
-        </Button>
       </div>
     </MsgCard>
   );

@@ -2,7 +2,7 @@ import { useI18n } from "../../i18n";
 import { Chip } from "../Chip";
 import { Icon } from "../Icon";
 import type { MsgFormProps, MsgRefProps } from "../props";
-import { MsgButtons } from "./MsgButtons";
+import { msgButtonItems } from "./MsgButtons";
 import { MsgCard } from "./MsgCard";
 
 type Pointer = { icon: string; title: string; count: string; nav?: MsgRefProps["nav"] };
@@ -13,6 +13,7 @@ function Pointer({ icon, title, count, nav }: Pointer) {
     <MsgCard
       icon={icon}
       className="msg-ref"
+      footer={nav ? msgButtonItems([nav]) : undefined}
       title={
         <>
           <span className="ref-title">{title}</span>
@@ -24,7 +25,6 @@ function Pointer({ icon, title, count, nav }: Pointer) {
         <Icon name="arrow-left" size={12} stroke={2.4} />
         {t("ui.shownInContent")}
       </div>
-      {nav ? <MsgButtons buttons={[nav]} /> : null}
     </MsgCard>
   );
 }

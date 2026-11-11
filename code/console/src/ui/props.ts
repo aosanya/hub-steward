@@ -36,7 +36,7 @@ export type DetailProps = { pairs: [string, ReactNode][]; title?: ReactNode; act
 export type SettingRowData = { label: string; control: ReactNode; htmlFor?: string };
 export type SettingRowsProps = { rows: SettingRowData[]; title?: string };
 
-export type CardProps = { title?: ReactNode; actions?: ReactNode; footer?: ReactNode; tight?: boolean; className?: string; open?: boolean; onToggle?: () => void; children?: ReactNode };
+export type CardProps = { title?: ReactNode; actions?: ReactNode; footer?: ReactNode; level?: 2 | 3 | "plain"; tight?: boolean; className?: string; open?: boolean; onToggle?: () => void; children?: ReactNode };
 
 export type MsgButtonData = { label: string; kind?: ButtonKind; to?: string; onClick?: () => void; disabled?: boolean };
 export type ActionState = "pending" | "done";

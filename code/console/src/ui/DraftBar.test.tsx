@@ -148,7 +148,7 @@ describe("the draft bar after a refused publish", () => {
   it("draws an error card under the bar that counts the problems", () => {
     draw({ state: "failed", problems });
     const card = screen.getByRole("alert");
-    expect(card).toHaveClass("msg-card", "bad", "wide");
+    expect(card.querySelector(":scope > .card")).toHaveClass("msg-card", "bad", "wide");
     expect(within(card).getByText("Nothing was published: the check found 3 problems")).toBeInTheDocument();
     expect(bar().compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });

@@ -51,7 +51,19 @@ export function FormCard({ title, fields, submit, cancel, hint, onSubmit, onCanc
   const [values, setValues] = useState(() => startValues(fields));
   const submitLabel = submit ?? t("save");
   return (
-    <MsgCard icon="edit" title={title ?? ""} heading={Boolean(title)}>
+    <MsgCard
+      icon="edit"
+      title={title ?? ""}
+      heading={Boolean(title)}
+      footer={[
+        <Button key="submit" size="sm" onClick={() => onSubmit?.(values)}>
+          {submitLabel}
+        </Button>,
+        <Button key="cancel" kind="quiet" size="sm" onClick={onCancel}>
+          {cancel ?? t("cancel")}
+        </Button>,
+      ]}
+    >
       <div className="msg-form">
         {fields.map((field) => (
           <FormCardControl
@@ -61,14 +73,6 @@ export function FormCard({ title, fields, submit, cancel, hint, onSubmit, onCanc
             onChange={(value) => setValues({ ...values, [nameOf(field)]: value })}
           />
         ))}
-      </div>
-      <div className="msg-buttons">
-        <Button size="sm" onClick={() => onSubmit?.(values)}>
-          {submitLabel}
-        </Button>
-        <Button kind="quiet" size="sm" onClick={onCancel}>
-          {cancel ?? t("cancel")}
-        </Button>
       </div>
       <div className="msg-note">{hint ?? t("ui.nothingUntilPress").replace("{action}", submitLabel)}</div>
     </MsgCard>

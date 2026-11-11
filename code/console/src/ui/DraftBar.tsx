@@ -3,6 +3,7 @@ import { useI18n } from "../i18n";
 import { formatWhen } from "../pages/work/formatWhen";
 import { Button } from "./Button";
 import { Chip } from "./Chip";
+import { MsgCard } from "./chat/MsgCard";
 import { Icon } from "./Icon";
 import { Stack } from "./Layout";
 import { TextLink } from "./TextLink";
@@ -50,16 +51,14 @@ function ProblemsCard({ problems }: { problems: DraftProblem[] }) {
   const { t } = useI18n();
   const title = problems.length === 1 ? t("draft.failedOne") : t("draft.failedMany").replace("{n}", String(problems.length));
   return (
-    <div className="msg-card bad wide" role="alert">
-      <div className="msg-title bad">
-        <Icon name="alert" size={16} />
-        {title}
-      </div>
-      <div className="draft-problems">
-        {problems.map((problem, index) => (
-          <ProblemRow key={index} problem={problem} />
-        ))}
-      </div>
+    <div role="alert">
+      <MsgCard icon="alert" tone="bad" className="bad wide" title={title}>
+        <div className="draft-problems">
+          {problems.map((problem, index) => (
+            <ProblemRow key={index} problem={problem} />
+          ))}
+        </div>
+      </MsgCard>
     </div>
   );
 }

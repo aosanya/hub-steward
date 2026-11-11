@@ -1,8 +1,9 @@
 import { useI18n } from "../../i18n";
 import { Button } from "../Button";
+import { Card } from "../Card";
 import { Icon } from "../Icon";
 import type { MsgActionProps, MsgChoiceProps, MsgConfirmProps, MsgErrorProps, MsgSuggestionProps } from "../props";
-import { MsgButtons } from "./MsgButtons";
+import { msgButtonItems } from "./MsgButtons";
 import { MsgCard } from "./MsgCard";
 
 export function MsgChoice({ question, options, picked, onPick }: MsgChoiceProps) {
@@ -27,8 +28,19 @@ export function MsgChoice({ question, options, picked, onPick }: MsgChoiceProps)
 
 export function MsgConfirm({ title, detail, confirm, cancel, danger, resolved, onConfirm, onCancel }: MsgConfirmProps) {
   const { t } = useI18n();
+  const footer =
+    resolved === undefined
+      ? [
+          <Button key="confirm" kind={danger ? "danger" : "primary"} size="sm" onClick={onConfirm}>
+            {confirm ?? t("approve")}
+          </Button>,
+          <Button key="cancel" kind="quiet" size="sm" onClick={onCancel}>
+            {cancel ?? t("cancel")}
+          </Button>,
+        ]
+      : undefined;
   return (
-    <MsgCard icon={danger ? "alert" : "check"} title={title}>
+    <MsgCard icon={danger ? "alert" : "check"} title={title} footer={footer}>
       <div className="msg-detail">{detail}</div>
       {resolved === "confirmed" ? (
         <div className="msg-done">
@@ -38,17 +50,7 @@ export function MsgConfirm({ title, detail, confirm, cancel, danger, resolved, o
       ) : resolved === "cancelled" ? (
         <div className="msg-note">{t("ui.cancelledNothing")}</div>
       ) : (
-        <>
-          <div className="msg-buttons">
-            <Button kind={danger ? "danger" : "primary"} size="sm" onClick={onConfirm}>
-              {confirm ?? t("approve")}
-            </Button>
-            <Button kind="quiet" size="sm" onClick={onCancel}>
-              {cancel ?? t("cancel")}
-            </Button>
-          </div>
-          <div className="msg-note">{t("ui.nothingRecorded")}</div>
-        </>
+        <div className="msg-note">{t("ui.nothingRecorded")}</div>
       )}
     </MsgCard>
   );
@@ -56,21 +58,20 @@ export function MsgConfirm({ title, detail, confirm, cancel, danger, resolved, o
 
 export function MsgError({ children }: MsgErrorProps) {
   return (
-    <div className="msg-card bad">
+    <Card className="msg-card bad">
       <div className="msg-title bad">
         <Icon name="alert" size={16} />
         {children}
       </div>
-    </div>
+    </Card>
   );
 }
 
 export function MsgSuggestion({ text, actions }: MsgSuggestionProps) {
   const { t } = useI18n();
   return (
-    <MsgCard icon="sparkle" title={t("ui.suggestedNextStep")}>
+    <MsgCard icon="sparkle" title={t("ui.suggestedNextStep")} footer={msgButtonItems(actions)}>
       <div className="msg-detail">{text}</div>
-      <MsgButtons buttons={actions} />
     </MsgCard>
   );
 }
@@ -79,9 +80,8 @@ export function MsgAction({ title, detail, buttons = [], state }: MsgActionProps
   const { t } = useI18n();
   const done = state === "done";
   return (
-    <MsgCard icon={done ? "check" : "wrench"} stroke={done ? 2.6 : undefined} tone={done ? "ok" : undefined} title={title}>
+    <MsgCard icon={done ? "check" : "wrench"} stroke={done ? 2.6 : undefined} tone={done ? "ok" : undefined} title={title} footer={msgButtonItems(buttons)}>
       {detail ? <div className="msg-detail">{detail}</div> : null}
-      <MsgButtons buttons={buttons} />
       {state === "pending" ? <div className="msg-note">{t("ui.nothingRecorded")}</div> : null}
     </MsgCard>
   );

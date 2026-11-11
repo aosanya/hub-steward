@@ -1,6 +1,7 @@
 import { useId, type FormEvent, type ReactNode } from "react";
 import type { OptionItem } from "../../types";
 import { Button, Icon, Labelled } from "../../ui";
+import { MsgCard } from "../../ui/chat/MsgCard";
 
 type FormCardProps = {
   title: string;
@@ -20,26 +21,27 @@ export function FormCard({ title, submit, cancel, note, error, busy, onSubmit, o
     onSubmit();
   };
   return (
-    <form className="msg-card" aria-label={title} noValidate onSubmit={send}>
-      <div className="msg-title">
-        <Icon name="edit" size={16} />
-        {title}
-      </div>
-      <div className="msg-form">{children}</div>
-      {error ? (
-        <div className="field-error" role="alert">
-          {error}
-        </div>
-      ) : null}
-      <div className="msg-buttons">
-        <Button type="submit" size="sm" disabled={busy}>
-          {submit}
-        </Button>
-        <Button kind="quiet" size="sm" onClick={onCancel}>
-          {cancel}
-        </Button>
-      </div>
-      <div className="msg-note">{note}</div>
+    <form aria-label={title} noValidate onSubmit={send}>
+      <MsgCard
+        icon="edit"
+        title={title}
+        footer={[
+          <Button key="submit" type="submit" size="sm" disabled={busy}>
+            {submit}
+          </Button>,
+          <Button key="cancel" kind="quiet" size="sm" onClick={onCancel}>
+            {cancel}
+          </Button>,
+        ]}
+      >
+        <div className="msg-form">{children}</div>
+        {error ? (
+          <div className="field-error" role="alert">
+            {error}
+          </div>
+        ) : null}
+        <div className="msg-note">{note}</div>
+      </MsgCard>
     </form>
   );
 }

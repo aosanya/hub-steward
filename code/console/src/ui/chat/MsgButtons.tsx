@@ -16,6 +16,10 @@ export function MsgButton({ label, kind = "quiet", to, onClick, disabled }: MsgB
   );
 }
 
+export function msgButtonItems(buttons: MsgButtonData[]) {
+  return buttons.length === 0 ? undefined : buttons.map((button, i) => <MsgButton key={i} {...button} />);
+}
+
 export function MsgButtons({ buttons }: { buttons: MsgButtonData[] }) {
   if (buttons.length === 0) return null;
   return (

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { Button, Card, Empty, Icon, Stack, Toggle } from "../../ui";
+import { Button, Card, Empty, Stack, Toggle } from "../../ui";
 import { agentInstructions, saveAgentInstructions, type InstructionPart, type InstructionsReply } from "../../data/agent";
+import { MsgCard } from "../../ui/chat/MsgCard";
 import { AgentFrame } from "./AgentFrame";
 import { agencyPartsOf, assemblePreview } from "./preview";
 import { Revisions } from "./Revisions";
@@ -42,11 +43,18 @@ type FineTuningFormProps = {
 function FineTuningForm({ fineTuning, useAgency, onFineTuning, onUseAgency, onSave, onCancel }: FineTuningFormProps) {
   const { t } = useI18n();
   return (
-    <div className="msg-card">
-      <div className="msg-title">
-        <Icon name="edit" size={16} />
-        {t("agent.instrYours")}
-      </div>
+    <MsgCard
+      icon="edit"
+      title={t("agent.instrYours")}
+      footer={[
+        <Button key="save" size="sm" onClick={onSave}>
+          {t("save")}
+        </Button>,
+        <Button key="cancel" kind="quiet" size="sm" onClick={onCancel}>
+          {t("cancel")}
+        </Button>,
+      ]}
+    >
       <div className="msg-form">
         <Toggle label={t("instrUseAgency")} on={useAgency} onChange={onUseAgency} />
         <label className="field">
@@ -56,16 +64,8 @@ function FineTuningForm({ fineTuning, useAgency, onFineTuning, onUseAgency, onSa
           </span>
         </label>
       </div>
-      <div className="msg-buttons">
-        <Button size="sm" onClick={onSave}>
-          {t("save")}
-        </Button>
-        <Button kind="quiet" size="sm" onClick={onCancel}>
-          {t("cancel")}
-        </Button>
-      </div>
       <div className="msg-note">{t("agent.instrNothingRecorded")}</div>
-    </div>
+    </MsgCard>
   );
 }
 

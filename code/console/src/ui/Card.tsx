@@ -1,7 +1,7 @@
 import { Icon } from "./Icon";
 import type { CardProps } from "./props";
 
-export function Card({ title, actions, footer, tight, className, open = true, onToggle, children }: CardProps) {
+export function Card({ title, actions, footer, level = 2, tight, className, open = true, onToggle, children }: CardProps) {
   const classes = ["card", tight ? "tight" : "", open ? "" : "closed", className ?? ""].filter(Boolean).join(" ");
   const heading = onToggle ? (
     <button type="button" className="card-toggle" aria-expanded={open} onClick={onToggle}>
@@ -11,10 +11,11 @@ export function Card({ title, actions, footer, tight, className, open = true, on
   ) : (
     title
   );
+  const Heading = level === 3 ? "h3" : level === "plain" ? "div" : "h2";
   const head =
     title || actions ? (
       <div className="card-head">
-        {title ? <h2>{heading}</h2> : null}
+        {title ? <Heading>{heading}</Heading> : null}
         {actions ? <div className="card-actions">{actions}</div> : null}
       </div>
     ) : null;
