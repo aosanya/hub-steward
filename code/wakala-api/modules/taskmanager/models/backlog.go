@@ -106,10 +106,11 @@ func CheckBacklogs(backlogs []Backlog) error {
 		if strings.TrimSpace(b.Name) == "" || b.ID == "" {
 			return fmt.Errorf("backlogs: a backlog has no name or id")
 		}
-		if ids[b.ID] || names[b.Name] {
+		name := plaintext.FoldName(b.Name)
+		if ids[b.ID] || names[name] {
 			return fmt.Errorf("backlogs: %q is declared twice", b.Name)
 		}
-		ids[b.ID], names[b.Name] = true, true
+		ids[b.ID], names[name] = true, true
 		if b.Smart() {
 			if err := checkSmart(b); err != nil {
 				return err
@@ -174,10 +175,11 @@ func checkSteps(b Backlog) error {
 		if strings.TrimSpace(s.Name) == "" || s.ID == "" {
 			return fmt.Errorf("backlogs: a step of %q has no name or id", b.Name)
 		}
-		if ids[s.ID] || names[s.Name] {
+		name := plaintext.FoldName(s.Name)
+		if ids[s.ID] || names[name] {
 			return fmt.Errorf("backlogs: step %q of %q is declared twice", s.Name, b.Name)
 		}
-		ids[s.ID], names[s.Name] = true, true
+		ids[s.ID], names[name] = true, true
 		for _, status := range s.Statuses {
 			if !knownTaskStatuses[status] {
 				return fmt.Errorf("backlogs: step %q maps %q, which is not a task status", s.Name, status)

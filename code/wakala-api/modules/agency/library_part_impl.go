@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/agency/models"
+	"wakalaserver/modules/shared/plaintext"
 )
 
 type LibraryPartFilter struct {
@@ -40,7 +41,7 @@ var (
 )
 
 func sameTitle(a, b string) bool {
-	return strings.EqualFold(strings.TrimSpace(a), strings.TrimSpace(b))
+	return plaintext.SameNameIgnoringCase(a, b)
 }
 
 func (m *agencyManager) requireFreeTitle(ctx context.Context, tx *gorm.DB, k libraryKind, draftID, exceptID, title string) error {

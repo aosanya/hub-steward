@@ -33,13 +33,11 @@ func (m *accountManager) valid(a Account) error {
 }
 
 func (m *accountManager) nameTaken(ctx context.Context, agencyID, name, except string) (bool, error) {
-	var n int64
-	q := m.st.Query(ctx, roleAccount).Where("agency_id = ? AND name = ?", agencyID, name)
+	q := m.st.Query(ctx, roleAccount).Where("agency_id = ?", agencyID)
 	if except != "" {
 		q = q.Where("id <> ?", except)
 	}
-	err := q.Count(&n).Error
-	return n > 0, err
+	return anyNameFolds(q, name)
 }
 
 func (m *accountManager) CreateAccount(ctx context.Context, agencyID string, in Account) (Account, error) {

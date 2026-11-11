@@ -25,7 +25,7 @@ func invalidScenario(format string, args ...any) error {
 }
 
 func sameName(a, b string) bool {
-	return strings.EqualFold(strings.TrimSpace(a), strings.TrimSpace(b))
+	return plaintext.SameNameIgnoringCase(a, b)
 }
 
 func (m *agencyManager) requireOpenDraft(ctx context.Context, tx *gorm.DB, draftID string) error {
