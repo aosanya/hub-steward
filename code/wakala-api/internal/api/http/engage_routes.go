@@ -17,7 +17,7 @@ func engageMount() engageroutes.Mount {
 
 func (d *Deps) instanceEngageMount(role string) engageroutes.Mount {
 	mount := engageMount()
-	mount.Authorize = agentPermissioned(role, d.Registry, d.agencyRolePermissions, mount.Authorize)
+	mount.Authorize = postKindGated(agentPermissioned(role, d.Registry, d.agencyRolePermissions, mount.Authorize))
 	return mount
 }
 
@@ -36,6 +36,9 @@ func (d *Deps) registerEngageRoutes(mux *http.ServeMux, reg agencies.Registry, a
 				return
 			}
 			r = withPartition(r, instanceID)
+			if rt.Action == createPostAction {
+				r = withPostKind(r)
+			}
 			engageroutes.RoutesFor(m, d.instanceEngageMount(d.callerRole(r, instanceID)))[idx].Handler(w, r)
 		}))
 	}
