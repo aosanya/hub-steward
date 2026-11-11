@@ -172,7 +172,7 @@ type CatalogManager interface {
 	SchedulePublishBatch(ctx context.Context, s PublishSchedule) ([]Entry, error)
 
 	// DeleteEntry soft-deletes an Entry.
-	DeleteEntry(ctx context.Context, slug string) error
+	DeleteEntry(ctx context.Context, slug, deletedBy string) error
 	DisposeExpired(ctx context.Context, now time.Time) ([]string, error)
 	SeedEntries(ctx context.Context) ([]string, error)
 

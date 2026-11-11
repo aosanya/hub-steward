@@ -97,7 +97,7 @@
       "call": "UpsertEntry",
       "action": "catalog.entry.upsert",
       "title": "Write entry",
-      "description": "Create the entry at this slug or replace the document and card of the one already there. Replacing the document of an approved entry returns it to pending, so never re-send a document that has not changed. Visibility is not set here.",
+      "description": "Create the entry at this slug or replace the document and card of the one already there. Replacing the document of an approved entry returns it to pending, so never re-send a document that has not changed. Visibility is not set here. An entry someone else wrote is refused unless the caller is the owner of the agency.",
       "args": [
         {
           "from": "body",
@@ -129,12 +129,17 @@
       "action": "catalog.entry.delete",
       "status": 204,
       "title": "Delete entry",
-      "description": "Soft-delete one entry. It stops being readable and its row stays.",
+      "description": "Soft-delete one entry. It stops being readable and its row stays. Only the one who wrote the entry, or the owner of the agency, may delete it.",
       "args": [
         {
           "from": "path",
           "as": "slug",
           "description": "The entry to delete."
+        },
+        {
+          "from": "caller",
+          "as": "deleted_by",
+          "description": "Who is deleting, supplied by the mount. Never read from the request."
         }
       ],
       "returns": [
@@ -1637,6 +1642,7 @@
   },
   "errors": {
     "ErrEntryNotFound": 404,
+    "ErrNotEntryOwner": 403,
     "ErrSuggestionNotFound": 404,
     "ErrShareLinkNotFound": 404,
     "ErrSettingNotFound": 404,

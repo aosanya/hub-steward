@@ -19,6 +19,7 @@ var operations = sync.OnceValues(func() (*dispatch.Spec, error) {
 
 var sentinels = map[string]error{
 	"ErrEntryNotFound":          catalog.ErrEntryNotFound,
+	"ErrNotEntryOwner":          catalog.ErrNotEntryOwner,
 	"ErrSuggestionNotFound":     catalog.ErrSuggestionNotFound,
 	"ErrShareLinkNotFound":      catalog.ErrShareLinkNotFound,
 	"ErrSettingNotFound":        catalog.ErrSettingNotFound,

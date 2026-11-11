@@ -10,6 +10,8 @@ import "errors"
 // catalog's unpublished slugs by the shape of the error alone.
 var ErrEntryNotFound = errors.New("entry not found")
 
+var ErrNotEntryOwner = errors.New("the entry belongs to someone else")
+
 // ErrEntryExists is returned by [CatalogManager.CreateEntry] when the slug
 // is already taken.
 var ErrEntryExists = errors.New("entry slug already in use")

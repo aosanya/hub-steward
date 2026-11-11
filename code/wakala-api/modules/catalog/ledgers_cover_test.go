@@ -64,7 +64,7 @@ func TestSeedsCreateEachMissingEntryOnceAndLeaveExistingAndDeletedSlugsAlone(t *
 	if _, err := cm.CreateEntry(ctx, catalog.Entry{Slug: "market", Name: "Old market", Doc: `{}`}); err != nil {
 		t.Fatal(err)
 	}
-	if err := cm.DeleteEntry(ctx, "market"); err != nil {
+	if err := cm.DeleteEntry(ctx, "market", ""); err != nil {
 		t.Fatal(err)
 	}
 

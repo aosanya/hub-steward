@@ -303,10 +303,10 @@ func TestDeletingAnEntryFreesItsSlugAndRetiresItsKeysAndDisposalSweepsTheDue(t *
 	if _, err := cm.PutPrivate(ctx, catalog.EntryPrivate{Slug: "vault", Readme: "notes"}); err != nil {
 		t.Fatal(err)
 	}
-	if err := cm.DeleteEntry(ctx, "vault"); err != nil {
+	if err := cm.DeleteEntry(ctx, "vault", ""); err != nil {
 		t.Fatal(err)
 	}
-	if err := cm.DeleteEntry(ctx, "vault"); !errors.Is(err, catalog.ErrEntryNotFound) {
+	if err := cm.DeleteEntry(ctx, "vault", ""); !errors.Is(err, catalog.ErrEntryNotFound) {
 		t.Fatalf("a second delete: %v", err)
 	}
 	if _, err := cm.OpenEntry(ctx, "vault", key); !errors.Is(err, catalog.ErrEntryNotFound) {

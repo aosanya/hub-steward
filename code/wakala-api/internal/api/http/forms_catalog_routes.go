@@ -124,7 +124,25 @@ func formsCatalogFor(ctx context.Context, reg agencies.Registry, instanceID stri
 	if err := mustBeMounted(ctx, reg, instanceID, "forms"); err != nil {
 		return nil, err
 	}
-	return reg.CatalogManager(ctx, instanceID, formsCatalogMount)
+	cm, err := reg.CatalogManager(ctx, instanceID, formsCatalogMount)
+	if err != nil || role != agencies.RoleOwner {
+		return cm, err
+	}
+	return agencyOwnedCatalog{CatalogManager: cm}, nil
+}
+
+type agencyOwnedCatalog struct{ catalog.CatalogManager }
+
+func (c agencyOwnedCatalog) UpsertEntry(ctx context.Context, e catalog.Entry) (catalog.Entry, error) {
+	return c.CatalogManager.UpsertEntry(catalog.AsAgencyOwner(ctx), e)
+}
+
+func (c agencyOwnedCatalog) UpdateEntry(ctx context.Context, e catalog.Entry) (catalog.Entry, error) {
+	return c.CatalogManager.UpdateEntry(catalog.AsAgencyOwner(ctx), e)
+}
+
+func (c agencyOwnedCatalog) DeleteEntry(ctx context.Context, slug, deletedBy string) error {
+	return c.CatalogManager.DeleteEntry(catalog.AsAgencyOwner(ctx), slug, deletedBy)
 }
 
 type formsCatalogShape struct{ catalog.CatalogManager }
