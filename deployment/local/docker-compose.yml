@@ -122,7 +122,7 @@ services:
       SHOP_SUPABASE_URL: http://supabase-gateway:8000
       SHOP_SUPABASE_ANON_KEY: ${ANON_KEY}
       PUBLIC_BASE_URL: http://localhost:${API_PORT:-8092}
-      STUDIO_ORIGINS: http://localhost:${CONSOLE_PORT:-8090}
+      STUDIO_ORIGINS: http://localhost:${CONSOLE_PORT:-8090},http://localhost:${STAGING_APP_PORT:-5191},http://127.0.0.1:${STAGING_APP_PORT:-5191}
       MEMBER_APP_ORIGINS: http://localhost:${APP_PORT:-8091}
     volumes:
       - ./logs:/logs
