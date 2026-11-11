@@ -17,7 +17,10 @@ export const toggled = (chosen: string[], tag: string) => (chosen.includes(tag) 
 
 export const toneOf = (tag: string): ChipTone | undefined => (tag === "Ready" ? "success" : tag === "Blocked" ? "danger" : undefined);
 
-export const hueOf = (tag: string) => [...tag].reduce((sum, letter) => (sum * 31 + letter.charCodeAt(0)) % 360, 7);
+const firstHue = 110;
+const hueSpan = 140;
+
+export const hueOf = (tag: string) => firstHue + [...tag].reduce((sum, letter) => (sum * 31 + letter.charCodeAt(0)) % hueSpan, 7);
 
 export const chipLook = (tag: string) => {
   const tone = toneOf(tag);

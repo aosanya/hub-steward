@@ -62,6 +62,16 @@ describe("an issue's title on a row or card", () => {
     expect(hueOnRow("hub-steward-swe")).toBe(String(hueOf("hub-steward-swe")));
   });
 
+  it("colours a generated bubble only in the greens and blues, the reds are kept for Blocked", () => {
+    const words = ["hub-steward-swe", "Backlog", "mwanachama-frontend-kazi", "meta-global-ai-hackathon-community-hubs", "Docs", "a", "zz", "projects/hub-steward-swe"];
+    const sample = Array.from({ length: 720 }, (_, at) => `tag-${at}`);
+    for (const word of [...words, ...sample]) {
+      const hue = hueOf(word);
+      expect(hue).toBeGreaterThanOrEqual(110);
+      expect(hue).toBeLessThan(250);
+    }
+  });
+
   it("colours a bubble from its own text, the same every time, and leaves Ready and Blocked their tones", () => {
     expect(hueOf("hub-steward-swe")).toBe(hueOf("hub-steward-swe"));
     expect(hueOf("hub-steward-swe")).not.toBe(hueOf("Backlog"));
