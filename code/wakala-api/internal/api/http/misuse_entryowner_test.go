@@ -89,33 +89,45 @@ func serverCatalogWalk(t *testing.T) stepRunWalk {
 	}
 	w := newStepRunWalk(t, nil)
 	w.deps.Catalog = cm
+	w.deps.Reports = cm
 	w.deps.Permissions = everyoneMay{}
 	w.handler = NewRouter(w.deps)
 	return w
 }
 
 func TestServerCatalog_OnlyTheEntrysOwnerOverwritesOrDeletesIt(t *testing.T) {
-	w := serverCatalogWalk(t)
-	anna := w.cookieFor(t, "resident-anna")
-	bela := w.cookieFor(t, "resident-bela")
+	for _, door := range []string{"/catalog", "/reports"} {
+		t.Run(door, func(t *testing.T) {
+			w := serverCatalogWalk(t)
+			ctx := context.Background()
+			for _, resident := range []string{"resident-anna", "resident-bela"} {
+				if err := w.deps.Registry.AddMember(ctx, w.instance, resident, agencies.RoleResident); err != nil {
+					t.Fatalf("AddMember %s: %v", resident, err)
+				}
+			}
+			anna := w.cookieFor(t, "resident-anna")
+			bela := w.cookieFor(t, "resident-bela")
+			entry := door + "/entries/lights"
 
-	if rec := w.call(t, "PUT", "/catalog/entries/lights", entryBody("lights", "Lights"), anna); rec.Code != http.StatusOK {
-		t.Fatalf("anna writes: %d %s", rec.Code, rec.Body.String())
-	}
-	if rec := w.call(t, "PUT", "/catalog/entries/lights", entryBody("lights", "TAKEN"), bela); rec.Code != http.StatusForbidden {
-		t.Errorf("bela overwrites anna's entry: %d %s, want 403", rec.Code, rec.Body.String())
-	}
-	if rec := w.call(t, "DELETE", "/catalog/entries/lights", nil, bela); rec.Code != http.StatusForbidden {
-		t.Errorf("bela deletes anna's entry: %d %s, want 403", rec.Code, rec.Body.String())
-	}
-	read := w.call(t, "GET", "/catalog/entries/lights/admin", nil, anna)
-	if read.Code != http.StatusOK || decodeObject(t, read)["submitted_by"] != "resident-anna" {
-		t.Errorf("anna's entry after the refused acts: %d %s, want it still hers", read.Code, read.Body.String())
-	}
-	if rec := w.call(t, "PUT", "/catalog/entries/lights", entryBody("lights", "Lights 2"), anna); rec.Code != http.StatusOK {
-		t.Errorf("anna rewrites her own entry: %d %s, want 200", rec.Code, rec.Body.String())
-	}
-	if rec := w.call(t, "DELETE", "/catalog/entries/lights", nil, anna); rec.Code != http.StatusNoContent {
-		t.Errorf("anna deletes her own entry: %d %s, want 204", rec.Code, rec.Body.String())
+			if rec := w.call(t, "PUT", entry, entryBody("lights", "Lights"), anna); rec.Code != http.StatusOK {
+				t.Fatalf("anna writes: %d %s", rec.Code, rec.Body.String())
+			}
+			if rec := w.call(t, "PUT", entry, entryBody("lights", "TAKEN"), bela); rec.Code != http.StatusForbidden {
+				t.Errorf("bela overwrites anna's entry: %d %s, want 403", rec.Code, rec.Body.String())
+			}
+			if rec := w.call(t, "DELETE", entry, nil, bela); rec.Code != http.StatusForbidden {
+				t.Errorf("bela deletes anna's entry: %d %s, want 403", rec.Code, rec.Body.String())
+			}
+			read := w.call(t, "GET", entry+"/admin", nil, anna)
+			if read.Code != http.StatusOK || decodeObject(t, read)["submitted_by"] != "resident-anna" {
+				t.Errorf("anna's entry after the refused acts: %d %s, want it still hers", read.Code, read.Body.String())
+			}
+			if rec := w.call(t, "PUT", entry, entryBody("lights", "Lights 2"), anna); rec.Code != http.StatusOK {
+				t.Errorf("anna rewrites her own entry: %d %s, want 200", rec.Code, rec.Body.String())
+			}
+			if rec := w.call(t, "DELETE", entry, nil, anna); rec.Code != http.StatusNoContent {
+				t.Errorf("anna deletes her own entry: %d %s, want 204", rec.Code, rec.Body.String())
+			}
+		})
 	}
 }
