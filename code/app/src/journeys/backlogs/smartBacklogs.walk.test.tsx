@@ -251,9 +251,9 @@ describe("journey 09, smart backlogs", () => {
     expect(within(entry).getByText("3 issues")).toBeInTheDocument();
   });
 
-  it("3. opens it: the Smart pill, the rules read back, the count, Edit rules and Select, a List | Board switch opening on the board, and only Ready issues at To do", async () => {
+  it("3. opens it: the Smart pill, the first rule read back with a +1 more bubble, the count, Edit rules and Select, a List | Board switch opening on the board, and only Ready issues at To do", async () => {
     walk("/backlogs/ready/smart");
-    expect(await screen.findByText("Mark is Ready · Step is To do")).toBeInTheDocument();
+    expect(await screen.findByText("Mark is Ready")).toBeInTheDocument();
     expect(screen.getByText("Smart")).toBeInTheDocument();
     expect(screen.getByText("3 issues")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Actions" }));
@@ -267,7 +267,7 @@ describe("journey 09, smart backlogs", () => {
 
   it("3. a role that may not manage backlogs sees the list without the Edit rules link", async () => {
     walk("/backlogs/ready/smart", { permissions: worker, levels: workerLevels });
-    expect(await screen.findByText("Mark is Ready · Step is To do")).toBeInTheDocument();
+    expect(await screen.findByText("Mark is Ready")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Actions" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Edit rules" })).toBeNull();
   });

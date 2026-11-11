@@ -10,7 +10,7 @@ import { choicesOf, mcpSmartBacklogClient, setOf, smartOf, smartTools } from "./
 import { AddSmartBacklogScreen, EditSmartBacklogScreen } from "./SmartScreens";
 import { SmartBacklogPage } from "./SmartBacklogPage";
 import { DuplicateRules, type FieldChoices, type RuleSet, type SmartBacklogClient } from "./types";
-import { rulesWords } from "./words";
+import { matchWords, moreWords, ruleWords } from "./words";
 
 const calls: [string, any][] = [];
 
@@ -114,8 +114,9 @@ describe("one smart backlog opened", () => {
 
   it("reads the rules back, counts the issues and offers Edit rules to a manager, with a List | Board switch on Board", async () => {
     open(fake(), [issue("t1", "Record the voice clips"), issue("t2", "Add the backlog tools")]);
-    expect(await screen.findByText("Mark is Ready · Step is To do")).toBeInTheDocument();
+    expect(await screen.findByText("Mark is Ready")).toBeInTheDocument();
     expect(screen.getByText("Smart")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "+1 more" })).toBeInTheDocument();
     expect(screen.getByText("2 issues")).toBeInTheDocument();
     expect(screen.getByText(/Record the voice clips/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Edit rules" })).toBeNull();
@@ -185,14 +186,14 @@ describe("one smart backlog opened", () => {
 
   it("hides Change who has access from a role that may not manage backlogs", async () => {
     open(fake(), [issue("t1", "Record the voice clips")], false);
-    await screen.findByText("Mark is Ready · Step is To do");
+    await screen.findByText("Mark is Ready");
     expect(screen.queryByRole("button", { name: "Actions" })).toBeNull();
     expect(screen.queryByRole("link", { name: "Change who has access" })).toBeNull();
   });
 
   it("hides Edit rules from a role that may not manage backlogs", async () => {
     open(fake(), [issue("t1", "Record the voice clips")], false);
-    await screen.findByText("Mark is Ready · Step is To do");
+    await screen.findByText("Mark is Ready");
     expect(screen.queryByRole("button", { name: "Actions" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Edit rules" })).toBeNull();
   });
@@ -272,9 +273,11 @@ describe("the smart backlog client", () => {
     });
   });
 
-  it("reads rules back in words, joined by or for Match any", () => {
-    expect(rulesWords(readySet)).toBe("Mark is Ready · Step is To do");
-    expect(rulesWords({ ...readySet, match: "any" })).toBe("Mark is Ready or Step is To do");
+  it("reads a rule back in words, says how the rules combine and counts the ones not shown", () => {
+    expect(ruleWords(readySet.rules[1])).toBe("Step is To do");
+    expect(matchWords("all")).toBe("Matches all of these rules");
+    expect(matchWords("any")).toBe("Matches any of these rules");
+    expect(moreWords(4)).toBe("+4 more");
   });
 
   it("sends the name and the rules together on create and counts through the count tool", async () => {

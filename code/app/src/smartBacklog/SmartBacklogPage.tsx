@@ -14,14 +14,13 @@ import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklo
 import { useLoad } from "../forms/useLoad";
 import { Button } from "../ui/Button";
 import { ActionsMenu } from "../ui/ActionsMenu";
-import { Chip } from "../ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
 import { mcpSmartBacklogClient } from "./api";
 import { editRulesPath } from "./paths";
+import { RulesHead } from "./RulesHead";
 import type { SmartBacklogClient } from "./types";
-import { rulesWords } from "./words";
 
 type Props = { client?: SmartBacklogClient; issues?: BacklogsClient; manage?: BacklogManageClient };
 
@@ -54,10 +53,7 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
     : { title: backlog.name, onBack: back, action: canSend ? <SelectButton onStart={selecting.start} /> : undefined };
   return (
     <Shell {...shell} headEnd={mayEdit ? <ActionsMenu actions={[{ label: "Edit rules", onSelect: edit }, { label: "Change who has access", to: backlogAccessPath(backlogId) }]} /> : undefined} tabless={selecting.on} fluid>
-      <div className="smart-head">
-        <Chip tone="info">Smart</Chip>
-        <span className="sub">{rulesWords(backlog.set)}</span>
-      </div>
+      <RulesHead set={backlog.set} />
       {rows.length === 0 ? (
         <EmptyCard words="Nothing matches yet">{mayEdit ? <Button kind="primary" onClick={edit}>Edit rules</Button> : null}</EmptyCard>
       ) : (

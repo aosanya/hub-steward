@@ -4,4 +4,6 @@
 .rpair { display: flex; gap: .5rem; }
 .pick { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: .25rem; min-height: 2.5rem; padding: 0 .75rem; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r-sm); font: inherit; color: var(--ink); text-align: left; }
 .pick.val { background: var(--bg); }
-.smart-head { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.smart-head { display: flex; align-items: center; gap: .5rem; flex-wrap: nowrap; min-width: 0; }
+.smart-head .chip { flex: none; }
+.smart-head .rule-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

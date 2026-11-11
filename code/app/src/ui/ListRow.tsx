@@ -51,6 +51,6 @@ export function SelectableRow({ selection, ...row }: Props & { selection: Select
   );
 }
 
-export function Rows({ children }: { children: ReactNode }) {
-  return <div className="rows">{children}</div>;
+export function Rows({ children, role }: { children: ReactNode; role?: string }) {
+  return <div className="rows" role={role}>{children}</div>;
 }
