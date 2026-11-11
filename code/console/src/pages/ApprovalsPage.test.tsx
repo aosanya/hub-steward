@@ -87,7 +87,7 @@ const listed = (status: string): Call => ({ hub: "h1", tool: "agency_list_approv
 const decided = (approvalId: string, decision: string): Call => ({
   hub: "h1",
   tool: "agency_decide_approval",
-  args: { approval_id: approvalId, decision },
+  args: { approval_id: approvalId, decision, seen_amendments: 0 },
 });
 const listings = (calls: Call[]) => calls.filter((c) => c.tool === "agency_list_approvals");
 const decisions = (calls: Call[]) => calls.filter((c) => c.tool === "agency_decide_approval");
@@ -518,8 +518,8 @@ describe("Approve all for one requester", () => {
     await userEvent.click(screen.getByRole("button", { name: "Approve all" }));
     await waitFor(() => expect(decisions(calls)).toHaveLength(2));
     expect(decisions(calls).map((c) => c.args)).toEqual([
-      { approval_id: "k1", decision: "approved" },
-      { approval_id: "k2", decision: "approved" },
+      { approval_id: "k1", decision: "approved", seen_amendments: 0 },
+      { approval_id: "k2", decision: "approved", seen_amendments: 0 },
     ]);
     expect(await screen.findByText("Approved all of Akinyi Otieno's requests")).toBeInTheDocument();
   });

@@ -89,9 +89,8 @@ function ApprovalRows({ hubId, tab, requester, onPending }: { hubId: string; tab
   }, [state, tab, requester, onPending]);
 
   const decide = async (row: PageRow, decision: Decision) => {
-    const seen = amendmentsSeen(row);
     const outcome = await approvals()
-      .actions!.decide(hubId, { id: shown(row.id), decision, ...(seen === undefined ? {} : { seen_amendments: seen }) })
+      .actions!.decide(hubId, { id: shown(row.id), decision, seen_amendments: amendmentsSeen(row) })
       .then(
         () => "sent" as const,
         (error) => (isChangedSinceRead(error) ? ("changed" as const) : ("failed" as const)),

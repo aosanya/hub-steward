@@ -33,14 +33,13 @@ const listApprovals = async (hubId: string, query: Query): Promise<PageRow[]> =>
   return items.filter((item) => !query.requester || isRequester(item, query.requester));
 };
 
-const decideApproval = async (hubId: string, id: string, decision: string, reason: string, seenAmendments?: number) => {
-  const args: Record<string, unknown> = { approval_id: id, decision };
+const decideApproval = async (hubId: string, id: string, decision: string, reason: string, seenAmendments: number) => {
+  const args: Record<string, unknown> = { approval_id: id, decision, seen_amendments: seenAmendments };
   if (reason !== "") args.reason = reason;
-  if (seenAmendments !== undefined) args.seen_amendments = seenAmendments;
   await callTool(hubId, "agency_decide_approval", args);
 };
 
-export const amendmentsSeen = (row: PageRow): number | undefined => (row.amendments === undefined ? undefined : listIn(row, "amendments").length);
+export const amendmentsSeen = (row: PageRow): number => listIn(row, "amendments").length;
 
 export const isChangedSinceRead = (error: unknown) => error instanceof McpError && error.message.includes("changed after it was read");
 
@@ -73,8 +72,8 @@ const decide: ActionRun = async (hubId, values) => {
   const reason = text(values.reason);
   const id = text(values.id);
   if (id.trim() !== "") {
-    const seen = typeof values.seen_amendments === "number" ? values.seen_amendments : undefined;
-    await decideApproval(hubId, id, decision, reason, seen);
+    if (typeof values.seen_amendments !== "number") throw new Error("seen_amendments is required");
+    await decideApproval(hubId, id, decision, reason, values.seen_amendments);
     return "done";
   }
   const requester = text(values.requester);

@@ -96,8 +96,8 @@ describe("deciding approvals", () => {
     expect(out.decided).toEqual(["a1"]);
     expect(out.failed).toEqual([{ id: "a2", error: "already decided" }]);
     expect(decideCalls().map((call) => call.args)).toEqual([
-      { approval_id: "a1", decision: "approved" },
-      { approval_id: "a2", decision: "approved" },
+      { approval_id: "a1", decision: "approved", seen_amendments: 0 },
+      { approval_id: "a2", decision: "approved", seen_amendments: 0 },
     ]);
   });
 
@@ -105,20 +105,20 @@ describe("deciding approvals", () => {
     await decideAllPending("h1", "akinyi", "refused", "not now");
     expect(calls()[0]).toEqual({ tool: "agency_list_approvals", args: { status: "pending" } });
     expect(decideCalls().map((call) => call.args)).toEqual([
-      { approval_id: "a1", decision: "refused", reason: "not now" },
-      { approval_id: "a2", decision: "refused", reason: "not now" },
+      { approval_id: "a1", decision: "refused", reason: "not now", seen_amendments: 0 },
+      { approval_id: "a2", decision: "refused", reason: "not now", seen_amendments: 0 },
     ]);
   });
 
   it("sends approved for one request and answers done", async () => {
-    expect(await decide({ id: "a1", decision: "approved" })).toBe("done");
-    expect(calls()).toEqual([{ tool: "agency_decide_approval", args: { approval_id: "a1", decision: "approved" } }]);
+    expect(await decide({ id: "a1", decision: "approved", seen_amendments: 0 })).toBe("done");
+    expect(calls()).toEqual([{ tool: "agency_decide_approval", args: { approval_id: "a1", decision: "approved", seen_amendments: 0 } }]);
     expect(vi.mocked(callTool).mock.calls[0][0]).toBe("h1");
   });
 
   it("sends refused with the reason when one is given", async () => {
-    expect(await decide({ id: "a1", decision: "refused", reason: "not now" })).toBe("done");
-    expect(decideCalls()[0].args).toEqual({ approval_id: "a1", decision: "refused", reason: "not now" });
+    expect(await decide({ id: "a1", decision: "refused", reason: "not now", seen_amendments: 0 })).toBe("done");
+    expect(decideCalls()[0].args).toEqual({ approval_id: "a1", decision: "refused", reason: "not now", seen_amendments: 0 });
   });
 
   it("decides all of a requester's pending requests when it is given a requester and no id", async () => {
@@ -141,6 +141,12 @@ describe("deciding approvals", () => {
   it("binds a single decision to the amendment count the approver read", async () => {
     await decide({ id: "a1", decision: "approved", seen_amendments: 2 });
     expect(decideCalls()[0].args).toEqual({ approval_id: "a1", decision: "approved", seen_amendments: 2 });
+  });
+
+  it("refuses a decision on one request that does not name how many amendments were read, before asking anything", async () => {
+    await expect(decide({ id: "a1", decision: "approved" })).rejects.toThrow("seen_amendments is required");
+    await expect(decide({ id: "a1", decision: "refused", seen_amendments: "2" })).rejects.toThrow("seen_amendments is required");
+    expect(calls()).toEqual([]);
   });
 
   it("binds a decision of zero amendments too", async () => {
@@ -167,6 +173,11 @@ describe("deciding approvals", () => {
     ]);
   });
 
+  it("binds a request whose listing row carries no amendments key to zero", async () => {
+    await decideAllPending("h1", "otieno", "approved", "");
+    expect(decideCalls().map((call) => call.args)).toEqual([{ approval_id: "a3", decision: "approved", seen_amendments: 0 }]);
+  });
+
   it("recognises the answer that says the request changed after it was read", () => {
     const refusal = new McpError("agency_decide_approval: the approval changed after it was read, so read it again before deciding");
     expect(isChangedSinceRead(refusal)).toBe(true);
@@ -176,12 +187,12 @@ describe("deciding approvals", () => {
 
   it("fails when the tool refuses the decision", async () => {
     answerWith(["a1"]);
-    await expect(decide({ id: "a1", decision: "approved" })).rejects.toThrow("already decided");
+    await expect(decide({ id: "a1", decision: "approved", seen_amendments: 0 })).rejects.toThrow("already decided");
   });
 
   it("fails as signed out when the hub's session is gone", async () => {
     vi.mocked(callTool).mockRejectedValue(new McpError("not signed in", true));
-    await expect(decide({ id: "a1", decision: "approved" })).rejects.toMatchObject({ unauthorized: true });
+    await expect(decide({ id: "a1", decision: "approved", seen_amendments: 0 })).rejects.toMatchObject({ unauthorized: true });
   });
 });
 
