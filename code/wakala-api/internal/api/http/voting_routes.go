@@ -39,7 +39,11 @@ func (d *Deps) registerVotingRoutes(mux *http.ServeMux, reg agencies.Registry, a
 			}
 			instanceID := r.PathValue("instanceID")
 			r = withPartition(r, instanceID)
-			votingroutes.RoutesFor(m, d.instanceVotingMount(d.callerRole(r, instanceID)))[idx].Handler(w, r)
+			role := d.callerRole(r, instanceID)
+			if role == agencies.RoleResident {
+				m = residentPolls{m}
+			}
+			votingroutes.RoutesFor(m, d.instanceVotingMount(role))[idx].Handler(w, r)
 		}))
 	}
 }

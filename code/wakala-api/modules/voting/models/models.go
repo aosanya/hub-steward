@@ -44,3 +44,36 @@ type Ballot struct {
 	Votes      map[string]int `json:"votes"`
 	CastAt     string         `json:"cast_at"`
 }
+
+type PollRead interface{ pollRead() }
+
+func (Poll) pollRead() {}
+
+func (PollRespondentView) pollRead() {}
+
+type PollRespondentView struct {
+	ID                string   `json:"id"`
+	Question          string   `json:"question"`
+	Mode              string   `json:"mode"`
+	MaxChoices        int      `json:"max_choices,omitempty"`
+	Budget            int      `json:"budget,omitempty"`
+	ChangeAllowed     bool     `json:"change_allowed"`
+	PerGroup          string   `json:"per_group"`
+	GroupIDs          []string `json:"group_ids"`
+	OpensAt           string   `json:"opens_at"`
+	ClosesAt          string   `json:"closes_at"`
+	State             string   `json:"state"`
+	PublishedAt       string   `json:"published_at,omitempty"`
+	PublishedGroupIDs []string `json:"published_group_ids,omitempty"`
+	CreatedAt         string   `json:"created_at"`
+	Choices           []Choice `json:"choices,omitempty"`
+}
+
+func (p Poll) RespondentView() PollRespondentView {
+	return PollRespondentView{
+		ID: p.ID, Question: p.Question, Mode: p.Mode, MaxChoices: p.MaxChoices, Budget: p.Budget,
+		ChangeAllowed: p.ChangeAllowed, PerGroup: p.PerGroup, GroupIDs: p.GroupIDs, OpensAt: p.OpensAt,
+		ClosesAt: p.ClosesAt, State: p.State, PublishedAt: p.PublishedAt, PublishedGroupIDs: p.PublishedGroupIDs,
+		CreatedAt: p.CreatedAt, Choices: p.Choices,
+	}
+}

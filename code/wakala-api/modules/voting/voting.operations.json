@@ -17,10 +17,10 @@
     "get_poll": {
       "method": "GET",
       "path": "/polls/{pollID}",
-      "call": "GetPoll",
+      "call": "ShowPoll",
       "action": "voting.poll.read",
       "title": "Read poll",
-      "description": "Read one poll with its settings and state.",
+      "description": "Read one poll with its settings and state. A resident reads it as a respondent does, without the members who made or published it.",
       "args": [{ "from": "path", "as": "pollID", "description": "The poll to read." }],
       "returns": [{ "body": true }]
     },
