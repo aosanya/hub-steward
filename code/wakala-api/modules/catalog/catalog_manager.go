@@ -15,38 +15,39 @@ import (
 // Entry, EntryPrivate, ShareLink and their enum types are aliases of their
 // models. counterparts, so a caller needs only this package's import.
 type (
-	Entry              = models.Entry
-	DocFilter          = models.DocFilter
-	EntryPrivate       = models.EntryPrivate
-	ShareLink          = models.ShareLink
-	Suggestion         = models.Suggestion
-	SuggestionComment  = models.SuggestionComment
-	SuggestionMatch    = models.SuggestionMatch
-	MiningRun          = models.MiningRun
-	Setting            = models.Setting
-	PageView           = models.PageView
-	Visibility         = models.Visibility
-	LinkStatus         = models.LinkStatus
-	SuggestionStatus   = models.SuggestionStatus
-	SuggestionSource   = models.SuggestionSource
-	CommentAuthor      = models.CommentAuthor
-	PageKind           = models.PageKind
-	Record             = models.Record
-	Endorsement        = models.Endorsement
-	Slot               = models.Slot
-	Booking            = models.Booking
-	RaisedItem         = models.RaisedItem
-	BoardItem          = models.BoardItem
-	BoardItemTally     = models.BoardItemTally
-	SharedBoardItem    = models.SharedBoardItem
-	Reply              = models.Reply
-	FollowKey          = models.FollowKey
-	FollowedRaisedItem = models.FollowedRaisedItem
-	MyRaisedItem       = models.MyRaisedItem
-	Removal            = models.Removal
-	RaisedItemFile     = models.RaisedItemFile
-	FieldTally         = models.FieldTally
-	ScopeFigure        = models.ScopeFigure
+	Entry                  = models.Entry
+	DocFilter              = models.DocFilter
+	EntryPrivate           = models.EntryPrivate
+	ShareLink              = models.ShareLink
+	Suggestion             = models.Suggestion
+	SuggestionComment      = models.SuggestionComment
+	SuggestionMatch        = models.SuggestionMatch
+	MiningRun              = models.MiningRun
+	Setting                = models.Setting
+	PageView               = models.PageView
+	Visibility             = models.Visibility
+	LinkStatus             = models.LinkStatus
+	SuggestionStatus       = models.SuggestionStatus
+	SuggestionSource       = models.SuggestionSource
+	CommentAuthor          = models.CommentAuthor
+	PageKind               = models.PageKind
+	Record                 = models.Record
+	Endorsement            = models.Endorsement
+	Slot                   = models.Slot
+	Booking                = models.Booking
+	RaisedItem             = models.RaisedItem
+	BoardItem              = models.BoardItem
+	BoardItemTally         = models.BoardItemTally
+	SharedBoardItem        = models.SharedBoardItem
+	Reply                  = models.Reply
+	FollowKey              = models.FollowKey
+	FollowedRaisedItem     = models.FollowedRaisedItem
+	FollowedRaisedItemView = models.FollowedRaisedItemView
+	MyRaisedItem           = models.MyRaisedItem
+	Removal                = models.Removal
+	RaisedItemFile         = models.RaisedItemFile
+	FieldTally             = models.FieldTally
+	ScopeFigure            = models.ScopeFigure
 )
 
 const (
@@ -306,6 +307,7 @@ type CatalogManager interface {
 	ListMyReplies(ctx context.Context, raisedItemID, caller string) ([]Reply, error)
 	IssueFollowKey(ctx context.Context, raisedItemID string) (FollowKey, error)
 	OpenFollowedRaisedItem(ctx context.Context, key string) (FollowedRaisedItem, error)
+	ShowFollowedRaisedItem(ctx context.Context, key string) (FollowedRaisedItemView, error)
 	RecordScopeFigure(ctx context.Context, f ScopeFigure) (ScopeFigure, error)
 	CurrentScopeFigure(ctx context.Context, scopeID string) (ScopeFigure, error)
 	ListScopeFigures(ctx context.Context, scopeID string) ([]ScopeFigure, error)

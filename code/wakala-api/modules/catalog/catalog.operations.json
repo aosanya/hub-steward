@@ -1280,10 +1280,10 @@
     "open_followed_raised_item": {
       "method": "GET",
       "path": "/followed-items/{key}",
-      "call": "OpenFollowedRaisedItem",
+      "call": "ShowFollowedRaisedItem",
       "action": "catalog.raised_item.open_followed",
       "title": "Open a followed raised item",
-      "description": "Read one raised item, its department and status, and the replies written to it through its follow key, without signing in. An unknown key, a retired key, a missing item and a catalog that takes no raised items are all the same 'not found'.",
+      "description": "Read one raised item, its department and status, and the replies written to it through its follow key, without signing in, as the person who raised it sees it: the item, its status and the text of each reply, and none of the staff who filed, routed or replied. An unknown key, a retired key, a missing item and a catalog that takes no raised items are all the same 'not found'.",
       "args": [
         {
           "from": "path",
