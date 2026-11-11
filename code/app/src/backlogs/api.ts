@@ -130,8 +130,6 @@ export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
   };
 };
 
-export const inRankOrder = (issues: Issue[]) => [...issues].sort((a, b) => a.rank - b.rank);
-
 export const stepsOf = (reply: any): string[] => itemsOf(reply).map((raw) => text(raw?.name)).filter((name) => name !== "");
 
 const hubBacklogs = async () => hubBacklogsOf(await callTool("", taskTools.backlogs, {}));
@@ -155,7 +153,7 @@ const fetchAll = async (query: Query): Promise<any[]> => {
 
 const issueList = async (backlogId: string, hub: HubBacklog[]) => {
   const rows = await fetchAll(backlogId === allIssuesId ? {} : { backlog: backlogId });
-  return inRankOrder(rows.map((raw) => issueOf(raw, hub)).filter((issue) => issue.id !== ""));
+  return rows.map((raw) => issueOf(raw, hub)).filter((issue) => issue.id !== "");
 };
 
 export const mcpBacklogsClient: BacklogsClient = {

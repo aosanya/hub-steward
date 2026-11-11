@@ -25,7 +25,7 @@ export const docsIssue = issueRow({ id: "t2", title: "Write the manual", rank: 1
 
 export const loaderIssue = issueRow({ id: "t3", title: "Write the loader", rank: 3, project_name: "hub-steward-swe", tags: ["Software"], description: "The script." });
 
-export const issues = [importIssue, docsIssue, loaderIssue];
+export const issues = [docsIssue, importIssue, loaderIssue];
 
 export const hubBacklogsFor = (items: Raw[]) => ({
   items: [

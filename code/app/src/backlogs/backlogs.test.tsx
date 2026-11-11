@@ -28,9 +28,9 @@ const task = (id: string, title: string, rank: number, extra: Record<string, unk
 });
 
 const board = [
-  task("t3", "Record the voice clips", 3, { project_name: "community-hubs" }),
   task("t1", "Fix mirrored board drift", 1, { project_name: "mwanachama-web", tags: ["Docs"] }),
   task("t2", "Import the municipality", 2, { status: "blocked", state: "Waiting", tags: ["Blocked"], description: "Load the English template." }),
+  task("t3", "Record the voice clips", 3, { project_name: "community-hubs" }),
 ];
 
 const stepNames = ["To do", "Doing", "Waiting", "Done", "Cancelled"];
@@ -183,7 +183,7 @@ describe("the Backlogs screen", () => {
 });
 
 describe("the list of issues", () => {
-  it("shows the issues in rank order with the title, the repo and the backlog on each row", async () => {
+  it("shows the issues in the order the hub gives them with the title, the repo and the backlog on each row", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs/all");
     await screen.findByText("Fix mirrored board drift");
@@ -195,6 +195,16 @@ describe("the list of issues", () => {
     expect(first.querySelectorAll(".chip.hued")).toHaveLength(2);
     expect(within(document.querySelectorAll(".issue-row")[1] as HTMLElement).getByRole("button", { name: "Blocked" })).toBeInTheDocument();
     expect(screen.getByText("3 issues")).toBeInTheDocument();
+  });
+
+  it("shows a Done step in the order the hub gives it, newest completion first", async () => {
+    answering([
+      task("d2", "Finished last", 2, { status: "completed", state: "Done", step: "done", completed_at: "2026-11-11T12:00:00Z" }),
+      task("d1", "Finished first", 1, { status: "completed", state: "Done", step: "done", completed_at: "2026-11-11T09:00:00Z" }),
+    ]);
+    openAt("/a/hub-1/backlogs/all");
+    await screen.findByText("Finished last");
+    expect(titles()).toEqual(["Finished last", "Finished first"]);
   });
 
   it("keeps a long title to two lines and gives the description only to the detail page", async () => {
