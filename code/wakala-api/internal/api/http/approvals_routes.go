@@ -54,18 +54,18 @@ func decideApproval(ctx context.Context, reg agencies.Registry, env applyEnv, in
 	if err != nil {
 		return approvals.Approval{}, err
 	}
-	out, err := decideStored(ctx, st, id, accounts.IDFromContext(ctx), decision, reason, payloadPatch, seenAmendments)
+	out, err := st.DecideSeen(ctx, id, accounts.IDFromContext(ctx), decision, reason, payloadPatch, seenCount(seenAmendments))
 	if err != nil || out.Status != approvals.StatusApproved {
 		return out, err
 	}
 	return applyApproved(ctx, reg, env, instanceID, st, out)
 }
 
-func decideStored(ctx context.Context, st *approvals.Store, id, decider, decision, reason, payloadPatch string, seenAmendments *int) (approvals.Approval, error) {
+func seenCount(seenAmendments *int) int {
 	if seenAmendments == nil {
-		return st.Decide(ctx, id, decider, decision, reason, payloadPatch)
+		return 0
 	}
-	return st.DecideSeen(ctx, id, decider, decision, reason, payloadPatch, *seenAmendments)
+	return *seenAmendments
 }
 
 func amendApproval(ctx context.Context, reg agencies.Registry, instanceID, id, summary, payloadPatch string) (approvals.Approval, error) {
@@ -203,7 +203,7 @@ type mcpDecideApprovalParams struct {
 	Decision       string `json:"decision" jsonschema:"approved or refused"`
 	Reason         string `json:"reason,omitempty" jsonschema:"why, shown to the agent"`
 	PayloadPatch   string `json:"payload_patch,omitempty" jsonschema:"only when approving: a JSON object as text, applied to the proposal's payload as a JSON merge patch (RFC 7386); a key sets or replaces a value and null removes it"`
-	SeenAmendments *int   `json:"seen_amendments,omitempty" jsonschema:"how many amendments the proposal had when you read it; the decision is refused with a conflict if it has more now, so read it again"`
+	SeenAmendments *int   `json:"seen_amendments,omitempty" jsonschema:"send it on every decision: how many amendments the proposal had when you read it (the length of its amendments list, 0 when none); left out it counts as 0, and the decision is refused with a conflict if the proposal has a different number now, so read it again"`
 }
 
 type mcpAmendApprovalParams struct {
@@ -217,7 +217,7 @@ func (d *Deps) registerApprovalMCPTools(server *mcp.Server) {
 	mcp.AddTool(server, &mcp.Tool{Name: "agency_propose_write", Title: "Propose Write", Description: "Propose a write for an owner of the agency to approve: kind, summary and the payload as JSON text. Any member may propose; it starts pending."}, d.mcpProposeWrite)
 	mcp.AddTool(server, &mcp.Tool{Name: "agency_list_approvals", Title: "List Approvals", Description: "List an agency's proposals, newest first, optionally by status (pending, approved, refused)."}, d.mcpListApprovals)
 	mcp.AddTool(server, &mcp.Tool{Name: "agency_get_approval", Title: "Get Approval", Description: "Read one proposal by id with everything its log is built from: the draft (proposed_by, proposed_at), each amendment, the decision (decided_by, decided_at, reason) and, when approved, the patched payload and the patch, and the steps taken after approving (applied: a JSON list of at, by and step)."}, d.mcpGetApproval)
-	mcp.AddTool(server, &mcp.Tool{Name: "agency_decide_approval", Title: "Decide Approval", Description: "Owner only: approve or refuse a pending proposal. When approving, an optional payload_patch (a JSON object as text) changes values in the proposal's payload at that moment as a JSON merge patch; the approval then carries the patched payload and the patch. An agent is refused."}, d.mcpDecideApproval)
+	mcp.AddTool(server, &mcp.Tool{Name: "agency_decide_approval", Title: "Decide Approval", Description: "Owner only: approve or refuse a pending proposal. When approving, an optional payload_patch (a JSON object as text) changes values in the proposal's payload at that moment as a JSON merge patch; the approval then carries the patched payload and the patch. Send seen_amendments, the number of amendments you read (0 when it had none): a decision is refused with a conflict when the proposal has a different number now, and an omitted seen_amendments counts as 0. An agent is refused."}, d.mcpDecideApproval)
 	mcp.AddTool(server, &mcp.Tool{Name: "agency_amend_approval", Title: "Amend Approval", Description: "Change a proposal that is still pending, keeping its id: an optional new summary and an optional payload_patch (a JSON object as text, applied to the payload as a JSON merge patch). Only the proposer or an owner may amend; an approved or refused proposal is refused."}, d.mcpAmendApproval)
 }
 

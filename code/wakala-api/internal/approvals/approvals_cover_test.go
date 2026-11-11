@@ -136,7 +136,7 @@ func TestAPatchIsRefusedUnlessApprovingAnObjectOntoAnObjectStillPending(t *testi
 	}
 }
 
-func TestDecideRetriesWhenTheProposalIsAmendedMidDecision(t *testing.T) {
+func TestDecideRefusesWhenTheProposalIsAmendedMidDecision(t *testing.T) {
 	st := openMisuseStore(t)
 	ctx := context.Background()
 	a := proposed(t, st, "p", `{"a":1}`)
@@ -150,14 +150,12 @@ func TestDecideRetriesWhenTheProposalIsAmendedMidDecision(t *testing.T) {
 			t.Error(err)
 		}
 	}
-	got, err := st.Decide(ctx, a.ID, "owner", StatusApproved, "", `{"c":3}`)
-	if err != nil {
-		t.Fatal(err)
+	if _, err := st.Decide(ctx, a.ID, "owner", StatusApproved, "", `{"c":3}`); !errors.Is(err, ErrChangedSinceRead) {
+		t.Fatalf("want ErrChangedSinceRead, got %v", err)
 	}
-	var payload map[string]any
-	_ = json.Unmarshal([]byte(got.Payload), &payload)
-	if payload["a"] != float64(1) || payload["b"] != float64(2) || payload["c"] != float64(3) {
-		t.Errorf("the decision lost the amendment or the patch: %v", payload)
+	held, err := st.Get(ctx, a.ID)
+	if err != nil || held.Status != StatusPending {
+		t.Fatalf("the refused decision changed the approval: %+v err %v", held, err)
 	}
 }
 

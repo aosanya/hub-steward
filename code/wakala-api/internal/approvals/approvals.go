@@ -233,28 +233,25 @@ func amendmentsIn(amendments string) ([]amendment, error) {
 }
 
 func (s *Store) Decide(ctx context.Context, id, decider, decision, reason, payloadPatch string) (Approval, error) {
-	return s.decide(ctx, id, decider, decision, reason, payloadPatch, nil)
+	return s.DecideSeen(ctx, id, decider, decision, reason, payloadPatch, 0)
 }
 
 func (s *Store) DecideSeen(ctx context.Context, id, decider, decision, reason, payloadPatch string, seenAmendments int) (Approval, error) {
-	return s.decide(ctx, id, decider, decision, reason, payloadPatch, &seenAmendments)
+	return s.decide(ctx, id, decider, decision, reason, payloadPatch, seenAmendments)
 }
 
-func checkSeen(held Approval, seenAmendments *int) error {
-	if seenAmendments == nil {
-		return nil
-	}
+func checkSeen(held Approval, seenAmendments int) error {
 	history, err := amendmentsIn(held.Amendments)
 	if err != nil {
 		return err
 	}
-	if len(history) != *seenAmendments {
+	if len(history) != seenAmendments {
 		return ErrChangedSinceRead
 	}
 	return nil
 }
 
-func (s *Store) decide(ctx context.Context, id, decider, decision, reason, payloadPatch string, seenAmendments *int) (Approval, error) {
+func (s *Store) decide(ctx context.Context, id, decider, decision, reason, payloadPatch string, seenAmendments int) (Approval, error) {
 	if decision != StatusApproved && decision != StatusRefused {
 		return Approval{}, ErrBadDecision
 	}
@@ -274,7 +271,7 @@ func (s *Store) decide(ctx context.Context, id, decider, decision, reason, paylo
 			if s.afterRead != nil {
 				s.afterRead()
 			}
-		} else if seenAmendments != nil {
+		} else {
 			read, err := s.Get(ctx, id)
 			if err != nil {
 				return Approval{}, err
@@ -284,12 +281,10 @@ func (s *Store) decide(ctx context.Context, id, decider, decision, reason, paylo
 			}
 			held = read
 		}
-		if payloadPatch != "" || seenAmendments != nil {
-			if err := checkSeen(held, seenAmendments); err != nil {
-				return Approval{}, err
-			}
-			guard = guard.Where("COALESCE(payload, '') = ? AND COALESCE(amendments, '') = ?", held.Payload, held.Amendments)
+		if err := checkSeen(held, seenAmendments); err != nil {
+			return Approval{}, err
 		}
+		guard = guard.Where("COALESCE(payload, '') = ? AND COALESCE(amendments, '') = ?", held.Payload, held.Amendments)
 		res := guard.Updates(changes)
 		if res.Error != nil {
 			return Approval{}, res.Error
