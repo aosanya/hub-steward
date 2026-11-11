@@ -18,6 +18,8 @@ var (
 	errReviewNotServed    = errors.New("Reviews are not served by this server")
 )
 
+const reviewStartAction = "agency.review.start"
+
 type ReviewRunner interface {
 	Start(ctx context.Context, instanceID, draftID, startedBy, area string) (reviewruns.Page, error)
 	Resume(ctx context.Context) error
@@ -39,6 +41,10 @@ func (d *Deps) postReviewRun(w http.ResponseWriter, r *http.Request) {
 	role, err := d.Registry.RoleOf(ctx, instanceID, caller)
 	if caller == "" || err != nil || (role != agencies.RoleOwner && role != agencies.RoleAgent) {
 		writeErr(w, http.StatusNotFound, agencies.ErrInstanceNotFound.Error())
+		return
+	}
+	if !d.agentMayDesign(withPartition(r, instanceID), instanceID, reviewStartAction) {
+		writeErr(w, http.StatusForbidden, "forbidden")
 		return
 	}
 	var req reviewRunRequest

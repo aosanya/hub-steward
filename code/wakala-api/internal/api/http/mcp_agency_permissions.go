@@ -7,10 +7,16 @@ import (
 	"wakalaserver/modules/shared/dispatch"
 )
 
-const designFromSpecTool = "agency_design_from_spec"
+const (
+	designFromSpecTool = "agency_design_from_spec"
+	runReviewTool      = "agency_run_review"
+)
 
 func agencyToolActions() map[string]string {
-	actions := map[string]string{designFromSpecTool: LocalActions()[designFromSpecTool]}
+	actions := map[string]string{
+		designFromSpecTool: LocalActions()[designFromSpecTool],
+		runReviewTool:      hostToolActions()[runReviewTool],
+	}
 	spec, err := dispatch.Parse(mwanachamaagency.Operations())
 	if err != nil {
 		panic(err)
