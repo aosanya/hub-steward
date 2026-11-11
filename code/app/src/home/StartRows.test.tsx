@@ -9,6 +9,8 @@ import { homeCardsFor, type AgencyKind } from "./cards";
 import { StartRows } from "./StartRows";
 import { chatTab } from "../tabs";
 import { chatListPath } from "../routes";
+import { mcpStepsClient } from "../steps/api";
+import * as mcp from "../wakala/mcp";
 import { applySupplierPath, applySupplierWorkflow, buyInputsChatPath, buyInputsChatWorkflow, joinGroupWorkflow, sellHarvestChatPath, sellHarvestChatWorkflow } from "./workflowScreens";
 
 const kinds: AgencyKind[] = ["farmers", "supplier"];
@@ -475,5 +477,28 @@ describe("the Start rows of Do Something", () => {
       expect(openSteps).toHaveBeenCalledTimes(1);
       expect(container).toBeEmptyDOMElement();
     });
+  });
+});
+
+describe("a member whose next step is a send_form step", () => {
+  it("sees it listed instead of Nothing to start yet, and it opens the step page", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue({
+      items: [
+        {
+          id: "send1",
+          title: "Send the paper return",
+          kind: "send_form",
+          workflow_name: "Paper return",
+          role_name: "Recipient",
+          form_name: "Paper return",
+          state: "waiting",
+          order_id: "o9",
+          questions: [{ prompt: "Channel", answer_type: "single_choice", required: true, options: ["Papíron"] }],
+        },
+      ],
+    });
+    await show({ kind: "farmers", view: view([]), start: stepsOf([]), steps: mcpStepsClient });
+    expect(screen.queryByText("Nothing to start yet")).not.toBeInTheDocument();
+    expect(await rowsShown()).toEqual([["Paper return", "/a/farmers/steps/send1"]]);
   });
 });

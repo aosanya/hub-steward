@@ -44,14 +44,16 @@ export const memberStepOf = (raw: any): MemberStep | undefined => {
 const refusalOf = (status: number): SendRefusal =>
   status === 403 ? "role" : status === 409 ? "not-ready" : status === 400 ? "invalid" : status === 404 ? "missing" : "failed";
 
-const fillsForm = (raw: any) => raw?.kind === "fill_form" && Array.isArray(raw?.questions) && raw.questions.length > 0;
+const answerKinds = ["fill_form", "send_form"];
+
+const takesAnswers = (raw: any) => answerKinds.includes(raw?.kind) && Array.isArray(raw?.questions) && raw.questions.length > 0;
 
 export const mcpStepsClient: StepsClient = {
   async available() {
     const reply = await callTool("", "agency_list_my_open_steps", { available: true });
     const items: any[] = Array.isArray(reply?.items) ? reply.items : [];
     return items
-      .filter(fillsForm)
+      .filter(takesAnswers)
       .flatMap((raw) => memberStepOf(raw) ?? [])
       .filter((step) => !(step.state === "start" && wasStarted(step.id)));
   },

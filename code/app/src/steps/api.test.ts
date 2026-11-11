@@ -50,6 +50,22 @@ describe("listing what a member may act on now", () => {
     expect(await mcpStepsClient.available()).toEqual([]);
   });
 
+  it("lists a send_form step the caller is the recipient of, whatever the order of the steps", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue({
+      items: [raw({ id: "send1", kind: "send_form", state: "waiting", order_id: "o3", form_name: "Paper return", role_name: "Recipient" }), raw()],
+    });
+    const steps = await mcpStepsClient.available();
+    expect(steps.map((s) => [s.id, s.state, s.orderId, s.formName, s.roleName])).toEqual([
+      ["send1", "waiting", "o3", "Paper return", "Recipient"],
+      ["s1", "start", "", "Referral", "Volunteer"],
+    ]);
+  });
+
+  it("still leaves out a send_form step with no questions", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [raw({ id: "send1", kind: "send_form", state: "waiting", order_id: "o3", questions: [] })] });
+    expect(await mcpStepsClient.available()).toEqual([]);
+  });
+
   it("leaves out the start of a step she has sent in this session, so the list shows it once as Sent", async () => {
     markSent({ id: "s1", orderId: "r1", title: "Refer the case" });
     vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [raw(), raw({ id: "s3", form_name: "Other" })] });

@@ -4,7 +4,8 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { routes } from "../routes";
-import { refusalWords, StepRefused, type MemberStep, type StepsClient } from "./api";
+import * as mcp from "../wakala/mcp";
+import { mcpStepsClient, refusalWords, StepRefused, type MemberStep, type StepsClient } from "./api";
 import { forgetSent, wasSent } from "./sent";
 import { StepPage } from "./StepPage";
 
@@ -66,6 +67,7 @@ beforeEach(() => openAgency("farmers"));
 
 afterEach(() => {
   cleanup();
+  vi.restoreAllMocks();
   forgetOpenAgency();
   forgetSent();
 });
@@ -179,5 +181,35 @@ describe("a member fills in one of her own steps", () => {
   it("says it could not be opened when her steps cannot be read", async () => {
     await show({ available: async () => Promise.reject(new Error("down")), submit: vi.fn() });
     expect(await screen.findByRole("alert")).toHaveTextContent("This could not be opened.");
+  });
+});
+
+describe("a member whose next step is a send_form step", () => {
+  const sendRaw = {
+    id: "send1",
+    title: "Send the paper return",
+    kind: "send_form",
+    workflow_id: "w9",
+    workflow_name: "Paper return",
+    role_id: "r18",
+    role_name: "Recipient",
+    form_name: "Paper return",
+    record_code: "REC-9",
+    state: "waiting",
+    order_id: "o9",
+    questions: [{ prompt: "Channel", answer_type: "single_choice", required: true, options: ["Papíron", "Telefonon"] }],
+  };
+
+  it("opens it by its address and sends its answers to the step with its run", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [sendRaw] });
+    const posted = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify({ done: false, order_id: "o9" }), { status: 201 }));
+    await show(mcpStepsClient, "send1", "o9");
+    expect(screen.queryByText("This could not be opened.")).not.toBeInTheDocument();
+    await userEvent.click(await screen.findByRole("radio", { name: "Papíron" }));
+    await userEvent.click(screen.getByRole("button", { name: "Send" }));
+    const [url, init] = posted.mock.calls[0];
+    expect(String(url)).toContain("/steps/send1/answers");
+    expect(JSON.parse(String((init as RequestInit).body))).toEqual({ answers: { Channel: "Papíron" }, order_id: "o9" });
+    expect(landed).toBe("/a/farmers/do-something");
   });
 });
