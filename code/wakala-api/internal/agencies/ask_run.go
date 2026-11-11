@@ -44,7 +44,7 @@ func StartAskRun(ctx context.Context, reg Registry, instanceID string, ask mwana
 	if err != nil {
 		return err
 	}
-	_, err = board.BeginWorkflowRunStep(ctx, run.ID, step.stepCode, 0, "")
+	_, err = board.BeginWorkflowRunStep(withTrustedStep(ctx), run.ID, step.stepCode, 0, "")
 	return err
 }
 

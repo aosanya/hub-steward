@@ -61,7 +61,11 @@ func (d *Deps) taskManagerFor(ctx context.Context, reg agencies.Registry, instan
 	if err := d.taskManagerAdmitted(ctx, instanceID); err != nil {
 		return nil, err
 	}
-	return reg.TaskManager(ctx, instanceID)
+	board, err := reg.TaskManager(ctx, instanceID)
+	if err != nil {
+		return nil, err
+	}
+	return stepRoleBoard{TaskManager: board, reg: reg, instanceID: instanceID}, nil
 }
 
 func sourceManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamasources.SourceManager, error) {

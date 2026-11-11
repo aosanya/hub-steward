@@ -17,6 +17,7 @@ type fakeBoard struct {
 	run          mwanachamataskmanager.WorkflowRun
 	runErr       error
 	begun        []beganStep
+	started      []string
 	answered     []string
 	answerErr    error
 	closed       []mwanachamataskmanager.WorkflowRun
@@ -86,6 +87,11 @@ func (b *fakeBoard) GetWorkflowRun(context.Context, string) (mwanachamataskmanag
 func (b *fakeBoard) BeginWorkflowRunStep(_ context.Context, runID, step string, minutes int, cancelCode string) (mwanachamataskmanager.WorkflowRun, error) {
 	b.begun = append(b.begun, beganStep{runID, step, minutes, cancelCode})
 	return mwanachamataskmanager.WorkflowRun{ID: runID}, nil
+}
+
+func (b *fakeBoard) StartWorkflowRun(_ context.Context, name, workflowCode string, _ int, _, _ string) (mwanachamataskmanager.WorkflowRun, error) {
+	b.started = append(b.started, workflowCode)
+	return mwanachamataskmanager.WorkflowRun{Name: name, WorkflowCode: workflowCode}, nil
 }
 
 func (b *fakeBoard) AnswerWorkflowRunStep(_ context.Context, runID string) (mwanachamataskmanager.WorkflowRun, error) {

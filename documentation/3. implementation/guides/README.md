@@ -15,6 +15,7 @@ Working on a part:
 How it fits and how to run it:
 
 - [Architecture](architecture.md): the pieces and who calls whom
+- [The workflow-run engine](workflow-run-engine.md): what a run start and a run step are checked against, and where the checks live
 - [Load the demo agencies](load-demo-agencies.md): import a template into a running API
 - [Run with another model](other-models.md): add a model account
 - [Languages](languages.md): fix or add a translation

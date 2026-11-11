@@ -27,6 +27,13 @@ type publishedLimit struct {
 }
 
 func (b limitedBoard) BeginWorkflowRunStep(ctx context.Context, runID, stepCode string, limitMinutes int, cancelWorkflowCode string) (mwanachamataskmanager.WorkflowRun, error) {
+	run, err := b.TaskManager.GetWorkflowRun(ctx, runID)
+	if err != nil {
+		return mwanachamataskmanager.WorkflowRun{}, err
+	}
+	if err := b.checkedStep(ctx, run, stepCode, cancelWorkflowCode); err != nil {
+		return mwanachamataskmanager.WorkflowRun{}, err
+	}
 	if limit, found := b.publishedLimit(ctx, runID, stepCode); found {
 		limitMinutes, cancelWorkflowCode = limit.minutes, limit.cancelCode
 	}

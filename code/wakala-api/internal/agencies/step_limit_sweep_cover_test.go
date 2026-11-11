@@ -31,7 +31,7 @@ func (r *fakeRegistry) TaskManager(_ context.Context, id string) (mwanachamatask
 	return r.boards[id], nil
 }
 
-func approved(id string) Instance  { return Instance{ID: id, Approval: ApprovalApproved} }
+func approved(id string) Instance { return Instance{ID: id, Approval: ApprovalApproved} }
 func awaiting(id string) Instance { return Instance{ID: id, Approval: ApprovalPending} }
 
 func TestSweepClosesRunsOnlyInApprovedAgenciesAndNamesTheFailures(t *testing.T) {
@@ -123,7 +123,7 @@ func TestStepStartsWithThePublishedLimitInPlaceOfTheOneAsked(t *testing.T) {
 	board := newFakeBoard()
 	board.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "order", WorkflowVersion: 4}
 	lb := limitedOver(board, fixedPublications{document: limitDocument()}, nil)
-	if _, err := lb.BeginWorkflowRunStep(context.Background(), "run-1", "pack", 15, "asked_cancel"); err != nil {
+	if _, err := lb.BeginWorkflowRunStep(context.Background(), "run-1", "pack", 15, "other"); err != nil {
 		t.Fatal(err)
 	}
 	if got := board.begun[0]; got.minutes != 90 || got.cancelCode != "cancel_order" || got.step != "pack" {
@@ -131,54 +131,111 @@ func TestStepStartsWithThePublishedLimitInPlaceOfTheOneAsked(t *testing.T) {
 	}
 }
 
-func TestStepKeepsTheAskedLimitWhenNothingPublishedSpeaksForIt(t *testing.T) {
-	cases := map[string]func(*fakeBoard) limitedBoard{
-		"run unreadable": func(b *fakeBoard) limitedBoard {
-			b.runErr = errors.New("gone")
+var errRunGone = errors.New("gone")
+
+func TestStepIsRefusedWhenNothingPublishedSpeaksForIt(t *testing.T) {
+	cases := map[string]struct {
+		build func(*fakeBoard) limitedBoard
+		step  string
+		want  error
+	}{
+		"run unreadable": {func(b *fakeBoard) limitedBoard {
+			b.runErr = errRunGone
 			return limitedOver(b, fixedPublications{document: limitDocument()}, nil)
-		},
-		"unpublished run": func(b *fakeBoard) limitedBoard {
+		}, "pack", errRunGone},
+		"run of no published workflow": {func(b *fakeBoard) limitedBoard {
 			b.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "order"}
 			return limitedOver(b, fixedPublications{document: limitDocument()}, nil)
-		},
-		"no reader": func(b *fakeBoard) limitedBoard {
-			b.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "order", WorkflowVersion: 1}
-			return limitedOver(b, nil, errors.New("no agency"))
-		},
-		"no publication": func(b *fakeBoard) limitedBoard {
+		}, "pack", mwanachamataskmanager.ErrStepNotInWorkflow},
+		"no publication": {func(b *fakeBoard) limitedBoard {
 			b.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "order", WorkflowVersion: 1}
 			return limitedOver(b, fixedPublications{err: errors.New("missing")}, nil)
-		},
-		"step not in the publication": func(b *fakeBoard) limitedBoard {
+		}, "pack", mwanachamataskmanager.ErrWorkflowNotPublished},
+		"workflow not in the publication": {func(b *fakeBoard) limitedBoard {
+			b.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "gone", WorkflowVersion: 1}
+			return limitedOver(b, fixedPublications{document: limitDocument()}, nil)
+		}, "pack", mwanachamataskmanager.ErrWorkflowNotPublished},
+		"step not in the workflow": {func(b *fakeBoard) limitedBoard {
 			b.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "order", WorkflowVersion: 1}
 			return limitedOver(b, fixedPublications{document: limitDocument()}, nil)
-		},
+		}, "deliver", mwanachamataskmanager.ErrStepNotInWorkflow},
 	}
-	for name, build := range cases {
+	for name, c := range cases {
 		board := newFakeBoard()
-		lb := build(board)
-		step := "pack"
-		if name == "step not in the publication" {
-			step = "deliver"
-		}
-		if _, err := lb.BeginWorkflowRunStep(context.Background(), "run-1", step, 15, "asked_cancel"); err != nil {
-			t.Fatalf("%s: %v", name, err)
-		}
-		if got := board.begun[0]; got.minutes != 15 || got.cancelCode != "asked_cancel" {
-			t.Errorf("%s: got %+v", name, got)
+		lb := c.build(board)
+		_, err := lb.BeginWorkflowRunStep(context.Background(), "run-1", c.step, 0, "")
+		if !errors.Is(err, c.want) || len(board.begun) != 0 {
+			t.Errorf("%s: err %v begun %v", name, err, board.begun)
 		}
 	}
 }
 
 func TestAStepPublishedWithNoMinutesRemovesTheAskedLimit(t *testing.T) {
 	board := newFakeBoard()
-	board.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "order", WorkflowVersion: 4}
+	board.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "order", WorkflowVersion: 4, CurrentStepID: "pack"}
 	lb := limitedOver(board, fixedPublications{document: limitDocument()}, nil)
-	if _, err := lb.BeginWorkflowRunStep(context.Background(), "run-1", "ship", 30, "asked_cancel"); err != nil {
+	if _, err := lb.BeginWorkflowRunStep(context.Background(), "run-1", "ship", 30, "other"); err != nil {
 		t.Fatal(err)
 	}
 	if got := board.begun[0]; got.minutes != 0 || got.cancelCode != "" {
 		t.Fatalf("got %+v", got)
+	}
+}
+
+func TestAStepOutOfOrderOrAskingForAnUnpublishedCancelWorkflowIsRefused(t *testing.T) {
+	cases := map[string]struct {
+		current, step, cancel string
+		want                  error
+	}{
+		"a jump past the first step":      {"", "ship", "", mwanachamataskmanager.ErrStepOutOfOrder},
+		"the same step again":             {"pack", "pack", "", mwanachamataskmanager.ErrStepOutOfOrder},
+		"a cancel workflow not published": {"", "pack", "W-NOPE-777", mwanachamataskmanager.ErrWorkflowNotPublished},
+	}
+	for name, c := range cases {
+		board := newFakeBoard()
+		board.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "order", WorkflowVersion: 4, CurrentStepID: c.current}
+		lb := limitedOver(board, fixedPublications{document: limitDocument()}, nil)
+		if _, err := lb.BeginWorkflowRunStep(context.Background(), "run-1", c.step, 5, c.cancel); !errors.Is(err, c.want) || len(board.begun) != 0 {
+			t.Errorf("%s: err %v begun %v", name, err, board.begun)
+		}
+	}
+}
+
+func TestATrustedStepMayBeginOutOfOrderButStillMustBelongToTheWorkflow(t *testing.T) {
+	board := newFakeBoard()
+	board.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "order", WorkflowVersion: 4}
+	lb := limitedOver(board, fixedPublications{document: limitDocument()}, nil)
+	ctx := withTrustedStep(context.Background())
+	if _, err := lb.BeginWorkflowRunStep(ctx, "run-1", "ship", 0, ""); err != nil {
+		t.Fatalf("a trusted step out of order: %v", err)
+	}
+	if _, err := lb.BeginWorkflowRunStep(ctx, "run-1", "deliver", 0, ""); !errors.Is(err, mwanachamataskmanager.ErrStepNotInWorkflow) {
+		t.Fatalf("a trusted step of no workflow: %v", err)
+	}
+}
+
+func TestARunOfAPublishedWorkflowAndVersionStarts(t *testing.T) {
+	board := newFakeBoard()
+	lb := limitedOver(board, fixedPublications{document: limitDocument()}, nil)
+	if _, err := lb.StartWorkflowRun(context.Background(), "n", "order", 4, "", ""); err != nil || len(board.started) != 1 || board.started[0] != "order" {
+		t.Fatalf("err %v started %v", err, board.started)
+	}
+}
+
+func TestARunIsRefusedForAWorkflowOrVersionThatIsNotPublished(t *testing.T) {
+	cases := map[string]struct {
+		reader fixedPublications
+		code   string
+	}{
+		"no such workflow":    {fixedPublications{document: limitDocument()}, "W-999"},
+		"no such publication": {fixedPublications{err: errors.New("missing")}, "order"},
+	}
+	for name, c := range cases {
+		board := newFakeBoard()
+		lb := limitedOver(board, c.reader, nil)
+		if _, err := lb.StartWorkflowRun(context.Background(), "n", c.code, 99, "", ""); !errors.Is(err, mwanachamataskmanager.ErrWorkflowNotPublished) {
+			t.Errorf("%s: %v", name, err)
+		}
 	}
 }
 
