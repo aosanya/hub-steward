@@ -68,7 +68,7 @@ export const lineWords = (issue: Issue): Word[] =>
   ].filter((word, at, all) => word.label !== "" && all.findIndex((one) => one.label === word.label) === at);
 
 export function IssueLine({ issue, chosen, onTag, showStep }: { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; showStep?: boolean }) {
-  const words = [...(issue.mark === "Blocked" || issue.mark === "Waiting" ? [{ tag: issue.mark, label: issue.mark }] : []), ...lineWords(issue)];
+  const words = [...(issue.mark === "Blocked" || issue.mark === "Sinbin" || issue.mark === "Waiting" ? [{ tag: issue.mark, label: issue.mark }] : []), ...lineWords(issue)];
   const step = showStep ? issue.step : "";
   return words.length === 0 && !step && !issue.priority && !issue.createdAt ? null : (
     <span className="issue-tags issue-line">

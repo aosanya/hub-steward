@@ -342,6 +342,31 @@ func TestPendingTasks_WaitingIsItsOwnMarkAndNeverBesideBlocked(t *testing.T) {
 	}
 }
 
+func TestPendingTasks_SinbinIsItsOwnMarkAndNeverBesideBlockedOrWaiting(t *testing.T) {
+	mgr := newTestManager(t)
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "stopped", Tags: []string{"Sinbin"}})
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "stopped and waiting", Tags: []string{"Sinbin", "Waiting"}})
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "stopped and blocked", Tags: []string{"Sinbin", "Blocked"}})
+	mustCreate(t, mgr, mwanachamataskmanager.Task{Title: "ready", Tags: []string{"Ready"}})
+
+	type flags struct{ blocked, waiting, sinbin bool }
+	got := map[string]flags{}
+	for _, item := range pendingOf(t, mgr, mwanachamataskmanager.PendingFilter{}).Items {
+		got[item.Title] = flags{item.Blocked, item.Waiting, item.Sinbin}
+	}
+	want := map[string]flags{
+		"stopped":             {false, false, true},
+		"stopped and waiting": {false, false, true},
+		"stopped and blocked": {true, false, false},
+		"ready":               {false, false, false},
+	}
+	for title, w := range want {
+		if got[title] != w {
+			t.Fatalf("%s flags %+v, want %+v (all %v)", title, got[title], w, got)
+		}
+	}
+}
+
 func TestPendingTasks_CountsDoneAndCancelledByStepOnlyWhenAsked(t *testing.T) {
 	mgr := newTestManager(t)
 	seedPending(t, mgr)

@@ -31,6 +31,7 @@ type PendingItem struct {
 	Rank     int          `json:"rank"`
 	Blocked  bool         `json:"blocked"`
 	Waiting  bool         `json:"waiting"`
+	Sinbin   bool         `json:"sinbin"`
 }
 
 type PendingTasks struct {

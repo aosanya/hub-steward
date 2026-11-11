@@ -126,12 +126,12 @@ func canonicalValue(field, value string) (string, error) {
 		}
 		return "", nil
 	case RuleFieldMark:
-		for _, mark := range []string{tagReady, tagWaiting, tagBlocked} {
+		for _, mark := range []string{tagReady, tagWaiting, tagSinbin, tagBlocked} {
 			if strings.EqualFold(value, mark) {
 				return mark, nil
 			}
 		}
-		return "", fmt.Errorf("mark is Ready, Waiting or Blocked, got %q", value)
+		return "", fmt.Errorf("mark is Ready, Waiting, Sinbin or Blocked, got %q", value)
 	case RuleFieldPriority:
 		switch TaskPriority(strings.ToLower(value)) {
 		case TaskPriorityLow, TaskPriorityMedium, TaskPriorityHigh, TaskPriorityCritical:

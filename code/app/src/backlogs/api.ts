@@ -72,7 +72,7 @@ export const itemsOf = (reply: any): any[] => (Array.isArray(reply) ? reply : Ar
 export const settled = new Set(["completed", "cancelled"]);
 
 const markOf = (raw: any, status: string): Mark =>
-  settled.has(status) ? "" : raw?.blocked === true ? "Blocked" : raw?.waiting === true ? "Waiting" : "";
+  settled.has(status) ? "" : raw?.blocked === true ? "Blocked" : raw?.sinbin === true ? "Sinbin" : raw?.waiting === true ? "Waiting" : "";
 
 const rankOf = (raw: any) => (typeof raw?.rank === "number" && raw.rank > 0 ? raw.rank : Number.MAX_SAFE_INTEGER);
 

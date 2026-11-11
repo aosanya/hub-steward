@@ -263,10 +263,10 @@ describe("the smart backlog client", () => {
     expect(setOf(undefined)).toEqual({ match: "all", rules: [] });
   });
 
-  it("offers the values that exist on the issues, Ready, Waiting and Blocked, and the priorities the server accepts", () => {
+  it("offers the values that exist on the issues, Ready, Waiting, Sinbin and Blocked, and the priorities the server accepts", () => {
     expect(choicesOf([{ topics: ["Docs"], repo: "hub-steward", step: "To do", backlog: "Software" }, { topics: [], repo: "hub-steward", step: "", backlog: "Software" }])).toEqual({
       tag: ["Docs", "hub-steward"],
-      mark: ["Ready", "Waiting", "Blocked"],
+      mark: ["Ready", "Waiting", "Sinbin", "Blocked"],
       backlog: ["Software"],
       step: ["To do"],
       priority: ["critical", "high", "medium", "low"],

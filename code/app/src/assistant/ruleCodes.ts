@@ -13,7 +13,7 @@ const text = (value: unknown) => (typeof value === "string" ? value : typeof val
 const operatorCodes = (field: FieldId) => fieldSpec(field).operators.map((operator) => operator.id);
 
 const valueHint: Partial<Record<FieldId, string>> = {
-  mark: "Ready, Waiting or Blocked",
+  mark: "Ready, Waiting, Sinbin or Blocked",
   priority: PRIORITIES.join(", "),
   last_changed: `a number and a unit such as '14 days' (${DURATION_UNITS.join(", ")})`,
   waits_on: "nothing",
@@ -27,7 +27,7 @@ export const ruleCodesLine = `Every rule you send uses codes, never the words th
 
 const valueProblem = (field: FieldId, value: string): string => {
   const spelled = value.trim().toLowerCase();
-  if (field === "mark" && !marks.includes(spelled)) return `The mark value "${value}" is not allowed; a mark is Ready, Waiting or Blocked.`;
+  if (field === "mark" && !marks.includes(spelled)) return `The mark value "${value}" is not allowed; a mark is Ready, Waiting, Sinbin or Blocked.`;
   if (field === "priority" && !(PRIORITIES as readonly string[]).includes(spelled)) return `The priority "${value}" is not allowed; a priority is ${PRIORITIES.join(", ")}.`;
   if (field === "last_changed" && !durationPattern.test(value.trim())) return `The last_changed value "${value}" is not allowed; it is a number and a unit such as '14 days' (${DURATION_UNITS.join(", ")}).`;
   return "";

@@ -12,7 +12,7 @@ export const manyMatchesRule =
   "When a search finds seven or more issues and you need to know which one the owner means, never list the titles and never ask in words alone: name a few readings (a repo, a tag, a title word), each on its own line as [[option]], and ask for a narrower word if none fits.";
 
 export const blockedIsATagRule =
-  "Ready, Waiting and Blocked are marks, each a tag of its own: Ready means the Ready tag only, Waiting means the Waiting tag only (it waits on an issue that is not finished) and Blocked means the Blocked tag only (a person must look); an issue never carries two of them. Filter by the tag the owner names and list Blocked issues and Waiting issues separately.";
+  "Ready, Waiting, Sinbin and Blocked are marks, each a tag of its own: Ready means the Ready tag only, Waiting means the Waiting tag only (it waits on an issue that is not finished), Sinbin means the Sinbin tag only (a worker stopped at a cap and the owner reviews it) and Blocked means the Blocked tag only (a person must look); an issue never carries two of them. Filter by the tag the owner names and list Blocked, Sinbin and Waiting issues separately.";
 
 export const backlogByNameRule =
   "When the owner asks to show a backlog or a smart backlog by name, call taskmanager_backlog_list first to find it, then read its issues: the page shows a card with an Open button for each backlog the owner named, so do not say where the card is and do not list the backlogs yourself.";

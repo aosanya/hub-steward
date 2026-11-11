@@ -56,8 +56,8 @@ describe("Waiting as a mark beside Blocked", () => {
     expect(first).toHaveClass("waiting");
   });
 
-  it("offers Waiting between Ready and Blocked in the mark choices", () => {
-    expect(choicesOf([]).mark).toEqual(["Ready", "Waiting", "Blocked"]);
+  it("offers Waiting and Sinbin between Ready and Blocked in the mark choices", () => {
+    expect(choicesOf([]).mark).toEqual(["Ready", "Waiting", "Sinbin", "Blocked"]);
   });
 
   it("turns a chosen Waiting chip into a mark rule", () => {
@@ -72,7 +72,7 @@ describe("Waiting as a mark beside Blocked", () => {
   it("lets the assistant write a Waiting mark rule and still refuses an unknown mark", () => {
     expect(rulesProblem([{ field: "mark", operator: "is", value: "Waiting" }])).toBe("");
     expect(rulesProblem([{ field: "mark", operator: "is", value: "waiting" }])).toBe("");
-    expect(rulesProblem([{ field: "mark", operator: "is", value: "Stale" }])).toContain("Ready, Waiting or Blocked");
+    expect(rulesProblem([{ field: "mark", operator: "is", value: "Stale" }])).toContain("Ready, Waiting, Sinbin or Blocked");
   });
 
   it("tells the Triager that Waiting and Blocked are separate tags to list apart", () => {
