@@ -262,6 +262,13 @@ func (d *Deps) addLiveRow(ctx context.Context, instanceID, recordCode string, re
 	if msg := namesAStranger(ctx, reg, instanceID, record, req.Answers); msg != "" {
 		return agencymodels.RecordRow{}, badRowError(msg)
 	}
+	real, err := d.rowRunIsReal(ctx, instanceID, m, record, req.OrderID)
+	if err != nil {
+		return agencymodels.RecordRow{}, err
+	}
+	if !real {
+		return agencymodels.RecordRow{}, badRowError(unknownRunMessage)
+	}
 	return m.CreateRecordRow(ctx, agencymodels.RecordRow{
 		DraftID: draftID, RecordID: record.ID, RoleID: record.RoleID,
 		AddedBy: accounts.IDFromContext(ctx), Answers: req.Answers,
