@@ -5,9 +5,8 @@ export type CapKey = "input" | "output" | "runtimeSeconds";
 export type CapLine = {
   key: CapKey;
   label: string;
-  cap: string;
-  used: string | null;
-  percent: number | null;
+  figure: string;
+  percent: number;
   passed: boolean;
   nearest: boolean;
   paused: boolean;
@@ -25,6 +24,8 @@ export const minutesOf = (seconds: number) => {
   return rest === 0 ? `${whole} min` : `${whole} min ${rest} s`;
 };
 
+export const clockOf = (seconds: number) => `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+
 export const minutesField = (seconds: number) => String(Math.round(seconds / 60));
 
 export const standardLine = (caps: Caps) => [tokens(caps.input), tokens(caps.output), minutesOf(caps.runtimeSeconds)].join(" · ");
@@ -33,19 +34,20 @@ const labels: Record<CapKey, string> = { input: "Input tokens", output: "Output 
 
 const keys: CapKey[] = ["input", "output", "runtimeSeconds"];
 
-const shown = (key: CapKey, amount: number) => (key === "runtimeSeconds" ? minutesOf(amount) : tokens(amount));
+const shown = (key: CapKey, amount: number) => (key === "runtimeSeconds" ? clockOf(amount) : tokens(amount));
+
+const figureOf = (key: CapKey, spent: number, cap: number) => `${shown(key, spent)} / ${shown(key, cap)}${key === "runtimeSeconds" ? "" : " tokens"}`;
 
 export const lineOf = (reading: CapsReading, key: CapKey): CapLine => {
   const cap = reading.inForce[key];
-  const spent = reading.used === null ? null : key === "input" ? reading.used.input : key === "output" ? reading.used.output : reading.used.seconds;
-  const passed = spent !== null && spent >= cap;
-  const rounded = spent === null ? null : Math.round((spent / cap) * 100);
+  const spent = reading.used === null ? 0 : key === "input" ? reading.used.input : key === "output" ? reading.used.output : reading.used.seconds;
+  const passed = reading.used !== null && spent >= cap;
+  const rounded = Math.round((spent / cap) * 100);
   return {
     key,
     label: labels[key],
-    cap: shown(key, cap),
-    used: spent === null ? null : `${shown(key, spent)} of ${shown(key, cap)}`,
-    percent: rounded === null ? null : passed ? 100 : Math.min(rounded, 99),
+    figure: figureOf(key, spent, cap),
+    percent: passed ? 100 : Math.min(rounded, 99),
     passed,
     nearest: false,
     paused: key === "runtimeSeconds" && reading.used?.clockStopped === true,
@@ -55,7 +57,7 @@ export const lineOf = (reading: CapsReading, key: CapKey): CapLine => {
 
 export const linesOf = (reading: CapsReading): CapLine[] => {
   const lines = keys.map((key) => lineOf(reading, key));
-  const highest = Math.max(...lines.map((line) => line.percent ?? 0));
+  const highest = Math.max(...lines.map((line) => line.percent));
   const first = highest > 0 ? lines.findIndex((line) => line.percent === highest) : -1;
   return lines.map((line, at) => ({ ...line, nearest: at === first }));
 };

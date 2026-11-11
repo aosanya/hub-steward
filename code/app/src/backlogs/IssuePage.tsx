@@ -74,7 +74,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
           </div>
           <div className="issue-side">
             <ReferencesCard key={ready.id} issueId={ready.id} client={referencesClient} repoClient={repoClient} />
-            <CapsCard key={ready.id} issueId={ready.id} client={capsClient} />
+            <CapsCard key={ready.id} issueId={ready.id} client={capsClient} running={ready.step === "Doing"} />
             <IssueLog key={ready.id} issueId={ready.id} client={notesClient} />
             <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />
             {[

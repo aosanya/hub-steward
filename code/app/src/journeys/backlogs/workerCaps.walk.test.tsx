@@ -1,8 +1,11 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
+import { dateTimeWords } from "../../ui/days";
+import { taskTools } from "../../backlogs/api";
 import { capsTools } from "../../backlogs/caps/api";
 import { referenceTools } from "../../backlogs/references/api";
-import { beforeEachJourney, endInAgencies, inFarmers } from "./backlogs.test-support";
+import { beforeEachJourney, endInAgencies, importIssue, inFarmers } from "./backlogs.test-support";
 
 beforeEach(beforeEachJourney);
 
@@ -10,7 +13,7 @@ afterEach(endInAgencies);
 
 type Numbers = { input_tokens: number; output_tokens: number; runtime_seconds: number };
 
-type Used = { input_tokens: number; output_tokens: number; seconds_used: number; clock_stopped: boolean };
+type Used = { input_tokens: number; output_tokens: number; seconds_used: number; clock_stopped: boolean; updated_at?: string };
 
 const standard: Numbers = { input_tokens: 500000, output_tokens: 100000, runtime_seconds: 900 };
 
@@ -62,10 +65,10 @@ describe("journey 10, the Caps card on an issue", () => {
   it("sits between References and Log and shows the default numbers with the words for all workers", async () => {
     inFarmers("/backlogs/issue/t1", worldWith());
     const card = await section();
-    expect(await within(card).findByText("500,000")).toBeInTheDocument();
-    expect(within(lineOf(card, "Input tokens")).getByText("500,000")).toBeInTheDocument();
-    expect(within(lineOf(card, "Output tokens")).getByText("100,000")).toBeInTheDocument();
-    expect(within(lineOf(card, "Runtime")).getByText("15 min")).toBeInTheDocument();
+    expect(await within(card).findByText("0 / 500,000 tokens")).toBeInTheDocument();
+    expect(within(lineOf(card, "Input tokens")).getByText("0 / 500,000 tokens")).toBeInTheDocument();
+    expect(within(lineOf(card, "Output tokens")).getByText("0 / 100,000 tokens")).toBeInTheDocument();
+    expect(within(lineOf(card, "Runtime")).getByText("0:00 / 15:00")).toBeInTheDocument();
     expect(within(card).getByText("Default for all workers")).toBeInTheDocument();
     const titles = Array.from(document.querySelectorAll(".issue-side .card-title")).map((one) => one.textContent);
     expect(titles.indexOf("References")).toBeLessThan(titles.indexOf("Caps"));
@@ -74,7 +77,7 @@ describe("journey 10, the Caps card on an issue", () => {
 
   it("reads the caps and the consumption with the one call", async () => {
     const world = inFarmers("/backlogs/issue/t1", worldWith());
-    await within(await section()).findByText("500,000");
+    await within(await section()).findByText("0 / 500,000 tokens");
     expect(world.named(capsTools.read).map((call) => call.args.taskID)).toEqual(["t1"]);
   });
 
@@ -85,23 +88,23 @@ describe("journey 10, the Caps card on an issue", () => {
     expect(head).toHaveAttribute("aria-expanded", "false");
     expect(within(card).queryByText("Input tokens")).toBeNull();
     await userEvent.click(head);
-    expect(await within(card).findByText("500,000")).toBeInTheDocument();
+    expect(await within(card).findByText("0 / 500,000 tokens")).toBeInTheDocument();
     await userEvent.click(head);
-    expect(within(card).queryByText("500,000")).toBeNull();
+    expect(within(card).queryByText("0 / 500,000 tokens")).toBeNull();
   });
 
   it("says an issue's own numbers are its own and shows the default beside them", async () => {
     inFarmers("/backlogs/issue/t1", worldWith({ own: { input_tokens: 800000, output_tokens: 150000, runtime_seconds: 1500 } }));
     const card = await section();
-    expect(await within(card).findByText("800,000")).toBeInTheDocument();
-    expect(within(lineOf(card, "Runtime")).getByText("25 min")).toBeInTheDocument();
+    expect(await within(card).findByText("0 / 800,000 tokens")).toBeInTheDocument();
+    expect(within(lineOf(card, "Runtime")).getByText("0:00 / 25:00")).toBeInTheDocument();
     expect(within(card).getByText("This issue's own numbers · the default is 500,000 · 100,000 · 15 min")).toBeInTheDocument();
   });
 
   it("marks the caps that fall back to the default when only some are the issue's own", async () => {
     inFarmers("/backlogs/issue/t1", worldWith({ own: { input_tokens: 800000, output_tokens: 0, runtime_seconds: 1500 } }));
     const card = await section();
-    await within(card).findByText("800,000");
+    await within(card).findByText("0 / 800,000 tokens");
     expect(within(lineOf(card, "Output tokens")).getByText("Default")).toBeInTheDocument();
     expect(within(lineOf(card, "Input tokens")).queryByText("Default")).toBeNull();
     expect(within(card).getByText("Some numbers are this issue's own · the default is 500,000 · 100,000 · 15 min")).toBeInTheDocument();
@@ -111,14 +114,68 @@ describe("journey 10, the Caps card on an issue", () => {
     inFarmers("/backlogs/issue/t1", worldWith({ used: { input_tokens: 312400, output_tokens: 41200, seconds_used: 680, clock_stopped: false } }));
     const card = await section();
     const input = lineOf(card, "Input tokens");
-    expect(await within(input).findByText("312,400 of 500,000")).toBeInTheDocument();
+    expect(await within(input).findByText("312,400 / 500,000 tokens")).toBeInTheDocument();
     expect(within(input).getByText("62% used")).toBeInTheDocument();
     expect(within(input).getByRole("progressbar")).toHaveAttribute("aria-valuenow", "62");
-    expect(within(lineOf(card, "Output tokens")).getByText("41,200 of 100,000")).toBeInTheDocument();
-    expect(within(lineOf(card, "Runtime")).getByText("11 min 20 s of 15 min")).toBeInTheDocument();
+    expect(within(lineOf(card, "Output tokens")).getByText("41,200 / 100,000 tokens")).toBeInTheDocument();
+    expect(within(lineOf(card, "Runtime")).getByText("11:20 / 15:00")).toBeInTheDocument();
     expect(within(lineOf(card, "Runtime")).getByText("76% used")).toBeInTheDocument();
     expect(within(card).getAllByText("Nearest")).toHaveLength(1);
     expect(within(lineOf(card, "Runtime")).getByText("Nearest")).toBeInTheDocument();
+  });
+
+  it("shows 200,222 / 500,000 tokens for a card with consumption, and the runtime of 200 seconds as 3:20 / 15:00", async () => {
+    inFarmers("/backlogs/issue/t1", worldWith({ used: { input_tokens: 200222, output_tokens: 12480, seconds_used: 200, clock_stopped: false } }));
+    const card = await section();
+    expect(await within(lineOf(card, "Input tokens")).findByText("200,222 / 500,000 tokens")).toBeInTheDocument();
+    expect(within(lineOf(card, "Output tokens")).getByText("12,480 / 100,000 tokens")).toBeInTheDocument();
+    expect(within(lineOf(card, "Runtime")).getByText("3:20 / 15:00")).toBeInTheDocument();
+  });
+
+  it("shows 0 / cap, an empty bar and 0% used on every line when no worker has run, and nothing is Nearest", async () => {
+    inFarmers("/backlogs/issue/t1", worldWith());
+    const card = await section();
+    await within(card).findByText("0 / 500,000 tokens");
+    for (const label of ["Input tokens", "Output tokens", "Runtime"]) {
+      const line = lineOf(card, label);
+      expect(within(line).getByText("0% used")).toBeInTheDocument();
+      expect(within(line).getByRole("progressbar")).toHaveAttribute("aria-valuenow", "0");
+    }
+    expect(within(card).queryByText("Nearest")).toBeNull();
+    expect(within(card).queryByText(/^updated /)).toBeNull();
+  });
+
+  it("says when the consumption was last updated, only while a run is on record", async () => {
+    inFarmers("/backlogs/issue/t1", worldWith({ used: { input_tokens: 200222, output_tokens: 12480, seconds_used: 200, clock_stopped: false, updated_at: "2026-11-11T19:20:00Z" } }));
+    const card = await section();
+    await within(card).findByText("200,222 / 500,000 tokens");
+    expect(within(card).getByText(`updated ${dateTimeWords("2026-11-11T19:20:00Z")}`)).toBeInTheDocument();
+  });
+
+  it("asks again every 15 seconds while the issue is in progress, and never when it is not", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      const world = inFarmers("/backlogs/issue/t1", { ...worldWith({ used: { input_tokens: 100, output_tokens: 10, seconds_used: 5, clock_stopped: false } }), [taskTools.get]: () => ({ ...importIssue, state: "Doing" }) });
+      await within(await section()).findByText("100 / 500,000 tokens");
+      const before = world.named(capsTools.read).length;
+      await vi.advanceTimersByTimeAsync(15_000);
+      expect(world.named(capsTools.read).length).toBe(before + 1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("does not ask again when no worker runs", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      const world = inFarmers("/backlogs/issue/t1", worldWith());
+      await within(await section()).findByText("0 / 500,000 tokens");
+      const before = world.named(capsTools.read).length;
+      await vi.advanceTimersByTimeAsync(45_000);
+      expect(world.named(capsTools.read).length).toBe(before);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("marks the passed cap Passed with a full bar", async () => {
@@ -172,7 +229,7 @@ describe("journey 10, step 7, gives one issue its own numbers", () => {
     expect(await within(card).findByText("This issue's own numbers · the default is 500,000 · 100,000 · 15 min")).toBeInTheDocument();
     expect(world.named(capsTools.set).map((call) => call.args)).toEqual([expect.objectContaining({ taskID: "t1", input_tokens: 800000, output_tokens: 150000, runtime_seconds: 1500 })]);
     expect(world.named(capsTools.clear)).toHaveLength(0);
-    expect(within(lineOf(card, "Input tokens")).getByText("800,000")).toBeInTheDocument();
+    expect(within(lineOf(card, "Input tokens")).getByText("0 / 800,000 tokens")).toBeInTheDocument();
     expect(within(card).queryByRole("button", { name: "Save" })).toBeNull();
   });
 
@@ -183,7 +240,7 @@ describe("journey 10, step 7, gives one issue its own numbers", () => {
     await userEvent.click(within(card).getByRole("button", { name: "Use the default" }));
     expect(await within(card).findByText("Default for all workers")).toBeInTheDocument();
     expect(world.named(capsTools.clear).map((call) => call.args.taskID)).toEqual(["t1"]);
-    expect(within(lineOf(card, "Input tokens")).getByText("500,000")).toBeInTheDocument();
+    expect(within(lineOf(card, "Input tokens")).getByText("0 / 500,000 tokens")).toBeInTheDocument();
   });
 
   it("an emptied number falls back to the default while the others stay the issue's own", async () => {
@@ -196,7 +253,7 @@ describe("journey 10, step 7, gives one issue its own numbers", () => {
     expect(world.named(capsTools.clear)).toHaveLength(1);
     expect(world.named(capsTools.set).map((call) => call.args)).toEqual([expect.objectContaining({ input_tokens: 800000, runtime_seconds: 1500 })]);
     expect(world.named(capsTools.set)[0].args).not.toHaveProperty("output_tokens");
-    expect(within(lineOf(card, "Output tokens")).getByText("100,000")).toBeInTheDocument();
+    expect(within(lineOf(card, "Output tokens")).getByText("0 / 100,000 tokens")).toBeInTheDocument();
     expect(within(lineOf(card, "Output tokens")).getByText("Default")).toBeInTheDocument();
   });
 
@@ -252,6 +309,6 @@ describe("journey 10, step 7, gives one issue its own numbers", () => {
     await userEvent.click(within(card).getByRole("button", { name: "Cancel" }));
     await waitFor(() => expect(within(card).queryByLabelText("Input tokens")).toBeNull());
     expect(world.named(capsTools.set)).toHaveLength(0);
-    expect(within(lineOf(card, "Input tokens")).getByText("500,000")).toBeInTheDocument();
+    expect(within(lineOf(card, "Input tokens")).getByText("0 / 500,000 tokens")).toBeInTheDocument();
   });
 });

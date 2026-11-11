@@ -8,7 +8,7 @@ export const capsTools = {
 
 export type Caps = { input: number; output: number; runtimeSeconds: number };
 
-export type CapsUsed = { input: number; output: number; seconds: number; clockStopped: boolean };
+export type CapsUsed = { input: number; output: number; seconds: number; clockStopped: boolean; updatedAt?: string };
 
 export type CapsReading = { inForce: Caps; standard: Caps; own: Caps | null; used: CapsUsed | null };
 
@@ -33,6 +33,7 @@ const usedOf = (raw: any): CapsUsed | null =>
         output: Math.max(0, Number(raw.output_tokens) || 0),
         seconds: Math.max(0, Number(raw.seconds_used) || 0),
         clockStopped: raw.clock_stopped === true,
+        updatedAt: typeof raw.updated_at === "string" && raw.updated_at !== "" ? raw.updated_at : undefined,
       }
     : null;
 

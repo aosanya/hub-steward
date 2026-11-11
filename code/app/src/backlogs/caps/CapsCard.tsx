@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLoad } from "../../forms/useLoad";
 import { openAgencyId } from "../../agency/open";
 import { Button } from "../../ui/Button";
 import { Card } from "../../ui/Card";
 import { Chip } from "../../ui/Chip";
+import { dateTimeWords } from "../../ui/days";
 import { Field } from "../../ui/Field";
 import { mcpCapsClient, type CapsClient, type CapsReading } from "./api";
 import { changeOf, droppedOwn, problemsIn, sentNothing, typedFrom, type Typed } from "./capsEdit";
@@ -15,21 +16,17 @@ function Line({ line, fallsBack }: { line: CapLine; fallsBack: boolean }) {
   return (
     <div className={className}>
       <span className="cap-label">{line.label}</span>
-      <span className="cap-value">{line.used ?? line.cap}</span>
+      <span className="cap-value">{line.figure}</span>
       <span className="cap-marks">
         {fallsBack ? <Chip>Default</Chip> : null}
         {line.nearest ? <Chip tone="accent">Nearest</Chip> : null}
         {line.passed ? <Chip tone="danger">Passed</Chip> : null}
         {line.paused ? <Chip>Paused, waiting for your answer</Chip> : null}
       </span>
-      {line.percent !== null ? (
-        <>
-          <span className="cap-bar" role="progressbar" aria-label={line.label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={line.percent}>
-            <span className="cap-fill" style={{ width: `${line.percent}%` }} />
-          </span>
-          <span className="cap-percent">{line.percent}% used</span>
-        </>
-      ) : null}
+      <span className="cap-bar" role="progressbar" aria-label={`${line.label} used`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={line.percent}>
+        <span className="cap-fill" style={{ width: `${line.percent}%` }} />
+      </span>
+      <span className="cap-percent">{line.percent}% used</span>
     </div>
   );
 }
@@ -92,11 +89,24 @@ function Editing({ reading, issueId, client, onSaved, onClose }: EditProps) {
   );
 }
 
-export function CapsCard({ issueId, client = mcpCapsClient }: { issueId: string; client?: CapsClient }) {
+const refreshMilliseconds = 15_000;
+
+function updatedWords(reading: CapsReading) {
+  const when = reading.used?.updatedAt ? dateTimeWords(reading.used.updatedAt) : null;
+  return when === null ? null : `updated ${when}`;
+}
+
+export function CapsCard({ issueId, client = mcpCapsClient, running = false }: { issueId: string; client?: CapsClient; running?: boolean }) {
   const [saved, setSaved] = useState<CapsReading | null>(null);
   const [editing, setEditing] = useState(false);
   const loaded = useLoad(() => client.read(issueId), `caps:${openAgencyId()}:${issueId}`);
   const reading = saved ?? (loaded.state === "ready" ? loaded.data : null);
+  useEffect(() => {
+    if (!running || editing) return;
+    const timer = setInterval(() => client.read(issueId).then(setSaved, () => undefined), refreshMilliseconds);
+    return () => clearInterval(timer);
+  }, [running, editing, issueId, client]);
+  const updated = reading ? updatedWords(reading) : null;
   return (
     <Card title="Caps" collapsible defaultOpen={false} flush>
       {loaded.state === "error" && saved === null ? (
@@ -112,6 +122,7 @@ export function CapsCard({ issueId, client = mcpCapsClient }: { issueId: string;
             {linesOf(reading).map((line) => (
               <Line key={line.key} line={line} fallsBack={reading.own !== null && !line.own} />
             ))}
+            {updated ? <p className="cap-updated">{updated}</p> : null}
             <p className="cap-owner">{ownershipOf(reading)}</p>
             <div className="cap-actions">
               <Button onClick={() => setEditing(true)}>Edit</Button>

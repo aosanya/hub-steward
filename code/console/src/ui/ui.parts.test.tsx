@@ -408,6 +408,37 @@ describe("Card", () => {
     const { container } = show(<Card tight>inside</Card>);
     expect(container.querySelector(".card")).toHaveClass("tight");
   });
+
+  it("is three parts: a header with the title and the actions, the content, and an optional footer of actions", () => {
+    const { container } = show(
+      <Card title="Profile" actions={<Button kind="quiet">Edit</Button>} footer={[<Button key="a" kind="quiet">Save</Button>, <Button key="b" kind="quiet">Cancel</Button>]}>
+        inside
+      </Card>,
+    );
+    const card = container.querySelector("section.card") as HTMLElement;
+    expect(card.querySelector(":scope > .card-head")).toHaveTextContent("Profile");
+    expect(card.querySelector(":scope > .card-body")).toHaveTextContent("inside");
+    const foot = card.querySelector(":scope > .card-foot") as HTMLElement;
+    expect(Array.from(foot.children).map((one) => one.textContent)).toEqual(["Save", "Cancel"]);
+    expect(foot.previousElementSibling).toHaveClass("card-body");
+  });
+
+  it("has no footer unless it is given one, and no content wrapper when it has no header and no footer", () => {
+    const { container } = show(<Card title="Profile">inside</Card>);
+    expect(container.querySelector(".card-foot")).toBeNull();
+    const plain = show(<Card>words</Card>);
+    expect(plain.container.querySelector(".card > .card-body")).toBeNull();
+  });
+
+  it("hides the footer with the content when collapsed", () => {
+    const { container } = show(
+      <Card title="Profile" open={false} onToggle={() => undefined} footer={<Button kind="quiet">Save</Button>}>
+        inside
+      </Card>,
+    );
+    expect(container.querySelector(".card-foot")).toBeNull();
+    expect(container.querySelector(".card-body")).toBeNull();
+  });
 });
 
 describe("Detail", () => {
