@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strings"
 
+	"wakalaserver/modules/shared/plaintext"
 	"wakalaserver/modules/shared/spec"
 )
 
@@ -68,6 +69,10 @@ func check(o spec.Object, v any) error {
 			continue
 		}
 		s := fv.String()
+
+		if plaintext.HasNUL(s) {
+			return fmt.Errorf("%s: %s may not hold a NUL byte", o.Name, f.Name)
+		}
 
 		if f.Required && strings.TrimSpace(s) == "" {
 			return fmt.Errorf("%s: %s is required", o.Name, f.Name)
