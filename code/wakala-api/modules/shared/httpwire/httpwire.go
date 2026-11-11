@@ -15,7 +15,7 @@ func WriteJSON(w http.ResponseWriter, code int, v any) {
 }
 
 func WriteErr(w http.ResponseWriter, code int, msg string) {
-	WriteJSON(w, code, map[string]string{"error": msg})
+	WriteJSON(w, code, map[string]string{"error": PlainMessage(msg)})
 }
 
 func ReadJSON(r *http.Request, v any) error {

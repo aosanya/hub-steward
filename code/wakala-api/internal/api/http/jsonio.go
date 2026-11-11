@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"wakalaserver/modules/shared/httpwire"
 )
 
 // writeJSON writes v as the response body with the given status code.
@@ -13,9 +15,8 @@ func writeJSON(w http.ResponseWriter, code int, v any) {
 	_ = json.NewEncoder(w).Encode(v)
 }
 
-// writeErr writes {"error": msg}.
 func writeErr(w http.ResponseWriter, code int, msg string) {
-	writeJSON(w, code, map[string]string{"error": msg})
+	writeJSON(w, code, map[string]string{"error": httpwire.PlainMessage(msg)})
 }
 
 // readJSON decodes a JSON body into v, refusing unknown fields.

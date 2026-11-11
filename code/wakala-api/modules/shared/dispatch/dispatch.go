@@ -177,10 +177,11 @@ func handlerFor(op Operation, method reflect.Value, table map[error]int, fallbac
 			callErr := last.Interface().(error)
 			answer := resolve(callErr, table, fallback)
 			if answer.code == fallback {
+				logFailure(r.Method+" "+r.URL.Path, callErr)
 				httpwire.WriteErr(w, answer.code, opaque)
 				return
 			}
-			httpwire.WriteJSON(w, answer.code, answer.body(callErr.Error()))
+			httpwire.WriteJSON(w, answer.code, answer.body(httpwire.PlainWithLog(callErr, r.Method+" "+r.URL.Path)))
 			return
 		}
 

@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+
+	"wakalaserver/modules/shared/httpwire"
 )
 
 type FieldDoc struct {
@@ -175,9 +177,10 @@ func invokerFor(op Operation, plan []slot, props []property, method reflect.Valu
 		if last := results[len(results)-1]; !last.IsNil() {
 			callErr := last.Interface().(error)
 			if resolve(callErr, table, fallback).code == fallback {
+				logFailure(publishedName(op), callErr)
 				return nil, errors.New(opaque)
 			}
-			return nil, callErr
+			return nil, httpwire.PlainError{Cause: callErr}
 		}
 		return rendered(op, results[:len(results)-1]), nil
 	}
