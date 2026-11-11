@@ -94,13 +94,13 @@ func TestMemberInvitationBatch_MayorAgentCannotDoInviteAList(t *testing.T) {
 		return c
 	}
 	mayor := agent("agent-mayor", "role-mayor")
-	clerk := agent("agent-clerk", "role-clerk")
+	agent("agent-clerk", "role-clerk")
 	rows := func(email string) map[string]any {
 		return map[string]any{"rows": []map[string]any{{"first_name": "Ben", "last_name": "Kiss", "email": email, "group_code": code}}}
 	}
 
-	if rec := w.call(t, "POST", path+"/invitations/batch", rows("clerk-batch@example.test"), clerk); rec.Code != http.StatusOK {
-		t.Fatalf("clerk agent holding member.invite sending a list: %d %s, want 200", rec.Code, rec.Body.String())
+	if rec := w.call(t, "POST", path+"/invitations/batch", rows("owner-batch@example.test"), w.owner); rec.Code != http.StatusOK {
+		t.Fatalf("owner sending a list: %d %s, want 200", rec.Code, rec.Body.String())
 	}
 	rec := w.call(t, "POST", path+"/invitations/batch", rows("mayor-batch@example.test"), mayor)
 	if rec.Code != http.StatusForbidden && rec.Code != http.StatusNotFound {

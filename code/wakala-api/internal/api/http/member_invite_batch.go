@@ -65,6 +65,18 @@ func (m memberInvitations) handleBatch(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusInternalServerError, "internal error")
 		return
 	}
+	if role != agencies.RoleOwner {
+		leads, err := leadsEveryGroupIn(r.Context(), um, checks)
+		if err != nil {
+			slog.Default().Error("an invitation list could not be checked for group leaders", "instance", instanceID, "error", err.Error())
+			writeErr(w, http.StatusInternalServerError, "internal error")
+			return
+		}
+		if !leads {
+			writeErr(w, http.StatusForbidden, "forbidden")
+			return
+		}
+	}
 	for _, c := range checks {
 		if c.Status != actormodels.BatchRowReady || c.ActorID != "" {
 			continue
@@ -89,6 +101,22 @@ func (m memberInvitations) handleBatch(w http.ResponseWriter, r *http.Request) {
 	}
 	go m.sendPaced(sentEmails(results), redirect)
 	writeJSON(w, http.StatusOK, invitationBatchAnswer{Results: results})
+}
+
+func leadsEveryGroupIn(ctx context.Context, um mwanachamaactor.UserManager, checks []mwanachamaactor.InvitationBatchCheck) (bool, error) {
+	caller := accounts.IDFromContext(ctx)
+	checked := map[string]bool{}
+	for _, c := range checks {
+		if c.GroupID == "" || checked[c.GroupID] {
+			continue
+		}
+		leads, err := um.IsGroupLeader(ctx, c.GroupID, caller)
+		if err != nil || !leads {
+			return false, err
+		}
+		checked[c.GroupID] = true
+	}
+	return true, nil
 }
 
 func (m memberInvitations) accountFor(ctx context.Context, instanceID, email string) (string, error) {
