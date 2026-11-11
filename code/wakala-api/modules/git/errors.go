@@ -130,3 +130,9 @@ var ErrEntityNotFound = errors.New("entity not found")
 var ErrFileTooLarge = errors.New("file exceeds the size limit")
 
 var ErrMergeNotPermitted = errors.New("merge not permitted")
+
+var ErrQueryRequired = errors.New("query must not be empty")
+
+var ErrTitleRequired = errors.New("title is required")
+
+var ErrSourceBranchRequired = errors.New("source_branch_id is required")
