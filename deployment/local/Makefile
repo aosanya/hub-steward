@@ -12,7 +12,7 @@ up: master env
 	$(COMPOSE) up --build -d --wait
 	@$(MAKE) --no-print-directory urls
 
-api: master env
+api: env
 	$(COMPOSE) up --build -d --no-deps --wait wakala-api
 
 down:
