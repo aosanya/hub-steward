@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"unicode"
 	"unicode/utf8"
 
 	mwanachamaactor "wakalaserver/modules/actor"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
+	"wakalaserver/modules/shared/plaintext"
 )
 
 const (
@@ -167,14 +167,11 @@ func cleanName(label, raw string) (string, error) {
 		return "", fmt.Errorf("a %s is required", label)
 	case utf8.RuneCountInString(name) > maxDisplayNameLength:
 		return "", fmt.Errorf("a %s is at most %d characters", label, maxDisplayNameLength)
-	case strings.IndexFunc(name, isUnseenOrLineBreaking) >= 0:
-		return "", fmt.Errorf("a %s is one line with no control characters", label)
+	}
+	if problem := plaintext.Problem(label, name); problem != "" {
+		return "", errors.New(problem)
 	}
 	return name, nil
-}
-
-func isUnseenOrLineBreaking(r rune) bool {
-	return unicode.IsControl(r) || unicode.In(r, unicode.Cf, unicode.Zl, unicode.Zp)
 }
 
 func lookUpNames(reg agencies.Registry) http.HandlerFunc {
