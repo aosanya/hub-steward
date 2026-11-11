@@ -17,6 +17,7 @@ const held: AssistantSettings = {
     { id: "r3", name: "Backlog manager", permissions: ["task.read", "ai.chat"], may: true },
   ],
   limits: { day: 20000, month: null, ownerDay: null, ownerMonth: 90000 },
+  workers: { input: 500000, output: 100000, minutes: 15 },
 };
 
 const open = async (settings: AssistantSettings | Error = held) => {
@@ -134,5 +135,43 @@ describe("the console's Assistant page", () => {
   it("says no Backlog roles are in the draft when there are none", async () => {
     await open({ ...held, roles: [] });
     expect(screen.getByText("No Backlog roles are in the draft yet.")).toBeInTheDocument();
+  });
+
+  it("ends with a Workers block holding the default input tokens, output tokens and runtime in minutes", async () => {
+    await open();
+    expect(screen.getByText("Workers")).toBeInTheDocument();
+    expect(fieldOf("Input tokens")).toHaveValue("500000");
+    expect(fieldOf("Output tokens")).toHaveValue("100000");
+    expect(fieldOf("Runtime in minutes")).toHaveValue("15");
+    const labels = Array.from(document.querySelectorAll(".setting-label")).map((node) => node.textContent);
+    expect(labels.indexOf("Input tokens")).toBeGreaterThan(labels.indexOf("Tokens a month for you"));
+  });
+
+  it("saves the changed worker numbers with the same Save", async () => {
+    await open();
+    await userEvent.clear(fieldOf("Input tokens"));
+    await userEvent.type(fieldOf("Input tokens"), "800000");
+    await userEvent.clear(fieldOf("Runtime in minutes"));
+    await userEvent.type(fieldOf("Runtime in minutes"), "25");
+    await pressSave();
+    expect(saveAssistantSettings).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(saveAssistantSettings).mock.calls[0][2].workers).toEqual({ input: 800000, output: 100000, minutes: 25 });
+  });
+
+  it.each(["0", "", "abc", "1.5"])("refuses %j as a worker number in place and sends nothing", async (typed) => {
+    await open();
+    await userEvent.clear(fieldOf("Output tokens"));
+    if (typed !== "") await userEvent.type(fieldOf("Output tokens"), typed);
+    await pressSave();
+    expect(within(rowOf("Output tokens")).getByText("A whole number above zero.")).toBeInTheDocument();
+    expect(saveAssistantSettings).not.toHaveBeenCalled();
+  });
+
+  it("puts the worker numbers back as saved when Cancel is pressed", async () => {
+    await open();
+    await userEvent.clear(fieldOf("Input tokens"));
+    await userEvent.type(fieldOf("Input tokens"), "7");
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(fieldOf("Input tokens")).toHaveValue("500000");
   });
 });

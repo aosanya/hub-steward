@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loadAssistantSettings, saveAssistantSettings, type AssistantSettings } from "../../data/assistantLimits";
+import { loadAssistantSettings, saveAssistantSettings, type AssistantSettings, type WorkerDefaults } from "../../data/assistantLimits";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import { useLoaded } from "../../shell/useLoaded";
@@ -10,7 +10,15 @@ type Digits = { applies: boolean; digits: string };
 
 type LimitKey = "day" | "month" | "ownerDay" | "ownerMonth";
 
-type Form = { settings: AssistantSettings; digits: Record<LimitKey, Digits> };
+type WorkerKey = keyof WorkerDefaults;
+
+type Form = { settings: AssistantSettings; digits: Record<LimitKey, Digits>; workers: Record<WorkerKey, string> };
+
+const workerKeys: WorkerKey[] = ["input", "output", "minutes"];
+
+const workerLabels: Record<WorkerKey, string> = { input: "assistant.workerInput", output: "assistant.workerOutput", minutes: "assistant.workerMinutes" };
+
+const wholeAboveZero = /^[1-9]\d*$/;
 
 const limitKeys: LimitKey[] = ["day", "month", "ownerDay", "ownerMonth"];
 
@@ -19,13 +27,17 @@ const digitsOf = (value: number | null): Digits => ({ applies: value !== null, d
 const formOf = (settings: AssistantSettings): Form => ({
   settings,
   digits: Object.fromEntries(limitKeys.map((key) => [key, digitsOf(settings.limits[key])])) as Record<LimitKey, Digits>,
+  workers: Object.fromEntries(workerKeys.map((key) => [key, String(settings.workers[key])])) as Record<WorkerKey, string>,
 });
+
+const badWorkers = (form: Form) => workerKeys.filter((key) => !wholeAboveZero.test(form.workers[key].trim()));
 
 const valueOf = ({ applies, digits }: Digits): number | null => (applies ? Number(digits || 0) : null);
 
 const settingsOf = (form: Form): AssistantSettings => ({
   ...form.settings,
   limits: Object.fromEntries(limitKeys.map((key) => [key, valueOf(form.digits[key])])) as AssistantSettings["limits"],
+  workers: Object.fromEntries(workerKeys.map((key) => [key, Number(form.workers[key].trim())])) as WorkerDefaults,
 });
 
 function AssistantForm({ held }: { held: AssistantSettings }) {
@@ -36,11 +48,15 @@ function AssistantForm({ held }: { held: AssistantSettings }) {
   const [switchesSaved, setSwitchesSaved] = useState(false);
   const [form, setForm] = useState(() => formOf(held));
   const [busy, setBusy] = useState(false);
+  const [refused, setRefused] = useState<WorkerKey[]>([]);
 
   const switchRole = (id: string, may: boolean) =>
     setForm({ ...form, settings: { ...form.settings, roles: form.settings.roles.map((role) => (role.id === id ? { ...role, may } : role)) } });
 
   const save = async () => {
+    const bad = badWorkers(form);
+    setRefused(bad);
+    if (bad.length > 0) return;
     const after = settingsOf(form);
     setBusy(true);
     const ok = await saveAssistantSettings(hub.id, saved, after).then(
@@ -67,6 +83,20 @@ function AssistantForm({ held }: { held: AssistantSettings }) {
     ),
   });
 
+  const typeWorker = (key: WorkerKey, text: string) => setForm({ ...form, workers: { ...form.workers, [key]: text } });
+
+  const workerRows = workerKeys.map((key) => ({
+    label: t(workerLabels[key]),
+    control: (
+      <>
+        <span className="control ctl">
+          <input type="text" inputMode="numeric" aria-label={t(workerLabels[key])} aria-invalid={refused.includes(key) ? true : undefined} value={form.workers[key]} onChange={(e) => typeWorker(key, e.target.value)} />
+        </span>
+        {refused.includes(key) ? <span className="field-error">{t("assistant.wholeNumber")}</span> : null}
+      </>
+    ),
+  }));
+
   const roleRows = form.settings.roles.map((role) => ({
     label: role.name,
     control: <Toggle label={t("assistant.mayAsk")} on={role.may} onChange={(may) => switchRole(role.id, may)} />,
@@ -85,11 +115,20 @@ function AssistantForm({ held }: { held: AssistantSettings }) {
           ]}
         />
       </Card>
+      <Card title={t("assistant.workers")}>
+        <SettingRows rows={workerRows} />
+      </Card>
       <div className="form-foot">
         <Button disabled={busy} onClick={save}>
           {t("assistant.save")}
         </Button>
-        <Button kind="quiet" onClick={() => setForm(formOf(saved))}>
+        <Button
+          kind="quiet"
+          onClick={() => {
+            setForm(formOf(saved));
+            setRefused([]);
+          }}
+        >
           {t("cancel")}
         </Button>
       </div>

@@ -16,6 +16,7 @@ const replies: Record<string, unknown> = {
       roleRow("r4", "Triager", ["task.read", "ai.use"]),
     ],
   },
+  taskmanager_worker_caps_read: { input_tokens: 500000, output_tokens: 100000, runtime_seconds: 900 },
   ai_get_assistant_limits: { tokens_per_person_day: 20000, tokens_per_person_month: 0, owner_tokens_per_person_day: 0, owner_tokens_per_person_month: 90000 },
 };
 
@@ -57,7 +58,37 @@ describe("the assistant settings the console reads", () => {
   });
 });
 
+describe("the default worker caps the console reads", () => {
+  it("reads the three numbers with the runtime turned from seconds into minutes", async () => {
+    answer({ taskmanager_worker_caps_read: { input_tokens: 800000, output_tokens: 150000, runtime_seconds: 1500 } });
+    expect((await loadAssistantSettings("h1")).workers).toEqual({ input: 800000, output: 150000, minutes: 25 });
+  });
+
+  it("falls back to the starting values when the hub does not serve the tool yet", async () => {
+    vi.mocked(callTool).mockImplementation(async (_hub, tool) => {
+      if (tool === "taskmanager_worker_caps_read") throw new Error("unknown tool");
+      return replies[tool] as never;
+    });
+    expect((await loadAssistantSettings("h1")).workers).toEqual({ input: 500000, output: 100000, minutes: 15 });
+  });
+});
+
 describe("saving the assistant settings", () => {
+  it("sends the worker numbers, the runtime in seconds, only when one changed", async () => {
+    const before = await loadAssistantSettings("h1");
+    await saveAssistantSettings("h1", before, before);
+    expect(callsTo("taskmanager_worker_caps_set")).toEqual([]);
+    await saveAssistantSettings("h1", before, { ...before, workers: { input: 800000, output: 100000, minutes: 25 } });
+    expect(callsTo("taskmanager_worker_caps_set")).toEqual([{ input_tokens: 800000, output_tokens: 100000, runtime_seconds: 1500 }]);
+  });
+
+  it.each([0, -1, 1.5])("refuses the worker number %s before anything is sent", async (bad) => {
+    const before = await loadAssistantSettings("h1");
+    await expect(saveAssistantSettings("h1", before, { ...before, workers: { ...before.workers, output: bad } })).rejects.toThrow("a worker cap is a whole number above zero");
+    expect(callsTo("taskmanager_worker_caps_set")).toEqual([]);
+    expect(callsTo("ai_set_assistant_limits")).toEqual([]);
+  });
+
   it("gives ai.chat to a role switched on and keeps every other permission it holds", async () => {
     const before = await loadAssistantSettings("h1");
     const after = { ...before, roles: before.roles.map((role) => (role.id === "r2" ? { ...role, may: true } : role)) };

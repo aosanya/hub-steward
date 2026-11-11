@@ -15,6 +15,8 @@ import { mcpBacklogsClient, mcpNotesClient, type BacklogsClient, type NotesClien
 import { SendToBacklogButton } from "../sendToBacklog";
 import type { SendClient } from "../sendToBacklog/types";
 import { IssueLog } from "./IssueLog";
+import { mcpCapsClient, type CapsClient } from "./caps/api";
+import { CapsCard } from "./caps/CapsCard";
 import { mcpReferencesClient, mcpRepoClient, type ReferencesClient, type RepoClient } from "./references/api";
 import { ReferencesCard } from "./references/ReferencesCard";
 import { IssueRow } from "./IssueRow";
@@ -23,9 +25,9 @@ import { PriorityMenu } from "./PriorityMenu";
 import { issuePath, issuesPath } from "./paths";
 import { splitSource } from "./source";
 
-type Props = { client?: BacklogsClient; notesClient?: NotesClient; sendClient?: SendClient; referencesClient?: ReferencesClient; repoClient?: RepoClient };
+type Props = { client?: BacklogsClient; notesClient?: NotesClient; sendClient?: SendClient; referencesClient?: ReferencesClient; repoClient?: RepoClient; capsClient?: CapsClient };
 
-export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesClient, sendClient, referencesClient = mcpReferencesClient, repoClient = mcpRepoClient }: Props) {
+export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesClient, sendClient, referencesClient = mcpReferencesClient, repoClient = mcpRepoClient, capsClient = mcpCapsClient }: Props) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -76,6 +78,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
           </div>
           <div className="issue-side">
             <ReferencesCard key={ready.id} issueId={ready.id} client={referencesClient} repoClient={repoClient} />
+            <CapsCard key={ready.id} issueId={ready.id} client={capsClient} />
             <IssueLog key={ready.id} issueId={ready.id} client={notesClient} />
             <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />
             {[
