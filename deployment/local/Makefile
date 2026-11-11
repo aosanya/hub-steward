@@ -1,6 +1,6 @@
 COMPOSE = docker compose --env-file .env
 
-.PHONY: env master up down backup logs ps urls
+.PHONY: env master up api down backup logs ps urls
 
 env:
 	@sh scripts/make-env.sh
@@ -11,7 +11,9 @@ master:
 up: master env
 	$(COMPOSE) up --build -d --wait
 	@$(MAKE) --no-print-directory urls
-	@sh scripts/seed-swe.sh
+
+api: master env
+	$(COMPOSE) up --build -d --no-deps --wait wakala-api
 
 down:
 	$(COMPOSE) down
