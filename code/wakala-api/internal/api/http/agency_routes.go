@@ -34,9 +34,6 @@ func (d *Deps) registerAgencyRoutes(mux *http.ServeMux, reg agencies.Registry, a
 }
 
 func (d *Deps) agentMayDesign(r *http.Request, instanceID, action string) bool {
-	if r.Method == http.MethodGet || r.Method == http.MethodHead {
-		return true
-	}
 	role := d.callerRole(r, instanceID)
 	if role != agencies.RoleAgent {
 		return true

@@ -30,9 +30,12 @@ func TestAgencyRole_AgentCannotDoEditItsOwnRolePermissions(t *testing.T) {
 		t.Fatalf("agent without join_request.decide approving: %d %s, want 403", rec.Code, rec.Body.String())
 	}
 
-	read := w.call(t, "GET", path+"/roles/"+roleID, nil, agent)
+	if rec := w.call(t, "GET", path+"/roles/"+roleID, nil, agent); rec.Code != http.StatusForbidden {
+		t.Fatalf("agent without a design read permission reads its own role: %d %s, want 403", rec.Code, rec.Body.String())
+	}
+	read := w.call(t, "GET", path+"/roles/"+roleID, nil, w.owner)
 	if read.Code != http.StatusOK {
-		t.Fatalf("agent reads its own role: %d %s", read.Code, read.Body.String())
+		t.Fatalf("owner reads the role: %d %s", read.Code, read.Body.String())
 	}
 	role := decodeObject(t, read)
 	perms, _ := role["permissions"].([]any)

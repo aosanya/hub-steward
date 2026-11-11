@@ -62,6 +62,7 @@ func newMCPServer(d *Deps) *mcp.Server {
 	d.registerReportsMCPTools(server)
 	d.registerTemplateMCPTools(server)
 	agencymcp.RegisterToolsAs(server, d.resolveAgencyManager, accounts.IDFromContext)
+	d.guardAgencyMCPTools(server)
 	d.registerReviewRunMCPTools(server)
 	d.registerTaskManagerMCPTools(server, d.resolveTaskManager)
 	insightsmcp.RegisterTools(server, scopeInsightsToCaller(d.Insights, d.Registry))
