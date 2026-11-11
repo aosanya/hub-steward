@@ -53,6 +53,16 @@ func (d *Deps) registerInstanceSettingsMCPTools(server *mcp.Server) {
 	mcp.AddTool(server, &mcp.Tool{Name: "instance_rename", Title: "Rename Agency", Description: "Rename an Agency Instance in the hub list. Members only."}, d.mcpRenameInstance)
 	mcp.AddTool(server, &mcp.Tool{Name: "instance_get_languages", Title: "Get Languages", Description: "Read an Agency Instance's studio default language, offered content languages and default content language. Open to every person admitted to the agency: its owner, its agents and its residents."}, d.mcpGetLanguages)
 	mcp.AddTool(server, &mcp.Tool{Name: "instance_set_languages", Title: "Set Languages", Description: "Owner only: set an Agency Instance's studio default language, offered content languages and default content language."}, d.mcpSetLanguages)
+	d.guardToolPermissions(server, instanceSettingsWriteActions())
+}
+
+func instanceSettingsWriteActions() map[string]string {
+	all := hostToolActions()
+	return map[string]string{
+		"instance_set_join_mode": all["instance_set_join_mode"],
+		"instance_rename":        all["instance_rename"],
+		"instance_set_languages": all["instance_set_languages"],
+	}
 }
 
 func (d *Deps) mcpGetJoinMode(ctx context.Context, _ *mcp.CallToolRequest, p mcpJoinModeParams) (*mcp.CallToolResult, mcpJoinMode, error) {
