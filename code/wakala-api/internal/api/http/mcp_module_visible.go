@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"log/slog"
 	"sort"
 	"sync"
 
@@ -55,7 +56,7 @@ func (m *mcpServers) modulesShownTo(ctx context.Context, subject string) (map[st
 	shown := map[string]bool{}
 	for _, membership := range memberships {
 		if err := m.addModulesShownIn(ctx, shown, membership); err != nil {
-			return nil, err
+			slog.Warn("mcp tool list skips an agency that cannot be read", "instance", membership.ID, "err", err)
 		}
 	}
 	return shown, nil

@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"sort"
@@ -10,6 +11,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	"wakalaserver/internal/agencies"
+	mwanachamaagency "wakalaserver/modules/agency"
 	"wakalaserver/modules/agency/models"
 )
 
@@ -221,5 +224,42 @@ func TestToolList_AResidentSeesOnlyTheModulesTheirAgencyHasOn(t *testing.T) {
 	}
 	if modulesOf(seen)["forms"] == 0 {
 		t.Fatalf("a resident of an agency with forms on sees no forms tool")
+	}
+}
+
+const unreadableAgencyID = "agency-whose-database-is-down"
+
+type registryWithAnUnreadableAgency struct {
+	agencies.Registry
+}
+
+func (r registryWithAnUnreadableAgency) MembershipsFor(ctx context.Context, subject string) ([]agencies.Membership, error) {
+	memberships, err := r.Registry.MembershipsFor(ctx, subject)
+	if err != nil {
+		return nil, err
+	}
+	unreadable := agencies.Membership{Instance: agencies.Instance{ID: unreadableAgencyID}, Role: agencies.RoleOwner}
+	return append(memberships, unreadable), nil
+}
+
+func (r registryWithAnUnreadableAgency) AgencyManager(ctx context.Context, id string) (mwanachamaagency.AgencyManager, error) {
+	if id == unreadableAgencyID {
+		return nil, errors.New("the agency's database is down")
+	}
+	return r.Registry.AgencyManager(ctx, id)
+}
+
+func TestToolList_AnAgencyThatCannotBeReadDoesNotTakeDownTheListOfTheOthers(t *testing.T) {
+	w := newToolListWalk(t)
+	runsModules(t, w.instance, "forms")
+	w.deps.Registry = registryWithAnUnreadableAgency{Registry: w.deps.Registry}
+
+	seen := w.toolsSeenBy(t, w.owner)
+
+	if modulesOf(seen)["forms"] == 0 {
+		t.Fatalf("the owner of a readable agency with forms on sees no forms tool once a second agency of theirs cannot be read")
+	}
+	if leaked := moduleToolsOutside(seen, "forms"); len(leaked) != 0 {
+		t.Fatalf("the unreadable agency showed %d tools beyond forms, first %v", len(leaked), firstFive(leaked))
 	}
 }
