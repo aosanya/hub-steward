@@ -33,6 +33,13 @@ func (d *Deps) authorizer(scope string) dispatch.Authorizer {
 	}
 }
 
+func (d *Deps) failClosedAuthorizer(scope string) dispatch.Authorizer {
+	if d.Permissions == nil {
+		return func(context.Context, string) error { return dispatch.ErrForbidden }
+	}
+	return d.authorizer(scope)
+}
+
 type partitionKey struct{}
 
 func withPartition(r *http.Request, partition string) *http.Request {

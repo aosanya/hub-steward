@@ -26,7 +26,7 @@ func (d *Deps) registerCatalogRoutes(mux *http.ServeMux, auth callers) {
 
 func (d *Deps) catalogMount() catalogroutes.Mount {
 	return catalogroutes.Mount{
-		Authorize: d.authorizer(catalogScope),
+		Authorize: d.failClosedAuthorizer(catalogScope),
 		Caller:    accounts.IDFromContext,
 	}
 }

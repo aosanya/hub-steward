@@ -40,7 +40,7 @@ func (d *Deps) registerReportsRoutes(mux *http.ServeMux, auth callers) {
 
 func (d *Deps) reportsMount() catalogroutes.Mount {
 	return catalogroutes.Mount{
-		Authorize: d.authorizer(reportsScope),
+		Authorize: d.failClosedAuthorizer(reportsScope),
 		Caller:    accounts.IDFromContext,
 		Anonymous: reportsAnonymousActions,
 	}

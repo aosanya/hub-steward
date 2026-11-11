@@ -20,7 +20,7 @@ var permissionsMount = specMount{
 func buildPermissions(log *slog.Logger) permissions.PermissionsManager {
 	dsn := os.Getenv("PERMISSIONS_DATABASE_URL")
 	if dsn == "" || !permissionsMount.configured() {
-		log.Info("no permissions mounted; every authenticated caller reaches every gated surface",
+		log.Info("no permissions mounted; the forms, reports and catalog mounts refuse every caller",
 			"reason", "PERMISSIONS_DATABASE_URL, or both PERMISSIONS_INSTANCE and PERMISSIONS_SPEC, is unset")
 		return nil
 	}

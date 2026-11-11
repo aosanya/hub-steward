@@ -31,7 +31,7 @@ func (d *Deps) registerFormsRoutes(mux *http.ServeMux, auth callers) {
 	for _, rt := range anonymousFormsRoutes(fm) {
 		mux.HandleFunc(rt.Pattern(formsPrefix), writes.guardedWhenWriting(rt.Action, rt.Handler))
 	}
-	for _, rt := range formsroutes.OperatorRoutesFor(fm, d.formsMount()) {
+	for _, rt := range formsroutes.OperatorRoutesFor(fm, d.serverFormsMount()) {
 		mux.HandleFunc(rt.Pattern(formsPrefix), auth.require(rt.Handler))
 	}
 }
@@ -139,6 +139,12 @@ func (d *Deps) formsMount() formsroutes.Mount {
 		Authorize: d.authorizer(formsScope),
 		Caller:    accounts.IDFromContext,
 	}
+}
+
+func (d *Deps) serverFormsMount() formsroutes.Mount {
+	mount := d.formsMount()
+	mount.Authorize = d.failClosedAuthorizer(formsScope)
+	return mount
 }
 
 func anonymousFormsRoutes(fm forms.FormManager) []formsroutes.Route {

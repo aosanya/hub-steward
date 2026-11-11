@@ -19,7 +19,7 @@ func (d *Deps) registerCatalogRatingsRoutes(mux *http.ServeMux, auth callers) {
 
 func (d *Deps) ratingsMount() ratingsroutes.Mount {
 	return ratingsroutes.Mount{
-		Authorize: d.authorizer(catalogScope),
+		Authorize: d.failClosedAuthorizer(catalogScope),
 		Caller:    accounts.IDFromContext,
 	}
 }
