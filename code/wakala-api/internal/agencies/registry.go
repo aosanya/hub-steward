@@ -379,6 +379,7 @@ func (r *registry) buildTaskManager(ctx context.Context, id string) (mwanachamat
 	if err != nil {
 		return nil, err
 	}
+	backfillIssueCodes(ctx, built, id)
 	built.UseGroups(mwanachamataskmanager.Groups(r.groupsIn(id)))
 	built.UseGroupExists(r.groupExistsIn(id))
 	built.UseInstanceOwner(r.ownerIn(id))

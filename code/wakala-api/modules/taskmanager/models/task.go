@@ -164,6 +164,10 @@ type Task struct {
 
 	HeldBy string `json:"held_by,omitempty"`
 
+	Code       string `json:"code"`
+	CodeSeries string `json:"code_series"`
+	CodeNumber int    `json:"code_number"`
+
 	LinkedRef string `json:"linked_ref,omitempty"`
 
 	Backlog string `json:"backlog,omitempty"`

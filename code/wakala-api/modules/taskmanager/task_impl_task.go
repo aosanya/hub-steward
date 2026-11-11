@@ -15,12 +15,6 @@ import (
 	"wakalaserver/modules/taskmanager/models"
 )
 
-// CreateTask creates a Task row.
-//
-// When task.WorkflowRunID is non-empty, the task is also linked to the named
-// run via the started_task edge (denormalised WorkflowRunID column — see
-// [TaskManager.AssignTask]'s chain-through behaviour). The edge write is
-// best-effort: a failure is logged but does not roll back the task creation.
 func (m *taskManager) CreateTask(ctx context.Context, task Task) (Task, error) {
 	states, err := m.taskStates(ctx)
 	if err != nil {
@@ -44,7 +38,7 @@ func (m *taskManager) CreateTask(ctx context.Context, task Task) (Task, error) {
 		}
 	}
 
-	if err := m.store.Insert(ctx, roleTask, task); err != nil {
+	if err := m.insertTask(ctx, &task); err != nil {
 		return Task{}, fmt.Errorf("CreateTask: %w", err)
 	}
 
@@ -122,6 +116,9 @@ func (m *taskManager) updateTask(ctx context.Context, task Task, replace bool) (
 	now := time.Now().UTC().Format(time.RFC3339)
 	task.UpdatedAt = now
 	task.CreatedAt = current.CreatedAt
+	if err := m.settleCodeOnUpdate(ctx, &task, current); err != nil {
+		return Task{}, fmt.Errorf("UpdateTask: %w", err)
+	}
 	if isTerminalStatus(task.Status) && task.CompletedAt == "" {
 		task.CompletedAt = now
 	}
