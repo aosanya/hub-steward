@@ -7,6 +7,8 @@ import (
 	"sync"
 	"testing"
 
+	"gorm.io/gorm"
+
 	mwanachamaactor "wakalaserver/modules/actor"
 )
 
@@ -20,7 +22,12 @@ type voiceSendRace struct {
 
 func newVoiceSendRace(t *testing.T, oneVoice string, lockedAfterSend bool) voiceSendRace {
 	t.Helper()
-	cw := newConsentWalkOn(t, localPostgresOrSkip(t))
+	return newVoiceSendRaceOn(t, localPostgresOrSkip(t), oneVoice, lockedAfterSend)
+}
+
+func newVoiceSendRaceOn(t *testing.T, db *gorm.DB, oneVoice string, lockedAfterSend bool) voiceSendRace {
+	t.Helper()
+	cw := newConsentWalkOn(t, db)
 	publishMechanicsConsent(t, cw)
 	if agreed := cw.call(t, "POST", "/instances/"+cw.instance+"/custody/consent/agree", map[string]any{}, cw.resident); agreed.Code != http.StatusCreated {
 		t.Fatalf("resident agrees: %d %s", agreed.Code, agreed.Body.String())
