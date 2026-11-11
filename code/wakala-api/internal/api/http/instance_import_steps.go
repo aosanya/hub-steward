@@ -101,7 +101,7 @@ func (im *importer) createStep(ctx context.Context, wi importWorkItem) (models.W
 		im.fail("work item %q: %v", wi.Title, err)
 		return models.WorkItem{}, false
 	}
-	created, err := im.mgr.CreateWorkItem(ctx, row)
+	created, err := im.mgr.CreateWorkItem(im.kept.keeping(ctx, wi.Code), row)
 	if err != nil {
 		im.fail("work item %q: %v", wi.Title, err)
 		return models.WorkItem{}, false
@@ -145,7 +145,7 @@ func (im *importer) applyRecords(ctx context.Context, in importRequest) {
 			im.fail("record %q: unknown role %q", rc.Name, rc.RoleID)
 			continue
 		}
-		if _, err := im.mgr.CreateRecord(ctx, models.Record{DraftID: im.draftID,
+		if _, err := im.mgr.CreateRecord(im.kept.keeping(ctx, rc.Code), models.Record{DraftID: im.draftID,
 			WorkflowID: workflowID,
 			Name:       rc.Name,
 			RoleID:     roleID,

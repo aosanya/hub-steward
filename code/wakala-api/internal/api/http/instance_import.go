@@ -227,6 +227,7 @@ type importer struct {
 	workItems  refMap
 	controls   refMap
 	risks      refMap
+	kept       keptCodes
 }
 
 func newImporter(mgr mwanachamaagency.AgencyManager, draftID string) *importer {
@@ -277,8 +278,10 @@ func (im *importer) target(targetType, ref string) (string, error) {
 }
 
 func (im *importer) apply(ctx context.Context, in importRequest) {
+	im.kept = keptCodesOf(in)
+	ctx = im.kept.reserving(ctx)
 	for _, r := range in.Roles {
-		created, err := im.mgr.CreateRole(ctx, models.Role{DraftID: im.draftID, Name: r.Name, Description: r.Description, Permissions: r.Permissions})
+		created, err := im.mgr.CreateRole(im.kept.keeping(ctx, r.Code), models.Role{DraftID: im.draftID, Name: r.Name, Description: r.Description, Permissions: r.Permissions})
 		if err != nil {
 			im.fail("role %q: %v", r.Name, err)
 			continue
@@ -288,7 +291,7 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 	}
 
 	for _, g := range in.Goals {
-		created, err := im.mgr.CreateGoal(ctx, models.Goal{DraftID: im.draftID,
+		created, err := im.mgr.CreateGoal(im.kept.keeping(ctx, g.Code), models.Goal{DraftID: im.draftID,
 			Title:       g.Title,
 			Description: g.Description,
 			Ordinality:  g.Ordinality,
@@ -307,7 +310,7 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 			im.fail("objective %q: unknown goal %q", o.Title, o.GoalID)
 			continue
 		}
-		created, err := im.mgr.CreateObjective(ctx, models.Objective{DraftID: im.draftID,
+		created, err := im.mgr.CreateObjective(im.kept.keeping(ctx, o.Code), models.Objective{DraftID: im.draftID,
 			GoalID:      goalID,
 			Title:       o.Title,
 			Description: o.Description,
@@ -322,7 +325,7 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 	}
 
 	for _, w := range in.Workflows {
-		created, err := im.mgr.CreateWorkflow(ctx, models.Workflow{DraftID: im.draftID,
+		created, err := im.mgr.CreateWorkflow(im.kept.keeping(ctx, w.Code), models.Workflow{DraftID: im.draftID,
 			Name:        w.Name,
 			Description: w.Description,
 			Ordinality:  w.Ordinality,
@@ -376,7 +379,7 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 			}
 			workflowID = resolved
 		}
-		created, err := im.mgr.CreateControl(ctx, models.Control{
+		created, err := im.mgr.CreateControl(im.kept.keeping(ctx, c.Code), models.Control{
 			DraftID: im.draftID, Text: c.Text, Action: c.Action,
 			CondField: c.CondField, CondOperator: c.CondOperator, CondValue: c.CondValue,
 			OnBreach: c.OnBreach, WorkflowID: workflowID, Severity: c.Severity,
@@ -390,7 +393,7 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 	}
 
 	for _, r := range in.Risks {
-		created, err := im.mgr.CreateRisk(ctx, models.Risk{DraftID: im.draftID, Title: r.Title, TopEvent: r.TopEvent, Hazard: r.Hazard, Owner: r.Owner})
+		created, err := im.mgr.CreateRisk(im.kept.keeping(ctx, r.Code), models.Risk{DraftID: im.draftID, Title: r.Title, TopEvent: r.TopEvent, Hazard: r.Hazard, Owner: r.Owner})
 		if err != nil {
 			im.fail("risk %q: %v", r.Code, err)
 			continue

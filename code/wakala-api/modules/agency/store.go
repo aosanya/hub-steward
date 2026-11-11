@@ -223,7 +223,7 @@ func (m *agencyManager) writeUpdate(ctx context.Context, tx *gorm.DB, role, id s
 
 func (m *agencyManager) createWithCode(ctx context.Context, role, entityType, prefix string, build func(code string) any) error {
 	err := m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		code, err := nextCode(ctx, tx, m.table(roleCodeSequence), entityType, prefix)
+		code, err := claimCode(ctx, tx, m.table(roleCodeSequence), entityType, prefix)
 		if err != nil {
 			return err
 		}
