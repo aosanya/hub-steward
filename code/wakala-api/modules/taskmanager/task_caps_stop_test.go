@@ -194,6 +194,42 @@ func TestUsageWrite_AWorkerWaitingForTheOwnerIsNotStoppedOnRuntimeButIsOnTokens(
 	}
 }
 
+func TestUsageWrite_TheClockStoppedAtTheCapPassesNoRuntimeCapAndThePlayedClockDoes(t *testing.T) {
+	ctx := context.Background()
+	mgr := newTestManager(t)
+	task := workerHolding(t, mgr, "Ready")
+	ownCaps(t, mgr, task.ID, 1000, 200, 60)
+	waiting := usage(10, 10, 60)
+	waiting.ClockStopped = true
+	if reply, err := mgr.WriteTaskUsage(ctx, "", task.ID, waiting); err != nil || reply.Stop || len(reply.Passed) != 0 {
+		t.Fatalf("reply %+v, err %v", reply, err)
+	}
+	wantPlace(t, mgr, task.ID, "doing")
+	answered := usage(10, 10, 61)
+	reply, err := mgr.WriteTaskUsage(ctx, "", task.ID, answered)
+	if err != nil || !reply.Stop || !reflect.DeepEqual(reply.Passed, []string{"runtime_seconds"}) {
+		t.Fatalf("reply %+v, err %v", reply, err)
+	}
+	wantPlace(t, mgr, task.ID, "to-do")
+}
+
+func TestUsageWrite_AnUnansweredQuestionNeverEndsAWorkerOnRuntimeHoweverLongTheFigure(t *testing.T) {
+	ctx := context.Background()
+	mgr := newTestManager(t)
+	task := workerHolding(t, mgr, "Ready")
+	ownCaps(t, mgr, task.ID, 1000, 200, 60)
+	asking := usage(999, 199, 86400)
+	asking.ClockStopped = true
+	reply, err := mgr.WriteTaskUsage(ctx, "", task.ID, asking)
+	if err != nil || reply.Stop {
+		t.Fatalf("reply %+v, err %v", reply, err)
+	}
+	if n := len(logOf(t, mgr, task.ID)); n != 0 {
+		t.Fatalf("%d entries", n)
+	}
+	wantPlace(t, mgr, task.ID, "doing")
+}
+
 func TestUsageWrite_AWriteAfterTheStopRepliesStopAgainWithoutASecondEntry(t *testing.T) {
 	ctx := context.Background()
 	mgr := newTestManager(t)
