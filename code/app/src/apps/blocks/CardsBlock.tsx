@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "../../ui/Button";
+import { Card } from "../../ui/Card";
 import type { ButtonSpec, CardSpec, ToolRunner } from "./types";
 
 type Props = {
@@ -51,21 +52,18 @@ function CardView({ card, onPrompt, onTool }: { card: CardSpec; onPrompt: Props[
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   return (
     <article className="attached">
-      <span className="ttl">{card.title}</span>
-      {card.lines.map((line, index) => (
-        <span key={index} className="line">
-          {line}
-        </span>
-      ))}
-      {card.buttons.length > 0 ? (
-        <div className="btns">
-          {card.buttons.map((spec) => (
-            <CardButton key={spec.label} spec={spec} onPrompt={onPrompt} onTool={onTool} onOutcome={setOutcome} />
-          ))}
-        </div>
-      ) : null}
-      {outcome?.state === "done" ? <p className="note success">Done</p> : null}
-      {outcome?.state === "failed" ? <p className="ferr" role="alert">{outcome.message}</p> : null}
+      <Card
+        title={card.title}
+        footer={card.buttons.length > 0 ? card.buttons.map((spec) => <CardButton key={spec.label} spec={spec} onPrompt={onPrompt} onTool={onTool} onOutcome={setOutcome} />) : undefined}
+      >
+        {card.lines.map((line, index) => (
+          <span key={index} className="line">
+            {line}
+          </span>
+        ))}
+        {outcome?.state === "done" ? <p className="note success">Done</p> : null}
+        {outcome?.state === "failed" ? <p className="ferr" role="alert">{outcome.message}</p> : null}
+      </Card>
     </article>
   );
 }

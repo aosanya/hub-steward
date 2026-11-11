@@ -137,6 +137,28 @@ describe("form block", () => {
   });
 });
 
+describe("the cards and the form drawn in the thread are shared Cards", () => {
+  it("heads a card with its title, holds its lines and puts its buttons in the footer", () => {
+    show({ kind: "cards", cards: [card(1)], shown: 3 });
+    const shared = screen.getByRole("article").querySelector(":scope > .card") as HTMLElement;
+    expect(shared.querySelector(":scope > .card-head .card-title")).toHaveTextContent("Card 1");
+    expect(shared.querySelector(":scope > .card-body")).toHaveTextContent("Line 1");
+    expect(shared.querySelector(":scope > .card-foot")).toHaveTextContent("Open 1");
+  });
+
+  it("draws no footer on a card without buttons", () => {
+    show({ kind: "cards", cards: [{ id: "c", title: "Plain", lines: ["Only words"], buttons: [] }], shown: 3 });
+    expect(document.querySelector(".card-foot")).toBeNull();
+  });
+
+  it("heads a form with its title and puts the submit button in the footer", () => {
+    show({ kind: "form", tool: "market_add", title: "Add a bag", fields: [{ name: "n", label: "Name", kind: "text" }], submitLabel: "Add" });
+    const form = screen.getByRole("form", { name: "Add a bag" });
+    expect(form.querySelector(":scope > .card > .card-head .card-title")).toHaveTextContent("Add a bag");
+    expect(form.querySelector(":scope > .card > .card-foot button[type=submit]")).toHaveTextContent("Add");
+  });
+});
+
 describe("schema mapping", () => {
   const schema = {
     type: "object",

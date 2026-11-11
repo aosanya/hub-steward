@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { Card } from "../../ui/Card";
 import { Field } from "../../ui/Field";
 import type { FieldSpec } from "./types";
 
@@ -88,35 +89,41 @@ export function FormBlock({ title, fields, submitLabel, fixedArgs, onSubmit }: P
 
   return (
     <form className="attached" onSubmit={submit} noValidate aria-label={title}>
-      <span className="ttl">{title}</span>
-      <div className="fobj">
-        {fields.map((field) =>
-          field.kind === "choice" ? (
-            <Choice key={field.name} field={field} value={values[field.name] ?? ""} error={errors[field.name]} onPick={(value) => set(field.name, value)} />
-          ) : (
-            <Field
-              key={field.name}
-              label={field.label}
-              type={field.kind === "date" ? "date" : "text"}
-              inputMode={field.kind === "number" ? "decimal" : undefined}
-              value={values[field.name] ?? ""}
-              error={errors[field.name]}
-              disabled={result !== null}
-              onChange={(event) => set(field.name, event.target.value)}
-            />
-          ),
-        )}
-      </div>
-      {failure ? <p className="ferr" role="alert">{failure}</p> : null}
-      {result !== null ? (
-        <p className="note success" role="status">
-          {result}
-        </p>
-      ) : (
-        <button type="submit" className="btn primary" disabled={busy}>
-          {submitLabel}
-        </button>
-      )}
+      <Card
+        title={title}
+        footer={
+          result === null ? (
+            <button type="submit" className="btn primary" disabled={busy}>
+              {submitLabel}
+            </button>
+          ) : undefined
+        }
+      >
+        <div className="fobj">
+          {fields.map((field) =>
+            field.kind === "choice" ? (
+              <Choice key={field.name} field={field} value={values[field.name] ?? ""} error={errors[field.name]} onPick={(value) => set(field.name, value)} />
+            ) : (
+              <Field
+                key={field.name}
+                label={field.label}
+                type={field.kind === "date" ? "date" : "text"}
+                inputMode={field.kind === "number" ? "decimal" : undefined}
+                value={values[field.name] ?? ""}
+                error={errors[field.name]}
+                disabled={result !== null}
+                onChange={(event) => set(field.name, event.target.value)}
+              />
+            ),
+          )}
+        </div>
+        {failure ? <p className="ferr" role="alert">{failure}</p> : null}
+        {result !== null ? (
+          <p className="note success" role="status">
+            {result}
+          </p>
+        ) : null}
+      </Card>
     </form>
   );
 }
