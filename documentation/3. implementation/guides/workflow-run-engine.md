@@ -53,4 +53,9 @@ limit sent with the call is replaced by the published one.
 `internal/api/http/misuse_workflow_run_test.go` drives the routes as the owner
 against a published three-step referral workflow, and
 `internal/agencies/step_limit_sweep_cover_test.go` covers the board checks on
-their own.
+their own. `internal/api/http/misuse_workflow_run_start_test.go` covers the role
+check on a start through the routes, and
+`internal/api/http/misuse_workflow_run_start_doors_test.go` covers it through
+the `taskmanager_workflow_run_start` tool, covers the tool's refusal of an
+unpublished workflow or version for the owner, and pins that the market ask
+runner starts its timed step for a picker who holds no role.
