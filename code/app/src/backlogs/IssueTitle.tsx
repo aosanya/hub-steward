@@ -1,8 +1,7 @@
-import { Fragment } from "react";
 import { Chip } from "../ui/Chip";
 import type { Issue } from "./api";
 import "./backlogs.css";
-import { tagsOf, toneOf } from "./tags";
+import { chipLook, tagsOf } from "./tags";
 
 const idLike = /^[A-Za-z]+-?\d+[A-Za-z]?$/;
 
@@ -36,7 +35,7 @@ export function IssueTags({ issue, chosen, onTag, extra = [] }: { issue: Issue; 
   return tags.length + facts.length === 0 ? null : (
     <span className="issue-tags">
       {tags.map((tag) => (
-        <Chip key={tag} tone={toneOf(tag, issue)} pressed={onTag ? chosen.includes(tag) : undefined} onClick={onTag ? () => onTag(tag) : undefined}>
+        <Chip key={tag} {...chipLook(tag)} pressed={onTag ? chosen.includes(tag) : undefined} onClick={onTag ? () => onTag(tag) : undefined}>
           {tag}
         </Chip>
       ))}
@@ -58,31 +57,14 @@ export const lineWords = (issue: Issue): Word[] =>
   ].filter((word, at, all) => word.label !== "" && all.findIndex((one) => one.label === word.label) === at);
 
 export function IssueLine({ issue, chosen, onTag }: { issue: Issue; chosen: string[]; onTag?: (tag: string) => void }) {
-  const blocked = issue.mark === "Blocked";
-  const words = lineWords(issue);
-  return !blocked && words.length === 0 ? null : (
+  const words = [...(issue.mark === "Blocked" ? [{ tag: "Blocked", label: "Blocked" }] : []), ...lineWords(issue)];
+  return words.length === 0 ? null : (
     <span className="issue-tags issue-line">
-      {blocked ? (
-        <Chip tone="danger" pressed={onTag ? chosen.includes("Blocked") : undefined} onClick={onTag ? () => onTag("Blocked") : undefined}>
-          Blocked
+      {words.map((word) => (
+        <Chip key={word.tag} {...chipLook(word.tag)} pressed={onTag ? chosen.includes(word.tag) : undefined} onClick={onTag ? () => onTag(word.tag) : undefined}>
+          {word.label}
         </Chip>
-      ) : null}
-      {words.length > 0 ? (
-        <span className="issue-words">
-          {words.map((word, at) => (
-            <Fragment key={word.tag}>
-              {at > 0 ? " · " : null}
-              {onTag ? (
-                <button type="button" className="issue-word" aria-pressed={chosen.includes(word.tag)} onClick={() => onTag(word.tag)}>
-                  {word.label}
-                </button>
-              ) : (
-                word.label
-              )}
-            </Fragment>
-          ))}
-        </span>
-      ) : null}
+      ))}
     </span>
   );
 }

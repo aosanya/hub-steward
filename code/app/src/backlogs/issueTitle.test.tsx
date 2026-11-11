@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Issue } from "./api";
 import { IssueTags, IssueTitle, lineWords, titleParts } from "./IssueTitle";
+import { hueOf } from "./tags";
 
 const issue = (over: Partial<Issue>): Issue => ({ id: "a", title: "t", description: "", status: "pending", step: "", repo: "", topics: [], backlog: "", mark: "", rank: 1, ...over });
 
@@ -39,7 +40,7 @@ describe("an issue's title on a row or card", () => {
     expect(pills.map((one) => one.textContent)).toEqual(["Blocked", "hub-steward", "Docs", "Backlog"]);
     expect(pills.every((one) => one.classList.contains("chip"))).toBe(true);
     expect(pills[0]).toHaveClass("danger");
-    expect(pills[3]).toHaveClass("accent");
+    expect(pills[3]).toHaveClass("hued");
     expect(container.textContent).toBe("Blockedhub-stewardDocsBacklog");
   });
 
@@ -50,5 +51,14 @@ describe("an issue's title on a row or card", () => {
     ]);
     expect(lineWords(issue({ repo: "backlog", backlog: "backlog" })).map((word) => word.label)).toEqual(["backlog"]);
     expect(lineWords(issue({}))).toEqual([]);
+  });
+
+  it("colours a bubble from its own text, the same every time, and leaves Ready and Blocked their tones", () => {
+    expect(hueOf("hub-steward-swe")).toBe(hueOf("hub-steward-swe"));
+    expect(hueOf("hub-steward-swe")).not.toBe(hueOf("Backlog"));
+    const { container } = render(<IssueTags issue={issue({ mark: "Ready", repo: "hub-steward-swe", backlog: "Backlog" })} chosen={[]} />);
+    const pills = Array.from(container.querySelectorAll<HTMLElement>(".issue-tags > *"));
+    expect(pills[0]).toHaveClass("success");
+    expect(pills[1].style.getPropertyValue("--hue")).toBe(String(hueOf("hub-steward-swe")));
   });
 });

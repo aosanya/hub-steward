@@ -191,9 +191,8 @@ describe("the list of issues", () => {
     const first = document.querySelector(".issue-row") as HTMLElement;
     expect(within(first).getAllByRole("button")).toHaveLength(3);
     expect(first.querySelector(".issue-title")?.textContent).toBe("Fix mirrored board drift");
-    expect(first.querySelectorAll(".chip")).toHaveLength(0);
-    expect(first.querySelector(".issue-words")?.textContent).toBe("mwanachama-web · Backlog");
-    expect(document.querySelectorAll(".issue-row .chip")).toHaveLength(1);
+    expect(Array.from(first.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["mwanachama-web", "Backlog"]);
+    expect(first.querySelectorAll(".chip.hued")).toHaveLength(2);
     expect(within(document.querySelectorAll(".issue-row")[1] as HTMLElement).getByRole("button", { name: "Blocked" })).toBeInTheDocument();
     expect(screen.getByText("3 issues")).toBeInTheDocument();
   });
@@ -218,7 +217,7 @@ describe("the list of issues", () => {
     expect(pill.tagName).toBe("SPAN");
     await userEvent.click(pill);
     expect(where()).toBe(issuePath("t2"));
-    const waited = (document.querySelector(".card.flush .rows .issue-row") as HTMLElement).querySelector(".issue-words") as HTMLElement;
+    const waited = (document.querySelector(".card.flush .rows .issue-row") as HTMLElement).querySelector(".issue-line") as HTMLElement;
     expect(waited.tagName).toBe("SPAN");
     expect(within(waited).queryByRole("button")).toBeNull();
     await userEvent.click(waited);

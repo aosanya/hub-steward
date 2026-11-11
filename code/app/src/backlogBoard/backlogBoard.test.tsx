@@ -96,11 +96,9 @@ describe("BacklogBoard", () => {
     const card = within(column("Waiting")).getByRole("button", { name: /^Import the municipality/ });
     const whole = card.closest(".bb-card") as HTMLElement;
     expect(whole.querySelector(".issue-title")?.textContent).toBe("Import the municipality");
-    expect(Array.from(whole.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Blocked"]);
-    expect(whole.querySelector(".issue-words")?.textContent).toBe("hub-steward · Backlog");
+    expect(Array.from(whole.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Blocked", "hub-steward", "Backlog"]);
     const ready = within(column("To do")).getByRole("button", { name: /Record the clips/ }).closest(".bb-card") as HTMLElement;
-    expect(ready.querySelectorAll(".chip")).toHaveLength(0);
-    expect(ready.querySelector(".issue-words")?.textContent).toBe("community-hubs · Backlog");
+    expect(Array.from(ready.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["community-hubs", "Backlog"]);
     await user.click(card);
     await waitFor(() => expect(screen.getByTestId("where").textContent).toMatch(/\/backlogs\/issue\/3$/));
   });

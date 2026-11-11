@@ -15,8 +15,14 @@ export const narrowed = (issues: Issue[], chosen: string[], query: string) => wi
 
 export const toggled = (chosen: string[], tag: string) => (chosen.includes(tag) ? chosen.filter((one) => one !== tag) : [...chosen, tag]);
 
-export const toneOf = (tag: string, issue: Issue): ChipTone | undefined =>
-  tag === "Ready" ? "success" : tag === "Blocked" ? "danger" : tag === issue.backlog ? "accent" : undefined;
+export const toneOf = (tag: string): ChipTone | undefined => (tag === "Ready" ? "success" : tag === "Blocked" ? "danger" : undefined);
+
+export const hueOf = (tag: string) => [...tag].reduce((sum, letter) => (sum * 31 + letter.charCodeAt(0)) % 360, 7);
+
+export const chipLook = (tag: string) => {
+  const tone = toneOf(tag);
+  return tone ? { tone } : { hue: hueOf(tag) };
+};
 
 export const issuesWords = (count: number) => `${count} ${count === 1 ? "issue" : "issues"}`;
 

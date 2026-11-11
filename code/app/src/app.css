@@ -10,7 +10,7 @@ input::placeholder { color: var(--ink-soft); }
 .bar { position: sticky; top: 0; z-index: 1; display: grid; grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr); align-items: center; gap: .5rem; min-height: 3rem; padding: 0 .5rem; background: var(--surface); border-bottom: 1px solid var(--line); }
 .title { grid-column: 1 / 3; min-width: 0; padding-left: .5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.125rem; font-weight: 700; line-height: 1.2; letter-spacing: -.015em; }
 .back { display: inline-flex; align-items: center; min-height: 3rem; padding: 0 .5rem; border: 0; background: transparent; color: var(--accent); white-space: nowrap; }
-.body { flex: 1; display: flex; flex-direction: column; gap: .75rem; padding: 1rem; }
+.body { flex: 1; display: flex; flex-direction: column; gap: .75rem; padding: var(--gutter, 1rem); }
 .tabs { position: sticky; bottom: 0; display: flex; gap: .25rem; padding: .5rem .75rem 1rem; background: var(--surface); border-top: 1px solid var(--line); }
 .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .125rem; min-height: 3rem; color: var(--ink-soft); font-size: .8125rem; font-weight: 500; }
 .tabs.reserve .tab { flex: 0 1 calc(25% - .1875rem); }
@@ -25,6 +25,7 @@ input::placeholder { color: var(--ink-soft); }
 .chip.accent { background: var(--accent-wash); color: var(--accent-strong); }
 .chip.info { background: var(--info-wash); color: var(--info); }
 .chip.success { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
+.chip.hued { background: hsl(var(--hue) 65% 50% / .16); color: color-mix(in srgb, hsl(var(--hue) 70% 42%) 65%, var(--ink)); }
 .chip.danger { background: color-mix(in srgb, var(--danger) 14%, transparent); color: var(--danger); }
 .chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
 .btn { display: flex; align-items: center; justify-content: center; gap: .5rem; width: 100%; min-height: 3rem; padding: 0 1.25rem; background: transparent; border: 1px solid transparent; border-radius: var(--r-md); font-weight: 600; text-align: center; }

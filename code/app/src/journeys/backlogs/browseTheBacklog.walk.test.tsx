@@ -51,8 +51,7 @@ describe("journey 02, browse the backlog", () => {
     expect(titles).toEqual(["Write the manual", "Import the boards", "Write the loader"]);
     const row = first.closest(".row") as HTMLElement;
     expect(row.querySelector(".issue-title")?.textContent).toBe("Write the manual");
-    expect(row.querySelector(".issue-words")?.textContent).toContain("mwanachama-docs");
-    expect(row.querySelector(".chip")).toBeNull();
+    expect(row.querySelector(".issue-line")?.textContent).toContain("mwanachama-docs");
     expect(screen.queryByText(/P[1-4]|critical|priority/i)).toBeNull();
   });
 
