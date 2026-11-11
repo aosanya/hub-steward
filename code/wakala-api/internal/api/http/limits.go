@@ -17,6 +17,8 @@ const (
 const (
 	anonymousTrackedClients = 20000
 
+	anonymousJSONBodyBytes = 64 << 10
+
 	anonymousReportsPerMinute = 20
 	anonymousReportBodyBytes  = 32 << 10
 

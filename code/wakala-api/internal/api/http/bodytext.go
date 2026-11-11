@@ -26,9 +26,18 @@ func refuseControlCharacters(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
-		raw, err := io.ReadAll(peeked)
+		limit := scanLimitFor(r)
+		if r.ContentLength > limit {
+			writeErr(w, http.StatusRequestEntityTooLarge, "request body too large")
+			return
+		}
+		raw, err := io.ReadAll(io.LimitReader(peeked, limit+1))
 		if err != nil {
 			writeReadErr(w, err)
+			return
+		}
+		if int64(len(raw)) > limit {
+			writeErr(w, http.StatusRequestEntityTooLarge, "request body too large")
 			return
 		}
 		if err := plaintext.CheckJSONStrings(raw); err != nil {
@@ -38,6 +47,21 @@ func refuseControlCharacters(next http.Handler) http.Handler {
 		r.Body = readCloser{Reader: bytes.NewReader(raw), Closer: original}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func scanLimitFor(r *http.Request) int64 {
+	if carriesCredentials(r) {
+		return maxRequestBody
+	}
+	return anonymousJSONBodyBytes
+}
+
+func carriesCredentials(r *http.Request) bool {
+	if _, ok := bearerToken(r); ok {
+		return true
+	}
+	_, err := r.Cookie(sessionCookieName)
+	return err == nil
 }
 
 type readCloser struct {
