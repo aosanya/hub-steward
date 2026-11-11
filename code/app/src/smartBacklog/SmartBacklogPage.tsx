@@ -6,6 +6,8 @@ import { useMayManage } from "../backlogManage/useMayManage";
 import type { BacklogManageClient } from "../backlogManage/types";
 import { mcpBacklogsClient, type BacklogsClient, type Issue } from "../backlogs/api";
 import { FilterBar } from "../backlogs/FilterBar";
+import type { CapsClient } from "../backlogs/caps/api";
+import { CapTintScope } from "../backlogs/caps/CapTintScope";
 import { IssueRow } from "../backlogs/IssueRow";
 import { backlogAccessPath } from "../backlogAccess/paths";
 import { BoardColumns, columnsOf, stepsOfIssues, useView, ViewSwitch } from "../backlogBoard";
@@ -26,9 +28,9 @@ import { editRulesPath } from "./paths";
 import { RulesHead } from "./RulesHead";
 import type { SmartBacklogClient } from "./types";
 
-type Props = { client?: SmartBacklogClient; issues?: BacklogsClient; manage?: BacklogManageClient };
+type Props = { client?: SmartBacklogClient; issues?: BacklogsClient; manage?: BacklogManageClient; capsClient?: CapsClient };
 
-export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpBacklogsClient, manage = mcpBacklogManageClient }: Props) {
+export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpBacklogsClient, manage = mcpBacklogManageClient, capsClient }: Props) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -69,11 +71,13 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
         <>
           <FilterBar query={query} onQuery={(text) => setSearch(searchOf([], text), { replace: true })} count={countWords(rows.length, held.length, query.trim() !== "")} chosen={[]} onTag={() => undefined} />
           <ViewSwitch current={view} onChange={chooseView} />
-          {rows.length === 0 ? <EmptyCard words="No issues match" /> : view === "board" ? (
-            <BoardColumns columns={columnsOf(stepsOfIssues(all, rows), rows)} renderCard={rowOf} />
-          ) : (
-            <Rows>{rows.map((issue) => <Fragment key={issue.id}>{rowOf(issue)}</Fragment>)}</Rows>
-          )}
+          <CapTintScope issues={rows} client={capsClient}>
+            {rows.length === 0 ? <EmptyCard words="No issues match" /> : view === "board" ? (
+              <BoardColumns columns={columnsOf(stepsOfIssues(all, rows), rows)} renderCard={rowOf} />
+            ) : (
+              <Rows>{rows.map((issue) => <Fragment key={issue.id}>{rowOf(issue)}</Fragment>)}</Rows>
+            )}
+          </CapTintScope>
         </>
       )}
       {outcome && !selecting.on ? (

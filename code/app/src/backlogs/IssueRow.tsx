@@ -1,14 +1,13 @@
 import type { Issue } from "./api";
-import type { CapsClient } from "./caps/api";
 import { CapTintChip } from "./caps/CapTintChip";
 import { tintStyle } from "./caps/capTint";
-import { useCapTint } from "./caps/useCapTint";
+import { useCapTintOf } from "./caps/CapTintScope";
 import { IssueLine, IssueTags, IssueTitle, openUnlessTag } from "./IssueTitle";
 
-type Props = { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; onOpen?: () => void; chevron?: boolean; showStep?: boolean; capsClient?: CapsClient };
+type Props = { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; onOpen?: () => void; chevron?: boolean; showStep?: boolean };
 
-export function IssueRow({ issue, chosen, onTag, onOpen, chevron, showStep, capsClient }: Props) {
-  const found = useCapTint(issue, capsClient);
+export function IssueRow({ issue, chosen, onTag, onOpen, chevron, showStep }: Props) {
+  const found = useCapTintOf(issue.id);
   const title = <IssueTitle title={issue.title} code={issue.code} />;
   return (
     <div className={[onOpen ? "row issue-row" : "row issue-row static", found ? "capped" : ""].filter(Boolean).join(" ")} style={tintStyle(found)} onClick={onOpen ? openUnlessTag(onOpen) : undefined}>

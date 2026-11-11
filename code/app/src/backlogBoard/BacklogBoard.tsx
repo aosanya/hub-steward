@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from "../backlogs/api";
 import { FilterBar } from "../backlogs/FilterBar";
+import type { CapsClient } from "../backlogs/caps/api";
+import { CapTintScope } from "../backlogs/caps/CapTintScope";
 import { IssueRow } from "../backlogs/IssueRow";
 import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam } from "../backlogs/paths";
 import { narrowed, toggled } from "../backlogs/tags";
@@ -21,7 +23,7 @@ type Read = { state: "loading" } | { state: "failed" } | ({ state: "ready" } & L
 
 const countWords = (shown: number, steps: number) => `${shown} ${shown === 1 ? "issue" : "issues"} · ${steps} ${steps === 1 ? "step" : "steps"}`;
 
-export function BacklogBoard({ client = mcpBacklogsClient }: { client?: BacklogsClient }) {
+export function BacklogBoard({ client = mcpBacklogsClient, capsClient }: { client?: BacklogsClient; capsClient?: CapsClient }) {
   const { backlogId = "" } = useParams();
   const navigate = useNavigate();
   const here = useLocation();
@@ -78,16 +80,18 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
         <>
           <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={toggle} onClear={() => choose([])} />
           <ViewSwitch current="board" onChange={() => navigate(issuesPath(backlogId, chosen, query))} />
-          <BoardColumns
-            columns={columnsOf(backlog.steps, shown)}
-            renderCard={(issue) =>
-              selecting.on ? (
-                <SelectableIssueRow issue={issue} chosen={chosen} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
-              ) : (
-                <IssueRow issue={issue} chosen={chosen} onTag={toggle} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
-              )
-            }
-          />
+          <CapTintScope issues={shown} client={capsClient}>
+            <BoardColumns
+              columns={columnsOf(backlog.steps, shown)}
+              renderCard={(issue) =>
+                selecting.on ? (
+                  <SelectableIssueRow issue={issue} chosen={chosen} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
+                ) : (
+                  <IssueRow issue={issue} chosen={chosen} onTag={toggle} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
+                )
+              }
+            />
+          </CapTintScope>
           {outcome && !selecting.on ? (
             <p className="sub" role="status">
               {outcome}

@@ -24,13 +24,15 @@ import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklo
 import { BoardColumns } from "../backlogBoard/BoardColumns";
 import { columnsOf, stepsOfIssues } from "../backlogBoard/board";
 import { useView, ViewSwitch } from "../backlogBoard/ViewSwitch";
+import type { CapsClient } from "./caps/api";
+import { CapTintScope } from "./caps/CapTintScope";
 import { IssueRow } from "./IssueRow";
 import { backlogsHomePath, boardPath, issuePath, queryParam, searchOf, tagParam } from "./paths";
 import { countWords, narrowed, toggled } from "./tags";
 
-type Props = { client?: BacklogsClient; manage?: BacklogManageClient; smartBacklogs?: () => Promise<SmartBacklog[]> };
+type Props = { client?: BacklogsClient; manage?: BacklogManageClient; smartBacklogs?: () => Promise<SmartBacklog[]>; capsClient?: CapsClient };
 
-export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogManageClient, smartBacklogs = listSmartBacklogs }: Props) {
+export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogManageClient, smartBacklogs = listSmartBacklogs, capsClient }: Props) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -85,8 +87,10 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
       {issues.state === "ready" && total === 0 && mayManage.state === "ready" && backlogs.state === "ready" ? (
         <EmptyCard words={mayManage.data && issuesHeld(backlogs.data) === 0 ? "No issues yet. Run the loader on your laptop to load the boards." : "Nothing here yet."} />
       ) : null}
-      {shown.length > 0 && listed === "board" && backlogs.state === "ready" ? <BoardColumns columns={columnsOf(stepsOfIssues(backlogs.data, shown), shown)} renderCard={rowOf} /> : null}
-      {shown.length > 0 && listed === "list" ? <Rows>{shown.map((issue) => <Fragment key={issue.id}>{rowOf(issue)}</Fragment>)}</Rows> : null}
+      <CapTintScope issues={shown} client={capsClient}>
+        {shown.length > 0 && listed === "board" && backlogs.state === "ready" ? <BoardColumns columns={columnsOf(stepsOfIssues(backlogs.data, shown), shown)} renderCard={rowOf} /> : null}
+        {shown.length > 0 && listed === "list" ? <Rows>{shown.map((issue) => <Fragment key={issue.id}>{rowOf(issue)}</Fragment>)}</Rows> : null}
+      </CapTintScope>
       {total > 0 && shown.length === 0 ? <EmptyCard words="No issues match" /> : null}
       {outcome && !selecting.on ? (
         <p className="sub" role="status">

@@ -21,6 +21,7 @@ import { CapTintChip } from "./caps/CapTintChip";
 import { tintOf, tintStyle } from "./caps/capTint";
 import { mcpReferencesClient, mcpRepoClient, type ReferencesClient, type RepoClient } from "./references/api";
 import { ReferencesCard } from "./references/ReferencesCard";
+import { CapTintScope } from "./caps/CapTintScope";
 import { IssueRow } from "./IssueRow";
 import { IssueTags, IssueTitle, titleParts } from "./IssueTitle";
 import { PriorityMenu } from "./PriorityMenu";
@@ -92,11 +93,13 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
             ].map(({ heading, issues }) =>
               issues.length > 0 ? (
                 <Card key={heading} title={heading} collapsible flush>
-                  <Rows>
-                    {issues.map((one) => (
-                      <IssueRow key={one.id} issue={one} chosen={[]} chevron showStep onOpen={() => navigate(issuePath(one.id), backState(here.pathname + here.search, parts.code))} />
-                    ))}
-                  </Rows>
+                  <CapTintScope issues={issues} client={capsClient}>
+                    <Rows>
+                      {issues.map((one) => (
+                        <IssueRow key={one.id} issue={one} chosen={[]} chevron showStep onOpen={() => navigate(issuePath(one.id), backState(here.pathname + here.search, parts.code))} />
+                      ))}
+                    </Rows>
+                  </CapTintScope>
                 </Card>
               ) : null,
             )}
