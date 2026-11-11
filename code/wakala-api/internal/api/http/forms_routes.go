@@ -106,6 +106,10 @@ func (noLinkIssued) OpenPublicLink(context.Context, string) (forms.ResolvedLink,
 	return forms.ResolvedLink{}, forms.ErrLinkNotFound
 }
 
+func (noLinkIssued) ShowPublicLink(context.Context, string) (forms.ResolvedLinkView, error) {
+	return forms.ResolvedLinkView{}, forms.ErrLinkNotFound
+}
+
 func (noLinkIssued) PublicLinkQuestions(context.Context, string) ([]formsmodels.LinkedQuestion, error) {
 	return nil, forms.ErrLinkNotFound
 }
