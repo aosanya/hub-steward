@@ -19,6 +19,7 @@ type publicationReader interface {
 type limitedBoard struct {
 	mwanachamataskmanager.TaskManager
 	publications func(ctx context.Context) (publicationReader, error)
+	outcomes     *promiseOutcomes
 }
 
 type publishedLimit struct {

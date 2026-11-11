@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"sort"
 	"strings"
 	"time"
@@ -25,8 +26,6 @@ var (
 	ErrPromiseNotDue          = errors.New("promise not yet due")
 	ErrPromiseOutcomeRecorded = errors.New("promise outcome already recorded")
 )
-
-var promiseOutcomeLocks keyedLocks
 
 type ReportPromise struct {
 	Text       string `json:"text"`
@@ -87,7 +86,8 @@ func RecordPromiseOutcome(ctx context.Context, board mwanachamataskmanager.TaskM
 	default:
 		return mwanachamataskmanager.Task{}, fmt.Errorf("%w: outcome %q", ErrInvalidPromise, outcome)
 	}
-	defer promiseOutcomeLocks.acquire(taskID)()
+	outcomes := promiseOutcomesOf(board)
+	defer outcomes.hold(taskID)()
 	task, err := board.GetTask(ctx, taskID)
 	if err != nil {
 		return mwanachamataskmanager.Task{}, err
@@ -102,6 +102,40 @@ func RecordPromiseOutcome(ctx context.Context, board mwanachamataskmanager.TaskM
 	if notYetDue(task.DueAt, now) {
 		return mwanachamataskmanager.Task{}, fmt.Errorf("%w: task %s falls due %s", ErrPromiseNotDue, taskID, task.DueAt)
 	}
+	held, claimed, err := outcomes.claim(ctx, taskID, outcome, note)
+	if err != nil {
+		return mwanachamataskmanager.Task{}, err
+	}
+	if !claimed {
+		finishClaimedOutcome(ctx, board, taskID, held)
+		return mwanachamataskmanager.Task{}, fmt.Errorf("%w: task %s is already %s", ErrPromiseOutcomeRecorded, taskID, held.Outcome)
+	}
+	written, err := writePromiseOutcome(ctx, board, task, link, outcome, note)
+	if err != nil {
+		if releaseErr := outcomes.release(ctx, taskID); releaseErr != nil {
+			slog.Error("releasing a promise outcome claim failed", "task", taskID, "error", releaseErr.Error())
+		}
+		return mwanachamataskmanager.Task{}, err
+	}
+	return written, nil
+}
+
+func finishClaimedOutcome(ctx context.Context, board mwanachamataskmanager.TaskManager, taskID string, held promiseOutcomeClaim) {
+	current, err := board.GetTask(ctx, taskID)
+	if err != nil {
+		slog.Error("reading a claimed promise failed", "task", taskID, "error", err.Error())
+		return
+	}
+	link, ok := PromiseOf(current)
+	if !ok || link.Outcome != "" {
+		return
+	}
+	if _, err := writePromiseOutcome(ctx, board, current, link, PromiseOutcome(held.Outcome), held.Note); err != nil {
+		slog.Error("finishing a claimed promise outcome failed", "task", taskID, "error", err.Error())
+	}
+}
+
+func writePromiseOutcome(ctx context.Context, board mwanachamataskmanager.TaskManager, task mwanachamataskmanager.Task, link PromiseLink, outcome PromiseOutcome, note string) (mwanachamataskmanager.Task, error) {
 	link.Outcome = outcome
 	link.OutcomeNote = note
 	raw, err := json.Marshal(link)

@@ -110,6 +110,8 @@ type Registry interface {
 type registry struct {
 	db *gorm.DB
 
+	outcomes *promiseOutcomes
+
 	epochs          *authz.Epochs
 	cacheEntries    int
 	managers        *authz.Cache[mwanachamaagency.AgencyManager]
@@ -201,10 +203,13 @@ func NewRegistry(db *gorm.DB, opts ...Option) (Registry, error) {
 	if err := migrateMembers(db); err != nil {
 		return nil, fmt.Errorf("NewRegistry: migrate members: %w", err)
 	}
+	if err := migratePromiseOutcomes(db); err != nil {
+		return nil, fmt.Errorf("NewRegistry: migrate promise outcomes: %w", err)
+	}
 	if err := migrateGroupRoles(db); err != nil {
 		return nil, fmt.Errorf("NewRegistry: migrate group roles: %w", err)
 	}
-	r := &registry{db: db, cacheEntries: authz.DefaultMaxEntries, withdrawalPolicy: WithdrawalKeepsHidden}
+	r := &registry{db: db, outcomes: newPromiseOutcomes(db), cacheEntries: authz.DefaultMaxEntries, withdrawalPolicy: WithdrawalKeepsHidden}
 	for _, opt := range opts {
 		opt(r)
 	}
@@ -386,7 +391,7 @@ func (r *registry) buildTaskManager(ctx context.Context, id string) (mwanachamat
 	built.UseRoleSync(r.backlogRolesIn(id))
 	built = limitedBoard{TaskManager: built, publications: func(ctx context.Context) (publicationReader, error) {
 		return r.AgencyManager(ctx, id)
-	}}
+	}, outcomes: r.outcomes}
 
 	return built, nil
 }
