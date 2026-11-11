@@ -206,10 +206,8 @@ type TaskFilter struct {
 	Backlog       string       `query:"backlog"`
 	Step          string       `query:"step"`
 	UntouchedDays int          `query:"untouched_days"`
-	Offset        int          `query:"offset"`
+	Offset        int          `query:"offset,min=0"`
 	RequesterID   string       `query:"-" json:"-"`
 
-	// Limit caps the number of tasks returned, up to maxListPage. 0 (or
-	// anything above maxListPage) falls back to maxListPage.
-	Limit int `query:"limit"`
+	Limit int `query:"limit,min=1"`
 }
