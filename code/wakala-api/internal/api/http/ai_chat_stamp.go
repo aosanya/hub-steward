@@ -28,11 +28,9 @@ func stampChatRequest(r *http.Request, person string) error {
 	if err != nil {
 		return err
 	}
-	args := map[string]json.RawMessage{}
-	if len(bytes.TrimSpace(body)) > 0 {
-		if err := json.Unmarshal(body, &args); err != nil {
-			return err
-		}
+	args, err := decodeBodyObject(body)
+	if err != nil {
+		return err
 	}
 	stampChat(args, person)
 	stamped, err := json.Marshal(args)

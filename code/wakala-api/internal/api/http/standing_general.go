@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 
@@ -23,8 +24,12 @@ func withGeneralStandingThread(reg agencies.Registry, action string, serve http.
 			return
 		}
 		r.Body = io.NopCloser(bytes.NewReader(raw))
-		var body map[string]json.RawMessage
-		if json.Unmarshal(raw, &body) != nil || !threadAbsent(body["thread_id"]) {
+		body, err := decodeBodyObject(raw)
+		if errors.Is(err, errBodyNotObject) {
+			writeErr(w, http.StatusBadRequest, err.Error())
+			return
+		}
+		if err != nil || !threadAbsent(body["thread_id"]) {
 			serve(w, r)
 			return
 		}

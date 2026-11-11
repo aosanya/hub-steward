@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 
@@ -40,12 +41,14 @@ func pinVoterKindOnRequest(w http.ResponseWriter, r *http.Request, agencyRole st
 		writeErr(w, http.StatusBadRequest, "could not read the request body")
 		return false
 	}
-	fields := map[string]json.RawMessage{}
-	if len(bytes.TrimSpace(raw)) > 0 {
-		if err := json.Unmarshal(raw, &fields); err != nil {
-			r.Body = io.NopCloser(bytes.NewReader(raw))
-			return true
-		}
+	fields, err := decodeBodyObject(raw)
+	if errors.Is(err, errBodyNotObject) {
+		writeErr(w, http.StatusBadRequest, err.Error())
+		return false
+	}
+	if err != nil {
+		r.Body = io.NopCloser(bytes.NewReader(raw))
+		return true
 	}
 	pinVoterKind(fields, agencyRole)
 	pinned, err := json.Marshal(fields)
