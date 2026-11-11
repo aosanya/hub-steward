@@ -101,7 +101,7 @@ func wholeFromArgs(op Operation, sl slot, in map[string]json.RawMessage) (reflec
 	}
 	v := reflect.New(sl.typ)
 	if err := json.Unmarshal(encoded, v.Interface()); err != nil {
-		return reflect.Value{}, fmt.Errorf("the arguments are not a valid %s: %v", sl.typ, err)
+		return reflect.Value{}, describeDecodeError(err, "")
 	}
 	return v.Elem(), nil
 }
@@ -173,7 +173,7 @@ func valueFromArgs(want reflect.Type, raw json.RawMessage, name string) (reflect
 		if want.Kind() == reflect.Slice {
 			return oneElementSlice(want, raw, name)
 		}
-		return reflect.Value{}, fmt.Errorf("%s: %v", name, err)
+		return reflect.Value{}, describeDecodeError(err, name)
 	}
 	return v.Elem(), nil
 }
@@ -181,7 +181,7 @@ func valueFromArgs(want reflect.Type, raw json.RawMessage, name string) (reflect
 func oneElementSlice(want reflect.Type, raw json.RawMessage, name string) (reflect.Value, error) {
 	element := reflect.New(want.Elem())
 	if err := json.Unmarshal(raw, element.Interface()); err != nil {
-		return reflect.Value{}, fmt.Errorf("%s: %v", name, err)
+		return reflect.Value{}, describeDecodeError(err, name)
 	}
 	return reflect.Append(reflect.MakeSlice(want, 0, 1), element.Elem()), nil
 }
