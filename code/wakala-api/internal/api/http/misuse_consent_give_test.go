@@ -15,7 +15,16 @@ import (
 	mwanachamainsights "wakalaserver/modules/insights"
 )
 
-func TestConsentGive_ResidentAgreesThenFormAnswerIsNoLongerRefusedForConsent(t *testing.T) {
+type consentWalk struct {
+	stepRunWalk
+	reg      agencies.Registry
+	actorID  string
+	groupID  string
+	resident *http.Cookie
+}
+
+func newConsentWalk(t *testing.T) consentWalk {
+	t.Helper()
 	db := stepRunDB(t)
 	var registry agencies.Registry
 	reg, err := agencies.NewRegistry(db, agencies.StartingApproved(),
@@ -60,8 +69,23 @@ func TestConsentGive_ResidentAgreesThenFormAnswerIsNoLongerRefusedForConsent(t *
 	if err := reg.AddMember(ctx, w.instance, actor.ID, agencies.RoleResident); err != nil {
 		t.Fatalf("AddMember: %v", err)
 	}
+	group, err := um.CreateGroup(ctx, mwanachamaactor.Group{Name: "Ward group"})
+	if err != nil {
+		t.Fatalf("CreateGroup: %v", err)
+	}
+	groupID := group.ID
+	if _, err := um.AssignGroup(ctx, mwanachamaactor.ActorGroupAssignment{ActorID: actor.ID, GroupID: groupID}); err != nil {
+		t.Fatalf("AssignGroup: %v", err)
+	}
 	resident := w.cookieFor(t, actor.ID)
 
+	return consentWalk{stepRunWalk: w, reg: reg, actorID: actor.ID, groupID: groupID, resident: resident}
+}
+
+func TestConsentGive_ResidentAgreesThenFormAnswerIsNoLongerRefusedForConsent(t *testing.T) {
+	cw := newConsentWalk(t)
+	w, reg, resident := cw.stepRunWalk, cw.reg, cw.resident
+	ctx := context.Background()
 	cm, err := reg.CustodyManager(ctx, w.instance)
 	if err != nil {
 		t.Fatalf("CustodyManager: %v", err)
@@ -87,8 +111,8 @@ func TestConsentGive_ResidentAgreesThenFormAnswerIsNoLongerRefusedForConsent(t *
 	if agreed.Code != http.StatusCreated {
 		t.Fatalf("resident agrees: %d %s, want 201", agreed.Code, agreed.Body.String())
 	}
-	if got, _ := decodeObject(t, agreed)["actor_id"].(string); got != actor.ID {
-		t.Fatalf("consent recorded for %q, want the resident %q", got, actor.ID)
+	if got, _ := decodeObject(t, agreed)["actor_id"].(string); got != cw.actorID {
+		t.Fatalf("consent recorded for %q, want the resident %q", got, cw.actorID)
 	}
 
 	after := answer()
@@ -104,5 +128,74 @@ func TestConsentGive_ResidentAgreesThenFormAnswerIsNoLongerRefusedForConsent(t *
 	withdrawn := w.call(t, "POST", "/instances/"+w.instance+"/custody/consent/withdraw", map[string]any{}, resident)
 	if withdrawn.Code != http.StatusCreated {
 		t.Fatalf("resident withdraws: %d %s, want 201", withdrawn.Code, withdrawn.Body.String())
+	}
+}
+
+func publishMechanicsConsent(t *testing.T, cw consentWalk) {
+	t.Helper()
+	ctx := context.Background()
+	cm, err := cw.reg.CustodyManager(ctx, cw.instance)
+	if err != nil {
+		t.Fatalf("CustodyManager: %v", err)
+	}
+	version, err := cm.CreateConsentVersion(ctx, mwanachamacustody.ConsentVersionInput{Scope: custodymodels.ScopeMechanics, Version: "v1", Language: custodymodels.LanguageEnglish})
+	if err != nil {
+		t.Fatalf("CreateConsentVersion: %v", err)
+	}
+	if _, err := cm.PublishConsentVersion(ctx, version.ID, "test-owner"); err != nil {
+		t.Fatalf("PublishConsentVersion: %v", err)
+	}
+}
+
+func openFormForGroup(t *testing.T, cw consentWalk) (formID, questionID string) {
+	t.Helper()
+	base := "/instances/" + cw.instance + "/forms/forms"
+	created := cw.call(t, "POST", base, map[string]any{
+		"title": "Ward consultation", "closes_at": "2099-01-01T00:00:00Z", "originator_chapter_id": cw.groupID,
+		"audience": "member", "collection_mode": "self",
+	}, cw.owner)
+	if created.Code != http.StatusCreated {
+		t.Fatalf("create form: %d %s", created.Code, created.Body.String())
+	}
+	formID, _ = decodeObject(t, created)["id"].(string)
+	question := cw.call(t, "POST", base+"/"+formID+"/questions", map[string]any{"prompt": "Your view", "answer_type": "free_text"}, cw.owner)
+	if question.Code != http.StatusCreated {
+		t.Fatalf("add question: %d %s", question.Code, question.Body.String())
+	}
+	asked, _ := decodeObject(t, question)["question"].(map[string]any)
+	questionID, _ = asked["id"].(string)
+	target := cw.call(t, "POST", base+"/"+formID+"/targets", map[string]any{"chapter_id": cw.groupID}, cw.owner)
+	if target.Code != http.StatusCreated {
+		t.Fatalf("add target: %d %s", target.Code, target.Body.String())
+	}
+	published := cw.call(t, "POST", base+"/"+formID+"/publish", map[string]any{}, cw.owner)
+	if published.Code != http.StatusOK && published.Code != http.StatusCreated {
+		t.Fatalf("publish form: %d %s", published.Code, published.Body.String())
+	}
+	return formID, questionID
+}
+
+func TestConsentGive_ResidentAnswersARealFormOnlyAfterAgreeing(t *testing.T) {
+	cw := newConsentWalk(t)
+	publishMechanicsConsent(t, cw)
+	formID, questionID := openFormForGroup(t, cw)
+	path := "/instances/" + cw.instance + "/forms/forms/" + formID + "/answers"
+	body := map[string]any{"answers": []map[string]any{{"question_id": questionID, "value_text": "synthetic"}}}
+
+	before := cw.call(t, "POST", path, body, cw.resident)
+	if before.Code != http.StatusForbidden || !strings.Contains(before.Body.String(), "consent") {
+		t.Fatalf("answer before consent: %d %s, want the consent refusal", before.Code, before.Body.String())
+	}
+	agreed := cw.call(t, "POST", "/instances/"+cw.instance+"/custody/consent/agree", map[string]any{}, cw.resident)
+	if agreed.Code != http.StatusCreated {
+		t.Fatalf("resident agrees: %d %s, want 201", agreed.Code, agreed.Body.String())
+	}
+	after := cw.call(t, "POST", path, body, cw.resident)
+	if after.Code != http.StatusOK {
+		t.Fatalf("answer after consent: %d %s, want 200", after.Code, after.Body.String())
+	}
+	mine := cw.call(t, "GET", path+"/mine", nil, cw.resident)
+	if mine.Code != http.StatusOK || !strings.Contains(mine.Body.String(), "synthetic") {
+		t.Fatalf("the answer did not land: %d %s", mine.Code, mine.Body.String())
 	}
 }
