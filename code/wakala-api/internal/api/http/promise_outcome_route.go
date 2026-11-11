@@ -3,6 +3,7 @@ package http
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
@@ -55,7 +56,7 @@ func (d *Deps) registerPromiseOutcomeRoute(mux *http.ServeMux, reg agencies.Regi
 			writeErr(w, http.StatusNotFound, "not found")
 			return
 		}
-		task, err = agencies.RecordPromiseOutcome(r.Context(), board, taskID, body.Outcome, body.Note)
+		task, err = agencies.RecordPromiseOutcome(r.Context(), board, taskID, body.Outcome, body.Note, time.Now())
 		if err != nil {
 			writePromiseMissing(w, err)
 			return
@@ -85,6 +86,10 @@ func promiseBoardForOperator(w http.ResponseWriter, r *http.Request, reg agencie
 }
 
 func writePromiseMissing(w http.ResponseWriter, err error) {
+	if errors.Is(err, agencies.ErrPromiseNotDue) || errors.Is(err, agencies.ErrPromiseOutcomeRecorded) {
+		writeErr(w, http.StatusConflict, err.Error())
+		return
+	}
 	if errors.Is(err, mwanachamataskmanager.ErrTaskNotFound) {
 		writeErr(w, http.StatusNotFound, "not found")
 		return

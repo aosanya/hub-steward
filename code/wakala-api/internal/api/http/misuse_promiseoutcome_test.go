@@ -41,7 +41,7 @@ func TestPromiseOutcome_MayorCannotDoRecordOutcome(t *testing.T) {
 	if err != nil {
 		t.Fatalf("TaskManager: %v", err)
 	}
-	tasks, err := agencies.PromisesAsTasks(ctx, board, "form-1", 1, []agencies.ReportPromise{{Text: "Fix the Mill Row lights", DueAt: "2026-12-31T00:00:00Z", AnswersFor: "lights"}})
+	tasks, err := agencies.PromisesAsTasks(ctx, board, "form-1", 1, []agencies.ReportPromise{{Text: "Fix the Mill Row lights", DueAt: "2020-01-01T00:00:00Z", AnswersFor: "lights"}})
 	if err != nil || len(tasks) != 1 {
 		t.Fatalf("PromisesAsTasks: %v %d", err, len(tasks))
 	}

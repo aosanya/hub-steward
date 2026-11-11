@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
@@ -69,7 +70,7 @@ func TestPromiseOfIgnoresTasksThatAreNotPromises(t *testing.T) {
 func TestRecordingAnOutcomeKeepsTheLinkAndAddsTheNote(t *testing.T) {
 	board := newFakeBoard()
 	made, _ := PromisesAsTasks(context.Background(), board, "form-1", 2, []ReportPromise{{Text: "Mend the well", AnswersFor: "clerk"}})
-	updated, err := RecordPromiseOutcome(context.Background(), board, made[0].ID, PromisePartlyKept, "pump still missing")
+	updated, err := RecordPromiseOutcome(context.Background(), board, made[0].ID, PromisePartlyKept, "pump still missing", time.Now())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -82,13 +83,13 @@ func TestRecordingAnOutcomeKeepsTheLinkAndAddsTheNote(t *testing.T) {
 func TestRecordingRefusesAnUnknownOutcomeAnUnknownTaskAndANonPromise(t *testing.T) {
 	board := newFakeBoard()
 	plain, _ := board.CreateTask(context.Background(), mwanachamataskmanager.Task{Title: "plain"})
-	if _, err := RecordPromiseOutcome(context.Background(), board, plain.ID, PromiseOutcome("late"), ""); !errors.Is(err, ErrInvalidPromise) {
+	if _, err := RecordPromiseOutcome(context.Background(), board, plain.ID, PromiseOutcome("late"), "", time.Now()); !errors.Is(err, ErrInvalidPromise) {
 		t.Errorf("unknown outcome: %v", err)
 	}
-	if _, err := RecordPromiseOutcome(context.Background(), board, "missing", PromiseKept, ""); err == nil || errors.Is(err, ErrInvalidPromise) {
+	if _, err := RecordPromiseOutcome(context.Background(), board, "missing", PromiseKept, "", time.Now()); err == nil || errors.Is(err, ErrInvalidPromise) {
 		t.Errorf("unknown task must pass the board's error, got %v", err)
 	}
-	if _, err := RecordPromiseOutcome(context.Background(), board, plain.ID, PromiseKept, ""); !errors.Is(err, ErrInvalidPromise) {
+	if _, err := RecordPromiseOutcome(context.Background(), board, plain.ID, PromiseKept, "", time.Now()); !errors.Is(err, ErrInvalidPromise) {
 		t.Errorf("non-promise task: %v", err)
 	}
 }
@@ -116,5 +117,25 @@ func TestReportPromisesListsOnlyThatReportInTaskOrder(t *testing.T) {
 	none, err := ReportPromises(ctx, board, "form-9", 1)
 	if err != nil || none == nil || len(none) != 0 {
 		t.Fatalf("an empty report must read as an empty list, got %#v %v", none, err)
+	}
+}
+
+func TestRecordingWaitsForTheDueDateAndNeverOverwrites(t *testing.T) {
+	ctx := context.Background()
+	board := newFakeBoard()
+	due := time.Date(2027, 1, 8, 0, 0, 0, 0, time.UTC)
+	made, _ := PromisesAsTasks(ctx, board, "form-1", 1, []ReportPromise{{Text: "Fix benches", DueAt: due.Format(time.RFC3339), AnswersFor: "clerk"}})
+	if _, err := RecordPromiseOutcome(ctx, board, made[0].ID, PromiseKept, "early", due.Add(-time.Second)); !errors.Is(err, ErrPromiseNotDue) {
+		t.Fatalf("before the due date: %v", err)
+	}
+	if _, err := RecordPromiseOutcome(ctx, board, made[0].ID, PromiseKept, "on time", due); err != nil {
+		t.Fatalf("on the due date: %v", err)
+	}
+	if _, err := RecordPromiseOutcome(ctx, board, made[0].ID, PromiseNotKept, "overwrite", due.Add(time.Hour)); !errors.Is(err, ErrPromiseOutcomeRecorded) {
+		t.Fatalf("second record: %v", err)
+	}
+	got, _ := board.GetTask(ctx, made[0].ID)
+	if link, _ := PromiseOf(got); link.Outcome != PromiseKept || link.OutcomeNote != "on time" {
+		t.Fatalf("first record changed: %+v", link)
 	}
 }

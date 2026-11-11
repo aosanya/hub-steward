@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
@@ -19,7 +20,11 @@ const (
 	PromiseNotKept    PromiseOutcome = "not_kept"
 )
 
-var ErrInvalidPromise = errors.New("invalid promise")
+var (
+	ErrInvalidPromise         = errors.New("invalid promise")
+	ErrPromiseNotDue          = errors.New("promise not yet due")
+	ErrPromiseOutcomeRecorded = errors.New("promise outcome already recorded")
+)
 
 type ReportPromise struct {
 	Text       string `json:"text"`
@@ -74,7 +79,7 @@ func PromiseOf(task mwanachamataskmanager.Task) (PromiseLink, bool) {
 	return link, true
 }
 
-func RecordPromiseOutcome(ctx context.Context, board mwanachamataskmanager.TaskManager, taskID string, outcome PromiseOutcome, note string) (mwanachamataskmanager.Task, error) {
+func RecordPromiseOutcome(ctx context.Context, board mwanachamataskmanager.TaskManager, taskID string, outcome PromiseOutcome, note string, now time.Time) (mwanachamataskmanager.Task, error) {
 	switch outcome {
 	case PromiseKept, PromisePartlyKept, PromiseNotKept:
 	default:
@@ -88,6 +93,12 @@ func RecordPromiseOutcome(ctx context.Context, board mwanachamataskmanager.TaskM
 	if !ok {
 		return mwanachamataskmanager.Task{}, fmt.Errorf("%w: task %s is not a report's promise", ErrInvalidPromise, taskID)
 	}
+	if link.Outcome != "" {
+		return mwanachamataskmanager.Task{}, fmt.Errorf("%w: task %s is already %s", ErrPromiseOutcomeRecorded, taskID, link.Outcome)
+	}
+	if notYetDue(task.DueAt, now) {
+		return mwanachamataskmanager.Task{}, fmt.Errorf("%w: task %s falls due %s", ErrPromiseNotDue, taskID, task.DueAt)
+	}
 	link.Outcome = outcome
 	link.OutcomeNote = note
 	raw, err := json.Marshal(link)
@@ -96,6 +107,11 @@ func RecordPromiseOutcome(ctx context.Context, board mwanachamataskmanager.TaskM
 	}
 	task.Context = string(raw)
 	return board.UpdateTask(ctx, task)
+}
+
+func notYetDue(dueAt string, now time.Time) bool {
+	due, err := time.Parse(time.RFC3339, dueAt)
+	return err == nil && now.Before(due)
 }
 
 type ReportPromiseRead struct {
