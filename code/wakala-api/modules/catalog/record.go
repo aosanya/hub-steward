@@ -46,6 +46,9 @@ func (m *catalogManager) putRecordOnce(ctx context.Context, r Record, onePerHold
 	var out Record
 	err := m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if onePerHolder {
+			if err := lockHolder(tx, r); err != nil {
+				return err
+			}
 			if err := m.refuseASecondStanding(tx, r); err != nil {
 				return err
 			}
@@ -125,6 +128,13 @@ const SettingOneRecordPerHolder = "record.one_per_holder"
 func (m *catalogManager) onePerHolder(ctx context.Context) bool {
 	s, err := m.GetSetting(ctx, SettingOneRecordPerHolder)
 	return err == nil && s.Value == "true"
+}
+
+func lockHolder(tx *gorm.DB, r Record) error {
+	if tx.Dialector.Name() != "postgres" {
+		return nil
+	}
+	return tx.Exec("SELECT pg_advisory_xact_lock(hashtextextended(?, 0))", r.SubjectID+"|"+r.HolderID).Error
 }
 
 func (m *catalogManager) refuseASecondStanding(tx *gorm.DB, r Record) error {
