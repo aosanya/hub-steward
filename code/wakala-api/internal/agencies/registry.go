@@ -654,6 +654,7 @@ func (r *registry) buildPostManager(ctx context.Context, id string) (mwanachamae
 		return nil, err
 	}
 	built.UseGroups(mwanachamaengage.Groups(r.groupsIn(id)))
+	built.UseGroupExists(mwanachamaengage.GroupExists(r.groupExistsIn(id)))
 	built.UseConsentGate(r.consentGateIn(id))
 	return built, nil
 }

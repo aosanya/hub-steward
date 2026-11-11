@@ -12,11 +12,15 @@ import (
 
 type Groups func(ctx context.Context, callerID string) ([]string, error)
 
+type GroupExists func(ctx context.Context, groupID string) (bool, error)
+
 type UnreadCount struct {
 	Count int `json:"count"`
 }
 
 func (m *postManager) UseGroups(g Groups) { m.groups = g }
+
+func (m *postManager) UseGroupExists(g GroupExists) { m.exists = g }
 
 func (m *postManager) UseConsentGate(g consent.Gate) { m.consent = g }
 

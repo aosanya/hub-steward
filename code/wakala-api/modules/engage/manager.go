@@ -40,6 +40,7 @@ type PostManager interface {
 	WithdrawOffer(ctx context.Context, postID, participantID string) (Offer, error)
 	Unpick(ctx context.Context, postID, pickID, callerID string) (Picked, error)
 	UseGroups(g Groups)
+	UseGroupExists(g GroupExists)
 	UseConsentGate(g consent.Gate)
 	ReleaseParticipant(ctx context.Context, participantID string) error
 	RestoreParticipant(ctx context.Context, participantID string) error
@@ -51,6 +52,7 @@ type postManager struct {
 	st      *store
 	now     func() string
 	groups  Groups
+	exists  GroupExists
 	consent consent.Gate
 }
 

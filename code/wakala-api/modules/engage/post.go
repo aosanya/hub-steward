@@ -3,6 +3,7 @@ package engage
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"wakalaserver/modules/engage/models"
 )
@@ -18,12 +19,34 @@ func (m *postManager) CreatePost(ctx context.Context, in Post) (Post, error) {
 	if err := postHolds(in); err != nil {
 		return Post{}, fmt.Errorf("%w: %s", ErrInvalidPost, err)
 	}
+	if err := m.groupsBelong(ctx, in.GroupIDs); err != nil {
+		return Post{}, err
+	}
 	in.ID = newID()
 	in.PostedAt = m.now()
 	if err := m.st.Insert(ctx, objectPost, in); err != nil {
 		return Post{}, fmt.Errorf("CreatePost: %w", err)
 	}
 	return in, nil
+}
+
+func (m *postManager) groupsBelong(ctx context.Context, groupIDs []string) error {
+	for _, g := range groupIDs {
+		if strings.TrimSpace(g) == "" {
+			return fmt.Errorf("%w: a post goes to groups that have an id", ErrInvalidPost)
+		}
+		if m.exists == nil {
+			continue
+		}
+		found, err := m.exists(ctx, g)
+		if err != nil {
+			return fmt.Errorf("CreatePost: %w", err)
+		}
+		if !found {
+			return fmt.Errorf("%w: group %q is not a group of this agency", ErrInvalidPost, g)
+		}
+	}
+	return nil
 }
 
 func postHolds(p Post) error {
