@@ -33,6 +33,7 @@ func controlByteCases(instance, group, actor string) []controlByteCase {
 		{"consent version", "POST", i + "/custody/consent/versions", `{"version":"a\u0000b"}`, "version", "owner"},
 		{"agent user id", "POST", i + "/agents", `{"user_id":"a\u0000b"}`, "user_id", "owner"},
 		{"instance api key name", "POST", i + "/api-keys", `{"name":"a\u0000b"}`, "name", "owner"},
+		{"reports setting value", "PUT", "/reports/settings/anything", `{"value":"a\u0000b"}`, "value", "owner"},
 		{"account api key name", "POST", "/auth/api-keys", `{"name":"a\u0000b"}`, "name", "resident"},
 	}
 }
