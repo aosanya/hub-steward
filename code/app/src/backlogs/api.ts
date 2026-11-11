@@ -35,6 +35,8 @@ export type Issue = {
   mark: Mark;
   rank: number;
   priority?: string;
+  createdAt?: string;
+  completedAt?: string;
 };
 
 export type IssueDetail = Issue & { waitsOn: Issue[]; waitedOnBy: Issue[] };
@@ -66,7 +68,7 @@ const count = (value: unknown) => (typeof value === "number" && value > 0 ? valu
 
 export const itemsOf = (reply: any): any[] => (Array.isArray(reply) ? reply : Array.isArray(reply?.items) ? reply.items : Array.isArray(reply?.tasks) ? reply.tasks : []);
 
-const settled = new Set(["completed", "cancelled"]);
+export const settled = new Set(["completed", "cancelled"]);
 
 const marks: Mark[] = ["Blocked", "Ready"];
 
@@ -121,6 +123,8 @@ export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
     mark: own ?? markOf(raw, status),
     rank: rankOf(raw),
     priority: text(raw?.priority),
+    ...(text(raw?.created_at) !== "" ? { createdAt: text(raw?.created_at) } : {}),
+    ...(text(raw?.completed_at) !== "" ? { completedAt: text(raw?.completed_at) } : {}),
   };
 };
 
@@ -159,7 +163,7 @@ export const mcpBacklogsClient: BacklogsClient = {
   async smartCounts(smarts) {
     const read = async (one: Backlog) => {
       try {
-        return pendingCountsOf(await callTool("", taskTools.pending, { backlog: one.id, limit: 1 }), one.issues);
+        return pendingCountsOf(await callTool("", taskTools.pending, { backlog: one.id, limit: 1, include_closed: true }));
       } catch {
         return [];
       }

@@ -22,10 +22,7 @@ export const stepTotals = (backlogs: Backlog[]): StepCount[] => {
   return [...totals].map(([name, issues]) => ({ name, issues }));
 };
 
-export const pendingCountsOf = (reply: any, held: number): StepCount[] => {
-  const open: StepCount[] = (Array.isArray(reply?.by_step) ? reply.by_step : [])
+export const pendingCountsOf = (reply: any): StepCount[] =>
+  (Array.isArray(reply?.by_step) ? reply.by_step : [])
     .map((raw: any) => ({ name: typeof raw?.name === "string" ? raw.name : "", issues: whole(raw?.count) }))
     .filter((one: StepCount) => one.name !== "");
-  const settled = held - whole(reply?.total);
-  return reply?.by_step === undefined ? [] : settled > 0 ? [...open, { name: "Done", issues: settled }] : open;
-};

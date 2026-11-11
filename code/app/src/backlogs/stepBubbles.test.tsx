@@ -20,7 +20,7 @@ const hubItems = {
 
 const pendingFor = (backlog: string) =>
   backlog === "swe"
-    ? { total: 6, by_step: [{ name: "To do", count: 1 }, { name: "Doing", count: 5 }] }
+    ? { total: 6, by_step: [{ name: "To do", count: 1 }, { name: "Doing", count: 5 }, { name: "Done", count: 3 }, { name: "Cancelled", count: 1 }] }
     : { total: 43, by_step: [{ name: "Waiting", count: 40 }, { name: "To do", count: 3 }] };
 
 const answering = (pending: (backlog: string) => unknown = pendingFor) =>
@@ -65,17 +65,18 @@ describe("stepTotals", () => {
 });
 
 describe("pendingCountsOf", () => {
-  it("reads the open steps and calls the rest of the row's count Done", () => {
-    expect(pendingCountsOf({ total: 6, by_step: [{ name: "To do", count: 1 }, { name: "Doing", count: 5 }] }, 10)).toEqual([
+  it("reads every step the hub counts, Done and Cancelled included, and does not work out Done from anything", () => {
+    expect(pendingCountsOf({ total: 6, by_step: [{ name: "To do", count: 1 }, { name: "Doing", count: 5 }, { name: "Done", count: 3 }, { name: "Cancelled", count: 1 }] })).toEqual([
       { name: "To do", issues: 1 },
       { name: "Doing", issues: 5 },
-      { name: "Done", issues: 4 },
+      { name: "Done", issues: 3 },
+      { name: "Cancelled", issues: 1 },
     ]);
   });
 
-  it("adds no Done when the open issues are the whole count, and nothing for an unreadable reply", () => {
-    expect(pendingCountsOf({ total: 2, by_step: [{ name: "To do", count: 2 }] }, 2)).toEqual([{ name: "To do", issues: 2 }]);
-    expect(pendingCountsOf("down", 2)).toEqual([]);
+  it("shows nothing for an unreadable reply", () => {
+    expect(pendingCountsOf("down")).toEqual([]);
+    expect(pendingCountsOf({ total: 2 })).toEqual([]);
   });
 });
 
@@ -94,13 +95,14 @@ describe("step bubbles on the Backlogs list", () => {
     expect(bubblesOf("All issues")).toEqual(["To do: 1321", "Waiting: 289", "Doing: 81", "Done: 8", "Review: 6"]);
   });
 
-  it("shows a smart row its open steps from one pending call and the rest as Done", async () => {
+  it("shows a smart row every step the hub counts, Done and Cancelled included, from one pending call asking for the closed ones", async () => {
     const spy = answering();
     openList();
-    await waitFor(() => expect(bubblesOf("hub-steward-swe")).toEqual(["Doing: 5", "Done: 4", "To do: 1"]));
+    await waitFor(() => expect(bubblesOf("hub-steward-swe")).toEqual(["Doing: 5", "Done: 3", "To do: 1", "Cancelled: 1"]));
     expect(bubblesOf("hungarian-municipality")).toEqual(["Waiting: 40", "To do: 3"]);
     const pending = spy.mock.calls.filter((call) => call[1] === taskTools.pending);
     expect(pending.map((call) => (call[2] as any).backlog).sort()).toEqual(["hm", "swe"]);
+    pending.forEach((call) => expect((call[2] as any).include_closed).toBe(true));
     expect(spy.mock.calls.some((call) => call[1] === taskTools.list)).toBe(false);
   });
 
