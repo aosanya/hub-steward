@@ -17,7 +17,7 @@ const (
 const (
 	anonymousTrackedClients = 20000
 
-	anonymousJSONBodyBytes = 64 << 10
+	anonymousJSONBodyBytes = max(anonymousFormBodyBytes, anonymousReportBodyBytes)
 
 	anonymousReportsPerMinute = 20
 	anonymousReportBodyBytes  = 32 << 10
