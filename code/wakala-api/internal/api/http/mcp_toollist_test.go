@@ -263,3 +263,29 @@ func TestToolList_AnAgencyThatCannotBeReadDoesNotTakeDownTheListOfTheOthers(t *t
 		t.Fatalf("the unreadable agency showed %d tools beyond forms, first %v", len(leaked), firstFive(leaked))
 	}
 }
+
+func TestToolList_AnAgentHoldingOnlyACatalogOrMountPermissionSeesTheToolItGrants(t *testing.T) {
+	cases := []struct{ permission, tool string }{
+		{"service.read", "forms_catalog_entry_list"},
+		{"service.publish", "forms_catalog_entry_set_visibility"},
+		{"board_item.reply", "forms_catalog_reply_send"},
+		{"board_item.hide", "forms_catalog_board_item_set_hidden"},
+		{"board.manage", "forms_catalog_board_item_set_outcome"},
+		{"mount.list", "agency_list_mounts"},
+	}
+	for _, c := range cases {
+		t.Run(c.permission, func(t *testing.T) {
+			w := newToolListWalk(t)
+			runsModules(t, w.instance, "forms", "agency")
+			w.deps.rolePermissionsOverride = func(context.Context, string) ([]string, error) {
+				return []string{c.permission}, nil
+			}
+
+			seen := w.toolsSeenBy(t, w.agent)
+
+			if !contains(seen, c.tool) {
+				t.Fatalf("an agent whose role holds only %s does not see %s, it sees %v", c.permission, c.tool, firstFive(seen))
+			}
+		})
+	}
+}

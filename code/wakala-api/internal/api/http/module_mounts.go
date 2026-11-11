@@ -136,7 +136,7 @@ func (d *Deps) agentModuleVisibility(ctx context.Context, reg agencies.Registry,
 func anyActionUnder(actions []string) func(code string) bool {
 	return func(code string) bool {
 		for _, a := range actions {
-			if strings.HasPrefix(a, code+".") {
+			if strings.HasPrefix(a, code+".") || models.DeclaredModuleOfAction(a) == code {
 				return true
 			}
 		}

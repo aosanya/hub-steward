@@ -37,6 +37,27 @@ func mustLoadPermissions(raw []byte) []Permission {
 	return out
 }
 
+var actionModules = declaredActionModules(permissionsCatalog)
+
+func declaredActionModules(catalog []Permission) map[string]string {
+	out := map[string]string{}
+	for _, p := range catalog {
+		if p.Module == "" {
+			continue
+		}
+		for _, a := range p.Actions {
+			if _, taken := out[a]; !taken {
+				out[a] = p.Module
+			}
+		}
+	}
+	return out
+}
+
+func DeclaredModuleOfAction(action string) string {
+	return actionModules[action]
+}
+
 func PermissionCatalog() []Permission {
 	return append([]Permission(nil), permissionsCatalog...)
 }
