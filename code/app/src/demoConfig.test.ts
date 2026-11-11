@@ -1,4 +1,5 @@
-import { demoConfigJson } from "../demoConfig";
+import type { ViteDevServer } from "vite";
+import { demoConfig, demoConfigJson } from "../demoConfig";
 
 const sources = import.meta.glob(["./**/*.ts", "./**/*.tsx", "./**/*.css", "!./**/*.test.*", "!./**/*.test-support.*", "!./test-setup.ts"], { query: "?raw", import: "default", eager: true }) as Record<string, string>;
 
@@ -9,6 +10,25 @@ describe("the demo build config", () => {
 
   it("is same-origin when the variable is unset", () => {
     expect(JSON.parse(demoConfigJson(undefined))).toEqual({ wakala: "" });
+  });
+
+  const served = (wakala: string | undefined) => {
+    const mounted: { path: string; handler: (request: unknown, response: { setHeader: (name: string, value: string) => void; end: (body: string) => void }) => void }[] = [];
+    const server = { middlewares: { use: (path: string, handler: never) => mounted.push({ path, handler }) } } as unknown as ViteDevServer;
+    (demoConfig(wakala).configureServer as (server: ViteDevServer) => void)(server);
+    return mounted;
+  };
+
+  it("serves config.json from the dev server when the variable is set, so hot reload reaches the same API", () => {
+    const [route] = served("http://localhost:8092/");
+    let body = "";
+    route.handler({}, { setHeader: () => undefined, end: (text) => (body = text) });
+    expect(route.path).toBe("/config.json");
+    expect(JSON.parse(body)).toEqual({ wakala: "http://localhost:8092" });
+  });
+
+  it("serves nothing from the dev server when the variable is unset", () => {
+    expect(served(undefined)).toEqual([]);
   });
 
   it("carries no hardcoded address in the app sources", () => {
