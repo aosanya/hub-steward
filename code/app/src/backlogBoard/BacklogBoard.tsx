@@ -70,7 +70,7 @@ export function BacklogBoard({ client = mcpBacklogsClient }: { client?: Backlogs
     : { title, onBack: () => navigate(backlogsHomePath()), action: backlog ? action : undefined };
 
   return (
-    <Shell {...shell} tabless={selecting.on} fluid>
+    <Shell {...shell} tabless={selecting.on}>
       {read.state === "loading" ? <LoadingLine /> : null}
       {read.state === "failed" ? <LoadFailed words="The board could not be read. Try again." /> : null}
       {loaded && !backlog ? <EmptyCard words="This backlog could not be found." /> : null}

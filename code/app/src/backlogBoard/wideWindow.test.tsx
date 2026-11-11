@@ -52,8 +52,10 @@ const issuesAt = (at: string) =>
     </MemoryRouter>,
   );
 
-describe("the fluid frame", () => {
-  it("is off on a screen that does not ask for it", () => {
+const frameCss = readFileSync(resolve(__dirname, "../ui/drawerFrame.css"), "utf8");
+
+describe("the frame is always as wide as the window", () => {
+  it("has no fluid variant and no width cap on any screen", () => {
     render(
       <MemoryRouter>
         <Shell title="Chat">
@@ -61,18 +63,20 @@ describe("the fluid frame", () => {
         </Shell>
       </MemoryRouter>,
     );
+    expect(frame()).toHaveClass("frame");
     expect(frame()).not.toHaveClass("fluid");
+    expect(frameCss).not.toContain("fluid");
+    expect(frameCss).not.toMatch(/\.frame\s*\{[^}]*max-width/);
+    expect(frameCss).not.toMatch(/\.frame\s*\{[^}]*margin:\s*0 auto/);
   });
 
-  it("is on when a screen asks for it", () => {
-    render(
-      <MemoryRouter>
-        <Shell title="Chat" fluid>
-          <p>body</p>
-        </Shell>
-      </MemoryRouter>,
-    );
-    expect(frame()).toHaveClass("fluid");
+  it("keeps the bottom tabs in a centred group whose tabs stop growing at 10rem", () => {
+    expect(frameCss).toMatch(/\.frame \.tabs\s*\{[^}]*justify-content:\s*center/);
+    expect(frameCss).toMatch(/\.frame \.tab\s*\{[^}]*max-width:\s*10rem/);
+  });
+
+  it("keeps a lone button at most 28rem wide so it does not stretch across a wide window", () => {
+    expect(frameCss).toMatch(/\.frame \.body > \.btn\s*\{[^}]*max-width:\s*28rem/);
   });
 });
 
@@ -80,7 +84,7 @@ describe("the backlog screens on a wide window", () => {
   it("lets All issues as a Board use the window", async () => {
     issuesAt("/a/hub-1/backlogs/all/issues");
     await screen.findByRole("region", { name: "To do" });
-    expect(frame()).toHaveClass("fluid");
+    expect(frame()).toHaveClass("frame");
     expect(screen.getByRole("searchbox", { name: "Search issues" })).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "View" })).toBeInTheDocument();
   });
@@ -88,7 +92,7 @@ describe("the backlog screens on a wide window", () => {
   it("lets All issues as a List use the window", async () => {
     issuesAt("/a/hub-1/backlogs/all/issues?view=list");
     await screen.findByText("Record the clips");
-    expect(frame()).toHaveClass("fluid");
+    expect(frame()).toHaveClass("frame");
     expect(screen.getByRole("searchbox", { name: "Search issues" })).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "View" })).toBeInTheDocument();
   });
@@ -102,7 +106,7 @@ describe("the backlog screens on a wide window", () => {
       </MemoryRouter>,
     );
     await screen.findByRole("region", { name: "To do" });
-    expect(frame()).toHaveClass("fluid");
+    expect(frame()).toHaveClass("frame");
     expect(screen.getByRole("searchbox", { name: "Search issues" })).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "View" })).toBeInTheDocument();
   });
@@ -116,12 +120,10 @@ describe("the backlog screens on a wide window", () => {
       </MemoryRouter>,
     );
     await screen.findByRole("group", { name: "View" });
-    expect(frame()).toHaveClass("fluid");
+    expect(frame()).toHaveClass("frame");
     expect(screen.queryByRole("searchbox")).toBeNull();
   });
 });
-
-const frameCss = readFileSync(resolve(__dirname, "../ui/drawerFrame.css"), "utf8");
 
 const wideBlock = () => frameCss.slice(frameCss.indexOf("@media (min-width: 48rem)"));
 
@@ -134,26 +136,26 @@ describe("the header line on a wide window", () => {
 
   it("dissolves the headline row and sends Actions to the right end of the line", () => {
     const block = wideBlock();
-    expect(block).toMatch(/\.frame\.fluid \.head(-line)?[^{]*\{[^}]*display: contents/);
-    expect(block).toMatch(/\.frame\.fluid \.actions\s*\{[^}]*margin-left: auto/);
+    expect(block).toMatch(/\.frame \.head(-line)?[^{]*\{[^}]*display: contents/);
+    expect(block).toMatch(/\.frame \.actions\s*\{[^}]*margin-left: auto/);
   });
 
   it("keeps the line in order: title, then Search or the Smart chip and rule, then the count, then the switch, then Actions, with the board after", () => {
     const block = wideBlock();
-    expect(block).toMatch(/\.frame\.fluid \.body > \*\s*\{[^}]*order: 3/);
-    expect(block).toMatch(/\.frame\.fluid \.body > \.count\s*\{[^}]*order: 1[^}]*margin-left: auto/);
-    expect(block).toMatch(/\.frame\.fluid \.body > \.seg\s*\{[^}]*order: 1/);
-    expect(block).toMatch(/\.frame\.fluid \.actions\s*\{[^}]*order: 2/);
+    expect(block).toMatch(/\.frame \.body > \*\s*\{[^}]*order: 3/);
+    expect(block).toMatch(/\.frame \.body > \.count\s*\{[^}]*order: 1[^}]*margin-left: auto/);
+    expect(block).toMatch(/\.frame \.body:has\(> \.filter-bar, > \.seg\) > \.seg\s*\{[^}]*order: 1/);
+    expect(block).toMatch(/\.frame \.actions\s*\{[^}]*order: 2/);
   });
 
   it("sizes the List | Board switch to its content on that line", () => {
-    expect(wideBlock()).toMatch(/\.frame\.fluid \.body > \.seg\s*\{[^}]*flex: 0 0 auto/);
+    expect(wideBlock()).toMatch(/\.frame \.body:has\(> \.filter-bar, > \.seg\) > \.seg\s*\{[^}]*flex: 0 0 auto/);
   });
 
   it("puts the count on the search line, after the Search box, with no row of its own", () => {
-    expect(wideBlock()).toMatch(/\.frame\.fluid \.filter-bar\s*\{[^}]*flex-direction: row/);
-    expect(wideBlock()).toMatch(/\.frame\.fluid \.filter-bar > \.sub\s*\{[^}]*flex: none/);
-    expect(wideBlock()).toMatch(/\.frame\.fluid \.filter-bar > \.search-box\s*\{[^}]*flex: 1 1 18rem/);
+    expect(wideBlock()).toMatch(/\.frame \.filter-bar\s*\{[^}]*flex-direction: row/);
+    expect(wideBlock()).toMatch(/\.frame \.filter-bar > \.sub\s*\{[^}]*flex: none/);
+    expect(wideBlock()).toMatch(/\.frame \.filter-bar > \.search-box\s*\{[^}]*flex: 1 1 18rem/);
   });
 });
 

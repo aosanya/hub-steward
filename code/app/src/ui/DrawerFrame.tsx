@@ -17,9 +17,9 @@ const DrawerContext = createContext<Drawer>(idle);
 
 export const useDrawer = () => useContext(DrawerContext);
 
-type Props = { drawer: ReactNode; fluid?: boolean; children: ReactNode };
+type Props = { drawer: ReactNode; children: ReactNode };
 
-export function DrawerFrame({ drawer, fluid, children }: Props) {
+export function DrawerFrame({ drawer, children }: Props) {
   const [open, setOpen] = useState(false);
   const id = useId();
   const button = useRef<HTMLButtonElement>(null);
@@ -49,7 +49,7 @@ export function DrawerFrame({ drawer, fluid, children }: Props) {
 
   return (
     <DrawerContext.Provider value={value}>
-      <div className={fluid ? "frame fluid" : "frame"}>
+      <div className="frame">
         <div ref={slot} id={id} className="drawer-slot">
           {open ? drawer : null}
         </div>

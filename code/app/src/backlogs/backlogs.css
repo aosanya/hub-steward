@@ -12,7 +12,7 @@
 .issue-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .issue-code { color: var(--accent); font-weight: 500; }
 .issue-description { padding: 1rem; border-top: 1px solid var(--line); }
-.frame.fluid .issue-row .txt { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: .75rem; }
-.frame.fluid .issue-row .open { flex: 1 1 24rem; }
-.frame.fluid .issue-row .issue-tags { flex: 0 1 auto; }
+.rows .issue-row .txt { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: .75rem; }
+.rows .issue-row .open { flex: 1 1 24rem; }
+.rows .issue-row .issue-tags { flex: 0 1 auto; }
 .step-counts { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .25rem; }
