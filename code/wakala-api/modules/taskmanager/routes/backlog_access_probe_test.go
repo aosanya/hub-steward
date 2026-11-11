@@ -27,10 +27,12 @@ type probeCall struct {
 }
 
 var operationsNotBoundToABacklog = map[string]bool{
-	"open_case":      true,
-	"vote_case":      true,
-	"take_back_vote": true,
-	"add_task_note":  true,
+	"open_case":             true,
+	"vote_case":             true,
+	"take_back_vote":        true,
+	"add_task_note":         true,
+	"add_task_reference":    true,
+	"remove_task_reference": true,
 }
 
 var readsSentAsPost = map[string]bool{
