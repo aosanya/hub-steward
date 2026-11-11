@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"errors"
+	"slices"
 
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
@@ -192,14 +193,25 @@ func postManagerFor(ctx context.Context, reg agencies.Registry, instanceID strin
 	return reg.PostManager(ctx, instanceID)
 }
 
-func custodyManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (*mwanachamacustody.CustodyManager, error) {
+func custodyManagerFor(ctx context.Context, reg agencies.Registry, instanceID, action string) (*mwanachamacustody.CustodyManager, error) {
 	if err := mustBeMounted(ctx, reg, instanceID, "custody"); err != nil {
 		return nil, err
 	}
-	if err := mustBeMember(ctx, reg, instanceID); err != nil {
+	admit := mustBeMember
+	if slices.Contains(residentCustodyActions, action) {
+		admit = mustBeAdmitted
+	}
+	if err := admit(ctx, reg, instanceID); err != nil {
 		return nil, err
 	}
 	return reg.CustodyManager(ctx, instanceID)
+}
+
+var residentCustodyActions = []string{"custody.consent.give", "custody.consent.withdraw"}
+
+func mustBeAdmitted(ctx context.Context, reg agencies.Registry, instanceID string) error {
+	_, err := admittedRole(ctx, reg, instanceID)
+	return err
 }
 
 func riskManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamariskmanager.RiskManager, error) {

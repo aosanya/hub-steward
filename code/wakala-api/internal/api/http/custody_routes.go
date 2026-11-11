@@ -27,10 +27,10 @@ func (d *Deps) registerCustodyRoutes(mux *http.ServeMux, reg agencies.Registry, 
 		panic(err)
 	}
 	for i, rt := range shape {
-		idx := i
+		idx, action := i, rt.Action
 		mux.HandleFunc(rt.Pattern(custodyInstancePrefix), auth.require(func(w http.ResponseWriter, r *http.Request) {
 			instanceID := r.PathValue("instanceID")
-			m, err := custodyManagerFor(r.Context(), reg, instanceID)
+			m, err := custodyManagerFor(r.Context(), reg, instanceID, action)
 			if err != nil {
 				writeInstanceErr(w, err)
 				return
