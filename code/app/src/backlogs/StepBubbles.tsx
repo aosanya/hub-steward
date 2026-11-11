@@ -6,7 +6,7 @@ export function StepBubbles({ counts }: { counts: StepCount[] }) {
   return shown.length === 0 ? null : (
     <span className="step-counts">
       {shown.map((one) => (
-        <TextChip key={one.name} text={one.name}>{`${one.name} ${one.issues}`}</TextChip>
+        <TextChip key={one.name} text={one.name}>{`${one.name}: ${one.issues}`}</TextChip>
       ))}
     </span>
   );

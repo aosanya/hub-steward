@@ -1,7 +1,8 @@
 import { Chip } from "../ui/Chip";
+import { TextChip } from "../ui/TextChip";
 import type { Issue } from "./api";
 import "./backlogs.css";
-import { chipLook, tagsOf } from "./tags";
+import { tagsOf } from "./tags";
 
 const idLike = /^[A-Za-z]+-?\d+[A-Za-z]?$/;
 
@@ -35,9 +36,7 @@ export function IssueTags({ issue, chosen, onTag, extra = [] }: { issue: Issue; 
   return tags.length + facts.length === 0 ? null : (
     <span className="issue-tags">
       {tags.map((tag) => (
-        <Chip key={tag} {...chipLook(tag)} pressed={onTag ? chosen.includes(tag) : undefined} onClick={onTag ? () => onTag(tag) : undefined}>
-          {tag}
-        </Chip>
+        <TextChip key={tag} text={tag} pressed={onTag ? chosen.includes(tag) : undefined} onClick={onTag ? () => onTag(tag) : undefined} />
       ))}
       {facts.map((fact) => (
         <Chip key={fact}>{fact}</Chip>
@@ -61,9 +60,7 @@ export function IssueLine({ issue, chosen, onTag }: { issue: Issue; chosen: stri
   return words.length === 0 ? null : (
     <span className="issue-tags issue-line">
       {words.map((word) => (
-        <Chip key={word.tag} {...chipLook(word.label)} pressed={onTag ? chosen.includes(word.tag) : undefined} onClick={onTag ? () => onTag(word.tag) : undefined}>
-          {word.label}
-        </Chip>
+        <TextChip key={word.tag} text={word.label} pressed={onTag ? chosen.includes(word.tag) : undefined} onClick={onTag ? () => onTag(word.tag) : undefined} />
       ))}
     </span>
   );

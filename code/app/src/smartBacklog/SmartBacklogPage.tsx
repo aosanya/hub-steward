@@ -1,6 +1,6 @@
 import "./smartBacklog.css";
 import { Fragment, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { mcpBacklogManageClient } from "../backlogManage/api";
 import { useMayManage } from "../backlogManage/useMayManage";
 import type { BacklogManageClient } from "../backlogManage/types";
@@ -10,6 +10,8 @@ import { backlogAccessPath } from "../backlogAccess/paths";
 import { BoardColumns, columnsOf, stepsOfIssues, useView, ViewSwitch } from "../backlogBoard";
 import { backlogsHomePath, issuePath } from "../backlogs/paths";
 import { openAgencyId } from "../agency/open";
+import { useLanguage } from "../entry/language";
+import { backState } from "../ui/backTo";
 import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../sendToBacklog";
 import { useLoad } from "../forms/useLoad";
 import { Button } from "../ui/Button";
@@ -26,6 +28,8 @@ type Props = { client?: SmartBacklogClient; issues?: BacklogsClient; manage?: Ba
 
 export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpBacklogsClient, manage = mcpBacklogManageClient }: Props) {
   const navigate = useNavigate();
+  const here = useLocation();
+  const { words } = useLanguage();
   const backlogId = useParams().backlogId ?? "";
   const [version, setVersion] = useState(0);
   const [sending, setSending] = useState(false);
@@ -37,20 +41,20 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
   const may = useMayManage(manage);
   const mayEdit = may.state === "ready" && may.data;
   const back = () => navigate(backlogsHomePath());
-  if (loaded.state === "loading") return <Shell title="Backlog" onBack={back} fluid><LoadingLine /></Shell>;
-  if (loaded.state === "error") return <Shell title="Backlog" onBack={back} fluid><LoadFailed words="This smart backlog could not be loaded." /></Shell>;
+  if (loaded.state === "loading") return <Shell title="Backlog" onBack={back} backLabel={words.backBacklogs} fluid><LoadingLine /></Shell>;
+  if (loaded.state === "error") return <Shell title="Backlog" onBack={back} backLabel={words.backBacklogs} fluid><LoadFailed words="This smart backlog could not be loaded." /></Shell>;
   const { backlog, rows, all } = loaded.data;
   const rowOf = (issue: Issue) =>
     selecting.on ? (
       <SelectableIssueRow issue={issue} chosen={[]} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
     ) : (
-      <IssueRow issue={issue} chosen={[]} onOpen={() => navigate(issuePath(issue.id))} chevron={view === "list"} />
+      <IssueRow issue={issue} chosen={[]} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, backlog.name))} chevron={view === "list"} />
     );
   const edit = () => navigate(editRulesPath(backlogId));
   const canSend = targets.state === "ready" && targets.data.length > 0 && rows.length > 0;
   const shell = selecting.on
     ? selectingShell(selecting, rows.map((issue) => issue.id))
-    : { title: backlog.name, onBack: back, action: canSend ? <SelectButton onStart={selecting.start} /> : undefined };
+    : { title: backlog.name, onBack: back, backLabel: words.backBacklogs, action: canSend ? <SelectButton onStart={selecting.start} /> : undefined };
   return (
     <Shell {...shell} headEnd={mayEdit ? <ActionsMenu actions={[{ label: "Edit rules", onSelect: edit }, { label: "Change who has access", to: backlogAccessPath(backlogId) }]} /> : undefined} tabless={selecting.on} fluid>
       <RulesHead set={backlog.set} />

@@ -2,6 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import * as mcp from "../wakala/mcp";
+import { hueOf } from "../ui/textColor";
 import { BacklogsPage } from "./BacklogsPage";
 import { taskTools } from "./api";
 import { pendingCountsOf, stepTotals, topSteps } from "./stepCounts";
@@ -83,33 +84,36 @@ describe("step bubbles on the Backlogs list", () => {
     answering();
     openList();
     await screen.findByText("Docs");
-    await waitFor(() => expect(bubblesOf("Backlog")).toEqual(["To do 1301", "Waiting 289", "Doing 81", "Done 4"]));
+    await waitFor(() => expect(bubblesOf("Backlog")).toEqual(["To do: 1301", "Waiting: 289", "Doing: 81", "Done: 4"]));
   });
 
   it("shows All issues the backlogs' steps added up by name", async () => {
     answering();
     openList();
     await screen.findByText("Docs");
-    expect(bubblesOf("All issues")).toEqual(["To do 1321", "Waiting 289", "Doing 81", "Done 8", "Review 6"]);
+    expect(bubblesOf("All issues")).toEqual(["To do: 1321", "Waiting: 289", "Doing: 81", "Done: 8", "Review: 6"]);
   });
 
   it("shows a smart row its open steps from one pending call and the rest as Done", async () => {
     const spy = answering();
     openList();
-    await waitFor(() => expect(bubblesOf("hub-steward-swe")).toEqual(["Doing 5", "Done 4", "To do 1"]));
-    expect(bubblesOf("hungarian-municipality")).toEqual(["Waiting 40", "To do 3"]);
+    await waitFor(() => expect(bubblesOf("hub-steward-swe")).toEqual(["Doing: 5", "Done: 4", "To do: 1"]));
+    expect(bubblesOf("hungarian-municipality")).toEqual(["Waiting: 40", "To do: 3"]);
     const pending = spy.mock.calls.filter((call) => call[1] === taskTools.pending);
     expect(pending.map((call) => (call[2] as any).backlog).sort()).toEqual(["hm", "swe"]);
     expect(spy.mock.calls.some((call) => call[1] === taskTools.list)).toBe(false);
   });
 
-  it("draws every bubble as the app's neutral Chip", async () => {
+  it("colours every bubble from its step name, so the same step has the same colour on every row", async () => {
     answering();
     openList();
     await screen.findByText("Docs");
     const chips = Array.from(screen.getByText("Backlog").closest(".row")!.querySelectorAll(".step-counts .chip"));
     expect(chips.length).toBeGreaterThan(0);
-    chips.forEach((chip) => expect(chip.className).toBe("chip"));
+    chips.forEach((chip) => expect(chip.className).toBe("chip hued"));
+    const hueOfStep = (title: string, step: string) => Array.from(screen.getByText(title).closest(".row")!.querySelectorAll<HTMLElement>(".step-counts .chip")).find((chip) => chip.textContent?.startsWith(`${step}:`))?.style.getPropertyValue("--hue");
+    expect(hueOfStep("Backlog", "To do")).toBe(hueOfStep("All issues", "To do"));
+    expect(hueOfStep("Backlog", "To do")).toBe(String(hueOf("To do")));
   });
 
   it("keeps a smart row and its Smart pill when its counts cannot be read", async () => {
@@ -122,6 +126,6 @@ describe("step bubbles on the Backlogs list", () => {
     expect(await screen.findByText("hub-steward-swe")).toBeInTheDocument();
     expect(screen.getAllByText("Smart")).toHaveLength(2);
     expect(bubblesOf("hub-steward-swe")).toEqual([]);
-    expect(bubblesOf("Backlog")).toEqual(["To do 1301", "Waiting 289", "Doing 81", "Done 4"]);
+    expect(bubblesOf("Backlog")).toEqual(["To do: 1301", "Waiting: 289", "Doing: 81", "Done: 4"]);
   });
 });

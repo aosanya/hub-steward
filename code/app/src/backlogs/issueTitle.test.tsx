@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Issue } from "./api";
 import { IssueLine, IssueTags, IssueTitle, lineWords, titleParts } from "./IssueTitle";
-import { hueOf, shadeOf } from "./tags";
+import { hueOf, shadeOf } from "../ui/textColor";
 
 const issue = (over: Partial<Issue>): Issue => ({ id: "a", title: "t", description: "", status: "pending", step: "", repo: "", topics: [], backlog: "", mark: "", rank: 1, ...over });
 
@@ -62,13 +62,13 @@ describe("an issue's title on a row or card", () => {
     expect(hueOnRow("hub-steward-swe")).toBe(String(hueOf("hub-steward-swe")));
   });
 
-  it("colours a generated bubble only in the greens and blues, the reds are kept for Blocked", () => {
+  it("colours a generated bubble from blue to magenta, the reds and greens are kept for Blocked and Ready", () => {
     const words = ["hub-steward-swe", "Backlog", "mwanachama-frontend-kazi", "meta-global-ai-hackathon-community-hubs", "Docs", "a", "zz", "projects/hub-steward-swe"];
     const sample = Array.from({ length: 720 }, (_, at) => `tag-${at}`);
     for (const word of [...words, ...sample]) {
       const hue = hueOf(word);
-      expect(hue).toBeGreaterThanOrEqual(100);
-      expect(hue).toBeLessThan(255);
+      expect(hue).toBeGreaterThanOrEqual(185);
+      expect(hue).toBeLessThanOrEqual(330);
     }
   });
 
@@ -79,7 +79,7 @@ describe("an issue's title on a row or card", () => {
     expect(shadeOf("hub-steward-swe")).toBe(shadeOf("hub-steward-swe"));
     const hues = new Set(sample.map(hueOf));
     expect(hues.size).toBeGreaterThan(100);
-    expect(Math.abs(hueOf("hub-steward-swe") - hueOf("Backlog"))).toBeGreaterThanOrEqual(60);
+    expect([hueOf("hub-steward-swe"), shadeOf("hub-steward-swe")]).not.toEqual([hueOf("Backlog"), shadeOf("Backlog")]);
     const { container } = render(<IssueLine issue={issue({ repo: "hub-steward-swe", backlog: "Backlog" })} chosen={[]} />);
     const first = container.querySelector<HTMLElement>(".chip");
     expect(first?.style.getPropertyValue("--shade")).toBe(String(shadeOf("hub-steward-swe")));

@@ -214,7 +214,7 @@ describe("journey 09, smart backlogs", () => {
     await userEvent.click(screen.getByRole("button", { name: "Create smart backlog" }));
     await waitFor(() => expect(where()).toBe(`/a/${farmers.id}/backlogs/smart-2/smart`));
     expect(world.named(smartTools.create)[0]?.args).toMatchObject({ name: 'hub-steward Software "custody"', rules: filterRules });
-    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+    await userEvent.click(screen.getByRole("button", { name: /Backlogs/ }));
     const entry = (await screen.findByText('hub-steward Software "custody"')).closest("button") as HTMLElement;
     expect(within(entry).getByText("Smart")).toBeInTheDocument();
     expect(within(entry).getByText("1 issue")).toBeInTheDocument();
@@ -245,7 +245,7 @@ describe("journey 09, smart backlogs", () => {
     expect(world.named(smartTools.create)[0]?.args).toMatchObject({ name: "Ready to start", rules: readyRules });
     expect(await screen.findByText("3 issues")).toBeInTheDocument();
     listed("Record the voice clips", "Add the backlog tools", "Switch on the custody module");
-    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+    await userEvent.click(screen.getByRole("button", { name: /Backlogs/ }));
     const entry = (await screen.findByText("Ready to start")).closest("button") as HTMLElement;
     expect(within(entry).getByText("Smart")).toBeInTheDocument();
     expect(within(entry).getByText("3 issues")).toBeInTheDocument();
