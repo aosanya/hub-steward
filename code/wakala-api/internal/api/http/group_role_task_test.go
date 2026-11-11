@@ -72,7 +72,7 @@ func (w groupRoleWalk) group(t *testing.T, name string) string {
 	if id, ok := w.groups[name]; ok {
 		return id
 	}
-	g, err := w.directory(t).CreateGroup(context.Background(), mwanachamaactor.Group{Name: name})
+	g, err := w.directory(t).CreateGroup(context.Background(), mwanachamaactor.Group{Name: name + " group"})
 	if err != nil {
 		t.Fatalf("CreateGroup %s: %v", name, err)
 	}
