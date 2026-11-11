@@ -19,6 +19,7 @@ import { mcpReferencesClient, mcpRepoClient, type ReferencesClient, type RepoCli
 import { ReferencesCard } from "./references/ReferencesCard";
 import { IssueRow } from "./IssueRow";
 import { titleParts } from "./IssueTitle";
+import { PriorityMenu } from "./PriorityMenu";
 import { issuePath, issuesPath } from "./paths";
 import { splitSource } from "./source";
 
@@ -33,11 +34,20 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
   const id = useParams().issueId ?? "";
   const [version, setVersion] = useState(0);
   const [sent, setSent] = useState("");
+  const [failed, setFailed] = useState(false);
   const issue = useLoad(() => client.issue(id), `issue:${openAgencyId()}:${id}:${version}`);
   const ready = issue.state === "ready" ? issue.data : null;
   const place = ready ? [ready.backlog, ready.step].filter((part) => part !== "").join(" · ") : "";
   const parts = ready ? titleParts(ready.title, ready.code) : null;
   const { body, source } = splitSource(ready?.description ?? "");
+  const setPriority = client.setPriority;
+  const pick = (priority: string) => {
+    setFailed(false);
+    setPriority?.(id, priority).then(
+      () => setVersion((now) => now + 1),
+      () => setFailed(true),
+    );
+  };
   return (
     <Shell title={parts?.code || "Issue"} onBack={() => navigate(backTo)} backLabel={backLabel}>
       {issue.state === "loading" ? <LoadingLine /> : null}
@@ -47,11 +57,16 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
           {sent}
         </p>
       ) : null}
+      {failed ? (
+        <p className="sub" role="alert">
+          The priority was not changed.
+        </p>
+      ) : null}
       {ready && parts ? (
         <div className="issue-wide">
           <div className="issue-main">
             <Card flush>
-              <IssueRow issue={ready} chosen={[]} facts={[place, ready.priority ?? ""]} />
+              <IssueRow issue={ready} chosen={[]} facts={[place]} action={setPriority ? <PriorityMenu priority={ready.priority ?? ""} onPick={pick} /> : undefined} />
               {body ? (
                 <div className="issue-description">
                   <Markdown text={body} className="issue-body" />

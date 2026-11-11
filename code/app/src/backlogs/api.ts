@@ -10,6 +10,7 @@ export const taskTools = {
   pending: "taskmanager_task_pending",
   notes: "taskmanager_task_note_list",
   addNote: "taskmanager_task_note_add",
+  patch: "taskmanager_task_patch",
 };
 
 export const listCap = 500;
@@ -48,6 +49,7 @@ export type BacklogsClient = {
   issues: (backlogId?: string) => Promise<Issue[]>;
   issue: (id: string) => Promise<IssueDetail>;
   smartCounts?: (smarts: Backlog[]) => Promise<Record<string, StepCount[]>>;
+  setPriority?: (id: string, priority: string) => Promise<void>;
 };
 
 export type NotesClient = {
@@ -172,6 +174,9 @@ export const mcpBacklogsClient: BacklogsClient = {
   },
   async issues(backlogId = allIssuesId) {
     return issueList(backlogId, await hubBacklogs());
+  },
+  async setPriority(id, priority) {
+    await callTool("", taskTools.patch, { taskID: id, priority });
   },
   async issue(id) {
     const [raw, outbound, inbound, hub] = await Promise.all([

@@ -16,3 +16,4 @@
 .rows .issue-row .open { flex: 1 1 24rem; }
 .rows .issue-row .issue-tags { flex: 0 1 auto; }
 .step-counts { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .25rem; }
+.issue-row .actions-btn { min-height: 2rem; padding: 0 .625rem; font-size: .875rem; }
