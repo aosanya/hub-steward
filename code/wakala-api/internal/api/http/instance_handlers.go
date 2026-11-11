@@ -44,27 +44,27 @@ func createInstance(reg agencies.Registry) http.HandlerFunc {
 				writeErr(w, http.StatusConflict, err.Error())
 				return
 			}
-			writeErr(w, http.StatusInternalServerError, "internal error")
+			writeInternalErr(w, err)
 			return
 		}
 		out, err := reg.CreateInstance(r.Context(), in.Name)
 		if err != nil {
-			writeErr(w, http.StatusInternalServerError, "internal error")
+			writeInternalErr(w, err)
 			return
 		}
 		if err := reg.AddMember(r.Context(), out.ID, caller, agencies.RoleOwner); err != nil {
-			writeErr(w, http.StatusInternalServerError, "internal error")
+			writeInternalErr(w, err)
 			return
 		}
 		mgr, err := reg.AgencyManager(r.Context(), out.ID)
 		if err != nil {
-			writeErr(w, http.StatusInternalServerError, "internal error")
+			writeInternalErr(w, err)
 			return
 		}
 		if _, err := mgr.CreateAgency(r.Context(), mwanachamaagencymodels.Agency{
 			Name: in.Name,
 		}); err != nil {
-			writeErr(w, http.StatusInternalServerError, "internal error")
+			writeInternalErr(w, err)
 			return
 		}
 		writeJSON(w, http.StatusCreated, out)
@@ -92,7 +92,7 @@ func listInstances(reg agencies.Registry) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		out, err := reg.MembershipsFor(r.Context(), accounts.IDFromContext(r.Context()))
 		if err != nil {
-			writeErr(w, http.StatusInternalServerError, "internal error")
+			writeInternalErr(w, err)
 			return
 		}
 		for i := range out {
@@ -104,14 +104,16 @@ func listInstances(reg agencies.Registry) http.HandlerFunc {
 	}
 }
 
-// writeInstanceErr maps a Registry error to a status code — 404 for an
-// unregistered id, 500 for anything else (never a raw driver error on the
-// wire).
 func writeInstanceErr(w http.ResponseWriter, err error) {
 	if errors.Is(err, agencies.ErrInstanceNotFound) {
 		writeErr(w, http.StatusNotFound, err.Error())
 		return
 	}
+	writeInternalErr(w, err)
+}
+
+func writeInternalErr(w http.ResponseWriter, err error) {
+	logInstanceFailure(w, err)
 	writeErr(w, http.StatusInternalServerError, "internal error")
 }
 

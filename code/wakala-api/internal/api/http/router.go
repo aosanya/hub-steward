@@ -81,5 +81,5 @@ func NewRouter(d *Deps) http.Handler {
 	registerMemberInviteRoutes(mux, auth, memberInvitations{reg: d.Registry, accounts: d.MemberAccounts, links: links, residents: d.residentGrants(), mail: d.InvitationMail, refused: d.linkedAgentRefused})
 	registerMemberSessionRoutes(mux, memberSessions{project: d.CatalogAuth, verified: d.verifiedTokens()})
 
-	return withWriteDeadline(responseWriteTimeout, withTenantSlot(allowStudioOrigins(d.StudioOrigins, allowMemberOrigins(d.MemberOrigins, refuseForeignOrigin(append(append([]string{}, d.StudioOrigins...), d.MemberOrigins...), d.PublicBaseURL, limitRequestBody(mux))))))
+	return withWriteDeadline(responseWriteTimeout, withTenantSlot(allowStudioOrigins(d.StudioOrigins, allowMemberOrigins(d.MemberOrigins, refuseForeignOrigin(append(append([]string{}, d.StudioOrigins...), d.MemberOrigins...), d.PublicBaseURL, limitRequestBody(failureLogged(mux)))))))
 }

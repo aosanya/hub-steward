@@ -146,13 +146,11 @@ func mustBeMember(ctx context.Context, reg agencies.Registry, instanceID string)
 	return opaqueMembershipError(adoptCallerAsActor(ctx, reg, instanceID, caller))
 }
 
-var errMembershipUnavailable = errors.New("internal error")
-
 func opaqueMembershipError(err error) error {
 	if err == nil || errors.Is(err, agencies.ErrInstanceNotFound) {
 		return err
 	}
-	return errMembershipUnavailable
+	return membershipUnavailable{cause: err}
 }
 
 func adoptCallerAsActor(ctx context.Context, reg agencies.Registry, instanceID, caller string) error {
