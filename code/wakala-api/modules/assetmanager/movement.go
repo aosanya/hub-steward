@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"wakalaserver/modules/shared/gormutil"
 	"wakalaserver/modules/shared/specstore"
 
 	"wakalaserver/modules/assetmanager/models"
@@ -151,12 +152,6 @@ func (m *assetManager) syncAssetLocation(ctx context.Context, mv models.Movement
 	return nil
 }
 
-// ReverseMovement posts the mirror of an existing Movement — the same rule
-// merchandise-entry.md's rpc_resolve_merchandise_dispute follows: "reverse
-// posts the mirror, original untouched". The reversal's From/To locations
-// are the original's swapped, which is what makes GetAssetBalance's fold
-// cancel the pair out to zero net effect regardless of the original Kind's
-// sign convention.
 func (m *assetManager) ReverseMovement(ctx context.Context, movementID, performedBy, note string) (models.Movement, error) {
 	if performedBy == "" {
 		return models.Movement{}, fmt.Errorf("%w: performedBy is required — every ledger entry needs an accountable actor", ErrInvalidMovement)
@@ -194,6 +189,9 @@ func (m *assetManager) ReverseMovement(ctx context.Context, movementID, performe
 
 	reversal.ID = newID()
 	if err := m.store.Insert(ctx, roleMovement, reversal); err != nil {
+		if gormutil.IsUniqueViolation(err) {
+			return models.Movement{}, ErrMovementAlreadyReversed
+		}
 		return models.Movement{}, fmt.Errorf("ReverseMovement: %w", err)
 	}
 	out := reversal
