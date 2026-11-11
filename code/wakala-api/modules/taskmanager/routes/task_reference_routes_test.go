@@ -32,3 +32,23 @@ func TestAReaderAddsListsAndRemovesAReferenceAndAnUnseenIssueIsNotFound(t *testi
 		t.Fatalf("got %v", left)
 	}
 }
+
+func TestAnAssistantProposesAndAPersonConfirmsAReferenceOverTheRoutes(t *testing.T) {
+	f := newMoreWritesFixture(t)
+	refs := "/tasks/" + f.issue + "/references"
+
+	proposed := f.h.expect(http.StatusCreated, "ann", "POST", refs+"/proposals", map[string]any{"kind": "folder", "repo": "hub-steward", "target": "code/app"})
+	if proposed["source"] != "assistant" || proposed["confirmed"] != false {
+		t.Fatalf("got %v", proposed)
+	}
+	f.h.expect(http.StatusConflict, "ann", "POST", refs+"/proposals", map[string]any{"kind": "folder", "repo": "hub-steward", "target": "code/app"})
+	f.h.expect(http.StatusBadRequest, "ann", "POST", refs+"/proposals", map[string]any{"kind": "folder", "target": "code/app"})
+
+	confirmed := f.h.expect(http.StatusOK, "ann", "POST", refs+"/"+proposed["id"].(string)+"/confirm", nil)
+	if confirmed["confirmed"] != true || confirmed["source"] != "assistant" {
+		t.Fatalf("got %v", confirmed)
+	}
+	f.h.expect(http.StatusNotFound, "ann", "POST", refs+"/nothing/confirm", nil)
+	f.h.expect(http.StatusNotFound, "nog", "POST", refs+"/"+proposed["id"].(string)+"/confirm", nil)
+	f.h.expect(http.StatusNotFound, "nog", "POST", refs+"/proposals", map[string]any{"kind": "link", "target": "https://example.test"})
+}

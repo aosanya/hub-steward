@@ -20,7 +20,8 @@ const (
 	referenceScreen = "screen"
 	referenceLink   = "link"
 
-	referenceByPerson = "person"
+	referenceByPerson    = "person"
+	referenceByAssistant = "assistant"
 )
 
 var (
@@ -87,6 +88,14 @@ func (m *taskManager) taskReference(ctx context.Context, taskID, id string) (Tas
 }
 
 func (m *taskManager) AddTaskReference(ctx context.Context, requesterID, taskID, kind, repo, target string) (TaskReference, error) {
+	return m.saveTaskReference(ctx, requesterID, taskID, kind, repo, target, referenceByPerson)
+}
+
+func (m *taskManager) ProposeTaskReference(ctx context.Context, requesterID, taskID, kind, repo, target string) (TaskReference, error) {
+	return m.saveTaskReference(ctx, requesterID, taskID, kind, repo, target, referenceByAssistant)
+}
+
+func (m *taskManager) saveTaskReference(ctx context.Context, requesterID, taskID, kind, repo, target, source string) (TaskReference, error) {
 	repo, target, ok := cleanReference(kind, repo, target)
 	if !ok {
 		return TaskReference{}, ErrInvalidTaskReference
@@ -96,19 +105,38 @@ func (m *taskManager) AddTaskReference(ctx context.Context, requesterID, taskID,
 	}
 	ref := TaskReference{
 		ID: taskReferenceKey(taskID, kind, repo, target), TaskID: taskID, Kind: kind, Repo: repo, Target: target,
-		Source: referenceByPerson, Confirmed: true, AddedBy: requesterID, CreatedAt: time.Now().UTC().Format(noteTimeForm),
+		Source: source, Confirmed: source == referenceByPerson, AddedBy: requesterID, CreatedAt: time.Now().UTC().Format(noteTimeForm),
 	}
 	if _, err := m.taskReference(ctx, taskID, ref.ID); err == nil {
 		return TaskReference{}, ErrDuplicateTaskReference
 	} else if !errors.Is(err, ErrTaskReferenceNotFound) {
-		return TaskReference{}, fmt.Errorf("AddTaskReference: %w", err)
+		return TaskReference{}, fmt.Errorf("saveTaskReference: %w", err)
 	}
 	if err := m.store.Insert(ctx, roleTaskReference, ref); err != nil {
 		if _, lookupErr := m.taskReference(ctx, taskID, ref.ID); lookupErr == nil {
 			return TaskReference{}, ErrDuplicateTaskReference
 		}
-		return TaskReference{}, fmt.Errorf("AddTaskReference: %w", err)
+		return TaskReference{}, fmt.Errorf("saveTaskReference: %w", err)
 	}
+	return ref, nil
+}
+
+func (m *taskManager) ConfirmTaskReference(ctx context.Context, requesterID, taskID, referenceID string) (TaskReference, error) {
+	if _, err := m.GetTaskFor(ctx, requesterID, taskID); err != nil {
+		return TaskReference{}, err
+	}
+	ref, err := m.taskReference(ctx, taskID, referenceID)
+	if err != nil {
+		return TaskReference{}, err
+	}
+	if ref.Confirmed {
+		return ref, nil
+	}
+	res := m.store.Query(ctx, roleTaskReference).Where("id = ?", ref.ID).Where("task_id = ?", taskID).Updates(map[string]any{"confirmed": true})
+	if res.Error != nil {
+		return TaskReference{}, fmt.Errorf("ConfirmTaskReference: %w", res.Error)
+	}
+	ref.Confirmed = true
 	return ref, nil
 }
 
