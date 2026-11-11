@@ -32,7 +32,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
   const issue = useLoad(() => client.issue(id), `issue:${openAgencyId()}:${id}:${version}`);
   const ready = issue.state === "ready" ? issue.data : null;
   const place = ready ? [ready.backlog, ready.step].filter((part) => part !== "").join(" · ") : "";
-  const parts = ready ? titleParts(ready.title) : null;
+  const parts = ready ? titleParts(ready.title, ready.code) : null;
   const { body, source } = splitSource(ready?.description ?? "");
   return (
     <Shell title={parts?.code || "Issue"} onBack={() => navigate(backTo)} backLabel={backLabel}>

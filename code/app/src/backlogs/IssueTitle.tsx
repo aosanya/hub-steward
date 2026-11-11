@@ -8,15 +8,21 @@ const idLike = /^[A-Za-z]+-?\d+[A-Za-z]?$/;
 
 const plain = (title: string) => title.replace(/\*\*/g, "").replace(/`/g, "");
 
-export const titleParts = (title: string) => {
+const leadingCode = (title: string) => {
   const text = plain(title).trim();
   const at = text.indexOf(" ");
   const first = at === -1 ? text : text.slice(0, at);
   return idLike.test(first) && at !== -1 ? { code: first, rest: text.slice(at + 1) } : { code: "", rest: text };
 };
 
-export function IssueTitle({ title }: { title: string }) {
-  const { code, rest } = titleParts(title);
+export const titleParts = (title: string, code = "") => {
+  const lead = leadingCode(title);
+  if (code === "") return lead;
+  return lead.code === code || lead.code === "" ? { code, rest: lead.rest } : { code, rest: plain(title).trim() };
+};
+
+export function IssueTitle({ title, code: own }: { title: string; code?: string }) {
+  const { code, rest } = titleParts(title, own);
   return (
     <span className="issue-title">
       {code ? <span className="issue-code">{code}</span> : null}

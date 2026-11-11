@@ -4,7 +4,7 @@ import { IssueLine, IssueTags, IssueTitle, openUnlessTag } from "./IssueTitle";
 type Props = { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; onOpen?: () => void; chevron?: boolean; facts?: string[] };
 
 export function IssueRow({ issue, chosen, onTag, onOpen, chevron, facts }: Props) {
-  const title = <IssueTitle title={issue.title} />;
+  const title = <IssueTitle title={issue.title} code={issue.code} />;
   return (
     <div className={onOpen ? "row issue-row" : "row issue-row static"} onClick={onOpen ? openUnlessTag(onOpen) : undefined}>
       <span className="txt">

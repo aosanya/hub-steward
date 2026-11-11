@@ -23,6 +23,7 @@ export type Mark = "Ready" | "Blocked" | "";
 export type Issue = {
   id: string;
   key?: string;
+  code?: string;
   title: string;
   description: string;
   status: string;
@@ -108,6 +109,7 @@ export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
   return {
     id: text(raw?.id),
     ...(text(raw?.task_name) !== "" ? { key: text(raw?.task_name) } : {}),
+    ...(text(raw?.code) !== "" ? { code: text(raw?.code) } : {}),
     title: text(raw?.title) || text(raw?.task_name),
     description: text(raw?.description),
     status,
