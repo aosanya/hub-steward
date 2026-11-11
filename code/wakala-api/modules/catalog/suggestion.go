@@ -163,6 +163,12 @@ func (m *catalogManager) RecordSuggestionAttempt(ctx context.Context, id, runRef
 	if strings.TrimSpace(comment) == "" {
 		return Suggestion{}, ErrAttemptNeedsComment
 	}
+	if err := plainText(ErrInvalidComment, "comment", comment); err != nil {
+		return Suggestion{}, err
+	}
+	if err := plainText(ErrInvalidComment, "run_ref", runRef); err != nil {
+		return Suggestion{}, err
+	}
 	attempts, err := m.countAttempt(ctx, id)
 	if err != nil {
 		return Suggestion{}, err
@@ -249,6 +255,12 @@ func (m *catalogManager) ListSuggestionComments(ctx context.Context, id string) 
 }
 
 func (m *catalogManager) upsertMatch(ctx context.Context, suggestionID, slug, runRef, note string) (SuggestionMatch, error) {
+	if err := plainText(ErrInvalidComment, "note", note); err != nil {
+		return SuggestionMatch{}, err
+	}
+	if err := plainText(ErrInvalidComment, "run_ref", runRef); err != nil {
+		return SuggestionMatch{}, err
+	}
 	if _, err := m.findEntry(ctx, slug); err != nil {
 		return SuggestionMatch{}, err
 	}

@@ -129,6 +129,9 @@ func (m *catalogManager) cancelBooking(ctx context.Context, bookingID, by, reaso
 	if bookingID == "" || by == "" {
 		return Booking{}, ErrBookingNotFound
 	}
+	if err := plainText(ErrInvalidSlot, "reason", reason); err != nil {
+		return Booking{}, err
+	}
 	var b Booking
 	if err := m.take(m.q(ctx, roleBooking).Where("id = ?", bookingID), roleBooking, &b, ErrBookingNotFound); err != nil {
 		return Booking{}, err

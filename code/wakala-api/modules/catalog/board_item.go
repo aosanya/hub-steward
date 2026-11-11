@@ -110,6 +110,9 @@ func (m *catalogManager) SetBoardItemOutcome(ctx context.Context, boardItemID, o
 	if boardItemID == "" {
 		return ErrInvalidBoardItem
 	}
+	if err := plainText(ErrInvalidBoardItem, "outcome", outcome); err != nil {
+		return err
+	}
 	res := m.q(ctx, roleBoardItem).Where("id = ?", boardItemID).Update("outcome", outcome)
 	if res.Error != nil {
 		return res.Error

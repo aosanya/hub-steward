@@ -28,6 +28,12 @@ func (m *catalogManager) RecordRun(ctx context.Context, r MiningRun) (MiningRun,
 	if r.TemplatesFiled < 0 || len(r.Summary) > models.MaxRunSummaryBytes {
 		return MiningRun{}, ErrInvalidRun
 	}
+	if err := plainText(ErrInvalidRun, "summary", r.Summary); err != nil {
+		return MiningRun{}, err
+	}
+	if err := plainText(ErrInvalidRun, "run_ref", r.RunRef); err != nil {
+		return MiningRun{}, err
+	}
 	r.ID = newID()
 	r.CreatedAt = m.now()
 	if err := m.insert(ctx, roleRun, r); err != nil {
@@ -54,6 +60,12 @@ func (m *catalogManager) PutSetting(ctx context.Context, key, value string) (Set
 	}
 	if key == "" {
 		return Setting{}, ErrInvalidSetting
+	}
+	if err := plainText(ErrInvalidSetting, "key", key); err != nil {
+		return Setting{}, err
+	}
+	if err := plainText(ErrInvalidSetting, "value", value); err != nil {
+		return Setting{}, err
 	}
 	s := models.Setting{Key: key, Value: value, UpdatedAt: m.now()}
 

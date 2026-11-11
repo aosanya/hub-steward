@@ -19,6 +19,9 @@ func (m *catalogManager) IssueShareLink(ctx context.Context, slug, label, by str
 	if len(label) > models.MaxShareLabelBytes {
 		return ShareLink{}, "", ErrInvalidShareLink
 	}
+	if err := plainText(ErrInvalidShareLink, "label", label); err != nil {
+		return ShareLink{}, "", err
+	}
 	entry, err := m.findEntry(ctx, slug)
 	if err != nil {
 		return ShareLink{}, "", err

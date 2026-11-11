@@ -43,6 +43,9 @@ func (m *catalogManager) ReassignRaisedItem(ctx context.Context, raisedItemID, d
 	if raisedItemID == "" || department == "" {
 		return ErrInvalidRaisedItem
 	}
+	if err := plainText(ErrInvalidRaisedItem, "department", department); err != nil {
+		return err
+	}
 	res := m.q(ctx, roleRaisedItem).Where("id = ?", raisedItemID).Updates(map[string]any{"department": department, "department_by": DepartmentByOfficer})
 	if res.Error != nil {
 		return res.Error
