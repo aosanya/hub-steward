@@ -48,7 +48,7 @@ describe("every place that shows an issue draws it through the one shared row", 
   it("the cards of the board", async () => {
     at("/a/hub-1/backlogs/backlog/board", <BacklogBoard client={client} />, "/a/:agencyId/backlogs/:backlogId/board");
     await screen.findByText("DEV-009");
-    const cards = document.querySelectorAll(".bb-card");
+    const cards = document.querySelectorAll(".bb-col > .card");
     expect(cards).toHaveLength(2);
     cards.forEach((card) => expect(card.querySelector(".issue-row")).not.toBeNull());
   });

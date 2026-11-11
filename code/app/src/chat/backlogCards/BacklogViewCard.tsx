@@ -2,6 +2,7 @@ import { Button } from "../../ui/Button";
 import { openAgencyId } from "../../agency/open";
 import { boardPath, issuesPath } from "../../backlogs/paths";
 import { smartBacklogPath } from "../../smartBacklog/paths";
+import { Card } from "../../ui/Card";
 import { Chip } from "../../ui/Chip";
 import { useBacklogSummaries } from "./summaries";
 import { backlogViewOf } from "./views";
@@ -10,27 +11,32 @@ import "./backlogCards.css";
 
 function OpenCard({ title, line, to, smart = false }: { title: string; line: string; to: string; smart?: boolean }) {
   return (
-    <div className="rm-card">
-      <span className="rm-ttl">{title}</span>
-      {line ? (
-        <span className="rm-line">
-          {smart ? <Chip tone="info">Smart</Chip> : null}
-          {line}
-        </span>
-      ) : null}
-      <div className="rm-btns">
-        <Button kind="primary" to={to}>
-          Open
-        </Button>
-      </div>
+    <div className="rm-slot">
+      <Card
+        title={title}
+        footer={
+          <Button kind="quiet" to={to}>
+            Open
+          </Button>
+        }
+      >
+        {line ? (
+          <span className="rm-line">
+            {smart ? <Chip tone="info">Smart</Chip> : null}
+            {line}
+          </span>
+        ) : null}
+      </Card>
     </div>
   );
 }
 
 function NotOpenable() {
   return (
-    <div className="rm-card">
-      <span className="rm-line">This could not be opened.</span>
+    <div className="rm-slot">
+      <Card>
+        <span className="rm-line">This could not be opened.</span>
+      </Card>
     </div>
   );
 }
@@ -39,19 +45,20 @@ function BacklogButtons() {
   const { backlogs, ready } = useBacklogSummaries();
   if (backlogs.length === 0) return ready ? <NotOpenable /> : null;
   return (
-    <div className="rm-card">
-      <span className="rm-ttl">Backlogs</span>
-      <div className="rm-btns rm-stack">
-        {backlogs.map((backlog) => (
-          <Button key={backlog.id} to={backlog.smart ? smartBacklogPath(backlog.id) : boardPath(backlog.id)}>
-            <span className="rm-pick">{backlog.name}</span>
-            <span className="rm-line">
-              {backlog.smart ? <Chip tone="info">Smart</Chip> : null}
-              {backlogLine(backlog)}
-            </span>
-          </Button>
-        ))}
-      </div>
+    <div className="rm-slot">
+      <Card title="Backlogs">
+        <div className="rm-btns rm-stack">
+          {backlogs.map((backlog) => (
+            <Button key={backlog.id} to={backlog.smart ? smartBacklogPath(backlog.id) : boardPath(backlog.id)}>
+              <span className="rm-pick">{backlog.name}</span>
+              <span className="rm-line">
+                {backlog.smart ? <Chip tone="info">Smart</Chip> : null}
+                {backlogLine(backlog)}
+              </span>
+            </Button>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 }

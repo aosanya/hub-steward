@@ -36,3 +36,26 @@ describe("one backlog's own card", () => {
     expect(screen.getByRole("link", { name: "Open" })).toHaveAttribute("href", "/a/hub-steward-swe/backlogs/s1/smart");
   });
 });
+
+describe("the backlog cards in the chat are shared Cards", () => {
+  it("head the backlog with its name and put Open in the footer", () => {
+    show("backlog:b1");
+    const card = screen.getByText("Software").closest("section") as HTMLElement;
+    expect(card).toHaveClass("card");
+    expect(card.querySelector(":scope > .card-head .card-title")).toHaveTextContent("Software");
+    expect(card.querySelector(":scope > .card-body")).toHaveTextContent("5 issues in 6 steps");
+    expect(card.querySelector(":scope > .card-foot a")).toHaveTextContent("Open");
+    expect(card.parentElement).toHaveClass("rm-slot");
+    expect(document.querySelector(".rm-card")).toBeNull();
+  });
+
+  it("head the list of backlogs with its title and keep the backlogs as its content", () => {
+    show("backlogs");
+    const card = screen.getByText("Backlogs").closest("section") as HTMLElement;
+    expect(card.querySelector(":scope > .card-head .card-title")).toHaveTextContent("Backlogs");
+    expect(card.querySelectorAll(":scope > .card-body a")).toHaveLength(2);
+    expect(card.querySelector(".card-foot")).toBeNull();
+    expect(document.querySelector(".rm-card")).toBeNull();
+  });
+});
+

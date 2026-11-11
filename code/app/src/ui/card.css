@@ -1,4 +1,4 @@
-.card:has(> .card-head) { padding: 0; gap: 0; overflow: hidden; }
+.card.flush, .card:has(> .card-head) { padding: 0; gap: 0; overflow: hidden; }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .625rem 1rem; border-bottom: 1px solid var(--line); color: var(--ink); }
 .card-head.closed { border-bottom: 0; }
 .card-toggle { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: .5rem; min-width: 0; padding: 0; border: 0; background: transparent; font: inherit; text-align: left; color: inherit; }
@@ -8,6 +8,7 @@
 .card-body { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; }
 .card-foot { display: flex; border-top: 1px solid var(--line); }
 .card-foot > * { flex: 1; min-height: 2.75rem; padding: .625rem; border: 0; background: transparent; color: var(--accent); font: inherit; text-align: center; text-decoration: none; }
+.card .card-foot > .btn { width: auto; border: 0; border-radius: 0; color: var(--accent); }
 .card-foot > * + * { border-left: 1px solid var(--line); }
 .card.flush > .card-body { gap: 0; padding: 0; }
 .card.flush .rows { border: 0; border-radius: 0; box-shadow: none; background: transparent; }

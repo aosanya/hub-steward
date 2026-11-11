@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Issue } from "../backlogs/api";
+import { Card } from "../ui/Card";
 import type { Column } from "./board";
 import "./backlogBoard.css";
 
@@ -15,9 +16,9 @@ export function BoardColumns({ columns, renderCard }: Props) {
             <span>{column.issues.length}</span>
           </h3>
           {column.issues.map((issue) => (
-            <div key={issue.id} className="bb-card">
+            <Card key={issue.id} flush>
               {renderCard(issue)}
-            </div>
+            </Card>
           ))}
           {column.issues.length === 0 ? <p className="bb-none">Nothing here</p> : null}
         </section>
