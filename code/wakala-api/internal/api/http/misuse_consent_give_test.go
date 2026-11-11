@@ -88,32 +88,25 @@ func newConsentWalkOn(t *testing.T, db *gorm.DB) consentWalk {
 	return consentWalk{stepRunWalk: w, reg: reg, actorID: actor.ID, groupID: groupID, resident: resident}
 }
 
-func TestConsentGive_ResidentAgreesThenFormAnswerIsNoLongerRefusedForConsent(t *testing.T) {
+func TestConsentGive_ResidentAnswersARealFormOnlyWhileConsented(t *testing.T) {
 	cw := newConsentWalk(t)
-	w, reg, resident := cw.stepRunWalk, cw.reg, cw.resident
-	ctx := context.Background()
-	cm, err := reg.CustodyManager(ctx, w.instance)
-	if err != nil {
-		t.Fatalf("CustodyManager: %v", err)
+	publishMechanicsConsent(t, cw)
+	formID, questionID := openFormForGroup(t, cw)
+	path := "/instances/" + cw.instance + "/forms/forms/" + formID + "/answers"
+	consent := "/instances/" + cw.instance + "/custody/consent"
+	answer := func(text string) *httptest.ResponseRecorder {
+		return cw.call(t, "POST", path, map[string]any{"answers": []map[string]any{{"question_id": questionID, "value_text": text}}}, cw.resident)
 	}
-	version, err := cm.CreateConsentVersion(ctx, mwanachamacustody.ConsentVersionInput{Scope: custodymodels.ScopeMechanics, Version: "v1", Language: custodymodels.LanguageEnglish})
-	if err != nil {
-		t.Fatalf("CreateConsentVersion: %v", err)
-	}
-	if _, err := cm.PublishConsentVersion(ctx, version.ID, "test-owner"); err != nil {
-		t.Fatalf("PublishConsentVersion: %v", err)
-	}
-
-	answer := func() *httptest.ResponseRecorder {
-		return w.call(t, "POST", "/instances/"+w.instance+"/forms/forms/no-such-form/answers",
-			map[string]any{"answers": []map[string]any{{"question_id": "q", "value_text": "synthetic"}}}, resident)
-	}
-	before := answer()
-	if before.Code != http.StatusForbidden || !strings.Contains(before.Body.String(), "consent") {
-		t.Fatalf("answer before consent: %d %s, want the consent refusal", before.Code, before.Body.String())
+	refusedForConsent := func(label string, got *httptest.ResponseRecorder) {
+		t.Helper()
+		if got.Code != http.StatusForbidden || !strings.Contains(got.Body.String(), "consent") {
+			t.Fatalf("%s: %d %s, want the consent refusal", label, got.Code, got.Body.String())
+		}
 	}
 
-	agreed := w.call(t, "POST", "/instances/"+w.instance+"/custody/consent/agree", map[string]any{}, resident)
+	refusedForConsent("answer before consent", answer("before"))
+
+	agreed := cw.call(t, "POST", consent+"/agree", map[string]any{}, cw.resident)
 	if agreed.Code != http.StatusCreated {
 		t.Fatalf("resident agrees: %d %s, want 201", agreed.Code, agreed.Body.String())
 	}
@@ -121,20 +114,25 @@ func TestConsentGive_ResidentAgreesThenFormAnswerIsNoLongerRefusedForConsent(t *
 		t.Fatalf("consent recorded for %q, want the resident %q", got, cw.actorID)
 	}
 
-	after := answer()
-	if strings.Contains(after.Body.String(), "consent") {
-		t.Fatalf("answer after consent still refused for consent: %d %s", after.Code, after.Body.String())
+	after := answer("synthetic")
+	if after.Code != http.StatusOK {
+		t.Fatalf("answer after consent: %d %s, want 200", after.Code, after.Body.String())
+	}
+	mine := cw.call(t, "GET", path+"/mine", nil, cw.resident)
+	if mine.Code != http.StatusOK || !strings.Contains(mine.Body.String(), "synthetic") {
+		t.Fatalf("the answer did not land: %d %s", mine.Code, mine.Body.String())
 	}
 
-	operatorRead := w.call(t, "POST", "/instances/"+w.instance+"/custody/consent/versions", map[string]any{"scope": "mechanics", "version": "v2", "language": "en"}, resident)
-	if operatorRead.Code != http.StatusNotFound {
-		t.Fatalf("resident drafting a consent version: %d %s, want 404 as before", operatorRead.Code, operatorRead.Body.String())
+	drafted := cw.call(t, "POST", consent+"/versions", map[string]any{"scope": "mechanics", "version": "v2", "language": "en"}, cw.resident)
+	if drafted.Code != http.StatusNotFound {
+		t.Fatalf("resident drafting a consent version: %d %s, want 404 as before", drafted.Code, drafted.Body.String())
 	}
 
-	withdrawn := w.call(t, "POST", "/instances/"+w.instance+"/custody/consent/withdraw", map[string]any{}, resident)
+	withdrawn := cw.call(t, "POST", consent+"/withdraw", map[string]any{}, cw.resident)
 	if withdrawn.Code != http.StatusCreated {
 		t.Fatalf("resident withdraws: %d %s, want 201", withdrawn.Code, withdrawn.Body.String())
 	}
+	refusedForConsent("answer after withdrawal", answer("after"))
 }
 
 func publishMechanicsConsent(t *testing.T, cw consentWalk) {
@@ -184,29 +182,4 @@ func openFormForGroupLocked(t *testing.T, cw consentWalk, lockedAfterSend bool) 
 		t.Fatalf("publish form: %d %s", published.Code, published.Body.String())
 	}
 	return formID, questionID
-}
-
-func TestConsentGive_ResidentAnswersARealFormOnlyAfterAgreeing(t *testing.T) {
-	cw := newConsentWalk(t)
-	publishMechanicsConsent(t, cw)
-	formID, questionID := openFormForGroup(t, cw)
-	path := "/instances/" + cw.instance + "/forms/forms/" + formID + "/answers"
-	body := map[string]any{"answers": []map[string]any{{"question_id": questionID, "value_text": "synthetic"}}}
-
-	before := cw.call(t, "POST", path, body, cw.resident)
-	if before.Code != http.StatusForbidden || !strings.Contains(before.Body.String(), "consent") {
-		t.Fatalf("answer before consent: %d %s, want the consent refusal", before.Code, before.Body.String())
-	}
-	agreed := cw.call(t, "POST", "/instances/"+cw.instance+"/custody/consent/agree", map[string]any{}, cw.resident)
-	if agreed.Code != http.StatusCreated {
-		t.Fatalf("resident agrees: %d %s, want 201", agreed.Code, agreed.Body.String())
-	}
-	after := cw.call(t, "POST", path, body, cw.resident)
-	if after.Code != http.StatusOK {
-		t.Fatalf("answer after consent: %d %s, want 200", after.Code, after.Body.String())
-	}
-	mine := cw.call(t, "GET", path+"/mine", nil, cw.resident)
-	if mine.Code != http.StatusOK || !strings.Contains(mine.Body.String(), "synthetic") {
-		t.Fatalf("the answer did not land: %d %s", mine.Code, mine.Body.String())
-	}
 }
