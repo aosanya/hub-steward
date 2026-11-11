@@ -22,6 +22,8 @@ var (
 	ErrInvalid        = errors.New("kind and summary are required")
 	ErrBadDecision    = errors.New("decision must be approved or refused")
 
+	ErrChangedSinceRead = errors.New("the approval changed after it was read, so read it again before deciding")
+
 	ErrPatchNeedsApproval = errors.New("payload_patch is only allowed when approving")
 	ErrBadPatch           = errors.New("payload_patch must be a JSON object")
 	ErrPayloadNotObject   = errors.New("the proposal's payload is not a JSON object, so it cannot take a payload_patch")
@@ -231,6 +233,28 @@ func amendmentsIn(amendments string) ([]amendment, error) {
 }
 
 func (s *Store) Decide(ctx context.Context, id, decider, decision, reason, payloadPatch string) (Approval, error) {
+	return s.decide(ctx, id, decider, decision, reason, payloadPatch, nil)
+}
+
+func (s *Store) DecideSeen(ctx context.Context, id, decider, decision, reason, payloadPatch string, seenAmendments int) (Approval, error) {
+	return s.decide(ctx, id, decider, decision, reason, payloadPatch, &seenAmendments)
+}
+
+func checkSeen(held Approval, seenAmendments *int) error {
+	if seenAmendments == nil {
+		return nil
+	}
+	history, err := amendmentsIn(held.Amendments)
+	if err != nil {
+		return err
+	}
+	if len(history) != *seenAmendments {
+		return ErrChangedSinceRead
+	}
+	return nil
+}
+
+func (s *Store) decide(ctx context.Context, id, decider, decision, reason, payloadPatch string, seenAmendments *int) (Approval, error) {
 	if decision != StatusApproved && decision != StatusRefused {
 		return Approval{}, ErrBadDecision
 	}
@@ -249,6 +273,20 @@ func (s *Store) Decide(ctx context.Context, id, decider, decision, reason, paylo
 			}
 			if s.afterRead != nil {
 				s.afterRead()
+			}
+		} else if seenAmendments != nil {
+			read, err := s.Get(ctx, id)
+			if err != nil {
+				return Approval{}, err
+			}
+			if read.Status != StatusPending {
+				return Approval{}, ErrAlreadyDecided
+			}
+			held = read
+		}
+		if payloadPatch != "" || seenAmendments != nil {
+			if err := checkSeen(held, seenAmendments); err != nil {
+				return Approval{}, err
 			}
 			guard = guard.Where("COALESCE(payload, '') = ? AND COALESCE(amendments, '') = ?", held.Payload, held.Amendments)
 		}

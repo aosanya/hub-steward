@@ -46,7 +46,7 @@ func getApproval(ctx context.Context, reg agencies.Registry, instanceID, id stri
 	return st.Get(ctx, id)
 }
 
-func decideApproval(ctx context.Context, reg agencies.Registry, env applyEnv, instanceID, id, decision, reason, payloadPatch string) (approvals.Approval, error) {
+func decideApproval(ctx context.Context, reg agencies.Registry, env applyEnv, instanceID, id, decision, reason, payloadPatch string, seenAmendments *int) (approvals.Approval, error) {
 	if err := mustOwnAgency(ctx, reg, instanceID); err != nil {
 		return approvals.Approval{}, err
 	}
@@ -54,11 +54,18 @@ func decideApproval(ctx context.Context, reg agencies.Registry, env applyEnv, in
 	if err != nil {
 		return approvals.Approval{}, err
 	}
-	out, err := st.Decide(ctx, id, accounts.IDFromContext(ctx), decision, reason, payloadPatch)
+	out, err := decideStored(ctx, st, id, accounts.IDFromContext(ctx), decision, reason, payloadPatch, seenAmendments)
 	if err != nil || out.Status != approvals.StatusApproved {
 		return out, err
 	}
 	return applyApproved(ctx, reg, env, instanceID, st, out)
+}
+
+func decideStored(ctx context.Context, st *approvals.Store, id, decider, decision, reason, payloadPatch string, seenAmendments *int) (approvals.Approval, error) {
+	if seenAmendments == nil {
+		return st.Decide(ctx, id, decider, decision, reason, payloadPatch)
+	}
+	return st.DecideSeen(ctx, id, decider, decision, reason, payloadPatch, *seenAmendments)
 }
 
 func amendApproval(ctx context.Context, reg agencies.Registry, instanceID, id, summary, payloadPatch string) (approvals.Approval, error) {
@@ -88,7 +95,7 @@ func writeApprovalErr(w http.ResponseWriter, err error) {
 		writeErr(w, http.StatusNotFound, err.Error())
 	case errors.Is(err, ErrApplyFailed):
 		writeErr(w, http.StatusUnprocessableEntity, err.Error())
-	case errors.Is(err, approvals.ErrAlreadyDecided):
+	case errors.Is(err, approvals.ErrAlreadyDecided), errors.Is(err, approvals.ErrChangedSinceRead):
 		writeErr(w, http.StatusConflict, err.Error())
 	default:
 		writeInstanceErr(w, err)
@@ -105,6 +112,8 @@ type decideApprovalRequest struct {
 	Decision     string          `json:"decision"`
 	Reason       string          `json:"reason"`
 	PayloadPatch json.RawMessage `json:"payload_patch"`
+
+	SeenAmendments *int `json:"seen_amendments"`
 }
 
 type amendApprovalRequest struct {
@@ -149,7 +158,7 @@ func (d *Deps) registerApprovalRoutes(mux *http.ServeMux, auth callers) {
 			writeReadErr(w, err)
 			return
 		}
-		out, err := decideApproval(r.Context(), reg, d.applyEnv(), r.PathValue("instanceID"), r.PathValue("approvalID"), in.Decision, in.Reason, string(in.PayloadPatch))
+		out, err := decideApproval(r.Context(), reg, d.applyEnv(), r.PathValue("instanceID"), r.PathValue("approvalID"), in.Decision, in.Reason, string(in.PayloadPatch), in.SeenAmendments)
 		if err != nil {
 			writeApprovalErr(w, err)
 			return
@@ -189,11 +198,12 @@ type mcpGetApprovalParams struct {
 }
 
 type mcpDecideApprovalParams struct {
-	InstanceID   string `json:"instance_id" jsonschema:"the Agency Instance the proposal belongs to"`
-	ApprovalID   string `json:"approval_id" jsonschema:"the proposal to decide"`
-	Decision     string `json:"decision" jsonschema:"approved or refused"`
-	Reason       string `json:"reason,omitempty" jsonschema:"why, shown to the agent"`
-	PayloadPatch string `json:"payload_patch,omitempty" jsonschema:"only when approving: a JSON object as text, applied to the proposal's payload as a JSON merge patch (RFC 7386); a key sets or replaces a value and null removes it"`
+	InstanceID     string `json:"instance_id" jsonschema:"the Agency Instance the proposal belongs to"`
+	ApprovalID     string `json:"approval_id" jsonschema:"the proposal to decide"`
+	Decision       string `json:"decision" jsonschema:"approved or refused"`
+	Reason         string `json:"reason,omitempty" jsonschema:"why, shown to the agent"`
+	PayloadPatch   string `json:"payload_patch,omitempty" jsonschema:"only when approving: a JSON object as text, applied to the proposal's payload as a JSON merge patch (RFC 7386); a key sets or replaces a value and null removes it"`
+	SeenAmendments *int   `json:"seen_amendments,omitempty" jsonschema:"how many amendments the proposal had when you read it; the decision is refused with a conflict if it has more now, so read it again"`
 }
 
 type mcpAmendApprovalParams struct {
@@ -236,7 +246,7 @@ func (d *Deps) mcpGetApproval(ctx context.Context, _ *mcp.CallToolRequest, p mcp
 }
 
 func (d *Deps) mcpDecideApproval(ctx context.Context, _ *mcp.CallToolRequest, p mcpDecideApprovalParams) (*mcp.CallToolResult, approvals.Approval, error) {
-	out, err := decideApproval(ctx, d.Registry, d.applyEnv(), p.InstanceID, p.ApprovalID, p.Decision, p.Reason, p.PayloadPatch)
+	out, err := decideApproval(ctx, d.Registry, d.applyEnv(), p.InstanceID, p.ApprovalID, p.Decision, p.Reason, p.PayloadPatch, p.SeenAmendments)
 	if err != nil {
 		return nil, approvals.Approval{}, err
 	}
