@@ -7,8 +7,11 @@ import (
 	"slices"
 	"time"
 
+	"wakalaserver/modules/shared/gormutil"
 	"wakalaserver/modules/voting/models"
 )
+
+const answerAttempts = 5
 
 type Answer struct {
 	PollID     string         `json:"poll_id"`
@@ -59,14 +62,24 @@ func (m *pollManager) AnswerPoll(ctx context.Context, in Answer) (Participation,
 	if err := votesFit(p, choices, in.Votes); err != nil {
 		return Participation{}, fmt.Errorf("%w: %s", ErrInvalidAnswer, err)
 	}
-	prior, err := m.priorParticipation(ctx, p.ID, in.AnsweredBy, group)
-	if err != nil {
-		return Participation{}, err
+	return m.recordAnswer(ctx, p, in.AnsweredBy, group, in.Votes, now)
+}
+
+func (m *pollManager) recordAnswer(ctx context.Context, p Poll, by, group string, votes map[string]int, now string) (Participation, error) {
+	for attempt := 0; attempt < answerAttempts; attempt++ {
+		prior, err := m.priorParticipation(ctx, p.ID, by, group)
+		if err != nil {
+			return Participation{}, err
+		}
+		if prior != nil && !p.ChangeAllowed {
+			return Participation{}, ErrAlreadyAnswered
+		}
+		part, err := m.record(ctx, p.ID, by, group, votes, prior, now)
+		if !gormutil.IsUniqueViolation(err) {
+			return part, err
+		}
 	}
-	if prior != nil && !p.ChangeAllowed {
-		return Participation{}, ErrAlreadyAnswered
-	}
-	return m.record(ctx, p.ID, in.AnsweredBy, group, in.Votes, prior, now)
+	return Participation{}, ErrAlreadyAnswered
 }
 
 func insideWindow(p Poll, now string) bool {

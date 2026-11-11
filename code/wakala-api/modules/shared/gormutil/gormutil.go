@@ -67,6 +67,15 @@ func ClassifyError(err error, wrapReference, wrapConflict func(field string) err
 	}
 }
 
+func IsUniqueViolation(err error) bool {
+	conflicted := false
+	ClassifyError(err,
+		func(string) error { return err },
+		func(string) error { conflicted = true; return err },
+	)
+	return conflicted
+}
+
 func pgConstraintOf(pgErr *pgconn.PgError) string {
 	if pgErr.ConstraintName != "" {
 		return pgErr.ConstraintName
