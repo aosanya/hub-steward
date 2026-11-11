@@ -7,6 +7,8 @@ import "errors"
 var ErrTaskNotFound = errors.New("task not found")
 var ErrInvalidPlacement = errors.New("invalid card placement")
 
+var ErrTaskMoveConflict = errors.New("the task changed while it was being moved; read it and move it again")
+
 var ErrInvalidOverdueFilter = errors.New("invalid overdue filter")
 
 var ErrInvalidAssignee = errors.New("an assignee is an actor or a role with an id")

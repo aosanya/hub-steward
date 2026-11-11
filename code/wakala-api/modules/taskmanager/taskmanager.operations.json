@@ -1058,6 +1058,7 @@
     "ErrStepRoleNotHeld": 403,
     "ErrNoPathToState": 409,
     "ErrInvalidPlacement": 400,
+    "ErrTaskMoveConflict": 409,
     "ErrCaseNotFound": 404,
     "ErrRepeatingTaskNotFound": 404,
     "ErrInvalidRepeatingTask": 400,
