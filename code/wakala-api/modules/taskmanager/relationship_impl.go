@@ -217,6 +217,9 @@ func (m *taskManager) CreateRelationship(ctx context.Context, rel Relationship) 
 			rel.CreatedAt = now
 			rel.ID = syntheticEdgeID(rel.FromID, rel.Label, rel.ToID)
 			m.publish(ctx, TopicRelationshipCreated, RelationshipCreatedPayload{FromID: rel.FromID, ToID: rel.ToID, Label: rel.Label})
+			if rel.Label == RelLabelDependsOn {
+				m.markWaitingIfOpen(ctx, rel.FromID)
+			}
 			return rel, nil
 		}
 		rel.ID = syntheticEdgeID(rel.FromID, rel.Label, rel.ToID)
@@ -257,6 +260,9 @@ func (m *taskManager) DeleteRelationship(ctx context.Context, fromID, toID, labe
 		}
 		if res.RowsAffected == 0 {
 			return ErrRelationshipNotFound
+		}
+		if label == RelLabelDependsOn {
+			m.dropWaitingIfClear(ctx, fromID, "The last open dependency edge was removed: Waiting dropped and Ready added.")
 		}
 		return nil
 	}

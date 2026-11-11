@@ -192,6 +192,9 @@ func (m *taskManager) updateTask(ctx context.Context, task Task, replace bool) (
 				WorkflowRunID:  out.WorkflowRunID,
 			})
 		}
+		if finishesDependency(out.Status) {
+			m.freeDependents(ctx, out)
+		}
 		if settlesCase(out.Status) {
 			if err := m.closeCaseIfSettled(ctx, out.ID); err != nil {
 				slog.WarnContext(ctx, "UpdateTask: closeCaseIfSettled", "task_id", out.ID, "err", err)
