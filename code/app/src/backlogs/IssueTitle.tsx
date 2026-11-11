@@ -1,6 +1,7 @@
+import { AgeBubble } from "../ui/AgeBubble";
 import { Chip } from "../ui/Chip";
 import { TextChip } from "../ui/TextChip";
-import type { Issue } from "./api";
+import { settled, type Issue } from "./api";
 import "./backlogs.css";
 import { tagsOf } from "./tags";
 
@@ -32,6 +33,10 @@ export function IssueTitle({ title, code: own }: { title: string; code?: string 
   );
 }
 
+function IssueAge({ issue }: { issue: Issue }) {
+  return <AgeBubble created={issue.createdAt} ended={issue.completedAt} closed={settled.has(issue.status)} />;
+}
+
 export const openUnlessTag = (open: () => void) => (event: { target: EventTarget }) => {
   if (!(event.target as HTMLElement).closest(".issue-tags button")) open();
 };
@@ -39,7 +44,7 @@ export const openUnlessTag = (open: () => void) => (event: { target: EventTarget
 export function IssueTags({ issue, chosen, onTag, extra = [] }: { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; extra?: string[] }) {
   const tags = tagsOf(issue);
   const facts = extra.filter((fact) => fact !== "");
-  return tags.length + facts.length === 0 ? null : (
+  return tags.length + facts.length === 0 && !issue.createdAt ? null : (
     <span className="issue-tags">
       {tags.map((tag) => (
         <TextChip key={tag} text={tag} pressed={onTag ? chosen.includes(tag) : undefined} onClick={onTag ? () => onTag(tag) : undefined} />
@@ -47,6 +52,7 @@ export function IssueTags({ issue, chosen, onTag, extra = [] }: { issue: Issue; 
       {facts.map((fact) => (
         <Chip key={fact}>{fact}</Chip>
       ))}
+      <IssueAge issue={issue} />
     </span>
   );
 }
@@ -63,11 +69,12 @@ export const lineWords = (issue: Issue): Word[] =>
 
 export function IssueLine({ issue, chosen, onTag }: { issue: Issue; chosen: string[]; onTag?: (tag: string) => void }) {
   const words = [...(issue.mark === "Blocked" ? [{ tag: "Blocked", label: "Blocked" }] : []), ...lineWords(issue)];
-  return words.length === 0 ? null : (
+  return words.length === 0 && !issue.createdAt ? null : (
     <span className="issue-tags issue-line">
       {words.map((word) => (
         <TextChip key={word.tag} text={word.label} pressed={onTag ? chosen.includes(word.tag) : undefined} onClick={onTag ? () => onTag(word.tag) : undefined} />
       ))}
+      <IssueAge issue={issue} />
     </span>
   );
 }

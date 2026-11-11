@@ -21,3 +21,11 @@ export const shortDayWords = (value: string) => {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : `${shortDayNames[date.getDay()]} ${date.getDate()} ${monthNames[date.getMonth()]}`;
 };
+
+const twoDigits = (value: number) => String(value).padStart(2, "0");
+
+export const dateTimeWords = (value: string) => {
+  const date = new Date(value);
+  const day = shortDayWords(value);
+  return day === null ? null : `${day} ${date.getFullYear()}, ${twoDigits(date.getHours())}:${twoDigits(date.getMinutes())}`;
+};
