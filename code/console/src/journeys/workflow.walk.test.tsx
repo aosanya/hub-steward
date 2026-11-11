@@ -2,7 +2,7 @@ import { cleanup, screen, within } from "@testing-library/react";
 import { loadDesign } from "../data/pages/workflowDesign";
 import type { Hub } from "../types";
 import { callTool } from "../wakala/mcp";
-import { agencyWith, pattern, walkFixtures, type Rec, type WalkFixture } from "./walkFixture";
+import { agencyWith, pattern, walkFixtures, type Rec, type WalkFixture, type WalkStep } from "./walkFixture";
 import { cardNamed, cardShown, goTo, heading, main, mountConsole, pairsOf, user } from "./walkSupport";
 
 vi.hoisted(() => {
@@ -26,6 +26,13 @@ const walk = (fixture: WalkFixture) => {
   const roleOf = (step: Rec) => file.roles.find((role) => role.id === step.role_id);
   const actorOf = (step: Rec) => roleOf(step)?.name ?? "The agency";
   const specOf = (code: string) => fixture.steps.find((step) => step.code === code)!;
+  const expectedRoleCode = (step: Rec, spec: WalkStep) => {
+    if (spec.role === undefined) {
+      expect(roleOf(step)).toBeDefined();
+      return roleOf(step)?.code;
+    }
+    return spec.role ?? undefined;
+  };
   const aiClause = pattern(fixture.aiClause);
   const humanApproval = pattern(fixture.humanApproval);
   const ruleRef = fixture.ruleRef ? pattern(fixture.ruleRef) : null;
@@ -90,7 +97,7 @@ const walk = (fixture: WalkFixture) => {
       it(`${code}. step ${number} shows its title, its role, its prompt and its AI-drafts clause`, async () => {
         const step = stepsInFile[index];
         expect(step.ordinality).toBe(number);
-        expect(roleOf(step)?.code).toBe(spec.role ?? undefined);
+        expect(roleOf(step)?.code).toBe(expectedRoleCode(step, spec));
         await openWorkflow();
 
         const card = stepCard(number, step.title);
@@ -126,7 +133,7 @@ const walk = (fixture: WalkFixture) => {
         .filter((text) => /^\d+ · /.test(text));
       expect(shown).toEqual(stepsByOrdinality.map((step, index) => `${index + 1} · ${step.title}`));
       expect(stepsByOrdinality.map((step) => step.code)).toEqual(stepCodes);
-      expect(stepsByOrdinality.map((step) => roleOf(step)?.code)).toEqual(fixture.steps.map((step) => step.role ?? undefined));
+      expect(stepsByOrdinality.map((step) => roleOf(step)?.code)).toEqual(stepsByOrdinality.map((step) => expectedRoleCode(step, specOf(step.code))));
 
       stepsByOrdinality.forEach((step, index) => {
         expect(pairsOf(stepCard(index + 1, step.title)).Actor).toBe(actorOf(step));

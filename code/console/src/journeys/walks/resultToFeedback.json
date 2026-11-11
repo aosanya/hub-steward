@@ -6,27 +6,22 @@
   "steps": [
     {
       "code": "WI-24",
-      "role": null,
       "ai": true
     },
     {
       "code": "WI-25",
-      "role": null,
       "ai": true
     },
     {
       "code": "WI-26",
-      "role": null,
       "ai": true
     },
     {
       "code": "WI-27",
-      "role": null,
       "ai": true
     },
     {
       "code": "WI-28",
-      "role": null,
       "ai": true
     }
   ],

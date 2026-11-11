@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 export type Rec = Record<string, any>;
 export type Table = Record<string, Rec[]> & { agency: Rec };
 
-export type WalkStep = { code: string; role: string | null; ai: boolean };
+export type WalkStep = { code: string; role?: string | null; ai: boolean };
 
 export type WalkChecks = {
   roleText?: { role: string; match: string[] }[];
