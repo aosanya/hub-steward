@@ -34,6 +34,10 @@ func (m memberInvitations) handleBatch(w http.ResponseWriter, r *http.Request) {
 		writeInstanceErr(w, err)
 		return
 	}
+	if m.refuses(r, instanceID, inviteBatchAction) {
+		writeErr(w, http.StatusForbidden, "forbidden")
+		return
+	}
 	var in invitationBatchRequest
 	if err := readJSON(r, &in); err != nil {
 		writeReadErr(w, err)

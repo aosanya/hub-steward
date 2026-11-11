@@ -22,12 +22,26 @@ type memberInvitations struct {
 	links     *magicLinkSender
 	residents residentGrants
 	mail      *InvitationMail
+	refused   func(ctx context.Context, instanceID, action string) bool
+}
+
+const (
+	inviteOneAction   = "actor.invitation.create"
+	inviteBatchAction = "actor.invitation.send_batch"
+)
+
+func (m memberInvitations) refuses(r *http.Request, instanceID, action string) bool {
+	return m.refused != nil && m.refused(r.Context(), instanceID, action)
 }
 
 func (m memberInvitations) handle(w http.ResponseWriter, r *http.Request) {
 	instanceID := r.PathValue("instanceID")
 	if err := mustBeMember(r.Context(), m.reg, instanceID); err != nil {
 		writeInstanceErr(w, err)
+		return
+	}
+	if m.refuses(r, instanceID, inviteOneAction) {
+		writeErr(w, http.StatusForbidden, "forbidden")
 		return
 	}
 	var in linkRequest
