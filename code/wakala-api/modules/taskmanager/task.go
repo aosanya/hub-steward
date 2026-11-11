@@ -252,6 +252,8 @@ type TaskManager interface {
 	TakeBackVote(ctx context.Context, caseID, memberID string) (RankedCase, error)
 	ListCaseVotes(ctx context.Context, caseID string) ([]CaseVote, error)
 	ListCasesByVotes(ctx context.Context, filter CaseFilter) ([]RankedCase, error)
+	AddTaskNote(ctx context.Context, requesterID, taskID, kind, text string, links []string) (TaskNote, error)
+	ListTaskNotes(ctx context.Context, requesterID, taskID string) ([]TaskNote, error)
 
 	// GetTaskByName retrieves a task by its project-scoped name (task_name)
 	// within a project (project_name). Returns [ErrTaskNotFound] if no task

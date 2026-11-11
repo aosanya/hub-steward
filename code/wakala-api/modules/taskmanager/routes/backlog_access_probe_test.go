@@ -30,6 +30,7 @@ var operationsNotBoundToABacklog = map[string]bool{
 	"open_case":      true,
 	"vote_case":      true,
 	"take_back_vote": true,
+	"add_task_note":  true,
 }
 
 var readsSentAsPost = map[string]bool{
