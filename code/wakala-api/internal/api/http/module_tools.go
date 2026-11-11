@@ -42,8 +42,11 @@ func (c *toolCatalog) load(ctx context.Context, d *Deps) ([]moduleToolView, erro
 }
 
 func (d *Deps) listServerTools(ctx context.Context) ([]moduleToolView, error) {
+	return moduleToolsServedBy(ctx, newMCPServer(d))
+}
+
+func moduleToolsServedBy(ctx context.Context, server *mcp.Server) ([]moduleToolView, error) {
 	serverSide, clientSide := mcp.NewInMemoryTransports()
-	server := newMCPServer(d)
 	serverSession, err := server.Connect(ctx, serverSide, nil)
 	if err != nil {
 		return nil, err

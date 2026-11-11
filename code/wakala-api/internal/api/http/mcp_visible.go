@@ -80,9 +80,10 @@ func (t *toolActions) get(d *Deps) map[string]string {
 }
 
 type mcpServers struct {
-	deps    *Deps
-	full    *mcp.Server
-	actions toolActions
+	deps        *Deps
+	full        *mcp.Server
+	actions     toolActions
+	moduleTools serverModuleTools
 
 	mu    sync.Mutex
 	byKey map[string]*mcp.Server
@@ -97,28 +98,62 @@ func newMCPServers(d *Deps) *mcpServers {
 }
 
 func (m *mcpServers) forRequest(r *http.Request) *mcp.Server {
-	if m.deps.Permissions == nil {
-		return m.full
-	}
 	ctx := r.Context()
 	subject := accounts.IDFromContext(ctx)
 	if subject == "" {
-		return m.full
+		return nil
 	}
+	hidden, err := m.hiddenFrom(ctx, subject)
+	if err != nil {
+		return nil
+	}
+	return m.serverFor(ctx, hidden)
+}
 
+func (m *mcpServers) hiddenFrom(ctx context.Context, subject string) ([]string, error) {
+	byModule, err := m.hiddenByModule(ctx, subject)
+	if err != nil {
+		return nil, err
+	}
+	if m.deps.Permissions == nil {
+		return byModule, nil
+	}
+	byAction, err := m.hiddenByAction(ctx, subject)
+	if err != nil {
+		return nil, err
+	}
+	return mergeNames(byModule, byAction), nil
+}
+
+func (m *mcpServers) hiddenByAction(ctx context.Context, subject string) ([]string, error) {
 	permitted, err := m.deps.Permissions.ActionsAnywhere(ctx, subject)
 	if err != nil {
-		return m.full
+		return nil, err
 	}
 	inScope := map[string][]string{}
 	for _, scope := range m.scopes() {
 		held, err := m.deps.Permissions.ActionsFor(ctx, subject, scope)
 		if err != nil {
-			return m.full
+			return nil, err
 		}
 		inScope[scope] = held
 	}
-	return m.serverFor(ctx, permitted, inScope)
+	return m.hiddenTools(permitted, inScope), nil
+}
+
+func mergeNames(a, b []string) []string {
+	seen := make(map[string]bool, len(a)+len(b))
+	var out []string
+	for _, list := range [][]string{a, b} {
+		for _, name := range list {
+			if !seen[name] {
+				seen[name] = true
+				out = append(out, name)
+			}
+		}
+	}
+	sort.Strings(out)
+	return out
 }
 
 func (m *mcpServers) scopes() []string {
@@ -135,8 +170,7 @@ func (m *mcpServers) scopes() []string {
 	return out
 }
 
-func (m *mcpServers) serverFor(ctx context.Context, permitted []string, inScope map[string][]string) *mcp.Server {
-	hidden := m.hiddenTools(permitted, inScope)
+func (m *mcpServers) serverFor(ctx context.Context, hidden []string) *mcp.Server {
 	if len(hidden) == 0 {
 		return m.full
 	}
