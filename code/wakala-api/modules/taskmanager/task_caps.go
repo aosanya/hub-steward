@@ -236,7 +236,8 @@ func (m *taskManager) WriteTaskUsage(ctx context.Context, requesterID, taskID st
 	if err := m.requireMoveOnTask(ctx, requesterID, taskID); err != nil {
 		return TaskCaps{}, err
 	}
-	if _, err := m.GetTask(ctx, taskID); err != nil {
+	task, err := m.GetTask(ctx, taskID)
+	if err != nil {
 		return TaskCaps{}, err
 	}
 	if usage.InputTokens < 0 || usage.OutputTokens < 0 || usage.SecondsUsed < 0 {
@@ -250,5 +251,9 @@ func (m *taskManager) WriteTaskUsage(ctx context.Context, requesterID, taskID st
 	if err := m.upsertRow(ctx, roleTaskUsage, row); err != nil {
 		return TaskCaps{}, fmt.Errorf("WriteTaskUsage: %w", err)
 	}
-	return m.capsReading(ctx, taskID)
+	reading, err := m.capsReading(ctx, taskID)
+	if err != nil {
+		return TaskCaps{}, err
+	}
+	return m.applyCaps(ctx, requesterID, task, usage, reading), nil
 }

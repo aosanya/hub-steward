@@ -25,6 +25,8 @@ type TaskUsageWrite struct {
 	OutputTokens int64 `json:"output_tokens"`
 	SecondsUsed  int64 `json:"seconds_used"`
 	ClockStopped bool  `json:"clock_stopped"`
+
+	FilesUncommitted *[]string `json:"files_uncommitted,omitempty"`
 }
 
 type TaskUsage struct {
@@ -43,6 +45,9 @@ type TaskCaps struct {
 	Own     *WorkerCaps `json:"own,omitempty"`
 	InForce WorkerCaps  `json:"in_force"`
 	Used    *TaskUsage  `json:"used,omitempty"`
+
+	Stop   bool     `json:"stop"`
+	Passed []string `json:"passed,omitempty"`
 }
 
 type CapsNearestFilter struct {
