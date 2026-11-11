@@ -21,9 +21,26 @@ func (m quietDeclinesUnseen) ListJoinRequestsForActor(ctx context.Context, actor
 		return nil, err
 	}
 	for i := range held {
-		held[i] = asTheApplicantSeesIt(held[i])
+		held[i] = withoutDecider(asTheApplicantSeesIt(held[i]))
 	}
 	return held, nil
+}
+
+func (m quietDeclinesUnseen) ListInvitationsForActor(ctx context.Context, actorID string) ([]mwanachamaactor.GroupInvitation, error) {
+	held, err := m.UserManager.ListInvitationsForActor(ctx, actorID)
+	if err != nil {
+		return nil, err
+	}
+	for i := range held {
+		held[i].InvitedBy = ""
+	}
+	return held, nil
+}
+
+func (m quietDeclinesUnseen) GetMyJoinDecision(ctx context.Context, decisionID, actorID string) (mwanachamaactor.JoinDecision, error) {
+	decision, err := m.UserManager.GetMyJoinDecision(ctx, decisionID, actorID)
+	decision.DecidedBy = ""
+	return decision, err
 }
 
 func (m quietDeclinesUnseen) GetJoinRequest(ctx context.Context, id string) (mwanachamaactor.GroupJoinRequest, error) {
@@ -31,18 +48,25 @@ func (m quietDeclinesUnseen) GetJoinRequest(ctx context.Context, id string) (mwa
 	if err != nil || req.ActorID != accounts.IDFromContext(ctx) {
 		return req, err
 	}
-	return asTheApplicantSeesIt(req), nil
+	return withoutDecider(asTheApplicantSeesIt(req)), nil
 }
 
 func (m quietDeclinesUnseen) FindGroupByCode(ctx context.Context, code, actorID string) (mwanachamaactor.GroupByCode, error) {
 	found, err := m.UserManager.FindGroupByCode(ctx, code, actorID)
-	if err != nil || found.Request == nil || found.State != actormodels.CallerDeclined || !found.Request.Silent {
+	if err != nil || found.Request == nil {
 		return found, err
 	}
-	seen := asTheApplicantSeesIt(*found.Request)
+	seen := withoutDecider(asTheApplicantSeesIt(*found.Request))
 	found.Request = &seen
-	found.State = actormodels.CallerRequested
+	if found.State == actormodels.CallerDeclined && found.Request.State == joinRequestUnderReview {
+		found.State = actormodels.CallerRequested
+	}
 	return found, nil
+}
+
+func withoutDecider(req mwanachamaactor.GroupJoinRequest) mwanachamaactor.GroupJoinRequest {
+	req.DecidedBy = ""
+	return req
 }
 
 func asTheApplicantSeesIt(req mwanachamaactor.GroupJoinRequest) mwanachamaactor.GroupJoinRequest {

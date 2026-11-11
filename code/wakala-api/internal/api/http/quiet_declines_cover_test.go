@@ -109,6 +109,13 @@ func TestGroupByCodeShowsASilentDeclineAsRequested(t *testing.T) {
 	}
 }
 
+func sameRequestWithoutDecider(got, in *mwanachamaactor.GroupJoinRequest) bool {
+	if got == nil || in == nil {
+		return got == in
+	}
+	return *got == withoutDecider(*in)
+}
+
 func TestGroupByCodeLeavesOtherStatesAlone(t *testing.T) {
 	open := silentDecline()
 	open.Silent = false
@@ -119,8 +126,8 @@ func TestGroupByCodeLeavesOtherStatesAlone(t *testing.T) {
 	}
 	for name, in := range cases {
 		got, err := (quietDeclinesUnseen{declinesStub{byCode: in}}).FindGroupByCode(context.Background(), "abc", "me")
-		if err != nil || got.State != in.State || got.Request != in.Request {
-			t.Fatalf("%s: must pass through unchanged, got %+v, %v", name, got, err)
+		if err != nil || got.State != in.State || !sameRequestWithoutDecider(got.Request, in.Request) {
+			t.Fatalf("%s: must pass through unchanged but for the decider, got %+v, %v", name, got, err)
 		}
 	}
 	boom := errors.New("down")
