@@ -13,7 +13,7 @@ import (
 
 const bodySniffBytes = 512
 
-func refuseControlCharacters(next http.Handler) http.Handler {
+func refuseControlCharacters(auth callers, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Body == nil || r.Body == http.NoBody || !mayCarryJSON(r.Header.Get("Content-Type")) {
 			next.ServeHTTP(w, r)
@@ -26,18 +26,8 @@ func refuseControlCharacters(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
-		limit := scanLimitFor(r)
-		if r.ContentLength > limit {
-			writeErr(w, http.StatusRequestEntityTooLarge, "request body too large")
-			return
-		}
-		raw, err := io.ReadAll(io.LimitReader(peeked, limit+1))
-		if err != nil {
-			writeReadErr(w, err)
-			return
-		}
-		if int64(len(raw)) > limit {
-			writeErr(w, http.StatusRequestEntityTooLarge, "request body too large")
+		raw, ok := readScannedBody(w, r, peeked, rememberedRecognition(auth, r))
+		if !ok {
 			return
 		}
 		if err := plaintext.CheckJSONStrings(raw); err != nil {
@@ -49,19 +39,48 @@ func refuseControlCharacters(next http.Handler) http.Handler {
 	})
 }
 
-func scanLimitFor(r *http.Request) int64 {
-	if carriesCredentials(r) {
-		return maxRequestBody
+func readScannedBody(w http.ResponseWriter, r *http.Request, body io.Reader, recognised func() bool) ([]byte, bool) {
+	if r.ContentLength > anonymousJSONBodyBytes && !recognised() {
+		writeErr(w, http.StatusRequestEntityTooLarge, "request body too large")
+		return nil, false
 	}
-	return anonymousJSONBodyBytes
+	limit := int64(anonymousJSONBodyBytes)
+	if r.ContentLength > limit {
+		limit = maxRequestBody
+	}
+	if r.ContentLength > limit {
+		writeErr(w, http.StatusRequestEntityTooLarge, "request body too large")
+		return nil, false
+	}
+	raw, err := io.ReadAll(io.LimitReader(body, limit+1))
+	if err != nil {
+		writeReadErr(w, err)
+		return nil, false
+	}
+	if int64(len(raw)) > limit && limit < maxRequestBody && recognised() {
+		more, err := io.ReadAll(io.LimitReader(body, maxRequestBody-int64(len(raw))+1))
+		if err != nil {
+			writeReadErr(w, err)
+			return nil, false
+		}
+		raw = append(raw, more...)
+		limit = maxRequestBody
+	}
+	if int64(len(raw)) > limit {
+		writeErr(w, http.StatusRequestEntityTooLarge, "request body too large")
+		return nil, false
+	}
+	return raw, true
 }
 
-func carriesCredentials(r *http.Request) bool {
-	if _, ok := bearerToken(r); ok {
-		return true
+func rememberedRecognition(auth callers, r *http.Request) func() bool {
+	var asked, answer bool
+	return func() bool {
+		if !asked {
+			asked, answer = true, auth.recognises(r)
+		}
+		return answer
 	}
-	_, err := r.Cookie(sessionCookieName)
-	return err == nil
 }
 
 type readCloser struct {

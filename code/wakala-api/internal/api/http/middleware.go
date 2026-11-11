@@ -72,26 +72,37 @@ func asCaller(r *http.Request, id string) *http.Request {
 
 func (c callers) require(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if tok, ok := bearerToken(r); ok {
-			if c.keys != nil {
-				if key, err := c.keys.Verify(r.Context(), tok); err == nil {
-					next(w, asCaller(r, key.AccountID))
-					return
-				}
-			}
-			if id, ok := c.projectUserSeen(r.Context(), tok); ok {
-				next(w, asCaller(r, id))
-				return
-			}
+		id, ok := c.identify(r, c.projectUserSeen)
+		if !ok {
+			c.refuse(w, r)
+			return
 		}
-		if cookie, err := r.Cookie(sessionCookieName); err == nil && c.sessions != nil {
-			if sess, err := c.sessions.Verify(r.Context(), cookie.Value); err == nil {
-				next(w, asCaller(r, sess.MemberID))
-				return
-			}
-		}
-		c.refuse(w, r)
+		next(w, asCaller(r, id))
 	}
+}
+
+func (c callers) recognises(r *http.Request) bool {
+	_, ok := c.identify(r, c.projectUser)
+	return ok
+}
+
+func (c callers) identify(r *http.Request, projectIdentity func(context.Context, string) (string, bool)) (string, bool) {
+	if tok, ok := bearerToken(r); ok {
+		if c.keys != nil {
+			if key, err := c.keys.Verify(r.Context(), tok); err == nil {
+				return key.AccountID, true
+			}
+		}
+		if id, ok := projectIdentity(r.Context(), tok); ok {
+			return id, true
+		}
+	}
+	if cookie, err := r.Cookie(sessionCookieName); err == nil && c.sessions != nil {
+		if sess, err := c.sessions.Verify(r.Context(), cookie.Value); err == nil {
+			return sess.MemberID, true
+		}
+	}
+	return "", false
 }
 
 func (c callers) projectUser(ctx context.Context, token string) (string, bool) {
