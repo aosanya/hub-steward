@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	mwanachamaforms "wakalaserver/modules/forms"
 	formsmodels "wakalaserver/modules/forms/models"
 
 	"wakalaserver/internal/accounts"
@@ -13,7 +14,7 @@ import (
 const reportPromisesPattern = "GET " + formsInstancePrefix + "/forms/{form_id}/results/latest/promises"
 
 type reportWithPromises struct {
-	Report   formsmodels.ResultReportView `json:"report"`
+	Report   formsmodels.ResultReportRead `json:"report"`
 	Promises []agencies.ReportPromiseRead `json:"promises"`
 }
 
@@ -32,7 +33,8 @@ func (d *Deps) registerReportPromisesRoute(mux *http.ServeMux, reg agencies.Regi
 		if refusedAsMissing(w, r, d.instanceFormsMount(role).Authorize, "forms.results.read") {
 			return
 		}
-		report, err := fm.LatestResults(r.Context(), r.PathValue("form_id"), accounts.IDFromContext(r.Context()))
+		callerID := accounts.IDFromContext(r.Context())
+		report, err := fm.LatestResults(r.Context(), r.PathValue("form_id"), callerID)
 		if err != nil {
 			writeInstanceErr(w, agencies.ErrInstanceNotFound)
 			return
@@ -49,7 +51,11 @@ func (d *Deps) registerReportPromisesRoute(mux *http.ServeMux, reg agencies.Regi
 		if promises == nil {
 			promises = []agencies.ReportPromiseRead{}
 		}
-		writeJSON(w, http.StatusOK, reportWithPromises{Report: report.RespondentView(), Promises: promises})
+		reach := r.Context()
+		if d.instanceFormsMount(role).ReachedOnly {
+			reach = mwanachamaforms.OnlyReached(reach, callerID)
+		}
+		writeJSON(w, http.StatusOK, reportWithPromises{Report: report.ReadAs(mwanachamaforms.IsNarrowed(reach)), Promises: promises})
 	}))
 }
 
