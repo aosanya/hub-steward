@@ -5,3 +5,10 @@
 .bb-card .row, .bb-card .selrow { border-top: 0; }
 .bb-none { margin: 0; padding: .5rem; color: var(--ink-soft); font-size: .8125rem; }
 .bb-clear { min-height: 2.5rem; padding: 0 .875rem; border: 1px solid var(--line-strong); border-radius: var(--r-pill); background: var(--surface); color: var(--accent); font: inherit; font-weight: 500; }
+@media (min-width: 48rem) {
+  .bb-board { max-height: calc(100dvh - 14rem); overflow: auto; align-items: flex-start; }
+  .bb-col h3 { position: sticky; top: 0; z-index: 1; background: var(--bg-alt); }
+  .bb-board::-webkit-scrollbar { width: .875rem; height: .875rem; }
+  .bb-board::-webkit-scrollbar-track { background: var(--bg-alt); border-radius: var(--r-pill); }
+  .bb-board::-webkit-scrollbar-thumb { background: var(--line-strong); border: .1875rem solid var(--bg-alt); border-radius: var(--r-pill); }
+}

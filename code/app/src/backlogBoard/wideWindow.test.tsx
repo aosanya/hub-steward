@@ -156,3 +156,20 @@ describe("the header line on a wide window", () => {
     expect(wideBlock()).toMatch(/\.frame\.fluid \.filter-bar > \.search-box\s*\{[^}]*flex: 1 1 18rem/);
   });
 });
+
+const boardCss = readFileSync(resolve(__dirname, "backlogBoard.css"), "utf8");
+
+describe("the board on a wide window keeps a visible scroll bar in reach", () => {
+  const wide = boardCss.slice(boardCss.indexOf("@media (min-width: 48rem)"));
+
+  it("scrolls in its own window-high box so the horizontal bar is not a thousand cards down", () => {
+    expect(boardCss).toContain("@media (min-width: 48rem)");
+    expect(wide).toMatch(/\.bb-board\s*\{[^}]*max-height:\s*calc\(100dvh/);
+    expect(wide).toMatch(/\.bb-board\s*\{[^}]*overflow:\s*auto/);
+  });
+
+  it("draws the bar itself so it shows without scrolling, and keeps the column names in view", () => {
+    expect(wide).toContain(".bb-board::-webkit-scrollbar");
+    expect(wide).toMatch(/\.bb-col h3\s*\{[^}]*position:\s*sticky/);
+  });
+});
