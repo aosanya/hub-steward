@@ -83,6 +83,11 @@ func taskManagerToolHandler(idx int, name string, resolve taskManagerResolver, r
 		if name == caseVoteTool {
 			pinVoterKind(args, callerAgencyRole(ctx, reg, instanceID))
 		}
+		if name == takeBackVoteTool {
+			if refusal := refuseVoteWithdrawal(accounts.IDFromContext(ctx), callerAgencyRole(ctx, reg, instanceID), args); refusal != nil {
+				return refusal, nil
+			}
+		}
 		rest, err := json.Marshal(args)
 		if err != nil {
 			return toolError(err), nil

@@ -47,6 +47,9 @@ func (d *Deps) registerTaskManagerRoutes(mux *http.ServeMux, reg agencies.Regist
 			if action == caseVoteAction && !pinVoterKindOnRequest(w, r, d.callerRole(r, r.PathValue("instanceID"))) {
 				return
 			}
+			if action == takeBackVoteAction && !admitVoteWithdrawal(w, r, d.callerRole(r, r.PathValue("instanceID"))) {
+				return
+			}
 			handler := taskmanagerroutes.RoutesFor(m, d.instanceTaskManagerMount(d.callerRole(r, r.PathValue("instanceID"))))[idx].Handler
 			if action == caseEndAction && endGrants != nil {
 				endCaseThenItsGrants(w, r, handler, endGrants)
