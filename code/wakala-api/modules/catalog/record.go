@@ -6,7 +6,11 @@ import (
 	"errors"
 
 	"gorm.io/gorm"
+
+	"wakalaserver/modules/shared/gormutil"
 )
+
+const recordAttempts = 5
 
 func (m *catalogManager) keepsRecords() bool {
 	_, kept := m.st.Spec().ByRole(roleRecord)
@@ -29,6 +33,16 @@ func (m *catalogManager) PutRecord(ctx context.Context, r Record) (Record, error
 		return Record{}, ErrInvalidRecord
 	}
 	onePerHolder := m.onePerHolder(ctx)
+	for attempt := 0; attempt < recordAttempts; attempt++ {
+		out, err := m.putRecordOnce(ctx, r, onePerHolder)
+		if !gormutil.IsUniqueViolation(err) {
+			return out, err
+		}
+	}
+	return Record{}, ErrRecordHolderSpoke
+}
+
+func (m *catalogManager) putRecordOnce(ctx context.Context, r Record, onePerHolder bool) (Record, error) {
 	var out Record
 	err := m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if onePerHolder {

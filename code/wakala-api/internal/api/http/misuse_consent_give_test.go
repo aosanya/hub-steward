@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	"gorm.io/gorm"
+
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/session"
 	mwanachamaactor "wakalaserver/modules/actor"
@@ -25,7 +27,11 @@ type consentWalk struct {
 
 func newConsentWalk(t *testing.T) consentWalk {
 	t.Helper()
-	db := stepRunDB(t)
+	return newConsentWalkOn(t, stepRunDB(t))
+}
+
+func newConsentWalkOn(t *testing.T, db *gorm.DB) consentWalk {
+	t.Helper()
 	var registry agencies.Registry
 	reg, err := agencies.NewRegistry(db, agencies.StartingApproved(),
 		agencies.WithConsentRequired(ConsentRequired(func() agencies.Registry { return registry })),
@@ -149,10 +155,15 @@ func publishMechanicsConsent(t *testing.T, cw consentWalk) {
 
 func openFormForGroup(t *testing.T, cw consentWalk) (formID, questionID string) {
 	t.Helper()
+	return openFormForGroupLocked(t, cw, false)
+}
+
+func openFormForGroupLocked(t *testing.T, cw consentWalk, lockedAfterSend bool) (formID, questionID string) {
+	t.Helper()
 	base := "/instances/" + cw.instance + "/forms/forms"
 	created := cw.call(t, "POST", base, map[string]any{
 		"title": "Ward consultation", "closes_at": "2099-01-01T00:00:00Z", "originator_chapter_id": cw.groupID,
-		"audience": "member", "collection_mode": "self",
+		"audience": "member", "collection_mode": "self", "locked_after_send": lockedAfterSend,
 	}, cw.owner)
 	if created.Code != http.StatusCreated {
 		t.Fatalf("create form: %d %s", created.Code, created.Body.String())

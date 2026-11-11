@@ -17,6 +17,12 @@ import (
 
 func overriddenManager(t *testing.T, overrides map[string]any) catalog.CatalogManager {
 	t.Helper()
+	cm, _, _ := overriddenManagerOn(t, overrides)
+	return cm
+}
+
+func overriddenManagerOn(t *testing.T, overrides map[string]any) (catalog.CatalogManager, *gorm.DB, *spec.Spec) {
+	t.Helper()
 	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{Logger: logger.Default.LogMode(logger.Silent)})
 	if err != nil {
 		t.Fatal(err)
@@ -37,7 +43,7 @@ func overriddenManager(t *testing.T, overrides map[string]any) catalog.CatalogMa
 	if err != nil {
 		t.Fatal(err)
 	}
-	return cm
+	return cm, db, s
 }
 
 func seedsOf(slugs ...string) []any {
