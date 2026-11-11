@@ -36,6 +36,9 @@ func (d *Deps) registerCustodyRoutes(mux *http.ServeMux, reg agencies.Registry, 
 				return
 			}
 			r = withPartition(r, instanceID)
+			if action == consentGiveAction {
+				r = d.withAgencyConsentLanguage(r, instanceID)
+			}
 			custodyroutes.RoutesFor(m, d.instanceCustodyMount(d.callerRole(r, instanceID)))[idx].Handler(w, r)
 		}))
 	}

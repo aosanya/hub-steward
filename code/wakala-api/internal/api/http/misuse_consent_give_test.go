@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/internal/agencies"
+	"wakalaserver/internal/languages"
 	"wakalaserver/internal/session"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamacustody "wakalaserver/modules/custody"
@@ -52,7 +53,11 @@ func newConsentWalkOn(t *testing.T, db *gorm.DB) consentWalk {
 	if err != nil {
 		t.Fatalf("NewInsightManager: %v", err)
 	}
-	deps := &Deps{Registry: reg, Insights: insights, Sessions: session.NewHMACManager([]byte("test-secret"), nil, nil), AdminToken: "test-admin-token"}
+	languageStore, err := languages.NewStore(db)
+	if err != nil {
+		t.Fatalf("languages NewStore: %v", err)
+	}
+	deps := &Deps{Registry: reg, Insights: insights, Languages: languageStore, Sessions: session.NewHMACManager([]byte("test-secret"), nil, nil), AdminToken: "test-admin-token"}
 	ApplyCaches(deps)
 	w := stepRunWalk{handler: NewRouter(deps), deps: deps, roles: map[string]string{}, steps: map[string]string{}, people: map[string]*http.Cookie{}}
 	w.owner = w.cookieFor(t, "test-owner")
