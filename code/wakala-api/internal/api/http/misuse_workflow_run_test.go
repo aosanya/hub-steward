@@ -15,7 +15,11 @@ const runEngineOwner = "test-owner"
 
 func runEngineWalk(t *testing.T) stepRunWalk {
 	t.Helper()
-	w := referral(t)
+	return runEngineWalkOf(t, referral(t))
+}
+
+func runEngineWalkOf(t *testing.T, w stepRunWalk) stepRunWalk {
+	t.Helper()
 	ctx := context.Background()
 	mgr, err := w.deps.Registry.AgencyManager(ctx, w.instance)
 	if err != nil {
@@ -75,8 +79,12 @@ type publishedReferral struct {
 	steps    []string
 }
 
-func publishedReferralOf(t *testing.T, w stepRunWalk) publishedReferral {
+func publishedReferralOf(t *testing.T, w stepRunWalk, stepCount ...int) publishedReferral {
 	t.Helper()
+	want := 3
+	if len(stepCount) > 0 {
+		want = stepCount[0]
+	}
 	mgr, err := w.deps.Registry.AgencyManager(context.Background(), w.instance)
 	if err != nil {
 		t.Fatalf("AgencyManager: %v", err)
@@ -91,7 +99,7 @@ func publishedReferralOf(t *testing.T, w stepRunWalk) publishedReferral {
 	for _, item := range items {
 		out.steps = append(out.steps, item.Code)
 	}
-	if out.workflow == "" || len(out.steps) != 3 {
+	if out.workflow == "" || len(out.steps) != want {
 		t.Fatalf("published referral has workflow %q and steps %v", out.workflow, out.steps)
 	}
 	return out

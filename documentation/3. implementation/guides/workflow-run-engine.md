@@ -11,6 +11,11 @@ checks every call against the published agency.
 - The version is a published version of the agency.
 - The workflow code is a workflow of that version.
 - Otherwise the call is refused with 400 (`ErrWorkflowNotPublished`).
+- Unless the caller owns the agency, the caller holds the role the published
+  first step of the workflow names (through a seat, a group or a role
+  assignment), or the call is refused with 403 (`ErrStepRoleNotHeld`). A first
+  step that names no role, such as a `send_form` or `route` step, which carry
+  none by design, has no role to check. The owner starts any workflow.
 
 ## What a step must satisfy
 
@@ -34,7 +39,8 @@ limit sent with the call is replaced by the published one.
   step membership, order and cancel-workflow checks, on `limitedBoard`, the
   wrapper every task manager of an agency is built with.
 - `wakala-api/internal/api/http/step_role_board.go` holds the role check, on a
-  wrapper that `taskManagerFor` puts around the board for callers. The HTTP
+  wrapper that `taskManagerFor` puts around the board for callers; it checks
+  the role of the first step on a start and of the named step on a step. The HTTP
   routes and the MCP tools both resolve their board through it.
 - The market ask runner starts and begins its own timed yes-or-no step from
   inside the server, through the registry board and not the caller board. It
