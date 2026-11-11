@@ -1,3 +1,4 @@
+import { type MockInstance, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
@@ -63,13 +64,15 @@ const Where = () => {
   return null;
 };
 
+const noMemberSteps = { available: async () => [] };
+
 const show = async (props: Parameters<typeof StartRows>[0]) => {
   landed = "";
   let shown: ReturnType<typeof render> | undefined;
   await act(async () => {
     shown = render(
       <MemoryRouter>
-        <StartRows forms={holdsAForm} {...props} />
+        <StartRows forms={holdsAForm} steps={noMemberSteps} {...props} />
         <Where />
       </MemoryRouter>,
     );
@@ -96,9 +99,19 @@ const rowsShown = async () => {
 
 const rowNamed = (title: string) => screen.findByRole("button", { name: new RegExp(`^${title}`) });
 
-beforeEach(() => openAgency("farmers"));
+let network: MockInstance<typeof fetch>;
 
-afterEach(() => forgetOpenAgency());
+beforeEach(() => {
+  openAgency("farmers");
+  network = vi.spyOn(globalThis, "fetch");
+});
+
+afterEach(() => {
+  const calls = network.mock.calls.length;
+  network.mockRestore();
+  forgetOpenAgency();
+  expect(calls).toBe(0);
+});
 
 describe("the Start rows of Do Something", () => {
   describe("the rows of the agency's cards", () => {
