@@ -82,6 +82,10 @@ func Fields() (map[string]dispatch.FieldDoc, error) {
 func BuildTools(wm workspace.WorkspaceManager) ([]Tool, error) { return BuildToolsWith(wm, nil) }
 
 func BuildToolsWith(wm workspace.WorkspaceManager, authorize dispatch.Authorizer) ([]Tool, error) {
+	return BuildToolsFor(wm, Mount{Authorize: authorize})
+}
+
+func BuildToolsFor(wm workspace.WorkspaceManager, m Mount) ([]Tool, error) {
 	s, err := operations()
 	if err != nil {
 		return nil, err
@@ -91,7 +95,7 @@ func BuildToolsWith(wm workspace.WorkspaceManager, authorize dispatch.Authorizer
 		return nil, err
 	}
 	tools, err := dispatch.Tools(s, dispatch.Deps{
-		Manager: wm, Errors: sentinels, Fields: fields, Authorize: authorize,
+		Manager: wm, Errors: sentinels, Fields: fields, Authorize: m.Authorize, Caller: m.Caller, Device: m.Device,
 	})
 	if err != nil {
 		return nil, err
@@ -102,7 +106,11 @@ func BuildToolsWith(wm workspace.WorkspaceManager, authorize dispatch.Authorizer
 func Tools(wm workspace.WorkspaceManager) []Tool { return ToolsWith(wm, nil) }
 
 func ToolsWith(wm workspace.WorkspaceManager, authorize dispatch.Authorizer) []Tool {
-	out, err := BuildToolsWith(wm, authorize)
+	return ToolsFor(wm, Mount{Authorize: authorize})
+}
+
+func ToolsFor(wm workspace.WorkspaceManager, m Mount) []Tool {
+	out, err := BuildToolsFor(wm, m)
 	if err != nil {
 		panic(fmt.Sprintf("workspace tools: %v", err))
 	}

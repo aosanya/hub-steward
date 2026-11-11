@@ -484,10 +484,9 @@
           "description": "The proposal to comment on."
         },
         {
-          "from": "body",
+          "from": "caller",
           "as": "author",
-          "required": true,
-          "field": "SuggestionComment.author"
+          "description": "Who wrote it, resolved from the session rather than the request."
         },
         {
           "from": "body",

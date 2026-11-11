@@ -147,7 +147,7 @@
       "args": [
         {"from": "path", "as": "workbook_id", "description": "The workbook to share."},
         {"from": "body", "as": "label", "description": "What this key is being handed out for."},
-        {"from": "body", "as": "issued_by", "description": "Who is issuing it."}
+        {"from": "caller", "as": "issued_by", "description": "Who is issuing it, resolved from the session rather than the request."}
       ],
       "returns": [{"as": "share"}, {"as": "key", "once": true}]
     },
