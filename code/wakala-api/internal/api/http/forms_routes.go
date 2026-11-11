@@ -118,7 +118,7 @@ func (noLinkIssued) RegisterRespondent(context.Context, string, string) (forms.R
 	return forms.RespondentPublicView{}, forms.ErrLinkNotFound
 }
 
-func (noLinkIssued) DeclareChapter(context.Context, string, string, string, string) (forms.Declaration, error) {
+func (noLinkIssued) DeclareChapter(context.Context, string, string, string, string, string) (forms.Declaration, error) {
 	return forms.Declaration{}, forms.ErrLinkNotFound
 }
 
