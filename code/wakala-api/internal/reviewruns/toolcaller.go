@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	mwanachamaagency "wakalaserver/modules/agency"
 )
 
 const (
@@ -27,6 +29,7 @@ type InstanceLister func(ctx context.Context) ([]string, error)
 type CallerTools struct {
 	Caller    ToolCaller
 	Instances InstanceLister
+	Agency    func(ctx context.Context, instanceID string) (mwanachamaagency.AgencyManager, error)
 }
 
 type items[T any] struct {
@@ -41,7 +44,10 @@ func (t CallerTools) call(ctx context.Context, instanceID, tool string, args map
 	return t.Caller.Call(ctx, tool, with)
 }
 
-func (t CallerTools) StartReview(ctx context.Context, instanceID, draftID, _, area string) (Page, error) {
+func (t CallerTools) StartReview(ctx context.Context, instanceID, draftID, startedBy, area string) (Page, error) {
+	if t.Agency != nil {
+		return t.startSigned(ctx, instanceID, draftID, startedBy, area)
+	}
 	args := map[string]any{"draft_id": draftID}
 	if area != "" {
 		args["area"] = area
@@ -49,6 +55,22 @@ func (t CallerTools) StartReview(ctx context.Context, instanceID, draftID, _, ar
 	body, err := t.call(ctx, instanceID, toolStartReview, args)
 	if err != nil {
 		return Page{}, refusalOf(err)
+	}
+	return decodePage(body)
+}
+
+func (t CallerTools) startSigned(ctx context.Context, instanceID, draftID, startedBy, area string) (Page, error) {
+	manager, err := t.Agency(ctx, instanceID)
+	if err != nil {
+		return Page{}, err
+	}
+	view, err := manager.StartReview(ctx, draftID, startedBy, area)
+	if err != nil {
+		return Page{}, refusalOf(err)
+	}
+	body, err := json.Marshal(view)
+	if err != nil {
+		return Page{}, err
 	}
 	return decodePage(body)
 }

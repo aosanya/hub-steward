@@ -22,7 +22,7 @@ func newReviewService(logger *slog.Logger, registry agencies.Registry, resolveAI
 			return registry.AgencyManager(ctx, id)
 		})
 	}}
-	tools := reviewruns.CallerTools{Caller: caller, Instances: instanceIDsOf(registry)}
+	tools := reviewruns.CallerTools{Caller: caller, Instances: instanceIDsOf(registry), Agency: registry.AgencyManager}
 	pieces := reviewruns.Pieces{
 		AI:     resolveAI,
 		Agency: registry.AgencyManager,
