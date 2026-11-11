@@ -13,6 +13,7 @@ import (
 type HiddenRows struct {
 	Engage *mwanachamaengage.Hidden       `json:"engage,omitempty"`
 	Forms  []models.Answer                `json:"forms,omitempty"`
+	Sends  []models.Submission            `json:"sends,omitempty"`
 	Comm   *mwanachamacomm.HiddenMessages `json:"comm,omitempty"`
 }
 
@@ -40,8 +41,10 @@ func (r *registry) HiddenRowsOf(ctx context.Context, id, actorID string) (Hidden
 			if err != nil {
 				return err
 			}
-			out.Forms, err = fm.ListHiddenAnswers(ctx, actorID)
-			return err
+			answers, answersErr := fm.ListHiddenAnswers(ctx, actorID)
+			sends, sendsErr := fm.ListHiddenSends(ctx, actorID)
+			out.Forms, out.Sends = answers, sends
+			return errors.Join(answersErr, sendsErr)
 		}),
 		r.whenMounted(ctx, id, "comm", func() error {
 			rm, err := r.CommManager(ctx, id)
