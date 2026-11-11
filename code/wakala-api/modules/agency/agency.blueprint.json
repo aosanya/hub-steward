@@ -595,6 +595,7 @@
         {"name": "order_id", "type": "string", "description": "The one group order the row was added from. Empty for a row that belongs to no order."},
         {"name": "replaces", "type": "string", "description": "The row this one corrects. The replaced row stays, and reads as history."},
         {"name": "corrected_on", "type": "timestamp", "description": "When this row replaced the earlier one. Empty for a row that corrects nothing."},
+        {"name": "send_key", "type": "string", "description": "The step and run a workflow step sent this row for, written by the step's own send and by nothing else. Empty for every other row, including the ones kept from before the key existed."},
         {"name": "created_at", "type": "timestamp", "description": "When the row was added.", "immutable": true},
         {"name": "last_updated", "type": "timestamp", "description": "When it last changed."},
         {"name": "deleted", "type": "bool", "description": "Whether it has been retired from every listing."}
@@ -602,7 +603,8 @@
       "indexes": [
         {"name": "record", "description": "Reads the rows of one record.", "fields": ["record_id"]},
         {"name": "record_code", "description": "Reads the rows of one record across versions.", "fields": ["record_code"]},
-        {"name": "record_order", "description": "Reads the rows of one record that belong to one group order.", "fields": ["record_id", "order_id"]}
+        {"name": "record_order", "description": "Reads the rows of one record that belong to one group order.", "fields": ["record_id", "order_id"]},
+        {"name": "send_key_unique", "description": "Refuses a second send of one step in one run, so two writers racing, in this process or another, cannot both add it. A retired row frees its step, and rows with no key, which include every row kept from before the key existed, are left out.", "fields": ["send_key"], "unique": true, "not_deleted": true, "where": [{"field": "send_key", "op": "not_empty"}]}
       ]
     },
     {

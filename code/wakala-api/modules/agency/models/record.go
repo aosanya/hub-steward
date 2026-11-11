@@ -26,6 +26,7 @@ type RecordRow struct {
 	OrderID     string            `json:"order_id,omitempty"`
 	Replaces    string            `json:"replaces,omitempty"`
 	CorrectedOn string            `json:"corrected_on,omitempty"`
+	SendKey     string            `json:"-"`
 	CreatedAt   string            `json:"created_at"`
 	LastUpdated string            `json:"last_updated"`
 	Deleted     bool              `json:"deleted"`

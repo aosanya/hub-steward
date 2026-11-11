@@ -138,6 +138,7 @@ var (
 	ErrRecordRowRefused = errors.New("mwanachamaagency: this role does not add rows to the record")
 
 	ErrDuplicateRecordRow = errors.New("mwanachamaagency: the same answers were saved a moment ago")
+	ErrStepAlreadySent    = errors.New("mwanachamaagency: this step was already sent for this run")
 )
 
 var (

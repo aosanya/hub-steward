@@ -246,7 +246,7 @@ func (m *agencyManager) CreateRecordRow(ctx context.Context, row models.RecordRo
 	if err := m.refuseDuplicate(ctx, row); err != nil {
 		return models.RecordRow{}, fmt.Errorf("CreateRecordRow: %w", err)
 	}
-	if err := m.insert(ctx, roleRecordRow, row); err != nil {
+	if err := duplicateOr(m.st.Insert(ctx, roleRecordRow, row), ErrStepAlreadySent); err != nil {
 		return models.RecordRow{}, fmt.Errorf("CreateRecordRow: %w", err)
 	}
 	return row, nil

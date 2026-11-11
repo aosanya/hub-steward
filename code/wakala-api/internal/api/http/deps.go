@@ -145,6 +145,7 @@ type Deps struct {
 	cacheMu     sync.Mutex
 	epochs      *authz.Epochs
 	permissions *authz.Cache[[]string]
+	sends       *sendLocks
 }
 
 // CookieConfig is the deployment-specific half of the session cookie —

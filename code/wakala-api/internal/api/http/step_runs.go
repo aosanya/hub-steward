@@ -123,7 +123,14 @@ type sendLock struct {
 	waiting int
 }
 
-var stepSendLocks = &sendLocks{held: map[string]*sendLock{}}
+func (d *Deps) stepSendLocks() *sendLocks {
+	d.cacheMu.Lock()
+	defer d.cacheMu.Unlock()
+	if d.sends == nil {
+		d.sends = &sendLocks{held: map[string]*sendLock{}}
+	}
+	return d.sends
+}
 
 func (l *sendLocks) acquire(key string) func() {
 	l.mu.Lock()
@@ -382,7 +389,7 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 		return stepAnswersResult{}, err
 	}
 	if req.OrderID != "" && index > 0 {
-		release := stepSendLocks.acquire(instanceID + "\x00" + req.OrderID)
+		release := d.stepSendLocks().acquire(instanceID + "\x00" + req.OrderID)
 		defer release()
 	}
 	orderID, err := runForSubmit(ctx, m, chain, index, req.OrderID)
@@ -392,7 +399,11 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	row, err := m.CreateRecordRow(ctx, agencymodels.RecordRow{
 		DraftID: held.DraftID, RecordID: chain[index].record.ID, RoleID: chain[index].record.RoleID,
 		AddedBy: accounts.IDFromContext(ctx), Answers: answers, OrderID: orderID,
+		SendKey: chain[index].record.Code + ":" + orderID,
 	})
+	if errors.Is(err, mwanachamaagency.ErrStepAlreadySent) {
+		return stepAnswersResult{}, errStepNotWaiting
+	}
 	if err != nil {
 		return stepAnswersResult{}, err
 	}

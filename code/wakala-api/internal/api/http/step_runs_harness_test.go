@@ -55,11 +55,15 @@ type stepRunWalk struct {
 
 func (w stepRunWalk) call(t *testing.T, method, path string, body any, as *http.Cookie) *httptest.ResponseRecorder {
 	t.Helper()
+	return callOn(w.handler, method, path, body, as)
+}
+
+func callOn(handler http.Handler, method, path string, body any, as *http.Cookie) *httptest.ResponseRecorder {
 	var reader *bytes.Reader
 	if body != nil {
 		b, err := json.Marshal(body)
 		if err != nil {
-			t.Fatalf("marshal body: %v", err)
+			panic(err)
 		}
 		reader = bytes.NewReader(b)
 	} else {
@@ -71,7 +75,7 @@ func (w stepRunWalk) call(t *testing.T, method, path string, body any, as *http.
 	}
 	req.AddCookie(as)
 	rec := httptest.NewRecorder()
-	w.handler.ServeHTTP(rec, req)
+	handler.ServeHTTP(rec, req)
 	return rec
 }
 
@@ -119,7 +123,11 @@ type forkSpec struct {
 
 func newStepRunWalk(t *testing.T, plan []stepSpec, people ...string) stepRunWalk {
 	t.Helper()
-	db := stepRunDB(t)
+	return newStepRunWalkOn(t, stepRunDB(t), plan, people...)
+}
+
+func stepRunDeps(t *testing.T, db *gorm.DB) (*Deps, agencies.Registry) {
+	t.Helper()
 	reg, err := agencies.NewRegistry(db, agencies.StartingApproved())
 	if err != nil {
 		t.Fatalf("NewRegistry: %v", err)
@@ -137,6 +145,12 @@ func newStepRunWalk(t *testing.T, plan []stepSpec, people ...string) stepRunWalk
 	}
 	deps := &Deps{Registry: reg, Insights: insights, Sessions: session.NewHMACManager([]byte("test-secret"), nil, nil), AdminToken: "test-admin-token"}
 	ApplyCaches(deps)
+	return deps, reg
+}
+
+func newStepRunWalkOn(t *testing.T, db *gorm.DB, plan []stepSpec, people ...string) stepRunWalk {
+	t.Helper()
+	deps, reg := stepRunDeps(t, db)
 	w := stepRunWalk{handler: NewRouter(deps), deps: deps, roles: map[string]string{}, steps: map[string]string{}, people: map[string]*http.Cookie{}, db: db}
 	w.owner = w.cookieFor(t, "test-owner")
 
