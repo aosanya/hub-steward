@@ -1,9 +1,13 @@
-.card-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; width: 100%; padding: 0; border: 0; background: transparent; text-align: left; color: var(--ink); }
-.card-title { font-weight: 600; }
+.card:has(> .card-head) { padding: 0; gap: 0; overflow: hidden; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .625rem 1rem; border-bottom: 1px solid var(--line); color: var(--ink); }
+.card-head.closed { border-bottom: 0; }
+.card-toggle { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: .5rem; min-width: 0; padding: 0; border: 0; background: transparent; font: inherit; text-align: left; color: inherit; }
+.card-title { min-width: 0; font-weight: 700; overflow-wrap: anywhere; }
 .card-chevron { color: var(--ink-soft); font-size: 1.125rem; line-height: 1; transition: transform .15s; }
 .card-head.closed .card-chevron { transform: rotate(-90deg); }
-.card-body { display: flex; flex-direction: column; gap: .75rem; }
-.card.flush { padding: 0; gap: 0; }
-.card.flush > .card-head { padding: 1rem; }
-.card.flush .rows { border: 0; border-radius: 0; box-shadow: none; background: transparent; border-top: 1px solid var(--line); }
-.card.flush > .row:first-child { border-top: 0; }
+.card-body { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; }
+.card-foot { display: flex; border-top: 1px solid var(--line); }
+.card-foot > * { flex: 1; min-height: 2.75rem; padding: .625rem; border: 0; background: transparent; color: var(--accent); font: inherit; text-align: center; text-decoration: none; }
+.card-foot > * + * { border-left: 1px solid var(--line); }
+.card.flush > .card-body { gap: 0; padding: 0; }
+.card.flush .rows { border: 0; border-radius: 0; box-shadow: none; background: transparent; }

@@ -19,7 +19,7 @@ input::placeholder { color: var(--ink-soft); }
 .tab .unread-num { position: absolute; top: -.125rem; left: calc(50% + .25rem); }
 .tab[aria-current="page"] { color: var(--accent); font-weight: 600; }
 .tab[aria-current="page"] .pill { background: var(--accent-wash); }
-.card { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 1px 2px var(--line); }
+.card { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 .25rem .75rem -.25rem var(--line); }
 .card.empty { align-items: center; text-align: center; color: var(--ink-soft); min-height: 8rem; justify-content: center; }
 .chip { display: inline-flex; align-items: center; gap: .25rem; padding: 0 .625rem; border: 0; border-radius: var(--r-pill); background: var(--bg-alt); color: var(--ink-soft); font-family: inherit; font-size: .8125rem; font-weight: 500; line-height: 1.5rem; white-space: nowrap; }
 .chip.accent { background: var(--accent-wash); color: var(--accent-strong); }

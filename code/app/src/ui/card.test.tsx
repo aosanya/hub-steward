@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { Card } from "./Card";
 
@@ -80,5 +81,66 @@ describe("Card", () => {
   it("draws a flush card with no inner padding so rows can run edge to edge under the header", () => {
     const { container } = render(<Card title="Rows" collapsible flush>Body</Card>);
     expect(container.querySelector("section")).toHaveClass("card", "flush");
+  });
+
+  it("draws the header, the content and no footer as the three parts of a titled card", () => {
+    const { container } = render(<Card title="Component">Body</Card>);
+    const card = container.querySelector("section") as HTMLElement;
+    expect(card.querySelector(":scope > .card-head .card-title")).toHaveTextContent("Component");
+    expect(card.querySelector(":scope > .card-body")).toHaveTextContent("Body");
+    expect(card.querySelector(".card-foot")).toBeNull();
+  });
+
+  it("takes a node as the title, so a card can head itself with a code and a name", () => {
+    render(<Card title={<span>SW1 <b>Write</b></span>}>Body</Card>);
+    expect(screen.getByText("Write")).toBeInTheDocument();
+  });
+
+  it("puts one control at the right end of the header, outside the toggle", async () => {
+    const pick = vi.fn();
+    const { container } = render(
+      <Card title="Component" action={<button type="button" onClick={pick}>medium</button>}>
+        Body
+      </Card>,
+    );
+    const head = container.querySelector(".card-head") as HTMLElement;
+    expect(head.lastElementChild).toContainElement(screen.getByRole("button", { name: "medium" }));
+    await userEvent.click(screen.getByRole("button", { name: "medium" }));
+    expect(pick).toHaveBeenCalledTimes(1);
+    expect(container.querySelector(".card-foot")).toBeNull();
+  });
+
+  it("keeps the toggle and the header control as two buttons on a collapsible card", async () => {
+    render(
+      <Card title="Component" collapsible action={<button type="button">edit</button>}>
+        Body
+      </Card>,
+    );
+    expect(screen.getByRole("button", { name: "edit" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Component" }));
+    expect(screen.queryByText("Body")).toBeNull();
+    expect(screen.getByRole("button", { name: "edit" })).toBeInTheDocument();
+  });
+
+  it("draws an optional footer of actions under the content, and none when it is not given", () => {
+    const { container } = render(
+      <Card title="Component" footer={[<button key="a" type="button">Save</button>, <button key="b" type="button">Cancel</button>]}>
+        Body
+      </Card>,
+    );
+    const foot = container.querySelector(".card > .card-foot") as HTMLElement;
+    expect(foot).not.toBeNull();
+    expect(Array.from(foot.children).map((one) => one.textContent)).toEqual(["Save", "Cancel"]);
+    expect(foot.previousElementSibling).toHaveClass("card-body");
+  });
+
+  it("hides the footer with the content when the card is collapsed", async () => {
+    const { container } = render(
+      <Card title="Component" collapsible footer={[<button key="a" type="button">Save</button>]}>
+        Body
+      </Card>,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Component" }));
+    expect(container.querySelector(".card-foot")).toBeNull();
   });
 });

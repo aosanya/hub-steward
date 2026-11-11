@@ -4,13 +4,15 @@ import "./card.css";
 type Props = {
   children: ReactNode;
   empty?: boolean;
-  title?: string;
+  title?: ReactNode;
+  action?: ReactNode;
+  footer?: ReactNode;
   collapsible?: boolean;
   defaultOpen?: boolean;
   flush?: boolean;
 };
 
-export function Card({ children, empty = false, title, collapsible = false, defaultOpen = true, flush = false }: Props) {
+export function Card({ children, empty = false, title, action, footer, collapsible = false, defaultOpen = true, flush = false }: Props) {
   const [open, setOpen] = useState(defaultOpen);
   const bodyId = useId();
   const className = ["card", empty ? "empty" : "", flush ? "flush" : ""].filter(Boolean).join(" ");
@@ -18,17 +20,19 @@ export function Card({ children, empty = false, title, collapsible = false, defa
   const shown = !collapsible || open;
   return (
     <section className={className}>
-      {collapsible ? (
-        <button type="button" className={open ? "card-head" : "card-head closed"} aria-expanded={open} aria-controls={bodyId} onClick={() => setOpen(!open)}>
+      <div className={collapsible && !open ? "card-head closed" : "card-head"}>
+        {collapsible ? (
+          <button type="button" className="card-toggle" aria-expanded={open} aria-controls={bodyId} onClick={() => setOpen(!open)}>
+            <span className="card-title">{title}</span>
+            <span className="card-chevron" aria-hidden="true">⌄</span>
+          </button>
+        ) : (
           <span className="card-title">{title}</span>
-          <span className="card-chevron" aria-hidden="true">⌄</span>
-        </button>
-      ) : (
-        <div className="card-head">
-          <span className="card-title">{title}</span>
-        </div>
-      )}
+        )}
+        {action}
+      </div>
       {shown ? <div id={bodyId} className="card-body">{children}</div> : null}
+      {shown && footer ? <div className="card-foot">{footer}</div> : null}
     </section>
   );
 }
