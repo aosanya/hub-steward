@@ -61,7 +61,7 @@ export function IssueLine({ issue, chosen, onTag }: { issue: Issue; chosen: stri
   return words.length === 0 ? null : (
     <span className="issue-tags issue-line">
       {words.map((word) => (
-        <Chip key={word.tag} {...chipLook(word.tag)} pressed={onTag ? chosen.includes(word.tag) : undefined} onClick={onTag ? () => onTag(word.tag) : undefined}>
+        <Chip key={word.tag} {...chipLook(word.label)} pressed={onTag ? chosen.includes(word.tag) : undefined} onClick={onTag ? () => onTag(word.tag) : undefined}>
           {word.label}
         </Chip>
       ))}

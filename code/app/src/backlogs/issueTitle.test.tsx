@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Issue } from "./api";
-import { IssueTags, IssueTitle, lineWords, titleParts } from "./IssueTitle";
+import { IssueLine, IssueTags, IssueTitle, lineWords, titleParts } from "./IssueTitle";
 import { hueOf } from "./tags";
 
 const issue = (over: Partial<Issue>): Issue => ({ id: "a", title: "t", description: "", status: "pending", step: "", repo: "", topics: [], backlog: "", mark: "", rank: 1, ...over });
@@ -51,6 +51,15 @@ describe("an issue's title on a row or card", () => {
     ]);
     expect(lineWords(issue({ repo: "backlog", backlog: "backlog" })).map((word) => word.label)).toEqual(["backlog"]);
     expect(lineWords(issue({}))).toEqual([]);
+  });
+
+  it("gives two row bubbles that read the same the same colour, whatever repo path stands behind them", () => {
+    const hueOnRow = (repo: string) => {
+      const { container } = render(<IssueLine issue={issue({ repo, backlog: "Backlog" })} chosen={[]} />);
+      return container.querySelector<HTMLElement>(".chip")?.style.getPropertyValue("--hue");
+    };
+    expect(hueOnRow("projects/hub-steward-swe")).toBe(hueOnRow("hub-steward-swe"));
+    expect(hueOnRow("hub-steward-swe")).toBe(String(hueOf("hub-steward-swe")));
   });
 
   it("colours a bubble from its own text, the same every time, and leaves Ready and Blocked their tones", () => {
