@@ -38,11 +38,11 @@ afterEach(() => vi.restoreAllMocks());
 describe("setting an issue's priority from the issue card", () => {
   it("has one button, in the card header beside the title, and no buttons below it", async () => {
     pageWith(async () => undefined);
-    const header = (await screen.findByText("Write the manual")).closest(".issue-row") as HTMLElement;
+    const header = (await screen.findByText("Write the manual")).closest(".card-head") as HTMLElement;
     const card = header.closest(".card") as HTMLElement;
     expect(within(header).getByRole("button", { name: /medium/ })).toBeInTheDocument();
     expect(within(card).getAllByRole("button")).toHaveLength(1);
-    expect(card.querySelector(".card-footer")).toBeNull();
+    expect(card.querySelector(".card-foot")).toBeNull();
   });
 
   it("opens the four values and sets the one chosen, then shows it", async () => {

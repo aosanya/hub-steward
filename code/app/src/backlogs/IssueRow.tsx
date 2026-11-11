@@ -1,10 +1,9 @@
-import type { ReactNode } from "react";
 import type { Issue } from "./api";
 import { IssueLine, IssueTags, IssueTitle, openUnlessTag } from "./IssueTitle";
 
-type Props = { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; onOpen?: () => void; chevron?: boolean; showStep?: boolean; facts?: string[]; action?: ReactNode };
+type Props = { issue: Issue; chosen: string[]; onTag?: (tag: string) => void; onOpen?: () => void; chevron?: boolean; showStep?: boolean };
 
-export function IssueRow({ issue, chosen, onTag, onOpen, chevron, showStep, facts, action }: Props) {
+export function IssueRow({ issue, chosen, onTag, onOpen, chevron, showStep }: Props) {
   const title = <IssueTitle title={issue.title} code={issue.code} />;
   return (
     <div className={onOpen ? "row issue-row" : "row issue-row static"} onClick={onOpen ? openUnlessTag(onOpen) : undefined}>
@@ -16,9 +15,8 @@ export function IssueRow({ issue, chosen, onTag, onOpen, chevron, showStep, fact
         ) : (
           <span className="open">{title}</span>
         )}
-        {onOpen ? <IssueLine issue={issue} chosen={chosen} onTag={onTag} showStep={showStep} /> : <IssueTags issue={issue} chosen={chosen} onTag={onTag} extra={facts} />}
+        {onOpen ? <IssueLine issue={issue} chosen={chosen} onTag={onTag} showStep={showStep} /> : <IssueTags issue={issue} chosen={chosen} onTag={onTag} />}
       </span>
-      {action}
       {chevron ? (
         <span className="end" aria-hidden="true">
           ›

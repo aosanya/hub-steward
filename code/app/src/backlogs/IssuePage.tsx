@@ -20,7 +20,7 @@ import { CapsCard } from "./caps/CapsCard";
 import { mcpReferencesClient, mcpRepoClient, type ReferencesClient, type RepoClient } from "./references/api";
 import { ReferencesCard } from "./references/ReferencesCard";
 import { IssueRow } from "./IssueRow";
-import { titleParts } from "./IssueTitle";
+import { IssueTags, IssueTitle, titleParts } from "./IssueTitle";
 import { PriorityMenu } from "./PriorityMenu";
 import { issuePath, issuesPath } from "./paths";
 import { splitSource } from "./source";
@@ -67,13 +67,9 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
       {ready && parts ? (
         <div className="issue-wide">
           <div className="issue-main">
-            <Card flush>
-              <IssueRow issue={ready} chosen={[]} facts={[place]} action={setPriority ? <PriorityMenu priority={ready.priority ?? ""} onPick={pick} /> : undefined} />
-              {body ? (
-                <div className="issue-description">
-                  <Markdown text={body} className="issue-body" />
-                </div>
-              ) : null}
+            <Card title={<IssueTitle title={ready.title} code={ready.code} />} action={setPriority ? <PriorityMenu priority={ready.priority ?? ""} onPick={pick} /> : undefined}>
+              <IssueTags issue={ready} chosen={[]} extra={[place]} />
+              {body ? <Markdown text={body} className="issue-body" /> : null}
             </Card>
           </div>
           <div className="issue-side">

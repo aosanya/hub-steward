@@ -47,7 +47,7 @@ describe("an issue's page on a wide window", () => {
     await open();
     const main = document.querySelector(".issue-wide > .issue-main") as HTMLElement;
     const side = document.querySelector(".issue-wide > .issue-side") as HTMLElement;
-    expect(main.querySelector(".issue-description")).toHaveTextContent("A description.");
+    expect(main.querySelector(".issue-body")).toHaveTextContent("A description.");
     expect(side).toContainElement(screen.getByText("Waits on"));
     expect(side).toContainElement(screen.getByText("Log"));
     expect(side.lastElementChild).toContainElement(screen.getByText("Source"));

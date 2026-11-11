@@ -60,8 +60,8 @@ describe("each issue in the Waits on card shows its current step", () => {
     expect(within(rowOf("DEV-012")).getByText("To do")).toBeInTheDocument();
   });
 
-  it("the page's own top row does not gain a second step bubble", async () => {
+  it("the page's own top card does not gain a second step bubble", async () => {
     await screen.findByText("Waits on");
-    expect(within(document.querySelector(".issue-row.static") as HTMLElement).queryAllByText("To do")).toHaveLength(0);
+    expect(within(document.querySelector(".issue-main .card") as HTMLElement).queryAllByText("To do")).toHaveLength(0);
   });
 });
