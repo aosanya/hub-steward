@@ -1,5 +1,5 @@
 [
-  {"code": "report.publish", "name": "Publish a report", "locked": false, "actions": ["forms.results.publish"]},
+  {"code": "report.publish", "name": "Publish a report", "locked": false, "actions": ["forms.results.publish", "voting.result.publish"]},
   {"code": "form.approve", "name": "Approve forms", "locked": false, "actions": ["forms.approval.approve", "forms.approval.approve_slot", "forms.approval.refuse"]},
   {"code": "join_request.decide", "name": "Decide join requests", "locked": false, "actions": ["actor.join_request.approve", "actor.join_request.decline"]},
   {"code": "join_request.operate", "name": "Read join requests and decide them as the operator", "locked": false, "actions": ["actor.join_request.list_for_group", "actor.join_request.read", "actor.join_request.operator_approve", "actor.join_request.operator_decline"]},
