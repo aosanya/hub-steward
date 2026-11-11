@@ -38,8 +38,8 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
   const may = useMayManage(manage);
   const mayEdit = may.state === "ready" && may.data;
   const back = () => navigate(backlogsHomePath());
-  if (loaded.state === "loading") return <Shell title="Backlog" onBack={back}><LoadingLine /></Shell>;
-  if (loaded.state === "error") return <Shell title="Backlog" onBack={back}><LoadFailed words="This smart backlog could not be loaded." /></Shell>;
+  if (loaded.state === "loading") return <Shell title="Backlog" onBack={back} fluid><LoadingLine /></Shell>;
+  if (loaded.state === "error") return <Shell title="Backlog" onBack={back} fluid><LoadFailed words="This smart backlog could not be loaded." /></Shell>;
   const { backlog, rows, all } = loaded.data;
   const rowOf = (issue: Issue) =>
     selecting.on ? (
@@ -53,7 +53,7 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
     ? selectingShell(selecting, rows.map((issue) => issue.id))
     : { title: backlog.name, onBack: back, action: canSend ? <SelectButton onStart={selecting.start} /> : undefined };
   return (
-    <Shell {...shell} headEnd={mayEdit ? <ActionsMenu actions={[{ label: "Edit rules", onSelect: edit }, { label: "Change who has access", to: backlogAccessPath(backlogId) }]} /> : undefined} tabless={selecting.on}>
+    <Shell {...shell} headEnd={mayEdit ? <ActionsMenu actions={[{ label: "Edit rules", onSelect: edit }, { label: "Change who has access", to: backlogAccessPath(backlogId) }]} /> : undefined} tabless={selecting.on} fluid>
       <div className="smart-head">
         <Chip tone="info">Smart</Chip>
         <span className="sub">{rulesWords(backlog.set)}</span>

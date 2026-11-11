@@ -77,7 +77,7 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
     ? selectingShell(selecting, shown.map((issue) => issue.id))
     : { title, onBack: () => navigate(backlogsHomePath()), backLabel: words.backBacklogs, action: canSend ? <SelectButton onStart={selecting.start} /> : undefined };
   return (
-    <Shell {...shell} tabless={selecting.on}>
+    <Shell {...shell} tabless={selecting.on} fluid>
       <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={choose} save={save} />
       <ViewSwitch current={listed} onChange={(next) => (backlogId === allIssuesId ? chooseView(next) : navigate(boardPath(backlogId, chosen, query)))} />
       {issues.state === "loading" ? <LoadingLine /> : null}

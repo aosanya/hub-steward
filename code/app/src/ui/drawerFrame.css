@@ -1,7 +1,29 @@
 .frame { --drawer: 80%; position: relative; display: grid; max-width: 26rem; margin: 0 auto; overflow-x: clip; }
 .frame > * { grid-area: 1 / 1; min-width: 0; }
+.frame.fluid { --drawer: min(80%, 22rem); --gutter: clamp(1rem, 3vw, 2rem); max-width: none; }
+.frame.fluid .body { padding-inline: var(--gutter); flex-direction: row; flex-wrap: wrap; align-content: flex-start; align-items: flex-start; }
+.frame.fluid .body > * { flex: 1 1 100%; min-width: 0; }
+.frame.fluid .body > .filter-bar { flex: 999 1 18rem; }
+.frame.fluid .body > .seg { flex: 1 1 11rem; max-width: 24rem; }
 .drawer-slot { position: sticky; top: 0; align-self: start; justify-self: end; display: flex; flex-direction: column; width: var(--drawer); height: 100dvh; }
 .page { position: relative; display: flex; flex-direction: column; min-height: 100dvh; background: var(--bg); transition: transform .2s ease; }
 .page.open { transform: translateX(calc(var(--drawer) * -1)); border-radius: var(--r-md); box-shadow: 0 .5rem 1.5rem var(--line); pointer-events: none; }
 .page.open .menu-btn { pointer-events: auto; }
 @media (prefers-reduced-motion: reduce) { .page { transition: none; } }
+@media (min-width: 48rem) {
+  .frame.fluid .body { align-items: center; column-gap: .5rem; }
+  .frame.fluid .head, .frame.fluid .head-line { display: contents; }
+  .frame.fluid .headline, .frame.fluid .body > .smart-head, .frame.fluid .body > .count { flex: 0 1 auto; }
+  .frame.fluid .body > * { order: 3; }
+  .frame.fluid .headline, .frame.fluid .body > .smart-head, .frame.fluid .body > .filter-bar { order: 0; }
+  .frame.fluid .body > .count { order: 1; margin-left: auto; }
+  .frame.fluid .actions { order: 2; margin-left: auto; }
+  .frame.fluid .body:has(> .seg) .actions { margin-left: 0; }
+  .frame.fluid .body > .seg { flex: 0 0 auto; order: 1; max-width: none; }
+  .frame.fluid .seg > button { flex: none; min-height: 2.5rem; padding: 0 1.25rem; }
+  .frame.fluid .body > .filter-bar ~ .seg { position: sticky; top: 3rem; z-index: 1; box-shadow: 0 0 0 .5rem var(--bg); }
+  .frame.fluid .filter-bar { flex-direction: row; flex-wrap: wrap; align-items: center; column-gap: .75rem; }
+  .frame.fluid .filter-bar > .search-box { flex: 1 1 18rem; }
+  .frame.fluid .filter-bar > .sub { flex: none; }
+  .frame.fluid .filter-bar > :not(.search-box):not(.sub) { flex: 1 1 100%; }
+}
