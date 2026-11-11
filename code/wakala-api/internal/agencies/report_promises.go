@@ -26,6 +26,8 @@ var (
 	ErrPromiseOutcomeRecorded = errors.New("promise outcome already recorded")
 )
 
+var promiseOutcomeLocks keyedLocks
+
 type ReportPromise struct {
 	Text       string `json:"text"`
 	DueAt      string `json:"due_at"`
@@ -85,6 +87,7 @@ func RecordPromiseOutcome(ctx context.Context, board mwanachamataskmanager.TaskM
 	default:
 		return mwanachamataskmanager.Task{}, fmt.Errorf("%w: outcome %q", ErrInvalidPromise, outcome)
 	}
+	defer promiseOutcomeLocks.acquire(taskID)()
 	task, err := board.GetTask(ctx, taskID)
 	if err != nil {
 		return mwanachamataskmanager.Task{}, err
