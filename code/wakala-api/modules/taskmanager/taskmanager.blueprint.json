@@ -1666,7 +1666,7 @@
             },
             {
               "id": "doing",
-              "name": "Doing",
+              "name": "In Progress",
               "statuses": [
                 "in_progress",
                 "split"

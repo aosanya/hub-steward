@@ -92,8 +92,8 @@ func TestPendingTasks_CountsEachStepInStepOrder(t *testing.T) {
 
 	out := pendingOf(t, mgr, mwanachamataskmanager.PendingFilter{})
 
-	if len(out.ByStep) != 2 || out.ByStep[0].Name != "To do" || out.ByStep[0].Count != 2 || out.ByStep[1].Name != "Doing" || out.ByStep[1].Count != 1 {
-		t.Fatalf("by_step %+v, want To do 2 then Doing 1", out.ByStep)
+	if len(out.ByStep) != 2 || out.ByStep[0].Name != "To do" || out.ByStep[0].Count != 2 || out.ByStep[1].Name != "In Progress" || out.ByStep[1].Count != 1 {
+		t.Fatalf("by_step %+v, want To do 2 then In Progress 1", out.ByStep)
 	}
 }
 
@@ -348,7 +348,7 @@ func TestPendingTasks_CountsDoneAndCancelledByStepOnlyWhenAsked(t *testing.T) {
 
 	asked := pendingOf(t, mgr, mwanachamataskmanager.PendingFilter{IncludeClosed: true})
 
-	want := map[string]int{"To do": 2, "Doing": 1, "Done": 1, "Cancelled": 1}
+	want := map[string]int{"To do": 2, "In Progress": 1, "Done": 1, "Cancelled": 1}
 	if len(asked.ByStep) != len(want) {
 		t.Fatalf("by_step %+v, want %v", asked.ByStep, want)
 	}
@@ -357,7 +357,7 @@ func TestPendingTasks_CountsDoneAndCancelledByStepOnlyWhenAsked(t *testing.T) {
 			t.Fatalf("%s %d, want %d: %+v", name, got, count, asked.ByStep)
 		}
 	}
-	if names := []string{asked.ByStep[0].Name, asked.ByStep[1].Name, asked.ByStep[2].Name, asked.ByStep[3].Name}; strings.Join(names, ",") != "To do,Doing,Done,Cancelled" {
+	if names := []string{asked.ByStep[0].Name, asked.ByStep[1].Name, asked.ByStep[2].Name, asked.ByStep[3].Name}; strings.Join(names, ",") != "To do,In Progress,Done,Cancelled" {
 		t.Fatalf("by_step not in step order: %+v", asked.ByStep)
 	}
 	if asked.Total != 3 || len(asked.Items) != 3 {
