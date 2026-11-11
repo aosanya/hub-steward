@@ -25,6 +25,7 @@ type PollManager interface {
 	CreatePoll(ctx context.Context, in Poll) (Poll, error)
 	GetPoll(ctx context.Context, pollID string) (Poll, error)
 	ShowPoll(ctx context.Context, pollID string) (PollRead, error)
+	OpenToReader(ctx context.Context, pollID, reader string) error
 
 	AddChoice(ctx context.Context, in Choice) (Choice, error)
 	ListChoices(ctx context.Context, pollID string) ([]Choice, error)

@@ -6,6 +6,8 @@ import (
 
 	"wakalaserver/modules/shared/dispatch"
 	mwanachamavoting "wakalaserver/modules/voting"
+
+	"wakalaserver/internal/accounts"
 )
 
 var residentVotingActions = []string{
@@ -28,9 +30,19 @@ type residentPolls struct {
 }
 
 func (r residentPolls) ShowPoll(ctx context.Context, pollID string) (mwanachamavoting.PollRead, error) {
+	if err := r.OpenToReader(ctx, pollID, accounts.IDFromContext(ctx)); err != nil {
+		return nil, err
+	}
 	p, err := r.GetPoll(ctx, pollID)
 	if err != nil {
 		return nil, err
 	}
 	return p.RespondentView(), nil
+}
+
+func (r residentPolls) ListChoices(ctx context.Context, pollID string) ([]mwanachamavoting.Choice, error) {
+	if err := r.OpenToReader(ctx, pollID, accounts.IDFromContext(ctx)); err != nil {
+		return nil, err
+	}
+	return r.PollManager.ListChoices(ctx, pollID)
 }
