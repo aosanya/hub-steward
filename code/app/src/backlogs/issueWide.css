@@ -1,0 +1,6 @@
+.issue-wide, .issue-main, .issue-side { display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
+@media (min-width: 48rem) {
+  .issue-wide { flex-direction: row; flex-wrap: wrap; align-items: flex-start; column-gap: 1.5rem; }
+  .issue-main { flex: 1 1 24rem; max-width: 40rem; }
+  .issue-side { flex: 1 1 18rem; }
+}

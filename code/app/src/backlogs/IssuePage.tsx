@@ -10,6 +10,7 @@ import { Markdown } from "../ui/Markdown";
 import { backState, useBackLabel, useBackTo } from "../ui/backTo";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
+import "./issueWide.css";
 import { mcpBacklogsClient, mcpNotesClient, type BacklogsClient, type NotesClient } from "./api";
 import { SendToBacklogButton } from "../sendToBacklog";
 import type { SendClient } from "../sendToBacklog/types";
@@ -43,37 +44,41 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
         </p>
       ) : null}
       {ready && parts ? (
-        <>
-          <Card flush>
-            <IssueRow issue={ready} chosen={[]} facts={[place, ready.priority ?? ""]} />
-            {body ? (
-              <div className="issue-description">
-                <Markdown text={body} className="issue-body" />
-              </div>
-            ) : null}
-          </Card>
-          <IssueLog issueId={ready.id} client={notesClient} />
-          <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />
-          {[
-            { heading: "Waits on", issues: ready.waitsOn },
-            { heading: "Waited on by", issues: ready.waitedOnBy },
-          ].map(({ heading, issues }) =>
-            issues.length > 0 ? (
-              <Card key={heading} title={heading} collapsible flush>
-                <Rows>
-                  {issues.map((one) => (
-                    <IssueRow key={one.id} issue={one} chosen={[]} chevron onOpen={() => navigate(issuePath(one.id), backState(here.pathname + here.search, parts.code))} />
-                  ))}
-                </Rows>
-              </Card>
-            ) : null,
-          )}
-          {source ? (
-            <Card title="Source" collapsible>
-              <p className="sub issue-source">{source}</p>
+        <div className="issue-wide">
+          <div className="issue-main">
+            <Card flush>
+              <IssueRow issue={ready} chosen={[]} facts={[place, ready.priority ?? ""]} />
+              {body ? (
+                <div className="issue-description">
+                  <Markdown text={body} className="issue-body" />
+                </div>
+              ) : null}
             </Card>
-          ) : null}
-        </>
+          </div>
+          <div className="issue-side">
+            <IssueLog issueId={ready.id} client={notesClient} />
+            <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />
+            {[
+              { heading: "Waits on", issues: ready.waitsOn },
+              { heading: "Waited on by", issues: ready.waitedOnBy },
+            ].map(({ heading, issues }) =>
+              issues.length > 0 ? (
+                <Card key={heading} title={heading} collapsible flush>
+                  <Rows>
+                    {issues.map((one) => (
+                      <IssueRow key={one.id} issue={one} chosen={[]} chevron onOpen={() => navigate(issuePath(one.id), backState(here.pathname + here.search, parts.code))} />
+                    ))}
+                  </Rows>
+                </Card>
+              ) : null,
+            )}
+            {source ? (
+              <Card title="Source" collapsible>
+                <p className="sub issue-source">{source}</p>
+              </Card>
+            ) : null}
+          </div>
+        </div>
       ) : null}
     </Shell>
   );
