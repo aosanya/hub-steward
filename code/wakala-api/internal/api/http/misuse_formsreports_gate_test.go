@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
@@ -12,6 +13,8 @@ import (
 	catalog "wakalaserver/modules/catalog"
 	forms "wakalaserver/modules/forms"
 	"wakalaserver/modules/shared/spec"
+
+	"wakalaserver/internal/agencies"
 )
 
 func gateTestDB(t *testing.T, name string) *gorm.DB {
@@ -59,6 +62,9 @@ func TestReportsAndForms_PersonWithoutPermissionCannotDoPublishOrReadPrivate(t *
 	w.deps.Forms = fm
 	w.handler = NewRouter(w.deps)
 	resident := w.cookieFor(t, "resident-anna")
+	if err := w.deps.Registry.AddMember(context.Background(), w.instance, "resident-anna", agencies.RoleResident); err != nil {
+		t.Fatalf("AddMember: %v", err)
+	}
 
 	slug := "street-lights-ward-3"
 	put := w.call(t, "PUT", "/reports/entries/"+slug, map[string]any{"slug": slug, "name": "Street lights", "summary": "Ward 3 lights", "doc": "{}", "visibility": "pending"}, resident)

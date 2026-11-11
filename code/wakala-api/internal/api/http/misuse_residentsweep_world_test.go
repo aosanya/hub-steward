@@ -7,8 +7,6 @@ import (
 	"time"
 
 	mwanachamaactor "wakalaserver/modules/actor"
-	catalog "wakalaserver/modules/catalog"
-	"wakalaserver/modules/shared/spec"
 
 	"wakalaserver/internal/agencies"
 )
@@ -228,14 +226,7 @@ func (w *sweepWorld) seedGroups(t *testing.T, instance string) {
 }
 
 func (w *sweepWorld) seedCatalog(t *testing.T) {
-	s, err := catalog.SpecFor("sweep", "reports")
-	if err != nil {
-		t.Fatalf("catalog spec: %v", err)
-	}
-	if err := spec.Migrate(w.walk.db, s); err != nil {
-		t.Fatalf("catalog migrate: %v", err)
-	}
-	manager, err := catalog.NewCatalogManager(w.walk.db, s)
+	manager, err := w.walk.deps.Registry.CatalogManager(context.Background(), w.walk.instance, agencies.MountCatalog)
 	if err != nil {
 		t.Fatalf("catalog manager: %v", err)
 	}
@@ -253,6 +244,8 @@ func (w *sweepWorld) seedCatalog(t *testing.T) {
 	w.created2(t, seeding, "group onto board", "PUT", "/catalog/raised-items/"+itemID+"/board-item", map[string]any{"board_item_id": board}, owner)
 	w.created2(t, seeding, "entry", "PUT", "/catalog/entries/street-lights", map[string]any{"slug": "street-lights", "name": "Street lights", "summary": "Ward lights", "doc": "{}", "visibility": "public"}, owner)
 
+	w.queries["catalog.raised_item.open_followed"] = "instance_id=" + w.walk.instance
+	w.queries["catalog.board_item.open_shared"] = "instance_id=" + w.walk.instance
 	w.byAction["catalog.raised_item.open_followed"] = map[string]string{"key": followKey}
 	w.byAction["catalog.board_item.open_shared"] = map[string]string{"key": board}
 	w.params["slug"] = "street-lights"

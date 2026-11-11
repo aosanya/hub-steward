@@ -28,11 +28,29 @@ func (d *Deps) registerFormsRoutes(mux *http.ServeMux, auth callers) {
 		return
 	}
 	writes := newAnonymousDoor(anonymousFormWritesPerMinute, anonymousFormBodyBytes)
+	if d.Registry != nil {
+		d.registerAgencyFormsRoutes(mux, auth, writes)
+		return
+	}
 	for _, rt := range anonymousFormsRoutes(fm) {
 		mux.HandleFunc(rt.Pattern(formsPrefix), writes.guardedWhenWriting(rt.Action, rt.Handler))
 	}
 	for _, rt := range formsroutes.OperatorRoutesFor(fm, d.serverFormsMount()) {
 		mux.HandleFunc(rt.Pattern(formsPrefix), auth.require(rt.Handler))
+	}
+}
+
+func (d *Deps) registerAgencyFormsRoutes(mux *http.ServeMux, auth callers, writes *anonymousDoor) {
+	public := agencyFormRoutes{deps: d, public: true, build: anonymousFormsRoutes}
+	for i, rt := range anonymousFormsRoutes(noLinkIssued{}) {
+		mux.HandleFunc(rt.Pattern(formsPrefix), writes.guardedWhenWriting(rt.Action, public.handler(i)))
+	}
+	mount := d.serverFormsMount()
+	operator := agencyFormRoutes{deps: d, build: func(fm forms.FormManager) []formsroutes.Route {
+		return formsroutes.OperatorRoutesFor(fm, mount)
+	}}
+	for i, rt := range formsroutes.OperatorRoutesFor(noLinkIssued{}, mount) {
+		mux.HandleFunc(rt.Pattern(formsPrefix), auth.require(operator.handler(i)))
 	}
 }
 

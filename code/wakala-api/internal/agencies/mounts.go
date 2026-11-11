@@ -29,4 +29,8 @@ const (
 	MountPosts = "posts"
 
 	MountFormRecords = "forms"
+
+	MountReports = "reports"
+
+	MountCatalog = "catalog"
 )

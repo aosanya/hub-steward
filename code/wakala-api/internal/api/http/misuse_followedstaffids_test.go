@@ -1,26 +1,24 @@
 package http
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"testing"
 
 	catalog "wakalaserver/modules/catalog"
-	"wakalaserver/modules/shared/spec"
+
+	"wakalaserver/internal/agencies"
 )
 
 func TestFollowKeyDoor_HolderReadsNoStaffMemberIds(t *testing.T) {
 	w := newStepRunWalk(t, nil)
-	s, err := catalog.SpecFor("followview", "reports")
-	if err != nil {
-		t.Fatalf("spec: %v", err)
-	}
-	if err := spec.Migrate(w.db, s); err != nil {
-		t.Fatalf("migrate: %v", err)
-	}
-	manager, err := catalog.NewCatalogManager(w.db, s)
+	manager, err := w.deps.Registry.CatalogManager(context.Background(), w.instance, agencies.MountCatalog)
 	if err != nil {
 		t.Fatalf("manager: %v", err)
+	}
+	if err := w.deps.Registry.AddMember(context.Background(), w.instance, "resident-1", agencies.RoleResident); err != nil {
+		t.Fatalf("AddMember: %v", err)
 	}
 	w.deps.Catalog = manager
 	w.deps.Permissions = everyoneMay{}
@@ -54,7 +52,7 @@ func TestFollowKeyDoor_HolderReadsNoStaffMemberIds(t *testing.T) {
 		t.Fatalf("resident's own list no longer holds filed_by: %d %s", mine.Code, mine.Body.String())
 	}
 
-	door := getWithHeaders(w, "/catalog/followed-items/"+key, "", nil)
+	door := getWithHeaders(w, "/catalog/followed-items/"+key+"?instance_id="+w.instance, "", nil)
 	if door.Code != http.StatusOK {
 		t.Fatalf("holder opens the followed item: %d %s", door.Code, door.Body.String())
 	}
