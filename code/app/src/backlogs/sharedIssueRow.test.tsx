@@ -42,23 +42,23 @@ describe("every place that shows an issue draws it through the one shared row", 
   it("the list of all issues and a search result", async () => {
     at("/a/hub-1/backlogs/all?q=route&view=list", <IssuesPage client={client} />, "/a/:agencyId/backlogs/:backlogId");
     await screen.findByText("DEV-010");
-    expect(document.querySelectorAll(".rows > .issue-row")).toHaveLength(1);
+    expect(document.querySelectorAll(".issue-cards > .issue-row")).toHaveLength(1);
   });
 
   it("the cards of the board", async () => {
     at("/a/hub-1/backlogs/backlog/board", <BacklogBoard client={client} />, "/a/:agencyId/backlogs/:backlogId/board");
     await screen.findByText("DEV-009");
-    const cards = document.querySelectorAll(".bb-col > .card");
+    const cards = document.querySelectorAll(".bb-col > .issue-row");
     expect(cards).toHaveLength(2);
-    cards.forEach((card) => expect(card.querySelector(".issue-row")).not.toBeNull());
+    cards.forEach((card) => expect(card.querySelector(":scope > .card")).not.toBeNull());
   });
 
   it("the top of an issue's page, what it waits on and what waits on it", async () => {
     at("/a/hub-1/backlogs/issue/1", <IssuePage client={client} />, "/a/:agencyId/backlogs/issue/:issueId");
     await screen.findByText("Waits on");
-    expect(document.querySelectorAll(".issue-main > .card > .card-head .issue-title")).toHaveLength(1);
+    expect(document.querySelectorAll(".issue-main > .card > .card-head .issue-code")).toHaveLength(1);
     expect(document.querySelectorAll(".issue-row.static")).toHaveLength(0);
-    expect(document.querySelectorAll(".card.flush .rows .issue-row")).toHaveLength(2);
+    expect(document.querySelectorAll(".issue-side .card .issue-row")).toHaveLength(2);
     expect(screen.getByText("Waited on by")).toBeInTheDocument();
   });
 
@@ -68,7 +68,8 @@ describe("every place that shows an issue draws it through the one shared row", 
     const head = document.querySelector(".issue-main .card-head") as HTMLElement;
     const card = head.closest("section") as HTMLElement;
     expect(card).toHaveClass("card");
-    expect(head.querySelector(".card-title")).toHaveTextContent("DEV-009 Create the tables");
+    expect(head.querySelector(".card-title")).toHaveTextContent("DEV-009");
+    expect(card.querySelector(":scope > .card-body")?.firstElementChild).toHaveTextContent("Create the tables");
     expect(card.querySelector(":scope > .card-body .issue-tags")).not.toBeNull();
     expect(card.querySelector(":scope > .card-body .issue-body")).toHaveTextContent("Text");
     expect(card.querySelector(".card-foot")).toBeNull();

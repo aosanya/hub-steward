@@ -32,7 +32,7 @@ const open = (client: SmartBacklogClient) =>
         <Route path="/a/:agencyId/backlogs/:backlogId/rules" element={<EditSmartBacklogScreen client={client} />} />
         <Route
           path="/a/:agencyId/backlogs"
-          element={<BacklogsPage client={{ backlogs: async () => [], issues: async () => [] } as never} agency={{ read: async () => ({ name: "" }) } as never} manage={{ mayManage: async () => true } as never} />}
+          element={<BacklogsPage client={{ backlogs: async () => [], issues: async () => [] } as never} manage={{ mayManage: async () => true } as never} />}
         />
       </Routes>
     </MemoryRouter>,

@@ -1,9 +1,10 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router-dom";
+import { rememberAgencyName } from "../agency/open";
 import { TopBar, type TopBarBack } from "./TopBar";
 
 type Extras = { action?: ReactNode; menu?: boolean };
@@ -27,6 +28,14 @@ describe("top bar", () => {
     bar();
     expect(within(screen.getByRole("banner")).getByRole("heading", { level: 1, name: "Chat" })).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+
+  it("names the open agency under the title, and drops the name when none is open", () => {
+    act(() => rememberAgencyName("Zöldhalom Town Council"));
+    bar();
+    expect(within(screen.getByRole("banner")).getByText("Zöldhalom Town Council")).toBeInTheDocument();
+    act(() => rememberAgencyName(""));
+    expect(within(screen.getByRole("banner")).queryByText("Zöldhalom Town Council")).toBeNull();
   });
 
   it("holds nothing but the title when it has no back link, action or menu", () => {

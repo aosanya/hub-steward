@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { mcpAgencyClient, type AgencyClient } from "../agency/modules";
 import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
 import { Button } from "../ui/Button";
@@ -21,14 +20,13 @@ import { boardPath, issuesPath } from "./paths";
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
-type Props = { client?: BacklogsClient; agency?: AgencyClient; manage?: BacklogManageClient };
+type Props = { client?: BacklogsClient; manage?: BacklogManageClient };
 
-export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyClient, manage = mcpBacklogManageClient }: Props) {
+export function BacklogsPage({ client = mcpBacklogsClient, manage = mcpBacklogManageClient }: Props) {
   const navigate = useNavigate();
   const notice = useOnceNotice();
   const [adding, setAdding] = useState(false);
   const backlogs = useLoad(() => client.backlogs(), `backlogs:${openAgencyId()}`);
-  const named = useLoad(() => agency.read(), `backlogs-agency:${openAgencyId()}`);
   const mayManage = useMayManage(manage);
   const rows = backlogs.state === "ready" ? backlogs.data : [];
   const issues = issuesHeld(rows);
@@ -36,7 +34,7 @@ export function BacklogsPage({ client = mcpBacklogsClient, agency = mcpAgencyCli
   const smartCounts = useLoad(() => (client.smartCounts ? client.smartCounts(smarts) : Promise.resolve<Record<string, StepCount[]>>({})), `backlogs-smart-counts:${openAgencyId()}:${smarts.map((one) => one.id).join(",")}:${backlogs.state}`);
   const smartCountsOf = (id: string) => (smartCounts.state === "ready" ? smartCounts.data[id] ?? [] : []);
   return (
-    <Shell title="Backlogs" sub={named.state === "ready" && named.data.name ? named.data.name : undefined}>
+    <Shell title="Backlogs">
       {notice ? <p role="status" className="sub">{notice}</p> : null}
       {backlogs.state === "error" ? <LoadFailed words="The backlogs could not be loaded." /> : null}
       {backlogs.state === "ready" && rows.length === 0 ? <EmptyCard words={nothingSharedWords} /> : null}

@@ -4,3 +4,6 @@
   .issue-main { flex: 1 1 24rem; max-width: 40rem; }
   .issue-side { flex: 1 1 18rem; }
 }
+.issue-row .card:has(> .card-head), .issue-main .card:has(> .card-head) { overflow: visible; }
+.issue-tags .actions-list { right: auto; left: 0; }
+.issue-tags .actions-btn { min-height: 1.5rem; padding: 0 .5rem; gap: .25rem; font-size: .8125rem; }

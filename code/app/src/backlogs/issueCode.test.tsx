@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { issueOf, type Issue } from "./api";
-import { IssueRow } from "./IssueRow";
+import { IssueCard } from "./IssueCard";
 import { titleParts } from "./IssueTitle";
 import { matchesQuery } from "./tags";
 
@@ -14,13 +14,13 @@ describe("an issue's own code", () => {
   });
 
   it("shows on the card as the code even when the title does not start with it", () => {
-    render(<IssueRow issue={issue({ title: "Gives every new issue its number", code: "SW193" })} chosen={[]} />);
+    render(<IssueCard issue={issue({ title: "Gives every new issue its number", code: "SW193" })} chosen={[]} />);
     expect(screen.getByText("SW193")).toHaveClass("issue-code");
     expect(screen.getByText(/Gives every new issue its number/)).toBeInTheDocument();
   });
 
   it("shows once when the title starts with the same code", () => {
-    render(<IssueRow issue={issue({ title: "SW193 Gives every new issue its number", code: "SW193" })} chosen={[]} />);
+    render(<IssueCard issue={issue({ title: "SW193 Gives every new issue its number", code: "SW193" })} chosen={[]} />);
     expect(screen.getAllByText(/SW193/)).toHaveLength(1);
   });
 

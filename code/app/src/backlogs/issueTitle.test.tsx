@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Issue } from "./api";
-import { IssueLine, IssueTags, IssueTitle, lineWords, titleParts } from "./IssueTitle";
+import { IssueCode, IssueLine, IssueName, IssueTags, lineWords, titleParts } from "./IssueTitle";
 import { hueOf, shadeOf } from "../ui/textColor";
 
 const issue = (over: Partial<Issue>): Issue => ({ id: "a", title: "t", description: "", status: "pending", step: "", repo: "", topics: [], backlog: "", mark: "", rank: 1, ...over });
@@ -23,8 +23,14 @@ describe("an issue's title on a row or card", () => {
   });
 
   it("puts the code in its own span so it can take the accent colour", () => {
-    render(<IssueTitle title="DEV-009 Create the tables" />);
+    render(
+      <>
+        <IssueCode title="DEV-009 Create the tables" />
+        <IssueName title="DEV-009 Create the tables" />
+      </>,
+    );
     expect(screen.getByText("DEV-009")).toHaveClass("issue-code");
+    expect(screen.getByText("Create the tables")).toHaveClass("issue-title");
   });
 
   it("shows one bubble for each tag, three for three, and none for none", () => {

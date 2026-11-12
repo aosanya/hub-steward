@@ -38,10 +38,11 @@ const shown = (key: CapKey, amount: number) => (key === "runtimeSeconds" ? clock
 
 const figureOf = (key: CapKey, spent: number, cap: number) => `${shown(key, spent)} / ${shown(key, cap)}${key === "runtimeSeconds" ? "" : " tokens"}`;
 
-export const lineOf = (reading: CapsReading, key: CapKey): CapLine => {
+export const lineOf = (reading: CapsReading, key: CapKey, elapsed?: number): CapLine => {
   const cap = reading.inForce[key];
-  const spent = reading.used === null ? 0 : key === "input" ? reading.used.input : key === "output" ? reading.used.output : reading.used.seconds;
-  const passed = reading.used !== null && spent >= cap;
+  const stored = reading.used === null ? 0 : key === "input" ? reading.used.input : key === "output" ? reading.used.output : reading.used.seconds;
+  const spent = key === "runtimeSeconds" && elapsed !== undefined ? elapsed : stored;
+  const passed = (reading.used !== null || elapsed !== undefined) && spent >= cap;
   const rounded = Math.round((spent / cap) * 100);
   return {
     key,
@@ -55,8 +56,8 @@ export const lineOf = (reading: CapsReading, key: CapKey): CapLine => {
   };
 };
 
-export const linesOf = (reading: CapsReading): CapLine[] => {
-  const lines = keys.map((key) => lineOf(reading, key));
+export const linesOf = (reading: CapsReading, elapsed?: number): CapLine[] => {
+  const lines = keys.map((key) => lineOf(reading, key, elapsed));
   const highest = Math.max(...lines.map((line) => line.percent));
   const first = highest > 0 ? lines.findIndex((line) => line.percent === highest) : -1;
   return lines.map((line, at) => ({ ...line, nearest: at === first }));

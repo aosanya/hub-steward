@@ -15,7 +15,7 @@ export type CapsUsed = { input: number; output: number; seconds: number; clockSt
 
 export type CapsReading = { inForce: Caps; standard: Caps; own: Caps | null; used: CapsUsed | null };
 
-export type CapNearest = { key: CapKey; used: number; cap: number; ratio: number };
+export type CapNearest = { key: CapKey; used: number; cap: number; ratio: number; runtimeSeconds?: number; startedAt?: number };
 
 export type CapsChange = Partial<Caps>;
 
@@ -57,8 +57,13 @@ export const nearestOf = (reply: unknown): Record<string, CapNearest> => {
   for (const item of itemsOf(reply)) {
     const key = nearestKeys[item?.nearest?.key];
     const ratio = Number(item?.nearest?.ratio);
-    if (typeof item?.task_id !== "string" || !key || !Number.isFinite(ratio) || ratio < 0) continue;
-    found[item.task_id] = { key, used: Number(item.nearest.used) || 0, cap: Number(item.nearest.cap) || 0, ratio };
+    const startedAt = new Date(item?.started_at).getTime();
+    const runtimeSeconds = whole(item?.in_force?.runtime_seconds);
+    if (typeof item?.task_id !== "string" || !key || !Number.isFinite(ratio) || ratio < 0) {
+      if (typeof item?.task_id === "string" && Number.isFinite(startedAt) && runtimeSeconds > 0) found[item.task_id] = { key: "runtimeSeconds", used: 0, cap: runtimeSeconds, ratio: 0, runtimeSeconds, startedAt };
+      continue;
+    }
+    found[item.task_id] = { key, used: Number(item.nearest.used) || 0, cap: Number(item.nearest.cap) || 0, ratio, runtimeSeconds: runtimeSeconds || undefined, startedAt: Number.isFinite(startedAt) ? startedAt : undefined };
   }
   return found;
 };

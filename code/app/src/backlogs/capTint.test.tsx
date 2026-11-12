@@ -5,7 +5,7 @@ import { openAgency } from "../agency/open";
 import { BacklogBoard } from "../backlogBoard/BacklogBoard";
 import { IssuePage } from "./IssuePage";
 import { IssuesPage } from "./IssuesPage";
-import { IssueRow } from "./IssueRow";
+import { IssueCard } from "./IssueCard";
 import type { Backlog, BacklogsClient, Issue, IssueDetail } from "./api";
 import type { CapsClient, CapsReading } from "./caps/api";
 import type { CapKey } from "./caps/capsFigures";
@@ -47,7 +47,7 @@ const issue = (over: Partial<Issue> = {}): Issue => ({
 const list = (issues: Issue[], client: CapsClient) => (
   <CapTintScope issues={issues} client={client}>
     {issues.map((one) => (
-      <IssueRow key={one.id} issue={one} chosen={[]} />
+      <IssueCard key={one.id} issue={one} chosen={[]} />
     ))}
   </CapTintScope>
 );
@@ -63,7 +63,7 @@ describe("a board or list turns its cards red from one read of the nearest cap",
     render(list([issue()], clientAt([{ 1: runtime(0.8) }])));
     expect(await screen.findByText("Runtime 80%")).toBeInTheDocument();
     const row = rowOf("1");
-    expect(row).toHaveClass("capped");
+    expect(row).toHaveClass("cap-tinted");
     expect(row.style.getPropertyValue("--cap-tint")).toBe("0.68");
   });
 
@@ -124,7 +124,7 @@ describe("a board or list turns its cards red from one read of the nearest cap",
   it("keeps the last run's tint on a Sinbin card that sits in to do", async () => {
     render(list([issue({ status: "pending", step: "To do", topics: ["Sinbin"] })], clientAt([{ 1: runtime(1.2) }])));
     expect(await screen.findByText("Runtime passed")).toBeInTheDocument();
-    expect(rowOf("1")).toHaveClass("capped");
+    expect(rowOf("1")).toHaveClass("cap-tinted");
   });
 
   it("refreshes the one read every 15 seconds while a card is in progress", async () => {
@@ -163,7 +163,7 @@ describe("a board or list turns its cards red from one read of the nearest cap",
   });
 
   it("shows no tint on a row outside a board or list", () => {
-    render(<IssueRow issue={issue()} chosen={[]} />);
+    render(<IssueCard issue={issue()} chosen={[]} />);
     expect(rowOf("1")).not.toHaveClass("capped");
   });
 });
@@ -225,5 +225,21 @@ describe("the board and the list page read once for the whole screen", () => {
     expect(screen.getByText("Runtime 60%")).toBeInTheDocument();
     expect(client.nearest).toHaveBeenCalledTimes(1);
     expect(client.read).not.toHaveBeenCalled();
+  });
+
+  it("shows the time left on a running card from the time it was taken, and shades it past half", async () => {
+    const started = Date.now() - 700_000;
+    const client = clientAt([{}]);
+    client.nearest.mockResolvedValue({ 2: { key: "runtimeSeconds", used: 0, cap: 900, ratio: 0, runtimeSeconds: 900, startedAt: started } });
+    render(
+      <MemoryRouter initialEntries={["/a/hub-1/backlogs/default/board"]}>
+        <Routes>
+          <Route path="/a/hub-1/backlogs/:backlogId/board" element={<BacklogBoard client={backlogs} capsClient={client} />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    expect(await screen.findByText("4 min left")).toBeInTheDocument();
+    const card = screen.getByText("Running").closest(".cap-tinted") as HTMLElement;
+    expect(Number(card.style.getPropertyValue("--cap-tint"))).toBeGreaterThan(0.5);
   });
 });

@@ -94,7 +94,6 @@ describe("the Backlogs screen", () => {
     expect(await screen.findByText("All issues")).toBeInTheDocument();
     expect(screen.getByText("3 issues")).toBeInTheDocument();
     expect(screen.getByText("5 steps · 3 issues")).toBeInTheDocument();
-    expect(await screen.findByText("Hub Steward SWE")).toBeInTheDocument();
   });
 
   it("counts only the issues the backlogs with steps hold, not a smart backlog's matches", async () => {
@@ -189,7 +188,7 @@ describe("the list of issues", () => {
     await screen.findByText("Fix mirrored board drift");
     expect(titles()).toEqual(["Fix mirrored board drift", "Import the municipality", "Record the voice clips"]);
     const first = document.querySelector(".issue-row") as HTMLElement;
-    expect(within(first).getAllByRole("button")).toHaveLength(3);
+    expect(within(first).getAllByRole("button")).toHaveLength(5);
     expect(first.querySelector(".issue-title")?.textContent).toBe("Fix mirrored board drift");
     expect(Array.from(first.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["mwanachama-web", "Backlog"]);
     expect(first.querySelectorAll(".chip.hued")).toHaveLength(2);
@@ -211,10 +210,11 @@ describe("the list of issues", () => {
     const long = "DEV-009 Create the party plane's structure tables";
     answering([task("t9", long, 1, { description: "A paragraph that belongs on the detail page only." })]);
     openAt("/a/hub-1/backlogs/all");
-    await screen.findByRole("button", { name: new RegExp(`^${long}`) });
+    await screen.findByRole("button", { name: /^Create the party plane's structure tables/ });
     expect(screen.queryByText("A paragraph that belongs on the detail page only.")).not.toBeInTheDocument();
-    expect(document.querySelector(".issue-row .issue-title")?.textContent).toBe(long);
-    await userEvent.click(screen.getByRole("button", { name: new RegExp(`^${long}`) }));
+    expect(document.querySelector(".issue-row .issue-title")?.textContent).toBe("Create the party plane's structure tables");
+    expect(document.querySelector(".issue-row .issue-code")?.textContent).toBe("DEV-009");
+    await userEvent.click(screen.getByRole("button", { name: /^Create the party plane's structure tables/ }));
     expect(await screen.findByText("A paragraph that belongs on the detail page only.")).toBeInTheDocument();
   });
 
@@ -227,9 +227,10 @@ describe("the list of issues", () => {
     expect(pill.tagName).toBe("SPAN");
     await userEvent.click(pill);
     expect(where()).toBe(issuePath("t2"));
-    const waited = (document.querySelector(".card.flush .rows .issue-row") as HTMLElement).querySelector(".issue-line") as HTMLElement;
+    const waited = (document.querySelector(".issue-side .issue-row") as HTMLElement).querySelector(".issue-line") as HTMLElement;
     expect(waited.tagName).toBe("SPAN");
-    expect(within(waited).queryByRole("button")).toBeNull();
+    expect(within(waited).getAllByRole("button")).toHaveLength(1);
+    expect(within(waited).getByRole("button")).toHaveTextContent(/^Priority/);
     await userEvent.click(waited);
     await waitFor(() => expect(where()).toBe(issuePath("t1")));
   });
@@ -393,15 +394,17 @@ describe("one issue", () => {
     openAt(issuePath("t9"));
     await screen.findByText("Docs");
     const head = document.querySelector(".issue-main .card-head") as HTMLElement;
-    expect(head).toHaveTextContent("DEV-009 Create the party plane's tables");
+    expect(head).toHaveTextContent("DEV-009");
+    expect(head).not.toHaveTextContent("Create the party plane's tables");
     expect(head.querySelector(".card-title .issue-code")?.textContent).toBe("DEV-009");
+    expect(head.closest(".card")?.querySelector(":scope > .card-body")?.firstElementChild).toHaveTextContent("Create the party plane's tables");
     expect(head.closest(".card")).not.toBeNull();
     expect(within(head).queryByRole("link")).toBeNull();
     const top = document.querySelector(".issue-main .card-body") as HTMLElement;
     expect(Array.from(top.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(expect.arrayContaining(["Docs", "Backlog · To do"]));
     expect(within(screen.getByRole("banner")).getByRole("heading", { level: 1 })).toHaveTextContent("DEV-009");
     expect(screen.queryByRole("button", { name: "Docs" })).toBeNull();
-    const detailTags = Array.from(document.querySelectorAll(".issue-main .issue-tags > *"));
+    const detailTags = Array.from(document.querySelectorAll(".issue-main .issue-tags > :not(.actions)"));
     expect(detailTags.length).toBeGreaterThan(1);
     expect(detailTags.every((one) => one.classList.contains("chip"))).toBe(true);
     const text = document.body.textContent ?? "";
@@ -423,13 +426,12 @@ describe("one issue", () => {
     await waitFor(() => expect(where()).toBe(issuePath("t1")));
   });
 
-  it("lists what it waits on as rows of one card, the same row as the lists, and a row opens its issue", async () => {
+  it("lists what it waits on as cards in one card, the same card as the lists, and a row opens its issue", async () => {
     answering(board);
     openAt(issuePath("t2"));
     await screen.findByText("Waits on");
-    const card = screen.getByText("Waits on").closest("section")?.querySelector(".rows") as HTMLElement;
-    expect(card.querySelectorAll(".issue-row")).toHaveLength(1);
-    expect(card.querySelector(".end")).toHaveTextContent("›");
+    const card = screen.getByText("Waits on").closest("section") as HTMLElement;
+    expect(card.querySelectorAll(".issue-row .card-head")).toHaveLength(1);
     await userEvent.click(within(card).getByRole("button", { name: /Fix mirrored board drift/ }));
     await waitFor(() => expect(where()).toBe(issuePath("t1")));
   });

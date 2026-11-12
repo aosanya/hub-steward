@@ -4,7 +4,9 @@ import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from
 import { FilterBar } from "../backlogs/FilterBar";
 import type { CapsClient } from "../backlogs/caps/api";
 import { CapTintScope } from "../backlogs/caps/CapTintScope";
-import { IssueRow } from "../backlogs/IssueRow";
+import { IssueCard } from "../backlogs/IssueCard";
+import { effortPicker } from "../backlogs/effortPicker";
+import { priorityPicker } from "../backlogs/priorityPicker";
 import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam } from "../backlogs/paths";
 import { narrowed, toggled } from "../backlogs/tags";
 import { backlogPagePath } from "../backlogPage/paths";
@@ -53,6 +55,8 @@ export function BacklogBoard({ client = mcpBacklogsClient, capsClient }: { clien
   const typed = (text: string) => setSearch(searchOf(chosen, text), { replace: true });
   const toggle = (tag: string) => choose(toggled(chosen, tag));
 
+  const priorityOf = priorityPicker(client, () => setVersion((now) => now + 1));
+  const effortOf = effortPicker(client, () => setVersion((now) => now + 1));
   const loaded = read.state === "ready" ? read : null;
   const backlog = loaded?.backlog ?? null;
   const shown = loaded ? narrowed(loaded.issues, chosen, query) : [];
@@ -87,7 +91,7 @@ export function BacklogBoard({ client = mcpBacklogsClient, capsClient }: { clien
                 selecting.on ? (
                   <SelectableIssueRow issue={issue} chosen={chosen} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
                 ) : (
-                  <IssueRow issue={issue} chosen={chosen} onTag={toggle} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
+                  <IssueCard issue={issue} chosen={chosen} onTag={toggle} onPriority={priorityOf(issue)} onEffort={effortOf(issue)} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
                 )
               }
             />

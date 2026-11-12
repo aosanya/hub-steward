@@ -73,7 +73,7 @@ describe("the Backlogs screen with smart backlogs", () => {
   const show = () =>
     render(
       <MemoryRouter initialEntries={["/a/hub-1/backlogs"]}>
-        <BacklogsPage client={{ backlogs: async () => backlogs, issues: async () => [], issue: async () => ({}) as never }} manage={may(true)} agency={{ read: async () => ({ name: "Hub Steward SWE" }) } as never} />
+        <BacklogsPage client={{ backlogs: async () => backlogs, issues: async () => [], issue: async () => ({}) as never }} manage={may(true)} />
         <Where />
       </MemoryRouter>,
     );

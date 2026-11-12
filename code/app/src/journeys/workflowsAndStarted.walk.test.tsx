@@ -327,7 +327,7 @@ const step1AFarmerOpensHome = async () => {
   await opensDoSomething();
 
   expect(screen.getAllByRole("heading", { level: 1 }).map((title) => title.textContent)).toEqual(["Do Something"]);
-  expect(within(screen.getByRole("main")).getByText(siaya.name)).toHaveClass("sub");
+  expect(within(screen.getByRole("main")).queryByText(siaya.name)).toBeNull();
   expect(within(screen.getByRole("main")).queryAllByRole("heading")).toEqual([]);
   expect(tabsBar().getAllByRole("link").slice(0, 3).map((link) => link.textContent?.replace(/[^A-Za-z ]/g, ""))).toEqual(["Home", "Start", "Ongoing"]);
   expect(startSegment()).toHaveAttribute("aria-current", "page");
@@ -515,7 +515,7 @@ const step6NothingBegunShowsTheEmptyCard = async () => {
   expect(where()).toBe(doSomethingOf(siaya.id));
   expect(startSegment()).toHaveAttribute("aria-current", "page");
   expect(ongoingSegment()).not.toHaveAttribute("aria-current");
-  expect(within(screen.getByRole("main")).getByText(siaya.name)).toHaveClass("sub");
+  expect(within(screen.getByRole("main")).queryByText(siaya.name)).toBeNull();
   expect(await startRow(joinStep.form_name)).toBeInTheDocument();
   expect(startRowsShown()).toEqual(farmerStartRows);
   expect(screen.queryByText("Nothing ongoing yet")).toBeNull();
@@ -536,7 +536,7 @@ afterEach(() => {
 });
 
 describe("journey 22 and 18, the agency's workflows on Do Something and the Ongoing rows", () => {
-  it("step 1: a farmer opens Do Something and finds the agency name under the title, Start chosen beside Ongoing, the workflows as rows, the Menu button in the bar and no account items", step1AFarmerOpensHome);
+  it("step 1: a farmer opens Do Something and finds no agency name in the page, Start chosen beside Ongoing, the workflows as rows, the Menu button in the bar and no account items", step1AFarmerOpensHome);
 
   it("step 2: she opens the Menu, sees its four items and Switch agency goes to the agency list", step2SheOpensTheMenu);
 

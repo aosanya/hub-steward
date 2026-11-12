@@ -4,7 +4,6 @@ import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
 import { openAgencyId } from "../agency/open";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
-import { Rows } from "../ui/ListRow";
 import { backState } from "../ui/backTo";
 import { Shell } from "../ui/Shell";
 import "./backlogs.css";
@@ -26,7 +25,9 @@ import { columnsOf, stepsOfIssues } from "../backlogBoard/board";
 import { useView, ViewSwitch } from "../backlogBoard/ViewSwitch";
 import type { CapsClient } from "./caps/api";
 import { CapTintScope } from "./caps/CapTintScope";
-import { IssueRow } from "./IssueRow";
+import { IssueCard } from "./IssueCard";
+import { effortPicker } from "./effortPicker";
+import { priorityPicker } from "./priorityPicker";
 import { backlogsHomePath, boardPath, issuePath, queryParam, searchOf, tagParam } from "./paths";
 import { countWords, narrowed, toggled } from "./tags";
 
@@ -69,11 +70,13 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
     <Button onClick={() => navigate(addSmartBacklogPath(), { state: { draft } })}>Save as smart backlog</Button>
   );
   const canSend = targets.state === "ready" && targets.data.length > 0 && shown.length > 0;
+  const priorityOf = priorityPicker(client, () => setVersion((now) => now + 1));
+  const effortOf = effortPicker(client, () => setVersion((now) => now + 1));
   const rowOf = (issue: Issue) =>
     selecting.on ? (
       <SelectableIssueRow issue={issue} chosen={chosen} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
     ) : (
-      <IssueRow issue={issue} chosen={chosen} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, title))} onTag={choose} />
+      <IssueCard issue={issue} chosen={chosen} onPriority={priorityOf(issue)} onEffort={effortOf(issue)} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, title))} onTag={choose} />
     );
   const shell = selecting.on
     ? selectingShell(selecting, shown.map((issue) => issue.id))
@@ -89,7 +92,7 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
       ) : null}
       <CapTintScope issues={shown} client={capsClient}>
         {shown.length > 0 && listed === "board" && backlogs.state === "ready" ? <BoardColumns columns={columnsOf(stepsOfIssues(backlogs.data, shown), shown)} renderCard={rowOf} /> : null}
-        {shown.length > 0 && listed === "list" ? <Rows>{shown.map((issue) => <Fragment key={issue.id}>{rowOf(issue)}</Fragment>)}</Rows> : null}
+        {shown.length > 0 && listed === "list" ? <div className="issue-cards">{shown.map((issue) => <Fragment key={issue.id}>{rowOf(issue)}</Fragment>)}</div> : null}
       </CapTintScope>
       {total > 0 && shown.length === 0 ? <EmptyCard words="No issues match" /> : null}
       {outcome && !selecting.on ? (

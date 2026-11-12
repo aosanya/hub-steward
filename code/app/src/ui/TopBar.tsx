@@ -1,10 +1,11 @@
-import type { ReactNode } from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { openAgencyName, subscribeAgencyName } from "../agency/open";
 import { useDrawer } from "./DrawerFrame";
 
 export type TopBarBack = { onClick: () => void; label?: string } | { to: string; label: string };
 
-type Extras = { action?: ReactNode; menu?: boolean };
+type Extras = { action?: ReactNode; menu?: boolean; unnamed?: boolean };
 
 type Props = ({ title: string; back?: undefined } | { title?: string; back: TopBarBack }) & Extras;
 
@@ -40,7 +41,8 @@ function MenuButton() {
   );
 }
 
-export function TopBar({ title, back, action, menu }: Props) {
+export function TopBar({ title, back, action, menu, unnamed }: Props) {
+  const agencyName = useSyncExternalStore(subscribeAgencyName, openAgencyName);
   return (
     <header className="bar">
       {back ? <BackLink back={back} /> : <h1 className="title">{title}</h1>}
@@ -51,6 +53,7 @@ export function TopBar({ title, back, action, menu }: Props) {
           {menu ? <MenuButton /> : null}
         </div>
       ) : null}
+      {agencyName && !unnamed ? <p className="bar-agency">{agencyName}</p> : null}
     </header>
   );
 }

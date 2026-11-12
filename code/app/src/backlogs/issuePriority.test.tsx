@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../agency/open";
 import * as mcp from "../wakala/mcp";
 import { IssuePage } from "./IssuePage";
-import { IssueRow } from "./IssueRow";
+import { IssueCard } from "./IssueCard";
 import { mcpBacklogsClient, taskTools, type BacklogsClient, type Issue, type IssueDetail, type NotesClient } from "./api";
 
 const issue = (over: Partial<Issue>): Issue => ({ id: "1", title: "SW9 Write the manual", description: "Body.", status: "pending", step: "To do", repo: "hub-steward", topics: [], backlog: "Backlog", mark: "Ready", rank: 1, priority: "medium", ...over });
@@ -36,40 +36,50 @@ beforeEach(() => openAgency({ id: "hub-1", name: "Hub" } as never));
 afterEach(() => vi.restoreAllMocks());
 
 describe("setting an issue's priority from the issue card", () => {
-  it("has one button, in the card header beside the title, and no buttons below it", async () => {
+  it("has one button, in the chip row at the bottom of the card, and none in the header", async () => {
     pageWith(async () => undefined);
-    const header = (await screen.findByText("Write the manual")).closest(".card-head") as HTMLElement;
+    const header = (await screen.findByText("SW9", { selector: ".issue-code" })).closest(".card-head") as HTMLElement;
     const card = header.closest(".card") as HTMLElement;
-    expect(within(header).getByRole("button", { name: /medium/ })).toBeInTheDocument();
+    expect(within(header).queryByRole("button")).toBeNull();
+    expect(within(card.querySelector(".issue-tags") as HTMLElement).getByRole("button", { name: /Priority: Medium/ })).toBeInTheDocument();
     expect(within(card).getAllByRole("button")).toHaveLength(1);
     expect(card.querySelector(".card-foot")).toBeNull();
+  });
+
+  it("has the code, not the title, in the header and the title first in the content", async () => {
+    pageWith(async () => undefined);
+    const header = (await screen.findByText("SW9", { selector: ".issue-code" })).closest(".card-head") as HTMLElement;
+    expect(header.querySelector(".issue-code")).toHaveTextContent("SW9");
+    expect(header).not.toHaveTextContent("Write the manual");
+    expect((header.closest(".card") as HTMLElement).querySelector(":scope > .card-body")?.firstElementChild).toHaveTextContent("Write the manual");
   });
 
   it("opens the four values and sets the one chosen, then shows it", async () => {
     const set = vi.fn(async () => undefined);
     pageWith(set);
-    await userEvent.click(await screen.findByRole("button", { name: /medium/ }));
-    expect(screen.getAllByRole("button").filter((one) => ["critical", "high", "medium", "low"].includes(one.textContent ?? "")).map((one) => one.textContent)).toEqual(["critical", "high", "medium", "low"]);
-    await userEvent.click(screen.getByRole("button", { name: "critical" }));
+    await userEvent.click(await screen.findByRole("button", { name: /Priority: Medium/ }));
+    expect(screen.getAllByRole("button").filter((one) => ["Critical", "High", "Medium", "Low"].includes(one.textContent ?? "")).map((one) => one.textContent)).toEqual(["Critical", "High", "Medium", "Low"]);
+    await userEvent.click(screen.getByRole("button", { name: "Critical" }));
     expect(set).toHaveBeenCalledWith("1", "critical");
-    expect(await screen.findByRole("button", { name: /critical/ })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /Priority: Critical/ })).toBeInTheDocument();
   });
 });
 
 describe("the priority on a card and a row", () => {
-  it("shows the priority as a bubble on the line of a row or board card", () => {
+  it("shows the priority in the chip row of a row or board card, not in its header", () => {
     render(
       <MemoryRouter>
-        <IssueRow issue={issue({ priority: "critical" })} chosen={[]} onOpen={() => undefined} />
+        <IssueCard issue={issue({ priority: "critical" })} chosen={[]} onOpen={() => undefined} />
       </MemoryRouter>,
     );
-    expect(document.querySelector(".issue-line")).toHaveTextContent("critical");
+    expect(document.querySelector(".issue-line")).toHaveTextContent("Priority: Critical");
+    expect(document.querySelector(".card-head")).not.toHaveTextContent("Critical");
   });
 
-  it("shows no bubble when the hub sent no priority", () => {
+  it("shows no priority chip when the hub sent no priority", () => {
     render(
       <MemoryRouter>
-        <IssueRow issue={issue({ priority: "" })} chosen={[]} onOpen={() => undefined} />
+        <IssueCard issue={issue({ priority: "" })} chosen={[]} onOpen={() => undefined} />
       </MemoryRouter>,
     );
     expect(document.querySelector(".issue-line")).not.toHaveTextContent(/critical|high|medium|low/);

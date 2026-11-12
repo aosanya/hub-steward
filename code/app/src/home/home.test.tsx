@@ -41,10 +41,10 @@ const renderHome = (kind?: AgencyKind, view?: AgencyView, segment?: DoSomethingS
 const pageParts = () => Array.from(screen.getByRole("main").children).map((part) => part.textContent);
 
 describe("home composition", () => {
-  it.each(kinds)("lays the %s Do Something out as title, name, rows", (kind) => {
+  it.each(kinds)("lays the %s Do Something out as title, rows", (kind) => {
     renderHome(kind, read);
     expect(screen.getByRole("heading", { level: 1, name: "Do Something" })).toBeInTheDocument();
-    expect(pageParts()).toEqual(["Alego Growers", `rows: ${kind}, forms market`]);
+    expect(pageParts()).toEqual([`rows: ${kind}, forms market`]);
   });
 
   it("draws the Start rows at once and the loading line under them while the agency kind is unknown", () => {
@@ -66,22 +66,10 @@ describe("home composition", () => {
     );
   });
 
-  it.each(kinds)("paints no agency name on the %s Do Something before the agency has answered", (kind) => {
-    renderHome(kind);
-    expect(screen.getByRole("main").querySelector(".sub")).toBeNull();
-  });
-
-  it.each(kinds)("paints the name the agency answered under the title on the %s Do Something", (kind) => {
+  it.each(kinds)("paints no agency name in the %s Do Something page, the top bar carries it", (kind) => {
     renderHome(kind, { name: "Alego Growers", modules: [], modulesUnread: true });
-    const name = screen.getByText("Alego Growers");
-    expect(name).toHaveClass("sub");
-    expect(screen.getByRole("main")).toContainElement(name);
-    expect(screen.queryByRole("heading", { level: 2 })).not.toBeInTheDocument();
-  });
-
-  it("paints no agency name when the agency answered without one", () => {
-    renderHome("farmers", { name: "", modules: [], modulesUnread: true });
     expect(screen.getByRole("main").querySelector(".sub")).toBeNull();
+    expect(screen.queryByText("Alego Growers")).not.toBeInTheDocument();
   });
 });
 
@@ -92,9 +80,9 @@ describe("Start and Ongoing", () => {
     expect(screen.queryByText("ongoing rows")).not.toBeInTheDocument();
   });
 
-  it("draws the Ongoing rows on the Ongoing segment, under the title and the name", () => {
+  it("draws the Ongoing rows on the Ongoing segment, under the title", () => {
     renderHome("farmers", read, "ongoing");
-    expect(pageParts()).toEqual(["Alego Growers", "ongoing rows"]);
+    expect(pageParts()).toEqual(["ongoing rows"]);
   });
 
   it("takes the Ongoing rows' Go to Start to the Do Something page", async () => {

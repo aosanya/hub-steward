@@ -6,7 +6,7 @@ import { mcpBacklogsClient } from "../backlogs/api";
 import { issuePath } from "../backlogs/paths";
 import { backState } from "../ui/backTo";
 import { CapTintScope } from "../backlogs/caps/CapTintScope";
-import { IssueRow } from "../backlogs/IssueRow";
+import { IssueCard } from "../backlogs/IssueCard";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { ListRow, Rows } from "../ui/ListRow";
@@ -107,13 +107,13 @@ export function ResultsPanel({ results, picked, onPick, onOpen }: PanelProps) {
           ))}
         </select>
       </label>
-      <Card title={labelOf(list)} flush>
+      <Card title={labelOf(list)}>
         <CapTintScope issues={list.issues.slice(0, shown)}>
-          <Rows>
+          <div className="issue-cards">
             {list.issues.slice(0, shown).map((issue) => (
-              <IssueRow key={issue.id} issue={issue.backlog === "" ? { ...issue, backlog: names.get(issue.backlogId ?? "") ?? "" } : issue} chosen={[]} onOpen={() => open(issue.id)} chevron />
+              <IssueCard key={issue.id} issue={issue.backlog === "" ? { ...issue, backlog: names.get(issue.backlogId ?? "") ?? "" } : issue} chosen={[]} onOpen={() => open(issue.id)} />
             ))}
-          </Rows>
+          </div>
         </CapTintScope>
         {list.total > list.issues.length ? <p className="assistant-count">{`Showing ${list.issues.length} of ${list.total}`}</p> : null}
         {list.issues.length > shown ? <Button onClick={() => setVisible({ ...visible, [list.id]: shown + pageSize })}>{showMoreWords}</Button> : null}

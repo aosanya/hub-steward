@@ -1,9 +1,12 @@
-import { ActionsMenu } from "../ui/ActionsMenu";
+import { capitalised } from "./capitalised";
+import { ChoiceMenu } from "./ChoiceMenu";
 
 export const priorities = ["critical", "high", "medium", "low"];
+
+export const priorityLabel = (priority?: string) => (priority ? `Priority: ${capitalised(priority)}` : "Priority");
 
 type Props = { priority: string; onPick: (priority: string) => void };
 
 export function PriorityMenu({ priority, onPick }: Props) {
-  return <ActionsMenu label={priority || "priority"} actions={priorities.map((one) => ({ label: one, current: one === priority, onSelect: () => onPick(one) }))} />;
+  return <ChoiceMenu label={priorityLabel(priority)} choices={priorities.map((one) => ({ value: one, label: capitalised(one) }))} current={priority} onPick={onPick} />;
 }

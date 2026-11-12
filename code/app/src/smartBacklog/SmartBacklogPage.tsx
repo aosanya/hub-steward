@@ -8,7 +8,9 @@ import { mcpBacklogsClient, type BacklogsClient, type Issue } from "../backlogs/
 import { FilterBar } from "../backlogs/FilterBar";
 import type { CapsClient } from "../backlogs/caps/api";
 import { CapTintScope } from "../backlogs/caps/CapTintScope";
-import { IssueRow } from "../backlogs/IssueRow";
+import { IssueCard } from "../backlogs/IssueCard";
+import { effortPicker } from "../backlogs/effortPicker";
+import { priorityPicker } from "../backlogs/priorityPicker";
 import { backlogAccessPath } from "../backlogAccess/paths";
 import { BoardColumns, columnsOf, stepsOfIssues, useView, ViewSwitch } from "../backlogBoard";
 import { backlogsHomePath, issuePath, queryParam, searchOf } from "../backlogs/paths";
@@ -21,7 +23,6 @@ import { useLoad } from "../forms/useLoad";
 import { Button } from "../ui/Button";
 import { ActionsMenu } from "../ui/ActionsMenu";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
-import { Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
 import { mcpSmartBacklogClient } from "./api";
 import { editRulesPath } from "./paths";
@@ -51,11 +52,13 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
   if (loaded.state === "error") return <Shell title="Backlog" onBack={back} backLabel={words.backBacklogs}><LoadFailed words="This smart backlog could not be loaded." /></Shell>;
   const { backlog, rows: held, all } = loaded.data;
   const rows = narrowed(held, [], query);
+  const priorityOf = priorityPicker(issues, () => setVersion((now) => now + 1));
+  const effortOf = effortPicker(issues, () => setVersion((now) => now + 1));
   const rowOf = (issue: Issue) =>
     selecting.on ? (
       <SelectableIssueRow issue={issue} chosen={[]} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
     ) : (
-      <IssueRow issue={issue} chosen={[]} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, backlog.name))} chevron={view === "list"} />
+      <IssueCard issue={issue} chosen={[]} onPriority={priorityOf(issue)} onEffort={effortOf(issue)} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, backlog.name))} />
     );
   const edit = () => navigate(editRulesPath(backlogId));
   const canSend = targets.state === "ready" && targets.data.length > 0 && rows.length > 0;
@@ -75,7 +78,7 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
             {rows.length === 0 ? <EmptyCard words="No issues match" /> : view === "board" ? (
               <BoardColumns columns={columnsOf(stepsOfIssues(all, rows), rows)} renderCard={rowOf} />
             ) : (
-              <Rows>{rows.map((issue) => <Fragment key={issue.id}>{rowOf(issue)}</Fragment>)}</Rows>
+              <div className="issue-cards">{rows.map((issue) => <Fragment key={issue.id}>{rowOf(issue)}</Fragment>)}</div>
             )}
           </CapTintScope>
         </>

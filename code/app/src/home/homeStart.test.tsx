@@ -205,12 +205,12 @@ describe("the order she began", () => {
 });
 
 describe("Ongoing on the Do Something page", () => {
-  it("opens on Start and puts the agency name under the title", async () => {
+  it("opens on Start and leaves the agency name to the top bar", async () => {
     answering(async () => ({ modules: [] }));
     openAt(`/a/${hub}/do-something`);
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Start/ })).toHaveAttribute("aria-current", "page");
-    expect(await screen.findByText("Alego Growers")).toHaveClass("sub");
+    expect(within(screen.getByRole("main")).queryByText("Alego Growers")).toBeNull();
   });
 
   it("offers Go to Start when nothing is ongoing, and Start comes back with its rows", async () => {

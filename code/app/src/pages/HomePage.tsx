@@ -14,7 +14,7 @@ type Props = { kind?: AgencyKind; view?: AgencyView | null; segment?: DoSomethin
 export function HomePage({ kind, view, segment = "start" }: Props) {
   const navigate = useNavigate();
   return (
-    <Shell title="Do Something" sub={view?.name || undefined}>
+    <Shell title="Do Something">
       {segment === "start" ? (
         <>
           <StartRows kind={kind} view={view} />

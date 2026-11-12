@@ -6,6 +6,8 @@ import { Card } from "../../ui/Card";
 import { Chip } from "../../ui/Chip";
 import { dateTimeWords } from "../../ui/days";
 import { Field } from "../../ui/Field";
+import { mcpNotesClient, type NotesClient } from "../api";
+import { elapsedSeconds, startedAtOf } from "./elapsed";
 import { mcpCapsClient, type CapsClient, type CapsReading } from "./api";
 import { changeOf, droppedOwn, problemsIn, sentNothing, typedFrom, type Typed } from "./capsEdit";
 import { linesOf, ownershipOf, type CapLine } from "./capsFigures";
@@ -96,19 +98,35 @@ function updatedWords(reading: CapsReading) {
   return when === null ? null : `updated ${when}`;
 }
 
-export function CapsCard({ issueId, client = mcpCapsClient, running = false, onReading }: { issueId: string; client?: CapsClient; running?: boolean; onReading?: (reading: CapsReading) => void }) {
+const tickMilliseconds = 1_000;
+
+export function CapsCard({ issueId, client = mcpCapsClient, notesClient = mcpNotesClient, running = false, onReading }: { issueId: string; client?: CapsClient; notesClient?: NotesClient; running?: boolean; onReading?: (reading: CapsReading) => void }) {
   const [saved, setSaved] = useState<CapsReading | null>(null);
   const [editing, setEditing] = useState(false);
   const loaded = useLoad(() => client.read(issueId), `caps:${openAgencyId()}:${issueId}`);
   const reading = saved ?? (loaded.state === "ready" ? loaded.data : null);
+  const log = useLoad(() => (running ? notesClient.notes(issueId) : Promise.resolve([])), `caps-log:${openAgencyId()}:${issueId}:${running}`);
+  const startedAt = log.state === "ready" ? startedAtOf(log.data) : null;
+  const counting = running && startedAt !== null && reading?.used?.clockStopped !== true;
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!counting) return;
+    setNow(Date.now());
+    const timer = setInterval(() => setNow(Date.now()), tickMilliseconds);
+    return () => clearInterval(timer);
+  }, [counting]);
+  const elapsed = counting ? elapsedSeconds(startedAt, now) : undefined;
   useEffect(() => {
     if (!running || editing) return;
     const timer = setInterval(() => client.read(issueId).then(setSaved, () => undefined), refreshMilliseconds);
     return () => clearInterval(timer);
   }, [running, editing, issueId, client]);
+  const quantised = elapsed === undefined ? undefined : Math.floor(elapsed / 15) * 15;
   useEffect(() => {
-    if (reading) onReading?.(reading);
-  }, [reading]);
+    if (!reading) return;
+    const used = reading.used ?? { input: 0, output: 0, seconds: 0, clockStopped: false };
+    onReading?.(quantised === undefined ? reading : { ...reading, used: { ...used, seconds: quantised } });
+  }, [reading, quantised]);
   const updated = reading ? updatedWords(reading) : null;
   return (
     <Card title="Caps" collapsible defaultOpen={false} flush>
@@ -122,7 +140,7 @@ export function CapsCard({ issueId, client = mcpCapsClient, running = false, onR
           <Editing reading={reading} issueId={issueId} client={client} onSaved={setSaved} onClose={() => setEditing(false)} />
         ) : (
           <>
-            {linesOf(reading).map((line) => (
+            {linesOf(reading, elapsed).map((line) => (
               <Line key={line.key} line={line} fallsBack={reading.own !== null && !line.own} />
             ))}
             {updated ? <p className="cap-updated">{updated}</p> : null}

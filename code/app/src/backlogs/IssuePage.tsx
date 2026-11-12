@@ -5,7 +5,6 @@ import { useLoad } from "../forms/useLoad";
 import { openAgencyId } from "../agency/open";
 import { Card } from "../ui/Card";
 import { LoadFailed, LoadingLine } from "../ui/LoadState";
-import { Rows } from "../ui/ListRow";
 import { Markdown } from "../ui/Markdown";
 import { backState, useBackLabel, useBackTo } from "../ui/backTo";
 import { Shell } from "../ui/Shell";
@@ -22,9 +21,9 @@ import { tintOf, tintStyle } from "./caps/capTint";
 import { mcpReferencesClient, mcpRepoClient, type ReferencesClient, type RepoClient } from "./references/api";
 import { ReferencesCard } from "./references/ReferencesCard";
 import { CapTintScope } from "./caps/CapTintScope";
-import { IssueRow } from "./IssueRow";
-import { IssueTags, IssueTitle, titleParts } from "./IssueTitle";
-import { PriorityMenu } from "./PriorityMenu";
+import { IssueCard } from "./IssueCard";
+import { priorityPicker } from "./priorityPicker";
+import { IssueCode, IssueName, IssueTags, titleParts } from "./IssueTitle";
 import { issuePath, issuesPath } from "./paths";
 import { splitSource } from "./source";
 
@@ -39,7 +38,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
   const id = useParams().issueId ?? "";
   const [version, setVersion] = useState(0);
   const [sent, setSent] = useState("");
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState("");
   const [caps, setCaps] = useState<{ issueId: string; reading: CapsReading } | null>(null);
   const issue = useLoad(() => client.issue(id), `issue:${openAgencyId()}:${id}:${version}`);
   const ready = issue.state === "ready" ? issue.data : null;
@@ -47,12 +46,14 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
   const parts = ready ? titleParts(ready.title, ready.code) : null;
   const found = ready && !settled.has(ready.status) && caps?.issueId === ready.id ? tintOf(caps.reading) : null;
   const { body, source } = splitSource(ready?.description ?? "");
-  const setPriority = client.setPriority;
-  const pick = (priority: string) => {
-    setFailed(false);
-    setPriority?.(id, priority).then(
+  const { setPriority, setEffort } = client;
+  const reload = () => setVersion((now) => now + 1);
+  const priorityOf = priorityPicker(client, reload);
+  const change = (field: string, set: (id: string, value: string) => Promise<void>) => (value: string) => {
+    setFailed("");
+    set(id, value).then(
       () => setVersion((now) => now + 1),
-      () => setFailed(true),
+      () => setFailed(field),
     );
   };
   return (
@@ -66,14 +67,15 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
       ) : null}
       {failed ? (
         <p className="sub" role="alert">
-          The priority was not changed.
+          The {failed} was not changed.
         </p>
       ) : null}
       {ready && parts ? (
         <div className="issue-wide">
           <div className={found ? "issue-main cap-tinted" : "issue-main"} style={tintStyle(found)}>
-            <Card title={<IssueTitle title={ready.title} code={ready.code} />} action={setPriority ? <PriorityMenu priority={ready.priority ?? ""} onPick={pick} /> : undefined}>
-              <IssueTags issue={ready} chosen={[]} extra={[place]} />
+            <Card title={<IssueCode title={ready.title} code={ready.code} />}>
+              <IssueName title={ready.title} code={ready.code} full />
+              <IssueTags issue={ready} chosen={[]} extra={[place]} onPriority={setPriority && change("priority", setPriority)} onEffort={setEffort && change("effort", setEffort)} />
               {found ? (
                 <span className="issue-tags">
                   <CapTintChip found={found} />
@@ -84,7 +86,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
           </div>
           <div className="issue-side">
             <ReferencesCard key={ready.id} issueId={ready.id} client={referencesClient} repoClient={repoClient} />
-            <CapsCard key={ready.id} issueId={ready.id} client={capsClient} running={ready.step === "Doing"} onReading={(reading) => setCaps({ issueId: ready.id, reading })} />
+            <CapsCard key={ready.id} issueId={ready.id} client={capsClient} notesClient={notesClient} running={ready.step === "Doing"} onReading={(reading) => setCaps({ issueId: ready.id, reading })} />
             <IssueLog key={ready.id} issueId={ready.id} client={notesClient} />
             <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />
             {[
@@ -92,13 +94,11 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
               { heading: "Waited on by", issues: ready.waitedOnBy },
             ].map(({ heading, issues }) =>
               issues.length > 0 ? (
-                <Card key={heading} title={heading} collapsible flush>
+                <Card key={heading} title={heading} collapsible>
                   <CapTintScope issues={issues} client={capsClient}>
-                    <Rows>
-                      {issues.map((one) => (
-                        <IssueRow key={one.id} issue={one} chosen={[]} chevron showStep onOpen={() => navigate(issuePath(one.id), backState(here.pathname + here.search, parts.code))} />
-                      ))}
-                    </Rows>
+                    {issues.map((one) => (
+                      <IssueCard key={one.id} issue={one} chosen={[]} showStep onPriority={priorityOf(one)} onOpen={() => navigate(issuePath(one.id), backState(here.pathname + here.search, parts.code))} />
+                    ))}
                   </CapTintScope>
                 </Card>
               ) : null,

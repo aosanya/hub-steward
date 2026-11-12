@@ -35,6 +35,7 @@ export type Issue = {
   mark: Mark;
   rank: number;
   priority?: string;
+  effort?: string;
   createdAt?: string;
   completedAt?: string;
 };
@@ -49,6 +50,7 @@ export type BacklogsClient = {
   issue: (id: string) => Promise<IssueDetail>;
   smartCounts?: (smarts: Backlog[]) => Promise<Record<string, StepCount[]>>;
   setPriority?: (id: string, priority: string) => Promise<void>;
+  setEffort?: (id: string, effort: string) => Promise<void>;
 };
 
 export type NotesClient = {
@@ -123,6 +125,7 @@ export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {
     mark: own ?? markOf(raw, status),
     rank: rankOf(raw),
     priority: text(raw?.priority),
+    ...(text(raw?.effort) !== "" ? { effort: text(raw?.effort) } : {}),
     ...(text(raw?.created_at) !== "" ? { createdAt: text(raw?.created_at) } : {}),
     ...(text(raw?.completed_at) !== "" ? { completedAt: text(raw?.completed_at) } : {}),
   };
@@ -173,6 +176,9 @@ export const mcpBacklogsClient: BacklogsClient = {
   },
   async setPriority(id, priority) {
     await callTool("", taskTools.patch, { taskID: id, priority });
+  },
+  async setEffort(id, effort) {
+    await callTool("", taskTools.patch, { taskID: id, effort });
   },
   async issue(id) {
     const [raw, outbound, inbound, hub] = await Promise.all([

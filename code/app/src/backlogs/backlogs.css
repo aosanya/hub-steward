@@ -1,5 +1,4 @@
-.issue-row .txt { display: flex; flex-direction: column; gap: .375rem; }
-.issue-row .open { padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: var(--content); text-align: left; overflow-wrap: anywhere; }
+.issue-row .open { padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: left; overflow-wrap: anywhere; }
 .issue-tags { display: flex; flex-wrap: wrap; gap: .375rem; }
 .filter-bar { position: sticky; top: 3rem; z-index: 1; display: flex; flex-direction: column; gap: .5rem; padding: .5rem 0; background: var(--bg); }
 .chosen { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
@@ -10,8 +9,9 @@
 .issue-body p, .issue-body ul, .issue-body ol { margin: 0 0 .5rem; }
 .issue-source { white-space: pre-wrap; overflow-wrap: anywhere; }
 .issue-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
-.issue-code { color: var(--accent); font-weight: 500; }
-.rows .issue-row .txt { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: .75rem; }
-.rows .issue-row .open { flex: 1 1 24rem; }
-.rows .issue-row .issue-tags { flex: 0 1 auto; }
+.issue-code { color: var(--accent); font-weight: 700; }
+.issue-title.full { display: block; }
 .step-counts { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .25rem; }
+.issue-cards { display: flex; flex-direction: column; gap: .75rem; }
+.selrow:has(> .issue-row) { gap: .5rem; padding-left: 0; border-top: 0; }
+.selrow > .issue-row { flex: 1; min-width: 0; }

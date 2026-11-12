@@ -2,11 +2,11 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { issueOf, type Issue } from "./api";
-import { IssueRow } from "./IssueRow";
+import { IssueCard } from "./IssueCard";
 
 const minutesAgo = (minutes: number) => new Date(Date.now() - minutes * 60_000).toISOString();
 const issue = (over: Partial<Issue>): Issue => ({ id: "a", title: "t", description: "", status: "pending", step: "To do", repo: "taskmanager", topics: ["Docs"], backlog: "Backlog", mark: "", rank: 1, ...over });
-const show = (one: Issue, open = true) => render(<MemoryRouter><IssueRow issue={one} chosen={[]} onOpen={open ? () => undefined : undefined} /></MemoryRouter>);
+const show = (one: Issue, open = true) => render(<MemoryRouter><IssueCard issue={one} chosen={[]} onOpen={open ? () => undefined : undefined} /></MemoryRouter>);
 
 describe("an issue's age", () => {
   it("is read from the hub's created_at and completed_at", () => {

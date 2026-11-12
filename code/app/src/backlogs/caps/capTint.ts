@@ -32,6 +32,16 @@ export const tintOf = (reading: CapsReading): CapTint | null => {
   return tintAt(nearest.key, spentOf(reading, nearest.key) / reading.inForce[nearest.key], nearest.percent);
 };
 
+const timeLeftWords = (seconds: number) => (seconds >= 60 ? `${Math.ceil(seconds / 60)} min left` : `${seconds} s left`);
+
+export const tintOfElapsed = (elapsed: number, cap: number): CapTint => {
+  const ratio = elapsed / cap;
+  const shaded = tintAt("runtimeSeconds", ratio, Math.min(Math.round(ratio * 100), 99));
+  return { tint: shaded?.tint ?? 0, chip: ratio >= 1 ? "Time is up" : timeLeftWords(cap - elapsed), danger: ratio >= redText };
+};
+
 export const tintOfNearest = (nearest: CapNearest): CapTint | null => tintAt(nearest.key, nearest.ratio, Math.min(Math.round(nearest.ratio * 100), 99));
+
+export const strongerTint = (first: CapTint | null, second: CapTint | null): CapTint | null => (first && second ? (second.tint > first.tint ? second : first) : first ?? second);
 
 export const tintStyle = (found: CapTint | null): CSSProperties | undefined => (found ? ({ "--cap-tint": found.tint } as CSSProperties) : undefined);

@@ -49,10 +49,12 @@ describe("journey 02, browse the backlog", () => {
     const first = await screen.findByRole("button", { name: /^Write the manual/ });
     const titles = Array.from(document.querySelectorAll(".issue-row .issue-title")).map((one) => one.textContent);
     expect(titles).toEqual(["Write the manual", "Import the boards", "Write the loader"]);
-    const row = first.closest(".row") as HTMLElement;
+    const row = first.closest(".issue-row") as HTMLElement;
     expect(row.querySelector(".issue-title")?.textContent).toBe("Write the manual");
     expect(row.querySelector(".issue-line")?.textContent).toContain("mwanachama-docs");
-    expect(screen.queryByText(/P[1-4]|critical|priority/i)).toBeNull();
+    expect(document.querySelectorAll(".issue-row .card-head .actions-btn")).toHaveLength(0);
+    expect(document.querySelectorAll(".issue-row .issue-line .actions-btn")).toHaveLength(6);
+    expect(screen.queryByText(/^P[1-4]$/)).toBeNull();
   });
 
   it("2. the back arrow returns to Backlogs", async () => {

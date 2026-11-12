@@ -82,7 +82,7 @@ describe("journey 06, use the board", () => {
     expect(within(column("Doing")).getByText("Write the loader")).toBeInTheDocument();
     expect(within(column("Waiting")).getByText("Import the boards")).toBeInTheDocument();
     expect(within(column("Done")).getByText("Close the sprint")).toBeInTheDocument();
-    expect(document.querySelectorAll(".bb-col > .card")).toHaveLength(4);
+    expect(document.querySelectorAll(".bb-col .card")).toHaveLength(4);
     expect(screen.getByText(/^4 issues · 5 steps$/)).toBeInTheDocument();
   });
 
@@ -97,7 +97,7 @@ describe("journey 06, use the board", () => {
   it("4. a tag in the address filters every column at once, shows a chip with a cross, and follows the counts", async () => {
     inFarmers(`${board}?tag=Docs`, withPlacedIssues);
     await screen.findByRole("region", { name: "To do" });
-    expect(document.querySelectorAll(".bb-col > .card")).toHaveLength(2);
+    expect(document.querySelectorAll(".bb-col .card")).toHaveLength(2);
     expect(screen.getByRole("button", { name: "Docs ✕" })).toBeInTheDocument();
     expect(within(column("Doing")).getByText("Nothing here")).toBeInTheDocument();
     expect(screen.getByText(/^2 issues · 5 steps$/)).toBeInTheDocument();
@@ -107,7 +107,7 @@ describe("journey 06, use the board", () => {
     inFarmers(`${board}?tag=Docs`, withPlacedIssues);
     await screen.findByRole("button", { name: "Docs ✕" });
     await userEvent.click(screen.getByRole("button", { name: "Docs ✕" }));
-    await waitFor(() => expect(document.querySelectorAll(".bb-col > .card")).toHaveLength(4));
+    await waitFor(() => expect(document.querySelectorAll(".bb-col .card")).toHaveLength(4));
   });
 
   it("5. the List | Board switch opens the list with the same issues", async () => {

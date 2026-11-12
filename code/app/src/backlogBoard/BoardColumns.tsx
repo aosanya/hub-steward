@@ -1,6 +1,5 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import type { Issue } from "../backlogs/api";
-import { Card } from "../ui/Card";
 import type { Column } from "./board";
 import "./backlogBoard.css";
 
@@ -16,9 +15,7 @@ export function BoardColumns({ columns, renderCard }: Props) {
             <span>{column.issues.length}</span>
           </h3>
           {column.issues.map((issue) => (
-            <Card key={issue.id} flush>
-              {renderCard(issue)}
-            </Card>
+            <Fragment key={issue.id}>{renderCard(issue)}</Fragment>
           ))}
           {column.issues.length === 0 ? <p className="bb-none">Nothing here</p> : null}
         </section>
