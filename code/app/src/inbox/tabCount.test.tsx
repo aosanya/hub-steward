@@ -35,13 +35,13 @@ const tabBar = (inbox: InboxClient) =>
     </MemoryRouter>,
   );
 
-const inboxLink = () => screen.getByRole("link", { name: /Home/ });
+const notificationsLink = () => screen.getByRole("link", { name: /Notifications/ });
 
-describe("the Home tab count", () => {
+describe("the Notifications tab count", () => {
   it("shows 2 when two notifications are unread", async () => {
     tabBar(inboxOf([note("a"), note("b"), note("c", true)]));
     expect(await screen.findByLabelText("2 unread notifications")).toHaveTextContent("2");
-    expect(inboxLink()).toContainElement(screen.getByLabelText("2 unread notifications"));
+    expect(notificationsLink()).toContainElement(screen.getByLabelText("2 unread notifications"));
   });
 
   it("shows nothing when everything is read", async () => {
@@ -75,15 +75,16 @@ describe("the Home tab count", () => {
     expect(await screen.findByLabelText("99+ unread notifications")).toHaveTextContent("99+");
   });
 
-  it("puts the count on only the Home tab", async () => {
+  it("puts the count on only the Notifications tab", async () => {
     tabBar(inboxOf(unreadNotes(2)));
     await screen.findByLabelText("2 unread notifications");
     expect(screen.getAllByLabelText(/unread notifications/)).toHaveLength(1);
     expect(screen.getByRole("link", { name: /Chat/ })).not.toContainElement(screen.getByLabelText("2 unread notifications"));
+    expect(screen.getByRole("link", { name: /Home/ })).not.toContainElement(screen.getByLabelText("2 unread notifications"));
   });
 });
 
-describe("the Home tab count beside the home screen", () => {
+describe("the Notifications tab count beside the notifications page", () => {
   const openInbox = (inbox: InboxClient) =>
     render(
       <MemoryRouter>

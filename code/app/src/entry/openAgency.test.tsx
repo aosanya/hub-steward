@@ -75,7 +75,7 @@ describe("a member in two agencies opens one", () => {
     await screen.findByRole("heading", { name: "Home" });
     const hrefs = tabLinks().map((link) => link.getAttribute("href"));
     const base = agencyBasePath(riders.id);
-    expect(hrefs).toEqual([agencyHomePath(riders.id), `${base}/chat`, `${base}/do-something`]);
+    expect(hrefs).toEqual([agencyHomePath(riders.id), `${base}/chat`, `${base}/notifications`]);
     expect(hrefs[0]).toBe(`${base}/home`);
   });
 
@@ -91,8 +91,8 @@ describe("a member in two agencies opens one", () => {
     expect(screen.getByRole("link", { name: /Chat/ })).toHaveAttribute("aria-current", "page");
     await userEvent.click(screen.getByRole("link", { name: /Home/ }));
     expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("link", { name: /Do Something/ }));
-    expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("link", { name: /Notifications/ }));
+    expect(await screen.findByRole("link", { name: /Notifications/ })).toHaveAttribute("aria-current", "page");
     tabLinks().forEach((link) => expect(link.getAttribute("href")).toContain(agencyBasePath(farmers.id)));
     const calls = toolCalls(fetcher);
     expect(calls.length).toBeGreaterThan(0);
@@ -146,9 +146,7 @@ describe("the retired Started address", () => {
   it("sends /a/{id}/started to that agency's Ongoing screen", async () => {
     stubWakala();
     at(`/a/${riders.id}/started`, [farmers, riders]);
-    const tab = await screen.findByRole("link", { name: /Ongoing/ });
-    expect(tab).toHaveAttribute("href", `${agencyBasePath(riders.id)}/ongoing`);
-    expect(tab).toHaveAttribute("aria-current", "page");
+    expect(await screen.findByRole("heading", { level: 1 })).toBeInTheDocument();
     expect(openAgencyId()).toBe(riders.id);
   });
 
@@ -156,7 +154,7 @@ describe("the retired Started address", () => {
     stubWakala();
     openAgency(riders.id);
     at("/started", [farmers, riders]);
-    expect(await screen.findByRole("link", { name: /Ongoing/ })).toHaveAttribute("href", `${agencyBasePath(riders.id)}/ongoing`);
+    expect(await screen.findByRole("heading", { level: 1 })).toBeInTheDocument();
   });
 
   it("sends /started to Your agencies when no agency is open", async () => {

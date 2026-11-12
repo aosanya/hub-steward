@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "./App";
 import { forgetOpenAgency, openAgency } from "./agency/open";
-import { doSomethingBar, homeBar } from "./tabs";
+import { mainBar } from "./tabs";
 import { BottomBar } from "./ui/BottomBar";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
@@ -42,8 +42,8 @@ describe("tab bar", () => {
     at("/");
     const nav = screen.getByRole("navigation", { name: "Main" });
     const links = nav.querySelectorAll("a");
-    expect(links).toHaveLength(homeBar.length);
-    homeBar.forEach((tab, i) => expect(links[i]).toHaveTextContent(tab.label));
+    expect(links).toHaveLength(mainBar.length);
+    mainBar.forEach((tab, i) => expect(links[i]).toHaveTextContent(tab.label));
     expect(links[0]).toHaveAttribute("aria-current", "page");
     expect(links[1]).not.toHaveAttribute("aria-current");
   });
@@ -54,32 +54,29 @@ describe("tab bar", () => {
     await userEvent.click(screen.getByRole("link", { name: /Chat/ }));
     expect(screen.getByRole("heading", { name: "Chat" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Chat/ })).toHaveAttribute("aria-current", "page");
+    await userEvent.click(screen.getByRole("link", { name: /Notifications/ }));
+    expect(await screen.findByRole("link", { name: /Notifications/ })).toHaveAttribute("aria-current", "page");
     await userEvent.click(screen.getByRole("link", { name: /Home/ }));
     expect(screen.getByRole("heading", { name: "Home" })).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("link", { name: /Do Something/ }));
-    expect(await screen.findByRole("heading", { name: "Do Something" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Home/ })).toHaveAttribute("aria-current", "page");
   });
 
-  it("swaps to the Do Something bar on Do Something, and Home swaps back", async () => {
+  it("keeps the same bar on Start and Ongoing, with none chosen", async () => {
     at("/a/walk-agency/do-something");
-    expect(await screen.findByRole("link", { name: /Start/ })).toHaveAttribute("aria-current", "page");
-    expect(barLabels()).toEqual(["Home", "Start", "Ongoing"]);
-    await userEvent.click(screen.getByRole("link", { name: /Ongoing/ }));
-    expect(screen.getByRole("link", { name: /Ongoing/ })).toHaveAttribute("aria-current", "page");
-    expect(screen.getByRole("link", { name: /Start/ })).not.toHaveAttribute("aria-current");
-    await userEvent.click(screen.getByRole("link", { name: /Home/ }));
-    expect(screen.getByRole("heading", { name: "Home" })).toBeInTheDocument();
-    expect(barLabels()).toEqual(["Home", "Chat", "Do Something"]);
+    expect(await screen.findByRole("heading", { name: "Start" })).toBeInTheDocument();
+    expect(barLabels()).toEqual(["Home", "Chat", "Notifications"]);
+    within(screen.getByRole("navigation", { name: "Main" }))
+      .getAllByRole("link")
+      .forEach((link) => expect(link).not.toHaveAttribute("aria-current"));
   });
 
-  it("holds Home, Chat and Do Something and keeps no Inbox, Apps or Started tab", () => {
-    expect(homeBar.map((tab) => tab.label)).toEqual(["Home", "Chat", "Do Something"]);
-    expect(doSomethingBar.map((tab) => tab.label)).toEqual(["Home", "Start", "Ongoing", "Backlogs"]);
+  it("holds Home, Chat and Notifications and keeps no Inbox, Apps, Started or Do Something tab", () => {
+    expect(mainBar.map((tab) => tab.label)).toEqual(["Home", "Chat", "Notifications"]);
   });
 
-  it("draws three labels in the home bar", () => {
+  it("draws three labels in the bar", () => {
     at("/");
-    expect(barLabels()).toEqual(["Home", "Chat", "Do Something"]);
+    expect(barLabels()).toEqual(["Home", "Chat", "Notifications"]);
   });
 
   it("draws the inbox as the home screen", () => {
@@ -89,16 +86,29 @@ describe("tab bar", () => {
   });
 
   it("sends the agency's old started address to its Ongoing screen", async () => {
-    at("/a/other-agency/started");
-    expect(await screen.findByRole("link", { name: /Ongoing/ })).toHaveAttribute("aria-current", "page");
+    const seen: string[] = [];
+    render(
+      <MemoryRouter initialEntries={["/a/other-agency/started"]}>
+        <App />
+        <Where seen={seen} />
+      </MemoryRouter>,
+    );
+    expect(await screen.findByRole("heading", { level: 1 })).toBeInTheDocument();
+    expect(seen.at(-1)).toBe("/a/other-agency/ongoing");
     expect(screen.queryByRole("heading", { name: "Started" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Ongoing/ })).toHaveAttribute("href", "/a/other-agency/ongoing");
+    expect(barLabels()).toEqual(["Home", "Chat", "Notifications"]);
   });
 
   it("sends the agency-less /started to the open agency's Ongoing screen", async () => {
-    at("/started");
-    expect(await screen.findByRole("link", { name: /Ongoing/ })).toHaveAttribute("href", "/a/walk-agency/ongoing");
-    expect(screen.getByRole("link", { name: /Ongoing/ })).toHaveAttribute("aria-current", "page");
+    const seen: string[] = [];
+    render(
+      <MemoryRouter initialEntries={["/started"]}>
+        <App />
+        <Where seen={seen} />
+      </MemoryRouter>,
+    );
+    expect(await screen.findByRole("heading", { level: 1 })).toBeInTheDocument();
+    expect(seen.at(-1)).toBe("/a/walk-agency/ongoing");
   });
 
   it("has no page at the old apps tab route", () => {
@@ -121,9 +131,9 @@ describe("tab bar", () => {
     expect(screen.getByRole("link", { name: /Home/ })).toHaveAttribute("aria-current", "page");
   });
 
-  it("opens Do Something on the agency's do-something route", () => {
+  it("opens Start on the agency's do-something route", () => {
     at("/a/walk-agency/do-something");
-    expect(screen.getByRole("heading", { name: "Do Something" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Start" })).toBeInTheDocument();
   });
 
   it("sends an unknown path to the agencies page when no agency is open", () => {

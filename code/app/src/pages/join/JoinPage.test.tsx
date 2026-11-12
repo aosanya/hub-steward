@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
 import type { GroupsClient, JoinableGroup } from "../../groups/api";
 import { routes } from "../../routes";
-import { chatTab, doSomethingTab, tabRoute } from "../../tabs";
+import { chatTab, startTab, tabRoute } from "../../tabs";
 import { JoinPage } from "./JoinPage";
 
 const farmers: JoinableGroup = { id: "g1", name: "Siaya farmers", code: "G-S7F-4KM-2RX", approvalNeeded: true };
@@ -30,7 +30,7 @@ const show = (client: GroupsClient) =>
         <Route path={routes.join.pattern} element={<JoinPage client={client} />} />
         <Route path={tabRoute(chatTab)} element={<h1>Chat page</h1>} />
         <Route path={routes.roomThreads.pattern} element={<h1>Room page</h1>} />
-        <Route path={tabRoute(doSomethingTab)} element={<h1>Do Something page</h1>} />
+        <Route path={tabRoute(startTab)} element={<h1>Do Something page</h1>} />
       </Routes>
     </MemoryRouter>,
   );

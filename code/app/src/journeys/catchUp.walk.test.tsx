@@ -111,16 +111,16 @@ describe("journey 23, step 1: opens the Inbox", () => {
     expect(screen.queryByText("You are all caught up")).not.toBeInTheDocument();
   });
 
-  it("carries the number of unread on the Inbox tab, read once with the list", async () => {
+  it("carries the number of unread on the Notifications tab, read once with the list", async () => {
     seedFarmers();
     open("/inbox");
 
     expect(await screen.findByLabelText("2 unread notifications")).toHaveTextContent("2");
-    expect(screen.getByRole("link", { name: /Home/ })).toContainElement(screen.getByLabelText("2 unread notifications"));
+    expect(screen.getByRole("link", { name: /Notifications/ })).toContainElement(screen.getByLabelText("2 unread notifications"));
     expect(callsTo(world, "comm_notification_list")).toHaveLength(1);
   });
 
-  it("takes the number off the Inbox tab when she marks all read", async () => {
+  it("takes the number off the Notifications tab when she marks all read", async () => {
     seedFarmers();
     open("/inbox");
     await userEvent.click(await screen.findByRole("button", { name: "Mark all read" }));

@@ -1,22 +1,17 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { AgencyClient } from "../agency/modules";
 import type { InboxClient } from "../inbox/api";
 import { rememberSide, sideReached } from "../tabs";
 import { doSomethingBackPath } from "../routes";
-import { forgetTaskModules, TabBar } from "./TabBar";
+import { TabBar } from "./TabBar";
 
 const quietInbox = { listNotifications: () => Promise.resolve([]) } as unknown as InboxClient;
 
-const agencyWith = (...codes: string[]): AgencyClient => ({
-  read: () => Promise.resolve({ name: "Siaya", modules: codes.map((code) => ({ code, name: code })) }),
-});
-
-const open = (path = "/a/walk-siaya/home", agency = agencyWith()) =>
+const open = (path = "/a/walk-siaya/home") =>
   render(
     <MemoryRouter initialEntries={[path]}>
-      <TabBar inbox={quietInbox} agency={agency} />
+      <TabBar inbox={quietInbox} />
     </MemoryRouter>,
   );
 
@@ -24,126 +19,107 @@ const labels = () => screen.getAllByRole("link").map((link) => link.textContent?
 
 afterEach(() => {
   forgetOpenAgency();
-  forgetTaskModules();
   rememberSide("start");
 });
 
 const iconsShown = () => screen.getAllByRole("link").map((link) => link.querySelector("svg")?.getAttribute("data-icon"));
 
 describe("tab bar", () => {
-  it("draws each tab with an icon, not a text glyph", () => {
+  it("draws each tab with an icon, not a text glyph, the bell for Notifications", () => {
     open();
-    expect(iconsShown()).toEqual(["home", "chat", "grid"]);
+    expect(iconsShown()).toEqual(["home", "chat", "bell"]);
     screen.getAllByRole("link").forEach((link) => {
       expect(link.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
       expect(link.querySelector(".pill")?.textContent).toBe("");
     });
   });
 
-  it("draws the Do Something tabs Home, Start and Ongoing with their own icons", () => {
-    open("/a/walk-siaya/do-something", agencyWith("taskmanager"));
-    return waitFor(() => expect(iconsShown()).toEqual(["home", "play", "clock", "list"]));
-  });
-
-  it("leaves the label of every tab as it was", () => {
+  it("shows Home, Chat and Notifications in that order", () => {
     open();
-    expect(labels()).toEqual(["Home", "Chat", "Do Something"]);
+    expect(labels()).toEqual(["Home", "Chat", "Notifications"]);
   });
 
-  it("shows Home, Chat and Do Something in that order on the home screen", () => {
+  it("has no Do Something, Apps or Started tab", () => {
     open();
-    expect(labels()).toEqual(["Home", "Chat", "Do Something"]);
-  });
-
-  it("keeps the home bar on Chat", () => {
-    open("/a/walk-siaya/chat");
-    expect(labels()).toEqual(["Home", "Chat", "Do Something"]);
-  });
-
-  it("points Home and Do Something at their retired paths when no agency is open", () => {
-    open("/");
-    expect(screen.getByRole("link", { name: /Home/ })).toHaveAttribute("href", "/");
-    expect(screen.getByRole("link", { name: /Do Something/ })).toHaveAttribute("href", "/do-something");
-  });
-
-  it("has no Apps tab and no Started tab", () => {
-    open();
-    expect(screen.queryByRole("link", { name: /Apps|Started/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Do Something|Apps|Started/ })).not.toBeInTheDocument();
     expect(screen.getAllByRole("link")).toHaveLength(3);
   });
 
-  it("points every tab at the open agency's own pages", () => {
+  it("points Home, Chat and Notifications at the open agency's own pages", () => {
     openAgency("walk-siaya");
     open();
     expect(screen.getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual([
       "/a/walk-siaya/home",
       "/a/walk-siaya/chat",
-      "/a/walk-siaya/do-something",
+      "/a/walk-siaya/notifications",
     ]);
   });
 
-  it.each(["do-something", "ongoing", "backlogs", "backlogs/all"])("shows Home, Start and Ongoing on %s, and Backlogs once the task module is on", async (segment) => {
-    openAgency("walk-siaya");
-    open(`/a/walk-siaya/${segment}`, agencyWith("taskmanager"));
-    expect(await screen.findByRole("link", { name: /Backlogs/ })).toBeInTheDocument();
-    expect(labels()).toEqual(["Home", "Start", "Ongoing", "Backlogs"]);
-  });
-
-  it("leaves Backlogs out while the task module is off", async () => {
-    openAgency("walk-siaya");
-    open("/a/walk-siaya/ongoing", agencyWith("market"));
-    expect(await screen.findByRole("link", { name: /Ongoing/ })).toBeInTheDocument();
-    expect(labels()).toEqual(["Home", "Start", "Ongoing"]);
-  });
-
-  it("leaves Backlogs out when the modules could not be read", async () => {
-    openAgency("walk-siaya");
-    open("/a/walk-siaya/do-something", { read: () => Promise.reject(new Error("down")) });
-    expect(await screen.findByRole("link", { name: /Start/ })).toBeInTheDocument();
-    expect(labels()).toEqual(["Home", "Start", "Ongoing"]);
-  });
-
-  it("marks Start on the Do Something page and Backlogs on a backlog's board", async () => {
-    openAgency("walk-siaya");
-    open("/a/walk-siaya/backlogs/all", agencyWith("taskmanager"));
-    expect(await screen.findByRole("link", { name: /Backlogs/ })).toHaveAttribute("aria-current", "page");
-    expect(screen.getByRole("link", { name: /Start/ })).not.toHaveAttribute("aria-current");
+  it("points Home, Chat and Notifications at their plain paths when no agency is open", () => {
+    open("/");
+    expect(screen.getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual(["/", "/chat", "/notifications"]);
   });
 
   it.each([
+    ["/a/walk-siaya/home", "Home"],
+    ["/a/walk-siaya/chat", "Chat"],
+    ["/a/walk-siaya/notifications", "Notifications"],
+  ])("chooses the one tab of %s", (path, label) => {
+    openAgency("walk-siaya");
+    open(path);
+    const chosen = screen.getAllByRole("link").filter((link) => link.hasAttribute("aria-current"));
+    expect(chosen.map((link) => link.textContent?.replace(/[^A-Za-z ]/g, ""))).toEqual([label]);
+  });
+
+  it.each([
+    "/a/walk-siaya/do-something",
+    "/a/walk-siaya/ongoing",
+    "/a/walk-siaya/backlogs",
+    "/a/walk-siaya/backlogs/all",
     "/a/walk-siaya/steps/s1",
     "/a/walk-siaya/start/s1",
     "/a/walk-siaya/market",
     "/a/walk-siaya/market/urea",
     "/a/walk-siaya/forms/f1",
     "/a/walk-siaya/join",
+    "/a/walk-siaya/risks",
     "/asks",
     "/orders/o1",
-    "/offers",
-    "/prices",
-    "/group-orders/g1",
     "/coordinator/orders/o1/payments",
-    "/supply/apply",
     "/sell/maize",
-    "/stock",
-  ])("keeps the Do Something bar on %s, with Start chosen when Start was where the person came from", async (path) => {
+  ])("keeps the same bar on %s with none chosen", (path) => {
     openAgency("walk-siaya");
     open(path);
-    await screen.findByRole("link", { name: /Start/ });
-    expect(labels()).toEqual(["Home", "Start", "Ongoing"]);
-    expect(screen.getByRole("link", { name: /Start/ })).toHaveAttribute("aria-current", "page");
-    expect(screen.getByRole("link", { name: /Ongoing/ })).not.toHaveAttribute("aria-current");
+    expect(labels()).toEqual(["Home", "Chat", "Notifications"]);
+    screen.getAllByRole("link").forEach((link) => expect(link).not.toHaveAttribute("aria-current"));
   });
 
-  it("chooses Ongoing on a screen opened from Ongoing, and Back goes there", async () => {
+  it("keeps the bar the same width of slots, with no slot reserved", () => {
+    open("/a/walk-siaya/ongoing");
+    expect(screen.getByRole("navigation", { name: "Main" })).not.toHaveClass("reserve");
+  });
+
+  it("puts the unread count on the Notifications button", async () => {
+    const unread = {
+      listNotifications: () => Promise.resolve([{ id: "n1", event: "new_form", subjectKind: "form", subjectId: "f1", names: {}, createdAt: "2026-10-28T10:40:00Z", read: false }]),
+    } as unknown as InboxClient;
+    render(
+      <MemoryRouter initialEntries={["/a/walk-siaya/ongoing"]}>
+        <TabBar inbox={unread} />
+      </MemoryRouter>,
+    );
+    const badge = await screen.findByLabelText("1 unread notifications");
+    expect(screen.getByRole("link", { name: /Notifications/ })).toContainElement(badge);
+    expect(screen.getByRole("link", { name: /Home/ })).not.toContainElement(badge);
+  });
+
+  it("remembers the side a person reached, and Back goes there", () => {
     openAgency("walk-siaya");
     const view = open("/a/walk-siaya/ongoing");
-    await screen.findByRole("link", { name: /Ongoing/ });
     expect(sideReached()).toBe("ongoing");
     view.unmount();
     open("/a/walk-siaya/steps/s1");
-    expect(await screen.findByRole("link", { name: /Ongoing/ })).toHaveAttribute("aria-current", "page");
-    expect(screen.getByRole("link", { name: /Start/ })).not.toHaveAttribute("aria-current");
+    expect(sideReached()).toBe("ongoing");
     expect(doSomethingBackPath()).toBe("/a/walk-siaya/ongoing");
   });
 
@@ -155,53 +131,9 @@ describe("tab bar", () => {
     expect(doSomethingBackPath()).toBe("/a/walk-siaya/do-something");
   });
 
-  it("keeps the home bar on the chat and the home screen, and on the old inbox path", async () => {
+  it("keeps the same bar on the old inbox path", () => {
     openAgency("walk-siaya");
-    for (const path of ["/a/walk-siaya/home", "/a/walk-siaya/chat", "/a/walk-siaya/inbox", "/a/walk-siaya/risks"]) {
-      const view = open(path);
-      expect(labels()).toEqual(["Home", "Chat", "Do Something"]);
-      view.unmount();
-    }
-  });
-
-  it("reserves the Backlogs slot while the first read is out, so the other tabs stay where they are", async () => {
-    openAgency("walk-siaya");
-    let answer: (modules: string[]) => void = () => undefined;
-    const slow: AgencyClient = {
-      read: () => new Promise((resolve) => (answer = (codes) => resolve({ name: "Siaya", modules: codes.map((code) => ({ code, name: code })) }))),
-    };
-    open("/a/walk-siaya/ongoing", slow);
-    expect(screen.getByRole("navigation", { name: "Main" })).toHaveClass("reserve");
-    expect(labels()).toEqual(["Home", "Start", "Ongoing"]);
-    await act(async () => answer(["taskmanager"]));
-    expect(await screen.findByRole("link", { name: /Backlogs/ })).toBeInTheDocument();
-    expect(screen.getByRole("navigation", { name: "Main" })).not.toHaveClass("reserve");
-  });
-
-  it("shows Backlogs at once on the next screen, from what the first read found", async () => {
-    openAgency("walk-siaya");
-    const first = open("/a/walk-siaya/ongoing", agencyWith("taskmanager"));
-    await screen.findByRole("link", { name: /Backlogs/ });
-    first.unmount();
-    open("/a/walk-siaya/steps/s1", { read: () => new Promise(() => undefined) });
-    expect(labels()).toEqual(["Home", "Start", "Ongoing", "Backlogs"]);
-    expect(screen.getByRole("navigation", { name: "Main" })).not.toHaveClass("reserve");
-  });
-
-  it("drops what it remembered when the read fails, and keeps three tabs", async () => {
-    openAgency("walk-siaya");
-    const first = open("/a/walk-siaya/ongoing", agencyWith("taskmanager"));
-    await screen.findByRole("link", { name: /Backlogs/ });
-    first.unmount();
-    open("/a/walk-siaya/ongoing", { read: () => Promise.reject(new Error("down")) });
-    await waitFor(() => expect(labels()).toEqual(["Home", "Start", "Ongoing"]));
-    expect(screen.getByRole("navigation", { name: "Main" })).not.toHaveClass("reserve");
-  });
-
-  it("keeps three tabs when the modules came back unread", async () => {
-    openAgency("walk-siaya");
-    open("/a/walk-siaya/ongoing", { read: () => Promise.resolve({ name: "Siaya", modules: [], modulesUnread: true }) });
-    await waitFor(() => expect(screen.getByRole("navigation", { name: "Main" })).not.toHaveClass("reserve"));
-    expect(labels()).toEqual(["Home", "Start", "Ongoing"]);
+    open("/a/walk-siaya/inbox");
+    expect(labels()).toEqual(["Home", "Chat", "Notifications"]);
   });
 });

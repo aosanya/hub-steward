@@ -27,8 +27,8 @@ const open = (path = "/") =>
   );
 
 const openDoSomething = async () => {
-  open();
-  await userEvent.click(await screen.findByRole("link", { name: /Do Something/ }));
+  open("/do-something");
+  await screen.findByRole("heading", { level: 1 });
 };
 
 const press = async (name: string | RegExp) => userEvent.click(await screen.findByRole("button", { name }));

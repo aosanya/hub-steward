@@ -1,5 +1,5 @@
 import { agencyBasePath, openAgencyId } from "./agency/open";
-import { agencyRoute, chatTab, doSomethingTab, sideReached, sideTab, tabPathIn } from "./tabs";
+import { agencyRoute, chatTab, sideReached, startTab, sideTab, tabPathIn } from "./tabs";
 
 type ParamNames<P extends string> = P extends `${string}:${infer Name}/${infer Rest}`
   ? Name | ParamNames<`/${Rest}`>
@@ -68,7 +68,7 @@ export const routes = {
 
 export const allScreens: AgencyScreen[] = Object.values(routes);
 
-export const doSomethingPath = () => tabPathIn(doSomethingTab, openAgencyId());
+export const doSomethingPath = () => tabPathIn(startTab, openAgencyId());
 
 export const doSomethingBackPath = () => tabPathIn(sideTab(sideReached()), openAgencyId());
 

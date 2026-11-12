@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "../App";
-import { doSomethingPathIn, openAgency } from "../agency/open";
+import { agencyBasePath, doSomethingPathIn, openAgency } from "../agency/open";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 import * as mcp from "../wakala/mcp";
 import { forgetSubject } from "../wakala/me";
@@ -32,12 +32,9 @@ const ongoingRowsShown = () =>
     row.querySelector(".meta")?.textContent ?? "",
   ]);
 
-const ongoingSegment = () => within(screen.getByRole("navigation", { name: "Main" })).findByRole("link", { name: /Ongoing$/ });
-
 const atOngoing = async () => {
-  at(doSomethingPathIn(agency.id));
-  await userEvent.click(await ongoingSegment());
-  expect(await ongoingSegment()).toHaveAttribute("aria-current", "page");
+  at(`${agencyBasePath(agency.id)}/ongoing`);
+  await screen.findByRole("heading", { level: 1 });
 };
 
 const liveOrder = (id: string, product: string) => ({
@@ -247,7 +244,6 @@ describe("journey 18, the Ongoing segment", () => {
     expect(ongoingRowsShown()).toEqual([]);
 
     await tapped("Go to Start");
-    expect(within(screen.getByRole("navigation", { name: "Main" })).getByRole("link", { name: /Start$/ })).toHaveAttribute("aria-current", "page");
     expect(screen.queryByText("Nothing ongoing yet")).not.toBeInTheDocument();
     expect(where()).toBe(doSomethingPathIn(agency.id));
   });

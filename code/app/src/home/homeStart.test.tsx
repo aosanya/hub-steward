@@ -184,13 +184,10 @@ describe("a workflow step that is not the group order Start", () => {
   });
 });
 
-const chooseOngoing = async () => userEvent.click(await screen.findByRole("link", { name: /Ongoing/ }));
-
 describe("the order she began", () => {
   it("is listed in the Ongoing rows with its workflow and state", async () => {
     answering(async () => ({ modules: [] }), { orders: [beganOrder] });
-    openAt(`/a/${hub}/do-something`);
-    await chooseOngoing();
+    openAt(`/a/${hub}/ongoing`);
     expect(await screen.findByText("Create group order · Open")).toBeInTheDocument();
     expect(screen.getByText(beganOrder.product)).toBeInTheDocument();
     expect(screen.queryByText("Urea group order")).not.toBeInTheDocument();
@@ -209,30 +206,24 @@ describe("Ongoing on the Do Something page", () => {
     answering(async () => ({ modules: [] }));
     openAt(`/a/${hub}/do-something`);
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Start/ })).toHaveAttribute("aria-current", "page");
     expect(within(screen.getByRole("main")).queryByText("Alego Growers")).toBeNull();
   });
 
   it("offers Go to Start when nothing is ongoing, and Start comes back with its rows", async () => {
     answering(async () => ({ modules: [] }));
-    openAt(`/a/${hub}/do-something`);
-    await chooseOngoing();
+    openAt(`/a/${hub}/ongoing`);
     expect(await screen.findByText("Nothing ongoing yet")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Go to Start" }));
-    expect(screen.getByRole("link", { name: /Start/ })).toHaveAttribute("aria-current", "page");
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
     expect(where()).toBe(`/a/${hub}/do-something`);
   });
 
   it("opens an Ongoing row where the work left off, and back from it lands on Ongoing", async () => {
     answering(async () => ({ modules: [] }), { orders: [beganOrder] });
-    openAt(`/a/${hub}/do-something`);
-    await chooseOngoing();
+    openAt(`/a/${hub}/ongoing`);
     await userEvent.click(await screen.findByText("Create group order · Open"));
     expect(where()).toBe(`/coordinator/orders/${beganOrder.id}`);
-    expect(screen.getByRole("link", { name: /Ongoing/ })).toHaveAttribute("aria-current", "page");
     await userEvent.click(await screen.findByRole("button", { name: "Back" }));
     expect(where()).toBe(`/a/${hub}/ongoing`);
-    expect(await screen.findByRole("link", { name: /Ongoing/ })).toHaveAttribute("aria-current", "page");
   });
 });

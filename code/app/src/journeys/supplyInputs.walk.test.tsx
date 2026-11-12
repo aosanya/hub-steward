@@ -263,11 +263,11 @@ const walk = world();
 
 const open = async () => {
   render(
-    <MemoryRouter initialEntries={["/"]}>
+    <MemoryRouter initialEntries={["/do-something"]}>
       <App />
     </MemoryRouter>,
   );
-  await userEvent.click(await screen.findByRole("link", { name: /Do Something/ }));
+  await screen.findByRole("heading", { level: 1 });
 };
 
 const press = (name: string | RegExp) => userEvent.click(screen.getByRole("button", { name }));
@@ -339,7 +339,7 @@ describe("journey 14, supply inputs", () => {
     await press("Mark all read");
     await waitFor(() => expect(screen.queryByRole("button", { name: "Mark all read" })).toBeNull());
 
-    await goTab(/Do Something/);
+    await pressWhenShown(/^Start$/);
     for (const row of [/^Offers/, /^Asks/, /^Group order/, /^Orders/]) {
       expect(await screen.findByRole("button", { name: row })).toBeInTheDocument();
     }

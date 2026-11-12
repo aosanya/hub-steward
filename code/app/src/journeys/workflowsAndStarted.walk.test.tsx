@@ -242,8 +242,6 @@ const heading = (name: string, level = 1) => screen.findByRole("heading", { name
 
 const tabsBar = () => within(screen.getByRole("navigation", { name: "Main" }));
 
-const doSomethingTab = () => tabsBar().getByRole("link", { name: /Start$/ });
-
 const farmerStartRows = ["Buy inputs", "Sell harvest", modules[1].name, joinStep.form_name, supplierStep.form_name];
 
 const startRowsShown = () => Array.from(document.querySelectorAll<HTMLElement>("main > .rows > .row .ttl")).map((title) => title.textContent);
@@ -268,14 +266,16 @@ const ongoingRowsAre = async (expected: string[][]) => {
   expect(screen.queryByText("Nothing ongoing yet")).toBeNull();
 };
 
-const startSegment = () => tabsBar().getByRole("link", { name: /Start$/ });
-
-const ongoingSegment = () => tabsBar().getByRole("link", { name: /Ongoing$/ });
-
 const ongoingOpened = async () => {
-  await userEvent.click(ongoingSegment());
-  expect(ongoingSegment()).toHaveAttribute("aria-current", "page");
-  expect(startSegment()).not.toHaveAttribute("aria-current");
+  visit(`/a/${siaya.id}/ongoing`);
+  await screen.findByRole("heading", { level: 1 });
+};
+
+const barChoosesNothing = () => {
+  expect(tabsBar().getAllByRole("link").map((tab) => tab.textContent?.replace(/[^A-Za-z ]/g, ""))).toEqual(["Home", "Chat", "Notifications"]);
+  tabsBar()
+    .getAllByRole("link")
+    .forEach((tab) => expect(tab).not.toHaveAttribute("aria-current"));
 };
 
 const rowTitled = (title: string) => screen.getByText(title).closest(".row") as HTMLElement;
@@ -329,9 +329,7 @@ const step1AFarmerOpensHome = async () => {
   expect(screen.getAllByRole("heading", { level: 1 }).map((title) => title.textContent)).toEqual(["Start"]);
   expect(within(screen.getByRole("main")).queryByText(siaya.name)).toBeNull();
   expect(within(screen.getByRole("main")).queryAllByRole("heading")).toEqual([]);
-  expect(tabsBar().getAllByRole("link").slice(0, 3).map((link) => link.textContent?.replace(/[^A-Za-z ]/g, ""))).toEqual(["Home", "Start", "Ongoing"]);
-  expect(startSegment()).toHaveAttribute("aria-current", "page");
-  expect(ongoingSegment()).not.toHaveAttribute("aria-current");
+  barChoosesNothing();
   expect(screen.queryByText("Nothing ongoing yet")).toBeNull();
   expect(fakes.called("agency_list_my_open_steps")).not.toHaveLength(0);
   expect(startRowsShown()).toEqual(farmerStartRows);
@@ -346,8 +344,7 @@ const step1AFarmerOpensHome = async () => {
   expect(screen.queryByRole("button", { name: "Account" })).toBeNull();
   expect(screen.queryByRole("menu")).toBeNull();
 
-  expect(tabsBar().getAllByRole("link").map((tab) => tab.textContent)).toEqual(["Home", "Start", "Ongoing"]);
-  expect(doSomethingTab()).toHaveAttribute("aria-current", "page");
+  barChoosesNothing();
 };
 
 const step2SheOpensTheMenu = async () => {
@@ -513,13 +510,11 @@ const step6NothingBegunShowsTheEmptyCard = async () => {
   await pressed("Go to Start");
   await heading("Start");
   expect(where()).toBe(doSomethingOf(siaya.id));
-  expect(startSegment()).toHaveAttribute("aria-current", "page");
-  expect(ongoingSegment()).not.toHaveAttribute("aria-current");
+  barChoosesNothing();
   expect(within(screen.getByRole("main")).queryByText(siaya.name)).toBeNull();
   expect(await startRow(joinStep.form_name)).toBeInTheDocument();
   expect(startRowsShown()).toEqual(farmerStartRows);
   expect(screen.queryByText("Nothing ongoing yet")).toBeNull();
-  expect(doSomethingTab()).toHaveAttribute("aria-current", "page");
 };
 
 beforeEach(() => {
