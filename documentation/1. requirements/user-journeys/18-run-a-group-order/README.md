@@ -36,3 +36,6 @@ The mockups are in [mockups/](../../../2.%20design/mockups/journeys/18-run-a-gro
    - After sending, the first row carries a Sent chip and the button is gone.
    - A called-off order carries a Called off chip, has no Send the order and keeps its Records.
    - If the order is called off, her Notifications page shows The Urea 50kg group order was called off, with its date. The notice opens the order.
+   - The order stays on Ongoing, Live, after she sends it. It moves to Ongoing, Done only once it is closed or called off; nothing yet closes a sent order (ISS-163), so a sent order does not reach Done by itself.
+   - Done is read-only and newest first. A closed or called-off order is a row with a Closed or Called off chip that opens the order page. A delivered order appears there once something sets its delivery date (ISS-154).
+   - With nothing finished the tab is one card, Nothing finished yet. A list that cannot be read says Your finished tasks could not be loaded, with Try again; if only some can be read it says Some of your finished tasks could not be loaded and shows the rest. A long list ends with Show more.

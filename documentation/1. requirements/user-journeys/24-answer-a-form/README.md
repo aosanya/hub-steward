@@ -16,6 +16,7 @@ Screens: [all six in order](../../../2.%20design/mockups/journeys/24-answer-a-fo
 4. **She sees where it went.** [Mockup](../../../2.%20design/mockups/journeys/24-answer-a-form/mockups/step-04-sees-the-thread-it-opens.html). After she sends, Form sent says her answers were sent, with Back to forms. For a standing form the screen is titled with the form and shows her answers one per line under Your thread · with the agent. The app does not open the chat thread itself.
 5. **She finds what she answered.** [Mockup](../../../2.%20design/mockups/journeys/24-answer-a-form/mockups/step-05-finds-what-she-answered.html). Forms, Answered lists the open forms she has answered, newest first, each with the date of her last send. A quiet button at the foot, Every form you answered, opens every form she answered, each marked Open or Closed.
 6. **She has nothing waiting.** [Mockup](../../../2.%20design/mockups/journeys/24-answer-a-form/mockups/step-06-has-nothing-waiting.html). When no form is waiting, Waiting shows zero and one card, Nothing is waiting for you. The card carries its own button, See what you answered, which switches to Answered.
+7. **She finds a form she sent as a step.** Ongoing, Done keeps the forms she sent as a step of an agency task, read-only and newest first, as a plain row with a Sent chip. It is not the Answered list of step 5: Answered holds the open forms she answered in Forms. With none sent, Done is one card, Nothing finished yet.
 
 ## What the drawings invent
 

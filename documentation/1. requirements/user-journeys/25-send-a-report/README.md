@@ -25,3 +25,4 @@ The themes, the wording, the agent's name, the reference and the dates are drawn
 - None of the three steps is built in the phone app or the console. The app has no report screen, and no report, idea or complaint form type exists in its code. A workflow can open into a chat ([Design a chat workflow](../28-design-a-chat-workflow/README.md)), but none is a report.
 - The server can mount a reports domain (reports, board items with a reference, the acknowledgement and answer clocks) from `code/wakala-api/internal/specs/wakala.reports.json`. It mounts only when its `REPORTS_` variables are set, which neither `docker-compose.yml` nor `.env.example` does, and no screen calls it.
 - It is undecided whether the agency's phone app carries this journey at all.
+- Ongoing, Done lists the forms a member sent as a step of an agency task (D157, D158). A report sent through this chat would only appear there once a report exists as a workflow step; none does.
