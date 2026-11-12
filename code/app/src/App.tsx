@@ -10,7 +10,7 @@ import { ConsentPage } from "./consent/ConsentPage";
 import { LanguagePage } from "./account/LanguagePage";
 import { ProfilePage } from "./account/ProfilePage";
 import { SignOutPage } from "./account/SignOutPage";
-import { InboxPage } from "./pages/InboxPage";
+import { NotificationsPage } from "./pages/NotificationsPage";
 import { EvidencePage } from "./risks/EvidencePage";
 import { RiskPage } from "./risks/RiskPage";
 import { RisksPage } from "./risks/RisksPage";
@@ -72,8 +72,8 @@ function ToAgencyHome() {
 }
 
 function tabElement(tab: Tab) {
-  if (tab.id === "home") return <InboxPage above={<HomeOptions />} />;
-  if (tab.id === "notifications") return <InboxPage />;
+  if (tab.id === "home") return <NotificationsPage above={<HomeOptions />} />;
+  if (tab.id === "notifications") return <NotificationsPage />;
   if (tab.id === "start") return <SupplierHome segment="start" />;
   if (tab.id === "ongoing") return <SupplierHome segment="ongoing" />;
   if (tab.id === "chat") return <ChatPage />;

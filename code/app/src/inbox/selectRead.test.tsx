@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { StartClient } from "../coordinator/start/api";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import { InboxPage } from "../pages/InboxPage";
+import { NotificationsPage } from "../pages/NotificationsPage";
 import { routes } from "../routes";
 import type { InboxClient, NotificationItem } from "./api";
 
@@ -37,7 +37,7 @@ const show = (client: InboxClient) =>
   render(
     <MemoryRouter initialEntries={["/inbox"]}>
       <Routes>
-        <Route path="/inbox" element={<InboxPage client={client} start={quietStart} />} />
+        <Route path="/inbox" element={<NotificationsPage client={client} start={quietStart} />} />
         <Route path={routes.roomThread.pattern} element={<p>the thread opened</p>} />
       </Routes>
     </MemoryRouter>,

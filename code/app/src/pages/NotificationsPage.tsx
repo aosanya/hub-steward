@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { mcpInboxClient, type InboxClient, type InvitationItem, type NotificationItem } from "../inbox/api";
 import { isOutage } from "../inbox/outage";
 import { NeedsYouSection } from "../inbox/NeedsYouSection";
-import { needsYouCountOf, updatesOf, waitingNoticesOf } from "../inbox/needsYou";
+import { needsYouCount, needsYouNotes, updatesOf } from "../inbox/needsYou";
 import { UpdatesSection } from "../inbox/UpdatesSection";
 import { unreadOf, useNotifications } from "../inbox/useNotifications";
 import { Button } from "../ui/Button";
@@ -51,11 +51,11 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
   };
 
   const waiting = useStartWaiting(start);
-  const updates = updatesOf(items ?? []);
+  const updates = updatesOf(items);
   const unread = unreadOf(updates);
   const chosen = unread.filter((n) => ticked.includes(n.id)).map((n) => n.id);
-  const needing = waitingNoticesOf(items ?? []);
-  const waitsOnYou = needsYouCountOf({ steps: waiting ?? [], invitations, notifications: items ?? [] }) > 0;
+  const needing = needsYouNotes(items);
+  const waitsOnYou = needsYouCount({ steps: waiting ?? [], invitations, items }) > 0;
 
   if (opened) {
     const { invitation, joined } = opened;

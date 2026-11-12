@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { InboxPage } from "../../pages/InboxPage";
+import { NotificationsPage } from "../../pages/NotificationsPage";
 import * as mcp from "../../wakala/mcp";
 import type { StartClient, StartStep } from "./api";
 import { TabBar } from "../../ui/TabBar";
@@ -46,7 +46,7 @@ const replies = (over: Record<string, unknown> = {}) =>
 const openInbox = () =>
   render(
     <MemoryRouter>
-      <InboxPage />
+      <NotificationsPage />
     </MemoryRouter>,
   );
 

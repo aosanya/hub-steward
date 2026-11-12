@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { GroupOrder, GroupOrderClient } from "../../supply/groupOrder/api";
 import * as mcp from "../../wakala/mcp";
 import { holdsGroupCoordinator, isDuplicate, mcpPaymentsClient, paymentOf, recordOf, type Payment, type PaymentsClient, type PaymentsRecord } from "./api";
-import { InboxPage } from "../../pages/InboxPage";
+import { NotificationsPage } from "../../pages/NotificationsPage";
 import type { InboxClient } from "../../inbox/api";
 import { CoordinatorOrderCards } from "./OrderCards";
 import { AddPaymentPage, CoordinatorOrderPage, ManagePaymentsPage } from "./PaymentsPages";
@@ -487,7 +487,7 @@ describe("called-off Inbox row", () => {
       acceptInvitation: vi.fn(),
       declineInvitation: vi.fn(),
     };
-    at("/inbox", <InboxPage client={client} />, "/inbox");
+    at("/inbox", <NotificationsPage client={client} />, "/inbox");
     await userEvent.click(await screen.findByText("The Urea 50kg group order was called off"));
     expect(await screen.findByText("elsewhere")).toBeInTheDocument();
   });

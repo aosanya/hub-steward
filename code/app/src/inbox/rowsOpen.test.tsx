@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { issuePath } from "../backlogs/paths";
 import type { StartClient } from "../coordinator/start/api";
-import { InboxPage } from "../pages/InboxPage";
+import { NotificationsPage } from "../pages/NotificationsPage";
 import { routes } from "../routes";
 import type { InboxClient, NotificationItem } from "./api";
 
@@ -42,7 +42,7 @@ const show = (client: InboxClient) =>
   render(
     <MemoryRouter initialEntries={["/inbox"]}>
       <Routes>
-        <Route path="/inbox" element={<InboxPage client={client} start={quietStart} />} />
+        <Route path="/inbox" element={<NotificationsPage client={client} start={quietStart} />} />
         <Route path="*" element={<Where />} />
       </Routes>
     </MemoryRouter>,
@@ -59,7 +59,7 @@ describe("a notification row opens its subject", () => {
   ])("opens the subject of %s", async (event, subjectKind, subjectId, expected) => {
     const client = clientOf([note({ event, subjectKind, subjectId })]);
     show(client);
-    const title = await screen.findByText(/./, { selector: ".selrow .ttl" });
+    const title = await screen.findByText(/./, { selector: ".row .ttl" });
     await userEvent.click(title.closest("button") as HTMLElement);
     expect(await screen.findByText(`at ${expected()}`)).toBeInTheDocument();
     expect(client.markRead).toHaveBeenCalledWith(["n1"]);
@@ -75,14 +75,14 @@ describe("a notification row that opens nothing", () => {
     ["new_form", ""],
   ])("shows no unread dot and no button for %s", async (event, subjectKind) => {
     show(clientOf([note({ event, subjectKind, subjectId: subjectKind ? "x1" : "" })]));
-    const row = (await screen.findByText(/./, { selector: ".selrow .ttl" })).closest(".row") as HTMLElement;
+    const row = (await screen.findByText(/./, { selector: ".row .ttl" })).closest(".row") as HTMLElement;
     expect(row.tagName).toBe("DIV");
     expect(within(row).queryByLabelText("Unread")).toBeNull();
     expect(within(row).queryByText("›")).toBeNull();
   });
 
-  it("still lets the member tick it and mark it read", async () => {
-    const client = clientOf([note({ id: "a1", event: "ask_waiting", subjectKind: "ask", subjectId: "k1" })]);
+  it("still lets the member tick it and mark it read when it is news", async () => {
+    const client = clientOf([note({ id: "a1", event: "quote_sent", subjectKind: "quote", subjectId: "k1" })]);
     show(client);
     await userEvent.click(await screen.findByRole("checkbox"));
     await userEvent.click(screen.getByRole("button", { name: "Mark read" }));

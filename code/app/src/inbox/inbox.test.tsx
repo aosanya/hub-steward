@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { StartClient } from "../coordinator/start/api";
-import { InboxPage } from "../pages/InboxPage";
+import { NotificationsPage } from "../pages/NotificationsPage";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
 import { routes } from "../routes";
 import { forgetOpenAgency, openAgency } from "../agency/open";
@@ -37,22 +37,22 @@ const quietStart = { waiting: async () => [] } as unknown as StartClient;
 const show = (client: InboxClient) =>
   render(
     <MemoryRouter>
-      <InboxPage client={client} start={quietStart} />
+      <NotificationsPage client={client} start={quietStart} />
     </MemoryRouter>,
   );
 
 describe("inbox", () => {
   it("marks unread rows with a dot and leaves read rows without one", async () => {
-    show(fake([note({}), note({ id: "n2", event: "new_form", names: {}, read: true })]));
+    show(fake([note({}), note({ id: "n2", event: "group_join_declined", names: {}, read: true })]));
     const unreadRow = (await screen.findByText("You joined Siaya farmers")).closest(".row") as HTMLElement;
-    const readRow = screen.getByText("New form").closest(".row") as HTMLElement;
+    const readRow = screen.getByText("Request declined").closest(".row") as HTMLElement;
     expect(within(unreadRow).getByLabelText("Unread")).toBeInTheDocument();
     expect(within(readRow).queryByLabelText("Unread")).toBeNull();
     expect(screen.getByRole("button", { name: "Mark all read" })).toBeInTheDocument();
   });
 
   it("puts the unread dot first in the row, before the title", async () => {
-    show(fake([note({}), note({ id: "n2", event: "new_form", names: {}, read: true })]));
+    show(fake([note({}), note({ id: "n2", event: "group_join_declined", names: {}, read: true })]));
     const unreadRow = (await screen.findByText("You joined Siaya farmers")).closest(".row") as HTMLElement;
     expect(unreadRow.firstElementChild).toBe(within(unreadRow).getByLabelText("Unread"));
     expect(unreadRow.lastElementChild).not.toBe(within(unreadRow).getByLabelText("Unread"));
@@ -65,14 +65,14 @@ describe("inbox", () => {
     expect(row.firstElementChild).toBe(within(row).getByLabelText("Unread"));
   });
 
-  it("puts Mark all read in the bar and not in the body", async () => {
+  it("puts Mark all read in the Updates heading and not in the bar", async () => {
     show(fake([note({})]));
     const button = await screen.findByRole("button", { name: "Mark all read" });
-    expect(button.closest("header.bar")).not.toBeNull();
-    expect(button.closest("main.body")).toBeNull();
+    expect(button.closest(".heading-row")).not.toBeNull();
+    expect(button.closest("header.bar")).toBeNull();
   });
 
-  it("has no Mark all read in the bar when nothing is unread", async () => {
+  it("has no Mark all read when nothing is unread", async () => {
     show(fake([note({ read: true })]));
     await screen.findByText("You joined Siaya farmers");
     expect(screen.queryByRole("button", { name: "Mark all read" })).toBeNull();
@@ -164,7 +164,7 @@ describe("tapping a row", () => {
     render(
       <MemoryRouter initialEntries={["/inbox"]}>
         <Routes>
-          <Route path="/inbox" element={<InboxPage client={client} start={quietStart} />} />
+          <Route path="/inbox" element={<NotificationsPage client={client} start={quietStart} />} />
           <Route path={routes.roomThread.pattern} element={<p>the thread opened</p>} />
         </Routes>
       </MemoryRouter>,

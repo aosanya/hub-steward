@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import type { StartClient } from "../coordinator/start/api";
-import { InboxPage } from "../pages/InboxPage";
+import { NotificationsPage } from "../pages/NotificationsPage";
 import { McpError } from "../wakala/mcp";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
 
@@ -29,7 +29,7 @@ const quietStart = { waiting: async () => [] } as unknown as StartClient;
 const show = (client: InboxClient) =>
   render(
     <MemoryRouter>
-      <InboxPage client={client} start={quietStart} />
+      <NotificationsPage client={client} start={quietStart} />
     </MemoryRouter>,
   );
 

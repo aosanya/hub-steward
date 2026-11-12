@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import type { StartClient } from "../coordinator/start/api";
-import { InboxPage } from "../pages/InboxPage";
+import { NotificationsPage } from "../pages/NotificationsPage";
 import type { InboxClient } from "./api";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 
@@ -26,7 +26,7 @@ describe("an invitation while Join is on its way", () => {
     const inbox = client(accept);
     render(
       <MemoryRouter>
-        <InboxPage client={inbox} start={quietStart} />
+        <NotificationsPage client={inbox} start={quietStart} />
       </MemoryRouter>,
     );
     await userEvent.click(await screen.findByText("You are invited to Supplier"));

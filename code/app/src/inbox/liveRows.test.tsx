@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { StartClient } from "../coordinator/start/api";
 import { swahili } from "../entry/swahili";
 import { words } from "../entry/words";
-import { InboxPage } from "../pages/InboxPage";
+import { NotificationsPage } from "../pages/NotificationsPage";
 import { TabBar } from "../ui/TabBar";
 import * as mcp from "../wakala/mcp";
 import { mcpInboxClient } from "./api";
@@ -56,7 +56,7 @@ const show = () =>
   render(
     <MemoryRouter initialEntries={["/inbox"]}>
       <Routes>
-        <Route path="/inbox" element={<InboxPage client={{ ...mcpInboxClient }} start={quietStart} />} />
+        <Route path="/inbox" element={<NotificationsPage client={{ ...mcpInboxClient }} start={quietStart} />} />
         <Route path={routes.roomThread.pattern} element={<Landed />} />
         <Route path={tabRoute(chatTab)} element={<p>the chat list</p>} />
       </Routes>
@@ -180,14 +180,16 @@ const raisedEvents: [string, string, string][] = [
   ["counter_sent", "quote", "A counter was sent on your quote"],
   ["case_opened", "case", "Your request was opened"],
   ["case_closed", "case", "Your request was closed"],
-  ["task_assigned", "task", "A task was assigned to you"],
+  ["task_assigned", "task", "An issue was assigned to you"],
 ];
+
+const shownEvents = raisedEvents.filter(([event]) => event !== "group_invited");
 
 const rowOf = (event: string, kind: string, over: Record<string, unknown> = {}) =>
   liveRow("1", { Event: event, SubjectKind: kind, SubjectID: `${kind}-1`, StructureID: "", ...over });
 
 describe("the Inbox words the events other modules raise, over the live answer", () => {
-  it.each(raisedEvents)("words %s as a sentence and never prints the event name", async (event, kind, sentence) => {
+  it.each(shownEvents)("words %s as a sentence and never prints the event name", async (event, kind, sentence) => {
     answer([rowOf(event, kind)]);
     show();
     expect(await screen.findByText(sentence)).toBeInTheDocument();
@@ -195,7 +197,7 @@ describe("the Inbox words the events other modules raise, over the live answer",
     expect(screen.queryByText(words.inboxNotification)).toBeNull();
   });
 
-  it.each(raisedEvents)("words %s in Kiswahili when that is the chosen language", async (event, kind, sentence) => {
+  it.each(shownEvents)("words %s in Kiswahili when that is the chosen language", async (event, kind, sentence) => {
     window.localStorage.setItem("hub.language", "sw");
     answer([rowOf(event, kind)]);
     show();
@@ -234,12 +236,6 @@ describe("the Inbox words the events other modules raise, over the live answer",
     show();
     const row = (await screen.findByText("You joined a group")).closest(".row") as HTMLElement;
     expect(within(row).getByText("Your request was approved.")).toBeInTheDocument();
-  });
-
-  it("names the group an invitation is to when the row carries it", async () => {
-    answer([rowOf("group_invited", "group", { Names: { group: "Supplier" } })]);
-    show();
-    expect(await screen.findByText("You are invited to Supplier")).toBeInTheDocument();
   });
 
   it("names the product of a called-off group order in Kiswahili", async () => {
@@ -308,7 +304,7 @@ describe("tapping a live row", () => {
     return render(
       <MemoryRouter initialEntries={["/inbox"]}>
         <Routes>
-          <Route path="/inbox" element={<InboxPage client={client} start={quietStart} />} />
+          <Route path="/inbox" element={<NotificationsPage client={client} start={quietStart} />} />
           <Route path={routes.roomThread.pattern} element={<LandedBeside />} />
         </Routes>
       </MemoryRouter>,

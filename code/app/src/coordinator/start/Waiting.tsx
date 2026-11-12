@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
+import { waitingStepsOf } from "../../inbox/needsYou";
 import { ListRow } from "../../ui/ListRow";
 import { mcpStartClient, startPath, type StartClient } from "./api";
 import { useStartWaiting } from "./startWaiting";
 
 export function StartWaitingRows({ client = mcpStartClient }: { client?: StartClient }) {
   const navigate = useNavigate();
-  const steps = useStartWaiting(client) ?? [];
+  const steps = waitingStepsOf(useStartWaiting(client) ?? []);
   return (
     <>
       {steps.map((s) => (
