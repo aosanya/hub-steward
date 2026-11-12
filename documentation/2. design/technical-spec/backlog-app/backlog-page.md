@@ -395,7 +395,7 @@ Who writes the list: when an agent picks up an issue that has no pieces, it writ
 Written at creation (D160, in the decisions of hub-steward-swe): whoever creates an issue, a person or a skill, writes its todos then, in the order they are done, each with what it waits on.
 The last todo is documentation, short and in place, and the issue is not Done until it is.
 
-Moving to Review: when the last piece is Done, an issue that is In progress moves to Review by itself. An issue in any other step does not move. If the issue's backlog has no Review step, nothing moves.
+Moving to Review: when the last piece is Done, an issue that is In progress moves to Review by itself. An issue in any other step does not move. If the issue's backlog has no Review step, nothing moves. Built (TDL-7): the API does it when a piece turns Done, adds a Log entry "Every todo is Done: moved to Review", and does not move the issue back when a piece is added or reopened.
 
 What exists today in the taskmanager, and what is new:
 
@@ -404,7 +404,7 @@ What exists today in the taskmanager, and what is new:
 | A todo has a status (`pending`, `dispatched`, `completed`, `blocked`, `failed`), `depends_on` and `parent_task_id` | Listing the todos of an issue |
 | Todos are listed only by workflow run (`taskmanager_task_todo_list`) | Edit, reorder and delete |
 | A todo can be created, read, dispatched and given a status | Refusing a cycle or a piece of another issue |
-| There is no edit and no delete | Blocked by itself and back to To do, the written reason, the move to Review, the count for the pill |
+| There is no edit and no delete | Blocked by itself and back to To do, the written reason, the count for the pill |
 
 The store (TDL-9). The `task_todo` table of the taskmanager holds one row per piece; its fields are declared in `taskmanager.blueprint.json`:
 
