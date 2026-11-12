@@ -12,7 +12,7 @@ import { EmptyCard, LoadFailed } from "../ui/LoadState";
 import { chatTab } from "../tabs";
 import { chatListPath, routes } from "../routes";
 import { mcpStepsClient, type MemberStep, type StepsClient } from "../steps/api";
-import { sentSteps, wasSent } from "../steps/sent";
+import { sentAfter, sentSteps, wasSent } from "../steps/sent";
 import { homeCardsFor, type AgencyKind, type HomeCard } from "./cards";
 import { chatScreenOf, hasScreen, screenOf } from "./workflowScreens";
 import { Icon } from "../ui/Icon";
@@ -24,7 +24,7 @@ const stepRowOf = (step: StartStep): HomeCard[] => {
   return path ? [{ title: step.formName, path }] : [];
 };
 
-type Row = HomeCard & { chat?: true; sent?: boolean };
+type Row = HomeCard & { chat?: true; sent?: boolean; after?: string };
 
 const chatRowsOf = (steps: StartStep[]): Row[] => {
   const named = steps.filter((step) => step.opensIn === "chat" && step.workflowName !== "");
@@ -42,9 +42,9 @@ const stepPathOf = (step: { id: string; orderId: string }) => routes.step.path({
 const memberRowsOf = (steps: MemberStep[]): Row[] => {
   const listed = steps
     .filter((step) => generic(step) !== "" && !hasOwnTools(step))
-    .map((step) => ({ title: generic(step), path: stepPathOf(step), sent: wasSent(step) }));
+    .map((step) => ({ title: generic(step), path: stepPathOf(step), sent: wasSent(step), after: sentAfter(step) }));
   const gone = sentSteps().filter((one) => !steps.some((step) => step.id === one.id && step.orderId === one.orderId));
-  return [...listed, ...gone.map((one) => ({ title: one.title, path: stepPathOf(one), sent: true }))];
+  return [...listed, ...gone.map((one) => ({ title: one.title, path: stepPathOf(one), sent: true, after: one.after }))];
 };
 
 const holdsForms = async (forms: Pick<FormsClient, "waiting" | "answered">) => {
@@ -97,6 +97,7 @@ export function StartRows({
               key={row.chat ? `chat:${row.title}` : row.path}
               title={row.titleKey ? words[row.titleKey] : row.title}
               start={row.chat ? <span className="mark" aria-hidden="true"><Icon name={chatTab.icon} /></span> : undefined}
+              meta={row.after || undefined}
               end={row.sent ? "Sent" : "›"}
               onClick={row.sent ? undefined : () => navigate(row.path)}
             />
