@@ -77,7 +77,7 @@ export const swahili: Words = {
   inboxCounterSent: "Jibu la bei limetumwa kwenye nukuu yako",
   inboxCaseOpened: "Ombi lako limefunguliwa",
   inboxCaseClosed: "Ombi lako limefungwa",
-  inboxTaskAssigned: "Umepewa kazi",
+  inboxTaskAssigned: "Umepewa suala",
   inboxNotification: "Arifa",
   risksTitle: "Hatari",
   risksMine: "Hatari zangu",

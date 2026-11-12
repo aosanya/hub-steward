@@ -140,7 +140,7 @@ type Query = Record<string, string>;
 const pageOf = async (query: Query, offset: number) =>
   itemsOf(await callTool("", taskTools.list, offset === 0 ? { ...query, limit: listCap } : { ...query, limit: listCap, offset }));
 
-const fetchAll = async (query: Query): Promise<any[]> => {
+export const fetchAll = async (query: Query): Promise<any[]> => {
   const rows: any[] = [];
   const seen = new Set<string>();
   for (let offset = 0; ; offset += listCap) {

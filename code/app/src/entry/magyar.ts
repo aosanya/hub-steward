@@ -77,7 +77,7 @@ export const magyar: Words = {
   inboxCounterSent: "Ellenajánlat érkezett az árajánlatára",
   inboxCaseOpened: "A kérelmét megnyitották",
   inboxCaseClosed: "A kérelmét lezárták",
-  inboxTaskAssigned: "Feladatot kapott",
+  inboxTaskAssigned: "Ügyet kapott",
   inboxNotification: "Értesítés",
   risksTitle: "Kockázatok",
   risksMine: "Kockázataim",

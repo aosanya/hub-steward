@@ -75,7 +75,7 @@ export const words = {
   inboxCounterSent: "A counter was sent on your quote",
   inboxCaseOpened: "Your request was opened",
   inboxCaseClosed: "Your request was closed",
-  inboxTaskAssigned: "A task was assigned to you",
+  inboxTaskAssigned: "An issue was assigned to you",
   inboxNotification: "Notification",
   risksTitle: "Risks",
   risksMine: "My risks",
