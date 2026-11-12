@@ -6,15 +6,15 @@
 
 **Result:** the farmers' order reaches the Supplier once, with the payments kept in the agency.
 
-The mockups are in [mockups/](../../../2.%20design/mockups/journeys/18-run-a-group-order/mockups/), one HTML page per step, and can be browsed in order from [index.html](../../../2.%20design/mockups/journeys/18-run-a-group-order/index.html). The mockups draw the phone app with three tabs, Do Something, Chat and Inbox, and the menu in a drawer.
+The mockups are in [mockups/](../../../2.%20design/mockups/journeys/18-run-a-group-order/mockups/), one HTML page per step, and can be browsed in order from [index.html](../../../2.%20design/mockups/journeys/18-run-a-group-order/index.html). The mockups draw the phone app with the bottom bar Home, Chat and Notifications (D154, D155) and the menu in a drawer.
 
 ## Steps
 
 1. **Sees what waits.** [Mockup](../../../2.%20design/mockups/journeys/18-run-a-group-order/mockups/step-01-sees-what-waits.html).
-   - The Start tab of Do Something shows the step that waits on her first, named for its form, Create group order. The agency's apps follow: Buy inputs, Sell harvest and Forms.
-   - The Inbox has a matching row, Start the group order, with the agency and the role and an unread dot.
-   - Once she has started the order, Create group order stays in Start, because she can have several orders. Each live order is a row on the Ongoing tab: Urea 50kg over Create group order · Open.
-   - A farmer's Start tab has no such row. It holds the agency's apps and the two steps a Farmer holds, Join a group and Apply as a supplier. A farmer who has begun nothing sees one card on Ongoing, Nothing ongoing yet, with Go to Start inside it.
+   - Start, opened from Home, shows the step that waits on her first, named for its form, Create group order. The agency's tasks follow: Buy inputs, Sell harvest and Forms.
+   - Notifications has a matching row, Start the group order, with the agency and the role and an unread dot.
+   - Once she has started the order, Create group order stays in Start, because she can have several orders. Each live order is a row on Ongoing: Urea 50kg over Create group order · Open.
+   - A farmer's Start has no such row. It holds the agency's tasks and the two steps a Farmer holds, Join a group and Apply as a supplier. A farmer who has begun nothing sees one card on Ongoing, Nothing ongoing yet, with Go to Start inside it.
 
 2. **Fills the form.** [Mockup](../../../2.%20design/mockups/journeys/18-run-a-group-order/mockups/step-02-fills-the-form.html).
    - The form asks for Product, Price a bag and Minimum bags. She fills in Urea 50kg, 3,600 and 20, and presses Start, which opens the order.
@@ -35,4 +35,4 @@ The mockups are in [mockups/](../../../2.%20design/mockups/journeys/18-run-a-gro
    - The page shows the terms, KES 3,600 a bag from 20 bags, then the bags so far and the farmers. Under a Records heading is a Manage payments row. Send the order is her own button.
    - After sending, the first row carries a Sent chip and the button is gone.
    - A called-off order carries a Called off chip, has no Send the order and keeps its Records.
-   - If the order is called off, her Inbox shows The Urea 50kg group order was called off, with its date. The notice opens the order.
+   - If the order is called off, her Notifications page shows The Urea 50kg group order was called off, with its date. The notice opens the order.

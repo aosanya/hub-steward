@@ -16,7 +16,7 @@ Mockups: [all steps in order](../../../2.%20design/mockups/journeys/14-supply-in
 
 ### 1. Applies and is approved
 
-Apply as a supplier is a row on the Start tab. He sends his shop name, his area and what he sells. His application shows Waiting beside the Market manager with no time limit, and is also a row on the Ongoing tab. When the Market manager approves, his Inbox says he is approved as a supplier and his Start tab gains the supplier's rows: Offers, Asks, Group order, Orders, Your prices and Forms.
+Apply as a supplier is a row on Start. He sends his shop name, his area and what he sells. His application shows Waiting beside the Market manager with no time limit, and is also a row on Ongoing. When the Market manager approves, his Notifications page says he is approved as a supplier and his Start gains the supplier's rows: Offers, Asks, Group order, Orders, Your prices and Forms.
 
 Mockup: [step-01-applies-and-is-approved.html](../../../2.%20design/mockups/journeys/14-supply-inputs/mockups/step-01-applies-and-is-approved.html)
 

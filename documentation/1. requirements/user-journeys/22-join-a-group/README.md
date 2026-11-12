@@ -6,7 +6,7 @@
 
 **Result:** she is in the group and its room is on Chat.
 
-Join a group is a workflow of the agency. The group's Admin decides who joins. The mockups are in [mockups/](../../../2.%20design/mockups/journeys/22-join-a-group/mockups/) and can be browsed in order from [index.html](../../../2.%20design/mockups/journeys/22-join-a-group/index.html).
+Join a group is a task of the agency. The group's Admin decides who joins. The mockups are in [mockups/](../../../2.%20design/mockups/journeys/22-join-a-group/mockups/) and can be browsed in order from [index.html](../../../2.%20design/mockups/journeys/22-join-a-group/index.html).
 
 ## Steps
 
@@ -22,8 +22,8 @@ Join a group is a workflow of the agency. The group's Admin decides who joins. T
    - After the Admin approves (how the Admin decides is not built, see below), the group's row on that page reads You are in, and it opens the room. The room is also on Chat.
    - Her request leaves Ongoing, which lists only requests still waiting.
 
-4. **Is invited from Notifications.** [Mockup](../../../2.%20design/mockups/journeys/22-join-a-group/mockups/step-04-is-invited.html).
-   - An invitation is a row under Needs you on the Notifications page, and the bell counts it. Opened, it names the group and who invited her, shows how long it has left, and has Decline and Join.
+4. **Is invited from Home.** [Mockup](../../../2.%20design/mockups/journeys/22-join-a-group/mockups/step-04-is-invited.html).
+   - On Home the strip counts the invitation and opens the Notifications page, where it is a row under Needs you; the bell counts it too. Opened, it names the group and who invited her, shows how long it has left, and has Decline and Join.
    - After Join, the card says she joined and where the room is, and has no buttons.
 
 ## Not yet built

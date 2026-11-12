@@ -33,7 +33,7 @@ Each journey is one README: a short story, numbered steps and what the screen sh
 | [Test an agency](20-test-an-agency/README.md) | Proves the agency's rules work by running scenarios against a test copy before publishing. |
 | [Sign in and choose an agency](21-sign-in-and-choose-an-agency/README.md) | Signs in with an emailed link and goes into one of her agencies. |
 | [Join a group](22-join-a-group/README.md) | Asks to join a group, or accepts an invitation, and finds its room. |
-| [Catch up](23-catch-up/README.md) | Sees what is new in her agency: the Inbox first, then her rooms. |
+| [Catch up](23-catch-up/README.md) | Sees what is new in her agency: the Notifications page first, then her rooms. |
 | [Answer a form](24-answer-a-form/README.md) | Answers a form her group sent, one question at a time, and sees where it went. |
 | [Send a report](25-send-a-report/README.md) | Sends a report, an idea or a complaint and gets a reference. |
 | [Design an agency](26-design-an-agency/README.md) | Takes a draft through AI and expert review, answering every finding before publishing. Not built: only the AI review exists, as journey 27. |
