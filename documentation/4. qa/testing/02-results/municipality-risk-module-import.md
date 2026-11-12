@@ -4,7 +4,7 @@ Run on 2026-11-07 in a cloud container with a native Postgres on `127.0.0.1:5432
 
 | Check | Result |
 |---|---|
-| `demo/municipality.json` against `code/console/public/templates/municipality.json` | identical |
+| `demo/municipality.json` against `code/console/public/templates/municipality.json` (not found in the repo as of 2026-11-12; only a built copy at `code/console/dist/templates/municipality.json` exists) | identical |
 | Mount in the file | module `riskmanager`, enabled, mount key `risks` |
 | Roles in the file | R-13 (department head, risk owner) and R-14 (council and mayor's office reader), each with `permissions: ["risk.read"]` |
 | Rules in the file | RU-RISK-1 attached to R-13, RU-RISK-2 attached to R-14 |

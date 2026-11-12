@@ -1,5 +1,7 @@
 # Municipality import
 
+Superseded by [Municipality import, 2026-11-08](municipality-import-2026-11-08.md) (46 workflows, 25 errors).
+
 Run on 2026-11-07 on this laptop: `demo/municipality.json` posted to `POST /instances/import` of the API built from `code/wakala-api`, running against the local Supabase database (`127.0.0.1:54322`), never a hosted project.
 
 | Check | Result |

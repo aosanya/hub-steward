@@ -12,4 +12,4 @@ Run on 2026-11-07 in a cloud container, against a throwaway native Postgres 16 o
 
 Not covered: sign-in by emailed link (no sign-in service and no inbox here); the forms and catalog list addresses were not exercised; no work item was run by an agent.
 
-Console walk: `code/console/src/journeys/registerUpkeep.walk.test.tsx`, 6 tests (one per step WI-1 to WI-5 and one in order), `npx vitest run src/journeys` 36 passed. Swapping the order of two steps in the agency file fails three of them. The five steps carry no role in the agency file, so the role per step is the console's fallback actor; the workflow is not yet complete.
+Console walk: `code/console/src/journeys/walks/registerUpkeep.json`, 6 tests (one per step WI-1 to WI-5 and one in order), `npx vitest run src/journeys` 36 passed. Swapping the order of two steps in the agency file fails three of them. The five steps carry no role in the agency file, so the role per step is the console's fallback actor; the workflow is not yet complete.

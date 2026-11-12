@@ -18,7 +18,7 @@ cd code/console && npm ci && npm test
 cd code/app && npm ci && npm test
 ```
 
-Once the dependencies are installed, none of them needs a network, a key or a server. The API server copy in this repository has no test files, so `go test` there only checks that it compiles. The console's three Playwright specs in `code/console/e2e` are not part of `npm test` and need their own environment; the [console guide](../../3.%20implementation/guides/console.md) describes it.
+Once the dependencies are installed, none of them needs a network, a key or a server. On 2026-11-12 the API server copy in this repository holds 541 `_test.go` files; the run of 2026-11-04 found none, so it only checked that the code compiles. The console's three Playwright specs in `code/console/e2e` are not part of `npm test` and need their own environment; the [console guide](../../3.%20implementation/guides/console.md) describes it.
 
 ## Where the suites stand
 
@@ -28,7 +28,7 @@ Run on 2026-11-04. These are the only results anyone can reproduce from this rep
 |---|---|---|
 | Console | 3640 tests in 251 files passed; the build passes | [Console tests](02-results/console-tests.md) |
 | Phone app | 1905 tests in 124 files passed; the build passes | [App tests](02-results/app-tests.md) |
-| API server | Builds and vets clean; no test files, so nothing was tested | [API server tests](02-results/api-tests.md) |
+| API server | Builds and vets clean on 2026-11-04, when it had no test files, so nothing was tested; on 2026-11-12 the repo holds 541 `_test.go` files | [API server tests](02-results/api-tests.md) |
 
 Both web app suites run against fakes in place of the API. No journey has been run end to end against a server here.
 

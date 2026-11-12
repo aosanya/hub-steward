@@ -11,7 +11,8 @@ practice there, not what this repository holds.
 
 This repository has the console suite and the phone app suite, and its API
 server copy is only built and vetted: `make test` runs `go vet` and `go test`
-on it, but it has no test files, so nothing is tested, and there is no
+on it. On 2026-11-12 the repo holds 541 `_test.go` files; the run of
+2026-11-04 found none, so it only built and vetted the code. There is no
 `make self-test`. See [Results](../02-results/README.md)
 and [API server tests](../02-results/api-tests.md).
 
@@ -40,7 +41,7 @@ An agent acts only through declared tools and does nothing that needs approval u
 | Test | State |
 |---|---|
 | Import | Siaya lab only: 0 errors, recorded in the earlier Mwanachama results. The other seven agencies have no recorded import. Five templates stop at Create Hub with no Hub Steward role |
-| Roles and permissions | Not run here. The console and app suites check what screens show for a role against fakes; no test runs against the API server, which has no test files |
+| Roles and permissions | Not run here. The console and app suites check what screens show for a role against fakes; no test runs against the API server, which the run of 2026-11-04 found without test files (541 `_test.go` files on 2026-11-12) |
 | Design, review, test, publish | Console pages for review, test and publish are covered in the console suite against fakes. Three Playwright specs exist in `code/console/e2e` and were not run |
 | Member app journeys | The phone app suite passes with fakes in place of the API. No journey was run against a server, and form answering has unit tests only |
 | Offline unit tests | Not run: planned, because the loop they test is not in this repository |

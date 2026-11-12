@@ -8,15 +8,29 @@ These are the only results anyone can reproduce from this repository.
 
 | Suite | Where | Result | Page |
 |---|---|---|---|
-| Console | `code/console` | 3640 tests in 251 files passed, 0 failed; the build passes | [Console tests](console-tests.md) |
-| Phone app | `code/app` | 1905 tests in 124 files passed, 0 failed; the build passes | [App tests](app-tests.md) |
-| API server | `code/wakala-api` | Builds and vets clean; no test files in any of its 96 packages, so nothing was tested | [API server tests](api-tests.md) |
-| Municipality import | `demo/municipality.json` | Imports on the local database (201); custody, digitaltwin and engage mount | [Municipality import](municipality-import.md) |
+| Console | `code/console` | As of 2026-11-04: 3640 tests in 251 files passed, 0 failed; the build passes | [Console tests](console-tests.md) |
+| Phone app | `code/app` | As of 2026-11-04: 1905 tests in 124 files passed, 0 failed; the build passes | [App tests](app-tests.md) |
+| API server | `code/wakala-api` | Builds and vets clean; on 2026-11-04 none of its 96 packages had a test file, so nothing was tested. On 2026-11-12 the repo holds 541 `_test.go` files; the run of 2026-11-04 found none | [API server tests](api-tests.md) |
+| Municipality import (superseded) | `demo/municipality.json` | Imports on the local database (201); custody, digitaltwin and engage mount | [Municipality import](municipality-import.md); superseded by the 2026-11-08 run below |
 | Municipality import, 2026-11-08 | `demo/municipality.json` at `42c8ed8` | Imports (201) but W-19, W-20, W-29 and W-31 have no steps: 25 items lack a `kind` | [Municipality import, 2026-11-08](municipality-import-2026-11-08.md) |
+
+## Municipality runs of 2026-11-07
+
+Run in cloud containers on a native Postgres at `127.0.0.1:54322`, never a hosted project.
+
+| Suite | Where | Result | Page |
+|---|---|---|---|
+| Municipality workflows, batch | `demo/municipality.json` | 22 workflows and 124 work items; console suite 3772 passed, 1 failed (`templates.test.ts`, known) | [Workflows batch](municipality-workflows-batch.md) |
+| Municipality workflows, batch 2 | `demo/municipality.json` | 31 workflows and 172 work items; console suite 3840 passed, 1 failed (`templates.test.ts`); the run against the real API and the import of the grown agency were not exercised | [Workflows batch 2](municipality-workflows-batch-2.md) |
+| Municipality real-API run | `demo/municipality.json` | First import 201, but 156 of 184 work items refused: a step with a role needs a kind | [Real-API run](municipality-real-api-run.md) |
+| Municipality whole-file import, cloud run 5 | `demo/municipality.json` | Imports (201) with 34 workflows and 190 work items; console 3861 passed, 1 failed (`templates.test.ts`) | [Wave 5](municipality-wave-5-real-api-run.md) |
+| Municipality risk module import | `demo/municipality.json` at `bce4144` | Mount `riskmanager` at `risks`, roles R-13 and R-14 with `risk.read` | [Risk module import](municipality-risk-module-import.md) |
+| Municipality risk module, live walk | `demo/municipality.json` | Moments 1 and 2 pass, 3 passes with a manual step, 4 passes for the data with no pack screen | [Risk live walk](municipality-risk-live-walk.md) |
+| Register upkeep (W-1) walk | `demo/municipality.json` | Import 201; W-1 to W-5 in the draft; 6 walk tests | [Register upkeep](register-upkeep.md) |
 
 ## Earlier results, from the Mwanachama repositories
 
-Everything below was produced in the Mwanachama platform's own repositories, before its modules were copied here. This repository's `code/wakala-api` has no tests and no `make self-test`, so none of these numbers can be reproduced here and they say nothing about the copy.
+Everything below was produced in the Mwanachama platform's own repositories, before its modules were copied here. These numbers were not produced in this repository, so they cannot be reproduced here and they say nothing about the copy; on 2026-11-12 `code/wakala-api` holds 541 `_test.go` files, whose results are not recorded here.
 
 | What | Command | Result |
 |---|---|---|

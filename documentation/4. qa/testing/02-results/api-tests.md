@@ -18,12 +18,13 @@ Go 1.27.3 on darwin/arm64; `go.mod` asks for Go 1.25.
 |---|---|
 | Packages | 96 |
 | Packages with test files | 0 |
-| `_test.go` files under `code/wakala-api` | 0 |
+| `_test.go` files under `code/wakala-api` on 2026-11-04 | 0 |
+| `_test.go` files under `code/wakala-api` on 2026-11-12 | 541 |
 | Tests passed | 0 |
 | Tests failed | 0 |
 | Tests skipped | 0 |
 
-No failure lines exist because no test ran. `go test` exits 0 here because nothing was asked to pass, not because anything was checked.
+On 2026-11-12 the repo holds 541 `_test.go` files; this page records a run of 2026-11-04 that found none. No failure lines exist because no test ran in that run. `go test` exits 0 here because nothing was asked to pass, not because anything was checked.
 
 ## What this does and does not cover
 
