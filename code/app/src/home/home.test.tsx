@@ -43,7 +43,7 @@ const pageParts = () => Array.from(screen.getByRole("main").children).map((part)
 describe("home composition", () => {
   it.each(kinds)("lays the %s Start page out as title, rows", (kind) => {
     renderHome(kind, read);
-    expect(screen.getByRole("heading", { level: 1, name: "Start" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Start a task" })).toBeInTheDocument();
     expect(pageParts()).toEqual([`rows: ${kind}, forms market`]);
   });
 
@@ -83,6 +83,7 @@ describe("Start and Ongoing", () => {
   it("draws the Ongoing rows on the Ongoing segment, under the title", () => {
     renderHome("farmers", read, "ongoing");
     expect(pageParts()).toEqual(["ongoing rows"]);
+    expect(screen.getByRole("heading", { level: 1, name: "Your tasks" })).toBeInTheDocument();
   });
 
   it("takes the Ongoing rows' Go to Start to the Do Something page", async () => {

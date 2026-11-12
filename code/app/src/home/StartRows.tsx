@@ -103,7 +103,7 @@ export function StartRows({
           ))}
         </Rows>
       ) : null}
-      {steps.state === "error" ? <LoadFailed words="Your apps could not be loaded." /> : null}
+      {steps.state === "error" ? <LoadFailed words="Your tasks could not be loaded." /> : null}
     </>
   );
 }

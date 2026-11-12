@@ -71,8 +71,8 @@ export function StartPage({ client = mcpStartClient, products = mcpProductsClien
   const step = loaded.state === "ready" ? loaded.data.find((s) => s.id === stepId) : undefined;
   return (
     <Shell title={step?.title ?? ""} onBack={() => navigate(-1)}>
-      {loaded.state === "error" || (loaded.state === "ready" && !step) ? <LoadFailed words="This could not be opened." /> : null}
-      {step && posterLoaded.state === "error" ? <LoadFailed words="This could not be opened." /> : null}
+      {loaded.state === "error" || (loaded.state === "ready" && !step) ? <LoadFailed words="This task could not be opened." /> : null}
+      {step && posterLoaded.state === "error" ? <LoadFailed words="This task could not be opened." /> : null}
       {step && posterLoaded.state === "ready" ? (
         <StartForm client={client} products={products} step={step} poster={posterLoaded.data} done={(id) => navigate(id ? coordinatorOrderPath(id) : doSomethingPath())} />
       ) : null}

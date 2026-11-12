@@ -21,7 +21,7 @@ export const refusalWords: Record<SendRefusal, string> = {
   role: "This step is not for your role.",
   "not-ready": "This step is not ready or was already sent.",
   invalid: "Check your answers and try again.",
-  missing: "This could not be opened.",
+  missing: "This task could not be opened.",
   failed: "Your answers could not be sent. Try again.",
   timeout: "This is taking too long. Try again.",
 };

@@ -169,18 +169,18 @@ describe("a member fills in one of her own steps", () => {
 
   it("does not open a waiting step under another run's number", async () => {
     await show(clientOf([confirm]), "s2", "o8");
-    expect(await screen.findByRole("alert")).toHaveTextContent("This could not be opened.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("This task could not be opened.");
   });
 
   it("says it could not be opened for a step that is not in her list, which is how another role's step looks to her", async () => {
     await show(clientOf([referral]), "someone-elses");
-    expect(await screen.findByRole("alert")).toHaveTextContent("This could not be opened.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("This task could not be opened.");
     expect(screen.queryByLabelText("Reason")).not.toBeInTheDocument();
   });
 
   it("says it could not be opened when her steps cannot be read", async () => {
     await show({ available: async () => Promise.reject(new Error("down")), submit: vi.fn() });
-    expect(await screen.findByRole("alert")).toHaveTextContent("This could not be opened.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("This task could not be opened.");
   });
 });
 
@@ -204,7 +204,7 @@ describe("a member whose next step is a send_form step", () => {
     vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [sendRaw] });
     const posted = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify({ done: false, order_id: "o9" }), { status: 201 }));
     await show(mcpStepsClient, "send1", "o9");
-    expect(screen.queryByText("This could not be opened.")).not.toBeInTheDocument();
+    expect(screen.queryByText("This task could not be opened.")).not.toBeInTheDocument();
     await userEvent.click(await screen.findByRole("radio", { name: "Papíron" }));
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
     const [url, init] = posted.mock.calls[0];

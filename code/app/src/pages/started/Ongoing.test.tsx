@@ -25,7 +25,7 @@ const supplier: StartedItem = {
 };
 
 const memberLine = "The app could not tell who you are, so some rows may be missing.";
-const sourceLine = "Some of your ongoing apps could not be loaded.";
+const sourceLine = "Some of your tasks could not be loaded.";
 
 const clientOf = (items: StartedItem[]): StartedClient => ({ list: async () => items });
 
@@ -148,9 +148,9 @@ describe("ongoing rows", () => {
     expect(screen.queryByText("Loading")).not.toBeInTheDocument();
   });
 
-  it("says the ongoing apps could not be loaded when the list fails", async () => {
+  it("says the tasks could not be loaded when the list fails", async () => {
     renderOngoing({ list: async () => Promise.reject(new Error("down")) });
-    expect(await screen.findByRole("alert")).toHaveTextContent("Your ongoing apps could not be loaded.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Your tasks could not be loaded.");
     expect(screen.queryByText("Nothing ongoing yet")).not.toBeInTheDocument();
     expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     expect(screen.queryByText(/started/i)).not.toBeInTheDocument();

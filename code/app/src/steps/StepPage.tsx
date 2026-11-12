@@ -47,7 +47,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
   if (!step) {
     return (
       <Shell title="" onBack={back}>
-        <LoadFailed words="This could not be opened." />
+        <LoadFailed words="This task could not be opened." />
       </Shell>
     );
   }

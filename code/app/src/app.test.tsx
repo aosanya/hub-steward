@@ -63,7 +63,7 @@ describe("tab bar", () => {
 
   it("keeps the same bar on Start and Ongoing, with none chosen", async () => {
     at("/a/walk-agency/do-something");
-    expect(await screen.findByRole("heading", { name: "Start" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Start a task" })).toBeInTheDocument();
     expect(barLabels()).toEqual(["Home", "Chat", "Notifications"]);
     within(screen.getByRole("navigation", { name: "Main" }))
       .getAllByRole("link")
@@ -93,7 +93,7 @@ describe("tab bar", () => {
         <Where seen={seen} />
       </MemoryRouter>,
     );
-    expect(await screen.findByRole("heading", { level: 1 })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Your tasks" })).toBeInTheDocument();
     expect(seen.at(-1)).toBe("/a/other-agency/ongoing");
     expect(screen.queryByRole("heading", { name: "Started" })).not.toBeInTheDocument();
     expect(barLabels()).toEqual(["Home", "Chat", "Notifications"]);
@@ -107,7 +107,7 @@ describe("tab bar", () => {
         <Where seen={seen} />
       </MemoryRouter>,
     );
-    expect(await screen.findByRole("heading", { level: 1 })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Your tasks" })).toBeInTheDocument();
     expect(seen.at(-1)).toBe("/a/walk-agency/ongoing");
   });
 
@@ -133,7 +133,7 @@ describe("tab bar", () => {
 
   it("opens Start on the agency's do-something route", () => {
     at("/a/walk-agency/do-something");
-    expect(screen.getByRole("heading", { name: "Start" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Start a task" })).toBeInTheDocument();
   });
 
   it("sends an unknown path to the agencies page when no agency is open", () => {

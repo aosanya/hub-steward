@@ -20,7 +20,7 @@ const sections: { waitsOn: WaitsOn; heading: string }[] = [
 
 const memberUnknownLine = "The app could not tell who you are, so some rows may be missing.";
 
-const sourceFailedLine = "Some of your ongoing apps could not be loaded.";
+const sourceFailedLine = "Some of your tasks could not be loaded.";
 
 const missingRowsLine = (failed: StartedAnswer["failed"]) => {
   if (failed.length === 0) return "";
@@ -59,7 +59,7 @@ function LiveTab({ items }: { items: StartedItem[] }) {
 export function Ongoing({ client = mcpStartedClient, onStart }: { client?: StartedClient; onStart: () => void }) {
   const [tab, setTab] = useState<OngoingTab>("live");
   const ongoing = useLoad(() => startedAnswerOf(client), `started:${openAgencyId()}`);
-  if (ongoing.state === "error") return <LoadFailed words="Your ongoing apps could not be loaded." />;
+  if (ongoing.state === "error") return <LoadFailed words="Your tasks could not be loaded." />;
   if (ongoing.state === "loading") return <LoadingLine />;
   const { items, failed } = ongoing.data;
   const missing = missingRowsLine(failed);

@@ -14,7 +14,7 @@ type Props = { kind?: AgencyKind; view?: AgencyView | null; segment?: DoSomethin
 export function HomePage({ kind, view, segment = "start" }: Props) {
   const navigate = useNavigate();
   return (
-    <Shell title={segment === "start" ? "Start" : "Ongoing"}>
+    <Shell title={segment === "start" ? "Start a task" : "Your tasks"}>
       {segment === "start" ? (
         <>
           <StartRows kind={kind} view={view} />

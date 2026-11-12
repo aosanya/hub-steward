@@ -308,7 +308,7 @@ describe("the Start rows of Do Something", () => {
     it("draws it when the open steps cannot be read, beside the alert", async () => {
       await show({ start: startOf(async () => Promise.reject(new Error("down")), async () => [groupOrderStart]) });
       await rowNamed(groupOrderStart.formName);
-      expect(await screen.findByRole("alert")).toHaveTextContent("Your apps could not be loaded.");
+      expect(await screen.findByRole("alert")).toHaveTextContent("Your tasks could not be loaded.");
     });
 
     it("draws the cards without it when the waiting steps cannot be read", async () => {
@@ -414,20 +414,20 @@ describe("the Start rows of Do Something", () => {
 
     it("keeps the card rows and says the apps could not be loaded when the steps could not be read", async () => {
       await show({ kind: "farmers", start: startOf(async () => Promise.reject(new Error("down"))) });
-      expect(await screen.findByRole("alert")).toHaveTextContent("Your apps could not be loaded.");
+      expect(await screen.findByRole("alert")).toHaveTextContent("Your tasks could not be loaded.");
       expect(titlesShown()).toEqual(["Forms"]);
     });
 
     it("says only that the apps could not be loaded when there are no cards either", async () => {
       const { container } = await show({ start: startOf(async () => Promise.reject(new Error("down"))) });
-      expect(await screen.findByRole("alert")).toHaveTextContent("Your apps could not be loaded.");
+      expect(await screen.findByRole("alert")).toHaveTextContent("Your tasks could not be loaded.");
       expect(container.querySelector(".rows")).toBeNull();
     });
 
     it("announces the failed read as an alert inside the empty failure card", async () => {
       await show({ start: startOf(async () => Promise.reject(new Error("down"))) });
       const alert = await screen.findByRole("alert");
-      expect(alert).toHaveTextContent("Your apps could not be loaded.");
+      expect(alert).toHaveTextContent("Your tasks could not be loaded.");
       expect(alert.closest(".card")).toHaveClass("empty");
     });
 
