@@ -161,14 +161,30 @@ func TestAPieceAddedAfterwardsDoesNotMoveTheIssueBack(t *testing.T) {
 	}
 }
 
-func TestSettingADoneTodoToDoneAgainOnAnIssueBackInProgressMovesItOnce(t *testing.T) {
+func TestSettingADoneTodoToDoneAgainIsNotATransitionAndMovesNothing(t *testing.T) {
 	f := newReviewFixture(t, withReview, "in-progress", 1)
 	f.setState(t, 0, "Done")
 	if _, err := f.mgr.MoveTaskToStep(context.Background(), f.issue.ID, f.backlog, "in-progress"); err != nil {
 		t.Fatalf("send back: %v", err)
 	}
 	f.setState(t, 0, "Done")
+	if got := f.stepNow(t); got != "in-progress" {
+		t.Fatalf("Done again moved the issue to %q", got)
+	}
+}
+
+func TestReopeningAndFinishingThePieceAfterASendBackMovesTheIssueAgain(t *testing.T) {
+	f := newReviewFixture(t, withReview, "in-progress", 1)
+	f.setState(t, 0, "Done")
+	if _, err := f.mgr.MoveTaskToStep(context.Background(), f.issue.ID, f.backlog, "in-progress"); err != nil {
+		t.Fatalf("send back: %v", err)
+	}
+	f.setState(t, 0, "To do")
+	f.setState(t, 0, "Done")
 	if got := f.stepNow(t); got != "review" {
-		t.Fatalf("the transition to the last Done again left the issue in %q", got)
+		t.Fatalf("the transition to the last Done left the issue in %q", got)
+	}
+	if got := f.reviewEntries(t); got != 2 {
+		t.Fatalf("the Log holds %d entries about the move, want 2", got)
 	}
 }

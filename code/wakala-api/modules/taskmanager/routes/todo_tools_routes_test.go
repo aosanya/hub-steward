@@ -352,3 +352,29 @@ func TestTheTodoToolsAreDeclaredWithTheirActionsAndTheirErrorsHaveStatuses(t *te
 		}
 	}
 }
+
+func TestTheLastTodoSetToDoneMovesAnInProgressIssueToReviewAndTheLogSaysWhy(t *testing.T) {
+	f := newMoreWritesFixture(t)
+	lists := f.h.expect(http.StatusCreated, "boss", "POST", "/backlogs", map[string]any{"name": "Issue todo lists", "steps": []string{"To do", "In progress", "Review", "Done"}})["id"].(string)
+	issue := f.h.expect(http.StatusCreated, "boss", "POST", "/tasks", map[string]any{"title": "an issue with todos", "backlog": lists, "step": "in-progress"})["id"].(string)
+	first := f.todo(t, issue, "first")
+	second := f.todo(t, issue, "second")
+
+	f.h.expect(http.StatusOK, "boss", "PUT", "/todos/"+first+"/status", map[string]any{"status": "Done"})
+	if got := f.h.expect(http.StatusOK, "boss", "GET", "/tasks/"+issue, nil)["step"]; got != "in-progress" {
+		t.Fatalf("with a piece open the issue is in %v", got)
+	}
+	f.h.expect(http.StatusOK, "boss", "PUT", "/todos/"+second+"/status", map[string]any{"status": "Done"})
+	if got := f.h.expect(http.StatusOK, "boss", "GET", "/tasks/"+issue, nil)["step"]; got != "review" {
+		t.Fatalf("after the last piece the issue is in %v", got)
+	}
+	log := f.h.notesAs("boss", "/tasks/"+issue+"/notes")
+	if len(log) != 1 || log[0]["kind"] != "worker" || log[0]["text"] != "Every todo is Done: moved to Review" {
+		t.Fatalf("got %v", log)
+	}
+
+	f.h.expect(http.StatusOK, "boss", "PUT", "/todos/"+second+"/status", map[string]any{"status": "To do"})
+	if got := f.h.expect(http.StatusOK, "boss", "GET", "/tasks/"+issue, nil)["step"]; got != "review" {
+		t.Fatalf("reopening a piece moved the issue to %v", got)
+	}
+}

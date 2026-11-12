@@ -228,12 +228,14 @@ func (m *taskManager) SetTodoStateFor(ctx context.Context, requesterID, todoID, 
 		return TodoView{}, err
 	}
 	blockedReason = strings.TrimSpace(blockedReason)
-	if _, err := m.todoToEdit(ctx, requesterID, todoID); err != nil {
+	before, err := m.todoToEdit(ctx, requesterID, todoID)
+	if err != nil {
 		return TodoView{}, err
 	}
 	set, err := m.SetTaskTodoStatus(ctx, todoID, status, blockedReason)
 	if err != nil {
 		return TodoView{}, err
 	}
+	m.moveToReviewWhenAllDone(ctx, requesterID, before, set)
 	return m.viewOfTodo(ctx, set)
 }
