@@ -146,6 +146,11 @@ export const words = {
   profileNotSaved: "Your phone number was not saved. Check it and try again.",
   signOutTitle: "Sign out",
   signOutSignedInAs: "You are signed in as {name}.",
+  consentTitle: "Consent",
+  consentAgree: "Agree",
+  consentLoading: "Loading the consent text",
+  consentUnreached: "The consent text did not load. Check your connection and try again.",
+  consentNotSaved: "Your consent was not recorded. Try again.",
 } as const;
 
 export const languages = [

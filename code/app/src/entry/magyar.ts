@@ -148,4 +148,9 @@ export const magyar: Words = {
   profileNotSaved: "A telefonszám nem lett mentve. Ellenőrizze, és próbálja újra.",
   signOutTitle: "Kijelentkezés",
   signOutSignedInAs: "Bejelentkezve mint {name}.",
+  consentTitle: "Hozzájárulás",
+  consentAgree: "Elfogadom",
+  consentLoading: "A hozzájárulási szöveg betöltése",
+  consentUnreached: "A hozzájárulási szöveg nem töltődött be. Ellenőrizze a kapcsolatot, és próbálja újra.",
+  consentNotSaved: "A hozzájárulás nem lett rögzítve. Próbálja újra.",
 };

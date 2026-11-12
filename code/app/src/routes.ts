@@ -44,6 +44,7 @@ function screen<P extends string>(retired: P): Screen<P> {
 }
 
 export const routes = {
+  consent: screen("/consent"),
   join: screen("/join"),
   start: screen("/start/:stepId"),
   step: screen("/steps/:stepId"),

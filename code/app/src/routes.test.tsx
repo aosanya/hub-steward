@@ -13,6 +13,7 @@ afterEach(() => forgetOpenAgency());
 
 describe("a screen's path is built from one definition", () => {
   it.each([
+    ["consent", () => routes.consent.path(), "/consent", "/a/{id}/consent"],
     ["join", () => routes.join.path(), "/join", "/a/{id}/join"],
     ["start", () => routes.start.path({ stepId: "s1" }), "/start/:stepId", "/a/{id}/start/s1"],
     ["step", () => routes.step.path({ stepId: "s1" }), "/steps/:stepId", "/a/{id}/steps/s1"],

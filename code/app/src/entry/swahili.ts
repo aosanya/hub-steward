@@ -148,4 +148,9 @@ export const swahili: Words = {
   profileNotSaved: "Namba yako ya simu haikuhifadhiwa. Iangalie kisha ujaribu tena.",
   signOutTitle: "Toka",
   signOutSignedInAs: "Umeingia kama {name}.",
+  consentTitle: "Idhini",
+  consentAgree: "Nakubali",
+  consentLoading: "Inapakia maandishi ya idhini",
+  consentUnreached: "Maandishi ya idhini hayakupakia. Angalia muunganisho wako kisha ujaribu tena.",
+  consentNotSaved: "Idhini yako haikurekodiwa. Jaribu tena.",
 };

@@ -5,6 +5,8 @@ import { AgenciesPage } from "./pages/entry/AgenciesPage";
 import { InAgency, ToOpenAgency, ToOpenAgencyScreen } from "./pages/entry/OpenAgency";
 import { SignInLinkPage } from "./pages/entry/SignInLinkPage";
 import { SignInPage } from "./pages/entry/SignInPage";
+import { ConsentGate } from "./consent/ConsentGate";
+import { ConsentPage } from "./consent/ConsentPage";
 import { LanguagePage } from "./account/LanguagePage";
 import { ProfilePage } from "./account/ProfilePage";
 import { SignOutPage } from "./account/SignOutPage";
@@ -86,7 +88,7 @@ export function App() {
       <Route path={backlogsTab.path} element={<ToOpenAgency tab={backlogsTab} />} />
       <Route path="/started" element={<ToOpenAgency tab={ongoingTab} />} />
       <Route path="/inbox" element={<ToOpenAgency tab={homeTab} />} />
-      <Route path={agencyRoute} element={<InAgency><Outlet /></InAgency>}>
+      <Route path={agencyRoute} element={<InAgency><ConsentGate><Outlet /></ConsentGate></InAgency>}>
         <Route index element={<ToAgencyHome />} />
         <Route path={retiredStartedRoute} element={<ToAgencyOngoing />} />
         <Route path={retiredInboxRoute} element={<ToAgencyHome />} />
@@ -94,6 +96,7 @@ export function App() {
           <Route key={`in-${tab.id}`} path={tabRoute(tab)} element={tabElement(tab)} />
         ))}
         <Route path={`${backlogsTab.segment}/*`} element={<BacklogsRoutes />} />
+        <Route path={routes.consent.pattern} element={<ConsentPage />} />
         <Route path={routes.join.pattern} element={<JoinPage />} />
         <Route path={routes.start.pattern} element={<StartPage />} />
         <Route path={routes.step.pattern} element={<StepPage />} />
