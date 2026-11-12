@@ -27,6 +27,10 @@ export const retiredInboxRoute = `${agencyRoute}/inbox`;
 
 export const tabPathIn = (tab: Tab, agencyId: string) => (agencyId ? `${agencyBasePath(agencyId)}/${tab.segment}` : tab.path);
 
+export const needsYouAnchor = "needs-you";
+
+export const needsYouPath = (agencyId: string) => `${tabPathIn(notificationsTab, agencyId)}#${needsYouAnchor}`;
+
 export const tabRoute = (tab: Tab) => `${agencyRoute}/${tab.segment}`;
 
 const screenOf = (pathname: string) => {

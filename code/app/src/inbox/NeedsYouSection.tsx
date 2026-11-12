@@ -1,6 +1,7 @@
 import type { StartClient } from "../coordinator/start/api";
 import { StartWaitingRows } from "../coordinator/start/Waiting";
 import { ListRow, Rows } from "../ui/ListRow";
+import { needsYouAnchor } from "../tabs";
 import { SectionHeading } from "../ui/SectionHeading";
 import type { InvitationItem, NotificationItem } from "./api";
 import { NoticeRow } from "./NoticeRow";
@@ -16,7 +17,7 @@ type Props = {
 export function NeedsYouSection({ start, invitations, notices, onOpenInvitation, onOpenNotice }: Props) {
   return (
     <>
-      <SectionHeading>Needs you</SectionHeading>
+      <SectionHeading id={needsYouAnchor}>Needs you</SectionHeading>
       <Rows>
         <StartWaitingRows client={start} />
         {invitations.map((i) => (

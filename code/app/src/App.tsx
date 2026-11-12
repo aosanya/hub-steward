@@ -30,6 +30,7 @@ import { OrderPage } from "./supply/orders/OrderPage";
 import { OrdersPage } from "./supply/orders/OrdersPage";
 import { SupplierHome } from "./supply/SupplierHome";
 import { HomeOptions } from "./home/HomeOptions";
+import { NeedsYouStrip } from "./home/NeedsYouStrip";
 import { StockPage } from "./supply/stock/StockPage";
 import { GroupOrderPage, GroupOrdersPage, ReviseGroupOrderPage } from "./supply/groupOrder/GroupOrderPages";
 import { AddPaymentPage, CoordinatorOrderPage, ManagePaymentsPage } from "./coordinator/payments/PaymentsPages";
@@ -72,7 +73,7 @@ function ToAgencyHome() {
 }
 
 function tabElement(tab: Tab) {
-  if (tab.id === "home") return <NotificationsPage above={<HomeOptions />} />;
+  if (tab.id === "home") return <NotificationsPage above={<><NeedsYouStrip /><HomeOptions /></>} />;
   if (tab.id === "notifications") return <NotificationsPage />;
   if (tab.id === "start") return <SupplierHome segment="start" />;
   if (tab.id === "ongoing") return <SupplierHome segment="ongoing" />;
