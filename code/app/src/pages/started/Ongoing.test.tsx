@@ -289,3 +289,30 @@ describe("ongoing rows when a source failed", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 });
+
+describe("ongoing Try again", () => {
+  it("reads the list again from the failure card and then draws the rows", async () => {
+    const list = vi.fn().mockRejectedValueOnce(new Error("down")).mockResolvedValue([urea]);
+    renderOngoing({ list });
+    expect(await screen.findByRole("alert")).toHaveTextContent("Your tasks could not be loaded.");
+    await userEvent.click(screen.getByRole("button", { name: "Try again" }));
+    expect(await screen.findByText("Start the urea group order")).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(list).toHaveBeenCalledTimes(2);
+  });
+
+  it("offers Try again under the rows when only a source failed, and reads every source again", async () => {
+    const listWithFailures = vi.fn().mockResolvedValueOnce({ items: [urea], failed: ["orders"] }).mockResolvedValue({ items: [urea], failed: [] });
+    renderOngoing({ list: async () => [urea], listWithFailures });
+    expect(await screen.findByRole("alert")).toHaveTextContent(sourceLine);
+    await userEvent.click(screen.getByRole("button", { name: "Try again" }));
+    await screen.findByText("Start the urea group order");
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(listWithFailures).toHaveBeenCalledTimes(2);
+  });
+
+  it("offers Try again when no row came back because a source failed", async () => {
+    renderOngoing(answering({ items: [], failed: ["orders"] }));
+    expect(await screen.findByRole("button", { name: "Try again" })).toBeInTheDocument();
+  });
+});

@@ -401,11 +401,13 @@ describe("the Start form that cannot open", () => {
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("This task could not be opened.");
     expect(alert.closest(".card")).toHaveClass("empty");
+    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
 
-  it("announces This task could not be opened. when the step is not among the waiting steps", async () => {
+  it("says This task has closed. when the step is not among the waiting steps", async () => {
     openStart(clientOf([step]), "w9");
-    expect(await screen.findByRole("alert")).toHaveTextContent("This task could not be opened.");
+    expect(await screen.findByText("This task has closed.")).toBeInTheDocument();
+    expect(screen.queryByText("This task could not be opened.")).toBeNull();
     expect(screen.queryByRole("button", { name: "Start" })).toBeNull();
   });
 

@@ -169,18 +169,25 @@ describe("a member fills in one of her own steps", () => {
 
   it("does not open a waiting step under another run's number", async () => {
     await show(clientOf([confirm]), "s2", "o8");
-    expect(await screen.findByRole("alert")).toHaveTextContent("This task could not be opened.");
+    expect(await screen.findByText("This task has closed.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Try again" })).not.toBeInTheDocument();
   });
 
-  it("says it could not be opened for a step that is not in her list, which is how another role's step looks to her", async () => {
+  it("says it has closed for a step that is not in her list, which is how another role's step looks to her", async () => {
     await show(clientOf([referral]), "someone-elses");
-    expect(await screen.findByRole("alert")).toHaveTextContent("This task could not be opened.");
+    expect(await screen.findByText("This task has closed.")).toBeInTheDocument();
+    expect(screen.queryByText("This task could not be opened.")).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Reason")).not.toBeInTheDocument();
   });
 
-  it("says it could not be opened when her steps cannot be read", async () => {
-    await show({ available: async () => Promise.reject(new Error("down")), submit: vi.fn() });
+  it("says it could not be opened, never that it closed, when her steps cannot be read, and Try again reads them again", async () => {
+    const available = vi.fn().mockRejectedValueOnce(new Error("down")).mockResolvedValue([referral]);
+    await show({ available, submit: vi.fn() });
     expect(await screen.findByRole("alert")).toHaveTextContent("This task could not be opened.");
+    expect(screen.queryByText("This task has closed.")).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Try again" }));
+    expect(await screen.findByLabelText("Reason")).toBeInTheDocument();
+    expect(available).toHaveBeenCalledTimes(2);
   });
 });
 

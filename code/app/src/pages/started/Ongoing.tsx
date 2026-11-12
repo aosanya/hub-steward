@@ -58,12 +58,14 @@ function LiveTab({ items }: { items: StartedItem[] }) {
 
 export function Ongoing({ client = mcpStartedClient, onStart }: { client?: StartedClient; onStart: () => void }) {
   const [tab, setTab] = useState<OngoingTab>("live");
-  const ongoing = useLoad(() => startedAnswerOf(client), `started:${openAgencyId()}`);
-  if (ongoing.state === "error") return <LoadFailed words="Your tasks could not be loaded." />;
+  const [attempt, setAttempt] = useState(0);
+  const retry = () => setAttempt(attempt + 1);
+  const ongoing = useLoad(() => startedAnswerOf(client), `started:${openAgencyId()}:${attempt}`);
+  if (ongoing.state === "error") return <LoadFailed words="Your tasks could not be loaded." onRetry={retry} />;
   if (ongoing.state === "loading") return <LoadingLine />;
   const { items, failed } = ongoing.data;
   const missing = missingRowsLine(failed);
-  if (items.length === 0 && missing) return <LoadFailed words={missing} />;
+  if (items.length === 0 && missing) return <LoadFailed words={missing} onRetry={retry} />;
   if (items.length === 0) {
     return (
       <EmptyCard words="Nothing ongoing yet">
@@ -77,7 +79,7 @@ export function Ongoing({ client = mcpStartedClient, onStart }: { client?: Start
     <>
       {ongoingTabs.length > 1 ? <Segmented items={ongoingTabs} current={tab} onChange={setTab} label="Ongoing" /> : null}
       {tab === "live" ? <LiveTab items={items} /> : null}
-      {missing ? <p role="alert">{missing}</p> : null}
+      {missing ? <LoadFailed words={missing} onRetry={retry} /> : null}
     </>
   );
 }

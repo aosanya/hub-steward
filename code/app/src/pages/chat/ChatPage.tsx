@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assistantName, askPlaceholder } from "../../assistant/AssistantPage";
 import { joinGroupWorkflow } from "../../home/workflowScreens";
@@ -7,14 +8,15 @@ import { mcpChatClient, type ChatClient, type Room } from "../../chat/api";
 import { stampOf } from "../../chat/stamp";
 import { useLoad } from "../../forms/useLoad";
 import { Button } from "../../ui/Button";
-import { EmptyCard, LoadFailed } from "../../ui/LoadState";
+import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { routes } from "../../routes";
 import { Shell } from "../../ui/Shell";
 
 export function ChatPage({ client = mcpChatClient }: { client?: ChatClient }) {
   const navigate = useNavigate();
-  const rooms = useLoad(() => client.listRooms(), "rooms");
+  const [attempt, setAttempt] = useState(0);
+  const rooms = useLoad(() => client.listRooms(), `rooms:${attempt}`);
   const empty = rooms.state === "ready" && rooms.data.length === 0;
   const join = <Button onClick={() => navigate(routes.join.path())}>{joinGroupWorkflow}</Button>;
   return (
@@ -35,7 +37,8 @@ export function ChatPage({ client = mcpChatClient }: { client?: ChatClient }) {
             ))
           : null}
       </Rows>
-      {rooms.state === "error" ? <LoadFailed words="Chat could not be loaded." /> : null}
+      {rooms.state === "loading" ? <LoadingLine words="Loading Chat" /> : null}
+      {rooms.state === "error" ? <LoadFailed words="Chat could not be loaded." onRetry={() => setAttempt(attempt + 1)} /> : null}
       {empty ? <EmptyCard words="No rooms yet.">{join}</EmptyCard> : rooms.state === "loading" ? null : join}
     </Shell>
   );

@@ -8,7 +8,7 @@ import { doSomethingBackPath } from "../routes";
 import { BottomBar } from "../ui/BottomBar";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
-import { LoadFailed, LoadingLine } from "../ui/LoadState";
+import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Shell } from "../ui/Shell";
 import { openAgencyId } from "../agency/open";
 import { ongoingTab, startTab, tabPathIn } from "../tabs";
@@ -30,7 +30,8 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
   const { stepId = "" } = useParams();
   const [params] = useSearchParams();
   const order = params.get("order") ?? "";
-  const loaded = useLoad(() => steps.available(), `step:${stepId}:${order}`);
+  const [attempt, setAttempt] = useState(0);
+  const loaded = useLoad(() => steps.available(), `step:${stepId}:${order}:${attempt}`);
   const draftKey = stepDraftKey(stepId, order);
   const [draft, setDraft] = useState<Draft>(() => loadDraft(draftKey));
   const [problems, setProblems] = useState<Record<string, string>>({});
@@ -48,10 +49,17 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
       </Shell>
     );
   }
+  if (loaded.state === "error") {
+    return (
+      <Shell title="" onBack={back}>
+        <LoadFailed words="This task could not be opened." onRetry={() => setAttempt(attempt + 1)} />
+      </Shell>
+    );
+  }
   if (!step) {
     return (
       <Shell title="" onBack={back}>
-        <LoadFailed words="This task could not be opened." />
+        <EmptyCard words="This task has closed." />
       </Shell>
     );
   }

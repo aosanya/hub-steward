@@ -66,13 +66,16 @@ function StartForm({ client, products, step, poster, done }: FormProps) {
 export function StartPage({ client = mcpStartClient, products = mcpProductsClient }: { client?: StartClient; products?: ProductsClient }) {
   const navigate = useNavigate();
   const { stepId = "" } = useParams();
-  const loaded = useLoad(() => client.waiting(), stepId);
-  const posterLoaded = useLoad(() => client.poster(), stepId);
+  const [attempt, setAttempt] = useState(0);
+  const retry = () => setAttempt(attempt + 1);
+  const loaded = useLoad(() => client.waiting(), `${stepId}:${attempt}`);
+  const posterLoaded = useLoad(() => client.poster(), `${stepId}:${attempt}`);
   const step = loaded.state === "ready" ? loaded.data.find((s) => s.id === stepId) : undefined;
   return (
     <Shell title={step?.title ?? ""} onBack={() => navigate(-1)}>
-      {loaded.state === "error" || (loaded.state === "ready" && !step) ? <LoadFailed words="This task could not be opened." /> : null}
-      {step && posterLoaded.state === "error" ? <LoadFailed words="This task could not be opened." /> : null}
+      {loaded.state === "error" ? <LoadFailed words="This task could not be opened." onRetry={retry} /> : null}
+      {loaded.state === "ready" && !step ? <EmptyCard words="This task has closed." /> : null}
+      {step && posterLoaded.state === "error" ? <LoadFailed words="This task could not be opened." onRetry={retry} /> : null}
       {step && posterLoaded.state === "ready" ? (
         <StartForm client={client} products={products} step={step} poster={posterLoaded.data} done={(id) => navigate(id ? coordinatorOrderPath(id) : doSomethingPath())} />
       ) : null}
