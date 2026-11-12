@@ -5,6 +5,7 @@ import { forgetOpenAgency, openAgency } from "../agency/open";
 import type { StartClient, StartStep } from "../coordinator/start/api";
 import { NotificationsPage } from "../pages/NotificationsPage";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
+import type { AssignedClient } from "./assignedIssues";
 import type { Reader } from "./subjectCheck";
 
 beforeEach(() => openAgency("farmers"));
@@ -40,10 +41,10 @@ const startWith = (steps: StartStep[] = []) => ({ waiting: async () => steps }) 
 
 const stillThere: Reader = async () => ({ status: "pending" });
 
-const show = (client: InboxClient, start: StartClient = startWith()) =>
+const show = (client: InboxClient, start: StartClient = startWith(), assigned?: AssignedClient) =>
   render(
     <MemoryRouter>
-      <NotificationsPage client={client} start={start} read={stillThere} />
+      <NotificationsPage client={client} start={start} assigned={assigned} read={stillThere} />
     </MemoryRouter>,
   );
 
@@ -96,9 +97,10 @@ describe("the Notifications page", () => {
 
   it("puts Mark all read in the Updates heading and marks the updates only", async () => {
     const client = fake([assigned(), note({ id: "u1" }), note({ id: "u2", event: "group_join_declined", subjectKind: "group", names: {} })], [invitation]);
-    show(client);
-    const updatesHeading = (await heading("Updates")).closest(".heading-row") as HTMLElement;
-    await userEvent.click(within(updatesHeading).getByRole("button", { name: "Mark all read" }));
+    show(client, startWith(), { assigned: () => Promise.reject(new Error("issues unavailable")) });
+    const markAll = await screen.findByRole("button", { name: "Mark all read" });
+    expect(within(markAll.closest(".heading-row") as HTMLElement).getByRole("heading", { level: 2, name: "Updates" })).toBeInTheDocument();
+    await userEvent.click(markAll);
     expect(client.markRead).toHaveBeenCalledWith(["u1", "u2"]);
     expect(screen.getByText("An issue was assigned to you").closest(".row")).not.toBeNull();
     expect(within(screen.getByText("An issue was assigned to you").closest(".row") as HTMLElement).getByLabelText("Unread")).toBeInTheDocument();

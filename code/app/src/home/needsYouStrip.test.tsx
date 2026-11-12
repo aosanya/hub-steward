@@ -129,7 +129,7 @@ describe("Needs you strip", () => {
 
 describe("Needs you section anchor", () => {
   it("is the heading the strip opens, found by the anchor in the strip's address", () => {
-    inRouter(<NeedsYouSection start={startOf({ steps: [step("s1")] })} invitations={[invitation("i1")]} notices={[]} onOpenInvitation={() => undefined} onOpenNotice={() => undefined} />);
+    inRouter(<NeedsYouSection start={startOf({ steps: [step("s1")] })} invitations={[invitation("i1")]} notices={[]} state={{ loading: false, words: "" }} hasRows onRetry={() => undefined} onOpenInvitation={() => undefined} onOpenNotice={() => undefined} />);
     expect(document.getElementById(needsYouAnchor)?.textContent).toBe("Needs you");
   });
 });

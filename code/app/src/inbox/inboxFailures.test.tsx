@@ -49,31 +49,36 @@ describe("Home when a call fails", () => {
   it("offers Try again for a real outage and reloads", async () => {
     const list = vi.fn().mockRejectedValueOnce(new McpError("wakala answered 503: down")).mockResolvedValue([note]);
     show(fake({ listNotifications: list }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Home could not be loaded.");
-    await userEvent.click(screen.getByRole("button", { name: "Try again" }));
+    expect(await screen.findByText("Needs you could not be loaded.")).toBeInTheDocument();
+    await userEvent.click(screen.getAllByRole("button", { name: "Try again" })[0]);
     expect(await screen.findByText(/Siaya farmers/)).toBeInTheDocument();
     expect(screen.queryByRole("alert")).toBeNull();
     expect(list).toHaveBeenCalledTimes(2);
   });
 
-  it.each([
-    ["notifications", { listNotifications: vi.fn().mockRejectedValue(new McpError("comm_notification_list: forbidden")) }],
-    ["invitations", { listInvitations: vi.fn().mockRejectedValue(new McpError("actor_list_my_invitations: forbidden")) }],
-  ])("says Home could not be loaded, with Try again, never You are all caught up, when the %s read is refused", async (_name, over) => {
-    show(fake(over));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Home could not be loaded.");
+  it("says Needs you and Updates could not be loaded, with Try again, never You are all caught up, when the notifications read is refused", async () => {
+    show(fake({ listNotifications: vi.fn().mockRejectedValue(new McpError("comm_notification_list: forbidden")) }));
+    expect(await screen.findByText("Needs you could not be loaded.")).toBeInTheDocument();
+    expect(screen.getByText("Updates could not be loaded.")).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Try again" })).toHaveLength(2);
+    expect(screen.queryByText("You are all caught up")).toBeNull();
+  });
+
+  it("says Needs you could not be loaded, with Try again, never You are all caught up, when the invitations read is refused", async () => {
+    show(fake({ listInvitations: vi.fn().mockRejectedValue(new McpError("actor_list_my_invitations: forbidden")) }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Needs you could not be loaded.");
     expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
     expect(screen.queryByText("You are all caught up")).toBeNull();
   });
 
   it("treats a network failure as an outage", async () => {
     show(fake({ listNotifications: vi.fn().mockRejectedValue(new TypeError("Failed to fetch")) }));
-    expect(await screen.findByRole("button", { name: "Try again" })).toBeInTheDocument();
+    expect((await screen.findAllByRole("button", { name: "Try again" })).length).toBeGreaterThan(0);
   });
 
   it("draws the failure alone when the invitations cannot be read and nothing else is there", async () => {
     show(fake({ listInvitations: vi.fn().mockRejectedValue(new Error("actor down")) }));
-    await screen.findByText("Home could not be loaded.");
+    await screen.findByText("Needs you could not be loaded.");
     expect(screen.queryByText("You are all caught up")).toBeNull();
   });
 

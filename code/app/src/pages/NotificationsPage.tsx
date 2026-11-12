@@ -4,6 +4,7 @@ import { mcpInboxClient, type InboxClient, type InvitationItem, type Notificatio
 import { type AssignedClient, mcpAssignedClient } from "../inbox/assignedIssues";
 import { withoutIssueNotices } from "../inbox/issueCount";
 import { isOutage } from "../inbox/outage";
+import { allAnswered, sectionState, type Part, type ReadStatus } from "../inbox/sectionState";
 import { useClearDone } from "../inbox/clearDone";
 import { NeedsYouSection } from "../inbox/NeedsYouSection";
 import { needsYouCount, needsYouNotes, updatesOf } from "../inbox/needsYou";
@@ -16,7 +17,7 @@ import { Card } from "../ui/Card";
 import { LoadFailed } from "../ui/LoadState";
 import { Shell } from "../ui/Shell";
 import { mcpStartClient, type StartClient } from "../coordinator/start/api";
-import { useStartWaiting } from "../coordinator/start/startWaiting";
+import { useStartWaitingState } from "../coordinator/start/startWaiting";
 
 type Opened = { invitation: InvitationItem; joined: boolean };
 
@@ -27,18 +28,22 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
   const [ticked, setTicked] = useState<string[]>([]);
   const [invitations, setInvitations] = useState<InvitationItem[]>([]);
   const [opened, setOpened] = useState<Opened | null>(null);
+  const [invitationsLoaded, setInvitationsLoaded] = useState(false);
   const [invitationsFailed, setInvitationsFailed] = useState(false);
   const [invitationsOutage, setInvitationsOutage] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [problem, setProblem] = useState("");
   const [working, setWorking] = useState<"join" | "decline" | null>(null);
-  const outage = (notificationsFailed && notificationsOutage) || (invitationsFailed && invitationsOutage);
 
   useEffect(() => {
     let live = true;
     client
       .listInvitations()
-      .then((i) => live && setInvitations(i))
+      .then((i) => {
+        if (!live) return;
+        setInvitations(i);
+        setInvitationsLoaded(true);
+      })
       .catch((error) => {
         if (!live) return;
         setInvitationsFailed(true);
@@ -49,22 +54,24 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
     };
   }, [client, attempt]);
 
-  const tryAgain = () => {
-    setInvitationsFailed(false);
-    setInvitationsOutage(false);
-    setAttempt(attempt + 1);
-    retryNotifications();
-  };
-
-  const waiting = useStartWaiting(start);
+  const waiting = useStartWaitingState(start);
   const updates = updatesOf(items);
   const unread = unreadOf(updates);
   const chosen = unread.filter((n) => ticked.includes(n.id)).map((n) => n.id);
   const issues = useAssignedIssues(assigned);
+  const issuesStatus: ReadStatus = issues.failed ? "failed" : issues.value === null ? "loading" : "ready";
   const issuesListed = issues.value !== null && !issues.failed;
   const waitingItems = issuesListed ? withoutIssueNotices(items, issues.value) : items;
   const needing = needsYouNotes(waitingItems);
-  const waitsOnYou = needsYouCount({ steps: waiting ?? [], invitations, items: waitingItems }) + (issuesListed ? (issues.value ?? []).length : 0) > 0;
+  const retryNeedsYou = () => {
+    setInvitationsFailed(false);
+    setInvitationsOutage(false);
+    setAttempt(attempt + 1);
+    retryNotifications();
+    waiting.retry();
+    issues.refresh();
+  };
+  const waitsOnYou = needsYouCount({ steps: waiting.steps, invitations, items: waitingItems }) + (issuesListed ? (issues.value ?? []).length : 0) > 0;
 
   if (opened) {
     const { invitation, joined } = opened;
@@ -147,20 +154,24 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
 
   const tick = (id: string, on: boolean) => setTicked(on ? [...ticked, id] : ticked.filter((t) => t !== id));
 
-  const settled = items !== null || (notificationsFailed && !notificationsOutage);
-  const empty = !outage && settled && waiting !== null && (issues.value !== null || issues.failed) && !waitsOnYou && updates.length === 0;
+  const notificationsStatus: ReadStatus = notificationsFailed && notificationsOutage ? "failed" : items !== null || notificationsFailed ? "ready" : "loading";
+  const invitationsStatus: ReadStatus = invitationsFailed && invitationsOutage ? "failed" : invitationsLoaded || invitationsFailed ? "ready" : "loading";
+  const needsYouParts: Part[] = [
+    { name: "your tasks", status: waiting.status },
+    { name: "your invitations", status: invitationsStatus },
+    { name: "your assigned issues", status: issuesStatus },
+    { name: "your notices", status: notificationsStatus },
+  ];
+  const updatesParts: Part[] = [{ name: "your updates", status: notificationsStatus }];
+  const needsYouState = sectionState("Needs you", needsYouParts, waitsOnYou);
+  const updatesState = sectionState("Updates", updatesParts, updates.length > 0);
+  const empty = allAnswered([...needsYouParts, ...updatesParts]) && !waitsOnYou && updates.length === 0;
 
   const openNotice = (n: NotificationItem, path: string) => openChecked(n, path, { read, markOneRead, navigate, say: setProblem });
 
   return (
     <Shell title={above ? "Home" : "Notifications"} inbox={client}>
       {above}
-      {outage ? (
-        <>
-          <LoadFailed words="Home could not be loaded." />
-          <Button onClick={tryAgain}>Try again</Button>
-        </>
-      ) : null}
       {problem ? <LoadFailed words={problem} /> : null}
       {empty ? (
         <Card empty>
@@ -168,8 +179,10 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
           <p>Notifications from your groups will appear here.</p>
         </Card>
       ) : null}
-      {waitsOnYou ? <NeedsYouSection start={start} assigned={assigned} invitations={invitations} notices={needing} onOpenInvitation={(invitation) => setOpened({ invitation, joined: false })} onOpenNotice={openNotice} /> : null}
-      {updates.length > 0 ? <UpdatesSection notices={updates} chosen={chosen} onTick={tick} onMarkRead={markRead} onOpenNotice={openNotice} /> : null}
+      {waitsOnYou || needsYouState.loading || needsYouState.words ? (
+        <NeedsYouSection start={start} assigned={assigned} invitations={invitations} notices={needing} state={needsYouState} hasRows={waitsOnYou} onRetry={retryNeedsYou} onOpenInvitation={(invitation) => setOpened({ invitation, joined: false })} onOpenNotice={openNotice} />
+      ) : null}
+      {updates.length > 0 || updatesState.loading || updatesState.words ? <UpdatesSection notices={updates} state={updatesState} onRetry={retryNotifications} chosen={chosen} onTick={tick} onMarkRead={markRead} onOpenNotice={openNotice} /> : null}
     </Shell>
   );
 }
