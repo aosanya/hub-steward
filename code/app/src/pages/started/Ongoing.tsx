@@ -2,16 +2,21 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { openAgencyId } from "../../agency/open";
 import { useLoad } from "../../forms/useLoad";
+import { mcpDoneClient, type DoneClient } from "../../started/done";
 import { mcpStartedClient, startedAnswerOf, type StartedAnswer, type StartedClient, type StartedItem, type WaitsOn } from "../../started/api";
 import { Button } from "../../ui/Button";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
 import { SectionHeading } from "../../ui/SectionHeading";
 import { Segmented, type SegmentedItem } from "../../ui/Segmented";
+import { DoneTab } from "./DoneTab";
 
-type OngoingTab = "live";
+type OngoingTab = "live" | "done";
 
-const ongoingTabs: SegmentedItem<OngoingTab>[] = [{ id: "live", label: "Live" }];
+const ongoingTabs: SegmentedItem<OngoingTab>[] = [
+  { id: "live", label: "Live" },
+  { id: "done", label: "Done" },
+];
 
 const sections: { waitsOn: WaitsOn; heading: string }[] = [
   { waitsOn: "you", heading: "Needs you" },
@@ -27,7 +32,7 @@ const missingRowsLine = (failed: StartedAnswer["failed"]) => {
   return failed.includes("member") ? memberUnknownLine : sourceFailedLine;
 };
 
-function LiveTab({ items }: { items: StartedItem[] }) {
+function LiveRows({ items }: { items: StartedItem[] }) {
   const navigate = useNavigate();
   const backTo = useLocation().pathname;
   return (
@@ -56,8 +61,7 @@ function LiveTab({ items }: { items: StartedItem[] }) {
   );
 }
 
-export function Ongoing({ client = mcpStartedClient, onStart }: { client?: StartedClient; onStart: () => void }) {
-  const [tab, setTab] = useState<OngoingTab>("live");
+function LiveTab({ client, onStart }: { client: StartedClient; onStart: () => void }) {
   const [attempt, setAttempt] = useState(0);
   const retry = () => setAttempt(attempt + 1);
   const ongoing = useLoad(() => startedAnswerOf(client), `started:${openAgencyId()}:${attempt}`);
@@ -77,9 +81,26 @@ export function Ongoing({ client = mcpStartedClient, onStart }: { client?: Start
   }
   return (
     <>
-      {ongoingTabs.length > 1 ? <Segmented items={ongoingTabs} current={tab} onChange={setTab} label="Ongoing" /> : null}
-      {tab === "live" ? <LiveTab items={items} /> : null}
+      <LiveRows items={items} />
       {missing ? <LoadFailed words={missing} onRetry={retry} /> : null}
+    </>
+  );
+}
+
+export function Ongoing({
+  client = mcpStartedClient,
+  doneClient = mcpDoneClient,
+  onStart,
+}: {
+  client?: StartedClient;
+  doneClient?: DoneClient;
+  onStart: () => void;
+}) {
+  const [tab, setTab] = useState<OngoingTab>("live");
+  return (
+    <>
+      <Segmented items={ongoingTabs} current={tab} onChange={setTab} label="Ongoing" />
+      {tab === "live" ? <LiveTab client={client} onStart={onStart} /> : <DoneTab client={doneClient} />}
     </>
   );
 }

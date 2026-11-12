@@ -219,12 +219,12 @@ describe("the Live tab", () => {
     expect(headingNames()).toEqual(["Needs you"]);
   });
 
-  it("draws no Done tab and no tab switch while Live is the only tab", async () => {
+  it("draws the Live and Done tabs, Live chosen", async () => {
     renderOngoing(clientOf([urea, supplier]));
     await screen.findByText(urea.title);
-    expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Live" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("group")).not.toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Ongoing" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Live" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Done" })).toHaveAttribute("aria-pressed", "false");
   });
 
   it("still opens a row from either section", async () => {

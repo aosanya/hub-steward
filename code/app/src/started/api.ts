@@ -51,7 +51,7 @@ const myOrderPath = (id: string) => `/my-orders/group/${id}`;
 const hasLineOf = (raw: any, me: string) =>
   me !== "" && (Array.isArray(raw?.lines) ? raw.lines : []).some((line: any) => text(line?.picker) === me);
 
-const offersOfShops = (): Promise<PosterOffer[]> =>
+export const offersOfShops = (): Promise<PosterOffer[]> =>
   callTool("", "market_list_offers", {}).then(posterOffersOf, () => []);
 
 const linesOf = (raw: any): any[] => (Array.isArray(raw?.lines) ? raw.lines : []);
@@ -128,7 +128,7 @@ const supplierRows = async (supply: SupplyClient, me: string): Promise<StartedIt
 
 const sourceNames = ["orders", "joinRequests", "supplier"] as const;
 
-const marketAbsent = (reason: unknown) => reason instanceof Error && reason.message.includes("instance not found");
+export const marketAbsent = (reason: unknown) => reason instanceof Error && reason.message.includes("instance not found");
 
 const emptyWhenNoMarket = <T>(rows: Promise<T[]>): Promise<T[]> =>
   rows.catch((reason) => (marketAbsent(reason) ? [] : Promise.reject(reason)));
