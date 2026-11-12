@@ -73,6 +73,7 @@ var sentinels = map[string]error{
 	"ErrNoPathToState":              mwanachamataskmanager.ErrNoPathToState,
 	"ErrInvalidPlacement":           mwanachamataskmanager.ErrInvalidPlacement,
 	"ErrTaskMoveConflict":           mwanachamataskmanager.ErrTaskMoveConflict,
+	"ErrInvalidEffort":              mwanachamataskmanager.ErrInvalidEffort,
 	"ErrUnknownBacklogStep":         mwanachamataskmanager.ErrUnknownBacklogStep,
 	"ErrInvalidBacklog":             mwanachamataskmanager.ErrInvalidBacklog,
 	"ErrDuplicateRules":             mwanachamataskmanager.ErrDuplicateRules,
