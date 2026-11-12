@@ -48,7 +48,7 @@ func (r *registry) recordWritersIn(id string) mwanachamaforms.RecordWriters {
 			}}, true
 		case moduleRatings:
 			return ratingWriter{ratings: func(ctx context.Context) (mwanachamaratings.RatingsManager, error) {
-				return r.ratingsManagerFor(ctx, id)
+				return r.RatingsManager(ctx, id)
 			}}, true
 		}
 		return nil, false

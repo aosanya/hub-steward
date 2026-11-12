@@ -36,6 +36,7 @@ import (
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamagit "wakalaserver/modules/git"
 	mwanachamamarket "wakalaserver/modules/market"
+	mwanachamaratings "wakalaserver/modules/ratings"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
 	mwanachamasources "wakalaserver/modules/sources"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
@@ -67,6 +68,7 @@ type Registry interface {
 	LedgerRepository(ctx context.Context, id string) (mwanachamaaccounting.LedgerRepository, error)
 	TaskManager(ctx context.Context, id string) (mwanachamataskmanager.TaskManager, error)
 	CatalogManager(ctx context.Context, id, mount string) (mwanachamacatalog.CatalogManager, error)
+	RatingsManager(ctx context.Context, id string) (mwanachamaratings.RatingsManager, error)
 	GitManager(ctx context.Context, id string) (mwanachamagit.GitManager, error)
 	SourceManager(ctx context.Context, id string) (mwanachamasources.SourceManager, error)
 	PollManager(ctx context.Context, id string) (mwanachamavoting.PollManager, error)

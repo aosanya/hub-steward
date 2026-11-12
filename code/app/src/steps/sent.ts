@@ -1,9 +1,6 @@
 import { openAgencyId } from "../agency/open";
 
-type Sent = { id: string; orderId: string; title: string; after?: string };
-
-export const afterWords = (reply: { done: boolean; next: { roleName: string } | null }) =>
-  reply.done ? "Done" : reply.next?.roleName ? `Next: ${reply.next.roleName}` : "";
+type Sent = { id: string; orderId: string; title: string };
 
 type Kept = Sent & { agencyId: string };
 
@@ -19,9 +16,6 @@ export const markSent = (step: Sent) => {
 };
 
 export const wasSent = (step: Pick<Sent, "id" | "orderId">) => sent.some((one) => same(one, { ...step, agencyId: openAgencyId() }));
-
-export const sentAfter = (step: Pick<Sent, "id" | "orderId">) =>
-  sent.find((one) => same(one, { ...step, agencyId: openAgencyId() }))?.after ?? "";
 
 export const wasStarted = (stepId: string) => sent.some((one) => one.agencyId === openAgencyId() && one.id === stepId);
 

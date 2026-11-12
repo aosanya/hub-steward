@@ -107,7 +107,7 @@ func TestARegistryFormLandsAPaymentInTheLedgerAndARatingInRatingsInPostgres(t *t
 	}); err != nil {
 		t.Fatalf("SubmitAnswers rating = %v", err)
 	}
-	rm, err := reg.(*registry).ratingsManagerFor(ctx, inst.ID)
+	rm, err := reg.(*registry).RatingsManager(ctx, inst.ID)
 	if err != nil {
 		t.Fatal(err)
 	}

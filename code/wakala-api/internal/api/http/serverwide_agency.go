@@ -1,12 +1,15 @@
 package http
 
 import (
+	"context"
 	"net/http"
 
 	catalog "wakalaserver/modules/catalog"
 	catalogroutes "wakalaserver/modules/catalog/routes"
 	forms "wakalaserver/modules/forms"
 	formsroutes "wakalaserver/modules/forms/routes"
+	ratings "wakalaserver/modules/ratings"
+	ratingsroutes "wakalaserver/modules/ratings/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
@@ -15,10 +18,12 @@ import (
 const agencyQuery = "instance_id"
 
 func (d *Deps) agencyOfRequest(r *http.Request, public bool) (string, error) {
-	ctx := r.Context()
-	named := r.URL.Query().Get(agencyQuery)
+	return d.agencyOfCaller(r.Context(), r.URL.Query().Get(agencyQuery), public)
+}
+
+func (d *Deps) agencyOfCaller(ctx context.Context, named string, public bool) (string, error) {
 	caller := accounts.IDFromContext(ctx)
-	if public || caller == "" {
+	if public {
 		if named == "" {
 			return "", agencies.ErrInstanceNotFound
 		}
@@ -26,6 +31,9 @@ func (d *Deps) agencyOfRequest(r *http.Request, public bool) (string, error) {
 			return "", err
 		}
 		return named, nil
+	}
+	if caller == "" {
+		return "", agencies.ErrInstanceNotFound
 	}
 	if named != "" {
 		member, err := d.Registry.IsMember(ctx, named, caller)
@@ -97,4 +105,29 @@ func (a agencyFormRoutes) manager(r *http.Request, instanceID string) (forms.For
 		return a.deps.Registry.IssuingFormManager(r.Context(), instanceID)
 	}
 	return a.deps.Registry.FormManager(r.Context(), instanceID)
+}
+
+type agencyRatingsRoutes struct {
+	deps  *Deps
+	mount ratingsroutes.Mount
+}
+
+func (a agencyRatingsRoutes) handler(index int) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		instanceID, err := a.deps.agencyOfRequest(r, false)
+		if err != nil {
+			writeInstanceErr(w, err)
+			return
+		}
+		rm, err := a.deps.Registry.RatingsManager(r.Context(), instanceID)
+		if err != nil {
+			writeInstanceErr(w, err)
+			return
+		}
+		a.build(rm)[index].Handler(w, withPartition(r, instanceID))
+	}
+}
+
+func (a agencyRatingsRoutes) build(rm ratings.RatingsManager) []ratingsroutes.Route {
+	return ratingsroutes.OperatorRoutesFor(rm, a.mount)
 }

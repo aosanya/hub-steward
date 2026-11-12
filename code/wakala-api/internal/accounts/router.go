@@ -24,6 +24,7 @@ import (
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamagit "wakalaserver/modules/git"
 	mwanachamamarket "wakalaserver/modules/market"
+	mwanachamaratings "wakalaserver/modules/ratings"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
 	mwanachamasources "wakalaserver/modules/sources"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
@@ -262,6 +263,14 @@ func (r *Router) CatalogManager(ctx context.Context, id, mount string) (mwanacha
 		return nil, err
 	}
 	return reg.CatalogManager(ctx, id, mount)
+}
+
+func (r *Router) RatingsManager(ctx context.Context, id string) (mwanachamaratings.RatingsManager, error) {
+	reg, err := r.pick(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return reg.RatingsManager(ctx, id)
 }
 
 func (r *Router) GitManager(ctx context.Context, id string) (mwanachamagit.GitManager, error) {

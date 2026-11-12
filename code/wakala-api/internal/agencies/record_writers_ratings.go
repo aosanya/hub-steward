@@ -88,7 +88,7 @@ type ratingsKey struct {
 
 var ratingsManagers sync.Map
 
-func (r *registry) ratingsManagerFor(ctx context.Context, id string) (mwanachamaratings.RatingsManager, error) {
+func (r *registry) RatingsManager(ctx context.Context, id string) (mwanachamaratings.RatingsManager, error) {
 	key := ratingsKey{db: r.db, id: id}
 	if cached, found := ratingsManagers.Load(key); found {
 		return cached.(mwanachamaratings.RatingsManager), nil

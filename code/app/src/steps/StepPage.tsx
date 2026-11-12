@@ -10,11 +10,9 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Shell } from "../ui/Shell";
-import { openAgencyId } from "../agency/open";
-import { ongoingTab, startTab, tabPathIn } from "../tabs";
-import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type SendRefusal, type StepsClient } from "./api";
+import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type StepsClient } from "./api";
 import { answersOf, formQuestionsOf, unsendable } from "./questions";
-import { afterWords, markSent } from "./sent";
+import { markSent } from "./sent";
 
 const numeric = (type: string) => type === "number" || type === "currency";
 
@@ -35,7 +33,6 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
   const [problems, setProblems] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "sending">("idle");
   const [refusal, setRefusal] = useState("");
-  const [refusedFor, setRefusedFor] = useState<SendRefusal | "">("");
   const [sendKey] = useState(newSendKey);
   const step = loaded.state === "ready" ? loaded.data.find((s) => s.id === stepId && s.orderId === order) : undefined;
   const back = () => navigate(doSomethingBackPath());
@@ -66,13 +63,11 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
     if (Object.values(found).some(Boolean)) return;
     setStatus("sending");
     setRefusal("");
-    setRefusedFor("");
     try {
       const reply = await steps.submit(step, answersOf(questions, draft), sendKey);
-      markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title, after: afterWords(reply) });
+      markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title });
       navigate(doSomethingBackPath());
     } catch (e) {
-      setRefusedFor(e instanceof StepRefused ? e.reason : "failed");
       setRefusal(e instanceof StepRefused ? e.message : refusalWords.failed);
       setStatus("idle");
     }
@@ -92,8 +87,6 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
           )
         ))}
         {refusal ? <p className="ferr">{refusal}</p> : null}
-        {refusedFor === "role" ? <Button to={tabPathIn(startTab, openAgencyId())}>Go to Start</Button> : null}
-        {refusedFor === "not-ready" ? <Button to={tabPathIn(ongoingTab, openAgencyId())}>Go to Ongoing</Button> : null}
       </Card>
       <BottomBar>
         <Button onClick={back}>Back</Button>

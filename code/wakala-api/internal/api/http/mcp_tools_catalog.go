@@ -9,10 +9,16 @@ import (
 
 	catalogroutes "wakalaserver/modules/catalog/routes"
 	"wakalaserver/modules/shared/dispatch"
+
+	"wakalaserver/internal/agencies"
 )
 
 func (d *Deps) registerCatalogMCPTools(server *mcp.Server) {
 	if d.Catalog == nil {
+		return
+	}
+	if d.Registry != nil {
+		d.registerAgencyCatalogMCPTools(server, agencies.MountCatalog, d.catalogMount(), func(name string) string { return name })
 		return
 	}
 	for _, tool := range catalogroutes.ToolsFor(d.Catalog, d.catalogMount()) {
@@ -27,6 +33,10 @@ func (d *Deps) registerCatalogMCPTools(server *mcp.Server) {
 
 func (d *Deps) registerReportsMCPTools(server *mcp.Server) {
 	if d.Reports == nil {
+		return
+	}
+	if d.Registry != nil {
+		d.registerAgencyCatalogMCPTools(server, agencies.MountReports, d.reportsMount(), reportsToolName)
 		return
 	}
 	for _, tool := range catalogroutes.ToolsFor(d.Reports, d.reportsMount()) {
