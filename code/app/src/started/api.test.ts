@@ -49,7 +49,7 @@ describe("the group order she started as coordinator", () => {
   it("shows an open one with its product, state and her order page", async () => {
     answering({ market_list_group_orders: { items: [groupOrder({ id: "g1", coordinator: "m1" })] } });
     expect(await mcpStartedClient.list()).toEqual([
-      { id: "order-g1", workflow: "Create group order", title: "urea", state: "Open", path: "/coordinator/orders/g1" },
+      { id: "order-g1", workflow: "Create group order", title: "urea", state: "Open", waitsOn: "others", reason: "No farmers have joined yet", path: "/coordinator/orders/g1" },
     ]);
   });
 
@@ -80,6 +80,24 @@ describe("the group order she started as coordinator", () => {
   it("says Revising while new terms are out", async () => {
     answering({ market_list_group_orders: { items: [groupOrder({ coordinator: "m1", state: "revising" })] } });
     expect((await mcpStartedClient.list())[0].state).toBe("Revising");
+  });
+
+  it("says how many farmers have joined while it is open", async () => {
+    const lines = [1, 2, 3].map((n) => ({ picker: `f${n}`, quantity: 1 }));
+    answering({ market_list_group_orders: { items: [groupOrder({ coordinator: "m1", lines })] } });
+    const [row] = await mcpStartedClient.list();
+    expect([row.waitsOn, row.reason]).toEqual(["others", "3 farmers joined"]);
+  });
+
+  it("says one farmer joined in the singular", async () => {
+    answering({ market_list_group_orders: { items: [groupOrder({ coordinator: "m1", lines: [{ picker: "f1", quantity: 1 }] })] } });
+    expect((await mcpStartedClient.list())[0].reason).toBe("1 farmer joined");
+  });
+
+  it("waits on the farmers while new terms are out", async () => {
+    answering({ market_list_group_orders: { items: [groupOrder({ coordinator: "m1", state: "revising" })] } });
+    const [row] = await mcpStartedClient.list();
+    expect([row.waitsOn, row.reason]).toEqual(["others", "Waiting for the farmers to answer the new terms"]);
   });
 
   it("leaves out an order that was sent, closed or cancelled", async () => {
@@ -139,7 +157,7 @@ describe("a group order she joined", () => {
       market_list_offers: { items: [offer] },
     });
     expect(await mcpStartedClient.list()).toEqual([
-      { id: "order-g2", workflow: "Group order", title: "Urea 50kg", state: "Open", path: "/my-orders/group/g2" },
+      { id: "order-g2", workflow: "Group order", title: "Urea 50kg", state: "Open", waitsOn: "others", reason: "Waiting for the coordinator to send the order", path: "/my-orders/group/g2" },
     ]);
   });
 
@@ -156,6 +174,22 @@ describe("a group order she joined", () => {
       market_list_group_orders: { items: [groupOrder({ state: "revising", lines: [{ picker: "m1", quantity: 3 }] })] },
     });
     expect((await mcpStartedClient.list())[0].state).toBe("Revising");
+  });
+
+  it("waits on her while new terms are out and her line has no answer", async () => {
+    answering({
+      market_list_group_orders: { items: [groupOrder({ state: "revising", lines: [{ picker: "m1", quantity: 3, answer: "waiting" }] })] },
+    });
+    const [row] = await mcpStartedClient.list();
+    expect([row.waitsOn, row.reason]).toEqual(["you", "Answer the new terms"]);
+  });
+
+  it("waits on the other farmers once she has answered the new terms", async () => {
+    answering({
+      market_list_group_orders: { items: [groupOrder({ state: "revising", lines: [{ picker: "m1", quantity: 3, answer: "yes" }] })] },
+    });
+    const [row] = await mcpStartedClient.list();
+    expect([row.waitsOn, row.reason]).toEqual(["others", "Waiting for the other farmers to answer"]);
   });
 
   it("leaves out a finished one", async () => {
@@ -187,7 +221,7 @@ describe("a request to join a group", () => {
       actor_list_joinable_groups: joinable,
     });
     expect(await mcpStartedClient.list()).toEqual([
-      { id: "join-grp1", workflow: "Join a group", title: "Siaya farmers", state: "Requested", path: "/a/farmers/join" },
+      { id: "join-grp1", workflow: "Join a group", title: "Siaya farmers", state: "Requested", waitsOn: "others", reason: "Waiting for the group to answer", path: "/a/farmers/join" },
     ]);
   });
 
@@ -202,7 +236,7 @@ describe("a request to join a group", () => {
   it("keeps the row with no title when no result names the group", async () => {
     answering({ actor_list_my_join_requests: { items: [{ group_id: "grp3", state: "pending" }] } });
     expect(await mcpStartedClient.list()).toEqual([
-      { id: "join-grp3", workflow: "Join a group", title: "", state: "Requested", path: "/a/farmers/join" },
+      { id: "join-grp3", workflow: "Join a group", title: "", state: "Requested", waitsOn: "others", reason: "Waiting for the group to answer", path: "/a/farmers/join" },
     ]);
   });
 
@@ -212,7 +246,7 @@ describe("a request to join a group", () => {
       actor_get_group: { id: "grp3", name: "Rarieda growers" },
     });
     expect(await mcpStartedClient.list()).toEqual([
-      { id: "join-grp3", workflow: "Join a group", title: "Rarieda growers", state: "Requested", path: "/a/farmers/join" },
+      { id: "join-grp3", workflow: "Join a group", title: "Rarieda growers", state: "Requested", waitsOn: "others", reason: "Waiting for the group to answer", path: "/a/farmers/join" },
     ]);
     expect(call).toHaveBeenCalledWith("", "actor_get_group", { group_id: "grp3" });
   });
@@ -253,7 +287,7 @@ describe("a request to join a group", () => {
       actor_get_group: new Error("not allowed"),
     });
     expect(await mcpStartedClient.list()).toEqual([
-      { id: "join-grp3", workflow: "Join a group", title: "", state: "Requested", path: "/a/farmers/join" },
+      { id: "join-grp3", workflow: "Join a group", title: "", state: "Requested", waitsOn: "others", reason: "Waiting for the group to answer", path: "/a/farmers/join" },
     ]);
   });
 
@@ -284,7 +318,7 @@ describe("her supplier application", () => {
   it("shows one that is not approved yet by the shop name and sends her to Apply", async () => {
     answering({ market_list_posters: { items: [shop()] } });
     expect(await mcpStartedClient.list()).toEqual([
-      { id: "supplier-s1", workflow: "Apply as a supplier", title: "Asha Agrovet", state: "Asked", path: "/supply/apply" },
+      { id: "supplier-s1", workflow: "Apply as a supplier", title: "Asha Agrovet", state: "Asked", waitsOn: "others", reason: "Waiting for the agency to approve your shop", path: "/supply/apply" },
     ]);
   });
 
@@ -436,7 +470,7 @@ describe("the answer for any client", () => {
   });
 
   it("reports no failures for a client that only lists", async () => {
-    const row = { id: "order-g1", workflow: "Group order", title: "urea", state: "Open", path: "/my-orders/group/g1" };
+    const row = { id: "order-g1", workflow: "Group order", title: "urea", state: "Open", waitsOn: "others" as const, reason: "", path: "/my-orders/group/g1" };
     expect(await startedAnswerOf({ list: async () => [row] })).toEqual({ items: [row], failed: [] });
   });
 });

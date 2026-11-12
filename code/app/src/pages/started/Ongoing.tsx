@@ -1,10 +1,22 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { openAgencyId } from "../../agency/open";
 import { useLoad } from "../../forms/useLoad";
-import { mcpStartedClient, startedAnswerOf, type StartedAnswer, type StartedClient } from "../../started/api";
+import { mcpStartedClient, startedAnswerOf, type StartedAnswer, type StartedClient, type StartedItem, type WaitsOn } from "../../started/api";
 import { Button } from "../../ui/Button";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
+import { SectionHeading } from "../../ui/SectionHeading";
+import { Segmented, type SegmentedItem } from "../../ui/Segmented";
+
+type OngoingTab = "live";
+
+const ongoingTabs: SegmentedItem<OngoingTab>[] = [{ id: "live", label: "Live" }];
+
+const sections: { waitsOn: WaitsOn; heading: string }[] = [
+  { waitsOn: "you", heading: "Needs you" },
+  { waitsOn: "others", heading: "With others" },
+];
 
 const memberUnknownLine = "The app could not tell who you are, so some rows may be missing.";
 
@@ -15,9 +27,37 @@ const missingRowsLine = (failed: StartedAnswer["failed"]) => {
   return failed.includes("member") ? memberUnknownLine : sourceFailedLine;
 };
 
-export function Ongoing({ client = mcpStartedClient, onStart }: { client?: StartedClient; onStart: () => void }) {
+function LiveTab({ items }: { items: StartedItem[] }) {
   const navigate = useNavigate();
   const backTo = useLocation().pathname;
+  return (
+    <>
+      {sections.map(({ waitsOn, heading }) => {
+        const rows = items.filter((item) => item.waitsOn === waitsOn);
+        if (rows.length === 0) return null;
+        return (
+          <section key={waitsOn}>
+            <SectionHeading>{heading}</SectionHeading>
+            <Rows>
+              {rows.map((item) => (
+                <ListRow
+                  key={item.id}
+                  title={item.title || item.workflow}
+                  meta={[[item.title ? item.workflow : "", item.state].filter(Boolean).join(" · "), item.reason]}
+                  end="›"
+                  onClick={() => navigate(item.path, { state: { backTo } })}
+                />
+              ))}
+            </Rows>
+          </section>
+        );
+      })}
+    </>
+  );
+}
+
+export function Ongoing({ client = mcpStartedClient, onStart }: { client?: StartedClient; onStart: () => void }) {
+  const [tab, setTab] = useState<OngoingTab>("live");
   const ongoing = useLoad(() => startedAnswerOf(client), `started:${openAgencyId()}`);
   if (ongoing.state === "error") return <LoadFailed words="Your ongoing apps could not be loaded." />;
   if (ongoing.state === "loading") return <LoadingLine />;
@@ -35,17 +75,8 @@ export function Ongoing({ client = mcpStartedClient, onStart }: { client?: Start
   }
   return (
     <>
-      <Rows>
-        {items.map((item) => (
-          <ListRow
-            key={item.id}
-            title={item.title || item.workflow}
-            meta={[item.title ? item.workflow : "", item.state].filter(Boolean).join(" · ")}
-            end="›"
-            onClick={() => navigate(item.path, { state: { backTo } })}
-          />
-        ))}
-      </Rows>
+      {ongoingTabs.length > 1 ? <Segmented items={ongoingTabs} current={tab} onChange={setTab} label="Ongoing" /> : null}
+      {tab === "live" ? <LiveTab items={items} /> : null}
       {missing ? <p role="alert">{missing}</p> : null}
     </>
   );

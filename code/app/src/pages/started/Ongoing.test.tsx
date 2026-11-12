@@ -5,8 +5,24 @@ import { forgetOpenAgency, openAgency } from "../../agency/open";
 import type { StartedAnswer, StartedClient, StartedItem } from "../../started/api";
 import { Ongoing } from "./Ongoing";
 
-const urea: StartedItem = { id: "s1", workflow: "Urea group order", title: "Start the urea group order", state: "Waiting on you", path: "/start/s1" };
-const supplier: StartedItem = { id: "s2", workflow: "Apply as a supplier", title: "Apply as a supplier", state: "Waiting on you", path: "/start/s2" };
+const urea: StartedItem = {
+  id: "s1",
+  workflow: "Urea group order",
+  title: "Start the urea group order",
+  state: "Open",
+  waitsOn: "others",
+  reason: "3 new farmers joined",
+  path: "/start/s1",
+};
+const supplier: StartedItem = {
+  id: "s2",
+  workflow: "Apply as a supplier",
+  title: "Apply as a supplier",
+  state: "Waiting on you",
+  waitsOn: "you",
+  reason: "Shop changed the price",
+  path: "/start/s2",
+};
 
 const memberLine = "The app could not tell who you are, so some rows may be missing.";
 const sourceLine = "Some of your ongoing apps could not be loaded.";
@@ -42,29 +58,38 @@ const renderOngoing = (client: StartedClient, onStart: () => void = () => undefi
 describe("ongoing rows", () => {
   afterEach(() => forgetOpenAgency());
 
-  it("draws only the rows: no heading, no tab bar", async () => {
+  it("draws no page heading, no navigation and no main of its own", async () => {
     renderOngoing(clientOf([urea]));
     await screen.findByText(urea.title);
-    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { level: 1 })).not.toBeInTheDocument();
     expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
     expect(screen.queryByRole("main")).not.toBeInTheDocument();
   });
 
-  it("draws one row per item with its workflow and state words", async () => {
+  it("draws one row per item with its workflow, state words and reason", async () => {
     renderOngoing(clientOf([urea, supplier]));
-    expect(await screen.findByRole("button", { name: "Start the urea group order Urea group order · Waiting on you" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Apply as a supplier Apply as a supplier · Waiting on you" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("button", { name: "Start the urea group order Urea group order · Open 3 new farmers joined" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Apply as a supplier Apply as a supplier · Waiting on you Shop changed the price" }),
+    ).toBeInTheDocument();
   });
 
   it("leaves out the separator when an item carries no state", async () => {
     renderOngoing(clientOf([{ ...urea, state: "" }]));
-    const row = await screen.findByRole("button", { name: "Start the urea group order Urea group order" });
+    const row = await screen.findByRole("button", { name: "Start the urea group order Urea group order 3 new farmers joined" });
     expect(row).not.toHaveTextContent("·");
   });
 
   it("names a row after its workflow when the item has no title", async () => {
     renderOngoing(clientOf([{ ...supplier, title: "", state: "Requested" }]));
-    expect(await screen.findByRole("button", { name: "Apply as a supplier Requested" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Apply as a supplier Requested Shop changed the price" })).toBeInTheDocument();
+  });
+
+  it("leaves out the reason line when an item carries no reason", async () => {
+    renderOngoing(clientOf([{ ...urea, reason: "" }]));
+    expect(await screen.findByRole("button", { name: "Start the urea group order Urea group order · Open" })).toBeInTheDocument();
   });
 
   it("opens the path an item points at", async () => {
@@ -144,6 +169,68 @@ describe("ongoing rows", () => {
     rerender(page());
     await screen.findByText(urea.title);
     expect(list).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("the Live tab", () => {
+  afterEach(() => forgetOpenAgency());
+
+  const headingNames = () => screen.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent);
+
+  it("puts what waits on her under Needs you above what waits on others under With others", async () => {
+    renderOngoing(clientOf([urea, supplier]));
+    await screen.findByText(urea.title);
+    expect(headingNames()).toEqual(["Needs you", "With others"]);
+    const needsYou = screen.getByRole("heading", { name: "Needs you" });
+    const withOthers = screen.getByRole("heading", { name: "With others" });
+    const waitingOnHer = screen.getByText(supplier.title).closest("button") as HTMLElement;
+    const waitingOnOthers = screen.getByText(urea.title).closest("button") as HTMLElement;
+    const follows = (a: HTMLElement, b: HTMLElement) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(follows(needsYou, waitingOnHer)).toBe(true);
+    expect(follows(waitingOnHer, withOthers)).toBe(true);
+    expect(follows(withOthers, waitingOnOthers)).toBe(true);
+  });
+
+  it("keeps the order the client gave inside a section", async () => {
+    const second = { ...supplier, id: "s3", title: "Second one" };
+    renderOngoing(clientOf([supplier, urea, second]));
+    await screen.findByText(urea.title);
+    const needsYou = within(screen.getByRole("heading", { name: "Needs you" }).nextElementSibling as HTMLElement);
+    expect(needsYou.getAllByRole("button").map((row) => row.querySelector(".ttl")?.textContent)).toEqual([supplier.title, "Second one"]);
+  });
+
+  it("says why each row needs her or what it waits on", async () => {
+    renderOngoing(clientOf([urea, supplier]));
+    const needsYou = within((await screen.findByRole("heading", { name: "Needs you" })).nextElementSibling as HTMLElement);
+    const withOthers = within(screen.getByRole("heading", { name: "With others" }).nextElementSibling as HTMLElement);
+    expect(needsYou.getByText("Shop changed the price")).toBeInTheDocument();
+    expect(withOthers.getByText("3 new farmers joined")).toBeInTheDocument();
+  });
+
+  it("draws no Needs you heading when nothing waits on her", async () => {
+    renderOngoing(clientOf([urea]));
+    await screen.findByText(urea.title);
+    expect(headingNames()).toEqual(["With others"]);
+  });
+
+  it("draws no With others heading when nothing waits on others", async () => {
+    renderOngoing(clientOf([supplier]));
+    await screen.findByText(supplier.title);
+    expect(headingNames()).toEqual(["Needs you"]);
+  });
+
+  it("draws no Done tab and no tab switch while Live is the only tab", async () => {
+    renderOngoing(clientOf([urea, supplier]));
+    await screen.findByText(urea.title);
+    expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Live" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("group")).not.toBeInTheDocument();
+  });
+
+  it("still opens a row from either section", async () => {
+    renderOngoing(clientOf([urea, supplier]));
+    await userEvent.click(await screen.findByText(supplier.title));
+    expect(where()).toMatch(/^\/start\/s2\|/);
   });
 });
 

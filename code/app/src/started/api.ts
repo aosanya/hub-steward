@@ -6,7 +6,9 @@ import { posterOffersOf, productNameAt, type PosterOffer } from "../market/produ
 import { mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../supply/api";
 import { callTool } from "../wakala/mcp";
 
-export type StartedItem = { id: string; workflow: string; title: string; state: string; path: string };
+export type WaitsOn = "you" | "others";
+
+export type StartedItem = { id: string; workflow: string; title: string; state: string; waitsOn: WaitsOn; reason: string; path: string };
 
 export type StartedSource = "member" | "orders" | "joinRequests" | "supplier";
 
@@ -29,6 +31,19 @@ const stateWords = {
   notApproved: "Asked",
 } as const;
 
+const reasonWords = {
+  noFarmersYet: "No farmers have joined yet",
+  farmersAnswerNewTerms: "Waiting for the farmers to answer the new terms",
+  coordinatorSends: "Waiting for the coordinator to send the order",
+  answerNewTerms: "Answer the new terms",
+  otherFarmersAnswer: "Waiting for the other farmers to answer",
+  groupAnswers: "Waiting for the group to answer",
+  agencyApproves: "Waiting for the agency to approve your shop",
+} as const;
+
+const farmersJoined = (count: number) =>
+  count === 0 ? reasonWords.noFarmersYet : `${count} ${count === 1 ? "farmer" : "farmers"} joined`;
+
 const text = (value: unknown) => (typeof value === "string" ? value : value == null ? "" : String(value));
 
 const myOrderPath = (id: string) => `/my-orders/group/${id}`;
@@ -38,6 +53,19 @@ const hasLineOf = (raw: any, me: string) =>
 
 const offersOfShops = (): Promise<PosterOffer[]> =>
   callTool("", "market_list_offers", {}).then(posterOffersOf, () => []);
+
+const linesOf = (raw: any): any[] => (Array.isArray(raw?.lines) ? raw.lines : []);
+
+const startedReason = (raw: any) =>
+  text(raw?.state) === "revising" ? reasonWords.farmersAnswerNewTerms : farmersJoined(linesOf(raw).length);
+
+const joinedWaiting = (raw: any, me: string): { waitsOn: WaitsOn; reason: string } => {
+  if (text(raw?.state) !== "revising") return { waitsOn: "others", reason: reasonWords.coordinatorSends };
+  const unanswered = linesOf(raw).some((line) => text(line?.picker) === me && text(line?.answer) === "waiting");
+  return unanswered
+    ? { waitsOn: "you", reason: reasonWords.answerNewTerms }
+    : { waitsOn: "others", reason: reasonWords.otherFarmersAnswer };
+};
 
 const groupOrderRows = async (me: string): Promise<StartedItem[]> => {
   const live = (await listAllGroupOrders()).filter(isLiveBuyOrder);
@@ -52,6 +80,8 @@ const groupOrderRows = async (me: string): Promise<StartedItem[]> => {
       workflow: workflows.createGroupOrder,
       title: titleOf(raw),
       state: stateOf(raw),
+      waitsOn: "others" as const,
+      reason: startedReason(raw),
       path: coordinatorOrderPath(text(raw?.id)),
     })),
     ...joined.map((raw) => ({
@@ -59,6 +89,7 @@ const groupOrderRows = async (me: string): Promise<StartedItem[]> => {
       workflow: workflows.groupOrder,
       title: titleOf(raw),
       state: stateOf(raw),
+      ...joinedWaiting(raw, me),
       path: myOrderPath(text(raw?.id)),
     })),
   ];
@@ -83,6 +114,8 @@ const joinRequestRows = async (groups: GroupsClient): Promise<StartedItem[]> => 
     workflow: joinGroupWorkflow,
     title: names.get(request.groupId) ?? "",
     state: stateWords.pending,
+    waitsOn: "others" as const,
+    reason: reasonWords.groupAnswers,
     path: joinGroupPath(),
   }));
 };
@@ -90,7 +123,7 @@ const joinRequestRows = async (groups: GroupsClient): Promise<StartedItem[]> => 
 const supplierRows = async (supply: SupplyClient, me: string): Promise<StartedItem[]> => {
   const shop = mySupplier(await supply.listSuppliers(), me);
   if (shop?.status !== "pending") return [];
-  return [{ id: `supplier-${shop.id}`, workflow: applySupplierWorkflow, title: shop.shop, state: stateWords.notApproved, path: applySupplierPath }];
+  return [{ id: `supplier-${shop.id}`, workflow: applySupplierWorkflow, title: shop.shop, state: stateWords.notApproved, waitsOn: "others", reason: reasonWords.agencyApproves, path: applySupplierPath }];
 };
 
 const sourceNames = ["orders", "joinRequests", "supplier"] as const;
