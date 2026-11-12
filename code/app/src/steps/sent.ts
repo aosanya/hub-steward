@@ -1,7 +1,10 @@
 import { openAgencyId } from "../agency/open";
 import { readKept, removeKept, writeKept } from "../storage/kept";
 
-type Sent = { id: string; orderId: string; title: string };
+type Sent = { id: string; orderId: string; title: string; after?: string };
+
+export const afterWords = (reply: { done: boolean; next: { roleName: string } | null }) =>
+  reply.done ? "Done" : reply.next?.roleName ? `Next: ${reply.next.roleName}` : "";
 
 type Kept = Sent & { agencyId: string };
 
@@ -31,6 +34,9 @@ export const markSent = (step: Sent) => {
 };
 
 export const wasSent = (step: Pick<Sent, "id" | "orderId">) => all().some((one) => same(one, { ...step, agencyId: openAgencyId() }));
+
+export const sentAfter = (step: Pick<Sent, "id" | "orderId">) =>
+  all().find((one) => same(one, { ...step, agencyId: openAgencyId() }))?.after ?? "";
 
 export const wasStarted = (stepId: string) => all().some((one) => one.agencyId === openAgencyId() && one.id === stepId);
 
