@@ -1,0 +1,9 @@
+.body>.rows{gap:.75rem;overflow:visible;background:transparent;border:0;border-radius:0;box-shadow:none}
+.body>.rows>.row,.body>.rows>.selrow{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line);overflow:hidden}
+.body>.rows>.row+.row,.body>.rows>.selrow:first-child,.body>.rows>.selrow+.selrow{border:1px solid var(--line)}
+.body>.rows>.selrow>.row{border:0;background:transparent;box-shadow:none}
+.bar>.menu-btn{grid-column:3;justify-self:end}
+.strip{display:flex;align-items:center;gap:.75rem;min-height:3.5rem;padding:.5rem 1rem;background:var(--accent-wash);border:1px solid var(--line);border-radius:var(--r-md);color:var(--accent-strong);font-weight:600}
+.strip .txt{flex:1;min-width:0}
+.heading.split{display:flex;align-items:center;justify-content:space-between}
+.heading .act{min-height:2rem;padding:0;font-size:.8125rem}

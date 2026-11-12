@@ -41,9 +41,9 @@ const renderHome = (kind?: AgencyKind, view?: AgencyView, segment?: DoSomethingS
 const pageParts = () => Array.from(screen.getByRole("main").children).map((part) => part.textContent);
 
 describe("home composition", () => {
-  it.each(kinds)("lays the %s Do Something out as title, rows", (kind) => {
+  it.each(kinds)("lays the %s Start page out as title, rows", (kind) => {
     renderHome(kind, read);
-    expect(screen.getByRole("heading", { level: 1, name: "Do Something" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Start" })).toBeInTheDocument();
     expect(pageParts()).toEqual([`rows: ${kind}, forms market`]);
   });
 

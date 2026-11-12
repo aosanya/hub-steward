@@ -30,3 +30,8 @@ export const mcpAgencyClient: AgencyClient = {
     return { name, modules: [], modulesUnread: true };
   },
 };
+
+export const taskModule = "taskmanager";
+
+export const hasModule = (view: AgencyView | null | undefined, code: string) =>
+  view !== null && view !== undefined && !view.modulesUnread && view.modules.some((module) => module.code === code);

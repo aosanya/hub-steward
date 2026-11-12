@@ -1,4 +1,5 @@
-import { Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { BacklogBoard } from "../backlogBoard/BacklogBoard";
 import { BacklogPage, backlogPageRoutePath } from "../backlogPage";
 import { AddBacklogScreen, EditBacklogScreen } from "../backlogManage";
@@ -9,10 +10,20 @@ import { NeedsRole } from "./NeedsRole";
 import { IssuePage } from "./IssuePage";
 import { AddReferencePage } from "./references/AddReferencePage";
 import { IssuesPage } from "./IssuesPage";
+import { backlogIdOfPath, rememberBacklog } from "../home/lastBacklog";
+
+function RememberOpenedBacklog() {
+  const id = backlogIdOfPath(useLocation().pathname);
+  useEffect(() => {
+    if (id !== "") rememberBacklog(id);
+  }, [id]);
+  return null;
+}
 
 export function BacklogsRoutes() {
   return (
     <NeedsRole>
+      <RememberOpenedBacklog />
       <Routes>
         <Route index element={<BacklogsPage />} />
         <Route path="issue/:issueId" element={<IssuePage />} />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Words } from "../entry/words";
 import { useLanguage } from "../entry/language";
@@ -28,7 +28,7 @@ const pathOf = (n: NotificationItem) => (calledOff(n) ? orderPath(n.subjectId) :
 
 type Opened = { invitation: InvitationItem; joined: boolean };
 
-export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: { client?: InboxClient; start?: StartClient }) {
+export function InboxPage({ client = mcpInboxClient, start = mcpStartClient, above }: { client?: InboxClient; start?: StartClient; above?: ReactNode }) {
   const navigate = useNavigate();
   const { words } = useLanguage();
   const { items, failed: notificationsFailed, outage: notificationsOutage, retry: retryNotifications, markAllRead, markIdsRead, markOneRead } = useNotifications(client);
@@ -146,6 +146,7 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: {
 
   return (
     <Shell title="Home" inbox={client} action={anythingUnread ? <Button onClick={markRead}>{chosen.length > 0 ? "Mark read" : "Mark all read"}</Button> : undefined}>
+      {above}
       {outage ? (
         <>
           <LoadFailed words="Home could not be loaded." />

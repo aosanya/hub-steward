@@ -29,6 +29,7 @@ import { OffersPage } from "./pages/supply/OffersPage";
 import { OrderPage } from "./supply/orders/OrderPage";
 import { OrdersPage } from "./supply/orders/OrdersPage";
 import { SupplierHome } from "./supply/SupplierHome";
+import { HomeOptions } from "./home/HomeOptions";
 import { StockPage } from "./supply/stock/StockPage";
 import { GroupOrderPage, GroupOrdersPage, ReviseGroupOrderPage } from "./supply/groupOrder/GroupOrderPages";
 import { AddPaymentPage, CoordinatorOrderPage, ManagePaymentsPage } from "./coordinator/payments/PaymentsPages";
@@ -71,7 +72,7 @@ function ToAgencyHome() {
 }
 
 function tabElement(tab: Tab) {
-  if (tab.id === "home") return <InboxPage />;
+  if (tab.id === "home") return <InboxPage above={<HomeOptions />} />;
   if (tab.id === "do-something") return <SupplierHome segment="start" />;
   if (tab.id === "ongoing") return <SupplierHome segment="ongoing" />;
   if (tab.id === "chat") return <ChatPage />;

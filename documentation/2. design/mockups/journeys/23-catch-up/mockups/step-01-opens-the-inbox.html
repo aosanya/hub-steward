@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Opens the Inbox</title>
+<title>Opens Notifications</title>
 <style>
 :root{font-size:112.5%;--r-sm:.5rem;--r-md:.875rem;--r-pill:999px;--sans:'IBM Plex Sans',ui-sans-serif,system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace}
 :root,[data-theme="light"]{--bg:#EDF0EC;--bg-alt:#E3E8E3;--surface:#FBFCFA;--ink:#1B2430;--ink-soft:#3D4652;--line:rgba(27, 36, 48, 0.16);--line-strong:rgba(27, 36, 48, 0.4);--accent:#703C0F;--accent-strong:#542E0B;--accent-wash:rgba(112, 60, 15, 0.1);--on-accent:#FFFCF9;--danger:#A8402E;--success:#3F7D45;--info:#35618F;--info-wash:rgba(53, 97, 143, 0.1)}
@@ -49,8 +49,6 @@ figure{display:flex;flex-direction:column;gap:.75rem;min-width:0;max-width:100%}
 .tabs{display:flex;gap:.25rem;padding:.5rem .75rem 1rem;background:var(--surface);border-top:1px solid var(--line)}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:.125rem;min-height:3rem;color:var(--ink-soft);font-size:.8125rem;font-weight:500}
 .tab .pill{position:relative;display:grid;place-items:center;width:3.5rem;height:2rem;border-radius:var(--r-pill)}
-.tab[aria-current="page"]{color:var(--accent);font-weight:600}
-.tab[aria-current="page"] .pill{background:var(--accent-wash)}
 .num{display:inline-grid;place-items:center;min-width:1.25rem;height:1.25rem;padding:0 .375rem;border-radius:var(--r-pill);background:var(--accent);color:var(--on-accent);font-size:.75rem;font-weight:600;line-height:1}
 .tab .num{position:absolute;top:-.125rem;left:calc(50% + .25rem)}
 .bottombar{display:flex;gap:.5rem;padding:.75rem 1rem 1rem;background:var(--surface);border-top:1px solid var(--line)}
@@ -194,20 +192,21 @@ figure{display:flex;flex-direction:column;gap:.75rem;min-width:0;max-width:100%}
 .cmp-icon{display:flex;flex-direction:column;align-items:center;gap:.25rem;color:var(--ink)}
 .cmp-schema{margin:0;padding:.75rem;overflow:auto;white-space:pre;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);font-family:var(--mono);font-size:.75rem;color:var(--ink-soft)}
 </style>
+<link rel="stylesheet" href="../../../shared/app-kit.css">
 </head>
 <body>
 <main class="screens column">
 <figure id="j1-s1">
-<figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>the Inbox of the Siaya Farmers' Group. Invitations come first, then notifications newest first, each with its day. A dot marks what is unread, the tab counts the unread notifications, and Mark all read is in the header while any notification is unread.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">comm_notification_list</span><br><span class="code">actor_list_my_invitations</span><br><span class="code">comm_notification_mark_read</span></dd></div></dl></figcaption>
+<figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>the Notifications page of the Siaya Farmers' Group. Needs you comes first and holds what is waiting on her, here the invitation, which opens its screen. Updates comes below, newest first, each with its day; a dot marks what is unread, and Mark all read is in the Updates heading while any update is unread and clears Updates only. The Notifications button shows the same number as the Home strip, the things waiting on her, and a dot for unread updates with no number.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">comm_notification_list</span><br><span class="code">actor_list_my_invitations</span><br><span class="code">comm_notification_mark_read</span></dd></div></dl></figcaption>
 <div class="phone" data-theme="light">
-<header class="bar"><h1 class="title">Inbox</h1><div class="bar-action"><button type="button" class="act">Mark all read</button><button type="button" class="menu-btn" aria-label="Menu" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></div></header>
+<header class="bar"><h1 class="title">Notifications</h1><div class="bar-action"><button type="button" class="menu-btn" aria-label="Menu" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></div></header>
 <div class="body">
 <div class="head"><p class="sub">Siaya Farmers' Group</p></div>
-<div class="rows"><a class="row" href="#" title="Opens: Invitation"><span class="dot"></span><span class="txt"><span class="ttl">You are invited to Supplier</span></span></a><div class="row"><span class="dot"></span><span class="txt"><span class="ttl">You joined Siaya farmers</span><span class="meta">Your request was approved.</span></span><span class="end">2026-10-28</span></div><div class="row read"><span class="dot off"></span><span class="txt"><span class="ttl">New form</span></span><span class="end">2026-10-27</span></div></div>
-</div>
-<nav class="tabs" aria-label="Tabs"><a class="tab" href="#" title="Opens: Do Something"><span class="pill"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span><span>Do Something</span></a><a class="tab" href="#" title="Opens: Chat"><span class="pill"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span>Chat</span></a><a class="tab" href="#" title="Opens: Inbox" aria-current="page"><span class="pill"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="num">1</span></span><span>Inbox</span></a></nav>
+<h2 class="heading">Needs you</h2><div class="rows"><a class="row" href="#" title="Opens: Invitation"><span class="txt"><span class="ttl">You are invited to Supplier</span><span class="meta">Invitation</span></span><span class="end"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a></div><h2 class="heading split">Updates<button type="button" class="act">Mark all read</button></h2><div class="rows"><div class="row"><span class="dot"></span><span class="txt"><span class="ttl">You joined Siaya farmers</span><span class="meta">Your request was approved.</span></span><span class="end">2026-10-28</span></div><div class="row read"><span class="dot off"></span><span class="txt"><span class="ttl">Water levy 2026 was received</span></span><span class="end">2026-10-27</span></div></div></div>
+<nav class="tabs" aria-label="Tabs" data-tabs data-chosen="notifications" data-badge="1" data-news></nav>
 </div>
 </figure>
 </main>
+<script src="../../../shared/app-bar.js" defer></script>
 </body>
 </html>
