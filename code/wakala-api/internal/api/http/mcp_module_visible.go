@@ -16,6 +16,18 @@ var toolsOfNoModule = map[string]bool{
 	"agency_list_instances":  true,
 }
 
+var modulesServedThroughAnother = map[string]bool{
+	"catalog": true,
+	"git":     true,
+}
+
+func shownWithoutMount(entry models.ModuleCatalogEntry, set mountedSet) bool {
+	if entry.Mount != "" || modulesServedThroughAnother[entry.Code] {
+		return false
+	}
+	return set.ungated || set.modules[entry.Code]
+}
+
 type serverModuleTools struct {
 	once  sync.Once
 	tools []moduleToolView
@@ -75,7 +87,7 @@ func (m *mcpServers) addModulesShownIn(ctx context.Context, shown map[string]boo
 		}
 	}
 	for _, entry := range models.ModuleCatalog {
-		if (set.ungated || len(set.mountsOf(entry.Code)) > 0) && may(entry.Code) {
+		if (set.ungated || len(set.mountsOf(entry.Code)) > 0 || shownWithoutMount(entry, set)) && may(entry.Code) {
 			shown[entry.Code] = true
 		}
 	}

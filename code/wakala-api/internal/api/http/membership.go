@@ -209,7 +209,9 @@ func custodyManagerFor(ctx context.Context, reg agencies.Registry, instanceID, a
 	return reg.CustodyManager(ctx, instanceID)
 }
 
-var residentCustodyActions = []string{"custody.consent.give", "custody.consent.withdraw", "custody.consent.mine", "custody.consent_version.in_force", "custody.consent_text.read"}
+var residentCustodyConsentActions = []string{"custody.consent.give", "custody.consent.withdraw", "custody.consent.mine", "custody.consent_text.read"}
+
+var residentCustodyActions = append(slices.Clone(residentCustodyConsentActions), "custody.consent_version.in_force")
 
 func mustBeAdmitted(ctx context.Context, reg agencies.Registry, instanceID string) error {
 	_, err := admittedRole(ctx, reg, instanceID)

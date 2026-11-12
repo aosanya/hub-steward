@@ -14,9 +14,10 @@ import (
 )
 
 var residentActions = map[string][]string{
-	formsScope: residentFormsActions,
-	commScope:  residentCommActions,
-	actorScope: residentActorActions,
+	formsScope:   residentFormsActions,
+	commScope:    residentCommActions,
+	actorScope:   residentActorActions,
+	custodyScope: residentCustodyConsentActions,
 }
 
 var errNoResidentRole = errors.New("an instance id with no letter or digit names no resident role")

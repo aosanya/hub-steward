@@ -14,6 +14,7 @@ const (
 	reportsScope = "module:reports"
 	formsScope   = "module:forms"
 	commScope    = "module:comm"
+	custodyScope = "module:custody"
 )
 
 func (d *Deps) authorizer(scope string) dispatch.Authorizer {
