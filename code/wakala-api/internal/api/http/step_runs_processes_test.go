@@ -17,7 +17,7 @@ import (
 
 func openSharedFile(t *testing.T, path string) *gorm.DB {
 	t.Helper()
-	db, err := gorm.Open(sqlite.Open("file:"+path+"?_pragma=busy_timeout(10000)&_pragma=journal_mode(WAL)"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("file:"+path+"?_pragma=busy_timeout(10000)&_pragma=journal_mode(WAL)&_txlock=immediate"), &gorm.Config{})
 	if err != nil {
 		t.Fatalf("open sqlite %s: %v", path, err)
 	}
