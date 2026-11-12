@@ -392,6 +392,9 @@ What a person can do: add a piece, rename it, reorder it, delete it, and set wha
 
 Who writes the list: when an agent picks up an issue that has no pieces, it writes the list first, then works the pieces in order, and sets each one's status as it goes. A person can change what the agent wrote.
 
+Written at creation (D160, in the decisions of hub-steward-swe): whoever creates an issue, a person or a skill, writes its todos then, in the order they are done, each with what it waits on.
+The last todo is documentation, short and in place, and the issue is not Done until it is.
+
 Moving to Review: when the last piece is Done, an issue that is In progress moves to Review by itself. An issue in any other step does not move. If the issue's backlog has no Review step, nothing moves.
 
 What exists today in the taskmanager, and what is new:
