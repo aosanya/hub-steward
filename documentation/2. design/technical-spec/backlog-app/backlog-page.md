@@ -419,6 +419,29 @@ The store (TDL-9). The `task_todo` table of the taskmanager holds one row per pi
 
 Rows written before this change kept ordinalities in `depends_on`. The taskmanager rewrites them as ids when it starts, once: an ordinality that names no piece of the issue is dropped, and a board with none to rewrite is not touched. The store refuses a dependency on a piece of another issue (`ErrTaskTodoCrossIssue`), on one that does not exist (`ErrTaskTodoDependencyNotFound`) and one that would close a cycle (`ErrTaskTodoCycle`). There is no hand-kept SQL mirror: the table follows the blueprint and gains `blocked_reason` when the board is provisioned.
 
+The tools (TDL-2, on the store of TDL-9). Writing needs Can move on the backlog the issue is in; reading needs only that the caller can see it, and an issue the caller cannot see answers not found.
+
+| Tool | Does |
+|---|---|
+| `taskmanager_task_todo_list_for_issue` | The todos of one issue by its id, in order: id, code, title, instructions, `depends_on` (ids), `status` (the API value), `state` (To do, In progress, Done or Blocked; `failed` reads Blocked), `blocked_reason`, and `done` and `total` for the issue |
+| `taskmanager_task_todo_count_for_issues` | `task_id` repeated, at most 500: `done` and `total` for each issue that has todos, in one read, so a board card needs no read of its own (TDL-6); an issue with none, unknown or not visible is left out |
+| `taskmanager_task_todo_update` | Only the fields sent: `title`, `description`, `instructions`, `depends_on` (an empty list clears it) |
+| `taskmanager_task_todo_reorder` | `ids`: every todo of the issue once, first to last |
+| `taskmanager_task_todo_delete` | Removes the todo; the todos that waited on it stop waiting |
+| `taskmanager_task_todo_set_status` | `status` is To do, In progress, Done or Blocked (the API values `pending`, `dispatched`, `completed` and `blocked` are taken too); Blocked by hand needs `blocked_reason`, and any other status clears it, so lifting a block is setting To do |
+| `taskmanager_task_todo_create`, `_read`, `_dispatch`, `_list` | Unchanged; `_list` still lists by workflow run |
+
+Refusals, each with the store's message and nothing changed:
+
+| Error | Status | When |
+|---|---|---|
+| `ErrTaskTodoCycle` | 409 | an edit would make a todo wait, directly or through others, on itself |
+| `ErrTaskTodoCrossIssue` | 400 | a todo would wait on a todo of another issue |
+| `ErrTaskTodoDependencyNotFound` | 400 | `depends_on` names a todo that does not exist |
+| `ErrTaskTodoOrderMismatch` | 409 | `ids` of a reorder is not exactly the issue's todos, so the list changed under the caller: read it and send it again |
+| `ErrTaskTodoBlockedReasonRequired` | 400 | Blocked by hand with no reason |
+| `ErrInvalidTodoStatus` | 400 | a status that is not one of the four |
+
 ## What this leaves out
 
 | Left out | Why |

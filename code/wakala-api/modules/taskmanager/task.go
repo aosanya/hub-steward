@@ -257,6 +257,12 @@ type TaskManager interface {
 	ListCasesByVotes(ctx context.Context, filter CaseFilter) ([]RankedCase, error)
 	AddTaskNote(ctx context.Context, requesterID, taskID, kind, text string, links []string) (TaskNote, error)
 	ListTaskNotes(ctx context.Context, requesterID, taskID string) ([]TaskNote, error)
+	ListTodosOfIssue(ctx context.Context, requesterID, issueID string) (IssueTodoList, error)
+	CountTodosOfIssues(ctx context.Context, filter TodoCountsFilter) (IssueTodoCounts, error)
+	EditTodoFor(ctx context.Context, requesterID, todoID string, change TodoChange) (TodoView, error)
+	ReorderTodosOfIssue(ctx context.Context, requesterID, issueID string, order TodoOrder) (IssueTodoList, error)
+	DeleteTodoFor(ctx context.Context, requesterID, todoID string) error
+	SetTodoStateFor(ctx context.Context, requesterID, todoID, state, blockedReason string) (TodoView, error)
 	GetWorkerCapsDefault(ctx context.Context) (WorkerCaps, error)
 	SetWorkerCapsDefault(ctx context.Context, requesterID string, change TaskCapsChange) (WorkerCaps, error)
 	GetTaskCaps(ctx context.Context, requesterID, taskID string) (TaskCaps, error)
