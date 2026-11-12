@@ -78,6 +78,7 @@ func newMCPServer(d *Deps) *mcp.Server {
 	d.registerCustodyMCPTools(server)
 	d.registerLiveRecordMCPTools(server)
 	d.registerCallerOpenStepsMCPTool(server)
+	d.registerCallerSentStepsMCPTool(server)
 	d.registerSubmitStepAnswersMCPTool(server)
 	return server
 }
