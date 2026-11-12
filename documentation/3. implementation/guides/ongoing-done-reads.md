@@ -8,7 +8,7 @@ Spike for ISS-79 (decisions 157 and 158). The first build of Ongoing has the Liv
 |---|---|---|---|
 | Finished group order | `market_list_group_orders` with `state` `closed` and `mine` true | The member's closed group orders, paged by id (200 at most) | When it closed: a group order carries `created_at` only; the time is in `market_group_order_trail`, one call per order |
 | Called-off group order | `market_list_group_orders` with `state` `cancelled` and `mine` true | The member's cancelled group orders | When it was called off, as above |
-| Single order, delivered or cancelled | `market_list_orders` | Every order of the caller in one unpaged reply, states `placed`, `delivered`, `cancelled` | A `state` argument, paging, and the time it ended: an order carries `created_at` only |
+| Single order, delivered or cancelled | `market_list_orders` with `state` `delivered` or `cancelled` | The caller's orders in that state, paged by id (`limit` 50 by default, 200 at most, `after` the last id), each with `delivered_at` or `cancelled_at` (ISS-124) | Nothing yet sets `delivered_at`: the market module has no delivery step for an order, so a delivered order carries the time only once one is added |
 | Answers a member sent | none for the caller | `agency_list_live_record_rows` lists rows per `record_code`, and a seat that adds rows to a record sees every row of it, so the app would filter on `added_by` | A row has no step id, step title or workflow name, so the list cannot be rebuilt from it; one call per record |
 | Open steps | `agency_list_my_open_steps` | Steps to act on now, never steps already sent | Not a Done read |
 

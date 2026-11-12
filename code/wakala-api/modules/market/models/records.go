@@ -145,8 +145,6 @@ type GroupOrder struct {
 	PromisedDate    string  `json:"promised_date,omitempty"`
 	Note            string  `json:"note,omitempty"`
 	CreatedAt       string  `json:"created_at"`
-	ClosedAt        string  `json:"closed_at,omitempty"`
-	CancelledAt     string  `json:"cancelled_at,omitempty"`
 }
 
 type Line struct {
