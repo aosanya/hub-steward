@@ -1,0 +1,9 @@
+.todos { display: flex; flex-direction: column; margin: 0 -1rem -1rem; border-top: 1px solid var(--line); }
+.todos-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .625rem 1rem; border-bottom: 1px solid var(--line); font-weight: 600; }
+.todos-head .line, .todo .line { font-size: .8125rem; font-weight: 400; color: var(--ink-soft); }
+.todos-none { display: flex; flex-direction: column; gap: .5rem; margin: 0; padding: .75rem 1rem; color: var(--ink-soft); }
+.todos-head + .todo > .row { border-top: 0; }
+.todo > .row { padding-left: calc(1rem + var(--depth, 0) * 1.25rem); }
+.todo .rank { flex: none; min-width: 1rem; font-weight: 600; color: var(--ink-soft); }
+.todo-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .375rem; }
+.todo .why { color: var(--danger); font-size: .8125rem; overflow-wrap: anywhere; }

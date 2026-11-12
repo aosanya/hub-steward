@@ -4,6 +4,8 @@ import { Card } from "./Card";
 
 export const tryAgainWords = "Try again";
 
+export const loadingWords = "Loading";
+
 export function EmptyCard({ words, children }: { words: string; children?: ReactNode }) {
   return (
     <Card empty>
@@ -13,7 +15,7 @@ export function EmptyCard({ words, children }: { words: string; children?: React
   );
 }
 
-export function LoadingLine({ words = "Loading" }: { words?: string }) {
+export function LoadingLine({ words = loadingWords }: { words?: string }) {
   return (
     <Card empty>
       <p role="status">{words}</p>

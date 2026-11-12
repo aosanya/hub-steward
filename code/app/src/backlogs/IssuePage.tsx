@@ -26,10 +26,12 @@ import { priorityPicker } from "./priorityPicker";
 import { IssueCode, IssueName, IssueTags, titleParts } from "./IssueTitle";
 import { issuePath, issuesPath } from "./paths";
 import { splitSource } from "./source";
+import { mcpTodosClient, type TodosClient } from "./todos/api";
+import { TodoList } from "./todos/TodoList";
 
-type Props = { client?: BacklogsClient; notesClient?: NotesClient; sendClient?: SendClient; referencesClient?: ReferencesClient; repoClient?: RepoClient; capsClient?: CapsClient };
+type Props = { client?: BacklogsClient; notesClient?: NotesClient; sendClient?: SendClient; referencesClient?: ReferencesClient; repoClient?: RepoClient; capsClient?: CapsClient; todosClient?: TodosClient };
 
-export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesClient, sendClient, referencesClient = mcpReferencesClient, repoClient = mcpRepoClient, capsClient = mcpCapsClient }: Props) {
+export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesClient, sendClient, referencesClient = mcpReferencesClient, repoClient = mcpRepoClient, capsClient = mcpCapsClient, todosClient = mcpTodosClient }: Props) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -82,6 +84,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
                 </span>
               ) : null}
               {body ? <Markdown text={body} className="issue-body" /> : null}
+              <TodoList key={ready.id} issueId={ready.id} client={todosClient} />
             </Card>
           </div>
           <div className="issue-side">

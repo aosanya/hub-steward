@@ -26,7 +26,7 @@ const pageWith = (setPriority: BacklogsClient["setPriority"]) => {
   render(
     <MemoryRouter initialEntries={["/a/hub-1/backlogs/issue/1"]}>
       <Routes>
-        <Route path="/a/:agencyId/backlogs/issue/:issueId" element={<IssuePage client={client} notesClient={notes} />} />
+        <Route path="/a/:agencyId/backlogs/issue/:issueId" element={<IssuePage client={client} notesClient={notes} todosClient={{ list: async () => [] }} />} />
       </Routes>
     </MemoryRouter>,
   );
