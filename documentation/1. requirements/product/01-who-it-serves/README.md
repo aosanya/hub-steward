@@ -12,7 +12,7 @@ synthetic.
 | **Agency manager** | To run the organization without doing every routine task; to know what the AI roles did | Creates the agency from a template, shows what is waiting for approval, who is in which group, and what each agent has done and spent |
 | **Agency designer** | To change how the agency works without breaking it | Edits roles, groups, workflows, forms and rules; reviews the draft; tests it with scenarios; publishes the approved change |
 | **Group coordinator** | To let people in and keep a group running | Takes join requests and invitations, sends forms to the group, and runs the group's work, such as a group order |
-| **Member** | To reach the organization in their own language and get things done | Chat rooms with the agency's agents, an inbox, forms to answer and groups to join; reports to send are planned |
+| **Member** | To reach the organization in their own language and get things done | Chat rooms with the agency's agents, a Notifications page, forms to answer and groups to join; reports to send are planned |
 | **Risk owner** | To know what could go wrong with the AI roles and which safeguards are proven | Keeps the hazards, threats and controls, and shows which safeguards hold |
 | **Supplier and buyer** | To trade with the group on clear terms | Post prices and answer asks; take part in the group's orders and sales where the agency has a market |
 | **AI roles** | A place in the agency with clear limits | Each joins as an agent and acts only through declared tools its role permits; [What it does](../02-what-it-does/README.md#the-approval-rule) says when it waits for a person |

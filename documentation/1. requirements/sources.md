@@ -30,7 +30,7 @@ and Meta's own pricing page.
 
 ## HS184 · Which models the Meta Model API hosts, and where the open weights run
 
-Checked 2026-10-28. [HS184](../3.%20implementation/todo.md)
+Checked 2026-10-28. HS184
 
 | Fact | Source | Kind |
 |---|---|---|
@@ -48,7 +48,7 @@ tool calling and under which model id.
 
 ## HS57 · How Muse Image is called
 
-Checked 2026-10-26. [HS57](../3.%20implementation/todo.md)
+Checked 2026-10-26. HS57
 
 | Fact | Source | Kind |
 |---|---|---|
@@ -64,7 +64,7 @@ answer can also be a signed URL.
 
 ## Q64 · Recording who has paid
 
-Checked 2026-10-26. [Q64](questions.md), [Q65](questions.md), [HS100](../3.%20implementation/todo.md)
+Checked 2026-10-26. [Q64](questions.md), [Q65](questions.md), HS100
 
 | Fact | Source | Kind |
 |---|---|---|
@@ -107,20 +107,20 @@ Chain, link by link:
 5. Front end: the studio has no workflows, test or records route (`mwanachama-wakala-studio/app/routes.ts`); the member app has no Manage payments route (`mwanachama-frontend-member/app/routes.ts`; only `chat/order`).
 6. Agent: nothing exists for an agent to propose a row.
 
-Answered 2026-10-29: [decision 90](decisions.md).
+Answered 2026-10-29: [decision 90](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 ## Q75 · An order's version against a changed workflow
 
 Checked 2026-10-29. [Q75](questions.md)
 
-1. Screen: `workflow-detail.html` screen 1 (Version 2, one order started on version 1) and `workflow-records.html` screen 2 ("the order no longer has a Paid step"). Decision 72 and `2. design/market.md` (Order and Group order carry "the workflow version").
+1. Screen: `workflow-detail.html` screen 1 (Version 2, one order started on version 1) and `workflow-records.html` screen 2 ("the order no longer has a Paid step"). Decision 72 and `2. design/technical-spec/market.md` (Order and Group order carry "the workflow version").
 2. wakala-api: workflow and work_item tools only (`agency_*_workflow`, `agency_*_work_item`); no version tool.
 3. Module: `mwanachama-backend-agency/agency.blueprint.json` `workflow` and `work_item` have no version field; the version is `agency_publication.version` with the whole workflow in `document`. `mwanachama-backend-market` is a `replace` target of wakala-api's go.mod (`../mwanachama-backend-market`) but is not checked out, so how an order stores the version could not be read.
 4. Rights and storage: published documents are immutable rows; a record added in version 2 has no home for a version 1 order.
 5. Front end: no studio or member route draws either.
 6. Agent: unchanged.
 
-Answered 2026-10-29: [decision 91](decisions.md).
+Answered 2026-10-29: [decision 91](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 ## Q76 · A Farmer leaving a group order
 
@@ -133,11 +133,11 @@ Checked 2026-10-29. [Q76](questions.md)
 5. Front end: the member app has `chat/order` (`routes/group-order.tsx`) only.
 6. Agent: the agent never cancels for a person.
 
-Answered 2026-10-29: [decision 92](decisions.md); the Supplier-approves part is parked as Q77.
+Answered 2026-10-29: [decision 92](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md); the Supplier-approves part is parked as Q77.
 
 ## Q78 · Where the studio's lists of choices come from
 
-Checked 2026-10-29. [Q78](questions.md) Answered 2026-10-29: [decision 94](decisions.md).
+Checked 2026-10-29. [Q78](questions.md) Answered 2026-10-29: [decision 94](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 1. Screen: `workflow-steps.html` screens 1 and 2 (Kind, Actor, Notifies, Attaches, Sends to), `workflow-records.html` (Who adds rows, Picks from); generator constants in `2. design/studio/_generator/pages_workflows.py`: `HUMAN_ROLES` (four), `ACTORS`, `NOTIFY_TARGETS`, `ATTACHMENTS`, `OPTION_SOURCES` (five), `ANSWER_TYPES` (six), `OPERATORS`.
 2. wakala-api: no tool lists any of these; the only role list the agency exposes is `agency_list_roles`.
@@ -148,7 +148,7 @@ Checked 2026-10-29. [Q78](questions.md) Answered 2026-10-29: [decision 94](decis
 
 ## Q79 · The Group coordinator in the app
 
-Checked 2026-10-29. [Q79](questions.md) Answered 2026-10-29: [decision 93](decisions.md).
+Checked 2026-10-29. [Q79](questions.md) Answered 2026-10-29: [decision 93](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 1. Screen: `app/` has journeys 13, 14, 16, 17 for Farmer, Supplier, Buyer and Rider; "Group coordinator" appears only as a chip or as "waiting on" in `14-supply-inputs/step-04-sees-a-group-order.html`, `13-buy-inputs/step-03-joins-a-group-order.html` and `04-chat/farm-room.html`.
 2. wakala-api: market group-order tools exist per `review/step-kinds.md` and `review/workflows.md`; the market module repo is not checked out.
@@ -160,7 +160,7 @@ Checked 2026-10-29. [Q79](questions.md) Answered 2026-10-29: [decision 93](decis
 
 ## Q80 · Going back to an earlier version with orders under way
 
-Checked 2026-10-29. [Q80](questions.md) Answered 2026-10-29: [decision 95](decisions.md).
+Checked 2026-10-29. [Q80](questions.md) Answered 2026-10-29: [decision 95](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 1. Screen: `2. design/studio/agency/workflows.html` (orders under way, started on version 1) and `publish.html`; decision 91.
 2. wakala-api: no route sets a channel except what the agency routes generate; no tool for go-back was found in the design.
@@ -171,7 +171,7 @@ Checked 2026-10-29. [Q80](questions.md) Answered 2026-10-29: [decision 95](decis
 
 ## Q81 · How soon a publish reaches members
 
-Checked 2026-10-29. [Q81](questions.md) Answered 2026-10-29: [decision 96](decisions.md).
+Checked 2026-10-29. [Q81](questions.md) Answered 2026-10-29: [decision 96](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 1. Screen: `publish.html`, `workflows.html`.
 2. wakala-api: `internal/api/http/module_switch.go`: `mustBeMounted` per request, `mountedSets` map per process, `mountedModulesExpiry = 30 * time.Second`, `forget` deletes one process's entry.
@@ -181,7 +181,7 @@ Checked 2026-10-29. [Q81](questions.md) Answered 2026-10-29: [decision 96](decis
 
 ## Q82 · A scenario that waits
 
-Checked 2026-10-29. [Q82](questions.md) Answered 2026-10-29: [decision 101](decisions.md).
+Checked 2026-10-29. [Q82](questions.md) Answered 2026-10-29: [decision 101](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 1. Screen: `test-run.html` screen 1 (Stop this run, tokens, the Supplier row "Saying yes to 8 bags").
 2. wakala-api: `agency_run_scenarios`, `agency_get_test_run` are illustrative; no scenario object in `agency.blueprint.json`.
@@ -190,7 +190,7 @@ Checked 2026-10-29. [Q82](questions.md) Answered 2026-10-29: [decision 101](deci
 
 ## Q83
 
-Answered 2026-10-29: [decision 97](decisions.md).
+Answered 2026-10-29: [decision 97](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 1. Screen: `04-chat/rooms.html` (unread count per room).
 2. wakala-api: comm chat routes mounted under the instance; not traced further.
@@ -199,7 +199,7 @@ Answered 2026-10-29: [decision 97](decisions.md).
 
 ## Q84
 
-Answered 2026-10-29: [decision 98](decisions.md).
+Answered 2026-10-29: [decision 98](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 1. Screen: the group roster in the app (journeys 14-supply-inputs, the Manage payments list); not drawn with a page limit.
 2. wakala-api: actor module mounted per agency; list route not traced further.
@@ -208,7 +208,7 @@ Answered 2026-10-29: [decision 98](decisions.md).
 
 ## Q85
 
-Answered 2026-10-29 by [decision 92](decisions.md) (a Farmer changes or takes out her share until the Group coordinator sends the order); not asked again. What the order does when the coordinator removes a Farmer from the group is left to the first running workflow's later edge cases (decision 92: no edge cases now).
+Answered 2026-10-29 by [decision 92](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md) (a Farmer changes or takes out her share until the Group coordinator sends the order); not asked again. What the order does when the coordinator removes a Farmer from the group is left to the first running workflow's later edge cases (decision 92: no edge cases now).
 
 1. Screen: `13-buy-inputs/step-03-joins-a-group-order.html` screen 2 (Join with 2 bags: one field, Join); `14-supply-inputs/step-04-sees-a-group-order.html` screen 1 (bags so far, per-farmer lines).
 2. Tools named in the captions: `market_join_group_order`; no change or take-out tool is named. The client in `submission/code/market/market.go` has `JoinGroupOrder` (line 317), `AskRevision`, `GetGroupOrder`, no leave or change call; `marketfake/rules.go` has only `market_withdraw_notice` for notices.
@@ -218,7 +218,7 @@ Answered 2026-10-29 by [decision 92](decisions.md) (a Farmer changes or takes ou
 
 ## Q86
 
-Answered 2026-10-29: [decision 99](decisions.md).
+Answered 2026-10-29: [decision 99](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 1. Screens: `17-pick-a-rider/step-02-picks-a-rider.html` screen 1 (Waiting, with no timer, Cancel is her own button) and screen 4 (after his no, she picks another); `16-sell-the-harvest/step-03-buyer-posts-a-price-and-answers.html` screen 3 (the ask waiting for his answer).
 2. Tools named: `market_ask`, `market_get_order`, `market_list_asks`, `market_answer_ask`, `market_set_availability`. The client `submission/code/market/market.go` has `Ask` (line 206), `ListAsks`, `AnswerAsk` (line 221). `type Ask` has id, poster, request, offer, picker, kind, question, answer, detail: no created time, no closing time, no state beyond the answer.
@@ -228,7 +228,7 @@ Answered 2026-10-29: [decision 99](decisions.md).
 
 ## Q87
 
-Answered 2026-10-29: [decision 100](decisions.md).
+Answered 2026-10-29: [decision 100](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md).
 
 1. Rule: `decisions.md` row 39, a tool call is checked against what the agent's agency role may do.
 2. Check: `mwanachama-wakala-api/internal/api/http/agent_powers.go` `agentPowered` (lines 29 to 50): for a caller whose membership role is agent it reads the linked agency role id; when that id is empty it skips the powers lookup and falls through to the mount's own authorizer.
@@ -404,7 +404,7 @@ Added 2026-11-04: the built Add payment picker (`mwanachama-frontend-member/app/
 
 ## Q108
 
-1. Screen: `2. design/studio/agency/publish-review.html` (a finding row with Apply, Details, Dismiss); `2. design/agency-review.md` steps 3 and 4 and the `review_finding` table.
+1. Screen: `2. design/studio/agency/publish-review.html` (a finding row with Apply, Details, Dismiss); `2. design/technical-spec/agency-review.md` steps 3 and 4 and the `review_finding` table.
 2. Route and tool: `mwanachama-wakala-api/internal/api/http/review_runs.go` (`POST /instances/{instanceID}/review-runs`, MCP `agency_run_review`); Apply runs the finding's own `tool` and `arguments` as the Chat response tab does today.
 3. Module: `mwanachama-backend-agency/agency.blueprint.json` `review`, `review_area`, `review_finding` (fields `tool`, `arguments`, `then_steps`, `status`, `fate`), `review_start_impl.go`, `review_read_impl.go`.
 4. Storage: findings keep no hash, version or read time of the draft; `review.started_at` is the only time.
@@ -487,7 +487,7 @@ Added 2026-11-04: the built Add payment picker (`mwanachama-frontend-member/app/
 
 ## Decision 123 · Chat workflows
 
-Checked 2026-11-02. [Decision 123](decisions.md). Five read-only research reports came first; the notes are kept in the session's scratchpad and summarised here. The vendor documentation pages are official; the three blog posts are secondary and are to be confirmed against an official page before a decision rests on them. The Agentforce and Slack rows of the comparison came from search summaries, and one Trailhead page answered 404.
+Checked 2026-11-02. [Decision 123](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md). Five read-only research reports came first; the notes are kept in the session's scratchpad and summarised here. The vendor documentation pages are official; the three blog posts are secondary and are to be confirmed against an official page before a decision rests on them. The Agentforce and Slack rows of the comparison came from search summaries, and one Trailhead page answered 404.
 
 1. Agency backend (read in `mwanachama-backend-agency`, `mwanachama-wakala-api`): `models/workflow.go:3-20` (a workflow has no type, icon or actor), `models/workitem.go:3-28`, `models/workitemstep.go:7-19` (one role and one of six kinds for a step), `issue_impl.go:176-179,226-229` (a workflow with no objective, and one with no work items, block Publish), `publication_impl.go:35-38,394` (the publish hash covers only today's fields), `module_impl.go:130-137` (modules switch on from step kinds), `role_brief_impl.go:64-81` (the role brief is built from steps), `internal/api/http/caller_open_steps.go:75-103` (the open-steps read lists steps only), `internal/testruns/agent.go:18,135` (a scenario with no steps stops). Options for where a type lives: fields on the workflow, a `chat` step kind, a companion object like Record. Chosen: a locked first step.
 2. AI and chat runtime (read in `mwanachama-backend-ai`, `mwanachama-backend-comm`): `ai.blueprint.json` (an AI role holds a prompt, an account, limits and a link to an agency role, and no tools), `chat.go:46` (tools arrive with every model call), `comm.blueprint.json` (a chat message is a body and an opaque attachment pair; no prompts, cards or forms), `documentation/2. design/subject-threads.md` (a private thread per subject), `documentation/2. design/gaps.md` (polling only, no chat tools over MCP).
@@ -649,7 +649,7 @@ Checked 2026-11-02. [Decision 123](decisions.md). Five read-only research report
 
 - mwanachama-backend-agency: agency.blueprint.json (roles review, review_area, review_finding, indexes draft and running_unique, lines 692 to 745), review_start_impl.go (StartReview), review_record_impl.go (RecordReviewArea, settleReview), review_read_impl.go (ListRunningReviews), review_areas.go.
 - mwanachama-wakala-api: internal/reviewruns/service.go (Start, Resume), runner.go (Launch, claim, review, settleFailure), cmd/server/reviewruns.go (resumeReviews, reviewResumeDelay 10 seconds).
-- the working repo: decisions 105 and 107, 2. design/agency-review.md.
+- the working repo: decisions 105 and 107, 2. design/technical-spec/agency-review.md.
 - Chain: Run review button -> StartReview inserts review (running) and one review_area per part (reading) -> Runner.Launch runs one reviewer per part in the process -> RecordReviewArea writes findings and settles the review when no part is reading. Exists: all of it, plus a resume at boot. Missing: a stop time for a part that never answers, and a claim that works across replicas. Not read: the AI module (not checked out), so whether the model call has its own timeout is unknown.
 
 ## Q138
@@ -734,7 +734,7 @@ Chain: Profile page rename (`agency_update_agency`, exists, no draft argument) -
 
 Repos and files read: mwanachama-backend-agency (`actor_pick_impl.go`, `picker_impl.go`, `workitemstep_impl.go` lines 185 to 215, `issue_impl.go` line 349, `publication_impl.go` line 390, `models/picker.go`), mwanachama-wakala-api (`internal/agencies/picker_groups.go`, `internal/agencies/registry.go` line 296, `internal/api/http/caller_open_steps.go`), mwanachama-backend-actor (`group_impl.go` ListGroups), mwanachama-backend-shared (`specstore/store.go` list cap), decisions 94, 112 and 113, `studio/agency/workflow-steps.html` screens 1 and 2.
 
-Chain: the Who does it dropdown (`agency_list_pickers`, exists, returns roles, groups and the agency) -> a step saved with that id in `role_id` (`UpdateWorkItem` accepts a group id through `actorOfDraft`, exists) -> the scan and Publish accept it (exists) -> the published step is read for a person by `caller_open_steps.go`, which keeps a step only when its id is in the roles the person holds (exists, roles only) -> the person's Start list and Do Something. A group id never matches a role, so the step reaches nobody. Missing: any rule saying who in a group may act.
+Chain: the Who does it dropdown (`agency_list_pickers`, exists, returns roles, groups and the agency) -> a step saved with that id in `role_id` (`UpdateWorkItem` accepts a group id through `actorOfDraft`, exists) -> the scan and Publish accept it (exists) -> the published step is read for a person by `caller_open_steps.go`, which keeps a step only when its id is in the roles the person holds (exists, roles only) -> the person's Start list. A group id never matches a role, so the step reaches nobody. Missing: any rule saying who in a group may act.
 
 ## Q152
 
@@ -745,7 +745,7 @@ Chain: Who sees rows dropdown (drawn; no tool named) -> `viewer_role_id` on the 
 
 ## Q153
 
-Repos and files read: mwanachama-frontend-member (`app/routes/home.tsx`, `app/api/forms.ts`, `app/forms/` listing), mwanachama-wakala-api (`internal/api/http/form_thread_landing.go`, `market_ask_run.go`, `ai_gateway.go`, `ai_chat_stamp.go`, `ai_weekly_limits_test.go`), mwanachama-wakala-studio (`app/chat/providers/chat-completions.ts`), this repo (`2. design/gaps.md`, decisions 123 and 147, board rows HS566 and HS643, `2. design/app/02-do-something/do-something.html`, `02-member/step-01-asks-a-question-in-chat.html`).
+Repos and files read: mwanachama-frontend-member (`app/routes/home.tsx`, `app/api/forms.ts`, `app/forms/` listing), mwanachama-wakala-api (`internal/api/http/form_thread_landing.go`, `market_ask_run.go`, `ai_gateway.go`, `ai_chat_stamp.go`, `ai_weekly_limits_test.go`), mwanachama-wakala-studio (`app/chat/providers/chat-completions.ts`), this repo (`2. design/technical-spec/gaps.md`, decisions 123 and 147, board rows HS566 and HS643, `2. design/app/02-do-something/do-something.html`, `02-member/step-01-asks-a-question-in-chat.html`).
 
 Chain: Ask in Chat button on the empty Start card (drawn, decision 147, HS566) -> Chat tab room of the agency (exists, comm) -> a member's post stored by comm (exists) -> something reads the post and calls the model (missing: only HS643 plans it; no starter in wakala-api reacts to a chat post) -> the model call goes through the AI gateway (`/v1/chat/completions`, exists, stamped as chat with the person) -> the account's weekly request and token limits are checked (exists, tests only; module unread) -> the reply is posted (missing) -> what the member sees when the check refuses (not drawn, not decided; HS643 lists it as open and calls it daily).
 
@@ -760,7 +760,7 @@ Chain: a form question of type photo or file (forms module accepts it, exists) -
 
 Repos and files read: mwanachama-wakala-api (`internal/api/http/voting_routes.go`, `membership.go`, `operation_routes.go`, `mcp*.go` searched, `internal/agencies/registry.go`, `caches.go`, `mounts.go`, `internal/notifyrules` searched, `go.mod`), mwanachama-frontend-member (`app` searched for polls), this repo (`studio/_generator/pages_modules.py` line 19, decisions and questions searched; decision 17 is issue votes, a different thing).
 
-Chain: Modules page row "voting" (drawn, off) -> polls REST routes per agency (`voting_routes.go`, exist) -> manager built and tables created on first call (`buildPollManager`, exists) -> agent tool to create a poll (no voting tool in any `mcp_*.go`, missing) -> notice to the people it reaches (no notify rule, missing) -> Do Something card, Inbox row, answer screen in the member app (none, missing) -> the module's reach and count rules (module not checked out, unread).
+Chain: Modules page row "voting" (drawn, off) -> polls REST routes per agency (`voting_routes.go`, exist) -> manager built and tables created on first call (`buildPollManager`, exists) -> agent tool to create a poll (no voting tool in any `mcp_*.go`, missing) -> notice to the people it reaches (no notify rule, missing) -> Start card, Inbox row, answer screen in the member app (none, missing) -> the module's reach and count rules (module not checked out, unread).
 
 ## Q156
 
@@ -785,7 +785,7 @@ Chain: access given in the app or studio -> CreateGrant (exists; refuses a dupli
 
 Repos and files read: mwanachama-backend-market (`group.go` `viewAll`, `assembleView`, `ListGroupOrdersBy`, `GroupOrderTrail`; `workflows.go` `nameOf`; `market.blueprint.json` indexes), mwanachama-wakala-api (`internal/agencies/groups.go` `namesIn`, `registry.go` lines 636 to 655), design `_generator/pages_do_something.py`, `pages_j18_run_a_group_order.py` (tool `market_list_group_orders`), decisions.md 70.
 
-Chain: Do Something and the supply journeys call `market_list_group_orders` (exists; named in the captions) -> `ListGroupOrdersBy` (page 50 default, 200 largest) -> `viewAll` loads all lines of the page's orders in one query (uncapped) -> per order `assembleView`, one `nameOf` per visible line -> `namesIn` one `GetActor` each, error swallowed to an empty name. The list needs only total and count, which `assembleView` computes in Go from the same lines. Missing: a grouped sum, a batched name read. Read from code, not measured.
+Chain: Start and the supply journeys call `market_list_group_orders` (exists; named in the captions) -> `ListGroupOrdersBy` (page 50 default, 200 largest) -> `viewAll` loads all lines of the page's orders in one query (uncapped) -> per order `assembleView`, one `nameOf` per visible line -> `namesIn` one `GetActor` each, error swallowed to an empty name. The list needs only total and count, which `assembleView` computes in Go from the same lines. Missing: a grouped sum, a batched name read. Read from code, not measured.
 
 ## Q153 (addendum, 2026-11-08)
 

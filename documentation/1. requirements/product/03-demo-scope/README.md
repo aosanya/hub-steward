@@ -31,7 +31,7 @@ recorded result ([Results](../../../4.%20qa/testing/02-results/README.md)).
 | Feature | The demo shows | State |
 |---|---|---|
 | Design and publish | An agency manager creates a hub from a template, changes a workflow, reviews the draft with the AI reviewers, tests it with scenarios and publishes the approved change | Exists; the expert stage and the Publish block are To be built |
-| Run the agency | A member signs in on the phone app, finds a group, reads the inbox and answers a form | Exists |
+| Run the agency | A member signs in on the phone app, finds a group, reads Notifications and answers a form | Exists |
 | Send a report | A member sends a report, an idea or a complaint and gets a reference | To be built: the phone app has no report screen |
 | Approvals | An AI role drafts a request; the agency manager approves it with one tap; only then does the agency act ([the approval rule](../02-what-it-does/README.md#the-approval-rule)) | Exists |
 | AI roles and their cost | The manager sets an agent's model, limits and instructions and sees what it used | Exists |
@@ -48,7 +48,7 @@ more detail.
 
 - The console: Status, Approvals, People, Groups, Agents, Models, Usage,
   Workflows, Review, Test and Publish.
-- The phone app: Home, chat in the agency's rooms, Inbox, Forms, Groups, and
+- The phone app: Home, chat in the agency's rooms, Notifications, Forms, Groups, and
   the market and group orders for the farmers.
 - The lab's room as a member and as the lab manager, and the manager's list of
   drafts to approve.

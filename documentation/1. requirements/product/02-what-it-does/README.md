@@ -37,7 +37,7 @@ the demo agency declares it and this repository does not run it yet.
 |---|---|---|
 | Approvals | A guarded change waits in a list; the agency manager approves or declines with one tap; only then does the agency act. The bundled API keeps the draft, each amendment, the decision and the steps taken after approving on the proposal; the console has no log page. [The approval rule](#the-approval-rule) | Exists |
 | Chat with the agency's agents | A member writes in a room; the agent replies in a thread in the language the member wrote in | Rooms and threads exist. The loop that reads new room messages and makes an agent reply is not part of this repository; test runs and reviews do call a model |
-| Catch up | The inbox shows what is new, then the member's rooms | Exists |
+| Catch up | The Notifications page shows what is new, then the member's rooms | Exists |
 | Join a group | A member asks to join or accepts an invitation; a coordinator lets her in | Exists |
 | Answer a form | A member answers a form one question at a time and sees where it went | Exists |
 | Send a report | A member sends a report, an idea or a complaint and gets a reference | To be built. The phone app has no report screen ([journey 25](../../user-journeys/25-send-a-report/README.md)) |

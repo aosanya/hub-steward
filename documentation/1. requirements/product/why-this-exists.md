@@ -14,7 +14,7 @@ Hub Steward lets an agency manager run a whole organization with AI roles that d
 |---|---|
 | Designs the agency | Roles, groups, goals, rules, workflows with steps and records, forms and documents, in the console |
 | Checks it before it goes live | AI and expert reviewers read the whole draft; scenarios run against a test copy; the manager answers every finding |
-| Runs it day to day | Members use the phone app: chat rooms, inbox, forms, groups, and a market where the agency has one |
+| Runs it day to day | Members use the phone app: chat rooms, Notifications, forms, groups, and a market where the agency has one |
 | Puts AI roles to work | Each role acts only through declared, permission-checked tools; what needs approval waits for a person |
 | Keeps the manager in charge | Approvals (the API keeps each proposal's draft, decision and the steps taken after approving), the model each agent uses, the limits on it, and what it has spent |
 
