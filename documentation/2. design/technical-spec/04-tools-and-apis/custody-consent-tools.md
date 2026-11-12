@@ -10,15 +10,6 @@ so the tool and its REST route are one declaration.
 The studio page for the consent text and the phone screens for agreeing and
 withdrawing are built from these tools, which is why they are written down here.
 
-## Not final yet
-
-Two things on this page are not final.
-
-- **Who may read the version list and publish.** Today the owner can; a stranger is told the agency is not found; a resident is refused the same way; a seated agent is refused as forbidden. How visible the consent text and its versions are to the owner is not final until SW401 lands.
-- **What a resident may call.** Today a resident may call exactly the four resident tools below and nothing else in custody. The resident permissions are not final until SW404 lands.
-
-Read the tables below as the behaviour at commit `36920a5`, not as a settled rule.
-
 ## Common to all six
 
 | Fact | Value |

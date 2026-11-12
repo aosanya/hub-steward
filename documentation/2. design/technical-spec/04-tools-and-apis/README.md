@@ -115,6 +115,7 @@ A workflow step of kind fill form names the role that acts on it and the form's 
 |---|---|---|---|---|---|
 | List the steps I can act on now | `GET /instances/{agency}/my-open-steps?available=true` | reads the live version's fill-form steps whose role the caller holds and that can be acted on now: a workflow's first step (`state` start) and a later step whose run waits for the caller's role (`state` waiting, with its `order_id`), each with its form's questions and the register's code | member | Exists | Exists: `agency_list_my_open_steps` with `available` true |
 | Send a step's answers | `POST /instances/{agency}/steps/{step}/answers` | checks the caller holds the step's role, checks the answers against the step's questions, saves them as a row of the step's register and returns the run's `order_id`, the row and the next step | member, or an AI role seated in the agency | Exists | Exists: `agency_submit_step_answers` |
+| List the steps I have sent | `GET /instances/{agency}/my-sent-steps?limit=&after=` | reads the rows the caller added to the live version's step registers, current rows only (a corrected row is replaced by its correction), newest first, each with `step_id`, `title`, `form_name`, `workflow_id`, `workflow_name`, `record_code`, `order_id`, `row_id`, `sent_at` (the row's creation time) and `answers`; `limit` is 50 by default and 200 at most, `after` is the `row_id` of the last item of the page before and an unknown one is refused with 400; another member's rows never appear, the owner's included | member, or an AI role seated in the agency | Exists | Exists: `agency_list_my_sent_steps`, action `instance.my_sent_steps.read` |
 
 How it works:
 
@@ -127,7 +128,7 @@ How it works:
 - **What the next role sees.** After a send the response carries the next step (title, role, form name, questions, `order_id`). That role's `available=true` list shows it as waiting, and the sender's list no longer shows that run.
 - **Where the rows go.** The rows are the register's rows, so the register screens and tools read them with the register's own visibility.
 
-Limits: only fill-form steps are moved on by this; a step of another kind in the same workflow is skipped by the run. The run moves in step order and does not branch on an answer.
+Limits: this moves on fill-form steps, and since 2026-11-11 also `send_form` steps and `route` forks (see `../do-something-own-steps.md`); a step of any other kind in the same workflow is skipped by the run.
 
 ## Other families on the MCP endpoint
 
