@@ -1,4 +1,4 @@
-import { hasModule, mcpAgencyClient, taskModule } from "../agency/modules";
+import { agencyInstanceAbsent, hasModule, mcpAgencyClient, taskModule } from "../agency/modules";
 import { fetchAll, settled } from "../backlogs/api";
 import { callTool } from "../wakala/mcp";
 
@@ -21,7 +21,11 @@ export const assignedIssueTitle = (issue: AssignedIssue) => [issue.code, issue.t
 
 export const mcpAssignedClient: AssignedClient = {
   async assigned() {
-    const view = await mcpAgencyClient.read();
+    const view = await mcpAgencyClient.read().catch((reason) => {
+      if (agencyInstanceAbsent(reason)) return null;
+      throw reason;
+    });
+    if (view === null) return [];
     if (view.modulesUnread) throw new Error("modules unread");
     if (!hasModule(view, taskModule)) return [];
     const me = await callTool("", "actor_get_my_actor");

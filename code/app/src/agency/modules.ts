@@ -33,5 +33,7 @@ export const mcpAgencyClient: AgencyClient = {
 
 export const taskModule = "taskmanager";
 
+export const agencyInstanceAbsent = (reason: unknown) => reason instanceof Error && reason.message.includes("agencies: instance not found");
+
 export const hasModule = (view: AgencyView | null | undefined, code: string) =>
   view !== null && view !== undefined && !view.modulesUnread && view.modules.some((module) => module.code === code);

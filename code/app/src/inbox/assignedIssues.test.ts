@@ -67,6 +67,16 @@ describe("the read of the member's issues", () => {
     await expect(mcpAssignedClient.assigned()).rejects.toThrow();
   });
 
+  it("finds none, and asks for no issues, when the hub answers that the agency instance is not found", async () => {
+    const notFound = new Error("agencies: instance not found");
+    const spy = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub: string, tool: string) => {
+      if (tool === "agency_get_agency" || tool === "agency_list_mounts") throw notFound;
+      throw new Error("not asked");
+    });
+    await expect(mcpAssignedClient.assigned()).resolves.toEqual([]);
+    expect(spy.mock.calls.map((c) => c[1])).not.toContain("taskmanager_task_list");
+  });
+
   it("fails when the issues cannot be read, so the count is not taken for none", async () => {
     hub(withTaskModule, (tool) => (tool === "actor_get_my_actor" ? { id: "m1" } : new Error("down")));
     await expect(mcpAssignedClient.assigned()).rejects.toThrow();
