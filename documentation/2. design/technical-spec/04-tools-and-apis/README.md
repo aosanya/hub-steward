@@ -136,6 +136,7 @@ The bundled API registers more tool families than the lab uses. They belong to a
 | Family | What an agency's roles do with it |
 |---|---|
 | `agency_*`, `instance_*` | Register an agency, add an agent, list its services, read and set its join mode, name and languages, run a review, design from a spec, and propose, list, read, amend and decide approvals |
+| Custody consent | Read, publish, agree to and withdraw the consent text: [custody consent tools](custody-consent-tools.md) |
 | Forms, forms catalogue, forms git | Compose, send and answer forms; keep the counted answers and the records branch |
 | Market | Offers, asks, orders and group orders that wait for a named person's yes |
 | Risk | The risk register of threats, consequences and safeguards |
