@@ -69,6 +69,9 @@ func (t *toolActions) get(d *Deps) map[string]string {
 		for name, action := range riskToolActions() {
 			t.byName[name] = action
 		}
+		for name, action := range custodyToolActions() {
+			t.byName[name] = action
+		}
 		for name, action := range liveRecordToolActions() {
 			t.byName[name] = action
 		}

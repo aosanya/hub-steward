@@ -2,6 +2,7 @@ package http
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -29,11 +30,11 @@ func (d *Deps) withAgencyConsentLanguage(r *http.Request, instanceID string) *ht
 	if named, present := body["language"]; present && named != "" {
 		return r
 	}
-	agency, err := d.Languages.Agency(r.Context(), instanceID)
-	if err != nil {
+	language, ok := d.agencyConsentLanguage(r.Context(), instanceID)
+	if !ok {
 		return r
 	}
-	body["language"] = strings.ToLower(agency.ContentDefault)
+	body["language"] = language
 	filled, err := json.Marshal(body)
 	if err != nil {
 		return r
@@ -41,4 +42,15 @@ func (d *Deps) withAgencyConsentLanguage(r *http.Request, instanceID string) *ht
 	r.Body = io.NopCloser(bytes.NewReader(filled))
 	r.ContentLength = int64(len(filled))
 	return r
+}
+
+func (d *Deps) agencyConsentLanguage(ctx context.Context, instanceID string) (string, bool) {
+	if d.Languages == nil {
+		return "", false
+	}
+	agency, err := d.Languages.Agency(ctx, instanceID)
+	if err != nil {
+		return "", false
+	}
+	return strings.ToLower(agency.ContentDefault), true
 }

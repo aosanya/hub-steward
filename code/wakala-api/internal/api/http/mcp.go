@@ -75,6 +75,7 @@ func newMCPServer(d *Deps) *mcp.Server {
 	d.registerAIMCPTools(server)
 	d.registerMarketMCPTools(server)
 	d.registerRiskMCPTools(server)
+	d.registerCustodyMCPTools(server)
 	d.registerLiveRecordMCPTools(server)
 	d.registerCallerOpenStepsMCPTool(server)
 	d.registerSubmitStepAnswersMCPTool(server)
