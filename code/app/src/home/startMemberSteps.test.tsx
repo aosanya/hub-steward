@@ -26,6 +26,9 @@ const member = (over: Partial<MemberStep>): MemberStep => ({
 
 const none = { openSteps: async (): Promise<StartStep[]> => [], waiting: async (): Promise<StartStep[]> => [] };
 
+const waitingForm = { form_id: "f1", title: "Survey", closes_at: "", questions: 1, answered: false, unanswered_as: [] };
+const formsHeld = { waiting: async () => [waitingForm], answered: async () => [] };
+
 let landed = "";
 let search = "";
 
@@ -130,11 +133,12 @@ describe("the rows of the steps a member may act on now", () => {
     await act(async () => {
       render(
         <MemoryRouter>
-          <StartRows kind="farmers" start={none} steps={{ available: async () => [member({})] }} />
+          <StartRows kind="farmers" start={none} steps={{ available: async () => [member({})] }} forms={formsHeld} />
         </MemoryRouter>,
       );
     });
     await screen.findByRole("button", { name: /^Referral/ });
+    await screen.findByRole("button", { name: /^Forms/ });
     expect(titles()).toEqual(["Forms", "Referral"]);
   });
 
