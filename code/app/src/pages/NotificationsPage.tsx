@@ -2,8 +2,10 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { mcpInboxClient, type InboxClient, type InvitationItem, type NotificationItem } from "../inbox/api";
 import { isOutage } from "../inbox/outage";
+import { useClearDone } from "../inbox/clearDone";
 import { NeedsYouSection } from "../inbox/NeedsYouSection";
 import { needsYouCount, needsYouNotes, updatesOf } from "../inbox/needsYou";
+import { mcpReader, openChecked, type Reader } from "../inbox/subjectCheck";
 import { UpdatesSection } from "../inbox/UpdatesSection";
 import { unreadOf, useNotifications } from "../inbox/useNotifications";
 import { Button } from "../ui/Button";
@@ -15,9 +17,10 @@ import { useStartWaiting } from "../coordinator/start/startWaiting";
 
 type Opened = { invitation: InvitationItem; joined: boolean };
 
-export function NotificationsPage({ client = mcpInboxClient, start = mcpStartClient, above }: { client?: InboxClient; start?: StartClient; above?: ReactNode }) {
+export function NotificationsPage({ client = mcpInboxClient, start = mcpStartClient, read = mcpReader, above }: { client?: InboxClient; start?: StartClient; read?: Reader; above?: ReactNode }) {
   const navigate = useNavigate();
   const { items, failed: notificationsFailed, outage: notificationsOutage, retry: retryNotifications, markIdsRead, markOneRead } = useNotifications(client);
+  useClearDone(items, markIdsRead, read);
   const [ticked, setTicked] = useState<string[]>([]);
   const [invitations, setInvitations] = useState<InvitationItem[]>([]);
   const [opened, setOpened] = useState<Opened | null>(null);
@@ -141,10 +144,7 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
   const settled = items !== null || (notificationsFailed && !notificationsOutage);
   const empty = !outage && settled && waiting !== null && !waitsOnYou && updates.length === 0;
 
-  const openNotice = (n: NotificationItem, path: string) => {
-    if (!n.read) markOneRead(n.id);
-    navigate(path);
-  };
+  const openNotice = (n: NotificationItem, path: string) => openChecked(n, path, { read, markOneRead, navigate, say: setProblem });
 
   return (
     <Shell title={above ? "Home" : "Notifications"} inbox={client}>

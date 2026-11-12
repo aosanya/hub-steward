@@ -1,10 +1,11 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import type { StartClient, StartStep } from "../coordinator/start/api";
 import { NotificationsPage } from "../pages/NotificationsPage";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
+import type { Reader } from "./subjectCheck";
 
 beforeEach(() => openAgency("farmers"));
 
@@ -37,10 +38,12 @@ const fake = (notes: NotificationItem[], invites: InvitationItem[] = []): InboxC
 
 const startWith = (steps: StartStep[] = []) => ({ waiting: async () => steps }) as unknown as StartClient;
 
+const stillThere: Reader = async () => ({ status: "pending" });
+
 const show = (client: InboxClient, start: StartClient = startWith()) =>
   render(
     <MemoryRouter>
-      <NotificationsPage client={client} start={start} />
+      <NotificationsPage client={client} start={start} read={stillThere} />
     </MemoryRouter>,
   );
 
@@ -122,6 +125,6 @@ describe("the Notifications page", () => {
     const client = fake([assigned()]);
     show(client);
     await userEvent.click(await screen.findByRole("button", { name: /An issue was assigned to you/ }));
-    expect(client.markRead).toHaveBeenCalledWith(["a1"]);
+    await waitFor(() => expect(client.markRead).toHaveBeenCalledWith(["a1"]));
   });
 });
