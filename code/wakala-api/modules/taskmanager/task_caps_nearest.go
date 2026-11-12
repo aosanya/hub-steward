@@ -7,6 +7,8 @@ import (
 	"wakalaserver/modules/shared/specstore"
 )
 
+const maxWorkerNotesRead = 20000
+
 func nearestCap(caps WorkerCaps, used *TaskUsage) *NearestCap {
 	if used == nil {
 		return nil
@@ -79,9 +81,28 @@ func (m *taskManager) NearestCaps(ctx context.Context, filter CapsNearestFilter)
 	for i := range usages {
 		usedOf[usages[i].ID] = &usages[i]
 	}
+	startedOf, err := m.firstWorkerNoteTimes(ctx, ids)
+	if err != nil {
+		return CapsNearestList{}, fmt.Errorf("NearestCaps: %w", err)
+	}
 	for _, id := range ids {
 		inForce := withOwn(defaults, ownOf[id])
-		out.Items = append(out.Items, CapsNearest{TaskID: id, InForce: inForce, Nearest: nearestCap(inForce, usedOf[id])})
+		out.Items = append(out.Items, CapsNearest{TaskID: id, InForce: inForce, Nearest: nearestCap(inForce, usedOf[id]), StartedAt: startedOf[id]})
 	}
 	return out, nil
+}
+
+func (m *taskManager) firstWorkerNoteTimes(ctx context.Context, ids []string) (map[string]string, error) {
+	q := m.store.Query(ctx, roleTaskNote).Where("task_id IN ?", ids).Where("kind = ?", noteByWorker).Order("created_at").Limit(maxWorkerNotesRead)
+	notes, err := specstore.List[TaskNote](m.store, q, roleTaskNote)
+	if err != nil {
+		return nil, err
+	}
+	first := map[string]string{}
+	for _, note := range notes {
+		if _, seen := first[note.TaskID]; !seen {
+			first[note.TaskID] = note.CreatedAt
+		}
+	}
+	return first, nil
 }

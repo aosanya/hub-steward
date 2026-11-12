@@ -68,6 +68,8 @@ type CapsNearest struct {
 	TaskID  string      `json:"task_id"`
 	InForce WorkerCaps  `json:"in_force"`
 	Nearest *NearestCap `json:"nearest,omitempty"`
+
+	StartedAt string `json:"started_at,omitempty"`
 }
 
 type CapsNearestList struct {
