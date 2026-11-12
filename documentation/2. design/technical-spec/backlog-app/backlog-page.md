@@ -369,6 +369,8 @@ class of their own are gone.
 
 ## Todo list of an issue (D159, TDL-1)
 
+Mockup: [issue-todos.html](../../mockups/app/issue-todos.html).
+
 An issue holds a todo list: its work cut into smaller pieces, each of which can wait on other pieces, so the list is a dependency tree. Issues keep the steps they have today; the list sits inside an issue and adds no step.
 
 Where it is: the left card of the issue page, under the description. The board card shows a pill such as 2 of 6, the pieces Done out of all pieces, and no pill for an issue with no pieces.
