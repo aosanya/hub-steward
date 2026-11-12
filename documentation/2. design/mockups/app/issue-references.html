@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Issue references</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{font-size:112.5%;--content:.9rem;--r-sm:.5rem;--r-md:.875rem;--r-pill:999px;--sans:'IBM Plex Sans',ui-sans-serif,system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;--bg:#EDF0EC;--bg-alt:#E3E8E3;--surface:#FBFCFA;--ink:#1B2430;--ink-soft:#3D4652;--line:rgba(27,36,48,.16);--line-strong:rgba(27,36,48,.4);--accent:#703C0F;--accent-strong:#542E0B;--accent-wash:rgba(112,60,15,.1);--on-accent:#FFFCF9;--danger:#A8402E;--success:#3F7D45;--info:#35618F;--info-wash:rgba(53,97,143,.1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg-alt);color:var(--ink);font-family:var(--sans);font-size:1rem;line-height:1.5}
+h1,h2,h3,p,figure,dl,dd,ul{margin:0}
+ul{padding:0;list-style:none}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;text-align:inherit}
+input::placeholder{color:var(--ink-soft)}
+.ic{flex:none;width:1.25rem;height:1.25rem;stroke-width:1.75}
+.code{font-family:var(--mono);font-size:.75rem;color:var(--ink-soft);overflow-wrap:anywhere}
+.screens{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(24rem,100%),24rem));justify-content:center;gap:2.5rem 2rem;padding:2rem 1rem 3rem}
+figure{display:flex;flex-direction:column;gap:.75rem;min-width:0;max-width:100%}
+.cap{width:0;min-width:100%;max-width:40rem;font-size:.8125rem;line-height:1.4;color:var(--ink-soft)}
+.cap-rows{display:grid;grid-template-columns:6.5rem 1fr;gap:.375rem .75rem}
+.cap-row{display:contents}
+.cap-rows dt{font-weight:600;color:var(--ink)}
+.cap-rows dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.phone{font-size:.8125rem;position:relative;display:flex;flex-direction:column;flex:none;width:24rem;max-width:100%;min-height:40rem;overflow:hidden;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 .5rem 1.5rem var(--line)}
+.bar{position:sticky;top:0;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:.5rem;min-height:3rem;padding:0 .5rem;background:var(--surface);border-bottom:1px solid var(--line)}
+.ttl2{padding-left:.5rem;font-size:1.125rem;font-weight:700;letter-spacing:-.015em}
+.bar-action{grid-column:3;justify-self:end;display:flex;align-items:center;gap:.25rem}
+.bar-title{grid-column:2;max-width:14rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:1.125rem;font-weight:700;line-height:1.2;text-align:center}
+.act{display:inline-flex;align-items:center;min-height:3rem;padding:0 .5rem;color:var(--accent);font-weight:500}
+.back{display:inline-flex;align-items:center;gap:.125rem;min-height:3rem;padding:0 .5rem;border:0;background:transparent;color:var(--accent);white-space:nowrap}
+.menu-btn{display:grid;place-items:center;flex:none;width:2.75rem;height:2.75rem;padding:0;border:0;border-radius:var(--r-pill);background:var(--accent-wash);color:var(--accent)}
+.body{flex:1;display:flex;flex-direction:column;gap:.75rem;padding:1rem}
+.head{display:flex;flex-direction:column;gap:.25rem;padding:.25rem 0}
+.headline{font-size:1.25rem;font-weight:700;line-height:1.2;letter-spacing:-.015em;overflow-wrap:anywhere}
+.sub{font-size:.8125rem;color:var(--ink-soft)}
+.dot{flex:none;width:.625rem;height:.625rem;border-radius:var(--r-pill);background:var(--accent)}
+.dot.off{background:transparent;border:1px solid var(--line-strong)}
+.selrow{display:flex;align-items:center;padding-left:1rem;border-top:1px solid var(--line)}
+.rows>.selrow:first-child{border-top:0}
+.selrow>.row{border-top:0;padding-left:.75rem}
+.selrow>input,.selrow>.selgap{flex:none;width:1.25rem;height:1.25rem;margin:0;accent-color:var(--accent)}
+.card{display:flex;flex-direction:column;gap:.75rem;padding:1rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line)}
+.card .ttl{font-weight:600}
+.line{font-size:.8125rem;color:var(--ink-soft)}
+.btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;min-height:3rem;padding:0 1.25rem;background:transparent;border:1px solid transparent;border-radius:var(--r-md);font-weight:600;text-align:center}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.quiet{border-color:var(--line-strong);color:var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:.5rem}
+.btns .btn{flex:1 1 auto;width:auto}
+.chip{display:inline-flex;align-items:center;gap:.25rem;padding:0 .625rem;border-radius:var(--r-pill);background:var(--bg-alt);color:var(--ink-soft);font-size:.8125rem;font-weight:500;line-height:1.5rem;white-space:nowrap}
+.chip.accent{background:var(--accent-wash);color:var(--accent-strong)}
+.chip.info{background:var(--info-wash);color:var(--info)}
+.chip.success{background:color-mix(in srgb,var(--success) 14%,transparent);color:var(--success)}
+.chip.danger{background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--danger)}
+.rows{display:flex;flex-direction:column;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line)}
+.row{display:flex;align-items:center;gap:.75rem;min-height:3.5rem;padding:.5rem 1rem;color:var(--ink)}
+.row[hidden]{display:none}
+.row+.row{border-top:1px solid var(--line)}
+.row .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}
+.row .ttl{font-weight:600;overflow-wrap:anywhere}
+.row .meta{display:flex;flex-wrap:wrap;gap:.375rem}
+.row .end{flex:none;color:var(--ink-soft)}
+.row .last{color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .end.col{display:flex;flex-direction:column;align-items:flex-end;gap:.25rem}
+.row .ubadge{min-width:1.25rem;height:1.25rem;padding:0 .375rem;border-radius:var(--r-pill);background:var(--danger);color:var(--on-accent);font-size:.6875rem;font-weight:600;line-height:1.25rem;text-align:center}
+.tg{border:0;cursor:pointer;font:inherit;font-size:.8125rem;font-weight:500;min-height:1.75rem}
+.tg[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.seg{display:flex;gap:.25rem;padding:.25rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-pill)}
+.seg>a{flex:1;display:flex;align-items:center;justify-content:center;min-height:2.5rem;border-radius:var(--r-pill);color:var(--ink-soft);font-weight:500;text-align:center}
+.seg>a[aria-pressed="true"]{background:var(--accent-wash);color:var(--accent-strong);font-weight:600}
+.seg .dot{display:inline-block;width:.5rem;height:.5rem;margin-left:.375rem;border-radius:50%;background:var(--accent)}
+.sel{flex:1;font:inherit;color:inherit}
+.count{margin:0;padding:.5rem 1rem;color:var(--ink-soft);font-size:.8125rem}
+.backlog{display:flex;flex-direction:column;gap:.75rem}
+.fbar{position:sticky;top:3rem;z-index:1;display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0;background:var(--bg)}
+.icb{display:grid;place-items:center;flex:none;width:2.5rem;height:2.5rem;padding:0;border:0;background:transparent;color:var(--ink-soft)}
+.icb[disabled]{opacity:.35}
+.btn.danger{border-color:var(--danger);color:var(--danger)}
+.btn:disabled{background:var(--bg-alt);border-color:transparent;color:var(--ink-soft)}
+.refusal{display:flex;gap:.625rem;padding:.75rem 1rem;border:1px solid var(--danger);border-radius:var(--r-md);color:var(--danger)}
+.refusal p{color:var(--ink)}
+.flabel{font-size:.8125rem;font-weight:500;color:var(--ink-soft)}
+.fields{display:flex;flex-direction:column;gap:1rem}
+.none{display:none;color:var(--ink-soft)}
+.board{display:flex;gap:.75rem;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -1rem;padding:0 1rem .5rem}
+.col{flex:none;width:15rem;scroll-snap-align:start;display:flex;flex-direction:column;gap:.5rem;padding:.5rem;background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--r-md)}
+.col h3{display:flex;justify-content:space-between;padding:.25rem .5rem;font-size:.875rem;font-weight:600;color:var(--ink-soft)}
+.kcard{display:flex;flex-direction:column;gap:.375rem;padding:.75rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line)}
+.kcard[hidden]{display:none}
+.kcard .ttl{overflow-wrap:anywhere}
+.kcard .meta{display:flex;flex-wrap:wrap;gap:.375rem}
+.cnone{display:none;padding:.5rem;color:var(--ink-soft);font-size:.8125rem}
+.itl{font-size:var(--content);font-weight:400;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.icode{color:var(--accent);font-weight:500}
+.srch{display:flex;align-items:center;gap:.5rem;min-height:3rem;padding:0 .875rem;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-md);color:var(--ink-soft)}
+.dh{font-size:1.25rem;font-weight:700;line-height:1.2;overflow-wrap:anywhere}
+.dbody{font-size:var(--content);padding:1rem;border-top:1px solid var(--line)}
+.card.flush{padding:0;gap:0}
+.card.flush>.card-head{padding:1rem}
+.card.flush>.row:first-child{border-top:0}
+.card.flush .rows{border:0;border-radius:0;box-shadow:none;background:transparent;border-top:1px solid var(--line)}
+.qd{font-size:.8125rem;color:var(--ink-soft)}.dots{display:inline-flex;gap:.25rem}.dots i{width:.375rem;height:.375rem;border-radius:50%;background:var(--ink-soft);opacity:.6}.working{display:flex;align-items:center;gap:.5rem;color:var(--ink-soft)}.msg.mine .who b{font-weight:400;color:var(--ink-soft)}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-weight:600}
+.card-chevron{color:var(--ink-soft);font-size:1.125rem;line-height:1}
+.dbody code{font-size:.9em}
+.rank{flex:none;min-width:1.75rem;font-weight:600;color:var(--ink-soft)}
+.heading{padding-top:.25rem;font-size:.8125rem;font-weight:600;color:var(--ink-soft)}
+.chosen{display:flex;flex-wrap:wrap;gap:.5rem}
+.sg{display:inline-flex;align-items:center;gap:.25rem;min-height:2.5rem;padding:0 .875rem;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);color:var(--accent);font-weight:500;cursor:pointer}
+.cbtn{display:flex;align-items:center;gap:.75rem;width:100%;min-height:3.5rem;padding:.5rem .75rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line);color:var(--ink);font-weight:600}
+.cbtn span:first-child{flex:1;min-width:0}
+.progress{display:flex;flex-direction:column;gap:.5rem;font-size:.8125rem;color:var(--ink-soft)}
+.pbar{height:.25rem;border-radius:var(--r-pill);background:var(--line)}
+.pbar i{display:block;height:100%;border-radius:var(--r-pill);background:var(--accent)}
+.field{display:flex;flex-direction:column;gap:.375rem}
+.input{display:flex;align-items:center;min-height:3rem;padding:0 .875rem;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-md)}
+.thread{display:flex;flex-direction:column;gap:.25rem;margin-top:auto}
+.msg{display:flex;flex-direction:column;align-items:flex-start;gap:.125rem;max-width:85%}
+.msg.mine{align-self:flex-end;align-items:flex-end}
+.who{display:flex;align-items:center;gap:.5rem;margin-top:.5rem;font-size:.8125rem;color:var(--ink-soft)}
+.who b{font-weight:600;color:var(--ink)}
+.bubble{padding:.625rem .875rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);overflow-wrap:anywhere}
+.mine .bubble{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.attached{align-self:flex-start;width:92%;display:flex;flex-direction:column;gap:.75rem;margin-top:.25rem;padding:1rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line)}
+.attached .ttl{font-weight:600}
+.composer{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem 1rem;background:var(--surface);border-top:1px solid var(--line)}
+.cfield{flex:1;min-width:0;display:flex;align-items:center;min-height:3rem;padding:0 1rem;background:var(--bg);border:1px solid var(--line-strong);border-radius:var(--r-pill)}
+.cfield input{flex:1;min-width:0;padding:0;border:0;outline:0;background:transparent}
+.send{flex:none;display:grid;place-items:center;width:3rem;height:3rem;padding:0;border:0;border-radius:var(--r-pill);background:var(--bg-alt);color:var(--ink-soft)}
+.jnav{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:.25rem .5rem;padding:.25rem 1rem;background:var(--surface);border-bottom:1px solid var(--line);font-size:.8125rem}
+.jnav a{display:inline-flex;align-items:center;gap:.375rem;min-height:2.25rem;padding:0 .75rem;border-radius:var(--r-pill);color:var(--ink-soft)}
+.jnav a[aria-current]{background:var(--accent-wash);color:var(--accent-strong);font-weight:600}
+.jnav .sep{flex:1 1 100%;height:0}
+.idx{max-width:72rem;margin:0 auto;padding:1.5rem 1rem 3rem;display:flex;flex-direction:column;gap:1.5rem}
+.idx h1{font-size:1.5rem;font-weight:700;letter-spacing:-.015em}
+.idx p{color:var(--ink-soft);max-width:62ch}
+.idx h2{font-size:1rem;font-weight:700}
+.idx a{color:var(--accent-strong);text-decoration:underline;text-underline-offset:.2em}
+.idx ul{display:flex;flex-direction:column;gap:.5rem}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));gap:.75rem}
+.dcard{display:flex;flex-direction:column;gap:.5rem;padding:1rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md)}
+.dcard h3{font-size:1rem;font-weight:600}
+.state{scroll-margin-top:3.5rem;margin:0 auto;padding:2rem 1rem 0;max-width:72rem;font-size:1.5rem;font-weight:700;letter-spacing:-.015em}
+.intro{margin:.5rem auto 0;padding:0 1rem;max-width:72rem;color:var(--ink-soft);font-size:.875rem}
+.log-entry{display:flex;flex-direction:column;gap:.375rem;padding:.75rem 1rem;border-top:1px solid var(--line)}
+.by{display:flex;flex-wrap:wrap;align-items:center;gap:.375rem;font-size:.8125rem;color:var(--ink-soft)}
+.by b{font-weight:600;color:var(--ink)}
+.log-entry p{font-size:var(--content);overflow-wrap:anywhere}
+.log-entry p+p{margin-top:.375rem}
+.links{display:flex;flex-wrap:wrap;gap:.375rem}
+.lk{display:inline-flex;align-items:center;min-height:1.75rem;padding:0 .625rem;border:1px solid var(--line-strong);border-radius:var(--r-pill);color:var(--accent);font-family:var(--mono);font-size:.75rem}
+.addnote{display:flex;flex-direction:column;gap:.5rem;padding:1rem;border-top:1px solid var(--line)}
+.note{min-height:4.5rem;padding:.625rem .875rem;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-md);color:var(--ink-soft)}
+.nolog{padding:.75rem 1rem;border-top:1px solid var(--line);color:var(--ink-soft)}
+.refpath{font-family:var(--mono);font-size:.8125rem;overflow-wrap:anywhere}
+.refact{display:flex;flex-wrap:wrap;gap:.5rem}
+.refact .btn{min-height:2.25rem;width:auto;padding:0 .875rem;font-size:.8125rem}
+.crumb{display:flex;flex-wrap:wrap;align-items:center;gap:.25rem;font-family:var(--mono);font-size:.75rem;color:var(--accent)}
+.crumb span{color:var(--ink-soft)}
+.missing .refpath{text-decoration:line-through;color:var(--ink-soft)}
+</style>
+<link rel="stylesheet" href="../shared/app-kit.css">
+</head>
+<body>
+<nav class="jnav" data-pages data-current="issue-references.html" aria-label="Mockups"><span class="sep"></span><a href="#s1">1 · References</a><a href="#s2">2 · None yet</a><a href="#s3">3 · Add: kind</a><a href="#s4">4 · Add: repo</a><a href="#s5">5 · Add: file</a><a href="#s6">6 · Add: link</a></nav>
+<p class="intro">References on an issue: what the issue is talking about, a file first, from any repo in the catalog. A person adds them by hand and the assistant can propose some; a person confirms or removes them. Drawn for the owner to change; no code behind it.</p>
+<h2 class="state" id="s1">1 · References on an issue</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>the issue page of a tapped row, with a References section under the description and above the Log: what the issue is talking about. The page always opens with References, Log and Caps collapsed; this screen draws References after the owner has opened it for this visit, and it is collapsed again on the next issue. Each entry is a line with what it points at, its kind and repo, a mark of who named it (Person, or Assistant proposed), and a cross to remove it. An entry the assistant proposed and nobody has confirmed carries a Confirm button until a person confirms it or removes it; a confirmed one keeps its Assistant proposed mark and shows Confirmed. A file or folder that is no longer on the repo&apos;s main branch is struck through and marked Not found, for someone to fix by removing it and adding the right one. Kinds drawn: a file, a folder, a board row, a screen or tool, a website link. Tapping an entry opens it: a file or folder in the repo, a board row as that issue, a link in the browser.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">taskmanager_task_reference_list</span><br><span class="code">taskmanager_task_reference_add</span><br><span class="code">taskmanager_task_reference_remove</span><br><span class="code">taskmanager_task_reference_confirm</span><br><span class="code">forms_git_directory_list (Not found check)</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The issue, the entries, the repos, the paths and the names are drawn for this page, not read from the hub. The tool names are the built ones; the repo list (forms_git_repository_list) is not built yet.</dd></div></dl></figcaption><div class="phone"><header class="bar"><a class="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>All issues</a><span class="bar-title">HS-002</span><span class="bar-action"><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></span></header><div class="body"><div class="card flush"><div class="row"><span class="txt"><span class="ttl itl"><span class="icode">HS-002</span> Import the municipality</span><span class="meta"><span class="chip danger">Blocked</span><span class="chip ">hub-steward</span><span class="chip accent">Backlog</span><span class="chip ">critical</span></span></span></div><div class="dbody"><p>Load the English template into the local database and check that <strong>all 46 workflows</strong> are listed.</p></div></div><div class="card flush"><div class="card-head"><span>References</span><span class="card-chevron">⌄</span></div><div class="rows"><div class="row"><span class="txt"><span class="ttl refpath">app/src/backlogs/IssuePage.tsx</span><span class="line">hub-steward · File</span><span class="meta"><span class="chip ">Person</span></span></span><button type="button" class="icb" aria-label="Remove"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div><div class="row"><span class="txt"><span class="ttl refpath">loader/importer.go</span><span class="line">hub-steward-swe · File</span><span class="meta"><span class="chip info">Assistant proposed</span></span><div class="refact"><button type="button" class="btn primary">Confirm</button></div></span><button type="button" class="icb" aria-label="Remove"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div><div class="row"><span class="txt"><span class="ttl refpath">wakala-api/modules/taskmanager</span><span class="line">hub-steward · Folder</span><span class="meta"><span class="chip ">Person</span></span></span><button type="button" class="icb" aria-label="Remove"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div><div class="row missing"><span class="txt"><span class="ttl refpath">documentation/2. design/old-page.md</span><span class="line">hub-steward-swe · File</span><span class="meta"><span class="chip ">Person</span><span class="chip danger">Not found</span></span></span><button type="button" class="icb" aria-label="Remove"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div><div class="row"><span class="txt"><span class="ttl refpath">HS-005 Switch on the custody module</span><span class="line">Board row</span><span class="meta"><span class="chip ">Person</span></span></span><button type="button" class="icb" aria-label="Remove"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div><div class="row"><span class="txt"><span class="ttl refpath">agency_list_mounts</span><span class="line">Screen or tool</span><span class="meta"><span class="chip info">Assistant proposed</span><span class="chip success">Confirmed</span></span></span><button type="button" class="icb" aria-label="Remove"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div><div class="row"><span class="txt"><span class="ttl refpath">https://example.test/spec</span><span class="line">Link</span><span class="meta"><span class="chip ">Person</span></span></span><button type="button" class="icb" aria-label="Remove"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div><div class="addnote"><button type="button" class="btn quiet">Add a reference</button></div></div><div class="card flush"><div class="card-head"><span>Log</span><span class="card-chevron">⌄</span></div></div></div><nav class="tabs" data-tabs data-chosen="" data-badge="3"></nav></div></figure></main>
+<h2 class="state" id="s2">2 · No references yet</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>the same page for an issue nobody has referenced anything on, which is every existing issue (the loader adds none): the section says so and the button is the way to add the first one.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">taskmanager_task_reference_list</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The issue, the entries, the repos, the paths and the names are drawn for this page, not read from the hub. The tool names are the built ones; the repo list (forms_git_repository_list) is not built yet.</dd></div></dl></figcaption><div class="phone"><header class="bar"><a class="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>All issues</a><span class="bar-title">HS-002</span><span class="bar-action"><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></span></header><div class="body"><div class="card flush"><div class="row"><span class="txt"><span class="ttl itl"><span class="icode">HS-002</span> Import the municipality</span><span class="meta"><span class="chip danger">Blocked</span><span class="chip ">hub-steward</span><span class="chip accent">Backlog</span><span class="chip ">critical</span></span></span></div><div class="dbody"><p>Load the English template into the local database and check that <strong>all 46 workflows</strong> are listed.</p></div></div><div class="card flush"><div class="card-head"><span>References</span><span class="card-chevron">⌄</span></div><div class="nolog">Nothing referenced yet.</div><div class="addnote"><button type="button" class="btn quiet">Add a reference</button></div></div><div class="card flush"><div class="card-head"><span>Log</span><span class="card-chevron">⌄</span></div></div></div><nav class="tabs" data-tabs data-chosen="" data-badge="3"></nav></div></figure></main>
+<h2 class="state" id="s3">3 · Add: what kind</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>Add a reference opens a page that asks what is being referenced, five kinds, a file first. Anyone who can see the issue can add one, as with a note on the Log.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">(no tool; choosing a kind)</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The issue, the entries, the repos, the paths and the names are drawn for this page, not read from the hub. The tool names are the built ones; the repo list (forms_git_repository_list) is not built yet.</dd></div></dl></figcaption><div class="phone"><header class="bar"><a class="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Cancel</a><span class="bar-title">Add a reference</span><span class="bar-action"><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></span></header><div class="body"><div class="rows"><a class="row"><span class="txt"><span class="ttl">File</span><span class="line">Pick it from a repo</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl">Folder</span><span class="line">Pick it from a repo</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl">Board row</span><span class="line">Another issue, by its number</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl">Screen or tool</span><span class="line">Such as the Access screen or agency_list_mounts</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl">Website link</span><span class="line">A URL</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a></div></div><nav class="tabs" data-tabs data-chosen="" data-badge="3"></nav></div></figure></main>
+<h2 class="state" id="s4">4 · Add: which repo</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>For a file or a folder: the repos of the catalog, with a find box. There is no attach step and no settings page; every repo in the catalog is offered.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">repo list (no tool yet; see decision 117)</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The issue, the entries, the repos, the paths and the names are drawn for this page, not read from the hub. The tool names are the built ones; the repo list (forms_git_repository_list) is not built yet.</dd></div></dl></figcaption><div class="phone"><header class="bar"><a class="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Kinds</a><span class="bar-title">Choose a repo</span><span class="bar-action"><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></span></header><div class="body"><div class="srch"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>Find a repo</span></div><div class="rows"><a class="row"><span class="txt"><span class="ttl">hub-steward</span><span class="line"></span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl">hub-steward-swe</span><span class="line"></span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl">mwanachama-backend-catalog</span><span class="line"></span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl">mwanachama-backend-taskmanager</span><span class="line"></span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a></div></div><nav class="tabs" data-tabs data-chosen="" data-badge="3"></nav></div></figure></main>
+<h2 class="state" id="s5">5 · Add: the file</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>The repo&apos;s tree on its main branch, one folder at a time with the path shown above. Tapping a folder opens it, tapping a file adds it at once and returns to the issue; Use this folder adds the folder the person is in (the same page serves the Folder kind). Nothing about a commit or a line is asked.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">forms_git_directory_list</span><br><span class="code">taskmanager_task_reference_add</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The issue, the entries, the repos, the paths and the names are drawn for this page, not read from the hub. The tool names are the built ones; the repo list (forms_git_repository_list) is not built yet.</dd></div></dl></figcaption><div class="phone"><header class="bar"><a class="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Repos</a><span class="bar-title">hub-steward-swe</span><span class="bar-action"><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></span></header><div class="body"><div class="crumb">hub-steward-swe<span>/</span>loader</div><div class="rows"><a class="row"><span class="txt"><span class="ttl refpath">..</span><span class="line">Up one folder</span></span><span class="end"></span></a><a class="row"><span class="txt"><span class="ttl refpath">agencycheck</span><span class="line">Folder</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl refpath">importer.go</span><span class="line">File</span></span><span class="end"></span></a><a class="row"><span class="txt"><span class="ttl refpath">importer_test.go</span><span class="line">File</span></span><span class="end"></span></a><a class="row"><span class="txt"><span class="ttl refpath">report.go</span><span class="line">File</span></span><span class="end"></span></a></div><button type="button" class="btn quiet">Use this folder</button><p class="sub">Tap a file to add it.</p></div><nav class="tabs" data-tabs data-chosen="" data-badge="3"></nav></div></figure></main>
+<h2 class="state" id="s6">6 · Add: a link</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>For a board row, a screen or tool, and a website link the person types or pastes one line; this is the website link. Add is off until something is typed.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">taskmanager_task_reference_add</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The issue, the entries, the repos, the paths and the names are drawn for this page, not read from the hub. The tool names are the built ones; the repo list (forms_git_repository_list) is not built yet.</dd></div></dl></figcaption><div class="phone"><header class="bar"><a class="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Kinds</a><span class="bar-title">Website link</span><span class="bar-action"><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></span></header><div class="body"><div class="fields"><div class="field"><span class="flabel">Website link</span><div class="input">https://</div></div></div><button type="button" class="btn primary" disabled>Add</button></div><nav class="tabs" data-tabs data-chosen="" data-badge="3"></nav></div></figure></main>
+<script src="../shared/app-bar.js" defer></script>
+<script src="../shared/app-nav.js" defer></script>
+</body>
+</html>

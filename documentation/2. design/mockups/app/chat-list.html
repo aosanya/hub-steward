@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat list</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{font-size:112.5%;--content:.9rem;--r-sm:.5rem;--r-md:.875rem;--r-pill:999px;--sans:'IBM Plex Sans',ui-sans-serif,system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;--bg:#EDF0EC;--bg-alt:#E3E8E3;--surface:#FBFCFA;--ink:#1B2430;--ink-soft:#3D4652;--line:rgba(27,36,48,.16);--line-strong:rgba(27,36,48,.4);--accent:#703C0F;--accent-strong:#542E0B;--accent-wash:rgba(112,60,15,.1);--on-accent:#FFFCF9;--danger:#A8402E;--success:#3F7D45;--info:#35618F;--info-wash:rgba(53,97,143,.1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg-alt);color:var(--ink);font-family:var(--sans);font-size:1rem;line-height:1.5}
+h1,h2,h3,p,figure,dl,dd,ul{margin:0}
+ul{padding:0;list-style:none}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;text-align:inherit}
+input::placeholder{color:var(--ink-soft)}
+.ic{flex:none;width:1.25rem;height:1.25rem;stroke-width:1.75}
+.code{font-family:var(--mono);font-size:.75rem;color:var(--ink-soft);overflow-wrap:anywhere}
+.screens{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(24rem,100%),24rem));justify-content:center;gap:2.5rem 2rem;padding:2rem 1rem 3rem}
+figure{display:flex;flex-direction:column;gap:.75rem;min-width:0;max-width:100%}
+.cap{width:0;min-width:100%;max-width:40rem;font-size:.8125rem;line-height:1.4;color:var(--ink-soft)}
+.cap-rows{display:grid;grid-template-columns:6.5rem 1fr;gap:.375rem .75rem}
+.cap-row{display:contents}
+.cap-rows dt{font-weight:600;color:var(--ink)}
+.cap-rows dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.phone{font-size:.8125rem;position:relative;display:flex;flex-direction:column;flex:none;width:24rem;max-width:100%;min-height:40rem;overflow:hidden;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 .5rem 1.5rem var(--line)}
+.bar{position:sticky;top:0;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:.5rem;min-height:3rem;padding:0 .5rem;background:var(--surface);border-bottom:1px solid var(--line)}
+.ttl2{padding-left:.5rem;font-size:1.125rem;font-weight:700;letter-spacing:-.015em}
+.bar-action{grid-column:3;justify-self:end;display:flex;align-items:center;gap:.25rem}
+.bar-title{grid-column:2;max-width:14rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:1.125rem;font-weight:700;line-height:1.2;text-align:center}
+.act{display:inline-flex;align-items:center;min-height:3rem;padding:0 .5rem;color:var(--accent);font-weight:500}
+.back{display:inline-flex;align-items:center;gap:.125rem;min-height:3rem;padding:0 .5rem;border:0;background:transparent;color:var(--accent);white-space:nowrap}
+.menu-btn{display:grid;place-items:center;flex:none;width:2.75rem;height:2.75rem;padding:0;border:0;border-radius:var(--r-pill);background:var(--accent-wash);color:var(--accent)}
+.body{flex:1;display:flex;flex-direction:column;gap:.75rem;padding:1rem}
+.head{display:flex;flex-direction:column;gap:.25rem;padding:.25rem 0}
+.headline{font-size:1.25rem;font-weight:700;line-height:1.2;letter-spacing:-.015em;overflow-wrap:anywhere}
+.sub{font-size:.8125rem;color:var(--ink-soft)}
+.dot{flex:none;width:.625rem;height:.625rem;border-radius:var(--r-pill);background:var(--accent)}
+.dot.off{background:transparent;border:1px solid var(--line-strong)}
+.selrow{display:flex;align-items:center;padding-left:1rem;border-top:1px solid var(--line)}
+.rows>.selrow:first-child{border-top:0}
+.selrow>.row{border-top:0;padding-left:.75rem}
+.selrow>input,.selrow>.selgap{flex:none;width:1.25rem;height:1.25rem;margin:0;accent-color:var(--accent)}
+.card{display:flex;flex-direction:column;gap:.75rem;padding:1rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line)}
+.card .ttl{font-weight:600}
+.line{font-size:.8125rem;color:var(--ink-soft)}
+.btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;min-height:3rem;padding:0 1.25rem;background:transparent;border:1px solid transparent;border-radius:var(--r-md);font-weight:600;text-align:center}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.quiet{border-color:var(--line-strong);color:var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:.5rem}
+.btns .btn{flex:1 1 auto;width:auto}
+.chip{display:inline-flex;align-items:center;gap:.25rem;padding:0 .625rem;border-radius:var(--r-pill);background:var(--bg-alt);color:var(--ink-soft);font-size:.8125rem;font-weight:500;line-height:1.5rem;white-space:nowrap}
+.chip.accent{background:var(--accent-wash);color:var(--accent-strong)}
+.chip.info{background:var(--info-wash);color:var(--info)}
+.chip.success{background:color-mix(in srgb,var(--success) 14%,transparent);color:var(--success)}
+.chip.danger{background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--danger)}
+.rows{display:flex;flex-direction:column;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line)}
+.row{display:flex;align-items:center;gap:.75rem;min-height:3.5rem;padding:.5rem 1rem;color:var(--ink)}
+.row[hidden]{display:none}
+.row+.row{border-top:1px solid var(--line)}
+.row .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}
+.row .ttl{font-weight:600;overflow-wrap:anywhere}
+.row .meta{display:flex;flex-wrap:wrap;gap:.375rem}
+.row .end{flex:none;color:var(--ink-soft)}
+.row .last{color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .end.col{display:flex;flex-direction:column;align-items:flex-end;gap:.25rem}
+.row .ubadge{min-width:1.25rem;height:1.25rem;padding:0 .375rem;border-radius:var(--r-pill);background:var(--danger);color:var(--on-accent);font-size:.6875rem;font-weight:600;line-height:1.25rem;text-align:center}
+.tg{border:0;cursor:pointer;font:inherit;font-size:.8125rem;font-weight:500;min-height:1.75rem}
+.tg[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.seg{display:flex;gap:.25rem;padding:.25rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-pill)}
+.seg>a{flex:1;display:flex;align-items:center;justify-content:center;min-height:2.5rem;border-radius:var(--r-pill);color:var(--ink-soft);font-weight:500;text-align:center}
+.seg>a[aria-pressed="true"]{background:var(--accent-wash);color:var(--accent-strong);font-weight:600}
+.seg .dot{display:inline-block;width:.5rem;height:.5rem;margin-left:.375rem;border-radius:50%;background:var(--accent)}
+.sel{flex:1;font:inherit;color:inherit}
+.count{margin:0;padding:.5rem 1rem;color:var(--ink-soft);font-size:.8125rem}
+.backlog{display:flex;flex-direction:column;gap:.75rem}
+.fbar{position:sticky;top:3rem;z-index:1;display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0;background:var(--bg)}
+.icb{display:grid;place-items:center;flex:none;width:2.5rem;height:2.5rem;padding:0;border:0;background:transparent;color:var(--ink-soft)}
+.icb[disabled]{opacity:.35}
+.btn.danger{border-color:var(--danger);color:var(--danger)}
+.btn:disabled{background:var(--bg-alt);border-color:transparent;color:var(--ink-soft)}
+.refusal{display:flex;gap:.625rem;padding:.75rem 1rem;border:1px solid var(--danger);border-radius:var(--r-md);color:var(--danger)}
+.refusal p{color:var(--ink)}
+.flabel{font-size:.8125rem;font-weight:500;color:var(--ink-soft)}
+.fields{display:flex;flex-direction:column;gap:1rem}
+.none{display:none;color:var(--ink-soft)}
+.board{display:flex;gap:.75rem;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -1rem;padding:0 1rem .5rem}
+.col{flex:none;width:15rem;scroll-snap-align:start;display:flex;flex-direction:column;gap:.5rem;padding:.5rem;background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--r-md)}
+.col h3{display:flex;justify-content:space-between;padding:.25rem .5rem;font-size:.875rem;font-weight:600;color:var(--ink-soft)}
+.kcard{display:flex;flex-direction:column;gap:.375rem;padding:.75rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line)}
+.kcard[hidden]{display:none}
+.kcard .ttl{overflow-wrap:anywhere}
+.kcard .meta{display:flex;flex-wrap:wrap;gap:.375rem}
+.cnone{display:none;padding:.5rem;color:var(--ink-soft);font-size:.8125rem}
+.itl{font-size:var(--content);font-weight:400;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.icode{color:var(--accent);font-weight:500}
+.srch{display:flex;align-items:center;gap:.5rem;min-height:3rem;padding:0 .875rem;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-md);color:var(--ink-soft)}
+.dh{font-size:1.25rem;font-weight:700;line-height:1.2;overflow-wrap:anywhere}
+.dbody{font-size:var(--content);padding:1rem;border-top:1px solid var(--line)}
+.card.flush{padding:0;gap:0}
+.card.flush>.card-head{padding:1rem}
+.card.flush>.row:first-child{border-top:0}
+.card.flush .rows{border:0;border-radius:0;box-shadow:none;background:transparent;border-top:1px solid var(--line)}
+.qd{font-size:.8125rem;color:var(--ink-soft)}.dots{display:inline-flex;gap:.25rem}.dots i{width:.375rem;height:.375rem;border-radius:50%;background:var(--ink-soft);opacity:.6}.working{display:flex;align-items:center;gap:.5rem;color:var(--ink-soft)}.msg.mine .who b{font-weight:400;color:var(--ink-soft)}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-weight:600}
+.card-chevron{color:var(--ink-soft);font-size:1.125rem;line-height:1}
+.dbody code{font-size:.9em}
+.rank{flex:none;min-width:1.75rem;font-weight:600;color:var(--ink-soft)}
+.heading{padding-top:.25rem;font-size:.8125rem;font-weight:600;color:var(--ink-soft)}
+.chosen{display:flex;flex-wrap:wrap;gap:.5rem}
+.sg{display:inline-flex;align-items:center;gap:.25rem;min-height:2.5rem;padding:0 .875rem;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);color:var(--accent);font-weight:500;cursor:pointer}
+.cbtn{display:flex;align-items:center;gap:.75rem;width:100%;min-height:3.5rem;padding:.5rem .75rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line);color:var(--ink);font-weight:600}
+.cbtn span:first-child{flex:1;min-width:0}
+.progress{display:flex;flex-direction:column;gap:.5rem;font-size:.8125rem;color:var(--ink-soft)}
+.pbar{height:.25rem;border-radius:var(--r-pill);background:var(--line)}
+.pbar i{display:block;height:100%;border-radius:var(--r-pill);background:var(--accent)}
+.field{display:flex;flex-direction:column;gap:.375rem}
+.input{display:flex;align-items:center;min-height:3rem;padding:0 .875rem;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-md)}
+.thread{display:flex;flex-direction:column;gap:.25rem;margin-top:auto}
+.msg{display:flex;flex-direction:column;align-items:flex-start;gap:.125rem;max-width:85%}
+.msg.mine{align-self:flex-end;align-items:flex-end}
+.who{display:flex;align-items:center;gap:.5rem;margin-top:.5rem;font-size:.8125rem;color:var(--ink-soft)}
+.who b{font-weight:600;color:var(--ink)}
+.bubble{padding:.625rem .875rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);overflow-wrap:anywhere}
+.mine .bubble{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.attached{align-self:flex-start;width:92%;display:flex;flex-direction:column;gap:.75rem;margin-top:.25rem;padding:1rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 1px 2px var(--line)}
+.attached .ttl{font-weight:600}
+.composer{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem 1rem;background:var(--surface);border-top:1px solid var(--line)}
+.cfield{flex:1;min-width:0;display:flex;align-items:center;min-height:3rem;padding:0 1rem;background:var(--bg);border:1px solid var(--line-strong);border-radius:var(--r-pill)}
+.cfield input{flex:1;min-width:0;padding:0;border:0;outline:0;background:transparent}
+.send{flex:none;display:grid;place-items:center;width:3rem;height:3rem;padding:0;border:0;border-radius:var(--r-pill);background:var(--bg-alt);color:var(--ink-soft)}
+.jnav{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:.25rem .5rem;padding:.25rem 1rem;background:var(--surface);border-bottom:1px solid var(--line);font-size:.8125rem}
+.jnav a{display:inline-flex;align-items:center;gap:.375rem;min-height:2.25rem;padding:0 .75rem;border-radius:var(--r-pill);color:var(--ink-soft)}
+.jnav a[aria-current]{background:var(--accent-wash);color:var(--accent-strong);font-weight:600}
+.jnav .sep{flex:1 1 100%;height:0}
+.idx{max-width:72rem;margin:0 auto;padding:1.5rem 1rem 3rem;display:flex;flex-direction:column;gap:1.5rem}
+.idx h1{font-size:1.5rem;font-weight:700;letter-spacing:-.015em}
+.idx p{color:var(--ink-soft);max-width:62ch}
+.idx h2{font-size:1rem;font-weight:700}
+.idx a{color:var(--accent-strong);text-decoration:underline;text-underline-offset:.2em}
+.idx ul{display:flex;flex-direction:column;gap:.5rem}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));gap:.75rem}
+.dcard{display:flex;flex-direction:column;gap:.5rem;padding:1rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md)}
+.dcard h3{font-size:1rem;font-weight:600}
+.state{scroll-margin-top:3.5rem;margin:0 auto;padding:2rem 1rem 0;max-width:72rem;font-size:1.5rem;font-weight:700;letter-spacing:-.015em}
+.intro{margin:.5rem auto 0;padding:0 1rem;max-width:72rem;color:var(--ink-soft);font-size:.875rem}
+</style>
+<link rel="stylesheet" href="../shared/app-kit.css">
+</head>
+<body>
+<nav class="jnav" data-pages data-current="chat-list.html" aria-label="Mockups"><span class="sep"></span><a href="#s1">1 · The Chat screen with groups</a><a href="#s2">2 · One group</a><a href="#s3">3 · No groups</a><a href="#s4">4 · A group's room</a><a href="#s5">5 · The assistant: Chat</a><a href="#s6">6 · The assistant: Results</a></nav>
+<p class="intro">The Chat screen lists the groups the person belongs to next to the General room, as WhatsApp does (decision 82). Drawn for the owner to change; no code behind it.</p>
+<h2 class="state" id="s1">1 · The Chat screen with groups</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>Chat lists the agency's General room and one row for each group the person belongs to (decision 82), the way WhatsApp lists its chats: the name, the last message and its time, an unread count, newest activity first. A group with no messages is still listed and says so; a row opens that group's room.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">comm_chat_thread_list</span><br><span class="code">actor_list_my_groups</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The group names, last messages, times and counts are drawn for this page, not read from a hub. General is the agency's room, as the app's Chat tab already lists it.</dd></div></dl></figcaption><div class="phone"><header class="bar"><span class="ttl2">Chat</span><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></header><div class="body"><div class="rows"><a class="row"><span class="txt"><span class="ttl">Hub Steward</span><span class="last">Ask about the backlogs</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl">General</span><span class="last">Triager: 12 issues are Blocked</span></span><span class="end col"><span>10:42</span><span class="ubadge" role="img" aria-label="2 unread">2</span></span></a><a class="row"><span class="txt"><span class="ttl">Support</span><span class="last">Amina: the form is sent</span></span><span class="end col"><span>9:15</span></span></a><a class="row"><span class="txt"><span class="ttl">Dev</span><span class="last">Kofi: moved 3 to In Progress</span></span><span class="end col"><span>Yesterday</span><span class="ubadge" role="img" aria-label="5 unread">5</span></span></a><a class="row"><span class="txt"><span class="ttl">Residents</span><span class="last">No messages yet</span></span><span class="end col"><span></span></span></a></div><button type="button" class="btn quiet">Join a group</button></div><nav class="tabs" data-tabs data-chosen="chat" data-badge="3"></nav></div></figure></main><h2 class="state" id="s2">2 · One group</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>A member of one group: General and that group only. Groups the person does not belong to are not listed.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">actor_list_my_groups</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The group names, last messages, times and counts are drawn for this page, not read from a hub. General is the agency's room, as the app's Chat tab already lists it.</dd></div></dl></figcaption><div class="phone"><header class="bar"><span class="ttl2">Chat</span><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></header><div class="body"><div class="rows"><a class="row"><span class="txt"><span class="ttl">Hub Steward</span><span class="last">Ask about the backlogs</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl">General</span><span class="last">Triager: 12 issues are Blocked</span></span><span class="end col"><span>10:42</span></span></a><a class="row"><span class="txt"><span class="ttl">Support</span><span class="last">Amina: the form is sent</span></span><span class="end col"><span>9:15</span></span></a></div><button type="button" class="btn quiet">Join a group</button></div><nav class="tabs" data-tabs data-chosen="chat" data-badge="3"></nav></div></figure></main><h2 class="state" id="s3">3 · No groups</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>A member of no group: only the agency's General room, as the app's Chat tab shows today.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">actor_list_my_groups</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The group names, last messages, times and counts are drawn for this page, not read from a hub. General is the agency's room, as the app's Chat tab already lists it.</dd></div></dl></figcaption><div class="phone"><header class="bar"><span class="ttl2">Chat</span><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></header><div class="body"><div class="rows"><a class="row"><span class="txt"><span class="ttl">Hub Steward</span><span class="last">Ask about the backlogs</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl">General</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a></div><button type="button" class="btn quiet">Join a group</button></div><nav class="tabs" data-tabs data-chosen="chat" data-badge="3"></nav></div></figure></main><h2 class="state" id="s4">4 · A group's room</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>A group's room, opened from the Chat list. The bar has the Chat back label at the left, the group's name centred and the menu at the right. The thread's name is a plain pill under the bar. The threads sit in a card whose header says how many; it is open at first and the header collapses it. The writing box stays at the bottom.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">comm_chat_thread_list</span><br><span class="code">comm_chat_message_list</span><br><span class="code">comm_chat_message_post</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The group names, last messages, times and counts are drawn for this page, not read from a hub. General is the agency's room, as the app's Chat tab already lists it.</dd></div></dl></figcaption><div class="phone"><header class="bar"><a class="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Chat</a><span class="bar-title">Product owner</span><span class="bar-action"><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></span></header><div class="body"><div><span class="chip ">General</span></div><div class="card flush"><div class="card-head"><span>Threads · 1</span><span class="card-chevron">⌄</span></div><div class="rows"><a class="row"><span class="txt"><span class="ttl">General</span><span class="last">Triager: 12 issues are Blocked</span></span><span class="end col"><span>10:42</span><span class="ubadge" role="img" aria-label="2 unread">2</span></span></a></div></div></div><div class="composer"><span class="cfield"><input type="text" placeholder="Write a message"></span><button type="button" class="send" aria-label="Send"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></button></div></div></figure></main><h2 class="state" id="s5">5 · The assistant: Chat</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>The assistant, opened from the pinned row of the Chat list. A tab strip at the top of the panel: Chat holds the conversation words only, and Results holds the data the assistant read through the MCP tools. When data arrives while Chat shows, a dot appears on Results. Each list the assistant returned is an entry in its message, with its title and count; tapping it opens that list in Results. While it answers, the assistant side shows three pulsing dots and Looking it up; a message written meanwhile is added at once with a small Queued label and a remove cross, and is sent when the answer arrives. A failed request pauses the queue and shows That did not work with a Try again button.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">taskmanager_task_pending</span><br><span class="code">taskmanager_task_list</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The issue codes, titles and counts are drawn for this page, not read from a hub.</dd></div></dl></figcaption><div class="phone"><header class="bar"><a class="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Chat</a><span class="bar-title">Hub Steward</span><span class="bar-action"><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></span></header><div class="body"><div class="seg"><a aria-pressed="true">Chat</a><a aria-pressed="false">Results<i class=dot></i></a></div><div class="card"><div class="thread"><div class="msg mine"><span class="who"><b>You</b></span><p class="bubble">what is pending</p></div><div class="msg"><span class="who"><b>Hub Steward</b><span class="chip ">Agent</span></span><p class="bubble">1296 issues are pending; 211 of them are Blocked.</p><div class="rows"><a class="row"><span class="txt"><span class="ttl">Pending issues · 1296</span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a></div></div><div class="msg mine"><span class="who"><b>You</b><span class="qd">Queued</span><span class="qd">×</span></span><p class="bubble">show the blocked ones</p></div></div></div></div><div class="composer"><span class="cfield"><input type="text" placeholder="Write a message"></span><button type="button" class="send" aria-label="Send"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></button></div></div></figure></main><h2 class="state" id="s6">6 · The assistant: Results</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>The Results tab. The dropdown lists every list the assistant returned in this conversation, newest first, so there can be several; choosing one shows it. The lists use the same issue rows as the Backlogs: the code in the accent colour, the title, and the tags in pills; tapping a row opens the issue. When the tool reports more issues than it sent, the card says so, and Show more reveals fifty more rows at a time.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">taskmanager_task_pending</span><br><span class="code">taskmanager_task_read</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The issue codes, titles and counts are drawn for this page, not read from a hub.</dd></div></dl></figcaption><div class="phone"><header class="bar"><a class="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Chat</a><span class="bar-title">Hub Steward</span><span class="bar-action"><button type="button" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button></span></header><div class="body"><div class="seg"><a aria-pressed="false">Chat</a><a aria-pressed="true">Results</a></div><label class="input"><select class="sel" aria-label="Results"><option>Pending issues · 1296</option></select></label><div class="card flush"><div class="card-head"><span>Pending issues · 1296</span></div><div class="rows"><a class="row"><span class="txt"><span class="ttl"><span style="color:var(--accent)">DEV-009</span> Create the party plane's structure tables</span><span class="meta"><span class="chip danger">Blocked</span><span class="chip ">mwanachama-frontend-kazi</span><span class="chip accent">Backlog</span></span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl"><span style="color:var(--accent)">DEV-162</span> Create identity_case with its four endings</span><span class="meta"><span class="chip success">Ready</span><span class="chip ">mwanachama-frontend-kazi</span><span class="chip accent">Backlog</span></span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a><a class="row"><span class="txt"><span class="ttl"><span style="color:var(--accent)">DEV-214</span> Create public_survey_link and respondent</span><span class="meta"><span class="chip danger">Blocked</span><span class="chip ">mwanachama-frontend-kazi</span><span class="chip accent">Backlog</span></span></span><span class="end"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a></div><p class="count">Showing 25 of 1296</p></div></div><div class="composer"><span class="cfield"><input type="text" placeholder="Write a message"></span><button type="button" class="send" aria-label="Send"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></button></div></div></figure></main>
+<script>
+document.querySelectorAll('.backlog').forEach(function(root){
+var chosen=new Set((root.dataset.start||'').split(',').filter(Boolean));
+var rows=root.querySelectorAll('[data-tags]');
+var chips=root.querySelector('.chosen');
+function toggle(t){chosen.has(t)?chosen.delete(t):chosen.add(t);draw();}
+function draw(){
+var shown=0;
+rows.forEach(function(r){var tags=r.dataset.tags.split('|');var ok=Array.from(chosen).every(function(t){return tags.indexOf(t)>-1;});r.hidden=!ok;if(ok)shown++;
+r.querySelectorAll('.tg').forEach(function(b){b.setAttribute('aria-pressed',chosen.has(b.dataset.tag)?'true':'false');});});
+chips.innerHTML='';
+chosen.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='sg';b.textContent=t+' ✕';b.onclick=function(){toggle(t);};chips.appendChild(b);});
+root.querySelector('.count').textContent=chosen.size?shown+' of '+rows.length+(rows.length===1?' issue':' issues'):shown+(shown===1?' issue':' issues');
+var none=root.querySelector('.none');if(none)none.style.display=shown?'none':'block';
+var rl=root.querySelector('.rows');if(rl)rl.style.display=shown?'flex':'none';
+root.querySelectorAll('.col').forEach(function(c){var n=c.querySelectorAll('[data-tags]:not([hidden])').length;c.querySelector('.n').textContent=n;c.querySelector('.cnone').style.display=n?'none':'block';});
+}
+root.querySelectorAll('.tg').forEach(function(b){b.onclick=function(){toggle(b.dataset.tag);};});
+draw();
+});
+</script>
+<script src="../shared/app-bar.js" defer></script>
+<script src="../shared/app-nav.js" defer></script>
+</body>
+</html>
