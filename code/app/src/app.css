@@ -44,6 +44,9 @@ input::placeholder { color: var(--ink-soft); }
 .rows > .row:first-child, .rows > .selrow:first-child { border-top: 0; }
 .selrow { display: flex; align-items: center; padding-left: 1rem; border-top: 1px solid var(--line); }
 .selrow > .row { border-top: 0; padding-left: .75rem; }
+.body > .rows { gap: .75rem; overflow: visible; background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+.body > .rows > .row, .body > .rows > .selrow { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 1px 2px var(--line); overflow: hidden; }
+.body > .rows > .selrow > .row { border: 0; background: transparent; box-shadow: none; }
 .selrow > input, .selrow > .selgap { flex: none; width: 1.25rem; height: 1.25rem; margin: 0; accent-color: var(--accent); }
 .row .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .row .ttl { font-weight: 600; overflow-wrap: anywhere; }
