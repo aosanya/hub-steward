@@ -79,7 +79,9 @@ func (m *taskManager) NearestCaps(ctx context.Context, filter CapsNearestFilter)
 	}
 	usedOf := map[string]*TaskUsage{}
 	for i := range usages {
-		usedOf[usages[i].ID] = &usages[i]
+		if usedOf[usages[i].ID], err = m.stopIfIdle(ctx, &usages[i]); err != nil {
+			return CapsNearestList{}, fmt.Errorf("NearestCaps: %w", err)
+		}
 	}
 	startedOf, err := m.firstWorkerNoteTimes(ctx, ids)
 	if err != nil {
@@ -87,7 +89,8 @@ func (m *taskManager) NearestCaps(ctx context.Context, filter CapsNearestFilter)
 	}
 	for _, id := range ids {
 		inForce := withOwn(defaults, ownOf[id])
-		out.Items = append(out.Items, CapsNearest{TaskID: id, InForce: inForce, Nearest: nearestCap(inForce, usedOf[id]), StartedAt: startedOf[id]})
+		interrupted := usedOf[id] != nil && usedOf[id].IdleStopped
+		out.Items = append(out.Items, CapsNearest{TaskID: id, InForce: inForce, Nearest: nearestCap(inForce, usedOf[id]), StartedAt: startedOf[id], Interrupted: interrupted})
 	}
 	return out, nil
 }
@@ -100,7 +103,7 @@ func (m *taskManager) firstWorkerNoteTimes(ctx context.Context, ids []string) (m
 	}
 	first := map[string]string{}
 	for _, note := range notes {
-		if _, seen := first[note.TaskID]; !seen {
+		if _, seen := first[note.TaskID]; !seen && !note.Automatic {
 			first[note.TaskID] = note.CreatedAt
 		}
 	}
