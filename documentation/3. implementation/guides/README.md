@@ -12,6 +12,7 @@ Working on a part:
 - [Phone app](phone-app.md): the member's web app
 - [Write an agency](write-an-agency.md): how a demo agency template is put together
 - [Taskmanager tools that read the backlog](taskmanager-tools.md): pending, find, read and list, and what `taskmanager_task_find` matches
+- [Reads for the Ongoing Done tab](ongoing-done-reads.md): what the API lists for finished orders and sent answers, and what is missing
 
 How it fits and how to run it:
 
