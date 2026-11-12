@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
+import { Button } from "./Button";
 import { Card } from "./Card";
+
+export const tryAgainWords = "Try again";
 
 export function EmptyCard({ words, children }: { words: string; children?: ReactNode }) {
   return (
@@ -18,10 +21,11 @@ export function LoadingLine({ words = "Loading" }: { words?: string }) {
   );
 }
 
-export function LoadFailed({ words }: { words: string }) {
+export function LoadFailed({ words, onRetry }: { words: string; onRetry?: () => void }) {
   return (
     <Card empty>
       <p role="alert">{words}</p>
+      {onRetry ? <Button onClick={onRetry}>{tryAgainWords}</Button> : null}
     </Card>
   );
 }

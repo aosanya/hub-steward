@@ -5,14 +5,15 @@ import type { AgencyView } from "../agency/modules";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import type { Backlog } from "../backlogs/api";
 import type { StartStep } from "../coordinator/start/api";
+import type { MemberStep } from "../steps/api";
 import { forgetLastBacklogs, rememberBacklog } from "./lastBacklog";
 import { HomeOptions } from "./HomeOptions";
 
-const step = { id: "s1", title: "Report", formName: "Report", roleName: "Farmer", workflowName: "", agencyName: "Alego", questions: [] } as StartStep;
+const step = { id: "s1", title: "Report", formName: "Report", roleName: "Farmer", workflowName: "", agencyName: "Alego", questions: [], state: "start", orderId: "o1", recordCode: "R1" } as MemberStep;
 
 const backlog = (id: string, name: string, over: Partial<Backlog> = {}): Backlog => ({ id, name, steps: ["to-do", "done"], issues: 2, ...over });
 
-type Setup = { codes?: string[]; unread?: boolean; open?: StartStep[]; available?: StartStep[]; backlogs?: Backlog[]; backlogsFail?: boolean };
+type Setup = { codes?: string[]; unread?: boolean; open?: StartStep[]; available?: MemberStep[]; backlogs?: Backlog[]; backlogsFail?: boolean; agencyFail?: boolean };
 
 const view = ({ codes = ["taskmanager"], unread = false }: Setup): AgencyView => ({ name: "Alego", modules: codes.map((code) => ({ code, name: code })), ...(unread ? { modulesUnread: true } : {}) });
 
@@ -27,9 +28,9 @@ const show = (setup: Setup = {}) =>
   render(
     <MemoryRouter initialEntries={["/a/alego/home"]}>
       <HomeOptions
-        agency={{ read: async () => view(setup) }}
+        agency={{ read: async () => (setup.agencyFail ? Promise.reject(new Error("no")) : view(setup)) }}
         start={{ openSteps: async () => setup.open ?? [] }}
-        steps={{ available: async () => setup.available ?? [] }}
+        steps={{ available: async () => (setup.available ?? []) as never[] }}
         backlogs={{
           backlogs: async () => {
             if (setup.backlogsFail) throw new Error("no");
@@ -105,20 +106,48 @@ describe("Home options", () => {
     await waitFor(() => expect(titles()).toEqual(["Start", "Ongoing"]));
   });
 
-  it("leaves out Backlogs when the member can see no backlog or the read fails", async () => {
-    const first = show({ open: [step], backlogs: [] });
+  it("leaves out Backlogs when the member can see no backlog, without a failure line", async () => {
+    show({ open: [step], backlogs: [] });
     await screen.findByText("Start");
     expect(titles()).toEqual(["Start", "Ongoing"]);
-    first.unmount();
-    show({ open: [step], backlogsFail: true });
-    await screen.findByText("Start");
-    expect(titles()).toEqual(["Start", "Ongoing"]);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
-  it("leaves out Backlogs while the agency's modules could not be read", async () => {
-    show({ unread: true, open: [step], backlogs: [backlog("b1", "Backlog")] });
-    await screen.findByText("Start");
-    expect(titles()).toEqual(["Start", "Ongoing"]);
+  it.each([
+    ["the backlogs cannot be read", { backlogsFail: true }],
+    ["the agency's modules could not be read", { unread: true, backlogs: [backlog("b1", "Backlog")] }],
+    ["the agency cannot be read", { agencyFail: true }],
+  ] as [string, Setup][])("says Backlogs could not be loaded, with Try again, when %s, and keeps Start and Ongoing", async (_name, setup) => {
+    show({ open: [step], ...setup });
+    expect(await screen.findByRole("alert")).toHaveTextContent("Backlogs could not be loaded.");
+    expect(titles().slice(0, 2)).toEqual(["Start", "Ongoing"]);
+    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+  });
+
+  it("says Start and Ongoing could not be loaded when both workflow reads fail, never that there are none", async () => {
+    render(
+      <MemoryRouter>
+        <HomeOptions agency={{ read: async () => view({}) }} start={{ openSteps: async () => Promise.reject(new Error("no")) }} steps={{ available: async () => Promise.reject(new Error("no")) }} backlogs={{ backlogs: async () => [] } as never} />
+      </MemoryRouter>,
+    );
+    expect(await screen.findByRole("alert")).toHaveTextContent("Start and Ongoing could not be loaded.");
+  });
+
+  it("reads Backlogs again on Try again and then draws the card", async () => {
+    const user = userEvent.setup();
+    let down = true;
+    const read = vi.fn(async () => (down ? Promise.reject(new Error("no")) : [backlog("b1", "Backlog")]));
+    render(
+      <MemoryRouter>
+        <HomeOptions agency={{ read: async () => view({}) }} start={{ openSteps: async () => [step] }} steps={{ available: async () => [] }} backlogs={{ backlogs: read } as never} />
+      </MemoryRouter>,
+    );
+    await screen.findByRole("alert");
+    down = false;
+    await user.click(screen.getByRole("button", { name: "Try again" }));
+    await screen.findByText("Backlogs");
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(read).toHaveBeenCalledTimes(2);
   });
 
   it("shows nothing when the agency has neither workflows nor backlogs", async () => {

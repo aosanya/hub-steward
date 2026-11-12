@@ -1,14 +1,15 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import type { AgencyView } from "../agency/modules";
 import { openAgencyId } from "../agency/open";
 import { isGroupOrderForm, mcpStartClient, startPath, type StartClient, type StartStep } from "../coordinator/start/api";
-import { useStartWaiting } from "../coordinator/start/startWaiting";
+import { useStartWaitingState } from "../coordinator/start/startWaiting";
 import { liveClient as liveForms, type FormsClient } from "../forms/api";
 import { useLoad } from "../forms/useLoad";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Button } from "../ui/Button";
-import { EmptyCard, LoadFailed } from "../ui/LoadState";
+import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { chatTab } from "../tabs";
 import { chatListPath, routes } from "../routes";
 import { mcpStepsClient, type MemberStep, type StepsClient } from "../steps/api";
@@ -69,21 +70,27 @@ export function StartRows({
 }) {
   const navigate = useNavigate();
   const { words } = useLanguage();
-  const waitingRead = useStartWaiting(start);
-  const waiting = waitingRead ?? [];
-  const steps = useLoad(() => start.openSteps(), `start-rows:${openAgencyId()}`);
-  const mine = useLoad(() => members.available(), `start-available:${openAgencyId()}`);
-  const formsHeld = useLoad(() => holdsForms(forms), `start-forms:${openAgencyId()}`);
+  const waiting = useStartWaitingState(start);
+  const [attempt, setAttempt] = useState(0);
+  const key = `${openAgencyId()}:${attempt}`;
+  const steps = useLoad(() => start.openSteps(), `start-rows:${key}`);
+  const mine = useLoad(() => members.available(), `start-available:${key}`);
+  const formsHeld = useLoad(() => holdsForms(forms), `start-forms:${key}`);
   const formsCardHidden = formsHeld.state === "loading" || (formsHeld.state === "ready" && !formsHeld.data);
   const cards = (kind ? homeCardsFor(kind, view) : []).filter((card) => !(formsCardHidden && card.path === routes.forms.path()));
   const stepRows = steps.state === "ready" ? steps.data.flatMap(stepRowOf) : [];
   const chatRows = steps.state === "ready" ? chatRowsOf(steps.data) : [];
   const memberRows = mine.state === "ready" ? memberRowsOf(mine.data) : memberRowsOf([]);
-  const rows = withoutRepeats([...waiting.map(waitingRowOf), ...chatRows, ...cards, ...stepRows, ...memberRows]);
-  const settled = kind !== undefined && waitingRead !== null && steps.state === "ready" && mine.state !== "loading" && formsHeld.state !== "loading";
+  const rows = withoutRepeats([...waiting.steps.map(waitingRowOf), ...chatRows, ...cards, ...stepRows, ...memberRows]);
+  const failed = waiting.status === "failed" || steps.state === "error" || mine.state === "error";
+  const reading = waiting.status === "loading" || steps.state === "loading" || mine.state === "loading" || formsHeld.state === "loading";
+  const retry = () => {
+    setAttempt(attempt + 1);
+    waiting.retry();
+  };
   return (
     <>
-      {rows.length === 0 && settled ? (
+      {rows.length === 0 && kind !== undefined && !failed && !reading ? (
         <EmptyCard words="Nothing to start yet">
           <Button kind="primary" onClick={() => navigate(chatListPath())}>
             Ask in Chat
@@ -104,7 +111,8 @@ export function StartRows({
           ))}
         </Rows>
       ) : null}
-      {steps.state === "error" ? <LoadFailed words="Your tasks could not be loaded." /> : null}
+      {rows.length === 0 && kind !== undefined && !failed && reading ? <LoadingLine words="Loading your tasks" /> : null}
+      {failed ? <LoadFailed words="Your tasks could not be loaded." onRetry={retry} /> : null}
     </>
   );
 }

@@ -178,9 +178,10 @@ describe("the rows of the steps a member may act on now", () => {
     expect(titles()).toEqual(["Confirm arrival", "Referral"]);
   });
 
-  it("draws no row and no alert when her steps cannot be read, since the old list carries the alert", async () => {
+  it("draws no row and says her tasks could not be loaded, with Try again, when her steps cannot be read", async () => {
     await show(async () => Promise.reject(new Error("down")));
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(await screen.findByRole("alert")).toHaveTextContent("Your tasks could not be loaded.");
+    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
     expect(document.querySelector(".rows")).toBeNull();
   });
 });

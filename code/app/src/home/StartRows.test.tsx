@@ -315,7 +315,7 @@ describe("the Start rows of Do Something", () => {
       await show({ kind: "farmers", start: startOf(async () => [buyChat, sellChat], async () => Promise.reject(new Error("down"))) });
       await rowNamed(buyInputsChatWorkflow);
       expect(titlesShown()).toEqual([buyInputsChatWorkflow, sellHarvestChatWorkflow, "Forms"]);
-      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+      expect(await screen.findByRole("alert")).toHaveTextContent("Your tasks could not be loaded.");
     });
 
     it("puts it above the cards when it arrives after them", async () => {
@@ -438,6 +438,40 @@ describe("the Start rows of Do Something", () => {
       expect(screen.getByText("Nothing to start yet").closest(".card")).toHaveClass("empty");
       await userEvent.click(screen.getByRole("button", { name: "Ask in Chat" }));
       expect(landed).toBe(chatListPath());
+    });
+
+    it.each([
+      ["the open steps", { openSteps: async (): Promise<StartStep[]> => Promise.reject(new Error("down")), waiting: async (): Promise<StartStep[]> => [] }, noMemberSteps],
+      ["the waiting steps", { openSteps: async (): Promise<StartStep[]> => [], waiting: async (): Promise<StartStep[]> => Promise.reject(new Error("down")) }, noMemberSteps],
+      ["the steps she can start", { openSteps: async (): Promise<StartStep[]> => [], waiting: async (): Promise<StartStep[]> => [] }, { available: async () => Promise.reject(new Error("down")) }],
+    ])("says the tasks could not be loaded, never Nothing to start yet, when %s cannot be read", async (_name, start, steps) => {
+      await show({ kind: "farmers", view: view([]), start, steps: steps as never });
+      expect(await screen.findByRole("alert")).toHaveTextContent("Your tasks could not be loaded.");
+      expect(screen.queryByText("Nothing to start yet")).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+    });
+
+    it("says Loading in place of a blank page while the first reads are out", async () => {
+      await show({ kind: "farmers", view: view([]), start: startOf(() => new Promise<StartStep[]>(() => undefined), () => new Promise<StartStep[]>(() => undefined)), forms: { waiting: async () => [], answered: async () => [] } });
+      expect(screen.getByRole("status")).toHaveTextContent("Loading");
+      expect(screen.queryByText("Nothing to start yet")).not.toBeInTheDocument();
+    });
+
+    it("re-reads every source on Try again and shows the empty card only once they all answer", async () => {
+      let down = true;
+      const openSteps = vi.fn(async () => (down ? Promise.reject(new Error("down")) : []));
+      const waiting = vi.fn(async (): Promise<StartStep[]> => []);
+      const available = vi.fn(async () => (down ? Promise.reject(new Error("down")) : []));
+      const answered = vi.fn(async () => []);
+      const waitingForms = vi.fn(async () => []);
+      await show({ kind: "farmers", view: view([]), start: { openSteps, waiting }, steps: { available }, forms: { waiting: waitingForms, answered } });
+      await screen.findByRole("alert");
+      expect(screen.queryByText("Nothing to start yet")).not.toBeInTheDocument();
+      down = false;
+      await act(async () => userEvent.click(screen.getByRole("button", { name: "Try again" })));
+      expect(await screen.findByText("Nothing to start yet")).toBeInTheDocument();
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+      expect([openSteps, waiting, available, waitingForms, answered].map((read) => read.mock.calls.length)).toEqual([2, 2, 2, 2, 2]);
     });
 
     it("does not draw the empty card while the steps load, when they cannot be read, or when a row is shown", async () => {

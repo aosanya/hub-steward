@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { useStartWaiting } from "./startWaiting";
+import { useStartWaiting, useStartWaitingState } from "./startWaiting";
 
 const step = (id: string) => ({ id }) as never;
 
@@ -35,6 +35,32 @@ describe("useStartWaiting", () => {
     expect(second.result.current).toBeNull();
     await act(async () => {});
     await waitFor(() => expect(second.result.current).toHaveLength(1));
+    expect(client.waiting).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("useStartWaitingState", () => {
+  it("says failed, not ready with no steps, when the read fails, and holds no steps", async () => {
+    const client = { waiting: vi.fn().mockRejectedValue(new Error("down")) };
+    const { result } = renderHook(() => useStartWaitingState(client));
+    expect(result.current.status).toBe("loading");
+    await waitFor(() => expect(result.current.status).toBe("failed"));
+    expect(result.current.steps).toEqual([]);
+  });
+
+  it("says ready with no steps when the read answers with none", async () => {
+    const client = { waiting: vi.fn().mockResolvedValue([]) };
+    const { result } = renderHook(() => useStartWaitingState(client));
+    await waitFor(() => expect(result.current.status).toBe("ready"));
+  });
+
+  it("reads again on retry and becomes ready when the second read answers", async () => {
+    const client = { waiting: vi.fn().mockRejectedValueOnce(new Error("down")).mockResolvedValue([step("s1")]) };
+    const { result } = renderHook(() => useStartWaitingState(client));
+    await waitFor(() => expect(result.current.status).toBe("failed"));
+    act(() => result.current.retry());
+    await waitFor(() => expect(result.current.status).toBe("ready"));
+    expect(result.current.steps).toHaveLength(1);
     expect(client.waiting).toHaveBeenCalledTimes(2);
   });
 });
