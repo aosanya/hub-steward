@@ -27,7 +27,7 @@ Which modules an agency has depends on its published definition. A farmers' grou
 |---|---|---|
 | Mwanachama API | Go service in `code/wakala-api` mounting Mwanachama's modules per agency, with sign-in, membership, approvals, an AI gateway and an MCP endpoint | Exists |
 | Console | Web app in `code/console` for managers and designers: people, groups, agents, models, documents, workflows, review, tests, approvals, usage | Exists |
-| Phone app | Mobile-first web app in `code/app`: chat in rooms and threads, inbox, forms, groups, market. The member's side; the code folder is `code/app` | Exists; image built, not hosted. Reports have no screen yet |
+| Phone app | Mobile-first web app in `code/app`: chat in rooms and threads, notifications, forms, groups, market. The member's side; the code folder is `code/app` | Exists; image built, not hosted. Reports have no screen yet |
 | Agencies | Each agency's roles, goals, responsibilities, rules and workflows in one file; eight synthetic ones are in `demo/` | Exist |
 | AI roles | Agents the agency has, such as Hub Steward, Assets Keeper, Farmers' agent, Suppliers' agent. Each has its own model, limits and instructions | Roles, limits, instructions and the service key exist in the API. The loop that notices a message and replies is not in this repository ([the agent](../03-the-agent/README.md), [hub keys](../hub-keys.md)); enforcement of responsibilities when an agent acts is undecided |
 

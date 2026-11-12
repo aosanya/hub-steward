@@ -88,7 +88,7 @@ but the lab's Hub Steward does so only after the manager has approved its draft.
 |---|---|---|---|---|---|
 | Find people | `GET /actors?q={text}` | reads members whose name or member code contains the text | agent or manager; members are refused | Exists | Exists: `actor_list_actors` |
 | Join requests across the agency | `GET /join-requests?pending_only=true` | reads every group's join requests, newest first | agent or manager; members are refused | Exists | Not generated yet |
-| Approve or decline a join request as the agency | `POST /join-requests/{request}/operator-approve`, `/operator-decline` | writes the decision; a decline is told with a reason or made quietly, and a told one reaches the member's inbox | manager or agent, whether or not they lead the group; members are refused | Exists | Exists: `actor_operator_approve_join_request`, `actor_operator_decline_join_request` |
+| Approve or decline a join request as the agency | `POST /join-requests/{request}/operator-approve`, `/operator-decline` | writes the decision; a decline is told with a reason or made quietly, and a told one reaches the member's Notifications page | manager or agent, whether or not they lead the group; members are refused | Exists | Exists: `actor_operator_approve_join_request`, `actor_operator_decline_join_request` |
 | Approve or decline a join request as a group leader | `POST /join-requests/{request}/approve`, `/decline` | writes the decision | a leader of that group | Exists | Exists: `actor_approve_join_request`, `actor_decline_join_request` |
 
 ## Approvals, tasks and the agent

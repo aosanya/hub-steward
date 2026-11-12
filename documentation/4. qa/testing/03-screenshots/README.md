@@ -25,7 +25,7 @@ The goal named "mj-change test goal" was added by a test run, not part of the de
 
 | Picture | What it shows |
 |---|---|
-| ![Supplier menu](08-app-supplier-menu.png) | A supplier's Do Something tab in the Farmers' Group: Offers, Asks, Group order, Orders, Your prices, Forms |
+| ![Supplier menu](08-app-supplier-menu.png) | A supplier's menu in the Farmers' Group, drawn before Start moved to Home (D154): Offers, Asks, Group order, Orders, Your prices, Forms |
 | ![Market](09-app-market.png) | The market page |
 | ![Member home](10-app-member-home.png) | A member of the Siaya lab after signing in with the emailed link |
 

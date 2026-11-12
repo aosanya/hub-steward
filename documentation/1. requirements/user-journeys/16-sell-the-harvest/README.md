@@ -16,7 +16,7 @@ Mockups: [all steps in order](../../../2.%20design/mockups/journeys/16-sell-the-
 
 ### 1. Sees the buyers' prices and sells now
 
-Asha Otieno opens the Sell harvest row on the Start tab and the Farmers' agent asks what she wants to sell. She says maize and gets the best buyer first: what each buyer pays for a 90 kg bag, for example Kisumu Grain Traders at KES 4,200 a bag and KES 4,350 from 100 bags, and the group sale that is open. She chooses Sell now, enters 40 bags and sells at the price shown. The agent asks the buyer once; the yes is the buyer's own, and until it comes the ask simply has no answer yet. After the yes her sale shows 40 bags, the price it was made at, KES 168,000 in all and the date the buyer gave, Friday, 6 Nov, with a line saying who was asked and that the buyer said yes, and a Cancel the sale button.
+Asha Otieno opens the Sell harvest row on Start, which she opens from Home, and the Farmers' agent asks what she wants to sell. She says maize and gets the best buyer first: what each buyer pays for a 90 kg bag, for example Kisumu Grain Traders at KES 4,200 a bag and KES 4,350 from 100 bags, and the group sale that is open. She chooses Sell now, enters 40 bags and sells at the price shown. The agent asks the buyer once; the yes is the buyer's own, and until it comes the ask simply has no answer yet. After the yes her sale shows 40 bags, the price it was made at, KES 168,000 in all and the date the buyer gave, Friday, 6 Nov, with a line saying who was asked and that the buyer said yes, and a Cancel the sale button.
 
 ![Maize prices, best buyer first](screenshots/step-01-maize-prices.png)
 

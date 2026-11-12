@@ -27,7 +27,7 @@ The tool names on the test screens are illustrative.
 - The fields that box the chat in (who opens it, what it talks about, the first line, the prompts, Can call and Can start) have no editor in the console. The agency stores them on the chat step: the agent, the topic, the first line, up to three prompts, the tools and the workflows it may start.
 - Choosing A chat in Add a workflow saves the workflow as opening in a chat but does not add its chat step, and the console cannot add one. The Steps tab shows a chat step, locked as step 1, only when the workflow already holds one; the agency allows one per workflow.
 - Workflows are not sorted with the chat workflows first; the cards follow the workflows' own order.
-- Built in the phone app, so not a gap: it lists a workflow that opens in a chat on the Start tab. Buy inputs and Sell harvest open the app's own screens by name; any other chat workflow opens the Chat tab.
+- Built in the phone app, so not a gap: it lists a task that opens in a chat on Start. Buy inputs and Sell harvest open the app's own screens by name; any other chat workflow opens the Chat tab.
 - No test run plays a chat.
 - Open: which objectives Buy inputs and Sell harvest attach to, so that Publish does not block them.
 - Open: whether a sub chat means a workflow the person started from the chat, shown as a chat opening under it, or the discussion thread the agent opens with a shop.
