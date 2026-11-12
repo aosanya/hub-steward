@@ -306,29 +306,29 @@ type TaskManager interface {
 	// if the task is not currently blocked. Returns [ErrTaskNotFound] if missing.
 	UnblockTask(ctx context.Context, taskID, note string) (Task, error)
 
-	// CreateTaskTodo creates a new TaskTodo entity for a decomposed sub-task.
-	// Required fields: Title, Instructions, ParentTaskID. Returns [ErrInvalidTask]
-	// if any required field is empty.
-	// Todos with non-empty DependsOn are created with [TodoStatusBlocked] and
-	// are NOT dispatched — call [DispatchTaskTodo] once their predecessors complete.
-	// Todos with no dependencies start as [TodoStatusPending]; callers should
-	// immediately call [DispatchTaskTodo] for them.
 	CreateTaskTodo(ctx context.Context, todo TaskTodo) (TaskTodo, error)
 
-	// DispatchTaskTodo publishes [TopicTodoDispatched] for an existing todo,
-	// making it available to agents via their work plans.
-	// If the todo is currently [TodoStatusBlocked], it is first transitioned to
-	// [TodoStatusPending] before the event is published.
-	// Returns [ErrTaskTodoNotFound] if the todo does not exist.
 	DispatchTaskTodo(ctx context.Context, todoID string) error
 
-	// GetTaskTodo retrieves a single TaskTodo by its entity ID.
-	// Returns [ErrTaskTodoNotFound] if no matching todo exists.
 	GetTaskTodo(ctx context.Context, todoID string) (TaskTodo, error)
 
-	// UpdateTaskTodoStatus transitions a TaskTodo to a new [TodoStatus].
-	// Returns [ErrTaskTodoNotFound] if the todo does not exist.
 	UpdateTaskTodoStatus(ctx context.Context, todoID string, status TodoStatus) (TaskTodo, error)
+
+	SetTaskTodoStatus(ctx context.Context, todoID string, status TodoStatus, blockedReason string) (TaskTodo, error)
+
+	UpdateTaskTodo(ctx context.Context, todoID string, patch TaskTodoPatch) (TaskTodo, error)
+
+	ReorderTaskTodos(ctx context.Context, issueID string, orderedIDs []string) ([]TaskTodo, error)
+
+	DeleteTaskTodo(ctx context.Context, todoID string) error
+
+	ListIssueTodos(ctx context.Context, issueID string) ([]TaskTodo, error)
+
+	CountIssueTodos(ctx context.Context, issueIDs []string) (map[string]TodoCount, error)
+
+	CheckTodoSameIssue(ctx context.Context, issueID string, dependsOn []string) error
+
+	CheckTodoCycle(ctx context.Context, todoID string, dependsOn []string) error
 
 	// CreateWorkflowRun anchors a new orchestrated execution. The returned
 	// run is in [WorkflowRunStatusPending]; producers transition it to
@@ -558,7 +558,11 @@ func NewTaskManager(db *gorm.DB, s *spec.Spec, pub events.Publisher) (TaskManage
 	if err != nil {
 		return nil, fmt.Errorf("NewTaskManager: %w", err)
 	}
-	return &taskManager{db: db, store: st, publisher: pub, spec: s, overdueGrace: grace}, nil
+	m := &taskManager{db: db, store: st, publisher: pub, spec: s, overdueGrace: grace}
+	if err := m.migrateTodoDependencies(context.Background()); err != nil {
+		return nil, fmt.Errorf("NewTaskManager: %w", err)
+	}
+	return m, nil
 }
 
 func Unbound() TaskManager { return (*taskManager)(nil) }

@@ -240,7 +240,7 @@ type TodoDispatchedPayload struct {
 	Instructions   string
 	Ordinality     int
 	CanRunParallel bool
-	DependsOn      []int
+	DependsOn      []string
 	Precalls       string // JSON-encoded []PrecallSpec stored on the TaskTodo
 	TodoType       string // semantic type label (e.g. "compile-fix"); used for per-type run-count enforcement
 	MaxRuns        int    // maximum spawns of this todo type within the parent task; 0 means no limit
