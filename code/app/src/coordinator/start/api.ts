@@ -14,6 +14,7 @@ export type StartStep = {
   agencyName: string;
   questions: StartQuestion[];
   opensIn?: OpensIn;
+  orderId?: string;
 };
 
 export type StartDraft = { product: string; price: number; minimum: number; posterId: string };
@@ -73,6 +74,9 @@ export const unitOf = (answerType: string): Unit => {
 
 export const startPath = (id: string) => routes.start.path({ stepId: id });
 
+export const waitingPath = (step: Pick<StartStep, "id" | "orderId">) =>
+  step.orderId ? routes.step.path({ stepId: step.id }, { order: step.orderId }) : startPath(step.id);
+
 export const coordinatorOrderPath = (id: string) => `/coordinator/orders/${id}`;
 
 const numberOf = (value: string) => {
@@ -91,12 +95,19 @@ const posterOf = (raw: any): Poster => ({ id: text(raw?.id), name: text(raw?.nam
 
 const readOpenSteps = () => callTool("", "agency_list_my_open_steps", {});
 
+const readAvailableSteps = () => callTool("", "agency_list_my_open_steps", { available: true });
+
+const waitsOnMember = (raw: any) => text(raw?.state) === "waiting" && fillsForm(raw);
+
+const waitingStepOf = (agencyName: string) => (raw: any): StartStep => ({ ...stepOf(agencyName)(raw), orderId: text(raw?.order_id) });
+
 const readAgencyName = async () => text((await callTool("", "agency_get_agency", {}).catch(() => ({})))?.name);
 
 export const mcpStartClient: StartClient = {
   async waiting() {
-    const [steps, agencyName] = await Promise.all([readOpenSteps(), readAgencyName()]);
-    return itemsOf(steps).filter(fillsForm).map(stepOf(agencyName)).filter(isGroupOrderStart);
+    const [steps, available, agencyName] = await Promise.all([readOpenSteps(), readAvailableSteps(), readAgencyName()]);
+    const starts = itemsOf(steps).filter(fillsForm).map(stepOf(agencyName)).filter(isGroupOrderStart);
+    return [...starts, ...itemsOf(available).filter(waitsOnMember).map(waitingStepOf(agencyName))];
   },
   async openSteps() {
     return itemsOf(await readOpenSteps())

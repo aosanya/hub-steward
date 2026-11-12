@@ -81,7 +81,7 @@ export function StartRows({
   const stepRows = steps.state === "ready" ? steps.data.flatMap(stepRowOf) : [];
   const chatRows = steps.state === "ready" ? chatRowsOf(steps.data) : [];
   const memberRows = mine.state === "ready" ? memberRowsOf(mine.data) : memberRowsOf([]);
-  const rows = withoutRepeats([...waiting.steps.map(waitingRowOf), ...chatRows, ...cards, ...stepRows, ...memberRows]);
+  const rows = withoutRepeats([...waiting.steps.filter((step) => !step.orderId).map(waitingRowOf), ...chatRows, ...cards, ...stepRows, ...memberRows]);
   const failed = waiting.status === "failed" || steps.state === "error" || mine.state === "error";
   const reading = waiting.status === "loading" || steps.state === "loading" || mine.state === "loading" || formsHeld.state === "loading";
   const retry = () => {

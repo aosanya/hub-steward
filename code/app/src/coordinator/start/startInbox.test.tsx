@@ -115,7 +115,7 @@ describe("a Start step in the Inbox, as the drawing shows it", () => {
     const call = replies();
     openInbox();
     await startRow();
-    expect(call.mock.calls.filter(([, tool]) => tool === "agency_list_my_open_steps")).toHaveLength(1);
+    expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && !args?.available)).toHaveLength(1);
   });
 
   it("leaves no row, no badge and no Mark all read when nothing waits and nothing is unread, and says all caught up", async () => {
