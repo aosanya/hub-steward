@@ -1,7 +1,7 @@
 import { callTool } from "../../wakala/mcp";
 import type { Todo } from "./todoTree";
 
-export const todoTools: { list: string | null } = { list: null };
+export const todoTools = { list: "taskmanager_task_todo_list_for_issue" };
 
 export type TodosClient = {
   list: (issueId: string) => Promise<Todo[]>;
@@ -28,7 +28,6 @@ export const todosOf = (reply: unknown): Todo[] =>
 
 export const mcpTodosClient: TodosClient = {
   async list(issueId) {
-    if (todoTools.list === null) throw new Error("The todo list tool is not served yet.");
     return todosOf(await callTool("", todoTools.list, { taskID: issueId }));
   },
 };
