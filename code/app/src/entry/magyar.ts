@@ -153,4 +153,9 @@ export const magyar: Words = {
   consentLoading: "A hozzájárulási szöveg betöltése",
   consentUnreached: "A hozzájárulási szöveg nem töltődött be. Ellenőrizze a kapcsolatot, és próbálja újra.",
   consentNotSaved: "A hozzájárulás nem lett rögzítve. Próbálja újra.",
+  consentAgreedTo: "Ön a(z) {version}. verzióhoz járult hozzá",
+  consentWithdrew: "Ön visszavonta a hozzájárulását",
+  consentWithdraw: "Visszavonás",
+  consentAgreeAgain: "Újra elfogadom",
+  consentNotWithdrawn: "A hozzájárulás visszavonása nem sikerült. Próbálja újra.",
 };

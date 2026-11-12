@@ -175,10 +175,10 @@ describe("Shell drawer", () => {
     expect(page().classList.contains("open")).toBe(false);
   });
 
-  it("opens the four account rows and slides the bar, the body and the tab bar", async () => {
+  it("opens the five account rows and slides the bar, the body and the tab bar", async () => {
     inShell();
     await userEvent.click(screen.getByRole("button", { name: "Menu" }));
-    expect(within(screen.getByRole("menu")).getAllByRole("menuitem")).toHaveLength(4);
+    expect(within(screen.getByRole("menu")).getAllByRole("menuitem")).toHaveLength(5);
     expect(page().classList.contains("open")).toBe(true);
     expect(page()).toContainElement(screen.getByRole("banner"));
     expect(page()).toContainElement(screen.getByRole("main"));
@@ -216,7 +216,7 @@ describe("Shell drawer", () => {
   it("opens from a screen with a back link and slides the page when it has no tab bar", async () => {
     inShell({ tabless: true, onBack: () => undefined });
     await userEvent.click(screen.getByRole("button", { name: "Menu" }));
-    expect(within(screen.getByRole("menu")).getAllByRole("menuitem")).toHaveLength(4);
+    expect(within(screen.getByRole("menu")).getAllByRole("menuitem")).toHaveLength(5);
     expect(page().classList.contains("open")).toBe(true);
     expect(page()).toContainElement(screen.getByRole("banner"));
     expect(page()).toContainElement(screen.getByRole("main"));

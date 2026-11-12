@@ -329,6 +329,7 @@ describe("the menu on a screen with a back link", () => {
       expect.stringContaining("My profile"),
       expect.stringContaining("Switch agency"),
       expect.stringContaining("Change language"),
+      expect.stringContaining("Consent"),
       expect.stringContaining("Sign out"),
     ]);
     expect((screen.getByRole("main").closest(".page") as HTMLElement).classList.contains("open")).toBe(true);

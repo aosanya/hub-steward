@@ -153,4 +153,9 @@ export const swahili: Words = {
   consentLoading: "Inapakia maandishi ya idhini",
   consentUnreached: "Maandishi ya idhini hayakupakia. Angalia muunganisho wako kisha ujaribu tena.",
   consentNotSaved: "Idhini yako haikurekodiwa. Jaribu tena.",
+  consentAgreedTo: "Umekubali toleo la {version}",
+  consentWithdrew: "Umeondoa idhini yako",
+  consentWithdraw: "Ondoa idhini",
+  consentAgreeAgain: "Kubali tena",
+  consentNotWithdrawn: "Idhini yako haikuondolewa. Jaribu tena.",
 };

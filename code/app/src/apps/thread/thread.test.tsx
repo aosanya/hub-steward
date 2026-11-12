@@ -117,7 +117,7 @@ describe("AppThreadPage", () => {
     show(sourceOf());
     await screen.findByText("What do you want to buy?");
     await userEvent.click(screen.getByRole("button", { name: "Menu" }));
-    expect(within(screen.getByRole("menu")).getAllByRole("menuitem")).toHaveLength(4);
+    expect(within(screen.getByRole("menu")).getAllByRole("menuitem")).toHaveLength(5);
     const page = screen.getByRole("main", { name: "Thread" }).closest(".page") as HTMLElement;
     expect(page.classList.contains("open")).toBe(true);
     expect(page).toContainElement(screen.getByRole("banner"));

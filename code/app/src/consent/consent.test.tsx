@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { endInAgencies, farmers, openApp, startInAgencies, stubWakala, where } from "../journeys/inAgency.test-support";
 import { words } from "../entry/words";
 import { swahili } from "../entry/swahili";
-import { unsettle } from "./settled";
+import { settle, unsettle } from "./settled";
 
 const sheet = "We keep your answers and messages so the council can hear what residents think.";
 
@@ -52,15 +52,17 @@ describe("the Consent screen on first opening a hub", () => {
     const wakala = stubWakala(neverAgreed);
     openApp(homePath);
     await userEvent.click(await screen.findByRole("button", { name: words.consentAgree }));
+    const askedBeforeAgreeing = wakala.named("custody_get_my_consent").length;
     await waitFor(() => expect(where()).toBe(doSomethingPath));
     expect(screen.queryByRole("heading", { name: words.consentTitle })).toBeNull();
-    expect(wakala.named("custody_get_my_consent")).toHaveLength(1);
+    expect(wakala.named("custody_get_my_consent")).toHaveLength(askedBeforeAgreeing);
   });
 
   it("asks again after a withdrawal", async () => {
     stubWakala({ ...neverAgreed, custody_get_my_consent: () => ({ status: "withdrawn" }) });
     openApp(homePath);
-    expect(await screen.findByRole("button", { name: words.consentAgree })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: words.consentAgreeAgain })).toBeInTheDocument();
+    expect(where()).toBe(consentPath);
   });
 
   it("goes straight to the tabs when the resident has already agreed", async () => {
@@ -97,5 +99,87 @@ describe("the Consent screen on first opening a hub", () => {
     stubWakala(neverAgreed);
     openApp(homePath);
     expect(await screen.findByRole("button", { name: swahili.consentAgree })).toBeInTheDocument();
+  });
+});
+
+const standing = () => {
+  let status = "agreed";
+  return {
+    ...neverAgreed,
+    custody_get_my_consent: () => ({ status, mechanics_version_id: "m3" }),
+    custody_agree_consent: () => {
+      status = "agreed";
+      return { id: "c2", mechanics_version_id: "m3" };
+    },
+    custody_withdraw_consent: () => {
+      status = "withdrawn";
+      return { status };
+    },
+  };
+};
+
+const openFromMenu = async () => {
+  settle(farmers.id);
+  openApp(homePath);
+  await userEvent.click(await screen.findByRole("button", { name: "Menu" }));
+  await userEvent.click(screen.getByRole("menuitem", { name: "Consent" }));
+};
+
+describe("the Consent entry in the Menu drawer", () => {
+  it("opens the agreed screen: the version, the text and one Withdraw button", async () => {
+    stubWakala(standing());
+    await openFromMenu();
+    expect(await screen.findByText(sheet)).toBeInTheDocument();
+    expect(where()).toBe(consentPath);
+    expect(screen.getByRole("heading", { name: words.consentTitle })).toBeInTheDocument();
+    expect(screen.getByText("You agreed to version 3")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: words.consentWithdraw })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: words.consentAgree })).toBeNull();
+    expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Menu" })).toBeInTheDocument();
+  });
+
+  it("withdraws for the hub and then offers Agree again under You withdrew your consent", async () => {
+    const wakala = stubWakala(standing());
+    await openFromMenu();
+    await userEvent.click(await screen.findByRole("button", { name: words.consentWithdraw }));
+    expect(await screen.findByText(words.consentWithdrew)).toBeInTheDocument();
+    expect(wakala.named("custody_withdraw_consent")).toHaveLength(1);
+    expect(wakala.named("custody_withdraw_consent")[0].instance).toBe(farmers.id);
+    expect(screen.getByText(sheet)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: words.consentAgreeAgain })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: words.consentWithdraw })).toBeNull();
+    expect(where()).toBe(consentPath);
+  });
+
+  it("agrees again and returns to the agreed screen without leaving it", async () => {
+    const wakala = stubWakala(standing());
+    await openFromMenu();
+    await userEvent.click(await screen.findByRole("button", { name: words.consentWithdraw }));
+    await userEvent.click(await screen.findByRole("button", { name: words.consentAgreeAgain }));
+    expect(await screen.findByText("You agreed to version 3")).toBeInTheDocument();
+    expect(wakala.named("custody_agree_consent")).toHaveLength(1);
+    expect(screen.getByRole("button", { name: words.consentWithdraw })).toBeInTheDocument();
+    expect(where()).toBe(consentPath);
+  });
+
+  it("says the consent was not withdrawn when the hub refuses it, and keeps Withdraw", async () => {
+    stubWakala({
+      ...standing(),
+      custody_withdraw_consent: () => {
+        throw new Error("refused");
+      },
+    });
+    await openFromMenu();
+    await userEvent.click(await screen.findByRole("button", { name: words.consentWithdraw }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(words.consentNotWithdrawn);
+    expect(screen.getByRole("button", { name: words.consentWithdraw })).toBeInTheDocument();
+  });
+
+  it("takes the resident back to the screen they came from", async () => {
+    stubWakala(standing());
+    await openFromMenu();
+    await userEvent.click(await screen.findByRole("button", { name: "Back" }));
+    expect(where()).toBe(homePath);
   });
 });

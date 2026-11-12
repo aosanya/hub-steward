@@ -45,7 +45,7 @@ describe("the Menu button on the entry screens", () => {
     await userEvent.click(screen.getByRole("button", { name: words.changeLanguage }));
     expect(within(bar()).getByRole("button", { name: "Back" })).toBeInTheDocument();
     await userEvent.click(menuIn(bar())!);
-    expect(within(screen.getByRole("menu")).getAllByRole("menuitem")).toHaveLength(4);
+    expect(within(screen.getByRole("menu")).getAllByRole("menuitem")).toHaveLength(5);
     expect((screen.getByRole("main").closest(".page") as HTMLElement).classList.contains("open")).toBe(true);
     expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
   });

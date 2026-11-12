@@ -151,6 +151,11 @@ export const words = {
   consentLoading: "Loading the consent text",
   consentUnreached: "The consent text did not load. Check your connection and try again.",
   consentNotSaved: "Your consent was not recorded. Try again.",
+  consentAgreedTo: "You agreed to version {version}",
+  consentWithdrew: "You withdrew your consent",
+  consentWithdraw: "Withdraw",
+  consentAgreeAgain: "Agree again",
+  consentNotWithdrawn: "Your consent was not withdrawn. Try again.",
 } as const;
 
 export const languages = [

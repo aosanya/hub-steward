@@ -24,11 +24,12 @@ const menuButton = () => screen.getByRole("button", { name: "Menu" });
 const titles = () => screen.getAllByRole("menuitem").map((item) => item.querySelector(".ttl")?.textContent);
 
 describe("the account menu items", () => {
-  it("are the four account pages, in this order", () => {
+  it("are the five account pages, in this order", () => {
     expect(accountItems).toEqual([
       { title: "My profile", path: "/profile" },
       { title: "Switch agency", path: "/agencies" },
       { title: "Change language", path: "/language" },
+      { title: "Consent", path: "/consent" },
       { title: "Sign out", path: "/sign-out" },
     ]);
   });
@@ -49,12 +50,12 @@ describe("the menu button", () => {
     expect(menuButton().querySelectorAll("svg path")).toHaveLength(3);
   });
 
-  it("opens the four items in order", async () => {
+  it("opens the five items in order", async () => {
     open();
     await userEvent.click(menuButton());
     expect(menuButton()).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByRole("menu", { name: "Menu" })).toBeInTheDocument();
-    expect(titles()).toEqual(["My profile", "Switch agency", "Change language", "Sign out"]);
+    expect(titles()).toEqual(["My profile", "Switch agency", "Change language", "Consent", "Sign out"]);
   });
 
   it("points at the drawer with aria-controls, open or closed", async () => {
@@ -82,7 +83,7 @@ describe("the menu button", () => {
     open();
     await userEvent.click(menuButton());
     const rows = screen.getAllByRole("menuitem");
-    expect(rows.map((row) => row.querySelector(".lead")?.textContent)).toEqual(["M", "S", "C", "S"]);
+    expect(rows.map((row) => row.querySelector(".lead")?.textContent)).toEqual(["M", "S", "C", "C", "S"]);
     rows.forEach((row) => {
       expect(row.querySelector(".lead")).toHaveAttribute("aria-hidden", "true");
       expect(row.querySelector(".end")).toHaveAttribute("aria-hidden", "true");
@@ -142,7 +143,7 @@ describe("moving through the drawer with the arrow keys", () => {
     await userEvent.click(menuButton());
     await userEvent.keyboard("{ArrowDown}");
     expect(screen.getByRole("menuitem", { name: /Switch agency/ })).toHaveFocus();
-    await userEvent.keyboard("{ArrowDown}{ArrowDown}");
+    await userEvent.keyboard("{ArrowDown}{ArrowDown}{ArrowDown}");
     expect(screen.getByRole("menuitem", { name: /Sign out/ })).toHaveFocus();
     await userEvent.keyboard("{ArrowDown}");
     expect(screen.getByRole("menuitem", { name: /My profile/ })).toHaveFocus();

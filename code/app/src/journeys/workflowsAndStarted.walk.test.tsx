@@ -335,7 +335,7 @@ const step1AFarmerOpensHome = async () => {
   expect(screen.queryByText("Nothing ongoing yet")).toBeNull();
   expect(fakes.called("agency_list_my_open_steps")).not.toHaveLength(0);
   expect(startRowsShown()).toEqual(farmerStartRows);
-  for (const item of ["My profile", "Switch agency", "Change language", "Sign out"]) {
+  for (const item of ["My profile", "Switch agency", "Change language", "Consent", "Sign out"]) {
     expect(screen.queryByText(item)).toBeNull();
   }
   expect(screen.queryByText(startStep.form_name)).toBeNull();
@@ -357,8 +357,8 @@ const step2SheOpensTheMenu = async () => {
   const menu = await screen.findByRole("menu", { name: "Menu" });
   expect(screen.getByRole("button", { name: "Menu" })).toHaveAttribute("aria-expanded", "true");
   const items = within(menu).getAllByRole("menuitem");
-  expect(items).toHaveLength(4);
-  ["My profile", "Switch agency", "Change language", "Sign out"].forEach((name, at) => {
+  expect(items).toHaveLength(5);
+  ["My profile", "Switch agency", "Change language", "Consent", "Sign out"].forEach((name, at) => {
     expect(within(menu).getByRole("menuitem", { name })).toBe(items[at]);
   });
 
@@ -538,7 +538,7 @@ afterEach(() => {
 describe("journey 22 and 18, the agency's workflows on Do Something and the Ongoing rows", () => {
   it("step 1: a farmer opens Do Something and finds no agency name in the page, Start chosen beside Ongoing, the workflows as rows, the Menu button in the bar and no account items", step1AFarmerOpensHome);
 
-  it("step 2: she opens the Menu, sees its four items and Switch agency goes to the agency list", step2SheOpensTheMenu);
+  it("step 2: she opens the Menu, sees its five items and Switch agency goes to the agency list", step2SheOpensTheMenu);
 
   it("step 3: she opens the Join a group row, asks to join, and Start keeps the row while Ongoing holds the group as Join a group, Requested", step3SheAsksToJoinAGroup);
 

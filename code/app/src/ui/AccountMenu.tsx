@@ -8,6 +8,7 @@ export const accountItems: { title: string; path: string }[] = [
   { title: "My profile", path: "/profile" },
   { title: "Switch agency", path: "/agencies" },
   { title: "Change language", path: "/language" },
+  { title: "Consent", path: "/consent" },
   { title: "Sign out", path: "/sign-out" },
 ];
 
