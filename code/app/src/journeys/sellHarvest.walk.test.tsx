@@ -35,7 +35,7 @@ const press = async (name: string | RegExp) => userEvent.click(await screen.find
 
 const startRow = async (name: string | RegExp) => userEvent.click(await screen.findByRole("button", { name }));
 
-const doSomethingShown = () => screen.findByRole("heading", { name: "Do Something", level: 1 });
+const doSomethingShown = () => screen.findByRole("heading", { name: "Start", level: 1 });
 
 const fill = async (label: string, value: string) => userEvent.type(await screen.findByLabelText(label), value);
 

@@ -324,7 +324,7 @@ describe("journey 14, supply inputs", () => {
     expect(screen.queryByRole("button", { name: /^Offers/ })).toBeNull();
 
     await goBack();
-    await heading("Do Something");
+    await heading("Start");
     expect(await screen.findByRole("button", { name: /^Sell harvest/ })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /^Orders/ })).toBeNull();
     expect(screen.queryByRole("button", { name: /^Asks/ })).toBeNull();
