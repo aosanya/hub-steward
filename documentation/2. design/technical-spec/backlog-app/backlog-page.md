@@ -367,6 +367,40 @@ through it. The issue page's top row is no longer a static `IssueRow`; the
 shared row now only draws rows. The board card and the chat card that had a
 class of their own are gone.
 
+## Todo list of an issue (D159, TDL-1)
+
+An issue holds a todo list: its work cut into smaller pieces, each of which can wait on other pieces, so the list is a dependency tree. Issues keep the steps they have today; the list sits inside an issue and adds no step.
+
+Where it is: the left card of the issue page, under the description. The board card shows a pill such as 2 of 6, the pieces Done out of all pieces, and no pill for an issue with no pieces.
+
+| Status | Means | The API's status |
+|---|---|---|
+| To do | Nothing it waits on is open, and nobody has started it | `pending` |
+| In progress | Someone is working on it | `dispatched` |
+| Done | Finished | `completed` |
+| Blocked | It waits on a piece that is not Done, or a person marked it | `blocked`, and `failed` shows as Blocked (D159, my choice, needs the owner's word) |
+
+How Blocked works:
+
+- A piece is Blocked by itself while a piece it waits on is not Done, and turns To do when all of them are Done.
+- Anyone can also mark a piece Blocked by hand. The reason is written when they do, and shows under the piece.
+- Not yet settled by the owner (my choices): a piece Blocked by hand stays Blocked when the pieces it waits on are Done, until a person lifts it, and lifting it clears the reason.
+
+What a person can do: add a piece, rename it, reorder it, delete it, and set what it waits on. A change that would make a cycle, or make a piece wait on a piece of another issue, is refused, and the card says so.
+
+Who writes the list: when an agent picks up an issue that has no pieces, it writes the list first, then works the pieces in order, and sets each one's status as it goes. A person can change what the agent wrote.
+
+Moving to Review: when the last piece is Done, an issue that is In progress moves to Review by itself. An issue in any other step does not move. If the issue's backlog has no Review step, nothing moves.
+
+What exists today in the taskmanager, and what is new:
+
+| Today | New |
+|---|---|
+| A todo has a status (`pending`, `dispatched`, `completed`, `blocked`, `failed`), `depends_on` and `parent_task_id` | Listing the todos of an issue |
+| Todos are listed only by workflow run (`taskmanager_task_todo_list`) | Edit, reorder and delete |
+| A todo can be created, read, dispatched and given a status | Refusing a cycle or a piece of another issue |
+| There is no edit and no delete | Blocked by itself and back to To do, the written reason, the move to Review, the count for the pill |
+
 ## What this leaves out
 
 | Left out | Why |
