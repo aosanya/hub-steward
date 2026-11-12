@@ -58,6 +58,10 @@ const reply = (world: World) => async (_hub: string, tool: string, args: Raw = {
       return { items: world.groups };
     case "comm_chat_thread_list":
       return { items: world.threads[args.structure_id] ?? [] };
+    case "agency_get_agency":
+      return { name: "Walk agency" };
+    case "agency_list_mounts":
+      return { modules: [] };
     case "agency_list_drafts":
     case "agency_list_work_items":
       return { items: [] };

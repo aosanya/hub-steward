@@ -7,7 +7,7 @@ import { rememberSide } from "./tabs";
 import { setRuntimeConfig } from "./wakala/config";
 
 beforeEach(() => {
-  vi.spyOn(mcpAssignedClient, "assigned").mockRejectedValue(new Error("issues unavailable"));
+  vi.spyOn(mcpAssignedClient, "assigned").mockResolvedValue([]);
   window.localStorage.clear();
   forgetSent();
   forgetConversations();
