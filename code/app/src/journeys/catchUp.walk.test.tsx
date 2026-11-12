@@ -52,6 +52,7 @@ const reply = (world: World) => async (_hub: string, tool: string, args: Raw = {
       return { marked: ids.length };
     }
     case "actor_list_my_invitations":
+    case "agency_list_my_open_steps":
       return { items: [] };
     case "actor_list_my_groups":
       return { items: world.groups };
@@ -115,17 +116,19 @@ describe("journey 23, step 1: opens the Inbox", () => {
     seedFarmers();
     open("/inbox");
 
-    expect(await screen.findByLabelText("2 unread notifications")).toHaveTextContent("2");
-    expect(screen.getByRole("link", { name: /Notifications/ })).toContainElement(screen.getByLabelText("2 unread notifications"));
+    expect(await screen.findByLabelText("1 thing to do")).toHaveTextContent("1");
+    expect(screen.getByRole("link", { name: /Notifications/ })).toContainElement(screen.getByLabelText("1 thing to do"));
+    expect(screen.getByRole("link", { name: /Notifications/ })).toContainElement(screen.getByRole("img", { name: "New updates" }));
     expect(callsTo(world, "comm_notification_list")).toHaveLength(1);
   });
 
-  it("takes the number off the Notifications tab when she marks all read", async () => {
+  it("takes the news dot off the Notifications tab when she marks all read and keeps the thing waiting", async () => {
     seedFarmers();
     open("/inbox");
     await userEvent.click(await screen.findByRole("button", { name: "Mark all read" }));
 
-    expect(screen.queryByLabelText(/unread notifications/)).not.toBeInTheDocument();
+    expect(screen.queryByRole("img", { name: "New updates" })).not.toBeInTheDocument();
+    expect(screen.getByLabelText("1 thing to do")).toBeInTheDocument();
   });
 
   it("offers Mark all read while anything is unread", async () => {
@@ -134,13 +137,13 @@ describe("journey 23, step 1: opens the Inbox", () => {
     expect(await screen.findByRole("button", { name: "Mark all read" })).toBeInTheDocument();
   });
 
-  it("marks only the unread rows read, clears every dot, keeps the rows and takes Mark all read away", async () => {
+  it("marks only the unread updates read, keeps the dot of the form that waits on her, keeps the rows and takes Mark all read away", async () => {
     seedFarmers();
     open("/inbox");
     await userEvent.click(await screen.findByRole("button", { name: "Mark all read" }));
 
-    expect(callsTo(world, "comm_notification_mark_read")).toEqual([{ ids: ["n1", "n2"] }]);
-    expect(dots()).toHaveLength(0);
+    expect(callsTo(world, "comm_notification_mark_read")).toEqual([{ ids: ["n1"] }]);
+    expect(dots()).toHaveLength(1);
     expect(screen.queryByRole("button", { name: "Mark all read" })).not.toBeInTheDocument();
     expect(screen.getByText("You joined Siaya Farmers' Group")).toBeInTheDocument();
     expect(screen.getByText("New form")).toBeInTheDocument();
@@ -155,7 +158,7 @@ describe("journey 23, step 1: opens the Inbox", () => {
 
     open("/inbox");
     expect(await screen.findByText("You joined Siaya Farmers' Group")).toBeInTheDocument();
-    expect(dots()).toHaveLength(0);
+    expect(dots()).toHaveLength(1);
     expect(screen.queryByRole("button", { name: "Mark all read" })).not.toBeInTheDocument();
   });
 

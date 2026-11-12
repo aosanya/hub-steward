@@ -258,7 +258,7 @@ describe("journey 18, the Start step on Do Something and in the Inbox", () => {
     expect(within(row).getByLabelText("Unread")).toBeInTheDocument();
     expect(within(row).getByText(`${agency.name} · ${startStep.role_name}`)).toBeInTheDocument();
     expect(row.querySelector(".end")).toBeNull();
-    expect(screen.getByLabelText("1 unread notifications")).toBeInTheDocument();
+    expect(screen.getByLabelText("1 thing to do")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Mark all read" })).not.toBeInTheDocument();
     expect(screen.queryByText("You are all caught up")).not.toBeInTheDocument();
   });

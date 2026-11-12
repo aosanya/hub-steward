@@ -72,7 +72,7 @@ describe("selecting rows to mark read", () => {
     await userEvent.click(screen.getByRole("button", { name: "Mark read" }));
     expect(client.markRead).toHaveBeenCalledTimes(1);
     expect(client.markRead).toHaveBeenCalledWith(["c1", "c3"]);
-    expect(await screen.findByLabelText("1 unread notifications")).toBeInTheDocument();
+    expect(await screen.findByRole("img", { name: "New updates" })).toBeInTheDocument();
     expect(boxes()).toHaveLength(1);
     expect(screen.getByRole("button", { name: "Mark all read" })).toBeInTheDocument();
   });

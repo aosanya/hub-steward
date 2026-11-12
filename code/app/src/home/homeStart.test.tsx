@@ -141,9 +141,9 @@ describe("Do Something and the Home badge read the same waiting steps", () => {
     expect(await screen.findByText("Urea group order")).toBeInTheDocument();
     await goHome();
     const nav = screen.getByRole("navigation", { name: "Main" });
-    expect(await within(nav).findByLabelText("1 unread notifications")).toBeInTheDocument();
+    expect(await within(nav).findByLabelText("1 thing to do")).toBeInTheDocument();
     expect(await screen.findByText(startStep.title)).toBeInTheDocument();
-    expect(within(screen.getByRole("navigation", { name: "Main" })).getByLabelText("1 unread notifications")).toBeInTheDocument();
+    expect(within(screen.getByRole("navigation", { name: "Main" })).getByLabelText("1 thing to do")).toBeInTheDocument();
   });
 
   it("reads the steps for the Start row, again for the badge once Home is back, and once for the other Start rows, which callTool answers from one request", async () => {
@@ -151,7 +151,7 @@ describe("Do Something and the Home badge read the same waiting steps", () => {
     openAt(`/a/${hub}/do-something`);
     await screen.findByText("Urea group order");
     await goHome();
-    expect(await screen.findByLabelText("1 unread notifications")).toBeInTheDocument();
+    expect(await screen.findByLabelText("1 thing to do")).toBeInTheDocument();
     expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && !args?.available)).toHaveLength(4);
     expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && args?.available === true)).toHaveLength(4);
   });
@@ -160,7 +160,7 @@ describe("Do Something and the Home badge read the same waiting steps", () => {
     const call = answering(async () => ({ modules: [] }));
     openAt(`/a/${hub}/home`);
     await screen.findByText(startStep.title);
-    expect(await screen.findByLabelText("1 unread notifications")).toBeInTheDocument();
+    expect(await screen.findByLabelText("1 thing to do")).toBeInTheDocument();
     expect(call.mock.calls.filter(([, tool]) => tool === "agency_list_my_open_steps")).toHaveLength(4);
   });
 });
@@ -180,7 +180,7 @@ describe("a workflow step that is not the group order Start", () => {
     openAt(`/a/${hub}/do-something`);
     await screen.findByRole("button", { name: /^Join a group/ });
     await goHome();
-    expect(screen.queryByLabelText(/unread notifications/)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/things? to do/)).not.toBeInTheDocument();
   });
 });
 

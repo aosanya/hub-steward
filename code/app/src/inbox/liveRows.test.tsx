@@ -329,22 +329,22 @@ describe("tapping a live row", () => {
     expect(await screen.findByText(`landed in room ${room} thread cthread-1`)).toBeInTheDocument();
   });
 
-  it("shows the tab on the next screen one lower, though the list is read while the mark is still on its way", async () => {
-    server([liveRow("1"), liveRow("2")], { delayMs: 30, listDelayMs: 60 });
+  it("takes the news dot off the tab on the next screen, though the list is read while the mark is still on its way", async () => {
+    server([liveRow("1")], { delayMs: 30, listDelayMs: 60 });
     showBeside();
-    expect(await screen.findByLabelText("2 unread notifications")).toBeInTheDocument();
+    expect(await screen.findByRole("img", { name: "New updates" })).toBeInTheDocument();
     await tapFirst();
     expect(await screen.findByText(`landed in room ${room} thread cthread-1`)).toBeInTheDocument();
-    expect(await screen.findByLabelText("1 unread notifications")).toBeInTheDocument();
+    await vi.waitFor(() => expect(screen.queryByRole("img", { name: "New updates" })).toBeNull());
   });
 
-  it("leaves the tab as it was on the next screen when the mark is refused", async () => {
-    server([liveRow("1"), liveRow("2")], { fails: true });
+  it("leaves the news dot on the tab on the next screen when the mark is refused", async () => {
+    server([liveRow("1")], { fails: true });
     showBeside();
-    expect(await screen.findByLabelText("2 unread notifications")).toBeInTheDocument();
+    expect(await screen.findByRole("img", { name: "New updates" })).toBeInTheDocument();
     await tapFirst();
     expect(await screen.findByText(`landed in room ${room} thread cthread-1`)).toBeInTheDocument();
-    expect(await screen.findByLabelText("2 unread notifications")).toBeInTheDocument();
+    expect(await screen.findByRole("img", { name: "New updates" })).toBeInTheDocument();
   });
 });
 

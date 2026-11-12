@@ -170,14 +170,14 @@ describe("tapping a row", () => {
       </MemoryRouter>,
     );
 
-  it("marks the row read, clears its dot and takes one off the tab", async () => {
-    const client = fake([chatNote("c1"), chatNote("c2")]);
+  it("marks the row read, clears its dot and takes the news dot off the tab when it was the last unread", async () => {
+    const client = fake([chatNote("c1")]);
     show(client);
-    expect(await screen.findByLabelText("2 unread notifications")).toBeInTheDocument();
-    const [first] = screen.getAllByRole("button", { name: /There is a new reply/ });
+    expect(await screen.findByRole("img", { name: "New updates" })).toBeInTheDocument();
+    const first = screen.getByRole("button", { name: /There is a new reply/ });
     await userEvent.click(first);
     expect(client.markRead).toHaveBeenCalledWith(["c1"]);
-    expect(await screen.findByLabelText("1 unread notifications")).toBeInTheDocument();
+    await vi.waitFor(() => expect(screen.queryByRole("img", { name: "New updates" })).toBeNull());
     expect(within(first).queryByLabelText("Unread")).toBeNull();
   });
 
@@ -196,7 +196,7 @@ describe("tapping a row", () => {
     show(client);
     await userEvent.click(await screen.findByRole("button", { name: /There is a new reply/ }));
     await vi.waitFor(() => expect(client.markRead).toHaveBeenCalled());
-    expect(screen.getByLabelText("1 unread notifications")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "New updates" })).toBeInTheDocument();
     expect(screen.getByLabelText("Unread")).toBeInTheDocument();
   });
 
