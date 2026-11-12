@@ -399,3 +399,26 @@ func TestAStepPublishedWithoutItsRegisterIsRefusedWithAConflict(t *testing.T) {
 		}
 	}
 }
+
+func TestAFirstStepSentTwiceWithOneSendKeyStartsOneRun(t *testing.T) {
+	w := referral(t)
+	body := map[string]any{"answers": map[string]string{"Reason": "Fever", "Minutes to the clinic": "10"}, "send_key": "opening-1"}
+	path := "/instances/" + w.instance + "/steps/" + w.steps["Report a referral"] + "/answers"
+	first := w.call(t, "POST", path, body, w.people["Volunteer"])
+	if first.Code != http.StatusCreated {
+		t.Fatalf("the first send: %d %s", first.Code, first.Body.String())
+	}
+	if again := w.call(t, "POST", path, body, w.people["Volunteer"]); again.Code != http.StatusConflict {
+		t.Errorf("the same send repeated: %d %s, want 409", again.Code, again.Body.String())
+	}
+	if waiting := w.available(t, w.people["Liaison"]); len(waiting) != 1 {
+		t.Errorf("the liaison sees %d runs, want 1: %v", len(waiting), waiting)
+	}
+	body["send_key"] = "opening-2"
+	if other := w.call(t, "POST", path, body, w.people["Volunteer"]); other.Code != http.StatusCreated {
+		t.Errorf("a new opening of the form: %d %s, want 201", other.Code, other.Body.String())
+	}
+	if waiting := w.available(t, w.people["Liaison"]); len(waiting) != 2 {
+		t.Errorf("the liaison sees %d runs, want 2", len(waiting))
+	}
+}

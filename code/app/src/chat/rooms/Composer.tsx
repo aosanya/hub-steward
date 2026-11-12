@@ -6,10 +6,12 @@ export function Composer({ placeholder, onSend }: Props) {
   const field = useRef<HTMLInputElement>(null);
   const [body, setBody] = useState("");
   const [problem, setProblem] = useState("");
-  const ready = body.trim() !== "";
+  const [sending, setSending] = useState(false);
+  const ready = body.trim() !== "" && !sending;
   const send = async () => {
     if (!ready) return;
     setProblem("");
+    setSending(true);
     try {
       await onSend(body.trim());
       setBody("");
@@ -17,6 +19,7 @@ export function Composer({ placeholder, onSend }: Props) {
     } catch {
       setProblem("Your message was not sent. Try again.");
     }
+    setSending(false);
   };
   return (
     <div className="rm-composer">
@@ -32,7 +35,7 @@ export function Composer({ placeholder, onSend }: Props) {
           onChange={(e) => setBody(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()}
         />
-        <button type="button" className={ready ? "rm-send ready" : "rm-send"} aria-label="Send" disabled={!ready} onClick={send}>
+        <button type="button" className={ready ? "rm-send ready" : "rm-send"} aria-label={sending ? "Sending" : "Send"} disabled={!ready} onClick={send}>
           ↑
         </button>
       </div>

@@ -11,7 +11,11 @@ export type MemberStep = StartStep & { state: StepState; orderId: string; record
 
 export type Sent = { done: boolean; next: MemberStep | null; orderId: string };
 
-export type SendRefusal = "role" | "not-ready" | "invalid" | "missing" | "failed";
+export type SendRefusal = "role" | "not-ready" | "invalid" | "missing" | "failed" | "timeout";
+
+export const sendTimeoutMs = 20000;
+
+export const newSendKey = () => crypto.randomUUID();
 
 export const refusalWords: Record<SendRefusal, string> = {
   role: "This step is not for your role.",
@@ -19,6 +23,7 @@ export const refusalWords: Record<SendRefusal, string> = {
   invalid: "Check your answers and try again.",
   missing: "This could not be opened.",
   failed: "Your answers could not be sent. Try again.",
+  timeout: "This is taking too long. Try again.",
 };
 
 export class StepRefused extends Error {
@@ -29,7 +34,7 @@ export class StepRefused extends Error {
 
 export type StepsClient = {
   available: () => Promise<MemberStep[]>;
-  submit: (step: Pick<MemberStep, "id" | "state" | "orderId">, answers: Record<string, string>) => Promise<Sent>;
+  submit: (step: Pick<MemberStep, "id" | "state" | "orderId">, answers: Record<string, string>, sendKey: string) => Promise<Sent>;
 };
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
@@ -42,7 +47,7 @@ export const memberStepOf = (raw: any): MemberStep | undefined => {
 };
 
 const refusalOf = (status: number): SendRefusal =>
-  status === 403 ? "role" : status === 409 ? "not-ready" : status === 400 ? "invalid" : status === 404 ? "missing" : "failed";
+  status === 403 ? "role" : status === 400 ? "invalid" : status === 404 ? "missing" : "failed";
 
 const answerKinds = ["fill_form", "send_form"];
 
@@ -57,9 +62,11 @@ export const mcpStepsClient: StepsClient = {
       .flatMap((raw) => memberStepOf(raw) ?? [])
       .filter((step) => !(step.state === "start" && wasStarted(step.id)));
   },
-  async submit(step, answers) {
+  async submit(step, answers, sendKey) {
     const { wakala } = await runtimeConfig();
-    const body = { answers, ...(step.state === "waiting" ? { order_id: step.orderId } : {}) };
+    const body = { answers, ...(step.state === "waiting" ? { order_id: step.orderId } : { send_key: sendKey }) };
+    const limit = new AbortController();
+    const timer = setTimeout(() => limit.abort(), sendTimeoutMs);
     let res: Response;
     try {
       res = await fetch(`${wakala}/instances/${encodeURIComponent(openAgencyId())}/steps/${encodeURIComponent(step.id)}/answers`, {
@@ -67,12 +74,16 @@ export const mcpStepsClient: StepsClient = {
         credentials: "include",
         headers: { ...(await renewedAuthHeaders()), "Content-Type": "application/json" },
         body: JSON.stringify(body),
+        signal: limit.signal,
       });
     } catch {
-      throw new StepRefused("failed");
+      throw new StepRefused(limit.signal.aborted ? "timeout" : "failed");
+    } finally {
+      clearTimeout(timer);
     }
-    if (!res.ok) throw new StepRefused(refusalOf(res.status));
+    if (!res.ok && res.status !== 409) throw new StepRefused(refusalOf(res.status));
     forgetReads();
+    if (res.status === 409) return { done: false, next: null, orderId: step.orderId };
     const reply = await res.json().catch(() => ({}));
     return { done: reply?.done === true, next: reply?.next_step ? (memberStepOf(reply.next_step) ?? null) : null, orderId: text(reply?.order_id) };
   },

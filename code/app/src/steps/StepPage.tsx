@@ -10,7 +10,7 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Shell } from "../ui/Shell";
-import { mcpStepsClient, StepRefused, refusalWords, type StepsClient } from "./api";
+import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type StepsClient } from "./api";
 import { answersOf, formQuestionsOf, unsendable } from "./questions";
 import { markSent } from "./sent";
 
@@ -33,6 +33,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
   const [problems, setProblems] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "sending">("idle");
   const [refusal, setRefusal] = useState("");
+  const [sendKey] = useState(newSendKey);
   const step = loaded.state === "ready" ? loaded.data.find((s) => s.id === stepId && s.orderId === order) : undefined;
   const back = () => navigate(doSomethingBackPath());
 
@@ -63,7 +64,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
     setStatus("sending");
     setRefusal("");
     try {
-      const reply = await steps.submit(step, answersOf(questions, draft));
+      const reply = await steps.submit(step, answersOf(questions, draft), sendKey);
       markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title });
       navigate(doSomethingBackPath());
     } catch (e) {
@@ -90,7 +91,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
       <BottomBar>
         <Button onClick={back}>Back</Button>
         <Button kind="primary" disabled={status === "sending"} onClick={send}>
-          Send
+          {status === "sending" ? "Sending" : "Send"}
         </Button>
       </BottomBar>
     </Shell>

@@ -94,11 +94,11 @@ describe("listing what a member may act on now", () => {
 describe("sending a step's answers", () => {
   it("posts the answers keyed by prompt to the step, with no run for a start step, and reads the next step the reply carries", async () => {
     const fetch = fetched(201, { step_id: "s1", order_id: "o1", record_code: "REC-1", row_id: "row1", done: true, next_step: raw({ id: "s2", state: "waiting", order_id: "o1", role_name: "Liaison" }) });
-    const sent = await mcpStepsClient.submit({ id: "s1", state: "start", orderId: "" }, { Reason: "Needs a clinic check", "Visits this week": "3" });
+    const sent = await mcpStepsClient.submit({ id: "s1", state: "start", orderId: "" }, { Reason: "Needs a clinic check", "Visits this week": "3" }, "k1");
     const [url, init] = fetch.mock.calls[0];
     expect(String(url)).toBe("https://wakala.test/instances/hub1/steps/s1/answers");
     expect(init?.method).toBe("POST");
-    expect(JSON.parse(String(init?.body))).toEqual({ answers: { Reason: "Needs a clinic check", "Visits this week": "3" } });
+    expect(JSON.parse(String(init?.body))).toEqual({ answers: { Reason: "Needs a clinic check", "Visits this week": "3" }, send_key: "k1" });
     expect(sent.done).toBe(true);
     expect(sent.orderId).toBe("o1");
     expect(sent.next).toMatchObject({ id: "s2", state: "waiting", orderId: "o1", roleName: "Liaison" });
@@ -106,7 +106,7 @@ describe("sending a step's answers", () => {
 
   it("sends the run with a waiting step and reports no next step after the last", async () => {
     const fetch = fetched(201, { done: true, next_step: null });
-    const sent = await mcpStepsClient.submit({ id: "s2", state: "waiting", orderId: "o1" }, { Arrived: "yes" });
+    const sent = await mcpStepsClient.submit({ id: "s2", state: "waiting", orderId: "o1" }, { Arrived: "yes" }, "k2");
     expect(JSON.parse(String(fetch.mock.calls[0][1]?.body))).toEqual({ answers: { Arrived: "yes" }, order_id: "o1" });
     expect(sent).toEqual({ done: true, next: null, orderId: "" });
   });
@@ -114,19 +114,18 @@ describe("sending a step's answers", () => {
   it("forgets what it read so the next list is read afresh", async () => {
     fetched(201, { done: true, next_step: null });
     const forget = vi.spyOn(mcp, "forgetReads");
-    await mcpStepsClient.submit({ id: "s1", state: "start", orderId: "" }, {});
+    await mcpStepsClient.submit({ id: "s1", state: "start", orderId: "" }, {}, "k1");
     expect(forget).toHaveBeenCalled();
   });
 
   it.each([
     [403, "role"],
-    [409, "not-ready"],
     [400, "invalid"],
     [404, "missing"],
     [500, "failed"],
   ])("turns an answer of %i into the reason %s, in plain words", async (status, reason) => {
     fetched(status);
-    const failure = await mcpStepsClient.submit({ id: "s1", state: "start", orderId: "" }, {}).catch((e) => e);
+    const failure = await mcpStepsClient.submit({ id: "s1", state: "start", orderId: "" }, {}, "k1").catch((e) => e);
     expect(failure).toBeInstanceOf(StepRefused);
     expect(failure.reason).toBe(reason);
     expect(failure.message).toBe(refusalWords[reason as keyof typeof refusalWords]);
@@ -139,7 +138,7 @@ describe("sending a step's answers", () => {
 
   it("reports a failure to reach the server as a failed send", async () => {
     vi.spyOn(globalThis, "fetch").mockRejectedValue(new TypeError("offline"));
-    const failure = await mcpStepsClient.submit({ id: "s1", state: "start", orderId: "" }, {}).catch((e) => e);
+    const failure = await mcpStepsClient.submit({ id: "s1", state: "start", orderId: "" }, {}, "k1").catch((e) => e);
     expect(failure.reason).toBe("failed");
   });
 });

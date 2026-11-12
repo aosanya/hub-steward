@@ -39,6 +39,7 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient, abo
   const [invitationsOutage, setInvitationsOutage] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [problem, setProblem] = useState("");
+  const [working, setWorking] = useState<"join" | "decline" | null>(null);
   const outage = (notificationsFailed && notificationsOutage) || (invitationsFailed && invitationsOutage);
 
   useEffect(() => {
@@ -75,14 +76,18 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient, abo
       setOpened(null);
     };
     const settle = () => setInvitations(invitations.filter((i) => i.id !== invitation.id));
-    const attempt = async (call: () => Promise<void>, onDone: () => void, words: string) => {
+    const attempt = async (which: "join" | "decline", call: () => Promise<void>, onDone: () => void, words: string) => {
+      if (working) return;
       setProblem("");
+      setWorking(which);
       try {
         await call();
       } catch {
         setProblem(words);
+        setWorking(null);
         return;
       }
+      setWorking(null);
       onDone();
     };
     return (
@@ -99,8 +104,10 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient, abo
             <p>Expires in {invitation.expiresInDays} days.</p>
             {problem ? <LoadFailed words={problem} /> : null}
             <Button
+              disabled={working !== null}
               onClick={() =>
                 attempt(
+                  "decline",
                   () => client.declineInvitation(invitation.id),
                   () => {
                     settle();
@@ -110,12 +117,14 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient, abo
                 )
               }
             >
-              Decline
+              {working === "decline" ? "Declining" : "Decline"}
             </Button>
             <Button
               kind="primary"
+              disabled={working !== null}
               onClick={() =>
                 attempt(
+                  "join",
                   () => client.acceptInvitation(invitation.id),
                   () => {
                     settle();
@@ -125,7 +134,7 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient, abo
                 )
               }
             >
-              Join
+              {working === "join" ? "Joining" : "Join"}
             </Button>
           </Card>
         )}

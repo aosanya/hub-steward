@@ -115,7 +115,7 @@ describe("a member fills in one of her own steps", () => {
       "Needs transport": "yes",
       "Visit date": "2026-11-06",
       "How soon": "Same day",
-    });
+    }, expect.any(String));
     expect(wasSent({ id: "s1", orderId: "o1" })).toBe(true);
     expect(screen.getByText("elsewhere")).toBeInTheDocument();
     expect(landed).toBe("/a/farmers/do-something");
@@ -126,7 +126,7 @@ describe("a member fills in one of her own steps", () => {
     await show(client, "s2", "o7");
     await userEvent.click(screen.getByRole("radio", { name: "Yes" }));
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
-    expect(client.submit).toHaveBeenCalledWith(expect.objectContaining({ id: "s2", state: "waiting", orderId: "o7" }), { Arrived: "yes" });
+    expect(client.submit).toHaveBeenCalledWith(expect.objectContaining({ id: "s2", state: "waiting", orderId: "o7" }), { Arrived: "yes" }, expect.any(String));
   });
 
   it.each([
@@ -153,7 +153,7 @@ describe("a member fills in one of her own steps", () => {
     await show(clientOf([referral], submit));
     await fillAll();
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
-    expect(screen.getByRole("button", { name: "Send" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Sending" })).toBeDisabled();
     expect(submit).toHaveBeenCalledTimes(1);
   });
 

@@ -62,6 +62,7 @@ func (a *stepAnswer) UnmarshalJSON(data []byte) error {
 type stepAnswersRequest struct {
 	Answers map[string]stepAnswer `json:"answers"`
 	OrderID string                `json:"order_id,omitempty"`
+	SendKey string                `json:"send_key,omitempty"`
 }
 
 const multiSelectSeparator = ", "
@@ -167,6 +168,7 @@ type mcpSubmitStepAnswersParams struct {
 	StepID     string            `json:"step_id" jsonschema:"the step's id, as agency_list_my_open_steps names it"`
 	Answers    map[string]string `json:"answers" jsonschema:"the answer to each question of the step's form, by the question's prompt; a multi-select answer is its chosen options joined by a comma and a space"`
 	OrderID    string            `json:"order_id,omitempty" jsonschema:"the run the step belongs to: empty on a workflow's first step, which starts a new run, and the run's order_id on every later step"`
+	SendKey    string            `json:"send_key,omitempty" jsonschema:"a key made once per opening of the form; sending a workflow's first step again with the same key is refused as already sent instead of starting a second run"`
 }
 
 func (d *Deps) registerSubmitStepAnswersRoute(mux *http.ServeMux, auth callers) {
@@ -194,7 +196,7 @@ func (d *Deps) registerSubmitStepAnswersMCPTool(server *mcp.Server) {
 }
 
 func (d *Deps) mcpSubmitStepAnswers(ctx context.Context, _ *mcp.CallToolRequest, p mcpSubmitStepAnswersParams) (*mcp.CallToolResult, stepAnswersResult, error) {
-	out, err := d.submitStepAnswers(ctx, p.InstanceID, p.StepID, stepAnswersRequest{Answers: textAnswers(p.Answers), OrderID: p.OrderID})
+	out, err := d.submitStepAnswers(ctx, p.InstanceID, p.StepID, stepAnswersRequest{Answers: textAnswers(p.Answers), OrderID: p.OrderID, SendKey: p.SendKey})
 	if err != nil {
 		return nil, stepAnswersResult{}, err
 	}
@@ -392,7 +394,7 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 		release := d.stepSendLocks().acquire(instanceID + "\x00" + req.OrderID)
 		defer release()
 	}
-	orderID, err := runForSubmit(ctx, m, chain, index, req.OrderID)
+	orderID, err := runForSubmit(ctx, m, chain, index, req.OrderID, firstRunID(ctx, instanceID, stepID, req.SendKey))
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
@@ -435,12 +437,20 @@ func followingStep(ctx context.Context, m mwanachamaagency.AgencyManager, chain 
 	return -1, nil
 }
 
-func runForSubmit(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formStep, index int, orderID string) (string, error) {
+func firstRunID(ctx context.Context, instanceID, stepID, sendKey string) string {
+	if sendKey == "" {
+		return uuid.NewString()
+	}
+	name := instanceID + "\x00" + stepID + "\x00" + accounts.IDFromContext(ctx) + "\x00" + sendKey
+	return uuid.NewSHA1(uuid.NameSpaceOID, []byte(name)).String()
+}
+
+func runForSubmit(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formStep, index int, orderID, firstRun string) (string, error) {
 	if index == 0 {
 		if orderID != "" {
 			return "", badRowError("the first step of a workflow starts a new run, so order_id is left empty")
 		}
-		return uuid.NewString(), nil
+		return firstRun, nil
 	}
 	if orderID == "" {
 		return "", badRowError("order_id names the run this step belongs to")
