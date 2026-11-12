@@ -10,6 +10,8 @@ import { draftOf, isGroupOrderStart, mcpStartClient, unitOf, type PosterChoice, 
 import { StartPage } from "./StartPages";
 import { StartWaitingRows } from "./Waiting";
 
+const noMemberSteps = { available: async () => [] };
+
 const step: StartStep = {
   id: "w1",
   title: "Start the urea group order",
@@ -95,7 +97,7 @@ describe("the Group coordinator starts the group order", () => {
     render(
       <MemoryRouter>
         <Routes>
-          <Route path="/" element={<StartRows start={clientOf([step])} />} />
+          <Route path="/" element={<StartRows start={clientOf([step])} steps={noMemberSteps} />} />
           <Route path={routes.start.pattern} element={<p>form opened</p>} />
         </Routes>
       </MemoryRouter>,
@@ -122,7 +124,7 @@ describe("the Group coordinator starts the group order", () => {
   it("shows nothing when nothing waits", async () => {
     const { container } = render(
       <MemoryRouter>
-        <StartRows start={clientOf([])} />
+        <StartRows start={clientOf([])} steps={noMemberSteps} />
       </MemoryRouter>,
     );
     await act(async () => undefined);
@@ -178,7 +180,7 @@ describe("the Group coordinator starts the group order", () => {
     const second = { ...step, id: "w2", formName: "Maize group order" };
     const { container } = render(
       <MemoryRouter>
-        <StartRows start={clientOf([step, second])} />
+        <StartRows start={clientOf([step, second])} steps={noMemberSteps} />
       </MemoryRouter>,
     );
     await screen.findByText("Maize group order");
@@ -429,7 +431,7 @@ describe("the Start row names the form from the step's data", () => {
   it("shows the form name the step carries, whatever it is", async () => {
     render(
       <MemoryRouter>
-        <StartRows start={clientOf([{ ...step, formName: "Group order" }])} />
+        <StartRows start={clientOf([{ ...step, formName: "Group order" }])} steps={noMemberSteps} />
       </MemoryRouter>,
     );
     expect(await screen.findByText("Group order")).toBeInTheDocument();
@@ -440,7 +442,7 @@ describe("the Start row names the form from the step's data", () => {
   it("falls back to the step's title when the step carries no form name", async () => {
     render(
       <MemoryRouter>
-        <StartRows start={clientOf([{ ...step, formName: "" }])} />
+        <StartRows start={clientOf([{ ...step, formName: "" }])} steps={noMemberSteps} />
       </MemoryRouter>,
     );
     expect(await screen.findByText("Start the urea group order")).toBeInTheDocument();
