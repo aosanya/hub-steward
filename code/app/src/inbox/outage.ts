@@ -1,5 +1,7 @@
 import { McpError } from "../wakala/mcp";
 
-const serverFailure = /^wakala answered 5/;
+const toolNotServed = /unknown tool/i;
 
-export const isOutage = (error: unknown) => !(error instanceof McpError) || error.unauthorized || serverFailure.test(error.message);
+export const isModuleOff = (error: unknown) => error instanceof McpError && !error.unauthorized && toolNotServed.test(error.message);
+
+export const isOutage = (error: unknown) => !isModuleOff(error);

@@ -56,6 +56,16 @@ describe("Home when a call fails", () => {
     expect(list).toHaveBeenCalledTimes(2);
   });
 
+  it.each([
+    ["notifications", { listNotifications: vi.fn().mockRejectedValue(new McpError("comm_notification_list: forbidden")) }],
+    ["invitations", { listInvitations: vi.fn().mockRejectedValue(new McpError("actor_list_my_invitations: forbidden")) }],
+  ])("says Home could not be loaded, with Try again, never You are all caught up, when the %s read is refused", async (_name, over) => {
+    show(fake(over));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Home could not be loaded.");
+    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+    expect(screen.queryByText("You are all caught up")).toBeNull();
+  });
+
   it("treats a network failure as an outage", async () => {
     show(fake({ listNotifications: vi.fn().mockRejectedValue(new TypeError("Failed to fetch")) }));
     expect(await screen.findByRole("button", { name: "Try again" })).toBeInTheDocument();
