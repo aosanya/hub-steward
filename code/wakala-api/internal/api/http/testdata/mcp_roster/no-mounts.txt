@@ -633,6 +633,7 @@ taskmanager_task_caps_set
 taskmanager_task_create
 taskmanager_task_create_in_project
 taskmanager_task_delete
+taskmanager_task_find
 taskmanager_task_list
 taskmanager_task_list_assignments
 taskmanager_task_list_overdue

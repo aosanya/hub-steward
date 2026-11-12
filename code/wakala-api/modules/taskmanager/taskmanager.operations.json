@@ -33,6 +33,14 @@
                {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
       "returns": [{"body": true}]
     },
+    "find_tasks": {
+      "method": "GET", "path": "/find-tasks", "call": "FindTasks", "action": "taskmanager.task.find",
+      "title": "Find issues by id, code or words",
+      "description": "Find issues of the backlogs the caller can see by what the caller remembers of them. q is required and is one of: an issue id (a uuid, exact), an issue code such as SW39 or mun67 (exact or a prefix, without regard to case, the exact code first), or words, where every word must appear, without regard to case, in the title, the code, a tag or the description. A blank q is refused with 400. Open issues only unless include_closed is true. Narrow by backlog (id or name), step (id or name) and tag (repeat it to require every tag). It returns total, counted over everything that matches, and items: the first limit issues in rank order, each compact (id, code, title, state, backlog, step, priority, tags, rank, blocked, waiting, sinbin) and without the description, the same shape as taskmanager_task_pending. limit defaults to 25 and is at most 100; pass offset (0 or more) to read the next page. To read one issue in full use taskmanager_task_read.",
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
+      "returns": [{"body": true}]
+    },
     "get_task": {
       "method": "GET", "path": "/tasks/{taskID}", "call": "GetTaskFor", "action": "taskmanager.task.read",
       "title": "Read task",

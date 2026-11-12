@@ -11,6 +11,7 @@ Working on a part:
 - [Console](console.md): the manager's and designer's web app
 - [Phone app](phone-app.md): the member's web app
 - [Write an agency](write-an-agency.md): how a demo agency template is put together
+- [Taskmanager tools that read the backlog](taskmanager-tools.md): pending, find, read and list, and what `taskmanager_task_find` matches
 
 How it fits and how to run it:
 
