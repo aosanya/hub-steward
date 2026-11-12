@@ -10,7 +10,7 @@ export function AssignedIssueRows({ client }: { client?: AssignedClient }) {
   return (
     <>
       {(read.value ?? []).map((issue) => (
-        <ListRow key={`issue-${issue.id}`} title={assignedIssueTitle(issue)} start={<span className="dot" role="img" aria-label="Unread" />} onClick={() => navigate(issuePath(issue.id))} />
+        <ListRow key={`issue-${issue.id}`} title={assignedIssueTitle(issue)} meta="Issue assigned to you" start={<span className="dot" role="img" aria-label="Unread" />} onClick={() => navigate(issuePath(issue.id))} />
       ))}
     </>
   );

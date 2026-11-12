@@ -1,3 +1,4 @@
+import { hasModule, mcpAgencyClient, taskModule } from "../agency/modules";
 import { fetchAll, settled } from "../backlogs/api";
 import { callTool } from "../wakala/mcp";
 
@@ -20,6 +21,9 @@ export const assignedIssueTitle = (issue: AssignedIssue) => [issue.code, issue.t
 
 export const mcpAssignedClient: AssignedClient = {
   async assigned() {
+    const view = await mcpAgencyClient.read();
+    if (view.modulesUnread) throw new Error("modules unread");
+    if (!hasModule(view, taskModule)) return [];
     const me = await callTool("", "actor_get_my_actor");
     return assignedIssuesOf(await fetchAll({}), text(me?.id));
   },

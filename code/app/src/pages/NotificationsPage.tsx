@@ -1,12 +1,15 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { mcpInboxClient, type InboxClient, type InvitationItem, type NotificationItem } from "../inbox/api";
+import { type AssignedClient, mcpAssignedClient } from "../inbox/assignedIssues";
+import { withoutIssueNotices } from "../inbox/issueCount";
 import { isOutage } from "../inbox/outage";
 import { useClearDone } from "../inbox/clearDone";
 import { NeedsYouSection } from "../inbox/NeedsYouSection";
 import { needsYouCount, needsYouNotes, updatesOf } from "../inbox/needsYou";
 import { mcpReader, openChecked, type Reader } from "../inbox/subjectCheck";
 import { UpdatesSection } from "../inbox/UpdatesSection";
+import { useAssignedIssues } from "../inbox/useAssignedIssues";
 import { unreadOf, useNotifications } from "../inbox/useNotifications";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
@@ -17,7 +20,7 @@ import { useStartWaiting } from "../coordinator/start/startWaiting";
 
 type Opened = { invitation: InvitationItem; joined: boolean };
 
-export function NotificationsPage({ client = mcpInboxClient, start = mcpStartClient, read = mcpReader, above }: { client?: InboxClient; start?: StartClient; read?: Reader; above?: ReactNode }) {
+export function NotificationsPage({ client = mcpInboxClient, start = mcpStartClient, assigned = mcpAssignedClient, read = mcpReader, above }: { client?: InboxClient; start?: StartClient; assigned?: AssignedClient; read?: Reader; above?: ReactNode }) {
   const navigate = useNavigate();
   const { items, failed: notificationsFailed, outage: notificationsOutage, retry: retryNotifications, markIdsRead, markOneRead } = useNotifications(client);
   useClearDone(items, markIdsRead, read);
@@ -57,8 +60,11 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
   const updates = updatesOf(items);
   const unread = unreadOf(updates);
   const chosen = unread.filter((n) => ticked.includes(n.id)).map((n) => n.id);
-  const needing = needsYouNotes(items);
-  const waitsOnYou = needsYouCount({ steps: waiting ?? [], invitations, items }) > 0;
+  const issues = useAssignedIssues(assigned);
+  const issuesListed = issues.value !== null && !issues.failed;
+  const waitingItems = issuesListed ? withoutIssueNotices(items, issues.value) : items;
+  const needing = needsYouNotes(waitingItems);
+  const waitsOnYou = needsYouCount({ steps: waiting ?? [], invitations, items: waitingItems }) + (issuesListed ? (issues.value ?? []).length : 0) > 0;
 
   if (opened) {
     const { invitation, joined } = opened;
@@ -142,7 +148,7 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
   const tick = (id: string, on: boolean) => setTicked(on ? [...ticked, id] : ticked.filter((t) => t !== id));
 
   const settled = items !== null || (notificationsFailed && !notificationsOutage);
-  const empty = !outage && settled && waiting !== null && !waitsOnYou && updates.length === 0;
+  const empty = !outage && settled && waiting !== null && (issues.value !== null || issues.failed) && !waitsOnYou && updates.length === 0;
 
   const openNotice = (n: NotificationItem, path: string) => openChecked(n, path, { read, markOneRead, navigate, say: setProblem });
 
@@ -162,7 +168,7 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
           <p>Notifications from your groups will appear here.</p>
         </Card>
       ) : null}
-      {waitsOnYou ? <NeedsYouSection start={start} invitations={invitations} notices={needing} onOpenInvitation={(invitation) => setOpened({ invitation, joined: false })} onOpenNotice={openNotice} /> : null}
+      {waitsOnYou ? <NeedsYouSection start={start} assigned={assigned} invitations={invitations} notices={needing} onOpenInvitation={(invitation) => setOpened({ invitation, joined: false })} onOpenNotice={openNotice} /> : null}
       {updates.length > 0 ? <UpdatesSection notices={updates} chosen={chosen} onTick={tick} onMarkRead={markRead} onOpenNotice={openNotice} /> : null}
     </Shell>
   );

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { words } from "../entry/words";
 import { magyar } from "../entry/magyar";
 import { swahili } from "../entry/swahili";
@@ -6,6 +6,8 @@ import * as mcp from "../wakala/mcp";
 import { assignedIssuesOf, assignedIssueTitle, mcpAssignedClient } from "./assignedIssues";
 import type { NotificationItem } from "./api";
 import { pathOf, titleOf } from "./noticeWords";
+
+beforeEach(() => vi.restoreAllMocks());
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -36,22 +38,37 @@ describe("the issues waiting on the member", () => {
   });
 });
 
+const withTaskModule = { modules: [{ module: "taskmanager" }] };
+
+const hub = (modules: unknown, rest: (tool: string) => unknown) =>
+  vi.spyOn(mcp, "callTool").mockImplementation(async (_hub: string, tool: string) => {
+    if (tool === "agency_get_agency") return { name: "Kisumu" };
+    if (tool === "agency_list_mounts") return modules;
+    const out = rest(tool);
+    if (out instanceof Error) throw out;
+    return out;
+  });
+
 describe("the read of the member's issues", () => {
   it("asks who the member is, lists the issues, and keeps the member's open ones", async () => {
-    const spy = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub: string, tool: string) => {
-      if (tool === "actor_get_my_actor") return { id: "m1" };
-      if (tool === "taskmanager_task_list") return { items: [row({}), row({ id: "t2", assigned_to: "m9" })] };
-      throw new Error("down");
-    });
+    const spy = hub(withTaskModule, (tool) => (tool === "actor_get_my_actor" ? { id: "m1" } : { items: [row({}), row({ id: "t2", assigned_to: "m9" })] }));
     expect(await mcpAssignedClient.assigned()).toEqual([{ id: "t1", code: "HS-002", title: "Review: the Review step", step: "review" }]);
-    expect(spy.mock.calls.map((c) => c[1])).toEqual(["actor_get_my_actor", "taskmanager_task_list"]);
+    expect(spy.mock.calls.map((c) => c[1])).toContain("taskmanager_task_list");
+  });
+
+  it("reads nothing and finds none when the agency has no task module", async () => {
+    const spy = hub({ modules: [{ module: "forms" }] }, () => new Error("not asked"));
+    expect(await mcpAssignedClient.assigned()).toEqual([]);
+    expect(spy.mock.calls.map((c) => c[1])).not.toContain("taskmanager_task_list");
+  });
+
+  it("fails when the modules cannot be read, so the count is not taken for none", async () => {
+    hub({}, () => new Error("down"));
+    await expect(mcpAssignedClient.assigned()).rejects.toThrow();
   });
 
   it("fails when the issues cannot be read, so the count is not taken for none", async () => {
-    vi.spyOn(mcp, "callTool").mockImplementation(async (_hub: string, tool: string) => {
-      if (tool === "actor_get_my_actor") return { id: "m1" };
-      throw new Error("down");
-    });
+    hub(withTaskModule, (tool) => (tool === "actor_get_my_actor" ? { id: "m1" } : new Error("down")));
     await expect(mcpAssignedClient.assigned()).rejects.toThrow();
   });
 });
