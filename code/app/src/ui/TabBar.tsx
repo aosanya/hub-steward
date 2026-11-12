@@ -3,10 +3,9 @@ import { NavLink, useLocation } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
 import "../chat/unread.css";
 import { type InboxClient, mcpInboxClient } from "../inbox/api";
-import { unreadOf, useNotifications } from "../inbox/useNotifications";
-import { unreadLabel } from "../chat/unread";
+import { thingsToDoLabel } from "../inbox/thingsToDo";
+import { useNeedsYou } from "../inbox/useNeedsYou";
 import { mcpStartClient, type StartClient } from "../coordinator/start/api";
-import { useStartWaiting } from "../coordinator/start/startWaiting";
 import { Icon } from "./Icon";
 import { mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "../tabs";
 
@@ -21,8 +20,8 @@ function useRememberedSide() {
 
 export function TabBar({ inbox = mcpInboxClient, start = mcpStartClient }: Props) {
   const agencyId = openAgencyId();
-  const waiting = useStartWaiting(start) ?? [];
-  const unread = unreadLabel(unreadOf(useNotifications(inbox).items).length + waiting.length);
+  const { count, newsUnread } = useNeedsYou(inbox, start);
+  const things = thingsToDoLabel(count);
   useRememberedSide();
   return (
     <nav className="tabs" aria-label="Main">
@@ -30,11 +29,12 @@ export function TabBar({ inbox = mcpInboxClient, start = mcpStartClient }: Props
         <NavLink key={tab.id} to={tabPathIn(tab, agencyId)} end className="tab">
           <span className="pill">
             <Icon name={tab.icon} />
-            {tab.id === notificationsTab.id && unread ? (
-              <span className="unread-num" aria-label={`${unread} unread notifications`}>
-                {unread}
+            {tab.id === notificationsTab.id && things ? (
+              <span className="unread-num" aria-label={things.words}>
+                {things.shown}
               </span>
             ) : null}
+            {tab.id === notificationsTab.id && newsUnread ? <span className="unread-dot" role="img" aria-label="New updates" /> : null}
           </span>
           {tab.label}
         </NavLink>

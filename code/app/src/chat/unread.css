@@ -1,1 +1,4 @@
 .unread-num { display: inline-grid; place-items: center; min-width: 1.25rem; height: 1.25rem; padding: 0 .375rem; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: .75rem; font-weight: 600; line-height: 1; }
+.unread-dot { width: .625rem; height: .625rem; border-radius: 999px; background: var(--accent); }
+.tab .unread-dot { position: absolute; top: .125rem; left: calc(50% + .5rem); }
+.tab .unread-num ~ .unread-dot { left: auto; right: calc(50% + .75rem); }

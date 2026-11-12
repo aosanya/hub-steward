@@ -2,12 +2,13 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { type InboxClient, mcpInboxClient, type NotificationItem } from "./api";
 import { unreadLabel } from "../chat/unread";
 import { isOutage } from "./outage";
+import { onRegainFocus } from "./regainFocus";
 
 export const unreadOf = (items: NotificationItem[] | null) => (items ?? []).filter((n) => !n.read);
 
 export const unreadCountLabel = (items: NotificationItem[] | null) => unreadLabel(unreadOf(items).length);
 
-type Loading = { client: InboxClient; promise: Promise<void> };
+type Loading = { client: InboxClient; promise: Promise<void>; done: boolean };
 
 let current: NotificationItem[] | null = null;
 let loading: Loading | null = null;
@@ -46,16 +47,23 @@ const markOne = (client: InboxClient, id: string) => {
 
 const load = (client: InboxClient) => {
   if (loading?.client === client) return loading.promise;
-  const started: Loading = {
-    client,
-    promise: Promise.all([...marking])
-      .then(() => client.listNotifications())
-      .then((items) => {
-        if (loading === started) publish(items);
-      }),
-  };
+  const started: Loading = { client, done: false, promise: Promise.resolve() };
+  started.promise = Promise.all([...marking])
+    .then(() => client.listNotifications())
+    .then((items) => {
+      if (loading === started) publish(items);
+    })
+    .finally(() => {
+      started.done = true;
+    });
   loading = started;
   return started.promise;
+};
+
+const reload = (client: InboxClient) => {
+  if (loading?.client === client && !loading.done) return loading.promise;
+  loading = null;
+  return load(client);
 };
 
 export function useNotifications(client: InboxClient = mcpInboxClient) {
@@ -63,18 +71,34 @@ export function useNotifications(client: InboxClient = mcpInboxClient) {
   const [failed, setFailed] = useState(false);
   const [outage, setOutage] = useState(false);
 
-  const fetch = (live: () => boolean) =>
-    load(client).catch((error) => {
-      if (!live()) return;
-      setFailed(true);
-      setOutage(isOutage(error));
-    });
+  const fetch = (live: () => boolean, read = load) =>
+    read(client).then(
+      () => {
+        if (!live()) return;
+        setFailed(false);
+        setOutage(false);
+      },
+      (error) => {
+        if (!live()) return;
+        setFailed(true);
+        setOutage(isOutage(error));
+      },
+    );
 
   useEffect(() => {
     let live = true;
     fetch(() => live);
     return () => {
       live = false;
+    };
+  }, [client]);
+
+  useEffect(() => {
+    let live = true;
+    const stop = onRegainFocus(() => void fetch(() => live, reload));
+    return () => {
+      live = false;
+      stop();
     };
   }, [client]);
 

@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
+import type { StartClient } from "../coordinator/start/api";
 import type { InboxClient } from "../inbox/api";
 import { rememberSide, sideReached } from "../tabs";
 import { doSomethingBackPath } from "../routes";
@@ -99,16 +100,18 @@ describe("tab bar", () => {
     expect(screen.getByRole("navigation", { name: "Main" })).not.toHaveClass("reserve");
   });
 
-  it("puts the unread count on the Notifications button", async () => {
+  it("puts the count of things waiting on the Notifications button", async () => {
     const unread = {
       listNotifications: () => Promise.resolve([{ id: "n1", event: "new_form", subjectKind: "form", subjectId: "f1", names: {}, createdAt: "2026-10-28T10:40:00Z", read: false }]),
+      listInvitations: () => Promise.resolve([]),
     } as unknown as InboxClient;
+    const noSteps = { waiting: () => Promise.resolve([]) } as unknown as StartClient;
     render(
       <MemoryRouter initialEntries={["/a/walk-siaya/ongoing"]}>
-        <TabBar inbox={unread} />
+        <TabBar inbox={unread} start={noSteps} />
       </MemoryRouter>,
     );
-    const badge = await screen.findByLabelText("1 unread notifications");
+    const badge = await screen.findByLabelText("1 thing to do");
     expect(screen.getByRole("link", { name: /Notifications/ })).toContainElement(badge);
     expect(screen.getByRole("link", { name: /Home/ })).not.toContainElement(badge);
   });
