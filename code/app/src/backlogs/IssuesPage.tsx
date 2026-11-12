@@ -26,14 +26,16 @@ import { useView, ViewSwitch } from "../backlogBoard/ViewSwitch";
 import type { CapsClient } from "./caps/api";
 import { CapTintScope } from "./caps/CapTintScope";
 import { IssueCard } from "./IssueCard";
+import type { TodoCountsClient } from "./todoCounts/api";
+import { TodoCountScope } from "./todoCounts/TodoCountScope";
 import { effortPicker } from "./effortPicker";
 import { priorityPicker } from "./priorityPicker";
 import { backlogsHomePath, boardPath, issuePath, queryParam, searchOf, tagParam } from "./paths";
 import { countWords, narrowed, toggled } from "./tags";
 
-type Props = { client?: BacklogsClient; manage?: BacklogManageClient; smartBacklogs?: () => Promise<SmartBacklog[]>; capsClient?: CapsClient };
+type Props = { client?: BacklogsClient; manage?: BacklogManageClient; smartBacklogs?: () => Promise<SmartBacklog[]>; capsClient?: CapsClient; todoCounts?: TodoCountsClient };
 
-export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogManageClient, smartBacklogs = listSmartBacklogs, capsClient }: Props) {
+export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogManageClient, smartBacklogs = listSmartBacklogs, capsClient, todoCounts }: Props) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -91,7 +93,11 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
         <EmptyCard words={mayManage.data && issuesHeld(backlogs.data) === 0 ? "No issues yet. Run the loader on your laptop to load the boards." : "Nothing here yet."} />
       ) : null}
       <CapTintScope issues={shown} client={capsClient}>
-        {shown.length > 0 && listed === "board" && backlogs.state === "ready" ? <BoardColumns columns={columnsOf(stepsOfIssues(backlogs.data, shown), shown)} renderCard={rowOf} /> : null}
+        {shown.length > 0 && listed === "board" && backlogs.state === "ready" ? (
+          <TodoCountScope issues={shown} client={todoCounts}>
+            <BoardColumns columns={columnsOf(stepsOfIssues(backlogs.data, shown), shown)} renderCard={rowOf} />
+          </TodoCountScope>
+        ) : null}
         {shown.length > 0 && listed === "list" ? <div className="issue-cards">{shown.map((issue) => <Fragment key={issue.id}>{rowOf(issue)}</Fragment>)}</div> : null}
       </CapTintScope>
       {total > 0 && shown.length === 0 ? <EmptyCard words="No issues match" /> : null}

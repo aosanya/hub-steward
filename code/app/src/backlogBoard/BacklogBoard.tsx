@@ -5,6 +5,8 @@ import { FilterBar } from "../backlogs/FilterBar";
 import type { CapsClient } from "../backlogs/caps/api";
 import { CapTintScope } from "../backlogs/caps/CapTintScope";
 import { IssueCard } from "../backlogs/IssueCard";
+import type { TodoCountsClient } from "../backlogs/todoCounts/api";
+import { TodoCountScope } from "../backlogs/todoCounts/TodoCountScope";
 import { effortPicker } from "../backlogs/effortPicker";
 import { priorityPicker } from "../backlogs/priorityPicker";
 import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam } from "../backlogs/paths";
@@ -25,7 +27,7 @@ type Read = { state: "loading" } | { state: "failed" } | ({ state: "ready" } & L
 
 const countWords = (shown: number, steps: number) => `${shown} ${shown === 1 ? "issue" : "issues"} · ${steps} ${steps === 1 ? "step" : "steps"}`;
 
-export function BacklogBoard({ client = mcpBacklogsClient, capsClient }: { client?: BacklogsClient; capsClient?: CapsClient }) {
+export function BacklogBoard({ client = mcpBacklogsClient, capsClient, todoCounts }: { client?: BacklogsClient; capsClient?: CapsClient; todoCounts?: TodoCountsClient }) {
   const { backlogId = "" } = useParams();
   const navigate = useNavigate();
   const here = useLocation();
@@ -85,16 +87,18 @@ export function BacklogBoard({ client = mcpBacklogsClient, capsClient }: { clien
           <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={toggle} onClear={() => choose([])} />
           <ViewSwitch current="board" onChange={() => navigate(issuesPath(backlogId, chosen, query))} />
           <CapTintScope issues={shown} client={capsClient}>
-            <BoardColumns
-              columns={columnsOf(backlog.steps, shown)}
-              renderCard={(issue) =>
-                selecting.on ? (
-                  <SelectableIssueRow issue={issue} chosen={chosen} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
-                ) : (
-                  <IssueCard issue={issue} chosen={chosen} onTag={toggle} onPriority={priorityOf(issue)} onEffort={effortOf(issue)} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
-                )
-              }
-            />
+            <TodoCountScope issues={shown} client={todoCounts}>
+              <BoardColumns
+                columns={columnsOf(backlog.steps, shown)}
+                renderCard={(issue) =>
+                  selecting.on ? (
+                    <SelectableIssueRow issue={issue} chosen={chosen} selection={{ checked: selecting.has(issue.id), onChange: (checked) => selecting.toggle(issue.id, checked), label: `Select ${issue.title}` }} />
+                  ) : (
+                    <IssueCard issue={issue} chosen={chosen} onTag={toggle} onPriority={priorityOf(issue)} onEffort={effortOf(issue)} onOpen={() => navigate(issuePath(issue.id), backState(here.pathname + here.search, "Board"))} />
+                  )
+                }
+              />
+            </TodoCountScope>
           </CapTintScope>
           {outcome && !selecting.on ? (
             <p className="sub" role="status">
