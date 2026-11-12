@@ -5,6 +5,9 @@ import { AgenciesPage } from "./pages/entry/AgenciesPage";
 import { InAgency, ToOpenAgency, ToOpenAgencyScreen } from "./pages/entry/OpenAgency";
 import { SignInLinkPage } from "./pages/entry/SignInLinkPage";
 import { SignInPage } from "./pages/entry/SignInPage";
+import { LanguagePage } from "./account/LanguagePage";
+import { ProfilePage } from "./account/ProfilePage";
+import { SignOutPage } from "./account/SignOutPage";
 import { InboxPage } from "./pages/InboxPage";
 import { EvidencePage } from "./risks/EvidencePage";
 import { RiskPage } from "./risks/RiskPage";
@@ -149,6 +152,9 @@ export function App() {
       <Route path="/sign-in" element={<SignInPage />} />
       <Route path="/sign-in/link" element={<SignInLinkPage />} />
       <Route path="/agencies" element={<AgenciesPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/language" element={<LanguagePage />} />
+      <Route path="/sign-out" element={<SignOutPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
     </SessionGate>

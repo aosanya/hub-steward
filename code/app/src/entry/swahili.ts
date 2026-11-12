@@ -139,4 +139,13 @@ export const swahili: Words = {
   bandMedium: "Wastani",
   bandHigh: "Juu",
   bandCritical: "Hatari sana",
+  profileTitle: "Wasifu wangu",
+  profileLoading: "Inapakia wasifu wako",
+  profileUnreached: "Wasifu wako haukupakia. Angalia muunganisho wako kisha ujaribu tena.",
+  profilePhone: "Namba ya simu",
+  profileSave: "Hifadhi",
+  profileSaved: "Namba yako ya simu imehifadhiwa",
+  profileNotSaved: "Namba yako ya simu haikuhifadhiwa. Iangalie kisha ujaribu tena.",
+  signOutTitle: "Toka",
+  signOutSignedInAs: "Umeingia kama {name}.",
 };

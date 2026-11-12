@@ -4,9 +4,9 @@ import { entryClient, type LinkOutcome } from "../../entry/api";
 import { useLanguage } from "../../entry/language";
 import { hubIsLocal } from "../../entry/localHub";
 import { signInWithPassword, type PasswordOutcome } from "../../entry/passwordSignIn";
-import { languages } from "../../entry/words";
 import { Button } from "../../ui/Button";
 import { Field } from "../../ui/Field";
+import { LanguageChoice } from "../../ui/LanguageChoice";
 import { Shell } from "../../ui/Shell";
 import { resetMcp } from "../../wakala/mcp";
 import { forgetSubject } from "../../wakala/me";
@@ -22,7 +22,7 @@ export function SignInPage() {
   const [password, setPassword] = useState("");
   const [passwordOutcome, setPasswordOutcome] = useState<PasswordOutcome | null>(null);
   const navigate = useNavigate();
-  const { code: language, setLanguage, words } = useLanguage();
+  const { words } = useLanguage();
   useEffect(() => {
     let alive = true;
     hubIsLocal().then((yes) => alive && setLocal(yes));
@@ -41,20 +41,7 @@ export function SignInPage() {
   if (choosing) {
     return (
       <Shell tabless title={words.selectLanguageTitle} onBack={() => setChoosing(false)}>
-        {languages.map((l) => (
-          <Button
-            key={l.code}
-            kind={l.code === language ? "primary" : "quiet"}
-            lang={l.code}
-            aria-pressed={l.code === language}
-            onClick={() => {
-              setLanguage(l.code);
-              setChoosing(false);
-            }}
-          >
-            {l.name}
-          </Button>
-        ))}
+        <LanguageChoice onChosen={() => setChoosing(false)} />
       </Shell>
     );
   }

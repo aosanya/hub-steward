@@ -139,4 +139,13 @@ export const magyar: Words = {
   bandMedium: "Közepes",
   bandHigh: "Magas",
   bandCritical: "Kritikus",
+  profileTitle: "Profilom",
+  profileLoading: "A profil betöltése",
+  profileUnreached: "A profil nem töltődött be. Ellenőrizze a kapcsolatot, és próbálja újra.",
+  profilePhone: "Telefonszám",
+  profileSave: "Mentés",
+  profileSaved: "A telefonszám mentve",
+  profileNotSaved: "A telefonszám nem lett mentve. Ellenőrizze, és próbálja újra.",
+  signOutTitle: "Kijelentkezés",
+  signOutSignedInAs: "Bejelentkezve mint {name}.",
 };

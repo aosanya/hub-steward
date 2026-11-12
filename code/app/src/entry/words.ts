@@ -137,6 +137,15 @@ export const words = {
   bandMedium: "Medium",
   bandHigh: "High",
   bandCritical: "Critical",
+  profileTitle: "My profile",
+  profileLoading: "Loading your profile",
+  profileUnreached: "Your profile did not load. Check your connection and try again.",
+  profilePhone: "Phone number",
+  profileSave: "Save",
+  profileSaved: "Your phone number was saved",
+  profileNotSaved: "Your phone number was not saved. Check it and try again.",
+  signOutTitle: "Sign out",
+  signOutSignedInAs: "You are signed in as {name}.",
 } as const;
 
 export const languages = [

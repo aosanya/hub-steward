@@ -107,7 +107,7 @@ describe("tab bar", () => {
     expect(screen.queryByRole("link", { name: /Apps/ })).not.toBeInTheDocument();
   });
 
-  it.each(["/profile", "/language", "/sign-out", "/a/walk-agency/apps"])("sends the unbuilt or retired path %s to the agency's home screen with its tab bar", (path) => {
+  it.each(["/a/walk-agency/apps"])("sends the retired path %s to the agency's home screen with its tab bar", (path) => {
     at(path);
     expect(screen.getByRole("heading", { name: "Home" })).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "Main" })).toBeInTheDocument();
@@ -128,7 +128,7 @@ describe("tab bar", () => {
 
   it("sends an unknown path to the agencies page when no agency is open", () => {
     forgetOpenAgency();
-    at("/profile");
+    at("/nowhere");
     expect(screen.getByRole("heading", { name: "Your agencies" })).toBeInTheDocument();
   });
 
