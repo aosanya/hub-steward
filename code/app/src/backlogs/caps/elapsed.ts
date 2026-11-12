@@ -1,7 +1,7 @@
 import type { IssueNote } from "../issueNotes";
 
 export const startedAtOf = (notes: IssueNote[]): number | null => {
-  const moments = notes.filter((note) => note.kind === "worker").map((note) => new Date(note.at).getTime()).filter((moment) => Number.isFinite(moment));
+  const moments = notes.filter((note) => note.kind === "worker" && !note.automatic).map((note) => new Date(note.at).getTime()).filter((moment) => Number.isFinite(moment));
   return moments.length === 0 ? null : Math.min(...moments);
 };
 

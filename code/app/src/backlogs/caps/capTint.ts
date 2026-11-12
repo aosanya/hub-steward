@@ -40,6 +40,8 @@ export const tintOfElapsed = (elapsed: number, cap: number): CapTint => {
   return { tint: shaded?.tint ?? 0, chip: ratio >= 1 ? "Time is up" : timeLeftWords(cap - elapsed), danger: ratio >= redText };
 };
 
+export const interruptedTint: CapTint = { tint: 0.2, chip: "Interrupted", danger: false };
+
 export const tintOfNearest = (nearest: CapNearest): CapTint | null => tintAt(nearest.key, nearest.ratio, Math.min(Math.round(nearest.ratio * 100), 99));
 
 export const strongerTint = (first: CapTint | null, second: CapTint | null): CapTint | null => (first && second ? (second.tint > first.tint ? second : first) : first ?? second);

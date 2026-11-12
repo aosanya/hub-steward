@@ -12,7 +12,7 @@ describe("the Log of an issue", () => {
   });
 
   it("an entry reads the writer, kind, text, links and time the hub sends", () => {
-    expect(noteOf({ id: "n1", author_id: "w1", kind: "worker", text: "Done.", links: ["a", "", 3], created_at: "2026-11-10T14:02:00Z" })).toEqual({ id: "n1", author: "w1", kind: "worker", text: "Done.", links: ["a"], at: "2026-11-10T14:02:00Z" });
+    expect(noteOf({ id: "n1", author_id: "w1", kind: "worker", text: "Done.", links: ["a", "", 3], created_at: "2026-11-10T14:02:00Z" })).toEqual({ id: "n1", author: "w1", kind: "worker", text: "Done.", links: ["a"], at: "2026-11-10T14:02:00Z", automatic: false });
     expect(noteOf({}).kind).toBe("person");
   });
 

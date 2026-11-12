@@ -1,6 +1,6 @@
 export type NoteKind = "person" | "worker";
 
-export type IssueNote = { id: string; author: string; kind: NoteKind; text: string; links: string[]; at: string };
+export type IssueNote = { id: string; author: string; kind: NoteKind; text: string; links: string[]; at: string; automatic: boolean };
 
 export type NoteLink = { label: string; href?: string };
 
@@ -13,6 +13,7 @@ export const noteOf = (raw: any): IssueNote => ({
   text: text(raw?.text),
   links: Array.isArray(raw?.links) ? raw.links.filter((link: unknown) => typeof link === "string" && link.trim() !== "") : [],
   at: text(raw?.created_at),
+  automatic: raw?.automatic === true,
 });
 
 const web = /^https?:\/\//;

@@ -41,3 +41,17 @@ describe("the tint of a card follows the nearest cap", () => {
     expect(tintOf(reading({ input: 600, output: 360, seconds: 100 }))).toMatchObject({ chip: "Output 90%" });
   });
 });
+
+import { nearestOf } from "./api";
+import { interruptedTint } from "./capTint";
+
+describe("an issue the hub stopped as interrupted says Interrupted, not Time is up", () => {
+  it("carries the hub's interrupted flag from the nearest reading", () => {
+    const found = nearestOf({ items: [{ task_id: "a", interrupted: true, started_at: "2026-11-12T08:00:00Z", in_force: { runtime_seconds: 900 } }] });
+    expect(found.a.interrupted).toBe(true);
+  });
+
+  it("has a chip that reads Interrupted", () => {
+    expect(interruptedTint.chip).toBe("Interrupted");
+  });
+});

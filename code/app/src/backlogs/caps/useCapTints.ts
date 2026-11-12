@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Issue } from "../api";
 import { listCap, settled } from "../api";
 import { mcpCapsClient, type CapNearest, type CapsClient } from "./api";
-import { strongerTint, tintOfElapsed, tintOfNearest, type CapTint } from "./capTint";
+import { interruptedTint, strongerTint, tintOfElapsed, tintOfNearest, type CapTint } from "./capTint";
 import { elapsedSeconds } from "./elapsed";
 
 export const capsRefreshMs = 15_000;
@@ -60,6 +60,10 @@ export function useCapTints(issues: Issue[], client: CapsClient = mcpCapsClient)
     for (const id of ids) {
       const found = nearest[id];
       if (!found) continue;
+      if (found.interrupted) {
+        tints[id] = interruptedTint;
+        continue;
+      }
       const stored = found.ratio > 0 ? tintOfNearest(found) : null;
       const clocked = runningIds.has(id) && found.startedAt !== undefined && found.runtimeSeconds ? tintOfElapsed(elapsedSeconds(found.startedAt, now), found.runtimeSeconds) : null;
       const tint = strongerTint(stored, clocked);

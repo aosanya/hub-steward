@@ -3,7 +3,7 @@ import { elapsedSeconds, startedAtOf } from "./elapsed";
 import { lineOf } from "./capsFigures";
 import type { CapsReading } from "./api";
 
-const note = (kind: IssueNote["kind"], at: string): IssueNote => ({ id: at, author: "", kind, text: "", links: [], at });
+const note = (kind: IssueNote["kind"], at: string, automatic = false): IssueNote => ({ id: at, author: "", kind, text: "", links: [], at, automatic });
 
 const caps = { input: 1000, output: 400, runtimeSeconds: 900 };
 const reading: CapsReading = { inForce: caps, standard: caps, own: null, used: { input: 0, output: 0, seconds: 0, clockStopped: false } };
@@ -11,6 +11,11 @@ const reading: CapsReading = { inForce: caps, standard: caps, own: null, used: {
 describe("the runtime of a running issue is worked out from its Log", () => {
   it("starts at the first worker entry", () => {
     const started = startedAtOf([note("person", "2026-11-11T20:00:00Z"), note("worker", "2026-11-11T20:10:00Z"), note("worker", "2026-11-11T20:05:00Z")]);
+    expect(started).toBe(new Date("2026-11-11T20:05:00Z").getTime());
+  });
+
+  it("does not start at the hub's own automatic notes", () => {
+    const started = startedAtOf([note("worker", "2026-11-11T19:00:00Z", true), note("worker", "2026-11-11T20:05:00Z")]);
     expect(started).toBe(new Date("2026-11-11T20:05:00Z").getTime());
   });
 
