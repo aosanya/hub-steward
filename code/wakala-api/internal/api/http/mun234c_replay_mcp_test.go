@@ -282,3 +282,21 @@ func TestMUN234c_ReplayMCP_Round2(t *testing.T) {
 		{tool: "custody_publish_consent_version", args: named("text", map[string]any{"scope": "mechanics"}), list: "custody_list_consent_versions", expect: replayOneRow, bug: "MUN687"},
 	})
 }
+
+func TestMUN234c_ReplayMCP_Round3(t *testing.T) {
+	cw := replayWalk(t)
+	cw.probeReplay(t, []replayCase{
+		{tool: "taskmanager_backlog_step_add", args: named("name", nil), list: "taskmanager_backlog_list", expect: replayOneRow, fixed: func(t *testing.T, cw consentWalk) map[string]any {
+			backlog := cw.makeOne(t, "taskmanager_backlog_create", map[string]any{"name": "stepped"})
+			return map[string]any{"backlogID": backlog["id"]}
+		}},
+		{tool: "taskmanager_task_note_add", args: named("text", nil), list: "taskmanager_task_note_list", expect: replayDuplicatesAllowed, listArgs: map[string]any{"taskID": ""}, fixed: func(t *testing.T, cw consentWalk) map[string]any {
+			task := cw.makeOne(t, "taskmanager_task_create", map[string]any{"title": "noted"})
+			return map[string]any{"taskID": task["id"]}
+		}},
+		{tool: "riskmanager_risk_create", args: func(label string) map[string]any { return map[string]any{"title": label, "top_event": label} }, list: "riskmanager_risk_list", expect: replayDuplicatesAllowed},
+		{tool: "riskmanager_control_create", args: named("name", nil), list: "riskmanager_control_list", expect: replayDuplicatesAllowed},
+		{tool: "forms_form_create", args: named("title", map[string]any{"closes_at": "2030-01-01T00:00:00Z"}), list: "forms_form_list", expect: replayDuplicatesAllowed},
+		{tool: "market_create_notice", args: named("wanted", nil), list: "market_list_notices", expect: replayDuplicatesAllowed},
+	})
+}
