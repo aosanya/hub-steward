@@ -1068,6 +1068,7 @@
     "ErrInvalidPlacement": 400,
     "ErrTaskMoveConflict": 409,
     "ErrInvalidEffort": 400,
+    "ErrPriorityLocked": 409,
     "ErrCaseNotFound": 404,
     "ErrRepeatingTaskNotFound": 404,
     "ErrInvalidRepeatingTask": 400,

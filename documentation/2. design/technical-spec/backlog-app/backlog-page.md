@@ -319,7 +319,18 @@ Unknown), with the current one marked, and choosing one writes it at once. A per
 without Can move on the backlog sees the same text as a plain chip. If the hub
 refuses, the card says "The priority was not changed" or "The effort was not
 changed". The pills are on the issue page, the list row, the board card and the
-smart-backlog row. The menu opens to the right of the pill and over the card below,
+smart-backlog row.
+
+An issue in Done shows its priority as the same plain chip, with no arrow and no
+menu, on the issue page, the list row, the board card and the Waits on and Waited
+on by rows alike: the one shared `IssuePills` draws the menu only while the issue
+is not completed, and the card returns to a menu if the issue is ever back in an
+open step. The hub enforces it too: `taskmanager_task_patch` (and a `taskmanager_task_update`
+that sends a different priority) for an issue in Done is refused with 409 and "the
+priority of an issue in Done cannot be changed", so the board, the MCP tools and the
+app cannot do it; a patch that leaves the priority alone still goes through.
+
+The menu opens to the right of the pill and over the card below,
 so the card does not clip it.
 
 There is no new-issue form in the phone app yet; issues are filed through the hub,
