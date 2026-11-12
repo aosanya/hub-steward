@@ -343,7 +343,7 @@ describe("forms list drafts and grouping", () => {
   const w = (id: string, title: string, closes_at: string) => ({ form_id: id, title, closes_at, questions: 12, answered: false, unanswered_as: [] });
 
   it("marks a form with a draft kept on the device", async () => {
-    window.localStorage.setItem("hs-form-draft-d1", JSON.stringify({ q1: { text: "yes", options: [] }, q2: { text: "", options: ["a"] }, q3: { text: " ", options: [] } }));
+    window.localStorage.setItem("hs-form-draft-farmers-d1", JSON.stringify({ q1: { text: "yes", options: [] }, q2: { text: "", options: ["a"] }, q3: { text: " ", options: [] } }));
     at("/a/farmers/forms", fake({ waiting: async () => [w("d1", "Borehole pledge", "2026-11-01T00:00:00Z"), w("d2", "Plain form", "2026-11-02T00:00:00Z")] }));
     expect(await screen.findByText("Draft · 2 of 12")).toBeInTheDocument();
     expect(screen.getAllByText("New")).toHaveLength(1);

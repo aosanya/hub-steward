@@ -1,4 +1,6 @@
+import { openAgencyId } from "../../agency/open";
 import type { Answer, FormQuestion } from "../../forms/api";
+import { readKept, removeKept, writeKept } from "../../storage/kept";
 
 export type Given = { text: string; options: string[]; files?: string[] };
 export type Draft = Record<string, Given>;
@@ -44,31 +46,17 @@ export const shown = (q: FormQuestion, d: Draft) => {
 export const threadLines = (qs: FormQuestion[], d: Draft) =>
   qs.filter((q) => filled(q, d)).map((q) => `${q.prompt}: ${shown(q, d)}`);
 
-const keyOf = (formId: string) => `hs-form-draft-${formId}`;
+export const formDraftKey = (formId: string) => `hs-form-draft-${openAgencyId()}-${formId}`;
 
-export const loadDraft = (formId: string): Draft => {
-  try {
-    return JSON.parse(window.localStorage.getItem(keyOf(formId)) ?? "{}");
-  } catch {
-    return {};
-  }
-};
+export const stepDraftKey = (stepId: string, orderId: string) => `hs-step-draft-${openAgencyId()}-${stepId}-${orderId}`;
 
-export const saveDraft = (formId: string, d: Draft) => {
-  try {
-    window.localStorage.setItem(keyOf(formId), JSON.stringify(d));
-  } catch {
-    return;
-  }
-};
+const isDraft = (value: unknown) => typeof value === "object" && value !== null && !Array.isArray(value);
 
-export const clearDraft = (formId: string) => {
-  try {
-    window.localStorage.removeItem(keyOf(formId));
-  } catch {
-    return;
-  }
-};
+export const loadDraft = (key: string): Draft => readKept<Draft>(key, {}, isDraft);
 
-export const draftCount = (formId: string) =>
-  Object.values(loadDraft(formId)).filter((g) => g.text.trim() !== "" || g.options.length > 0 || (g.files?.length ?? 0) > 0).length;
+export const saveDraft = (key: string, d: Draft) => writeKept(key, d);
+
+export const clearDraft = (key: string) => removeKept(key);
+
+export const draftCount = (key: string) =>
+  Object.values(loadDraft(key)).filter((g) => g.text.trim() !== "" || g.options.length > 0 || (g.files?.length ?? 0) > 0).length;

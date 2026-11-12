@@ -11,7 +11,7 @@ import { ListRow, Rows } from "../../ui/ListRow";
 import { isoDay } from "../../ui/days";
 import { Segmented } from "../../ui/Segmented";
 import { Shell } from "../../ui/Shell";
-import { draftCount } from "./answers";
+import { draftCount, formDraftKey } from "./answers";
 
 const sender = (f: WaitingForm) => [f.group, f.publishing_authority || f.publisher_name].filter(Boolean).join(" · ");
 
@@ -71,7 +71,7 @@ export function FormsPage() {
                   <h2>{g.heading}</h2>
                   <Rows>
                     {g.items.map((f) => {
-                      const kept = draftCount(f.form_id);
+                      const kept = draftCount(formDraftKey(f.form_id));
                       return (
                         <ListRow
                           key={f.form_id}

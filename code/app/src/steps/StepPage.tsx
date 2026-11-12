@@ -3,7 +3,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import type { FormQuestion } from "../forms/api";
 import { QuestionInput } from "../forms/QuestionInput";
 import { useLoad } from "../forms/useLoad";
-import { filled, given, type Draft, type Given } from "../pages/forms/answers";
+import { clearDraft, filled, given, loadDraft, saveDraft, stepDraftKey, type Draft, type Given } from "../pages/forms/answers";
 import { doSomethingBackPath } from "../routes";
 import { BottomBar } from "../ui/BottomBar";
 import { Button } from "../ui/Button";
@@ -31,7 +31,8 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
   const [params] = useSearchParams();
   const order = params.get("order") ?? "";
   const loaded = useLoad(() => steps.available(), `step:${stepId}:${order}`);
-  const [draft, setDraft] = useState<Draft>({});
+  const draftKey = stepDraftKey(stepId, order);
+  const [draft, setDraft] = useState<Draft>(() => loadDraft(draftKey));
   const [problems, setProblems] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "sending">("idle");
   const [refusal, setRefusal] = useState("");
@@ -57,7 +58,9 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
 
   const questions = formQuestionsOf(step);
   const change = (id: string, patch: Partial<Given>) => {
-    setDraft((d) => ({ ...d, [id]: { ...given(questions.find((q) => q.id === id)!, d), ...patch } }));
+    const next = { ...draft, [id]: { ...given(questions.find((q) => q.id === id)!, draft), ...patch } };
+    setDraft(next);
+    saveDraft(draftKey, next);
     setProblems((p) => ({ ...p, [id]: "" }));
   };
   const send = async () => {
@@ -69,6 +72,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
     setRefusedFor("");
     try {
       const reply = await steps.submit(step, answersOf(questions, draft), sendKey);
+      clearDraft(draftKey);
       markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title, after: afterWords(reply) });
       navigate(doSomethingBackPath());
     } catch (e) {

@@ -11,7 +11,7 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
 import { QuestionInput } from "../../forms/QuestionInput";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { Shell } from "../../ui/Shell";
-import { clearDraft, filled, given, loadDraft, saveDraft, shown, threadLines, toAnswers, type Draft, type Given } from "./answers";
+import { clearDraft, filled, formDraftKey, given, loadDraft, saveDraft, shown, threadLines, toAnswers, type Draft, type Given } from "./answers";
 
 type Step = number | "review";
 
@@ -23,7 +23,7 @@ export function AnswerPage() {
   const forms = useForms();
   const go = useNavigate();
   const loaded = useLoad(() => forms.questions(id), `q-${id}`);
-  const [draft, setDraft] = useState<Draft>(() => loadDraft(id));
+  const [draft, setDraft] = useState<Draft>(() => loadDraft(formDraftKey(id)));
   const [step, setStep] = useState<Step>(0);
   const [missing, setMissing] = useState<string | null>(null);
   const [over, setOver] = useState<{ id: string; message: string } | null>(null);
@@ -33,7 +33,7 @@ export function AnswerPage() {
   const set = (qid: string, patch: Partial<Given>) =>
     setDraft((d) => {
       const next = { ...d, [qid]: { ...(d[qid] ?? { text: "", options: [] }), ...patch } };
-      saveDraft(id, next);
+      saveDraft(formDraftKey(id), next);
       return next;
     });
 
@@ -42,7 +42,7 @@ export function AnswerPage() {
     try {
       await forms.submit(id, toAnswers(questions, draft));
       setLines(threadLines(questions, draft));
-      clearDraft(id);
+      clearDraft(formDraftKey(id));
       setStatus("sent");
     } catch {
       setStatus("failed");

@@ -100,7 +100,7 @@ describe("journey 24, Answer a form", () => {
   });
 
   it("step 1: marks a form with answers kept on the phone as a Draft", async () => {
-    window.localStorage.setItem("hs-form-draft-pledge", JSON.stringify({ p1: { text: "Two bags", options: [] } }));
+    window.localStorage.setItem("hs-form-draft-walk-agency-pledge", JSON.stringify({ p1: { text: "Two bags", options: [] } }));
     const { client } = freshClient();
     open(client);
     expect(await screen.findByText("Draft · 1 of 2")).toBeInTheDocument();
@@ -115,7 +115,7 @@ describe("journey 24, Answer a form", () => {
     await click("Next");
     expect(await screen.findByText("This question needs an answer")).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("How many jerrycans a week"), "12");
-    expect(window.localStorage.getItem("hs-form-draft-borehole")).toContain("12");
+    expect(window.localStorage.getItem("hs-form-draft-walk-agency-borehole")).toContain("12");
     await click("Next");
     expect(await screen.findByText("Question 2 of 2")).toBeInTheDocument();
     await userEvent.click(screen.getByLabelText("Tuesday"));
@@ -156,7 +156,7 @@ describe("journey 24, Answer a form", () => {
     ]);
     expect(JSON.stringify(state.sent)).not.toContain("member_id");
     expect(await screen.findByText("Your answers were sent")).toBeInTheDocument();
-    expect(window.localStorage.getItem("hs-form-draft-borehole")).toBeNull();
+    expect(window.localStorage.getItem("hs-form-draft-walk-agency-borehole")).toBeNull();
   });
 
   it("step 4: opens the thread after a standing form's send, one answer per line", async () => {
