@@ -23,10 +23,12 @@ var residentFormsActions = []string{
 	"forms.results.read",
 }
 
+var residentRoleFormsActions = []string{"forms.results.publish"}
+
 func (d *Deps) instanceFormsMount(role string) formsroutes.Mount {
 	mount := d.formsMount()
 	if role == agencies.RoleResident {
-		mount.Authorize = d.authorizeResident(formsScope)
+		mount.Authorize = d.residentOrRoleHolding(d.authorizeResident(formsScope), residentRoleFormsActions)
 		mount.ReachedOnly = true
 	}
 	mount.Authorize = agentPermissioned(role, d.Registry, d.agencyRolePermissions, mount.Authorize)

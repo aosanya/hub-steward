@@ -18,6 +18,12 @@ var residentVotingActions = []string{
 	"voting.result.read",
 }
 
+var residentRoleVotingActions = []string{
+	"voting.poll.create",
+	"voting.choice.create",
+	"voting.result.publish",
+}
+
 func authorizeResidentVoting(_ context.Context, action string) error {
 	if slices.Contains(residentVotingActions, action) {
 		return nil
