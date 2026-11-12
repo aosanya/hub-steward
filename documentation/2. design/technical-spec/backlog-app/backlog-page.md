@@ -406,6 +406,19 @@ What exists today in the taskmanager, and what is new:
 | A todo can be created, read, dispatched and given a status | Refusing a cycle or a piece of another issue |
 | There is no edit and no delete | Blocked by itself and back to To do, the written reason, the move to Review, the count for the pill |
 
+The store (TDL-9). The `task_todo` table of the taskmanager holds one row per piece; its fields are declared in `taskmanager.blueprint.json`:
+
+| Field | Holds |
+|---|---|
+| `parent_task_id` | The issue the piece belongs to; indexed, so one issue's list is one query, read in `ordinality` order |
+| `ordinality` | The 1-based position in the list; a reorder renumbers it from 1, and a piece created without one goes to the end |
+| `depends_on` | The ids of the pieces of the same issue it waits on, never positions, so a reorder or a delete cannot break it; creating a piece also accepts `depends_on_ordinalities`, which are resolved to ids and not stored |
+| `status` | `pending`, `dispatched`, `completed`, `blocked`, `failed` or `skipped`; Done in the pill is `completed` |
+| `blocked_reason` | Why a person marked the piece Blocked; required for that, cleared by every other status, including lifting the block |
+| `deleted` | Soft delete; every read leaves a deleted piece out, and deleting a piece takes its id out of the `depends_on` of the pieces that waited on it |
+
+Rows written before this change kept ordinalities in `depends_on`. The taskmanager rewrites them as ids when it starts, once: an ordinality that names no piece of the issue is dropped, and a board with none to rewrite is not touched. The store refuses a dependency on a piece of another issue (`ErrTaskTodoCrossIssue`), on one that does not exist (`ErrTaskTodoDependencyNotFound`) and one that would close a cycle (`ErrTaskTodoCycle`). There is no hand-kept SQL mirror: the table follows the blueprint and gains `blocked_reason` when the board is provisioned.
+
 ## What this leaves out
 
 | Left out | Why |
