@@ -1,6 +1,6 @@
 COMPOSE = docker compose --env-file .env
 
-.PHONY: env master up api down backup logs ps urls
+.PHONY: env master unstick up api down backup logs ps urls
 
 env:
 	@sh scripts/make-env.sh
@@ -12,8 +12,12 @@ up: master env
 	$(COMPOSE) up --build -d --wait
 	@$(MAKE) --no-print-directory urls
 
-api: env
-	$(COMPOSE) up --build -d --no-deps --wait wakala-api
+unstick:
+	@ps -axo pid=,stat=,command= | awk '$$2 ~ /^T/ && /docker.*compose|buildx bake/ {print $$1}' | xargs kill -9 2>/dev/null; true
+
+api: env unstick
+	$(COMPOSE) build wakala-api
+	$(COMPOSE) up -d --no-deps --no-build --wait --wait-timeout 120 wakala-api
 
 down:
 	$(COMPOSE) down
