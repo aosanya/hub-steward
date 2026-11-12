@@ -77,4 +77,4 @@ Run `npm ci` in `code/console` or `code/app` first. `make test` does it for you.
 Go fetches modules on the first run, so that run needs a network.
 
 **`go test` passes but runs no tests.**
-The API server copy in this repository has no test files. It only checks that the code compiles.
+On 2026-11-12 the API server copy in this repository holds 541 `_test.go` files; a run of 2026-11-04 found none and only checked that the code compiles.

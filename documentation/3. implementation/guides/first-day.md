@@ -76,7 +76,7 @@ From the repository root:
 make test
 ```
 
-It runs `go vet` and `go test` for the API server, then `npm ci` and `npm test` for the console and the phone app. The API server copy has no test files, so `go test` only compiles it. Once the dependencies are installed, none of it needs a network, keys or a server.
+It runs `go vet` and `go test` for the API server, then `npm ci` and `npm test` for the console and the phone app. On 2026-11-12 the API server copy holds 541 `_test.go` files; the run of 2026-11-04 found none. Once the dependencies are installed, none of it needs a network, keys or a server.
 
 ## 7. Where to read next
 

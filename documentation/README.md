@@ -1,6 +1,6 @@
 # Hub Steward documentation
 
-Hub Steward is for creating agencies. An agency is a member organization of any kind: a farmers' group, a riders' collective, a computer lab, a clinical research organization, a utility. A manager or designer creates one in the console, reviews and tests it, and publishes it; members then use it on the phone app, with AI roles working beside the people. The demo holds eight synthetic agencies. Two carry most of the examples in these pages: the Siaya Farmers' Group for buying inputs together and selling the harvest, and the Siaya computer lab for access requests, member set-up and network management.
+Hub Steward is for creating agencies. An agency is a member organization of any kind: a farmers' group, a riders' collective, a computer lab, a clinical research organization, a utility. A manager or designer creates one in the console, reviews and tests it, and publishes it; members then use it on the phone app, with AI roles working beside the people. The demo holds nine synthetic agencies. Two carry most of the examples in these pages: the Siaya Farmers' Group for buying inputs together and selling the harvest, and the Siaya computer lab for access requests, member set-up and network management.
 
 ## Start here
 
@@ -21,7 +21,7 @@ Hub Steward is for creating agencies. An agency is a member organization of any 
 | Phase | Folder | What it holds |
 |---|---|---|
 | 1 | [requirements](1.%20requirements/) | [Product](1.%20requirements/product/README.md): why it exists, who it serves, what it does for an agency, what the demo covers. [User journeys](1.%20requirements/user-journeys/README.md): what each kind of user does, and the words used in the pages |
-| 2 | [design](2.%20design/) | [Technical spec](2.%20design/technical-spec/README.md): how Hub Steward is built, from the overview and the agent to tools, data and privacy, deployment and hub keys. [Mockups](2.%20design/mockups/console/README.md): static design-time screens for the console and for each journey, not the shipped UI |
+| 2 | [design](2.%20design/) | [Technical spec](2.%20design/technical-spec/README.md): how Hub Steward is built, from the overview and the agent to tools, data and privacy, deployment and hub keys. [Backlog app](2.%20design/technical-spec/backlog-app/README.md): the phone app's Backlogs, Chat and assistant screens. [Mockups](2.%20design/mockups/console/README.md): static design-time screens for the console and for each journey, and [the phone app's](2.%20design/mockups/app/index.html), not the shipped UI |
 | 3 | [implementation](3.%20implementation/) | [Build](3.%20implementation/build/README.md): what exists and how to run it. [Guides](3.%20implementation/guides/README.md): first day, troubleshooting, the three code parts, writing an agency, architecture, loading the demo agencies, other models, languages and the local or hosted database |
 | 4 | [qa](4.%20qa/) | [Testing](4.%20qa/testing/README.md): the test plan, the latest results for the console, the phone app and the API server, and what no suite covers |
 
