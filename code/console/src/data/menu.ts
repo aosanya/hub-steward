@@ -130,6 +130,7 @@ const entries: Entry[] = [
   { id: "equipment", icon: "laptop", section: "generated", kinds: ["riders"] },
   { id: "documents", icon: "file", section: "knowledge", kinds: labAndRiders },
   { id: "general", icon: "gear", section: "settings", kinds: everyKind },
+  { id: "consent", icon: "doc", section: "settings", kinds: everyKind, managersOnly: true },
   {
     id: "models",
     icon: "grid",

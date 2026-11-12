@@ -81,7 +81,7 @@ describe("the menu follows the kind of the hub", () => {
     expect(groups[0]).toMatchObject({ caption: undefined, divided: false });
     expect(groups[0].rows.map((row) => row.id)).toEqual(["status"]);
     expect(groups.at(-1)).toMatchObject({ caption: "menuSettings", divided: true });
-    expect(groups.at(-1)?.rows.map((row) => row.id)).toEqual(["general", "models"]);
+    expect(groups.at(-1)?.rows.map((row) => row.id)).toEqual(["general", "consent", "models"]);
   });
 
   it("lists the sections in the design's order and leaves out a section no page of the hub fills", () => {
@@ -341,7 +341,7 @@ describe("the pages of one model and of one agent", () => {
 });
 
 describe("the pages the menu lists", () => {
-  const routed = ["models", "models-configure", "assistant", "approvals", "usage", "usage-overview", "usage-work", "usage-agents"];
+  const routed = ["consent", "models", "models-configure", "assistant", "approvals", "usage", "usage-overview", "usage-work", "usage-agents"];
   const drawnNotBuilt = ["equipment"];
   const listed = [...new Set(hubKinds.flatMap(pagesOf))];
 
@@ -386,6 +386,25 @@ describe("the Models rows in the menu", () => {
   it("give Configure the hints of Models", () => {
     expect(hintKeys("models-configure", true)).toEqual(["chat.models.1", "chat.models.2", "chat.models.3"]);
     expect(hintKeys("models-configure", false)).toEqual(["chat.models.1"]);
+  });
+});
+
+describe("the Consent text row in the menu", () => {
+  it("sits under Settings between General and Models for the owner of every kind of hub", () => {
+    for (const kind of hubKinds) {
+      const settings = buildMenu(kind, "status", {}, "owner").at(-1)!;
+      expect(settings.rows.map((row) => row.id)).toEqual(["general", "consent", "models"]);
+    }
+  });
+
+  it("is kept from a staff seat and marks itself current on its own page", () => {
+    expect(idsOf(buildMenu("farmers", "status", {}, "agent"))).not.toContain("consent");
+    expect(rowOf(buildMenu("farmers", "consent", {}, "owner"), "consent")?.current).toBe(true);
+  });
+
+  it("is crumbed under Settings and offers its own three chat suggestions", () => {
+    expect(crumbsOf("consent")).toEqual({ section: "menuSettings", parent: undefined, last: "consent" });
+    expect(hintKeys("consent")).toEqual(["chat.consent.1", "chat.consent.2", "chat.consent.3"]);
   });
 });
 

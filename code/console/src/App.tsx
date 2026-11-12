@@ -7,6 +7,7 @@ import { SignIn } from "./entry/SignIn";
 import { Start } from "./entry/Start";
 import { AgentEdit } from "./pages/agent/AgentEdit";
 import { ApprovalsPage } from "./pages/ApprovalsPage";
+import { ConsentNewPage } from "./pages/consent/ConsentNewPage";
 import { ModelAddPage } from "./pages/models/ModelAddPage";
 import { ModelPage } from "./pages/models/ModelPage";
 import { ModelsPage } from "./pages/ModelsPage";
@@ -26,6 +27,7 @@ export function App() {
         <Route path="/hubs" element={<Hubs />} />
         <Route path="/h/:hubId" element={<Frame />}>
           <Route index element={<Navigate to="status" replace />} />
+          <Route path="consent/new" element={<ConsentNewPage />} />
           <Route path="models" element={<ModelsPage />} />
           <Route path="models/new" element={<ModelAddPage />} />
           <Route path="models/:accountId" element={<Navigate to="key" replace />} />
