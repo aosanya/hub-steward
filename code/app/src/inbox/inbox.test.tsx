@@ -137,16 +137,16 @@ describe("inbox", () => {
     show(fake([note({ event: "supplier_approved", names: { person: "", approver: "Asha Otieno", group: "", structure: "Siaya Farmers' Group" } })]));
     expect(await screen.findByText("Asha Otieno · Siaya Farmers' Group")).toBeInTheDocument();
   });
-  it("words an ask nobody answered with the ask's own line and clears its dot with Mark all read", async () => {
+  it("words an ask nobody answered with the ask's own line, with no dot because it opens nothing, and marks it read with Mark all read", async () => {
     const client = fake([note({ id: "c1", event: "ask_closed", subjectKind: "ask", names: { line: "a delivery" } })]);
     show(client);
     const row = (await screen.findByText("Nobody answered")).closest(".row") as HTMLElement;
     expect(within(row).getByText("Your ask for a delivery closed.")).toBeInTheDocument();
-    expect(row.firstElementChild).toBe(within(row).getByLabelText("Unread"));
+    expect(within(row).queryByLabelText("Unread")).toBeNull();
     expect(screen.queryByText("ask_closed")).toBeNull();
     await userEvent.click(screen.getByRole("button", { name: "Mark all read" }));
     expect(client.markRead).toHaveBeenCalledWith(["c1"]);
-    expect(screen.queryByLabelText("Unread")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Mark all read" })).toBeNull();
   });
 
   it("words a closed ask that carries no line", async () => {

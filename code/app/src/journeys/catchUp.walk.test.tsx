@@ -186,24 +186,23 @@ describe("journey 23, step 3: reads an ask nobody answered", () => {
       notification({ id: "c1", event: "ask_closed", subject_kind: "ask", subject_id: "a1", names: { line: "a ride" }, created_at: "2026-10-30T11:35:00Z" }),
     );
 
-  it("words the row Nobody answered with the ask's own line, unread, and never shows the raw event name", async () => {
+  it("words the row Nobody answered with the ask's own line, with no dot because it opens nothing, and never shows the raw event name", async () => {
     seedClosedAsk();
     open("/inbox");
 
     expect(await screen.findByText("Nobody answered")).toBeInTheDocument();
     expect(screen.getByText("Your ask for a ride closed.")).toBeInTheDocument();
-    expect(dots()).toHaveLength(1);
+    expect(dots()).toHaveLength(0);
     expect(screen.queryByText("ask_closed")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Mark all read" })).toBeInTheDocument();
   });
 
-  it("clears the dot and Mark all read once she has read it, and the row stays", async () => {
+  it("clears Mark all read once she has read it, and the row stays", async () => {
     seedClosedAsk();
     open("/inbox");
     await userEvent.click(await screen.findByRole("button", { name: "Mark all read" }));
 
     expect(callsTo(world, "comm_notification_mark_read")).toEqual([{ ids: ["c1"] }]);
-    expect(dots()).toHaveLength(0);
     expect(screen.queryByRole("button", { name: "Mark all read" })).not.toBeInTheDocument();
     expect(screen.getByText("Nobody answered")).toBeInTheDocument();
     expect(screen.getByText("Your ask for a ride closed.")).toBeInTheDocument();

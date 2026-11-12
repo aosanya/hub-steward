@@ -4,7 +4,7 @@ import type { Words } from "../entry/words";
 import { useLanguage } from "../entry/language";
 import { mcpInboxClient, type InboxClient, type InvitationItem, type NotificationItem } from "../inbox/api";
 import { chatMetaOf, chatTitleOf, threadPathOf } from "../inbox/chatNotice";
-import { noticeMetaOf, noticeTitleOf } from "../inbox/notice";
+import { noticeMetaOf, noticePathOf, noticeTitleOf } from "../inbox/notice";
 import { isOutage } from "../inbox/outage";
 import { unreadOf, useNotifications } from "../inbox/useNotifications";
 import { Button } from "../ui/Button";
@@ -24,7 +24,7 @@ const metaOf = (n: NotificationItem, words: Words) => noticeMetaOf(n, words) ?? 
 
 const calledOff = (n: NotificationItem) => n.event === "group_order_called_off" && n.subjectKind === "group_order" && n.subjectId !== "";
 
-const pathOf = (n: NotificationItem) => (calledOff(n) ? orderPath(n.subjectId) : threadPathOf(n));
+const pathOf = (n: NotificationItem) => (calledOff(n) ? orderPath(n.subjectId) : (noticePathOf(n) ?? threadPathOf(n)));
 
 type Opened = { invitation: InvitationItem; joined: boolean };
 
@@ -179,7 +179,7 @@ export function InboxPage({ client = mcpInboxClient, start = mcpStartClient }: {
                 selection={n.read ? null : { checked: chosen.includes(n.id), onChange: (on) => tick(n.id, on), label: `Select ${titleOf(n, words)}` }}
                 title={titleOf(n, words)}
                 meta={metaOf(n, words)}
-                start={n.read ? <span className="dot off" aria-hidden="true" /> : <span className="dot" role="img" aria-label="Unread" />}
+                start={n.read || !path ? <span className="dot off" aria-hidden="true" /> : <span className="dot" role="img" aria-label="Unread" />}
                 end={isoDay(n.createdAt)}
                 onClick={
                   path

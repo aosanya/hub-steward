@@ -1,4 +1,6 @@
+import { issuePath } from "../backlogs/paths";
 import type { Words } from "../entry/words";
+import { routes } from "../routes";
 import type { NotificationItem } from "./api";
 import { firstFilled } from "./chatNotice";
 
@@ -60,4 +62,17 @@ export const noticeMetaOf = (n: NotificationItem, words: Words): string | undefi
   if (n.event === "supplier_approved") return approvedBy(n);
   const wording = noticeWordings.get(n.event);
   return wording ? spoken(n, words, wording.line, wording.lineNamed) : undefined;
+};
+
+const formEvents = new Set(["survey_reached", "form_published", "new_form"]);
+
+const joinedEvents = new Set(["group_join_approved", "joined", "request_approved"]);
+
+const subjectIs = (n: NotificationItem, ...kinds: string[]) => n.subjectId !== "" && kinds.includes(n.subjectKind);
+
+export const noticePathOf = (n: NotificationItem): string | undefined => {
+  if (formEvents.has(n.event) && subjectIs(n, "survey", "form")) return routes.form.path({ id: n.subjectId });
+  if (n.event === "task_assigned" && subjectIs(n, "task", "issue")) return issuePath(n.subjectId);
+  if (joinedEvents.has(n.event) && subjectIs(n, "group")) return routes.roomThreads.path({ roomId: n.subjectId });
+  return undefined;
 };
