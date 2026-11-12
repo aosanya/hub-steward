@@ -157,6 +157,10 @@ func writeActorErr(w http.ResponseWriter, err error) {
 	if errors.Is(err, mwanachamaactor.ErrActorNotFound) {
 		err = agencies.ErrInstanceNotFound
 	}
+	if errors.Is(err, mwanachamaactor.ErrDuplicateDisplayName) {
+		writeErr(w, http.StatusConflict, "another member or a role in this agency already has this name")
+		return
+	}
 	writeInstanceErr(w, err)
 }
 
