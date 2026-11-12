@@ -12,6 +12,23 @@ const remembered = () => {
 
 export const openAgencyId = () => (openId ||= remembered());
 
+let openName = "";
+
+const nameListeners = new Set<() => void>();
+
+export const openAgencyName = () => openName;
+
+export const subscribeAgencyName = (listener: () => void) => {
+  nameListeners.add(listener);
+  return () => void nameListeners.delete(listener);
+};
+
+export const rememberAgencyName = (name: string) => {
+  if (name === openName) return;
+  openName = name;
+  nameListeners.forEach((listener) => listener());
+};
+
 export const openAgency = (id: string) => {
   openId = id;
   try {
@@ -23,6 +40,7 @@ export const openAgency = (id: string) => {
 
 export const forgetOpenAgency = () => {
   openId = "";
+  rememberAgencyName("");
   try {
     sessionStorage.removeItem(storageKey);
   } catch {

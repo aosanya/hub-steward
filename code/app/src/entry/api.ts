@@ -53,7 +53,11 @@ export const httpEntryClient: EntryClient = {
     if (!res.ok) throw new Error(`your agencies answered ${res.status}`);
     const body = await res.json();
     const items: any[] = Array.isArray(body?.agencies) ? body.agencies : [];
-    return items.map((a) => ({ id: String(a?.id ?? ""), name: String(a?.name ?? "") }));
+    const { agency } = await runtimeConfig();
+    const only = agency?.toLowerCase();
+    return items
+      .map((a) => ({ id: String(a?.id ?? ""), name: String(a?.name ?? "") }))
+      .filter((a) => !only || a.name.toLowerCase().includes(only));
   },
   async searchDirectory(query) {
     const res = await wakalaFetch(`/directory?q=${encodeURIComponent(query)}`, { method: "GET" });

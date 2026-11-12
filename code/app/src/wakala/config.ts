@@ -1,4 +1,4 @@
-export type RuntimeConfig = { wakala: string; mcp: string };
+export type RuntimeConfig = { wakala: string; mcp: string; agency?: string };
 
 const sameOrigin: RuntimeConfig = { wakala: "", mcp: "/mcp" };
 
@@ -7,7 +7,8 @@ const trimmed = (value: unknown) => (typeof value === "string" ? value.trim().re
 export const parseConfig = (raw: unknown): RuntimeConfig => {
   const doc = typeof raw === "object" && raw !== null ? (raw as Record<string, unknown>) : {};
   const wakala = trimmed(doc.wakala);
-  return { wakala, mcp: trimmed(doc.mcp) || `${wakala}/mcp` };
+  const agency = trimmed(doc.agency);
+  return { wakala, mcp: trimmed(doc.mcp) || `${wakala}/mcp`, ...(agency ? { agency } : {}) };
 };
 
 const fetchConfig = async (): Promise<RuntimeConfig | null> => {

@@ -110,20 +110,20 @@ export function AgenciesPage() {
   }
   if (view.name === "agency") {
     return (
-      <Shell tabless title={view.agency.name} onBack={() => setView({ name: "find" })}>
+      <Shell tabless unnamed title={view.agency.name} onBack={() => setView({ name: "find" })}>
         <AgencyDetail agency={view.agency} />
       </Shell>
     );
   }
   if (view.name === "find") {
     return (
-      <Shell tabless title={words.findAgencyTitle} onBack={() => setView({ name: "list" })}>
+      <Shell tabless unnamed title={words.findAgencyTitle} onBack={() => setView({ name: "list" })}>
         <Find onPick={(agency) => setView({ name: "agency", agency })} />
       </Shell>
     );
   }
   return (
-    <Shell tabless title={words.agenciesTitle}>
+    <Shell tabless unnamed title={words.agenciesTitle}>
       {loaded.kind === "unreached" ? <LoadFailed words={words.agenciesUnreached} /> : null}
       {loaded.kind === "ready" && loaded.agencies.length === 0 ? (
         <Card empty>

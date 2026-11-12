@@ -425,7 +425,11 @@ describe("the runtime config", () => {
     expect(parseConfig(raw)).toEqual({ wakala: "", mcp: "/mcp" });
   });
 
-  it("holds no field beyond the wakala origin and the mcp endpoint, whatever the file names", () => {
+  it("keeps the agency an app is limited to", () => {
+    expect(parseConfig({ wakala: "", agency: " Zöldhalom " })).toEqual({ wakala: "", mcp: "/mcp", agency: "Zöldhalom" });
+  });
+
+  it("holds no field beyond the wakala origin, the mcp endpoint and the limiting agency, whatever the file names", () => {
     expect(parseConfig({ wakala: "https://w", template: "farmers" })).toEqual({ wakala: "https://w", mcp: "https://w/mcp" });
   });
 

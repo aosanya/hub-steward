@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Navigate, useLocation, useParams } from "react-router-dom";
-import { forgetOpenAgency, openAgency, openAgencyId } from "../../agency/open";
+import { forgetOpenAgency, openAgency, openAgencyId, rememberAgencyName } from "../../agency/open";
 import { entryClient } from "../../entry/api";
 import type { AgencyScreen } from "../../routes";
 import { tabPathIn, type Tab } from "../../tabs";
@@ -15,7 +15,12 @@ export function InAgency({ children }: { children: ReactNode }) {
     entryClient()
       .listAgencies()
       .then((agencies) => {
-        if (!live || agencies.some((agency) => agency.id === agencyId)) return;
+        if (!live) return;
+        const found = agencies.find((agency) => agency.id === agencyId);
+        if (found) {
+          rememberAgencyName(found.name);
+          return;
+        }
         forgetOpenAgency();
         setRefused(true);
       })

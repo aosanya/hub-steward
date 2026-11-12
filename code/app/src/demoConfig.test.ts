@@ -12,10 +12,14 @@ describe("the demo build config", () => {
     expect(JSON.parse(demoConfigJson(undefined))).toEqual({ wakala: "" });
   });
 
-  const served = (wakala: string | undefined) => {
+  it("names the one agency the app is limited to", () => {
+    expect(JSON.parse(demoConfigJson("", " Zöldhalom "))).toEqual({ wakala: "", agency: "Zöldhalom" });
+  });
+
+  const served = (wakala: string | undefined, agency?: string) => {
     const mounted: { path: string; handler: (request: unknown, response: { setHeader: (name: string, value: string) => void; end: (body: string) => void }) => void }[] = [];
     const server = { middlewares: { use: (path: string, handler: never) => mounted.push({ path, handler }) } } as unknown as ViteDevServer;
-    (demoConfig(wakala).configureServer as (server: ViteDevServer) => void)(server);
+    (demoConfig(wakala, agency).configureServer as (server: ViteDevServer) => void)(server);
     return mounted;
   };
 
@@ -25,6 +29,13 @@ describe("the demo build config", () => {
     route.handler({}, { setHeader: () => undefined, end: (text) => (body = text) });
     expect(route.path).toBe("/config.json");
     expect(JSON.parse(body)).toEqual({ wakala: "http://localhost:8092" });
+  });
+
+  it("serves config.json from the dev server for a limited agency even through a same-origin proxy", () => {
+    const [route] = served(undefined, "Zöldhalom");
+    let body = "";
+    route.handler({}, { setHeader: () => undefined, end: (text) => (body = text) });
+    expect(JSON.parse(body)).toEqual({ wakala: "", agency: "Zöldhalom" });
   });
 
   it("serves nothing from the dev server when the variable is unset", () => {
