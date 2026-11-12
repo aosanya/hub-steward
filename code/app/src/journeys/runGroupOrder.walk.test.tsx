@@ -214,7 +214,7 @@ describe("journey 18, the Ongoing segment", () => {
     await atOngoing();
     const row = (await screen.findByText("Urea 50kg")).closest(".row") as HTMLElement;
     expect(within(row).getByText("Create group order · Open")).toBeInTheDocument();
-    expect(within(screen.getByRole("main")).queryAllByRole("heading")).toEqual([]);
+    expect(within(screen.getByRole("main")).queryAllByRole("heading").map((heading) => heading.textContent)).toEqual(["With others"]);
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Apps|Started/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: startStep.form_name })).not.toBeInTheDocument();
