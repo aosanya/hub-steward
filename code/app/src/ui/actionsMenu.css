@@ -3,3 +3,5 @@
 .actions-list { position: absolute; top: calc(100% + .25rem); right: 0; z-index: 10; min-width: 13rem; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r-md); box-shadow: 0 .25rem 1rem var(--line); overflow: hidden; }
 .actions-list > * { display: block; min-height: 3rem; padding: .75rem 1rem; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: left; text-decoration: none; }
 .actions-list > * + * { border-top: 1px solid var(--line); }
+.actions-btn.icon { justify-content: center; min-width: 2.5rem; padding: 0; }
+.actions-list > .danger { color: var(--danger); }

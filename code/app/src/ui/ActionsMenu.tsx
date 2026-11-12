@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "./actionsMenu.css";
 
-export type MenuAction = { label: string; onSelect?: () => void; to?: string; current?: boolean };
+export type MenuAction = { label: string; onSelect?: () => void; to?: string; current?: boolean; danger?: boolean };
 
-export function ActionsMenu({ actions, label = "Actions" }: { actions: MenuAction[]; label?: string }) {
+export function ActionsMenu({ actions, label = "Actions", icon }: { actions: MenuAction[]; label?: string; icon?: string }) {
   const [open, setOpen] = useState(false);
   const frame = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -21,9 +21,9 @@ export function ActionsMenu({ actions, label = "Actions" }: { actions: MenuActio
   if (actions.length === 0) return null;
   return (
     <div className="actions" ref={frame}>
-      <button type="button" className="actions-btn" aria-expanded={open} onClick={() => setOpen(!open)}>
-        {label}
-        <span aria-hidden="true">▾</span>
+      <button type="button" className={icon ? "actions-btn icon" : "actions-btn"} aria-label={icon ? label : undefined} aria-expanded={open} onClick={() => setOpen(!open)}>
+        {icon ?? label}
+        {icon ? null : <span aria-hidden="true">▾</span>}
       </button>
       {open ? (
         <div className="actions-list">
@@ -36,6 +36,7 @@ export function ActionsMenu({ actions, label = "Actions" }: { actions: MenuActio
               <button
                 key={action.label}
                 type="button"
+                className={action.danger ? "danger" : undefined}
                 aria-current={action.current ? "true" : undefined}
                 onClick={() => {
                   setOpen(false);

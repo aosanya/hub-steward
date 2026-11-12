@@ -43,3 +43,19 @@ describe("the Actions dropdown", () => {
     expect(screen.queryByRole("button", { name: "Actions" })).toBeNull();
   });
 });
+
+describe("the Actions dropdown as an icon button", () => {
+  it("shows the icon, names the button by its label, and draws a danger action in the danger colour", async () => {
+    render(
+      <MemoryRouter>
+        <ActionsMenu icon="⋯" label="Piece 4 menu" actions={[{ label: "Rename", onSelect: () => {} }, { label: "Delete", danger: true, onSelect: () => {} }]} />
+      </MemoryRouter>,
+    );
+    const button = screen.getByRole("button", { name: "Piece 4 menu" });
+    expect(button).toHaveTextContent("⋯");
+    expect(button).not.toHaveTextContent("▾");
+    await userEvent.click(button);
+    expect(screen.getByRole("button", { name: "Delete" })).toHaveClass("danger");
+    expect(screen.getByRole("button", { name: "Rename" })).not.toHaveClass("danger");
+  });
+});

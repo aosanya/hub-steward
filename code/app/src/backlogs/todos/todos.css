@@ -7,3 +7,8 @@
 .todo .rank { flex: none; min-width: 1rem; font-weight: 600; color: var(--ink-soft); }
 .todo-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .375rem; }
 .todo .why { color: var(--danger); font-size: .8125rem; overflow-wrap: anywhere; }
+.todo-edit { display: flex; flex-direction: column; gap: .5rem; padding: .75rem 1rem .75rem calc(1rem + var(--depth, 0) * 1.25rem); background: var(--bg-alt); border-top: 1px solid var(--line); }
+.todo-btns { display: flex; gap: .5rem; }
+.todo-btns .btn { flex: 1; }
+.todo-note { margin: 0; padding: 0 1rem .5rem calc(1rem + var(--depth, 0) * 1.25rem); }
+.todo-add .ttl { color: var(--accent); }

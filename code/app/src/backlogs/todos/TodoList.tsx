@@ -2,65 +2,64 @@ import { useState } from "react";
 import { useLoad } from "../../forms/useLoad";
 import { openAgencyId } from "../../agency/open";
 import { Button } from "../../ui/Button";
-import { Chip, type ChipTone } from "../../ui/Chip";
 import { loadingWords, tryAgainWords } from "../../ui/LoadState";
 import { ListRow } from "../../ui/ListRow";
-import type { CSSProperties } from "react";
-import type { TodosClient } from "./api";
-import { countOf, statusOf, treeOf, type TodoRowData, type TodoState } from "./todoTree";
+import { writesOf, type TodosClient } from "./api";
+import { TitleForm } from "./TodoForms";
+import { TodoRow } from "./TodoRow";
+import { useAttempt } from "./todoEdit";
+import { countOf, treeOf, type Todo } from "./todoTree";
 import "./todos.css";
 
-const stateWords: Record<TodoState, string> = { todo: "To do", progress: "In progress", done: "Done", blocked: "Blocked" };
-
-const stateTones: Record<TodoState, ChipTone | undefined> = { todo: undefined, progress: "info", done: "success", blocked: "danger" };
-
-export function TodoRow({ row }: { row: TodoRowData }) {
-  const state = statusOf(row.todo.status);
-  return (
-    <div className="todo" style={{ "--depth": row.depth } as CSSProperties}>
-      <ListRow
-        title={row.todo.title}
-        start={<span className="rank">{row.todo.number}</span>}
-        below={
-          <>
-            <span className="todo-meta">
-              <Chip tone={stateTones[state]}>{stateWords[state]}</Chip>
-              {row.waitsOn.length > 0 ? <span className="line">waits on {row.waitsOn.join(", ")}</span> : null}
-            </span>
-            {row.reason ? <span className="why">{row.reason}</span> : null}
-          </>
-        }
-      />
-    </div>
-  );
+function AddPiece({ onAdd, refresh }: { onAdd: (title: string) => Promise<void>; refresh: () => void }) {
+  const [open, setOpen] = useState(false);
+  const attempt = useAttempt(refresh);
+  const close = () => {
+    attempt.clear();
+    setOpen(false);
+  };
+  if (!open) return <ListRow className="todo-add" title="+ Add a piece" onClick={() => setOpen(true)} />;
+  return <TitleForm label="Title of the new piece" submit="Add" busy={attempt.busy} message={attempt.message} onCancel={close} onSave={(title) => void attempt.run(() => onAdd(title)).then((done) => done && setOpen(false))} />;
 }
 
 export function TodoList({ issueId, client }: { issueId: string; client: TodosClient }) {
   const [version, setVersion] = useState(0);
+  const [fresh, setFresh] = useState<Todo[] | null>(null);
   const loaded = useLoad(() => client.list(issueId), `todos:${openAgencyId()}:${issueId}:${version}`);
-  const held = loaded.state === "ready" ? loaded.data : [];
+  const readyNow = fresh !== null || loaded.state === "ready";
+  const held = fresh ?? (loaded.state === "ready" ? loaded.data : []);
   const { done, total } = countOf(held);
+  const writes = writesOf(client);
+  const retry = () => {
+    setFresh(null);
+    setVersion((now) => now + 1);
+  };
+  const refresh = () => {
+    client.list(issueId).then(setFresh, retry);
+  };
+  const editing = writes ? { writes, todos: held, refresh } : undefined;
   return (
     <div className="todos">
       <div className="todos-head">
         <span>Todo list</span>
         {total > 0 ? <span className="line">{done} of {total} done</span> : null}
       </div>
-      {loaded.state === "loading" ? (
+      {loaded.state === "loading" && fresh === null ? (
         <p className="todos-none" role="status">
           {loadingWords}
         </p>
       ) : null}
-      {loaded.state === "error" ? (
+      {loaded.state === "error" && fresh === null ? (
         <div className="todos-none">
           <p role="alert">The todo list could not be loaded.</p>
-          <Button onClick={() => setVersion((now) => now + 1)}>{tryAgainWords}</Button>
+          <Button onClick={retry}>{tryAgainWords}</Button>
         </div>
       ) : null}
-      {loaded.state === "ready" && total === 0 ? <p className="todos-none">No pieces yet.</p> : null}
+      {readyNow && total === 0 ? <p className="todos-none">No pieces yet.</p> : null}
       {treeOf(held).map((row) => (
-        <TodoRow key={row.todo.id} row={row} />
+        <TodoRow key={row.todo.id} row={row} editing={editing} />
       ))}
+      {readyNow && writes ? <AddPiece onAdd={(title) => writes.add(issueId, title)} refresh={refresh} /> : null}
     </div>
   );
 }
