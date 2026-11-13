@@ -428,3 +428,36 @@ describe("the Usage pages in the menu", () => {
     expect(ids).toContain("models");
   });
 });
+
+describe("the menu of a resident who holds the consent.publish permission", () => {
+  const permissions = ["consent.publish"];
+
+  it("shows Settings and Consent text under it and no other page", () => {
+    for (const kind of hubKinds) {
+      const groups = buildMenu(kind, "consent", {}, "resident", permissions);
+      expect(groups.map((group) => group.caption)).toEqual(["menuSettings"]);
+      expect(idsOf(groups)).toEqual(["consent"]);
+    }
+  });
+
+  it("marks Consent text current on its own page", () => {
+    expect(rowOf(buildMenu("farmers", "consent", {}, "resident", permissions), "consent")?.current).toBe(true);
+  });
+
+  it("shows nothing of the agency, users, models or usage pages", () => {
+    const ids = idsOf(buildMenu("lab", "consent", {}, "resident", permissions));
+    for (const hidden of ["status", "profile", "workflows", "users", "agents", "general", "models", "assistant", "usage"]) expect(ids).not.toContain(hidden);
+  });
+
+  it("leaves the owner's menu whole whatever permissions come with it", () => {
+    const whole = idsOf(buildMenu("farmers", "status", {}, "owner"));
+    expect(idsOf(buildMenu("farmers", "status", {}, "owner", permissions))).toEqual(whole);
+    expect(whole.length).toBeGreaterThan(1);
+  });
+
+  it("leaves the staff seat's menu as it is whatever permissions come with it", () => {
+    const staff = idsOf(buildMenu("farmers", "status", {}, "agent"));
+    expect(idsOf(buildMenu("farmers", "status", {}, "agent", permissions))).toEqual(staff);
+    expect(staff).not.toContain("consent");
+  });
+});

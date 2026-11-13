@@ -10,7 +10,8 @@ import { hubPath } from "../api";
 import type { ChatAnswer, SlotAnswer } from "../data/chatAnswer";
 import { formTarget } from "../data/chatFill";
 import { kindOf } from "../data/hubKind";
-import type { ChipWords } from "../data/menu";
+import { homePageOf, showsPage, viewerOf, type ChipWords } from "../data/menu";
+import { holdsOnlyPermissions } from "../data/seat";
 import { loadReviewBadges } from "../data/reviewBadges";
 import { useSession } from "../session";
 import type { Hub } from "../types";
@@ -106,6 +107,7 @@ function Shell({ hubs, hub }: ShellProps) {
     loadReview(hubId),
   );
   const [told, setTold] = useState<Told | null>(null);
+  const holder = holdsOnlyPermissions(hub.role, hub.permissions);
   const asks = useAskQueue(hubId);
   const [chipWords, setChipWords] = useState<ChipWords>({});
   const counted = useCounts(hub, inReview(page), menuRefresh);
@@ -222,6 +224,7 @@ function Shell({ hubs, hub }: ShellProps) {
                             hubId={hubId}
                             kind={kindOf(hub)}
                             role={hub.role}
+                            permissions={hub.permissions}
                             page={page}
                             badges={badges}
                           />
@@ -262,21 +265,23 @@ function Shell({ hubs, hub }: ShellProps) {
                             </ReviewTabs>
                             {loading > 0 ? <Loading /> : null}
                           </main>
-                          <ChatColumn
-                            key={hubId}
-                            hubId={hubId}
-                            page={page}
-                            rail={rail}
-                            onToggleRail={toggleRail}
-                            onAnswer={showAnswer}
-                            onChanged={reloadPage}
-                            told={told?.hubId === hubId ? told : null}
-                            queue={asks.queue}
-                            onTake={asks.take}
-                            onCancelQueued={asks.cancel}
-                            onCancelAll={asks.cancelAll}
-                            chipWords={chipWords}
-                          />
+                          {holder ? null : (
+                            <ChatColumn
+                              key={hubId}
+                              hubId={hubId}
+                              page={page}
+                              rail={rail}
+                              onToggleRail={toggleRail}
+                              onAnswer={showAnswer}
+                              onChanged={reloadPage}
+                              told={told?.hubId === hubId ? told : null}
+                              queue={asks.queue}
+                              onTake={asks.take}
+                              onCancelQueued={asks.cancel}
+                              onCancelAll={asks.cancelAll}
+                              chipWords={chipWords}
+                            />
+                          )}
                         </div>
                       </div>
                     </FailureCtx.Provider>
@@ -295,6 +300,7 @@ export function Frame() {
   const { hubId } = useParams();
   const { signedIn, hubs, restore } = useSession();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const restoreTried = useRef(false);
 
   useEffect(() => {
@@ -311,5 +317,7 @@ export function Frame() {
   if (!signedIn) return <Loading />;
   const hub = hubs.find((h) => h.id === hubId);
   if (!hub) return <Navigate to="/" replace />;
+  if (holdsOnlyPermissions(hub.role, hub.permissions) && !showsPage(kindOf(hub), pageOf(pathname), viewerOf(hub)))
+    return <Navigate to={hubPath(hub.id, homePageOf(hub))} replace />;
   return <Shell hubs={hubs} hub={hub} />;
 }

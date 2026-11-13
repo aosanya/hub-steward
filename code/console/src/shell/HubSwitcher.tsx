@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { hubPath } from "../api";
 import { kindOf, stateOf } from "../data/hubKind";
-import { showsPage } from "../data/menu";
+import { homePageOf, showsPage, viewerOf } from "../data/menu";
+import { holdsOnlyPermissions } from "../data/seat";
 import { hubWithState, useHubStates } from "../entry/useHubStates";
 import { useI18n } from "../i18n";
 import type { Hub } from "../types";
@@ -31,7 +32,7 @@ const pageOfOtherHub = (page: string) => (page === pageNamingARole ? "agents" : 
 
 const pageIn = (hub: Hub, page: string) => {
   const wanted = pageOfOtherHub(page);
-  return showsPage(kindOf(hub), wanted) ? wanted : "status";
+  return showsPage(kindOf(hub), wanted, viewerOf(hub)) ? wanted : homePageOf(hub);
 };
 
 export function HubSwitcher({ hubs, hub, page }: HubSwitcherProps) {
@@ -65,7 +66,7 @@ export function HubSwitcher({ hubs, hub, page }: HubSwitcherProps) {
   };
   const wanted = query.trim().toLowerCase();
   const shown = hubs.filter((h) => h.id === hub.id || h.name.toLowerCase().includes(wanted));
-  const states = useHubStates(open ? hubs.filter((h) => h.id !== hub.id) : []);
+  const states = useHubStates(open ? hubs.filter((h) => h.id !== hub.id && !holdsOnlyPermissions(h.role, h.permissions)) : []);
 
   return (
     <div className="switch" ref={root}>

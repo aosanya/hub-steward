@@ -1,6 +1,6 @@
 import { api, type ApiResult } from "../api";
 import type { Hub } from "../types";
-import { consentPermission } from "../data/seat";
+import { consentPermission, ownerRole } from "../data/seat";
 import { runtimeConfig } from "./config";
 import { callTool, resetMcp } from "./mcp";
 
@@ -9,8 +9,6 @@ export type Credentials = { email: string; password: string };
 export type Failure = { error?: unknown };
 
 export type Imported = { instance?: { id?: string; name?: string } };
-
-const ownerRole = "owner";
 
 const rest = async <T = any>(method: string, path: string, body?: unknown): Promise<ApiResult<T>> => {
   const { wakala } = await runtimeConfig();

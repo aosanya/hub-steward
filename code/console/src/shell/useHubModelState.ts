@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { listAccounts } from "../data/accounts";
+import { holdsOnlyPermissions } from "../data/seat";
 import { hasKey } from "../pages/models/accountMap";
 import { useSession } from "../session";
 import type { Hub } from "../types";
@@ -17,7 +18,10 @@ export function useHubModelState(hub: Hub, page: string) {
     latest.current = hub;
   });
 
+  const quiet = holdsOnlyPermissions(hub.role, hub.permissions);
+
   useEffect(() => {
+    if (quiet) return;
     let live = true;
     const load = async () => {
       try {
@@ -34,5 +38,5 @@ export function useHubModelState(hub: Hub, page: string) {
       live = false;
       window.removeEventListener(hubModelChanged, load);
     };
-  }, [hubId, page, updateHub]);
+  }, [hubId, page, updateHub, quiet]);
 }

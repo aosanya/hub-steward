@@ -9,7 +9,7 @@ import { Icon } from "../ui/Icon";
 import { usageSearch } from "../pages/usage/usageLinks";
 import type { Badges } from "./page";
 
-type MenuProps = { hubId: string; kind: HubKind; role?: string; page: string; badges: Badges };
+type MenuProps = { hubId: string; kind: HubKind; role?: string; permissions?: readonly string[]; page: string; badges: Badges };
 
 type NavRowProps = { hubId: string; row: MenuRow; depth?: number };
 
@@ -57,11 +57,13 @@ function NavRow({ hubId, row, depth = 0 }: NavRowProps) {
   );
 }
 
-export function Menu({ hubId, kind, role = "", page, badges }: MenuProps) {
+const noPermissions: readonly string[] = [];
+
+export function Menu({ hubId, kind, role = "", permissions = noPermissions, page, badges }: MenuProps) {
   const { t } = useI18n();
   const { signOut } = useSession();
   const navigate = useNavigate();
-  const groups = useMemo(() => buildMenu(kind, page, badges, role), [kind, page, badges, role]);
+  const groups = useMemo(() => buildMenu(kind, page, badges, role, permissions), [kind, page, badges, role, permissions]);
 
   const leave = (e: MouseEvent) => {
     e.preventDefault();

@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { hubPath } from "../api";
+import { homePageOf } from "../data/menu";
 import { useSession } from "../session";
 import type { Hub } from "../types";
 import { Loading } from "../ui";
 
-export const landingPath = (hubs: Hub[]) => (hubs.length > 0 ? hubPath(hubs[0].id, "status") : "/create");
+export const landingPath = (hubs: Hub[]) => (hubs.length > 0 ? hubPath(hubs[0].id, homePageOf(hubs[0])) : "/create");
 
 export function Gate() {
   const { restore, signedIn, hubs } = useSession();

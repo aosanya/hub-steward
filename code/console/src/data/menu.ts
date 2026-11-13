@@ -1,5 +1,6 @@
 import type { HubKind } from "./hubKind";
-import { isStaff } from "./seat";
+import type { Hub } from "../types";
+import { consentPermission, holdsOnlyPermissions, isStaff } from "./seat";
 
 export type Badges = Record<string, number>;
 
@@ -15,6 +16,8 @@ export type MenuRow = {
 };
 
 export type MenuGroup = { caption?: string; divided: boolean; rows: MenuRow[] };
+
+export type Viewer = { role: string; permissions: readonly string[] };
 
 export type ChipWords = { step?: string };
 
@@ -35,6 +38,7 @@ type Entry = {
   children?: string[];
   dividedBefore?: boolean;
   managersOnly?: boolean;
+  permission?: string;
 };
 
 export const hiddenPages: string[] = ["network"];
@@ -130,7 +134,14 @@ const entries: Entry[] = [
   { id: "equipment", icon: "laptop", section: "generated", kinds: ["riders"] },
   { id: "documents", icon: "file", section: "knowledge", kinds: labAndRiders },
   { id: "general", icon: "gear", section: "settings", kinds: everyKind },
-  { id: "consent", icon: "doc", section: "settings", kinds: everyKind, managersOnly: true },
+  {
+    id: "consent",
+    icon: "doc",
+    section: "settings",
+    kinds: everyKind,
+    managersOnly: true,
+    permission: consentPermission,
+  },
   {
     id: "models",
     icon: "grid",
@@ -194,22 +205,34 @@ const hasDescendant = (entry: Entry, id: string): boolean =>
     (kid) => kid === id || hasDescendant(entryOf(kid)!, id),
   );
 
+const noViewer: Viewer = { role: "", permissions: [] };
+
+const opensFor = (entry: Entry, { role, permissions }: Viewer): boolean =>
+  holdsOnlyPermissions(role, permissions)
+    ? entry.permission !== undefined && permissions.includes(entry.permission)
+    : !(entry.managersOnly && isStaff(role));
+
 const shownTo =
-  (kind: HubKind, role = "") =>
+  (kind: HubKind, viewer: Viewer = noViewer) =>
   (entry: Entry | undefined): entry is Entry =>
     entry !== undefined &&
     entry.kinds.includes(kind) &&
     !hiddenPages.includes(entry.id) &&
-    !(entry.managersOnly && isStaff(role));
+    opensFor(entry, viewer);
 
 export const pageIcon = (page: string): string =>
   entryOf(page)?.icon ?? details.get(page)?.icon ?? "chat";
 
-export const showsPage = (kind: HubKind, page: string): boolean =>
-  shownTo(kind)(entryOf(page));
+export const showsPage = (kind: HubKind, page: string, viewer: Viewer = noViewer): boolean =>
+  shownTo(kind, viewer)(entryOf(page));
 
 export const pagesOf = (kind: HubKind): string[] =>
   entries.filter(shownTo(kind)).map((entry) => entry.id);
+
+export const viewerOf = (hub: Hub): Viewer => ({ role: hub.role, permissions: hub.permissions ?? [] });
+
+export const homePageOf = (hub: Hub): string =>
+  holdsOnlyPermissions(hub.role, hub.permissions) ? "consent" : "status";
 
 const modelsLanding = new Map([["models", "models-configure"]]);
 
@@ -275,10 +298,10 @@ function rowOf(
   kind: HubKind,
   shown: string,
   badges: Badges,
-  role: string,
+  viewer: Viewer,
 ): MenuRow {
   const page = modelsLanding.get(shown) ?? details.get(shown)?.parent ?? shown;
-  const kids = (entry.children ?? []).map(entryOf).filter(shownTo(kind, role));
+  const kids = (entry.children ?? []).map(entryOf).filter(shownTo(kind, viewer));
   const row: MenuRow = {
     id: entry.id,
     label: "menu." + entry.id,
@@ -290,7 +313,7 @@ function rowOf(
   if (kids.length > 0) {
     row.expanded = entry.id === page || hasDescendant(entry, page);
     if (row.expanded)
-      row.children = kids.map((kid) => rowOf(kid, kind, page, badges, role));
+      row.children = kids.map((kid) => rowOf(kid, kind, page, badges, viewer));
     else count += kids.reduce((sum, kid) => sum + (badges[kid.id] ?? 0), 0);
   }
   if (count > 0) row.badge = count;
@@ -302,10 +325,12 @@ export function buildMenu(
   page: string,
   badges: Badges,
   role = "",
+  permissions: readonly string[] = [],
 ): MenuGroup[] {
+  const viewer: Viewer = { role, permissions };
   const groups: { section: Section | null; entries: Entry[] }[] = [];
   for (const entry of entries.filter(
-    (e) => shownTo(kind, role)(e) && !childIds.has(e.id),
+    (e) => shownTo(kind, viewer)(e) && !childIds.has(e.id),
   )) {
     const last = groups[groups.length - 1];
     if (last && last.section === entry.section) last.entries.push(entry);
@@ -314,6 +339,6 @@ export function buildMenu(
   return groups.map((group) => ({
     caption: group.section ? sectionCaptions[group.section] : undefined,
     divided: group.section === "settings",
-    rows: group.entries.map((entry) => rowOf(entry, kind, page, badges, role)),
+    rows: group.entries.map((entry) => rowOf(entry, kind, page, badges, viewer)),
   }));
 }

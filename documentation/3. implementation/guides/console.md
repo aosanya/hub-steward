@@ -41,7 +41,7 @@ A data page is a `PageModule` (`data/types.ts`): a `spec`, a `rows(hubId, query)
 
 ## The menu and what hides pages
 
-`data/menu.ts` lists every page once in `entries`: `id`, `icon`, `section`, `kinds` and optional `children` and `managersOnly`. A page shows when its `kinds` include the hub's kind (`lab`, `farmers` or `riders`, from `kindOf` in `data/hubKind.ts`), it is not in `hiddenPages`, and the viewer is not a staff seat on a `managersOnly` page. A staff seat is the role `agent` (`data/seat.ts`). Each label is the key `menu.<id>` (`data/menu.ts`, `shell/labels.ts`).
+`data/menu.ts` lists every page once in `entries`: `id`, `icon`, `section`, `kinds` and optional `children` and `managersOnly`. A page shows when its `kinds` include the hub's kind (`lab`, `farmers` or `riders`, from `kindOf` in `data/hubKind.ts`), it is not in `hiddenPages`, and the viewer is not a staff seat on a `managersOnly` page. A staff seat is the role `agent` (`data/seat.ts`). An entry may name the `permission` that opens it (`consent` names `consent.publish`); a caller who is neither the owner nor a staff seat and holds permissions (`holdsOnlyPermissions` in `data/seat.ts`) sees only the entries whose permission they hold, lands on that page (`homePageOf`), is sent back to it from any other page by `Frame`, and gets no chat column and no model, draft or badge reads they would be refused. Each label is the key `menu.<id>` (`data/menu.ts`, `shell/labels.ts`).
 
 `data/features.ts` holds one switch, `measuresOn = false`, which removes every tool with "measure" in its name.
 
