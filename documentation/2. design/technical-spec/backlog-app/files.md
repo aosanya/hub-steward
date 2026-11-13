@@ -251,3 +251,60 @@ The dash rule: a line whose call fails or has no answer shows a dash. A Folder w
 | The limit of 8 tabs | A proposal, not decided by the owner |
 | Back to Folders on a wide empty Folder | The wide window draws the note "No description yet" and not the phone's empty card, since the top bar's back link already leads to the Folders list; whether it also wants the card is not decided |
 | Reaching Chat and Notifications | How a member reaches Chat and Notifications from the wide Files window is not drawn |
+
+## The viewer
+
+Source: hub issue ISS-4, built in `code/app/src/files/viewer/`. Read only.
+
+### Interface
+
+| Part | Where | What it does |
+|---|---|---|
+| `FileViewer({ name, extension, text, size, bytes?, reason? })` | `FileViewer.tsx` | Shows one file. `text` null means the name, size and reason note |
+| `viewerFor(name, extension?)` | `viewerFor.ts` | Returns `markdown`, `code`, `text`, `image` or `none` |
+| `languageFor(name, extension?)` | `viewerFor.ts` | The language the code viewer colours with |
+| `extensionTable`, `languageOf` | `extensions.ts` | The one table of extensions |
+
+The groups in `extensionTable`:
+
+| Group | Holds |
+|---|---|
+| code | Every extension in `languageOf`: go, mod, sum, ts, tsx, js, jsx, mjs, cjs, rb, json, yaml, yml, toml, sh, env, py, rs, java, kt, swift, c, h, cpp, css, html, xml, sql |
+| markdown | md, markdown, mdx |
+| text | txt, log, csv |
+| image | png, jpg, jpeg, gif, webp, svg |
+| names | `dockerfile` and `makefile`, matched on the whole file name |
+
+An unknown or missing extension with text is plain text.
+
+### What each viewer shows
+
+| Viewer | Shows |
+|---|---|
+| Code | Numbered lines, one row per line with a sticky number. A long line scrolls sideways inside the block only, so it never moves the page. Monospace in the root-relative rem size, colours from the app tokens |
+| Markdown page | Headings, lists, links, tables, quotes and fenced code, built as React elements by a hand-written parser. Raw HTML is never executed and shows as text. Only http, https and mailto links open, in a new window with `rel="noopener noreferrer"`. An image in Markdown shows its alt text only |
+| Plain text | A `pre` |
+| Image | The picture from `bytes` through a data URL in an `img`, with its name. An svg is never inlined |
+| Withheld | The name, the size (`formatSize`: B, KB, MB, GB) and one sentence, never the bytes. "This file is too large to show.", "This file is not text, so it is not shown.", or "This image could not be shown." |
+
+### Dependencies and limits
+
+| Question | Answer |
+|---|---|
+| Added dependencies | None. An own single-pass tokenizer (`highlight.ts`: a keyword table per language, strings, comments including block comments, Go raw strings and Python triple quotes, numbers, function names) and an own Markdown parser (`MarkdownPage.tsx`) |
+| Why not highlight.js or marked with DOMPurify | The app has none of them, and the owner wants it small with no executed HTML |
+| Swapping later | Replace `CodeBlock` and `MarkdownPage` only |
+| Code limits | A small highlighter, not a grammar: no nested template-string expressions, no regex literals, keywords by heuristic. A language outside the table shows as plain numbered lines |
+| Markdown limits | No footnotes, task-list checkboxes, reference-style links, autolinks or HTML |
+
+### Images
+
+`forms_git_file_read` gives `encoding` (`base64` for a non-text file) and `content` (the bytes as base64), so the tool can return image bytes. Not verified against a live hub.
+
+The Image row in "Which viewer opens a file" above is superseded: the data layer (`code/app/src/files/api.ts`, `FileAnswer`) still answers every non-utf-8 file as withheld "not text" with no content. Today an image therefore shows its name, size and "This image could not be shown." Passing the base64 `content` through the data layer and decoding it into `bytes` on the screen is what is left; an image over the 1 MiB limit stays withheld.
+
+### Tests
+
+88 tests across 5 files in `code/app/src/files/viewer/` at the time of writing, run with `cd code/app && npx vitest run src/files/viewer`. They cover .md, .go, .json, .txt, .png with and without bytes, a binary file and a too-large file withheld, a long line, and a script tag in Markdown.
+
+Not verified: a real browser render at phone width and the sideways scroll (jsdom has no layout).
