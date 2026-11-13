@@ -7,3 +7,16 @@
 .strip .txt{flex:1;min-width:0}
 .heading.split{display:flex;align-items:center;justify-content:space-between}
 .heading .act{min-height:2rem;padding:0;font-size:.8125rem}
+:root{--r-sm:0;--r-md:0;--r-pill:0}
+.mk:not(.box),.mk.dotted::after{border-radius:50%}
+.seg .dot,.dots i{border-radius:0}
+.seg{gap:0}
+.seg>a+a{border-left:1px solid var(--line)}
+.bar-action{gap:0}
+.bar-action>*+.menu-btn{border-left:1px solid var(--line)}
+.bottombar{gap:0}
+.bottombar>.btn+.btn{margin-left:-1px;border-left-color:var(--line-strong)}
+.btns{gap:0}
+.btns>.btn{margin:0 -1px -1px 0}
+.opts{gap:0}
+.opts>*+*{margin-top:-1px}
