@@ -71,6 +71,35 @@ func (d *Deps) admittedHolding(ctx context.Context, instanceID string, holds fun
 	return opaqueMembershipError(adoptCallerAsActor(ctx, d.Registry, instanceID, caller))
 }
 
+func (d *Deps) admittedByRolePermission(ctx context.Context, reg agencies.Registry, instanceID, action string) error {
+	err := mustBeMember(ctx, reg, instanceID)
+	if err == nil || !errors.Is(err, agencies.ErrInstanceNotFound) {
+		return err
+	}
+	caller := accounts.IDFromContext(ctx)
+	role, rerr := reg.RoleOf(ctx, instanceID, caller)
+	if caller == "" || rerr != nil || role != agencies.RoleResident {
+		return agencies.ErrInstanceNotFound
+	}
+	if !d.heldRolesAllow(withPartitionContext(ctx, instanceID), reg, action) {
+		return agencies.ErrInstanceNotFound
+	}
+	return opaqueMembershipError(adoptCallerAsActor(ctx, reg, instanceID, caller))
+}
+
+func (d *Deps) heldRolesAllow(ctx context.Context, reg agencies.Registry, action string) bool {
+	links, ok := reg.(agencies.AgencyRoleLinks)
+	if !ok {
+		return false
+	}
+	roleIDs, err := agentRoleIDs(ctx, reg, links)
+	if err != nil || len(roleIDs) == 0 {
+		return false
+	}
+	codes, err := unionPermissions(ctx, d.agencyRolePermissions, roleIDs)
+	return err == nil && permissionsAllow(codes, action)
+}
+
 func withPartitionContext(ctx context.Context, instanceID string) context.Context {
 	return context.WithValue(ctx, partitionKey{}, instanceID)
 }

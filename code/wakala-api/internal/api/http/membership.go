@@ -195,21 +195,29 @@ func postManagerFor(ctx context.Context, reg agencies.Registry, instanceID strin
 	return reg.PostManager(ctx, instanceID)
 }
 
-func custodyManagerFor(ctx context.Context, reg agencies.Registry, instanceID, action string) (*mwanachamacustody.CustodyManager, error) {
+func (d *Deps) custodyManagerFor(ctx context.Context, reg agencies.Registry, instanceID, action string) (*mwanachamacustody.CustodyManager, error) {
 	if err := mustBeMounted(ctx, reg, instanceID, "custody"); err != nil {
 		return nil, err
 	}
-	admit := mustBeMember
-	if slices.Contains(residentCustodyActions, action) {
-		admit = mustBeAdmitted
-	}
-	if err := admit(ctx, reg, instanceID); err != nil {
+	if err := d.custodyAdmitted(ctx, reg, instanceID, action); err != nil {
 		return nil, err
 	}
 	return reg.CustodyManager(ctx, instanceID)
 }
 
+func (d *Deps) custodyAdmitted(ctx context.Context, reg agencies.Registry, instanceID, action string) error {
+	switch {
+	case slices.Contains(residentCustodyActions, action):
+		return mustBeAdmitted(ctx, reg, instanceID)
+	case slices.Contains(permissionedCustodyActions, action):
+		return d.admittedByRolePermission(ctx, reg, instanceID, action)
+	}
+	return mustBeMember(ctx, reg, instanceID)
+}
+
 var residentCustodyConsentActions = []string{"custody.consent.give", "custody.consent.withdraw", "custody.consent.mine", "custody.consent_text.read"}
+
+var permissionedCustodyActions = []string{"custody.consent_version.list", "custody.consent_text.publish"}
 
 var residentCustodyActions = append(slices.Clone(residentCustodyConsentActions), "custody.consent_version.in_force")
 

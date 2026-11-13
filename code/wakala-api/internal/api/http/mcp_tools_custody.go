@@ -78,7 +78,7 @@ func (d *Deps) invokeCustodyTool(ctx context.Context, name, action string, raw j
 	if err != nil {
 		return nil, err
 	}
-	cm, err := custodyManagerFor(ctx, d.Registry, instanceID, action)
+	cm, err := d.custodyManagerFor(ctx, d.Registry, instanceID, action)
 	if err != nil {
 		return nil, err
 	}
