@@ -22,11 +22,13 @@ Who may call the git tools is a separate gate. The forms git mount answers owner
 |---|---|---|---|
 | 1 | Home with Files | Home with the Files option beside Start, Ongoing and Backlogs, shown when the agency mounts git. The bottom bar is Home, Chat, Notifications, with no Files tab | `agency_get_agency`, `agency_list_mounts` |
 | 2 | Folders list | One row for each Folder: its name and "Changed 2 hours ago". Back goes to Home, which stays chosen in the bottom bar | `forms_git_repository_list`, then `forms_git_commit_log` for each row |
-| 3 | A Folder's top level | The folders and files at the top, then the README text under the list, nothing else. Back goes to the Folders list | `forms_git_directory_list`, `forms_git_file_read` for the README |
+| 3 | A Folder's top level | The folders and files at the top, then the README text under the list, nothing else. The title is the Folder's name and Back reads Folders and goes to the Folders list | `forms_git_directory_list`, `forms_git_file_read` for the README |
 | 4 | A folder inside a folder | The same list one level down; Back, or a breadcrumb of the folder names above | `forms_git_directory_list` |
 | 5 | A code file | The name, one line "Changed 2 hours ago by Agent One", then the text highlighted with line numbers | `forms_git_file_read`, `forms_git_commit_log` |
 | 6 | A document file | The same name and line, then the text rendered as a page | `forms_git_file_read`, `forms_git_commit_log` |
-| 7 | An empty Folder | A Home-style card with its act inside it, never a grey glyph on a blank page. The screens only read, so the act is Back to Folders | `forms_git_directory_list` answering no entries |
+| 7 | An empty Folder | A Home-style card with its act inside it, never a grey glyph on a blank page. The screens only read, so the act is Back to Folders. The bar is as in 3: Back reads Folders and the title is the Folder's name | `forms_git_directory_list` answering no entries |
+
+The chain of screens is Home > Folders > Folder > folder > file. The Folders list keeps the title Files and its Back reads Home; a Folder's top level shows the Folder's name as its title and its Back reads Folders; inside a folder or a file, Back names the screen above it.
 
 A file shows only its current text and the one line under its name. There is no history list and no diff.
 
@@ -164,22 +166,23 @@ Other documents (word processor, spreadsheet, PDF) are not in this design and fa
 
 Drawn in [wide.html](../../mockups/app/wide.html) 9 to 12: the Folders and a Folder's top level (9), a code file (10), a document file (11) and an empty Folder (12). Phone: [files.html](../../mockups/app/files.html).
 
-The wide window is laid out like a code editor: a tree of Folders at the left, a strip of tabs over the content in the middle, and the Properties of the selection at the right. The three parts fill the window edge to edge with no margin, no gap and no inner frame, separated only by 1px lines. Corners and scrollbars are square.
+The wide window is laid out like a code editor: a tree of the open Folder's files at the left, a strip of tabs over the content in the middle, and the Properties of the selection at the right. The three parts fill the window edge to edge with no margin, no gap and no inner frame, separated only by 1px lines. Corners and scrollbars are square.
 
 ### What changes
 
 | Part | Phone | Wide window (from 48rem) |
 |---|---|---|
-| Folders list and an open Folder | Two screens: the Folders list, then a tap opens the Folder | One screen. The tree at the left has the Folders at its top level, each with a chevron that expands or collapses it; its folders and files sit indented under it. The first Folder is open when the window opens, as the one tab, so the middle is never empty |
-| A file | Opens in place of the list, with Back to its Folder | Opens in a tab. The tree keeps its Folders expanded and the file's row highlighted |
+| Folders list and an open Folder | Two screens: the Folders list, then a tap opens the Folder | One screen for the open Folder. The tree at the left starts at that Folder's own name; its folders and files sit directly under it, and a folder has a chevron that expands or collapses it. The first Folder is open when the window opens, as the one tab, so the middle is never empty. This window draws no Folders list |
+| Top bar | Back reads Home on the Folders list and Folders on a Folder's top level; the title is Files on the Folders list and the Folder's name below it | Back reads Folders and leads to the Folders list; the title is the open Folder's name, centred on the bar. The chain is Home > Folders > Folder > folder > file |
+| A file | Opens in place of the list, with Back to its Folder | Opens in a tab. The tree keeps the file's folders expanded and the file's row highlighted |
 | Tabs | None | A strip over the content, one tab for each open Folder or file (see Tabs below) |
 | Properties | None | A flat list of read-only lines at the right for the selection (see Properties below) |
 | A code file | The text scrolls sideways for a long line | The viewer takes the whole content area, so an ordinary line shows whole. A line longer than the viewer still scrolls sideways and the line numbers stay |
 | A document | The rendered page fills the width | The page keeps a reading width of `70ch` at the left of the content |
 | An empty Folder | The card with Back to Folders | The same card, held to a width of at most 28rem; no tab, no Properties |
 | The name and the Changed line | Under the name, "Changed 2 hours ago by Agent One" | The name is on the tab and the Changed line is in Properties as Last changed and Changed by. This is the wide window's place for them; the phone keeps its line under the name |
-| Layout | One column | A flex row with no margin and no gap: the tree `flex: 0 1 15rem`, the middle `flex: 1 1 24rem`, Properties `flex: 0 1 15rem` |
-| Bottom bar | Home, Chat, Notifications | The same, as on every wide screen. Files is an option on Home, not in the bar |
+| Layout | One column | A flex row with no margin and no gap, running down to the bottom edge of the frame: the tree `flex: 0 1 15rem`, the middle `flex: 1 1 24rem`, Properties `flex: 0 1 15rem` |
+| Bottom bar | Home, Chat, Notifications | None. The wide Files window has no bottom bar |
 
 Below 48rem the window is the phone's: one Folder or file at a time with a back arrow, and no tree, no tab strip and no Properties (all three are left out, not stacked).
 
@@ -187,11 +190,13 @@ Below 48rem the window is the phone's: one Folder or file at a time with a back 
 
 | Rule | Detail |
 |---|---|
-| Top level | The Folders, from `forms_git_repository_list` |
-| Expanding | A chevron expands or collapses a Folder or folder and opens nothing. Expanding calls `forms_git_directory_list` for that one folder; the tree never asks for more than the folders the person expanded. The answer is kept while the app is open |
-| A row | One line with the chevron (folders only), an icon and the name. No Changed line: the time of the selection is in Properties, so the tree makes no `forms_git_commit_log` call for each Folder (the phone's Folders list still does) |
-| The open file | Its row is highlighted and the Folders above it are expanded |
-| Tapping | Tapping a file opens it in a tab. Tapping a Folder or folder selects it and opens it in a tab |
+| Top row | The open Folder's own name, a plain bold small uppercase label with no chevron and no "Folders" label above it. It is the row of the Folder's top level and is highlighted flat when that level is the selection. The name comes from `forms_git_repository_list` |
+| Rows below | The Folder's folders and files directly under it, folders before files, each one compact line about 1.375rem tall in `.8125rem` text: a chevron column of about `.75rem` (empty for a file), a `1rem` icon and the name. Each level is indented by about `.75rem`, with a faint vertical line down the indent of an expanded folder |
+| Expanding | A chevron expands or collapses a folder and opens nothing. Expanding calls `forms_git_directory_list` for that one folder; the tree never asks for more than the folders the person expanded. The answer is kept while the app is open |
+| No Changed line | The time of the selection is in Properties, so the tree makes no `forms_git_commit_log` call for each row |
+| The open file | Its row is highlighted flat across the width and the folders above it are expanded |
+| Tapping | Tapping a file opens it in a tab. Tapping a folder, or the top row, selects it and opens it in a tab |
+| Which Folder | The window opens on the first Folder from `forms_git_repository_list`. How a person switches to another Folder on the wide window is not drawn; the Folders list is reached by the back link |
 
 ### Tabs
 
@@ -242,4 +247,5 @@ The dash rule: a line whose call fails or has no answer shows a dash. A Folder w
 | Question | Why it is open |
 |---|---|
 | The limit of 8 tabs | A proposal, not decided by the owner |
-| Back to Folders on a wide empty Folder | The tree is already at the left of the card, so whether the act is still wanted there is not decided |
+| Back to Folders on a wide empty Folder | The Folder's name is already at the left of the card and the top bar's back link leads to the Folders list, so whether the act is still wanted there is not decided |
+| Reaching Chat and Notifications | How a member reaches Chat and Notifications from the wide Files window is not drawn |
