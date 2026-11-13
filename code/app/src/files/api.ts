@@ -39,7 +39,7 @@ export type FilesClient = {
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
 
-const readmeName = /^readme(\.md)?$/i;
+const readmeName = /^readme(\.[^.]+)?$/i;
 
 const isNotFound = (error: unknown) => error instanceof McpError && error.message.toLowerCase().includes("not found");
 
