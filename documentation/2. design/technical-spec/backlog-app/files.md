@@ -26,7 +26,7 @@ Who may call the git tools is a separate gate. The forms git mount answers owner
 | 4 | A folder inside a folder | The same list one level down; Back, or a breadcrumb of the folder names above | `forms_git_directory_list` |
 | 5 | A code file | The name, one line "Changed 2 hours ago by Agent One", then the text highlighted with line numbers | `forms_git_file_read`, `forms_git_commit_log` |
 | 6 | A document file | The same name and line, then the text rendered as a page | `forms_git_file_read`, `forms_git_commit_log` |
-| 7 | An empty Folder | A Home-style card with its act inside it, never a grey glyph on a blank page | `forms_git_directory_list` answering no entries |
+| 7 | An empty Folder | A Home-style card with its act inside it, never a grey glyph on a blank page. The screens only read, so the act is Back to Folders | `forms_git_directory_list` answering no entries |
 
 A file shows only its current text and the one line under its name. There is no history list and no diff.
 
