@@ -36,6 +36,16 @@ The two tools, the register, the run's `order_id` and the checks are described i
 - After a send the member is returned to Start, where the row shows `Sent` and cannot be opened again. Under the title the row says `Next: <role>` when the run goes on to another role, `Done` when the send finished the task, and nothing after a 409. The mark and that line are kept in the phone app's memory, per agency, per step and per run. The send returns the run's `order_id` and the sent run is marked under it, so the step list the app reads leaves out a first step she has sent in this session and the sent run shows as one `Sent` row, never beside a second open row of the same name. The API still lets a first step start another run, so the row comes back as a fresh start after a reload. If a reply carries no `order_id`, the app uses a local id so the start row is never blocked.
 - A step is sent once per run whichever API process takes the request. Each step row carries a `send_key` (the step's record code and the run's `order_id`), and the `record_row` object declares a unique index on it that ignores retired rows and rows with an empty key. The second send of the same step in the same run hits the index and is answered 409 `that run is not waiting for this step`, as the in-process lock already did for two sends on one process. The lock stays so most losers are turned away before they write. Rows written before the key existed have an empty key, so a database that already holds two rows of one step starts and keeps them; only new sends are guarded.
 
+## Approving in your own name
+
+Decided with the owner on 2026-11-13. A step that asks the member to approve in their own name records who approved and when, put there by the server.
+
+- **Which step.** A form step whose title, description or prompt has `approv*` before "own name" or "by name" in one sentence (`isApprovalStep`, `wakala-api/internal/api/http/approval_step.go`). No template change is needed.
+- **What the member sees.** The open-steps reply carries `approval: true`. The step page shows `ApproveInOwnName.tsx`, `You approve this in your own name, as <name>.`, and the Send button reads Approve. The Done list shows `Approved by <name>` (`started/done.ts`).
+- **What the server adds.** On send the row gets the answers `Approved by`, the signed-in member's display name (the actor of the session), and `Approved at`, the time in UTC RFC3339. A request that answers either prompt is refused with 400, and so is an approver without a display name. `modules/agency/approval_stamp.go` lets the two prompts past `validateRowAnswers`.
+- **Who sees it next.** The next role's `earlier` and `agency_list_my_sent_steps` carry both answers.
+- **Before it can be seen.** wakala-api and the app need a restart, and the approving member's actor needs a display name.
+
 ## Not yet built
 
 - A question answered with a photo or a file: the step page cannot send one. A required photo or file question stops the send with a sentence saying so.
