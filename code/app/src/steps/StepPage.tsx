@@ -15,6 +15,7 @@ import { ongoingTab, startTab, tabPathIn } from "../tabs";
 import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type SendRefusal, type StepsClient } from "./api";
 import { ApproveInOwnName } from "./ApproveInOwnName";
 import { AmendDraft } from "./AmendDraft";
+import { ApprovalLimitNote } from "./ApprovalLimitNote";
 import { amendmentsOf, type Edits } from "./amend";
 import { PublishReport } from "./PublishReport";
 import type { PublishClient } from "./publishApi";
@@ -103,6 +104,7 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
         {step.prompt ? <p>{step.prompt}</p> : null}
         <PublishReport formName={step.formName || step.title} client={publisher} />
         {step.earlier.length ? <AmendDraft earlier={step.earlier} edits={edits} onChange={setEdits} /> : null}
+        <ApprovalLimitNote limit={step.approvalLimit} />
         {step.approval ? <ApproveInOwnName /> : null}
         {questions.map((q) => (
           unsendable(q) ? (
