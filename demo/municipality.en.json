@@ -183,7 +183,9 @@
       "deleted": false,
       "permissions": [
         "consent.publish",
-        "report.publish"
+        "report.publish",
+        "risk.read",
+        "late_matters.read"
       ]
     },
     {
