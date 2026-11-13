@@ -117,7 +117,8 @@ figure{display:flex;flex-direction:column;gap:.75rem;min-width:0;max-width:100%}
 .pbar i{display:block;height:100%;border-radius:var(--r-pill);background:var(--accent)}
 .field{display:flex;flex-direction:column;gap:.5rem}
 .card>.field{padding-top:1rem;border-top:1px solid var(--line)}
-.phone .body{padding:1rem 0}
+.phone .body{padding:1rem 0 0;gap:0}
+.phone .head{margin-bottom:.75rem}
 .phone .head{padding:.25rem 1rem}
 .phone .card{border-width:1px 0;border-radius:0;box-shadow:none}
 .phone .card .opt,.phone .card .input,.phone .card .rows,.phone .card .btn,.phone .bottombar .btn{border-radius:0}
@@ -165,7 +166,7 @@ figure{display:flex;flex-direction:column;gap:.75rem;min-width:0;max-width:100%}
 .opt.on .mk{background:var(--accent);border-color:var(--accent)}
 .mk .ic{width:.875rem;height:.875rem;stroke-width:2.5}
 .mk.dotted::after{content:"";width:.5rem;height:.5rem;border-radius:var(--r-pill);background:var(--on-accent)}
-.bottombar{display:flex;gap:.5rem;padding:.75rem 1rem 1rem;margin:0 -1rem -1rem;background:var(--surface);border-top:1px solid var(--line)}
+.bottombar{display:flex;gap:.5rem;padding:.75rem 1rem 1.5rem;background:var(--surface);border-top:1px solid var(--line)}
 .bottombar .btn{flex:1}
 .bottombar .btn.primary{flex:2}
 .req{color:var(--danger)}
