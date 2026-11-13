@@ -169,13 +169,15 @@ func (m *agencyManager) DeleteRecord(ctx context.Context, id string) error {
 	return nil
 }
 
+const amendmentPromptPrefix = "Changed: "
+
 func validateRowAnswers(questions []models.StepQuestion, answers map[string]string) error {
 	asked := make(map[string]models.StepQuestion, len(questions))
 	for _, q := range questions {
 		asked[q.Prompt] = q
 	}
 	for prompt := range answers {
-		if _, ok := asked[prompt]; !ok {
+		if _, ok := asked[prompt]; !ok && !strings.HasPrefix(prompt, amendmentPromptPrefix) {
 			return invalidRow("%q is not a question of the form", prompt)
 		}
 	}
