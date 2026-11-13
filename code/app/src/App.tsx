@@ -24,6 +24,7 @@ import { ProductPage } from "./pages/market/ProductPage";
 import { AsksPage } from "./supply/asks/AsksPage";
 import { JoinPage } from "./pages/join/JoinPage";
 import { BacklogsRoutes } from "./backlogs";
+import { FilesRoutes, filesSegment } from "./files";
 import { TabPage } from "./pages/TabPage";
 import { ApplyPage } from "./pages/supply/ApplyPage";
 import { OfferFormPage } from "./pages/supply/OfferFormPage";
@@ -101,6 +102,7 @@ export function App() {
           <Route key={`in-${tab.id}`} path={tabRoute(tab)} element={tabElement(tab)} />
         ))}
         <Route path={`${backlogsTab.segment}/*`} element={<BacklogsRoutes />} />
+        <Route path={`${filesSegment}/*`} element={<FilesRoutes />} />
         <Route path={routes.consent.pattern} element={<ConsentPage />} />
         <Route path={routes.join.pattern} element={<JoinPage />} />
         <Route path={routes.start.pattern} element={<StartPage />} />

@@ -5,6 +5,7 @@ import { openAgencyId } from "../agency/open";
 import { askMayRead } from "../backlogs/access";
 import { allIssuesId, mcpBacklogsClient, type Backlog, type BacklogsClient } from "../backlogs/api";
 import { boardPath } from "../backlogs/paths";
+import { mcpFilesClient, filesHomePath, type FilesClient } from "../files";
 import { mcpStartClient, type StartClient } from "../coordinator/start/api";
 import { useLoad } from "../forms/useLoad";
 import { mcpStepsClient, type StepsClient } from "../steps/api";
@@ -21,6 +22,7 @@ type Props = {
   steps?: Pick<StepsClient, "available">;
   backlogs?: Pick<BacklogsClient, "backlogs">;
   mayRead?: () => Promise<boolean>;
+  files?: Pick<FilesClient, "mounted">;
 };
 
 const holdsWorkflows = async (start: Props["start"] & {}, steps: Props["steps"] & {}) => {
@@ -44,18 +46,23 @@ const lastOpenedFirst = (rows: Backlog[]) => {
 
 const pathOf = (row: Backlog) => (row.kind === "smart" ? smartBacklogPath(row.id) : boardPath(row.id));
 
-export function HomeOptions({ agency = mcpAgencyClient, start = mcpStartClient, steps = mcpStepsClient, backlogs = mcpBacklogsClient, mayRead = askMayRead }: Props) {
+export function HomeOptions({ agency = mcpAgencyClient, start = mcpStartClient, steps = mcpStepsClient, backlogs = mcpBacklogsClient, mayRead = askMayRead, files = mcpFilesClient }: Props) {
   const navigate = useNavigate();
   const agencyId = openAgencyId();
   const [attempt, setAttempt] = useState(0);
   const workflows = useLoad(() => holdsWorkflows(start, steps), `home-workflows:${agencyId}:${attempt}`);
   const held = useLoad(() => visibleBacklogs(agency, backlogs, mayRead), `home-backlogs:${agencyId}:${attempt}`);
+  const filesMounted = useLoad(() => files.mounted(), `home-files:${agencyId}`);
   const retry = () => setAttempt(attempt + 1);
-  if (workflows.state === "loading" || held.state === "loading") return null;
+  if (workflows.state === "loading" || held.state === "loading" || filesMounted.state === "loading") return null;
   const hasWorkflows = workflows.state === "ready" && workflows.data;
   const rows = held.state === "ready" ? held.data.filter((row) => row.id !== allIssuesId) : [];
   const options: Tab[] = [...(hasWorkflows ? [startTab, ongoingTab] : []), ...(hasWorkflows && rows.length > 0 ? [backlogsTab] : [])];
   const failedWords = [workflows.state === "error" ? "Start and Ongoing" : "", held.state === "error" ? "Backlogs" : ""].filter(Boolean).join(" and ");
+  const filesRow =
+    filesMounted.state === "ready" && filesMounted.data ? (
+      <ListRow title="Files" start={<span className="mark" aria-hidden="true"><Icon name="folder" /></span>} end="›" onClick={() => navigate(filesHomePath())} />
+    ) : null;
   const failures = failedWords ? <LoadFailed words={`${failedWords} could not be loaded.`} onRetry={retry} /> : null;
   if (!hasWorkflows && rows.length > 0) {
     return (
@@ -73,12 +80,13 @@ export function HomeOptions({ agency = mcpAgencyClient, start = mcpStartClient, 
               }}
             />
           ))}
+          {filesRow}
         </Rows>
         {failures}
       </>
     );
   }
-  if (options.length === 0) return failures;
+  if (options.length === 0 && !filesRow) return failures;
   return (
     <>
       <Rows>
@@ -91,6 +99,7 @@ export function HomeOptions({ agency = mcpAgencyClient, start = mcpStartClient, 
             onClick={() => navigate(tabPathIn(tab, agencyId))}
           />
         ))}
+        {filesRow}
       </Rows>
       {failures}
     </>

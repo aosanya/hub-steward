@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { vi } from "vitest";
 import { openAgency } from "../agency/open";
@@ -157,7 +157,7 @@ export const nineFiles = (): Setup => {
   };
 };
 
-export const goBack = () => (document.querySelector(".back") as HTMLElement).click();
+export const goBack = () => act(() => (document.querySelector(".back") as HTMLElement).click());
 
 export const treeNames = () => within(screen.getByRole("tree")).getAllByRole("treeitem").map((one) => one.getAttribute("aria-label"));
 
