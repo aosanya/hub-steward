@@ -4,7 +4,7 @@ import { readKept, removeKept, writeKept } from "../storage/kept";
 type Sent = { id: string; orderId: string; title: string; after?: string };
 
 export const afterWords = (reply: { done: boolean; next: { roleName: string } | null }) =>
-  reply.done ? "Done" : reply.next?.roleName ? `Next: ${reply.next.roleName}` : "";
+  reply.next?.roleName ? `Next: ${reply.next.roleName}` : reply.done ? "Done" : "";
 
 type Kept = Sent & { agencyId: string };
 
