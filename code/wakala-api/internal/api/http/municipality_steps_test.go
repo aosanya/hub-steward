@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	mwanachamaagency "wakalaserver/modules/agency"
@@ -116,5 +117,34 @@ func TestOncePublishedEveryStepOfWorkflowsFourAndFiveRunsAndTheSheetsRoundForks(
 	}
 	if !sentForm || forked != 3 {
 		t.Errorf("the sheets round chain holds the sent form %v and %d forked recording steps, want true and 3", sentForm, forked)
+	}
+}
+
+func TestTheMayorsReasonStepsAskForAReasonInTheMayorsOwnName(t *testing.T) {
+	path := []string{"..", "..", "..", "..", "..", "..", "hungarian-municipality", "agency", "municipality.en.json"}
+	if _, err := os.Stat(filepath.Join(path...)); err != nil {
+		t.Skip("municipality.en.json is not present")
+	}
+	steps := municipalitySteps(t, path...)
+	for _, code := range []string{"WI-43-3", "WI-26-5", "WI-31-6"} {
+		found := false
+		for _, s := range steps {
+			if s.Code != code {
+				continue
+			}
+			found = true
+			asksForReason := false
+			for _, q := range s.Questions {
+				if q.AnswerType == agencymodels.AnswerFreeText && q.Required && strings.HasPrefix(q.Prompt, "Your reason, in your own name") {
+					asksForReason = true
+				}
+			}
+			if !asksForReason {
+				t.Errorf("%s has no required free-text question starting with %q", code, "Your reason, in your own name")
+			}
+		}
+		if !found {
+			t.Errorf("%s is not in the template", code)
+		}
 	}
 }
