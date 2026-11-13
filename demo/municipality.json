@@ -7169,7 +7169,7 @@
       "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
       "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
       "title": "Jóváhagyjuk és közzétesszük a szöveget",
-      "description": "A polgármester névvel jóváhagyja az új változatot, és csak ezután lép érvénybe.",
+      "description": "A polgármester névvel jóváhagyja az új változatot, és csak ezután lép érvénybe. A polgármester a konzolon teszi közzé: Beállítások > Hozzájárulási szöveg > Új verzió, majd Közzététel.",
       "prompt": "A Polgármester / testületi elnök elolvassa a 3. változatot, jóváhagyja és névvel aláírja, és csak ezután kerül ki új, számozott változatként a hozzájárulások közé; a régi változatok megmaradnak. Addig senkitől nem kérünk hozzájárulást az új szöveggel. Ezt a lépést ember végzi, MI-szerep nincs benne.",
       "ordinality": 3,
       "created_at": "2026-11-08T09:00:00Z",

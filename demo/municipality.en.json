@@ -7069,7 +7069,7 @@
       "workflow_id": "5da5c014-9842-5cb8-9060-77fe590298d0",
       "role_id": "cbf5f57c-14cb-4dd3-ba04-3b4c0539fcf8",
       "title": "We approve and publish the text",
-      "description": "The mayor approves the new version by name, and only then does it take effect.",
+      "description": "The mayor approves the new version by name, and only then does it take effect. The mayor publishes it on the console: Settings > Consent text > New version, then Publish.",
       "prompt": "The Mayor / council chair reads version 3, approves it and signs it by name, and only then does it go out as a new, numbered version among the consents; the old versions are kept. Until then we ask nobody for consent with the new text. A person carries out this step, no AI role is in it.",
       "ordinality": 3,
       "created_at": "2026-11-08T09:00:00Z",
