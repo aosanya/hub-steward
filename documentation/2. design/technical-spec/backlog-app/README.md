@@ -11,6 +11,6 @@ The phone app's Backlogs, Chat and assistant screens, as the owner decided them.
 | [Group roles](group-roles.md) | How a group is given a role in the agency |
 | [Worker caps](worker-caps.md) | How much a worker may use on one issue, and the Sinbin mark |
 | [Assistant limits](assistant-limits.md) | Who may ask the assistant and how much each person may use |
-| [Files](files.md) | The Files tab: Folders, folders and files, read only |
+| [Files](files.md) | Files on Home: Folders, folders and files, read only |
 | [Load journey](load-journey.md) | How the boards are loaded into the hub |
 | [Who sees the consent tools](consent-tools-visibility.md) | Decision D153, also written up in [custody consent visibility](../04-tools-and-apis/custody-consent-visibility.md) |
