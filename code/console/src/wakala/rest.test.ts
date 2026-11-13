@@ -169,6 +169,88 @@ describe("the session", () => {
     expect(await listHubs()).toEqual([{ id: "h1", name: "Siaya", role: "owner" }]);
   });
 
+  it("also lists a hub where the caller is a resident whose roles hold the consent.publish permission, with the membership as role and the permission codes", async () => {
+    stubFetch({
+      [`GET ${wakala}/instances`]: {
+        body: [
+          { id: "a", name: "Alpha", role: "owner" },
+          { id: "m", name: "Municipality", role: "resident", kind: "lab" },
+        ],
+      },
+      [`GET ${wakala}/instances/m/my-roles`]: {
+        body: {
+          instance_id: "m",
+          membership: "resident",
+          roles: [{ id: "r1", code: "R-1", name: "Mayor" }],
+          permissions: ["consent.publish", "forms.read"],
+        },
+      },
+    });
+
+    expect(await listHubs()).toEqual([
+      { id: "a", name: "Alpha", role: "owner" },
+      { id: "m", name: "Municipality", role: "resident", kind: "lab", permissions: ["consent.publish", "forms.read"] },
+    ]);
+  });
+
+  it("takes the role of a non-owner hub from the membership my-roles names", async () => {
+    stubFetch({
+      [`GET ${wakala}/instances`]: { body: [{ id: "m", name: "Municipality", role: "agent" }] },
+      [`GET ${wakala}/instances/m/my-roles`]: {
+        body: { instance_id: "m", membership: "agent", roles: [], permissions: ["consent.publish"] },
+      },
+    });
+
+    expect(await listHubs()).toEqual([{ id: "m", name: "Municipality", role: "agent", permissions: ["consent.publish"] }]);
+  });
+
+  it("leaves out a non-owner hub whose roles do not hold consent.publish", async () => {
+    stubFetch({
+      [`GET ${wakala}/instances`]: { body: [{ id: "m", name: "Municipality", role: "resident" }] },
+      [`GET ${wakala}/instances/m/my-roles`]: {
+        body: { instance_id: "m", membership: "resident", roles: [], permissions: ["forms.read"] },
+      },
+    });
+
+    expect(await listHubs()).toEqual([]);
+  });
+
+  it("leaves out a non-owner hub whose my-roles cannot be read", async () => {
+    stubFetch({
+      [`GET ${wakala}/instances`]: {
+        body: [
+          { id: "m", name: "Municipality", role: "resident" },
+          { id: "n", name: "Nairobi", role: "resident" },
+          { id: "o", name: "Oslo", role: "resident" },
+        ],
+      },
+      [`GET ${wakala}/instances/m/my-roles`]: { status: 403, body: { error: "forbidden" } },
+      [`GET ${wakala}/instances/n/my-roles`]: "unreachable",
+      [`GET ${wakala}/instances/o/my-roles`]: { body: { instance_id: "o" } },
+    });
+
+    expect(await listHubs()).toEqual([]);
+  });
+
+  it("does not ask my-roles about the hubs the caller owns", async () => {
+    const seen = stubFetch({
+      [`GET ${wakala}/instances`]: {
+        body: [
+          { id: "a", name: "Alpha", role: "owner" },
+          { id: "m", name: "Municipality", role: "resident" },
+        ],
+      },
+      [`GET ${wakala}/instances/m/my-roles`]: {
+        body: { instance_id: "m", membership: "resident", roles: [], permissions: ["consent.publish"] },
+      },
+    });
+
+    await listHubs();
+
+    expect(seen.map((s) => s.url)).toContain(`${wakala}/instances/m/my-roles`);
+    expect(seen.map((s) => s.url)).not.toContain(`${wakala}/instances/a/my-roles`);
+  });
+
   it("never asks the retired studio for anything", async () => {
     const seen = stubFetch({ [`GET ${wakala}/instances`]: { body: [{ id: "h1", name: "Siaya", role: "owner" }] } });
     await listHubs();

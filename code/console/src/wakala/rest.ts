@@ -1,5 +1,6 @@
 import { api, type ApiResult } from "../api";
 import type { Hub } from "../types";
+import { consentPermission } from "../data/seat";
 import { runtimeConfig } from "./config";
 import { callTool, resetMcp } from "./mcp";
 
@@ -38,15 +39,32 @@ export const signOut = async () => {
 
 export const checkSession = () => rest("GET", "/auth/session");
 
-const ownedHubs = (memberships: unknown): Hub[] =>
-  (Array.isArray(memberships) ? memberships : [])
-    .filter((m) => typeof m === "object" && m !== null && m.role === ownerRole && typeof m.id === "string")
-    .map((m) => ({
-      id: m.id,
-      name: typeof m.name === "string" ? m.name : m.id,
-      role: ownerRole,
-      ...(typeof m.kind === "string" && m.kind !== "" ? { kind: m.kind } : {}),
-    }));
+const hubRows = (memberships: unknown): any[] =>
+  (Array.isArray(memberships) ? memberships : []).filter(
+    (m) => typeof m === "object" && m !== null && typeof m.id === "string",
+  );
+
+const hubOf = (row: any, role: string): Hub => ({
+  id: row.id,
+  name: typeof row.name === "string" ? row.name : row.id,
+  role,
+  ...(typeof row.kind === "string" && row.kind !== "" ? { kind: row.kind } : {}),
+});
+
+const publisherHub = async (row: any): Promise<Hub | null> => {
+  try {
+    const reply = await rest("GET", `/instances/${row.id}/my-roles`);
+    const data = reply.ok ? reply.data : null;
+    const codes: string[] = Array.isArray(data?.permissions)
+      ? data.permissions.filter((code: unknown) => typeof code === "string")
+      : [];
+    if (!codes.includes(consentPermission)) return null;
+    const membership = typeof data?.membership === "string" && data.membership !== "" ? data.membership : row.role;
+    return { ...hubOf(row, typeof membership === "string" ? membership : ""), permissions: codes };
+  } catch {
+    return null;
+  }
+};
 
 const managersRoom = "managers' room";
 
@@ -61,15 +79,19 @@ const managerRoomOf = async (hubId: string): Promise<string | undefined> => {
   }
 };
 
+const ownedHub = async (row: any): Promise<Hub> => {
+  const hub = hubOf(row, ownerRole);
+  const room = await managerRoomOf(hub.id);
+  return room ? { ...hub, manager_room_id: room } : hub;
+};
+
 export const listHubs = async (): Promise<Hub[] | null> => {
   const reply = await rest("GET", "/instances");
   if (!reply.ok) return null;
-  return Promise.all(
-    ownedHubs(reply.data).map(async (hub) => {
-      const room = await managerRoomOf(hub.id);
-      return room ? { ...hub, manager_room_id: room } : hub;
-    }),
+  const hubs = await Promise.all(
+    hubRows(reply.data).map((row) => (row.role === ownerRole ? ownedHub(row) : publisherHub(row))),
   );
+  return hubs.filter((hub): hub is Hub => hub !== null);
 };
 
 export const restoreHubs = async (): Promise<Hub[] | null> => {

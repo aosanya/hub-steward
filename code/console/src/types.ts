@@ -5,6 +5,7 @@ export type Hub = {
   model_key_set?: boolean;
   manager_room_id?: string;
   kind?: string;
+  permissions?: string[];
 };
 
 export type PageColumn = { key: string; label: string };
