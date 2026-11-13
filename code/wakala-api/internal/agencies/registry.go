@@ -1,18 +1,10 @@
-// Package agencies is wakala-api's own layer for managing multiple
-// Agencies. mwanachama-backend-agency is imported unmodified (decision #1)
-// and is single-Agency-per-table-set by design — its AgencyManager.GetAgency
-// takes no id and its own doc comment says it "fetches the sole Agency row
-// (single-agency deployment)". Registry is what lets more than one Agency
-// exist in this product: every registered Instance gets its own private
-// table set via mwanachamaagency.SpecFor(TableSlug), so N Instances means N
-// agencies coexisting, unmodified, in the one shared Postgres database
-// (decision #14, and decision #21 for the membership that fences them).
 package agencies
 
 import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 	"wakalaserver/internal/approvals"
@@ -150,6 +142,9 @@ type registry struct {
 	rules        RuleOf
 	startsAs     string
 
+	gitFolder    string
+	gitOpenFiles int
+
 	scenariosAtOnce ScenariosAtOnce
 	tokensPerTest   TokensPerTest
 	runnerOf        RunnerOf
@@ -212,6 +207,7 @@ func NewRegistry(db *gorm.DB, opts ...Option) (Registry, error) {
 		return nil, fmt.Errorf("NewRegistry: migrate group roles: %w", err)
 	}
 	r := &registry{db: db, outcomes: newPromiseOutcomes(db), cacheEntries: authz.DefaultMaxEntries, withdrawalPolicy: WithdrawalKeepsHidden}
+	r.gitFolder, r.gitOpenFiles = gitFolderFromEnv(os.Getenv)
 	for _, opt := range opts {
 		opt(r)
 	}
@@ -222,11 +218,6 @@ func NewRegistry(db *gorm.DB, opts ...Option) (Registry, error) {
 	return r, nil
 }
 
-// tableSlug mints the instance segment of every physical name this
-// instance's tables take: <slug>_agency_<table>. It carries no underscore
-// and stays short, because the segment is read back apart by the separator
-// and every emitted index name has to fit Postgres's 63-byte identifier
-// limit, which truncates silently rather than failing.
 func tableSlug() string {
 	return "agy" + strings.ReplaceAll(uuid.New().String(), "-", "")[:8]
 }

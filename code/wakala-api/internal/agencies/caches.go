@@ -73,7 +73,7 @@ func (r *registry) openCaches() {
 	r.ledgers = authz.NewCache[mwanachamaaccounting.LedgerRepository]("ledgers", nil, authz.WithTTL[mwanachamaaccounting.LedgerRepository](0), authz.WithMaxEntries[mwanachamaaccounting.LedgerRepository](n))
 	r.boards = authz.NewCache[mwanachamataskmanager.TaskManager]("boards", nil, authz.WithTTL[mwanachamataskmanager.TaskManager](0), authz.WithMaxEntries[mwanachamataskmanager.TaskManager](n))
 	r.catalogs = authz.NewCache[mwanachamacatalog.CatalogManager]("catalogs", nil, authz.WithTTL[mwanachamacatalog.CatalogManager](0), authz.WithMaxEntries[mwanachamacatalog.CatalogManager](n))
-	r.gits = authz.NewCache[mwanachamagit.GitManager]("gits", nil, authz.WithTTL[mwanachamagit.GitManager](0), authz.WithMaxEntries[mwanachamagit.GitManager](n))
+	r.gits = authz.NewCache[mwanachamagit.GitManager]("gits", nil, authz.WithTTL[mwanachamagit.GitManager](0), authz.WithMaxEntries[mwanachamagit.GitManager](n), authz.WithEvict[mwanachamagit.GitManager](closeGitManager))
 	r.sources = authz.NewCache[mwanachamasources.SourceManager]("sources", nil, authz.WithTTL[mwanachamasources.SourceManager](0), authz.WithMaxEntries[mwanachamasources.SourceManager](n))
 	r.polls = authz.NewCache[mwanachamavoting.PollManager]("polls", nil, authz.WithTTL[mwanachamavoting.PollManager](0), authz.WithMaxEntries[mwanachamavoting.PollManager](n))
 	r.custody = authz.NewCache[*mwanachamacustody.CustodyManager]("custody", nil, authz.WithTTL[*mwanachamacustody.CustodyManager](0), authz.WithMaxEntries[*mwanachamacustody.CustodyManager](n))
