@@ -182,6 +182,7 @@
       "last_updated": "2026-10-01T18:00:00Z",
       "deleted": false,
       "permissions": [
+        "consent.publish",
         "report.publish"
       ]
     },
