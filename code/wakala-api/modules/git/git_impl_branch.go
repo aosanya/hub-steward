@@ -1,4 +1,3 @@
-// git_impl_branch.go — Branch management implementation for [gitManager].
 package mwanachamagit
 
 import (
@@ -11,12 +10,6 @@ import (
 	"wakalaserver/modules/git/models"
 )
 
-// ── Branch Management ─────────────────────────────────────────────────────────
-
-// CreateBranch creates a new Branch row from the specified source branch.
-// If req.FromBranchID is empty, the repository default branch is used.
-// Returns [ErrRepoNotInitialised] if no repository with that ID exists.
-// Returns [ErrBranchExists] if a branch with the given name already exists.
 func (m *gitManager) CreateBranch(ctx context.Context, req CreateBranchRequest) (models.Branch, error) {
 	repo, err := m.GetRepository(ctx, req.RepositoryID)
 	if err != nil {
@@ -64,8 +57,6 @@ func (m *gitManager) CreateBranch(ctx context.Context, req CreateBranchRequest) 
 	return row, nil
 }
 
-// GetBranch retrieves a Branch row by its ID.
-// Returns [ErrBranchNotFound] if no branch with that ID exists.
 func (m *gitManager) GetBranch(ctx context.Context, branchID string) (models.Branch, error) {
 	var row models.Branch
 	err := m.db.WithContext(ctx).Table(m.tables.Branches).
@@ -79,8 +70,6 @@ func (m *gitManager) GetBranch(ctx context.Context, branchID string) (models.Bra
 	return row, nil
 }
 
-// ListBranches returns all Branch rows for the specified repository.
-// Returns [ErrRepoNotInitialised] if no repository with that ID exists.
 func (m *gitManager) ListBranches(ctx context.Context, repoID string) ([]models.Branch, error) {
 	if _, err := m.GetRepository(ctx, repoID); err != nil {
 		return nil, fmt.Errorf("ListBranches: %w", err)
@@ -96,9 +85,6 @@ func (m *gitManager) ListBranches(ctx context.Context, repoID string) ([]models.
 	return out, nil
 }
 
-// GetBranchByName retrieves a Branch row by its human-readable name.
-// Returns [ErrBranchNotFound] if no branch with that name exists for the
-// specified repository.
 func (m *gitManager) GetBranchByName(ctx context.Context, repoID string, branchName string) (models.Branch, error) {
 	var row models.Branch
 	err := m.db.WithContext(ctx).Table(m.tables.Branches).
@@ -112,9 +98,6 @@ func (m *gitManager) GetBranchByName(ctx context.Context, repoID string, branchN
 	return row, nil
 }
 
-// DeleteBranch removes a Branch row.
-// Returns [ErrBranchNotFound] if no branch with that ID exists.
-// Returns [ErrDefaultBranchDeleteForbidden] if branchID is the default branch.
 func (m *gitManager) DeleteBranch(ctx context.Context, branchID string) error {
 	branch, err := m.GetBranch(ctx, branchID)
 	if err != nil {
@@ -124,8 +107,6 @@ func (m *gitManager) DeleteBranch(ctx context.Context, branchID string) error {
 		return fmt.Errorf("DeleteBranch: %w", ErrDefaultBranchDeleteForbidden)
 	}
 
-	// GIT-022b: Delete branch-scoped documentation edges before removing the
-	// branch row so no dangling edges are left behind.
 	m.deleteDocEdgesForBranch(ctx, branchID, branch.HeadCommitID)
 
 	if err := m.db.WithContext(ctx).Table(m.tables.Branches).
@@ -135,20 +116,6 @@ func (m *gitManager) DeleteBranch(ctx context.Context, branchID string) error {
 	return nil
 }
 
-// MergeBranch merges the given branch into the repository's default branch by
-// forwarding the default branch's HEAD commit pointer to the source branch's
-// HEAD commit. Returns the updated default [models.Branch].
-//
-// The entire advance-head operation runs inside a [RefLocker] lock
-// so that two concurrent MergeBranch calls cannot produce a lost update. The
-// CAS guard in [advanceBranchHead] provides a second layer
-// of protection: if the default branch HEAD changed between the read and the
-// write, [ErrMergeConcurrencyConflict] is returned and the caller may retry.
-//
-// Returns [ErrBranchNotFound] if no branch with that ID exists.
-// Returns [ErrRepoNotInitialised] if no repository entity exists.
-// Returns [ErrMergeConcurrencyConflict] if a concurrent merge advanced the
-// default branch HEAD before this one could complete.
 func (m *gitManager) MergeBranch(ctx context.Context, branchID string) (models.Branch, error) {
 	if err := m.mayMergeBranch(ctx, "", branchID); err != nil {
 		return models.Branch{}, fmt.Errorf("MergeBranch: %w", err)
@@ -175,29 +142,28 @@ func (m *gitManager) mergeBranch(ctx context.Context, branchID string) (models.B
 
 	var updated models.Branch
 	lockErr := m.locker.WithMergeLock(ctx, func() error {
-		// Re-read the default branch inside the lock so we hold the freshest
-		// HeadCommitID as the CAS guard. This ensures two sequential merges
-		// both succeed; the CAS only fires if the row was modified by an
-		// out-of-band write (e.g. another service instance).
 		currentDefault, readErr := m.defaultBranch(ctx, repo.ID)
 		if readErr != nil {
 			return fmt.Errorf("re-read default branch: %w", readErr)
 		}
-		var advErr error
-		updated, advErr = m.advanceBranchHead(ctx, currentDefault.ID, sourceBranch.HeadCommitID, currentDefault.HeadCommitID)
-		return advErr
+		var mergeErr error
+		updated, mergeErr = m.mergeIntoDefault(ctx, sourceBranch, currentDefault)
+		return mergeErr
 	})
 	if lockErr != nil {
+		var conflict *ErrMergeConflict
+		if errors.As(lockErr, &conflict) {
+			m.publish(ctx, TopicMergeConflict, MergeConflictPayload{
+				BranchID:         sourceBranch.ID,
+				ConflictingFiles: conflict.ConflictingFiles,
+				WorkflowRunID:    sourceBranch.WorkflowRunID,
+			})
+		}
 		return models.Branch{}, fmt.Errorf("MergeBranch: advance default head: %w", lockErr)
 	}
 
-	// GIT-022a: Replicate branch-scoped documentation edges (tagged_with,
-	// references) from source branch blobs to the default branch.
 	m.replicateDocEdges(ctx, sourceBranch.ID, defaultBranchEntity.ID, sourceBranch.HeadCommitID)
 
-	// FEAT-20260602-001: emit TopicBranchMerged so the closure aggregator can
-	// observe the merge. workflow_run_id is read off the source branch — the
-	// originating WorkflowRun is the run that produced the branch's commits.
 	m.publish(ctx, TopicBranchMerged, BranchMergedPayload{
 		BranchID:      sourceBranch.ID,
 		RepoID:        repo.ID,
@@ -207,12 +173,74 @@ func (m *gitManager) mergeBranch(ctx context.Context, branchID string) (models.B
 	return updated, nil
 }
 
-// ListBranchesFiltered returns Branch rows for the specified repository
-// filtered by [BranchFilter]. When filter.WorkflowRunID is non-empty only
-// branches with the matching workflow_run_id column are returned.
-// When repoID is empty and filter.WorkflowRunID is set the query is
-// cross-repository (used by mwanachama-backend-taskmanager's WorkflowRun closure
-// aggregator).
+func (m *gitManager) mergeIntoDefault(ctx context.Context, source, expectedDefault models.Branch) (models.Branch, error) {
+	if expectedDefault.HeadCommitID == source.HeadCommitID {
+		return expectedDefault, nil
+	}
+	if expectedDefault.HeadCommitID == "" {
+		return m.advanceBranchHead(ctx, expectedDefault.ID, source.HeadCommitID, expectedDefault.HeadCommitID)
+	}
+	base, err := m.mergeBase(ctx, expectedDefault.HeadCommitID, source.HeadCommitID)
+	if err != nil {
+		return models.Branch{}, fmt.Errorf("merge base: %w", err)
+	}
+	if base == source.HeadCommitID {
+		return expectedDefault, nil
+	}
+	if base == expectedDefault.HeadCommitID {
+		return m.advanceBranchHead(ctx, expectedDefault.ID, source.HeadCommitID, expectedDefault.HeadCommitID)
+	}
+
+	baseTree, err := m.mergeTreeAt(ctx, base)
+	if err != nil {
+		return models.Branch{}, err
+	}
+	oursTree, err := m.mergeTreeAt(ctx, expectedDefault.HeadCommitID)
+	if err != nil {
+		return models.Branch{}, err
+	}
+	theirsTree, err := m.mergeTreeAt(ctx, source.HeadCommitID)
+	if err != nil {
+		return models.Branch{}, err
+	}
+	merged, overlapping := mergeTrees(baseTree, oursTree, theirsTree)
+	resolved, conflicts, err := m.resolveOverlaps(ctx, baseTree, oursTree, theirsTree, overlapping)
+	if err != nil {
+		return models.Branch{}, err
+	}
+	if len(conflicts) > 0 {
+		return models.Branch{}, &ErrMergeConflict{TaskID: source.Name, ConflictingFiles: conflicts}
+	}
+	if err := m.storeMergedBlobs(ctx, merged, resolved); err != nil {
+		return models.Branch{}, err
+	}
+
+	message := fmt.Sprintf("Merge branch '%s' into %s", source.Name, expectedDefault.Name)
+	mergeCommit, err := m.writeMergeCommit(ctx, source.RepositoryID, merged,
+		[]string{expectedDefault.HeadCommitID, source.HeadCommitID}, message)
+	if err != nil {
+		return models.Branch{}, err
+	}
+	return m.advanceBranchHead(ctx, expectedDefault.ID, mergeCommit.ID, expectedDefault.HeadCommitID)
+}
+
+func (m *gitManager) mergeTreeAt(ctx context.Context, commitID string) (mergeTree, error) {
+	tree := mergeTree{}
+	if commitID == "" {
+		return tree, nil
+	}
+	blobs, err := m.allBlobsAtCommit(ctx, commitID)
+	if err != nil {
+		return nil, err
+	}
+	for _, b := range blobs {
+		if b.Path != "" && b.SHA != "" {
+			tree[b.Path] = mergeEntry{BlobID: b.ID, SHA: b.SHA}
+		}
+	}
+	return tree, nil
+}
+
 func (m *gitManager) ListBranchesFiltered(ctx context.Context, repoID string, filter BranchFilter) ([]models.Branch, error) {
 	if repoID == "" && filter.WorkflowRunID != "" {
 		return m.listBranchesByWorkflowRunID(ctx, filter.WorkflowRunID)
@@ -233,9 +261,6 @@ func (m *gitManager) ListBranchesFiltered(ctx context.Context, repoID string, fi
 	return out, nil
 }
 
-// listBranchesByWorkflowRunID returns all Branch rows across all
-// repositories whose workflow_run_id column matches runID. Used by the
-// closure aggregator path where no repository is specified.
 func (m *gitManager) listBranchesByWorkflowRunID(ctx context.Context, runID string) ([]models.Branch, error) {
 	var rows []models.Branch
 	if err := m.db.WithContext(ctx).Table(m.tables.Branches).
@@ -249,10 +274,6 @@ func (m *gitManager) listBranchesByWorkflowRunID(ctx context.Context, runID stri
 	return out, nil
 }
 
-// ── Branch internal helpers ───────────────────────────────────────────────────
-
-// listBranchesByRepo returns all Branch rows linked to the given
-// repositoryID.
 func (m *gitManager) listBranchesByRepo(ctx context.Context, repositoryID string) ([]models.Branch, error) {
 	var rows []models.Branch
 	err := m.db.WithContext(ctx).Table(m.tables.Branches).
@@ -260,8 +281,6 @@ func (m *gitManager) listBranchesByRepo(ctx context.Context, repositoryID string
 	return rows, err
 }
 
-// defaultBranch returns the Branch row whose is_default column is true for
-// the given repository.
 func (m *gitManager) defaultBranch(ctx context.Context, repositoryID string) (models.Branch, error) {
 	var row models.Branch
 	err := m.db.WithContext(ctx).Table(m.tables.Branches).
@@ -275,17 +294,6 @@ func (m *gitManager) defaultBranch(ctx context.Context, repositoryID string) (mo
 	return row, nil
 }
 
-// advanceBranchHead updates a branch's head_commit_id and sha columns to
-// point at newCommitID. The sha is copied from the Commit row so callers can
-// read the branch tip SHA directly off the Branch row without an extra
-// query. Returns the updated Branch.
-//
-// expectedHeadCommitID is a CAS guard: if non-empty, the update only applies
-// when the branch's current head_commit_id still matches it — a single
-// conditional UPDATE, strictly stronger than the old read-then-write check
-// (no window between the read and the write for a concurrent writer to land
-// in). Returns [ErrMergeConcurrencyConflict] if the row didn't match.
-// Pass "" to skip the check (used by IndexPushedBranch).
 func (m *gitManager) advanceBranchHead(ctx context.Context, branchID, newCommitID, expectedHeadCommitID string) (models.Branch, error) {
 	var commitRow models.Commit
 	if err := m.db.WithContext(ctx).Table(m.tables.Commits).
@@ -314,5 +322,10 @@ func (m *gitManager) advanceBranchHead(ctx context.Context, branchID, newCommitI
 		return models.Branch{}, ErrMergeConcurrencyConflict
 	}
 
-	return m.GetBranch(ctx, branchID)
+	branch, err := m.GetBranch(ctx, branchID)
+	if err != nil {
+		return models.Branch{}, err
+	}
+	m.recordCommitInCatalog(ctx, branch.RepositoryID, commitRow)
+	return branch, nil
 }

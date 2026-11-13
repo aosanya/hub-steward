@@ -1,7 +1,3 @@
-// git_impl_repo.go — Repository lifecycle implementation for [gitManager].
-//
-// Branch management is in git_impl_branch.go.
-// Tag management is in git_impl_tag.go.
 package mwanachamagit
 
 import (
@@ -14,12 +10,17 @@ import (
 	"wakalaserver/modules/git/models"
 )
 
-// ── Repository Lifecycle ──────────────────────────────────────────────────────
-
-// InitRepo creates a new Repository row.
-// Returns [ErrRepoAlreadyExists] if a repository with the same name already exists.
-// Publishes [TopicRepoCreated] after a successful write.
 func (m *gitManager) InitRepo(ctx context.Context, req CreateRepoRequest) (models.Repository, error) {
+	if m.singleRepository {
+		var existing int64
+		if err := m.db.WithContext(ctx).Table(m.tables.Repositories).Count(&existing).Error; err != nil {
+			return models.Repository{}, fmt.Errorf("InitRepo: count repositories: %w", err)
+		}
+		if existing > 0 {
+			return models.Repository{}, ErrRepoAlreadyExists
+		}
+	}
+
 	var count int64
 	if err := m.db.WithContext(ctx).Table(m.tables.Repositories).
 		Where("name = ? AND NOT deleted", req.Name).Count(&count).Error; err != nil {
@@ -59,13 +60,19 @@ func (m *gitManager) InitRepo(ctx context.Context, req CreateRepoRequest) (model
 		return models.Repository{}, fmt.Errorf("InitRepo: create default branch: %w", err)
 	}
 
+	if err := m.registerInCatalog(ctx, row); err != nil {
+		return models.Repository{}, fmt.Errorf("InitRepo: register in catalog: %w", err)
+	}
+
 	repo := row
 	m.publish(ctx, TopicRepoCreated, RepoCreatedPayload{RepoID: repo.ID, Name: req.Name})
 	return repo, nil
 }
 
-// ListRepositories returns all Repository rows.
 func (m *gitManager) ListRepositories(ctx context.Context) ([]models.Repository, error) {
+	if m.catalog != nil {
+		return m.listCataloguedRepositories(ctx)
+	}
 	var rows []models.Repository
 	if err := m.db.WithContext(ctx).Table(m.tables.Repositories).
 		Where("NOT deleted").Limit(maxListPage).Find(&rows).Error; err != nil {
@@ -111,8 +118,6 @@ func (m *gitManager) ListRepositorySummaries(ctx context.Context) ([]models.Repo
 	return out, nil
 }
 
-// GetRepository retrieves a Repository row by its ID.
-// Returns [ErrRepoNotInitialised] if no repository with that ID exists.
 func (m *gitManager) GetRepository(ctx context.Context, repoID string) (models.Repository, error) {
 	var row models.Repository
 	err := m.db.WithContext(ctx).Table(m.tables.Repositories).
@@ -126,8 +131,6 @@ func (m *gitManager) GetRepository(ctx context.Context, repoID string) (models.R
 	return row, nil
 }
 
-// GetRepositoryByName retrieves a Repository row by its human-readable name.
-// Returns [ErrRepoNotInitialised] if no repository with that name exists.
 func (m *gitManager) GetRepositoryByName(ctx context.Context, repoName string) (models.Repository, error) {
 	var row models.Repository
 	err := m.db.WithContext(ctx).Table(m.tables.Repositories).
@@ -141,8 +144,6 @@ func (m *gitManager) GetRepositoryByName(ctx context.Context, repoName string) (
 	return row, nil
 }
 
-// DeleteRepo soft-deletes the specified repository row and all owned sub-rows.
-// Returns [ErrRepoNotInitialised] if no repository with that ID exists.
 func (m *gitManager) DeleteRepo(ctx context.Context, repoID string) error {
 	repo, err := m.GetRepository(ctx, repoID)
 	if err != nil {
@@ -161,12 +162,12 @@ func (m *gitManager) DeleteRepo(ctx context.Context, repoID string) error {
 		Where("id = ?", repo.ID).Update("deleted", true).Error; err != nil {
 		return fmt.Errorf("DeleteRepo: delete repo: %w", err)
 	}
+	if err := m.removeFromCatalog(ctx, repo.ID); err != nil {
+		return fmt.Errorf("DeleteRepo: remove from catalog: %w", err)
+	}
 	return nil
 }
 
-// PurgeRepo is a no-op alias for DeleteRepo — soft deletion is the only
-// supported deletion strategy.
-// Returns [ErrRepoNotInitialised] if no repository with that ID exists.
 func (m *gitManager) PurgeRepo(ctx context.Context, repoID string) error {
 	return m.DeleteRepo(ctx, repoID)
 }

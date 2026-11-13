@@ -1,16 +1,10 @@
-// File operations and commit history implementations for [gitManager].
-//
-// WriteFile creates Commit, Tree, and Blob rows, wires them, and advances
-// the branch HEAD pointer. ReadFile, DeleteFile, and ListDirectory traverse
-// the commit + tree graph (via allBlobsAtCommit, git_impl_converters.go) to
-// locate blobs. Log walks the commit-parent chain; Diff compares two commit
-// trees.
 package mwanachamagit
 
 import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -27,23 +21,16 @@ import (
 	"wakalaserver/modules/git/models"
 )
 
-// ── File Operations ───────────────────────────────────────────────────────────
-
-// treeRecord holds the git object data for one tree node built by buildNestedTrees.
 type treeRecord struct {
-	path    string // directory path: "" = root, "lib", "lib/providers", …
+	path    string
 	sha     string
 	rawData []byte
 	size    int64
-	entries string // JSON [{name,mode,sha}] for storage
+	entries string
 }
 
-// buildNestedTrees constructs a complete, properly-nested git tree from a flat
-// map of full file paths to blob hashes. It processes directories bottom-up so
-// subtree hashes are known before parent trees are encoded.
-// Returns the root tree hash and one treeRecord per directory.
 func buildNestedTrees(files map[string]plumbing.Hash) (plumbing.Hash, []treeRecord, error) {
-	// Collect every directory that appears as an ancestor of any file path.
+
 	dirSet := map[string]bool{"": true}
 	for p := range files {
 		parts := strings.Split(p, "/")
@@ -52,7 +39,6 @@ func buildNestedTrees(files map[string]plumbing.Hash) (plumbing.Hash, []treeReco
 		}
 	}
 
-	// Sort directories deepest-first so subtrees are built before their parents.
 	dirs := make([]string, 0, len(dirSet))
 	for d := range dirSet {
 		dirs = append(dirs, d)
@@ -66,13 +52,12 @@ func buildNestedTrees(files map[string]plumbing.Hash) (plumbing.Hash, []treeReco
 		return dirs[i] > dirs[j]
 	})
 
-	subtreeHashes := map[string]plumbing.Hash{} // dir path → encoded tree hash
+	subtreeHashes := map[string]plumbing.Hash{}
 	var records []treeRecord
 
 	for _, dir := range dirs {
 		var entries []object.TreeEntry
 
-		// File entries directly inside this directory.
 		for filePath, blobHash := range files {
 			if dirPath(filePath) == dir {
 				entries = append(entries, object.TreeEntry{
@@ -83,7 +68,6 @@ func buildNestedTrees(files map[string]plumbing.Hash) (plumbing.Hash, []treeReco
 			}
 		}
 
-		// Immediate subdirectory entries (already encoded in earlier iterations).
 		for subPath, subHash := range subtreeHashes {
 			if dirPath(subPath) == dir {
 				entries = append(entries, object.TreeEntry{
@@ -94,7 +78,6 @@ func buildNestedTrees(files map[string]plumbing.Hash) (plumbing.Hash, []treeReco
 			}
 		}
 
-		// Git requires tree entries sorted by name.
 		sort.Slice(entries, func(i, j int) bool {
 			return entries[i].Name < entries[j].Name
 		})
@@ -137,19 +120,6 @@ func buildNestedTrees(files map[string]plumbing.Hash) (plumbing.Hash, []treeReco
 	return rootHash, records, nil
 }
 
-// WriteFile commits a single file to the specified branch.
-// Each call builds a complete nested git tree that includes all files from
-// the parent commit plus the new file, so the branch accumulates files
-// correctly across successive writes.
-//
-// The entire operation runs inside the [RefLocker] lock so that
-// concurrent writes chain commits onto each other instead of racing the
-// branch ref. Without this, each caller reads the same parent HEAD, builds a
-// sibling commit, and the unsynchronised [gitManager.advanceBranchHead] call
-// leaves the branch pointing at only the last writer's commit.
-//
-// Returns [ErrBranchNotFound] if the branch does not exist.
-// Returns [ErrRepoNotInitialised] if no repository entity exists.
 func (m *gitManager) WriteFile(ctx context.Context, req WriteFileRequest) (models.Commit, error) {
 	var result models.Commit
 	lockErr := m.locker.WithMergeLock(ctx, func() error {
@@ -166,8 +136,6 @@ func (m *gitManager) WriteFile(ctx context.Context, req WriteFileRequest) (model
 	return result, nil
 }
 
-// writeFileLocked is the body of WriteFile that must run under the
-// [RefLocker]. Do not call directly outside of WriteFile.
 func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) (models.Commit, error) {
 	if err := m.checkFileSize(req); err != nil {
 		return models.Commit{}, fmt.Errorf("WriteFile: %w", err)
@@ -181,7 +149,6 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 		return models.Commit{}, fmt.Errorf("WriteFile: %w", err)
 	}
 
-	// Normalise the path: strip leading slashes.
 	req.Path = strings.TrimLeft(req.Path, "/")
 
 	encoding := req.Encoding
@@ -195,7 +162,6 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 	commitTime := time.Now().UTC()
 	now := commitTime.Format(time.RFC3339)
 
-	// ── 1. Create the new Blob row ────────────────────────────────────────────
 	blobObj := &plumbing.MemoryObject{}
 	blobObj.SetType(plumbing.BlobObject)
 	blobW, _ := blobObj.Writer()
@@ -224,7 +190,6 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 		return models.Commit{}, fmt.Errorf("WriteFile: create blob: %w", err)
 	}
 
-	// ── 2. Build the complete file map (parent files + new file) ──────────────
 	var parentIDs []string
 	var parentHashes []plumbing.Hash
 	if branch.HeadCommitID != "" {
@@ -239,9 +204,8 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 		}
 	}
 
-	// path → blob git SHA for all files on the branch after this write.
 	fileMap := map[string]plumbing.Hash{}
-	// path → blob row ID for wiring tree_blobs rows to the new root tree.
+
 	blobEntityByPath := map[string]string{}
 
 	if len(parentIDs) > 0 {
@@ -256,21 +220,15 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 			}
 		}
 	}
-	// Add/replace with the file being written.
+
 	fileMap[req.Path] = blobHash
 	blobEntityByPath[req.Path] = blobRow.ID
 
-	// ── 3. Build nested git trees ─────────────────────────────────────────────
 	rootTreeHash, treeRecords, err := buildNestedTrees(fileMap)
 	if err != nil {
 		return models.Commit{}, fmt.Errorf("WriteFile: %w", err)
 	}
 
-	// ── 4. Persist all tree rows (root + subtrees) ────────────────────────────
-	// Only the root tree is ever linked to a blob or a commit below — matches
-	// the pre-GORM behavior, where every blob was wired flat onto the root
-	// tree (see step 6) and non-root tree rows were created but never linked
-	// by any edge. Not fixed here; a behavior-preserving port.
 	var rootTreeID string
 	for _, tr := range treeRecords {
 		treeRow := models.Tree{SHA: tr.sha, Path: tr.path, CreatedAt: now}
@@ -286,11 +244,6 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 		}
 	}
 
-	// ── 5. Encode and persist the Commit row ──────────────────────────────────
-	// Fall back to a bot identity when the caller didn't supply an author —
-	// go-git renders empty signatures as "Author: <>" which leaves commits
-	// unattributable. Any downstream tool that filters / blames by author
-	// then has nothing to bind to.
 	authorName := req.AuthorName
 	if authorName == "" {
 		authorName = "mwanachama-bot"
@@ -336,7 +289,6 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 		return models.Commit{}, fmt.Errorf("WriteFile: create commit: %w", err)
 	}
 
-	// ── 6. Wire edges ─────────────────────────────────────────────────────────
 	if len(parentIDs) > 0 {
 		parentRows := commitParentsOf(commitRow.ID, parentIDs)
 		ensureID(&parentRows)
@@ -344,8 +296,7 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 			return models.Commit{}, fmt.Errorf("WriteFile: link parents: %w", err)
 		}
 	}
-	// Wire root tree → every blob so allBlobsAtCommit finds them all (flat,
-	// matching the pre-GORM has_blob wiring — see step 4's note).
+
 	treeBlobRows := make([]models.TreeBlob, 0, len(blobEntityByPath))
 	for _, blobID := range blobEntityByPath {
 		treeBlobRows = append(treeBlobRows, models.TreeBlob{TreeID: rootTreeID, BlobID: blobID})
@@ -357,7 +308,6 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 		}
 	}
 
-	// ── 7. Advance branch HEAD ────────────────────────────────────────────────
 	if _, err := m.advanceBranchHead(ctx, branch.ID, commitRow.ID, ""); err != nil {
 		return models.Commit{}, fmt.Errorf("WriteFile: advance branch head: %w", err)
 	}
@@ -375,16 +325,6 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 	return commit, nil
 }
 
-// ReadFile returns the content of path at the branch's HEAD commit.
-// It first checks whether the blob row already carries cached content.
-// If the content field is empty (stub blob created by FetchBranch), it reads
-// the content directly from the local full clone and caches it back into the
-// row.
-// Returns [ErrBranchNotFound] if the branch does not exist.
-// Returns [ErrFileNotFound] if the path is not present on the branch.
-// Returns [ErrBlobContentUnavailable] if the blob exists as a stub but the
-// local clone is unavailable; the caller should trigger [GitManager.FetchBranch]
-// and retry.
 func (m *gitManager) ReadFile(ctx context.Context, branchID, path string) (models.Blob, error) {
 	branch, err := m.GetBranch(ctx, branchID)
 	if err != nil {
@@ -412,26 +352,20 @@ func (m *gitManager) ReadFile(ctx context.Context, branchID, path string) (model
 	return blob, nil
 }
 
-// DeleteFile removes a file from the specified branch by creating a deletion
-// commit (empty content, size=0).
-// Returns [ErrBranchNotFound] if the branch does not exist.
-// Returns [ErrFileNotFound] if the path does not exist on the branch.
 func (m *gitManager) DeleteFile(ctx context.Context, req DeleteFileRequest) (models.Commit, error) {
-	// Verify the file exists first and capture the current blob ID for edge cleanup.
+
 	existingBlob, err := m.ReadFile(ctx, req.BranchID, req.Path)
 	if err != nil {
 		return models.Commit{}, err
 	}
 
-	// GIT-022c: Remove branch-scoped documentation edges on the deleted blob
-	// before the deletion commit is written.
 	m.deleteDocEdgesForBlob(ctx, existingBlob.ID, req.BranchID)
 
 	message := req.Message
 	if message == "" {
 		message = "Delete " + req.Path
 	}
-	// A deletion commit writes empty content to the path.
+
 	return m.WriteFile(ctx, WriteFileRequest{
 		BranchID:    req.BranchID,
 		Path:        req.Path,
@@ -443,10 +377,6 @@ func (m *gitManager) DeleteFile(ctx context.Context, req DeleteFileRequest) (mod
 	})
 }
 
-// ListDirectory returns the immediate children (files and sub-directories)
-// at the given path on the branch's HEAD commit.
-// Returns [ErrBranchNotFound] if the branch does not exist.
-// Returns [ErrFileNotFound] if the path does not exist on the branch.
 func (m *gitManager) ListDirectory(ctx context.Context, branchID, path string) ([]FileEntry, error) {
 	branch, err := m.GetBranch(ctx, branchID)
 	if err != nil {
@@ -456,13 +386,11 @@ func (m *gitManager) ListDirectory(ctx context.Context, branchID, path string) (
 		return []FileEntry{}, nil
 	}
 
-	// Find all blobs reachable from the HEAD commit.
 	blobs, err := m.allBlobsAtCommit(ctx, branch.HeadCommitID)
 	if err != nil {
 		return nil, fmt.Errorf("ListDirectory: %w", err)
 	}
 
-	// Normalise the query path: trim leading/trailing slashes.
 	queryDir := strings.Trim(path, "/")
 
 	seen := make(map[string]bool)
@@ -473,12 +401,12 @@ func (m *gitManager) ListDirectory(ctx context.Context, branchID, path string) (
 		bDirClean := strings.Trim(bDir, "/")
 
 		if queryDir == "" {
-			// Root listing — show immediate children only.
+
 			rel := bPath
-			// If the file is in a subdirectory, show the directory entry.
+
 			parts := strings.SplitN(strings.Trim(rel, "/"), "/", 2)
 			if len(parts) == 1 {
-				// Direct file at root.
+
 				if !seen[parts[0]] {
 					seen[parts[0]] = true
 					entries = append(entries, FileEntry{
@@ -489,7 +417,7 @@ func (m *gitManager) ListDirectory(ctx context.Context, branchID, path string) (
 					})
 				}
 			} else {
-				// Subdirectory entry.
+
 				if !seen[parts[0]] {
 					seen[parts[0]] = true
 					entries = append(entries, FileEntry{
@@ -500,7 +428,7 @@ func (m *gitManager) ListDirectory(ctx context.Context, branchID, path string) (
 				}
 			}
 		} else {
-			// Subdirectory listing.
+
 			if bDirClean == queryDir {
 				name := fileName(bPath)
 				if !seen[name] {
@@ -513,7 +441,7 @@ func (m *gitManager) ListDirectory(ctx context.Context, branchID, path string) (
 					})
 				}
 			} else if strings.HasPrefix(bDirClean, queryDir+"/") {
-				// Deeper subdirectory — show intermediate directory.
+
 				rel := bDirClean[len(queryDir)+1:]
 				topLevel := strings.SplitN(rel, "/", 2)[0]
 				if !seen[topLevel] {
@@ -533,11 +461,6 @@ func (m *gitManager) ListDirectory(ctx context.Context, branchID, path string) (
 	return entries, nil
 }
 
-// ── History ───────────────────────────────────────────────────────────────────
-
-// Log returns the commit history for the branch, newest to oldest.
-// Optionally filtered to a specific file path via filter.Path.
-// Returns [ErrBranchNotFound] if the branch does not exist.
 func (m *gitManager) Log(ctx context.Context, branchID string, filter LogFilter) ([]CommitEntry, error) {
 	branch, err := m.GetBranch(ctx, branchID)
 	if err != nil {
@@ -555,7 +478,6 @@ func (m *gitManager) Log(ctx context.Context, branchID string, filter LogFilter)
 	out := make([]CommitEntry, 0, len(commits))
 	for _, c := range commits {
 		if filter.Path != "" {
-			// Check if this commit touched the requested path.
 			if !m.commitTouchesPath(ctx, c.ID, filter.Path) {
 				continue
 			}
@@ -568,8 +490,6 @@ func (m *gitManager) Log(ctx context.Context, branchID string, filter LogFilter)
 	return out, nil
 }
 
-// Diff returns per-file change summaries between two refs (branch IDs or commit IDs).
-// Returns [ErrRefNotFound] if either ref cannot be resolved.
 func (m *gitManager) Diff(ctx context.Context, fromRef, toRef string) ([]FileDiff, error) {
 	fromCommitID, err := m.resolveRef(ctx, fromRef)
 	if err != nil {
@@ -592,9 +512,6 @@ func (m *gitManager) Diff(ctx context.Context, fromRef, toRef string) ([]FileDif
 	return diffBlobs(fromBlobs, toBlobs), nil
 }
 
-// ── Internal helpers ──────────────────────────────────────────────────────────
-
-// findBlobAtCommit traverses the commit's tree(s) to find a blob matching path.
 func (m *gitManager) findBlobAtCommit(ctx context.Context, commitID, path string) (models.Blob, error) {
 	blobs, err := m.allBlobsAtCommit(ctx, commitID)
 	if err != nil {
@@ -608,8 +525,6 @@ func (m *gitManager) findBlobAtCommit(ctx context.Context, commitID, path string
 	return models.Blob{}, ErrFileNotFound
 }
 
-// walkCommitChain returns startCommitID and its ancestors (newest-first),
-// via [CommitChainIDs], up to limit commits (0 = no limit).
 func (m *gitManager) walkCommitChain(ctx context.Context, startCommitID string, limit int) ([]models.Commit, error) {
 	ids, err := CommitChainIDs(m.db.WithContext(ctx), m.tables, startCommitID, limit)
 	if err != nil {
@@ -636,17 +551,48 @@ func (m *gitManager) walkCommitChain(ctx context.Context, startCommitID string, 
 	return out, nil
 }
 
-// commitTouchesPath reports whether the commit's tree contains a blob at path.
-func (m *gitManager) commitTouchesPath(ctx context.Context, commitID, path string) bool {
-	_, err := m.findBlobAtCommit(ctx, commitID, path)
-	return err == nil
+type pathState struct {
+	sha     string
+	present bool
 }
 
-// resolveRef resolves a branchID or commitID to a commit row ID.
-// It first tries GetBranch (to read HeadCommitID), then falls back to
-// treating the ref as a raw commit row ID, then as a SHA.
+func (m *gitManager) pathStateAt(ctx context.Context, commitID, path string) (pathState, error) {
+	b, err := m.findBlobAtCommit(ctx, commitID, path)
+	if errors.Is(err, ErrFileNotFound) {
+		return pathState{}, nil
+	}
+	if err != nil {
+		return pathState{}, err
+	}
+	return pathState{sha: b.SHA, present: true}, nil
+}
+
+func (m *gitManager) commitTouchesPath(ctx context.Context, commitID, path string) bool {
+	own, err := m.pathStateAt(ctx, commitID, path)
+	if err != nil {
+		return true
+	}
+	parentIDs, err := CommitParentIDs(m.db.WithContext(ctx), m.tables, commitID)
+	if err != nil {
+		return true
+	}
+	if len(parentIDs) == 0 {
+		return own.present
+	}
+	for _, parentID := range parentIDs {
+		parent, err := m.pathStateAt(ctx, parentID, path)
+		if err != nil {
+			return true
+		}
+		if parent == own {
+			return false
+		}
+	}
+	return true
+}
+
 func (m *gitManager) resolveRef(ctx context.Context, ref string) (string, error) {
-	// Try as a branch ID first.
+
 	branch, err := m.GetBranch(ctx, ref)
 	if err == nil {
 		if branch.HeadCommitID == "" {
@@ -654,13 +600,13 @@ func (m *gitManager) resolveRef(ctx context.Context, ref string) (string, error)
 		}
 		return branch.HeadCommitID, nil
 	}
-	// Try as a commit row ID directly.
+
 	var row models.Commit
 	if err := m.db.WithContext(ctx).Table(m.tables.Commits).
 		Where("id = ?", ref).First(&row).Error; err == nil {
 		return ref, nil
 	}
-	// Try as a SHA.
+
 	if err := m.db.WithContext(ctx).Table(m.tables.Commits).
 		Where("sha = ?", ref).First(&row).Error; err == nil {
 		return row.ID, nil
@@ -668,9 +614,6 @@ func (m *gitManager) resolveRef(ctx context.Context, ref string) (string, error)
 	return "", ErrRefNotFound
 }
 
-// ── Domain converters ─────────────────────────────────────────────────────────
-
-// commitToEntry converts a Commit row to a [CommitEntry] for Log output.
 func commitToEntry(r models.Commit) CommitEntry {
 	ts, _ := time.Parse(time.RFC3339, r.CommittedAt)
 	if ts.IsZero() {
@@ -684,7 +627,6 @@ func commitToEntry(r models.Commit) CommitEntry {
 	}
 }
 
-// diffBlobs computes added/modified/deleted file entries between two blob sets.
 func diffBlobs(fromBlobs, toBlobs []models.Blob) []FileDiff {
 	fromMap := make(map[string]models.Blob, len(fromBlobs))
 	for _, b := range fromBlobs {
@@ -696,7 +638,6 @@ func diffBlobs(fromBlobs, toBlobs []models.Blob) []FileDiff {
 	}
 
 	var diffs []FileDiff
-	// Added or modified.
 	for path, toBlob := range toMap {
 		if fromBlob, ok := fromMap[path]; !ok {
 			diffs = append(diffs, FileDiff{Path: path, Operation: "added"})
@@ -704,18 +645,15 @@ func diffBlobs(fromBlobs, toBlobs []models.Blob) []FileDiff {
 			diffs = append(diffs, FileDiff{Path: path, Operation: "modified"})
 		}
 	}
-	// Deleted.
 	for path := range fromMap {
 		if _, ok := toMap[path]; !ok {
 			diffs = append(diffs, FileDiff{Path: path, Operation: "deleted"})
 		}
 	}
+	sort.Slice(diffs, func(i, j int) bool { return diffs[i].Path < diffs[j].Path })
 	return diffs
 }
 
-// ── Path helpers ──────────────────────────────────────────────────────────────
-
-// dirPath returns the directory component of a file path (empty for root files).
 func dirPath(p string) string {
 	idx := strings.LastIndex(p, "/")
 	if idx < 0 {
@@ -724,7 +662,6 @@ func dirPath(p string) string {
 	return p[:idx]
 }
 
-// fileName returns the base name of a file path.
 func fileName(p string) string {
 	idx := strings.LastIndex(p, "/")
 	if idx < 0 {
@@ -733,8 +670,6 @@ func fileName(p string) string {
 	return p[idx+1:]
 }
 
-// fileExtension returns the file extension without the leading dot, e.g. "txt".
-// Returns an empty string for files with no extension or dotfiles (e.g. ".gitignore").
 func fileExtension(p string) string {
 	name := fileName(p)
 	idx := strings.LastIndex(name, ".")

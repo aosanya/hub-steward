@@ -50,5 +50,6 @@ func Sentinels() map[string]error {
 		"ErrQueryRequired":                ErrQueryRequired,
 		"ErrTitleRequired":                ErrTitleRequired,
 		"ErrSourceBranchRequired":         ErrSourceBranchRequired,
+		"ErrMergeConflicted":              ErrMergeConflicted,
 	}
 }
