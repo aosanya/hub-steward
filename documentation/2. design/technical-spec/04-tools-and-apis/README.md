@@ -31,6 +31,7 @@ approvals; the rest depend on the modules its published definition switches on.
 | [Members](#members) | Every agency | Member set-up |
 | [Approvals, tasks and the agent](#approvals-tasks-and-the-agent) | Every agency | A seat or Wi-Fi draft the manager approves |
 | [Form steps](#form-steps) | Agencies whose workflows have form steps | A member's own form, then the next role's step |
+| [Report files](report-files.md) | Agencies whose role holders publish a stored report | The Mayor picks a stored file and version to publish |
 | [Other families on the MCP endpoint](#other-families-on-the-mcp-endpoint) | Agencies that switch the module on | Not used by the lab |
 
 ## Chat
@@ -138,6 +139,7 @@ The bundled API registers more tool families than the lab uses. They belong to a
 |---|---|
 | `agency_*`, `instance_*` | Register an agency, add an agent, list its services, read and set its join mode, name and languages, run a review, design from a spec, and propose, list, read, amend and decide approvals |
 | Custody consent | Read, publish, agree to and withdraw the consent text: [custody consent tools](custody-consent-tools.md) |
+| Report files | List the stored versions of a form's report files: [report files](report-files.md) |
 | Forms, forms catalogue, forms git | Compose, send and answer forms; keep the counted answers and the records branch |
 | Market | Offers, asks, orders and group orders that wait for a named person's yes |
 | Risk | The risk register of threats, consequences and safeguards |
