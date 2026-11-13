@@ -447,6 +447,7 @@ forms_question_option_list
 forms_question_update
 forms_question_version
 forms_respondent_claim
+forms_results_files
 forms_results_publish
 forms_results_read
 forms_submission_list
