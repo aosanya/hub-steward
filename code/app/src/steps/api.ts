@@ -3,6 +3,7 @@ import { stepOf, type StartStep } from "../coordinator/start/api";
 import { runtimeConfig } from "../wakala/config";
 import { callTool, forgetReads } from "../wakala/mcp";
 import { renewedAuthHeaders } from "../wakala/renewal";
+import { serverSentenceOf } from "./overLimitRefusal";
 import { wasStarted } from "./sent";
 
 export type StepState = "start" | "waiting";
@@ -15,7 +16,7 @@ export type MemberStep = StartStep & { state: StepState; orderId: string; record
 
 export type Sent = { done: boolean; next: MemberStep | null; orderId: string };
 
-export type SendRefusal = "role" | "not-ready" | "invalid" | "missing" | "failed" | "timeout";
+export type SendRefusal = "role" | "not-ready" | "invalid" | "missing" | "failed" | "timeout" | "over-limit";
 
 export const sendTimeoutMs = 20000;
 
@@ -28,11 +29,12 @@ export const refusalWords: Record<SendRefusal, string> = {
   missing: "This task could not be opened.",
   failed: "Your answers could not be sent. Try again.",
   timeout: "This is taking too long. Try again.",
+  "over-limit": "This amount is above your approval limit.",
 };
 
 export class StepRefused extends Error {
-  constructor(readonly reason: SendRefusal) {
-    super(refusalWords[reason]);
+  constructor(readonly reason: SendRefusal, message?: string) {
+    super(message || refusalWords[reason]);
   }
 }
 
@@ -66,7 +68,7 @@ export const memberStepOf = (raw: any): MemberStep | undefined => {
 };
 
 const refusalOf = (status: number): SendRefusal =>
-  status === 403 ? "role" : status === 400 ? "invalid" : status === 404 ? "missing" : "failed";
+  status === 403 ? "role" : status === 400 ? "invalid" : status === 404 ? "missing" : status === 422 ? "over-limit" : "failed";
 
 const answerKinds = ["fill_form", "send_form"];
 
@@ -100,7 +102,7 @@ export const mcpStepsClient: StepsClient = {
     } finally {
       clearTimeout(timer);
     }
-    if (!res.ok && res.status !== 409) throw new StepRefused(refusalOf(res.status));
+    if (!res.ok && res.status !== 409) throw new StepRefused(refusalOf(res.status), res.status === 422 ? await serverSentenceOf(res) : undefined);
     forgetReads();
     if (res.status === 409) return { done: false, next: null, orderId: step.orderId };
     const reply = await res.json().catch(() => ({}));
