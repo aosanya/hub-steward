@@ -33,6 +33,12 @@ afterEach(() => {
 });
 
 describe("listing what a member may act on now", () => {
+  it("reads the step's description from the listing", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [raw({ description: "Stated by the mayor." })] });
+    const [step] = await mcpStepsClient.available();
+    expect(step.description).toBe("Stated by the mayor.");
+  });
+
   it("asks for the steps available now and reads each form step as a start step or a waiting step with its run", async () => {
     const call = vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [raw(), raw({ id: "s2", state: "waiting", order_id: "o9", form_name: "Confirm" })] });
     const steps = await mcpStepsClient.available();

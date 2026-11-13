@@ -8,6 +8,8 @@ export type OpensIn = "chat" | "form";
 export type StartStep = {
   id: string;
   title: string;
+  description?: string;
+  prompt?: string;
   formName: string;
   roleName: string;
   workflowName: string;
@@ -38,6 +40,8 @@ const opensInOf = (raw: any): OpensIn => (text(raw?.opens_in) === "chat" ? "chat
 export const stepOf = (agencyName: string) => (raw: any): StartStep => ({
   id: text(raw?.id),
   title: text(raw?.title),
+  ...(text(raw?.description) ? { description: text(raw?.description) } : {}),
+  ...(text(raw?.prompt) ? { prompt: text(raw?.prompt) } : {}),
   formName: text(raw?.form_name),
   roleName: text(raw?.role_name),
   workflowName: text(raw?.workflow_name),

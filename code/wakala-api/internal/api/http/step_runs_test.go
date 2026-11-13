@@ -13,11 +13,11 @@ import (
 
 func referralPlan() []stepSpec {
 	return []stepSpec{
-		{title: "Report a referral", form: "Referral", role: "Volunteer", questions: []agencymodels.StepQuestion{
+		{title: "Report a referral", description: "Say why the person is being referred.", form: "Referral", role: "Volunteer", questions: []agencymodels.StepQuestion{
 			{Prompt: "Reason", AnswerType: agencymodels.AnswerFreeText, Required: true},
 			{Prompt: "Minutes to the clinic", AnswerType: agencymodels.AnswerNumber, Required: true},
 		}},
-		{title: "Confirm arrival", form: "Arrival", role: "Liaison", questions: []agencymodels.StepQuestion{
+		{title: "Confirm arrival", description: "Confirm the person reached the clinic.", form: "Arrival", role: "Liaison", questions: []agencymodels.StepQuestion{
 			{Prompt: "Arrived", AnswerType: agencymodels.AnswerYesNo, Required: true},
 		}},
 		{title: "Close the referral", form: "Closure", role: "Coordinator", questions: []agencymodels.StepQuestion{
@@ -135,6 +135,24 @@ func TestEachMemberSeesOnlyTheirOwnFormStep(t *testing.T) {
 	}
 	if qs, _ := first["questions"].([]any); len(qs) != 2 {
 		t.Errorf("the step lists %d questions, want 2", len(qs))
+	}
+}
+
+func TestEachListedStepCarriesItsDescription(t *testing.T) {
+	w := referral(t)
+	if got := w.available(t, w.people["Volunteer"])[0]["description"]; got != "Say why the person is being referred." {
+		t.Errorf("a start step's description = %v", got)
+	}
+	sent := w.submit(t, w.people["Volunteer"], "Report a referral", map[string]string{"Reason": "Needs a clinic check", "Minutes to the clinic": "25"}, "")
+	if sent.Code != http.StatusCreated {
+		t.Fatalf("the volunteer's submit: %d %s", sent.Code, sent.Body.String())
+	}
+	next, _ := decodeObject(t, sent)["next_step"].(map[string]any)
+	if next["description"] != "Confirm the person reached the clinic." {
+		t.Errorf("the next step's description = %v", next["description"])
+	}
+	if got := w.available(t, w.people["Liaison"])[0]["description"]; got != "Confirm the person reached the clinic." {
+		t.Errorf("a waiting step's description = %v", got)
 	}
 }
 

@@ -108,6 +108,8 @@ func decodeObjects(t *testing.T, rec *httptest.ResponseRecorder) []map[string]an
 
 type stepSpec struct {
 	title, form, role string
+	description       string
+	prompt            string
 	questions         []agencymodels.StepQuestion
 	kind              agencymodels.StepKind
 	fork              *forkSpec
@@ -195,7 +197,7 @@ func newStepRunWalkOn(t *testing.T, db *gorm.DB, plan []stepSpec, people ...stri
 				w.roles[s.role] = role.ID
 			}
 			item := agencymodels.WorkItem{
-				DraftID: draft.ID, WorkflowID: workflow.ID, Title: s.title, Ordinality: i + 1,
+				DraftID: draft.ID, WorkflowID: workflow.ID, Title: s.title, Description: s.description, Prompt: s.prompt, Ordinality: i + 1,
 				Kind: agencymodels.StepKindFillForm, RoleID: w.roles[s.role], FormName: s.form, Questions: s.questions,
 			}
 			if s.kind != "" {

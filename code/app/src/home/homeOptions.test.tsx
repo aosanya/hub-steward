@@ -9,7 +9,7 @@ import type { MemberStep } from "../steps/api";
 import { forgetLastBacklogs, rememberBacklog } from "./lastBacklog";
 import { HomeOptions } from "./HomeOptions";
 
-const step = { id: "s1", title: "Report", formName: "Report", roleName: "Farmer", workflowName: "", agencyName: "Alego", questions: [], state: "start", orderId: "o1", recordCode: "R1" } as MemberStep;
+const step = { id: "s1", title: "Report", formName: "Report", roleName: "Farmer", workflowName: "", agencyName: "Alego", questions: [], state: "start", orderId: "o1", recordCode: "R1", earlier: [] } as MemberStep;
 
 const backlog = (id: string, name: string, over: Partial<Backlog> = {}): Backlog => ({ id, name, steps: ["to-do", "done"], issues: 2, ...over });
 

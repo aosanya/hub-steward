@@ -323,6 +323,10 @@ func (d *Deps) callerAvailableSteps(ctx context.Context, instanceID string) (ope
 	if err != nil {
 		return openSteps{}, err
 	}
+	roles, err := m.ListRoles(ctx, draftID, mwanachamaagency.RoleFilter{})
+	if err != nil {
+		return openSteps{}, err
+	}
 	chains := formStepsByWorkflow(steps, records)
 	workflowIDs := make([]string, 0, len(chains))
 	for id := range chains {
@@ -346,6 +350,7 @@ func (d *Deps) callerAvailableSteps(ctx context.Context, instanceID string) (ope
 			}
 			if item, ok := mine[chain[at].step.ID]; ok {
 				item.State, item.OrderID, item.RecordCode = stepStateWaiting, run.orderID, chain[at].record.Code
+				item.Earlier = earlierStepsOf(chain, run, at, roles)
 				items = append(items, item)
 			}
 		}
@@ -477,7 +482,7 @@ func nextStepOf(ctx context.Context, m mwanachamaagency.AgencyManager, draftID s
 		return openStep{}, err
 	}
 	next := openStep{
-		ID: link.step.ID, Title: link.step.Title, Kind: string(link.step.Kind), WorkflowID: link.step.WorkflowID,
+		ID: link.step.ID, Title: link.step.Title, Description: link.step.Description, Prompt: link.step.Prompt, Kind: string(link.step.Kind), WorkflowID: link.step.WorkflowID,
 		WorkflowName: workflows[link.step.WorkflowID].Name, OpensIn: opensInOf(workflows[link.step.WorkflowID]),
 		RoleID: link.record.RoleID, FormName: link.step.FormName, Questions: link.step.Questions,
 		State: stepStateWaiting, OrderID: orderID, RecordCode: link.record.Code,

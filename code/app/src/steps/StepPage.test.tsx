@@ -20,6 +20,7 @@ const referral: MemberStep = {
   state: "start",
   orderId: "",
   recordCode: "REC-1",
+  earlier: [],
   questions: [
     { prompt: "Reason", answerType: "free_text", helper: "", required: true },
     { prompt: "Visits this week", answerType: "number", helper: "", required: true },
@@ -84,6 +85,16 @@ describe("a member fills in one of her own steps", () => {
     expect(screen.getByRole("radio", { name: "Same day" })).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: "This week" })).toBeInTheDocument();
     expect(screen.getByLabelText("Note")).toBeInTheDocument();
+  });
+
+  it("shows what the step asks of her under its title when the step has a description", async () => {
+    await show(clientOf([{ ...referral, description: "The reason is stated by the mayor in their own name." }]));
+    expect(screen.getByText("The reason is stated by the mayor in their own name.")).toBeInTheDocument();
+  });
+
+  it("shows no description line when the step has none", async () => {
+    await show(clientOf([referral]));
+    expect(screen.queryByText("The reason is stated by the mayor in their own name.")).not.toBeInTheDocument();
   });
 
   it("does not send while a required question is unanswered, and says which", async () => {

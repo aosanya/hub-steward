@@ -1,0 +1,40 @@
+package http
+
+import (
+	agencymodels "wakalaserver/modules/agency/models"
+)
+
+type earlierAnswer struct {
+	Prompt string `json:"prompt"`
+	Answer string `json:"answer"`
+}
+
+type earlierStep struct {
+	StepTitle string          `json:"step_title"`
+	RoleName  string          `json:"role_name"`
+	Answers   []earlierAnswer `json:"answers"`
+}
+
+func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymodels.Role) []earlierStep {
+	roleNames := make(map[string]string, len(roles))
+	for _, r := range roles {
+		roleNames[r.ID] = r.Name
+	}
+	var out []earlierStep
+	for i := 0; i < index && i < len(chain) && i < len(run.done); i++ {
+		if !run.done[i] {
+			continue
+		}
+		var answers []earlierAnswer
+		for _, q := range chain[i].record.Questions {
+			if text := run.answers[i][q.Prompt]; text != "" {
+				answers = append(answers, earlierAnswer{Prompt: q.Prompt, Answer: text})
+			}
+		}
+		if len(answers) == 0 {
+			continue
+		}
+		out = append(out, earlierStep{StepTitle: chain[i].step.Title, RoleName: roleNames[chain[i].record.RoleID], Answers: answers})
+	}
+	return out
+}

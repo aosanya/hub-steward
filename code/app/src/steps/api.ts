@@ -7,7 +7,9 @@ import { wasStarted } from "./sent";
 
 export type StepState = "start" | "waiting";
 
-export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string };
+export type EarlierStep = { stepTitle: string; roleName: string; answers: { prompt: string; answer: string }[] };
+
+export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string; earlier: EarlierStep[] };
 
 export type Sent = { done: boolean; next: MemberStep | null; orderId: string };
 
@@ -41,9 +43,18 @@ const text = (value: unknown) => (typeof value === "string" ? value : "");
 
 const stateOf = (raw: any): StepState | undefined => (raw?.state === "start" || raw?.state === "waiting" ? raw.state : undefined);
 
+const earlierOf = (raw: any): EarlierStep[] =>
+  (Array.isArray(raw?.earlier) ? raw.earlier : []).map((entry: any) => ({
+    stepTitle: text(entry?.step_title),
+    roleName: text(entry?.role_name),
+    answers: (Array.isArray(entry?.answers) ? entry.answers : []).map((a: any) => ({ prompt: text(a?.prompt), answer: text(a?.answer) })),
+  }));
+
 export const memberStepOf = (raw: any): MemberStep | undefined => {
   const state = stateOf(raw);
-  return state === undefined ? undefined : { ...stepOf("")(raw), state, orderId: text(raw?.order_id), recordCode: text(raw?.record_code) };
+  return state === undefined
+    ? undefined
+    : { ...stepOf("")(raw), state, orderId: text(raw?.order_id), recordCode: text(raw?.record_code), earlier: earlierOf(raw) };
 };
 
 const refusalOf = (status: number): SendRefusal =>

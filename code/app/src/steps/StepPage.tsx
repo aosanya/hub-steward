@@ -13,6 +13,7 @@ import { Shell } from "../ui/Shell";
 import { openAgencyId } from "../agency/open";
 import { ongoingTab, startTab, tabPathIn } from "../tabs";
 import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type SendRefusal, type StepsClient } from "./api";
+import { EarlierWork } from "./EarlierWork";
 import { answersOf, formQuestionsOf, unsendable } from "./questions";
 import { afterWords, markSent } from "./sent";
 
@@ -93,6 +94,9 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
   return (
     <Shell title={step.formName || step.title} sub={step.workflowName || undefined} onBack={back}>
       <Card>
+        {step.description ? <p>{step.description}</p> : null}
+        {step.prompt ? <p>{step.prompt}</p> : null}
+        {step.earlier.length ? <EarlierWork earlier={step.earlier} /> : null}
         {questions.map((q) => (
           unsendable(q) ? (
             <div key={q.id}>

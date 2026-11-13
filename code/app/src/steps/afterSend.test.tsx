@@ -20,6 +20,7 @@ const referral: MemberStep = {
   state: "start",
   orderId: "",
   recordCode: "REC-1",
+  earlier: [],
   questions: [{ prompt: "Reason", answerType: "free_text", helper: "", required: true }],
 };
 

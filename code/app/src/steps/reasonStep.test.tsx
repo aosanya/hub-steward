@@ -23,6 +23,7 @@ const mayorReason: MemberStep = {
   state: "start",
   orderId: "",
   recordCode: "REC-1",
+  earlier: [],
   questions: [{ prompt: reasonPrompt, answerType: "free_text", helper: "", required: true }],
 };
 

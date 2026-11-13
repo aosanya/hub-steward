@@ -20,6 +20,7 @@ const member = (over: Partial<MemberStep>): MemberStep => ({
   state: "start",
   orderId: "",
   recordCode: "REC-1",
+  earlier: [],
   questions: [{ prompt: "Reason", answerType: "free_text", helper: "", required: true }],
   ...over,
 });
