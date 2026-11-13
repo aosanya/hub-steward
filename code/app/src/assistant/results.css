@@ -3,4 +3,4 @@
 .assistant-results .card .assistant-count { margin: 0; padding: .5rem 1rem; color: var(--ink-soft); font-size: .8125rem; }
 .assistant-results .card .assistant-empty { margin: 1rem auto; }
 .assistant-results .card > .card-body > button { margin: .5rem 1rem 1rem; }
-.assistant-dot { display: inline-block; width: .5rem; height: .5rem; margin-left: .375rem; border-radius: 50%; background: var(--accent); }
+.assistant-dot { display: inline-block; width: .5rem; height: .5rem; margin-left: .375rem; border-radius: var(--r-pill); background: var(--accent); }

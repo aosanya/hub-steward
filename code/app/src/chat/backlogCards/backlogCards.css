@@ -1,3 +1,4 @@
 .rm-stack { flex-direction: column; }
+.rm-btns.rm-stack > .btn + .btn { margin-left: 0; margin-top: -1px; }
 .rm-stack .btn { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
 .rm-pick { font-weight: 600; }

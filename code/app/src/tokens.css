@@ -1,8 +1,8 @@
 :root {
   font-size: 90%;
-  --r-sm: .5rem;
-  --r-md: .875rem;
-  --r-pill: 999px;
+  --r-sm: 0;
+  --r-md: 0;
+  --r-pill: 0;
   --sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
   --bg: #EDF0EC;

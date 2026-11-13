@@ -13,7 +13,7 @@
 .rm-slot { align-self: flex-start; width: 90%; }
 .rm-ttl { font-weight: 600; }
 .rm-line { font-size: .8125rem; color: var(--ink-soft); }
-.rm-btns { display: flex; gap: .5rem; }
+.rm-btns { display: flex; }
 .rm-btns .btn { flex: 1 1 auto; }
 .rm-composer { display: flex; flex-direction: column; gap: .5rem; position: sticky; bottom: 0; padding-top: .5rem; background: var(--bg); }
 .rm-compose-row { display: flex; align-items: center; gap: .5rem; }
