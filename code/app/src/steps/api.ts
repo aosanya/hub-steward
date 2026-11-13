@@ -11,7 +11,7 @@ export type EarlierStep = { stepTitle: string; roleName: string; answers: { prom
 
 export type ApprovalLimit = { amount?: number };
 
-export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string; earlier: EarlierStep[]; approvalLimit?: ApprovalLimit };
+export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string; earlier: EarlierStep[]; approval?: boolean; approvalLimit?: ApprovalLimit };
 
 export type Sent = { done: boolean; next: MemberStep | null; orderId: string };
 
@@ -62,7 +62,7 @@ export const memberStepOf = (raw: any): MemberStep | undefined => {
   const state = stateOf(raw);
   return state === undefined
     ? undefined
-    : { ...stepOf("")(raw), state, orderId: text(raw?.order_id), recordCode: text(raw?.record_code), earlier: earlierOf(raw), ...(approvalLimitOf(raw) ? { approvalLimit: approvalLimitOf(raw) } : {}) };
+    : { ...stepOf("")(raw), state, orderId: text(raw?.order_id), recordCode: text(raw?.record_code), earlier: earlierOf(raw), approval: raw?.approval === true, ...(approvalLimitOf(raw) ? { approvalLimit: approvalLimitOf(raw) } : {}) };
 };
 
 const refusalOf = (status: number): SendRefusal =>

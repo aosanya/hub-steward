@@ -13,6 +13,7 @@ import { Shell } from "../ui/Shell";
 import { openAgencyId } from "../agency/open";
 import { ongoingTab, startTab, tabPathIn } from "../tabs";
 import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type SendRefusal, type StepsClient } from "./api";
+import { ApproveInOwnName } from "./ApproveInOwnName";
 import { AmendDraft } from "./AmendDraft";
 import { amendmentsOf, type Edits } from "./amend";
 import { PublishReport } from "./PublishReport";
@@ -102,6 +103,7 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
         {step.prompt ? <p>{step.prompt}</p> : null}
         <PublishReport formName={step.formName || step.title} client={publisher} />
         {step.earlier.length ? <AmendDraft earlier={step.earlier} edits={edits} onChange={setEdits} /> : null}
+        {step.approval ? <ApproveInOwnName /> : null}
         {questions.map((q) => (
           unsendable(q) ? (
             <div key={q.id}>
@@ -119,7 +121,7 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
       <BottomBar>
         <Button onClick={back}>Back</Button>
         <Button kind="primary" disabled={status === "sending"} onClick={send}>
-          {status === "sending" ? "Sending" : "Send"}
+          {status === "sending" ? "Sending" : step.approval ? "Approve" : "Send"}
         </Button>
       </BottomBar>
     </Shell>

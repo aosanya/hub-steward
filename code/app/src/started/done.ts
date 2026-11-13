@@ -94,6 +94,8 @@ const ordersEnded =
       }),
     );
 
+const approverOf = (raw: any) => text(raw?.answers?.["Approved by"]).trim();
+
 const sentSteps: SourceRead = async (after) => {
   const rows = itemsOf(await callTool("", "agency_list_my_sent_steps", pageArguments(after)));
   return pageOf(
@@ -103,7 +105,7 @@ const sentSteps: SourceRead = async (after) => {
       id: `form-${text(raw?.row_id)}`,
       workflow: workflows.form,
       title: text(raw?.title) || text(raw?.form_name),
-      state: states.sent,
+      state: approverOf(raw) ? `Approved by ${approverOf(raw)}` : states.sent,
       endedAt: text(raw?.sent_at),
       path: "",
     })),
