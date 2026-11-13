@@ -9,20 +9,20 @@ The Files screens let a person read what an agency keeps in its git module: code
 | Question | Answer |
 |---|---|
 | Who gets Files | Any agency that mounts the git module. An agency without git never sees it. |
-| Where is it | A bottom-bar tab called Files, beside Backlogs, Chat and the assistant, shown only when the agency mounts git |
-| How the app knows | `agency_list_modules`, the read every existing tab already uses ([tabs.html](../../mockups/app/tabs.html)). The tab shows when the list carries the module with code `git` switched on. |
+| Where is it | An option called Files on Home, beside Start, Ongoing and Backlogs, shown only when the agency mounts git, as Backlogs is shown only when the task module is on. The bottom bar is unchanged (Home, Chat, Notifications): there is no Files tab |
+| How the app knows | `agency_list_modules`, the read Home already uses to decide its options ([tabs.html](../../mockups/app/tabs.html)). The Files option shows when the list carries the module with code `git` switched on, and is left out otherwise, so the check fails closed. |
 
-The module catalog has a `git` module (code `git`). The agency repo's tests find the module by that code in a draft; the live read of an agency without a draft id answered an empty list on 2026-11-02 ([app-agency-trace.md](../app-agency-trace.md), question 11), so the Files tab would not show there until that read is settled.
+The module catalog has a `git` module (code `git`). The agency repo's tests find the module by that code in a draft; the live read of an agency without a draft id answered an empty list on 2026-11-02 ([app-agency-trace.md](../app-agency-trace.md), question 11), so the Files option would not show there until that read is settled.
 
-Who may call the git tools is a separate gate. The forms git mount answers owners and agents only; a resident, a non-member or an unknown agency gets 404, and whether residents may read it is still an open owner question ([forms-git-mount.md](../../../../../../mwanachama-wakala-api/documentation/2.%20design/forms-git-mount.md)). Until it is answered, a resident would see a Files tab that cannot open anything.
+Who may call the git tools is a separate gate. The forms git mount answers owners and agents only; a resident, a non-member or an unknown agency gets 404, and whether residents may read it is still an open owner question ([forms-git-mount.md](../../../../../../mwanachama-wakala-api/documentation/2.%20design/forms-git-mount.md)). Until it is answered, a resident would see a Files option on Home that cannot open anything.
 
 ## The screens
 
 | # | Screen | What it shows | Tool |
 |---|---|---|---|
-| 1 | Files tab | The tab in the bottom bar, on when the agency mounts git | `agency_list_modules` |
-| 2 | Folders list | One row for each Folder: its name and "Changed 2 hours ago" | `forms_git_repository_list`, then `forms_git_commit_log` for each row |
-| 3 | A Folder's top level | The folders and files at the top, then the README text under the list, nothing else | `forms_git_directory_list`, `forms_git_file_read` for the README |
+| 1 | Home with Files | Home with the Files option beside Start, Ongoing and Backlogs, shown when the agency mounts git. The bottom bar is Home, Chat, Notifications, with no Files tab | `agency_list_modules` |
+| 2 | Folders list | One row for each Folder: its name and "Changed 2 hours ago". Back goes to Home, which stays chosen in the bottom bar | `forms_git_repository_list`, then `forms_git_commit_log` for each row |
+| 3 | A Folder's top level | The folders and files at the top, then the README text under the list, nothing else. Back goes to the Folders list | `forms_git_directory_list`, `forms_git_file_read` for the README |
 | 4 | A folder inside a folder | The same list one level down; Back, or a breadcrumb of the folder names above | `forms_git_directory_list` |
 | 5 | A code file | The name, one line "Changed 2 hours ago by Agent One", then the text highlighted with line numbers | `forms_git_file_read`, `forms_git_commit_log` |
 | 6 | A document file | The same name and line, then the text rendered as a page | `forms_git_file_read`, `forms_git_commit_log` |
@@ -98,3 +98,4 @@ Other documents (word processor, spreadsheet, PDF) are not in this design and fa
 | Editing | Read only; no write, delete or upload |
 | Branches | The default branch is always the one read, and is never named |
 | Merge requests, tags, import | Not screens of this app |
+| A Files tab | The bottom bar is unchanged: Home, Chat, Notifications. The assistant is a screen inside Chat, not a tab |
