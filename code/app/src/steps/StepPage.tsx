@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import type { FormQuestion } from "../forms/api";
+import { CouncilViewLink } from "../council/CouncilViewLink";
 import { QuestionInput } from "../forms/QuestionInput";
 import { useLoad } from "../forms/useLoad";
 import { clearDraft, filled, given, loadDraft, saveDraft, stepDraftKey, type Draft, type Given } from "../pages/forms/answers";
@@ -102,6 +103,7 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
       <Card>
         {step.description ? <p>{step.description}</p> : null}
         {step.prompt ? <p>{step.prompt}</p> : null}
+        <CouncilViewLink step={step} />
         <PublishReport formName={step.formName || step.title} client={publisher} />
         {step.earlier.length ? <AmendDraft earlier={step.earlier} edits={edits} onChange={setEdits} /> : null}
         <ApprovalLimitNote limit={step.approvalLimit} />

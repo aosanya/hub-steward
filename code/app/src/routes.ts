@@ -64,6 +64,8 @@ export const routes = {
   risks: screen("/risks"),
   risk: screen("/risks/:riskId"),
   riskEvidence: screen("/risks/:riskId/safeguards/:barrierId/evidence"),
+  lateMatters: screen("/council/late-matters"),
+  councilRisks: screen("/council/risks"),
 };
 
 export const allScreens: AgencyScreen[] = Object.values(routes);

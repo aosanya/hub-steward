@@ -11,6 +11,8 @@ import { LanguagePage } from "./account/LanguagePage";
 import { ProfilePage } from "./account/ProfilePage";
 import { SignOutPage } from "./account/SignOutPage";
 import { NotificationsPage } from "./pages/NotificationsPage";
+import { CouncilRisksPage } from "./council/CouncilRisksPage";
+import { LateMattersPage } from "./council/LateMattersPage";
 import { EvidencePage } from "./risks/EvidencePage";
 import { RiskPage } from "./risks/RiskPage";
 import { RisksPage } from "./risks/RisksPage";
@@ -119,6 +121,8 @@ export function App() {
         <Route path={routes.risks.pattern} element={<RisksPage />} />
         <Route path={routes.risk.pattern} element={<RiskPage />} />
         <Route path={routes.riskEvidence.pattern} element={<EvidencePage />} />
+        <Route path={routes.lateMatters.pattern} element={<LateMattersPage />} />
+        <Route path={routes.councilRisks.pattern} element={<CouncilRisksPage />} />
       </Route>
       {allScreens.map((screen) => (
         <Route key={screen.retired} path={screen.retired} element={<ToOpenAgencyScreen screen={screen} />} />
