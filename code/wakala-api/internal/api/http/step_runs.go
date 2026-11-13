@@ -205,11 +205,14 @@ func (d *Deps) mcpSubmitStepAnswers(ctx context.Context, _ *mcp.CallToolRequest,
 }
 
 func writeStepErr(w http.ResponseWriter, err error) {
+	var aboveLimit approvalAboveLimitError
 	switch {
 	case errors.Is(err, errStepNotFound):
 		writeErr(w, http.StatusNotFound, err.Error())
 	case errors.Is(err, errStepNotWaiting), errors.Is(err, errStepNoRegister):
 		writeErr(w, http.StatusConflict, err.Error())
+	case errors.As(err, &aboveLimit):
+		writeErr(w, http.StatusUnprocessableEntity, err.Error())
 	default:
 		writeRecordErr(w, err)
 	}
@@ -397,6 +400,9 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	}
 	answers, err := resolveStepAnswers(chain[index].record.Questions, req.Answers)
 	if err != nil {
+		return stepAnswersResult{}, err
+	}
+	if err := d.refuseAmountAboveLimit(ctx, instanceID, chain[index].record.Questions, answers); err != nil {
 		return stepAnswersResult{}, err
 	}
 	if isApprovalStep(step) {

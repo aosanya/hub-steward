@@ -38,6 +38,18 @@ func largestLimitOf(seats []mwanachamaactor.ActorRoleAssignment) *stepApprovalLi
 	return &stepApprovalLimit{Amount: largest}
 }
 
+func (d *Deps) callerApprovalLimit(ctx context.Context, instanceID string) (*stepApprovalLimit, error) {
+	directory, err := d.Registry.ActorManager(ctx, instanceID)
+	if err != nil {
+		return nil, err
+	}
+	seats, err := directory.ListRoleAssignmentsForActor(ctx, accounts.IDFromContext(ctx), true)
+	if err != nil {
+		return nil, err
+	}
+	return largestLimitOf(seats), nil
+}
+
 func (d *Deps) showApprovalLimits(ctx context.Context, instanceID string, items []openStep) error {
 	var limit *stepApprovalLimit
 	for i := range items {
@@ -45,15 +57,11 @@ func (d *Deps) showApprovalLimits(ctx context.Context, instanceID string, items 
 			continue
 		}
 		if limit == nil {
-			directory, err := d.Registry.ActorManager(ctx, instanceID)
+			var err error
+			limit, err = d.callerApprovalLimit(ctx, instanceID)
 			if err != nil {
 				return err
 			}
-			seats, err := directory.ListRoleAssignmentsForActor(ctx, accounts.IDFromContext(ctx), true)
-			if err != nil {
-				return err
-			}
-			limit = largestLimitOf(seats)
 		}
 		shown := *limit
 		items[i].ApprovalLimit = &shown
