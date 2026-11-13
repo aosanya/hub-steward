@@ -47,6 +47,15 @@ Decided with the owner on 2026-11-13. A step that asks the member to approve in 
 - **Who sees it next.** The next role's `earlier` and `agency_list_my_sent_steps` carry both answers.
 - **Before it can be seen.** wakala-api and the app need a restart, and the approving member's actor needs a display name.
 
+## The approval limit on a step
+
+Added with MUN795. A step question can carry `checks_approval_limit`, and the server then holds the sender to the limit written to their role.
+
+- **The question.** A currency question with `checks_approval_limit: true` (`StepQuestion.ChecksApprovalLimit`), such as the municipality template's WI-56-6 "What amount are you approving, in forints?".
+- **What the member sees.** The open step carries `approval_limit {amount?}` in `my-open-steps` and `agency_list_my_open_steps` (`step_approval_limit.go`). The step page shows it in `ApprovalLimitNote.tsx`. No amount means no limit is written to any of the member's seats.
+- **What the server refuses.** A send whose amount is above the limit is answered 422 `The amount 720 000 Ft is above the limit of 500 000 Ft written to your role. Another role must approve it.` A non-numeric or negative amount is answered 400 (`step_approval_refusal.go`). The app shows the 422 sentence as it is and keeps the answers (`overLimitRefusal.ts`).
+- **Which limit.** The largest active seat limit of the session's caller, never a figure in the request. Limits are written with `actor_set_approval_limit`.
+
 ## Not yet built
 
 - A question answered with a photo or a file: the step page cannot send one. A required photo or file question stops the send with a sentence saying so.
