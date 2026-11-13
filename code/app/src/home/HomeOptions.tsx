@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { hasModule, mcpAgencyClient, taskModule, type AgencyClient } from "../agency/modules";
 import { openAgencyId } from "../agency/open";
+import { askMayRead } from "../backlogs/access";
 import { allIssuesId, mcpBacklogsClient, type Backlog, type BacklogsClient } from "../backlogs/api";
 import { boardPath } from "../backlogs/paths";
 import { mcpStartClient, type StartClient } from "../coordinator/start/api";
@@ -19,6 +20,7 @@ type Props = {
   start?: Pick<StartClient, "openSteps">;
   steps?: Pick<StepsClient, "available">;
   backlogs?: Pick<BacklogsClient, "backlogs">;
+  mayRead?: () => Promise<boolean>;
 };
 
 const holdsWorkflows = async (start: Props["start"] & {}, steps: Props["steps"] & {}) => {
@@ -28,10 +30,11 @@ const holdsWorkflows = async (start: Props["start"] & {}, steps: Props["steps"] 
   return held;
 };
 
-const visibleBacklogs = async (agency: AgencyClient, backlogs: Props["backlogs"] & {}): Promise<Backlog[]> => {
+const visibleBacklogs = async (agency: AgencyClient, backlogs: Props["backlogs"] & {}, mayRead: Props["mayRead"] & {}): Promise<Backlog[]> => {
   const view = await agency.read();
   if (view.modulesUnread) throw new Error("modules unread");
-  return hasModule(view, taskModule) ? backlogs.backlogs() : [];
+  if (!hasModule(view, taskModule)) return [];
+  return (await mayRead()) ? backlogs.backlogs() : [];
 };
 
 const lastOpenedFirst = (rows: Backlog[]) => {
@@ -41,12 +44,12 @@ const lastOpenedFirst = (rows: Backlog[]) => {
 
 const pathOf = (row: Backlog) => (row.kind === "smart" ? smartBacklogPath(row.id) : boardPath(row.id));
 
-export function HomeOptions({ agency = mcpAgencyClient, start = mcpStartClient, steps = mcpStepsClient, backlogs = mcpBacklogsClient }: Props) {
+export function HomeOptions({ agency = mcpAgencyClient, start = mcpStartClient, steps = mcpStepsClient, backlogs = mcpBacklogsClient, mayRead = askMayRead }: Props) {
   const navigate = useNavigate();
   const agencyId = openAgencyId();
   const [attempt, setAttempt] = useState(0);
   const workflows = useLoad(() => holdsWorkflows(start, steps), `home-workflows:${agencyId}:${attempt}`);
-  const held = useLoad(() => visibleBacklogs(agency, backlogs), `home-backlogs:${agencyId}:${attempt}`);
+  const held = useLoad(() => visibleBacklogs(agency, backlogs, mayRead), `home-backlogs:${agencyId}:${attempt}`);
   const retry = () => setAttempt(attempt + 1);
   if (workflows.state === "loading" || held.state === "loading") return null;
   const hasWorkflows = workflows.state === "ready" && workflows.data;

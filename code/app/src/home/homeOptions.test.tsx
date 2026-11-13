@@ -13,7 +13,7 @@ const step = { id: "s1", title: "Report", formName: "Report", roleName: "Farmer"
 
 const backlog = (id: string, name: string, over: Partial<Backlog> = {}): Backlog => ({ id, name, steps: ["to-do", "done"], issues: 2, ...over });
 
-type Setup = { codes?: string[]; unread?: boolean; open?: StartStep[]; available?: MemberStep[]; backlogs?: Backlog[]; backlogsFail?: boolean; agencyFail?: boolean };
+type Setup = { codes?: string[]; unread?: boolean; open?: StartStep[]; available?: MemberStep[]; backlogs?: Backlog[]; backlogsFail?: boolean; agencyFail?: boolean; noAccess?: boolean; rolesFail?: boolean };
 
 const view = ({ codes = ["taskmanager"], unread = false }: Setup): AgencyView => ({ name: "Alego", modules: codes.map((code) => ({ code, name: code })), ...(unread ? { modulesUnread: true } : {}) });
 
@@ -24,7 +24,7 @@ const Where = () => {
   return null;
 };
 
-const show = (setup: Setup = {}) =>
+const show = (setup: Setup = {}, backlogsRead = vi.fn(async () => setup.backlogs ?? [])) =>
   render(
     <MemoryRouter initialEntries={["/a/alego/home"]}>
       <HomeOptions
@@ -34,9 +34,13 @@ const show = (setup: Setup = {}) =>
         backlogs={{
           backlogs: async () => {
             if (setup.backlogsFail) throw new Error("no");
-            return setup.backlogs ?? [];
+            return backlogsRead();
           },
         } as never}
+        mayRead={async () => {
+          if (setup.rolesFail) throw new Error("no");
+          return !setup.noAccess;
+        }}
       />
       <Where />
     </MemoryRouter>,
@@ -113,10 +117,29 @@ describe("Home options", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
+  it("leaves out Backlogs, without a failure line and without reading them, when the member may not read backlogs", async () => {
+    const backlogsRead = vi.fn(async (): Promise<Backlog[]> => Promise.reject(new Error("agencies: instance not found")));
+    show({ open: [step], backlogs: [backlog("b1", "Backlog")], noAccess: true }, backlogsRead);
+    await screen.findByText("Start");
+    await waitFor(() => expect(titles()).toEqual(["Start", "Ongoing"]));
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(backlogsRead).not.toHaveBeenCalled();
+  });
+
+  it("shows nothing, without a failure line, when the member has no workflows and may not read backlogs", async () => {
+    const backlogsRead = vi.fn(async (): Promise<Backlog[]> => Promise.reject(new Error("agencies: instance not found")));
+    const { container } = show({ backlogs: [backlog("b1", "Backlog")], noAccess: true }, backlogsRead);
+    await waitFor(() => expect(container.querySelector(".rows")).toBeNull());
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(backlogsRead).not.toHaveBeenCalled();
+  });
+
   it.each([
     ["the backlogs cannot be read", { backlogsFail: true }],
     ["the agency's modules could not be read", { unread: true, backlogs: [backlog("b1", "Backlog")] }],
     ["the agency cannot be read", { agencyFail: true }],
+    ["the member's roles cannot be read", { rolesFail: true, backlogs: [backlog("b1", "Backlog")] }],
   ] as [string, Setup][])("says Backlogs could not be loaded, with Try again, when %s, and keeps Start and Ongoing", async (_name, setup) => {
     show({ open: [step], ...setup });
     expect(await screen.findByRole("alert")).toHaveTextContent("Backlogs could not be loaded.");
@@ -127,7 +150,7 @@ describe("Home options", () => {
   it("says Start and Ongoing could not be loaded when both workflow reads fail, never that there are none", async () => {
     render(
       <MemoryRouter>
-        <HomeOptions agency={{ read: async () => view({}) }} start={{ openSteps: async () => Promise.reject(new Error("no")) }} steps={{ available: async () => Promise.reject(new Error("no")) }} backlogs={{ backlogs: async () => [] } as never} />
+        <HomeOptions agency={{ read: async () => view({}) }} start={{ openSteps: async () => Promise.reject(new Error("no")) }} steps={{ available: async () => Promise.reject(new Error("no")) }} backlogs={{ backlogs: async () => [] } as never} mayRead={async () => true} />
       </MemoryRouter>,
     );
     expect(await screen.findByRole("alert")).toHaveTextContent("Start and Ongoing could not be loaded.");
@@ -139,7 +162,7 @@ describe("Home options", () => {
     const read = vi.fn(async () => (down ? Promise.reject(new Error("no")) : [backlog("b1", "Backlog")]));
     render(
       <MemoryRouter>
-        <HomeOptions agency={{ read: async () => view({}) }} start={{ openSteps: async () => [step] }} steps={{ available: async () => [] }} backlogs={{ backlogs: read } as never} />
+        <HomeOptions agency={{ read: async () => view({}) }} start={{ openSteps: async () => [step] }} steps={{ available: async () => [] }} backlogs={{ backlogs: read } as never} mayRead={async () => true} />
       </MemoryRouter>,
     );
     await screen.findByRole("alert");
