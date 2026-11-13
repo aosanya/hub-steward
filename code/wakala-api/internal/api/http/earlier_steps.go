@@ -31,6 +31,11 @@ func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymode
 				answers = append(answers, earlierAnswer{Prompt: q.Prompt, Answer: text})
 			}
 		}
+		for _, prompt := range []string{stampedByPrompt, stampedAtPrompt} {
+			if text := run.answers[i][prompt]; text != "" {
+				answers = append(answers, earlierAnswer{Prompt: prompt, Answer: text})
+			}
+		}
 		if len(answers) == 0 {
 			continue
 		}

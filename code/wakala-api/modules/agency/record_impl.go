@@ -177,7 +177,7 @@ func validateRowAnswers(questions []models.StepQuestion, answers map[string]stri
 		asked[q.Prompt] = q
 	}
 	for prompt := range answers {
-		if _, ok := asked[prompt]; !ok && !strings.HasPrefix(prompt, amendmentPromptPrefix) {
+		if _, ok := asked[prompt]; !ok && !isApprovalStampPrompt(prompt) && !strings.HasPrefix(prompt, amendmentPromptPrefix) {
 			return invalidRow("%q is not a question of the form", prompt)
 		}
 	}

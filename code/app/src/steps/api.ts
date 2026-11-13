@@ -9,7 +9,9 @@ export type StepState = "start" | "waiting";
 
 export type EarlierStep = { stepTitle: string; roleName: string; answers: { prompt: string; answer: string }[] };
 
-export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string; earlier: EarlierStep[] };
+export type ApprovalLimit = { amount?: number };
+
+export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string; earlier: EarlierStep[]; approvalLimit?: ApprovalLimit };
 
 export type Sent = { done: boolean; next: MemberStep | null; orderId: string };
 
@@ -50,11 +52,17 @@ const earlierOf = (raw: any): EarlierStep[] =>
     answers: (Array.isArray(entry?.answers) ? entry.answers : []).map((a: any) => ({ prompt: text(a?.prompt), answer: text(a?.answer) })),
   }));
 
+const approvalLimitOf = (raw: any): ApprovalLimit | undefined => {
+  const limit = raw?.approval_limit;
+  if (typeof limit !== "object" || limit === null || Array.isArray(limit)) return undefined;
+  return typeof limit.amount === "number" && Number.isFinite(limit.amount) ? { amount: limit.amount } : {};
+};
+
 export const memberStepOf = (raw: any): MemberStep | undefined => {
   const state = stateOf(raw);
   return state === undefined
     ? undefined
-    : { ...stepOf("")(raw), state, orderId: text(raw?.order_id), recordCode: text(raw?.record_code), earlier: earlierOf(raw) };
+    : { ...stepOf("")(raw), state, orderId: text(raw?.order_id), recordCode: text(raw?.record_code), earlier: earlierOf(raw), ...(approvalLimitOf(raw) ? { approvalLimit: approvalLimitOf(raw) } : {}) };
 };
 
 const refusalOf = (status: number): SendRefusal =>

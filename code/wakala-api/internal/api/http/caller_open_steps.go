@@ -29,6 +29,7 @@ type openStep struct {
 	OrderID       string                      `json:"order_id,omitempty"`
 	RecordCode    string                      `json:"record_code,omitempty"`
 	Earlier       []earlierStep               `json:"earlier,omitempty"`
+	Approval      bool                        `json:"approval,omitempty"`
 	ApprovalLimit *stepApprovalLimit          `json:"approval_limit,omitempty"`
 }
 
@@ -58,7 +59,7 @@ func (d *Deps) registerCallerOpenStepsMCPTool(server *mcp.Server) {
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        "agency_list_my_open_steps",
 		Title:       "List My Open Steps",
-		Description: "List the live workflow steps whose role the caller holds in this agency: step id, title, the work item's prompt, kind, workflow id, name and opens_in (chat or form), role, form name and the form's questions with their answer types. Members only. With available true it lists only the form steps the caller can act on now.",
+		Description: "List the live workflow steps whose role the caller holds in this agency: step id, title, the work item's prompt, kind, workflow id, name and opens_in (chat or form), role, form name and the form's questions with their answer types. Members only. A step the member approves in their own name carries approval true; sending it stores who approved and when. With available true it lists only the form steps the caller can act on now.",
 	}, d.mcpListMyOpenSteps)
 }
 
@@ -131,7 +132,7 @@ func (d *Deps) callerOpenSteps(ctx context.Context, instanceID string) (openStep
 		workflow := workflows[s.WorkflowID]
 		items = append(items, openStep{
 			ID: s.ID, Title: s.Title, Description: s.Description, Prompt: s.Prompt, Kind: string(s.Kind), WorkflowID: s.WorkflowID, WorkflowName: workflow.Name, OpensIn: opensInOf(workflow),
-			RoleID: role.ID, RoleName: role.Name, FormName: s.FormName, Questions: questions,
+			RoleID: role.ID, RoleName: role.Name, FormName: s.FormName, Questions: questions, Approval: isApprovalStep(s),
 		})
 	}
 	if err := d.showApprovalLimits(ctx, instanceID, items); err != nil {

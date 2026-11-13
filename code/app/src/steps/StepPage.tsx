@@ -15,6 +15,8 @@ import { ongoingTab, startTab, tabPathIn } from "../tabs";
 import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type SendRefusal, type StepsClient } from "./api";
 import { AmendDraft } from "./AmendDraft";
 import { amendmentsOf, type Edits } from "./amend";
+import { PublishReport } from "./PublishReport";
+import type { PublishClient } from "./publishApi";
 import { answersOf, formQuestionsOf, unsendable } from "./questions";
 import { afterWords, markSent } from "./sent";
 
@@ -27,7 +29,7 @@ const problemOf = (q: FormQuestion, draft: Draft) => {
   return "";
 };
 
-export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
+export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsClient; publisher?: PublishClient }) {
   const navigate = useNavigate();
   const { stepId = "" } = useParams();
   const [params] = useSearchParams();
@@ -98,6 +100,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
       <Card>
         {step.description ? <p>{step.description}</p> : null}
         {step.prompt ? <p>{step.prompt}</p> : null}
+        <PublishReport formName={step.formName || step.title} client={publisher} />
         {step.earlier.length ? <AmendDraft earlier={step.earlier} edits={edits} onChange={setEdits} /> : null}
         {questions.map((q) => (
           unsendable(q) ? (

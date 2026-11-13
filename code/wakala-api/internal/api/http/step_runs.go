@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"maps"
 	"net/http"
 	"slices"
 	"sort"
@@ -191,7 +192,7 @@ func (d *Deps) registerSubmitStepAnswersMCPTool(server *mcp.Server) {
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        submitStepAnswersTool,
 		Title:       "Submit a Step's Answers",
-		Description: "Send the answers to a live workflow step's form. Only a member who holds the step's role may send it. The answers are checked against the step's questions and saved as a row of the step's register; the first step of a workflow starts a new run (leave order_id empty) and returns its order_id, and the next step of that run, held by another role, then appears in that role's agency_list_my_open_steps with available true.",
+		Description: "Send the answers to a live workflow step's form. Only a member who holds the step's role may send it. The answers are checked against the step's questions and saved as a row of the step's register (an approval step also stores the sender's name as Approved by and the time as Approved at, which cannot be answered); the first step of a workflow starts a new run (leave order_id empty) and returns its order_id, and the next step of that run, held by another role, then appears in that role's agency_list_my_open_steps with available true.",
 	}, d.mcpSubmitStepAnswers)
 }
 
@@ -391,9 +392,19 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	if index < 0 {
 		return stepAnswersResult{}, errStepNoRegister
 	}
+	if err := refuseStampedPrompts(req.Answers); err != nil {
+		return stepAnswersResult{}, err
+	}
 	answers, err := resolveStepAnswers(chain[index].record.Questions, req.Answers)
 	if err != nil {
 		return stepAnswersResult{}, err
+	}
+	if isApprovalStep(step) {
+		stamp, err := d.approvalStamp(ctx, instanceID)
+		if err != nil {
+			return stepAnswersResult{}, err
+		}
+		maps.Copy(answers, stamp)
 	}
 	if req.OrderID != "" && index > 0 {
 		release := d.stepSendLocks().acquire(instanceID + "\x00" + req.OrderID)
@@ -485,7 +496,7 @@ func nextStepOf(ctx context.Context, m mwanachamaagency.AgencyManager, draftID s
 		ID: link.step.ID, Title: link.step.Title, Description: link.step.Description, Prompt: link.step.Prompt, Kind: string(link.step.Kind), WorkflowID: link.step.WorkflowID,
 		WorkflowName: workflows[link.step.WorkflowID].Name, OpensIn: opensInOf(workflows[link.step.WorkflowID]),
 		RoleID: link.record.RoleID, FormName: link.step.FormName, Questions: link.step.Questions,
-		State: stepStateWaiting, OrderID: orderID, RecordCode: link.record.Code,
+		State: stepStateWaiting, OrderID: orderID, RecordCode: link.record.Code, Approval: isApprovalStep(link.step),
 	}
 	for _, r := range roles {
 		if r.ID == link.record.RoleID {
