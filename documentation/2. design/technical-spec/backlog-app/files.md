@@ -99,3 +99,38 @@ Other documents (word processor, spreadsheet, PDF) are not in this design and fa
 | Branches | The default branch is always the one read, and is never named |
 | Merge requests, tags, import | Not screens of this app |
 | A Files tab | The bottom bar is unchanged: Home, Chat, Notifications. The assistant is a screen inside Chat, not a tab |
+
+## Wide window
+
+Drawn in [wide.html](../../mockups/app/wide.html) 9 to 12: the Folders and a Folder's top level (9), a code file (10), a document file (11) and an empty Folder (12). Phone: [files.html](../../mockups/app/files.html).
+
+### What changes
+
+| Part | Phone | Wide window (from 48rem) |
+|---|---|---|
+| Folders list and an open Folder | Two screens: the Folders list, then a tap opens the Folder | One screen. The Folders are a list at the left, one row for each with its name and "Changed 2 hours ago"; the open Folder shows its folders under its name. The Folder at the right is open when the window opens, the first one, so the right side is never empty |
+| A file | Opens in place of the list, with Back to its Folder | Opens at the right; the Folders list stays at the left with the file's Folder marked |
+| A code file | The text scrolls sideways for a long line | The viewer takes the whole right side, so an ordinary line shows whole. A line longer than the viewer still scrolls sideways and the line numbers stay |
+| A document | The rendered page fills the width | The page keeps a reading width of `70ch` at the left of the right side; the name and the Changed line are not held to it |
+| An empty Folder | The card with Back to Folders | The same card, held to a width of at most 28rem |
+| Layout | One column | A wrapping flex row: the Folders `flex: 0 1 15rem`, the open side `flex: 1 1 24rem`, inside the window's margin of `clamp(1rem, 3vw, 2rem)` |
+| Bottom bar | Home, Chat, Notifications | The same, as on every wide screen. Files is an option on Home, not in the bar |
+
+Below 48rem the window is the phone's, with the two screens and no list beside the Folder.
+
+### What does not change
+
+| Part | Same on the wide window |
+|---|---|
+| Calls | The same four tools: `forms_git_repository_list` and `forms_git_commit_log` for the Folders list, `forms_git_directory_list` for the folders and files, `forms_git_file_read` for a file and the README, `forms_git_commit_log` for the Changed line. The list beside the Folder asks for nothing the phone does not: the open Folder's list is the call that fills both the tree and the right side |
+| Words | Folders, Folder, file, "Changed 2 hours ago by Agent One". Never repository, branch, commit, diff or merge request |
+| Viewers | Chosen by the file's `extension` and `encoding`, as in the table above: code highlighted with line numbers, Markdown and other text documents rendered as a page |
+| What a file shows | Its current text and the one Changed line. No history, no diff |
+| Read only | No write, delete or upload |
+| Who sees Files | Only an agency that mounts the git module |
+
+### Left open
+
+| Question | Why it is open |
+|---|---|
+| Back to Folders on a wide empty Folder | The Folders list is already at the left of the card, so whether the act is still wanted there is not decided |
