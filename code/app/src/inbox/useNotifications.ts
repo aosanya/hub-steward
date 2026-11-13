@@ -119,9 +119,7 @@ export function useNotifications(client: InboxClient = mcpInboxClient) {
     return true;
   };
 
-  const markAllRead = () => markIdsRead(unreadOf(current).map((n) => n.id));
-
   const markOneRead = (id: string) => markOne(client, id);
 
-  return { items, failed, outage, retry, markAllRead, markIdsRead, markOneRead };
+  return { items, failed, outage, retry, markIdsRead, markOneRead };
 }

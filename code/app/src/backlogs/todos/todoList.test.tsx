@@ -6,7 +6,7 @@ import { TodoList } from "./TodoList";
 import type { TodosClient } from "./api";
 import type { Todo } from "./todoTree";
 
-const todo = (number: number, over: Partial<Todo> = {}): Todo => ({ id: `t${number}`, number, title: `Piece ${number} title`, status: "pending", waitsOn: [], blockedReason: "", ...over });
+const todo = (number: number, over: Partial<Todo> = {}): Todo => ({ id: `t${number}`, number, title: `Piece ${number} title`, description: "", status: "pending", waitsOn: [], blockedReason: "", ...over });
 
 const cleanup: Todo[] = [
   todo(1, { status: "completed" }),
@@ -30,6 +30,13 @@ describe("the todo list of an issue", () => {
     show(clientOf(() => new Promise(() => {})));
     expect(screen.getByText("Todo list")).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("Loading");
+  });
+
+  it("shows the description of a piece under its title, and nothing for a piece without one", async () => {
+    show(clientOf(async () => [todo(1, { description: "Output: v2/script.md." }), todo(2)]));
+    await screen.findByText("Piece 1 title");
+    expect(within(rowOf("Piece 1 title")).getByText("Output: v2/script.md.")).toBeInTheDocument();
+    expect(rowOf("Piece 2 title").querySelector(".details")).toBeNull();
   });
 
   it("reads the pieces of the issue it sits on", async () => {

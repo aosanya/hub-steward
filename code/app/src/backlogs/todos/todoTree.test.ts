@@ -1,6 +1,6 @@
 import { countOf, statusOf, treeOf, type Todo } from "./todoTree";
 
-const todo = (number: number, over: Partial<Todo> = {}): Todo => ({ id: `t${number}`, number, title: `Piece ${number}`, status: "pending", waitsOn: [], blockedReason: "", ...over });
+const todo = (number: number, over: Partial<Todo> = {}): Todo => ({ id: `t${number}`, number, title: `Piece ${number}`, description: "", status: "pending", waitsOn: [], blockedReason: "", ...over });
 
 const cleanup = [
   todo(1, { status: "completed" }),

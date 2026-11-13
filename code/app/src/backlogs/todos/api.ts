@@ -37,6 +37,7 @@ export const todoOf = (raw: any): Todo => ({
   id: text(raw?.id),
   number: typeof raw?.ordinality === "number" ? raw.ordinality : 0,
   title: text(raw?.title),
+  description: text(raw?.description).trim(),
   status: text(raw?.status),
   waitsOn: Array.isArray(raw?.depends_on) ? raw.depends_on.filter((id: unknown): id is string => typeof id === "string" && id !== "") : [],
   blockedReason: text(raw?.blocked_reason),

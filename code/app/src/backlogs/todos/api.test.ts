@@ -25,10 +25,14 @@ describe("the todos client", () => {
 
   it("keeps the number, the status, the ids it waits on and the reason of each todo", () => {
     expect(todosOf(reply)).toEqual([
-      { id: "a", number: 1, title: "First", status: "completed", waitsOn: [], blockedReason: "" },
-      { id: "b", number: 2, title: "Second", status: "dispatched", waitsOn: ["a"], blockedReason: "" },
-      { id: "c", number: 3, title: "Third", status: "blocked", waitsOn: ["a"], blockedReason: "Waiting for the owner." },
+      { id: "a", number: 1, title: "First", description: "", status: "completed", waitsOn: [], blockedReason: "" },
+      { id: "b", number: 2, title: "Second", description: "", status: "dispatched", waitsOn: ["a"], blockedReason: "" },
+      { id: "c", number: 3, title: "Third", description: "", status: "blocked", waitsOn: ["a"], blockedReason: "Waiting for the owner." },
     ]);
+  });
+
+  it("keeps the description of a todo without the blank lines around it", () => {
+    expect(todosOf({ items: [{ id: "a", ordinality: 1, title: "First", description: "\nOutput: v2/script.md.\n" }] })[0].description).toBe("Output: v2/script.md.");
   });
 
   it("reads an issue with no todos as an empty list", () => {

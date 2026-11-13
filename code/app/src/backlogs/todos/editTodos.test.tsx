@@ -6,7 +6,7 @@ import { TodoList } from "./TodoList";
 import type { TodosClient } from "./api";
 import type { Todo } from "./todoTree";
 
-const todo = (number: number, over: Partial<Todo> = {}): Todo => ({ id: `t${number}`, number, title: `Piece ${number} title`, status: "pending", waitsOn: [], blockedReason: "", ...over });
+const todo = (number: number, over: Partial<Todo> = {}): Todo => ({ id: `t${number}`, number, title: `Piece ${number} title`, description: "", status: "pending", waitsOn: [], blockedReason: "", ...over });
 
 const pieces: Todo[] = [todo(1, { status: "completed" }), todo(2, { waitsOn: ["t1"] }), todo(3, { waitsOn: ["t2"] }), todo(4, { waitsOn: ["t1"] })];
 

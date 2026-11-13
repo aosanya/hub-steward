@@ -27,7 +27,7 @@ const backlogs: BacklogsClient = { backlogs: async () => [], issues: async () =>
 
 const notes: NotesClient = { notes: async () => [], addNote: async () => Promise.reject(new Error("unused")) };
 
-const todo = (number: number, over: Partial<Todo> = {}): Todo => ({ id: `t${number}`, number, title: `Piece ${number} title`, status: "pending", waitsOn: [], blockedReason: "", ...over });
+const todo = (number: number, over: Partial<Todo> = {}): Todo => ({ id: `t${number}`, number, title: `Piece ${number} title`, description: "", status: "pending", waitsOn: [], blockedReason: "", ...over });
 
 const open = (todos: TodosClient) => {
   openAgency({ id: "hub-1", name: "Hub" } as never);

@@ -4,6 +4,7 @@ export type Todo = {
   id: string;
   number: number;
   title: string;
+  description: string;
   status: string;
   waitsOn: string[];
   blockedReason: string;

@@ -43,6 +43,7 @@ export function TodoRow({ row, editing }: { row: TodoRowData; editing?: Editing 
         end={editing ? <ActionsMenu icon="⋯" label={`Piece ${row.todo.number} menu`} actions={actions} /> : undefined}
         below={
           <>
+            {row.todo.description ? <span className="details">{row.todo.description}</span> : null}
             <span className="todo-meta">
               <Chip tone={stateTones[state]}>{stateWords[state]}</Chip>
               {row.waitsOn.length > 0 ? <span className="line">waits on {row.waitsOn.join(", ")}</span> : null}

@@ -1,7 +1,7 @@
 import { refusalOf, waitChoices, waitingOn } from "./todoEdit";
 import type { Todo } from "./todoTree";
 
-const todo = (number: number, waitsOn: string[] = []): Todo => ({ id: `t${number}`, number, title: `Piece ${number}`, status: "pending", waitsOn, blockedReason: "" });
+const todo = (number: number, waitsOn: string[] = []): Todo => ({ id: `t${number}`, number, title: `Piece ${number}`, description: "", status: "pending", waitsOn, blockedReason: "" });
 
 const chain = [todo(1), todo(2, ["t1"]), todo(3, ["t2"]), todo(4, ["t3"]), todo(5)];
 
