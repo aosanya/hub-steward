@@ -164,7 +164,7 @@ Other documents (word processor, spreadsheet, PDF) are not in this design and fa
 
 ## Wide window
 
-Drawn in [wide.html](../../mockups/app/wide.html) 9 to 12: the Folders and a Folder's top level (9), a code file (10), a document file (11) and an empty Folder (12). Phone: [files.html](../../mockups/app/files.html).
+Drawn in [files.html](../../mockups/app/files.html) under each phone screen: the Folders and a Folder's top level ([3](../../mockups/app/files.html#s3)), a code file ([5](../../mockups/app/files.html#s5)), a document file ([6](../../mockups/app/files.html#s6)) and an empty Folder ([7](../../mockups/app/files.html#s7)).
 
 The wide window is laid out like a code editor: a tree of the open Folder's files at the left, a strip of tabs over the content in the middle, and the Properties of the selection at the right. The three parts fill the window edge to edge with no margin, no gap and no inner frame, separated only by 1px lines. Corners and scrollbars are square.
 
@@ -172,14 +172,15 @@ The wide window is laid out like a code editor: a tree of the open Folder's file
 
 | Part | Phone | Wide window (from 48rem) |
 |---|---|---|
-| Folders list and an open Folder | Two screens: the Folders list, then a tap opens the Folder | One screen for the open Folder. The tree at the left starts at that Folder's own name; its folders and files sit directly under it, and a folder has a chevron that expands or collapses it. The first Folder is open when the window opens, as the one tab, so the middle is never empty. This window draws no Folders list |
+| Folders list and an open Folder | Two screens: the Folders list, then a tap opens the Folder | One screen for the open Folder. The tree at the left starts at that Folder's own name; its folders and files sit directly under it, and a folder has a chevron that expands or collapses it. The first Folder is open when the window opens with its top row selected, so the middle shows its description and is never empty. This window draws no Folders list |
 | Top bar | Back reads Home on the Folders list and Folders on a Folder's top level; the title is Files on the Folders list and the Folder's name below it | Back reads Folders and leads to the Folders list; the title is the open Folder's name, centred on the bar. The chain is Home > Folders > Folder > folder > file |
 | A file | Opens in place of the list, with Back to its Folder | Opens in a tab. The tree keeps the file's folders expanded and the file's row highlighted |
-| Tabs | None | A strip over the content, one tab for each open Folder or file (see Tabs below) |
+| The Folder's description | The listing of the Folder's folders and files with the README text under it | Clicking the Folder's name row at the top of the tree selects it and shows only its description in the middle: the README text drawn as a rendered page with its title and paragraph, the same viewer as a document. No tab opens and no listing is drawn, because the tree already lists the folders and files; they are browsed in the tree. A Folder with no README shows a plain note, "No description yet" |
+| Tabs | None | A strip over the content, one tab for each open folder or file (see Tabs below). With no tab open the strip is an empty bar of the same height, so its line still runs straight into the Properties header |
 | Properties | None | A flat list of read-only lines at the right for the selection (see Properties below) |
 | A code file | The text scrolls sideways for a long line | The viewer takes the whole content area, so an ordinary line shows whole. A line longer than the viewer still scrolls sideways and the line numbers stay |
 | A document | The rendered page fills the width | The page keeps a reading width of `70ch` at the left of the content |
-| An empty Folder | The card with Back to Folders | The same card, held to a width of at most 28rem; no tab, no Properties |
+| An empty Folder | The card with Back to Folders | The plain note "No description yet" in the middle, an empty strip, nothing under the Folder's name in the tree, and no Properties. The phone's empty card with Back to Folders is not drawn here |
 | The name and the Changed line | Under the name, "Changed 2 hours ago by Agent One" | The name is on the tab and the Changed line is in Properties as Last changed and Changed by. This is the wide window's place for them; the phone keeps its line under the name |
 | Layout | One column | A flex row with no margin and no gap, running down to the status bar along the bottom edge of the frame: the tree `flex: 0 1 15rem`, the middle `flex: 1 1 24rem`, Properties `flex: 0 1 15rem` |
 | Bottom bar | Home, Chat, Notifications | None. The wide Files window has no bottom bar |
@@ -191,12 +192,12 @@ Below 48rem the window is the phone's: one Folder or file at a time with a back 
 
 | Rule | Detail |
 |---|---|
-| Top row | The open Folder's own name, a plain bold small uppercase label with no chevron and no "Folders" label above it. It is the row of the Folder's top level and is highlighted flat when that level is the selection. The name comes from `forms_git_repository_list` |
+| Top row | The open Folder's own name, a plain bold small uppercase label with no chevron and no "Folders" label above it. Clicking it selects the Folder, highlights it flat and shows the Folder's description with no tab. The name comes from `forms_git_repository_list` |
 | Rows below | The Folder's folders and files directly under it, folders before files, each one compact line about 1.375rem tall in `.8125rem` text: a chevron column of about `.75rem` (empty for a file), a `1rem` icon and the name. Each level is indented by about `.75rem`, with a faint vertical line down the indent of an expanded folder |
 | Expanding | A chevron expands or collapses a folder and opens nothing. Expanding calls `forms_git_directory_list` for that one folder; the tree never asks for more than the folders the person expanded. The answer is kept while the app is open |
 | No Changed line | The time of the selection is in Properties, so the tree makes no `forms_git_commit_log` call for each row |
 | The open file | Its row is highlighted flat across the width and the folders above it are expanded |
-| Tapping | Tapping a file opens it in a tab. Tapping a folder, or the top row, selects it and opens it in a tab |
+| Tapping | Tapping a file opens it in a tab. Tapping a folder selects it and opens it in a tab. Tapping the top row opens no tab: it shows the Folder's description |
 | Which Folder | The window opens on the first Folder from `forms_git_repository_list`. How a person switches to another Folder on the wide window is not drawn; the Folders list is reached by the back link |
 
 ### Tabs
@@ -204,13 +205,13 @@ Below 48rem the window is the phone's: one Folder or file at a time with a back 
 | Rule | Detail |
 |---|---|
 | What a tab is | One open Folder or file: its name and an x. A plain link with a button beside it, in one flat strip along the top of the content; the active tab is joined to the content and the others are quieter |
-| Opening | A tap on a file in the tree, or on a row in the content, opens it in a new tab at the right end, or focuses its tab if it is already open |
-| Closing | The x closes that tab and its right neighbour becomes active, or its left neighbour if it was the last. Closing the last tab shows the marked Folder's top level with no strip |
+| Opening | A tap on a folder or file in the tree opens it in a new tab at the right end, or focuses its tab if it is already open |
+| Closing | The x closes that tab and its right neighbour becomes active, or its left neighbour if it was the last. Closing the last tab shows the Folder's description over an empty strip |
 | How many | Proposal for the owner, not decided: at most 8 open tabs; opening a ninth closes the tab unused longest, never the active one |
 | Left out | No drag, no split, no pinned tabs, no preview tabs, no dropdown, no other button |
 | Where they exist | Only on the wide window. The phone shows one file at a time with a back arrow |
 | Where they live | The list of open tabs and the active one live in the app and are not saved on the server. The app starts again from the first Folder when it is opened |
-| An empty Folder | Opens no tab |
+| The Folder itself | Opens no tab; clicking its name row shows its description. A Folder with nothing in it also opens no tab |
 
 ### Properties
 
@@ -248,5 +249,5 @@ The dash rule: a line whose call fails or has no answer shows a dash. A Folder w
 | Question | Why it is open |
 |---|---|
 | The limit of 8 tabs | A proposal, not decided by the owner |
-| Back to Folders on a wide empty Folder | The Folder's name is already at the left of the card and the top bar's back link leads to the Folders list, so whether the act is still wanted there is not decided |
+| Back to Folders on a wide empty Folder | The wide window draws the note "No description yet" and not the phone's empty card, since the top bar's back link already leads to the Folders list; whether it also wants the card is not decided |
 | Reaching Chat and Notifications | How a member reaches Chat and Notifications from the wide Files window is not drawn |
