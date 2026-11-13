@@ -181,8 +181,9 @@ The wide window is laid out like a code editor: a tree of the open Folder's file
 | A document | The rendered page fills the width | The page keeps a reading width of `70ch` at the left of the content |
 | An empty Folder | The card with Back to Folders | The same card, held to a width of at most 28rem; no tab, no Properties |
 | The name and the Changed line | Under the name, "Changed 2 hours ago by Agent One" | The name is on the tab and the Changed line is in Properties as Last changed and Changed by. This is the wide window's place for them; the phone keeps its line under the name |
-| Layout | One column | A flex row with no margin and no gap, running down to the bottom edge of the frame: the tree `flex: 0 1 15rem`, the middle `flex: 1 1 24rem`, Properties `flex: 0 1 15rem` |
+| Layout | One column | A flex row with no margin and no gap, running down to the status bar along the bottom edge of the frame: the tree `flex: 0 1 15rem`, the middle `flex: 1 1 24rem`, Properties `flex: 0 1 15rem` |
 | Bottom bar | Home, Chat, Notifications | None. The wide Files window has no bottom bar |
+| Status bar | None | One flat strip about `1.5rem` tall along the bottom edge of the frame, full width under the three panes, with a 1px line above it. Empty for now: nothing is shown in it yet |
 
 Below 48rem the window is the phone's: one Folder or file at a time with a back arrow, and no tree, no tab strip and no Properties (all three are left out, not stacked).
 
