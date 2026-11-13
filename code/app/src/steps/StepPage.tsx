@@ -13,7 +13,8 @@ import { Shell } from "../ui/Shell";
 import { openAgencyId } from "../agency/open";
 import { ongoingTab, startTab, tabPathIn } from "../tabs";
 import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type SendRefusal, type StepsClient } from "./api";
-import { EarlierWork } from "./EarlierWork";
+import { AmendDraft } from "./AmendDraft";
+import { amendmentsOf, type Edits } from "./amend";
 import { answersOf, formQuestionsOf, unsendable } from "./questions";
 import { afterWords, markSent } from "./sent";
 
@@ -37,6 +38,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
   const [draft, setDraft] = useState<Draft>(() => loadDraft(draftKey));
   const [problems, setProblems] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "sending">("idle");
+  const [edits, setEdits] = useState<Edits>({});
   const [refusal, setRefusal] = useState("");
   const [refusedFor, setRefusedFor] = useState<SendRefusal | "">("");
   const [sendKey] = useState(newSendKey);
@@ -80,7 +82,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
     setRefusal("");
     setRefusedFor("");
     try {
-      const reply = await steps.submit(step, answersOf(questions, draft), sendKey);
+      const reply = await steps.submit(step, { ...answersOf(questions, draft), ...amendmentsOf(step.earlier, edits) }, sendKey);
       clearDraft(draftKey);
       markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title, after: afterWords(reply) });
       navigate(doSomethingBackPath());
@@ -96,7 +98,7 @@ export function StepPage({ steps = mcpStepsClient }: { steps?: StepsClient }) {
       <Card>
         {step.description ? <p>{step.description}</p> : null}
         {step.prompt ? <p>{step.prompt}</p> : null}
-        {step.earlier.length ? <EarlierWork earlier={step.earlier} /> : null}
+        {step.earlier.length ? <AmendDraft earlier={step.earlier} edits={edits} onChange={setEdits} /> : null}
         {questions.map((q) => (
           unsendable(q) ? (
             <div key={q.id}>

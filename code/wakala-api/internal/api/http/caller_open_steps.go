@@ -13,22 +13,23 @@ import (
 )
 
 type openStep struct {
-	ID           string                      `json:"id"`
-	Title        string                      `json:"title"`
-	Description  string                      `json:"description"`
-	Prompt       string                      `json:"prompt,omitempty"`
-	Kind         string                      `json:"kind"`
-	WorkflowID   string                      `json:"workflow_id"`
-	WorkflowName string                      `json:"workflow_name"`
-	OpensIn      string                      `json:"opens_in"`
-	RoleID       string                      `json:"role_id"`
-	RoleName     string                      `json:"role_name"`
-	FormName     string                      `json:"form_name"`
-	Questions    []agencymodels.StepQuestion `json:"questions"`
-	State        string                      `json:"state,omitempty"`
-	OrderID      string                      `json:"order_id,omitempty"`
-	RecordCode   string                      `json:"record_code,omitempty"`
-	Earlier      []earlierStep               `json:"earlier,omitempty"`
+	ID            string                      `json:"id"`
+	Title         string                      `json:"title"`
+	Description   string                      `json:"description"`
+	Prompt        string                      `json:"prompt,omitempty"`
+	Kind          string                      `json:"kind"`
+	WorkflowID    string                      `json:"workflow_id"`
+	WorkflowName  string                      `json:"workflow_name"`
+	OpensIn       string                      `json:"opens_in"`
+	RoleID        string                      `json:"role_id"`
+	RoleName      string                      `json:"role_name"`
+	FormName      string                      `json:"form_name"`
+	Questions     []agencymodels.StepQuestion `json:"questions"`
+	State         string                      `json:"state,omitempty"`
+	OrderID       string                      `json:"order_id,omitempty"`
+	RecordCode    string                      `json:"record_code,omitempty"`
+	Earlier       []earlierStep               `json:"earlier,omitempty"`
+	ApprovalLimit *stepApprovalLimit          `json:"approval_limit,omitempty"`
 }
 
 type openSteps struct {
@@ -132,6 +133,9 @@ func (d *Deps) callerOpenSteps(ctx context.Context, instanceID string) (openStep
 			ID: s.ID, Title: s.Title, Description: s.Description, Prompt: s.Prompt, Kind: string(s.Kind), WorkflowID: s.WorkflowID, WorkflowName: workflow.Name, OpensIn: opensInOf(workflow),
 			RoleID: role.ID, RoleName: role.Name, FormName: s.FormName, Questions: questions,
 		})
+	}
+	if err := d.showApprovalLimits(ctx, instanceID, items); err != nil {
+		return openSteps{}, err
 	}
 	return openSteps{Items: items}, nil
 }
