@@ -164,28 +164,76 @@ Other documents (word processor, spreadsheet, PDF) are not in this design and fa
 
 Drawn in [wide.html](../../mockups/app/wide.html) 9 to 12: the Folders and a Folder's top level (9), a code file (10), a document file (11) and an empty Folder (12). Phone: [files.html](../../mockups/app/files.html).
 
+The wide window is laid out like a code editor: a tree of Folders at the left, a strip of tabs over the content in the middle, and the Properties of the selection at the right. The three parts fill the window edge to edge with no margin, no gap and no inner frame, separated only by 1px lines. Corners and scrollbars are square.
+
 ### What changes
 
 | Part | Phone | Wide window (from 48rem) |
 |---|---|---|
-| Folders list and an open Folder | Two screens: the Folders list, then a tap opens the Folder | One screen. The Folders are a list at the left, one row for each with its name and "Changed 2 hours ago"; the open Folder shows its folders under its name. The Folder at the right is open when the window opens, the first one, so the right side is never empty |
-| A file | Opens in place of the list, with Back to its Folder | Opens at the right; the Folders list stays at the left with the file's Folder marked |
-| A code file | The text scrolls sideways for a long line | The viewer takes the whole right side, so an ordinary line shows whole. A line longer than the viewer still scrolls sideways and the line numbers stay |
-| A document | The rendered page fills the width | The page keeps a reading width of `70ch` at the left of the right side; the name and the Changed line are not held to it |
-| An empty Folder | The card with Back to Folders | The same card, held to a width of at most 28rem |
-| Layout | One column | A wrapping flex row: the Folders `flex: 0 1 15rem`, the open side `flex: 1 1 24rem`, inside the window's margin of `clamp(1rem, 3vw, 2rem)` |
+| Folders list and an open Folder | Two screens: the Folders list, then a tap opens the Folder | One screen. The tree at the left has the Folders at its top level, each with a chevron that expands or collapses it; its folders and files sit indented under it. The first Folder is open when the window opens, as the one tab, so the middle is never empty |
+| A file | Opens in place of the list, with Back to its Folder | Opens in a tab. The tree keeps its Folders expanded and the file's row highlighted |
+| Tabs | None | A strip over the content, one tab for each open Folder or file (see Tabs below) |
+| Properties | None | A flat list of read-only lines at the right for the selection (see Properties below) |
+| A code file | The text scrolls sideways for a long line | The viewer takes the whole content area, so an ordinary line shows whole. A line longer than the viewer still scrolls sideways and the line numbers stay |
+| A document | The rendered page fills the width | The page keeps a reading width of `70ch` at the left of the content |
+| An empty Folder | The card with Back to Folders | The same card, held to a width of at most 28rem; no tab, no Properties |
+| The name and the Changed line | Under the name, "Changed 2 hours ago by Agent One" | The name is on the tab and the Changed line is in Properties as Last changed and Changed by. This is the wide window's place for them; the phone keeps its line under the name |
+| Layout | One column | A flex row with no margin and no gap: the tree `flex: 0 1 15rem`, the middle `flex: 1 1 24rem`, Properties `flex: 0 1 15rem` |
 | Bottom bar | Home, Chat, Notifications | The same, as on every wide screen. Files is an option on Home, not in the bar |
 
-Below 48rem the window is the phone's, with the two screens and no list beside the Folder.
+Below 48rem the window is the phone's: one Folder or file at a time with a back arrow, and no tree, no tab strip and no Properties (all three are left out, not stacked).
+
+### The tree
+
+| Rule | Detail |
+|---|---|
+| Top level | The Folders, from `forms_git_repository_list` |
+| Expanding | A chevron expands or collapses a Folder or folder and opens nothing. Expanding calls `forms_git_directory_list` for that one folder; the tree never asks for more than the folders the person expanded. The answer is kept while the app is open |
+| A row | One line with the chevron (folders only), an icon and the name. No Changed line: the time of the selection is in Properties, so the tree makes no `forms_git_commit_log` call for each Folder (the phone's Folders list still does) |
+| The open file | Its row is highlighted and the Folders above it are expanded |
+| Tapping | Tapping a file opens it in a tab. Tapping a Folder or folder selects it and opens it in a tab |
+
+### Tabs
+
+| Rule | Detail |
+|---|---|
+| What a tab is | One open Folder or file: its name and an x. A plain link with a button beside it, in one flat strip along the top of the content; the active tab is joined to the content and the others are quieter |
+| Opening | A tap on a file in the tree, or on a row in the content, opens it in a new tab at the right end, or focuses its tab if it is already open |
+| Closing | The x closes that tab and its right neighbour becomes active, or its left neighbour if it was the last. Closing the last tab shows the marked Folder's top level with no strip |
+| How many | Proposal for the owner, not decided: at most 8 open tabs; opening a ninth closes the tab unused longest, never the active one |
+| Left out | No drag, no split, no pinned tabs, no preview tabs, no dropdown, no other button |
+| Where they exist | Only on the wide window. The phone shows one file at a time with a back arrow |
+| Where they live | The list of open tabs and the active one live in the app and are not saved on the server. The app starts again from the first Folder when it is opened |
+| An empty Folder | Opens no tab |
+
+### Properties
+
+One flat list of read-only lines for the selection, which is the highlighted tree row and the active tab. No buttons. Only what the git tools can fill is shown.
+
+| Line | Folder or folder | File | Filled by |
+|---|---|---|---|
+| Name | yes | yes | `name` from `forms_git_repository_list` (a Folder) or `forms_git_directory_list` (an entry) |
+| Path | yes, a Folder's own is `/` | yes | `path` from `forms_git_directory_list` or `forms_git_file_read` |
+| Kind | no | yes | A plain word the app chooses from `extension`; the module gives no content type |
+| Size | no | yes | `size` from `forms_git_directory_list`, or from `forms_git_file_read` once the file is read |
+| Items | yes | no | The number of entries in `forms_git_directory_list`, counted by the app, folders and files together |
+| Last changed | yes | yes | `forms_git_commit_log` with the Folder's `default_branch_id` (sent as `branchID`), the `path` and `limit` 1: `timestamp` |
+| Changed by | yes | yes | The same call: `author`, a name the committer set, not an actor |
+
+What each call does not give: `forms_git_directory_list` has no last-changed time and no author for an entry, and what `size` holds for a folder is not verified; `forms_git_file_read` has no content type, no last-changed time and no author; `forms_git_commit_log` gives `author` as a name, not an actor id.
+
+Not shown, because no tool gives it or the design leaves it out: permissions, owner, created date, commit ids, and a history list (decision 6: no history).
+
+The dash rule: a line whose call fails or has no answer shows a dash. A Folder with no entries has no log to answer Last changed and Changed by, so they would show a dash; Properties are left out on an empty Folder in the drawing (12).
 
 ### What does not change
 
 | Part | Same on the wide window |
 |---|---|
-| Calls | The same four tools: `forms_git_repository_list` and `forms_git_commit_log` for the Folders list, `forms_git_directory_list` for the folders and files, `forms_git_file_read` for a file and the README, `forms_git_commit_log` for the Changed line. The list beside the Folder asks for nothing the phone does not: the open Folder's list is the call that fills both the tree and the right side |
+| Calls | The same four tools: `forms_git_repository_list` for the Folders, `forms_git_directory_list` for the folders and files, `forms_git_file_read` for a file and the README, `forms_git_commit_log` for the Changed line, now in Properties and only for the selection |
 | Words | Folders, Folder, file, "Changed 2 hours ago by Agent One". Never repository, branch, commit, diff or merge request |
 | Viewers | Chosen by the file's `extension` and `encoding`, as in the table above: code highlighted with line numbers, Markdown and other text documents rendered as a page |
-| What a file shows | Its current text and the one Changed line. No history, no diff |
+| What a file shows | Its current text and the Properties above. No history, no diff |
 | Read only | No write, delete or upload |
 | Who sees Files | Only an agency that mounts the git module |
 
@@ -193,4 +241,5 @@ Below 48rem the window is the phone's, with the two screens and no list beside t
 
 | Question | Why it is open |
 |---|---|
-| Back to Folders on a wide empty Folder | The Folders list is already at the left of the card, so whether the act is still wanted there is not decided |
+| The limit of 8 tabs | A proposal, not decided by the owner |
+| Back to Folders on a wide empty Folder | The tree is already at the left of the card, so whether the act is still wanted there is not decided |
