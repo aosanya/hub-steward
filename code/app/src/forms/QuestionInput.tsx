@@ -3,6 +3,8 @@ import { ChoiceGroup, ChoiceRow } from "../ui/ChoiceRow";
 import { Field } from "../ui/Field";
 import { fileLimit, filesOf, isChoice, isFile, type Given } from "../pages/forms/answers";
 
+export const currencyUnit = "Ft";
+
 export type QuestionEntry = { q: FormQuestion; value: Given; error?: string; onChange: (patch: Partial<Given>, error?: string) => void };
 
 export function QuestionInput({ q, value, error, onChange }: QuestionEntry) {
@@ -58,5 +60,6 @@ export function QuestionInput({ q, value, error, onChange }: QuestionEntry) {
     );
   }
   const type = q.answer_type === "number" || q.answer_type === "currency" ? "number" : q.answer_type === "date" ? "date" : q.answer_type === "time" ? "time" : "text";
-  return <Field label={q.prompt} type={type} value={value.text} error={error} onChange={(e) => onChange({ text: e.target.value })} />;
+  const unitAfter = q.answer_type === "currency" ? currencyUnit : undefined;
+  return <Field label={q.prompt} type={type} value={value.text} unitAfter={unitAfter} error={error} onChange={(e) => onChange({ text: e.target.value })} />;
 }
