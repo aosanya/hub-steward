@@ -18,8 +18,8 @@ describe("the shared icon", () => {
     expect(svg).toHaveAttribute("data-icon", "home");
   });
 
-  it("has a drawing for each name of the tab bar and the Folders", () => {
-    expect(iconNames).toEqual(["home", "chat", "bell", "play", "clock", "list", "folder"]);
+  it("has a drawing for each name of the tab bar, the Folders and the files", () => {
+    expect(iconNames).toEqual(["home", "chat", "bell", "play", "clock", "list", "folder", "document", "code", "file"]);
     iconNames.forEach((name) => expect(svgOf(name).childElementCount).toBeGreaterThan(0));
   });
 
