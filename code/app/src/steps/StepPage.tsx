@@ -17,6 +17,8 @@ import { AmendDraft } from "./AmendDraft";
 import { amendmentsOf, type Edits } from "./amend";
 import { PublishReport } from "./PublishReport";
 import type { PublishClient } from "./publishApi";
+import { PublishReport } from "./PublishReport";
+import type { PublishClient } from "./publishApi";
 import { answersOf, formQuestionsOf, unsendable } from "./questions";
 import { afterWords, markSent } from "./sent";
 
@@ -100,6 +102,7 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
       <Card>
         {step.description ? <p>{step.description}</p> : null}
         {step.prompt ? <p>{step.prompt}</p> : null}
+        <PublishReport formName={step.formName || step.title} client={publisher} />
         <PublishReport formName={step.formName || step.title} client={publisher} />
         {step.earlier.length ? <AmendDraft earlier={step.earlier} edits={edits} onChange={setEdits} /> : null}
         {questions.map((q) => (
