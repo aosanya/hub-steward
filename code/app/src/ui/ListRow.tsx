@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 
-type Props = { title: string; code?: string; meta?: string | string[]; end?: ReactNode; onClick?: () => void; lead?: boolean; start?: ReactNode; below?: ReactNode; className?: string; role?: string };
+type Props = { title: string; code?: string; meta?: string | string[]; end?: ReactNode; onClick?: () => void; lead?: boolean; start?: ReactNode; below?: ReactNode; className?: string; role?: string; pressed?: boolean };
 
 const chevron = "›";
 
 export const leadLetter = (title: string) => Array.from(title.trim()).find((c) => /[\p{L}\p{N}]/u.test(c))?.toLocaleUpperCase() ?? "";
 
-export function ListRow({ title, code, meta, end, onClick, lead, start, below, className, role }: Props) {
+export function ListRow({ title, code, meta, end, onClick, lead, start, below, className, role, pressed }: Props) {
   const letter = lead ? leadLetter(title) : "";
   const rowClass = className ? `row ${className}` : "row";
   const inner = (
@@ -25,7 +25,7 @@ export function ListRow({ title, code, meta, end, onClick, lead, start, below, c
     </>
   );
   return onClick ? (
-    <button type="button" role={role} className={rowClass} onClick={onClick}>
+    <button type="button" role={role} className={rowClass} aria-pressed={pressed} onClick={onClick}>
       {inner}
     </button>
   ) : (

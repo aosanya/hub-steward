@@ -29,6 +29,7 @@ const publisherOf = (holds: boolean): PublishClient => ({
   holds: async () => holds,
   closedFormId: async () => "f1",
   latest: async () => null,
+  files: async () => [{ name: "r.pdf", path: "r.pdf", version: "abc1234def5678", committedAt: "2026-11-13T10:00:00Z" }],
   publish: vi.fn(async () => ({ version: 1, gitPath: "r.pdf", publishedAt: "2026-11-13T10:00:00Z" })),
 });
 

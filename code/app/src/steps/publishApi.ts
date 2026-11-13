@@ -2,10 +2,13 @@ import { callTool } from "../wakala/mcp";
 
 export type PublishedReport = { version: number; gitPath: string; publishedAt: string };
 
+export type ReportFile = { name: string; path: string; version: string; committedAt: string };
+
 export type PublishClient = {
   holds(): Promise<boolean>;
   closedFormId(formName: string): Promise<string | null>;
   latest(formId: string): Promise<PublishedReport | null>;
+  files(formId: string): Promise<ReportFile[]>;
   publish(formId: string, gitPath: string, gitCommit: string): Promise<PublishedReport>;
 };
 
@@ -27,6 +30,13 @@ const reportOf = (raw: any): PublishedReport => ({
   publishedAt: text(raw?.published_at),
 });
 
+export const reportFileOf = (raw: any): ReportFile => ({
+  name: text(raw?.name),
+  path: text(raw?.path),
+  version: text(raw?.version),
+  committedAt: text(raw?.committed_at),
+});
+
 const itemsOf = (reply: any): any[] => (Array.isArray(reply) ? reply : Array.isArray(reply?.items) ? reply.items : []);
 
 export const mcpPublishClient: PublishClient = {
@@ -37,6 +47,13 @@ export const mcpPublishClient: PublishClient = {
       return reportOf(await callTool("", "forms_results_read", { form_id: formId }));
     } catch {
       return null;
+    }
+  },
+  files: async (formId) => {
+    try {
+      return itemsOf(await callTool("", "forms_results_files", { form_id: formId })).map(reportFileOf);
+    } catch {
+      return [];
     }
   },
   publish: async (formId, gitPath, gitCommit) => reportOf(await callTool("", "forms_results_publish", { form_id: formId, git_path: gitPath, git_commit: gitCommit })),

@@ -2,14 +2,17 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { PublishReport } from "./PublishReport";
-import { type PublishClient, type PublishedReport } from "./publishApi";
+import { type PublishClient, type PublishedReport, type ReportFile } from "./publishApi";
 
 const report: PublishedReport = { version: 1, gitPath: "reports/arrivals.pdf", publishedAt: "2026-11-13T09:30:00Z" };
+
+const arrivals: ReportFile = { name: "arrivals.pdf", path: "reports/arrivals.pdf", version: "abc1234def5678", committedAt: "2026-11-13T09:30:00Z" };
 
 const clientOf = (over: Partial<PublishClient> = {}): PublishClient => ({
   holds: vi.fn(async () => true),
   closedFormId: vi.fn(async () => "f1"),
   latest: vi.fn(async () => null),
+  files: vi.fn(async () => [arrivals]),
   publish: vi.fn(async () => report),
   ...over,
 });
@@ -20,9 +23,8 @@ const show = async (client: PublishClient) => {
   });
 };
 
-const fill = async (file: string, version: string) => {
-  await userEvent.type(screen.getByLabelText("Report file"), file);
-  await userEvent.type(screen.getByLabelText("Version"), version);
+const pick = async () => {
+  await userEvent.click(screen.getByRole("button", { name: /arrivals\.pdf/ }));
 };
 
 afterEach(() => {
@@ -31,16 +33,16 @@ afterEach(() => {
 });
 
 describe("a member holding report.publish can publish the closed form's report", () => {
-  it("shows a Publish button, sends the file and version, then shows the version, file and date it went public", async () => {
+  it("shows a Publish button, sends the tapped file and its version, then shows the version, file and date it went public", async () => {
     const client = clientOf();
     await show(client);
     expect(screen.getByRole("button", { name: "Publish" })).toBeInTheDocument();
-    await fill("reports/arrivals.pdf", "1");
+    await pick();
     await userEvent.click(screen.getByRole("button", { name: "Publish" }));
-    expect(client.publish).toHaveBeenCalledWith("f1", "reports/arrivals.pdf", "1");
+    expect(client.publish).toHaveBeenCalledWith("f1", "reports/arrivals.pdf", "abc1234def5678");
     expect(await screen.findByText(/Version 1/)).toBeInTheDocument();
     expect(screen.getByText(/reports\/arrivals\.pdf/)).toBeInTheDocument();
-    expect(screen.getByText(/2026/)).toBeInTheDocument();
+    expect(screen.getByText(/public since.*2026/)).toBeInTheDocument();
   });
 
   it("asks for the closed form of the step's form name", async () => {
@@ -49,20 +51,18 @@ describe("a member holding report.publish can publish the closed form's report",
     expect(client.closedFormId).toHaveBeenCalledWith("Arrival");
   });
 
-  it("keeps Publish disabled until both the file and the version are filled", async () => {
+  it("keeps Publish disabled until a file is tapped", async () => {
     await show(clientOf());
     const button = screen.getByRole("button", { name: "Publish" });
     expect(button).toBeDisabled();
-    await userEvent.type(screen.getByLabelText("Report file"), "reports/arrivals.pdf");
-    expect(button).toBeDisabled();
-    await userEvent.type(screen.getByLabelText("Version"), "1");
+    await pick();
     expect(button).toBeEnabled();
   });
 
   it("says in plain words when the report could not be published", async () => {
     const client = clientOf({ publish: vi.fn(async () => Promise.reject(new Error("boom"))) });
     await show(client);
-    await fill("reports/arrivals.pdf", "1");
+    await pick();
     await userEvent.click(screen.getByRole("button", { name: "Publish" }));
     expect(await screen.findByText("The report could not be published. Try again.")).toBeInTheDocument();
   });
@@ -89,6 +89,6 @@ describe("a report already published", () => {
     await show(clientOf({ latest: vi.fn(async () => report) }));
     expect(screen.getByText(/Version 1/)).toBeInTheDocument();
     expect(screen.getByText(/reports\/arrivals\.pdf/)).toBeInTheDocument();
-    expect(screen.getByText(/2026/)).toBeInTheDocument();
+    expect(screen.getByText(/public since.*2026/)).toBeInTheDocument();
   });
 });
