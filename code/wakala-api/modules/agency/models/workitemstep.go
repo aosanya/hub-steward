@@ -73,13 +73,14 @@ func (a AnswerType) Valid() bool {
 }
 
 type StepQuestion struct {
-	Prompt      string     `json:"prompt"`
-	AnswerType  AnswerType `json:"answer_type"`
-	Required    bool       `json:"required"`
-	Helper      string     `json:"helper,omitempty"`
-	Options     []string   `json:"options,omitempty"`
-	OptionsFrom string     `json:"options_from,omitempty"`
-	Fixed       string     `json:"fixed,omitempty"`
+	Prompt              string     `json:"prompt"`
+	AnswerType          AnswerType `json:"answer_type"`
+	Required            bool       `json:"required"`
+	Helper              string     `json:"helper,omitempty"`
+	Options             []string   `json:"options,omitempty"`
+	OptionsFrom         string     `json:"options_from,omitempty"`
+	Fixed               string     `json:"fixed,omitempty"`
+	ChecksApprovalLimit bool       `json:"checks_approval_limit,omitempty"`
 }
 
 type RouteMatch string
