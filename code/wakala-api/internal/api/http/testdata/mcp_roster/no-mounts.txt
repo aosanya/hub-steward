@@ -398,6 +398,7 @@ forms_git_blob_search
 forms_git_branch_create
 forms_git_branch_delete
 forms_git_branch_read
+forms_git_branch_rebase
 forms_git_commit_diff
 forms_git_commit_log
 forms_git_directory_list
