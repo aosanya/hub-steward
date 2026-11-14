@@ -75,6 +75,37 @@ describe("the tree on a wide window", () => {
     expect(asked().filter((path) => path === "docs/notes")).toHaveLength(1);
   });
 
+  it("draws every tree icon in the accent colour", async () => {
+    await ready();
+    await screen.findByRole("treeitem", { name: "main.go" });
+    const icons = document.querySelectorAll(".wf-tree .wf-icon");
+    expect(icons).toHaveLength(5);
+    icons.forEach((icon) => expect(icon).toHaveClass("fi"));
+  });
+
+  it("draws a guide under an expanded folder for its children and none at the top level", async () => {
+    const user = userEvent.setup();
+    await ready();
+    await screen.findByRole("treeitem", { name: "main.go" });
+    expect(document.querySelectorAll(".wf-guide")).toHaveLength(0);
+    await user.click(screen.getByRole("button", { name: "Expand docs" }));
+    await screen.findByRole("treeitem", { name: "a.md" });
+    expect(screen.getByRole("treeitem", { name: "a.md" }).querySelector(".wf-guide")).not.toBeNull();
+    expect(screen.getByRole("treeitem", { name: "docs" }).querySelector(".wf-guide")).toBeNull();
+    expect(screen.getByRole("treeitem", { name: "README.md" }).querySelector(".wf-guide")).toBeNull();
+  });
+
+  it("opens a tab with the file's accent icon, the active one carrying the active class", async () => {
+    await ready();
+    await open("README.md");
+    await open("main.go");
+    const tabs = Array.from(document.querySelectorAll(".wf-tab"));
+    expect(tabs).toHaveLength(2);
+    tabs.forEach((tab) => expect(tab.querySelector(".fi")).not.toBeNull());
+    expect(tabs[0]).not.toHaveClass("active");
+    expect(tabs[1]).toHaveClass("active");
+  });
+
   it("opens nothing when a chevron expands a folder, and marks the folder expanded", async () => {
     const user = userEvent.setup();
     await ready();

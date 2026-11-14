@@ -26,13 +26,23 @@ describe("a Folder's top level on a phone", () => {
     expect(rowTitles()).toEqual(["docs", "src", "README.md", "main.go", "go.mod"]);
   });
 
-  it("shows a file's size on its row and nothing under a folder's row, and no Changed line", async () => {
+  it("shows a file's size at the right end of its row and nothing under a folder's row, and no Changed line", async () => {
     show("/a/hub-1/files/r1");
     await screen.findByText("docs");
     const rows = Array.from(document.querySelectorAll(".row"));
     expect(rows[0].querySelector(".meta")).toBeNull();
-    expect(rows[2].querySelector(".meta")?.textContent).toBe("1.2 KB");
+    expect(rows[2].querySelector(".meta")).toBeNull();
+    expect(rows[2].lastElementChild?.textContent).toBe("1.2 KB");
+    expect(rows[2].lastElementChild).toHaveClass("end");
     expect(screen.queryByText(/^Changed/)).toBeNull();
+  });
+
+  it("draws every row's icon in the accent colour", async () => {
+    show("/a/hub-1/files/r1");
+    await screen.findByText("docs");
+    const marks = Array.from(document.querySelectorAll(".row > .mark"));
+    expect(marks).toHaveLength(5);
+    marks.forEach((mark) => expect(mark).toHaveClass("fi"));
   });
 
   it("draws the README text under the list", async () => {

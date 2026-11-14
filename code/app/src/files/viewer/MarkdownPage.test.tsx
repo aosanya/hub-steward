@@ -13,6 +13,11 @@ describe("markdown page", () => {
     expect(container.querySelector("h6")?.textContent).toBe("Small");
   });
 
+  it("draws the page as a card", () => {
+    const container = page("# Title");
+    expect(container.querySelector(".doc-page")).toHaveClass("card");
+  });
+
   it("renders a web link that opens in a new tab without the opener", () => {
     const link = page("Read [the guide](https://example.com/g).").querySelector("a");
     expect(link).toHaveAttribute("href", "https://example.com/g");
