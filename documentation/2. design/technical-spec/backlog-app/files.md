@@ -308,3 +308,36 @@ The Image row in "Which viewer opens a file" above is superseded: the data layer
 88 tests across 5 files in `code/app/src/files/viewer/` at the time of writing, run with `cd code/app && npx vitest run src/files/viewer`. They cover .md, .go, .json, .txt, .png with and without bytes, a binary file and a too-large file withheld, a long line, and a script tag in Markdown.
 
 Not verified: a real browser render at phone width and the sideways scroll (jsdom has no layout).
+
+## Built
+
+### Screens
+
+| Screen | What it is |
+|---|---|
+| Files on Home | One more option beside Start, Ongoing and Backlogs, drawn only when the agency mounts git (`HomeOptions.tsx`) |
+| Folders list | One row per Folder with its name and when it last changed (`FoldersPage`) |
+| A Folder's top level | Folders first, then files, then the README text under the list (`FolderPage`) |
+| A folder inside a folder | The same screen at a path; Back reads the parent's name |
+| The empty Folder | The empty card with Back to Folders |
+| A file | The name in the bar, the Changed line, then the viewer from `files/viewer` chosen by extension (`FilePage`) |
+| The wide window | Tree at the left, tab strip over the content in the middle, Properties panel at the right, an empty status bar along the bottom and no bottom bar (`WideFiles` with `FileTree`, `TabStrip`, `PropertiesPanel`, `WideContent`) |
+
+### Data layer and tab state
+
+Every screen reads through `FilesClient` in `files/api.ts` and nothing else. Open tabs live in the app only (`openTabs.ts`, held in `WideFiles` state) and are not saved on the server, so a reload starts again from the first Folder. At most 8 tabs are open; opening a ninth closes the tab that has gone longest without being used, never the active one. "Used" includes focusing a tab.
+
+### Decisions the spec does not pin
+
+| Point | What was built |
+|---|---|
+| Back on a wide window | Reads Folders, but `/files` on a wide window opens the first Folder directly, so Back and the Folders list form a loop |
+| Tapping a folder in the tree | Opens a tab for that folder; only the chevron expands or collapses it |
+| Guide lines | No faint vertical line down an expanded folder |
+| Focusing a tab | Re-reads the file |
+
+### Not verified
+
+Not run against a live hub with the git module mounted; every check used a fake `FilesClient` (jsdom tests and one browser render).
+
+Rendered in headless Chrome at 390 x 844 (Folders list, a Folder's top level with README, a folder inside a folder, a code file, a document file, the empty Folder) and at 1280 x 800 (the wide window with tabs and Properties, the empty Folder), from a throwaway Vite page with a fake `FilesClient` outside the repo. Layout is not broken: nothing overlaps and nothing is unstyled. It differs from the drawings in styling, not structure: the app font is not the drawings' font, the tree and Properties panel sit on the white surface where the drawings use the grey one, the Properties lines have no dividers, tabs have no icon and no accent line on the active tab, tree rows are tighter than drawn, file sizes sit under the name where the drawings put them at the right, and a rendered document has no bullets in its lists. Not checked: a long line scrolling sideways, an image, more than 8 tabs, narrow-to-wide resizing, dark mode.
