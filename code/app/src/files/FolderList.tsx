@@ -6,6 +6,7 @@ import { entryIcon } from "./entryIcon";
 import { foldersFirst } from "./folderOrder";
 import { filePath, folderPath } from "./paths";
 import { formatSize } from "./viewer/formatSize";
+import "./folderList.css";
 
 type Props = { folder: Folder; entries: FolderEntry[] };
 
@@ -17,9 +18,8 @@ export function FolderList({ folder, entries }: Props) {
         <ListRow
           key={entry.path}
           title={entry.name}
-          meta={entry.folder ? undefined : formatSize(entry.size)}
-          start={<span className="mark" aria-hidden="true"><Icon name={entryIcon(entry)} /></span>}
-          end={entry.folder ? "›" : undefined}
+          start={<span className="mark fi" aria-hidden="true"><Icon name={entryIcon(entry)} /></span>}
+          end={entry.folder ? "›" : formatSize(entry.size)}
           onClick={() => navigate(entry.folder ? folderPath(folder.id, entry.path) : filePath(folder.id, entry.path))}
         />
       ))}

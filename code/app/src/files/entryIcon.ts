@@ -10,4 +10,4 @@ const byViewer: Record<ReturnType<typeof viewerFor>, IconName> = {
   none: "file",
 };
 
-export const entryIcon = (entry: FolderEntry): IconName => (entry.folder ? "folder" : byViewer[viewerFor(entry.name)]);
+export const entryIcon = (entry: Pick<FolderEntry, "name" | "folder">): IconName => (entry.folder ? "folder" : byViewer[viewerFor(entry.name)]);
