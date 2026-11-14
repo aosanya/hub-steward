@@ -1,7 +1,7 @@
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { activeTab, agentOne, backText, barTitle, budget, folder, nineFiles, prepare, properties, readmeText, release, seen, show, tabNames, treeNames, type Setup } from "./filesFixture";
+import { activeTab, agentOne, backText, barTitle, budget, folder, goBack, nineFiles, prepare, properties, readmeText, release, rowTitles, seen, show, tabNames, treeNames, where, type Setup } from "./filesFixture";
 
 vi.mock("./viewer/FileViewer", () => ({
   FileViewer: (props: { name: string; text: string | null }) => <div data-testid="viewer">{props.name}|{props.text ?? ""}</div>,
@@ -35,10 +35,37 @@ describe("the tree on a wide window", () => {
     expect(levels).toEqual(["1", "2", "2", "2", "2", "2"]);
   });
 
-  it("opens on the first Folder when it is reached at the Folders list, and draws no Folders list", async () => {
+  it("draws the Folders list at the Files index, for one Folder as for several, and no tree", async () => {
+    show("/a/hub-1/files", { folders: [folder] });
+    await screen.findByText("Field notes");
+    expect(rowTitles()).toEqual(["Field notes"]);
+    expect(screen.queryByRole("tree")).toBeNull();
+    expect(barTitle()).toBe("Files");
+  });
+
+  it("opens a Folder's window when its row is tapped in the Folders list", async () => {
+    const user = userEvent.setup();
     show("/a/hub-1/files", { folders: [folder, budget] });
-    await screen.findByRole("treeitem", { name: "Field notes" });
-    expect(screen.queryByText("Budget")).toBeNull();
+    await user.click(await screen.findByText("Budget"));
+    expect(where()).toBe("/a/hub-1/files/r2");
+    await screen.findByRole("treeitem", { name: "Budget" });
+  });
+
+  it("goes from the Folders list back to Home", async () => {
+    show("/a/hub-1/files", { folders: [folder, budget] });
+    await screen.findByText("Budget");
+    expect(backText()).toContain("Home");
+    goBack();
+    expect(where()).toBe("/a/hub-1/home");
+  });
+
+  it("goes from a Folder's window back to the Folders list, not to the same Folder", async () => {
+    await ready();
+    goBack();
+    expect(where()).toBe("/a/hub-1/files");
+    await screen.findByText("Field notes");
+    expect(rowTitles()).toEqual(["Field notes"]);
+    expect(screen.queryByRole("tree")).toBeNull();
   });
 
   it("is titled with the Folder's name, with Back reading Folders", async () => {
@@ -122,6 +149,13 @@ describe("the tree on a wide window", () => {
     expect(asked.every((path) => path === "")).toBe(true);
   });
 
+  it("expands the folder and opens no tab when the window opens on a folder path", async () => {
+    show("/a/hub-1/files/r1?path=docs");
+    await screen.findByRole("treeitem", { name: "a.md" });
+    expect(screen.getByRole("treeitem", { name: "docs" })).toHaveAttribute("aria-expanded", "true");
+    expect(tabNames()).toEqual([]);
+  });
+
   it("keeps a file's folders expanded and its row selected when the window opens on that file", async () => {
     show("/a/hub-1/files/r1/file?path=docs%2Fa.md");
     const row = await screen.findByRole("treeitem", { name: "a.md" });
@@ -163,11 +197,35 @@ describe("the tabs on a wide window", () => {
     expect(await screen.findByTestId("viewer")).toHaveTextContent("main.go|package main");
   });
 
-  it("opens a folder tapped in the tree in a tab", async () => {
+  it("expands a folder tapped by its name and collapses it on the next tap, opening no tab", async () => {
     await ready();
     await open("docs");
-    expect(tabNames()).toEqual(["docs"]);
-    expect(screen.getByRole("treeitem", { name: "docs" })).toHaveAttribute("aria-selected", "true");
+    await screen.findByRole("treeitem", { name: "a.md" });
+    expect(tabNames()).toEqual([]);
+    expect(screen.getByRole("treeitem", { name: "docs" })).toHaveAttribute("aria-expanded", "true");
+    await open("docs");
+    expect(screen.queryByRole("treeitem", { name: "a.md" })).toBeNull();
+    expect(screen.getByRole("treeitem", { name: "docs" })).toHaveAttribute("aria-expanded", "false");
+    expect(tabNames()).toEqual([]);
+  });
+
+  it("leaves the active file tab and its text alone when a folder is tapped", async () => {
+    await ready();
+    await open("main.go");
+    await open("docs");
+    await screen.findByRole("treeitem", { name: "a.md" });
+    expect(tabNames()).toEqual(["main.go"]);
+    expect(activeTab()).toBe("main.go");
+    expect(screen.getByRole("treeitem", { name: "main.go" })).toHaveAttribute("aria-selected", "true");
+    expect(await screen.findByTestId("viewer")).toHaveTextContent("main.go|package main");
+  });
+
+  it("opens a file under an expanded folder in a tab", async () => {
+    await ready();
+    await open("docs");
+    await open("a.md");
+    expect(tabNames()).toEqual(["a.md"]);
+    expect(activeTab()).toBe("a.md");
   });
 
   it("closes a tab with its x and makes its right neighbour active", async () => {
@@ -223,25 +281,19 @@ describe("the tabs on a wide window", () => {
     expect(tabNames()).toEqual([]);
   });
 
-  it("keeps at most 8 tabs, closing the one unused longest and never the one just opened", async () => {
+  it("keeps every tab open however many files are opened", async () => {
     await ready("/a/hub-1/files/r1", nineFiles());
-    for (let number = 1; number <= 8; number += 1) await open(`f${number}.md`);
-    expect(tabNames()).toHaveLength(8);
-    await open("f1.md");
-    await open("f9.md");
-    expect(tabNames()).toHaveLength(8);
-    expect(tabNames()).not.toContain("f2.md");
-    expect(tabNames()).toContain("f1.md");
+    for (let number = 1; number <= 9; number += 1) await open(`f${number}.md`);
+    expect(tabNames()).toEqual(Array.from({ length: 9 }, (_, index) => `f${index + 1}.md`));
     expect(activeTab()).toBe("f9.md");
   });
 
-  it("can open the tab closed for room again", async () => {
+  it("still focuses a tab opened long ago when its file is tapped again with nine tabs open", async () => {
     await ready("/a/hub-1/files/r1", nineFiles());
     for (let number = 1; number <= 9; number += 1) await open(`f${number}.md`);
-    expect(tabNames()).not.toContain("f1.md");
     await open("f1.md");
     expect(activeTab()).toBe("f1.md");
-    expect(tabNames()).toHaveLength(8);
+    expect(tabNames()).toHaveLength(9);
   });
 });
 
@@ -267,12 +319,11 @@ describe("the Properties on a wide window", () => {
     expect(properties()?.Kind).toBe("Go code");
   });
 
-  it("holds the item count of a folder and no Kind or Size", async () => {
-    await ready("/a/hub-1/files/r1", { changes: { "r1:docs": agentOne } });
+  it("keeps the Folder's Properties when a folder row is tapped", async () => {
+    await ready();
     await open("docs");
-    await waitFor(() => expect(properties()?.Name).toBe("docs"));
-    expect(Object.keys(properties() ?? {})).toEqual(["Name", "Path", "Items", "Last changed", "Changed by"]);
-    expect(properties()).toMatchObject({ Path: "docs", Items: "3" });
+    await screen.findByRole("treeitem", { name: "a.md" });
+    expect(properties()).toMatchObject({ Name: "Field notes", Path: "/", Items: "5" });
   });
 
   it("shows a dash where a call has no answer", async () => {

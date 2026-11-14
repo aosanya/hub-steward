@@ -19,6 +19,12 @@ describe("the Folders list on a phone", () => {
     expect(rowTitles()).toEqual(["Field notes", "Budget"]);
   });
 
+  it("draws the list for a single Folder too", async () => {
+    show("/a/hub-1/files");
+    await screen.findByText("Field notes");
+    expect(rowTitles()).toEqual(["Field notes"]);
+  });
+
   it("is titled Files, with Back reading Home and leading to Home, and keeps the bottom bar", async () => {
     show("/a/hub-1/files");
     await screen.findByText("Field notes");

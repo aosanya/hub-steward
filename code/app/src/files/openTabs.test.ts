@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { focusTab, maxTabs, noTabs, openTab, showNoTab, withoutTab, type Tab } from "./openTabs";
+import { focusTab, noTabs, openTab, showNoTab, withoutTab, type Tab } from "./openTabs";
 
 const file = (name: string): Tab => ({ path: name, name, folder: false });
 
@@ -44,12 +44,17 @@ describe("the open tabs", () => {
     expect(tabs.active).toBeNull();
   });
 
-  it("closes the tab unused longest when a ninth is opened, never the new one", () => {
-    const eight = Array.from({ length: maxTabs }, (_, index) => `f${index + 1}`);
-    const tabs = openTab(focusTab(opened(...eight), "f1"), file("f9"));
-    expect(tabs.open).toHaveLength(maxTabs);
-    expect(names(tabs)).not.toContain("f2");
-    expect(names(tabs)).toContain("f1");
-    expect(tabs.active).toBe("f9");
+  it("keeps every tab open however many are opened, the new one active", () => {
+    const twelve = Array.from({ length: 12 }, (_, index) => `f${index + 1}`);
+    const tabs = opened(...twelve);
+    expect(names(tabs)).toEqual(twelve);
+    expect(tabs.active).toBe("f12");
+  });
+
+  it("keeps every tab open when an old one is focused and another is opened", () => {
+    const ten = Array.from({ length: 10 }, (_, index) => `f${index + 1}`);
+    const tabs = openTab(focusTab(opened(...ten), "f1"), file("f11"));
+    expect(names(tabs)).toEqual([...ten, "f11"]);
+    expect(tabs.active).toBe("f11");
   });
 });
