@@ -44,7 +44,7 @@ func formsGitFor(ctx context.Context, reg agencies.Registry, instanceID string) 
 	if role != agencies.RoleOwner && role != agencies.RoleAgent {
 		return nil, agencies.ErrInstanceNotFound
 	}
-	if err := mustBeMounted(ctx, reg, instanceID, "forms"); err != nil {
+	if err := mustBeMounted(ctx, reg, instanceID, "git"); err != nil {
 		return nil, err
 	}
 	return reg.GitManager(ctx, instanceID)
