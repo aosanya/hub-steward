@@ -6,7 +6,7 @@ import { forgetOpenAgency, openAgency } from "../agency/open";
 import type { Backlog } from "../backlogs/api";
 import type { StartStep } from "../coordinator/start/api";
 import type { MemberStep } from "../steps/api";
-import { forgetLastBacklogs, rememberBacklog } from "./lastBacklog";
+import { forgetLastBacklogs } from "./lastBacklog";
 import { HomeOptions } from "./HomeOptions";
 
 const step = { id: "s1", title: "Report", formName: "Report", roleName: "Farmer", workflowName: "", agencyName: "Alego", questions: [], state: "start", orderId: "o1", recordCode: "R1", earlier: [] } as MemberStep;
@@ -99,7 +99,7 @@ describe("Home options", () => {
 
   it("leaves out Start and Ongoing when the role has no workflows", async () => {
     show({ backlogs: [backlog("b1", "Backlog"), backlog("b2", "Other")] });
-    await screen.findByText("Backlog");
+    await screen.findByText("Backlogs");
     expect(screen.queryByText("Start")).not.toBeInTheDocument();
     expect(screen.queryByText("Ongoing")).not.toBeInTheDocument();
   });
@@ -179,31 +179,14 @@ describe("Home options", () => {
     expect(screen.queryAllByRole("button")).toHaveLength(0);
   });
 
-  it("lists the backlogs themselves for a role that only uses backlogs, the last one opened first", async () => {
-    rememberBacklog("b2");
-    show({ backlogs: [backlog("b1", "First"), backlog("b2", "Second"), backlog("b3", "Third")] });
-    await screen.findByText("Second");
-    expect(titles()).toEqual(["Second", "First", "Third"]);
-  });
-
-  it("keeps the order the hub gives when no backlog was opened, and opens a backlog's board or smart page", async () => {
+  it("shows one Backlogs row, not the backlogs themselves, for a role that only uses backlogs", async () => {
     const user = userEvent.setup();
     show({ backlogs: [backlog("b1", "First"), backlog("s1", "Ready ones", { kind: "smart" })] });
-    await screen.findByText("First");
-    expect(titles()).toEqual(["First", "Ready ones"]);
-    await user.click(screen.getByRole("button", { name: "First" }));
-    expect(landed).toBe("/a/alego/backlogs/b1/board");
-    await user.click(screen.getByRole("button", { name: "Ready ones" }));
-    expect(landed).toBe("/a/alego/backlogs/s1/smart");
-  });
-
-  it("remembers the backlog opened from Home as the one to list first next time", async () => {
-    const user = userEvent.setup();
-    show({ backlogs: [backlog("b1", "First"), backlog("b2", "Second")] });
-    await user.click(await screen.findByRole("button", { name: "Second" }));
-    cleanup();
-    show({ backlogs: [backlog("b1", "First"), backlog("b2", "Second")] });
-    await screen.findByText("Second");
-    expect(titles()).toEqual(["Second", "First"]);
+    await screen.findByText("Backlogs");
+    expect(titles()).toEqual(["Backlogs"]);
+    expect(screen.queryByText("First")).not.toBeInTheDocument();
+    expect(screen.queryByText("Ready ones")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Backlogs" }));
+    expect(landed).toBe("/a/alego/backlogs");
   });
 });

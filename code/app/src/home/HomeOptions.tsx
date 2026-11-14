@@ -4,17 +4,14 @@ import { hasModule, mcpAgencyClient, taskModule, type AgencyClient } from "../ag
 import { openAgencyId } from "../agency/open";
 import { askMayRead } from "../backlogs/access";
 import { allIssuesId, mcpBacklogsClient, type Backlog, type BacklogsClient } from "../backlogs/api";
-import { boardPath } from "../backlogs/paths";
 import { mcpFilesClient, filesHomePath, type FilesClient } from "../files";
 import { mcpStartClient, type StartClient } from "../coordinator/start/api";
 import { useLoad } from "../forms/useLoad";
 import { mcpStepsClient, type StepsClient } from "../steps/api";
-import { smartBacklogPath } from "../smartBacklog/paths";
 import { backlogsTab, ongoingTab, startTab, tabPathIn, type Tab } from "../tabs";
 import { Icon } from "../ui/Icon";
 import { ListRow, Rows } from "../ui/ListRow";
 import { LoadFailed } from "../ui/LoadState";
-import { lastBacklogId, rememberBacklog } from "./lastBacklog";
 
 type Props = {
   agency?: AgencyClient;
@@ -39,13 +36,6 @@ const visibleBacklogs = async (agency: AgencyClient, backlogs: Props["backlogs"]
   return (await mayRead()) ? backlogs.backlogs() : [];
 };
 
-const lastOpenedFirst = (rows: Backlog[]) => {
-  const last = lastBacklogId();
-  return [...rows.filter((row) => row.id === last), ...rows.filter((row) => row.id !== last)];
-};
-
-const pathOf = (row: Backlog) => (row.kind === "smart" ? smartBacklogPath(row.id) : boardPath(row.id));
-
 export function HomeOptions({ agency = mcpAgencyClient, start = mcpStartClient, steps = mcpStepsClient, backlogs = mcpBacklogsClient, mayRead = askMayRead, files = mcpFilesClient }: Props) {
   const navigate = useNavigate();
   const agencyId = openAgencyId();
@@ -57,35 +47,13 @@ export function HomeOptions({ agency = mcpAgencyClient, start = mcpStartClient, 
   if (workflows.state === "loading" || held.state === "loading" || filesMounted.state === "loading") return null;
   const hasWorkflows = workflows.state === "ready" && workflows.data;
   const rows = held.state === "ready" ? held.data.filter((row) => row.id !== allIssuesId) : [];
-  const options: Tab[] = [...(hasWorkflows ? [startTab, ongoingTab] : []), ...(hasWorkflows && rows.length > 0 ? [backlogsTab] : [])];
+  const options: Tab[] = [...(hasWorkflows ? [startTab, ongoingTab] : []), ...(rows.length > 0 ? [backlogsTab] : [])];
   const failedWords = [workflows.state === "error" ? "Start and Ongoing" : "", held.state === "error" ? "Backlogs" : ""].filter(Boolean).join(" and ");
   const filesRow =
     filesMounted.state === "ready" && filesMounted.data ? (
       <ListRow title="Files" start={<span className="mark" aria-hidden="true"><Icon name="folder" /></span>} end="›" onClick={() => navigate(filesHomePath())} />
     ) : null;
   const failures = failedWords ? <LoadFailed words={`${failedWords} could not be loaded.`} onRetry={retry} /> : null;
-  if (!hasWorkflows && rows.length > 0) {
-    return (
-      <>
-        <Rows>
-          {lastOpenedFirst(rows).map((row) => (
-            <ListRow
-              key={row.id}
-              title={row.name}
-              start={<span className="mark" aria-hidden="true"><Icon name={backlogsTab.icon} /></span>}
-              end="›"
-              onClick={() => {
-                rememberBacklog(row.id);
-                navigate(pathOf(row));
-              }}
-            />
-          ))}
-          {filesRow}
-        </Rows>
-        {failures}
-      </>
-    );
-  }
   if (options.length === 0 && !filesRow) return failures;
   return (
     <>
