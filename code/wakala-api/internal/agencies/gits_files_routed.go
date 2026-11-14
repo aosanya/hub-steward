@@ -48,7 +48,7 @@ func (g *repositoryFolderGit) ListRepositorySummaries(ctx context.Context) ([]mo
 	out := []models.RepositorySummary{}
 	err := g.eachFile(ctx, func(entry mwanachamagit.RepositoryCatalogEntry, file *mwanachamagit.RepoFile) error {
 		repo := g.repositoryOf(ctx, entry, file)
-		summary := models.RepositorySummary{ID: repo.ID, Name: repo.Name, DefaultBranch: repo.DefaultBranch}
+		summary := models.RepositorySummary{ID: repo.ID, Name: repo.Name, DefaultBranch: repo.DefaultBranch, LastCommitAt: entry.LastCommitAt}
 		if branch, err := file.GetBranchByName(ctx, repo.ID, repo.DefaultBranch); err == nil {
 			summary.DefaultBranchID = branch.ID
 		}
