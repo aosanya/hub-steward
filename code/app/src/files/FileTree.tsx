@@ -54,7 +54,8 @@ export function FileTree({ folderName, rows, selected, onFolder, onEntry, onTogg
           ) : (
             <span className="wf-chevron" />
           )}
-          <span className="wf-icon" aria-hidden="true">
+          {level > 2 ? <span className="wf-guide" aria-hidden="true" /> : null}
+          <span className="wf-icon fi" aria-hidden="true">
             <Icon name={entryIcon(entry)} />
           </span>
           <span className="wf-name">{entry.name}</span>
