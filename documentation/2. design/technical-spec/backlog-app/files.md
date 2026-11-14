@@ -21,7 +21,7 @@ Who may call the git tools is a separate gate. The forms git mount answers owner
 | # | Screen | What it shows | Tool |
 |---|---|---|---|
 | 1 | Home with Files | Home with the Files option beside Start, Ongoing and Backlogs, shown when the agency mounts git. The bottom bar is Home, Chat, Notifications, with no Files tab | `agency_get_agency`, `agency_list_mounts` |
-| 2 | Folders list | One row for each Folder: its name and "Changed 2 hours ago". Back goes to Home, which stays chosen in the bottom bar | `forms_git_repository_list`, then `forms_git_commit_log` for each row |
+| 2 | Folders list | One row for each Folder: its name and "Changed 2 hours ago". Back goes to Home, which stays chosen in the bottom bar | `forms_git_repository_list` alone |
 | 3 | A Folder's top level | The folders and files at the top, then the README text under the list, nothing else. The title is the Folder's name and Back reads Folders and goes to the Folders list | `forms_git_directory_list`, `forms_git_file_read` for the README |
 | 4 | A folder inside a folder | The same list one level down; Back, or a breadcrumb of the folder names above | `forms_git_directory_list` |
 | 5 | A code file | The name, one line "Changed 2 hours ago by Agent One", then the text highlighted with line numbers | `forms_git_file_read`, `forms_git_commit_log` |
@@ -38,7 +38,7 @@ Every tool also takes `instance_id`, the agency. Tool names are the module's own
 
 | Tool | Takes | Gives | Does not give |
 |---|---|---|---|
-| `forms_git_repository_list` | nothing else | For each Folder: `id`, `name`, `default_branch` (a name), `default_branch_id` | No last-changed time, no description, no count of files, no author |
+| `forms_git_repository_list` | nothing else | For each Folder: `id`, `name`, `default_branch` (a name), `default_branch_id`, `last_commit_at` (the time of its latest commit, left out for a Folder with no commit; hub issue ISS-12) | No description, no count of files, no author, no size |
 | `forms_git_directory_list` | `branchID`, `path` (empty is the top level) | For each entry directly inside: `name`, `path`, `is_dir`, `size` | No last-changed time and no author for an entry; no content type; what `size` holds for a folder is not verified |
 | `forms_git_file_read` | `branchID`, `path` | One file: `id`, `sha`, `path`, `name`, `extension`, `size`, `encoding` (`utf-8` or `base64`), `content` | No content type (the `extension` is the only hint), no last-changed time, no author, no line count |
 | `forms_git_commit_log` | `branchID`, optional `path`, optional `limit` | Newest first: `sha`, `author` (a name), `message`, `timestamp` (RFC 3339) | `author` is the name git recorded, not an actor id, so it is not tied to a person in the agency |
@@ -50,7 +50,7 @@ The Folder's `default_branch_id` from the list is the `branchID` every other cal
 | Line | Source |
 |---|---|
 | Folder name | `forms_git_repository_list`, `name` |
-| "Changed 2 hours ago" on a Folder | Not in the list. `forms_git_commit_log` with that Folder's `default_branch_id` and `limit` 1, read as `timestamp`. It is one more call for each row, so a list of ten Folders makes eleven calls. No tool gives it in one call. |
+| "Changed 2 hours ago" on a Folder | `forms_git_repository_list`, `last_commit_at` of that Folder, in the same call as the names. A Folder with no commit has none and its row has no Changed line. |
 | "Changed 2 hours ago by Agent One" on a file | `forms_git_commit_log` with the Folder's `default_branch_id`, the file's `path` and `limit` 1: `timestamp` and `author` |
 | README under a Folder's list | The entry in `forms_git_directory_list` named README, then `forms_git_file_read` |
 
@@ -58,7 +58,7 @@ The Folder's `default_branch_id` from the list is the `branchID` every other cal
 
 | Gap | What it means for the screens |
 |---|---|
-| The Folders list has no last-changed time | The Changed line costs one `forms_git_commit_log` call for each Folder. The row can show the name first and fill the time as each call returns. |
+| The Folders list time has no author | `last_commit_at` carries the time only, so the row says "Changed 2 hours ago" without "by". The author is in Properties. |
 | Folder and file rows in a folder have no last-changed time or author | Rows in a folder show the name and, for a file, its size only. They do not say "Changed". |
 | `author` is a name, not an actor | "by Agent One" is only as good as the name the committer set. Whether the agents and people of the hub commit under their display names is not verified. |
 | No content type, only `extension` and `encoding` | The viewer is chosen by extension (below). A file without an extension is shown as plain text when `encoding` is `utf-8`. |
@@ -81,7 +81,7 @@ Source: hub issue ISS-2. Built in `code/app/src/files/api.ts`. Read only: the cl
 
 | Call | Tool | Sends | Gives |
 |---|---|---|---|
-| `folders` | `forms_git_repository_list` | nothing else | For each Folder: `id`, `name`, `default_branch_id`. A row without a name or without a default branch id is dropped |
+| `folders` | `forms_git_repository_list` | nothing else | For each Folder: `id`, `name`, `default_branch_id`, `last_commit_at` (kept as `changedAt`, empty when the hub gives none). A row without a name or without a default branch id is dropped |
 | `list` | `forms_git_directory_list` | `branchID`, `path` | For each entry: `name`, `path`, `is_dir`, `size` |
 | `read` | `forms_git_file_read` | `branchID`, `path` | `extension`, `encoding`, `size`, `content` |
 | `readme` | `forms_git_directory_list`, then `forms_git_file_read` | as above | The README of a folder, or none |
@@ -124,7 +124,7 @@ Tests: `cd code/app && npm test` gave 326 files, 3647 tests passed, 14 todo. `sr
 | `is_dir` and `size` for folders | Whether they are filled for a folder entry is not known |
 | `author` | Whether it is a person's display name is not known |
 | `agency_list_mounts` for git | Whether it lists git for a real agency is not known |
-| The Changed call cost | One `forms_git_commit_log` call for each Folder |
+| The Changed call cost | None for the Folders list: the time comes with the list. One `forms_git_commit_log` call for a file's Changed line and for Properties |
 
 ## Which viewer opens a file
 
