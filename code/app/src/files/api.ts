@@ -15,7 +15,7 @@ export const fileSizeLimit = 1048576;
 
 export const gitModule = "git";
 
-export type Folder = { id: string; name: string; branchId: string };
+export type Folder = { id: string; name: string; branchId: string; changedAt: string };
 
 export type FolderEntry = { name: string; path: string; folder: boolean; size: number };
 
@@ -46,7 +46,12 @@ const readmeName = /^readme(\.[^.]+)?$/i;
 
 const isNotFound = (error: unknown) => error instanceof McpError && error.message.toLowerCase().includes("not found");
 
-export const folderOf = (raw: any): Folder => ({ id: text(raw?.id), name: text(raw?.name), branchId: text(raw?.default_branch_id) });
+export const folderOf = (raw: any): Folder => ({
+  id: text(raw?.id),
+  name: text(raw?.name),
+  branchId: text(raw?.default_branch_id),
+  changedAt: text(raw?.last_commit_at),
+});
 
 export const entryOf = (raw: any): FolderEntry => ({
   name: text(raw?.name),

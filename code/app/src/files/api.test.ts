@@ -10,7 +10,7 @@ type Blob = { extension?: string; encoding?: string; content?: string };
 const dir = (name: string, path: string): Row => ({ name, path, is_dir: true, size: 0 });
 const file = (name: string, path: string, size: number): Row => ({ name, path, is_dir: false, size });
 
-const folder = { id: "r1", name: "Field notes", branchId: "b1" };
+const folder = { id: "r1", name: "Field notes", branchId: "b1", changedAt: "" };
 
 type Hub = {
   dirs?: Record<string, Row[]>;
@@ -113,13 +113,13 @@ describe("the list of folders", () => {
   it("maps each repository to a folder with its default branch, through the read tool only", async () => {
     const { spy } = hub({
       repos: [
-        { id: "r1", name: "Field notes", default_branch: "main", default_branch_id: "b1" },
+        { id: "r1", name: "Field notes", default_branch: "main", default_branch_id: "b1", last_commit_at: "2026-11-13T10:00:00Z" },
         { id: "r2", name: "Minutes", default_branch: "trunk", default_branch_id: "b2" },
       ],
     });
     expect(await mcpFilesClient.folders()).toEqual([
-      { id: "r1", name: "Field notes", branchId: "b1" },
-      { id: "r2", name: "Minutes", branchId: "b2" },
+      { id: "r1", name: "Field notes", branchId: "b1", changedAt: "2026-11-13T10:00:00Z" },
+      { id: "r2", name: "Minutes", branchId: "b2", changedAt: "" },
     ]);
     expect(spy.mock.calls.map((call) => call[1])).toEqual(["forms_git_repository_list"]);
   });
@@ -133,7 +133,7 @@ describe("the list of folders", () => {
         { id: "r4", default_branch_id: "b4" },
       ],
     });
-    expect(await mcpFilesClient.folders()).toEqual([{ id: "r1", name: "Field notes", branchId: "b1" }]);
+    expect(await mcpFilesClient.folders()).toEqual([{ id: "r1", name: "Field notes", branchId: "b1", changedAt: "" }]);
   });
 
   it("gives an empty list when the hub has no repository", async () => {

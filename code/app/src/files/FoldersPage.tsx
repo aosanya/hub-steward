@@ -12,10 +12,9 @@ import { folderPath } from "./paths";
 
 type Props = { client: FilesClient };
 
-function FolderRow({ client, folder }: { client: FilesClient; folder: Folder }) {
+function FolderRow({ folder }: { folder: Folder }) {
   const navigate = useNavigate();
-  const changed = useLoad(() => client.changed(folder, ""), `folder-changed:${openAgencyId()}:${folder.id}`);
-  const when = changed.state === "ready" && changed.data ? agoWords(changed.data.when) : "";
+  const when = agoWords(folder.changedAt);
   return (
     <ListRow
       title={folder.name}
@@ -39,7 +38,7 @@ export function FoldersPage({ client }: Props) {
       {folders.state === "ready" && folders.data.length > 0 ? (
         <Rows>
           {folders.data.map((folder) => (
-            <FolderRow key={folder.id} client={client} folder={folder} />
+            <FolderRow key={folder.id} folder={folder} />
           ))}
         </Rows>
       ) : null}

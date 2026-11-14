@@ -35,16 +35,20 @@ describe("the Folders list on a phone", () => {
     expect(where()).toBe("/a/hub-1/home");
   });
 
-  it("says under each row when its Folder last changed, asking once for each Folder's top level", async () => {
-    const client = show("/a/hub-1/files", { folders: [folder, budget], changes: { "r1:": agentOne, "r2:": agentTwo } });
+  it("says under each row when its Folder last changed, from the list itself with no call for each Folder", async () => {
+    const client = show("/a/hub-1/files", {
+      folders: [
+        { ...folder, changedAt: agentOne.when },
+        { ...budget, changedAt: agentTwo.when },
+      ],
+    });
     expect(await screen.findByText("Changed 2 hours ago")).toBeInTheDocument();
     expect(screen.getByText("Changed 3 days ago")).toBeInTheDocument();
-    expect(client.changed).toHaveBeenCalledWith(folder, "");
-    expect(client.changed).toHaveBeenCalledWith(budget, "");
+    expect(client.changed).not.toHaveBeenCalled();
   });
 
-  it("leaves the Changed line off a row whose Folder has no answer", async () => {
-    show("/a/hub-1/files", { folders: [folder, budget], changes: { "r1:": agentOne } });
+  it("leaves the Changed line off a row whose Folder has no time", async () => {
+    show("/a/hub-1/files", { folders: [{ ...folder, changedAt: agentOne.when }, budget] });
     await screen.findByText("Changed 2 hours ago");
     expect(screen.queryAllByText(/^Changed/)).toHaveLength(1);
   });

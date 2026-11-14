@@ -6,9 +6,9 @@ import * as mcp from "../wakala/mcp";
 import type { Changed, FileAnswer, FilesClient, Folder, FolderEntry, Listing, Readme } from "./api";
 import { FilesRoutes } from "./index";
 
-export const folder: Folder = { id: "r1", name: "Field notes", branchId: "b1" };
+export const folder: Folder = { id: "r1", name: "Field notes", branchId: "b1", changedAt: "" };
 
-export const budget: Folder = { id: "r2", name: "Budget", branchId: "b2" };
+export const budget: Folder = { id: "r2", name: "Budget", branchId: "b2", changedAt: "" };
 
 export const twoHoursAgo = "2026-11-13T10:00:00Z";
 
