@@ -521,5 +521,5 @@ const renderBlocks = (blocks: Block[], tight: boolean): ReactNode[] =>
 
 export function MarkdownPage({ source }: { source: string }) {
   const lines = source.replace(/\r\n?/g, "\n").replace(/\t/g, "    ").split("\n");
-  return <div className="doc-page">{renderBlocks(parseBlocks(lines, 0), false)}</div>;
+  return <div className="doc-page card">{renderBlocks(parseBlocks(lines, 0), false)}</div>;
 }
