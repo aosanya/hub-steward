@@ -1,6 +1,8 @@
 import { hasModule, mcpAgencyClient } from "../agency/modules";
 import { itemsOf } from "../backlogs/api";
 import { McpError, callTool } from "../wakala/mcp";
+import { extensionOf } from "./fileKind";
+import { viewerFor } from "./viewer/viewerFor";
 
 export const filesTools = {
   repos: "forms_git_repository_list",
@@ -21,6 +23,7 @@ export type Listing = { status: "listed"; entries: FolderEntry[] } | { status: "
 
 export type FileAnswer =
   | { status: "text"; name: string; path: string; extension: string; size: number; content: string }
+  | { status: "image"; name: string; path: string; extension: string; size: number; bytes: Uint8Array }
   | { status: "withheld"; name: string; path: string; size: number; reason: "too large" | "not text" }
   | { status: "missing" };
 
@@ -52,6 +55,11 @@ export const entryOf = (raw: any): FolderEntry => ({
   size: typeof raw?.size === "number" ? raw.size : 0,
 });
 
+const bytesOfBase64 = (encoded: string) => Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
+
+const imageBytes = (encoding: string, content: string) =>
+  encoding === "base64" ? bytesOfBase64(content) : new TextEncoder().encode(content);
+
 const parentOf = (path: string) => path.slice(0, Math.max(path.lastIndexOf("/"), 0));
 
 const list = async (folder: Folder, path: string): Promise<Listing> => {
@@ -73,8 +81,13 @@ const read = async (folder: Folder, path: string): Promise<FileAnswer> => {
   if (size > fileSizeLimit) return { status: "withheld", name, path, size, reason: "too large" };
   try {
     const blob = await callTool("", filesTools.file, { branchID: folder.branchId, path });
-    if (text(blob?.encoding) !== "utf-8") return { status: "withheld", name, path, size, reason: "not text" };
-    return { status: "text", name, path, extension: text(blob?.extension), size, content: text(blob?.content) };
+    const encoding = text(blob?.encoding);
+    const extension = text(blob?.extension) || extensionOf(name);
+    if (viewerFor(name, extension) === "image") {
+      return { status: "image", name, path, extension, size, bytes: imageBytes(encoding, text(blob?.content)) };
+    }
+    if (encoding !== "utf-8") return { status: "withheld", name, path, size, reason: "not text" };
+    return { status: "text", name, path, extension, size, content: text(blob?.content) };
   } catch (error) {
     if (isNotFound(error)) return { status: "missing" };
     throw error;
