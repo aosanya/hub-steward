@@ -236,14 +236,74 @@ describe("reading a file", () => {
     expect(called(spy, "forms_git_file_read")).toHaveLength(1);
   });
 
-  it("withholds a file the hub gives as base64, with no content", async () => {
+  it("withholds a binary that is not an image, with no content", async () => {
     hub({
-      dirs: { "": [file("photo.png", "photo.png", 2048)] },
+      dirs: { "": [file("data.bin", "data.bin", 2048)] },
+      blobs: { "data.bin": { extension: "bin", encoding: "base64", content: "iVBORw0KGgo=" } },
+    });
+    const answer = await mcpFilesClient.read(folder, "data.bin");
+    expect(answer).toEqual({ status: "withheld", name: "data.bin", path: "data.bin", size: 2048, reason: "not text" });
+    expect(answer).not.toHaveProperty("content");
+  });
+
+  it("decodes the base64 of a png into its bytes", async () => {
+    hub({
+      dirs: { "": [file("photo.png", "photo.png", 8)] },
       blobs: { "photo.png": { extension: "png", encoding: "base64", content: "iVBORw0KGgo=" } },
     });
     const answer = await mcpFilesClient.read(folder, "photo.png");
-    expect(answer).toEqual({ status: "withheld", name: "photo.png", path: "photo.png", size: 2048, reason: "not text" });
+    expect(answer).toMatchObject({ status: "image", name: "photo.png", path: "photo.png", extension: "png", size: 8 });
     expect(answer).not.toHaveProperty("content");
+    expect(answer.status === "image" ? Array.from(answer.bytes) : []).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+  });
+
+  it("gives a jpg, a gif and a webp as images too", async () => {
+    hub({
+      dirs: { "": [file("a.jpg", "a.jpg", 3), file("b.gif", "b.gif", 3), file("c.webp", "c.webp", 3)] },
+      blobs: {
+        "a.jpg": { extension: "jpg", encoding: "base64", content: "AAEC" },
+        "b.gif": { extension: "gif", encoding: "base64", content: "AAEC" },
+        "c.webp": { extension: "webp", encoding: "base64", content: "AAEC" },
+      },
+    });
+    for (const path of ["a.jpg", "b.gif", "c.webp"]) {
+      expect(await mcpFilesClient.read(folder, path)).toMatchObject({ status: "image", path });
+    }
+  });
+
+  it("gives an svg, which the hub sends as utf-8 text, as image bytes and never as text", async () => {
+    const markup = '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>';
+    hub({
+      dirs: { "": [file("logo.svg", "logo.svg", markup.length)] },
+      blobs: { "logo.svg": { extension: "svg", encoding: "utf-8", content: markup } },
+    });
+    const answer = await mcpFilesClient.read(folder, "logo.svg");
+    expect(answer).toMatchObject({ status: "image", extension: "svg" });
+    expect(answer).not.toHaveProperty("content");
+    expect(answer.status === "image" ? new TextDecoder().decode(answer.bytes) : "").toBe(markup);
+  });
+
+  it("takes the extension from the name when the hub sends none", async () => {
+    hub({
+      dirs: { "": [file("photo.png", "photo.png", 3)] },
+      blobs: { "photo.png": { encoding: "base64", content: "AAEC" } },
+    });
+    expect(await mcpFilesClient.read(folder, "photo.png")).toMatchObject({ status: "image", extension: "png" });
+  });
+
+  it("withholds an image over the size limit without reading it", async () => {
+    const { spy } = hub({
+      dirs: { "": [file("huge.png", "huge.png", fileSizeLimit + 1)] },
+      blobs: { "huge.png": { extension: "png", encoding: "base64", content: "AAEC" } },
+    });
+    expect(await mcpFilesClient.read(folder, "huge.png")).toEqual({
+      status: "withheld",
+      name: "huge.png",
+      path: "huge.png",
+      size: fileSizeLimit + 1,
+      reason: "too large",
+    });
+    expect(called(spy, "forms_git_file_read")).toHaveLength(0);
   });
 
   it("answers missing when the path is not in the listing of its folder", async () => {

@@ -66,6 +66,16 @@ describe("file viewer", () => {
     expect(container.textContent).toContain("logo.png");
   });
 
+  it("draws an svg with a script element as an img and lets no script element or markup reach the page", () => {
+    const markup = '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>';
+    const bytes = new TextEncoder().encode(markup);
+    const { container } = render(<FileViewer name="logo.svg" extension="svg" text={null} size={bytes.length} bytes={bytes} />);
+    expect(container.querySelector("img")?.getAttribute("src")).toMatch(/^data:image\/svg\+xml;base64,/);
+    expect(container.querySelector("script")).toBeNull();
+    expect(container.querySelector("svg")).toBeNull();
+    expect(container.textContent).not.toContain("alert(1)");
+  });
+
   it("says an image without bytes could not be shown and draws no image", () => {
     const { container } = render(<FileViewer name="logo.png" extension="png" text={null} size={1536} bytes={null} />);
     expect(container.querySelector("img")).toBeNull();

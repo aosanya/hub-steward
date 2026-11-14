@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { agentOne, backText, barTitle, folder, goBack, prepare, release, show, where } from "./filesFixture";
 
 vi.mock("./viewer/FileViewer", () => ({
-  FileViewer: (props: { name: string; text: string | null; reason?: string }) => (
-    <div data-testid="viewer">
+  FileViewer: (props: { name: string; extension: string; text: string | null; reason?: string; bytes?: Uint8Array | null }) => (
+    <div data-testid="viewer" data-extension={props.extension} data-bytes={props.bytes ? props.bytes.length : ""}>
       {props.name}|{props.text ?? ""}|{props.reason ?? ""}
     </div>
   ),
@@ -50,6 +50,15 @@ describe("a file's screen on a phone", () => {
   it("hands a file the app will not show to the viewer with no text and its reason", async () => {
     show("/a/hub-1/files/r1/file?path=big.bin", { answers: { "big.bin": { status: "withheld", name: "big.bin", path: "big.bin", size: 2000000, reason: "too large" } } });
     expect(await screen.findByTestId("viewer")).toHaveTextContent("big.bin||too large");
+  });
+
+  it("hands an image's extension and bytes to the viewer, with no text", async () => {
+    const answers = { "photo.png": { status: "image", name: "photo.png", path: "photo.png", extension: "png", size: 3, bytes: new Uint8Array([0, 1, 2]) } } as const;
+    show("/a/hub-1/files/r1/file?path=photo.png", { answers });
+    const viewer = await screen.findByTestId("viewer");
+    expect(viewer).toHaveTextContent("photo.png||");
+    expect(viewer).toHaveAttribute("data-extension", "png");
+    expect(viewer).toHaveAttribute("data-bytes", "3");
   });
 
   it("has a file inside a folder name that folder in Back and lead to it", async () => {

@@ -4,7 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { activeTab, agentOne, backText, barTitle, budget, folder, goBack, nineFiles, prepare, properties, readmeText, release, rowTitles, seen, show, tabNames, treeNames, where, type Setup } from "./filesFixture";
 
 vi.mock("./viewer/FileViewer", () => ({
-  FileViewer: (props: { name: string; text: string | null }) => <div data-testid="viewer">{props.name}|{props.text ?? ""}</div>,
+  FileViewer: (props: { name: string; extension: string; text: string | null; bytes?: Uint8Array | null }) => (
+    <div data-testid="viewer" data-extension={props.extension} data-bytes={props.bytes ? props.bytes.length : ""}>
+      {props.name}|{props.text ?? ""}
+    </div>
+  ),
 }));
 
 beforeEach(() => prepare(true));
@@ -163,6 +167,17 @@ describe("the tree on a wide window", () => {
     expect(screen.getByRole("treeitem", { name: "docs" })).toHaveAttribute("aria-expanded", "true");
     expect(activeTab()).toBe("a.md");
     expect(await screen.findByTestId("viewer")).toHaveTextContent("a.md|# Alpha");
+  });
+});
+
+describe("an image on a wide window", () => {
+  it("hands the image's extension and bytes to the viewer, with no text", async () => {
+    const answers = { "photo.png": { status: "image", name: "photo.png", path: "photo.png", extension: "png", size: 3, bytes: new Uint8Array([0, 1, 2]) } } as const;
+    show("/a/hub-1/files/r1/file?path=photo.png", { answers });
+    const viewer = await screen.findByTestId("viewer");
+    expect(viewer).toHaveTextContent("photo.png|");
+    expect(viewer).toHaveAttribute("data-extension", "png");
+    expect(viewer).toHaveAttribute("data-bytes", "3");
   });
 });
 
