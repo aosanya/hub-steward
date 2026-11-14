@@ -94,7 +94,8 @@ Source: hub issue ISS-2. Built in `code/app/src/files/api.ts`. Read only: the cl
 | One number | `fileSizeLimit` is 1048576 bytes (1 MiB), one constant in `code/app/src/files/api.ts`. Change that number and nothing else |
 | Read from the listing | The size comes from the directory entry, so a file over the limit is never fetched |
 | At the limit | A file of exactly the limit is read |
-| Not text | A file whose `encoding` is not `utf-8` (images included for now; the Image viewer below is not built in this layer) comes back as its name, size and a plain reason, "too large" or "not text", with no content |
+| Image | A file whose extension the viewer calls an image (png, jpg, jpeg, gif, webp, svg) and that is under the limit comes back with `status` `image` and its `bytes`: the base64 `content` decoded, or, for an svg, which the hub sends as `utf-8` text, the text encoded. The extension is the hub's `extension`, else the one in the name |
+| Not text | Any other file whose `encoding` is not `utf-8` comes back as its name, size and a plain reason, "too large" or "not text", with no content |
 
 ### Not found
 
@@ -134,7 +135,7 @@ The viewer is chosen by the file's `extension`, then by `encoding`.
 | Code | go, ts, tsx, js, jsx, json, py, sh, sql, css, html, yaml, yml, toml, xml, mod, sum, makefile, env | Highlighted with line numbers |
 | Markdown | md, markdown | Rendered as a page |
 | Plain text | txt, log, csv, and any file with no extension whose `encoding` is `utf-8` | The text on a page, no line numbers |
-| Image | png, jpg, jpeg, gif, webp, svg | The picture, from the `base64` content. Not built in the data layer yet: an image comes back as name and size, reason "not text" |
+| Image | png, jpg, jpeg, gif, webp, svg | The picture, drawn from the `bytes` the data layer decoded. An svg is drawn as an image, never inserted as markup |
 | Name and size only | Every other extension; any file whose `encoding` is `base64` and is not an image; any file over the limit | The name, the size and the Changed line, no content |
 
 The size limit above which a file shows as name and size only is the app's own, 1 MiB ([The size limit](#the-size-limit)). The backend has none for reading, so the app reads the `size` from `forms_git_directory_list` first and does not call `forms_git_file_read` for a file over it.
@@ -300,7 +301,7 @@ An unknown or missing extension with text is plain text.
 
 `forms_git_file_read` gives `encoding` (`base64` for a non-text file) and `content` (the bytes as base64), so the tool can return image bytes. Not verified against a live hub.
 
-The Image row in "Which viewer opens a file" above is superseded: the data layer (`code/app/src/files/api.ts`, `FileAnswer`) still answers every non-utf-8 file as withheld "not text" with no content. Today an image therefore shows its name, size and "This image could not be shown." Passing the base64 `content` through the data layer and decoding it into `bytes` on the screen is what is left; an image over the 1 MiB limit stays withheld.
+Source: hub issue ISS-9. The hub encodes a file as `base64` when it holds a null byte or is not valid UTF-8 and as `utf-8` otherwise (`code/wakala-api/modules/git/git_impl_blobcache.go`), so a png, jpg, gif or webp arrives as `base64` and an svg arrives as `utf-8` text. The data layer (`code/app/src/files/api.ts`) answers any of them under the 1 MiB limit with `status` `image` and `bytes`; `FilePage` and `WideContent` hand `bytes` and `extension` to `FileViewer`, which draws an `img` from a `data:` URL, so an svg with a script element shows as a picture and no script element reaches the page. An image over the limit stays withheld "too large", and a binary that is not an image stays withheld "not text". Not verified against a live hub.
 
 ### Tests
 
@@ -319,7 +320,7 @@ Not verified: a real browser render at phone width and the sideways scroll (jsdo
 | A Folder's top level | Folders first, then files, then the README text under the list (`FolderPage`) |
 | A folder inside a folder | The same screen at a path; Back reads the parent's name |
 | The empty Folder | The empty card with Back to Folders |
-| A file | The name in the bar, the Changed line, then the viewer from `files/viewer` chosen by extension (`FilePage`) |
+| A file | The name in the bar, the Changed line, then the viewer from `files/viewer` chosen by extension (`FilePage`); an image shows as a picture |
 | The wide window | Tree at the left, tab strip over the content in the middle, Properties panel at the right, an empty status bar along the bottom and no bottom bar (`WideFiles` with `FileTree`, `TabStrip`, `PropertiesPanel`, `WideContent`) |
 
 ### Data layer and tab state
