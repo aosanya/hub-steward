@@ -20,6 +20,7 @@ const activate = (act: () => void) => (event: KeyboardEvent<HTMLElement>) => {
 };
 
 export function FileTree({ folderName, rows, selected, onFolder, onEntry, onToggle }: Props) {
+  const choose = (entry: FolderEntry) => (entry.folder ? onToggle(entry.path) : onEntry(entry));
   return (
     <div className="wf-tree" role="tree" aria-label="Files">
       <div className="wf-row wf-root" role="treeitem" aria-level={1} aria-selected={selected === null} aria-label={folderName} tabIndex={0} onClick={onFolder} onKeyDown={activate(onFolder)}>
@@ -36,8 +37,8 @@ export function FileTree({ folderName, rows, selected, onFolder, onEntry, onTogg
           aria-label={entry.name}
           tabIndex={0}
           style={{ ["--level" as string]: level - 2 }}
-          onClick={() => onEntry(entry)}
-          onKeyDown={activate(() => onEntry(entry))}
+          onClick={() => choose(entry)}
+          onKeyDown={activate(() => choose(entry))}
         >
           {entry.folder ? (
             <button

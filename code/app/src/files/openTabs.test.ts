@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { focusTab, noTabs, openTab, showNoTab, withoutTab, type Tab } from "./openTabs";
 
-const file = (name: string): Tab => ({ path: name, name, folder: false });
+const file = (name: string): Tab => ({ path: name, name });
 
 const names = (tabs: { open: Tab[] }) => tabs.open.map((tab) => tab.name);
 

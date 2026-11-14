@@ -10,7 +10,7 @@ export function TabStrip({ tabs, active, onFocus, onClose }: Props) {
       {tabs.map((tab) => (
         <div key={tab.path} className={tab.path === active ? "wf-tab active" : "wf-tab"} role="presentation">
           <span className="wf-icon fi" aria-hidden="true">
-            <Icon name={entryIcon(tab)} />
+            <Icon name={entryIcon({ ...tab, folder: false })} />
           </span>
           <button type="button" role="tab" className="wf-tab-name" aria-selected={tab.path === active} title={tab.path} onClick={() => onFocus(tab.path)}>
             {tab.name}

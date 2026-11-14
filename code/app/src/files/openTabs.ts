@@ -1,4 +1,4 @@
-export type Tab = { path: string; name: string; folder: boolean };
+export type Tab = { path: string; name: string };
 
 export type Tabs = { open: Tab[]; active: string | null };
 

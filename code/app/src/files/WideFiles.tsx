@@ -16,19 +16,20 @@ import { useListings } from "./useListings";
 import { Description, FileContent } from "./WideContent";
 import "./wideFiles.css";
 
-type Start = Tab | null;
+type Start = { path: string; file: boolean } | null;
 
-const tabFor = (entry: FolderEntry): Tab => ({ path: entry.path, name: entry.name, folder: entry.folder });
+const tabFor = (entry: FolderEntry): Tab => ({ path: entry.path, name: entry.name });
 
-const startAt = (path: string | null, isFile: boolean): Start => (path ? { path, name: lastNameOf(path), folder: !isFile } : null);
+const startAt = (path: string | null, file: boolean): Start => (path ? { path, file } : null);
 
-const revealing = (start: Start) => (start ? [...ancestorsOf(start.path), ...(start.folder ? [start.path] : [])] : []);
+const revealing = (start: Start) => (start ? [...ancestorsOf(start.path), ...(start.file ? [] : [start.path])] : []);
+
+const startingTabs = (start: Start): Tabs => (start?.file ? openTab(noTabs, { path: start.path, name: lastNameOf(start.path) }) : noTabs);
 
 function FilesWindow({ client, folder, start }: { client: FilesClient; folder: Folder; start: Start }) {
-  const [tabs, setTabs] = useState<Tabs>(() => (start ? openTab(noTabs, start) : noTabs));
+  const [tabs, setTabs] = useState<Tabs>(() => startingTabs(start));
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(() => new Set(revealing(start)));
-  const folderTabs = tabs.open.filter((tab) => tab.folder).map((tab) => tab.path);
-  const wanted = useMemo(() => [...new Set([topLevel, ...expanded, ...folderTabs])], [expanded, folderTabs.join("\n")]);
+  const wanted = useMemo(() => [...new Set([topLevel, ...expanded])], [expanded]);
   const listings = useListings(client, folder, wanted);
   const rootEntries = listings.entries[topLevel];
   const active = tabs.open.find((tab) => tab.path === tabs.active) ?? null;
@@ -47,18 +48,17 @@ function FilesWindow({ client, folder, start }: { client: FilesClient; folder: F
 
   const sizeOf = (path: string) => listings.entries[parentPathOf(path)]?.find((entry) => entry.path === path)?.size ?? null;
   const selection: Selection | null = active
-    ? { path: active.path, name: active.name, folder: active.folder, size: active.folder ? null : sizeOf(active.path), items: listings.entries[active.path]?.length ?? null }
+    ? { path: active.path, name: active.name, folder: false, size: sizeOf(active.path), items: null }
     : { path: topLevel, name: folder.name, folder: true, size: null, items: rootEntries?.length ?? null };
-  const propertiesReady = active ? !active.folder || selection.items !== null : Boolean(rootEntries && rootEntries.length > 0);
+  const propertiesReady = active ? true : Boolean(rootEntries && rootEntries.length > 0);
 
   const content = () => {
-    if (active && !active.folder) return <FileContent key={active.path} client={client} folder={folder} path={active.path} />;
-    const path = active ? active.path : topLevel;
-    const answer = listings.answers[path];
+    if (active) return <FileContent key={active.path} client={client} folder={folder} path={active.path} />;
+    const answer = listings.answers[topLevel];
     if (!answer) return <LoadingLine />;
-    if (answer.status === "failed") return <LoadFailed words="The Folder could not be loaded." onRetry={() => listings.retry(path)} />;
+    if (answer.status === "failed") return <LoadFailed words="The Folder could not be loaded." onRetry={() => listings.retry(topLevel)} />;
     if (answer.status === "missing") return <EmptyCard words="Folder not found" />;
-    return <Description key={path} client={client} folder={folder} path={path} empty={answer.entries.length === 0} />;
+    return <Description client={client} folder={folder} path={topLevel} empty={answer.entries.length === 0} />;
   };
 
   return (
