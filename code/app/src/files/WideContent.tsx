@@ -37,6 +37,13 @@ export function FileContent({ client, folder, path }: Props) {
   if (file.state === "error") return <LoadFailed words="The file could not be loaded." onRetry={() => setAttempt(attempt + 1)} />;
   const answer = file.data;
   if (answer.status === "missing") return <EmptyCard words="File not found" />;
+  if (answer.status === "image") {
+    return (
+      <div className="wf-doc">
+        <FileViewer name={answer.name} extension={answer.extension} text={null} size={answer.size} bytes={answer.bytes} />
+      </div>
+    );
+  }
   if (answer.status === "withheld") {
     return (
       <div className="wf-doc">

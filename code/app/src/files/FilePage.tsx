@@ -39,9 +39,10 @@ export function FilePage({ client }: { client: FilesClient }) {
           <ChangedLine client={client} folder={folder} path={path} />
           <FileViewer
             name={answer.name}
-            extension={answer.status === "text" ? answer.extension : ""}
+            extension={answer.status === "withheld" ? "" : answer.extension}
             text={answer.status === "text" ? answer.content : null}
             size={answer.size}
+            bytes={answer.status === "image" ? answer.bytes : null}
             reason={answer.status === "withheld" ? answer.reason : undefined}
           />
         </>
