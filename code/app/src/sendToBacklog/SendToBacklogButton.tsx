@@ -6,7 +6,6 @@ import { SendToBacklog } from "./SendToBacklog";
 import type { SendClient } from "./types";
 import { useTargets } from "./useTargets";
 import { sendWords } from "./words";
-import "./sendToBacklog.css";
 
 type Props = { issueId: string; from?: string[]; onSent?: () => void; onOutcome?: (words: string) => void; client?: SendClient };
 

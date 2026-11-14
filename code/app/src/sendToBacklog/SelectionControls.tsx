@@ -4,11 +4,10 @@ import type { Selecting } from "./selection";
 import type { SendClient } from "./types";
 import { useTargets } from "./useTargets";
 import { allWords, cancelWords, selectedWords, selectWords, sendWords, someOnlySeenWords } from "./words";
-import "./sendToBacklog.css";
 
 export function SelectButton({ onStart }: { onStart: () => void }) {
   return (
-    <button type="button" className="send-act" onClick={onStart}>
+    <button type="button" className="act" onClick={onStart}>
       {selectWords}
     </button>
   );
@@ -19,7 +18,7 @@ export const selectingShell = (selecting: Selecting, shownIds: string[]) => ({
   onBack: selecting.cancel,
   backLabel: cancelWords,
   action: (
-    <button type="button" className="send-act" onClick={() => selecting.selectAll(shownIds)}>
+    <button type="button" className="act" onClick={() => selecting.selectAll(shownIds)}>
       {allWords}
     </button>
   ),

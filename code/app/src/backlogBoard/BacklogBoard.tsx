@@ -9,6 +9,7 @@ import type { TodoCountsClient } from "../backlogs/todoCounts/api";
 import { TodoCountScope } from "../backlogs/todoCounts/TodoCountScope";
 import { effortPicker } from "../backlogs/effortPicker";
 import { priorityPicker } from "../backlogs/priorityPicker";
+import { useLanguage } from "../entry/language";
 import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam } from "../backlogs/paths";
 import { narrowed, toggled } from "../backlogs/tags";
 import { backlogPagePath } from "../backlogPage/paths";
@@ -30,6 +31,7 @@ const countWords = (shown: number, steps: number) => `${shown} ${shown === 1 ? "
 export function BacklogBoard({ client = mcpBacklogsClient, capsClient, todoCounts }: { client?: BacklogsClient; capsClient?: CapsClient; todoCounts?: TodoCountsClient }) {
   const { backlogId = "" } = useParams();
   const navigate = useNavigate();
+  const { words } = useLanguage();
   const here = useLocation();
   const [search, setSearch] = useSearchParams();
   const chosen = search.getAll(tagParam);
@@ -75,7 +77,7 @@ export function BacklogBoard({ client = mcpBacklogsClient, capsClient, todoCount
   );
   const shell = selecting.on
     ? selectingShell(selecting, shown.map((issue) => issue.id))
-    : { title, onBack: () => navigate(backlogsHomePath()), action: backlog ? action : undefined };
+    : { title, onBack: () => navigate(backlogsHomePath()), backLabel: words.backBacklogs, titleUnder: true, action: backlog ? action : undefined };
 
   return (
     <Shell {...shell} tabless={selecting.on}>
