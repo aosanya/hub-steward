@@ -90,7 +90,7 @@ export function WideFiles({ client }: { client: FilesClient }) {
   const onFile = useLocation().pathname.endsWith("/file");
   const [attempt, setAttempt] = useState(0);
   const folders = useLoad(() => client.folders(), `wide-folders:${openAgencyId()}:${attempt}`);
-  const known = folders.state === "ready" ? (folderId ? folders.data.find((one) => one.id === folderId) : folders.data[0]) : undefined;
+  const known = folders.state === "ready" ? folders.data.find((one) => one.id === folderId) : undefined;
   return (
     <Shell title={known?.name ?? "Files"} backLabel="Folders" onBack={() => navigate(filesHomePath())} tabless>
       {folders.state === "loading" ? <LoadingLine /> : null}

@@ -10,7 +10,7 @@ export function FilesRoutes({ client = mcpFilesClient }: { client?: FilesClient 
   const wide = useWide();
   return (
     <Routes>
-      <Route index element={wide ? <WideFiles client={client} /> : <FoldersPage client={client} />} />
+      <Route index element={<FoldersPage client={client} />} />
       <Route path=":folderId" element={wide ? <WideFiles client={client} /> : <FolderPage client={client} />} />
       <Route path=":folderId/file" element={wide ? <WideFiles client={client} /> : <FilePage client={client} />} />
     </Routes>
