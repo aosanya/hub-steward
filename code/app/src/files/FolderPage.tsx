@@ -3,7 +3,6 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
 import { Button } from "../ui/Button";
-import { Card } from "../ui/Card";
 import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 import { Shell } from "../ui/Shell";
 import type { FilesClient, Folder, FolderEntry, Readme } from "./api";
@@ -59,9 +58,7 @@ export function FolderPage({ client }: { client: FilesClient }) {
           <FolderList folder={opened.data.folder} entries={opened.data.entries} />
           {opened.data.readme ? (
             <div className="readme">
-              <Card>
-                <MarkdownPage source={opened.data.readme.content} />
-              </Card>
+              <MarkdownPage source={opened.data.readme.content} />
             </div>
           ) : null}
         </>

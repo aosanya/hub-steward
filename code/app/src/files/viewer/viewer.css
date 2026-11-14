@@ -14,8 +14,8 @@
 .doc-page > :first-child { margin-top: 0; }
 .doc-page > :last-child { margin-bottom: 0; }
 .doc-page h1, .doc-page h2, .doc-page h3, .doc-page h4, .doc-page h5, .doc-page h6 { margin: 1.5rem 0 .5rem; line-height: 1.25; }
-.doc-page h1 { font-size: 1.75rem; }
-.doc-page h2 { font-size: 1.4rem; }
+.doc-page h1 { font-size: 1.5rem; }
+.doc-page h2 { font-size: 1rem; }
 .doc-page h3 { font-size: 1.15rem; }
 .doc-page h4, .doc-page h5, .doc-page h6 { font-size: 1rem; }
 .doc-page p, .doc-page ul, .doc-page ol, .doc-page table, .doc-page pre, .doc-page blockquote { margin: 0 0 1rem; }
