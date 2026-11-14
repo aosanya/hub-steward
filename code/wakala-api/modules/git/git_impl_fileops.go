@@ -121,9 +121,13 @@ func buildNestedTrees(files map[string]plumbing.Hash) (plumbing.Hash, []treeReco
 }
 
 func (m *gitManager) WriteFile(ctx context.Context, req WriteFileRequest) (models.Commit, error) {
+	return m.commitPathChange(ctx, req, false)
+}
+
+func (m *gitManager) commitPathChange(ctx context.Context, req WriteFileRequest, remove bool) (models.Commit, error) {
 	var result models.Commit
 	lockErr := m.locker.WithMergeLock(ctx, func() error {
-		c, err := m.writeFileLocked(ctx, req)
+		c, err := m.writeFileLocked(ctx, req, remove)
 		if err != nil {
 			return err
 		}
@@ -136,7 +140,7 @@ func (m *gitManager) WriteFile(ctx context.Context, req WriteFileRequest) (model
 	return result, nil
 }
 
-func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) (models.Commit, error) {
+func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest, remove bool) (models.Commit, error) {
 	if err := m.checkFileSize(req); err != nil {
 		return models.Commit{}, fmt.Errorf("WriteFile: %w", err)
 	}
@@ -162,32 +166,14 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 	commitTime := time.Now().UTC()
 	now := commitTime.Format(time.RFC3339)
 
-	blobObj := &plumbing.MemoryObject{}
-	blobObj.SetType(plumbing.BlobObject)
-	blobW, _ := blobObj.Writer()
-	_, _ = blobW.Write([]byte(req.Content))
-	_ = blobW.Close()
-	blobR, _ := blobObj.Reader()
-	blobRaw, _ := io.ReadAll(blobR)
-	_ = blobR.Close()
-	blobDataB64 := base64.StdEncoding.EncodeToString(blobRaw)
-	blobHash := blobObj.Hash()
-	blobSHA := blobHash.String()
-
-	blobRow := models.Blob{
-		SHA:       blobSHA,
-		Path:      req.Path,
-		Name:      fileName(req.Path),
-		Extension: fileExtension(req.Path),
-		Size:      int64(len(req.Content)),
-		Encoding:  encoding,
-		Content:   req.Content,
-		CreatedAt: now,
-	}
-	blobRow.Data = blobDataB64
-	ensureID(&blobRow)
-	if err := m.db.WithContext(ctx).Table(m.tables.Blobs).Create(&blobRow).Error; err != nil {
-		return models.Commit{}, fmt.Errorf("WriteFile: create blob: %w", err)
+	var blobRow models.Blob
+	var blobHash plumbing.Hash
+	if !remove {
+		var blobErr error
+		blobRow, blobHash, blobErr = m.createBlobRow(ctx, req, encoding, now)
+		if blobErr != nil {
+			return models.Commit{}, blobErr
+		}
 	}
 
 	var parentIDs []string
@@ -221,8 +207,16 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 		}
 	}
 
-	fileMap[req.Path] = blobHash
-	blobEntityByPath[req.Path] = blobRow.ID
+	if remove {
+		if _, present := fileMap[req.Path]; !present {
+			return models.Commit{}, ErrFileNotFound
+		}
+		delete(fileMap, req.Path)
+		delete(blobEntityByPath, req.Path)
+	} else {
+		fileMap[req.Path] = blobHash
+		blobEntityByPath[req.Path] = blobRow.ID
+	}
 
 	rootTreeHash, treeRecords, err := buildNestedTrees(fileMap)
 	if err != nil {
@@ -325,6 +319,35 @@ func (m *gitManager) writeFileLocked(ctx context.Context, req WriteFileRequest) 
 	return commit, nil
 }
 
+func (m *gitManager) createBlobRow(ctx context.Context, req WriteFileRequest, encoding, now string) (models.Blob, plumbing.Hash, error) {
+	blobObj := &plumbing.MemoryObject{}
+	blobObj.SetType(plumbing.BlobObject)
+	blobW, _ := blobObj.Writer()
+	_, _ = blobW.Write([]byte(req.Content))
+	_ = blobW.Close()
+	blobR, _ := blobObj.Reader()
+	blobRaw, _ := io.ReadAll(blobR)
+	_ = blobR.Close()
+	blobHash := blobObj.Hash()
+
+	blobRow := models.Blob{
+		SHA:       blobHash.String(),
+		Path:      req.Path,
+		Name:      fileName(req.Path),
+		Extension: fileExtension(req.Path),
+		Size:      int64(len(req.Content)),
+		Encoding:  encoding,
+		Content:   req.Content,
+		CreatedAt: now,
+	}
+	blobRow.Data = base64.StdEncoding.EncodeToString(blobRaw)
+	ensureID(&blobRow)
+	if err := m.db.WithContext(ctx).Table(m.tables.Blobs).Create(&blobRow).Error; err != nil {
+		return models.Blob{}, plumbing.ZeroHash, fmt.Errorf("WriteFile: create blob: %w", err)
+	}
+	return blobRow, blobHash, nil
+}
+
 func (m *gitManager) ReadFile(ctx context.Context, branchID, path string) (models.Blob, error) {
 	branch, err := m.GetBranch(ctx, branchID)
 	if err != nil {
@@ -353,28 +376,32 @@ func (m *gitManager) ReadFile(ctx context.Context, branchID, path string) (model
 }
 
 func (m *gitManager) DeleteFile(ctx context.Context, req DeleteFileRequest) (models.Commit, error) {
-
-	existingBlob, err := m.ReadFile(ctx, req.BranchID, req.Path)
+	branch, err := m.GetBranch(ctx, req.BranchID)
 	if err != nil {
-		return models.Commit{}, err
+		return models.Commit{}, fmt.Errorf("DeleteFile: %w", err)
+	}
+	if branch.HeadCommitID == "" {
+		return models.Commit{}, ErrFileNotFound
+	}
+	path := strings.TrimLeft(req.Path, "/")
+	existingBlob, err := m.findBlobAtCommit(ctx, branch.HeadCommitID, path)
+	if err != nil {
+		return models.Commit{}, fmt.Errorf("DeleteFile: %w", err)
 	}
 
 	m.deleteDocEdgesForBlob(ctx, existingBlob.ID, req.BranchID)
 
 	message := req.Message
 	if message == "" {
-		message = "Delete " + req.Path
+		message = "Delete " + path
 	}
-
-	return m.WriteFile(ctx, WriteFileRequest{
+	return m.commitPathChange(ctx, WriteFileRequest{
 		BranchID:    req.BranchID,
-		Path:        req.Path,
-		Content:     "",
-		Encoding:    "utf-8",
+		Path:        path,
 		AuthorName:  req.AuthorName,
 		AuthorEmail: req.AuthorEmail,
 		Message:     message,
-	})
+	}, true)
 }
 
 func (m *gitManager) ListDirectory(ctx context.Context, branchID, path string) ([]FileEntry, error) {
