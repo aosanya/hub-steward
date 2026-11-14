@@ -1,6 +1,7 @@
 PORT ?= 8082
 QA_PORT ?= 8183
 QA_DIR ?= /tmp/hubsteward-qa
+GIT_FOLDER ?= /Users/tony/Agents/workdir/CodeVald-AIProject/mwanachama/git-repositories
 
 .PHONY: restart restartQA
 
@@ -13,7 +14,7 @@ restart:
 	done; \
 	pids=$$(lsof -ti tcp:$(PORT) -sTCP:LISTEN); \
 	if [ -n "$$pids" ]; then kill -9 $$pids; sleep 1; fi
-	WAKALA_REQUEST_LOG=true PORT=$(PORT) go run ./cmd/server
+	GIT_REPOSITORY_FOLDER=$(GIT_FOLDER) WAKALA_REQUEST_LOG=true PORT=$(PORT) go run ./cmd/server
 
 restartQA:
 	@pids=$$(lsof -ti tcp:$(QA_PORT) -sTCP:LISTEN); \
@@ -28,6 +29,7 @@ restartQA:
 		PORT=$(QA_PORT) \
 		WAKALA_REQUEST_LOG=true \
 		WAKALA_SQLITE_PATH=$(QA_DIR)/hub.db \
+		GIT_REPOSITORY_FOLDER=$(QA_DIR)/git-repositories \
 		WAKALA_ADMIN_TOKEN=local-admin-token \
 		WAKALA_SESSION_SECRET=local-only-session-secret-change-before-sharing \
 		AI_MASTER_KEY=local-only-master-key-change-me0 \

@@ -124,8 +124,10 @@ services:
       PUBLIC_BASE_URL: http://localhost:${API_PORT:-8092}
       STUDIO_ORIGINS: http://localhost:${CONSOLE_PORT:-8090},http://localhost:${STAGING_APP_PORT:-5191},http://127.0.0.1:${STAGING_APP_PORT:-5191}
       MEMBER_APP_ORIGINS: http://localhost:${APP_PORT:-8091}
+      GIT_REPOSITORY_FOLDER: /var/lib/wakala/git
     volumes:
       - ./logs:/logs
+      - ${GIT_FOLDER:-/Users/tony/Agents/workdir/CodeVald-AIProject/mwanachama/git-repositories}:/var/lib/wakala/git
     ports:
       - "127.0.0.1:${API_PORT:-8092}:8082"
 
