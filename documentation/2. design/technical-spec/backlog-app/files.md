@@ -333,11 +333,15 @@ Every screen reads through `FilesClient` in `files/api.ts` and nothing else. Ope
 |---|---|
 | Back on a wide window | Reads Folders, but `/files` on a wide window opens the first Folder directly, so Back and the Folders list form a loop |
 | Tapping a folder in the tree | Opens a tab for that folder; only the chevron expands or collapses it |
-| Guide lines | No faint vertical line down an expanded folder |
+| Guide lines | Each row under an expanded folder carries a `wf-guide` element: a 1px `var(--line)` vertical line per level, drawn from the chevron's centre as in wide.html |
+| Icons and sizes | Row, tree and tab icons carry the class `fi` and take the accent colour; a file's size is the row's last element, at the right end |
+| Markdown page | The page is a `card`; inside the wide window the card is transparent so the content sits flat on the surface, as in wide.html 11 |
 | Focusing a tab | Re-reads the file |
 
 ### Not verified
 
 Not run against a live hub with the git module mounted; every check used a fake `FilesClient` (jsdom tests and one browser render).
 
-Rendered in headless Chrome at 390 x 844 (Folders list, a Folder's top level with README, a folder inside a folder, a code file, a document file, the empty Folder) and at 1280 x 800 (the wide window with tabs and Properties, the empty Folder), from a throwaway Vite page with a fake `FilesClient` outside the repo. Layout is not broken: nothing overlaps and nothing is unstyled. It differs from the drawings in styling, not structure: the app font is not the drawings' font, the tree and Properties panel sit on the white surface where the drawings use the grey one, the Properties lines have no dividers, tabs have no icon and no accent line on the active tab, tree rows are tighter than drawn, file sizes sit under the name where the drawings put them at the right, and a rendered document has no bullets in its lists. Not checked: a long line scrolling sideways, an image, more than 8 tabs, narrow-to-wide resizing, dark mode.
+Rendered in headless Chrome against a fake `FilesClient` from a throwaway Vite page outside the repo, and compared by eye with the matching drawing rendered the same way (files.html 3 and 6 on a phone frame, wide.html 9 to 12 at 1500 x 700). The six differences found in the first pass are gone: row icons are the accent brown, a file's size sits at the right end of its row, the tree and Properties panes are tinted with 1px lines between the panes and between the Properties lines, tabs carry a file icon and the active tab a 0.125rem accent line, the tree draws its guide lines, and a Markdown page is a card with bullets.
+
+Still differs from the drawings: the app's root font size is 90% (`tokens.css`) where the drawings use 112.5%, so everything is about a fifth smaller in the app and the tree rows look tighter than drawn; a tab's close mark is the character x where the drawings draw a close icon; the phone card keeps the app's soft shadow where the drawings show a flatter one; the page text size is 1rem where the drawings use the content size token. Not checked: a long line scrolling sideways, an image, more than 8 tabs, narrow-to-wide resizing, dark mode.
