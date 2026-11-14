@@ -1,6 +1,6 @@
 [
   {"code": "auth", "name": "auth", "description": "", "enabled": true, "locked": true, "icon": "lock", "mount": "main"},
-  {"code": "git", "name": "git", "description": "", "enabled": false, "locked": false, "icon": "file", "mount": ""},
+  {"code": "git", "name": "git", "description": "", "enabled": false, "locked": false, "icon": "file", "mount": "main"},
   {"code": "taskmanager", "name": "taskmanager", "description": "", "enabled": false, "locked": false, "icon": "check", "mount": "board"},
   {"code": "agency", "name": "agency", "description": "", "enabled": false, "locked": false, "icon": "grid", "mount": "main"},
   {"code": "actor", "name": "actor", "description": "", "enabled": true, "locked": true, "icon": "user", "mount": "directory"},

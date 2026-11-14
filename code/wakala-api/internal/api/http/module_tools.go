@@ -69,6 +69,9 @@ func moduleToolsServedBy(ctx context.Context, server *mcp.Server) ([]moduleToolV
 	out := make([]moduleToolView, 0, len(listed.Tools))
 	for _, t := range listed.Tools {
 		module, _, found := strings.Cut(t.Name, "_")
+		if strings.HasPrefix(t.Name, formsGitToolPrefix) {
+			module, found = gitModuleCode, true
+		}
 		if !found || !codes[module] {
 			continue
 		}

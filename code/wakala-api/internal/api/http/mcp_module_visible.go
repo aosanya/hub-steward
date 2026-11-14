@@ -18,7 +18,6 @@ var toolsOfNoModule = map[string]bool{
 
 var modulesServedThroughAnother = map[string]bool{
 	"catalog": true,
-	"git":     true,
 }
 
 func shownWithoutMount(entry models.ModuleCatalogEntry, set mountedSet) bool {

@@ -13,7 +13,10 @@ import (
 	"wakalaserver/modules/shared/dispatch"
 )
 
-const formsGitToolPrefix = "forms_git_"
+const (
+	formsGitToolPrefix = "forms_git_"
+	gitModuleCode      = "git"
+)
 
 func formsGitToolName(name string) string {
 	return formsGitToolPrefix + strings.TrimPrefix(name, "git_")
