@@ -233,7 +233,7 @@ the tag line with a plain grey bubble that says how long the issue has waited. I
 is the app's Chip in its one neutral style, not coloured from its text, and it
 shares the tag line, so a card or a row on a phone is no taller. It is not a
 filter. Drawn in [kanban.html](../../mockups/app/kanban.html), [lists.html](../../mockups/app/lists.html)
-and [wide.html](../../mockups/app/wide.html) 7.
+and [card.html](../../mockups/app/card.html#s2), where the wide window sits under the phone.
 
 | Case | Reads | Hover or tap text |
 |---|---|---|
@@ -462,7 +462,7 @@ Something list (`src/home/StartRows.tsx`) is the reference.
 
 ## Using the full width of a window
 
-Drawn in [wide.html](../../mockups/app/wide.html) at phone width, at 42rem and at 84rem, for an issue's page (below), All issues as a list and as a board, a backlog's board, and a smart backlog's page as a list and as a board. The owner chose one wide row for each issue for the List on 2026-11-11 (D108). The Board drawings, columns of at least 15rem that share the spare width, stand as drawn and were not questioned.
+Drawn at phone width, at 42rem and at 84rem, each beside its phone screen: an issue's page ([card.html](../../mockups/app/card.html#s2)), All issues as a list ([lists.html](../../mockups/app/lists.html#s1)) and as a board ([kanban.html](../../mockups/app/kanban.html#s2)), a backlog's board ([kanban.html](../../mockups/app/kanban.html#s1)), and a smart backlog's page as a list and as a board ([smart-backlogs.html](../../mockups/app/smart-backlogs.html#s3)). The owner chose one wide row for each issue for the List on 2026-11-11 (D108). The Board drawings, columns of at least 15rem that share the spare width, stand as drawn and were not questioned.
 
 The width of the window decides the layout through flex, `clamp()` and grow and shrink rules, with no fixed pixel width, so a window of any width gets a layout that fits it. The one breakpoint is `min-width: 48rem`: below it the header keeps the stacked layout of the phone, and from it up the header is a single line. The phone looks as it does today.
 
@@ -481,7 +481,7 @@ Not drawn because it is not built: a Search box on a smart backlog's page.
 
 ### Every other screen (D123)
 
-Drawn in [wide.html](../../mockups/app/wide.html#s8) with Chat and the Backlogs list as the two examples. The frame of every screen, backlog or not, is as wide as the window at every width: the earlier phone-width column and the separate `fluid` frame are gone. The only breakpoint is still `min-width: 48rem`, and it changes the header line, never the width of the frame.
+Drawn in [tabs.html](../../mockups/app/tabs.html#s5) with Chat and the Backlogs list as the two examples. The frame of every screen, backlog or not, is as wide as the window at every width: the earlier phone-width column and the separate `fluid` frame are gone. The only breakpoint is still `min-width: 48rem`, and it changes the header line, never the width of the frame.
 
 | Part | Strategy |
 |---|---|
@@ -496,7 +496,7 @@ Screens whose wide layout needs more than rows spreading across the width, such 
 
 ### An issue's page
 
-Drawn in [wide.html](../../mockups/app/wide.html) 7 at phone width, at 42rem and at 84rem (D119). The page is a wrapping flex row from `min-width: 48rem`, and the single column of today below it.
+Drawn in [card.html](../../mockups/app/card.html#s2) at phone width, at 42rem and at 84rem (D119). The page is a wrapping flex row from `min-width: 48rem`, and the single column of today below it.
 
 | Part | Strategy |
 |---|---|
