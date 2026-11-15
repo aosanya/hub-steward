@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"reflect"
 	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -57,31 +56,8 @@ func (d *Deps) formsGitToolHandler(name string) mcp.ToolHandler {
 		if err != nil {
 			return toolError(err), nil
 		}
-		result := toolText(rendering(out), false)
-		result.StructuredContent = gitStructuredContent(out)
-		return result, nil
+		return toolValue(out), nil
 	}
-}
-
-func gitStructuredContent(out any) any {
-	value := reflect.ValueOf(out)
-	if !value.IsValid() {
-		return nil
-	}
-	switch value.Kind() {
-	case reflect.Slice, reflect.Array:
-		if value.Kind() == reflect.Slice && value.IsNil() {
-			return map[string]any{"items": []any{}}
-		}
-		return map[string]any{"items": out}
-	case reflect.Map, reflect.Struct:
-		return out
-	case reflect.Pointer:
-		if !value.IsNil() && value.Elem().Kind() == reflect.Struct {
-			return out
-		}
-	}
-	return nil
 }
 
 func (d *Deps) invokeFormsGitTool(ctx context.Context, name string, raw json.RawMessage) (any, error) {

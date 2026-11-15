@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"encoding/json"
+	"reflect"
 	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -64,7 +65,7 @@ func catalogToolHandler(tool catalogroutes.Tool) mcp.ToolHandler {
 		if err != nil {
 			return toolText(err.Error(), true), nil
 		}
-		return toolText(rendering(out), false), nil
+		return toolValue(out), nil
 	}
 }
 
@@ -77,6 +78,33 @@ func rendering(out any) string {
 		return "done"
 	}
 	return string(encoded)
+}
+
+func toolValue(out any) *mcp.CallToolResult {
+	result := toolText(rendering(out), false)
+	result.StructuredContent = structuredContentOf(out)
+	return result
+}
+
+func structuredContentOf(out any) any {
+	value := reflect.ValueOf(out)
+	if !value.IsValid() {
+		return nil
+	}
+	switch value.Kind() {
+	case reflect.Slice, reflect.Array:
+		if value.Kind() == reflect.Slice && value.IsNil() {
+			return map[string]any{"items": []any{}}
+		}
+		return map[string]any{"items": out}
+	case reflect.Map, reflect.Struct:
+		return out
+	case reflect.Pointer:
+		if !value.IsNil() && value.Elem().Kind() == reflect.Struct {
+			return out
+		}
+	}
+	return nil
 }
 
 func toolText(text string, failed bool) *mcp.CallToolResult {

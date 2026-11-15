@@ -39,7 +39,7 @@ func (d *Deps) formsCatalogToolHandler(name string) mcp.ToolHandler {
 		if err != nil {
 			return toolError(err), nil
 		}
-		return toolText(rendering(out), false), nil
+		return toolValue(out), nil
 	}
 }
 

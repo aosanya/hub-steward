@@ -43,7 +43,7 @@ func (d *Deps) agencyCatalogToolHandler(mountName string, m catalogroutes.Mount,
 			if err != nil {
 				return toolText(err.Error(), true), nil
 			}
-			return toolText(rendering(out), false), nil
+			return toolValue(out), nil
 		}
 		return toolText("unknown tool "+name, true), nil
 	}
