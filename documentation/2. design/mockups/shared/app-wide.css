@@ -1,5 +1,6 @@
 input::placeholder{color:var(--ink-soft)}
 .win .bar{position:sticky;top:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.5rem;min-height:3rem;padding:0 .5rem;background:var(--surface);border-bottom:1px solid var(--line)}
+.phone .bar{grid-template-columns:minmax(max-content,1fr) minmax(0,max-content) minmax(max-content,1fr)}
 .act{display:inline-flex;align-items:center;min-height:3rem;padding:0 .5rem;color:var(--accent);font-weight:500}
 .sub{font-size:.8125rem;color:var(--ink-soft)}
 .dot{flex:none;width:.625rem;height:.625rem;border-radius:var(--r-pill);background:var(--accent)}
