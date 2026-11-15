@@ -62,6 +62,25 @@ describe("the menu rows on Home", () => {
     ]);
   });
 
+  it("lists the nine sections in the drawn order for an agency with every module, and no Dashboard row", async () => {
+    home(view(["actor", "digitaltwin", "forms", "assetmanager", "voting", "accounting"]));
+
+    await screen.findByText("Residents");
+    const titles = screen.getAllByRole("button").map((button) => button.querySelector(".ttl")?.textContent);
+    expect(titles).toEqual([
+      "Residents",
+      "Properties & Addresses",
+      "Issues & Requests",
+      "Services & Permits",
+      "Assets & Works",
+      "Council & Decisions",
+      "Staff & Departments",
+      "Finance",
+      "Settings",
+    ]);
+    expect(titles).not.toContain("Dashboard");
+  });
+
   it("opens the section's own screen", async () => {
     home(view(["actor"]));
 
