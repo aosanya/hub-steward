@@ -23,7 +23,7 @@ Home gets one more list under Start, Ongoing and Backlogs: the sections of the a
 | Which sections show | `agency_list_mounts` |
 | Home's own lists (Start, Ongoing) | `agency_list_my_open_steps` |
 
-The drawings name the module only for Residents (actor) and for the smaller agency drawn in state 5 of menu.html (actor and forms only: Properties, Assets, Council and Finance are not drawn). The module behind each other section is not fixed in the drawings.
+The drawings name the module only for Residents (actor) and for the smaller agency drawn in state 5 of menu.html (actor and forms only: Properties, Assets, Council and Finance are not drawn). The module behind each other section is not fixed in the drawings. Assets & Works uses the module `assetmanager` (owner, 15 November 2026, MUN968): assets, locations, movements and holds. See [menu-modules.md](../../3.%20implementation/guides/menu-modules.md).
 
 ## The section names are the agency's own
 

@@ -44,7 +44,7 @@ The hub serves no `digitaltwin_`, `voting_` or `accounting_` tools at all, so th
 
 ## Open
 
-- Decide the module code for Assets & Works: a catalog module for assetmanager, or a mounted module that exists.
+- Assets & Works: decided by the owner on 15 November 2026 (issue MUN968). It keeps the module code assetmanager, and assetmanager is added to the catalog with its assets, locations, movements and holds (the `assetmanager_asset_*`, `assetmanager_location_*`, `assetmanager_movement_*` and `assetmanager_hold_*` tools). The app needs no change: it reads modules and mount names from `agency_list_mounts`, and `src/menu/menuNames.test.tsx` shows Assets & Works titled by its assetmanager mount. The catalog entry itself is a line of `models/modules_catalog.json` in mwanachama-backend-agency, outside this repo, and is still to be added there.
 - Decide whether Properties & Addresses, Council & Decisions and Finance keep their module code or are drawn from the tools they use.
 
 The drawings and `sections.ts` are not edited by this check.
