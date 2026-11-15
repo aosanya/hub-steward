@@ -28,9 +28,12 @@
       ['menu-assets.html', 'Assets & Works'],
       ['menu-properties.html', 'Properties & Addresses'],
       ['menu-issues.html', 'Issues & Requests'],
+      ['menu-services.html', 'Services & Permits'],
       ['menu-residents.html', 'Residents'],
+      ['menu-council.html', 'Council & Decisions'],
+      ['menu-finance.html', 'Finance'],
       ['menu-staff.html', 'Staff & Departments'],
-      ['menu-council.html', 'Council & Decisions']
+      ['menu-settings.html', 'Settings']
     ] },
     { label: 'Forms', items: [
       ['form.html', 'Forms'],
