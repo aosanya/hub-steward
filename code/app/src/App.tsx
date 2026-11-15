@@ -33,6 +33,8 @@ import { OrderPage } from "./supply/orders/OrderPage";
 import { OrdersPage } from "./supply/orders/OrdersPage";
 import { SupplierHome } from "./supply/SupplierHome";
 import { HomeOptions } from "./home/HomeOptions";
+import { MenuRows } from "./menu/MenuRows";
+import { SectionPage } from "./menu/SectionPage";
 import { NeedsYouStrip } from "./home/NeedsYouStrip";
 import { StockPage } from "./supply/stock/StockPage";
 import { GroupOrderPage, GroupOrdersPage, ReviseGroupOrderPage } from "./supply/groupOrder/GroupOrderPages";
@@ -76,7 +78,7 @@ function ToAgencyHome() {
 }
 
 function tabElement(tab: Tab) {
-  if (tab.id === "home") return <NotificationsPage above={<><NeedsYouStrip /><HomeOptions /></>} />;
+  if (tab.id === "home") return <NotificationsPage above={<><NeedsYouStrip /><HomeOptions /><MenuRows /></>} />;
   if (tab.id === "notifications") return <NotificationsPage />;
   if (tab.id === "start") return <SupplierHome segment="start" />;
   if (tab.id === "ongoing") return <SupplierHome segment="ongoing" />;
@@ -125,6 +127,7 @@ export function App() {
         <Route path={routes.riskEvidence.pattern} element={<EvidencePage />} />
         <Route path={routes.lateMatters.pattern} element={<LateMattersPage />} />
         <Route path={routes.councilRisks.pattern} element={<CouncilRisksPage />} />
+        <Route path={routes.menu.pattern} element={<SectionPage />} />
       </Route>
       {allScreens.map((screen) => (
         <Route key={screen.retired} path={screen.retired} element={<ToOpenAgencyScreen screen={screen} />} />
