@@ -29,7 +29,8 @@
       ['menu-properties.html', 'Properties & Addresses'],
       ['menu-issues.html', 'Issues & Requests'],
       ['menu-residents.html', 'Residents'],
-      ['menu-staff.html', 'Staff & Departments']
+      ['menu-staff.html', 'Staff & Departments'],
+      ['menu-council.html', 'Council & Decisions']
     ] },
     { label: 'Forms', items: [
       ['form.html', 'Forms'],
