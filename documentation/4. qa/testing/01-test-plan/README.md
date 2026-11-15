@@ -51,6 +51,8 @@ An agent acts only through declared tools and does nothing that needs approval u
 
 What was run and what was not is in [Results](../02-results/README.md).
 
+The drawings of the phone app's Menu have their own checks: [Menu journeys](menu-journeys.md).
+
 ## The demo
 
 A walk-through on the hosted demo, as a member and as the manager. It covers the features [Demo scope](../../../1.%20requirements/product/03-demo-scope/README.md) lists. For the lab agency those are answers and access requests.

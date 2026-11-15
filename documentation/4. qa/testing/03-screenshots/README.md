@@ -29,6 +29,22 @@ The goal named "mj-change test goal" was added by a test run, not part of the de
 | ![Market](09-app-market.png) | The market page |
 | ![Member home](10-app-member-home.png) | A member of the Siaya lab after signing in with the emailed link |
 
+## Menu drawings
+
+Taken by the Menu journeys in [Menu journeys](../01-test-plan/menu-journeys.md) from the static drawings under `documentation/2. design/mockups/app/`, one picture per step, in `menu/<folder>/`. They are pictures of drawings with sample data, not of the running app.
+
+| Folder | What it shows |
+|---|---|
+| `menu/00-smoke/` | The first Home drawing, taken once to check the setup |
+| `menu/00-home/` | Home with a row for each section, a section with one screen, a section that opens the forms, nothing built yet, and the Home of a smaller agency |
+| `menu/01-residents/` | Residents: the submenus, All Residents, a resident, Households, Registrations, Groups & Associations, Communications |
+| `menu/02-properties/` | Properties & Addresses: Home, the properties list, a property, Addresses, Ownership & Tenure, Land Use & Zoning |
+| `menu/03-issues/` | Issues & Requests: Home and the section screen so far; the rest follow when the journey is finished |
+| `menu/06-council/` | Council & Decisions: Home, Meetings, a meeting, Agendas & Minutes, Resolutions, Bylaws, Committees |
+| `menu/07-staff/` | Staff & Departments: Home, Staff, a staff member, Departments, Crews, Roles & Permissions |
+
+The folders for Services & Permits, Assets & Works, Finance and Settings are added when their journeys have pictures.
+
 ## What these pictures do not show
 
 Findings from the same runs are in the results pages. Two matter to anyone repeating the run: on a hub made by the demo import, the Approvals page and the console's Save do not work yet, and the phone app has no assistant for members.
