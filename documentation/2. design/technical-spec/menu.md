@@ -27,7 +27,7 @@ The drawings name the module only for Residents (actor) and for the smaller agen
 
 ## The section names are the agency's own
 
-A section's title is the name the agency gave a mount of the section's module, read from `agency_list_mounts`, so a school can show Students where a town council shows Residents. The mounts of a module are taken in order: when several sections share a module (Residents and Staff & Departments both use actor), the first section takes the module's first mount name, the second section the second. A mount with no name, a module with fewer mounts than sections, and an agency whose mounts cannot be read keep the fixed words in the table below. The same title shows on Home and on the section screen. The submenu names are not renamed.
+A section's title is the name the agency gave a mount of the section's module, read from `agency_list_mounts`, so a school can show Students where a town council shows Residents. The mounts of a module are taken in order: when several sections share a module (Residents and Staff & Departments both use actor), the first section takes the module's first mount name, the second section the second. A mount with no name, a mount whose name is only its module's code (the hub returns actor, forms, voting and accounting for mounts nobody renamed), a module with fewer mounts than sections, and an agency whose mounts cannot be read keep the fixed words in the table below. The same title shows on Home and on the section screen. The submenu names are not renamed.
 
 ## The sections
 
