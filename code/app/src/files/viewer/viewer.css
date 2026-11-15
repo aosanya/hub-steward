@@ -1,6 +1,6 @@
 .file-viewer { min-width: 0; max-width: 100%; color: var(--ink); }
 .code-view { min-width: 0; max-width: 100%; }
-.code-scroll, .text-view { font-family: var(--mono); font-size: .75rem; line-height: 1.6; }
+.code-scroll, .text-view { font-family: var(--mono); font-size: 1rem; line-height: 1.6; }
 .code-scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); padding: .75rem 0; }
 .code-line { display: block; white-space: pre; min-width: max-content; }
 .code-no { position: sticky; left: 0; display: inline-block; width: 2.5rem; padding-right: .5rem; margin-right: .5rem; background: var(--surface); color: var(--ink-soft); text-align: right; user-select: none; }

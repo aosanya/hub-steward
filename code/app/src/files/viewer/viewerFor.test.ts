@@ -6,7 +6,7 @@ describe("viewerFor", () => {
     expect(viewerFor(`notes.${extension}`, extension)).toBe("markdown");
   });
 
-  it.each(["go", "ts", "tsx", "js", "jsx", "json", "yaml", "yml", "toml", "sh", "py", "rb", "rs", "java", "kt", "swift", "c", "h", "cpp", "css", "html", "sql", "mod", "sum"])(
+  it.each(["go", "ts", "tsx", "js", "jsx", "json", "yaml", "yml", "toml", "sh", "py", "rb", "rs", "java", "kt", "swift", "dart", "kts", "plist", "storyboard", "xcscheme", "xcworkspacedata", "properties", "c", "h", "cpp", "css", "html", "sql", "mod", "sum"])(
     "opens the %s extension as code",
     (extension) => {
       expect(viewerFor(`file.${extension}`, extension)).toBe("code");

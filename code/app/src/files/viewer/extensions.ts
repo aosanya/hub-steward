@@ -1,15 +1,4 @@
-export type Language =
-  | "go"
-  | "json"
-  | "script"
-  | "shell"
-  | "python"
-  | "sql"
-  | "css"
-  | "markup"
-  | "yaml"
-  | "c"
-  | "plain";
+export type Language = string;
 
 const codeNames = ["dockerfile", "makefile"];
 
@@ -17,32 +6,39 @@ export const languageOf: Record<string, Language> = {
   go: "go",
   mod: "go",
   sum: "go",
-  ts: "script",
-  tsx: "script",
-  js: "script",
-  jsx: "script",
-  mjs: "script",
-  cjs: "script",
-  rb: "script",
+  ts: "typescript",
+  tsx: "typescript",
+  js: "javascript",
+  jsx: "javascript",
+  mjs: "javascript",
+  cjs: "javascript",
+  rb: "ruby",
   json: "json",
   yaml: "yaml",
   yml: "yaml",
-  toml: "yaml",
-  sh: "shell",
-  env: "shell",
-  dockerfile: "shell",
-  makefile: "shell",
+  toml: "ini",
+  properties: "ini",
+  sh: "bash",
+  env: "bash",
+  dockerfile: "bash",
+  makefile: "makefile",
   py: "python",
-  rs: "c",
-  java: "c",
-  kt: "c",
-  swift: "c",
+  rs: "rust",
+  java: "java",
+  kt: "kotlin",
+  kts: "kotlin",
+  swift: "swift",
+  dart: "dart",
   c: "c",
   h: "c",
-  cpp: "c",
+  cpp: "cpp",
   css: "css",
-  html: "markup",
-  xml: "markup",
+  html: "xml",
+  xml: "xml",
+  plist: "xml",
+  storyboard: "xml",
+  xcscheme: "xml",
+  xcworkspacedata: "xml",
   sql: "sql",
 };
 

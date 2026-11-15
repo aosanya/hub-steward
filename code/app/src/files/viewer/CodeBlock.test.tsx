@@ -15,8 +15,6 @@ describe("code block", () => {
     expect(keywords).toContain("package");
     expect(keywords).toContain("func");
     expect(container.querySelector(".tok-string")?.textContent).toBe('"fmt"');
-    const functions = Array.from(container.querySelectorAll(".tok-function")).map((node) => node.textContent);
-    expect(functions).toEqual(["main", "Println"]);
     expect(container.querySelectorAll(".code-line")[1].textContent).toBe("2");
   });
 
@@ -29,10 +27,11 @@ describe("code block", () => {
     expect(line?.querySelector(".code-no")?.textContent).not.toContain("x");
   });
 
-  it("marks json strings, numbers and literals", () => {
+  it("marks json keys, strings, numbers and literals", () => {
     const { container } = render(<CodeBlock source={'{\n  "name": "viewer",\n  "count": 3,\n  "ok": true\n}\n'} language="json" />);
     expect(numbersOf(container)).toEqual(["1", "2", "3", "4", "5"]);
-    expect(container.querySelectorAll(".tok-string")).toHaveLength(4);
+    expect(Array.from(container.querySelectorAll(".tok-function")).map((node) => node.textContent)).toEqual(['"name"', '"count"', '"ok"']);
+    expect(Array.from(container.querySelectorAll(".tok-string")).map((node) => node.textContent)).toEqual(['"viewer"']);
     expect(container.querySelector(".tok-number")?.textContent).toBe("3");
     expect(container.querySelector(".tok-keyword")?.textContent).toBe("true");
   });
@@ -65,6 +64,18 @@ describe("code block", () => {
     expect(go[0][go[0].length - 1].kind).toBe("comment");
     const sql = highlight("SELECT 1 -- note", "sql");
     expect(sql[0].map((token) => token.kind)).toEqual(["keyword", "plain", "number", "plain", "comment"]);
+  });
+
+  it("highlights dart keywords, built-ins, strings, numbers and comments", () => {
+    const dart = highlight("class MyApp extends StatelessWidget { // root\n  final int count = 3;\n  void run() => print('a');\n}", "dart");
+    expect(dart[0].filter((token) => token.kind === "keyword").map((token) => token.text)).toEqual(["class", "extends"]);
+    expect(dart[0][dart[0].length - 1]).toEqual({ kind: "comment", text: "// root" });
+    expect(dart[1].filter((token) => token.kind !== "plain")).toEqual([
+      { kind: "keyword", text: "final" },
+      { kind: "keyword", text: "int" },
+      { kind: "number", text: "3" },
+    ]);
+    expect(dart[2].filter((token) => token.kind === "string")).toEqual([{ kind: "string", text: "'a'" }]);
   });
 
   it("leaves unknown languages plain and stays fast on a long line", () => {
