@@ -26,6 +26,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Hub keys](hub-keys.md) | How the agent gets into each agency |
 |  | [Start: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |
 |  | [Creation journey](creation-journey.md) | How one agency gets made: the cast of roles and the stages |
+|  | [Menu](menu.md) | The sections on Home, their submenus and the screens behind them |
 
 ## The phone app's top bar
 
