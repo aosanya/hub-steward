@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { words } from "../entry/words";
 import { forgetRuntimeConfig, setRuntimeConfig } from "../wakala/config";
@@ -184,5 +185,43 @@ describe("the MCP late matters client", () => {
     expect(found[1].place).toBe("Kossuth utca");
     expect(found[0].daysLate).toBeGreaterThan(365);
     expect(sent.map((call) => call.tool)).toEqual(["forms_catalog_raised_item_list_overdue"]);
+  });
+});
+
+let landed = "";
+
+const Where = () => {
+  landed = useLocation().pathname;
+  return null;
+};
+
+const section = { path: "/a/council-agency/menu/issues", title: "Issues & Requests" };
+
+const atWithState = (state?: unknown) =>
+  render(
+    <MemoryRouter initialEntries={[{ pathname: `${base}/late-matters`, state }]}>
+      <Routes>
+        <Route path={`${base}/late-matters`} element={<LateMattersPage client={client()} />} />
+        <Route path="*" element={null} />
+      </Routes>
+      <Where />
+    </MemoryRouter>,
+  );
+
+describe("the late matters page opened from a menu section", () => {
+  it("offers a Back button named after the section and goes back to the section", async () => {
+    atWithState({ from: section });
+    await screen.findByText("Broken streetlight");
+
+    await userEvent.click(screen.getByRole("button", { name: /Issues & Requests/ }));
+
+    expect(landed).toBe(section.path);
+  });
+
+  it("offers no Back button when it was not opened from a section", async () => {
+    atWithState();
+    await screen.findByText("Broken streetlight");
+
+    expect(screen.queryByRole("button", { name: /‹/ })).toBeNull();
   });
 });

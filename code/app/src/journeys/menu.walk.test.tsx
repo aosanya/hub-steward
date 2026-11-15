@@ -34,7 +34,7 @@ const openHome = async () => {
 };
 
 describe("menu: a member goes from Home into a section and on to a screen", () => {
-  it("opens Issues & Requests, then Overdue, lands on Late matters and returns to Home", async () => {
+  it("opens Issues & Requests, then Overdue, lands on Late matters, goes back to Issues & Requests and returns to Home", async () => {
     const world = await openHome();
     await userEvent.click(screen.getByRole("button", { name: /Issues & Requests/ }));
     await heading("Issues & Requests");
@@ -44,6 +44,9 @@ describe("menu: a member goes from Home into a section and on to a screen", () =
     await waitFor(() => expect(where()).toBe(`/a/${riders.id}/council/late-matters`));
     expect(await screen.findByText("Broken water main")).toBeInTheDocument();
     expect(screen.getByText("Fallen tree")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: /Issues & Requests/ }));
+    await heading("Issues & Requests");
+    await waitFor(() => expect(where()).toBe(`/a/${riders.id}/menu/issues`));
     await userEvent.click(screen.getByRole("link", { name: "Home" }));
     await waitFor(() => expect(where()).toBe(home));
     expect(await screen.findByRole("button", { name: /Services & Permits/ })).toBeInTheDocument();
@@ -52,7 +55,7 @@ describe("menu: a member goes from Home into a section and on to a screen", () =
     expect(openAgencyId()).toBe(riders.id);
   });
 
-  it("goes back from a section to Home, then opens Services & Permits and Applications on the Forms list", async () => {
+  it("goes back from a section to Home, then opens Services & Permits and Applications on the Forms list and back to Services & Permits", async () => {
     await openHome();
     await userEvent.click(screen.getByRole("button", { name: /Issues & Requests/ }));
     await heading("Issues & Requests");
@@ -64,6 +67,9 @@ describe("menu: a member goes from Home into a section and on to a screen", () =
     await userEvent.click(await screen.findByRole("button", { name: /Applications/ }));
     await heading("Forms");
     await waitFor(() => expect(where()).toBe(`/a/${riders.id}/forms`));
+    await userEvent.click(screen.getByRole("button", { name: /Services & Permits/ }));
+    await heading("Services & Permits");
+    await waitFor(() => expect(where()).toBe(`/a/${riders.id}/menu/services`));
   });
 
   it("shows a row with no screen behind it as text, not as a button", async () => {
