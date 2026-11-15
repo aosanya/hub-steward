@@ -1,17 +1,21 @@
 import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { mcpAgencyClient, type AgencyClient } from "../agency/modules";
 import { agencyHomePath, openAgencyId } from "../agency/open";
+import { useLoad } from "../forms/useLoad";
 import { Chip } from "../ui/Chip";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
-import { sectionById } from "./sections";
+import { named, sectionById } from "./sections";
 
 export const notYetWords = "Not available yet";
 
-export function SectionPage() {
+export function SectionPage({ agency = mcpAgencyClient }: { agency?: AgencyClient }) {
   const { sectionId = "" } = useParams();
   const navigate = useNavigate();
-  const section = sectionById(sectionId);
-  if (!section) return <Navigate to={agencyHomePath(openAgencyId())} replace />;
+  const view = useLoad(() => agency.read(), `menu-modules:${openAgencyId()}`);
+  const found = sectionById(sectionId);
+  if (!found) return <Navigate to={agencyHomePath(openAgencyId())} replace />;
+  const section = named(found, view.state === "ready" ? view.data : null);
   return (
     <Shell title={section.title}>
       <Rows>

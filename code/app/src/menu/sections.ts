@@ -77,8 +77,19 @@ export const menuSections: MenuSection[] = [
 
 export const sectionById = (id: string) => menuSections.find((section) => section.id === id);
 
+const mountNameOf = (view: AgencyView | null | undefined, section: MenuSection) => {
+  if (!view || view.modulesUnread || !section.module) return "";
+  const position = menuSections.filter((other) => other.module === section.module).indexOf(section);
+  return view.modules.find((module) => module.code === section.module)?.mountNames?.[position] ?? "";
+};
+
+export const named = (section: MenuSection, view: AgencyView | null | undefined): MenuSection => {
+  const title = mountNameOf(view, section);
+  return title ? { ...section, title } : section;
+};
+
 export const sectionsFor = (view: AgencyView | null | undefined): MenuSection[] => {
   if (!view || view.modulesUnread) return [];
   const held = menuSections.filter((section) => section.module && hasModule(view, section.module));
-  return held.length === 0 ? [] : menuSections.filter((section) => !section.module || hasModule(view, section.module));
+  return held.length === 0 ? [] : menuSections.filter((section) => !section.module || hasModule(view, section.module)).map((section) => named(section, view));
 };

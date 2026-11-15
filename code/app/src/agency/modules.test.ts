@@ -21,9 +21,9 @@ describe("agency modules client", () => {
       ],
     };
     expect(modulesOf(reply)).toEqual([
-      { code: "market", name: "Inputs market" },
-      { code: "auth", name: "auth" },
-      { code: "git", name: "git" },
+      { code: "market", name: "Inputs market", mountNames: ["Inputs market", "Produce market"] },
+      { code: "auth", name: "auth", mountNames: [""] },
+      { code: "git", name: "git", mountNames: [] },
     ]);
   });
 
@@ -34,7 +34,7 @@ describe("agency modules client", () => {
     });
     expect(await mcpAgencyClient.read()).toEqual({
       name: "Siaya Farmers' Group",
-      modules: [{ code: "market", name: "Market" }],
+      modules: [{ code: "market", name: "Market", mountNames: ["Market"] }],
     });
     expect(call).toHaveBeenCalledWith("", "agency_get_agency", {});
     expect(call).toHaveBeenCalledWith("", "agency_list_mounts", {});

@@ -1,6 +1,6 @@
 import { callTool } from "../wakala/mcp";
 
-export type AgencyModule = { code: string; name: string };
+export type AgencyModule = { code: string; name: string; mountNames?: string[] };
 
 export type AgencyView = { name: string; modules: AgencyModule[]; modulesUnread?: boolean };
 
@@ -12,7 +12,8 @@ const text = (value: unknown) => (typeof value === "string" ? value : value == n
 
 export const moduleOf = (raw: any): AgencyModule => {
   const code = text(raw?.module);
-  return { code, name: text(raw?.mounts?.[0]?.name) || code };
+  const mountNames: string[] = (Array.isArray(raw?.mounts) ? raw.mounts : []).map((mount: any) => text(mount?.name));
+  return { code, name: mountNames[0] || code, mountNames };
 };
 
 export const modulesOf = (reply: any): AgencyModule[] =>
