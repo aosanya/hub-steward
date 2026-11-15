@@ -25,6 +25,7 @@
     { page: 'files.html', label: 'Folders' },
     { label: 'Menu', items: [
       ['menu.html', 'Menu'],
+      ['menu-assets.html', 'Assets & Works'],
       ['menu-properties.html', 'Properties & Addresses'],
       ['menu-issues.html', 'Issues & Requests'],
       ['menu-residents.html', 'Residents']
