@@ -5,6 +5,7 @@ import { useLoad } from "../forms/useLoad";
 import { Chip } from "../ui/Chip";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";
+import { routes } from "../routes";
 import { named, sectionById } from "./sections";
 
 export const notYetWords = "Not available yet";
@@ -22,7 +23,7 @@ export function SectionPage({ agency = mcpAgencyClient }: { agency?: AgencyClien
         {section.items.map((item) => {
           const path = item.path;
           return path ? (
-            <ListRow key={item.title} title={item.title} end="›" onClick={() => navigate(path())} />
+            <ListRow key={item.title} title={item.title} end="›" onClick={() => navigate(path(), { state: { from: { path: routes.menu.path({ sectionId }), title: section.title } } })} />
           ) : (
             <ListRow key={item.title} title={item.title} end={<Chip>{notYetWords}</Chip>} />
           );

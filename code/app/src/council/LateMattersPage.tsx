@@ -1,5 +1,6 @@
 import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
+import { useBackToSection } from "../menu/useBackToSection";
 import { filled } from "../risks/labels";
 import { Chip } from "../ui/Chip";
 import { ListRow, Rows } from "../ui/ListRow";
@@ -9,9 +10,10 @@ import { longestLateFirst, mcpLateMattersClient, type LateMattersClient } from "
 
 export function LateMattersPage({ client = mcpLateMattersClient }: { client?: LateMattersClient }) {
   const { words } = useLanguage();
+  const back = useBackToSection();
   const matters = useLoad(() => client.list().then(longestLateFirst), "late-matters");
   return (
-    <Shell title={words.lateMattersTitle}>
+    <Shell title={words.lateMattersTitle} {...back}>
       {matters.state === "loading" ? <LoadingLine words={words.lateMattersLoading} /> : null}
       {matters.state === "error" ? <LoadFailed words={words.lateMattersFailed} /> : null}
       {matters.state === "ready" && matters.data.length === 0 ? <EmptyCard words={words.lateMattersEmpty} /> : null}

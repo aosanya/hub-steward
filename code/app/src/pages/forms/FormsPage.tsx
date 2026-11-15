@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { WaitingForm } from "../../forms/api";
 import { useForms } from "../../forms/context";
 import { useLoad } from "../../forms/useLoad";
+import { useBackToSection } from "../../menu/useBackToSection";
 import { routes } from "../../routes";
 import { Button } from "../../ui/Button";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
@@ -34,6 +35,7 @@ type View = "waiting" | "answered";
 export function FormsPage() {
   const forms = useForms();
   const go = useNavigate();
+  const back = useBackToSection();
   const [view, setView] = useState<View>("waiting");
   const [everyAnswered, setEveryAnswered] = useState(false);
   const waiting = useLoad(() => forms.waiting(), "waiting");
@@ -45,7 +47,7 @@ export function FormsPage() {
   const answeredCount = answered.state === "ready" ? ` · ${openAnswered.length}` : "";
 
   return (
-    <Shell title="Forms">
+    <Shell title="Forms" {...back}>
       <Segmented
         items={[
           { id: "waiting", label: `Waiting${waitingCount}` },
