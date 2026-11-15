@@ -28,7 +28,8 @@
       ['menu-assets.html', 'Assets & Works'],
       ['menu-properties.html', 'Properties & Addresses'],
       ['menu-issues.html', 'Issues & Requests'],
-      ['menu-residents.html', 'Residents']
+      ['menu-residents.html', 'Residents'],
+      ['menu-staff.html', 'Staff & Departments']
     ] },
     { label: 'Forms', items: [
       ['form.html', 'Forms'],
