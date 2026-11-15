@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { basename, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Page } from "@playwright/test";
+import { pickAgency, type HeldAgency } from "./pickAgency";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../../../..");
@@ -17,8 +18,10 @@ export const appUrl = "http://127.0.0.1:5181";
 export const sessionCookie = "wakala_session";
 
 type Person = { who: string; cookie: string; agency: string; agencyName: string };
+type Session = { who: string; cookie: string; agencies: HeldAgency[] };
 
-const people = new Map<string, Promise<Person>>();
+const people = new Map<string, Promise<Session>>();
+let wantedAgencyName: string | undefined;
 const mcpSessions = new Map<string, Promise<string>>();
 let nextId = 0;
 
@@ -35,7 +38,7 @@ const cookieFromJar = (who: string) => {
 
 const whoAmI = async (cookie: string) => {
   const reply = await fetch(`${apiUrl}/me`, { headers: { Cookie: `${sessionCookie}=${cookie}` } });
-  return reply.ok ? ((await reply.json()) as { agencies: { id: string; name: string }[] }) : null;
+  return reply.ok ? ((await reply.json()) as { agencies: HeldAgency[] }) : null;
 };
 
 const writeJar = (who: string, cookie: string) =>
@@ -44,7 +47,7 @@ const writeJar = (who: string, cookie: string) =>
     `# Netscape HTTP Cookie File\n#HttpOnly_127.0.0.1\tFALSE\t/\tFALSE\t0\t${sessionCookie}\t${cookie}\n`,
   );
 
-const signInOnce = async (who: string): Promise<Person> => {
+const signInOnce = async (who: string): Promise<Session> => {
   let cookie = cookieFromJar(who);
   let me = cookie ? await whoAmI(cookie) : null;
   if (!me) {
@@ -60,14 +63,18 @@ const signInOnce = async (who: string): Promise<Person> => {
     writeJar(who, cookie);
     me = await whoAmI(cookie);
   }
-  const agency = me?.agencies[0];
-  if (!agency) throw new Error(`${who}: signed in but belongs to no agency`);
-  return { who, cookie, agency: agency.id, agencyName: agency.name };
+  return { who, cookie, agencies: me?.agencies ?? [] };
 };
 
-export const person = (who: string): Promise<Person> => {
+export const agencyNamed = (name?: string): void => {
+  wantedAgencyName = name;
+};
+
+export const person = async (who: string): Promise<Person> => {
   if (!people.has(who)) people.set(who, signInOnce(who));
-  return people.get(who) as Promise<Person>;
+  const session = await (people.get(who) as Promise<Session>);
+  const agency = pickAgency(session.agencies, wantedAgencyName);
+  return { who, cookie: session.cookie, agency: agency.id, agencyName: agency.name };
 };
 
 export const signIn = async (page: Page, who: string): Promise<Person> => {
