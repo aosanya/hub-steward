@@ -80,7 +80,8 @@ export const sectionById = (id: string) => menuSections.find((section) => sectio
 const mountNameOf = (view: AgencyView | null | undefined, section: MenuSection) => {
   if (!view || view.modulesUnread || !section.module) return "";
   const position = menuSections.filter((other) => other.module === section.module).indexOf(section);
-  return view.modules.find((module) => module.code === section.module)?.mountNames?.[position] ?? "";
+  const name = view.modules.find((module) => module.code === section.module)?.mountNames?.[position] ?? "";
+  return name === section.module ? "" : name;
 };
 
 export const named = (section: MenuSection, view: AgencyView | null | undefined): MenuSection => {

@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { AgencyView } from "../agency/modules";
 import { forgetOpenAgency, openAgency } from "../agency/open";
@@ -68,5 +68,34 @@ describe("a section named by its mount", () => {
     section("residents", school({ actor: [] }));
 
     await waitFor(() => expect(screen.getByRole("heading", { name: "Residents" })).toBeInTheDocument());
+  });
+
+  it("keeps the fixed words on Home when each mount is named after its module code", async () => {
+    home(school({ actor: ["actor"], forms: ["forms"], voting: ["voting"], accounting: ["accounting"] }));
+
+    await screen.findByText("Residents");
+    expect(rowTitles()).toEqual([
+      "Residents",
+      "Issues & Requests",
+      "Services & Permits",
+      "Council & Decisions",
+      "Staff & Departments",
+      "Finance",
+      "Settings",
+    ]);
+  });
+
+  it("titles the section screen with the old words when the mount is named after its module code", async () => {
+    section("residents", school({ actor: ["actor"] }));
+    await act(async () => {});
+
+    expect(screen.getByRole("heading", { name: "Residents" })).toBeInTheDocument();
+  });
+
+  it("still titles a real name when another mount is named after its module code", async () => {
+    home(school({ actor: ["Students"], forms: ["forms"] }));
+
+    await screen.findByText("Students");
+    expect(rowTitles()).toEqual(["Students", "Issues & Requests", "Services & Permits", "Staff & Departments", "Settings"]);
   });
 });
