@@ -25,6 +25,10 @@ Home gets one more list under Start, Ongoing and Backlogs: the sections of the a
 
 The drawings name the module only for Residents (actor) and for the smaller agency drawn in state 5 of menu.html (actor and forms only: Properties, Assets, Council and Finance are not drawn). The module behind each other section is not fixed in the drawings.
 
+## The section names are the agency's own
+
+A section's title is the name the agency gave a mount of the section's module, read from `agency_list_mounts`, so a school can show Students where a town council shows Residents. The mounts of a module are taken in order: when several sections share a module (Residents and Staff & Departments both use actor), the first section takes the module's first mount name, the second section the second. A mount with no name, a module with fewer mounts than sections, and an agency whose mounts cannot be read keep the fixed words in the table below. The same title shows on Home and on the section screen. The submenu names are not renamed.
+
 ## The sections
 
 | Section | Submenus |
