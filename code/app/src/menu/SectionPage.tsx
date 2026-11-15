@@ -17,7 +17,7 @@ export function SectionPage({ agency = mcpAgencyClient }: { agency?: AgencyClien
   if (!found) return <Navigate to={agencyHomePath(openAgencyId())} replace />;
   const section = named(found, view.state === "ready" ? view.data : null);
   return (
-    <Shell title={section.title}>
+    <Shell title={section.title} onBack={() => navigate(agencyHomePath(openAgencyId()))} backLabel="Home">
       <Rows>
         {section.items.map((item) => {
           const path = item.path;
