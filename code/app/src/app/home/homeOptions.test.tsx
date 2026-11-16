@@ -13,7 +13,7 @@ const step = { id: "s1", title: "Report", formName: "Report", roleName: "Farmer"
 
 const backlog = (id: string, name: string, over: Partial<Backlog> = {}): Backlog => ({ id, name, steps: ["to-do", "done"], issues: 2, ...over });
 
-type Setup = { codes?: string[]; unread?: boolean; open?: StartStep[]; available?: MemberStep[]; backlogs?: Backlog[]; backlogsFail?: boolean; agencyFail?: boolean; noAccess?: boolean; rolesFail?: boolean };
+type Setup = { codes?: string[]; unread?: boolean; open?: StartStep[]; available?: MemberStep[]; backlogs?: Backlog[]; backlogsFail?: boolean; agencyFail?: boolean; agencyAbsent?: boolean; noAccess?: boolean; rolesFail?: boolean };
 
 const view = ({ codes = ["taskmanager"], unread = false }: Setup): AgencyView => ({ name: "Alego", modules: codes.map((code) => ({ code, name: code })), ...(unread ? { modulesUnread: true } : {}) });
 
@@ -28,7 +28,7 @@ const show = (setup: Setup = {}, backlogsRead = vi.fn(async () => setup.backlogs
   render(
     <MemoryRouter initialEntries={["/a/alego/home"]}>
       <HomeOptions
-        agency={{ read: async () => (setup.agencyFail ? Promise.reject(new Error("no")) : view(setup)) }}
+        agency={{ read: async () => (setup.agencyFail ? Promise.reject(new Error("no")) : setup.agencyAbsent ? Promise.reject(new Error("agencies: instance not found")) : view(setup)) }}
         start={{ openSteps: async () => setup.open ?? [] }}
         steps={{ available: async () => (setup.available ?? []) as never[] }}
         backlogs={{
@@ -120,6 +120,15 @@ describe("Home options", () => {
   it("leaves out Backlogs, without a failure line and without reading them, when the member may not read backlogs", async () => {
     const backlogsRead = vi.fn(async (): Promise<Backlog[]> => Promise.reject(new Error("agencies: instance not found")));
     show({ open: [step], backlogs: [backlog("b1", "Backlog")], noAccess: true }, backlogsRead);
+    await screen.findByText("Start");
+    await waitFor(() => expect(titles()).toEqual(["Start", "Ongoing"]));
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(backlogsRead).not.toHaveBeenCalled();
+  });
+
+  it("keeps Start and Ongoing with no failure line when the agency does not hold the member", async () => {
+    const backlogsRead = vi.fn(async (): Promise<Backlog[]> => [backlog("b1", "Backlog")]);
+    show({ open: [step], agencyAbsent: true }, backlogsRead);
     await screen.findByText("Start");
     await waitFor(() => expect(titles()).toEqual(["Start", "Ongoing"]));
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
