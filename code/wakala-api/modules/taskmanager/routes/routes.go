@@ -21,6 +21,8 @@ var sentinels = map[string]error{
 	"ErrTaskNotFound":                  mwanachamataskmanager.ErrTaskNotFound,
 	"ErrInvalidTaskNote":               mwanachamataskmanager.ErrInvalidTaskNote,
 	"ErrInvalidTaskNoteFilter":         mwanachamataskmanager.ErrInvalidTaskNoteFilter,
+	"ErrInvalidRelease":                mwanachamataskmanager.ErrInvalidRelease,
+	"ErrNotInProgress":                 mwanachamataskmanager.ErrNotInProgress,
 	"ErrInvalidCaps":                   mwanachamataskmanager.ErrInvalidCaps,
 	"ErrDuplicateTaskCode":             mwanachamataskmanager.ErrDuplicateTaskCode,
 	"ErrInvalidTaskReference":          mwanachamataskmanager.ErrInvalidTaskReference,

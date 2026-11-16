@@ -363,6 +363,15 @@
                {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The issue to take."}],
       "returns": [{"body": true}]
     },
+    "release_task": {
+      "method": "POST", "path": "/tasks/{taskID}/release", "call": "ReleaseTaskAs", "action": "taskmanager.task.release",
+      "title": "Release an issue as Blocked or Sinbin",
+      "description": "Stop work on an issue you took, in one call. mode is blocked (a problem a person must look at) or sinbin (you stopped at a cap and the owner reviews it). The hub writes the Log entry (kind worker, the mode, your reason and your links), tags the issue with the one mark and drops Ready, Waiting, Blocked and Sinbin so never two of them are left (every other tag is kept), sets the todo you name Blocked with the reason when mode is blocked, and moves the issue to To do. Refused with 409 when the issue is not In Progress, 403 without Can move on the backlog, 400 for another mode, a blank reason or a todo that is not one of this issue's (or sent with mode sinbin), 404 for an issue or todo that is not found or not seen. Nothing is written when it is refused.",
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is releasing it, from the session; a person needs Can move on the backlog the issue is in."},
+               {"from": "body", "whole": true},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "into": "TaskID", "description": "The issue to release."}],
+      "returns": [{"body": true}]
+    },
     "list_backlog_access": {
       "method": "GET", "path": "/backlogs/{backlogID}/access", "call": "ListBacklogAccess", "action": "taskmanager.backlog_access.list",
       "title": "List who can use a backlog",
@@ -1205,6 +1214,8 @@
     "ErrTaskNotFound": 404,
     "ErrInvalidTaskNote": 400,
     "ErrInvalidTaskNoteFilter": 400,
+    "ErrInvalidRelease": 400,
+    "ErrNotInProgress": 409,
     "ErrInvalidCaps": 400,
     "ErrDuplicateTaskCode": 409,
     "ErrInvalidTaskReference": 400,

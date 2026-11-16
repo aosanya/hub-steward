@@ -111,6 +111,7 @@ func writesOnAnIssue(f *moreWritesFixture, other string) map[string]probeCall {
 		"set_task_caps":            {"PUT", issue + "/caps", map[string]any{"input_tokens": 5}},
 		"clear_task_caps":          {"DELETE", issue + "/caps", nil},
 		"write_task_usage":         {"PUT", issue + "/usage", map[string]any{"input_tokens": 5}},
+		"release_task":             {"POST", issue + "/release", map[string]any{"mode": "sinbin", "reason": "stopped"}},
 		"generate_tasks":           {"POST", "/generated-tasks", map[string]any{"run": "r1", "template": map[string]any{"title": "per subject"}, "subjects": []string{"s1"}}},
 	}
 }
