@@ -1,14 +1,13 @@
 import { useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { itemsOf } from "../../../../features/backlogs";
+import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { IssueListScreen } from "./IssueListScreen";
 import { nearbyIssues, nearbyTool } from "./nearbyIssues";
 import { issuePaths } from "./paths";
 
 type Item = Record<string, unknown>;
-
-export const allIssuesTitle = "All Issues";
 
 export const assignedToMeTitle = "Assigned to Me";
 
@@ -42,9 +41,11 @@ function useOpenIssue(from: string) {
 }
 
 export function AllIssuesScreen() {
-  const { remember, open } = useOpenIssue(allIssuesTitle);
+  const word = useWord("forms");
+  const title = `All ${word("Issues")}`;
+  const { remember, open } = useOpenIssue(title);
   const load = async () => remember(await nearbyIssues());
-  return <IssueListScreen title={allIssuesTitle} tool={nearbyTool} fields={{ title: "title", meta: "status" }} empty="No issues yet." load={load} onChoose={open} />;
+  return <IssueListScreen title={title} tool={nearbyTool} fields={{ title: "title", meta: "status" }} empty={`No ${word("Issues").toLowerCase()} yet.`} load={load} onChoose={open} />;
 }
 
 export function AssignedToMeScreen() {
@@ -54,9 +55,11 @@ export function AssignedToMeScreen() {
 }
 
 export function MapViewScreen() {
-  return <IssueListScreen title="Map View" tool={nearbyTool} fields={{ title: "title", meta: "place" }} empty="No issues on the map yet." load={mapRows} />;
+  const word = useWord("forms");
+  return <IssueListScreen title="Map View" tool={nearbyTool} fields={{ title: "title", meta: "place" }} empty={`No ${word("Issues").toLowerCase()} on the map yet.`} load={mapRows} />;
 }
 
 export function ServiceTypesScreen() {
-  return <IssueListScreen title="Service Types" tool="forms_catalog_entry_list" fields={{ title: "name", meta: "summary" }} empty="No service types yet." />;
+  const word = useWord("forms");
+  return <IssueListScreen title={word("Service Types")} tool="forms_catalog_entry_list" fields={{ title: "name", meta: "summary" }} empty={`No ${word("Service Types").toLowerCase()} yet.`} />;
 }

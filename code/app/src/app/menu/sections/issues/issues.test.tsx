@@ -73,7 +73,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const toolsCalled = () => new Set(called.mock.calls.map(([, name]) => name));
+const toolsCalled = () => new Set(called.mock.calls.map(([, name]) => name).filter((name) => !name.startsWith("agency_")));
 
 const open = (at: string, state: unknown = { from: origin }) =>
   render(
