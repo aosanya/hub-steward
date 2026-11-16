@@ -1,5 +1,5 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
@@ -72,7 +72,7 @@ describe("editing a group from its detail", () => {
     await waitFor(() =>
       expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", NodeType: "district", AnchorLevelOverrideID: "lv1", name: "Malomsor alsó" }),
     );
-    expect(await screen.findByText("Malomsor alsó")).toBeTruthy();
+    expect(await within(document.querySelector(".mw-detail") as HTMLElement).findByText("Malomsor alsó")).toBeTruthy();
   });
 
   it("changes the joining and hides the group under group.settings", async () => {

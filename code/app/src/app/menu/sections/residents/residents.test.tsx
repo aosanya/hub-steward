@@ -384,3 +384,46 @@ describe("All People on the menu window", () => {
     expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no");
   });
 });
+
+const groupWindows = [
+  { title: "Households", screenIndex: 1, chosen: "Household One", other: "Household Two", count: "12 members", id: "g1" },
+  { title: "Groups & Associations", screenIndex: 3, chosen: "Reading Circle", other: "Football Club", count: "45 members", id: "g3" },
+];
+
+describe.each(groupWindows)("$title on the menu window", ({ title, screenIndex, chosen, other, count, id }) => {
+  beforeEach(() => {
+    answers.actor_get_group = (args) => groups.find((group) => group.id === args.group_id);
+  });
+
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("draws the Folders frame at wide size with the list beside the chosen group and its member count", async () => {
+    setWide(true);
+    open(screens[screenIndex].at);
+
+    await userEvent.click(await screen.findByRole("button", { name: new RegExp(chosen) }));
+
+    const frame = document.querySelector(".wf") as HTMLElement;
+    const tree = frame.querySelector(".wf-panes .wf-tree") as HTMLElement;
+    const content = frame.querySelector(".wf-main .wf-content") as HTMLElement;
+    expect(within(tree).getByRole("button", { name: new RegExp(other) })).toBeInTheDocument();
+    expect(await within(content).findByText(chosen)).toBeInTheDocument();
+    expect(await within(content).findByText(count)).toBeInTheDocument();
+    expect(called).toHaveBeenCalledWith("", "actor_get_group", { group_id: id });
+    expect(landed).toBe(screens[screenIndex].at);
+  });
+
+  it("shows one pane at a time on a phone and returns to the list from the group", async () => {
+    setWide(false);
+    open(screens[screenIndex].at);
+
+    await userEvent.click(await screen.findByRole("button", { name: new RegExp(chosen) }));
+
+    expect(document.querySelector(".wf")).toBeNull();
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "actor_get_group", { group_id: id }));
+    expect(landed).toBe(screens[screenIndex].at);
+    await userEvent.click(screen.getByRole("button", { name: new RegExp(title) }));
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no");
+  });
+});

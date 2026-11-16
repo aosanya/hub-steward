@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { dayWords } from "../../../../shared/ui/days";
@@ -10,7 +9,7 @@ import { MenuList } from "../../MenuList";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
 import { useBackToSection } from "../../useBackToSection";
-import { residentPaths } from "./paths";
+import { GroupPanel, loadGroup } from "./GroupScreen";
 import { personNameOf } from "./personName";
 import { loadPerson, PersonPanel } from "./PersonScreen";
 
@@ -67,17 +66,30 @@ export function AllPeopleScreen() {
   );
 }
 
-function useOpenGroup(title: string, path: (id: string) => string) {
-  const navigate = useNavigate();
-  const here = useLocation();
-  return (id: string) => navigate(path(id), { state: { from: { path: `${here.pathname}${here.search}`, title } } });
+type GroupWindowProps = { title: string; empty: string; keep: (group: Item) => boolean };
+
+function GroupWindow({ title, empty, keep }: GroupWindowProps) {
+  const [version, setVersion] = useState(0);
+  return (
+    <MenuWindow
+      title={title}
+      listKey={version}
+      detailKey={version}
+      list={{ title, tool: "actor_list_groups", fields: { title: "name", meta: "meta" }, empty: homeEmpty(empty), load: () => groupRows(keep) }}
+      detail={{
+        tool: "actor_get_group",
+        load: loadGroup,
+        fields: { Name: "name", Joining: "join_mode", Members: "members", Hidden: "hiddenWords" },
+        status: "status",
+        extra: (group) => <GroupPanel group={group} onSaved={() => setVersion((was) => was + 1)} />,
+      }}
+    />
+  );
 }
 
 export function HouseholdsScreen() {
   const word = useWord("actor");
-  const open = useOpenGroup(word("Households"), (id) => residentPaths.household.path({ id }));
-  const load = () => groupRows((group) => householdTypes.has(text(group, "node_type").toLowerCase()));
-  return <ListScreen title={word("Households")} tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty={`No ${word("Households").toLowerCase()} yet.`} load={load} onChoose={open} />;
+  return <GroupWindow title={word("Households")} empty={`No ${word("Households").toLowerCase()} yet.`} keep={(group) => householdTypes.has(text(group, "node_type").toLowerCase())} />;
 }
 
 export function RegistrationsScreen() {
@@ -97,9 +109,7 @@ export function RegistrationsScreen() {
 export function GroupsScreen() {
   const word = useWord("actor");
   const groupsTitle = word("Groups") === "Groups" ? "Groups & Associations" : word("Groups");
-  const load = () => groupRows(() => true);
-  const open = useOpenGroup(groupsTitle, (id) => residentPaths.group.path({ id }));
-  return <ListScreen title={groupsTitle} tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty={`No ${word("Groups").toLowerCase()} yet.`} load={load} onChoose={open} />;
+  return <GroupWindow title={groupsTitle} empty={`No ${word("Groups").toLowerCase()} yet.`} keep={() => true} />;
 }
 
 export function CommunicationsScreen() {
