@@ -27,6 +27,25 @@ const locations = [
   { id: "l3", name: "4 Mill Lane", kind: "address", parent_location_id: "l1" },
 ];
 
+const addressList = "digitaltwin_address_list";
+const tenureList = "digitaltwin_tenure_list";
+const landUseList = "digitaltwin_land_use_list";
+
+const addresses = [
+  { id: "d1", street: "Main Street", number: "12", area: "Old Town", postcode: "6724", place_id: "n1" },
+  { id: "d2", street: "Mill Lane", number: "4", area: "", postcode: "", place_id: "" },
+];
+
+const tenures = [
+  { id: "t1", place_id: "n1", holder: "Anna Kovacs", kind: "owner", since: "2019-03-01T00:00:00Z" },
+  { id: "t2", place_id: "n2", holder: "Town Library Trust", kind: "custodian", since: "" },
+];
+
+const landUses = [
+  { id: "u1", place_id: "", area: "Old Town", zone: "Residential", use: "Housing" },
+  { id: "u2", place_id: "n2", area: "", zone: "Civic", use: "" },
+];
+
 const mounted = { modules: [{ module: "digitaltwin" }, { module: "assetmanager" }] };
 
 const origin = { path: "/a/town/menu/properties", title: "Places & Addresses" };
@@ -47,6 +66,9 @@ const byArgument = <T extends { id: string }>(rows: T[], args: unknown, argument
 
 const answer = (name: string, args: unknown) => {
   if (name === "agency_list_mounts") return Promise.resolve(mounted);
+  if (name === addressList) return Promise.resolve({ items: addresses });
+  if (name === tenureList) return Promise.resolve({ items: tenures });
+  if (name === landUseList) return Promise.resolve({ items: landUses });
   if (name === assetList) return Promise.resolve({ items: assets });
   if (name === locationList) return Promise.resolve({ items: locations });
   if (name === assetRead) return Promise.resolve({ item: byArgument(assets, args, "assetID") });
@@ -143,49 +165,55 @@ describe("Places", () => {
 });
 
 describe("Addresses", () => {
-  it("lists each location with its street line and the place it belongs to", async () => {
+  it("lists each address with its street and number, and the postcode and area it lies in", async () => {
     show(<AddressesPage />);
 
-    await screen.findByText("12 Main Street", { selector: ".ttl" });
-    expect(metaOf(rowOf("12 Main Street"))).toEqual(["Old Town"]);
-    expect(metaOf(rowOf("4 Mill Lane"))).toEqual(["Old Town"]);
-    expect(callsTo(locationList)).toHaveLength(1);
+    await screen.findByText("Main Street 12", { selector: ".ttl" });
+    expect(metaOf(rowOf("Main Street 12"))).toEqual(["6724 Old Town"]);
+    expect(metaOf(rowOf("Mill Lane 4"))).toEqual([]);
+    expect(callsTo(addressList)).toHaveLength(1);
+    expect(callsTo(locationList)).toHaveLength(0);
     expect(callsTo(assetList)).toHaveLength(0);
   });
 
   it("names the screen the person came from on the Back button", async () => {
     show(<AddressesPage />, { pathname: "/a/town/menu/properties/page", state: { from: origin } });
-    await screen.findByText("12 Main Street", { selector: ".ttl" });
+    await screen.findByText("Main Street 12", { selector: ".ttl" });
 
     await userEvent.click(screen.getByRole("button", { name: /Places & Addresses/ }));
 
     await waitFor(() => expect(landed).toBe(origin.path));
   });
+
+  it("says there are none when the digitaltwin keeps no addresses", async () => {
+    called.mockImplementation(async (_agency, name) => (name === addressList ? { items: [] } : answer(name, undefined)));
+    show(<AddressesPage />);
+
+    expect(await screen.findByText("No addresses yet.")).toBeInTheDocument();
+  });
 });
 
 describe("Ownership & Tenure", () => {
-  it("lists each asset by name only", async () => {
+  it("lists each holder with the kind of holding and since when", async () => {
     show(<OwnershipPage />);
 
-    await screen.findByText("Town hall", { selector: ".ttl" });
-    expect(rowOf("Town hall")).toHaveTextContent(/^Town hall$/);
-    expect(metaOf(rowOf("Town hall"))).toEqual([]);
-    expect(metaOf(rowOf("Market square"))).toEqual([]);
-    expect(screen.queryByText("Building")).toBeNull();
-    expect(callsTo(assetList)).toHaveLength(1);
+    await screen.findByText("Anna Kovacs", { selector: ".ttl" });
+    expect(metaOf(rowOf("Anna Kovacs"))).toEqual(["owner · since 2019-03-01"]);
+    expect(metaOf(rowOf("Town Library Trust"))).toEqual(["custodian"]);
+    expect(callsTo(tenureList)).toHaveLength(1);
+    expect(callsTo(assetList)).toHaveLength(0);
   });
 });
 
 describe("Land Use", () => {
-  it("lists each location by area name only", async () => {
+  it("lists each zone with its use and the area it covers", async () => {
     show(<LandUsePage />);
 
-    await screen.findByText("Old Town", { selector: ".ttl" });
-    expect(rowOf("Old Town")).toHaveTextContent(/^Old Town$/);
-    expect(metaOf(rowOf("Old Town"))).toEqual([]);
-    expect(metaOf(rowOf("4 Mill Lane"))).toEqual([]);
-    expect(callsTo(locationList)).toHaveLength(1);
-    expect(callsTo(assetList)).toHaveLength(0);
+    await screen.findByText("Residential", { selector: ".ttl" });
+    expect(metaOf(rowOf("Residential"))).toEqual(["Housing · Old Town"]);
+    expect(metaOf(rowOf("Civic"))).toEqual([]);
+    expect(callsTo(landUseList)).toHaveLength(1);
+    expect(callsTo(locationList)).toHaveLength(0);
   });
 });
 
@@ -197,8 +225,25 @@ describe("a hub that does not mount the asset module", () => {
     });
   });
 
+  it("says plainly why Places lists nothing", async () => {
+    show(<PlacesPage />);
+
+    expect(await screen.findByText(notMountedWords)).toBeInTheDocument();
+    expect(screen.queryByText(loadFailedWords)).toBeNull();
+    expect(document.querySelectorAll(".row")).toHaveLength(0);
+    expect(within(document.body).queryByRole("searchbox")).toBeNull();
+  });
+});
+
+describe("a hub that does not mount the digitaltwin module", () => {
+  beforeEach(() => {
+    called.mockImplementation(async (_agency, name) => {
+      if (name === "agency_list_mounts") return { modules: [{ module: "assetmanager" }] };
+      throw new Error(`${name}: unknown tool`);
+    });
+  });
+
   it.each([
-    ["Places", <PlacesPage />],
     ["Addresses", <AddressesPage />],
     ["Ownership & Tenure", <OwnershipPage />],
     ["Land Use", <LandUsePage />],
@@ -209,5 +254,8 @@ describe("a hub that does not mount the asset module", () => {
     expect(screen.queryByText(loadFailedWords)).toBeNull();
     expect(document.querySelectorAll(".row")).toHaveLength(0);
     expect(within(document.body).queryByRole("searchbox")).toBeNull();
+    expect(callsTo(addressList)).toHaveLength(0);
+    expect(callsTo(tenureList)).toHaveLength(0);
+    expect(callsTo(landUseList)).toHaveLength(0);
   });
 });

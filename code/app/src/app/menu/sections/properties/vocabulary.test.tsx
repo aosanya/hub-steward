@@ -19,6 +19,7 @@ const answerWith = (words: Record<string, string>, assets: unknown[]) => (_agenc
   if (name === "assetmanager_asset_list") return Promise.resolve({ items: assets });
   if (name === "assetmanager_asset_read") return Promise.resolve({ item: { id: "a1", name: "Town hall", category: "Building" } });
   if (name === "assetmanager_location_list") return Promise.resolve({ items: [] });
+  if (name.startsWith("digitaltwin_")) return Promise.resolve({ items: [] });
   return Promise.reject(new Error(`${name}: unknown tool`));
 };
 

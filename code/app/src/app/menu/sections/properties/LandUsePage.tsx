@@ -1,16 +1,27 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { MountedMenuList } from "./MountedMenuList";
+import { digitaltwinModule, joined, loadRecords, textOf } from "./records";
 
-const fields = { title: "name", meta: "" };
+export const landUseList = "digitaltwin_land_use_list";
+
+const fields = { title: "zone", meta: "use" };
+
+const loadLandUses = () =>
+  loadRecords(landUseList, (landUse) => ({
+    zone: textOf(landUse.zone),
+    use: joined([textOf(landUse.use), textOf(landUse.area)]),
+  }));
 
 export function LandUsePage() {
   const word = useWord("digitaltwin");
   return (
     <MountedMenuList
+      module={digitaltwinModule}
       title={word("Land Use")}
-      tool="assetmanager_location_list"
+      tool={landUseList}
       fields={fields}
       empty={{ words: `No ${word("Areas").toLowerCase()} yet.` }}
+      load={loadLandUses}
     />
   );
 }

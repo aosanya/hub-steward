@@ -11,14 +11,16 @@ import { notMountedWords } from "./words";
 
 const assetModule = "assetmanager";
 
-const readMounts = async () => {
+type Props = ComponentProps<typeof MenuList> & { module?: string };
+
+const readMounts = async (module: string) => {
   const modules = modulesOf(await callTool("", agencyTools.modules, {}));
-  return modules.length === 0 || hasModule({ name: "", modules }, assetModule);
+  return modules.length === 0 || hasModule({ name: "", modules }, module);
 };
 
-export function MountedMenuList(props: ComponentProps<typeof MenuList>) {
+export function MountedMenuList({ module = assetModule, ...props }: Props) {
   const back = useBackToSection();
-  const mounted = useLoad(readMounts, `properties-mounts:${openAgencyId()}`);
+  const mounted = useLoad(() => readMounts(module), `properties-mounts:${module}:${openAgencyId()}`);
   if (mounted.state === "ready" && mounted.data) return <MenuList {...props} />;
   return (
     <Shell title={props.title} titleUnder {...back}>

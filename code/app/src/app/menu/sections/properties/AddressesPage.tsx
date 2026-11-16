@@ -1,28 +1,24 @@
-import { itemsOf } from "../../../../features/backlogs";
-import { callTool } from "../../../../shared/wakala/mcp";
 import { useWord } from "../../../../features/agency/useWord";
 import { MountedMenuList } from "./MountedMenuList";
+import { digitaltwinModule, joined, loadRecords, textOf } from "./records";
+
+export const addressList = "digitaltwin_address_list";
 
 const fields = { title: "name", meta: "place" };
 
-const textOf = (value: unknown) => (typeof value === "string" ? value : "");
-
-const loadAddresses = async () => {
-  const locations: Record<string, unknown>[] = itemsOf(await callTool("", "assetmanager_location_list"));
-  const nameById = new Map(locations.map((location) => [textOf(location.id), textOf(location.name)]));
-  return locations.map((location) => ({
-    id: textOf(location.id),
-    name: textOf(location.name),
-    place: nameById.get(textOf(location.parent_location_id)) ?? "",
+const loadAddresses = () =>
+  loadRecords(addressList, (address) => ({
+    name: joined([textOf(address.street), textOf(address.number)], " "),
+    place: joined([textOf(address.postcode), textOf(address.area)], " "),
   }));
-};
 
 export function AddressesPage() {
   const word = useWord("digitaltwin");
   return (
     <MountedMenuList
+      module={digitaltwinModule}
       title={word("Addresses")}
-      tool="assetmanager_location_list"
+      tool={addressList}
       fields={fields}
       empty={{ words: `No ${word("Addresses").toLowerCase()} yet.` }}
       load={loadAddresses}
