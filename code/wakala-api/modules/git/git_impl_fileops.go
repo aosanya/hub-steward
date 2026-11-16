@@ -78,9 +78,7 @@ func buildNestedTrees(files map[string]plumbing.Hash) (plumbing.Hash, []treeReco
 			}
 		}
 
-		sort.Slice(entries, func(i, j int) bool {
-			return entries[i].Name < entries[j].Name
-		})
+		sort.Sort(object.TreeEntrySorter(entries))
 
 		treeObj := &object.Tree{Entries: entries}
 		memObj := &plumbing.MemoryObject{}
