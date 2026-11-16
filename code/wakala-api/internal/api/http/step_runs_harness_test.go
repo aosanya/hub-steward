@@ -128,9 +128,9 @@ func newStepRunWalk(t *testing.T, plan []stepSpec, people ...string) stepRunWalk
 	return newStepRunWalkOn(t, stepRunDB(t), plan, people...)
 }
 
-func stepRunDeps(t *testing.T, db *gorm.DB) (*Deps, agencies.Registry) {
+func stepRunDeps(t *testing.T, db *gorm.DB, options ...agencies.Option) (*Deps, agencies.Registry) {
 	t.Helper()
-	reg, err := agencies.NewRegistry(db, agencies.StartingApproved())
+	reg, err := agencies.NewRegistry(db, append([]agencies.Option{agencies.StartingApproved()}, options...)...)
 	if err != nil {
 		t.Fatalf("NewRegistry: %v", err)
 	}

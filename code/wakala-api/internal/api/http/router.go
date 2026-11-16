@@ -76,6 +76,7 @@ func NewRouter(d *Deps) http.Handler {
 	registerOperationRoutes(mux, d, auth, &operationCatalog{})
 	registerPlatformOwnerRoutes(mux, auth, newPlatformOwners(d.PlatformOwners, d.Registry))
 	registerMCPRoutes(mux, d)
+	mux.Handle(gitRoutePrefix, d.GitRouteAuth(d.GitRoute()))
 	registerLaunchRoutes(mux, d)
 	links := newMagicLinkSender(d.CatalogAuth, d.MemberOrigins)
 	registerMemberSignInRoutes(mux, links)

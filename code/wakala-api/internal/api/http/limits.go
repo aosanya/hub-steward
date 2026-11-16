@@ -4,6 +4,7 @@ import "time"
 
 const (
 	maxRequestBody = 1 << 20
+	maxGitPushBody = 64 << 20
 
 	ServerReadTimeout       = 10 * time.Second
 	ServerIdleTimeout       = 60 * time.Second
