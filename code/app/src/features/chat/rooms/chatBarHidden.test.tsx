@@ -3,7 +3,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
 import { AskPage } from "../AskPage";
 import { ChatPage } from "../ChatPage";
-import { routes } from "../../../routes";
+import { routes } from "../../../app/routes";
 import type { ChatClient } from "../api";
 import type { RoomsClient } from "./api";
 import { RoomThreadPage } from "./RoomThreadPage";

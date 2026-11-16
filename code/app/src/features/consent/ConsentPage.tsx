@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
 import { useLanguage } from "../../features/entry/language";
 import { filled } from "../../features/risks/labels";
-import { doSomethingPath } from "../../routes";
+import { doSomethingPath } from "../../app/routes";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
 import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";

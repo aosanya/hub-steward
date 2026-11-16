@@ -7,7 +7,7 @@ import { mcpBacklogsClient, type BacklogsClient } from "../../features/backlogs/
 import { BacklogViewCard } from "../../features/backlogs/cards/BacklogViewCard";
 import { BacklogSummariesLoader } from "../../features/backlogs/cards/SummariesLoader";
 import { backlogViewKind } from "../../features/backlogs/cards/views";
-import { chatListPath } from "../../routes";
+import { chatListPath } from "../../app/routes";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
 import { Chip } from "../../shared/ui/Chip";

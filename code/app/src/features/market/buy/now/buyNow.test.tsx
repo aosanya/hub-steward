@@ -6,7 +6,7 @@ import { buyOrderOf, mcpBuyNowClient, orderTotal, type BuyNowClient, type BuyOff
 import { BuyNowPage } from "./BuyNowPage";
 import { BuyOrderPage } from "./BuyOrderPage";
 import { canCancel, orderStatus } from "./standing";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { forgetOpenAgency, openAgency } from "../../../agency/open";
 
 beforeEach(() => openAgency("farmers"));

@@ -1,4 +1,4 @@
-import { routes } from "../../../routes";
+import { routes } from "../../../app/routes";
 import { callTool } from "../../../shared/wakala/mcp";
 
 export type StartQuestion = { prompt: string; answerType: string; helper: string; required?: boolean; options?: string[] };

@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes, useParams } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { AskPage } from "./AskPage";
 import { ChatPage } from "./ChatPage";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { unreadLabel } from "./unread";
 import type { Ask, ChatClient, ChatMessage } from "./api";
 

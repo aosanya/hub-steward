@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import type { GroupsClient, JoinableGroup } from "./api";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { JoinPage } from "./JoinPage";
 
 const farmers: JoinableGroup = { id: "g1", name: "Siaya farmers", code: "G-S7F-4KM-2RX", approvalNeeded: false };

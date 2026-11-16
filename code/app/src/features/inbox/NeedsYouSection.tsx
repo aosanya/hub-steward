@@ -2,7 +2,7 @@ import type { StartClient } from "../../features/market/start/api";
 import { StartWaitingRows } from "../../features/market/start/Waiting";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
-import { needsYouAnchor } from "../../tabs";
+import { needsYouAnchor } from "../../app/tabs";
 import { SectionHeading } from "../../shared/ui/SectionHeading";
 import type { InvitationItem, NotificationItem } from "./api";
 import { AssignedIssueRows } from "./AssignedIssueRows";

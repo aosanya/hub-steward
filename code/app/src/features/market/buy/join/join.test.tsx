@@ -16,7 +16,7 @@ import {
   type JoinClient,
   type OpenGroupOrder,
 } from "./api";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { forgetOpenAgency, openAgency } from "../../../agency/open";
 
 beforeEach(() => openAgency("farmers"));

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach } from "vitest";
-import { App } from "../../App";
+import { App } from "../../app/App";
 import { provideEntryClient, type EntryClient } from "./api";
 import { wordsFor } from "./language";
 import { magyar } from "./magyar";

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { Chip } from "../../shared/ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../shared/ui/ListRow";

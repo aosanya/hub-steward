@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../features/forms/useLoad";
-import { chatListPath, routes } from "../../../routes";
+import { chatListPath, routes } from "../../../app/routes";
 import { Card } from "../../../shared/ui/Card";
 import { Chip } from "../../../shared/ui/Chip";
 import { LoadFailed } from "../../../shared/ui/LoadState";

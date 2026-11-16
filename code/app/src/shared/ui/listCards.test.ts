@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const rules = readFileSync(resolve(process.cwd(), "src/app.css"), "utf8").split("\n");
+const rules = readFileSync(resolve(process.cwd(), "src/app/app.css"), "utf8").split("\n");
 const ruleFor = (selector: string) => rules.find((line) => line.startsWith(`${selector} {`)) ?? "";
 
 describe("lists drawn as separate cards", () => {

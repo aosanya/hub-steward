@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { expect, vi } from "vitest";
-import { App } from "../App";
+import { App } from "../app/App";
 import { forgetOpenAgency } from "../features/agency/open";
 import { provideEntryClient, type Agency, type EntryClient } from "../features/entry/api";
 import { provideWaitingCount, restoreWaitingCount } from "../features/entry/waiting";

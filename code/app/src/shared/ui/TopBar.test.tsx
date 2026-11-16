@@ -127,7 +127,7 @@ describe("top bar", () => {
     expect(screen.queryByRole("button", { name: "Menu" })).toBeNull();
   });
   it("keeps the two outer columns of the bar equal in width so a title between them is centred, and lets them grow for the actions", () => {
-    const css = readFileSync(resolve(process.cwd(), "src/app.css"), "utf8");
+    const css = readFileSync(resolve(process.cwd(), "src/app/app.css"), "utf8");
     const rule = css.split("\n").find((line) => line.startsWith(".bar {")) ?? "";
     expect(rule).toContain("grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);");
   });

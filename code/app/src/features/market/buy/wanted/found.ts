@@ -1,4 +1,4 @@
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { kes } from "../../supply/api";
 import type { Asked, Found, Offer, Shop, Wanted } from "./api";
 import { dayName } from "./dates";

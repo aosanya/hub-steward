@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { doSomethingBackPath } from "../../../routes";
+import { doSomethingBackPath } from "../../../app/routes";
 import { useLoad } from "../../forms/useLoad";
 import { isApproved, mcpSupplyClient, mySupplier, buyerPriceWords, priceWords, resolveMember, type SupplyClient } from "./api";
 import { Button } from "../../../shared/ui/Button";

@@ -6,7 +6,7 @@ import type { RoomAsk, RoomMessage, RoomOrder, RoomThread, RoomsClient } from ".
 import { RoomThreadPage } from "./RoomThreadPage";
 import { RoomThreadsPage } from "./RoomThreadsPage";
 import { timeOf } from "./time";
-import { routes } from "../../../routes";
+import { routes } from "../../../app/routes";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
 
 beforeEach(() => openAgency("farmers"));

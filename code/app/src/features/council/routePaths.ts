@@ -1,4 +1,4 @@
-import { screen } from "../../screen";
+import { screen } from "../../app/screen";
 
 export const councilPaths = {
   lateMatters: screen("/council/late-matters"),

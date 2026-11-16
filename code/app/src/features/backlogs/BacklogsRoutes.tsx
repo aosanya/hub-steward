@@ -10,7 +10,7 @@ import { NeedsRole } from "./shared/NeedsRole";
 import { IssuePage } from "./issue/IssuePage";
 import { AddReferencePage } from "./references/AddReferencePage";
 import { IssuesPage } from "./issue/IssuesPage";
-import { backlogIdOfPath, rememberBacklog } from "../../home/lastBacklog";
+import { backlogIdOfPath, rememberBacklog } from "../../app/home/lastBacklog";
 
 function RememberOpenedBacklog() {
   const id = backlogIdOfPath(useLocation().pathname);

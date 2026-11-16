@@ -5,7 +5,7 @@ import * as mcp from "../../../../shared/wakala/mcp";
 import { canCancelOrder, lineOrderOf, mcpMyOrdersClient, orderOf, trailWords, type MyOrder, type MyOrdersClient } from "./api";
 import { MyOrderPage } from "./MyOrderPage";
 import { MyOrdersPage } from "./MyOrdersPage";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { forgetOpenAgency, openAgency } from "../../../agency/open";
 
 beforeEach(() => openAgency("farmers"));

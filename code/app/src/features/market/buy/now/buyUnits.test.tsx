@@ -6,7 +6,7 @@ import { buyOfferOf, buyOrderOf, type BuyNowClient, type BuyOffer, type BuyOrder
 import { BuyNowPage } from "./BuyNowPage";
 import { BuyOrderPage } from "./BuyOrderPage";
 import { agentLine } from "./standing";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { forgetOpenAgency, openAgency } from "../../../agency/open";
 
 beforeEach(() => openAgency("farmers"));

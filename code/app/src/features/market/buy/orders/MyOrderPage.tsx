@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { Button } from "../../../../shared/ui/Button";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";

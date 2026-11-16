@@ -8,7 +8,7 @@ import type { EvidenceDraft, RiskDetail, RisksClient } from "./api";
 import { EvidencePage } from "./EvidencePage";
 import { RiskPage } from "./RiskPage";
 import { RisksPage } from "./RisksPage";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 
 beforeEach(() => {
   window.localStorage.clear();

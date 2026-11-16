@@ -1,4 +1,4 @@
-import { routes } from "../../../routes";
+import { routes } from "../../../app/routes";
 import { mcpMarketClient, type MarketClient, type Product } from "../../../features/market/shared/api";
 import type { Block, CardSpec } from "../blocks/types";
 import type { AgentSource } from "./source";

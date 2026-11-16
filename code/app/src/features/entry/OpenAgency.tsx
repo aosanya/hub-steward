@@ -2,8 +2,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Navigate, useLocation, useParams } from "react-router-dom";
 import { forgetOpenAgency, openAgency, openAgencyId, rememberAgencyName } from "../agency/open";
 import { entryClient } from "./api";
-import type { AgencyScreen } from "../../routes";
-import { tabPathIn, type Tab } from "../../tabs";
+import type { AgencyScreen } from "../../app/routes";
+import { tabPathIn, type Tab } from "../../app/tabs";
 
 export function InAgency({ children }: { children: ReactNode }) {
   const { agencyId = "" } = useParams();

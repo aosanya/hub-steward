@@ -7,7 +7,7 @@ import { NoticePage } from "./NoticePage";
 import { WantedPage } from "./WantedPage";
 import { askTicked } from "./askTicked";
 import type { WantedClient } from "./api";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { forgetOpenAgency, openAgency } from "../../../agency/open";
 
 beforeEach(() => openAgency("farmers"));

@@ -11,8 +11,8 @@ import * as mcp from "../../shared/wakala/mcp";
 import { mcpInboxClient } from "./api";
 import { chatWordings } from "./chatNotice";
 import { noticeWordings } from "./notice";
-import { routes } from "../../routes";
-import { chatTab, tabRoute } from "../../tabs";
+import { routes } from "../../app/routes";
+import { chatTab, tabRoute } from "../../app/tabs";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 
 beforeEach(() => openAgency("farmers"));

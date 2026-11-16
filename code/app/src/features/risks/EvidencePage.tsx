@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLanguage } from "../entry/language";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { BottomBar } from "../../shared/ui/BottomBar";
 import { Button } from "../../shared/ui/Button";
 import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";

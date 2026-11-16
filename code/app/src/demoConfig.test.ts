@@ -1,7 +1,7 @@
 import type { ViteDevServer } from "vite";
 import { demoConfig, demoConfigJson } from "../demoConfig";
 
-const sources = import.meta.glob(["./**/*.ts", "./**/*.tsx", "./**/*.css", "!./**/*.test.*", "!./**/*.test-support.*", "!./test-setup.ts"], { query: "?raw", import: "default", eager: true }) as Record<string, string>;
+const sources = import.meta.glob(["./**/*.ts", "./**/*.tsx", "./**/*.css", "!./**/*.test.*", "!./**/*.test-support.*", "!./app/test-setup.ts"], { query: "?raw", import: "default", eager: true }) as Record<string, string>;
 
 describe("the demo build config", () => {
   it("takes the wakala address from the build variable and trims it", () => {

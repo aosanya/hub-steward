@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { mcpAgencyClient, type AgencyClient, type AgencyView } from "../../agency/modules";
-import type { AgencyKind } from "../../../home/cards";
-import { HomePage, type DoSomethingSegment } from "../../../home/HomePage";
+import type { AgencyKind } from "../../../app/home/cards";
+import { HomePage, type DoSomethingSegment } from "../../../app/home/HomePage";
 import { isApproved, mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "./api";
 
 export function SupplierHome({

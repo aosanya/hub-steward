@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { Shell } from "../../../../shared/ui/Shell";

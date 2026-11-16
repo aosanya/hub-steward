@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { joinGroupWorkflow } from "../../home/workflowScreens";
+import { joinGroupWorkflow } from "../../app/home/workflowScreens";
 import { mcpGroupsClient, type GroupsClient, type JoinableGroup, type MyGroup } from "./api";
 import { Button } from "../../shared/ui/Button";
 import { EmptyCard } from "../../shared/ui/LoadState";
 import { Field } from "../../shared/ui/Field";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
-import { chatListPath, doSomethingBackPath, routes } from "../../routes";
+import { chatListPath, doSomethingBackPath, routes } from "../../app/routes";
 import { Shell } from "../../shared/ui/Shell";
 
 const defaultClient = mcpGroupsClient();

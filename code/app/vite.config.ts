@@ -23,5 +23,5 @@ export default defineConfig({
     : undefined,
   base: "/",
   build: { outDir: "dist", emptyOutDir: true },
-  test: { environment: "jsdom", globals: true, setupFiles: ["./src/test-setup.ts"], css: false },
+  test: { environment: "jsdom", globals: true, setupFiles: ["./src/app/test-setup.ts"], css: false },
 });

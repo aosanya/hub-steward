@@ -3,7 +3,7 @@ import { mcpMarketClient, type MarketClient } from "../shared/api";
 import { useLoad } from "../../forms/useLoad";
 import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
-import { doSomethingBackPath, routes } from "../../../routes";
+import { doSomethingBackPath, routes } from "../../../app/routes";
 import { ProductRows } from "../../../shared/ui/ProductRows";
 import { Shell } from "../../../shared/ui/Shell";
 

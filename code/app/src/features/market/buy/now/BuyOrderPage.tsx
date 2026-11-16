@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
 import { kes } from "../../supply/api";
 import { dayWords } from "../../../../shared/ui/days";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { Button } from "../../../../shared/ui/Button";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { Chip } from "../../../../shared/ui/Chip";

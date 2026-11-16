@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { doSomethingBackPath } from "../../../../routes";
+import { doSomethingBackPath } from "../../../../app/routes";
 import { useLoad } from "../../../forms/useLoad";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
 import { ProductRows } from "../../../../shared/ui/ProductRows";

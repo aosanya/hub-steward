@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { RoomThreadsPage } from "./RoomThreadsPage";
 import type { RoomsClient } from "./api";
-import { routes } from "../../../routes";
+import { routes } from "../../../app/routes";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
 
 beforeEach(() => openAgency("farmers"));

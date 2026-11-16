@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import type { Issue } from "../../features/backlogs/shared/api";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { AssistantPage } from "./AssistantPage";
 import type { AssistantClient } from "./api";
 import { requeueUnanswered, type Item } from "./queue";

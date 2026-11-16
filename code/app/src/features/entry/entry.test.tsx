@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { App } from "../../App";
+import { App } from "../../app/App";
 import { provideEntryClient, type Agency, type DirectoryAgency, type EntryClient, type LinkOutcome } from "./api";
 import { words } from "./words";
 

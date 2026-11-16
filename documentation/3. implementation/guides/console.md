@@ -57,7 +57,7 @@ The console speaks `en`, `de`, `sw`, `es`, `fr` and `zh` (`i18n.tsx`). Words com
 
 ## Tests
 
-Vitest runs in jsdom (`vite.config.ts`). `src/test-setup.ts` clears `localStorage` before each test and points the runtime config at `https://wakala.test`.
+Vitest runs in jsdom (`vite.config.ts`). `src/app/test-setup.ts` clears `localStorage` before each test and points the runtime config at `https://wakala.test`.
 
 ```sh
 npm test

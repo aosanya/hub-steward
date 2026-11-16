@@ -5,7 +5,7 @@ import { MarketPage } from "./MarketPage";
 import { ProductPage } from "./ProductPage";
 import * as mcp from "../../../shared/wakala/mcp";
 import { mcpMarketClient, type MarketClient } from "../shared/api";
-import { routes } from "../../../routes";
+import { routes } from "../../../app/routes";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
 
 beforeEach(() => openAgency("farmers"));

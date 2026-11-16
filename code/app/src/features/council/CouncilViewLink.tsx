@@ -1,6 +1,6 @@
 import type { StartStep } from "../../features/market/start/api";
 import { useLanguage } from "../../features/entry/language";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { Button } from "../../shared/ui/Button";
 import { councilViewOf } from "./stepLinks";
 

@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
 import { resolveMember } from "../../supply/api";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
 import { JoinForm } from "../../../../shared/ui/JoinForm";
 import { Shell } from "../../../../shared/ui/Shell";

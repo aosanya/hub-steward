@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLoad } from "../../../features/forms/useLoad";
-import { routes } from "../../../routes";
+import { routes } from "../../../app/routes";
 import { bags, termsWords } from "../../../features/market/supply/groupOrder/api";
 import { Button } from "../../../shared/ui/Button";
 import { Card } from "../../../shared/ui/Card";

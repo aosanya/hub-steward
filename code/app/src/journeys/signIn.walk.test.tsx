@@ -1,7 +1,7 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { App } from "../App";
+import { App } from "../app/App";
 import { openAgencyId } from "../features/agency/open";
 import { provideEntryClient, type Agency, type DirectoryAgency, type EntryClient } from "../features/entry/api";
 import { wordsFor } from "../features/entry/language";

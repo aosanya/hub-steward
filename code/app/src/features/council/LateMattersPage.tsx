@@ -1,6 +1,6 @@
 import { useLanguage } from "../../features/entry/language";
 import { useLoad } from "../../features/forms/useLoad";
-import { useBackToSection } from "../../menu/useBackToSection";
+import { useBackToSection } from "../../app/menu/useBackToSection";
 import { filled } from "../../features/risks/labels";
 import { Chip } from "../../shared/ui/Chip";
 import { ListRow, Rows } from "../../shared/ui/ListRow";

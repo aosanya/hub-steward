@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Navigate, useLocation, useParams } from "react-router-dom";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { owesConsent } from "./api";
 import { isSettled, settle } from "./settled";
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assistantName, askPlaceholder } from "../assistant/AssistantPage";
-import { joinGroupWorkflow } from "../../home/workflowScreens";
+import { joinGroupWorkflow } from "../../app/home/workflowScreens";
 import { unreadLabel } from "./unread";
 import "./unread.css";
 import { mcpChatClient, type ChatClient, type Room } from "./api";
@@ -10,7 +10,7 @@ import { useLoad } from "../../features/forms/useLoad";
 import { Button } from "../../shared/ui/Button";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { Shell } from "../../shared/ui/Shell";
 
 export function ChatPage({ client = mcpChatClient }: { client?: ChatClient }) {

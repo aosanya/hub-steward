@@ -79,7 +79,7 @@ describe("the publish report list on a phone", () => {
   });
 });
 
-const styles = readFileSync(resolve(process.cwd(), "src/app.css"), "utf8");
+const styles = readFileSync(resolve(process.cwd(), "src/app/app.css"), "utf8");
 
 describe("the field styles", () => {
   it("gives .field no fixed pixel width", () => {

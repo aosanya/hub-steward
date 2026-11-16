@@ -42,7 +42,7 @@ Three things followed from that:
 ```
 src/
   app/
-    main.tsx  App.tsx  routes.ts  tabs.ts  tokens.css  app.css
+    main.tsx  App.tsx  routes.ts  tabs.ts  screen.ts  tokens.css  app.css  test-setup.ts
     home/  menu/
   features/
     backlogs/
@@ -84,7 +84,7 @@ Status is read from `code/app/src` on disk when this page was last written, and 
 | other features' deep imports into `backlogs/` | through `backlogs/index.ts` | open | SW456 |
 | `shared/` imports of features | none | open | SW504 |
 | every feature folder (`account`, `agency`, `apps`, `assistant`, `backlogs`, `chat`, `consent`, `council`, `entry`, `files`, `forms`, `groups`, `inbox`, `market`, `people`, `risks`, `started`, `steps`) | `features/` | done | SW489 |
-| `home`, `menu`, `tabs.ts`, `routes.ts`, `App.tsx`, `main.tsx`, the CSS tokens | `app/` | open | SW492 |
+| `home`, `menu`, `tabs.ts`, `routes.ts`, `screen.ts`, `App.tsx`, `main.tsx`, `app.css`, `tokens.css`, `test-setup.ts` and their tests | `app/` | done | SW492 |
 | `journeys/` and its test support | stays together | decided, nothing moves | SW495 |
 | a test that fails when a rule is broken | `layoutRules.test.ts` | in progress | SW510 |
 | a script that moves a folder and re-points imports | `code/app/scripts/moveFolder.mjs` | in progress | SW507 |
@@ -100,6 +100,8 @@ Status is read from `code/app/src` on disk when this page was last written, and 
 - **The `access` name clash (SW450).** A file `backlogs/access.ts` sat beside the folder `backlogs/access/`, and `BacklogsRoutes` imported `./access/index` to get round it. The file went to `backlogs/shared/access.ts`, so the plain import works again.
 - **Imports into the market (SW471).** Pointing every outside import at `market/index.ts` made one import cycle of 45 files (the market screens, `shared/ui/Shell`, `shared/ui/TabBar`, `inbox/useNeedsYou`, back to the index). Eight outside files keep a deep import because dropping any one brings the cycle back: `shared/ui/TabBar.tsx`, `shared/ui/JoinForm.tsx`, `inbox/useNeedsYou.ts`, `inbox/needsYou.ts`, `home/StartRows.tsx`, `started/api.ts`, `started/done.ts` and `steps/api.ts`. Rule 5 therefore allows a deep import only where the index would make a cycle, and each such import is listed by name. Lifting the open-steps reader and the product-name and unit-word helpers out of the market into a shared home removes the exceptions.
 - **`shared/` imports features (SW486, filed as SW504).** Rule 4 is broken in 15 places and nothing is moved yet: `agency/open` (`shared/ui/TabBar`, `TopBar`, `wakala/mcp`), `entry/language` and `entry/words` (`shared/ui/AgeBubble`, `LanguageChoice`, `age`), `inbox/api`, `assignedIssues`, `thingsToDo` and `useNeedsYou` (`shared/ui/Shell`, `TabBar`), `market/start/api` (`shared/ui/TabBar`), `market/shared/unitWords` (`shared/ui/JoinForm`), `chat/unread.css` (`shared/ui/TabBar`), and the root files `tabs.ts` and `routes.ts` (`shared/ui/TabBar`). The tests `shared/ui/age.test`, `TopBar.test`, `tabBar.test`, `bellBadge.test`, `shared/wakala/mcp.test`, `instance.test` and `me.test` import `entry/`, `agency/`, `inbox/` and `market/` too. Most of it goes through `TabBar` and `TopBar`, which are the shell more than the kit. Each import is to move into `shared/` or be passed in by the caller, one at a time.
+
+- **The shell (SW492).** `main.tsx`, `App.tsx`, `routes.ts`, `screen.ts`, `tabs.ts`, `app.css`, `tokens.css`, `test-setup.ts`, `home/` and `menu/` are in `src/app/`, with the tests that sat beside them. `index.html` loads `/src/app/main.tsx` and `vite.config.ts` loads `./src/app/test-setup.ts`. Three root tests were placed by what they read: `layoutRules.test.ts` stays at the top of `src` because it reads the whole source tree, `demoConfig.test.ts` stays because it scans the whole source tree and tests `demoConfig.ts` outside `src`, and `backlogToolNames.test.ts` went to `features/backlogs/` because it reads only that folder.
 
 ## Still to settle
 

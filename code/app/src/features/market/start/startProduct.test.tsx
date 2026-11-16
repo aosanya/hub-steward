@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
-import { routes } from "../../../routes";
+import { routes } from "../../../app/routes";
 import * as mcp from "../../../shared/wakala/mcp";
 import { type PosterChoice, type StartClient, type StartStep } from "./api";
 import { mcpProductsClient, noOfferWords, offeredProducts, resolveProduct, type ProductsClient } from "./products";

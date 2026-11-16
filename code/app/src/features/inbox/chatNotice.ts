@@ -1,4 +1,4 @@
-import { chatListPath, routes } from "../../routes";
+import { chatListPath, routes } from "../../app/routes";
 import type { Words } from "../entry/words";
 import type { NotificationItem } from "./api";
 

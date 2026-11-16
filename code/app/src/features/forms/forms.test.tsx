@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { App } from "../../App";
+import { App } from "../../app/App";
 import type { Answer, FormsClient } from "./api";
 import { FormsProvider } from "./context";
 import { forgetOpenAgency, openAgency } from "../agency/open";

@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { mcpChatClient, type ChatClient } from "./api";
 import { useLoad } from "../../features/forms/useLoad";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { AskForm } from "../../features/market/supply/asks/AskForm";
 import { noStock, type StockReader } from "../../features/market/supply/asks/stock";
 import { LoadFailed } from "../../shared/ui/LoadState";

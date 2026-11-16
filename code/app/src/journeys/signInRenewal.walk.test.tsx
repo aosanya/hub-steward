@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { App } from "../App";
+import { App } from "../app/App";
 import { forgetOpenAgency } from "../features/agency/open";
 import { words } from "../features/entry/words";
 import { resetMcp } from "../shared/wakala/mcp";

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
 import { resolveMember } from "../../supply/api";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { BottomBar } from "../../../../shared/ui/BottomBar";
 import { Button } from "../../../../shared/ui/Button";
 import { Card } from "../../../../shared/ui/Card";

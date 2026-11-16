@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { FormQuestion } from "./api";
 import { useForms } from "./context";
 import { useLoad } from "./useLoad";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { BottomBar } from "../../shared/ui/BottomBar";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";

@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../features/forms/useLoad";
-import { chatListPath, routes } from "../../../routes";
+import { chatListPath, routes } from "../../../app/routes";
 import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
 import { Shell } from "../../../shared/ui/Shell";
 import { generalOf, mcpRoomsClient, type RoomsClient } from "./api";

@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { App } from "../../App";
+import { App } from "../../app/App";
 import { resetMcp } from "../../shared/wakala/mcp";
 import { forgetSubject } from "../../shared/wakala/me";
 import { forgetToken, storedToken } from "../../shared/wakala/token";

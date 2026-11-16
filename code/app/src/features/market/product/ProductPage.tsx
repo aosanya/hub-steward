@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { mcpMarketClient, type MarketClient, type Offer } from "../shared/api";
 import { kes } from "../shared/money";
 import { useLoad } from "../../forms/useLoad";
-import { routes } from "../../../routes";
+import { routes } from "../../../app/routes";
 import { Button } from "../../../shared/ui/Button";
 import { Card } from "../../../shared/ui/Card";
 import { LoadFailed } from "../../../shared/ui/LoadState";

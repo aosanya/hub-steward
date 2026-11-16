@@ -6,7 +6,7 @@ import type { BoughtOrder, JoinClient } from "../join/api";
 import { lineOrderOf, mcpMyOrdersClient, trailDay, trailWords, type MyOrder, type MyOrdersClient } from "./api";
 import { MyOrderPage } from "./MyOrderPage";
 import { MyOrdersPage } from "./MyOrdersPage";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { forgetOpenAgency, openAgency } from "../../../agency/open";
 
 beforeEach(() => openAgency("farmers"));

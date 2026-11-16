@@ -1,4 +1,4 @@
-import { screen } from "../../screen";
+import { screen } from "../../app/screen";
 
 export const chatPaths = {
   roomThreads: screen("/chat/:roomId/threads"),

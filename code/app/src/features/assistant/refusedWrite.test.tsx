@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import { routes } from "../../routes";
+import { routes } from "../../app/routes";
 import { AssistantPage, failedWords } from "./AssistantPage";
 import { mcpAssistantClient, offeredNames } from "./api";
 import { rulesTool } from "./confirm";

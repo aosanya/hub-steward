@@ -8,7 +8,7 @@ import { thingsToDoLabel } from "../../features/inbox/thingsToDo";
 import { useNeedsYou } from "../../features/inbox/useNeedsYou";
 import { mcpStartClient, type StartClient } from "../../features/market/start/api";
 import { Icon } from "./Icon";
-import { mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "../../tabs";
+import { mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "../../app/tabs";
 
 type Props = { inbox?: InboxClient; start?: StartClient; assigned?: AssignedClient };
 

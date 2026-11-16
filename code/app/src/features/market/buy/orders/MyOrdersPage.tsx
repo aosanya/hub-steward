@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
-import { routes } from "../../../../routes";
+import { routes } from "../../../../app/routes";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
 import { Chip, type ChipTone } from "../../../../shared/ui/Chip";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";

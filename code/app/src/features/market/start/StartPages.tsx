@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
-import { doSomethingPath } from "../../../routes";
+import { doSomethingPath } from "../../../app/routes";
 import { Button } from "../../../shared/ui/Button";
 import { Card } from "../../../shared/ui/Card";
 import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";

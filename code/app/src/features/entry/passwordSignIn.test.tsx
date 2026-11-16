@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { App } from "../../App";
+import { App } from "../../app/App";
 import { forgetRuntimeConfig, setRuntimeConfig } from "../../shared/wakala/config";
 import { resetMcp } from "../../shared/wakala/mcp";
 import { forgetSubject } from "../../shared/wakala/me";
