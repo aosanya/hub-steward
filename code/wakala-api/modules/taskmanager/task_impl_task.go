@@ -37,6 +37,9 @@ func (m *taskManager) CreateTask(ctx context.Context, task Task) (Task, error) {
 	if err := checkEffort(task.Effort); err != nil {
 		return Task{}, fmt.Errorf("CreateTask: %w", err)
 	}
+	if task.Files, err = checkFiles(task.Files); err != nil {
+		return Task{}, fmt.Errorf("CreateTask: %w", err)
+	}
 	task.CompletedAt = ""
 	if task.Rank <= 0 {
 		if task.Rank, err = m.nextRank(ctx); err != nil {
@@ -112,6 +115,12 @@ func (m *taskManager) updateTask(ctx context.Context, task Task, replace bool) (
 		task.Effort = current.Effort
 	}
 	if err := checkEffort(task.Effort); err != nil {
+		return Task{}, fmt.Errorf("UpdateTask: %w", err)
+	}
+	if task.Files == nil {
+		task.Files = current.Files
+	}
+	if task.Files, err = checkFiles(task.Files); err != nil {
 		return Task{}, fmt.Errorf("UpdateTask: %w", err)
 	}
 	if current.Status != task.Status && !current.Status.CanTransitionTo(task.Status) {
@@ -399,6 +408,9 @@ func nonStatusChangedFields(before, after Task) []string {
 	}
 	if before.Context != after.Context {
 		out = append(out, "context")
+	}
+	if !stringSlicesEqual(before.Files, after.Files) {
+		out = append(out, "files")
 	}
 	return out
 }

@@ -84,6 +84,11 @@
           "description": "The working memory an agent carries between attempts at this task."
         },
         {
+          "name": "files",
+          "type": "json",
+          "description": "The paths this issue will touch, a list of strings, each relative to its repo and optionally prefixed with the repo name and a colon; a trailing slash means everything under that folder. Empty when none are named."
+        },
+        {
           "name": "created_at",
           "type": "timestamp",
           "description": "When the row was created."

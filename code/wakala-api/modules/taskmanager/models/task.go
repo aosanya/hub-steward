@@ -130,6 +130,8 @@ type Task struct {
 	// Context is the AI agent's working memory blob. Optional.
 	Context string `json:"context,omitempty"`
 
+	Files FileList `json:"files"`
+
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 
@@ -189,6 +191,15 @@ type Task struct {
 	Rank int `json:"rank"`
 
 	Deleted bool `json:"deleted"`
+}
+
+type FileList []string
+
+func (l FileList) MarshalJSON() ([]byte, error) {
+	if l == nil {
+		return []byte("[]"), nil
+	}
+	return json.Marshal([]string(l))
 }
 
 type TagList []string

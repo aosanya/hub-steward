@@ -62,6 +62,7 @@ type (
 	CapsNearestList    = models.CapsNearestList
 	TaskReference      = models.TaskReference
 	TaskPatch          = models.TaskPatch
+	FileList           = models.FileList
 	RankedCase         = models.RankedCase
 	CodeSequence       = models.CodeSequence
 )

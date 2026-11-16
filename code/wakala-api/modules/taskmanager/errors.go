@@ -11,6 +11,7 @@ var ErrTaskMoveConflict = errors.New("the task changed while it was being moved;
 var ErrTaskNotClaimable = errors.New("the issue cannot be taken")
 var ErrPriorityLocked = errors.New("the priority of an issue in Done cannot be changed; move it back to an open step first")
 var ErrInvalidEffort = errors.New("effort is unknown, very_low, low, medium, high or very_high")
+var ErrInvalidFiles = errors.New("invalid files list")
 
 var ErrInvalidOverdueFilter = errors.New("invalid overdue filter")
 
