@@ -51,12 +51,12 @@ func (m *taskManager) TimedOut(ctx context.Context, filter TimedOutFilter) (Time
 	if err := m.requireVisibleBacklog(ctx, backlogs, name, filter.RequesterID); err != nil {
 		return out, fmt.Errorf("TimedOut: %w", err)
 	}
-	query, err := m.scopedTasks(ctx, name, "", nil, filter.RequesterID)
+	issues, err := m.inProgressIssues(ctx, PendingTodosFilter{Backlog: name, RequesterID: filter.RequesterID})
 	if err != nil {
 		return out, fmt.Errorf("TimedOut: %w", err)
 	}
 	var rows []pendingRow
-	if err := query.Where("status = ?", string(TaskStatusInProgress)).Select(pendingColumns).Order(taskOrder).Limit(maxListPage).Scan(&rows).Error; err != nil {
+	if err := issues().Select(pendingColumns).Order(taskOrder).Limit(maxListPage).Scan(&rows).Error; err != nil {
 		return out, fmt.Errorf("TimedOut: %w", err)
 	}
 	if len(rows) == 0 {

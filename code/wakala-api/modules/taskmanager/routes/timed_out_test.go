@@ -40,12 +40,12 @@ func newTimedOutFixture(t *testing.T) *timedOutFixture {
 	return f
 }
 
-func (f *timedOutFixture) issue(code, backlog, step string, inProgress bool) string {
+func (f *timedOutFixture) issue(code, backlog, step string, statusInProgress bool) string {
 	f.h.t.Helper()
 	made := f.h.expect(http.StatusCreated, "owner", "POST", "/tasks", map[string]any{"title": "issue " + code, "code": code, "backlog": backlog, "step": step})
 	id := made["id"].(string)
 	f.issues[code] = id
-	if inProgress {
+	if statusInProgress {
 		f.h.expect(http.StatusOK, "owner", "PATCH", "/tasks/"+id, map[string]any{"status": "in_progress"})
 	}
 	return id
@@ -71,7 +71,7 @@ func (f *timedOutFixture) logAt(code, text string, ago time.Duration) {
 func seedTimedOut(t *testing.T) *timedOutFixture {
 	t.Helper()
 	f := newTimedOutFixture(t)
-	f.issue("LATE", "book", "in-progress", true)
+	f.issue("LATE", "book", "in-progress", false)
 	f.logAt("LATE", "Taken.", 20*time.Minute)
 	f.logAt("LATE", "Todo 1 of 2 done: the failing test, and a very long line that goes on and on "+strings.Repeat("more words ", 30), 3*time.Minute)
 	f.issue("FRESH", "book", "in-progress", true)
@@ -82,6 +82,8 @@ func seedTimedOut(t *testing.T) *timedOutFixture {
 	f.issue("NOLOG", "book", "in-progress", true)
 	f.issue("WAITING", "book", "open", false)
 	f.logAt("WAITING", "Taken.", 40*time.Minute)
+	f.issue("STATUSONLY", "book", "open", true)
+	f.logAt("STATUSONLY", "Taken.", 40*time.Minute)
 	f.issue("OTHER", "elsewhere", "in-progress", true)
 	f.logAt("OTHER", "Taken.", 40*time.Minute)
 	return f
@@ -187,7 +189,7 @@ func TestTimedOutMovesAndTagsNothing(t *testing.T) {
 	f.h.expect(http.StatusOK, "owner", "GET", "/timed-out?backlog=book", nil)
 
 	read := f.h.expect(http.StatusOK, "owner", "GET", "/tasks/"+f.issues["LATE"], nil)
-	if read["status"] != "in_progress" {
+	if read["status"] != "pending" || read["step"] != "in-progress" {
 		t.Errorf("status %v", read["status"])
 	}
 	if notes := f.h.notesAs("owner", "/tasks/"+f.issues["LATE"]+"/notes"); len(notes) != 2 {
