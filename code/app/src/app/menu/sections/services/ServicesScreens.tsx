@@ -7,6 +7,7 @@ import { Shell } from "../../../Shell";
 import { MenuList } from "../../MenuList";
 import { MenuWindow } from "../../MenuWindow";
 import { useBackToSection } from "../../useBackToSection";
+import { useWord } from "../../../../features/agency/useWord";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
 
 const paidWords = "Paid";
@@ -66,7 +67,10 @@ const loadSubmissions = async (slug: string) => {
 const markPaid = (submission: Item) =>
   callTool("", "forms_submission_mark_paid", { form_id: text(submission, "form_id"), member_id: text(submission, "member_id"), paid: true });
 
-const KindScreen = ({ title, kind, empty, payable }: { title: string; kind: string; empty: string; payable?: boolean }) => {
+const KindScreen = ({ generic, emptyGeneric, kind, payable }: { generic: string; emptyGeneric: string; kind: string; payable?: boolean }) => {
+  const word = useWord("forms");
+  const title = word(generic);
+  const empty = `No ${word(emptyGeneric).toLowerCase()} yet.`;
   const [version, setVersion] = useState(0);
   const [failed, setFailed] = useState(false);
   const owing = (item: Item) => (item.owing as Item[] | undefined) ?? [];
@@ -91,17 +95,24 @@ const KindScreen = ({ title, kind, empty, payable }: { title: string; kind: stri
   );
 };
 
-export const PermitsScreen = () => <KindScreen title="Permits" kind="permit" empty="No permits yet." />;
+export const PermitsScreen = () => <KindScreen generic="Permits" emptyGeneric="Permits" kind="permit" />;
 
-export const LicencesScreen = () => <KindScreen title="Licences" kind="licence" empty="No licences yet." />;
+export const LicencesScreen = () => <KindScreen generic="Licences" emptyGeneric="Licences" kind="licence" />;
 
-export const FeesPaymentsScreen = () => <KindScreen title="Fees & Payments" kind="fee" empty="No fees yet." payable />;
+export const FeesPaymentsScreen = () => <KindScreen generic="Fees & Payments" emptyGeneric="Fees" kind="fee" payable />;
 
 const catalogueRow = (entry: Item) => ({ id: text(entry, "id"), name: text(entry, "name"), line: text(entry, "summary") });
 
 export function ServiceCatalogueScreen() {
+  const word = useWord("forms");
   const load = async () => (await listOf("forms_catalog_entry_list_public")).map(catalogueRow);
   return (
-    <ServicesList title="Service Catalogue" tool="forms_catalog_entry_list_public" load={load} fields={{ title: "name", meta: "line" }} empty={homeEmpty("No services yet.")} />
+    <ServicesList
+      title={word("Service Catalogue")}
+      tool="forms_catalog_entry_list_public"
+      load={load}
+      fields={{ title: "name", meta: "line" }}
+      empty={homeEmpty(`No ${word("Services").toLowerCase()} yet.`)}
+    />
   );
 }

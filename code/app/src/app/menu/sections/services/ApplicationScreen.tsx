@@ -8,6 +8,7 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
 import { MenuDetail, actionFailedWords, loadFailedWords } from "../../MenuDetail";
 import { useBackToSection } from "../../useBackToSection";
+import { useWord } from "../../../../features/agency/useWord";
 import { listOf, text, type Item } from "../staff/staffData";
 
 export const withdrawLabel = "Withdraw";
@@ -42,6 +43,7 @@ function ApplicationAnswers({ formId, version }: { formId: string; version: numb
 
 export function ApplicationScreen() {
   const back = useBackToSection();
+  const title = useWord("forms")("Application");
   const id = useParams().id ?? "";
   const [version, setVersion] = useState(0);
   const [failed, setFailed] = useState(false);
@@ -57,11 +59,11 @@ export function ApplicationScreen() {
     );
   };
   return (
-    <Shell title="Application" titleUnder tabless {...back}>
+    <Shell title={title} titleUnder tabless {...back}>
       <MenuDetail
         key={version}
         bare
-        title="Application"
+        title={title}
         tool="forms_submission_read_mine"
         fields={{}}
         status="status"
