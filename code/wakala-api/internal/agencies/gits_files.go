@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings"
 	"sync"
 
 	mwanachamagit "wakalaserver/modules/git"
@@ -246,8 +247,36 @@ func (g *repositoryFolderGit) fetchJob(ctx context.Context, id string) repoFileS
 
 func (g *repositoryFolderGit) SmartHTTPHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.Error(w, "git over HTTP is not served from per-repository files", http.StatusNotImplemented)
+		name, rest, ok := splitRepositoryPath(r.URL.Path)
+		if !ok {
+			http.Error(w, "invalid repository path", http.StatusBadRequest)
+			return
+		}
+		err := g.named(r.Context(), name)(func(file *mwanachamagit.RepoFile) error {
+			inner := r.Clone(r.Context())
+			inner.URL.Path = rest
+			file.GitHTTPHandler().ServeHTTP(w, inner)
+			return nil
+		})
+		if errors.Is(err, mwanachamagit.ErrRepoNotInitialised) || errors.Is(err, mwanachamagit.ErrRepositoryNotRegistered) {
+			http.Error(w, "repository not found", http.StatusNotFound)
+			return
+		}
+		if err != nil {
+			http.Error(w, "internal error: "+err.Error(), http.StatusInternalServerError)
+		}
 	})
+}
+
+func splitRepositoryPath(path string) (name, rest string, ok bool) {
+	trimmed := strings.TrimPrefix(path, "/")
+	index := strings.Index(trimmed, "/")
+	if index < 0 {
+		return "", "", false
+	}
+	name = strings.TrimSuffix(trimmed[:index], ".git")
+	rest = trimmed[index:]
+	return name, rest, name != "" && rest != "/"
 }
 
 var _ mwanachamagit.GitManager = (*repositoryFolderGit)(nil)
