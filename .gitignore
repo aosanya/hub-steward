@@ -8,4 +8,5 @@ playwright-report/
 .env.*
 *.mp4
 !.env.example
+!.env.qa.example
 deployment/local/backups/
