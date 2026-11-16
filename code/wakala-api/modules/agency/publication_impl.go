@@ -161,7 +161,7 @@ func (m *agencyManager) contentHashFor(ctx context.Context, tx *gorm.DB, draftID
 	for _, r := range roles {
 		records = append(records, hashRecord("Role", map[string]any{
 			"id": r.ID, "name": r.Name, "description": r.Description, "deleted": r.Deleted,
-		}))
+		}, optionalField{"permissions", hashList(r.Permissions)}, optionalField{"staff", trueText(r.Staff)}))
 	}
 
 	modules, err := list[models.Module](m, scoped(roleModule), roleModule)
