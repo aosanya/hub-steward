@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
@@ -10,6 +11,7 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
 import { MenuDetail } from "../../MenuDetail";
 import { useBackToSection } from "../../useBackToSection";
+import { PersonEdit } from "./PersonEdit";
 import { personNameOf } from "./personName";
 
 type Item = Record<string, unknown>;
@@ -52,9 +54,11 @@ export function PersonScreen() {
   const back = useBackToSection();
   const word = useWord("actor");
   const id = useParams().id ?? "";
+  const [version, setVersion] = useState(0);
+  const saved = () => setVersion((was) => was + 1);
   return (
     <Shell title={word("Person")} titleUnder {...back}>
-      <MenuDetail bare title={word("Person")} tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadPerson} />
+      <MenuDetail key={version} bare title={word("Person")} tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadPerson} extra={(person) => <PersonEdit id={id} person={person} onSaved={saved} />} />
       <PersonGroups id={id} />
     </Shell>
   );

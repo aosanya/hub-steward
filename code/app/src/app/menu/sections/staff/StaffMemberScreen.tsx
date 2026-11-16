@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
@@ -9,6 +10,7 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
 import { MenuDetail } from "../../MenuDetail";
 import { useBackToSection } from "../../useBackToSection";
+import { PersonEdit } from "../residents/PersonEdit";
 import { personNameOf } from "../residents/personName";
 import { listOf, roleKindNames, seatLabel, text, type Item } from "./staffData";
 
@@ -60,9 +62,11 @@ export function StaffMemberScreen() {
   const back = useBackToSection();
   const id = useParams().id ?? "";
   const word = useWord("actor");
+  const [version, setVersion] = useState(0);
+  const saved = () => setVersion((was) => was + 1);
   return (
     <Shell title={word("Staff member")} titleUnder {...back}>
-      <MenuDetail bare title={word("Staff member")} tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadMember} />
+      <MenuDetail key={version} bare title={word("Staff member")} tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadMember} extra={(member) => <PersonEdit id={id} person={member} onSaved={saved} />} />
       <Seats id={id} />
     </Shell>
   );

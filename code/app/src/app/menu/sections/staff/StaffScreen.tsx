@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
+import { PersonEdit } from "../residents/PersonEdit";
 import { personNameOf } from "../residents/personName";
 import { homeEmpty, listOf, roleKindNames, seatsLine, text, type Item } from "./staffData";
 
@@ -28,16 +30,19 @@ const loadPerson = async (id: string) => {
     listOf("actor_list_role_assignments_for_actor", { actor_id: id }),
     roleKindNames(),
   ]);
-  return { id, name: personNameOf(person ?? {}), role: seatsLine(seats, kindNames) };
+  return { id, name: personNameOf(person ?? {}), display_name: personNameOf(person ?? {}), role: seatsLine(seats, kindNames) };
 };
 
 export function StaffScreen() {
   const word = useWord("actor");
+  const [version, setVersion] = useState(0);
   return (
     <MenuWindow
       title={word("Staff")}
+      listKey={version}
+      detailKey={version}
       list={{ title: word("Staff"), tool: "actor_list_actors", load: loadStaff, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Staff").toLowerCase()} yet.`) }}
-      detail={{ tool: "actor_get_actor", load: loadPerson, fields: { Name: "name", Role: "role" }, status: "status" }}
+      detail={{ tool: "actor_get_actor", load: loadPerson, fields: { Name: "name", Role: "role" }, status: "status", extra: (person) => <PersonEdit id={text(person, "id")} person={person} onSaved={() => setVersion((was) => was + 1)} /> }}
     />
   );
 }

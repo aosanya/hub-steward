@@ -112,7 +112,7 @@ describe("editing a group from its detail", () => {
     expect(screen.queryByRole("button", { name: "Hide" })).toBeNull();
   });
 
-  it("offers a person no Edit because no permission covers renaming one", async () => {
+  it("offers a person no Edit to a caller without member.edit", async () => {
     permissions = ["group.manage", "group.settings", "member.view"];
     const path = items.find((item) => item.title === "All People")?.path?.() ?? "";
     group = { id: "p1" };
