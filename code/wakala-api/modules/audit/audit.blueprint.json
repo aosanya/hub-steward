@@ -1,0 +1,57 @@
+{
+  "module": "audit",
+  "objects": [
+    {
+      "role": "entry",
+      "description": "One thing a person did to an agency, put on record: who did it, what they did, what it was done to, and when. Append-only: an entry is never edited or removed.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers. Set when the row is written.",
+          "primary": true
+        },
+        {
+          "name": "instance_id",
+          "type": "string",
+          "description": "The agency the action was taken in. Every listing is narrowed to one of these, so one agency never reads another's log.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "actor",
+          "type": "string",
+          "description": "Who acted, exactly as they authenticated.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "description": "What they did, in plain words such as \"renamed the agency\".",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "description": "What the action was done to, in plain words or as an id. Empty when the action had no single target.",
+          "immutable": true
+        },
+        {
+          "name": "at",
+          "type": "timestamp",
+          "description": "When it happened, as an RFC 3339 instant in UTC. The only ordering a log has.",
+          "immutable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "instance",
+          "description": "Reading one agency's log, newest first.",
+          "fields": ["instance_id", "at"]
+        }
+      ]
+    }
+  ]
+}

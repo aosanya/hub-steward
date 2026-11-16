@@ -1,0 +1,27 @@
+{
+  "operations": {
+    "list_entries": {
+      "method": "GET",
+      "path": "/audit/entries",
+      "call": "ListEntries",
+      "action": "audit.entry.list",
+      "tool": "audit_list_entries",
+      "title": "List audit entries",
+      "description": "List what has been done in one agency, newest first: who acted, what they did, what it was done to, and when.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    }
+  },
+  "errors": {
+    "ErrInvalidEntry": 400
+  }
+}
