@@ -644,6 +644,14 @@
                {"from": "path", "as": "taskID", "refers": "taskmanager.task", "into": "TaskID", "description": "The issue to brief."}],
       "returns": [{"body": true}]
     },
+    "file_overlaps": {
+      "method": "GET", "path": "/file-overlaps", "call": "FileOverlaps", "action": "taskmanager.task.file_overlaps",
+      "title": "The issues in progress that touch the same files",
+      "description": "Before taking an issue, learn which issues in progress touch the same files, so two agents do not edit one file at once. Send taskID (an issue whose files list is used) or files (a list of paths, repeat it for several, for when no issue exists yet), or both; one of the two is required, 400 otherwise, and a bad path is refused with 400 as taskmanager_task_patch refuses it. items are the issues in progress, in any backlog the caller can see (the step named In Progress, without regard to case; a card's status is ignored), whose files list overlaps, each with id, code, title, step and overlapping: the pairs {asked, theirs} of paths that overlap. Two paths overlap when they are equal, or one is a folder (a trailing slash) containing the other, within the same repo prefix. The issue asked about is never listed against itself, and an issue with an empty files list overlaps nothing. An issue in a backlog the caller cannot see is not listed or counted, and an issue the caller cannot see is refused as not found. Read-only.",
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
+      "returns": [{"body": true}]
+    },
     "task_dependencies": {
       "method": "GET", "path": "/tasks/{taskID}/dependencies", "call": "TaskDependenciesFor", "action": "taskmanager.task.dependencies",
       "title": "What an issue waits on and what waits on it",

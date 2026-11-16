@@ -89,7 +89,7 @@ func overlapPairs(item map[string]any) []string {
 func TestFileOverlapsListsTheInProgressIssuesSharingAFileOrAFolderAndNothingElse(t *testing.T) {
 	f := seedOverlaps(t)
 
-	body := f.h.expect(http.StatusOK, "owner", "GET", "/file-overlaps?taskID="+f.issues["ASKED"], nil)
+	body := f.h.expect(http.StatusOK, "dev", "GET", "/file-overlaps?taskID="+f.issues["ASKED"], nil)
 
 	if got := overlapCodes(body); got != "INFOLDER,SAMEFILE" {
 		t.Fatalf("got %s, want INFOLDER and SAMEFILE", got)
@@ -99,10 +99,10 @@ func TestFileOverlapsListsTheInProgressIssuesSharingAFileOrAFolderAndNothingElse
 func TestFileOverlapsNamesTheOverlappingPairsAndTheIssueIdentity(t *testing.T) {
 	f := seedOverlaps(t)
 
-	body := f.h.expect(http.StatusOK, "owner", "GET", "/file-overlaps?taskID="+f.issues["ASKED"], nil)
+	body := f.h.expect(http.StatusOK, "dev", "GET", "/file-overlaps?taskID="+f.issues["ASKED"], nil)
 
 	same := overlapItem(t, body, "SAMEFILE")
-	if same["id"] != f.issues["SAMEFILE"] || same["title"] != "issue SAMEFILE" || same["step"] != "in-progress" {
+	if same["id"] != f.issues["SAMEFILE"] || same["title"] != "issue SAMEFILE" || same["step"] != "In progress" {
 		t.Errorf("identity %v", same)
 	}
 	if got := strings.Join(overlapPairs(same), "|"); got != menuFile+" ~ "+menuFile {
