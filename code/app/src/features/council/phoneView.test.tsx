@@ -115,10 +115,12 @@ describe("the late matters page with the window set to phone width (jsdom lays n
     expect(within(bar).getByRole("button", { name: "Menu" })).toBeInTheDocument();
   });
 
-  it("has only the Menu button and no input, textarea, select or form", async () => {
+  it("has only the Menu button and the search box, with no textarea, select or form", async () => {
     const container = await showLateMatters();
     expect(buttonNames(container)).toEqual(["Menu"]);
-    expect(container.querySelectorAll("input, textarea, select, form")).toHaveLength(0);
+    expect(container.querySelectorAll("input")).toHaveLength(1);
+    expect(container.querySelector("input[type=search]")).not.toBeNull();
+    expect(container.querySelectorAll("textarea, select, form")).toHaveLength(0);
   });
 
   it("sets no font size or pixel width inline on any element", async () => {
