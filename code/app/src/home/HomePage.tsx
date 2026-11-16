@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import type { AgencyKind } from "../home/cards";
+import type { AgencyKind } from "./cards";
 import type { AgencyView } from "../agency/modules";
-import { StartRows } from "../home/StartRows";
+import { StartRows } from "./StartRows";
 import { doSomethingPath } from "../routes";
 import { Ongoing } from "../started/Ongoing";
 import { LoadingLine } from "../shared/ui/LoadState";

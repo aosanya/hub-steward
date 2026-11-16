@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { GroupOrder, GroupOrderClient } from "../../market/supply/groupOrder/api";
 import * as mcp from "../../shared/wakala/mcp";
 import { holdsGroupCoordinator, isDuplicate, mcpPaymentsClient, paymentOf, recordOf, type Payment, type PaymentsClient, type PaymentsRecord } from "./api";
-import { NotificationsPage } from "../../pages/NotificationsPage";
+import { NotificationsPage } from "../../inbox/NotificationsPage";
 import type { InboxClient } from "../../inbox/api";
 import { CoordinatorOrderCards } from "./OrderCards";
 import { AddPaymentPage, CoordinatorOrderPage, ManagePaymentsPage } from "./PaymentsPages";

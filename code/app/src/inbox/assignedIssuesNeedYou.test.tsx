@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import type { StartClient } from "../market/start/api";
-import { NotificationsPage } from "../pages/NotificationsPage";
+import { NotificationsPage } from "./NotificationsPage";
 import type { InboxClient, NotificationItem } from "./api";
 import * as mcp from "../shared/wakala/mcp";
 import { type AssignedClient, mcpAssignedClient } from "./assignedIssues";

@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { StartClient } from "../market/start/api";
 import { swahili } from "../entry/swahili";
 import { words } from "../entry/words";
-import { NotificationsPage } from "../pages/NotificationsPage";
+import { NotificationsPage } from "./NotificationsPage";
 import { TabBar } from "../shared/ui/TabBar";
 import * as mcp from "../shared/wakala/mcp";
 import { mcpInboxClient } from "./api";

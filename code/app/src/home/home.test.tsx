@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { agencyCards, homeCardsFor, type AgencyKind } from "./cards";
 import type { AgencyView } from "../agency/modules";
-import { HomePage, type DoSomethingSegment } from "../pages/HomePage";
+import { HomePage, type DoSomethingSegment } from "./HomePage";
 
 type RowsProps = { kind?: string; view?: { modules: { code: string }[] } | null };
 

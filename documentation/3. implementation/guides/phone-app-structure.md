@@ -9,15 +9,14 @@ Decided on 2026-11-16 with the owner. This page is the strategy; [phone-app.md](
 | Grouping | Folders |
 |---|---|
 | By feature | `backlogs`, `chat`, `files`, `market`, `forms` |
-| By layer | `ui`, `wakala`, `storage`, `pages` |
+| By layer | `ui`, `wakala`, `storage` |
 | By role | `coordinator`, `council` |
 | By journey | `started`, `steps`, `entry`, `journeys` |
 
-Three things follow from that:
+Two things follow from that:
 
-- `pages/` repeats the feature folders. The Market screens are in `pages/market` and its logic in `market/`; the same split holds for supply, started, chat, entry, forms and join. One change opens two folders.
 - Backlogs are in about ten places: `backlogs`, `backlogAccess`, `backlogBoard`, `backlogManage`, `backlogPage`, `smartBacklog`, `sendToBacklog`, `journeys/backlogs`, `chat/backlogCards` and `assistant/namedBacklog`.
-- The market is in five: `market`, `supply`, `buy`, `sell` and `pages/market`.
+- The market is in four: `market`, `supply`, `buy` and `sell`.
 
 ## The rules
 
@@ -62,8 +61,7 @@ src/
 | Today | Goes to |
 |---|---|
 | `backlogs`, `backlogAccess`, `backlogBoard`, `backlogManage`, `backlogPage`, `smartBacklog`, `sendToBacklog`, `journeys/backlogs`, `chat/backlogCards` | `features/backlogs/`, one sub-folder per screen area |
-| `market`, `buy`, `sell`, `supply`, `pages/market`, `pages/supply` | `features/market/` |
-| `pages/chat`, `pages/forms`, `pages/started`, `pages/entry`, `pages/join` | the feature folder of the same name |
+| `market`, `buy`, `sell`, `supply` | `features/market/` |
 | `ui`, `wakala`, `storage` | `shared/` |
 | `home`, `menu`, `tabs.ts`, `routes.ts`, `App.tsx`, `main.tsx`, the CSS tokens | `app/` |
 | every other feature folder | `features/`, unchanged inside |
@@ -81,7 +79,7 @@ Each is decided when its folder is reached, and the answer is written here.
 
 ## How the move is done
 
-- One feature at a time, backlogs first, then market, then `pages/`, then the top-level groups.
+- One feature at a time, backlogs first, then market, then the top-level groups.
 - Each step is a move with import updates and nothing else, and `npm run typecheck` and `npm test` pass before the next step starts.
 - The step that moves a folder updates [phone-app.md](phone-app.md) in the same change.
 - A new file goes into its feature on the day it is written, even before that feature has been moved.

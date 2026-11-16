@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { StartClient } from "../market/start/api";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import { NotificationsPage } from "../pages/NotificationsPage";
+import { NotificationsPage } from "./NotificationsPage";
 import { routes } from "../routes";
 import type { InboxClient, NotificationItem } from "./api";
 

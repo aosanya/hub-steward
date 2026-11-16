@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { StartRows } from "../../home/StartRows";
-import { NotificationsPage } from "../../pages/NotificationsPage";
+import { NotificationsPage } from "../../inbox/NotificationsPage";
 import { TabBar } from "../../shared/ui/TabBar";
 import * as mcp from "../../shared/wakala/mcp";
 import { mcpStartClient, type StartStep } from "./api";

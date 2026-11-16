@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { issuePath } from "../backlogs/paths";
 import type { StartClient } from "../market/start/api";
-import { NotificationsPage } from "../pages/NotificationsPage";
+import { NotificationsPage } from "./NotificationsPage";
 import { routes } from "../routes";
 import type { InboxClient, NotificationItem } from "./api";
 

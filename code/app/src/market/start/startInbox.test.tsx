@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { NotificationsPage } from "../../pages/NotificationsPage";
+import { NotificationsPage } from "../../inbox/NotificationsPage";
 import * as mcp from "../../shared/wakala/mcp";
 import type { StartClient, StartStep } from "./api";
 import { TabBar } from "../../shared/ui/TabBar";
