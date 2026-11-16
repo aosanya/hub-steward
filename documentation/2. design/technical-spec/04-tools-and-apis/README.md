@@ -253,7 +253,7 @@ Nine tools keep what the Places & Addresses screens show beyond a place's name: 
 - **Module.** `modules/digitaltwin` in `code/wakala-api`: the roles `address`, `tenure` and `land_use` in `digitaltwin.blueprint.json`, filled by `digitaltwin.wakala.json` (tables `addresses`, `tenures`, `land_uses`) and the four testdata domains; operations in `digitaltwin.operations.json`; the records in `address_record.go`, `tenure_record.go` and `land_use_record.go`. A place named by `place_id` must exist as a node, otherwise the record is refused as invalid.
 - **Permissions.** `digitaltwin.manage` carries all nine actions, `digitaltwin.view` the six list and read actions; both are in `modules/agency/models/permissions_catalog.json`. In the Hungarian municipality the clerk (Jegyzo) holds `digitaltwin.manage` and the council member `digitaltwin.view`.
 - **Serving.** `modules/digitaltwin/mcp/resolve.go` registers only the address, tenure and land use operations and resolves the agency's twin manager per call, as the accounting tools do; `internal/api/http/mcp_tools_digitaltwin.go` guards them with the shared permission check. The other digitaltwin operations (nodes, links, observations) stay on the HTTP routes and are not tools. The nine names are pinned in `testdata/mcp_roster/no-mounts.txt`.
-- **Screens.** The four Places & Addresses screens still read assetmanager until MUN1085b moves them onto these tools.
+- **Screens.** Addresses, Ownership & Tenure and Land Use read these tools (MUN1116, commit `b5dbb10b`); Places and the place detail still read assetmanager.
 
 ## Issues and votes (stretch)
 
