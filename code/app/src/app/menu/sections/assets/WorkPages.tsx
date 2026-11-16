@@ -5,6 +5,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuEditForm } from "../../MenuEditForm";
 import { MenuList } from "../../MenuList";
 import { MenuWindow } from "../../MenuWindow";
+import { WorkOrderAssignee } from "./WorkOrderAssignee";
 import { WorkOrderStatus } from "./WorkOrderStatus";
 
 type Item = Record<string, unknown>;
@@ -68,6 +69,7 @@ export function WorkOrdersPage() {
         extra: (order) => (
           <>
             <MenuEditForm item={order} id={textOf(order.id)} idArg="taskID" tool="taskmanager_task_patch" permission="task.edit" fields={workOrderEditFields} onSaved={() => setVersion((was) => was + 1)} />
+            <WorkOrderAssignee order={order} onAssigned={() => setVersion((was) => was + 1)} />
             <WorkOrderStatus order={order} onMoved={() => setVersion((was) => was + 1)} />
           </>
         ),

@@ -1,0 +1,85 @@
+import { useState } from "react";
+import { itemsOf } from "../../../../features/backlogs";
+import { useLoad } from "../../../../features/forms/useLoad";
+import { useMay } from "../../../../features/agency/useMay";
+import { Button } from "../../../../shared/ui/Button";
+import { ChoiceGroup } from "../../../../shared/ui/ChoiceRow";
+import { ListRow, Rows } from "../../../../shared/ui/ListRow";
+import { LoadFailed } from "../../../../shared/ui/LoadState";
+import { callTool } from "../../../../shared/wakala/mcp";
+import { openAgencyId } from "../../../../shared/wakala/openAgency";
+import { refusalWords } from "../../MenuEditForm";
+
+type Item = Record<string, unknown>;
+
+type Worker = { id: string; name: string };
+
+type Props = { order: Item; onAssigned: () => void };
+
+const workersTool = "taskmanager_agent_list";
+
+const assignTool = "taskmanager_task_assign";
+
+const assignPermission = "task.assign";
+
+const agentKind = "agent";
+
+const nobodyWords = "Not assigned";
+
+const textOf = (value: unknown) => (typeof value === "string" ? value : "");
+
+const loadWorkers = async (): Promise<Worker[]> =>
+  ((await callTool("", workersTool, {}).then(itemsOf)) as Item[]).map((worker) => ({
+    id: textOf(worker.id),
+    name: textOf(worker.display_name) || textOf(worker.agent_id),
+  }));
+
+export function WorkOrderAssignee({ order, onAssigned }: Props) {
+  const may = useMay(assignPermission);
+  const workers = useLoad(loadWorkers, `workers:${openAgencyId()}`);
+  const [choosing, setChoosing] = useState(false);
+  const [assigning, setAssigning] = useState(false);
+  const [refused, setRefused] = useState("");
+  const list = workers.state === "ready" ? workers.data : [];
+  const holder = textOf(order.assignee_kind) === agentKind ? textOf(order.assigned_to) : "";
+  const isCurrent = (worker: Worker) => worker.id === holder;
+  const assignee = list.find(isCurrent)?.name || nobodyWords;
+  const assign = async (worker: Worker) => {
+    setAssigning(true);
+    setRefused("");
+    try {
+      await callTool("", assignTool, { taskID: textOf(order.id), agent_id: worker.id });
+      setChoosing(false);
+      onAssigned();
+    } catch (error) {
+      setRefused(refusalWords(error));
+    } finally {
+      setAssigning(false);
+    }
+  };
+  const open = () => {
+    setRefused("");
+    setChoosing(true);
+  };
+  return (
+    <>
+      <Rows>
+        <ListRow title="Assignee" meta={assignee} />
+      </Rows>
+      {may && !choosing ? <Button kind="quiet" onClick={open}>Assign</Button> : null}
+      {may && choosing ? (
+        <>
+          <ChoiceGroup label="Assign to">
+            {list.map((worker) => (
+              <Button key={worker.id} kind="quiet" aria-current={isCurrent(worker) ? "true" : undefined} disabled={assigning || isCurrent(worker)} onClick={() => assign(worker)}>
+                {isCurrent(worker) ? `${worker.name} (now)` : worker.name}
+              </Button>
+            ))}
+          </ChoiceGroup>
+          {refused ? <LoadFailed words={refused} /> : null}
+          <Button kind="quiet" disabled={assigning} onClick={() => setChoosing(false)}>Cancel</Button>
+        </>
+      ) : null}
+    </>
+  );
+}
