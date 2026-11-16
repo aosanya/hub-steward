@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useWord, type Wording } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
@@ -11,8 +12,6 @@ import { MenuWindow } from "../../MenuWindow";
 import { budgetRow, homeEmpty, listOf, moneyWords, periodWords, text, tools, type Item } from "./financeData";
 
 const managePermission = "accounting.manage";
-
-const addWords = "Add budget line";
 
 const rolesTool = "agency_get_my_roles";
 
@@ -66,7 +65,7 @@ const complete = (draft: Draft) => draft.account !== "" && draft.name.trim() !==
 
 const dayStart = (day: string) => `${day}T00:00:00Z`;
 
-function AddLineForm({ onSaved }: { onSaved: () => void }) {
+function AddLineForm({ onSaved, word }: { onSaved: () => void; word: Wording }) {
   const [draft, setDraft] = useState(blank);
   const [refused, setRefused] = useState("");
   const accounts = useLoad(accountChoices, `budget-accounts:${openAgencyId()}`);
@@ -95,19 +94,20 @@ function AddLineForm({ onSaved }: { onSaved: () => void }) {
       <Field label="Period start" placeholder="2026-01-01" value={draft.start} onChange={(event) => set("start")(event.target.value)} />
       <Field label="Period end" placeholder="2026-12-31" value={draft.end} onChange={(event) => set("end")(event.target.value)} />
       <Field label="Amount" inputMode="decimal" value={draft.amount} onChange={(event) => set("amount")(event.target.value)} />
-      <Button kind="primary" disabled={!complete(draft)} onClick={save}>Save budget line</Button>
+      <Button kind="primary" disabled={!complete(draft)} onClick={save}>Save {word("Budget line").toLowerCase()}</Button>
       {refused ? <LoadFailed words={refused} /> : null}
     </>
   );
 }
 
 export function BudgetScreen() {
+  const word = useWord("accounting");
   const [version, setVersion] = useState(0);
   const [adding, setAdding] = useState(false);
   const [count, setCount] = useState(0);
   const allowed = useLoad(mayManage, `may-manage-budget:${openAgencyId()}`);
   const may = allowed.state === "ready" && allowed.data;
-  const addButton = may && !adding ? <Button kind="primary" onClick={() => setAdding(true)}>{addWords}</Button> : null;
+  const addButton = may && !adding ? <Button kind="primary" onClick={() => setAdding(true)}>Add {word("Budget line").toLowerCase()}</Button> : null;
   const saved = () => {
     setAdding(false);
     setVersion((was) => was + 1);
@@ -120,15 +120,15 @@ export function BudgetScreen() {
   return (
     <MenuWindow
       key={version}
-      title="Budget"
-      list={{ title: "Budget", tool: tools.budgetList, load, fields: { title: "name", meta: "meta" }, empty: { ...homeEmpty("No budget lines yet."), children: addButton } }}
+      title={word("Budget")}
+      list={{ title: word("Budget"), tool: tools.budgetList, load, fields: { title: "name", meta: "meta" }, empty: { ...homeEmpty(`No ${word("Budget lines").toLowerCase()} yet.`), children: addButton } }}
       detail={{
         tool: tools.budgetRead,
         load: loadLine,
         fields: { Name: "name", Department: "department", Period: "period", Planned: "planned", Spent: "spent", Remaining: "remaining", "Share spent": "share", Tenders: "tenders" },
         status: "status",
       }}
-      above={may && adding ? <AddLineForm onSaved={saved} /> : count > 0 ? addButton : null}
+      above={may && adding ? <AddLineForm onSaved={saved} word={word} /> : count > 0 ? addButton : null}
     />
   );
 }
