@@ -725,6 +725,14 @@
                {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The issue."}],
       "returns": [{"body": true}]
     },
+    "task_report": {
+      "method": "GET", "path": "/tasks/{taskID}/report", "call": "TaskReportFor", "action": "taskmanager.task.report",
+      "title": "The figures a worker's final report must carry",
+      "description": "Counted from the issue, not typed from memory: step and tags; todos_done and todos_total, and blocked (the todos held Blocked with their blocked_reason); commits (every link in the Log whose text starts with commit, in order, one for each commit hash); entry_count and last_entry_id; first_entry_at, last_entry_at and minutes_between them (null when the Log is empty); and missing, the todos that are Done but have no Log entry starting Todo n of total done. Read-only; an issue the caller cannot see is 404.",
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The issue."}],
+      "returns": [{"body": true}]
+    },
     "count_issue_todos": {
       "method": "GET", "path": "/todo-counts", "call": "CountTodosOfIssues", "action": "taskmanager.task_todo.count_for_issues",
       "title": "Count the todos of many issues",
