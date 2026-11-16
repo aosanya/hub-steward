@@ -1,10 +1,11 @@
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
+import { populationFigure } from "../../populationFigure";
 
 const populationOf = async (groupId: string) => {
-  const reply = (await callTool("", "actor_get_group_population", { group_id: groupId })) as { population?: unknown } | null;
-  return typeof reply?.population === "number" ? `${reply.population} residents` : "";
+  const figure = await populationFigure(groupId);
+  return figure === null ? "" : `${figure} residents`;
 };
 
 const loadAreas = async () => {

@@ -5,6 +5,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
 import { MenuList } from "../../MenuList";
+import { populationFigure } from "../../populationFigure";
 import { useBackToSection } from "../../useBackToSection";
 import { residentPaths } from "./paths";
 import { PersonScreen } from "./PersonScreen";
@@ -25,9 +26,8 @@ const text = (item: Item, key: string) => {
 const listOf = async (tool: string, args?: Record<string, unknown>) => itemsOf(await callTool("", tool, args)) as Item[];
 
 const memberCountOf = async (group: Item) => {
-  const reply = (await callTool("", "actor_get_group_population", { group_id: text(group, "id") })) as Item | null;
-  const count = reply ? text(reply, "population") : "";
-  return { id: text(group, "id"), name: text(group, "name"), meta: count === "" ? "" : `${count} members` };
+  const count = await populationFigure(text(group, "id"));
+  return { id: text(group, "id"), name: text(group, "name"), meta: count === null ? "" : `${count} members` };
 };
 
 const groupRows = async (keep: (group: Item) => boolean) => Promise.all((await listOf("actor_list_groups")).filter(keep).map(memberCountOf));

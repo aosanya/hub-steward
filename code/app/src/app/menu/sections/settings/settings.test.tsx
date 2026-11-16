@@ -28,6 +28,8 @@ const groups = [
 
 const populations: Record<string, unknown> = { g1: { group_id: "g1", population: 1200 }, g2: { group_id: "g2", population: 845 } };
 
+const refusedWithoutFigure = new Set<string>();
+
 const accounts = [
   { id: "a1", name: "Writing helper", provider: "Anthropic", key_set: true },
   { id: "a2", name: "Translation helper", provider: "DeepL", key_set: false },
@@ -49,6 +51,7 @@ const reply = (name: string, args: Record<string, unknown>): unknown => {
     case "actor_list_groups":
       return { items: groups };
     case "actor_get_group_population":
+      if (refusedWithoutFigure.has((args as { group_id: string }).group_id)) throw new mcp.McpError("no population figure recorded for the group");
       return populations[(args as { group_id: string }).group_id];
     case "ai_list_accounts":
       return { items: accounts };
@@ -60,6 +63,7 @@ const reply = (name: string, args: Record<string, unknown>): unknown => {
 beforeEach(() => {
   agencyName = "Riverside Office";
   landed = "";
+  refusedWithoutFigure.clear();
   openAgency("town");
   vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => reply(name, (args ?? {}) as Record<string, unknown>));
 });
@@ -151,6 +155,24 @@ describe("the Boundaries & Areas screen", () => {
     const south = screen.getByRole("button", { name: /South Ward/ });
     expect(within(south).getByText(/845/)).toBeInTheDocument();
     expect(called("actor_get_group_population").map((call) => call[2])).toEqual(expect.arrayContaining([expect.objectContaining({ group_id: "g1" }), expect.objectContaining({ group_id: "g2" })]));
+  });
+});
+
+describe("the Boundaries & Areas screen when a group has no population figure", () => {
+  it("still lists every group and shows the figure only where one is recorded", async () => {
+    groups.push({ id: "g3", name: "East Ward" });
+    refusedWithoutFigure.add("g3");
+    try {
+      openAt("Boundaries & Areas");
+
+      const north = await screen.findByRole("button", { name: /North Ward/ });
+      expect(within(north).getByText(/1200/)).toBeInTheDocument();
+      const east = screen.getByRole("button", { name: /East Ward/ });
+      expect(within(east).queryByText(/residents/)).toBeNull();
+      expect(screen.queryByText("This list could not be loaded.")).toBeNull();
+    } finally {
+      groups.pop();
+    }
   });
 });
 
