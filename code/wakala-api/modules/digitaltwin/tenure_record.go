@@ -11,17 +11,8 @@ func (m *twinManager) CreateTenure(ctx context.Context, t Tenure) (Tenure, error
 	if t.Kind == "" {
 		t.Kind = "owner"
 	}
-	if err := m.checks(roleTenure, t); err != nil {
+	if err := m.tenureFits(ctx, t); err != nil {
 		return Tenure{}, err
-	}
-	if _, err := m.GetNode(ctx, t.PlaceID); err != nil {
-		if errors.Is(err, ErrNodeNotFound) {
-			return Tenure{}, fmt.Errorf("%w: place_id %q names no node", ErrInvalid, t.PlaceID)
-		}
-		return Tenure{}, err
-	}
-	if t.Since != "" && !isDate(t.Since) {
-		return Tenure{}, fmt.Errorf("%w: since must be RFC3339 or YYYY-MM-DD (%q given)", ErrInvalid, t.Since)
 	}
 	t.ID = newID()
 	t.CreatedAt = m.now()
@@ -29,6 +20,40 @@ func (m *twinManager) CreateTenure(ctx context.Context, t Tenure) (Tenure, error
 		return Tenure{}, err
 	}
 	return t, nil
+}
+
+func (m *twinManager) UpdateTenure(ctx context.Context, t Tenure) (Tenure, error) {
+	held, err := m.GetTenure(ctx, t.ID)
+	if err != nil {
+		return Tenure{}, err
+	}
+	if t.Kind == "" {
+		t.Kind = held.Kind
+	}
+	t.CreatedAt = held.CreatedAt
+	if err := m.tenureFits(ctx, t); err != nil {
+		return Tenure{}, err
+	}
+	if err := m.update(ctx, roleTenure, "id", t.ID, t); err != nil {
+		return Tenure{}, err
+	}
+	return t, nil
+}
+
+func (m *twinManager) tenureFits(ctx context.Context, t Tenure) error {
+	if err := m.checks(roleTenure, t); err != nil {
+		return err
+	}
+	if _, err := m.GetNode(ctx, t.PlaceID); err != nil {
+		if errors.Is(err, ErrNodeNotFound) {
+			return fmt.Errorf("%w: place_id %q names no node", ErrInvalid, t.PlaceID)
+		}
+		return err
+	}
+	if t.Since != "" && !isDate(t.Since) {
+		return fmt.Errorf("%w: since must be RFC3339 or YYYY-MM-DD (%q given)", ErrInvalid, t.Since)
+	}
+	return nil
 }
 
 func (m *twinManager) GetTenure(ctx context.Context, id string) (Tenure, error) {

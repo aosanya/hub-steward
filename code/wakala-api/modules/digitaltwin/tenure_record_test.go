@@ -105,3 +105,80 @@ func TestMissingTenureIdGivesErrTenureNotFound(t *testing.T) {
 		t.Fatalf("err = %v, want ErrTenureNotFound", err)
 	}
 }
+
+func TestAnUpdatedTenureIsReadBackChangedAndKeepsItsIdAndCreatedAt(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	place := seedNode(t, tm, ctx, "Plot 12", "place")
+	other := seedNode(t, tm, ctx, "Plot 13", "place")
+	made, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: place.ID, Holder: "amina", Kind: "tenant", Since: "2026-01-15"})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	updated, err := tm.UpdateTenure(ctx, digitaltwin.Tenure{ID: made.ID, PlaceID: other.ID, Holder: "juma", Kind: "owner", Since: "2026-03-01"})
+	if err != nil {
+		t.Fatalf("update: %v", err)
+	}
+	if updated.ID != made.ID || updated.CreatedAt != made.CreatedAt {
+		t.Fatalf("id or created_at changed: %+v then %+v", made, updated)
+	}
+	read, err := tm.GetTenure(ctx, made.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if read.PlaceID != other.ID || read.Holder != "juma" || read.Kind != "owner" || read.Since != "2026-03-01" {
+		t.Fatalf("the change was not stored: %+v", read)
+	}
+	all, err := tm.ListTenures(ctx, digitaltwin.TenureFilter{})
+	if err != nil || len(all) != 1 {
+		t.Fatalf("an update must not add a record: %d, %v", len(all), err)
+	}
+}
+
+func TestATenureUpdateWithoutAKindKeepsTheHeldKind(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	place := seedNode(t, tm, ctx, "Plot 12", "place")
+	made, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: place.ID, Holder: "amina", Kind: "tenant"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	updated, err := tm.UpdateTenure(ctx, digitaltwin.Tenure{ID: made.ID, PlaceID: place.ID, Holder: "amina b"})
+	if err != nil {
+		t.Fatalf("update: %v", err)
+	}
+	if updated.Kind != "tenant" || updated.Holder != "amina b" {
+		t.Fatalf("got %+v", updated)
+	}
+}
+
+func TestATenureUpdateIsRefusedForAnUnknownPlaceOrABadDateOrKind(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	place := seedNode(t, tm, ctx, "Plot 12", "place")
+	made, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: place.ID, Holder: "amina", Kind: "tenant", Since: "2026-01-15"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []digitaltwin.Tenure{
+		{ID: made.ID, PlaceID: "no-such-node", Holder: "amina", Kind: "tenant"},
+		{ID: made.ID, PlaceID: place.ID, Holder: "amina", Kind: "tenant", Since: "last spring"},
+		{ID: made.ID, PlaceID: place.ID, Holder: "amina", Kind: "landlord"},
+		{ID: made.ID, PlaceID: place.ID, Holder: "", Kind: "tenant"},
+	} {
+		if _, err := tm.UpdateTenure(ctx, c); !errors.Is(err, digitaltwin.ErrInvalid) {
+			t.Fatalf("%+v: err = %v, want ErrInvalid", c, err)
+		}
+	}
+	read, _ := tm.GetTenure(ctx, made.ID)
+	if read.Since != "2026-01-15" || read.Kind != "tenant" {
+		t.Fatalf("a refused update changed the record: %+v", read)
+	}
+}
+
+func TestUpdatingAMissingTenureReportsItIsNotFound(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	place := seedNode(t, tm, ctx, "Plot 12", "place")
+	_, err := tm.UpdateTenure(ctx, digitaltwin.Tenure{ID: "missing", PlaceID: place.ID, Holder: "amina"})
+	if !errors.Is(err, digitaltwin.ErrTenureNotFound) {
+		t.Fatalf("err = %v, want ErrTenureNotFound", err)
+	}
+}

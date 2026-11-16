@@ -74,8 +74,8 @@ func TestTheDeclaredTableBuilds(t *testing.T) {
 	if err != nil {
 		t.Fatalf("build: %v", err)
 	}
-	if len(built) != 28 {
-		t.Fatalf("built %d routes, want the 28 the operations file declares", len(built))
+	if len(built) != 31 {
+		t.Fatalf("built %d routes, want the 31 the operations file declares", len(built))
 	}
 	for _, rt := range built {
 		if rt.Action == "" {
@@ -92,8 +92,8 @@ func TestEveryRouteIsGatedUntilNamedAnonymous(t *testing.T) {
 	if public := routes.PublicRoutes(tm); len(public) != 0 {
 		t.Fatalf("%d routes are reachable without a caller", len(public))
 	}
-	if gated := routes.OperatorRoutes(tm, routes.Mount{}); len(gated) != 28 {
-		t.Fatalf("%d routes are gated, want all 28", len(gated))
+	if gated := routes.OperatorRoutes(tm, routes.Mount{}); len(gated) != 31 {
+		t.Fatalf("%d routes are gated, want all 31", len(gated))
 	}
 }
 

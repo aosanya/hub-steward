@@ -8,19 +8,8 @@ import (
 )
 
 func (m *twinManager) CreateAddress(ctx context.Context, a Address) (Address, error) {
-	if err := m.checks(roleAddress, a); err != nil {
+	if err := m.addressFits(ctx, a); err != nil {
 		return Address{}, err
-	}
-	if strings.TrimSpace(a.Street) == "" || strings.TrimSpace(a.Number) == "" {
-		return Address{}, fmt.Errorf("%w: an address needs a street and a number", ErrInvalid)
-	}
-	if a.PlaceID != "" {
-		if _, err := m.GetNode(ctx, a.PlaceID); err != nil {
-			if errors.Is(err, ErrNodeNotFound) {
-				return Address{}, fmt.Errorf("%w: place_id %q names no node: %w", ErrInvalid, a.PlaceID, err)
-			}
-			return Address{}, err
-		}
 	}
 	a.ID = newID()
 	a.CreatedAt = m.now()
@@ -28,6 +17,39 @@ func (m *twinManager) CreateAddress(ctx context.Context, a Address) (Address, er
 		return Address{}, err
 	}
 	return a, nil
+}
+
+func (m *twinManager) UpdateAddress(ctx context.Context, a Address) (Address, error) {
+	held, err := m.GetAddress(ctx, a.ID)
+	if err != nil {
+		return Address{}, err
+	}
+	a.CreatedAt = held.CreatedAt
+	if err := m.addressFits(ctx, a); err != nil {
+		return Address{}, err
+	}
+	if err := m.update(ctx, roleAddress, "id", a.ID, a); err != nil {
+		return Address{}, err
+	}
+	return a, nil
+}
+
+func (m *twinManager) addressFits(ctx context.Context, a Address) error {
+	if err := m.checks(roleAddress, a); err != nil {
+		return err
+	}
+	if strings.TrimSpace(a.Street) == "" || strings.TrimSpace(a.Number) == "" {
+		return fmt.Errorf("%w: an address needs a street and a number", ErrInvalid)
+	}
+	if a.PlaceID != "" {
+		if _, err := m.GetNode(ctx, a.PlaceID); err != nil {
+			if errors.Is(err, ErrNodeNotFound) {
+				return fmt.Errorf("%w: place_id %q names no node: %w", ErrInvalid, a.PlaceID, err)
+			}
+			return err
+		}
+	}
+	return nil
 }
 
 func (m *twinManager) GetAddress(ctx context.Context, id string) (Address, error) {

@@ -178,6 +178,14 @@
       "args": [{"from": "path", "as": "addressID", "description": "The address to read."}],
       "returns": [{"body": true}]
     },
+    "update_address": {
+      "method": "PUT", "path": "/addresses/{addressID}", "call": "UpdateAddress", "action": "digitaltwin.address.update",
+      "title": "Update address",
+      "description": "Replace an address: its street, number, area, postcode and place node. The street and the number stay required.",
+      "args": [{"from": "body", "whole": true},
+               {"from": "path", "as": "addressID", "into": "ID", "description": "The address to update. The address decides, not the body."}],
+      "returns": [{"body": true}]
+    },
     "list_addresses": {
       "method": "GET", "path": "/addresses", "call": "ListAddresses", "action": "digitaltwin.address.list",
       "title": "List address records",
@@ -200,6 +208,14 @@
       "args": [{"from": "path", "as": "tenureID", "description": "The tenure to read."}],
       "returns": [{"body": true}]
     },
+    "update_tenure": {
+      "method": "PUT", "path": "/tenures/{tenureID}", "call": "UpdateTenure", "action": "digitaltwin.tenure.update",
+      "title": "Update tenure",
+      "description": "Replace a holding: the place node, the holder, the kind of holding (an empty kind keeps the held one) and since when.",
+      "args": [{"from": "body", "whole": true},
+               {"from": "path", "as": "tenureID", "into": "ID", "description": "The tenure to update. The address decides, not the body."}],
+      "returns": [{"body": true}]
+    },
     "list_tenures": {
       "method": "GET", "path": "/tenures", "call": "ListTenures", "action": "digitaltwin.tenure.list",
       "title": "List tenure records",
@@ -220,6 +236,14 @@
       "title": "Read land use",
       "description": "Read one land use by its storage key.",
       "args": [{"from": "path", "as": "landUseID", "description": "The land use to read."}],
+      "returns": [{"body": true}]
+    },
+    "update_land_use": {
+      "method": "PUT", "path": "/land-uses/{landUseID}", "call": "UpdateLandUse", "action": "digitaltwin.land_use.update",
+      "title": "Update land use",
+      "description": "Replace a land use: its place node or area, its zone and its use. Name the place node or the area, one of the two.",
+      "args": [{"from": "body", "whole": true},
+               {"from": "path", "as": "landUseID", "into": "ID", "description": "The land use to update. The address decides, not the body."}],
       "returns": [{"body": true}]
     },
     "list_land_uses": {

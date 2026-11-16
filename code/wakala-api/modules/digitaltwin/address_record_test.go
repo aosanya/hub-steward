@@ -95,3 +95,59 @@ func TestReadingAMissingAddressReportsItIsNotFound(t *testing.T) {
 		t.Fatalf("err = %v, want ErrAddressNotFound", err)
 	}
 }
+
+func TestAnUpdatedAddressIsReadBackChangedAndKeepsItsIdAndCreatedAt(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	made, err := tm.CreateAddress(ctx, digitaltwin.Address{Street: "Fő utca", Number: "12", Area: "Belváros"})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	updated, err := tm.UpdateAddress(ctx, digitaltwin.Address{ID: made.ID, Street: "Fő utca", Number: "14", Area: "Újváros", Postcode: "6722"})
+	if err != nil {
+		t.Fatalf("update: %v", err)
+	}
+	if updated.ID != made.ID || updated.CreatedAt != made.CreatedAt {
+		t.Fatalf("id or created_at changed: %+v then %+v", made, updated)
+	}
+
+	read, err := tm.GetAddress(ctx, made.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if read.Number != "14" || read.Area != "Újváros" || read.Postcode != "6722" {
+		t.Fatalf("the change was not stored: %+v", read)
+	}
+	all, err := tm.ListAddresses(ctx, digitaltwin.AddressFilter{})
+	if err != nil || len(all) != 1 {
+		t.Fatalf("an update must not add a record: %d, %v", len(all), err)
+	}
+}
+
+func TestAnAddressUpdateIsRefusedWhenItBlanksTheStreetOrNamesNoPlace(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	made, err := tm.CreateAddress(ctx, digitaltwin.Address{Street: "Fő utca", Number: "12"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, a := range []digitaltwin.Address{
+		{ID: made.ID, Street: "  ", Number: "12"},
+		{ID: made.ID, Street: "Fő utca", Number: "12", PlaceID: "no-such-node"},
+	} {
+		if _, err := tm.UpdateAddress(ctx, a); !errors.Is(err, digitaltwin.ErrInvalid) {
+			t.Fatalf("%+v: err = %v, want ErrInvalid", a, err)
+		}
+	}
+	read, _ := tm.GetAddress(ctx, made.ID)
+	if read.Street != "Fő utca" || read.PlaceID != "" {
+		t.Fatalf("a refused update changed the record: %+v", read)
+	}
+}
+
+func TestUpdatingAMissingAddressReportsItIsNotFound(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	_, err := tm.UpdateAddress(ctx, digitaltwin.Address{ID: "missing", Street: "Fő utca", Number: "1"})
+	if !errors.Is(err, digitaltwin.ErrAddressNotFound) {
+		t.Fatalf("err = %v, want ErrAddressNotFound", err)
+	}
+}

@@ -115,3 +115,60 @@ func TestReadingAMissingLandUseGivesNotFound(t *testing.T) {
 		t.Fatalf("err = %v, want ErrLandUseNotFound", err)
 	}
 }
+
+func TestAnUpdatedLandUseIsReadBackChangedAndKeepsItsIdAndCreatedAt(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	parcel := seedNode(t, tm, ctx, "Plot 7", "parcel")
+	made, err := tm.CreateLandUse(ctx, digitaltwin.LandUse{PlaceID: parcel.ID, Zone: "residential", Use: "housing"})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	updated, err := tm.UpdateLandUse(ctx, digitaltwin.LandUse{ID: made.ID, Area: "Belváros", Zone: "mixed", Use: "shops"})
+	if err != nil {
+		t.Fatalf("update: %v", err)
+	}
+	if updated.ID != made.ID || updated.CreatedAt != made.CreatedAt {
+		t.Fatalf("id or created_at changed: %+v then %+v", made, updated)
+	}
+	read, err := tm.GetLandUse(ctx, made.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if read.PlaceID != "" || read.Area != "Belváros" || read.Zone != "mixed" || read.Use != "shops" {
+		t.Fatalf("the change was not stored: %+v", read)
+	}
+	all, err := tm.ListLandUses(ctx, digitaltwin.LandUseFilter{})
+	if err != nil || len(all) != 1 {
+		t.Fatalf("an update must not add a record: %d, %v", len(all), err)
+	}
+}
+
+func TestALandUseUpdateIsRefusedWithNeitherPlaceNorAreaOrAnUnknownPlace(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	parcel := seedNode(t, tm, ctx, "Plot 7", "parcel")
+	made, err := tm.CreateLandUse(ctx, digitaltwin.LandUse{PlaceID: parcel.ID, Zone: "residential", Use: "housing"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, u := range []digitaltwin.LandUse{
+		{ID: made.ID, Zone: "residential", Use: "housing"},
+		{ID: made.ID, PlaceID: "no-such-node", Zone: "residential", Use: "housing"},
+	} {
+		if _, err := tm.UpdateLandUse(ctx, u); !errors.Is(err, digitaltwin.ErrInvalid) {
+			t.Fatalf("%+v: err = %v, want ErrInvalid", u, err)
+		}
+	}
+	read, _ := tm.GetLandUse(ctx, made.ID)
+	if read.PlaceID != parcel.ID {
+		t.Fatalf("a refused update changed the record: %+v", read)
+	}
+}
+
+func TestUpdatingAMissingLandUseReportsItIsNotFound(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	_, err := tm.UpdateLandUse(ctx, digitaltwin.LandUse{ID: "missing", Area: "Belváros", Zone: "mixed", Use: "shops"})
+	if !errors.Is(err, digitaltwin.ErrLandUseNotFound) {
+		t.Fatalf("err = %v, want ErrLandUseNotFound", err)
+	}
+}

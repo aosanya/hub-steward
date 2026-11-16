@@ -82,14 +82,17 @@ type TwinManager interface {
 
 	CreateAddress(ctx context.Context, a Address) (Address, error)
 	GetAddress(ctx context.Context, id string) (Address, error)
+	UpdateAddress(ctx context.Context, a Address) (Address, error)
 	ListAddresses(ctx context.Context, filter AddressFilter) ([]Address, error)
 
 	CreateTenure(ctx context.Context, t Tenure) (Tenure, error)
 	GetTenure(ctx context.Context, id string) (Tenure, error)
+	UpdateTenure(ctx context.Context, t Tenure) (Tenure, error)
 	ListTenures(ctx context.Context, filter TenureFilter) ([]Tenure, error)
 
 	CreateLandUse(ctx context.Context, u LandUse) (LandUse, error)
 	GetLandUse(ctx context.Context, id string) (LandUse, error)
+	UpdateLandUse(ctx context.Context, u LandUse) (LandUse, error)
 	ListLandUses(ctx context.Context, filter LandUseFilter) ([]LandUse, error)
 
 	ForRun(runID string) (TwinManager, error)
