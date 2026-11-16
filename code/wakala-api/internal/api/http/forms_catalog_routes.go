@@ -28,7 +28,7 @@ func (d *Deps) registerFormsCatalogRoutes(mux *http.ServeMux, reg agencies.Regis
 		idx := i
 		action := rt.Action
 		mux.HandleFunc(rt.Pattern(formsCatalogInstancePrefix), auth.require(func(w http.ResponseWriter, r *http.Request) {
-			cm, err := formsCatalogForRequest(r, reg, action)
+			cm, err := d.formsCatalogForRequest(r, reg, action)
 			if err != nil {
 				writeInstanceErr(w, err)
 				return
@@ -47,12 +47,12 @@ var groupLeaderRecordReads = map[string]bool{
 	"catalog.record.count": true,
 }
 
-func formsCatalogForRequest(r *http.Request, reg agencies.Registry, action string) (catalog.CatalogManager, error) {
-	return formsCatalogForAction(r.Context(), reg, r.PathValue("instanceID"), action, r.PathValue("subject_id"), r.URL.Query().Get("scope_id"))
+func (d *Deps) formsCatalogForRequest(r *http.Request, reg agencies.Registry, action string) (catalog.CatalogManager, error) {
+	return d.formsCatalogForAction(r.Context(), reg, r.PathValue("instanceID"), action, r.PathValue("subject_id"), r.URL.Query().Get("scope_id"))
 }
 
-func formsCatalogForAction(ctx context.Context, reg agencies.Registry, instanceID, action, formID, scopeID string) (catalog.CatalogManager, error) {
-	cm, err := formsCatalogFor(ctx, reg, instanceID)
+func (d *Deps) formsCatalogForAction(ctx context.Context, reg agencies.Registry, instanceID, action, formID, scopeID string) (catalog.CatalogManager, error) {
+	cm, err := d.formsCatalogFor(ctx, reg, instanceID, action)
 	if !errors.Is(err, agencies.ErrInstanceNotFound) || !groupLeaderRecordReads[action] {
 		return cm, err
 	}
@@ -111,7 +111,7 @@ func callerLeadsTheScopeNamed(ctx context.Context, reg agencies.Registry, instan
 	return nil
 }
 
-func formsCatalogFor(ctx context.Context, reg agencies.Registry, instanceID string) (catalog.CatalogManager, error) {
+func (d *Deps) formsCatalogFor(ctx context.Context, reg agencies.Registry, instanceID, action string) (catalog.CatalogManager, error) {
 	caller := accounts.IDFromContext(ctx)
 	if caller == "" {
 		return nil, agencies.ErrInstanceNotFound
@@ -120,7 +120,7 @@ func formsCatalogFor(ctx context.Context, reg agencies.Registry, instanceID stri
 	if err != nil {
 		return nil, err
 	}
-	if role != agencies.RoleOwner && role != agencies.RoleAgent {
+	if role != agencies.RoleOwner && role != agencies.RoleAgent && !d.residentHoldsAction(ctx, instanceID, role, action) {
 		return nil, agencies.ErrInstanceNotFound
 	}
 	if err := mustBeMounted(ctx, reg, instanceID, "forms"); err != nil {
@@ -206,4 +206,8 @@ func (d *Deps) linkedAgentRefused(ctx context.Context, instanceID, action string
 	ctx = context.WithValue(ctx, partitionKey{}, instanceID)
 	authorize := agentPermissioned(role, d.Registry, d.agencyRolePermissions, nil)
 	return authorize != nil && authorize(ctx, action) != nil
+}
+
+func (d *Deps) residentHoldsAction(ctx context.Context, instanceID, role, action string) bool {
+	return role == agencies.RoleResident && d.callerHoldsAction(withPartitionContext(ctx, instanceID), role, action)
 }

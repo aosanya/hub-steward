@@ -49,7 +49,7 @@ func (d *Deps) invokeFormsCatalogTool(ctx context.Context, name string, raw json
 	if err != nil {
 		return nil, err
 	}
-	cm, err := formsCatalogForAction(ctx, d.Registry, instanceID, formsCatalogToolAction(name), subjectIDOf(rest), scopeIDOf(rest))
+	cm, err := d.formsCatalogForAction(ctx, d.Registry, instanceID, formsCatalogToolAction(name), subjectIDOf(rest), scopeIDOf(rest))
 	if err != nil {
 		return nil, err
 	}
