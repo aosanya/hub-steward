@@ -305,17 +305,29 @@ test("inviting by member code looks up the screen name and proposes the code und
   });
 });
 
+test("a member who has a code but no display name is invited by the code and named by the code", async () => {
+  answer(codeLookup({ display_name: "" }));
+  const result = await invite({ group_id: "g-1", group_name: "Képviselő-testület", actor_code: "M-9T6-SEB-VUH" });
+  expect(result).toBe("accepted");
+  expect(proposal()).toEqual({
+    kind: "actor_invite_to_group",
+    summary: "Invite M-9T6-SEB-VUH to Képviselő-testület",
+    payload: { group_id: "g-1", actor_code: "M-9T6-SEB-VUH" },
+  });
+});
+
 test("giving both a member code and a person id is refused before any tool is called", async () => {
   await expect(invite({ group_id: "g", actor_id: "a", actor_code: "M-1" })).rejects.toThrow("give a member code or a person id, not both");
   expect(call).not.toHaveBeenCalled();
 });
 
-test("a member code nobody has is refused and nothing is proposed", async () => {
+test("a member whose lookup answers no name at all is still invited by the code", async () => {
   answer(codeLookup({}));
-  await expect(invite({ group_id: "g", actor_code: "M-1" })).rejects.toThrow("no member has that code");
+  await invite({ group_id: "g", group_name: "Ward 3", actor_code: "M-1" });
+  expect(proposal().summary).toBe("Invite M-1 to Ward 3");
   answer(codeLookup({ display_name: "   " }));
-  await expect(invite({ group_id: "g", actor_code: "M-1" })).rejects.toThrow("no member has that code");
-  expect(callsTo("agency_propose_write")).toEqual([]);
+  await invite({ group_id: "g", group_name: "Ward 3", actor_code: "M-1" });
+  expect(proposal().summary).toBe("Invite M-1 to Ward 3");
 });
 
 test("a failing code lookup is reported as no member having that code", async () => {

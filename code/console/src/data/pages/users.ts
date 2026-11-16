@@ -154,17 +154,13 @@ const rows = async (hubId: string, query: Query): Promise<UserRow[]> => (await r
 export const usersWithWaiting = (hubId: string, query: Query = {}) => readUsers(hubId, query, true);
 
 const screenNameForCode = async (hubId: string, code: string): Promise<string> => {
-  const unknownCode = new Error("no member has that code");
-  let found: unknown;
   try {
-    found = await callTool<unknown>(hubId, "actor_get_screen_name_by_code", { code });
+    const found = await callTool<unknown>(hubId, "actor_get_screen_name_by_code", { code });
+    return textOf(found, "display_name").trim() || code;
   } catch (failure) {
     if (failure instanceof McpError && failure.unauthorized) throw failure;
-    throw unknownCode;
+    throw new Error("no member has that code");
   }
-  const screenName = textOf(found, "display_name").trim();
-  if (!screenName) throw unknownCode;
-  return screenName;
 };
 
 const inviteUser: ActionRun = async (hubId, values) => {
