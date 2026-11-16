@@ -7,6 +7,7 @@ import { issuePath } from "../backlogs";
 import type { StartClient } from "../market";
 import { NotificationsPage } from "./NotificationsPage";
 import { routes } from "../../app/routes";
+import { forgetWidth, setWide } from "./fakeWidth";
 import type { InboxClient, NotificationItem } from "./api";
 
 beforeEach(() => openAgency("farmers"));
@@ -87,5 +88,20 @@ describe("a notification row that opens nothing", () => {
     await userEvent.click(await screen.findByRole("checkbox"));
     await userEvent.click(screen.getByRole("button", { name: "Mark read" }));
     expect(client.markRead).toHaveBeenCalledWith(["a1"]);
+  });
+});
+
+describe.each([true, false])("a notification row at wide %s", (wide) => {
+  beforeEach(() => setWide(wide));
+
+  afterEach(forgetWidth);
+
+  it("opens its subject and marks the row read", async () => {
+    const client = clientOf([note({ event: "task_assigned", subjectKind: "task", subjectId: "t1" })]);
+    show(client);
+    const title = await screen.findByText(/./, { selector: ".row .ttl" });
+    await userEvent.click(title.closest("button") as HTMLElement);
+    expect(await screen.findByText(`at ${issuePath("t1")}`)).toBeInTheDocument();
+    expect(client.markRead).toHaveBeenCalledWith(["n1"]);
   });
 });

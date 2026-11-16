@@ -7,6 +7,7 @@ import { NotificationsPage } from "./NotificationsPage";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
 import type { AssignedClient } from "./assignedIssues";
 import type { Reader } from "./subjectCheck";
+import { forgetWidth, setWide } from "./fakeWidth";
 
 beforeEach(() => openAgency("farmers"));
 
@@ -131,19 +132,10 @@ describe("the Notifications page", () => {
   });
 });
 
-const setWide = (wide: boolean) => {
-  window.matchMedia = ((query: string) => ({
-    matches: wide,
-    media: query,
-    addEventListener: () => undefined,
-    removeEventListener: () => undefined,
-  })) as unknown as typeof window.matchMedia;
-};
-
 const frame = () => document.querySelector(".wf") as HTMLElement | null;
 
 describe("the Notifications page in the Folders frame", () => {
-  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+  afterEach(forgetWidth);
 
   it("puts Needs you in the left pane and Updates under the head strip of the main pane on a wide screen", async () => {
     setWide(true);

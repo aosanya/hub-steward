@@ -5,6 +5,7 @@ import type { StartClient } from "../market";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { NotificationsPage } from "./NotificationsPage";
 import { routes } from "../../app/routes";
+import { forgetWidth, setWide } from "./fakeWidth";
 import type { InboxClient, NotificationItem } from "./api";
 
 beforeEach(() => openAgency("farmers"));
@@ -99,5 +100,23 @@ describe("selecting rows to mark read", () => {
     await userEvent.click(screen.getAllByRole("button", { name: /There is a new reply/ })[1]);
     expect(await screen.findByText("the thread opened")).toBeInTheDocument();
     expect(client.markRead).toHaveBeenCalledWith(["c2"]);
+  });
+});
+
+describe.each([true, false])("selecting rows at wide %s", (wide) => {
+  beforeEach(() => setWide(wide));
+
+  afterEach(forgetWidth);
+
+  it("marks exactly the ticked rows read", async () => {
+    const client = fake([reply("c1"), reply("c2"), reply("c3")]);
+    show(client);
+    await screen.findByRole("button", { name: "Mark all read" });
+    await userEvent.click(boxes()[0]);
+    await userEvent.click(boxes()[2]);
+    await userEvent.click(screen.getByRole("button", { name: "Mark read" }));
+    expect(client.markRead).toHaveBeenCalledWith(["c1", "c3"]);
+    expect(await screen.findByRole("img", { name: "New updates" })).toBeInTheDocument();
+    expect(boxes()).toHaveLength(1);
   });
 });
