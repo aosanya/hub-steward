@@ -91,8 +91,6 @@ const open = (at: string, state: unknown = { from: origin }) =>
 
 const pathOf = (item: { path: unknown }) => (typeof item.path === "function" ? (item.path as () => string)() : String(item.path));
 
-const issueAt = (id: string) => `/a/town/menu/issues/all/${id}`;
-
 const openIssue = async (name: RegExp) => {
   open(screens[0].at);
   await userEvent.click(await screen.findByRole("button", { name }));
@@ -419,5 +417,38 @@ describe("Assigned to Me on the menu window", () => {
     expect(within(list).getByRole("button", { name: /Fallen branch/ })).toHaveAttribute("aria-pressed", "true");
     expect(await within(main).findByText("Fallen branch")).toBeInTheDocument();
     expect(landed).toBe(screens[1].at);
+  });
+
+  it("opens the chosen issue in the window on a phone, with its status and replies", async () => {
+    setWide(false);
+    await chooseAssigned(/Fallen branch/);
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expect(await within(detail).findByText("open")).toBeInTheDocument();
+    expect(await screen.findByText("A crew is booked for Monday.")).toBeInTheDocument();
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
+  });
+
+  it("sends a reply on the assigned issue and loads the thread again", async () => {
+    setWide(true);
+    await chooseAssigned(/Fallen branch/);
+    await screen.findByText("A crew is booked for Monday.");
+    const asked = () => called.mock.calls.filter(([, name]) => name === "forms_catalog_reply_list").length;
+    const before = asked();
+
+    await userEvent.type(screen.getByRole("textbox", { name: "Your reply" }), "On my way.");
+    await userEvent.click(screen.getByRole("button", { name: /^Reply/ }));
+
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_send", expect.objectContaining({ raisedItemID: "i3", body: "On my way." })));
+    await waitFor(() => expect(asked()).toBeGreaterThan(before));
+  });
+
+  it.each([true, false])("says nothing is assigned inside the empty card when wide is %s", async (wide) => {
+    setWide(wide);
+    answers.forms_catalog_raised_item_list_mine = () => ({ items: [] });
+    open(screens[1].at);
+
+    expect(await screen.findByText("Nothing is assigned to you.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Fallen branch/ })).toBeNull();
   });
 });
