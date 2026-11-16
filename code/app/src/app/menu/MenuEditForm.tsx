@@ -25,8 +25,13 @@ type Props = {
 
 type Clash = { key: string; label: string; theirs: string; mine: string };
 
-const textOf = (item: Item, key: string) => {
+const dayOf = (text: string) => text.match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? text;
+
+const instantOf = (day: string) => (/^\d{4}-\d{2}-\d{2}$/.test(day) ? `${day}T00:00:00Z` : day);
+
+const textOf = (item: Item, key: string, field?: EditField) => {
   const value = item[key];
+  if (field?.kind === "date" && typeof value === "string") return dayOf(value);
   if (Array.isArray(value) && value.every((entry) => typeof entry === "string")) return value.join("\n");
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
@@ -53,12 +58,13 @@ const isNumber = (text: string) => wholeOrDecimal.test(text.trim());
 
 const sendable = (field: EditField | undefined, text: string) => {
   if (field?.kind === "lines") return linesOf(text);
+  if (field?.kind === "date") return instantOf(text.trim());
   return field?.kind === "number" && isNumber(text) ? Number(text.trim()) : text;
 };
 
 const inputModes = { text: undefined, number: "decimal", date: undefined, lines: undefined } as const;
 
-const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key)]));
+const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key, field)]));
 
 export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], readAgain, onSaved }: Props) {
   const may = useMay(permission);
@@ -80,7 +86,10 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
       const value = item[key];
       return typeof value === "string" || typeof value === "number" ? value : "";
     }
-    return sendable(field, key in base ? base[key] : textOf(item, key));
+    const recorded = item[key];
+    const text = key in base ? base[key] : textOf(item, key, field);
+    if (field.kind === "date" && typeof recorded === "string" && dayOf(recorded) === text) return recorded;
+    return sendable(field, text);
   };
   const sent = (key: string, text: string) => sendable(fieldOf(key), text);
   const open = () => {

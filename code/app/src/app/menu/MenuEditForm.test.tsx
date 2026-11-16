@@ -1,5 +1,5 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import * as mcp from "../../shared/wakala/mcp";
@@ -365,5 +365,74 @@ describe("the shared menu edit form with a list-of-lines field", () => {
     await userEvent.type(screen.getByLabelText("Agenda items, one per line"), "{Enter}  {Enter}");
 
     expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+  });
+});
+
+describe("the shared menu edit form with a date field", () => {
+  const dateItem = { id: "t1", title: "Road tender", closes_at: "2026-12-01T00:00:00Z" };
+  const dateFields = [
+    { label: "Title", key: "title" },
+    { label: "Closes", key: "closes_at", kind: "date" as const },
+  ];
+  const dateForm = (keep: string[] = [], onSaved = vi.fn(), record: Record<string, unknown> = dateItem) => {
+    render(<MenuEditForm item={record} id="t1" idArg="tenderID" tool="accounting_budget_set" permission="accounting.manage" fields={dateFields} keep={keep} onSaved={onSaved} />);
+    return onSaved;
+  };
+
+  it("shows a recorded instant as its day", async () => {
+    dateForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+
+    expect(screen.getByLabelText("Closes")).toHaveValue("2026-12-01");
+  });
+
+  it("sends a changed day as an instant and reports the typed day", async () => {
+    const onSaved = dateForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    fireEvent.change(screen.getByLabelText("Closes"), { target: { value: "2026-12-15" } });
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { tenderID: "t1", closes_at: "2026-12-15T00:00:00Z" }]]));
+    expect(onSaved).toHaveBeenCalledWith({ closes_at: "2026-12-15" });
+  });
+
+  it("does not save when the day was not changed", async () => {
+    dateForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+  });
+
+  it("sends a kept date as the instant the hub recorded", async () => {
+    dateForm(["closes_at"]);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Title"), " 2");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { tenderID: "t1", closes_at: "2026-12-01T00:00:00Z", title: "Road tender 2" }]]));
+  });
+
+  it("keeps the recorded time of day of a kept date that was not edited", async () => {
+    dateForm(["closes_at"], vi.fn(), { ...dateItem, closes_at: "2026-12-01T09:30:00Z" });
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Title"), " 2");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { tenderID: "t1", closes_at: "2026-12-01T09:30:00Z", title: "Road tender 2" }]]));
+  });
+
+  it("sends a cleared day as empty text rather than an instant", async () => {
+    dateForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    fireEvent.change(screen.getByLabelText("Closes"), { target: { value: "" } });
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { tenderID: "t1", closes_at: "" }]]));
   });
 });
