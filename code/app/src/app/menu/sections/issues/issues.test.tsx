@@ -14,8 +14,8 @@ const nearby = [
 ];
 
 const mine = [
-  { id: "i3", title: "Fallen branch", status: "open" },
-  { id: "i4", title: "Loose paving stone", status: "closed" },
+  { id: "i3", title: "Fallen branch", status: "open", topic: "trees" },
+  { id: "i4", title: "Loose paving stone", status: "closed", topic: "streetlights" },
 ];
 
 const entries = [
@@ -53,6 +53,7 @@ beforeEach(() => {
   answers = {
     forms_catalog_raised_item_list_nearby: () => ({ items: nearby }),
     forms_catalog_raised_item_list_mine: () => ({ items: mine }),
+    forms_catalog_setting_read: () => ({ value: "streetlights, drains" }),
     forms_catalog_entry_list: () => ({ items: entries }),
     forms_catalog_reply_list: () => ({ items: replies }),
     forms_catalog_reply_send: (args) => ({ id: "r3", raised_item_id: args.raisedItemID, body: args.body }),
@@ -122,7 +123,35 @@ describe("All Issues", () => {
     expect(screen.getByText("open")).toBeInTheDocument();
     expect(screen.getByText("received")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "All Issues" })).toBeInTheDocument();
-    expect(toolsCalled()).toEqual(new Set(["forms_catalog_raised_item_list_nearby"]));
+    expect(toolsCalled()).toContain("forms_catalog_raised_item_list_nearby");
+  });
+
+  it("asks the nearby tool for each known topic, anywhere, with the arguments it requires", async () => {
+    open(screens[0].at);
+    await screen.findByText("Broken streetlight");
+
+    const asked = called.mock.calls.filter(([, name]) => name === "forms_catalog_raised_item_list_nearby").map(([, , args]) => args as Args);
+    expect(asked.map((args) => args.topic).sort()).toEqual(["drains", "streetlights", "trees"]);
+    asked.forEach((args) => {
+      expect(args.at).toEqual([0, 0]);
+      expect(args.within).toBeGreaterThan(0);
+    });
+  });
+
+  it("lists an issue once however many topics returned it", async () => {
+    open(screens[0].at);
+    await screen.findByText("Broken streetlight");
+
+    expect(screen.getAllByText("Broken streetlight")).toHaveLength(1);
+  });
+
+  it("still lists the issues of the topics it knows when the topic setting cannot be read", async () => {
+    answers.forms_catalog_setting_read = () => {
+      throw new Error("no such setting");
+    };
+    open(screens[0].at);
+
+    expect(await screen.findByText("Broken streetlight")).toBeInTheDocument();
   });
 });
 
@@ -135,6 +164,26 @@ describe("Assigned to Me", () => {
     expect(screen.queryByText("Broken streetlight")).toBeNull();
     expect(toolsCalled()).toEqual(new Set(["forms_catalog_raised_item_list_mine"]));
   });
+
+  it("opens an issue from its row, with its replies", async () => {
+    answers.forms_catalog_reply_list = () => ({ items: [{ id: "r9", body: "Collected today.", created_at: "2026-03-07T10:00:00Z" }] });
+    open(screens[1].at);
+    await userEvent.click(await screen.findByRole("button", { name: /Fallen branch/ }));
+
+    await waitFor(() => expect(landed).toBe(issueAt("i3")));
+    expect(await screen.findByText("Collected today.")).toBeInTheDocument();
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "i3" }));
+  });
+
+  it("has a Back button on the opened issue that reads Assigned to Me", async () => {
+    open(screens[1].at);
+    await userEvent.click(await screen.findByRole("button", { name: /Fallen branch/ }));
+    await waitFor(() => expect(landed).toBe(issueAt("i3")));
+
+    await userEvent.click(await screen.findByRole("button", { name: /Assigned to Me/ }));
+
+    await waitFor(() => expect(landed).toBe(screens[1].at));
+  });
 });
 
 describe("Map View", () => {
@@ -145,7 +194,14 @@ describe("Map View", () => {
     expect(screen.getByText("Blocked drain")).toBeInTheDocument();
     expect(screen.getByText(/Elm Street/)).toBeInTheDocument();
     expect(screen.getByText(/Riverside/)).toBeInTheDocument();
-    expect(toolsCalled()).toEqual(new Set(["forms_catalog_raised_item_list_nearby"]));
+    expect(toolsCalled()).toContain("forms_catalog_raised_item_list_nearby");
+  });
+
+  it("sends topic, at and within to the nearby tool", async () => {
+    open(screens[2].at);
+    await screen.findByText("Broken streetlight");
+
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_raised_item_list_nearby", expect.objectContaining({ topic: "drains", at: [0, 0], within: expect.any(Number) }));
   });
 });
 

@@ -3,13 +3,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { IssueListScreen } from "./IssueListScreen";
+import { nearbyIssues, nearbyTool } from "./nearbyIssues";
 import { issuePaths } from "./paths";
 
 type Item = Record<string, unknown>;
 
 export const allIssuesTitle = "All Issues";
 
-const nearbyTool = "forms_catalog_raised_item_list_nearby";
+export const assignedToMeTitle = "Assigned to Me";
+
+const mineTool = "forms_catalog_raised_item_list_mine";
 
 const text = (item: Item, key: string) => {
   const value = item[key];
@@ -21,26 +24,33 @@ const placeOf = (item: Item) => [text(item, "street"), text(item, "area")].filte
 const rowOf = (issue: Item) => ({ id: text(issue, "id"), title: text(issue, "title"), status: text(issue, "status") });
 
 const mapRows = async () =>
-  (itemsOf(await callTool("", nearbyTool)) as Item[]).map((issue) => ({ id: text(issue, "id"), title: text(issue, "title"), place: placeOf(issue) }));
+  (await nearbyIssues()).map((issue) => ({ id: text(issue, "id"), title: text(issue, "title"), place: placeOf(issue) }));
 
-export function AllIssuesScreen() {
+function useOpenIssue(from: string) {
   const navigate = useNavigate();
   const here = useLocation();
   const seen = useRef(new Map<string, Item>());
-  const load = async () => {
-    const rows = itemsOf(await callTool("", nearbyTool)) as Item[];
+  const remember = (rows: Item[]) => {
     seen.current = new Map(rows.map((row) => [text(row, "id"), row]));
     return rows;
   };
   const open = (id: string) =>
     navigate(issuePaths.issue.path({ id }), {
-      state: { from: { path: `${here.pathname}${here.search}`, title: allIssuesTitle }, issue: rowOf(seen.current.get(id) ?? { id }) },
+      state: { from: { path: `${here.pathname}${here.search}`, title: from }, issue: rowOf(seen.current.get(id) ?? { id }) },
     });
+  return { remember, open };
+}
+
+export function AllIssuesScreen() {
+  const { remember, open } = useOpenIssue(allIssuesTitle);
+  const load = async () => remember(await nearbyIssues());
   return <IssueListScreen title={allIssuesTitle} tool={nearbyTool} fields={{ title: "title", meta: "status" }} empty="No issues yet." load={load} onChoose={open} />;
 }
 
 export function AssignedToMeScreen() {
-  return <IssueListScreen title="Assigned to Me" tool="forms_catalog_raised_item_list_mine" fields={{ title: "title", meta: "status" }} empty="Nothing is assigned to you." />;
+  const { remember, open } = useOpenIssue(assignedToMeTitle);
+  const load = async () => remember(itemsOf(await callTool("", mineTool)) as Item[]);
+  return <IssueListScreen title={assignedToMeTitle} tool={mineTool} fields={{ title: "title", meta: "status" }} empty="Nothing is assigned to you." load={load} onChoose={open} />;
 }
 
 export function MapViewScreen() {
