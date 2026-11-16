@@ -86,8 +86,8 @@ Status is read from `code/app/src` on disk when this page was last written, and 
 | every feature folder (`account`, `agency`, `apps`, `assistant`, `backlogs`, `chat`, `consent`, `council`, `entry`, `files`, `forms`, `groups`, `inbox`, `market`, `people`, `risks`, `started`, `steps`) | `features/` | done | SW489 |
 | `home`, `menu`, `tabs.ts`, `routes.ts`, `screen.ts`, `App.tsx`, `main.tsx`, `app.css`, `tokens.css`, `test-setup.ts` and their tests | `app/` | done | SW492 |
 | `journeys/` and its test support | stays together | decided, nothing moves | SW495 |
-| a test that fails when a rule is broken | `layoutRules.test.ts` | in progress | SW510 |
-| a script that moves a folder and re-points imports | `code/app/scripts/moveFolder.mjs` | in progress | SW507 |
+| a test that fails when a rule is broken | `layoutRules.test.ts` | done | SW510 |
+| a script that moves a folder and re-points imports | `code/app/scripts/moveFolder.mjs` | done | SW507 |
 
 ## Decided
 
@@ -124,4 +124,4 @@ A move that rewrites imports across many files, like the market index, is applie
 
 The moves are made in this order: backlogs, market, `pages/`, then the top-level groups. A new file goes into its feature on the day it is written, even before that feature has been moved.
 
-A script that does the folder move and the re-pointing in one step is being built under SW507; see SW507 for how to run it.
+From `code/app`, `node scripts/moveFolder.mjs <from> <to>` (paths under `src`) moves a folder and re-points every relative import, CSS import and `vi.mock` path; `--dry` lists the changes first. It prints every path string it cannot rewrite as `check by hand`: fix those, then run typecheck and the moved folder's tests.
