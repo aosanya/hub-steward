@@ -610,6 +610,14 @@
                {"from": "query", "as": "direction", "description": "inbound for edges pointing at it, outbound for edges leading away."}],
       "returns": [{"body": true}]
     },
+    "task_dependencies": {
+      "method": "GET", "path": "/tasks/{taskID}/dependencies", "call": "TaskDependenciesFor", "action": "taskmanager.task.dependencies",
+      "title": "What an issue waits on and what waits on it",
+      "description": "See at once why an issue is Waiting, without reading each issue. depends_on lists the issues this one waits on and needed_by lists the issues that wait on it; each is {id, code, title, step, state, open}, where open is true while that issue is not Done or Cancelled, in rank order. blocks_start is true when any issue it waits on is open. An issue in a backlog the caller cannot see is not named: hidden_depends_on and hidden_needed_by carry how many were left out, and a hidden open one still makes blocks_start true. An issue the caller cannot see is refused as not found. Read-only.",
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The issue to read the dependencies of."}],
+      "returns": [{"body": true}]
+    },
 
     "import_project": {
       "method": "POST", "path": "/projects/import", "call": "ImportProject", "action": "taskmanager.import.run",

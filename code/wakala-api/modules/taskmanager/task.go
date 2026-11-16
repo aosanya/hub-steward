@@ -90,6 +90,7 @@ type TaskManager interface {
 	ListTasksForRunFor(ctx context.Context, requesterID, runID string) ([]Task, error)
 	ListCaseTasksFor(ctx context.Context, requesterID, caseID string) ([]Task, error)
 	TraverseRelationshipsFor(ctx context.Context, requesterID, vertexID, label string, dir Direction) ([]Relationship, error)
+	TaskDependenciesFor(ctx context.Context, requesterID, taskID string) (TaskDependencies, error)
 	ListBacklogAccess(ctx context.Context, backlogID string) (BacklogAccess, error)
 	GiveBacklogAccess(ctx context.Context, backlogID, groupID, level string) (BacklogAccess, error)
 	TakeBacklogAccess(ctx context.Context, backlogID, groupID string) (BacklogAccess, error)
