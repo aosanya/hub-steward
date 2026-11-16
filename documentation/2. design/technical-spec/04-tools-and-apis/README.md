@@ -146,6 +146,7 @@ The bundled API registers more tool families than the lab uses. They belong to a
 | AI | An agency's AI accounts, roles and limits |
 | Insights | `insight_create`, `insight_list` |
 | Audit | `audit_list_entries`: what has been done in the agency, newest first; see [Audit log](#audit-log) |
+| Places | `digitaltwin_address_*`, `digitaltwin_tenure_*` and `digitaltwin_land_use_*`: addresses, holdings and land use of places; see [Places records](#places-records-digitaltwin) |
 | Council | `council_*`: meetings, agendas, minutes, resolutions and bylaws, for agencies that run the council module; see [Council records](#council-records) |
 | Finance | `accounting_budget_*`, `accounting_report_*`, `accounting_bill_*`, `accounting_payment_*`, `accounting_tender_*`, `accounting_quote_*`: budget lines, reports, bills, payments and procurement; see [Finance tools](#finance-tools-accounting) |
 
@@ -232,6 +233,27 @@ Thirteen tools keep what a council does: its meetings, each meeting's agenda and
 - **Tool list.** The council tools are shown only to an agency that runs the module (the tool prefix `council` is the module code). The thirteen names are pinned in `testdata/mcp_roster/no-mounts.txt`, and the permission-coverage checks see each tool through `mcp_tool_actions.go`.
 - **Errors.** A blank or malformed value, a blank agenda item, or a year, date or outcome out of shape is refused as invalid (400); an unknown id, a meeting or resolution of another agency, or a read of an agenda or minutes never set is refused as not found (404).
 - **Commits on dev.** `b7113c46` (meetings, the permissions and the catalog entry), `5d811795` (agenda and minutes), `61489b52` (resolutions), `521236ea` (bylaws), `6076e6b7` (served on the hub, with the guard). Evidence: `projects/hungarian-municipality/documentation/3. implementation/todo/MUN982-council-records/README.md`.
+
+## Places records (digitaltwin)
+
+Nine tools keep what the Places & Addresses screens show beyond a place's name: its street addresses, who holds it and how it is zoned. They exist for an agency that runs the `digitaltwin` module. Every tool takes the agency as `instance_id`.
+
+| Tool | Method and path | Arguments | Permission |
+|---|---|---|---|
+| `digitaltwin_address_create` | `POST /addresses` | `street`, `number`, optional `area`, `postcode` and `place_id` (a registered place node) | `digitaltwin.manage` |
+| `digitaltwin_address_list` | `GET /addresses` | optional `street`, `area`, `place_id`; oldest first | `digitaltwin.view` |
+| `digitaltwin_address_read` | `GET /addresses/{addressID}` | `addressID` | `digitaltwin.view` |
+| `digitaltwin_tenure_create` | `POST /tenures` | `place_id`, `holder`, optional `kind` (`owner` by default, `tenant`, `leaseholder`, `occupant`, `custodian`) and `since` (`YYYY-MM-DD` or RFC 3339) | `digitaltwin.manage` |
+| `digitaltwin_tenure_list` | `GET /tenures` | optional `place_id`, `holder`, `kind` | `digitaltwin.view` |
+| `digitaltwin_tenure_read` | `GET /tenures/{tenureID}` | `tenureID` | `digitaltwin.view` |
+| `digitaltwin_land_use_create` | `POST /land-uses` | `zone`, `use`, and `place_id` or `area` | `digitaltwin.manage` |
+| `digitaltwin_land_use_list` | `GET /land-uses` | optional `place_id`, `area`, `zone` | `digitaltwin.view` |
+| `digitaltwin_land_use_read` | `GET /land-uses/{landUseID}` | `landUseID` | `digitaltwin.view` |
+
+- **Module.** `modules/digitaltwin` in `code/wakala-api`: the roles `address`, `tenure` and `land_use` in `digitaltwin.blueprint.json`, filled by `digitaltwin.wakala.json` (tables `addresses`, `tenures`, `land_uses`) and the four testdata domains; operations in `digitaltwin.operations.json`; the records in `address_record.go`, `tenure_record.go` and `land_use_record.go`. A place named by `place_id` must exist as a node, otherwise the record is refused as invalid.
+- **Permissions.** `digitaltwin.manage` carries all nine actions, `digitaltwin.view` the six list and read actions; both are in `modules/agency/models/permissions_catalog.json`. In the Hungarian municipality the clerk (Jegyzo) holds `digitaltwin.manage` and the council member `digitaltwin.view`.
+- **Serving.** `modules/digitaltwin/mcp/resolve.go` registers only the address, tenure and land use operations and resolves the agency's twin manager per call, as the accounting tools do; `internal/api/http/mcp_tools_digitaltwin.go` guards them with the shared permission check. The other digitaltwin operations (nodes, links, observations) stay on the HTTP routes and are not tools. The nine names are pinned in `testdata/mcp_roster/no-mounts.txt`.
+- **Screens.** The four Places & Addresses screens still read assetmanager until MUN1085b moves them onto these tools.
 
 ## Issues and votes (stretch)
 
