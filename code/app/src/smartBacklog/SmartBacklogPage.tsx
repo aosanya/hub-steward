@@ -1,9 +1,9 @@
 import "./smartBacklog.css";
 import { Fragment, useState } from "react";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { mcpBacklogManageClient } from "../backlogManage/api";
-import { useMayManage } from "../backlogManage/useMayManage";
-import type { BacklogManageClient } from "../backlogManage/types";
+import { mcpBacklogManageClient } from "../backlogs/manage/api";
+import { useMayManage } from "../backlogs/manage/useMayManage";
+import type { BacklogManageClient } from "../backlogs/manage/types";
 import { mcpBacklogsClient, type BacklogsClient, type Issue } from "../backlogs/api";
 import { FilterBar } from "../backlogs/FilterBar";
 import type { CapsClient } from "../backlogs/caps/api";

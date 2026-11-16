@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { backlogTools } from "../../backlogManage/api";
+import { backlogTools } from "../../backlogs/manage/api";
 import { taskTools } from "../../backlogs/api";
 import { referenceTools } from "../../backlogs/references/api";
 import { beforeEachJourney, endInAgencies, inFarmers, issues, where } from "./backlogs.test-support";

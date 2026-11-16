@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
 import { backlogAccessPath } from "../backlogs/access/paths";
-import { editBacklogPath, useMayManage, type BacklogManageClient } from "../backlogManage";
-import { mcpBacklogManageClient } from "../backlogManage/api";
+import { editBacklogPath, useMayManage, type BacklogManageClient } from "../backlogs/manage";
+import { mcpBacklogManageClient } from "../backlogs/manage/api";
 import { issuesPath } from "../backlogs/paths";
 import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";

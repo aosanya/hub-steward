@@ -1,4 +1,4 @@
-import { McpError } from "../wakala/mcp";
+import { McpError } from "../../wakala/mcp";
 import { allowedIn, backlogTools,  detailOf, mcpBacklogManageClient, refusalText } from "./api";
 import { savedStep } from "./stepsDraft";
 import { ManageRefused } from "./types";
@@ -9,8 +9,8 @@ const recorded: [string, string, any][] = [];
 
 let answer: Answer = async () => ({});
 
-vi.mock("../wakala/mcp", async () => {
-  const actual = await vi.importActual<typeof import("../wakala/mcp")>("../wakala/mcp");
+vi.mock("../../wakala/mcp", async () => {
+  const actual = await vi.importActual<typeof import("../../wakala/mcp")>("../../wakala/mcp");
   return {
     ...actual,
     callTool: (hub: string, name: string, args: any) => {

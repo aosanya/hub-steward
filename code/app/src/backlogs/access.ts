@@ -1,4 +1,4 @@
-import { backlogTools } from "../backlogManage/api";
+import { backlogTools } from "./manage/api";
 import { callTool } from "../wakala/mcp";
 
 export const readPermission = "task.read";

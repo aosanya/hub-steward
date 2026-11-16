@@ -1,10 +1,10 @@
-import "../../backlogManage/backlogManage.css";
+import "../manage/backlogManage.css";
 import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { openAgencyId } from "../../agency/open";
-import { mcpBacklogManageClient } from "../../backlogManage/api";
-import type { BacklogManageClient } from "../../backlogManage/types";
-import { useMayManage } from "../../backlogManage/useMayManage";
+import { mcpBacklogManageClient } from "../manage/api";
+import type { BacklogManageClient } from "../manage/types";
+import { useMayManage } from "../manage/useMayManage";
 import { backlogPagePath } from "../../backlogPage/paths";
 import { useLoad } from "../../forms/useLoad";
 import { Button } from "../../ui/Button";

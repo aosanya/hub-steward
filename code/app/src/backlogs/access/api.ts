@@ -1,5 +1,5 @@
 import { callTool } from "../../wakala/mcp";
-import { backlogTools, refusalText } from "../../backlogManage/api";
+import { backlogTools, refusalText } from "../manage/api";
 import { AccessRefused, type AccessReading, type AgencyGroup, type BacklogAccessClient, type Grant } from "./types";
 
 export const accessTools = {

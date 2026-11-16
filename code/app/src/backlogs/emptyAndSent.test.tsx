@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../agency/open";
-import type { BacklogManageClient } from "../backlogManage/types";
+import type { BacklogManageClient } from "./manage/types";
 import { SendToBacklogButton } from "../sendToBacklog";
 import type { SendClient, Target } from "../sendToBacklog/types";
 import type { Backlog, BacklogsClient, IssueDetail } from "./api";

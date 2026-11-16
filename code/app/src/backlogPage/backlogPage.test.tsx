@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { defaultBacklogId, taskTools } from "../backlogs/api";
 import * as mcp from "../wakala/mcp";
-import type { BacklogManageClient } from "../backlogManage";
+import type { BacklogManageClient } from "../backlogs/manage";
 import { BacklogPage } from "./BacklogPage";
 import { mcpBacklogPageClient, type BacklogPageClient } from "./api";
 import { accessTools } from "../backlogs/access/api";

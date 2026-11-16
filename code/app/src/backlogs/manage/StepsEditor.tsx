@@ -1,8 +1,8 @@
 import "./backlogManage.css";
 import { useState } from "react";
-import { Button } from "../ui/Button";
-import { Field } from "../ui/Field";
-import { ListRow, Rows } from "../ui/ListRow";
+import { Button } from "../../ui/Button";
+import { Field } from "../../ui/Field";
+import { ListRow, Rows } from "../../ui/ListRow";
 import { addStep, canMoveDown, canMoveUp, canRemove, heldWords, moveDown, moveUp, removeStep, renameStep, type DraftStep } from "./stepsDraft";
 
 type Props = { steps: DraftStep[]; onChange: (steps: DraftStep[]) => void; showHeld: boolean };
