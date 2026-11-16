@@ -358,7 +358,7 @@ describe("inviting a user", () => {
     await user.type(screen.getByLabelText("Person"), "a-9");
     await user.click(screen.getByRole("button", { name: "Submit" }));
 
-    expect(await screen.findByText("The change could not be sent.")).toHaveClass("error");
+    expect(await screen.findByText("The change could not be sent. agency_propose_write: boom")).toHaveClass("error");
     expect(screen.getByLabelText("Person")).toHaveValue("a-9");
     expect(screen.queryByText("Waiting for approval")).not.toBeInTheDocument();
   });
@@ -375,7 +375,7 @@ describe("inviting a user", () => {
     const user = await openForm();
     await user.type(screen.getByLabelText("Person"), "a-9");
     await user.click(screen.getByRole("button", { name: "Submit" }));
-    await screen.findByText("The change could not be sent.");
+    await screen.findByText("The change could not be sent. agency_propose_write: boom");
 
     await user.click(screen.getByRole("button", { name: "Submit" }));
 
