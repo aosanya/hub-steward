@@ -118,3 +118,48 @@ describe("evidence", () => {
     });
   });
 });
+
+describe("the officer's control gaps", () => {
+  const staleGap = {
+    kind: "barrier_stale",
+    severity: "medium",
+    risk_id: "r1",
+    subject: "Fire alarm test",
+    subject_id: "b1",
+    message: "No evidence in the last 90 days",
+  };
+  const otherGap = { ...staleGap, risk_id: "r2", subject: "Flood pump", subject_id: "b9" };
+
+  it("asks for gaps with the officer as owner and returns the stale-evidence gap of an own risk", async () => {
+    const sent = stub({
+      [riskTools.risks]: { items: [mine] },
+      [riskTools.gaps]: { items: [staleGap, otherGap] },
+    });
+    const found = await mcpRisksClient.myGaps();
+    expect(found).toEqual([
+      {
+        kind: "barrier_stale",
+        severity: "medium",
+        riskId: "r1",
+        subject: "Fire alarm test",
+        subjectId: "b1",
+        message: "No evidence in the last 90 days",
+      },
+    ]);
+    expect(sent.find((call) => call.tool === riskTools.gaps)?.args.owner).toBe("officer-ilona");
+    expect(sent.find((call) => call.tool === riskTools.risks)?.args.owner).toBe("officer-ilona");
+  });
+
+  it("leaves out a gap of another owner's risk", async () => {
+    stub({
+      [riskTools.risks]: { items: [mine] },
+      [riskTools.gaps]: { items: [otherGap] },
+    });
+    expect(await mcpRisksClient.myGaps()).toEqual([]);
+  });
+
+  it("returns nothing when the officer owns no risk", async () => {
+    stub({ [riskTools.risks]: { items: [] }, [riskTools.gaps]: { items: [staleGap] } });
+    expect(await mcpRisksClient.myGaps()).toEqual([]);
+  });
+});

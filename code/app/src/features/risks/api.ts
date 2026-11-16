@@ -20,11 +20,14 @@ export type Safeguard = {
 
 export type RiskDetail = { risk: Risk; ratings: Rating[]; safeguards: Safeguard[]; actions: RiskAction[] };
 
+export type Gap = { kind: string; severity: string; riskId: string; subject: string; subjectId: string; message: string };
+
 export type EvidenceDraft = { barrierId: string; kind: string; outcome: string; summary: string; reference: string };
 
 export type RisksClient = {
   myRisks(): Promise<Risk[]>;
   myActions(): Promise<RiskAction[]>;
+  myGaps(): Promise<Gap[]>;
   risk(riskId: string): Promise<RiskDetail>;
   recordEvidence(draft: EvidenceDraft): Promise<void>;
 };
@@ -40,6 +43,7 @@ export const riskTools = {
   preventive: "riskmanager_preventive_measure_list",
   mitigating: "riskmanager_mitigating_measure_list",
   evidence: "riskmanager_evidence_record",
+  gaps: "riskmanager_gap_list",
 };
 
 const text = (value: unknown) => (typeof value === "string" ? value : value == null ? "" : String(value));
@@ -61,6 +65,15 @@ export const actionOf = (raw: any): RiskAction => ({
   status: text(raw?.status),
   dueAt: text(raw?.due_at),
   owner: text(raw?.owner),
+});
+
+export const gapOf = (raw: any): Gap => ({
+  kind: text(raw?.kind),
+  severity: text(raw?.severity),
+  riskId: text(raw?.risk_id),
+  subject: text(raw?.subject),
+  subjectId: text(raw?.subject_id),
+  message: text(raw?.message),
 });
 
 const ratingOf = (kind: string, raw: any): Rating[] =>
@@ -90,6 +103,16 @@ export const mcpRisksClient: RisksClient = {
     if (member === "") return [];
     const reply = await callTool("", riskTools.actions, { owner: member });
     return rowsOf(reply).map(actionOf).filter(ownedBy(member));
+  },
+  async myGaps() {
+    const member = await resolveMember();
+    if (member === "") return [];
+    const [risks, gaps] = await Promise.all([
+      callTool("", riskTools.risks, { owner: member }),
+      callTool("", riskTools.gaps, { owner: member }),
+    ]);
+    const ownRiskIds = new Set(rowsOf(risks).map(riskOf).filter(ownedBy(member)).map((risk) => risk.id));
+    return rowsOf(gaps).map(gapOf).filter((gap) => ownRiskIds.has(gap.riskId));
   },
   async risk(riskId) {
     const member = await resolveMember();
