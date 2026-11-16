@@ -103,13 +103,16 @@ export const signIn = async (page: Page, who: string): Promise<Person> => {
   });
   await page.goto("/");
   const agree = page.getByRole("button", { name: "Agree" });
-  const home = page.getByText("Notifications", { exact: true }).first();
+  const home = page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: /Notifications/ });
+  const fetchesQuiet = () =>
+    page.waitForFunction(() => (window as any).appFetchesAreQuiet?.() === true, undefined, { timeout: 30_000 });
   await agree.or(home).first().waitFor({ timeout: 30_000 });
+  await fetchesQuiet();
   if (await agree.isVisible()) {
     await agree.click();
     await home.waitFor({ timeout: 30_000 });
+    await fetchesQuiet();
   }
-  await page.waitForFunction(() => (window as any).appFetchesAreQuiet?.() === true, undefined, { timeout: 30_000 });
   return signedIn;
 };
 
