@@ -1,6 +1,6 @@
 import type { FormQuestion } from "../forms/api";
 import type { StartStep } from "../market/start/api";
-import { filled, given, isChoice, isFile, type Draft } from "../pages/forms/answers";
+import { filled, given, isChoice, isFile, type Draft } from "../forms/answers";
 
 export const formQuestionsOf = (step: Pick<StartStep, "questions">): FormQuestion[] =>
   step.questions.map((q, index) => ({

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../agency/open";
 import { clearDraft, draftCount, formDraftKey, loadDraft, saveDraft } from "./answers";
 
 beforeEach(() => {

@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { ChatPage } from "../pages/chat/ChatPage";
+import { ChatPage } from "./ChatPage";
 import { callTool } from "../wakala/mcp";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 

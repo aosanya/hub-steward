@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { assistantName, askPlaceholder } from "../../assistant/AssistantPage";
-import { joinGroupWorkflow } from "../../home/workflowScreens";
-import { unreadLabel } from "../../chat/unread";
-import "../../chat/unread.css";
-import { mcpChatClient, type ChatClient, type Room } from "../../chat/api";
-import { stampOf } from "../../chat/stamp";
-import { useLoad } from "../../forms/useLoad";
-import { Button } from "../../ui/Button";
-import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
-import { ListRow, Rows } from "../../ui/ListRow";
-import { routes } from "../../routes";
-import { Shell } from "../../ui/Shell";
+import { assistantName, askPlaceholder } from "../assistant/AssistantPage";
+import { joinGroupWorkflow } from "../home/workflowScreens";
+import { unreadLabel } from "./unread";
+import "./unread.css";
+import { mcpChatClient, type ChatClient, type Room } from "./api";
+import { stampOf } from "./stamp";
+import { useLoad } from "../forms/useLoad";
+import { Button } from "../ui/Button";
+import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
+import { ListRow, Rows } from "../ui/ListRow";
+import { routes } from "../routes";
+import { Shell } from "../ui/Shell";
 
 export function ChatPage({ client = mcpChatClient }: { client?: ChatClient }) {
   const navigate = useNavigate();

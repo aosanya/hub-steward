@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
-import { AskPage } from "../../pages/chat/AskPage";
-import { ChatPage } from "../../pages/chat/ChatPage";
+import { AskPage } from "../AskPage";
+import { ChatPage } from "../ChatPage";
 import { routes } from "../../routes";
 import type { ChatClient } from "../api";
 import type { RoomsClient } from "./api";

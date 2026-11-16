@@ -1,6 +1,6 @@
-import { openAgencyId } from "../../agency/open";
-import type { Answer, FormQuestion } from "../../forms/api";
-import { readKept, removeKept, writeKept } from "../../storage/kept";
+import { openAgencyId } from "../agency/open";
+import type { Answer, FormQuestion } from "./api";
+import { readKept, removeKept, writeKept } from "../storage/kept";
 
 export type Given = { text: string; options: string[]; files?: string[] };
 export type Draft = Record<string, Given>;

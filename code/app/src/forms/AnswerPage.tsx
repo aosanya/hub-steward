@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import type { FormQuestion } from "../../forms/api";
-import { useForms } from "../../forms/context";
-import { useLoad } from "../../forms/useLoad";
-import { routes } from "../../routes";
-import { BottomBar } from "../../ui/BottomBar";
-import { Button } from "../../ui/Button";
-import { Card } from "../../ui/Card";
-import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
-import { QuestionInput } from "../../forms/QuestionInput";
-import { ListRow, Rows } from "../../ui/ListRow";
-import { Shell } from "../../ui/Shell";
+import type { FormQuestion } from "./api";
+import { useForms } from "./context";
+import { useLoad } from "./useLoad";
+import { routes } from "../routes";
+import { BottomBar } from "../ui/BottomBar";
+import { Button } from "../ui/Button";
+import { Card } from "../ui/Card";
+import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
+import { QuestionInput } from "./QuestionInput";
+import { ListRow, Rows } from "../ui/ListRow";
+import { Shell } from "../ui/Shell";
 import { clearDraft, filled, formDraftKey, given, loadDraft, saveDraft, shown, threadLines, toAnswers, type Draft, type Given } from "./answers";
 
 type Step = number | "review";

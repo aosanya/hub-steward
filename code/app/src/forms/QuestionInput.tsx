@@ -1,7 +1,7 @@
 import type { FormQuestion } from "./api";
 import { ChoiceGroup, ChoiceRow } from "../ui/ChoiceRow";
 import { Field } from "../ui/Field";
-import { fileLimit, filesOf, isChoice, isFile, type Given } from "../pages/forms/answers";
+import { fileLimit, filesOf, isChoice, isFile, type Given } from "./answers";
 
 export const currencyUnit = "Ft";
 

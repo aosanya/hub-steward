@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import { ChatPage } from "../pages/chat/ChatPage";
+import { ChatPage } from "./ChatPage";
 import type { ChatClient } from "./api";
 
 beforeEach(() => openAgency("farmers"));

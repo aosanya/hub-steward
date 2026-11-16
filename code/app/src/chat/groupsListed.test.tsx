@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { ChatPage } from "../pages/chat/ChatPage";
+import { ChatPage } from "./ChatPage";
 import { RoomThreadsPage } from "./rooms/RoomThreadsPage";
 import { mcpRoomsClient, type RoomsClient } from "./rooms/api";
 import { roomsOf } from "./api";

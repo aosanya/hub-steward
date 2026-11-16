@@ -1,9 +1,9 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
-import type { FormsClient } from "../../forms/api";
-import { FormsProvider } from "../../forms/context";
+import { forgetOpenAgency, openAgency } from "../agency/open";
+import type { FormsClient } from "./api";
+import { FormsProvider } from "./context";
 import { FormsPage } from "./FormsPage";
 
 let landed = "";

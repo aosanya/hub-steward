@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import type { FormQuestion } from "./api";
 import { QuestionInput } from "./QuestionInput";
-import { toAnswer } from "../pages/forms/answers";
+import { toAnswer } from "./answers";
 
 const question = (answer_type: string): FormQuestion => ({ id: "q1", prompt: "Amount awarded", answer_type, required: true, options: [] });
 
