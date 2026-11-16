@@ -145,8 +145,29 @@ The bundled API registers more tool families than the lab uses. They belong to a
 | Risk | The risk register of threats, consequences and safeguards |
 | AI | An agency's AI accounts, roles and limits |
 | Insights | `insight_create`, `insight_list` |
+| Audit | `audit_list_entries`: what has been done in the agency, newest first; see [Audit log](#audit-log) |
 
 Whether each tool is open to an agent role is set by the agency's role permissions, not by this page.
+
+## Audit log
+
+| Operation | Method and path | Reads / writes | Who | REST | MCP |
+|---|---|---|---|---|---|
+| List the agency's audit entries | `GET /audit/entries` | reads entries, newest first, each with `id`, `instance_id`, `actor`, `action`, `subject` and `at`; only the named agency's | the agency's owner, or a role that holds the permission `audit.view` | Exists | Exists: `audit_list_entries`, action `audit.entry.list` |
+
+- **Module.** `modules/audit` in `code/wakala-api`: the object `audit_entry` (table `audit_entries`) and the one list operation, declared in `audit.blueprint.json` and `audit.operations.json`. An entry is append-only; it is never edited or removed.
+- **Permission.** `audit.view`, "View the audit log", carries the single action `audit.entry.list` (`modules/agency/models/permissions_catalog.json`). A caller who is neither the owner nor holds it is refused with a message naming the permission. The check is in `internal/api/http/mcp_tools_audit.go`.
+- **Writes that record an entry.** On the MCP tool path, after the write succeeds, `internal/api/http/mcp_audit_records.go` records the caller as `actor`, a plain `action` and the thing changed as `subject`, for the agency in the call's `instance_id`:
+
+| Tool | Action | Subject |
+|---|---|---|
+| `instance_rename` | renamed the agency | the new name |
+| `actor_grant_role` | granted a role | the `actor_id` argument |
+| `forms_form_publish` | published a form | the `form_id` argument |
+
+A failed write records nothing, and no other write records an entry yet. A failure to record is logged and does not undo the write.
+
+- **Commits on dev.** `aef05cf3` (failing test), `18c5002f` (module), `c218fcec` (permission and guard), `be95447a` (the three recorded writes).
 
 ## Issues and votes (stretch)
 
