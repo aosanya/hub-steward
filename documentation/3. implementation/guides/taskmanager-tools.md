@@ -8,6 +8,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 |---|---|---|
 | What is open, and how many at each step and priority | `taskmanager_task_pending` | `GET /pending-tasks` |
 | Which issue is this id, code or text | `taskmanager_task_find` | `GET /find-tasks` |
+| Which issue should a worker take next | `taskmanager_task_next_ready` | `GET /next-ready` |
 | The whole issue | `taskmanager_task_read` | `GET /tasks/{taskID}` |
 | Page through every issue | `taskmanager_task_list` | `GET /tasks` |
 
@@ -27,6 +28,12 @@ The answer is `total`, counted over everything that matches, and `items`: the sa
 
 Open issues only, unless `include_closed` is true. The in-tray sorter and the backlog workers use one find call for a duplicate check; a words search over the description is what finds a duplicate that names the same thing in other words.
 
+## taskmanager_task_next_ready
+
+Inputs: `backlog` (id or name), `tag` (repeat it to require every tag) and `limit` (1 to 5, default 1). The caller is taken from the session.
+
+The answer is `total_ready`, every Ready issue at the To do step that the filters match, and `items`: the first `limit` of them, lowest rank first, each with id, code, title, priority, effort, tags, rank, backlog and step and without the description. An issue that carries Sinbin, Blocked or Waiting is never counted or returned, even beside Ready. With nothing ready, `items` is empty and `total_ready` is 0. A backlog the caller cannot see is refused as unknown, 400, the same as a backlog that does not exist; a limit outside 1 to 5 is also 400. A worker takes the first item and reads it with `taskmanager_task_read`.
+
 ## Where the code is
 
 | Part | File |
@@ -35,3 +42,4 @@ Open issues only, unless `include_closed` is true. The in-tray sorter and the ba
 | The place, access and tag narrowing, the word match and the compact items it shares with pending | `modules/taskmanager/task_pending.go` |
 | Input and answer types | `modules/taskmanager/models/find.go` |
 | Tests | `task_find_test.go` and `routes/find_tasks_test.go` |
+| The next-ready tool and its types | `modules/taskmanager/task_next_ready.go`, tests in `routes/next_ready_test.go` |
