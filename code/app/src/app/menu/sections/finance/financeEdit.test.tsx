@@ -1,5 +1,5 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
@@ -75,6 +75,8 @@ const replace = async (label: string, text: string) => {
   await userEvent.clear(input);
   await userEvent.type(input, text);
 };
+
+const setDay = (label: string, day: string) => fireEvent.change(screen.getByLabelText(label), { target: { value: day } });
 
 const editButtons = () => screen.queryAllByRole("button", { name: "Edit" });
 
@@ -160,5 +162,96 @@ describe("editing a tender and its quotes from the tender detail", () => {
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
 
     expect(editButtons()).toHaveLength(0);
+  });
+});
+
+describe("correcting a date from the edit forms", () => {
+  it("shows the recorded due date as its day and sends a corrected due date as an instant", async () => {
+    await showBill();
+
+    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[0]);
+    expect((screen.getByLabelText("Due date") as HTMLInputElement).value).toBe("2026-01-15");
+    setDay("Due date", "2026-02-15");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() =>
+      expect(called).toHaveBeenCalledWith("", tools.billUpdate, { billID: "b2", payer: "Sample Garage", amount: 1500, due_at: "2026-02-15T00:00:00Z", narration: "January stall fee" }),
+    );
+  });
+
+  it("shows the hub's words when a bill with a payment is given a new due date and the hub refuses", async () => {
+    refusal = "accounting_bill_update: bill b2 already has a payment of 500, so its due date stays 2026-01-15";
+    await showBill();
+
+    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[0]);
+    setDay("Due date", "2026-03-01");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByText("bill b2 already has a payment of 500, so its due date stays 2026-01-15")).toBeTruthy();
+  });
+
+  it("sends a changed closing day to accounting_tender_update as an instant", async () => {
+    await showTender();
+
+    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[0]);
+    expect((screen.getByLabelText("Closing day") as HTMLInputElement).value).toBe("2026-12-01");
+    setDay("Closing day", "2026-12-15");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() =>
+      expect(called).toHaveBeenCalledWith("", tools.tenderUpdate, { tenderID: "t1", description: "Slate roof", title: "Roof repair", closes_at: "2026-12-15T00:00:00Z" }),
+    );
+  });
+
+  it("sends an unchanged closing day exactly as recorded when only the description changes", async () => {
+    tenders = [{ ...tenders[0], closes_at: "2026-12-01T09:30:00Z" }];
+    await showTender();
+
+    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[0]);
+    await replace("Description", "Tile roof");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() =>
+      expect(called).toHaveBeenCalledWith("", tools.tenderUpdate, { tenderID: "t1", title: "Roof repair", description: "Tile roof", closes_at: "2026-12-01T09:30:00Z" }),
+    );
+  });
+
+  it("shows the hub's words when a closed tender is given a new closing day", async () => {
+    refusal = "accounting_tender_update: tender t1 closed on 2026-02-01T00:00:00Z and can no longer be changed";
+    await showTender();
+
+    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[0]);
+    setDay("Closing day", "2026-12-20");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByText("tender t1 closed on 2026-02-01T00:00:00Z and can no longer be changed")).toBeTruthy();
+    expect(called).toHaveBeenCalledWith("", tools.tenderUpdate, expect.objectContaining({ closes_at: "2026-12-20T00:00:00Z" }));
+  });
+
+  it("sends a corrected valid-until day of a quote as an instant", async () => {
+    await showTender();
+
+    const buttons = await screen.findAllByRole("button", { name: "Edit" });
+    await userEvent.click(buttons[buttons.length - 1]);
+    setDay("Valid until", "2026-12-10");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() =>
+      expect(called).toHaveBeenCalledWith("", tools.quoteUpdate, { quoteID: "q1", supplier: "Sample Roofers", amount: 8200, note: "with scaffolding", valid_until: "2026-12-10T00:00:00Z" }),
+    );
+  });
+
+  it("sends an unchanged quote valid-until exactly as recorded", async () => {
+    quotes = [{ ...quotes[0], valid_until: "2026-11-30T17:00:00Z" }];
+    await showTender();
+
+    const buttons = await screen.findAllByRole("button", { name: "Edit" });
+    await userEvent.click(buttons[buttons.length - 1]);
+    await replace("Note", "scaffolding extra");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() =>
+      expect(called).toHaveBeenCalledWith("", tools.quoteUpdate, { quoteID: "q1", supplier: "Sample Roofers", amount: 8200, note: "scaffolding extra", valid_until: "2026-11-30T17:00:00Z" }),
+    );
   });
 });

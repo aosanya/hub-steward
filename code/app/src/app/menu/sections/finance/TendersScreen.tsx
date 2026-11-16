@@ -71,12 +71,14 @@ const loadTender = async (id: string) => {
 const tenderFields: EditField[] = [
   { label: "Title", key: "title", required: true },
   { label: "Description", key: "description" },
+  { label: "Closing day", key: "closes_at", kind: "date" },
 ];
 
 const quoteFields: EditField[] = [
   { label: "Supplier", key: "supplier", required: true },
   { label: "Amount", key: "amount", kind: "number", required: true },
   { label: "Note", key: "note" },
+  { label: "Valid until", key: "valid_until", kind: "date" },
 ];
 
 const readQuote = async (tenderID: string, quote: Item) =>

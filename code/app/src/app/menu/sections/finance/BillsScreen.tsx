@@ -54,6 +54,7 @@ const loadBill = async (id: string) => {
 const editFields: EditField[] = [
   { label: "Payer", key: "payer" },
   { label: "Amount", key: "amount", kind: "number", required: true },
+  { label: "Due date", key: "due_at", kind: "date" },
   { label: "Narration", key: "narration" },
 ];
 
