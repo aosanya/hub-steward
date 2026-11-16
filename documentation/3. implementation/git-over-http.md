@@ -79,6 +79,8 @@ git push origin my-change
 
 A push of `main` is refused with the message above; push a branch instead. The branch then appears in the app where branches already appear. To bring it into `main`, open a merge request from the branch to `main` with the merge request tool (`forms_git_merge_request_create`) or its button, and someone completes it. Further commits pushed to the same branch move it, and a branch can be removed with `git push origin --delete my-change`.
 
+**A first push of an existing folder.** The folder's history shares no commit with `main`, so push it to a branch and open a merge request, as above. Completing the request finds no common ancestor and merges against an empty base: where the folder's paths are not on `main`, the merge succeeds, `main` gets both trees, and its log shows both roots under one two-parent merge commit. Where the same path (for example `README.md`) holds different text on both sides, the merge stops with a conflict naming the path, `main` does not move and the request ends as failed; which side should win is for the owner to say, and nothing is chosen for them. The tests are `TestRepoFileUnrelatedHistory_` and `TestCompletingAMergeRequestOfAnUnrelatedPushedHistory` in `modules/git`.
+
 ## Known limits
 
 These are the todos TD-1464 and TD-1465 on ISS-88 and the open questions 3 and 6 on the design page.
