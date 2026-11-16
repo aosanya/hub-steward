@@ -92,9 +92,9 @@ describe("journey 24, Answer a form", () => {
     open(client);
     const soon = await screen.findByRole("button", { name: /Borehole contribution/ });
     expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Closes this week", "Later", "Ask for something"]);
-    expect(soon).toHaveTextContent(`Kilimani Ward · Treasurer, Kilimani Ward2 questions, closes ${dayOf(state.waiting[1].closes_at)}`);
+    expect(soon).toHaveTextContent(`Kilimani Ward · Treasurer, Kilimani Ward · 2 questions, closes ${dayOf(state.waiting[1].closes_at)}`);
     expect(soon).toHaveTextContent("New");
-    expect(screen.getByRole("button", { name: /Burial fund pledge/ })).toHaveTextContent(`Otieno Achieng2 questions, closes ${dayOf(state.waiting[0].closes_at)}`);
+    expect(screen.getByRole("button", { name: /Burial fund pledge/ })).toHaveTextContent(`Otieno Achieng · 2 questions, closes ${dayOf(state.waiting[0].closes_at)}`);
     expect(screen.getByRole("button", { name: "Waiting · 2" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Answered · 1" })).toBeInTheDocument();
   });
@@ -111,6 +111,7 @@ describe("journey 24, Answer a form", () => {
     const { state, client } = freshClient();
     open(client);
     await click(/Borehole contribution/);
+    await click("Open form");
     expect(await screen.findByText("Question 1 of 2")).toBeInTheDocument();
     await click("Next");
     expect(await screen.findByText("This question needs an answer")).toBeInTheDocument();
@@ -163,6 +164,7 @@ describe("journey 24, Answer a form", () => {
     const { client } = freshClient();
     open(client);
     await click(/Ask for a delivery/);
+    await click("Open form");
     await userEvent.type(await screen.findByLabelText("Pickup"), "Market gate");
     await click("Next");
     await userEvent.type(await screen.findByLabelText("Destination"), "Siaya hospital");
@@ -199,7 +201,8 @@ describe("journey 24, Answer a form", () => {
     await click("Every form you answered");
     expect(await screen.findByText("Seed order form")).toBeInTheDocument();
     expect(screen.getAllByText("Closed")).toHaveLength(1);
-    expect(screen.queryByRole("button", { name: /Seed order form/ })).not.toBeInTheDocument();
+    await click(/Seed order form/);
+    expect(screen.queryByRole("button", { name: "Open form" })).not.toBeInTheDocument();
     expect(screen.getAllByText("Open")).toHaveLength(2);
     expect(screen.queryByRole("button", { name: "Every form you answered" })).not.toBeInTheDocument();
   });
@@ -207,6 +210,7 @@ describe("journey 24, Answer a form", () => {
   it("step 6: with nothing waiting, one card says so and its button switches to Answered", async () => {
     const { state, client } = freshClient();
     state.waiting = [];
+    state.standing = [];
     open(client);
     expect(await screen.findByText("Nothing is waiting for you")).toBeInTheDocument();
     expect(screen.getByText("New forms from your groups show up here and on Home.")).toBeInTheDocument();

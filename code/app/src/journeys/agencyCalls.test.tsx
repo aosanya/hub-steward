@@ -63,6 +63,7 @@ describe("forms: every call names the agency in the address", () => {
     openAgency(farmers.id);
     openApp(`/a/${riders.id}/forms`);
     await userEvent.click(await screen.findByRole("button", { name: /Water levy/ }));
+    await userEvent.click(await screen.findByRole("button", { name: "Open form" }));
     await userEvent.type(await screen.findByLabelText("What do you need"), "A ramp");
     await userEvent.click(screen.getByRole("button", { name: "Next" }));
     await userEvent.click(await screen.findByRole("button", { name: "Submit" }));

@@ -120,6 +120,7 @@ describe("forms: a member goes in by the new path and by the old one", () => {
     await heading("Forms");
     expect(where()).toBe(base);
     await userEvent.click(await screen.findByRole("button", { name: /Water levy/ }));
+    await userEvent.click(await screen.findByRole("button", { name: "Open form" }));
     await waitFor(() => expect(where()).toBe(`${base}/f1`));
     await userEvent.type(await screen.findByLabelText("What do you need"), "A ramp");
     await userEvent.click(screen.getByRole("button", { name: "Next" }));
