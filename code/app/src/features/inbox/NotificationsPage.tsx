@@ -16,11 +16,14 @@ import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
 import { LoadFailed } from "../../shared/ui/LoadState";
 import { Shell } from "../../app/Shell";
+import { useWide } from "../../shared/ui/useWide";
+import "../../shared/ui/paneWindow.css";
 import { mcpStartClient, type StartClient, useStartWaitingState } from "../market";
 type Opened = { invitation: InvitationItem; joined: boolean };
 
 export function NotificationsPage({ client = mcpInboxClient, start = mcpStartClient, assigned = mcpAssignedClient, read = mcpReader, above }: { client?: InboxClient; start?: StartClient; assigned?: AssignedClient; read?: Reader; above?: ReactNode }) {
   const navigate = useNavigate();
+  const wide = useWide();
   const { items, failed: notificationsFailed, outage: notificationsOutage, retry: retryNotifications, markIdsRead, markOneRead } = useNotifications(client);
   useClearDone(items, markIdsRead, read);
   const [ticked, setTicked] = useState<string[]>([]);
@@ -167,20 +170,50 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
 
   const openNotice = (n: NotificationItem, path: string) => openChecked(n, path, { read, markOneRead, navigate, say: setProblem });
 
+  const problemLine = problem ? <LoadFailed words={problem} /> : null;
+  const emptyCard = empty ? (
+    <Card empty>
+      <p className="ttl">You are all caught up</p>
+      <p>Notifications from your groups will appear here.</p>
+    </Card>
+  ) : null;
+  const needsYouSection =
+    waitsOnYou || needsYouState.loading || needsYouState.words ? (
+      <NeedsYouSection start={start} assigned={assigned} invitations={invitations} notices={needing} state={needsYouState} hasRows={waitsOnYou} onRetry={retryNeedsYou} onOpenInvitation={(invitation) => setOpened({ invitation, joined: false })} onOpenNotice={openNotice} />
+    ) : null;
+  const updatesSection =
+    updates.length > 0 || updatesState.loading || updatesState.words ? <UpdatesSection notices={updates} state={updatesState} onRetry={retryNotifications} chosen={chosen} onTick={tick} onMarkRead={markRead} onOpenNotice={openNotice} /> : null;
+
+  if (wide && !above) {
+    return (
+      <Shell title="Notifications" inbox={client}>
+        <div className="wf wf-tabbed">
+          <div className="wf-panes">
+            <section className="wf-tree" aria-label="Needs you">
+              {needsYouSection}
+            </section>
+            <section className="wf-main" aria-label="Notifications">
+              <h2 className="wf-head">Notifications</h2>
+              <div className="wf-content">
+                {problemLine}
+                {emptyCard}
+                {updatesSection}
+              </div>
+            </section>
+          </div>
+          <footer className="wf-status" aria-label="Status bar" />
+        </div>
+      </Shell>
+    );
+  }
+
   return (
     <Shell title={above ? "Home" : "Notifications"} inbox={client}>
       {above}
-      {problem ? <LoadFailed words={problem} /> : null}
-      {empty ? (
-        <Card empty>
-          <p className="ttl">You are all caught up</p>
-          <p>Notifications from your groups will appear here.</p>
-        </Card>
-      ) : null}
-      {waitsOnYou || needsYouState.loading || needsYouState.words ? (
-        <NeedsYouSection start={start} assigned={assigned} invitations={invitations} notices={needing} state={needsYouState} hasRows={waitsOnYou} onRetry={retryNeedsYou} onOpenInvitation={(invitation) => setOpened({ invitation, joined: false })} onOpenNotice={openNotice} />
-      ) : null}
-      {updates.length > 0 || updatesState.loading || updatesState.words ? <UpdatesSection notices={updates} state={updatesState} onRetry={retryNotifications} chosen={chosen} onTick={tick} onMarkRead={markRead} onOpenNotice={openNotice} /> : null}
+      {problemLine}
+      {emptyCard}
+      {needsYouSection}
+      {updatesSection}
     </Shell>
   );
 }

@@ -130,3 +130,73 @@ describe("the Notifications page", () => {
     await waitFor(() => expect(client.markRead).toHaveBeenCalledWith(["a1"]));
   });
 });
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+const frame = () => document.querySelector(".wf") as HTMLElement | null;
+
+describe("the Notifications page in the Folders frame", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("puts Needs you in the left pane and Updates under the head strip of the main pane on a wide screen", async () => {
+    setWide(true);
+    show(fake([assigned(), note({})], [invitation]), startWith([waitingStep]));
+    await heading("Needs you");
+    await heading("Updates");
+
+    const tree = frame()?.querySelector(".wf-panes > .wf-tree") as HTMLElement;
+    const main = frame()?.querySelector(".wf-panes > .wf-main") as HTMLElement;
+    expect(within(tree).getByRole("heading", { level: 2, name: "Needs you" })).toBeInTheDocument();
+    expect(within(tree).getByText("You are invited to Contributors")).toBeInTheDocument();
+    expect(within(main.querySelector(".wf-head") as HTMLElement).getByText("Notifications")).toBeInTheDocument();
+    expect(within(main.querySelector(".wf-content") as HTMLElement).getByRole("heading", { level: 2, name: "Updates" })).toBeInTheDocument();
+    expect(within(main).getByText("You joined Siaya farmers")).toBeInTheDocument();
+  });
+
+  it("keeps the tab bar and its Notifications count on a wide screen", async () => {
+    setWide(true);
+    show(fake([assigned(), note({})], [invitation]));
+    await heading("Needs you");
+
+    expect(frame()).not.toBeNull();
+    expect(screen.getByRole("navigation", { name: "Main" })).toBeInTheDocument();
+  });
+
+  it("draws no frame on a phone and keeps Needs you above Updates", async () => {
+    setWide(false);
+    show(fake([assigned(), note({})], [invitation]));
+    await heading("Needs you");
+    await heading("Updates");
+
+    expect(frame()).toBeNull();
+  });
+
+  it.each([true, false])("marks read the update about a task that is done and keeps Mark all read when wide is %s", async (wide) => {
+    setWide(wide);
+    const client = fake([assigned(), note({ id: "u1" })], [invitation]);
+    const done: Reader = async () => ({ status: "completed" });
+    render(
+      <MemoryRouter>
+        <NotificationsPage client={client} start={startWith()} read={done} />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => expect(client.markRead).toHaveBeenCalledWith(["a1"]));
+    expect(await screen.findByRole("button", { name: "Mark all read" })).toBeInTheDocument();
+  });
+
+  it("says You are all caught up inside the main pane on a wide screen", async () => {
+    setWide(true);
+    show(fake([]));
+
+    const card = await screen.findByText("You are all caught up");
+    expect(card.closest(".wf-main")).not.toBeNull();
+  });
+});
