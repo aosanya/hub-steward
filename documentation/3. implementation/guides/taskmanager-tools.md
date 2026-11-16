@@ -11,6 +11,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | Which issue should a worker take next | `taskmanager_task_next_ready` | `GET /next-ready` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
 | Which issues in progress are past their working-time cap | `taskmanager_task_timed_out` | `GET /timed-out` |
+| Take an issue: move it to In Progress, write the taken entry, record the caps | `taskmanager_task_claim` | `POST /tasks/{taskID}/claim` |
 | The whole issue | `taskmanager_task_read` | `GET /tasks/{taskID}` |
 | Page through every issue | `taskmanager_task_list` | `GET /tasks` |
 
@@ -50,6 +51,14 @@ The answer is `items`: every issue of the backlog that sits at its In Progress s
 
 The tool names no cause. Whether the run was interrupted, idle or too big stays the lead's call, made from the last entry and `clock_stopped`. It moves and tags nothing.
 
+## taskmanager_task_claim
+
+Input: `taskID`. The caller is taken from the session and needs Can move on the backlog the issue is in; an issue the caller cannot see is 404 and one they can only see is 403.
+
+The tool finds the backlog's In Progress step by what it holds, not by its id: the step that names the in_progress status, else the step called In Progress or Doing (the default Backlog uses `doing`, the Journey Book `in-progress`). It then, in one transaction, moves the issue there, sets its status to in_progress and writes the first Log entry, `Taken by <caller>. Caps in force: <input> input, <output> output, <minutes> minutes`, with the caps as `taskmanager_task_caps_read` reports them (the issue's own, else the default). The answer is `issue` (id, code, title, status, priority, effort, tags, backlog, step), `note_id` and `caps`.
+
+Atomic: the first statement of the transaction updates the issue only while its status is still the one the claimer read, so of two claims at once exactly one writes the move and the entry, and the other is refused 409 as already in progress and leaves no entry. An issue tagged Sinbin, Blocked or Waiting, one that waits on an open dependency, one already at the In Progress step and one that has left To do are refused 409 with the reason.
+
 ## Where the code is
 
 | Part | File |
@@ -61,3 +70,4 @@ The tool names no cause. Whether the run was interrupted, idle or too big stays 
 | The next-ready tool and its types | `modules/taskmanager/task_next_ready.go`, tests in `routes/next_ready_test.go` |
 | The dependencies tool and its types | `modules/taskmanager/task_dependencies.go`, tests in `routes/task_dependencies_test.go` |
 | The timed-out tool and its types | `modules/taskmanager/task_timed_out.go`, tests in `routes/timed_out_test.go` |
+| The claim tool and its types | `modules/taskmanager/task_claim.go`, tests in `routes/claim_task_test.go` |
