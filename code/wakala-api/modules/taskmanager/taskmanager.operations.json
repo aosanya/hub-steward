@@ -95,11 +95,12 @@
       "returns": [{"body": true}]
     },
     "list_task_notes": {
-      "method": "GET", "path": "/tasks/{taskID}/notes", "call": "ListTaskNotes", "action": "taskmanager.task.note_list",
+      "method": "GET", "path": "/tasks/{taskID}/notes", "call": "ListTaskNotesFiltered", "action": "taskmanager.task.note_list",
       "title": "List the Log of an issue",
-      "description": "List the entries in the Log of one issue, oldest first: writer, kind, text, links and time.",
-      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
-               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The issue."}],
+      "description": "List the entries in the Log of one issue, oldest first: writer, kind, text, links and time. Send nothing else for the whole Log. To read only what was added since you last looked, pass after, the id of the last entry you saw (or an RFC 3339 time): only strictly newer entries come back, and an id that is not an entry of this issue is refused with 400. kind (person, worker or automatic; repeat it for several) keeps only entries of those kinds: automatic is what the hub wrote itself, worker is what a worker wrote. limit (1 to 200) keeps the newest that many entries, still oldest first. They combine: after, then kind, then limit.",
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "into": "TaskID", "description": "The issue."}],
       "returns": [{"body": true}]
     },
     "get_task_caps": {
@@ -1170,6 +1171,7 @@
     "ErrRequesterVoteStays": 409,
     "ErrTaskNotFound": 404,
     "ErrInvalidTaskNote": 400,
+    "ErrInvalidTaskNoteFilter": 400,
     "ErrInvalidCaps": 400,
     "ErrDuplicateTaskCode": 409,
     "ErrInvalidTaskReference": 400,

@@ -265,6 +265,7 @@ type TaskManager interface {
 	ListCasesByVotes(ctx context.Context, filter CaseFilter) ([]RankedCase, error)
 	AddTaskNote(ctx context.Context, requesterID, taskID, kind, text string, links []string) (TaskNote, error)
 	ListTaskNotes(ctx context.Context, requesterID, taskID string) ([]TaskNote, error)
+	ListTaskNotesFiltered(ctx context.Context, filter TaskNoteFilter) ([]TaskNote, error)
 	ListTodosOfIssue(ctx context.Context, requesterID, issueID string) (IssueTodoList, error)
 	ReadyTodosFor(ctx context.Context, requesterID, issueID string) (ReadyTodos, error)
 	CountTodosOfIssues(ctx context.Context, filter TodoCountsFilter) (IssueTodoCounts, error)

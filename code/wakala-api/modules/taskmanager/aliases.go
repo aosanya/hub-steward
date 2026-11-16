@@ -49,6 +49,7 @@ type (
 	CaseFilter         = models.CaseFilter
 	CaseVote           = models.CaseVote
 	TaskNote           = models.TaskNote
+	TaskNoteFilter     = models.TaskNoteFilter
 	WorkerCaps         = models.WorkerCaps
 	TaskCapsChange     = models.TaskCapsChange
 	TaskCapsOverride   = models.TaskCapsOverride
