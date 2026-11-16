@@ -22,6 +22,9 @@ export function RisksPage({ client = mcpRisksClient }: { client?: RisksClient })
   const actions = useLoad(() => client.myActions(), "actions");
   return (
     <Shell title={words.risksTitle}>
+      <Rows>
+        <ListRow title={words.gapsTitle} end="›" onClick={() => go(routes.riskGaps.path())} />
+      </Rows>
       <Segmented
         items={[
           { id: "risks", label: words.risksMine },

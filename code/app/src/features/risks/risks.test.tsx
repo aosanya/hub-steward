@@ -4,8 +4,9 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { magyar } from "../../shared/language/magyar";
 import { words } from "../../shared/language/words";
-import type { EvidenceDraft, RiskDetail, RisksClient } from "./api";
+import type { EvidenceDraft, Gap, RiskDetail, RisksClient } from "./api";
 import { EvidencePage } from "./EvidencePage";
+import { GapsPage } from "./GapsPage";
 import { RiskPage } from "./RiskPage";
 import { RisksPage } from "./RisksPage";
 import { routes } from "../../app/routes";
@@ -41,6 +42,7 @@ const client = (over: Partial<RisksClient> = {}): RisksClient => ({
   myActions: async () => detail.actions,
   risk: async () => detail,
   recordEvidence: async () => {},
+  myGaps: async () => [],
   ...over,
 });
 
@@ -50,6 +52,7 @@ const at = (path: string, fake: RisksClient) =>
       <Routes>
         <Route path={routes.risks.pattern} element={<RisksPage client={fake} />} />
         <Route path={routes.risk.pattern} element={<RiskPage client={fake} />} />
+        <Route path={routes.riskGaps.pattern} element={<GapsPage client={fake} />} />
         <Route path={routes.riskEvidence.pattern} element={<EvidencePage client={fake} />} />
       </Routes>
     </MemoryRouter>,
@@ -86,6 +89,35 @@ describe("the risk list", () => {
     at(`${base}/risks`, client({ myActions: async () => [] }));
     await userEvent.click(screen.getByRole("button", { name: words.actionsMine }));
     expect(await screen.findByText(words.actionsEmpty)).toBeInTheDocument();
+  });
+});
+
+const gap: Gap = { kind: "unproven_safeguard", severity: "high", riskId: "r1", subject: "Vent inspection", subjectId: "b2", message: "No evidence has been recorded" };
+
+describe("the gap list", () => {
+  it("lists each gap with its message and severity and opens its risk", async () => {
+    at(`${base}/risk-gaps`, client({ myGaps: async () => [gap] }));
+    const row = await screen.findByRole("button", { name: /Vent inspection/ });
+    expect(row).toHaveTextContent("No evidence has been recorded");
+    expect(row).toHaveTextContent("high");
+    await userEvent.click(row);
+    expect(await screen.findByText("Fire in the boiler room")).toBeInTheDocument();
+  });
+
+  it("says so when there are no gaps", async () => {
+    at(`${base}/risk-gaps`, client());
+    expect(await screen.findByText(words.gapsEmpty)).toBeInTheDocument();
+  });
+
+  it("says so when the gaps cannot be loaded", async () => {
+    at(`${base}/risk-gaps`, client({ myGaps: async () => Promise.reject(new Error("down")) }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(words.gapsFailed);
+  });
+
+  it("is reached from the risk list", async () => {
+    at(`${base}/risks`, client({ myGaps: async () => [gap] }));
+    await userEvent.click(screen.getByRole("button", { name: new RegExp(words.gapsTitle) }));
+    expect(await screen.findByRole("button", { name: /Vent inspection/ })).toBeInTheDocument();
   });
 });
 
@@ -149,6 +181,12 @@ describe("the Hungarian words", () => {
   it("has every risk word", () => {
     const keys = Object.keys(words).filter((key) => /^(risk|risks|actions|evidence|standing|status|kind|outcome|actionStatus|rating|band|safeguard)/.test(key));
     expect(keys.length).toBeGreaterThan(40);
+    keys.forEach((key) => expect(magyar[key as keyof typeof magyar], key).not.toBe(""));
+  });
+
+  it("has every gap word", () => {
+    const keys = Object.keys(words).filter((key) => key.startsWith("gaps"));
+    expect(keys.length).toBeGreaterThanOrEqual(4);
     keys.forEach((key) => expect(magyar[key as keyof typeof magyar], key).not.toBe(""));
   });
 });
