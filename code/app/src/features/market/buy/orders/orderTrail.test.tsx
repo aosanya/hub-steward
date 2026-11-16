@@ -7,7 +7,7 @@ import { lineOrderOf, mcpMyOrdersClient, trailDay, trailWords, type MyOrder, typ
 import { MyOrderPage } from "./MyOrderPage";
 import { MyOrdersPage } from "./MyOrdersPage";
 import { routes } from "../../../../app/routes";
-import { forgetOpenAgency, openAgency } from "../../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

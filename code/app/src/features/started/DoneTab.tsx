@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { openAgencyId } from "../agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../forms/useLoad";
 import { doneSources, newestFirst, type DoneClient, type DoneItem, type DonePage } from "./done";
 import { Button } from "../../shared/ui/Button";

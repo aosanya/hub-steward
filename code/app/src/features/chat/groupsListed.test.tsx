@@ -6,7 +6,7 @@ import { RoomThreadsPage } from "./rooms/RoomThreadsPage";
 import { mcpRoomsClient, type RoomsClient } from "./rooms/api";
 import { roomsOf } from "./api";
 import { callTool } from "../../shared/wakala/mcp";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

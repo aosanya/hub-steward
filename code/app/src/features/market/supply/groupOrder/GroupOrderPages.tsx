@@ -10,7 +10,7 @@ import { Field } from "../../../../shared/ui/Field";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { Roster } from "../../../../shared/ui/roster/Roster";
 import { loadFromList } from "../../../../shared/ui/roster/usePagedRoster";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { isApproved, mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../api";
 import { bags, isLive, mcpGroupOrderClient, tally, termsWords, type GroupOrder, type GroupOrderClient, type OrderLine } from "./api";
 

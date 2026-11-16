@@ -1,4 +1,4 @@
-import { openAgencyId } from "../features/agency/open";
+import { openAgencyId } from "../shared/wakala/openAgency";
 import { assistantPaths } from "../features/assistant/routePaths";
 import { chatPaths } from "../features/chat/routePaths";
 import { consentPaths } from "../features/consent/routePaths";

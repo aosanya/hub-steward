@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { hasModule, mcpAgencyClient, taskModule, type AgencyClient } from "../../features/agency/modules";
-import { openAgencyId } from "../../features/agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { askMayRead } from "../../features/backlogs/shared/access";
 import { allIssuesId, mcpBacklogsClient, type Backlog, type BacklogsClient } from "../../features/backlogs/shared/api";
 import { mcpFilesClient, filesHomePath, type FilesClient } from "../../features/files";

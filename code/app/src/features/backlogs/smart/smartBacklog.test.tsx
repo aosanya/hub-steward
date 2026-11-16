@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 import { RulesScreen } from "./RulesScreen";
 import type { FieldChoices } from "./types";
 

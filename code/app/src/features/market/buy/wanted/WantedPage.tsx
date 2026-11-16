@@ -4,7 +4,7 @@ import { useLoad } from "../../../forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { Chip } from "../../../../shared/ui/Chip";
 import { Field } from "../../../../shared/ui/Field";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { mcpWantedClient, type WantedClient } from "./api";
 import { buyInputs } from "./buyInputs";
 import { isListed } from "./unlisted";

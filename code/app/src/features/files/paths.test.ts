@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { openAgency } from "../agency/open";
+import { openAgency } from "../../shared/wakala/openAgency";
 import { filePath, filesHomePath, folderPath, pathParam } from "./paths";
 
 beforeEach(() => openAgency("hub-1"));

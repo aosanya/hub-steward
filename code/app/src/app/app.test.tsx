@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "./App";
-import { forgetOpenAgency, openAgency } from "../features/agency/open";
+import { forgetOpenAgency, openAgency } from "../shared/wakala/openAgency";
 import { mainBar } from "./tabs";
 import { BottomBar } from "../shared/ui/BottomBar";
 import { Button } from "../shared/ui/Button";
@@ -10,7 +10,7 @@ import { Card } from "../shared/ui/Card";
 import { Chip } from "../shared/ui/Chip";
 import { Field } from "../shared/ui/Field";
 import { ListRow, Rows } from "../shared/ui/ListRow";
-import { Shell } from "../shared/ui/Shell";
+import { Shell } from "./Shell";
 
 const at = (path: string) =>
   render(

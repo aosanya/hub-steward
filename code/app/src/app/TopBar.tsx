@@ -1,7 +1,7 @@
 import { useSyncExternalStore, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { openAgencyName, subscribeAgencyName } from "../../features/agency/open";
-import { useDrawer } from "./DrawerFrame";
+import { openAgencyName, subscribeAgencyName } from "../shared/wakala/openAgency";
+import { useDrawer } from "../shared/ui/DrawerFrame";
 
 export type TopBarBack = { onClick: () => void; label?: string } | { to: string; label: string };
 

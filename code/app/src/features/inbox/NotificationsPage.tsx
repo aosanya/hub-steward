@@ -15,7 +15,7 @@ import { unreadOf, useNotifications } from "./useNotifications";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
 import { LoadFailed } from "../../shared/ui/LoadState";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import { mcpStartClient, type StartClient } from "../../features/market/start/api";
 import { useStartWaitingState } from "../../features/market/start/startWaiting";
 

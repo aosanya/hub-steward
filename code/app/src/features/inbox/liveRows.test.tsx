@@ -3,17 +3,17 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useParams } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { StartClient } from "../../features/market/start/api";
-import { swahili } from "../entry/swahili";
-import { words } from "../entry/words";
+import { swahili } from "../../shared/language/swahili";
+import { words } from "../../shared/language/words";
 import { NotificationsPage } from "./NotificationsPage";
-import { TabBar } from "../../shared/ui/TabBar";
+import { TabBar } from "../../app/TabBar";
 import * as mcp from "../../shared/wakala/mcp";
 import { mcpInboxClient } from "./api";
 import { chatWordings } from "./chatNotice";
 import { noticeWordings } from "./notice";
 import { routes } from "../../app/routes";
 import { chatTab, tabRoute } from "../../app/tabs";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

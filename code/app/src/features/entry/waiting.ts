@@ -1,5 +1,5 @@
 import { callTool } from "../../shared/wakala/mcp";
-import type { Words } from "./words";
+import type { Words } from "../../shared/language/words";
 
 export const formsWaiting = (count: number, words: Words) =>
   (count === 1 ? words.formsWaitingOne : words.formsWaitingMany).replace("{count}", String(count));

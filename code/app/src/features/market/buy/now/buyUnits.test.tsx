@@ -7,7 +7,7 @@ import { BuyNowPage } from "./BuyNowPage";
 import { BuyOrderPage } from "./BuyOrderPage";
 import { agentLine } from "./standing";
 import { routes } from "../../../../app/routes";
-import { forgetOpenAgency, openAgency } from "../../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

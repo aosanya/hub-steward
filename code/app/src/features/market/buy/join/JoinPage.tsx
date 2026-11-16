@@ -3,8 +3,8 @@ import { useLoad } from "../../../forms/useLoad";
 import { resolveMember } from "../../supply/api";
 import { routes } from "../../../../app/routes";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
-import { JoinForm } from "../../../../shared/ui/JoinForm";
-import { Shell } from "../../../../shared/ui/Shell";
+import { JoinForm } from "../../shared/JoinForm";
+import { Shell } from "../../../../app/Shell";
 import { termsWords, mcpJoinClient, type JoinClient, type OpenGroupOrder } from "./api";
 
 type Props = { client?: JoinClient; me?: string };

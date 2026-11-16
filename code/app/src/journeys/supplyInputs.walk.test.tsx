@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { App } from "../app/App";
 import * as mcp from "../shared/wakala/mcp";
 import { forgetSubject } from "../shared/wakala/me";
-import { openAgency } from "../features/agency/open";
+import { openAgency } from "../shared/wakala/openAgency";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 import { farmerChatSteps } from "./chatSteps";
 

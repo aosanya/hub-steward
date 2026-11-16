@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "../../features/entry/language";
+import { useLanguage } from "../../shared/language/language";
 import type { AgencyView } from "../../features/agency/modules";
-import { openAgencyId } from "../../features/agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { isGroupOrderForm, mcpStartClient, startPath, type StartClient, type StartStep } from "../../features/market/start/api";
 import { useStartWaitingState } from "../../features/market/start/startWaiting";
 import { liveClient as liveForms, type FormsClient } from "../../features/forms/api";

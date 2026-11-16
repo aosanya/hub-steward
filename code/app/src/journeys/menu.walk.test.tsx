@@ -1,7 +1,7 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { agencyTools } from "../features/agency/modules";
-import { openAgency, openAgencyId } from "../features/agency/open";
+import { openAgency, openAgencyId } from "../shared/wakala/openAgency";
 import { lateMattersTool } from "../features/council/lateMattersApi";
 import { endInAgencies, everyCallNames, openApp, riders, startInAgencies, stubWakala, where } from "./inAgency.test-support";
 

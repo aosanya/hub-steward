@@ -11,7 +11,7 @@ import { Chip } from "../../shared/ui/Chip";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { isoDay } from "../../shared/ui/days";
 import { Segmented } from "../../shared/ui/Segmented";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import { draftCount, formDraftKey } from "./answers";
 
 const sender = (f: WaitingForm) => [f.group, f.publishing_authority || f.publisher_name].filter(Boolean).join(" · ");

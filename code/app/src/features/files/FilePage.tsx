@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { openAgencyId } from "../agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../../features/forms/useLoad";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import type { FileAnswer, FilesClient, Folder } from "./api";
 import { ChangedLine } from "./ChangedLine";
 import { backLabelFor, lastNameOf, parentPathOf } from "./folderTrail";

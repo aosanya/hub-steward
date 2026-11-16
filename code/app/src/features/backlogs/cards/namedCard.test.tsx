@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 import { BacklogViewCard } from "./BacklogViewCard";
 import { BacklogSummariesProvider, type BacklogSummary } from "./summaries";
 

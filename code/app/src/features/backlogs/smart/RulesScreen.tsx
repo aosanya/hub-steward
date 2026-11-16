@@ -6,7 +6,7 @@ import { ConfirmDelete } from "../../../shared/ui/ConfirmDelete";
 import { Field } from "../../../shared/ui/Field";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
 import { Segmented } from "../../../shared/ui/Segmented";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { Sheet } from "../../../shared/ui/Sheet";
 import { DURATION_UNITS, choicesFor, fieldSpec, fieldSpecs, joinDuration, parseDuration, ruleComplete } from "./fields";
 import { addRule, changeField, changeOperator, changeValue, countWords, draftProblem, emptyDraft, inChoiceSpelling, removeRule, toRuleSet, type Draft } from "./rulesDraft";

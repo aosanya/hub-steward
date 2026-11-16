@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { useLoad } from "../../../features/forms/useLoad";
 import { Button } from "../../../shared/ui/Button";
 import { Chip } from "../../../shared/ui/Chip";
@@ -8,7 +8,7 @@ import { Sheet } from "../../../shared/ui/Sheet";
 import { addSmartBacklogPath, smartBacklogPath } from "../smart/paths";
 import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { useOnceNotice } from "../../../shared/ui/onceNotice";
 import { allIssuesId, issuesHeld, mcpBacklogsClient, type BacklogsClient } from "../shared/api";
 import { addBacklogPath, useMayManage, type BacklogManageClient } from "../manage";

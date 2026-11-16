@@ -12,7 +12,7 @@ import { Roster } from "../../../shared/ui/roster/Roster";
 import { loadFromList } from "../../../shared/ui/roster/usePagedRoster";
 import { SearchSelect } from "../../../shared/ui/SearchSelect";
 import { SectionHeading } from "../../../shared/ui/SectionHeading";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { bags, farmersWords, mcpGroupOrderClient, termsWords, type GroupOrder, type GroupOrderClient } from "../../market/supply/groupOrder/api";
 import { mcpPaymentsClient, type Payment, type PaymentsClient, type PaymentsRecord } from "./api";
 

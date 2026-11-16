@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import type { StartClient } from "../../features/market/start/api";
 import { NotificationsPage } from "./NotificationsPage";
 import type { InboxClient } from "./api";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

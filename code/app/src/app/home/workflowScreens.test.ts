@@ -1,4 +1,4 @@
-import { forgetOpenAgency, openAgency } from "../../features/agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import {
   applySupplierPath,
   applySupplierWorkflow,

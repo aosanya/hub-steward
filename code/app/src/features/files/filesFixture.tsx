@@ -1,7 +1,7 @@
 import { act, render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { vi } from "vitest";
-import { openAgency } from "../agency/open";
+import { openAgency } from "../../shared/wakala/openAgency";
 import * as mcp from "../../shared/wakala/mcp";
 import type { Changed, FileAnswer, FilesClient, Folder, FolderEntry, Listing, Readme } from "./api";
 import { FilesRoutes } from "./index";

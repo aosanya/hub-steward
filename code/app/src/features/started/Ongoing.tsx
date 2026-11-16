@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { openAgencyId } from "../agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../forms/useLoad";
 import { mcpDoneClient, type DoneClient } from "./done";
 import { mcpStartedClient, startedAnswerOf, type StartedAnswer, type StartedClient, type StartedItem, type WaitsOn } from "./api";

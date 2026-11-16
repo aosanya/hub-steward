@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
-import { AccountMenu, accountItems } from "./AccountMenu";
-import { DrawerFrame } from "./DrawerFrame";
+import { AccountMenu, accountItems } from "../shared/ui/AccountMenu";
+import { DrawerFrame } from "../shared/ui/DrawerFrame";
 import { TopBar } from "./TopBar";
 
 function Where() {

@@ -1,17 +1,17 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { backlogAccessPath } from "../access/paths";
 import { editBacklogPath, useMayManage, type BacklogManageClient } from "../manage";
 import { mcpBacklogManageClient } from "../manage/api";
 import { issuesPath } from "../shared/paths";
-import { useLanguage } from "../../../features/entry/language";
+import { useLanguage } from "../../../shared/language/language";
 import { useLoad } from "../../../features/forms/useLoad";
 import { Button } from "../../../shared/ui/Button";
 import { Chip } from "../../../shared/ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
 import { SectionHeading } from "../../../shared/ui/SectionHeading";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { issuesWords } from "../shared/tags";
 import { mcpBacklogPageClient, type BacklogPageClient } from "./api";
 

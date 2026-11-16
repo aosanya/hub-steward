@@ -11,8 +11,8 @@ import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { dayWords } from "../../../../shared/ui/days";
 import { kes } from "../../shared/money";
 import { quantityLabel } from "../../shared/unitWords";
-import { JoinForm } from "../../../../shared/ui/JoinForm";
-import { Shell } from "../../../../shared/ui/Shell";
+import { JoinForm } from "../../shared/JoinForm";
+import { Shell } from "../../../../app/Shell";
 import { isOpenSale, mcpSaleClient, ownLine, type Collection, type Sale, type SaleClient } from "./saleApi";
 
 type Props = { client?: SaleClient; me?: string };

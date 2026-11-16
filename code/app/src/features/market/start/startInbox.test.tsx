@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { NotificationsPage } from "../../inbox/NotificationsPage";
 import * as mcp from "../../../shared/wakala/mcp";
 import type { StartClient, StartStep } from "./api";
-import { TabBar } from "../../../shared/ui/TabBar";
+import { TabBar } from "../../../app/TabBar";
 
 const rawStep = {
   id: "w1",

@@ -4,7 +4,7 @@ import { Button } from "../../../../shared/ui/Button";
 import { Card } from "../../../../shared/ui/Card";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { priceWords, quantityWords } from "../../shared/unitWords";
 import { bulkWords, groupSaleLine, mcpSellClient, nameOfProduct, statusOf, type SellClient } from "./api";
 import { mcpOpenSales, type OpenSalesClient } from "./openSales";

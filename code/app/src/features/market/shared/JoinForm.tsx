@@ -1,8 +1,8 @@
 import { useState, type ReactNode } from "react";
-import { unitWordsOf } from "../../features/market/shared/unitWords";
-import { Button } from "./Button";
-import { Card } from "./Card";
-import { Field } from "./Field";
+import { unitWordsOf } from "./unitWords";
+import { Button } from "../../../shared/ui/Button";
+import { Card } from "../../../shared/ui/Card";
+import { Field } from "../../../shared/ui/Field";
 
 export const wholeQuantity = (text: string) => {
   const n = Number(text.replace(/,/g, "").trim());

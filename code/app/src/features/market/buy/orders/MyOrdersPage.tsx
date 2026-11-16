@@ -4,7 +4,7 @@ import { routes } from "../../../../app/routes";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
 import { Chip, type ChipTone } from "../../../../shared/ui/Chip";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { kes, resolveMember } from "../../supply/api";
 import { kindWords, mcpMyOrdersClient, orderTitle, type MyOrdersClient, type Standing } from "./api";
 

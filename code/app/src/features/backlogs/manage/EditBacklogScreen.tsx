@@ -6,7 +6,7 @@ import { Button } from "../../../shared/ui/Button";
 import { ConfirmDelete } from "../../../shared/ui/ConfirmDelete";
 import { Field } from "../../../shared/ui/Field";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { StepsEditor } from "./StepsEditor";
 import { draftProblem, heldWords, type DraftStep } from "./stepsDraft";
 import { mcpBacklogManageClient } from "./api";

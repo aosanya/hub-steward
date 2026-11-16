@@ -4,10 +4,10 @@ import { MemoryRouter } from "react-router-dom";
 import { beforeEach } from "vitest";
 import { App } from "../../app/App";
 import { provideEntryClient, type EntryClient } from "./api";
-import { wordsFor } from "./language";
-import { magyar } from "./magyar";
-import { swahili } from "./swahili";
-import { words } from "./words";
+import { wordsFor } from "../../shared/language/language";
+import { magyar } from "../../shared/language/magyar";
+import { swahili } from "../../shared/language/swahili";
+import { words } from "../../shared/language/words";
 
 const mount = (path = "/sign-in") =>
   render(

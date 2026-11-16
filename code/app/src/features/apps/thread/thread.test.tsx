@@ -6,7 +6,7 @@ import { AppThreadPage } from "./AppThreadPage";
 import { marketSource, myOrders, notListed, onSale } from "./marketSource";
 import type { AgentSource } from "./source";
 import type { MarketClient, Product } from "../../../features/market/shared/api";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

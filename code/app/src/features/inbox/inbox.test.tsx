@@ -5,7 +5,7 @@ import type { StartClient } from "../../features/market/start/api";
 import { NotificationsPage } from "./NotificationsPage";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
 import { routes } from "../../app/routes";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

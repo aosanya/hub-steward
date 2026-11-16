@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { words } from "../entry/words";
-import { magyar } from "../entry/magyar";
-import { swahili } from "../entry/swahili";
+import { words } from "../../shared/language/words";
+import { magyar } from "../../shared/language/magyar";
+import { swahili } from "../../shared/language/swahili";
 import * as mcp from "../../shared/wakala/mcp";
 import { assignedIssuesOf, assignedIssueTitle, mcpAssignedClient } from "./assignedIssues";
 import type { NotificationItem } from "./api";

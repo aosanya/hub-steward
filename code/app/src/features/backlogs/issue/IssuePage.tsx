@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useLanguage } from "../../../features/entry/language";
+import { useLanguage } from "../../../shared/language/language";
 import { useLoad } from "../../../features/forms/useLoad";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { Card } from "../../../shared/ui/Card";
 import { LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
 import { Markdown } from "../../../shared/ui/Markdown";
 import { backState, useBackLabel, useBackTo } from "../../../shared/ui/backTo";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import "../shared/backlogs.css";
 import "./issueWide.css";
 import { mcpBacklogsClient, mcpNotesClient, settled, type BacklogsClient, type NotesClient } from "../shared/api";

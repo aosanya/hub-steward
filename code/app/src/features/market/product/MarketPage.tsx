@@ -5,7 +5,7 @@ import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
 import { doSomethingBackPath, routes } from "../../../app/routes";
 import { ProductRows } from "../../../shared/ui/ProductRows";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 
 export function MarketPage({ client = mcpMarketClient }: { client?: MarketClient }) {
   const navigate = useNavigate();

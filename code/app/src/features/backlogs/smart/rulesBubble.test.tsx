@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 import { SmartBacklogPage } from "./SmartBacklogPage";
 import type { RuleSet, SmartBacklogClient } from "./types";
 

@@ -2,7 +2,7 @@ import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 import { defaultBacklogId, taskTools } from "../shared/api";
 import * as mcp from "../../../shared/wakala/mcp";
 import type { BacklogManageClient } from "../manage";

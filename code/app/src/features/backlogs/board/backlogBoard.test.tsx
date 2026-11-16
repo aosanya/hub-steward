@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import type { Backlog, BacklogsClient, Issue } from "../shared/api";
-import { openAgency } from "../../agency/open";
+import { openAgency } from "../../../shared/wakala/openAgency";
 import { sendTools } from "../../backlogs/send";
 import * as mcp from "../../../shared/wakala/mcp";
 import { BacklogBoard } from "./BacklogBoard";

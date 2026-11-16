@@ -2,7 +2,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import type { AgencyClient, AgencyView } from "../../features/agency/modules";
-import { forgetOpenAgency, openAgency } from "../../features/agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { SupplierHome } from "../../features/market/supply/SupplierHome";
 import type { Supplier, SupplyClient } from "../../features/market/supply/api";
 import * as mcp from "../../shared/wakala/mcp";

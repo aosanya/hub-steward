@@ -1,4 +1,4 @@
-import { openAgency, forgetOpenAgency } from "../../agency/open";
+import { openAgency, forgetOpenAgency } from "../../../shared/wakala/openAgency";
 import { McpError } from "../../../shared/wakala/mcp";
 import { allowedIn, managePermission, refusalText } from "./api";
 import { addBacklogPath, editBacklogPath } from "./paths";

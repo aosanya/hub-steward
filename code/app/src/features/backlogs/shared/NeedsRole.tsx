@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { useLoad } from "../../../features/forms/useLoad";
 import { EmptyCard, LoadingLine } from "../../../shared/ui/LoadState";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { askMayRead, noRoleWords } from "./access";
 
 type Props = { ask?: () => Promise<boolean>; children: ReactNode };

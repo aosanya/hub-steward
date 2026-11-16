@@ -1,4 +1,4 @@
-import type { Words } from "../../features/entry/words";
+import type { Words } from "../language/words";
 
 export type Age = { unit: "min" | "hour" | "day"; count: number };
 

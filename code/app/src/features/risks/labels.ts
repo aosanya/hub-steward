@@ -1,4 +1,4 @@
-import type { Words } from "../entry/words";
+import type { Words } from "../../shared/language/words";
 
 const camel = (value: string) => value.split("_").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join("");
 

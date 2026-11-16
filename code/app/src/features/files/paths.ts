@@ -1,4 +1,4 @@
-import { agencyBasePath, openAgencyId } from "../agency/open";
+import { agencyBasePath, openAgencyId } from "../../shared/wakala/openAgency";
 
 export const filesSegment = "files";
 

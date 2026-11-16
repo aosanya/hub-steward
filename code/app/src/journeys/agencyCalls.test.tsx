@@ -1,6 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { openAgency, openAgencyId } from "../features/agency/open";
+import { openAgency, openAgencyId } from "../shared/wakala/openAgency";
 import { groupTools } from "../features/groups/api";
 import { answeringAForm, chattingInARoom, endInAgencies, everyCallNames, farmers, groupOrderStep, openApp, riders, shoppingForUrea, startInAgencies, startingAnOrder, stubWakala } from "./inAgency.test-support";
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { words } from "../../features/entry/words";
-import { swahili } from "../../features/entry/swahili";
-import { magyar } from "../../features/entry/magyar";
+import { words } from "../language/words";
+import { swahili } from "../language/swahili";
+import { magyar } from "../language/magyar";
 import { ageOf, ageWords } from "./age";
 
 const created = "2026-11-10T08:00:00Z";

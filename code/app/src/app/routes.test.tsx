@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../features/agency/open";
+import { forgetOpenAgency, openAgency } from "../shared/wakala/openAgency";
 import { ToOpenAgencyScreen } from "../features/entry/OpenAgency";
 import { allScreens, routes } from "./routes";
 

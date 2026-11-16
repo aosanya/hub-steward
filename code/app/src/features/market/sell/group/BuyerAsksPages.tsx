@@ -11,7 +11,7 @@ import { Card } from "../../../../shared/ui/Card";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
 import { Chip } from "../../../../shared/ui/Chip";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { answeredAsks, askPrice, mcpBuyerAskClient, waitingAsks, type BuyerAsk, type BuyerAskClient } from "./buyerAsksApi";
 
 type Props = { client?: BuyerAskClient; me?: string; readStock?: StockReader; back?: string };

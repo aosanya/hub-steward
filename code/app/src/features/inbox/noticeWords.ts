@@ -1,4 +1,4 @@
-import type { Words } from "../entry/words";
+import type { Words } from "../../shared/language/words";
 import { orderPath } from "../../features/market/payments/OrderCards";
 import type { NotificationItem } from "./api";
 import { chatMetaOf, chatTitleOf, threadPathOf } from "./chatNotice";

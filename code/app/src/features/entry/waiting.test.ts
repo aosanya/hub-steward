@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import * as mcp from "../../shared/wakala/mcp";
 import { formsWaiting, provideWaitingCount, restoreWaitingCount, waitingCount } from "./waiting";
-import { words } from "./words";
+import { words } from "../../shared/language/words";
 
 afterEach(() => {
   restoreWaitingCount();

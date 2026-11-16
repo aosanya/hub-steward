@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { agencyHomePath, openAgencyId } from "../agency/open";
+import { agencyHomePath, openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../../features/forms/useLoad";
 import { Icon } from "../../shared/ui/Icon";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import { agoWords } from "./ago";
 import type { FilesClient, Folder } from "./api";
 import { folderPath } from "./paths";

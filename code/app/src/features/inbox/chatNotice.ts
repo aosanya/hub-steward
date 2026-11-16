@@ -1,5 +1,5 @@
 import { chatListPath, routes } from "../../app/routes";
-import type { Words } from "../entry/words";
+import type { Words } from "../../shared/language/words";
 import type { NotificationItem } from "./api";
 
 type Wording = { bare: keyof Words; byPerson?: keyof Words };

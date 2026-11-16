@@ -6,7 +6,7 @@ import { AppThreadPage } from "../features/apps/thread/AppThreadPage";
 import { marketSource } from "../features/apps/thread/marketSource";
 import * as mcp from "../shared/wakala/mcp";
 import { forgetSubject } from "../shared/wakala/me";
-import { forgetOpenAgency, openAgency } from "../features/agency/open";
+import { forgetOpenAgency, openAgency } from "../shared/wakala/openAgency";
 import { answerWakala } from "./answerWakala";
 
 beforeEach(() => openAgency("walk-agency"));

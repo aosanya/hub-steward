@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLoad } from "../../../features/forms/useLoad";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { listPeople, namesOf, type Names } from "../../../features/people/api";
 import { Button } from "../../../shared/ui/Button";
 import { Card } from "../../../shared/ui/Card";

@@ -1,6 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { dayLimitWords, monthLimitWords } from "./AssistantPage";
 import { mcpAssistantClient, type LimitSpan } from "./api";
 import { showAssistant } from "./assistantScreen";

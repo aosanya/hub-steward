@@ -1,9 +1,9 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { backlogsHomePath } from "../shared/paths";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { useLoad } from "../../../features/forms/useLoad";
 import { LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { mcpSmartBacklogClient } from "./api";
 import { RulesScreen } from "./RulesScreen";
 import { smartBacklogPath } from "./paths";

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLoad } from "../../../features/forms/useLoad";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { Button } from "../../../shared/ui/Button";
 import { loadingWords, tryAgainWords } from "../../../shared/ui/LoadState";
 import { ListRow } from "../../../shared/ui/ListRow";

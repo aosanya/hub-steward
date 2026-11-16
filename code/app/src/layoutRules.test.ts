@@ -14,39 +14,7 @@ const featuresWithPublicIndex = guardedFeatures.filter(
 );
 const foldersExemptFromPublicSurface = new Set(["journeys"]);
 
-const sharedImportsOfFeaturesAndShell: string[] = [
-  "shared/ui/AgeBubble.tsx -> entry/language",
-  "shared/ui/JoinForm.tsx -> market/shared/unitWords",
-  "shared/ui/LanguageChoice.tsx -> entry/language",
-  "shared/ui/LanguageChoice.tsx -> entry/words",
-  "shared/ui/Shell.tsx -> inbox/api",
-  "shared/ui/TabBar.tsx -> agency/open",
-  "shared/ui/TabBar.tsx -> chat/unread.css",
-  "shared/ui/TabBar.tsx -> inbox/api",
-  "shared/ui/TabBar.tsx -> inbox/assignedIssues",
-  "shared/ui/TabBar.tsx -> inbox/thingsToDo",
-  "shared/ui/TabBar.tsx -> inbox/useNeedsYou",
-  "shared/ui/TabBar.tsx -> market/start/api",
-  "shared/ui/TabBar.tsx -> tabs",
-  "shared/ui/TabPage.tsx -> tabs",
-  "shared/ui/TopBar.test.tsx -> agency/open",
-  "shared/ui/TopBar.tsx -> agency/open",
-  "shared/ui/age.test.ts -> entry/magyar",
-  "shared/ui/age.test.ts -> entry/swahili",
-  "shared/ui/age.test.ts -> entry/words",
-  "shared/ui/age.ts -> entry/words",
-  "shared/ui/bellBadge.test.tsx -> inbox/api",
-  "shared/ui/bellBadge.test.tsx -> market/start/api",
-  "shared/ui/tabBar.test.tsx -> agency/open",
-  "shared/ui/tabBar.test.tsx -> inbox/api",
-  "shared/ui/tabBar.test.tsx -> market/start/api",
-  "shared/ui/tabBar.test.tsx -> routes",
-  "shared/ui/tabBar.test.tsx -> tabs",
-  "shared/wakala/instance.test.ts -> agency/open",
-  "shared/wakala/mcp.test.ts -> agency/open",
-  "shared/wakala/mcp.ts -> agency/open",
-  "shared/wakala/me.test.ts -> market/supply/api",
-];
+const sharedImportsOfFeaturesAndShell: string[] = [];
 
 const deepImportsIntoFeaturesWithPublicIndex: string[] = [
   "assistant/AssistantPage.tsx -> backlogs",

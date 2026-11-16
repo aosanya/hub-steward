@@ -3,7 +3,7 @@ import { doSomethingBackPath } from "../../../../app/routes";
 import { useLoad } from "../../../forms/useLoad";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
 import { ProductRows } from "../../../../shared/ui/ProductRows";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { mcpSellClient, type SellClient } from "./api";
 
 export function SellProductsPage({ client = mcpSellClient }: { client?: SellClient }) {

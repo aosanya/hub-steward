@@ -3,7 +3,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import type { AgencyView } from "../../features/agency/modules";
-import { forgetOpenAgency, openAgency } from "../../features/agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { isGroupOrderStart, startPath, type StartStep } from "../../features/market/start/api";
 import { homeCardsFor, type AgencyKind } from "./cards";
 import { StartRows } from "./StartRows";

@@ -1,4 +1,4 @@
-import { openAgencyId } from "../agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import type { Answer, FormQuestion } from "./api";
 import { readKept, removeKept, writeKept } from "../../shared/storage/kept";
 

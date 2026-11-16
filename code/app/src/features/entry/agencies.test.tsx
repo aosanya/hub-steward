@@ -2,13 +2,13 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { App } from "../../app/App";
-import { forgetOpenAgency, openAgencyId } from "../agency/open";
+import { forgetOpenAgency, openAgencyId } from "../../shared/wakala/openAgency";
 import * as mcp from "../../shared/wakala/mcp";
 import { provideEntryClient, type Agency, type EntryClient } from "./api";
 import { formsWaiting, provideWaitingCount, restoreWaitingCount, waitingCount } from "./waiting";
-import { wordsFor } from "./language";
-import { swahili } from "./swahili";
-import { words } from "./words";
+import { wordsFor } from "../../shared/language/language";
+import { swahili } from "../../shared/language/swahili";
+import { words } from "../../shared/language/words";
 
 const lab: Agency = { id: "56af4999-1de9-535f-beaa-b1824294c82f", name: "Siaya Community Computer Lab" };
 const farmers: Agency = { id: "270e07b7-6b69-55ca-aa30-9441ce138541", name: "Siaya Farmers' Group" };

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 import { IssuePage } from "../issue/IssuePage";
 import type { BacklogsClient, Issue, IssueDetail } from "../shared/api";
 import { SmartBacklogPage } from "./SmartBacklogPage";

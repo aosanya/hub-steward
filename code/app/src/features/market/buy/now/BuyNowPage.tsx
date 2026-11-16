@@ -6,7 +6,7 @@ import { routes } from "../../../../app/routes";
 import { Button } from "../../../../shared/ui/Button";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { Field } from "../../../../shared/ui/Field";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { mcpBuyNowClient, type BuyNowClient } from "./api";
 
 export function BuyNowPage({ client = mcpBuyNowClient }: { client?: BuyNowClient }) {

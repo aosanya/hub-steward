@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import { words } from "../../features/entry/words";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
+import { words } from "../../shared/language/words";
 import { forgetRuntimeConfig, setRuntimeConfig } from "../../shared/wakala/config";
 import { forgetSubject } from "../../shared/wakala/me";
 import { resetMcp } from "../../shared/wakala/mcp";

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { openAgency } from "../agency/open";
+import { openAgency } from "../../shared/wakala/openAgency";
 import { taskTools } from "../../features/backlogs/shared/api";
 import * as mcp from "../../shared/wakala/mcp";
 import { ResultsPanel } from "./ResultsPanel";

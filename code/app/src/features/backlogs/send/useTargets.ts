@@ -1,4 +1,4 @@
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { useLoad } from "../../../features/forms/useLoad";
 import { mcpSendClient } from "./api";
 import type { SendClient } from "./types";

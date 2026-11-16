@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { vi } from "vitest";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { openAgency } from "../../agency/open";
+import { openAgency } from "../../../shared/wakala/openAgency";
 import { IssuePage } from "../issue/IssuePage";
 import type { BacklogsClient, IssueDetail, NotesClient } from "../shared/api";
 import { AddReferencePage } from "./AddReferencePage";

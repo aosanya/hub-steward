@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { openAgency } from "../../agency/open";
+import { openAgency } from "../../../shared/wakala/openAgency";
 import { IssuePage } from "./IssuePage";
 import { IssueCard } from "../shared/IssueCard";
 import type { BacklogsClient, Issue, IssueDetail, NotesClient } from "../shared/api";

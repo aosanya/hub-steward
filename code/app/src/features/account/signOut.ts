@@ -1,4 +1,4 @@
-import { forgetOpenAgency } from "../../features/agency/open";
+import { forgetOpenAgency } from "../../shared/wakala/openAgency";
 import { runtimeConfig } from "../../shared/wakala/config";
 import { resetMcp } from "../../shared/wakala/mcp";
 import { endSession } from "../../shared/wakala/me";

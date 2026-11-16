@@ -1,4 +1,4 @@
-import { openAgencyId } from "../agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { stepOf, type StartStep } from "../market/start/api";
 import { runtimeConfig } from "../../shared/wakala/config";
 import { callTool, forgetReads } from "../../shared/wakala/mcp";

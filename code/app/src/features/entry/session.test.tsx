@@ -4,7 +4,7 @@ import { App } from "../../app/App";
 import { callTool, resetMcp } from "../../shared/wakala/mcp";
 import { forgetSubject } from "../../shared/wakala/me";
 import { provideEntryClient } from "./api";
-import { words } from "./words";
+import { words } from "../../shared/language/words";
 
 type Server = { me: number | "down"; mcp: number };
 

@@ -1,6 +1,6 @@
 import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { dayLimitWords, failedWords, monthLimitWords } from "./AssistantPage";
 import { askAssistant, LimitReached, type AssistantClient } from "./api";
 import { say, showAssistant } from "./assistantScreen";

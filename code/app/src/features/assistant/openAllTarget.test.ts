@@ -1,7 +1,7 @@
 import { draftOf, listTool, openAllTarget, pendingTool, withIds, type ResultDraft } from "./results";
 import { issuesPath } from "../../features/backlogs/shared/paths";
 import { smartBacklogPath } from "../../features/backlogs/smart/paths";
-import { openAgency, forgetOpenAgency } from "../agency/open";
+import { openAgency, forgetOpenAgency } from "../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

@@ -1,7 +1,6 @@
 import { forgetRuntimeConfig, setRuntimeConfig } from "./config";
 import { checkSession, endSession, forgetSubject, loadSubject, subjectNow } from "./me";
 import { keepToken, storedToken } from "./token";
-import { memberId, resolveMember } from "../../features/market/supply/api";
 
 const answer = (status: number, body: unknown) => vi.fn().mockResolvedValue({ ok: status === 200, status, json: async () => body });
 
@@ -24,7 +23,6 @@ describe("the signed-in member", () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(fetcher).toHaveBeenCalledWith("https://api.example/me", { credentials: "include", headers: {} });
     expect(subjectNow()).toBe("m7");
-    expect(memberId()).toBe("m7");
   });
 
   it("asks for /me as the kept sign-in link token and forgets that token when the session ends", async () => {
@@ -65,12 +63,5 @@ describe("the signed-in member", () => {
     expect(await loadSubject()).toBe("");
     await loadSubject();
     expect(fetcher).toHaveBeenCalledTimes(2);
-  });
-
-  it("prefers an injected id and falls back to the stored one", async () => {
-    vi.stubGlobal("fetch", answer(401, {}));
-    expect(await resolveMember("injected")).toBe("injected");
-    window.localStorage.setItem("hubsteward.member", "stored");
-    expect(await resolveMember()).toBe("stored");
   });
 });

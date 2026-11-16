@@ -1,5 +1,5 @@
 import { act, screen, within } from "@testing-library/react";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { failedWords } from "./AssistantPage";
 import type { AssistantClient } from "./api";
 import { say, showAssistant } from "./assistantScreen";

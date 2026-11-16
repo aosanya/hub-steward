@@ -7,7 +7,7 @@ import { routes } from "../../../app/routes";
 import { Button } from "../../../shared/ui/Button";
 import { Card } from "../../../shared/ui/Card";
 import { LoadFailed } from "../../../shared/ui/LoadState";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 
 const firstShown = 2;
 

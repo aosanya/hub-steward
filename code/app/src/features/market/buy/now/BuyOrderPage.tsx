@@ -8,7 +8,7 @@ import { Button } from "../../../../shared/ui/Button";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { Chip } from "../../../../shared/ui/Chip";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { priceWords, quantityWords } from "../../shared/unitWords";
 import { mcpBuyNowClient, orderTotal, type BuyNowClient, type BuyOrder } from "./api";
 import { agentLine, canCancel, orderStatus } from "./standing";

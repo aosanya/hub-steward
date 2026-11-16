@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../features/forms/useLoad";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { Button } from "../../../shared/ui/Button";
 import { Field } from "../../../shared/ui/Field";
 import { LoadingLine } from "../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
 import { SearchBox } from "../../../shared/ui/SearchBox";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { issuePath } from "../shared/paths";
 import { mcpReferencesClient, mcpRepoClient, type ReferenceKind, type ReferencesClient, type RepoClient } from "./api";
 import { parentOf } from "./repoPaths";

@@ -1,4 +1,4 @@
-import { openAgencyId } from "../agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { readKept, removeKept, writeKept } from "../../shared/storage/kept";
 
 type Sent = { id: string; orderId: string; title: string; after?: string };

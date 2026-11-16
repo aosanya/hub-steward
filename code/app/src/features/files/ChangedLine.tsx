@@ -1,4 +1,4 @@
-import { openAgencyId } from "../agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../../features/forms/useLoad";
 import { agoWords } from "./ago";
 import type { FilesClient, Folder } from "./api";

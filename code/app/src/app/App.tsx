@@ -18,13 +18,13 @@ import { NotificationsPage } from "../features/inbox/NotificationsPage";
 import { ChatPage } from "../features/chat/ChatPage";
 import { BacklogsRoutes } from "../features/backlogs";
 import { FilesRoutes, filesSegment } from "../features/files";
-import { TabPage } from "../shared/ui/TabPage";
+import { TabPage } from "./TabPage";
 import { SupplierHome } from "../features/market/supply/SupplierHome";
 import { HomeOptions } from "./home/HomeOptions";
 import { MenuRows } from "./menu/MenuRows";
 import { NeedsYouStrip } from "./home/NeedsYouStrip";
 import { SessionGate } from "../features/entry/SessionGate";
-import { agencyHomePath } from "../features/agency/open";
+import { agencyHomePath } from "../shared/wakala/openAgency";
 import { allScreens } from "./routes";
 import { agencyRoute, backlogsTab, homeTab, ongoingTab, retiredInboxRoute, retiredStartedRoute, tabPathIn, tabRoute, tabs, type Tab } from "./tabs";
 

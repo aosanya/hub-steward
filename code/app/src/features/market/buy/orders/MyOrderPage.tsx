@@ -6,7 +6,7 @@ import { Button } from "../../../../shared/ui/Button";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { useBackTo } from "../../../../shared/ui/backTo";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { kes, resolveMember } from "../../supply/api";
 import { dayWords } from "../../../../shared/ui/days";
 import { canCancelOrder, kindWords, mcpMyOrdersClient, orderTitle, trailDay, trailWords, type MyOrder, type MyOrdersClient, type TrailLine } from "./api";

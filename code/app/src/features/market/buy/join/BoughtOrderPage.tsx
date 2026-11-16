@@ -3,7 +3,7 @@ import { useLoad } from "../../../forms/useLoad";
 import { routes } from "../../../../app/routes";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { resolveMember } from "../../supply/api";
 import { buyStanding, mcpMyOrdersClient, trailDay, trailWords, type MyOrdersClient } from "../orders/api";
 import { StandingChip } from "../orders/MyOrdersPage";

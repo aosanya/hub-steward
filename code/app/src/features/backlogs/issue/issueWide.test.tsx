@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { openAgency } from "../../agency/open";
+import { openAgency } from "../../../shared/wakala/openAgency";
 import { IssuePage } from "./IssuePage";
 import type { BacklogsClient, Issue, IssueDetail, NotesClient } from "../shared/api";
 

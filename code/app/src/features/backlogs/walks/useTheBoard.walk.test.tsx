@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
-import { openAgency } from "../../agency/open";
+import { openAgency } from "../../../shared/wakala/openAgency";
 import { BacklogSummariesProvider } from "../cards/summaries";
 import type { RoomMessage, RoomsClient } from "../../../features/chat/rooms/api";
 import { Attachment } from "../../../features/chat/rooms/cards";

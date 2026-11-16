@@ -5,7 +5,7 @@ import { resetMcp } from "../../shared/wakala/mcp";
 import { forgetSubject } from "../../shared/wakala/me";
 import { forgetToken, storedToken } from "../../shared/wakala/token";
 import { provideEntryClient } from "./api";
-import { words } from "./words";
+import { words } from "../../shared/language/words";
 
 const link = "/sign-in/link#access_token=t1&expires_in=3600&refresh_token=r1&token_type=bearer&type=magiclink";
 

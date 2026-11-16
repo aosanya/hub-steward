@@ -1,6 +1,6 @@
 # Hub Steward app
 
-The phone app: a mobile-first React shell with a sticky app bar, one bottom bar of three buttons, Home, Chat and Notifications, and the small component kit. The bar is data in `src/app/tabs.ts` (`mainBar`), drawn by `src/shared/ui/TabBar.tsx` on every screen; colours are in `src/app/tokens.css` (light and dark by `prefers-color-scheme`). `src/shared/wakala` is the MCP client over fetch to wakala-api, copied from the console.
+The phone app: a mobile-first React shell with a sticky app bar, one bottom bar of three buttons, Home, Chat and Notifications, and the small component kit. The bar is data in `src/app/tabs.ts` (`mainBar`), drawn by `src/app/TabBar.tsx` on every screen; colours are in `src/app/tokens.css` (light and dark by `prefers-color-scheme`). `src/shared/wakala` is the MCP client over fetch to wakala-api, copied from the console.
 
 ```
 npm ci
@@ -21,7 +21,7 @@ Home (`/a/<agency id>/home`) holds a strip (`src/app/home/NeedsYouStrip.tsx`), Y
 
 `public/config.json` holds the wakala-api address the app calls (`{"wakala":"http://localhost:8082"}`); `npm run build:demo` builds with the address from `HUBSTEWARD_WAKALA_URL`. `node scripts/shoot-screen.mjs <route> <output.png>` photographs one screen at phone size and needs Playwright installed in `../console`.
 
-The top bar (`src/shared/ui/TopBar.tsx`) draws the open agency's name in a small line under the title, on every screen inside an agency. `src/features/agency/open.ts` holds the name (`openAgencyName`); `InAgency` in `src/features/entry/OpenAgency.tsx` sets it once `GET /me/agencies` answers, and forgetting the open agency clears it. The three agency-picker screens (Your agencies, Find an agency and an agency's detail) pass `unnamed` to `Shell`, so the bar leaves the name off there, where the list already names every agency. Start and Backlogs no longer draw the name as a line of their own.
+The top bar (`src/app/TopBar.tsx`) draws the open agency's name in a small line under the title, on every screen inside an agency. `src/shared/wakala/openAgency.ts` holds the name (`openAgencyName`); `InAgency` in `src/features/entry/OpenAgency.tsx` sets it once `GET /me/agencies` answers, and forgetting the open agency clears it. The three agency-picker screens (Your agencies, Find an agency and an agency's detail) pass `unnamed` to `Shell`, so the bar leaves the name off there, where the list already names every agency. Start and Backlogs no longer draw the name as a line of their own.
 
 `config.json` may also carry `agency`, a name the app is limited to. `parseConfig` keeps it as trimmed text, and `listAgencies` in `src/features/entry/api.ts` keeps only the agencies whose name contains it, ignoring case. With one agency left, the agency list opens it at once. The API still lists all of the account's agencies, and the directory search behind Find an agency is not filtered. `HUBSTEWARD_ONLY_AGENCY` sets the key when the dev server or a build writes `config.json`.
 

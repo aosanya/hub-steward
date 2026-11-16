@@ -5,7 +5,7 @@ import { StartRows } from "./StartRows";
 import { doSomethingPath } from "../routes";
 import { Ongoing } from "../../features/started/Ongoing";
 import { LoadingLine } from "../../shared/ui/LoadState";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../Shell";
 
 export type DoSomethingSegment = "start" | "ongoing";
 

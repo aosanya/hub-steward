@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { StartRows } from "../../../app/home/StartRows";
 import { NotificationsPage } from "../../inbox/NotificationsPage";
-import { TabBar } from "../../../shared/ui/TabBar";
+import { TabBar } from "../../../app/TabBar";
 import * as mcp from "../../../shared/wakala/mcp";
 import { mcpStartClient, type StartStep } from "./api";
 

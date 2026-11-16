@@ -1,5 +1,5 @@
 import type { IconName } from "../shared/ui/Icon";
-import { agencyBasePath, backlogsSegment, doSomethingSegment, homeSegment, notificationsSegment, ongoingSegment } from "../features/agency/open";
+import { agencyBasePath, backlogsSegment, doSomethingSegment, homeSegment, notificationsSegment, ongoingSegment } from "../shared/wakala/openAgency";
 
 export type Tab = { id: string; path: string; segment: string; label: string; icon: IconName };
 

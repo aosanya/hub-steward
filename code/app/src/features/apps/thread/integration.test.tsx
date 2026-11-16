@@ -6,7 +6,7 @@ import { AppThreadPage } from "./AppThreadPage";
 import type { BuyerPrice, SellClient } from "../../../features/market/sell/now/api";
 import { marketSource, myOrders, notListed, onSale } from "./marketSource";
 import { joinGroupPrompt, sellNowPrompt, sellSource } from "./sellSource";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

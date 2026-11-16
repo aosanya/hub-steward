@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { openAgency } from "../../agency/open";
+import { openAgency } from "../../../shared/wakala/openAgency";
 import * as mcp from "../../../shared/wakala/mcp";
 import { BacklogBoard } from "../board/BacklogBoard";
 import { BacklogsRoutes } from "../BacklogsRoutes";

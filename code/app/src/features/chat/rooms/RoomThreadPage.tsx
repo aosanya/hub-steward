@@ -5,7 +5,7 @@ import { chatListPath, routes } from "../../../app/routes";
 import { Card } from "../../../shared/ui/Card";
 import { Chip } from "../../../shared/ui/Chip";
 import { LoadFailed } from "../../../shared/ui/LoadState";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { generalOf, mcpRoomsClient, type RoomMessage, type RoomsClient } from "./api";
 import { BacklogSummariesLoader } from "../../backlogs";
 import { askPath } from "./cards";

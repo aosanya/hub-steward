@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it } from "vitest";
-import { words } from "../../features/entry/words";
+import { words } from "../../shared/language/words";
 import { routes } from "../../app/routes";
 import { CouncilViewLink } from "./CouncilViewLink";
 import { councilViewOf } from "./stepLinks";

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import { words } from "../../features/entry/words";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
+import { words } from "../../shared/language/words";
 import type { Risk, RiskAction } from "../../features/risks/api";
 import { forgetRuntimeConfig, setRuntimeConfig } from "../../shared/wakala/config";
 import { forgetSubject } from "../../shared/wakala/me";

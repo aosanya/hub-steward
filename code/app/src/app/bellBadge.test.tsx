@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import type { StartClient, StartStep } from "../../features/market/start/api";
-import type { InboxClient, InvitationItem, NotificationItem } from "../../features/inbox/api";
+import type { StartClient, StartStep } from "../features/market/start/api";
+import type { InboxClient, InvitationItem, NotificationItem } from "../features/inbox/api";
 import { TabBar } from "./TabBar";
 
 const note = (id: string, event: string, read = false): NotificationItem => ({

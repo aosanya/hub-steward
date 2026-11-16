@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import { App } from "../../app/App";
 import { provideEntryClient, type Agency, type DirectoryAgency, type EntryClient } from "./api";
 import { provideWaitingCount, restoreWaitingCount } from "./waiting";
-import { words } from "./words";
+import { words } from "../../shared/language/words";
 
 const farmers: Agency = { id: "270e07b7-6b69-55ca-aa30-9441ce138541", name: "Siaya Farmers' Group" };
 const riders: Agency = { id: "c61e4358-10fd-539b-89f5-a7ccf4e94479", name: "Siaya Boda Boda Riders" };

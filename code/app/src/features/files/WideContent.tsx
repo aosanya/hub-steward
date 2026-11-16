@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { openAgencyId } from "../agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../../features/forms/useLoad";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import type { FilesClient, Folder } from "./api";

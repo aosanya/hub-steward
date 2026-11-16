@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 import type { RoomMessage, RoomsClient } from "../../../features/chat/rooms/api";
 import { Attachment } from "../../../features/chat/rooms/cards";
 import { BacklogSummariesProvider, type BacklogSummary } from "./summaries";

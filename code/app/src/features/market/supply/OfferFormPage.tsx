@@ -6,7 +6,7 @@ import { Button } from "../../../shared/ui/Button";
 import { Card } from "../../../shared/ui/Card";
 import { LoadFailed } from "../../../shared/ui/LoadState";
 import { Field } from "../../../shared/ui/Field";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 
 type Loaded = { supplierId: string; products: string[]; offer?: SupplyOffer } | null;
 

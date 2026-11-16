@@ -7,7 +7,7 @@ import { EmptyCard } from "../../shared/ui/LoadState";
 import { Field } from "../../shared/ui/Field";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { chatListPath, doSomethingBackPath, routes } from "../../app/routes";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 
 const defaultClient = mcpGroupsClient();
 

@@ -8,7 +8,7 @@ import { forgetSubject } from "../../shared/wakala/me";
 import { forgetToken } from "../../shared/wakala/token";
 import { provideEntryClient } from "./api";
 import { hubIsLocal, isLoopbackHost } from "./localHub";
-import { words } from "./words";
+import { words } from "../../shared/language/words";
 
 type Server = { signin: number };
 

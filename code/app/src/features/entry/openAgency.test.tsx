@@ -2,14 +2,14 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { App } from "../../app/App";
-import { agencyBasePath, agencyHomePath, forgetOpenAgency, openAgency, openAgencyId } from "../agency/open";
+import { agencyBasePath, agencyHomePath, forgetOpenAgency, openAgency, openAgencyId } from "../../shared/wakala/openAgency";
 import { forgetRuntimeConfig, setRuntimeConfig } from "../../shared/wakala/config";
 import { resetMcp } from "../../shared/wakala/mcp";
 import { forgetSubject } from "../../shared/wakala/me";
 import { forgetToken } from "../../shared/wakala/token";
 import { provideEntryClient, type Agency, type EntryClient } from "./api";
 import { provideWaitingCount, restoreWaitingCount } from "./waiting";
-import { words } from "./words";
+import { words } from "../../shared/language/words";
 
 const farmers: Agency = { id: "270e07b7-6b69-55ca-aa30-9441ce138541", name: "Siaya Farmers' Group" };
 const riders: Agency = { id: "c61e4358-10fd-539b-89f5-a7ccf4e94479", name: "Siaya Boda Boda Riders" };

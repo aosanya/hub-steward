@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { openAgencyId } from "../../features/agency/open";
-import "../../features/chat/unread.css";
-import { type InboxClient, mcpInboxClient } from "../../features/inbox/api";
-import { type AssignedClient, mcpAssignedClient } from "../../features/inbox/assignedIssues";
-import { thingsToDoLabel } from "../../features/inbox/thingsToDo";
-import { useNeedsYou } from "../../features/inbox/useNeedsYou";
-import { mcpStartClient, type StartClient } from "../../features/market/start/api";
-import { Icon } from "./Icon";
-import { mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "../../app/tabs";
+import { openAgencyId } from "../shared/wakala/openAgency";
+import "../features/chat/unread.css";
+import { type InboxClient, mcpInboxClient } from "../features/inbox/api";
+import { type AssignedClient, mcpAssignedClient } from "../features/inbox/assignedIssues";
+import { thingsToDoLabel } from "../features/inbox/thingsToDo";
+import { useNeedsYou } from "../features/inbox/useNeedsYou";
+import { mcpStartClient, type StartClient } from "../features/market/start/api";
+import { Icon } from "../shared/ui/Icon";
+import { mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "./tabs";
 
 type Props = { inbox?: InboxClient; start?: StartClient; assigned?: AssignedClient };
 

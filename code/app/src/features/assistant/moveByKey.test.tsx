@@ -1,5 +1,5 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { askAssistant, offeredNames } from "./api";
 import type { BacklogsClient } from "../../features/backlogs/shared/api";
 import { moveTool, nameWrite } from "./confirm";

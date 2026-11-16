@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import type { InboxClient } from "../../features/inbox/api";
-import { AccountMenu } from "./AccountMenu";
-import { DrawerFrame } from "./DrawerFrame";
-import { ScreenHead } from "./ScreenHead";
+import type { InboxClient } from "../features/inbox/api";
+import { AccountMenu } from "../shared/ui/AccountMenu";
+import { DrawerFrame } from "../shared/ui/DrawerFrame";
+import { ScreenHead } from "../shared/ui/ScreenHead";
 import { TabBar } from "./TabBar";
 import { TopBar } from "./TopBar";
 

@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { agencyHomePath } from "../agency/open";
+import { agencyHomePath } from "../../shared/wakala/openAgency";
 import { entryClient, type Agency, type DirectoryAgency, type JoinOutcome } from "./api";
-import { useLanguage } from "./language";
+import { useLanguage } from "../../shared/language/language";
 import { formsWaiting, waitingCount } from "./waiting";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
 import { EmptyCard, LoadFailed } from "../../shared/ui/LoadState";
 import { Field } from "../../shared/ui/Field";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 
 type View = { name: "list" } | { name: "find" } | { name: "agency"; agency: DirectoryAgency };
 type Loaded = { kind: "loading" } | { kind: "ready"; agencies: Agency[] } | { kind: "unreached" };

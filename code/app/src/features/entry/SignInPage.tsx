@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { entryClient, type LinkOutcome } from "./api";
-import { useLanguage } from "./language";
+import { useLanguage } from "../../shared/language/language";
 import { hubIsLocal } from "./localHub";
 import { signInWithPassword, type PasswordOutcome } from "./passwordSignIn";
 import { Button } from "../../shared/ui/Button";
 import { Field } from "../../shared/ui/Field";
 import { LanguageChoice } from "../../shared/ui/LanguageChoice";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import { resetMcp } from "../../shared/wakala/mcp";
 import { forgetSubject } from "../../shared/wakala/me";
 

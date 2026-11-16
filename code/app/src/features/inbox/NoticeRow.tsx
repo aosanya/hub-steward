@@ -1,4 +1,4 @@
-import { useLanguage } from "../entry/language";
+import { useLanguage } from "../../shared/language/language";
 import { isoDay } from "../../shared/ui/days";
 import { ListRow, SelectableRow } from "../../shared/ui/ListRow";
 import type { NotificationItem } from "./api";

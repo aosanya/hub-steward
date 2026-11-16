@@ -7,7 +7,7 @@ import { RoomThreadPage } from "./RoomThreadPage";
 import { RoomThreadsPage } from "./RoomThreadsPage";
 import { timeOf } from "./time";
 import { routes } from "../../../app/routes";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { openAgency } from "../../agency/open";
+import { openAgency } from "../../../shared/wakala/openAgency";
 import { IssuePage } from "./IssuePage";
 import type { BacklogsClient, Issue, IssueDetail, NotesClient } from "../shared/api";
 import type { ReferencesClient, RepoClient } from "../references/api";

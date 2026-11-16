@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useLanguage } from "../entry/language";
+import { useLanguage } from "../../shared/language/language";
 import { routes } from "../../app/routes";
 import { BottomBar } from "../../shared/ui/BottomBar";
 import { Button } from "../../shared/ui/Button";
 import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";
 import { EmptyCard } from "../../shared/ui/LoadState";
 import { Field } from "../../shared/ui/Field";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import { evidenceKinds, evidenceOutcomes, mcpRisksClient, type RisksClient } from "./api";
 import { filled, labelOf } from "./labels";
 

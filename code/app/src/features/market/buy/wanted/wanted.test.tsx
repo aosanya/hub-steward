@@ -8,7 +8,7 @@ import { WantedPage } from "./WantedPage";
 import { askTicked } from "./askTicked";
 import type { WantedClient } from "./api";
 import { routes } from "../../../../app/routes";
-import { forgetOpenAgency, openAgency } from "../../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 
 beforeEach(() => openAgency("farmers"));
 

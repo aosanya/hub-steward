@@ -1,5 +1,5 @@
 import { issuePath } from "../backlogs/shared/paths";
-import type { Words } from "../entry/words";
+import type { Words } from "../../shared/language/words";
 import { routes } from "../../app/routes";
 import type { NotificationItem } from "./api";
 import { firstFilled } from "./chatNotice";

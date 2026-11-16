@@ -1,4 +1,4 @@
-import { openAgencyId } from "../agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import type { Item } from "./queue";
 
 export type Tab = "chat" | "results";

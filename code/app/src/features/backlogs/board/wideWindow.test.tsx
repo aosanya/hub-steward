@@ -2,12 +2,12 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 import type { BacklogsClient, Issue } from "../shared/api";
 import { IssuesPage } from "../issue/IssuesPage";
 import { SmartBacklogPage } from "../smart/SmartBacklogPage";
 import type { SmartBacklogClient } from "../smart/types";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { BacklogBoard } from "./BacklogBoard";
 
 vi.mock("../../../shared/wakala/mcp", async () => {

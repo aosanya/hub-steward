@@ -1,5 +1,5 @@
 import { Button } from "../../../shared/ui/Button";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { boardPath, issuesPath } from "../../backlogs/shared/paths";
 import { smartBacklogPath } from "../../backlogs/smart/paths";
 import { Card } from "../../../shared/ui/Card";

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { openAgencyId } from "../agency/open";
-import { useLanguage } from "../../features/entry/language";
+import { openAgencyId } from "../../shared/wakala/openAgency";
+import { useLanguage } from "../../shared/language/language";
 import { filled } from "../../features/risks/labels";
 import { doSomethingPath } from "../../app/routes";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
 import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import { agree, readInForce, readMine, versionNumber, withdraw, type ConsentText, type MyConsent } from "./api";
 import { settle, unsettle } from "./settled";
 

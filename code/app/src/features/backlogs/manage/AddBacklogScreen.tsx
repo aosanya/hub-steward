@@ -4,7 +4,7 @@ import { backlogsHomePath } from "../shared/paths";
 import { Button } from "../../../shared/ui/Button";
 import { Field } from "../../../shared/ui/Field";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { StepsEditor } from "./StepsEditor";
 import { draftProblem, type DraftStep } from "./stepsDraft";
 import { mcpBacklogManageClient } from "./api";

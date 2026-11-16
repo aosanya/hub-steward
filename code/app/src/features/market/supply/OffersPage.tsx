@@ -7,7 +7,7 @@ import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
 import { BuyerTabs } from "../../market/sell/buyer/BuyerTabs";
 import { mcpBuyerAskClient, waitingAsks, type BuyerAskClient } from "../../market/sell/group/buyerAsksApi";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 
 type Props = { client?: SupplyClient; asks?: BuyerAskClient; me?: string; buyer?: boolean };
 

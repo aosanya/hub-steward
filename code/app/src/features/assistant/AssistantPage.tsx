@@ -13,7 +13,7 @@ import { Card } from "../../shared/ui/Card";
 import { Chip } from "../../shared/ui/Chip";
 import { EmptyCard } from "../../shared/ui/LoadState";
 import { Markdown } from "../../shared/ui/Markdown";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import { LimitReached, mcpAssistantClient, type AssistantClient, type LimitSpan } from "./api";
 import { ConfirmCard, useConfirmation } from "./ConfirmCard";
 import { failureReason } from "./failureReason";

@@ -1,9 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import { magyar } from "../entry/magyar";
-import { words } from "../entry/words";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
+import { magyar } from "../../shared/language/magyar";
+import { words } from "../../shared/language/words";
 import type { EvidenceDraft, RiskDetail, RisksClient } from "./api";
 import { EvidencePage } from "./EvidencePage";
 import { RiskPage } from "./RiskPage";

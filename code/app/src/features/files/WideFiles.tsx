@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { openAgencyId } from "../agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../../features/forms/useLoad";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import type { FilesClient, Folder, FolderEntry } from "./api";
 import { FileTree } from "./FileTree";
 import { lastNameOf, parentPathOf, topLevel } from "./folderTrail";

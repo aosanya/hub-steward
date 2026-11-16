@@ -8,7 +8,7 @@ import { Card } from "../../../shared/ui/Card";
 import { LoadFailed } from "../../../shared/ui/LoadState";
 import { Field } from "../../../shared/ui/Field";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 
 export function ApplyPage({ client = mcpSupplyClient, me }: { client?: SupplyClient; me?: string }) {
   const navigate = useNavigate();

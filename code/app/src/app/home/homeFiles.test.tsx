@@ -2,7 +2,7 @@ import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import type { AgencyView } from "../../features/agency/modules";
-import { forgetOpenAgency, openAgency } from "../../features/agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import type { Backlog } from "../../features/backlogs/shared/api";
 import type { StartStep } from "../../features/market/start/api";
 import type { MemberStep } from "../../features/steps/api";

@@ -2,8 +2,8 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { endInAgencies, farmers, openApp, startInAgencies, stubWakala, where } from "../../journeys/inAgency.test-support";
-import { words } from "../../features/entry/words";
-import { swahili } from "../../features/entry/swahili";
+import { words } from "../../shared/language/words";
+import { swahili } from "../../shared/language/swahili";
 import { settle, unsettle } from "./settled";
 
 const sheet = "We keep your answers and messages so the council can hear what residents think.";

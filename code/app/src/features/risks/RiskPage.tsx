@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useLanguage } from "../entry/language";
+import { useLanguage } from "../../shared/language/language";
 import { useLoad } from "../forms/useLoad";
 import { routes } from "../../app/routes";
 import { Card } from "../../shared/ui/Card";
@@ -7,7 +7,7 @@ import { Chip } from "../../shared/ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { SectionHeading } from "../../shared/ui/SectionHeading";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import { isoDay } from "../../shared/ui/days";
 import { mcpRisksClient, type RisksClient, type Safeguard, type Side } from "./api";
 import { filled, labelOf, standingTone } from "./labels";

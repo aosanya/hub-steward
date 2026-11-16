@@ -6,7 +6,7 @@ import { useLoad } from "../../../forms/useLoad";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { Segmented } from "../../../../shared/ui/Segmented";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { AskForm } from "./AskForm";
 import { noStock, type StockReader } from "./stock";
 

@@ -3,7 +3,7 @@ import { doSomethingBackPath } from "../../../app/routes";
 import { AccountMenu } from "../../../shared/ui/AccountMenu";
 import { DrawerFrame } from "../../../shared/ui/DrawerFrame";
 import { ScreenHead } from "../../../shared/ui/ScreenHead";
-import { TopBar } from "../../../shared/ui/TopBar";
+import { TopBar } from "../../../app/TopBar";
 import { BlockView } from "../blocks";
 import type { Block } from "../blocks/types";
 import type { AgentSource } from "./source";

@@ -1,11 +1,11 @@
 import { Fragment, useState } from "react";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useLanguage } from "../../../features/entry/language";
+import { useLanguage } from "../../../shared/language/language";
 import { useLoad } from "../../../features/forms/useLoad";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
 import { backState } from "../../../shared/ui/backTo";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import "../shared/backlogs.css";
 import { mcpBacklogManageClient } from "../manage/api";
 import { useMayManage } from "../manage/useMayManage";

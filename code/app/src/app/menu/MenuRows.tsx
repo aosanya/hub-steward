@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { mcpAgencyClient, type AgencyClient } from "../../features/agency/modules";
-import { openAgencyId } from "../../features/agency/open";
+import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../../features/forms/useLoad";
 import { routes } from "../routes";
 import { Icon } from "../../shared/ui/Icon";

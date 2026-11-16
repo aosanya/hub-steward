@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { App } from "../../app/App";
 import { provideEntryClient, type Agency, type DirectoryAgency, type EntryClient, type LinkOutcome } from "./api";
-import { words } from "./words";
+import { words } from "../../shared/language/words";
 
 const amina = "amina@example.com";
 

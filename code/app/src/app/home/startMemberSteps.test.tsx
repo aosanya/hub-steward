@@ -2,7 +2,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { forgetOpenAgency, openAgency } from "../../features/agency/open";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import type { StartStep } from "../../features/market/start/api";
 import type { MemberStep } from "../../features/steps/api";
 import { forgetSent, markSent } from "../../features/steps/sent";

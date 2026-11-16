@@ -1,8 +1,8 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { openAgency, openAgencyId } from "../features/agency/open";
+import { openAgency, openAgencyId } from "../shared/wakala/openAgency";
 import { groupTools } from "../features/groups/api";
-import { words } from "../features/entry/words";
+import { words } from "../shared/language/words";
 import { answeringAForm, chattingInARoom, endInAgencies, everyCallNames, groupOrderStep, openApp, riders, shoppingForUrea, startInAgencies, startingAnOrder, stubWakala, where } from "./inAgency.test-support";
 
 beforeEach(startInAgencies);

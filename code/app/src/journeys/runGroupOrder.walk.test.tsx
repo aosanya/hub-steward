@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "../app/App";
-import { agencyBasePath, doSomethingPathIn, openAgency } from "../features/agency/open";
+import { agencyBasePath, doSomethingPathIn, openAgency } from "../shared/wakala/openAgency";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 import * as mcp from "../shared/wakala/mcp";
 import { forgetSubject } from "../shared/wakala/me";

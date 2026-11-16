@@ -10,7 +10,7 @@ import { Card } from "../../shared/ui/Card";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { QuestionInput } from "./QuestionInput";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 import { clearDraft, filled, formDraftKey, given, loadDraft, saveDraft, shown, threadLines, toAnswers, type Draft, type Given } from "./answers";
 
 type Step = number | "review";

@@ -4,7 +4,7 @@ import { useLoad } from "../../../forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
 import { ChoiceGroup, ChoiceRow } from "../../../../shared/ui/ChoiceRow";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { mcpWantedClient, type WantedClient } from "./api";
 import { askTicked } from "./askTicked";
 import { dayName } from "./dates";

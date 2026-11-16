@@ -4,7 +4,7 @@ import { useLoad } from "../../../forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { EmptyCard, LoadFailed } from "../../../../shared/ui/LoadState";
 import { Field } from "../../../../shared/ui/Field";
-import { Shell } from "../../../../shared/ui/Shell";
+import { Shell } from "../../../../app/Shell";
 import { isApproved, mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../api";
 import { mcpStockClient, type StockClient } from "./api";
 

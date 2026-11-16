@@ -1,7 +1,7 @@
 import "../manage/backlogManage.css";
 import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { mcpBacklogManageClient } from "../manage/api";
 import type { BacklogManageClient } from "../manage/types";
 import { useMayManage } from "../manage/useMayManage";
@@ -13,7 +13,7 @@ import { Chip } from "../../../shared/ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
 import { Segmented } from "../../../shared/ui/Segmented";
-import { Shell } from "../../../shared/ui/Shell";
+import { Shell } from "../../../app/Shell";
 import { mcpBacklogAccessClient } from "./api";
 import { groupsOfOwnerHierarchy, groupsWithoutAccess, levelItems, levelWords, smartLevelItems, noRoleWords, rowsOf, withGroup, withLevel, withoutGroup } from "./levels";
 import { refusalWords, type AccessLevel, type AccessRow, type AgencyGroup, type BacklogAccessClient } from "./types";

@@ -1,4 +1,4 @@
-import { agencyBasePath, openAgencyId } from "../../agency/open";
+import { agencyBasePath, openAgencyId } from "../../../shared/wakala/openAgency";
 import { allIssuesId } from "./api";
 
 export const tagParam = "tag";

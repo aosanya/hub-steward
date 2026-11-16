@@ -11,7 +11,7 @@ import { Button } from "../../shared/ui/Button";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { routes } from "../../app/routes";
-import { Shell } from "../../shared/ui/Shell";
+import { Shell } from "../../app/Shell";
 
 export function ChatPage({ client = mcpChatClient }: { client?: ChatClient }) {
   const navigate = useNavigate();

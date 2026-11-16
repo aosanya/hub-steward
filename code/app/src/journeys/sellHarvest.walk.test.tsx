@@ -6,7 +6,7 @@ import { App } from "../app/App";
 import * as mcp from "../shared/wakala/mcp";
 import { forgetSubject } from "../shared/wakala/me";
 import { buyer, farmer, world } from "./walk16.test-support";
-import { openAgency } from "../features/agency/open";
+import { openAgency } from "../shared/wakala/openAgency";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 
 beforeEach(() => openAgency("walk-agency"));
