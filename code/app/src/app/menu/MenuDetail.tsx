@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { useLoad } from "../../features/forms/useLoad";
 import { Button } from "../../shared/ui/Button";
@@ -18,7 +18,7 @@ type Item = Record<string, unknown>;
 
 type Action = { label: string; tool: string; run?: (item: Item) => void; when?: (item: Item) => boolean };
 
-type Props = { title: string; tool: string; fields: Record<string, string>; status: string; action?: Action; id?: string; bare?: boolean; load?: (id: string) => Promise<Item> };
+type Props = { title: string; tool: string; fields: Record<string, string>; status: string; action?: Action; id?: string; bare?: boolean; load?: (id: string) => Promise<Item>; extra?: (item: Item) => ReactNode };
 
 const textOf = (item: Item, key: string) => {
   const value = item[key];
@@ -30,7 +30,7 @@ const itemOf = (reply: unknown): Item => {
   return inner && typeof inner === "object" ? (inner as Item) : {};
 };
 
-export function MenuDetail({ title, tool, fields, status, action, id: chosen, bare, load }: Props) {
+export function MenuDetail({ title, tool, fields, status, action, id: chosen, bare, load, extra }: Props) {
   const back = useBackToSection();
   const params = useParams();
   const id = chosen ?? params.id;
@@ -65,6 +65,7 @@ export function MenuDetail({ title, tool, fields, status, action, id: chosen, ba
               <ListRow key={label} title={label} meta={textOf(item, key)} />
             ))}
           </Rows>
+          {extra?.(item)}
           {action && (action.when?.(item) ?? true) ? (
             <Button kind="primary" disabled={acting === "busy"} onClick={act}>{action.label}</Button>
           ) : null}

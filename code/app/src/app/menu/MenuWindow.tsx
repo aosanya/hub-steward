@@ -7,11 +7,11 @@ import "./menuWindow.css";
 
 type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "fields" | "empty" | "load" | "end" | "loadingWords" | "failedWords" | "groups">;
 
-type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load">;
+type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load" | "extra">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; detailKey?: string | number };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; detailKey?: string | number; listKey?: string | number };
 
-export function MenuWindow({ title, list, detail, above, below, detailKey }: Props) {
+export function MenuWindow({ title, list, detail, above, below, detailKey, listKey }: Props) {
   const back = useBackToSection();
   const [chosen, setChosen] = useState("");
   const onBack = chosen ? () => setChosen("") : back.onBack;
@@ -21,7 +21,7 @@ export function MenuWindow({ title, list, detail, above, below, detailKey }: Pro
       <div className="mw" data-chosen={chosen ? "yes" : "no"}>
         <section className="mw-list" aria-label={list.title}>
           {above}
-          <MenuList {...list} bare selectedId={chosen} onChoose={setChosen} />
+          <MenuList key={listKey} {...list} bare selectedId={chosen} onChoose={setChosen} />
           {below}
         </section>
         {chosen ? (
