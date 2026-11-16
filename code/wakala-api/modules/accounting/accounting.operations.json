@@ -344,6 +344,44 @@
       ],
       "returns": [{ "body": true }]
     },
+    "create_bill": {
+      "method": "POST",
+      "path": "/bills",
+      "call": "CreateBill",
+      "action": "accounting.bill.create",
+      "status": 201,
+      "title": "Create bill",
+      "description": "Raise a bill: an amount owed to an income account, due on a date. It is posted as a debit to the receivable account and a credit to the income account, with due_at set, so the overdue read ages it. Name the income account, the receivable account (an asset account), the amount, due_at and, if known, the payer. A payment settles a bill by naming it in settles_entry_id.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "caller", "as": "billed_by", "into": "BilledBy", "description": "Who raised the bill, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "list_bills": {
+      "method": "GET",
+      "path": "/bills",
+      "call": "ListBills",
+      "action": "accounting.bill.list",
+      "title": "List bills",
+      "description": "List bills by due date, each with its amount, what was settled, what is outstanding and its status: open, overdue (past due_at as of as_of, default now, and not fully settled), settled or reversed. Narrow by income_account_id, status or payer; limit caps the page.",
+      "args": [
+        { "from": "query", "whole": true }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "get_bill": {
+      "method": "GET",
+      "path": "/bills/{billID}",
+      "call": "GetBill",
+      "action": "accounting.bill.read",
+      "title": "Read bill",
+      "description": "Read one bill by its id, with what was settled against it, what is outstanding and its status as of now.",
+      "args": [
+        { "from": "path", "as": "billID", "description": "The bill to read." }
+      ],
+      "returns": [{ "body": true }]
+    },
     "overdue_entries": {
       "method": "GET",
       "path": "/accounts/{accountID}/overdue",

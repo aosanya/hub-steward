@@ -14,6 +14,8 @@ const budgetActionPrefix = "accounting.budget."
 
 const reportActionPrefix = "accounting.report."
 
+const billActionPrefix = "accounting.bill."
+
 func BuildTools(repo accounting.LedgerRepository, m Mount) ([]Tool, error) {
 	s, err := operations()
 	if err != nil {
@@ -28,6 +30,9 @@ func BuildTools(repo accounting.LedgerRepository, m Mount) ([]Tool, error) {
 	var served []Tool
 	for _, t := range all {
 		if strings.HasPrefix(t.Action, budgetActionPrefix) && t.Action != "accounting.budget.variance" {
+			served = append(served, t)
+		}
+		if strings.HasPrefix(t.Action, billActionPrefix) {
 			served = append(served, t)
 		}
 		if strings.HasPrefix(t.Action, reportActionPrefix) {
