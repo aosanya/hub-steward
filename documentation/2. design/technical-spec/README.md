@@ -24,6 +24,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Console list pages](console-list-pages.md) | How a console page that lists named things looks |
 |  | [Gaps](gaps.md) | What Mwanachama already does, and what is missing |
 |  | [Hub keys](hub-keys.md) | How the agent gets into each agency |
+|  | [Git over HTTP](../git-remote.md) | The URL, sign-in and push rules for cloning and pushing an agency's repository |
 |  | [Start: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |
 |  | [Creation journey](creation-journey.md) | How one agency gets made: the cast of roles and the stages |
 |  | [Menu](menu.md) | The sections on Home, their submenus and the screens behind them |
