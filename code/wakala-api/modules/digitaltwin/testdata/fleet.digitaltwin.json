@@ -97,6 +97,24 @@
           ]
         }
       ]
+    },
+    {
+      "role": "address",
+      "name": "address",
+      "table": "addresses",
+      "description": "One street address."
+    },
+    {
+      "role": "tenure",
+      "name": "tenure",
+      "table": "tenures",
+      "description": "One holding of a place."
+    },
+    {
+      "role": "land_use",
+      "name": "land_use",
+      "table": "land_uses",
+      "description": "The zoning and use of a place or area."
     }
   ]
 }

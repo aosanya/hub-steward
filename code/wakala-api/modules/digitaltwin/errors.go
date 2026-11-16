@@ -17,3 +17,9 @@ var ErrRetentionNotFound = errors.New("digitaltwin: retention rule not found")
 var ErrObservationNotFound = errors.New("digitaltwin: no observation found")
 
 var ErrUnknownMetric = errors.New("digitaltwin: metric not registered")
+
+var ErrAddressNotFound = errors.New("digitaltwin: address not found")
+
+var ErrTenureNotFound = errors.New("digitaltwin: tenure not found")
+
+var ErrLandUseNotFound = errors.New("digitaltwin: land use not found")

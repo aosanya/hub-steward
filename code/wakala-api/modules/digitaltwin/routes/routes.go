@@ -20,6 +20,9 @@ var Sentinels = map[string]error{
 	"ErrMetricNotFound":      digitaltwin.ErrMetricNotFound,
 	"ErrRetentionNotFound":   digitaltwin.ErrRetentionNotFound,
 	"ErrObservationNotFound": digitaltwin.ErrObservationNotFound,
+	"ErrAddressNotFound":     digitaltwin.ErrAddressNotFound,
+	"ErrTenureNotFound":      digitaltwin.ErrTenureNotFound,
+	"ErrLandUseNotFound":     digitaltwin.ErrLandUseNotFound,
 }
 
 var AnonymousActions = []string{}

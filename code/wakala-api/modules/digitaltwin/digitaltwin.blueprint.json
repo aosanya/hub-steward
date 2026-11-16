@@ -346,6 +346,166 @@
           "unique": true
         }
       ]
+    },
+    {
+      "role": "address",
+      "description": "One street address: the street, the house number, the area it lies in and, when the place is already registered as a node, the link to it.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "street",
+          "type": "string",
+          "description": "The street name as written, such as Fő utca.",
+          "required": true
+        },
+        {
+          "name": "number",
+          "type": "string",
+          "description": "The house number as written, such as 14 or 12/A.",
+          "required": true
+        },
+        {
+          "name": "area",
+          "type": "string",
+          "description": "The town, ward or district the address lies in. Empty when unknown."
+        },
+        {
+          "name": "postcode",
+          "type": "string",
+          "description": "The postal code. Empty when unknown."
+        },
+        {
+          "name": "place_id",
+          "type": "string",
+          "description": "The node this address belongs to, when one is registered. Empty when the address stands alone."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "street_number",
+          "description": "Finds an address by its street and number.",
+          "fields": [
+            "street",
+            "number"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "tenure",
+      "description": "One holding of a place: who holds it, in what capacity, and since when.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "place_id",
+          "type": "string",
+          "description": "The node the holder holds.",
+          "required": true
+        },
+        {
+          "name": "holder",
+          "type": "string",
+          "description": "The name of the person or body that holds the place.",
+          "required": true
+        },
+        {
+          "name": "kind",
+          "type": "enum",
+          "description": "In what capacity the holder holds the place.",
+          "default": "owner",
+          "values": [
+            "owner",
+            "tenant",
+            "leaseholder",
+            "occupant",
+            "custodian"
+          ]
+        },
+        {
+          "name": "since",
+          "type": "timestamp",
+          "description": "When the holding began. Empty when unknown."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "place_since",
+          "description": "Lists the holdings of one place.",
+          "fields": [
+            "place_id",
+            "since"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "land_use",
+      "description": "How one place or area is zoned and used.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "place_id",
+          "type": "string",
+          "description": "The node the zoning applies to. Empty when it applies to a named area."
+        },
+        {
+          "name": "area",
+          "type": "string",
+          "description": "The named area the zoning applies to when no node is named. Empty when place_id is set."
+        },
+        {
+          "name": "zone",
+          "type": "string",
+          "description": "The zone the land lies in, such as residential, green or market.",
+          "required": true
+        },
+        {
+          "name": "use",
+          "type": "string",
+          "description": "What the land is used for in practice, such as housing, park or trading.",
+          "required": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the row was created."
+        }
+      ],
+      "indexes": [
+        {
+          "name": "place_zone",
+          "description": "Lists the zoning of one place.",
+          "fields": [
+            "place_id",
+            "zone"
+          ]
+        }
+      ]
     }
   ]
 }

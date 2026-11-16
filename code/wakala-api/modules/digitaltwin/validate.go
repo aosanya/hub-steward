@@ -14,6 +14,9 @@ const (
 	RoleMetric      = roleMetric
 	RoleObservation = roleObservation
 	RoleRetention   = roleRetention
+	RoleAddress     = roleAddress
+	RoleTenure      = roleTenure
+	RoleLandUse     = roleLandUse
 )
 
 func Check(s *spec.Spec, role string, v any) error {

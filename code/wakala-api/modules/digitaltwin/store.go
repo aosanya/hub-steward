@@ -13,6 +13,9 @@ const (
 	roleMetric      = "metric"
 	roleObservation = "observation"
 	roleRetention   = "retention"
+	roleAddress     = "address"
+	roleTenure      = "tenure"
+	roleLandUse     = "land_use"
 )
 
 type store = specstore.Store

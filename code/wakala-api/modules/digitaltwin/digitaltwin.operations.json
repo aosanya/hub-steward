@@ -162,6 +162,72 @@
       "args": [{"from": "path", "as": "nodeID", "description": "The node to read."},
                {"from": "query", "as": "metric_name", "description": "Narrows to one measurement. Empty returns the latest of each."}],
       "returns": [{"body": true}]
+    },
+    "create_address": {
+      "method": "POST", "path": "/addresses", "call": "CreateAddress", "action": "digitaltwin.address.create",
+      "status": 201,
+      "title": "Record address",
+      "description": "Record one street address: street, number, and optionally the area, postcode and the place node it belongs to.",
+      "args": [{"from": "body", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "get_address": {
+      "method": "GET", "path": "/addresses/{addressID}", "call": "GetAddress", "action": "digitaltwin.address.read",
+      "title": "Read address",
+      "description": "Read one address by its storage key.",
+      "args": [{"from": "path", "as": "addressID", "description": "The address to read."}],
+      "returns": [{"body": true}]
+    },
+    "list_addresses": {
+      "method": "GET", "path": "/addresses", "call": "ListAddresses", "action": "digitaltwin.address.list",
+      "title": "List address records",
+      "description": "List the addresses matching the filter, oldest first. An empty street, area or place_id matches every one.",
+      "args": [{"from": "query", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "create_tenure": {
+      "method": "POST", "path": "/tenures", "call": "CreateTenure", "action": "digitaltwin.tenure.create",
+      "status": 201,
+      "title": "Record tenure",
+      "description": "Record who holds a place: the place node, the holder's name, the kind of holding (owner, tenant, leaseholder, occupant or custodian) and since when.",
+      "args": [{"from": "body", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "get_tenure": {
+      "method": "GET", "path": "/tenures/{tenureID}", "call": "GetTenure", "action": "digitaltwin.tenure.read",
+      "title": "Read tenure",
+      "description": "Read one holding by its storage key.",
+      "args": [{"from": "path", "as": "tenureID", "description": "The tenure to read."}],
+      "returns": [{"body": true}]
+    },
+    "list_tenures": {
+      "method": "GET", "path": "/tenures", "call": "ListTenures", "action": "digitaltwin.tenure.list",
+      "title": "List tenure records",
+      "description": "List the holdings matching the filter, oldest first. An empty place_id, holder or kind matches every one.",
+      "args": [{"from": "query", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "create_land_use": {
+      "method": "POST", "path": "/land-uses", "call": "CreateLandUse", "action": "digitaltwin.land_use.create",
+      "status": 201,
+      "title": "Record land use",
+      "description": "Record how a place or a named area is zoned and used: its zone and its use. Name the place node or the area, one of the two.",
+      "args": [{"from": "body", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "get_land_use": {
+      "method": "GET", "path": "/land-uses/{landUseID}", "call": "GetLandUse", "action": "digitaltwin.land_use.read",
+      "title": "Read land use",
+      "description": "Read one land use by its storage key.",
+      "args": [{"from": "path", "as": "landUseID", "description": "The land use to read."}],
+      "returns": [{"body": true}]
+    },
+    "list_land_uses": {
+      "method": "GET", "path": "/land-uses", "call": "ListLandUses", "action": "digitaltwin.land_use.list",
+      "title": "List land use records",
+      "description": "List the land uses matching the filter, oldest first. An empty place_id, area or zone matches every one.",
+      "args": [{"from": "query", "whole": true}],
+      "returns": [{"body": true}]
     }
   },
   "errors": {
@@ -172,6 +238,9 @@
     "ErrLinkNotFound": 404,
     "ErrMetricNotFound": 404,
     "ErrRetentionNotFound": 404,
-    "ErrObservationNotFound": 404
+    "ErrObservationNotFound": 404,
+    "ErrAddressNotFound": 404,
+    "ErrTenureNotFound": 404,
+    "ErrLandUseNotFound": 404
   }
 }

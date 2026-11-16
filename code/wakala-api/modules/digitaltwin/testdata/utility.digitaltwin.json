@@ -42,6 +42,24 @@
       "name": "retention_policy",
       "table": "retention_policies",
       "description": "How long readings of one kind are kept before the sweep removes them."
+    },
+    {
+      "role": "address",
+      "name": "address",
+      "table": "addresses",
+      "description": "One street address."
+    },
+    {
+      "role": "tenure",
+      "name": "tenure",
+      "table": "tenures",
+      "description": "One holding of a place."
+    },
+    {
+      "role": "land_use",
+      "name": "land_use",
+      "table": "land_uses",
+      "description": "The zoning and use of a place or area."
     }
   ]
 }

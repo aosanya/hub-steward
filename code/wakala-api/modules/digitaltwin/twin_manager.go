@@ -31,6 +31,12 @@ type (
 	Label             = models.Label
 	LabelForm         = models.LabelForm
 	Abbreviations     = models.Abbreviations
+	Address           = models.Address
+	AddressFilter     = models.AddressFilter
+	Tenure            = models.Tenure
+	TenureFilter      = models.TenureFilter
+	LandUse           = models.LandUse
+	LandUseFilter     = models.LandUseFilter
 )
 
 const (
@@ -74,6 +80,18 @@ type TwinManager interface {
 	Latest(ctx context.Context, nodeID, metricName string) (any, error)
 	PurgeObservationsBefore(ctx context.Context, nodeKind, metricName, cutoff string, spared ...Retention) (int, error)
 
+	CreateAddress(ctx context.Context, a Address) (Address, error)
+	GetAddress(ctx context.Context, id string) (Address, error)
+	ListAddresses(ctx context.Context, filter AddressFilter) ([]Address, error)
+
+	CreateTenure(ctx context.Context, t Tenure) (Tenure, error)
+	GetTenure(ctx context.Context, id string) (Tenure, error)
+	ListTenures(ctx context.Context, filter TenureFilter) ([]Tenure, error)
+
+	CreateLandUse(ctx context.Context, u LandUse) (LandUse, error)
+	GetLandUse(ctx context.Context, id string) (LandUse, error)
+	ListLandUses(ctx context.Context, filter LandUseFilter) ([]LandUse, error)
+
 	ForRun(runID string) (TwinManager, error)
 }
 
@@ -90,6 +108,9 @@ func NewTwinManager(db *gorm.DB, s *spec.Spec) (TwinManager, error) {
 		roleMetric:      models.Metric{},
 		roleObservation: models.Observation{},
 		roleRetention:   models.Retention{},
+		roleAddress:     models.Address{},
+		roleTenure:      models.Tenure{},
+		roleLandUse:     models.LandUse{},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("NewTwinManager: %w", err)
