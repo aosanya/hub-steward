@@ -146,6 +146,37 @@ describe("the Users & Roles screen", () => {
   });
 });
 
+describe("the Users & Roles screen with unnamed people and repeated seats", () => {
+  beforeEach(() => {
+    people.push({ id: "p3", display_name: "", email: "mate@example.org" } as (typeof people)[number], { id: "p4", display_name: "" } as (typeof people)[number], { id: "p5", display_name: "Gal Eszter" });
+    standings.p3 = { actor_id: "p3", display_name: "", seats: [] };
+    standings.p4 = { actor_id: "p4abcdef-1111", display_name: "", seats: [{ id: "s3", role_name: "Town clerk" }] };
+    standings.p5 = { actor_id: "p5", display_name: "Gal Eszter", seats: [{ id: "s4", role_name: "Council member" }, { id: "s5", role_name: "Council member" }] };
+  });
+
+  afterEach(() => {
+    people.length = 2;
+    delete standings.p3;
+    delete standings.p4;
+    delete standings.p5;
+  });
+
+  it("labels a person without a display name by email, or else by a short id", async () => {
+    openAt("Users & Roles");
+
+    expect(await screen.findByRole("button", { name: /mate@example\.org/ })).toBeInTheDocument();
+    const nameless = screen.getByRole("button", { name: /Town clerk/ });
+    expect(within(nameless).getByText(/p4/)).toBeInTheDocument();
+  });
+
+  it("names a role once for a person who holds it in two seats", async () => {
+    openAt("Users & Roles");
+
+    const gal = await screen.findByRole("button", { name: /Gal Eszter/ });
+    expect(within(gal).getByText("Council member")).toBeInTheDocument();
+  });
+});
+
 describe("the Boundaries & Areas screen", () => {
   it("lists each group with its resident count", async () => {
     openAt("Boundaries & Areas");
