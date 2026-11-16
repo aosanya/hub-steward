@@ -4,7 +4,7 @@ import { GroupScreen } from "./GroupScreen";
 import { residentPaths } from "./paths";
 
 export const items = [
-  { title: "All People", path: () => residentPaths.people.path() },
+  { title: "All People", wordIn: "People", path: () => residentPaths.people.path() },
   { title: "Households", path: () => residentPaths.households.path() },
   { title: "Registrations", path: () => residentPaths.registrations.path() },
   { title: "Groups & Associations", path: () => residentPaths.groups.path() },

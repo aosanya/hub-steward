@@ -11,7 +11,7 @@ import { items as servicesItems } from "./sections/services";
 import { items as settingsItems } from "./sections/settings";
 import { items as staffItems } from "./sections/staff";
 
-export type MenuItem = { title: string; label?: string; path?: () => string };
+export type MenuItem = { title: string; label?: string; wordIn?: string; path?: () => string };
 
 export type MenuSection = SectionHead & { items: MenuItem[] };
 
@@ -37,10 +37,13 @@ export const menuSections: MenuSection[] = sectionHeads.map((head) => ({ ...head
 
 export const sectionById = (id: string) => menuSections.find((section) => section.id === id);
 
+const labelOf = (item: MenuItem, section: MenuSection, view: AgencyView | null | undefined) =>
+  item.wordIn ? item.title.replace(item.wordIn, word(view, item.wordIn, section.module)) : word(view, item.title, section.module);
+
 export const named = (section: MenuSection, view: AgencyView | null | undefined): MenuSection => ({
   ...section,
   title: titleOf(section, view),
-  items: section.items.map((item) => ({ ...item, label: word(view, item.title, section.module) })),
+  items: section.items.map((item) => ({ ...item, label: labelOf(item, section, view) })),
 });
 
 export const sectionsFor = (view: AgencyView | null | undefined): MenuSection[] => {
