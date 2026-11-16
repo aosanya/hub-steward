@@ -1,5 +1,5 @@
 import { MenuWindow } from "../../MenuWindow";
-import { homeEmpty, listOf, peopleWords, text, type Item } from "./staffData";
+import { homeEmpty, listOf, peopleWords, text } from "./staffData";
 
 const liveDraftOf = async () => {
   const production = (await listOf("agency_list_publications")).filter((publication) => publication.channel === "production");
