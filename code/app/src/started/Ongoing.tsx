@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { openAgencyId } from "../../agency/open";
-import { useLoad } from "../../forms/useLoad";
-import { mcpDoneClient, type DoneClient } from "../../started/done";
-import { mcpStartedClient, startedAnswerOf, type StartedAnswer, type StartedClient, type StartedItem, type WaitsOn } from "../../started/api";
-import { Button } from "../../ui/Button";
-import { ListRow, Rows } from "../../ui/ListRow";
-import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
-import { SectionHeading } from "../../ui/SectionHeading";
-import { Segmented, type SegmentedItem } from "../../ui/Segmented";
+import { openAgencyId } from "../agency/open";
+import { useLoad } from "../forms/useLoad";
+import { mcpDoneClient, type DoneClient } from "./done";
+import { mcpStartedClient, startedAnswerOf, type StartedAnswer, type StartedClient, type StartedItem, type WaitsOn } from "./api";
+import { Button } from "../ui/Button";
+import { ListRow, Rows } from "../ui/ListRow";
+import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
+import { SectionHeading } from "../ui/SectionHeading";
+import { Segmented, type SegmentedItem } from "../ui/Segmented";
 import { DoneTab } from "./DoneTab";
 
 type OngoingTab = "live" | "done";

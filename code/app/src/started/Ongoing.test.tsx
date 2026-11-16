@@ -1,8 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
-import type { StartedAnswer, StartedClient, StartedItem } from "../../started/api";
+import { forgetOpenAgency, openAgency } from "../agency/open";
+import type { StartedAnswer, StartedClient, StartedItem } from "./api";
 import { Ongoing } from "./Ongoing";
 
 const urea: StartedItem = {

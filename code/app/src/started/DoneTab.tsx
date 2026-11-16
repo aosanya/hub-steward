@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { openAgencyId } from "../../agency/open";
-import { useLoad } from "../../forms/useLoad";
-import { doneSources, newestFirst, type DoneClient, type DoneItem, type DonePage } from "../../started/done";
-import { Button } from "../../ui/Button";
-import { shortDayWords } from "../../ui/days";
-import { ListRow, Rows } from "../../ui/ListRow";
-import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
+import { openAgencyId } from "../agency/open";
+import { useLoad } from "../forms/useLoad";
+import { doneSources, newestFirst, type DoneClient, type DoneItem, type DonePage } from "./done";
+import { Button } from "../ui/Button";
+import { shortDayWords } from "../ui/days";
+import { ListRow, Rows } from "../ui/ListRow";
+import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
 
 const allFailedWords = "Your finished tasks could not be loaded.";
 

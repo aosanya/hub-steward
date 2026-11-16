@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { entryClient, type LinkOutcome } from "../../entry/api";
-import { useLanguage } from "../../entry/language";
-import { hubIsLocal } from "../../entry/localHub";
-import { signInWithPassword, type PasswordOutcome } from "../../entry/passwordSignIn";
-import { Button } from "../../ui/Button";
-import { Field } from "../../ui/Field";
-import { LanguageChoice } from "../../ui/LanguageChoice";
-import { Shell } from "../../ui/Shell";
-import { resetMcp } from "../../wakala/mcp";
-import { forgetSubject } from "../../wakala/me";
+import { entryClient, type LinkOutcome } from "./api";
+import { useLanguage } from "./language";
+import { hubIsLocal } from "./localHub";
+import { signInWithPassword, type PasswordOutcome } from "./passwordSignIn";
+import { Button } from "../ui/Button";
+import { Field } from "../ui/Field";
+import { LanguageChoice } from "../ui/LanguageChoice";
+import { Shell } from "../ui/Shell";
+import { resetMcp } from "../wakala/mcp";
+import { forgetSubject } from "../wakala/me";
 
 export function SignInPage() {
   const arrival = new URLSearchParams(useLocation().search);

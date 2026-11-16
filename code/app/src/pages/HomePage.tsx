@@ -3,7 +3,7 @@ import type { AgencyKind } from "../home/cards";
 import type { AgencyView } from "../agency/modules";
 import { StartRows } from "../home/StartRows";
 import { doSomethingPath } from "../routes";
-import { Ongoing } from "./started/Ongoing";
+import { Ongoing } from "../started/Ongoing";
 import { LoadingLine } from "../ui/LoadState";
 import { Shell } from "../ui/Shell";
 

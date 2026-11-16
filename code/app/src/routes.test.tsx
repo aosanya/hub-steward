@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "./agency/open";
-import { ToOpenAgencyScreen } from "./pages/entry/OpenAgency";
+import { ToOpenAgencyScreen } from "./entry/OpenAgency";
 import { allScreens, routes } from "./routes";
 
 const farmers = "270e07b7-6b69-55ca-aa30-9441ce138541";

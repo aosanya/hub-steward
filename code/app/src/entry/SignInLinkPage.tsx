@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { resetMcp } from "../../wakala/mcp";
-import { checkSession, forgetSubject } from "../../wakala/me";
-import { forgetToken, keepToken, readLinkFragment } from "../../wakala/token";
+import { resetMcp } from "../wakala/mcp";
+import { checkSession, forgetSubject } from "../wakala/me";
+import { forgetToken, keepToken, readLinkFragment } from "../wakala/token";
 
 export const linkFailedPath = "/sign-in?link=failed";
 

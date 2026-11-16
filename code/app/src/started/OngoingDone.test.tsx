@@ -1,9 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { forgetOpenAgency } from "../../agency/open";
-import type { DoneClient, DoneItem, DonePage } from "../../started/done";
-import type { StartedClient } from "../../started/api";
+import { forgetOpenAgency } from "../agency/open";
+import type { DoneClient, DoneItem, DonePage } from "./done";
+import type { StartedClient } from "./api";
 import { Ongoing } from "./Ongoing";
 
 const closedOrder: DoneItem = {

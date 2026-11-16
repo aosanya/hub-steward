@@ -11,7 +11,7 @@ vi.mock("./StartRows", () => ({
   StartRows: ({ kind, view }: RowsProps) => <p>{`rows: ${kind}, ${view?.modules.map((module) => module.code).join(" ") ?? "no read"}`}</p>,
 }));
 
-vi.mock("../pages/started/Ongoing", () => ({
+vi.mock("../started/Ongoing", () => ({
   Ongoing: ({ onStart }: { onStart: () => void }) => (
     <button type="button" onClick={onStart}>
       ongoing rows
