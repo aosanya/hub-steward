@@ -52,15 +52,33 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
   const changed = Object.fromEntries(Object.entries(values).filter(([key, value]) => value !== base[key]));
   const missing = fields.some((field) => field.required && (values[field.key] ?? "").trim() === "");
   const open = () => {
+    const start = startValues(item, fields);
+    setBase(start);
     setValues(start);
     setRefused("");
+    setClashes([]);
     setEditing(true);
+  };
+  const settle = (key: string, theirs: string, useTheirs: boolean) => {
+    setBase((was) => ({ ...was, [key]: theirs }));
+    if (useTheirs) setValues((was) => ({ ...was, [key]: theirs }));
+    setClashes((was) => was.filter((clash) => clash.key !== key));
   };
   const save = async () => {
     setSaving(true);
     setRefused("");
     try {
-      await callTool("", tool, { [idArg]: id, ...Object.fromEntries(keep.map((key) => [key, key in start ? start[key] : textOf(item, key)])), ...changed });
+      if (readAgain) {
+        const present = startValues(await readAgain(), fields);
+        const found = fields
+          .filter((field) => field.key in changed && present[field.key] !== base[field.key])
+          .map((field) => ({ key: field.key, label: field.label, theirs: present[field.key], mine: changed[field.key] }));
+        if (found.length > 0) {
+          setClashes(found);
+          return;
+        }
+      }
+      await callTool("", tool, { [idArg]: id, ...Object.fromEntries(keep.map((key) => [key, key in base ? base[key] : textOf(item, key)])), ...changed });
       setEditing(false);
       onSaved?.(changed);
     } catch (error) {

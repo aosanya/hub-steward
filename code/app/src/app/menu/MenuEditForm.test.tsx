@@ -1,5 +1,5 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import * as mcp from "../../shared/wakala/mcp";
@@ -131,5 +131,119 @@ describe("the shared menu edit form", () => {
 
     expect(screen.queryByLabelText("Name")).toBeNull();
     expect(saves()).toHaveLength(0);
+  });
+
+  describe("when the hub's record is read again on Save", () => {
+    let present: Record<string, unknown>;
+
+    beforeEach(() => {
+      present = { ...item };
+    });
+
+    const staleForm = (onSaved = vi.fn()) => {
+      render(
+        <MenuEditForm
+          item={item}
+          id="b1"
+          idArg="budgetID"
+          tool="accounting_budget_set"
+          permission="accounting.manage"
+          fields={fields}
+          readAgain={async () => present}
+          onSaved={onSaved}
+        />,
+      );
+      return onSaved;
+    };
+
+    const editDepartment = async (text: string) => {
+      await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+      const department = screen.getByLabelText("Department");
+      await userEvent.clear(department);
+      await userEvent.type(department, text);
+    };
+
+    it("stops, shows both values and sends nothing when the hub changed a field the person changed", async () => {
+      const onSaved = staleForm();
+      present = { ...item, department: "Works and Roads" };
+
+      await editDepartment("Roads");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      const conflict = await screen.findByRole("group", { name: "Department" });
+      expect(within(conflict).getByText("Works and Roads")).toBeInTheDocument();
+      expect(within(conflict).getByText("Roads")).toBeInTheDocument();
+      expect(within(conflict).getByRole("button", { name: "Keep mine" })).toBeInTheDocument();
+      expect(within(conflict).getByRole("button", { name: "Use theirs" })).toBeInTheDocument();
+      expect(saves()).toHaveLength(0);
+      expect(onSaved).not.toHaveBeenCalled();
+    });
+
+    it("saves as before when the hub changed a different field", async () => {
+      const onSaved = staleForm();
+      present = { ...item, amount: "2000" };
+
+      await editDepartment("Roads");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      await waitFor(() => expect(onSaved).toHaveBeenCalledWith({ department: "Roads" }));
+      expect(saves()).toEqual([["", "accounting_budget_set", { budgetID: "b1", department: "Roads" }]]);
+      expect(screen.queryByRole("group", { name: "Department" })).toBeNull();
+    });
+
+    it("sends the person's own value after Keep mine and a second Save", async () => {
+      staleForm();
+      present = { ...item, department: "Works and Roads" };
+
+      await editDepartment("Roads");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+      const conflict = await screen.findByRole("group", { name: "Department" });
+      await userEvent.click(within(conflict).getByRole("button", { name: "Keep mine" }));
+
+      expect(saves()).toHaveLength(0);
+      expect(screen.queryByRole("group", { name: "Department" })).toBeNull();
+      expect(screen.getByLabelText("Department")).toHaveValue("Roads");
+
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { budgetID: "b1", department: "Roads" }]]));
+    });
+
+    it("puts the hub's value in the field after Use theirs and sends nothing", async () => {
+      staleForm();
+      present = { ...item, department: "Works and Roads" };
+
+      await editDepartment("Roads");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+      const conflict = await screen.findByRole("group", { name: "Department" });
+      await userEvent.click(within(conflict).getByRole("button", { name: "Use theirs" }));
+
+      expect(screen.queryByRole("group", { name: "Department" })).toBeNull();
+      expect(screen.getByLabelText("Department")).toHaveValue("Works and Roads");
+      expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+      expect(saves()).toHaveLength(0);
+    });
+
+    it("does not call the tool when the hub's record cannot be read again", async () => {
+      render(
+        <MenuEditForm
+          item={item}
+          id="b1"
+          idArg="budgetID"
+          tool="accounting_budget_set"
+          permission="accounting.manage"
+          fields={fields}
+          readAgain={async () => {
+            throw new mcp.McpError("accounting_budget_get: the hub is not answering");
+          }}
+        />,
+      );
+
+      await editDepartment("Roads");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      expect(await screen.findByText("the hub is not answering")).toBeInTheDocument();
+      expect(saves()).toHaveLength(0);
+    });
   });
 });
