@@ -3,6 +3,7 @@ import { openAgencyId } from "../../shared/wakala/openAgency";
 import { mcpStartClient, type StartClient } from "../../features/market";
 import { type InboxClient, mcpInboxClient } from "../../features/inbox/api";
 import { thingsToDoLabel } from "../../features/inbox/thingsToDo";
+import { useWord } from "../../features/agency/useWord";
 import { useNeedsYou } from "../../features/inbox/useNeedsYou";
 import { needsYouPath } from "../tabs";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
@@ -11,7 +12,8 @@ type RowProps = { count: number | null; to?: string };
 
 export function NeedsYouStripRow({ count, to }: RowProps) {
   const navigate = useNavigate();
-  const things = thingsToDoLabel(count);
+  const word = useWord();
+  const things = thingsToDoLabel(count, word);
   if (!things) return null;
   return (
     <Rows>

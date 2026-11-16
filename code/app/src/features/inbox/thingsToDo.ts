@@ -1,7 +1,12 @@
 import { unreadLabel } from "../chat/unread";
 
-export const thingsToDoLabel = (count: number | null) => {
+type Wording = (generic: string) => string;
+
+const asWritten: Wording = (generic) => generic;
+
+export const thingsToDoLabel = (count: number | null, word: Wording = asWritten) => {
   const shown = unreadLabel(count);
   if (!shown) return null;
-  return { shown, words: `${shown} ${count === 1 ? "thing" : "things"} to do` };
+  const noun = word(count === 1 ? "Thing" : "Things").toLowerCase();
+  return { shown, words: `${shown} ${noun} to do` };
 };
