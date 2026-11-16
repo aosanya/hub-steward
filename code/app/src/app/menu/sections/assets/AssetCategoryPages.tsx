@@ -1,6 +1,7 @@
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { MenuList } from "../../MenuList";
+import { MenuWindow } from "../../MenuWindow";
+import { assetDetailFields, assetReadTool, loadAsset } from "./assetDetail";
 
 type Item = Record<string, unknown>;
 
@@ -27,7 +28,13 @@ const loadCategory = (category: string) => async () => {
 
 const categoryPage = ({ title, category, empty }: Category) =>
   function AssetCategoryPage() {
-    return <MenuList title={title} tool={assetList} fields={fields} empty={{ words: empty }} load={loadCategory(category)} />;
+    return (
+      <MenuWindow
+        title={title}
+        list={{ title, tool: assetList, fields, empty: { words: empty }, load: loadCategory(category) }}
+        detail={{ tool: assetReadTool, fields: assetDetailFields, status: "", load: loadAsset }}
+      />
+    );
   };
 
 export const RoutesPage = categoryPage({ title: "Routes", category: "Route", empty: "No routes yet." });
