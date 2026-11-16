@@ -1,5 +1,5 @@
 import type { KeyboardEvent } from "react";
-import { Icon } from "../ui/Icon";
+import { Icon } from "../shared/ui/Icon";
 import type { FolderEntry } from "./api";
 import { entryIcon } from "./entryIcon";
 import type { TreeRow } from "./treeRows";

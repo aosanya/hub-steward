@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button } from "../../ui/Button";
-import { Card } from "../../ui/Card";
-import { Field } from "../../ui/Field";
+import { Button } from "../../shared/ui/Button";
+import { Card } from "../../shared/ui/Card";
+import { Field } from "../../shared/ui/Field";
 
 export function StartThread({ onStart, bare = false }: { onStart: (label: string) => Promise<void>; bare?: boolean }) {
   const [open, setOpen] = useState(false);

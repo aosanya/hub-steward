@@ -1,4 +1,4 @@
-import { callTool } from "../../../wakala/mcp";
+import { callTool } from "../../../shared/wakala/mcp";
 import { productsOf, type Offer, type Product } from "../../shared/api";
 import { askArguments, buyNowArguments, listOffersArguments } from "../../shared/arguments";
 import { listAllGroupOrders } from "../../shared/groupOrders";

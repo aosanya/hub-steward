@@ -9,7 +9,7 @@ import { AssistantPage } from "./AssistantPage";
 import type { AssistantClient } from "./api";
 import type { ResultDraft } from "./results";
 
-vi.mock("../wakala/mcp", () => ({ callTool: vi.fn().mockResolvedValue({ items: [] }), listTools: vi.fn(), McpError: class extends Error {} }));
+vi.mock("../shared/wakala/mcp", () => ({ callTool: vi.fn().mockResolvedValue({ items: [] }), listTools: vi.fn(), McpError: class extends Error {} }));
 
 beforeEach(() => openAgency("farmers"));
 

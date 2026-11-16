@@ -9,9 +9,9 @@ import { mcpStartClient, type StartClient } from "../market/start/api";
 import { useLoad } from "../forms/useLoad";
 import { mcpStepsClient, type StepsClient } from "../steps/api";
 import { backlogsTab, ongoingTab, startTab, tabPathIn, type Tab } from "../tabs";
-import { Icon } from "../ui/Icon";
-import { ListRow, Rows } from "../ui/ListRow";
-import { LoadFailed } from "../ui/LoadState";
+import { Icon } from "../shared/ui/Icon";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { LoadFailed } from "../shared/ui/LoadState";
 
 type Props = {
   agency?: AgencyClient;

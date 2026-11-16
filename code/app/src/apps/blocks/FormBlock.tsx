@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
-import { Card } from "../../ui/Card";
-import { Field } from "../../ui/Field";
+import { Card } from "../../shared/ui/Card";
+import { Field } from "../../shared/ui/Field";
 import type { FieldSpec } from "./types";
 
 type Props = {

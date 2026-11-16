@@ -2,10 +2,10 @@ import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
 import { useBackToSection } from "../menu/useBackToSection";
 import { filled } from "../risks/labels";
-import { Chip } from "../ui/Chip";
-import { ListRow, Rows } from "../ui/ListRow";
-import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
-import { Shell } from "../ui/Shell";
+import { Chip } from "../shared/ui/Chip";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { EmptyCard, LoadFailed, LoadingLine } from "../shared/ui/LoadState";
+import { Shell } from "../shared/ui/Shell";
 import { longestLateFirst, mcpLateMattersClient, type LateMattersClient } from "./lateMattersApi";
 
 export function LateMattersPage({ client = mcpLateMattersClient }: { client?: LateMattersClient }) {

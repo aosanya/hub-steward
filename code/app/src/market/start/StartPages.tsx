@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { doSomethingPath } from "../../routes";
-import { Button } from "../../ui/Button";
-import { Card } from "../../ui/Card";
-import { EmptyCard, LoadFailed } from "../../ui/LoadState";
-import { Field } from "../../ui/Field";
-import { SearchSelect } from "../../ui/SearchSelect";
-import { Shell } from "../../ui/Shell";
+import { Button } from "../../shared/ui/Button";
+import { Card } from "../../shared/ui/Card";
+import { EmptyCard, LoadFailed } from "../../shared/ui/LoadState";
+import { Field } from "../../shared/ui/Field";
+import { SearchSelect } from "../../shared/ui/SearchSelect";
+import { Shell } from "../../shared/ui/Shell";
 import { coordinatorOrderPath, draftOf, mcpStartClient, unitOf, type PosterChoice, type StartClient, type StartStep } from "./api";
 import { mcpProductsClient, noOfferWords, offeredProducts, resolveProduct, type ProductsClient } from "./products";
 

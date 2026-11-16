@@ -2,8 +2,8 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { App } from "../App";
-import * as mcp from "../wakala/mcp";
-import { forgetSubject } from "../wakala/me";
+import * as mcp from "../shared/wakala/mcp";
+import { forgetSubject } from "../shared/wakala/me";
 import { openAgency } from "../agency/open";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLoad } from "../../forms/useLoad";
 import { openAgencyId } from "../../agency/open";
-import { Button } from "../../ui/Button";
-import { Card } from "../../ui/Card";
-import { Chip } from "../../ui/Chip";
-import { dateTimeWords } from "../../ui/days";
-import { Field } from "../../ui/Field";
+import { Button } from "../../shared/ui/Button";
+import { Card } from "../../shared/ui/Card";
+import { Chip } from "../../shared/ui/Chip";
+import { dateTimeWords } from "../../shared/ui/days";
+import { Field } from "../../shared/ui/Field";
 import { mcpNotesClient, type NotesClient } from "../api";
 import { elapsedSeconds, startedAtOf } from "./elapsed";
 import { mcpCapsClient, type CapsClient, type CapsReading } from "./api";

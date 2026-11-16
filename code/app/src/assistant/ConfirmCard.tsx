@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { BacklogsClient } from "../backlogs/api";
-import { Button } from "../ui/Button";
-import { Card } from "../ui/Card";
+import { Button } from "../shared/ui/Button";
+import { Card } from "../shared/ui/Card";
 import type { ResultDraft } from "./results";
 import { cancelWords, confirmWords, nameWrite, writeLines, type Confirm, type Held, type Names, type Write } from "./confirm";
 

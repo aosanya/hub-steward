@@ -1,4 +1,4 @@
-import { Icon } from "../ui/Icon";
+import { Icon } from "../shared/ui/Icon";
 import { entryIcon } from "./entryIcon";
 import type { Tab } from "./openTabs";
 

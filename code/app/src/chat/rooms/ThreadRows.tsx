@@ -1,5 +1,5 @@
-import { Chip } from "../../ui/Chip";
-import { ListRow, Rows } from "../../ui/ListRow";
+import { Chip } from "../../shared/ui/Chip";
+import { ListRow, Rows } from "../../shared/ui/ListRow";
 import type { RoomThread } from "./api";
 import { timeOf } from "./time";
 

@@ -7,8 +7,8 @@ import { forgetOpenAgency, openAgency } from "../../agency/open";
 import { SmartBacklogPage } from "./SmartBacklogPage";
 import type { RuleSet, SmartBacklogClient } from "./types";
 
-vi.mock("../../wakala/mcp", async () => {
-  const actual = await vi.importActual<typeof import("../../wakala/mcp")>("../../wakala/mcp");
+vi.mock("../../shared/wakala/mcp", async () => {
+  const actual = await vi.importActual<typeof import("../../shared/wakala/mcp")>("../../shared/wakala/mcp");
   return { ...actual, callTool: async () => ({ items: [] }) };
 });
 

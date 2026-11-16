@@ -7,11 +7,11 @@ import { AskForm } from "../../supply/asks/AskForm";
 import { OneAskPage } from "../../supply/asks/AsksPage";
 import { liveStock } from "../../supply/asks/liveStock";
 import { noStock, type StockReader } from "../../supply/asks/stock";
-import { Card } from "../../../ui/Card";
-import { EmptyCard, LoadFailed } from "../../../ui/LoadState";
-import { Chip } from "../../../ui/Chip";
-import { ListRow, Rows } from "../../../ui/ListRow";
-import { Shell } from "../../../ui/Shell";
+import { Card } from "../../../shared/ui/Card";
+import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
+import { Chip } from "../../../shared/ui/Chip";
+import { ListRow, Rows } from "../../../shared/ui/ListRow";
+import { Shell } from "../../../shared/ui/Shell";
 import { answeredAsks, askPrice, mcpBuyerAskClient, waitingAsks, type BuyerAsk, type BuyerAskClient } from "./buyerAsksApi";
 
 type Props = { client?: BuyerAskClient; me?: string; readStock?: StockReader; back?: string };

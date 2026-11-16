@@ -1,6 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { McpError } from "../wakala/mcp";
+import { McpError } from "../shared/wakala/mcp";
 import { say, showAssistant } from "./assistantScreen";
 import { failureReason } from "./failureReason";
 

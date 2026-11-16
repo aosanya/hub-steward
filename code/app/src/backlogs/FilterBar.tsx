@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { Chip } from "../ui/Chip";
-import { SearchBox } from "../ui/SearchBox";
+import { Chip } from "../shared/ui/Chip";
+import { SearchBox } from "../shared/ui/SearchBox";
 import "./backlogs.css";
 
 type Props = { query: string; onQuery: (text: string) => void; count?: string; chosen: string[]; onTag: (tag: string) => void; onClear?: () => void; save?: ReactNode };

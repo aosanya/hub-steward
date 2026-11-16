@@ -5,15 +5,15 @@ import { ChatPage } from "./ChatPage";
 import { RoomThreadsPage } from "./rooms/RoomThreadsPage";
 import { mcpRoomsClient, type RoomsClient } from "./rooms/api";
 import { roomsOf } from "./api";
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 
 beforeEach(() => openAgency("farmers"));
 
 afterEach(() => forgetOpenAgency());
 
-vi.mock("../wakala/mcp", async () => ({ ...(await vi.importActual<typeof import("../wakala/mcp")>("../wakala/mcp")), callTool: vi.fn() }));
-vi.mock("../wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
+vi.mock("../shared/wakala/mcp", async () => ({ ...(await vi.importActual<typeof import("../shared/wakala/mcp")>("../shared/wakala/mcp")), callTool: vi.fn() }));
+vi.mock("../shared/wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
 
 const stamp = (hours: number) => {
   const date = new Date();

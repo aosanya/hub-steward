@@ -1,6 +1,6 @@
-import { AgeBubble } from "../ui/AgeBubble";
-import { Chip } from "../ui/Chip";
-import { TextChip } from "../ui/TextChip";
+import { AgeBubble } from "../shared/ui/AgeBubble";
+import { Chip } from "../shared/ui/Chip";
+import { TextChip } from "../shared/ui/TextChip";
 import { settled, type Issue } from "./api";
 import "./backlogs.css";
 import { effortKnown } from "./effort";

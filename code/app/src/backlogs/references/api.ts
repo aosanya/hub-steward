@@ -1,4 +1,4 @@
-import { callTool } from "../../wakala/mcp";
+import { callTool } from "../../shared/wakala/mcp";
 import { itemsOf, taskTools } from "../api";
 
 export const referenceTools = {

@@ -5,7 +5,7 @@ import { rulesProblem } from "../assistant/ruleCodes";
 import { filterDraft } from "./smart/fromFilter";
 import { choicesOf } from "./smart/api";
 import { rulesKey } from "./smart/rulesKey";
-import { textLook } from "../ui/textColor";
+import { textLook } from "../shared/ui/textColor";
 import { issueOf, type Issue } from "./api";
 import { IssueLine, IssueTags } from "./IssueTitle";
 

@@ -6,7 +6,7 @@ import { App } from "../App";
 import { forgetOpenAgency, openAgency, openAgencyId } from "../agency/open";
 import { words } from "../entry/words";
 import { swahili } from "../entry/swahili";
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../shared/wakala/mcp";
 import { LanguagePage } from "./LanguagePage";
 import { ProfilePage } from "./ProfilePage";
 import { SignOutPage } from "./SignOutPage";

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { backlogsHomePath } from "../paths";
-import { Button } from "../../ui/Button";
-import { Field } from "../../ui/Field";
-import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
-import { Shell } from "../../ui/Shell";
+import { Button } from "../../shared/ui/Button";
+import { Field } from "../../shared/ui/Field";
+import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
+import { Shell } from "../../shared/ui/Shell";
 import { StepsEditor } from "./StepsEditor";
 import { draftProblem, type DraftStep } from "./stepsDraft";
 import { mcpBacklogManageClient } from "./api";

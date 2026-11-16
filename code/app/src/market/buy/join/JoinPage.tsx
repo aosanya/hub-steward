@@ -2,9 +2,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
 import { resolveMember } from "../../supply/api";
 import { routes } from "../../../routes";
-import { EmptyCard, LoadFailed } from "../../../ui/LoadState";
-import { JoinForm } from "../../../ui/JoinForm";
-import { Shell } from "../../../ui/Shell";
+import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
+import { JoinForm } from "../../../shared/ui/JoinForm";
+import { Shell } from "../../../shared/ui/Shell";
 import { termsWords, mcpJoinClient, type JoinClient, type OpenGroupOrder } from "./api";
 
 type Props = { client?: JoinClient; me?: string };

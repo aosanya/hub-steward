@@ -8,7 +8,7 @@ import { AssistantPage } from "./AssistantPage";
 import type { AssistantClient } from "./api";
 import { draftOf, labelOf, pendingTool, titleOf, type ResultDraft } from "./results";
 
-vi.mock("../wakala/mcp", () => ({ callTool: vi.fn(), listTools: vi.fn(), McpError: class extends Error {} }));
+vi.mock("../shared/wakala/mcp", () => ({ callTool: vi.fn(), listTools: vi.fn(), McpError: class extends Error {} }));
 
 beforeEach(() => openAgency("farmers"));
 

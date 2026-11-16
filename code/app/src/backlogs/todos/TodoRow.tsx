@@ -1,7 +1,7 @@
 import { useState, type CSSProperties } from "react";
-import { ActionsMenu } from "../../ui/ActionsMenu";
-import { Chip, type ChipTone } from "../../ui/Chip";
-import { ListRow } from "../../ui/ListRow";
+import { ActionsMenu } from "../../shared/ui/ActionsMenu";
+import { Chip, type ChipTone } from "../../shared/ui/Chip";
+import { ListRow } from "../../shared/ui/ListRow";
 import type { TodoWrites } from "./api";
 import { ReasonForm, StatusChoices, TitleForm, WaitsOnForm } from "./TodoForms";
 import { useAttempt, waitChoices } from "./todoEdit";

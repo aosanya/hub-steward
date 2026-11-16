@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import * as mcp from "../../../wakala/mcp";
+import * as mcp from "../../../shared/wakala/mcp";
 import { mcpSellClient, type BuyerPrice, type GroupSale, type SellClient } from "./api";
 import { SellPage } from "./SellPage";
 

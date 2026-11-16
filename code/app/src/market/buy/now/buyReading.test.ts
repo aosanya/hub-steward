@@ -1,4 +1,4 @@
-import * as mcp from "../../../wakala/mcp";
+import * as mcp from "../../../shared/wakala/mcp";
 import { buyOfferOf, buyOrderOf, mcpBuyNowClient, offerWordsOf, orderTotal } from "./api";
 
 afterEach(() => vi.restoreAllMocks());

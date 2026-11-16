@@ -1,7 +1,7 @@
-import { Button } from "../ui/Button";
-import { Rows } from "../ui/ListRow";
-import { LoadFailed, LoadingLine } from "../ui/LoadState";
-import { SectionHeading } from "../ui/SectionHeading";
+import { Button } from "../shared/ui/Button";
+import { Rows } from "../shared/ui/ListRow";
+import { LoadFailed, LoadingLine } from "../shared/ui/LoadState";
+import { SectionHeading } from "../shared/ui/SectionHeading";
 import type { NotificationItem } from "./api";
 import { NoticeRow } from "./NoticeRow";
 import type { SectionState } from "./sectionState";

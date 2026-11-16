@@ -1,9 +1,9 @@
-import { callTool } from "../../../wakala/mcp";
+import { callTool } from "../../../shared/wakala/mcp";
 import { mcpWantedClient, wantedBody } from "./api";
-import { dayWords } from "../../../ui/days";
+import { dayWords } from "../../../shared/ui/days";
 import { dayName } from "./dates";
 
-vi.mock("../../../wakala/mcp", () => ({ callTool: vi.fn() }));
+vi.mock("../../../shared/wakala/mcp", () => ({ callTool: vi.fn() }));
 
 const call = callTool as any;
 

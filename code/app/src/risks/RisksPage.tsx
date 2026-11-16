@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
 import { routes } from "../routes";
-import { Chip } from "../ui/Chip";
-import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
-import { ListRow, Rows } from "../ui/ListRow";
-import { isoDay } from "../ui/days";
-import { Segmented } from "../ui/Segmented";
-import { Shell } from "../ui/Shell";
+import { Chip } from "../shared/ui/Chip";
+import { EmptyCard, LoadFailed, LoadingLine } from "../shared/ui/LoadState";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { isoDay } from "../shared/ui/days";
+import { Segmented } from "../shared/ui/Segmented";
+import { Shell } from "../shared/ui/Shell";
 import { mcpRisksClient, type RisksClient } from "./api";
 import { filled, labelOf } from "./labels";
 

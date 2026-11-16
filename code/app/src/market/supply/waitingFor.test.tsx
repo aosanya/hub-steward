@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ApplyPage } from "./ApplyPage";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../shared/wakala/mcp";
 import { leaderNames, mcpSupplyClient, waitingWords, type Supplier, type SupplyClient } from "./api";
 
 const applicant = (status: string, approvedByName = ""): Supplier => ({

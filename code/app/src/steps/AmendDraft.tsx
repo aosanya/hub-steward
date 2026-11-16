@@ -1,5 +1,5 @@
-import { Button } from "../ui/Button";
-import { TextArea } from "../ui/TextArea";
+import { Button } from "../shared/ui/Button";
+import { TextArea } from "../shared/ui/TextArea";
 import { editKey, type Edits } from "./amend";
 import type { EarlierStep } from "./api";
 

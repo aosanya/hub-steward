@@ -6,7 +6,7 @@ import { OfferFormPage } from "./OfferFormPage";
 import { OffersPage } from "./OffersPage";
 import { kes, mcpSupplyClient, offerOf, priceWords, productSlug, supplierOf, type Supplier, type SupplyClient, type SupplyOffer } from "./api";
 import { SupplierHome } from "./SupplierHome";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../shared/wakala/mcp";
 
 const supplier = (status: string, owner = "m1"): Supplier => ({
   id: "p1",
@@ -227,8 +227,8 @@ describe("the market tools", () => {
 
 describe("the member id against a live api", () => {
   it("finds the member's own application from /me when none is injected", async () => {
-    const { forgetSubject } = await import("../../wakala/me");
-    const { setRuntimeConfig, forgetRuntimeConfig } = await import("../../wakala/config");
+    const { forgetSubject } = await import("../../shared/wakala/me");
+    const { setRuntimeConfig, forgetRuntimeConfig } = await import("../../shared/wakala/config");
     forgetSubject();
     setRuntimeConfig({ wakala: "https://api.example" });
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ subject: "m1", agencies: [] }) }));

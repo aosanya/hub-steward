@@ -1,4 +1,4 @@
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 
 export type WaitingForm = {
   form_id: string;

@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import type { Backlog, BacklogsClient, Issue } from "../api";
 import { openAgency } from "../../agency/open";
 import { sendTools } from "../../backlogs/send";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../shared/wakala/mcp";
 import { BacklogBoard } from "./BacklogBoard";
 import { tagsOf, withAllTags } from "../tags";
 import { columnsOf, unplacedStep } from "./board";

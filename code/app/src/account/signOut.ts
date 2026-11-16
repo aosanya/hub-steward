@@ -1,7 +1,7 @@
 import { forgetOpenAgency } from "../agency/open";
-import { runtimeConfig } from "../wakala/config";
-import { resetMcp } from "../wakala/mcp";
-import { endSession } from "../wakala/me";
+import { runtimeConfig } from "../shared/wakala/config";
+import { resetMcp } from "../shared/wakala/mcp";
+import { endSession } from "../shared/wakala/me";
 
 const tellTheServer = async () => {
   try {

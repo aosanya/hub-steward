@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { chatStepOf } from "../../journeys/chatSteps";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../shared/wakala/mcp";
 import { mcpStartClient } from "./api";
 
 const formStep = {

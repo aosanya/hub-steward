@@ -1,4 +1,4 @@
-import { Chip } from "../ui/Chip";
+import { Chip } from "../shared/ui/Chip";
 import type { Issue } from "./api";
 import { EffortPill } from "./EffortPill";
 import { PriorityMenu, priorityLabel } from "./PriorityMenu";

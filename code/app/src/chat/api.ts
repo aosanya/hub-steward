@@ -1,5 +1,5 @@
-import { callTool } from "../wakala/mcp";
-import { loadSubject } from "../wakala/me";
+import { callTool } from "../shared/wakala/mcp";
+import { loadSubject } from "../shared/wakala/me";
 
 export type Room = {
   id: string;

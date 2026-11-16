@@ -5,7 +5,7 @@ import type { AgencyClient, AgencyView } from "../agency/modules";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { SupplierHome } from "../market/supply/SupplierHome";
 import type { Supplier, SupplyClient } from "../market/supply/api";
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../shared/wakala/mcp";
 
 const supplierRows = ["Offers", "Asks", "Group order", "Orders", "Your prices", "Forms"];
 const stepRows = ["Join a group", "Apply as a supplier"];

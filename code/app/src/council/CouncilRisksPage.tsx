@@ -1,12 +1,12 @@
 import { useLanguage } from "../entry/language";
 import { useLoad } from "../forms/useLoad";
 import { filled, labelOf } from "../risks/labels";
-import { Chip } from "../ui/Chip";
-import { isoDay } from "../ui/days";
-import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
-import { ListRow, Rows } from "../ui/ListRow";
-import { SectionHeading } from "../ui/SectionHeading";
-import { Shell } from "../ui/Shell";
+import { Chip } from "../shared/ui/Chip";
+import { isoDay } from "../shared/ui/days";
+import { EmptyCard, LoadFailed, LoadingLine } from "../shared/ui/LoadState";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { SectionHeading } from "../shared/ui/SectionHeading";
+import { Shell } from "../shared/ui/Shell";
 import { mcpCouncilRisksClient, type CouncilRisksClient } from "./councilRisksApi";
 
 export function CouncilRisksPage({ client = mcpCouncilRisksClient }: { client?: CouncilRisksClient }) {

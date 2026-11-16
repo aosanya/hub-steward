@@ -1,7 +1,7 @@
 import type { StartStep } from "../market/start/api";
 import { useLanguage } from "../entry/language";
 import { routes } from "../routes";
-import { Button } from "../ui/Button";
+import { Button } from "../shared/ui/Button";
 import { councilViewOf } from "./stepLinks";
 
 export function CouncilViewLink({ step }: { step: Pick<StartStep, "title"> }) {

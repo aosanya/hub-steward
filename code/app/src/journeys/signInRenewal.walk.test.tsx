@@ -4,9 +4,9 @@ import { MemoryRouter } from "react-router-dom";
 import { App } from "../App";
 import { forgetOpenAgency } from "../agency/open";
 import { words } from "../entry/words";
-import { resetMcp } from "../wakala/mcp";
-import { forgetSubject } from "../wakala/me";
-import { storedToken } from "../wakala/token";
+import { resetMcp } from "../shared/wakala/mcp";
+import { forgetSubject } from "../shared/wakala/me";
+import { storedToken } from "../shared/wakala/token";
 
 const hour = 3_600_000;
 const aMinuteToGo = 30_000;

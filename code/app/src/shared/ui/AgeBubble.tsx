@@ -1,4 +1,4 @@
-import { useLanguage } from "../entry/language";
+import { useLanguage } from "../../entry/language";
 import { Chip } from "./Chip";
 import { ageOf, ageWords } from "./age";
 import { dateTimeWords } from "./days";

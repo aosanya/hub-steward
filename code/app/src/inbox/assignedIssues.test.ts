@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { words } from "../entry/words";
 import { magyar } from "../entry/magyar";
 import { swahili } from "../entry/swahili";
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../shared/wakala/mcp";
 import { assignedIssuesOf, assignedIssueTitle, mcpAssignedClient } from "./assignedIssues";
 import type { NotificationItem } from "./api";
 import { pathOf, titleOf } from "./noticeWords";

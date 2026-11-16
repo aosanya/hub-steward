@@ -1,9 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { App } from "../App";
-import { resetMcp } from "../wakala/mcp";
-import { forgetSubject } from "../wakala/me";
-import { forgetToken, storedToken } from "../wakala/token";
+import { resetMcp } from "../shared/wakala/mcp";
+import { forgetSubject } from "../shared/wakala/me";
+import { forgetToken, storedToken } from "../shared/wakala/token";
 import { provideEntryClient } from "./api";
 import { words } from "./words";
 

@@ -3,12 +3,12 @@ import { doSomethingBackPath } from "../../routes";
 import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { isApproved, mcpSupplyClient, mySupplier, resolveMember, waitingWords, type SupplyClient } from "./api";
-import { Button } from "../../ui/Button";
-import { Card } from "../../ui/Card";
-import { LoadFailed } from "../../ui/LoadState";
-import { Field } from "../../ui/Field";
-import { ListRow, Rows } from "../../ui/ListRow";
-import { Shell } from "../../ui/Shell";
+import { Button } from "../../shared/ui/Button";
+import { Card } from "../../shared/ui/Card";
+import { LoadFailed } from "../../shared/ui/LoadState";
+import { Field } from "../../shared/ui/Field";
+import { ListRow, Rows } from "../../shared/ui/ListRow";
+import { Shell } from "../../shared/ui/Shell";
 
 export function ApplyPage({ client = mcpSupplyClient, me }: { client?: SupplyClient; me?: string }) {
   const navigate = useNavigate();

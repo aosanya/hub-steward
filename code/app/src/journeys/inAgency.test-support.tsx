@@ -5,8 +5,8 @@ import { App } from "../App";
 import { forgetOpenAgency } from "../agency/open";
 import { provideEntryClient, type Agency, type EntryClient } from "../entry/api";
 import { provideWaitingCount, restoreWaitingCount } from "../entry/waiting";
-import { forgetRuntimeConfig, setRuntimeConfig } from "../wakala/config";
-import { resetMcp } from "../wakala/mcp";
+import { forgetRuntimeConfig, setRuntimeConfig } from "../shared/wakala/config";
+import { resetMcp } from "../shared/wakala/mcp";
 
 export const farmers: Agency = { id: "270e07b7-6b69-55ca-aa30-9441ce138541", name: "Siaya Farmers' Group" };
 export const riders: Agency = { id: "c61e4358-10fd-539b-89f5-a7ccf4e94479", name: "Siaya Boda Boda Riders" };

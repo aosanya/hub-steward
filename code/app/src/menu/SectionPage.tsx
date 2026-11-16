@@ -2,9 +2,9 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { mcpAgencyClient, type AgencyClient } from "../agency/modules";
 import { agencyHomePath, openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
-import { Chip } from "../ui/Chip";
-import { ListRow, Rows } from "../ui/ListRow";
-import { Shell } from "../ui/Shell";
+import { Chip } from "../shared/ui/Chip";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { Shell } from "../shared/ui/Shell";
 import { routes } from "../routes";
 import { named, sectionById } from "./sections";
 

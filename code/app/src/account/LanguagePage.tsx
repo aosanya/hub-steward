@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../entry/language";
-import { LanguageChoice } from "../ui/LanguageChoice";
-import { Shell } from "../ui/Shell";
+import { LanguageChoice } from "../shared/ui/LanguageChoice";
+import { Shell } from "../shared/ui/Shell";
 
 export function LanguagePage() {
   const { words } = useLanguage();

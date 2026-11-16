@@ -2,7 +2,7 @@ import { listAllGroupOrders } from "../../shared/groupOrders";
 import { kes } from "../../shared/money";
 import { posterOffersOf, productNameAt, type PosterOffer } from "../../shared/productName";
 import { GROUP_COORDINATOR, listPeople, namesOf, type Names } from "../../../people/api";
-import { callTool } from "../../../wakala/mcp";
+import { callTool } from "../../../shared/wakala/mcp";
 
 export type OrderLine = { id: string; picker: string; quantity: number; answer: string };
 

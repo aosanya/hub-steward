@@ -5,7 +5,7 @@ import { askedBacklog } from "./namedBacklog";
 
 const mcp = vi.hoisted(() => ({ callTool: vi.fn(), listTools: vi.fn() }));
 
-vi.mock("../wakala/mcp", () => ({ callTool: mcp.callTool, listTools: mcp.listTools, McpError: class extends Error {} }));
+vi.mock("../shared/wakala/mcp", () => ({ callTool: mcp.callTool, listTools: mcp.listTools, McpError: class extends Error {} }));
 
 const backlogs = { items: [{ id: "b1", name: "Backlog" }, { id: "b2", name: "Software" }, { id: "s1", name: "walk-09b ready", kind: "smart" }] };
 

@@ -1,4 +1,4 @@
-import { callTool } from "../../wakala/mcp";
+import { callTool } from "../../shared/wakala/mcp";
 
 export const groupOrdersPageSize = 200;
 

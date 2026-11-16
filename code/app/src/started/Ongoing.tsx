@@ -4,11 +4,11 @@ import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
 import { mcpDoneClient, type DoneClient } from "./done";
 import { mcpStartedClient, startedAnswerOf, type StartedAnswer, type StartedClient, type StartedItem, type WaitsOn } from "./api";
-import { Button } from "../ui/Button";
-import { ListRow, Rows } from "../ui/ListRow";
-import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
-import { SectionHeading } from "../ui/SectionHeading";
-import { Segmented, type SegmentedItem } from "../ui/Segmented";
+import { Button } from "../shared/ui/Button";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { EmptyCard, LoadFailed, LoadingLine } from "../shared/ui/LoadState";
+import { SectionHeading } from "../shared/ui/SectionHeading";
+import { Segmented, type SegmentedItem } from "../shared/ui/Segmented";
 import { DoneTab } from "./DoneTab";
 
 type OngoingTab = "live" | "done";

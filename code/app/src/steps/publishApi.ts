@@ -1,4 +1,4 @@
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 
 export type PublishedReport = { version: number; gitPath: string; publishedAt: string };
 

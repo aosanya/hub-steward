@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { Icon } from "../ui/Icon";
-import { ListRow, Rows } from "../ui/ListRow";
+import { Icon } from "../shared/ui/Icon";
+import { ListRow, Rows } from "../shared/ui/ListRow";
 import type { Folder, FolderEntry } from "./api";
 import { entryIcon } from "./entryIcon";
 import { foldersFirst } from "./folderOrder";

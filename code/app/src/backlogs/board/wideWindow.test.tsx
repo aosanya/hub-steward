@@ -7,11 +7,11 @@ import type { BacklogsClient, Issue } from "../api";
 import { IssuesPage } from "../IssuesPage";
 import { SmartBacklogPage } from "../smart/SmartBacklogPage";
 import type { SmartBacklogClient } from "../smart/types";
-import { Shell } from "../../ui/Shell";
+import { Shell } from "../../shared/ui/Shell";
 import { BacklogBoard } from "./BacklogBoard";
 
-vi.mock("../../wakala/mcp", async () => {
-  const actual = await vi.importActual<typeof import("../../wakala/mcp")>("../../wakala/mcp");
+vi.mock("../../shared/wakala/mcp", async () => {
+  const actual = await vi.importActual<typeof import("../../shared/wakala/mcp")>("../../shared/wakala/mcp");
   return { ...actual, callTool: async () => ({ items: [] }) };
 });
 
@@ -52,7 +52,7 @@ const issuesAt = (at: string) =>
     </MemoryRouter>,
   );
 
-const frameCss = readFileSync(resolve(__dirname, "../../ui/drawerFrame.css"), "utf8");
+const frameCss = readFileSync(resolve(__dirname, "../../shared/ui/drawerFrame.css"), "utf8");
 
 describe("the frame is always as wide as the window", () => {
   it("has no fluid variant and no width cap on any screen", () => {

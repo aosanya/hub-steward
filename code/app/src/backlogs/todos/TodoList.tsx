@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useLoad } from "../../forms/useLoad";
 import { openAgencyId } from "../../agency/open";
-import { Button } from "../../ui/Button";
-import { loadingWords, tryAgainWords } from "../../ui/LoadState";
-import { ListRow } from "../../ui/ListRow";
+import { Button } from "../../shared/ui/Button";
+import { loadingWords, tryAgainWords } from "../../shared/ui/LoadState";
+import { ListRow } from "../../shared/ui/ListRow";
 import { writesOf, type TodosClient } from "./api";
 import { TitleForm } from "./TodoForms";
 import { TodoRow } from "./TodoRow";

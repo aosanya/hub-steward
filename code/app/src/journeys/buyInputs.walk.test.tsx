@@ -4,8 +4,8 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { App } from "../App";
 import { AppThreadPage } from "../apps/thread/AppThreadPage";
 import { marketSource } from "../apps/thread/marketSource";
-import * as mcp from "../wakala/mcp";
-import { forgetSubject } from "../wakala/me";
+import * as mcp from "../shared/wakala/mcp";
+import { forgetSubject } from "../shared/wakala/me";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { answerWakala } from "./answerWakala";
 

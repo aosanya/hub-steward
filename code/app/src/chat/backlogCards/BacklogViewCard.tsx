@@ -1,9 +1,9 @@
-import { Button } from "../../ui/Button";
+import { Button } from "../../shared/ui/Button";
 import { openAgencyId } from "../../agency/open";
 import { boardPath, issuesPath } from "../../backlogs/paths";
 import { smartBacklogPath } from "../../backlogs/smart/paths";
-import { Card } from "../../ui/Card";
-import { Chip } from "../../ui/Chip";
+import { Card } from "../../shared/ui/Card";
+import { Chip } from "../../shared/ui/Chip";
 import { useBacklogSummaries } from "./summaries";
 import { backlogViewOf } from "./views";
 import { backlogLine, issuesWords } from "./words";

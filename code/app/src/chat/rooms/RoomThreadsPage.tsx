@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
 import { chatListPath, routes } from "../../routes";
-import { EmptyCard, LoadFailed } from "../../ui/LoadState";
-import { Shell } from "../../ui/Shell";
+import { EmptyCard, LoadFailed } from "../../shared/ui/LoadState";
+import { Shell } from "../../shared/ui/Shell";
 import { generalOf, mcpRoomsClient, type RoomsClient } from "./api";
 import { StartThread } from "./StartThread";
 import { ThreadRows } from "./ThreadRows";

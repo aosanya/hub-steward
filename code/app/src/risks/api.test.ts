@@ -1,6 +1,6 @@
-import { forgetRuntimeConfig, setRuntimeConfig } from "../wakala/config";
-import { forgetSubject } from "../wakala/me";
-import { resetMcp } from "../wakala/mcp";
+import { forgetRuntimeConfig, setRuntimeConfig } from "../shared/wakala/config";
+import { forgetSubject } from "../shared/wakala/me";
+import { resetMcp } from "../shared/wakala/mcp";
 import { mcpRisksClient, riskTools } from "./api";
 
 type Sent = { tool: string; args: Record<string, any> };

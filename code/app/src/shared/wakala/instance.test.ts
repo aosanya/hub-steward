@@ -1,4 +1,4 @@
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
 import { forgetRuntimeConfig, setRuntimeConfig } from "./config";
 import { callTool, resetMcp } from "./mcp";
 

@@ -1,5 +1,5 @@
 import { taskTools } from "../backlogs/api";
-import { callTool, listTools, type ToolInfo } from "../wakala/mcp";
+import { callTool, listTools, type ToolInfo } from "../shared/wakala/mcp";
 import { cancelledResult, moveTool, createTool, rulesTool, resolveMove, unconfirmedResult, writeNames, writeProblem, type Confirm } from "./confirm";
 import { backlogDraftsFor, showNamedBacklog } from "./namedBacklog";
 import { askedCountFirst, draftOf, pendingTool, readTool, type ResultDraft, type ResultList } from "./results";

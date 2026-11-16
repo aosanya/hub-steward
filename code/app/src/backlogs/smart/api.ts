@@ -1,7 +1,7 @@
 import { mcpBacklogsClient } from "../api";
 import { markNames } from "../marks";
 import { backlogTools, mcpBacklogManageClient, refusalText } from "../manage/api";
-import { callTool, McpError } from "../../wakala/mcp";
+import { callTool, McpError } from "../../shared/wakala/mcp";
 import { PRIORITIES } from "./fields";
 import { DuplicateRules, type FieldChoices, type Match, type Rule, type RuleSet, type SmartBacklog, type SmartBacklogClient } from "./types";
 

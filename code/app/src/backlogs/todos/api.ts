@@ -1,4 +1,4 @@
-import { callTool } from "../../wakala/mcp";
+import { callTool } from "../../shared/wakala/mcp";
 import type { Todo } from "./todoTree";
 
 export const todoTools = {

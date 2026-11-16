@@ -1,6 +1,6 @@
-import { callTool } from "../../wakala/mcp";
+import { callTool } from "../../shared/wakala/mcp";
 import { lastAtOf, lastOf, previewOf } from "../api";
-import { loadSubject } from "../../wakala/me";
+import { loadSubject } from "../../shared/wakala/me";
 import { groupOrderOf, type GroupOrder } from "../../market/supply/groupOrder/api";
 import { productName, type NamedOffer } from "../../market/shared/productName";
 

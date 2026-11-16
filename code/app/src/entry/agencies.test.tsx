@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { App } from "../App";
 import { forgetOpenAgency, openAgencyId } from "../agency/open";
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../shared/wakala/mcp";
 import { provideEntryClient, type Agency, type EntryClient } from "./api";
 import { formsWaiting, provideWaitingCount, restoreWaitingCount, waitingCount } from "./waiting";
 import { wordsFor } from "./language";

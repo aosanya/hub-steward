@@ -7,11 +7,11 @@ import "./unread.css";
 import { mcpChatClient, type ChatClient, type Room } from "./api";
 import { stampOf } from "./stamp";
 import { useLoad } from "../forms/useLoad";
-import { Button } from "../ui/Button";
-import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
-import { ListRow, Rows } from "../ui/ListRow";
+import { Button } from "../shared/ui/Button";
+import { EmptyCard, LoadFailed, LoadingLine } from "../shared/ui/LoadState";
+import { ListRow, Rows } from "../shared/ui/ListRow";
 import { routes } from "../routes";
-import { Shell } from "../ui/Shell";
+import { Shell } from "../shared/ui/Shell";
 
 export function ChatPage({ client = mcpChatClient }: { client?: ChatClient }) {
   const navigate = useNavigate();

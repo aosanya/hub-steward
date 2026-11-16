@@ -1,10 +1,10 @@
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
-import { Button } from "../../../ui/Button";
-import { LoadFailed } from "../../../ui/LoadState";
-import { Chip } from "../../../ui/Chip";
-import { ListRow, Rows } from "../../../ui/ListRow";
-import { Shell } from "../../../ui/Shell";
+import { Button } from "../../../shared/ui/Button";
+import { LoadFailed } from "../../../shared/ui/LoadState";
+import { Chip } from "../../../shared/ui/Chip";
+import { ListRow, Rows } from "../../../shared/ui/ListRow";
+import { Shell } from "../../../shared/ui/Shell";
 import { mcpWantedClient, type Asked, type WantedClient } from "./api";
 import { buyInputs } from "./buyInputs";
 import { dayName } from "./dates";

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Issue } from "./api";
 import { IssueCode, IssueLine, IssueName, IssueTags, lineWords, titleParts } from "./IssueTitle";
-import { hueOf, shadeOf } from "../ui/textColor";
+import { hueOf, shadeOf } from "../shared/ui/textColor";
 
 const issue = (over: Partial<Issue>): Issue => ({ id: "a", title: "t", description: "", status: "pending", step: "", repo: "", topics: [], backlog: "", mark: "", rank: 1, ...over });
 

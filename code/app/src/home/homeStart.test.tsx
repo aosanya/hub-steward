@@ -4,8 +4,8 @@ import { MemoryRouter, useLocation } from "react-router-dom";
 import { openAgency } from "../agency/open";
 import { answerWakala } from "../journeys/answerWakala";
 import { App } from "../App";
-import * as mcp from "../wakala/mcp";
-import { forgetSubject } from "../wakala/me";
+import * as mcp from "../shared/wakala/mcp";
+import { forgetSubject } from "../shared/wakala/me";
 
 const hub = "hub-1";
 

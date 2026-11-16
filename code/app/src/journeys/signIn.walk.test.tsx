@@ -7,9 +7,9 @@ import { provideEntryClient, type Agency, type DirectoryAgency, type EntryClient
 import { wordsFor } from "../entry/language";
 import { formsWaiting, provideWaitingCount } from "../entry/waiting";
 import { languages, words } from "../entry/words";
-import { callTool, resetMcp } from "../wakala/mcp";
-import { forgetSubject } from "../wakala/me";
-import { forgetToken, storedToken } from "../wakala/token";
+import { callTool, resetMcp } from "../shared/wakala/mcp";
+import { forgetSubject } from "../shared/wakala/me";
+import { forgetToken, storedToken } from "../shared/wakala/token";
 import { endInAgencies, farmers, riders, startInAgencies } from "./inAgency.test-support";
 
 const memberAddress = "asha@example.org";

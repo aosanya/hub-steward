@@ -10,7 +10,7 @@ import { moveTool, nameWrite, rulesTool, writeLines } from "./confirm";
 
 const mcp = vi.hoisted(() => ({ callTool: vi.fn(), listTools: vi.fn() }));
 
-vi.mock("../wakala/mcp", () => ({ callTool: mcp.callTool, listTools: mcp.listTools, McpError: class extends Error {} }));
+vi.mock("../shared/wakala/mcp", () => ({ callTool: mcp.callTool, listTools: mcp.listTools, McpError: class extends Error {} }));
 
 beforeEach(() => {
   openAgency("farmers");

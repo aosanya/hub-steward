@@ -4,7 +4,7 @@ import { applySupplierPath, applySupplierWorkflow, joinGroupPath, joinGroupWorkf
 import { listAllGroupOrders } from "../market/shared/groupOrders";
 import { posterOffersOf, productNameAt, type PosterOffer } from "../market/shared/productName";
 import { mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../market/supply/api";
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 
 export type WaitsOn = "you" | "others";
 

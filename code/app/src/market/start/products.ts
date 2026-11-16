@@ -1,5 +1,5 @@
 import { posterOffersOf, productName, type PosterOffer } from "../../market/shared/productName";
-import { callTool } from "../../wakala/mcp";
+import { callTool } from "../../shared/wakala/mcp";
 
 export type OfferedProduct = { key: string; words: string };
 

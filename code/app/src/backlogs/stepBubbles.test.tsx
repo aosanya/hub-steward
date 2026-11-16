@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import * as mcp from "../wakala/mcp";
-import { hueOf } from "../ui/textColor";
+import * as mcp from "../shared/wakala/mcp";
+import { hueOf } from "../shared/ui/textColor";
 import { BacklogsPage } from "./BacklogsPage";
 import { taskTools } from "./api";
 import { pendingCountsOf, stepTotals, topSteps } from "./stepCounts";

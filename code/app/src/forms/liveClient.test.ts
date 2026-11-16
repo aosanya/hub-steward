@@ -1,7 +1,7 @@
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 import { liveClient } from "./api";
 
-vi.mock("../wakala/mcp", () => ({ callTool: vi.fn() }));
+vi.mock("../shared/wakala/mcp", () => ({ callTool: vi.fn() }));
 
 const mocked = callTool as any;
 

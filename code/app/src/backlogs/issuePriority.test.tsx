@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../agency/open";
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../shared/wakala/mcp";
 import { IssuePage } from "./IssuePage";
 import { IssueCard } from "./IssueCard";
 import { mcpBacklogsClient, taskTools, type BacklogsClient, type Issue, type IssueDetail, type NotesClient } from "./api";

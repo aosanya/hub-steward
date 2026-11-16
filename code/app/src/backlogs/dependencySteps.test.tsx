@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { openAgency } from "../agency/open";
-import { textLook } from "../ui/textColor";
+import { textLook } from "../shared/ui/textColor";
 import { IssuePage } from "./IssuePage";
 import type { Backlog, BacklogsClient, Issue, IssueDetail } from "./api";
 

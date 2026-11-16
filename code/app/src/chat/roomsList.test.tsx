@@ -1,15 +1,15 @@
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { ChatPage } from "./ChatPage";
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 
 beforeEach(() => openAgency("farmers"));
 
 afterEach(() => forgetOpenAgency());
 
-vi.mock("../wakala/mcp", async () => ({ ...(await vi.importActual<typeof import("../wakala/mcp")>("../wakala/mcp")), callTool: vi.fn() }));
-vi.mock("../wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
+vi.mock("../shared/wakala/mcp", async () => ({ ...(await vi.importActual<typeof import("../shared/wakala/mcp")>("../shared/wakala/mcp")), callTool: vi.fn() }));
+vi.mock("../shared/wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
 
 const today = (hours: number, minutes: number) => {
   const date = new Date();

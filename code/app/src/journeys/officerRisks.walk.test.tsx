@@ -2,7 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { openAgency } from "../agency/open";
 import { words } from "../entry/words";
-import { forgetSubject } from "../wakala/me";
+import { forgetSubject } from "../shared/wakala/me";
 import { endInAgencies, everyCallNames, openApp, startInAgencies, stubWakala, where } from "./inAgency.test-support";
 import type { Agency } from "../entry/api";
 

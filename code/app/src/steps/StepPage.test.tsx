@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { routes } from "../routes";
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../shared/wakala/mcp";
 import { mcpStepsClient, refusalWords, StepRefused, type MemberStep, type StepsClient } from "./api";
 import { forgetSent, wasSent } from "./sent";
 import { StepPage } from "./StepPage";

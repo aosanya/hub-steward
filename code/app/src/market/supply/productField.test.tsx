@@ -1,6 +1,6 @@
 import { correctedGroup, mcpSupplyClient, offerOf, productSlug } from "./api";
 import { mcpSellClient } from "../sell/now/api";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../shared/wakala/mcp";
 
 afterEach(() => vi.restoreAllMocks());
 

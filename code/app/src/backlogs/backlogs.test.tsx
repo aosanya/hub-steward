@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../agency/open";
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../shared/wakala/mcp";
 import { BacklogsPage } from "./BacklogsPage";
 import { mayReadIn, noRoleWords, nothingSharedWords } from "./access";
 import { BacklogsRoutes } from "./BacklogsRoutes";

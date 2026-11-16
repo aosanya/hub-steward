@@ -1,4 +1,4 @@
-import { callTool } from "../../../wakala/mcp";
+import { callTool } from "../../../shared/wakala/mcp";
 import { askArguments, listOffersArguments } from "../../shared/arguments";
 
 export type Wanted = { what: string; quantity: string; neededBy: string };

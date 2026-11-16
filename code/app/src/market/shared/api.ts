@@ -1,4 +1,4 @@
-import { callTool } from "../../wakala/mcp";
+import { callTool } from "../../shared/wakala/mcp";
 import { listAllGroupOrders } from "./groupOrders";
 import { kes } from "./money";
 import { productName } from "./productName";

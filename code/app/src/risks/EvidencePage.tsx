@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLanguage } from "../entry/language";
 import { routes } from "../routes";
-import { BottomBar } from "../ui/BottomBar";
-import { Button } from "../ui/Button";
-import { ChoiceGroup, ChoiceRow } from "../ui/ChoiceRow";
-import { EmptyCard } from "../ui/LoadState";
-import { Field } from "../ui/Field";
-import { Shell } from "../ui/Shell";
+import { BottomBar } from "../shared/ui/BottomBar";
+import { Button } from "../shared/ui/Button";
+import { ChoiceGroup, ChoiceRow } from "../shared/ui/ChoiceRow";
+import { EmptyCard } from "../shared/ui/LoadState";
+import { Field } from "../shared/ui/Field";
+import { Shell } from "../shared/ui/Shell";
 import { evidenceKinds, evidenceOutcomes, mcpRisksClient, type RisksClient } from "./api";
 import { filled, labelOf } from "./labels";
 

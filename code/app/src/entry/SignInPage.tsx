@@ -4,12 +4,12 @@ import { entryClient, type LinkOutcome } from "./api";
 import { useLanguage } from "./language";
 import { hubIsLocal } from "./localHub";
 import { signInWithPassword, type PasswordOutcome } from "./passwordSignIn";
-import { Button } from "../ui/Button";
-import { Field } from "../ui/Field";
-import { LanguageChoice } from "../ui/LanguageChoice";
-import { Shell } from "../ui/Shell";
-import { resetMcp } from "../wakala/mcp";
-import { forgetSubject } from "../wakala/me";
+import { Button } from "../shared/ui/Button";
+import { Field } from "../shared/ui/Field";
+import { LanguageChoice } from "../shared/ui/LanguageChoice";
+import { Shell } from "../shared/ui/Shell";
+import { resetMcp } from "../shared/wakala/mcp";
+import { forgetSubject } from "../shared/wakala/me";
 
 export function SignInPage() {
   const arrival = new URLSearchParams(useLocation().search);

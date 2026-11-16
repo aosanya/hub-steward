@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { forgetRuntimeConfig, setRuntimeConfig } from "../wakala/config";
-import * as mcp from "../wakala/mcp";
-import { keepToken } from "../wakala/token";
+import { forgetRuntimeConfig, setRuntimeConfig } from "../shared/wakala/config";
+import * as mcp from "../shared/wakala/mcp";
+import { keepToken } from "../shared/wakala/token";
 import { httpEntryClient, looksLikeAnAddress } from "./api";
 
 const respond = (status: number, body?: unknown) =>

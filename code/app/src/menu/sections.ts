@@ -1,6 +1,6 @@
 import { hasModule, type AgencyView } from "../agency/modules";
 import { routes } from "../routes";
-import type { IconName } from "../ui/Icon";
+import type { IconName } from "../shared/ui/Icon";
 
 export type MenuItem = { title: string; path?: () => string };
 

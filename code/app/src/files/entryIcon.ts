@@ -1,4 +1,4 @@
-import type { IconName } from "../ui/Icon";
+import type { IconName } from "../shared/ui/Icon";
 import type { FolderEntry } from "./api";
 import { viewerFor } from "./viewer/viewerFor";
 

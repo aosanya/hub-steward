@@ -10,7 +10,7 @@ import { StartRows } from "./StartRows";
 import { chatTab } from "../tabs";
 import { chatListPath } from "../routes";
 import { mcpStepsClient } from "../steps/api";
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../shared/wakala/mcp";
 import { applySupplierPath, applySupplierWorkflow, buyInputsChatPath, buyInputsChatWorkflow, joinGroupWorkflow, sellHarvestChatPath, sellHarvestChatWorkflow } from "./workflowScreens";
 
 const kinds: AgencyKind[] = ["farmers", "supplier"];

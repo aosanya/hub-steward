@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { forgetRuntimeConfig, setRuntimeConfig } from "../../wakala/config";
-import { callTool, resetMcp } from "../../wakala/mcp";
+import { forgetRuntimeConfig, setRuntimeConfig } from "../../shared/wakala/config";
+import { callTool, resetMcp } from "../../shared/wakala/mcp";
 import {
   askArguments,
   buyNowArguments,

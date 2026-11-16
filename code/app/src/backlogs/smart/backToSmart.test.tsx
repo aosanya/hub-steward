@@ -8,8 +8,8 @@ import type { BacklogsClient, Issue, IssueDetail } from "../api";
 import { SmartBacklogPage } from "./SmartBacklogPage";
 import type { SmartBacklogClient } from "./types";
 
-vi.mock("../../wakala/mcp", async () => {
-  const actual = await vi.importActual<typeof import("../../wakala/mcp")>("../../wakala/mcp");
+vi.mock("../../shared/wakala/mcp", async () => {
+  const actual = await vi.importActual<typeof import("../../shared/wakala/mcp")>("../../shared/wakala/mcp");
   return { ...actual, callTool: async () => ({ items: [] }) };
 });
 

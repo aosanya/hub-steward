@@ -4,7 +4,7 @@ import { MemoryRouter, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import type { StartClient } from "../market/start/api";
 import { NotificationsPage } from "../pages/NotificationsPage";
-import { McpError } from "../wakala/mcp";
+import { McpError } from "../shared/wakala/mcp";
 import type { InboxClient, NotificationItem } from "./api";
 import type { Reader } from "./subjectCheck";
 

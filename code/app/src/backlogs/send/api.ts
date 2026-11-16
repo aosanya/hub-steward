@@ -1,4 +1,4 @@
-import { callTool } from "../../wakala/mcp";
+import { callTool } from "../../shared/wakala/mcp";
 import { hubBacklogOf, itemsOf, taskTools } from "../api";
 import { refusalText } from "../manage/api";
 import type { SendClient, SendResult, Target } from "./types";

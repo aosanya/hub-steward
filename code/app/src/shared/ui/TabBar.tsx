@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { openAgencyId } from "../agency/open";
-import "../chat/unread.css";
-import { type InboxClient, mcpInboxClient } from "../inbox/api";
-import { type AssignedClient, mcpAssignedClient } from "../inbox/assignedIssues";
-import { thingsToDoLabel } from "../inbox/thingsToDo";
-import { useNeedsYou } from "../inbox/useNeedsYou";
-import { mcpStartClient, type StartClient } from "../market/start/api";
+import { openAgencyId } from "../../agency/open";
+import "../../chat/unread.css";
+import { type InboxClient, mcpInboxClient } from "../../inbox/api";
+import { type AssignedClient, mcpAssignedClient } from "../../inbox/assignedIssues";
+import { thingsToDoLabel } from "../../inbox/thingsToDo";
+import { useNeedsYou } from "../../inbox/useNeedsYou";
+import { mcpStartClient, type StartClient } from "../../market/start/api";
 import { Icon } from "./Icon";
-import { mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "../tabs";
+import { mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "../../tabs";
 
 type Props = { inbox?: InboxClient; start?: StartClient; assigned?: AssignedClient };
 

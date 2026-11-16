@@ -4,8 +4,8 @@ import { useLoad } from "../forms/useLoad";
 import { routes } from "../routes";
 import { AskForm } from "../market/supply/asks/AskForm";
 import { noStock, type StockReader } from "../market/supply/asks/stock";
-import { LoadFailed } from "../ui/LoadState";
-import { Shell } from "../ui/Shell";
+import { LoadFailed } from "../shared/ui/LoadState";
+import { Shell } from "../shared/ui/Shell";
 
 export function AskPage({ client = mcpChatClient, readStock = noStock }: { client?: ChatClient; readStock?: StockReader }) {
   const { roomId = "", threadId = "", askId = "" } = useParams();

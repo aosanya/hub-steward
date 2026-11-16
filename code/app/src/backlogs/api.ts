@@ -1,4 +1,4 @@
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 import { noteOf, type IssueNote } from "./issueNotes";
 import { markPrecedence, type Mark } from "./marks";
 import { pendingCountsOf, type StepCount } from "./stepCounts";

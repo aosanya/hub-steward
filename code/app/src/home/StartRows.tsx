@@ -7,16 +7,16 @@ import { isGroupOrderForm, mcpStartClient, startPath, type StartClient, type Sta
 import { useStartWaitingState } from "../market/start/startWaiting";
 import { liveClient as liveForms, type FormsClient } from "../forms/api";
 import { useLoad } from "../forms/useLoad";
-import { ListRow, Rows } from "../ui/ListRow";
-import { Button } from "../ui/Button";
-import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { Button } from "../shared/ui/Button";
+import { EmptyCard, LoadFailed, LoadingLine } from "../shared/ui/LoadState";
 import { chatTab } from "../tabs";
 import { chatListPath, routes } from "../routes";
 import { mcpStepsClient, type MemberStep, type StepsClient } from "../steps/api";
 import { sentAfter, sentSteps, wasSent } from "../steps/sent";
 import { homeCardsFor, type AgencyKind, type HomeCard } from "./cards";
 import { chatScreenOf, hasScreen, screenOf } from "./workflowScreens";
-import { Icon } from "../ui/Icon";
+import { Icon } from "../shared/ui/Icon";
 
 const waitingRowOf = (step: StartStep): HomeCard => ({ title: step.formName || step.title, path: startPath(step.id) });
 

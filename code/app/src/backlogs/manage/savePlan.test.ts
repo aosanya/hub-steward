@@ -1,5 +1,5 @@
 import { openAgency, forgetOpenAgency } from "../../agency/open";
-import { McpError } from "../../wakala/mcp";
+import { McpError } from "../../shared/wakala/mcp";
 import { allowedIn, managePermission, refusalText } from "./api";
 import { addBacklogPath, editBacklogPath } from "./paths";
 import { savePlan } from "./savePlan";

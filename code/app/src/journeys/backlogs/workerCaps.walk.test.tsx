@@ -1,7 +1,7 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { dateTimeWords } from "../../ui/days";
+import { dateTimeWords } from "../../shared/ui/days";
 import { taskTools } from "../../backlogs/api";
 import { capsTools } from "../../backlogs/caps/api";
 import { referenceTools } from "../../backlogs/references/api";

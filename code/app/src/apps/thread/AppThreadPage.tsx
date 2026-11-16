@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { doSomethingBackPath } from "../../routes";
-import { AccountMenu } from "../../ui/AccountMenu";
-import { DrawerFrame } from "../../ui/DrawerFrame";
-import { ScreenHead } from "../../ui/ScreenHead";
-import { TopBar } from "../../ui/TopBar";
+import { AccountMenu } from "../../shared/ui/AccountMenu";
+import { DrawerFrame } from "../../shared/ui/DrawerFrame";
+import { ScreenHead } from "../../shared/ui/ScreenHead";
+import { TopBar } from "../../shared/ui/TopBar";
 import { BlockView } from "../blocks";
 import type { Block } from "../blocks/types";
 import type { AgentSource } from "./source";

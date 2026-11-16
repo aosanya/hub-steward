@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
-import { Button } from "../../../ui/Button";
-import { LoadFailed } from "../../../ui/LoadState";
-import { ListRow, Rows } from "../../../ui/ListRow";
-import { Shell } from "../../../ui/Shell";
+import { Button } from "../../../shared/ui/Button";
+import { LoadFailed } from "../../../shared/ui/LoadState";
+import { ListRow, Rows } from "../../../shared/ui/ListRow";
+import { Shell } from "../../../shared/ui/Shell";
 import { mcpWantedClient, type WantedClient } from "./api";
-import { dayWords } from "../../../ui/days";
+import { dayWords } from "../../../shared/ui/days";
 import { buyInputs } from "./buyInputs";
 import "./notice.css";
 

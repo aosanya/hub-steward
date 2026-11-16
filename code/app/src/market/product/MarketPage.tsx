@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { mcpMarketClient, type MarketClient } from "../shared/api";
 import { useLoad } from "../../forms/useLoad";
-import { EmptyCard, LoadFailed } from "../../ui/LoadState";
-import { ListRow, Rows } from "../../ui/ListRow";
+import { EmptyCard, LoadFailed } from "../../shared/ui/LoadState";
+import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { doSomethingBackPath, routes } from "../../routes";
-import { ProductRows } from "../../ui/ProductRows";
-import { Shell } from "../../ui/Shell";
+import { ProductRows } from "../../shared/ui/ProductRows";
+import { Shell } from "../../shared/ui/Shell";
 
 export function MarketPage({ client = mcpMarketClient }: { client?: MarketClient }) {
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import { McpError } from "../wakala/mcp";
+import { McpError } from "../shared/wakala/mcp";
 
 type Row = Record<string, any>;
 

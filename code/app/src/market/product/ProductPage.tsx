@@ -4,10 +4,10 @@ import { mcpMarketClient, type MarketClient, type Offer } from "../shared/api";
 import { kes } from "../shared/money";
 import { useLoad } from "../../forms/useLoad";
 import { routes } from "../../routes";
-import { Button } from "../../ui/Button";
-import { Card } from "../../ui/Card";
-import { LoadFailed } from "../../ui/LoadState";
-import { Shell } from "../../ui/Shell";
+import { Button } from "../../shared/ui/Button";
+import { Card } from "../../shared/ui/Card";
+import { LoadFailed } from "../../shared/ui/LoadState";
+import { Shell } from "../../shared/ui/Shell";
 
 const firstShown = 2;
 

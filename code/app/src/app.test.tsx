@@ -4,13 +4,13 @@ import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "./App";
 import { forgetOpenAgency, openAgency } from "./agency/open";
 import { mainBar } from "./tabs";
-import { BottomBar } from "./ui/BottomBar";
-import { Button } from "./ui/Button";
-import { Card } from "./ui/Card";
-import { Chip } from "./ui/Chip";
-import { Field } from "./ui/Field";
-import { ListRow, Rows } from "./ui/ListRow";
-import { Shell } from "./ui/Shell";
+import { BottomBar } from "./shared/ui/BottomBar";
+import { Button } from "./shared/ui/Button";
+import { Card } from "./shared/ui/Card";
+import { Chip } from "./shared/ui/Chip";
+import { Field } from "./shared/ui/Field";
+import { ListRow, Rows } from "./shared/ui/ListRow";
+import { Shell } from "./shared/ui/Shell";
 
 const at = (path: string) =>
   render(

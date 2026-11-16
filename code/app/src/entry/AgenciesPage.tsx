@@ -4,12 +4,12 @@ import { agencyHomePath } from "../agency/open";
 import { entryClient, type Agency, type DirectoryAgency, type JoinOutcome } from "./api";
 import { useLanguage } from "./language";
 import { formsWaiting, waitingCount } from "./waiting";
-import { Button } from "../ui/Button";
-import { Card } from "../ui/Card";
-import { EmptyCard, LoadFailed } from "../ui/LoadState";
-import { Field } from "../ui/Field";
-import { ListRow, Rows } from "../ui/ListRow";
-import { Shell } from "../ui/Shell";
+import { Button } from "../shared/ui/Button";
+import { Card } from "../shared/ui/Card";
+import { EmptyCard, LoadFailed } from "../shared/ui/LoadState";
+import { Field } from "../shared/ui/Field";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { Shell } from "../shared/ui/Shell";
 
 type View = { name: "list" } | { name: "find" } | { name: "agency"; agency: DirectoryAgency };
 type Loaded = { kind: "loading" } | { kind: "ready"; agencies: Agency[] } | { kind: "unreached" };

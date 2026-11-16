@@ -1,4 +1,4 @@
-import { Chip } from "../ui/Chip";
+import { Chip } from "../shared/ui/Chip";
 import { effortKnown, effortLabel } from "./effort";
 import { EffortMenu } from "./EffortMenu";
 

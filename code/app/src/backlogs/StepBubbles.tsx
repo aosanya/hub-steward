@@ -1,4 +1,4 @@
-import { TextChip } from "../ui/TextChip";
+import { TextChip } from "../shared/ui/TextChip";
 import { topSteps, type StepCount } from "./stepCounts";
 
 export function StepBubbles({ counts }: { counts: StepCount[] }) {

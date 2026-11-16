@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import type { Ask, AskAnswer } from "../../../chat/api";
-import { Button } from "../../../ui/Button";
-import { Field } from "../../../ui/Field";
-import { Card } from "../../../ui/Card";
-import { Chip } from "../../../ui/Chip";
-import { ListRow, Rows } from "../../../ui/ListRow";
-import { dayWords } from "../../../ui/days";
+import { Button } from "../../../shared/ui/Button";
+import { Field } from "../../../shared/ui/Field";
+import { Card } from "../../../shared/ui/Card";
+import { Chip } from "../../../shared/ui/Chip";
+import { ListRow, Rows } from "../../../shared/ui/ListRow";
+import { dayWords } from "../../../shared/ui/days";
 import { stockText, type StockLine, type StockReader } from "./stock";
 
 export function AskForm({

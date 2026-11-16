@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { MarketPage } from "./MarketPage";
 import { ProductPage } from "./ProductPage";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../shared/wakala/mcp";
 import { mcpMarketClient, type MarketClient } from "../shared/api";
 import { routes } from "../../routes";
 import { forgetOpenAgency, openAgency } from "../../agency/open";

@@ -4,8 +4,8 @@ import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "../App";
 import { forgetOpenAgency } from "../agency/open";
 import { agenciesFrom, answerWakala } from "./answerWakala";
-import * as mcp from "../wakala/mcp";
-import { forgetSubject } from "../wakala/me";
+import * as mcp from "../shared/wakala/mcp";
+import { forgetSubject } from "../shared/wakala/me";
 
 type Row = Record<string, any>;
 

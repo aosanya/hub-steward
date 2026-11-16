@@ -1,6 +1,6 @@
 import { agencyInstanceAbsent, hasModule, mcpAgencyClient, taskModule } from "../agency/modules";
 import { fetchAll, settled } from "../backlogs/api";
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 
 export type AssignedIssue = { id: string; code: string; title: string; step: string };
 

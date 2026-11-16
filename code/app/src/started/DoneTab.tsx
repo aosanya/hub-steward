@@ -3,10 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
 import { doneSources, newestFirst, type DoneClient, type DoneItem, type DonePage } from "./done";
-import { Button } from "../ui/Button";
-import { shortDayWords } from "../ui/days";
-import { ListRow, Rows } from "../ui/ListRow";
-import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
+import { Button } from "../shared/ui/Button";
+import { shortDayWords } from "../shared/ui/days";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { EmptyCard, LoadFailed, LoadingLine } from "../shared/ui/LoadState";
 
 const allFailedWords = "Your finished tasks could not be loaded.";
 

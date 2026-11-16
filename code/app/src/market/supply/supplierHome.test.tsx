@@ -5,7 +5,7 @@ import type { AgencyClient, AgencyView } from "../../agency/modules";
 import type { Supplier, SupplyClient } from "./api";
 import { SupplierHome } from "./SupplierHome";
 import { chatStepOf } from "../../journeys/chatSteps";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../shared/wakala/mcp";
 
 const approved: Supplier = {
   id: "p1",

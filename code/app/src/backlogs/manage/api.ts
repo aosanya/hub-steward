@@ -1,4 +1,4 @@
-import { callTool, McpError } from "../../wakala/mcp";
+import { callTool, McpError } from "../../shared/wakala/mcp";
 import { savePlan, type Rename } from "./savePlan";
 import { savedStep, type DraftStep } from "./stepsDraft";
 import { ManageRefused, type BacklogDetail, type BacklogManageClient } from "./types";

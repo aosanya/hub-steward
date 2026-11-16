@@ -1,4 +1,4 @@
-import { Chip } from "../../ui/Chip";
+import { Chip } from "../../shared/ui/Chip";
 import type { CapTint } from "./capTint";
 import "./caps.css";
 

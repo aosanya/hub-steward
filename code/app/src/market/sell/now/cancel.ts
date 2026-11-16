@@ -1,4 +1,4 @@
-import { callTool } from "../../../wakala/mcp";
+import { callTool } from "../../../shared/wakala/mcp";
 import { readSale, statusOf, type Sale } from "./api";
 
 export const cancelSaleTool = "market_cancel_order";

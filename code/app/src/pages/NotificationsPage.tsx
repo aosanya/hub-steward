@@ -12,10 +12,10 @@ import { mcpReader, openChecked, type Reader } from "../inbox/subjectCheck";
 import { UpdatesSection } from "../inbox/UpdatesSection";
 import { useAssignedIssues } from "../inbox/useAssignedIssues";
 import { unreadOf, useNotifications } from "../inbox/useNotifications";
-import { Button } from "../ui/Button";
-import { Card } from "../ui/Card";
-import { LoadFailed } from "../ui/LoadState";
-import { Shell } from "../ui/Shell";
+import { Button } from "../shared/ui/Button";
+import { Card } from "../shared/ui/Card";
+import { LoadFailed } from "../shared/ui/LoadState";
+import { Shell } from "../shared/ui/Shell";
 import { mcpStartClient, type StartClient } from "../market/start/api";
 import { useStartWaitingState } from "../market/start/startWaiting";
 

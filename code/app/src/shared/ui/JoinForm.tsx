@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { unitWordsOf } from "../market/shared/unitWords";
+import { unitWordsOf } from "../../market/shared/unitWords";
 import { Button } from "./Button";
 import { Card } from "./Card";
 import { Field } from "./Field";

@@ -1,9 +1,9 @@
-import { callTool } from "../wakala/mcp";
-import { loadSubject } from "../wakala/me";
+import { callTool } from "../shared/wakala/mcp";
+import { loadSubject } from "../shared/wakala/me";
 import { listAsks, mcpChatClient } from "./api";
 
-vi.mock("../wakala/mcp", () => ({ callTool: vi.fn() }));
-vi.mock("../wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("") }));
+vi.mock("../shared/wakala/mcp", () => ({ callTool: vi.fn() }));
+vi.mock("../shared/wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("") }));
 
 describe("the real shapes of comm and the market", () => {
   it("reads a message's ask from attachment_kind and attachment_id", async () => {

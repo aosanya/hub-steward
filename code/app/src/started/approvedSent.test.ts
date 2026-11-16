@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import * as me from "../wakala/me";
-import * as mcp from "../wakala/mcp";
+import * as me from "../shared/wakala/me";
+import * as mcp from "../shared/wakala/mcp";
 import { mcpDoneClient } from "./done";
 
 const sentStep = (over: Record<string, unknown> = {}) => ({

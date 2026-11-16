@@ -1,4 +1,4 @@
-import { runtimeConfig } from "../wakala/config";
+import { runtimeConfig } from "../shared/wakala/config";
 
 export type PasswordOutcome = "in" | "wrong" | "busy" | "unavailable" | "offline";
 

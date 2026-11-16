@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import * as mcp from "../../../wakala/mcp";
+import * as mcp from "../../../shared/wakala/mcp";
 import { BoughtOrderPage } from "../join/BoughtOrderPage";
 import type { BoughtOrder, JoinClient } from "../join/api";
 import { lineOrderOf, mcpMyOrdersClient, trailDay, trailWords, type MyOrder, type MyOrdersClient } from "./api";

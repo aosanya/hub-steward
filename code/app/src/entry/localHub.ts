@@ -1,4 +1,4 @@
-import { runtimeConfig } from "../wakala/config";
+import { runtimeConfig } from "../shared/wakala/config";
 
 const loopback = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
 

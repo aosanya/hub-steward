@@ -1,4 +1,4 @@
-import { Button } from "../ui/Button";
+import { Button } from "../shared/ui/Button";
 
 export function OptionButtons({ options, onPick }: { options: string[]; onPick: (option: string) => void }) {
   return (

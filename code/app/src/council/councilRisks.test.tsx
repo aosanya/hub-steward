@@ -3,9 +3,9 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { words } from "../entry/words";
 import type { Risk, RiskAction } from "../risks/api";
-import { forgetRuntimeConfig, setRuntimeConfig } from "../wakala/config";
-import { forgetSubject } from "../wakala/me";
-import { resetMcp } from "../wakala/mcp";
+import { forgetRuntimeConfig, setRuntimeConfig } from "../shared/wakala/config";
+import { forgetSubject } from "../shared/wakala/me";
+import { resetMcp } from "../shared/wakala/mcp";
 import { CouncilRisksPage } from "./CouncilRisksPage";
 import { mcpCouncilRisksClient, overdueOf, type CouncilRisks, type CouncilRisksClient } from "./councilRisksApi";
 

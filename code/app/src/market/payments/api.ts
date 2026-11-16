@@ -1,6 +1,6 @@
 import { kes } from "../../market/shared/money";
 import { GROUP_COORDINATOR, listPeople, namesOf, type Person } from "../../people/api";
-import { callTool } from "../../wakala/mcp";
+import { callTool } from "../../shared/wakala/mcp";
 
 export type Question = { prompt: string; answerType: string; listName: string };
 export type PaymentsRecord = { code: string; name: string; canAdd: boolean; farmerPrompt: string; amountPrompt: string };

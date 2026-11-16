@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
 import { isApproved, mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../../supply/api";
-import { Card } from "../../../ui/Card";
-import { ListRow, Rows } from "../../../ui/ListRow";
+import { Card } from "../../../shared/ui/Card";
+import { ListRow, Rows } from "../../../shared/ui/ListRow";
 import { mcpBuyerAskClient, waitingAsks, type BuyerAskClient } from "../group/buyerAsksApi";
 
 type Props = { client?: SupplyClient; askClient?: BuyerAskClient; me?: string };

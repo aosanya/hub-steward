@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
 import { routes } from "../../routes";
 import { StartRows } from "../../home/StartRows";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../shared/wakala/mcp";
 import { draftOf, isGroupOrderStart, mcpStartClient, unitOf, type PosterChoice, type StartClient, type StartStep } from "./api";
 import { StartPage } from "./StartPages";
 import { StartWaitingRows } from "./Waiting";

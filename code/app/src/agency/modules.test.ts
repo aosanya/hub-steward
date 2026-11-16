@@ -1,4 +1,4 @@
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../shared/wakala/mcp";
 import { agencyTools, mcpAgencyClient, modulesOf } from "./modules";
 
 afterEach(() => vi.restoreAllMocks());

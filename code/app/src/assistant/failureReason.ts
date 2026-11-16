@@ -1,4 +1,4 @@
-import { McpError } from "../wakala/mcp";
+import { McpError } from "../shared/wakala/mcp";
 
 const longest = 120;
 

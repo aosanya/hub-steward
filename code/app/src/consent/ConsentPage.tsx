@@ -4,10 +4,10 @@ import { openAgencyId } from "../agency/open";
 import { useLanguage } from "../entry/language";
 import { filled } from "../risks/labels";
 import { doSomethingPath } from "../routes";
-import { Button } from "../ui/Button";
-import { Card } from "../ui/Card";
-import { LoadFailed, LoadingLine } from "../ui/LoadState";
-import { Shell } from "../ui/Shell";
+import { Button } from "../shared/ui/Button";
+import { Card } from "../shared/ui/Card";
+import { LoadFailed, LoadingLine } from "../shared/ui/LoadState";
+import { Shell } from "../shared/ui/Shell";
 import { agree, readInForce, readMine, versionNumber, withdraw, type ConsentText, type MyConsent } from "./api";
 import { settle, unsettle } from "./settled";
 

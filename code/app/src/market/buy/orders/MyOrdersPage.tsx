@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
 import { routes } from "../../../routes";
-import { EmptyCard, LoadFailed } from "../../../ui/LoadState";
-import { Chip, type ChipTone } from "../../../ui/Chip";
-import { ListRow, Rows } from "../../../ui/ListRow";
-import { Shell } from "../../../ui/Shell";
+import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
+import { Chip, type ChipTone } from "../../../shared/ui/Chip";
+import { ListRow, Rows } from "../../../shared/ui/ListRow";
+import { Shell } from "../../../shared/ui/Shell";
 import { kes, resolveMember } from "../../supply/api";
 import { kindWords, mcpMyOrdersClient, orderTitle, type MyOrdersClient, type Standing } from "./api";
 

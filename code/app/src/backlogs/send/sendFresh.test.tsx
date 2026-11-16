@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../../agency/open";
 import type { BacklogsClient, IssueDetail } from "../api";
 import { IssuePage } from "../IssuePage";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../shared/wakala/mcp";
 import { sendTools } from "./api";
 import { withoutCurrent } from "./leftOut";
 import { SendToBacklog } from "./SendToBacklog";

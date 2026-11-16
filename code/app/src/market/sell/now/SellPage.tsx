@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
-import { Button } from "../../../ui/Button";
-import { Card } from "../../../ui/Card";
-import { EmptyCard, LoadFailed } from "../../../ui/LoadState";
-import { ListRow, Rows } from "../../../ui/ListRow";
-import { Shell } from "../../../ui/Shell";
+import { Button } from "../../../shared/ui/Button";
+import { Card } from "../../../shared/ui/Card";
+import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
+import { ListRow, Rows } from "../../../shared/ui/ListRow";
+import { Shell } from "../../../shared/ui/Shell";
 import { priceWords, quantityWords } from "../../shared/unitWords";
 import { bulkWords, groupSaleLine, mcpSellClient, nameOfProduct, statusOf, type SellClient } from "./api";
 import { mcpOpenSales, type OpenSalesClient } from "./openSales";

@@ -1,7 +1,7 @@
 import { messageOf } from "./api";
 
-vi.mock("../../wakala/mcp", () => ({ callTool: vi.fn() }));
-vi.mock("../../wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
+vi.mock("../../shared/wakala/mcp", () => ({ callTool: vi.fn() }));
+vi.mock("../../shared/wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
 
 const posted = (extra: Record<string, unknown>) => ({ id: "m1", author_id: "u9", author_name: "Someone", body: "hi", created_at: "2026-11-02T09:00:00Z", ...extra });
 

@@ -1,8 +1,8 @@
 import { openAgencyId } from "../agency/open";
 import { stepOf, type StartStep } from "../market/start/api";
-import { runtimeConfig } from "../wakala/config";
-import { callTool, forgetReads } from "../wakala/mcp";
-import { renewedAuthHeaders } from "../wakala/renewal";
+import { runtimeConfig } from "../shared/wakala/config";
+import { callTool, forgetReads } from "../shared/wakala/mcp";
+import { renewedAuthHeaders } from "../shared/wakala/renewal";
 import { serverSentenceOf } from "./overLimitRefusal";
 import { wasStarted } from "./sent";
 

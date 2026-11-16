@@ -9,7 +9,7 @@ import type { AssistantClient } from "./api";
 import { requeueUnanswered, type Item } from "./queue";
 import { resultsOf, withIds, worthKeeping, type ResultDraft } from "./results";
 
-vi.mock("../wakala/mcp", () => ({ callTool: vi.fn(), listTools: vi.fn(), McpError: class extends Error {} }));
+vi.mock("../shared/wakala/mcp", () => ({ callTool: vi.fn(), listTools: vi.fn(), McpError: class extends Error {} }));
 
 beforeEach(() => openAgency("farmers"));
 

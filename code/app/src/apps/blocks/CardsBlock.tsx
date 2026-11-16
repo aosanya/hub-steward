@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "../../ui/Button";
-import { Card } from "../../ui/Card";
+import { Button } from "../../shared/ui/Button";
+import { Card } from "../../shared/ui/Card";
 import type { ButtonSpec, CardSpec, ToolRunner } from "./types";
 
 type Props = {

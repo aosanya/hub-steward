@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 import { groupTools, mcpGroupsClient } from "./api";
 
-vi.mock("../wakala/mcp", () => ({ callTool: vi.fn() }));
+vi.mock("../shared/wakala/mcp", () => ({ callTool: vi.fn() }));
 
 const lastTool = () => vi.mocked(callTool).mock.calls.at(-1)?.[1];
 

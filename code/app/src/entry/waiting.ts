@@ -1,4 +1,4 @@
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 import type { Words } from "./words";
 
 export const formsWaiting = (count: number, words: Words) =>

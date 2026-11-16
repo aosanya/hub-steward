@@ -1,4 +1,4 @@
-import { shortDayWords } from "../../ui/days";
+import { shortDayWords } from "../../shared/ui/days";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 

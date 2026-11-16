@@ -1,6 +1,6 @@
-import { runtimeConfig } from "../wakala/config";
-import { isRefusal, reportRefused } from "../wakala/mcp";
-import { renewedAuthHeaders } from "../wakala/renewal";
+import { runtimeConfig } from "../shared/wakala/config";
+import { isRefusal, reportRefused } from "../shared/wakala/mcp";
+import { renewedAuthHeaders } from "../shared/wakala/renewal";
 
 export type LinkOutcome = "sent" | "invalid" | "busy" | "unavailable" | "offline";
 export type Agency = { id: string; name: string };

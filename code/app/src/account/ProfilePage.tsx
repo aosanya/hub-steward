@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../entry/language";
-import { Button } from "../ui/Button";
-import { Field } from "../ui/Field";
-import { LoadFailed, LoadingLine } from "../ui/LoadState";
-import { ListRow, Rows } from "../ui/ListRow";
-import { Shell } from "../ui/Shell";
+import { Button } from "../shared/ui/Button";
+import { Field } from "../shared/ui/Field";
+import { LoadFailed, LoadingLine } from "../shared/ui/LoadState";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { Shell } from "../shared/ui/Shell";
 import { correctPhone, readProfile, type Profile } from "./profile";
 
 type Loaded = { kind: "loading" } | { kind: "unreached" } | { kind: "ready"; profile: Profile };

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Segmented } from "../../../ui/Segmented";
+import { Segmented } from "../../../shared/ui/Segmented";
 
 export type BuyerView = "prices" | "asks";
 

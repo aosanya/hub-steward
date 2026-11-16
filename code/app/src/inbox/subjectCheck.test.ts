@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { McpError } from "../wakala/mcp";
+import { McpError } from "../shared/wakala/mcp";
 import type { NotificationItem } from "./api";
 import { openChecked, stateOf, type Reader } from "./subjectCheck";
 

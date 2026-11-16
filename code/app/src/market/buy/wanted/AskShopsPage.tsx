@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
-import { Button } from "../../../ui/Button";
-import { EmptyCard, LoadFailed } from "../../../ui/LoadState";
-import { ChoiceGroup, ChoiceRow } from "../../../ui/ChoiceRow";
-import { Shell } from "../../../ui/Shell";
+import { Button } from "../../../shared/ui/Button";
+import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
+import { ChoiceGroup, ChoiceRow } from "../../../shared/ui/ChoiceRow";
+import { Shell } from "../../../shared/ui/Shell";
 import { mcpWantedClient, type WantedClient } from "./api";
 import { askTicked } from "./askTicked";
 import { dayName } from "./dates";

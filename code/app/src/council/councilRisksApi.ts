@@ -1,6 +1,6 @@
 import { actionOf, riskOf, riskTools, type Risk, type RiskAction } from "../risks/api";
-import { isoDay } from "../ui/days";
-import { callTool } from "../wakala/mcp";
+import { isoDay } from "../shared/ui/days";
+import { callTool } from "../shared/wakala/mcp";
 
 export type CouncilRisks = { risks: Risk[]; overdueActions: RiskAction[] };
 

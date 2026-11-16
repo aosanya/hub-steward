@@ -1,7 +1,7 @@
-import { callTool } from "../../../wakala/mcp";
+import { callTool } from "../../../shared/wakala/mcp";
 import { listAllGroupOrders } from "../../shared/groupOrders";
 import { productName } from "../../shared/productName";
-import { shortDayWords } from "../../../ui/days";
+import { shortDayWords } from "../../../shared/ui/days";
 import { offerWordsOf } from "../now/api";
 
 export type Standing = "Paid" | "Cancelled" | "Delivered" | "Yes" | "Confirmed" | "Said yes" | "Said no" | "Waiting";

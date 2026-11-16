@@ -1,5 +1,5 @@
-import { useLanguage } from "../entry/language";
-import { languages } from "../entry/words";
+import { useLanguage } from "../../entry/language";
+import { languages } from "../../entry/words";
 import { Button } from "./Button";
 
 export function LanguageChoice({ onChosen }: { onChosen: () => void }) {

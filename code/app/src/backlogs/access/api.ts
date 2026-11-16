@@ -1,4 +1,4 @@
-import { callTool } from "../../wakala/mcp";
+import { callTool } from "../../shared/wakala/mcp";
 import { backlogTools, refusalText } from "../manage/api";
 import { AccessRefused, type AccessReading, type AgencyGroup, type BacklogAccessClient, type Grant } from "./types";
 

@@ -4,8 +4,8 @@ import type { AgencyView } from "../agency/modules";
 import { StartRows } from "../home/StartRows";
 import { doSomethingPath } from "../routes";
 import { Ongoing } from "../started/Ongoing";
-import { LoadingLine } from "../ui/LoadState";
-import { Shell } from "../ui/Shell";
+import { LoadingLine } from "../shared/ui/LoadState";
+import { Shell } from "../shared/ui/Shell";
 
 export type DoSomethingSegment = "start" | "ongoing";
 

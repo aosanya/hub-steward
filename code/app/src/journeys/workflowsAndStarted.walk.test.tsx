@@ -5,8 +5,8 @@ import { App } from "../App";
 import { doSomethingPathIn, openAgency } from "../agency/open";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 import { farmerChatSteps } from "./chatSteps";
-import * as mcp from "../wakala/mcp";
-import { forgetSubject } from "../wakala/me";
+import * as mcp from "../shared/wakala/mcp";
+import { forgetSubject } from "../shared/wakala/me";
 
 type Row = Record<string, any>;
 

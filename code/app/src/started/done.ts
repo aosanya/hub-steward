@@ -1,7 +1,7 @@
 import { coordinatorOrderPath } from "../market/start/api";
 import { productNameAt, type PosterOffer } from "../market/shared/productName";
 import { resolveMember } from "../market/supply/api";
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 import { marketAbsent, offersOfShops } from "./api";
 
 export const donePageSize = 20;

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { InboxClient } from "../inbox/api";
+import type { InboxClient } from "../../inbox/api";
 import { AccountMenu } from "./AccountMenu";
 import { DrawerFrame } from "./DrawerFrame";
 import { ScreenHead } from "./ScreenHead";

@@ -1,10 +1,10 @@
-import { callTool } from "../../wakala/mcp";
-import { loadSubject } from "../../wakala/me";
+import { callTool } from "../../shared/wakala/mcp";
+import { loadSubject } from "../../shared/wakala/me";
 import { askFor, mcpRoomsClient, messageOf, orderFor, threadOf } from "./api";
 import { dayLabel } from "./time";
 
-vi.mock("../../wakala/mcp", () => ({ callTool: vi.fn() }));
-vi.mock("../../wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
+vi.mock("../../shared/wakala/mcp", () => ({ callTool: vi.fn() }));
+vi.mock("../../shared/wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
 
 const mocked = callTool as unknown as ReturnType<typeof vi.fn>;
 

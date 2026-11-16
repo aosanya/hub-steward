@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { words } from "../entry/words";
-import { forgetRuntimeConfig, setRuntimeConfig } from "../wakala/config";
-import { forgetSubject } from "../wakala/me";
-import { resetMcp } from "../wakala/mcp";
+import { forgetRuntimeConfig, setRuntimeConfig } from "../shared/wakala/config";
+import { forgetSubject } from "../shared/wakala/me";
+import { resetMcp } from "../shared/wakala/mcp";
 import { LateMattersPage } from "./LateMattersPage";
 import { lateMatterOf, mcpLateMattersClient, type LateMatter, type LateMattersClient } from "./lateMattersApi";
 

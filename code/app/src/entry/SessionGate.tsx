@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { onRefused } from "../wakala/mcp";
-import { checkSession, endSession, hadSession } from "../wakala/me";
+import { onRefused } from "../shared/wakala/mcp";
+import { checkSession, endSession, hadSession } from "../shared/wakala/me";
 
 const onSignIn = (pathname: string) => pathname === "/sign-in" || pathname.startsWith("/sign-in/");
 

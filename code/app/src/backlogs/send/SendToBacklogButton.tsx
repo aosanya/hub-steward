@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../ui/Button";
+import { Button } from "../../shared/ui/Button";
 import { mcpSendClient } from "./api";
 import { canSendFrom, withoutCurrent } from "./leftOut";
 import { SendToBacklog } from "./SendToBacklog";

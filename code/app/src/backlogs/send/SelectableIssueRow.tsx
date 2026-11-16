@@ -1,6 +1,6 @@
 import type { Issue } from "../api";
 import { IssueCard } from "../IssueCard";
-import { SelectionBox, type Selection } from "../../ui/ListRow";
+import { SelectionBox, type Selection } from "../../shared/ui/ListRow";
 
 type Props = { issue: Issue; chosen: string[]; selection: Selection };
 

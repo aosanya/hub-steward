@@ -1,5 +1,5 @@
 import { settled } from "../backlogs/api";
-import { callTool, McpError } from "../wakala/mcp";
+import { callTool, McpError } from "../shared/wakala/mcp";
 import type { NotificationItem } from "./api";
 
 export type Reader = (tool: string, args: Record<string, unknown>) => Promise<any>;

@@ -2,12 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { doSomethingBackPath } from "../../routes";
 import { useLoad } from "../../forms/useLoad";
 import { isApproved, mcpSupplyClient, mySupplier, buyerPriceWords, priceWords, resolveMember, type SupplyClient } from "./api";
-import { Button } from "../../ui/Button";
-import { EmptyCard, LoadFailed } from "../../ui/LoadState";
-import { ListRow, Rows } from "../../ui/ListRow";
+import { Button } from "../../shared/ui/Button";
+import { EmptyCard, LoadFailed } from "../../shared/ui/LoadState";
+import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { BuyerTabs } from "../../market/sell/buyer/BuyerTabs";
 import { mcpBuyerAskClient, waitingAsks, type BuyerAskClient } from "../../market/sell/group/buyerAsksApi";
-import { Shell } from "../../ui/Shell";
+import { Shell } from "../../shared/ui/Shell";
 
 type Props = { client?: SupplyClient; asks?: BuyerAskClient; me?: string; buyer?: boolean };
 

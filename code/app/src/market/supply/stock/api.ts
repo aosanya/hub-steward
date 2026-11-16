@@ -1,4 +1,4 @@
-import { callTool } from "../../../wakala/mcp";
+import { callTool } from "../../../shared/wakala/mcp";
 import { getStockArguments, setStockArguments } from "../../shared/arguments";
 import { isApproved, mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../api";
 import type { AskText, StockReader } from "../asks/stock";

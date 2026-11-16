@@ -14,9 +14,9 @@ import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam
 import { narrowed, toggled } from "../tags";
 import { backlogPagePath } from "../page/paths";
 import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../../backlogs/send";
-import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
-import { backState } from "../../ui/backTo";
-import { Shell } from "../../ui/Shell";
+import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
+import { backState } from "../../shared/ui/backTo";
+import { Shell } from "../../shared/ui/Shell";
 import { BoardColumns } from "./BoardColumns";
 import { ViewSwitch } from "./ViewSwitch";
 import { columnsOf } from "./board";

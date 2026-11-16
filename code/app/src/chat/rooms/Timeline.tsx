@@ -1,4 +1,4 @@
-import { Chip } from "../../ui/Chip";
+import { Chip } from "../../shared/ui/Chip";
 import type { RoomMessage, RoomsClient } from "./api";
 import { Attachment } from "./cards";
 import { dayKey, dayLabel, timeOf } from "./time";

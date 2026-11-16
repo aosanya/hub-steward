@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { doSomethingBackPath } from "../../../routes";
 import { useLoad } from "../../../forms/useLoad";
-import { EmptyCard, LoadFailed } from "../../../ui/LoadState";
-import { ProductRows } from "../../../ui/ProductRows";
-import { Shell } from "../../../ui/Shell";
+import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
+import { ProductRows } from "../../../shared/ui/ProductRows";
+import { Shell } from "../../../shared/ui/Shell";
 import { mcpSellClient, type SellClient } from "./api";
 
 export function SellProductsPage({ client = mcpSellClient }: { client?: SellClient }) {

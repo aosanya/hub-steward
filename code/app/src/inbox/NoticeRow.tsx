@@ -1,6 +1,6 @@
 import { useLanguage } from "../entry/language";
-import { isoDay } from "../ui/days";
-import { ListRow, SelectableRow } from "../ui/ListRow";
+import { isoDay } from "../shared/ui/days";
+import { ListRow, SelectableRow } from "../shared/ui/ListRow";
 import type { NotificationItem } from "./api";
 import { metaOf, pathOf, titleOf } from "./noticeWords";
 

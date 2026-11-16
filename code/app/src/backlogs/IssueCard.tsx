@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card } from "../ui/Card";
+import { Card } from "../shared/ui/Card";
 import type { Issue } from "./api";
 import { CapTintChip } from "./caps/CapTintChip";
 import { tintStyle } from "./caps/capTint";

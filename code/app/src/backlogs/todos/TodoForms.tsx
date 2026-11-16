@@ -1,8 +1,8 @@
 import { useState, type FormEvent, type ReactNode } from "react";
-import { Button } from "../../ui/Button";
-import { ChoiceGroup, ChoiceRow } from "../../ui/ChoiceRow";
-import { Field } from "../../ui/Field";
-import { TextArea } from "../../ui/TextArea";
+import { Button } from "../../shared/ui/Button";
+import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";
+import { Field } from "../../shared/ui/Field";
+import { TextArea } from "../../shared/ui/TextArea";
 import type { SettableStatus } from "./api";
 import { statusOf, type Todo } from "./todoTree";
 

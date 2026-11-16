@@ -3,7 +3,7 @@ import { pageLines, promptFrom, publicationsTool, rolesTool, triagerDescription 
 
 const mcp = vi.hoisted(() => ({ callTool: vi.fn(), listTools: vi.fn() }));
 
-vi.mock("../wakala/mcp", () => ({ callTool: mcp.callTool, listTools: mcp.listTools, McpError: class extends Error {} }));
+vi.mock("../shared/wakala/mcp", () => ({ callTool: mcp.callTool, listTools: mcp.listTools, McpError: class extends Error {} }));
 
 const description =
   "The backlog's AI role. If asked to load the boards it says the loader is run in a terminal on the owner's laptop. For what is pending it first calls taskmanager_task_pending.";

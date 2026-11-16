@@ -1,4 +1,4 @@
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../shared/wakala/mcp";
 import { GROUP_COORDINATOR, listPeople, namesOf, peopleOf } from "./api";
 
 afterEach(() => vi.restoreAllMocks());

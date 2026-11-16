@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
-import { EmptyCard, LoadFailed, LoadingLine } from "../ui/LoadState";
+import { EmptyCard, LoadFailed, LoadingLine } from "../shared/ui/LoadState";
 import type { FilesClient, Folder } from "./api";
 import { extensionOf } from "./fileKind";
 import { FileViewer } from "./viewer/FileViewer";

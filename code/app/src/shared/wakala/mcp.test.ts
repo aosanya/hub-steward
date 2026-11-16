@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
 import { forgetRuntimeConfig, parseConfig, setRuntimeConfig } from "./config";
 import { McpError, callTool, isReadTool, listTools, onRefused, replyFrom, resetMcp } from "./mcp";
 import { keepToken, storedToken } from "./token";

@@ -2,12 +2,12 @@ import { useState } from "react";
 import { doSomethingBackPath } from "../../../routes";
 import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
-import { Button } from "../../../ui/Button";
-import { EmptyCard, LoadFailed } from "../../../ui/LoadState";
-import { Chip } from "../../../ui/Chip";
-import { ListRow, Rows } from "../../../ui/ListRow";
-import { Segmented } from "../../../ui/Segmented";
-import { Shell } from "../../../ui/Shell";
+import { Button } from "../../../shared/ui/Button";
+import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
+import { Chip } from "../../../shared/ui/Chip";
+import { ListRow, Rows } from "../../../shared/ui/ListRow";
+import { Segmented } from "../../../shared/ui/Segmented";
+import { Shell } from "../../../shared/ui/Shell";
 import { kes } from "../api";
 import { mcpOrdersClient, orderMeta, orderTotal, yesMeta, type OrdersClient } from "./api";
 

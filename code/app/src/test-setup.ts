@@ -4,7 +4,7 @@ import { forgetConversations } from "./assistant/session";
 import { mcpAssignedClient } from "./inbox/assignedIssues";
 import { forgetSent } from "./steps/sent";
 import { rememberSide } from "./tabs";
-import { setRuntimeConfig } from "./wakala/config";
+import { setRuntimeConfig } from "./shared/wakala/config";
 
 beforeEach(() => {
   vi.spyOn(mcpAssignedClient, "assigned").mockResolvedValue([]);

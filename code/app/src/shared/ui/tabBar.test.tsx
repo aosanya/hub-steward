@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { StartClient } from "../market/start/api";
-import type { InboxClient } from "../inbox/api";
-import { rememberSide, sideReached } from "../tabs";
-import { doSomethingBackPath } from "../routes";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
+import type { StartClient } from "../../market/start/api";
+import type { InboxClient } from "../../inbox/api";
+import { rememberSide, sideReached } from "../../tabs";
+import { doSomethingBackPath } from "../../routes";
 import { TabBar } from "./TabBar";
 
 const quietInbox = { listNotifications: () => Promise.resolve([]) } as unknown as InboxClient;

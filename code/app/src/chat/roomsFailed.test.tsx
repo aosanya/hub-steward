@@ -1,15 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { ChatPage } from "./ChatPage";
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 
 beforeEach(() => openAgency("farmers"));
 
 afterEach(() => forgetOpenAgency());
 
-vi.mock("../wakala/mcp", async () => ({ ...(await vi.importActual<typeof import("../wakala/mcp")>("../wakala/mcp")), callTool: vi.fn() }));
-vi.mock("../wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
+vi.mock("../shared/wakala/mcp", async () => ({ ...(await vi.importActual<typeof import("../shared/wakala/mcp")>("../shared/wakala/mcp")), callTool: vi.fn() }));
+vi.mock("../shared/wakala/me", () => ({ loadSubject: vi.fn().mockResolvedValue("u1") }));
 
 const thread = { id: "t1", label: "General", audience: "group", unread: 0, last_message_at: new Date().toISOString() };
 

@@ -1,4 +1,4 @@
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 
 export type LateMatter = { id: string; title: string; place: string; raisedAt: string; daysLate: number; owner: string };
 

@@ -1,7 +1,7 @@
-import { callTool } from "../../wakala/mcp";
+import { callTool } from "../../shared/wakala/mcp";
 import { createOfferArguments, listOffersArguments, updateOfferArguments, type OfferFields } from "../shared/arguments";
 import { kes } from "../shared/money";
-import { loadSubject, subjectNow } from "../../wakala/me";
+import { loadSubject, subjectNow } from "../../shared/wakala/me";
 
 export { kes };
 

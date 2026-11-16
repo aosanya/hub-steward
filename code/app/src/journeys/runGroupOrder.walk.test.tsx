@@ -4,8 +4,8 @@ import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "../App";
 import { agencyBasePath, doSomethingPathIn, openAgency } from "../agency/open";
 import { agenciesFrom, answerWakala } from "./answerWakala";
-import * as mcp from "../wakala/mcp";
-import { forgetSubject } from "../wakala/me";
+import * as mcp from "../shared/wakala/mcp";
+import { forgetSubject } from "../shared/wakala/me";
 import { agency, callsTo, coordinator, farmers, freshWorld, paymentsRecord, poster, reply, startStep, type World } from "./walk18.test-support";
 
 const Where = () => <output data-testid="where">{useLocation().pathname}</output>;

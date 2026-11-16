@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { waitingStepsOf } from "../../inbox/needsYou";
-import { ListRow } from "../../ui/ListRow";
+import { ListRow } from "../../shared/ui/ListRow";
 import { mcpStartClient, waitingPath, type StartClient } from "./api";
 import { useStartWaiting } from "./startWaiting";
 

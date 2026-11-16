@@ -1,4 +1,4 @@
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 
 export type Person = { id: string; name: string };
 export type Names = Map<string, string>;

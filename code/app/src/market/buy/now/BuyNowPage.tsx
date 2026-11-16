@@ -3,10 +3,10 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
 import { priceWords, unitWordsOf } from "../../shared/unitWords";
 import { routes } from "../../../routes";
-import { Button } from "../../../ui/Button";
-import { LoadFailed } from "../../../ui/LoadState";
-import { Field } from "../../../ui/Field";
-import { Shell } from "../../../ui/Shell";
+import { Button } from "../../../shared/ui/Button";
+import { LoadFailed } from "../../../shared/ui/LoadState";
+import { Field } from "../../../shared/ui/Field";
+import { Shell } from "../../../shared/ui/Shell";
 import { mcpBuyNowClient, type BuyNowClient } from "./api";
 
 export function BuyNowPage({ client = mcpBuyNowClient }: { client?: BuyNowClient }) {

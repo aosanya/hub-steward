@@ -1,4 +1,4 @@
-import { ActionsMenu } from "../ui/ActionsMenu";
+import { ActionsMenu } from "../shared/ui/ActionsMenu";
 
 export type Choice = { value: string; label: string };
 

@@ -1,13 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../forms/useLoad";
 import { routes } from "../../../routes";
-import { LoadFailed } from "../../../ui/LoadState";
-import { ListRow, Rows } from "../../../ui/ListRow";
-import { Shell } from "../../../ui/Shell";
+import { LoadFailed } from "../../../shared/ui/LoadState";
+import { ListRow, Rows } from "../../../shared/ui/ListRow";
+import { Shell } from "../../../shared/ui/Shell";
 import { resolveMember } from "../../supply/api";
 import { buyStanding, mcpMyOrdersClient, trailDay, trailWords, type MyOrdersClient } from "../orders/api";
 import { StandingChip } from "../orders/MyOrdersPage";
-import { dayWords } from "../../../ui/days";
+import { dayWords } from "../../../shared/ui/days";
 import { bags, kes, mcpJoinClient, type BoughtOrder, type JoinClient } from "./api";
 
 type Props = { client?: JoinClient; orders?: Pick<MyOrdersClient, "getOrder" | "getTrail">; me?: string };

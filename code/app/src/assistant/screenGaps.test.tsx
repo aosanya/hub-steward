@@ -7,7 +7,7 @@ import { say, showAssistant } from "./assistantScreen";
 import type { ResultDraft } from "./results";
 import { forgetConversations } from "./session";
 
-vi.mock("../wakala/mcp", () => ({ callTool: vi.fn(), listTools: vi.fn(), McpError: class extends Error {} }));
+vi.mock("../shared/wakala/mcp", () => ({ callTool: vi.fn(), listTools: vi.fn(), McpError: class extends Error {} }));
 
 beforeEach(() => openAgency("farmers"));
 

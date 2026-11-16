@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../entry/language";
-import { Button } from "../ui/Button";
-import { Shell } from "../ui/Shell";
+import { Button } from "../shared/ui/Button";
+import { Shell } from "../shared/ui/Shell";
 import { readProfile } from "./profile";
 import { signOut } from "./signOut";
 

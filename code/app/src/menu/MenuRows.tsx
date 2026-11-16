@@ -3,8 +3,8 @@ import { mcpAgencyClient, type AgencyClient } from "../agency/modules";
 import { openAgencyId } from "../agency/open";
 import { useLoad } from "../forms/useLoad";
 import { routes } from "../routes";
-import { Icon } from "../ui/Icon";
-import { ListRow, Rows } from "../ui/ListRow";
+import { Icon } from "../shared/ui/Icon";
+import { ListRow, Rows } from "../shared/ui/ListRow";
 import { sectionsFor } from "./sections";
 
 export function MenuRows({ agency = mcpAgencyClient }: { agency?: AgencyClient }) {

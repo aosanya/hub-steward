@@ -1,4 +1,4 @@
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../shared/wakala/mcp";
 import { itemsOf, taskTools } from "../backlogs/api";
 import { draftOf, type ResultDraft } from "./results";
 

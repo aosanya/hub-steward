@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { useWide } from "../ui/useWide";
+import { useWide } from "../shared/ui/useWide";
 import { mcpFilesClient, type FilesClient } from "./api";
 import { FilePage } from "./FilePage";
 import { FolderPage } from "./FolderPage";

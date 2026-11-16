@@ -1,9 +1,9 @@
 import type { StartClient } from "../market/start/api";
 import { StartWaitingRows } from "../market/start/Waiting";
-import { ListRow, Rows } from "../ui/ListRow";
-import { LoadFailed, LoadingLine } from "../ui/LoadState";
+import { ListRow, Rows } from "../shared/ui/ListRow";
+import { LoadFailed, LoadingLine } from "../shared/ui/LoadState";
 import { needsYouAnchor } from "../tabs";
-import { SectionHeading } from "../ui/SectionHeading";
+import { SectionHeading } from "../shared/ui/SectionHeading";
 import type { InvitationItem, NotificationItem } from "./api";
 import { AssignedIssueRows } from "./AssignedIssueRows";
 import type { AssignedClient } from "./assignedIssues";

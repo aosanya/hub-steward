@@ -5,7 +5,7 @@ import { type InboxClient, mcpInboxClient } from "../inbox/api";
 import { thingsToDoLabel } from "../inbox/thingsToDo";
 import { useNeedsYou } from "../inbox/useNeedsYou";
 import { needsYouPath } from "../tabs";
-import { ListRow, Rows } from "../ui/ListRow";
+import { ListRow, Rows } from "../shared/ui/ListRow";
 
 type RowProps = { count: number | null; to?: string };
 

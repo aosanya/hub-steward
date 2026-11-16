@@ -1,6 +1,6 @@
 import { kes } from "../../shared/money";
 import { productName } from "../../shared/productName";
-import { callTool } from "../../../wakala/mcp";
+import { callTool } from "../../../shared/wakala/mcp";
 
 export { kes };
 

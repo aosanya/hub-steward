@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Button } from "../ui/Button";
-import { ListRow, Rows } from "../ui/ListRow";
+import { Button } from "../shared/ui/Button";
+import { ListRow, Rows } from "../shared/ui/ListRow";
 import { mcpPublishClient, type PublishClient, type PublishedReport, type ReportFile } from "./publishApi";
 
 const readable = (iso: string) => {

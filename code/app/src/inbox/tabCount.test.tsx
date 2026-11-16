@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import type { StartClient } from "../market/start/api";
-import { TabBar } from "../ui/TabBar";
+import { TabBar } from "../shared/ui/TabBar";
 import type { InboxClient, NotificationItem } from "./api";
 
 const note = (id: string, read = false): NotificationItem => ({
