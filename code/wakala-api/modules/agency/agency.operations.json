@@ -1127,7 +1127,7 @@
         {
           "from": "body",
           "as": "mounts",
-          "description": "Each mount: name, optional key (copy it from the list you read), optional icon from the shipped set."
+          "description": "Each mount: name, optional key (copy it from the list you read), optional icon from the shipped set, optional words: a map from a generic word to the word this agency uses for it, such as {\"People\": \"Residents\"}, at most 64 words, each one line of at most 60 characters."
         }
       ],
       "returns": [

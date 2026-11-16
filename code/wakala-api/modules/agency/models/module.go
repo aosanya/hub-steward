@@ -34,11 +34,15 @@ type ModuleMount struct {
 	Name string `json:"name"`
 	Key  string `json:"key,omitempty"`
 	Icon string `json:"icon,omitempty"`
+
+	Words map[string]string `json:"words,omitempty"`
 }
 
 const (
 	MaxModuleMounts    = 16
 	MaxMountNameLength = 60
+	MaxMountWords      = 64
+	MaxMountWordLength = 60
 )
 
 var ModuleIcons = map[string]bool{
@@ -221,8 +225,30 @@ func ValidateModuleMounts(code string, mounts []ModuleMount) error {
 		if mount.Icon != "" && !ModuleIcons[mount.Icon] {
 			return ErrInvalidMounts
 		}
+		if err := validateMountWords(mount.Words); err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+func validateMountWords(words map[string]string) error {
+	if len(words) > MaxMountWords {
+		return ErrInvalidMounts
+	}
+	for generic, replacement := range words {
+		if !singleLineWord(generic) || !singleLineWord(replacement) {
+			return ErrInvalidMounts
+		}
+	}
+	return nil
+}
+
+func singleLineWord(word string) bool {
+	trimmed := strings.TrimSpace(word)
+	return trimmed != "" && trimmed == word &&
+		utf8.RuneCountInString(word) <= MaxMountWordLength &&
+		strings.IndexFunc(word, unicode.IsControl) < 0
 }
 
 func MountKeyFromName(name string) string {

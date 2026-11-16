@@ -1,6 +1,11 @@
 package models
 
-import "testing"
+import (
+	"encoding/json"
+	"errors"
+	"strings"
+	"testing"
+)
 
 func TestModuleCatalog_MountableModulesAcceptAMount(t *testing.T) {
 	cases := []struct {
@@ -49,5 +54,57 @@ func TestModuleCatalog_AssetmanagerFollowsRiskmanager(t *testing.T) {
 	last := len(ModuleCatalog) - 1
 	if last < 1 || ModuleCatalog[last].Code != "assetmanager" || ModuleCatalog[last-1].Code != "riskmanager" {
 		t.Fatalf("assetmanager must come right after riskmanager at the end of the catalog")
+	}
+}
+
+func TestValidateModuleMounts_Words(t *testing.T) {
+	tooMany := map[string]string{}
+	for i := 0; i <= MaxMountWords; i++ {
+		tooMany[strings.Repeat("a", i+1)] = "x"
+	}
+	cases := []struct {
+		name  string
+		words map[string]string
+		ok    bool
+	}{
+		{"none", nil, true},
+		{"one pair", map[string]string{"People": "Residents"}, true},
+		{"empty generic", map[string]string{"": "Residents"}, false},
+		{"empty replacement", map[string]string{"People": ""}, false},
+		{"untrimmed replacement", map[string]string{"People": " Residents"}, false},
+		{"untrimmed generic", map[string]string{"People ": "Residents"}, false},
+		{"newline in replacement", map[string]string{"People": "Resi\ndents"}, false},
+		{"tab in generic", map[string]string{"Peo\tple": "Residents"}, false},
+		{"replacement at the limit", map[string]string{"People": strings.Repeat("r", MaxMountWordLength)}, true},
+		{"replacement over the limit", map[string]string{"People": strings.Repeat("r", MaxMountWordLength+1)}, false},
+		{"generic over the limit", map[string]string{strings.Repeat("g", MaxMountWordLength+1): "Residents"}, false},
+		{"multibyte words at the limit", map[string]string{strings.Repeat("é", MaxMountWordLength): strings.Repeat("ü", MaxMountWordLength)}, true},
+		{"too many words", tooMany, false},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := ValidateModuleMounts("actor", []ModuleMount{{Name: "Residents", Key: "directory", Words: c.words}})
+			if c.ok && err != nil {
+				t.Errorf("refused: %v", err)
+			}
+			if !c.ok && !errors.Is(err, ErrInvalidMounts) {
+				t.Errorf("err = %v, want ErrInvalidMounts", err)
+			}
+		})
+	}
+}
+
+func TestModuleMounts_WordsRoundTripThroughStoredJSON(t *testing.T) {
+	stored := `[{"name":"Residents","key":"directory","words":{"People":"Residents"}},{"name":"Plain","key":"plain"}]`
+	mounts := EffectiveModuleMounts("council", stored)
+	if len(mounts) != 2 || mounts[0].Words["People"] != "Residents" || mounts[1].Words != nil {
+		t.Fatalf("mounts = %+v", mounts)
+	}
+	raw, err := json.Marshal(mounts[1])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(raw), "words") {
+		t.Errorf("a mount without words marshals a words key: %s", raw)
 	}
 }

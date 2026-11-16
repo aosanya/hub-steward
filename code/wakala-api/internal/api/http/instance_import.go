@@ -153,9 +153,23 @@ type importAttachment struct {
 }
 
 type importModule struct {
-	ID      string `json:"id"`
-	Code    string `json:"code"`
-	Enabled bool   `json:"enabled"`
+	ID      string          `json:"id"`
+	Code    string          `json:"code"`
+	Enabled bool            `json:"enabled"`
+	Mounts  json.RawMessage `json:"mounts,omitempty"`
+}
+
+func (in importRequest) checkMounts() error {
+	for _, m := range in.Modules {
+		mounts, err := models.ParseModuleMounts(string(m.Mounts))
+		if err == nil {
+			err = models.ValidateModuleMounts(m.Code, mounts)
+		}
+		if err != nil {
+			return fmt.Errorf("module %q: %w", m.Code, err)
+		}
+	}
+	return nil
 }
 
 type importTemplate struct {
@@ -452,7 +466,11 @@ func (im *importer) applyModules(ctx context.Context, in importRequest) {
 	}
 	for _, m := range in.Modules {
 		held, ok := byCode[m.Code]
-		if !m.Enabled || !ok || held.Locked {
+		if !ok {
+			continue
+		}
+		im.applyModuleMounts(ctx, held.ID, m)
+		if !m.Enabled || held.Locked {
 			continue
 		}
 		if _, err := im.mgr.SetModuleEnabled(ctx, im.draftID, held.ID, true); err != nil {
@@ -460,6 +478,16 @@ func (im *importer) applyModules(ctx context.Context, in importRequest) {
 			continue
 		}
 		im.counted("modules")
+	}
+}
+
+func (im *importer) applyModuleMounts(ctx context.Context, moduleID string, m importModule) {
+	mounts, err := models.ParseModuleMounts(string(m.Mounts))
+	if err != nil || len(mounts) == 0 {
+		return
+	}
+	if _, err := im.mgr.SetModuleMounts(ctx, moduleID, mounts); err != nil {
+		im.fail("module %q mounts: %v", m.Code, err)
 	}
 }
 
@@ -499,6 +527,10 @@ func importInstance(reg agencies.Registry) http.HandlerFunc {
 			return
 		}
 		if err := in.checkReferences(); err != nil {
+			writeErr(w, http.StatusBadRequest, err.Error())
+			return
+		}
+		if err := in.checkMounts(); err != nil {
 			writeErr(w, http.StatusBadRequest, err.Error())
 			return
 		}
