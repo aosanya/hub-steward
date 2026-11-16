@@ -1,3 +1,4 @@
+import { groupsOfType } from "../../groupsOfType";
 import { listOf, text } from "./councilData";
 
 const groupList = "actor_list_groups";
@@ -11,7 +12,7 @@ const chairOf = async (groupId: string) => {
 };
 
 export const loadCommittees = async () => {
-  const groups = await listOf(groupList);
+  const groups = await groupsOfType("Committee");
   return Promise.all(groups.map(async (group) => ({ id: text(group, "id"), name: text(group, "name"), chair: await chairOf(text(group, "id")) })));
 };
 

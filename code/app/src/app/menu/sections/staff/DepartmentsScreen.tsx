@@ -1,7 +1,8 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
+import { groupsOfType } from "../../groupsOfType";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { homeEmpty, listOf, peopleWords, text, type Item } from "./staffData";
+import { homeEmpty, peopleWords, text, type Item } from "./staffData";
 
 const headCountOf = async (group: Item) => {
   const reply = await callTool("", "actor_get_group_population", { group_id: text(group, "id") }).catch(() => null);
@@ -10,7 +11,7 @@ const headCountOf = async (group: Item) => {
 };
 
 const loadDepartments = async () => {
-  const groups = await listOf("actor_list_groups");
+  const groups = await groupsOfType("Department");
   return Promise.all(groups.map(async (group) => ({ id: text(group, "id"), name: text(group, "name"), meta: await headCountOf(group) })));
 };
 

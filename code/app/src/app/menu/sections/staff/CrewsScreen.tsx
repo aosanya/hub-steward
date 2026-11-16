@@ -1,4 +1,5 @@
 import { useWord } from "../../../../features/agency/useWord";
+import { groupsOfType } from "../../groupsOfType";
 import { MenuWindow } from "../../MenuWindow";
 import { homeEmpty, listOf, text, type Item } from "./staffData";
 
@@ -8,7 +9,7 @@ const leadersWords = (leaders: Item[]) => {
 };
 
 const loadCrews = async () => {
-  const groups = await listOf("actor_list_groups");
+  const groups = await groupsOfType("Crew");
   return Promise.all(
     groups.map(async (group) => ({
       id: text(group, "id"),

@@ -271,8 +271,11 @@ describe("a staff member", () => {
 });
 
 const departments = [
-  { id: "g1", name: "Sample Public Works" },
-  { id: "g2", name: "Sample Registry" },
+  { id: "g1", name: "Sample Public Works", node_type: "Department" },
+  { id: "g2", name: "Sample Registry", node_type: "Department" },
+  { id: "g6", name: "Sample Audit Committee", node_type: "Committee" },
+  { id: "g7", name: "Sample Road Crew", node_type: "Crew" },
+  { id: "g8", name: "Sample walk group" },
 ];
 
 const populations: Record<string, number> = { g1: 12, g2: 1 };
@@ -297,6 +300,15 @@ describe("the Departments list", () => {
     expect(screen.getByText("1 person")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Departments" })).toBeInTheDocument();
     expect(callsTo("actor_get_group_population").map(([, , args]) => (args as { group_id: string }).group_id).sort()).toEqual(["g1", "g2"]);
+  });
+
+  it("leaves out every group whose type is not Department", async () => {
+    screens();
+    await screen.findByText("Sample Public Works");
+
+    expect(screen.queryByText("Sample Audit Committee")).toBeNull();
+    expect(screen.queryByText("Sample Road Crew")).toBeNull();
+    expect(screen.queryByText("Sample walk group")).toBeNull();
   });
 
   it("opens the department beside the list when a row is pressed, with its head count", async () => {
@@ -336,8 +348,10 @@ describe("the Departments list", () => {
 });
 
 const crews = [
-  { id: "g3", name: "Sample Road Crew" },
-  { id: "g4", name: "Sample Water Crew" },
+  { id: "g3", name: "Sample Road Crew", node_type: "Crew" },
+  { id: "g4", name: "Sample Water Crew", node_type: "Crew" },
+  { id: "g5", name: "Sample Public Works", node_type: "Department" },
+  { id: "g9", name: "Sample walk group" },
 ];
 
 const leadersOf: Record<string, unknown[]> = {
@@ -365,6 +379,14 @@ describe("the Crews list", () => {
     expect(screen.getByText("Leader: Ben Sample")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Crews" })).toBeInTheDocument();
     expect(callsTo("actor_list_group_leaders").map(([, , args]) => (args as { group_id: string }).group_id).sort()).toEqual(["g3", "g4"]);
+  });
+
+  it("leaves out every group whose type is not Crew", async () => {
+    screens();
+    await screen.findByText("Sample Road Crew");
+
+    expect(screen.queryByText("Sample Public Works")).toBeNull();
+    expect(screen.queryByText("Sample walk group")).toBeNull();
   });
 
   it("opens the crew beside the list when a row is pressed, with its leader", async () => {

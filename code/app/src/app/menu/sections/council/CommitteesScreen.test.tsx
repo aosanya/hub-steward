@@ -11,9 +11,15 @@ const groupList = "actor_list_groups";
 const leaderList = "actor_list_group_leaders";
 
 const committees = [
-  { id: "g1", name: "Finance Committee" },
-  { id: "g2", name: "Planning Committee" },
-  { id: "g3", name: "Audit Committee" },
+  { id: "g1", name: "Finance Committee", node_type: "Committee" },
+  { id: "g2", name: "Planning Committee", node_type: "Committee" },
+  { id: "g3", name: "Audit Committee", node_type: "Committee" },
+];
+
+const others = [
+  { id: "g8", name: "Public Works Department", node_type: "Department" },
+  { id: "g9", name: "Balogh household", node_type: "Háztartás" },
+  { id: "g10", name: "walk-03 Town hall" },
 ];
 
 const leadersOf: Record<string, unknown[]> = {
@@ -40,7 +46,7 @@ const answer = (name: string, args: unknown) => {
 };
 
 beforeEach(() => {
-  groups = committees;
+  groups = [...others, ...committees];
   openAgency("town");
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
@@ -78,6 +84,15 @@ describe("the Committees screen", () => {
     expect(metaOf(rowOf("Planning Committee"))).toEqual(["Chair: Ben Sample"]);
     expect(screen.getByRole("heading", { name: "Committees" })).toBeInTheDocument();
     expect(callsTo(groupList)).toHaveLength(1);
+  });
+
+  it("leaves out every group whose type is not Committee", async () => {
+    showCommittees();
+    await screen.findByText("Chair: Anna Sample");
+
+    expect(screen.queryByText("Public Works Department")).toBeNull();
+    expect(screen.queryByText("Balogh household")).toBeNull();
+    expect(screen.queryByText("walk-03 Town hall")).toBeNull();
     expect(callsTo(leaderList).map(([, , args]) => (args as { group_id: string }).group_id).sort()).toEqual(["g1", "g2", "g3"]);
   });
 
@@ -119,7 +134,7 @@ describe("the Committees screen", () => {
   });
 
   it("says so when the hub lists no committees", async () => {
-    groups = [];
+    groups = others;
     showCommittees();
 
     expect(await screen.findByText(/No committees/i)).toBeInTheDocument();
