@@ -20,7 +20,13 @@ const text = (item: Item, key: string) => {
 
 const placeOf = (item: Item) => [text(item, "street"), text(item, "area")].filter(Boolean).join(", ");
 
-const rowOf = (issue: Item) => ({ id: text(issue, "id"), title: text(issue, "title"), status: text(issue, "status") });
+const rowOf = (issue: Item) => ({
+  id: text(issue, "id"),
+  title: text(issue, "title"),
+  status: text(issue, "status"),
+  department: text(issue, "department"),
+  boardItemId: text(issue, "board_item_id"),
+});
 
 const mapRows = async () =>
   (await nearbyIssues()).map((issue) => ({ id: text(issue, "id"), title: text(issue, "title"), place: placeOf(issue) }));

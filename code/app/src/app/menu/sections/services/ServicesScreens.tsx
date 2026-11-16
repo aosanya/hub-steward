@@ -1,27 +1,16 @@
-import { useState, type ComponentProps } from "react";
+import { useState } from "react";
 import { dayWords } from "../../../../shared/ui/days";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
-import { Shell } from "../../../Shell";
-import { MenuList } from "../../MenuList";
 import { MenuWindow } from "../../MenuWindow";
-import { useBackToSection } from "../../useBackToSection";
 import { useWord } from "../../../../features/agency/useWord";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
+import { CatalogueWindow } from "./CatalogueEntry";
 
 const paidWords = "Paid";
 
 const markPaidLabel = "Mark paid";
-
-function ServicesList(props: Omit<ComponentProps<typeof MenuList>, "bare">) {
-  const back = useBackToSection();
-  return (
-    <Shell title={props.title} titleUnder tabless {...back}>
-      <MenuList {...props} bare />
-    </Shell>
-  );
-}
 
 const sentWords = "Sent";
 
@@ -101,18 +90,7 @@ export const LicencesScreen = () => <KindScreen generic="Licences" emptyGeneric=
 
 export const FeesPaymentsScreen = () => <KindScreen generic="Fees & Payments" emptyGeneric="Fees" kind="fee" payable />;
 
-const catalogueRow = (entry: Item) => ({ id: text(entry, "id"), name: text(entry, "name"), line: text(entry, "summary") });
-
 export function ServiceCatalogueScreen() {
   const word = useWord("forms");
-  const load = async () => (await listOf("forms_catalog_entry_list_public")).map(catalogueRow);
-  return (
-    <ServicesList
-      title={word("Service Catalogue")}
-      tool="forms_catalog_entry_list_public"
-      load={load}
-      fields={{ title: "name", meta: "line" }}
-      empty={homeEmpty(`No ${word("Services").toLowerCase()} yet.`)}
-    />
-  );
+  return <CatalogueWindow title={word("Service Catalogue")} empty={`No ${word("Services").toLowerCase()} yet.`} />;
 }

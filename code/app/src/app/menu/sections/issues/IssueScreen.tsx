@@ -7,6 +7,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { Shell } from "../../../Shell";
 import { MenuDetail, actionFailedWords } from "../../MenuDetail";
 import { useBackToSection } from "../../useBackToSection";
+import { IssueEdit } from "./IssueEdit";
 import { IssueReplies } from "./IssueReplies";
 import { issueFromState } from "./issueRow";
 
@@ -34,6 +35,7 @@ export function IssueScreen() {
   return (
     <Shell title={issue.title} titleUnder {...back}>
       {issue.status ? <Chip>{issue.status}</Chip> : null}
+      <IssueEdit issue={issue} />
       <IssueReplies raisedItemID={id} version={version} />
       <TextArea label="Your reply" value={draft} onChange={(event) => setDraft(event.target.value)} />
       {failed ? <LoadFailed words={actionFailedWords} /> : null}

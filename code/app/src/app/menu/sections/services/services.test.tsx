@@ -9,6 +9,8 @@ import { ApplicationsScreen } from "./ApplicationsScreen";
 import { FeesPaymentsScreen, LicencesScreen, PermitsScreen, ServiceCatalogueScreen } from "./ServicesScreens";
 import { items, routes } from "./index";
 
+vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
+
 type Args = Record<string, unknown>;
 
 const entries = [
