@@ -50,6 +50,9 @@ const repeating = [
   { id: "p1", title: "Grease the pumps", schedule_rule: "FREQ=WEEKLY" },
   { id: "p2", title: "Inspect the fire exits", schedule_rule: "FREQ=MONTHLY" },
   { id: "p3", title: "Sweep the market square", schedule_rule: "FREQ=DAILY" },
+  { id: "p4", title: "Inspect the playground", schedule_rule: "FREQ=WEEKLY;INTERVAL=2;BYDAY=WE" },
+  { id: "p5", title: "Service the boiler", schedule_rule: "FREQ=MONTHLY;INTERVAL=3" },
+  { id: "p6", title: "Check the hydrants", schedule_rule: "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO" },
 ];
 
 const mounted = { modules: [{ module: "assetmanager" }, { module: "taskmanager" }] };
@@ -263,6 +266,15 @@ describe("Maintenance Schedule", () => {
     expect(metaOf(rowOf("Sweep the market square"))).toEqual(["Daily"]);
     expect(callsTo(repeatingList)).not.toHaveLength(0);
     expect(callsTo(taskList)).toHaveLength(0);
+  });
+
+  it("says every 2 weeks for a rule with an interval and keeps the plain word for an interval of 1", async () => {
+    showRouted("Maintenance Schedule");
+
+    await screen.findByText("Inspect the playground", { selector: ".ttl" });
+    expect(metaOf(rowOf("Inspect the playground"))).toEqual(["Every 2 weeks"]);
+    expect(metaOf(rowOf("Service the boiler"))).toEqual(["Every 3 months"]);
+    expect(metaOf(rowOf("Check the hydrants"))).toEqual(["Weekly"]);
   });
 
   it("names the screen the person came from on the Back button", async () => {

@@ -14,8 +14,12 @@ const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
 const isDone = (task: Item) => textOf(task.state).toLowerCase() === doneState || textOf(task.status) === "completed";
 
+const unitWords: Record<string, string> = { DAILY: "days", WEEKLY: "weeks", MONTHLY: "months", YEARLY: "years" };
+
 const frequencyWords = (rule: string) => {
   const frequency = /FREQ=([A-Z]+)/.exec(rule)?.[1] ?? "";
+  const interval = Number(/INTERVAL=(\d+)/.exec(rule)?.[1] ?? 1);
+  if (interval > 1 && unitWords[frequency]) return `Every ${interval} ${unitWords[frequency]}`;
   return frequency.charAt(0) + frequency.slice(1).toLowerCase();
 };
 
