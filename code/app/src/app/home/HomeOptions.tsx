@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { hasModule, mcpAgencyClient, taskModule, type AgencyClient } from "../../features/agency/modules";
+import { agencyInstanceAbsent, hasModule, mcpAgencyClient, taskModule, type AgencyClient } from "../../features/agency/modules";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { askMayRead, allIssuesId, mcpBacklogsClient, type Backlog, type BacklogsClient } from "../../features/backlogs";
 import { mcpFilesClient, filesHomePath, type FilesClient } from "../../features/files";
@@ -29,7 +29,11 @@ const holdsWorkflows = async (start: Props["start"] & {}, steps: Props["steps"] 
 };
 
 const visibleBacklogs = async (agency: AgencyClient, backlogs: Props["backlogs"] & {}, mayRead: Props["mayRead"] & {}): Promise<Backlog[]> => {
-  const view = await agency.read();
+  const view = await agency.read().catch((reason) => {
+    if (agencyInstanceAbsent(reason)) return null;
+    throw reason;
+  });
+  if (!view) return [];
   if (view.modulesUnread) throw new Error("modules unread");
   if (!hasModule(view, taskModule)) return [];
   return (await mayRead()) ? backlogs.backlogs() : [];
