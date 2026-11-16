@@ -2,10 +2,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { itemsOf } from "../../../../features/backlogs";
 import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { agencyBasePath, agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
+import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
 import { MenuList } from "../../MenuList";
 import { useBackToSection } from "../../useBackToSection";
+import { residentPaths } from "./paths";
+import { PersonScreen } from "./PersonScreen";
+
+export { PersonScreen };
 
 type Item = Record<string, unknown>;
 
@@ -45,7 +49,7 @@ export function AllPeopleScreen() {
   const navigate = useNavigate();
   const here = useLocation();
   const open = (id: string) =>
-    navigate(`${agencyBasePath(openAgencyId())}/menu/residents/people/${encodeURIComponent(id)}`, { state: { from: { path: `${here.pathname}${here.search}`, title: peopleTitle } } });
+    navigate(residentPaths.person.path({ id }), { state: { from: { path: `${here.pathname}${here.search}`, title: peopleTitle } } });
   const load = async () => (await listOf("actor_list_actors")).map((person) => ({ id: text(person, "id"), name: text(person, "display_name"), status: text(person, "status") }));
   return <ListScreen title={peopleTitle} tool="actor_list_actors" fields={{ title: "name", meta: "status" }} empty="No people yet." load={load} onChoose={open} />;
 }
