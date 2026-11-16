@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { MenuEditForm } from "../../MenuEditForm";
 import { MenuList } from "../../MenuList";
+import { MenuWindow } from "../../MenuWindow";
 
 type Item = Record<string, unknown>;
 
@@ -36,10 +39,37 @@ const loadSchedule = async () =>
     often: frequencyWords(textOf(task.schedule_rule)),
   }));
 
+const taskRead = "taskmanager_task_read";
+
+const workOrderEditFields = [{ label: "Title", key: "title", required: true }];
+
+const loadWorkOrder = async (taskId: string) => {
+  const reply = (await callTool("", taskRead, { taskID: taskId })) as { item?: unknown } | null;
+  const inner = reply?.item ?? reply;
+  return inner && typeof inner === "object" ? (inner as Item) : {};
+};
+
 export function WorkOrdersPage() {
   const word = useWord("assetmanager");
   const title = word("Work Orders");
-  return <MenuList title={title} tool={taskList} fields={{ title: "title", meta: "state" }} empty={{ words: `No ${title.toLowerCase()} yet.` }} load={loadWorkOrders} />;
+  const [version, setVersion] = useState(0);
+  return (
+    <MenuWindow
+      title={title}
+      listKey={version}
+      detailKey={version}
+      list={{ title, tool: taskList, fields: { title: "title", meta: "state" }, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadWorkOrders }}
+      detail={{
+        tool: taskRead,
+        fields: { Title: "title", State: "state" },
+        status: "",
+        load: loadWorkOrder,
+        extra: (order) => (
+          <MenuEditForm item={order} id={textOf(order.id)} idArg="taskID" tool="taskmanager_task_patch" permission="task.edit" fields={workOrderEditFields} onSaved={() => setVersion((was) => was + 1)} />
+        ),
+      }}
+    />
+  );
 }
 
 export function MaintenancePage() {
