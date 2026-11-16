@@ -1,5 +1,5 @@
-import { callTool } from "../../wakala/mcp";
-import { dayWords } from "../../ui/days";
+import { callTool } from "../../../wakala/mcp";
+import { dayWords } from "../../../ui/days";
 import { kes } from "../api";
 
 export type SupplyYes = {

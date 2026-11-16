@@ -4,7 +4,7 @@ import { askArguments, buyNowArguments, listOffersArguments } from "../../market
 import { listAllGroupOrders } from "../../market/shared/groupOrders";
 import { productName } from "../../market/shared/productName";
 import { quantityWords, priceWords } from "../../market/shared/unitWords";
-import { kes } from "../../supply/api";
+import { kes } from "../../market/supply/api";
 
 export const sellNowTool = "market_ask";
 

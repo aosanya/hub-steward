@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../../ui/Card";
 import { ListRow, Rows } from "../../ui/ListRow";
-import { isLive, mcpGroupOrderClient, termsWords, type GroupOrder, type GroupOrderClient } from "../../supply/groupOrder/api";
+import { isLive, mcpGroupOrderClient, termsWords, type GroupOrder, type GroupOrderClient } from "../../market/supply/groupOrder/api";
 import { mcpPaymentsClient, type PaymentsClient } from "./api";
 
 export const orderPath = (id: string) => `/coordinator/orders/${id}`;

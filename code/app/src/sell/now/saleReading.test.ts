@@ -1,5 +1,5 @@
 import * as mcp from "../../wakala/mcp";
-import { kes } from "../../supply/api";
+import { kes } from "../../market/supply/api";
 import {
   askedBags,
   bulkWords,

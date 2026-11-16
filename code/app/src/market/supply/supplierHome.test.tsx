@@ -1,11 +1,11 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import type { AgencyClient, AgencyView } from "../agency/modules";
+import type { AgencyClient, AgencyView } from "../../agency/modules";
 import type { Supplier, SupplyClient } from "./api";
 import { SupplierHome } from "./SupplierHome";
-import { chatStepOf } from "../journeys/chatSteps";
-import * as mcp from "../wakala/mcp";
+import { chatStepOf } from "../../journeys/chatSteps";
+import * as mcp from "../../wakala/mcp";
 
 const approved: Supplier = {
   id: "p1",

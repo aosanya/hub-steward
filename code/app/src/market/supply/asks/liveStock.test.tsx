@@ -2,7 +2,7 @@ import { afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../../wakala/mcp";
 import { OneAskPage } from "./AsksPage";
 import { liveStock } from "./liveStock";
 

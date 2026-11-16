@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { doSomethingBackPath } from "../../routes";
 import { useLoad } from "../../forms/useLoad";
-import { isApproved, mcpSupplyClient, mySupplier, buyerPriceWords, priceWords, resolveMember, type SupplyClient } from "../../supply/api";
+import { isApproved, mcpSupplyClient, mySupplier, buyerPriceWords, priceWords, resolveMember, type SupplyClient } from "./api";
 import { Button } from "../../ui/Button";
 import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { ListRow, Rows } from "../../ui/ListRow";

@@ -4,7 +4,7 @@ import { routes } from "../../routes";
 import { LoadFailed } from "../../ui/LoadState";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { Shell } from "../../ui/Shell";
-import { resolveMember } from "../../supply/api";
+import { resolveMember } from "../../market/supply/api";
 import { buyStanding, mcpMyOrdersClient, trailDay, trailWords, type MyOrdersClient } from "../orders/api";
 import { StandingChip } from "../orders/MyOrdersPage";
 import { dayWords } from "../../ui/days";

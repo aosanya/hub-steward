@@ -7,7 +7,7 @@ import { LoadFailed } from "../../ui/LoadState";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { useBackTo } from "../../ui/backTo";
 import { Shell } from "../../ui/Shell";
-import { kes, resolveMember } from "../../supply/api";
+import { kes, resolveMember } from "../../market/supply/api";
 import { dayWords } from "../../ui/days";
 import { canCancelOrder, kindWords, mcpMyOrdersClient, orderTitle, trailDay, trailWords, type MyOrder, type MyOrdersClient, type TrailLine } from "./api";
 import { StandingChip } from "./MyOrdersPage";

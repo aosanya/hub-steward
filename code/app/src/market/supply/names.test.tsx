@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import * as mcp from "../wakala/mcp";
-import { listAsks } from "../chat/api";
+import * as mcp from "../../wakala/mcp";
+import { listAsks } from "../../chat/api";
 import { AskForm } from "./asks/AskForm";
 import { noStock } from "./asks/stock";
 import { lineOf } from "./groupOrder/api";

@@ -1,12 +1,12 @@
 import { BuyerTabs } from "../buyer/BuyerTabs";
 import { useNavigate, useParams } from "react-router-dom";
 import type { AskAnswer, ChatClient } from "../../chat/api";
-import type { SupplyOffer } from "../../supply/api";
+import type { SupplyOffer } from "../../market/supply/api";
 import { useLoad } from "../../forms/useLoad";
-import { AskForm } from "../../supply/asks/AskForm";
-import { OneAskPage } from "../../supply/asks/AsksPage";
-import { liveStock } from "../../supply/asks/liveStock";
-import { noStock, type StockReader } from "../../supply/asks/stock";
+import { AskForm } from "../../market/supply/asks/AskForm";
+import { OneAskPage } from "../../market/supply/asks/AsksPage";
+import { liveStock } from "../../market/supply/asks/liveStock";
+import { noStock, type StockReader } from "../../market/supply/asks/stock";
 import { Card } from "../../ui/Card";
 import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { Chip } from "../../ui/Chip";

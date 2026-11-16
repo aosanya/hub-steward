@@ -1,5 +1,5 @@
 import * as mcp from "../../wakala/mcp";
-import * as supply from "../../supply/api";
+import * as supply from "../../market/supply/api";
 import { answeredAsks, askPrice, buyerAskOf, mcpBuyerAskClient, waitingAsks, type BuyerAsk } from "./buyerAsksApi";
 import { isOpenSale, mcpSaleClient, ownLine, saleOf, type Sale } from "./saleApi";
 

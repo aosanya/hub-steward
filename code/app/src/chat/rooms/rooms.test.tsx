@@ -1,7 +1,7 @@
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useParams, useSearchParams } from "react-router-dom";
-import type { GroupOrder } from "../../supply/groupOrder/api";
+import type { GroupOrder } from "../../market/supply/groupOrder/api";
 import type { RoomAsk, RoomMessage, RoomOrder, RoomThread, RoomsClient } from "./api";
 import { RoomThreadPage } from "./RoomThreadPage";
 import { RoomThreadsPage } from "./RoomThreadsPage";

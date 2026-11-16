@@ -2,7 +2,7 @@ import { useState } from "react";
 import { doSomethingBackPath } from "../../routes";
 import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
-import { isApproved, mcpSupplyClient, mySupplier, resolveMember, waitingWords, type SupplyClient } from "../../supply/api";
+import { isApproved, mcpSupplyClient, mySupplier, resolveMember, waitingWords, type SupplyClient } from "./api";
 import { Button } from "../../ui/Button";
 import { Card } from "../../ui/Card";
 import { LoadFailed } from "../../ui/LoadState";

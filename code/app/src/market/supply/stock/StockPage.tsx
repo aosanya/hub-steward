@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLoad } from "../../forms/useLoad";
-import { Button } from "../../ui/Button";
-import { EmptyCard, LoadFailed } from "../../ui/LoadState";
-import { Field } from "../../ui/Field";
-import { Shell } from "../../ui/Shell";
+import { useLoad } from "../../../forms/useLoad";
+import { Button } from "../../../ui/Button";
+import { EmptyCard, LoadFailed } from "../../../ui/LoadState";
+import { Field } from "../../../ui/Field";
+import { Shell } from "../../../ui/Shell";
 import { isApproved, mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../api";
 import { mcpStockClient, type StockClient } from "./api";
 

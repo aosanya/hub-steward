@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { isWaiting, type Ask, type ChatClient } from "../../chat/api";
+import { isWaiting, type Ask, type ChatClient } from "../../../chat/api";
 import { AsksPage, OneAskPage } from "./AsksPage";
 import { stockText } from "./stock";
 

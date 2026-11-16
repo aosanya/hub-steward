@@ -5,7 +5,7 @@ import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { Chip, type ChipTone } from "../../ui/Chip";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { Shell } from "../../ui/Shell";
-import { kes, resolveMember } from "../../supply/api";
+import { kes, resolveMember } from "../../market/supply/api";
 import { kindWords, mcpMyOrdersClient, orderTitle, type MyOrdersClient, type Standing } from "./api";
 
 const tones: Record<Standing, ChipTone | undefined> = {

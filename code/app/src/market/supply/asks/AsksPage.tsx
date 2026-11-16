@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { doSomethingBackPath } from "../../routes";
+import { doSomethingBackPath } from "../../../routes";
 import { useNavigate, useParams } from "react-router-dom";
-import { listAsks, mcpChatClient, isWaiting, type Ask, type ChatClient } from "../../chat/api";
-import { useLoad } from "../../forms/useLoad";
-import { EmptyCard, LoadFailed } from "../../ui/LoadState";
-import { ListRow, Rows } from "../../ui/ListRow";
-import { Segmented } from "../../ui/Segmented";
-import { Shell } from "../../ui/Shell";
+import { listAsks, mcpChatClient, isWaiting, type Ask, type ChatClient } from "../../../chat/api";
+import { useLoad } from "../../../forms/useLoad";
+import { EmptyCard, LoadFailed } from "../../../ui/LoadState";
+import { ListRow, Rows } from "../../../ui/ListRow";
+import { Segmented } from "../../../ui/Segmented";
+import { Shell } from "../../../ui/Shell";
 import { AskForm } from "./AskForm";
 import { noStock, type StockReader } from "./stock";
 

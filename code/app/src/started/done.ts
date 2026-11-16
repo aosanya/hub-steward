@@ -1,6 +1,6 @@
 import { coordinatorOrderPath } from "../coordinator/start/api";
 import { productNameAt, type PosterOffer } from "../market/shared/productName";
-import { resolveMember } from "../supply/api";
+import { resolveMember } from "../market/supply/api";
 import { callTool } from "../wakala/mcp";
 import { marketAbsent, offersOfShops } from "./api";
 

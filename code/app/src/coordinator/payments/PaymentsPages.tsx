@@ -13,7 +13,7 @@ import { loadFromList } from "../../ui/roster/usePagedRoster";
 import { SearchSelect } from "../../ui/SearchSelect";
 import { SectionHeading } from "../../ui/SectionHeading";
 import { Shell } from "../../ui/Shell";
-import { bags, farmersWords, mcpGroupOrderClient, termsWords, type GroupOrder, type GroupOrderClient } from "../../supply/groupOrder/api";
+import { bags, farmersWords, mcpGroupOrderClient, termsWords, type GroupOrder, type GroupOrderClient } from "../../market/supply/groupOrder/api";
 import { mcpPaymentsClient, type Payment, type PaymentsClient, type PaymentsRecord } from "./api";
 
 type Clients = { orders?: GroupOrderClient; payments?: PaymentsClient };

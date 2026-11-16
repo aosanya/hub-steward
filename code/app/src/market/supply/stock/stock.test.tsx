@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import { listAskRecords, mcpStockClient, mcpStockReader, type StockClient } from "./api";
 import { StockPage } from "./StockPage";
-import * as mcp from "../../wakala/mcp";
+import * as mcp from "../../../wakala/mcp";
 import type { Supplier, SupplyClient, SupplyOffer } from "../api";
 
 const supplier = (status: string): Supplier => ({

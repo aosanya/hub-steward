@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
-import { resolveMember } from "../../supply/api";
+import { resolveMember } from "../../market/supply/api";
 import { routes } from "../../routes";
 import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { JoinForm } from "../../ui/JoinForm";

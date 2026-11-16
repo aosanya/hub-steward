@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import type { GroupOrder, GroupOrderClient } from "../../supply/groupOrder/api";
+import type { GroupOrder, GroupOrderClient } from "../../market/supply/groupOrder/api";
 import * as mcp from "../../wakala/mcp";
 import { holdsGroupCoordinator, isDuplicate, mcpPaymentsClient, paymentOf, recordOf, type Payment, type PaymentsClient, type PaymentsRecord } from "./api";
 import { NotificationsPage } from "../../pages/NotificationsPage";

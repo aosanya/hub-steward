@@ -2,8 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { mcpChatClient, type ChatClient } from "../../chat/api";
 import { useLoad } from "../../forms/useLoad";
 import { routes } from "../../routes";
-import { AskForm } from "../../supply/asks/AskForm";
-import { noStock, type StockReader } from "../../supply/asks/stock";
+import { AskForm } from "../../market/supply/asks/AskForm";
+import { noStock, type StockReader } from "../../market/supply/asks/stock";
 import { LoadFailed } from "../../ui/LoadState";
 import { Shell } from "../../ui/Shell";
 

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
-import { isApproved, mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../../supply/api";
+import { isApproved, mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../../market/supply/api";
 import { Card } from "../../ui/Card";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { mcpBuyerAskClient, waitingAsks, type BuyerAskClient } from "../group/buyerAsksApi";

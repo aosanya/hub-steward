@@ -1,5 +1,5 @@
 import { posterOffersOf, productNameAt, type PosterOffer } from "../../market/shared/productName";
-import { mcpSupplyClient } from "../../supply/api";
+import { mcpSupplyClient } from "../../market/supply/api";
 import { callTool } from "../../wakala/mcp";
 
 export type SaleLine = { picker: string; quantity: number };

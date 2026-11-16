@@ -12,7 +12,7 @@ import {
   type OfferFields,
 } from "./arguments";
 import { mcpMarketClient } from "./api";
-import { mcpSupplyClient } from "../../supply/api";
+import { mcpSupplyClient } from "../supply/api";
 
 const exactKeys = (sent: Record<string, unknown>) => Object.keys(sent).sort();
 

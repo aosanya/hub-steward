@@ -1,8 +1,8 @@
-import { listAllGroupOrders } from "../../market/shared/groupOrders";
-import { kes } from "../../market/shared/money";
-import { posterOffersOf, productNameAt, type PosterOffer } from "../../market/shared/productName";
-import { GROUP_COORDINATOR, listPeople, namesOf, type Names } from "../../people/api";
-import { callTool } from "../../wakala/mcp";
+import { listAllGroupOrders } from "../../shared/groupOrders";
+import { kes } from "../../shared/money";
+import { posterOffersOf, productNameAt, type PosterOffer } from "../../shared/productName";
+import { GROUP_COORDINATOR, listPeople, namesOf, type Names } from "../../../people/api";
+import { callTool } from "../../../wakala/mcp";
 
 export type OrderLine = { id: string; picker: string; quantity: number; answer: string };
 

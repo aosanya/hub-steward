@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import * as mcp from "../../wakala/mcp";
 import type { ChatClient } from "../../chat/api";
-import type { SupplyOffer } from "../../supply/api";
+import type { SupplyOffer } from "../../market/supply/api";
 import { AskRoutePage, BuyerAskPage, BuyerAsksPage } from "./BuyerAsksPages";
 import { askPrice, buyerAskOf, mcpBuyerAskClient, type BuyerAsk, type BuyerAskClient } from "./buyerAsksApi";
 

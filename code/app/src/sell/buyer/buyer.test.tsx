@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import type { Supplier, SupplyClient } from "../../supply/api";
+import type { Supplier, SupplyClient } from "../../market/supply/api";
 import type { BuyerAsk, BuyerAskClient } from "../group/buyerAsksApi";
 import { BuyerHome } from "./BuyerHome";
 import { BuyerTabs } from "./BuyerTabs";

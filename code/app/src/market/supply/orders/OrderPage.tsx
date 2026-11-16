@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useLoad } from "../../forms/useLoad";
-import { Button } from "../../ui/Button";
-import { LoadFailed } from "../../ui/LoadState";
-import { Chip } from "../../ui/Chip";
-import { ListRow, Rows } from "../../ui/ListRow";
-import { Shell } from "../../ui/Shell";
-import { dayWords } from "../../ui/days";
+import { useLoad } from "../../../forms/useLoad";
+import { Button } from "../../../ui/Button";
+import { LoadFailed } from "../../../ui/LoadState";
+import { Chip } from "../../../ui/Chip";
+import { ListRow, Rows } from "../../../ui/ListRow";
+import { Shell } from "../../../ui/Shell";
+import { dayWords } from "../../../ui/days";
 import { mcpOrdersClient, priceLine, type OrdersClient, type SupplyOrder } from "./api";
 
 export function OrderPage({ client = mcpOrdersClient }: { client?: OrdersClient }) {

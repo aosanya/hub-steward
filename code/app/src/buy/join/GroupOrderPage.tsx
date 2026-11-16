@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
-import { resolveMember } from "../../supply/api";
+import { resolveMember } from "../../market/supply/api";
 import { routes } from "../../routes";
 import { BottomBar } from "../../ui/BottomBar";
 import { Button } from "../../ui/Button";
