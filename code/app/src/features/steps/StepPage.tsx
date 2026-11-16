@@ -23,6 +23,8 @@ import type { PublishClient } from "./publishApi";
 import { answersOf, formQuestionsOf, unsendable } from "./questions";
 import { afterWords, markSent } from "./sent";
 
+const recordsSheets = (questions: FormQuestion[]) => questions.find((q) => q.prompt.startsWith("On whose behalf"));
+
 const numeric = (type: string) => type === "number" || type === "currency";
 
 const problemOf = (q: FormQuestion, draft: Draft) => {
@@ -46,7 +48,10 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
   const [edits, setEdits] = useState<Edits>({});
   const [refusal, setRefusal] = useState("");
   const [refusedFor, setRefusedFor] = useState<SendRefusal | "">("");
-  const [sendKey] = useState(newSendKey);
+  const [sendKey, setSendKey] = useState(newSendKey);
+  const [sheets, setSheets] = useState(0);
+  const [resting, setResting] = useState(false);
+  const [recorded, setRecorded] = useState({ orderId: "", keptOrderId: "", after: "" });
   const step = loaded.state === "ready" ? loaded.data.find((s) => s.id === stepId && s.orderId === order) : undefined;
   const back = () => navigate(doSomethingBackPath());
 
@@ -87,16 +92,53 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
     setRefusal("");
     setRefusedFor("");
     try {
-      const reply = await steps.submit(step, { ...answersOf(questions, draft), ...amendmentsOf(step.earlier, edits) }, sendKey);
+      const answers = { ...answersOf(questions, draft), ...amendmentsOf(step.earlier, edits) };
+      const reply = await (sheets > 0
+        ? steps.submit(step, answers, sendKey, { orderId: recorded.orderId })
+        : steps.submit(step, answers, sendKey));
       clearDraft(draftKey);
-      markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title, after: afterWords(reply) });
-      navigate(doSomethingBackPath());
+      const after = afterWords(reply);
+      if (!recordsSheets(questions)) {
+        markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title, after });
+        navigate(doSomethingBackPath());
+        return;
+      }
+      const keptOrderId = sheets > 0 ? recorded.keptOrderId : markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title });
+      setRecorded({ orderId: sheets > 0 ? recorded.orderId : step.orderId || reply.orderId, keptOrderId, after });
+      setSheets(sheets + 1);
+      setResting(true);
+      setStatus("idle");
     } catch (e) {
       setRefusedFor(e instanceof StepRefused ? e.reason : "failed");
       setRefusal(e instanceof StepRefused ? e.message : refusalWords.failed);
       setStatus("idle");
     }
   };
+
+  const addAnotherSheet = () => {
+    const behalf = recordsSheets(questions);
+    const { [behalf!.id]: _cleared, ...kept } = draft;
+    setDraft(kept);
+    saveDraft(draftKey, kept);
+    setSendKey(newSendKey());
+    setResting(false);
+  };
+  const finished = () => {
+    markSent({ id: step.id, orderId: recorded.keptOrderId, title: step.formName || step.title, after: recorded.after });
+    navigate(doSomethingBackPath());
+  };
+
+  if (resting) {
+    return (
+      <Shell title={step.formName || step.title} sub={step.workflowName || undefined} onBack={back}>
+        <Card>
+          <p>Sheets recorded: {sheets}</p>
+          <Button onClick={addAnotherSheet}>Add another sheet</Button>
+          <Button kind="primary" onClick={finished}>Finished</Button>
+        </Card>
+      </Shell>
+    );
+  }
 
   return (
     <Shell title={step.formName || step.title} sub={step.workflowName || undefined} onBack={back}>

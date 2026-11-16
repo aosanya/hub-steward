@@ -31,6 +31,7 @@ const same = (a: Pick<Kept, "agencyId" | "id" | "orderId">, b: Pick<Kept, "agenc
 export const markSent = (step: Sent) => {
   const kept = { ...step, orderId: step.orderId || `sent-${nextLocalNumber()}`, agencyId: openAgencyId() };
   keep([...all().filter((one) => !same(one, kept)), kept]);
+  return kept.orderId;
 };
 
 export const wasSent = (step: Pick<Sent, "id" | "orderId">) => all().some((one) => same(one, { ...step, agencyId: openAgencyId() }));
