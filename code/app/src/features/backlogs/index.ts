@@ -3,6 +3,7 @@ export { askMayRead } from "./shared/access";
 export {
   allIssuesId,
   fetchAll,
+  hubBacklogsOf,
   issueOf,
   itemsOf,
   mcpBacklogsClient,
@@ -10,6 +11,7 @@ export {
   taskTools,
   type Backlog,
   type BacklogsClient,
+  type HubStep,
   type Issue,
 } from "./shared/api";
 export { IssueCard } from "./shared/IssueCard";
@@ -22,3 +24,4 @@ export { backlogViewKind } from "./cards/views";
 export { DURATION_UNITS, fieldSpec, fieldSpecs, operatorLabel, PRIORITIES } from "./smart/fields";
 export { smartBacklogPath } from "./smart/paths";
 export { FIELD_IDS, type FieldId } from "./smart/types";
+export { refusalText } from "./manage/api";

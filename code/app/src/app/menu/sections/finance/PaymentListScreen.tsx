@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useWord } from "../../../../features/agency/useWord";
-import { refusalText } from "../../../../features/backlogs/manage/api";
+import { refusalText } from "../../../../features/backlogs";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
 import { LoadFailed } from "../../../../shared/ui/LoadState";

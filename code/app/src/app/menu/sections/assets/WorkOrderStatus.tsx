@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { hubBacklogsOf, taskTools, type HubStep } from "../../../../features/backlogs/shared/api";
+import { hubBacklogsOf, taskTools, type HubStep } from "../../../../features/backlogs";
 import { useMay } from "../../../../features/agency/useMay";
 import { Button } from "../../../../shared/ui/Button";
 import { ChoiceGroup } from "../../../../shared/ui/ChoiceRow";
