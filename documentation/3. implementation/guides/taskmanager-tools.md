@@ -10,6 +10,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | Which issue is this id, code or text | `taskmanager_task_find` | `GET /find-tasks` |
 | Which issue should a worker take next | `taskmanager_task_next_ready` | `GET /next-ready` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
+| Everything a worker reads before starting an issue, in one call | `taskmanager_task_brief` | `GET /tasks/{taskID}/brief` |
 | Which issues in progress are past their working-time cap | `taskmanager_task_timed_out` | `GET /timed-out` |
 | Take an issue: move it to In Progress, write the taken entry, record the caps | `taskmanager_task_claim` | `POST /tasks/{taskID}/claim` |
 | Stop work on an issue as Blocked or Sinbin, with the tags and the move done right | `taskmanager_task_release` | `POST /tasks/{taskID}/release` |
@@ -60,6 +61,14 @@ The tool finds the backlog's In Progress step by what it holds, not by its id: t
 
 Atomic: the first statement of the transaction updates the issue only while its status is still the one the claimer read, so of two claims at once exactly one writes the move and the entry, and the other is refused 409 as already in progress and leaves no entry. An issue tagged Sinbin, Blocked or Waiting, one that waits on an open dependency, one already at the In Progress step and one that has left To do are refused 409 with the reason.
 
+## taskmanager_task_brief
+
+Inputs: `taskID` and optionally `log_limit` (1 to 50, default 10; another value is 400). The caller is taken from the session; an issue the caller cannot see is 404.
+
+It replaces the five reads a worker made at the start of an issue (the issue, its caps, its Log, its todos and its dependencies with their Logs). The answer is `issue` (the whole record, description included), `caps` (exactly what `taskmanager_task_caps_read` gives), `log` (the newest `log_limit` entries, oldest first, plus every entry of kind person older than those, because a person note is an instruction), `todos` (`items`, `done`, `total`, as `taskmanager_task_todo_list_for_issue` gives them), `depends_on` (each `id`, `code`, `title`, `step`, `state`, `open` and `last_entries`, the last 3 Log entries of that issue, oldest first) and `needed_by` (each `id`, `code`, `title`, `step`, `state`, `open`). An issue in a backlog the caller cannot see is never named and its Log is never read: `hidden_depends_on` and `hidden_needed_by` count them.
+
+It composes the code of its siblings and holds none of its own: the dependency sides are `taskmanager_task_dependencies`, the caps the caps reading, the Log the paged Log read and the todos the todo list.
+
 ## taskmanager_task_release
 
 Inputs: `taskID`, `mode` (`blocked` or `sinbin`), `reason` (not blank), and optionally `todo_id` (only with `blocked`: that todo of the issue is set Blocked with the reason as its blocked reason) and `links` (a list of strings for the Log entry). The caller is taken from the session and needs Can move on the backlog the issue is in; an issue the caller cannot see is 404 and one they can only see is 403.
@@ -81,3 +90,4 @@ Refused, with nothing written: 409 unless the issue sits at the backlog's In Pro
 | The timed-out tool and its types | `modules/taskmanager/task_timed_out.go`, tests in `routes/timed_out_test.go` |
 | The claim tool and its types | `modules/taskmanager/task_claim.go`, tests in `routes/claim_task_test.go` |
 | The release tool and its types | `modules/taskmanager/task_release.go`, tests in `routes/release_task_test.go` |
+| The brief tool and its types | `modules/taskmanager/task_brief.go`, tests in `routes/task_brief_test.go` |
