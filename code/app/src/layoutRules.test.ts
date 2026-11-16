@@ -8,8 +8,9 @@ const nonFeatureFolders = new Set(["shared", "app", "features", "journeys", "hom
 const featureFolders = new Set(
   readdirSync(featuresRoot).filter((name) => statSync(join(featuresRoot, name)).isDirectory() && !nonFeatureFolders.has(name)),
 );
-const featuresWithPublicIndex = [...featureFolders].filter(
-  (name) => existsSync(join(featuresRoot, name, "index.ts")) || existsSync(join(featuresRoot, name, "index.tsx")),
+const guardedFeatures = ["backlogs", "files"];
+const featuresWithPublicIndex = guardedFeatures.filter(
+  (name) => featureFolders.has(name) && (existsSync(join(featuresRoot, name, "index.ts")) || existsSync(join(featuresRoot, name, "index.tsx"))),
 );
 const foldersExemptFromPublicSurface = new Set(["journeys"]);
 
