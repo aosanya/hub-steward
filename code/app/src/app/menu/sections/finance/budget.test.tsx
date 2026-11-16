@@ -51,7 +51,12 @@ beforeEach(() => {
     if (name === "accounting_budget_set") {
       if (refusal) throw new mcp.McpError(`403: ${refusal}`);
       const made = args as Record<string, unknown>;
-      stored = [...stored, { id: "b3", spent: 0, planned: made.amount, ...made }];
+      const same = stored.findIndex((line) => line.account_id === made.account_id && line.period_start === made.period_start && line.period_end === made.period_end);
+      if (same >= 0) {
+        stored = stored.map((line, index) => (index === same ? { ...line, name: made.name, department: made.department, planned: Number(made.amount) } : line));
+        return stored[same];
+      }
+      stored = [...stored, { id: "b3", spent: 0, planned: Number(made.amount), ...made }];
       return stored[stored.length - 1];
     }
     throw new Error(`${name} is not a tool this screen may use`);
@@ -198,5 +203,69 @@ describe("adding a budget line", () => {
 
     expect(await screen.findByText("Sample Road Repairs")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Add budget line" })).toBeNull();
+  });
+});
+
+describe("editing a budget line", () => {
+  const openRoadLine = async () => {
+    open();
+    await userEvent.click(await screen.findByRole("button", { name: /Sample Road Repairs/ }));
+    await waitFor(() => expect(pane().textContent).toContain("Public Works"));
+  };
+
+  const raisePlannedTo = async (amount: string) => {
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    const planned = screen.getByLabelText("Planned amount");
+    await userEvent.clear(planned);
+    await userEvent.type(planned, amount);
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+  };
+
+  it("sets the line again on accounting_budget_set with its account and every field", async () => {
+    await openRoadLine();
+    await raisePlannedTo("1500");
+
+    await waitFor(() => expect(callsTo("accounting_budget_set")).toHaveLength(1));
+    const sent = callsTo("accounting_budget_set")[0][2] as Record<string, unknown>;
+    expect(sent).toMatchObject({ account_id: "ac1", name: "Sample Road Repairs", department: "Public Works", period_start: "2026-01-01", period_end: "2026-02-01" });
+    expect(Number(sent.amount)).toBe(1500);
+  });
+
+  it("shows the new planned amount in the list and the new Remaining and share spent in the line", async () => {
+    await openRoadLine();
+    await raisePlannedTo("1500");
+
+    expect(await screen.findByText("Planned 1,500 · Spent 250")).toBeInTheDocument();
+    await waitFor(() => expect(pane().textContent).toContain("1,250"));
+    expect(pane().textContent).toContain("17%");
+    expect(pane().textContent).not.toContain("750");
+  });
+
+  it("replaces the line and makes no second one", async () => {
+    await openRoadLine();
+    await raisePlannedTo("1500");
+
+    expect(await screen.findByText("Planned 1,500 · Spent 250")).toBeInTheDocument();
+    expect(stored).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: /Sample Road Repairs/ })).toHaveLength(1);
+    expect(screen.getByRole("button", { name: /Sample Library Books/ })).toBeInTheDocument();
+  });
+
+  it("keeps the form open and shows the refusal in its own words", async () => {
+    refusal = "you may not set a budget line";
+    await openRoadLine();
+    await raisePlannedTo("1500");
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("you may not set a budget line");
+    expect(screen.getByLabelText("Planned amount")).toHaveValue("1500");
+  });
+
+  it("shows no Edit to a caller who holds only accounting.view", async () => {
+    permissions = ["accounting.view"];
+    await openRoadLine();
+
+    await waitFor(() => expect(callsTo("agency_get_my_roles").length).toBeGreaterThan(0));
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
   });
 });

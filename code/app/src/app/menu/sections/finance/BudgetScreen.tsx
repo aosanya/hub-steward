@@ -8,6 +8,7 @@ import { SearchSelect } from "../../../../shared/ui/SearchSelect";
 import { callTool, McpError } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { actionFailedWords } from "../../MenuDetail";
+import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { budgetRow, homeEmpty, listOf, moneyWords, periodWords, text, tools, type Item } from "./financeData";
 
@@ -43,6 +44,10 @@ const loadLine = async (id: string) => {
   const spent = Number(text(line, "spent")) || 0;
   return {
     id,
+    account_id: text(line, "account_id"),
+    period_start: text(line, "period_start"),
+    period_end: text(line, "period_end"),
+    amount: String(planned),
     name: text(line, "name"),
     department: text(line, "department"),
     period: periodWords(text(line, "period_start"), text(line, "period_end")),
@@ -62,6 +67,12 @@ const accountChoices = async () =>
   (await listOf(accountListTool)).map((account) => ({ value: text(account, "id"), label: [text(account, "category"), text(account, "code")].filter((word) => word !== "").join(" ") }));
 
 const complete = (draft: Draft) => draft.account !== "" && draft.name.trim() !== "" && draft.start !== "" && draft.end !== "" && Number(draft.amount) > 0;
+
+const editFields: EditField[] = [
+  { label: "Name", key: "name", required: true },
+  { label: "Department", key: "department" },
+  { label: "Planned amount", key: "amount", kind: "number", required: true },
+];
 
 const dayStart = (day: string) => `${day}T00:00:00Z`;
 
@@ -103,6 +114,7 @@ function AddLineForm({ onSaved, word }: { onSaved: () => void; word: Wording }) 
 export function BudgetScreen() {
   const word = useWord("accounting");
   const [version, setVersion] = useState(0);
+  const [edited, setEdited] = useState(0);
   const [adding, setAdding] = useState(false);
   const [count, setCount] = useState(0);
   const allowed = useLoad(mayManage, `may-manage-budget:${openAgencyId()}`);
@@ -121,12 +133,26 @@ export function BudgetScreen() {
     <MenuWindow
       key={version}
       title={word("Budget")}
+      listKey={edited}
+      detailKey={edited}
       list={{ title: word("Budget"), tool: tools.budgetList, load, fields: { title: "name", meta: "meta" }, empty: { ...homeEmpty(`No ${word("Budget lines").toLowerCase()} yet.`), children: addButton } }}
       detail={{
         tool: tools.budgetRead,
         load: loadLine,
         fields: { Name: "name", Department: "department", Period: "period", Planned: "planned", Spent: "spent", Remaining: "remaining", "Share spent": "share", Tenders: "tenders" },
         status: "status",
+        extra: (line) => (
+          <MenuEditForm
+            item={line}
+            id={String(line.account_id ?? "")}
+            idArg="account_id"
+            tool={budgetSetTool}
+            permission={managePermission}
+            fields={editFields}
+            keep={["name", "department", "amount", "period_start", "period_end"]}
+            onSaved={() => setEdited((was) => was + 1)}
+          />
+        ),
       }}
       above={may && adding ? <AddLineForm onSaved={saved} word={word} /> : count > 0 ? addButton : null}
     />
