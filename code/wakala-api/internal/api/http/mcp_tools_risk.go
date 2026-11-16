@@ -28,10 +28,11 @@ func riskToolActions() map[string]string {
 
 func (d *Deps) registerRiskMCPTools(server *mcp.Server) {
 	resolve := func(ctx context.Context, instanceID string) (mwanachamariskmanager.RiskManager, error) {
-		return riskManagerFor(ctx, d.Registry, instanceID)
+		return d.riskManagerFor(ctx, d.Registry, instanceID)
 	}
 	if err := riskmcp.RegisterTools(server, resolve, riskMount()); err != nil {
 		panic(err)
 	}
 	d.guardToolPermissions(server, riskToolActions())
+	d.guardRiskResidentTools(server, riskToolActions())
 }

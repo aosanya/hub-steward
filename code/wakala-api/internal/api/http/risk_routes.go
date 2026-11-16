@@ -21,7 +21,7 @@ func riskMount() riskroutes.Mount {
 
 func (d *Deps) instanceRiskMount(role string) riskroutes.Mount {
 	mount := riskMount()
-	mount.Authorize = agentPermissioned(role, d.Registry, d.agencyRolePermissions, mount.Authorize)
+	mount.Authorize = d.taskPermissioned(role, mount.Authorize)
 	return mount
 }
 
@@ -34,7 +34,7 @@ func (d *Deps) registerRiskRoutes(mux *http.ServeMux, reg agencies.Registry, aut
 		idx := i
 		mux.HandleFunc(rt.Pattern(riskInstancePrefix), auth.require(func(w http.ResponseWriter, r *http.Request) {
 			instanceID := r.PathValue("instanceID")
-			m, err := riskManagerFor(r.Context(), reg, instanceID)
+			m, err := d.riskManagerFor(r.Context(), reg, instanceID)
 			if err != nil {
 				writeInstanceErr(w, err)
 				return

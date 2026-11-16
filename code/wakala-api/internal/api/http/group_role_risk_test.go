@@ -74,3 +74,15 @@ func TestGroupRoleRisk_AResidentWithNoRoleListsNoRisks(t *testing.T) {
 		t.Fatalf("the owner lists risks: %d, want 200", code)
 	}
 }
+
+func TestGroupRoleRisk_AResidentHoldingOnlyTheRiskReadPermissionCannotWriteRisks(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	w.riskReaderRole(t)
+	_, amina := w.resident(t, "Amina", "Analysts")
+	w.giveRole(t, "Analysts", riskReaderName)
+	body := map[string]any{"title": "Bridge flooding", "top_event": "River floods the footbridge"}
+	rec := w.call(t, "POST", "/instances/"+w.instance+"/risks/risks", body, amina)
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("a resident holding only the risk read permission writes a risk: %d %s, want 403", rec.Code, rec.Body.String())
+	}
+}
