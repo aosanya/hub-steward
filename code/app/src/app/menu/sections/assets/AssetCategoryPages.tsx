@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { assetDetailFields, assetReadTool, loadAsset } from "./assetDetail";
 
@@ -13,6 +15,11 @@ const assetList = "assetmanager_asset_list";
 const fields = { title: "name", meta: "place" };
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
+
+const editFields = [
+  { label: "Name", key: "name", required: true },
+  { label: "Category", key: "category" },
+];
 
 const loadCategory = (category: string) => async () => {
   const [assets, locations] = await Promise.all([
@@ -31,11 +38,18 @@ const categoryPage = ({ title: generic, category }: Category) =>
   function AssetCategoryPage() {
     const word = useWord("assetmanager");
     const title = word(generic);
+    const [version, setVersion] = useState(0);
     return (
       <MenuWindow
         title={title}
+        listKey={version}
+        detailKey={version}
         list={{ title, tool: assetList, fields, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadCategory(category) }}
-        detail={{ tool: assetReadTool, fields: assetDetailFields, status: "", load: loadAsset }}
+        detail={{ tool: assetReadTool, fields: assetDetailFields, status: "", load: loadAsset,
+          extra: (asset) => (
+            <MenuEditForm item={asset} id={textOf(asset.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" fields={editFields} keep={["name"]} onSaved={() => setVersion((was) => was + 1)} />
+          ),
+        }}
       />
     );
   };
