@@ -18,8 +18,11 @@ type Props = {
   permission: string;
   fields: EditField[];
   keep?: string[];
+  readAgain?: () => Promise<Item>;
   onSaved?: (changed: Record<string, string>) => void;
 };
+
+type Clash = { key: string; label: string; theirs: string; mine: string };
 
 const textOf = (item: Item, key: string) => {
   const value = item[key];
@@ -37,15 +40,16 @@ const inputModes = { text: undefined, number: "decimal", date: undefined } as co
 
 const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key)]));
 
-export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], onSaved }: Props) {
+export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], readAgain, onSaved }: Props) {
   const may = useMay(permission);
   const [editing, setEditing] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [refused, setRefused] = useState("");
+  const [base, setBase] = useState<Record<string, string>>({});
+  const [clashes, setClashes] = useState<Clash[]>([]);
   if (!may) return null;
-  const start = startValues(item, fields);
-  const changed = Object.fromEntries(Object.entries(values).filter(([key, value]) => value !== start[key]));
+  const changed = Object.fromEntries(Object.entries(values).filter(([key, value]) => value !== base[key]));
   const missing = fields.some((field) => field.required && (values[field.key] ?? "").trim() === "");
   const open = () => {
     setValues(start);
@@ -56,7 +60,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
     setSaving(true);
     setRefused("");
     try {
-      await callTool("", tool, { [idArg]: id, ...Object.fromEntries(keep.map((key) => [key, start[key]])), ...changed });
+      await callTool("", tool, { [idArg]: id, ...Object.fromEntries(keep.map((key) => [key, key in start ? start[key] : textOf(item, key)])), ...changed });
       setEditing(false);
       onSaved?.(changed);
     } catch (error) {
@@ -78,7 +82,16 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
           onChange={(event) => setValues((was) => ({ ...was, [field.key]: event.target.value }))}
         />
       ))}
-      <Button kind="primary" disabled={saving || missing || Object.keys(changed).length === 0} onClick={save}>Save</Button>
+      {clashes.map((clash) => (
+        <div key={clash.key} role="group" aria-label={clash.label}>
+          <p>Someone else saved {clash.label} first.</p>
+          <p>Hub now: <span>{clash.theirs}</span></p>
+          <p>Yours: <span>{clash.mine}</span></p>
+          <Button kind="quiet" onClick={() => settle(clash.key, clash.theirs, false)}>Keep mine</Button>
+          <Button kind="quiet" onClick={() => settle(clash.key, clash.theirs, true)}>Use theirs</Button>
+        </div>
+      ))}
+      <Button kind="primary" disabled={saving || missing || clashes.length > 0 || Object.keys(changed).length === 0} onClick={save}>Save</Button>
       <Button kind="quiet" disabled={saving} onClick={() => setEditing(false)}>Cancel</Button>
       {refused ? <LoadFailed words={refused} /> : null}
     </>

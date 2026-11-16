@@ -62,10 +62,17 @@ export function AllPeopleScreen() {
   return <ListScreen title={peopleTitle} tool="actor_list_actors" fields={{ title: "name", meta: "status" }} empty={`No ${word("People").toLowerCase()} yet.`} load={load} onChoose={open} />;
 }
 
+function useOpenGroup(title: string, path: (id: string) => string) {
+  const navigate = useNavigate();
+  const here = useLocation();
+  return (id: string) => navigate(path(id), { state: { from: { path: `${here.pathname}${here.search}`, title } } });
+}
+
 export function HouseholdsScreen() {
   const word = useWord("actor");
+  const open = useOpenGroup(word("Households"), (id) => residentPaths.household.path({ id }));
   const load = () => groupRows((group) => householdTypes.has(text(group, "node_type").toLowerCase()));
-  return <ListScreen title={word("Households")} tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty={`No ${word("Households").toLowerCase()} yet.`} load={load} />;
+  return <ListScreen title={word("Households")} tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty={`No ${word("Households").toLowerCase()} yet.`} load={load} onChoose={open} />;
 }
 
 export function RegistrationsScreen() {
@@ -86,7 +93,8 @@ export function GroupsScreen() {
   const word = useWord("actor");
   const groupsTitle = word("Groups") === "Groups" ? "Groups & Associations" : word("Groups");
   const load = () => groupRows(() => true);
-  return <ListScreen title={groupsTitle} tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty={`No ${word("Groups").toLowerCase()} yet.`} load={load} />;
+  const open = useOpenGroup(groupsTitle, (id) => residentPaths.group.path({ id }));
+  return <ListScreen title={groupsTitle} tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty={`No ${word("Groups").toLowerCase()} yet.`} load={load} onChoose={open} />;
 }
 
 export function CommunicationsScreen() {
