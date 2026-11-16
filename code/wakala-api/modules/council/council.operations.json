@@ -1,0 +1,45 @@
+{
+  "operations": {
+    "create_meeting": {
+      "method": "POST",
+      "path": "/council/meetings",
+      "call": "CreateMeeting",
+      "action": "council.meeting.create",
+      "tool": "council_meeting_create",
+      "status": 201,
+      "title": "Create a council meeting",
+      "description": "Put one council or committee meeting on record: its name, the day it is held, where, and which committee holds it.",
+      "args": [{"from": "body", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "list_meetings": {
+      "method": "GET",
+      "path": "/council/meetings",
+      "call": "ListMeetings",
+      "action": "council.meeting.list",
+      "tool": "council_meeting_list",
+      "title": "List council meetings",
+      "description": "List the meetings of one agency's council, earliest day first, optionally only one committee's.",
+      "args": [{"from": "query", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "get_meeting": {
+      "method": "GET",
+      "path": "/council/meetings/{meetingID}",
+      "call": "GetMeeting",
+      "action": "council.meeting.read",
+      "tool": "council_meeting_read",
+      "title": "Read a council meeting",
+      "description": "Read one meeting of one agency's council by its id.",
+      "args": [
+        {"from": "query", "whole": true},
+        {"from": "path", "as": "meetingID", "into": "ID", "description": "The meeting to read."}
+      ],
+      "returns": [{"body": true}]
+    }
+  },
+  "errors": {
+    "ErrInvalidMeeting": 400,
+    "ErrMeetingNotFound": 404
+  }
+}

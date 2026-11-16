@@ -1,0 +1,60 @@
+{
+  "module": "council",
+  "objects": [
+    {
+      "role": "meeting",
+      "description": "One sitting of the council or one of its committees: what it is called, the day it is held, where, and which committee holds it. Agendas, minutes and resolutions hang off a meeting.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers. Set when the row is written.",
+          "primary": true
+        },
+        {
+          "name": "instance_id",
+          "type": "string",
+          "description": "The agency the meeting belongs to. Every read is narrowed to one of these, so one agency never reads another's meetings.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "What the meeting is called, such as \"Budget session\".",
+          "required": true
+        },
+        {
+          "name": "date",
+          "type": "string",
+          "description": "The day it is held, as YYYY-MM-DD.",
+          "required": true,
+          "matches": "date"
+        },
+        {
+          "name": "place",
+          "type": "string",
+          "description": "Where it is held, in plain words. Empty when not yet fixed."
+        },
+        {
+          "name": "committee",
+          "type": "string",
+          "description": "The committee that holds it, as the committee group's name or id. Empty for a sitting of the whole council."
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the meeting was put on record, as an RFC 3339 instant in UTC.",
+          "immutable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "instance_date",
+          "description": "Listing one agency's meetings by day.",
+          "fields": ["instance_id", "date"]
+        }
+      ]
+    }
+  ]
+}

@@ -9,6 +9,7 @@ func TestModuleCatalog_MountableModulesAcceptAMount(t *testing.T) {
 		icon  string
 	}{
 		{"assetmanager", "assets", "wrench"},
+		{"council", "council", "file"},
 		{"digitaltwin", "places", "globe"},
 		{"riskmanager", "risks", "alert"},
 	}

@@ -1,0 +1,13 @@
+{
+  "module": "council",
+  "domain": "wakala",
+  "instance": "app",
+  "objects": [
+    {
+      "role": "meeting",
+      "name": "council_meeting",
+      "table": "council_meetings",
+      "description": "One sitting of the council or a committee: name, day, place and committee."
+    }
+  ]
+}
