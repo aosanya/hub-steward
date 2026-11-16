@@ -6,17 +6,15 @@ import { Field } from "../../../../shared/ui/Field";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuDetail } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
-import { budgetRow, homeEmpty, listOf, moneyWords, periodWords, reportPeriodOf, reportRow, text, tools, type Item } from "./financeData";
+import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, reportRow, text, tools, type Item } from "./financeData";
 
 const missingPeriodWords = "Choose both a start date and an end date.";
 
-const reversedPeriodWords = "The end date must come after the start date.";
-
-const startOfDay = (day: string) => `${day}T00:00:00Z`;
+const reversedPeriodWords = "The end date must not come before the start date.";
 
 const periodRefusal = (start: string, end: string) => {
   if (!start || !end) return missingPeriodWords;
-  return end <= start ? reversedPeriodWords : "";
+  return end < start ? reversedPeriodWords : "";
 };
 
 const figureOf = (report: Item | null, key: string) => (report?.figures as Item | undefined)?.[key];
@@ -61,7 +59,7 @@ function ChoosePeriod() {
   const read = () => {
     const words = periodRefusal(start, end);
     setRefusal(words);
-    setReading(words ? "" : `${startOfDay(start)}~${startOfDay(end)}`);
+    setReading(words ? "" : `${dayStart(start)}~${periodEndOf(end)}`);
   };
   return (
     <section aria-label="Choose period">

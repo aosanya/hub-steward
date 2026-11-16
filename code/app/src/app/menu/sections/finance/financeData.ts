@@ -31,7 +31,20 @@ export const moneyWords = (amount: number | string) => Math.round(numberOf(amoun
 
 export const dayWords = (iso: string) => iso.slice(0, 10);
 
-export const periodWords = (start: string, end: string) => `${dayWords(start)} to ${dayWords(end)}`;
+const dayShifted = (day: string, by: number) => {
+  const moved = new Date(`${day}T00:00:00Z`);
+  if (Number.isNaN(moved.getTime())) return day;
+  moved.setUTCDate(moved.getUTCDate() + by);
+  return moved.toISOString().slice(0, 10);
+};
+
+export const dayStart = (day: string) => `${day}T00:00:00Z`;
+
+export const periodEndOf = (lastDay: string) => dayStart(dayShifted(lastDay, 1));
+
+export const lastDayOf = (end: string) => dayShifted(dayWords(end), -1);
+
+export const periodWords = (start: string, end: string) => `${dayWords(start)} to ${lastDayOf(end)}`;
 
 const capitalised = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
 

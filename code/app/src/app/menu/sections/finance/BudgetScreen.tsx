@@ -10,7 +10,7 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
-import { budgetRow, homeEmpty, listOf, moneyWords, periodWords, text, tools, type Item } from "./financeData";
+import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, text, tools, type Item } from "./financeData";
 
 const managePermission = "accounting.manage";
 
@@ -74,8 +74,6 @@ const editFields: EditField[] = [
   { label: "Planned amount", key: "amount", kind: "number", required: true },
 ];
 
-const dayStart = (day: string) => `${day}T00:00:00Z`;
-
 function AddLineForm({ onSaved, word }: { onSaved: () => void; word: Wording }) {
   const [draft, setDraft] = useState(blank);
   const [refused, setRefused] = useState("");
@@ -89,7 +87,7 @@ function AddLineForm({ onSaved, word }: { onSaved: () => void; word: Wording }) 
         name: draft.name.trim(),
         department: draft.department.trim(),
         period_start: dayStart(draft.start),
-        period_end: dayStart(draft.end),
+        period_end: periodEndOf(draft.end),
         amount: Number(draft.amount),
       });
       onSaved();
