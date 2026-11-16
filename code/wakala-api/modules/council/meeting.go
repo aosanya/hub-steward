@@ -28,6 +28,10 @@ type CouncilManager interface {
 	CreateMeeting(ctx context.Context, m models.Meeting) (models.Meeting, error)
 	ListMeetings(ctx context.Context, filter MeetingFilter) ([]models.Meeting, error)
 	GetMeeting(ctx context.Context, key MeetingKey) (models.Meeting, error)
+	SetAgenda(ctx context.Context, in models.Agenda) (models.Agenda, error)
+	GetAgenda(ctx context.Context, key AgendaKey) (models.Agenda, error)
+	SetMinutes(ctx context.Context, in models.Minutes) (models.Minutes, error)
+	GetMinutes(ctx context.Context, key MinutesKey) (models.Minutes, error)
 }
 
 type councilManager struct {
@@ -46,7 +50,7 @@ func NewCouncilManagerWithClock(db *gorm.DB, s *spec.Spec, clock Clock) (Council
 	if clock == nil {
 		return nil, fmt.Errorf("NewCouncilManager: clock must not be nil")
 	}
-	st, err := newStore(db, s, map[string]any{roleMeeting: models.Meeting{}})
+	st, err := newStore(db, s, map[string]any{roleMeeting: models.Meeting{}, roleAgenda: models.Agenda{}, roleMinutes: models.Minutes{}})
 	if err != nil {
 		return nil, fmt.Errorf("NewCouncilManager: %w", err)
 	}

@@ -13,10 +13,16 @@ type Tool = dispatch.Tool
 
 var carriers = map[string]string{
 	"meeting": "Meeting",
+	"agenda":  "Agenda",
+	"minutes": "Minutes",
 }
 
 var storeOwned = map[string]bool{
 	"Meeting.created_at": true,
+	"Agenda.created_at":  true,
+	"Agenda.updated_at":  true,
+	"Minutes.created_at": true,
+	"Minutes.updated_at": true,
 }
 
 var requestFields = map[string]dispatch.FieldDoc{
@@ -29,6 +35,22 @@ var requestFields = map[string]dispatch.FieldDoc{
 	},
 	"MeetingKey.instance_id": {
 		Description: "The agency whose council the meeting belongs to.",
+		Required:    true,
+	},
+	"AgendaKey.instance_id": {
+		Description: "The agency whose council the agenda belongs to.",
+		Required:    true,
+	},
+	"AgendaKey.meeting_id": {
+		Description: "The meeting whose agenda to read.",
+		Required:    true,
+	},
+	"MinutesKey.instance_id": {
+		Description: "The agency whose council the minutes belong to.",
+		Required:    true,
+	},
+	"MinutesKey.meeting_id": {
+		Description: "The meeting whose minutes to read.",
 		Required:    true,
 	},
 	"MeetingKey.id": {

@@ -36,9 +36,69 @@
         {"from": "path", "as": "meetingID", "into": "ID", "description": "The meeting to read."}
       ],
       "returns": [{"body": true}]
+    },
+    "set_agenda": {
+      "method": "PUT",
+      "path": "/council/meetings/{meetingID}/agenda",
+      "call": "SetAgenda",
+      "action": "council.agenda.set",
+      "tool": "council_agenda_set",
+      "title": "Set a meeting's agenda",
+      "description": "Set the items one council meeting will take up, in order. Setting it again replaces the items.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "meetingID", "into": "MeetingID", "description": "The meeting the agenda is for."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "get_agenda": {
+      "method": "GET",
+      "path": "/council/meetings/{meetingID}/agenda",
+      "call": "GetAgenda",
+      "action": "council.agenda.read",
+      "tool": "council_agenda_read",
+      "title": "Read a meeting's agenda",
+      "description": "Read the agenda of one meeting of one agency's council.",
+      "args": [
+        {"from": "query", "whole": true},
+        {"from": "path", "as": "meetingID", "into": "MeetingID", "description": "The meeting whose agenda to read."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "set_minutes": {
+      "method": "PUT",
+      "path": "/council/meetings/{meetingID}/minutes",
+      "call": "SetMinutes",
+      "action": "council.minutes.set",
+      "tool": "council_minutes_set",
+      "title": "Set a meeting's minutes",
+      "description": "Set the written minutes of one council meeting. Setting them again replaces the text.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "meetingID", "into": "MeetingID", "description": "The meeting the minutes are for."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "get_minutes": {
+      "method": "GET",
+      "path": "/council/meetings/{meetingID}/minutes",
+      "call": "GetMinutes",
+      "action": "council.minutes.read",
+      "tool": "council_minutes_read",
+      "title": "Read a meeting's minutes",
+      "description": "Read the minutes of one meeting of one agency's council.",
+      "args": [
+        {"from": "query", "whole": true},
+        {"from": "path", "as": "meetingID", "into": "MeetingID", "description": "The meeting whose minutes to read."}
+      ],
+      "returns": [{"body": true}]
     }
   },
   "errors": {
+    "ErrInvalidAgenda": 400,
+    "ErrAgendaNotFound": 404,
+    "ErrInvalidMinutes": 400,
+    "ErrMinutesNotFound": 404,
     "ErrInvalidMeeting": 400,
     "ErrMeetingNotFound": 404
   }
