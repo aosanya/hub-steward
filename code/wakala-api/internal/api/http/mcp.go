@@ -52,6 +52,8 @@ func (d *Deps) resolveAssetManager(ctx context.Context, instanceID string) (mwan
 	return assetManagerFor(ctx, d.Registry, instanceID)
 }
 
+var buildMCPServer = newMCPServer
+
 func newMCPServer(d *Deps) *mcp.Server {
 	server := mcp.NewServer(&mcp.Implementation{Name: "mwanachama-wakala", Version: "1.0.0"}, nil)
 	server.AddReceivingMiddleware(slotPerToolCall)

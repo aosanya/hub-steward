@@ -35,7 +35,7 @@ type serverModuleTools struct {
 
 func (m *mcpServers) moduleToolsOfServer(ctx context.Context) ([]moduleToolView, error) {
 	m.moduleTools.once.Do(func() {
-		m.moduleTools.tools, m.moduleTools.err = moduleToolsServedBy(context.WithoutCancel(ctx), m.full)
+		m.moduleTools.tools, m.moduleTools.err = moduleToolsServedBy(context.WithoutCancel(ctx), m.fullServer())
 	})
 	return m.moduleTools.tools, m.moduleTools.err
 }

@@ -84,6 +84,7 @@ func (t *toolActions) get(d *Deps) map[string]string {
 
 type mcpServers struct {
 	deps        *Deps
+	fullOnce    sync.Once
 	full        *mcp.Server
 	actions     toolActions
 	moduleTools serverModuleTools
@@ -93,11 +94,17 @@ type mcpServers struct {
 }
 
 func newMCPServers(d *Deps) *mcpServers {
-	m := &mcpServers{deps: d, full: newMCPServer(d), byKey: map[string]*mcp.Server{}}
-	if d.Permissions != nil {
-		m.full.AddReceivingMiddleware(m.gateToolCalls)
-	}
-	return m
+	return &mcpServers{deps: d, byKey: map[string]*mcp.Server{}}
+}
+
+func (m *mcpServers) fullServer() *mcp.Server {
+	m.fullOnce.Do(func() {
+		m.full = buildMCPServer(m.deps)
+		if m.deps.Permissions != nil {
+			m.full.AddReceivingMiddleware(m.gateToolCalls)
+		}
+	})
+	return m.full
 }
 
 func (m *mcpServers) forRequest(r *http.Request) *mcp.Server {
@@ -175,7 +182,7 @@ func (m *mcpServers) scopes() []string {
 
 func (m *mcpServers) serverFor(ctx context.Context, hidden []string) *mcp.Server {
 	if len(hidden) == 0 {
-		return m.full
+		return m.fullServer()
 	}
 	key := strings.Join(hidden, "\n")
 
@@ -184,7 +191,7 @@ func (m *mcpServers) serverFor(ctx context.Context, hidden []string) *mcp.Server
 	if held, ok := m.byKey[key]; ok {
 		return held
 	}
-	built := newMCPServer(m.deps)
+	built := buildMCPServer(m.deps)
 	built.AddReceivingMiddleware(m.gateToolCalls)
 	built.RemoveTools(hidden...)
 	m.byKey[key] = built
