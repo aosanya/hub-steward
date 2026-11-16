@@ -173,6 +173,7 @@ describe("standing forms", () => {
     ];
     at("/a/farmers/forms", fake({ standing: async () => [{ form_id: "s1", title: "Ask for a delivery", landing: "thread" }], questions: delivery }));
     await userEvent.click(await screen.findByRole("button", { name: /Ask for a delivery/ }));
+    await userEvent.click(await screen.findByRole("button", { name: "Open form" }));
     await userEvent.type(await screen.findByLabelText("Pickup"), "Market gate");
     await userEvent.click(screen.getByRole("button", { name: "Next" }));
     await userEvent.type(await screen.findByLabelText("Destination"), "Siaya hospital");
@@ -228,6 +229,7 @@ describe("answering a form", () => {
       }),
     );
     await userEvent.click(await screen.findByRole("button", { name: /Inputs I need/ }));
+    await userEvent.click(await screen.findByRole("button", { name: "Open form" }));
     await userEvent.type(await screen.findByLabelText("What do you need"), "A ramp");
     await userEvent.click(screen.getByRole("button", { name: "Next" }));
     await userEvent.click(await screen.findByRole("button", { name: "Next" }));
@@ -333,8 +335,8 @@ describe("sender on a waiting row", () => {
         ],
       }),
     );
-    expect(await screen.findByRole("button", { name: /Borehole contribution/ })).toHaveTextContent("Treasurer, Kilimani Ward4 questions, closes 2026-11-01");
-    expect(screen.getByRole("button", { name: /Burial fund pledge/ })).toHaveTextContent("Otieno Achieng4 questions");
+    expect(await screen.findByRole("button", { name: /Borehole contribution/ })).toHaveTextContent("Treasurer, Kilimani Ward · 4 questions, closes 2026-11-01");
+    expect(screen.getByRole("button", { name: /Burial fund pledge/ })).toHaveTextContent("Otieno Achieng · 4 questions");
     expect(screen.getByRole("button", { name: /Plain form/ })).toHaveTextContent(/^Plain form4 questions, closes 2026-11-01/);
   });
 });
