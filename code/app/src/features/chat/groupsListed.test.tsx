@@ -140,3 +140,26 @@ describe("the threads page of a group nobody has written in", () => {
     expect(action.closest(".card")).toHaveClass("empty");
   });
 });
+
+describe("the Chat tab on a wide screen", () => {
+  beforeEach(() => {
+    window.matchMedia = ((query: string) => ({
+      matches: true,
+      media: query,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    })) as unknown as typeof window.matchMedia;
+  });
+
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("keeps every group in the left pane and opens a group in its room", async () => {
+    hub({ g2: [thread("t2", 4, 15, "Standup moved")] });
+    showChat();
+    const dev = await screen.findByRole("button", { name: /Dev/ });
+    expect(dev.closest(".wf-tree")).not.toBeNull();
+    expect(within(dev).getByLabelText("4 unread")).toBeInTheDocument();
+    await userEvent.click(dev);
+    expect((await screen.findByTestId("where")).textContent).toBe("/a/farmers/chat/g2/t2");
+  });
+});

@@ -225,3 +225,36 @@ describe("the empty Chat tab and Join a group", () => {
     expect(screen.getByRole("button", { name: "Join a group" })).toBeInTheDocument();
   });
 });
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+describe.each([true, false])("the Chat rooms list when the screen is wide: %s", (wide) => {
+  beforeEach(() => setWide(wide));
+
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("opens a room on its own thread route", async () => {
+    show(fake([]), "/chat");
+    await userEvent.click(await screen.findByRole("button", { name: /Kisumu Agro Supplies/ }));
+    expect(await screen.findByText("room s1 thread t1")).toBeInTheDocument();
+  });
+
+  it("puts the empty card with Join a group in the list and opens the join page", async () => {
+    const client = fake([]);
+    client.listRooms = vi.fn().mockResolvedValue([]);
+    show(client, "/chat");
+    await screen.findByText("No rooms yet.");
+    const join = screen.getByRole("button", { name: "Join a group" });
+    expect(join.closest(".card")).toHaveClass("empty");
+    expect(Boolean(join.closest(".wf-tree"))).toBe(wide);
+    await userEvent.click(join);
+    expect(await screen.findByText("Join page")).toBeInTheDocument();
+  });
+});
