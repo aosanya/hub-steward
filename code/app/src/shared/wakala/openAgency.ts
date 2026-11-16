@@ -63,3 +63,4 @@ export const agencyBasePath = (id: string) => `/a/${encodeURIComponent(id)}`;
 export const agencyHomePath = (id: string) => `${agencyBasePath(id)}/${homeSegment}`;
 
 export const doSomethingPathIn = (id: string) => `${agencyBasePath(id)}/${doSomethingSegment}`;
+export const pickAgencyState = { pickAgency: true };

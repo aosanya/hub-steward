@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { agencyHomePath } from "../../shared/wakala/openAgency";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { agencyHomePath, pickAgencyState } from "../../shared/wakala/openAgency";
 import { entryClient, type Agency, type DirectoryAgency, type JoinOutcome } from "./api";
 import { useLanguage } from "../../shared/language/language";
 import { formsWaiting, waitingCount } from "./waiting";
@@ -91,6 +91,7 @@ export function AgenciesPage() {
   const [loaded, setLoaded] = useState<Loaded>({ kind: "loading" });
   const [waiting, setWaiting] = useState<Record<string, number>>({});
   const navigate = useNavigate();
+  const chosen = (useLocation().state as typeof pickAgencyState | null)?.pickAgency === true;
 
   useEffect(() => {
     if (loaded.kind !== "ready" || loaded.agencies.length < 2) return;
@@ -115,7 +116,7 @@ export function AgenciesPage() {
     };
   }, []);
 
-  if (loaded.kind === "ready" && loaded.agencies.length === 1 && view.name === "list") {
+  if (loaded.kind === "ready" && loaded.agencies.length === 1 && view.name === "list" && !chosen) {
     return <Navigate to={agencyHomePath(loaded.agencies[0].id)} replace />;
   }
   if (view.name === "agency") {

@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { App } from "../../app/App";
-import { forgetOpenAgency, openAgencyId } from "../../shared/wakala/openAgency";
+import { forgetOpenAgency, openAgencyId, pickAgencyState } from "../../shared/wakala/openAgency";
 import * as mcp from "../../shared/wakala/mcp";
 import { provideEntryClient, type Agency, type EntryClient } from "./api";
 import { formsWaiting, provideWaitingCount, restoreWaitingCount, waitingCount } from "./waiting";
@@ -23,7 +23,7 @@ const client = (agencies: Agency[]): EntryClient => ({
   join: async () => "joined",
 });
 
-const at = (path: string, agencies: Agency[]) => {
+const at = (path: string | { pathname: string; state: unknown }, agencies: Agency[]) => {
   provideEntryClient(client(agencies));
   return render(
     <MemoryRouter initialEntries={[path]}>
@@ -89,6 +89,14 @@ describe("your agencies with forms waiting", () => {
     expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: words.agenciesTitle })).not.toBeInTheDocument();
     expect(openAgencyId()).toBe(farmers.id);
+  });
+
+  it("lists the one agency when the member chose Switch agency from the menu", async () => {
+    at({ pathname: "/agencies", state: pickAgencyState }, [farmers]);
+    expect(await screen.findByRole("heading", { name: words.agenciesTitle })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: new RegExp(farmers.name) })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: words.findAgencyTitle })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Home" })).not.toBeInTheDocument();
   });
 
   it("still lists a member of none", async () => {

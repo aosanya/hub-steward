@@ -1,4 +1,5 @@
 import { useEffect, useRef, type KeyboardEvent } from "react";
+import { pickAgencyState } from "../wakala/openAgency";
 import { useNavigate } from "react-router-dom";
 import { useDrawer } from "./DrawerFrame";
 import { ListRow } from "./ListRow";
@@ -27,7 +28,7 @@ export function AccountMenu() {
 
   const choose = (path: string) => {
     close();
-    navigate(path);
+    navigate(path, path === "/agencies" ? { state: pickAgencyState } : undefined);
   };
 
   const onKeyDown = (event: KeyboardEvent) => {

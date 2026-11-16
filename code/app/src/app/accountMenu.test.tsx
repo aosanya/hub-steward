@@ -1,12 +1,19 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
+import { pickAgencyState } from "../shared/wakala/openAgency";
 import { AccountMenu, accountItems } from "../shared/ui/AccountMenu";
 import { DrawerFrame } from "../shared/ui/DrawerFrame";
 import { TopBar } from "./TopBar";
 
 function Where() {
-  return <p data-testid="where">{useLocation().pathname}</p>;
+  const location = useLocation();
+  return (
+    <>
+      <p data-testid="where">{location.pathname}</p>
+      <p data-testid="state">{JSON.stringify(location.state)}</p>
+    </>
+  );
 }
 
 const open = () =>
@@ -108,6 +115,22 @@ describe("choosing an account item", () => {
     expect(screen.getByTestId("where")).toHaveTextContent(path);
     expect(screen.queryByRole("menu")).toBeNull();
     expect(menuButton()).toHaveAttribute("aria-expanded", "false");
+  });
+});
+
+describe("choosing Switch agency", () => {
+  it("asks the agencies page to list, even for a member of one agency", async () => {
+    open();
+    await userEvent.click(menuButton());
+    await userEvent.click(screen.getByRole("menuitem", { name: "Switch agency" }));
+    expect(screen.getByTestId("state")).toHaveTextContent(JSON.stringify(pickAgencyState));
+  });
+
+  it("asks nothing of the other pages", async () => {
+    open();
+    await userEvent.click(menuButton());
+    await userEvent.click(screen.getByRole("menuitem", { name: "My profile" }));
+    expect(screen.getByTestId("state")).toHaveTextContent("null");
   });
 });
 
