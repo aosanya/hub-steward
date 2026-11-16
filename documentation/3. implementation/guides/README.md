@@ -10,6 +10,7 @@ Working on a part:
 - [API server](api-server.md): the Wakala API server, its layout and how to change it
 - [Console](console.md): the manager's and designer's web app
 - [Phone app](phone-app.md): the member's web app
+- [Phone app: how `src` is organised](phone-app-structure.md): the folder strategy (features, `shared/`, `app/`) and the order of the move
 - [Menu sections and modules](menu-modules.md): which module code each menu section names, checked against the real catalog and the municipality demo
 - [Write an agency](write-an-agency.md): how a demo agency template is put together
 - [Taskmanager tools that read the backlog](taskmanager-tools.md): pending, find, read and list, and what `taskmanager_task_find` matches

@@ -4,7 +4,7 @@
 
 ## Where things are
 
-Everything is under `code/app/src`.
+Everything is under `code/app/src`. The table is the layout today; the layout it is moving to is in [phone-app-structure.md](phone-app-structure.md).
 
 | Folder | What it holds |
 |---|---|
