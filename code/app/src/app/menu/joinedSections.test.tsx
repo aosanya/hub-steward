@@ -31,8 +31,16 @@ const cases = [
   { id: "staff", section: "Staff & Departments", submenu: "Departments", opens: "/a/town/menu/staff/departments" },
   { id: "issues", section: "Issues & Requests", submenu: "All Issues", opens: "/a/town/menu/issues/all" },
   { id: "settings", section: "Settings", submenu: "Integrations", opens: "/a/town/menu/settings/integrations" },
+  { id: "council", section: "Decisions", submenu: "Meetings", opens: "/a/town/menu/council/meetings" },
+  { id: "council", section: "Decisions", submenu: "Agendas & Minutes", opens: "/a/town/menu/council/agendas" },
+  { id: "council", section: "Decisions", submenu: "Resolutions", opens: "/a/town/menu/council/resolutions" },
+  { id: "council", section: "Decisions", submenu: "Rules", opens: "/a/town/menu/council/bylaws" },
   { id: "council", section: "Decisions", submenu: "Committees", opens: "/a/town/menu/council/committees" },
+  { id: "finance", section: "Finance", submenu: "Budget", opens: "/a/town/menu/finance/budget" },
+  { id: "finance", section: "Finance", submenu: "Revenue & Billing", opens: "/a/town/menu/finance/revenue-and-billing" },
+  { id: "finance", section: "Finance", submenu: "Procurement", opens: "/a/town/menu/finance/procurement" },
   { id: "finance", section: "Finance", submenu: "Payments", opens: "/a/town/menu/finance/payments" },
+  { id: "finance", section: "Finance", submenu: "Financial Reports", opens: "/a/town/menu/finance/reports" },
 ];
 
 const section = (id: string) =>
@@ -58,8 +66,6 @@ describe.each(cases)("the $section submenu $submenu", ({ id, section: title, sub
 
 describe("the submenus no module covers", () => {
   it.each([
-    { id: "council", missing: ["Meetings", "Agendas & Minutes", "Resolutions", "Rules"] },
-    { id: "finance", missing: ["Budget", "Financial Reports"] },
     { id: "settings", missing: ["Audit Log"] },
     { id: "services", missing: ["Permits", "Licences", "Fees & Payments", "Service Catalogue"] },
   ])("keep $id saying Not available yet", ({ id, missing }) => {

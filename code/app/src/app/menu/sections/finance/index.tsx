@@ -1,21 +1,27 @@
 import { Route } from "react-router-dom";
+import { BillsScreen } from "./BillsScreen";
+import { BudgetScreen } from "./BudgetScreen";
+import { PaymentListScreen } from "./PaymentListScreen";
+import { ReportsScreen } from "./ReportsScreen";
+import { TendersScreen } from "./TendersScreen";
 import { financePaths } from "./paths";
-import { PaymentsScreen } from "./PaymentsScreen";
-import { ProcurementScreen } from "./ProcurementScreen";
-import { RevenueBillingScreen } from "./RevenueBillingScreen";
 
-export { PaymentsScreen, ProcurementScreen, RevenueBillingScreen };
+export { BillsScreen, BudgetScreen, PaymentListScreen, ReportsScreen, TendersScreen };
 
 export const items = [
+  { title: "Budget", path: () => financePaths.budget.path() },
   { title: "Revenue & Billing", path: () => financePaths.revenueAndBilling.path() },
   { title: "Procurement", path: () => financePaths.procurement.path() },
   { title: "Payments", path: () => financePaths.payments.path() },
+  { title: "Financial Reports", path: () => financePaths.reports.path() },
 ];
 
 export const routes = () => (
   <>
-    <Route path={financePaths.revenueAndBilling.pattern} element={<RevenueBillingScreen />} />
-    <Route path={financePaths.procurement.pattern} element={<ProcurementScreen />} />
-    <Route path={financePaths.payments.pattern} element={<PaymentsScreen />} />
+    <Route path={financePaths.budget.pattern} element={<BudgetScreen />} />
+    <Route path={financePaths.revenueAndBilling.pattern} element={<BillsScreen />} />
+    <Route path={financePaths.procurement.pattern} element={<TendersScreen />} />
+    <Route path={financePaths.payments.pattern} element={<PaymentListScreen />} />
+    <Route path={financePaths.reports.pattern} element={<ReportsScreen />} />
   </>
 );
