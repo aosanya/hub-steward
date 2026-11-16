@@ -12,6 +12,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
 | Which issues in progress are past their working-time cap | `taskmanager_task_timed_out` | `GET /timed-out` |
 | Take an issue: move it to In Progress, write the taken entry, record the caps | `taskmanager_task_claim` | `POST /tasks/{taskID}/claim` |
+| Stop work on an issue as Blocked or Sinbin, with the tags and the move done right | `taskmanager_task_release` | `POST /tasks/{taskID}/release` |
 | The whole issue | `taskmanager_task_read` | `GET /tasks/{taskID}` |
 | Page through every issue | `taskmanager_task_list` | `GET /tasks` |
 
@@ -59,6 +60,14 @@ The tool finds the backlog's In Progress step by what it holds, not by its id: t
 
 Atomic: the first statement of the transaction updates the issue only while its status is still the one the claimer read, so of two claims at once exactly one writes the move and the entry, and the other is refused 409 as already in progress and leaves no entry. An issue tagged Sinbin, Blocked or Waiting, one that waits on an open dependency, one already at the In Progress step and one that has left To do are refused 409 with the reason.
 
+## taskmanager_task_release
+
+Inputs: `taskID`, `mode` (`blocked` or `sinbin`), `reason` (not blank), and optionally `todo_id` (only with `blocked`: that todo of the issue is set Blocked with the reason as its blocked reason) and `links` (a list of strings for the Log entry). The caller is taken from the session and needs Can move on the backlog the issue is in; an issue the caller cannot see is 404 and one they can only see is 403.
+
+It replaces the four calls a worker made by hand when it could not finish (set the todo Blocked, write the note, patch the whole tag list, move to To do). In one transaction it writes the Log entry (kind worker: `Released as Blocked` or `Released as Sinbin`, then the reason, with the links), sets the tags to the issue's own tags minus Ready, Waiting, Blocked and Sinbin plus the one mark for the mode, sets the named todo Blocked, and moves the issue to the To do step of its backlog, which sets the status the step holds. Because the old marks are removed first, an issue that carried Ready and Waiting ends with only Blocked or only Sinbin, and every other tag stays. The answer is `id`, `code`, `title`, `mode`, `tags`, `backlog`, `step`, `status`, `note_id` and `todo_id`.
+
+Refused, with nothing written: 409 when the issue is not In Progress, 403 without Can move, 400 for another mode, a blank reason, a todo that belongs to another issue or a todo sent with mode `sinbin`, 404 for an issue that is unknown or unseen or a todo that is unknown.
+
 ## Where the code is
 
 | Part | File |
@@ -71,3 +80,4 @@ Atomic: the first statement of the transaction updates the issue only while its 
 | The dependencies tool and its types | `modules/taskmanager/task_dependencies.go`, tests in `routes/task_dependencies_test.go` |
 | The timed-out tool and its types | `modules/taskmanager/task_timed_out.go`, tests in `routes/timed_out_test.go` |
 | The claim tool and its types | `modules/taskmanager/task_claim.go`, tests in `routes/claim_task_test.go` |
+| The release tool and its types | `modules/taskmanager/task_release.go`, tests in `routes/release_task_test.go` |
