@@ -23,6 +23,7 @@ func (d *Deps) registerFormsCatalogMCPTools(server *mcp.Server) {
 	if d.Registry == nil {
 		return
 	}
+	d.registerFormsCatalogEntrySubmissionsTool(server)
 	for _, t := range catalogroutes.ToolsFor(formsCatalogShape{}, formsCatalogRouteMount) {
 		server.AddTool(&mcp.Tool{
 			Name:        formsCatalogToolName(t.Name),

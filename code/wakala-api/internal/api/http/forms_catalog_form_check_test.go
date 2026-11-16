@@ -61,3 +61,33 @@ func TestAnEntryNamingAFormThatIsNotAFormIsRefusedAndARealOneIsWritten(t *testin
 		t.Fatalf("written: %+v", inner.written)
 	}
 }
+
+type recordedSubmissions struct {
+	asked []string
+	sent  []formsmodels.Submission
+}
+
+func (r *recordedSubmissions) ListSubmissions(_ context.Context, formID, memberID, periodKey string) ([]formsmodels.Submission, error) {
+	r.asked = append(r.asked, formID+"/"+memberID+"/"+periodKey)
+	return r.sent, nil
+}
+
+func TestTheCallersSubmissionsForAnEntryAreThoseOfItsFormOnly(t *testing.T) {
+	forms := &recordedSubmissions{sent: []formsmodels.Submission{{ID: "s1", FormID: "f1", MemberID: "m1"}}}
+	got, err := entrySubmissionsOf(context.Background(), catalog.Entry{Slug: "permit", FormID: "f1"}, forms, "m1")
+	if err != nil || len(got) != 1 || got[0].ID != "s1" {
+		t.Fatalf("%+v %v", got, err)
+	}
+	if len(forms.asked) != 1 || forms.asked[0] != "f1/m1/" {
+		t.Fatalf("asked %v", forms.asked)
+	}
+	forms.asked = nil
+	none, err := entrySubmissionsOf(context.Background(), catalog.Entry{Slug: "fee", Doc: `{"kind":"fee"}`}, forms, "m1")
+	if err != nil || none == nil || len(none) != 0 || len(forms.asked) != 0 {
+		t.Fatalf("an entry with no form: %+v %v asked %v", none, err, forms.asked)
+	}
+	fromDoc, err := entrySubmissionsOf(context.Background(), catalog.Entry{Slug: "licence", Doc: `{"form_id":"f2"}`}, forms, "m1")
+	if err != nil || len(fromDoc) != 1 || forms.asked[0] != "f2/m1/" {
+		t.Fatalf("form from the document: %+v %v asked %v", fromDoc, err, forms.asked)
+	}
+}

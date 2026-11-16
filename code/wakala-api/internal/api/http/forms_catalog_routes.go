@@ -23,6 +23,7 @@ func (d *Deps) registerFormsCatalogRoutes(mux *http.ServeMux, reg agencies.Regis
 	if reg == nil {
 		return
 	}
+	d.registerFormsCatalogEntrySubmissions(mux, auth)
 	for i, rt := range catalogroutes.OperatorRoutesFor(formsCatalogShape{}, formsCatalogRouteMount) {
 		idx := i
 		action := rt.Action
