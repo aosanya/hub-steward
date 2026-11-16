@@ -63,6 +63,7 @@ const words = {
     createStepTemplate: "Importing the agency template",
     createStepAgent: "Connecting Hub Steward to the hub",
     createStepGroups: "Creating the groups",
+    createNoGroupsMade: "none made, the file names no groups",
     createRunning: "Running",
     createWaiting: "Waiting",
     createFailedStep: "Failed",
@@ -664,6 +665,17 @@ describe("the create page", () => {
     await openStatus();
     await waitFor(() => expect(whereNow()).toHaveTextContent("/h/kisumu/status"));
     expect(toolNames(tools)).toEqual(["agency_list_drafts", "agency_list_roles", "agency_grant_service"]);
+  });
+
+  it("says on the groups line that none were made when the file names no groups", async () => {
+    stubFetch({ ...visitorCanSignIn, ...goodServices });
+    stubTools();
+    renderEntry("/create");
+    await chooseFile(agencyFile(fileAgency));
+    await fillCreateForm("Kisumu hub", manager);
+    await pressCreate();
+    expect(await screen.findByRole("heading", { name: "Your hub is ready" })).toBeInTheDocument();
+    expect(screen.getByText("none made, the file names no groups")).toBeInTheDocument();
   });
 
   it("creates the rooms an imported agency file names", async () => {

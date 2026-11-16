@@ -28,7 +28,7 @@ export function CreateProgress({ phase, counts, rooms, onOpen, onBack, onHubs }:
   const { t } = useI18n();
   const done = stepsDone(phase);
   const hubName = "hub" in phase && phase.hub ? phase.hub.name : "";
-  const results: ReactNode[] = [[hubName, counts].filter(Boolean).join(" · "), t("connected"), rooms.join(", ")];
+  const results: ReactNode[] = [[hubName, counts].filter(Boolean).join(" · "), t("connected"), rooms.length > 0 ? rooms.join(", ") : t("createNoGroupsMade")];
   const titles = [t("createStepTemplate"), t("createStepAgent"), t("createStepGroups")];
 
   const steps: Step[] = titles.map((title, index) => {
