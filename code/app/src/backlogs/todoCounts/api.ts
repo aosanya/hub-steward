@@ -1,5 +1,5 @@
 import { callTool } from "../../shared/wakala/mcp";
-import { itemsOf } from "../api";
+import { itemsOf } from "../shared/api";
 import { todoCountsOf, type TodoCounts } from "./todoPill";
 
 export const todoCountTools = {

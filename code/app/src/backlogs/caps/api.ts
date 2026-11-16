@@ -1,5 +1,5 @@
 import { callTool } from "../../shared/wakala/mcp";
-import { itemsOf } from "../api";
+import { itemsOf } from "../shared/api";
 import type { CapKey } from "./capsFigures";
 
 export const capsTools = {

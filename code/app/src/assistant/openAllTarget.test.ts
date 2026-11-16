@@ -1,5 +1,5 @@
 import { draftOf, listTool, openAllTarget, pendingTool, withIds, type ResultDraft } from "./results";
-import { issuesPath } from "../backlogs/paths";
+import { issuesPath } from "../backlogs/shared/paths";
 import { smartBacklogPath } from "../backlogs/smart/paths";
 import { openAgency, forgetOpenAgency } from "../agency/open";
 

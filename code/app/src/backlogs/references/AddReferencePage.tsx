@@ -8,7 +8,7 @@ import { LoadingLine } from "../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { SearchBox } from "../../shared/ui/SearchBox";
 import { Shell } from "../../shared/ui/Shell";
-import { issuePath } from "../paths";
+import { issuePath } from "../shared/paths";
 import { mcpReferencesClient, mcpRepoClient, type ReferenceKind, type ReferencesClient, type RepoClient } from "./api";
 import { parentOf } from "./repoPaths";
 import "./references.css";

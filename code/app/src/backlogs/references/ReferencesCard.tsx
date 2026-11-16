@@ -7,7 +7,7 @@ import { Card } from "../../shared/ui/Card";
 import { Chip } from "../../shared/ui/Chip";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { backState } from "../../shared/ui/backTo";
-import { addReferencePath, issuePath } from "../paths";
+import { addReferencePath, issuePath } from "../shared/paths";
 import { kindWords, type Reference, type ReferencesClient, type RepoClient } from "./api";
 import { missingOf } from "./repoPaths";
 import "./references.css";

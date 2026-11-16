@@ -45,7 +45,7 @@ src/
     home/  menu/
   features/
     backlogs/
-      board/  manage/  smart/  access/  issue/  send/  shared/
+      board/  manage/  smart/  access/  page/  issue/  list/  send/  shared/  caps/  references/  todos/  todoCounts/
       index.ts  routes.tsx
     market/
       buy/  sell/  supply/  product/  shared/

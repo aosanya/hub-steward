@@ -1,11 +1,11 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { accessTools } from "../access/api";
-import { backlogTools } from "../manage/api";
-import { taskTools } from "../api";
-import { sendTools } from "../send";
-import { smartTools } from "../smart/api";
+import { accessTools } from "../../backlogs/access/api";
+import { backlogTools } from "../../backlogs/manage/api";
+import { taskTools } from "../../backlogs/shared/api";
+import { sendTools } from "../../backlogs/send";
+import { smartTools } from "../../backlogs/smart/api";
 import { beforeEachJourney, endInAgencies, farmers, openApp, where } from "./backlogs.test-support";
 
 beforeEach(beforeEachJourney);

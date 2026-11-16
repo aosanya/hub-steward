@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { backlogsHomePath } from "../paths";
+import { backlogsHomePath } from "../shared/paths";
 import { useLoad } from "../../forms/useLoad";
 import { Button } from "../../shared/ui/Button";
 import { ConfirmDelete } from "../../shared/ui/ConfirmDelete";

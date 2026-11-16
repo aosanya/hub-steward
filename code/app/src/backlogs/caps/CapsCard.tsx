@@ -6,7 +6,7 @@ import { Card } from "../../shared/ui/Card";
 import { Chip } from "../../shared/ui/Chip";
 import { dateTimeWords } from "../../shared/ui/days";
 import { Field } from "../../shared/ui/Field";
-import { mcpNotesClient, type NotesClient } from "../api";
+import { mcpNotesClient, type NotesClient } from "../shared/api";
 import { elapsedSeconds, startedAtOf } from "./elapsed";
 import { mcpCapsClient, type CapsClient, type CapsReading } from "./api";
 import { changeOf, droppedOwn, problemsIn, sentNothing, typedFrom, type Typed } from "./capsEdit";

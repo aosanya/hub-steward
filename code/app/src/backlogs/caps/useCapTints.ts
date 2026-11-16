@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Issue } from "../api";
-import { listCap, settled } from "../api";
+import type { Issue } from "../shared/api";
+import { listCap, settled } from "../shared/api";
 import { mcpCapsClient, type CapNearest, type CapsClient } from "./api";
 import { interruptedTint, strongerTint, tintOfElapsed, tintOfNearest, type CapTint } from "./capTint";
 import { elapsedSeconds } from "./elapsed";

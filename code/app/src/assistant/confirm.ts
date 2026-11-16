@@ -1,4 +1,4 @@
-import { issueOf, type BacklogsClient } from "../backlogs/api";
+import { issueOf, type BacklogsClient } from "../backlogs/shared/api";
 import { optionLimit, type ResultDraft } from "./results";
 import { fieldSpec, operatorLabel } from "../backlogs/smart/fields";
 import { FIELD_IDS, type FieldId } from "../backlogs/smart/types";

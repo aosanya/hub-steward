@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { issuesHeld, mcpBacklogsClient, type BacklogsClient } from "../api";
+import { issuesHeld, mcpBacklogsClient, type BacklogsClient } from "../../backlogs/shared/api";
 import { BacklogSummariesProvider, type BacklogSummary } from "./summaries";
 import { backlogViewKind } from "./views";
 

@@ -1,5 +1,5 @@
 import { backlogsSegment, openAgencyId } from "../agency/open";
-import { allIssuesId } from "../backlogs/api";
+import { allIssuesId } from "../backlogs/shared/api";
 
 const keyPrefix = "hubsteward.lastBacklog.";
 

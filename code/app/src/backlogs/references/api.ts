@@ -1,5 +1,5 @@
 import { callTool } from "../../shared/wakala/mcp";
-import { itemsOf, taskTools } from "../api";
+import { itemsOf, taskTools } from "../shared/api";
 
 export const referenceTools = {
   list: "taskmanager_task_reference_list",

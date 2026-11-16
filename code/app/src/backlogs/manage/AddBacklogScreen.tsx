@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { backlogsHomePath } from "../paths";
+import { backlogsHomePath } from "../shared/paths";
 import { Button } from "../../shared/ui/Button";
 import { Field } from "../../shared/ui/Field";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";

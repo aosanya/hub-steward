@@ -1,4 +1,4 @@
-import { issuesWords } from "../tags";
+import { issuesWords } from "../shared/tags";
 import type { SendResult, Target } from "./types";
 
 export const sendWords = "Send to backlog";

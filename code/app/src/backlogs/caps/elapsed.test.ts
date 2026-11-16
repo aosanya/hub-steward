@@ -1,4 +1,4 @@
-import type { IssueNote } from "../issueNotes";
+import type { IssueNote } from "../shared/issueNotes";
 import { elapsedSeconds, startedAtOf } from "./elapsed";
 import { lineOf } from "./capsFigures";
 import type { CapsReading } from "./api";

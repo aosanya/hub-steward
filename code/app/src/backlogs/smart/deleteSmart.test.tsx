@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
-import { BacklogsPage } from "../BacklogsPage";
+import { BacklogsPage } from "../list/BacklogsPage";
 import { EditSmartBacklogScreen } from "./SmartScreens";
 import type { FieldChoices, SmartBacklogClient } from "./types";
 

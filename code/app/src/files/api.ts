@@ -1,5 +1,5 @@
 import { hasModule, mcpAgencyClient } from "../agency/modules";
-import { itemsOf } from "../backlogs/api";
+import { itemsOf } from "../backlogs/shared/api";
 import { McpError, callTool } from "../shared/wakala/mcp";
 import { extensionOf } from "./fileKind";
 import { viewerFor } from "./viewer/viewerFor";

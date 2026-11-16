@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from "react";
-import type { Issue } from "../api";
+import type { Issue } from "../shared/api";
 import type { Column } from "./board";
 import "./backlogBoard.css";
 

@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import type { AgencyView } from "../agency/modules";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { Backlog } from "../backlogs/api";
+import type { Backlog } from "../backlogs/shared/api";
 import type { StartStep } from "../market/start/api";
 import type { MemberStep } from "../steps/api";
 import { forgetLastBacklogs } from "./lastBacklog";

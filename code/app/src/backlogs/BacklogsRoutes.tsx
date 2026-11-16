@@ -3,13 +3,13 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { BacklogBoard } from "./board/BacklogBoard";
 import { BacklogPage, backlogPageRoutePath } from "./page";
 import { AddBacklogScreen, EditBacklogScreen } from "./manage";
-import { BacklogAccessScreen, backlogAccessRoutePath } from "./access/index";
+import { BacklogAccessScreen, backlogAccessRoutePath } from "./access";
 import { AddSmartBacklogScreen, EditSmartBacklogScreen, SmartBacklogPage } from "./smart";
-import { BacklogsPage } from "./BacklogsPage";
-import { NeedsRole } from "./NeedsRole";
-import { IssuePage } from "./IssuePage";
+import { BacklogsPage } from "./list/BacklogsPage";
+import { NeedsRole } from "./shared/NeedsRole";
+import { IssuePage } from "./issue/IssuePage";
 import { AddReferencePage } from "./references/AddReferencePage";
-import { IssuesPage } from "./IssuesPage";
+import { IssuesPage } from "./issue/IssuesPage";
 import { backlogIdOfPath, rememberBacklog } from "../home/lastBacklog";
 
 function RememberOpenedBacklog() {

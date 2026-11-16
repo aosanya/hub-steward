@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { Issue } from "../backlogs/api";
+import type { Issue } from "../backlogs/shared/api";
 import type { AssistantClient } from "./api";
 import { say, showAssistant } from "./assistantScreen";
 import type { ResultDraft } from "./results";

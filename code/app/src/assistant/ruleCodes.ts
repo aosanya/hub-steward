@@ -1,4 +1,4 @@
-import { markNames } from "../backlogs/marks";
+import { markNames } from "../backlogs/shared/marks";
 import { DURATION_UNITS, fieldSpec, fieldSpecs, PRIORITIES } from "../backlogs/smart/fields";
 import { FIELD_IDS, type FieldId } from "../backlogs/smart/types";
 

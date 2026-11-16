@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from "react";
-import type { Issue } from "../api";
+import type { Issue } from "../shared/api";
 import type { CapsClient } from "./api";
 import type { CapTint } from "./capTint";
 import { useCapTints, type CapTints } from "./useCapTints";

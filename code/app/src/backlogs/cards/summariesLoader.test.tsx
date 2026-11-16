@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
-import type { BacklogsClient } from "../api";
+import type { BacklogsClient } from "../../backlogs/shared/api";
 import type { RoomMessage, RoomsClient } from "../../chat/rooms/api";
 import { Attachment } from "../../chat/rooms/cards";
 import { BacklogSummariesLoader } from "./SummariesLoader";

@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../../agency/open";
-import { IssuesPage } from "../IssuesPage";
-import type { BacklogsClient, Issue } from "../api";
+import { IssuesPage } from "../issue/IssuesPage";
+import type { BacklogsClient, Issue } from "../shared/api";
 import * as mcp from "../../shared/wakala/mcp";
 import { sendTools } from "./api";
 

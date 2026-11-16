@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Issue } from "../api";
+import type { Issue } from "../shared/api";
 import { mcpTodoCountsClient, type TodoCountsClient } from "./api";
 import type { TodoCounts } from "./todoPill";
 

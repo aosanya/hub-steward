@@ -1,5 +1,5 @@
-import { mcpBacklogsClient } from "../api";
-import { markNames } from "../marks";
+import { mcpBacklogsClient } from "../shared/api";
+import { markNames } from "../shared/marks";
 import { backlogTools, mcpBacklogManageClient, refusalText } from "../manage/api";
 import { callTool, McpError } from "../../shared/wakala/mcp";
 import { PRIORITIES } from "./fields";

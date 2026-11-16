@@ -1,4 +1,4 @@
-import type { IssueNote } from "../issueNotes";
+import type { IssueNote } from "../shared/issueNotes";
 
 export const startedAtOf = (notes: IssueNote[]): number | null => {
   const moments = notes.filter((note) => note.kind === "worker" && !note.automatic).map((note) => new Date(note.at).getTime()).filter((moment) => Number.isFinite(moment));

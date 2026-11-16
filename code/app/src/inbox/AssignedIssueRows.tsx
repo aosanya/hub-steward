@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { issuePath } from "../backlogs/paths";
+import { issuePath } from "../backlogs/shared/paths";
 import { ListRow } from "../shared/ui/ListRow";
 import { type AssignedClient, assignedIssueTitle } from "./assignedIssues";
 import { useAssignedIssues } from "./useAssignedIssues";

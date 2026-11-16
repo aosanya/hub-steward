@@ -3,7 +3,7 @@ import { openAgencyId } from "../../agency/open";
 import { backlogAccessPath } from "../access/paths";
 import { editBacklogPath, useMayManage, type BacklogManageClient } from "../manage";
 import { mcpBacklogManageClient } from "../manage/api";
-import { issuesPath } from "../paths";
+import { issuesPath } from "../shared/paths";
 import { useLanguage } from "../../entry/language";
 import { useLoad } from "../../forms/useLoad";
 import { Button } from "../../shared/ui/Button";
@@ -12,7 +12,7 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { SectionHeading } from "../../shared/ui/SectionHeading";
 import { Shell } from "../../shared/ui/Shell";
-import { issuesWords } from "../tags";
+import { issuesWords } from "../shared/tags";
 import { mcpBacklogPageClient, type BacklogPageClient } from "./api";
 
 const stepsWords = (count: number) => `Backlog · ${count} ${count === 1 ? "step" : "steps"}`;

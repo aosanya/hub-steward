@@ -1,4 +1,4 @@
-import { markNames } from "../marks";
+import { markNames } from "../shared/marks";
 import type { Draft } from "./rulesDraft";
 import type { Rule } from "./types";
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { BacklogsClient } from "../backlogs/api";
+import type { BacklogsClient } from "../backlogs/shared/api";
 import { Button } from "../shared/ui/Button";
 import { Card } from "../shared/ui/Card";
 import type { ResultDraft } from "./results";

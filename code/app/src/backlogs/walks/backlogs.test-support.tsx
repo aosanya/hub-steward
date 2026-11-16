@@ -1,4 +1,4 @@
-import { taskTools } from "../api";
+import { taskTools } from "../../backlogs/shared/api";
 import { farmers, openApp, startInAgencies, stubWakala } from "../../journeys/inAgency.test-support";
 
 export { endInAgencies, farmers, openApp, startInAgencies, where } from "../../journeys/inAgency.test-support";

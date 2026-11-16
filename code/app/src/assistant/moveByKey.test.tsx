@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../agency/open";
 import { askAssistant, offeredNames } from "./api";
-import type { BacklogsClient } from "../backlogs/api";
+import type { BacklogsClient } from "../backlogs/shared/api";
 import { moveTool, nameWrite } from "./confirm";
 import { pendingTool } from "./results";
 

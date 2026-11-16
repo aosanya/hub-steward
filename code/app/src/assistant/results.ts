@@ -1,5 +1,5 @@
-import { issueOf, itemsOf, taskTools, type Backlog, type Issue } from "../backlogs/api";
-import { issuesPath } from "../backlogs/paths";
+import { issueOf, itemsOf, taskTools, type Backlog, type Issue } from "../backlogs/shared/api";
+import { issuesPath } from "../backlogs/shared/paths";
 import { smartBacklogPath } from "../backlogs/smart/paths";
 import { splitOptions } from "./optionLines";
 

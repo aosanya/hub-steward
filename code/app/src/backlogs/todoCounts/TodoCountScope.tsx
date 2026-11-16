@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from "react";
-import type { Issue } from "../api";
+import type { Issue } from "../shared/api";
 import type { TodoCountsClient } from "./api";
 import type { TodoCount, TodoCounts } from "./todoPill";
 import { useTodoCounts } from "./useTodoCounts";

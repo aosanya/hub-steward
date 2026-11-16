@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { backlogsHomePath } from "../paths";
+import { backlogsHomePath } from "../shared/paths";
 import { openAgencyId } from "../../agency/open";
 import { useLoad } from "../../forms/useLoad";
 import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";

@@ -6,7 +6,7 @@ import { BacklogSummariesProvider } from "../cards/summaries";
 import type { RoomMessage, RoomsClient } from "../../chat/rooms/api";
 import { Attachment } from "../../chat/rooms/cards";
 import { beforeEachJourney, endInAgencies, farmers, inFarmers, issueRow, states, where } from "./backlogs.test-support";
-import { taskTools } from "../api";
+import { taskTools } from "../../backlogs/shared/api";
 
 beforeEach(beforeEachJourney);
 

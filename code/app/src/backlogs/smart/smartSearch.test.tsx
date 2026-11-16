@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
-import type { BacklogsClient, Issue, IssueDetail } from "../api";
+import type { BacklogsClient, Issue, IssueDetail } from "../shared/api";
 import { SmartBacklogPage } from "./SmartBacklogPage";
 import type { SmartBacklogClient } from "./types";
 

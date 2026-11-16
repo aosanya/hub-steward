@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
-import { defaultBacklogId, taskTools } from "../api";
+import { defaultBacklogId, taskTools } from "../shared/api";
 import * as mcp from "../../shared/wakala/mcp";
 import type { BacklogManageClient } from "../manage";
 import { BacklogPage } from "./BacklogPage";
