@@ -124,6 +124,10 @@ const goodServices: Record<string, Reply> = {
   "POST /instances/import": { status: 201, body: { instance: { id: "kisumu", name: "Kisumu hub" }, draft_id: "d-1", created: {} } },
 };
 
+const farmersServices: Record<string, Reply> = { ...goodServices, "GET /templates/farmers.json": { body: { ...template, agency: { name: "Siaya Farmers' Group" } } } };
+
+const chooseFarmers = () => userEvent.click(screen.getByLabelText(/Farmers' group/));
+
 const visitorCanSignIn: Record<string, Reply> = { "POST /auth/signin": { status: 201, body: { expires_at: "2026-11-26T00:00:00Z" } } };
 
 type ToolCall = { hubId: string; tool: string; args: Record<string, unknown> };
@@ -617,10 +621,11 @@ describe("the create page", () => {
     expect(tools.find((c) => c.tool === "agency_grant_service")?.args).toEqual({ service: "hub-steward", agency_role_id: "r-steward" });
   });
 
-  it("creates the five default rooms and opens each one to join", async () => {
-    stubFetch({ ...visitorCanSignIn, ...goodServices });
+  it("creates the three farm rooms in order and opens each one to join when the farmers template is chosen", async () => {
+    stubFetch({ ...visitorCanSignIn, ...farmersServices });
     const tools = stubTools();
     renderEntry("/create");
+    await chooseFarmers();
     await fillCreateForm("Kisumu hub", manager);
     await pressCreate();
     await openStatus();
@@ -636,6 +641,40 @@ describe("the create page", () => {
       ["g-1", "g-2", "g-3"].map((id) => ({ group_id: id, join_mode: "open" })),
     );
     expect(rooms.every((c) => c.hubId === "kisumu")).toBe(true);
+  });
+
+  it("creates the rooms the chosen template document names instead of the built-in ones", async () => {
+    stubFetch({ ...visitorCanSignIn, ...goodServices, "GET /templates/farmers.json": { body: { ...template, rooms: ["Cooperative room"] } } });
+    const tools = stubTools();
+    renderEntry("/create");
+    await chooseFarmers();
+    await fillCreateForm("Kisumu hub", manager);
+    await pressCreate();
+    await openStatus();
+    expect(tools.filter((c) => c.tool === "actor_create_group").map((c) => c.args)).toEqual([{ name: "Cooperative room" }]);
+    expect(tools.filter((c) => c.tool === "actor_set_group_join_mode")).toHaveLength(1);
+  });
+
+  it("creates no rooms for a template that names none, and still reaches the ready page", async () => {
+    stubFetch({ ...visitorCanSignIn, ...goodServices });
+    const tools = stubTools();
+    renderEntry("/create");
+    await fillCreateForm("Kisumu hub", manager);
+    await pressCreate();
+    await openStatus();
+    await waitFor(() => expect(whereNow()).toHaveTextContent("/h/kisumu/status"));
+    expect(toolNames(tools)).toEqual(["agency_list_drafts", "agency_list_roles", "agency_grant_service"]);
+  });
+
+  it("creates the rooms an imported agency file names", async () => {
+    stubFetch({ ...visitorCanSignIn, ...goodServices });
+    const tools = stubTools();
+    renderEntry("/create");
+    await chooseFile(agencyFile({ ...fileAgency, rooms: ["Council chamber", "Ward desk"] }));
+    await fillCreateForm("Kisumu hub", manager);
+    await pressCreate();
+    await openStatus();
+    expect(tools.filter((c) => c.tool === "actor_create_group").map((c) => c.args)).toEqual([{ name: "Council chamber" }, { name: "Ward desk" }]);
   });
 
   it("falls back to the first draft when none says it was imported", async () => {
@@ -797,18 +836,20 @@ describe("the create page", () => {
   });
 
   it("says the rooms could not be created when a room is refused", async () => {
-    stubFetch(goodServices);
+    stubFetch(farmersServices);
     stubTools({ actor_create_group: () => new McpError("actor_create_group: refused") });
     renderEntry("/create", { signedInAs: [siaya] });
+    await chooseFarmers();
     await fillCreateForm("Kisumu hub");
     await pressCreate();
     expect(await screen.findByRole("alert")).toHaveTextContent("The hub's rooms could not be created.");
   });
 
   it("says the rooms could not be created when a room comes back without an id", async () => {
-    stubFetch(goodServices);
+    stubFetch(farmersServices);
     stubTools({ actor_create_group: () => ({}) });
     renderEntry("/create", { signedInAs: [siaya] });
+    await chooseFarmers();
     await fillCreateForm("Kisumu hub");
     await pressCreate();
     expect(await screen.findByRole("alert")).toHaveTextContent("The hub's rooms could not be created.");
@@ -935,8 +976,9 @@ describe("creating the hub, step by step", () => {
   });
 
   it("says the hub is ready, lists the three steps done and opens the status page from Open Status", async () => {
-    stubFetch({ ...visitorCanSignIn, ...goodServices });
+    stubFetch({ ...visitorCanSignIn, ...farmersServices });
     renderEntry("/create");
+    await chooseFarmers();
     await fillCreateForm("Kisumu hub", manager);
     await pressCreate();
     expect(await screen.findByRole("heading", { name: "Your hub is ready" })).toBeInTheDocument();

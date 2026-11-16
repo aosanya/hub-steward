@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { agentPermission } from "../data/pages/agents";
 import { McpError, callTool } from "../wakala/mcp";
 import { importHub, listServices } from "../wakala/rest";
-import { SetupFailure, agentRoleName, roomNames, serviceName, setUpHub } from "./hubSetup";
+import { SetupFailure, agentRoleName, serviceName, setUpHub } from "./hubSetup";
 
 vi.mock("../wakala/mcp", async (importOriginal) => ({ ...(await importOriginal<object>()), callTool: vi.fn() }));
 vi.mock("../data/pages/agents", async (importOriginal) => ({ ...(await importOriginal<object>()), agentPermission: "role.is-an-agent" }));
@@ -41,6 +41,25 @@ const failureOf = async (work: Promise<unknown>) => {
   throw new Error("setup did not fail");
 };
 
+const farmRooms = ["Managers' room", "Farmers' room", "Suppliers' room"];
+
+const roomed = { agency: {}, rooms: farmRooms };
+
+const councilDocument = {
+  _template: { archetype: "municipality" },
+  agency: { name: "Municipality" },
+  modules: [],
+  roles: [{ name: "Mayor" }],
+  goals: [],
+  objectives: [],
+};
+
+const stubTemplateFile = (document: unknown) => {
+  const fetchSpy = vi.fn().mockResolvedValue({ ok: true, json: async () => document });
+  vi.stubGlobal("fetch", fetchSpy);
+  return fetchSpy;
+};
+
 const calls = (tool: string) => callToolMock.mock.calls.filter((call) => call[1] === tool);
 
 beforeEach(() => {
@@ -55,15 +74,58 @@ afterEach(() => {
 });
 
 describe("setting up a hub from a file document", () => {
-  it("imports the document, links the agent role and makes the three rooms in order", async () => {
+  it("imports the document, links the agent role and makes the rooms its rooms key names, in order", async () => {
     const done = vi.fn();
-    const hub = await setUpHub("Nyando", { agency: {} }, done);
+    const hub = await setUpHub("Nyando", roomed, done);
     expect(hub).toEqual({ id: "h1", name: "Imported name", role: "owner" });
-    expect(importHubMock).toHaveBeenCalledWith("Nyando", { agency: {} });
+    expect(importHubMock).toHaveBeenCalledWith("Nyando", roomed);
     expect(calls("agency_grant_service")[0]).toEqual(["h1", "agency_grant_service", { service: serviceName, agency_role_id: "r1" }]);
-    expect(calls("actor_create_group").map((call) => call[2])).toEqual(roomNames.map((name) => ({ name })));
+    expect(calls("actor_create_group").map((call) => call[2])).toEqual(farmRooms.map((name) => ({ name })));
     expect(calls("actor_set_group_join_mode")).toHaveLength(3);
     expect(done.mock.calls.map((call) => call[0])).toEqual([1, 2, 3]);
+  });
+
+  it("opens each room it makes to join, right after making it", async () => {
+    stubTools({ actor_create_group: { id: "g" } });
+    await setUpHub("Nyando", { rooms: ["One", "Two"] });
+    expect(callToolMock.mock.calls.filter((call) => call[1].startsWith("actor_")).map((call) => [call[1], call[2]])).toEqual([
+      ["actor_create_group", { name: "One" }],
+      ["actor_set_group_join_mode", { group_id: "g", join_mode: "open" }],
+      ["actor_create_group", { name: "Two" }],
+      ["actor_set_group_join_mode", { group_id: "g", join_mode: "open" }],
+    ]);
+  });
+
+  it("makes exactly the rooms the document names and no others", async () => {
+    await setUpHub("Nyando", { agency: {}, rooms: ["Council chamber"] });
+    expect(calls("actor_create_group").map((call) => call[2])).toEqual([{ name: "Council chamber" }]);
+    expect(calls("actor_set_group_join_mode")).toHaveLength(1);
+  });
+
+  it("makes no rooms for a document with no rooms key, and still reports the three stages", async () => {
+    const done = vi.fn();
+    await setUpHub("Nyando", councilDocument, done);
+    expect(calls("actor_create_group")).toHaveLength(0);
+    expect(calls("actor_set_group_join_mode")).toHaveLength(0);
+    expect(done.mock.calls.map((call) => call[0])).toEqual([1, 2, 3]);
+  });
+
+  it("makes no rooms for a document whose rooms key is empty", async () => {
+    await setUpHub("Nyando", { agency: {}, rooms: [] });
+    expect(calls("actor_create_group")).toHaveLength(0);
+    expect(calls("actor_set_group_join_mode")).toHaveLength(0);
+  });
+
+  it("hands the rooms it made to the done callback at the last stage", async () => {
+    const done = vi.fn();
+    await setUpHub("Nyando", roomed, done);
+    expect(done.mock.calls[2]).toEqual([3, { id: "h1", name: "Imported name", role: "owner" }, farmRooms]);
+  });
+
+  it("hands an empty list of rooms to the done callback for a council document", async () => {
+    const done = vi.fn();
+    await setUpHub("Nyando", councilDocument, done);
+    expect(done.mock.calls[2][2]).toEqual([]);
   });
 
   it("falls back to the typed name when the server returns none", async () => {
@@ -99,6 +161,39 @@ describe("setting up a hub from a named template", () => {
     expect(failure.reason).toEqual({ key: "createNoTemplate" });
     expect(failure.stage).toBe(0);
     expect(importHubMock).not.toHaveBeenCalled();
+  });
+
+  it("makes the three farm rooms from the farmers template when its file names none", async () => {
+    stubTemplateFile({ agency: { name: "Farmers" }, roles: [{}] });
+    const done = vi.fn();
+    await setUpHub("Nyando", "farmers", done);
+    expect(calls("actor_create_group").map((call) => call[2])).toEqual(farmRooms.map((name) => ({ name })));
+    expect(calls("actor_set_group_join_mode")).toHaveLength(3);
+    expect(done.mock.calls[2][2]).toEqual(farmRooms);
+  });
+
+  it("prefers the rooms the template file names over the built-in ones for its id", async () => {
+    stubTemplateFile({ agency: { name: "Farmers" }, rooms: ["Cooperative room"] });
+    await setUpHub("Nyando", "farmers", vi.fn());
+    expect(calls("actor_create_group").map((call) => call[2])).toEqual([{ name: "Cooperative room" }]);
+  });
+
+  it("makes no rooms from the municipality template, a council with roles and no rooms", async () => {
+    const fetchSpy = stubTemplateFile(councilDocument);
+    const done = vi.fn();
+    await setUpHub("Nyando", "municipality", done);
+    expect(fetchSpy).toHaveBeenCalledWith("/templates/municipality.json");
+    expect(importHubMock).toHaveBeenCalledWith("Nyando", councilDocument);
+    expect(calls("actor_create_group")).toHaveLength(0);
+    expect(calls("actor_set_group_join_mode")).toHaveLength(0);
+    expect(done.mock.calls.map((call) => call[0])).toEqual([1, 2, 3]);
+    expect(done.mock.calls[2][2]).toEqual([]);
+  });
+
+  it("makes no rooms from a template id that has no built-in rooms", async () => {
+    stubTemplateFile({ agency: { name: "Lab" } });
+    await setUpHub("Nyando", "siaya-lab");
+    expect(calls("actor_create_group")).toHaveLength(0);
   });
 
   it("reports no template when the request itself fails", async () => {
@@ -255,7 +350,7 @@ describe("later stages failing", () => {
 
   it("reports a room with no id as the rooms failing at stage 2", async () => {
     stubTools({ actor_create_group: {} });
-    const failure = await failureOf(setUpHub("N", {}));
+    const failure = await failureOf(setUpHub("N", roomed));
     expect(failure.reason).toEqual({ key: "createNoRooms" });
     expect(failure.stage).toBe(2);
     expect(calls("actor_create_group")).toHaveLength(1);
@@ -263,7 +358,7 @@ describe("later stages failing", () => {
 
   it("stops making rooms when setting the join mode fails", async () => {
     stubTools({ actor_set_group_join_mode: new Error("no") });
-    const failure = await failureOf(setUpHub("N", {}));
+    const failure = await failureOf(setUpHub("N", roomed));
     expect(failure.reason).toEqual({ key: "createNoRooms" });
     expect(calls("actor_create_group")).toHaveLength(1);
   });
@@ -271,7 +366,7 @@ describe("later stages failing", () => {
   it("does not report completion of a stage that failed", async () => {
     stubTools({ actor_create_group: new Error("no") });
     const done = vi.fn();
-    await failureOf(setUpHub("N", {}, done));
+    await failureOf(setUpHub("N", roomed, done));
     expect(done.mock.calls.map((call) => call[0])).toEqual([1, 2]);
   });
 });
