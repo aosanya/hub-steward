@@ -71,3 +71,41 @@ describe("the Chat tab of a member of two groups", () => {
     expect([times("actor_list_my_groups"), times("comm_chat_thread_list"), times("comm_chat_message_list")]).toEqual([1, 2, 0]);
   });
 });
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+describe("the rooms list in the Folders frame", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("sits in the left pane of the frame on a wide screen with the assistant row, stamp and unread number", async () => {
+    setWide(true);
+    memberOfTwoGroups();
+    show();
+    const farmers = await screen.findByRole("button", { name: /Siaya farmers/ });
+    const frame = document.querySelector(".wf") as HTMLElement;
+    const tree = frame.querySelector(".wf-panes .wf-tree") as HTMLElement;
+    expect(within(tree).getByRole("button", { name: /Siaya farmers/ })).toBe(farmers);
+    expect(within(tree).getByRole("button", { name: /Suppliers/ })).toBeInTheDocument();
+    expect(within(tree).getByText("Join a group")).toBeInTheDocument();
+    expect(within(farmers).getByText("14:20")).toBeInTheDocument();
+    expect(within(farmers).getByLabelText("3 unread")).toBeInTheDocument();
+    expect(frame.querySelector(".wf-panes .wf-main")).not.toBeNull();
+  });
+
+  it("draws no frame on a phone and keeps the plain list", async () => {
+    setWide(false);
+    memberOfTwoGroups();
+    show();
+    const farmers = await screen.findByRole("button", { name: /Siaya farmers/ });
+    expect(document.querySelector(".wf")).toBeNull();
+    expect(within(farmers).getByText("14:20")).toBeInTheDocument();
+    expect(within(farmers).getByLabelText("3 unread")).toBeInTheDocument();
+  });
+});
