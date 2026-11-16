@@ -278,3 +278,18 @@ Approving a draft carries it out when wakala-api has an applier for its kind:
 the write is made as the deciding manager, and a write the agency refuses answers
 422 and leaves the draft pending. A draft of any other kind is recorded
 approved and nothing is written.
+
+## Changing a person and a place
+
+Three tools change a record that already exists, and each carries its own permission so an app can tell who may change it and show or hide its Edit button (MUN1127, split from MUN1108).
+
+| Tool | Action | Permission |
+|---|---|---|
+| `actor_set_actor_display_name` | `actor.actor.set_display_name` | `member.edit`, "Change a person's name and details" |
+| `actor_set_actor_attributes` | `actor.actor.set_attributes` | `member.edit` |
+| `assetmanager_location_update` | `assetmanager.location.update` | `location.edit`, "Change a place" |
+
+- **Who may.** The agency's owner always may. Any other caller, an agent or a resident, may only when one of the roles they hold carries the permission; a resident holds a role through a group the agency gave it to. Without it the tool answers with a message naming the permission, for example `you need the permission "Change a place" (location.edit) in this agency to do this`. The check is `guardChangeTools` in `internal/api/http/change_permissions.go`; the same file lets a resident who holds `member.edit` through the actor routes and a resident who holds `location.edit` through the asset manager routes, and refuses the asset manager's place update on the HTTP route the same way.
+- **Catalogue.** Both codes are in `modules/agency/models/permissions_catalog.json`, so `agency_list_permissions` lists them.
+- **Grants.** No role of the municipality agency files is given either code: none of them could change a person or a place before, and a grant is the owner's to make on the permissions page.
+- **Tests.** `internal/api/http/change_permissions_test.go` (owner, agent and resident, with and without the code, the refusal naming it) and `modules/agency/models/permission_edit_test.go`.

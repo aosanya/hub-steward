@@ -21,4 +21,5 @@ func (d *Deps) registerAssetMCPTools(server *mcp.Server, resolve assetmcp.Manage
 		actions[t.Name] = t.Action
 	}
 	d.guardToolPermissions(server, actions)
+	d.guardChangeTools(server)
 }

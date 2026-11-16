@@ -17,7 +17,7 @@ func assetManagerMount() assetroutes.Mount {
 
 func (d *Deps) instanceAssetManagerMount(role string) assetroutes.Mount {
 	mount := assetManagerMount()
-	mount.Authorize = agentPermissioned(role, d.Registry, d.agencyRolePermissions, mount.Authorize)
+	mount.Authorize = agentPermissioned(role, d.Registry, d.agencyRolePermissions, d.changeNeedsItsCode(role, mount.Authorize))
 	return mount
 }
 
@@ -29,7 +29,7 @@ func (d *Deps) registerAssetManagerRoutes(mux *http.ServeMux, reg agencies.Regis
 	for i, rt := range shape {
 		idx := i
 		mux.HandleFunc(rt.Pattern(assetManagerInstancePrefix), auth.require(func(w http.ResponseWriter, r *http.Request) {
-			m, err := assetManagerFor(r.Context(), reg, r.PathValue("instanceID"))
+			m, err := d.assetManagerAdmitting(r.Context(), r.PathValue("instanceID"))
 			if err != nil {
 				writeInstanceErr(w, err)
 				return

@@ -49,7 +49,7 @@ func (d *Deps) resolveSourceManager(ctx context.Context, instanceID string) (mwa
 }
 
 func (d *Deps) resolveAssetManager(ctx context.Context, instanceID string) (mwanachamaassetmanager.AssetManager, error) {
-	return assetManagerFor(ctx, d.Registry, instanceID)
+	return d.assetManagerAdmitting(ctx, instanceID)
 }
 
 var buildMCPServer = newMCPServer
