@@ -1,5 +1,5 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
@@ -18,6 +18,17 @@ const reports = [
 const figuresOf: Record<string, unknown> = {
   "2026-01-01": { planned: 12000, spent: 9500, difference: 2500, departments: [], balances: [] },
   "2026-04-01": { planned: 8000, spent: 8300, difference: -300, departments: [], balances: [] },
+};
+
+const linesOf: Record<string, unknown[]> = {
+  "2026-01-01": [
+    { id: "b1", name: "Road repair", department: "Public works", planned: 7000, spent: 5000 },
+    { id: "b2", name: "Library roof", department: "Culture", planned: 5000, spent: 4500 },
+  ],
+  "2026-04-01": [
+    { id: "b3", name: "Bus shelters", department: "Transport", planned: 3000, spent: 3100 },
+    { id: "b4", name: "Park lighting", department: "Public works", planned: 5000, spent: 5200 },
+  ],
 };
 
 let landed = "";
@@ -52,9 +63,10 @@ beforeEach(() => {
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     if (name === "accounting_report_list") return reportList();
     if (name === "accounting_report_read") {
-      const start = String((args as Args)?.period_start);
+      const start = String((args as Args)?.period_start).slice(0, 10);
       const report = reports.find((one) => one.period_start === start);
-      return { ...report, figures: figuresOf[start] };
+      if (!report) throw new Error("no budget lines were set for that period");
+      return { ...report, figures: figuresOf[start], lines: linesOf[start] };
     }
     throw new Error(`${name} is not a tool this screen may use`);
   });
@@ -125,5 +137,63 @@ describe("the Financial Reports list", () => {
     openReports();
 
     expect(await screen.findByText(/No reports/i)).toBeInTheDocument();
+  });
+
+  it("lists the budget lines of an opened report with planned and spent that add to its totals", async () => {
+    openReports();
+    await userEvent.click(await screen.findByRole("button", { name: /First quarter/ }));
+
+    await waitFor(() => expect(pane().textContent).toContain("Road repair"));
+    expect(pane().textContent).toContain("Library roof");
+    expect(pane().textContent).toContain("Planned 7,000 · Spent 5,000");
+    expect(pane().textContent).toContain("Planned 5,000 · Spent 4,500");
+    const planned = linesOf["2026-01-01"].reduce((sum: number, line) => sum + (line as { planned: number }).planned, 0);
+    const spent = linesOf["2026-01-01"].reduce((sum: number, line) => sum + (line as { spent: number }).spent, 0);
+    expect(planned).toBe(figuresOf["2026-01-01"] && (figuresOf["2026-01-01"] as { planned: number }).planned);
+    expect(spent).toBe((figuresOf["2026-01-01"] as { spent: number }).spent);
+  });
+});
+
+describe("choosing a period", () => {
+  const periodCard = () => screen.getByRole("region", { name: "Choose period" });
+
+  const choose = async (start: string, end: string) => {
+    await screen.findByText("First quarter");
+    fireEvent.change(within(periodCard()).getByLabelText("From"), { target: { value: start } });
+    fireEvent.change(within(periodCard()).getByLabelText("To"), { target: { value: end } });
+    await userEvent.click(within(periodCard()).getByRole("button", { name: "Read report" }));
+  };
+
+  it("reads the report of the chosen period and shows its totals and lines", async () => {
+    openReports();
+    await choose("2026-04-01", "2026-07-01");
+
+    await waitFor(() => expect(periodCard().textContent).toContain("8,300"));
+    expect(callsTo("accounting_report_read")[0][2]).toEqual({ period_start: "2026-04-01T00:00:00Z", period_end: "2026-07-01T00:00:00Z" });
+    expect(periodCard().textContent).toContain("Bus shelters");
+    expect(periodCard().textContent).toContain("-300");
+  });
+
+  it("refuses a reversed period in words and makes no call", async () => {
+    openReports();
+    await choose("2026-07-01", "2026-04-01");
+
+    expect(await screen.findByText("The end date must come after the start date.")).toBeInTheDocument();
+    expect(callsTo("accounting_report_read")).toHaveLength(0);
+  });
+
+  it("refuses an empty period in words and makes no call", async () => {
+    openReports();
+    await choose("2026-04-01", "");
+
+    expect(await screen.findByText("Choose both a start date and an end date.")).toBeInTheDocument();
+    expect(callsTo("accounting_report_read")).toHaveLength(0);
+  });
+
+  it("says so in words when no budget lines were set for the period", async () => {
+    openReports();
+    await choose("2027-01-01", "2027-04-01");
+
+    expect(await screen.findByText("No report could be read for that period.")).toBeInTheDocument();
   });
 });
