@@ -203,6 +203,50 @@
         }
       ]
     },
+    "list_reports": {
+      "method": "GET",
+      "path": "/reports",
+      "call": "ListReports",
+      "action": "accounting.report.list",
+      "title": "List financial reports",
+      "description": "List financial reports, one for each period that has budget lines, oldest period first. Each has a name, the period, its figures and its budget lines. The figures are the planned and spent totals and their difference, spent minus planned, the same split by department, and the closing balance of each account type at the period end, all folded on every call. Limit caps the page.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_report": {
+      "method": "GET",
+      "path": "/reports/period",
+      "call": "GetReport",
+      "action": "accounting.report.read",
+      "title": "Read financial report",
+      "description": "Read the financial report of one period: its name, figures and budget lines. The period is named exactly as its budget lines were set.",
+      "args": [
+        {
+          "from": "query",
+          "as": "period_start",
+          "description": "The period's first instant, inclusive, exactly as the budget lines were set."
+        },
+        {
+          "from": "query",
+          "as": "period_end",
+          "description": "The period's end, exclusive, exactly as the budget lines were set."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
     "variance": {
       "method": "GET",
       "path": "/accounts/{accountID}/variance",
