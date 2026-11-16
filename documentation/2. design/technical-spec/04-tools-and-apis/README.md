@@ -293,3 +293,22 @@ Three tools change a record that already exists, and each carries its own permis
 - **Catalogue.** Both codes are in `modules/agency/models/permissions_catalog.json`, so `agency_list_permissions` lists them.
 - **Grants.** No role of the municipality agency files is given either code: none of them could change a person or a place before, and a grant is the owner's to make on the permissions page.
 - **Tests.** `internal/api/http/change_permissions_test.go` (owner, agent and resident, with and without the code, the refusal naming it) and `modules/agency/models/permission_edit_test.go`.
+
+## Setting what a role may do
+
+`agency_set_role_permissions` replaces the whole list of permission codes a role holds in an open draft (MUN1167, the owner's decision of 2026-11-16). `agency_update_role` stays the tool for a role's name and description.
+
+| Item | Value |
+|---|---|
+| Tool | `agency_set_role_permissions` |
+| Route | `PUT /instances/{agency}/roles/{role_id}/permissions` |
+| Action | `agency.role.set_permissions` |
+| Arguments | `instance_id`, `role_id` (id or code), `permissions` (every code the role should hold afterwards) |
+| Returns | the role, with its stored `permissions` |
+
+- **Replaces, never adds.** A code left out is unticked and an empty list unticks everything; a repeated code is kept once. The role's name, description and staff flag are untouched.
+- **Who may.** The action is listed under the locked code `permission.override` in `modules/agency/models/permissions_catalog.json` and under no other code. The owner holds every code, so the owner may; an agent may only through a role that holds `permission.override`; a resident or a stranger is refused by the same membership check as every other `agency_*` tool.
+- **Refused in words.** The locked codes `agent.manage`, `api_key.manage`, `agency.go_live`, `agency.delete` and `permission.override` answer 400 `... belongs to the owner alone and cannot be given to a role`; a code the catalogue does not list answers 400 `... is not a permission the catalogue knows`. Both name every offending code, and a refused call changes nothing.
+- **A draft change.** It is refused once the draft is archived, and a role's permissions are part of the publish hash (MUN1158), so a permissions change alone publishes as a new version and changes what the live roles hold only then.
+- **Where.** `SetRolePermissions` in `modules/agency/role_impl.go`; the declaration in `modules/agency/agency.operations.json`; the registry's cache is told through `internal/agencies/role_edits.go`.
+- **Tests.** `modules/agency/mcp/role_permissions_tool_test.go` (replace, clear, de-duplicate, each locked code, unknown codes, archived draft, the catalogue entry), `internal/api/http/role_permissions_set_test.go` (owner, agent without the code, resident and stranger, a locked code, publish) and `internal/agencies/role_permissions_edits_test.go`; the roster pin counts rose by one.

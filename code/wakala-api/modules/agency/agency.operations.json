@@ -34,6 +34,8 @@
     "ErrInvalidModuleMounts": 400,
     "ErrInvalidRACILabel": 400,
     "ErrInvalidRole": 400,
+    "ErrUnknownPermission": 400,
+    "ErrLockedPermission": 400,
     "ErrInvalidRule": 400,
     "ErrInvalidTargetType": 400,
     "ErrInvalidValue": 400,
@@ -893,6 +895,33 @@
         }
       ],
       "tool": "agency_update_role"
+    },
+    "set_role_permissions": {
+      "method": "PUT",
+      "path": "/roles/{role_id}/permissions",
+      "call": "SetRolePermissions",
+      "action": "agency.role.set_permissions",
+      "title": "Set role permissions",
+      "description": "Replace the whole list of permission codes a seat holds, in the open draft; it goes live when the draft is published. Send every code the seat should hold: a code left out is unticked, an empty list unticks all. Only the owner, or a seat holding the permission.override code, may call it. The codes agent.manage, api_key.manage, agency.go_live, agency.delete and permission.override belong to the owner alone and are refused, and so is any code the catalogue does not list; read the catalogue with agency_list_permissions.",
+      "args": [
+        {
+          "from": "path",
+          "as": "role_id",
+          "refers": "agency.role",
+          "description": "The seat whose permissions to set."
+        },
+        {
+          "from": "body",
+          "as": "permissions",
+          "description": "Every permission code the seat should hold after this call."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "agency_set_role_permissions"
     },
     "delete_role": {
       "method": "DELETE",

@@ -171,6 +171,7 @@ type AgencyManager interface {
 	// mirror of DeleteObjective's cascade from the other side of the same
 	// join table.
 	UpdateRole(ctx context.Context, r models.Role) (models.Role, error)
+	SetRolePermissions(ctx context.Context, id string, permissions []string) (models.Role, error)
 	DeleteRole(ctx context.Context, id string) error
 
 	CreateWorkflowObjective(ctx context.Context, l models.WorkflowObjective) (models.WorkflowObjective, error)

@@ -263,6 +263,7 @@ agency_set_module_enabled
 agency_set_module_mounts
 agency_set_publication_channel
 agency_set_raci
+agency_set_role_permissions
 agency_set_scenario_input
 agency_start_review
 agency_stop_test_run

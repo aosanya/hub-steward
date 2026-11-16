@@ -93,5 +93,5 @@
   {"code": "api_key.manage", "name": "Manage API keys", "locked": true},
   {"code": "agency.go_live", "name": "Go live", "locked": true},
   {"code": "agency.delete", "name": "Delete the agency", "locked": true},
-  {"code": "permission.override", "name": "Change overrides on the permissions page", "locked": true}
+  {"code": "permission.override", "name": "Change overrides on the permissions page", "locked": true, "actions": ["agency.role.set_permissions"]}
 ]

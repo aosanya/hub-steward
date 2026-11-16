@@ -17,6 +17,11 @@ func (m roleEdits) UpdateRole(ctx context.Context, r agencymodels.Role) (agencym
 	return m.AgencyManager.UpdateRole(ctx, r)
 }
 
+func (m roleEdits) SetRolePermissions(ctx context.Context, id string, permissions []string) (agencymodels.Role, error) {
+	defer m.changed()
+	return m.AgencyManager.SetRolePermissions(ctx, id, permissions)
+}
+
 func (m roleEdits) DeleteRole(ctx context.Context, id string) error {
 	defer m.changed()
 	return m.AgencyManager.DeleteRole(ctx, id)

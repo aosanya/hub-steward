@@ -97,6 +97,54 @@ func (m *agencyManager) UpdateRole(ctx context.Context, r models.Role) (models.R
 	return out, nil
 }
 
+func (m *agencyManager) SetRolePermissions(ctx context.Context, id string, permissions []string) (models.Role, error) {
+	wanted := models.DistinctPermissions(permissions)
+	if err := checkRolePermissions(wanted); err != nil {
+		return models.Role{}, fmt.Errorf("SetRolePermissions: %w", err)
+	}
+	var out models.Role
+	err := m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		existing, err := m.findRole(ctx, tx, id)
+		if err != nil {
+			return err
+		}
+		if err := m.requireOpenDraft(ctx, tx, existing.DraftID); err != nil {
+			return err
+		}
+		existing.Permissions = append([]string{}, wanted...)
+		existing.LastUpdated = models.NowRFC3339()
+		if err := m.writeUpdate(ctx, tx, roleRole, existing.ID, existing, ErrRoleNotFound, "draft_id"); err != nil {
+			return err
+		}
+		out = existing
+		return m.sendBack(ctx, tx, existing.DraftID, usageKey("role", existing.Code))
+	})
+	if err != nil {
+		return models.Role{}, fmt.Errorf("SetRolePermissions: %w", err)
+	}
+	return out, nil
+}
+
+func checkRolePermissions(codes []string) error {
+	var unknown, locked []string
+	for _, code := range codes {
+		p, ok := models.LookupPermission(code)
+		switch {
+		case !ok:
+			unknown = append(unknown, code)
+		case p.Locked:
+			locked = append(locked, code)
+		}
+	}
+	if len(unknown) > 0 {
+		return fmt.Errorf("%w: %s", ErrUnknownPermission, strings.Join(unknown, ", ")+" is not a permission the catalogue knows; list the catalogue to see the codes")
+	}
+	if len(locked) > 0 {
+		return fmt.Errorf("%w: %s", ErrLockedPermission, strings.Join(locked, ", ")+" belongs to the owner alone and cannot be given to a role")
+	}
+	return nil
+}
+
 func (m *agencyManager) DeleteRole(ctx context.Context, id string) error {
 	err := m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		existing, err := m.findRole(ctx, tx, id)
