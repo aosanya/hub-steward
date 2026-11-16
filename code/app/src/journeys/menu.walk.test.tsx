@@ -74,11 +74,11 @@ describe("menu: a member goes from Home into a section and on to a screen", () =
 
   it("shows a row with no screen behind it as text, not as a button", async () => {
     await openHome();
-    await userEvent.click(screen.getByRole("button", { name: /Issues & Requests/ }));
-    await heading("Issues & Requests");
-    expect(await screen.findByText("All Issues")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /All Issues/ })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: /Services & Permits/ }));
+    await heading("Services & Permits");
+    expect(await screen.findByText("Permits")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Permits/ })).toBeNull();
     expect(screen.getAllByText("Not available yet").length).toBeGreaterThan(0);
-    expect(screen.getByRole("button", { name: /Overdue/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Applications/ })).toBeInTheDocument();
   });
 });

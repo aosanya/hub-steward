@@ -25,9 +25,14 @@ const catalogue = [
 
 const application = { id: "s1", form_id: "f1", status: "Submitted", sent_at: "2026-03-04T12:00:00Z" };
 
+const applicationQuestions = [
+  { id: "q1", prompt: "Stall location" },
+  { id: "q2", prompt: "Number of trading days" },
+];
+
 const applicationAnswers = [
-  { prompt: "Stall location", answer: "Riverside Square" },
-  { prompt: "Number of trading days", answer: "Three" },
+  { id: "a1", question_id: "q1", value_text: "Riverside Square" },
+  { id: "a2", question_id: "q2", value_text: "Three" },
 ];
 
 const dayWords = (day: number) => new RegExp(`2026-03-${String(day).padStart(2, "0")}|${day} Mar|Mar ${day}\\b|${String(day).padStart(2, "0")}/03|03/${String(day).padStart(2, "0")}`);
@@ -59,6 +64,7 @@ beforeEach(() => {
     forms_submission_mark_paid: () => ({}),
     forms_catalog_entry_list_public: () => ({ items: catalogue }),
     forms_submission_read_mine: () => application,
+    forms_question_list: () => ({ items: applicationQuestions }),
     forms_answer_list: () => ({ items: applicationAnswers }),
     forms_form_withdraw: () => ({}),
   };
@@ -190,7 +196,7 @@ describe("an application", () => {
   it("shows its status and the answers that were sent", async () => {
     open(applicationAt("f1"));
 
-    expect(await screen.findByText("Submitted")).toBeInTheDocument();
+    expect(await screen.findByText("Sent")).toBeInTheDocument();
     expect(await screen.findByText("Stall location")).toBeInTheDocument();
     expect(screen.getByText("Riverside Square")).toBeInTheDocument();
     expect(screen.getByText("Number of trading days")).toBeInTheDocument();
@@ -209,7 +215,7 @@ describe("an application", () => {
 
   it("has a Back button that reads the screen the application was opened from", async () => {
     open(applicationAt("f1"), { from: { path: screens[0].at, title: "Permits" } });
-    await screen.findByText("Submitted");
+    await screen.findByText("Sent");
 
     await userEvent.click(screen.getByRole("button", { name: /Permits/ }));
 
