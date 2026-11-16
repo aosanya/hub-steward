@@ -8,20 +8,28 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { isoDay } from "../../shared/ui/days";
 import { Segmented } from "../../shared/ui/Segmented";
+import { useWide } from "../../shared/ui/useWide";
 import { Shell } from "../../app/Shell";
 import { mcpRisksClient, type RisksClient } from "./api";
+import { RiskPane } from "./RiskBody";
 import { filled, labelOf } from "./labels";
+import "../../shared/ui/paneWindow.css";
+import "../../app/menu/menuWindow.css";
 
 type View = "risks" | "actions";
 
-export function RisksPage({ client = mcpRisksClient }: { client?: RisksClient }) {
+export function RisksPage({ client = mcpRisksClient, riskId = "" }: { client?: RisksClient; riskId?: string }) {
   const { words } = useLanguage();
   const go = useNavigate();
+  const wide = useWide();
+  const [chosen, setChosen] = useState(riskId);
   const [view, setView] = useState<View>("risks");
   const risks = useLoad(() => client.myRisks(), "risks");
   const actions = useLoad(() => client.myActions(), "actions");
-  return (
-    <Shell title={words.risksTitle}>
+  const open = (id: string) => (wide ? setChosen(id) : go(routes.risk.path({ riskId: id })));
+  const pressed = (id: string) => (wide ? chosen === id : undefined);
+  const list = (
+    <>
       <Rows>
         <ListRow title={words.gapsTitle} end="›" onClick={() => go(routes.riskGaps.path())} />
       </Rows>
@@ -47,7 +55,8 @@ export function RisksPage({ client = mcpRisksClient }: { client?: RisksClient })
                   lead
                   meta={risk.topEvent}
                   end={<Chip>{labelOf(words, "status", risk.status)}</Chip>}
-                  onClick={() => go(routes.risk.path({ riskId: risk.id }))}
+                  pressed={pressed(risk.id)}
+                  onClick={() => open(risk.id)}
                 />
               ))}
             </Rows>
@@ -66,13 +75,30 @@ export function RisksPage({ client = mcpRisksClient }: { client?: RisksClient })
                   title={action.title}
                   meta={action.dueAt ? filled(words.riskDue, { date: isoDay(action.dueAt) }) : undefined}
                   end={<Chip>{labelOf(words, "actionStatus", action.status)}</Chip>}
-                  onClick={() => go(routes.risk.path({ riskId: action.riskId }))}
+                  pressed={pressed(action.riskId)}
+                  onClick={() => open(action.riskId)}
                 />
               ))}
             </Rows>
           ) : null}
         </>
       )}
+    </>
+  );
+  if (!wide) return <Shell title={words.risksTitle}>{list}</Shell>;
+  return (
+    <Shell title={words.risksTitle} tabless>
+      <div className="wf">
+        <div className="wf-panes">
+          <section className="wf-tree mw-list" aria-label={words.risksTitle}>
+            {list}
+          </section>
+          <section className="wf-main" aria-label={chosen ? words.risksTitle : undefined}>
+            {chosen ? <RiskPane key={chosen} client={client} riskId={chosen} /> : null}
+          </section>
+        </div>
+        <footer className="wf-status" aria-label="Status bar" />
+      </div>
     </Shell>
   );
 }

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
@@ -188,5 +188,93 @@ describe("the Hungarian words", () => {
     const keys = Object.keys(words).filter((key) => key.startsWith("gaps"));
     expect(keys.length).toBeGreaterThanOrEqual(4);
     keys.forEach((key) => expect(magyar[key as keyof typeof magyar], key).not.toBe(""));
+  });
+});
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+const paneOf = (name: string) => document.querySelector(`.wf ${name}`) as HTMLElement;
+
+describe("the risk list on a wide screen", () => {
+  beforeEach(() => setWide(true));
+
+  afterEach(() => {
+    cleanup();
+    Reflect.deleteProperty(window, "matchMedia");
+  });
+
+  it("draws the Folders frame with the Gaps row, the switch and the risks in the left pane", async () => {
+    at(`${base}/risks`, client());
+    await screen.findByRole("button", { name: /Boiler room fire/ });
+    const tree = within(paneOf(".wf-tree"));
+    expect(tree.getByRole("button", { name: new RegExp(words.gapsTitle) })).toBeInTheDocument();
+    expect(tree.getByRole("button", { name: words.risksMine })).toBeInTheDocument();
+    expect(tree.getByRole("button", { name: /Boiler room fire/ })).toHaveTextContent(words.statusOpen);
+  });
+
+  it("opens the chosen risk beside the list under a head strip, and marks its row", async () => {
+    at(`${base}/risks`, client());
+    await userEvent.click(await screen.findByRole("button", { name: /Boiler room fire/ }));
+    expect(await within(paneOf(".wf-main .wf-content")).findByText("Fire in the boiler room")).toBeInTheDocument();
+    expect(within(paneOf(".wf-main .wf-head")).getByText(risk.title)).toBeInTheDocument();
+    expect(within(paneOf(".wf-tree")).getByRole("button", { name: /Boiler room fire/ })).toHaveAttribute("aria-pressed", "true");
+    expect(within(paneOf(".wf-main")).getByRole("button", { name: /Annual wiring check/ })).toHaveTextContent(words.standingProven);
+  });
+
+  it("lists the actions in the left pane on the switch and opens the risk of the chosen action", async () => {
+    at(`${base}/risks`, client());
+    await userEvent.click(await screen.findByRole("button", { name: words.actionsMine }));
+    const row = await within(paneOf(".wf-tree")).findByRole("button", { name: /Service the sprinklers/ });
+    expect(row).toHaveTextContent("Due 2026-12-01");
+    expect(row).toHaveTextContent(words.actionStatusInProgress);
+    await userEvent.click(row);
+    expect(await within(paneOf(".wf-main .wf-content")).findByText("Fire in the boiler room")).toBeInTheDocument();
+  });
+
+  it("says in the main pane when the chosen risk cannot be loaded, and keeps the list", async () => {
+    at(`${base}/risks`, client({ risk: async () => Promise.reject(new Error("not yours")) }));
+    await userEvent.click(await screen.findByRole("button", { name: /Boiler room fire/ }));
+    expect(await within(paneOf(".wf-main")).findByRole("alert")).toHaveTextContent(words.riskFailed);
+    expect(within(paneOf(".wf-tree")).getByRole("button", { name: /Boiler room fire/ })).toBeInTheDocument();
+  });
+
+  it("keeps the empty and failure cards in the left pane", async () => {
+    at(`${base}/risks`, client({ myRisks: async () => [] }));
+    expect(await within(paneOf(".wf-tree")).findByText(words.risksEmpty)).toBeInTheDocument();
+    cleanup();
+    at(`${base}/risks`, client({ myRisks: async () => Promise.reject(new Error("down")) }));
+    expect(await within(paneOf(".wf-tree")).findByRole("alert")).toHaveTextContent(words.risksFailed);
+  });
+
+  it("opens the same frame with the risk chosen at its own address", async () => {
+    at(`${base}/risks/r1`, client());
+    expect(await within(paneOf(".wf-main .wf-content")).findByText("Fire in the boiler room")).toBeInTheDocument();
+    expect(within(paneOf(".wf-tree")).getByRole("button", { name: /Boiler room fire/ })).toHaveAttribute("aria-pressed", "true");
+  });
+});
+
+describe("the risk list on a phone", () => {
+  beforeEach(() => setWide(false));
+
+  afterEach(() => {
+    cleanup();
+    Reflect.deleteProperty(window, "matchMedia");
+  });
+
+  it("draws no frame and opens a risk as its own screen with the status chip on the row", async () => {
+    at(`${base}/risks`, client());
+    const row = await screen.findByRole("button", { name: /Boiler room fire/ });
+    expect(row).toHaveTextContent(words.statusOpen);
+    expect(document.querySelector(".wf")).toBeNull();
+    await userEvent.click(row);
+    expect(await screen.findByText("Fire in the boiler room")).toBeInTheDocument();
+    expect(document.querySelector(".wf")).toBeNull();
   });
 });
