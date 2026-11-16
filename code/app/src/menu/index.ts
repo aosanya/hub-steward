@@ -1,0 +1,1 @@
+export { menuRoutes } from "./routes";

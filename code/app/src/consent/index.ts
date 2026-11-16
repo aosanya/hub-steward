@@ -1,0 +1,1 @@
+export { consentRoutes } from "./routes";

@@ -34,7 +34,7 @@ Three things followed from that:
 
    A feature may import `shared/`. `shared/` never imports a feature, and `app/` is the only place that joins features.
 5. **Features meet only at `index.ts`.** Each feature folder has an `index.ts` listing what other features may use. Nothing else is imported from outside the folder. Backlog code that another feature hosts, such as the cards shown in chat, stays in `backlogs/` and is exported.
-6. **Each feature owns its routes.** A feature's `routes.tsx` lists its paths and screens and is exported through its `index.ts`. The root route file only joins them, the way `BacklogsRoutes.tsx` and `FilesRoutes.tsx` already do.
+6. **Each feature owns its routes.** A feature's `routes.tsx` lists its paths and screens and is exported through its `index.ts`. The root route file only joins them, the way `BacklogsRoutes.tsx` and `FilesRoutes.tsx` already do. A feature with screens inside the agency keeps its path definitions in `routePaths.ts`, which imports nothing from a feature, so the root `routes.ts` can read them without an import cycle through the screens (SW483).
 7. **Tests sit beside the code they test.** Test support used by one feature stays in that feature; support used by several goes in `shared/`.
 
 ## Target layout

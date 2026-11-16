@@ -1,0 +1,1 @@
+export { risksRoutes } from "./routes";
