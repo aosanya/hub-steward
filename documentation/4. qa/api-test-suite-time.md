@@ -84,6 +84,26 @@ This is the "share one migrated database across tests" idea. It is listed so nob
 - Splitting the package into several packages: the walk helpers (`newStepRunWalk`, `referralPlan`, the `misuse_*` fakes) are shared by 136 files, so a split mostly means copying them, and option 2 gets the same parallelism without moving a file.
 - A `fast` build tag for the unit tests: nearly all 674 tests are walks that build a router and an instance. There is no small unit-test subset to tag, so the tag would exclude almost nothing.
 
+## Running the package under -race in shards: `make test-api-race`
+
+Option 2 exists as a Makefile target in the repo root (ISS-103). Agents run it instead of a bare `go test -race ./internal/api/http`.
+
+- `make test-api-race` compiles the package's test binary once with `go test -c -race`, lists its tests with `-test.list`, deals the names round-robin into N shards, and runs the binary once per shard at the same time with `-test.v -test.timeout=45m` and `-test.run '^(name|name|...)$'`.
+- `N` sets the number of shards (default 6) and `FILTER` is a regular expression for `-test.list` that narrows the run (default `.`, the whole package): `make test-api-race N=3 FILTER='^TestMUN235b'`.
+- The target ends with a line per shard (test count and exit code), the names of the failed tests, a note if a shard hit the timeout, and `tests listed, ran, seconds`. It exits 1 when any shard exits non-zero, or when the union of the shard lists is not exactly the list (a test in no shard or in two).
+- The scripts are `scripts/test-api-race.sh` and `scripts/split-test-names.sh`. The splitting logic has a plain shell test, `scripts/split-test-names.test.sh` (ten names in three shards, an empty shard, one shard, an empty list, bad counts), which `make test` runs first.
+- A shard with no names is not started. Shard output is kept only in a scratch folder that the script removes on exit, so the failed test names in the summary are what remains; rerun a failed test alone with `go test -race -run '^TestName$' ./internal/api/http`.
+
+Measured on a clean `git archive` export of `dev` at `3b7dd396` (Go 1.27.3, darwin/arm64, 11 cores, load average 15 to 20 from other agents during the run), with `N=3` and `FILTER='^(TestRoleHolder|TestGroupRoles|TestMUN235b|TestToolList|TestRequestBody)'`, which selects 62 tests:
+
+| Step | Time |
+| --- | --- |
+| Compile with `-race` | 31 s |
+| Run of three shards (21, 21, 20 tests) | about 230 s |
+| Whole target | 262 s |
+
+62 tests listed, 62 ran. The run reported 8 failed `TestRoleHolder_...` tests, all of the "instance not found" kind that the export already showed before this change (see the side finding above); the target exited 1 for them, as it should. The 230 s for 62 tests is far above the 1.6 s per test of an idle machine because the load average was above the core count; the idle-machine figure for the whole package (under 10 minutes with six shards) has not been measured, because the whole package was not run on a loaded machine.
+
 ## Issues filed
 
 Option 1 and option 2 are on the `backlog` backlog of the hub-steward project, tagged `tests` and `bug`, in `to-do`. Option 1 is ISS-102 and option 2 is ISS-103. Option 3 is not filed.
