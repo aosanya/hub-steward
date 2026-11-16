@@ -7,6 +7,8 @@ import * as mcp from "../../../../shared/wakala/mcp";
 import { AllPeopleScreen, CommunicationsScreen, GroupsScreen, HouseholdsScreen, PersonScreen, RegistrationsScreen } from "./PeopleScreens";
 import { items, routes } from "./index";
 
+vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
+
 type Args = Record<string, unknown>;
 
 const people = [
@@ -291,5 +293,15 @@ describe("Households with no household among the groups", () => {
     await waitFor(() => expect(document.querySelector(".card button")).not.toBeNull());
     expect(screen.queryByText("Reading Circle")).toBeNull();
     expect(screen.queryByRole("searchbox")).toBeNull();
+  });
+});
+
+describe.each([...screens.map(({ title, at }) => ({ title, at })), { title: "Person", at: personAt("p1") }])("$title bottom tab bar", ({ at }) => {
+  it("draws the main tab bar like every other section screen", async () => {
+    open(at);
+    await waitFor(() => expect(called).toHaveBeenCalled());
+
+    const bar = screen.getByRole("navigation", { name: "Main" });
+    expect(within(bar).getByRole("link", { name: /Home/ })).toBeInTheDocument();
   });
 });

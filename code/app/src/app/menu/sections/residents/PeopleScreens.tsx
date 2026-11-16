@@ -45,7 +45,7 @@ type ListScreenProps = { title: string; tool: string; fields: { title: string; m
 function ListScreen({ title, tool, fields, empty, load, onChoose }: ListScreenProps) {
   const back = useBackToSection();
   return (
-    <Shell title={title} titleUnder tabless {...back}>
+    <Shell title={title} titleUnder {...back}>
       <MenuList bare title={title} tool={tool} fields={fields} empty={homeEmpty(empty)} load={load} onChoose={onChoose} />
     </Shell>
   );

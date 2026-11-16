@@ -44,7 +44,7 @@ export function PersonScreen() {
   const back = useBackToSection();
   const id = useParams().id ?? "";
   return (
-    <Shell title="Person" titleUnder tabless {...back}>
+    <Shell title="Person" titleUnder {...back}>
       <MenuDetail bare title="Person" tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadPerson} />
       <PersonGroups id={id} />
     </Shell>

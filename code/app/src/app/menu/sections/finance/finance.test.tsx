@@ -6,6 +6,8 @@ import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgen
 import * as mcp from "../../../../shared/wakala/mcp";
 import { PaymentsScreen, ProcurementScreen, RevenueBillingScreen, items, routes } from "./index";
 
+vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
+
 type Args = Record<string, unknown>;
 
 const orders = [
@@ -271,5 +273,15 @@ describe.each(screens)("$title as a screen of the Finance section", ({ title, at
     expect(card.querySelector("p")?.textContent).not.toBe("");
     expect(card.querySelector("svg, img")).toBeNull();
     expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
+  });
+});
+
+describe.each(screens)("$title bottom tab bar", ({ at }) => {
+  it("draws the main tab bar like every other section screen", async () => {
+    open(at);
+    await waitFor(() => expect(called).toHaveBeenCalled());
+
+    const bar = screen.getByRole("navigation", { name: "Main" });
+    expect(within(bar).getByRole("link", { name: /Home/ })).toBeInTheDocument();
   });
 });
