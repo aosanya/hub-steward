@@ -146,6 +146,8 @@ The bundled API registers more tool families than the lab uses. They belong to a
 | AI | An agency's AI accounts, roles and limits |
 | Insights | `insight_create`, `insight_list` |
 | Audit | `audit_list_entries`: what has been done in the agency, newest first; see [Audit log](#audit-log) |
+| Council | `council_*`: meetings, agendas, minutes, resolutions and bylaws, for agencies that run the council module; see [Council records](#council-records) |
+| Finance | `accounting_budget_*`, `accounting_report_*`, `accounting_bill_*`, `accounting_payment_*`, `accounting_tender_*`, `accounting_quote_*`: budget lines, reports, bills, payments and procurement; see [Finance tools](#finance-tools-accounting) |
 
 Whether each tool is open to an agent role is set by the agency's role permissions, not by this page.
 
@@ -168,6 +170,68 @@ Whether each tool is open to an agent role is set by the agency's role permissio
 A failed write records nothing, and no other write records an entry yet. A failure to record is logged and does not undo the write.
 
 - **Commits on dev.** `aef05cf3` (failing test), `18c5002f` (module), `c218fcec` (permission and guard), `be95447a` (the three recorded writes).
+
+## Finance tools (accounting)
+
+Served from `modules/accounting` in `code/wakala-api` (MUN983, hub MUN1045). Every tool takes the agency as `instance_id`; the caller's account id fills `created_by`, `billed_by`, `paid_by` and `quoted_by`, and a request that names one of them is refused. Amounts are whole numbers in the smallest unit. `routes.BuildTools` is the allowlist: the account, entry, contract and variance operations of the module are not served as tools.
+
+| Tool | Action | Arguments besides `instance_id` | Reads / writes | Permission |
+|---|---|---|---|---|
+| `accounting_budget_set` | `accounting.budget.set` | `account_id`, `period_start`, `period_end`, `amount`, optional `name`, `department` | writes one budget line per account and period; setting it again replaces name, department and amount | `accounting.manage` |
+| `accounting_budget_list` | `accounting.budget.list` | optional `account_id`, `department`, `limit` | reads lines with `planned` and `spent` (the account's balance over the period, debits minus credits) | `accounting.manage`, `accounting.view` |
+| `accounting_budget_read` | `accounting.budget.read` | `budgetID` | reads one line | `accounting.manage`, `accounting.view` |
+| `accounting_report_list` | `accounting.report.list` | optional `limit` | reads one report per period that has budget lines, oldest first | `accounting.manage`, `accounting.view` |
+| `accounting_report_read` | `accounting.report.read` | `period_start`, `period_end`, exactly as the budget lines were set | reads one report: `name`, `figures` (planned, spent, difference, per department, closing balance per account type) and `lines`; folded on every call | `accounting.manage`, `accounting.view` |
+| `accounting_bill_create` | `accounting.bill.create` | `income_account_id`, `receivable_account_id`, `amount`, `due_at`, optional `payer`, `narration` | writes one entry: debit the receivable, credit the income account, `due_at` set, `document_kind` `bill` | `accounting.manage` |
+| `accounting_bill_list` | `accounting.bill.list` | optional `income_account_id`, `status`, `payer`, `as_of`, `limit` | reads bills by due date with `settled`, `outstanding`, `status` (`open`, `overdue`, `settled`, `reversed`) and `days_overdue` | `accounting.manage`, `accounting.view` |
+| `accounting_bill_read` | `accounting.bill.read` | `billID` | reads one bill | `accounting.manage`, `accounting.view` |
+| `accounting_payment_mark_paid` | `accounting.payment.mark_paid` | `billID`, `cash_account_id`, optional `amount`, `paid_on`, `narration` | writes one entry: debit the cash account, credit the bill's receivable, `settles_entry_id` set to the bill; no `amount` pays what is outstanding, a smaller one is a part payment | `accounting.manage` |
+| `accounting_payment_list` | `accounting.payment.list` | optional `kind` (`bill` or `certificate`), `bill_id`, `payer`, `limit` | reads payments oldest first: bill payments and milestone payment certificates; a reversed payment is left out | `accounting.manage`, `accounting.view` |
+| `accounting_tender_create` | `accounting.tender.create` | `budget_id`, `title`, optional `description`, `closes_at` | writes one tender on an existing budget line | `accounting.manage` |
+| `accounting_tender_list` | `accounting.tender.list` | optional `budget_id`, `limit` | reads tenders oldest first, each with `quote_count` and `lowest_amount` | `accounting.manage`, `accounting.view` |
+| `accounting_tender_read` | `accounting.tender.read` | `tenderID` | reads one tender with `quote_count` and `lowest_amount` | `accounting.manage`, `accounting.view` |
+| `accounting_quote_create` | `accounting.quote.create` | `tenderID`, `supplier`, `amount`, optional `note`, `valid_until` | writes one quote; append-only, a changed price is a new quote | `accounting.manage` |
+| `accounting_quote_list` | `accounting.quote.list` | `tenderID`, optional `limit` | reads the tender's quotes, lowest price first | `accounting.manage`, `accounting.view` |
+
+- **Permissions.** `accounting.manage`, "Keep the books and set budgets", carries every action above and the account and entry actions; `accounting.view`, "Read accounts, budgets and reports", carries the list and read actions only (`modules/agency/models/permissions_catalog.json`, MUN1052). `guardToolPermissions` in `internal/api/http/mcp_sources_permissions.go` applies the actions to an agent caller: an agent whose agency roles hold neither permission is refused as for any agency tool. A caller who is not an agent is not held to the catalog by that guard.
+- **Nothing derived is stored.** `spent`, a report's figures, a bill's `settled`, `outstanding` and `status`, the payment list and a tender's `lowest_amount` are folded on every call from entries and quotes.
+- **Refusals.** An unknown budget line, bill, tender or cash account answers not found. A missing required argument, a non-positive amount, a malformed instant, a cash or receivable account of the wrong type, and paying a settled or reversed bill or more than is outstanding answer invalid.
+- **Storage.** Budget lines, bills and payments live in the ledger's budget lines and entries; tenders and quotes are the blueprint objects `tender` and `quote`, whose tables `Provision` creates.
+- **Not built.** Awarding a tender to a quote, and tying an award to a contract and its milestones.
+- **Commits on dev.** `2910c9a7` (budget), `3819e72d` (reports), `45b1971b` (bills, with the store and test files of the procurement work), `4eabbfd4` (procurement), `56030154` (payments), `6942f8f9` (the two permissions). Evidence: `projects/hungarian-municipality/documentation/3. implementation/todo/MUN983-finance-records/README.md`.
+
+## Council records
+
+Thirteen tools keep what a council does: its meetings, each meeting's agenda and minutes, the resolutions it takes and its bylaws. They exist for an agency that runs the `council` module (a mountable entry in `modules/agency/models/modules_catalog.json`). Every tool takes the agency as `instance_id`, and every read, list and write is narrowed to that agency.
+
+| Tool | Method and path | Arguments | Permission |
+|---|---|---|---|
+| `council_meeting_create` | `POST /council/meetings` | `name`, `date` (`YYYY-MM-DD`), optional `place` and `committee` | `council.manage` |
+| `council_meeting_list` | `GET /council/meetings` | optional `committee`; earliest day first | `council.view` |
+| `council_meeting_read` | `GET /council/meetings/{meetingID}` | `meetingID` | `council.view` |
+| `council_agenda_set` | `PUT /council/meetings/{meetingID}/agenda` | `meetingID`, `items` (non-blank lines, in order); setting again replaces the items | `council.manage` |
+| `council_agenda_read` | `GET /council/meetings/{meetingID}/agenda` | `meetingID` | `council.view` |
+| `council_minutes_set` | `PUT /council/meetings/{meetingID}/minutes` | `meetingID`, `text`; setting again replaces the text | `council.manage` |
+| `council_minutes_read` | `GET /council/meetings/{meetingID}/minutes` | `meetingID` | `council.view` |
+| `council_resolution_create` | `POST /council/resolutions` | `title`, `date` (`YYYY-MM-DD`), `outcome` (`adopted`, `rejected` or `deferred`), optional `meeting_id` of a meeting of the same agency | `council.manage` |
+| `council_resolution_list` | `GET /council/resolutions` | optional `meeting_id` and `outcome`; earliest day first | `council.view` |
+| `council_resolution_read` | `GET /council/resolutions/{resolutionID}` | `resolutionID` | `council.view` |
+| `council_bylaw_create` | `POST /council/bylaws` | `title`, `year` (four digits), optional `text` | `council.manage` |
+| `council_bylaw_list` | `GET /council/bylaws` | optional `year`; earliest year first, then title | `council.view` |
+| `council_bylaw_read` | `GET /council/bylaws/{bylawID}` | `bylawID` | `council.view` |
+
+- **Module.** `modules/council` in `code/wakala-api`: the objects `meeting`, `agenda`, `minutes`, `resolution` and `bylaw`, declared in `council.blueprint.json`, `council.wakala.json` and `council.operations.json`. A meeting has one agenda and one set of minutes (unique on agency and meeting).
+- **Permissions.** `council.manage` ("Put council meetings on record and read them") carries all thirteen actions, `council.<object>.<verb>`, one for each tool; `council.view` ("Read council meetings") carries the eight list and read actions. Both are in `modules/agency/models/permissions_catalog.json`.
+- **Guard.** `internal/api/http/mcp_tools_council.go` runs before any `council_*` call and refuses it when:
+  - the call names no agency (`instance_id`);
+  - the caller is not a member of the agency (the refusal is the same not-found as for an unknown agency, so the agency is not confirmed);
+  - the agency does not run the council module, even for its owner;
+  - the caller is not the owner and holds no role with the call's action. The refusal names the missing permission: `council.view` for a list or read tool, `council.manage` for a create or set tool.
+
+  The owner passes once the agency runs the module. A server started without a council manager refuses every call.
+- **Tool list.** The council tools are shown only to an agency that runs the module (the tool prefix `council` is the module code). The thirteen names are pinned in `testdata/mcp_roster/no-mounts.txt`, and the permission-coverage checks see each tool through `mcp_tool_actions.go`.
+- **Errors.** A blank or malformed value, a blank agenda item, or a year, date or outcome out of shape is refused as invalid (400); an unknown id, a meeting or resolution of another agency, or a read of an agenda or minutes never set is refused as not found (404).
+- **Commits on dev.** `b7113c46` (meetings, the permissions and the catalog entry), `5d811795` (agenda and minutes), `61489b52` (resolutions), `521236ea` (bylaws), `6076e6b7` (served on the hub, with the guard). Evidence: `projects/hungarian-municipality/documentation/3. implementation/todo/MUN982-council-records/README.md`.
 
 ## Issues and votes (stretch)
 
