@@ -1,17 +1,17 @@
-import { useState, type ComponentProps } from "react";
+import { useState, type ComponentProps, type ReactNode } from "react";
 import { Shell } from "../Shell";
 import { MenuDetail } from "./MenuDetail";
 import { MenuList } from "./MenuList";
 import { useBackToSection } from "./useBackToSection";
 import "./menuWindow.css";
 
-type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "fields" | "empty">;
+type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "fields" | "empty" | "load" | "end" | "loadingWords" | "failedWords" | "groups">;
 
-type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action">;
+type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode };
 
-export function MenuWindow({ title, list, detail }: Props) {
+export function MenuWindow({ title, list, detail, above, below }: Props) {
   const back = useBackToSection();
   const [chosen, setChosen] = useState("");
   const onBack = chosen ? () => setChosen("") : back.onBack;
@@ -20,7 +20,9 @@ export function MenuWindow({ title, list, detail }: Props) {
     <Shell title={title} titleUnder onBack={onBack} backLabel={backLabel}>
       <div className="mw" data-chosen={chosen ? "yes" : "no"}>
         <section className="mw-list" aria-label={list.title}>
+          {above}
           <MenuList {...list} bare selectedId={chosen} onChoose={setChosen} />
+          {below}
         </section>
         {chosen ? (
           <section className="mw-detail" aria-label={title}>

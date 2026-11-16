@@ -14,11 +14,11 @@ export const loadFailedWords = "This could not be loaded.";
 
 export const actionFailedWords = "That did not go through.";
 
-type Action = { label: string; tool: string };
-
-type Props = { title: string; tool: string; fields: Record<string, string>; status: string; action?: Action; id?: string; bare?: boolean };
-
 type Item = Record<string, unknown>;
+
+type Action = { label: string; tool: string; run?: (item: Item) => void; when?: (item: Item) => boolean };
+
+type Props = { title: string; tool: string; fields: Record<string, string>; status: string; action?: Action; id?: string; bare?: boolean; load?: (id: string) => Promise<Item> };
 
 const textOf = (item: Item, key: string) => {
   const value = item[key];
@@ -30,17 +30,21 @@ const itemOf = (reply: unknown): Item => {
   return inner && typeof inner === "object" ? (inner as Item) : {};
 };
 
-export function MenuDetail({ title, tool, fields, status, action, id: chosen, bare }: Props) {
+export function MenuDetail({ title, tool, fields, status, action, id: chosen, bare, load }: Props) {
   const back = useBackToSection();
   const params = useParams();
   const id = chosen ?? params.id;
   const [acting, setActing] = useState<"idle" | "busy" | "failed">("idle");
-  const view = useLoad(async () => itemOf(await callTool("", tool, id ? { id } : {})), `menu-detail:${openAgencyId()}:${tool}:${id ?? ""}`);
+  const view = useLoad(load ? () => load(id ?? "") : async () => itemOf(await callTool("", tool, id ? { id } : {})), `menu-detail:${openAgencyId()}:${tool}:${id ?? ""}`);
   const item = view.state === "ready" ? view.data : {};
   const shown = Object.entries(fields).filter(([, key]) => textOf(item, key) !== "");
   const state = textOf(item, status);
   const act = async () => {
     if (!action) return;
+    if (action.run) {
+      action.run(item);
+      return;
+    }
     setActing("busy");
     try {
       await callTool("", action.tool, { id: textOf(item, "id") || id });
@@ -61,7 +65,7 @@ export function MenuDetail({ title, tool, fields, status, action, id: chosen, ba
               <ListRow key={label} title={label} meta={textOf(item, key)} />
             ))}
           </Rows>
-          {action ? (
+          {action && (action.when?.(item) ?? true) ? (
             <Button kind="primary" disabled={acting === "busy"} onClick={act}>{action.label}</Button>
           ) : null}
           {acting === "failed" ? <LoadFailed words={actionFailedWords} /> : null}
