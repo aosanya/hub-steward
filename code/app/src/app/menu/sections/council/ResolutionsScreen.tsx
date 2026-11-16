@@ -1,6 +1,7 @@
 import { callTool } from "../../../../shared/wakala/mcp";
+import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
-import { councilTools, homeEmpty, listOf, readMeetingArgs, readResolutionArgs, text, type Item } from "./councilData";
+import { councilTools, homeEmpty, listOf, noneYet, readMeetingArgs, readResolutionArgs, text, type Item } from "./councilData";
 
 export const resolutionsTitle = "Resolutions";
 
@@ -34,10 +35,12 @@ const loadResolution = async (id: string) => {
 };
 
 export function ResolutionsScreen() {
+  const word = useWord("council");
+  const title = word(resolutionsTitle);
   return (
     <MenuWindow
-      title={resolutionsTitle}
-      list={{ title: resolutionsTitle, tool: councilTools.resolutionList, load: loadResolutions, fields: { title: "title", meta: "meta" }, empty: homeEmpty("No resolutions yet.") }}
+      title={title}
+      list={{ title, tool: councilTools.resolutionList, load: loadResolutions, fields: { title: "title", meta: "meta" }, empty: homeEmpty(noneYet(word, resolutionsTitle, "No resolutions yet.")) }}
       detail={{ tool: councilTools.resolutionRead, load: loadResolution, fields: { Title: "title", Date: "date", Outcome: "outcome", Meeting: "meeting" }, status: "status" }}
     />
   );

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
@@ -9,7 +10,7 @@ import { Shell } from "../../../Shell";
 import { MenuList } from "../../MenuList";
 import { useBackToSection } from "../../useBackToSection";
 import "../../menuWindow.css";
-import { councilTools, homeEmpty, listOf, readMeetingArgs, text, type Agenda, type Item, type Minutes } from "./councilData";
+import { councilTools, homeEmpty, listOf, noneYet, readMeetingArgs, text, type Agenda, type Item, type Minutes } from "./councilData";
 
 export const agendaMinutesTitle = "Agendas & Minutes";
 
@@ -30,14 +31,15 @@ const loadPapers = async (id: string) => {
 const loadMeetings = () => listOf(councilTools.meetingList);
 
 function Papers({ id }: { id: string }) {
+  const word = useWord("council");
   const view = useLoad(() => loadPapers(id), `agenda-minutes:${openAgencyId()}:${id}`);
   if (view.state !== "ready") return <LoadingLine />;
   const { items, minutes } = view.data;
   return (
     <>
-      <SectionHeading>Agenda</SectionHeading>
+      <SectionHeading>{word("Agenda")}</SectionHeading>
       {items.length === 0 ? (
-        <EmptyCard words="No agenda yet." />
+        <EmptyCard words={noneYet(word, "Agenda", "No agenda yet.")} />
       ) : (
         <Rows>
           {items.map((entry, at) => (
@@ -45,9 +47,9 @@ function Papers({ id }: { id: string }) {
           ))}
         </Rows>
       )}
-      <SectionHeading>Minutes</SectionHeading>
+      <SectionHeading>{word("Minutes")}</SectionHeading>
       {minutes === "" ? (
-        <EmptyCard words="No minutes yet." />
+        <EmptyCard words={noneYet(word, "Minutes", "No minutes yet.")} />
       ) : (
         <Rows>
           <ListRow title={minutes} />
@@ -59,24 +61,26 @@ function Papers({ id }: { id: string }) {
 
 export function AgendaMinutesScreen() {
   const back = useBackToSection();
+  const word = useWord("council");
+  const title = word(agendaMinutesTitle);
   const [chosen, setChosen] = useState("");
   return (
-    <Shell title={agendaMinutesTitle} titleUnder onBack={chosen ? () => setChosen("") : back.onBack} backLabel={chosen ? agendaMinutesTitle : back.backLabel}>
+    <Shell title={title} titleUnder onBack={chosen ? () => setChosen("") : back.onBack} backLabel={chosen ? title : back.backLabel}>
       <div className="mw" data-chosen={chosen ? "yes" : "no"}>
-        <section className="mw-list" aria-label={agendaMinutesTitle}>
+        <section className="mw-list" aria-label={title}>
           <MenuList
             bare
-            title={agendaMinutesTitle}
+            title={title}
             tool={councilTools.meetingList}
             load={loadMeetings}
             fields={{ title: "name", meta: "date" }}
-            empty={homeEmpty("No meetings yet.")}
+            empty={homeEmpty(noneYet(word, "Meetings", "No meetings yet."))}
             selectedId={chosen}
             onChoose={setChosen}
           />
         </section>
         {chosen ? (
-          <section className="mw-detail" aria-label={agendaMinutesTitle}>
+          <section className="mw-detail" aria-label={title}>
             <Papers id={chosen} />
           </section>
         ) : null}

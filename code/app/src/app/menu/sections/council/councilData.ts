@@ -51,4 +51,7 @@ export const text = (item: Item | null | undefined, key: string) => {
 
 export const listOf = async (tool: string, args?: Record<string, unknown>) => itemsOf(await callTool("", tool, args)) as Item[];
 
+export const noneYet = (word: (generic: string) => string, generic: string, today: string) =>
+  word(generic) === generic ? today : `No ${word(generic).toLowerCase()} yet.`;
+
 export const homeEmpty = (words: string) => ({ words, act: "Home", to: agencyHomePath(openAgencyId()) });

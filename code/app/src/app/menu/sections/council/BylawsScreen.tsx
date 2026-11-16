@@ -1,6 +1,7 @@
 import { callTool } from "../../../../shared/wakala/mcp";
+import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
-import { councilTools, homeEmpty, listOf, readBylawArgs, text, type Bylaw, type Item } from "./councilData";
+import { councilTools, homeEmpty, listOf, noneYet, readBylawArgs, text, type Bylaw, type Item } from "./councilData";
 
 export const bylawsTitle = "Rules";
 
@@ -14,10 +15,12 @@ const loadBylaw = async (id: string): Promise<Item> => {
 };
 
 export function BylawsScreen() {
+  const word = useWord("council");
+  const title = word(bylawsTitle);
   return (
     <MenuWindow
-      title={bylawsTitle}
-      list={{ title: bylawsTitle, tool: councilTools.bylawList, load: loadBylaws, fields: { title: "title", meta: "year" }, empty: homeEmpty("No bylaws yet.") }}
+      title={title}
+      list={{ title, tool: councilTools.bylawList, load: loadBylaws, fields: { title: "title", meta: "year" }, empty: homeEmpty(noneYet(word, bylawsTitle, "No bylaws yet.")) }}
       detail={{ tool: councilTools.bylawRead, load: loadBylaw, fields: { Title: "title", Year: "year", Text: "text" }, status: "status" }}
     />
   );
