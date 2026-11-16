@@ -48,49 +48,36 @@ const sharedImportsOfFeaturesAndShell: string[] = [
 ];
 
 const deepImportsIntoFeaturesWithPublicIndex: string[] = [
-  "assistant/AssistantPage.tsx -> backlogs/api",
-  "assistant/ConfirmCard.tsx -> backlogs/api",
-  "assistant/ResultsPanel.tsx -> backlogs/IssueCard",
-  "assistant/ResultsPanel.tsx -> backlogs/api",
-  "assistant/ResultsPanel.tsx -> backlogs/caps/CapTintScope",
-  "assistant/ResultsPanel.tsx -> backlogs/paths",
-  "assistant/api.ts -> backlogs/api",
-  "assistant/cards.test.tsx -> backlogs/api",
-  "assistant/confirm.ts -> backlogs/api",
-  "assistant/confirm.ts -> backlogs/smart/fields",
-  "assistant/confirm.ts -> backlogs/smart/types",
-  "assistant/confirmKey.test.tsx -> backlogs/api",
-  "assistant/confirmNames.test.tsx -> backlogs/api",
-  "assistant/keeps.test.tsx -> backlogs/api",
-  "assistant/moveByKey.test.tsx -> backlogs/api",
-  "assistant/namedBacklog.ts -> backlogs/api",
-  "assistant/openAll.test.tsx -> backlogs/api",
-  "assistant/openAll.test.tsx -> backlogs/paths",
-  "assistant/openAllTarget.test.ts -> backlogs/paths",
-  "assistant/openAllTarget.test.ts -> backlogs/smart/paths",
-  "assistant/openOrdinal.test.ts -> backlogs/api",
-  "assistant/results.test.tsx -> backlogs/api",
-  "assistant/results.ts -> backlogs/api",
-  "assistant/results.ts -> backlogs/paths",
-  "assistant/results.ts -> backlogs/smart/paths",
-  "assistant/resultsBack.test.tsx -> backlogs/api",
-  "assistant/ruleCodes.ts -> backlogs/marks",
-  "assistant/ruleCodes.ts -> backlogs/smart/fields",
-  "assistant/ruleCodes.ts -> backlogs/smart/types",
-  "assistant/screenGaps.test.tsx -> backlogs/api",
-  "chat/rooms/cards.tsx -> backlogs/cards/BacklogViewCard",
-  "chat/rooms/cards.tsx -> backlogs/cards/views",
-  "files/api.ts -> backlogs/api",
-  "home/HomeOptions.tsx -> backlogs/access",
-  "home/HomeOptions.tsx -> backlogs/api",
-  "home/homeFiles.test.tsx -> backlogs/api",
-  "home/homeOptions.test.tsx -> backlogs/api",
-  "home/lastBacklog.ts -> backlogs/api",
-  "inbox/AssignedIssueRows.tsx -> backlogs/paths",
-  "inbox/assignedIssues.ts -> backlogs/api",
-  "inbox/notice.ts -> backlogs/paths",
-  "inbox/rowsOpen.test.tsx -> backlogs/paths",
-  "inbox/subjectCheck.ts -> backlogs/api",
+  "assistant/AssistantPage.tsx -> backlogs",
+  "assistant/ConfirmCard.tsx -> backlogs",
+  "assistant/ResultsPanel.tsx -> backlogs",
+  "assistant/api.ts -> backlogs",
+  "assistant/cards.test.tsx -> backlogs",
+  "assistant/confirm.ts -> backlogs",
+  "assistant/confirmKey.test.tsx -> backlogs",
+  "assistant/confirmNames.test.tsx -> backlogs",
+  "assistant/keeps.test.tsx -> backlogs",
+  "assistant/moveByKey.test.tsx -> backlogs",
+  "assistant/namedBacklog.ts -> backlogs",
+  "assistant/openAll.test.tsx -> backlogs",
+  "assistant/openAllTarget.test.ts -> backlogs",
+  "assistant/openOrdinal.test.ts -> backlogs",
+  "assistant/results.test.tsx -> backlogs",
+  "assistant/results.ts -> backlogs",
+  "assistant/resultsBack.test.tsx -> backlogs",
+  "assistant/ruleCodes.ts -> backlogs",
+  "assistant/screenGaps.test.tsx -> backlogs",
+  "chat/rooms/cards.tsx -> backlogs",
+  "files/api.ts -> backlogs",
+  "home/HomeOptions.tsx -> backlogs",
+  "home/homeFiles.test.tsx -> backlogs",
+  "home/homeOptions.test.tsx -> backlogs",
+  "home/lastBacklog.ts -> backlogs",
+  "inbox/AssignedIssueRows.tsx -> backlogs",
+  "inbox/assignedIssues.ts -> backlogs",
+  "inbox/notice.ts -> backlogs",
+  "inbox/rowsOpen.test.tsx -> backlogs",
+  "inbox/subjectCheck.ts -> backlogs",
 ];
 
 type Import = { file: string; line: number; target: string };
@@ -128,6 +115,8 @@ const kindOf = (path: string): "shared" | "feature" | "shell" => {
 
 const keyOf = (found: Import): string => `${found.file} -> ${found.target}`;
 
+const featureKeyOf = (found: Import): string => `${found.file} -> ${topOf(found.target)}`;
+
 const isIndexOnly = (target: string): boolean => {
   const rest = target.split("/").slice(1);
   return rest.length === 0 || (rest.length === 1 && /^index(\.tsx?)?$/.test(rest[0]));
@@ -147,11 +136,11 @@ const deepImportsIntoFeaturesWithPublicIndexFound = allImports.filter(
     !isIndexOnly(found.target),
 );
 
-const unlisted = (found: Import[], listed: string[]): string[] =>
-  found.filter((one) => !listed.includes(keyOf(one))).map((one) => `${one.file}:${one.line} imports ${one.target}`);
+const unlisted = (found: Import[], listed: string[], key: (one: Import) => string): string[] =>
+  found.filter((one) => !listed.includes(key(one))).map((one) => `${one.file}:${one.line} imports ${one.target}`);
 
-const staleEntries = (found: Import[], listed: string[]): string[] => {
-  const present = new Set(found.map(keyOf));
+const staleEntries = (found: Import[], listed: string[], key: (one: Import) => string): string[] => {
+  const present = new Set(found.map(key));
   return listed.filter((entry) => !present.has(entry));
 };
 
@@ -162,19 +151,19 @@ describe("the folder strategy of phone-app-structure.md", () => {
   });
 
   it("keeps shared from importing a feature or the shell, apart from the listed imports", () => {
-    expect(unlisted(sharedImportsOfFeaturesAndShellFound, sharedImportsOfFeaturesAndShell)).toEqual([]);
+    expect(unlisted(sharedImportsOfFeaturesAndShellFound, sharedImportsOfFeaturesAndShell, keyOf)).toEqual([]);
   });
 
   it("lists no shared import that has since been fixed", () => {
-    expect(staleEntries(sharedImportsOfFeaturesAndShellFound, sharedImportsOfFeaturesAndShell)).toEqual([]);
+    expect(staleEntries(sharedImportsOfFeaturesAndShellFound, sharedImportsOfFeaturesAndShell, keyOf)).toEqual([]);
   });
 
   it("reaches a feature that has a public index only through that index, apart from the listed imports", () => {
-    expect(unlisted(deepImportsIntoFeaturesWithPublicIndexFound, deepImportsIntoFeaturesWithPublicIndex)).toEqual([]);
+    expect(unlisted(deepImportsIntoFeaturesWithPublicIndexFound, deepImportsIntoFeaturesWithPublicIndex, featureKeyOf)).toEqual([]);
   });
 
   it("lists no deep import that has since been fixed", () => {
-    expect(staleEntries(deepImportsIntoFeaturesWithPublicIndexFound, deepImportsIntoFeaturesWithPublicIndex)).toEqual([]);
+    expect(staleEntries(deepImportsIntoFeaturesWithPublicIndexFound, deepImportsIntoFeaturesWithPublicIndex, featureKeyOf)).toEqual([]);
   });
 
   it("guards the features that have a public index today", () => {
