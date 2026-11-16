@@ -261,3 +261,54 @@ func TestAnApproveStepSentByAMemberWithNoDisplayNameIsRefused(t *testing.T) {
 		t.Errorf("the refused approval still saved %v", got)
 	}
 }
+
+const (
+	registerLimitsTitle  = "The mayor approves the register and the limits"
+	registerLimitsPrompt = "The Mayor / council chair approves the register of declarations and the limits recorded for the roles."
+)
+
+func registerLimitsPlan(questions []agencymodels.StepQuestion) []stepSpec {
+	return []stepSpec{
+		{title: registerLimitsTitle, prompt: registerLimitsPrompt, form: "Register approval", role: "Mayor", questions: questions},
+	}
+}
+
+func limitCheckedQuestions() []agencymodels.StepQuestion {
+	return []agencymodels.StepQuestion{
+		{Prompt: "Limit", AnswerType: agencymodels.AnswerCurrency, Required: true, ChecksApprovalLimit: true},
+	}
+}
+
+func TestAStepWithAnApprovalLimitQuestionIsMarkedApprovalWhateverItsWording(t *testing.T) {
+	w := newStepRunWalk(t, registerLimitsPlan(limitCheckedQuestions()), "Mayor")
+	item := w.available(t, w.people["Mayor"])[0]
+	if item["approval"] != true {
+		t.Errorf("the register and limits step = %v, want approval true", item)
+	}
+}
+
+func TestSendingAStepWithAnApprovalLimitQuestionStoresWhoApprovedAndWhen(t *testing.T) {
+	w := newStepRunWalk(t, registerLimitsPlan(limitCheckedQuestions()), "Mayor")
+	sent := w.submit(t, w.people["Mayor"], registerLimitsTitle, map[string]string{"Limit": "500000"}, "")
+	if sent.Code != http.StatusCreated {
+		t.Fatalf("the mayor's submit: %d %s", sent.Code, sent.Body.String())
+	}
+	got := w.sentSteps(t, w.people["Mayor"], "")
+	if len(got) != 1 {
+		t.Fatalf("the mayor sees %d sent steps, want 1: %v", len(got), got)
+	}
+	answers := answersOfSent(t, got[0])
+	if answers[approvedByPrompt] != "Mayor" {
+		t.Errorf("%s = %v, want the mayor's display name", approvedByPrompt, answers[approvedByPrompt])
+	}
+	stamp, _ := answers[approvedAtPrompt].(string)
+	requireRecentUTC(t, stamp)
+}
+
+func TestAStepWithTheSameWordingButNoApprovalLimitQuestionOmitsTheApprovalField(t *testing.T) {
+	w := newStepRunWalk(t, registerLimitsPlan(decisionQuestions()), "Mayor")
+	item := w.available(t, w.people["Mayor"])[0]
+	if _, has := item["approval"]; has {
+		t.Errorf("a step with no limit question carries approval: %v", item["approval"])
+	}
+}
