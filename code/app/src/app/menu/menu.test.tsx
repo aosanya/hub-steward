@@ -69,6 +69,12 @@ describe("the menu rows on Home", () => {
     expect(titles).not.toContain("Dashboard");
   });
 
+  it("draws nothing for a role whose mount list holds only the agency and riskmanager modules", async () => {
+    home(view(["agency", "riskmanager"]));
+
+    await waitFor(() => expect(screen.queryByRole("button")).toBeNull());
+  });
+
   it("opens the section's own screen", async () => {
     home(view(["actor"]));
 
