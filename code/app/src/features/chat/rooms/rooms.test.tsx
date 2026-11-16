@@ -464,3 +464,59 @@ describe("a room that cannot load", () => {
     expect(screen.queryByRole("alert")).toBeNull();
   });
 });
+
+const setWidth = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+describe.each([
+  { width: "phone", wide: false },
+  { width: "wide", wide: true },
+])("the threads list at $width width", ({ wide }) => {
+  const lab = { room: "Siaya Community Computer Lab" };
+
+  beforeEach(() => setWidth(wide));
+
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("lists the thread rows with their previews, framed only when wide", async () => {
+    const threads = [thread({ preview: "Seed prices are up" }), thread({ id: "t2", label: "Printing", audience: "leads", requestedBy: "u1" })];
+    show(fake({ ...lab, threads }), "/a/farmers/chat/r1/threads");
+    expect(await screen.findByText("Seed prices are up")).toBeInTheDocument();
+    expect(screen.getByText("Your request · with the leaders")).toBeInTheDocument();
+    expect(document.querySelector(".wf .wf-tree") !== null).toBe(wide);
+  });
+
+  it("opens a thread from its row", async () => {
+    const client = fake({ ...lab, threads: [thread({}), thread({ id: "t2", label: "Printing" })] });
+    show(client, "/a/farmers/chat/r1/threads");
+    await userEvent.click(await screen.findByRole("button", { name: /Printing/ }));
+    await waitFor(() => expect(client.listMessages).toHaveBeenCalledWith("r1", "t2"));
+  });
+
+  it("starts a thread from the list", async () => {
+    const client = fake({ ...lab, threads: [thread({})] });
+    show(client, "/a/farmers/chat/r1/threads");
+    await userEvent.click(await screen.findByRole("button", { name: "Start a thread" }));
+    await userEvent.type(screen.getByLabelText("What is the thread about?"), "Printing");
+    await userEvent.click(screen.getByRole("button", { name: "Start" }));
+    expect(client.startThread).toHaveBeenCalledWith("r1", "Printing");
+    await waitFor(() => expect(client.listMessages).toHaveBeenCalledWith("r1", "t9"));
+  });
+
+  it("starts a thread from the empty card", async () => {
+    const client = fake({ ...lab, threads: [] });
+    show(client, "/a/farmers/chat/r1/threads");
+    await screen.findByText("No messages yet.");
+    await userEvent.click(screen.getByRole("button", { name: "Start a thread" }));
+    await userEvent.type(screen.getByLabelText("What is the thread about?"), "Printing");
+    await userEvent.click(screen.getByRole("button", { name: "Start" }));
+    expect(client.startThread).toHaveBeenCalledWith("r1", "Printing");
+    await waitFor(() => expect(client.listMessages).toHaveBeenCalledWith("r1", "t9"));
+  });
+});

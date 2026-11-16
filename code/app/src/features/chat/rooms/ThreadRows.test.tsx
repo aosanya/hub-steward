@@ -66,4 +66,21 @@ describe("thread rows", () => {
     await userEvent.click(screen.getByRole("button", { name: /Plain/ }));
     expect(onOpen).toHaveBeenCalledWith("t9");
   });
+
+  it("lists several rows in the order given and opens the one pressed", async () => {
+    const onOpen = vi.fn();
+    render(
+      <ThreadRows
+        subject="grace"
+        threads={[thread({ id: "a", label: "First" }), thread({ id: "b", label: "Second", preview: "Latest word" })]}
+        onOpen={onOpen}
+      />,
+    );
+    const rows = screen.getAllByRole("button");
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toHaveTextContent("First");
+    expect(rows[1]).toHaveTextContent("Latest word");
+    await userEvent.click(rows[1]);
+    expect(onOpen).toHaveBeenCalledWith("b");
+  });
 });
