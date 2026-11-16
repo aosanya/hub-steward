@@ -2,9 +2,9 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { dateTimeWords } from "../../shared/ui/days";
-import { taskTools } from "../../backlogs/api";
-import { capsTools } from "../../backlogs/caps/api";
-import { referenceTools } from "../../backlogs/references/api";
+import { taskTools } from "../api";
+import { capsTools } from "../caps/api";
+import { referenceTools } from "../references/api";
 import { beforeEachJourney, endInAgencies, importIssue, inFarmers } from "./backlogs.test-support";
 
 beforeEach(beforeEachJourney);

@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { openAgency } from "../../agency/open";
-import { BacklogSummariesProvider } from "../../chat/backlogCards/summaries";
+import { BacklogSummariesProvider } from "../cards/summaries";
 import type { RoomMessage, RoomsClient } from "../../chat/rooms/api";
 import { Attachment } from "../../chat/rooms/cards";
 import { beforeEachJourney, endInAgencies, farmers, inFarmers, where } from "./backlogs.test-support";

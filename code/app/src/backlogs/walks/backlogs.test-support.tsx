@@ -1,7 +1,7 @@
-import { taskTools } from "../../backlogs/api";
-import { farmers, openApp, startInAgencies, stubWakala } from "../inAgency.test-support";
+import { taskTools } from "../api";
+import { farmers, openApp, startInAgencies, stubWakala } from "../../journeys/inAgency.test-support";
 
-export { endInAgencies, farmers, openApp, startInAgencies, where } from "../inAgency.test-support";
+export { endInAgencies, farmers, openApp, startInAgencies, where } from "../../journeys/inAgency.test-support";
 
 type Raw = Record<string, unknown>;
 

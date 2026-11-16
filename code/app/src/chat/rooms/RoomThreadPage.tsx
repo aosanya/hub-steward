@@ -7,7 +7,7 @@ import { Chip } from "../../shared/ui/Chip";
 import { LoadFailed } from "../../shared/ui/LoadState";
 import { Shell } from "../../shared/ui/Shell";
 import { generalOf, mcpRoomsClient, type RoomMessage, type RoomsClient } from "./api";
-import { BacklogSummariesLoader } from "../backlogCards/SummariesLoader";
+import { BacklogSummariesLoader } from "../../backlogs";
 import { askPath } from "./cards";
 import { Composer } from "./Composer";
 import { StartThread } from "./StartThread";

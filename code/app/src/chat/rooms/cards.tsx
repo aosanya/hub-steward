@@ -4,8 +4,8 @@ import { routes } from "../../routes";
 import { bags, termsWords } from "../../market/supply/groupOrder/api";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
-import { BacklogViewCard } from "../backlogCards/BacklogViewCard";
-import { backlogViewKind } from "../backlogCards/views";
+import { BacklogViewCard } from "../../backlogs/cards/BacklogViewCard";
+import { backlogViewKind } from "../../backlogs/cards/views";
 import { attachmentKinds, type RoomAsk, type RoomMessage, type RoomOrder, type RoomsClient } from "./api";
 
 const titleOf = (productWords: string) => (productWords === "" ? "Group order" : `${productWords} group order`);

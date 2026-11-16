@@ -1,9 +1,9 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { accessTools } from "../../backlogs/access/api";
-import { noRoleWords, nothingSharedWords } from "../../backlogs/access";
-import { backlogTools } from "../../backlogs/manage/api";
-import { taskTools } from "../../backlogs/api";
+import { accessTools } from "../access/api";
+import { noRoleWords, nothingSharedWords } from "../access";
+import { backlogTools } from "../manage/api";
+import { taskTools } from "../api";
 import { beforeEachJourney, endInAgencies, hubBacklogsFor, inFarmers, issues } from "./backlogs.test-support";
 
 beforeEach(beforeEachJourney);
