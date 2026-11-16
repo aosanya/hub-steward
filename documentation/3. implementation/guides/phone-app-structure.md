@@ -79,7 +79,7 @@ Status is read from `code/app/src` on disk when this page was last written, and 
 | `pages/started`, `pages/entry`, `pages/join` | `started/`, `entry/`, `groups/` | done | SW477 |
 | `pages/HomePage`, `pages/NotificationsPage`, `pages/TabPage` | `home/`, `inbox/`, `shared/ui/` (`pages/` is gone) | done | SW480 |
 | `ui`, `wakala`, `storage` | `shared/ui`, `shared/wakala`, `shared/storage` | done | SW486 |
-| each feature's routes in the root `routes.ts` and `App.tsx` | a `routes.tsx` in each feature | in progress | SW483 |
+| each feature's routes in the root `routes.ts` and `App.tsx` | a `routes.tsx` in each feature | done | SW483 |
 | other features' deep imports into `market/` | through `market/index.ts` | done, with the listed exceptions | SW471 |
 | other features' deep imports into `backlogs/` | through `backlogs/index.ts` | done, two exceptions | SW456 |
 | `shared/` imports of features | none: `Shell`, `TabBar`, `TopBar`, `TabPage` to `app/`, the language to `shared/language`, the open agency to `shared/wakala`, `JoinForm` to `market/shared` | done | SW504 |
