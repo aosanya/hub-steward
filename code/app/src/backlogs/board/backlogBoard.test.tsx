@@ -1,12 +1,12 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import type { Backlog, BacklogsClient, Issue } from "../backlogs/api";
-import { openAgency } from "../agency/open";
-import { sendTools } from "../sendToBacklog";
-import * as mcp from "../wakala/mcp";
+import type { Backlog, BacklogsClient, Issue } from "../api";
+import { openAgency } from "../../agency/open";
+import { sendTools } from "../../sendToBacklog";
+import * as mcp from "../../wakala/mcp";
 import { BacklogBoard } from "./BacklogBoard";
-import { tagsOf, withAllTags } from "../backlogs/tags";
+import { tagsOf, withAllTags } from "../tags";
 import { columnsOf, unplacedStep } from "./board";
 
 const issue = (id: string, title: string, step: string, over: Partial<Issue> = {}): Issue => ({

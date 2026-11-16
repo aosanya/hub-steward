@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../../agency/open";
-import { BacklogBoard } from "../../backlogBoard/BacklogBoard";
+import { BacklogBoard } from "../board/BacklogBoard";
 import type { Backlog, BacklogsClient, Issue } from "../api";
 import { IssueCard } from "../IssueCard";
 import { IssuesPage } from "../IssuesPage";

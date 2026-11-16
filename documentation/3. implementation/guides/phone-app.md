@@ -16,7 +16,7 @@ Everything is under `code/app/src`. The table is the layout today; the layout it
 | `chat/`, `forms/`, `groups/`, `people/` | One folder per feature: its API calls (`api.ts`) and its tests |
 | `market/`, `buy/`, `sell/`, `supply/`, `coordinator/` | The market: products and prices, buying, selling, shops' offers and orders, the coordinator's group order and payments |
 | `apps/` | The chat-workflow thread screens |
-| `backlogs/`, `backlogBoard/`, `backlogPage/`, `backlogManage/`, `backlogAccess/`, `smartBacklog/`, `sendToBacklog/` | The Backlogs screens: the lists and the issue page, the Kanban board, a backlog's page, adding and editing backlogs, who has access, smart backlogs, and selecting issues to send to a backlog |
+| `backlogs/` (with `backlogs/board/`), `backlogPage/`, `backlogManage/`, `backlogAccess/`, `smartBacklog/`, `sendToBacklog/` | The Backlogs screens: the lists and the issue page, the Kanban board, a backlog's page, adding and editing backlogs, who has access, smart backlogs, and selecting issues to send to a backlog |
 | `ui/` | The shared components |
 | `journeys/` | The walk tests and their test support |
 

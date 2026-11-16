@@ -1,4 +1,4 @@
-import type { Issue } from "../backlogs/api";
+import type { Issue } from "../api";
 
 export type Column = { step: string; issues: Issue[] };
 

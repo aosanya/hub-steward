@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { openAgency } from "../agency/open";
-import { BacklogBoard } from "../backlogBoard/BacklogBoard";
+import { BacklogBoard } from "./board/BacklogBoard";
 import { IssuePage } from "./IssuePage";
 import { IssuesPage } from "./IssuesPage";
 import type { Backlog, BacklogsClient, Issue, IssueDetail } from "./api";

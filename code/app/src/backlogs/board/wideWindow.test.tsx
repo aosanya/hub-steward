@@ -2,16 +2,16 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { BacklogsClient, Issue } from "../backlogs/api";
-import { IssuesPage } from "../backlogs/IssuesPage";
-import { SmartBacklogPage } from "../smartBacklog/SmartBacklogPage";
-import type { SmartBacklogClient } from "../smartBacklog/types";
-import { Shell } from "../ui/Shell";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
+import type { BacklogsClient, Issue } from "../api";
+import { IssuesPage } from "../IssuesPage";
+import { SmartBacklogPage } from "../../smartBacklog/SmartBacklogPage";
+import type { SmartBacklogClient } from "../../smartBacklog/types";
+import { Shell } from "../../ui/Shell";
 import { BacklogBoard } from "./BacklogBoard";
 
-vi.mock("../wakala/mcp", async () => {
-  const actual = await vi.importActual<typeof import("../wakala/mcp")>("../wakala/mcp");
+vi.mock("../../wakala/mcp", async () => {
+  const actual = await vi.importActual<typeof import("../../wakala/mcp")>("../../wakala/mcp");
   return { ...actual, callTool: async () => ({ items: [] }) };
 });
 
@@ -52,7 +52,7 @@ const issuesAt = (at: string) =>
     </MemoryRouter>,
   );
 
-const frameCss = readFileSync(resolve(__dirname, "../ui/drawerFrame.css"), "utf8");
+const frameCss = readFileSync(resolve(__dirname, "../../ui/drawerFrame.css"), "utf8");
 
 describe("the frame is always as wide as the window", () => {
   it("has no fluid variant and no width cap on any screen", () => {

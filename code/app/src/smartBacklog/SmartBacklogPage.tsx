@@ -12,7 +12,7 @@ import { IssueCard } from "../backlogs/IssueCard";
 import { effortPicker } from "../backlogs/effortPicker";
 import { priorityPicker } from "../backlogs/priorityPicker";
 import { backlogAccessPath } from "../backlogAccess/paths";
-import { BoardColumns, columnsOf, stepsOfIssues, useView, ViewSwitch } from "../backlogBoard";
+import { BoardColumns, columnsOf, stepsOfIssues, useView, ViewSwitch } from "../backlogs/board";
 import { backlogsHomePath, issuePath, queryParam, searchOf } from "../backlogs/paths";
 import { countWords, narrowed } from "../backlogs/tags";
 import { openAgencyId } from "../agency/open";

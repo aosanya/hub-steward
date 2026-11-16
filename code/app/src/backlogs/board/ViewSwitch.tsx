@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import { Segmented } from "../ui/Segmented";
+import { Segmented } from "../../ui/Segmented";
 
 export type View = "list" | "board";
 

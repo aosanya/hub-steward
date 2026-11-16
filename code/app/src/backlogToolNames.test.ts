@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 const hub = resolve(process.cwd(), "../wakala-api");
 
-const folders = ["backlogs", "backlogPage", "backlogBoard", "backlogManage", "backlogAccess", "chat/backlogCards"];
+const folders = ["backlogs", "backlogPage", "backlogs/board", "backlogManage", "backlogAccess", "chat/backlogCards"];
 
 const modules = ["taskmanager", "actor", "agency", "comm", "permissions"];
 
