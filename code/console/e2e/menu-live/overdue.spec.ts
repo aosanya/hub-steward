@@ -53,7 +53,7 @@ test.describe(journey, () => {
     await shootLive(page, journey, "overdue-from-home");
   });
 
-  test.fixme("an issue past its answer clock is listed under Overdue with its days late", async ({ page }) => {
+  test("an issue past its answer clock is listed under Overdue with its days late", async ({ page }) => {
     const signedIn = await signIn(page, staff);
     const late = await raiseIssue(seed, "late pothole report");
     backdateRaisedItem(late.id, daysPastTheClock);
