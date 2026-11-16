@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { mcpMarketClient, type MarketClient } from "../../market/api";
+import { mcpMarketClient, type MarketClient } from "../shared/api";
 import { useLoad } from "../../forms/useLoad";
 import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { ListRow, Rows } from "../../ui/ListRow";

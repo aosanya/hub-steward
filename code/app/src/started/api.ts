@@ -1,8 +1,8 @@
 import { coordinatorOrderPath, isLiveBuyOrder } from "../coordinator/start/api";
 import { mcpGroupsClient, type GroupsClient } from "../groups/api";
 import { applySupplierPath, applySupplierWorkflow, joinGroupPath, joinGroupWorkflow } from "../home/workflowScreens";
-import { listAllGroupOrders } from "../market/groupOrders";
-import { posterOffersOf, productNameAt, type PosterOffer } from "../market/productName";
+import { listAllGroupOrders } from "../market/shared/groupOrders";
+import { posterOffersOf, productNameAt, type PosterOffer } from "../market/shared/productName";
 import { mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../supply/api";
 import { callTool } from "../wakala/mcp";
 

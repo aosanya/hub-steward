@@ -14,7 +14,7 @@ Everything is under `code/app/src`. The table is the layout today; the layout it
 | `entry/` | Sign-in, the agency list, the language picker and the words (`words.ts`, `swahili.ts`, `magyar.ts`, `language.ts`) |
 | `home/`, `started/`, `inbox/`, `pages/` | Home's cards (`home/HomeOptions.tsx`), the Start rows, the Ongoing reads, the Notifications page and the count behind the bell, and the page components |
 | `chat/`, `forms/`, `groups/`, `people/` | One folder per feature: its API calls (`api.ts`) and its tests |
-| `market/`, `buy/`, `sell/`, `supply/`, `coordinator/` | The market: products and prices, buying, selling, shops' offers and orders, the coordinator's group order and payments |
+| `market/`, `buy/`, `sell/`, `supply/`, `coordinator/` | The market: `market/product/` holds the products list and a product page with their tests; `market/shared/` holds the market client (`api.ts`), tool arguments, group-order paging, money, product names and unit words that buying, selling, supplying and the coordinator share; then buying, selling, shops' offers and orders, the coordinator's group order and payments |
 | `apps/` | The chat-workflow thread screens |
 | `backlogs/` (with `backlogs/board/`), `backlogPage/`, `backlogManage/`, `backlogAccess/`, `smartBacklog/`, `sendToBacklog/` | The Backlogs screens: the lists and the issue page, the Kanban board, a backlog's page, adding and editing backlogs, who has access, smart backlogs, and selecting issues to send to a backlog |
 | `ui/` | The shared components |

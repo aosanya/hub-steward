@@ -1,5 +1,5 @@
 import * as mcp from "../../wakala/mcp";
-import { kes } from "../../market/money";
+import { kes } from "../../market/shared/money";
 import {
   bags,
   changedTermsWords,

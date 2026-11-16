@@ -1,7 +1,7 @@
-import { callTool } from "../wakala/mcp";
+import { callTool } from "../../wakala/mcp";
 import { mcpMarketClient } from "./api";
 
-vi.mock("../wakala/mcp", () => ({ callTool: vi.fn() }));
+vi.mock("../../wakala/mcp", () => ({ callTool: vi.fn() }));
 
 const offers = {
   items: [

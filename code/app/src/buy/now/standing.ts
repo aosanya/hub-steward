@@ -1,5 +1,5 @@
 import { canCancelOrder, orderOf } from "../orders/api";
-import { quantityWords } from "../../market/unitWords";
+import { quantityWords } from "../../market/shared/unitWords";
 import type { BuyOrder, OrderStatus } from "./api";
 
 const myOrderOf = (order: BuyOrder) =>

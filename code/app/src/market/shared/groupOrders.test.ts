@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../../wakala/mcp";
 import { groupOrdersPageSize, listAllGroupOrders } from "./groupOrders";
 
 afterEach(() => vi.restoreAllMocks());

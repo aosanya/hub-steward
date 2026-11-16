@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { forgetRuntimeConfig, setRuntimeConfig } from "../wakala/config";
-import { callTool, resetMcp } from "../wakala/mcp";
+import { forgetRuntimeConfig, setRuntimeConfig } from "../../wakala/config";
+import { callTool, resetMcp } from "../../wakala/mcp";
 import {
   askArguments,
   buyNowArguments,
@@ -12,7 +12,7 @@ import {
   type OfferFields,
 } from "./arguments";
 import { mcpMarketClient } from "./api";
-import { mcpSupplyClient } from "../supply/api";
+import { mcpSupplyClient } from "../../supply/api";
 
 const exactKeys = (sent: Record<string, unknown>) => Object.keys(sent).sort();
 

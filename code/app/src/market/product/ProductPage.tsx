@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { mcpMarketClient, type MarketClient, type Offer } from "../../market/api";
-import { kes } from "../../market/money";
+import { mcpMarketClient, type MarketClient, type Offer } from "../shared/api";
+import { kes } from "../shared/money";
 import { useLoad } from "../../forms/useLoad";
 import { routes } from "../../routes";
 import { Button } from "../../ui/Button";

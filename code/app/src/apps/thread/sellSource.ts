@@ -1,5 +1,5 @@
-import type { Product } from "../../market/api";
-import { priceWords } from "../../market/unitWords";
+import type { Product } from "../../market/shared/api";
+import { priceWords } from "../../market/shared/unitWords";
 import {
   bulkWords,
   groupSaleLine,

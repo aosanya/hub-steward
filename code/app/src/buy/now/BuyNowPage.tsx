@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
-import { priceWords, unitWordsOf } from "../../market/unitWords";
+import { priceWords, unitWordsOf } from "../../market/shared/unitWords";
 import { routes } from "../../routes";
 import { Button } from "../../ui/Button";
 import { LoadFailed } from "../../ui/LoadState";

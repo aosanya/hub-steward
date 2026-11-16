@@ -1,9 +1,9 @@
 import { callTool } from "../../wakala/mcp";
-import { productsOf, type Offer, type Product } from "../../market/api";
-import { askArguments, buyNowArguments, listOffersArguments } from "../../market/arguments";
-import { listAllGroupOrders } from "../../market/groupOrders";
-import { productName } from "../../market/productName";
-import { quantityWords, priceWords } from "../../market/unitWords";
+import { productsOf, type Offer, type Product } from "../../market/shared/api";
+import { askArguments, buyNowArguments, listOffersArguments } from "../../market/shared/arguments";
+import { listAllGroupOrders } from "../../market/shared/groupOrders";
+import { productName } from "../../market/shared/productName";
+import { quantityWords, priceWords } from "../../market/shared/unitWords";
 import { kes } from "../../supply/api";
 
 export const sellNowTool = "market_ask";

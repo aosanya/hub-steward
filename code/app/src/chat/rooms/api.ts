@@ -2,7 +2,7 @@ import { callTool } from "../../wakala/mcp";
 import { lastAtOf, lastOf, previewOf } from "../api";
 import { loadSubject } from "../../wakala/me";
 import { groupOrderOf, type GroupOrder } from "../../supply/groupOrder/api";
-import { productName, type NamedOffer } from "../../market/productName";
+import { productName, type NamedOffer } from "../../market/shared/productName";
 
 export const attachmentKinds = { groupOrder: "group_order", request: "request", ask: "ask" } as const;
 

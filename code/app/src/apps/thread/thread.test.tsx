@@ -5,7 +5,7 @@ import type { Block } from "../blocks/types";
 import { AppThreadPage } from "./AppThreadPage";
 import { marketSource, myOrders, notListed, onSale } from "./marketSource";
 import type { AgentSource } from "./source";
-import type { MarketClient, Product } from "../../market/api";
+import type { MarketClient, Product } from "../../market/shared/api";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
 
 beforeEach(() => openAgency("farmers"));

@@ -1,4 +1,4 @@
-import { kes } from "../../market/money";
+import { kes } from "../../market/shared/money";
 import { GROUP_COORDINATOR, listPeople, namesOf, type Person } from "../../people/api";
 import { callTool } from "../../wakala/mcp";
 

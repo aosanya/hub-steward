@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import type { MarketClient, Product } from "../../market/api";
+import type { MarketClient, Product } from "../../market/shared/api";
 import { AppThreadPage } from "./AppThreadPage";
 import type { BuyerPrice, SellClient } from "../../sell/now/api";
 import { marketSource, myOrders, notListed, onSale } from "./marketSource";

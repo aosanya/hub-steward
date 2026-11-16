@@ -1,5 +1,5 @@
 import { callTool } from "../../wakala/mcp";
-import { buyNowArguments, listOffersArguments } from "../../market/arguments";
+import { buyNowArguments, listOffersArguments } from "../../market/shared/arguments";
 
 export type BuyOffer = {
   id: string;

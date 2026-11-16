@@ -9,7 +9,7 @@ import { LoadFailed } from "../../ui/LoadState";
 import { Chip, type ChipTone } from "../../ui/Chip";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { Shell } from "../../ui/Shell";
-import { priceWords, quantityWords } from "../../market/unitWords";
+import { priceWords, quantityWords } from "../../market/shared/unitWords";
 import { mcpSellClient, nameOfProduct, saleTotal, statusOf, type Sale, type SaleStatus, type SellClient } from "./api";
 import { canCancelSale, mcpSaleActions, type SaleActions } from "./cancel";
 

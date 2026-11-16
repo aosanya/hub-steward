@@ -1,5 +1,5 @@
-import { kes } from "../../market/money";
-import { productName } from "../../market/productName";
+import { kes } from "../../market/shared/money";
+import { productName } from "../../market/shared/productName";
 import { callTool } from "../../wakala/mcp";
 
 export { kes };

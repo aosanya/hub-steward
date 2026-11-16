@@ -6,7 +6,7 @@ import { LoadFailed } from "../../ui/LoadState";
 import { Field } from "../../ui/Field";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { Shell } from "../../ui/Shell";
-import { priceWords, quantityLabel, unitWordsOf } from "../../market/unitWords";
+import { priceWords, quantityLabel, unitWordsOf } from "../../market/shared/unitWords";
 import { mcpSellClient, type SellClient } from "./api";
 
 const wholeBags = (value: string) => (/^\d+$/.test(value.trim()) ? Number(value.trim()) : 0);

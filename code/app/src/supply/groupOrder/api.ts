@@ -1,6 +1,6 @@
-import { listAllGroupOrders } from "../../market/groupOrders";
-import { kes } from "../../market/money";
-import { posterOffersOf, productNameAt, type PosterOffer } from "../../market/productName";
+import { listAllGroupOrders } from "../../market/shared/groupOrders";
+import { kes } from "../../market/shared/money";
+import { posterOffersOf, productNameAt, type PosterOffer } from "../../market/shared/productName";
 import { GROUP_COORDINATOR, listPeople, namesOf, type Names } from "../../people/api";
 import { callTool } from "../../wakala/mcp";
 

@@ -1,12 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { MarketPage } from "../pages/market/MarketPage";
-import { ProductPage } from "../pages/market/ProductPage";
-import * as mcp from "../wakala/mcp";
-import { mcpMarketClient, type MarketClient } from "./api";
-import { routes } from "../routes";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { MarketPage } from "./MarketPage";
+import { ProductPage } from "./ProductPage";
+import * as mcp from "../../wakala/mcp";
+import { mcpMarketClient, type MarketClient } from "../shared/api";
+import { routes } from "../../routes";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
 
 beforeEach(() => openAgency("farmers"));
 

@@ -1,4 +1,4 @@
-import { posterOffersOf, productNameAt, type PosterOffer } from "../../market/productName";
+import { posterOffersOf, productNameAt, type PosterOffer } from "../../market/shared/productName";
 import { mcpSupplyClient } from "../../supply/api";
 import { callTool } from "../../wakala/mcp";
 

@@ -1,6 +1,6 @@
 import { callTool } from "../../wakala/mcp";
-import { listAllGroupOrders } from "../../market/groupOrders";
-import { productName } from "../../market/productName";
+import { listAllGroupOrders } from "../../market/shared/groupOrders";
+import { productName } from "../../market/shared/productName";
 import { shortDayWords } from "../../ui/days";
 import { offerWordsOf } from "../now/api";
 

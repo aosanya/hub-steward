@@ -1,5 +1,5 @@
 import { isWaiting, mcpChatClient, type Ask, type AskAnswer } from "../../chat/api";
-import { kes } from "../../market/money";
+import { kes } from "../../market/shared/money";
 import { mcpSupplyClient, resolveMember, type SupplyOffer } from "../../supply/api";
 import { callTool } from "../../wakala/mcp";
 

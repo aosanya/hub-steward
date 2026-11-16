@@ -5,7 +5,7 @@ import { Card } from "../../ui/Card";
 import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { ListRow, Rows } from "../../ui/ListRow";
 import { Shell } from "../../ui/Shell";
-import { priceWords, quantityWords } from "../../market/unitWords";
+import { priceWords, quantityWords } from "../../market/shared/unitWords";
 import { bulkWords, groupSaleLine, mcpSellClient, nameOfProduct, statusOf, type SellClient } from "./api";
 import { mcpOpenSales, type OpenSalesClient } from "./openSales";
 
