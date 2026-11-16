@@ -271,6 +271,9 @@ func TestToolList_AnAgentHoldingOnlyACatalogOrMountPermissionSeesTheToolItGrants
 		{"board_item.reply", "forms_catalog_reply_send"},
 		{"board_item.hide", "forms_catalog_board_item_set_hidden"},
 		{"board.manage", "forms_catalog_board_item_set_outcome"},
+		{"board.manage", "forms_catalog_board_item_assign"},
+		{"service.edit", "forms_catalog_entry_upsert"},
+		{"service.edit", "forms_catalog_entry_read"},
 		{"mount.list", "agency_list_mounts"},
 	}
 	for _, c := range cases {
