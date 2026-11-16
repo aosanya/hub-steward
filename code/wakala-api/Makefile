@@ -36,6 +36,7 @@ restartQA:
 		WAKALA_ADMIN_TOKEN=$(WAKALA_ADMIN_TOKEN) \
 		WAKALA_SESSION_SECRET=$(WAKALA_SESSION_SECRET) \
 		AI_MASTER_KEY=$(AI_MASTER_KEY) \
+		PLATFORM_OWNER_ACCOUNT_IDS=$(PLATFORM_OWNER_ACCOUNT_IDS) \
 		STUDIO_ORIGINS=http://localhost:5180,http://127.0.0.1:5180,http://localhost:5181,http://127.0.0.1:5181,http://localhost:5173,http://127.0.0.1:5173 \
 		MEMBER_APP_ORIGINS=http://localhost:5174,http://127.0.0.1:5174 \
 		go run ./cmd/server
