@@ -1,6 +1,6 @@
 import { callTool } from "../../shared/wakala/mcp";
 
-export type AgencyModule = { code: string; name: string; mountNames?: string[] };
+export type AgencyModule = { code: string; name: string; mountNames?: string[]; words?: Record<string, string> };
 
 export type AgencyView = { name: string; modules: AgencyModule[]; modulesUnread?: boolean };
 
@@ -10,10 +10,26 @@ export const agencyTools = { agency: "agency_get_agency", modules: "agency_list_
 
 const text = (value: unknown) => (typeof value === "string" ? value : value == null ? "" : String(value));
 
+const wordsOf = (mounts: any[]): Record<string, string> => {
+  const words: Record<string, string> = {};
+  for (const mount of mounts) {
+    const listed = mount?.words;
+    if (listed === null || typeof listed !== "object" || Array.isArray(listed)) continue;
+    for (const [generic, own] of Object.entries(listed)) {
+      if (generic !== "" && text(own) !== "" && !(generic in words)) words[generic] = text(own);
+    }
+  }
+  return words;
+};
+
 export const moduleOf = (raw: any): AgencyModule => {
   const code = text(raw?.module);
-  const mountNames: string[] = (Array.isArray(raw?.mounts) ? raw.mounts : []).map((mount: any) => text(mount?.name));
-  return { code, name: mountNames[0] || code, mountNames };
+  const mounts: any[] = Array.isArray(raw?.mounts) ? raw.mounts : [];
+  const mountNames: string[] = mounts.map((mount: any) => text(mount?.name));
+  const words = wordsOf(mounts);
+  const module: AgencyModule = { code, name: mountNames[0] || code, mountNames };
+  if (Object.keys(words).length > 0) module.words = words;
+  return module;
 };
 
 export const modulesOf = (reply: any): AgencyModule[] =>
@@ -38,3 +54,17 @@ export const agencyInstanceAbsent = (reason: unknown) => reason instanceof Error
 
 export const hasModule = (view: AgencyView | null | undefined, code: string) =>
   view !== null && view !== undefined && !view.modulesUnread && view.modules.some((module) => module.code === code);
+
+const listedWord = (module: AgencyModule | undefined, generic: string) =>
+  module?.words && Object.prototype.hasOwnProperty.call(module.words, generic) ? module.words[generic] : undefined;
+
+export const word = (view: AgencyView | null | undefined, generic: string, section?: string): string => {
+  if (!view || view.modulesUnread) return generic;
+  const drawn = section === undefined ? undefined : listedWord(view.modules.find((module) => module.code === section), generic);
+  if (drawn !== undefined) return drawn;
+  for (const module of view.modules) {
+    const own = listedWord(module, generic);
+    if (own !== undefined) return own;
+  }
+  return generic;
+};

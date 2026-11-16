@@ -1,5 +1,5 @@
 import * as mcp from "../../shared/wakala/mcp";
-import { agencyTools, mcpAgencyClient, modulesOf } from "./modules";
+import { agencyTools, mcpAgencyClient, modulesOf, word, type AgencyView } from "./modules";
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -61,5 +61,56 @@ describe("agency modules client", () => {
   it("fails when neither read works", async () => {
     answer({ [agencyTools.agency]: new Error("down"), [agencyTools.modules]: new Error("down") });
     await expect(mcpAgencyClient.read()).rejects.toThrow("down");
+  });
+});
+
+describe("agency words", () => {
+  const view = (modules: unknown[]): AgencyView => ({ name: "Town", modules: modulesOf({ modules }) });
+  const municipality = view([{ module: "actor", mounts: [{ name: "Residents", key: "directory", words: { People: "Residents", Person: "Resident" } }] }]);
+
+  it("reads the words a mount lists into its module", () => {
+    expect(modulesOf({ modules: [{ module: "actor", mounts: [{ name: "Residents", key: "directory", words: { People: "Residents" } }] }] })).toEqual([
+      { code: "actor", name: "Residents", mountNames: ["Residents"], words: { People: "Residents" } },
+    ]);
+  });
+
+  it("answers the agency's word where its mount lists the generic one", () => {
+    expect(word(municipality, "People")).toBe("Residents");
+    expect(word(municipality, "Person")).toBe("Resident");
+  });
+
+  it("answers the generic word for an agency with no words", () => {
+    expect(word(view([{ module: "actor", mounts: [{ name: "People", key: "directory" }] }]), "People")).toBe("People");
+  });
+
+  it("returns an unknown generic word unchanged", () => {
+    expect(word(municipality, "Market")).toBe("Market");
+  });
+
+  it("returns the generic word when the modules were not read or there is no agency", () => {
+    expect(word({ name: "", modules: [], modulesUnread: true }, "People")).toBe("People");
+    expect(word(null, "People")).toBe("People");
+    expect(word(undefined, "People")).toBe("People");
+  });
+
+  it("takes the mount of the section being drawn when two mounts list the same generic word", () => {
+    const two = view([
+      { module: "market", mounts: [{ name: "Market", key: "m", words: { Items: "Goods" } }] },
+      { module: "assetmanager", mounts: [{ name: "Assets", key: "a", words: { Items: "Equipment" } }] },
+    ]);
+    expect(word(two, "Items", "assetmanager")).toBe("Equipment");
+    expect(word(two, "Items", "market")).toBe("Goods");
+    expect(word(two, "Items")).toBe("Goods");
+    expect(word(two, "Items", "git")).toBe("Goods");
+  });
+
+  it("ignores empty words and words that are not text lists", () => {
+    const odd = view([{ module: "actor", mounts: [{ name: "A", key: "k", words: { People: "", Person: "Resident" } }, { name: "B", key: "j", words: ["x"] }] }]);
+    expect(word(odd, "People")).toBe("People");
+    expect(word(odd, "Person")).toBe("Resident");
+  });
+
+  it("does not answer for names every object has", () => {
+    expect(word(municipality, "constructor")).toBe("constructor");
   });
 });
