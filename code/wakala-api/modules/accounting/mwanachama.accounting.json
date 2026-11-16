@@ -32,6 +32,18 @@
       "name": "certificate",
       "table": "certificates",
       "description": "A payment certificate for a milestone, with the retention it withheld."
+    },
+    {
+      "role": "tender",
+      "name": "tender",
+      "table": "tenders",
+      "description": "A request to buy something against a budget line, answered by quotes."
+    },
+    {
+      "role": "quote",
+      "name": "quote",
+      "table": "quotes",
+      "description": "One supplier's offer for a tender."
     }
   ]
 }

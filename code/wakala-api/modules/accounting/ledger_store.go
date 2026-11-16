@@ -26,6 +26,9 @@ func NewLedgerRepository(db *gorm.DB, s *spec.Spec) (LedgerRepository, error) {
 
 		roleMilestone:   models.Milestone{},
 		roleCertificate: models.Certificate{},
+
+		roleTender: models.Tender{},
+		roleQuote:  models.Quote{},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("NewLedgerRepository: %w", err)

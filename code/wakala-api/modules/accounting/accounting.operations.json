@@ -344,6 +344,72 @@
       ],
       "returns": [{ "body": true }]
     },
+    "create_tender": {
+      "method": "POST",
+      "path": "/tenders",
+      "call": "CreateTender",
+      "action": "accounting.tender.create",
+      "status": 201,
+      "title": "Create tender",
+      "description": "Open a tender: what is to be bought and the budget line it draws on, with the date quotes close if there is one. Refused when the budget line does not exist.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "caller", "as": "created_by", "into": "CreatedBy", "description": "Who opened the tender, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "list_tenders": {
+      "method": "GET",
+      "path": "/tenders",
+      "call": "ListTenders",
+      "action": "accounting.tender.list",
+      "title": "List tenders",
+      "description": "List tenders, oldest first, each with how many quotes it has and the lowest amount quoted. Narrow by budget_id; limit caps the page.",
+      "args": [
+        { "from": "query", "whole": true }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "get_tender": {
+      "method": "GET",
+      "path": "/tenders/{tenderID}",
+      "call": "GetTender",
+      "action": "accounting.tender.read",
+      "title": "Read tender",
+      "description": "Read one tender by its id, with how many quotes it has and the lowest amount quoted.",
+      "args": [
+        { "from": "path", "as": "tenderID", "description": "The tender to read." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "create_quote": {
+      "method": "POST",
+      "path": "/tenders/{tenderID}/quotes",
+      "call": "CreateQuote",
+      "action": "accounting.quote.create",
+      "status": 201,
+      "title": "Record quote",
+      "description": "Record one supplier's offer for a tender: who offers, the price in the smallest unit and what it includes. A supplier that changes its offer is recorded again as a new quote.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "path", "as": "tenderID", "into": "TenderID", "description": "The tender the quote answers. The address decides, not the body." },
+        { "from": "caller", "as": "quoted_by", "into": "QuotedBy", "description": "Who recorded the quote, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "list_quotes": {
+      "method": "GET",
+      "path": "/tenders/{tenderID}/quotes",
+      "call": "ListQuotes",
+      "action": "accounting.quote.list",
+      "title": "List quotes",
+      "description": "List the quotes offered for one tender, lowest price first.",
+      "args": [
+        { "from": "path", "as": "tenderID", "description": "The tender whose quotes to list." },
+        { "from": "query", "as": "limit", "description": "Cap the quotes returned. Zero or absent means the default page." }
+      ],
+      "returns": [{ "body": true }]
+    },
     "create_bill": {
       "method": "POST",
       "path": "/bills",

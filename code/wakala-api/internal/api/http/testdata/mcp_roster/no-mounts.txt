@@ -4,8 +4,13 @@ accounting_bill_read
 accounting_budget_list
 accounting_budget_read
 accounting_budget_set
+accounting_quote_create
+accounting_quote_list
 accounting_report_list
 accounting_report_read
+accounting_tender_create
+accounting_tender_list
+accounting_tender_read
 actor_accept_invitation
 actor_approve_join_request
 actor_assign_group

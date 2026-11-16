@@ -461,6 +461,132 @@
           ]
         }
       ]
+    },
+    {
+      "role": "tender",
+      "description": "A request to buy something, drawn against one budget line, that suppliers answer with quotes. Append-only: it is recorded once and read back with the quotes offered for it.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "budget_id",
+          "type": "string",
+          "description": "The budget line the purchase draws on.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "What is bought, in the caller's words, such as Resurfacing of Mill Street.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "The specification suppliers quote against.",
+          "immutable": true
+        },
+        {
+          "name": "closes_at",
+          "type": "timestamp",
+          "description": "When quotes stop being invited, as an RFC 3339 instant. Absent when no date is set.",
+          "immutable": true
+        },
+        {
+          "name": "created_by",
+          "type": "string",
+          "description": "Who opened the tender, supplied by the mount.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "When the tender was recorded. Written by the store.",
+          "immutable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "budget",
+          "description": "Lists the tenders drawing on one budget line.",
+          "fields": [
+            "budget_id"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "quote",
+      "description": "One supplier's offer for a tender. Append-only: a supplier that changes its offer sends another quote.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "tender_id",
+          "type": "string",
+          "description": "The tender the offer answers.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "supplier",
+          "type": "string",
+          "description": "Who makes the offer, as the supplier is named.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "amount",
+          "type": "int",
+          "description": "The price offered in the smallest unit, always positive.",
+          "immutable": true
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "description": "What the offer includes or assumes.",
+          "immutable": true
+        },
+        {
+          "name": "valid_until",
+          "type": "timestamp",
+          "description": "The last instant the price holds, as an RFC 3339 instant. Absent when it has no end.",
+          "immutable": true
+        },
+        {
+          "name": "quoted_by",
+          "type": "string",
+          "description": "Who recorded the quote, supplied by the mount.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "quoted_at",
+          "type": "timestamp",
+          "description": "When the quote was recorded. Written by the store.",
+          "immutable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "tender",
+          "description": "Lists the quotes offered for one tender.",
+          "fields": [
+            "tender_id"
+          ]
+        }
+      ]
     }
   ]
 }

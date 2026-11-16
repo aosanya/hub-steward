@@ -38,6 +38,9 @@ func BuildTools(repo accounting.LedgerRepository, m Mount) ([]Tool, error) {
 		if strings.HasPrefix(t.Action, reportActionPrefix) {
 			served = append(served, t)
 		}
+		if isProcurementAction(t.Action) {
+			served = append(served, t)
+		}
 	}
 	return served, nil
 }

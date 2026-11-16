@@ -7,6 +7,8 @@ const DefaultPage = 200
 type LedgerRepository interface {
 	ContractRepository
 
+	ProcurementRepository
+
 	ReportRepository
 
 	BillRepository
