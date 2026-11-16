@@ -53,6 +53,15 @@ function Form({ client, backlog }: { client: BacklogManageClient; backlog: Backl
       <Button kind="primary" onClick={save} disabled={busy}>
         Save
       </Button>
+      {backlog.archived ? (
+        <Button onClick={() => attempt(() => client.unarchive(backlog.id), "The backlog could not be brought back. Try again.")} disabled={busy}>
+          Bring the backlog back
+        </Button>
+      ) : (
+        <Button onClick={() => attempt(() => client.archive(backlog.id), "The backlog could not be archived. Try again.")} disabled={busy}>
+          Archive the backlog
+        </Button>
+      )}
       <ConfirmDelete
         label="Delete the backlog"
         question={`Delete ${backlog.name}?`}
@@ -61,7 +70,7 @@ function Form({ client, backlog }: { client: BacklogManageClient; backlog: Backl
         disabled={holding}
       />
       {holding ? <p className="sub">{`It still holds ${heldWords(held)}.`}</p> : null}
-      <p className="sub">A step that holds issues cannot be removed, and a backlog that holds issues cannot be deleted.</p>
+      <p className="sub">A step that holds issues cannot be removed, and a backlog that holds issues cannot be deleted. An archived backlog leaves the Backlogs list; its issues stay.</p>
     </>
   );
 }

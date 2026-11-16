@@ -42,7 +42,7 @@ export type Issue = {
 
 export type IssueDetail = Issue & { waitsOn: Issue[]; waitedOnBy: Issue[] };
 
-export type Backlog = { id: string; name: string; steps: string[]; issues: number; kind?: "smart"; counts?: StepCount[] };
+export type Backlog = { id: string; name: string; steps: string[]; issues: number; kind?: "smart"; counts?: StepCount[]; archived?: boolean };
 
 export type BacklogsClient = {
   backlogs: () => Promise<Backlog[]>;
@@ -63,7 +63,7 @@ export const issuesHeld = (backlogs: { issues: number; kind?: "smart" }[]) =>
 
 export type HubStep = { id: string; name: string; issues: number };
 
-export type HubBacklog = { id: string; name: string; steps: HubStep[]; issues: number; kind?: "smart" };
+export type HubBacklog = { id: string; name: string; steps: HubStep[]; issues: number; kind?: "smart"; archived?: boolean };
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
 
@@ -84,6 +84,7 @@ export const hubBacklogOf = (raw: any): HubBacklog => ({
   issues: count(raw?.issues),
   steps: itemsOfSteps(raw?.steps),
   ...(raw?.kind === "smart" ? { kind: "smart" as const } : {}),
+  ...(raw?.archived === true ? { archived: true } : {}),
 });
 
 function itemsOfSteps(raw: unknown): HubStep[] {
@@ -101,6 +102,7 @@ export const backlogOf = (one: HubBacklog): Backlog => ({
   issues: one.issues,
   counts: one.steps.map((step) => ({ name: step.name, issues: step.issues })),
   ...(one.kind ? { kind: one.kind } : {}),
+  ...(one.archived ? { archived: true } : {}),
 });
 
 export const issueOf = (raw: any, hub: HubBacklog[] = []): Issue => {

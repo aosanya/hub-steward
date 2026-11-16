@@ -8,6 +8,7 @@ The phone app's Backlogs, Chat and assistant screens, as the owner decided them.
 | [Chat and MCP](chat-and-mcp.md) | What each ask in Chat does, and the tool behind it |
 | [Chat replies](chat-replies.md) | How the roles answer: cards with an Open button |
 | [Smart backlogs](smart-backlogs.md) | Backlogs that fill themselves from rules, and sending issues to a backlog |
+| [Archived backlogs](archived-backlogs.md) | Marking a whole backlog archived and hiding it from the list |
 | [Group roles](group-roles.md) | How a group is given a role in the agency |
 | [Worker caps](worker-caps.md) | How much a worker may use on one issue, and the Sinbin mark |
 | [Assistant limits](assistant-limits.md) | Who may ask the assistant and how much each person may use |

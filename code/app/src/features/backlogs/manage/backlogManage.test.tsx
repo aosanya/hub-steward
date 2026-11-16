@@ -23,6 +23,8 @@ const fake = (over: Partial<BacklogManageClient> = {}): BacklogManageClient => (
   create: vi.fn().mockResolvedValue("support"),
   save: vi.fn().mockResolvedValue(undefined),
   remove: vi.fn().mockResolvedValue(undefined),
+  archive: vi.fn().mockResolvedValue(undefined),
+  unarchive: vi.fn().mockResolvedValue(undefined),
   ...over,
 });
 
@@ -144,6 +146,23 @@ describe("edit a backlog", () => {
     expect(client.remove).not.toHaveBeenCalled();
     await userEvent.click(screen.getByRole("button", { name: "Delete" }));
     await waitFor(() => expect(client.remove).toHaveBeenCalledWith("support"));
+  });
+
+  it("archives the backlog from the edit screen and goes back to Backlogs", async () => {
+    const client = fake();
+    show(`${base}/software/edit`, client);
+    await userEvent.click(await screen.findByRole("button", { name: "Archive the backlog" }));
+    await waitFor(() => expect(client.archive).toHaveBeenCalledWith("software"));
+    expect(await screen.findByText("Backlogs screen")).toBeInTheDocument();
+  });
+
+  it("offers to bring an archived backlog back instead of archiving it again", async () => {
+    const client = fake({ read: vi.fn().mockResolvedValue({ ...software, archived: true }) });
+    show(`${base}/software/edit`, client);
+    expect(await screen.findByRole("button", { name: "Bring the backlog back" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Archive the backlog" })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Bring the backlog back" }));
+    await waitFor(() => expect(client.unarchive).toHaveBeenCalledWith("software"));
   });
 
   it("keeps the backlog when Cancel is chosen", async () => {

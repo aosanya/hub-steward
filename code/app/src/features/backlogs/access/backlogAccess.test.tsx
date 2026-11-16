@@ -35,6 +35,8 @@ const manageFake = (allowed = true): BacklogManageClient => ({
   create: vi.fn(),
   save: vi.fn(),
   remove: vi.fn(),
+  archive: vi.fn(),
+  unarchive: vi.fn(),
 });
 
 const accessFake = (over: Partial<BacklogAccessClient> = {}): BacklogAccessClient => ({

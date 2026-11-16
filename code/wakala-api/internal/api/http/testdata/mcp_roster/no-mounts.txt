@@ -581,6 +581,7 @@ taskmanager_agent_upsert
 taskmanager_backlog_access_give
 taskmanager_backlog_access_list
 taskmanager_backlog_access_take
+taskmanager_backlog_archive
 taskmanager_backlog_create
 taskmanager_backlog_delete
 taskmanager_backlog_list
@@ -593,6 +594,7 @@ taskmanager_backlog_step_add
 taskmanager_backlog_step_remove
 taskmanager_backlog_step_rename
 taskmanager_backlog_step_reorder
+taskmanager_backlog_unarchive
 taskmanager_case_end
 taskmanager_case_link_task
 taskmanager_case_list

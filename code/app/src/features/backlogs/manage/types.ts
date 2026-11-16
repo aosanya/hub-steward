@@ -1,6 +1,6 @@
 import type { DraftStep } from "./stepsDraft";
 
-export type BacklogDetail = { id: string; name: string; steps: DraftStep[] };
+export type BacklogDetail = { id: string; name: string; steps: DraftStep[]; archived?: boolean };
 
 export type BacklogManageClient = {
   mayManage: () => Promise<boolean>;
@@ -8,6 +8,8 @@ export type BacklogManageClient = {
   create: (name: string, steps: string[]) => Promise<string>;
   save: (backlogId: string, name: string, steps: DraftStep[]) => Promise<void>;
   remove: (backlogId: string) => Promise<void>;
+  archive: (backlogId: string) => Promise<void>;
+  unarchive: (backlogId: string) => Promise<void>;
 };
 
 export class ManageRefused extends Error {}

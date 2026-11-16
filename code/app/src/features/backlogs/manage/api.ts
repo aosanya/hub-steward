@@ -8,6 +8,8 @@ export const backlogTools = {
   create: "taskmanager_backlog_create",
   rename: "taskmanager_backlog_rename",
   remove: "taskmanager_backlog_delete",
+  archive: "taskmanager_backlog_archive",
+  unarchive: "taskmanager_backlog_unarchive",
   addStep: "taskmanager_backlog_step_add",
   renameStep: "taskmanager_backlog_step_rename",
   removeStep: "taskmanager_backlog_step_remove",
@@ -23,6 +25,7 @@ export const detailOf = (raw: any): BacklogDetail => ({
   id: text(raw?.id),
   name: text(raw?.name),
   steps: (Array.isArray(raw?.steps) ? raw.steps : []).map((step: any) => savedStep(text(step?.id), text(step?.name), typeof step?.issues === "number" ? step.issues : 0)),
+  ...(raw?.archived === true ? { archived: true } : {}),
 });
 
 export const allowedIn = (reply: any) => Array.isArray(reply?.permissions) && reply.permissions.includes(managePermission);
@@ -129,5 +132,11 @@ export const mcpBacklogManageClient: BacklogManageClient = {
   },
   async remove(id) {
     await refused(callTool("", backlogTools.remove, ofBacklog(id)));
+  },
+  async archive(id) {
+    await refused(callTool("", backlogTools.archive, ofBacklog(id)));
+  },
+  async unarchive(id) {
+    await refused(callTool("", backlogTools.unarchive, ofBacklog(id)));
   },
 };

@@ -30,6 +30,20 @@ beforeEach(() => {
 });
 
 describe("backlog manage client", () => {
+  it("reads the archived mark of a backlog", () => {
+    expect(detailOf({ ...summary([["a", "To do", 2]]), archived: true }).archived).toBe(true);
+    expect(detailOf(summary([["a", "To do", 2]])).archived).toBeUndefined();
+  });
+
+  it("archives and unarchives a backlog by its id", async () => {
+    await mcpBacklogManageClient.archive("software");
+    await mcpBacklogManageClient.unarchive("software");
+    expect(calls()).toEqual([
+      ["taskmanager_backlog_archive", { backlogID: "software" }],
+      ["taskmanager_backlog_unarchive", { backlogID: "software" }],
+    ]);
+  });
+
   it("reads a summary into steps with how many issues each holds", () => {
     expect(detailOf(summary([["a", "To do", 2]]))).toEqual({ id: "software", name: "Software", steps: [savedStep("a", "To do", 2)] });
   });
@@ -40,6 +54,8 @@ describe("backlog manage client", () => {
       create: "taskmanager_backlog_create",
       rename: "taskmanager_backlog_rename",
       remove: "taskmanager_backlog_delete",
+      archive: "taskmanager_backlog_archive",
+      unarchive: "taskmanager_backlog_unarchive",
       addStep: "taskmanager_backlog_step_add",
       renameStep: "taskmanager_backlog_step_rename",
       removeStep: "taskmanager_backlog_step_remove",
