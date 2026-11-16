@@ -5,8 +5,8 @@ import { isApproved, mcpSupplyClient, mySupplier, buyerPriceWords, priceWords, r
 import { Button } from "../../ui/Button";
 import { EmptyCard, LoadFailed } from "../../ui/LoadState";
 import { ListRow, Rows } from "../../ui/ListRow";
-import { BuyerTabs } from "../../sell/buyer/BuyerTabs";
-import { mcpBuyerAskClient, waitingAsks, type BuyerAskClient } from "../../sell/group/buyerAsksApi";
+import { BuyerTabs } from "../../market/sell/buyer/BuyerTabs";
+import { mcpBuyerAskClient, waitingAsks, type BuyerAskClient } from "../../market/sell/group/buyerAsksApi";
 import { Shell } from "../../ui/Shell";
 
 type Props = { client?: SupplyClient; asks?: BuyerAskClient; me?: string; buyer?: boolean };

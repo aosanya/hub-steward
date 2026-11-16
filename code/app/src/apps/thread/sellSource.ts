@@ -8,7 +8,7 @@ import {
   type BuyerPrice,
   type GroupSale,
   type SellClient,
-} from "../../sell/now/api";
+} from "../../market/sell/now/api";
 import type { Block, CardSpec } from "../blocks/types";
 import type { AgentSource } from "./source";
 

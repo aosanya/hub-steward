@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import type { MarketClient, Product } from "../../market/shared/api";
 import { AppThreadPage } from "./AppThreadPage";
-import type { BuyerPrice, SellClient } from "../../sell/now/api";
+import type { BuyerPrice, SellClient } from "../../market/sell/now/api";
 import { marketSource, myOrders, notListed, onSale } from "./marketSource";
 import { joinGroupPrompt, sellNowPrompt, sellSource } from "./sellSource";
 import { forgetOpenAgency, openAgency } from "../../agency/open";

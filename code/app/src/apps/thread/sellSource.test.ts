@@ -1,5 +1,5 @@
 import type { Product } from "../../market/shared/api";
-import type { BuyerPrice, GroupSale, SellClient } from "../../sell/now/api";
+import type { BuyerPrice, GroupSale, SellClient } from "../../market/sell/now/api";
 import type { Block } from "../blocks/types";
 import { groupCard, joinGroupPrompt, priceCard, sellNowPrompt, sellSource } from "./sellSource";
 

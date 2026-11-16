@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export type Loaded<T> = { state: "loading" } | { state: "error" } | { state: "ready"; data: T };
 
-export function useLoad<T>(load: () => Promise<T>, key: string): Loaded<T> {
+export function useLoad<T>(load: () => Promise<T>, key: string, refreshMs?: number): Loaded<T> {
   const [result, setResult] = useState<Loaded<T>>({ state: "loading" });
   useEffect(() => {
     let live = true;
@@ -11,9 +11,19 @@ export function useLoad<T>(load: () => Promise<T>, key: string): Loaded<T> {
       (data) => live && setResult({ state: "ready", data }),
       () => live && setResult({ state: "error" }),
     );
+    const timer = refreshMs
+      ? setInterval(() => {
+          if (document.hidden) return;
+          load().then(
+            (data) => live && setResult({ state: "ready", data }),
+            () => undefined,
+          );
+        }, refreshMs)
+      : undefined;
     return () => {
       live = false;
+      if (timer) clearInterval(timer);
     };
-  }, [key]);
+  }, [key, refreshMs]);
   return result;
 }

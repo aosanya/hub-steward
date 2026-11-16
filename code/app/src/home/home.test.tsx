@@ -21,7 +21,7 @@ vi.mock("../pages/started/Ongoing", () => ({
 
 vi.mock("../coordinator/payments/OrderCards", () => ({ CoordinatorOrderCards: () => <p>order cards</p> }));
 
-vi.mock("../sell/buyer/BuyerHome", () => ({ BuyerHome: () => <p>buyer home</p> }));
+vi.mock("../market/sell/buyer/BuyerHome", () => ({ BuyerHome: () => <p>buyer home</p> }));
 
 const kinds: AgencyKind[] = ["farmers", "supplier"];
 

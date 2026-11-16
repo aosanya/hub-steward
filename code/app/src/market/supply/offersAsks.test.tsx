@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { OffersPage } from "./OffersPage";
-import type { BuyerAsk, BuyerAskClient } from "../../sell/group/buyerAsksApi";
+import type { BuyerAsk, BuyerAskClient } from "../sell/group/buyerAsksApi";
 import type { SupplyClient, SupplyOffer, Supplier } from "./api";
 
 const shop: Supplier = { id: "p1", shop: "Kisumu Grain Traders", area: "", sells: "", owner: "m1", status: "approved", approvedBy: "", ownerName: "", approvedByName: "" };

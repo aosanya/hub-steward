@@ -11,6 +11,7 @@ import { CapTintScope } from "../caps/CapTintScope";
 import { IssueCard } from "../IssueCard";
 import { effortPicker } from "../effortPicker";
 import { priorityPicker } from "../priorityPicker";
+import { issuesRefreshMs } from "../refresh";
 import { backlogAccessPath } from "../access/paths";
 import { BoardColumns, columnsOf, stepsOfIssues, useView, ViewSwitch } from "../board";
 import { backlogsHomePath, issuePath, queryParam, searchOf } from "../paths";
@@ -44,7 +45,7 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
   const query = search.get(queryParam) ?? "";
   const selecting = useSelection();
   const targets = useTargets();
-  const loaded = useLoad(async () => ({ backlog: await client.read(backlogId), rows: await issues.issues(backlogId), all: await issues.backlogs() }), `smart:${openAgencyId()}:${backlogId}:${version}`);
+  const loaded = useLoad(async () => ({ backlog: await client.read(backlogId), rows: await issues.issues(backlogId), all: await issues.backlogs() }), `smart:${openAgencyId()}:${backlogId}:${version}`, issuesRefreshMs);
   const may = useMayManage(manage);
   const mayEdit = may.state === "ready" && may.data;
   const back = () => navigate(backlogsHomePath());

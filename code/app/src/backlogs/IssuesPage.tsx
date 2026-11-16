@@ -29,6 +29,7 @@ import { IssueCard } from "./IssueCard";
 import type { TodoCountsClient } from "./todoCounts/api";
 import { TodoCountScope } from "./todoCounts/TodoCountScope";
 import { effortPicker } from "./effortPicker";
+import { issuesRefreshMs } from "./refresh";
 import { priorityPicker } from "./priorityPicker";
 import { backlogsHomePath, boardPath, issuePath, queryParam, searchOf, tagParam } from "./paths";
 import { countWords, narrowed, toggled } from "./tags";
@@ -51,7 +52,7 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
   const selecting = useSelection();
   const targets = useTargets();
   const key = `issues:${openAgencyId()}:${backlogId}:${version}`;
-  const issues = useLoad(() => client.issues(backlogId), key);
+  const issues = useLoad(() => client.issues(backlogId), key, issuesRefreshMs);
   const backlogs = useLoad(() => client.backlogs(), `backlogs:${openAgencyId()}`);
   const mayManage = useMayManage(manage);
   const smart = useLoad(() => smartBacklogs(), `smart-sets:${openAgencyId()}`);
