@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LoadingLine } from "../ui/LoadState";
+import { LoadingLine } from "../../ui/LoadState";
 import { mcpSendClient } from "./api";
 import { withoutCurrent } from "./leftOut";
 import { SendSheet } from "./SendSheet";

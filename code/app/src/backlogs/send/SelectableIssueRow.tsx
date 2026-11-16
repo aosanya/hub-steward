@@ -1,6 +1,6 @@
-import type { Issue } from "../backlogs/api";
-import { IssueCard } from "../backlogs/IssueCard";
-import { SelectionBox, type Selection } from "../ui/ListRow";
+import type { Issue } from "../api";
+import { IssueCard } from "../IssueCard";
+import { SelectionBox, type Selection } from "../../ui/ListRow";
 
 type Props = { issue: Issue; chosen: string[]; selection: Selection };
 

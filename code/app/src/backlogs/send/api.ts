@@ -1,6 +1,6 @@
-import { callTool } from "../wakala/mcp";
-import { hubBacklogOf, itemsOf, taskTools } from "../backlogs/api";
-import { refusalText } from "../backlogs/manage/api";
+import { callTool } from "../../wakala/mcp";
+import { hubBacklogOf, itemsOf, taskTools } from "../api";
+import { refusalText } from "../manage/api";
 import type { SendClient, SendResult, Target } from "./types";
 
 export const sendTools = { move: "taskmanager_task_move_to_step" };

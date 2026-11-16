@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as mcp from "../wakala/mcp";
+import * as mcp from "../../wakala/mcp";
 import { mcpSendClient, targetsOf } from "./api";
 import { withoutCurrent } from "./leftOut";
 import { useSelection } from "./selection";

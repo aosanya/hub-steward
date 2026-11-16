@@ -2,9 +2,9 @@ import { act, render, renderHook, screen, waitFor } from "@testing-library/react
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { openAgency } from "../agency/open";
-import { taskTools } from "../backlogs/api";
-import * as mcp from "../wakala/mcp";
+import { openAgency } from "../../agency/open";
+import { taskTools } from "../api";
+import * as mcp from "../../wakala/mcp";
 import { mcpSendClient, sendTools, targetsOf } from "./api";
 import { SelectableIssueRow } from "./SelectableIssueRow";
 import { selectingShell } from "./SelectionControls";

@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
 import { BacklogsPage } from "../BacklogsPage";
 import { taskTools, type Issue } from "../api";
-import { sendTools } from "../../sendToBacklog";
+import { sendTools } from "../send";
 import { McpError } from "../../wakala/mcp";
 import { choicesOf, mcpSmartBacklogClient, setOf, smartOf, smartTools } from "./api";
 import { AddSmartBacklogScreen, EditSmartBacklogScreen } from "./SmartScreens";

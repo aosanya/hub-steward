@@ -1,5 +1,5 @@
-import { openAgencyId } from "../agency/open";
-import { useLoad } from "../forms/useLoad";
+import { openAgencyId } from "../../agency/open";
+import { useLoad } from "../../forms/useLoad";
 import { mcpSendClient } from "./api";
 import type { SendClient } from "./types";
 

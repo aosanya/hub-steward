@@ -19,7 +19,7 @@ import type { SmartBacklog } from "./smart/types";
 import { Button } from "../ui/Button";
 import { allIssuesId, issuesHeld, mcpBacklogsClient, type BacklogsClient, type Issue } from "./api";
 import { FilterBar } from "./FilterBar";
-import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../sendToBacklog";
+import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "./send";
 import { BoardColumns } from "./board/BoardColumns";
 import { columnsOf, stepsOfIssues } from "./board/board";
 import { useView, ViewSwitch } from "./board/ViewSwitch";

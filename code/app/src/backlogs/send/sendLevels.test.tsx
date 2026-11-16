@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { openAgency } from "../agency/open";
+import { openAgency } from "../../agency/open";
 import { SendBar } from "./SelectionControls";
 import { canSendFrom } from "./leftOut";
 import { SendToBacklogButton } from "./SendToBacklogButton";

@@ -13,7 +13,7 @@ import { useLanguage } from "../../entry/language";
 import { backlogsHomePath, issuePath, issuesPath, queryParam, searchOf, tagParam } from "../paths";
 import { narrowed, toggled } from "../tags";
 import { backlogPagePath } from "../../backlogPage/paths";
-import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../../sendToBacklog";
+import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../../backlogs/send";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../ui/LoadState";
 import { backState } from "../../ui/backTo";
 import { Shell } from "../../ui/Shell";

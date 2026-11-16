@@ -2,10 +2,10 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { openAgency } from "../agency/open";
-import { IssuesPage } from "../backlogs/IssuesPage";
-import type { BacklogsClient, Issue } from "../backlogs/api";
-import * as mcp from "../wakala/mcp";
+import { openAgency } from "../../agency/open";
+import { IssuesPage } from "../IssuesPage";
+import type { BacklogsClient, Issue } from "../api";
+import * as mcp from "../../wakala/mcp";
 import { sendTools } from "./api";
 
 const issue = (id: string, title: string, rank: number): Issue => ({ id, title, description: "", status: "pending", step: "To do", repo: "hub-steward", topics: [], backlog: "Software", mark: "Ready", rank });

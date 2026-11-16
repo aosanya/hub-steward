@@ -18,7 +18,7 @@ import { countWords, narrowed } from "../tags";
 import { openAgencyId } from "../../agency/open";
 import { useLanguage } from "../../entry/language";
 import { backState } from "../../ui/backTo";
-import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../../sendToBacklog";
+import { SelectableIssueRow, SelectButton, selectingShell, SendBar, SendToBacklog, useSelection, useTargets } from "../send";
 import { useLoad } from "../../forms/useLoad";
 import { Button } from "../../ui/Button";
 import { ActionsMenu } from "../../ui/ActionsMenu";
