@@ -17,7 +17,7 @@ type Props = {
 export function IssueListScreen({ title, tool, fields, empty, load, onChoose }: Props) {
   const back = useBackToSection();
   return (
-    <Shell title={title} titleUnder tabless {...back}>
+    <Shell title={title} titleUnder {...back}>
       <MenuList bare title={title} tool={tool} fields={fields} empty={{ words: empty, act: "Home", to: agencyHomePath(openAgencyId()) }} load={load} onChoose={onChoose} />
     </Shell>
   );

@@ -54,7 +54,7 @@ export function StaffMemberScreen() {
   const back = useBackToSection();
   const id = useParams().id ?? "";
   return (
-    <Shell title="Staff member" titleUnder tabless {...back}>
+    <Shell title="Staff member" titleUnder {...back}>
       <MenuDetail bare title="Staff member" tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadMember} />
       <Seats id={id} />
     </Shell>

@@ -6,6 +6,8 @@ import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgen
 import * as mcp from "../../../../shared/wakala/mcp";
 import { AllIssuesScreen, AssignedToMeScreen, IssueScreen, MapViewScreen, ServiceTypesScreen, items, routes } from "./index";
 
+vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
+
 type Args = Record<string, unknown>;
 
 const nearby = [
@@ -294,5 +296,25 @@ describe.each(screens)("$title as a screen of the Issues & Requests section", ({
     expect(card.querySelector("svg, img")).toBeNull();
     expect(screen.queryByRole("searchbox")).toBeNull();
     expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
+  });
+});
+
+describe.each(screens)("$title bottom tab bar", ({ at }) => {
+  it("draws the main tab bar like every other section screen", async () => {
+    open(at);
+    await waitFor(() => expect(called).toHaveBeenCalled());
+
+    const bar = screen.getByRole("navigation", { name: "Main" });
+    expect(within(bar).getByRole("link", { name: /Home/ })).toBeInTheDocument();
+  });
+});
+
+describe("an issue's bottom tab bar", () => {
+  it("draws the main tab bar like every other section screen", async () => {
+    await openIssue(/Broken streetlight/, "i1");
+    await screen.findByText("A crew is booked for Monday.");
+
+    const bar = screen.getByRole("navigation", { name: "Main" });
+    expect(within(bar).getByRole("link", { name: /Home/ })).toBeInTheDocument();
   });
 });

@@ -32,7 +32,7 @@ export function IssueScreen() {
     );
   };
   return (
-    <Shell title={issue.title} titleUnder tabless {...back}>
+    <Shell title={issue.title} titleUnder {...back}>
       {issue.status ? <Chip>{issue.status}</Chip> : null}
       <IssueReplies raisedItemID={id} version={version} />
       <TextArea label="Your reply" value={draft} onChange={(event) => setDraft(event.target.value)} />
