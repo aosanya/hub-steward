@@ -70,6 +70,21 @@ describe("asking for a sign-in link", () => {
     expect(await httpEntryClient.sendSignInLink("g@example.org", "/x")).toBe(outcome);
   });
 
+  it("answers refused, not invalid, when the hub says the app address is not allowed", async () => {
+    vi.stubGlobal("fetch", respond(400, { error: "that redirect is not one of the member app's addresses" }));
+    const outcome: string = await httpEntryClient.sendSignInLink("g@example.org", "https://app.example/back");
+    expect(outcome).toBe("refused");
+  });
+
+  it.each([
+    "that does not look like an email address",
+    "an email address is required",
+  ])("still answers invalid when the hub says %j", async (error) => {
+    vi.stubGlobal("fetch", respond(400, { error }));
+    const outcome: string = await httpEntryClient.sendSignInLink("g@example.org", "/x");
+    expect(outcome).toBe("invalid");
+  });
+
   it("answers offline when the network fails", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("Failed to fetch")));
     expect(await httpEntryClient.sendSignInLink("g@example.org", "/x")).toBe("offline");
