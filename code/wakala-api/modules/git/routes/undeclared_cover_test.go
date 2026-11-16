@@ -54,7 +54,7 @@ func newGitManager(t *testing.T) mwanachamagit.GitManager {
 	return gm
 }
 
-func serve(t *testing.T, rs []routes.Route) *httptest.Server {
+func serveRoutes(t *testing.T, rs []routes.Route) *httptest.Server {
 	t.Helper()
 	mux := http.NewServeMux()
 	for _, rt := range rs {
@@ -259,7 +259,7 @@ func TestADeniedActionRefusesTheDeclaredRoutesWith403(t *testing.T) {
 	deny := func(ctx context.Context, action string) error {
 		return context.Canceled
 	}
-	srv := serve(t, routes.RoutesFor(gm, routes.Mount{Authorize: deny}))
+	srv := serveRoutes(t, routes.RoutesFor(gm, routes.Mount{Authorize: deny}))
 	code, body := send(t, srv, "POST", "/repos", `{"name":"alpha"}`)
 	if code != http.StatusForbidden {
 		t.Fatalf("want 403, got %d: %s", code, body)
