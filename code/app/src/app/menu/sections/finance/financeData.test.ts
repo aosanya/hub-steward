@@ -3,6 +3,9 @@ import {
   billRow,
   budgetRow,
   dayWords,
+  dayStart,
+  lastDayOf,
+  periodEndOf,
   moneyWords,
   paymentRow,
   periodWords,
@@ -55,7 +58,24 @@ describe("money and period words", () => {
   });
 
   it("joins two days into a period", () => {
-    expect(periodWords("2026-01-01T00:00:00Z", "2026-02-01T00:00:00Z")).toBe("2026-01-01 to 2026-02-01");
+    expect(periodWords("2026-01-01T00:00:00Z", "2026-02-01T00:00:00Z")).toBe("2026-01-01 to 2026-01-31");
+  });
+
+  it("shows the hub's exclusive end as the last day, across month and year ends", () => {
+    expect(lastDayOf("2027-01-01T00:00:00Z")).toBe("2026-12-31");
+    expect(lastDayOf("2026-03-01")).toBe("2026-02-28");
+    expect(lastDayOf("2028-03-01")).toBe("2028-02-29");
+    expect(lastDayOf("")).toBe("");
+  });
+
+  it("sends the typed last day as the next day at midnight, across month and year ends", () => {
+    expect(periodEndOf("2026-12-31")).toBe("2027-01-01T00:00:00Z");
+    expect(periodEndOf("2026-02-28")).toBe("2026-03-01T00:00:00Z");
+    expect(periodEndOf("2028-02-28")).toBe("2028-02-29T00:00:00Z");
+  });
+
+  it("sends a typed first day at midnight", () => {
+    expect(dayStart("2026-01-01")).toBe("2026-01-01T00:00:00Z");
   });
 });
 
@@ -117,7 +137,7 @@ describe("quote rows", () => {
 describe("report rows", () => {
   it("builds its id from the period and shows the period as meta", () => {
     const row = reportRow({ name: "Q1", period_start: "2026-01-01", period_end: "2026-02-01" });
-    expect(row).toEqual({ id: "2026-01-01~2026-02-01", name: "Q1", meta: "2026-01-01 to 2026-02-01" });
+    expect(row).toEqual({ id: "2026-01-01~2026-02-01", name: "Q1", meta: "2026-01-01 to 2026-01-31" });
   });
 
   it("reads the period back out of the id", () => {

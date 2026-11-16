@@ -64,7 +64,8 @@ beforeEach(() => {
     if (name === "accounting_report_list") return reportList();
     if (name === "accounting_report_read") {
       const start = String((args as Args)?.period_start).slice(0, 10);
-      const report = reports.find((one) => one.period_start === start);
+      const end = String((args as Args)?.period_end).slice(0, 10);
+      const report = reports.find((one) => one.period_start === start && one.period_end === end);
       if (!report) throw new Error("no budget lines were set for that period");
       return { ...report, figures: figuresOf[start], lines: linesOf[start] };
     }
@@ -83,9 +84,9 @@ describe("the Financial Reports list", () => {
     openReports();
 
     expect(await screen.findByText("First quarter")).toBeInTheDocument();
-    expect(screen.getByText("2026-01-01 to 2026-04-01")).toBeInTheDocument();
+    expect(screen.getByText("2026-01-01 to 2026-03-31")).toBeInTheDocument();
     expect(screen.getByText("Second quarter")).toBeInTheDocument();
-    expect(screen.getByText("2026-04-01 to 2026-07-01")).toBeInTheDocument();
+    expect(screen.getByText("2026-04-01 to 2026-06-30")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Financial Reports" })).toBeInTheDocument();
     expect(callsTo("accounting_report_list")).toHaveLength(1);
   });
@@ -98,7 +99,7 @@ describe("the Financial Reports list", () => {
     await waitFor(() => expect(pane().textContent).toContain("8,300"));
     expect(callsTo("accounting_report_read")[0][2]).toEqual({ period_start: "2026-04-01", period_end: "2026-07-01" });
     expect(pane().textContent).toContain("Second quarter");
-    expect(pane().textContent).toContain("2026-04-01 to 2026-07-01");
+    expect(pane().textContent).toContain("2026-04-01 to 2026-06-30");
     expect(pane().textContent).toContain("8,000");
     expect(pane().textContent).toContain("-300");
   });
@@ -164,12 +165,13 @@ describe("choosing a period", () => {
     await userEvent.click(within(periodCard()).getByRole("button", { name: "Read report" }));
   };
 
-  it("reads the report of the chosen period and shows its totals and lines", async () => {
+  it("reads the report of the chosen period, sending the typed last day as the next day, and shows its totals and lines", async () => {
     openReports();
-    await choose("2026-04-01", "2026-07-01");
+    await choose("2026-04-01", "2026-06-30");
 
     await waitFor(() => expect(periodCard().textContent).toContain("8,300"));
     expect(callsTo("accounting_report_read")[0][2]).toEqual({ period_start: "2026-04-01T00:00:00Z", period_end: "2026-07-01T00:00:00Z" });
+    expect(periodCard().textContent).toContain("2026-04-01 to 2026-06-30");
     expect(periodCard().textContent).toContain("Bus shelters");
     expect(periodCard().textContent).toContain("-300");
   });
@@ -178,8 +180,16 @@ describe("choosing a period", () => {
     openReports();
     await choose("2026-07-01", "2026-04-01");
 
-    expect(await screen.findByText("The end date must come after the start date.")).toBeInTheDocument();
+    expect(await screen.findByText("The end date must not come before the start date.")).toBeInTheDocument();
     expect(callsTo("accounting_report_read")).toHaveLength(0);
+  });
+
+  it("allows a one-day period and asks for the next day as its end", async () => {
+    openReports();
+    await choose("2026-04-01", "2026-04-01");
+
+    expect(await screen.findByText("No report could be read for that period.")).toBeInTheDocument();
+    expect(callsTo("accounting_report_read")[0][2]).toEqual({ period_start: "2026-04-01T00:00:00Z", period_end: "2026-04-02T00:00:00Z" });
   });
 
   it("refuses an empty period in words and makes no call", async () => {
@@ -192,7 +202,7 @@ describe("choosing a period", () => {
 
   it("says so in words when no budget lines were set for the period", async () => {
     openReports();
-    await choose("2027-01-01", "2027-04-01");
+    await choose("2027-01-01", "2027-03-31");
 
     expect(await screen.findByText("No report could be read for that period.")).toBeInTheDocument();
   });

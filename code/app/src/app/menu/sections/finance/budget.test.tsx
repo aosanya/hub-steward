@@ -99,7 +99,7 @@ describe("the Budget list", () => {
     await waitFor(() => expect(pane()).not.toBeNull());
     await waitFor(() => expect(pane().textContent).toContain("Public Works"));
     expect(pane().textContent).toContain("Sample Road Repairs");
-    expect(pane().textContent).toContain("2026-01-01 to 2026-02-01");
+    expect(pane().textContent).toContain("2026-01-01 to 2026-01-31");
     expect(pane().textContent).toContain("1,000");
     expect(pane().textContent).toContain("250");
     expect(callsTo("accounting_budget_read")[0][2]).toEqual({ budgetID: "b1" });
@@ -158,7 +158,7 @@ describe("adding a budget line", () => {
     await userEvent.type(screen.getByLabelText("Name"), "Winter Salt");
     await userEvent.type(screen.getByLabelText("Department"), "Public Works");
     await userEvent.type(screen.getByLabelText("Period start"), "2026-03-01");
-    await userEvent.type(screen.getByLabelText("Period end"), "2026-04-01");
+    await userEvent.type(screen.getByLabelText("Period end"), "2026-03-31");
     await userEvent.type(screen.getByLabelText("Amount"), "4000");
   };
 
@@ -178,6 +178,23 @@ describe("adding a budget line", () => {
       amount: 4000,
     });
     expect(screen.queryByLabelText("Name")).toBeNull();
+  });
+
+  it("sends the typed last day of the period as the next day, so 2026-12-31 is sent as 2027-01-01", async () => {
+    open();
+    await userEvent.click(await screen.findByRole("button", { name: "Add budget line" }));
+    await userEvent.click(await screen.findByRole("button", { name: /Account/ }));
+    await userEvent.click(await screen.findByRole("option", { name: /roads/ }));
+    await userEvent.type(screen.getByLabelText("Name"), "Year Salt");
+    await userEvent.type(screen.getByLabelText("Period start"), "2026-01-01");
+    await userEvent.type(screen.getByLabelText("Period end"), "2026-12-31");
+    await userEvent.type(screen.getByLabelText("Amount"), "900");
+    await userEvent.click(screen.getByRole("button", { name: "Save budget line" }));
+
+    await screen.findByText("Year Salt");
+    expect(callsTo("accounting_budget_set")[0][2]).toMatchObject({ period_start: "2026-01-01T00:00:00Z", period_end: "2027-01-01T00:00:00Z" });
+    await userEvent.click(screen.getByRole("button", { name: /Year Salt/ }));
+    await waitFor(() => expect(pane().textContent).toContain("2026-01-01 to 2026-12-31"));
   });
 
   it("keeps the form and shows the refusal in its own words", async () => {
