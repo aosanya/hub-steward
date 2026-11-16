@@ -33,6 +33,22 @@
                {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
       "returns": [{"body": true}]
     },
+    "next_ready": {
+      "method": "GET", "path": "/next-ready", "call": "NextReady", "action": "taskmanager.task.next_ready",
+      "title": "The next Ready issue to take",
+      "description": "Find the next issue a worker should take with one cheap call: the issues at the To do step that carry the Ready tag, lowest rank first. It returns total_ready (every Ready issue the filters match) and items: the first limit issues, each compact (id, code, title, priority, effort, tags, rank, backlog, step) and without the description. An issue tagged Sinbin, Blocked or Waiting is never returned, even if it also carries Ready. Narrow by backlog (id or name; a backlog the caller cannot see is refused as unknown) and tag (repeat it to require every tag). limit is 1 to 5 and defaults to 1. items is empty and total_ready is 0 when none match. To read the issue in full use taskmanager_task_read.",
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
+      "returns": [{"body": true}]
+    },
+    "pending_todos": {
+      "method": "GET", "path": "/pending-todos", "call": "PendingTodos", "action": "taskmanager.task.todo.pending",
+      "title": "What is left on the issues in progress",
+      "description": "For one backlog, the todos that are not Done of every issue that is in progress, in one call, instead of reading the In Progress step and then each issue's todo list. backlog (its id or name) is required: a blank or missing one is refused with 400, and a backlog that does not exist or that the caller cannot see is refused as unknown, so its existence is not confirmed. An issue counts as in progress when its state is In Progress, whatever its step is called. It returns total (the in-progress issues), total_pending_todos (the todos that are not Done over all of them) and items: the first limit in-progress issues in rank order, each compact (id, code, title, priority, tags, step) with todos, the ones that are not Done in order, each with id, code, title, ordinality, state (To do, In progress or Blocked), blocked_reason and depends_on, and done and total, the counts taskmanager_task_todo_list_for_issue gives. An in-progress issue with no pending todo is still listed, with an empty todos list. limit defaults to 25 and is at most 100; pass offset (0 or more) to read the next page of issues. To read one issue's whole todo list use taskmanager_task_todo_list_for_issue.",
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the backlogs their groups can see."}],
+      "returns": [{"body": true}]
+    },
     "find_tasks": {
       "method": "GET", "path": "/find-tasks", "call": "FindTasks", "action": "taskmanager.task.find",
       "title": "Find issues by id, code or words",

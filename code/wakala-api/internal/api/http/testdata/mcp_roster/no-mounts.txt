@@ -696,6 +696,7 @@ taskmanager_task_list_assignments
 taskmanager_task_list_overdue
 taskmanager_task_move
 taskmanager_task_move_to_step
+taskmanager_task_next_ready
 taskmanager_task_note_add
 taskmanager_task_note_list
 taskmanager_task_patch

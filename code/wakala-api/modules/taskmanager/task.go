@@ -49,6 +49,8 @@ type TaskManager interface {
 
 	FindTasks(ctx context.Context, filter FindFilter) (FoundTasks, error)
 
+	NextReady(ctx context.Context, filter NextReadyFilter) (NextReady, error)
+
 	ListTaskStates(ctx context.Context) (TaskStateList, error)
 
 	MoveTaskToState(ctx context.Context, taskID, state string) (Task, error)
