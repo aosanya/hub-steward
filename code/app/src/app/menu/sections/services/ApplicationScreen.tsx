@@ -10,9 +10,15 @@ import { MenuDetail, actionFailedWords, loadFailedWords } from "../../MenuDetail
 import { useBackToSection } from "../../useBackToSection";
 import { useWord } from "../../../../features/agency/useWord";
 import { listOf, text, type Item } from "../staff/staffData";
-import { ApplicationCorrect, type SentAnswer } from "./ApplicationCorrect";
+import { MenuEditForm, type EditField } from "../../MenuEditForm";
 
 export const withdrawLabel = "Withdraw";
+
+export const correctPermission = "application.correct";
+
+const correctTool = "forms_submission_correct";
+
+type SentAnswer = { id: string; questionId: string; prompt: string; valueKey: string; value: string };
 
 const withdrawnWords = "Withdrawn";
 
@@ -34,6 +40,29 @@ const loadAnswers = async (formId: string) => {
   return { sent, memberId: answers.map((answer) => text(answer, "member_id")).find((id) => id !== "") ?? "" };
 };
 
+function ApplicationCorrection({ formId, memberId, answers, onSaved }: { formId: string; memberId: string; answers: SentAnswer[]; onSaved: () => void }) {
+  const editable = answers.filter((answer) => answer.valueKey !== "");
+  if (!memberId || editable.length === 0) return null;
+  const fields: EditField[] = editable.map((answer) => ({ label: answer.prompt, key: answer.id, kind: answer.valueKey === "value_number" ? "number" : "text" }));
+  const build = (sent: Record<string, unknown>) => ({
+    form_id: formId,
+    member_id: memberId,
+    answers: editable.filter((answer) => answer.id in sent).map((answer) => ({ question_id: answer.questionId, [answer.valueKey]: sent[answer.id] })),
+  });
+  return (
+    <MenuEditForm
+      item={Object.fromEntries(editable.map((answer) => [answer.id, answer.value]))}
+      id={formId}
+      idArg="form_id"
+      tool={correctTool}
+      permission={correctPermission}
+      fields={fields}
+      build={build}
+      onSaved={onSaved}
+    />
+  );
+}
+
 function ApplicationAnswers({ formId, version, onCorrected }: { formId: string; version: number; onCorrected: () => void }) {
   const view = useLoad(() => loadAnswers(formId), `application-answers:${openAgencyId()}:${formId}:${version}`);
   if (view.state === "loading") return <LoadingLine />;
@@ -45,7 +74,7 @@ function ApplicationAnswers({ formId, version, onCorrected }: { formId: string; 
           <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />
         ))}
       </Rows>
-      <ApplicationCorrect formId={formId} memberId={view.data.memberId} answers={view.data.sent} onSaved={onCorrected} />
+      <ApplicationCorrection formId={formId} memberId={view.data.memberId} answers={view.data.sent} onSaved={onCorrected} />
     </>
   );
 }

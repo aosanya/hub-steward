@@ -28,7 +28,12 @@ export const mcpAssignedClient: AssignedClient = {
     if (view === null) return [];
     if (view.modulesUnread) throw new Error("modules unread");
     if (!hasModule(view, taskModule)) return [];
-    const me = await callTool("", "actor_get_my_actor");
-    return assignedIssuesOf(await fetchAll({}), text(me?.id));
+    try {
+      const me = await callTool("", "actor_get_my_actor");
+      return assignedIssuesOf(await fetchAll({}), text(me?.id));
+    } catch (reason) {
+      if (agencyInstanceAbsent(reason)) return [];
+      throw reason;
+    }
   },
 };

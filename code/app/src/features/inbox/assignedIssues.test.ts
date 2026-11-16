@@ -77,6 +77,11 @@ describe("the read of the member's issues", () => {
     expect(spy.mock.calls.map((c) => c[1])).not.toContain("taskmanager_task_list");
   });
 
+  it("finds none when the modules are listed but the issue list answers that the agency instance is not found", async () => {
+    hub(withTaskModule, (tool) => (tool === "actor_get_my_actor" ? { id: "m1" } : new Error("taskmanager_task_list: agencies: instance not found")));
+    await expect(mcpAssignedClient.assigned()).resolves.toEqual([]);
+  });
+
   it("fails when the issues cannot be read, so the count is not taken for none", async () => {
     hub(withTaskModule, (tool) => (tool === "actor_get_my_actor" ? { id: "m1" } : new Error("down")));
     await expect(mcpAssignedClient.assigned()).rejects.toThrow();

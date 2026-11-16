@@ -435,4 +435,18 @@ describe("the shared menu edit form with a date field", () => {
 
     await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { tenderID: "t1", closes_at: "" }]]));
   });
+
+  it("saves through the call a build prop shapes from the changed fields", async () => {
+    const build = (sent: Record<string, unknown>) => ({ form_id: "f1", answers: Object.entries(sent).map(([question_id, value]) => ({ question_id, value })) });
+    render(<MenuEditForm item={item} id="b1" idArg="budgetID" tool="accounting_budget_set" permission="accounting.manage" fields={fields} build={build} />);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Department"), "!");
+    const amount = screen.getByLabelText("Amount");
+    await userEvent.clear(amount);
+    await userEvent.type(amount, "2500");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { form_id: "f1", answers: [{ question_id: "department", value: "Public Works!" }, { question_id: "amount", value: 2500 }] }]]));
+  });
 });
