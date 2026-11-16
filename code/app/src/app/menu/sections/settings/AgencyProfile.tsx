@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
@@ -23,6 +24,7 @@ const loadProfile = async (): Promise<Profile> => {
 
 export function AgencyProfile() {
   const back = useBackToSection();
+  const word = useWord();
   const [saved, setSaved] = useState(0);
   const [draft, setDraft] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
@@ -38,7 +40,7 @@ export function AgencyProfile() {
     }
   };
   return (
-    <Shell title="Agency Profile" titleUnder {...back}>
+    <Shell title={word("Agency Profile")} titleUnder {...back}>
       {view.state === "loading" ? <LoadingLine /> : null}
       {view.state === "error" ? <LoadFailed words={loadFailedWords} /> : null}
       {view.state === "ready" ? (

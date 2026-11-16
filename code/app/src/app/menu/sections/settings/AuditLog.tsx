@@ -1,3 +1,4 @@
+import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { dateTimeWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
@@ -18,5 +19,6 @@ const loadEntries = async () =>
     }));
 
 export function AuditLog() {
-  return <MenuList title="Audit Log" tool="audit_list_entries" load={loadEntries} fields={{ title: "what", meta: "who" }} empty={{ words: "Nothing has been recorded yet." }} />;
+  const word = useWord();
+  return <MenuList title={word("Audit Log")} tool="audit_list_entries" load={loadEntries} fields={{ title: "what", meta: "who" }} empty={{ words: "Nothing has been recorded yet." }} />;
 }

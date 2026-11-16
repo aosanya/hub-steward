@@ -1,3 +1,4 @@
+import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
@@ -15,11 +16,17 @@ const loadAreas = async () => {
 
 const loadArea = async (id: string) => ({ id, residents: await populationOf(id) });
 
+const genericAreas = "Boundaries & Areas";
+
+const areasInSentence = (listed: string) => (listed === genericAreas ? "areas" : listed.toLowerCase());
+
 export function BoundariesAndAreas() {
+  const word = useWord();
+  const title = word(genericAreas);
   return (
     <MenuWindow
-      title="Boundaries & Areas"
-      list={{ title: "Boundaries & Areas", tool: "actor_list_groups", load: loadAreas, fields: { title: "name", meta: "residents" }, empty: { words: "No areas have been added yet." } }}
+      title={title}
+      list={{ title, tool: "actor_list_groups", load: loadAreas, fields: { title: "name", meta: "residents" }, empty: { words: `No ${areasInSentence(title)} have been added yet.` } }}
       detail={{ tool: "actor_get_group_population", load: loadArea, fields: { Residents: "residents" }, status: "status" }}
     />
   );

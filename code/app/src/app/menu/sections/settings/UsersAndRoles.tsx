@@ -1,3 +1,4 @@
+import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
@@ -31,10 +32,12 @@ const loadPerson = async (id: string) => {
 };
 
 export function UsersAndRoles() {
+  const word = useWord();
+  const title = word("Users & Roles");
   return (
     <MenuWindow
-      title="Users & Roles"
-      list={{ title: "Users & Roles", tool: "actor_list_actors", load: loadPeople, fields: { title: "display_name", meta: "roles" }, empty: { words: "No one has joined this agency yet." } }}
+      title={title}
+      list={{ title, tool: "actor_list_actors", load: loadPeople, fields: { title: "display_name", meta: "roles" }, empty: { words: "No one has joined this agency yet." } }}
       detail={{ tool: "actor_get_actor_standing", load: loadPerson, fields: { Name: "display_name", Roles: "roles" }, status: "status" }}
     />
   );
