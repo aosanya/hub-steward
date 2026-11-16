@@ -36,6 +36,8 @@ type PendingTodos struct {
 	Items             []PendingTodosIssue `json:"items"`
 }
 
+const inProgressStepName = "in progress"
+
 var finishedTodoStatuses = []string{string(TodoStatusCompleted), string(TodoStatusSkipped)}
 
 func (m *taskManager) PendingTodos(ctx context.Context, filter PendingTodosFilter) (PendingTodos, error) {
@@ -96,14 +98,61 @@ func (m *taskManager) requireVisibleBacklog(ctx context.Context, backlogs []mode
 }
 
 func (m *taskManager) inProgressIssues(ctx context.Context, filter PendingTodosFilter) (func() *gorm.DB, error) {
-	backlog := strings.TrimSpace(filter.Backlog)
-	if _, err := m.scopedTasks(ctx, backlog, "", nil, filter.RequesterID); err != nil {
+	backlogs, err := m.backlogs(ctx)
+	if err != nil {
+		return nil, err
+	}
+	name := strings.TrimSpace(filter.Backlog)
+	found, ok := backlogNamed(backlogs, name)
+	if !ok {
+		return nil, fmt.Errorf("%w: %q", ErrUnknownBacklog, name)
+	}
+	if found.Smart() {
+		where, args := atInProgressSteps(backlogs)
+		return m.issuesAt(ctx, filter, name, "", where, args)
+	}
+	step, has := inProgressStep(found)
+	if !has {
+		return m.issuesAt(ctx, filter, name, "", "1 = 0", nil)
+	}
+	return m.issuesAt(ctx, filter, name, step.ID, "", nil)
+}
+
+func (m *taskManager) issuesAt(ctx context.Context, filter PendingTodosFilter, backlog, stepID, where string, args []any) (func() *gorm.DB, error) {
+	if _, err := m.scopedTasks(ctx, backlog, stepID, nil, filter.RequesterID); err != nil {
 		return nil, err
 	}
 	return func() *gorm.DB {
-		q, _ := m.scopedTasks(ctx, backlog, "", nil, filter.RequesterID)
-		return q.Where("status = ?", string(TaskStatusInProgress))
+		q, _ := m.scopedTasks(ctx, backlog, stepID, nil, filter.RequesterID)
+		if where != "" {
+			q = q.Where(where, args...)
+		}
+		return q
 	}, nil
+}
+
+func inProgressStep(b models.Backlog) (models.BacklogStep, bool) {
+	for _, s := range b.Steps {
+		if strings.EqualFold(strings.TrimSpace(s.Name), inProgressStepName) {
+			return s, true
+		}
+	}
+	return models.BacklogStep{}, false
+}
+
+func atInProgressSteps(backlogs []models.Backlog) (string, []any) {
+	var pairs []string
+	var args []any
+	for _, b := range backlogs {
+		if step, ok := inProgressStep(b); ok && !b.Smart() {
+			pairs = append(pairs, "(backlog = ? AND step = ?)")
+			args = append(args, b.ID, step.ID)
+		}
+	}
+	if len(pairs) == 0 {
+		return "1 = 0", nil
+	}
+	return "(" + strings.Join(pairs, " OR ") + ")", args
 }
 
 func (m *taskManager) issuesWithPendingTodos(ctx context.Context, backlogs []models.Backlog, rows []pendingRow) ([]PendingTodosIssue, error) {

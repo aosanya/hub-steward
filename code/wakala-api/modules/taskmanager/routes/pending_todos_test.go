@@ -269,3 +269,69 @@ func TestPendingTodosIsAnMCPToolNamedByItsAction(t *testing.T) {
 	}
 	t.Fatal("no tool for taskmanager.task.todo.pending")
 }
+
+func (f *pendingTodosFixture) issueMovedTo(code, backlog, step string) string {
+	f.h.t.Helper()
+	made := f.h.expect(http.StatusCreated, "owner", "POST", "/tasks", map[string]any{"title": "issue " + code, "code": code, "backlog": backlog})
+	id := made["id"].(string)
+	f.issues[code] = id
+	moved := f.h.expect(http.StatusOK, "owner", "POST", "/tasks/"+id+"/move-to-step", map[string]any{"backlog": backlog, "step": step})
+	return moved["status"].(string)
+}
+
+func TestPendingTodosListsAnIssueAtTheInProgressStepWhoseStatusIsStillPending(t *testing.T) {
+	f := newPendingTodosFixture(t)
+	if status := f.issueMovedTo("G", "book", "in-progress"); status != "pending" {
+		t.Fatalf("moving to the step set the status %s", status)
+	}
+	f.todos("G", "g-todo")
+
+	got := f.h.expect(http.StatusOK, "owner", "GET", "/pending-todos?backlog=book", nil)
+
+	g := pendingTodoItem(t, got, "G")
+	if strings.Join(pendingTodoTitles(g), "|") != "g-todo" || got["total"] != float64(4) {
+		t.Fatalf("G %v, total %v", g, got["total"])
+	}
+}
+
+func TestPendingTodosNeverListsAnIssueAtAnotherStepWhoseStatusIsInProgress(t *testing.T) {
+	f := newPendingTodosFixture(t)
+	f.issueMovedTo("H", "book", "open")
+	f.h.expect(http.StatusOK, "owner", "PATCH", "/tasks/"+f.issues["H"], map[string]any{"status": "in_progress"})
+
+	got := f.h.expect(http.StatusOK, "owner", "GET", "/pending-todos?backlog=book", nil)
+
+	for _, code := range pendingTodoCodes(got) {
+		if code == "H" {
+			t.Errorf("issue %s is listed: %v", code, got)
+		}
+	}
+}
+
+func TestPendingTodosFindsTheInProgressStepWhateverItsIdIs(t *testing.T) {
+	f := newPendingTodosFixture(t)
+	f.h.expect(http.StatusCreated, "owner", "POST", "/backlogs", map[string]any{"name": "Board", "steps": []string{"Open", "Doing", "Done"}})
+	f.h.expect(http.StatusOK, "owner", "PUT", "/backlogs/board/steps/doing", map[string]string{"name": "In Progress"})
+	f.issueMovedTo("J", "board", "doing")
+	f.issueMovedTo("K", "board", "open")
+	f.h.expect(http.StatusOK, "owner", "PATCH", "/tasks/"+f.issues["K"], map[string]any{"status": "in_progress"})
+
+	got := f.h.expect(http.StatusOK, "owner", "GET", "/pending-todos?backlog=board", nil)
+
+	if strings.Join(pendingTodoCodes(got), "|") != "J" {
+		t.Fatalf("the step id doing listed %v", pendingTodoCodes(got))
+	}
+}
+
+func TestPendingTodosListsNothingForABacklogWithNoInProgressStep(t *testing.T) {
+	f := newPendingTodosFixture(t)
+	f.h.expect(http.StatusCreated, "owner", "POST", "/backlogs", map[string]any{"name": "Plain", "steps": []string{"Open", "Done"}})
+	f.issueMovedTo("L", "plain", "open")
+	f.h.expect(http.StatusOK, "owner", "PATCH", "/tasks/"+f.issues["L"], map[string]any{"status": "in_progress"})
+
+	got := f.h.expect(http.StatusOK, "owner", "GET", "/pending-todos?backlog=plain", nil)
+
+	if got["total"] != float64(0) || len(pendingTodoCodes(got)) != 0 {
+		t.Fatalf("got %v", got)
+	}
+}
