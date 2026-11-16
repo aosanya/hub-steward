@@ -1,5 +1,5 @@
 (function () {
-  var menu = [
+  var menu = window.mockupPages || [
     { page: 'tabs.html', label: 'Tabs' },
     { label: 'Chat', items: [
       ['chat-list.html', 'Chat list'],
@@ -23,22 +23,9 @@
       ['worker-caps.html', 'Worker caps']
     ] },
     { page: 'files.html', label: 'Folders' },
-    { label: 'Menu', items: [
-      ['menu.html', 'Menu'],
-      ['menu-assets.html', 'Assets & Works'],
-      ['menu-properties.html', 'Properties & Addresses'],
-      ['menu-issues.html', 'Issues & Requests'],
-      ['menu-services.html', 'Services & Permits'],
-      ['menu-residents.html', 'Residents'],
-      ['menu-council.html', 'Council & Decisions'],
-      ['menu-finance.html', 'Finance'],
-      ['menu-staff.html', 'Staff & Departments'],
-      ['menu-settings.html', 'Settings']
-    ] },
     { label: 'Forms', items: [
       ['form.html', 'Forms'],
-      ['workflow.html', 'Workflow'],
-      ['step-questions.html', 'Step questions']
+      ['workflow.html', 'Workflow']
     ] }
   ];
   var homeIcon = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/></svg>';

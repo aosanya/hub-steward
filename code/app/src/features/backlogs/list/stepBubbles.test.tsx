@@ -14,7 +14,7 @@ const hubItems = {
     { id: "backlog", name: "Backlog", issues: 1675, steps: [step("To do", 1301), step("Waiting", 289), step("Doing", 81), step("Done", 4), step("Cancelled", 0)] },
     { id: "docs", name: "Docs", issues: 30, steps: [step("To do", 20), step("Review", 6), step("Done", 4)] },
     { id: "swe", name: "hub-steward-swe", issues: 10, steps: [], kind: "smart" },
-    { id: "hm", name: "hungarian-municipality", issues: 43, steps: [], kind: "smart" },
+    { id: "hm", name: "demo-agency", issues: 43, steps: [], kind: "smart" },
   ],
 };
 
@@ -99,7 +99,7 @@ describe("step bubbles on the Backlogs list", () => {
     const spy = answering();
     openList();
     await waitFor(() => expect(bubblesOf("hub-steward-swe")).toEqual(["Doing: 5", "Done: 3", "To do: 1", "Cancelled: 1"]));
-    expect(bubblesOf("hungarian-municipality")).toEqual(["Waiting: 40", "To do: 3"]);
+    expect(bubblesOf("demo-agency")).toEqual(["Waiting: 40", "To do: 3"]);
     const pending = spy.mock.calls.filter((call) => call[1] === taskTools.pending);
     expect(pending.map((call) => (call[2] as any).backlog).sort()).toEqual(["hm", "swe"]);
     pending.forEach((call) => expect((call[2] as any).include_closed).toBe(true));

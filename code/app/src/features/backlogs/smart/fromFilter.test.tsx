@@ -13,7 +13,7 @@ const issue = (id: string, title: string, over: Partial<Issue> = {}): Issue => (
 
 const client: BacklogsClient = {
   backlogs: async () => [{ id: "b1", name: "Software", steps: ["To do"], issues: 2 }],
-  issues: async () => [issue("1", "Import the municipality", { mark: "Blocked" }), issue("2", "Switch on the custody module")],
+  issues: async () => [issue("1", "Import the farmers agency", { mark: "Blocked" }), issue("2", "Switch on the custody module")],
   issue: async () => ({ ...issue("1", "x"), waitsOn: [], waitedOnBy: [] }),
 };
 
@@ -85,13 +85,13 @@ describe("Save as smart backlog on a filtered list", () => {
 
   it("is not offered without a filter", async () => {
     at("/a/hub-1/backlogs/all", true, []);
-    await screen.findByText("Import the municipality");
+    await screen.findByText("Import the farmers agency");
     expect(screen.queryByRole("button", { name: "Save as smart backlog" })).toBeNull();
   });
 
   it("is not offered to a person who may not manage backlogs", async () => {
     at("/a/hub-1/backlogs/all?tag=Software", false, []);
-    await screen.findByText("Import the municipality");
+    await screen.findByText("Import the farmers agency");
     expect(screen.queryByRole("button", { name: "Save as smart backlog" })).toBeNull();
   });
 

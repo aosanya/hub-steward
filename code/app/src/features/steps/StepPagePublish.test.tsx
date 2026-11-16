@@ -12,7 +12,7 @@ const confirm: MemberStep = {
   id: "s2",
   title: "Confirm arrival",
   formName: "Arrival",
-  roleName: "Mayor",
+  roleName: "Director",
   workflowName: "Case referral",
   opensIn: "form",
   agencyName: "",

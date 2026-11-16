@@ -8,7 +8,7 @@
 
 Screens: [all three in order](../../../2.%20design/mockups/journeys/25-send-a-report/index.html).
 
-This journey is drawn only. It uses the municipality template's Report, Idea or Complaint with a council's agent, which is not one of the eight demo agencies.
+This journey is drawn only. It uses a Report, Idea or Complaint template with the agency's agent, which is not one of the eight demo agencies.
 
 ## Steps
 
@@ -18,7 +18,7 @@ This journey is drawn only. It uses the municipality template's Report, Idea or 
 
 ## What the drawings invent
 
-The themes, the wording, the agent's name, the reference and the dates are drawn for the page from the municipality template.
+The themes, the wording, the agent's name, the reference and the dates are drawn for the page from that template.
 
 ## Not yet built
 

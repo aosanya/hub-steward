@@ -104,7 +104,7 @@ The assistant page (`hub-steward/code/app/src/features/assistant`) shows a write
 ```text
 You: open 2
 +--------------------------------+
-| 2  Import the municipality     |
+| 2  Import the Siaya agency     |
 | Load the English template into |
 | the local database and check   |
 | that all 46 workflows are      |
@@ -124,7 +124,7 @@ on line and no buttons.
 | The owner says | The roles answer, one line |
 |---|---|
 | "Load the boards" | The boards are loaded from a terminal on your laptop, not here. See loader.md. |
-| "Move 2 to In Progress" | Moved 2, Import the municipality, to In Progress. |
+| "Move 2 to In Progress" | Moved 2, Import the Siaya agency, to In Progress. |
 | "Move 4 to Software" | Moved 4, Mirror the story boards, to the Software backlog, at To do. |
 | "Add a step called Review after In Progress in Software" | Added Review to Software. Its steps are To do, In Progress, Review, Testing, Done, Cancelled. |
 | "Add a backlog called Support with the steps New, Answering, Closed" | Added the Support backlog with 3 steps. Only the Product owner group can see it. |
@@ -144,7 +144,7 @@ chat). A bare "move the import" for the issue just discussed means that issue.
 ```text
 +--------------------------------+
 | Which one?                     |
-| [Import the municipality]      |
+| [Import the Siaya agency]      |
 | [Import the story boards]      |
 +--------------------------------+
 ```

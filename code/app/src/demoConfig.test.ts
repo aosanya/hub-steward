@@ -13,7 +13,7 @@ describe("the demo build config", () => {
   });
 
   it("names the one agency the app is limited to", () => {
-    expect(JSON.parse(demoConfigJson("", " Zöldhalom "))).toEqual({ wakala: "", agency: "Zöldhalom" });
+    expect(JSON.parse(demoConfigJson("", " Åkerby "))).toEqual({ wakala: "", agency: "Åkerby" });
   });
 
   const served = (wakala: string | undefined, agency?: string) => {
@@ -32,10 +32,10 @@ describe("the demo build config", () => {
   });
 
   it("serves config.json from the dev server for a limited agency even through a same-origin proxy", () => {
-    const [route] = served(undefined, "Zöldhalom");
+    const [route] = served(undefined, "Åkerby");
     let body = "";
     route.handler({}, { setHeader: () => undefined, end: (text) => (body = text) });
-    expect(JSON.parse(body)).toEqual({ wakala: "", agency: "Zöldhalom" });
+    expect(JSON.parse(body)).toEqual({ wakala: "", agency: "Åkerby" });
   });
 
   it("serves nothing from the dev server when the variable is unset", () => {

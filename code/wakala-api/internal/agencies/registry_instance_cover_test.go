@@ -71,8 +71,8 @@ func TestJoinModeIsOpenOrConfirmedAndChangeIsReadBack(t *testing.T) {
 
 func TestKindIsTrimmedAndReadBack(t *testing.T) {
 	reg, id := registryWithMembers(t, nil)
-	set, err := reg.SetKind(context.Background(), id, "  municipality ")
-	if err != nil || set.Kind != "municipality" {
+	set, err := reg.SetKind(context.Background(), id, "  cooperative ")
+	if err != nil || set.Kind != "cooperative" {
 		t.Fatalf("got %+v, %v", set, err)
 	}
 }

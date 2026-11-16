@@ -80,10 +80,10 @@ describe("the cards under an answer", () => {
 });
 
 describe("a question about which one in words", () => {
-  const several = listed("Import the municipality", "Import the story boards", "Import the tags");
+  const several = listed("Import the farmers agency", "Import the story boards", "Import the tags");
 
   it("takes the issues the search found as its buttons when the answer has none of its own", () => {
-    expect(questionOptions("Which one did you want moved to Doing?", [several])).toEqual(["Import the municipality", "Import the story boards", "Import the tags"]);
+    expect(questionOptions("Which one did you want moved to Doing?", [several])).toEqual(["Import the farmers agency", "Import the story boards", "Import the tags"]);
   });
 
   it("takes none when the answer is not a question, has its own buttons, or the search found one or too many", () => {

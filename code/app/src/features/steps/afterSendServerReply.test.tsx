@@ -13,7 +13,7 @@ const approval: MemberStep = {
   id: "s1",
   title: "Approve the agenda",
   formName: "Agenda approval",
-  roleName: "Mayor / council chair",
+  roleName: "Director / chair",
   workflowName: "Council meeting",
   opensIn: "form",
   agencyName: "",

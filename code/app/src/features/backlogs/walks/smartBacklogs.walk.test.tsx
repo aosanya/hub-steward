@@ -71,7 +71,7 @@ const hub = (over: { permissions?: string[]; levels?: Levels; withReady?: boolea
     row("t2", "Add the backlog tools", 2),
     row("t3", "Switch on the custody module", 3),
     row("t4", "Fix the import route", 4, { step: "doing" }),
-    row("t5", "Import the municipality", 5, { status: "blocked" }),
+    row("t5", "Import the farmers agency", 5, { status: "blocked" }),
   ];
   const smarts: Smart[] = [...(over.withReady === false ? [] : [{ id: "ready", name: "Ready to start", rules: readyRules }]), ...(over.seeded ?? [])];
   const grants: { group_id: string; level: string }[] = [{ group_id: "po", level: "edit" }];
@@ -203,7 +203,7 @@ describe("journey 09, smart backlogs", () => {
     await filterByTwoTagsAndAWord();
     expect(await screen.findByText("1 of 5 issues")).toBeInTheDocument();
     listed("Switch on the custody module");
-    absent("Record the voice clips", "Import the municipality");
+    absent("Record the voice clips", "Import the farmers agency");
     await userEvent.click(screen.getByRole("button", { name: "Save as smart backlog" }));
     expect(where()).toBe(`/a/${farmers.id}/backlogs/new/smart`);
     expect(await screen.findByDisplayValue('hub-steward Software "custody"')).toBeInTheDocument();
@@ -262,7 +262,7 @@ describe("journey 09, smart backlogs", () => {
     expect(screen.getByRole("button", { name: "Select" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Board" })).toHaveAttribute("aria-pressed", "true");
     listed("Record the voice clips", "Add the backlog tools", "Switch on the custody module");
-    absent("Fix the import route", "Import the municipality");
+    absent("Fix the import route", "Import the farmers agency");
   });
 
   it("3. a role that may not manage backlogs sees the list without the Edit rules link", async () => {

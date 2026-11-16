@@ -29,7 +29,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("the Mayor picks the report file and version from a list", () => {
+describe("the Director picks the report file and version from a list", () => {
   it("lists each stored file with its name and the first seven characters of its version, newest first as given", async () => {
     await show(clientOf());
     const entries = screen.getAllByRole("button", { pressed: false });

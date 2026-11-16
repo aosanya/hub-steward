@@ -142,7 +142,7 @@ const stub = (replies: Record<string, unknown>) => {
   vi.stubGlobal(
     "fetch",
     vi.fn(async (url: string, init?: RequestInit) => {
-      if (String(url).endsWith("/me")) return { ok: true, status: 200, json: async () => ({ subject: "mayor-bela" }) };
+      if (String(url).endsWith("/me")) return { ok: true, status: 200, json: async () => ({ subject: "director-ada" }) };
       const body = JSON.parse(String(init?.body || "{}"));
       let result: unknown = {};
       if (body.method === "tools/call") {

@@ -12,7 +12,7 @@ export const reference = (over: Partial<Reference>): Reference => ({ id: "r1", k
 const detail: IssueDetail = {
   id: "1",
   code: "HS-002",
-  title: "Import the municipality",
+  title: "Import the farmers agency",
   description: "Load the template.",
   status: "pending",
   step: "To do",

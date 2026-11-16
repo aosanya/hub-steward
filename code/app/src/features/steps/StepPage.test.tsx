@@ -88,13 +88,13 @@ describe("a member fills in one of her own steps", () => {
   });
 
   it("shows what the step asks of her under its title when the step has a description", async () => {
-    await show(clientOf([{ ...referral, description: "The reason is stated by the mayor in their own name." }]));
-    expect(screen.getByText("The reason is stated by the mayor in their own name.")).toBeInTheDocument();
+    await show(clientOf([{ ...referral, description: "The reason is stated by the director in their own name." }]));
+    expect(screen.getByText("The reason is stated by the director in their own name.")).toBeInTheDocument();
   });
 
   it("shows no description line when the step has none", async () => {
     await show(clientOf([referral]));
-    expect(screen.queryByText("The reason is stated by the mayor in their own name.")).not.toBeInTheDocument();
+    expect(screen.queryByText("The reason is stated by the director in their own name.")).not.toBeInTheDocument();
   });
 
   it("does not send while a required question is unanswered, and says which", async () => {

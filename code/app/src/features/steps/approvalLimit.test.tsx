@@ -22,11 +22,11 @@ const overLimitSentence = "The amount 720 000 Ft is above the limit of 500 000 F
 
 const openStepsReply = (limit: Record<string, unknown>) => ({
   id: "WI-56-6",
-  title: "The mayor approves the register and the limits",
+  title: "The director approves the register and the limits",
   kind: "fill_form",
   workflow_name: "Register",
-  role_name: "Mayor",
-  form_name: "The mayor approves the register and the limits",
+  role_name: "Director",
+  form_name: "The director approves the register and the limits",
   record_code: "REC-56",
   order_id: "o56",
   state: "start",
@@ -62,7 +62,7 @@ const send = () => userEvent.click(screen.getByRole("button", { name: "Send" }))
 
 beforeEach(() => {
   resizeTo(phoneWidth);
-  openAgency("municipality");
+  openAgency("agency");
 });
 
 afterEach(() => {
@@ -75,7 +75,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("the mayor's approval step on a phone shows the approval limit", () => {
+describe("the director's approval step on a phone shows the approval limit", () => {
   it("shows the limit from the open-steps reply in forints", async () => {
     await show(mayorStep({ amount: 500000 }), vi.fn());
     expect(window.innerWidth).toBe(phoneWidth);

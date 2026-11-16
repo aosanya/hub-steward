@@ -28,7 +28,7 @@ By hand. There is no sync script, Makefile target, `go generate` step or CI chec
 
 - Searched with no hit: `hub-steward/Makefile`, `hub-steward/scripts/` (`fake-api.py`, `local-setup.sh`, `local-setup.test.sh`), `code/wakala-api/Makefile` (only `restart` and `restartQA`), `code/wakala-api/scripts/` (only `two_process_poll_replace.sh`), `.github/workflows/ci.yml`, `docker-compose.yml`, `documentation/3. implementation/guides/` (`api-server.md`, `architecture.md`, `ci.md`), and the backend `CLAUDE.md` files of `mwanachama-backend-git` and `mwanachama-wakala-api`. None describes how the hub copy is refreshed, and the two backend `CLAUDE.md` files do not mention the hub copy.
 - What the git history shows is a person or agent re-applying a backend change in the hub, named in the commit message: "Mirror: InitRepo in single-repository mode ignores deleted repositories (hub issue G75)" (ea4e2393), "git module: DeleteFile removes the path from the tree..." (d29bce37, G73), "git: Delete and Purge release the cached handle..." (6fca6c0a, G74), "git module: per-repository SQLite files... from mwanachama-backend-git G57 to G72" (4c5ce035, ISS-6), and for taskmanager "as the backend copy does (e54b6d6)" (34a8d6af, d78f24f9). The matching backend commits are `ae09abd`, `5d0fa0c` and `512a589` in `mwanachama-backend-git`.
-- The other direction also happens. Fixes written in the hub (MUN issues, for example MUN82 import codes, MUN172 plaintext, MUN245 reversals, MUN308 git errors) are in the hub copy only.
+- The other direction also happens. Fixes written in the hub (for example import codes, plaintext, reversals and git errors) are in the hub copy only.
 - `documentation/3. implementation/guides/api-server.md` and `README.md` used to say the hub copy has no test files. They are corrected: the hub copy holds Go test files (363 `_test.go` files when this was measured).
 
 ## Drift measured
@@ -46,7 +46,7 @@ After the rewrite and the comment strip, `modules/git` differs by 40 lines in no
 
 Every one of the 40 lines is the hub ahead of the backend, none is the backend ahead of the hub:
 
-- `ErrQueryRequired`, `ErrTitleRequired`, `ErrSourceBranchRequired` and their 400 mapping (MUN308); the backend still answers `fmt.Errorf` and so a 500.
+- `ErrQueryRequired`, `ErrTitleRequired`, `ErrSourceBranchRequired` and their 400 mapping ; the backend still answers `fmt.Errorf` and so a 500.
 - `last_commit_at` on `models.Repository` and in the list description (ISS-12).
 - `indexPushedBranchFrom` split out of the push path.
 - A tree is sorted with `object.TreeEntrySorter` (git's own tree order) where the backend sorts by name.

@@ -21,7 +21,7 @@ Items come newest first, at most 200. The answer is an empty list, not an error,
 
 ## Why a tool of its own
 
-The `forms_git_*` tools serve only owner and agent roles. The Mayor is a resident, so none of them was open to the Mayor. This tool is gated by `forms.results.files`, which the `report.publish` permission carries, and takes the caller from the session.
+The `forms_git_*` tools serve only owner and agent roles. The role holder is a resident, so none of them was open to them. This tool is gated by `forms.results.files`, which the `report.publish` permission carries, and takes the caller from the session.
 
 ## On the phone
 

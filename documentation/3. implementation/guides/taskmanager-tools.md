@@ -20,7 +20,7 @@ Inputs: `q` (required), `backlog` (id or name), `step` (id or name), `tag` (repe
 | `q` | Matches | Order |
 |---|---|---|
 | A uuid | the issue with that id | one issue |
-| One token of letters then digits, with or without a dash (`SW39`, `mun67`, `DEV-1`) | every issue whose code starts with it, without regard to case; an issue that only names the code in its description is not matched | the exact code first, then rank |
+| One token of letters then digits, with or without a dash (`SW39`, `app67`, `DEV-1`) | every issue whose code starts with it, without regard to case; an issue that only names the code in its description is not matched | the exact code first, then rank |
 | Anything else | every word appears, without regard to case, in the title, the code, a tag or the description | rank |
 
 The answer is `total`, counted over everything that matches, and `items`: the same compact items as `taskmanager_task_pending` (id, code, title, state, backlog, step, priority, tags, rank, blocked, waiting, sinbin), without the description. Only issues of backlogs the caller may see are matched, as for `taskmanager_task_pending`. A blank `q` is refused with 400 and a message that names `q`; an unknown backlog or step is also a 400.

@@ -80,7 +80,7 @@ func TestActorNames_OwnerCannotDoNameAnActorWithCharactersThatDrawNothing(t *tes
 func TestHierarchyNames_OwnerCannotDoNameAHierarchyOrLevelWithCharactersThatDrawNothing(t *testing.T) {
 	w := newStepRunWalk(t, nil)
 	base := "/instances/" + w.instance + "/actor"
-	hierarchyID := w.createdID(t, base+"/hierarchies", map[string]any{"name": "Municipal"})
+	hierarchyID := w.createdID(t, base+"/hierarchies", map[string]any{"name": "Regional"})
 	levelID := w.createdID(t, base+"/levels", map[string]any{"hierarchy_id": hierarchyID, "name": "Ward", "depth": 1})
 
 	w.refuseNames(t, namedRoute{label: "create hierarchy", method: "POST", path: base + "/hierarchies", field: "name", word: "hierarchy name"})
@@ -94,7 +94,7 @@ func TestHierarchyNames_OwnerCannotDoNameAHierarchyOrLevelWithCharactersThatDraw
 func TestGroupTypeNames_OwnerCannotDoNameAGroupTypeWithCharactersThatDrawNothing(t *testing.T) {
 	w := newStepRunWalk(t, nil)
 	base := "/instances/" + w.instance + "/actor"
-	hierarchyID := w.createdID(t, base+"/hierarchies", map[string]any{"name": "Municipal"})
+	hierarchyID := w.createdID(t, base+"/hierarchies", map[string]any{"name": "Regional"})
 	typeID := w.createdID(t, base+"/group-types", map[string]any{"hierarchy_id": hierarchyID, "name": "Ward"})
 	hierarchy := map[string]any{"hierarchy_id": hierarchyID}
 

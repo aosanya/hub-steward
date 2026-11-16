@@ -31,7 +31,7 @@ approvals; the rest depend on the modules its published definition switches on.
 | [Members](#members) | Every agency | Member set-up |
 | [Approvals, tasks and the agent](#approvals-tasks-and-the-agent) | Every agency | A seat or Wi-Fi draft the manager approves |
 | [Form steps](#form-steps) | Agencies whose workflows have form steps | A member's own form, then the next role's step |
-| [Report files](report-files.md) | Agencies whose role holders publish a stored report | The Mayor picks a stored file and version to publish |
+| [Report files](report-files.md) | Agencies whose role holders publish a stored report | A role holder picks a stored file and version to publish |
 | [Other families on the MCP endpoint](#other-families-on-the-mcp-endpoint) | Agencies that switch the module on | Not used by the lab |
 
 ## Chat

@@ -31,11 +31,11 @@ describe("top bar", () => {
   });
 
   it("names the open agency under the title, and drops the name when none is open", () => {
-    act(() => rememberAgencyName("Zöldhalom Town Council"));
+    act(() => rememberAgencyName("Åkerby Cooperative"));
     bar();
-    expect(within(screen.getByRole("banner")).getByText("Zöldhalom Town Council")).toBeInTheDocument();
+    expect(within(screen.getByRole("banner")).getByText("Åkerby Cooperative")).toBeInTheDocument();
     act(() => rememberAgencyName(""));
-    expect(within(screen.getByRole("banner")).queryByText("Zöldhalom Town Council")).toBeNull();
+    expect(within(screen.getByRole("banner")).queryByText("Åkerby Cooperative")).toBeNull();
   });
 
   it("holds nothing but the title when it has no back link, action or menu", () => {

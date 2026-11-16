@@ -59,5 +59,4 @@ README ([demo](../../../../demo/README.md)).
 
 The demo also holds a farmers' group, boda-boda riders, a clinical research
 organization, an electric grid utility, a logistics company, a mobile money
-operator and a drone crop-spraying service. A municipality in Hungary is in
-conversation about using Hub Steward to hear residents' feedback.
+operator and a drone crop-spraying service.

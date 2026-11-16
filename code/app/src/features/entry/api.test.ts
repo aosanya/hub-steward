@@ -94,9 +94,9 @@ describe("listing her agencies", () => {
   });
 
   it("lists only the agencies whose name holds the one the app is limited to, in any case", async () => {
-    setRuntimeConfig({ wakala: "https://w.example", agency: "zöld" });
-    vi.stubGlobal("fetch", respond(200, { agencies: [{ id: "a1", name: "Hub Steward SWE" }, { id: "a2", name: "Zöldhalom Town Council" }] }));
-    expect(await httpEntryClient.listAgencies()).toEqual([{ id: "a2", name: "Zöldhalom Town Council" }]);
+    setRuntimeConfig({ wakala: "https://w.example", agency: "åker" });
+    vi.stubGlobal("fetch", respond(200, { agencies: [{ id: "a1", name: "Hub Steward SWE" }, { id: "a2", name: "Åkerby Cooperative" }] }));
+    expect(await httpEntryClient.listAgencies()).toEqual([{ id: "a2", name: "Åkerby Cooperative" }]);
   });
 
   it("renews a token within a minute of its end first, and reads her agencies as the new one", async () => {

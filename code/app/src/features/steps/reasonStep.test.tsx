@@ -15,8 +15,8 @@ const completedPrompt = "Did we complete the step?";
 const mayorReason: MemberStep = {
   id: "m1",
   title: "State the reason",
-  formName: "The mayor states the reason by name",
-  roleName: "Mayor",
+  formName: "The director states the reason by name",
+  roleName: "Director",
   workflowName: "Council decision",
   opensIn: "form",
   agencyName: "",
@@ -64,7 +64,7 @@ afterEach(() => {
   forgetSent();
 });
 
-describe("the mayor states the reason on the step page", () => {
+describe("the director states the reason on the step page", () => {
   it("shows one text input labelled with the reason prompt", async () => {
     await show(clientOf([mayorReason]), "m1");
     expect(screen.getAllByRole("textbox")).toHaveLength(1);
@@ -88,7 +88,7 @@ describe("the mayor states the reason on the step page", () => {
   });
 });
 
-describe("a step that keeps its yes/no question first and adds the mayor's reason", () => {
+describe("a step that keeps its yes/no question first and adds the director's reason", () => {
   it("shows both questions", async () => {
     await show(clientOf([completedWithReason]), "m2");
     expect(screen.getByRole("radio", { name: "Yes" })).toBeInTheDocument();

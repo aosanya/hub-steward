@@ -1,6 +1,6 @@
 # Worker caps and the Sinbin tag
 
-From the owner's remark on 2026-11-11, after the hungarian-municipality workers ran very long (SW197). Decided as D126 to D135, D136 to D138 (proposed, SW221), D144 to D147 (Sinbin is a tag, SW239), and D150 and D151 (the hub enforces the caps, any runner reports, SW272), in [decisions.md](../../../../../hub-steward-swe/documentation/1.%20requirements/decisions.md). Drawn in [worker-caps.html](../../mockups/app/worker-caps.html); walked in [journey 10](../../../../../hub-steward-swe/documentation/4.%20qa/user-journeys/10-worker-caps/README.md). The Caps card and both editors are built (SW242); the red card, the hook and the Sinbin mark are not (ISS-48 for the tint).
+From the owner's remark on 2026-11-11, after the backlog workers ran very long (SW197). Decided as D126 to D135, D136 to D138 (proposed, SW221), D144 to D147 (Sinbin is a tag, SW239), and D150 and D151 (the hub enforces the caps, any runner reports, SW272), in [decisions.md](../../../../../hub-steward-swe/documentation/1.%20requirements/decisions.md). Drawn in [worker-caps.html](../../mockups/app/worker-caps.html); walked in [journey 10](../../../../../hub-steward-swe/documentation/4.%20qa/user-journeys/10-worker-caps/README.md). The Caps card and both editors are built (SW242); the red card, the hook and the Sinbin mark are not (ISS-48 for the tint).
 
 ## The caps (D126, D127)
 
@@ -85,7 +85,7 @@ Sinbin is a tag beside Ready, Waiting and Blocked, with its own chip and its own
 
 The owner asks the Triager in Chat to split a Sinbin issue; it answers with a card holding a table (piece, what it covers, waits on) and a Confirm button. Pieces are named as the original title and a letter, and wait on another piece only where one really needs the one before. After Confirm the pieces are created, the original is Cancelled with a Log note naming them and loses its Sinbin tag, and the pieces show as Ready, or Waiting where one waits on another.
 
-The `split-sinbin` skill does this for every Sinbin issue in one pass: it reads each Log to find what is left, splits only that remainder into pieces that fit the caps and share no files, creates the pieces without a Confirm (asking for the skill is the owner's request, so the owner sees the result, not a proposal), titles each "MUN199a short description", files it one priority level above its original (the work is half finished, so it goes first), clears Sinbin and cancels the original. It starts no worker: the Ready pieces are picked automatically. This skips the Confirm that D130 asks of the Triager's single-issue split; D130 is unchanged for that path.
+The `split-sinbin` skill does this for every Sinbin issue in one pass: it reads each Log to find what is left, splits only that remainder into pieces that fit the caps and share no files, creates the pieces without a Confirm (asking for the skill is the owner's request, so the owner sees the result, not a proposal), titles each "SW199a short description", files it one priority level above its original (the work is half finished, so it goes first), clears Sinbin and cancels the original. It starts no worker: the Ready pieces are picked automatically. This skips the Confirm that D130 asks of the Triager's single-issue split; D130 is unchanged for that path.
 
 ## Open
 

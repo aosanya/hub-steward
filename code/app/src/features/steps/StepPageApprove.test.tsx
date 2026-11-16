@@ -15,7 +15,7 @@ const permit: MemberStep = {
   id: "s2",
   title: "Approve the permit",
   formName: "Permit",
-  roleName: "Mayor",
+  roleName: "Director",
   workflowName: "Permit",
   opensIn: "form",
   agencyName: "",

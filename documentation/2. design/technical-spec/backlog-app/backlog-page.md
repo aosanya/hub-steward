@@ -28,7 +28,7 @@ and no counts above it.
 +------------------------------------+
 | 1  Fix mirrored board drift        |
 |    [Ready] [mwanachama-web] |
-| 2  Import the municipality         |
+| 2  Import the Siaya agency         |
 |    [Blocked] [hub-steward]|
 | 3  Record the voice clips          |
 |    [Ready] [community-hubs]|
@@ -76,7 +76,7 @@ it opens that task.
 
 ```text
 +------------------------------------+
-| < Import the municipality          |
+| < Import the Siaya agency          |
 +------------------------------------+
 | Load the English template into the |
 | local database and check that all  |
@@ -309,7 +309,7 @@ estimated hours, and refuses any other word.
 Both the priority and the effort are pills in the chip row at the bottom of the
 card, with the tags and the age, never in the header: the header holds only the
 issue code, because pills beside the code crowd a phone-width header and wrap it
-(MUN344 broke into MUN34 and 4). Each pill is the same rounded menu, drawn by the
+(a four-digit code broke across two lines). Each pill is the same rounded menu, drawn by the
 shared `ChoiceMenu`, and reads "Priority: Medium" and "Effort: Medium", the label,
 a colon and the capitalised value, then the arrow. An unset effort reads "Effort:
 Unknown". The pills take the chips' own font size (rem) and a tight padding so both
@@ -504,3 +504,7 @@ Drawn in [card.html](../../mockups/app/card.html#s2) at phone width, at 42rem an
 | Card column | The card with the code, title, tag bubbles and description: `flex: 1 1 24rem` and `max-width: 40rem`, so the description is never one long line; the Source card sits under it |
 | Sections column | `flex: 1 1 18rem`: the rest of the width, for the References and Log sections (D117, D111), the send-to-backlog button and the Waits on cards; it drops under the card when the window is too narrow for both |
 | Phone | One column: the card, then the sections, as built |
+
+## Keeping the list current
+
+The All issues list and a smart backlog's list and board read the issues again every 30 seconds (`issuesRefreshMs` in `app/src/backlogs/refresh.ts`, passed to `useLoad`), so a card moved, tagged or finished elsewhere appears without a reload. The read is silent: the screen never goes back to Loading, scroll and open menus stay, a read that fails leaves the cards already shown, and nothing is read while the browser tab is hidden. The worker-cap tint keeps its own 15-second read for running issues (worker-caps.md, Q22). A step's board (`BacklogBoard`) is not covered yet.

@@ -5,11 +5,7 @@ STAGING_PORT ?= 5191
 STAGING_API ?= http://localhost:8092
 APP_LOG ?= $(or $(TMPDIR),/tmp)/hubsteward-app/dev.log
 
-MUNICIPALITY_PORT ?= 5192
-MUNICIPALITY_API ?= http://127.0.0.1:8092
-MUNICIPALITY_NAME ?= Zöldhalom
-
-.PHONY: run restart restartQA runStaging runMunicipality logs
+.PHONY: run restart restartQA runStaging logs
 
 run:
 	@lsof -ti tcp:$(DEV_PORT) | xargs kill -9 2>/dev/null || true
@@ -26,10 +22,6 @@ restartQA:
 runStaging:
 	@lsof -ti tcp:$(STAGING_PORT) | xargs kill -9 2>/dev/null || true
 	HUBSTEWARD_WAKALA_URL=$(STAGING_API) npx vite --host 127.0.0.1 --port $(STAGING_PORT) --strictPort
-
-runMunicipality:
-	@lsof -ti tcp:$(MUNICIPALITY_PORT) | xargs kill -9 2>/dev/null || true
-	HUBSTEWARD_PROXY_TO=$(MUNICIPALITY_API) HUBSTEWARD_ONLY_AGENCY="$(MUNICIPALITY_NAME)" npx vite --host 127.0.0.1 --port $(MUNICIPALITY_PORT) --strictPort
 
 logs:
 	tail -n 50 -f "$(APP_LOG)"

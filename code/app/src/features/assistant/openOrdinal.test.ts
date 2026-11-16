@@ -11,7 +11,7 @@ const asked = (id: number, content: string): Item => ({ id, role: "user", conten
 
 const answered = (id: number, content: string, lists: ResultList[]): Item => ({ id, role: "assistant", content, lists });
 
-const blocked = list("2:0", "Blocked issues", [issue("u-1", "Fix the drift", "DEV-1"), issue("u-2", "Import the municipality", "DEV-2"), issue("u-3", "Record clips", "DEV-3")]);
+const blocked = list("2:0", "Blocked issues", [issue("u-1", "Fix the drift", "DEV-1"), issue("u-2", "Import the farmers agency", "DEV-2"), issue("u-3", "Record clips", "DEV-3")]);
 
 const earlier = list("1:0", "Issues", [issue("u-9", "Another thing"), issue("u-8", "Something else")]);
 
@@ -20,7 +20,7 @@ describe("Open N in the history sent to the model", () => {
     const items = [asked(1, "show blocked"), answered(2, "Here.", [blocked]), asked(3, "Open 2")];
     const sent = historyUpTo(items, 3);
     expect(sent[2].content).toContain("u-2");
-    expect(sent[2].content).toContain("Import the municipality");
+    expect(sent[2].content).toContain("Import the farmers agency");
     expect(sent[2].content).toContain("Blocked issues");
   });
 

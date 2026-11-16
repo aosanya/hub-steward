@@ -15,7 +15,7 @@ describe("holdsReportPublish", () => {
     expect(holdsReportPublish({ roles: [], permissions: ["poll.run", "report.publish", "form.close"] })).toBe(true);
   });
 
-  it("is true for the mayor whose reply lists only report.publish", () => {
+  it("is true for the director whose reply lists only report.publish", () => {
     expect(holdsReportPublish({ permissions: ["report.publish"] })).toBe(true);
   });
 

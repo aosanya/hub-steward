@@ -3,7 +3,7 @@
 Six MCP tools put the consent sheet on the same surface as the other modules'
 tools: the owner writes the text residents agree to, and a resident reads it,
 agrees to it, reads their own state and withdraws. They were added in commit
-`36920a5` (MUN181) and are served from `code/wakala-api/internal/api/http/mcp_tools_custody.go`.
+`36920a5` and are served from `code/wakala-api/internal/api/http/mcp_tools_custody.go`.
 Each is a custody operation declared in `code/wakala-api/modules/custody/custody.operations.json`,
 so the tool and its REST route are one declaration.
 

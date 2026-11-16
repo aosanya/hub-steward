@@ -26,7 +26,7 @@ const issue = (id: string, title: string, step: string, over: Partial<Issue> = {
 const issues = [
   issue("1", "Record the clips", "To do", { repo: "community-hubs" }),
   issue("2", "Fix the import route", "Doing"),
-  issue("3", "Import the municipality", "Waiting", { mark: "Blocked", topics: ["Docs"] }),
+  issue("3", "Import the farmers agency", "Waiting", { mark: "Blocked", topics: ["Docs"] }),
 ];
 
 const backlog: Backlog = { id: "default", name: "Software", steps: ["To do", "Doing", "Waiting", "Done"], issues: 3 };
@@ -85,7 +85,7 @@ describe("BacklogBoard", () => {
     expect(await screen.findByRole("heading", { level: 1, name: "Software" })).toBeInTheDocument();
     expect(screen.getByText("3 issues · 4 steps")).toBeInTheDocument();
     expect(within(column("To do")).getByText("Record the clips")).toBeInTheDocument();
-    expect(within(column("Waiting")).getByText("Import the municipality")).toBeInTheDocument();
+    expect(within(column("Waiting")).getByText("Import the farmers agency")).toBeInTheDocument();
     expect(within(column("Done")).getByText("Nothing here")).toBeInTheDocument();
   });
 
@@ -93,9 +93,9 @@ describe("BacklogBoard", () => {
     const user = userEvent.setup();
     open(client());
     await screen.findByText("Record the clips");
-    const card = within(column("Waiting")).getByRole("button", { name: /^Import the municipality/ });
+    const card = within(column("Waiting")).getByRole("button", { name: /^Import the farmers agency/ });
     const whole = card.closest(".bb-col .card") as HTMLElement;
-    expect(whole.querySelector(".issue-title")?.textContent).toBe("Import the municipality");
+    expect(whole.querySelector(".issue-title")?.textContent).toBe("Import the farmers agency");
     expect(Array.from(whole.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["Blocked", "hub-steward", "Backlog"]);
     const ready = within(column("To do")).getByRole("button", { name: /Record the clips/ }).closest(".bb-col .card") as HTMLElement;
     expect(Array.from(ready.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(["community-hubs", "Backlog"]);
@@ -119,7 +119,7 @@ describe("BacklogBoard", () => {
   it("filters every column by the tags in the address and clears them again", async () => {
     const user = userEvent.setup();
     open(client(), "/a/x/backlogs/default/board?tag=Docs");
-    await screen.findByText("Import the municipality");
+    await screen.findByText("Import the farmers agency");
     expect(screen.queryByText("Record the clips")).not.toBeInTheDocument();
     expect(screen.getByText("1 issue · 4 steps")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Clear" }));
@@ -128,7 +128,7 @@ describe("BacklogBoard", () => {
 
   it("has the same pinned filter bar as the list", async () => {
     open(client(), "/a/x/backlogs/default/board?tag=Docs");
-    await screen.findByText("Import the municipality");
+    await screen.findByText("Import the farmers agency");
     const bar = document.querySelector(".filter-bar") as HTMLElement;
     expect(within(bar).getByRole("searchbox", { name: "Search issues" })).toBeInTheDocument();
     expect(within(bar).getByRole("button", { name: "Docs ✕" })).toBeInTheDocument();
@@ -138,9 +138,9 @@ describe("BacklogBoard", () => {
     const user = userEvent.setup();
     open(client());
     await screen.findByText("Record the clips");
-    await user.type(screen.getByRole("searchbox", { name: "Search issues" }), "municipality");
+    await user.type(screen.getByRole("searchbox", { name: "Search issues" }), "farmers");
     expect(screen.queryByText("Record the clips")).not.toBeInTheDocument();
-    expect(within(column("Waiting")).getByText("Import the municipality")).toBeInTheDocument();
+    expect(within(column("Waiting")).getByText("Import the farmers agency")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Clear search" }));
     expect(await screen.findByText("Record the clips")).toBeInTheDocument();
   });

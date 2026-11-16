@@ -174,14 +174,14 @@ describe("the session", () => {
       [`GET ${wakala}/instances`]: {
         body: [
           { id: "a", name: "Alpha", role: "owner" },
-          { id: "m", name: "Municipality", role: "resident", kind: "lab" },
+          { id: "m", name: "Civic hub", role: "resident", kind: "lab" },
         ],
       },
       [`GET ${wakala}/instances/m/my-roles`]: {
         body: {
           instance_id: "m",
           membership: "resident",
-          roles: [{ id: "r1", code: "R-1", name: "Mayor" }],
+          roles: [{ id: "r1", code: "R-1", name: "Chair" }],
           permissions: ["consent.publish", "forms.read"],
         },
       },
@@ -189,24 +189,24 @@ describe("the session", () => {
 
     expect(await listHubs()).toEqual([
       { id: "a", name: "Alpha", role: "owner" },
-      { id: "m", name: "Municipality", role: "resident", kind: "lab", permissions: ["consent.publish", "forms.read"] },
+      { id: "m", name: "Civic hub", role: "resident", kind: "lab", permissions: ["consent.publish", "forms.read"] },
     ]);
   });
 
   it("takes the role of a non-owner hub from the membership my-roles names", async () => {
     stubFetch({
-      [`GET ${wakala}/instances`]: { body: [{ id: "m", name: "Municipality", role: "agent" }] },
+      [`GET ${wakala}/instances`]: { body: [{ id: "m", name: "Civic hub", role: "agent" }] },
       [`GET ${wakala}/instances/m/my-roles`]: {
         body: { instance_id: "m", membership: "agent", roles: [], permissions: ["consent.publish"] },
       },
     });
 
-    expect(await listHubs()).toEqual([{ id: "m", name: "Municipality", role: "agent", permissions: ["consent.publish"] }]);
+    expect(await listHubs()).toEqual([{ id: "m", name: "Civic hub", role: "agent", permissions: ["consent.publish"] }]);
   });
 
   it("leaves out a non-owner hub whose roles do not hold consent.publish", async () => {
     stubFetch({
-      [`GET ${wakala}/instances`]: { body: [{ id: "m", name: "Municipality", role: "resident" }] },
+      [`GET ${wakala}/instances`]: { body: [{ id: "m", name: "Civic hub", role: "resident" }] },
       [`GET ${wakala}/instances/m/my-roles`]: {
         body: { instance_id: "m", membership: "resident", roles: [], permissions: ["forms.read"] },
       },
@@ -219,7 +219,7 @@ describe("the session", () => {
     stubFetch({
       [`GET ${wakala}/instances`]: {
         body: [
-          { id: "m", name: "Municipality", role: "resident" },
+          { id: "m", name: "Civic hub", role: "resident" },
           { id: "n", name: "Nairobi", role: "resident" },
           { id: "o", name: "Oslo", role: "resident" },
         ],
@@ -237,7 +237,7 @@ describe("the session", () => {
       [`GET ${wakala}/instances`]: {
         body: [
           { id: "a", name: "Alpha", role: "owner" },
-          { id: "m", name: "Municipality", role: "resident" },
+          { id: "m", name: "Civic hub", role: "resident" },
         ],
       },
       [`GET ${wakala}/instances/m/my-roles`]: {

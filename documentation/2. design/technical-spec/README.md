@@ -28,7 +28,6 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Git over HTTP](../git-remote.md) | The URL, sign-in and push rules for cloning and pushing an agency's repository |
 |  | [Start: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |
 |  | [Creation journey](creation-journey.md) | How one agency gets made: the cast of roles and the stages |
-|  | [Menu](menu.md) | The sections on Home, their submenus and the screens behind them |
 
 ## The phone app's top bar
 

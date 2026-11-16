@@ -29,7 +29,7 @@ const task = (id: string, title: string, rank: number, extra: Record<string, unk
 
 const board = [
   task("t1", "Fix mirrored board drift", 1, { project_name: "mwanachama-web", tags: ["Docs"] }),
-  task("t2", "Import the municipality", 2, { status: "blocked", state: "Waiting", tags: ["Blocked"], description: "Load the English template." }),
+  task("t2", "Import the farmers agency", 2, { status: "blocked", state: "Waiting", tags: ["Blocked"], description: "Load the English template." }),
   task("t3", "Record the voice clips", 3, { project_name: "community-hubs" }),
 ];
 
@@ -186,7 +186,7 @@ describe("the list of issues", () => {
     answering(board);
     openAt("/a/hub-1/backlogs/all");
     await screen.findByText("Fix mirrored board drift");
-    expect(titles()).toEqual(["Fix mirrored board drift", "Import the municipality", "Record the voice clips"]);
+    expect(titles()).toEqual(["Fix mirrored board drift", "Import the farmers agency", "Record the voice clips"]);
     const first = document.querySelector(".issue-row") as HTMLElement;
     expect(within(first).getAllByRole("button")).toHaveLength(5);
     expect(first.querySelector(".issue-title")?.textContent).toBe("Fix mirrored board drift");
@@ -267,13 +267,13 @@ describe("the list of issues", () => {
     openAt("/a/hub-1/backlogs/all");
     await screen.findByText("Fix mirrored board drift");
     const box = screen.getByRole("searchbox", { name: "Search issues" });
-    await userEvent.type(box, "MUNICIPALITY");
-    expect(titles()).toEqual(["Import the municipality"]);
+    await userEvent.type(box, "FARMERS");
+    expect(titles()).toEqual(["Import the farmers agency"]);
     expect(screen.getByText("1 of 3 issues")).toBeInTheDocument();
-    expect(where()).toBe("/a/hub-1/backlogs/all?q=MUNICIPALITY");
+    expect(where()).toBe("/a/hub-1/backlogs/all?q=FARMERS");
     await userEvent.clear(box);
-    await userEvent.type(box, "import muni");
-    expect(titles()).toEqual(["Import the municipality"]);
+    await userEvent.type(box, "import farm");
+    expect(titles()).toEqual(["Import the farmers agency"]);
     await userEvent.clear(box);
     await userEvent.type(box, "import drift");
     expect(screen.getByText("No issues match")).toBeInTheDocument();
@@ -291,7 +291,7 @@ describe("the list of issues", () => {
     expect(titles()).toEqual(["Fix mirrored board drift"]);
     await userEvent.clear(box);
     await userEvent.type(box, "blocked");
-    expect(titles()).toEqual(["Import the municipality"]);
+    expect(titles()).toEqual(["Import the farmers agency"]);
     await userEvent.clear(box);
     await userEvent.type(box, "mirrored docs");
     expect(titles()).toEqual(["Fix mirrored board drift"]);
@@ -314,9 +314,9 @@ describe("the list of issues", () => {
     openAt("/a/hub-1/backlogs/all?tag=Docs");
     await screen.findByText("Fix mirrored board drift");
     expect(titles()).toEqual(["Fix mirrored board drift"]);
-    await userEvent.type(screen.getByRole("searchbox", { name: "Search issues" }), "municipality");
+    await userEvent.type(screen.getByRole("searchbox", { name: "Search issues" }), "farmers");
     expect(screen.getByText("No issues match")).toBeInTheDocument();
-    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Docs&q=municipality");
+    expect(where()).toBe("/a/hub-1/backlogs/all?tag=Docs&q=farmers");
     await userEvent.click(screen.getByRole("button", { name: "Clear search" }));
     expect(titles()).toEqual(["Fix mirrored board drift"]);
     await userEvent.click(screen.getByRole("button", { name: "Docs ✕" }));
@@ -327,7 +327,7 @@ describe("the list of issues", () => {
   it("keeps the search in the address when a tag is chosen and the tags when the search changes", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs/all?q=the");
-    await screen.findByText("Import the municipality");
+    await screen.findByText("Import the farmers agency");
     await userEvent.click(within(document.querySelector(".issue-row") as HTMLElement).getByRole("button", { name: "Blocked" }));
     expect(where()).toBe("/a/hub-1/backlogs/all?tag=Blocked&q=the");
   });
@@ -343,8 +343,8 @@ describe("the list of issues", () => {
   it("starts with the tags a chat card asked for", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs/backlog?tag=Blocked");
-    await screen.findByText("Import the municipality");
-    expect(titles()).toEqual(["Import the municipality"]);
+    await screen.findByText("Import the farmers agency");
+    expect(titles()).toEqual(["Import the farmers agency"]);
     expect(screen.getByRole("heading", { name: "Backlog" })).toBeInTheDocument();
   });
 
@@ -378,7 +378,7 @@ describe("the list of issues", () => {
   it("opens an issue from its title", async () => {
     answering(board);
     openAt("/a/hub-1/backlogs/all");
-    await userEvent.click(await screen.findByRole("button", { name: /^Import the municipality/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /^Import the farmers agency/ }));
     expect(where()).toBe(issuePath("t2"));
   });
 });

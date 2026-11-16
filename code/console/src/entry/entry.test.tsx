@@ -1138,15 +1138,15 @@ describe("where a signed-in caller lands", () => {
   });
 
   it("is the Consent text page of the first hub when the caller is not its owner but holds consent.publish", () => {
-    const municipality: Hub = { id: "m1", name: "Municipality", role: "resident", permissions: ["consent.publish"] };
-    expect(landingPath([municipality])).toBe(hubPath("m1", "consent"));
+    const civic: Hub = { id: "m1", name: "Civic hub", role: "resident", permissions: ["consent.publish"] };
+    expect(landingPath([civic])).toBe(hubPath("m1", "consent"));
   });
 
   it("follows the first hub, owner or not, when there are several", () => {
-    const municipality: Hub = { id: "m1", name: "Municipality", role: "resident", permissions: ["consent.publish"] };
+    const civic: Hub = { id: "m1", name: "Civic hub", role: "resident", permissions: ["consent.publish"] };
     const siaya: Hub = { id: "h1", name: "Siaya", role: "owner" };
-    expect(landingPath([siaya, municipality])).toBe(hubPath("h1", "status"));
-    expect(landingPath([municipality, siaya])).toBe(hubPath("m1", "consent"));
+    expect(landingPath([siaya, civic])).toBe(hubPath("h1", "status"));
+    expect(landingPath([civic, siaya])).toBe(hubPath("m1", "consent"));
   });
 
   it("is the create page when the caller has no hub", () => {

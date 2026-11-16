@@ -13,11 +13,11 @@ import { Frame } from "./Frame";
 
 const words = JSON.parse(readFileSync(resolve(__dirname, "../../public/i18n.json"), "utf8"));
 
-const municipality: Hub = {
+const civic: Hub = {
   id: "m1",
-  name: "Municipality",
+  name: "Civic hub",
   role: "resident",
-  kind: "municipality",
+  kind: "lab",
   permissions: ["consent.publish"],
 };
 
@@ -40,7 +40,7 @@ function Seed({ children }: { children: ReactNode }) {
   const { startSession } = useSession();
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    startSession([municipality, siaya]);
+    startSession([civic, siaya]);
     setReady(true);
   }, [startSession]);
   return ready ? <>{children}</> : null;

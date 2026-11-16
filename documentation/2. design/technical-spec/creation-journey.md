@@ -52,7 +52,7 @@ a sector named alone, the sources the research used are listed (compare
 ## Output
 
 A file `agency/<name>.json` in this repo, in the shape of
-[agency/examples/municipality.en.json](../../../../hub-steward-agency_creator/agency/examples/municipality.en.json),
+[an example agency file under agency/examples/](../../../../hub-steward-agency_creator/agency/examples/),
 plus the risk library files in the shape of
 [agency/examples/risks/](../../../../hub-steward-agency_creator/agency/examples/risks/). Both are loaded into a
 local test hub (D9). The creator never imports into the live catalog (R17).

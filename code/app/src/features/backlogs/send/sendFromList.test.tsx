@@ -12,7 +12,7 @@ const issue = (id: string, title: string, rank: number): Issue => ({ id, title, 
 
 const client: BacklogsClient = {
   backlogs: async () => [],
-  issues: async () => [issue("t1", "HS-001 Fix mirrored board drift", 1), issue("t2", "HS-002 Import the municipality", 2), issue("t3", "HS-003 Record the voice clips", 3)],
+  issues: async () => [issue("t1", "HS-001 Fix mirrored board drift", 1), issue("t2", "HS-002 Import the farmers agency", 2), issue("t3", "HS-003 Record the voice clips", 3)],
   issue: async () => {
     throw new Error("not used");
   },
