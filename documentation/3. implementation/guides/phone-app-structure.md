@@ -1,22 +1,23 @@
 # Phone app: how `src` is organised
 
-Decided on 2026-11-16 with the owner. This page is the strategy; [phone-app.md](phone-app.md) still describes the folders as they are today and moves to this layout as the work lands. Until then, a folder named here that does not exist yet is a target, not a fact.
+Decided on 2026-11-16 with the owner. This page is the strategy and the progress of the move. [phone-app.md](phone-app.md) describes the folders as they are and follows each move in the same change. A folder named in the target layout that does not exist yet is a target, not a fact; the status column below says which is which.
 
 ## Why this page exists
 
-`code/app/src` has 775 files in 36 top-level folders, and four ways of grouping sit side by side:
+`code/app/src` had 775 files in 36 top-level folders, and four ways of grouping sat side by side:
 
 | Grouping | Folders |
 |---|---|
 | By feature | `backlogs`, `chat`, `files`, `market`, `forms` |
-| By layer | `ui`, `wakala`, `storage` |
+| By layer | `ui`, `wakala`, `storage`, `pages` |
 | By role | `coordinator`, `council` |
 | By journey | `started`, `steps`, `entry`, `journeys` |
 
-Two things follow from that:
+Three things followed from that:
 
-- Backlogs are in about ten places: `backlogs`, `backlogAccess`, `backlogBoard`, `backlogManage`, `backlogPage`, `smartBacklog`, `sendToBacklog`, `journeys/backlogs`, `chat/backlogCards` and `assistant/namedBacklog`.
-- The market is in four: `market`, `supply`, `buy` and `sell`.
+- `pages/` repeated the feature folders. The Market screens were in `pages/market` and its logic in `market/`; the same split held for supply, started, chat, entry, forms and join. One change opened two folders.
+- Backlogs were in about ten places: `backlogs`, `backlogAccess`, `backlogBoard`, `backlogManage`, `backlogPage`, `smartBacklog`, `sendToBacklog`, `journeys/backlogs`, `chat/backlogCards` and `assistant/namedBacklog`.
+- The market was in five: `market`, `supply`, `buy`, `sell` and `pages/market`.
 
 ## The rules
 
@@ -45,10 +46,10 @@ src/
     home/  menu/
   features/
     backlogs/
-      board/  manage/  smart/  access/  page/  issue/  list/  send/  shared/  caps/  references/  todos/  todoCounts/
+      board/  manage/  smart/  access/  page/  issue/  list/  send/  cards/  walks/  shared/  caps/  references/  todos/  todoCounts/
       index.ts  routes.tsx
     market/
-      buy/  sell/  supply/  product/  shared/
+      buy/  sell/  supply/  product/  payments/  start/  shared/
       index.ts  routes.tsx
     chat/  assistant/  files/  steps/  started/  forms/  inbox/
     entry/  account/  consent/  people/  groups/  agency/  council/  risks/  apps/
@@ -58,28 +59,66 @@ src/
 
 ## Where today's folders go
 
-| Today | Goes to |
-|---|---|
-| `backlogs`, `backlogAccess`, `backlogBoard`, `backlogManage`, `backlogPage`, `smartBacklog`, `sendToBacklog`, `journeys/backlogs`, `chat/backlogCards` | `features/backlogs/`, one sub-folder per screen area |
-| `market`, `buy`, `sell`, `supply` | `features/market/` |
-| `ui`, `wakala`, `storage` | `shared/` |
-| `home`, `menu`, `tabs.ts`, `routes.ts`, `App.tsx`, `main.tsx`, the CSS tokens | `app/` |
-| every other feature folder | `features/`, unchanged inside |
+Status is read from `code/app/src` on disk when this page was last written, and from the hub for work still on its way to `dev`: done means the files are on `dev` at the new place, in progress means an agent holds the issue or its commit is not on `dev` yet, open means nobody has started.
+
+| Today | Goes to | Status | Issue |
+|---|---|---|---|
+| `backlogBoard` | `backlogs/board` | done | SW432 |
+| `backlogManage` | `backlogs/manage` | done | SW435 |
+| `smartBacklog` | `backlogs/smart` | done | SW438 |
+| `backlogAccess` | `backlogs/access` | done | SW441 |
+| `backlogPage` | `backlogs/page` | done | SW444 |
+| `sendToBacklog` | `backlogs/send` | done | SW447 |
+| the loose files at the top of `backlogs/` | `backlogs/issue`, `backlogs/list`, `backlogs/shared` | done | SW450 |
+| `chat/backlogCards`, `journeys/backlogs` | `backlogs/cards`, `backlogs/walks` | done | SW453 |
+| `pages/market` | `market/product`, `market/shared` | done | SW459 |
+| `buy`, `sell` | `market/buy`, `market/sell` | done | SW462 |
+| `supply`, `pages/supply` | `market/supply` | done | SW465 |
+| `coordinator/payments`, `coordinator/start` | `market/payments`, `market/start` | done | SW468 |
+| `pages/chat`, `pages/forms` | `chat/`, `forms/` | done | SW474 |
+| `pages/started`, `pages/entry`, `pages/join` | `started/`, `entry/`, `groups/` | done | SW477 |
+| `pages/HomePage`, `pages/NotificationsPage`, `pages/TabPage` | `home/`, `inbox/`, `shared/ui/` (`pages/` is gone) | done | SW480 |
+| `ui`, `wakala`, `storage` | `shared/ui`, `shared/wakala`, `shared/storage` | done | SW486 |
+| each feature's routes in the root `routes.ts` and `App.tsx` | a `routes.tsx` in each feature | in progress | SW483 |
+| other features' deep imports into `market/` | through `market/index.ts` | in progress, built and waiting to be re-applied on the final tree | SW471 |
+| other features' deep imports into `backlogs/` | through `backlogs/index.ts` | open | SW456 |
+| `shared/` imports of features | none | open | SW504 |
+| every feature folder | `features/` | open | SW489 |
+| `home`, `menu`, `tabs.ts`, `routes.ts`, `App.tsx`, `main.tsx`, the CSS tokens | `app/` | open | SW492 |
+| `journeys/` and its test support | stays together | decided, nothing moves | SW495 |
+| a test that fails when a rule is broken | `layoutRules.test.ts` | in progress | SW510 |
+| a script that moves a folder and re-points imports | `code/app/scripts/moveFolder.mjs` | in progress | SW507 |
+
+## Decided
+
+- **`coordinator` (SW468).** Both folders are market screens. `coordinator/payments` is the group-order order cards and payments pages, and `coordinator/start` starts a group order and picks its product, all through `market_*` tools. They are now `market/payments` and `market/start`, and `coordinator/` is gone. `market/start/api.ts` and `startWaiting.ts` also feed home, inbox, steps and started with the member's open steps; lifting that reader out of the market is a later step.
+- **`journeys/` (SW495).** The walk tests and their `*.test-support` files stay together in `journeys/` and no file moves. Every walk renders `<App />` or opens an agency and crosses three to six features, so none belongs to one feature, and the support files are shared by several walks (`answerWakala` 7, `inAgency` 5, `chatSteps` 2) and by tests outside `journeys/`. Moving them would rename about 25 files for no feature gain. `journeys/backlogs` was the one exception and went to `backlogs/walks` with SW453.
+- **`assistant/namedBacklog.ts` (SW453).** It stays in the assistant. It matches a typed message against backlog names and builds the assistant's own result cards, only the assistant uses it, and it holds no backlog screen logic.
+- **`pages/join` (SW477).** It went to `groups/`, not `entry/`: `JoinPage` is built on the groups client (`listJoinableGroups`, `findGroupByCode`, `joinGroup`, `listMyGroups`), and `entry/` is sign-in and agency picking.
+- **The last three pages (SW480).** `HomePage` went to `home/`, `NotificationsPage` to `inbox/`, and `TabPage`, an empty-card screen that `App.tsx` shows for a tab with no screen of its own, to `shared/ui/` beside `Shell` and `TabBar`.
+- **The `access` name clash (SW450).** A file `backlogs/access.ts` sat beside the folder `backlogs/access/`, and `BacklogsRoutes` imported `./access/index` to get round it. The file went to `backlogs/shared/access.ts`, so the plain import works again.
+- **Imports into the market (SW471).** Pointing every outside import at `market/index.ts` made one import cycle of 45 files (the market screens, `shared/ui/Shell`, `shared/ui/TabBar`, `inbox/useNeedsYou`, back to the index). Eight outside files keep a deep import because dropping any one brings the cycle back: `shared/ui/TabBar.tsx`, `shared/ui/JoinForm.tsx`, `inbox/useNeedsYou.ts`, `inbox/needsYou.ts`, `home/StartRows.tsx`, `started/api.ts`, `started/done.ts` and `steps/api.ts`. Rule 5 therefore allows a deep import only where the index would make a cycle, and each such import is listed by name. Lifting the open-steps reader and the product-name and unit-word helpers out of the market into a shared home removes the exceptions.
+- **`shared/` imports features (SW486, filed as SW504).** Rule 4 is broken in 15 places and nothing is moved yet: `agency/open` (`shared/ui/TabBar`, `TopBar`, `wakala/mcp`), `entry/language` and `entry/words` (`shared/ui/AgeBubble`, `LanguageChoice`, `age`), `inbox/api`, `assignedIssues`, `thingsToDo` and `useNeedsYou` (`shared/ui/Shell`, `TabBar`), `market/start/api` (`shared/ui/TabBar`), `market/shared/unitWords` (`shared/ui/JoinForm`), `chat/unread.css` (`shared/ui/TabBar`), and the root files `tabs.ts` and `routes.ts` (`shared/ui/TabBar`). The tests `shared/ui/age.test`, `TopBar.test`, `tabBar.test`, `bellBadge.test`, `shared/wakala/mcp.test`, `instance.test` and `me.test` import `entry/`, `agency/`, `inbox/` and `market/` too. Most of it goes through `TabBar` and `TopBar`, which are the shell more than the kit. Each import is to move into `shared/` or be passed in by the caller, one at a time.
 
 ## Still to settle
 
-Each is decided when its folder is reached, and the answer is written here.
-
-- `coordinator`: decided on 2026-11-16 (SW468). Both folders are market screens: `coordinator/payments` is the group-order order cards and payments pages, and `coordinator/start` starts a group order and picks its product, all through `market_*` tools. They are now `market/payments` and `market/start`, and `coordinator/` is gone. `market/start/api.ts` and `startWaiting.ts` also feed home, inbox, steps and started with the member's open steps; lifting that reader out of the market is a later step.
-- `shared/` imports features (SW486, listed on 2026-11-16, rule 4 broken in 15 places, nothing moved yet): `agency/open` (`shared/ui/TabBar`, `TopBar`, `wakala/mcp`), `entry/language`, `entry/words` (`shared/ui/AgeBubble`, `LanguageChoice`, `age`), `inbox/api`, `assignedIssues`, `thingsToDo`, `useNeedsYou` (`shared/ui/Shell`, `TabBar`), `market/start/api` (`shared/ui/TabBar`), `market/shared/unitWords` (`shared/ui/JoinForm`), `chat/unread.css` (`shared/ui/TabBar`), and the root files `tabs.ts` and `routes.ts` (`shared/ui/TabBar`). The tests `shared/ui/age.test`, `TopBar.test`, `tabBar.test`, `bellBadge.test`, `shared/wakala/mcp.test`, `instance.test` and `me.test` import `entry/`, `agency/`, `inbox/` and `market/` too. Each is to move into `shared/` or to be passed in by the caller, one at a time.
-- `council`: named by role, not by feature; still to settle when its folder is reached.
-- `journeys/` (decided, SW495): the walk tests and their `*.test-support` files stay together in `journeys/` and no file moves. Every walk renders `<App />` or opens an agency and crosses three to six features, so none belongs to one feature, and the support files are shared by several walks (`answerWakala` 7, `inAgency` 5, `chatSteps` 2) and by tests outside `journeys/`. Moving them would rename about 25 files for no feature gain. `journeys/backlogs` is the one exception and goes to `features/backlogs/` with SW453.
-- `assistant/namedBacklog.ts`: it belongs to the assistant or to `backlogs`.
+- `council`: named by role, not by feature; settled when its folder is reached in SW489.
 - A barrel is not added to a feature that nothing outside imports.
 
 ## How the move is done
 
-- One feature at a time, backlogs first, then market, then the top-level groups.
-- Each step is a move with import updates and nothing else, and `npm run typecheck` and `npm test` pass before the next step starts.
-- The step that moves a folder updates [phone-app.md](phone-app.md) in the same change.
-- A new file goes into its feature on the day it is written, even before that feature has been moved.
+The recipe the agents followed, one issue each:
+
+1. One detached worktree per issue, made off `dev`: `git worktree add --detach <path> dev`, with `code/app/node_modules` linked in from the main tree. Nothing is pulled, fetched or pushed from it, and the main tree is not touched.
+2. The change is a rename plus import fixes and nothing else: `git mv`, every import, CSS import, `vi.mock` path and path string updated, no behaviour changed, no comments in code.
+3. `npm run typecheck` and `npm test` pass in the worktree. A test that fails only with "timed out in 5000ms" while other agents run is re-run on its own, and the Log says so.
+4. The folder table in [phone-app.md](phone-app.md) is updated in the same commit.
+5. The agent writes a Log entry as each step finishes and moves the card to Done.
+6. The lead checks the commit, the Log and the card, then cherry-picks the commit onto `dev`. Commits made before an earlier move landed conflict on import lines and on the folder table. In the moved folder's own files the agent's side is kept, since its relative paths are right; everywhere else `dev`'s side is kept and the old folder names are re-pointed with a script that works out each relative path from the file's own place. The folder table is merged by hand. Typecheck must be clean before the pick is committed.
+7. When the commit is on `dev`, the worktree is removed.
+
+A move that rewrites imports across many files, like the market index, is applied last, on the final tree, because every earlier or later move would conflict with it.
+
+The moves are made in this order: backlogs, market, `pages/`, then the top-level groups. A new file goes into its feature on the day it is written, even before that feature has been moved.
+
+A script that does the folder move and the re-pointing in one step is being built under SW507; see SW507 for how to run it.
