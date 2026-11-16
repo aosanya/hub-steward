@@ -48,6 +48,12 @@ var filterFields = map[string]dispatch.FieldDoc{
 	"ListFilter.docs": {
 		Description: "Keep only entries whose document holds the given value at the given dotted path, such as {\"path\": \"_template.sector\", \"value\": \"health\"}.",
 	},
+	"Entry.kind": {
+		Description: "What sort of entry this is, as named in the kinds setting, such as permit, licence or fee. Kept in the document under kind.",
+	},
+	"Entry.form_id": {
+		Description: "The form this entry's applications are sent on. Must be a form of the agency. Kept in the document under form_id.",
+	},
 	"ListFilter.kind": {
 		Description: "Keep only entries of this kind, such as permit, licence or fee, as named in the kinds setting.",
 	},

@@ -58,7 +58,7 @@
       "call": "ListEntries",
       "action": "catalog.entry.list",
       "title": "List entries",
-      "description": "List the entry cards matching the filter, ordered by name. A card never carries the document, so read one entry to see it. A large catalog returns a large answer — 634 cards is around 350KB, past what a tool result can carry — so pass a limit, or narrow with a document path or a search term, unless you genuinely need every card.",
+      "description": "List the entry cards matching the filter, ordered by name. A card never carries the document, so read one entry to see it. A large catalog returns a large answer — 634 cards is around 350KB, past what a tool result can carry — so pass a limit, or narrow with a kind, a document path or a search term, unless you genuinely need every card. Each card carries its kind and form_id.",
       "args": [
         {
           "from": "query",
@@ -97,7 +97,7 @@
       "call": "UpsertEntry",
       "action": "catalog.entry.upsert",
       "title": "Write entry",
-      "description": "Create the entry at this slug or replace the document and card of the one already there. Replacing the document of an approved entry returns it to pending, so never re-send a document that has not changed. Visibility is not set here. An entry someone else wrote is refused unless the caller is the owner of the agency.",
+      "description": "Create the entry at this slug or replace the document and card of the one already there. Replacing the document of an approved entry returns it to pending, so never re-send a document that has not changed. Visibility is not set here. Pass kind (checked against the kinds setting) and form_id (the form its applications are sent on; the forms mount refuses an id that is not a form) to make the entry a service; both are kept in the document. An entry someone else wrote is refused unless the caller is the owner of the agency.",
       "args": [
         {
           "from": "body",
