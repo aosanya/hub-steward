@@ -1,5 +1,11 @@
 # Vendored modules: copy or dependency (Q23)
 
+> **Withdrawn on 2026-11-16 (ISS-105).** The owner ruled "never copy the backend again". Option 2 and the `vendor/` recommendation below are withdrawn: the hub does not commit a `vendor/` folder, keep a sync script or hold a copy. Both APIs import `mwanachama-backend-git` and `mwanachama-backend-shared` at tagged versions, and the hub copy is removed module by module as each module switches. Git is no longer copied once ISS-105 lands. Options 1 and 3 are not taken either.
+>
+> Why: `vendor/` still puts the backend source into the public hub repo and still makes the hub a second home for fixes, which is the thing the owner ruled out. Tagged imports from GitHub need no token for public repos, and the five private backends become public instead. How it works now: `documentation/3. implementation/import-switch-plan.md` and `fix-flow-backend-imports.md`.
+>
+> What stays valid: the study. What is copied, the drift table, the Go module facts (`internal/` cannot be imported, `replace` cannot work in the hub's one-folder Docker build, a tag is needed) and the reading of the hub being ahead of the backends. The sections "Options", "Recommendation" and "Open question for the owner" are kept as the record and are answered by the withdrawal above.
+
 Question Q23 (hub issues G76 and ISS-6): should the modules copied into `code/wakala-api` (`modules/*` and `internal/agencies`) become Go dependencies on the `mwanachama-backend-*` repos and `mwanachama-wakala-api`, instead of being copied?
 
 Measured on 2026-11-16, read-only. The backend repos were at `mwanachama-backend-git` 512a589 (2026-11-14) and `mwanachama-wakala-api` 8bd70b3 (2026-11-15).
@@ -126,7 +132,7 @@ What follows:
 
 Observation for the owner: the public hub repo already carries the source of five private backends (agency, catalog, permissions, ratings, workspace) through the copy. That is true with either option below; it matters if the plan is to keep those five private.
 
-## Options
+## Options (withdrawn, see the note at the top)
 
 1. Keep copying, and make it a script plus a check. Add `scripts/sync-modules.sh` that copies a backend, rewrites the imports, strips comments (the Go printer pass above) and refuses to overwrite a file the hub has changed since the last sync; a CI job reports the drift table above. The hub stays one folder that builds anywhere with no credentials. The cost: two homes for every fix remain, and the 5,800 lines of hub-only change still have to be carried by hand each time.
 
@@ -134,7 +140,7 @@ Observation for the owner: the public hub repo already carries the source of fiv
 
 3. Reverse it: the hub builds from `mwanachama-wakala-api` itself (a fork or a configuration of it) and `code/wakala-api` stops being a source tree. One source tree, no copy, no dependency graph to manage. The cost is the largest: the hub's 1,667 `internal` lines and `cmd` differences must be merged into wakala-api, and the hub stops being a place where the API can be changed on its own.
 
-## Recommendation
+## Recommendation (withdrawn, see the note at the top)
 
 Option 2.
 
