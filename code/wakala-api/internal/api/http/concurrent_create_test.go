@@ -11,19 +11,19 @@ import (
 	"testing"
 )
 
-const mun234bRounds = 12
+const concurrentCreateRounds = 12
 
-type mun234bWorld struct {
+type concurrentCreateWorld struct {
 	t        *testing.T
 	walk     stepRunWalk
 	instance string
 }
 
-func (w mun234bWorld) send(method, path string, body any) *httptest.ResponseRecorder {
+func (w concurrentCreateWorld) send(method, path string, body any) *httptest.ResponseRecorder {
 	return callOn(w.walk.handler, method, strings.ReplaceAll(path, "{instanceID}", w.instance), body, w.walk.owner)
 }
 
-func (w mun234bWorld) made(path string, body any) map[string]any {
+func (w concurrentCreateWorld) made(path string, body any) map[string]any {
 	w.t.Helper()
 	rec := w.send("POST", path, body)
 	if rec.Code < 200 || rec.Code > 299 {
@@ -34,7 +34,7 @@ func (w mun234bWorld) made(path string, body any) map[string]any {
 	return out
 }
 
-func (w mun234bWorld) idOf(path string, body any) string {
+func (w concurrentCreateWorld) idOf(path string, body any) string {
 	w.t.Helper()
 	id, _ := w.made(path, body)["id"].(string)
 	if id == "" {
@@ -43,7 +43,7 @@ func (w mun234bWorld) idOf(path string, body any) string {
 	return id
 }
 
-func (w mun234bWorld) rows(path string) int {
+func (w concurrentCreateWorld) rows(path string) int {
 	rec := w.send("GET", path, nil)
 	if rec.Code != http.StatusOK {
 		return -1
@@ -63,22 +63,22 @@ func (w mun234bWorld) rows(path string) int {
 	return -1
 }
 
-type mun234bCreate struct {
+type concurrentCreateCreate struct {
 	post func(round int) (path string, body any)
 	list string
 }
 
-type mun234bCase struct {
+type concurrentCreateCase struct {
 	name  string
-	build func(w mun234bWorld) mun234bCreate
+	build func(w concurrentCreateWorld) concurrentCreateCreate
 }
 
-type mun234bOutcome struct {
+type concurrentCreateOutcome struct {
 	codes []int
 	text  []string
 }
 
-func (o mun234bOutcome) successes() int {
+func (o concurrentCreateOutcome) successes() int {
 	n := 0
 	for _, c := range o.codes {
 		if c >= 200 && c < 300 {
@@ -88,7 +88,7 @@ func (o mun234bOutcome) successes() int {
 	return n
 }
 
-func (o mun234bOutcome) serverFault() bool {
+func (o concurrentCreateOutcome) serverFault() bool {
 	for _, c := range o.codes {
 		if c >= 500 {
 			return true
@@ -97,13 +97,13 @@ func (o mun234bOutcome) serverFault() bool {
 	return false
 }
 
-func newMUN234bWorld(t *testing.T) mun234bWorld {
+func newConcurrentCreateWorld(t *testing.T) concurrentCreateWorld {
 	t.Helper()
 	walk := newStepRunWalkOn(t, openSharedFile(t, filepath.Join(t.TempDir(), "wakala.db")), nil)
-	return mun234bWorld{t: t, walk: walk, instance: walk.instance}
+	return concurrentCreateWorld{t: t, walk: walk, instance: walk.instance}
 }
 
-func (w mun234bWorld) twice(path string, body any, together bool) mun234bOutcome {
+func (w concurrentCreateWorld) twice(path string, body any, together bool) concurrentCreateOutcome {
 	results := make([]*httptest.ResponseRecorder, 2)
 	if together {
 		start := make(chan struct{})
@@ -123,15 +123,15 @@ func (w mun234bWorld) twice(path string, body any, together bool) mun234bOutcome
 			results[i] = w.send("POST", path, body)
 		}
 	}
-	var out mun234bOutcome
+	var out concurrentCreateOutcome
 	for _, rec := range results {
 		out.codes = append(out.codes, rec.Code)
-		out.text = append(out.text, mun234bShort(rec.Body.String()))
+		out.text = append(out.text, concurrentCreateShort(rec.Body.String()))
 	}
 	return out
 }
 
-type mun234bVerdict struct {
+type concurrentCreateVerdict struct {
 	name    string
 	rounds  int
 	defects []string
@@ -139,15 +139,15 @@ type mun234bVerdict struct {
 	sample  []string
 }
 
-func mun234bProbe(t *testing.T, c mun234bCase) mun234bVerdict {
+func concurrentCreateProbe(t *testing.T, c concurrentCreateCase) concurrentCreateVerdict {
 	t.Helper()
-	together := newMUN234bWorld(t)
-	alone := newMUN234bWorld(t)
+	together := newConcurrentCreateWorld(t)
+	alone := newConcurrentCreateWorld(t)
 
-	verdict := mun234bVerdict{name: c.name, shape: map[string]int{}}
+	verdict := concurrentCreateVerdict{name: c.name, shape: map[string]int{}}
 	createTogether := c.build(together)
 	createAlone := c.build(alone)
-	for round := 0; round < mun234bRounds; round++ {
+	for round := 0; round < concurrentCreateRounds; round++ {
 		pathT, bodyT := createTogether.post(round)
 		pathA, bodyA := createAlone.post(round)
 		beforeT, beforeA := -1, -1
@@ -179,23 +179,23 @@ func mun234bProbe(t *testing.T, c mun234bCase) mun234bVerdict {
 	return verdict
 }
 
-var mun234bFiled = map[string]string{
-	"agency create_hazard":           "MUN698",
-	"agency create_threat":           "MUN698",
-	"agency create_consequence":      "MUN698",
-	"taskmanager start_workflow_run": "MUN701",
-	"taskmanager create_agent":       "MUN702",
-	"taskmanager create_project":     "MUN703",
-	"riskmanager create_control":     "MUN706",
+var concurrentCreateFiled = map[string]string{
+	"agency create_hazard":           "open",
+	"agency create_threat":           "open",
+	"agency create_consequence":      "open",
+	"taskmanager start_workflow_run": "open",
+	"taskmanager create_agent":       "open",
+	"taskmanager create_project":     "open",
+	"riskmanager create_control":     "open",
 }
 
-func mun234bRun(t *testing.T, cases []mun234bCase) {
+func concurrentCreateRun(t *testing.T, cases []concurrentCreateCase) {
 	for _, c := range cases {
 		c := c
 		t.Run(c.name, func(t *testing.T) {
-			v := mun234bProbe(t, c)
+			v := concurrentCreateProbe(t, c)
 			t.Logf("%s: %d rounds, shapes %v, defects %d, first round %q", v.name, v.rounds, v.shape, len(v.defects), v.sample)
-			filed, known := mun234bFiled[c.name]
+			filed, known := concurrentCreateFiled[c.name]
 			for _, d := range v.defects {
 				if known {
 					t.Logf("filed as %s: %s", filed, d)
@@ -207,9 +207,9 @@ func mun234bRun(t *testing.T, cases []mun234bCase) {
 	}
 }
 
-func mun234bNamed(path string, list string, field string, extra map[string]any) func(w mun234bWorld) mun234bCreate {
-	return func(w mun234bWorld) mun234bCreate {
-		return mun234bCreate{list: list, post: func(round int) (string, any) {
+func concurrentCreateNamed(path string, list string, field string, extra map[string]any) func(w concurrentCreateWorld) concurrentCreateCreate {
+	return func(w concurrentCreateWorld) concurrentCreateCreate {
+		return concurrentCreateCreate{list: list, post: func(round int) (string, any) {
 			body := map[string]any{field: fmt.Sprintf("Probe %d", round)}
 			for k, v := range extra {
 				body[k] = v
@@ -219,79 +219,79 @@ func mun234bNamed(path string, list string, field string, extra map[string]any) 
 	}
 }
 
-func TestMUN234b_Round1_Actor(t *testing.T) {
+func TestConcurrentCreate_Round1_Actor(t *testing.T) {
 	const base = "/instances/{instanceID}/actor/"
-	mun234bRun(t, []mun234bCase{
-		{"actor create_group", mun234bNamed(base+"groups", base+"groups", "name", nil)},
-		{"actor create_hierarchy", mun234bNamed(base+"hierarchies", base+"hierarchies", "name", nil)},
-		{"actor create_role_kind", mun234bNamed(base+"role-kinds", base+"role-kinds", "name", nil)},
-		{"actor create_actor same phone", func(w mun234bWorld) mun234bCreate {
-			return mun234bCreate{list: base + "actors", post: func(round int) (string, any) {
+	concurrentCreateRun(t, []concurrentCreateCase{
+		{"actor create_group", concurrentCreateNamed(base+"groups", base+"groups", "name", nil)},
+		{"actor create_hierarchy", concurrentCreateNamed(base+"hierarchies", base+"hierarchies", "name", nil)},
+		{"actor create_role_kind", concurrentCreateNamed(base+"role-kinds", base+"role-kinds", "name", nil)},
+		{"actor create_actor same phone", func(w concurrentCreateWorld) concurrentCreateCreate {
+			return concurrentCreateCreate{list: base + "actors", post: func(round int) (string, any) {
 				return base + "actors", map[string]any{"display_name": fmt.Sprintf("Person %d", round), "attributes": map[string]any{"phone": fmt.Sprintf("+3612345%04d", round)}}
 			}}
 		}},
-		{"actor create_actor same name", func(w mun234bWorld) mun234bCreate {
-			return mun234bCreate{list: base + "actors", post: func(round int) (string, any) {
+		{"actor create_actor same name", func(w concurrentCreateWorld) concurrentCreateCreate {
+			return concurrentCreateCreate{list: base + "actors", post: func(round int) (string, any) {
 				return base + "actors", map[string]any{"display_name": fmt.Sprintf("Person %d", round)}
 			}}
 		}},
-		{"actor create_level", func(w mun234bWorld) mun234bCreate {
+		{"actor create_level", func(w concurrentCreateWorld) concurrentCreateCreate {
 			h := w.idOf(base+"hierarchies", map[string]any{"name": "Tree"})
-			return mun234bCreate{list: base + "levels", post: func(round int) (string, any) {
+			return concurrentCreateCreate{list: base + "levels", post: func(round int) (string, any) {
 				return base + "levels", map[string]any{"hierarchy_id": h, "name": fmt.Sprintf("Level %d", round), "depth": round + 1}
 			}}
 		}},
-		{"actor grant_role", func(w mun234bWorld) mun234bCreate {
+		{"actor grant_role", func(w concurrentCreateWorld) concurrentCreateCreate {
 			kind := w.idOf(base+"role-kinds", map[string]any{"name": "Chair"})
 			group := w.idOf(base+"groups", map[string]any{"name": "Council"})
-			actors := make([]string, mun234bRounds)
+			actors := make([]string, concurrentCreateRounds)
 			for i := range actors {
 				actors[i] = w.idOf(base+"actors", map[string]any{"display_name": fmt.Sprintf("Holder %d", i)})
 			}
-			return mun234bCreate{list: base + "role-assignments", post: func(round int) (string, any) {
+			return concurrentCreateCreate{list: base + "role-assignments", post: func(round int) (string, any) {
 				return base + "role-assignments", map[string]any{"actor_id": actors[round], "group_id": group, "kind_id": kind}
 			}}
 		}},
-		{"actor invite_to_group", func(w mun234bWorld) mun234bCreate {
+		{"actor invite_to_group", func(w concurrentCreateWorld) concurrentCreateCreate {
 			group := w.idOf(base+"groups", map[string]any{"name": "Council"})
-			actors := make([]string, mun234bRounds)
+			actors := make([]string, concurrentCreateRounds)
 			for i := range actors {
 				actors[i] = w.idOf(base+"actors", map[string]any{"display_name": fmt.Sprintf("Guest %d", i)})
 			}
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "groups/" + group + "/invitations", map[string]any{"actor_id": actors[round]}
 			}}
 		}},
-		{"actor create_delegation", func(w mun234bWorld) mun234bCreate {
+		{"actor create_delegation", func(w concurrentCreateWorld) concurrentCreateCreate {
 			subject := w.idOf(base+"actors", map[string]any{"display_name": "Subject"})
-			delegates := make([]string, mun234bRounds)
+			delegates := make([]string, concurrentCreateRounds)
 			for i := range delegates {
 				delegates[i] = w.idOf(base+"actors", map[string]any{"display_name": fmt.Sprintf("Delegate %d", i)})
 			}
-			return mun234bCreate{list: base + "delegations", post: func(round int) (string, any) {
+			return concurrentCreateCreate{list: base + "delegations", post: func(round int) (string, any) {
 				return base + "delegations", map[string]any{"delegate_id": delegates[round], "subject_id": subject}
 			}}
 		}},
-		{"actor record_group_population", func(w mun234bWorld) mun234bCreate {
+		{"actor record_group_population", func(w concurrentCreateWorld) concurrentCreateCreate {
 			group := w.idOf(base+"groups", map[string]any{"name": "Council"})
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "groups/" + group + "/population", map[string]any{"population": 100 + round, "as_of": "2026-01-01", "source": "census"}
 			}}
 		}},
-		{"actor create_group_type", func(w mun234bWorld) mun234bCreate {
+		{"actor create_group_type", func(w concurrentCreateWorld) concurrentCreateCreate {
 			h := w.idOf(base+"hierarchies", map[string]any{"name": "Tree"})
-			return mun234bCreate{list: base + "group-types", post: func(round int) (string, any) {
+			return concurrentCreateCreate{list: base + "group-types", post: func(round int) (string, any) {
 				return base + "group-types", map[string]any{"hierarchy_id": h, "name": fmt.Sprintf("Kind %d", round), "singular": "chapter", "plural": "chapters"}
 			}}
 		}},
 	})
 }
 
-func mun234bDrafted(path, field string, extra func(w mun234bWorld, draft string) map[string]any) func(w mun234bWorld) mun234bCreate {
+func concurrentCreateDrafted(path, field string, extra func(w concurrentCreateWorld, draft string) map[string]any) func(w concurrentCreateWorld) concurrentCreateCreate {
 	const base = "/instances/{instanceID}/"
-	return func(w mun234bWorld) mun234bCreate {
+	return func(w concurrentCreateWorld) concurrentCreateCreate {
 		draft := w.idOf(base+"drafts", map[string]any{"description": "Probe draft"})
-		return mun234bCreate{list: base + path + "?draft_id=" + draft, post: func(round int) (string, any) {
+		return concurrentCreateCreate{list: base + path + "?draft_id=" + draft, post: func(round int) (string, any) {
 			body := map[string]any{"draft_id": draft, field: fmt.Sprintf("Probe %d", round)}
 			if extra != nil {
 				for k, v := range extra(w, draft) {
@@ -303,46 +303,46 @@ func mun234bDrafted(path, field string, extra func(w mun234bWorld, draft string)
 	}
 }
 
-func TestMUN234b_Round2_Agency(t *testing.T) {
+func TestConcurrentCreate_Round2_Agency(t *testing.T) {
 	const base = "/instances/{instanceID}/"
-	mun234bRun(t, []mun234bCase{
-		{"agency create_draft", func(w mun234bWorld) mun234bCreate {
-			return mun234bCreate{list: base + "drafts", post: func(round int) (string, any) {
+	concurrentCreateRun(t, []concurrentCreateCase{
+		{"agency create_draft", func(w concurrentCreateWorld) concurrentCreateCreate {
+			return concurrentCreateCreate{list: base + "drafts", post: func(round int) (string, any) {
 				return base + "drafts", map[string]any{"description": fmt.Sprintf("Draft %d", round)}
 			}}
 		}},
-		{"agency create_goal", mun234bDrafted("goals", "title", nil)},
-		{"agency create_workflow", mun234bDrafted("workflows", "name", nil)},
-		{"agency create_role", mun234bDrafted("roles", "name", nil)},
-		{"agency create_value", mun234bDrafted("values", "text", nil)},
-		{"agency create_rule", mun234bDrafted("rules", "text", nil)},
-		{"agency create_control", mun234bDrafted("controls", "text", nil)},
-		{"agency create_hazard", mun234bDrafted("hazards", "title", nil)},
-		{"agency create_threat", mun234bDrafted("threats", "title", nil)},
-		{"agency create_risk", mun234bDrafted("risks", "title", func(mun234bWorld, string) map[string]any { return map[string]any{"top_event": "Spill"} })},
-		{"agency start_review", func(w mun234bWorld) mun234bCreate {
+		{"agency create_goal", concurrentCreateDrafted("goals", "title", nil)},
+		{"agency create_workflow", concurrentCreateDrafted("workflows", "name", nil)},
+		{"agency create_role", concurrentCreateDrafted("roles", "name", nil)},
+		{"agency create_value", concurrentCreateDrafted("values", "text", nil)},
+		{"agency create_rule", concurrentCreateDrafted("rules", "text", nil)},
+		{"agency create_control", concurrentCreateDrafted("controls", "text", nil)},
+		{"agency create_hazard", concurrentCreateDrafted("hazards", "title", nil)},
+		{"agency create_threat", concurrentCreateDrafted("threats", "title", nil)},
+		{"agency create_risk", concurrentCreateDrafted("risks", "title", func(concurrentCreateWorld, string) map[string]any { return map[string]any{"top_event": "Spill"} })},
+		{"agency start_review", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := w.idOf(base+"drafts", map[string]any{"description": "Probe draft"})
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "reviews", map[string]any{"draft_id": draft}
 			}}
 		}},
-		{"agency link_workflow_objective", func(w mun234bWorld) mun234bCreate {
+		{"agency link_workflow_objective", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := w.idOf(base+"drafts", map[string]any{"description": "Probe draft"})
 			goal := w.idOf(base+"goals", map[string]any{"draft_id": draft, "title": "Goal"})
-			workflows := make([]string, mun234bRounds)
-			objectives := make([]string, mun234bRounds)
+			workflows := make([]string, concurrentCreateRounds)
+			objectives := make([]string, concurrentCreateRounds)
 			for i := range workflows {
 				workflows[i] = w.idOf(base+"workflows", map[string]any{"draft_id": draft, "name": fmt.Sprintf("Flow %d", i)})
 				objectives[i] = w.idOf(base+"objectives", map[string]any{"draft_id": draft, "goal_id": goal, "title": fmt.Sprintf("Objective %d", i)})
 			}
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "workflow-objectives", map[string]any{"draft_id": draft, "workflow_id": workflows[round], "objective_id": objectives[round]}
 			}}
 		}},
 	})
 }
 
-func mun234bShort(text string) string {
+func concurrentCreateShort(text string) string {
 	text = strings.TrimSpace(text)
 	if len(text) > 90 {
 		return text[:90]
@@ -350,156 +350,156 @@ func mun234bShort(text string) string {
 	return text
 }
 
-func TestMUN234b_Round3_AgencyLinks(t *testing.T) {
+func TestConcurrentCreate_Round3_AgencyLinks(t *testing.T) {
 	const base = "/instances/{instanceID}/"
-	draftOf := func(w mun234bWorld) string {
+	draftOf := func(w concurrentCreateWorld) string {
 		return w.idOf(base+"drafts", map[string]any{"description": "Probe draft"})
 	}
-	codeOf := func(w mun234bWorld, path string, body map[string]any) string {
+	codeOf := func(w concurrentCreateWorld, path string, body map[string]any) string {
 		code, _ := w.made(path, body)["code"].(string)
 		return code
 	}
-	mun234bRun(t, []mun234bCase{
-		{"agency create_consequence", func(w mun234bWorld) mun234bCreate {
+	concurrentCreateRun(t, []concurrentCreateCase{
+		{"agency create_consequence", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := draftOf(w)
 			hazard := codeOf(w, base+"hazards", map[string]any{"draft_id": draft, "title": "Fire"})
-			return mun234bCreate{list: base + "consequences?draft_id=" + draft, post: func(round int) (string, any) {
+			return concurrentCreateCreate{list: base + "consequences?draft_id=" + draft, post: func(round int) (string, any) {
 				return base + "consequences", map[string]any{"draft_id": draft, "hazard_code": hazard, "title": fmt.Sprintf("Probe %d", round)}
 			}}
 		}},
-		{"agency attach_value", func(w mun234bWorld) mun234bCreate {
+		{"agency attach_value", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := draftOf(w)
 			value := w.idOf(base+"values", map[string]any{"draft_id": draft, "text": "Care"})
-			goals := make([]string, mun234bRounds)
+			goals := make([]string, concurrentCreateRounds)
 			for i := range goals {
 				goals[i] = w.idOf(base+"goals", map[string]any{"draft_id": draft, "title": fmt.Sprintf("Goal %d", i)})
 			}
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "values/" + value + "/attachments", map[string]any{"target_type": "goal", "target_id": goals[round]}
 			}}
 		}},
-		{"agency attach_rule", func(w mun234bWorld) mun234bCreate {
+		{"agency attach_rule", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := draftOf(w)
 			rule := w.idOf(base+"rules", map[string]any{"draft_id": draft, "text": "Rule"})
-			goals := make([]string, mun234bRounds)
+			goals := make([]string, concurrentCreateRounds)
 			for i := range goals {
 				goals[i] = w.idOf(base+"goals", map[string]any{"draft_id": draft, "title": fmt.Sprintf("Goal %d", i)})
 			}
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "rules/" + rule + "/attachments", map[string]any{"target_type": "goal", "target_id": goals[round]}
 			}}
 		}},
-		{"agency attach_control", func(w mun234bWorld) mun234bCreate {
+		{"agency attach_control", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := draftOf(w)
 			control := w.idOf(base+"controls", map[string]any{"draft_id": draft, "text": "Control"})
-			goals := make([]string, mun234bRounds)
+			goals := make([]string, concurrentCreateRounds)
 			for i := range goals {
 				goals[i] = w.idOf(base+"goals", map[string]any{"draft_id": draft, "title": fmt.Sprintf("Goal %d", i)})
 			}
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "controls/" + control + "/attachments", map[string]any{"target_type": "goal", "target_id": goals[round]}
 			}}
 		}},
-		{"agency create_risk_threat", func(w mun234bWorld) mun234bCreate {
+		{"agency create_risk_threat", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := draftOf(w)
 			risk := codeOf(w, base+"risks", map[string]any{"draft_id": draft, "title": "Flood", "top_event": "Spill"})
-			threats := make([]string, mun234bRounds)
+			threats := make([]string, concurrentCreateRounds)
 			for i := range threats {
 				threats[i] = codeOf(w, base+"threats", map[string]any{"draft_id": draft, "title": fmt.Sprintf("Threat %d", i)})
 			}
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "risk-threats", map[string]any{"draft_id": draft, "risk_code": risk, "threat_code": threats[round]}
 			}}
 		}},
-		{"agency create_objective", func(w mun234bWorld) mun234bCreate {
+		{"agency create_objective", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := draftOf(w)
 			goal := w.idOf(base+"goals", map[string]any{"draft_id": draft, "title": "Goal"})
-			return mun234bCreate{list: base + "objectives?draft_id=" + draft, post: func(round int) (string, any) {
+			return concurrentCreateCreate{list: base + "objectives?draft_id=" + draft, post: func(round int) (string, any) {
 				return base + "objectives", map[string]any{"draft_id": draft, "goal_id": goal, "title": fmt.Sprintf("Probe %d", round)}
 			}}
 		}},
-		{"agency create_work_item", func(w mun234bWorld) mun234bCreate {
+		{"agency create_work_item", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := draftOf(w)
 			workflow := w.idOf(base+"workflows", map[string]any{"draft_id": draft, "name": "Flow"})
-			return mun234bCreate{list: base + "work-items?draft_id=" + draft, post: func(round int) (string, any) {
+			return concurrentCreateCreate{list: base + "work-items?draft_id=" + draft, post: func(round int) (string, any) {
 				return base + "work-items", map[string]any{"draft_id": draft, "workflow_id": workflow, "title": fmt.Sprintf("Probe %d", round)}
 			}}
 		}},
-		{"agency create_scenario", func(w mun234bWorld) mun234bCreate {
+		{"agency create_scenario", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := draftOf(w)
 			workflow := w.idOf(base+"workflows", map[string]any{"draft_id": draft, "name": "Flow"})
-			return mun234bCreate{list: base + "scenarios?draft_id=" + draft, post: func(round int) (string, any) {
+			return concurrentCreateCreate{list: base + "scenarios?draft_id=" + draft, post: func(round int) (string, any) {
 				return base + "scenarios", map[string]any{"draft_id": draft, "workflow_id": workflow, "name": fmt.Sprintf("Probe %d", round)}
 			}}
 		}},
-		{"agency publish_agency", func(w mun234bWorld) mun234bCreate {
+		{"agency publish_agency", func(w concurrentCreateWorld) concurrentCreateCreate {
 			draft := draftOf(w)
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "publications", map[string]any{"draft_id": draft, "tag": fmt.Sprintf("v%d", round)}
 			}}
 		}},
 	})
 }
 
-func TestMUN234b_Round4_Taskmanager(t *testing.T) {
+func TestConcurrentCreate_Round4_Taskmanager(t *testing.T) {
 	const base = "/instances/{instanceID}/taskmanager/"
-	mun234bRun(t, []mun234bCase{
-		{"taskmanager create_backlog", mun234bNamed(base+"backlogs", base+"backlogs", "name", nil)},
-		{"taskmanager create_project", mun234bNamed(base+"projects", base+"projects", "name", nil)},
-		{"taskmanager create_task", mun234bNamed(base+"tasks", base+"tasks", "title", nil)},
-		{"taskmanager create_agent", mun234bNamed(base+"agents", base+"agents", "agent_id", nil)},
-		{"taskmanager start_workflow_run", mun234bNamed(base+"workflow-runs", base+"workflow-runs", "name", nil)},
-		{"taskmanager create_task_todo", func(w mun234bWorld) mun234bCreate {
+	concurrentCreateRun(t, []concurrentCreateCase{
+		{"taskmanager create_backlog", concurrentCreateNamed(base+"backlogs", base+"backlogs", "name", nil)},
+		{"taskmanager create_project", concurrentCreateNamed(base+"projects", base+"projects", "name", nil)},
+		{"taskmanager create_task", concurrentCreateNamed(base+"tasks", base+"tasks", "title", nil)},
+		{"taskmanager create_agent", concurrentCreateNamed(base+"agents", base+"agents", "agent_id", nil)},
+		{"taskmanager start_workflow_run", concurrentCreateNamed(base+"workflow-runs", base+"workflow-runs", "name", nil)},
+		{"taskmanager create_task_todo", func(w concurrentCreateWorld) concurrentCreateCreate {
 			task := w.idOf(base+"tasks", map[string]any{"title": "Parent"})
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "todos", map[string]any{"parent_task_id": task, "title": fmt.Sprintf("Todo %d", round)}
 			}}
 		}},
-		{"taskmanager add_task_note", func(w mun234bWorld) mun234bCreate {
+		{"taskmanager add_task_note", func(w concurrentCreateWorld) concurrentCreateCreate {
 			task := w.idOf(base+"tasks", map[string]any{"title": "Parent"})
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "tasks/" + task + "/notes", map[string]any{"kind": "person", "text": fmt.Sprintf("Note %d", round)}
 			}}
 		}},
-		{"taskmanager add_task_reference", func(w mun234bWorld) mun234bCreate {
+		{"taskmanager add_task_reference", func(w concurrentCreateWorld) concurrentCreateCreate {
 			task := w.idOf(base+"tasks", map[string]any{"title": "Parent"})
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "tasks/" + task + "/references", map[string]any{"kind": "commit", "repo": "hub-steward", "target": fmt.Sprintf("abc%d", round)}
 			}}
 		}},
-		{"taskmanager create_relationship", func(w mun234bWorld) mun234bCreate {
+		{"taskmanager create_relationship", func(w concurrentCreateWorld) concurrentCreateCreate {
 			from := w.idOf(base+"tasks", map[string]any{"title": "From"})
-			tos := make([]string, mun234bRounds)
+			tos := make([]string, concurrentCreateRounds)
 			for i := range tos {
 				tos[i] = w.idOf(base+"tasks", map[string]any{"title": fmt.Sprintf("To %d", i)})
 			}
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "relationships", map[string]any{"from_task_id": from, "to_task_id": tos[round], "kind": "depends_on"}
 			}}
 		}},
-		{"taskmanager add_step", func(w mun234bWorld) mun234bCreate {
+		{"taskmanager add_step", func(w concurrentCreateWorld) concurrentCreateCreate {
 			backlog := w.idOf(base+"backlogs", map[string]any{"name": "Board"})
-			return mun234bCreate{post: func(round int) (string, any) {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "backlogs/" + backlog + "/steps", map[string]any{"name": fmt.Sprintf("Step %d", round)}
 			}}
 		}},
 	})
 }
 
-func TestMUN234b_Round5_Modules(t *testing.T) {
+func TestConcurrentCreate_Round5_Modules(t *testing.T) {
 	const base = "/instances/{instanceID}/"
-	mun234bRun(t, []mun234bCase{
-		{"voting create_poll", mun234bNamed(base+"voting/polls", base+"voting/polls", "question", map[string]any{"mode": "single", "per_group": false, "opens_at": "2026-12-01T00:00:00Z", "closes_at": "2026-12-02T00:00:00Z"})},
-		{"digitaltwin create_node", mun234bNamed(base+"digitaltwin/nodes", base+"digitaltwin/nodes", "name", map[string]any{"kind": "pump"})},
-		{"digitaltwin create_metric", mun234bNamed(base+"digitaltwin/metrics", base+"digitaltwin/metrics", "name", map[string]any{"unit": "l", "node_kind": "pump"})},
-		{"engage create_post", mun234bNamed(base+"engage/posts", base+"engage/posts", "title", map[string]any{"kind": "event"})},
-		{"riskmanager create_risk", mun234bNamed(base+"risks/risks", base+"risks/risks", "title", map[string]any{"top_event": "Spill"})},
-		{"riskmanager create_control", mun234bNamed(base+"risks/controls", base+"risks/controls", "name", nil)},
-		{"custody create_consent_version", func(w mun234bWorld) mun234bCreate {
-			return mun234bCreate{post: func(round int) (string, any) {
+	concurrentCreateRun(t, []concurrentCreateCase{
+		{"voting create_poll", concurrentCreateNamed(base+"voting/polls", base+"voting/polls", "question", map[string]any{"mode": "single", "per_group": false, "opens_at": "2026-12-01T00:00:00Z", "closes_at": "2026-12-02T00:00:00Z"})},
+		{"digitaltwin create_node", concurrentCreateNamed(base+"digitaltwin/nodes", base+"digitaltwin/nodes", "name", map[string]any{"kind": "pump"})},
+		{"digitaltwin create_metric", concurrentCreateNamed(base+"digitaltwin/metrics", base+"digitaltwin/metrics", "name", map[string]any{"unit": "l", "node_kind": "pump"})},
+		{"engage create_post", concurrentCreateNamed(base+"engage/posts", base+"engage/posts", "title", map[string]any{"kind": "event"})},
+		{"riskmanager create_risk", concurrentCreateNamed(base+"risks/risks", base+"risks/risks", "title", map[string]any{"top_event": "Spill"})},
+		{"riskmanager create_control", concurrentCreateNamed(base+"risks/controls", base+"risks/controls", "name", nil)},
+		{"custody create_consent_version", func(w concurrentCreateWorld) concurrentCreateCreate {
+			return concurrentCreateCreate{post: func(round int) (string, any) {
 				return base + "custody/consent/versions", map[string]any{"scope": "mechanics", "version": fmt.Sprint(round + 1), "language": "en", "text": "I agree"}
 			}}
 		}},
-		{"agency create_agency", mun234bNamed(base+"agency", "", "name", nil)},
+		{"agency create_agency", concurrentCreateNamed(base+"agency", "", "name", nil)},
 	})
 }

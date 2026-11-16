@@ -29,7 +29,7 @@ func TestCatalogRoutesAndReassignsReportsInTheDatabase(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	instance := fmt.Sprintf("mun15d%d", os.Getpid())
+	instance := fmt.Sprintf("dept15d%d", os.Getpid())
 	t.Cleanup(func() {
 		var names []string
 		db.Raw("select tablename from pg_tables where schemaname = current_schema() and tablename like ?", instance+"%").Scan(&names)

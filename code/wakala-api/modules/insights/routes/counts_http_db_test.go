@@ -31,7 +31,7 @@ func TestGetInsightsCountsOverHTTPWithholdsSmallSubjects(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	instance := fmt.Sprintf("mun11h%d", os.Getpid())
+	instance := fmt.Sprintf("count11h%d", os.Getpid())
 	s, err := insights.SpecFor(instance)
 	if err != nil {
 		t.Fatal(err)

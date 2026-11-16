@@ -244,7 +244,7 @@ func (cw consentWalk) makeOne(t *testing.T, tool string, args map[string]any) ma
 	return decoded
 }
 
-func TestMUN234c_ReplayMCP_Round1(t *testing.T) {
+func TestReplayMCP_Round1(t *testing.T) {
 	cw := replayWalk(t)
 	cw.probeReplay(t, []replayCase{
 		{tool: "actor_create_actor", args: named("display_name", nil), list: "actor_list_actors", expect: replayDuplicatesAllowed},
@@ -258,18 +258,18 @@ func TestMUN234c_ReplayMCP_Round1(t *testing.T) {
 		{tool: "assetmanager_location_create", args: named("name", nil), list: "assetmanager_location_list", expect: replayDuplicatesAllowed},
 		{tool: "assetmanager_asset_create", args: func(label string) map[string]any {
 			return map[string]any{"name": label, "tracking_mode": "serialized", "serial_tag": label}
-		}, list: "assetmanager_asset_list", expect: replayOneRow, bug: "MUN684"},
+		}, list: "assetmanager_asset_list", expect: replayOneRow, bug: "open"},
 		{tool: "sources_source_create", args: named("title", nil), list: "sources_source_list", expect: replayDuplicatesAllowed},
 	})
 }
 
-func TestMUN234c_ReplayMCP_Round2(t *testing.T) {
+func TestReplayMCP_Round2(t *testing.T) {
 	cw := replayWalk(t)
 	draft := func(t *testing.T, cw consentWalk) map[string]any {
 		return map[string]any{"draft_id": cw.makeOne(t, "agency_create_draft", map[string]any{"description": "replay"})["id"]}
 	}
 	cw.probeReplay(t, []replayCase{
-		{tool: "actor_create_group_type", args: named("name", nil), list: "actor_list_group_types", expect: replayOneRow, bug: "MUN688", fixed: func(t *testing.T, cw consentWalk) map[string]any {
+		{tool: "actor_create_group_type", args: named("name", nil), list: "actor_list_group_types", expect: replayOneRow, bug: "open", fixed: func(t *testing.T, cw consentWalk) map[string]any {
 			hierarchy := cw.makeOne(t, "actor_create_hierarchy", map[string]any{"name": "typed"})
 			level := cw.makeOne(t, "actor_create_level", map[string]any{"name": "ward", "depth": 1, "hierarchy_id": hierarchy["id"]})
 			return map[string]any{"hierarchy_id": hierarchy["id"], "level_id": level["id"]}
@@ -279,11 +279,11 @@ func TestMUN234c_ReplayMCP_Round2(t *testing.T) {
 		{tool: "agency_create_goal", args: named("title", nil), list: "agency_list_goals", listArgs: map[string]any{"draft_id": ""}, expect: replayDuplicatesAllowed, fixed: draft},
 		{tool: "agency_create_value", args: named("text", nil), list: "agency_list_values", listArgs: map[string]any{"draft_id": ""}, expect: replayDuplicatesAllowed, fixed: draft},
 		{tool: "agency_create_workflow", args: named("name", nil), list: "agency_list_workflows", listArgs: map[string]any{"draft_id": ""}, expect: replayDuplicatesAllowed, fixed: draft},
-		{tool: "custody_publish_consent_version", args: named("text", map[string]any{"scope": "mechanics"}), list: "custody_list_consent_versions", expect: replayOneRow, bug: "MUN687"},
+		{tool: "custody_publish_consent_version", args: named("text", map[string]any{"scope": "mechanics"}), list: "custody_list_consent_versions", expect: replayOneRow, bug: "open"},
 	})
 }
 
-func TestMUN234c_ReplayMCP_Round3(t *testing.T) {
+func TestReplayMCP_Round3(t *testing.T) {
 	cw := replayWalk(t)
 	cw.probeReplay(t, []replayCase{
 		{tool: "taskmanager_backlog_step_add", args: named("name", nil), list: "taskmanager_backlog_list", expect: replayOneRow, fixed: func(t *testing.T, cw consentWalk) map[string]any {

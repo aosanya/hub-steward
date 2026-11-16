@@ -31,7 +31,7 @@ func publishedPollFixture(t *testing.T) (PollManager, *gorm.DB, *spec.Spec, stri
 	if err != nil {
 		t.Fatalf("gorm.Open: %v", err)
 	}
-	instance := fmt.Sprintf("mun11x%d", os.Getpid())
+	instance := fmt.Sprintf("disclose11x%d", os.Getpid())
 	s, err := SpecFor(instance)
 	if err != nil {
 		t.Fatal(err)

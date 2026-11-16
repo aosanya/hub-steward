@@ -57,7 +57,7 @@ describe("a menu section's screen", () => {
   it("marks a submenu with no screen as not available yet and gives it no button", () => {
     section("residents");
 
-    expect(screen.queryByRole("button", { name: /All Residents/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: /All People/ })).toBeNull();
     expect(screen.getAllByText(notYetWords)).toHaveLength(5);
   });
 

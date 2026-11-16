@@ -35,7 +35,7 @@ func insightFixture(t *testing.T) (InsightManager, *gorm.DB, *spec.Spec) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	instance := fmt.Sprintf("mun11i%d", os.Getpid())
+	instance := fmt.Sprintf("count11i%d", os.Getpid())
 	s, err := SpecFor(instance)
 	if err != nil {
 		t.Fatal(err)

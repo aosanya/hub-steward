@@ -9,7 +9,7 @@ import (
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
 
-func mun327Document() agencymodels.AgencyDocument {
+func runRouteOrderDocument() agencymodels.AgencyDocument {
 	return agencymodels.AgencyDocument{
 		Workflows: []agencymodels.DocumentWorkflow{{ID: "w-round", Code: "round"}},
 		WorkItems: []agencymodels.DocumentWorkItem{
@@ -52,7 +52,7 @@ func TestMun327AStepAfterARouteMayBeAnyBranchTheRouteCanChoose(t *testing.T) {
 	for name, c := range cases {
 		board := newFakeBoard()
 		board.run = mwanachamataskmanager.WorkflowRun{WorkflowCode: "round", WorkflowVersion: 2, CurrentStepID: c.current}
-		lb := limitedOver(board, fixedPublications{document: mun327Document()}, nil)
+		lb := limitedOver(board, fixedPublications{document: runRouteOrderDocument()}, nil)
 		_, err := lb.BeginWorkflowRunStep(context.Background(), "run-1", c.step, 0, "")
 		if !errors.Is(err, c.want) && !(c.want == nil && err == nil) {
 			t.Errorf("%s: %s after %q gave %v", name, c.step, c.current, err)

@@ -13,17 +13,17 @@ const opens = (title: string, path: () => string): MenuItem => ({ title, path })
 export const menuSections: MenuSection[] = [
   {
     id: "residents",
-    title: "Residents",
+    title: "People",
     icon: "users",
     module: "actor",
-    items: ["All Residents", "Households", "Registrations", "Groups & Associations", "Communications"].map(notYet),
+    items: ["All People", "Households", "Registrations", "Groups & Associations", "Communications"].map(notYet),
   },
   {
     id: "properties",
-    title: "Properties & Addresses",
+    title: "Places & Addresses",
     icon: "pin",
     module: "digitaltwin",
-    items: ["Properties", "Addresses", "Ownership & Tenure", "Land Use & Zoning"].map(notYet),
+    items: ["Places", "Addresses", "Ownership & Tenure", "Land Use"].map(notYet),
   },
   {
     id: "issues",
@@ -44,14 +44,14 @@ export const menuSections: MenuSection[] = [
     title: "Assets & Works",
     icon: "box",
     module: "assetmanager",
-    items: ["Roads & Paths", "Street Lights", "Water Points", "Buildings", "Work Orders", "Maintenance Schedule"].map(notYet),
+    items: ["Routes", "Equipment", "Facilities", "Buildings", "Work Orders", "Maintenance Schedule"].map(notYet),
   },
   {
     id: "council",
-    title: "Council & Decisions",
+    title: "Decisions",
     icon: "landmark",
     module: "voting",
-    items: ["Meetings", "Agendas & Minutes", "Resolutions", "Bylaws", "Committees"].map(notYet),
+    items: ["Meetings", "Agendas & Minutes", "Resolutions", "Rules", "Committees"].map(notYet),
   },
   {
     id: "staff",
@@ -71,7 +71,7 @@ export const menuSections: MenuSection[] = [
     id: "settings",
     title: "Settings",
     icon: "gear",
-    items: ["Municipality Profile", "Users & Roles", "Boundaries & Wards", "Integrations", "Audit Log"].map(notYet),
+    items: ["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "Audit Log"].map(notYet),
   },
 ];
 

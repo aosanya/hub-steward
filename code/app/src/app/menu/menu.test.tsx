@@ -6,7 +6,7 @@ import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { MenuRows } from "./MenuRows";
 import { menuSections } from "./sections";
 
-const view = (codes: string[], over: Partial<AgencyView> = {}): AgencyView => ({ name: "Zöldhalom", modules: codes.map((code) => ({ code, name: code })), ...over });
+const view = (codes: string[], over: Partial<AgencyView> = {}): AgencyView => ({ name: "Åkerby Cooperative", modules: codes.map((code) => ({ code, name: code })), ...over });
 
 let landed = "";
 
@@ -40,9 +40,9 @@ describe("the menu rows on Home", () => {
   it("lists only the sections whose module the agency has switched on, with Settings after them", async () => {
     home(view(["actor", "forms"]));
 
-    await screen.findByText("Residents");
+    await screen.findByText("People");
     expect(screen.getAllByRole("button").map((button) => button.querySelector(".ttl")?.textContent)).toEqual([
-      "Residents",
+      "People",
       "Issues & Requests",
       "Services & Permits",
       "Staff & Departments",
@@ -53,15 +53,15 @@ describe("the menu rows on Home", () => {
   it("lists the nine sections in the drawn order for an agency with every module, and no Dashboard row", async () => {
     home(view(["actor", "digitaltwin", "forms", "assetmanager", "voting", "accounting"]));
 
-    await screen.findByText("Residents");
+    await screen.findByText("People");
     const titles = screen.getAllByRole("button").map((button) => button.querySelector(".ttl")?.textContent);
     expect(titles).toEqual([
-      "Residents",
-      "Properties & Addresses",
+      "People",
+      "Places & Addresses",
       "Issues & Requests",
       "Services & Permits",
       "Assets & Works",
-      "Council & Decisions",
+      "Decisions",
       "Staff & Departments",
       "Finance",
       "Settings",
@@ -72,7 +72,7 @@ describe("the menu rows on Home", () => {
   it("opens the section's own screen", async () => {
     home(view(["actor"]));
 
-    await userEvent.click(await screen.findByRole("button", { name: /Residents/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /People/ }));
 
     expect(landed).toBe("/a/town/menu/residents");
   });

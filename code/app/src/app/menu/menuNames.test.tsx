@@ -53,32 +53,32 @@ describe("a section named by its mount", () => {
   it("keeps the old words for a mount with no name", async () => {
     home(school({ actor: [], forms: [] }));
 
-    await screen.findByText("Residents");
-    expect(rowTitles()).toEqual(["Residents", "Issues & Requests", "Services & Permits", "Staff & Departments", "Settings"]);
+    await screen.findByText("People");
+    expect(rowTitles()).toEqual(["People", "Issues & Requests", "Services & Permits", "Staff & Departments", "Settings"]);
   });
 
   it("titles the section screen with the mount's name and keeps its submenus", async () => {
     section("residents", school({ actor: ["Students"] }));
 
     expect(await screen.findByRole("heading", { name: "Students" })).toBeInTheDocument();
-    expect(screen.getByText("All Residents")).toBeInTheDocument();
+    expect(screen.getByText("All People")).toBeInTheDocument();
   });
 
   it("titles the section screen with the old words when the mount has no name", async () => {
     section("residents", school({ actor: [] }));
 
-    await waitFor(() => expect(screen.getByRole("heading", { name: "Residents" })).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole("heading", { name: "People" })).toBeInTheDocument());
   });
 
   it("keeps the fixed words on Home when each mount is named after its module code", async () => {
     home(school({ actor: ["actor"], forms: ["forms"], voting: ["voting"], accounting: ["accounting"] }));
 
-    await screen.findByText("Residents");
+    await screen.findByText("People");
     expect(rowTitles()).toEqual([
-      "Residents",
+      "People",
       "Issues & Requests",
       "Services & Permits",
-      "Council & Decisions",
+      "Decisions",
       "Staff & Departments",
       "Finance",
       "Settings",
@@ -89,7 +89,7 @@ describe("a section named by its mount", () => {
     section("residents", school({ actor: ["actor"] }));
     await act(async () => {});
 
-    expect(screen.getByRole("heading", { name: "Residents" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "People" })).toBeInTheDocument();
   });
 
   it("shows Assets & Works on Home for an agency that holds the assetmanager module", async () => {
@@ -116,7 +116,7 @@ describe("a section named by its mount", () => {
   it("hides Assets & Works from an agency without the assetmanager module", async () => {
     home(school({ actor: ["actor"] }));
 
-    await screen.findByText("Residents");
+    await screen.findByText("People");
     expect(rowTitles()).not.toContain("Assets & Works");
   });
 

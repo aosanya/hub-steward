@@ -16,7 +16,7 @@ import (
 type roleHolderActs struct {
 	walk     stepRunWalk
 	path     string
-	mayor    *http.Cookie
+	director    *http.Cookie
 	clerk    *http.Cookie
 	nobody   *http.Cookie
 	closedID string
@@ -26,18 +26,18 @@ type roleHolderActs struct {
 func newRoleHolderActs(t *testing.T) roleHolderActs {
 	t.Helper()
 	w := newStepRunWalk(t, []stepSpec{
-		{title: "Mayor signs", form: "Sign", role: "Mayor", questions: boardQuestions},
+		{title: "Director signs", form: "Sign", role: "Director", questions: boardQuestions},
 		{title: "Clerk files", form: "File", role: "Clerk", questions: boardQuestions},
-	}, "Mayor", "Clerk")
+	}, "Director", "Clerk")
 	enableModules(t, w, "forms", "voting")
 	perms := map[string][]string{
-		w.roles["Mayor"]: {"report.publish"},
+		w.roles["Director"]: {"report.publish"},
 		w.roles["Clerk"]: {"poll.run"},
 	}
 	w.deps.rolePermissionsOverride = func(_ context.Context, roleID string) ([]string, error) {
 		return perms[roleID], nil
 	}
-	a := roleHolderActs{walk: w, path: "/instances/" + w.instance, mayor: w.people["Mayor"], clerk: w.people["Clerk"]}
+	a := roleHolderActs{walk: w, path: "/instances/" + w.instance, director: w.people["Director"], clerk: w.people["Clerk"]}
 	a.nobody = a.resident(t, "Nobody")
 	a.groupID = a.createGroup(t, "Town hall")
 	a.closedID = a.closedForm(t)
@@ -141,7 +141,7 @@ func (a roleHolderActs) runPoll(t *testing.T, as *http.Cookie) int {
 
 func TestRoleHolder_APersonHoldingTheReportRolePublishesAReport(t *testing.T) {
 	a := newRoleHolderActs(t)
-	if code := a.publishReport(t, a.mayor); code != http.StatusCreated {
+	if code := a.publishReport(t, a.director); code != http.StatusCreated {
 		t.Fatalf("the holder of report.publish publishes a report: %d, want 201", code)
 	}
 }
@@ -167,7 +167,7 @@ func TestRoleHolder_APersonHoldingThePollRoleRunsAPoll(t *testing.T) {
 
 func TestRoleHolder_APersonWithoutThePollRoleIsRefusedRunningAPoll(t *testing.T) {
 	a := newRoleHolderActs(t)
-	for name, as := range map[string]*http.Cookie{"resident with no role": a.nobody, "holder of report.publish": a.mayor} {
+	for name, as := range map[string]*http.Cookie{"resident with no role": a.nobody, "holder of report.publish": a.director} {
 		if code := a.runPoll(t, as); code != http.StatusForbidden {
 			t.Errorf("%s runs a poll: %d, want 403", name, code)
 		}

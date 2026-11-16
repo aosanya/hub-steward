@@ -8,14 +8,14 @@ import (
 	"time"
 )
 
-type mun235aWorld struct {
+type pollFormDatesWorld struct {
 	walk  stepRunWalk
 	group string
 	polls string
 	forms string
 }
 
-func newMUN235aWorld(t *testing.T) *mun235aWorld {
+func newPollFormDatesWorld(t *testing.T) *pollFormDatesWorld {
 	t.Helper()
 	w := newStepRunWalk(t, nil)
 	path := "/instances/" + w.instance
@@ -24,57 +24,57 @@ func newMUN235aWorld(t *testing.T) *mun235aWorld {
 		t.Fatalf("create group: %d %s", group.Code, group.Body.String())
 	}
 	groupID, _ := decodeObject(t, group)["id"].(string)
-	return &mun235aWorld{walk: w, group: groupID, polls: path + "/voting/polls", forms: path + "/forms"}
+	return &pollFormDatesWorld{walk: w, group: groupID, polls: path + "/voting/polls", forms: path + "/forms"}
 }
 
-func (m *mun235aWorld) poll(t *testing.T, opens, closes any) (int, map[string]any) {
+func (m *pollFormDatesWorld) poll(t *testing.T, opens, closes any) (int, map[string]any) {
 	t.Helper()
 	rec := m.walk.call(t, "POST", m.polls, map[string]any{
 		"question": "Close Mill Row on Sundays?", "choices": []map[string]any{{"label": "yes"}, {"label": "no"}},
 		"group_ids": []string{m.group}, "opens_at": opens, "closes_at": closes,
 	}, m.walk.owner)
-	return rec.Code, mun235aObject(rec.Body.Bytes())
+	return rec.Code, pollFormDatesObject(rec.Body.Bytes())
 }
 
-func (m *mun235aWorld) form(t *testing.T, fields map[string]any) (int, map[string]any) {
+func (m *pollFormDatesWorld) form(t *testing.T, fields map[string]any) (int, map[string]any) {
 	t.Helper()
 	body := map[string]any{"title": "Street survey"}
 	for k, v := range fields {
 		body[k] = v
 	}
 	rec := m.walk.call(t, "POST", m.forms+"/forms", body, m.walk.owner)
-	return rec.Code, mun235aObject(rec.Body.Bytes())
+	return rec.Code, pollFormDatesObject(rec.Body.Bytes())
 }
 
-func (m *mun235aWorld) patchForm(t *testing.T, id string, fields map[string]any) (int, map[string]any) {
+func (m *pollFormDatesWorld) patchForm(t *testing.T, id string, fields map[string]any) (int, map[string]any) {
 	t.Helper()
 	body := map[string]any{"title": "Street survey", "audience": "member", "collection_mode": "self", "closes_at": "2099-01-01T00:00:00Z"}
 	for k, v := range fields {
 		body[k] = v
 	}
 	rec := m.walk.call(t, "PATCH", m.forms+"/forms/"+id, body, m.walk.owner)
-	return rec.Code, mun235aObject(rec.Body.Bytes())
+	return rec.Code, pollFormDatesObject(rec.Body.Bytes())
 }
 
-func mun235aObject(raw []byte) map[string]any {
+func pollFormDatesObject(raw []byte) map[string]any {
 	var out map[string]any
 	_ = json.Unmarshal(raw, &out)
 	return out
 }
 
-func mun235aNoServerError(t *testing.T, name string, code int, body map[string]any) {
+func pollFormDatesNoServerError(t *testing.T, name string, code int, body map[string]any) {
 	t.Helper()
 	if code >= http.StatusInternalServerError {
 		t.Fatalf("%s: %d %v, want no server error", name, code, body)
 	}
 }
 
-func mun235aStranger() *http.Cookie {
+func pollFormDatesStranger() *http.Cookie {
 	return &http.Cookie{Name: "stranger", Value: "none"}
 }
 
-func TestMUN235a_PollWindowsAreAcceptedOrRefusedNeverServerErrors(t *testing.T) {
-	m := newMUN235aWorld(t)
+func TestPollFormDates_PollWindowsAreAcceptedOrRefusedNeverServerErrors(t *testing.T) {
+	m := newPollFormDatesWorld(t)
 	for _, c := range []struct {
 		name          string
 		opens, closes any
@@ -94,16 +94,16 @@ func TestMUN235a_PollWindowsAreAcceptedOrRefusedNeverServerErrors(t *testing.T) 
 		{"same instant spelled two ways", "2026-11-08T00:00:00Z", "2026-11-08T00:00:00.000Z", http.StatusBadRequest},
 	} {
 		code, body := m.poll(t, c.opens, c.closes)
-		mun235aNoServerError(t, c.name, code, body)
+		pollFormDatesNoServerError(t, c.name, code, body)
 		if code != c.want {
 			t.Errorf("%s: %d %v, want %d", c.name, code, body, c.want)
 		}
 	}
 }
 
-func TestMUN235a_PollWindowThatIsNotARealTimestampIsRefused(t *testing.T) {
-	t.Skip("MUN682: opens_at and closes_at are compared and stored as text; remove this line with the fix")
-	m := newMUN235aWorld(t)
+func TestPollFormDates_PollWindowThatIsNotARealTimestampIsRefused(t *testing.T) {
+	t.Skip("Known defect: opens_at and closes_at are compared and stored as text; remove this line with the fix")
+	m := newPollFormDatesWorld(t)
 	for _, c := range []struct{ name, opens, closes string }{
 		{"no zone", "2026-11-08T00:00:00", "2026-12-08T00:00:00"},
 		{"date only", "2026-11-08", "2026-12-08"},
@@ -120,9 +120,9 @@ func TestMUN235a_PollWindowThatIsNotARealTimestampIsRefused(t *testing.T) {
 	}
 }
 
-func TestMUN235a_PollWindowIsComparedByInstantNotByText(t *testing.T) {
-	t.Skip("MUN682: opens_at and closes_at are compared and stored as text; remove this line with the fix")
-	m := newMUN235aWorld(t)
+func TestPollFormDates_PollWindowIsComparedByInstantNotByText(t *testing.T) {
+	t.Skip("Known defect: opens_at and closes_at are compared and stored as text; remove this line with the fix")
+	m := newPollFormDatesWorld(t)
 	if code, body := m.poll(t, "2026-11-08T00:00:00Z", "2026-11-08T12:00:00+14:00"); code != http.StatusBadRequest {
 		t.Errorf("closes 22:00 UTC the day before it opens: %d %v, want 400", code, body)
 	}
@@ -131,7 +131,7 @@ func TestMUN235a_PollWindowIsComparedByInstantNotByText(t *testing.T) {
 	}
 }
 
-func TestMUN235a_PollWindowsAtTheEdgesOfTheCalendarAreAnswerableByAResident(t *testing.T) {
+func TestPollFormDates_PollWindowsAtTheEdgesOfTheCalendarAreAnswerableByAResident(t *testing.T) {
 	pa := newPollAnswerWalk(t)
 	for _, c := range []struct{ name, opens, closes string }{
 		{"year 9999 close", "2020-01-01T00:00:00Z", "9999-12-31T23:59:59Z"},
@@ -162,8 +162,8 @@ func TestMUN235a_PollWindowsAtTheEdgesOfTheCalendarAreAnswerableByAResident(t *t
 	}
 }
 
-func TestMUN235a_PollWithAWindowOfNoRealTimestampsIsNotLeftInvisibleToResidents(t *testing.T) {
-	t.Skip("MUN682: a date-only, no-zone, lowercase or padded window is created 201 and then 404 for every resident; remove this line with the fix")
+func TestPollFormDates_PollWithAWindowOfNoRealTimestampsIsNotLeftInvisibleToResidents(t *testing.T) {
+	t.Skip("Known defect: a date-only, no-zone, lowercase or padded window is created 201 and then 404 for every resident; remove this line with the fix")
 	pa := newPollAnswerWalk(t)
 	for _, c := range []struct{ name, opens, closes string }{
 		{"date only", "2020-01-01", "2099-01-01"},
@@ -185,8 +185,8 @@ func TestMUN235a_PollWithAWindowOfNoRealTimestampsIsNotLeftInvisibleToResidents(
 	}
 }
 
-func TestMUN235a_FormWindowsAreAcceptedOrRefusedNeverServerErrors(t *testing.T) {
-	m := newMUN235aWorld(t)
+func TestPollFormDates_FormWindowsAreAcceptedOrRefusedNeverServerErrors(t *testing.T) {
+	m := newPollFormDatesWorld(t)
 	for _, c := range []struct {
 		name   string
 		fields map[string]any
@@ -214,15 +214,15 @@ func TestMUN235a_FormWindowsAreAcceptedOrRefusedNeverServerErrors(t *testing.T) 
 		{"closes at the instant it opens", map[string]any{"opens_at": "2098-01-01T00:00:00Z", "closes_at": "2098-01-01T00:00:00.000Z"}, http.StatusBadRequest},
 	} {
 		code, body := m.form(t, c.fields)
-		mun235aNoServerError(t, c.name, code, body)
+		pollFormDatesNoServerError(t, c.name, code, body)
 		if code != c.want {
 			t.Errorf("%s: %d %v, want %d", c.name, code, body, c.want)
 		}
 	}
 }
 
-func TestMUN235a_FormSchedulesAreAcceptedOrRefusedNeverServerErrors(t *testing.T) {
-	m := newMUN235aWorld(t)
+func TestPollFormDates_FormSchedulesAreAcceptedOrRefusedNeverServerErrors(t *testing.T) {
+	m := newPollFormDatesWorld(t)
 	budapest := func(extra map[string]any) map[string]any {
 		out := map[string]any{"start": "2098-01-01T00:00:00Z", "zone": "Europe/Budapest", "rule": "FREQ=WEEKLY;BYDAY=MO"}
 		for k, v := range extra {
@@ -253,15 +253,15 @@ func TestMUN235a_FormSchedulesAreAcceptedOrRefusedNeverServerErrors(t *testing.T
 		{"start words", budapest(map[string]any{"start": "x"}), http.StatusBadRequest},
 	} {
 		code, body := m.form(t, map[string]any{"closes_at": "2099-01-01T00:00:00Z", "audience": "public", "schedule": c.schedule})
-		mun235aNoServerError(t, c.name, code, body)
+		pollFormDatesNoServerError(t, c.name, code, body)
 		if code != c.want {
 			t.Errorf("%s: %d %v, want %d", c.name, code, body, c.want)
 		}
 	}
 }
 
-func TestMUN235a_PublicDoorOfARepeatingFormNeverServerErrorsOnOddSchedules(t *testing.T) {
-	m := newMUN235aWorld(t)
+func TestPollFormDates_PublicDoorOfARepeatingFormNeverServerErrorsOnOddSchedules(t *testing.T) {
+	m := newPollFormDatesWorld(t)
 	w := m.walk
 	for i, schedule := range []map[string]any{
 		{"start": "2098-01-01T00:00:00Z", "zone": "Europe/Budapest", "rule": "FREQ=DAILY", "open_days": 2000000000},
@@ -278,14 +278,14 @@ func TestMUN235a_PublicDoorOfARepeatingFormNeverServerErrorsOnOddSchedules(t *te
 			t.Fatalf("schedule %d: create %d %v", i, code, created)
 		}
 		id, _ := created["id"].(string)
-		key := "mun235a-door-" + string(rune('a'+i))
+		key := "poll-form-dates-door-" + string(rune('a'+i))
 		if rec := w.call(t, "POST", m.forms+"/forms/"+id+"/publish", map[string]any{"candidate_link_key": key}, w.owner); rec.Code != http.StatusOK {
 			t.Fatalf("schedule %d: publish %d %s", i, rec.Code, rec.Body.String())
 		}
-		if rec := w.call(t, "GET", m.forms+"/public-links/"+key, nil, mun235aStranger()); rec.Code != http.StatusOK {
+		if rec := w.call(t, "GET", m.forms+"/public-links/"+key, nil, pollFormDatesStranger()); rec.Code != http.StatusOK {
 			t.Errorf("schedule %d: door %d %s, want 200", i, rec.Code, rec.Body.String())
 		}
-		if rec := w.call(t, "POST", m.forms+"/public-links/"+key+"/respondents", map[string]any{}, mun235aStranger()); rec.Code != http.StatusOK {
+		if rec := w.call(t, "POST", m.forms+"/public-links/"+key+"/respondents", map[string]any{}, pollFormDatesStranger()); rec.Code != http.StatusOK {
 			t.Errorf("schedule %d: register %d %s, want 200", i, rec.Code, rec.Body.String())
 		}
 		if rec := w.call(t, "GET", m.forms+"/forms", nil, w.owner); rec.Code != http.StatusOK {
@@ -300,8 +300,8 @@ func TestMUN235a_PublicDoorOfARepeatingFormNeverServerErrorsOnOddSchedules(t *te
 	}
 }
 
-func TestMUN235a_FormWindowEditsKeepTheCreateRulesAndAPastCloseCannotBePublished(t *testing.T) {
-	m := newMUN235aWorld(t)
+func TestPollFormDates_FormWindowEditsKeepTheCreateRulesAndAPastCloseCannotBePublished(t *testing.T) {
+	m := newPollFormDatesWorld(t)
 	w := m.walk
 	code, created := m.form(t, map[string]any{"closes_at": "2099-01-01T00:00:00Z", "audience": "public"})
 	if code != http.StatusCreated {
@@ -326,7 +326,7 @@ func TestMUN235a_FormWindowEditsKeepTheCreateRulesAndAPastCloseCannotBePublished
 		{"weekly schedule", map[string]any{"schedule": map[string]any{"start": "2098-01-01T00:00:00Z", "zone": "Europe/Budapest", "rule": "FREQ=WEEKLY;BYDAY=MO"}}, http.StatusOK},
 	} {
 		code, body := m.patchForm(t, id, c.fields)
-		mun235aNoServerError(t, c.name, code, body)
+		pollFormDatesNoServerError(t, c.name, code, body)
 		if code != c.want {
 			t.Errorf("%s: %d %v, want %d", c.name, code, body, c.want)
 		}
@@ -334,16 +334,16 @@ func TestMUN235a_FormWindowEditsKeepTheCreateRulesAndAPastCloseCannotBePublished
 	if code, body := m.patchForm(t, id, map[string]any{"audience": "public", "closes_at": "2020-01-01T00:00:00Z"}); code != http.StatusOK {
 		t.Fatalf("edit to a close in the past: %d %v", code, body)
 	}
-	if rec := w.call(t, "POST", m.forms+"/forms/"+id+"/publish", map[string]any{"candidate_link_key": "mun235a-past"}, w.owner); rec.Code != http.StatusBadRequest {
+	if rec := w.call(t, "POST", m.forms+"/forms/"+id+"/publish", map[string]any{"candidate_link_key": "poll-form-dates-past"}, w.owner); rec.Code != http.StatusBadRequest {
 		t.Errorf("publish a draft that closes in the past: %d %s, want 400", rec.Code, rec.Body.String())
 	}
-	if rec := w.call(t, "GET", m.forms+"/public-links/mun235a-past", nil, mun235aStranger()); rec.Code != http.StatusNotFound {
+	if rec := w.call(t, "GET", m.forms+"/public-links/poll-form-dates-past", nil, pollFormDatesStranger()); rec.Code != http.StatusNotFound {
 		t.Errorf("door of a draft that closes in the past: %d %s, want 404", rec.Code, rec.Body.String())
 	}
 }
 
-type mun235aAnswers struct {
-	*mun235aWorld
+type pollFormDatesAnswers struct {
+	*pollFormDatesWorld
 	formID     string
 	dateID     string
 	boundedID  string
@@ -351,9 +351,9 @@ type mun235aAnswers struct {
 	sendCookie *http.Cookie
 }
 
-func newMUN235aAnswers(t *testing.T) mun235aAnswers {
+func newPollFormDatesAnswers(t *testing.T) pollFormDatesAnswers {
 	t.Helper()
-	m := newMUN235aWorld(t)
+	m := newPollFormDatesWorld(t)
 	w := m.walk
 	code, created := m.form(t, map[string]any{"closes_at": "2099-01-01T00:00:00Z", "audience": "member", "collection_mode": "self", "originator_chapter_id": m.group})
 	if code != http.StatusCreated {
@@ -365,11 +365,11 @@ func newMUN235aAnswers(t *testing.T) mun235aAnswers {
 		if rec.Code != http.StatusCreated {
 			t.Fatalf("add question %v: %d %s", question, rec.Code, rec.Body.String())
 		}
-		made, _ := mun235aObject(rec.Body.Bytes())["question"].(map[string]any)
+		made, _ := pollFormDatesObject(rec.Body.Bytes())["question"].(map[string]any)
 		id, _ := made["id"].(string)
 		return id
 	}
-	out := mun235aAnswers{mun235aWorld: m, formID: formID, sendCookie: w.owner}
+	out := pollFormDatesAnswers{pollFormDatesWorld: m, formID: formID, sendCookie: w.owner}
 	out.dateID = ask(map[string]any{"prompt": "When", "answer_type": "date"})
 	out.boundedID = ask(map[string]any{"prompt": "Within", "answer_type": "date", "min_date": "2026-01-01", "max_date": "2026-12-31"})
 	out.timeID = ask(map[string]any{"prompt": "At", "answer_type": "time"})
@@ -382,7 +382,7 @@ func newMUN235aAnswers(t *testing.T) mun235aAnswers {
 	return out
 }
 
-func (a mun235aAnswers) send(t *testing.T, query string, answer map[string]any) int {
+func (a pollFormDatesAnswers) send(t *testing.T, query string, answer map[string]any) int {
 	t.Helper()
 	rec := a.walk.call(t, "POST", a.forms+"/forms/"+a.formID+"/answers"+query, map[string]any{"answers": []map[string]any{answer}}, a.sendCookie)
 	if rec.Code >= http.StatusInternalServerError {
@@ -391,8 +391,8 @@ func (a mun235aAnswers) send(t *testing.T, query string, answer map[string]any) 
 	return rec.Code
 }
 
-func TestMUN235a_FormDateAnswersAreStrictCalendarDates(t *testing.T) {
-	a := newMUN235aAnswers(t)
+func TestPollFormDates_FormDateAnswersAreStrictCalendarDates(t *testing.T) {
+	a := newPollFormDatesAnswers(t)
 	for _, c := range []struct {
 		value string
 		want  int
@@ -429,8 +429,8 @@ func TestMUN235a_FormDateAnswersAreStrictCalendarDates(t *testing.T) {
 	}
 }
 
-func TestMUN235a_FormQuestionDateBoundsAreStrictCalendarDates(t *testing.T) {
-	m := newMUN235aWorld(t)
+func TestPollFormDates_FormQuestionDateBoundsAreStrictCalendarDates(t *testing.T) {
+	m := newPollFormDatesWorld(t)
 	w := m.walk
 	_, created := m.form(t, map[string]any{"closes_at": "2099-01-01T00:00:00Z"})
 	id, _ := created["id"].(string)
@@ -455,8 +455,8 @@ func TestMUN235a_FormQuestionDateBoundsAreStrictCalendarDates(t *testing.T) {
 	}
 }
 
-func TestMUN235a_FormTimeAnswersAreClockTimesInHoursAndMinutes(t *testing.T) {
-	a := newMUN235aAnswers(t)
+func TestPollFormDates_FormTimeAnswersAreClockTimesInHoursAndMinutes(t *testing.T) {
+	a := newPollFormDatesAnswers(t)
 	for _, c := range []struct {
 		value string
 		want  int
@@ -478,9 +478,9 @@ func TestMUN235a_FormTimeAnswersAreClockTimesInHoursAndMinutes(t *testing.T) {
 	}
 }
 
-func TestMUN235a_FormTimeAnswerWithAOneDigitHourIsNotStoredAsTyped(t *testing.T) {
-	t.Skip("MUN700: value_time 7:05 is accepted and stored as typed, while a date 2026-1-5 is refused; remove this line with the fix")
-	a := newMUN235aAnswers(t)
+func TestPollFormDates_FormTimeAnswerWithAOneDigitHourIsNotStoredAsTyped(t *testing.T) {
+	t.Skip("Known defect: value_time 7:05 is accepted and stored as typed, while a date 2026-1-5 is refused; remove this line with the fix")
+	a := newPollFormDatesAnswers(t)
 	got := a.send(t, "", map[string]any{"question_id": a.timeID, "value_time": "7:05"})
 	if got == http.StatusOK {
 		rec := a.walk.call(t, "GET", a.forms+"/forms/"+a.formID+"/answers", nil, a.walk.owner)
@@ -492,8 +492,8 @@ func TestMUN235a_FormTimeAnswerWithAOneDigitHourIsNotStoredAsTyped(t *testing.T)
 	}
 }
 
-func TestMUN235a_PeriodKeyOnAFormThatDoesNotRepeatIsIgnoredAndNeverStored(t *testing.T) {
-	a := newMUN235aAnswers(t)
+func TestPollFormDates_PeriodKeyOnAFormThatDoesNotRepeatIsIgnoredAndNeverStored(t *testing.T) {
+	a := newPollFormDatesAnswers(t)
 	for _, key := range []string{"2026-02-30", "abc", "9999-12-31", "0001-01-01", ""} {
 		if got := a.send(t, "?period_key="+key, map[string]any{"question_id": a.dateID, "value_date": "2026-11-08"}); got != http.StatusOK {
 			t.Errorf("period_key %q: %d, want 200", key, got)
@@ -507,8 +507,8 @@ func TestMUN235a_PeriodKeyOnAFormThatDoesNotRepeatIsIgnoredAndNeverStored(t *tes
 	}
 }
 
-func TestMUN235a_StampsTheCallerSendsOnAPollAreReplacedByTheServer(t *testing.T) {
-	m := newMUN235aWorld(t)
+func TestPollFormDates_StampsTheCallerSendsOnAPollAreReplacedByTheServer(t *testing.T) {
+	m := newPollFormDatesWorld(t)
 	rec := m.walk.call(t, "POST", m.polls, map[string]any{
 		"question": "Close Mill Row on Sundays?", "choices": []map[string]any{{"label": "yes"}, {"label": "no"}},
 		"group_ids": []string{m.group}, "opens_at": "2026-11-08T00:00:00Z", "closes_at": "2026-12-08T00:00:00Z",
@@ -520,7 +520,7 @@ func TestMUN235a_StampsTheCallerSendsOnAPollAreReplacedByTheServer(t *testing.T)
 	if rec.Code != http.StatusCreated {
 		return
 	}
-	poll := mun235aObject(rec.Body.Bytes())
+	poll := pollFormDatesObject(rec.Body.Bytes())
 	created, _ := poll["created_at"].(string)
 	if parsed, err := time.Parse(time.RFC3339Nano, created); err != nil || parsed.Year() < 2026 {
 		t.Errorf("created_at %q, want the server's own time", created)
@@ -533,14 +533,14 @@ func TestMUN235a_StampsTheCallerSendsOnAPollAreReplacedByTheServer(t *testing.T)
 	}
 }
 
-func TestMUN235a_StampsTheCallerSendsOnAFormAreReplacedByTheServer(t *testing.T) {
-	m := newMUN235aWorld(t)
+func TestPollFormDates_StampsTheCallerSendsOnAFormAreReplacedByTheServer(t *testing.T) {
+	m := newPollFormDatesWorld(t)
 	code, body := m.form(t, map[string]any{
 		"closes_at": "2099-01-01T00:00:00Z", "created_at": "1900-01-01T00:00:00Z", "last_updated": "1900-01-01T00:00:00Z",
 		"published_at": "1900-01-02T00:00:00Z", "closed_at": "1900-01-03T00:00:00Z", "approved_at": "1900-01-04T00:00:00Z",
 		"status": "open", "results_published_at": "1900-01-05T00:00:00Z",
 	})
-	mun235aNoServerError(t, "form with stamps", code, body)
+	pollFormDatesNoServerError(t, "form with stamps", code, body)
 	if code != http.StatusCreated {
 		return
 	}

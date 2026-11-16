@@ -98,7 +98,7 @@ func (w resultsFilesWorld) items(t *testing.T, subject, formID string) []map[str
 func (w resultsFilesWorld) subject(t *testing.T, who string) string {
 	t.Helper()
 	cookies := map[string]*http.Cookie{
-		"Mayor":  w.acts.mayor,
+		"Director":  w.acts.director,
 		"Clerk":  w.acts.clerk,
 		"Nobody": w.acts.nobody,
 		"owner":  w.acts.walk.owner,
@@ -115,7 +115,7 @@ func TestFormsResultsFilesListsEachStoredFileVersionNewestFirst(t *testing.T) {
 	second := w.write(t, form+"/summary.md", "summary")
 	third := w.write(t, form+"/ward.md", "final")
 
-	got := w.items(t, w.subject(t, "Mayor"), form)
+	got := w.items(t, w.subject(t, "Director"), form)
 	wantVersions := []string{third, second, first}
 	wantPaths := []string{form + "/ward.md", form + "/summary.md", form + "/ward.md"}
 	wantNames := []string{"ward.md", "summary.md", "ward.md"}
@@ -144,19 +144,19 @@ func TestFormsResultsFilesListsEachStoredFileVersionNewestFirst(t *testing.T) {
 func TestFormsResultsFilesIsEmptyWithoutARepositoryOrAFolder(t *testing.T) {
 	w := newResultsFilesWorld(t)
 	form := w.acts.closedID
-	if got := w.items(t, w.subject(t, "Mayor"), form); len(got) != 0 {
-		t.Fatalf("with no reports repository the mayor sees %v, want none", got)
+	if got := w.items(t, w.subject(t, "Director"), form); len(got) != 0 {
+		t.Fatalf("with no reports repository the director sees %v, want none", got)
 	}
 	w.initReports(t)
-	if got := w.items(t, w.subject(t, "Mayor"), form); len(got) != 0 {
-		t.Fatalf("with an empty repository the mayor sees %v, want none", got)
+	if got := w.items(t, w.subject(t, "Director"), form); len(got) != 0 {
+		t.Fatalf("with an empty repository the director sees %v, want none", got)
 	}
 	w.write(t, "other-form/ward.md", "elsewhere")
-	if got := w.items(t, w.subject(t, "Mayor"), form); len(got) != 0 {
-		t.Errorf("with no folder for the form the mayor sees %v, want none", got)
+	if got := w.items(t, w.subject(t, "Director"), form); len(got) != 0 {
+		t.Errorf("with no folder for the form the director sees %v, want none", got)
 	}
-	if got := w.items(t, w.subject(t, "Mayor"), "no-such-form"); len(got) != 0 {
-		t.Errorf("for a form the agency does not have the mayor sees %v, want none", got)
+	if got := w.items(t, w.subject(t, "Director"), "no-such-form"); len(got) != 0 {
+		t.Errorf("for a form the agency does not have the director sees %v, want none", got)
 	}
 }
 

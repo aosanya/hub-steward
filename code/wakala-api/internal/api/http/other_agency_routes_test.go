@@ -29,20 +29,20 @@ import (
 )
 
 const (
-	mun226aRoundSize   = 15
-	mun226aFakeID      = "00000000-0000-4000-8000-00000000dead"
-	mun226aMuxNotFound = "404 page not found"
+	otherAgencyRoundSize   = 15
+	otherAgencyFakeID      = "00000000-0000-4000-8000-00000000dead"
+	otherAgencyMuxNotFound = "404 page not found"
 )
 
-var mun226aPlaceholder = regexp.MustCompile(`\{[^}]+\}`)
+var otherAgencyPlaceholder = regexp.MustCompile(`\{[^}]+\}`)
 
-type mun226aRoute struct {
+type otherAgencyRoute struct {
 	method, pattern string
 }
 
-func (r mun226aRoute) String() string { return r.method + " " + r.pattern }
+func (r otherAgencyRoute) String() string { return r.method + " " + r.pattern }
 
-type mun226aWorld struct {
+type otherAgencyWorld struct {
 	handler    http.Handler
 	deps       *Deps
 	reg        agencies.Registry
@@ -56,19 +56,19 @@ type mun226aWorld struct {
 	cookieMint func(subject string) *http.Cookie
 }
 
-func newMUN226aWorld(t *testing.T) mun226aWorld {
+func newOtherAgencyWorld(t *testing.T) otherAgencyWorld {
 	t.Helper()
 	walk := newStepRunWalk(t, nil)
 	walk.deps.AI = NewAIResolver(walk.db, walk.deps.Registry, []byte("0123456789abcdef0123456789abcdef"))
-	walk.deps.APIKeys = mun226aMust(apikeys.NewManager(walk.db))
-	walk.deps.NotifyRules = mun226aMust(notifyrules.NewStore(walk.db))
-	walk.deps.Languages = mun226aMust(languages.NewStore(walk.db))
-	walk.deps.FormsSettings = mun226aMust(formsettings.NewStore(walk.db))
+	walk.deps.APIKeys = otherAgencyMust(apikeys.NewManager(walk.db))
+	walk.deps.NotifyRules = otherAgencyMust(notifyrules.NewStore(walk.db))
+	walk.deps.Languages = otherAgencyMust(languages.NewStore(walk.db))
+	walk.deps.FormsSettings = otherAgencyMust(formsettings.NewStore(walk.db))
 	walk.deps.PlatformOwners = []string{"platform-owner"}
 	handler := NewRouter(walk.deps)
 	walk.handler = handler
 
-	w := mun226aWorld{
+	w := otherAgencyWorld{
 		handler: handler,
 		deps:    walk.deps,
 		reg:     walk.deps.Registry,
@@ -115,15 +115,15 @@ func createInstanceFor(t *testing.T, handler http.Handler, owner *http.Cookie, n
 	return id
 }
 
-func mun226aWriteMethod(method string) bool {
+func otherAgencyWriteMethod(method string) bool {
 	return method == "POST" || method == "PUT" || method == "PATCH" || method == "DELETE"
 }
 
-func mun226aInstanceRoutes(d *Deps) []mun226aRoute {
+func otherAgencyInstanceRoutes(d *Deps) []otherAgencyRoute {
 	seen := map[string]bool{}
-	var out []mun226aRoute
+	var out []otherAgencyRoute
 	add := func(method, pattern string) {
-		if !mun226aWriteMethod(method) || !strings.Contains(pattern, "{instanceID}") {
+		if !otherAgencyWriteMethod(method) || !strings.Contains(pattern, "{instanceID}") {
 			return
 		}
 		key := method + " " + pattern
@@ -131,7 +131,7 @@ func mun226aInstanceRoutes(d *Deps) []mun226aRoute {
 			return
 		}
 		seen[key] = true
-		out = append(out, mun226aRoute{method, pattern})
+		out = append(out, otherAgencyRoute{method, pattern})
 	}
 	addRoutes := func(prefix string, routes []dispatch.Route) {
 		for _, rt := range routes {
@@ -152,9 +152,9 @@ func mun226aInstanceRoutes(d *Deps) []mun226aRoute {
 	addRoutes(formsInstancePrefix, formsGatedShape())
 	addRoutes(commInstancePrefix, commGatedShape())
 	addRoutes(accountingInstancePrefix, accountingroutes.Shape())
-	addRoutes(assetManagerInstancePrefix, mun226aMust(assetroutes.Table().Shape()))
-	addRoutes(sourcesInstancePrefix, mun226aMust(sourcesroutes.Table.Shape()))
-	for _, rt := range mun226aMust(airoutes.Table.Shape()) {
+	addRoutes(assetManagerInstancePrefix, otherAgencyMust(assetroutes.Table().Shape()))
+	addRoutes(sourcesInstancePrefix, otherAgencyMust(sourcesroutes.Table.Shape()))
+	for _, rt := range otherAgencyMust(airoutes.Table.Shape()) {
 		pattern := strings.Replace(rt.Pattern(aiInstancePrefix), "/agencies/{agencyID}", "", 1)
 		method, path, _ := strings.Cut(pattern, " ")
 		add(method, path)
@@ -206,15 +206,15 @@ func mun226aInstanceRoutes(d *Deps) []mun226aRoute {
 	return out
 }
 
-func mun226aMust[T any](v T, err error) T {
+func otherAgencyMust[T any](v T, err error) T {
 	if err != nil {
 		panic(err)
 	}
 	return v
 }
 
-func mun226aFill(pattern, instanceID, otherID string) string {
-	return mun226aPlaceholder.ReplaceAllStringFunc(pattern, func(m string) string {
+func otherAgencyFill(pattern, instanceID, otherID string) string {
+	return otherAgencyPlaceholder.ReplaceAllStringFunc(pattern, func(m string) string {
 		if m == "{instanceID}" {
 			return instanceID
 		}
@@ -222,32 +222,32 @@ func mun226aFill(pattern, instanceID, otherID string) string {
 	})
 }
 
-var mun226aValidBodies = map[string]map[string]any{
+var otherAgencyValidBodies = map[string]map[string]any{
 	"POST /instances/{instanceID}/api-keys": {"name": "probe"},
 	"PUT /instances/{instanceID}/name":      {"name": "Hijacked"},
 }
 
-type mun226aAnswer struct {
+type otherAgencyAnswer struct {
 	code     int
 	body     string
 	panicked bool
 }
 
-func (w mun226aWorld) send(route mun226aRoute, path string, as *http.Cookie) (answer mun226aAnswer) {
+func (w otherAgencyWorld) send(route otherAgencyRoute, path string, as *http.Cookie) (answer otherAgencyAnswer) {
 	defer func() {
 		if recover() != nil {
 			answer.panicked = true
 		}
 	}()
 	body := map[string]any{}
-	if valid, ok := mun226aValidBodies[route.String()]; ok {
+	if valid, ok := otherAgencyValidBodies[route.String()]; ok {
 		body = valid
 	}
 	rec := callOn(w.handler, route.method, path, body, as)
-	return mun226aAnswer{code: rec.Code, body: rec.Body.String()}
+	return otherAgencyAnswer{code: rec.Code, body: rec.Body.String()}
 }
 
-func (w mun226aWorld) leaks(body string) []string {
+func (w otherAgencyWorld) leaks(body string) []string {
 	var found []string
 	for _, mark := range []string{w.nameA, "Agency A", "owner-of-agency-a"} {
 		if strings.Contains(body, mark) {
@@ -257,21 +257,21 @@ func (w mun226aWorld) leaks(body string) []string {
 	return found
 }
 
-type mun226aTally struct {
+type otherAgencyTally struct {
 	probed, refused, notMounted int
 	defects                     []string
 }
 
-func (w mun226aWorld) probeRound(routes []mun226aRoute, otherID string, exempt map[string]bool) mun226aTally {
-	var tally mun226aTally
+func (w otherAgencyWorld) probeRound(routes []otherAgencyRoute, otherID string, exempt map[string]bool) otherAgencyTally {
+	var tally otherAgencyTally
 	for _, route := range routes {
 		tally.probed++
-		pathA := mun226aFill(route.pattern, w.instanceA, otherID)
+		pathA := otherAgencyFill(route.pattern, w.instanceA, otherID)
 		answer := w.send(route, pathA, w.residentB)
 		switch {
 		case answer.panicked:
 			tally.defects = append(tally.defects, fmt.Sprintf("%s panicked", route))
-		case strings.TrimSpace(answer.body) == mun226aMuxNotFound:
+		case strings.TrimSpace(answer.body) == otherAgencyMuxNotFound:
 			tally.notMounted++
 		case answer.code >= 500:
 			tally.defects = append(tally.defects, fmt.Sprintf("%s answered %d %q", route, answer.code, answer.body))
@@ -289,24 +289,24 @@ func (w mun226aWorld) probeRound(routes []mun226aRoute, otherID string, exempt m
 	return tally
 }
 
-func mun226aRounds(routes []mun226aRoute) [][]mun226aRoute {
-	var rounds [][]mun226aRoute
+func otherAgencyRounds(routes []otherAgencyRoute) [][]otherAgencyRoute {
+	var rounds [][]otherAgencyRoute
 	for len(routes) > 0 {
-		n := min(mun226aRoundSize, len(routes))
+		n := min(otherAgencyRoundSize, len(routes))
 		rounds = append(rounds, routes[:n])
 		routes = routes[n:]
 	}
 	return rounds
 }
 
-func TestMUN226a_ResidentOfAnotherAgencyIsRefusedOnEveryWriteRoute(t *testing.T) {
-	w := newMUN226aWorld(t)
-	routes := mun226aInstanceRoutes(w.deps)
-	rounds := mun226aRounds(routes)
-	t.Logf("write routes with an agency id in the path: %d, in %d rounds of %d", len(routes), len(rounds), mun226aRoundSize)
+func TestOtherAgency_ResidentOfAnotherAgencyIsRefusedOnEveryWriteRoute(t *testing.T) {
+	w := newOtherAgencyWorld(t)
+	routes := otherAgencyInstanceRoutes(w.deps)
+	rounds := otherAgencyRounds(routes)
+	t.Logf("write routes with an agency id in the path: %d, in %d rounds of %d", len(routes), len(rounds), otherAgencyRoundSize)
 
 	exempt := map[string]bool{}
-	for _, idPass := range []struct{ name, id string }{{"fabricated ids", mun226aFakeID}, {"agency A group id", w.groupA}} {
+	for _, idPass := range []struct{ name, id string }{{"fabricated ids", otherAgencyFakeID}, {"agency A group id", w.groupA}} {
 		t.Run(idPass.name, func(t *testing.T) {
 			for i, round := range rounds {
 				tally := w.probeRound(round, idPass.id, exempt)
@@ -319,16 +319,16 @@ func TestMUN226a_ResidentOfAnotherAgencyIsRefusedOnEveryWriteRoute(t *testing.T)
 	}
 }
 
-func TestMUN226a_RefusalToAnotherAgencyReadsLikeAnAgencyThatDoesNotExist(t *testing.T) {
-	w := newMUN226aWorld(t)
+func TestOtherAgency_RefusalToAnotherAgencyReadsLikeAnAgencyThatDoesNotExist(t *testing.T) {
+	w := newOtherAgencyWorld(t)
 	var oracle []string
-	for _, route := range mun226aInstanceRoutes(w.deps) {
-		toA := w.send(route, mun226aFill(route.pattern, w.instanceA, mun226aFakeID), w.residentB)
-		toNobody := w.send(route, mun226aFill(route.pattern, mun226aFakeID, mun226aFakeID), w.residentB)
-		if toA.panicked || toNobody.panicked || strings.TrimSpace(toA.body) == mun226aMuxNotFound {
+	for _, route := range otherAgencyInstanceRoutes(w.deps) {
+		toA := w.send(route, otherAgencyFill(route.pattern, w.instanceA, otherAgencyFakeID), w.residentB)
+		toNobody := w.send(route, otherAgencyFill(route.pattern, otherAgencyFakeID, otherAgencyFakeID), w.residentB)
+		if toA.panicked || toNobody.panicked || strings.TrimSpace(toA.body) == otherAgencyMuxNotFound {
 			continue
 		}
-		bodyA := strings.ReplaceAll(toA.body, w.instanceA, mun226aFakeID)
+		bodyA := strings.ReplaceAll(toA.body, w.instanceA, otherAgencyFakeID)
 		if toA.code != toNobody.code || bodyA != toNobody.body {
 			oracle = append(oracle, fmt.Sprintf("%s: agency A -> %d %q, unknown agency -> %d %q", route, toA.code, toA.body, toNobody.code, toNobody.body))
 		}
@@ -339,12 +339,12 @@ func TestMUN226a_RefusalToAnotherAgencyReadsLikeAnAgencyThatDoesNotExist(t *test
 	}
 }
 
-func TestMUN226a_AgencyAIsUntouchedAfterTheSweep(t *testing.T) {
-	w := newMUN226aWorld(t)
+func TestOtherAgency_AgencyAIsUntouchedAfterTheSweep(t *testing.T) {
+	w := newOtherAgencyWorld(t)
 	before := w.snapshotOfA(t)
-	for _, route := range mun226aInstanceRoutes(w.deps) {
-		w.send(route, mun226aFill(route.pattern, w.instanceA, w.groupA), w.residentB)
-		w.send(route, mun226aFill(route.pattern, w.instanceA, mun226aFakeID), w.residentB)
+	for _, route := range otherAgencyInstanceRoutes(w.deps) {
+		w.send(route, otherAgencyFill(route.pattern, w.instanceA, w.groupA), w.residentB)
+		w.send(route, otherAgencyFill(route.pattern, w.instanceA, otherAgencyFakeID), w.residentB)
 	}
 	after := w.snapshotOfA(t)
 	if before != after {
@@ -352,7 +352,7 @@ func TestMUN226a_AgencyAIsUntouchedAfterTheSweep(t *testing.T) {
 	}
 }
 
-func (w mun226aWorld) snapshotOfA(t *testing.T) string {
+func (w otherAgencyWorld) snapshotOfA(t *testing.T) string {
 	t.Helper()
 	var parts []string
 	for _, path := range []string{"", "/actor/groups", "/members", "/join-requests", "/services", "/live-records", "/listing", "/join-mode"} {
@@ -362,7 +362,7 @@ func (w mun226aWorld) snapshotOfA(t *testing.T) string {
 	return strings.Join(parts, "\n")
 }
 
-var mun226aReadSegments = map[string]bool{
+var otherAgencyReadSegments = map[string]bool{
 	"get": true, "list": true, "read": true, "count": true, "search": true, "find": true,
 	"check": true, "resolve": true, "view": true, "traverse": true, "query": true,
 	"neighborhood": true, "tree": true, "diff": true, "log": true,
@@ -370,16 +370,16 @@ var mun226aReadSegments = map[string]bool{
 	"counts": true, "trail": true, "rollup": true,
 }
 
-func mun226aWriteTool(name string) bool {
+func otherAgencyWriteTool(name string) bool {
 	for _, segment := range strings.Split(name, "_") {
-		if mun226aReadSegments[segment] {
+		if otherAgencyReadSegments[segment] {
 			return false
 		}
 	}
 	return true
 }
 
-func mun226aToolArguments(tool *mcp.Tool, instanceID, otherID string) (map[string]any, bool) {
+func otherAgencyToolArguments(tool *mcp.Tool, instanceID, otherID string) (map[string]any, bool) {
 	schema, ok := tool.InputSchema.(map[string]any)
 	if !ok {
 		return nil, false
@@ -424,8 +424,8 @@ func mun226aToolArguments(tool *mcp.Tool, instanceID, otherID string) (map[strin
 	return args, scoped
 }
 
-func TestMUN226a_ResidentOfAnotherAgencyIsRefusedOnEveryWriteTool(t *testing.T) {
-	w := newMUN226aWorld(t)
+func TestOtherAgency_ResidentOfAnotherAgencyIsRefusedOnEveryWriteTool(t *testing.T) {
+	w := newOtherAgencyWorld(t)
 	server := httptest.NewServer(w.handler)
 	t.Cleanup(server.Close)
 
@@ -434,7 +434,7 @@ func TestMUN226a_ResidentOfAnotherAgencyIsRefusedOnEveryWriteTool(t *testing.T) 
 		Endpoint:   server.URL + mcpPath,
 		HTTPClient: &http.Client{Transport: sessionCookie{cookie: w.residentB}},
 	}
-	session, err := mcp.NewClient(&mcp.Implementation{Name: "mun226a", Version: "1"}, nil).Connect(ctx, transport, nil)
+	session, err := mcp.NewClient(&mcp.Implementation{Name: "otherAgency", Version: "1"}, nil).Connect(ctx, transport, nil)
 	if err != nil {
 		t.Fatalf("connect over /mcp: %v", err)
 	}
@@ -451,22 +451,22 @@ func TestMUN226a_ResidentOfAnotherAgencyIsRefusedOnEveryWriteTool(t *testing.T) 
 
 	var probed []*mcp.Tool
 	for _, tool := range tools {
-		if !mun226aWriteTool(tool.Name) {
+		if !otherAgencyWriteTool(tool.Name) {
 			continue
 		}
-		if _, scoped := mun226aToolArguments(tool, w.instanceA, mun226aFakeID); scoped {
+		if _, scoped := otherAgencyToolArguments(tool, w.instanceA, otherAgencyFakeID); scoped {
 			probed = append(probed, tool)
 		}
 	}
 	t.Logf("tools served: %d, write tools that take an agency id: %d", len(tools), len(probed))
 
 	before := w.snapshotOfA(t)
-	for _, idPass := range []struct{ name, id string }{{"fabricated ids", mun226aFakeID}, {"agency A group id", w.groupA}} {
-		for start := 0; start < len(probed); start += mun226aRoundSize {
-			end := min(start+mun226aRoundSize, len(probed))
+	for _, idPass := range []struct{ name, id string }{{"fabricated ids", otherAgencyFakeID}, {"agency A group id", w.groupA}} {
+		for start := 0; start < len(probed); start += otherAgencyRoundSize {
+			end := min(start+otherAgencyRoundSize, len(probed))
 			refused := 0
 			for _, tool := range probed[start:end] {
-				args, _ := mun226aToolArguments(tool, w.instanceA, idPass.id)
+				args, _ := otherAgencyToolArguments(tool, w.instanceA, idPass.id)
 				result, err := session.CallTool(ctx, &mcp.CallToolParams{Name: tool.Name, Arguments: args})
 				text := ""
 				if err != nil {
@@ -500,14 +500,14 @@ func TestMUN226a_ResidentOfAnotherAgencyIsRefusedOnEveryWriteTool(t *testing.T) 
 		Endpoint:   server.URL + mcpPath,
 		HTTPClient: &http.Client{Transport: sessionCookie{cookie: w.ownerA}},
 	}
-	ownerSession, err := mcp.NewClient(&mcp.Implementation{Name: "mun226a-owner", Version: "1"}, nil).Connect(ctx, ownerTransport, nil)
+	ownerSession, err := mcp.NewClient(&mcp.Implementation{Name: "otherAgency-owner", Version: "1"}, nil).Connect(ctx, ownerTransport, nil)
 	if err != nil {
 		t.Fatalf("connect owner of A over /mcp: %v", err)
 	}
 	t.Cleanup(func() { ownerSession.Close() })
 	accepted := 0
 	for _, tool := range probed {
-		args, _ := mun226aToolArguments(tool, w.instanceA, mun226aFakeID)
+		args, _ := otherAgencyToolArguments(tool, w.instanceA, otherAgencyFakeID)
 		result, err := ownerSession.CallTool(ctx, &mcp.CallToolParams{Name: tool.Name, Arguments: args})
 		if err == nil && !result.IsError {
 			accepted++
@@ -519,8 +519,8 @@ func TestMUN226a_ResidentOfAnotherAgencyIsRefusedOnEveryWriteTool(t *testing.T) 
 	}
 }
 
-func TestMUN226a_ControlTheSameRoutesAnswerTheOwnersOfAAndTheResidentOfBDifferently(t *testing.T) {
-	w := newMUN226aWorld(t)
+func TestOtherAgency_ControlTheSameRoutesAnswerTheOwnersOfAAndTheResidentOfBDifferently(t *testing.T) {
+	w := newOtherAgencyWorld(t)
 	if rec := callOn(w.handler, "PUT", "/instances/"+w.instanceB+"/me/name", map[string]any{"display_name": "Resident B"}, w.residentB); rec.Code >= 400 {
 		t.Fatalf("resident of B writing own name in B: %d %s, want success", rec.Code, rec.Body.String())
 	}
@@ -533,9 +533,9 @@ func TestMUN226a_ControlTheSameRoutesAnswerTheOwnersOfAAndTheResidentOfBDifferen
 	asB := map[int]int{}
 	asOwnerA := map[int]int{}
 	passed := 0
-	routes := mun226aInstanceRoutes(w.deps)
+	routes := otherAgencyInstanceRoutes(w.deps)
 	for _, route := range routes {
-		path := mun226aFill(route.pattern, w.instanceA, mun226aFakeID)
+		path := otherAgencyFill(route.pattern, w.instanceA, otherAgencyFakeID)
 		b := w.send(route, path, w.residentB)
 		a := w.send(route, path, w.ownerA)
 		asB[b.code]++

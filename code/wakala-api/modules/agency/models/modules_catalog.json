@@ -7,7 +7,7 @@
   {"code": "comm", "name": "comm", "description": "", "enabled": true, "locked": false, "icon": "chat", "mount": "main", "step_kinds": ["notify", "chat"]},
   {"code": "custody", "name": "custody", "description": "", "enabled": false, "locked": false, "icon": "lock", "mount": ""},
   {"code": "forms", "name": "forms", "description": "", "enabled": false, "locked": false, "icon": "file", "mount": "main", "requires": ["catalog", "git"], "step_kinds": ["fill_form", "send_form", "yes_no"]},
-  {"code": "digitaltwin", "name": "digitaltwin", "description": "Properties, addresses and the places a municipality keeps track of.", "enabled": false, "locked": false, "icon": "globe", "mount": "places", "mountable": true},
+  {"code": "digitaltwin", "name": "digitaltwin", "description": "Properties, addresses and the places an organisation keeps track of.", "enabled": false, "locked": false, "icon": "globe", "mount": "places", "mountable": true},
   {"code": "accounting", "name": "accounting", "description": "", "enabled": false, "locked": false, "icon": "file", "mount": "main"},
   {"code": "catalog", "name": "catalog", "description": "", "enabled": false, "locked": false, "icon": "grid", "mount": "", "mountable": true},
   {"code": "voting", "name": "voting", "description": "Polls put to chosen groups, answered inside a window, counted and published.", "enabled": false, "locked": false, "icon": "check", "mount": "polls"},

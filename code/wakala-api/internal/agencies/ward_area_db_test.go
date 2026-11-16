@@ -37,7 +37,7 @@ func TestCatalogFillsTheWardFromGroupBoundariesInTheDatabase(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	instance := fmt.Sprintf("mun12w%d", os.Getpid())
+	instance := fmt.Sprintf("ward12w%d", os.Getpid())
 	t.Cleanup(func() {
 		var names []string
 		db.Raw("select tablename from pg_tables where schemaname = current_schema() and tablename like ?", instance+"%").Scan(&names)
