@@ -1,8 +1,13 @@
 package http
 
 import (
+	"slices"
+	"strings"
+
 	agencymodels "wakalaserver/modules/agency/models"
 )
+
+const changedAnswerPrefix = "Changed: "
 
 type earlierAnswer struct {
 	Prompt string `json:"prompt"`
@@ -31,6 +36,7 @@ func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymode
 				answers = append(answers, earlierAnswer{Prompt: q.Prompt, Answer: text})
 			}
 		}
+		answers = append(answers, changedAnswersOf(run.answers[i])...)
 		for _, prompt := range []string{stampedByPrompt, stampedAtPrompt} {
 			if text := run.answers[i][prompt]; text != "" {
 				answers = append(answers, earlierAnswer{Prompt: prompt, Answer: text})
@@ -40,6 +46,21 @@ func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymode
 			continue
 		}
 		out = append(out, earlierStep{StepTitle: chain[i].step.Title, RoleName: roleNames[chain[i].record.RoleID], Answers: answers})
+	}
+	return out
+}
+
+func changedAnswersOf(answers map[string]string) []earlierAnswer {
+	var prompts []string
+	for prompt, text := range answers {
+		if strings.HasPrefix(prompt, changedAnswerPrefix) && text != "" {
+			prompts = append(prompts, prompt)
+		}
+	}
+	slices.Sort(prompts)
+	out := make([]earlierAnswer, 0, len(prompts))
+	for _, prompt := range prompts {
+		out = append(out, earlierAnswer{Prompt: prompt, Answer: answers[prompt]})
 	}
 	return out
 }
