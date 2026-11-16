@@ -40,9 +40,9 @@ The suite answers the API with fakes (`src/journeys/answerWakala.ts` stubs `fetc
 |---|---|---|
 | Sign in and choosing an agency | `src/entry`, `src/journeys/signInRenewal.walk.test.tsx`, `agencyPaths.walk.test.tsx` | Yes |
 | Catching up: Inbox and rooms | `src/inbox`, `src/chat`, `src/journeys/catchUp.walk.test.tsx` | Yes |
-| Joining a group | `src/groups`, `src/pages/join`, `src/journeys/joinGroup.walk.test.tsx` | Yes |
-| Buying inputs, supplying inputs, selling the harvest, running a group order | `src/buy`, `src/supply`, `src/sell`, `src/market`, `src/coordinator`, and the four matching walk tests | Yes |
-| Workflows a member starts | `src/started`, `src/pages/started`, `src/journeys/workflowsAndStarted.walk.test.tsx` | Yes |
+| Joining a group | `src/groups`, `src/journeys/joinGroup.walk.test.tsx` | Yes |
+| Buying inputs, supplying inputs, selling the harvest, running a group order | `src/market` (its buy, supply, sell, payments and start folders), and the four matching walk tests | Yes |
+| Workflows a member starts | `src/started`, `src/journeys/workflowsAndStarted.walk.test.tsx` | Yes |
 | Answering a form | `src/forms` (two files) | Unit tests only; no walk test |
 | Chat with an agent, including blocks in a thread | `src/chat`, `src/apps` | Yes |
 | Sending a report | `src/home/workflowScreens.test.ts`, `src/home/StartRows.test.tsx` mention it as a workflow start | Partly; no walk test for the report journey |

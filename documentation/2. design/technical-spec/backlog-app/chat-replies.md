@@ -90,7 +90,7 @@ The assistant page (`hub-steward/code/app/src/assistant`) shows a write as a con
 | Moment | What the page does |
 |---|---|
 | The card names its subject (SW155) | An issue is found by its key or its id from the lists this answer has read, and the step is shown in the backlog's own spelling ("In Progress", not "doing"); the id stays the fallback when nothing is found |
-| A rule is sent in words (SW161) | The page lines and the Triager's description give the field, operator and value codes (`last_changed`, `in_the_last`, and the rest of the lists in `smartBacklog/fields.ts`); a create or rules change is checked against them before the card, and a wrong word gets no card and no hub call: the model is told what is wrong and that nothing was done |
+| A rule is sent in words (SW161) | The page lines and the Triager's description give the field, operator and value codes (`last_changed`, `in_the_last`, and the rest of the lists in `backlogs/smart/fields.ts`); a create or rules change is checked against them before the card, and a wrong word gets no card and no hub call: the model is told what is wrong and that nothing was done |
 | The write is confirmed and done (SW154) | The answer carries no lookup lists or cards, so no stale "This could not be opened." card and no Results row for the lookups made on the way |
 | The hub refuses the confirmed write (SW160) | The ask ends: a failure card shows the hub's own reason in its grey line with Try again, and no confirm card or button stays live |
 | "Show <smart backlog name>" (SW162) | The page lines tell the model to read the backlog list first, so the answer is the backlogs card with an Open button for each backlog |

@@ -47,7 +47,7 @@ Everything below was produced in the Mwanachama platform's own repositories, bef
 | Member app journeys | `go test ./internal/api/http -run 'TestJourney[0-9]'`, and the member app's `make check` | 127 of 128 Go journey tests pass, the one failure a known open defect; `make check` passes with 716 of 716 Vitest tests |
 | Operator studio (now the console) journeys | the studio's committed journey tests in Go and Vitest | Go 30 of 34 passed and Vitest 98 of 126 passed with 16 left to do; every failure is a known open defect |
 | Operator console, whole suite | `npx vitest run` and `npm run typecheck` | 239 files and 3486 tests passed; 1 file failed (`library.test.ts`, which reads a sibling repo); typecheck clean |
-| Member app, Inbox shows a refused Join, Decline or Mark all read | `vitest run src/inbox src/pages/started`, and the typecheck | 146 tests passed; typecheck clean |
+| Member app, Inbox shows a refused Join, Decline or Mark all read | `vitest run src/inbox src/started`, and the typecheck | 146 tests passed; typecheck clean |
 | Digital twin, actor, task manager, comm, forms, voting, sources, git | `go test ./... -count=1` in each | All packages passed |
 | Catalog | `go test ./... -count=1` | 29 failures, each a known open defect |
 | Market | `go vet ./...` and `go test -count=1 ./...` | Vet clean; both packages with tests pass |
