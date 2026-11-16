@@ -8,6 +8,7 @@ var ErrTaskNotFound = errors.New("task not found")
 var ErrInvalidPlacement = errors.New("invalid card placement")
 
 var ErrTaskMoveConflict = errors.New("the task changed while it was being moved; read it and move it again")
+var ErrTaskNotClaimable = errors.New("the issue cannot be taken")
 var ErrPriorityLocked = errors.New("the priority of an issue in Done cannot be changed; move it back to an open step first")
 var ErrInvalidEffort = errors.New("effort is unknown, very_low, low, medium, high or very_high")
 

@@ -347,6 +347,14 @@
                {"from": "body", "as": "step", "required": true, "description": "The id of the step in that backlog."}],
       "returns": [{"body": true}]
     },
+    "claim_task": {
+      "method": "POST", "path": "/tasks/{taskID}/claim", "call": "ClaimTaskAs", "action": "taskmanager.task.claim",
+      "title": "Take an issue",
+      "description": "Take one issue in a single atomic call: move it to the In Progress step of its backlog (the step that holds the In Progress status, else the step called In Progress or Doing) with status in_progress, write the first Log entry (kind worker, \"Taken by <caller>. Caps in force: <input> input, <output> output, <minutes> minutes\"), and return the issue compact (id, code, title, status, priority, effort, tags, backlog, step), the id of that entry (note_id) and the caps in force (the issue's own, else the default). Refused with 409 and the reason when the issue is tagged Sinbin, Blocked or Waiting, waits on an open dependency, is already in progress or has left To do; when two callers claim at once exactly one succeeds and the other is told the issue is already in progress. Refused with 403 when the caller lacks Can move on the backlog; 404 when the issue is unknown or the caller cannot see it. The caller needs Can move on the backlog the issue is in.",
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is taking it, from the session; recorded as the writer of the entry."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The issue to take."}],
+      "returns": [{"body": true}]
+    },
     "list_backlog_access": {
       "method": "GET", "path": "/backlogs/{backlogID}/access", "call": "ListBacklogAccess", "action": "taskmanager.backlog_access.list",
       "title": "List who can use a backlog",
@@ -1169,6 +1177,7 @@
     "ErrNoPathToState": 409,
     "ErrInvalidPlacement": 400,
     "ErrTaskMoveConflict": 409,
+    "ErrTaskNotClaimable": 409,
     "ErrInvalidEffort": 400,
     "ErrPriorityLocked": 409,
     "ErrCaseNotFound": 404,

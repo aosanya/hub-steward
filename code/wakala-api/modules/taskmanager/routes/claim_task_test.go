@@ -108,15 +108,15 @@ func TestClaimWritesTheIssuesOwnCapsWhenItHasThem(t *testing.T) {
 	}
 }
 
-func TestClaimFindsTheInProgressStepOfABacklogWhoseStepIsCalledDoing(t *testing.T) {
+func TestClaimFindsTheInProgressStepOfABacklogWhoseStepIdIsDoing(t *testing.T) {
 	h := claimHub(t)
 	id := claimIssue(t, h, "backlog", "to-do", "Default backlog", "Ready")
 
 	body := h.expect(http.StatusOK, "owner", "POST", "/tasks/"+id+"/claim", nil)
 
 	issue := body["issue"].(map[string]any)
-	if issue["step"] != "Doing" || issue["status"] != "in_progress" {
-		t.Errorf("the issue is %v, want it at Doing", issue)
+	if issue["step"] != "In Progress" || issue["status"] != "in_progress" {
+		t.Errorf("the issue is %v, want it at In Progress", issue)
 	}
 	if stored := h.expect(http.StatusOK, "owner", "GET", "/tasks/"+id, nil); stored["step"] != "doing" {
 		t.Errorf("the stored step is %v", stored["step"])
