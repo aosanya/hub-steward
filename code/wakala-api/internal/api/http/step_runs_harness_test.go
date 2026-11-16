@@ -18,6 +18,7 @@ import (
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
 	mwanachamaaudit "wakalaserver/modules/audit"
+	mwanachamacouncil "wakalaserver/modules/council"
 	mwanachamainsights "wakalaserver/modules/insights"
 
 	"wakalaserver/internal/agencies"
@@ -157,7 +158,18 @@ func stepRunDeps(t *testing.T, db *gorm.DB, options ...agencies.Option) (*Deps, 
 	if err != nil {
 		t.Fatalf("NewAuditManager: %v", err)
 	}
-	deps := &Deps{Registry: reg, Insights: insights, Audit: auditLog, Sessions: session.NewHMACManager([]byte("test-secret"), nil, nil), AdminToken: "test-admin-token"}
+	councilSpec, err := mwanachamacouncil.SpecFor("test")
+	if err != nil {
+		t.Fatalf("council SpecFor: %v", err)
+	}
+	if err := mwanachamacouncil.Provision(db, councilSpec); err != nil {
+		t.Fatalf("council Provision: %v", err)
+	}
+	council, err := mwanachamacouncil.NewCouncilManager(db, councilSpec)
+	if err != nil {
+		t.Fatalf("NewCouncilManager: %v", err)
+	}
+	deps := &Deps{Registry: reg, Insights: insights, Audit: auditLog, Council: council, Sessions: session.NewHMACManager([]byte("test-secret"), nil, nil), AdminToken: "test-admin-token"}
 	ApplyCaches(deps)
 	return deps, reg
 }

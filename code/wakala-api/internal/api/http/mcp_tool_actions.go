@@ -60,6 +60,9 @@ func routePackageToolActions() map[string]string {
 	for name, action := range auditToolActions() {
 		out[name] = action
 	}
+	for name, action := range councilToolActions() {
+		out[name] = action
+	}
 	return out
 }
 

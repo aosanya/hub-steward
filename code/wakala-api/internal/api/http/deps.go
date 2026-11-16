@@ -7,6 +7,7 @@ import (
 	mwanachamaaudit "wakalaserver/modules/audit"
 	mwanachamaauth "wakalaserver/modules/auth"
 	catalog "wakalaserver/modules/catalog"
+	mwanachamacouncil "wakalaserver/modules/council"
 	forms "wakalaserver/modules/forms"
 	mwanachamainsights "wakalaserver/modules/insights"
 	permissions "wakalaserver/modules/permissions"
@@ -76,6 +77,8 @@ type Deps struct {
 	Insights mwanachamainsights.InsightManager
 
 	Audit mwanachamaaudit.AuditManager
+
+	Council mwanachamacouncil.CouncilManager
 
 	Catalog catalog.CatalogManager
 

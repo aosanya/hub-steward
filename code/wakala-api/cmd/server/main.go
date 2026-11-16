@@ -17,6 +17,7 @@ import (
 	"gorm.io/gorm"
 	mwanachamaaudit "wakalaserver/modules/audit"
 	mwanachamaauth "wakalaserver/modules/auth"
+	mwanachamacouncil "wakalaserver/modules/council"
 	mwanachamainsights "wakalaserver/modules/insights"
 
 	"wakalaserver/internal/accounts"
@@ -265,6 +266,21 @@ func buildDeps(logger *slog.Logger) *apihttp.Deps {
 		os.Exit(1)
 	}
 
+	councilSpec, err := mwanachamacouncil.SpecFor("app")
+	if err != nil {
+		logger.Error("could not load the council spec", "error", err.Error())
+		os.Exit(1)
+	}
+	if err := mwanachamacouncil.Provision(db, councilSpec); err != nil {
+		logger.Error("could not provision the council tables", "error", err.Error())
+		os.Exit(1)
+	}
+	council, err := mwanachamacouncil.NewCouncilManager(db, councilSpec)
+	if err != nil {
+		logger.Error("could not build mwanachamacouncil.CouncilManager", "error", err.Error())
+		os.Exit(1)
+	}
+
 	catalogManager := buildCatalog(logger)
 	reportsManager := buildReports(logger)
 	formManager := buildForms(logger)
@@ -398,6 +414,7 @@ func buildDeps(logger *slog.Logger) *apihttp.Deps {
 		FormsSettings: formsSettings,
 		Insights:      insights,
 		Audit:         auditLog,
+		Council:       council,
 		Catalog:       catalogManager,
 		Ratings:       buildRatings(logger),
 		Reports:       reportsManager,
