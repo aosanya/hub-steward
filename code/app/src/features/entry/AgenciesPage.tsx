@@ -12,6 +12,17 @@ import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { Shell } from "../../app/Shell";
 
 type View = { name: "list" } | { name: "find" } | { name: "agency"; agency: DirectoryAgency };
+const retryDelay = 300;
+
+const listWithOneRetry = async (): Promise<Agency[]> => {
+  try {
+    return await entryClient().listAgencies();
+  } catch {
+    await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    return entryClient().listAgencies();
+  }
+};
+
 type Loaded = { kind: "loading" } | { kind: "ready"; agencies: Agency[] } | { kind: "unreached" };
 
 function Find({ onPick }: { onPick: (a: DirectoryAgency) => void }) {
@@ -96,8 +107,7 @@ export function AgenciesPage() {
 
   useEffect(() => {
     let live = true;
-    entryClient()
-      .listAgencies()
+    listWithOneRetry()
       .then((agencies) => live && setLoaded({ kind: "ready", agencies }))
       .catch(() => live && setLoaded({ kind: "unreached" }));
     return () => {

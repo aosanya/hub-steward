@@ -115,6 +115,17 @@ describe("your agencies", () => {
     expect(await screen.findByText(words.agenciesUnreached)).toBeInTheDocument();
   });
 
+  it("loads the list when the first answer fails and the second succeeds", async () => {
+    const listAgencies = vi
+      .fn<() => Promise<Agency[]>>()
+      .mockRejectedValueOnce(new Error("config.json was not there yet"))
+      .mockResolvedValue([siaya, { ...siaya, id: "second", name: "Second Agency" }]);
+    at("/agencies", fake({ listAgencies }));
+    expect(await screen.findByRole("button", { name: new RegExp(siaya.name) })).toBeInTheDocument();
+    expect(screen.queryByText(words.agenciesUnreached)).toBeNull();
+    expect(listAgencies).toHaveBeenCalledTimes(2);
+  });
+
   it("finds an agency and asks to join", async () => {
     const join = vi.fn(async () => "requested" as const);
     at("/agencies", fake({ join }));
