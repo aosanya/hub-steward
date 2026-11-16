@@ -21,12 +21,21 @@ const measure = (side: string, barrier: string, control: string, standing: strin
   evidence_count: count,
 });
 
+const gaps = [
+  { kind: "stale_control", severity: "medium", risk_id: "r1", subject: "Sprinklers", subject_id: "c1", message: "Not reviewed for 14 months" },
+  { kind: "stale_control", severity: "high", risk_id: "r2", subject: "Flood alarm", subject_id: "c2", message: "Not reviewed for 20 months" },
+];
+
 const replies = {
   riskmanager_risk_list: (args: Record<string, unknown>) => ({ items: [mine, theirs].filter((risk) => !args.owner || risk.owner === args.owner) }),
   riskmanager_action_list: () => ({ items: [{ id: "a1", risk_id: "r1", title: "Service the sprinklers", status: "open", owner: ilona }] }),
   riskmanager_risk_bowtie: () => ({ risk: mine, inherent: { score: 15, band: "high" }, actions: [] }),
   riskmanager_preventive_measure_list: () => ({ items: [measure("threat", "b1", "Wiring check", "proven", 1), measure("threat", "b2", "Vent inspection", "unproven", 0)] }),
   riskmanager_mitigating_measure_list: () => ({ items: [measure("consequence", "b3", "Sprinklers", "failing", 2)] }),
+  riskmanager_gap_list: (args: Record<string, unknown>) => {
+    const owned = [mine, theirs].filter((risk) => !args.owner || risk.owner === args.owner).map((risk) => risk.id);
+    return { items: gaps.filter((gap) => owned.includes(gap.risk_id) && (!args.risk_id || gap.risk_id === args.risk_id)) };
+  },
   riskmanager_evidence_record: () => ({ id: "e1" }),
 };
 
@@ -82,6 +91,21 @@ describe("an officer's risks on the phone", () => {
       reference: "vent.jpg",
     });
     expect(wakala.named("riskmanager_risk_list")[0].args.owner).toBe(ilona);
+    everyCallNames(wakala.sent, hall);
+  });
+
+  it("opens the gap list from the risks screen and sees their own stale control, not another owner's", async () => {
+    const wakala = asIlona();
+    openAgency(hall.id);
+    openApp(`/a/${hall.id}/risks`, [hall]);
+
+    await userEvent.click(await screen.findByRole("button", { name: new RegExp(words.gapsTitle) }));
+    expect(where()).toBe(`/a/${hall.id}/risk-gaps`);
+
+    const row = await screen.findByRole("button", { name: /Sprinklers/ });
+    expect(row).toHaveTextContent("Not reviewed for 14 months");
+    expect(screen.queryByText("Flood alarm")).not.toBeInTheDocument();
+    expect(wakala.named("riskmanager_gap_list")[0].args.owner).toBe(ilona);
     everyCallNames(wakala.sent, hall);
   });
 });
