@@ -15,8 +15,18 @@ const lines = [
   { id: "b2", name: "Sample Library Books", department: "Library", account_id: "ac2", period_start: "2026-01-01", period_end: "2026-02-01", planned: 12500, spent: 0 },
 ];
 
+const accounts = [
+  { id: "ac1", code: "5000", category: "roads", type: "expense" },
+  { id: "ac2", code: "5100", category: "books", type: "expense" },
+];
+
+const tenders = [{ id: "t1", title: "Resurface Main Street", status: "open", budget_id: "b1", quote_count: 2, lowest_amount: 800 }];
+
 let landed = "";
 let called: MockInstance<typeof mcp.callTool>;
+let permissions: string[];
+let stored: Record<string, unknown>[];
+let refusal: string | null;
 
 const Where = () => {
   landed = useLocation().pathname;
@@ -29,9 +39,21 @@ const callsTo = (name: string) => called.mock.calls.filter(([, tool]) => tool ==
 
 beforeEach(() => {
   openAgency("town");
+  permissions = ["accounting.manage"];
+  stored = [...lines];
+  refusal = null;
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
-    if (name === "accounting_budget_list") return { items: lines };
-    if (name === "accounting_budget_read") return lines.find((line) => line.id === (args as { budgetID: string }).budgetID) ?? {};
+    if (name === "agency_get_my_roles") return { permissions };
+    if (name === "accounting_budget_list") return { items: stored };
+    if (name === "accounting_budget_read") return stored.find((line) => line.id === (args as { budgetID: string }).budgetID) ?? {};
+    if (name === "accounting_account_list") return { items: accounts };
+    if (name === "accounting_tender_list") return { items: tenders.filter((tender) => tender.budget_id === (args as { budget_id: string }).budget_id) };
+    if (name === "accounting_budget_set") {
+      if (refusal) throw new mcp.McpError(`403: ${refusal}`);
+      const made = args as Record<string, unknown>;
+      stored = [...stored, { id: "b3", spent: 0, planned: made.amount, ...made }];
+      return stored[stored.length - 1];
+    }
     throw new Error(`${name} is not a tool this screen may use`);
   });
 });
@@ -93,10 +115,88 @@ describe("the Budget list", () => {
     await waitFor(() => expect(landed).toBe(origin.path));
   });
 
-  it("says so when the hub lists no budget lines", async () => {
-    called.mockImplementation(async () => ({ items: [] }));
+  it("says so when the hub lists no budget lines, and the empty card carries the Add button", async () => {
+    called.mockImplementation(async (_agency, name) => (name === "agency_get_my_roles" ? { permissions } : { items: [] }));
     open();
 
-    expect(await screen.findByText(/No budget lines/i)).toBeInTheDocument();
+    expect(await screen.findByText("No budget lines yet.")).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Add budget line" })).toBeInTheDocument();
+  });
+});
+
+describe("a budget line's use", () => {
+  it("shows what remains, the share spent and the tenders drawn on the line", async () => {
+    open();
+    await userEvent.click(await screen.findByRole("button", { name: /Sample Road Repairs/ }));
+
+    await waitFor(() => expect(pane().textContent).toContain("Resurface Main Street"));
+    expect(pane().textContent).toContain("Remaining");
+    expect(pane().textContent).toContain("750");
+    expect(pane().textContent).toContain("25%");
+    expect(callsTo("accounting_tender_list")[0][2]).toEqual({ budget_id: "b1" });
+  });
+
+  it("draws no tenders row for a line without tenders", async () => {
+    open();
+    await userEvent.click(await screen.findByRole("button", { name: /Sample Library Books/ }));
+
+    await waitFor(() => expect(pane().textContent).toContain("12,500"));
+    expect(pane().textContent).not.toContain("Tenders");
+  });
+});
+
+describe("adding a budget line", () => {
+  const fillIn = async () => {
+    await userEvent.click(await screen.findByRole("button", { name: "Add budget line" }));
+    await userEvent.click(await screen.findByRole("button", { name: /Account/ }));
+    await userEvent.click(await screen.findByRole("option", { name: /roads/ }));
+    await userEvent.type(screen.getByLabelText("Name"), "Winter Salt");
+    await userEvent.type(screen.getByLabelText("Department"), "Public Works");
+    await userEvent.type(screen.getByLabelText("Period start"), "2026-03-01");
+    await userEvent.type(screen.getByLabelText("Period end"), "2026-04-01");
+    await userEvent.type(screen.getByLabelText("Amount"), "4000");
+  };
+
+  it("sets the line on accounting_budget_set and lists it with its planned and spent", async () => {
+    open();
+    await fillIn();
+    await userEvent.click(screen.getByRole("button", { name: "Save budget line" }));
+
+    expect(await screen.findByText("Winter Salt")).toBeInTheDocument();
+    expect(screen.getByText("Planned 4,000 · Spent 0")).toBeInTheDocument();
+    expect(callsTo("accounting_budget_set")[0][2]).toEqual({
+      account_id: "ac1",
+      name: "Winter Salt",
+      department: "Public Works",
+      period_start: "2026-03-01T00:00:00Z",
+      period_end: "2026-04-01T00:00:00Z",
+      amount: 4000,
+    });
+    expect(screen.queryByLabelText("Name")).toBeNull();
+  });
+
+  it("keeps the form and shows the refusal in its own words", async () => {
+    refusal = "you may not set a budget line";
+    open();
+    await fillIn();
+    await userEvent.click(screen.getByRole("button", { name: "Save budget line" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("you may not set a budget line");
+    expect(screen.getByLabelText("Name")).toHaveValue("Winter Salt");
+  });
+
+  it("does not save while the name or amount is missing", async () => {
+    open();
+    await userEvent.click(await screen.findByRole("button", { name: "Add budget line" }));
+
+    expect(screen.getByRole("button", { name: "Save budget line" })).toBeDisabled();
+  });
+
+  it("shows no Add button to a caller without accounting.manage", async () => {
+    permissions = ["accounting.read"];
+    open();
+
+    expect(await screen.findByText("Sample Road Repairs")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Add budget line" })).toBeNull();
   });
 });
