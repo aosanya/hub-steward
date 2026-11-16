@@ -2,7 +2,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { SectionPage, notYetWords } from "./SectionPage";
+import { SectionPage } from "./SectionPage";
 
 let landed = "";
 
@@ -52,13 +52,6 @@ describe("a menu section's screen", () => {
     await userEvent.click(screen.getByRole("button", { name: /Applications/ }));
 
     expect(landed).toBe("/a/town/forms");
-  });
-
-  it("marks a submenu with no screen as not available yet and gives it no button", () => {
-    section("services");
-
-    expect(screen.queryByRole("button", { name: /Permits/ })).toBeNull();
-    expect(screen.getAllByText(notYetWords)).toHaveLength(4);
   });
 
   it("goes back to Home for a section it does not know", () => {

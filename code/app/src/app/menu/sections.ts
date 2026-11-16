@@ -7,6 +7,7 @@ import { items as financeItems } from "./sections/finance";
 import { items as issueItems } from "./sections/issues";
 import { items as propertyItems } from "./sections/properties";
 import { items as residentItems } from "./sections/residents";
+import { items as servicesItems } from "./sections/services";
 import { items as settingsItems } from "./sections/settings";
 import { items as staffItems } from "./sections/staff";
 
@@ -47,7 +48,7 @@ export const menuSections: MenuSection[] = [
     title: "Services & Permits",
     icon: "document",
     module: "forms",
-    items: [opens("Applications", routes.forms.path), notYet("Permits"), notYet("Licences"), notYet("Fees & Payments"), notYet("Service Catalogue")],
+    items: joined(["Applications", "Permits", "Licences", "Fees & Payments", "Service Catalogue"], [opens("Applications", routes.forms.path), ...servicesItems]),
   },
   {
     id: "assets",

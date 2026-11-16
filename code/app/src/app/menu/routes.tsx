@@ -7,6 +7,7 @@ import { routes as financeRoutes } from "./sections/finance";
 import { routes as issueRoutes } from "./sections/issues";
 import { routes as propertyRoutes } from "./sections/properties";
 import { routes as residentRoutes } from "./sections/residents";
+import { routes as servicesRoutes } from "./sections/services";
 import { routes as settingsRoutes } from "./sections/settings";
 import { routes as staffRoutes } from "./sections/staff";
 
@@ -16,6 +17,7 @@ export const menuRoutes = () => (
     {residentRoutes()}
     {propertyRoutes()}
     {issueRoutes()}
+    {servicesRoutes()}
     {assetRoutes()}
     {councilRoutes()}
     {staffRoutes()}

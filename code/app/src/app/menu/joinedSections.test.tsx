@@ -42,6 +42,10 @@ const cases = [
   { id: "finance", section: "Finance", submenu: "Procurement", opens: "/a/town/menu/finance/procurement" },
   { id: "finance", section: "Finance", submenu: "Payments", opens: "/a/town/menu/finance/payments" },
   { id: "finance", section: "Finance", submenu: "Financial Reports", opens: "/a/town/menu/finance/reports" },
+  { id: "services", section: "Services & Permits", submenu: "Permits", opens: "/a/town/menu/services/permits" },
+  { id: "services", section: "Services & Permits", submenu: "Licences", opens: "/a/town/menu/services/licences" },
+  { id: "services", section: "Services & Permits", submenu: "Fees & Payments", opens: "/a/town/menu/services/fees" },
+  { id: "services", section: "Services & Permits", submenu: "Service Catalogue", opens: "/a/town/menu/services/catalogue" },
 ];
 
 const section = (id: string) =>
@@ -62,16 +66,5 @@ describe.each(cases)("the $section submenu $submenu", ({ id, section: title, sub
 
     await waitFor(() => expect(landed).toBe(`/a/town/menu/${id}`));
     expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
-  });
-});
-
-describe("the submenus no module covers", () => {
-  it.each([
-    { id: "services", missing: ["Permits", "Licences", "Fees & Payments", "Service Catalogue"] },
-  ])("keep $id saying Not available yet", ({ id, missing }) => {
-    section(id);
-
-    missing.forEach((title) => expect(screen.queryByRole("button", { name: new RegExp(title) })).toBeNull());
-    expect(screen.getAllByText("Not available yet")).toHaveLength(missing.length);
   });
 });
