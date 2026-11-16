@@ -79,7 +79,7 @@ function Where() {
 
 const openAt = (title: string, state: unknown = { from: section }) =>
   render(
-    <MemoryRouter initialEntries={[{ pathname: itemFor(title).path!(), state }]}>
+    <MemoryRouter initialEntries={[{ pathname: itemFor(title).path!(), state: state ?? undefined }]}>
       <Routes>
         {routes()}
         <Route path="*" element={null} />
@@ -176,7 +176,7 @@ describe.each(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integra
   });
 
   it("offers no named Back button when it was not opened from a section", async () => {
-    openAt(title, undefined);
+    openAt(title, null);
     await screen.findByRole("main");
 
     expect(screen.queryByRole("button", { name: /Settings/ })).toBeNull();
