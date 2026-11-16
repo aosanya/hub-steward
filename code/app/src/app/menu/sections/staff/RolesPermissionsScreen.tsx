@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
+import { RolePermissions } from "./RolePermissions";
 import { homeEmpty, listOf, peopleWords, text, type Item } from "./staffData";
 
 const liveDraftOf = async () => {
@@ -22,18 +24,22 @@ const loadRoles = async () => {
     id: text(role, "id"),
     name: text(role, "name"),
     meta: peopleWords(counts.get(text(role, "code")) ?? 0),
+    permissions: Array.isArray(role.permissions) ? role.permissions : [],
   }));
 };
 
-const loadRole = async (id: string) => (await loadRoles()).find((role) => role.id === id) ?? { id, name: "", meta: "" };
+const loadRole = async (id: string) => (await loadRoles()).find((role) => role.id === id) ?? { id, name: "", meta: "", permissions: [] };
 
 export function RolesPermissionsScreen() {
   const word = useWord("actor");
+  const [version, setVersion] = useState(0);
   return (
     <MenuWindow
       title={word("Roles & Permissions")}
+      listKey={version}
+      detailKey={version}
       list={{ title: word("Roles & Permissions"), tool: "agency_list_roles", load: loadRoles, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Roles").toLowerCase()} yet.`) }}
-      detail={{ tool: "actor_list_role_holders", load: loadRole, fields: { Name: "name", Holders: "meta" }, status: "status" }}
+      detail={{ tool: "actor_list_role_holders", load: loadRole, fields: { Name: "name", Holders: "meta" }, status: "status", extra: (role) => <RolePermissions role={role} onSaved={() => setVersion((was) => was + 1)} /> }}
     />
   );
 }
