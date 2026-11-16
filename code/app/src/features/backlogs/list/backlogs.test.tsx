@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../../../shared/wakala/openAgency";
 import * as mcp from "../../../shared/wakala/mcp";
 import { BacklogsPage } from "./BacklogsPage";
@@ -693,5 +693,74 @@ describe("a member who holds no role, or whose group shares nothing", () => {
       </MemoryRouter>,
     );
     expect(await screen.findByText("The screens")).toBeInTheDocument();
+  });
+});
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+const countedClient = {
+  backlogs: async () => [{ id: "backlog", name: "Backlog", issues: 3, steps: stepNames.map((name) => ({ id: name, name, issues: 0 })), counts: [{ name: "To do", issues: 3 }] }],
+  issues: async () => [],
+  issue: async () => ({}) as never,
+} as never;
+
+const openList = (mayManage: boolean) => {
+  answering(board);
+  return render(
+    <MemoryRouter initialEntries={["/a/hub-1/backlogs"]}>
+      <BacklogsPage client={countedClient} manage={{ mayManage: async () => mayManage } as never} />
+    </MemoryRouter>,
+  );
+};
+
+const framed = () => document.querySelector(".wf") as HTMLElement | null;
+
+describe("the Backlogs screen in the Folders frame", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("seats the backlog rows with their step bubbles in the left pane on a wide screen", async () => {
+    setWide(true);
+    openList(false);
+    await screen.findByText("5 steps · 3 issues");
+
+    const tree = framed()?.querySelector(".wf-panes .wf-tree") as HTMLElement;
+    expect(within(tree).getByText("All issues")).toBeInTheDocument();
+    expect(within(tree).getByText("5 steps · 3 issues")).toBeInTheDocument();
+    expect(tree.querySelector(".step-counts")).not.toBeNull();
+  });
+
+  it("puts the head strip and the Add a backlog button in the main pane for a member who may manage", async () => {
+    setWide(true);
+    openList(true);
+    await screen.findByText("5 steps · 3 issues");
+
+    const main = framed()?.querySelector(".wf-main") as HTMLElement;
+    expect(within(main.querySelector(".wf-head") as HTMLElement).getByText("Backlogs")).toBeInTheDocument();
+    expect(await within(main.querySelector(".wf-content") as HTMLElement).findByRole("button", { name: "Add a backlog" })).toBeInTheDocument();
+  });
+
+  it("offers no Add a backlog button on a wide screen to a member who may not manage", async () => {
+    setWide(true);
+    openList(false);
+    await screen.findByText("5 steps · 3 issues");
+
+    expect(screen.queryByRole("button", { name: "Add a backlog" })).not.toBeInTheDocument();
+  });
+
+  it("stays the plain list with no frame on a phone, step bubbles and Add a backlog kept", async () => {
+    setWide(false);
+    openList(true);
+    await screen.findByText("5 steps · 3 issues");
+
+    expect(framed()).toBeNull();
+    expect(document.querySelector(".step-counts")).not.toBeNull();
+    expect(await screen.findByRole("button", { name: "Add a backlog" })).toBeInTheDocument();
   });
 });
