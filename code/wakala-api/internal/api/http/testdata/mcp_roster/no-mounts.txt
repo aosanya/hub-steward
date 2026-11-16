@@ -716,6 +716,7 @@ taskmanager_task_todo_delete
 taskmanager_task_todo_dispatch
 taskmanager_task_todo_list
 taskmanager_task_todo_list_for_issue
+taskmanager_task_todo_pending
 taskmanager_task_todo_read
 taskmanager_task_todo_ready
 taskmanager_task_todo_reorder
