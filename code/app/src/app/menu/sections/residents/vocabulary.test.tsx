@@ -49,13 +49,12 @@ describe("the residents screens with an agency that lists words", () => {
     expect(screen.queryByText("All People")).toBeNull();
   });
 
-  it("shows the agency's word for a person on the detail screen", async () => {
+  it("shows the agency's word for the people and no generic word on the person's detail", async () => {
     vi.mocked(mcp.callTool).mockImplementation(async (agency, name) => answerWith(agencyWords, [{ id: "p1", display_name: "Amara Kole", status: "Active" }])(agency, name));
     showPeople();
     await userEvent.click(await screen.findByRole("button", { name: /Amara Kole/ }));
 
     expect(await screen.findByText("Not in any group yet.")).toBeInTheDocument();
-    expect(screen.getAllByText("Resident").length).toBeGreaterThan(0);
     expect(screen.queryByText("Person")).toBeNull();
   });
 });

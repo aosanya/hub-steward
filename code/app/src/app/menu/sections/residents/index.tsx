@@ -1,5 +1,5 @@
 import { Route } from "react-router-dom";
-import { AllPeopleScreen, CommunicationsScreen, GroupsScreen, HouseholdsScreen, PersonScreen, RegistrationsScreen } from "./PeopleScreens";
+import { AllPeopleScreen, CommunicationsScreen, GroupsScreen, HouseholdsScreen, RegistrationsScreen } from "./PeopleScreens";
 import { GroupScreen } from "./GroupScreen";
 import { residentPaths } from "./paths";
 
@@ -14,7 +14,6 @@ export const items = [
 export const routes = () => (
   <>
     <Route path={residentPaths.people.pattern} element={<AllPeopleScreen />} />
-    <Route path={residentPaths.person.pattern} element={<PersonScreen />} />
     <Route path={residentPaths.households.pattern} element={<HouseholdsScreen />} />
     <Route path={residentPaths.household.pattern} element={<GroupScreen />} />
     <Route path={residentPaths.group.pattern} element={<GroupScreen />} />

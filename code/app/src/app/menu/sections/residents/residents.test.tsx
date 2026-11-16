@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
-import { AllPeopleScreen, CommunicationsScreen, GroupsScreen, HouseholdsScreen, PersonScreen, RegistrationsScreen } from "./PeopleScreens";
+import { AllPeopleScreen, CommunicationsScreen, GroupsScreen, HouseholdsScreen, RegistrationsScreen } from "./PeopleScreens";
 import { items, routes } from "./index";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
@@ -62,8 +62,6 @@ const screens = [
   { title: "Communications", at: "/a/town/menu/residents/communications", pattern: "/a/:agencyId/menu/residents/communications", Screen: CommunicationsScreen, tool: "comm_chat_thread_list" },
 ];
 
-const personAt = (id: string) => `/a/town/menu/residents/people/${id}`;
-
 let landed = "";
 let called: MockInstance<typeof mcp.callTool>;
 let answers: Record<string, (args: Args) => unknown>;
@@ -106,7 +104,6 @@ const open = (at: string, state: unknown = { from: origin }) =>
         {screens.map(({ pattern, Screen }) => (
           <Route key={pattern} path={pattern} element={<Screen />} />
         ))}
-        <Route path="/a/:agencyId/menu/residents/people/:id" element={<PersonScreen />} />
         <Route path="*" element={null} />
       </Routes>
       <Where />
@@ -144,14 +141,14 @@ describe("All People", () => {
     expect(toolsCalled()).toEqual(new Set(["actor_list_actors"]));
   });
 
-  it("opens the person on the row that was pressed", async () => {
+  it("opens the person beside the list on the row that was pressed, without leaving the screen", async () => {
     open(screens[0].at);
 
     await userEvent.click(await screen.findByRole("button", { name: /Dana Reyes/ }));
 
-    await waitFor(() => expect(landed).toBe(personAt("p2")));
-    expect(await screen.findByText("Inactive")).toBeInTheDocument();
-    expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p2" });
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p2" }));
+    expect((await screen.findAllByText("Inactive")).length).toBe(2);
+    expect(landed).toBe(screens[0].at);
   });
 });
 
@@ -168,51 +165,38 @@ describe("All People with no display name", () => {
   });
 
   it("draws the code on the person's own card", async () => {
+    answers.actor_list_actors = () => ({ items: [blankPerson] });
     answers.actor_get_actor = () => blankPerson;
-    open(personAt("p5"));
+    open(screens[0].at);
 
-    expect(await screen.findByText("AC-15")).toBeInTheDocument();
+    await userEvent.click(await screen.findByRole("button", { name: /AC-15/ }));
+
+    await waitFor(() => expect(screen.getAllByText("AC-15")).toHaveLength(2));
   });
 });
 
 describe("a person", () => {
-  it("shows their name and status, and the groups they belong to", async () => {
-    open(personAt("p1"));
-
-    expect(await screen.findByText("Amara Kole")).toBeInTheDocument();
-    expect(screen.getByText("Active")).toBeInTheDocument();
-    expect(await screen.findByText("Reading Circle")).toBeInTheDocument();
-    expect(screen.getByText("Football Club")).toBeInTheDocument();
-    expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p1" });
-    expect(called).toHaveBeenCalledWith("", "actor_list_groups_for_actor", { actor_id: "p1" });
-    expect(toolsCalled()).toEqual(new Set(["actor_get_actor", "actor_list_groups_for_actor", "actor_list_groups"]));
-  });
-
-  it("has a Back button that reads All People when the person was opened from that list", async () => {
+  const openAmara = async () => {
     open(screens[0].at);
     await userEvent.click(await screen.findByRole("button", { name: /Amara Kole/ }));
-    await waitFor(() => expect(landed).toBe(personAt("p1")));
+  };
 
-    await userEvent.click(await screen.findByRole("button", { name: /All People/ }));
+  it("shows their name and status, and the groups they belong to", async () => {
+    await openAmara();
 
-    await waitFor(() => expect(landed).toBe(screens[0].at));
-  });
-
-  it("reads the name of whichever screen the person came from", async () => {
-    open(personAt("p1"), { from: { path: screens[3].at, title: "Groups & Associations" } });
-    await screen.findByText("Amara Kole");
-
-    expect(screen.getByRole("button", { name: /Groups & Associations/ })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /All People/ })).toBeNull();
+    expect(await screen.findByText("Reading Circle")).toBeInTheDocument();
+    expect(screen.getByText("Football Club")).toBeInTheDocument();
+    expect(screen.getAllByText("Amara Kole")).toHaveLength(2);
+    expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p1" });
+    expect(called).toHaveBeenCalledWith("", "actor_list_groups_for_actor", { actor_id: "p1" });
+    expect(toolsCalled()).toEqual(new Set(["actor_list_actors", "actor_get_actor", "actor_list_groups_for_actor", "actor_list_groups"]));
   });
 
   it("says plainly when the person belongs to no group", async () => {
     answers.actor_list_groups_for_actor = () => ({ items: [] });
-    open(personAt("p1"));
+    await openAmara();
 
-    await screen.findByText("Amara Kole");
-
-    await waitFor(() => expect(called).toHaveBeenCalledWith("", "actor_list_groups_for_actor", { actor_id: "p1" }));
+    expect(await screen.findByText("Not in any group yet.")).toBeInTheDocument();
     expect(screen.queryByText("Reading Circle")).toBeNull();
     expect(screen.queryByRole("alert")).toBeNull();
   });
@@ -354,12 +338,49 @@ describe("Households with no household among the groups", () => {
   });
 });
 
-describe.each([...screens.map(({ title, at }) => ({ title, at })), { title: "Person", at: personAt("p1") }])("$title bottom tab bar", ({ at }) => {
+describe.each(screens.map(({ title, at }) => ({ title, at })))("$title bottom tab bar", ({ at }) => {
   it("draws the main tab bar like every other section screen", async () => {
     open(at);
     await waitFor(() => expect(called).toHaveBeenCalled());
 
     const bar = screen.getByRole("navigation", { name: "Main" });
     expect(within(bar).getByRole("link", { name: /Home/ })).toBeInTheDocument();
+  });
+});
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({ matches: wide, media: query, addEventListener: () => undefined, removeEventListener: () => undefined })) as unknown as typeof window.matchMedia;
+};
+
+describe("All People on the menu window", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("draws the Folders frame at wide size with the list beside the chosen person and their groups", async () => {
+    setWide(true);
+    open(screens[0].at);
+
+    await userEvent.click(await screen.findByRole("button", { name: /Amara Kole/ }));
+
+    const frame = document.querySelector(".wf") as HTMLElement;
+    const tree = frame.querySelector(".wf-panes .wf-tree") as HTMLElement;
+    const content = frame.querySelector(".wf-main .wf-content") as HTMLElement;
+    expect(within(tree).getByRole("button", { name: /Dana Reyes/ })).toBeInTheDocument();
+    expect(await within(content).findByText("Amara Kole")).toBeInTheDocument();
+    expect(await within(content).findByText("Reading Circle")).toBeInTheDocument();
+    expect(landed).toBe(screens[0].at);
+  });
+
+  it("shows one pane at a time on a phone and returns to the list from the person", async () => {
+    setWide(false);
+    open(screens[0].at);
+
+    await userEvent.click(await screen.findByRole("button", { name: /Amara Kole/ }));
+
+    expect(document.querySelector(".wf")).toBeNull();
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
+    expect(await screen.findByText("Reading Circle")).toBeInTheDocument();
+    expect(landed).toBe(screens[0].at);
+    await userEvent.click(screen.getByRole("button", { name: /All People/ }));
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no");
   });
 });

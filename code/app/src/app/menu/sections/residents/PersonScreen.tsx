@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
@@ -8,19 +6,16 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../../../shared/ui/LoadSt
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { Shell } from "../../../Shell";
-import { MenuDetail } from "../../MenuDetail";
-import { useBackToSection } from "../../useBackToSection";
 import { PersonEdit } from "./PersonEdit";
 import { personNameOf } from "./personName";
 
 type Item = Record<string, unknown>;
 
-const loadPerson = async (id: string) => {
+export const loadPerson = async (id: string) => {
   const reply = (await callTool("", "actor_get_actor", { actor_id: id })) as { item?: Item } | Item | null;
   const person = (reply as { item?: Item } | null)?.item ?? reply;
   const found = (person && typeof person === "object" ? person : {}) as Item;
-  return { ...found, display_name: personNameOf(found) };
+  return { ...found, id, display_name: personNameOf(found) };
 };
 
 const loadGroupNames = (id: string) => async () => {
@@ -50,16 +45,12 @@ function PersonGroups({ id }: { id: string }) {
   );
 }
 
-export function PersonScreen() {
-  const back = useBackToSection();
-  const word = useWord("actor");
-  const id = useParams().id ?? "";
-  const [version, setVersion] = useState(0);
-  const saved = () => setVersion((was) => was + 1);
+export function PersonPanel({ person, onSaved }: { person: Item; onSaved: () => void }) {
+  const id = String(person.id ?? "");
   return (
-    <Shell title={word("Person")} titleUnder {...back}>
-      <MenuDetail key={version} bare title={word("Person")} tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadPerson} extra={(person) => <PersonEdit id={id} person={person} onSaved={saved} />} />
+    <>
+      <PersonEdit id={id} person={person} onSaved={onSaved} />
       <PersonGroups id={id} />
-    </Shell>
+    </>
   );
 }

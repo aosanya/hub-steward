@@ -129,7 +129,7 @@ describe("editing a group from its detail", () => {
       </MemoryRouter>,
     );
     await userEvent.click(await screen.findByRole("button", { name: /Sample Resident A/ }));
-    await screen.findByText("Sample Resident A");
+    await screen.findByText("Not in any group yet.");
     expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
   });
 });

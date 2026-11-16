@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
@@ -6,13 +7,12 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
 import { MenuList } from "../../MenuList";
+import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
 import { useBackToSection } from "../../useBackToSection";
 import { residentPaths } from "./paths";
 import { personNameOf } from "./personName";
-import { PersonScreen } from "./PersonScreen";
-
-export { PersonScreen };
+import { loadPerson, PersonPanel } from "./PersonScreen";
 
 type Item = Record<string, unknown>;
 
@@ -54,12 +54,17 @@ function ListScreen({ title, tool, fields, empty, load, onChoose }: ListScreenPr
 export function AllPeopleScreen() {
   const word = useWord("actor");
   const peopleTitle = `All ${word("People")}`;
-  const navigate = useNavigate();
-  const here = useLocation();
-  const open = (id: string) =>
-    navigate(residentPaths.person.path({ id }), { state: { from: { path: `${here.pathname}${here.search}`, title: peopleTitle } } });
+  const [version, setVersion] = useState(0);
   const load = async () => (await listOf("actor_list_actors")).map((person) => ({ id: text(person, "id"), name: personNameOf(person), status: text(person, "status") }));
-  return <ListScreen title={peopleTitle} tool="actor_list_actors" fields={{ title: "name", meta: "status" }} empty={`No ${word("People").toLowerCase()} yet.`} load={load} onChoose={open} />;
+  return (
+    <MenuWindow
+      title={peopleTitle}
+      listKey={version}
+      detailKey={version}
+      list={{ title: peopleTitle, tool: "actor_list_actors", fields: { title: "name", meta: "status" }, empty: homeEmpty(`No ${word("People").toLowerCase()} yet.`), load }}
+      detail={{ tool: "actor_get_actor", load: loadPerson, fields: { Name: "display_name" }, status: "status", extra: (person) => <PersonPanel person={person} onSaved={() => setVersion((was) => was + 1)} /> }}
+    />
+  );
 }
 
 function useOpenGroup(title: string, path: (id: string) => string) {

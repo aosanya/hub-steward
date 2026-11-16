@@ -2,7 +2,6 @@ import { screen } from "../../../screen";
 
 export const residentPaths = {
   people: screen("/menu/residents/people"),
-  person: screen("/menu/residents/people/:id"),
   households: screen("/menu/residents/households"),
   household: screen("/menu/residents/households/:id"),
   registrations: screen("/menu/residents/registrations"),

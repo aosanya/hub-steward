@@ -67,7 +67,7 @@ describe("editing a person from their detail", () => {
     await rename("Sample Resident Z");
 
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "actor_set_actor_display_name", { actor_id: "p1", display_name: "Sample Resident Z" }));
-    expect(await screen.findByText("Sample Resident Z")).toBeTruthy();
+    expect((await screen.findAllByText("Sample Resident Z")).length).toBeGreaterThan(0);
     expect(screen.queryByText("Sample Resident A")).toBeNull();
 
     await userEvent.click(screen.getByRole("button", { name: /All People/ }));
@@ -87,7 +87,7 @@ describe("editing a person from their detail", () => {
     permissions = ["member.view"];
     await openPerson();
 
-    await screen.findByText("Sample Resident A");
+    await screen.findAllByText("Sample Resident A");
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
 
     expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
