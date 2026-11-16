@@ -683,6 +683,7 @@ taskmanager_repeating_task_stop
 taskmanager_sourced_task_open
 taskmanager_task_assign
 taskmanager_task_assign_holder
+taskmanager_task_brief
 taskmanager_task_caps_clear
 taskmanager_task_caps_nearest
 taskmanager_task_caps_read

@@ -273,6 +273,7 @@ type TaskManager interface {
 	ListTodosOfIssue(ctx context.Context, requesterID, issueID string) (IssueTodoList, error)
 	ReadyTodosFor(ctx context.Context, requesterID, issueID string) (ReadyTodos, error)
 	TaskReportFor(ctx context.Context, requesterID, issueID string) (TaskReport, error)
+	TaskBriefFor(ctx context.Context, filter TaskBriefFilter) (TaskBrief, error)
 	CountTodosOfIssues(ctx context.Context, filter TodoCountsFilter) (IssueTodoCounts, error)
 	EditTodoFor(ctx context.Context, requesterID, todoID string, change TodoChange) (TodoView, error)
 	ReorderTodosOfIssue(ctx context.Context, requesterID, issueID string, order TodoOrder) (IssueTodoList, error)

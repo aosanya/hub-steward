@@ -635,6 +635,15 @@
                {"from": "query", "as": "direction", "description": "inbound for edges pointing at it, outbound for edges leading away."}],
       "returns": [{"body": true}]
     },
+    "task_brief": {
+      "method": "GET", "path": "/tasks/{taskID}/brief", "call": "TaskBriefFor", "action": "taskmanager.task.brief",
+      "title": "Everything a worker reads before starting an issue",
+      "description": "Read an issue the way a worker starts on it, in one call instead of five: the issue in full (description included), caps as taskmanager_task_caps_read gives them (default, in_force, own and used), log (the last log_limit Log entries, oldest first, and every entry of kind person beyond them too, because a person note is an instruction), todos (the issue's todo list with done and total, as taskmanager_task_todo_list_for_issue gives them), depends_on (each issue this one waits on as {id, code, title, step, state, open, last_entries}, where open is true while that issue is not Done or Cancelled and last_entries are the last 3 Log entries of that issue, oldest first) and needed_by (each issue that waits on this one as {id, code, title, step, state, open}). An issue in a backlog the caller cannot see is not named or read: hidden_depends_on and hidden_needed_by carry how many were left out. log_limit is 1 to 50 and defaults to 10; a value outside that is refused with 400. An issue the caller cannot see is refused as not found. Read-only.",
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "into": "TaskID", "description": "The issue to brief."}],
+      "returns": [{"body": true}]
+    },
     "task_dependencies": {
       "method": "GET", "path": "/tasks/{taskID}/dependencies", "call": "TaskDependenciesFor", "action": "taskmanager.task.dependencies",
       "title": "What an issue waits on and what waits on it",
