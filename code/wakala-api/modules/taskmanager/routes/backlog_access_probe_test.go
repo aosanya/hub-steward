@@ -90,6 +90,7 @@ func writesOnAnIssue(f *moreWritesFixture, other string) map[string]probeCall {
 		"patch_task":               {"PATCH", issue, map[string]any{"title": "patched"}},
 		"move_task_to_state":       {"POST", issue + "/move", map[string]string{"state": "Done"}},
 		"move_task_to_step":        {"POST", issue + "/move-to-step", map[string]string{"backlog": f.docs, "step": "done"}},
+		"claim_task":               {"POST", issue + "/claim", nil},
 		"place_task":               {"POST", issue + "/place", map[string]string{"after": other}},
 		"delete_task":              {"DELETE", issue, nil},
 		"unblock_task":             {"POST", issue + "/unblock", map[string]any{"note": "go"}},
