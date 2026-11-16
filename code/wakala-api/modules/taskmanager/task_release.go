@@ -5,8 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"gorm.io/gorm"
+
+	"wakalaserver/modules/taskmanager/models"
 )
 
 const (
@@ -57,8 +60,8 @@ func (m *taskManager) ReleaseTaskAs(ctx context.Context, requesterID string, req
 	if plan.task, err = m.releasableTask(ctx, requesterID, req.TaskID); err != nil {
 		return TaskReleased{}, err
 	}
-	if plan.task.Status != TaskStatusInProgress {
-		return TaskReleased{}, fmt.Errorf("ReleaseTask: %w: it is %s", ErrNotInProgress, plan.task.Status)
+	if err := m.requireAtInProgressStep(ctx, plan.task); err != nil {
+		return TaskReleased{}, err
 	}
 	if err := m.requireOwnTodo(ctx, plan.task.ID, plan.todoID); err != nil {
 		return TaskReleased{}, err
@@ -154,6 +157,27 @@ func (m *taskManager) requireOwnTodo(ctx context.Context, taskID, todoID string)
 	return nil
 }
 
+func (m *taskManager) requireAtInProgressStep(ctx context.Context, task Task) error {
+	backlogs, err := m.backlogs(ctx)
+	if err != nil {
+		return err
+	}
+	if at, ok := models.FindBacklog(backlogs, task.Backlog); ok {
+		for _, step := range backlogs[at].Steps {
+			if step.ID == task.Step && namesInProgress(step) {
+				return nil
+			}
+		}
+	}
+	return fmt.Errorf("ReleaseTask: %w: it is at step %q", ErrNotInProgress, task.Step)
+}
+
+func namesInProgress(step models.BacklogStep) bool {
+	slug := models.Slug(step.Name)
+	return strings.EqualFold(strings.TrimSpace(step.Name), inProgressStepName) ||
+		slug == inProgressStepID || slug == "doing" || models.StepNamesStatus(step, TaskStatusInProgress)
+}
+
 func releaseTags(tags []string, mark string) []string {
 	kept := make([]string, 0, len(tags)+1)
 	for _, tag := range tags {
@@ -189,7 +213,27 @@ func (m *taskManager) writeRelease(ctx context.Context, requesterID string, plan
 	if _, err := m.MoveTaskToStep(ctx, plan.task.ID, plan.backlog, toDoStepID); err != nil {
 		return "", fmt.Errorf("ReleaseTask: move to To do: %w", err)
 	}
+	if err := m.settleAsPending(ctx, plan.task.ID); err != nil {
+		return "", fmt.Errorf("ReleaseTask: set the status back to pending: %w", err)
+	}
 	return note.ID, nil
+}
+
+func (m *taskManager) settleAsPending(ctx context.Context, taskID string) error {
+	moved, err := m.GetTask(ctx, taskID)
+	if err != nil || moved.Status == TaskStatusPending {
+		return err
+	}
+	now := time.Now().UTC().Format(time.RFC3339)
+	res := m.store.Query(ctx, roleTask).Where("id = ? AND deleted = ?", taskID, false).
+		Updates(map[string]any{"status": string(TaskStatusPending), "updated_at": now, "held_by": ""})
+	if res.Error != nil {
+		return res.Error
+	}
+	pending := moved
+	pending.Status = TaskStatusPending
+	m.announceStatusChange(ctx, pending, moved.Status, now)
+	return nil
 }
 
 func (m *taskManager) releasedView(ctx context.Context, plan releasePlan, noteID string) (TaskReleased, error) {

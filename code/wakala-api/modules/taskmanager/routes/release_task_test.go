@@ -14,24 +14,26 @@ func releaseHub(t *testing.T) *accessHub {
 	t.Helper()
 	h := newAccessHub(t, releaseGroups)
 	h.expect(http.StatusNoContent, "", "PUT", "/backlog-owner-group", map[string]string{"group_id": "g-owner"})
-	h.expect(http.StatusOK, "owner", "PUT", "/backlogs", map[string]any{"backlogs": []map[string]any{
-		{"id": "software", "name": "Software", "steps": []map[string]any{
-			{"id": "in-coming", "name": "In coming"},
-			{"id": "to-do", "name": "To do", "statuses": []string{"pending"}},
-			{"id": "doing", "name": "Doing", "statuses": []string{"in_progress"}},
-		}},
-	}})
+	h.expect(http.StatusCreated, "owner", "POST", "/backlogs", map[string]any{"name": "Software", "steps": []string{"In coming", "To do", "In Progress", "Review"}})
 	h.expect(http.StatusOK, "owner", "PUT", "/backlogs/software/access/g-move", map[string]string{"level": "move"})
 	h.expect(http.StatusOK, "owner", "PUT", "/backlogs/software/access/g-view", map[string]string{"level": "see"})
 	return h
 }
 
-func releaseIssue(t *testing.T, h *accessHub, title string, tags ...string) string {
+func releaseIssueAt(t *testing.T, h *accessHub, backlog, step, status, title string, tags ...string) string {
 	t.Helper()
 	made := h.expect(http.StatusCreated, "owner", "POST", "/tasks", map[string]any{"title": title, "tags": tags})
 	id := made["id"].(string)
-	h.expect(http.StatusOK, "owner", "POST", "/tasks/"+id+"/move-to-step", map[string]any{"backlog": "software", "step": "doing"})
+	h.expect(http.StatusOK, "owner", "POST", "/tasks/"+id+"/move-to-step", map[string]any{"backlog": backlog, "step": step})
+	if status != "pending" {
+		h.expect(http.StatusOK, "owner", "PATCH", "/tasks/"+id, map[string]any{"status": status})
+	}
 	return id
+}
+
+func releaseIssue(t *testing.T, h *accessHub, title string, tags ...string) string {
+	t.Helper()
+	return releaseIssueAt(t, h, "software", "in-progress", "in_progress", title, tags...)
 }
 
 func releaseTodo(t *testing.T, h *accessHub, issue, title string) string {
@@ -53,8 +55,8 @@ func sortedTags(raw any) string {
 func assertStillInProgress(t *testing.T, h *accessHub, id, tags string) {
 	t.Helper()
 	got := h.expect(http.StatusOK, "owner", "GET", "/tasks/"+id, nil)
-	if got["step"] != "doing" || got["status"] != "in_progress" || sortedTags(got["tags"]) != tags {
-		t.Errorf("the issue is at step %v, status %v, tags %v; want doing, in_progress, %s", got["step"], got["status"], got["tags"], tags)
+	if got["step"] != "in-progress" || got["status"] != "in_progress" || sortedTags(got["tags"]) != tags {
+		t.Errorf("the issue is at step %v, status %v, tags %v; want in-progress, in_progress, %s", got["step"], got["status"], got["tags"], tags)
 	}
 	if notes := h.notesAs("owner", "/tasks/"+id+"/notes"); len(notes) != 0 {
 		t.Errorf("a refused release left entries in the Log: %v", notes)
@@ -145,22 +147,50 @@ func TestReleaseAsBlockedSetsTheNamedTodoBlockedWithTheReason(t *testing.T) {
 	}
 }
 
-func TestReleaseRefusesAnIssueThatIsNotInProgressAndChangesNothing(t *testing.T) {
+func TestReleaseRefusesAnIssueThatIsNotAtTheInProgressStepWhateverItsStatusAndChangesNothing(t *testing.T) {
 	h := releaseHub(t)
-	made := h.expect(http.StatusCreated, "owner", "POST", "/tasks", map[string]any{"title": "Waiting its turn", "tags": []string{"Ready"}})
-	id := made["id"].(string)
-	h.expect(http.StatusOK, "owner", "POST", "/tasks/"+id+"/move-to-step", map[string]any{"backlog": "software", "step": "to-do"})
+	for _, c := range []struct{ step, status string }{{"to-do", "pending"}, {"to-do", "in_progress"}, {"review", "pending"}, {"in-coming", "pending"}} {
+		id := releaseIssueAt(t, h, "software", c.step, c.status, "At "+c.step+" with "+c.status, "Ready")
 
-	for _, mode := range []string{"blocked", "sinbin"} {
-		h.expect(http.StatusConflict, "mover", "POST", "/tasks/"+id+"/release", map[string]any{"mode": mode, "reason": "x"})
-	}
+		for _, mode := range []string{"blocked", "sinbin"} {
+			h.expect(http.StatusConflict, "mover", "POST", "/tasks/"+id+"/release", map[string]any{"mode": mode, "reason": "x"})
+		}
 
-	stored := h.expect(http.StatusOK, "owner", "GET", "/tasks/"+id, nil)
-	if sortedTags(stored["tags"]) != "Ready" || stored["step"] != "to-do" {
-		t.Errorf("the issue changed: %v", stored)
+		stored := h.expect(http.StatusOK, "owner", "GET", "/tasks/"+id, nil)
+		if sortedTags(stored["tags"]) != "Ready" || stored["step"] != c.step || stored["status"] != c.status {
+			t.Errorf("the issue at %s with %s changed: %v", c.step, c.status, stored)
+		}
+		if notes := h.notesAs("owner", "/tasks/"+id+"/notes"); len(notes) != 0 {
+			t.Errorf("a refused release wrote %v", notes)
+		}
 	}
-	if notes := h.notesAs("owner", "/tasks/"+id+"/notes"); len(notes) != 0 {
-		t.Errorf("a refused release wrote %v", notes)
+}
+
+func TestReleaseFromTheInProgressStepSetsTheStatusBackToPendingWhateverItWas(t *testing.T) {
+	h := releaseHub(t)
+	for _, status := range []string{"pending", "in_progress"} {
+		id := releaseIssueAt(t, h, "software", "in-progress", status, "Status "+status, "Ready")
+
+		h.expect(http.StatusOK, "mover", "POST", "/tasks/"+id+"/release", map[string]any{"mode": "blocked", "reason": "stuck"})
+
+		stored := h.expect(http.StatusOK, "owner", "GET", "/tasks/"+id, nil)
+		if stored["step"] != "to-do" || stored["status"] != "pending" || sortedTags(stored["tags"]) != "Blocked" {
+			t.Errorf("an issue left with status %s is %v", status, stored)
+		}
+	}
+}
+
+func TestReleaseFindsTheInProgressStepOfTheDefaultBacklogCalledDoing(t *testing.T) {
+	h := releaseHub(t)
+	id := releaseIssueAt(t, h, "backlog", "doing", "in_progress", "Default backlog", "Ready")
+
+	body := h.expect(http.StatusOK, "owner", "POST", "/tasks/"+id+"/release", map[string]any{"mode": "sinbin", "reason": "cap"})
+
+	if body["step"] != "To do" || body["status"] != "pending" || sortedTags(body["tags"]) != "Sinbin" {
+		t.Errorf("the reply is %v", body)
+	}
+	if stored := h.expect(http.StatusOK, "owner", "GET", "/tasks/"+id, nil); stored["step"] != "to-do" || stored["status"] != "pending" {
+		t.Errorf("the stored issue is %v", stored)
 	}
 }
 
