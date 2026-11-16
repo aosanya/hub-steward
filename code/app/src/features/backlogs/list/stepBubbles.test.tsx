@@ -6,6 +6,7 @@ import { hueOf } from "../../../shared/ui/textColor";
 import { BacklogsPage } from "./BacklogsPage";
 import { taskTools } from "../shared/api";
 import { pendingCountsOf, stepTotals, topSteps } from "../shared/stepCounts";
+import { forgetWidth, setWide } from "../../inbox/fakeWidth";
 
 const step = (name: string, issues: number) => ({ id: name.toLowerCase().replace(" ", "-"), name, issues });
 
@@ -129,5 +130,49 @@ describe("step bubbles on the Backlogs list", () => {
     expect(screen.getAllByText("Smart")).toHaveLength(2);
     expect(bubblesOf("hub-steward-swe")).toEqual([]);
     expect(bubblesOf("Backlog")).toEqual(["To do: 1301", "Waiting: 289", "Doing: 81", "Done: 4"]);
+  });
+});
+
+const openListAs = (mayManage: boolean) =>
+  render(
+    <MemoryRouter>
+      <BacklogsPage manage={{ mayManage: async () => mayManage } as never} />
+    </MemoryRouter>,
+  );
+
+describe.each([
+  { screen: "phone", wide: false },
+  { screen: "wide screen", wide: true },
+])("step bubbles and access levels on a $screen", ({ wide }) => {
+  afterEach(forgetWidth);
+
+  it("shows the same step bubbles on every row, in the left pane on a wide screen", async () => {
+    setWide(wide);
+    answering();
+    openListAs(false);
+    await screen.findByText("Docs");
+    await waitFor(() => expect(bubblesOf("hub-steward-swe")).toEqual(["Doing: 5", "Done: 3", "To do: 1", "Cancelled: 1"]));
+    expect(bubblesOf("Backlog")).toEqual(["To do: 1301", "Waiting: 289", "Doing: 81", "Done: 4"]);
+    expect(bubblesOf("Docs")).toEqual(["To do: 20", "Review: 6", "Done: 4"]);
+    expect(bubblesOf("All issues")).toEqual(["To do: 1321", "Waiting: 289", "Doing: 81", "Done: 8", "Review: 6"]);
+    expect(Boolean(screen.getByText("Docs").closest(".wf-tree"))).toBe(wide);
+  });
+
+  it("keeps the step bubbles for a member who may manage backlogs and gives that member Add a backlog", async () => {
+    setWide(wide);
+    answering();
+    openListAs(true);
+    await screen.findByText("Docs");
+    expect(await screen.findByRole("button", { name: "Add a backlog" })).toBeInTheDocument();
+    expect(bubblesOf("Backlog")).toEqual(["To do: 1301", "Waiting: 289", "Doing: 81", "Done: 4"]);
+  });
+
+  it("keeps the step bubbles and offers no Add a backlog to a member who may not manage backlogs", async () => {
+    setWide(wide);
+    answering();
+    openListAs(false);
+    await screen.findByText("Docs");
+    expect(bubblesOf("Backlog")).toEqual(["To do: 1301", "Waiting: 289", "Doing: 81", "Done: 4"]);
+    expect(screen.queryByRole("button", { name: "Add a backlog" })).not.toBeInTheDocument();
   });
 });
