@@ -1,5 +1,42 @@
 {
   "operations": {
+    "create_bylaw": {
+      "method": "POST",
+      "path": "/council/bylaws",
+      "call": "CreateBylaw",
+      "action": "council.bylaw.create",
+      "tool": "council_bylaw_create",
+      "status": 201,
+      "title": "Put a council bylaw on record",
+      "description": "Put one bylaw of the council on record: its title, the year it was made and its text.",
+      "args": [{"from": "body", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "list_bylaws": {
+      "method": "GET",
+      "path": "/council/bylaws",
+      "call": "ListBylaws",
+      "action": "council.bylaw.list",
+      "tool": "council_bylaw_list",
+      "title": "List council bylaws",
+      "description": "List the bylaws of one agency's council, earliest year first, optionally only one year's.",
+      "args": [{"from": "query", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "get_bylaw": {
+      "method": "GET",
+      "path": "/council/bylaws/{bylawID}",
+      "call": "GetBylaw",
+      "action": "council.bylaw.read",
+      "tool": "council_bylaw_read",
+      "title": "Read a council bylaw",
+      "description": "Read one bylaw of one agency's council by its id.",
+      "args": [
+        {"from": "query", "whole": true},
+        {"from": "path", "as": "bylawID", "into": "ID", "description": "The bylaw to read."}
+      ],
+      "returns": [{"body": true}]
+    },
     "create_meeting": {
       "method": "POST",
       "path": "/council/meetings",
@@ -132,6 +169,8 @@
     }
   },
   "errors": {
+    "ErrInvalidBylaw": 400,
+    "ErrBylawNotFound": 404,
     "ErrInvalidResolution": 400,
     "ErrResolutionNotFound": 404,
     "ErrInvalidAgenda": 400,

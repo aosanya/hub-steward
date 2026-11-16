@@ -2,6 +2,21 @@
   "module": "council",
   "objects": [
     {
+      "role": "bylaw",
+      "description": "A local rule the council has made: what it is called, the year it was made and its text.",
+      "fields": [
+        {"name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true},
+        {"name": "instance_id", "type": "string", "description": "The agency the bylaw belongs to. Every read is narrowed to one of these, so one agency never reads another's bylaws.", "required": true, "immutable": true},
+        {"name": "title", "type": "string", "description": "What the bylaw is called, such as \"Market trading hours\".", "required": true},
+        {"name": "year", "type": "int", "description": "The four-digit year the bylaw was made.", "required": true},
+        {"name": "text", "type": "text", "description": "The bylaw's wording, as plain text. Empty when only the title and year are known."},
+        {"name": "created_at", "type": "timestamp", "description": "When the bylaw was put on record, as an RFC 3339 instant in UTC.", "immutable": true}
+      ],
+      "indexes": [
+        {"name": "instance_year", "description": "Listing one agency's bylaws by year.", "fields": ["instance_id", "year"]}
+      ]
+    },
+    {
       "role": "meeting",
       "description": "One sitting of the council or one of its committees: what it is called, the day it is held, where, and which committee holds it. Agendas, minutes and resolutions hang off a meeting.",
       "fields": [

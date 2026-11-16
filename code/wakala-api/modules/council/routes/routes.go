@@ -17,6 +17,8 @@ var operations = sync.OnceValues(func() (*dispatch.Spec, error) {
 })
 
 var sentinels = map[string]error{
+	"ErrInvalidBylaw":       council.ErrInvalidBylaw,
+	"ErrBylawNotFound":      council.ErrBylawNotFound,
 	"ErrInvalidResolution":  council.ErrInvalidResolution,
 	"ErrResolutionNotFound": council.ErrResolutionNotFound,
 	"ErrInvalidAgenda":      council.ErrInvalidAgenda,

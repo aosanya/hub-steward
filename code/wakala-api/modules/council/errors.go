@@ -14,6 +14,10 @@ var ErrInvalidMinutes = errors.New("invalid council minutes: missing or malforme
 
 var ErrMinutesNotFound = errors.New("council minutes not found")
 
+var ErrInvalidBylaw = errors.New("invalid council bylaw: missing or malformed fields")
+
+var ErrBylawNotFound = errors.New("council bylaw not found")
+
 var ErrInvalidResolution = errors.New("invalid council resolution: missing or malformed fields")
 
 var ErrResolutionNotFound = errors.New("council resolution not found")

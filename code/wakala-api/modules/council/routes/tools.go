@@ -12,6 +12,7 @@ import (
 type Tool = dispatch.Tool
 
 var carriers = map[string]string{
+	"bylaw":      "Bylaw",
 	"meeting":    "Meeting",
 	"agenda":     "Agenda",
 	"minutes":    "Minutes",
@@ -19,6 +20,7 @@ var carriers = map[string]string{
 }
 
 var storeOwned = map[string]bool{
+	"Bylaw.created_at":      true,
 	"Meeting.created_at":    true,
 	"Agenda.created_at":     true,
 	"Agenda.updated_at":     true,
@@ -28,6 +30,21 @@ var storeOwned = map[string]bool{
 }
 
 var requestFields = map[string]dispatch.FieldDoc{
+	"BylawFilter.instance_id": {
+		Description: "The agency whose council bylaws to list.",
+		Required:    true,
+	},
+	"BylawFilter.year": {
+		Description: "Only the bylaws of this year. Leave out for every bylaw.",
+	},
+	"BylawKey.instance_id": {
+		Description: "The agency whose council the bylaw belongs to.",
+		Required:    true,
+	},
+	"BylawKey.id": {
+		Description: "The bylaw to read.",
+		Required:    true,
+	},
 	"MeetingFilter.instance_id": {
 		Description: "The agency whose council meetings to list.",
 		Required:    true,

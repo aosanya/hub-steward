@@ -4,6 +4,12 @@
   "instance": "app",
   "objects": [
     {
+      "role": "bylaw",
+      "name": "council_bylaw",
+      "table": "council_bylaws",
+      "description": "A local rule the council has made: title, year and text."
+    },
+    {
       "role": "meeting",
       "name": "council_meeting",
       "table": "council_meetings",
