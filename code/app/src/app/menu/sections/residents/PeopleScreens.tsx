@@ -8,6 +8,7 @@ import { MenuList } from "../../MenuList";
 import { populationFigure } from "../../populationFigure";
 import { useBackToSection } from "../../useBackToSection";
 import { residentPaths } from "./paths";
+import { personNameOf } from "./personName";
 import { PersonScreen } from "./PersonScreen";
 
 export { PersonScreen };
@@ -16,7 +17,7 @@ type Item = Record<string, unknown>;
 
 const peopleTitle = "All People";
 
-const householdType = "household";
+const householdTypes = new Set(["household", "háztartás"]);
 
 const text = (item: Item, key: string) => {
   const value = item[key];
@@ -56,18 +57,25 @@ export function AllPeopleScreen() {
   const here = useLocation();
   const open = (id: string) =>
     navigate(residentPaths.person.path({ id }), { state: { from: { path: `${here.pathname}${here.search}`, title: peopleTitle } } });
-  const load = async () => (await listOf("actor_list_actors")).map((person) => ({ id: text(person, "id"), name: text(person, "display_name"), status: text(person, "status") }));
+  const load = async () => (await listOf("actor_list_actors")).map((person) => ({ id: text(person, "id"), name: personNameOf(person), status: text(person, "status") }));
   return <ListScreen title={peopleTitle} tool="actor_list_actors" fields={{ title: "name", meta: "status" }} empty="No people yet." load={load} onChoose={open} />;
 }
 
 export function HouseholdsScreen() {
-  const load = () => groupRows((group) => text(group, "node_type").toLowerCase() === householdType);
+  const load = () => groupRows((group) => householdTypes.has(text(group, "node_type").toLowerCase()));
   return <ListScreen title="Households" tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty="No households yet." load={load} />;
 }
 
 export function RegistrationsScreen() {
-  const load = async () =>
-    (await perGroup("actor_list_join_requests_for_group", "group_id")).map((request) => ({ id: text(request, "id"), name: text(request, "name"), asked: dayWords(text(request, "requested_at")) }));
+  const load = async () => {
+    const [requests, people] = await Promise.all([perGroup("actor_list_join_requests_for_group", "group_id"), listOf("actor_list_actors")]);
+    const nameById = new Map(people.map((person) => [text(person, "id"), personNameOf(person)]));
+    return requests.map((request) => ({
+      id: text(request, "id"),
+      name: text(request, "actor_name") || nameById.get(text(request, "actor_id")) || "",
+      asked: dayWords(text(request, "requested_at")),
+    }));
+  };
   return <ListScreen title="Registrations" tool="actor_list_join_requests_for_group" fields={{ title: "name", meta: "asked" }} empty="No registrations waiting." load={load} />;
 }
 

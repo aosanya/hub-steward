@@ -9,20 +9,26 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
 import { MenuDetail } from "../../MenuDetail";
 import { useBackToSection } from "../../useBackToSection";
+import { personNameOf } from "./personName";
 
 type Item = Record<string, unknown>;
-
-const nameOf = (group: Item) => (typeof group.name === "string" ? group.name : "");
 
 const loadPerson = async (id: string) => {
   const reply = (await callTool("", "actor_get_actor", { actor_id: id })) as { item?: Item } | Item | null;
   const person = (reply as { item?: Item } | null)?.item ?? reply;
-  return (person && typeof person === "object" ? person : {}) as Item;
+  const found = (person && typeof person === "object" ? person : {}) as Item;
+  return { ...found, display_name: personNameOf(found) };
+};
+
+const loadGroupNames = (id: string) => async () => {
+  const [memberships, groups] = await Promise.all([callTool("", "actor_list_groups_for_actor", { actor_id: id }), callTool("", "actor_list_groups")]);
+  const nameById = new Map((itemsOf(groups) as Item[]).map((group) => [String(group.id ?? ""), typeof group.name === "string" ? group.name : ""]));
+  return (itemsOf(memberships) as Item[]).map((membership) => nameById.get(String(membership.group_id ?? "")) ?? "").filter(Boolean);
 };
 
 function PersonGroups({ id }: { id: string }) {
-  const view = useLoad(async () => itemsOf(await callTool("", "actor_list_groups_for_actor", { actor_id: id })) as Item[], `person-groups:${openAgencyId()}:${id}`);
-  const names = view.state === "ready" ? view.data.map(nameOf).filter(Boolean) : [];
+  const view = useLoad(loadGroupNames(id), `person-groups:${openAgencyId()}:${id}`);
+  const names = view.state === "ready" ? view.data : [];
   return (
     <>
       <SectionHeading>Groups</SectionHeading>

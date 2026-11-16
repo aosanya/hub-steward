@@ -14,6 +14,16 @@ type Args = Record<string, unknown>;
 const people = [
   { id: "p1", display_name: "Amara Kole", status: "Active" },
   { id: "p2", display_name: "Dana Reyes", status: "Inactive" },
+  { id: "p3", display_name: "Eli Marsh" },
+  { id: "p4", display_name: "Nia Brandt" },
+];
+
+const blankPerson = { id: "p5", code: "AC-15", public_code: "M-F1E47F", display_name: "", first_name: "", last_name: "" };
+
+const hungarianGroups = [
+  { id: "h1", name: "Szabó háztartás, Óváros", node_type: "Háztartás" },
+  { id: "h2", name: "Molnár háztartás, Óváros", node_type: "Háztartás" },
+  { id: "h3", name: "Egyesület One", node_type: "Egyesület" },
 ];
 
 const groups = [
@@ -26,13 +36,13 @@ const groups = [
 const populations: Record<string, number> = { g1: 12, g2: 31, g3: 45, g4: 58 };
 
 const personGroups = [
-  { actor_id: "p1", group_id: "g3", name: "Reading Circle" },
-  { actor_id: "p1", group_id: "g4", name: "Football Club" },
+  { actor_id: "p1", group_id: "g3", priority: "normal" },
+  { actor_id: "p1", group_id: "g4", priority: "normal" },
 ];
 
 const joinRequests = [
-  { id: "r1", actor_id: "p3", name: "Eli Marsh", state: "pending", requested_at: "2026-03-04T12:00:00Z" },
-  { id: "r2", actor_id: "p4", name: "Nia Brandt", state: "pending", requested_at: "2026-03-09T12:00:00Z" },
+  { id: "r1", actor_id: "p3", actor_name: "", message: "May I join the garden?", state: "pending", requested_at: "2026-03-04T12:00:00Z" },
+  { id: "r2", actor_id: "p4", actor_name: "", message: "", state: "pending", requested_at: "2026-03-09T12:00:00Z" },
 ];
 
 const threads = [
@@ -145,6 +155,26 @@ describe("All People", () => {
   });
 });
 
+describe("All People with no display name", () => {
+  it("draws the person's code and first and last name instead of a blank row", async () => {
+    answers.actor_list_actors = () => ({
+      items: [...people, blankPerson, { id: "p6", code: "AC-16", display_name: "", first_name: "Réka", last_name: "Tóth" }],
+    });
+    open(screens[0].at);
+
+    expect(await screen.findByText("AC-15")).toBeInTheDocument();
+    expect(screen.getByText("Réka Tóth")).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /Amara Kole|Dana Reyes|Eli Marsh|Nia Brandt|AC-15|Réka Tóth/ })).toHaveLength(6);
+  });
+
+  it("draws the code on the person's own card", async () => {
+    answers.actor_get_actor = () => blankPerson;
+    open(personAt("p5"));
+
+    expect(await screen.findByText("AC-15")).toBeInTheDocument();
+  });
+});
+
 describe("a person", () => {
   it("shows their name and status, and the groups they belong to", async () => {
     open(personAt("p1"));
@@ -155,7 +185,7 @@ describe("a person", () => {
     expect(screen.getByText("Football Club")).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p1" });
     expect(called).toHaveBeenCalledWith("", "actor_list_groups_for_actor", { actor_id: "p1" });
-    expect(toolsCalled()).toEqual(new Set(["actor_get_actor", "actor_list_groups_for_actor"]));
+    expect(toolsCalled()).toEqual(new Set(["actor_get_actor", "actor_list_groups_for_actor", "actor_list_groups"]));
   });
 
   it("has a Back button that reads All People when the person was opened from that list", async () => {
@@ -189,6 +219,15 @@ describe("a person", () => {
 });
 
 describe("Households", () => {
+  it("lists the groups whose level is named in the hub's own language", async () => {
+    answers.actor_list_groups = () => ({ items: hungarianGroups });
+    open(screens[1].at);
+
+    expect(await screen.findByText("Szabó háztartás, Óváros")).toBeInTheDocument();
+    expect(screen.getByText("Molnár háztartás, Óváros")).toBeInTheDocument();
+    expect(screen.queryByText("Egyesület One")).toBeNull();
+  });
+
   it("draws a row for each household group with its member count, and leaves other groups out", async () => {
     open(screens[1].at);
 
@@ -221,7 +260,26 @@ describe("Registrations", () => {
     expect(screen.getByText(dayWords(4))).toBeInTheDocument();
     expect(screen.getByText(dayWords(9))).toBeInTheDocument();
     groups.forEach((group) => expect(called).toHaveBeenCalledWith("", "actor_list_join_requests_for_group", { group_id: group.id }));
-    expect(toolsCalled()).toEqual(new Set(["actor_list_groups", "actor_list_join_requests_for_group"]));
+    expect(toolsCalled()).toEqual(new Set(["actor_list_groups", "actor_list_join_requests_for_group", "actor_list_actors"]));
+  });
+
+  it("reads the requester's name from the person the request names when actor_name is empty", async () => {
+    answers.actor_list_actors = () => ({ items: [...people, blankPerson] });
+    answers.actor_list_join_requests_for_group = (args) => ({
+      items: args.group_id === "g1" ? [{ id: "r9", actor_id: "p5", actor_name: "", message: "Hello", state: "pending", requested_at: "2026-03-04T12:00:00Z" }] : [],
+    });
+    open(screens[2].at);
+
+    expect(await screen.findByText("AC-15")).toBeInTheDocument();
+  });
+
+  it("prefers actor_name when the request carries one", async () => {
+    answers.actor_list_join_requests_for_group = (args) => ({
+      items: args.group_id === "g1" ? [{ id: "r9", actor_id: "p3", actor_name: "Elizabeth Marsh", message: "", state: "pending", requested_at: "2026-03-04T12:00:00Z" }] : [],
+    });
+    open(screens[2].at);
+
+    expect(await screen.findByText("Elizabeth Marsh")).toBeInTheDocument();
   });
 });
 
