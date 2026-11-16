@@ -1,5 +1,6 @@
 import { vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
@@ -20,6 +21,7 @@ beforeEach(() => {
   openAgency("town");
   vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     if (name === "actor_list_groups") return { items: groups };
+    if (name === "actor_get_group") return { item: groups.find((group) => group.id === (args as { group_id: string }).group_id) };
     if (name === "actor_get_group_population") {
       const figure = populations[(args as { group_id: string }).group_id];
       if (figure === undefined) throw new mcp.McpError("no population figure recorded for the group");
@@ -51,6 +53,32 @@ describe("a group with no recorded population figure", () => {
     expect(await screen.findByText("Szabo Family")).toBeInTheDocument();
     expect(screen.getByText("4 members")).toBeInTheDocument();
     expect(screen.getByText("Kovacs Family")).toBeInTheDocument();
+    expect(screen.queryByText("This list could not be loaded.")).toBeNull();
+  });
+});
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({ matches: wide, media: query, addEventListener: () => undefined, removeEventListener: () => undefined })) as unknown as typeof window.matchMedia;
+};
+
+describe("choosing a group with no recorded population figure at wide size", () => {
+  beforeEach(() => setWide(true));
+
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it.each([
+    { title: "Groups & Associations", screen: <GroupsScreen />, chosen: "Reading Circle" },
+    { title: "Households", screen: <HouseholdsScreen />, chosen: "Kovacs Family" },
+  ])("shows the name and no members row in the $title content pane", async ({ screen: view, chosen }) => {
+    render(<MemoryRouter>{view}</MemoryRouter>);
+
+    await userEvent.click(await screen.findByRole("button", { name: new RegExp(chosen) }));
+
+    const content = document.querySelector(".wf-main .wf-content") as HTMLElement;
+    expect(await within(content).findByText(chosen)).toBeInTheDocument();
+    expect(await within(content).findByText("Hidden")).toBeInTheDocument();
+    expect(within(content).queryByText("Members")).toBeNull();
+    expect(within(content).queryByText(/members$/)).toBeNull();
     expect(screen.queryByText("This list could not be loaded.")).toBeNull();
   });
 });
