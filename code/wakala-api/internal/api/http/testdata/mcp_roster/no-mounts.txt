@@ -4,6 +4,8 @@ accounting_bill_read
 accounting_budget_list
 accounting_budget_read
 accounting_budget_set
+accounting_payment_list
+accounting_payment_mark_paid
 accounting_quote_create
 accounting_quote_list
 accounting_report_list

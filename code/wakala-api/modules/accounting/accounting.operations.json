@@ -448,6 +448,33 @@
       ],
       "returns": [{ "body": true }]
     },
+    "mark_bill_paid": {
+      "method": "POST",
+      "path": "/bills/{billID}/payments",
+      "call": "MarkBillPaid",
+      "action": "accounting.payment.mark_paid",
+      "status": 201,
+      "title": "Mark bill paid",
+      "description": "Record that a bill was paid: posts a debit to the cash account (an asset account) and a credit to the bill's receivable account, naming the bill in settles_entry_id, so the bill reads as settled. Leave amount out to pay what is outstanding; a smaller amount is a part payment. Refused when the bill is already settled or reversed, or the amount is more than is outstanding. paid_on is when the money arrived, if not now.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "path", "as": "billID", "into": "BillID", "description": "The bill paid. The address decides, not the body." },
+        { "from": "caller", "as": "paid_by", "into": "PaidBy", "description": "Who recorded the payment, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
+    "list_payments": {
+      "method": "GET",
+      "path": "/payments",
+      "call": "ListPayments",
+      "action": "accounting.payment.list",
+      "title": "List payments",
+      "description": "List payments, oldest first: the payments that settled bills (kind bill, each naming its bill_id) and the milestone payment certificates (kind certificate, each naming its certificate, milestone and contract, the amount being what was paid after retention). A reversed payment is left out. Narrow by kind, bill_id or payer; limit caps the page.",
+      "args": [
+        { "from": "query", "whole": true }
+      ],
+      "returns": [{ "body": true }]
+    },
     "overdue_entries": {
       "method": "GET",
       "path": "/accounts/{accountID}/overdue",

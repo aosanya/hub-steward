@@ -16,6 +16,8 @@ const reportActionPrefix = "accounting.report."
 
 const billActionPrefix = "accounting.bill."
 
+const paymentActionPrefix = "accounting.payment."
+
 func BuildTools(repo accounting.LedgerRepository, m Mount) ([]Tool, error) {
 	s, err := operations()
 	if err != nil {
@@ -33,6 +35,9 @@ func BuildTools(repo accounting.LedgerRepository, m Mount) ([]Tool, error) {
 			served = append(served, t)
 		}
 		if strings.HasPrefix(t.Action, billActionPrefix) {
+			served = append(served, t)
+		}
+		if strings.HasPrefix(t.Action, paymentActionPrefix) {
 			served = append(served, t)
 		}
 		if strings.HasPrefix(t.Action, reportActionPrefix) {
