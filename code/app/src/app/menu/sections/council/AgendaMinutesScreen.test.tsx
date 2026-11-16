@@ -1,5 +1,5 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
@@ -13,19 +13,23 @@ const meetings = [
   { id: "m2", name: "Summer Planning Meeting", date: "2026-06-10" },
 ];
 
-const agendas: Record<string, unknown> = {
+const freshAgendas = (): Record<string, unknown> => ({
   m1: { meeting_id: "m1", items: ["Opening and apologies", "Budget review", "Any other business"] },
-};
+});
 
-const minutes: Record<string, unknown> = {
+const freshMinutes = (): Record<string, unknown> => ({
   m1: { meeting_id: "m1", text: "The budget was reviewed and approved." },
-};
+});
+
+let agendas = freshAgendas();
+let minutes = freshMinutes();
 
 const origin = { path: "/a/town/menu/council", title: "Decisions" };
 
 let called: MockInstance<typeof mcp.callTool>;
 let landed = "";
 let listed: unknown[] = meetings;
+let permissions: string[] = [];
 
 const Where = () => {
   landed = useLocation().pathname;
@@ -34,6 +38,17 @@ const Where = () => {
 
 const answer = (name: string, args: unknown) => {
   const id = (args as { meetingID?: string } | undefined)?.meetingID ?? "";
+  if (name === "agency_get_my_roles") return Promise.resolve({ permissions });
+  if (name === councilTools.agendaSet) {
+    const set = args as { meetingID: string; items: string[] };
+    agendas[set.meetingID] = { meeting_id: set.meetingID, items: set.items };
+    return Promise.resolve(agendas[set.meetingID]);
+  }
+  if (name === councilTools.minutesSet) {
+    const set = args as { meetingID: string; text: string };
+    minutes[set.meetingID] = { meeting_id: set.meetingID, text: set.text };
+    return Promise.resolve(minutes[set.meetingID]);
+  }
   if (name === councilTools.meetingList) return Promise.resolve({ items: listed });
   if (name === councilTools.agendaRead) return id in agendas ? Promise.resolve(agendas[id]) : Promise.reject(new Error("not found"));
   if (name === councilTools.minutesRead) return id in minutes ? Promise.resolve(minutes[id]) : Promise.reject(new Error("not found"));
@@ -42,6 +57,9 @@ const answer = (name: string, args: unknown) => {
 
 beforeEach(() => {
   listed = meetings;
+  permissions = [];
+  agendas = freshAgendas();
+  minutes = freshMinutes();
   openAgency("town");
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
@@ -124,5 +142,80 @@ describe("the Agendas & Minutes screen", () => {
     showAgendas();
 
     expect(await screen.findByText(/No meetings/i)).toBeInTheDocument();
+  });
+
+  describe("editing the papers of a meeting", () => {
+    const openMeeting = async (name: RegExp) => {
+      showAgendas();
+      await userEvent.click(await screen.findByRole("button", { name }));
+      await screen.findByRole("group", { name: "Minutes" });
+    };
+
+    it("lets a council.manage caller edit the minutes and shows the new text", async () => {
+      permissions = ["council.view", "council.manage"];
+      await openMeeting(/Spring Budget Meeting/);
+
+      await userEvent.click(await within(screen.getByRole("group", { name: "Minutes" })).findByRole("button", { name: "Edit" }));
+      const field = screen.getByLabelText("Minutes text");
+      await userEvent.clear(field);
+      await userEvent.type(field, "The budget was approved with one change.");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      await waitFor(() => expect(pane().textContent).toContain("The budget was approved with one change."));
+      expect(callsTo(councilTools.minutesSet).map(([, , args]) => args)).toEqual([{ meetingID: "m1", text: "The budget was approved with one change." }]);
+      expect(pane().textContent).not.toContain("The budget was reviewed and approved.");
+    });
+
+    it("lets a council.manage caller edit the agenda one item per line and shows the lines in order", async () => {
+      permissions = ["council.manage"];
+      await openMeeting(/Spring Budget Meeting/);
+
+      await userEvent.click(await within(screen.getByRole("group", { name: "Agenda" })).findByRole("button", { name: "Edit" }));
+      const field = screen.getByLabelText("Agenda items, one per line");
+      expect(field).toHaveValue("Opening and apologies\nBudget review\nAny other business");
+      await userEvent.clear(field);
+      await userEvent.type(field, "Welcome{Enter}Road repairs{Enter}{Enter}Close");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      await waitFor(() => expect(within(screen.getByRole("group", { name: "Agenda" })).getByText("Close")).toBeInTheDocument());
+      expect(callsTo(councilTools.agendaSet).map(([, , args]) => args)).toEqual([{ meetingID: "m1", items: ["Welcome", "Road repairs", "Close"] }]);
+      const lines = Array.from(screen.getByRole("group", { name: "Agenda" }).querySelectorAll(".ttl")).map((line) => line.textContent);
+      expect(lines).toEqual(["Welcome", "Road repairs", "Close"]);
+    });
+
+    it("lets a council.manage caller write the first agenda of a meeting that has none", async () => {
+      permissions = ["council.manage"];
+      await openMeeting(/Summer Planning Meeting/);
+
+      await userEvent.click(await within(screen.getByRole("group", { name: "Agenda" })).findByRole("button", { name: "Edit" }));
+      await userEvent.type(screen.getByLabelText("Agenda items, one per line"), "Welcome");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      expect(await within(screen.getByRole("group", { name: "Agenda" })).findByText("Welcome")).toBeInTheDocument();
+      expect(callsTo(councilTools.agendaSet).map(([, , args]) => args)).toEqual([{ meetingID: "m2", items: ["Welcome"] }]);
+    });
+
+    it("shows a council.view caller no Edit on either paper", async () => {
+      permissions = ["council.view"];
+      await openMeeting(/Spring Budget Meeting/);
+
+      await waitFor(() => expect(callsTo("agency_get_my_roles").length).toBeGreaterThan(0));
+      expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
+    });
+
+    it("says why when the hub refuses the agenda and keeps the typed lines", async () => {
+      permissions = ["council.manage"];
+      await openMeeting(/Spring Budget Meeting/);
+      called.mockImplementation(async (_agency, name, args) =>
+        name === councilTools.agendaSet ? Promise.reject(new mcp.McpError("council_agenda_set: the meeting is closed")) : answer(name, args),
+      );
+
+      await userEvent.click(await within(screen.getByRole("group", { name: "Agenda" })).findByRole("button", { name: "Edit" }));
+      await userEvent.type(screen.getByLabelText("Agenda items, one per line"), "{Enter}Extra");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      expect(await screen.findByText("the meeting is closed")).toBeInTheDocument();
+      expect(screen.getByLabelText("Agenda items, one per line")).toHaveValue("Opening and apologies\nBudget review\nAny other business\nExtra");
+    });
   });
 });

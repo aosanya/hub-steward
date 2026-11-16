@@ -7,9 +7,11 @@ import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
+import { MenuEditForm } from "../../MenuEditForm";
 import { MenuList } from "../../MenuList";
 import { useBackToSection } from "../../useBackToSection";
 import "../../menuWindow.css";
+import { AgendaEditForm, manageCouncil } from "./AgendaEditForm";
 import { councilTools, homeEmpty, listOf, noneYet, readMeetingArgs, text, type Agenda, type Item, type Minutes } from "./councilData";
 
 export const agendaMinutesTitle = "Agendas & Minutes";
@@ -32,29 +34,37 @@ const loadMeetings = () => listOf(councilTools.meetingList);
 
 function Papers({ id }: { id: string }) {
   const word = useWord("council");
-  const view = useLoad(() => loadPapers(id), `agenda-minutes:${openAgencyId()}:${id}`);
+  const [version, setVersion] = useState(0);
+  const view = useLoad(() => loadPapers(id), `agenda-minutes:${openAgencyId()}:${id}:${version}`);
+  const reload = () => setVersion((was) => was + 1);
   if (view.state !== "ready") return <LoadingLine />;
   const { items, minutes } = view.data;
   return (
     <>
-      <SectionHeading>{word("Agenda")}</SectionHeading>
-      {items.length === 0 ? (
-        <EmptyCard words={noneYet(word, "Agenda", "No agenda yet.")} />
-      ) : (
-        <Rows>
-          {items.map((entry, at) => (
-            <ListRow key={at} title={entry} />
-          ))}
-        </Rows>
-      )}
-      <SectionHeading>{word("Minutes")}</SectionHeading>
-      {minutes === "" ? (
-        <EmptyCard words={noneYet(word, "Minutes", "No minutes yet.")} />
-      ) : (
-        <Rows>
-          <ListRow title={minutes} />
-        </Rows>
-      )}
+      <div role="group" aria-label="Agenda">
+        <SectionHeading>{word("Agenda")}</SectionHeading>
+        {items.length === 0 ? (
+          <EmptyCard words={noneYet(word, "Agenda", "No agenda yet.")} />
+        ) : (
+          <Rows>
+            {items.map((entry, at) => (
+              <ListRow key={at} title={entry} />
+            ))}
+          </Rows>
+        )}
+        <AgendaEditForm meetingId={id} items={items} onSaved={reload} />
+      </div>
+      <div role="group" aria-label="Minutes">
+        <SectionHeading>{word("Minutes")}</SectionHeading>
+        {minutes === "" ? (
+          <EmptyCard words={noneYet(word, "Minutes", "No minutes yet.")} />
+        ) : (
+          <Rows>
+            <ListRow title={minutes} />
+          </Rows>
+        )}
+        <MenuEditForm item={{ text: minutes }} id={id} idArg="meetingID" tool={councilTools.minutesSet} permission={manageCouncil} fields={[{ label: "Minutes text", key: "text", required: true }]} onSaved={reload} />
+      </div>
     </>
   );
 }
