@@ -23,7 +23,7 @@ export function SectionPage({ agency = mcpAgencyClient }: { agency?: AgencyClien
         {section.items.map((item) => {
           const path = item.path;
           return path ? (
-            <ListRow key={item.title} title={item.label ?? item.title} end="›" onClick={() => navigate(path(), { state: { from: { path: routes.menu.path({ sectionId }), title: section.title } } })} />
+            <ListRow key={item.title} title={item.label ?? item.title} end="›" onClick={() => navigate(path(), { state: { from: { path: routes.menu.path({ sectionId }), title: section.title, sectionId } } })} />
           ) : (
             <ListRow key={item.title} title={item.label ?? item.title} end={<Chip>{notYetWords}</Chip>} />
           );
