@@ -9,9 +9,9 @@ type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "field
 
 type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; detailKey?: string | number };
 
-export function MenuWindow({ title, list, detail, above, below }: Props) {
+export function MenuWindow({ title, list, detail, above, below, detailKey }: Props) {
   const back = useBackToSection();
   const [chosen, setChosen] = useState("");
   const onBack = chosen ? () => setChosen("") : back.onBack;
@@ -26,7 +26,7 @@ export function MenuWindow({ title, list, detail, above, below }: Props) {
         </section>
         {chosen ? (
           <section className="mw-detail" aria-label={title}>
-            <MenuDetail {...detail} title={title} bare id={chosen} />
+            <MenuDetail key={detailKey} {...detail} title={title} bare id={chosen} />
           </section>
         ) : null}
       </div>

@@ -10,17 +10,25 @@ import { items, routes } from "./index";
 
 type Args = Record<string, unknown>;
 
-const submissions = [
-  { id: "s1", form_id: "f1", member_id: "m1", kind: "permit", name: "Market Stall Permit", sent_at: "2026-03-04T12:00:00Z", status: "Submitted" },
-  { id: "s2", form_id: "f2", member_id: "m2", kind: "permit", name: "Street Party Permit", sent_at: "2026-03-09T12:00:00Z", status: "Approved" },
-  { id: "s3", form_id: "f3", member_id: "m3", kind: "licence", name: "Dog Licence", sent_at: "2026-03-11T12:00:00Z", status: "Issued" },
-  { id: "s4", form_id: "f4", member_id: "m4", kind: "fee", name: "Hall Hire Fee", sent_at: "2026-03-12T12:00:00Z", status: "Unpaid" },
-  { id: "s5", form_id: "f5", member_id: "m5", kind: "fee", name: "Parking Fee", sent_at: "2026-03-14T12:00:00Z", status: "Unpaid" },
+const entries = [
+  { id: "e1", slug: "market-stall-permit", name: "Market Stall Permit", summary: "Trade on the square", kind: "permit", form_id: "f1" },
+  { id: "e2", slug: "street-party-permit", name: "Street Party Permit", summary: "Close your street for a day", kind: "permit", form_id: "f2" },
+  { id: "e3", slug: "dog-licence", name: "Dog Licence", summary: "Keep a dog in town", kind: "licence", form_id: "f3" },
+  { id: "e4", slug: "hall-hire-fee", name: "Hall Hire Fee", summary: "Hire the town hall", kind: "fee", form_id: "f4" },
+  { id: "e5", slug: "parking-fee", name: "Parking Fee", summary: "Park on the square", kind: "fee", form_id: "f5" },
 ];
 
+const sentOn = {
+  "market-stall-permit": [{ id: "s1", form_id: "f1", member_id: "m1", submitted_at: "2026-03-04T12:00:00Z", paid: false }],
+  "street-party-permit": [{ id: "s2", form_id: "f2", member_id: "m1", submitted_at: "2026-03-09T12:00:00Z", withdrawn_at: "2026-03-10T12:00:00Z", paid: false }],
+  "dog-licence": [{ id: "s3", form_id: "f3", member_id: "m1", submitted_at: "2026-03-11T12:00:00Z", paid: false }],
+  "hall-hire-fee": [{ id: "s4", form_id: "f4", member_id: "m1", submitted_at: "2026-03-12T12:00:00Z", paid: false }],
+  "parking-fee": [{ id: "s5", form_id: "f5", member_id: "m1", submitted_at: "2026-03-14T12:00:00Z", paid: true, paid_at: "2026-03-15T12:00:00Z" }],
+} as Record<string, unknown[]>;
+
 const catalogue = [
-  { id: "c1", name: "Bulk Waste Collection", summary: "Book a collection for large items" },
-  { id: "c2", name: "Allotment Waiting List", summary: "Ask for a plot near you" },
+  { id: "c1", slug: "bulk-waste", name: "Bulk Waste Collection", summary: "Book a collection for large items" },
+  { id: "c2", slug: "allotments", name: "Allotment Waiting List", summary: "Ask for a plot near you" },
 ];
 
 const application = { id: "s1", form_id: "f1", status: "Submitted", sent_at: "2026-03-04T12:00:00Z" };
@@ -40,9 +48,9 @@ const dayWords = (day: number) => new RegExp(`2026-03-${String(day).padStart(2, 
 const origin = { path: "/a/town/menu/services", title: "Services & Permits" };
 
 const screens = [
-  { title: "Permits", at: "/a/town/menu/services/permits", pattern: "/a/:agencyId/menu/services/permits", Screen: PermitsScreen, tool: "forms_submission_list" },
-  { title: "Licences", at: "/a/town/menu/services/licences", pattern: "/a/:agencyId/menu/services/licences", Screen: LicencesScreen, tool: "forms_submission_list" },
-  { title: "Fees & Payments", at: "/a/town/menu/services/fees", pattern: "/a/:agencyId/menu/services/fees", Screen: FeesPaymentsScreen, tool: "forms_submission_list" },
+  { title: "Permits", at: "/a/town/menu/services/permits", pattern: "/a/:agencyId/menu/services/permits", Screen: PermitsScreen, tool: "forms_catalog_entry_list_public" },
+  { title: "Licences", at: "/a/town/menu/services/licences", pattern: "/a/:agencyId/menu/services/licences", Screen: LicencesScreen, tool: "forms_catalog_entry_list_public" },
+  { title: "Fees & Payments", at: "/a/town/menu/services/fees", pattern: "/a/:agencyId/menu/services/fees", Screen: FeesPaymentsScreen, tool: "forms_catalog_entry_list_public" },
   { title: "Service Catalogue", at: "/a/town/menu/services/catalogue", pattern: "/a/:agencyId/menu/services/catalogue", Screen: ServiceCatalogueScreen, tool: "forms_catalog_entry_list_public" },
 ];
 
@@ -60,9 +68,9 @@ const Where = () => {
 beforeEach(() => {
   openAgency("town");
   answers = {
-    forms_submission_list: () => ({ items: submissions }),
     forms_submission_mark_paid: () => ({}),
-    forms_catalog_entry_list_public: () => ({ items: catalogue }),
+    forms_catalog_entry_list_public: (args) => ({ items: args.kind ? entries.filter((entry) => entry.kind === args.kind) : catalogue }),
+    forms_catalog_entry_submissions_mine: (args) => sentOn[String(args.slug)] ?? [],
     forms_submission_read_mine: () => application,
     forms_question_list: () => ({ items: applicationQuestions }),
     forms_answer_list: () => ({ items: applicationAnswers }),
@@ -119,62 +127,96 @@ describe("the Services & Permits section's menu", () => {
 });
 
 describe("Permits", () => {
-  it("draws a row for each permit with its date and status, and leaves other kinds out", async () => {
+  it("lists the permit entries of the catalogue and leaves other kinds out", async () => {
     open(screens[0].at);
 
     expect(await screen.findByText("Market Stall Permit")).toBeInTheDocument();
     expect(screen.getByText("Street Party Permit")).toBeInTheDocument();
-    expect(screen.getByText(/Submitted/)).toBeInTheDocument();
-    expect(screen.getByText(/Approved/)).toBeInTheDocument();
-    expect(screen.getByText(dayWords(4))).toBeInTheDocument();
-    expect(screen.getByText(dayWords(9))).toBeInTheDocument();
+    expect(screen.getByText("Trade on the square")).toBeInTheDocument();
     expect(screen.queryByText("Dog Licence")).toBeNull();
     expect(screen.queryByText("Hall Hire Fee")).toBeNull();
-    expect(toolsCalled()).toEqual(new Set(["forms_submission_list"]));
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_entry_list_public", { kind: "permit" });
+    expect(toolsCalled()).not.toContain("forms_submission_list");
+    expect(toolsCalled()).not.toContain("forms_catalog_entry_submissions_mine");
+  });
+
+  it("opens a permit to the person's own submissions with their date and status", async () => {
+    open(screens[0].at);
+
+    await userEvent.click(await screen.findByText("Market Stall Permit"));
+
+    expect(await screen.findByText("Sent")).toBeInTheDocument();
+    expect(screen.getByText(dayWords(4))).toBeInTheDocument();
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_entry_submissions_mine", { slug: "market-stall-permit" });
+    expect(called).not.toHaveBeenCalledWith("", "forms_submission_list", expect.anything());
+  });
+
+  it("reads a withdrawn submission as Withdrawn", async () => {
+    open(screens[0].at);
+
+    await userEvent.click(await screen.findByText("Street Party Permit"));
+
+    expect(await screen.findByText("Withdrawn")).toBeInTheDocument();
+  });
+
+  it("says nothing was sent when the person has no submission to the entry", async () => {
+    answers.forms_catalog_entry_submissions_mine = () => [];
+    open(screens[0].at);
+
+    await userEvent.click(await screen.findByText("Market Stall Permit"));
+
+    expect(await screen.findByText("Not sent yet")).toBeInTheDocument();
   });
 });
 
 describe("Licences", () => {
-  it("draws a row for each licence with its date and status, and leaves other kinds out", async () => {
+  it("lists the licence entries of the catalogue and opens one to its submissions", async () => {
     open(screens[1].at);
 
-    expect(await screen.findByText("Dog Licence")).toBeInTheDocument();
-    expect(screen.getByText(/Issued/)).toBeInTheDocument();
+    await userEvent.click(await screen.findByText("Dog Licence"));
+
+    expect(await screen.findByText("Sent")).toBeInTheDocument();
     expect(screen.getByText(dayWords(11))).toBeInTheDocument();
     expect(screen.queryByText("Market Stall Permit")).toBeNull();
     expect(screen.queryByText("Parking Fee")).toBeNull();
-    expect(toolsCalled()).toEqual(new Set(["forms_submission_list"]));
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_entry_list_public", { kind: "licence" });
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_entry_submissions_mine", { slug: "dog-licence" });
   });
 });
 
 describe("Fees & Payments", () => {
-  it("draws a row for each fee with its date and status, and leaves other kinds out", async () => {
+  it("lists the fee entries of the catalogue and leaves other kinds out", async () => {
     open(screens[2].at);
 
     expect(await screen.findByText("Hall Hire Fee")).toBeInTheDocument();
     expect(screen.getByText("Parking Fee")).toBeInTheDocument();
-    expect(screen.getAllByText(/Unpaid/)).toHaveLength(2);
-    expect(screen.getByText(dayWords(12))).toBeInTheDocument();
-    expect(screen.getByText(dayWords(14))).toBeInTheDocument();
     expect(screen.queryByText("Dog Licence")).toBeNull();
     expect(screen.queryByText("Street Party Permit")).toBeNull();
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_entry_list_public", { kind: "fee" });
   });
 
-  it("offers Mark paid on each fee and records the send that was pressed", async () => {
+  it("offers Mark paid on an unpaid fee and marks the submission that was sent", async () => {
     open(screens[2].at);
-    await screen.findByText("Parking Fee");
-    const buttons = await screen.findAllByRole("button", { name: /Mark paid/ });
 
-    expect(buttons).toHaveLength(2);
-    await userEvent.click(buttons[1]);
+    await userEvent.click(await screen.findByText("Hall Hire Fee"));
+    await userEvent.click(await screen.findByRole("button", { name: /Mark paid/ }));
 
-    await waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_submission_mark_paid", expect.objectContaining({ form_id: "f5", member_id: "m5", paid: true })));
-    expect(called).not.toHaveBeenCalledWith("", "forms_submission_mark_paid", expect.objectContaining({ member_id: "m4" }));
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_submission_mark_paid", { form_id: "f4", member_id: "m1", paid: true }));
+  });
+
+  it("reads a paid fee as Paid and offers no Mark paid", async () => {
+    open(screens[2].at);
+
+    await userEvent.click(await screen.findByText("Parking Fee"));
+
+    expect(await screen.findByText("Paid")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Mark paid/ })).toBeNull();
   });
 
   it("offers no Mark paid on the permit and licence screens", async () => {
     open(screens[0].at);
-    await screen.findByText("Market Stall Permit");
+    await userEvent.click(await screen.findByText("Market Stall Permit"));
+    await screen.findByText("Sent");
 
     expect(screen.queryByRole("button", { name: /Mark paid/ })).toBeNull();
   });
