@@ -264,6 +264,7 @@ type TaskManager interface {
 	AddTaskNote(ctx context.Context, requesterID, taskID, kind, text string, links []string) (TaskNote, error)
 	ListTaskNotes(ctx context.Context, requesterID, taskID string) ([]TaskNote, error)
 	ListTodosOfIssue(ctx context.Context, requesterID, issueID string) (IssueTodoList, error)
+	ReadyTodosFor(ctx context.Context, requesterID, issueID string) (ReadyTodos, error)
 	CountTodosOfIssues(ctx context.Context, filter TodoCountsFilter) (IssueTodoCounts, error)
 	EditTodoFor(ctx context.Context, requesterID, todoID string, change TodoChange) (TodoView, error)
 	ReorderTodosOfIssue(ctx context.Context, requesterID, issueID string, order TodoOrder) (IssueTodoList, error)

@@ -692,6 +692,14 @@
                {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The issue."}],
       "returns": [{"body": true}]
     },
+    "ready_issue_todos": {
+      "method": "GET", "path": "/tasks/{taskID}/todos/ready", "call": "ReadyTodosFor", "action": "taskmanager.task_todo.ready",
+      "title": "The todos of an issue that can start now",
+      "description": "The todos of one issue that can start now, in order: not Done, not Blocked and every todo they wait on Done, so an issue agent can start one sub agent for each without working out the predecessors itself. items carries id, code, title, instructions, ordinality, state (To do or In progress) and can_run_parallel; blocked lists the todos held Blocked by hand with their blocked_reason, and a todo behind one of them is not ready. done and total count the issue's todos. Read-only; an issue the caller cannot see is 404.",
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The issue."}],
+      "returns": [{"body": true}]
+    },
     "count_issue_todos": {
       "method": "GET", "path": "/todo-counts", "call": "CountTodosOfIssues", "action": "taskmanager.task_todo.count_for_issues",
       "title": "Count the todos of many issues",
