@@ -43,6 +43,8 @@ A person or an agent can clone an agency's repository and push a branch to it wi
 6. Large pushes: should there be a size cap on one push, as there is on file writes (`filesize.go`)? Without one, a single push can fill the repository's SQLite file.
 7. The old handler served shallow clones through its own code path. Should the per-agency handler keep that, or refuse shallow requests until a need appears?
 
+The options, measurements and one recommendation each for questions 1, 3, 4, 5, 6 and 7 (and concurrent pushes) are on [Git over HTTP: options for the open questions](git-remote-options.md).
+
 ## Not in this decision
 
 How the per-repository SQLite file stores git objects so go-git's server can read them is the work of the other issues under ISS-86. This page only fixes what a client sees.
