@@ -294,6 +294,7 @@ type CatalogManager interface {
 	ListPublicBoardItems(ctx context.Context, limit, offset int) ([]BoardItemTally, error)
 
 	SetBoardItemOutcome(ctx context.Context, boardItemID, outcome string) error
+	GetBoardItem(ctx context.Context, boardItemID string) (BoardItemTally, error)
 	SetBoardItemHidden(ctx context.Context, boardItemID string, hidden bool) error
 	AssignBoardItem(ctx context.Context, boardItemID, assigneeKind, assigneeID string) error
 	UnassignBoardItem(ctx context.Context, boardItemID string) error

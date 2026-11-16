@@ -3,6 +3,7 @@ catalog_board_item_close
 catalog_board_item_list
 catalog_board_item_list_public
 catalog_board_item_put
+catalog_board_item_read
 catalog_board_item_set_hidden
 catalog_board_item_set_outcome
 catalog_board_item_unassign
@@ -68,6 +69,7 @@ reports_board_item_close
 reports_board_item_list
 reports_board_item_list_public
 reports_board_item_put
+reports_board_item_read
 reports_board_item_set_hidden
 reports_board_item_set_outcome
 reports_board_item_unassign

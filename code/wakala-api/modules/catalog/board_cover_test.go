@@ -234,3 +234,33 @@ func TestABoardItemIsAssignedToAnActorOrARoleAndNothingChangesOnceItIsClosed(t *
 		t.Fatalf("a closed item was reassigned: %v", err)
 	}
 }
+
+func TestOneBoardItemIsReadWithItsOutcomeHiddenOrNot(t *testing.T) {
+	cm := entryManager(t)
+	ctx := context.Background()
+	b, _ := cm.PutOnBoard(ctx, catalog.BoardItem{Title: "Potholes"})
+	r := raise(t, cm, "Hole one", true)
+	if err := cm.GroupUnderBoardItem(ctx, r.ID, b.ID); err != nil {
+		t.Fatal(err)
+	}
+	read, err := cm.GetBoardItem(ctx, b.ID)
+	if err != nil || read.Title != "Potholes" || read.Outcome != "" || read.RaisedBy != 1 {
+		t.Fatalf("%+v %v", read, err)
+	}
+	if err := cm.SetBoardItemOutcome(ctx, b.ID, "Resurfaced in June"); err != nil {
+		t.Fatal(err)
+	}
+	if err := cm.SetBoardItemHidden(ctx, b.ID, true); err != nil {
+		t.Fatal(err)
+	}
+	read, err = cm.GetBoardItem(ctx, b.ID)
+	if err != nil || read.Outcome != "Resurfaced in June" || !read.Hidden {
+		t.Fatalf("%+v %v", read, err)
+	}
+	if _, err := cm.GetBoardItem(ctx, "nowhere"); !errors.Is(err, catalog.ErrBoardItemNotFound) {
+		t.Fatalf("got %v", err)
+	}
+	if _, err := cm.GetBoardItem(ctx, ""); !errors.Is(err, catalog.ErrInvalidBoardItem) {
+		t.Fatalf("got %v", err)
+	}
+}

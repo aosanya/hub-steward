@@ -48,6 +48,36 @@ func (m *catalogManager) GroupUnderBoardItem(ctx context.Context, raisedItemID, 
 	return m.q(ctx, roleRaisedItem).Where("id = ?", raisedItemID).Update("board_item_id", boardItemID).Error
 }
 
+func (m *catalogManager) GetBoardItem(ctx context.Context, boardItemID string) (BoardItemTally, error) {
+	if !m.keepsBoard() {
+		return BoardItemTally{}, ErrBoardNotKept
+	}
+	if boardItemID == "" {
+		return BoardItemTally{}, ErrInvalidBoardItem
+	}
+	var b BoardItem
+	if err := m.take(m.q(ctx, roleBoardItem).Where("id = ?", boardItemID), roleBoardItem, &b, ErrBoardItemNotFound); err != nil {
+		return BoardItemTally{}, err
+	}
+	return m.tallyOf(ctx, b)
+}
+
+func (m *catalogManager) tallyOf(ctx context.Context, b BoardItem) (BoardItemTally, error) {
+	t := BoardItemTally{BoardItem: b}
+	var n int64
+	if err := m.q(ctx, roleRaisedItem).Where("board_item_id = ? AND publishable = ?", b.ID, true).Count(&n).Error; err != nil {
+		return BoardItemTally{}, err
+	}
+	t.RaisedBy = int(n)
+	if m.countsEndorsements() {
+		var err error
+		if t.MeToo, err = m.CountEndorsements(ctx, b.ID); err != nil {
+			return BoardItemTally{}, err
+		}
+	}
+	return t, nil
+}
+
 func (m *catalogManager) ListBoardItems(ctx context.Context) ([]BoardItemTally, error) {
 	if !m.keepsBoard() {
 		return nil, ErrBoardNotKept
@@ -58,16 +88,9 @@ func (m *catalogManager) ListBoardItems(ctx context.Context) ([]BoardItemTally, 
 	}
 	out := make([]BoardItemTally, 0, len(items))
 	for _, b := range items {
-		t := BoardItemTally{BoardItem: b}
-		var n int64
-		if err := m.q(ctx, roleRaisedItem).Where("board_item_id = ? AND publishable = ?", b.ID, true).Count(&n).Error; err != nil {
+		t, err := m.tallyOf(ctx, b)
+		if err != nil {
 			return nil, err
-		}
-		t.RaisedBy = int(n)
-		if m.countsEndorsements() {
-			if t.MeToo, err = m.CountEndorsements(ctx, b.ID); err != nil {
-				return nil, err
-			}
 		}
 		out = append(out, t)
 	}

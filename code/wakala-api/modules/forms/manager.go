@@ -250,6 +250,8 @@ type FormManager interface {
 
 	MarkPaid(ctx context.Context, formID, memberID string, paid bool, markedBy string) (models.Submission, error)
 
+	CorrectSubmission(ctx context.Context, formID, memberID, correctedBy string, answers []models.Answer) ([]models.Answer, error)
+
 	GetSend(ctx context.Context, formID, sendID, memberID string) (models.Send, error)
 
 	Declare(ctx context.Context, d models.Declaration) (models.Declaration, error)

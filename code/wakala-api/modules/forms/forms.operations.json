@@ -608,6 +608,21 @@
       ],
       "returns": [{"body": true}]
     },
+    "correct_submission": {
+      "method": "PUT",
+      "path": "/forms/{form_id}/submissions/{member_id}/answers",
+      "call": "CorrectSubmission",
+      "action": "forms.submission.correct",
+      "title": "Correct a sent application",
+      "description": "A clerk records the correction a resident asked for on what they sent: each answer named replaces the one the resident gave, answers not named stay as sent, and the send is stamped edited. It works on a form that locks after sending, because the resident cannot change it themselves. The answers are all checked before any is written. A person who sent nothing, or whose send was withdrawn, is not found.",
+      "args": [
+        {"from": "path", "as": "form_id", "refers": "forms.form", "description": "The instrument that was sent to."},
+        {"from": "path", "as": "member_id", "description": "The resident whose send is corrected."},
+        {"from": "caller", "as": "corrected_by", "description": "The clerk making the correction, resolved from the session rather than the request."},
+        {"from": "body", "as": "answers", "description": "One answer per prompt being corrected."}
+      ],
+      "returns": [{"body": true}]
+    },
     "list_missed": {
       "method": "GET",
       "path": "/forms/{form_id}/periods/{period_key}/missed",

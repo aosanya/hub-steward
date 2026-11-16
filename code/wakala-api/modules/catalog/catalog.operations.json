@@ -977,6 +977,26 @@
         }
       ]
     },
+    "get_board_item": {
+      "method": "GET",
+      "path": "/board-items/{boardItemID}",
+      "call": "GetBoardItem",
+      "action": "catalog.board_item.read",
+      "title": "Read one board item",
+      "description": "One board item with its outcome, assignee, whether it is hidden, how many raised it and how many said Me too. A hidden item is still read here. The staff read. Never anonymous.",
+      "args": [
+        {
+          "from": "path",
+          "as": "boardItemID",
+          "description": "The board item."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
     "list_public_board_items": {
       "method": "GET",
       "path": "/board-items/public",
