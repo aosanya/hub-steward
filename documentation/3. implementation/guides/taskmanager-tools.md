@@ -10,6 +10,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | Which issue is this id, code or text | `taskmanager_task_find` | `GET /find-tasks` |
 | Which issue should a worker take next | `taskmanager_task_next_ready` | `GET /next-ready` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
+| Which issues in progress are past their working-time cap | `taskmanager_task_timed_out` | `GET /timed-out` |
 | The whole issue | `taskmanager_task_read` | `GET /tasks/{taskID}` |
 | Page through every issue | `taskmanager_task_list` | `GET /tasks` |
 
@@ -41,6 +42,14 @@ Input: `taskID`. The caller is taken from the session; an issue the caller canno
 
 The answer is `depends_on` (the issues this one waits on) and `needed_by` (the issues that wait on it), each a list in rank order of `id`, `code`, `title`, `step`, `state` and `open`, where `open` is true while that issue is not Done or Cancelled. `blocks_start` is true when any issue it waits on is open. An issue in a backlog the caller cannot see is not named: `hidden_depends_on` and `hidden_needed_by` count them, and a hidden open dependency still makes `blocks_start` true so a worker is not told an issue is free when it is not.
 
+## taskmanager_task_timed_out
+
+Input: `backlog` (id or name, required: a blank or missing one is 400, and a backlog that does not exist or that the caller cannot see is refused as unknown). The caller is taken from the session.
+
+The answer is `items`: every issue of the backlog whose state is In Progress and whose time since its first worker Log entry is past its working-time cap, the issue's own or else the default 15 minutes, which is the board's Time is up measure. The hub's own automatic entries do not start the clock. An In Progress issue with no worker entry at all is also listed. Each item has `id`, `code`, `title`, `minutes_since_first_entry` and `minutes_since_last_entry` (both null when there is no entry), `cap_minutes`, `clock_stopped` (as `taskmanager_task_caps_read` reports it, including the hub's idle stop) and `last_entry` (`kind`, the first 200 characters of `text`, `created_at`; null when there is none).
+
+The tool names no cause. Whether the run was interrupted, idle or too big stays the lead's call, made from the last entry and `clock_stopped`. It moves and tags nothing.
+
 ## Where the code is
 
 | Part | File |
@@ -51,3 +60,4 @@ The answer is `depends_on` (the issues this one waits on) and `needed_by` (the i
 | Tests | `task_find_test.go` and `routes/find_tasks_test.go` |
 | The next-ready tool and its types | `modules/taskmanager/task_next_ready.go`, tests in `routes/next_ready_test.go` |
 | The dependencies tool and its types | `modules/taskmanager/task_dependencies.go`, tests in `routes/task_dependencies_test.go` |
+| The timed-out tool and its types | `modules/taskmanager/task_timed_out.go`, tests in `routes/timed_out_test.go` |
