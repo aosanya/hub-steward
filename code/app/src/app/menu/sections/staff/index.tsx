@@ -2,11 +2,10 @@ import { Route } from "react-router-dom";
 import { CrewsScreen } from "./CrewsScreen";
 import { DepartmentsScreen } from "./DepartmentsScreen";
 import { RolesPermissionsScreen } from "./RolesPermissionsScreen";
-import { StaffMemberScreen } from "./StaffMemberScreen";
 import { StaffScreen } from "./StaffScreen";
 import { staffPaths } from "./paths";
 
-export { CrewsScreen, DepartmentsScreen, RolesPermissionsScreen, StaffMemberScreen, StaffScreen };
+export { CrewsScreen, DepartmentsScreen, RolesPermissionsScreen, StaffScreen };
 
 export const items = [
   { title: "Staff", path: () => staffPaths.people.path() },
@@ -18,7 +17,6 @@ export const items = [
 export const routes = () => (
   <>
     <Route path={staffPaths.people.pattern} element={<StaffScreen />} />
-    <Route path={staffPaths.member.pattern} element={<StaffMemberScreen />} />
     <Route path={staffPaths.departments.pattern} element={<DepartmentsScreen />} />
     <Route path={staffPaths.crews.pattern} element={<CrewsScreen />} />
     <Route path={staffPaths.roles.pattern} element={<RolesPermissionsScreen />} />

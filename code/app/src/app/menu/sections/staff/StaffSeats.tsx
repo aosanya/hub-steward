@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
@@ -7,17 +5,7 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../../../shared/ui/LoadSt
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { Shell } from "../../../Shell";
-import { MenuDetail } from "../../MenuDetail";
-import { useBackToSection } from "../../useBackToSection";
-import { PersonEdit } from "../residents/PersonEdit";
-import { personNameOf } from "../residents/personName";
 import { listOf, roleKindNames, seatLabel, text, type Item } from "./staffData";
-
-const loadMember = async (id: string) => {
-  const found = ((await callTool("", "actor_get_actor", { actor_id: id })) as Item | null) ?? {};
-  return { ...found, display_name: personNameOf(found) };
-};
 
 const endedWords = (standing: Item | undefined) => {
   const reason = text(standing, "ended_reason");
@@ -38,7 +26,7 @@ const loadSeats = async (id: string) => {
   });
 };
 
-function Seats({ id }: { id: string }) {
+export function StaffSeats({ id }: { id: string }) {
   const word = useWord("actor");
   const view = useLoad(() => loadSeats(id), `staff-seats:${openAgencyId()}:${id}`);
   return (
@@ -55,19 +43,5 @@ function Seats({ id }: { id: string }) {
         </Rows>
       ) : null}
     </>
-  );
-}
-
-export function StaffMemberScreen() {
-  const back = useBackToSection();
-  const id = useParams().id ?? "";
-  const word = useWord("actor");
-  const [version, setVersion] = useState(0);
-  const saved = () => setVersion((was) => was + 1);
-  return (
-    <Shell title={word("Staff member")} titleUnder {...back}>
-      <MenuDetail key={version} bare title={word("Staff member")} tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadMember} extra={(member) => <PersonEdit id={id} person={member} onSaved={saved} />} />
-      <Seats id={id} />
-    </Shell>
   );
 }

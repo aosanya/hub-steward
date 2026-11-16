@@ -4,6 +4,7 @@ import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
 import { PersonEdit } from "../residents/PersonEdit";
 import { personNameOf } from "../residents/personName";
+import { StaffSeats } from "./StaffSeats";
 import { homeEmpty, listOf, roleKindNames, seatsLine, text, type Item } from "./staffData";
 
 const seatsOfGroups = async (groups: Item[]) => {
@@ -42,7 +43,18 @@ export function StaffScreen() {
       listKey={version}
       detailKey={version}
       list={{ title: word("Staff"), tool: "actor_list_actors", load: loadStaff, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Staff").toLowerCase()} yet.`) }}
-      detail={{ tool: "actor_get_actor", load: loadPerson, fields: { Name: "name", Role: "role" }, status: "status", extra: (person) => <PersonEdit id={text(person, "id")} person={person} onSaved={() => setVersion((was) => was + 1)} /> }}
+      detail={{
+        tool: "actor_get_actor",
+        load: loadPerson,
+        fields: { Name: "name", Role: "role" },
+        status: "status",
+        extra: (person) => (
+          <>
+            <PersonEdit id={text(person, "id")} person={person} onSaved={() => setVersion((was) => was + 1)} />
+            <StaffSeats id={text(person, "id")} />
+          </>
+        ),
+      }}
     />
   );
 }

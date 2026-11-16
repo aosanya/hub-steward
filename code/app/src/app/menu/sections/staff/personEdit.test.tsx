@@ -1,10 +1,10 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
-import { StaffMemberScreen, StaffScreen } from "./index";
+import { StaffScreen } from "./index";
 
 let called: MockInstance<typeof mcp.callTool>;
 let permissions: string[];
@@ -86,26 +86,6 @@ describe("editing a staff member", () => {
 
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
     await screen.findByText("Name");
-
-    expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
-  });
-
-  it("renames them from their own screen and shows the new name", async () => {
-    show(<StaffMemberScreen />, "/menu/staff/people/:id", "/menu/staff/people/a1");
-
-    await rename("Anna Példa");
-
-    await waitFor(() => expect(called).toHaveBeenCalledWith("", "actor_set_actor_display_name", { actor_id: "a1", display_name: "Anna Példa" }));
-    expect(await screen.findByText("Anna Példa")).toBeTruthy();
-    expect(within(document.body).queryByText("Anna Sample")).toBeNull();
-  });
-
-  it("shows no Edit on their own screen to a caller without member.edit", async () => {
-    permissions = ["member.view"];
-    show(<StaffMemberScreen />, "/menu/staff/people/:id", "/menu/staff/people/a1");
-
-    await screen.findByText("Anna Sample");
-    await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
 
     expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
   });

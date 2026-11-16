@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
-import { CrewsScreen, DepartmentsScreen, RolesPermissionsScreen, StaffMemberScreen, StaffScreen } from "./index";
+import { CrewsScreen, DepartmentsScreen, RolesPermissionsScreen, StaffScreen } from "./index";
 
 type Args = Record<string, unknown> | undefined;
 
@@ -210,63 +210,59 @@ describe("the Staff list with people who have no display name", () => {
   });
 
   it("draws the code on the opened person's card", async () => {
-    called = answering({ ...staffAnswers, actor_get_actor: () => unnamed[0] });
-    open("/a/town/menu/staff/people/a4", <StaffMemberScreen />, "/menu/staff/people/:id");
+    called = answering({ ...staffAnswers, actor_list_actors: () => ({ items: unnamed }), actor_get_actor: () => unnamed[0] });
+    openStaff("/a/town/menu/staff/people");
+    await userEvent.click(await screen.findByRole("button", { name: /AC-15/ }));
 
-    expect(await screen.findAllByText("AC-15")).not.toHaveLength(0);
+    await waitFor(() => expect(pane().textContent).toContain("AC-15"));
   });
 });
 
-describe("a staff member", () => {
-  const member = (id: string) => {
-    called = answering(staffAnswers);
-    return open(`/a/town/menu/staff/people/${id}`, <StaffMemberScreen />, "/menu/staff/people/:id");
+describe("the Staff window's seats", () => {
+  const setWide = (wide: boolean) => {
+    window.matchMedia = ((query: string) => ({
+      matches: wide,
+      media: query,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    })) as unknown as typeof window.matchMedia;
   };
 
-  it("reads the actor, the seats and the standing for the person in the address", async () => {
-    member("a1");
-    await waitFor(() => expect(document.body.textContent).toContain("Clerk"));
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
 
-    expect(callsTo("actor_get_actor")[0][2]).toEqual({ actor_id: "a1" });
-    expect(callsTo("actor_list_role_assignments_for_actor")[0][2]).toEqual({ actor_id: "a1" });
-    expect(callsTo("actor_get_actor_standing")[0][2]).toEqual({ actor_id: "a1" });
+  const choose = async (name: RegExp) => {
+    staff();
+    await userEvent.click(await screen.findByRole("button", { name }));
+    await waitFor(() => expect(pane()).not.toBeNull());
+  };
+
+  it("draws a seat of the chosen person with its group and In post beside the list at wide", async () => {
+    setWide(true);
+    await choose(/Anna Sample/);
+
+    await waitFor(() => expect(pane().textContent).toContain("Seats"));
+    expect(pane().textContent).toContain("In post");
+    expect(document.querySelector(".wf-tree")).not.toBeNull();
   });
 
-  it("shows the role, the department and In post for a seat that has not ended", async () => {
-    member("a1");
+  it("draws every seat of the chosen person and how an ended seat ended", async () => {
+    setWide(true);
+    await choose(/Ben Sample/);
 
-    expect(await screen.findByText("Anna Sample")).toBeInTheDocument();
-    await waitFor(() => expect(document.body.textContent).toContain("Clerk"));
-    expect(document.body.textContent).toContain("Registry");
-    expect(document.body.textContent).toContain("In post");
+    await waitFor(() => expect(pane().textContent).toContain("Surveyor"));
+    expect(pane().textContent).toContain("Planner");
+    expect(pane().textContent).toContain("Planning");
+    expect(pane().textContent).toMatch(/Ended · resigned/);
+    expect(callsTo("actor_get_actor")[0][2]).toEqual({ actor_id: "a2" });
+    expect(callsTo("actor_list_role_assignments_for_actor")[0][2]).toEqual({ actor_id: "a2" });
+    expect(callsTo("actor_get_actor_standing")[0][2]).toEqual({ actor_id: "a2" });
   });
 
-  it("shows one row for each seat, and how an ended seat ended", async () => {
-    member("a2");
-    await waitFor(() => expect(document.body.textContent).toContain("Surveyor"));
+  it("draws the seats in the phone's detail too", async () => {
+    setWide(false);
+    await choose(/Ben Sample/);
 
-    expect(document.body.textContent).toContain("Planner");
-    expect(document.body.textContent).toContain("Planning");
-    expect(document.body.textContent).toContain("In post");
-    expect(document.body.textContent).toMatch(/resigned/i);
-  });
-
-  it("has a Back button that names the Staff list it came from and goes there", async () => {
-    called = answering(staffAnswers);
-    render(
-      <MemoryRouter initialEntries={[{ pathname: "/a/town/menu/staff/people/a1", state: { from: { path: "/a/town/menu/staff/people", title: "Staff" } } }]}>
-        <Routes>
-          <Route path="/a/:agencyId/menu/staff/people/:id" element={<StaffMemberScreen />} />
-          <Route path="*" element={null} />
-        </Routes>
-        <Where />
-      </MemoryRouter>,
-    );
-    await waitFor(() => expect(document.body.textContent).toContain("Clerk"));
-
-    await userEvent.click(backButton(/‹ Staff$/));
-
-    await waitFor(() => expect(landed).toBe("/a/town/menu/staff/people"));
+    await waitFor(() => expect(pane().textContent).toMatch(/Ended · resigned/));
   });
 });
 
