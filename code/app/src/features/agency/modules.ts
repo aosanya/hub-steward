@@ -16,7 +16,7 @@ const wordsOf = (mounts: any[]): Record<string, string> => {
     const listed = mount?.words;
     if (listed === null || typeof listed !== "object" || Array.isArray(listed)) continue;
     for (const [generic, own] of Object.entries(listed)) {
-      if (generic !== "" && text(own) !== "" && !(generic in words)) words[generic] = text(own);
+      if (generic !== "" && text(own) !== "" && !Object.prototype.hasOwnProperty.call(words, generic)) words[generic] = text(own);
     }
   }
   return words;
