@@ -69,8 +69,8 @@ beforeEach(() => {
     actor_list_groups_for_actor: () => ({ items: personGroups }),
     actor_list_groups: () => ({ items: groups }),
     actor_get_group_population: (args) => ({ group_id: args.group_id, population: populations[String(args.group_id)] }),
-    actor_list_join_requests_for_group: () => ({ items: joinRequests }),
-    comm_chat_thread_list: () => ({ items: threads }),
+    actor_list_join_requests_for_group: (args) => ({ items: args.group_id === "g1" ? joinRequests : [] }),
+    comm_chat_thread_list: (args) => ({ items: args.structure_id === "g3" ? threads : [] }),
   };
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     const answer = answers[name];
@@ -218,7 +218,8 @@ describe("Registrations", () => {
     expect(screen.getByText("Nia Brandt")).toBeInTheDocument();
     expect(screen.getByText(dayWords(4))).toBeInTheDocument();
     expect(screen.getByText(dayWords(9))).toBeInTheDocument();
-    expect(toolsCalled()).toEqual(new Set(["actor_list_join_requests_for_group"]));
+    groups.forEach((group) => expect(called).toHaveBeenCalledWith("", "actor_list_join_requests_for_group", { group_id: group.id }));
+    expect(toolsCalled()).toEqual(new Set(["actor_list_groups", "actor_list_join_requests_for_group"]));
   });
 });
 
@@ -245,7 +246,8 @@ describe("Communications", () => {
     expect(screen.getByText("Street Party Plans")).toBeInTheDocument();
     expect(screen.getByText(dayWords(10))).toBeInTheDocument();
     expect(screen.getByText(dayWords(12))).toBeInTheDocument();
-    expect(toolsCalled()).toEqual(new Set(["comm_chat_thread_list"]));
+    groups.forEach((group) => expect(called).toHaveBeenCalledWith("", "comm_chat_thread_list", { structure_id: group.id }));
+    expect(toolsCalled()).toEqual(new Set(["actor_list_groups", "comm_chat_thread_list"]));
   });
 });
 

@@ -32,6 +32,12 @@ const memberCountOf = async (group: Item) => {
 
 const groupRows = async (keep: (group: Item) => boolean) => Promise.all((await listOf("actor_list_groups")).filter(keep).map(memberCountOf));
 
+const perGroup = async (tool: string, idName: string) => {
+  const groups = await listOf("actor_list_groups");
+  const lists = await Promise.all(groups.map((group) => listOf(tool, { [idName]: text(group, "id") })));
+  return lists.flat();
+};
+
 const homeEmpty = (words: string) => ({ words, act: "Home", to: agencyHomePath(openAgencyId()) });
 
 type ListScreenProps = { title: string; tool: string; fields: { title: string; meta: string }; empty: string; load: () => Promise<Item[]>; onChoose?: (id: string) => void };
@@ -61,7 +67,7 @@ export function HouseholdsScreen() {
 
 export function RegistrationsScreen() {
   const load = async () =>
-    (await listOf("actor_list_join_requests_for_group")).map((request) => ({ id: text(request, "id"), name: text(request, "name"), asked: dayWords(text(request, "requested_at")) }));
+    (await perGroup("actor_list_join_requests_for_group", "group_id")).map((request) => ({ id: text(request, "id"), name: text(request, "name"), asked: dayWords(text(request, "requested_at")) }));
   return <ListScreen title="Registrations" tool="actor_list_join_requests_for_group" fields={{ title: "name", meta: "asked" }} empty="No registrations waiting." load={load} />;
 }
 
@@ -72,6 +78,6 @@ export function GroupsScreen() {
 
 export function CommunicationsScreen() {
   const load = async () =>
-    (await listOf("comm_chat_thread_list")).map((thread) => ({ id: text(thread, "id"), label: text(thread, "label"), last: dayWords(text(thread, "last_message_at")) }));
+    (await perGroup("comm_chat_thread_list", "structure_id")).map((thread) => ({ id: text(thread, "id"), label: text(thread, "label"), last: dayWords(text(thread, "last_message_at")) }));
   return <ListScreen title="Communications" tool="comm_chat_thread_list" fields={{ title: "label", meta: "last" }} empty="No conversations yet." load={load} />;
 }
