@@ -47,7 +47,15 @@ describe("publishing from the Publish page", () => {
     expect(draft.publishDraft).toHaveBeenCalledWith("h1", "d1");
   });
 
-  it("refuses when the draft has no changes and sends nothing", async () => {
+  it("publishes a draft that has never been published even when no change is counted", async () => {
+    draft.loadDraft.mockResolvedValue({ draft: { id: "d1" }, changes: [] });
+    draft.publishDraft.mockResolvedValue({ published: { version: 1, tag: "v1", at: "" } });
+    expect(await publishNow("h1")).toEqual({ published: { version: 1, tag: "v1", at: "" } });
+    expect(draft.publishDraft).toHaveBeenCalledWith("h1", "d1");
+  });
+
+  it("refuses when a published draft has no counted changes and sends nothing", async () => {
+    draft.listPublished.mockResolvedValue([{ version: 1, tag: "v1", at: "", channel: "production" }]);
     draft.loadDraft.mockResolvedValue({ draft: { id: "d1" }, changes: [] });
     await expect(publishNow("h1")).rejects.toThrow("the draft is not ready to publish");
     expect(draft.publishDraft).not.toHaveBeenCalled();

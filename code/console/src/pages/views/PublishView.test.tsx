@@ -181,11 +181,49 @@ describe("the Publish page when every scenario has passed", () => {
   });
 });
 
+const publishedOnce = { items: [{ version: 1, tag: "v1", channel: "production", published_at: "2026-11-01T10:00:00Z" }] };
+
 describe("the Publish page with nothing to publish", () => {
-  it("says nothing is waiting and keeps Publish disabled even when every scenario has passed", async () => {
-    show({ ...ready, agency_list_approvals: { items: [] } });
+  it("says nothing is waiting and why Publish is disabled once a version is published and no counted change followed", async () => {
+    show({ ...ready, agency_list_approvals: { items: [] }, agency_list_publications: publishedOnce });
 
     expect(await screen.findByText("Nothing is waiting to be published.")).toBeInTheDocument();
+    expect(screen.getByText(/Publish is off: no goal, objective, role or profile change has been approved since version 1\./)).toBeInTheDocument();
+    expect(publishButton()).toBeDisabled();
+  });
+
+  it("enables Publish for a draft never published, although no counted change is waiting", async () => {
+    show({ ...ready, agency_list_approvals: { items: [] }, agency_list_issues: { items: [] }, agency_publish_agency: { version: 1, tag: "v1", published_at: "2026-11-01T10:00:00Z" } });
+    await screen.findByText("Nothing is waiting to be published.");
+
+    expect(publishButton()).toBeEnabled();
+    expect(screen.queryByText(/Publish is off/)).not.toBeInTheDocument();
+
+    await userEvent.click(publishButton());
+
+    expect(await screen.findByText("Published as version 1")).toBeInTheDocument();
+    expect(publishButton()).toBeDisabled();
+  });
+
+  it("says in words that nothing has changed when the agency refuses a publish with no changes", async () => {
+    show({
+      ...ready,
+      agency_list_issues: { items: [] },
+      agency_list_publications: { items: [{ version: 1, tag: "v1", channel: "production", published_at: "2026-10-01T10:00:00Z" }] },
+      agency_publish_agency: new McpError("agency_publish_agency: mwanachamaagency: no changes detected since last publication"),
+    });
+    await screen.findByText("Every scenario has passed on this draft");
+
+    await userEvent.click(publishButton());
+
+    expect(await screen.findByText("Nothing has changed since the last published version.")).toHaveClass("error");
+    expect(publishButton()).toBeEnabled();
+  });
+
+  it("says Publish is off when there is no open draft", async () => {
+    show({ ...ready, agency_list_drafts: { items: [] }, agency_list_publications: publishedOnce });
+
+    expect(await screen.findByText("Publish is off: there is no open draft.")).toBeInTheDocument();
     expect(publishButton()).toBeDisabled();
   });
 

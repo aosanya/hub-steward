@@ -11,7 +11,7 @@ import { testPath } from "../test/paths";
 import { PageContent } from "../work/PageContent";
 import { formatWhen } from "../work/formatWhen";
 import { PublishedVersion } from "./PublishedVersion";
-import { isReady, loadPublishState, publishNow } from "./publishData";
+import { isReady, latestVersion, loadPublishState, publishNow, whyNotReady } from "./publishData";
 
 type Hub = { hubId: string };
 
@@ -139,6 +139,7 @@ function PublishList({ hubId }: Hub) {
   const loaded = state.value;
   const published = outcome !== null && outcome !== "failed" && "published" in outcome ? outcome.published : null;
   const problems: DraftProblem[] = outcome !== null && outcome !== "failed" && "problems" in outcome ? outcome.problems : [];
+  const notReady = published === null ? whyNotReady(loaded) : null;
   const publish = async () => {
     setBusy(true);
     try {
@@ -158,6 +159,7 @@ function PublishList({ hubId }: Hub) {
       </TitleRow>
       <PageContent>
         <Stack gap={20}>
+          {notReady ? <p className="soft">{t(notReady).replace("{version}", String(latestVersion(loaded)))}</p> : null}
           {published ? <strong>{t("draft.publishedAs").replace("{version}", String(published.version))}</strong> : null}
           {outcome === "failed" ? <Empty text={t("draft.publishFailed")} failed /> : null}
           {problems.map((problem) => (

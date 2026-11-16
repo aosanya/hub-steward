@@ -4,7 +4,17 @@ import type { PageRow } from "../../types";
 
 export type PublishState = { draftId: string; changes: DraftChange[]; notPassed: Scenario[]; published: PublishedVersion[] };
 
-export const isReady = (state: PublishState): boolean => state.draftId !== "" && state.changes.length > 0;
+export type NotReadyWord = "publish.offNoDraft" | "publish.offNoChanges";
+
+export const isReady = (state: PublishState): boolean =>
+  state.draftId !== "" && (state.changes.length > 0 || state.published.length === 0);
+
+export const whyNotReady = (state: PublishState): NotReadyWord | null => {
+  if (isReady(state)) return null;
+  return state.draftId === "" ? "publish.offNoDraft" : "publish.offNoChanges";
+};
+
+export const latestVersion = (state: PublishState): number => Math.max(0, ...state.published.map((one) => one.version));
 
 export const loadPublishState = async (hubId: string): Promise<PublishState> => {
   const [snapshot, scenarios, published] = await Promise.all([loadDraft(hubId), loadScenarios(hubId), listPublished(hubId)]);

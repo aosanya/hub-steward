@@ -1,12 +1,14 @@
 import { vi } from "vitest";
-import { isReady, notPassedRows, type PublishState } from "./publishData";
+import { isReady, notPassedRows, whyNotReady, type PublishState } from "./publishData";
 import type { Scenario } from "../../data/scenario";
 
 vi.mock("../../data/draft", () => ({ loadDraft: vi.fn(), publishDraft: vi.fn(), listPublished: vi.fn().mockResolvedValue([]) }));
 vi.mock("../../data/scenario", () => ({ loadScenarios: vi.fn() }));
 
-const state = (notPassed: Scenario[], draftId = "d1", changes = 1): PublishState =>
-  ({ draftId, changes: Array.from({ length: changes }, (_, i) => ({ id: String(i) })) as never, notPassed, published: [] });
+const version = { version: 1, tag: "v1", at: "", channel: "production" };
+
+const state = (notPassed: Scenario[], draftId = "d1", changes = 1, published = [version]): PublishState =>
+  ({ draftId, changes: Array.from({ length: changes }, (_, i) => ({ id: String(i) })) as never, notPassed, published });
 
 describe("publishing with scenarios that have not passed", () => {
   it("is still ready, because the warning never blocks", () => {
@@ -16,6 +18,21 @@ describe("publishing with scenarios that have not passed", () => {
   it("is not ready without an open draft or without changes", () => {
     expect(isReady(state([], ""))).toBe(false);
     expect(isReady(state([], "d1", 0))).toBe(false);
+  });
+
+  it("is ready for a draft that has never been published, even with no counted change", () => {
+    expect(isReady(state([], "d1", 0, []))).toBe(true);
+  });
+
+  it("is not ready without an open draft, published or not", () => {
+    expect(isReady(state([], "", 0, []))).toBe(false);
+  });
+
+  it("says why it is not ready: no open draft, or nothing counted since the last version", () => {
+    expect(whyNotReady(state([], "", 0, []))).toBe("publish.offNoDraft");
+    expect(whyNotReady(state([], "d1", 0))).toBe("publish.offNoChanges");
+    expect(whyNotReady(state([], "d1", 1))).toBeNull();
+    expect(whyNotReady(state([], "d1", 0, []))).toBeNull();
   });
 
   it("lists each scenario that has not passed with its result", async () => {
