@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { useWord } from "../../../../features/agency/useWord";
 import { MenuDetail } from "../../MenuDetail";
 
 const fields = { Name: "name", Type: "category", Location: "location" };
@@ -22,5 +23,6 @@ const loadPlace = async (placeId: string) => {
 
 export function PlacePage() {
   const { placeId } = useParams();
-  return <MenuDetail title="Place" tool="assetmanager_asset_read" fields={fields} status="" id={placeId} load={loadPlace} />;
+  const word = useWord("digitaltwin");
+  return <MenuDetail title={word("Place")} tool="assetmanager_asset_read" fields={fields} status="" id={placeId} load={loadPlace} />;
 }

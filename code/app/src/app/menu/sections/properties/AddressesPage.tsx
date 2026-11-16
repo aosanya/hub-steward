@@ -1,5 +1,6 @@
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { useWord } from "../../../../features/agency/useWord";
 import { MountedMenuList } from "./MountedMenuList";
 
 const fields = { title: "name", meta: "place" };
@@ -17,12 +18,13 @@ const loadAddresses = async () => {
 };
 
 export function AddressesPage() {
+  const word = useWord("digitaltwin");
   return (
     <MountedMenuList
-      title="Addresses"
+      title={word("Addresses")}
       tool="assetmanager_location_list"
       fields={fields}
-      empty={{ words: "No addresses yet." }}
+      empty={{ words: `No ${word("Addresses").toLowerCase()} yet.` }}
       load={loadAddresses}
     />
   );
