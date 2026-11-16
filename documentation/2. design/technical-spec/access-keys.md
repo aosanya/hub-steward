@@ -6,6 +6,8 @@ The console page where a person makes, sees and revokes the keys they use as the
 
 Settings > Access keys, the third row of the Settings group after General and Models, route `#/settings/access-keys`, in every agency's menu. It sits in the open hub because the clone line it shows is for that hub's repository. The keys themselves are the person's, not the hub's: the list is the same in every hub the person opens. Make a key is a second page, Settings / Access keys / Make a key. The phone app has no screen for keys.
 
+As built in the console (`pages/keys/AccessKeysPage.tsx`), Make a key is not a second page: the Name field and Make key sit on the Access keys page above the list, the new key appears under them with its Copy button, and the menu id is `access-keys`, the last row of Settings.
+
 ## Screens
 
 | # | Screen | What is on it |

@@ -7,6 +7,7 @@ import { GroupsView } from "./views/GroupsView";
 import { AgentsView } from "./views/AgentsView";
 import { GeneralView } from "./views/GeneralView";
 import { ConsentPage } from "./consent/ConsentPage";
+import { AccessKeysPage } from "./keys/AccessKeysPage";
 import { DocumentsView } from "./views/DocumentsView";
 import { OperationsView } from "./views/OperationsView";
 import { NetworkView } from "./views/NetworkView";
@@ -52,6 +53,7 @@ export const views: Record<string, ComponentType> = {
   agents: AgentsView,
   general: GeneralView,
   consent: ConsentPage,
+  "access-keys": AccessKeysPage,
   documents: DocumentsView,
   operations: OperationsView,
   network: NetworkView,

@@ -1294,7 +1294,15 @@
     "consent.published": "Published as version {n}",
     "chat.consent.1": "Which version is in force?",
     "chat.consent.2": "Publish a new version",
-    "chat.consent.3": "What changed in the newest version?"
+    "chat.consent.3": "What changed in the newest version?",
+    "menu.access-keys": "Access keys",
+    "accessKeys.madeOn": "Made on",
+    "accessKeys.makeKey": "Make key",
+    "accessKeys.revoke": "Revoke",
+    "accessKeys.none": "You have no keys yet.",
+    "accessKeys.once": "It is not shown again.",
+    "accessKeys.password": "When git asks for a password, paste the key.",
+    "accessKeys.revokeFailed": "The key could not be revoked."
   },
   "de": {
     "headline": "Willkommen bei Hub Steward! Gründe deine Gemeinschaft und leite sie mit Leichtigkeit!",
@@ -2591,7 +2599,15 @@
     "consent.published": "Als Version {n} veröffentlicht",
     "chat.consent.1": "Welche Version gilt?",
     "chat.consent.2": "Eine neue Version veröffentlichen",
-    "chat.consent.3": "Was hat sich in der neuesten Version geändert?"
+    "chat.consent.3": "Was hat sich in der neuesten Version geändert?",
+    "menu.access-keys": "Zugangsschlüssel",
+    "accessKeys.madeOn": "Erstellt am",
+    "accessKeys.makeKey": "Schlüssel erstellen",
+    "accessKeys.revoke": "Widerrufen",
+    "accessKeys.none": "Du hast noch keine Schlüssel.",
+    "accessKeys.once": "Er wird nicht noch einmal angezeigt.",
+    "accessKeys.password": "Wenn git nach einem Passwort fragt, füge den Schlüssel ein.",
+    "accessKeys.revokeFailed": "Der Schlüssel konnte nicht widerrufen werden."
   },
   "sw": {
     "headline": "Karibu Hub Steward! Anzisha jumuiya yako na uiendeshe kwa urahisi!",
@@ -3888,7 +3904,15 @@
     "consent.published": "Limechapishwa kama toleo la {n}",
     "chat.consent.1": "Ni toleo gani linatumika?",
     "chat.consent.2": "Chapisha toleo jipya",
-    "chat.consent.3": "Nini kilibadilika katika toleo jipya zaidi?"
+    "chat.consent.3": "Nini kilibadilika katika toleo jipya zaidi?",
+    "menu.access-keys": "Funguo za ufikiaji",
+    "accessKeys.madeOn": "Ilitengenezwa",
+    "accessKeys.makeKey": "Tengeneza funguo",
+    "accessKeys.revoke": "Batilisha",
+    "accessKeys.none": "Bado huna funguo.",
+    "accessKeys.once": "Haitaonyeshwa tena.",
+    "accessKeys.password": "Git ikiomba nenosiri, bandika funguo.",
+    "accessKeys.revokeFailed": "Funguo haikuweza kubatilishwa."
   },
   "es": {
     "headline": "¡Bienvenido a Hub Steward! ¡Crea tu comunidad y gestiónala con facilidad!",
@@ -5185,7 +5209,15 @@
     "consent.published": "Publicada como versión {n}",
     "chat.consent.1": "¿Qué versión está en vigor?",
     "chat.consent.2": "Publicar una nueva versión",
-    "chat.consent.3": "¿Qué cambió en la última versión?"
+    "chat.consent.3": "¿Qué cambió en la última versión?",
+    "menu.access-keys": "Claves de acceso",
+    "accessKeys.madeOn": "Creada el",
+    "accessKeys.makeKey": "Crear clave",
+    "accessKeys.revoke": "Revocar",
+    "accessKeys.none": "Aún no tienes claves.",
+    "accessKeys.once": "No se mostrará de nuevo.",
+    "accessKeys.password": "Cuando git pida una contraseña, pega la clave.",
+    "accessKeys.revokeFailed": "No se pudo revocar la clave."
   },
   "fr": {
     "headline": "Bienvenue sur Hub Steward ! Créez votre communauté et gérez-la sans effort !",
@@ -6482,7 +6514,15 @@
     "consent.published": "Publiée en tant que version {n}",
     "chat.consent.1": "Quelle version est en vigueur ?",
     "chat.consent.2": "Publier une nouvelle version",
-    "chat.consent.3": "Qu'est-ce qui a changé dans la dernière version ?"
+    "chat.consent.3": "Qu'est-ce qui a changé dans la dernière version ?",
+    "menu.access-keys": "Clés d’accès",
+    "accessKeys.madeOn": "Créée le",
+    "accessKeys.makeKey": "Créer une clé",
+    "accessKeys.revoke": "Révoquer",
+    "accessKeys.none": "Vous n’avez pas encore de clés.",
+    "accessKeys.once": "Elle ne sera plus affichée.",
+    "accessKeys.password": "Quand git demande un mot de passe, collez la clé.",
+    "accessKeys.revokeFailed": "La clé n’a pas pu être révoquée."
   },
   "zh": {
     "headline": "欢迎使用 Hub Steward！创建你的社区，轻松运营！",
@@ -7779,7 +7819,15 @@
     "consent.published": "已发布为版本 {n}",
     "chat.consent.1": "哪个版本正在生效？",
     "chat.consent.2": "发布新版本",
-    "chat.consent.3": "最新版本有什么变化？"
+    "chat.consent.3": "最新版本有什么变化？",
+    "menu.access-keys": "访问密钥",
+    "accessKeys.madeOn": "创建于",
+    "accessKeys.makeKey": "创建密钥",
+    "accessKeys.revoke": "撤销",
+    "accessKeys.none": "你还没有密钥。",
+    "accessKeys.once": "密钥不会再次显示。",
+    "accessKeys.password": "当 git 要求输入密码时，粘贴此密钥。",
+    "accessKeys.revokeFailed": "无法撤销该密钥。"
   },
   "hu": {
     "headline": "Üdvözöl a Hub Steward! Hozd létre a közösségedet, és vezesd könnyedén!",
@@ -9076,6 +9124,14 @@
     "consent.published": "Közzétéve a(z) {n}. verzióként",
     "chat.consent.1": "Melyik verzió van érvényben?",
     "chat.consent.2": "Új verzió közzététele",
-    "chat.consent.3": "Mi változott a legújabb verzióban?"
+    "chat.consent.3": "Mi változott a legújabb verzióban?",
+    "menu.access-keys": "Hozzáférési kulcsok",
+    "accessKeys.madeOn": "Létrehozva",
+    "accessKeys.makeKey": "Kulcs létrehozása",
+    "accessKeys.revoke": "Visszavonás",
+    "accessKeys.none": "Még nincs kulcsod.",
+    "accessKeys.once": "Többé nem jelenik meg.",
+    "accessKeys.password": "Amikor a git jelszót kér, illeszd be a kulcsot.",
+    "accessKeys.revokeFailed": "A kulcsot nem sikerült visszavonni."
   }
 }

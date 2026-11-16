@@ -162,6 +162,7 @@ const entries: Entry[] = [
   { id: "usage-overview", icon: "chart", section: "settings", kinds: everyKind, managersOnly: true },
   { id: "usage-work", icon: "grid", section: "settings", kinds: everyKind, managersOnly: true },
   { id: "usage-agents", icon: "people", section: "settings", kinds: everyKind, managersOnly: true },
+  { id: "access-keys", icon: "key", section: "settings", kinds: everyKind },
 ];
 
 const details = new Map([
@@ -243,6 +244,7 @@ const ownHints = new Map<string, (words: ChipWords) => string[]>([
   ["usage-overview", usageHints],
   ["usage-work", usageHints],
   ["usage-agents", usageHints],
+  ["access-keys", () => []],
   [
     "workflow-edit",
     (words) => [

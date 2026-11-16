@@ -81,7 +81,7 @@ describe("the menu follows the kind of the hub", () => {
     expect(groups[0]).toMatchObject({ caption: undefined, divided: false });
     expect(groups[0].rows.map((row) => row.id)).toEqual(["status"]);
     expect(groups.at(-1)).toMatchObject({ caption: "menuSettings", divided: true });
-    expect(groups.at(-1)?.rows.map((row) => row.id)).toEqual(["general", "consent", "models"]);
+    expect(groups.at(-1)?.rows.map((row) => row.id)).toEqual(["general", "consent", "models", "access-keys"]);
   });
 
   it("lists the sections in the design's order and leaves out a section no page of the hub fills", () => {
@@ -341,7 +341,7 @@ describe("the pages of one model and of one agent", () => {
 });
 
 describe("the pages the menu lists", () => {
-  const routed = ["consent", "models", "models-configure", "assistant", "approvals", "usage", "usage-overview", "usage-work", "usage-agents"];
+  const routed = ["consent", "access-keys", "models", "models-configure", "assistant", "approvals", "usage", "usage-overview", "usage-work", "usage-agents"];
   const drawnNotBuilt = ["equipment"];
   const listed = [...new Set(hubKinds.flatMap(pagesOf))];
 
@@ -393,7 +393,7 @@ describe("the Consent text row in the menu", () => {
   it("sits under Settings between General and Models for the owner of every kind of hub", () => {
     for (const kind of hubKinds) {
       const settings = buildMenu(kind, "status", {}, "owner").at(-1)!;
-      expect(settings.rows.map((row) => row.id)).toEqual(["general", "consent", "models"]);
+      expect(settings.rows.map((row) => row.id)).toEqual(["general", "consent", "models", "access-keys"]);
     }
   });
 

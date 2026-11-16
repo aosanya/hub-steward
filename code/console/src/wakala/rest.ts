@@ -10,7 +10,7 @@ export type Failure = { error?: unknown };
 
 export type Imported = { instance?: { id?: string; name?: string } };
 
-const rest = async <T = any>(method: string, path: string, body?: unknown): Promise<ApiResult<T>> => {
+export const rest = async <T = any>(method: string, path: string, body?: unknown): Promise<ApiResult<T>> => {
   const { wakala } = await runtimeConfig();
   return api<T>(method, wakala + path, body, { credentials: "include" });
 };
