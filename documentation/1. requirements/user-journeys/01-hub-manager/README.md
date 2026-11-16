@@ -14,7 +14,7 @@ Mockups: [all steps](../../../2.%20design/mockups/journeys/01-hub-manager/index.
 
 The manager opens the start page, names the hub, picks a template (the demo has Computer lab, Farmers' group, Boda boda riders and five more), enters an email and password if not already signed in, and presses Create Hub. The page then shows the hub being made in three steps: importing the agency template, connecting Hub Steward to the hub, creating the groups. It ends on "Your hub is ready" with the steps ticked, the number of roles and goals, and a button to open Status.
 
-Behind that screen the hub gets its roles, rules and permissions from the template, Hub Steward is linked to the role that may use AI so that it holds only the permissions that role grants, and three rooms (Managers', Farmers' and Suppliers') are made open to join, whichever template was picked. The three are fixed: a lab hub gets the farmers' rooms too, and the page offers no way to choose the rooms. A template with no role that may use AI stops at the second step with "The hub has no Hub Steward role, so the agent was not connected".
+Behind that screen the hub gets its roles, rules and permissions from the template, Hub Steward is linked to the role that may use AI so that it holds only the permissions that role grants, and the rooms the agency document names in its `rooms` list are made open to join. A document with no `rooms` gets none, and the page offers no way to choose the rooms. A template with no role that may use AI stops at the second step with "The hub has no Hub Steward role, so the agent was not connected".
 
 Mockup: [create hub](../../../2.%20design/mockups/journeys/01-hub-manager/mockups/step-01-create-hub.html)
 
