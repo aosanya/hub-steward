@@ -41,7 +41,7 @@ export function AccountMenu() {
   };
 
   return (
-    <div className="drawer">
+    <div className="drawer body">
       <div ref={menu} className="rows" role="menu" aria-label="Menu" onKeyDown={onKeyDown}>
         {accountItems.map((item) => (
           <ListRow

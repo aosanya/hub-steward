@@ -107,6 +107,17 @@ describe("the menu button", () => {
   });
 });
 
+describe("the drawer's look", () => {
+  it("lays the rows in the page body, as the Folders list does, so they show as separate cards", async () => {
+    open();
+    await userEvent.click(menuButton());
+    const rows = screen.getByRole("menu");
+    expect(rows).toHaveClass("rows");
+    expect(rows.parentElement).toHaveClass("body");
+    expect(rows.parentElement).toHaveClass("drawer");
+  });
+});
+
 describe("choosing an account item", () => {
   it.each(accountItems)("goes to $path from $title and closes the drawer", async ({ title, path }) => {
     open();
