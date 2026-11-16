@@ -100,11 +100,9 @@ describe("the Folders window layout", () => {
     expect(phone).toMatch(/\.mw\[data-chosen="yes"\] \.mw-list\s*\{[^}]*display: none/);
   });
 
-  it("puts list and chosen row side by side only inside one min-width block", () => {
-    const wide = css.slice(css.indexOf("@media (min-width: 48rem)"));
-    expect(wide).toMatch(/\.mw\s*\{[^}]*display: grid[^}]*grid-template-columns/);
-    expect(wide).toMatch(/\.mw\[data-chosen="yes"\] \.mw-list\s*\{[^}]*display: flex/);
-    expect(css.slice(0, css.indexOf("@media"))).not.toContain("display: grid");
+  it("leaves the side by side layout to the shared pane rules", () => {
+    expect(css).not.toContain("display: grid");
+    expect(css).not.toContain("@media");
   });
 });
 

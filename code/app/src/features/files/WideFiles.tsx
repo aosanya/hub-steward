@@ -14,6 +14,7 @@ import { TabStrip } from "./TabStrip";
 import { ancestorsOf, treeRows } from "./treeRows";
 import { useListings } from "./useListings";
 import { Description, FileContent } from "./WideContent";
+import "../../shared/ui/paneWindow.css";
 import "./wideFiles.css";
 
 type Start = { path: string; file: boolean } | null;
