@@ -4,7 +4,7 @@ import type { Hub } from "../types";
 import { Button, Card, Progress, Row } from "../ui";
 import { Icon } from "../ui/Icon";
 import { ErrorLine } from "./ErrorLine";
-import { roomNames, setupStages } from "./hubSetup";
+import { setupStages } from "./hubSetup";
 import { StepList, type Step } from "./StepList";
 
 export type Phase =
@@ -16,6 +16,7 @@ export type Phase =
 type CreateProgressProps = {
   phase: Exclude<Phase, { kind: "form" }>;
   counts: string;
+  rooms: string[];
   onOpen: (hub: Hub) => void;
   onBack: () => void;
   onHubs: () => void;
@@ -23,11 +24,11 @@ type CreateProgressProps = {
 
 const stepsDone = (phase: CreateProgressProps["phase"]) => (phase.kind === "ready" ? setupStages : phase.done);
 
-export function CreateProgress({ phase, counts, onOpen, onBack, onHubs }: CreateProgressProps) {
+export function CreateProgress({ phase, counts, rooms, onOpen, onBack, onHubs }: CreateProgressProps) {
   const { t } = useI18n();
   const done = stepsDone(phase);
   const hubName = "hub" in phase && phase.hub ? phase.hub.name : "";
-  const results: ReactNode[] = [[hubName, counts].filter(Boolean).join(" · "), t("connected"), roomNames.join(", ")];
+  const results: ReactNode[] = [[hubName, counts].filter(Boolean).join(" · "), t("connected"), rooms.join(", ")];
   const titles = [t("createStepTemplate"), t("createStepAgent"), t("createStepGroups")];
 
   const steps: Step[] = titles.map((title, index) => {

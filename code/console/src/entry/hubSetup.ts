@@ -4,11 +4,10 @@ import type { Hub } from "../types";
 import { runtimeConfig } from "../wakala/config";
 import { McpError, callTool } from "../wakala/mcp";
 import { importHub, listServices, serviceNames } from "../wakala/rest";
+import { templates } from "./templates";
 
 export const serviceName = "hub-steward";
 export const agentRoleName = "Hub Steward";
-
-export const roomNames = ["Managers' room", "Farmers' room", "Suppliers' room"];
 
 const roomJoinMode = "open";
 const importedDraftPrefix = "Imported from ";
@@ -71,8 +70,15 @@ const loadTemplate = async (template: string): Promise<Record<string, unknown>> 
 
 export type HubSource = string | Record<string, unknown>;
 
-const importSource = async (name: string, source: HubSource): Promise<Hub> => {
-  const document = typeof source === "string" ? await loadTemplate(source) : source;
+const roomsOf = (document: Record<string, unknown>): string[] | null => {
+  if (!Array.isArray(document.rooms)) return null;
+  return document.rooms.filter((room): room is string => typeof room === "string").map((room) => room.trim()).filter(Boolean);
+};
+
+const roomsFor = (source: HubSource, document: Record<string, unknown>): string[] =>
+  roomsOf(document) ?? (typeof source === "string" ? (templates.find((template) => template.id === source)?.rooms ?? []) : []);
+
+const importSource = async (name: string, document: Record<string, unknown>): Promise<Hub> => {
   const reply = await importHub(name, document);
   if (!reply.ok) throw failureOf(reply);
   const id = reply.data.instance?.id;
@@ -105,22 +111,29 @@ const createRoom = async (hubId: string, name: string) => {
   await callTool(hubId, "actor_set_group_join_mode", { group_id: id, join_mode: roomJoinMode });
 };
 
-const createRooms = (hubId: string) =>
+const createRooms = (hubId: string, rooms: string[]) =>
   guarded("createNoRooms", async () => {
-    for (const name of roomNames) await createRoom(hubId, name);
+    for (const name of rooms) await createRoom(hubId, name);
   });
 
 export const configuredTemplate = async () => (await runtimeConfig()).template;
 
-export async function setUpHub(name: string, source: HubSource, done: (stages: number, hub: Hub) => void = () => {}): Promise<Hub> {
+export async function setUpHub(
+  name: string,
+  source: HubSource,
+  done: (stages: number, hub: Hub, rooms: string[]) => void = () => {},
+): Promise<Hub> {
+  let rooms: string[] = [];
   const hub = await atStage(0, async () => {
     await requireService();
-    return importSource(name, source);
+    const document = typeof source === "string" ? await loadTemplate(source) : source;
+    rooms = roomsFor(source, document);
+    return importSource(name, document);
   });
-  done(1, hub);
+  done(1, hub, []);
   await atStage(1, async () => grantService(hub.id, await findAgentRoleId(hub.id)));
-  done(2, hub);
-  await atStage(2, () => createRooms(hub.id));
-  done(3, hub);
+  done(2, hub, []);
+  await atStage(2, () => createRooms(hub.id, rooms));
+  done(3, hub, rooms);
   return hub;
 }

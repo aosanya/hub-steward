@@ -35,6 +35,7 @@ export function CreateHub() {
   const [agency, setAgency] = useState<AgencyFile | null>(null);
   const [fileFailed, setFileFailed] = useState(false);
   const [phase, setPhase] = useState<Phase>({ kind: "form" });
+  const [rooms, setRooms] = useState<string[]>([]);
   const showCredentials = !signedIn || credentialsAsked;
   const chosen = templateOf(picked ?? configured);
 
@@ -97,8 +98,9 @@ export function CreateHub() {
     setPhase({ kind: "creating", done: 0, hub: null });
     let created: Hub | null = null;
     try {
-      const hub = await setUpHub(hubName, agency?.document ?? chosen.id, (done, importedHub) => {
+      const hub = await setUpHub(hubName, agency?.document ?? chosen.id, (done, importedHub, made) => {
         created = importedHub;
+        setRooms(made);
         setPhase({ kind: "creating", done, hub: importedHub });
       });
       if (signedIn) addHub(hub);
@@ -117,6 +119,7 @@ export function CreateHub() {
         <CreateProgress
           phase={phase}
           counts={countsOf(agency ?? chosen, t)}
+          rooms={rooms}
           onOpen={openStatus}
           onBack={() => setPhase({ kind: "form" })}
           onHubs={() => navigate("/hubs")}

@@ -1,8 +1,8 @@
-export type Template = { id: string; nameKey: string; icon: string; roles: number; goals: number };
+export type Template = { id: string; nameKey: string; icon: string; roles: number; goals: number; rooms?: string[] };
 
 export const templates: Template[] = [
   { id: "siaya-lab", nameKey: "templateLab", icon: "laptop", roles: 3, goals: 4 },
-  { id: "farmers", nameKey: "templateFarmers", icon: "wheat", roles: 9, goals: 4 },
+  { id: "farmers", nameKey: "templateFarmers", icon: "wheat", roles: 9, goals: 4, rooms: ["Managers' room", "Farmers' room", "Suppliers' room"] },
   { id: "boda-boda-riders", nameKey: "templateRiders", icon: "bike", roles: 7, goals: 4 },
   { id: "logistics-freight-company", nameKey: "templateFreight", icon: "truck", roles: 11, goals: 4 },
   { id: "agricultural-drone-crop-spraying-service", nameKey: "templateDrone", icon: "send", roles: 11, goals: 3 },
