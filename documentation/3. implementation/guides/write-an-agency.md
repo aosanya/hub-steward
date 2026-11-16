@@ -50,7 +50,7 @@ Modules also decide which step kinds work: `comm` carries `notify` and `chat`, a
 
 ## AI roles and what Create Hub needs
 
-The console's Create Hub runs three stages (`code/console/src/entry/hubSetup.ts`): import the template, grant the `hub-steward` service key to the agency's AI role, and create three rooms (Managers', Farmers' and Suppliers'). The second stage looks for a role holding `ai.use`, preferring one named "Hub Steward"; with no role holding it and none named "Hub Steward" it stops with "createNoRole". So a template needs an AI role to get through Create Hub:
+The console's Create Hub runs three stages (`code/console/src/entry/hubSetup.ts`): import the template, grant the `hub-steward` service key to the agency's AI role, and create the rooms the agency document names. The second stage looks for a role holding `ai.use`, preferring one named "Hub Steward"; with no role holding it and none named "Hub Steward" it stops with "createNoRole". So a template needs an AI role to get through Create Hub:
 
 | Template | AI roles |
 |---|---|
@@ -59,7 +59,7 @@ The console's Create Hub runs three stages (`code/console/src/entry/hubSetup.ts`
 | farmers | Farmers' agent, Suppliers' agent |
 | the other five | none |
 
-The three rooms are the same for every template. Giving a template its own rooms is not built.
+An agency document may carry a top-level `rooms` list of names. Create Hub makes exactly those rooms, each open to join, and the progress card's groups line lists them. A document with no `rooms` gets none, and the line then reads "none made, the file names no groups". A template id whose file has no `rooms` falls back to the list set for it in `code/console/src/entry/templates.ts`, which only the farmers template has. The municipality files name three: Képviselő-testület, Ellenőrző bizottság and Polgármesteri hivatal (Council, Audit committee and Mayor's office in `municipality.en.json`). The importer ignores the key, so it never reaches the agency itself.
 
 ## Documents
 
