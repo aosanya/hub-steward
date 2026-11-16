@@ -36,6 +36,12 @@ export const refusalWords = (error: unknown) => {
   return words || actionFailedWords;
 };
 
+const wholeOrDecimal = /^-?\d+(\.\d+)?$/;
+
+const isNumber = (text: string) => wholeOrDecimal.test(text.trim());
+
+const sendable = (field: EditField | undefined, text: string) => (field?.kind === "number" && isNumber(text) ? Number(text.trim()) : text);
+
 const inputModes = { text: undefined, number: "decimal", date: undefined } as const;
 
 const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key)]));
@@ -51,6 +57,18 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
   if (!may) return null;
   const changed = Object.fromEntries(Object.entries(values).filter(([key, value]) => value !== base[key]));
   const missing = fields.some((field) => field.required && (values[field.key] ?? "").trim() === "");
+  const notNumber = (field: EditField) => field.kind === "number" && field.key in changed && !isNumber(values[field.key] ?? "");
+  const invalid = fields.some(notNumber);
+  const fieldOf = (key: string) => fields.find((field) => field.key === key);
+  const kept = (key: string) => {
+    const field = fieldOf(key);
+    if (!field) {
+      const value = item[key];
+      return typeof value === "string" || typeof value === "number" ? value : "";
+    }
+    return sendable(field, key in base ? base[key] : textOf(item, key));
+  };
+  const sent = (key: string, text: string) => sendable(fieldOf(key), text);
   const open = () => {
     const start = startValues(item, fields);
     setBase(start);
@@ -78,7 +96,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
           return;
         }
       }
-      await callTool("", tool, { [idArg]: id, ...Object.fromEntries(keep.map((key) => [key, key in base ? base[key] : textOf(item, key)])), ...changed });
+      await callTool("", tool, { [idArg]: id, ...Object.fromEntries(keep.map((key) => [key, kept(key)])), ...Object.fromEntries(Object.entries(changed).map(([key, text]) => [key, sent(key, text)])) });
       setEditing(false);
       onSaved?.(changed);
     } catch (error) {
@@ -96,6 +114,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
           label={field.label}
           type={field.kind === "date" ? "date" : "text"}
           inputMode={inputModes[field.kind ?? "text"]}
+          error={notNumber(field) ? `${field.label} must be a number` : undefined}
           value={values[field.key] ?? ""}
           onChange={(event) => setValues((was) => ({ ...was, [field.key]: event.target.value }))}
         />
@@ -109,7 +128,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
           <Button kind="quiet" onClick={() => settle(clash.key, clash.theirs, true)}>Use theirs</Button>
         </div>
       ))}
-      <Button kind="primary" disabled={saving || missing || clashes.length > 0 || Object.keys(changed).length === 0} onClick={save}>Save</Button>
+      <Button kind="primary" disabled={saving || missing || invalid || clashes.length > 0 || Object.keys(changed).length === 0} onClick={save}>Save</Button>
       <Button kind="quiet" disabled={saving} onClick={() => setEditing(false)}>Cancel</Button>
       {refused ? <LoadFailed words={refused} /> : null}
     </>

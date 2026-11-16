@@ -89,6 +89,64 @@ describe("the shared menu edit form", () => {
     await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { budgetID: "b1", name: "Road repairs", department: "Public Works East" }]]));
   });
 
+  it("sends a field of kind number as a JSON number and reports the typed text", async () => {
+    const onSaved = form();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    const amount = screen.getByLabelText("Amount");
+    await userEvent.clear(amount);
+    await userEvent.type(amount, "2500");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { budgetID: "b1", amount: 2500 }]]));
+    expect(onSaved).toHaveBeenCalledWith({ amount: "2500" });
+  });
+
+  it("sends a kept field of kind number as a number", async () => {
+    render(<MenuEditForm item={item} id="b1" idArg="budgetID" tool="accounting_budget_set" permission="accounting.manage" fields={fields} keep={["amount"]} />);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Department"), " East");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { budgetID: "b1", amount: 1000, department: "Public Works East" }]]));
+  });
+
+  it("keeps a number that is not a field as a number", async () => {
+    render(<MenuEditForm item={{ ...item, year: 2026 }} id="b1" idArg="budgetID" tool="accounting_budget_set" permission="accounting.manage" fields={fields} keep={["year"]} />);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Department"), " East");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { budgetID: "b1", year: 2026, department: "Public Works East" }]]));
+  });
+
+  it.each([["abc"], ["12x"], ["1,5"], ["-"], [""]])("shows that %j is not a number and keeps Save disabled", async (typed) => {
+    form();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    const amount = screen.getByLabelText("Amount");
+    await userEvent.clear(amount);
+    if (typed) await userEvent.type(amount, typed);
+
+    expect(screen.getByText("Amount must be a number")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+    expect(saves()).toHaveLength(0);
+  });
+
+  it("shows no number error while the amount is a number", async () => {
+    form();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    const amount = screen.getByLabelText("Amount");
+    await userEvent.clear(amount);
+    await userEvent.type(amount, "12.5");
+
+    expect(screen.queryByText("Amount must be a number")).toBeNull();
+    expect(screen.getByRole("button", { name: "Save" })).toBeEnabled();
+  });
+
   it("does not save while a required field is empty", async () => {
     form();
 
