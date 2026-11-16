@@ -5,7 +5,7 @@ import { accessTools } from "../../backlogs/access/api";
 import { backlogTools } from "../../backlogs/manage/api";
 import { taskTools } from "../../backlogs/api";
 import { sendTools } from "../../sendToBacklog";
-import { smartTools } from "../../smartBacklog/api";
+import { smartTools } from "../../backlogs/smart/api";
 import { beforeEachJourney, endInAgencies, farmers, openApp, where } from "./backlogs.test-support";
 
 beforeEach(beforeEachJourney);

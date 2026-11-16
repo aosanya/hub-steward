@@ -5,7 +5,7 @@ import { useLoad } from "../forms/useLoad";
 import { Button } from "../ui/Button";
 import { Chip } from "../ui/Chip";
 import { Sheet } from "../ui/Sheet";
-import { addSmartBacklogPath, smartBacklogPath } from "../smartBacklog/paths";
+import { addSmartBacklogPath, smartBacklogPath } from "./smart/paths";
 import { EmptyCard, LoadFailed } from "../ui/LoadState";
 import { ListRow, Rows } from "../ui/ListRow";
 import { Shell } from "../ui/Shell";

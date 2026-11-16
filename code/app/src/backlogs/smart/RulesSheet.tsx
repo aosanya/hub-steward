@@ -1,5 +1,5 @@
-import { ListRow, Rows } from "../ui/ListRow";
-import { Sheet } from "../ui/Sheet";
+import { ListRow, Rows } from "../../ui/ListRow";
+import { Sheet } from "../../ui/Sheet";
 import type { RuleSet } from "./types";
 import { matchWords, ruleWords, rulesSheetTitle } from "./words";
 

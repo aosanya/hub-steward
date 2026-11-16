@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
 import { RulesScreen } from "./RulesScreen";
 import type { Draft } from "./rulesDraft";
 import type { FieldChoices } from "./types";

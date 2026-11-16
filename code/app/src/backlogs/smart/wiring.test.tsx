@@ -1,11 +1,11 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import { BacklogsPage } from "../backlogs/BacklogsPage";
-import { taskTools, type Issue } from "../backlogs/api";
-import { sendTools } from "../sendToBacklog";
-import { McpError } from "../wakala/mcp";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { BacklogsPage } from "../BacklogsPage";
+import { taskTools, type Issue } from "../api";
+import { sendTools } from "../../sendToBacklog";
+import { McpError } from "../../wakala/mcp";
 import { choicesOf, mcpSmartBacklogClient, setOf, smartOf, smartTools } from "./api";
 import { AddSmartBacklogScreen, EditSmartBacklogScreen } from "./SmartScreens";
 import { SmartBacklogPage } from "./SmartBacklogPage";
@@ -16,8 +16,8 @@ const calls: [string, any][] = [];
 
 let answer: (name: string, args: any) => Promise<any> = async () => ({});
 
-vi.mock("../wakala/mcp", async () => {
-  const actual = await vi.importActual<typeof import("../wakala/mcp")>("../wakala/mcp");
+vi.mock("../../wakala/mcp", async () => {
+  const actual = await vi.importActual<typeof import("../../wakala/mcp")>("../../wakala/mcp");
   return {
     ...actual,
     callTool: (_hub: string, name: string, args: any) => {

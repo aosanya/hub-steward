@@ -1,6 +1,6 @@
 import { draftOf, listTool, openAllTarget, pendingTool, withIds, type ResultDraft } from "./results";
 import { issuesPath } from "../backlogs/paths";
-import { smartBacklogPath } from "../smartBacklog/paths";
+import { smartBacklogPath } from "../backlogs/smart/paths";
 import { openAgency, forgetOpenAgency } from "../agency/open";
 
 beforeEach(() => openAgency("farmers"));

@@ -1,4 +1,4 @@
-import { markNames } from "../backlogs/marks";
+import { markNames } from "../marks";
 import type { Draft } from "./rulesDraft";
 import type { Rule } from "./types";
 

@@ -1,7 +1,7 @@
 import { Button } from "../../ui/Button";
 import { openAgencyId } from "../../agency/open";
 import { boardPath, issuesPath } from "../../backlogs/paths";
-import { smartBacklogPath } from "../../smartBacklog/paths";
+import { smartBacklogPath } from "../../backlogs/smart/paths";
 import { Card } from "../../ui/Card";
 import { Chip } from "../../ui/Chip";
 import { useBacklogSummaries } from "./summaries";

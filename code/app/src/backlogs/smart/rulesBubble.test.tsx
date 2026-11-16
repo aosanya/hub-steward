@@ -3,12 +3,12 @@ import { resolve } from "node:path";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
 import { SmartBacklogPage } from "./SmartBacklogPage";
 import type { RuleSet, SmartBacklogClient } from "./types";
 
-vi.mock("../wakala/mcp", async () => {
-  const actual = await vi.importActual<typeof import("../wakala/mcp")>("../wakala/mcp");
+vi.mock("../../wakala/mcp", async () => {
+  const actual = await vi.importActual<typeof import("../../wakala/mcp")>("../../wakala/mcp");
   return { ...actual, callTool: async () => ({ items: [] }) };
 });
 

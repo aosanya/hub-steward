@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { BacklogsClient, Issue } from "../backlogs/api";
-import { IssuesPage } from "../backlogs/IssuesPage";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
+import type { BacklogsClient, Issue } from "../api";
+import { IssuesPage } from "../IssuesPage";
 import { filterDraft, filterName } from "./fromFilter";
 import { rulesKey, sameRules } from "./rulesKey";
 import { AddSmartBacklogScreen } from "./SmartScreens";

@@ -2,14 +2,14 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import { IssuePage } from "../backlogs/IssuePage";
-import type { BacklogsClient, Issue, IssueDetail } from "../backlogs/api";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { IssuePage } from "../IssuePage";
+import type { BacklogsClient, Issue, IssueDetail } from "../api";
 import { SmartBacklogPage } from "./SmartBacklogPage";
 import type { SmartBacklogClient } from "./types";
 
-vi.mock("../wakala/mcp", async () => {
-  const actual = await vi.importActual<typeof import("../wakala/mcp")>("../wakala/mcp");
+vi.mock("../../wakala/mcp", async () => {
+  const actual = await vi.importActual<typeof import("../../wakala/mcp")>("../../wakala/mcp");
   return { ...actual, callTool: async () => ({ items: [] }) };
 });
 

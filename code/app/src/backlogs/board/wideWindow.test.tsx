@@ -5,8 +5,8 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../agency/open";
 import type { BacklogsClient, Issue } from "../api";
 import { IssuesPage } from "../IssuesPage";
-import { SmartBacklogPage } from "../../smartBacklog/SmartBacklogPage";
-import type { SmartBacklogClient } from "../../smartBacklog/types";
+import { SmartBacklogPage } from "../smart/SmartBacklogPage";
+import type { SmartBacklogClient } from "../smart/types";
 import { Shell } from "../../ui/Shell";
 import { BacklogBoard } from "./BacklogBoard";
 

@@ -4,7 +4,7 @@ import { BacklogBoard } from "./board/BacklogBoard";
 import { BacklogPage, backlogPageRoutePath } from "../backlogPage";
 import { AddBacklogScreen, EditBacklogScreen } from "./manage";
 import { BacklogAccessScreen, backlogAccessRoutePath } from "./access/index";
-import { AddSmartBacklogScreen, EditSmartBacklogScreen, SmartBacklogPage } from "../smartBacklog";
+import { AddSmartBacklogScreen, EditSmartBacklogScreen, SmartBacklogPage } from "./smart";
 import { BacklogsPage } from "./BacklogsPage";
 import { NeedsRole } from "./NeedsRole";
 import { IssuePage } from "./IssuePage";

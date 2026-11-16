@@ -1,7 +1,7 @@
 import { issueOf, type BacklogsClient } from "../backlogs/api";
 import { optionLimit, type ResultDraft } from "./results";
-import { fieldSpec, operatorLabel } from "../smartBacklog/fields";
-import { FIELD_IDS, type FieldId } from "../smartBacklog/types";
+import { fieldSpec, operatorLabel } from "../backlogs/smart/fields";
+import { FIELD_IDS, type FieldId } from "../backlogs/smart/types";
 import { rulesProblem } from "./ruleCodes";
 
 export const moveTool = "taskmanager_task_move_to_step";

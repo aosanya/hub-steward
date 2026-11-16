@@ -1,4 +1,4 @@
-import { markNames } from "../backlogs/marks";
+import { markNames } from "../marks";
 import { FIELD_IDS, type Rule, type RuleSet } from "./types";
 
 const token = (text: string) => text.trim().toLowerCase().replace(/ /g, "_");

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Chip } from "../ui/Chip";
+import { Chip } from "../../ui/Chip";
 import { RulesSheet } from "./RulesSheet";
 import type { RuleSet } from "./types";
 import { moreWords, ruleWords } from "./words";
