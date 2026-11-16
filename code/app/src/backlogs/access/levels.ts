@@ -1,4 +1,4 @@
-import type { SegmentedItem } from "../ui/Segmented";
+import type { SegmentedItem } from "../../ui/Segmented";
 import type { AccessLevel, AccessReading, AccessRow, AgencyGroup } from "./types";
 
 export const levelItems: SegmentedItem<AccessLevel>[] = [

@@ -3,7 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { BacklogBoard } from "./board/BacklogBoard";
 import { BacklogPage, backlogPageRoutePath } from "../backlogPage";
 import { AddBacklogScreen, EditBacklogScreen } from "../backlogManage";
-import { BacklogAccessScreen, backlogAccessRoutePath } from "../backlogAccess";
+import { BacklogAccessScreen, backlogAccessRoutePath } from "./access/index";
 import { AddSmartBacklogScreen, EditSmartBacklogScreen, SmartBacklogPage } from "../smartBacklog";
 import { BacklogsPage } from "./BacklogsPage";
 import { NeedsRole } from "./NeedsRole";

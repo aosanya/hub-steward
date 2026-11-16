@@ -8,7 +8,7 @@ import * as mcp from "../wakala/mcp";
 import type { BacklogManageClient } from "../backlogManage";
 import { BacklogPage } from "./BacklogPage";
 import { mcpBacklogPageClient, type BacklogPageClient } from "./api";
-import { accessTools } from "../backlogAccess/api";
+import { accessTools } from "../backlogs/access/api";
 import { BacklogPageRoutes } from "./index";
 import { isValidElement } from "react";
 import { backlogPagePath } from "./paths";

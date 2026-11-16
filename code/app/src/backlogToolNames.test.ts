@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 const hub = resolve(process.cwd(), "../wakala-api");
 
-const folders = ["backlogs", "backlogPage", "backlogs/board", "backlogManage", "backlogAccess", "chat/backlogCards"];
+const folders = ["backlogs", "backlogPage", "backlogManage", "chat/backlogCards"];
 
 const modules = ["taskmanager", "actor", "agency", "comm", "permissions"];
 
@@ -55,7 +55,7 @@ describe("the tools the backlog screens call", () => {
 
   it("finds the tool names in the source of every backlog screen folder", () => {
     expect(used.size).toBeGreaterThanOrEqual(15);
-    for (const prefix of ["backlogs/", "backlogManage/", "backlogAccess/"]) {
+    for (const prefix of ["backlogs/", "backlogManage/", "backlogs/access/"]) {
       expect([...used.values()].some((path) => path.includes(`/${prefix}`)), prefix).toBe(true);
     }
   });

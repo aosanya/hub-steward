@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { accessTools } from "../../backlogAccess/api";
+import { accessTools } from "../../backlogs/access/api";
 import { noRoleWords, nothingSharedWords } from "../../backlogs/access";
 import { backlogTools } from "../../backlogManage/api";
 import { taskTools } from "../../backlogs/api";

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { accessTools } from "../backlogAccess/api";
+import { accessTools } from "../backlogs/access/api";
 import { taskTools } from "../backlogs/api";
 import * as mcp from "../wakala/mcp";
 import { mcpBacklogPageClient } from "./api";

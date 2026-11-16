@@ -1,9 +1,9 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import { savedStep } from "../backlogManage/stepsDraft";
-import type { BacklogManageClient } from "../backlogManage/types";
+import { forgetOpenAgency, openAgency } from "../../agency/open";
+import { savedStep } from "../../backlogManage/stepsDraft";
+import type { BacklogManageClient } from "../../backlogManage/types";
 import { groupOf, readingOf } from "./api";
 import { BacklogAccessScreen } from "./BacklogAccessScreen";
 import { rowsOf } from "./levels";
