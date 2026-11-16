@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
@@ -17,15 +18,25 @@ const text = (item: Item, key: string) => {
 
 const placeOf = (item: Item) => [text(item, "street"), text(item, "area")].filter(Boolean).join(", ");
 
+const rowOf = (issue: Item) => ({ id: text(issue, "id"), title: text(issue, "title"), status: text(issue, "status") });
+
 const mapRows = async () =>
   (itemsOf(await callTool("", nearbyTool)) as Item[]).map((issue) => ({ id: text(issue, "id"), title: text(issue, "title"), place: placeOf(issue) }));
 
 export function AllIssuesScreen() {
   const navigate = useNavigate();
   const here = useLocation();
+  const seen = useRef(new Map<string, Item>());
+  const load = async () => {
+    const rows = itemsOf(await callTool("", nearbyTool)) as Item[];
+    seen.current = new Map(rows.map((row) => [text(row, "id"), row]));
+    return rows;
+  };
   const open = (id: string) =>
-    navigate(issuePaths.issue.path({ id }), { state: { from: { path: `${here.pathname}${here.search}`, title: allIssuesTitle } } });
-  return <IssueListScreen title={allIssuesTitle} tool={nearbyTool} fields={{ title: "title", meta: "status" }} empty="No issues yet." onChoose={open} />;
+    navigate(issuePaths.issue.path({ id }), {
+      state: { from: { path: `${here.pathname}${here.search}`, title: allIssuesTitle }, issue: rowOf(seen.current.get(id) ?? { id }) },
+    });
+  return <IssueListScreen title={allIssuesTitle} tool={nearbyTool} fields={{ title: "title", meta: "status" }} empty="No issues yet." load={load} onChoose={open} />;
 }
 
 export function AssignedToMeScreen() {
