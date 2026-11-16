@@ -3,9 +3,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
+import { MenuWindow } from "../../MenuWindow";
 import { IssueListScreen } from "./IssueListScreen";
+import { replyLabel } from "./IssueScreen";
+import { IssueThread } from "./IssueThread";
 import { nearbyIssues, nearbyTool } from "./nearbyIssues";
 import { issuePaths } from "./paths";
+import { useReplyDrafts } from "./useReplyDrafts";
 
 type Item = Record<string, unknown>;
 
@@ -49,9 +54,27 @@ function useOpenIssue(from: string) {
 export function AllIssuesScreen() {
   const word = useWord("forms");
   const title = `All ${word("Issues")}`;
-  const { remember, open } = useOpenIssue(title);
-  const load = async () => remember(await nearbyIssues());
-  return <IssueListScreen title={title} tool={nearbyTool} fields={{ title: "title", meta: "status" }} empty={`No ${word("Issues").toLowerCase()} yet.`} load={load} onChoose={open} />;
+  const seen = useRef(new Map<string, Item>());
+  const replies = useReplyDrafts();
+  const loadList = async () => {
+    const issues = await nearbyIssues();
+    seen.current = new Map(issues.map((issue) => [text(issue, "id"), issue]));
+    return issues;
+  };
+  const loadIssue = async (id: string) => seen.current.get(id) ?? (await loadList()).find((issue) => text(issue, "id") === id) ?? { id };
+  const list = { title, tool: nearbyTool, fields: { title: "title", meta: "status" }, empty: { words: `No ${word("Issues").toLowerCase()} yet.`, act: "Home", to: agencyHomePath(openAgencyId()) }, load: loadList };
+  const detail = {
+    tool: nearbyTool,
+    fields: { Issue: "title" },
+    status: "status",
+    load: loadIssue,
+    action: { label: replyLabel, tool: "forms_catalog_reply_send", run: (item: Item) => replies.send(text(item, "id")) },
+    extra: (item: Item) => {
+      const issue = rowOf(item);
+      return <IssueThread issue={issue} version={replies.version} draft={replies.draftOf(issue.id)} onDraft={(body) => replies.setDraft(issue.id, body)} failed={replies.failed} />;
+    },
+  };
+  return <MenuWindow title={title} list={list} detail={detail} />;
 }
 
 export function AssignedToMeScreen() {

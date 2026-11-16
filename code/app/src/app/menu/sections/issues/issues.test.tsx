@@ -93,10 +93,10 @@ const pathOf = (item: { path: unknown }) => (typeof item.path === "function" ? (
 
 const issueAt = (id: string) => `/a/town/menu/issues/all/${id}`;
 
-const openIssue = async (name: RegExp, id: string) => {
+const openIssue = async (name: RegExp) => {
   open(screens[0].at);
   await userEvent.click(await screen.findByRole("button", { name }));
-  await waitFor(() => expect(landed).toBe(issueAt(id)));
+  await waitFor(() => expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes"));
 };
 
 describe("the Issues & Requests section's menu", () => {
@@ -221,23 +221,25 @@ describe("Service Types", () => {
 
 describe("an issue", () => {
   it("opens from the row that was pressed in All Issues", async () => {
-    await openIssue(/Blocked drain/, "i2");
+    await openIssue(/Blocked drain/);
 
-    expect(landed).toBe(issueAt("i2"));
+    expect(landed).toBe(screens[0].at);
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "i2" }));
   });
 
   it("shows its title and status from the row, and the replies sent on it", async () => {
-    await openIssue(/Broken streetlight/, "i1");
+    await openIssue(/Broken streetlight/);
 
     expect(await screen.findByText("A crew is booked for Monday.")).toBeInTheDocument();
     expect(screen.getByText("The lamp has been replaced.")).toBeInTheDocument();
-    expect(screen.getByText("Broken streetlight")).toBeInTheDocument();
-    expect(screen.getByText("open")).toBeInTheDocument();
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expect(within(detail).getByText("Broken streetlight")).toBeInTheDocument();
+    expect(within(detail).getByText("open")).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "i1" }));
   });
 
   it("sends a reply on that issue from its Reply action", async () => {
-    await openIssue(/Broken streetlight/, "i1");
+    await openIssue(/Broken streetlight/);
     await screen.findByText("A crew is booked for Monday.");
 
     await userEvent.type(screen.getByRole("textbox"), "Thank you, noted.");
@@ -248,18 +250,19 @@ describe("an issue", () => {
     );
   });
 
-  it("has a Back button that reads All Issues and goes there", async () => {
-    await openIssue(/Broken streetlight/, "i1");
+  it("has a Back button that reads All Issues and closes the issue", async () => {
+    await openIssue(/Broken streetlight/);
     await screen.findByText("A crew is booked for Monday.");
 
     await userEvent.click(screen.getByRole("button", { name: /All Issues/ }));
 
-    await waitFor(() => expect(landed).toBe(screens[0].at));
+    await waitFor(() => expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no"));
+    expect(landed).toBe(screens[0].at);
   });
 
   it("says plainly when nobody has replied yet", async () => {
     answers.forms_catalog_reply_list = () => ({ items: [] });
-    await openIssue(/Broken streetlight/, "i1");
+    await openIssue(/Broken streetlight/);
 
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "i1" })));
     expect(screen.queryByText("A crew is booked for Monday.")).toBeNull();
@@ -311,10 +314,87 @@ describe.each(screens)("$title bottom tab bar", ({ at }) => {
 
 describe("an issue's bottom tab bar", () => {
   it("draws the main tab bar like every other section screen", async () => {
-    await openIssue(/Broken streetlight/, "i1");
+    await openIssue(/Broken streetlight/);
     await screen.findByText("A crew is booked for Monday.");
 
     const bar = screen.getByRole("navigation", { name: "Main" });
     expect(within(bar).getByRole("link", { name: /Home/ })).toBeInTheDocument();
+  });
+});
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+const chooseIssue = async (name: RegExp) => {
+  open(screens[0].at);
+  await userEvent.click(await screen.findByRole("button", { name }));
+};
+
+describe("All Issues on the menu window", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("opens the chosen issue in the window, without leaving the All Issues path", async () => {
+    setWide(false);
+    await chooseIssue(/Broken streetlight/);
+
+    expect(await screen.findByText("A crew is booked for Monday.")).toBeInTheDocument();
+    expect(landed).toBe(screens[0].at);
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
+  });
+
+  it("loads the chosen issue by its id, with its status and department", async () => {
+    setWide(false);
+    answers.forms_catalog_raised_item_list_nearby = () => ({ items: [{ id: "i1", title: "Broken streetlight", status: "open", department: "Roads" }] });
+    await chooseIssue(/Broken streetlight/);
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expect(await within(detail).findByText("open")).toBeInTheDocument();
+    expect(within(detail).getByText("Roads")).toBeInTheDocument();
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "i1" }));
+  });
+
+  it("draws the issue beside the list in the Folders frame on a wide screen", async () => {
+    setWide(true);
+    await chooseIssue(/Broken streetlight/);
+
+    const frame = document.querySelector(".wf") as HTMLElement;
+    const list = frame.querySelector(".wf-tree") as HTMLElement;
+    const main = frame.querySelector(".wf-main") as HTMLElement;
+    expect(within(list).getByRole("button", { name: /Blocked drain/ })).toBeInTheDocument();
+    expect(await within(main).findByText("A crew is booked for Monday.")).toBeInTheDocument();
+    expect(within(list).getByRole("button", { name: /Broken streetlight/ })).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("sends a reply from the window's Reply action and loads the thread again", async () => {
+    setWide(true);
+    await chooseIssue(/Broken streetlight/);
+    await screen.findByText("A crew is booked for Monday.");
+    const asked = () => called.mock.calls.filter(([, name]) => name === "forms_catalog_reply_list").length;
+    const before = asked();
+
+    await userEvent.type(screen.getByRole("textbox", { name: "Your reply" }), "Thank you, noted.");
+    await userEvent.click(screen.getByRole("button", { name: /^Reply/ }));
+
+    await waitFor(() =>
+      expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_send", expect.objectContaining({ raisedItemID: "i1", body: "Thank you, noted." })),
+    );
+    await waitFor(() => expect(asked()).toBeGreaterThan(before));
+  });
+
+  it("goes back from the opened issue to the list inside the window on a phone", async () => {
+    setWide(false);
+    await chooseIssue(/Broken streetlight/);
+    await screen.findByText("A crew is booked for Monday.");
+
+    await userEvent.click(screen.getByRole("button", { name: /All Issues/ }));
+
+    await waitFor(() => expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no"));
+    expect(landed).toBe(screens[0].at);
   });
 });
