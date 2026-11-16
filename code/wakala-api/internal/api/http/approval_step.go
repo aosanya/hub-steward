@@ -24,6 +24,9 @@ var sentenceEnd = regexp.MustCompile(`[.!?;\n]+`)
 var ownNamePhrases = []string{"own name", "by name"}
 
 func isApprovalStep(step agencymodels.WorkItem) bool {
+	if checksApprovalLimit(step.Questions) {
+		return true
+	}
 	for _, text := range []string{step.Title, step.Description, step.Prompt} {
 		for _, sentence := range sentenceEnd.Split(strings.ToLower(text), -1) {
 			if approvesInOwnName(sentence) {
