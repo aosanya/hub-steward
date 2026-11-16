@@ -9,6 +9,7 @@ import { SearchSelect } from "../../../../shared/ui/SearchSelect";
 import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
+import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { dayWords, homeEmpty, listOf, moneyWords, quoteRow, tenderRow, text, tools, type Item } from "./financeData";
 
@@ -61,24 +62,53 @@ const loadTender = async (id: string) => {
     description: text(tender, "description"),
     budgetLine: text(line ?? {}, "name"),
     closes: closes ? dayWords(closes) : "",
+    closes_at: closes,
     status: row.status,
     quotes,
   };
 };
 
-function QuoteRows({ quotes }: { quotes: Item[] }) {
+const tenderFields: EditField[] = [
+  { label: "Title", key: "title", required: true },
+  { label: "Description", key: "description" },
+];
+
+const quoteFields: EditField[] = [
+  { label: "Supplier", key: "supplier", required: true },
+  { label: "Amount", key: "amount", kind: "number", required: true },
+  { label: "Note", key: "note" },
+];
+
+const readQuote = async (tenderID: string, quote: Item) =>
+  (await listOf(tools.quoteList, { tenderID })).find((found) => text(found, "id") === text(quote, "id")) ?? quote;
+
+function QuoteRows({ quotes, tenderID, onEdited }: { quotes: Item[]; tenderID: string; onEdited: () => void }) {
   const lowest = Math.min(...quotes.map((quote) => Number(quote.amount)));
   return (
-    <Rows>
+    <>
       {quotes.map((quote) => (
-        <ListRow
-          key={text(quote, "id")}
-          title={quoteRow(quote).supplier}
-          meta={quoteMeta(quote)}
-          end={quotes.length > 1 && Number(quote.amount) === lowest ? <Chip tone="success">{lowestWords}</Chip> : undefined}
-        />
+        <div key={text(quote, "id")}>
+          <Rows>
+            <ListRow
+              title={quoteRow(quote).supplier}
+              meta={quoteMeta(quote)}
+              end={quotes.length > 1 && Number(quote.amount) === lowest ? <Chip tone="success">{lowestWords}</Chip> : undefined}
+            />
+          </Rows>
+          <MenuEditForm
+            item={quote}
+            id={text(quote, "id")}
+            idArg="quoteID"
+            tool={tools.quoteUpdate}
+            permission={manageCode}
+            fields={quoteFields}
+            keep={["supplier", "amount", "note", "valid_until"]}
+            readAgain={() => readQuote(tenderID, quote)}
+            onSaved={onEdited}
+          />
+        </div>
       ))}
-    </Rows>
+    </>
   );
 }
 
@@ -188,7 +218,18 @@ export function TendersScreen() {
         status: "status",
         extra: (tender) => (
           <>
-            {Array.isArray(tender.quotes) && tender.quotes.length > 0 ? <QuoteRows quotes={tender.quotes as Item[]} /> : null}
+            <MenuEditForm
+              item={tender}
+              id={text(tender, "id")}
+              idArg="tenderID"
+              tool={tools.tenderUpdate}
+              permission={manageCode}
+              fields={tenderFields}
+              keep={["title", "description", "closes_at"]}
+              readAgain={() => loadTender(text(tender, "id"))}
+              onSaved={refresh}
+            />
+            {Array.isArray(tender.quotes) && tender.quotes.length > 0 ? <QuoteRows quotes={tender.quotes as Item[]} tenderID={text(tender, "id")} onEdited={refresh} /> : null}
             {can ? <AddQuote tenderID={text(tender, "id")} onAdded={refresh} /> : null}
           </>
         ),

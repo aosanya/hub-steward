@@ -7,6 +7,7 @@ import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { Segmented } from "../../../../shared/ui/Segmented";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
+import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { RaiseBillSheet } from "./RaiseBillSheet";
 import { billRow, dayWords, homeEmpty, listOf, moneyWords, text, tools, type Item } from "./financeData";
@@ -38,21 +39,30 @@ const loadBill = async (id: string) => {
     id,
     billID: id,
     payer: text(bill, "payer"),
-    amount: moneyWords(text(bill, "amount")),
+    amount: text(bill, "amount"),
+    amountWords: moneyWords(text(bill, "amount")),
     settled: moneyWords(text(bill, "settled")),
     outstanding: moneyWords(text(bill, "outstanding")),
     due: dayWords(text(bill, "due_at")),
+    due_at: text(bill, "due_at"),
     narration: text(bill, "narration"),
     status: billRow(bill ?? {}).status,
     ...Object.fromEntries(newestFirst(payments).slice(0, paymentLines).map((payment, at) => [`payment${at + 1}`, paymentLine(payment)])),
   };
 };
 
+const editFields: EditField[] = [
+  { label: "Payer", key: "payer" },
+  { label: "Amount", key: "amount", kind: "number", required: true },
+  { label: "Narration", key: "narration" },
+];
+
 const paymentFields = Object.fromEntries(paymentLabels.map((label, at) => [label, `payment${at + 1}`]));
 
 export function BillsScreen() {
   const word = useWord("accounting");
   const [version, setVersion] = useState(0);
+  const [edited, setEdited] = useState(0);
   const [status, setStatus] = useState("");
   const [raising, setRaising] = useState(false);
   const [refused, setRefused] = useState(false);
@@ -79,6 +89,8 @@ export function BillsScreen() {
     <MenuWindow
       key={`${status}:${version}`}
       title={word("Revenue & Billing")}
+      listKey={edited}
+      detailKey={edited}
       above={
         <>
           <Segmented label="Status" items={statuses.map(({ id, label }) => ({ id, label }))} current={status} onChange={setStatus} />
@@ -105,8 +117,21 @@ export function BillsScreen() {
       detail={{
         tool: tools.billRead,
         load: loadBill,
-        fields: { Payer: "payer", Amount: "amount", Settled: "settled", Outstanding: "outstanding", Due: "due", Narration: "narration", Status: "status", ...paymentFields },
+        fields: { Payer: "payer", Amount: "amountWords", Settled: "settled", Outstanding: "outstanding", Due: "due", Narration: "narration", Status: "status", ...paymentFields },
         status: "",
+        extra: (bill) => (
+          <MenuEditForm
+            item={bill}
+            id={text(bill, "id")}
+            idArg="billID"
+            tool={tools.billUpdate}
+            permission={manageRole}
+            fields={editFields}
+            keep={["payer", "amount", "due_at", "narration"]}
+            readAgain={() => loadBill(text(bill, "id"))}
+            onSaved={() => setEdited((was) => was + 1)}
+          />
+        ),
         action: { label: "Mark paid", tool: tools.paymentMarkPaid, run: markPaid, when: (row) => manage && ["Open", "Overdue"].includes(text(row, "status")) },
       }}
       below={refused ? <LoadFailed words={actionFailedWords} /> : null}
