@@ -1,3 +1,4 @@
+accounting_account_list
 accounting_bill_create
 accounting_bill_list
 accounting_bill_read
