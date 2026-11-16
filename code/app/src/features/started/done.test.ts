@@ -201,4 +201,12 @@ describe("a source that fails", () => {
     });
     expect(await mcpDoneClient.read(null)).toEqual({ items: [], failed: [], next: null });
   });
+
+  it("treats an unknown market tool as an empty market and not as a failure", async () => {
+    answering({
+      market_list_group_orders: () => new Error("market_list_group_orders: unknown tool"),
+      market_list_orders: () => new Error("market_list_orders: unknown tool"),
+    });
+    expect(await mcpDoneClient.read(null)).toEqual({ items: [], failed: [], next: null });
+  });
 });

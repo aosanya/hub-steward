@@ -128,7 +128,10 @@ const supplierRows = async (supply: SupplyClient, me: string): Promise<StartedIt
 
 const sourceNames = ["orders", "joinRequests", "supplier"] as const;
 
-export const marketAbsent = (reason: unknown) => reason instanceof Error && reason.message.includes("instance not found");
+const marketAbsentAnswers = ["instance not found", "unknown tool"];
+
+export const marketAbsent = (reason: unknown) =>
+  reason instanceof Error && marketAbsentAnswers.some((answer) => reason.message.includes(answer));
 
 const emptyWhenNoMarket = <T>(rows: Promise<T[]>): Promise<T[]> =>
   rows.catch((reason) => (marketAbsent(reason) ? [] : Promise.reject(reason)));

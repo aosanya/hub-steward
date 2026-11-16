@@ -489,6 +489,12 @@ describe("an agency with no market mounted", () => {
     expect(await mcpStartedClient.listWithFailures!()).toEqual({ items: [], failed: [] });
   });
 
+  it("lists nothing and names no failed source when the market tools answer unknown tool", async () => {
+    const unknownTool = new mcp.McpError("market_list_group_orders: unknown tool");
+    answering({ ...refusingMarket, market_list_group_orders: unknownTool, market_list_posters: unknownTool });
+    expect(await mcpStartedClient.listWithFailures!()).toEqual({ items: [], failed: [] });
+  });
+
   it("keeps the pending join request row", async () => {
     answering({
       ...refusingMarket,
