@@ -171,7 +171,7 @@ describe("the Staff list", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Anna Sample/ }));
     await waitFor(() => expect(pane()).not.toBeNull());
 
-    await userEvent.click(backButton(/^Staff$/));
+    await userEvent.click(backButton(/‹ Staff$/));
 
     expect(document.querySelector(".mw-detail")).toBeNull();
     expect(screen.getByText("Ben Sample")).toBeInTheDocument();
@@ -241,7 +241,7 @@ describe("a staff member", () => {
     );
     await waitFor(() => expect(document.body.textContent).toContain("Clerk"));
 
-    await userEvent.click(backButton(/^Staff$/));
+    await userEvent.click(backButton(/‹ Staff$/));
 
     await waitFor(() => expect(landed).toBe("/a/town/menu/staff/people"));
   });
@@ -289,7 +289,7 @@ describe("the Departments list", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Sample Public Works/ }));
     await waitFor(() => expect(pane()).not.toBeNull());
 
-    await userEvent.click(backButton(/^Departments$/));
+    await userEvent.click(backButton(/‹ Departments$/));
 
     expect(document.querySelector(".mw-detail")).toBeNull();
     expect(screen.getByText("Sample Registry")).toBeInTheDocument();
@@ -357,7 +357,7 @@ describe("the Crews list", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Sample Road Crew/ }));
     await waitFor(() => expect(pane()).not.toBeNull());
 
-    await userEvent.click(backButton(/^Crews$/));
+    await userEvent.click(backButton(/‹ Crews$/));
 
     expect(document.querySelector(".mw-detail")).toBeNull();
     expect(screen.getByText("Sample Water Crew")).toBeInTheDocument();
@@ -436,7 +436,7 @@ describe("the Roles & Permissions list", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Sample Clerk/ }));
     await waitFor(() => expect(pane()).not.toBeNull());
 
-    await userEvent.click(backButton(/^Roles & Permissions$/));
+    await userEvent.click(backButton(/‹ Roles & Permissions$/));
 
     expect(document.querySelector(".mw-detail")).toBeNull();
     expect(screen.getByText("Sample Registrar")).toBeInTheDocument();
