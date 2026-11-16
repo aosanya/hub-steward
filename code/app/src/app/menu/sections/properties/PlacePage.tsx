@@ -4,11 +4,11 @@ import { MenuDetail } from "../../MenuDetail";
 
 const fields = { Name: "name", Type: "category", Location: "location" };
 
-type Record = { [key: string]: unknown };
+type Fields = { [key: string]: unknown };
 
-const itemOf = (reply: unknown): Record => {
+const itemOf = (reply: unknown): Fields => {
   const inner = (reply as { item?: unknown } | null)?.item ?? reply;
-  return inner && typeof inner === "object" ? (inner as Record) : {};
+  return inner && typeof inner === "object" ? (inner as Fields) : {};
 };
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
