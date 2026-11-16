@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useParams } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { StartClient } from "../coordinator/start/api";
+import type { StartClient } from "../market/start/api";
 import { swahili } from "../entry/swahili";
 import { words } from "../entry/words";
 import { NotificationsPage } from "../pages/NotificationsPage";

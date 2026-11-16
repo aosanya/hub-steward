@@ -16,8 +16,8 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { LoadFailed } from "../ui/LoadState";
 import { Shell } from "../ui/Shell";
-import { mcpStartClient, type StartClient } from "../coordinator/start/api";
-import { useStartWaitingState } from "../coordinator/start/startWaiting";
+import { mcpStartClient, type StartClient } from "../market/start/api";
+import { useStartWaitingState } from "../market/start/startWaiting";
 
 type Opened = { invitation: InvitationItem; joined: boolean };
 

@@ -1,4 +1,4 @@
-import { coordinatorOrderPath, isLiveBuyOrder } from "../coordinator/start/api";
+import { coordinatorOrderPath, isLiveBuyOrder } from "../market/start/api";
 import { mcpGroupsClient, type GroupsClient } from "../groups/api";
 import { applySupplierPath, applySupplierWorkflow, joinGroupPath, joinGroupWorkflow } from "../home/workflowScreens";
 import { listAllGroupOrders } from "../market/shared/groupOrders";

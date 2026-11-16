@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import type { AgencyView } from "../agency/modules";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import { isGroupOrderStart, startPath, type StartStep } from "../coordinator/start/api";
+import { isGroupOrderStart, startPath, type StartStep } from "../market/start/api";
 import { homeCardsFor, type AgencyKind } from "./cards";
 import { StartRows } from "./StartRows";
 import { chatTab } from "../tabs";

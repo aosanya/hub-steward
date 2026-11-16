@@ -19,7 +19,7 @@ vi.mock("../pages/started/Ongoing", () => ({
   ),
 }));
 
-vi.mock("../coordinator/payments/OrderCards", () => ({ CoordinatorOrderCards: () => <p>order cards</p> }));
+vi.mock("../market/payments/OrderCards", () => ({ CoordinatorOrderCards: () => <p>order cards</p> }));
 
 vi.mock("../market/sell/buyer/BuyerHome", () => ({ BuyerHome: () => <p>buyer home</p> }));
 

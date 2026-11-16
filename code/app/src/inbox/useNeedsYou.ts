@@ -1,7 +1,7 @@
 import { type InboxClient, mcpInboxClient } from "./api";
 import { type AssignedClient, mcpAssignedClient } from "./assignedIssues";
-import { mcpStartClient, type StartClient } from "../coordinator/start/api";
-import { useStartWaitingRead } from "../coordinator/start/startWaiting";
+import { mcpStartClient, type StartClient } from "../market/start/api";
+import { useStartWaitingRead } from "../market/start/startWaiting";
 import { withoutIssueNotices } from "./issueCount";
 import { needsYouCount, newsUnreadIn } from "./needsYou";
 import { useAssignedIssues } from "./useAssignedIssues";

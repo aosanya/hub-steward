@@ -1,4 +1,4 @@
-import type { StartStep } from "../coordinator/start/api";
+import type { StartStep } from "../market/start/api";
 import { useLanguage } from "../entry/language";
 import { routes } from "../routes";
 import { Button } from "../ui/Button";

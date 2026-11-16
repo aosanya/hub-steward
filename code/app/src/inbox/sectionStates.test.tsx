@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { StartClient, StartStep } from "../coordinator/start/api";
+import type { StartClient, StartStep } from "../market/start/api";
 import { NotificationsPage } from "../pages/NotificationsPage";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
 import type { AssignedClient, AssignedIssue } from "./assignedIssues";

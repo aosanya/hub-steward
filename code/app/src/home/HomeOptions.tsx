@@ -5,7 +5,7 @@ import { openAgencyId } from "../agency/open";
 import { askMayRead } from "../backlogs/access";
 import { allIssuesId, mcpBacklogsClient, type Backlog, type BacklogsClient } from "../backlogs/api";
 import { mcpFilesClient, filesHomePath, type FilesClient } from "../files";
-import { mcpStartClient, type StartClient } from "../coordinator/start/api";
+import { mcpStartClient, type StartClient } from "../market/start/api";
 import { useLoad } from "../forms/useLoad";
 import { mcpStepsClient, type StepsClient } from "../steps/api";
 import { backlogsTab, ongoingTab, startTab, tabPathIn, type Tab } from "../tabs";

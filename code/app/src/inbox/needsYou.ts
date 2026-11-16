@@ -1,4 +1,4 @@
-import { isGroupOrderForm, type StartStep } from "../coordinator/start/api";
+import { isGroupOrderForm, type StartStep } from "../market/start/api";
 import type { InvitationItem, NotificationItem } from "./api";
 
 const waitingEvents = new Set(["ask_waiting", "revision_asked", "draft_waiting", "survey_reached", "form_published", "new_form", "task_assigned"]);

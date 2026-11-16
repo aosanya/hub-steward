@@ -1,4 +1,4 @@
-import type { StartStep } from "../coordinator/start/api";
+import type { StartStep } from "../market/start/api";
 
 export type CouncilView = "lateMatters" | "councilRisks";
 

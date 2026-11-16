@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import type { StartClient } from "../coordinator/start/api";
+import type { StartClient } from "../market/start/api";
 import { TabBar } from "../ui/TabBar";
 import type { InboxClient, NotificationItem } from "./api";
 

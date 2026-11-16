@@ -6,7 +6,7 @@ import { type InboxClient, mcpInboxClient } from "../inbox/api";
 import { type AssignedClient, mcpAssignedClient } from "../inbox/assignedIssues";
 import { thingsToDoLabel } from "../inbox/thingsToDo";
 import { useNeedsYou } from "../inbox/useNeedsYou";
-import { mcpStartClient, type StartClient } from "../coordinator/start/api";
+import { mcpStartClient, type StartClient } from "../market/start/api";
 import { Icon } from "./Icon";
 import { mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "../tabs";
 

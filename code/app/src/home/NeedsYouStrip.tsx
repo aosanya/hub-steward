@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { openAgencyId } from "../agency/open";
-import { mcpStartClient, type StartClient } from "../coordinator/start/api";
+import { mcpStartClient, type StartClient } from "../market/start/api";
 import { type InboxClient, mcpInboxClient } from "../inbox/api";
 import { thingsToDoLabel } from "../inbox/thingsToDo";
 import { useNeedsYou } from "../inbox/useNeedsYou";

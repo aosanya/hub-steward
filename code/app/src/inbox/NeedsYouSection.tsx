@@ -1,5 +1,5 @@
-import type { StartClient } from "../coordinator/start/api";
-import { StartWaitingRows } from "../coordinator/start/Waiting";
+import type { StartClient } from "../market/start/api";
+import { StartWaitingRows } from "../market/start/Waiting";
 import { ListRow, Rows } from "../ui/ListRow";
 import { LoadFailed, LoadingLine } from "../ui/LoadState";
 import { needsYouAnchor } from "../tabs";

@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { StartStep } from "../coordinator/start/api";
+import type { StartStep } from "../market/start/api";
 import type { MemberStep } from "../steps/api";
 import { forgetSent, markSent } from "../steps/sent";
 import { StartRows } from "./StartRows";

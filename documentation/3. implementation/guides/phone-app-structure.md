@@ -72,7 +72,8 @@ src/
 
 Each is decided when its folder is reached, and the answer is written here.
 
-- `coordinator` (payments, start) and `council`: they are named by role, not by feature. Their payments and start screens go into `features/market/` only if the code shows they are market screens.
+- `coordinator`: decided on 2026-11-16 (SW468). Both folders are market screens: `coordinator/payments` is the group-order order cards and payments pages, and `coordinator/start` starts a group order and picks its product, all through `market_*` tools. They are now `market/payments` and `market/start`, and `coordinator/` is gone. `market/start/api.ts` and `startWaiting.ts` also feed home, inbox, steps and started with the member's open steps; lifting that reader out of the market is a later step.
+- `council`: named by role, not by feature; still to settle when its folder is reached.
 - `journeys/`: the walk tests and their `*.test-support` files span features. They will either stay together under one folder or each move to the feature it walks.
 - `assistant/namedBacklog.ts`: it belongs to the assistant or to `backlogs`.
 - A barrel is not added to a feature that nothing outside imports.

@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import type { StartClient } from "../coordinator/start/api";
+import type { StartClient } from "../market/start/api";
 import { NotificationsPage } from "../pages/NotificationsPage";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
 import { routes } from "../routes";

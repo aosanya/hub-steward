@@ -2,7 +2,7 @@ import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { StartClient, StartStep } from "../coordinator/start/api";
+import type { StartClient, StartStep } from "../market/start/api";
 import type { InboxClient, InvitationItem, NotificationItem } from "../inbox/api";
 import { NeedsYouSection } from "../inbox/NeedsYouSection";
 import { needsYouAnchor } from "../tabs";
