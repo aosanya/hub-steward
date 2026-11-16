@@ -52,7 +52,7 @@ Test fixtures name the farmers' agencies most ("Siaya farmers" 79 times, "Siaya 
 ## What this does not cover
 
 - The console (`code/console`) is not part of this run; see [Console tests](console-tests.md).
-- The bundled API (`code/wakala-api`) has no test files; see [API server tests](api-tests.md).
+- The bundled API (`code/wakala-api`) has its own Go tests, which this run does not cover; [API server tests](api-tests.md) records an earlier run.
 - Nothing here ran against a real server, a real model or a real browser. Rendering is checked in jsdom.
 - Agencies other than the lab and the farmers appear in no walk test.
 - The warnings above are noise from the test setup and router, not failures. They were not fixed.

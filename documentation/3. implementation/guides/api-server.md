@@ -13,7 +13,7 @@ go build -o /tmp/wakala-server ./cmd/server
 PORT=8082 WAKALA_SQLITE_PATH=/tmp/wakala.db /tmp/wakala-server
 ```
 
-- **No test files.** The copy in this repository has none, so `go test` only compiles it. `go build` and `go vet` are the checks that mean something.
+- **Tests.** The copy in this repository holds Go test files next to the code they test. `go test ./...` runs them; the git packages take a few minutes with `-race`.
 - **Port.** The server listens on `:8080` unless `PORT` is set (`cmd/server/main.go`). The Docker setup and this guide use 8082.
 - **`.env`.** On a normal start the server reads `.env` from the working directory and applies each entry that is not already in the environment (`cmd/server/env.go`). Start it from a directory with no `.env` unless you want one read. A staging run reads none (`cmd/server/staging.go`).
 - **Database.** With `DATABASE_URL` set it opens Postgres. Without it, SQLite at `WAKALA_SQLITE_PATH`, or in memory when that is unset (`buildDeps` in `cmd/server/main.go`). Member accounts and sign-in sessions are built only on the Postgres path.
@@ -86,7 +86,6 @@ Copy the shape of a small module, such as `modules/riskmanager`: a blueprint, an
 
 - **The reply loop.** Nothing in `code/` reads a room, decides and posts a reply. The roles, rooms, keys and tools it would use exist. [hub-keys.md](../../2.%20design/technical-spec/hub-keys.md) says what is built.
 - **The digital twin.** It is a catalog entry that is off and has no mount, and there is no `modules/digitaltwin`.
-- **Tests.** There are no Go test files here.
 
 ## Mistakes to avoid
 

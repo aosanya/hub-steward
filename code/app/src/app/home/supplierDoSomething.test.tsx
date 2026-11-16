@@ -3,8 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import type { AgencyClient, AgencyView } from "../../features/agency/modules";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { SupplierHome } from "../../features/market/supply/SupplierHome";
-import type { Supplier, SupplyClient } from "../../features/market/supply/api";
+import { SupplierHome, type Supplier, type SupplyClient } from "../../features/market";
 import * as mcp from "../../shared/wakala/mcp";
 
 const supplierRows = ["Offers", "Asks", "Group order", "Orders", "Your prices", "Forms"];

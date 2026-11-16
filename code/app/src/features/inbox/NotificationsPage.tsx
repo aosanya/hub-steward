@@ -16,9 +16,7 @@ import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
 import { LoadFailed } from "../../shared/ui/LoadState";
 import { Shell } from "../../app/Shell";
-import { mcpStartClient, type StartClient } from "../../features/market/start/api";
-import { useStartWaitingState } from "../../features/market/start/startWaiting";
-
+import { mcpStartClient, type StartClient, useStartWaitingState } from "../market";
 type Opened = { invitation: InvitationItem; joined: boolean };
 
 export function NotificationsPage({ client = mcpInboxClient, start = mcpStartClient, assigned = mcpAssignedClient, read = mcpReader, above }: { client?: InboxClient; start?: StartClient; assigned?: AssignedClient; read?: Reader; above?: ReactNode }) {

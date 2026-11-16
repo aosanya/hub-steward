@@ -8,7 +8,7 @@ const nonFeatureFolders = new Set(["shared", "app", "features", "journeys", "hom
 const featureFolders = new Set(
   readdirSync(featuresRoot).filter((name) => statSync(join(featuresRoot, name)).isDirectory() && !nonFeatureFolders.has(name)),
 );
-const guardedFeatures = ["backlogs", "files"];
+const guardedFeatures = ["backlogs", "files", "market"];
 const featuresWithPublicIndex = guardedFeatures.filter(
   (name) => featureFolders.has(name) && (existsSync(join(featuresRoot, name, "index.ts")) || existsSync(join(featuresRoot, name, "index.tsx"))),
 );
@@ -17,6 +17,14 @@ const foldersExemptFromPublicSurface = new Set(["journeys"]);
 const sharedImportsOfFeaturesAndShell: string[] = [];
 
 const deepImportsIntoFeaturesWithPublicIndex: string[] = [
+  "TabBar.tsx -> market",
+  "routes.ts -> market",
+  "started/api.ts -> market",
+  "started/done.ts -> market",
+  "steps/api.ts -> market",
+  "home/StartRows.tsx -> market",
+  "inbox/needsYou.ts -> market",
+  "inbox/useNeedsYou.ts -> market",
   "home/lastBacklog.ts -> backlogs",
   "inbox/assignedIssues.ts -> backlogs",
 ];

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../shared/wakala/openAgency";
-import type { StartClient } from "../features/market/start/api";
+import type { StartClient } from "../features/market";
 import type { InboxClient } from "../features/inbox/api";
 import { rememberSide, sideReached } from "./tabs";
 import { doSomethingBackPath } from "./routes";

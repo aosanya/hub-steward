@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { issuePath } from "../backlogs";
-import type { StartClient } from "../../features/market/start/api";
+import type { StartClient } from "../market";
 import { NotificationsPage } from "./NotificationsPage";
 import { routes } from "../../app/routes";
 import type { InboxClient, NotificationItem } from "./api";

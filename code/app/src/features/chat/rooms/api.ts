@@ -1,9 +1,7 @@
 import { callTool } from "../../../shared/wakala/mcp";
 import { lastAtOf, lastOf, previewOf } from "../api";
 import { loadSubject } from "../../../shared/wakala/me";
-import { groupOrderOf, type GroupOrder } from "../../../features/market/supply/groupOrder/api";
-import { productName, type NamedOffer } from "../../../features/market/shared/productName";
-
+import { groupOrderOf, type GroupOrder, productName, type NamedOffer } from "../../market";
 export const attachmentKinds = { groupOrder: "group_order", request: "request", ask: "ask" } as const;
 
 export type RoomThread = {

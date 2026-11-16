@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import type { StartClient, StartStep } from "../../features/market/start/api";
+import type { StartClient, StartStep } from "../market";
 import { NotificationsPage } from "./NotificationsPage";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
 import type { AssignedClient, AssignedIssue } from "./assignedIssues";

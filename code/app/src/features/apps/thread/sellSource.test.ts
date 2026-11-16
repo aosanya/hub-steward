@@ -1,5 +1,4 @@
-import type { Product } from "../../../features/market/shared/api";
-import type { BuyerPrice, GroupSale, SellClient } from "../../../features/market/sell/now/api";
+import type { Product, BuyerPrice, GroupSale, SellClient } from "../../market";
 import type { Block } from "../blocks/types";
 import { groupCard, joinGroupPrompt, priceCard, sellNowPrompt, sellSource } from "./sellSource";
 

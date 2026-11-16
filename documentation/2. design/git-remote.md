@@ -1,13 +1,13 @@
 # Git over HTTP for the hub
 
-A person or an agent can clone an agency's repository and push a branch to it with an ordinary git client, so work done in an editor or by a coding agent reaches the hub without going through the MCP file tools. This page decides how it is addressed, how it signs in, who may do what, and what the app shows. Nothing here is built yet. The issue is ISS-87, part of ISS-86.
+A person or an agent can clone an agency's repository and push a branch to it with an ordinary git client, so work done in an editor or by a coding agent reaches the hub without going through the MCP file tools. This page decides how it is addressed, how it signs in, who may do what, and what the app shows. How it is built is on [Git over HTTP](../3.%20implementation/git-over-http.md). The issue is ISS-87, part of ISS-86.
 
 ## What exists today
 
 | Piece | State |
 |---|---|
 | Each agency has its own repositories, one SQLite file per repository, behind `GitManager` (`code/wakala-api/internal/agencies/gits_files.go`). | Exists |
-| `GitManager` has a `SmartHTTPHandler()` method. The per-repository-file manager answers every request to it with 501, "git over HTTP is not served from per-repository files". | Exists, refuses |
+| `GitManager` has a `SmartHTTPHandler()` method. The per-repository-file manager resolves `/<repository>[.git]/...` to that repository's file by catalogue name and serves it from the file; an unknown name is 404. | Exists, serves |
 | The older single-tenant Smart HTTP handler (`code/wakala-api/modules/git/git_smarthttp.go`) serves `info/refs`, `git-upload-pack` and `git-receive-pack` from a bare clone keyed by one repository name, and calls `IndexPushedBranch` after each accepted push so the pushed branch gets its row. It has no sign-in and no rule against pushing to the default branch. | Exists, not mounted per agency |
 | The git tools over MCP and HTTP sit at `/instances/{instanceID}/forms-git/...`, behind the caller check, an owner or agent role in the agency, and the git module being mounted. | Exists |
 | A caller is identified from a `Bearer` token (an API key starting `wak_`, or a project sign-in token) or from the `wakala_session` cookie (`callers.identify` in `internal/api/http/middleware.go`). | Exists |

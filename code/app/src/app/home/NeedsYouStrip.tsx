@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { openAgencyId } from "../../shared/wakala/openAgency";
-import { mcpStartClient, type StartClient } from "../../features/market/start/api";
+import { mcpStartClient, type StartClient } from "../../features/market";
 import { type InboxClient, mcpInboxClient } from "../../features/inbox/api";
 import { thingsToDoLabel } from "../../features/inbox/thingsToDo";
 import { useNeedsYou } from "../../features/inbox/useNeedsYou";

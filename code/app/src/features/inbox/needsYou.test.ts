@@ -1,4 +1,4 @@
-import type { StartStep } from "../../features/market/start/api";
+import type { StartStep } from "../market";
 import type { InvitationItem, NotificationItem } from "./api";
 import { needsYouCount, updatesOf, waitingStepsOf } from "./needsYou";
 

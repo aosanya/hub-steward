@@ -1,4 +1,4 @@
-import type { StartStep } from "../../features/market/start/api";
+import type { StartStep } from "../../features/market";
 import { routes } from "../routes";
 import { chatTab } from "../tabs";
 

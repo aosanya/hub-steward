@@ -1,5 +1,4 @@
-import type { StartStep } from "../../features/market/start/api";
-
+import type { StartStep } from "../market";
 export type CouncilView = "lateMatters" | "councilRisks";
 
 const viewByStepTitle: Record<string, CouncilView> = {

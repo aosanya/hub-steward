@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLoad } from "../../../features/forms/useLoad";
 import { routes } from "../../../app/routes";
-import { bags, termsWords } from "../../../features/market/supply/groupOrder/api";
+import { bags, termsWords } from "../../market";
 import { Button } from "../../../shared/ui/Button";
 import { Card } from "../../../shared/ui/Card";
 import { BacklogViewCard, backlogViewKind } from "../../backlogs";

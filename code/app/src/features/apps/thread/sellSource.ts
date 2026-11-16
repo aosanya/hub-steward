@@ -1,6 +1,6 @@
-import type { Product } from "../../../features/market/shared/api";
-import { priceWords } from "../../../features/market/shared/unitWords";
 import {
+  type Product,
+  priceWords,
   bulkWords,
   groupSaleLine,
   mcpSellClient,
@@ -8,7 +8,7 @@ import {
   type BuyerPrice,
   type GroupSale,
   type SellClient,
-} from "../../../features/market/sell/now/api";
+} from "../../market";
 import type { Block, CardSpec } from "../blocks/types";
 import type { AgentSource } from "./source";
 

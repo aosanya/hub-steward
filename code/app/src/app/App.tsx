@@ -19,7 +19,7 @@ import { ChatPage } from "../features/chat/ChatPage";
 import { BacklogsRoutes } from "../features/backlogs";
 import { FilesRoutes, filesSegment } from "../features/files";
 import { TabPage } from "./TabPage";
-import { SupplierHome } from "../features/market/supply/SupplierHome";
+import { SupplierHome } from "../features/market";
 import { HomeOptions } from "./home/HomeOptions";
 import { MenuRows } from "./menu/MenuRows";
 import { NeedsYouStrip } from "./home/NeedsYouStrip";

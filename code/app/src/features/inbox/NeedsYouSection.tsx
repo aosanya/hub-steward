@@ -1,5 +1,4 @@
-import type { StartClient } from "../../features/market/start/api";
-import { StartWaitingRows } from "../../features/market/start/Waiting";
+import { type StartClient, StartWaitingRows } from "../market";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { needsYouAnchor } from "../../app/tabs";

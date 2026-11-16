@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import type { StartClient } from "../../features/market/start/api";
+import type { StartClient } from "../market";
 import { NotificationsPage } from "./NotificationsPage";
 import type { InboxClient, NotificationItem } from "./api";
 import * as mcp from "../../shared/wakala/mcp";

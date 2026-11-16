@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import type { StartClient, StartStep } from "../../features/market/start/api";
+import type { StartClient, StartStep } from "../market";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
 import type { AssignedClient, AssignedIssue } from "./assignedIssues";
 import { useNeedsYou } from "./useNeedsYou";

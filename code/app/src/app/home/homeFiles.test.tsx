@@ -4,7 +4,7 @@ import { MemoryRouter, useLocation } from "react-router-dom";
 import type { AgencyView } from "../../features/agency/modules";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import type { Backlog } from "../../features/backlogs";
-import type { StartStep } from "../../features/market/start/api";
+import type { StartStep } from "../../features/market";
 import type { MemberStep } from "../../features/steps/api";
 import { forgetLastBacklogs } from "./lastBacklog";
 import { HomeOptions } from "./HomeOptions";

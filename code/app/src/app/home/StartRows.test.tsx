@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import type { AgencyView } from "../../features/agency/modules";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { isGroupOrderStart, startPath, type StartStep } from "../../features/market/start/api";
+import { isGroupOrderStart, startPath, type StartStep } from "../../features/market";
 import { homeCardsFor, type AgencyKind } from "./cards";
 import { StartRows } from "./StartRows";
 import { chatTab } from "../tabs";

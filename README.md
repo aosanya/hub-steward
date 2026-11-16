@@ -98,7 +98,7 @@ npm test
 npm run build
 ```
 
-Each web app build writes static files to `dist/` that any web server can serve. The API server copy in this repository has no test files, so `go test` only compiles it. Once the dependencies are installed, the tests need no network, no keys and no server.
+Each web app build writes static files to `dist/` that any web server can serve. Once the dependencies are installed, the tests need no network, no keys and no server.
 
 ## Makefile
 

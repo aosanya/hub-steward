@@ -1,6 +1,5 @@
 import { callTool } from "../../shared/wakala/mcp";
-import { resolveMember } from "../market/supply/api";
-
+import { resolveMember } from "../market";
 export type Risk = { id: string; title: string; topEvent: string; status: string; owner: string };
 
 export type RiskAction = { id: string; riskId: string; title: string; status: string; dueAt: string; owner: string };

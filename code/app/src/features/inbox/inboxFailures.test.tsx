@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import type { StartClient } from "../../features/market/start/api";
+import type { StartClient } from "../market";
 import { NotificationsPage } from "./NotificationsPage";
 import { McpError } from "../../shared/wakala/mcp";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";

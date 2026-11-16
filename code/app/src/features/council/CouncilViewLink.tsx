@@ -1,4 +1,4 @@
-import type { StartStep } from "../../features/market/start/api";
+import type { StartStep } from "../market";
 import { useLanguage } from "../../shared/language/language";
 import { routes } from "../../app/routes";
 import { Button } from "../../shared/ui/Button";

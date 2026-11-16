@@ -4,7 +4,7 @@ import { hasModule, mcpAgencyClient, taskModule, type AgencyClient } from "../..
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { askMayRead, allIssuesId, mcpBacklogsClient, type Backlog, type BacklogsClient } from "../../features/backlogs";
 import { mcpFilesClient, filesHomePath, type FilesClient } from "../../features/files";
-import { mcpStartClient, type StartClient } from "../../features/market/start/api";
+import { mcpStartClient, type StartClient } from "../../features/market";
 import { useLoad } from "../../features/forms/useLoad";
 import { mcpStepsClient, type StepsClient } from "../../features/steps/api";
 import { backlogsTab, ongoingTab, startTab, tabPathIn, type Tab } from "../tabs";
