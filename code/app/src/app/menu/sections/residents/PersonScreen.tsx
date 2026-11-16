@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
@@ -27,14 +28,15 @@ const loadGroupNames = (id: string) => async () => {
 };
 
 function PersonGroups({ id }: { id: string }) {
+  const word = useWord("actor");
   const view = useLoad(loadGroupNames(id), `person-groups:${openAgencyId()}:${id}`);
   const names = view.state === "ready" ? view.data : [];
   return (
     <>
-      <SectionHeading>Groups</SectionHeading>
+      <SectionHeading>{word("Groups")}</SectionHeading>
       {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "error" ? <LoadFailed words="The groups could not be loaded." /> : null}
-      {view.state === "ready" && names.length === 0 ? <EmptyCard words="Not in any group yet." /> : null}
+      {view.state === "error" ? <LoadFailed words={`The ${word("Groups").toLowerCase()} could not be loaded.`} /> : null}
+      {view.state === "ready" && names.length === 0 ? <EmptyCard words={`Not in any ${word("Group").toLowerCase()} yet.`} /> : null}
       {names.length > 0 ? (
         <Rows>
           {names.map((name) => (
@@ -48,10 +50,11 @@ function PersonGroups({ id }: { id: string }) {
 
 export function PersonScreen() {
   const back = useBackToSection();
+  const word = useWord("actor");
   const id = useParams().id ?? "";
   return (
-    <Shell title="Person" titleUnder {...back}>
-      <MenuDetail bare title="Person" tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadPerson} />
+    <Shell title={word("Person")} titleUnder {...back}>
+      <MenuDetail bare title={word("Person")} tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadPerson} />
       <PersonGroups id={id} />
     </Shell>
   );

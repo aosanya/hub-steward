@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
@@ -14,8 +15,6 @@ import { PersonScreen } from "./PersonScreen";
 export { PersonScreen };
 
 type Item = Record<string, unknown>;
-
-const peopleTitle = "All People";
 
 const householdTypes = new Set(["household", "háztartás"]);
 
@@ -53,20 +52,24 @@ function ListScreen({ title, tool, fields, empty, load, onChoose }: ListScreenPr
 }
 
 export function AllPeopleScreen() {
+  const word = useWord("actor");
+  const peopleTitle = `All ${word("People")}`;
   const navigate = useNavigate();
   const here = useLocation();
   const open = (id: string) =>
     navigate(residentPaths.person.path({ id }), { state: { from: { path: `${here.pathname}${here.search}`, title: peopleTitle } } });
   const load = async () => (await listOf("actor_list_actors")).map((person) => ({ id: text(person, "id"), name: personNameOf(person), status: text(person, "status") }));
-  return <ListScreen title={peopleTitle} tool="actor_list_actors" fields={{ title: "name", meta: "status" }} empty="No people yet." load={load} onChoose={open} />;
+  return <ListScreen title={peopleTitle} tool="actor_list_actors" fields={{ title: "name", meta: "status" }} empty={`No ${word("People").toLowerCase()} yet.`} load={load} onChoose={open} />;
 }
 
 export function HouseholdsScreen() {
+  const word = useWord("actor");
   const load = () => groupRows((group) => householdTypes.has(text(group, "node_type").toLowerCase()));
-  return <ListScreen title="Households" tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty="No households yet." load={load} />;
+  return <ListScreen title={word("Households")} tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty={`No ${word("Households").toLowerCase()} yet.`} load={load} />;
 }
 
 export function RegistrationsScreen() {
+  const word = useWord("actor");
   const load = async () => {
     const [requests, people] = await Promise.all([perGroup("actor_list_join_requests_for_group", "group_id"), listOf("actor_list_actors")]);
     const nameById = new Map(people.map((person) => [text(person, "id"), personNameOf(person)]));
@@ -76,16 +79,20 @@ export function RegistrationsScreen() {
       asked: dayWords(text(request, "requested_at")),
     }));
   };
-  return <ListScreen title="Registrations" tool="actor_list_join_requests_for_group" fields={{ title: "name", meta: "asked" }} empty="No registrations waiting." load={load} />;
+  return <ListScreen title={word("Registrations")} tool="actor_list_join_requests_for_group" fields={{ title: "name", meta: "asked" }} empty={`No ${word("Registrations").toLowerCase()} waiting.`} load={load} />;
 }
 
 export function GroupsScreen() {
+  const word = useWord("actor");
+  const groupsTitle = word("Groups") === "Groups" ? "Groups & Associations" : word("Groups");
   const load = () => groupRows(() => true);
-  return <ListScreen title="Groups & Associations" tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty="No groups yet." load={load} />;
+  return <ListScreen title={groupsTitle} tool="actor_list_groups" fields={{ title: "name", meta: "meta" }} empty={`No ${word("Groups").toLowerCase()} yet.`} load={load} />;
 }
 
 export function CommunicationsScreen() {
+  const word = useWord("comm");
+  const noneYet = word("Communications") === "Communications" ? "No conversations yet." : `No ${word("Communications").toLowerCase()} yet.`;
   const load = async () =>
     (await perGroup("comm_chat_thread_list", "structure_id")).map((thread) => ({ id: text(thread, "id"), label: text(thread, "label"), last: dayWords(text(thread, "last_message_at")) }));
-  return <ListScreen title="Communications" tool="comm_chat_thread_list" fields={{ title: "label", meta: "last" }} empty="No conversations yet." load={load} />;
+  return <ListScreen title={word("Communications")} tool="comm_chat_thread_list" fields={{ title: "label", meta: "last" }} empty={noneYet} load={load} />;
 }
