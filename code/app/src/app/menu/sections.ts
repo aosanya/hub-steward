@@ -1,4 +1,4 @@
-import { hasModule, type AgencyView } from "../../features/agency/modules";
+import { hasModule, word, type AgencyView } from "../../features/agency/modules";
 import { routes } from "../routes";
 import type { IconName } from "../../shared/ui/Icon";
 import { items as assetItems } from "./sections/assets";
@@ -11,7 +11,7 @@ import { items as servicesItems } from "./sections/services";
 import { items as settingsItems } from "./sections/settings";
 import { items as staffItems } from "./sections/staff";
 
-export type MenuItem = { title: string; path?: () => string };
+export type MenuItem = { title: string; label?: string; path?: () => string };
 
 export type MenuSection = { id: string; title: string; icon: IconName; module?: string; items: MenuItem[] };
 
@@ -48,7 +48,7 @@ export const menuSections: MenuSection[] = [
     title: "Services & Permits",
     icon: "document",
     module: "forms",
-    items: joined(["Applications", "Permits", "Licences", "Fees & Payments", "Service Catalogue"], [opens("Applications", routes.forms.path), ...servicesItems]),
+    items: joined(["Applications", "Permits", "Licences", "Fees & Payments", "Service Catalogue"], servicesItems),
   },
   {
     id: "assets",
@@ -95,10 +95,11 @@ const mountNameOf = (view: AgencyView | null | undefined, section: MenuSection) 
   return name === section.module ? "" : name;
 };
 
-export const named = (section: MenuSection, view: AgencyView | null | undefined): MenuSection => {
-  const title = mountNameOf(view, section);
-  return title ? { ...section, title } : section;
-};
+export const named = (section: MenuSection, view: AgencyView | null | undefined): MenuSection => ({
+  ...section,
+  title: mountNameOf(view, section) || word(view, section.title, section.module),
+  items: section.items.map((item) => ({ ...item, label: word(view, item.title, section.module) })),
+});
 
 export const sectionsFor = (view: AgencyView | null | undefined): MenuSection[] => {
   if (!view || view.modulesUnread) return [];
