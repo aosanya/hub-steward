@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -29,14 +30,26 @@ type fakeGitBackend struct {
 	keys         map[string]apikeys.Key
 	access       map[string]gitAccess
 	repositories map[string]bool
+	signInFails  error
+	accessFails  error
+	listFails    error
 }
 
-func (f fakeGitBackend) signIn(_ context.Context, token string) (apikeys.Key, bool) {
+func (f fakeGitBackend) signIn(_ context.Context, token string) (apikeys.Key, error) {
+	if f.signInFails != nil {
+		return apikeys.Key{}, f.signInFails
+	}
 	key, ok := f.keys[token]
-	return key, ok
+	if !ok {
+		return apikeys.Key{}, apikeys.ErrInvalidKey
+	}
+	return key, nil
 }
 
 func (f fakeGitBackend) accessIn(_ context.Context, agency, account string) (gitAccess, error) {
+	if f.accessFails != nil {
+		return gitAccess{}, f.accessFails
+	}
 	if agency != "farm" {
 		return gitAccess{}, agencies.ErrInstanceNotFound
 	}
@@ -44,6 +57,9 @@ func (f fakeGitBackend) accessIn(_ context.Context, agency, account string) (git
 }
 
 func (f fakeGitBackend) hasRepository(_ context.Context, agency, repository string) (bool, error) {
+	if f.listFails != nil {
+		return false, f.listFails
+	}
 	return f.repositories[agency+"/"+repository], nil
 }
 
@@ -367,5 +383,89 @@ func TestGitRouteAuth_AnAgencyWithoutTheGitModuleAnswers404(t *testing.T) {
 	rec := l.serve("GET", l.path("harvest", "/info/refs?service=git-upload-pack"), token)
 	if rec.Code != http.StatusNotFound || l.reached.called != 0 {
 		t.Fatalf("git unmounted = %d reached=%d, want 404", rec.Code, l.reached.called)
+	}
+}
+
+func TestGitRouteAuth_ADatabaseFailureAtSignInAnswers503NotA401(t *testing.T) {
+	log := captureLog(t)
+	backend := newFakeGitBackend()
+	backend.signInFails = errors.New("apikeys: lookup failed: sql: database is closed")
+	rec, reached := serveGit(backend, gitRequest("GET", cloneRefsPath, basic("me", writerToken)))
+	if rec.Code != http.StatusServiceUnavailable || reached.called != 0 {
+		t.Fatalf("sign-in outage = %d reached=%d, want 503", rec.Code, reached.called)
+	}
+	if got := rec.Header().Get("WWW-Authenticate"); got != "" {
+		t.Fatalf("sign-in outage carries the challenge %q, a client would erase its saved token", got)
+	}
+	if strings.Count(log.String(), "sql: database is closed") != 1 {
+		t.Fatalf("the cause is logged %d times, want once: %q", strings.Count(log.String(), "sql: database is closed"), log.String())
+	}
+	if strings.Contains(log.String(), writerToken) {
+		t.Fatalf("the log carries the credential: %q", log.String())
+	}
+}
+
+func TestGitRouteAuth_ARegistryFailureAnswers503NotA404(t *testing.T) {
+	log := captureLog(t)
+	backend := newFakeGitBackend()
+	backend.accessFails = errors.New("registry: connection refused")
+	rec, reached := serveGit(backend, gitRequest("GET", cloneRefsPath, basic("me", writerToken)))
+	if rec.Code != http.StatusServiceUnavailable || reached.called != 0 {
+		t.Fatalf("registry outage = %d reached=%d, want 503", rec.Code, reached.called)
+	}
+	if rec.Header().Get("WWW-Authenticate") != "" {
+		t.Fatal("registry outage carries a challenge")
+	}
+	if strings.Count(log.String(), "registry: connection refused") != 1 || strings.Contains(log.String(), writerToken) {
+		t.Fatalf("log = %q, want the cause once and no credential", log.String())
+	}
+}
+
+func TestGitRouteAuth_ARepositoryListingFailureAnswers503NotA404(t *testing.T) {
+	log := captureLog(t)
+	backend := newFakeGitBackend()
+	backend.listFails = errors.New("git store: connection refused")
+	rec, reached := serveGit(backend, gitRequest("GET", cloneRefsPath, basic("me", writerToken)))
+	if rec.Code != http.StatusServiceUnavailable || reached.called != 0 {
+		t.Fatalf("listing outage = %d reached=%d, want 503", rec.Code, reached.called)
+	}
+	if strings.Count(log.String(), "git store: connection refused") != 1 || strings.Contains(log.String(), writerToken) {
+		t.Fatalf("log = %q, want the cause once and no credential", log.String())
+	}
+}
+
+func TestGitRouteAuth_AnOutageOnlyShowsToACallerWhoseKeyIsGood(t *testing.T) {
+	backend := newFakeGitBackend()
+	backend.accessFails = errors.New("registry: connection refused")
+	rec, _ := serveGit(backend, gitRequest("GET", cloneRefsPath, basic("me", "wak_nobody.wrong")))
+	if rec.Code != http.StatusUnauthorized || rec.Header().Get("WWW-Authenticate") != `Basic realm="hub"` {
+		t.Fatalf("bad key during a registry outage = %d challenge=%q, want 401 with the challenge", rec.Code, rec.Header().Get("WWW-Authenticate"))
+	}
+}
+
+func TestGitRouteAuth_ARefusalIsNotLogged(t *testing.T) {
+	log := captureLog(t)
+	serveGit(newFakeGitBackend(), gitRequest("GET", cloneRefsPath, basic("me", "wak_nobody.wrong")))
+	serveGit(newFakeGitBackend(), gitRequest("GET", "/git/farm/missing.git/info/refs?service=git-upload-pack", basic("me", writerToken)))
+	if log.Len() != 0 {
+		t.Fatalf("a refusal was logged as a failure: %q", log.String())
+	}
+}
+
+func TestDepsGitBackend_ADatabaseFailureAtSignInIsNotABadKey(t *testing.T) {
+	l := newLiveGitRoute(t)
+	_, token := l.mint(t, "test-owner")
+	sqlDB, err := l.walk.db.DB()
+	if err != nil {
+		t.Fatal(err)
+	}
+	sqlDB.Close()
+	log := captureLog(t)
+	rec := l.serve("GET", l.path("harvest", "/info/refs?service=git-upload-pack"), token)
+	if rec.Code != http.StatusServiceUnavailable || rec.Header().Get("WWW-Authenticate") != "" || l.reached.called != 0 {
+		t.Fatalf("closed database = %d challenge=%q reached=%d, want 503 with no challenge", rec.Code, rec.Header().Get("WWW-Authenticate"), l.reached.called)
+	}
+	if strings.Contains(log.String(), token) {
+		t.Fatalf("the log carries the token: %q", log.String())
 	}
 }

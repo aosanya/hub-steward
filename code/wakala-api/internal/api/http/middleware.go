@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
+	"log/slog"
 	"net/http"
 	"strings"
 	"sync"
@@ -72,7 +74,11 @@ func asCaller(r *http.Request, id string) *http.Request {
 
 func (c callers) require(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, ok := c.identify(r, c.projectUserSeen)
+		id, ok, err := c.identify(r, c.projectUserSeen)
+		if err != nil {
+			refuseUnavailable(w, r, err)
+			return
+		}
 		if !ok {
 			c.refuse(w, r)
 			return
@@ -82,27 +88,39 @@ func (c callers) require(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func (c callers) recognises(r *http.Request) bool {
-	_, ok := c.identify(r, c.projectUser)
-	return ok
+	_, ok, err := c.identify(r, c.projectUser)
+	return ok && err == nil
 }
 
-func (c callers) identify(r *http.Request, projectIdentity func(context.Context, string) (string, bool)) (string, bool) {
+func refuseUnavailable(w http.ResponseWriter, r *http.Request, cause error) {
+	slog.Default().Error("a request could not be signed in",
+		"error", cause.Error(),
+		"route", r.Method+" "+r.URL.Path,
+	)
+	writeErr(w, http.StatusServiceUnavailable, "service unavailable")
+}
+
+func (c callers) identify(r *http.Request, projectIdentity func(context.Context, string) (string, bool)) (string, bool, error) {
 	if tok, ok := bearerToken(r); ok {
 		if c.keys != nil {
-			if key, err := c.keys.Verify(r.Context(), tok); err == nil {
-				return key.AccountID, true
+			key, err := c.keys.Verify(r.Context(), tok)
+			if err == nil {
+				return key.AccountID, true, nil
+			}
+			if errors.Is(err, apikeys.ErrLookupFailed) {
+				return "", false, err
 			}
 		}
 		if id, ok := projectIdentity(r.Context(), tok); ok {
-			return id, true
+			return id, true, nil
 		}
 	}
 	if cookie, err := r.Cookie(sessionCookieName); err == nil && c.sessions != nil {
 		if sess, err := c.sessions.Verify(r.Context(), cookie.Value); err == nil {
-			return sess.MemberID, true
+			return sess.MemberID, true, nil
 		}
 	}
-	return "", false
+	return "", false, nil
 }
 
 func (c callers) projectUser(ctx context.Context, token string) (string, bool) {

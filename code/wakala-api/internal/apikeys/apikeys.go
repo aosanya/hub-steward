@@ -42,11 +42,9 @@ type Key struct {
 	RevokedAt  *time.Time `json:"revoked_at,omitempty"`
 }
 
-// ErrInvalidKey is Verify's one failure sentinel — malformed, unknown, and
-// revoked all collapse to it, the same reasoning as auth_routes.go's
-// signInRefusal: a caller who can tell those apart has an enumeration
-// oracle.
 var ErrInvalidKey = errors.New("apikeys: invalid key")
+
+var ErrLookupFailed = errors.New("apikeys: lookup failed")
 
 // ErrKeyNotFound is returned by Revoke for an unknown id.
 var ErrKeyNotFound = errors.New("apikeys: not found")
@@ -178,7 +176,10 @@ func (m *manager) Verify(ctx context.Context, token string) (Key, error) {
 	}
 	var row keyRow
 	if err := m.db.WithContext(ctx).First(&row, "id = ?", id).Error; err != nil {
-		return Key{}, ErrInvalidKey
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return Key{}, ErrInvalidKey
+		}
+		return Key{}, fmt.Errorf("%w: %w", ErrLookupFailed, err)
 	}
 	if row.RevokedAt != nil {
 		return Key{}, ErrInvalidKey

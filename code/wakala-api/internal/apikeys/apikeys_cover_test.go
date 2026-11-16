@@ -132,6 +132,44 @@ func TestVerifyRefusesEveryBadTokenWithOneSentinel(t *testing.T) {
 	}
 }
 
+func TestVerifyAnswersADistinctErrorWhenTheDatabaseCannotBeRead(t *testing.T) {
+	m, db := newTestManager(t)
+	ctx := asAccount("acct-1")
+	_, token, err := m.Create(ctx, "k")
+	if err != nil {
+		t.Fatal(err)
+	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := sqlDB.Close(); err != nil {
+		t.Fatal(err)
+	}
+	_, err = m.Verify(ctx, token)
+	if !errors.Is(err, ErrLookupFailed) {
+		t.Fatalf("closed database: err = %v, want ErrLookupFailed", err)
+	}
+	if errors.Is(err, ErrInvalidKey) {
+		t.Fatalf("closed database: err = %v must not be ErrInvalidKey", err)
+	}
+	if strings.Contains(err.Error(), token) {
+		t.Fatalf("the error carries the token: %v", err)
+	}
+}
+
+func TestCachedVerifyPassesTheLookupFailureThrough(t *testing.T) {
+	m, db := newTestManager(t)
+	ctx := asAccount("acct-1")
+	_, token, _ := m.Create(ctx, "k")
+	c := NewCached(m, authz.NewEpochs())
+	sqlDB, _ := db.DB()
+	sqlDB.Close()
+	if _, err := c.Verify(ctx, token); !errors.Is(err, ErrLookupFailed) {
+		t.Fatalf("cached verify on a closed database: err = %v, want ErrLookupFailed", err)
+	}
+}
+
 func TestVerifyUpgradesALegacyPasswordHashToADigest(t *testing.T) {
 	m, db := newTestManager(t)
 	ctx := asAccount("acct-1")

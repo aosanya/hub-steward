@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net/http"
 	"strings"
 
@@ -24,7 +25,7 @@ type gitAccess struct {
 }
 
 type gitRouteBackend interface {
-	signIn(ctx context.Context, token string) (apikeys.Key, bool)
+	signIn(ctx context.Context, token string) (apikeys.Key, error)
 	accessIn(ctx context.Context, agency, account string) (gitAccess, error)
 	hasRepository(ctx context.Context, agency, repository string) (bool, error)
 }
@@ -41,10 +42,14 @@ func (d *Deps) GitRouteAuth(next http.Handler) http.Handler {
 
 func gitRouteAuth(backend gitRouteBackend, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		key, signedIn := signInToGitRoute(backend, r)
-		if !signedIn {
+		key, err := signInToGitRoute(backend, r)
+		if errors.Is(err, apikeys.ErrInvalidKey) {
 			w.Header().Set("WWW-Authenticate", gitBasicChallenge)
 			writeErr(w, http.StatusUnauthorized, "authentication required")
+			return
+		}
+		if err != nil {
+			refuseGitUnavailable(w, r, "sign-in", err)
 			return
 		}
 		target, refusal := parseGitTarget(r)
@@ -52,7 +57,11 @@ func gitRouteAuth(backend gitRouteBackend, next http.Handler) http.Handler {
 			writeErr(w, refusal, http.StatusText(refusal))
 			return
 		}
-		access, found := gitAccessOf(r.Context(), backend, key, target)
+		access, found, err := gitAccessOf(r.Context(), backend, key, target)
+		if err != nil {
+			refuseGitUnavailable(w, r, "access check", err)
+			return
+		}
 		if !found {
 			writeErr(w, http.StatusNotFound, "not found")
 			return
@@ -65,12 +74,21 @@ func gitRouteAuth(backend gitRouteBackend, next http.Handler) http.Handler {
 	})
 }
 
-func signInToGitRoute(backend gitRouteBackend, r *http.Request) (apikeys.Key, bool) {
+func signInToGitRoute(backend gitRouteBackend, r *http.Request) (apikeys.Key, error) {
 	token, ok := gitCredential(r)
 	if !ok {
-		return apikeys.Key{}, false
+		return apikeys.Key{}, apikeys.ErrInvalidKey
 	}
 	return backend.signIn(r.Context(), token)
+}
+
+func refuseGitUnavailable(w http.ResponseWriter, r *http.Request, stage string, cause error) {
+	slog.Default().Error("the git route could not check a request",
+		"stage", stage,
+		"error", cause.Error(),
+		"route", r.Method+" "+r.URL.Path,
+	)
+	writeErr(w, http.StatusServiceUnavailable, "service unavailable")
 }
 
 func gitCredential(r *http.Request) (string, bool) {
@@ -80,19 +98,25 @@ func gitCredential(r *http.Request) (string, bool) {
 	return bearerToken(r)
 }
 
-func gitAccessOf(ctx context.Context, backend gitRouteBackend, key apikeys.Key, target gitTarget) (gitAccess, bool) {
+func gitAccessOf(ctx context.Context, backend gitRouteBackend, key apikeys.Key, target gitTarget) (gitAccess, bool, error) {
 	if key.InstanceID != "" && key.InstanceID != target.agency {
-		return gitAccess{}, false
+		return gitAccess{}, false, nil
 	}
 	access, err := backend.accessIn(ctx, target.agency, key.AccountID)
-	if err != nil || !access.read && !access.write {
-		return gitAccess{}, false
+	if errors.Is(err, agencies.ErrInstanceNotFound) {
+		return gitAccess{}, false, nil
+	}
+	if err != nil {
+		return gitAccess{}, false, err
+	}
+	if !access.read && !access.write {
+		return gitAccess{}, false, nil
 	}
 	exists, err := backend.hasRepository(ctx, target.agency, target.repository)
 	if err != nil || !exists {
-		return gitAccess{}, false
+		return gitAccess{}, false, err
 	}
-	return access, true
+	return access, true, nil
 }
 
 func parseGitTarget(r *http.Request) (gitTarget, int) {
@@ -136,12 +160,11 @@ func packTarget(r *http.Request, target gitTarget, pushing bool) (gitTarget, int
 
 type depsGitBackend struct{ d *Deps }
 
-func (b depsGitBackend) signIn(ctx context.Context, token string) (apikeys.Key, bool) {
+func (b depsGitBackend) signIn(ctx context.Context, token string) (apikeys.Key, error) {
 	if b.d.APIKeys == nil {
-		return apikeys.Key{}, false
+		return apikeys.Key{}, apikeys.ErrInvalidKey
 	}
-	key, err := b.d.APIKeys.Verify(ctx, token)
-	return key, err == nil
+	return b.d.APIKeys.Verify(ctx, token)
 }
 
 func (b depsGitBackend) accessIn(ctx context.Context, agency, account string) (gitAccess, error) {
