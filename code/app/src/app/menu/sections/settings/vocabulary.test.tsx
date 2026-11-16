@@ -15,6 +15,8 @@ const listedWords = {
 const answer = (withWords: boolean) =>
   vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
     switch (name) {
+      case "agency_get_my_roles":
+        return { permissions: ["permission.override"] };
       case "agency_get_agency":
         return { name: "Zoldhalom" };
       case "agency_list_mounts":

@@ -39,6 +39,8 @@ const accounts = [
 
 const reply = (name: string, args: Record<string, unknown>): unknown => {
   switch (name) {
+    case "agency_get_my_roles":
+      return { permissions: ["permission.override"] };
     case "agency_get_agency":
       return { name: agencyName };
     case "instance_get_languages":

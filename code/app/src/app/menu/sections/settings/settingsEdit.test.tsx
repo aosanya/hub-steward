@@ -13,6 +13,7 @@ let audit: Record<string, unknown>[];
 let group: Record<string, unknown>;
 let seats: { id: string; role_name: string }[];
 let refusal: string | null;
+let languages: string[];
 
 const square = { type: "Polygon", coordinates: [[[19, 47], [19.1, 47], [19.1, 47.1], [19, 47]]] };
 
@@ -24,8 +25,13 @@ const answer = async (name: string, args: unknown) => {
     case "agency_get_agency":
       return { name: agencyName };
     case "instance_get_languages":
-      return { content: ["en"] };
+      return { studio_default: "en", content: languages, content_default: "en" };
+    case "instance_set_languages":
+      if (refusal) throw new mcp.McpError(`${name}: ${refusal}`);
+      languages = given.content as string[];
+      return {};
     case "instance_rename":
+      if (refusal) throw new mcp.McpError(`${name}: ${refusal}`);
       agencyName = String(given.name);
       audit.push({ id: `e${audit.length}`, actor: "owner", action: "renamed the agency", subject: agencyName, at: "2026-11-16T10:00:00Z" });
       return { name: agencyName };
@@ -63,6 +69,7 @@ const answer = async (name: string, args: unknown) => {
 beforeEach(() => {
   openAgency("town");
   permissions = ["group.manage", "role.assign"];
+  languages = ["en"];
   agencyName = "Riverside Office";
   audit = [];
   group = { id: "g1", name: "North Ward", area_node_id: "node-1", boundary: square };
@@ -101,6 +108,7 @@ const openAsha = async () => {
 
 describe("renaming the agency and the Audit Log", () => {
   it("lists the rename in the Audit Log after the owner renames the agency", async () => {
+    permissions = [...permissions, "permission.override"];
     open("Agency Profile");
     await screen.findByText("Riverside Office");
     await userEvent.click(screen.getByRole("button", { name: "Rename" }));
@@ -115,6 +123,62 @@ describe("renaming the agency and the Audit Log", () => {
 
     expect(await screen.findByText("renamed the agency: Lakeside Office")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
+  });
+});
+
+describe("the agency profile for the owner and for a member", () => {
+  it("offers Rename and the languages to a caller who holds permission.override", async () => {
+    permissions = ["permission.override"];
+    open("Agency Profile");
+    await screen.findByText("Riverside Office");
+    expect(await screen.findByRole("button", { name: "Rename" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Change languages" })).toBeInTheDocument();
+  });
+
+  it("shows a member with other codes the profile read-only", async () => {
+    open("Agency Profile");
+    await screen.findByText("Riverside Office");
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
+    expect(screen.queryByRole("button", { name: "Rename" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Change languages" })).toBeNull();
+  });
+
+  it("shows the hub's words when the rename is refused", async () => {
+    permissions = ["permission.override"];
+    refusal = "only the owner may rename the agency";
+    open("Agency Profile");
+    await userEvent.click(await screen.findByRole("button", { name: "Rename" }));
+    const name = screen.getByRole("textbox", { name: /name/i });
+    await userEvent.clear(name);
+    await userEvent.type(name, "Lakeside Office");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(await screen.findByText("only the owner may rename the agency")).toBeInTheDocument();
+    expect(agencyName).toBe("Riverside Office");
+  });
+
+  it("saves the content languages the owner types", async () => {
+    permissions = ["permission.override"];
+    open("Agency Profile");
+    await userEvent.click(await screen.findByRole("button", { name: "Change languages" }));
+    const field = screen.getByRole("textbox", { name: "Content languages" });
+    await userEvent.clear(field);
+    await userEvent.type(field, "en, hu");
+    await userEvent.click(screen.getByRole("button", { name: "Save languages" }));
+    await waitFor(() =>
+      expect(called).toHaveBeenCalledWith("", "instance_set_languages", { studio_default: "en", content: ["en", "hu"], content_default: "en" }),
+    );
+  });
+
+  it("shows the hub's words when the languages are refused", async () => {
+    permissions = ["permission.override"];
+    refusal = "content_default must be one of content";
+    open("Agency Profile");
+    await userEvent.click(await screen.findByRole("button", { name: "Change languages" }));
+    const field = screen.getByRole("textbox", { name: "Content languages" });
+    await userEvent.clear(field);
+    await userEvent.type(field, "hu");
+    await userEvent.click(screen.getByRole("button", { name: "Save languages" }));
+    expect(await screen.findByText("content_default must be one of content")).toBeInTheDocument();
   });
 });
 
