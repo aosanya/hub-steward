@@ -1,18 +1,8 @@
-import { itemsOf } from "../../../../features/backlogs";
-import { callTool } from "../../../../shared/wakala/mcp";
-
-type Item = Record<string, unknown>;
+import { listOf, text } from "./councilData";
 
 const groupList = "actor_list_groups";
 
 const leaderList = "actor_list_group_leaders";
-
-const text = (item: Item | null | undefined, key: string) => {
-  const value = item?.[key];
-  return typeof value === "string" || typeof value === "number" ? String(value) : "";
-};
-
-const listOf = async (tool: string, args?: Record<string, unknown>) => itemsOf(await callTool("", tool, args)) as Item[];
 
 const chairOf = async (groupId: string) => {
   const leaders = await listOf(leaderList, { group_id: groupId });
