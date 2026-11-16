@@ -1,6 +1,4 @@
-import { issueOf, itemsOf, taskTools, type Backlog, type Issue } from "../../features/backlogs/shared/api";
-import { issuesPath } from "../../features/backlogs/shared/paths";
-import { smartBacklogPath } from "../../features/backlogs/smart/paths";
+import { issueOf, itemsOf, taskTools, type Backlog, type Issue, issuesPath, smartBacklogPath } from "../backlogs";
 import { splitOptions } from "./optionLines";
 
 export type ListFilter = { tags: string[]; query: string; backlog: string; other: boolean; openOnly?: boolean };

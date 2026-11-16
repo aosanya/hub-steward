@@ -1,7 +1,4 @@
-import { markNames } from "../../features/backlogs/shared/marks";
-import { DURATION_UNITS, fieldSpec, fieldSpecs, PRIORITIES } from "../../features/backlogs/smart/fields";
-import { FIELD_IDS, type FieldId } from "../../features/backlogs/smart/types";
-
+import { markNames, DURATION_UNITS, fieldSpec, fieldSpecs, PRIORITIES, FIELD_IDS, type FieldId } from "../backlogs";
 const marks = markNames.map((mark) => mark.toLowerCase());
 
 const durationPattern = new RegExp(`^[1-9]\\d* (${DURATION_UNITS.join("|")})$`);

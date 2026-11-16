@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import type { BacklogsClient, Issue } from "../../features/backlogs/shared/api";
+import type { BacklogsClient, Issue } from "../backlogs";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { routes } from "../../app/routes";
 import { AssistantPage } from "./AssistantPage";

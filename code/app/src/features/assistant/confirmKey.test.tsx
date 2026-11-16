@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { issueOf, type BacklogsClient } from "../../features/backlogs/shared/api";
+import { issueOf, type BacklogsClient } from "../backlogs";
 import { askAssistant, offeredNames } from "./api";
 import { moveTool, nameWrite, writeLines } from "./confirm";
 

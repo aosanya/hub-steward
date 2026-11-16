@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../../shared/wakala/openAgency";
-import { taskTools } from "../../features/backlogs/shared/api";
+import { taskTools } from "../backlogs";
 import * as mcp from "../../shared/wakala/mcp";
 import { ResultsPanel } from "./ResultsPanel";
 import { draftOf } from "./results";

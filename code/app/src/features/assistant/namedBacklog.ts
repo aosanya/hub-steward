@@ -1,5 +1,5 @@
 import { callTool } from "../../shared/wakala/mcp";
-import { itemsOf, taskTools } from "../../features/backlogs/shared/api";
+import { itemsOf, taskTools } from "../backlogs";
 import { draftOf, type ResultDraft } from "./results";
 
 const leading = new Set(["show", "open", "display", "view", "see", "me", "my", "the", "a", "go", "to", "list", "smart", "backlog", "please"]);

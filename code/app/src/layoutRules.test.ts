@@ -17,36 +17,8 @@ const foldersExemptFromPublicSurface = new Set(["journeys"]);
 const sharedImportsOfFeaturesAndShell: string[] = [];
 
 const deepImportsIntoFeaturesWithPublicIndex: string[] = [
-  "assistant/AssistantPage.tsx -> backlogs",
-  "assistant/ConfirmCard.tsx -> backlogs",
-  "assistant/ResultsPanel.tsx -> backlogs",
-  "assistant/api.ts -> backlogs",
-  "assistant/cards.test.tsx -> backlogs",
-  "assistant/confirm.ts -> backlogs",
-  "assistant/confirmKey.test.tsx -> backlogs",
-  "assistant/confirmNames.test.tsx -> backlogs",
-  "assistant/keeps.test.tsx -> backlogs",
-  "assistant/moveByKey.test.tsx -> backlogs",
-  "assistant/namedBacklog.ts -> backlogs",
-  "assistant/openAll.test.tsx -> backlogs",
-  "assistant/openAllTarget.test.ts -> backlogs",
-  "assistant/openOrdinal.test.ts -> backlogs",
-  "assistant/results.test.tsx -> backlogs",
-  "assistant/results.ts -> backlogs",
-  "assistant/resultsBack.test.tsx -> backlogs",
-  "assistant/ruleCodes.ts -> backlogs",
-  "assistant/screenGaps.test.tsx -> backlogs",
-  "chat/rooms/cards.tsx -> backlogs",
-  "files/api.ts -> backlogs",
-  "home/HomeOptions.tsx -> backlogs",
-  "home/homeFiles.test.tsx -> backlogs",
-  "home/homeOptions.test.tsx -> backlogs",
   "home/lastBacklog.ts -> backlogs",
-  "inbox/AssignedIssueRows.tsx -> backlogs",
   "inbox/assignedIssues.ts -> backlogs",
-  "inbox/notice.ts -> backlogs",
-  "inbox/rowsOpen.test.tsx -> backlogs",
-  "inbox/subjectCheck.ts -> backlogs",
 ];
 
 type Import = { file: string; line: number; target: string };

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Issue } from "../../features/backlogs/shared/api";
+import type { Issue } from "../backlogs";
 import { historyUpTo, type Item } from "./queue";
 import type { ResultList } from "./results";
 

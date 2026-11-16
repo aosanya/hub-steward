@@ -1,4 +1,4 @@
-import { issuePath } from "../backlogs/shared/paths";
+import { issuePath } from "../backlogs";
 import type { Words } from "../../shared/language/words";
 import { routes } from "../../app/routes";
 import type { NotificationItem } from "./api";

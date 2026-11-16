@@ -1,4 +1,4 @@
-import { settled } from "../backlogs/shared/api";
+import { settled } from "../backlogs";
 import { callTool, McpError } from "../../shared/wakala/mcp";
 import type { NotificationItem } from "./api";
 
