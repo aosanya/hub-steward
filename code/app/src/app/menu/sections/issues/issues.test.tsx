@@ -167,24 +167,25 @@ describe("Assigned to Me", () => {
     expect(toolsCalled()).toEqual(new Set(["forms_catalog_raised_item_list_mine"]));
   });
 
-  it("opens an issue from its row, with its replies", async () => {
+  it("opens an issue from its row inside the window, with its replies", async () => {
     answers.forms_catalog_reply_list = () => ({ items: [{ id: "r9", body: "Collected today.", created_at: "2026-03-07T10:00:00Z" }] });
     open(screens[1].at);
     await userEvent.click(await screen.findByRole("button", { name: /Fallen branch/ }));
 
-    await waitFor(() => expect(landed).toBe(issueAt("i3")));
     expect(await screen.findByText("Collected today.")).toBeInTheDocument();
+    expect(landed).toBe(screens[1].at);
     expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "i3" }));
   });
 
-  it("has a Back button on the opened issue that reads Assigned to Me", async () => {
+  it("has a Back button on the opened issue that reads Assigned to Me and closes the issue", async () => {
     open(screens[1].at);
     await userEvent.click(await screen.findByRole("button", { name: /Fallen branch/ }));
-    await waitFor(() => expect(landed).toBe(issueAt("i3")));
+    await waitFor(() => expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes"));
 
     await userEvent.click(await screen.findByRole("button", { name: /Assigned to Me/ }));
 
-    await waitFor(() => expect(landed).toBe(screens[1].at));
+    await waitFor(() => expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no"));
+    expect(landed).toBe(screens[1].at);
   });
 });
 
@@ -396,5 +397,27 @@ describe("All Issues on the menu window", () => {
 
     await waitFor(() => expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no"));
     expect(landed).toBe(screens[0].at);
+  });
+});
+
+const chooseAssigned = async (name: RegExp) => {
+  open(screens[1].at);
+  await userEvent.click(await screen.findByRole("button", { name }));
+};
+
+describe("Assigned to Me on the menu window", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("draws the assigned issue beside the list in the Folders frame on a wide screen", async () => {
+    setWide(true);
+    await chooseAssigned(/Fallen branch/);
+
+    const frame = document.querySelector(".wf") as HTMLElement;
+    const list = frame.querySelector(".wf-tree") as HTMLElement;
+    const main = frame.querySelector(".wf-main") as HTMLElement;
+    expect(within(list).getByRole("button", { name: /Loose paving stone/ })).toBeInTheDocument();
+    expect(within(list).getByRole("button", { name: /Fallen branch/ })).toHaveAttribute("aria-pressed", "true");
+    expect(await within(main).findByText("Fallen branch")).toBeInTheDocument();
+    expect(landed).toBe(screens[1].at);
   });
 });
