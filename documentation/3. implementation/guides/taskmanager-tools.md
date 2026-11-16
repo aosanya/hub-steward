@@ -11,6 +11,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | Which issue should a worker take next | `taskmanager_task_next_ready` | `GET /next-ready` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
 | Everything a worker reads before starting an issue, in one call | `taskmanager_task_brief` | `GET /tasks/{taskID}/brief` |
+| Which issues in progress touch the same files as an issue or a list of paths | `taskmanager_task_file_overlaps` | `GET /file-overlaps` |
 | Which issues in progress are past their working-time cap | `taskmanager_task_timed_out` | `GET /timed-out` |
 | Take an issue: move it to In Progress, write the taken entry, record the caps | `taskmanager_task_claim` | `POST /tasks/{taskID}/claim` |
 | Stop work on an issue as Blocked or Sinbin, with the tags and the move done right | `taskmanager_task_release` | `POST /tasks/{taskID}/release` |
@@ -69,6 +70,14 @@ It replaces the five reads a worker made at the start of an issue (the issue, it
 
 It composes the code of its siblings and holds none of its own: the dependency sides are `taskmanager_task_dependencies`, the caps the caps reading, the Log the paged Log read and the todos the todo list.
 
+## taskmanager_task_file_overlaps
+
+Inputs: `taskID` and `files` (a list of paths, repeated in the query for several), at least one of them; with both, the issue's paths and the listed ones are asked together. A bad path is 400 with the same rule as `files` on create, and an unseen `taskID` is 404. The caller is taken from the session.
+
+The answer is `items`: every issue at the In Progress step of a backlog the caller can see, status ignored, whose `files` overlap, each with `id`, `code`, `title`, `step` and `overlapping`, a list of `{asked, theirs}` pairs. Two paths overlap when they are equal, or one is a folder (trailing slash) containing the other, and both carry the same repo prefix, so `hub-steward:code/app/` overlaps `hub-steward:code/app/src/menu.go` and not `other:code/app/src/menu.go`. The issue asked about is never listed against itself, and an issue with no `files` overlaps nothing.
+
+The In Progress step comes from the same rule as `taskmanager_task_timed_out`, across all the non-smart backlogs, and visibility from the rule the lists use: an issue in a backlog the caller cannot see is neither listed nor counted. It is read-only and holds only the overlap rule and the query; the path checks are the ones `files` uses on create.
+
 ## taskmanager_task_release
 
 Inputs: `taskID`, `mode` (`blocked` or `sinbin`), `reason` (not blank), and optionally `todo_id` (only with `blocked`: that todo of the issue is set Blocked with the reason as its blocked reason) and `links` (a list of strings for the Log entry). The caller is taken from the session and needs Can move on the backlog the issue is in; an issue the caller cannot see is 404 and one they can only see is 403.
@@ -91,3 +100,4 @@ Refused, with nothing written: 409 unless the issue sits at the backlog's In Pro
 | The claim tool and its types | `modules/taskmanager/task_claim.go`, tests in `routes/claim_task_test.go` |
 | The release tool and its types | `modules/taskmanager/task_release.go`, tests in `routes/release_task_test.go` |
 | The brief tool and its types | `modules/taskmanager/task_brief.go`, tests in `routes/task_brief_test.go` |
+| The file-overlaps tool and its types | `modules/taskmanager/task_file_overlaps.go`, tests in `routes/file_overlaps_test.go` |
