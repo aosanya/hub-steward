@@ -46,6 +46,12 @@ const answer = async (name: string, args: unknown) => {
       return { items: [{ id: "p1", display_name: "Asha Otieno" }] };
     case "actor_get_actor_standing":
       return { actor_id: "p1", display_name: "Asha Otieno", seats };
+    case "actor_list_role_kinds":
+      return { items: [{ id: "k1", name: "Secretary" }, { id: "k2", name: "Old Role", retired_at: "2026-01-01T00:00:00Z" }] };
+    case "actor_grant_role":
+      if (refusal) throw new mcp.McpError(`${name}: ${refusal}`);
+      seats = [...seats, { id: "s3", role_name: "Secretary" }];
+      return {};
     case "actor_revoke_role":
       seats = seats.filter((seat) => seat.id !== given.assignment_id);
       return {};
@@ -197,5 +203,47 @@ describe("ending a role from Users & Roles", () => {
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
 
     expect(screen.queryByRole("button", { name: /End role/ })).toBeNull();
+  });
+});
+
+describe("giving a role from Users & Roles", () => {
+  it("grants the picked role kind in the picked group and shows the new seat", async () => {
+    await openAsha();
+    const give = await screen.findByRole("button", { name: "Give role" });
+    expect(give).toBeDisabled();
+
+    await userEvent.click(screen.getByRole("button", { name: /^Role$/ }));
+    expect(screen.queryByRole("option", { name: "Old Role" })).toBeNull();
+    await userEvent.click(await screen.findByRole("option", { name: "Secretary" }));
+    await userEvent.click(screen.getByRole("button", { name: /^Group$/ }));
+    await userEvent.click(await screen.findByRole("option", { name: "North Ward" }));
+    await userEvent.click(screen.getByRole("button", { name: "Give role" }));
+
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "actor_grant_role", { actor_id: "p1", kind_id: "k1", group_id: "g1" }));
+    expect(await screen.findByRole("button", { name: "End role: Secretary" })).toBeInTheDocument();
+  });
+
+  it("shows the hub's words when the grant is refused", async () => {
+    refusal = "that group already has a leader";
+    await openAsha();
+
+    await userEvent.click(await screen.findByRole("button", { name: /^Role$/ }));
+    await userEvent.click(await screen.findByRole("option", { name: "Secretary" }));
+    await userEvent.click(screen.getByRole("button", { name: /^Group$/ }));
+    await userEvent.click(await screen.findByRole("option", { name: "North Ward" }));
+    await userEvent.click(screen.getByRole("button", { name: "Give role" }));
+
+    expect(await screen.findByText("that group already has a leader")).toBeInTheDocument();
+  });
+
+  it("offers no Give role form to a caller without role.assign", async () => {
+    permissions = ["member.view"];
+    await openAsha();
+
+    await screen.findAllByText("Clerk, Treasurer");
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
+
+    expect(screen.queryByRole("button", { name: "Give role" })).toBeNull();
+    expect(screen.queryByRole("button", { name: /^Role/ })).toBeNull();
   });
 });

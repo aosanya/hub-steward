@@ -4,6 +4,7 @@ import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
 import { SeatEnd, type Seat as HeldSeat } from "./SeatEnd";
+import { SeatGive } from "./SeatGive";
 
 type Seat = { id?: unknown; role_name?: unknown };
 
@@ -52,7 +53,12 @@ export function UsersAndRoles() {
       detailKey={version}
       list={{ title, tool: "actor_list_actors", load: loadPeople, fields: { title: "display_name", meta: "roles" }, empty: { words: "No one has joined this agency yet." } }}
       detail={{ tool: "actor_get_actor_standing", load: loadPerson, fields: { Name: "display_name", Roles: "roles" }, status: "status",
-        extra: (person) => <SeatEnd seats={(person.seats as HeldSeat[] | undefined) ?? []} onEnded={ended} />,
+        extra: (person) => (
+          <>
+            <SeatEnd seats={(person.seats as HeldSeat[] | undefined) ?? []} onEnded={ended} />
+            <SeatGive actorId={String(person.id)} onGiven={ended} />
+          </>
+        ),
       }}
     />
   );
