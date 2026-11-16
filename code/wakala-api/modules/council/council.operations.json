@@ -153,6 +153,48 @@
       ],
       "returns": [{"body": true}]
     },
+    "update_meeting": {
+      "method": "PATCH",
+      "path": "/council/meetings/{meetingID}",
+      "call": "UpdateMeeting",
+      "action": "council.meeting.update",
+      "tool": "council_meeting_update",
+      "title": "Correct a council meeting",
+      "description": "Correct one meeting of one agency's council: send its name, day, place and committee as they should now read. Whatever is left out is cleared, except the name and day, which are required.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "meetingID", "into": "ID", "description": "The meeting to correct."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "update_resolution": {
+      "method": "PATCH",
+      "path": "/council/resolutions/{resolutionID}",
+      "call": "UpdateResolution",
+      "action": "council.resolution.update",
+      "tool": "council_resolution_update",
+      "title": "Correct a council resolution",
+      "description": "Correct one resolution of one agency's council: send its title, the day it was taken and its outcome (adopted, rejected or deferred) as they should now read. The meeting it was taken at stays as it was recorded.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "resolutionID", "into": "ID", "description": "The resolution to correct."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "update_bylaw": {
+      "method": "PATCH",
+      "path": "/council/bylaws/{bylawID}",
+      "call": "UpdateBylaw",
+      "action": "council.bylaw.update",
+      "tool": "council_bylaw_update",
+      "title": "Correct a council bylaw",
+      "description": "Correct one bylaw of one agency's council: send its title, the year it was made and its text as they should now read.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "bylawID", "into": "ID", "description": "The bylaw to correct."}
+      ],
+      "returns": [{"body": true}]
+    },
     "get_minutes": {
       "method": "GET",
       "path": "/council/meetings/{meetingID}/minutes",

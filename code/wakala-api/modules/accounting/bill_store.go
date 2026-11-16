@@ -36,6 +36,8 @@ type BillRepository interface {
 	ListBills(ctx context.Context, filter BillFilter) ([]Bill, error)
 
 	GetBill(ctx context.Context, id string) (Bill, error)
+
+	UpdateBill(ctx context.Context, in BillUpdate) (Bill, error)
 }
 
 func (m *ledgerStore) accountOfType(ctx context.Context, id, field string, want AccountType) (Account, error) {

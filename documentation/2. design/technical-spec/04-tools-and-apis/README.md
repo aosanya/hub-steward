@@ -186,43 +186,50 @@ Served from `modules/accounting` in `code/wakala-api` (MUN983, hub MUN1045). Eve
 | `accounting_bill_create` | `accounting.bill.create` | `income_account_id`, `receivable_account_id`, `amount`, `due_at`, optional `payer`, `narration` | writes one entry: debit the receivable, credit the income account, `due_at` set, `document_kind` `bill` | `accounting.manage` |
 | `accounting_bill_list` | `accounting.bill.list` | optional `income_account_id`, `status`, `payer`, `as_of`, `limit` | reads bills by due date with `settled`, `outstanding`, `status` (`open`, `overdue`, `settled`, `reversed`) and `days_overdue` | `accounting.manage`, `accounting.view` |
 | `accounting_bill_read` | `accounting.bill.read` | `billID` | reads one bill | `accounting.manage`, `accounting.view` |
+| `accounting_bill_update` | `accounting.bill.update` | `billID`, `amount`, `due_at`, optional `payer`, `narration` | corrects one bill in place; refused as locked (409) when the bill is settled or reversed, and when it already has a payment and the `amount` differs, because a bill with a payment keeps its amount | `accounting.manage` |
 | `accounting_payment_mark_paid` | `accounting.payment.mark_paid` | `billID`, `cash_account_id`, optional `amount`, `paid_on`, `narration` | writes one entry: debit the cash account, credit the bill's receivable, `settles_entry_id` set to the bill; no `amount` pays what is outstanding, a smaller one is a part payment | `accounting.manage` |
 | `accounting_payment_list` | `accounting.payment.list` | optional `kind` (`bill` or `certificate`), `bill_id`, `payer`, `limit` | reads payments oldest first: bill payments and milestone payment certificates; a reversed payment is left out | `accounting.manage`, `accounting.view` |
 | `accounting_tender_create` | `accounting.tender.create` | `budget_id`, `title`, optional `description`, `closes_at` | writes one tender on an existing budget line | `accounting.manage` |
+| `accounting_tender_update` | `accounting.tender.update` | `tenderID`, `title`, optional `description`, `closes_at` | corrects one tender; the budget line stays; refused as locked once `closes_at` has passed | `accounting.manage` |
 | `accounting_tender_list` | `accounting.tender.list` | optional `budget_id`, `limit` | reads tenders oldest first, each with `quote_count` and `lowest_amount` | `accounting.manage`, `accounting.view` |
 | `accounting_tender_read` | `accounting.tender.read` | `tenderID` | reads one tender with `quote_count` and `lowest_amount` | `accounting.manage`, `accounting.view` |
-| `accounting_quote_create` | `accounting.quote.create` | `tenderID`, `supplier`, `amount`, optional `note`, `valid_until` | writes one quote; append-only, a changed price is a new quote | `accounting.manage` |
+| `accounting_quote_create` | `accounting.quote.create` | `tenderID`, `supplier`, `amount`, optional `note`, `valid_until` | writes one quote; a supplier that changes its offer before the tender closes either records another quote or corrects this one with `accounting_quote_update` | `accounting.manage` |
+| `accounting_quote_update` | `accounting.quote.update` | `quoteID`, `supplier`, `amount`, optional `note`, `valid_until` | corrects one quote in place; the tender stays; refused as locked once its tender has closed | `accounting.manage` |
 | `accounting_quote_list` | `accounting.quote.list` | `tenderID`, optional `limit` | reads the tender's quotes, lowest price first | `accounting.manage`, `accounting.view` |
 
 - **Permissions.** `accounting.manage`, "Keep the books and set budgets", carries every action above and the account and entry actions; `accounting.view`, "Read accounts, budgets and reports", carries the list and read actions only (`modules/agency/models/permissions_catalog.json`, MUN1052). `guardToolPermissions` in `internal/api/http/mcp_sources_permissions.go` applies the actions to an agent caller: an agent whose agency roles hold neither permission is refused as for any agency tool. A caller who is not an agent is not held to the catalog by that guard.
 - **Nothing derived is stored.** `spent`, a report's figures, a bill's `settled`, `outstanding` and `status`, the payment list and a tender's `lowest_amount` are folded on every call from entries and quotes.
 - **Refusals.** An unknown budget line, bill, tender or cash account answers not found. A missing required argument, a non-positive amount, a malformed instant, a cash or receivable account of the wrong type, and paying a settled or reversed bill or more than is outstanding answer invalid.
 - **Storage.** Budget lines, bills and payments live in the ledger's budget lines and entries; tenders and quotes are the blueprint objects `tender` and `quote`, whose tables `Provision` creates.
+- **Edit tools (MUN1112).** `accounting_budget_set` is the budget edit: setting a line again for the same account and period keeps its id and replaces name, department and amount, so there is no separate budget update tool. `accounting_bill_update`, `accounting_tender_update` and `accounting_quote_update` send the whole record as it should now read and answer `ErrLocked` (409) in words that say why when the rule above refuses. They rewrite only the editable columns (a bill's amount, due date, narration and payer; a tender's title, description and closing date; a quote's supplier, price, note and validity) and leave who recorded it, when and what it points at.
 - **Not built.** Awarding a tender to a quote, and tying an award to a contract and its milestones.
 - **Commits on dev.** `2910c9a7` (budget), `3819e72d` (reports), `45b1971b` (bills, with the store and test files of the procurement work), `4eabbfd4` (procurement), `56030154` (payments), `6942f8f9` (the two permissions). Evidence: `projects/hungarian-municipality/documentation/3. implementation/todo/MUN983-finance-records/README.md`.
 
 ## Council records
 
-Thirteen tools keep what a council does: its meetings, each meeting's agenda and minutes, the resolutions it takes and its bylaws. They exist for an agency that runs the `council` module (a mountable entry in `modules/agency/models/modules_catalog.json`). Every tool takes the agency as `instance_id`, and every read, list and write is narrowed to that agency.
+Sixteen tools keep what a council does: its meetings, each meeting's agenda and minutes, the resolutions it takes and its bylaws. They exist for an agency that runs the `council` module (a mountable entry in `modules/agency/models/modules_catalog.json`). Every tool takes the agency as `instance_id`, and every read, list and write is narrowed to that agency.
 
 | Tool | Method and path | Arguments | Permission |
 |---|---|---|---|
 | `council_meeting_create` | `POST /council/meetings` | `name`, `date` (`YYYY-MM-DD`), optional `place` and `committee` | `council.manage` |
 | `council_meeting_list` | `GET /council/meetings` | optional `committee`; earliest day first | `council.view` |
 | `council_meeting_read` | `GET /council/meetings/{meetingID}` | `meetingID` | `council.view` |
+| `council_meeting_update` | `PATCH /council/meetings/{meetingID}` | `meetingID`, `name`, `date`, optional `place` and `committee`; the whole record as it should now read | `council.manage` |
 | `council_agenda_set` | `PUT /council/meetings/{meetingID}/agenda` | `meetingID`, `items` (non-blank lines, in order); setting again replaces the items | `council.manage` |
 | `council_agenda_read` | `GET /council/meetings/{meetingID}/agenda` | `meetingID` | `council.view` |
 | `council_minutes_set` | `PUT /council/meetings/{meetingID}/minutes` | `meetingID`, `text`; setting again replaces the text | `council.manage` |
 | `council_minutes_read` | `GET /council/meetings/{meetingID}/minutes` | `meetingID` | `council.view` |
 | `council_resolution_create` | `POST /council/resolutions` | `title`, `date` (`YYYY-MM-DD`), `outcome` (`adopted`, `rejected` or `deferred`), optional `meeting_id` of a meeting of the same agency | `council.manage` |
+| `council_resolution_update` | `PATCH /council/resolutions/{resolutionID}` | `resolutionID`, `title`, `date`, `outcome`; the meeting it was taken at cannot be changed | `council.manage` |
 | `council_resolution_list` | `GET /council/resolutions` | optional `meeting_id` and `outcome`; earliest day first | `council.view` |
 | `council_resolution_read` | `GET /council/resolutions/{resolutionID}` | `resolutionID` | `council.view` |
 | `council_bylaw_create` | `POST /council/bylaws` | `title`, `year` (four digits), optional `text` | `council.manage` |
+| `council_bylaw_update` | `PATCH /council/bylaws/{bylawID}` | `bylawID`, `title`, `year` (four digits), optional `text` | `council.manage` |
 | `council_bylaw_list` | `GET /council/bylaws` | optional `year`; earliest year first, then title | `council.view` |
 | `council_bylaw_read` | `GET /council/bylaws/{bylawID}` | `bylawID` | `council.view` |
 
 - **Module.** `modules/council` in `code/wakala-api`: the objects `meeting`, `agenda`, `minutes`, `resolution` and `bylaw`, declared in `council.blueprint.json`, `council.wakala.json` and `council.operations.json`. A meeting has one agenda and one set of minutes (unique on agency and meeting).
-- **Permissions.** `council.manage` ("Put council meetings on record and read them") carries all thirteen actions, `council.<object>.<verb>`, one for each tool; `council.view` ("Read council meetings") carries the eight list and read actions. Both are in `modules/agency/models/permissions_catalog.json`.
+- **Permissions.** `council.manage` ("Put council meetings on record and read them") carries all sixteen actions, `council.<object>.<verb>`, one for each tool; `council.view` ("Read council meetings") carries the eight list and read actions. Both are in `modules/agency/models/permissions_catalog.json`.
 - **Guard.** `internal/api/http/mcp_tools_council.go` runs before any `council_*` call and refuses it when:
   - the call names no agency (`instance_id`);
   - the caller is not a member of the agency (the refusal is the same not-found as for an unknown agency, so the agency is not confirmed);
@@ -230,7 +237,7 @@ Thirteen tools keep what a council does: its meetings, each meeting's agenda and
   - the caller is not the owner and holds no role with the call's action. The refusal names the missing permission: `council.view` for a list or read tool, `council.manage` for a create or set tool.
 
   The owner passes once the agency runs the module. A server started without a council manager refuses every call.
-- **Tool list.** The council tools are shown only to an agency that runs the module (the tool prefix `council` is the module code). The thirteen names are pinned in `testdata/mcp_roster/no-mounts.txt`, and the permission-coverage checks see each tool through `mcp_tool_actions.go`.
+- **Tool list.** The council tools are shown only to an agency that runs the module (the tool prefix `council` is the module code). The sixteen names are pinned in `testdata/mcp_roster/no-mounts.txt`, and the permission-coverage checks see each tool through `mcp_tool_actions.go`.
 - **Errors.** A blank or malformed value, a blank agenda item, or a year, date or outcome out of shape is refused as invalid (400); an unknown id, a meeting or resolution of another agency, or a read of an agenda or minutes never set is refused as not found (404).
 - **Commits on dev.** `b7113c46` (meetings, the permissions and the catalog entry), `5d811795` (agenda and minutes), `61489b52` (resolutions), `521236ea` (bylaws), `6076e6b7` (served on the hub, with the guard). Evidence: `projects/hungarian-municipality/documentation/3. implementation/todo/MUN982-council-records/README.md`.
 

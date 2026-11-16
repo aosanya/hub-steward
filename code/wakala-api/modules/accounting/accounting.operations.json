@@ -397,6 +397,45 @@
       ],
       "returns": [{ "body": true }]
     },
+    "update_bill": {
+      "method": "PATCH",
+      "path": "/bills/{billID}",
+      "call": "UpdateBill",
+      "action": "accounting.bill.update",
+      "title": "Correct bill",
+      "description": "Correct a bill that is not yet settled: send its payer, amount, due_at and narration as they should now read. A bill that already has a payment keeps its amount, and a settled or reversed bill is refused.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "billID", "into": "ID", "description": "The bill to correct."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "update_tender": {
+      "method": "PATCH",
+      "path": "/tenders/{tenderID}",
+      "call": "UpdateTender",
+      "action": "accounting.tender.update",
+      "title": "Correct tender",
+      "description": "Correct a tender before its closing date: send its title, description and closes_at as they should now read. The budget line it draws on stays as recorded. Refused once the tender has closed.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "tenderID", "into": "ID", "description": "The tender to correct."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "update_quote": {
+      "method": "PATCH",
+      "path": "/quotes/{quoteID}",
+      "call": "UpdateQuote",
+      "action": "accounting.quote.update",
+      "title": "Correct quote",
+      "description": "Correct one supplier's quote before its tender closes: send the supplier, the price in the smallest unit, the note and valid_until as they should now read. Refused once the tender has closed.",
+      "args": [
+        {"from": "body", "whole": true},
+        {"from": "path", "as": "quoteID", "into": "ID", "description": "The quote to correct."}
+      ],
+      "returns": [{"body": true}]
+    },
     "list_quotes": {
       "method": "GET",
       "path": "/tenders/{tenderID}/quotes",
@@ -580,6 +619,7 @@
     "ErrCodeTaken": 409,
     "ErrOverCertified": 409,
     "ErrRetentionHeld": 409,
-    "ErrRetentionReleased": 409
+    "ErrRetentionReleased": 409,
+    "ErrLocked": 409
   }
 }

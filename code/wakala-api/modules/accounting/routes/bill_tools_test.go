@@ -19,7 +19,7 @@ func TestTheBillToolsAreServed(t *testing.T) {
 		}
 	}
 	sort.Strings(got)
-	want := []string{"accounting_bill_create", "accounting_bill_list", "accounting_bill_read"}
+	want := []string{"accounting_bill_create", "accounting_bill_list", "accounting_bill_read", "accounting_bill_update"}
 	if strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Fatalf("served %v, want %v", got, want)
 	}

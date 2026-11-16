@@ -146,8 +146,8 @@ func TestToolList_TheOwnerOfAnAgencyRunningCouncilSeesTheCouncilToolsAndOthersDo
 			t.Errorf("owner of an agency running council cannot see %s", name)
 		}
 	}
-	if got := modulesOf(seen)["council"]; got != 13 {
-		t.Errorf("owner sees %d council tools, want 13", got)
+	if got := modulesOf(seen)["council"]; got != 16 {
+		t.Errorf("owner sees %d council tools, want 16", got)
 	}
 
 	runsModules(t, w.instance, "forms")

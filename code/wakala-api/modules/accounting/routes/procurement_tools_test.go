@@ -32,7 +32,7 @@ func TestTheProcurementToolsAreServed(t *testing.T) {
 		}
 	}
 	sort.Strings(got)
-	want := []string{"accounting_quote_create", "accounting_quote_list", "accounting_tender_create", "accounting_tender_list", "accounting_tender_read"}
+	want := []string{"accounting_quote_create", "accounting_quote_list", "accounting_quote_update", "accounting_tender_create", "accounting_tender_list", "accounting_tender_read", "accounting_tender_update"}
 	if strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Fatalf("served %v, want %v", got, want)
 	}

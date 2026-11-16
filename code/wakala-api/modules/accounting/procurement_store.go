@@ -34,6 +34,10 @@ type ProcurementRepository interface {
 	CreateQuote(ctx context.Context, q Quote) (Quote, error)
 
 	ListQuotes(ctx context.Context, tenderID string, limit int) ([]Quote, error)
+
+	UpdateTender(ctx context.Context, in TenderUpdate) (Tender, error)
+
+	UpdateQuote(ctx context.Context, in QuoteUpdate) (Quote, error)
 }
 
 func (m *ledgerStore) tenderByID(ctx context.Context, id string) (Tender, error) {

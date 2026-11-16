@@ -19,3 +19,5 @@ var ErrOverCertified = errors.New("accounting: the certificates would exceed the
 var ErrRetentionHeld = errors.New("accounting: the retention cannot be released before its release date")
 
 var ErrRetentionReleased = errors.New("accounting: the retention has already been released")
+
+var ErrLocked = errors.New("accounting: the record can no longer be changed")
