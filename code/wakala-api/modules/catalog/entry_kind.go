@@ -35,6 +35,13 @@ func withDocFields(e Entry) Entry {
 	return e
 }
 
+func FormIDOf(e Entry) string {
+	if e.FormID != "" {
+		return e.FormID
+	}
+	return withDocFields(e).FormID
+}
+
 func putDocFields(e *Entry) error {
 	fields, ok := docObject(e.Doc)
 	if !ok {

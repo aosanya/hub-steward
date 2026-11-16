@@ -7,6 +7,7 @@ import (
 
 	catalog "wakalaserver/modules/catalog"
 	catalogroutes "wakalaserver/modules/catalog/routes"
+	formsmodels "wakalaserver/modules/forms/models"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
@@ -125,10 +126,59 @@ func formsCatalogFor(ctx context.Context, reg agencies.Registry, instanceID stri
 		return nil, err
 	}
 	cm, err := reg.CatalogManager(ctx, instanceID, formsCatalogMount)
-	if err != nil || role != agencies.RoleOwner {
+	if err != nil {
 		return cm, err
 	}
+	fm, err := reg.FormManager(ctx, instanceID)
+	if err != nil {
+		return nil, err
+	}
+	cm = formChecked{CatalogManager: cm, forms: fm}
+	if role != agencies.RoleOwner {
+		return cm, nil
+	}
 	return agencyOwnedCatalog{CatalogManager: cm}, nil
+}
+
+type formReader interface {
+	Get(ctx context.Context, id string) (formsmodels.Form, error)
+}
+
+type formChecked struct {
+	catalog.CatalogManager
+	forms formReader
+}
+
+func (c formChecked) formExists(ctx context.Context, e catalog.Entry) error {
+	id := catalog.FormIDOf(e)
+	if id == "" {
+		return nil
+	}
+	if _, err := c.forms.Get(ctx, id); err != nil {
+		return catalog.ErrInvalidEntry
+	}
+	return nil
+}
+
+func (c formChecked) CreateEntry(ctx context.Context, e catalog.Entry) (catalog.Entry, error) {
+	if err := c.formExists(ctx, e); err != nil {
+		return catalog.Entry{}, err
+	}
+	return c.CatalogManager.CreateEntry(ctx, e)
+}
+
+func (c formChecked) UpsertEntry(ctx context.Context, e catalog.Entry) (catalog.Entry, error) {
+	if err := c.formExists(ctx, e); err != nil {
+		return catalog.Entry{}, err
+	}
+	return c.CatalogManager.UpsertEntry(ctx, e)
+}
+
+func (c formChecked) UpdateEntry(ctx context.Context, e catalog.Entry) (catalog.Entry, error) {
+	if err := c.formExists(ctx, e); err != nil {
+		return catalog.Entry{}, err
+	}
+	return c.CatalogManager.UpdateEntry(ctx, e)
 }
 
 type agencyOwnedCatalog struct{ catalog.CatalogManager }
