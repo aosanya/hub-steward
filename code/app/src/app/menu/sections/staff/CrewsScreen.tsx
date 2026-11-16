@@ -1,3 +1,4 @@
+import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
 import { homeEmpty, listOf, text, type Item } from "./staffData";
 
@@ -20,10 +21,11 @@ const loadCrews = async () => {
 const loadCrew = async (id: string) => (await loadCrews()).find((crew) => crew.id === id) ?? { id, name: "", meta: "" };
 
 export function CrewsScreen() {
+  const word = useWord("actor");
   return (
     <MenuWindow
-      title="Crews"
-      list={{ title: "Crews", tool: "actor_list_groups", load: loadCrews, fields: { title: "name", meta: "meta" }, empty: homeEmpty("No crews yet.") }}
+      title={word("Crews")}
+      list={{ title: word("Crews"), tool: "actor_list_groups", load: loadCrews, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Crews").toLowerCase()} yet.`) }}
       detail={{ tool: "actor_list_group_leaders", load: loadCrew, fields: { Name: "name", Leaders: "meta" }, status: "status" }}
     />
   );

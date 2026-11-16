@@ -1,3 +1,4 @@
+import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
 import { homeEmpty, listOf, peopleWords, text, type Item } from "./staffData";
 
@@ -27,10 +28,11 @@ const loadRoles = async () => {
 const loadRole = async (id: string) => (await loadRoles()).find((role) => role.id === id) ?? { id, name: "", meta: "" };
 
 export function RolesPermissionsScreen() {
+  const word = useWord("actor");
   return (
     <MenuWindow
-      title="Roles & Permissions"
-      list={{ title: "Roles & Permissions", tool: "agency_list_roles", load: loadRoles, fields: { title: "name", meta: "meta" }, empty: homeEmpty("No roles yet.") }}
+      title={word("Roles & Permissions")}
+      list={{ title: word("Roles & Permissions"), tool: "agency_list_roles", load: loadRoles, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Roles").toLowerCase()} yet.`) }}
       detail={{ tool: "actor_list_role_holders", load: loadRole, fields: { Name: "name", Holders: "meta" }, status: "status" }}
     />
   );

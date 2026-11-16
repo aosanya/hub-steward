@@ -1,3 +1,4 @@
+import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { homeEmpty, listOf, peopleWords, text, type Item } from "./staffData";
@@ -16,10 +17,11 @@ const loadDepartments = async () => {
 const loadDepartment = async (id: string) => (await loadDepartments()).find((department) => department.id === id) ?? { id, name: "", meta: "" };
 
 export function DepartmentsScreen() {
+  const word = useWord("actor");
   return (
     <MenuWindow
-      title="Departments"
-      list={{ title: "Departments", tool: "actor_list_groups", load: loadDepartments, fields: { title: "name", meta: "meta" }, empty: homeEmpty("No departments yet.") }}
+      title={word("Departments")}
+      list={{ title: word("Departments"), tool: "actor_list_groups", load: loadDepartments, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Departments").toLowerCase()} yet.`) }}
       detail={{ tool: "actor_get_group_population", load: loadDepartment, fields: { Name: "name", "Head count": "meta" }, status: "status" }}
     />
   );

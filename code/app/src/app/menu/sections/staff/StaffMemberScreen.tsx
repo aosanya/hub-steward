@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
@@ -36,13 +37,14 @@ const loadSeats = async (id: string) => {
 };
 
 function Seats({ id }: { id: string }) {
+  const word = useWord("actor");
   const view = useLoad(() => loadSeats(id), `staff-seats:${openAgencyId()}:${id}`);
   return (
     <>
-      <SectionHeading>Seats</SectionHeading>
+      <SectionHeading>{word("Seats")}</SectionHeading>
       {view.state === "loading" ? <LoadingLine /> : null}
       {view.state === "error" ? <LoadFailed words="The seats could not be loaded." /> : null}
-      {view.state === "ready" && view.data.length === 0 ? <EmptyCard words="No seats yet." /> : null}
+      {view.state === "ready" && view.data.length === 0 ? <EmptyCard words={`No ${word("Seats").toLowerCase()} yet.`} /> : null}
       {view.state === "ready" && view.data.length > 0 ? (
         <Rows>
           {view.data.map((seat) => (
@@ -57,9 +59,10 @@ function Seats({ id }: { id: string }) {
 export function StaffMemberScreen() {
   const back = useBackToSection();
   const id = useParams().id ?? "";
+  const word = useWord("actor");
   return (
-    <Shell title="Staff member" titleUnder {...back}>
-      <MenuDetail bare title="Staff member" tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadMember} />
+    <Shell title={word("Staff member")} titleUnder {...back}>
+      <MenuDetail bare title={word("Staff member")} tool="actor_get_actor" fields={{ Name: "display_name" }} status="status" id={id} load={loadMember} />
       <Seats id={id} />
     </Shell>
   );
