@@ -60,7 +60,7 @@ export const menuSections: MenuSection[] = [
     id: "council",
     title: "Decisions",
     icon: "landmark",
-    module: "voting",
+    module: "council",
     items: joined(["Meetings", "Agendas & Minutes", "Resolutions", "Rules", "Committees"], councilItems),
   },
   {

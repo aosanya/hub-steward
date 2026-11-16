@@ -51,7 +51,7 @@ describe("the menu rows on Home", () => {
   });
 
   it("lists the nine sections in the drawn order for an agency with every module, and no Dashboard row", async () => {
-    home(view(["actor", "digitaltwin", "forms", "assetmanager", "voting", "accounting"]));
+    home(view(["actor", "digitaltwin", "forms", "assetmanager", "council", "accounting"]));
 
     await screen.findByText("People");
     const titles = screen.getAllByRole("button").map((button) => button.querySelector(".ttl")?.textContent);

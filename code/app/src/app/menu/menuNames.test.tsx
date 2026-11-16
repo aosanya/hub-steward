@@ -71,7 +71,7 @@ describe("a section named by its mount", () => {
   });
 
   it("keeps the fixed words on Home when each mount is named after its module code", async () => {
-    home(school({ actor: ["actor"], forms: ["forms"], voting: ["voting"], accounting: ["accounting"] }));
+    home(school({ actor: ["actor"], forms: ["forms"], council: ["council"], accounting: ["accounting"] }));
 
     await screen.findByText("People");
     expect(rowTitles()).toEqual([
