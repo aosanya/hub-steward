@@ -5,7 +5,7 @@ import { openAgencyId } from "../../agency/open";
 import { mcpBacklogManageClient } from "../manage/api";
 import type { BacklogManageClient } from "../manage/types";
 import { useMayManage } from "../manage/useMayManage";
-import { backlogPagePath } from "../../backlogPage/paths";
+import { backlogPagePath } from "../page/paths";
 import { useLoad } from "../../forms/useLoad";
 import { Button } from "../../ui/Button";
 import { Card } from "../../ui/Card";

@@ -1,7 +1,7 @@
-import { hubBacklogsOf, taskTools } from "../backlogs/api";
-import { mcpBacklogAccessClient } from "../backlogs/access/api";
-import { levelWords, rowsOf } from "../backlogs/access/levels";
-import { callTool } from "../wakala/mcp";
+import { hubBacklogsOf, taskTools } from "../api";
+import { mcpBacklogAccessClient } from "../access/api";
+import { levelWords, rowsOf } from "../access/levels";
+import { callTool } from "../../wakala/mcp";
 
 export type PageStep = { name: string; issues: number };
 

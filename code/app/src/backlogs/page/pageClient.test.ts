@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { accessTools } from "../backlogs/access/api";
-import { taskTools } from "../backlogs/api";
-import * as mcp from "../wakala/mcp";
+import { accessTools } from "../access/api";
+import { taskTools } from "../api";
+import * as mcp from "../../wakala/mcp";
 import { mcpBacklogPageClient } from "./api";
 
 const backlogs = {

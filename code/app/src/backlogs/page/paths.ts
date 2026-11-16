@@ -1,4 +1,4 @@
-import { backlogsHomePath } from "../backlogs/paths";
+import { backlogsHomePath } from "../paths";
 
 export const backlogPageRoutePath = ":backlogId/page";
 

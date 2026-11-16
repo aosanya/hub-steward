@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { BacklogBoard } from "./board/BacklogBoard";
-import { BacklogPage, backlogPageRoutePath } from "../backlogPage";
+import { BacklogPage, backlogPageRoutePath } from "./page";
 import { AddBacklogScreen, EditBacklogScreen } from "./manage";
 import { BacklogAccessScreen, backlogAccessRoutePath } from "./access/index";
 import { AddSmartBacklogScreen, EditSmartBacklogScreen, SmartBacklogPage } from "./smart";
