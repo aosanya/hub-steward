@@ -37,6 +37,7 @@ func (d *Deps) registerAuditMCPTools(server *mcp.Server) {
 	}
 	auditmcp.RegisterTools(server, manager)
 	server.AddReceivingMiddleware(d.guardAuditTools)
+	server.AddReceivingMiddleware(d.recordAuditedWrites)
 }
 
 func (d *Deps) guardAuditTools(next mcp.MethodHandler) mcp.MethodHandler {
