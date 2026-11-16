@@ -8,6 +8,7 @@ describe("council data contract", () => {
       meetingCreate: "council_meeting_create",
       meetingList: "council_meeting_list",
       meetingRead: "council_meeting_read",
+      meetingUpdate: "council_meeting_update",
       agendaSet: "council_agenda_set",
       agendaRead: "council_agenda_read",
       minutesSet: "council_minutes_set",
@@ -15,9 +16,11 @@ describe("council data contract", () => {
       resolutionCreate: "council_resolution_create",
       resolutionList: "council_resolution_list",
       resolutionRead: "council_resolution_read",
+      resolutionUpdate: "council_resolution_update",
       bylawCreate: "council_bylaw_create",
       bylawList: "council_bylaw_list",
       bylawRead: "council_bylaw_read",
+      bylawUpdate: "council_bylaw_update",
     });
   });
 
