@@ -687,6 +687,7 @@ taskmanager_task_caps_clear
 taskmanager_task_caps_nearest
 taskmanager_task_caps_read
 taskmanager_task_caps_set
+taskmanager_task_claim
 taskmanager_task_create
 taskmanager_task_create_in_project
 taskmanager_task_delete

@@ -145,6 +145,7 @@ var taskMoveActions = map[string]bool{
 	"taskmanager.task.place":        true,
 	"taskmanager.task.move":         true,
 	"taskmanager.task.move_to_step": true,
+	"taskmanager.task.claim":        true,
 }
 
 const taskListAction = "taskmanager.task.list"
