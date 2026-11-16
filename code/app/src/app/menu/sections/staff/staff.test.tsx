@@ -194,6 +194,29 @@ describe("the Staff list", () => {
   });
 });
 
+describe("the Staff list with people who have no display name", () => {
+  const unnamed = [
+    { id: "a4", code: "AC-15", display_name: "", first_name: "", last_name: "" },
+    { id: "a5", code: "AC-16", display_name: "", first_name: "Réka", last_name: "Tóth" },
+  ];
+
+  it("draws the first and last name, or else the code, instead of a blank row", async () => {
+    called = answering({ ...staffAnswers, actor_list_actors: () => ({ items: [...actors, ...unnamed] }) });
+    openStaff("/a/town/menu/staff/people");
+
+    expect(await screen.findByText("AC-15")).toBeInTheDocument();
+    expect(screen.getByText("Réka Tóth")).toBeInTheDocument();
+    expect(screen.getAllByRole("button").filter((button) => button.textContent === "" && !button.hasAttribute("aria-label"))).toHaveLength(0);
+  });
+
+  it("draws the code on the opened person's card", async () => {
+    called = answering({ ...staffAnswers, actor_get_actor: () => unnamed[0] });
+    open("/a/town/menu/staff/people/a4", <StaffMemberScreen />, "/menu/staff/people/:id");
+
+    expect(await screen.findAllByText("AC-15")).not.toHaveLength(0);
+  });
+});
+
 describe("a staff member", () => {
   const member = (id: string) => {
     called = answering(staffAnswers);

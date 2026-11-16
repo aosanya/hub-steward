@@ -1,5 +1,6 @@
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
+import { personNameOf } from "../residents/personName";
 import { homeEmpty, listOf, roleKindNames, seatsLine, text, type Item } from "./staffData";
 
 const seatsOfGroups = async (groups: Item[]) => {
@@ -12,7 +13,7 @@ const loadStaff = async () => {
   const seats = await seatsOfGroups(groups);
   return people.map((person) => ({
     id: text(person, "id"),
-    name: text(person, "display_name"),
+    name: personNameOf(person),
     meta: seatsLine(
       seats.filter((seat) => text(seat, "actor_id") === text(person, "id")),
       kindNames,
@@ -26,7 +27,7 @@ const loadPerson = async (id: string) => {
     listOf("actor_list_role_assignments_for_actor", { actor_id: id }),
     roleKindNames(),
   ]);
-  return { id, name: text(person, "display_name"), role: seatsLine(seats, kindNames) };
+  return { id, name: personNameOf(person), role: seatsLine(seats, kindNames) };
 };
 
 export function StaffScreen() {

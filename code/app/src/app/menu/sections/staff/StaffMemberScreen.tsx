@@ -8,9 +8,13 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
 import { MenuDetail } from "../../MenuDetail";
 import { useBackToSection } from "../../useBackToSection";
+import { personNameOf } from "../residents/personName";
 import { listOf, roleKindNames, seatLabel, text, type Item } from "./staffData";
 
-const loadMember = async (id: string) => (await callTool("", "actor_get_actor", { actor_id: id })) as Item;
+const loadMember = async (id: string) => {
+  const found = ((await callTool("", "actor_get_actor", { actor_id: id })) as Item | null) ?? {};
+  return { ...found, display_name: personNameOf(found) };
+};
 
 const endedWords = (standing: Item | undefined) => {
   const reason = text(standing, "ended_reason");
