@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { MarketPage } from "./MarketPage";
@@ -143,5 +143,97 @@ describe("one name for a product on both screens", () => {
       </MemoryRouter>,
     );
     expect(await screen.findByRole("heading", { level: 1, name: "Urea 50kg" })).toBeInTheDocument();
+  });
+});
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+const frame = () => document.querySelector(".wf") as HTMLElement | null;
+
+const pane = (name: string) => frame()?.querySelector(`.${name}`) as HTMLElement;
+
+describe("market on a wide screen", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("draws the Folders frame with the products, Something not listed and My orders in the left pane", async () => {
+    setWide(true);
+    show("/a/farmers/market");
+    await screen.findByText("3 shops · from KES 3,800");
+    const tree = within(pane("wf-tree"));
+    expect(tree.getByRole("button", { name: /^Urea/ })).toBeInTheDocument();
+    expect(tree.getByRole("button", { name: /Something not listed/ })).toBeInTheDocument();
+    expect(tree.getByRole("button", { name: /My orders/ })).toBeInTheDocument();
+  });
+
+  it("opens the chosen product in the main pane under a head strip and keeps the list beside it", async () => {
+    setWide(true);
+    show("/a/farmers/market");
+    await userEvent.click(await screen.findByRole("button", { name: /^Urea/ }));
+    const main = within(pane("wf-main"));
+    expect(await main.findByText("Kisumu Agro Supplies")).toBeInTheDocument();
+    expect(within(pane("wf-head")).getByText("Urea")).toBeInTheDocument();
+    expect(within(pane("wf-tree")).getByRole("button", { name: /^CAN/ })).toBeInTheDocument();
+    expect(main.getAllByRole("button", { name: "Buy now" })).toHaveLength(2);
+  });
+
+  it("opens a product route with the product already chosen beside the list", async () => {
+    setWide(true);
+    show("/a/farmers/market/urea");
+    expect(await within(pane("wf-main")).findByText("Siaya Farm Stores")).toBeInTheDocument();
+    expect(within(pane("wf-tree")).getByRole("button", { name: /^CAN/ })).toBeInTheDocument();
+  });
+
+  it("opens the wanted form and my orders from the frame", async () => {
+    setWide(true);
+    show("/a/farmers/market");
+    await userEvent.click(await screen.findByRole("button", { name: /Something not listed/ }));
+    expect(await screen.findByText("the wanted page")).toBeInTheDocument();
+  });
+
+  it("shows the empty card inside the frame with Something not listed still offered", async () => {
+    setWide(true);
+    const empty: MarketClient = { ...client, listProducts: vi.fn().mockResolvedValue([]) };
+    render(
+      <MemoryRouter initialEntries={["/a/farmers/market"]}>
+        <MarketPage client={empty} />
+      </MemoryRouter>,
+    );
+    expect(await within(pane("wf-tree")).findByText("Nothing is listed yet.")).toBeInTheDocument();
+    expect(within(pane("wf-tree")).getByRole("button", { name: /Something not listed/ })).toBeInTheDocument();
+  });
+
+  it("shows the failure card inside the frame", async () => {
+    setWide(true);
+    const broken: MarketClient = { ...client, listProducts: vi.fn().mockRejectedValue(new Error("down")) };
+    render(
+      <MemoryRouter initialEntries={["/a/farmers/market"]}>
+        <MarketPage client={broken} />
+      </MemoryRouter>,
+    );
+    expect(await within(pane("wf-tree")).findByText("The market could not be loaded.")).toBeInTheDocument();
+  });
+});
+
+describe("market on a phone", () => {
+  beforeEach(() => setWide(false));
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("draws no frame, lists the products with the two links and opens a product on its own page", async () => {
+    show("/a/farmers/market");
+    await screen.findByText("3 shops · from KES 3,800");
+    expect(frame()).toBeNull();
+    expect(screen.getByRole("button", { name: /Something not listed/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /My orders/ })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: /^Urea/ }));
+    expect(await screen.findByText("Kisumu Agro Supplies")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^CAN/ })).toBeNull();
+    expect(frame()).toBeNull();
   });
 });
