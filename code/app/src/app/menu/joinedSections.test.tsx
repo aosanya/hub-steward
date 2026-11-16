@@ -1,0 +1,71 @@
+import { vi } from "vitest";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter, Routes, useLocation } from "react-router-dom";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
+import * as mcp from "../../shared/wakala/mcp";
+import { menuRoutes } from "./routes";
+
+let landed = "";
+
+const Where = () => {
+  landed = useLocation().pathname;
+  return null;
+};
+
+beforeEach(() => {
+  openAgency("town");
+  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => (name.includes("_list") ? { items: [] } : Promise.reject(new Error(`${name}: unknown tool`))));
+});
+
+afterEach(() => {
+  cleanup();
+  forgetOpenAgency();
+  vi.restoreAllMocks();
+});
+
+const cases = [
+  { id: "residents", section: "People", submenu: "All People", opens: "/a/town/menu/residents/people" },
+  { id: "properties", section: "Places & Addresses", submenu: "Places", opens: "/a/town/menu/properties/places" },
+  { id: "assets", section: "Assets & Works", submenu: "Equipment", opens: "/a/town/menu/assets/equipment" },
+  { id: "staff", section: "Staff & Departments", submenu: "Departments", opens: "/a/town/menu/staff/departments" },
+  { id: "issues", section: "Issues & Requests", submenu: "All Issues", opens: "/a/town/menu/issues/all" },
+  { id: "settings", section: "Settings", submenu: "Integrations", opens: "/a/town/menu/settings/integrations" },
+  { id: "council", section: "Decisions", submenu: "Committees", opens: "/a/town/menu/council/committees" },
+  { id: "finance", section: "Finance", submenu: "Payments", opens: "/a/town/menu/finance/payments" },
+];
+
+const section = (id: string) =>
+  render(
+    <MemoryRouter initialEntries={[`/a/town/menu/${id}`]}>
+      <Routes>{menuRoutes()}</Routes>
+      <Where />
+    </MemoryRouter>,
+  );
+
+describe.each(cases)("the $section submenu $submenu", ({ id, section: title, submenu, opens }) => {
+  it("opens its screen and Back returns to the section", async () => {
+    section(id);
+
+    await userEvent.click(screen.getByRole("button", { name: new RegExp(submenu) }));
+    await waitFor(() => expect(landed).toBe(opens));
+    await userEvent.click(await screen.findByRole("button", { name: new RegExp(title.replace("&", "\\&")) }));
+
+    await waitFor(() => expect(landed).toBe(`/a/town/menu/${id}`));
+    expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
+  });
+});
+
+describe("the submenus no module covers", () => {
+  it.each([
+    { id: "council", missing: ["Meetings", "Agendas & Minutes", "Resolutions", "Rules"] },
+    { id: "finance", missing: ["Budget", "Financial Reports"] },
+    { id: "settings", missing: ["Audit Log"] },
+    { id: "services", missing: ["Permits", "Licences", "Fees & Payments", "Service Catalogue"] },
+  ])("keep $id saying Not available yet", ({ id, missing }) => {
+    section(id);
+
+    missing.forEach((title) => expect(screen.queryByRole("button", { name: new RegExp(title) })).toBeNull());
+    expect(screen.getAllByText("Not available yet")).toHaveLength(missing.length);
+  });
+});

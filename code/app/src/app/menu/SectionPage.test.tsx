@@ -55,10 +55,10 @@ describe("a menu section's screen", () => {
   });
 
   it("marks a submenu with no screen as not available yet and gives it no button", () => {
-    section("residents");
+    section("services");
 
-    expect(screen.queryByRole("button", { name: /All People/ })).toBeNull();
-    expect(screen.getAllByText(notYetWords)).toHaveLength(5);
+    expect(screen.queryByRole("button", { name: /Permits/ })).toBeNull();
+    expect(screen.getAllByText(notYetWords)).toHaveLength(4);
   });
 
   it("goes back to Home for a section it does not know", () => {

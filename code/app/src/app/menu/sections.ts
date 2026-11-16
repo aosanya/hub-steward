@@ -1,6 +1,14 @@
 import { hasModule, type AgencyView } from "../../features/agency/modules";
 import { routes } from "../routes";
 import type { IconName } from "../../shared/ui/Icon";
+import { items as assetItems } from "./sections/assets";
+import { items as councilItems } from "./sections/council";
+import { items as financeItems } from "./sections/finance";
+import { items as issueItems } from "./sections/issues";
+import { items as propertyItems } from "./sections/properties";
+import { items as residentItems } from "./sections/residents";
+import { items as settingsItems } from "./sections/settings";
+import { items as staffItems } from "./sections/staff";
 
 export type MenuItem = { title: string; path?: () => string };
 
@@ -10,27 +18,29 @@ const notYet = (title: string): MenuItem => ({ title });
 
 const opens = (title: string, path: () => string): MenuItem => ({ title, path });
 
+const joined = (titles: string[], covering: MenuItem[]): MenuItem[] => titles.map((title) => covering.find((item) => item.title === title) ?? notYet(title));
+
 export const menuSections: MenuSection[] = [
   {
     id: "residents",
     title: "People",
     icon: "users",
     module: "actor",
-    items: ["All People", "Households", "Registrations", "Groups & Associations", "Communications"].map(notYet),
+    items: residentItems,
   },
   {
     id: "properties",
     title: "Places & Addresses",
     icon: "pin",
     module: "digitaltwin",
-    items: ["Places", "Addresses", "Ownership & Tenure", "Land Use"].map(notYet),
+    items: propertyItems,
   },
   {
     id: "issues",
     title: "Issues & Requests",
     icon: "flag",
     module: "forms",
-    items: [notYet("All Issues"), notYet("Assigned to Me"), opens("Overdue", routes.lateMatters.path), notYet("Map View"), notYet("Service Types")],
+    items: joined(["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types"], [...issueItems, opens("Overdue", routes.lateMatters.path)]),
   },
   {
     id: "services",
@@ -44,34 +54,34 @@ export const menuSections: MenuSection[] = [
     title: "Assets & Works",
     icon: "box",
     module: "assetmanager",
-    items: ["Routes", "Equipment", "Facilities", "Buildings", "Work Orders", "Maintenance Schedule"].map(notYet),
+    items: assetItems,
   },
   {
     id: "council",
     title: "Decisions",
     icon: "landmark",
     module: "voting",
-    items: ["Meetings", "Agendas & Minutes", "Resolutions", "Rules", "Committees"].map(notYet),
+    items: joined(["Meetings", "Agendas & Minutes", "Resolutions", "Rules", "Committees"], councilItems),
   },
   {
     id: "staff",
     title: "Staff & Departments",
     icon: "briefcase",
     module: "actor",
-    items: ["Staff", "Departments", "Crews", "Roles & Permissions"].map(notYet),
+    items: staffItems,
   },
   {
     id: "finance",
     title: "Finance",
     icon: "wallet",
     module: "accounting",
-    items: ["Budget", "Revenue & Billing", "Procurement", "Payments", "Financial Reports"].map(notYet),
+    items: joined(["Budget", "Revenue & Billing", "Procurement", "Payments", "Financial Reports"], financeItems),
   },
   {
     id: "settings",
     title: "Settings",
     icon: "gear",
-    items: ["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "Audit Log"].map(notYet),
+    items: joined(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "Audit Log"], settingsItems),
   },
 ];
 
