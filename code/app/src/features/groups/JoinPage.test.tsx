@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
@@ -176,5 +176,68 @@ describe("join group", () => {
     show(fake());
     await userEvent.click(screen.getByRole("button", { name: "Back" }));
     expect(screen.getByRole("heading", { name: "Do Something page" })).toBeInTheDocument();
+  });
+});
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+const frame = () => document.querySelector(".wf") as HTMLElement | null;
+
+describe("join group in the Folders frame", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("lists the groups as the left pane and keeps the code field in the main pane under a head strip", async () => {
+    setWide(true);
+    show(fake({ listMyGroups: async () => [{ id: "g3", name: "Boda riders" }] }));
+    await screen.findByText("Siaya farmers");
+
+    const tree = frame()?.querySelector(".wf-panes .wf-tree") as HTMLElement;
+    expect(within(tree).getByText("Siaya farmers")).toBeInTheDocument();
+    expect(within(tree).getByText("Boda riders")).toBeInTheDocument();
+    expect(within(tree).queryByLabelText("Have a group code?")).toBeNull();
+    const main = frame()?.querySelector(".wf-panes .wf-main") as HTMLElement;
+    expect(within(main.querySelector(".wf-head") as HTMLElement).getByText("Join a group")).toBeInTheDocument();
+    expect(within(main.querySelector(".wf-content") as HTMLElement).getByLabelText("Have a group code?")).toBeInTheDocument();
+  });
+
+  it("asks to join from the list and shows Requested and Go to Chat in the frame", async () => {
+    setWide(true);
+    show(fake());
+    await userEvent.click((await screen.findAllByRole("button", { name: "Ask to join" }))[0]);
+
+    expect(await screen.findByRole("button", { name: "Requested" })).toBeDisabled();
+    expect(within(frame() as HTMLElement).getByRole("button", { name: "Go to Chat" })).toBeInTheDocument();
+  });
+
+  it("finds a group by code and says when no group has it, inside the frame", async () => {
+    setWide(true);
+    show(fake({ listJoinableGroups: async () => [] }));
+    await userEvent.type(screen.getByLabelText("Have a group code?"), "G-NOPE");
+    await userEvent.click(screen.getByRole("button", { name: "Find" }));
+
+    expect(await within(frame() as HTMLElement).findByText("No group has that code")).toBeInTheDocument();
+  });
+
+  it("shows the failure card inside the frame", async () => {
+    setWide(true);
+    show(fake({ listJoinableGroups: async () => Promise.reject(new Error("x")) }));
+
+    expect(await within(frame() as HTMLElement).findByRole("alert")).toBeInTheDocument();
+  });
+
+  it("draws no frame on a phone and keeps one plain column", async () => {
+    setWide(false);
+    show(fake());
+    await screen.findByText("Siaya farmers");
+
+    expect(frame()).toBeNull();
+    expect(screen.getByLabelText("Have a group code?")).toBeInTheDocument();
   });
 });

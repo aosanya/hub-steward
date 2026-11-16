@@ -1,0 +1,3 @@
+.join-list, .join-form { display: flex; flex-direction: column; gap: .75rem; }
+.join-list { padding: .75rem; }
+.join-form { max-width: 28rem; }

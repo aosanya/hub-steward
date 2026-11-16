@@ -8,11 +8,15 @@ import { Field } from "../../shared/ui/Field";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { chatListPath, doSomethingBackPath, routes } from "../../app/routes";
 import { Shell } from "../../app/Shell";
+import { PaneFrame } from "../../shared/ui/PaneFrame";
+import { useWide } from "../../shared/ui/useWide";
+import "./joinWindow.css";
 
 const defaultClient = mcpGroupsClient();
 
 export function JoinPage({ client = defaultClient }: { client?: GroupsClient }) {
   const navigate = useNavigate();
+  const wide = useWide();
   const [groups, setGroups] = useState<JoinableGroup[]>([]);
   const [mine, setMine] = useState<MyGroup[]>([]);
   const [requested, setRequested] = useState<Set<string>>(new Set());
@@ -98,8 +102,8 @@ export function JoinPage({ client = defaultClient }: { client?: GroupsClient }) 
       />
     );
 
-  return (
-    <Shell title={joinGroupWorkflow} onBack={() => navigate(doSomethingBackPath())}>
+  const form = (
+    <>
       <Field
         label="Have a group code?"
         placeholder="G-XXX-XXX-XXX"
@@ -112,17 +116,58 @@ export function JoinPage({ client = defaultClient }: { client?: GroupsClient }) 
       </Button>
       {failed ? <p role="alert">Something went wrong. Try again.</p> : null}
       {found && !memberIds.has(found.id) ? <Rows>{row(found)}</Rows> : null}
-      {mine.length > 0 ? <Rows>{mine.map(memberRow)}</Rows> : null}
-      {loaded && !failed && groups.length === 0 && mine.length === 0 ? (
-        <EmptyCard words="No groups are open to join yet." />
-      ) : (
-        <Rows>{stillToJoin.map(row)}</Rows>
-      )}
-      {requested.size > 0 || mine.length > 0 ? (
-        <Button kind="primary" onClick={() => navigate(chatListPath())}>
-          Go to Chat
-        </Button>
-      ) : null}
+    </>
+  );
+
+  const mineRows = mine.length > 0 ? <Rows>{mine.map(memberRow)}</Rows> : null;
+
+  const toJoin =
+    loaded && !failed && groups.length === 0 && mine.length === 0 ? (
+      <EmptyCard words="No groups are open to join yet." />
+    ) : (
+      <Rows>{stillToJoin.map(row)}</Rows>
+    );
+
+  const goToChat =
+    requested.size > 0 || mine.length > 0 ? (
+      <Button kind="primary" onClick={() => navigate(chatListPath())}>
+        Go to Chat
+      </Button>
+    ) : null;
+
+  const onBack = () => navigate(doSomethingBackPath());
+
+  if (wide) {
+    return (
+      <Shell title={joinGroupWorkflow} onBack={onBack} tabless>
+        <PaneFrame
+          label="Groups"
+          list={
+            <div className="join-list">
+              {mineRows}
+              {toJoin}
+            </div>
+          }
+          main={
+            <>
+              <h2 className="wf-head">{joinGroupWorkflow}</h2>
+              <div className="wf-content join-form">
+                {form}
+                {goToChat}
+              </div>
+            </>
+          }
+        />
+      </Shell>
+    );
+  }
+
+  return (
+    <Shell title={joinGroupWorkflow} onBack={onBack}>
+      {form}
+      {mineRows}
+      {toJoin}
+      {goToChat}
     </Shell>
   );
 }
