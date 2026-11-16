@@ -1,0 +1,7 @@
+.mw { display: flex; flex-direction: column; gap: .75rem; }
+.mw[data-chosen="yes"] .mw-list { display: none; }
+.mw-list, .mw-detail { display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
+@media (min-width: 48rem) {
+  .mw { display: grid; grid-template-columns: minmax(16rem, 2fr) 3fr; align-items: start; gap: 1rem; }
+  .mw[data-chosen="yes"] .mw-list { display: flex; }
+}

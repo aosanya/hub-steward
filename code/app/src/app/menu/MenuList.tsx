@@ -19,14 +19,14 @@ type Fields = { title: string; meta: string };
 
 type Empty = { words: string; act: string; to: string };
 
-type Props = { title: string; tool: string; fields: Fields; empty: Empty };
+type Props = { title: string; tool: string; fields: Fields; empty: Empty; bare?: boolean; selectedId?: string; onChoose?: (id: string) => void };
 
 const textOf = (item: Record<string, unknown>, key: string) => {
   const value = item[key];
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
 
-export function MenuList({ title, tool, fields, empty }: Props) {
+export function MenuList({ title, tool, fields, empty, bare, selectedId, onChoose }: Props) {
   const navigate = useNavigate();
   const back = useBackToSection();
   const [typed, setTyped] = useState("");
@@ -34,8 +34,8 @@ export function MenuList({ title, tool, fields, empty }: Props) {
   const rows = view.state === "ready" ? view.data : [];
   const wanted = typed.trim().toLocaleLowerCase();
   const shown = rows.filter((item) => `${textOf(item, fields.title)} ${textOf(item, fields.meta)}`.toLocaleLowerCase().includes(wanted));
-  return (
-    <Shell title={title} titleUnder {...back}>
+  const body = (
+    <>
       {view.state === "loading" ? <LoadingLine /> : null}
       {view.state === "error" ? <LoadFailed words={loadFailedWords} /> : null}
       {view.state === "ready" && rows.length === 0 ? (
@@ -48,11 +48,18 @@ export function MenuList({ title, tool, fields, empty }: Props) {
           <SearchBox label={searchWords} value={typed} onChange={setTyped} />
           <Rows>
             {shown.map((item, at) => (
-              <ListRow key={textOf(item, "id") || at} title={textOf(item, fields.title)} meta={textOf(item, fields.meta)} />
+              <ListRow
+                key={textOf(item, "id") || at}
+                title={textOf(item, fields.title)}
+                meta={textOf(item, fields.meta)}
+                onClick={onChoose ? () => onChoose(textOf(item, "id")) : undefined}
+                pressed={onChoose ? selectedId === textOf(item, "id") : undefined}
+              />
             ))}
           </Rows>
         </>
       ) : null}
-    </Shell>
+    </>
   );
+  return bare ? body : <Shell title={title} titleUnder {...back}>{body}</Shell>;
 }

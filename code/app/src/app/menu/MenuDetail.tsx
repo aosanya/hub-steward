@@ -16,7 +16,7 @@ export const actionFailedWords = "That did not go through.";
 
 type Action = { label: string; tool: string };
 
-type Props = { title: string; tool: string; fields: Record<string, string>; status: string; action?: Action };
+type Props = { title: string; tool: string; fields: Record<string, string>; status: string; action?: Action; id?: string; bare?: boolean };
 
 type Item = Record<string, unknown>;
 
@@ -30,9 +30,10 @@ const itemOf = (reply: unknown): Item => {
   return inner && typeof inner === "object" ? (inner as Item) : {};
 };
 
-export function MenuDetail({ title, tool, fields, status, action }: Props) {
+export function MenuDetail({ title, tool, fields, status, action, id: chosen, bare }: Props) {
   const back = useBackToSection();
-  const { id } = useParams();
+  const params = useParams();
+  const id = chosen ?? params.id;
   const [acting, setActing] = useState<"idle" | "busy" | "failed">("idle");
   const view = useLoad(async () => itemOf(await callTool("", tool, id ? { id } : {})), `menu-detail:${openAgencyId()}:${tool}:${id ?? ""}`);
   const item = view.state === "ready" ? view.data : {};
@@ -48,8 +49,8 @@ export function MenuDetail({ title, tool, fields, status, action }: Props) {
       setActing("failed");
     }
   };
-  return (
-    <Shell title={title} titleUnder {...back}>
+  const body = (
+    <>
       {view.state === "loading" ? <LoadingLine /> : null}
       {view.state === "error" ? <LoadFailed words={loadFailedWords} /> : null}
       {view.state === "ready" ? (
@@ -66,6 +67,7 @@ export function MenuDetail({ title, tool, fields, status, action }: Props) {
           {acting === "failed" ? <LoadFailed words={actionFailedWords} /> : null}
         </>
       ) : null}
-    </Shell>
+    </>
   );
+  return bare ? body : <Shell title={title} titleUnder {...back}>{body}</Shell>;
 }
