@@ -23,6 +23,10 @@ type LedgerRepository interface {
 
 	SetBudget(ctx context.Context, b Budget) (Budget, error)
 
+	ListBudgetLines(ctx context.Context, filter BudgetLineFilter) ([]BudgetLine, error)
+
+	GetBudgetLine(ctx context.Context, id string) (BudgetLine, error)
+
 	Variance(ctx context.Context, accountID, periodStart, periodEnd string) (Variance, error)
 
 	Overdue(ctx context.Context, accountID, asOf, ageFrom string) (Overdue, error)

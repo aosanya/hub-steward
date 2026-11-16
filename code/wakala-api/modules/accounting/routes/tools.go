@@ -1,0 +1,33 @@
+package routes
+
+import (
+	"strings"
+
+	"wakalaserver/modules/shared/dispatch"
+
+	accounting "wakalaserver/modules/accounting"
+)
+
+type Tool = dispatch.Tool
+
+const budgetActionPrefix = "accounting.budget."
+
+func BuildTools(repo accounting.LedgerRepository, m Mount) ([]Tool, error) {
+	s, err := operations()
+	if err != nil {
+		return nil, err
+	}
+	all, err := dispatch.Tools(s, dispatch.Deps{
+		Manager: repo, Errors: sentinels, Authorize: m.Authorize, Caller: m.Caller,
+	})
+	if err != nil {
+		return nil, err
+	}
+	var served []Tool
+	for _, t := range all {
+		if strings.HasPrefix(t.Action, budgetActionPrefix) && t.Action != "accounting.budget.variance" {
+			served = append(served, t)
+		}
+	}
+	return served, nil
+}

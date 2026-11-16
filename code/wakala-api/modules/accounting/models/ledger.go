@@ -33,7 +33,21 @@ type Budget struct {
 	AccountID   string `json:"account_id"`
 	PeriodStart string `json:"period_start"`
 	PeriodEnd   string `json:"period_end"`
+	Name        string `json:"name,omitempty"`
+	Department  string `json:"department,omitempty"`
 	Amount      int64  `json:"amount"`
+	SetAt       string `json:"set_at"`
+}
+
+type BudgetLine struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Department  string `json:"department"`
+	AccountID   string `json:"account_id"`
+	PeriodStart string `json:"period_start"`
+	PeriodEnd   string `json:"period_end"`
+	Planned     int64  `json:"planned"`
+	Spent       int64  `json:"spent"`
 	SetAt       string `json:"set_at"`
 }
 

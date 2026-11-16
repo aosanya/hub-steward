@@ -151,11 +151,50 @@
       "call": "SetBudget",
       "action": "accounting.budget.set",
       "title": "Set budget",
-      "description": "Set what one account is expected to hold over one period. Setting it again for the same account and period replaces the amount. The period runs from period_start, inclusive, to period_end, exclusive.",
+      "description": "Set one budget line: what one account is expected to hold over one period, with a name and the department it belongs to. Setting it again for the same account and period replaces the name, department and amount. The period runs from period_start, inclusive, to period_end, exclusive.",
       "args": [
         {
           "from": "body",
           "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "list_budget_lines": {
+      "method": "GET",
+      "path": "/budgets",
+      "call": "ListBudgetLines",
+      "action": "accounting.budget.list",
+      "title": "List budget lines",
+      "description": "List budget lines, each with its name, department, period, planned amount and what was spent in that period so far. Spent is the account's balance over the period, debits minus credits, folded on every call. Narrow by account_id or department; limit caps the page.",
+      "args": [
+        {
+          "from": "query",
+          "whole": true
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
+    "get_budget_line": {
+      "method": "GET",
+      "path": "/budgets/{budgetID}",
+      "call": "GetBudgetLine",
+      "action": "accounting.budget.read",
+      "title": "Read budget line",
+      "description": "Read one budget line by its id, with its planned amount and what was spent in its period so far.",
+      "args": [
+        {
+          "from": "path",
+          "as": "budgetID",
+          "description": "The budget line to read."
         }
       ],
       "returns": [

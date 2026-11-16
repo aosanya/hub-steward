@@ -71,6 +71,7 @@ func newMCPServer(d *Deps) *mcp.Server {
 	d.registerAuditMCPTools(server)
 	d.registerSourcesMCPTools(server, d.resolveSourceManager)
 	d.registerAssetMCPTools(server, d.resolveAssetManager)
+	d.registerAccountingMCPTools(server)
 	d.registerFormsMCPTools(server)
 	d.registerActorCommMCPTools(server)
 	d.registerFormsCatalogMCPTools(server)

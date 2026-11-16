@@ -246,6 +246,16 @@
           "immutable": true
         },
         {
+          "name": "name",
+          "type": "string",
+          "description": "What the budget line is called, such as Road repair."
+        },
+        {
+          "name": "department",
+          "type": "string",
+          "description": "The department the budget line belongs to, such as Public works."
+        },
+        {
           "name": "amount",
           "type": "int",
           "description": "The budgeted balance for the period, in the same smallest unit and the same debit-minus-credit sense as the account's balance."

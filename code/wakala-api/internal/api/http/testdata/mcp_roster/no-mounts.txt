@@ -1,3 +1,6 @@
+accounting_budget_list
+accounting_budget_read
+accounting_budget_set
 actor_accept_invitation
 actor_approve_join_request
 actor_assign_group

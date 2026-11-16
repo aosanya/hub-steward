@@ -15,6 +15,7 @@ type (
 	AccountCategory = models.AccountCategory
 	DocumentKind    = models.DocumentKind
 	Budget          = models.Budget
+	BudgetLine      = models.BudgetLine
 	Variance        = models.Variance
 	OverdueEntry    = models.OverdueEntry
 	Overdue         = models.Overdue
@@ -22,6 +23,12 @@ type (
 	Certificate     = models.Certificate
 	AgeBasis        = models.AgeBasis
 )
+
+type BudgetLineFilter struct {
+	AccountID  string `query:"account_id"`
+	Department string `query:"department"`
+	Limit      int    `query:"limit"`
+}
 
 const (
 	AgeFromDue    = models.AgeFromDue
