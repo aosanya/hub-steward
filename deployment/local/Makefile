@@ -1,6 +1,7 @@
 COMPOSE = docker compose --env-file .env
+GIT_FOLDER_DEFAULT = /Users/tony/Agents/workdir/CodeVald-AIProject/mwanachama/git-repositories
 
-.PHONY: env master unstick up api down backup logs ps urls
+.PHONY: env master unstick up api down backup restore-git logs ps urls
 
 env:
 	@sh scripts/make-env.sh
@@ -24,9 +25,16 @@ down:
 
 backup:
 	@mkdir -p backups && chmod 700 backups
-	@file=backups/hubsteward-$$(date +%Y%m%d-%H%M%S).sql; \
+	@stamp=$$(date +%Y%m%d-%H%M%S); file=backups/hubsteward-$$stamp.sql; \
 	$(COMPOSE) exec -T db pg_dump -U postgres postgres > $$file && gzip $$file || { rm -f $$file $$file.gz; exit 1; }; \
-	echo "backup written: $$file.gz"
+	echo "backup written: $$file.gz"; \
+	if [ -f ./.env ]; then . ./.env; fi; \
+	sh scripts/backup-git.sh "$${GIT_FOLDER:-$(GIT_FOLDER_DEFAULT)}" backups $$stamp
+
+restore-git:
+	@test -n "$(STAMP)" || { echo "usage: make restore-git STAMP=YYYYMMDD-HHMMSS (stop wakala-api first)" >&2; exit 1; }
+	@if [ -f ./.env ]; then . ./.env; fi; \
+	sh scripts/restore-git.sh backups/hubsteward-$(STAMP)-git "$${GIT_FOLDER:-$(GIT_FOLDER_DEFAULT)}"
 
 logs:
 	$(COMPOSE) logs -f --tail=100

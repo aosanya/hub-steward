@@ -33,3 +33,25 @@ Run from `deployment/local`. Nothing below was run by the page's author.
 6. Check that the route exists: `curl -i "http://localhost:8092/git/6b5149a7-da75-4493-a5a0-2ffe550cdae7/hub-steward-flutter-app.git/info/refs?service=git-upload-pack"` must answer 401 with `WWW-Authenticate: Basic realm="hub"`, not 404.
 7. Make a key while signed in with the session cookie (`POST /auth/api-keys`, or `POST /instances/6b5149a7-da75-4493-a5a0-2ffe550cdae7/api-keys` for one agency), then `git clone http://localhost:8092/git/6b5149a7-da75-4493-a5a0-2ffe550cdae7/hub-steward-flutter-app.git` with any user name and the key as password.
 8. For ISS-86, in `projects/hub-steward-app-flutter`: `git remote add origin <that URL>` then `git push -u origin <branch>`. A push to `main` is refused by design; push a branch and open a merge request.
+
+## Backup and restore of the repository files (ISS-98)
+
+`make backup` in `deployment/local` writes two things under one timestamp, in `deployment/local/backups` (git-ignored, mode 700):
+
+| Item | Name |
+|---|---|
+| Postgres dump (catalogue rows, agencies, issues) | `hubsteward-YYYYMMDD-HHMMSS.sql.gz` |
+| Every repository file of the git folder | folder `hubsteward-YYYYMMDD-HHMMSS-git/`, the same `<agency>/<file>.db` layout as the git folder |
+
+The git folder is `GIT_FOLDER` from `.env` when set, otherwise the compose default `mwanachama/git-repositories`. The copy runs while the hub is up. Each file is copied with SQLite's online backup (`sqlite3 <file> ".backup '<copy>'"`, busy timeout 30 seconds), which takes a consistent snapshot through the database's own locking, so a commit landing during the copy never leaves a torn file. A plain `cp` of a file being written could. Each copy is then opened and checked with `PRAGMA quick_check`.
+
+The folder is built as `...-git.partial` and renamed only when every file has been copied and checked. If any file fails, or the git folder is missing, or `sqlite3` is not installed, the partial folder is removed, nothing is renamed, and `make backup` exits non-zero with the file named on stderr. The Postgres dump of that run stays on disk. Treat a failed run as no backup. No retention exists for the Postgres dump today, so none was added for the copies; old pairs are deleted by hand.
+
+Restore, both halves from the same timestamp:
+
+1. Stop the API so nothing holds the files: `docker compose --env-file .env stop wakala-api`.
+2. Postgres: `gunzip -c backups/hubsteward-STAMP.sql.gz | docker compose --env-file .env exec -T db psql -U postgres postgres` into an empty database.
+3. Repository files: `make restore-git STAMP=STAMP`. Each file is copied beside its target and renamed into place, and any stale `-wal` and `-shm` files next to a target are removed first. Files in the git folder that are not in the backup are left alone.
+4. Start the API: `docker compose --env-file .env up -d --no-deps wakala-api`. The repository list and `forms_git_commit_log` then show the history again.
+
+The script test is `deployment/local/scripts/backup-git.test.sh` (`sh deployment/local/scripts/backup-git.test.sh`). It builds two WAL-mode files in a temporary folder, writes to one continuously during the copy, and checks that the copies pass the integrity check and hold the rows, that restore reproduces them and clears stale `-wal` files, and that a file that is not a database, a missing git folder and a missing backup each fail without leaving a finished folder. It touches no Docker stack and not the real git folder.
