@@ -10,6 +10,7 @@ import { MenuDetail, actionFailedWords, loadFailedWords } from "../../MenuDetail
 import { useBackToSection } from "../../useBackToSection";
 import { useWord } from "../../../../features/agency/useWord";
 import { listOf, text, type Item } from "../staff/staffData";
+import { ApplicationCorrect, type SentAnswer } from "./ApplicationCorrect";
 
 export const withdrawLabel = "Withdraw";
 
@@ -19,25 +20,33 @@ const sentWords = "Sent";
 
 const unwrapped = (reply: unknown): Item => ((reply as { item?: Item } | null)?.item ?? (reply as Item | null) ?? {}) as Item;
 
-const answerValue = (answer: Item) =>
-  ["value_text", "value_number", "value_date", "value_time"].map((key) => text(answer, key)).find((value) => value !== "") ?? "";
+const valueKeys = ["value_text", "value_number", "value_date", "value_time"];
+
+const valueKeyOf = (answer: Item) => valueKeys.find((key) => text(answer, key) !== "") ?? "";
 
 const loadAnswers = async (formId: string) => {
   const [questions, answers] = await Promise.all([listOf("forms_question_list", { form_id: formId }), listOf("forms_answer_list", { form_id: formId })]);
   const prompts = new Map(questions.map((question) => [text(question, "id"), text(question, "prompt")]));
-  return answers.map((answer) => ({ id: text(answer, "id"), prompt: prompts.get(text(answer, "question_id")) ?? "", value: answerValue(answer) }));
+  const sent: SentAnswer[] = answers.map((answer) => {
+    const valueKey = valueKeyOf(answer);
+    return { id: text(answer, "id"), questionId: text(answer, "question_id"), prompt: prompts.get(text(answer, "question_id")) ?? "", valueKey, value: valueKey ? text(answer, valueKey) : "" };
+  });
+  return { sent, memberId: answers.map((answer) => text(answer, "member_id")).find((id) => id !== "") ?? "" };
 };
 
-function ApplicationAnswers({ formId, version }: { formId: string; version: number }) {
+function ApplicationAnswers({ formId, version, onCorrected }: { formId: string; version: number; onCorrected: () => void }) {
   const view = useLoad(() => loadAnswers(formId), `application-answers:${openAgencyId()}:${formId}:${version}`);
   if (view.state === "loading") return <LoadingLine />;
   if (view.state === "error") return <LoadFailed words={loadFailedWords} />;
   return (
-    <Rows>
-      {view.data.map((answer) => (
-        <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />
-      ))}
-    </Rows>
+    <>
+      <Rows>
+        {view.data.sent.map((answer) => (
+          <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />
+        ))}
+      </Rows>
+      <ApplicationCorrect formId={formId} memberId={view.data.memberId} answers={view.data.sent} onSaved={onCorrected} />
+    </>
   );
 }
 
@@ -72,7 +81,7 @@ export function ApplicationScreen() {
         action={{ label: withdrawLabel, tool: "forms_form_withdraw", run: withdraw, when: (item) => text(item, "status") !== withdrawnWords }}
       />
       {failed ? <LoadFailed words={actionFailedWords} /> : null}
-      <ApplicationAnswers formId={id} version={version} />
+      <ApplicationAnswers formId={id} version={version} onCorrected={() => setVersion((current) => current + 1)} />
     </Shell>
   );
 }
