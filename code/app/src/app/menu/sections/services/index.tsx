@@ -1,12 +1,14 @@
 import { Route } from "react-router-dom";
 import { ApplicationScreen } from "./ApplicationScreen";
+import { ApplicationsScreen } from "./ApplicationsScreen";
 import { FeesPaymentsScreen, LicencesScreen, PermitsScreen, ServiceCatalogueScreen } from "./ServicesScreens";
 import { servicesPaths } from "./paths";
 
-export { ApplicationScreen, FeesPaymentsScreen, LicencesScreen, PermitsScreen, ServiceCatalogueScreen };
+export { ApplicationScreen, ApplicationsScreen, FeesPaymentsScreen, LicencesScreen, PermitsScreen, ServiceCatalogueScreen };
 export { servicesPaths } from "./paths";
 
 export const items = [
+  { title: "Applications", path: () => servicesPaths.applications.path() },
   { title: "Permits", path: () => servicesPaths.permits.path() },
   { title: "Licences", path: () => servicesPaths.licences.path() },
   { title: "Fees & Payments", path: () => servicesPaths.fees.path() },
@@ -15,6 +17,7 @@ export const items = [
 
 export const routes = () => (
   <>
+    <Route path={servicesPaths.applications.pattern} element={<ApplicationsScreen />} />
     <Route path={servicesPaths.permits.pattern} element={<PermitsScreen />} />
     <Route path={servicesPaths.licences.pattern} element={<LicencesScreen />} />
     <Route path={servicesPaths.fees.pattern} element={<FeesPaymentsScreen />} />

@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { ApplicationScreen } from "./ApplicationScreen";
+import { ApplicationsScreen } from "./ApplicationsScreen";
 import { FeesPaymentsScreen, LicencesScreen, PermitsScreen, ServiceCatalogueScreen } from "./ServicesScreens";
 import { items, routes } from "./index";
 
@@ -47,11 +48,17 @@ const dayWords = (day: number) => new RegExp(`2026-03-${String(day).padStart(2, 
 
 const origin = { path: "/a/town/menu/services", title: "Services & Permits" };
 
+const answeredForms = [
+  { send_id: "n1", form_id: "f1", title: "Market stall application", answered_at: "2026-03-04T12:00:00Z", open: true },
+  { send_id: "n2", form_id: "f9", title: "Fence permit application", answered_at: "2026-03-20T12:00:00Z", open: false },
+];
+
 const screens = [
   { title: "Permits", at: "/a/town/menu/services/permits", pattern: "/a/:agencyId/menu/services/permits", Screen: PermitsScreen, tool: "forms_catalog_entry_list_public" },
   { title: "Licences", at: "/a/town/menu/services/licences", pattern: "/a/:agencyId/menu/services/licences", Screen: LicencesScreen, tool: "forms_catalog_entry_list_public" },
   { title: "Fees & Payments", at: "/a/town/menu/services/fees", pattern: "/a/:agencyId/menu/services/fees", Screen: FeesPaymentsScreen, tool: "forms_catalog_entry_list_public" },
   { title: "Service Catalogue", at: "/a/town/menu/services/catalogue", pattern: "/a/:agencyId/menu/services/catalogue", Screen: ServiceCatalogueScreen, tool: "forms_catalog_entry_list_public" },
+  { title: "Applications", at: "/a/town/menu/services/applications", pattern: "/a/:agencyId/menu/services/applications", Screen: ApplicationsScreen, tool: "forms_form_list_answered" },
 ];
 
 const applicationAt = (id: string) => `/a/town/menu/services/applications/${id}`;
@@ -75,6 +82,7 @@ beforeEach(() => {
     forms_question_list: () => ({ items: applicationQuestions }),
     forms_answer_list: () => ({ items: applicationAnswers }),
     forms_form_withdraw: () => ({}),
+    forms_form_list_answered: () => ({ items: answeredForms }),
   };
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     const answer = answers[name];
@@ -231,6 +239,42 @@ describe("Service Catalogue", () => {
     expect(screen.getByText("Book a collection for large items")).toBeInTheDocument();
     expect(screen.getByText("Ask for a plot near you")).toBeInTheDocument();
     expect(toolsCalled()).toEqual(new Set(["forms_catalog_entry_list_public"]));
+  });
+});
+
+describe("Applications", () => {
+  it("lists the forms the person sent, newest first, from the answered forms only", async () => {
+    open(screens[4].at);
+
+    const fence = await screen.findByText("Fence permit application");
+    const stall = screen.getByText("Market stall application");
+    expect(fence.compareDocumentPosition(stall) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(called).toHaveBeenCalledWith("", "forms_form_list_answered", undefined);
+    expect(toolsCalled()).not.toContain("forms_form_list_waiting");
+  });
+
+  it("opens the application detail with Withdraw when a row is tapped", async () => {
+    open(screens[4].at);
+
+    await userEvent.click(await screen.findByText("Market stall application"));
+
+    await waitFor(() => expect(landed).toBe(applicationAt("f1")));
+    expect(await screen.findByRole("button", { name: /Withdraw/ })).toBeInTheDocument();
+  });
+
+  it("opens the detail with a Back button that reads Applications and returns to the list", async () => {
+    open(screens[4].at);
+    await userEvent.click(await screen.findByText("Fence permit application"));
+    await screen.findByText("Sent");
+
+    await userEvent.click(screen.getByRole("button", { name: /Applications/ }));
+
+    await waitFor(() => expect(landed).toBe(screens[4].at));
+  });
+
+  it("is a row of the Services & Permits menu", () => {
+    expect(items.map((item) => item.title)).toContain("Applications");
+    expect(pathOf(items.find((item) => item.title === "Applications") as { path: unknown })).toBe("/a/town/menu/services/applications");
   });
 });
 

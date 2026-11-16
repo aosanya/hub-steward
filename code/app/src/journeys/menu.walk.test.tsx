@@ -55,7 +55,7 @@ describe("menu: a member goes from Home into a section and on to a screen", () =
     expect(openAgencyId()).toBe(riders.id);
   });
 
-  it("goes back from a section to Home, then opens Services & Permits and Applications on the Forms list and back to Services & Permits", async () => {
+  it("goes back from a section to Home, then opens Services & Permits and Applications on the list of sent applications and back to Services & Permits", async () => {
     await openHome();
     await userEvent.click(screen.getByRole("button", { name: /Issues & Requests/ }));
     await heading("Issues & Requests");
@@ -65,8 +65,8 @@ describe("menu: a member goes from Home into a section and on to a screen", () =
     await heading("Services & Permits");
     await waitFor(() => expect(where()).toBe(`/a/${riders.id}/menu/services`));
     await userEvent.click(await screen.findByRole("button", { name: /Applications/ }));
-    await heading("Forms");
-    await waitFor(() => expect(where()).toBe(`/a/${riders.id}/forms`));
+    await heading("Applications");
+    await waitFor(() => expect(where()).toBe(`/a/${riders.id}/menu/services/applications`));
     await userEvent.click(screen.getByRole("button", { name: /Services & Permits/ }));
     await heading("Services & Permits");
     await waitFor(() => expect(where()).toBe(`/a/${riders.id}/menu/services`));

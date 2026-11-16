@@ -42,6 +42,7 @@ const cases = [
   { id: "finance", section: "Finance", submenu: "Procurement", opens: "/a/town/menu/finance/procurement" },
   { id: "finance", section: "Finance", submenu: "Payments", opens: "/a/town/menu/finance/payments" },
   { id: "finance", section: "Finance", submenu: "Financial Reports", opens: "/a/town/menu/finance/reports" },
+  { id: "services", section: "Services & Permits", submenu: "Applications", opens: "/a/town/menu/services/applications" },
   { id: "services", section: "Services & Permits", submenu: "Permits", opens: "/a/town/menu/services/permits" },
   { id: "services", section: "Services & Permits", submenu: "Licences", opens: "/a/town/menu/services/licences" },
   { id: "services", section: "Services & Permits", submenu: "Fees & Payments", opens: "/a/town/menu/services/fees" },

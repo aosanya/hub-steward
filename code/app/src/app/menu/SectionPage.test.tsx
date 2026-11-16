@@ -46,12 +46,12 @@ describe("a menu section's screen", () => {
     expect(landed).toBe("/a/town/council/late-matters");
   });
 
-  it("opens Applications on the forms list", async () => {
+  it("opens Applications on the list of sent applications", async () => {
     section("services");
 
     await userEvent.click(screen.getByRole("button", { name: /Applications/ }));
 
-    expect(landed).toBe("/a/town/forms");
+    expect(landed).toBe("/a/town/menu/services/applications");
   });
 
   it("goes back to Home for a section it does not know", () => {
