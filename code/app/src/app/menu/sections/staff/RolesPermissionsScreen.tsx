@@ -1,5 +1,5 @@
 import { MenuWindow } from "../../MenuWindow";
-import { homeEmpty, listOf, peopleWords, text } from "./staffData";
+import { homeEmpty, listOf, peopleWords, text, type Item } from "./staffData";
 
 const liveDraftOf = async () => {
   const production = (await listOf("agency_list_publications")).filter((publication) => publication.channel === "production");
@@ -7,13 +7,20 @@ const liveDraftOf = async () => {
   return text(newest, "draft_id");
 };
 
+const holdersOf = async (kind: Item) => {
+  const seats = await listOf("actor_list_role_holders", { kind_id: text(kind, "id") });
+  const standing = seats.filter((seat) => seat.active !== false && text(seat, "ended_at") === "");
+  return new Set(standing.map((seat) => text(seat, "actor_id"))).size;
+};
+
 const loadRoles = async () => {
   const draft = await liveDraftOf();
-  const [roles, assignments] = await Promise.all([listOf("agency_list_roles", { draft_id: draft }), listOf("agency_list_role_assignments", { draft_id: draft })]);
+  const [roles, kinds] = await Promise.all([listOf("agency_list_roles", { draft_id: draft }), listOf("actor_list_role_kinds")]);
+  const counts = new Map(await Promise.all(kinds.map(async (kind) => [text(kind, "definition_role_id"), await holdersOf(kind)] as const)));
   return roles.map((role) => ({
     id: text(role, "id"),
     name: text(role, "name"),
-    meta: peopleWords(assignments.filter((assignment) => text(assignment, "role_id") === text(role, "id")).length),
+    meta: peopleWords(counts.get(text(role, "code")) ?? 0),
   }));
 };
 
@@ -24,7 +31,7 @@ export function RolesPermissionsScreen() {
     <MenuWindow
       title="Roles & Permissions"
       list={{ title: "Roles & Permissions", tool: "agency_list_roles", load: loadRoles, fields: { title: "name", meta: "meta" }, empty: homeEmpty("No roles yet.") }}
-      detail={{ tool: "agency_list_role_assignments", load: loadRole, fields: { Name: "name", Holders: "meta" }, status: "status" }}
+      detail={{ tool: "actor_list_role_holders", load: loadRole, fields: { Name: "name", Holders: "meta" }, status: "status" }}
     />
   );
 }

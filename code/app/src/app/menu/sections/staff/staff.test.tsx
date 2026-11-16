@@ -380,21 +380,38 @@ describe("the Crews list", () => {
   });
 });
 
-const roles = [
-  { id: "r1", name: "Sample Clerk" },
-  { id: "r2", name: "Sample Registrar" },
-  { id: "r3", name: "Sample Planner" },
+const publications = [
+  { channel: "", version: 3, draft_id: "d-old" },
+  { channel: "production", version: 4, draft_id: "d-live" },
 ];
 
-const roleAssignments = [
-  { id: "x1", work_item_id: "w1", role_id: "r1", label: "R" },
-  { id: "x2", work_item_id: "w2", role_id: "r1", label: "A" },
-  { id: "x3", work_item_id: "w1", role_id: "r2", label: "A" },
+const roles = [
+  { id: "r1", code: "R-1", name: "Sample Clerk" },
+  { id: "r2", code: "R-2", name: "Sample Registrar" },
+  { id: "r3", code: "R-3", name: "Sample Planner" },
 ];
+
+const roleKinds = [
+  { id: "k1", name: "Sample Clerk", definition_role_id: "R-1" },
+  { id: "k2", name: "Sample Registrar", definition_role_id: "R-2" },
+  { id: "k3", name: "Sample Planner", definition_role_id: "R-3" },
+];
+
+const holdersOfKind: Record<string, unknown[]> = {
+  k1: [
+    { id: "s1", actor_id: "a1", group_id: "g1", kind_id: "k1", active: true, display_name: "Anna Sample" },
+    { id: "s2", actor_id: "a2", group_id: "g1", kind_id: "k1", active: true, display_name: "Ben Sample" },
+    { id: "s3", actor_id: "a1", group_id: "g2", kind_id: "k1", active: true, display_name: "Anna Sample" },
+    { id: "s4", actor_id: "a3", group_id: "g1", kind_id: "k1", active: false, ended_at: "2026-01-01" },
+  ],
+  k2: [{ id: "s5", actor_id: "a2", group_id: "g2", kind_id: "k2", active: true }],
+};
 
 const roleAnswers: Answers = {
+  agency_list_publications: () => ({ items: publications }),
   agency_list_roles: () => ({ items: roles }),
-  agency_list_role_assignments: () => ({ items: roleAssignments }),
+  actor_list_role_kinds: () => ({ items: roleKinds }),
+  actor_list_role_holders: (args) => ({ items: holdersOfKind[String(args?.kind_id)] ?? [] }),
 };
 
 describe("the Roles & Permissions list", () => {
@@ -403,7 +420,7 @@ describe("the Roles & Permissions list", () => {
     return open("/a/town/menu/staff/roles", <RolesPermissionsScreen />, "/menu/staff/roles");
   };
 
-  it("draws one row for each role, with how many assignments name that role", async () => {
+  it("draws one row for each role, with how many people hold the role kind it defines", async () => {
     screens();
 
     expect(await screen.findByText("Sample Clerk")).toBeInTheDocument();
@@ -415,12 +432,21 @@ describe("the Roles & Permissions list", () => {
     expect(screen.getByRole("heading", { name: "Roles & Permissions" })).toBeInTheDocument();
   });
 
-  it("reads the roles and the assignments once each, not once per row", async () => {
+  it("counts a person once however many departments they hold the role in, and leaves out ended seats", async () => {
+    screens();
+    await screen.findByText("2 people");
+
+    expect(screen.queryByText("3 people")).toBeNull();
+    expect(screen.queryByText("4 people")).toBeNull();
+  });
+
+  it("does not count RACI links, and asks the holders of each role kind once", async () => {
     screens();
     await screen.findByText("2 people");
 
     expect(callsTo("agency_list_roles")).toHaveLength(1);
-    expect(callsTo("agency_list_role_assignments")).toHaveLength(1);
+    expect(callsTo("agency_list_role_assignments")).toHaveLength(0);
+    expect(callsTo("actor_list_role_holders").map(([, , args]) => (args as { kind_id: string }).kind_id).sort()).toEqual(["k1", "k2", "k3"]);
   });
 
   it("opens the role beside the list when a row is pressed, with its count of holders", async () => {
