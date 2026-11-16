@@ -64,6 +64,8 @@ type stepAnswersRequest struct {
 	Answers map[string]stepAnswer `json:"answers"`
 	OrderID string                `json:"order_id,omitempty"`
 	SendKey string                `json:"send_key,omitempty"`
+
+	AnotherSheet bool `json:"another_sheet,omitempty"`
 }
 
 const multiSelectSeparator = ", "
@@ -165,11 +167,12 @@ type stepAnswersResult struct {
 }
 
 type mcpSubmitStepAnswersParams struct {
-	InstanceID string            `json:"instance_id" jsonschema:"the Agency Instance"`
-	StepID     string            `json:"step_id" jsonschema:"the step's id, as agency_list_my_open_steps names it"`
-	Answers    map[string]string `json:"answers" jsonschema:"the answer to each question of the step's form, by the question's prompt; a multi-select answer is its chosen options joined by a comma and a space"`
-	OrderID    string            `json:"order_id,omitempty" jsonschema:"the run the step belongs to: empty on a workflow's first step, which starts a new run, and the run's order_id on every later step"`
-	SendKey    string            `json:"send_key,omitempty" jsonschema:"a key made once per opening of the form; sending a workflow's first step again with the same key is refused as already sent instead of starting a second run"`
+	InstanceID   string            `json:"instance_id" jsonschema:"the Agency Instance"`
+	StepID       string            `json:"step_id" jsonschema:"the step's id, as agency_list_my_open_steps names it"`
+	Answers      map[string]string `json:"answers" jsonschema:"the answer to each question of the step's form, by the question's prompt; a multi-select answer is its chosen options joined by a comma and a space"`
+	OrderID      string            `json:"order_id,omitempty" jsonschema:"the run the step belongs to: empty on a workflow's first step, which starts a new run, and the run's order_id on every later step"`
+	SendKey      string            `json:"send_key,omitempty" jsonschema:"a key made once per opening of the form; sending a workflow's first step again with the same key is refused as already sent instead of starting a second run; with another_sheet it names the sheet, and sending the same key again is refused as already sent"`
+	AnotherSheet bool              `json:"another_sheet,omitempty" jsonschema:"true to add one more sheet to a record step this run has already sent: needs order_id, and the step must already be sent for that run"`
 }
 
 func (d *Deps) registerSubmitStepAnswersRoute(mux *http.ServeMux, auth callers) {
@@ -197,7 +200,7 @@ func (d *Deps) registerSubmitStepAnswersMCPTool(server *mcp.Server) {
 }
 
 func (d *Deps) mcpSubmitStepAnswers(ctx context.Context, _ *mcp.CallToolRequest, p mcpSubmitStepAnswersParams) (*mcp.CallToolResult, stepAnswersResult, error) {
-	out, err := d.submitStepAnswers(ctx, p.InstanceID, p.StepID, stepAnswersRequest{Answers: textAnswers(p.Answers), OrderID: p.OrderID, SendKey: p.SendKey})
+	out, err := d.submitStepAnswers(ctx, p.InstanceID, p.StepID, stepAnswersRequest{Answers: textAnswers(p.Answers), OrderID: p.OrderID, SendKey: p.SendKey, AnotherSheet: p.AnotherSheet})
 	if err != nil {
 		return nil, stepAnswersResult{}, err
 	}
@@ -412,18 +415,21 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 		}
 		maps.Copy(answers, stamp)
 	}
-	if req.OrderID != "" && index > 0 {
+	if req.AnotherSheet && isApprovalStep(step) {
+		return stepAnswersResult{}, badRowError("an approval step is decided once, so it takes no other sheet")
+	}
+	if req.OrderID != "" && (index > 0 || req.AnotherSheet) {
 		release := d.stepSendLocks().acquire(instanceID + "\x00" + req.OrderID)
 		defer release()
 	}
-	orderID, err := runForSubmit(ctx, m, chain, index, req.OrderID, firstRunID(ctx, instanceID, stepID, req.SendKey))
+	orderID, err := runForSubmit(ctx, m, chain, index, req, firstRunID(ctx, instanceID, stepID, req.SendKey))
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
 	row, err := m.CreateRecordRow(ctx, agencymodels.RecordRow{
 		DraftID: held.DraftID, RecordID: chain[index].record.ID, RoleID: chain[index].record.RoleID,
 		AddedBy: accounts.IDFromContext(ctx), Answers: answers, OrderID: orderID,
-		SendKey: chain[index].record.Code + ":" + orderID,
+		SendKey: rowSendKey(chain[index].record.Code, orderID, req),
 	})
 	if errors.Is(err, mwanachamaagency.ErrStepAlreadySent) {
 		return stepAnswersResult{}, errStepNotWaiting
@@ -467,7 +473,23 @@ func firstRunID(ctx context.Context, instanceID, stepID, sendKey string) string 
 	return uuid.NewSHA1(uuid.NameSpaceOID, []byte(name)).String()
 }
 
-func runForSubmit(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formStep, index int, orderID, firstRun string) (string, error) {
+func rowSendKey(recordCode, orderID string, req stepAnswersRequest) string {
+	key := recordCode + ":" + orderID
+	if !req.AnotherSheet {
+		return key
+	}
+	sheet := req.SendKey
+	if sheet == "" {
+		sheet = uuid.NewString()
+	}
+	return key + ":sheet:" + sheet
+}
+
+func runForSubmit(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formStep, index int, req stepAnswersRequest, firstRun string) (string, error) {
+	orderID := req.OrderID
+	if req.AnotherSheet {
+		return runOfSentStep(ctx, m, chain, index, orderID)
+	}
 	if index == 0 {
 		if orderID != "" {
 			return "", badRowError("the first step of a workflow starts a new run, so order_id is left empty")
@@ -483,6 +505,22 @@ func runForSubmit(ctx context.Context, m mwanachamaagency.AgencyManager, chain [
 	}
 	for _, run := range runs {
 		if run.orderID == orderID && run.next() == index {
+			return orderID, nil
+		}
+	}
+	return "", errStepNotWaiting
+}
+
+func runOfSentStep(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formStep, index int, orderID string) (string, error) {
+	if orderID == "" {
+		return "", badRowError("order_id names the run the sheet is added to")
+	}
+	runs, err := runsOf(ctx, m, chain)
+	if err != nil {
+		return "", err
+	}
+	for _, run := range runs {
+		if run.orderID == orderID && run.done[index] {
 			return orderID, nil
 		}
 	}
