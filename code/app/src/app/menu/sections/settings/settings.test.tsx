@@ -28,6 +28,8 @@ const groups = [
 
 const populations: Record<string, unknown> = { g1: { group_id: "g1", population: 1200 }, g2: { group_id: "g2", population: 845 } };
 
+let auditEntries: unknown[] = [];
+
 const refusedWithoutFigure = new Set<string>();
 
 const accounts = [
@@ -53,6 +55,8 @@ const reply = (name: string, args: Record<string, unknown>): unknown => {
     case "actor_get_group_population":
       if (refusedWithoutFigure.has((args as { group_id: string }).group_id)) throw new mcp.McpError("no population figure recorded for the group");
       return populations[(args as { group_id: string }).group_id];
+    case "audit_list_entries":
+      return { items: auditEntries };
     case "ai_list_accounts":
       return { items: accounts };
     default:
@@ -64,6 +68,7 @@ beforeEach(() => {
   agencyName = "Riverside Office";
   landed = "";
   refusedWithoutFigure.clear();
+  auditEntries = [];
   openAgency("town");
   vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => reply(name, (args ?? {}) as Record<string, unknown>));
 });
@@ -95,15 +100,15 @@ const openAt = (title: string, state: unknown = { from: section }) =>
 const called = (name: string) => vi.mocked(mcp.callTool).mock.calls.filter((call) => call[1] === name);
 
 describe("the Settings section's items", () => {
-  it("lists the four screens built here, each one openable", () => {
-    expect(items.map((item) => item.title)).toEqual(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations"]);
+  it("lists the five screens built here, each one openable", () => {
+    expect(items.map((item) => item.title)).toEqual(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "Audit Log"]);
     for (const item of items) expect(item.path).toBeTypeOf("function");
   });
 
   it("gives each screen its own path under the Settings section of the open agency", () => {
     const paths = items.map((item) => item.path!());
     for (const path of paths) expect(path.startsWith("/a/town/menu/settings/")).toBe(true);
-    expect(new Set(paths).size).toBe(4);
+    expect(new Set(paths).size).toBe(5);
   });
 });
 
@@ -207,6 +212,37 @@ describe("the Boundaries & Areas screen when a group has no population figure", 
   });
 });
 
+describe("the Audit Log screen", () => {
+  it("lists entries newest first with who did what to what, and when", async () => {
+    auditEntries = [
+      { id: "e1", actor: "acct-1", action: "renamed the agency", subject: "Riverside Office", at: "2026-11-10T09:00:00Z" },
+      { id: "e2", actor: "acct-2", action: "granted a role", subject: "p1", at: "2026-11-12T14:30:00Z" },
+    ];
+    openAt("Audit Log");
+
+    const newest = (await screen.findByText(/granted a role/)).closest("button, .row") as HTMLElement;
+    expect(within(newest).getByText(/p1/)).toBeInTheDocument();
+    expect(within(newest).getByText(/acct-2/)).toBeInTheDocument();
+    const older = screen.getByText(/renamed the agency/).closest("button, .row") as HTMLElement;
+    expect(within(older).getByText(/Riverside Office/)).toBeInTheDocument();
+    expect(newest.compareDocumentPosition(older) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(called("audit_list_entries").length).toBeGreaterThan(0);
+  });
+
+  it("says so when nothing has been recorded yet", async () => {
+    openAt("Audit Log");
+
+    expect(await screen.findByText("Nothing has been recorded yet.")).toBeInTheDocument();
+  });
+
+  it("says the log could not be loaded when the hub refuses it", async () => {
+    vi.spyOn(mcp, "callTool").mockRejectedValue(new mcp.McpError("not allowed"));
+    openAt("Audit Log");
+
+    expect(await screen.findByText("This list could not be loaded.")).toBeInTheDocument();
+  });
+});
+
 describe("the Integrations screen", () => {
   it("lists each service with whether it is connected", async () => {
     openAt("Integrations");
@@ -218,7 +254,7 @@ describe("the Integrations screen", () => {
   });
 });
 
-describe.each(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations"])("the %s screen's Back button", (title) => {
+describe.each(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "Audit Log"])("the %s screen's Back button", (title) => {
   it("is named after the section it was opened from and goes back to it", async () => {
     openAt(title);
     await screen.findByRole("button", { name: /‹ Settings/ });

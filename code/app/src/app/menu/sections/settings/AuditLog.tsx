@@ -1,0 +1,22 @@
+import { itemsOf } from "../../../../features/backlogs";
+import { dateTimeWords } from "../../../../shared/ui/days";
+import { callTool } from "../../../../shared/wakala/mcp";
+import { MenuList } from "../../MenuList";
+
+const textOf = (value: unknown) => (typeof value === "string" ? value : "");
+
+const newestFirst = (left: { at: string }, right: { at: string }) => Date.parse(right.at) - Date.parse(left.at) || 0;
+
+const loadEntries = async () =>
+  itemsOf(await callTool("", "audit_list_entries"))
+    .map((entry) => ({ id: entry.id, at: textOf(entry.at), action: textOf(entry.action), subject: textOf(entry.subject), actor: textOf(entry.actor) }))
+    .sort(newestFirst)
+    .map((entry) => ({
+      id: entry.id,
+      what: [entry.action, entry.subject].filter((part) => part !== "").join(": "),
+      who: [entry.actor, dateTimeWords(entry.at) ?? entry.at].filter((part) => part !== "").join(" · "),
+    }));
+
+export function AuditLog() {
+  return <MenuList title="Audit Log" tool="audit_list_entries" load={loadEntries} fields={{ title: "what", meta: "who" }} empty={{ words: "Nothing has been recorded yet." }} />;
+}

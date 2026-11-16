@@ -5,4 +5,5 @@ export const settingsPaths = {
   usersAndRoles: screen("/menu/settings/users-and-roles"),
   boundariesAndAreas: screen("/menu/settings/boundaries-and-areas"),
   integrations: screen("/menu/settings/integrations"),
+  auditLog: screen("/menu/settings/audit-log"),
 };
