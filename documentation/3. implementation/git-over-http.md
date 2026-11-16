@@ -92,3 +92,56 @@ These are the todos TD-1464 and TD-1465 on ISS-88 and the open questions 3 and 6
 - **Shallow clones.** Refused with 501.
 - **Sibling repositories.** The handler exists in the hub's `code/wakala-api` only (TD-1465).
 - **Tests.** The tests above were run with `-race` for `modules/git`, `internal/agencies` and the `TestGitRoute_` tests; the whole `internal/api/http` package timed out on a loaded machine in an unrelated test and has not been re-run in full.
+
+## Conformance with the design
+
+Audited on 2026-11-16 against the working tree of `code/wakala-api`, decision by decision from [the design page](../2.%20design/git-remote.md). Test names are in `internal/api/http` (`git_route_auth_test.go`, `git_route_mount_test.go`), `modules/git` (`git_smarthttp_file*_test.go`) and `internal/agencies` (`gits_files_http_test.go`). Some code the tests below depend on is not committed on `dev` when this was written (`git status` shows it as modified or untracked): the router mount (TD-1463), `git_smarthttp_file_refnames.go` (ISS-91), `git_smarthttp_file_record.go`, `git_smarthttp_file_upload.go` and the push guard (ISS-92, ISS-93), and `git_smarthttp_file_lazy.go` (ISS-94). Those issues own them; this audit does not touch them.
+
+| Decision | What the design says | State | Evidence |
+|---|---|---|---|
+| 1. URL | `/git/<agency>/<repository>.git`, three endpoints, same process and port | Built and tested | `TestGitMount_AWritersKeyPushesANewBranchAndTheDefaultBranchIsRefused` runs a real git binary through `NewRouter`; `TestGitRoute_HandsTheAgencysManagerThePathBelowTheAgency`. The mount line is uncommitted (TD-1463) |
+| 1. URL | Unknown agency or repository answers 404 | Built and tested | `TestGitRouteAuth_AnUnknownAgencyAndAnUnknownRepositoryAre404ForTheOwnerToo`; `TestGitFolder_SmartHTTPServesEachRepositoryFileByNameAndRefusesTheDefaultBranch` (missing repository) |
+| 1. URL | `.git` suffix optional | Built and untested | `TrimSuffix` in `parseGitTarget` and `splitRepositoryPath`; every test uses the `.git` form |
+| 1. URL | A request never reaches another agency's file | Built and tested | The registry picks the manager by the agency in the path; `TestGitFolder_TheSecondRepositoryDoesNotSeeTheFirstOnesFile` covers the per-repository file, the per-agency separation is by construction |
+| 2. Sign-in | Key as Basic password, user name ignored | Built and tested | `TestGitRouteAuth_TheUserNameIsIgnored` |
+| 2. Sign-in | The same key as a `Bearer` header | Built and tested | `TestGitRouteAuth_BearerIsAcceptedAsWellAsBasic` |
+| 2. Sign-in | Refusal is 401 with `WWW-Authenticate: Basic realm="hub"` | Built and tested | `TestGitRouteAuth_NoCredentialsAnswers401WithABasicChallenge`, `TestGitRouteAuth_AWrongKeyAnswers401WithABasicChallenge`, `TestGitMount_NoKeyIsAnswered401WithTheBasicChallenge` (real git refuses to clone) |
+| 2. Sign-in | The session cookie is refused | Built and tested | `TestGitRouteAuth_TheSessionCookieIsNotACredential` |
+| 2. Sign-in | Account key: what a person may do is their role in each agency; removing them removes git access | Partly built | The role is read on every request (`depsGitBackend.accessIn`), tested for an owner, an outsider and a resident (`TestGitRouteAuth_TheOwnersKeyClonesAndPushesInTheirAgency`, `..._APersonOutsideTheAgencyIsTold404`, `..._AResidentOfTheAgencyHasNoGitAccess`); removing a member and then cloning is not tested (ISS-99) |
+| 2. Sign-in | Per-agency agent key, an agent member of that one agency | Partly built | The pin is checked (`gitAccessOf`) and tested only against the fake backend (`TestGitRouteAuth_AKeyPinnedToAnotherAgencyIsTreatedAsNoAccess`); no test clones or pushes with a key minted by `POST /instances/{instanceID}/api-keys` (ISS-99) |
+| 2. Sign-in | Revocation: `DELETE /auth/api-keys/{keyID}`, next request refused | Partly built | The route exists and is tested for the agency routes (`TestAgencyAPIKey_RevokedKeyCannotDoReachTheAgency`); the git route is tested with `Manager.Revoke` (`TestGitRouteAuth_ARevokedKeyIsRefusedOnTheNextRequest`), not through the DELETE route (ISS-99) |
+| 2. Sign-in | (Not in the design) a database failure is not a bad key | Built and tested | `TestGitRouteAuth_ADatabaseFailureAtSignInAnswers503NotA401` and its neighbours (ISS-90) |
+| 3. Clone | Anyone who may read Files in that agency | Partly built | The check is the owner or agent role plus the git module mounted, the same check `formsGitFor` makes for the read tools, so the clone check matches the read tools. See the role table below |
+| 3. Push | Anyone who may write Files in that agency | Partly built | Same role check; read and write are separate flags in `gitAccess` and the 403 for a caller with read but no write works, but no real role produces it. See below |
+| 3. Default branch | A push to it is refused for everyone, per ref, nothing written | Built and tested | `TestRepoFileGitHTTP_PushToTheDefaultBranchIsRefusedWithAPlainMessage`, the mount test above (message reaches the client), `TestGitFolder_SmartHTTPServesEachRepositoryFileByNameAndRefusesTheDefaultBranch` |
+| 3. Other refs | Refs outside `refs/heads/` refused (design question 3 leaves tags open; refusal is the smaller first step) | Built and untested | `refusedNotABranch` in `pushRefusals`; no test pushes a tag or another ref (ISS-99) |
+| 3. Other branches | Accepted, create or move the branch, indexed so it has its row | Built and tested | `TestRepoFileGitHTTP_CloneCommitPushNewBranchCloneItAgain` (branch row with the pushed tip, file readable through the tools), `TestPushGuard_ACurrentPushStillMovesTheBranch`. The row is written by `recordFilePush`, which shares `indexPushedBranchFrom` with `IndexPushedBranch` |
+| 3. Delete | The default branch cannot be deleted by push; other branches can | Built and tested | `TestRepoFileGitHTTP_DeletingAPushedBranchWorksAndTheDefaultBranchCannotBeDeleted` |
+| 3. Merge | Work reaches `main` through a merge request from the pushed branch | Built and untested | The merge request tools work on any branch row, but no test opens and completes one from a pushed branch (ISS-99) |
+| 3. Unmounted | Git module not mounted answers 404 | Built and tested | `TestGitRouteAuth_AnAgencyWithoutTheGitModuleAnswers404` |
+| 4. App | Nothing new; a pushed branch appears where branches already appear | Built by reuse, untested in the app | No app or console code was added or needed; no test or walk shows a pushed branch on a screen. No screen makes or revokes a key (design question 2) |
+| Questions 3, 5, 6, 7 | Tag pushes, agent push, size cap, shallow | See the questions below | Tags refused; agents may push; no size cap (TD-1464); shallow answers 501 and is untested (ISS-99) |
+
+### Which role gets what today
+
+| Caller | Clone and fetch | Push | Evidence |
+|---|---|---|---|
+| Owner of the agency | Yes | Yes, to branches other than the default | `accessIn` returns `read` and `write` for `RoleOwner` |
+| Agent member (including the member a per-agency key creates) | Yes | Yes, to branches other than the default | `accessIn` returns `read` and `write` for `RoleAgent` |
+| Resident | No, 404 | No, 404 | `TestGitRouteAuth_AResidentOfTheAgencyHasNoGitAccess` |
+| Not a member | No, 404 | No, 404 | `TestGitRouteAuth_APersonOutsideTheAgencyIsTold404` |
+| A key pinned to another agency | No, 404 | No, 404 | `TestGitRouteAuth_AKeyPinnedToAnotherAgencyIsTreatedAsNoAccess` |
+
+Nothing grants read-only today. The 403 for a reader who pushes is only reached with a backend that returns `read` without `write`: `TestGitRouteAuth_AReaderMayCloneButNotPush` uses a fake backend, and `TestGitMount_AReadersKeyClonesAndItsPushIsRefused403` wraps the real backend (`readOnlyGitBackend`) to force `write` off for one account. So the split is built and tested as a mechanism, and not reachable by any role.
+
+### Gaps and where they are tracked
+
+- The router mount is uncommitted: TD-1463 on ISS-88.
+- Tag pushes, a size cap, serialised concurrent pushes: TD-1464 on ISS-88; invalid branch names, stale pushes, half-recorded pushes and memory per request are ISS-91, ISS-92, ISS-93 and ISS-94.
+- The handler in the two sibling repositories: TD-1465 on ISS-88.
+- Decided behaviour that has no test (non-branch refs, a real per-agency key, a removed member, revoke through the DELETE route, a merge request from a pushed branch, shallow 501): ISS-99.
+
+### Questions for the owner
+
+1. Which caller is read-only? The design says "anyone who may read Files" clones and "anyone who may write Files" pushes, but the agency has one Files check for both (owner or agent), so no role is read-only. Options: a resident or a group role with a Files read permission clones and never pushes; or every owner and agent both clones and pushes, and the design wording becomes "owners and agents". Until this is answered no role can be given clone-only access.
+2. Should a per-agency agent key be able to clone without being able to push (a reviewing agent)? It follows from question 1; today a per-agency key always pushes (design question 5 on the design page, still open).
