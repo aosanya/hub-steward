@@ -89,7 +89,7 @@ export const magyar: Words = {
   gapsTitle: "Hiányosságok",
   gapsLoading: "Hiányosságok betöltése",
   gapsFailed: "A hiányosságokat nem sikerült betölteni",
-  gapsEmpty: "A kockázataiban nincs hiányosság",
+  gapsEmpty: "Az Ön kockázataiban nincs hiányosság",
   actionsLoading: "Teendők betöltése",
   actionsFailed: "A teendőket nem sikerült betölteni",
   actionsEmpty: "Önnek nincs teendője",
