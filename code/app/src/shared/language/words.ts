@@ -4,6 +4,7 @@ export const words = {
   signInSend: "Email me a sign-in link",
   signInSent: "If that address can sign in, a link is on its way. Open it on this device.",
   signInInvalid: "That does not look like an email address.",
+  signInRefused: "A sign-in link cannot be sent from this app address. Ask the person who runs this hub to allow it.",
   signInBusy: "Too many links are being sent. Try again in a moment.",
   signInUnavailable: "Sign-in is not available right now. Try again later.",
   signInOffline: "We could not reach the server. Check your connection and try again.",

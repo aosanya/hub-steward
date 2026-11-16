@@ -6,6 +6,7 @@ export const magyar: Words = {
   signInSend: "Küldjenek bejelentkező hivatkozást e-mailben",
   signInSent: "Ha ezzel a címmel be lehet jelentkezni, a hivatkozás úton van. Nyissa meg ezen az eszközön.",
   signInInvalid: "Ez nem tűnik e-mail-címnek.",
+  signInRefused: "Erről az alkalmazáscímről nem küldhető bejelentkező hivatkozás. Kérje meg a hub üzemeltetőjét, hogy engedélyezze.",
   signInBusy: "Túl sok hivatkozás megy ki egyszerre. Próbálja újra egy kis idő múlva.",
   signInUnavailable: "A bejelentkezés most nem érhető el. Próbálja újra később.",
   signInOffline: "Nem értük el a kiszolgálót. Ellenőrizze a kapcsolatot, majd próbálja újra.",

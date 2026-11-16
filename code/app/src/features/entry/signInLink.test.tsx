@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { App } from "../../app/App";
 import { resetMcp } from "../../shared/wakala/mcp";
@@ -103,5 +104,19 @@ describe("opening a sign-in link", () => {
     window.localStorage.setItem("hub.language", "sw");
     open("/sign-in?link=failed", { me: 401 });
     expect(screen.getByRole("alert")).toHaveTextContent("Kiungo hicho cha kuingia hakikufanya kazi");
+  });
+
+  it("says the app address is not allowed, not that the email is wrong, when the hub refuses the redirect", async () => {
+    open("/sign-in", { me: 401 });
+    provideEntryClient({
+      sendSignInLink: async () => "refused",
+      listAgencies: async () => [],
+      searchDirectory: async () => [],
+      join: async () => "joined",
+    });
+    await userEvent.type(screen.getByLabelText(words.signInEmail), "amina@example.org");
+    await userEvent.click(screen.getByRole("button", { name: words.signInSend }));
+    expect(await screen.findByText(words.signInRefused)).toBeInTheDocument();
+    expect(screen.queryByText(words.signInInvalid)).not.toBeInTheDocument();
   });
 });

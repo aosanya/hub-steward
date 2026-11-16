@@ -6,6 +6,7 @@ export const swahili: Words = {
   signInSend: "Nitumie kiungo cha kuingia kwa barua pepe",
   signInSent: "Ikiwa anwani hiyo inaweza kuingia, kiungo kiko njiani. Kifungue kwenye kifaa hiki.",
   signInInvalid: "Hii haionekani kuwa anwani ya barua pepe.",
+  signInRefused: "Kiungo cha kuingia hakiwezi kutumwa kutoka anwani hii ya programu. Mwombe anayeendesha kitovu hiki akiruhusu.",
   signInBusy: "Viungo vingi vinatumwa. Jaribu tena baada ya muda mfupi.",
   signInUnavailable: "Kuingia hakupatikani kwa sasa. Jaribu tena baadaye.",
   signInOffline: "Hatukuweza kufikia seva. Angalia muunganisho wako kisha ujaribu tena.",

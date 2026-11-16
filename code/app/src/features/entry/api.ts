@@ -2,7 +2,7 @@ import { runtimeConfig } from "../../shared/wakala/config";
 import { isRefusal, reportRefused } from "../../shared/wakala/mcp";
 import { renewedAuthHeaders } from "../../shared/wakala/renewal";
 
-export type LinkOutcome = "sent" | "invalid" | "busy" | "unavailable" | "offline";
+export type LinkOutcome = "sent" | "invalid" | "refused" | "busy" | "unavailable" | "offline";
 export type Agency = { id: string; name: string };
 export type DirectoryAgency = Agency & { kind: string; purpose: string; joinMode: "open" | "approval" };
 export type JoinOutcome = "joined" | "requested" | "failed";
@@ -14,12 +14,23 @@ export type EntryClient = {
   join(agencyId: string): Promise<JoinOutcome>;
 };
 
+const refusedRedirect = "that redirect is not one of the member app's addresses";
+
 export const looksLikeAnAddress = (email: string) => /^[^\s@]+@[^\s@]+$/.test(email);
 
 const wakalaFetch = async (path: string, init: RequestInit) => {
   const { wakala } = await runtimeConfig();
   const headers = { ...(await renewedAuthHeaders()), ...(init.headers as Record<string, string> | undefined) };
   return fetch(wakala + path, { credentials: "include", ...init, headers });
+};
+
+const refusalText = async (res: Response) => {
+  try {
+    const body = await res.json();
+    return typeof body?.error === "string" ? body.error : "";
+  } catch {
+    return "";
+  }
 };
 
 const directoryAgency = (raw: any): DirectoryAgency => ({
@@ -40,7 +51,7 @@ export const httpEntryClient: EntryClient = {
         body: JSON.stringify({ email, redirect_to: redirectTo }),
       });
       if (res.status === 202) return "sent";
-      if (res.status === 400) return "invalid";
+      if (res.status === 400) return (await refusalText(res)) === refusedRedirect ? "refused" : "invalid";
       if (res.status === 429) return "busy";
       return "unavailable";
     } catch {

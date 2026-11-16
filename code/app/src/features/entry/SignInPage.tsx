@@ -33,6 +33,7 @@ export function SignInPage() {
 
   const refusal: Record<Exclude<LinkOutcome, "sent">, string> = {
     invalid: words.signInInvalid,
+    refused: words.signInRefused,
     busy: words.signInBusy,
     unavailable: words.signInUnavailable,
     offline: words.signInOffline,
