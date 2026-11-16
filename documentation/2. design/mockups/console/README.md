@@ -27,7 +27,7 @@ Every row action and title link is a real link to the screen it opens (`@/file#s
 - `work/`: `approvals.html` and `approvals-agency-change.html` (an approved agency change, not published yet), `operations.html` (the Overview) with its sub-menu pages `operations-network.html`, `operations-activity.html`, `operations-alerts.html`, `farm-orders.html`, `produce.html`, `equipment.html`.
 - `knowledge/`: `documents.html`.
 - `studio.css`: the one stylesheet every page links to.
-- `settings/`: `general.html`, `models.html`, `model-add.html`, `model-edit.html` with its tabs `model-limits.html`, `model-users.html` and `model-usage.html`, `model-template.html`.
+- `settings/`: `general.html`, `models.html`, `model-add.html`, `model-edit.html` with its tabs `model-limits.html`, `model-users.html` and `model-usage.html`, `model-template.html`. `access-keys.html`, Access keys and its Make a key page, four screens ([spec](../../technical-spec/access-keys.md)).
 - `flows/`: `step-01-set-the-key.html`, `step-02-test-the-key.html`, the Model key journey followed across pages.
 - `_generator/`: the generator and its README.
 
