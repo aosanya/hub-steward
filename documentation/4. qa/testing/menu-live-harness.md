@@ -34,4 +34,12 @@ The npm script `e2e:menu-live` runs the whole `menu-live` folder with the same b
 
 `00-smoke` in `smoke-live.spec.ts` signs in as own14 on Zöldhalom Town Council, raises one `00-smoke smoke record` with `forms_catalog_raised_item_raise`, opens Home, shoots it and removes the record with `forms_catalog_raised_item_remove`. A removed record still shows in `forms_catalog_raised_item_list_mine`, so removal is checked in `forms_catalog_removal_list_mine`.
 
+## An overdue issue
+
+The Overdue list only shows issues raised at or before now less `raised_item.answer_within_days` weekdays (default 10), and the file operation always sets `created_at` to now, so a live test cannot raise an issue that is already overdue. It raises the issue normally with a title that starts with the journey prefix `03-overdue` (`seed.named` gives `03-overdue <name>`), then calls `backdateRaisedItem(id, days)` from `helpers/live.ts`. The helper updates `created_at` of that one row in the QA database `/tmp/hubsteward-qa/hub.db` through sqlite3. It refuses any id that is not a UUID, any title that does not start with `03-overdue `, and any database that does not hold exactly one raised item table.
+
+A `created_at` supplied by the caller on the file operation was rejected (option c of the issue), because it would let any caller post an issue dated in the past through the real API.
+
+The test 'an issue past its answer clock is listed under Overdue with its days late' in `overdue.spec.ts` backdates by 15 days and asserts "15 days late".
+
 Evidence for the issue that added the spec is in [MUN951](../../3.%20implementation/todo/MUN951-menu-live-harness/README.md).
