@@ -79,38 +79,43 @@ function ApplicationAnswers({ formId, version, onCorrected }: { formId: string; 
   );
 }
 
+const loadApplication = async (id: string) => {
+  const sent = unwrapped(await callTool("", "forms_submission_read_mine", { form_id: id }));
+  return { ...sent, form_id: id, status: text(sent, "withdrawn_at") === "" ? sentWords : withdrawnWords };
+};
+
+export function useApplicationDetail() {
+  const [version, setVersion] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const refresh = () => setVersion((current) => current + 1);
+  const withdraw = (item: Item) => {
+    setFailed(false);
+    callTool("", "forms_form_withdraw", { form_id: text(item, "form_id") }).then(refresh, () => setFailed(true));
+  };
+  const detail = {
+    tool: "forms_submission_read_mine",
+    fields: {},
+    status: "status",
+    load: loadApplication,
+    action: { label: withdrawLabel, tool: "forms_form_withdraw", run: withdraw, when: (item: Item) => text(item, "status") !== withdrawnWords },
+    extra: (item: Item) => (
+      <>
+        {failed ? <LoadFailed words={actionFailedWords} /> : null}
+        <ApplicationAnswers formId={text(item, "form_id")} version={version} onCorrected={refresh} />
+      </>
+    ),
+  };
+  return { detail, version };
+}
+
 export function ApplicationScreen() {
   const back = useBackToSection();
   const title = useWord("forms")("Application");
   const id = useParams().id ?? "";
-  const [version, setVersion] = useState(0);
-  const [failed, setFailed] = useState(false);
-  const load = async () => {
-    const sent = unwrapped(await callTool("", "forms_submission_read_mine", { form_id: id }));
-    return { ...sent, status: text(sent, "withdrawn_at") === "" ? sentWords : withdrawnWords };
-  };
-  const withdraw = () => {
-    setFailed(false);
-    callTool("", "forms_form_withdraw", { form_id: id }).then(
-      () => setVersion((current) => current + 1),
-      () => setFailed(true),
-    );
-  };
+  const { detail, version } = useApplicationDetail();
   return (
     <Shell title={title} titleUnder tabless {...back}>
-      <MenuDetail
-        key={version}
-        bare
-        title={title}
-        tool="forms_submission_read_mine"
-        fields={{}}
-        status="status"
-        id={id}
-        load={load}
-        action={{ label: withdrawLabel, tool: "forms_form_withdraw", run: withdraw, when: (item) => text(item, "status") !== withdrawnWords }}
-      />
-      {failed ? <LoadFailed words={actionFailedWords} /> : null}
-      <ApplicationAnswers formId={id} version={version} onCorrected={() => setVersion((current) => current + 1)} />
+      <MenuDetail key={version} bare title={title} id={id} {...detail} />
     </Shell>
   );
 }

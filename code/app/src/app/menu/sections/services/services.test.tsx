@@ -1,5 +1,5 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
@@ -260,8 +260,8 @@ describe("Applications", () => {
 
     await userEvent.click(await screen.findByText("Market stall application"));
 
-    await waitFor(() => expect(landed).toBe(applicationAt("f1")));
     expect(await screen.findByRole("button", { name: /Withdraw/ })).toBeInTheDocument();
+    expect(landed).toBe(screens[4].at);
   });
 
   it("opens the detail with a Back button that reads Applications and returns to the list", async () => {
@@ -271,12 +271,84 @@ describe("Applications", () => {
 
     await userEvent.click(screen.getByRole("button", { name: /Applications/ }));
 
-    await waitFor(() => expect(landed).toBe(screens[4].at));
+    expect(await screen.findByText("Market stall application")).toBeInTheDocument();
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no");
   });
 
   it("is a row of the Services & Permits menu", () => {
     expect(items.map((item) => item.title)).toContain("Applications");
     expect(pathOf(items.find((item) => item.title === "Applications") as { path: unknown })).toBe("/a/town/menu/services/applications");
+  });
+});
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+describe("Applications in the menu window", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("draws the Folders frame on a wide screen with the sent applications as its list pane", async () => {
+    setWide(true);
+    open(screens[4].at);
+    await screen.findByText("Market stall application");
+
+    const tree = document.querySelector(".wf .wf-panes .wf-tree") as HTMLElement;
+    expect(within(tree).getByText("Fence permit application")).toBeInTheDocument();
+    expect(within(tree).getByText("Market stall application")).toBeInTheDocument();
+  });
+
+  it("opens the chosen application beside the list with Withdraw, its status and its answers, and does not leave the screen", async () => {
+    setWide(true);
+    open(screens[4].at);
+
+    await userEvent.click(await screen.findByRole("button", { name: /Market stall application/ }));
+
+    const main = document.querySelector(".wf .wf-main") as HTMLElement;
+    expect(await within(main).findByRole("button", { name: /Withdraw/ })).toBeInTheDocument();
+    expect(await within(main).findByText("Riverside Square")).toBeInTheDocument();
+    expect(within(main).getByText("Sent")).toBeInTheDocument();
+    expect(within(document.querySelector(".wf-tree") as HTMLElement).getByRole("button", { name: /Market stall application/ })).toHaveAttribute("aria-pressed", "true");
+    expect(landed).toBe(screens[4].at);
+  });
+
+  it("shows the list and then the detail on a phone, in the same window", async () => {
+    setWide(false);
+    open(screens[4].at);
+    await screen.findByText("Market stall application");
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no");
+
+    await userEvent.click(screen.getByRole("button", { name: /Market stall application/ }));
+
+    expect(document.querySelector(".wf")).toBeNull();
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
+    expect(await screen.findByRole("button", { name: /Withdraw/ })).toBeInTheDocument();
+    expect(landed).toBe(screens[4].at);
+  });
+
+  it("withdraws the chosen application from the window", async () => {
+    setWide(true);
+    open(screens[4].at);
+    await userEvent.click(await screen.findByRole("button", { name: /Market stall application/ }));
+
+    await userEvent.click(await screen.findByRole("button", { name: /Withdraw/ }));
+
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_form_withdraw", { form_id: "f1" }));
+  });
+
+  it("hides Withdraw once the chosen application is withdrawn", async () => {
+    setWide(true);
+    answers.forms_submission_read_mine = () => ({ ...application, withdrawn_at: "2026-03-10T12:00:00Z" });
+    open(screens[4].at);
+    await userEvent.click(await screen.findByRole("button", { name: /Market stall application/ }));
+
+    expect(await screen.findByText("Withdrawn")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Withdraw$/ })).toBeNull();
   });
 });
 
