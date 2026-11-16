@@ -1,4 +1,5 @@
 import { itemsOf } from "../../../../features/backlogs";
+import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuList } from "../../MenuList";
 
@@ -36,9 +37,12 @@ const loadSchedule = async () =>
   }));
 
 export function WorkOrdersPage() {
-  return <MenuList title="Work Orders" tool={taskList} fields={{ title: "title", meta: "state" }} empty={{ words: "No work orders yet." }} load={loadWorkOrders} />;
+  const word = useWord("assetmanager");
+  const title = word("Work Orders");
+  return <MenuList title={title} tool={taskList} fields={{ title: "title", meta: "state" }} empty={{ words: `No ${title.toLowerCase()} yet.` }} load={loadWorkOrders} />;
 }
 
 export function MaintenancePage() {
-  return <MenuList title="Maintenance Schedule" tool={repeatingList} fields={{ title: "title", meta: "often" }} empty={{ words: "No maintenance scheduled." }} load={loadSchedule} />;
+  const word = useWord("assetmanager");
+  return <MenuList title={word("Maintenance Schedule")} tool={repeatingList} fields={{ title: "title", meta: "often" }} empty={{ words: "No maintenance scheduled." }} load={loadSchedule} />;
 }

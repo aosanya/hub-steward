@@ -1,11 +1,12 @@
 import { itemsOf } from "../../../../features/backlogs";
+import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
 import { assetDetailFields, assetReadTool, loadAsset } from "./assetDetail";
 
 type Item = Record<string, unknown>;
 
-type Category = { title: string; category: string; empty: string };
+type Category = { title: string; category: string };
 
 const assetList = "assetmanager_asset_list";
 
@@ -26,18 +27,20 @@ const loadCategory = (category: string) => async () => {
   }));
 };
 
-const categoryPage = ({ title, category, empty }: Category) =>
+const categoryPage = ({ title: generic, category }: Category) =>
   function AssetCategoryPage() {
+    const word = useWord("assetmanager");
+    const title = word(generic);
     return (
       <MenuWindow
         title={title}
-        list={{ title, tool: assetList, fields, empty: { words: empty }, load: loadCategory(category) }}
+        list={{ title, tool: assetList, fields, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadCategory(category) }}
         detail={{ tool: assetReadTool, fields: assetDetailFields, status: "", load: loadAsset }}
       />
     );
   };
 
-export const RoutesPage = categoryPage({ title: "Routes", category: "Route", empty: "No routes yet." });
-export const EquipmentPage = categoryPage({ title: "Equipment", category: "Equipment", empty: "No equipment yet." });
-export const FacilitiesPage = categoryPage({ title: "Facilities", category: "Facility", empty: "No facilities yet." });
-export const BuildingsPage = categoryPage({ title: "Buildings", category: "Building", empty: "No buildings yet." });
+export const RoutesPage = categoryPage({ title: "Routes", category: "Route" });
+export const EquipmentPage = categoryPage({ title: "Equipment", category: "Equipment" });
+export const FacilitiesPage = categoryPage({ title: "Facilities", category: "Facility" });
+export const BuildingsPage = categoryPage({ title: "Buildings", category: "Building" });
