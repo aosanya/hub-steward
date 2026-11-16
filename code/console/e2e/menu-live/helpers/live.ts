@@ -240,17 +240,25 @@ const uuidShape = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 const sql = (statement: string): string =>
   execFileSync("sqlite3", ["-cmd", ".timeout 5000", qaDatabase, statement], { encoding: "utf8" }).trim();
 
-const raisedItemTable = (): string =>
-  sql("select name from sqlite_master where type='table' and name not like '%\\_test' escape '\\' and sql like '%follow_key_hash%'");
+const raisedItemTables = (): string[] =>
+  sql("select name from sqlite_master where type='table' and name not like '%\\_test' escape '\\' and sql like '%follow_key_hash%'")
+    .split("\n")
+    .filter(Boolean);
 
 export const backdateRaisedItem = (raisedItemId: string, days: number): number => {
   if (!uuidShape.test(raisedItemId)) throw new Error(`backdateRaisedItem: ${raisedItemId} is not an id`);
   if (!Number.isInteger(days) || days < 1) throw new Error(`backdateRaisedItem: ${days} is not a whole number of days`);
-  const table = raisedItemTable();
-  if (!table || table.includes("\n")) throw new Error(`backdateRaisedItem: expected one raised item table in ${qaDatabase}, found "${table}"`);
-  const touched = sql(
-    `update ${table} set created_at = strftime('%Y-%m-%dT%H:%M:%SZ', created_at, '-${days} days') where id = '${raisedItemId}' and title like '${overdueJourneyPrefix} %'; select changes();`,
+  const tables = raisedItemTables();
+  if (tables.length === 0) throw new Error(`backdateRaisedItem: no raised item table in ${qaDatabase}`);
+  const holding = tables.filter(
+    (table) => sql(`select count(*) from "${table}" where id = '${raisedItemId}' and title like '${overdueJourneyPrefix} %'`) === "1",
   );
-  if (touched !== "1") throw new Error(`backdateRaisedItem: ${raisedItemId} is not a ${overdueJourneyPrefix} issue in ${qaDatabase}`);
+  if (holding.length !== 1) {
+    throw new Error(`backdateRaisedItem: ${raisedItemId} is a ${overdueJourneyPrefix} issue in ${holding.length} of ${tables.length} raised item tables of ${qaDatabase}, expected 1`);
+  }
+  const touched = sql(
+    `update "${holding[0]}" set created_at = strftime('%Y-%m-%dT%H:%M:%SZ', created_at, '-${days} days') where id = '${raisedItemId}' and title like '${overdueJourneyPrefix} %'; select changes();`,
+  );
+  if (touched !== "1") throw new Error(`backdateRaisedItem: ${raisedItemId} was not updated in ${qaDatabase}`);
   return Number(touched);
 };
