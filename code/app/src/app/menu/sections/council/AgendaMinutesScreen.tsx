@@ -6,11 +6,8 @@ import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { Shell } from "../../../Shell";
 import { MenuEditForm } from "../../MenuEditForm";
-import { MenuList } from "../../MenuList";
-import { useBackToSection } from "../../useBackToSection";
-import "../../menuWindow.css";
+import { MenuWindow } from "../../MenuWindow";
 import { councilTools, homeEmpty, listOf, manageCouncil, noneYet, readMeetingArgs, text, type Agenda, type Item, type Minutes } from "./councilData";
 
 export const agendaMinutesTitle = "Agendas & Minutes";
@@ -69,31 +66,13 @@ function Papers({ id }: { id: string }) {
 }
 
 export function AgendaMinutesScreen() {
-  const back = useBackToSection();
   const word = useWord("council");
   const title = word(agendaMinutesTitle);
-  const [chosen, setChosen] = useState("");
   return (
-    <Shell title={title} titleUnder onBack={chosen ? () => setChosen("") : back.onBack} backLabel={chosen ? title : back.backLabel}>
-      <div className="mw" data-chosen={chosen ? "yes" : "no"}>
-        <section className="mw-list" aria-label={title}>
-          <MenuList
-            bare
-            title={title}
-            tool={councilTools.meetingList}
-            load={loadMeetings}
-            fields={{ title: "name", meta: "date" }}
-            empty={homeEmpty(noneYet(word, "Meetings", "No meetings yet."))}
-            selectedId={chosen}
-            onChoose={setChosen}
-          />
-        </section>
-        {chosen ? (
-          <section className="mw-detail" aria-label={title}>
-            <Papers id={chosen} />
-          </section>
-        ) : null}
-      </div>
-    </Shell>
+    <MenuWindow
+      title={title}
+      list={{ title, tool: councilTools.meetingList, load: loadMeetings, fields: { title: "name", meta: "date" }, empty: homeEmpty(noneYet(word, "Meetings", "No meetings yet.")) }}
+      detail={{ tool: councilTools.meetingRead, load: async (id) => ({ id }), fields: {}, status: "status", extra: (meeting) => <Papers id={text(meeting, "id")} /> }}
+    />
   );
 }

@@ -219,3 +219,41 @@ describe("the Agendas & Minutes screen", () => {
     });
   });
 });
+
+describe("the Agendas & Minutes screen on a wide screen", () => {
+  const setWide = (wide: boolean) => {
+    window.matchMedia = ((query: string) => ({
+      matches: wide,
+      media: query,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    })) as unknown as typeof window.matchMedia;
+  };
+
+  afterEach(() => {
+    Reflect.deleteProperty(window, "matchMedia");
+  });
+
+  it("keeps the meetings in the window's left pane and the agenda and minutes in its main pane", async () => {
+    setWide(true);
+    showAgendas();
+    await userEvent.click(await screen.findByRole("button", { name: /Spring Budget Meeting/ }));
+
+    const panes = document.querySelector(".wf-panes") as HTMLElement;
+    expect(within(panes.querySelector(".wf-tree") as HTMLElement).getByRole("button", { name: /Summer Planning Meeting/ })).toBeInTheDocument();
+    const content = panes.querySelector(".wf-main .wf-content") as HTMLElement;
+    expect(await within(content).findByText("Budget review")).toBeInTheDocument();
+    expect(within(content).getByText("The budget was reviewed and approved.")).toBeInTheDocument();
+    expect(within(content).getByRole("group", { name: "Agenda" })).toBeInTheDocument();
+    expect(within(content).getByRole("group", { name: "Minutes" })).toBeInTheDocument();
+  });
+
+  it("draws no window frame on a phone", async () => {
+    setWide(false);
+    showAgendas();
+    await userEvent.click(await screen.findByRole("button", { name: /Spring Budget Meeting/ }));
+
+    expect(document.querySelector(".wf")).toBeNull();
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
+  });
+});
