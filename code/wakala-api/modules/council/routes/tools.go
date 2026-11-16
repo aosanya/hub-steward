@@ -12,17 +12,19 @@ import (
 type Tool = dispatch.Tool
 
 var carriers = map[string]string{
-	"meeting": "Meeting",
-	"agenda":  "Agenda",
-	"minutes": "Minutes",
+	"meeting":    "Meeting",
+	"agenda":     "Agenda",
+	"minutes":    "Minutes",
+	"resolution": "Resolution",
 }
 
 var storeOwned = map[string]bool{
-	"Meeting.created_at": true,
-	"Agenda.created_at":  true,
-	"Agenda.updated_at":  true,
-	"Minutes.created_at": true,
-	"Minutes.updated_at": true,
+	"Meeting.created_at":    true,
+	"Agenda.created_at":     true,
+	"Agenda.updated_at":     true,
+	"Minutes.created_at":    true,
+	"Minutes.updated_at":    true,
+	"Resolution.created_at": true,
 }
 
 var requestFields = map[string]dispatch.FieldDoc{
@@ -51,6 +53,24 @@ var requestFields = map[string]dispatch.FieldDoc{
 	},
 	"MinutesKey.meeting_id": {
 		Description: "The meeting whose minutes to read.",
+		Required:    true,
+	},
+	"ResolutionFilter.instance_id": {
+		Description: "The agency whose council resolutions to list.",
+		Required:    true,
+	},
+	"ResolutionFilter.meeting_id": {
+		Description: "Only the resolutions taken at this meeting. Leave out for every resolution.",
+	},
+	"ResolutionFilter.outcome": {
+		Description: "Only resolutions with this outcome: adopted, rejected or deferred. Leave out for every outcome.",
+	},
+	"ResolutionKey.instance_id": {
+		Description: "The agency whose council the resolution belongs to.",
+		Required:    true,
+	},
+	"ResolutionKey.id": {
+		Description: "The resolution to read.",
 		Required:    true,
 	},
 	"MeetingKey.id": {

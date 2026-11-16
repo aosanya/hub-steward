@@ -85,6 +85,23 @@
       "indexes": [
         {"name": "instance_meeting", "description": "One set of minutes per meeting of one agency.", "fields": ["instance_id", "meeting_id"], "unique": true}
       ]
+    },
+    {
+      "role": "resolution",
+      "description": "A decision the council took: what it was, the day it was taken and how it came out. It may name the meeting it was taken at.",
+      "fields": [
+        {"name": "id", "type": "string", "description": "Storage key, opaque to callers. Set when the row is written.", "primary": true},
+        {"name": "instance_id", "type": "string", "description": "The agency the resolution belongs to. Every read is narrowed to one of these, so one agency never reads another's resolutions.", "required": true, "immutable": true},
+        {"name": "meeting_id", "type": "string", "description": "The meeting it was taken at. Empty for a resolution not tied to a meeting on record.", "immutable": true},
+        {"name": "title", "type": "string", "description": "What was decided, in a line, such as \"Adopt the 2027 budget\".", "required": true},
+        {"name": "date", "type": "string", "description": "The day it was taken, as YYYY-MM-DD.", "required": true, "matches": "date"},
+        {"name": "outcome", "type": "enum", "description": "How the vote came out.", "required": true, "values": ["adopted", "rejected", "deferred"]},
+        {"name": "created_at", "type": "timestamp", "description": "When the resolution was put on record, as an RFC 3339 instant in UTC.", "immutable": true}
+      ],
+      "indexes": [
+        {"name": "instance_date", "description": "Listing one agency's resolutions by day.", "fields": ["instance_id", "date"]},
+        {"name": "instance_meeting", "description": "Listing the resolutions taken at one meeting.", "fields": ["instance_id", "meeting_id"]}
+      ]
     }
   ]
 }

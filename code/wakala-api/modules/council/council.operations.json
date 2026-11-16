@@ -79,6 +79,43 @@
       ],
       "returns": [{"body": true}]
     },
+    "create_resolution": {
+      "method": "POST",
+      "path": "/council/resolutions",
+      "call": "CreateResolution",
+      "action": "council.resolution.create",
+      "tool": "council_resolution_create",
+      "status": 201,
+      "title": "Put a council resolution on record",
+      "description": "Put one decision of the council on record: its title, the day it was taken, its outcome (adopted, rejected or deferred) and optionally the meeting it was taken at.",
+      "args": [{"from": "body", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "list_resolutions": {
+      "method": "GET",
+      "path": "/council/resolutions",
+      "call": "ListResolutions",
+      "action": "council.resolution.list",
+      "tool": "council_resolution_list",
+      "title": "List council resolutions",
+      "description": "List the resolutions of one agency's council, earliest day first, optionally only those of one meeting or one outcome.",
+      "args": [{"from": "query", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "get_resolution": {
+      "method": "GET",
+      "path": "/council/resolutions/{resolutionID}",
+      "call": "GetResolution",
+      "action": "council.resolution.read",
+      "tool": "council_resolution_read",
+      "title": "Read a council resolution",
+      "description": "Read one resolution of one agency's council by its id.",
+      "args": [
+        {"from": "query", "whole": true},
+        {"from": "path", "as": "resolutionID", "into": "ID", "description": "The resolution to read."}
+      ],
+      "returns": [{"body": true}]
+    },
     "get_minutes": {
       "method": "GET",
       "path": "/council/meetings/{meetingID}/minutes",
@@ -95,6 +132,8 @@
     }
   },
   "errors": {
+    "ErrInvalidResolution": 400,
+    "ErrResolutionNotFound": 404,
     "ErrInvalidAgenda": 400,
     "ErrAgendaNotFound": 404,
     "ErrInvalidMinutes": 400,

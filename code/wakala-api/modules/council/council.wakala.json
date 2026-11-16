@@ -20,6 +20,12 @@
       "name": "council_minutes",
       "table": "council_minutes",
       "description": "The written record of what a meeting did."
+    },
+    {
+      "role": "resolution",
+      "name": "council_resolution",
+      "table": "council_resolutions",
+      "description": "A decision the council took: title, day and outcome."
     }
   ]
 }

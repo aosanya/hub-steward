@@ -17,12 +17,14 @@ var operations = sync.OnceValues(func() (*dispatch.Spec, error) {
 })
 
 var sentinels = map[string]error{
-	"ErrInvalidAgenda":   council.ErrInvalidAgenda,
-	"ErrAgendaNotFound":  council.ErrAgendaNotFound,
-	"ErrInvalidMinutes":  council.ErrInvalidMinutes,
-	"ErrMinutesNotFound": council.ErrMinutesNotFound,
-	"ErrInvalidMeeting":  council.ErrInvalidMeeting,
-	"ErrMeetingNotFound": council.ErrMeetingNotFound,
+	"ErrInvalidResolution":  council.ErrInvalidResolution,
+	"ErrResolutionNotFound": council.ErrResolutionNotFound,
+	"ErrInvalidAgenda":      council.ErrInvalidAgenda,
+	"ErrAgendaNotFound":     council.ErrAgendaNotFound,
+	"ErrInvalidMinutes":     council.ErrInvalidMinutes,
+	"ErrMinutesNotFound":    council.ErrMinutesNotFound,
+	"ErrInvalidMeeting":     council.ErrInvalidMeeting,
+	"ErrMeetingNotFound":    council.ErrMeetingNotFound,
 }
 
 var AnonymousActions []string

@@ -13,3 +13,7 @@ var ErrAgendaNotFound = errors.New("council agenda not found")
 var ErrInvalidMinutes = errors.New("invalid council minutes: missing or malformed fields")
 
 var ErrMinutesNotFound = errors.New("council minutes not found")
+
+var ErrInvalidResolution = errors.New("invalid council resolution: missing or malformed fields")
+
+var ErrResolutionNotFound = errors.New("council resolution not found")
