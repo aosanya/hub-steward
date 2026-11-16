@@ -3,7 +3,7 @@ import { useI18n } from "../../i18n";
 import type { FieldSpec, OptionItem } from "../../types";
 import { FormObject, type FormValues } from "../../ui";
 import type { Outcome } from "./sendAction";
-import { sendAction } from "./sendAction";
+import { failureOf, sendAction } from "./sendAction";
 import { pickerOptions } from "./pickerOptions";
 import { textOf } from "./usersRead";
 
@@ -38,7 +38,7 @@ export function InviteForm({ hubId, onOutcome, onCancel }: InviteFormProps) {
     if (named(values) !== 1) return t("users.giveOne");
     const groupName = groups.find((group) => group.value === values.group_id)?.label ?? "";
     const result = await sendAction("users", "users", hubId, { ...values, group_name: groupName });
-    if (result === "failed") return t("submitFailed");
+    if (result === "failed") return [t("submitFailed"), failureOf()].filter(Boolean).join(" ");
     onOutcome(result);
   };
 

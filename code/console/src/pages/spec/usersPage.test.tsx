@@ -245,10 +245,10 @@ describe("inviting a person", () => {
     expect(screen.queryByLabelText("Member code")).not.toBeInTheDocument();
   });
 
-  it("keeps the form open and says the change could not be sent when the hub refuses", async () => {
+  it("keeps the form open and says why the change could not be sent when the hub refuses", async () => {
     withActions(
       vi.fn(async () => {
-        throw new Error("no such member");
+        throw new Error("no member has that code");
       }),
     );
     await openForm();
@@ -257,7 +257,7 @@ describe("inviting a person", () => {
     await userEvent.type(screen.getByLabelText("Member code"), "ZZ9");
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
 
-    expect(await screen.findByText("The change could not be sent.")).toBeInTheDocument();
+    expect(await screen.findByRole("alert")).toHaveTextContent("The change could not be sent. no member has that code");
     expect(screen.getByLabelText("Member code")).toHaveValue("ZZ9");
   });
 
