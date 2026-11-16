@@ -17,6 +17,7 @@ type Props = {
   tool: string;
   permission: string;
   fields: EditField[];
+  keep?: string[];
   onSaved?: (changed: Record<string, string>) => void;
 };
 
@@ -36,7 +37,7 @@ const inputModes = { text: undefined, number: "decimal", date: undefined } as co
 
 const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key)]));
 
-export function MenuEditForm({ item, id, idArg, tool, permission, fields, onSaved }: Props) {
+export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], onSaved }: Props) {
   const may = useMay(permission);
   const [editing, setEditing] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
@@ -55,7 +56,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, onSave
     setSaving(true);
     setRefused("");
     try {
-      await callTool("", tool, { [idArg]: id, ...changed });
+      await callTool("", tool, { [idArg]: id, ...Object.fromEntries(keep.map((key) => [key, start[key]])), ...changed });
       setEditing(false);
       onSaved?.(changed);
     } catch (error) {

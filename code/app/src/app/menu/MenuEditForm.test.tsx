@@ -79,6 +79,16 @@ describe("the shared menu edit form", () => {
     expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
   });
 
+  it("sends the named fields with every save even when they did not change", async () => {
+    render(<MenuEditForm item={item} id="b1" idArg="budgetID" tool="accounting_budget_set" permission="accounting.manage" fields={fields} keep={["name"]} />);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Department"), " East");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { budgetID: "b1", name: "Road repairs", department: "Public Works East" }]]));
+  });
+
   it("does not save while a required field is empty", async () => {
     form();
 
