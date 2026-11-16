@@ -1,9 +1,8 @@
 import { test, expect, type Page } from "@playwright/test";
 import { shootLive, signIn } from "./helpers/live";
-import { modulesOffered, mountedModules, mountOnly, prepareThrowawayAgency, switchOffActor } from "./helpers/throwawayAgency";
+import { modulesOffered, mountedModules, mountOnly, mountsAgencyName, prepareThrowawayAgency, switchOffActor } from "./helpers/throwawayAgency";
 
 const journey = "05-mounts";
-const agencyName = "05-mounts";
 const who = "own14";
 const notYetWords = "Not available yet";
 
@@ -55,7 +54,7 @@ test.use({ viewport: { width: 390, height: 844 } });
 
 test.describe(journey, () => {
   test.beforeAll(async () => {
-    await prepareThrowawayAgency(agencyName, who);
+    await prepareThrowawayAgency(mountsAgencyName, who);
     offered = await modulesOffered(who);
   });
 

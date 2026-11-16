@@ -6,6 +6,8 @@ type ModuleRow = { id: string; code: string; enabled: boolean; locked: boolean }
 type Publication = { version: number; tag: string };
 type Draft = { id: string; status: string };
 
+export const mountsAgencyName = "05-mounts-2";
+
 const switchable = ["digitaltwin", "assetmanager", "forms", "accounting", "voting"];
 
 const jarCookie = (who: string): string => {
