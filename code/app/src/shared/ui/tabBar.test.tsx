@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../../agency/open";
-import type { StartClient } from "../../market/start/api";
-import type { InboxClient } from "../../inbox/api";
+import { forgetOpenAgency, openAgency } from "../../features/agency/open";
+import type { StartClient } from "../../features/market/start/api";
+import type { InboxClient } from "../../features/inbox/api";
 import { rememberSide, sideReached } from "../../tabs";
 import { doSomethingBackPath } from "../../routes";
 import { TabBar } from "./TabBar";

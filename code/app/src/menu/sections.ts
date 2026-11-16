@@ -1,4 +1,4 @@
-import { hasModule, type AgencyView } from "../agency/modules";
+import { hasModule, type AgencyView } from "../features/agency/modules";
 import { routes } from "../routes";
 import type { IconName } from "../shared/ui/Icon";
 

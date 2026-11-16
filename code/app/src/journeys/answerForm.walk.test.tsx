@@ -2,9 +2,9 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { App } from "../App";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { Answer, AnsweredForm, FormQuestion, FormsClient, StandingForm, WaitingForm } from "../forms/api";
-import { FormsProvider } from "../forms/context";
+import { forgetOpenAgency, openAgency } from "../features/agency/open";
+import type { Answer, AnsweredForm, FormQuestion, FormsClient, StandingForm, WaitingForm } from "../features/forms/api";
+import { FormsProvider } from "../features/forms/context";
 
 beforeEach(() => {
   window.localStorage.clear();

@@ -2,14 +2,14 @@ import { type MockInstance, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
-import type { AgencyView } from "../agency/modules";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import { isGroupOrderStart, startPath, type StartStep } from "../market/start/api";
+import type { AgencyView } from "../features/agency/modules";
+import { forgetOpenAgency, openAgency } from "../features/agency/open";
+import { isGroupOrderStart, startPath, type StartStep } from "../features/market/start/api";
 import { homeCardsFor, type AgencyKind } from "./cards";
 import { StartRows } from "./StartRows";
 import { chatTab } from "../tabs";
 import { chatListPath } from "../routes";
-import { mcpStepsClient } from "../steps/api";
+import { mcpStepsClient } from "../features/steps/api";
 import * as mcp from "../shared/wakala/mcp";
 import { applySupplierPath, applySupplierWorkflow, buyInputsChatPath, buyInputsChatWorkflow, joinGroupWorkflow, sellHarvestChatPath, sellHarvestChatWorkflow } from "./workflowScreens";
 

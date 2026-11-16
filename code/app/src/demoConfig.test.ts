@@ -43,7 +43,7 @@ describe("the demo build config", () => {
   });
 
   it("carries no hardcoded address in the app sources", () => {
-    const classifiesHosts = "./entry/localHub.ts";
+    const classifiesHosts = "./features/entry/localHub.ts";
     const offenders = Object.keys(sources)
       .filter((file) => file !== classifiesHosts)
       .filter((file) => /https?:\/\/|localhost|127\.0\.0\.1/.test(sources[file]));

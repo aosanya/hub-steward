@@ -1,10 +1,10 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { StartClient, StartStep } from "../market/start/api";
-import type { InboxClient, InvitationItem, NotificationItem } from "../inbox/api";
-import { NeedsYouSection } from "../inbox/NeedsYouSection";
+import { forgetOpenAgency, openAgency } from "../features/agency/open";
+import type { StartClient, StartStep } from "../features/market/start/api";
+import type { InboxClient, InvitationItem, NotificationItem } from "../features/inbox/api";
+import { NeedsYouSection } from "../features/inbox/NeedsYouSection";
 import { needsYouAnchor } from "../tabs";
 import { NeedsYouStrip, NeedsYouStripRow } from "./NeedsYouStrip";
 

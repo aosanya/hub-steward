@@ -1,7 +1,7 @@
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { mcpAgencyClient, type AgencyClient } from "../agency/modules";
-import { agencyHomePath, openAgencyId } from "../agency/open";
-import { useLoad } from "../forms/useLoad";
+import { mcpAgencyClient, type AgencyClient } from "../features/agency/modules";
+import { agencyHomePath, openAgencyId } from "../features/agency/open";
+import { useLoad } from "../features/forms/useLoad";
 import { Chip } from "../shared/ui/Chip";
 import { ListRow, Rows } from "../shared/ui/ListRow";
 import { Shell } from "../shared/ui/Shell";

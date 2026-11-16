@@ -1,8 +1,8 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
-import type { AgencyView } from "../agency/modules";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import type { AgencyView } from "../features/agency/modules";
+import { forgetOpenAgency, openAgency } from "../features/agency/open";
 import { MenuRows } from "./MenuRows";
 import { menuSections } from "./sections";
 

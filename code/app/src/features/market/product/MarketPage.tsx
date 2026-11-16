@@ -1,0 +1,26 @@
+import { useNavigate } from "react-router-dom";
+import { mcpMarketClient, type MarketClient } from "../shared/api";
+import { useLoad } from "../../forms/useLoad";
+import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
+import { ListRow, Rows } from "../../../shared/ui/ListRow";
+import { doSomethingBackPath, routes } from "../../../routes";
+import { ProductRows } from "../../../shared/ui/ProductRows";
+import { Shell } from "../../../shared/ui/Shell";
+
+export function MarketPage({ client = mcpMarketClient }: { client?: MarketClient }) {
+  const navigate = useNavigate();
+  const products = useLoad(() => client.listProducts(), "products");
+  return (
+    <Shell title="Market" onBack={() => navigate(doSomethingBackPath())}>
+      {products.state === "error" ? <LoadFailed words="The market could not be loaded." /> : null}
+      {products.state === "ready" && products.data.length === 0 ? <EmptyCard words="Nothing is listed yet." /> : null}
+      {products.state === "ready" && products.data.length > 0 ? (
+        <ProductRows products={products.data} onOpen={(productId) => navigate(routes.product.path({ productId }))} />
+      ) : null}
+      <Rows>
+        <ListRow title="Something not listed" end="›" onClick={() => navigate("/buy/wanted")} />
+        <ListRow title="My orders" end="›" onClick={() => navigate("/my-orders")} />
+      </Rows>
+    </Shell>
+  );
+}

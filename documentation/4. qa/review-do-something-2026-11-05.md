@@ -98,7 +98,7 @@ Nothing below has been run.
 1. **hub-steward: Do Something shows each member their own steps** (API)
    `code/wakala-api/internal/api/http/{step_runs.go, step_records.go, caller_open_steps.go, definition_role_kinds.go, seated_may.go, mcp.go, mcp_actions.go, router.go, step_runs_test.go, step_runs_harness_test.go, step_runs_titles_test.go, step_runs_concurrent_test.go, step_runs_multiselect_test.go}`
 2. **hub-steward: phone app step page, Send and Sent**
-   `code/app/src/steps/`, `code/app/src/forms/QuestionInput.tsx`, `code/app/src/pages/forms/AnswerPage.tsx`, `code/app/src/home/{StartRows.tsx, homeStart.test.tsx, startMemberSteps.test.tsx}`, `code/app/src/coordinator/start/api.ts`, `code/app/src/{App.tsx, routes.ts, routes.test.tsx}`, `code/app/README.md`
+   `code/app/src/features/steps/`, `code/app/src/features/forms/QuestionInput.tsx`, `code/app/src/pages/forms/AnswerPage.tsx`, `code/app/src/home/{StartRows.tsx, homeStart.test.tsx, startMemberSteps.test.tsx}`, `code/app/src/coordinator/start/api.ts`, `code/app/src/{App.tsx, routes.ts, routes.test.tsx}`, `code/app/README.md`
 3. **hub-steward: rename walk18 so the sample-data scan skips it** (staged already)
    `code/app/src/journeys/walk18.test-support.ts`, `code/app/src/journeys/runGroupOrder.walk.test.tsx`
 4. **hub-steward: wakala-api opens one shared in-memory database when no path is set**

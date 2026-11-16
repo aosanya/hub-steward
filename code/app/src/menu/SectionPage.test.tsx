@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../features/agency/open";
 import { SectionPage, notYetWords } from "./SectionPage";
 
 let landed = "";

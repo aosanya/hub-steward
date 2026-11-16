@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "./App";
-import { forgetOpenAgency, openAgency } from "./agency/open";
+import { forgetOpenAgency, openAgency } from "./features/agency/open";
 import { mainBar } from "./tabs";
 import { BottomBar } from "./shared/ui/BottomBar";
 import { Button } from "./shared/ui/Button";

@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { openAgencyId } from "../agency/open";
-import { mcpStartClient, type StartClient } from "../market/start/api";
-import { type InboxClient, mcpInboxClient } from "../inbox/api";
-import { thingsToDoLabel } from "../inbox/thingsToDo";
-import { useNeedsYou } from "../inbox/useNeedsYou";
+import { openAgencyId } from "../features/agency/open";
+import { mcpStartClient, type StartClient } from "../features/market/start/api";
+import { type InboxClient, mcpInboxClient } from "../features/inbox/api";
+import { thingsToDoLabel } from "../features/inbox/thingsToDo";
+import { useNeedsYou } from "../features/inbox/useNeedsYou";
 import { needsYouPath } from "../tabs";
 import { ListRow, Rows } from "../shared/ui/ListRow";
 

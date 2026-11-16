@@ -1,4 +1,4 @@
-import { openAgencyId } from "../../agency/open";
+import { openAgencyId } from "../../features/agency/open";
 import { runtimeConfig } from "./config";
 import { renewedAuthHeaders } from "./renewal";
 import { authHeaders } from "./token";

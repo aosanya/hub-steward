@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "../App";
-import { forgetOpenAgency } from "../agency/open";
+import { forgetOpenAgency } from "../features/agency/open";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 import * as mcp from "../shared/wakala/mcp";
 import { forgetSubject } from "../shared/wakala/me";

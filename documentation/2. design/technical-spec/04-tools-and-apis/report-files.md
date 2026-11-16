@@ -31,4 +31,4 @@ The step page shows each item as a row with the name, the first 7 characters of 
 
 How a report file gets into the "reports" folder of a form is not built. Someone with git access, an owner or an agent, commits it.
 
-Code: `code/wakala-api/internal/api/http/results_files.go`; the phone side is `app/src/steps/PublishReport.tsx` and `publishApi.ts`.
+Code: `code/wakala-api/internal/api/http/results_files.go`; the phone side is `app/src/features/steps/PublishReport.tsx` and `publishApi.ts`.

@@ -1,0 +1,45 @@
+import { useEffect } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { BacklogBoard } from "./board/BacklogBoard";
+import { BacklogPage, backlogPageRoutePath } from "./page";
+import { AddBacklogScreen, EditBacklogScreen } from "./manage";
+import { BacklogAccessScreen, backlogAccessRoutePath } from "./access";
+import { AddSmartBacklogScreen, EditSmartBacklogScreen, SmartBacklogPage } from "./smart";
+import { BacklogsPage } from "./list/BacklogsPage";
+import { NeedsRole } from "./shared/NeedsRole";
+import { IssuePage } from "./issue/IssuePage";
+import { AddReferencePage } from "./references/AddReferencePage";
+import { IssuesPage } from "./issue/IssuesPage";
+import { backlogIdOfPath, rememberBacklog } from "../../home/lastBacklog";
+
+function RememberOpenedBacklog() {
+  const id = backlogIdOfPath(useLocation().pathname);
+  useEffect(() => {
+    if (id !== "") rememberBacklog(id);
+  }, [id]);
+  return null;
+}
+
+export function BacklogsRoutes() {
+  return (
+    <NeedsRole>
+      <RememberOpenedBacklog />
+      <Routes>
+        <Route index element={<BacklogsPage />} />
+        <Route path="issue/:issueId" element={<IssuePage />} />
+        <Route path="issue/:issueId/references/add" element={<AddReferencePage />} />
+        <Route path="new" element={<AddBacklogScreen />} />
+        <Route path="new/smart" element={<AddSmartBacklogScreen />} />
+        <Route path=":backlogId/edit" element={<EditBacklogScreen />} />
+        <Route path=":backlogId/rules" element={<EditSmartBacklogScreen />} />
+        <Route path=":backlogId/smart" element={<SmartBacklogPage />} />
+        <Route path={backlogAccessRoutePath} element={<BacklogAccessScreen />} />
+        <Route path=":backlogId/board" element={<BacklogBoard />} />
+        <Route path={backlogPageRoutePath} element={<BacklogPage />} />
+        <Route path=":backlogId" element={<IssuesPage />} />
+      </Routes>
+    </NeedsRole>
+  );
+}
+
+export default BacklogsRoutes;

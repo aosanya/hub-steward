@@ -2,10 +2,10 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import type { StartStep } from "../market/start/api";
-import type { MemberStep } from "../steps/api";
-import { forgetSent, markSent } from "../steps/sent";
+import { forgetOpenAgency, openAgency } from "../features/agency/open";
+import type { StartStep } from "../features/market/start/api";
+import type { MemberStep } from "../features/steps/api";
+import { forgetSent, markSent } from "../features/steps/sent";
 import { StartRows } from "./StartRows";
 import { joinGroupWorkflow } from "./workflowScreens";
 

@@ -1,7 +1,7 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { openAgency, openAgencyId } from "../agency/open";
-import { groupTools } from "../groups/api";
+import { openAgency, openAgencyId } from "../features/agency/open";
+import { groupTools } from "../features/groups/api";
 import { answeringAForm, chattingInARoom, endInAgencies, everyCallNames, farmers, groupOrderStep, openApp, riders, shoppingForUrea, startInAgencies, startingAnOrder, stubWakala } from "./inAgency.test-support";
 
 beforeEach(startInAgencies);

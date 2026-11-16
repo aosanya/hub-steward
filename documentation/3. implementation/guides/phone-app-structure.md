@@ -83,7 +83,7 @@ Status is read from `code/app/src` on disk when this page was last written, and 
 | other features' deep imports into `market/` | through `market/index.ts` | in progress, built and waiting to be re-applied on the final tree | SW471 |
 | other features' deep imports into `backlogs/` | through `backlogs/index.ts` | open | SW456 |
 | `shared/` imports of features | none | open | SW504 |
-| every feature folder | `features/` | open | SW489 |
+| every feature folder (`account`, `agency`, `apps`, `assistant`, `backlogs`, `chat`, `consent`, `council`, `entry`, `files`, `forms`, `groups`, `inbox`, `market`, `people`, `risks`, `started`, `steps`) | `features/` | done | SW489 |
 | `home`, `menu`, `tabs.ts`, `routes.ts`, `App.tsx`, `main.tsx`, the CSS tokens | `app/` | open | SW492 |
 | `journeys/` and its test support | stays together | decided, nothing moves | SW495 |
 | a test that fails when a rule is broken | `layoutRules.test.ts` | in progress | SW510 |
@@ -95,6 +95,7 @@ Status is read from `code/app/src` on disk when this page was last written, and 
 - **`journeys/` (SW495).** The walk tests and their `*.test-support` files stay together in `journeys/` and no file moves. Every walk renders `<App />` or opens an agency and crosses three to six features, so none belongs to one feature, and the support files are shared by several walks (`answerWakala` 7, `inAgency` 5, `chatSteps` 2) and by tests outside `journeys/`. Moving them would rename about 25 files for no feature gain. `journeys/backlogs` was the one exception and went to `backlogs/walks` with SW453.
 - **`assistant/namedBacklog.ts` (SW453).** It stays in the assistant. It matches a typed message against backlog names and builds the assistant's own result cards, only the assistant uses it, and it holds no backlog screen logic.
 - **`pages/join` (SW477).** It went to `groups/`, not `entry/`: `JoinPage` is built on the groups client (`listJoinableGroups`, `findGroupByCode`, `joinGroup`, `listMyGroups`), and `entry/` is sign-in and agency picking.
+- **`council` (SW489).** Named by role, not by feature, but it holds the council's own screens and calls, so it moved to `features/council/` with the rest.
 - **The last three pages (SW480).** `HomePage` went to `home/`, `NotificationsPage` to `inbox/`, and `TabPage`, an empty-card screen that `App.tsx` shows for a tab with no screen of its own, to `shared/ui/` beside `Shell` and `TabBar`.
 - **The `access` name clash (SW450).** A file `backlogs/access.ts` sat beside the folder `backlogs/access/`, and `BacklogsRoutes` imported `./access/index` to get round it. The file went to `backlogs/shared/access.ts`, so the plain import works again.
 - **Imports into the market (SW471).** Pointing every outside import at `market/index.ts` made one import cycle of 45 files (the market screens, `shared/ui/Shell`, `shared/ui/TabBar`, `inbox/useNeedsYou`, back to the index). Eight outside files keep a deep import because dropping any one brings the cycle back: `shared/ui/TabBar.tsx`, `shared/ui/JoinForm.tsx`, `inbox/useNeedsYou.ts`, `inbox/needsYou.ts`, `home/StartRows.tsx`, `started/api.ts`, `started/done.ts` and `steps/api.ts`. Rule 5 therefore allows a deep import only where the index would make a cycle, and each such import is listed by name. Lifting the open-steps reader and the product-name and unit-word helpers out of the market into a shared home removes the exceptions.
@@ -102,7 +103,6 @@ Status is read from `code/app/src` on disk when this page was last written, and 
 
 ## Still to settle
 
-- `council`: named by role, not by feature; settled when its folder is reached in SW489.
 - A barrel is not added to a feature that nothing outside imports.
 
 ## How the move is done

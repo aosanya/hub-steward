@@ -67,13 +67,13 @@ The Folder's `default_branch_id` from the list is the `branchID` every other cal
 
 ## The data layer
 
-Source: hub issue ISS-2. Built in `code/app/src/files/api.ts`. Read only: the client has no write call.
+Source: hub issue ISS-2. Built in `code/app/src/features/files/api.ts`. Read only: the client has no write call.
 
 ### How the app learns git is mounted
 
 | Step | What happens |
 |---|---|
-| Read | `mounted()` reuses the agency read the app already makes (`agency_get_agency` and `agency_list_mounts`, `code/app/src/agency/modules.ts`) and asks `hasModule` for the module code `git` |
+| Read | `mounted()` reuses the agency read the app already makes (`agency_get_agency` and `agency_list_mounts`, `code/app/src/features/agency/modules.ts`) and asks `hasModule` for the module code `git` |
 | Fails closed | No git known means no Files option: not listed, the mounts read failed, both reads failed, or the answer unreadable |
 | Never throws | `mounted()` answers true or false and never throws |
 
@@ -91,7 +91,7 @@ Source: hub issue ISS-2. Built in `code/app/src/files/api.ts`. Read only: the cl
 
 | Rule | What it means |
 |---|---|
-| One number | `fileSizeLimit` is 1048576 bytes (1 MiB), one constant in `code/app/src/files/api.ts`. Change that number and nothing else |
+| One number | `fileSizeLimit` is 1048576 bytes (1 MiB), one constant in `code/app/src/features/files/api.ts`. Change that number and nothing else |
 | Read from the listing | The size comes from the directory entry, so a file over the limit is never fetched |
 | At the limit | A file of exactly the limit is read |
 | Image | A file whose extension the viewer calls an image (png, jpg, jpeg, gif, webp, svg) and that is under the limit comes back with `status` `image` and its `bytes`: the base64 `content` decoded, or, for an svg, which the hub sends as `utf-8` text, the text encoded. The extension is the hub's `extension`, else the one in the name |
@@ -254,7 +254,7 @@ The dash rule: a line whose call fails or has no answer shows a dash. A Folder w
 
 ## The viewer
 
-Source: hub issue ISS-4, built in `code/app/src/files/viewer/`. Read only.
+Source: hub issue ISS-4, built in `code/app/src/features/files/viewer/`. Read only.
 
 ### Interface
 
@@ -301,11 +301,11 @@ An unknown or missing extension with text is plain text.
 
 `forms_git_file_read` gives `encoding` (`base64` for a non-text file) and `content` (the bytes as base64), so the tool can return image bytes. Not verified against a live hub.
 
-Source: hub issue ISS-9. The hub encodes a file as `base64` when it holds a null byte or is not valid UTF-8 and as `utf-8` otherwise (`code/wakala-api/modules/git/git_impl_blobcache.go`), so a png, jpg, gif or webp arrives as `base64` and an svg arrives as `utf-8` text. The data layer (`code/app/src/files/api.ts`) answers any of them under the 1 MiB limit with `status` `image` and `bytes`; `FilePage` and `WideContent` hand `bytes` and `extension` to `FileViewer`, which draws an `img` from a `data:` URL, so an svg with a script element shows as a picture and no script element reaches the page. An image over the limit stays withheld "too large", and a binary that is not an image stays withheld "not text". Not verified against a live hub.
+Source: hub issue ISS-9. The hub encodes a file as `base64` when it holds a null byte or is not valid UTF-8 and as `utf-8` otherwise (`code/wakala-api/modules/git/git_impl_blobcache.go`), so a png, jpg, gif or webp arrives as `base64` and an svg arrives as `utf-8` text. The data layer (`code/app/src/features/files/api.ts`) answers any of them under the 1 MiB limit with `status` `image` and `bytes`; `FilePage` and `WideContent` hand `bytes` and `extension` to `FileViewer`, which draws an `img` from a `data:` URL, so an svg with a script element shows as a picture and no script element reaches the page. An image over the limit stays withheld "too large", and a binary that is not an image stays withheld "not text". Not verified against a live hub.
 
 ### Tests
 
-88 tests across 5 files in `code/app/src/files/viewer/` at the time of writing, run with `cd code/app && npx vitest run src/files/viewer`. They cover .md, .go, .json, .txt, .png with and without bytes, a binary file and a too-large file withheld, a long line, and a script tag in Markdown.
+88 tests across 5 files in `code/app/src/features/files/viewer/` at the time of writing, run with `cd code/app && npx vitest run src/files/viewer`. They cover .md, .go, .json, .txt, .png with and without bytes, a binary file and a too-large file withheld, a long line, and a script tag in Markdown.
 
 Not verified: a real browser render at phone width and the sideways scroll (jsdom has no layout).
 

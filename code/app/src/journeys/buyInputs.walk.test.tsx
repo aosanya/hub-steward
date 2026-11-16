@@ -2,11 +2,11 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { App } from "../App";
-import { AppThreadPage } from "../apps/thread/AppThreadPage";
-import { marketSource } from "../apps/thread/marketSource";
+import { AppThreadPage } from "../features/apps/thread/AppThreadPage";
+import { marketSource } from "../features/apps/thread/marketSource";
 import * as mcp from "../shared/wakala/mcp";
 import { forgetSubject } from "../shared/wakala/me";
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../features/agency/open";
 import { answerWakala } from "./answerWakala";
 
 beforeEach(() => openAgency("walk-agency"));

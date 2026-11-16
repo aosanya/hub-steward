@@ -44,7 +44,7 @@ New here? [First day](documentation/3.%20implementation/guides/first-day.md) tak
 | The phone app | [code/app/](code/app/) | [Phone app](documentation/3.%20implementation/guides/phone-app.md) |
 | A demo agency or the Siaya lab's documents | [demo/](demo/), and for the eight folders the matching copy in `code/console/public/templates/` | [Write an agency](documentation/3.%20implementation/guides/write-an-agency.md) |
 | The local database | [code/supabase/](code/supabase/) | [Local database](documentation/3.%20implementation/guides/local-database.md) |
-| A translation | `code/console/public/i18n.json`, and `words.ts` and `swahili.ts` in `code/app/src/entry/` | [Languages](documentation/3.%20implementation/guides/languages.md) |
+| A translation | `code/console/public/i18n.json`, and `words.ts` and `swahili.ts` in `code/app/src/features/entry/` | [Languages](documentation/3.%20implementation/guides/languages.md) |
 | What the product is for, a user journey | `documentation/1. requirements/` | [Documentation](documentation/README.md) |
 | How it is built, a screen drawing | `documentation/2. design/` | [Technical spec](documentation/2.%20design/technical-spec/README.md) |
 | How to run or build it, a guide | `documentation/3. implementation/` | [Guides](documentation/3.%20implementation/guides/README.md) |

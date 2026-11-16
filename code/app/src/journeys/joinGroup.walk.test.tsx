@@ -2,10 +2,10 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { App } from "../App";
-import { mcpGroupsClient } from "../groups/api";
+import { mcpGroupsClient } from "../features/groups/api";
 import * as mcp from "../shared/wakala/mcp";
 import { forgetSubject } from "../shared/wakala/me";
-import { openAgency } from "../agency/open";
+import { openAgency } from "../features/agency/open";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 
 beforeEach(() => openAgency("walk-agency"));

@@ -12,7 +12,7 @@ Spike for ISS-79 (decisions 157 and 158). The first build of Ongoing has the Liv
 | Answers a member sent | none for the caller | `agency_list_live_record_rows` lists rows per `record_code`, and a seat that adds rows to a record sees every row of it, so the app would filter on `added_by` | A row has no step id, step title or workflow name, so the list cannot be rebuilt from it; one call per record |
 | Open steps | `agency_list_my_open_steps` | Steps to act on now, never steps already sent | Not a Done read |
 
-`app/src/market/groupOrders.ts` (`listAllGroupOrders`) already takes `mine` and `state`, so the Done tab needs no new client code for group orders beyond the filter values.
+`app/src/features/market/groupOrders.ts` (`listAllGroupOrders`) already takes `mine` and `state`, so the Done tab needs no new client code for group orders beyond the filter values.
 
 ## Issues filed
 

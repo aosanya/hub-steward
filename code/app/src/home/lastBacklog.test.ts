@@ -1,4 +1,4 @@
-import { forgetOpenAgency, openAgency } from "../agency/open";
+import { forgetOpenAgency, openAgency } from "../features/agency/open";
 import { backlogIdOfPath, forgetLastBacklogs, lastBacklogId, rememberBacklog } from "./lastBacklog";
 
 afterEach(() => {

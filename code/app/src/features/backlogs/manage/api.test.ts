@@ -1,0 +1,212 @@
+import { McpError } from "../../../shared/wakala/mcp";
+import { allowedIn, backlogTools,  detailOf, mcpBacklogManageClient, refusalText } from "./api";
+import { savedStep } from "./stepsDraft";
+import { ManageRefused } from "./types";
+
+type Answer = (hub: string, name: string, args: any) => Promise<any>;
+
+const recorded: [string, string, any][] = [];
+
+let answer: Answer = async () => ({});
+
+vi.mock("../../../shared/wakala/mcp", async () => {
+  const actual = await vi.importActual<typeof import("../../../shared/wakala/mcp")>("../../../shared/wakala/mcp");
+  return {
+    ...actual,
+    callTool: (hub: string, name: string, args: any) => {
+      recorded.push([hub, name, args]);
+      return answer(hub, name, args);
+    },
+  };
+});
+
+const summary = (steps: [string, string, number][]) => ({ id: "software", name: "Software", issues: 0, steps: steps.map(([id, name, issues]) => ({ id, name, issues })) });
+
+const calls = () => recorded.map(([, name, args]) => [name, args]);
+
+beforeEach(() => {
+  recorded.length = 0;
+  answer = async () => ({});
+});
+
+describe("backlog manage client", () => {
+  it("reads a summary into steps with how many issues each holds", () => {
+    expect(detailOf(summary([["a", "To do", 2]]))).toEqual({ id: "software", name: "Software", steps: [savedStep("a", "To do", 2)] });
+  });
+
+  it("names each tool after its action with the dots turned to underscores", () => {
+    expect(backlogTools).toEqual({
+      list: "taskmanager_backlog_list",
+      create: "taskmanager_backlog_create",
+      rename: "taskmanager_backlog_rename",
+      remove: "taskmanager_backlog_delete",
+      addStep: "taskmanager_backlog_step_add",
+      renameStep: "taskmanager_backlog_step_rename",
+      removeStep: "taskmanager_backlog_step_remove",
+      reorder: "taskmanager_backlog_step_reorder",
+      myRoles: "agency_get_my_roles",
+    });
+  });
+
+  it("may manage only when the caller's role permissions include backlog.manage", async () => {
+    expect(allowedIn({ permissions: ["task.read", "backlog.manage"] })).toBe(true);
+    expect(allowedIn({ permissions: ["task.read"] })).toBe(false);
+    expect(allowedIn({ permissions: [] })).toBe(false);
+    expect(allowedIn({})).toBe(false);
+    expect(allowedIn(true)).toBe(false);
+  });
+
+  it("asks the caller's own roles, with no arguments", async () => {
+    answer = async () => ({ permissions: ["backlog.manage"] });
+    expect(await mcpBacklogManageClient.mayManage()).toBe(true);
+    expect(calls()).toEqual([[backlogTools.myRoles, undefined]]);
+    answer = async () => ({ permissions: [] });
+    expect(await mcpBacklogManageClient.mayManage()).toBe(false);
+  });
+
+  it("creates a backlog with its steps in order", async () => {
+    answer = async () => ({ id: "support" });
+    expect(await mcpBacklogManageClient.create("Support", ["New", "Closed"])).toBe("support");
+    expect(calls()).toEqual([[backlogTools.create, { name: "Support", steps: ["New", "Closed"] }]]);
+  });
+
+  it("saves in a safe order: rename the backlog, remove, rename steps, add, then the new order", async () => {
+    answer = async (_hub, name, args) => {
+      if (name === backlogTools.list) return { items: [summary([["a", "To do", 0], ["b", "Doing", 0], ["c", "Done", 0]])] };
+      if (name === backlogTools.removeStep) return summary([["a", "To do", 0], ["c", "Done", 0]]);
+      if (name === backlogTools.addStep) return summary([["a", "To do", 0], ["r", args.name, 0], ["c", "Done", 0]]);
+      return summary([]);
+    };
+    await mcpBacklogManageClient.save("software", "Engineering", [savedStep("a", "To do", 0), { key: "n", id: "", name: "Review", held: 0 }, savedStep("c", "Done", 0)]);
+    expect(calls().slice(1)).toEqual([
+      [backlogTools.rename, { backlogID: "software", name: "Engineering" }],
+      [backlogTools.removeStep, { backlogID: "software", stepID: "b" }],
+      [backlogTools.addStep, { backlogID: "software", name: "Review", after: "a" }],
+    ]);
+  });
+
+  it("keeps a step that is removed and added again under the same name, with nothing sent for it", async () => {
+    answer = async (_hub, name) => (name === backlogTools.list ? { items: [summary([["a", "To do", 0], ["r", "Review", 0], ["c", "Done", 0]])] } : summary([]));
+    await mcpBacklogManageClient.save("software", "Software", [savedStep("a", "To do", 0), { key: "n", id: "", name: "Review", held: 0 }, savedStep("c", "Done", 0)]);
+    expect(calls().slice(1)).toEqual([]);
+  });
+
+  it("replaces the only step with a new step of the same name without ever having zero steps", async () => {
+    answer = async (_hub, name) => (name === backlogTools.list ? { items: [summary([["a", "Review", 0]])] } : summary([]));
+    await mcpBacklogManageClient.save("software", "Software", [{ key: "n", id: "", name: "Review", held: 0 }]);
+    expect(calls().slice(1)).toEqual([]);
+  });
+
+  it("renames a step with the rename tool", async () => {
+    answer = async (_hub, name) => (name === backlogTools.list ? { items: [summary([["a", "To do", 0], ["b", "Doing", 0]])] } : summary([["a", "To do", 0], ["b", "Underway", 0]]));
+    await mcpBacklogManageClient.save("software", "Software", [savedStep("a", "To do", 0), savedStep("b", "Underway", 0)]);
+    expect(calls().slice(1)).toEqual([[backlogTools.renameStep, { backlogID: "software", stepID: "b", name: "Underway" }]]);
+  });
+
+  it("renames in an order that never repeats a name: a chain A to B and B to C renames B first", async () => {
+    answer = async (_hub, name) => (name === backlogTools.list ? { items: [summary([["a", "A", 0], ["b", "B", 0]])] } : summary([["a", "B", 0], ["b", "C", 0]]));
+    await mcpBacklogManageClient.save("software", "Software", [savedStep("a", "B", 0), savedStep("b", "C", 0)]);
+    expect(calls().slice(1).map(([, args]) => args.stepID)).toEqual(["b", "a"]);
+  });
+
+  it("refuses a swap of two step names before sending anything", async () => {
+    answer = async (_hub, name) => (name === backlogTools.list ? { items: [summary([["a", "A", 0], ["b", "B", 0]])] } : summary([]));
+    let words = "";
+    try {
+      await mcpBacklogManageClient.save("software", "Software", [savedStep("a", "B", 0), savedStep("b", "A", 0)]);
+    } catch (error) {
+      words = (error as Error).message;
+    }
+    expect(words).toBe("Two steps would swap names. Rename one of them to another name first, save, then rename the other. Nothing was saved.");
+    expect(calls().slice(1)).toEqual([]);
+  });
+
+  it("removes a step before adding a new one with a name an existing step is leaving", async () => {
+    answer = async (_hub, name, args) => {
+      if (name === backlogTools.list) return { items: [summary([["a", "Review", 0], ["b", "Done", 0]])] };
+      if (name === backlogTools.addStep) return summary([["a", "QA", 0], ["b", "Done", 0], ["r", args.name, 0]]);
+      return summary([["a", "QA", 0], ["b", "Done", 0]]);
+    };
+    await mcpBacklogManageClient.save("software", "Software", [savedStep("a", "QA", 0), savedStep("b", "Done", 0), { key: "n", id: "", name: "Review", held: 0 }]);
+    expect(calls().slice(1).map(([name]) => name)).toEqual([backlogTools.renameStep, backlogTools.addStep]);
+  });
+
+  it("never passes through zero steps when every step is replaced", async () => {
+    let steps: [string, string, number][] = [["a", "Open", 0]];
+    answer = async (_hub, name, args) => {
+      if (name === backlogTools.list) return { items: [summary(steps)] };
+      if (name === backlogTools.addStep) steps = [...steps, ["z", args.name, 0]];
+      if (name === backlogTools.removeStep) steps = steps.filter(([id]) => id !== args.stepID);
+      expect(steps.length).toBeGreaterThan(0);
+      return summary(steps);
+    };
+    await mcpBacklogManageClient.save("software", "Software", [{ key: "n", id: "", name: "New", held: 0 }]);
+    expect(calls().slice(1).map(([name]) => name)).toEqual([backlogTools.addStep, backlogTools.removeStep]);
+  });
+
+  it("replaces every step with differently named steps, adding before removing", async () => {
+    let steps: [string, string, number][] = [["a", "Open", 0], ["b", "Closed", 0]];
+    answer = async (_hub, name, args) => {
+      if (name === backlogTools.list) return { items: [summary(steps)] };
+      if (name === backlogTools.addStep) steps = [...steps, [`n${steps.length}`, args.name, 0]];
+      if (name === backlogTools.removeStep) steps = steps.filter(([id]) => id !== args.stepID);
+      expect(steps.length).toBeGreaterThan(0);
+      return summary(steps);
+    };
+    await mcpBacklogManageClient.save("software", "Software", [{ key: "x", id: "", name: "New", held: 0 }, { key: "y", id: "", name: "Finished", held: 0 }]);
+    expect(calls().slice(1).map(([name]) => name)).toEqual([backlogTools.addStep, backlogTools.addStep, backlogTools.removeStep, backlogTools.removeStep]);
+  });
+
+  it("adds a step at the end without a reorder call", async () => {
+    answer = async (_hub, name, args) => {
+      if (name === backlogTools.list) return { items: [summary([["a", "To do", 0]])] };
+      if (name === backlogTools.addStep) return summary([["a", "To do", 0], ["z", args.name, 0]]);
+      return summary([]);
+    };
+    await mcpBacklogManageClient.save("software", "Software", [savedStep("a", "To do", 0), { key: "n", id: "", name: "Done", held: 0 }]);
+    expect(calls().slice(1)).toEqual([[backlogTools.addStep, { backlogID: "software", name: "Done", after: "a" }]]);
+  });
+
+  it("says what was saved and which step failed when a later call is refused", async () => {
+    answer = async (_hub, name, args) => {
+      if (name === backlogTools.list) return { items: [summary([["a", "To do", 0], ["b", "Doing", 2]])] };
+      if (name === backlogTools.addStep) return summary([["a", "To do", 0], ["b", "Doing", 2], ["z", args.name, 0]]);
+      if (name === backlogTools.removeStep) throw new McpError("taskmanager_backlog_step_remove: step holds issues: Doing");
+      return summary([]);
+    };
+    let words = "";
+    try {
+      await mcpBacklogManageClient.save("software", "Engineering", [savedStep("a", "To do", 0), { key: "n", id: "", name: "Review", held: 0 }]);
+    } catch (error) {
+      words = (error as Error).message;
+    }
+    expect(words).toBe("Could not remove Doing: step holds issues: Doing Saved so far: renamed the backlog.");
+  });
+
+  it("reads the refusal without the tool name", () => {
+    expect(refusalText(new McpError("taskmanager_backlog_delete: backlog holds issues: Software"))).toBe("backlog holds issues: Software");
+    expect(refusalText(new Error("other"))).toBe("");
+  });
+
+  it("reorders when only the order changed", async () => {
+    answer = async (_hub, name) => (name === backlogTools.list ? { items: [summary([["a", "To do", 0], ["b", "Doing", 0]])] } : summary([]));
+    await mcpBacklogManageClient.save("software", "Software", [savedStep("b", "Doing", 0), savedStep("a", "To do", 0)]);
+    expect(calls().slice(1)).toEqual([[backlogTools.reorder, { backlogID: "software", steps: ["b", "a"] }]]);
+  });
+
+  it("turns a tool refusal into words without the tool name", async () => {
+    answer = async () => {
+      throw new McpError("taskmanager_backlog_delete: backlog holds issues: Software");
+    };
+    let words = "";
+    let refusedByClient = false;
+    try {
+      await mcpBacklogManageClient.remove("software");
+    } catch (error) {
+      refusedByClient = error instanceof ManageRefused;
+      words = (error as Error).message;
+    }
+    expect(refusedByClient).toBe(true);
+    expect(words).toBe("backlog holds issues: Software");
+  });
+});

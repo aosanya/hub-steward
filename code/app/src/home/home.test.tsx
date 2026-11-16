@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { agencyCards, homeCardsFor, type AgencyKind } from "./cards";
-import type { AgencyView } from "../agency/modules";
+import type { AgencyView } from "../features/agency/modules";
 import { HomePage, type DoSomethingSegment } from "./HomePage";
 
 type RowsProps = { kind?: string; view?: { modules: { code: string }[] } | null };
@@ -11,7 +11,7 @@ vi.mock("./StartRows", () => ({
   StartRows: ({ kind, view }: RowsProps) => <p>{`rows: ${kind}, ${view?.modules.map((module) => module.code).join(" ") ?? "no read"}`}</p>,
 }));
 
-vi.mock("../started/Ongoing", () => ({
+vi.mock("../features/started/Ongoing", () => ({
   Ongoing: ({ onStart }: { onStart: () => void }) => (
     <button type="button" onClick={onStart}>
       ongoing rows
@@ -19,9 +19,9 @@ vi.mock("../started/Ongoing", () => ({
   ),
 }));
 
-vi.mock("../market/payments/OrderCards", () => ({ CoordinatorOrderCards: () => <p>order cards</p> }));
+vi.mock("../features/market/payments/OrderCards", () => ({ CoordinatorOrderCards: () => <p>order cards</p> }));
 
-vi.mock("../market/sell/buyer/BuyerHome", () => ({ BuyerHome: () => <p>buyer home</p> }));
+vi.mock("../features/market/sell/buyer/BuyerHome", () => ({ BuyerHome: () => <p>buyer home</p> }));
 
 const kinds: AgencyKind[] = ["farmers", "supplier"];
 

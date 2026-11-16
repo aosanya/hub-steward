@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { expect, vi } from "vitest";
 import { App } from "../App";
-import { forgetOpenAgency } from "../agency/open";
-import { provideEntryClient, type Agency, type EntryClient } from "../entry/api";
-import { provideWaitingCount, restoreWaitingCount } from "../entry/waiting";
+import { forgetOpenAgency } from "../features/agency/open";
+import { provideEntryClient, type Agency, type EntryClient } from "../features/entry/api";
+import { provideWaitingCount, restoreWaitingCount } from "../features/entry/waiting";
 import { forgetRuntimeConfig, setRuntimeConfig } from "../shared/wakala/config";
 import { resetMcp } from "../shared/wakala/mcp";
 

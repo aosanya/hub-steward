@@ -1,7 +1,7 @@
 import { forgetRuntimeConfig, setRuntimeConfig } from "./config";
 import { checkSession, endSession, forgetSubject, loadSubject, subjectNow } from "./me";
 import { keepToken, storedToken } from "./token";
-import { memberId, resolveMember } from "../../market/supply/api";
+import { memberId, resolveMember } from "../../features/market/supply/api";
 
 const answer = (status: number, body: unknown) => vi.fn().mockResolvedValue({ ok: status === 200, status, json: async () => body });
 

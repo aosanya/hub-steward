@@ -1,4 +1,4 @@
-import type { AgencyView } from "../agency/modules";
+import type { AgencyView } from "../features/agency/modules";
 import { routes } from "../routes";
 
 export type AgencyKind = "farmers" | "supplier";

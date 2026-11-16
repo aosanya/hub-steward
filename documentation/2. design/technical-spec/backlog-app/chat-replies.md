@@ -2,7 +2,7 @@
 
 How the roles' answers look in the Chat tab of the phone app. A reply is
 either one plain line or one card. The card is the chat room's existing card
-(`rm-card` in `hub-steward/code/app/src/chat/rooms/cards.tsx`): a title, a few
+(`rm-card` in `hub-steward/code/app/src/features/chat/rooms/cards.tsx`): a title, a few
 plain lines, and a row of buttons at the bottom. No new card kind is drawn.
 This is a drawing for the owner to change, drawn as [mockups](../../mockups/app/chat-replies.html); the decisions it rests on are D40
 to D49 and the conversations are in [chat-and-mcp.md](chat-and-mcp.md).
@@ -85,7 +85,7 @@ Gone quiet now matches issues not changed in the last 14 days: 3 issues.
 
 ## The assistant page around a write (SW154 to SW162)
 
-The assistant page (`hub-steward/code/app/src/assistant`) shows a write as a confirm card and does nothing until the person taps it.
+The assistant page (`hub-steward/code/app/src/features/assistant`) shows a write as a confirm card and does nothing until the person taps it.
 
 | Moment | What the page does |
 |---|---|

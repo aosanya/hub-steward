@@ -1,10 +1,10 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import type { AgencyClient, AgencyView } from "../agency/modules";
-import { forgetOpenAgency, openAgency } from "../agency/open";
-import { SupplierHome } from "../market/supply/SupplierHome";
-import type { Supplier, SupplyClient } from "../market/supply/api";
+import type { AgencyClient, AgencyView } from "../features/agency/modules";
+import { forgetOpenAgency, openAgency } from "../features/agency/open";
+import { SupplierHome } from "../features/market/supply/SupplierHome";
+import type { Supplier, SupplyClient } from "../features/market/supply/api";
 import * as mcp from "../shared/wakala/mcp";
 
 const supplierRows = ["Offers", "Asks", "Group order", "Orders", "Your prices", "Forms"];

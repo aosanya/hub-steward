@@ -1,10 +1,10 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { openAgency } from "../agency/open";
-import { words } from "../entry/words";
+import { openAgency } from "../features/agency/open";
+import { words } from "../features/entry/words";
 import { forgetSubject } from "../shared/wakala/me";
 import { endInAgencies, everyCallNames, openApp, startInAgencies, stubWakala, where } from "./inAgency.test-support";
-import type { Agency } from "../entry/api";
+import type { Agency } from "../features/entry/api";
 
 const hall: Agency = { id: "walk-hall", name: "Kisvarda Town Hall" };
 

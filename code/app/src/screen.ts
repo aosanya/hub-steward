@@ -1,4 +1,4 @@
-import { agencyBasePath, openAgencyId } from "./agency/open";
+import { agencyBasePath, openAgencyId } from "./features/agency/open";
 import { agencyRoute } from "./tabs";
 
 type ParamNames<P extends string> = P extends `${string}:${infer Name}/${infer Rest}`
