@@ -8,6 +8,8 @@ type Entry struct {
 	Name        string     `json:"name"`
 	Summary     string     `json:"summary,omitempty"`
 	Doc         string     `json:"doc"`
+	Kind        string     `json:"kind,omitempty" spec:"-"`
+	FormID      string     `json:"form_id,omitempty" spec:"-"`
 	Visibility  Visibility `json:"visibility"`
 	SubmittedBy string     `json:"submitted_by,omitempty"`
 	ApprovedAt  string     `json:"approved_at,omitempty"`

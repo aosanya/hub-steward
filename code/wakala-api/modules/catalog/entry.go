@@ -41,12 +41,15 @@ func (m *catalogManager) findEntry(ctx context.Context, slug string) (Entry, err
 	err := m.take(
 		m.entries(ctx).Where("slug = ? AND deleted = ?", slug, false),
 		roleEntry, &e, ErrEntryNotFound)
-	return e, err
+	return withDocFields(e), err
 }
 
 func (m *catalogManager) CreateEntry(ctx context.Context, e Entry) (Entry, error) {
 	e.Visibility = models.VisibilityPending
 	e.ApprovedAt = ""
+	if err := putDocFields(&e); err != nil {
+		return Entry{}, err
+	}
 	if err := m.fillWard(ctx, &e); err != nil {
 		return Entry{}, err
 	}
@@ -67,7 +70,7 @@ func (m *catalogManager) CreateEntry(ctx context.Context, e Entry) (Entry, error
 		}
 		return Entry{}, err
 	}
-	return e, nil
+	return withDocFields(e), nil
 }
 
 func (m *catalogManager) UpsertEntry(ctx context.Context, e Entry) (Entry, error) {
@@ -90,6 +93,9 @@ func reviewedContentChanged(existing, sent Entry) bool {
 }
 
 func (m *catalogManager) rewriteEntry(ctx context.Context, existing, e Entry) (Entry, error) {
+	if err := putDocFields(&e); err != nil {
+		return Entry{}, err
+	}
 	if err := entryMayBeChangedBy(ctx, existing, e.SubmittedBy); err != nil {
 		return Entry{}, err
 	}
@@ -122,7 +128,7 @@ func (m *catalogManager) rewriteEntry(ctx context.Context, existing, e Entry) (E
 			return Entry{}, err
 		}
 	}
-	return e, nil
+	return withDocFields(e), nil
 }
 
 func sameDocument(stored, sent string) bool {

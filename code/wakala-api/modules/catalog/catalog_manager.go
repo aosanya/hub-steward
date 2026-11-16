@@ -125,6 +125,8 @@ type ListFilter struct {
 	// package learning either word.
 	Docs []DocFilter
 
+	Kind string
+
 	// Search, when set, keeps Entries whose name or summary contains it,
 	// case-insensitively.
 	Search string

@@ -48,6 +48,9 @@ var filterFields = map[string]dispatch.FieldDoc{
 	"ListFilter.docs": {
 		Description: "Keep only entries whose document holds the given value at the given dotted path, such as {\"path\": \"_template.sector\", \"value\": \"health\"}.",
 	},
+	"ListFilter.kind": {
+		Description: "Keep only entries of this kind, such as permit, licence or fee, as named in the kinds setting.",
+	},
 	"ListFilter.search": {
 		Description: "Keep only entries whose name or summary contains this, ignoring case.",
 	},

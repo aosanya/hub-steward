@@ -41,7 +41,11 @@ func (m *catalogManager) listEntries(ctx context.Context, f ListFilter, publishe
 	if f.Visibility != "" {
 		q = q.Where("visibility = ?", string(f.Visibility))
 	}
-	for _, d := range f.Docs {
+	docs := f.Docs
+	if f.Kind != "" {
+		docs = append(append([]models.DocFilter{}, docs...), models.DocFilter{Path: kindKey, Value: f.Kind})
+	}
+	for _, d := range docs {
 		if !d.Valid() {
 			return nil, ErrInvalidDocPath
 		}
@@ -71,6 +75,7 @@ func (m *catalogManager) listEntries(ctx context.Context, f ListFilter, publishe
 		if err := decode(o, r, &e); err != nil {
 			return nil, err
 		}
+		e = withDocFields(e)
 		e.Doc = ""
 		out = append(out, e)
 	}
