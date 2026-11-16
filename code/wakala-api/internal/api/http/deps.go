@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	mwanachamaaudit "wakalaserver/modules/audit"
 	mwanachamaauth "wakalaserver/modules/auth"
 	catalog "wakalaserver/modules/catalog"
 	forms "wakalaserver/modules/forms"
@@ -73,6 +74,8 @@ type Deps struct {
 	// repo's CLAUDE.md. Unlike Registry, this is not per-instance: there
 	// is exactly one Insights table set for this whole deployment.
 	Insights mwanachamainsights.InsightManager
+
+	Audit mwanachamaaudit.AuditManager
 
 	Catalog catalog.CatalogManager
 

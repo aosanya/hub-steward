@@ -1,5 +1,6 @@
 agency_create_instance
 agency_list_instances
+audit_list_entries
 insight_count
 insight_create
 insight_list

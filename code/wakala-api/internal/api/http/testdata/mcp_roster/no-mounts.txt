@@ -290,6 +290,7 @@ assetmanager_movement_list
 assetmanager_movement_post
 assetmanager_movement_read
 assetmanager_movement_reverse
+audit_list_entries
 comm_chat_message_list
 comm_chat_message_post
 comm_chat_thread_archive

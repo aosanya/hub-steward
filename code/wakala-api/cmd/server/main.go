@@ -15,6 +15,7 @@ import (
 	"github.com/glebarez/sqlite"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	mwanachamaaudit "wakalaserver/modules/audit"
 	mwanachamaauth "wakalaserver/modules/auth"
 	mwanachamainsights "wakalaserver/modules/insights"
 
@@ -249,6 +250,21 @@ func buildDeps(logger *slog.Logger) *apihttp.Deps {
 		os.Exit(1)
 	}
 
+	auditSpec, err := mwanachamaaudit.SpecFor("app")
+	if err != nil {
+		logger.Error("could not load the audit spec", "error", err.Error())
+		os.Exit(1)
+	}
+	if err := mwanachamaaudit.Provision(db, auditSpec); err != nil {
+		logger.Error("could not provision the audit tables", "error", err.Error())
+		os.Exit(1)
+	}
+	auditLog, err := mwanachamaaudit.NewAuditManager(db, auditSpec)
+	if err != nil {
+		logger.Error("could not build mwanachamaaudit.AuditManager", "error", err.Error())
+		os.Exit(1)
+	}
+
 	catalogManager := buildCatalog(logger)
 	reportsManager := buildReports(logger)
 	formManager := buildForms(logger)
@@ -381,6 +397,7 @@ func buildDeps(logger *slog.Logger) *apihttp.Deps {
 		Languages:     languageStore,
 		FormsSettings: formsSettings,
 		Insights:      insights,
+		Audit:         auditLog,
 		Catalog:       catalogManager,
 		Ratings:       buildRatings(logger),
 		Reports:       reportsManager,

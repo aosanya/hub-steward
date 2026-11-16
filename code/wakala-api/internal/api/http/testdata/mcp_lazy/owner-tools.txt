@@ -99,6 +99,7 @@ actor_unretire_role_kind
 actor_withdraw_group_population
 agency_create_instance
 agency_list_instances
+audit_list_entries
 comm_chat_message_list
 comm_chat_message_post
 comm_chat_thread_archive

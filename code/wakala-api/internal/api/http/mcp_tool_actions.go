@@ -54,6 +54,9 @@ func routePackageToolActions() map[string]string {
 	addToolActions(out, sameToolName, insightsroutes.Tools(struct {
 		mwanachamainsights.InsightManager
 	}{}))
+	for name, action := range auditToolActions() {
+		out[name] = action
+	}
 	return out
 }
 
