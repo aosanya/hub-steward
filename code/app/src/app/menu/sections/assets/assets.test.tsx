@@ -67,7 +67,11 @@ const Where = () => {
   return null;
 };
 
-const byId = <T extends { id: string }>(rows: T[], args: unknown) => rows.find((row) => row.id === (args as { id: string }).id);
+const byArgument = <T extends { id: string }>(rows: T[], args: unknown, argument: string) => {
+  const given = Object.keys((args ?? {}) as object);
+  if (given.length !== 1 || given[0] !== argument) throw new Error(`takes only ${argument}, got ${given.join(",") || "nothing"}`);
+  return rows.find((row) => row.id === (args as Record<string, string>)[argument]);
+};
 
 const answer = (name: string, args: unknown) => {
   if (name === "agency_list_mounts") return Promise.resolve(mounted);
@@ -75,9 +79,9 @@ const answer = (name: string, args: unknown) => {
     const category = (args as { category?: string } | undefined)?.category;
     return Promise.resolve({ items: category ? assets.filter((asset) => asset.category === category) : assets });
   }
-  if (name === assetRead) return Promise.resolve({ item: byId(assets, args) });
+  if (name === assetRead) return Promise.resolve({ item: byArgument(assets, args, "assetID") });
   if (name === locationList) return Promise.resolve({ items: locations });
-  if (name === locationRead) return Promise.resolve({ item: byId(locations, args) });
+  if (name === locationRead) return Promise.resolve({ item: byArgument(locations, args, "locationID") });
   if (name === movementList) return Promise.resolve({ items: movements });
   if (name === taskList) return Promise.resolve({ items: tasks });
   if (name === repeatingList) return Promise.resolve({ items: repeating });
@@ -181,8 +185,8 @@ describe("an asset detail", () => {
     expect(screen.getAllByText("Road roller").length).toBeGreaterThan(1);
     expect(screen.getAllByText("Equipment").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Riverside Yard").length).toBeGreaterThan(1);
-    expect(called).toHaveBeenCalledWith("", assetRead, { id: "e1" });
-    expect(called).toHaveBeenCalledWith("", locationRead, { id: "l2" });
+    expect(called).toHaveBeenCalledWith("", assetRead, { assetID: "e1" });
+    expect(called).toHaveBeenCalledWith("", locationRead, { locationID: "l2" });
   });
 
   it("marks the chosen row and leaves the rest of the list beside it", async () => {
@@ -210,8 +214,8 @@ describe("an asset detail", () => {
     await userEvent.click(screen.getByRole("button", { name: /Water pump/ }));
 
     expect(await screen.findByText("A-13")).toBeInTheDocument();
-    expect(called).toHaveBeenCalledWith("", assetRead, { id: "e2" });
-    expect(called).toHaveBeenCalledWith("", locationRead, { id: "l1" });
+    expect(called).toHaveBeenCalledWith("", assetRead, { assetID: "e2" });
+    expect(called).toHaveBeenCalledWith("", locationRead, { locationID: "l1" });
   });
 
   it("names the list on the Back button of the detail and returns to the list", async () => {

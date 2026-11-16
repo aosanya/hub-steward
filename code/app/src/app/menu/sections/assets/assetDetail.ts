@@ -31,7 +31,7 @@ const itemsIn = (reply: unknown): Item[] => {
 const newestFirst = (one: Item, two: Item) => textOf(two.occurred_at).localeCompare(textOf(one.occurred_at));
 
 const placeOf = async (locationId: string) =>
-  locationId ? textOf(itemOf(await callTool("", "assetmanager_location_read", { id: locationId })).name) : "";
+  locationId ? textOf(itemOf(await callTool("", "assetmanager_location_read", { locationID: locationId })).name) : "";
 
 const movementsOf = async (assetId: string) =>
   itemsIn(await callTool("", "assetmanager_movement_list", { asset_id: assetId }))
@@ -40,7 +40,7 @@ const movementsOf = async (assetId: string) =>
     .map((movement) => textOf(movement.note) || textOf(movement.kind));
 
 export const loadAsset = async (assetId: string) => {
-  const asset = itemOf(await callTool("", assetReadTool, { id: assetId }));
+  const asset = itemOf(await callTool("", assetReadTool, { assetID: assetId }));
   const [place, movements] = await Promise.all([placeOf(textOf(asset.location_id)), movementsOf(assetId)]);
   const latest = Object.fromEntries(movements.map((note, at) => [`movement${at}`, note]));
   return { ...asset, place, ...latest };

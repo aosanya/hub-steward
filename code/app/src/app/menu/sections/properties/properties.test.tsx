@@ -39,12 +39,18 @@ const Where = () => {
   return null;
 };
 
+const byArgument = <T extends { id: string }>(rows: T[], args: unknown, argument: string) => {
+  const given = Object.keys((args ?? {}) as object);
+  if (given.length !== 1 || given[0] !== argument) throw new Error(`takes only ${argument}, got ${given.join(",") || "nothing"}`);
+  return rows.find((row) => row.id === (args as Record<string, string>)[argument]);
+};
+
 const answer = (name: string, args: unknown) => {
   if (name === "agency_list_mounts") return Promise.resolve(mounted);
   if (name === assetList) return Promise.resolve({ items: assets });
   if (name === locationList) return Promise.resolve({ items: locations });
-  if (name === assetRead) return Promise.resolve({ item: assets.find((asset) => asset.id === (args as { id: string }).id) });
-  if (name === locationRead) return Promise.resolve({ item: locations.find((place) => place.id === (args as { id: string }).id) });
+  if (name === assetRead) return Promise.resolve({ item: byArgument(assets, args, "assetID") });
+  if (name === locationRead) return Promise.resolve({ item: byArgument(locations, args, "locationID") });
   return Promise.reject(new Error(`${name}: unknown tool`));
 };
 
@@ -111,8 +117,8 @@ describe("Places", () => {
     expect(await screen.findByText("12 Main Street")).toBeInTheDocument();
     expect(screen.getAllByText("Town hall").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Building").length).toBeGreaterThan(0);
-    expect(called).toHaveBeenCalledWith("", assetRead, { id: "a1" });
-    expect(called).toHaveBeenCalledWith("", locationRead, { id: "l2" });
+    expect(called).toHaveBeenCalledWith("", assetRead, { assetID: "a1" });
+    expect(called).toHaveBeenCalledWith("", locationRead, { locationID: "l2" });
   });
 
   it("names Places on the Back button of the place detail and returns to the list", async () => {

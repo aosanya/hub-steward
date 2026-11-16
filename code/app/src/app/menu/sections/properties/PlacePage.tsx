@@ -14,9 +14,9 @@ const itemOf = (reply: unknown): Fields => {
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
 const loadPlace = async (placeId: string) => {
-  const asset = itemOf(await callTool("", "assetmanager_asset_read", { id: placeId }));
+  const asset = itemOf(await callTool("", "assetmanager_asset_read", { assetID: placeId }));
   const locationId = textOf(asset.location_id);
-  const location = locationId ? itemOf(await callTool("", "assetmanager_location_read", { id: locationId })) : {};
+  const location = locationId ? itemOf(await callTool("", "assetmanager_location_read", { locationID: locationId })) : {};
   return { ...asset, location: textOf(location.name) };
 };
 
