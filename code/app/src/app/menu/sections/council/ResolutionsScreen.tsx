@@ -3,8 +3,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
-import { manageCouncil } from "./AgendaEditForm";
-import { councilTools, homeEmpty, listOf, noneYet, readMeetingArgs, readResolutionArgs, text, type Item } from "./councilData";
+import { councilTools, homeEmpty, listOf, manageCouncil, noneYet, readMeetingArgs, readResolutionArgs, text, type Item } from "./councilData";
 
 export const resolutionsTitle = "Resolutions";
 

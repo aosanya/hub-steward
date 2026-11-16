@@ -305,3 +305,65 @@ describe("the shared menu edit form", () => {
     });
   });
 });
+
+describe("the shared menu edit form with a list-of-lines field", () => {
+  const listItem = { id: "m1", name: "Spring meeting", items: ["Welcome", "Road repairs"] };
+  const listFields = [
+    { label: "Name", key: "name" },
+    { label: "Agenda items, one per line", key: "items", kind: "lines" as const },
+  ];
+  const lineForm = (keep: string[] = [], onSaved = vi.fn()) => {
+    render(<MenuEditForm item={listItem} id="m1" idArg="meetingID" tool="accounting_budget_set" permission="accounting.manage" fields={listFields} keep={keep} onSaved={onSaved} />);
+    return onSaved;
+  };
+
+  it("shows the items one per line in a multi-line box", async () => {
+    lineForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+
+    const box = screen.getByLabelText("Agenda items, one per line");
+    expect(box.tagName).toBe("TEXTAREA");
+    expect(box).toHaveValue("Welcome\nRoad repairs");
+  });
+
+  it("sends the lines as an array of trimmed items without blank lines and reports the typed text", async () => {
+    const onSaved = lineForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Agenda items, one per line"), "{Enter}  {Enter}Close  ");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { meetingID: "m1", items: ["Welcome", "Road repairs", "Close"] }]]));
+    expect(onSaved).toHaveBeenCalledWith({ items: "Welcome\nRoad repairs\n  \nClose  " });
+  });
+
+  it("sends an emptied list as an empty array", async () => {
+    lineForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.clear(screen.getByLabelText("Agenda items, one per line"));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { meetingID: "m1", items: [] }]]));
+  });
+
+  it("sends a kept lines field as an array", async () => {
+    lineForm(["items"]);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Name"), " 2");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { meetingID: "m1", items: ["Welcome", "Road repairs"], name: "Spring meeting 2" }]]));
+  });
+
+  it("does not save when only blank lines were added", async () => {
+    lineForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Agenda items, one per line"), "{Enter}  {Enter}");
+
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+  });
+});

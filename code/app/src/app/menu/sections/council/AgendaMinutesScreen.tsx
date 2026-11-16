@@ -11,8 +11,7 @@ import { MenuEditForm } from "../../MenuEditForm";
 import { MenuList } from "../../MenuList";
 import { useBackToSection } from "../../useBackToSection";
 import "../../menuWindow.css";
-import { AgendaEditForm, manageCouncil } from "./AgendaEditForm";
-import { councilTools, homeEmpty, listOf, noneYet, readMeetingArgs, text, type Agenda, type Item, type Minutes } from "./councilData";
+import { councilTools, homeEmpty, listOf, manageCouncil, noneYet, readMeetingArgs, text, type Agenda, type Item, type Minutes } from "./councilData";
 
 export const agendaMinutesTitle = "Agendas & Minutes";
 
@@ -52,7 +51,7 @@ function Papers({ id }: { id: string }) {
             ))}
           </Rows>
         )}
-        <AgendaEditForm meetingId={id} items={items} onSaved={reload} />
+        <MenuEditForm item={{ items }} id={id} idArg="meetingID" tool={councilTools.agendaSet} permission={manageCouncil} fields={[{ label: "Agenda items, one per line", key: "items", kind: "lines" }]} onSaved={reload} />
       </div>
       <div role="group" aria-label="Minutes">
         <SectionHeading>{word("Minutes")}</SectionHeading>

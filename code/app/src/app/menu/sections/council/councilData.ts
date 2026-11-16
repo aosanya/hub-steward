@@ -22,6 +22,8 @@ export type ResolutionListArgs = { meeting_id?: string; outcome?: Outcome };
 
 export type BylawListArgs = { year?: number };
 
+export const manageCouncil = "council.manage";
+
 export const councilTools = {
   meetingCreate: "council_meeting_create",
   meetingList: "council_meeting_list",

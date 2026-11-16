@@ -3,10 +3,11 @@ import { useMay } from "../../features/agency/useMay";
 import { Button } from "../../shared/ui/Button";
 import { Field } from "../../shared/ui/Field";
 import { LoadFailed } from "../../shared/ui/LoadState";
+import { TextArea } from "../../shared/ui/TextArea";
 import { callTool, McpError } from "../../shared/wakala/mcp";
 import { actionFailedWords } from "./MenuDetail";
 
-export type EditField = { label: string; key: string; required?: boolean; kind?: "text" | "number" | "date" };
+export type EditField = { label: string; key: string; required?: boolean; kind?: "text" | "number" | "date" | "lines" };
 
 type Item = Record<string, unknown>;
 
@@ -26,8 +27,18 @@ type Clash = { key: string; label: string; theirs: string; mine: string };
 
 const textOf = (item: Item, key: string) => {
   const value = item[key];
+  if (Array.isArray(value) && value.every((entry) => typeof entry === "string")) return value.join("\n");
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
+
+const linesOf = (text: string) =>
+  text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line !== "");
+
+const sameText = (field: EditField | undefined, one: string, other: string) =>
+  field?.kind === "lines" ? linesOf(one).join("\n") === linesOf(other).join("\n") : one === other;
 
 export const refusalWords = (error: unknown) => {
   const message = error instanceof McpError ? error.message : "";
@@ -40,9 +51,12 @@ const wholeOrDecimal = /^-?\d+(\.\d+)?$/;
 
 const isNumber = (text: string) => wholeOrDecimal.test(text.trim());
 
-const sendable = (field: EditField | undefined, text: string) => (field?.kind === "number" && isNumber(text) ? Number(text.trim()) : text);
+const sendable = (field: EditField | undefined, text: string) => {
+  if (field?.kind === "lines") return linesOf(text);
+  return field?.kind === "number" && isNumber(text) ? Number(text.trim()) : text;
+};
 
-const inputModes = { text: undefined, number: "decimal", date: undefined } as const;
+const inputModes = { text: undefined, number: "decimal", date: undefined, lines: undefined } as const;
 
 const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key)]));
 
@@ -55,11 +69,11 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
   const [base, setBase] = useState<Record<string, string>>({});
   const [clashes, setClashes] = useState<Clash[]>([]);
   if (!may) return null;
-  const changed = Object.fromEntries(Object.entries(values).filter(([key, value]) => value !== base[key]));
+  const fieldOf = (key: string) => fields.find((field) => field.key === key);
+  const changed = Object.fromEntries(Object.entries(values).filter(([key, value]) => !sameText(fieldOf(key), value, base[key])));
   const missing = fields.some((field) => field.required && (values[field.key] ?? "").trim() === "");
   const notNumber = (field: EditField) => field.kind === "number" && field.key in changed && !isNumber(values[field.key] ?? "");
   const invalid = fields.some(notNumber);
-  const fieldOf = (key: string) => fields.find((field) => field.key === key);
   const kept = (key: string) => {
     const field = fieldOf(key);
     if (!field) {
@@ -108,17 +122,21 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
   if (!editing) return <Button kind="quiet" onClick={open}>Edit</Button>;
   return (
     <>
-      {fields.map((field) => (
-        <Field
-          key={field.key}
-          label={field.label}
-          type={field.kind === "date" ? "date" : "text"}
-          inputMode={inputModes[field.kind ?? "text"]}
-          error={notNumber(field) ? `${field.label} must be a number` : undefined}
-          value={values[field.key] ?? ""}
-          onChange={(event) => setValues((was) => ({ ...was, [field.key]: event.target.value }))}
-        />
-      ))}
+      {fields.map((field) =>
+        field.kind === "lines" ? (
+          <TextArea key={field.key} label={field.label} rows={6} value={values[field.key] ?? ""} onChange={(event) => setValues((was) => ({ ...was, [field.key]: event.target.value }))} />
+        ) : (
+          <Field
+            key={field.key}
+            label={field.label}
+            type={field.kind === "date" ? "date" : "text"}
+            inputMode={inputModes[field.kind ?? "text"]}
+            error={notNumber(field) ? `${field.label} must be a number` : undefined}
+            value={values[field.key] ?? ""}
+            onChange={(event) => setValues((was) => ({ ...was, [field.key]: event.target.value }))}
+          />
+        ),
+      )}
       {clashes.map((clash) => (
         <div key={clash.key} role="group" aria-label={clash.label}>
           <p>Someone else saved {clash.label} first.</p>
