@@ -107,7 +107,7 @@ export function BillsScreen() {
         load: loadBill,
         fields: { Payer: "payer", Amount: "amount", Settled: "settled", Outstanding: "outstanding", Due: "due", Narration: "narration", Status: "status", ...paymentFields },
         status: "",
-        action: { label: "Mark paid", tool: tools.paymentMarkPaid, run: markPaid, when: (row) => ["Open", "Overdue"].includes(text(row, "status")) },
+        action: { label: "Mark paid", tool: tools.paymentMarkPaid, run: markPaid, when: (row) => manage && ["Open", "Overdue"].includes(text(row, "status")) },
       }}
       below={refused ? <LoadFailed words={actionFailedWords} /> : null}
     />

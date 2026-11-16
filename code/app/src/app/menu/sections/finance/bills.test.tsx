@@ -340,6 +340,14 @@ describe("Mark paid on a bill", () => {
     expect(within(pane()).queryByRole("button", { name: "Mark paid" })).toBeNull();
   });
 
+  it("is not offered to a caller without accounting.manage", async () => {
+    screens(withoutManage);
+    await userEvent.click(await screen.findByRole("button", { name: /Sample Market/ }));
+    await waitFor(() => expect(pane().textContent).toContain("Sample Market"));
+
+    expect(within(pane()).queryByRole("button", { name: "Mark paid" })).toBeNull();
+  });
+
   it("posts accounting_payment_mark_paid with the billID and the cash account", async () => {
     screens({ ...answers, accounting_payment_mark_paid: () => ({}) });
     await userEvent.click(await screen.findByRole("button", { name: /Sample Market/ }));
