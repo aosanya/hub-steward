@@ -9,7 +9,7 @@ import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
-import { dayWords, homeEmpty, listOf, moneyWords, text, tools, type Item } from "./financeData";
+import { dayStart, dayWords, homeEmpty, listOf, moneyWords, text, tools, type Item } from "./financeData";
 
 const owedHeading = "To pay";
 
@@ -142,7 +142,7 @@ export function PaymentListScreen() {
         billID: draft.billID,
         cash_account_id: cash,
         amount: Number(draft.amount),
-        paid_on: draft.paidOn,
+        paid_on: dayStart(draft.paidOn),
         ...(narration ? { narration } : {}),
       });
       setDraft(null);

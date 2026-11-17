@@ -80,7 +80,7 @@ beforeEach(() => {
       if (refusal) throw new mcp.McpError(`accounting_payment_mark_paid: ${refusal}`);
       const amount = Number(given.amount);
       owed -= amount;
-      made.push({ id: `p${made.length + 2}`, kind: "bill", amount, paid_at: `${given.paid_on}T00:00:00Z`, paid_by: "u1", bill_id: "b1", payer: "Anna Sample", narration: given.narration ?? "" });
+      made.push({ id: `p${made.length + 2}`, kind: "bill", amount, paid_at: given.paid_on, paid_by: "u1", bill_id: "b1", payer: "Anna Sample", narration: given.narration ?? "" });
       return { id: "p2" };
     }
     throw new Error(`${name} is not a tool this screen may use`);
@@ -169,7 +169,7 @@ describe("PaymentListScreen", () => {
     await userEvent.click(within(form).getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(callsTo("accounting_payment_mark_paid")).toHaveLength(1));
-    expect(callsTo("accounting_payment_mark_paid")[0]).toEqual(["", "accounting_payment_mark_paid", { billID: "b1", cash_account_id: "a2", amount: 500, paid_on: "2026-11-10", narration: "Cash at the counter" }]);
+    expect(callsTo("accounting_payment_mark_paid")[0]).toEqual(["", "accounting_payment_mark_paid", { billID: "b1", cash_account_id: "a2", amount: 500, paid_on: "2026-11-10T00:00:00Z", narration: "Cash at the counter" }]);
   });
 
   it("leaves the row in To pay with the smaller outstanding amount after a part payment, then moves it to Paid when the rest is paid", async () => {
