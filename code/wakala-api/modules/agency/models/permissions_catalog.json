@@ -47,7 +47,7 @@
   {"code": "group.read", "name": "See the hub's rooms", "locked": false, "actions": ["actor.group.list"]},
   {"code": "group.view", "name": "See a group, its leaders and its dashboard", "locked": false, "actions": ["actor.group.read", "actor.group.list_children", "actor.group.list_leaders", "actor.group.list_led", "actor.group.dashboard", "actor.group.list_at_point", "actor.assignment.home_counts"]},
   {"code": "group.join", "name": "Find a group and join it, or answer an invitation to one", "locked": false, "actions": ["actor.group.list_joinable", "actor.group.list_discoverable", "actor.group.find_by_code", "actor.group.join", "actor.group.join_by_code", "actor.invitation.accept", "actor.invitation.decline"]},
-  {"code": "member.edit", "name": "Change a person's name and details", "locked": false, "actions": ["actor.actor.set_display_name", "actor.actor.set_attributes"]},
+  {"code": "member.edit", "name": "Change a person's name and details", "locked": false, "actions": ["actor.actor.set_display_name", "actor.actor.set_attributes", "actor.actor.list_attribute_properties"]},
   {"code": "location.edit", "name": "Change a place", "locked": false, "module": "assetmanager", "actions": ["assetmanager.location.update"]},
   {"code": "member.read", "name": "See who is in the hub", "locked": false, "actions": ["actor.actor.list"]},
   {"code": "board_item.reply", "name": "Reply to board items", "locked": false, "module": "forms", "actions": ["catalog.reply.send"]},

@@ -299,6 +299,21 @@
       ],
       "tool": "actor_get_screen_name_by_code"
     },
+    "list_attribute_properties": {
+      "method": "GET",
+      "path": "/actors/attribute-properties",
+      "call": "AttributeProperties",
+      "action": "actor.actor.list_attribute_properties",
+      "title": "List attribute properties",
+      "description": "List the attribute names a person's record accepts, each with its name, label, range, unique and required, so a form can offer them even before any has a value.",
+      "args": [],
+      "returns": [
+        {
+          "body": true
+        }
+      ],
+      "tool": "actor_list_attribute_properties"
+    },
     "set_actor_display_name": {
       "method": "PATCH",
       "path": "/actors/{actor_id}/display-name",

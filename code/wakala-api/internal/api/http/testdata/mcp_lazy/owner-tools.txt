@@ -48,6 +48,7 @@ actor_join_group
 actor_join_group_by_code
 actor_list_actors
 actor_list_actors_for_group
+actor_list_attribute_properties
 actor_list_delegations
 actor_list_discoverable_groups
 actor_list_group_children

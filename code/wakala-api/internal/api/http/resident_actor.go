@@ -25,6 +25,7 @@ var residentActorActions = []string{
 	"actor.invitation.decline",
 	readMyActor,
 	"actor.actor.correct_my_attributes",
+	"actor.actor.list_attribute_properties",
 	"actor.actor.read_my_forms_week_split",
 	"actor.actor.set_my_forms_week_split",
 }
