@@ -103,3 +103,13 @@ export const paymentRow = (payment: Item) => {
     status: paid ? "Paid" : "Unpaid",
   };
 };
+
+export const owedTotal = (bills: Item[]) => {
+  const owing = bills.filter((bill) => numberOf(bill.outstanding) > 0);
+  return {
+    amount: owing.reduce((sum, bill) => sum + numberOf(bill.outstanding), 0),
+    payers: new Set(owing.map((bill) => text(bill, "payer")).filter(Boolean)).size,
+  };
+};
+
+export const owedWords = ({ amount, payers }: { amount: number; payers: number }) => `Owed in total: ${moneyWords(amount)} · ${payers} ${payers === 1 ? "payer" : "payers"}`;

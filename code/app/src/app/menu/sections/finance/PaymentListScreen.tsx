@@ -9,7 +9,7 @@ import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
-import { dayStart, dayWords, homeEmpty, listOf, moneyWords, text, tools, type Item } from "./financeData";
+import { dayStart, dayWords, homeEmpty, listOf, moneyWords, owedTotal, owedWords, text, tools, type Item } from "./financeData";
 
 const owedHeading = "To pay";
 
@@ -114,6 +114,7 @@ export function PaymentListScreen() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [refused, setRefused] = useState("");
   const [busy, setBusy] = useState(false);
+  const [owing, setOwing] = useState({ amount: 0, payers: 0 });
   useEffect(() => {
     let live = true;
     holdsManage().then((holds) => live && setMayMark(holds));
@@ -121,6 +122,11 @@ export function PaymentListScreen() {
       live = false;
     };
   }, []);
+  const loadCounted = async () => {
+    const rows = await loadRows();
+    setOwing(owedTotal(rows.filter((row) => text(row, "group") === owedHeading).map((row) => ({ payer: row.payer, outstanding: row.outstandingAmount }))));
+    return rows;
+  };
   const loadRow = async (id: string) => {
     const row = (await loadRows()).find((found) => found.id === id) ?? { id };
     return { ...row, bill: await billWords(text(row, "settledBillID")) };
@@ -157,10 +163,11 @@ export function PaymentListScreen() {
     <MenuWindow
       key={version}
       title={word("Payments")}
+      above={owing.amount > 0 ? <p className="sub">{owedWords(owing)}</p> : null}
       list={{
         title: word("Payments"),
         tool: tools.paymentList,
-        load: loadRows,
+        load: loadCounted,
         fields: { title: "payer", meta: "meta" },
         empty: homeEmpty(`No ${word("Payments").toLowerCase()} yet.`),
         end: (row) => text(row, "status"),
