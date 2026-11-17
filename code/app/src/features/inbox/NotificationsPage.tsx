@@ -187,7 +187,7 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
   if (wide && !above) {
     return (
       <Shell title="Notifications" inbox={client}>
-        <div className="wf wf-tabbed">
+        <div className="wf">
           <div className="wf-panes">
             <section className="wf-tree" aria-label="Needs you">
               {needsYouSection}
