@@ -24,7 +24,7 @@ const joined = (titles: string[], covering: MenuItem[]): MenuItem[] => titles.ma
 const itemsOf: Record<string, MenuItem[]> = {
   residents: residentItems,
   properties: propertyItems,
-  issues: joined(["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types"], [...issueItems, opens("Overdue", routes.lateMatters.path)]),
+  issues: joined(["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types", "Wishes"], [...issueItems, opens("Overdue", routes.lateMatters.path)]),
   services: joined(["Applications", "Permits", "Licences", "Fees & Payments", "Service Catalogue"], servicesItems),
   assets: assetItems,
   council: joined(["Meetings", "Agendas & Minutes", "Resolutions", "Rules", "Committees"], councilItems),

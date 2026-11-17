@@ -35,7 +35,7 @@ describe("a menu section's screen", () => {
     section("issues");
 
     expect(screen.getByRole("heading", { name: "Issues & Requests" })).toBeInTheDocument();
-    ["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types"].forEach((title) => expect(screen.getByText(title)).toBeInTheDocument());
+    ["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types", "Wishes"].forEach((title) => expect(screen.getByText(title)).toBeInTheDocument());
   });
 
   it("lists Wishes as the sixth Issues & Requests row, after Service Types", () => {
