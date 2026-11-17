@@ -1,11 +1,23 @@
 import { beforeEach, expect, test, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
+import { rest } from "../../wakala/rest";
 import { filterUserRows, usersPage, usersWithWaiting, type SeatRole, type UserRow } from "./users";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
   callTool: vi.fn(),
 }));
+
+vi.mock("../../wakala/rest", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../wakala/rest")>()),
+  rest: vi.fn(),
+}));
+
+const restCall = vi.mocked(rest);
+
+const agencyRequests = (reply: { ok: boolean; status: number; data: unknown }) => restCall.mockResolvedValue(reply);
+
+const pendingAtAgency = (userId: string) => ({ instance_id: "h1", user_id: userId, created_at: "2026-11-01T09:00:00Z", status: "pending", appeal: "", message: "" });
 
 type Args = Record<string, unknown>;
 
@@ -62,6 +74,8 @@ const codeLookup = (reply: unknown) => (tool: string, args: Args) =>
 
 beforeEach(() => {
   call.mockReset();
+  restCall.mockReset();
+  agencyRequests({ ok: true, status: 200, data: [] });
   answer(lab);
 });
 
@@ -443,6 +457,38 @@ test("a read of the requests that worked does not say it failed, with or without
   expect((await usersWithWaiting("h1")).waitingFailed).toBe(false);
   answer(withRequests({}));
   expect((await usersWithWaiting("h1")).waitingFailed).toBe(false);
+});
+
+test("a resident waiting to join the agency is listed at the agency level, named by the user id when no person matches", async () => {
+  answer(withRequests({}));
+  agencyRequests({ ok: true, status: 200, data: [pendingAtAgency("u9")] });
+  const read = await usersWithWaiting("h1");
+  expect(restCall).toHaveBeenCalledWith("GET", "/instances/h1/join-requests");
+  expect(read.waiting).toHaveLength(1);
+  expect(read.waiting[0]).toMatchObject({ id: "u9", level: "agency", name: "u9" });
+  expect(read.waitingFailed).toBe(false);
+});
+
+test("agency-level requests are listed beside the group-level ones", async () => {
+  answer(withRequests({ g1: [{ id: "r1", actor_id: "a2", group_id: "g1", state: "pending" }] }));
+  agencyRequests({ ok: true, status: 200, data: [pendingAtAgency("u9")] });
+  const read = await usersWithWaiting("h1");
+  expect(read.waiting.map((line) => line.id).sort()).toEqual(["r1", "u9"]);
+  expect(read.waiting.find((line) => line.id === "u9")).toMatchObject({ level: "agency" });
+});
+
+test("an agency-level request that is no longer pending is left out", async () => {
+  answer(withRequests({}));
+  agencyRequests({ ok: true, status: 200, data: [{ ...pendingAtAgency("u8"), status: "approved" }, pendingAtAgency("u9")] });
+  expect((await usersWithWaiting("h1")).waiting.map((line) => line.id)).toEqual(["u9"]);
+});
+
+test("a failing read of the agency-level requests says it failed and still lists the people", async () => {
+  answer(withRequests({}));
+  agencyRequests({ ok: false, status: 500, data: { error: "down" } });
+  const read = await usersWithWaiting("h1");
+  expect(read.waitingFailed).toBe(true);
+  expect(read.rows).toHaveLength(3);
 });
 
 test("the users page rows alone never ask for join requests", async () => {
