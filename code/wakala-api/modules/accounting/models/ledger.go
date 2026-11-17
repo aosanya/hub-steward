@@ -37,6 +37,7 @@ type Budget struct {
 	Department  string `json:"department,omitempty"`
 	Amount      int64  `json:"amount"`
 	SetAt       string `json:"set_at"`
+	Version     string `json:"version,omitempty" spec:"-"`
 }
 
 type BudgetLine struct {

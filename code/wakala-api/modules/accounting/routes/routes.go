@@ -7,6 +7,7 @@ import (
 
 	"wakalaserver/modules/shared/dispatch"
 	"wakalaserver/modules/shared/httpwire"
+	"wakalaserver/modules/shared/versioncheck"
 
 	accounting "wakalaserver/modules/accounting"
 )
@@ -28,6 +29,7 @@ var sentinels = map[string]error{
 	"ErrRetentionHeld":     accounting.ErrRetentionHeld,
 	"ErrRetentionReleased": accounting.ErrRetentionReleased,
 	"ErrLocked":            accounting.ErrLocked,
+	"ErrStale":             dispatch.ByType(&versioncheck.StaleError{}, nil),
 }
 
 type Mount struct {

@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/shared/specstore"
+	"wakalaserver/modules/shared/versioncheck"
 )
 
 func parsePeriod(start, end string) (time.Time, time.Time, error) {
@@ -47,6 +49,21 @@ func (m *ledgerStore) budgetFor(ctx context.Context, tx *gorm.DB, accountID, sta
 	return b, err
 }
 
+func staleBudget(sent, stored Budget) error {
+	if sent.Version == "" {
+		return nil
+	}
+	setAt, err := time.Parse(time.RFC3339Nano, stored.SetAt)
+	if err != nil {
+		return nil
+	}
+	return versioncheck.Stale(sent.Version, setAt, []versioncheck.Field{
+		{Name: "name", Sent: sent.Name, Stored: stored.Name},
+		{Name: "department", Sent: sent.Department, Stored: stored.Department},
+		{Name: "amount", Sent: strconv.FormatInt(sent.Amount, 10), Stored: strconv.FormatInt(stored.Amount, 10)},
+	})
+}
+
 func (m *ledgerStore) SetBudget(ctx context.Context, b Budget) (Budget, error) {
 	if err := m.checks(roleBudget, b); err != nil {
 		return Budget{}, err
@@ -63,12 +80,16 @@ func (m *ledgerStore) SetBudget(ctx context.Context, b Budget) (Budget, error) {
 		existing, err := m.budgetFor(ctx, tx, b.AccountID, b.PeriodStart, b.PeriodEnd)
 		switch {
 		case err == nil:
+			if err := staleBudget(b, existing); err != nil {
+				return err
+			}
 			b.ID = existing.ID
 		case errors.Is(err, ErrNotFound):
 			b.ID = ""
 		default:
 			return err
 		}
+		b.Version = ""
 		b.SetAt = m.now()
 
 		o := m.st.Object(roleBudget)

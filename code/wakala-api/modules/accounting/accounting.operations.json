@@ -151,7 +151,7 @@
       "call": "SetBudget",
       "action": "accounting.budget.set",
       "title": "Set budget",
-      "description": "Set one budget line: what one account is expected to hold over one period, with a name and the department it belongs to. Setting it again for the same account and period replaces the name, department and amount. The period runs from period_start, inclusive, to period_end, exclusive.",
+      "description": "Set one budget line: what one account is expected to hold over one period, with a name and the department it belongs to. Setting it again for the same account and period replaces the name, department and amount; send version, the set_at you read, to be refused when the line has changed since. The period runs from period_start, inclusive, to period_end, exclusive.",
       "args": [
         {
           "from": "body",
@@ -620,6 +620,7 @@
     "ErrOverCertified": 409,
     "ErrRetentionHeld": 409,
     "ErrRetentionReleased": 409,
-    "ErrLocked": 409
+    "ErrLocked": 409,
+    "ErrStale": 409
   }
 }
