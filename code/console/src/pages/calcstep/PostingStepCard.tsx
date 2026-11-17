@@ -42,6 +42,7 @@ export function PostingStepCard({ title, results, accounts, value, onChange, sam
   const rows = [
     {
       label: t("calcstep.posting.amount"),
+      required: true,
       htmlFor: "posting-amount",
       control: (
         <Control>
@@ -52,6 +53,7 @@ export function PostingStepCard({ title, results, accounts, value, onChange, sam
     },
     {
       label: t("calcstep.posting.account"),
+      required: true,
       htmlFor: "posting-account",
       control: (
         <Control>
@@ -62,6 +64,7 @@ export function PostingStepCard({ title, results, accounts, value, onChange, sam
     },
     {
       label: t("calcstep.posting.otherSide"),
+      required: true,
       htmlFor: "posting-other-side",
       control: (
         <Control>
@@ -72,6 +75,7 @@ export function PostingStepCard({ title, results, accounts, value, onChange, sam
     },
     {
       label: t("calcstep.posting.direction"),
+      required: true,
       control: (
         <Control>
           <span className="sr" id="posting-direction">
@@ -91,6 +95,7 @@ export function PostingStepCard({ title, results, accounts, value, onChange, sam
     },
     {
       label: t("calcstep.posting.reason"),
+      required: true,
       htmlFor: "posting-reason",
       control: (
         <Control>

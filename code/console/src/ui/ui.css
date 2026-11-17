@@ -14,7 +14,7 @@ button.tools-head{width:100%;border-width:0 0 1px;border-style:solid;border-colo
 .loading{display:grid;place-items:center;min-height:40vh;animation:loading-in .2s ease .2s backwards}
 .loading .tool-spin,.progress-spin.tool-spin{width:32px;height:32px;border-width:3px}
 @keyframes loading-in{from{opacity:0}}
-.setting-control>.field{flex:1 1 auto}
+.setting-control>.field,.setting-control>.stack{flex:1 1 auto}
 .control input[type="date"]{position:relative}
 .control input[type="date"]::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:auto;height:auto;opacity:0;cursor:pointer}
 .badge.accent{background:var(--accent);color:var(--ink)}

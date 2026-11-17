@@ -33,7 +33,7 @@ export type DataTableProps = { columns: string[]; rows: TableRowData[]; empty: s
 
 export type DetailProps = { pairs: [string, ReactNode][]; title?: ReactNode; actions?: ReactNode };
 
-export type SettingRowData = { label: string; control: ReactNode; htmlFor?: string };
+export type SettingRowData = { label: string; control: ReactNode; htmlFor?: string; required?: boolean };
 export type SettingRowsProps = { rows: SettingRowData[]; title?: string };
 
 export type CardProps = { title?: ReactNode; actions?: ReactNode; footer?: ReactNode; level?: 2 | 3 | "plain"; tight?: boolean; className?: string; open?: boolean; onToggle?: () => void; children?: ReactNode };
