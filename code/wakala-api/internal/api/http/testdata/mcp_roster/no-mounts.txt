@@ -17,6 +17,8 @@ accounting_tender_create
 accounting_tender_list
 accounting_tender_read
 accounting_tender_update
+accounting_upward_report_list
+accounting_upward_report_send
 actor_accept_invitation
 actor_approve_join_request
 actor_assign_group
