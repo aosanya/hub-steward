@@ -22,7 +22,7 @@ Every row action and title link is a real link to the screen it opens (`@/file#s
 
 - `entry/`: `sign-in.html`, `create-hub.html`, `hubs.html`, the pages before a hub is open.
 - `status/`: `status.html`, `hub-switcher.html`.
-- `agency/`: `profile.html` (the agency's own identity: name and purpose), `agency.html` (Goals) with its goal and objective pages `agency-detail.html` and `agency-add-objective.html`, `roles.html` (the agency's own roles), `risks.html`, `agency-draft.html` (what the draft changes), `workflow-calculating-step.html` (the calculating step screen and the posting step panel, three screens).
+- `agency/`: `profile.html` (the agency's own identity: name and purpose), `agency.html` (Goals) with its goal and objective pages `agency-detail.html` and `agency-add-objective.html`, `roles.html` (the agency's own roles), `risks.html`, `agency-draft.html` (what the draft changes), `workflow-calculating-step.html` (the calculating step screen and the posting step panel, three screens), `function-formula.html` (a function's formula as blocks beside its text, three screens).
 - `people/`: `members.html` (Users), `groups.html`, `agents.html` and its detail pages `agent-edit.html`, `agent-instructions.html`.
 - `work/`: `approvals.html` and `approvals-agency-change.html` (an approved agency change, not published yet), `operations.html` (the Overview) with its sub-menu pages `operations-network.html`, `operations-activity.html`, `operations-alerts.html`, `farm-orders.html`, `produce.html`, `equipment.html`.
 - `knowledge/`: `documents.html`.
