@@ -1,6 +1,7 @@
 import { callTool } from "../../../../shared/wakala/mcp";
 import { personNameOf } from "../residents/personName";
 import { loadPerson } from "../residents/PersonScreen";
+import { maintenanceHistoryOf } from "./maintenanceHistory";
 
 type Item = Record<string, unknown>;
 
@@ -16,6 +17,11 @@ export const assetDetailFields = {
   "Latest movement": "movement0",
   "Before that": "movement1",
   Earlier: "movement2",
+  "Maintenance history": "maintenance0",
+  "Maintenance history, second": "maintenance1",
+  "Maintenance history, third": "maintenance2",
+  "Maintenance history, fourth": "maintenance3",
+  "Maintenance history, fifth": "maintenance4",
 };
 
 export const conditionWords = ["Good", "Fair", "Poor", "Out of use"];
@@ -79,7 +85,12 @@ export const loadAsset = async (assetId: string) => {
   const asset = itemOf(await callTool("", assetReadTool, { assetID: assetId }));
   const attributes = attributesOf(asset) ?? {};
   const shown = Object.fromEntries(attributeKeys.map((key) => [key, textOf(attributes[key])]));
-  const [place, movements, keeperName] = await Promise.all([placeOf(textOf(asset.location_id)), movementsOf(assetId), keeperNameOf(textOf(shown.keeper))]);
+  const [place, movements, keeperName, maintenance] = await Promise.all([
+    placeOf(textOf(asset.location_id)),
+    movementsOf(assetId),
+    keeperNameOf(textOf(shown.keeper)),
+    maintenanceHistoryOf(assetId),
+  ]);
   const latest = Object.fromEntries(movements.map((note, at) => [`movement${at}`, note]));
-  return { ...asset, place, ...latest, ...shown, keeperName };
+  return { ...asset, place, ...latest, ...maintenance, ...shown, keeperName };
 };
