@@ -51,6 +51,9 @@ beforeEach(() => {
     if (name === "accounting_budget_set") {
       if (refusal) throw new mcp.McpError(`403: ${refusal}`);
       const made = args as Record<string, unknown>;
+      const day = (value: unknown) => String(value).slice(0, 10);
+      const used = stored.find((line) => line.account_id === made.account_id && day(line.period_start) === day(made.period_start) && day(line.period_end) === day(made.period_end));
+      if (made.create && used) throw new mcp.McpError(`409: account ${made.account_id} already has a budget line for ${day(made.period_start)} to ${day(made.period_end)}`);
       const same = stored.findIndex((line) => line.account_id === made.account_id && line.period_start === made.period_start && line.period_end === made.period_end);
       if (same >= 0) {
         stored = stored.map((line, index) => (index === same ? { ...line, name: made.name, department: made.department, planned: Number(made.amount) } : line));
@@ -207,6 +210,33 @@ describe("adding a budget line", () => {
     expect(screen.getByLabelText("Name")).toHaveValue("Winter Salt");
   });
 
+  it("sends create true when it saves a new line, so a used account and period is refused", async () => {
+    open();
+    await fillIn();
+    await userEvent.click(screen.getByRole("button", { name: "Save budget line" }));
+
+    await screen.findByText("Winter Salt");
+    expect(callsTo("accounting_budget_set")[0][2]).toMatchObject({ create: true });
+  });
+
+  it("shows the refusal naming the account and the period when the account and period already hold a line, and leaves the stored line unchanged", async () => {
+    open();
+    await userEvent.click(await screen.findByRole("button", { name: "Add budget line" }));
+    await userEvent.click(await screen.findByRole("button", { name: /Account/ }));
+    await userEvent.click(await screen.findByRole("option", { name: /roads/ }));
+    await userEvent.type(screen.getByLabelText("Name"), "Winter Salt");
+    await userEvent.type(screen.getByLabelText("Period start"), "2026-01-01");
+    await userEvent.type(screen.getByLabelText("Period end"), "2026-01-31");
+    await userEvent.type(screen.getByLabelText("Amount"), "4000");
+    await userEvent.click(screen.getByRole("button", { name: "Save budget line" }));
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("ac1");
+    expect(alert).toHaveTextContent("2026-01-01 to 2026-02-01");
+    expect(screen.getByLabelText("Name")).toHaveValue("Winter Salt");
+    expect(stored).toEqual(lines);
+  });
+
   it("does not save while the name or amount is missing", async () => {
     open();
     await userEvent.click(await screen.findByRole("button", { name: "Add budget line" }));
@@ -246,6 +276,15 @@ describe("editing a budget line", () => {
     const sent = callsTo("accounting_budget_set")[0][2] as Record<string, unknown>;
     expect(sent).toMatchObject({ account_id: "ac1", name: "Sample Road Repairs", department: "Public Works", period_start: "2026-01-01", period_end: "2026-02-01" });
     expect(Number(sent.amount)).toBe(1500);
+  });
+
+  it("does not send create, so saving a line again replaces it", async () => {
+    await openRoadLine();
+    await raisePlannedTo("1500");
+
+    await waitFor(() => expect(callsTo("accounting_budget_set")).toHaveLength(1));
+    expect(callsTo("accounting_budget_set")[0][2]).not.toHaveProperty("create");
+    expect(await screen.findByText("Planned 1,500 · Spent 250")).toBeInTheDocument();
   });
 
   it("shows the new planned amount in the list and the new Remaining and share spent in the line", async () => {
