@@ -24,6 +24,7 @@ type mcpSetJoinModeParams struct {
 type mcpRenameParams struct {
 	InstanceID string `json:"instance_id" jsonschema:"the Agency Instance"`
 	Name       string `json:"name" jsonschema:"the new name, 1 to 120 characters"`
+	Version    string `json:"version,omitempty" jsonschema:"the updated_at the agency was read with; the save is refused if it changed since"`
 }
 
 type mcpRenamed struct {
@@ -89,6 +90,9 @@ func (d *Deps) mcpSetJoinMode(ctx context.Context, _ *mcp.CallToolRequest, p mcp
 
 func (d *Deps) mcpRenameInstance(ctx context.Context, _ *mcp.CallToolRequest, p mcpRenameParams) (*mcp.CallToolResult, mcpRenamed, error) {
 	if err := mustBeMember(ctx, d.Registry, p.InstanceID); err != nil {
+		return nil, mcpRenamed{}, err
+	}
+	if err := refuseStaleRename(ctx, d.Registry, p.InstanceID, p.Version, p.Name); err != nil {
 		return nil, mcpRenamed{}, err
 	}
 	inst, err := d.Registry.RenameInstance(ctx, p.InstanceID, p.Name)

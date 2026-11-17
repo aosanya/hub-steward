@@ -88,8 +88,8 @@ func TestInstancesAreListedOldestFirstWithTheirApproval(t *testing.T) {
 	if err != nil || len(listed) != 2 || listed[0].ID != first || listed[1].ID != second.ID {
 		t.Fatalf("got %+v, %v", listed, err)
 	}
-	if listed[0].Approval != ApprovalApproved {
-		t.Fatalf("a new agency must not wait for approval, got %q", listed[0].Approval)
+	if listed[0].Approved() {
+		t.Fatal("a registry that does not start approved must create pending agencies")
 	}
 }
 

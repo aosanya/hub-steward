@@ -61,7 +61,7 @@ func (r *registry) SearchDirectory(ctx context.Context, query string) ([]Directo
 	if id, err := uuid.Parse(strings.TrimSpace(query)); err == nil {
 		return r.directoryEntryByID(ctx, id.String())
 	}
-	q := r.db.WithContext(ctx).Model(&instanceRow{}).Where("listed = ?", true)
+	q := r.db.WithContext(ctx).Model(&instanceRow{}).Where("listed = ?", true).Where("approval NOT IN ?", []string{ApprovalPending, ApprovalDeclined})
 	if term := strings.ToLower(strings.TrimSpace(query)); term != "" {
 		pattern := "%" + likeEscaper.Replace(term) + "%"
 		q = q.Where(`LOWER(name) LIKE ? ESCAPE '\' OR LOWER(place) LIKE ? ESCAPE '\'`, pattern, pattern)
@@ -84,6 +84,9 @@ func (r *registry) directoryEntryByID(ctx context.Context, id string) ([]Directo
 	}
 	if err != nil {
 		return nil, err
+	}
+	if !inst.Approved() {
+		return []DirectoryEntry{}, nil
 	}
 	return []DirectoryEntry{directoryEntryOf(inst)}, nil
 }

@@ -175,7 +175,7 @@ func (r *Router) openFor(ctx context.Context, id string) (agencies.Registry, err
 	if err != nil {
 		return nil, err
 	}
-	reg, err := agencies.NewRegistry(db, r.options...)
+	reg, err := agencies.NewRegistry(db, append(append([]agencies.Option{}, r.options...), agencies.StartingApproved())...)
 	if err != nil {
 		return nil, err
 	}

@@ -48,6 +48,7 @@ type Instance struct {
 	Approval     string    `json:"approval"`
 	ApprovalNote string    `json:"approval_note"`
 	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
 var ErrInstanceNotFound = errors.New("agencies: instance not found")

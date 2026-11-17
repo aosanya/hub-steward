@@ -35,7 +35,7 @@ func secondServerOnSameDatabase(t *testing.T, first *gorm.DB, sessions session.M
 		}
 	})
 	var registry agencies.Registry
-	reg, err := agencies.NewRegistry(db,
+	reg, err := agencies.NewRegistry(db, agencies.StartingApproved(),
 		agencies.WithConsentRequired(ConsentRequired(func() agencies.Registry { return registry })),
 		agencies.WithModuleMounted(ModuleMounted(func() agencies.Registry { return registry })),
 	)

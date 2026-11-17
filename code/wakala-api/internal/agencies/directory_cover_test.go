@@ -16,6 +16,9 @@ func listedAgency(t *testing.T, reg *registry, name, place string) Instance {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if _, err := reg.DecideApproval(ctx, inst.ID, true, ""); err != nil {
+		t.Fatal(err)
+	}
 	listed, err := reg.SetListing(ctx, inst.ID, ListingChange{Listed: boolp(true), Place: stringp(place), Purpose: stringp("  Water committee ")})
 	if err != nil {
 		t.Fatal(err)
@@ -49,13 +52,13 @@ func TestSetListingPublishesTheAgencyWithTrimmedTextAndLeavesTheRestAlone(t *tes
 	}
 }
 
-func TestDirectoryShowsOnlyListedAgenciesSortedByName(t *testing.T) {
+func TestDirectoryShowsOnlyListedApprovedAgenciesSortedByName(t *testing.T) {
 	reg, hidden := registryWithMembers(t, nil)
 	ctx := context.Background()
 	listedAgency(t, reg, "Zebra ward", "Arusha")
 	listedAgency(t, reg, "Acacia ward", "Mwanza")
-	unlisted, _ := reg.CreateInstance(ctx, "Unlisted ward")
-	reg.SetListing(ctx, unlisted.ID, ListingChange{Listed: boolp(false)})
+	pending, _ := reg.CreateInstance(ctx, "Pending ward")
+	reg.SetListing(ctx, pending.ID, ListingChange{Listed: boolp(true)})
 	reg.SetListing(ctx, hidden, ListingChange{Listed: boolp(false)})
 
 	found, err := reg.SearchDirectory(ctx, "")
@@ -87,14 +90,17 @@ func TestDirectorySearchMatchesNameOrPlaceIgnoringCaseAndTreatsWildcardsAsText(t
 	}
 }
 
-func TestDirectorySearchByIdFindsTheAgencyAndReadsAnUnknownIdAsEmpty(t *testing.T) {
-	reg, _ := registryWithMembers(t, nil)
+func TestDirectorySearchByIdFindsOnlyAnApprovedAgency(t *testing.T) {
+	reg, pendingID := registryWithMembers(t, nil)
 	ctx := context.Background()
 	approved := listedAgency(t, reg, "Acacia ward", "Mwanza")
 
 	found, err := reg.SearchDirectory(ctx, " "+strings.ToUpper(approved.ID)+" ")
 	if err != nil || len(found) != 1 || found[0].ID != approved.ID {
 		t.Fatalf("got %+v, %v", found, err)
+	}
+	if got, _ := reg.SearchDirectory(ctx, pendingID); got == nil || len(got) != 0 {
+		t.Fatalf("a pending agency is not shown by its id: %#v", got)
 	}
 	if got, err := reg.SearchDirectory(ctx, "00000000-0000-0000-0000-000000000000"); err != nil || got == nil || len(got) != 0 {
 		t.Fatalf("an unknown id reads as an empty list: %#v %v", got, err)
@@ -106,6 +112,7 @@ func TestDirectoryNeverReturnsMoreThanTheLimit(t *testing.T) {
 	ctx := context.Background()
 	for i := 0; i < DirectoryLimit+3; i++ {
 		inst, _ := reg.CreateInstance(ctx, "Ward "+strings.Repeat("x", i%7)+string(rune('a'+i%26)))
+		reg.DecideApproval(ctx, inst.ID, true, "")
 		reg.SetListing(ctx, inst.ID, ListingChange{Listed: boolp(true)})
 	}
 	found, err := reg.SearchDirectory(ctx, "")

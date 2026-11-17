@@ -8,6 +8,7 @@ import (
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
+	"wakalaserver/modules/shared/versioncheck"
 )
 
 type joinBody struct {
@@ -130,7 +131,8 @@ func setJoinMode(reg agencies.Registry) http.HandlerFunc {
 }
 
 type renameRequest struct {
-	Name string `json:"name"`
+	Name    string `json:"name"`
+	Version string `json:"version"`
 }
 
 func renameInstance(reg agencies.Registry) http.HandlerFunc {
@@ -143,6 +145,14 @@ func renameInstance(reg agencies.Registry) http.HandlerFunc {
 		var in renameRequest
 		if err := readJSON(r, &in); err != nil {
 			writeReadErr(w, err)
+			return
+		}
+		if err := refuseStaleRename(r.Context(), reg, instanceID, in.Version, in.Name); err != nil {
+			if _, stale := versioncheck.IsStale(err); stale {
+				writeErr(w, http.StatusConflict, err.Error())
+				return
+			}
+			writeInstanceErr(w, err)
 			return
 		}
 		out, err := reg.RenameInstance(r.Context(), instanceID, in.Name)

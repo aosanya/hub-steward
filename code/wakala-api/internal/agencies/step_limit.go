@@ -129,6 +129,9 @@ func SweepStepLimits(ctx context.Context, reg Registry, now time.Time, logger *s
 		if ctx.Err() != nil {
 			return report, ctx.Err()
 		}
+		if !inst.Approved() {
+			continue
+		}
 		report.Agencies++
 		closed, err := closeRunsPastLimit(ctx, reg, inst.ID, now, options, logger)
 		report.RunsClosed += closed

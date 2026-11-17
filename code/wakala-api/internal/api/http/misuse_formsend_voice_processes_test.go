@@ -62,7 +62,7 @@ func secondConnectionTo(t *testing.T, first *gorm.DB) *gorm.DB {
 func secondProcessOn(t *testing.T, db *gorm.DB, sessions session.Manager) http.Handler {
 	t.Helper()
 	var registry agencies.Registry
-	reg, err := agencies.NewRegistry(db,
+	reg, err := agencies.NewRegistry(db, agencies.StartingApproved(),
 		agencies.WithConsentRequired(ConsentRequired(func() agencies.Registry { return registry })),
 		agencies.WithModuleMounted(ModuleMounted(func() agencies.Registry { return registry })),
 	)

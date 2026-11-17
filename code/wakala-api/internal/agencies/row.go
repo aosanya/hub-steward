@@ -15,6 +15,7 @@ type instanceRow struct {
 	Approval     string `gorm:"not null;default:approved"`
 	ApprovalNote string `gorm:"not null;default:''"`
 	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 func (instanceRow) TableName() string { return "agency_instances" }
@@ -37,5 +38,13 @@ func rowToInstance(r instanceRow) Instance {
 		Approval:     approvalOf(r.Approval),
 		ApprovalNote: r.ApprovalNote,
 		CreatedAt:    r.CreatedAt,
+		UpdatedAt:    lastChanged(r),
 	}
+}
+
+func lastChanged(r instanceRow) time.Time {
+	if r.UpdatedAt.IsZero() {
+		return r.CreatedAt
+	}
+	return r.UpdatedAt
 }

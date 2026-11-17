@@ -33,6 +33,19 @@ func approvalOf(stored string) string {
 	return ApprovalApproved
 }
 
+func StartingApproved() Option {
+	return func(r *registry) { r.startsAs = ApprovalApproved }
+}
+
+func (r *registry) startingApproval() string {
+	if r.startsAs == ApprovalApproved {
+		return ApprovalApproved
+	}
+	return ApprovalPending
+}
+
+func (i Instance) Approved() bool { return i.Approval == ApprovalApproved }
+
 func (r *registry) ListPendingInstances(ctx context.Context) ([]Instance, error) {
 	var rows []instanceRow
 	err := r.db.WithContext(ctx).Where("approval = ?", ApprovalPending).Order("created_at").Order("id").Find(&rows).Error
