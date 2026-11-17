@@ -1,22 +1,8 @@
-import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
-import { callTool } from "../../../../shared/wakala/mcp";
 import { MountedMenuList } from "./MountedMenuList";
-import { dayOf, digitaltwinModule, joined, loadRecords, readRecord, textOf } from "./records";
-
-export const tenureList = "digitaltwin_tenure_list";
-const nodeList = "digitaltwin_node_list";
+import { dayOf, digitaltwinModule, joined, loadNodeNames, loadRecords, readRecord, tenureList, textOf } from "./records";
 
 const fields = { title: "holder", meta: "held" };
-
-const loadNodeNames = async () => {
-  try {
-    const nodes: Record<string, unknown>[] = itemsOf(await callTool("", nodeList));
-    return new Map(nodes.map((node) => [textOf(node.id), textOf(node.name)]));
-  } catch {
-    return new Map<string, string>();
-  }
-};
 
 const loadTenures = async () => {
   const names = await loadNodeNames();

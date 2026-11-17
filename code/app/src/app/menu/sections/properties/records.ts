@@ -3,6 +3,10 @@ import { callTool } from "../../../../shared/wakala/mcp";
 
 export const digitaltwinModule = "digitaltwin";
 
+export const tenureList = "digitaltwin_tenure_list";
+
+const nodeList = "digitaltwin_node_list";
+
 export const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
 export const joined = (parts: string[], separator = " · ") => parts.filter(Boolean).join(separator);
@@ -22,3 +26,12 @@ export const loadRecords = async <Row extends Record<string, string>>(tool: stri
 };
 
 export const loadPlaces = () => loadRecords("assetmanager_asset_list", (place) => ({ name: textOf(place.name), category: textOf(place.category) }));
+
+export const loadNodeNames = async () => {
+  try {
+    const nodes: Record<string, unknown>[] = itemsOf(await callTool("", nodeList));
+    return new Map(nodes.map((node) => [textOf(node.id), textOf(node.name)]));
+  } catch {
+    return new Map<string, string>();
+  }
+};

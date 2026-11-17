@@ -68,7 +68,7 @@ function PersonHeld({ holding, id }: { holding: (typeof holdings)[number]; id: s
   );
 }
 
-export function PersonHoldings({ id }: { id: string }) {
+export function PersonRecords({ id }: { id: string }) {
   return (
     <>
       {holdings.map((holding) => (
