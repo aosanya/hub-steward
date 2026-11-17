@@ -62,6 +62,19 @@ const linkedTasks: Record<string, string>[] = [
   { id: "k4", title: "Check the old record", state: "To do", status: "pending", linked_ref: "nothing-here" },
 ];
 
+const historyTasks: Record<string, string>[] = [
+  { id: "h1", title: "Grease the roller hydraulics", state: "Done", status: "completed", linked_ref: "e1", completed_at: "2026-11-03T09:30:00Z" },
+  { id: "h2", title: "Inspect the roller exhaust", state: "In progress", status: "in_progress", linked_ref: "e1" },
+  { id: "h3", title: "Replace the roller drum bearings", state: "Done", status: "completed", linked_ref: "e1", completed_at: "2026-11-10T14:00:00Z" },
+  { id: "h4", title: "Flush the water pump housing", state: "Done", status: "completed", linked_ref: "e2", completed_at: "2026-11-12T10:00:00Z" },
+  { id: "h5", title: "Clean the pump intake", state: "Done", status: "completed", linked_ref: "e2", completed_at: "2026-09-29T08:00:00Z" },
+  { id: "h6", title: "Replace the pump seals", state: "Done", status: "completed", linked_ref: "e2", completed_at: "2026-10-06T08:00:00Z" },
+  { id: "h7", title: "Test the pump pressure", state: "Done", status: "completed", linked_ref: "e2", completed_at: "2026-10-13T08:00:00Z" },
+  { id: "h8", title: "Oil the pump motor", state: "Done", status: "completed", linked_ref: "e2", completed_at: "2026-10-20T08:00:00Z" },
+  { id: "h9", title: "Repaint the pump casing", state: "Done", status: "completed", linked_ref: "e2", completed_at: "2026-10-27T08:00:00Z" },
+  { id: "h10", title: "Clear the gutters", state: "Done", status: "completed", completed_at: "2026-11-11T08:00:00Z" },
+];
+
 const repeating = [
   { id: "p1", title: "Grease the pumps", schedule_rule: "FREQ=WEEKLY" },
   { id: "p2", title: "Inspect the fire exits", schedule_rule: "FREQ=MONTHLY" },
@@ -649,6 +662,142 @@ describe("who keeps an asset", () => {
       const main = document.querySelector(".wf-main") as HTMLElement;
       expect(await within(main).findByText("A-13")).toBeInTheDocument();
       expect(within(main).queryByText("Kept by")).toBeNull();
+    });
+  });
+});
+
+describe("the maintenance history of an asset", () => {
+  const historyLabel = "Maintenance history";
+
+  beforeEach(() => {
+    listed = historyTasks;
+  });
+
+  const open = async (category: string, name: RegExp) => {
+    showRouted(category);
+    await userEvent.click(await screen.findByRole("button", { name }));
+  };
+
+  const rowIn = (container: HTMLElement, label: string) => within(container).queryByText(label, { selector: ".ttl" })?.closest(".row") as HTMLElement | null;
+
+  const rollerNewest = "Replace the roller drum bearings · Tuesday, 10 Nov";
+  const rollerNext = "Grease the roller hydraulics · Tuesday, 3 Nov";
+
+  it("shows the newest finished job of the asset under Maintenance history, with its title and the day it was finished", async () => {
+    await open("Equipment", /Road roller/);
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expect(await within(detail).findByText(rollerNewest)).toBeInTheDocument();
+    expect(metaOf(rowIn(detail, historyLabel) as HTMLElement)).toEqual([rollerNewest]);
+  });
+
+  it("shows the next finished job after it, newest first", async () => {
+    await open("Equipment", /Road roller/);
+
+    expect(await screen.findByText(rollerNewest)).toBeInTheDocument();
+    expect(screen.getByText(rollerNext)).toBeInTheDocument();
+    expect(before(rollerNewest, rollerNext)).toBe(true);
+  });
+
+  it("leaves out the open job of the asset and the finished jobs of other assets", async () => {
+    await open("Equipment", /Road roller/);
+
+    await screen.findByText(rollerNewest);
+    expect(screen.queryByText(/Inspect the roller exhaust/)).toBeNull();
+    expect(screen.queryByText(/Flush the water pump housing/)).toBeNull();
+    expect(screen.queryByText(/Clear the gutters/)).toBeNull();
+  });
+
+  it("keeps the movement rows when the history is shown", async () => {
+    await open("Equipment", /Road roller/);
+
+    expect(await screen.findByText("Parked at the yard")).toBeInTheDocument();
+    expect(screen.getByText("Back from the open day")).toBeInTheDocument();
+    expect(screen.getByText("Latest movement", { selector: ".ttl" })).toBeInTheDocument();
+  });
+
+  it("shows the newest five finished jobs of an asset with six, newest first, and not the oldest", async () => {
+    await open("Equipment", /Water pump/);
+
+    const newest = "Flush the water pump housing · Thursday, 12 Nov";
+    await screen.findByText(newest);
+    const shown = [newest, "Repaint the pump casing · Tuesday, 27 Oct", "Oil the pump motor · Tuesday, 20 Oct", "Test the pump pressure · Tuesday, 13 Oct", "Replace the pump seals · Tuesday, 6 Oct"];
+    for (const value of shown) expect(screen.getByText(value)).toBeInTheDocument();
+    shown.slice(1).forEach((value, at) => expect(before(shown[at], value)).toBe(true));
+    expect(screen.queryByText(/Clean the pump intake/)).toBeNull();
+  });
+
+  it("reads the task list once for the pane, and no job one by one", async () => {
+    await open("Equipment", /Water pump/);
+    await screen.findByText(/Flush the water pump housing/);
+
+    expect(callsTo(taskList)).toHaveLength(1);
+    expect(callsTo(taskRead)).toHaveLength(0);
+  });
+
+  it("shows no Maintenance history row for an asset with no finished job", async () => {
+    await open("Routes", /Ring Road/);
+
+    await screen.findByText("A-1");
+    await waitFor(() => expect(callsTo(taskList)).not.toHaveLength(0));
+    expect(screen.queryByText(historyLabel)).toBeNull();
+  });
+
+  it("shows no Maintenance history row when the tasks are not linked to the asset at all", async () => {
+    listed = tasks;
+    await open("Equipment", /Road roller/);
+
+    await screen.findByText("A-12");
+    await waitFor(() => expect(callsTo(taskList)).not.toHaveLength(0));
+    expect(screen.queryByText(historyLabel)).toBeNull();
+    expect(screen.getByText("Parked at the yard")).toBeInTheDocument();
+  });
+
+  it("changes with the asset when another row is chosen", async () => {
+    await open("Equipment", /Road roller/);
+    await screen.findByText(rollerNewest);
+
+    await userEvent.click(screen.getByRole("button", { name: /Water pump/ }));
+
+    expect(await screen.findByText(/Flush the water pump housing/)).toBeInTheDocument();
+    expect(screen.queryByText(rollerNewest)).toBeNull();
+  });
+
+  describe("on a wide screen", () => {
+    beforeEach(() => setWide(true));
+
+    afterEach(() => forgetWidth());
+
+    it("shows the finished jobs under Maintenance history in the right pane, newest first", async () => {
+      await open("Equipment", /Road roller/);
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      expect(await within(main).findByText(rollerNewest)).toBeInTheDocument();
+      expect(metaOf(rowIn(main, historyLabel) as HTMLElement)).toEqual([rollerNewest]);
+      expect(within(main).getByText(rollerNext)).toBeInTheDocument();
+      expect(before(rollerNewest, rollerNext)).toBe(true);
+      expect(within(main).queryByText(/Inspect the roller exhaust/)).toBeNull();
+      expect(within(main).queryByText(/Flush the water pump housing/)).toBeNull();
+      expect(within(main).getByText("Parked at the yard")).toBeInTheDocument();
+    });
+
+    it("shows five of six finished jobs in the right pane, from one task list read", async () => {
+      await open("Equipment", /Water pump/);
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      expect(await within(main).findByText("Flush the water pump housing · Thursday, 12 Nov")).toBeInTheDocument();
+      expect(within(main).getByText("Replace the pump seals · Tuesday, 6 Oct")).toBeInTheDocument();
+      expect(within(main).queryByText(/Clean the pump intake/)).toBeNull();
+      expect(callsTo(taskList)).toHaveLength(1);
+    });
+
+    it("shows no Maintenance history row in the right pane for an asset with no finished job", async () => {
+      await open("Routes", /Ring Road/);
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      expect(await within(main).findByText("A-1")).toBeInTheDocument();
+      await waitFor(() => expect(callsTo(taskList)).not.toHaveLength(0));
+      expect(within(main).queryByText(historyLabel)).toBeNull();
     });
   });
 });

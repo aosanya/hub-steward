@@ -149,3 +149,113 @@ describe("the keeper of an asset", () => {
     expect(keeperShown(loaded) ?? "").toBe("");
   });
 });
+
+describe("the maintenance history of an asset", () => {
+  const historyKeys = ["maintenance0", "maintenance1", "maintenance2", "maintenance3", "maintenance4"];
+
+  const job = (id: string, title: string, linked: string, completed: string, rest: Record<string, string> = { state: "Done", status: "completed" }) => ({
+    id,
+    title,
+    linked_ref: linked,
+    completed_at: completed,
+    ...rest,
+  });
+
+  const jobs = [
+    job("j1", "Grease the roller hydraulics", "e1", "2026-11-03T09:30:00Z"),
+    job("j2", "Replace the roller drum bearings", "e1", "2026-11-10T14:00:00Z", { state: "Done" }),
+    job("j3", "Inspect the roller exhaust", "e1", "", { state: "In progress", status: "in_progress" }),
+    job("j4", "Flush the pump housing", "e2", "2026-11-12T10:00:00Z"),
+    job("j5", "Change the roller filters", "e1", "2026-10-27T08:00:00Z", { status: "completed" }),
+    { id: "j6", title: "Clear the gutters", state: "Done", status: "completed", completed_at: "2026-11-11T08:00:00Z" },
+  ];
+
+  const sixFinished = [
+    job("s1", "Clean the roller scraper bars", "e1", "2026-09-29T08:00:00Z"),
+    job("s2", "Replace the roller seals", "e1", "2026-10-06T08:00:00Z"),
+    job("s3", "Test the roller brakes", "e1", "2026-10-13T08:00:00Z"),
+    job("s4", "Oil the roller joints", "e1", "2026-10-20T08:00:00Z"),
+    job("s5", "Repaint the roller frame", "e1", "2026-10-27T08:00:00Z"),
+    job("s6", "Swap the roller tyres", "e1", "2026-11-03T08:00:00Z"),
+  ];
+
+  let calls: string[] = [];
+
+  const load = async (listed: Record<string, unknown>[]) => {
+    calls = [];
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
+      calls.push(name);
+      const actors = answerActors(name, args);
+      if (actors) return actors;
+      if (name === "assetmanager_asset_read") return { item: { id: "e1", name: "Road roller" } };
+      if (name === "assetmanager_movement_list") return { items: [] };
+      if (name === "taskmanager_task_list") return { items: listed };
+      return {};
+    });
+    return loadAsset("e1");
+  };
+
+  const shownHistory = (loaded: Record<string, unknown>) => historyKeys.map((key) => loaded[key] ?? "");
+
+  it("labels the rows Maintenance history, after the movement rows, each reading one loaded key", () => {
+    const entries = Object.entries(assetDetailFields);
+    const labels = entries.map(([label]) => label);
+
+    expect(entries.slice(-5).map(([, key]) => key)).toEqual(historyKeys);
+    expect(entries.slice(-5)[0][0]).toBe("Maintenance history");
+    expect(labels.indexOf("Maintenance history")).toBeGreaterThan(labels.indexOf("Earlier"));
+    expect(new Set(labels).size).toBe(labels.length);
+  });
+
+  it("carries the finished jobs of that asset, newest first, each with its title and the day it was finished", async () => {
+    const loaded = await load(jobs);
+
+    expect(shownHistory(loaded)).toEqual([
+      "Replace the roller drum bearings · Tuesday, 10 Nov",
+      "Grease the roller hydraulics · Tuesday, 3 Nov",
+      "Change the roller filters · Tuesday, 27 Oct",
+      "",
+      "",
+    ]);
+  });
+
+  it("leaves out an open job of the asset and a finished job of another asset or of none", async () => {
+    const loaded = await load(jobs);
+
+    const shown = shownHistory(loaded).join("|");
+    expect(shown).not.toContain("Inspect the roller exhaust");
+    expect(shown).not.toContain("Flush the pump housing");
+    expect(shown).not.toContain("Clear the gutters");
+  });
+
+  it("keeps only the newest five of six finished jobs, however the list is ordered", async () => {
+    const loaded = await load([sixFinished[2], sixFinished[5], sixFinished[0], sixFinished[4], sixFinished[1], sixFinished[3]]);
+
+    expect(shownHistory(loaded)).toEqual([
+      "Swap the roller tyres · Tuesday, 3 Nov",
+      "Repaint the roller frame · Tuesday, 27 Oct",
+      "Oil the roller joints · Tuesday, 20 Oct",
+      "Test the roller brakes · Tuesday, 13 Oct",
+      "Replace the roller seals · Tuesday, 6 Oct",
+    ]);
+    expect(Object.values(loaded).join("|")).not.toContain("Clean the roller scraper bars");
+  });
+
+  it("reads the task list once, not once per job", async () => {
+    await load(sixFinished);
+
+    expect(calls.filter((name) => name === "taskmanager_task_list")).toHaveLength(1);
+    expect(calls.filter((name) => name === "taskmanager_task_read")).toHaveLength(0);
+  });
+
+  it.each([
+    ["no tasks at all", []],
+    ["only open jobs of the asset", [jobs[2]]],
+    ["only finished jobs of other assets", [jobs[3], jobs[5]]],
+  ])("puts no history on an asset with %s, and still loads it", async (_case, listed) => {
+    const loaded = await load(listed);
+
+    expect(loaded).toMatchObject({ id: "e1", name: "Road roller" });
+    expect(shownHistory(loaded)).toEqual(["", "", "", "", ""]);
+  });
+});
