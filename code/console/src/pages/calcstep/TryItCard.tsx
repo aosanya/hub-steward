@@ -56,7 +56,6 @@ export function TryItCard({ inputs, initial = {}, client }: TryItCardProps) {
           <Tile label={t("calcstep.tryit.nothing")} value={countText(outcome.rows.length)} state="bad" />
           <span className="hint">{t("calcstep.tryit.allAtOnce")}</span>
           <DataTable
-            className="mini"
             empty=""
             columns={[t("calcstep.tryit.input"), t("calcstep.tryit.received"), t("calcstep.tryit.problem")]}
             rows={outcome.rows.map((row, i) => ({
