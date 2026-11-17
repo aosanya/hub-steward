@@ -61,6 +61,8 @@ const scheduleOf = (task: Item) => {
     often: frequencyWords(textOf(task.schedule_rule)),
     next: dayOf(task.next_due_at),
     rule: textOf(task.schedule_rule),
+    lastUpkeep: dayOf(task.last_done_at),
+    lastJobDue: textOf(task.last_done_at) === "" ? dayOf(task.last_due_at) : "",
   };
   return { ...schedule, oftenAndNext: upkeepParts(schedule).filter((part) => part !== "").join(" · ") };
 };
@@ -120,7 +122,7 @@ export function MaintenancePage() {
     <MenuWindow
       title={title}
       list={{ title, tool: repeatingList, fields: { title: "title", meta: "oftenAndNext" }, empty: { words: "No maintenance scheduled." }, load: loadSchedule }}
-      detail={{ tool: repeatingRead, fields: { Title: "title", "How often": "often", "Next upkeep": "next", "Schedule rule": "rule" }, status: "", load: loadScheduleItem }}
+      detail={{ tool: repeatingRead, fields: { Title: "title", "How often": "often", "Last upkeep": "lastUpkeep", "Last job due": "lastJobDue", "Next upkeep": "next", "Schedule rule": "rule" }, status: "", load: loadScheduleItem }}
     />
   );
 }
