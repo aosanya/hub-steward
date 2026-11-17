@@ -15,10 +15,47 @@ const reports = [
   { name: "Second quarter", period_start: "2026-04-01", period_end: "2026-07-01" },
 ];
 
-const figuresOf: Record<string, unknown> = {
-  "2026-01-01": { planned: 12000, spent: 9500, difference: 2500, departments: [], balances: [] },
-  "2026-04-01": { planned: 8000, spent: 8300, difference: -300, departments: [], balances: [] },
+const thirdReport = { name: "Third quarter", period_start: "2026-07-01", period_end: "2026-10-01" };
+
+type DepartmentFigure = { department: string; planned: number; spent: number; difference: number };
+
+type Figures = { planned: number; spent: number; difference: number; departments: DepartmentFigure[] };
+
+const figuresOf: Record<string, Figures & { balances: unknown[] }> = {
+  "2026-01-01": {
+    planned: 12000,
+    spent: 9500,
+    difference: 2500,
+    departments: [
+      { department: "Public works", planned: 7000, spent: 5000, difference: 2000 },
+      { department: "Culture", planned: 5000, spent: 4500, difference: 500 },
+    ],
+    balances: [],
+  },
+  "2026-04-01": {
+    planned: 8000,
+    spent: 8300,
+    difference: -300,
+    departments: [
+      { department: "Transport", planned: 3000, spent: 3100, difference: -100 },
+      { department: "Public works", planned: 5000, spent: 5200, difference: -200 },
+    ],
+    balances: [],
+  },
+  "2026-07-01": {
+    planned: 6000,
+    spent: 4000,
+    difference: 2000,
+    departments: [
+      { department: "Parks", planned: 4000, spent: 3000, difference: 1000 },
+      { department: "", planned: 2000, spent: 1000, difference: 1000 },
+    ],
+    balances: [],
+  },
 };
+
+const sumOf = (figures: Figures, key: "planned" | "spent" | "difference") =>
+  figures.departments.reduce((sum, one) => sum + one[key], 0);
 
 const linesOf: Record<string, unknown[]> = {
   "2026-01-01": [
@@ -28,6 +65,10 @@ const linesOf: Record<string, unknown[]> = {
   "2026-04-01": [
     { id: "b3", name: "Bus shelters", department: "Transport", planned: 3000, spent: 3100 },
     { id: "b4", name: "Park lighting", department: "Public works", planned: 5000, spent: 5200 },
+  ],
+  "2026-07-01": [
+    { id: "b5", name: "Playground", department: "Parks", planned: 4000, spent: 3000 },
+    { id: "b6", name: "Office supplies", department: "", planned: 2000, spent: 1000 },
   ],
 };
 
@@ -65,7 +106,7 @@ beforeEach(() => {
     if (name === "accounting_report_read") {
       const start = String((args as Args)?.period_start).slice(0, 10);
       const end = String((args as Args)?.period_end).slice(0, 10);
-      const report = reports.find((one) => one.period_start === start && one.period_end === end);
+      const report = [...reports, thirdReport].find((one) => one.period_start === start && one.period_end === end);
       if (!report) throw new Error("no budget lines were set for that period");
       return { ...report, figures: figuresOf[start], lines: linesOf[start] };
     }
@@ -155,6 +196,46 @@ describe("the Financial Reports list", () => {
   });
 });
 
+describe("the departments of an opened report", () => {
+  it("names the Departments and shows each with its planned, spent and difference", async () => {
+    openReports();
+    await userEvent.click(await screen.findByRole("button", { name: /First quarter/ }));
+
+    await waitFor(() => expect(pane().textContent).toContain("9,500"));
+    expect(pane().textContent).toContain("Departments");
+    expect(pane().textContent).toContain("Public works · Planned 7,000 · Spent 5,000 · Difference 2,000");
+    expect(pane().textContent).toContain("Culture · Planned 5,000 · Spent 4,500 · Difference 500");
+  });
+
+  it("reads a department with an empty name as No department", async () => {
+    reportList = () => ({ items: [...reports, thirdReport] });
+    openReports();
+    await userEvent.click(await screen.findByRole("button", { name: /Third quarter/ }));
+
+    await waitFor(() => expect(pane().textContent).toContain("Parks · Planned 4,000 · Spent 3,000 · Difference 1,000"));
+    expect(pane().textContent).toContain("No department · Planned 2,000 · Spent 1,000 · Difference 1,000");
+  });
+
+  it.each(["2026-01-01", "2026-04-01", "2026-07-01"])(
+    "has departments whose planned, spent and difference add up to the totals of the report starting %s",
+    (start) => {
+      const figures = figuresOf[start];
+      expect(sumOf(figures, "planned")).toBe(figures.planned);
+      expect(sumOf(figures, "spent")).toBe(figures.spent);
+      expect(sumOf(figures, "difference")).toBe(figures.difference);
+    },
+  );
+
+  it("prints a negative department difference with its minus sign", async () => {
+    openReports();
+    await userEvent.click(await screen.findByRole("button", { name: /Second quarter/ }));
+
+    await waitFor(() => expect(pane().textContent).toContain("8,300"));
+    expect(pane().textContent).toContain("Transport · Planned 3,000 · Spent 3,100 · Difference -100");
+    expect(pane().textContent).toContain("Public works · Planned 5,000 · Spent 5,200 · Difference -200");
+  });
+});
+
 describe("choosing a period", () => {
   const periodCard = () => screen.getByRole("region", { name: "Choose period" });
 
@@ -174,6 +255,16 @@ describe("choosing a period", () => {
     expect(periodCard().textContent).toContain("2026-04-01 to 2026-06-30");
     expect(periodCard().textContent).toContain("Bus shelters");
     expect(periodCard().textContent).toContain("-300");
+  });
+
+  it("shows the departments of the report of the chosen period", async () => {
+    openReports();
+    await choose("2026-04-01", "2026-06-30");
+
+    await waitFor(() => expect(periodCard().textContent).toContain("8,300"));
+    expect(periodCard().textContent).toContain("Departments");
+    expect(periodCard().textContent).toContain("Transport · Planned 3,000 · Spent 3,100 · Difference -100");
+    expect(periodCard().textContent).toContain("Public works · Planned 5,000 · Spent 5,200 · Difference -200");
   });
 
   it("refuses a reversed period in words and makes no call", async () => {
