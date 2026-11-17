@@ -42,6 +42,7 @@ function OutcomeEdit({ boardItemId }: { boardItemId: string }) {
         tool="forms_catalog_board_item_set_outcome"
         permission={boardPermission}
         fields={outcomeFields}
+        editLabel="Edit outcome"
         onSaved={(changed) => setSaved(changed.outcome ?? outcome)}
       />
     </>
@@ -65,6 +66,7 @@ export function IssueEdit({ issue }: { issue: IssueRow }) {
         tool="forms_catalog_raised_item_reassign"
         permission={boardPermission}
         fields={departmentFields}
+        editLabel="Edit department"
         onSaved={(changed) => setDepartment(changed.department ?? department)}
       />
       <IssueWish issue={issue} />
