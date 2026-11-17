@@ -466,6 +466,25 @@ describe("SettingRows", () => {
     show(<SettingRows rows={[{ label: "Hub name", htmlFor: "hub", control: <TextControl id="hub" value="Siaya" /> }]} />);
     expect(screen.getByLabelText("Hub name")).toHaveValue("Siaya");
   });
+
+  it("draws one mark after the label of a required row, hidden from screen readers, and none on the others", () => {
+    const { container } = show(
+      <SettingRows
+        rows={[
+          { label: "Hub name", htmlFor: "hub", required: true, control: <TextControl id="hub" value="Siaya" /> },
+          { label: "Motto", control: "x" },
+          { label: "Colour", required: true, control: "y" },
+        ]}
+      />,
+    );
+    const marks = container.querySelectorAll(".setting-label .req");
+    expect(marks).toHaveLength(2);
+    marks.forEach((mark) => {
+      expect(mark).toHaveTextContent("*");
+      expect(mark).toHaveAttribute("aria-hidden", "true");
+    });
+    expect(container.querySelectorAll(".setting")[1].querySelector(".req")).toBeNull();
+  });
 });
 
 describe("Controls", () => {

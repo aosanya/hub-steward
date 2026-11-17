@@ -28,6 +28,13 @@ const show = (props: Partial<{ value: Posting; sample: string; onChange: (value:
 };
 
 describe("the posting step card", () => {
+  it("marks all five of its labels as required, as the drawing does", () => {
+    show();
+    const labels = Array.from(document.querySelectorAll(".setting-label"));
+    expect(labels.map((label) => label.textContent)).toEqual(["Amount*", "Account*", "Other side*", "Direction*", "Reason*"]);
+    labels.forEach((label) => expect(label.querySelector(".req")).toHaveAttribute("aria-hidden", "true"));
+  });
+
   it("lists only the results of calculating steps as the amount, and nobody types one", () => {
     show();
     const amount = screen.getByRole("combobox", { name: "Amount" });
