@@ -22,6 +22,8 @@ const paymentActionPrefix = "accounting.payment."
 
 const accountListAction = "accounting.account.list"
 
+const dimensionTotalsAction = "accounting.dimension.totals"
+
 func BuildTools(repo accounting.LedgerRepository, m Mount) ([]Tool, error) {
 	s, err := operations()
 	if err != nil {
@@ -41,7 +43,7 @@ func BuildTools(repo accounting.LedgerRepository, m Mount) ([]Tool, error) {
 		if strings.HasPrefix(t.Action, billActionPrefix) {
 			served = append(served, t)
 		}
-		if t.Action == accountListAction {
+		if t.Action == accountListAction || t.Action == dimensionTotalsAction {
 			served = append(served, t)
 		}
 		if strings.HasPrefix(t.Action, paymentActionPrefix) {

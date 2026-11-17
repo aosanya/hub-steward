@@ -6,6 +6,7 @@ accounting_bill_update
 accounting_budget_list
 accounting_budget_read
 accounting_budget_set
+accounting_dimension_totals
 accounting_payment_list
 accounting_payment_mark_paid
 accounting_quote_create
