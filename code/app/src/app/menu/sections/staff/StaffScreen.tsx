@@ -31,7 +31,7 @@ const loadPerson = async (id: string) => {
     listOf("actor_list_role_assignments_for_actor", { actor_id: id }),
     roleKindNames(),
   ]);
-  return { id, name: personNameOf(person ?? {}), display_name: personNameOf(person ?? {}), role: seatsLine(seats, kindNames) };
+  return { id, name: personNameOf(person ?? {}), display_name: personNameOf(person ?? {}), attributes: person?.attributes, role: seatsLine(seats, kindNames) };
 };
 
 export function StaffScreen() {
