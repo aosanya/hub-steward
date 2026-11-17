@@ -32,6 +32,7 @@
   {"code": "form.close", "name": "Close a form", "locked": false, "module": "forms", "actions": ["forms.form.close"]},
   {"code": "application.correct", "name": "Correct a sent application", "locked": false, "module": "forms", "actions": ["forms.submission.correct"]},
   {"code": "application.decide", "name": "Approve or refuse a sent application", "locked": false, "module": "forms", "actions": ["forms.submission.decide"]},
+  {"code": "application.inspect", "name": "Record an inspector's finding on a sent application", "locked": false, "module": "forms", "actions": ["forms.submission.inspect"]},
   {"code": "form.payment", "name": "Mark a form payment received", "locked": false, "module": "forms", "actions": ["forms.submission.mark_paid"]},
   {"code": "form.compose", "name": "Compose forms", "locked": false, "module": "forms", "actions": ["forms.form.create", "forms.question.create", "forms.question.list"]},
   {"code": "form.manage", "name": "Edit, delete and translate forms", "locked": false, "module": "forms", "actions": ["forms.form.list", "forms.form.read", "forms.form.update", "forms.form.delete", "forms.question.update", "forms.question.delete", "forms.question.move", "forms.question.version", "forms.question_option.list", "forms.question_option.create", "forms.target.create", "forms.target.list", "forms.target.delete", "forms.translation.put", "forms.translation.list", "forms.translation.list_reviewed", "forms.translation.languages"]},

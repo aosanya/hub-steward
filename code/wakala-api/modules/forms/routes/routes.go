@@ -76,6 +76,8 @@ var sentinels = map[string]error{
 	"ErrMissingNote":         forms.ErrMissingNote,
 	"ErrInvalidDecision":     forms.ErrInvalidDecision,
 	"ErrSelfDecision":        forms.ErrSelfDecision,
+	"ErrInvalidInspection":   forms.ErrInvalidInspection,
+	"ErrSelfInspection":      forms.ErrSelfInspection,
 	"ErrQuestionNotOnForm":   forms.ErrQuestionNotOnForm,
 }
 

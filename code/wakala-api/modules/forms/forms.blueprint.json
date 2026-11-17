@@ -260,6 +260,10 @@
         {"name": "decided_by", "type": "string", "description": "Who decided it, taken from the session. Empty while undecided."},
         {"name": "decided_at", "type": "timestamp", "description": "When it was decided. Empty while undecided."},
         {"name": "decision_note", "type": "string", "description": "Why. Required for a refusal."},
+        {"name": "inspection_result", "type": "enum", "description": "What the inspector found on this send. Empty means not inspected. A later finding replaces an earlier one. The applicant does not read it.", "values": ["", "complies", "does_not_comply", "needs_more"]},
+        {"name": "inspection_note", "type": "string", "description": "What was found. Required unless the result is complies."},
+        {"name": "inspected_by", "type": "string", "description": "Who inspected it, taken from the session. Empty while not inspected."},
+        {"name": "inspected_at", "type": "timestamp", "description": "When it was inspected. Empty while not inspected."},
         {"name": "voice_key", "type": "string", "description": "Names the one voice a person holds on an instrument that allows one voice per person, in one period, whichever group they sent as. Written only on a person's own voice, never on a repeat, and empty on an instrument that allows several voices and on every send kept from before the key existed."}
       ],
       "indexes": [

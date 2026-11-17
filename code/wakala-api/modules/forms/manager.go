@@ -253,6 +253,7 @@ type FormManager interface {
 	MarkPaid(ctx context.Context, formID, memberID string, paid bool, markedBy string) (models.Submission, error)
 
 	DecideSubmission(ctx context.Context, formID, memberID string, decision models.Decision, note, decidedBy string) (models.Submission, error)
+	InspectSubmission(ctx context.Context, formID, memberID string, result models.InspectionResult, note, inspectedBy string) (models.Submission, error)
 
 	CorrectSubmission(ctx context.Context, formID, memberID, correctedBy string, answers []models.Answer) ([]models.Answer, error)
 

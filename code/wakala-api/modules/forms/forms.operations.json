@@ -60,6 +60,8 @@
     "ErrMissingNote": 400,
     "ErrInvalidDecision": 400,
     "ErrSelfDecision": 403,
+    "ErrInvalidInspection": 400,
+    "ErrSelfInspection": 403,
     "ErrQuestionNotOnForm": 400
   },
   "operations": {
@@ -635,6 +637,22 @@
         {"from": "body", "as": "decision", "required": true, "description": "approved or refused."},
         {"from": "body", "as": "note", "description": "Why. Required for a refusal, optional for an approval."},
         {"from": "caller", "as": "decided_by", "description": "The clerk deciding, resolved from the session rather than the request."}
+      ],
+      "returns": [{"body": true}]
+    },
+    "inspect_submission": {
+      "method": "PUT",
+      "path": "/forms/{form_id}/submissions/{member_id}/inspection",
+      "call": "InspectSubmission",
+      "action": "forms.submission.inspect",
+      "title": "Record an inspector's finding on an applicant's send",
+      "description": "An inspector records what they found on what one applicant sent: complies, does_not_comply or needs_more, with a note that is required unless it complies. The inspector is the caller, resolved from the session, and the time is now. Nobody inspects their own send. Inspecting again replaces the earlier finding. The finding is for the council: the applicant does not read it with their send. A person who sent nothing, or whose send was withdrawn, is not found.",
+      "args": [
+        {"from": "path", "as": "form_id", "refers": "forms.form", "description": "The instrument that was sent to."},
+        {"from": "path", "as": "member_id", "description": "The applicant whose send is inspected."},
+        {"from": "body", "as": "result", "required": true, "description": "complies, does_not_comply or needs_more."},
+        {"from": "body", "as": "note", "description": "What was found. Required unless the result is complies."},
+        {"from": "caller", "as": "inspected_by", "description": "The inspector, resolved from the session rather than the request."}
       ],
       "returns": [{"body": true}]
     },
