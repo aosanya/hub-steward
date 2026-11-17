@@ -370,6 +370,16 @@
           "description": "Why a person marked this step blocked by hand. Empty unless the step is blocked, and cleared when the block is lifted."
         },
         {
+          "name": "started_at",
+          "type": "string",
+          "description": "When the step first became In progress, as an RFC 3339 time. Empty until then, and cleared when the step is reopened to To do."
+        },
+        {
+          "name": "done_at",
+          "type": "string",
+          "description": "When the step became Done, as an RFC 3339 time. Empty unless the step is Done."
+        },
+        {
           "name": "status",
           "type": "enum",
           "description": "Where this step sits in its lifecycle. Skipped is terminal and does not fail the parent.",
