@@ -30,6 +30,7 @@ const locations = [
 const addressList = "digitaltwin_address_list";
 const tenureList = "digitaltwin_tenure_list";
 const landUseList = "digitaltwin_land_use_list";
+const nodeList = "digitaltwin_node_list";
 
 const addresses = [
   { id: "d1", street: "Main Street", number: "12", area: "Old Town", postcode: "6724", place_id: "n1" },
@@ -39,6 +40,11 @@ const addresses = [
 const tenures = [
   { id: "t1", place_id: "n1", holder: "Anna Kovacs", kind: "owner", since: "2019-03-01T00:00:00Z" },
   { id: "t2", place_id: "n2", holder: "Town Library Trust", kind: "custodian", since: "" },
+];
+
+const nodes = [
+  { id: "n1", name: "Corner House", kind: "address" },
+  { id: "n2", name: "Town Library", kind: "building" },
 ];
 
 const landUses = [
@@ -69,6 +75,7 @@ const answer = (name: string, args: unknown) => {
   if (name === addressList) return Promise.resolve({ items: addresses });
   if (name === tenureList) return Promise.resolve({ items: tenures });
   if (name === landUseList) return Promise.resolve({ items: landUses });
+  if (name === nodeList) return Promise.resolve({ items: nodes });
   if (name === assetList) return Promise.resolve({ items: assets });
   if (name === locationList) return Promise.resolve({ items: locations });
   if (name === assetRead) return Promise.resolve({ item: byArgument(assets, args, "assetID") });
@@ -194,14 +201,47 @@ describe("Addresses", () => {
 });
 
 describe("Ownership & Tenure", () => {
-  it("lists each holder with the kind of holding and since when", async () => {
+  it("lists each holder with the property held, the kind of holding and since when", async () => {
     show(<OwnershipPage />);
 
     await screen.findByText("Anna Kovacs", { selector: ".ttl" });
-    expect(metaOf(rowOf("Anna Kovacs"))).toEqual(["owner · since 2019-03-01"]);
-    expect(metaOf(rowOf("Town Library Trust"))).toEqual(["custodian"]);
+    expect(metaOf(rowOf("Anna Kovacs"))).toEqual(["Corner House · owner · since 2019-03-01"]);
+    expect(metaOf(rowOf("Town Library Trust"))).toEqual(["Town Library · custodian"]);
     expect(callsTo(tenureList)).toHaveLength(1);
     expect(callsTo(assetList)).toHaveLength(0);
+  });
+
+  it("reads the node list once", async () => {
+    show(<OwnershipPage />);
+
+    await screen.findByText("Anna Kovacs", { selector: ".ttl" });
+    expect(callsTo(nodeList)).toHaveLength(1);
+  });
+
+  it("shows no property part for a holding whose place matches no node", async () => {
+    const stray = { id: "t3", place_id: "n9", holder: "Mill Trust", kind: "tenant", since: "2021-06-15T00:00:00Z" };
+    called.mockImplementation(async (_agency, name, args) =>
+      name === tenureList ? { items: [...tenures, stray] } : answer(name, args),
+    );
+    show(<OwnershipPage />);
+
+    await screen.findByText("Mill Trust", { selector: ".ttl" });
+    expect(metaOf(rowOf("Mill Trust"))).toEqual(["tenant · since 2021-06-15"]);
+    expect(rowOf("Mill Trust").textContent).not.toContain("undefined");
+    expect(metaOf(rowOf("Anna Kovacs"))).toEqual(["Corner House · owner · since 2019-03-01"]);
+  });
+
+  it("still lists the holdings when the node list cannot be read", async () => {
+    called.mockImplementation(async (_agency, name, args) =>
+      name === nodeList ? Promise.reject(new Error(`${name}: unavailable`)) : answer(name, args),
+    );
+    show(<OwnershipPage />);
+
+    await screen.findByText("Anna Kovacs", { selector: ".ttl" });
+    expect(callsTo(nodeList)).toHaveLength(1);
+    expect(metaOf(rowOf("Anna Kovacs"))).toEqual(["owner · since 2019-03-01"]);
+    expect(metaOf(rowOf("Town Library Trust"))).toEqual(["custodian"]);
+    expect(screen.queryByText(loadFailedWords)).toBeNull();
   });
 });
 
@@ -257,5 +297,6 @@ describe("a hub that does not mount the digitaltwin module", () => {
     expect(callsTo(addressList)).toHaveLength(0);
     expect(callsTo(tenureList)).toHaveLength(0);
     expect(callsTo(landUseList)).toHaveLength(0);
+    expect(callsTo(nodeList)).toHaveLength(0);
   });
 });
