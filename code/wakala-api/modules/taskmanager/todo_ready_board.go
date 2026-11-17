@@ -120,3 +120,6 @@ func filesOrEmpty(files FileList) []string {
 	}
 	return files
 }
+	for id, todos := range byIssue {
+		byIssue[id] = withElapsedAll(todos)
+	}
