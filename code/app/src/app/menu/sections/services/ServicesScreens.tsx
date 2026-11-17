@@ -9,12 +9,13 @@ import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
 import { moneyWords } from "../finance/financeData";
 import { personNameOf } from "../residents/personName";
 import { CatalogueWindow } from "./CatalogueEntry";
+import { sentWords } from "./decision";
+import { ReceivedApplications } from "./ReceivedApplications";
+import { readItem } from "./readItem";
 
 const paidWords = "Paid";
 
 const markPaidLabel = "Mark paid";
-
-const sentWords = "Sent";
 
 const withdrawnWords = "Withdrawn";
 
@@ -46,16 +47,6 @@ const statusOf = (submission: Item) => {
 const entryRow = (entry: Item) => ({ id: text(entry, "slug"), name: text(entry, "name"), line: text(entry, "summary") });
 
 const loadKind = (kind: string) => async () => (await listOf(listTool, { kind })).map(entryRow);
-
-const readItem = async (tool: string, args: Record<string, unknown>): Promise<Item> => {
-  try {
-    const reply = (await callTool("", tool, args)) as { item?: unknown } | null;
-    const inner = reply?.item ?? reply;
-    return inner && typeof inner === "object" ? (inner as Item) : {};
-  } catch {
-    return {};
-  }
-};
 
 const amountWords = (form: Item) => (typeof form.amount === "number" && form.amount > 0 ? moneyWords(form.amount) : "");
 
@@ -104,7 +95,7 @@ const KindScreen = ({ generic, emptyGeneric, kind, payable }: { generic: string;
       title={title}
       detailKey={version}
       list={{ title, tool: listTool, fields: listFields, empty: homeEmpty(empty), load: loadKind(kind) }}
-      detail={{ tool: submissionsTool, fields: payable ? feeDetailFields : detailFields, status: "status", load: loadSubmissions(payable === true), action }}
+      detail={{ tool: submissionsTool, fields: payable ? feeDetailFields : detailFields, status: "status", load: loadSubmissions(payable === true), action, extra: payable ? undefined : (item: Item) => <ReceivedApplications slug={text(item, "id")} /> }}
       below={failed ? <LoadFailed words={actionFailedWords} /> : null}
     />
   );

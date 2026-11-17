@@ -12,7 +12,8 @@ import { useWord } from "../../../../features/agency/useWord";
 import { listOf, text, type Item } from "../staff/staffData";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { dayWords } from "../../../../shared/ui/days";
-import { decidedWords, decisionStatus, reasonWords } from "./decision";
+import { valueKeyOf } from "./answers";
+import { decidedWords, decisionStatus, reasonWords, sentWords } from "./decision";
 
 export const withdrawLabel = "Withdraw";
 
@@ -24,13 +25,7 @@ type SentAnswer = { id: string; questionId: string; prompt: string; valueKey: st
 
 const withdrawnWords = "Withdrawn";
 
-const sentWords = "Sent";
-
 const unwrapped = (reply: unknown): Item => ((reply as { item?: Item } | null)?.item ?? (reply as Item | null) ?? {}) as Item;
-
-const valueKeys = ["value_text", "value_number", "value_date", "value_time"];
-
-const valueKeyOf = (answer: Item) => valueKeys.find((key) => text(answer, key) !== "") ?? "";
 
 const loadAnswers = async (formId: string) => {
   const [questions, answers] = await Promise.all([listOf("forms_question_list", { form_id: formId }), listOf("forms_answer_list", { form_id: formId })]);
