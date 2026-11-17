@@ -150,8 +150,13 @@ The answer is `changes` in time order (`id`, `code`, `title`, `kind`, `from`, `t
 |---|---|---|
 | `created` | empty | the time the issue was filed |
 | `priority` | the old and new priority | the Log entry a priority change writes |
+| `moved` | the old and new `backlog/step` | the automatic Log entry of the move |
+| `status` | the old and new status | the automatic Log entry of the change |
+| `tags` | the old and new tags, sorted and comma-joined | the automatic Log entry of the change |
+| `assigned`, `unassigned` | the old and new holder (empty for none) | the automatic Log entry of the hand-over or release |
+| `deleted` | empty | the automatic Log entry of the delete |
 
-A move, an assignment, a status or tag change and a delete are not reported: the hub writes no Log entry with a time and a from and to for them.
+Every move, hand-over, status change, tag change and delete writes one automatic Log entry (kind `automatic`, with the from and to), through every route including `taskmanager_task_batch`, `taskmanager_task_claim` and `taskmanager_task_claim_next`; a write that changes nothing writes none, and the workflow-run cancel and rollback paths write none. Changes made before these entries existed are not reported.
 
 ## taskmanager_task_batch
 
