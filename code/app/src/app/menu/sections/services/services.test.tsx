@@ -84,6 +84,8 @@ beforeEach(() => {
     forms_question_list: () => ({ items: applicationQuestions }),
     forms_answer_list: () => ({ items: applicationAnswers }),
     forms_form_withdraw: () => ({}),
+    forms_form_read: (args) => ({ id: args.form_id, amount: args.form_id === "f4" ? 4500 : 12000 }),
+    actor_get_actor: () => ({ id: "m1", display_name: "Kovács Márta" }),
     forms_form_list_answered: () => ({ items: answeredForms }),
   };
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
@@ -223,12 +225,60 @@ describe("Fees & Payments", () => {
     expect(screen.queryByRole("button", { name: /Mark paid/ })).toBeNull();
   });
 
+  it("shows the amount and the payer of an unpaid fee and never the member id", async () => {
+    open(screens[2].at);
+
+    await userEvent.click(await screen.findByText("Hall Hire Fee"));
+
+    expect(await screen.findByText("Amount")).toBeInTheDocument();
+    expect(screen.getByText("4,500")).toBeInTheDocument();
+    expect(screen.getByText("Payer")).toBeInTheDocument();
+    expect(screen.getByText("Kovács Márta")).toBeInTheDocument();
+    expect(screen.queryByText(/m1/)).toBeNull();
+    expect(called).toHaveBeenCalledWith("", "forms_form_read", { form_id: "f4" });
+    expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "m1" });
+  });
+
+  it("shows the amount and the payer of a paid fee too", async () => {
+    open(screens[2].at);
+
+    await userEvent.click(await screen.findByText("Parking Fee"));
+
+    expect(await screen.findByText("Paid")).toBeInTheDocument();
+    expect(await screen.findByText("12,000")).toBeInTheDocument();
+    expect(screen.getByText("Kovács Márta")).toBeInTheDocument();
+    expect(screen.queryByText(/m1/)).toBeNull();
+  });
+
+  it("shows no Amount line when the form has no amount but still shows the payer", async () => {
+    answers.forms_form_read = (args) => ({ id: args.form_id });
+    open(screens[2].at);
+
+    await userEvent.click(await screen.findByText("Hall Hire Fee"));
+
+    expect(await screen.findByText("Payer")).toBeInTheDocument();
+    expect(screen.getByText("Kovács Márta")).toBeInTheDocument();
+    expect(screen.queryByText("Amount")).toBeNull();
+  });
+
   it("offers no Mark paid on the permit and licence screens", async () => {
     open(screens[0].at);
     await userEvent.click(await screen.findByText("Market Stall Permit"));
     await screen.findByText("Sent");
 
     expect(screen.queryByRole("button", { name: /Mark paid/ })).toBeNull();
+  });
+
+  it("shows no Amount or Payer on a permit and reads neither the form nor the member", async () => {
+    open(screens[0].at);
+
+    await userEvent.click(await screen.findByText("Market Stall Permit"));
+    await screen.findByText("Sent");
+
+    expect(screen.queryByText("Amount")).toBeNull();
+    expect(screen.queryByText("Payer")).toBeNull();
+    expect(toolsCalled()).not.toContain("forms_form_read");
+    expect(toolsCalled()).not.toContain("actor_get_actor");
   });
 });
 
