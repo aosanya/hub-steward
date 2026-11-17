@@ -76,14 +76,20 @@ const answerKinds = ["fill_form", "send_form"];
 
 const takesAnswers = (raw: any) => answerKinds.includes(raw?.kind) && Array.isArray(raw?.questions) && raw.questions.length > 0;
 
+const sentStepIds = async (): Promise<Set<string>> => {
+  const reply = await callTool("", "agency_list_my_sent_steps", { limit: 200 }).catch(() => undefined);
+  const items: any[] = Array.isArray(reply?.items) ? reply.items : [];
+  return new Set(items.flatMap((item) => (typeof item?.step_id === "string" ? [item.step_id] : [])));
+};
+
 export const mcpStepsClient: StepsClient = {
   async available() {
-    const reply = await callTool("", "agency_list_my_open_steps", { available: true });
+    const [reply, sent] = await Promise.all([callTool("", "agency_list_my_open_steps", { available: true }), sentStepIds()]);
     const items: any[] = Array.isArray(reply?.items) ? reply.items : [];
     return items
       .filter(takesAnswers)
       .flatMap((raw) => memberStepOf(raw) ?? [])
-      .filter((step) => !(step.state === "start" && wasStarted(step.id)));
+      .filter((step) => !(step.state === "start" && (wasStarted(step.id) || sent.has(step.id))));
   },
   async submit(step, answers, sendKey, another) {
     const { wakala } = await runtimeConfig();
