@@ -587,6 +587,95 @@
           ]
         }
       ]
+    },
+    {
+      "role": "upward_report",
+      "description": "A financial report as it stood when it was sent upward: the totals and department figures folded at that moment, and the budget lines when the kind keeps them. Append-only: a second send of the same period and kind is another record.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Storage key, opaque to callers.",
+          "primary": true
+        },
+        {
+          "name": "kind",
+          "type": "enum",
+          "description": "Which report was sent. budget_and_actuals keeps every budget line beside the figures; spending_by_department keeps the department figures only.",
+          "required": true,
+          "values": [
+            "budget_and_actuals",
+            "spending_by_department"
+          ],
+          "immutable": true
+        },
+        {
+          "name": "period_start",
+          "type": "timestamp",
+          "description": "The first instant of the period reported, inclusive, as an RFC 3339 instant, exactly as the budget lines were set.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "period_end",
+          "type": "timestamp",
+          "description": "The instant the period reported ends, exclusive, as an RFC 3339 instant, exactly as the budget lines were set.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "planned",
+          "type": "int",
+          "description": "The planned total of the period as sent.",
+          "immutable": true
+        },
+        {
+          "name": "spent",
+          "type": "int",
+          "description": "The spent total of the period as sent.",
+          "immutable": true
+        },
+        {
+          "name": "difference",
+          "type": "int",
+          "description": "Spent minus planned as sent.",
+          "immutable": true
+        },
+        {
+          "name": "departments",
+          "type": "json",
+          "description": "The planned, spent and difference figures of each department as sent.",
+          "immutable": true
+        },
+        {
+          "name": "lines",
+          "type": "json",
+          "description": "Every budget line of the period as sent. Absent for the kinds that do not keep them.",
+          "immutable": true
+        },
+        {
+          "name": "sent_by",
+          "type": "string",
+          "description": "Who sent the report, supplied by the mount.",
+          "required": true,
+          "immutable": true
+        },
+        {
+          "name": "sent_at",
+          "type": "timestamp",
+          "description": "When the report was sent. Written by the store.",
+          "immutable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "sent",
+          "description": "Lists the sent reports newest first.",
+          "fields": [
+            "sent_at"
+          ]
+        }
+      ]
     }
   ]
 }

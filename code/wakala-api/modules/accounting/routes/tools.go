@@ -14,6 +14,8 @@ const budgetActionPrefix = "accounting.budget."
 
 const reportActionPrefix = "accounting.report."
 
+const upwardReportActionPrefix = "accounting.upward_report."
+
 const billActionPrefix = "accounting.bill."
 
 const paymentActionPrefix = "accounting.payment."
@@ -46,6 +48,9 @@ func BuildTools(repo accounting.LedgerRepository, m Mount) ([]Tool, error) {
 			served = append(served, t)
 		}
 		if strings.HasPrefix(t.Action, reportActionPrefix) {
+			served = append(served, t)
+		}
+		if strings.HasPrefix(t.Action, upwardReportActionPrefix) {
 			served = append(served, t)
 		}
 		if isProcurementAction(t.Action) {
