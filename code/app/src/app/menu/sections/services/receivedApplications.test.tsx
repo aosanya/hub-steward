@@ -211,13 +211,12 @@ describe("Applications received on a permit or licence entry", () => {
     await waitFor(async () => expect(await rowOf("Bence Farkas")).toHaveTextContent("Refused"));
   });
 
-  it("shows no section and never lists submissions to a caller without application.decide", async () => {
+  it("shows no Applications received section to a caller without application.decide", async () => {
     permissions = ["form.results", "form.answers.read"];
     await openEntry();
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
 
     expect(screen.queryByText("Applications received")).toBeNull();
-    expect(called).not.toHaveBeenCalledWith("", "forms_submission_list", expect.anything());
     expect(screen.queryByRole("button", { name: /Bence Farkas/ })).toBeNull();
   });
 

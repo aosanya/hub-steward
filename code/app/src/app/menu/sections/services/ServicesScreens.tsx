@@ -10,6 +10,7 @@ import { moneyWords } from "../finance/financeData";
 import { personNameOf } from "../residents/personName";
 import { CatalogueWindow } from "./CatalogueEntry";
 import { decisionStatus, sentWords } from "./decision";
+import { Granted } from "./Granted";
 import { ReceivedApplications } from "./ReceivedApplications";
 import { readItem } from "./readItem";
 
@@ -95,7 +96,7 @@ const KindScreen = ({ generic, emptyGeneric, kind, payable }: { generic: string;
       title={title}
       detailKey={version}
       list={{ title, tool: listTool, fields: listFields, empty: homeEmpty(empty), load: loadKind(kind) }}
-      detail={{ tool: submissionsTool, fields: payable ? feeDetailFields : detailFields, status: "status", load: loadSubmissions(payable === true), action, extra: payable ? undefined : (item: Item) => <ReceivedApplications slug={text(item, "id")} /> }}
+      detail={{ tool: submissionsTool, fields: payable ? feeDetailFields : detailFields, status: "status", load: loadSubmissions(payable === true), action, extra: payable ? undefined : (item: Item) => <><ReceivedApplications slug={text(item, "id")} /><Granted slug={text(item, "id")} /></> }}
       below={failed ? <LoadFailed words={actionFailedWords} /> : null}
     />
   );

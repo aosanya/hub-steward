@@ -14,6 +14,7 @@ import { listOf, text, type Item } from "../staff/staffData";
 import { peopleRows } from "../residents/PeopleScreens";
 import { answerWordsOf } from "./answers";
 import { decisionStatus, reasonWords, sentWords } from "./decision";
+import { announceDecision } from "./decisionSignal";
 import { readItem } from "./readItem";
 
 const sectionWords = "Applications received";
@@ -26,7 +27,7 @@ const unnamedWords = "Someone";
 
 const chevron = "›";
 
-type Received = { memberId: string; name: string; status: string; line: string; note: string; undecided: boolean };
+export type Received = { memberId: string; name: string; status: string; line: string; note: string; undecided: boolean; decidedAt: string };
 
 const received = (sent: Item, names: Map<string, string>): Received => {
   const status = decisionStatus(text(sent, "decision"));
@@ -38,12 +39,13 @@ const received = (sent: Item, names: Map<string, string>): Received => {
     line: `${status || sentWords} ${day}`,
     note: text(sent, "decision_note"),
     undecided: status === "",
+    decidedAt: text(sent, "decided_at"),
   };
 };
 
 const ownId = async () => text(await readItem("actor_get_my_actor", {}), "id");
 
-const loadReceived = async (slug: string) => {
+export const loadReceived = async (slug: string) => {
   const formId = text(await readItem("forms_catalog_entry_read", { slug }), "form_id");
   if (formId === "") throw new Error("entry without a form");
   const [sent, people, own] = await Promise.all([listOf("forms_submission_list", { form_id: formId }), peopleRows(), ownId()]);
@@ -109,6 +111,7 @@ function ReceivedList({ slug }: { slug: string }) {
   const { formId, own, rows } = view.data;
   const open = rows.find((row) => row.memberId === chosen);
   const decided = () => {
+    announceDecision();
     setChosen("");
     setVersion((current) => current + 1);
   };
