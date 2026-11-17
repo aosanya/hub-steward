@@ -12,6 +12,7 @@ import (
 
 var residentVotingActions = []string{
 	"voting.poll.read",
+	"voting.poll.list_open",
 	"voting.choice.list",
 	"voting.answer.create",
 	"voting.response.read_own",

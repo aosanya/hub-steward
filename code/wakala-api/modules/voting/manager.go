@@ -16,6 +16,7 @@ import (
 type (
 	Poll          = models.Poll
 	PollRead      = models.PollRead
+	OpenPoll      = models.OpenPoll
 	Choice        = models.Choice
 	Participation = models.Participation
 	Ballot        = models.Ballot
@@ -26,6 +27,7 @@ type PollManager interface {
 	GetPoll(ctx context.Context, pollID string) (Poll, error)
 	ShowPoll(ctx context.Context, pollID string) (PollRead, error)
 	OpenToReader(ctx context.Context, pollID, reader string) error
+	ListOpenPolls(ctx context.Context, caller string) ([]OpenPoll, error)
 
 	AddChoice(ctx context.Context, in Choice) (Choice, error)
 	ListChoices(ctx context.Context, pollID string) ([]Choice, error)
