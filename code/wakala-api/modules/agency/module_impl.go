@@ -146,14 +146,29 @@ func withEffectiveEnabled(modules []models.Module, kinds map[models.StepKind]boo
 		direct[mod.Code] = mod.Locked || mod.Enabled || needed[mod.Code]
 	}
 	closed := models.WithRequiredModules(direct)
+	requiredByModules := modulesRequiredByEnabled(modules, closed)
 	out := make([]models.Module, 0, len(modules))
 	for _, mod := range modules {
 		mod.Explicit = mod.Enabled
 		mod.NeededBySteps = needed[mod.Code]
+		mod.NeededByModules = requiredByModules[mod.Code]
 		mod.Enabled = mod.Locked || closed[mod.Code]
 		out = append(out, mod)
 	}
 	return out
+}
+
+func modulesRequiredByEnabled(modules []models.Module, closed map[string]bool) map[string]bool {
+	required := make(map[string]bool)
+	for _, mod := range modules {
+		if !mod.Locked && !closed[mod.Code] {
+			continue
+		}
+		for _, code := range models.ModuleRequires(mod.Code) {
+			required[code] = true
+		}
+	}
+	return required
 }
 
 func (m *agencyManager) findModule(ctx context.Context, tx *gorm.DB, id string) (models.Module, error) {

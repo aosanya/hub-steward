@@ -12,6 +12,7 @@ export type AgencyModule = {
   enabled: boolean;
   explicit: boolean;
   neededBySteps: boolean;
+  neededByModules: boolean;
 };
 
 export type ModuleHold = "locked" | "steps" | "required" | "free";
@@ -27,13 +28,13 @@ const moduleOf = (item: Item): AgencyModule => ({
   enabled: flagOf(item, "enabled"),
   explicit: flagOf(item, "explicit"),
   neededBySteps: flagOf(item, "needed_by_steps"),
+  neededByModules: flagOf(item, "needed_by_modules"),
 });
 
 export const holdOf = (module: AgencyModule): ModuleHold => {
   if (module.locked) return "locked";
-  if (module.explicit) return "free";
   if (module.neededBySteps) return "steps";
-  return module.enabled ? "required" : "free";
+  return module.neededByModules || (module.enabled && !module.explicit) ? "required" : "free";
 };
 
 export async function loadModules(hubId: string): Promise<AgencyModule[]> {

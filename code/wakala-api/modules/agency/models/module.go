@@ -26,8 +26,9 @@ type Module struct {
 	LastUpdated string `json:"last_updated"`
 	Deleted     bool   `json:"deleted"`
 
-	Explicit      bool `json:"explicit" spec:"-"`
-	NeededBySteps bool `json:"needed_by_steps" spec:"-"`
+	Explicit        bool `json:"explicit" spec:"-"`
+	NeededBySteps   bool `json:"needed_by_steps" spec:"-"`
+	NeededByModules bool `json:"needed_by_modules" spec:"-"`
 }
 
 type ModuleMount struct {

@@ -1067,7 +1067,7 @@
       "call": "ListModules",
       "action": "agency.module.list",
       "title": "List capabilities",
-      "description": "List the capability catalog for one draft. Each shows enabled (what runs: locked, or switched on, or needed by a workflow step, plus what those require), explicit (the switch itself, set with agency_set_module_enabled) and needed_by_steps (a workflow step uses it).",
+      "description": "List the capability catalog for one draft. Each shows enabled (what runs: locked, or switched on, or needed by a workflow step, plus what those require), explicit (the switch itself, set with agency_set_module_enabled), needed_by_steps (a workflow step uses it) and needed_by_modules (an enabled module requires it).",
       "args": [
         {
           "from": "query",
@@ -1092,7 +1092,7 @@
       "call": "GetModule",
       "action": "agency.module.read",
       "title": "Read capability",
-      "description": "Read one capability: enabled (what runs), explicit (the switch itself) and needed_by_steps (a workflow step uses it).",
+      "description": "Read one capability: enabled (what runs), explicit (the switch itself), needed_by_steps (a workflow step uses it) and needed_by_modules (an enabled module requires it).",
       "args": [
         {
           "from": "path",
