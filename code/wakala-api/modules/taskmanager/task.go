@@ -275,6 +275,7 @@ type TaskManager interface {
 	TaskReportFor(ctx context.Context, requesterID, issueID string) (TaskReport, error)
 	TaskBriefFor(ctx context.Context, filter TaskBriefFilter) (TaskBrief, error)
 	FileOverlaps(ctx context.Context, filter FileOverlapsFilter) (FileOverlaps, error)
+	NextReadyBatch(ctx context.Context, filter NextReadyBatchFilter) (NextReadyBatch, error)
 	CountTodosOfIssues(ctx context.Context, filter TodoCountsFilter) (IssueTodoCounts, error)
 	EditTodoFor(ctx context.Context, requesterID, todoID string, change TodoChange) (TodoView, error)
 	ReorderTodosOfIssue(ctx context.Context, requesterID, issueID string, order TodoOrder) (IssueTodoList, error)
