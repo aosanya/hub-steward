@@ -140,7 +140,6 @@ type registry struct {
 	pushFailed   func(error)
 	mutability   Mutability
 	rules        RuleOf
-	startsAs     string
 
 	gitFolder    string
 	gitOpenFiles int
@@ -231,7 +230,7 @@ func (r *registry) CreateInstance(ctx context.Context, name string) (Instance, e
 		Name:      name,
 		TableSlug: tableSlug(),
 		JoinMode:  JoinConfirmed,
-		Approval:  r.startingApproval(),
+		Approval:  ApprovalApproved,
 		CreatedAt: time.Now().UTC(),
 	}
 	if err := r.db.WithContext(ctx).Create(&row).Error; err != nil {

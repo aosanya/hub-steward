@@ -46,10 +46,6 @@ func joinInstance(reg agencies.Registry, residents residentGrants) http.HandlerF
 			writeReadErr(w, err)
 			return
 		}
-		if inst, err := reg.GetInstance(r.Context(), r.PathValue("instanceID")); err != nil || !inst.Approved() {
-			writeInstanceErr(w, agencies.ErrInstanceNotFound)
-			return
-		}
 		out, err := reg.Join(r.Context(), r.PathValue("instanceID"), caller, in.Message)
 		if errors.Is(err, agencies.ErrJoinMessageTooLong) {
 			writeErr(w, http.StatusBadRequest, err.Error())
