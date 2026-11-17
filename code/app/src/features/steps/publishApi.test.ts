@@ -10,6 +10,13 @@ const forms = [
   { id: "f-closed", title: "  arrival ", status: "closed" },
 ];
 
+const formListReply = {
+  rows: forms.map((form) => ({ form })),
+  total: 3,
+  by_status: { open: 1, closed: 2 },
+  respondents: 0,
+};
+
 describe("holdsReportPublish", () => {
   it("is true for the owner whose reply lists every code", () => {
     expect(holdsReportPublish({ roles: [], permissions: ["poll.run", "report.publish", "form.close"] })).toBe(true);
@@ -41,6 +48,10 @@ describe("closedFormIdOf", () => {
     expect(closedFormIdOf(forms, "Missing")).toBeNull();
     expect(closedFormIdOf([], "Arrival")).toBeNull();
   });
+
+  it("picks the closed form out of a forms_form_list reply of rows", () => {
+    expect(closedFormIdOf(formListReply, "Arrival")).toBe("f-closed");
+  });
 });
 
 describe("mcpPublishClient", () => {
@@ -52,6 +63,12 @@ describe("mcpPublishClient", () => {
 
   it("closedFormId lists forms and picks the closed one", async () => {
     const call = vi.spyOn(mcp, "callTool").mockResolvedValue({ items: forms });
+    expect(await mcpPublishClient.closedFormId("Arrival")).toBe("f-closed");
+    expect(call).toHaveBeenCalledWith("", "forms_form_list", {});
+  });
+
+  it("closedFormId reads the id from a reply of rows", async () => {
+    const call = vi.spyOn(mcp, "callTool").mockResolvedValue(formListReply);
     expect(await mcpPublishClient.closedFormId("Arrival")).toBe("f-closed");
     expect(call).toHaveBeenCalledWith("", "forms_form_list", {});
   });

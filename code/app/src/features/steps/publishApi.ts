@@ -19,8 +19,13 @@ const normal = (value: unknown) => text(value).trim().toLowerCase();
 
 export const holdsReportPublish = (reply: any): boolean => Array.isArray(reply?.permissions) && reply.permissions.includes(REPORT_PUBLISH);
 
-export const closedFormIdOf = (items: any[], formName: string): string | null => {
-  const form = (Array.isArray(items) ? items : []).find((item) => normal(item?.status) === "closed" && normal(item?.title) === normal(formName));
+const itemsOf = (reply: any): any[] =>
+  Array.isArray(reply) ? reply : Array.isArray(reply?.items) ? reply.items : Array.isArray(reply?.rows) ? reply.rows : [];
+
+export const closedFormIdOf = (reply: any, formName: string): string | null => {
+  const form = itemsOf(reply)
+    .map((item) => item?.form ?? item)
+    .find((item) => normal(item?.status) === "closed" && normal(item?.title) === normal(formName));
   return form?.id ? text(form.id) : null;
 };
 
@@ -37,11 +42,9 @@ export const reportFileOf = (raw: any): ReportFile => ({
   committedAt: text(raw?.committed_at),
 });
 
-const itemsOf = (reply: any): any[] => (Array.isArray(reply) ? reply : Array.isArray(reply?.items) ? reply.items : []);
-
 export const mcpPublishClient: PublishClient = {
   holds: async () => holdsReportPublish(await callTool("", "agency_get_my_roles", {})),
-  closedFormId: async (formName) => closedFormIdOf(itemsOf(await callTool("", "forms_form_list", {})), formName),
+  closedFormId: async (formName) => closedFormIdOf(await callTool("", "forms_form_list", {}), formName),
   latest: async (formId) => {
     try {
       return reportOf(await callTool("", "forms_results_read", { form_id: formId }));
