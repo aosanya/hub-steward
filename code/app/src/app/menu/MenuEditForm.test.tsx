@@ -53,6 +53,13 @@ describe("the shared menu edit form", () => {
     expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
   });
 
+  it("shows the given editLabel on the quiet button instead of Edit", async () => {
+    render(<MenuEditForm item={item} id="b1" idArg="budgetID" tool="accounting_budget_set" permission="accounting.manage" fields={fields} editLabel="Edit attributes" />);
+
+    expect(await screen.findByRole("button", { name: "Edit attributes" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
+  });
+
   it("shows no Edit and no form to a caller without the permission", async () => {
     permissions = ["accounting.view"];
     form();

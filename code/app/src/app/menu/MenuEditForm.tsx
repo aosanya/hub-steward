@@ -19,6 +19,7 @@ type Props = {
   permission: string;
   fields: EditField[];
   keep?: string[];
+  editLabel?: string;
   readAgain?: () => Promise<Item>;
   build?: (sent: Record<string, unknown>) => Record<string, unknown>;
   onSaved?: (changed: Record<string, string>) => void;
@@ -76,7 +77,7 @@ const inputModes = { text: undefined, number: "decimal", date: undefined, lines:
 
 const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key, field)]));
 
-export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], readAgain, build, onSaved }: Props) {
+export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], editLabel = "Edit", readAgain, build, onSaved }: Props) {
   const may = useMay(permission);
   const [editing, setEditing] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
@@ -155,7 +156,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
       setSaving(false);
     }
   };
-  if (!editing) return <Button kind="quiet" onClick={open}>Edit</Button>;
+  if (!editing) return <Button kind="quiet" onClick={open}>{editLabel}</Button>;
   return (
     <>
       {fields.map((field) =>
