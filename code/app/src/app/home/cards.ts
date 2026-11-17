@@ -36,6 +36,8 @@ const moduleOfPath = (path: string) => (path === routes.forms.path() ? "forms" :
 
 const risksModule = "riskmanager";
 
+const votingModule = "voting";
+
 export const homeCardsFor = (kind: AgencyKind, view?: AgencyView | null): HomeCard[] => {
   const cards = agencyCards[kind];
   if (!view || view.modulesUnread) return cards;
@@ -43,7 +45,8 @@ export const homeCardsFor = (kind: AgencyKind, view?: AgencyView | null): HomeCa
   const risks: HomeCard[] = on.has(risksModule)
     ? [{ title: view.modules.find((module) => module.code === risksModule)?.name ?? risksModule, path: routes.risks.path(), titleKey: "risksTitle" }]
     : [];
-  return [...cards, ...risks]
+  const question: HomeCard[] = on.has(votingModule) ? [{ title: "Question", path: routes.question.path() }] : [];
+  return [...cards, ...question, ...risks]
     .filter((card) => !moduleOfPath(card.path) || on.has(moduleOfPath(card.path)))
     .map((card) => {
       const named = moduleOfPath(card.path) === "forms" ? view.modules.find((module) => module.code === "forms")?.name : "";

@@ -26,6 +26,7 @@ describe("a screen's path is built from one definition", () => {
     ["join group order", () => routes.joinGroupOrder.path({ productId: "urea", groupOrderId: "g1" }), "/market/:productId/group-orders/:groupOrderId/join", "/a/{id}/market/urea/group-orders/g1/join"],
     ["forms", () => routes.forms.path(), "/forms", "/a/{id}/forms"],
     ["form", () => routes.form.path({ id: "f1" }), "/forms/:id", "/a/{id}/forms/f1"],
+    ["question", () => routes.question.path(), "/question", "/a/{id}/question"],
     ["room threads", () => routes.roomThreads.path({ roomId: "r1" }), "/chat/:roomId/threads", "/a/{id}/chat/r1/threads"],
     ["room thread", () => routes.roomThread.path({ roomId: "r1", threadId: "t1" }), "/chat/:roomId/:threadId", "/a/{id}/chat/r1/t1"],
     ["ask", () => routes.ask.path({ roomId: "r1", threadId: "t1", askId: "a1" }), "/chat/:roomId/:threadId/asks/:askId", "/a/{id}/chat/r1/t1/asks/a1"],

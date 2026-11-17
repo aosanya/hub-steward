@@ -18,13 +18,13 @@ const refusedRedirect = "that redirect is not one of the member app's addresses"
 
 export const looksLikeAnAddress = (email: string) => /^[^\s@]+@[^\s@]+$/.test(email);
 
-const wakalaFetch = async (path: string, init: RequestInit) => {
+export const wakalaFetch = async (path: string, init: RequestInit) => {
   const { wakala } = await runtimeConfig();
   const headers = { ...(await renewedAuthHeaders()), ...(init.headers as Record<string, string> | undefined) };
   return fetch(wakala + path, { credentials: "include", ...init, headers });
 };
 
-const refusalText = async (res: Response) => {
+export const refusalText = async (res: Response) => {
   try {
     const body = await res.json();
     return typeof body?.error === "string" ? body.error : "";

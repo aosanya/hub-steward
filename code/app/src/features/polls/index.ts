@@ -1,0 +1,1 @@
+export { pollsRoutes } from "./routes";
