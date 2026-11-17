@@ -62,3 +62,32 @@ func TestASendIsDecidedByTheCallerNotTheBodyThroughTheTool(t *testing.T) {
 	}
 	t.Fatal("no forms_submission_decide tool")
 }
+
+func TestTheDecideToolOffersTheCertificateAndTheEndDayAsOptionalInputs(t *testing.T) {
+	tools, err := BuildGatedTools(&deciders{}, sessionMount())
+	if err != nil {
+		t.Fatalf("BuildGatedTools: %v", err)
+	}
+	for _, tool := range tools {
+		if tool.Name != "forms_submission_decide" {
+			continue
+		}
+		var schema struct {
+			Required   []string       `json:"required"`
+			Properties map[string]any `json:"properties"`
+		}
+		if err := json.Unmarshal(tool.InputSchema, &schema); err != nil {
+			t.Fatalf("schema: %v", err)
+		}
+		for _, name := range []string{"certificate_ref", "valid_until"} {
+			if _, offered := schema.Properties[name]; !offered {
+				t.Errorf("the tool does not offer %s: %s", name, tool.InputSchema)
+			}
+			if strings.Contains(strings.Join(schema.Required, ","), name) {
+				t.Errorf("%s is required: %s", name, tool.InputSchema)
+			}
+		}
+		return
+	}
+	t.Fatal("no forms_submission_decide tool")
+}

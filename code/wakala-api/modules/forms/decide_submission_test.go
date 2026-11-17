@@ -2,11 +2,16 @@ package mwanachamaforms_test
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 
 	forms "wakalaserver/modules/forms"
 	"wakalaserver/modules/forms/models"
+	"wakalaserver/modules/forms/routes"
 )
 
 func TestDecidingApprovedSetsTheFourFieldsAndTheApplicantReadsThemBack(t *testing.T) {
@@ -202,5 +207,307 @@ func TestADecisionStaysAfterTheApplicantSendsAgainOrAClerkCorrectsIt(t *testing.
 	mine, err := r.m.ShowMySubmission(ctx, r.form.ID, "mem-1")
 	if err != nil || mine.Decision != models.DecisionApproved || mine.DecisionNote != "ok" {
 		t.Fatalf("send after a correction = %+v (%v), want the decision kept", mine, err)
+	}
+}
+
+const (
+	farDay      = "2099-12-31"
+	pastDay     = "2020-01-01"
+	certificate = "PRM-2026-0417"
+)
+
+func callRoute(t *testing.T, r voiceRound, caller, action, body string, path map[string]string) (int, []byte) {
+	t.Helper()
+	mount := routes.Mount{Caller: func(context.Context) string { return caller }}
+	for _, route := range routes.RoutesFor(r.m, mount) {
+		if route.Action != action {
+			continue
+		}
+		req := httptest.NewRequest(route.Method, "/", strings.NewReader(body))
+		req.Header.Set("Content-Type", "application/json")
+		req.SetPathValue("form_id", r.form.ID)
+		for key, value := range path {
+			req.SetPathValue(key, value)
+		}
+		rec := httptest.NewRecorder()
+		route.Handler(rec, req)
+		return rec.Code, rec.Body.Bytes()
+	}
+	t.Fatalf("no route for %s", action)
+	return 0, nil
+}
+
+func decideOverTheRoute(t *testing.T, r voiceRound, body string) (int, []byte) {
+	t.Helper()
+	return callRoute(t, r, "clerk-1", "forms.submission.decide", body, map[string]string{"member_id": "mem-1"})
+}
+
+func fieldsOf(t *testing.T, raw []byte) map[string]any {
+	t.Helper()
+	var got map[string]any
+	if err := json.Unmarshal(raw, &got); err != nil {
+		t.Fatalf("not a JSON object: %s", raw)
+	}
+	return got
+}
+
+func councilFieldsOf(t *testing.T, r voiceRound) map[string]any {
+	t.Helper()
+	status, raw := callRoute(t, r, "clerk-1", "forms.submission.list", "", nil)
+	var rows []map[string]any
+	if status != http.StatusOK || json.Unmarshal(raw, &rows) != nil || len(rows) != 1 {
+		t.Fatalf("council list = %d %s, want one send", status, raw)
+	}
+	return rows[0]
+}
+
+func readMineFieldsOf(t *testing.T, r voiceRound) map[string]any {
+	t.Helper()
+	status, raw := callRoute(t, r, "mem-1", "forms.submission.read_mine", "", nil)
+	if status != http.StatusOK {
+		t.Fatalf("read_mine = %d %s", status, raw)
+	}
+	return fieldsOf(t, raw)
+}
+
+func readMySendFieldsOf(t *testing.T, r voiceRound) map[string]any {
+	t.Helper()
+	rows, err := r.m.ListAnswered(context.Background(), "mem-1")
+	if err != nil || len(rows) != 1 {
+		t.Fatalf("ListAnswered = %+v (%v)", rows, err)
+	}
+	status, raw := callRoute(t, r, "mem-1", "forms.submission.read_my_send", "", map[string]string{"send_id": rows[0].SendID})
+	if status != http.StatusOK {
+		t.Fatalf("read_my_send = %d %s", status, raw)
+	}
+	submission, _ := fieldsOf(t, raw)["submission"].(map[string]any)
+	return submission
+}
+
+func grantBody(extra string) string {
+	return `{"decision":"approved"` + extra + `}`
+}
+
+func TestAGrantKeepsTheCertificateAndTheDayItEndsAndTheDecisionResponseCarriesThem(t *testing.T) {
+	r := sentOnce(t)
+	status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"`+certificate+`","valid_until":"`+farDay+`"`))
+	if status != http.StatusOK {
+		t.Fatalf("grant with certificate = %d %s", status, raw)
+	}
+	got := fieldsOf(t, raw)
+	if got["certificate_ref"] != certificate || got["valid_until"] != farDay || got["decision"] != "approved" {
+		t.Fatalf("decided send = %v", got)
+	}
+}
+
+func TestTheCouncilListCarriesTheCertificateAndTheDayItEnds(t *testing.T) {
+	r := sentOnce(t)
+	if status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"`+certificate+`","valid_until":"`+farDay+`"`)); status != http.StatusOK {
+		t.Fatalf("grant = %d %s", status, raw)
+	}
+	listed := councilFieldsOf(t, r)
+	if listed["certificate_ref"] != certificate || listed["valid_until"] != farDay {
+		t.Fatalf("council row = %v, want the certificate and the day it ends", listed)
+	}
+}
+
+func TestTheApplicantReadsTheCertificateAndTheDayItEndsOnReadMine(t *testing.T) {
+	r := sentOnce(t)
+	if status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"`+certificate+`","valid_until":"`+farDay+`"`)); status != http.StatusOK {
+		t.Fatalf("grant = %d %s", status, raw)
+	}
+	mine := readMineFieldsOf(t, r)
+	if mine["certificate_ref"] != certificate || mine["valid_until"] != farDay {
+		t.Fatalf("read_mine = %v, want the holder to read the certificate and the day it ends", mine)
+	}
+}
+
+func TestTheApplicantReadsTheCertificateAndTheDayItEndsOnReadMySend(t *testing.T) {
+	r := sentOnce(t)
+	if status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"`+certificate+`","valid_until":"`+farDay+`"`)); status != http.StatusOK {
+		t.Fatalf("grant = %d %s", status, raw)
+	}
+	submission := readMySendFieldsOf(t, r)
+	if submission["certificate_ref"] != certificate || submission["valid_until"] != farDay {
+		t.Fatalf("read_my_send submission = %v, want the holder to read the certificate and the day it ends", submission)
+	}
+}
+
+func TestAGrantWithOnlyACertificateKeepsItAndNoEndDay(t *testing.T) {
+	r := sentOnce(t)
+	if status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"`+certificate+`"`)); status != http.StatusOK {
+		t.Fatalf("grant with a certificate alone = %d %s", status, raw)
+	}
+	mine := readMineFieldsOf(t, r)
+	if mine["certificate_ref"] != certificate {
+		t.Fatalf("read_mine = %v, want the certificate", mine)
+	}
+	if _, has := mine["valid_until"]; has {
+		t.Fatalf("read_mine = %v, want no end day", mine)
+	}
+}
+
+func TestAGrantWithOnlyAnEndDayKeepsItAndNoCertificate(t *testing.T) {
+	r := sentOnce(t)
+	if status, raw := decideOverTheRoute(t, r, grantBody(`,"valid_until":"`+farDay+`"`)); status != http.StatusOK {
+		t.Fatalf("grant with an end day alone = %d %s", status, raw)
+	}
+	mine := readMineFieldsOf(t, r)
+	if mine["valid_until"] != farDay {
+		t.Fatalf("read_mine = %v, want the end day", mine)
+	}
+	if _, has := mine["certificate_ref"]; has {
+		t.Fatalf("read_mine = %v, want no certificate", mine)
+	}
+}
+
+func TestAGrantWithoutThemStoresNeitherAndReadsNeither(t *testing.T) {
+	r := sentOnce(t)
+	if status, raw := decideOverTheRoute(t, r, grantBody("")); status != http.StatusOK {
+		t.Fatalf("plain grant = %d %s", status, raw)
+	}
+	for name, fields := range map[string]map[string]any{
+		"council list": councilFieldsOf(t, r),
+		"read_mine":    readMineFieldsOf(t, r),
+		"read_my_send": readMySendFieldsOf(t, r),
+	} {
+		if _, has := fields["certificate_ref"]; has {
+			t.Errorf("%s carries certificate_ref: %v", name, fields)
+		}
+		if _, has := fields["valid_until"]; has {
+			t.Errorf("%s carries valid_until: %v", name, fields)
+		}
+	}
+	if fields := councilFieldsOf(t, r); fields["decision"] != "approved" {
+		t.Fatalf("council row = %v, want the grant kept", fields)
+	}
+}
+
+func TestAGrantWithBlankCertificateAndEndDayStoresNeither(t *testing.T) {
+	r := sentOnce(t)
+	if status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"  ","valid_until":""`)); status != http.StatusOK {
+		t.Fatalf("grant with blanks = %d %s", status, raw)
+	}
+	mine := readMineFieldsOf(t, r)
+	if _, has := mine["certificate_ref"]; has {
+		t.Fatalf("read_mine = %v, want no certificate", mine)
+	}
+	if _, has := mine["valid_until"]; has {
+		t.Fatalf("read_mine = %v, want no end day", mine)
+	}
+}
+
+func TestTheCertificateIsTrimmed(t *testing.T) {
+	r := sentOnce(t)
+	status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"  `+certificate+` \n"`))
+	if status != http.StatusOK || fieldsOf(t, raw)["certificate_ref"] != certificate {
+		t.Fatalf("grant with a padded certificate = %d %s", status, raw)
+	}
+}
+
+func TestARefusalCarryingEitherIsRefusedWithBadRequestAndLeavesTheSendUndecided(t *testing.T) {
+	for name, extra := range map[string]string{
+		"a certificate":           `,"certificate_ref":"` + certificate + `"`,
+		"an end day":              `,"valid_until":"` + farDay + `"`,
+		"a certificate and a day": `,"certificate_ref":"` + certificate + `","valid_until":"` + farDay + `"`,
+	} {
+		r := sentOnce(t)
+		status, raw := decideOverTheRoute(t, r, `{"decision":"refused","note":"plan missing"`+extra+`}`)
+		if status != http.StatusBadRequest {
+			t.Fatalf("refusal carrying %s = %d %s, want 400", name, status, raw)
+		}
+		if mine := readMineFieldsOf(t, r); mine["decision"] != nil {
+			t.Fatalf("send after the refused refusal carrying %s = %v, want undecided", name, mine)
+		}
+	}
+}
+
+func TestARefusalWithoutThemIsStillStored(t *testing.T) {
+	r := sentOnce(t)
+	status, raw := decideOverTheRoute(t, r, `{"decision":"refused","note":"plan missing"}`)
+	if status != http.StatusOK || fieldsOf(t, raw)["decision"] != "refused" {
+		t.Fatalf("plain refusal = %d %s", status, raw)
+	}
+}
+
+func TestAnEndDayInThePastIsRefusedWithBadRequestAndLeavesTheSendUndecided(t *testing.T) {
+	r := sentOnce(t)
+	status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"`+certificate+`","valid_until":"`+pastDay+`"`))
+	if status != http.StatusBadRequest {
+		t.Fatalf("grant ending in the past = %d %s, want 400", status, raw)
+	}
+	if mine := readMineFieldsOf(t, r); mine["decision"] != nil {
+		t.Fatalf("send after the refused grant = %v, want undecided", mine)
+	}
+}
+
+func TestAnEndDayThatIsNotADayIsRefusedWithBadRequest(t *testing.T) {
+	for _, word := range []string{"31/12/2099", "2099-13-45", "2099-12-31T00:00:00Z", "next year", "2099-1-5"} {
+		r := sentOnce(t)
+		status, raw := decideOverTheRoute(t, r, grantBody(`,"valid_until":"`+word+`"`))
+		if status != http.StatusBadRequest {
+			t.Fatalf("grant ending %q = %d %s, want 400", word, status, raw)
+		}
+		if mine := readMineFieldsOf(t, r); mine["decision"] != nil {
+			t.Fatalf("send after the refused grant ending %q = %v, want undecided", word, mine)
+		}
+	}
+}
+
+func TestAnEndDayOfTodayIsAccepted(t *testing.T) {
+	r := sentOnce(t)
+	today := models.NowRFC3339()[:10]
+	status, raw := decideOverTheRoute(t, r, grantBody(`,"valid_until":"`+today+`"`))
+	if status != http.StatusOK || fieldsOf(t, raw)["valid_until"] != today {
+		t.Fatalf("grant ending today = %d %s, want it accepted", status, raw)
+	}
+}
+
+func TestDecidingAgainWithoutThemClearsTheEarlierCertificateAndEndDay(t *testing.T) {
+	r := sentOnce(t)
+	if status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"`+certificate+`","valid_until":"`+farDay+`"`)); status != http.StatusOK {
+		t.Fatalf("first grant = %d %s", status, raw)
+	}
+	if status, raw := decideOverTheRoute(t, r, grantBody("")); status != http.StatusOK {
+		t.Fatalf("second grant = %d %s", status, raw)
+	}
+	mine := readMineFieldsOf(t, r)
+	if _, has := mine["certificate_ref"]; has {
+		t.Fatalf("read_mine = %v, want the second decision alone", mine)
+	}
+	if _, has := mine["valid_until"]; has {
+		t.Fatalf("read_mine = %v, want the second decision alone", mine)
+	}
+}
+
+func TestARefusalAfterAGrantClearsTheCertificateAndEndDay(t *testing.T) {
+	r := sentOnce(t)
+	if status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"`+certificate+`","valid_until":"`+farDay+`"`)); status != http.StatusOK {
+		t.Fatalf("grant = %d %s", status, raw)
+	}
+	if status, raw := decideOverTheRoute(t, r, `{"decision":"refused","note":"withdrawn on review"}`); status != http.StatusOK {
+		t.Fatalf("refusal = %d %s", status, raw)
+	}
+	mine := readMineFieldsOf(t, r)
+	if _, has := mine["certificate_ref"]; has {
+		t.Fatalf("read_mine = %v, want no certificate after a refusal", mine)
+	}
+	if _, has := mine["valid_until"]; has {
+		t.Fatalf("read_mine = %v, want no end day after a refusal", mine)
+	}
+}
+
+func TestTheCertificateAndEndDayStayAfterAClerkCorrectsTheSend(t *testing.T) {
+	ctx := context.Background()
+	r := sentOnce(t)
+	if status, raw := decideOverTheRoute(t, r, grantBody(`,"certificate_ref":"`+certificate+`","valid_until":"`+farDay+`"`)); status != http.StatusOK {
+		t.Fatalf("grant = %d %s", status, raw)
+	}
+	if _, err := r.m.CorrectSubmission(ctx, r.form.ID, "mem-1", "clerk-1", []models.Answer{{QuestionID: r.question.ID, ValueText: "street lighting"}}); err != nil {
+		t.Fatalf("CorrectSubmission: %v", err)
+	}
+	mine := readMineFieldsOf(t, r)
+	if mine["certificate_ref"] != certificate || mine["valid_until"] != farDay {
+		t.Fatalf("read_mine after a correction = %v, want the certificate and the day kept", mine)
 	}
 }
