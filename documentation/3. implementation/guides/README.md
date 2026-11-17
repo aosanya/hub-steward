@@ -13,6 +13,7 @@ Working on a part:
 - [Phone app: how `src` is organised](phone-app-structure.md): the folder strategy (features, `shared/`, `app/`) and the order of the move
 - [Write an agency](write-an-agency.md): how a demo agency template is put together
 - [Taskmanager tools that read the backlog](taskmanager-tools.md): pending, find, read and list, and what `taskmanager_task_find` matches
+- [Commit with commit-own-paths.sh](commit-own-paths.md): the one command agents commit with in the shared working tree, and what it refuses
 - [Reads for the Ongoing Done tab](ongoing-done-reads.md): what the API lists for finished orders and sent answers, and what is missing
 
 How it fits and how to run it:

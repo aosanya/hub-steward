@@ -5,6 +5,7 @@ FILTER ?= .
 
 test:
 	sh scripts/split-test-names.test.sh
+	sh scripts/commit-own-paths.test.sh
 	cd code/wakala-api && go vet ./... && go test ./...
 	cd code/console && npm ci && npm test
 	cd code/app && npm ci && npm test
