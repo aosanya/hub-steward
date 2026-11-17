@@ -113,8 +113,8 @@ const open = (at: string, state: unknown = { from: origin }) =>
 const pathOf = (item: { path: unknown }) => (typeof item.path === "function" ? (item.path as () => string)() : String(item.path));
 
 describe("the People section's menu", () => {
-  it("lists the six People screens under their names, in order", () => {
-    expect(items.map((item) => item.title)).toEqual(["All People", "Households", "Registrations", "Groups & Associations", "Communications", "Businesses"]);
+  it("lists the seven People screens under their names, in order", () => {
+    expect(items.map((item) => item.title)).toEqual(["All People", "Households", "Registrations", "Groups & Associations", "Communications", "Businesses", "Informal traders"]);
   });
 
   it("gives each screen its own path inside the People section", () => {
