@@ -10,6 +10,7 @@ import { PersonEdit } from "./PersonEdit";
 import { PersonBills } from "./PersonBills";
 import { PersonHoldings } from "./PersonHoldings";
 import { PersonApplications, PersonRecords } from "./PersonLinks";
+import { PersonRaised } from "./PersonRaised";
 import { personNameOf } from "./personName";
 
 type Item = Record<string, unknown>;
@@ -55,6 +56,7 @@ export function PersonPanel({ person, onSaved }: { person: Item; onSaved: () => 
       <PersonEdit id={id} person={person} onSaved={onSaved} />
       <PersonGroups id={id} />
       <PersonApplications id={id} />
+      <PersonRaised id={id} />
       <PersonBills id={id} />
       <PersonRecords id={id} />
       <PersonHoldings id={id} />

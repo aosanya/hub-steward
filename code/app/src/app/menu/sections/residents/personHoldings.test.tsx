@@ -56,8 +56,7 @@ const answer = async (name: string, args: unknown) => {
   if (name === "actor_list_groups_for_actor") return { items: [{ group_id: "g1" }] };
   if (name === "actor_list_groups") return { items: [{ id: "g1", name: "Sample Street Group" }] };
   if (name === "actor_list_attribute_properties") return { items: [] };
-  if (name === "forms_form_list") return { items: [{ id: "f1", title: "Sample Stall Permit" }] };
-  if (name === "forms_submission_list") return { items: [{ id: "s1", form_id: "f1", member_id: personId, submitted_at: "2026-11-03T09:30:00Z" }] };
+  if (name === "forms_submission_list_of_person") return { items: [{ id: "s1", form_id: "f1", form_title: "Sample Stall Permit", member_id: personId, submitted_at: "2026-11-03T09:30:00Z" }] };
   if (name === "agency_list_live_record_rows") {
     const code = String(given.record_code);
     const reply = replyByRecord[code] ?? "rows";

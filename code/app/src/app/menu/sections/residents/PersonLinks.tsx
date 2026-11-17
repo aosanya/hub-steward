@@ -6,22 +6,15 @@ import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { loadRecordRowsHeldBy, type RecordRow } from "../../liveRecordRows";
-import { listOf, text, type Item } from "../staff/staffData";
+import { listOf, text } from "../staff/staffData";
 import { businessesMetaPrompts, businessesRecordCode, businessesTitlePrompt } from "./BusinessesScreen";
 import { informalTradersMetaPrompts, informalTradersRecordCode, informalTradersTitlePrompt } from "./InformalTradersScreen";
 
-type Application = { key: string; title: string; sentAt: string };
-
-const applicationsOfForm = async (form: Item, memberId: string): Promise<Application[]> => {
-  const formId = text(form, "id");
-  const submissions = await listOf("forms_submission_list", { form_id: formId, member_id: memberId }).catch(() => [] as Item[]);
-  return submissions.map((submission) => ({ key: `${formId}:${text(submission, "id")}`, title: text(form, "title"), sentAt: text(submission, "submitted_at") }));
-};
-
 const loadApplications = (memberId: string) => async () => {
-  const forms = await listOf("forms_form_list");
-  const perForm = await Promise.all(forms.map((form) => applicationsOfForm(form, memberId)));
-  return perForm.flat().sort((a, b) => b.sentAt.localeCompare(a.sentAt));
+  const submissions = await listOf("forms_submission_list_of_person", { member_id: memberId });
+  return submissions
+    .map((submission) => ({ key: text(submission, "id"), title: text(submission, "form_title"), sentAt: text(submission, "submitted_at") }))
+    .sort((a, b) => b.sentAt.localeCompare(a.sentAt));
 };
 
 export function PersonApplications({ id }: { id: string }) {
