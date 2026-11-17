@@ -132,7 +132,7 @@ The answer is `items` and `total` (every stuck issue). Each item is an In Progre
 | `unassigned_in_progress` | `assigned_to` and `held_by` are both empty, so a plain `taskmanager_task_claim` counts as unassigned |
 | `files_clash_with_another_in_progress` | its files overlap those of another open In Progress issue |
 
-`days_since_activity` counts from the latest of the issue's own update, its todos' updates and its newest note. `days_in_step` is whole days since the issue's own update until the entered-step time lands.
+`days_since_activity` counts from the latest of the issue's own update, its todos' updates and its newest note. `days_in_step` is whole days since the issue entered its step (`entered_step_at`); an issue that has not moved since the hub began recording it counts from its `updated_at`, then its `created_at`.
 
 ## taskmanager_task_todo_ready_board
 
