@@ -399,6 +399,8 @@ Every todo is created with a description: what it makes, where the output goes a
 
 Moving to Review: when the last piece is Done, an issue that is In progress moves to Review by itself. An issue in any other step does not move. If the issue's backlog has no Review step, nothing moves. Built (TDL-7): the API does it when a piece turns Done, adds a Log entry "Every todo is Done: moved to Review", and does not move the issue back when a piece is added or reopened.
 
+Time on a todo: the API sets `started_at` the first time a todo turns In progress and `done_at` when it turns Done, and every read carries `elapsed_seconds`, worked out on read and never stored. To do clears both; Blocked clears `done_at`; reopening a Done todo clears `done_at` and keeps `started_at`. The todo row shows a small bubble with the elapsed time: it counts up each minute while the todo is not Done and stays fixed once Done. A todo set straight from To do to Done has no `started_at`, so it has no elapsed time and no bubble, and neither has a todo that finished before the field existed.
+
 What exists today in the taskmanager, and what is new:
 
 | Today | New |

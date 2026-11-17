@@ -9,6 +9,12 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | What is open, and how many at each step and priority | `taskmanager_task_pending` | `GET /pending-tasks` |
 | Which issue is this id, code or text | `taskmanager_task_find` | `GET /find-tasks` |
 | Which issue should a worker take next | `taskmanager_task_next_ready` | `GET /next-ready` |
+| Which issues can start together because their files do not clash | `taskmanager_task_next_ready_batch` | `GET /next-ready-batch` |
+| Take the next ready issue and hold it under a lease | `taskmanager_task_claim_next` | `POST /claim-next` |
+| Keep the lease of an issue taken with claim_next alive | `taskmanager_task_heartbeat` | `POST /tasks/{taskID}/heartbeat` |
+| The state of the board in one read | `taskmanager_task_board_snapshot` | `GET /board-snapshot` |
+| Which open issues finishing would unblock the most others | `taskmanager_task_unblock_impact` | `GET /unblock-impact` |
+| Which issues break the filing rules | `taskmanager_task_lint` | `GET /lint` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
 | Everything a worker reads before starting an issue, in one call | `taskmanager_task_brief` | `GET /tasks/{taskID}/brief` |
 | Which issues in progress touch the same files as an issue or a list of paths | `taskmanager_task_file_overlaps` | `GET /file-overlaps` |
@@ -39,6 +45,68 @@ Open issues only, unless `include_closed` is true. The in-tray sorter and the ba
 Inputs: `backlog` (id or name), `tag` (repeat it to require every tag) and `limit` (1 to 5, default 1). The caller is taken from the session.
 
 The answer is `total_ready`, every Ready issue at the To do step that the filters match, and `items`: the first `limit` of them, lowest rank first, each with id, code, title, priority, effort, tags, rank, backlog and step and without the description. An issue that carries Sinbin, Blocked or Waiting is never counted or returned, even beside Ready. With nothing ready, `items` is empty and `total_ready` is 0. A backlog the caller cannot see is refused as unknown, 400, the same as a backlog that does not exist; a limit outside 1 to 5 is also 400. A worker takes the first item and reads it with `taskmanager_task_read`.
+
+## Filters for orchestrating agents
+
+`taskmanager_task_list` and `taskmanager_task_pending` take all of these; `taskmanager_task_next_ready` takes the ones marked next_ready and also `priority` and `repo` (the issue's `project_name`). A bad value is 400, and `by_step`, `by_priority` and `total` follow the filter.
+
+| Filter | Keeps | next_ready |
+|---|---|---|
+| `assignee`, `unassigned` | issues held by that agent, or by nobody; not both | yes |
+| `blocked`, `waiting`, `sinbin` | issues that carry the mark (true) or not (false) | no |
+| `has_todos`, `todos_open` | issues with todos, or with at least one todo not Done | yes |
+| `has_files` | issues whose `files` list is not empty (true) or is (false) | yes |
+| `effort` | one of unknown, very_low, low, medium, high, very_high | yes |
+| `created_since`, `updated_since` | issues changed at or after an RFC 3339 time | yes |
+| `ids` | these issue ids, repeated, at most 100 | no |
+| `sort` | `rank` (default), `priority`, `updated` or `created` | no |
+
+## taskmanager_task_next_ready_batch
+
+Inputs: `count` (1 to 10, default 3), `backlog`, `tag` and `include_unfiled`. Read-only.
+
+The answer is `items` (the chosen Ready issues at To do, lowest rank first, each with id, code, title, priority, effort and files), `skipped` (each passed-over issue with `clashes_with`, the code of the issue in progress or the earlier chosen issue its files overlap) and `unfiled_left_out`. The choice is greedy: no two items overlap and none overlaps an issue in progress, by the rule of `taskmanager_task_file_overlaps`. An issue with no files is left out and counted, unless `include_unfiled` is true, then it clashes with nothing.
+
+## taskmanager_task_claim_next
+
+Inputs: `backlog`, `tag`, `agent` (default the caller) and `lease_minutes` (1 to 240, default 30; another value is 400). Needs Can move.
+
+It does what `taskmanager_task_claim` does to the first Ready issue at To do that is not Sinbin, Blocked or Waiting, does not wait on an open dependency and does not overlap an issue in progress, and also records the agent as the assignee and `lease_until`. The answer is as for claim. Two agents calling at once take different issues. 409 when none is free, 403 when some are free but the caller cannot move them.
+
+The lease rule: an issue still In Progress past its `lease_until` is put back at To do with its assignee cleared and a Log entry, before every `claim_next` and `heartbeat`.
+
+## taskmanager_task_heartbeat
+
+Inputs: `taskID`, `agent` (default the caller) and `lease_minutes` (as above). `lease_until` becomes `lease_minutes` from now, not added to the old one. The answer is `id`, `code`, `agent` and `lease_until`. 409, writing nothing, when the issue is not In Progress, was taken without a lease, is held by another agent or its lease had already run out.
+
+## taskmanager_task_board_snapshot
+
+Inputs: `backlog` and `stalled_days` (default 2; below 0 is 400). Read-only, about five queries.
+
+The answer is `steps` (`name`, `count` equal to `by_step` of `taskmanager_task_pending`, `oldest_days` and `oldest_code`, measured from the last change; a named backlog lists every step, zeros included), `agents` (issues In progress per assignee, most loaded first), `stalled` (In progress and unchanged for more than `stalled_days`, longest first), `blocked_chains` (each Blocked issue with `waits_on`, each `code` and whether it is itself blocked), `ready` (the `total_ready` of next_ready) and `todo_progress` (`done`, `total` over the issues In progress). Dependencies on issues outside the backlog asked for are not followed.
+
+## taskmanager_task_unblock_impact
+
+Inputs: `limit` (default 10, at most 50), `backlog` and `tag`. Read-only.
+
+The answer is `items`: every open issue that another open issue waits on, with `direct` (issues waiting on it), `total` (down the whole chain, each counted once, cycles not followed) and `dependents` (their codes), ordered by `total`, then `direct`, then rank. Done, failed and cancelled issues are neither listed nor counted.
+
+## taskmanager_task_lint
+
+Inputs: `taskID`, or `backlog` and `step` for the open issues there in rank order; `limit` (default 50, at most 200) and `offset`. Read-only; a `taskID` that is unknown or unseen is 404, and an unseen `backlog` is 400.
+
+The answer is `items` (id, code, title and `findings`, each a `rule` and a `message`; empty when clean), `total` and `clean` (issues on this page with no finding).
+
+| Rule | Fires when |
+|---|---|
+| `no_description` | the description is blank |
+| `no_done_when` | the description has none of Done looks like, Pass when, Done when |
+| `no_todos` | the issue has no todos |
+| `last_todo_not_documentation` | the last todo's title does not say document |
+| `no_files` | `files` is empty |
+| `effort_unknown` | effort is unknown |
+| `no_priority` | priority is blank |
+| `todo_without_description` | a todo has no description |
 
 ## taskmanager_task_dependencies
 
@@ -95,6 +163,12 @@ Refused, with nothing written: 409 unless the issue sits at the backlog's In Pro
 | Input and answer types | `modules/taskmanager/models/find.go` |
 | Tests | `task_find_test.go` and `routes/find_tasks_test.go` |
 | The next-ready tool and its types | `modules/taskmanager/task_next_ready.go`, tests in `routes/next_ready_test.go` |
+| The orchestration filters | `modules/taskmanager/task_orchestration_filter.go`, `models/orchestration.go`, tests in `routes/orchestration_filters_test.go` |
+| The next-ready-batch tool | `modules/taskmanager/task_next_ready_batch.go`, tests in `routes/next_ready_batch_test.go` |
+| The claim-next and heartbeat tools and the lease | `modules/taskmanager/task_claim_next.go`, `task_heartbeat.go`, `task_lease.go`, tests in `routes/claim_next_test.go` |
+| The board-snapshot tool | `modules/taskmanager/task_board_snapshot.go`, tests in `routes/board_snapshot_test.go` |
+| The unblock-impact tool | `modules/taskmanager/task_unblock_impact.go`, tests in `routes/unblock_impact_test.go` |
+| The lint tool and its rule table | `modules/taskmanager/task_lint.go`, tests in `routes/task_lint_test.go` |
 | The dependencies tool and its types | `modules/taskmanager/task_dependencies.go`, tests in `routes/task_dependencies_test.go` |
 | The timed-out tool and its types | `modules/taskmanager/task_timed_out.go`, tests in `routes/timed_out_test.go` |
 | The claim tool and its types | `modules/taskmanager/task_claim.go`, tests in `routes/claim_task_test.go` |
