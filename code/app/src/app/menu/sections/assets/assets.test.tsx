@@ -6,6 +6,7 @@ import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
+import { answerActors } from "./keeperActors";
 
 const assetList = "assetmanager_asset_list";
 const assetRead = "assetmanager_asset_read";
@@ -90,6 +91,8 @@ const byArgument = <T extends { id: string }>(rows: T[], args: unknown, argument
 };
 
 const answer = (name: string, args: unknown) => {
+  const actors = answerActors(name, args);
+  if (actors) return actors;
   if (name === "agency_list_mounts") return Promise.resolve(mounted);
   if (name === assetList) {
     const category = (args as { category?: string } | undefined)?.category;
@@ -559,6 +562,93 @@ describe("Maintenance Schedule", () => {
 
       expect(document.querySelector(".wf-main")?.textContent).toBe("");
       expect(callsTo(repeatingRead)).toHaveLength(0);
+    });
+  });
+});
+
+describe("who keeps an asset", () => {
+  const keeperOf = (_title: string) => screen.queryByText("Kept by", { selector: ".ttl" })?.closest(".row")?.querySelector(".meta")?.textContent ?? null;
+
+  const settle = async () => {
+    await waitFor(() => expect(called.mock.calls.some(([, tool]) => String(tool).startsWith("actor_"))).toBe(true));
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  };
+
+  const keep = (index: number, keeper: string) => Object.assign(assets[index], { attributes_json: JSON.stringify({ condition: "Good", keeper }) });
+
+  afterEach(() => {
+    for (const asset of assets) delete (asset as Record<string, unknown>).attributes_json;
+  });
+
+  it("shows the person who keeps a piece of equipment under Kept by, after Condition", async () => {
+    keep(2, "p1");
+    showRouted("Equipment");
+    await userEvent.click(await screen.findByRole("button", { name: /Road roller/ }));
+
+    await waitFor(() => expect(keeperOf("Road roller")).toBe("Nagy Réka"));
+    const condition = screen.getByText("Condition", { selector: ".ttl" });
+    const keeper = screen.getByText("Kept by", { selector: ".ttl" });
+    expect(Boolean(condition.compareDocumentPosition(keeper) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
+  });
+
+  it("shows the group that keeps a facility", async () => {
+    keep(4, "g3");
+    showRouted("Facilities");
+    await userEvent.click(await screen.findByRole("button", { name: /Swimming pool/ }));
+
+    await waitFor(() => expect(keeperOf("Swimming pool")).toBe("Public Works Department"));
+  });
+
+  it("shows no Kept by row for an asset nobody keeps", async () => {
+    showRouted("Equipment");
+    await userEvent.click(await screen.findByRole("button", { name: /Water pump/ }));
+
+    await screen.findByText("A-13");
+    expect(screen.queryByText("Kept by")).toBeNull();
+  });
+
+  it("shows no Kept by row when the keeper is not a person or group of the hub", async () => {
+    keep(2, "zz9");
+    showRouted("Equipment");
+    await userEvent.click(await screen.findByRole("button", { name: /Road roller/ }));
+
+    await screen.findByText("A-12");
+    await settle();
+    expect(screen.queryByText("Kept by")).toBeNull();
+    expect(screen.getAllByText("Road roller").length).toBeGreaterThan(1);
+  });
+
+  it("keeps the lists as they were: the keeper never reaches a row", async () => {
+    keep(2, "g1");
+    showRouted("Equipment");
+
+    await screen.findByText("Road roller", { selector: ".ttl" });
+    expect(metaOf(rowOf("Road roller"))).toEqual(["Riverside Yard"]);
+    expect(screen.queryByText("Street Lighting Crew")).toBeNull();
+  });
+
+  describe("on a wide screen", () => {
+    beforeEach(() => setWide(true));
+
+    afterEach(() => forgetWidth());
+
+    it("shows Kept by with the name in the right pane", async () => {
+      keep(2, "p2");
+      showRouted("Equipment");
+      await userEvent.click(await screen.findByRole("button", { name: /Road roller/ }));
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      expect(await within(main).findByText("Kept by")).toBeInTheDocument();
+      expect(await within(main).findByText("Gábor Horváth")).toBeInTheDocument();
+    });
+
+    it("shows no Kept by row in the right pane for an asset nobody keeps", async () => {
+      showRouted("Equipment");
+      await userEvent.click(await screen.findByRole("button", { name: /Water pump/ }));
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      expect(await within(main).findByText("A-13")).toBeInTheDocument();
+      expect(within(main).queryByText("Kept by")).toBeNull();
     });
   });
 });

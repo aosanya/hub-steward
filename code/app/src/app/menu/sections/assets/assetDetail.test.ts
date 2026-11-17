@@ -1,5 +1,6 @@
 import { vi } from "vitest";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { answerActors } from "./keeperActors";
 import { assetDetailFields, attributeKeys, attributesOf, conditionWords, loadAsset, withAttributes } from "./assetDetail";
 
 afterEach(() => vi.restoreAllMocks());
@@ -43,7 +44,7 @@ describe("withAttributes", () => {
 
 describe("the condition vocabulary", () => {
   it("keeps the condition under one attribute key", () => {
-    expect(attributeKeys).toEqual(["condition"]);
+    expect(attributeKeys).toContain("condition");
   });
 
   it("lists the four words in order", () => {
@@ -59,7 +60,9 @@ describe("the condition vocabulary", () => {
 
 describe("loadAsset", () => {
   const load = async (asset: Record<string, unknown>) => {
-    vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
+      const actors = answerActors(name, args);
+      if (actors) return actors;
       if (name === "assetmanager_asset_read") return { item: asset };
       if (name === "assetmanager_movement_list") return { items: [] };
       return {};
@@ -82,5 +85,67 @@ describe("loadAsset", () => {
     const loaded = await load({ id: "e1", name: "Road roller", ...extra });
 
     expect(loaded).toHaveProperty("condition", "");
+  });
+});
+
+describe("the keeper of an asset", () => {
+  const keeperLabel = "Kept by";
+
+  const keeperShown = (loaded: Record<string, unknown>) => loaded[assetDetailFields[keeperLabel as keyof typeof assetDetailFields]];
+
+  const load = async (asset: Record<string, unknown>) => {
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
+      const actors = answerActors(name, args);
+      if (actors) return actors;
+      if (name === "assetmanager_asset_read") return { item: asset };
+      if (name === "assetmanager_movement_list") return { items: [] };
+      return {};
+    });
+    return loadAsset("e1");
+  };
+
+  it("is one more attribute key beside the condition", () => {
+    expect(attributeKeys).toContain("keeper");
+    expect(attributeKeys).toContain("condition");
+  });
+
+  it("shows Kept by in the detail rows right after Condition", () => {
+    const labels = Object.keys(assetDetailFields);
+
+    expect(labels).toContain(keeperLabel);
+    expect(labels.indexOf(keeperLabel)).toBe(labels.indexOf("Condition") + 1);
+  });
+
+  it("keeps the other keys when the keeper is set", () => {
+    const text = withAttributes({ attributes_json: '{"condition":"Fair","warranty":"2027"}' }, { keeper: "g1" });
+
+    expect(JSON.parse(text)).toEqual({ condition: "Fair", warranty: "2027", keeper: "g1" });
+  });
+
+  it("puts the name of a person keeper on the loaded item", async () => {
+    const loaded = await load({ id: "e1", name: "Road roller", attributes_json: '{"keeper":"p2"}' });
+
+    expect(keeperShown(loaded)).toBe("Gábor Horváth");
+  });
+
+  it("puts the name of a group keeper on the loaded item", async () => {
+    const loaded = await load({ id: "e1", name: "Road roller", attributes_json: '{"condition":"Fair","keeper":"g3"}' });
+
+    expect(keeperShown(loaded)).toBe("Public Works Department");
+    expect(loaded).toMatchObject({ condition: "Fair" });
+  });
+
+  it.each([
+    ["no attributes", {}],
+    ["no keeper", { attributes_json: '{"condition":"Fair"}' }],
+    ["an empty keeper", { attributes_json: '{"keeper":""}' }],
+    ["a keeper that is not text", { attributes_json: '{"keeper":3}' }],
+    ["a keeper id that is nobody", { attributes_json: '{"keeper":"zz9"}' }],
+    ["text that is not JSON", { attributes_json: "not json" }],
+  ])("puts no keeper name on an asset with %s, and still loads it", async (_case, extra) => {
+    const loaded = await load({ id: "e1", name: "Road roller", ...extra });
+
+    expect(loaded).toMatchObject({ id: "e1", name: "Road roller" });
+    expect(keeperShown(loaded) ?? "").toBe("");
   });
 });
