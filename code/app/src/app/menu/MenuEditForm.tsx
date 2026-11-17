@@ -63,6 +63,15 @@ const sendable = (field: EditField | undefined, text: string) => {
   return field?.kind === "number" && isNumber(text) ? Number(text.trim()) : text;
 };
 
+const versionOf = (item: Item) => (typeof item.updated_at === "string" && item.updated_at !== "" ? item.updated_at : undefined);
+
+const staleNote = " changed since you read it";
+
+const namedStale = (error: unknown, fields: EditField[]) => {
+  const message = error instanceof McpError ? error.message.toLowerCase() : "";
+  return fields.find((field) => [field.key, field.label].some((name) => message.includes(name.toLowerCase() + staleNote)));
+};
+
 const inputModes = { text: undefined, number: "decimal", date: undefined, lines: undefined } as const;
 
 const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key, field)]));
@@ -75,6 +84,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
   const [refused, setRefused] = useState("");
   const [base, setBase] = useState<Record<string, string>>({});
   const [clashes, setClashes] = useState<Clash[]>([]);
+  const [version, setVersion] = useState<string | undefined>(undefined);
   if (!may) return null;
   const fieldOf = (key: string) => fields.find((field) => field.key === key);
   const changed = Object.fromEntries(Object.entries(values).filter(([key, value]) => !sameText(fieldOf(key), value, base[key])));
@@ -99,6 +109,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
     setValues(start);
     setRefused("");
     setClashes([]);
+    setVersion(versionOf(item));
     setEditing(true);
   };
   const settle = (key: string, theirs: string, useTheirs: boolean) => {
@@ -106,26 +117,40 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
     if (useTheirs) setValues((was) => ({ ...was, [key]: theirs }));
     setClashes((was) => was.filter((clash) => clash.key !== key));
   };
+  const clashesAgainst = (present: Record<string, string>, candidates: EditField[]) =>
+    candidates
+      .filter((field) => present[field.key] !== base[field.key])
+      .map((field) => ({ key: field.key, label: field.label, theirs: present[field.key], mine: values[field.key] ?? "" }));
+  const settleStale = async (field: EditField) => {
+    if (!readAgain) return false;
+    const reread = await readAgain();
+    const found = clashesAgainst(startValues(reread, fields), [field]);
+    if (found.length === 0) return false;
+    setVersion(versionOf(reread));
+    setClashes(found);
+    return true;
+  };
   const save = async () => {
     setSaving(true);
     setRefused("");
     try {
       if (readAgain) {
-        const present = startValues(await readAgain(), fields);
-        const found = fields
-          .filter((field) => field.key in changed && present[field.key] !== base[field.key])
-          .map((field) => ({ key: field.key, label: field.label, theirs: present[field.key], mine: changed[field.key] }));
+        const reread = await readAgain();
+        const found = clashesAgainst(startValues(reread, fields), fields.filter((field) => field.key in changed));
         if (found.length > 0) {
+          setVersion(versionOf(reread));
           setClashes(found);
           return;
         }
       }
       const sentChanges = Object.fromEntries(Object.entries(changed).map(([key, text]) => [key, sent(key, text)]));
-      await callTool("", tool, build ? build(sentChanges) : { [idArg]: id, ...Object.fromEntries(keep.map((key) => [key, kept(key)])), ...sentChanges });
+      await callTool("", tool, build ? build(sentChanges) : { [idArg]: id, ...(version ? { version } : {}), ...Object.fromEntries(keep.map((key) => [key, kept(key)])), ...sentChanges });
       setEditing(false);
       onSaved?.(changed);
     } catch (error) {
-      setRefused(refusalWords(error));
+      const stale = namedStale(error, fields);
+      const shown = stale ? await settleStale(stale).catch(() => false) : false;
+      if (!shown) setRefused(refusalWords(error));
     } finally {
       setSaving(false);
     }

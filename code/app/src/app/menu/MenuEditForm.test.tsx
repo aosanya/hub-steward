@@ -180,6 +180,130 @@ describe("the shared menu edit form", () => {
     expect(onSaved).not.toHaveBeenCalled();
   });
 
+  describe("when the save carries the version the form loaded", () => {
+    const loaded = { ...item, updated_at: "2026-11-16T10:00:00Z" };
+    const changedSince = "amount changed since you read it";
+    let present: Record<string, unknown>;
+    let reads: number;
+
+    beforeEach(() => {
+      present = { ...loaded };
+      reads = 0;
+    });
+
+    const versionedForm = (onSaved = vi.fn()) => {
+      render(
+        <MenuEditForm
+          item={loaded}
+          id="b1"
+          idArg="budgetID"
+          tool="accounting_budget_set"
+          permission="accounting.manage"
+          fields={fields}
+          readAgain={async () => {
+            reads += 1;
+            return reads === 1 ? loaded : present;
+          }}
+          onSaved={onSaved}
+        />,
+      );
+      return onSaved;
+    };
+
+    const typeAmount = async (text: string) => {
+      await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+      const amount = screen.getByLabelText("Amount");
+      await userEvent.clear(amount);
+      await userEvent.type(amount, text);
+    };
+
+    const refuseWith = (words: string) => {
+      called.mockImplementation(async (_agency, name) => {
+        if (name === "agency_get_my_roles") return { permissions };
+        if (name === "accounting_budget_set") throw new mcp.McpError(`accounting_budget_set: ${words}`);
+        return {};
+      });
+    };
+
+    it("sends version taken from the loaded item's updated_at as a string", async () => {
+      render(<MenuEditForm item={loaded} id="b1" idArg="budgetID" tool="accounting_budget_set" permission="accounting.manage" fields={fields} />);
+
+      await typeAmount("2500");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { budgetID: "b1", version: "2026-11-16T10:00:00Z", amount: 2500 }]]));
+    });
+
+    it("sends no version when the loaded item has no updated_at", async () => {
+      form();
+
+      await typeAmount("2500");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { budgetID: "b1", amount: 2500 }]]));
+    });
+
+    it("renders the stale state for the named field, keeps the typed value and shows the value saved first", async () => {
+      const onSaved = versionedForm();
+      refuseWith(changedSince);
+      present = { ...loaded, amount: "1200", updated_at: "2026-11-16T10:05:00Z" };
+
+      await typeAmount("1500");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      const stale = await screen.findByRole("group", { name: "Amount" });
+      expect(within(stale).getByText("1200")).toBeInTheDocument();
+      expect(within(stale).getByText("1500")).toBeInTheDocument();
+      expect(within(stale).getByRole("button", { name: "Keep mine" })).toBeInTheDocument();
+      expect(within(stale).getByRole("button", { name: "Use theirs" })).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: "Amount" })).toHaveValue("1500");
+      expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+      expect(onSaved).not.toHaveBeenCalled();
+    });
+
+    it("sends nothing further after the refusal until the person chooses", async () => {
+      versionedForm();
+      refuseWith(changedSince);
+      present = { ...loaded, amount: "1200", updated_at: "2026-11-16T10:05:00Z" };
+
+      await typeAmount("1500");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+      await screen.findByRole("group", { name: "Amount" });
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+      await new Promise((resolve) => setTimeout(resolve, 20));
+
+      expect(saves()).toHaveLength(1);
+    });
+
+    it("sends the person's value with the version just read after Keep mine", async () => {
+      versionedForm();
+      refuseWith(changedSince);
+      present = { ...loaded, amount: "1200", updated_at: "2026-11-16T10:05:00Z" };
+
+      await typeAmount("1500");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+      const stale = await screen.findByRole("group", { name: "Amount" });
+      refusal = null;
+      called.mockImplementation(async (_agency, name) => (name === "agency_get_my_roles" ? { permissions } : {}));
+      await userEvent.click(within(stale).getByRole("button", { name: "Keep mine" }));
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      await waitFor(() => expect(saves()).toHaveLength(2));
+      expect(saves()[1]).toEqual(["", "accounting_budget_set", { budgetID: "b1", version: "2026-11-16T10:05:00Z", amount: 1500 }]);
+    });
+
+    it("shows the hub's words as a plain refusal when a 409 names no field of the form", async () => {
+      versionedForm();
+      refuseWith("owner changed since you read it");
+
+      await typeAmount("1500");
+      await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      expect(await screen.findByText("owner changed since you read it")).toBeInTheDocument();
+      expect(screen.queryByRole("group", { name: "Amount" })).toBeNull();
+    });
+  });
+
   it("closes the form on Cancel without calling the tool", async () => {
     form();
 
