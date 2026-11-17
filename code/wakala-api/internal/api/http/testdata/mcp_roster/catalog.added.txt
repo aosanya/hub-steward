@@ -12,6 +12,7 @@ catalog_booking_cancel
 catalog_booking_cancel_as_staff
 catalog_booking_list_day
 catalog_booking_list_mine
+catalog_booking_list_of_person
 catalog_endorsement_add
 catalog_endorsement_count
 catalog_entry_delete

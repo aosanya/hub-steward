@@ -184,3 +184,71 @@ func TestNewManagerRefusesNoDatabaseAndNoClock(t *testing.T) {
 		t.Fatal("a manager without a clock was made")
 	}
 }
+
+func filterOf(t *testing.T, instanceID, actor, subject string) EntryFilter {
+	t.Helper()
+	f := EntryFilter{InstanceID: instanceID}
+	v := reflect.ValueOf(&f).Elem()
+	for field, value := range map[string]string{"Actor": actor, "Subject": subject} {
+		if value == "" {
+			continue
+		}
+		target := v.FieldByName(field)
+		if !target.IsValid() {
+			t.Fatalf("EntryFilter has no %s field", field)
+		}
+		target.SetString(value)
+	}
+	return f
+}
+
+func subjectsOf(entries []Entry) []string {
+	out := make([]string, 0, len(entries))
+	for _, e := range entries {
+		out = append(out, e.Actor+"/"+e.Subject)
+	}
+	return out
+}
+
+func TestListNarrowsByActorBySubjectAndByBothWithoutLeavingTheInstance(t *testing.T) {
+	am := newTestManager(t, tickingClock())
+	ctx := context.Background()
+	for _, in := range [][4]string{
+		{"agency-1", "owner", "renamed the agency", "Alpha"},
+		{"agency-1", "agent-1", "set the join mode", "open"},
+		{"agency-1", "owner", "set the join mode", "open"},
+		{"agency-1", "agent-2", "renamed the agency", "Alpha"},
+		{"agency-2", "owner", "renamed the agency", "Alpha"},
+	} {
+		if _, err := am.Record(ctx, in[0], in[1], in[2], in[3]); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	cases := []struct {
+		name           string
+		actor, subject string
+		want           []string
+	}{
+		{"by actor alone", "owner", "", []string{"owner/open", "owner/Alpha"}},
+		{"by subject alone", "", "Alpha", []string{"agent-2/Alpha", "owner/Alpha"}},
+		{"by both", "owner", "Alpha", []string{"owner/Alpha"}},
+		{"by an actor nobody is", "stranger", "", []string{}},
+		{"by a subject nobody touched", "", "Gamma", []string{}},
+		{"by an actor and a subject that never met", "agent-1", "Alpha", []string{}},
+	}
+	for _, c := range cases {
+		got, err := am.ListEntries(ctx, filterOf(t, "agency-1", c.actor, c.subject))
+		if err != nil {
+			t.Fatalf("%s: %v", c.name, err)
+		}
+		if gotNames := subjectsOf(got); !reflect.DeepEqual(gotNames, c.want) {
+			t.Errorf("%s: got %v, want %v", c.name, gotNames, c.want)
+		}
+	}
+
+	other, err := am.ListEntries(ctx, filterOf(t, "agency-2", "owner", ""))
+	if err != nil || len(other) != 1 || other[0].InstanceID != "agency-2" {
+		t.Fatalf("the other agency's owner entries: %+v %v", other, err)
+	}
+}

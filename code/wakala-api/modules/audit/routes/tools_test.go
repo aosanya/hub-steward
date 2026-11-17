@@ -88,3 +88,62 @@ func TestToolRefusesACallThatNamesNoInstance(t *testing.T) {
 		t.Fatal("a call naming no instance was answered")
 	}
 }
+
+func TestToolTakesAnOptionalActorAndSubjectBesideTheInstance(t *testing.T) {
+	var schema struct {
+		Properties map[string]json.RawMessage `json:"properties"`
+		Required   []string                   `json:"required"`
+	}
+	if err := json.Unmarshal(Tools(newManager(t))[0].InputSchema, &schema); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, name := range []string{"instance_id", "actor", "subject"} {
+		if _, asked := schema.Properties[name]; !asked {
+			t.Errorf("the tool does not take %s: %v", name, schema.Properties)
+		}
+	}
+	for _, name := range schema.Required {
+		if name != "instance_id" {
+			t.Errorf("%s is required, only instance_id may be", name)
+		}
+	}
+}
+
+func TestToolNarrowsTheInstancesEntriesByActorAndSubject(t *testing.T) {
+	am := newManager(t)
+	ctx := context.Background()
+	for _, in := range [][3]string{
+		{"owner", "renamed the agency", "Alpha"},
+		{"agent-1", "renamed the agency", "Beta"},
+		{"agent-1", "set the join mode", "open"},
+	} {
+		if _, err := am.Record(ctx, "agency-1", in[0], in[1], in[2]); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	for body, want := range map[string]int{
+		`{"instance_id":"agency-1","actor":"agent-1"}`:                   2,
+		`{"instance_id":"agency-1","subject":"Alpha"}`:                   1,
+		`{"instance_id":"agency-1","actor":"agent-1","subject":"Alpha"}`: 0,
+		`{"instance_id":"agency-1","actor":"agent-1","subject":"open"}`:  1,
+		`{"instance_id":"agency-1","actor":"stranger"}`:                  0,
+	} {
+		out, err := Tools(am)[0].Invoke(ctx, json.RawMessage(body))
+		if err != nil {
+			t.Fatalf("%s: %v", body, err)
+		}
+		encoded, err := json.Marshal(out)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var rows []map[string]any
+		if err := json.Unmarshal(encoded, &rows); err != nil {
+			t.Fatalf("%s: %v", encoded, err)
+		}
+		if len(rows) != want {
+			t.Errorf("%s answered %d entries, want %d: %s", body, len(rows), want, encoded)
+		}
+	}
+}

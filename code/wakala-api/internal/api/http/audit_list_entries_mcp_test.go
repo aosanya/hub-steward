@@ -107,3 +107,51 @@ func TestAuditListEntries_PersonWithoutTheAuditPermissionIsRefusedInPlainWords(t
 		}
 	}
 }
+
+func TestAuditListEntries_OwnerNarrowsTheLogByActorAndBySubject(t *testing.T) {
+	w := newDesignAgentWalk(t)
+	if out := w.mcpCall(t, "test-owner", "instance_rename", map[string]any{"instance_id": w.instance, "name": "Renamed once"}); out.IsError {
+		t.Fatalf("owner renaming the agency: %s", toolErrorText(out))
+	}
+	all := auditEntriesOf(t, w.mcpCall(t, "test-owner", "audit_list_entries", map[string]any{"instance_id": w.instance}))
+	if len(all) != 1 {
+		t.Fatalf("one rename left %d audit entries, want 1: %+v", len(all), all)
+	}
+
+	byOwner := auditEntriesOf(t, w.mcpCall(t, "test-owner", "audit_list_entries", map[string]any{"instance_id": w.instance, "actor": "test-owner"}))
+	if len(byOwner) != 1 || byOwner[0].Actor != "test-owner" {
+		t.Errorf("actor test-owner: %+v, want the one rename", byOwner)
+	}
+	byStranger := auditEntriesOf(t, w.mcpCall(t, "test-owner", "audit_list_entries", map[string]any{"instance_id": w.instance, "actor": "agent-bare"}))
+	if len(byStranger) != 0 {
+		t.Errorf("actor agent-bare: %+v, want nothing", byStranger)
+	}
+	bySubject := auditEntriesOf(t, w.mcpCall(t, "test-owner", "audit_list_entries", map[string]any{"instance_id": w.instance, "subject": all[0].Subject}))
+	if len(bySubject) != 1 || bySubject[0].Subject != all[0].Subject {
+		t.Errorf("subject %q: %+v, want the one rename", all[0].Subject, bySubject)
+	}
+	byOtherSubject := auditEntriesOf(t, w.mcpCall(t, "test-owner", "audit_list_entries", map[string]any{"instance_id": w.instance, "subject": "no such subject"}))
+	if len(byOtherSubject) != 0 {
+		t.Errorf("subject no such subject: %+v, want nothing", byOtherSubject)
+	}
+	both := auditEntriesOf(t, w.mcpCall(t, "test-owner", "audit_list_entries", map[string]any{"instance_id": w.instance, "actor": "test-owner", "subject": "no such subject"}))
+	if len(both) != 0 {
+		t.Errorf("actor and a subject that never met: %+v, want nothing", both)
+	}
+}
+
+func TestAuditListEntries_ActorFilterKeepsOnlyThatActorsEntries(t *testing.T) {
+	w := newDesignAgentWalk(t)
+	if out := w.mcpCall(t, "test-owner", "instance_rename", map[string]any{"instance_id": w.instance, "name": "By the owner"}); out.IsError {
+		t.Fatalf("owner renaming the agency: %s", toolErrorText(out))
+	}
+	if _, err := w.deps.Audit.Record(context.Background(), w.instance, "agent-chat", "set the join mode", "open"); err != nil {
+		t.Fatalf("recording a second actor: %v", err)
+	}
+
+	got := auditEntriesOf(t, w.mcpCall(t, "test-owner", "audit_list_entries", map[string]any{"instance_id": w.instance, "actor": "agent-chat"}))
+
+	if len(got) != 1 || got[0].Actor != "agent-chat" || got[0].Subject != "open" {
+		t.Fatalf("actor agent-chat: %+v, want that actor's one entry", got)
+	}
+}
