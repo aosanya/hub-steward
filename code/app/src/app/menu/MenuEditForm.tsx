@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useMay } from "../../features/agency/useMay";
 import { Button } from "../../shared/ui/Button";
+import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";
 import { Field } from "../../shared/ui/Field";
 import { LoadFailed } from "../../shared/ui/LoadState";
 import { TextArea } from "../../shared/ui/TextArea";
 import { callTool, McpError } from "../../shared/wakala/mcp";
 import { actionFailedWords } from "./MenuDetail";
 
-export type EditField = { label: string; key: string; required?: boolean; kind?: "text" | "number" | "date" | "lines" };
+export type EditField = { label: string; key: string; required?: boolean; kind?: "text" | "number" | "date" | "lines"; choices?: string[] };
 
 type Item = Record<string, unknown>;
 
@@ -160,7 +161,13 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
   return (
     <>
       {fields.map((field) =>
-        field.kind === "lines" ? (
+        field.choices ? (
+          <ChoiceGroup key={field.key} label={field.label}>
+            {field.choices.map((word) => (
+              <ChoiceRow key={word} type="radio" name={field.key} label={word} checked={values[field.key] === word} onChange={() => setValues((was) => ({ ...was, [field.key]: word }))} />
+            ))}
+          </ChoiceGroup>
+        ) : field.kind === "lines" ? (
           <TextArea key={field.key} label={field.label} rows={6} value={values[field.key] ?? ""} onChange={(event) => setValues((was) => ({ ...was, [field.key]: event.target.value }))} />
         ) : (
           <Field

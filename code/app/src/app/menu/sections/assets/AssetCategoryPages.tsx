@@ -4,7 +4,7 @@ import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
-import { assetDetailFields, assetReadTool, loadAsset } from "./assetDetail";
+import { assetDetailFields, assetReadTool, attributeKeys, attributesOf, conditionWords, loadAsset, withAttributes } from "./assetDetail";
 
 type Item = Record<string, unknown>;
 
@@ -16,10 +16,23 @@ const fields = { title: "name", meta: "place" };
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
-const editFields = [
+const editFieldsOf = (asset: Item) => [
   { label: "Name", key: "name", required: true },
   { label: "Category", key: "category" },
+  ...(attributesOf(asset) === null ? [] : [{ label: "Condition", key: "condition", choices: conditionWords }]),
 ];
+
+const updateOf = (asset: Item) => (sent: Record<string, unknown>) => {
+  const attributes = withAttributes(asset, Object.fromEntries(attributeKeys.filter((key) => key in sent).map((key) => [key, sent[key]])));
+  return {
+    assetID: textOf(asset.id),
+    name: sent.name ?? textOf(asset.name),
+    category: sent.category ?? textOf(asset.category),
+    ...(textOf(asset.serial_tag) === "" ? {} : { serial_tag: textOf(asset.serial_tag) }),
+    ...(attributes === "" ? {} : { attributes_json: attributes }),
+    ...(textOf(asset.updated_at) === "" ? {} : { version: textOf(asset.updated_at) }),
+  };
+};
 
 const loadCategory = (category: string) => async () => {
   const [assets, locations] = await Promise.all([
@@ -47,7 +60,7 @@ const categoryPage = ({ title: generic, category }: Category) =>
         list={{ title, tool: assetList, fields, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadCategory(category) }}
         detail={{ tool: assetReadTool, fields: assetDetailFields, status: "", load: loadAsset,
           extra: (asset) => (
-            <MenuEditForm item={asset} id={textOf(asset.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" fields={editFields} keep={["name"]} onSaved={() => setVersion((was) => was + 1)} />
+            <MenuEditForm item={asset} id={textOf(asset.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" fields={editFieldsOf(asset)} build={updateOf(asset)} onSaved={() => setVersion((was) => was + 1)} />
           ),
         }}
       />

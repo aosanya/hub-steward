@@ -8,15 +8,37 @@ export const assetDetailFields = {
   Name: "name",
   Code: "code",
   Category: "category",
+  Condition: "condition",
   Location: "place",
   "Latest movement": "movement0",
   "Before that": "movement1",
   Earlier: "movement2",
 };
 
+export const conditionWords = ["Good", "Fair", "Poor", "Out of use"];
+
+export const attributeKeys = ["condition"];
+
 const newestMovements = 3;
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
+
+export const attributesOf = (asset: Item): Item | null => {
+  const raw = asset.attributes_json;
+  if (typeof raw !== "string" || raw.trim() === "") return {};
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? (parsed as Item) : null;
+  } catch {
+    return null;
+  }
+};
+
+export const withAttributes = (asset: Item, changes: Item) => {
+  const current = attributesOf(asset);
+  if (current === null || Object.keys(changes).length === 0) return textOf(asset.attributes_json);
+  return JSON.stringify({ ...current, ...changes });
+};
 
 const itemOf = (reply: unknown): Item => {
   const inner = (reply as { item?: unknown } | null)?.item ?? reply;
@@ -43,5 +65,7 @@ export const loadAsset = async (assetId: string) => {
   const asset = itemOf(await callTool("", assetReadTool, { assetID: assetId }));
   const [place, movements] = await Promise.all([placeOf(textOf(asset.location_id)), movementsOf(assetId)]);
   const latest = Object.fromEntries(movements.map((note, at) => [`movement${at}`, note]));
-  return { ...asset, place, ...latest };
+  const attributes = attributesOf(asset) ?? {};
+  const shown = Object.fromEntries(attributeKeys.map((key) => [key, textOf(attributes[key])]));
+  return { ...asset, place, ...latest, ...shown };
 };
