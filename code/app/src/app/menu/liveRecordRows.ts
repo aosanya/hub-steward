@@ -21,11 +21,19 @@ export const recordRowsOf = (rows: Raw[], titlePrompt: string, metaPrompts: stri
     meta: metaPrompts.map((prompt) => answerOf(row, prompt)).filter(Boolean).join(" · "),
   }));
 
-export async function loadRecordRows(recordCode: string, titlePrompt: string, metaPrompts: string[]): Promise<RecordRow[]> {
+const loadRawRows = async (recordCode: string): Promise<Raw[]> => {
   try {
-    return recordRowsOf(itemsOf(await callTool("", liveRecordRowsTool, { record_code: recordCode })) as Raw[], titlePrompt, metaPrompts);
+    return itemsOf(await callTool("", liveRecordRowsTool, { record_code: recordCode })) as Raw[];
   } catch (error) {
     if (error instanceof Error && absentRecord.test(error.message)) return [];
     throw error;
   }
-}
+};
+
+export const loadRecordRows = async (recordCode: string, titlePrompt: string, metaPrompts: string[]): Promise<RecordRow[]> =>
+  recordRowsOf(await loadRawRows(recordCode), titlePrompt, metaPrompts);
+
+export const loadRecordRow = async (recordCode: string, id: string, prompts: string[]): Promise<Record<string, string>> => {
+  const row = (await loadRawRows(recordCode)).find((one) => one.id === id);
+  return row ? Object.fromEntries(prompts.map((prompt) => [prompt, answerOf(row, prompt)])) : {};
+};

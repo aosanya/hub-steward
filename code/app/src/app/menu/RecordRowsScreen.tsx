@@ -1,24 +1,36 @@
-import { MenuList } from "./MenuList";
-import { liveRecordRowsTool, loadRecordRows } from "./liveRecordRows";
+import { useState } from "react";
+import { Button } from "../../shared/ui/Button";
+import { liveRecordRowsTool, loadRecordRow, loadRecordRows } from "./liveRecordRows";
+import { MenuWindow } from "./MenuWindow";
 
 type Props = {
   title: string;
   recordCode: string;
   titlePrompt: string;
   metaPrompts: string[];
+  prompts: string[];
   empty: { words: string; act: string; to: string };
 };
 
-export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, empty }: Props) {
+export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, prompts, empty }: Props) {
+  const [count, setCount] = useState(0);
+  const load = async () => {
+    const rows = await loadRecordRows(recordCode, titlePrompt, metaPrompts);
+    setCount(rows.length);
+    return rows;
+  };
   return (
-    <MenuList
+    <MenuWindow
       key={recordCode}
       title={title}
-      tool={liveRecordRowsTool}
-      fields={{ title: "title", meta: "meta" }}
-      empty={empty}
-      add={{ label: empty.act, to: empty.to }}
-      load={() => loadRecordRows(recordCode, titlePrompt, metaPrompts)}
+      headEnd={count > 0 ? <Button to={empty.to}>{empty.act}</Button> : undefined}
+      list={{ title, tool: liveRecordRowsTool, fields: { title: "title", meta: "meta" }, empty, load }}
+      detail={{
+        tool: liveRecordRowsTool,
+        load: (id) => loadRecordRow(recordCode, id, prompts),
+        fields: Object.fromEntries(prompts.map((prompt) => [prompt, prompt])),
+        status: "status",
+      }}
     />
   );
 }

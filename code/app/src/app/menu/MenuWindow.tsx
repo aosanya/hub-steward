@@ -11,9 +11,9 @@ type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "field
 
 type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load" | "extra">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; detailKey?: string | number; listKey?: string | number; elsewhere?: (id: string) => boolean };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; detailKey?: string | number; listKey?: string | number; elsewhere?: (id: string) => boolean };
 
-export function MenuWindow({ title, list, detail, above, below, detailKey, listKey, elsewhere }: Props) {
+export function MenuWindow({ title, list, detail, above, below, headEnd, detailKey, listKey, elsewhere }: Props) {
   const back = useBackToSection();
   const wide = useWide();
   const [chosen, setChosen] = useState("");
@@ -29,7 +29,7 @@ export function MenuWindow({ title, list, detail, above, below, detailKey, listK
   const detailBody = <MenuDetail key={detailKey} {...detail} title={title} bare id={chosen} />;
   if (wide) {
     return (
-      <Shell title={title} onBack={onBack} backLabel={backLabel} tabless>
+      <Shell title={title} onBack={onBack} backLabel={backLabel} headEnd={headEnd} tabless>
         <div className="wf">
           <div className="wf-panes">
             {listPane}
@@ -48,7 +48,7 @@ export function MenuWindow({ title, list, detail, above, below, detailKey, listK
     );
   }
   return (
-    <Shell title={title} titleUnder onBack={onBack} backLabel={backLabel}>
+    <Shell title={title} titleUnder onBack={onBack} backLabel={backLabel} headEnd={headEnd}>
       <div className="mw" data-chosen={chosen ? "yes" : "no"}>
         {listPane}
         {chosen ? (

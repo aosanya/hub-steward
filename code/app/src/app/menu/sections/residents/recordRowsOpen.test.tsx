@@ -10,7 +10,9 @@ import { residentPaths } from "./paths";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
-const screens = [
+type Row = { id: string; answers: Record<string, string> };
+
+const screens: { name: string; code: string; path: () => string; rows: Row[]; other: string; add: string }[] = [
   {
     name: "Businesses",
     code: "RC-1",
@@ -23,6 +25,7 @@ const screens = [
       { id: "b2", answers: { "Trading name": "Zöldkert Grocer", "Kind of business": "Grocer", "Tax number": "20000000-2-02", Neighbourhood: "Óváros", Status: "Suspended" } },
     ],
     other: "20000000-2-02",
+    add: "Add business",
   },
   {
     name: "Informal traders",
@@ -36,6 +39,7 @@ const screens = [
       { id: "t2", answers: { "Name or alias": "Ferenc the chestnut roaster", "What is sold": "Roasted chestnuts", "Usual place": "Station steps", Neighbourhood: "Határrét", Status: "Suspended" } },
     ],
     other: "Station steps",
+    add: "Add trader",
   },
 ];
 
@@ -68,9 +72,18 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe.each(screens)("the $name rows", ({ code, path, rows, other }) => {
+describe.each(screens)("the $name rows", ({ code, path, rows, other, add }) => {
   const first = rows[0];
   const firstTitle = Object.values(first.answers)[0];
+
+  it("keep the add button beside the title while there are rows", async () => {
+    setWide(false);
+    listRows(code, rows);
+    showScreen(path());
+
+    await screen.findByText(firstTitle, { selector: ".ttl" });
+    expect(screen.getByRole("link", { name: add })).toBeInTheDocument();
+  });
 
   it("open the listed record as a page of its own on a phone", async () => {
     setWide(false);
