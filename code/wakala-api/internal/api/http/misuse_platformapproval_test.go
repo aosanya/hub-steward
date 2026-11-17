@@ -59,10 +59,7 @@ func TestPlatformApproval_NonPlatformAccountCannotDoApproveAnAgency(t *testing.T
 		}
 	}
 
-	if rec := w.call(t, "POST", approve, nil, platform); rec.Code != http.StatusOK {
-		t.Fatalf("platform owner approving the agency: %d %s, want 200", rec.Code, rec.Body.String())
-	}
 	if rec := w.call(t, "POST", approve, nil, platform); rec.Code != http.StatusConflict {
-		t.Fatalf("platform owner approving the agency again: %d %s, want 409", rec.Code, rec.Body.String())
+		t.Fatalf("platform owner approving a new agency: %d %s, want 409 because new agencies start approved", rec.Code, rec.Body.String())
 	}
 }

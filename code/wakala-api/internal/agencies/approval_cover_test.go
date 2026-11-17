@@ -50,21 +50,20 @@ func TestApprovalOfReadsAnythingUnknownAsApproved(t *testing.T) {
 	}
 }
 
-func TestNewAgenciesStartPendingUnlessTheRegistryStartsApproved(t *testing.T) {
-	ctx := context.Background()
-	pending, err := approvalRegistry(t).CreateInstance(ctx, "Needs a look")
+func leavePending(t *testing.T, reg *registry, id string) {
+	t.Helper()
+	if err := reg.db.Model(&instanceRow{}).Where("id = ?", id).Update("approval", ApprovalPending).Error; err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestNewAgenciesStartApproved(t *testing.T) {
+	inst, err := approvalRegistry(t).CreateInstance(context.Background(), "Open door")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if pending.Approval != ApprovalPending || pending.Approved() {
-		t.Fatalf("default registry gave approval %q", pending.Approval)
-	}
-	approved, err := approvalRegistry(t, StartingApproved()).CreateInstance(ctx, "Open door")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if approved.Approval != ApprovalApproved || !approved.Approved() {
-		t.Fatalf("StartingApproved registry gave approval %q", approved.Approval)
+	if inst.Approval != ApprovalApproved {
+		t.Fatalf("a new agency gave approval %q", inst.Approval)
 	}
 }
 
@@ -73,6 +72,8 @@ func TestListPendingInstancesHoldsOnlyUndecidedAgencies(t *testing.T) {
 	reg := approvalRegistry(t)
 	first, _ := reg.CreateInstance(ctx, "First")
 	second, _ := reg.CreateInstance(ctx, "Second")
+	leavePending(t, reg, first.ID)
+	leavePending(t, reg, second.ID)
 	if _, err := reg.DecideApproval(ctx, first.ID, true, ""); err != nil {
 		t.Fatal(err)
 	}
@@ -89,6 +90,7 @@ func TestDecideApprovalRecordsTheDecisionAndTrimmedNote(t *testing.T) {
 	ctx := context.Background()
 	reg := approvalRegistry(t)
 	inst, _ := reg.CreateInstance(ctx, "Declined one")
+	leavePending(t, reg, inst.ID)
 	got, err := reg.DecideApproval(ctx, inst.ID, false, "  not this time  ")
 	if err != nil {
 		t.Fatal(err)
@@ -105,6 +107,7 @@ func TestDecideApprovalRefusesASecondDecision(t *testing.T) {
 	ctx := context.Background()
 	reg := approvalRegistry(t)
 	inst, _ := reg.CreateInstance(ctx, "Once only")
+	leavePending(t, reg, inst.ID)
 	if _, err := reg.DecideApproval(ctx, inst.ID, true, "yes"); err != nil {
 		t.Fatal(err)
 	}
@@ -126,6 +129,7 @@ func TestDecideApprovalRefusesALongNoteBeforeLookingUpTheAgency(t *testing.T) {
 		t.Fatalf("err = %v, want ErrApprovalNoteLong", err)
 	}
 	inst, _ := reg.CreateInstance(ctx, "Exact limit")
+	leavePending(t, reg, inst.ID)
 	if _, err := reg.DecideApproval(ctx, inst.ID, true, strings.Repeat("é", ApprovalNoteLimit)); err != nil {
 		t.Fatalf("a note of exactly the limit in characters must pass: %v", err)
 	}
