@@ -29,7 +29,18 @@ var storeOwned = map[string]bool{
 	"Resolution.created_at": true,
 }
 
+var setInputs = map[string]string{
+	"AgendaSet":  "Agenda",
+	"MinutesSet": "Minutes",
+}
+
 var requestFields = map[string]dispatch.FieldDoc{
+	"AgendaSet.version": {
+		Description: "The updated_at you read with council_agenda_read. The save is refused if the agenda has changed since. Leave out to save regardless.",
+	},
+	"MinutesSet.version": {
+		Description: "The updated_at you read with council_minutes_read. The save is refused if the minutes have changed since. Leave out to save regardless.",
+	},
 	"BylawFilter.instance_id": {
 		Description: "The agency whose council bylaws to list.",
 		Required:    true,
@@ -118,6 +129,13 @@ func Fields() (map[string]dispatch.FieldDoc, error) {
 				Required:    f.Required,
 				ReadOnly:    f.Primary || f.Type == spec.TypeTimestamp || storeOwned[key],
 				Values:      f.Values,
+			}
+		}
+	}
+	for input, carrier := range setInputs {
+		for _, name := range []string{"instance_id", "meeting_id", "items", "text"} {
+			if doc, ok := out[carrier+"."+name]; ok {
+				out[input+"."+name] = doc
 			}
 		}
 	}

@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"wakalaserver/modules/council/models"
+	"wakalaserver/modules/shared/versioncheck"
 )
 
 const roleMinutes = "minutes"
@@ -17,11 +19,15 @@ type MinutesKey struct {
 	MeetingID  string `query:"meeting_id"`
 }
 
-func (m *councilManager) SetMinutes(ctx context.Context, in models.Minutes) (models.Minutes, error) {
-	in.Text = strings.TrimSpace(in.Text)
-	in.ID = ""
-	in.CreatedAt = ""
-	in.UpdatedAt = ""
+type MinutesSet struct {
+	InstanceID string `json:"instance_id"`
+	MeetingID  string `json:"meeting_id"`
+	Text       string `json:"text"`
+	Version    string `json:"version"`
+}
+
+func (m *councilManager) SetMinutes(ctx context.Context, set MinutesSet) (models.Minutes, error) {
+	in := models.Minutes{InstanceID: set.InstanceID, MeetingID: set.MeetingID, Text: strings.TrimSpace(set.Text)}
 	if err := check(m.st.Object(roleMinutes), in); err != nil {
 		return models.Minutes{}, fmt.Errorf("%w: %s", ErrInvalidMinutes, err)
 	}
@@ -35,6 +41,9 @@ func (m *councilManager) SetMinutes(ctx context.Context, in models.Minutes) (mod
 		q := tx.Query(ctx, roleMinutes).Where("instance_id = ? AND meeting_id = ?", in.InstanceID, in.MeetingID)
 		switch err := tx.Take(q, roleMinutes, &out, ErrMinutesNotFound); err {
 		case nil:
+			if err := staleMinutes(set.Version, out, in); err != nil {
+				return err
+			}
 			out.Text = in.Text
 			out.UpdatedAt = now
 			row, err := tx.Row(roleMinutes, out)
@@ -54,9 +63,19 @@ func (m *councilManager) SetMinutes(ctx context.Context, in models.Minutes) (mod
 		}
 	})
 	if err != nil {
+		if _, stale := versioncheck.IsStale(err); stale {
+			return models.Minutes{}, err
+		}
 		return models.Minutes{}, fmt.Errorf("SetMinutes: %w", err)
 	}
 	return out, nil
+}
+
+func staleMinutes(version string, stored, sent models.Minutes) error {
+	updatedAt, _ := time.Parse(time.RFC3339Nano, stored.UpdatedAt)
+	return versioncheck.Stale(version, updatedAt, []versioncheck.Field{
+		{Name: "text", Sent: sent.Text, Stored: stored.Text},
+	})
 }
 
 func (m *councilManager) GetMinutes(ctx context.Context, key MinutesKey) (models.Minutes, error) {

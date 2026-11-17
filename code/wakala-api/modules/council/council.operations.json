@@ -81,7 +81,7 @@
       "action": "council.agenda.set",
       "tool": "council_agenda_set",
       "title": "Set a meeting's agenda",
-      "description": "Set the items one council meeting will take up, in order. Setting it again replaces the items.",
+      "description": "Set the items one council meeting will take up, in order. Setting it again replaces the items. Send the updated_at you read as version to refuse the save if someone changed the agenda since.",
       "args": [
         {"from": "body", "whole": true},
         {"from": "path", "as": "meetingID", "into": "MeetingID", "description": "The meeting the agenda is for."}
@@ -109,7 +109,7 @@
       "action": "council.minutes.set",
       "tool": "council_minutes_set",
       "title": "Set a meeting's minutes",
-      "description": "Set the written minutes of one council meeting. Setting them again replaces the text.",
+      "description": "Set the written minutes of one council meeting. Setting them again replaces the text. Send the updated_at you read as version to refuse the save if someone changed the minutes since.",
       "args": [
         {"from": "body", "whole": true},
         {"from": "path", "as": "meetingID", "into": "MeetingID", "description": "The meeting the minutes are for."}
@@ -220,6 +220,7 @@
     "ErrInvalidMinutes": 400,
     "ErrMinutesNotFound": 404,
     "ErrInvalidMeeting": 400,
-    "ErrMeetingNotFound": 404
+    "ErrMeetingNotFound": 404,
+    "ErrStale": 409
   }
 }

@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"wakalaserver/modules/council/models"
+	"wakalaserver/modules/shared/versioncheck"
 )
 
 const roleAgenda = "agenda"
@@ -17,15 +19,19 @@ type AgendaKey struct {
 	MeetingID  string `query:"meeting_id"`
 }
 
-func (m *councilManager) SetAgenda(ctx context.Context, in models.Agenda) (models.Agenda, error) {
-	items, err := cleanItems(in.Items)
+type AgendaSet struct {
+	InstanceID string   `json:"instance_id"`
+	MeetingID  string   `json:"meeting_id"`
+	Items      []string `json:"items"`
+	Version    string   `json:"version"`
+}
+
+func (m *councilManager) SetAgenda(ctx context.Context, set AgendaSet) (models.Agenda, error) {
+	items, err := cleanItems(set.Items)
 	if err != nil {
 		return models.Agenda{}, fmt.Errorf("%w: %s", ErrInvalidAgenda, err)
 	}
-	in.Items = items
-	in.ID = ""
-	in.CreatedAt = ""
-	in.UpdatedAt = ""
+	in := models.Agenda{InstanceID: set.InstanceID, MeetingID: set.MeetingID, Items: items}
 	if err := check(m.st.Object(roleAgenda), in); err != nil {
 		return models.Agenda{}, fmt.Errorf("%w: %s", ErrInvalidAgenda, err)
 	}
@@ -39,6 +45,9 @@ func (m *councilManager) SetAgenda(ctx context.Context, in models.Agenda) (model
 		q := tx.Query(ctx, roleAgenda).Where("instance_id = ? AND meeting_id = ?", in.InstanceID, in.MeetingID)
 		switch err := tx.Take(q, roleAgenda, &out, ErrAgendaNotFound); err {
 		case nil:
+			if err := staleAgenda(set.Version, out, in); err != nil {
+				return err
+			}
 			out.Items = in.Items
 			out.UpdatedAt = now
 			row, err := tx.Row(roleAgenda, out)
@@ -58,9 +67,19 @@ func (m *councilManager) SetAgenda(ctx context.Context, in models.Agenda) (model
 		}
 	})
 	if err != nil {
+		if _, stale := versioncheck.IsStale(err); stale {
+			return models.Agenda{}, err
+		}
 		return models.Agenda{}, fmt.Errorf("SetAgenda: %w", err)
 	}
 	return out, nil
+}
+
+func staleAgenda(version string, stored, sent models.Agenda) error {
+	updatedAt, _ := time.Parse(time.RFC3339Nano, stored.UpdatedAt)
+	return versioncheck.Stale(version, updatedAt, []versioncheck.Field{
+		{Name: "items", Sent: strings.Join(sent.Items, "\n"), Stored: strings.Join(stored.Items, "\n")},
+	})
 }
 
 func (m *councilManager) GetAgenda(ctx context.Context, key AgendaKey) (models.Agenda, error) {

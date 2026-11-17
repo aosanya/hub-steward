@@ -6,6 +6,7 @@ import (
 
 	"wakalaserver/modules/shared/dispatch"
 	"wakalaserver/modules/shared/httpwire"
+	"wakalaserver/modules/shared/versioncheck"
 
 	council "wakalaserver/modules/council"
 )
@@ -27,6 +28,7 @@ var sentinels = map[string]error{
 	"ErrMinutesNotFound":    council.ErrMinutesNotFound,
 	"ErrInvalidMeeting":     council.ErrInvalidMeeting,
 	"ErrMeetingNotFound":    council.ErrMeetingNotFound,
+	"ErrStale":              dispatch.ByType(&versioncheck.StaleError{}, nil),
 }
 
 var AnonymousActions []string
