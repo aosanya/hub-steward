@@ -1,4 +1,5 @@
 import { actionOf, riskOf, riskTools, type Risk, type RiskAction } from "../../features/risks/api";
+import { listPeople, namesOf, type Names } from "../../features/people/api";
 import { isoDay } from "../../shared/ui/days";
 import { callTool } from "../../shared/wakala/mcp";
 
@@ -17,9 +18,23 @@ export const overdueOf = (actions: RiskAction[], today: Date = new Date()): Risk
     .sort((a, b) => a.dueAt.localeCompare(b.dueAt));
 };
 
+const actorId = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export const ownerName = (owner: string, names: Names): string =>
+  names.get(owner) ?? (actorId.test(owner) ? "" : owner);
+
+const knownNames = async (): Promise<Names> => namesOf(await listPeople().catch(() => []));
+
 export const mcpCouncilRisksClient: CouncilRisksClient = {
   async load() {
-    const [risks, actions] = await Promise.all([callTool("", riskTools.risks, {}), callTool("", riskTools.actions, {})]);
-    return { risks: rowsOf(risks).map(riskOf), overdueActions: overdueOf(rowsOf(actions).map(actionOf)) };
+    const [risks, actions, names] = await Promise.all([
+      callTool("", riskTools.risks, {}),
+      callTool("", riskTools.actions, {}),
+      knownNames(),
+    ]);
+    return {
+      risks: rowsOf(risks).map(riskOf).map((risk) => ({ ...risk, owner: ownerName(risk.owner, names) })),
+      overdueActions: overdueOf(rowsOf(actions).map(actionOf)).map((action) => ({ ...action, owner: ownerName(action.owner, names) })),
+    };
   },
 };
