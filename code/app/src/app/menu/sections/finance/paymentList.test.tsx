@@ -160,6 +160,17 @@ describe("PaymentListScreen", () => {
     expect(callsTo("accounting_payment_mark_paid")).toHaveLength(0);
   });
 
+  it("shows the Mark paid form inside the bill's detail screen, not behind the list", async () => {
+    openScreen();
+    const form = await openForm();
+
+    expect(pane()).toContainElement(form);
+    const inPane = within(pane()).getByRole("dialog", { name: "Mark paid" });
+    expect(within(inPane).getByLabelText("Amount")).toBeInTheDocument();
+    expect(within(inPane).getByLabelText("Paid on")).toBeInTheDocument();
+    expect(within(inPane).getByLabelText("Narration")).toBeInTheDocument();
+  });
+
   it("sends the amount, the day and the note with the cash account", async () => {
     openScreen();
     const form = await openForm();

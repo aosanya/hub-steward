@@ -173,8 +173,9 @@ export function PaymentListScreen() {
         fields: { Payer: "payer", Outstanding: "outstanding", Due: "due", Amount: "amount", "Paid on": "paidOn", Narration: "narration", Bill: "bill" },
         status: "status",
         action: { label: "Mark paid", tool: tools.paymentMarkPaid, run: openForm, when: (row) => mayMark && text(row, "group") === owedHeading },
+        extra: (row) =>
+          draft && draft.billID === text(row, "billID") ? <MarkPaidForm draft={draft} refused={refused} busy={busy} onChange={setDraft} onSave={save} onCancel={closeForm} /> : null,
       }}
-      below={draft ? <MarkPaidForm draft={draft} refused={refused} busy={busy} onChange={setDraft} onSave={save} onCancel={closeForm} /> : null}
     />
   );
 }
