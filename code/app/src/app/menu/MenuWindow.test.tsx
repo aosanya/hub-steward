@@ -57,6 +57,26 @@ describe("the Folders window", () => {
     expect(document.querySelector(".mw-detail")).toBeNull();
   });
 
+  it("chooses no row by itself once the list has loaded, so the list stays the page", async () => {
+    open();
+    await screen.findByText("Okafor");
+    await screen.findByText("Bello");
+
+    expect(window_()).toHaveAttribute("data-chosen", "no");
+    expect(document.querySelector(".mw-detail")).toBeNull();
+    expect(screen.getByRole("button", { name: /Okafor/ })).toHaveAttribute("aria-pressed", "false");
+    expect(vi.mocked(mcp.callTool).mock.calls.filter(([, name]) => name === readTool)).toEqual([]);
+  });
+
+  it("shows the empty state and no detail pane when the list has no rows", async () => {
+    vi.mocked(mcp.callTool).mockImplementation(async () => ({ items: [] }));
+    open();
+
+    expect(await screen.findByText("No folders yet")).toBeInTheDocument();
+    expect(window_()).toHaveAttribute("data-chosen", "no");
+    expect(document.querySelector(".mw-detail")).toBeNull();
+  });
+
   it("opens the chosen row beside the list, with that row marked chosen", async () => {
     open();
     await userEvent.click(await screen.findByRole("button", { name: /Okafor/ }));
