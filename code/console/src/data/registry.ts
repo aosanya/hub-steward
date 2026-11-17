@@ -12,6 +12,7 @@ import { networkPage } from "./pages/network";
 import { activityPage } from "./pages/activity";
 import { approvalsPage } from "./pages/approvals";
 import { alertsPage } from "./pages/alerts";
+import { recordsPage } from "./pages/records";
 import { workflowsPage } from "./pages/workflows";
 import { risksPage } from "./pages/risks";
 import { controlsPage } from "./pages/controls";
@@ -44,6 +45,7 @@ export const pages: Record<string, PageModule> = {
   activity: activityPage,
   approvals: approvalsPage,
   alerts: alertsPage,
+  records: recordsPage,
   workflows: workflowsPage,
   test: testPage,
   modules: modulesPage,

@@ -13,6 +13,7 @@ import { OperationsView } from "./views/OperationsView";
 import { NetworkView } from "./views/NetworkView";
 import { ActivityView } from "./views/ActivityView";
 import { AlertsView } from "./views/AlertsView";
+import { RecordsView } from "./views/RecordsView";
 import { WorkflowsView } from "./views/WorkflowsView";
 import { TestView } from "./views/TestView";
 import { PublishView } from "./views/PublishView";
@@ -59,6 +60,7 @@ export const views: Record<string, ComponentType> = {
   network: NetworkView,
   activity: ActivityView,
   alerts: AlertsView,
+  records: RecordsView,
   workflows: WorkflowsView,
   test: TestView,
   modules: ModulesView,
