@@ -638,13 +638,13 @@
         {
           "name": "difference",
           "type": "int",
-          "description": "Spent minus planned as sent.",
+          "description": "Planned minus spent as sent.",
           "immutable": true
         },
         {
           "name": "departments",
           "type": "json",
-          "description": "The planned, spent and difference figures of each department as sent.",
+          "description": "The planned, spent and difference figures of each department as sent, the difference being planned minus spent.",
           "immutable": true
         },
         {
