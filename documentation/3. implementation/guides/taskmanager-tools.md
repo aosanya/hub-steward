@@ -165,7 +165,7 @@ Every move, hand-over, status change, tag change and delete writes one automatic
 
 Inputs: `operations` (1 to 50, else 400), each `{op, task_id}` with `op` `patch` (and `patch`, the fields of `taskmanager_task_patch`) or `move_to_step` (and `backlog`, `step`), and `all_or_nothing` (default false). Needs Can move on the backlog of each issue, checked per operation as the single tool does.
 
-The answer is `results` (one per operation in order: `index`, `op`, `task_id`, `ok`, `applied`, `error`), `applied` and `failed`. By default a refused operation is reported and the rest still run. With `all_or_nothing` every operation is checked first, each against the state the earlier ones leave; if any is refused nothing is applied, and the ones that would have passed read `ok` true, `applied` false. There is no true undo: if an operation fails after passing the check, the ones after it are not applied and the ones before it stay.
+The answer is `results` (one per operation in order: `index`, `op`, `task_id`, `ok`, `applied`, `error`), `applied` and `failed`. By default a refused operation is reported and the rest still run. With `all_or_nothing` every operation is checked first, each against the state the earlier ones leave, a move into a step at its WIP limit included (an earlier move out of that step frees room); if any is refused nothing is applied, and the ones that would have passed read `ok` true, `applied` false. There is no true undo: if an operation fails after passing the check, the ones after it are not applied and the ones before it stay. Every operation that carries an error reads `ok` false and counts in `failed`, in every mode.
 
 ## taskmanager_task_create_with_todos
 
@@ -177,7 +177,7 @@ The answer is `issue` and `todos` (id, code, ordinality, `depends_on` as ids, st
 
 Inputs: `backlogID`, `stepID` and `wip_limit`, a whole number, 0 or more; 0 clears it. Needs Can edit on the backlog. A step with a limit shows `wip_limit` in the backlog list and every backlog summary.
 
-A `taskmanager_task_move_to_step`, `taskmanager_task_claim` or `taskmanager_task_claim_next` into a step that already holds that many issues is 409 and names the limit. `taskmanager_task_move_to_step` takes `override` true, which works only with Can edit on the backlog. Lowering a limit below the count removes nothing and only refuses new issues until the count is under it. An issue moved to the step it is already at is not counted again. `taskmanager_task_batch` moves and creating an issue straight into a full step are not limit-checked, and two moves in the same instant can both pass.
+A `taskmanager_task_move_to_step`, `taskmanager_task_claim` or `taskmanager_task_claim_next` into a step that already holds that many issues is 409 and names the limit. `taskmanager_task_move_to_step` takes `override` true, which works only with Can edit on the backlog. Lowering a limit below the count removes nothing and only refuses new issues until the count is under it. An issue moved to the step it is already at is not counted again. `taskmanager_task_batch` moves are limit-checked like single moves (there is no override in a batch). Creating an issue straight into a full step is not limit-checked, and two moves in the same instant can both pass.
 
 Every issue read and every `taskmanager_task_pending` item carries `entered_step_at` and `days_in_step`, worked out when read. The hub records `entered_step_at` on each move; an issue that has not moved since then counts from its `updated_at`, then its `created_at`.
 
