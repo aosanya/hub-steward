@@ -15,7 +15,7 @@ All issues and a smart backlog have the same List | Board switch under the count
 This is a drawing for the owner to change, drawn as
 [mockups](../../mockups/app/index.html). The screens use the app's shell: a sticky top
 bar with a back arrow and the bottom tab bar. Task rows on the
-[board](../../../../../hub-steward-swe/documentation/3.%20implementation/todo.md): SW8, SW30, SW31, SW34.
+board in the hub-steward-swe repo: SW8, SW30, SW31, SW34.
 
 ## The list (SW9, D13)
 
