@@ -9,6 +9,8 @@ import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { refusalWords } from "../../MenuEditForm";
+import { personNameOf } from "../residents/personName";
+import { loadPerson } from "../residents/PersonScreen";
 
 type Item = Record<string, unknown>;
 
@@ -24,6 +26,8 @@ const assignPermission = "task.assign";
 
 const agentKind = "agent";
 
+const actorKind = "actor";
+
 const nobodyWords = "Not assigned";
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
@@ -34,6 +38,12 @@ const loadWorkers = async (): Promise<Worker[]> =>
     name: textOf(worker.display_name) || textOf(worker.agent_id),
   }));
 
+const holderNameLoaders: Record<string, (id: string) => Promise<string>> = {
+  [actorKind]: async (id) => personNameOf(await loadPerson(id)),
+};
+
+const loadHolderName = (kind: string, id: string) => async () => (id ? ((await holderNameLoaders[kind]?.(id)) ?? "") : "");
+
 export function WorkOrderAssignee({ order, onAssigned }: Props) {
   const may = useMay(assignPermission);
   const workers = useLoad(loadWorkers, `workers:${openAgencyId()}`);
@@ -43,7 +53,11 @@ export function WorkOrderAssignee({ order, onAssigned }: Props) {
   const list = workers.state === "ready" ? workers.data : [];
   const holder = textOf(order.assignee_kind) === agentKind ? textOf(order.assigned_to) : "";
   const isCurrent = (worker: Worker) => worker.id === holder;
-  const assignee = list.find(isCurrent)?.name || nobodyWords;
+  const holderKind = textOf(order.assignee_kind);
+  const holderId = textOf(order.assigned_to);
+  const person = useLoad(loadHolderName(holderKind, holderId), `holder:${openAgencyId()}:${holderKind}:${holderId}`);
+  const personName = person.state === "ready" ? person.data : "";
+  const assignee = list.find(isCurrent)?.name || personName || nobodyWords;
   const assign = async (worker: Worker) => {
     setAssigning(true);
     setRefused("");
