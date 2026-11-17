@@ -26,6 +26,7 @@ func TestAccountingViewReadsAndAccountingManageAlsoWrites(t *testing.T) {
 		"accounting.budget.list", "accounting.budget.read",
 		"accounting.report.list", "accounting.report.read",
 		"accounting.dimension.totals",
+		"accounting.milestone.list", "accounting.certificate.list",
 	}
 	writeActions := []string{
 		"accounting.account.open", "accounting.account.close",
@@ -54,6 +55,7 @@ func TestEveryBudgetAndReportToolActionIsUnderAnAccountingPermission(t *testing.
 		"accounting_budget_set", "accounting_budget_list", "accounting_budget_read",
 		"accounting_report_list", "accounting_report_read",
 		"accounting_dimension_totals",
+		"accounting_milestone_list", "accounting_certificate_list",
 	} {
 		tool, ok := budgetTools(t, ledgerOnMemory(t))[name]
 		if !ok {
@@ -86,6 +88,15 @@ func TestTheUpwardReportListIsReadableAndTheSendNeedsAccountingManage(t *testing
 		}
 		if !slices.Contains(manage, tool.Action) {
 			t.Errorf("%s action %s is not under accounting.manage", name, tool.Action)
+		}
+	}
+}
+
+func TestTheContractWritesAreNotUnderAccountingView(t *testing.T) {
+	view := permissionActions(t, "accounting.view")
+	for _, a := range []string{"accounting.milestone.create", "accounting.certificate.create", "accounting.certificate.release_retention"} {
+		if slices.Contains(view, a) {
+			t.Errorf("%s must not be under accounting.view", a)
 		}
 	}
 }
