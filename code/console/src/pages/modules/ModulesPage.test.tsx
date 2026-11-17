@@ -16,6 +16,7 @@ const module = (over: Record<string, unknown>) => ({
   enabled: false,
   explicit: false,
   needed_by_steps: false,
+  needed_by_modules: false,
   ...over,
 });
 
@@ -132,12 +133,38 @@ describe("the modules page", () => {
     expect(within(rowOf("Chat")).getByText("Needed by another module")).toBeInTheDocument();
   });
 
-  it("leaves a module free to switch when it was also switched on by hand", async () => {
+  it("still shows the step chip and a disabled switch when the module was also switched on by hand", async () => {
     stored = [module({ enabled: true, explicit: true, needed_by_steps: true })];
     await open();
 
-    expect(screen.getByRole("switch", { name: "Chat" })).toBeEnabled();
-    expect(within(rowOf("Chat")).getByText("On")).toBeInTheDocument();
+    expect(screen.getByRole("switch", { name: "Chat" })).toBeChecked();
+    expect(screen.getByRole("switch", { name: "Chat" })).toBeDisabled();
+    expect(within(rowOf("Chat")).getByText("Needed by a workflow step")).toBeInTheDocument();
+  });
+
+  it("still shows the module chip and a disabled switch when the module was also switched on by hand", async () => {
+    stored = [module({ enabled: true, explicit: true, needed_by_modules: true })];
+    await open();
+
+    expect(screen.getByRole("switch", { name: "Chat" })).toBeChecked();
+    expect(screen.getByRole("switch", { name: "Chat" })).toBeDisabled();
+    expect(within(rowOf("Chat")).getByText("Needed by another module")).toBeInTheDocument();
+  });
+
+  it("names the step before the module when both need it", async () => {
+    stored = [module({ enabled: true, explicit: true, needed_by_steps: true, needed_by_modules: true })];
+    await open();
+
+    expect(within(rowOf("Chat")).getByText("Needed by a workflow step")).toBeInTheDocument();
+    expect(within(rowOf("Chat")).queryByText("Needed by another module")).not.toBeInTheDocument();
+  });
+
+  it("names the lock before the module when the module is locked", async () => {
+    stored = [module({ locked: true, enabled: true, explicit: true, needed_by_modules: true })];
+    await open();
+
+    expect(within(rowOf("Chat")).getByText("Always on")).toBeInTheDocument();
+    expect(within(rowOf("Chat")).queryByText("Needed by another module")).not.toBeInTheDocument();
   });
 
   it("says why when a switch is refused and leaves the switch as it was", async () => {

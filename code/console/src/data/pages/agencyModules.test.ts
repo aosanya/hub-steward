@@ -9,8 +9,8 @@ const call = vi.mocked(callTool);
 const callsTo = (tool: string) => call.mock.calls.filter(([, name]) => name === tool).map(([, , args]) => args);
 
 const listed = [
-  { id: "m1", code: "comm", name: "Chat", description: "Talk", locked: false, enabled: true, explicit: true, needed_by_steps: false },
-  { id: "m2", code: "forms", name: "", description: "", locked: false, enabled: true, explicit: false, needed_by_steps: true },
+  { id: "m1", code: "comm", name: "Chat", description: "Talk", locked: false, enabled: true, explicit: true, needed_by_steps: false, needed_by_modules: false },
+  { id: "m2", code: "forms", name: "", description: "", locked: false, enabled: true, explicit: false, needed_by_steps: true, needed_by_modules: true },
   { id: "", code: "ghost" },
 ];
 
@@ -24,15 +24,15 @@ const answers = (replies: Record<string, unknown> = {}) =>
 beforeEach(() => call.mockReset());
 
 describe("loading the agency's modules", () => {
-  it("lists them in the working draft and keeps the switch, the lock and the step need of each", async () => {
+  it("lists them in the working draft and keeps the switch, the lock, the step need and the module need of each", async () => {
     answers({ agency_list_modules: { items: listed } });
 
     const modules = await loadModules("h1");
 
     expect(callsTo("agency_list_modules")).toEqual([{ draft_id: "d1" }]);
     expect(modules).toEqual([
-      { id: "m1", code: "comm", name: "Chat", description: "Talk", locked: false, enabled: true, explicit: true, neededBySteps: false },
-      { id: "m2", code: "forms", name: "forms", description: "", locked: false, enabled: true, explicit: false, neededBySteps: true },
+      { id: "m1", code: "comm", name: "Chat", description: "Talk", locked: false, enabled: true, explicit: true, neededBySteps: false, neededByModules: false },
+      { id: "m2", code: "forms", name: "forms", description: "", locked: false, enabled: true, explicit: false, neededBySteps: true, neededByModules: true },
     ]);
   });
 
@@ -72,13 +72,20 @@ describe("switching a module", () => {
 });
 
 describe("what holds a module on", () => {
-  const base: AgencyModule = { id: "m", code: "c", name: "n", description: "", locked: false, enabled: true, explicit: true, neededBySteps: false };
+  const base: AgencyModule = { id: "m", code: "c", name: "n", description: "", locked: false, enabled: true, explicit: true, neededBySteps: false, neededByModules: false };
 
   it("is the lock first, then a step that needs it, else nothing", () => {
     expect(holdOf({ ...base, locked: true, neededBySteps: true })).toBe("locked");
     expect(holdOf({ ...base, explicit: false, neededBySteps: true })).toBe("steps");
-    expect(holdOf({ ...base, explicit: true, neededBySteps: true })).toBe("free");
+    expect(holdOf({ ...base, explicit: true, neededBySteps: true })).toBe("steps");
     expect(holdOf(base)).toBe("free");
+  });
+
+  it("is another module that requires it even when it was also switched on by hand", () => {
+    expect(holdOf({ ...base, explicit: true, neededByModules: true })).toBe("required");
+    expect(holdOf({ ...base, explicit: false, enabled: true, neededByModules: true })).toBe("required");
+    expect(holdOf({ ...base, explicit: true, neededByModules: true, neededBySteps: true })).toBe("steps");
+    expect(holdOf({ ...base, explicit: true, neededByModules: true, locked: true })).toBe("locked");
   });
 
   it("is another module that requires it when it reads on without its own switch or a step", () => {
