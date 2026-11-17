@@ -17,6 +17,8 @@ type Entry = models.Entry
 
 type EntryFilter struct {
 	InstanceID string `query:"instance_id"`
+	Actor      string `query:"actor"`
+	Subject    string `query:"subject"`
 }
 
 type AuditManager interface {
@@ -80,6 +82,12 @@ func (m *auditManager) ListEntries(ctx context.Context, filter EntryFilter) ([]m
 		return nil, fmt.Errorf("%w: instance_id is required", ErrInvalidEntry)
 	}
 	q := m.st.Query(ctx, roleEntry).Where("instance_id = ?", filter.InstanceID)
+	if filter.Actor != "" {
+		q = q.Where("actor = ?", filter.Actor)
+	}
+	if filter.Subject != "" {
+		q = q.Where("subject = ?", filter.Subject)
+	}
 	out, err := specstore.List[models.Entry](m.st, q.Order("at desc"), roleEntry)
 	if err != nil {
 		return nil, fmt.Errorf("ListEntries: %w", err)

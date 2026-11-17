@@ -1679,6 +1679,27 @@
           "body": true
         }
       ]
+    },
+    "list_person_bookings": {
+      "method": "GET",
+      "path": "/bookings/of-person",
+      "call": "ListHolderBookings",
+      "action": "catalog.booking.list_of_person",
+      "title": "List one person's bookings",
+      "description": "Staff read one person's bookings, standing and cancelled, earliest first. Needs the permission appointment.view_person.",
+      "args": [
+        {
+          "from": "query",
+          "as": "actor_id",
+          "required": true,
+          "description": "The person whose bookings to list."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
     }
   },
   "errors": {

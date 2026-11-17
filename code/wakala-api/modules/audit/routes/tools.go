@@ -24,6 +24,12 @@ var filterFields = map[string]dispatch.FieldDoc{
 		Description: "The agency whose log to read.",
 		Required:    true,
 	},
+	"EntryFilter.actor": {
+		Description: "Only entries made by this actor. Optional.",
+	},
+	"EntryFilter.subject": {
+		Description: "Only entries about this subject. Optional.",
+	},
 }
 
 func Fields() (map[string]dispatch.FieldDoc, error) {
