@@ -40,7 +40,7 @@ export const withAttributes = (asset: Item, changes: Item) => {
   return JSON.stringify({ ...current, ...changes });
 };
 
-const itemOf = (reply: unknown): Item => {
+export const itemOf = (reply: unknown): Item => {
   const inner = (reply as { item?: unknown } | null)?.item ?? reply;
   return inner && typeof inner === "object" ? (inner as Item) : {};
 };
@@ -52,7 +52,7 @@ const itemsIn = (reply: unknown): Item[] => {
 
 const newestFirst = (one: Item, two: Item) => textOf(two.occurred_at).localeCompare(textOf(one.occurred_at));
 
-const placeOf = async (locationId: string) =>
+export const placeOf = async (locationId: string) =>
   locationId ? textOf(itemOf(await callTool("", "assetmanager_location_read", { locationID: locationId })).name) : "";
 
 const movementsOf = async (assetId: string) =>

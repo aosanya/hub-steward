@@ -7,6 +7,7 @@ import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { WorkOrderAssignee } from "./WorkOrderAssignee";
 import { WorkOrderStatus } from "./WorkOrderStatus";
+import { aboutAndPlaceOf, placeLookupFor } from "./workOrderAsset";
 
 type Item = Record<string, unknown>;
 
@@ -39,10 +40,13 @@ const stateAndDue = (task: Item) => {
   return day === "" ? textOf(task.state) : `${textOf(task.state)} · due ${day}`;
 };
 
-const loadWorkOrders = async () =>
-  ((await callTool("", taskList).then(itemsOf)) as Item[])
-    .filter((task) => !isDone(task))
-    .map((task) => ({ id: textOf(task.id), title: textOf(task.title), state: textOf(task.state), due_at: textOf(task.due_at), stateAndDue: stateAndDue(task) }));
+const metaWithPlace = (task: Item, place: string) => [stateAndDue(task), place].filter((part) => part !== "").join(" · ");
+
+const loadWorkOrders = async () => {
+  const open = ((await callTool("", taskList).then(itemsOf)) as Item[]).filter((task) => !isDone(task));
+  const placeOf = await placeLookupFor(open);
+  return open.map((task) => ({ id: textOf(task.id), title: textOf(task.title), state: textOf(task.state), due_at: textOf(task.due_at), stateAndDue: metaWithPlace(task, placeOf(task)) }));
+};
 
 const scheduleOf = (task: Item) => ({
   id: textOf(task.id),
@@ -67,7 +71,7 @@ const readOne = async (tool: string, args: Record<string, string>) => {
 
 const loadWorkOrder = async (taskId: string) => {
   const task = await readOne(taskRead, { taskID: taskId });
-  return { ...task, due: dueDay(task) };
+  return { ...task, due: dueDay(task), ...(await aboutAndPlaceOf(task)) };
 };
 
 const loadScheduleItem = async (repeatingTaskId: string) => scheduleOf(await readOne(repeatingRead, { repeatingTaskID: repeatingTaskId }));
@@ -84,7 +88,7 @@ export function WorkOrdersPage() {
       list={{ title, tool: taskList, fields: { title: "title", meta: "stateAndDue" }, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadWorkOrders }}
       detail={{
         tool: taskRead,
-        fields: { Title: "title", State: "state", Due: "due" },
+        fields: { Title: "title", State: "state", Due: "due", About: "about", Place: "place" },
         status: "",
         load: loadWorkOrder,
         extra: (order) => (
