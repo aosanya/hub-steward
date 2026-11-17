@@ -59,7 +59,7 @@ export type PublishOutcome =
   | { published: Published }
   | { problems: DraftProblem[] };
 
-export const draftPages = ["profile", "goals", "roles", "risks", "bowties", "modules", "assistant"];
+export const draftPages = ["profile", "goals", "roles", "risks", "bowties", "modules", "assistant", "calc-step"];
 
 export const showsDraftBar = (page: string) => draftPages.includes(page);
 

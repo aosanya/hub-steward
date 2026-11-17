@@ -7,6 +7,7 @@ import { SignIn } from "./entry/SignIn";
 import { Start } from "./entry/Start";
 import { AgentEdit } from "./pages/agent/AgentEdit";
 import { ApprovalsPage } from "./pages/ApprovalsPage";
+import { CalcStepRoute } from "./pages/calcstep/CalcStepPage";
 import { ConsentNewPage } from "./pages/consent/ConsentNewPage";
 import { ModelAddPage } from "./pages/models/ModelAddPage";
 import { ModelPage } from "./pages/models/ModelPage";
@@ -36,6 +37,7 @@ export function App() {
           <Route path="approvals/:tab" element={<ApprovalsPage />} />
           <Route path="agent-edit/:role" element={<Navigate to="model" replace />} />
           <Route path="agent-edit/:role/:tab" element={<AgentEdit />} />
+          <Route path="calc-step/:stepId" element={<CalcStepRoute />} />
           <Route path="workflow-edit/:id" element={<Navigate to="workflow" replace />} />
           <Route path="workflow-edit/:id/:tab" element={<WorkflowEdit />} />
           <Route path=":page" element={<PageView />} />
