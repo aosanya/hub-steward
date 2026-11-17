@@ -170,7 +170,7 @@ describe("the overdue actions", () => {
 
 type Sent = { tool: string; args: Record<string, any> };
 
-const stub = (replies: Record<string, unknown>) => {
+const stub = (replies: Record<string, unknown | Error>) => {
   const sent: Sent[] = [];
   vi.stubGlobal(
     "fetch",
@@ -180,7 +180,8 @@ const stub = (replies: Record<string, unknown>) => {
       let result: unknown = {};
       if (body.method === "tools/call") {
         sent.push({ tool: body.params.name, args: body.params.arguments });
-        result = { structuredContent: replies[body.params.name] ?? { items: [] } };
+        const reply = replies[body.params.name] ?? { items: [] };
+        result = reply instanceof Error ? { isError: true, content: [{ type: "text", text: reply.message }] } : { structuredContent: reply };
       }
       const text = JSON.stringify({ jsonrpc: "2.0", id: body.id ?? 1, result });
       return { ok: true, status: 200, headers: new Headers({ "Mcp-Session-Id": "s1" }), text: async () => text };
@@ -228,5 +229,81 @@ describe("the MCP council risks client", () => {
     expect(actionsCall).toBeDefined();
     expect(risksCall?.args ?? {}).not.toHaveProperty("owner");
     expect(actionsCall?.args ?? {}).not.toHaveProperty("owner");
+  });
+
+  const ownerId = "0813067c-3746-48cc-91b8-3d3f7f26b5be";
+  const otherId = "7a1c2d90-5e4b-4f6a-8b3d-2c9e1f0a4b66";
+
+  const riskRow = (owner: string) => ({ id: "r1", title: "Boiler room fire", top_event: "Fire", status: "open", owner });
+
+  it("shows a risk's owner by display name when the owner is an actor id", async () => {
+    const sent = stub({
+      riskmanager_risk_list: { items: [riskRow(ownerId)] },
+      actor_list_actors: { items: [{ id: ownerId, display_name: "Ilona Kovacs" }, { id: otherId, display_name: "Bence Toth" }] },
+    });
+    const council = await mcpCouncilRisksClient.load();
+    expect(council.risks.map((r) => r.owner)).toEqual(["Ilona Kovacs"]);
+    expect(sent.some((call) => call.tool === "actor_list_actors")).toBe(true);
+  });
+
+  it("leaves a plain owner name as it is while resolving the ids around it", async () => {
+    stub({
+      riskmanager_risk_list: {
+        items: [riskRow("officer-ilona"), { ...riskRow(ownerId), id: "r2", title: "Archive flood" }],
+      },
+      actor_list_actors: { items: [{ id: ownerId, display_name: "Ilona Kovacs" }] },
+    });
+    const council = await mcpCouncilRisksClient.load();
+    expect(council.risks.map((r) => r.owner)).toEqual(["officer-ilona", "Ilona Kovacs"]);
+  });
+
+  it("blanks an owner id that no listed person has", async () => {
+    stub({
+      riskmanager_risk_list: { items: [riskRow(ownerId)] },
+      actor_list_actors: { items: [{ id: otherId, display_name: "Bence Toth" }] },
+    });
+    const council = await mcpCouncilRisksClient.load();
+    expect(council.risks.map((r) => r.owner)).toEqual([""]);
+  });
+
+  it("blanks an owner id when the people list cannot be loaded", async () => {
+    stub({
+      riskmanager_risk_list: { items: [riskRow(ownerId)] },
+      actor_list_actors: new Error("people down"),
+    });
+    const council = await mcpCouncilRisksClient.load();
+    expect(council.risks.map((r) => r.owner)).toEqual([""]);
+  });
+
+  it("renders no raw id on the page for an owner nobody can name", async () => {
+    stub({
+      riskmanager_risk_list: { items: [riskRow(ownerId)] },
+      actor_list_actors: { items: [{ id: otherId, display_name: "Bence Toth" }] },
+    });
+    at(mcpCouncilRisksClient);
+    expect(await screen.findByText("Boiler room fire")).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain(ownerId);
+    expect(document.body.textContent ?? "").not.toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
+  });
+
+  it("renders no raw id on the page when the people list cannot be loaded", async () => {
+    stub({
+      riskmanager_risk_list: { items: [riskRow(ownerId)] },
+      actor_list_actors: new Error("people down"),
+    });
+    at(mcpCouncilRisksClient);
+    expect(await screen.findByText("Boiler room fire")).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain(ownerId);
+  });
+
+  it("renders the owner's name on the page when the id resolves", async () => {
+    stub({
+      riskmanager_risk_list: { items: [riskRow(ownerId)] },
+      actor_list_actors: { items: [{ id: ownerId, display_name: "Ilona Kovacs" }] },
+    });
+    at(mcpCouncilRisksClient);
+    const title = await screen.findByText("Boiler room fire");
+    expect(textAround(title)).toContain("Ilona Kovacs");
+    expect(document.body.textContent).not.toContain(ownerId);
   });
 });
