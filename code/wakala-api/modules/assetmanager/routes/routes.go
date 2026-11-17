@@ -3,6 +3,7 @@ package routes
 import (
 	"wakalaserver/modules/shared/dispatch"
 	"wakalaserver/modules/shared/httpwire"
+	"wakalaserver/modules/shared/versioncheck"
 
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 )
@@ -30,6 +31,7 @@ var sentinels = map[string]error{
 	"ErrHoldSlotOverlaps":            mwanachamaassetmanager.ErrHoldSlotOverlaps,
 	"ErrConflict":                    mwanachamaassetmanager.ErrConflict,
 	"ErrInvalidFilter":               mwanachamaassetmanager.ErrInvalidFilter,
+	"ErrStale":                       dispatch.ByType(&versioncheck.StaleError{}, nil),
 }
 
 var AnonymousActions = []string{}
