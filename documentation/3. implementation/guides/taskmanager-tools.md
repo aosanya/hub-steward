@@ -15,6 +15,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | The state of the board in one read | `taskmanager_task_board_snapshot` | `GET /board-snapshot` |
 | Which open issues finishing would unblock the most others | `taskmanager_task_unblock_impact` | `GET /unblock-impact` |
 | Which issues break the filing rules | `taskmanager_task_lint` | `GET /lint` |
+| Which issues in progress are not moving, and why | `taskmanager_task_stuck` | `GET /stuck` |
 | The todos that can start now across the issues in progress | `taskmanager_task_todo_ready_board` | `GET /todo-ready-board` |
 | What changed on the board after a cursor | `taskmanager_task_changes_since` | `GET /changes-since` |
 | Patch or move up to 50 issues in one call | `taskmanager_task_batch` | `POST /batch` |
@@ -112,6 +113,25 @@ The answer is `items` (id, code, title and `findings`, each a `rule` and a `mess
 | `no_priority` | priority is blank |
 | `todo_without_description` | a todo has no description |
 
+## taskmanager_task_stuck
+
+Inputs: `backlog`, `tag` (repeat it to require every tag), `stalled_days` (default 2), `reason` (keep only issues that break that rule), `limit` (default 25, at most 100; more is 400) and `offset`. Read-only; a person sees only the backlogs their groups see, and an unseen `backlog`, a negative `stalled_days` and an unknown `reason` are refused.
+
+The answer is `items` and `total` (every stuck issue). Each item is an In Progress issue that breaks at least one rule: `id`, `code`, `title`, `assignee`, `days_in_step`, `days_since_activity`, `todos_done`, `todos_total`, `reasons` and `next_action` (the sentence for the first reason). Items with most reasons come first, then the longest quiet. A closed issue is never listed.
+
+| Rule | Fires when |
+|---|---|
+| `no_todos` | the issue has no todos |
+| `no_todo_started` | it has todos and none is In progress or Done |
+| `all_remaining_todos_blocked` | open todos exist, none is In progress, and none can start |
+| `only_documentation_left_open` | every open todo has document in its title and none is In progress |
+| `lease_expired` | `lease_until` is in the past |
+| `no_activity` | `days_since_activity` has reached `stalled_days` |
+| `unassigned_in_progress` | `assigned_to` and `held_by` are both empty, so a plain `taskmanager_task_claim` counts as unassigned |
+| `files_clash_with_another_in_progress` | its files overlap those of another open In Progress issue |
+
+`days_since_activity` counts from the latest of the issue's own update, its todos' updates and its newest note. `days_in_step` is whole days since the issue's own update until the entered-step time lands.
+
 ## taskmanager_task_todo_ready_board
 
 Inputs: `backlog`, `tag` (repeat it to require every tag) and `limit` (1 to 100, default 25; anything else is 400). Read-only; a person sees only the backlogs their groups see, and an unknown or unseen `backlog` is 400.
@@ -204,6 +224,7 @@ Refused, with nothing written: 409 unless the issue sits at the backlog's In Pro
 | The board-snapshot tool | `modules/taskmanager/task_board_snapshot.go`, tests in `routes/board_snapshot_test.go` |
 | The unblock-impact tool | `modules/taskmanager/task_unblock_impact.go`, tests in `routes/unblock_impact_test.go` |
 | The lint tool and its rule table | `modules/taskmanager/task_lint.go`, tests in `routes/task_lint_test.go` |
+| The stuck tool and its rule table | `modules/taskmanager/task_stuck.go`, tests in `routes/task_stuck_test.go` |
 | The todo-ready-board tool | `modules/taskmanager/todo_ready_board.go`, the readiness rule in `todo_ready.go`, tests in `routes/todo_ready_board_test.go` |
 | The changes-since tool | `modules/taskmanager/task_changes_since.go`, tests in `routes/changes_since_test.go` |
 | The batch and create-with-todos tools | `modules/taskmanager/task_batch.go`, `task_create_with_todos.go`, the move rule in `task_move_path.go`, tests in `routes/task_batch_test.go` |
