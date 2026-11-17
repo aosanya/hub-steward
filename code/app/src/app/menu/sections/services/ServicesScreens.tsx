@@ -9,7 +9,7 @@ import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
 import { moneyWords } from "../finance/financeData";
 import { personNameOf } from "../residents/personName";
 import { CatalogueWindow } from "./CatalogueEntry";
-import { sentWords } from "./decision";
+import { decisionStatus, sentWords } from "./decision";
 import { ReceivedApplications } from "./ReceivedApplications";
 import { readItem } from "./readItem";
 
@@ -41,7 +41,7 @@ const byNewest = (a: Item, b: Item) => text(b, "submitted_at").localeCompare(tex
 
 const statusOf = (submission: Item) => {
   if (isWithdrawn(submission)) return withdrawnWords;
-  return isPaid(submission) ? paidWords : sentWords;
+  return decisionStatus(text(submission, "decision")) || (isPaid(submission) ? paidWords : sentWords);
 };
 
 const entryRow = (entry: Item) => ({ id: text(entry, "slug"), name: text(entry, "name"), line: text(entry, "summary") });
