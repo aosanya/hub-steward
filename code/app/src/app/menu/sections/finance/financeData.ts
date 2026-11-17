@@ -23,6 +23,8 @@ export const tools = {
   quoteUpdate: "accounting_quote_update",
   paymentList: "accounting_payment_list",
   paymentMarkPaid: "accounting_payment_mark_paid",
+  milestoneList: "accounting_milestone_list",
+  certificateList: "accounting_certificate_list",
 };
 
 const numberOf = (value: unknown) => {
@@ -120,6 +122,36 @@ export const paymentRow = (payment: Item, unit = "") => {
     status: paid ? "Paid" : "Unpaid",
   };
 };
+
+const certifiedStatusWords = (status: string) => status.replace(/_/g, " ");
+
+export const milestoneWords = (milestone: Item, unit = "") =>
+  [
+    text(milestone, "name"),
+    moneyWords(numberOf(milestone.amount), unit),
+    `due ${dayWords(text(milestone, "due_at"))}`,
+    certifiedStatusWords(text(milestone, "status")),
+    `${moneyWords(numberOf(milestone.certified_amount), unit)} certified`,
+  ]
+    .filter((word) => word !== "")
+    .join(" · ");
+
+const releaseWords = (certificate: Item) => {
+  if (text(certificate, "released_at") !== "") return "released";
+  const due = text(certificate, "release_due_at");
+  return due === "" ? "" : `can be released ${dayWords(due)}`;
+};
+
+export const certificateWords = (certificate: Item, milestoneName: string, payeeName: string, unit = "") =>
+  [
+    milestoneName,
+    `${moneyWords(numberOf(certificate.amount), unit)} certified`,
+    payeeName,
+    `${moneyWords(numberOf(certificate.retention_amount), unit)} withheld`,
+    releaseWords(certificate),
+  ]
+    .filter((word) => word !== "")
+    .join(" · ");
 
 export const owedTotal = (bills: Item[]) => {
   const owing = bills.filter((bill) => numberOf(bill.outstanding) > 0);

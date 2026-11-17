@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   billRow,
   budgetRow,
+  certificateWords,
   dayWords,
   dayStart,
   lastDayOf,
+  milestoneWords,
   periodEndOf,
   moneyWords,
   owedTotal,
@@ -38,6 +40,8 @@ describe("finance tool names", () => {
       quoteUpdate: "accounting_quote_update",
       paymentList: "accounting_payment_list",
       paymentMarkPaid: "accounting_payment_mark_paid",
+      milestoneList: "accounting_milestone_list",
+      certificateList: "accounting_certificate_list",
     });
   });
 });
@@ -197,5 +201,19 @@ describe("owedTotal", () => {
   it("is zero for no bills and for bills with nothing outstanding", () => {
     expect(owedTotal([])).toEqual({ amount: 0, payers: 0 });
     expect(owedTotal([{ id: "b1", payer: "Ben", outstanding: 0 }])).toEqual({ amount: 0, payers: 0 });
+  });
+});
+
+describe("milestone and certificate words", () => {
+  it("says a milestone's status without its underscore", () => {
+    expect(milestoneWords({ name: "Base", amount: 600, due_at: "2026-03-15T00:00:00Z", status: "part_certified", certified_amount: 400 }, " Ft")).toBe("Base · 600 Ft · due 2026-03-15 · part certified · 400 Ft certified");
+  });
+
+  it("leaves out the release words of a certificate with no release day", () => {
+    expect(certificateWords({ amount: 100, retention_amount: 10 }, "Base", "", "")).toBe("Base · 100 certified · 10 withheld");
+  });
+
+  it("prefers released over the release day once the retention is released", () => {
+    expect(certificateWords({ amount: 100, retention_amount: 10, release_due_at: "2026-05-20T00:00:00Z", released_at: "2026-05-21T00:00:00Z" }, "Base", "Acme", "")).toBe("Base · 100 certified · Acme · 10 withheld · released");
   });
 });

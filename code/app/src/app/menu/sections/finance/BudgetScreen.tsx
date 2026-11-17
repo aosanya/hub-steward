@@ -10,13 +10,13 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
+import { lineStages } from "./lineStages";
+import { accountListTool } from "./markBillPaid";
 import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, text, tools, unitOf, type Item } from "./financeData";
 
 const managePermission = "accounting.manage";
 
 const rolesTool = "agency_get_my_roles";
-
-const accountListTool = "accounting_account_list";
 
 const budgetSetTool = "accounting_budget_set";
 
@@ -40,6 +40,7 @@ const loadLines = async (unit: string) => (await listOf(tools.budgetList)).map((
 
 const loadLine = async (id: string, unit: string) => {
   const [line, tenders] = await Promise.all([callTool("", tools.budgetRead, { budgetID: id }) as Promise<Item | null>, listOf(tools.tenderList, { budget_id: id })]);
+  const stages = await lineStages(text(line, "account_id"), unit);
   const planned = Number(text(line, "planned")) || 0;
   const spent = Number(text(line, "spent")) || 0;
   return {
@@ -56,6 +57,7 @@ const loadLine = async (id: string, unit: string) => {
     remaining: moneyWords(planned - spent, unit),
     share: shareWords(planned, spent),
     tenders: tenders.map(tenderWords).join(", "),
+    ...stages,
   };
 };
 
@@ -139,7 +141,7 @@ export function BudgetScreen() {
       detail={{
         tool: tools.budgetRead,
         load: (id: string) => loadLine(id, unit),
-        fields: { Name: "name", Department: "department", Period: "period", Planned: "planned", Spent: "spent", Remaining: "remaining", "Share spent": "share", Tenders: "tenders" },
+        fields: { Name: "name", Department: "department", Period: "period", Planned: "planned", Spent: "spent", Remaining: "remaining", "Share spent": "share", Tenders: "tenders", Milestones: "milestones", "Payment certificates": "certificates" },
         status: "status",
         extra: (line) => (
           <MenuEditForm
