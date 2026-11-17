@@ -28,14 +28,16 @@ export function UsersWaiting({ hubId, requests, onDecided }: UsersWaitingProps) 
     setBusy(false);
     onDecided();
   };
-  const approve = (request: WaitingToJoin) => decide(request, () => approveJoinRequest(hubId, request.id), t("users.approveFailed"));
-  const decline = (request: WaitingToJoin, choice: DeclineChoice) => decide(request, () => declineJoinRequest(hubId, request.id, choice), t("users.declineFailed"));
+  const approve = (request: WaitingToJoin) => decide(request, () => approveJoinRequest(hubId, request.id, request.level), t("users.approveFailed"));
+  const decline = (request: WaitingToJoin, choice: DeclineChoice) => decide(request, () => declineJoinRequest(hubId, request.id, choice, request.level), t("users.declineFailed"));
+
+  const placeOf = (request: WaitingToJoin) => (request.level === "agency" ? t("users.theAgency") : request.group);
 
   const rows = waiting.map((request) => ({
     key: request.id || request.actorId + request.group,
     cells: [
       <Cell text={request.name} lead={<Avatar name={request.name} />} />,
-      <Chip>{request.group}</Chip>,
+      <Chip>{placeOf(request)}</Chip>,
       <Chip kind="warn">{t("waitingForApproval")}</Chip>,
     ],
     actions: (
@@ -52,7 +54,7 @@ export function UsersWaiting({ hubId, requests, onDecided }: UsersWaitingProps) 
   return (
     <section aria-label={t("waitingForApproval")}>
       <Stack>
-        {declining ? <UsersDecline name={declining.name} group={declining.group} busy={busy} onConfirm={(choice) => decline(declining, choice)} onCancel={() => setDeclining(null)} /> : null}
+        {declining ? <UsersDecline name={declining.name} group={placeOf(declining)} busy={busy} onConfirm={(choice) => decline(declining, choice)} onCancel={() => setDeclining(null)} /> : null}
         <DataTable columns={[t("users.colUser"), t("users.colGroups"), t("users.colState")]} rows={rows} empty={t("noRows")} />
       </Stack>
     </section>

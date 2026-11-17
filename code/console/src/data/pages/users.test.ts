@@ -383,7 +383,7 @@ test("the people waiting to join are asked of every group, only the ones still w
 
 test("a person waiting to join is named from the hub's people and carries the group they asked for", async () => {
   answer(withRequests({ g1: [{ id: "r1", actor_id: "a2", group_id: "g1", state: "pending" }] }));
-  expect((await usersWithWaiting("h1")).waiting).toEqual([{ id: "r1", actorId: "a2", name: "Bram Sample", group: "Siaya farmers" }]);
+  expect((await usersWithWaiting("h1")).waiting).toEqual([{ id: "r1", actorId: "a2", name: "Bram Sample", group: "Siaya farmers", level: "group" }]);
 });
 
 test("a request that is no longer pending is left out even when the tool returns it", async () => {

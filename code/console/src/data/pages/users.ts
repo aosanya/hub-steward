@@ -1,10 +1,11 @@
 import { McpError, callTool } from "../../wakala/mcp";
+import { rest } from "../../wakala/rest";
 import type { ActionRun, PageModule, Query } from "../types";
 import { itemsOf, proposeWrite, textOf, trimmedValue } from "./groups";
 
 type UserRecord = { id: string; actorId: string; displayName: string; name: string; created: string; memberCode: string };
 
-export type WaitingToJoin = { id: string; actorId: string; name: string; group: string };
+export type WaitingToJoin = { id: string; actorId: string; name: string; group: string; level: "group" | "agency" };
 
 export type SeatRole = { group: string; role: string };
 
@@ -116,8 +117,29 @@ const waitingAmong = async (hubId: string, groups: Record<string, unknown>[], ev
         actorId: textOf(request, "actor_id"),
         name: names.get(textOf(request, "actor_id")) || textOf(request, "actor_id"),
         group: textOf(group, "name"),
+        level: "group" as const,
       })),
   );
+};
+
+const waitingAtAgency = async (hubId: string, everyone: UserRecord[]): Promise<WaitingToJoin[]> => {
+  const reply = await rest("GET", `/instances/${hubId}/join-requests`);
+  if (!reply.ok) throw new Error("agency join requests could not be read");
+  const names = new Map(everyone.map((actor) => [keyOf(actor), nameOf(actor) || actor.memberCode]));
+  return itemsOf(reply.data)
+    .filter((request) => textOf(request, "status") === "pending")
+    .map((request) => ({
+      id: textOf(request, "user_id"),
+      actorId: textOf(request, "user_id"),
+      name: names.get(textOf(request, "user_id")) || textOf(request, "user_id"),
+      group: "",
+      level: "agency" as const,
+    }));
+};
+
+const allWaiting = async (hubId: string, groups: Record<string, unknown>[], everyone: UserRecord[]): Promise<WaitingToJoin[]> => {
+  const [inGroups, atAgency] = await Promise.all([waitingAmong(hubId, groups, everyone), waitingAtAgency(hubId, everyone)]);
+  return [...inGroups, ...atAgency];
 };
 
 export type UsersRead = { rows: UserRow[]; roleNames: string[]; waiting: WaitingToJoin[]; waitingFailed: boolean };
@@ -141,7 +163,7 @@ const readUsers = async (hubId: string, query: Query, asking: boolean): Promise<
     joined: actor.created,
   }));
   const waiting = asking
-    ? await waitingAmong(hubId, groups, everyone).then(
+    ? await allWaiting(hubId, groups, everyone).then(
         (requests) => ({ requests, failed: false }),
         () => ({ requests: [] as WaitingToJoin[], failed: true }),
       )

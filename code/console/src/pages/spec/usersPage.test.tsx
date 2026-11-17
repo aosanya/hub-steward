@@ -2,11 +2,17 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
+import { rest } from "../../wakala/rest";
 import { UsersPage } from "./usersPage";
 import { clearPages, clearShown, installPage, renderSpec, answering as answeringPage } from "./specHarness.test-helper";
 import { answering, callsTo } from "./usersFixtures.test-helper";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
+
+vi.mock("../../wakala/rest", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../wakala/rest")>()),
+  rest: vi.fn(),
+}));
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -32,6 +38,8 @@ beforeEach(() => {
   clearPages();
   clearShown();
   vi.mocked(callTool).mockReset();
+  vi.mocked(rest).mockReset();
+  vi.mocked(rest).mockResolvedValue({ ok: true, status: 200, data: [] });
 });
 
 const open = (route = "/") => renderSpec(<UsersPage hubId="h1" />, route);

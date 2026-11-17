@@ -2,8 +2,14 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
+import { rest } from "../../wakala/rest";
 import { answering, callsTo, proposals, renderView } from "../spec/usersTesting";
 import { UsersView } from "./UsersView";
+
+vi.mock("../../wakala/rest", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../wakala/rest")>()),
+  rest: vi.fn(),
+}));
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -37,6 +43,8 @@ const showUsers = (replies: Parameters<typeof answering>[0] = hubWithPeople, sea
 
 beforeEach(() => {
   vi.mocked(callTool).mockReset();
+  vi.mocked(rest).mockReset();
+  vi.mocked(rest).mockResolvedValue({ ok: true, status: 200, data: [] });
 });
 
 const cards = () => Array.from(document.querySelectorAll<HTMLElement>(".card"));
