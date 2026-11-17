@@ -15,6 +15,8 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | The state of the board in one read | `taskmanager_task_board_snapshot` | `GET /board-snapshot` |
 | Which open issues finishing would unblock the most others | `taskmanager_task_unblock_impact` | `GET /unblock-impact` |
 | Which issues break the filing rules | `taskmanager_task_lint` | `GET /lint` |
+| Patch or move up to 50 issues in one call | `taskmanager_task_batch` | `POST /batch` |
+| Create an issue with its todos and their order in one call | `taskmanager_task_create_with_todos` | `POST /create-with-todos` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
 | Everything a worker reads before starting an issue, in one call | `taskmanager_task_brief` | `GET /tasks/{taskID}/brief` |
 | Which issues in progress touch the same files as an issue or a list of paths | `taskmanager_task_file_overlaps` | `GET /file-overlaps` |
@@ -108,6 +110,18 @@ The answer is `items` (id, code, title and `findings`, each a `rule` and a `mess
 | `no_priority` | priority is blank |
 | `todo_without_description` | a todo has no description |
 
+## taskmanager_task_batch
+
+Inputs: `operations` (1 to 50, else 400), each `{op, task_id}` with `op` `patch` (and `patch`, the fields of `taskmanager_task_patch`) or `move_to_step` (and `backlog`, `step`), and `all_or_nothing` (default false). Needs Can move on the backlog of each issue, checked per operation as the single tool does.
+
+The answer is `results` (one per operation in order: `index`, `op`, `task_id`, `ok`, `applied`, `error`), `applied` and `failed`. By default a refused operation is reported and the rest still run. With `all_or_nothing` every operation is checked first, each against the state the earlier ones leave; if any is refused nothing is applied, and the ones that would have passed read `ok` true, `applied` false. There is no true undo: if an operation fails after passing the check, the ones after it are not applied and the ones before it stay.
+
+## taskmanager_task_create_with_todos
+
+Inputs: the fields of `taskmanager_task_create` and `todos`, in order, each `{title, instructions, description, can_run_parallel, waits_on}`. Needs Can move on the backlog the issue lands in. `waits_on` lists positions, 1-based (1 is the first todo sent), and each must be an earlier one: a reference to itself, a later todo or a cycle is 400. A todo that waits on others lands Blocked and turns To do when they are Done.
+
+The answer is `issue` and `todos` (id, code, ordinality, `depends_on` as ids, status, state), 201. The todos are checked before the issue is made, and an issue whose todo cannot be made is taken away again, so nothing is left behind.
+
 ## taskmanager_task_dependencies
 
 Input: `taskID`. The caller is taken from the session; an issue the caller cannot see is 404.
@@ -169,6 +183,7 @@ Refused, with nothing written: 409 unless the issue sits at the backlog's In Pro
 | The board-snapshot tool | `modules/taskmanager/task_board_snapshot.go`, tests in `routes/board_snapshot_test.go` |
 | The unblock-impact tool | `modules/taskmanager/task_unblock_impact.go`, tests in `routes/unblock_impact_test.go` |
 | The lint tool and its rule table | `modules/taskmanager/task_lint.go`, tests in `routes/task_lint_test.go` |
+| The batch and create-with-todos tools | `modules/taskmanager/task_batch.go`, `task_create_with_todos.go`, the move rule in `task_move_path.go`, tests in `routes/task_batch_test.go` |
 | The dependencies tool and its types | `modules/taskmanager/task_dependencies.go`, tests in `routes/task_dependencies_test.go` |
 | The timed-out tool and its types | `modules/taskmanager/task_timed_out.go`, tests in `routes/timed_out_test.go` |
 | The claim tool and its types | `modules/taskmanager/task_claim.go`, tests in `routes/claim_task_test.go` |
