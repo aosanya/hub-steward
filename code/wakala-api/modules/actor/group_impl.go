@@ -93,6 +93,9 @@ func (m *userManager) EditGroup(ctx context.Context, id string, e GroupEdit) (Gr
 	if err != nil {
 		return Group{}, err
 	}
+	if err := checkGroupVersion(current, e); err != nil {
+		return Group{}, err
+	}
 	if err := plaintext.CheckLine("group name", e.Name); err != nil {
 		return Group{}, fmt.Errorf("%w: %v", ErrInvalidGroup, err)
 	}

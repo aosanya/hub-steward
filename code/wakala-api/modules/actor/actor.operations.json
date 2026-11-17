@@ -21,6 +21,7 @@
     "ErrDuplicateHierarchyName": 409,
     "ErrDuplicateDisplayName": 409,
     "ErrConflict": 409,
+    "ErrStaleVersion": 409,
     "ErrRootCannotMove": 409,
     "ErrParentIsSelf": 409,
     "ErrParentInSubtree": 409,
