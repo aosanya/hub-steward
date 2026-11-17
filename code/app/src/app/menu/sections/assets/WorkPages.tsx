@@ -3,7 +3,6 @@ import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuEditForm } from "../../MenuEditForm";
-import { MenuList } from "../../MenuList";
 import { MenuWindow } from "../../MenuWindow";
 import { WorkOrderAssignee } from "./WorkOrderAssignee";
 import { WorkOrderStatus } from "./WorkOrderStatus";
@@ -34,22 +33,30 @@ const loadWorkOrders = async () =>
     .filter((task) => !isDone(task))
     .map((task) => ({ id: textOf(task.id), title: textOf(task.title), state: textOf(task.state) }));
 
-const loadSchedule = async () =>
-  ((await callTool("", repeatingList).then(itemsOf)) as Item[]).map((task) => ({
-    id: textOf(task.id),
-    title: textOf(task.title),
-    often: frequencyWords(textOf(task.schedule_rule)),
-  }));
+const scheduleOf = (task: Item) => ({
+  id: textOf(task.id),
+  title: textOf(task.title),
+  often: frequencyWords(textOf(task.schedule_rule)),
+  rule: textOf(task.schedule_rule),
+});
+
+const loadSchedule = async () => ((await callTool("", repeatingList).then(itemsOf)) as Item[]).map(scheduleOf);
 
 const taskRead = "taskmanager_task_read";
 
+const repeatingRead = "taskmanager_repeating_task_read";
+
 const workOrderEditFields = [{ label: "Title", key: "title", required: true }];
 
-const loadWorkOrder = async (taskId: string) => {
-  const reply = (await callTool("", taskRead, { taskID: taskId })) as { item?: unknown } | null;
+const readOne = async (tool: string, args: Record<string, string>) => {
+  const reply = (await callTool("", tool, args)) as { item?: unknown } | null;
   const inner = reply?.item ?? reply;
   return inner && typeof inner === "object" ? (inner as Item) : {};
 };
+
+const loadWorkOrder = (taskId: string) => readOne(taskRead, { taskID: taskId });
+
+const loadScheduleItem = async (repeatingTaskId: string) => scheduleOf(await readOne(repeatingRead, { repeatingTaskID: repeatingTaskId }));
 
 export function WorkOrdersPage() {
   const word = useWord("assetmanager");
@@ -80,5 +87,12 @@ export function WorkOrdersPage() {
 
 export function MaintenancePage() {
   const word = useWord("assetmanager");
-  return <MenuList title={word("Maintenance Schedule")} tool={repeatingList} fields={{ title: "title", meta: "often" }} empty={{ words: "No maintenance scheduled." }} load={loadSchedule} />;
+  const title = word("Maintenance Schedule");
+  return (
+    <MenuWindow
+      title={title}
+      list={{ title, tool: repeatingList, fields: { title: "title", meta: "often" }, empty: { words: "No maintenance scheduled." }, load: loadSchedule }}
+      detail={{ tool: repeatingRead, fields: { Title: "title", "How often": "often", "Schedule rule": "rule" }, status: "", load: loadScheduleItem }}
+    />
+  );
 }

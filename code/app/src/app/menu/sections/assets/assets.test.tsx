@@ -1,7 +1,8 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, useLocation } from "react-router-dom";
+import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
@@ -13,6 +14,7 @@ const locationRead = "assetmanager_location_read";
 const movementList = "assetmanager_movement_list";
 const taskList = "taskmanager_task_list";
 const repeatingList = "taskmanager_repeating_task_list";
+const repeatingRead = "taskmanager_repeating_task_read";
 
 const locations = [
   { id: "l1", code: "L-1", name: "North Depot", kind: "depot" },
@@ -85,6 +87,7 @@ const answer = (name: string, args: unknown) => {
   if (name === movementList) return Promise.resolve({ items: movements });
   if (name === taskList) return Promise.resolve({ items: tasks });
   if (name === repeatingList) return Promise.resolve({ items: repeating });
+  if (name === repeatingRead) return Promise.resolve({ item: byArgument(repeating, args, "repeatingTaskID") });
   return Promise.reject(new Error(`${name}: unknown tool`));
 };
 
@@ -299,5 +302,42 @@ describe("Maintenance Schedule", () => {
     expect(bar).not.toHaveTextContent("Maintenance Schedule");
     expect(document.querySelector(".bar-title")).toBeNull();
     expect(document.querySelector("h1.headline")).toHaveTextContent("Maintenance Schedule");
+  });
+
+  it("opens the chosen schedule in the detail with its title, how often and the raw rule", async () => {
+    showRouted("Maintenance Schedule");
+    await userEvent.click(await screen.findByRole("button", { name: /Inspect the playground/ }));
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expect(await within(detail).findByText("Every 2 weeks")).toBeInTheDocument();
+    expect(within(detail).getByText("Inspect the playground")).toBeInTheDocument();
+    expect(within(detail).getByText("FREQ=WEEKLY;INTERVAL=2;BYDAY=WE")).toBeInTheDocument();
+    expect(callsTo(repeatingRead)[0][2]).toEqual({ repeatingTaskID: "p4" });
+  });
+
+  describe("on a wide screen", () => {
+    beforeEach(() => setWide(true));
+
+    afterEach(() => forgetWidth());
+
+    it("keeps the list on the left, opens the chosen schedule in the right pane and draws no tab bar", async () => {
+      showRouted("Maintenance Schedule");
+      await userEvent.click(await screen.findByRole("button", { name: /Grease the pumps/ }));
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      expect(await within(main).findByText("FREQ=WEEKLY")).toBeInTheDocument();
+      expect(within(main).getByText("Weekly")).toBeInTheDocument();
+      expect(within(main).getByText("Grease the pumps")).toBeInTheDocument();
+      expect(within(document.querySelector(".wf-tree") as HTMLElement).getByRole("button", { name: /Inspect the fire exits/ })).toBeInTheDocument();
+      expect(document.querySelector("nav.tabs")).toBeNull();
+    });
+
+    it("leaves the right pane empty until a schedule is chosen", async () => {
+      showRouted("Maintenance Schedule");
+      await screen.findByText("Grease the pumps", { selector: ".ttl" });
+
+      expect(document.querySelector(".wf-main")?.textContent).toBe("");
+      expect(callsTo(repeatingRead)).toHaveLength(0);
+    });
   });
 });
