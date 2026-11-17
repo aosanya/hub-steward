@@ -131,6 +131,7 @@ const entries: Entry[] = [
   { id: "network", icon: "wifi", section: "generated", kinds: labAndRiders },
   { id: "activity", icon: "pulse", section: "generated", kinds: labAndRiders },
   { id: "alerts", icon: "alert", section: "generated", kinds: labAndRiders },
+  { id: "records", icon: "grid", section: "generated", kinds: labAndRiders },
   { id: "equipment", icon: "laptop", section: "generated", kinds: ["riders"] },
   { id: "documents", icon: "file", section: "knowledge", kinds: labAndRiders },
   { id: "general", icon: "gear", section: "settings", kinds: everyKind },
