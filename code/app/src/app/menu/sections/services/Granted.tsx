@@ -32,7 +32,7 @@ function GrantedList({ slug }: { slug: string }) {
       ) : (
         <Rows>
           {view.data.map((row) => (
-            <ListRow key={row.memberId} title={row.name} meta={dayWords(row.decidedAt)} />
+            <ListRow key={row.memberId} title={row.name} meta={dayWords(row.decidedAt)} end={dayWords(row.validUntil)} />
           ))}
         </Rows>
       )}

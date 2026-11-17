@@ -9,7 +9,7 @@ import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
 import { moneyWords } from "../finance/financeData";
 import { personNameOf } from "../residents/personName";
 import { CatalogueWindow } from "./CatalogueEntry";
-import { decisionStatus, sentWords } from "./decision";
+import { certificateFields, certificateOf, decisionStatus, sentWords } from "./decision";
 import { Granted } from "./Granted";
 import { ReceivedApplications } from "./ReceivedApplications";
 import { readItem } from "./readItem";
@@ -28,7 +28,7 @@ const listTool = "forms_catalog_entry_list_public";
 
 const listFields = { title: "name", meta: "line" };
 
-const detailFields = { "Sent on": "sent" };
+const detailFields = { "Sent on": "sent", ...certificateFields };
 
 const feeDetailFields = { "Sent on": "sent", Amount: "amount", Payer: "payer" };
 
@@ -67,6 +67,7 @@ const loadSubmissions = (fee: boolean) => async (slug: string) => {
     status: sent.length === 0 ? notSentWords : statusOf(sent[0]),
     sent: sent.map((submission) => dayWords(text(submission, "submitted_at"))).join(", "),
     owing: sent.filter(isOwing),
+    ...(fee || sent.length === 0 ? {} : certificateOf(sent[0])),
     ...(fee ? await feeDetails(sent[0]) : {}),
   };
 };

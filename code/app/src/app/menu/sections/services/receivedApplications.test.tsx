@@ -106,8 +106,8 @@ const openApplicationOf = async (name: string) => {
 };
 
 const refuseWith = async (reason: string) => {
-  if (!screen.queryByRole("textbox")) await userEvent.click(screen.getByRole("button", { name: "Refuse" }));
-  if (reason !== "") await userEvent.type(await screen.findByRole("textbox"), reason);
+  if (!screen.queryByRole("textbox", { name: "Reason" })) await userEvent.click(screen.getByRole("button", { name: "Refuse" }));
+  if (reason !== "") await userEvent.type(await screen.findByRole("textbox", { name: "Reason" }), reason);
   await userEvent.click(screen.getByRole("button", { name: "Refuse" }));
 };
 
@@ -194,7 +194,7 @@ describe("Applications received on a permit or licence entry", () => {
 
     await refuseWith("");
 
-    expect(await screen.findByRole("textbox")).toBeInTheDocument();
+    expect(await screen.findByRole("textbox", { name: "Reason" })).toBeInTheDocument();
     expect(decideCalls()).toHaveLength(0);
     expect(await rowOf("Bence Farkas")).toHaveTextContent("Sent");
   });

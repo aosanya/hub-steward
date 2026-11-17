@@ -15,6 +15,7 @@ import { peopleRows } from "../residents/PeopleScreens";
 import { answerWordsOf } from "./answers";
 import { decisionStatus, reasonWords, sentWords } from "./decision";
 import { announceDecision } from "./decisionSignal";
+import { GrantFields, grantExtras } from "./GrantFields";
 import { InspectionForm } from "./InspectionForm";
 import { inspectionLineOf, inspectionWords } from "./inspection";
 import { readItem } from "./readItem";
@@ -29,7 +30,7 @@ const unnamedWords = "Someone";
 
 const chevron = "›";
 
-export type Received = { memberId: string; name: string; status: string; line: string; note: string; inspection: string; undecided: boolean; decidedAt: string };
+export type Received = { memberId: string; name: string; status: string; line: string; note: string; inspection: string; undecided: boolean; decidedAt: string; validUntil: string };
 
 const received = (sent: Item, names: Map<string, string>): Received => {
   const status = decisionStatus(text(sent, "decision"));
@@ -43,6 +44,7 @@ const received = (sent: Item, names: Map<string, string>): Received => {
     inspection: inspectionLineOf(sent),
     undecided: status === "",
     decidedAt: text(sent, "decided_at"),
+    validUntil: text(sent, "valid_until"),
   };
 };
 
@@ -66,12 +68,14 @@ function DecideButtons({ formId, memberId, onDecided }: { formId: string; member
   const [asking, setAsking] = useState(false);
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
+  const [certificate, setCertificate] = useState("");
+  const [validUntil, setValidUntil] = useState("");
   const [refused, setRefused] = useState("");
-  const decide = async (decision: "approved" | "refused", note: string) => {
+  const decide = async (decision: "approved" | "refused", note: string, extras: Record<string, string> = {}) => {
     setBusy(true);
     setRefused("");
     try {
-      await callTool("", "forms_submission_decide", { form_id: formId, member_id: memberId, decision, note });
+      await callTool("", "forms_submission_decide", { form_id: formId, member_id: memberId, decision, note, ...extras });
       onDecided();
     } catch (error) {
       setRefused(refusalWords(error));
@@ -81,8 +85,9 @@ function DecideButtons({ formId, memberId, onDecided }: { formId: string; member
   const refuse = () => (asking ? decide("refused", reason.trim()) : setAsking(true));
   return (
     <>
+      <GrantFields certificate={certificate} validUntil={validUntil} onCertificate={setCertificate} onValidUntil={setValidUntil} />
       {asking ? <TextArea label={reasonWords} value={reason} onChange={(event) => setReason(event.target.value)} /> : null}
-      <Button kind="primary" disabled={busy} onClick={() => decide("approved", "")}>{grantLabel}</Button>
+      <Button kind="primary" disabled={busy} onClick={() => decide("approved", "", grantExtras(certificate, validUntil))}>{grantLabel}</Button>
       <Button kind="danger" disabled={busy || (asking && reason.trim() === "")} onClick={refuse}>{refuseLabel}</Button>
       {refused ? <LoadFailed words={refused} /> : null}
     </>
