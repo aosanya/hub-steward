@@ -14,6 +14,16 @@
       ],
       "returns": [{ "body": true }]
     },
+    "list_open_polls": {
+      "method": "GET",
+      "path": "/polls/open",
+      "call": "ListOpenPolls",
+      "action": "voting.poll.list_open",
+      "title": "List open questions",
+      "description": "The polls open now to the groups of the caller, each with its choices in order and whether the caller has answered it. A respondent's view: it names neither who made a poll nor who published it.",
+      "args": [{ "from": "caller", "as": "caller" }],
+      "returns": [{ "body": true }]
+    },
     "get_poll": {
       "method": "GET",
       "path": "/polls/{pollID}",

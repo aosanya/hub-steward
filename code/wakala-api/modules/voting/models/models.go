@@ -77,3 +77,9 @@ func (p Poll) RespondentView() PollRespondentView {
 		CreatedAt: p.CreatedAt, Choices: p.Choices,
 	}
 }
+
+type OpenPoll struct {
+	PollRespondentView
+	Choices  []Choice `json:"choices"`
+	Answered bool     `json:"answered"`
+}
