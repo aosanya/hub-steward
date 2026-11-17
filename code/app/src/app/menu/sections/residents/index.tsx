@@ -1,4 +1,6 @@
 import { Route } from "react-router-dom";
+import { routes as appRoutes } from "../../../routes";
+import { BusinessNewScreen } from "./BusinessNewScreen";
 import { BusinessesScreen } from "./BusinessesScreen";
 import { AllPeopleScreen, CommunicationsScreen, GroupsScreen, HouseholdsScreen, RegistrationsScreen } from "./PeopleScreens";
 import { residentPaths } from "./paths";
@@ -20,5 +22,6 @@ export const routes = () => (
     <Route path={residentPaths.groups.pattern} element={<GroupsScreen />} />
     <Route path={residentPaths.communications.pattern} element={<CommunicationsScreen />} />
     <Route path={residentPaths.businesses.pattern} element={<BusinessesScreen />} />
+    <Route path={appRoutes.businessNew.pattern} element={<BusinessNewScreen />} />
   </>
 );
