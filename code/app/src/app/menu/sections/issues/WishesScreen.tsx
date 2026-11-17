@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { IssueListScreen } from "./IssueListScreen";
+import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
+import { MenuWindow } from "../../MenuWindow";
 import { MeTooButton } from "./MeTooButton";
 
 type Item = Record<string, unknown>;
@@ -15,29 +16,52 @@ const count = (item: Item, key: string) => {
   return typeof value === "number" ? value : 0;
 };
 
-const wishes = async () => itemsOf(await callTool("", wishesTool, {})) as Item[];
+const countsOf = (item: Item) => `raised by ${count(item, "raised_by")} · ${count(item, "me_too")} said Me too`;
 
-const countLines = (item: Item) => [`raised by ${count(item, "raised_by")}`, `${count(item, "me_too")} said Me too`];
+const wishRows = async () => (itemsOf(await callTool("", wishesTool, {})) as Item[]).map((item) => ({ ...item, counts: countsOf(item) }));
 
 const without = (ids: string[], id: string) => ids.filter((one) => one !== id);
+
+const wishFields = { Title: "title", "Raised by": "raised_by", "Said Me too": "me_too" };
 
 export function WishesScreen() {
   const [said, setSaid] = useState<string[]>([]);
   const [failed, setFailed] = useState<string[]>([]);
   const [reloads, setReloads] = useState(0);
+  const latest = useRef<Promise<Item[]> | null>(null);
+  const fetchWishes = () => {
+    const pending = wishRows();
+    latest.current = pending;
+    pending.catch(() => {
+      if (latest.current === pending) latest.current = null;
+    });
+    return pending;
+  };
+  const current = () => latest.current ?? fetchWishes();
+  const loadWish = async (id: string) => (await current()).find((item) => item.id === id) ?? { id };
   const meToo = (id: string) => {
     setFailed((now) => without(now, id));
     callTool("", endorseTool, { subject_id: id }).then(
       () => {
         setSaid((now) => [...without(now, id), id]);
+        fetchWishes();
         setReloads((now) => now + 1);
       },
       () => setFailed((now) => [...without(now, id), id]),
     );
   };
-  const end = (item: Item) => {
+  const button = (item: Item) => {
     const id = String(item.id ?? "");
     return <MeTooButton title={String(item.title ?? "")} said={said.includes(id)} failed={failed.includes(id)} onPress={() => meToo(id)} />;
   };
-  return <IssueListScreen title="Wishes" tool={wishesTool} fields={{ title: "title", meta: "" }} empty="No wishes yet." load={wishes} lines={countLines} end={end} reloadKey={reloads} />;
+  const title = "Wishes";
+  return (
+    <MenuWindow
+      title={title}
+      list={{ title, tool: wishesTool, fields: { title: "title", meta: "counts" }, empty: { words: "No wishes yet.", act: "Home", to: agencyHomePath(openAgencyId()) }, load: current }}
+      detail={{ tool: wishesTool, fields: wishFields, status: "", load: loadWish, extra: button }}
+      listKey={reloads}
+      detailKey={reloads}
+    />
+  );
 }
