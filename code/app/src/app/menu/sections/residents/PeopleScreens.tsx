@@ -4,11 +4,8 @@ import { itemsOf } from "../../../../features/backlogs";
 import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
-import { Shell } from "../../../Shell";
-import { MenuList } from "../../MenuList";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
-import { useBackToSection } from "../../useBackToSection";
 import { GroupPanel, loadGroup } from "./GroupScreen";
 import { personNameOf } from "./personName";
 import { loadPerson, PersonPanel } from "./PersonScreen";
@@ -59,17 +56,6 @@ export const conversationRows = async () =>
 
 export const homeEmpty = (words: string) => ({ words, act: "Home", to: agencyHomePath(openAgencyId()) });
 
-type ListScreenProps = { title: string; tool: string; fields: { title: string; meta: string }; empty: string; load: () => Promise<Item[]>; onChoose?: (id: string) => void };
-
-function ListScreen({ title, tool, fields, empty, load, onChoose }: ListScreenProps) {
-  const back = useBackToSection();
-  return (
-    <Shell title={title} titleUnder {...back}>
-      <MenuList bare title={title} tool={tool} fields={fields} empty={homeEmpty(empty)} load={load} onChoose={onChoose} />
-    </Shell>
-  );
-}
-
 export const peopleRows = async () => (await listOf("actor_list_actors")).map((person) => ({ id: text(person, "id"), name: personNameOf(person), status: text(person, "status") }));
 
 export function AllPeopleScreen() {
@@ -113,9 +99,32 @@ export function HouseholdsScreen() {
   return <GroupWindow title={word("Households")} empty={`No ${word("Households").toLowerCase()} yet.`} keep={(group) => householdTypes.has(text(group, "node_type").toLowerCase())} />;
 }
 
+const rowById = <Row extends { id: string }>(rows: () => Promise<Row[]>) => async (id: string) => (await rows()).find((row) => row.id === id) ?? ({} as Partial<Row>);
+
+const registrationDetail = async (id: string) => {
+  const request = await rowById(registrationRows)(id);
+  return { ...(await loadPerson(request.actor_id ?? "")), asked: request.asked ?? "" };
+};
+
 export function RegistrationsScreen() {
   const word = useWord("actor");
-  return <ListScreen title={word("Registrations")} tool="actor_list_join_requests_for_group" fields={{ title: "name", meta: "asked" }} empty={`No ${word("Registrations").toLowerCase()} waiting.`} load={registrationRows} />;
+  const title = word("Registrations");
+  const [version, setVersion] = useState(0);
+  return (
+    <MenuWindow
+      title={title}
+      listKey={version}
+      detailKey={version}
+      list={{ title, tool: "actor_list_join_requests_for_group", fields: { title: "name", meta: "asked" }, empty: homeEmpty(`No ${title.toLowerCase()} waiting.`), load: registrationRows }}
+      detail={{
+        tool: "actor_get_actor",
+        load: registrationDetail,
+        fields: { Name: "display_name", Asked: "asked" },
+        status: "status",
+        extra: (person) => <PersonPanel person={person} onSaved={() => setVersion((was) => was + 1)} />,
+      }}
+    />
+  );
 }
 
 export function GroupsScreen() {
@@ -126,6 +135,13 @@ export function GroupsScreen() {
 
 export function CommunicationsScreen() {
   const word = useWord("comm");
-  const noneYet = word("Communications") === "Communications" ? "No conversations yet." : `No ${word("Communications").toLowerCase()} yet.`;
-  return <ListScreen title={word("Communications")} tool="comm_chat_thread_list" fields={{ title: "label", meta: "last" }} empty={noneYet} load={conversationRows} />;
+  const title = word("Communications");
+  const noneYet = title === "Communications" ? "No conversations yet." : `No ${title.toLowerCase()} yet.`;
+  return (
+    <MenuWindow
+      title={title}
+      list={{ title, tool: "comm_chat_thread_list", fields: { title: "label", meta: "last" }, empty: homeEmpty(noneYet), load: conversationRows }}
+      detail={{ tool: "comm_chat_thread_list", load: rowById(conversationRows), fields: { Name: "label", "Last message": "last" }, status: "" }}
+    />
+  );
 }
