@@ -58,6 +58,8 @@
     "ErrMissingPrompt": 400,
     "ErrMissingOptionLabel": 400,
     "ErrMissingNote": 400,
+    "ErrInvalidDecision": 400,
+    "ErrSelfDecision": 403,
     "ErrQuestionNotOnForm": 400
   },
   "operations": {
@@ -605,6 +607,22 @@
         {"from": "path", "as": "member_id", "description": "The person whose send is marked."},
         {"from": "body", "as": "paid", "description": "True marks the send paid, false marks it not paid."},
         {"from": "caller", "as": "marked_by"}
+      ],
+      "returns": [{"body": true}]
+    },
+    "decide_submission": {
+      "method": "PUT",
+      "path": "/forms/{form_id}/submissions/{member_id}/decision",
+      "call": "DecideSubmission",
+      "action": "forms.submission.decide",
+      "title": "Decide an applicant's send",
+      "description": "A clerk records the decision on what one applicant sent: approved or refused, with an optional note for an approval and a required note for a refusal. The decider is the caller, resolved from the session, and the time is now. The decision sits on the applicant's own send and the applicant reads it back with their send and in the list of what they answered. Deciding again replaces the earlier decision. An applicant cannot decide their own send. A person who sent nothing, or whose send was withdrawn, is not found.",
+      "args": [
+        {"from": "path", "as": "form_id", "refers": "forms.form", "description": "The instrument that was sent to."},
+        {"from": "path", "as": "member_id", "description": "The applicant whose send is decided."},
+        {"from": "body", "as": "decision", "required": true, "description": "approved or refused."},
+        {"from": "body", "as": "note", "description": "Why. Required for a refusal, optional for an approval."},
+        {"from": "caller", "as": "decided_by", "description": "The clerk deciding, resolved from the session rather than the request."}
       ],
       "returns": [{"body": true}]
     },

@@ -256,6 +256,10 @@
         {"name": "paid_by", "type": "string", "description": "Who marked it paid, taken from the session. Empty when it is not paid."},
         {"name": "repeat_of", "type": "string", "description": "The send this one repeats, when the form allows one voice per person and the member sent again. Empty means it is the person's own voice. A repeat is kept and never counted."},
         {"name": "withdrawn_at", "type": "timestamp", "description": "When the member withdrew their consent. Empty means they have not. The send is kept and no longer listed, counted or marked paid, and a later send to the same instrument is kept beside it."},
+        {"name": "decision", "type": "enum", "description": "What was decided on this send. Empty means undecided. A later decision replaces an earlier one.", "values": ["", "approved", "refused"]},
+        {"name": "decided_by", "type": "string", "description": "Who decided it, taken from the session. Empty while undecided."},
+        {"name": "decided_at", "type": "timestamp", "description": "When it was decided. Empty while undecided."},
+        {"name": "decision_note", "type": "string", "description": "Why. Required for a refusal."},
         {"name": "voice_key", "type": "string", "description": "Names the one voice a person holds on an instrument that allows one voice per person, in one period, whichever group they sent as. Written only on a person's own voice, never on a repeat, and empty on an instrument that allows several voices and on every send kept from before the key existed."}
       ],
       "indexes": [

@@ -509,6 +509,7 @@ forms_results_files
 forms_results_publish
 forms_results_read
 forms_submission_correct
+forms_submission_decide
 forms_submission_list
 forms_submission_list_missed
 forms_submission_mark_paid
