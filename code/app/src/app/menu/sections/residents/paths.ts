@@ -6,4 +6,5 @@ export const residentPaths = {
   registrations: screen("/menu/residents/registrations"),
   groups: screen("/menu/residents/groups"),
   communications: screen("/menu/residents/communications"),
+  businesses: screen("/menu/residents/businesses"),
 };
