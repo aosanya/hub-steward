@@ -393,3 +393,101 @@ func TestCreateWithTodosKeepsCanRunParallelAndTheIssueFields(t *testing.T) {
 		t.Errorf("todos = %v, want can_run_parallel kept per todo", todos)
 	}
 }
+
+func (h *batchHub) limitInProgress(limit int) {
+	h.t.Helper()
+	h.expect(http.StatusOK, "owner", "PUT", "/backlogs/software/steps/in-progress/wip-limit", map[string]any{"wip_limit": limit})
+}
+
+func (h *batchHub) inProgress(title string) string {
+	h.t.Helper()
+	id := h.issue(title)
+	h.expect(http.StatusOK, "owner", "POST", "/tasks/"+id+"/move-to-step", map[string]any{"backlog": "software", "step": "in-progress"})
+	return id
+}
+
+func TestBatchAllOrNothingRefusesAMoveIntoAFullStepBeforeApplyingAnything(t *testing.T) {
+	h := newBatchHub(t)
+	h.inProgress("holder")
+	h.limitInProgress(1)
+	a, b := h.issue("A"), h.issue("B")
+
+	body := h.expect(http.StatusOK, "owner", "POST", "/batch", map[string]any{"all_or_nothing": true, "operations": []any{
+		patchOp(a, map[string]any{"title": "renamed"}),
+		moveOp(b, "in-progress"),
+	}})
+
+	if body["applied"] != float64(0) || body["failed"] != float64(1) {
+		t.Errorf("applied %v failed %v, want 0 and 1", body["applied"], body["failed"])
+	}
+	if r := batchResult(body, 0); r["ok"] != true || r["applied"] != false || r["error"] != nil {
+		t.Errorf("the passing patch read %v, want ok true, applied false, no error", r)
+	}
+	if r := batchResult(body, 1); r["ok"] != false || r["applied"] != false || r["error"] == nil {
+		t.Errorf("the refused move read %v, want ok false, applied false and an error", r)
+	}
+	if got := h.read(a)["title"]; got != "A" {
+		t.Errorf("A is titled %v, the batch applied a patch although a move was refused", got)
+	}
+	if got := h.read(b)["step"]; got != "to-do" {
+		t.Errorf("B is at %v, want to-do", got)
+	}
+}
+
+func TestBatchWithoutAllOrNothingReportsAFullStepRefusalAsFailed(t *testing.T) {
+	h := newBatchHub(t)
+	h.inProgress("holder")
+	h.limitInProgress(1)
+	a, b := h.issue("A"), h.issue("B")
+
+	body := h.expect(http.StatusOK, "owner", "POST", "/batch", map[string]any{"operations": []any{
+		patchOp(a, map[string]any{"title": "renamed"}),
+		moveOp(b, "in-progress"),
+	}})
+
+	if body["applied"] != float64(1) || body["failed"] != float64(1) {
+		t.Errorf("applied %v failed %v, want 1 and 1", body["applied"], body["failed"])
+	}
+	if r := batchResult(body, 1); r["ok"] != false || r["applied"] != false || r["error"] == nil {
+		t.Errorf("the refused move read %v, want ok false, applied false and an error", r)
+	}
+	if got := h.read(a)["title"]; got != "renamed" {
+		t.Errorf("A is titled %v, want renamed", got)
+	}
+}
+
+func TestBatchAllOrNothingCountsWhatEarlierMovesLeaveInAStep(t *testing.T) {
+	h := newBatchHub(t)
+	holder := h.inProgress("holder")
+	h.limitInProgress(1)
+	a, b := h.issue("A"), h.issue("B")
+
+	freed := h.expect(http.StatusOK, "owner", "POST", "/batch", map[string]any{"all_or_nothing": true, "operations": []any{
+		moveOp(holder, "to-do"),
+		moveOp(a, "in-progress"),
+	}})
+	if freed["applied"] != float64(2) || freed["failed"] != float64(0) {
+		t.Errorf("moving out then in: applied %v failed %v, want 2 and 0", freed["applied"], freed["failed"])
+	}
+
+	crowded := h.expect(http.StatusOK, "owner", "POST", "/batch", map[string]any{"all_or_nothing": true, "operations": []any{
+		moveOp(b, "in-progress"),
+	}})
+	if crowded["applied"] != float64(0) || crowded["failed"] != float64(1) {
+		t.Errorf("moving into the step A now fills: applied %v failed %v, want 0 and 1", crowded["applied"], crowded["failed"])
+	}
+
+	h2 := newBatchHub(t)
+	x, y := h2.issue("X"), h2.issue("Y")
+	h2.limitInProgress(1)
+	two := h2.expect(http.StatusOK, "owner", "POST", "/batch", map[string]any{"all_or_nothing": true, "operations": []any{
+		moveOp(x, "in-progress"),
+		moveOp(y, "in-progress"),
+	}})
+	if two["applied"] != float64(0) || batchResult(two, 1)["ok"] != false {
+		t.Errorf("two moves into a step with room for one: %v, want nothing applied and the second refused", two)
+	}
+	if h2.read(x)["step"] != "to-do" {
+		t.Errorf("X moved although the batch was refused")
+	}
+}
