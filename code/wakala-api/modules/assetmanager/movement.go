@@ -14,6 +14,19 @@ import (
 	"wakalaserver/modules/assetmanager/models"
 )
 
+// PostMovement validates and appends a new Movement entry, then updates the
+// affected Asset's denormalized LocationID to match. Kind must be one of
+// [models.MovementKindArrived], [models.MovementKindTransferred],
+// [models.MovementKindDeparted], or [models.MovementKindAdjusted] —
+// [models.MovementKindReversed] entries are only ever created by
+// [assetManager.ReverseMovement], never posted directly.
+//
+// Movement creation and the Asset.location_id patch are two separate calls,
+// not one atomic transaction — same gap mwanachama-backend-taskmanager's
+// WorkflowRun rollback (W6) documents and defers, unaffected by this
+// storage swap. A crash between the two leaves the ledger correct (it's the
+// only source of truth for balance) and the denormalized LocationID stale
+// until the next movement corrects it.
 func (m *assetManager) PostMovement(ctx context.Context, mv models.Movement) (models.Movement, error) {
 	mv.ID = newID()
 	if err := m.check(roleMovement, mv, ErrInvalidMovement); err != nil {
@@ -41,7 +54,7 @@ func (m *assetManager) PostMovement(ctx context.Context, mv models.Movement) (mo
 		mv.OccurredAt = now
 	}
 
-	if err := m.appendMovement(ctx, mv); err != nil {
+	if err := m.store.Insert(ctx, roleMovement, mv); err != nil {
 		return models.Movement{}, fmt.Errorf("PostMovement: %w", err)
 	}
 	out := mv
