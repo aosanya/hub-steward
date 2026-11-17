@@ -44,6 +44,8 @@ const formCard = () => screen.getByRole("region", { name: "Report to send" });
 
 const sentList = () => screen.getByRole("region", { name: "Sent reports" });
 
+const sentRows = () => Array.from(sentList().querySelectorAll("button.row")).map((row) => row.textContent ?? "");
+
 const openScreen = () =>
   render(
     <MemoryRouter initialEntries={[{ pathname: "/a/town/menu/finance/national-report", state: { from: origin } }]}>
@@ -191,9 +193,10 @@ describe("sending a report", () => {
     });
     await waitFor(() => expect(formCard().textContent).toContain("2026-10-05"));
     expect(formCard().textContent).toContain("8,100");
-    await waitFor(() => expect(within(sentList()).getByText("2026-07-01 to 2026-09-30 · Sent 2026-10-05")).toBeInTheDocument());
-    expect(within(sentList()).getByText("Spending by department")).toBeInTheDocument();
-    expect(within(sentList()).getByText("Budget and actuals")).toBeInTheDocument();
+    await waitFor(() => expect(sentRows()).toHaveLength(2));
+    expect(sentRows()[0]).toContain("Spending by department");
+    expect(sentRows()[0]).toContain("2026-07-01 to 2026-09-30 · Sent 2026-10-05");
+    expect(sentRows()[1]).toContain("Budget and actuals");
   });
 
   it("sends budget and actuals when the kind was left alone", async () => {
@@ -215,7 +218,7 @@ describe("sending a report", () => {
 
     expect(await within(formCard()).findByText("no budget lines were set for that period")).toBeInTheDocument();
     expect(sent).toHaveLength(1);
-    expect(within(sentList()).queryAllByRole("button", { name: /Sent 2026-10-05/ })).toHaveLength(0);
+    expect(sentRows()).toHaveLength(1);
   });
 
   it("does not claim a transmission to a national system", async () => {
@@ -233,9 +236,22 @@ describe("the Sent reports list", () => {
   it("draws one row for each record, titled with its kind in words and meta with its period and sent date", async () => {
     openScreen();
 
-    expect(await within(sentList()).findByText("Budget and actuals")).toBeInTheDocument();
-    expect(within(sentList()).getByText("2026-01-01 to 2026-03-31 · Sent 2026-04-10")).toBeInTheDocument();
+    await waitFor(() => expect(sentRows()).toHaveLength(1));
+    expect(sentRows()[0]).toContain("Budget and actuals");
+    expect(sentRows()[0]).toContain("2026-01-01 to 2026-03-31 · Sent 2026-04-10");
     expect(callsTo("accounting_upward_report_list")).toHaveLength(1);
+  });
+
+  it("opens a sent record with its figures as sent", async () => {
+    openScreen();
+    await waitFor(() => expect(sentRows()).toHaveLength(1));
+    await userEvent.click(sentList().querySelector("button.row") as HTMLElement);
+
+    const pane = () => document.querySelector(".mw-detail") as HTMLElement;
+    await waitFor(() => expect(pane()?.textContent).toContain("12,000"));
+    expect(pane().textContent).toContain("9,500");
+    expect(pane().textContent).toContain("2,500");
+    expect(pane().textContent).toContain("2026-04-10");
   });
 
   it("says so when nothing has been sent yet", async () => {
@@ -249,10 +265,9 @@ describe("the Sent reports list", () => {
     sent = [earlier, { ...earlier, id: "u9", kind: "spending_by_department", sent_at: "2026-10-05T09:00:00Z" }];
     openScreen();
 
-    await within(sentList()).findByText("Spending by department");
-    const rows = within(sentList()).getAllByRole("button").map((row) => row.textContent);
-    expect(rows[0]).toContain("Spending by department");
-    expect(rows[1]).toContain("Budget and actuals");
+    await waitFor(() => expect(sentRows()).toHaveLength(2));
+    expect(sentRows()[0]).toContain("Spending by department");
+    expect(sentRows()[1]).toContain("Budget and actuals");
   });
 });
 
@@ -267,7 +282,7 @@ describe("who may send", () => {
     permissions = ["accounting.view"];
     openScreen();
 
-    expect(await within(sentList()).findByText("Budget and actuals")).toBeInTheDocument();
+    await waitFor(() => expect(sentRows()).toHaveLength(1));
     await waitFor(() => expect(callsTo("agency_get_my_roles").length).toBeGreaterThan(0));
     await new Promise((resolve) => setTimeout(resolve, 20));
     expect(within(formCard()).queryByRole("button", { name: "Send report" })).toBeNull();
