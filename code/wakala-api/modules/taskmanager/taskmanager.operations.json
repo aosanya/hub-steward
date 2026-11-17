@@ -677,6 +677,14 @@
                {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
       "returns": [{"body": true}]
     },
+    "board_snapshot": {
+      "method": "GET", "path": "/board-snapshot", "call": "BoardSnapshot", "action": "taskmanager.task.board_snapshot",
+      "title": "The state of the board in one call",
+      "description": "Learn the state of the board in one call instead of reading pending, lists, overdue and dependencies. Narrow by backlog (id or name; a backlog the caller cannot see is refused as unknown) and stalled_days (default 2). It reads the open issues the caller can see and returns steps, one per step in step order, each {name, count, oldest_days, oldest_code} where count equals by_step of taskmanager_task_pending for the same backlog, and oldest_days is how many whole days the least recently changed issue of that step has gone without a change (a named backlog lists all its steps, zeros included; with none, only steps that hold an issue); agents, the issues In progress per assignee {agent, in_progress, codes}, most loaded first, with an empty agent for issues nobody holds; stalled, the issues In progress not changed for more than stalled_days {id, code, title, agent, days}, the longest first; blocked_chains, every issue tagged Blocked {id, code, title, waits_on}, where waits_on lists the open issues it depends on as {code, blocked}, blocked being true when that issue is itself Blocked, so a chain reads link by link; ready, the number of Ready issues at the To do step that are not Sinbin, Blocked or Waiting (the total_ready of taskmanager_task_next_ready); and todo_progress {done, total}, the todos over the issues In progress. A stalled_days below 0 is refused with 400. Read-only.",
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
+      "returns": [{"body": true}]
+    },
     "unblock_impact": {
       "method": "GET", "path": "/unblock-impact", "call": "UnblockImpact", "action": "taskmanager.task.unblock_impact",
       "title": "Which open issues finishing would unblock the most others",

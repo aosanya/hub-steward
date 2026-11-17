@@ -48,6 +48,8 @@ type TaskManager interface {
 	PendingTodos(ctx context.Context, filter PendingTodosFilter) (PendingTodos, error)
 	TimedOut(ctx context.Context, filter TimedOutFilter) (TimedOut, error)
 
+	BoardSnapshot(ctx context.Context, filter BoardSnapshotFilter) (BoardSnapshot, error)
+
 	FindTasks(ctx context.Context, filter FindFilter) (FoundTasks, error)
 
 	NextReady(ctx context.Context, filter NextReadyFilter) (NextReady, error)
