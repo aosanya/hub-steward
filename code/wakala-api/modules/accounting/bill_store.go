@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"wakalaserver/modules/accounting/models"
 	"wakalaserver/modules/shared/specstore"
 )
@@ -19,13 +20,17 @@ type (
 const (
 	DocumentBill DocumentKind = "bill"
 
-	dimensionPayer = "payer"
+	uuidLength = 36
+
+	dimensionPayer      = "payer"
+	dimensionPayerActor = "payer_actor_id"
 )
 
 type BillFilter struct {
 	IncomeAccountID string `query:"income_account_id"`
 	Status          string `query:"status"`
 	Payer           string `query:"payer"`
+	ActorID         string `query:"actor_id"`
 	AsOf            string `query:"as_of"`
 	Limit           int    `query:"limit"`
 }
@@ -51,7 +56,35 @@ func (m *ledgerStore) accountOfType(ctx context.Context, id, field string, want 
 	return a, nil
 }
 
+func payerDimensions(payer, payerActorID string) map[string]string {
+	dimensions := map[string]string{}
+	if payer = strings.TrimSpace(payer); payer != "" {
+		dimensions[dimensionPayer] = payer
+	}
+	if payerActorID = strings.TrimSpace(payerActorID); payerActorID != "" {
+		dimensions[dimensionPayerActor] = payerActorID
+	}
+	if len(dimensions) == 0 {
+		return nil
+	}
+	return dimensions
+}
+
+func checkPayerActorID(payerActorID string) error {
+	payerActorID = strings.TrimSpace(payerActorID)
+	if payerActorID == "" {
+		return nil
+	}
+	if _, err := uuid.Parse(payerActorID); err != nil || len(payerActorID) != uuidLength {
+		return fmt.Errorf("%w: payer_actor_id %q is not an actor id", ErrInvalid, payerActorID)
+	}
+	return nil
+}
+
 func checkBillInput(in BillInput) error {
+	if err := checkPayerActorID(in.PayerActorID); err != nil {
+		return err
+	}
 	if strings.TrimSpace(in.IncomeAccountID) == "" {
 		return fmt.Errorf("%w: a bill names no income_account_id", ErrInvalid)
 	}
@@ -77,10 +110,6 @@ func (m *ledgerStore) CreateBill(ctx context.Context, in BillInput) (Bill, error
 	if _, err := m.accountOfType(ctx, in.ReceivableAccountID, "receivable_account_id", AccountTypeAsset); err != nil {
 		return Bill{}, err
 	}
-	var dimensions map[string]string
-	if payer := strings.TrimSpace(in.Payer); payer != "" {
-		dimensions = map[string]string{dimensionPayer: payer}
-	}
 	posted, err := m.Post(ctx, Entry{
 		DebitAccountID:  in.ReceivableAccountID,
 		CreditAccountID: in.IncomeAccountID,
@@ -90,7 +119,7 @@ func (m *ledgerStore) CreateBill(ctx context.Context, in BillInput) (Bill, error
 		DocumentID:      newID(),
 		ActorID:         in.BilledBy,
 		Narration:       in.Narration,
-		Dimensions:      dimensions,
+		Dimensions:      payerDimensions(in.Payer, in.PayerActorID),
 	})
 	if err != nil {
 		return Bill{}, err
@@ -135,6 +164,9 @@ func (m *ledgerStore) billEntries(ctx context.Context, filter BillFilter) ([]Ent
 		if filter.Payer != "" && e.Dimensions[dimensionPayer] != filter.Payer {
 			continue
 		}
+		if filter.ActorID != "" && e.Dimensions[dimensionPayerActor] != filter.ActorID {
+			continue
+		}
 		bills = append(bills, e)
 	}
 	return bills, nil
@@ -165,6 +197,7 @@ func billOf(e Entry, reversed bool, paid int64, at time.Time) Bill {
 		IncomeAccountID:     e.CreditAccountID,
 		ReceivableAccountID: e.DebitAccountID,
 		Payer:               e.Dimensions[dimensionPayer],
+		PayerActorID:        e.Dimensions[dimensionPayerActor],
 		Amount:              e.Amount,
 		Settled:             paid,
 		Outstanding:         outstanding,

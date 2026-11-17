@@ -19,10 +19,11 @@ type (
 const DocumentPayment DocumentKind = "payment"
 
 type PaymentFilter struct {
-	Kind   string `query:"kind"`
-	BillID string `query:"bill_id"`
-	Payer  string `query:"payer"`
-	Limit  int    `query:"limit"`
+	Kind    string `query:"kind"`
+	BillID  string `query:"bill_id"`
+	Payer   string `query:"payer"`
+	ActorID string `query:"actor_id"`
+	Limit   int    `query:"limit"`
 }
 
 type PaymentRepository interface {
@@ -69,10 +70,6 @@ func (m *ledgerStore) MarkBillPaid(ctx context.Context, in MarkPaidInput) (Payme
 	if _, err := m.accountOfType(ctx, in.CashAccountID, "cash_account_id", AccountTypeAsset); err != nil {
 		return Payment{}, err
 	}
-	var dimensions map[string]string
-	if bill.Payer != "" {
-		dimensions = map[string]string{dimensionPayer: bill.Payer}
-	}
 	posted, err := m.Post(ctx, Entry{
 		DebitAccountID:  in.CashAccountID,
 		CreditAccountID: bill.ReceivableAccountID,
@@ -82,7 +79,7 @@ func (m *ledgerStore) MarkBillPaid(ctx context.Context, in MarkPaidInput) (Payme
 		DocumentID:      newID(),
 		ActorID:         in.PaidBy,
 		Narration:       in.Narration,
-		Dimensions:      dimensions,
+		Dimensions:      payerDimensions(bill.Payer, bill.PayerActorID),
 		SettlesEntryID:  bill.ID,
 	})
 	if err != nil {
@@ -103,6 +100,7 @@ func billPaymentOf(e Entry) Payment {
 		Narration:       e.Narration,
 		BillID:          e.SettlesEntryID,
 		Payer:           e.Dimensions[dimensionPayer],
+		PayerActorID:    e.Dimensions[dimensionPayerActor],
 	}
 }
 
@@ -130,6 +128,9 @@ func (m *ledgerStore) billPayments(ctx context.Context, filter PaymentFilter) ([
 		}
 		p := billPaymentOf(e)
 		if filter.Payer != "" && p.Payer != filter.Payer {
+			continue
+		}
+		if filter.ActorID != "" && p.PayerActorID != filter.ActorID {
 			continue
 		}
 		out = append(out, p)
@@ -212,7 +213,7 @@ func (m *ledgerStore) ListPayments(ctx context.Context, filter PaymentFilter) ([
 		}
 		all = append(all, bills...)
 	}
-	if kind != models.PaymentOfBill && filter.BillID == "" && filter.Payer == "" {
+	if kind != models.PaymentOfBill && filter.BillID == "" && filter.Payer == "" && filter.ActorID == "" {
 		certificates, err := m.certificatePayments(ctx)
 		if err != nil {
 			return nil, err

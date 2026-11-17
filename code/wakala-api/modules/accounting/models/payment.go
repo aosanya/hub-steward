@@ -31,6 +31,7 @@ type Payment struct {
 	Narration       string      `json:"narration,omitempty"`
 	BillID          string      `json:"bill_id,omitempty"`
 	Payer           string      `json:"payer,omitempty"`
+	PayerActorID    string      `json:"payer_actor_id,omitempty"`
 	CertificateID   string      `json:"certificate_id,omitempty"`
 	MilestoneID     string      `json:"milestone_id,omitempty"`
 	ContractID      string      `json:"contract_id,omitempty"`

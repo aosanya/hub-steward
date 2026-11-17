@@ -21,6 +21,7 @@ type BillInput struct {
 	IncomeAccountID     string `json:"income_account_id"`
 	ReceivableAccountID string `json:"receivable_account_id"`
 	Payer               string `json:"payer,omitempty"`
+	PayerActorID        string `json:"payer_actor_id,omitempty"`
 	Amount              int64  `json:"amount"`
 	DueAt               string `json:"due_at"`
 	Narration           string `json:"narration,omitempty"`
@@ -32,6 +33,7 @@ type Bill struct {
 	IncomeAccountID     string     `json:"income_account_id"`
 	ReceivableAccountID string     `json:"receivable_account_id"`
 	Payer               string     `json:"payer,omitempty"`
+	PayerActorID        string     `json:"payer_actor_id,omitempty"`
 	Amount              int64      `json:"amount"`
 	Settled             int64      `json:"settled"`
 	Outstanding         int64      `json:"outstanding"`
