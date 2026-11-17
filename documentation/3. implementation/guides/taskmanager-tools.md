@@ -15,8 +15,6 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | The state of the board in one read | `taskmanager_task_board_snapshot` | `GET /board-snapshot` |
 | Which open issues finishing would unblock the most others | `taskmanager_task_unblock_impact` | `GET /unblock-impact` |
 | Which issues break the filing rules | `taskmanager_task_lint` | `GET /lint` |
-| The todos that can start now across the issues in progress | `taskmanager_task_todo_ready_board` | `GET /todo-ready-board` |
-| What changed on the board after a cursor | `taskmanager_task_changes_since` | `GET /changes-since` |
 | Patch or move up to 50 issues in one call | `taskmanager_task_batch` | `POST /batch` |
 | Create an issue with its todos and their order in one call | `taskmanager_task_create_with_todos` | `POST /create-with-todos` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
@@ -112,25 +110,6 @@ The answer is `items` (id, code, title and `findings`, each a `rule` and a `mess
 | `no_priority` | priority is blank |
 | `todo_without_description` | a todo has no description |
 
-## taskmanager_task_todo_ready_board
-
-Inputs: `backlog`, `tag` (repeat it to require every tag) and `limit` (1 to 100, default 25; anything else is 400). Read-only; a person sees only the backlogs their groups see, and an unknown or unseen `backlog` is 400.
-
-The answer is `items`, ordered by the issue's rank and then the todo's order: each is a todo (`id`, `code`, `title`, `instructions`, `ordinality`, `state`, `can_run_parallel`, `elapsed_seconds`) with its issue (`issue_id`, `issue_code`, `issue_files`), and `total`, which counts every match. Only issues at the In Progress step contribute, and a todo is listed by the same rule as `taskmanager_task_todo_ready`.
-
-## taskmanager_task_changes_since
-
-Inputs: `cursor` (opaque; empty returns no changes and a cursor for now), `limit` (default 100, at most 500), `backlog` and `tag`. Read-only; a cursor this tool did not return and a `limit` above 500 are 400, and a person sees only the issues of the backlogs their groups see.
-
-The answer is `changes` in time order (`id`, `code`, `title`, `kind`, `from`, `to`, `at`), `next_cursor` to send next and `has_more`.
-
-| Kind | `from` and `to` | Read from |
-|---|---|---|
-| `created` | empty | the time the issue was filed |
-| `priority` | the old and new priority | the Log entry a priority change writes |
-
-A move, an assignment, a status or tag change and a delete are not reported: the hub writes no Log entry with a time and a from and to for them.
-
 ## taskmanager_task_batch
 
 Inputs: `operations` (1 to 50, else 400), each `{op, task_id}` with `op` `patch` (and `patch`, the fields of `taskmanager_task_patch`) or `move_to_step` (and `backlog`, `step`), and `all_or_nothing` (default false). Needs Can move on the backlog of each issue, checked per operation as the single tool does.
@@ -204,8 +183,6 @@ Refused, with nothing written: 409 unless the issue sits at the backlog's In Pro
 | The board-snapshot tool | `modules/taskmanager/task_board_snapshot.go`, tests in `routes/board_snapshot_test.go` |
 | The unblock-impact tool | `modules/taskmanager/task_unblock_impact.go`, tests in `routes/unblock_impact_test.go` |
 | The lint tool and its rule table | `modules/taskmanager/task_lint.go`, tests in `routes/task_lint_test.go` |
-| The todo-ready-board tool | `modules/taskmanager/todo_ready_board.go`, the readiness rule in `todo_ready.go`, tests in `routes/todo_ready_board_test.go` |
-| The changes-since tool | `modules/taskmanager/task_changes_since.go`, tests in `routes/changes_since_test.go` |
 | The batch and create-with-todos tools | `modules/taskmanager/task_batch.go`, `task_create_with_todos.go`, the move rule in `task_move_path.go`, tests in `routes/task_batch_test.go` |
 | The dependencies tool and its types | `modules/taskmanager/task_dependencies.go`, tests in `routes/task_dependencies_test.go` |
 | The timed-out tool and its types | `modules/taskmanager/task_timed_out.go`, tests in `routes/timed_out_test.go` |
