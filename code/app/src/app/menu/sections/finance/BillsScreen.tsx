@@ -10,7 +10,7 @@ import { actionFailedWords } from "../../MenuDetail";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { RaiseBillSheet } from "./RaiseBillSheet";
-import { billRow, dayWords, homeEmpty, listOf, moneyWords, text, tools, type Item } from "./financeData";
+import { billRow, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, text, tools, type Item } from "./financeData";
 import { markBillPaid } from "./markBillPaid";
 
 const manageRole = "accounting.manage";
@@ -46,6 +46,7 @@ const loadBill = async (id: string) => {
     due: dayWords(text(bill, "due_at")),
     due_at: text(bill, "due_at"),
     narration: text(bill, "narration"),
+    late: daysLateWords(bill ?? {}),
     status: billRow(bill ?? {}).status,
     ...Object.fromEntries(newestFirst(payments).slice(0, paymentLines).map((payment, at) => [`payment${at + 1}`, paymentLine(payment)])),
   };
@@ -118,7 +119,7 @@ export function BillsScreen() {
       detail={{
         tool: tools.billRead,
         load: loadBill,
-        fields: { Payer: "payer", Amount: "amountWords", Settled: "settled", Outstanding: "outstanding", Due: "due", Narration: "narration", Status: "status", ...paymentFields },
+        fields: { Payer: "payer", Amount: "amountWords", Settled: "settled", Outstanding: "outstanding", Due: "due", Late: "late", Narration: "narration", Status: "status", ...paymentFields },
         status: "",
         extra: (bill) => (
           <MenuEditForm

@@ -59,10 +59,16 @@ export const budgetRow = (line: Item) => ({
   spent: numberOf(line.spent),
 });
 
+export const daysLateWords = (bill: Item) => {
+  const days = numberOf(bill.days_overdue);
+  if (text(bill, "status") !== "overdue" || days <= 0) return "";
+  return `${days} ${days === 1 ? "day" : "days"} late`;
+};
+
 export const billRow = (bill: Item) => ({
   id: text(bill, "id"),
   payer: text(bill, "payer"),
-  meta: `${moneyWords(numberOf(bill.amount))} · due ${dayWords(text(bill, "due_at"))}`,
+  meta: [`${moneyWords(numberOf(bill.amount))} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
   status: capitalised(text(bill, "status")),
 });
 

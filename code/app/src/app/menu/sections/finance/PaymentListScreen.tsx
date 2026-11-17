@@ -9,7 +9,7 @@ import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
-import { dayStart, dayWords, homeEmpty, listOf, moneyWords, owedTotal, owedWords, text, tools, type Item } from "./financeData";
+import { dayStart, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, owedTotal, owedWords, text, tools, type Item } from "./financeData";
 
 const owedHeading = "To pay";
 
@@ -43,10 +43,11 @@ const owedRow = (bill: Item) => ({
   billID: text(bill, "id"),
   group: owedHeading,
   payer: text(bill, "payer"),
-  meta: `${moneyWords(text(bill, "outstanding"))} · due ${dayWords(text(bill, "due_at"))}`,
+  meta: [`${moneyWords(text(bill, "outstanding"))} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
   outstanding: moneyWords(text(bill, "outstanding")),
   outstandingAmount: String(Number(text(bill, "outstanding")) || 0),
   due: dayWords(text(bill, "due_at")),
+  late: daysLateWords(bill),
   status: text(bill, "status") === "overdue" ? "Overdue" : "Unpaid",
 });
 
@@ -177,7 +178,7 @@ export function PaymentListScreen() {
       detail={{
         tool: tools.paymentList,
         load: loadRow,
-        fields: { Payer: "payer", Outstanding: "outstanding", Due: "due", Amount: "amount", "Paid on": "paidOn", Narration: "narration", Bill: "bill" },
+        fields: { Payer: "payer", Outstanding: "outstanding", Due: "due", Late: "late", Amount: "amount", "Paid on": "paidOn", Narration: "narration", Bill: "bill" },
         status: "status",
         action: { label: "Mark paid", tool: tools.paymentMarkPaid, run: openForm, when: (row) => mayMark && text(row, "group") === owedHeading },
         extra: (row) =>
