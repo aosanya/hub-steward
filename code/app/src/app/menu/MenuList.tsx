@@ -27,6 +27,7 @@ type Props = {
   fields: Fields;
   empty: Empty;
   bare?: boolean;
+  add?: { label: string; to: string };
   selectedId?: string;
   onChoose?: (id: string) => void;
   load?: () => Promise<Item[]>;
@@ -42,7 +43,7 @@ const textOf = (item: Record<string, unknown>, key: string) => {
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
 
-export function MenuList({ title, tool, fields, empty, bare, selectedId, onChoose, load, end, loadingWords, failedWords, groups, lines }: Props) {
+export function MenuList({ title, tool, fields, empty, bare, add, selectedId, onChoose, load, end, loadingWords, failedWords, groups, lines }: Props) {
   const navigate = useNavigate();
   const back = useBackToSection();
   const [typed, setTyped] = useState("");
@@ -84,5 +85,5 @@ export function MenuList({ title, tool, fields, empty, bare, selectedId, onChoos
       ) : null}
     </>
   );
-  return bare ? body : <Shell title={title} titleUnder {...back}>{body}</Shell>;
+  return bare ? body : <Shell title={title} titleUnder headEnd={add && rows.length > 0 ? <Button to={add.to}>{add.label}</Button> : undefined} {...back}>{body}</Shell>;
 }

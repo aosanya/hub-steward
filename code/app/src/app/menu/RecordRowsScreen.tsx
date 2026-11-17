@@ -17,6 +17,7 @@ export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, 
       tool={liveRecordRowsTool}
       fields={{ title: "title", meta: "meta" }}
       empty={empty}
+      add={{ label: empty.act, to: empty.to }}
       load={() => loadRecordRows(recordCode, titlePrompt, metaPrompts)}
     />
   );
