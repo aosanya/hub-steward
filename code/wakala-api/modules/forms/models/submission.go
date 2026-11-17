@@ -23,6 +23,7 @@ type Submission struct {
 	VoiceKey     string   `json:"-"`
 	Paid         bool     `json:"paid" spec:"-"`
 	Answers      int      `json:"answers" spec:"-"`
+	FormTitle    string   `json:"form_title,omitempty" spec:"-"`
 }
 
 const (

@@ -922,6 +922,27 @@
         }
       ]
     },
+    "list_person_raised_items": {
+      "method": "GET",
+      "path": "/raised-items/by-person",
+      "call": "ListRaisedItems",
+      "action": "catalog.raised_item.list_of_person",
+      "title": "List the items one person raised",
+      "description": "The items one named person raised, newest first, each with the department that holds it and its status. Staff's read of another person's items, the person named in the request rather than taken from the session. Never anonymous.",
+      "args": [
+        {
+          "from": "query",
+          "as": "raised_by",
+          "required": true,
+          "description": "The actor whose items to list."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
     "list_subject_raised_items": {
       "method": "GET",
       "path": "/raised-items/by-subject",

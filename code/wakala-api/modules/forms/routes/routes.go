@@ -102,6 +102,7 @@ func BuildFor(fm forms.FormManager, m Mount) ([]Route, error) {
 	out, err := dispatch.Dispatch(s, dispatch.Deps{
 		Manager: fm, Errors: sentinels, Authorize: m.Authorize, Caller: m.Caller,
 	})
+	out = refuseUnnamedPerson(out, m.Authorize)
 	if err != nil || !m.ReachedOnly {
 		return out, err
 	}

@@ -595,6 +595,18 @@
       ],
       "returns": [{"body": true}]
     },
+    "list_person_submissions": {
+      "method": "GET",
+      "path": "/submissions",
+      "call": "ListSubmissionsOfPerson",
+      "action": "forms.submission.list_of_person",
+      "title": "List what one person sent across forms",
+      "description": "Every send one person has made, across every instrument, newest first, each with the title of the instrument it went to, when it was sent and how many answers it carried. A withdrawn send is left out. Staff's read of another person's sends; the person is named in the request, never taken from the session.",
+      "args": [
+        {"from": "query", "as": "member_id", "required": true, "description": "The person whose sends to list."}
+      ],
+      "returns": [{"body": true}]
+    },
     "mark_paid": {
       "method": "PUT",
       "path": "/forms/{form_id}/submissions/{member_id}/paid",

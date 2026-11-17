@@ -248,6 +248,8 @@ type FormManager interface {
 
 	ListSubmissions(ctx context.Context, formID, memberID, periodKey string) ([]models.Submission, error)
 
+	ListSubmissionsOfPerson(ctx context.Context, memberID string) ([]models.Submission, error)
+
 	MarkPaid(ctx context.Context, formID, memberID string, paid bool, markedBy string) (models.Submission, error)
 
 	DecideSubmission(ctx context.Context, formID, memberID string, decision models.Decision, note, decidedBy string) (models.Submission, error)
