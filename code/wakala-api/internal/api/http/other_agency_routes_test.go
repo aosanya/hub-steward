@@ -120,10 +120,14 @@ func otherAgencyWriteMethod(method string) bool {
 }
 
 func otherAgencyInstanceRoutes(d *Deps) []otherAgencyRoute {
+	return otherAgencyRoutesWhere(d, otherAgencyWriteMethod)
+}
+
+func otherAgencyRoutesWhere(d *Deps, wanted func(method string) bool) []otherAgencyRoute {
 	seen := map[string]bool{}
 	var out []otherAgencyRoute
 	add := func(method, pattern string) {
-		if !otherAgencyWriteMethod(method) || !strings.Contains(pattern, "{instanceID}") {
+		if !wanted(method) || !strings.Contains(pattern, "{instanceID}") {
 			return
 		}
 		key := method + " " + pattern
@@ -197,6 +201,24 @@ func otherAgencyInstanceRoutes(d *Deps) []otherAgencyRoute {
 		"POST /instances/{instanceID}/steps/{stepID}/answers",
 		"POST /instances/{instanceID}/translations/drafts",
 		"POST /instances/{instanceID}/translations/answer",
+		"GET /instances/{instanceID}",
+		"GET /instances/{instanceID}/approvals",
+		"GET /instances/{instanceID}/approvals/{approvalID}",
+		"GET /instances/{instanceID}/group-roles",
+		"GET /instances/{instanceID}/join-requests",
+		"GET /instances/{instanceID}/languages",
+		"GET /instances/{instanceID}/me/name",
+		"GET /instances/{instanceID}/me/studio-language",
+		"GET /instances/{instanceID}/module-tools",
+		"GET /instances/{instanceID}/mounts",
+		"GET /instances/{instanceID}/my-open-steps",
+		"GET /instances/{instanceID}/my-sent-steps",
+		"GET /instances/{instanceID}/my-roles",
+		"GET /instances/{instanceID}/names",
+		"GET /instances/{instanceID}/notification-rules",
+		"GET /instances/{instanceID}/notification-rules/{event}",
+		"GET /instances/{instanceID}/services",
+		"GET " + formsApprovalPath,
 	} {
 		method, path, _ := strings.Cut(s, " ")
 		add(method, path)
