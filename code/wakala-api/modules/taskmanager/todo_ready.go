@@ -10,6 +10,8 @@ type ReadyTodo struct {
 	Ordinality     int    `json:"ordinality"`
 	State          string `json:"state"`
 	CanRunParallel bool   `json:"can_run_parallel"`
+
+	ElapsedSeconds *int64 `json:"elapsed_seconds,omitempty"`
 }
 
 type HeldTodo struct {
@@ -39,6 +41,7 @@ func (m *taskManager) ReadyTodosFor(ctx context.Context, requesterID, issueID st
 			out.Items = append(out.Items, ReadyTodo{
 				ID: view.ID, Code: view.Code, Title: view.Title, Instructions: view.Instructions,
 				Ordinality: view.Ordinality, State: view.State, CanRunParallel: view.CanRunParallel,
+				ElapsedSeconds: view.ElapsedSeconds,
 			})
 		case TodoStatusBlocked, TodoStatusFailed:
 			if view.BlockedReason != "" {
