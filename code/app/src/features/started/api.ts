@@ -129,17 +129,17 @@ const supplierRows = async (supply: SupplyClient, me: string): Promise<StartedIt
 
 const sourceNames = ["orders", "joinRequests", "supplier"] as const;
 
-export const marketAbsent = (reason: unknown) => accessRefused(reason) || (reason instanceof Error && reason.message.includes("unknown tool"));
+export const moduleAbsent = (reason: unknown) => accessRefused(reason) || (reason instanceof Error && reason.message.includes("unknown tool"));
 
-const emptyWhenNoMarket = <T>(rows: Promise<T[]>): Promise<T[]> =>
-  rows.catch((reason) => (marketAbsent(reason) ? [] : Promise.reject(reason)));
+const emptyWhenModuleAbsent = <T>(rows: Promise<T[]>): Promise<T[]> =>
+  rows.catch((reason) => (moduleAbsent(reason) ? [] : Promise.reject(reason)));
 
 const listWithFailures = async (): Promise<StartedAnswer> => {
   const me = await resolveMember();
   const settled = await Promise.allSettled([
-    emptyWhenNoMarket(groupOrderRows(me)),
-    joinRequestRows(mcpGroupsClient()),
-    emptyWhenNoMarket(supplierRows(mcpSupplyClient, me)),
+    emptyWhenModuleAbsent(groupOrderRows(me)),
+    emptyWhenModuleAbsent(joinRequestRows(mcpGroupsClient())),
+    emptyWhenModuleAbsent(supplierRows(mcpSupplyClient, me)),
   ]);
   const failures = settled.filter((outcome): outcome is PromiseRejectedResult => outcome.status === "rejected");
   if (failures.length === settled.length) throw failures[0].reason;

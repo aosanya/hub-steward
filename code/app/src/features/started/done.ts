@@ -2,7 +2,7 @@ import { coordinatorOrderPath } from "../market/start/api";
 import { productNameAt, type PosterOffer } from "../market/shared/productName";
 import { resolveMember } from "../market/supply/api";
 import { callTool } from "../../shared/wakala/mcp";
-import { marketAbsent, offersOfShops } from "./api";
+import { moduleAbsent, offersOfShops } from "./api";
 
 export const donePageSize = 20;
 
@@ -45,7 +45,7 @@ const pageOf = (rows: any[], idKey: string, items: DoneItem[]): SourcePage => ({
 const noMarketPage: SourcePage = { items: [], last: "", full: false };
 
 const emptyWhenNoMarket = (page: Promise<SourcePage>) =>
-  page.catch((reason) => (marketAbsent(reason) ? noMarketPage : Promise.reject(reason)));
+  page.catch((reason) => (moduleAbsent(reason) ? noMarketPage : Promise.reject(reason)));
 
 const groupOrdersEnded =
   (state: "closed" | "cancelled", words: string, endKey: "closed_at" | "cancelled_at"): SourceRead =>
