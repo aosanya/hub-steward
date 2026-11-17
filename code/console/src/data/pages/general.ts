@@ -1,5 +1,6 @@
 import type { PageRow } from "../../types";
 import { callTool } from "../../wakala/mcp";
+import { reasonOf, rest } from "../../wakala/rest";
 import type { ActionResult, ActionRun, PageModule } from "../types";
 
 type Item = Record<string, unknown>;
@@ -43,9 +44,15 @@ const defaultLanguageOf = (answer: unknown) => {
   return text(answer.default) || text(languageEntries(answer).find((entry) => entry.default === true)?.code);
 };
 
+const listedOf = async (hubId: string) => {
+  const reply = await rest<unknown>("GET", `/instances/${hubId}`);
+  return reply.ok && isRecord(reply.data) && typeof reply.data.listed === "boolean" ? { listed: reply.data.listed } : {};
+};
+
 const rows = async (hubId: string): Promise<PageRow[]> => {
   const joinMode = await callTool<unknown>(hubId, "instance_get_join_mode");
   const languages = await callTool<unknown>(hubId, "instance_get_languages");
+  const listing = await listedOf(hubId);
   const mode = joinModeOf(joinMode);
   return [
     {
@@ -53,6 +60,7 @@ const rows = async (hubId: string): Promise<PageRow[]> => {
       joining_label: labelOf(mode),
       default_language: defaultLanguageOf(languages),
       languages: languageCodesOf(languages),
+      ...listing,
       theme: "dark",
       themes,
       pending_writes: ["joining"],
@@ -87,6 +95,14 @@ const changeLanguage: ActionRun = async (hubId, values) => {
   });
 };
 
+const changeListing: ActionRun = async (hubId, values) => {
+  const { listed } = values;
+  if (typeof listed !== "boolean") throw new Error("listed must be true or false");
+  const reply = await rest("PUT", `/instances/${hubId}/listing`, { listed });
+  if (!reply.ok) throw new Error(reasonOf(reply, "the hub did not accept the listing"));
+  return "done";
+};
+
 export const generalPage: PageModule = {
   spec: {
     id: "general",
@@ -100,5 +116,5 @@ export const generalPage: PageModule = {
     ],
   },
   rows,
-  actions: { general: changeJoinMode, language: changeLanguage },
+  actions: { general: changeJoinMode, language: changeLanguage, listing: changeListing },
 };

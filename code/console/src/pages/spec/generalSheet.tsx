@@ -3,6 +3,7 @@ import { useI18n } from "../../i18n";
 import type { OptionItem, PageRow } from "../../types";
 import { useTheme } from "../../shell/theme";
 import { Button, Card, Chip, Row, SelectControl, SettingRows, Stack, StatusLine, ThemePicker, TitleRow } from "../../ui";
+import { ListingControl } from "./generalListing";
 import { defaultLanguageChoices } from "./generalLanguages";
 import { RenameHubForm } from "./generalRename";
 import { useOutcomeNote } from "./profileOutcome";
@@ -36,7 +37,9 @@ export function GeneralSheet({ hubId, row, reload }: GeneralSheetProps) {
   const savedJoining = textOf(row.joining);
   const savedLanguage = textOf(row.default_language);
   const [joining, setJoining] = useState(savedJoining);
+  const savedListed = typeof row.listed === "boolean" ? row.listed : null;
   const [language, setLanguage] = useState(savedLanguage);
+  const [listed, setListed] = useState(savedListed === true);
   const [pending, setPending] = useState<Pending>({ joining: false, language: false });
   const [renaming, setRenaming] = useState(false);
   const [sending, setSending] = useState(false);
@@ -57,11 +60,13 @@ export function GeneralSheet({ hubId, row, reload }: GeneralSheetProps) {
 
   const save = async () => {
     if (sending) return;
-    const sends: { field: keyof Pending; run: Promise<Outcome> }[] = [];
+    const sends: { field: keyof Pending | "listing"; run: Promise<Outcome> }[] = [];
     if (joining !== savedJoining && joinModes.includes(joining))
       sends.push({ field: "joining", run: sendAction("general", "general", hubId, { join_mode: joining }) });
     if (language !== savedLanguage && language)
       sends.push({ field: "language", run: sendAction("general", "language", hubId, { language }) });
+    if (savedListed !== null && listed !== savedListed)
+      sends.push({ field: "listing", run: sendAction("general", "listing", hubId, { listed }) });
     if (sends.length === 0) return;
     setSending(true);
     const results = await Promise.all(sends.map((send) => send.run));
@@ -105,7 +110,7 @@ export function GeneralSheet({ hubId, row, reload }: GeneralSheetProps) {
         title={t("menu.general")}
         primary={t("general.saveChanges")}
         onPrimary={save}
-        primaryFlash={joining !== savedJoining || language !== savedLanguage}
+        primaryFlash={joining !== savedJoining || language !== savedLanguage || (savedListed !== null && listed !== savedListed)}
         actions={
           <Button
             kind="quiet"
@@ -142,6 +147,9 @@ export function GeneralSheet({ hubId, row, reload }: GeneralSheetProps) {
                     pending.language,
                   ),
                 },
+                ...(savedListed === null
+                  ? []
+                  : [{ label: t("general.listing"), control: <ListingControl listed={listed} onChange={setListed} /> }]),
               ]}
             />
           </Card>
