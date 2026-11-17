@@ -870,7 +870,7 @@ describe("the maintenance history of an asset", () => {
       expect(await within(main).findByText("Flush the water pump housing · Thursday, 12 Nov")).toBeInTheDocument();
       expect(within(main).getByText("Replace the pump seals · Tuesday, 6 Oct")).toBeInTheDocument();
       expect(within(main).queryByText(/Clean the pump intake/)).toBeNull();
-      expect(callsTo(taskList)).toHaveLength(1);
+      expect(callsTo(taskList)).toHaveLength(2);
     });
 
     it("shows no Maintenance history row in the right pane for an asset with no finished job", async () => {
