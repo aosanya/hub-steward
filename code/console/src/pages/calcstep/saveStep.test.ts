@@ -13,7 +13,7 @@ const filled: StepDraft = {
   ],
   step: { runner: { kind: "agency" }, failure: { kind: "stop" }, resultName: "Monthly payment", rounding: null },
   postStepId: "post",
-  posting: { amount: "work-out", account: "member-loans", otherSide: "cash", direction: "credit", reason: "Loan payment" },
+  posting: { amount: "work-out", debitAccount: "cash", creditAccount: "member-loans", reason: "Loan payment" },
 };
 
 const recorder = (drafts: unknown) => vi.fn(async (_hub: string, tool: string) => (tool === "agency_list_drafts" ? drafts : {})) as never;
@@ -41,13 +41,12 @@ describe("saving a calculating step", () => {
     expect(calculatingFields({ ...filled, step: { ...filled.step, failure: null } })).not.toHaveProperty("on_failure");
   });
 
-  it("writes the posting step with its amount, accounts, direction and reason", () => {
+  it("writes the posting step with its amount, debit account, credit account and reason", () => {
     expect(postingFields(filled)).toEqual({
       work_item_id: "post",
       amount_step_id: "work-out",
-      account: "member-loans",
-      counter_account: "cash",
-      direction: "credit",
+      debit_account: "cash",
+      credit_account: "member-loans",
       reason: "Loan payment",
     });
   });

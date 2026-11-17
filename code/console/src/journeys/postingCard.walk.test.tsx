@@ -13,7 +13,7 @@ const accounts = [
   { id: "savings", name: "Member savings" },
   { id: "cash", name: "Cash" },
 ];
-const start: Posting = { amount: "", account: "", otherSide: "", direction: "credit", reason: "" };
+const start: Posting = { amount: "", debitAccount: "", creditAccount: "", reason: "" };
 
 function Step() {
   const [value, setValue] = useState(start);
@@ -21,7 +21,7 @@ function Step() {
 }
 
 describe("a builder sets up the step that posts the monthly payment", () => {
-  it("chooses the amount, both accounts, the direction and a reason, and reads the posting back as a sentence", async () => {
+  it("chooses the amount, the debit account, the credit account and a reason, and reads the posting back as a sentence", async () => {
     const { container } = render(
       <I18nProvider initial={words}>
         <Step />
@@ -29,11 +29,10 @@ describe("a builder sets up the step that posts the monthly payment", () => {
     );
     expect(screen.getByText("Choose the amount, both accounts and a reason to read the posting back.")).toBeInTheDocument();
     await userEvent.selectOptions(screen.getByRole("combobox", { name: "Amount" }), "pmt");
-    await userEvent.selectOptions(screen.getByRole("combobox", { name: "Account" }), "loans");
-    await userEvent.selectOptions(screen.getByRole("combobox", { name: "Other side" }), "cash");
-    await userEvent.click(screen.getByRole("radio", { name: "Credit Member loans" }));
+    await userEvent.selectOptions(screen.getByRole("combobox", { name: "Debit account" }), "cash");
+    await userEvent.selectOptions(screen.getByRole("combobox", { name: "Credit account" }), "loans");
     await userEvent.type(screen.getByRole("textbox", { name: "Reason" }), "Loan payment for the month");
-    expect(screen.getByText(/^Credits Member loans and debits Cash by the Monthly payment\./)).toBeInTheDocument();
+    expect(screen.getByText(/^Debits Cash and credits Member loans by the Monthly payment\./)).toBeInTheDocument();
     const card = screen.getByRole("heading", { name: "What it does" }).closest("section") as HTMLElement;
     expect(within(card).getByText("564.88 on the sample")).toBeInTheDocument();
     if (process.env.WALK_SHOTS) savePage(container, process.env.WALK_SHOTS, "posting-card.html");

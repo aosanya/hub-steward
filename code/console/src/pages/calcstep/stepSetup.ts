@@ -61,7 +61,7 @@ export const loanPaymentSetup: StepSetup = {
   ],
   results: [{ key: "work-out", name: "Monthly payment", step: "Work out the monthly payment" }],
   step: { runner: { kind: "agency" }, failure: null, resultName: "Monthly payment", rounding: null },
-  posting: { amount: "", account: "", otherSide: "", direction: "debit", reason: "" },
+  posting: { amount: "", debitAccount: "", creditAccount: "", reason: "" },
   postStepId: "post",
   postTitle: "Post the payment",
   client: { run: async (values) => answerFor(values) },

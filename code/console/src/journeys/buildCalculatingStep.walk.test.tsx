@@ -56,11 +56,10 @@ describe("a builder builds the loan payment step from an empty step to a saved o
     expect(await within(sample).findByText("564.88")).toBeInTheDocument();
 
     await user.selectOptions(screen.getByRole("combobox", { name: "Amount" }), "work-out");
-    await user.selectOptions(screen.getByRole("combobox", { name: "Account" }), "member-loans");
-    await user.selectOptions(screen.getByRole("combobox", { name: "Other side" }), "cash");
-    await user.click(screen.getByRole("radio", { name: "Credit Member loans" }));
+    await user.selectOptions(screen.getByRole("combobox", { name: "Debit account" }), "cash");
+    await user.selectOptions(screen.getByRole("combobox", { name: "Credit account" }), "member-loans");
     await user.type(screen.getByRole("textbox", { name: "Reason" }), "Loan payment for the month");
-    expect(screen.getByText(/^Credits Member loans and debits Cash by the Monthly payment\./)).toBeInTheDocument();
+    expect(screen.getByText(/^Debits Cash and credits Member loans by the Monthly payment\./)).toBeInTheDocument();
     shoot(document.body, "calculating-step-set-up.html");
     shoot(cardOf("Post the payment").parentElement as HTMLElement, "calculating-step-posting.html");
 
@@ -71,7 +70,7 @@ describe("a builder builds the loan payment step from an empty step to a saved o
     expect(calculating).toMatchObject({ work_item_id: "work-out", function: "fin.pmt@2", result_name: "Monthly payment", draft_id: "d1" });
     expect(JSON.parse(calculating.on_failure)).toEqual({ choice: "stop" });
     expect(JSON.parse(calculating.bindings).map((binding: { source_type: string }) => binding.source_type)).toEqual(["ledger_balance", "fixed", "fixed"]);
-    expect(posting).toMatchObject({ work_item_id: "post", amount_step_id: "work-out", account: "member-loans", counter_account: "cash", direction: "credit", draft_id: "d1" });
+    expect(posting).toMatchObject({ work_item_id: "post", amount_step_id: "work-out", debit_account: "cash", credit_account: "member-loans", draft_id: "d1" });
     await waitFor(() => expect(save).toBeEnabled());
   });
 });

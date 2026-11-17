@@ -8,36 +8,33 @@ const t = (key: string) => words.en[key] ?? key;
 
 const names = { amount: "Monthly payment", accounts: { loans: "Member loans", cash: "Cash", savings: "Member savings" } };
 
-const credit: Posting = { amount: "pmt", account: "loans", otherSide: "cash", direction: "credit", reason: "Loan payment for the month" };
+const posting: Posting = { amount: "pmt", debitAccount: "cash", creditAccount: "loans", reason: "Loan payment for the month" };
 
-const sentenceOf = (posting: Posting) => postingSentence(posting, names, t);
+const sentenceOf = (value: Posting) => postingSentence(value, names, t);
 
 describe("the posting read back as a sentence", () => {
-  it("reads the accepted drawing's example word for word", () => {
-    expect(sentenceOf(credit)).toBe(
-      "Credits Member loans and debits Cash by the Monthly payment. The reason on the entry reads “Loan payment for the month”. Running this step twice for the same case posts once.",
+  it("reads the debit account first and the credit account second", () => {
+    expect(sentenceOf(posting)).toBe(
+      "Debits Cash and credits Member loans by the Monthly payment. The reason on the entry reads “Loan payment for the month”. Running this step twice for the same case posts once.",
     );
   });
 
-  it("turns the two sides round for a debit", () => {
-    expect(sentenceOf({ ...credit, direction: "debit" })).toBe(
-      "Debits Member loans and credits Cash by the Monthly payment. The reason on the entry reads “Loan payment for the month”. Running this step twice for the same case posts once.",
-    );
+  it("follows the accounts chosen, not their order in the list", () => {
+    expect(sentenceOf({ ...posting, debitAccount: "loans", creditAccount: "savings" })).toMatch(/^Debits Member loans and credits Member savings by the Monthly payment\./);
   });
 
   it("never writes a minus sign", () => {
-    expect(sentenceOf(credit)).not.toMatch(/[-−]\s?\d|minus/i);
-    expect(sentenceOf({ ...credit, direction: "debit" })).not.toMatch(/[-−]\s?\d|minus/i);
+    expect(sentenceOf(posting)).not.toMatch(/[-−]\s?\d|minus/i);
   });
 
   it("says nothing until the amount, both accounts and the reason are chosen", () => {
-    expect(sentenceOf({ ...credit, amount: "" })).toBe("");
-    expect(sentenceOf({ ...credit, account: "" })).toBe("");
-    expect(sentenceOf({ ...credit, otherSide: "" })).toBe("");
-    expect(sentenceOf({ ...credit, reason: "  " })).toBe("");
+    expect(sentenceOf({ ...posting, amount: "" })).toBe("");
+    expect(sentenceOf({ ...posting, debitAccount: "" })).toBe("");
+    expect(sentenceOf({ ...posting, creditAccount: "" })).toBe("");
+    expect(sentenceOf({ ...posting, reason: "  " })).toBe("");
   });
 
   it("says nothing when both sides are the same account", () => {
-    expect(sentenceOf({ ...credit, otherSide: "loans" })).toBe("");
+    expect(sentenceOf({ ...posting, creditAccount: "cash" })).toBe("");
   });
 });

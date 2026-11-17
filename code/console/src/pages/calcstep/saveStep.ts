@@ -47,13 +47,12 @@ export const calculatingFields = (draft: StepDraft) => {
 export const postingFields = (draft: StepDraft) => ({
   work_item_id: draft.postStepId,
   amount_step_id: draft.posting.amount,
-  account: draft.posting.account,
-  counter_account: draft.posting.otherSide,
-  direction: draft.posting.direction,
+  debit_account: draft.posting.debitAccount,
+  credit_account: draft.posting.creditAccount,
   reason: draft.posting.reason,
 });
 
-const postingIsComplete = ({ posting }: StepDraft) => Boolean(posting.amount && posting.account && posting.otherSide && posting.reason.trim());
+const postingIsComplete = ({ posting }: StepDraft) => Boolean(posting.amount && posting.debitAccount && posting.creditAccount && posting.reason.trim());
 
 async function openDraftId(hubId: string, call: Call): Promise<string> {
   const answer = (await call(hubId, "agency_list_drafts", {})) as { items?: { id?: string }[] };

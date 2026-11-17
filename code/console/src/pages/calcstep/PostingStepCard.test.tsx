@@ -15,7 +15,7 @@ const accounts = [
   { id: "savings", name: "Member savings" },
   { id: "cash", name: "Cash" },
 ];
-const value: Posting = { amount: "pmt", account: "loans", otherSide: "cash", direction: "credit", reason: "Loan payment for the month" };
+const value: Posting = { amount: "pmt", debitAccount: "cash", creditAccount: "loans", reason: "Loan payment for the month" };
 
 const show = (props: Partial<{ value: Posting; sample: string; onChange: (value: Posting) => void }> = {}) => {
   const onChange = props.onChange ?? vi.fn();
@@ -28,10 +28,10 @@ const show = (props: Partial<{ value: Posting; sample: string; onChange: (value:
 };
 
 describe("the posting step card", () => {
-  it("marks all five of its labels as required, as the drawing does", () => {
+  it("marks all four of its labels as required, as the drawing does", () => {
     show();
     const labels = Array.from(document.querySelectorAll(".setting-label"));
-    expect(labels.map((label) => label.textContent)).toEqual(["Amount*", "Account*", "Other side*", "Direction*", "Reason*"]);
+    expect(labels.map((label) => label.textContent)).toEqual(["Amount*", "Debit account*", "Credit account*", "Reason*"]);
     labels.forEach((label) => expect(label.querySelector(".req")).toHaveAttribute("aria-hidden", "true"));
   });
 
@@ -43,26 +43,26 @@ describe("the posting step card", () => {
     expect(screen.getByText("The result of a calculating step earlier in this workflow. Nobody types an amount here.")).toBeInTheDocument();
   });
 
-  it("names both accounts, and each can be any account", () => {
+  it("names a debit account and a credit account, and each can be any account", () => {
     show();
-    for (const label of ["Account", "Other side"])
+    for (const label of ["Debit account", "Credit account"])
       expect(within(screen.getByRole("combobox", { name: label })).getAllByRole("option").map((option) => option.textContent)).toEqual(["Member loans", "Member savings", "Cash"]);
+    expect(screen.queryByRole("radiogroup")).toBeNull();
+    expect(screen.queryByText("Direction")).toBeNull();
   });
 
-  it("offers the direction as two sides of the account, never a sign", async () => {
-    const onChange = show();
-    const group = screen.getByRole("radiogroup");
-    const sides = within(group).getAllByRole("radio");
-    expect(sides.map((side) => (side as HTMLInputElement).labels?.[0]?.textContent)).toEqual(["Debit Member loans", "Credit Member loans"]);
-    expect(within(group).getByRole("radio", { name: "Credit Member loans" })).toBeChecked();
-    await userEvent.click(within(group).getByRole("radio", { name: "Debit Member loans" }));
-    expect(onChange).toHaveBeenCalledWith({ ...value, direction: "debit" });
+  it("shows the account each side starts with", () => {
+    show();
+    expect(screen.getByRole("combobox", { name: "Debit account" })).toHaveValue("cash");
+    expect(screen.getByRole("combobox", { name: "Credit account" })).toHaveValue("loans");
   });
 
-  it("changes the reason and the other side", async () => {
+  it("changes the debit account, the credit account and the reason", async () => {
     const onChange = show();
-    await userEvent.selectOptions(screen.getByRole("combobox", { name: "Other side" }), "savings");
-    expect(onChange).toHaveBeenLastCalledWith({ ...value, otherSide: "savings" });
+    await userEvent.selectOptions(screen.getByRole("combobox", { name: "Debit account" }), "savings");
+    expect(onChange).toHaveBeenLastCalledWith({ ...value, debitAccount: "savings" });
+    await userEvent.selectOptions(screen.getByRole("combobox", { name: "Credit account" }), "cash");
+    expect(onChange).toHaveBeenLastCalledWith({ ...value, creditAccount: "cash" });
     await userEvent.type(screen.getByRole("textbox", { name: "Reason" }), "!");
     expect(onChange).toHaveBeenLastCalledWith({ ...value, reason: "Loan payment for the month!" });
   });
@@ -70,14 +70,14 @@ describe("the posting step card", () => {
   it("reads the whole posting back as a sentence and a short list", () => {
     show({ sample: "564.88" });
     const card = screen.getByRole("heading", { name: "What it does" }).closest("section") as HTMLElement;
-    expect(within(card).getByText(/^Credits Member loans and debits Cash by the Monthly payment\./)).toBeInTheDocument();
+    expect(within(card).getByText(/^Debits Cash and credits Member loans by the Monthly payment\./)).toBeInTheDocument();
     const pairs = Object.fromEntries([...card.querySelectorAll("dt")].map((term) => [term.textContent, term.nextElementSibling?.textContent]));
-    expect(pairs).toEqual({ Amount: "564.88 on the sample", "Member loans": "credit", Cash: "debit" });
+    expect(pairs).toEqual({ Amount: "564.88 on the sample", "Debit account": "Cash", "Credit account": "Member loans" });
   });
 
   it("leaves the read-back empty until the posting is complete", () => {
     show({ value: { ...value, reason: "" } });
-    expect(screen.queryByText(/^Credits /)).toBeNull();
+    expect(screen.queryByText(/^Debits /)).toBeNull();
     expect(screen.getByText("Choose the amount, both accounts and a reason to read the posting back.")).toBeInTheDocument();
   });
 });
