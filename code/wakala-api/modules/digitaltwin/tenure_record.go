@@ -70,6 +70,9 @@ func (m *twinManager) ListTenures(ctx context.Context, filter TenureFilter) ([]T
 	if filter.Holder != "" {
 		q = q.Where("holder = ?", filter.Holder)
 	}
+	if filter.HolderActorID != "" {
+		q = q.Where("holder_actor_id = ?", filter.HolderActorID)
+	}
 	if filter.Kind != "" {
 		q = q.Where("kind = ?", filter.Kind)
 	}

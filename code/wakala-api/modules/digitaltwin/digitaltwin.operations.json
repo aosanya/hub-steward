@@ -197,7 +197,7 @@
       "method": "POST", "path": "/tenures", "call": "CreateTenure", "action": "digitaltwin.tenure.create",
       "status": 201,
       "title": "Record tenure",
-      "description": "Record who holds a place: the place node, the holder's name, the kind of holding (owner, tenant, leaseholder, occupant or custodian) and since when.",
+      "description": "Record who holds a place: the place node, the holder's name, the holder's actor id when the holder is a person (leave it empty for a body), the kind of holding (owner, tenant, leaseholder, occupant or custodian) and since when.",
       "args": [{"from": "body", "whole": true}],
       "returns": [{"body": true}]
     },
@@ -211,7 +211,7 @@
     "update_tenure": {
       "method": "PUT", "path": "/tenures/{tenureID}", "call": "UpdateTenure", "action": "digitaltwin.tenure.update",
       "title": "Update tenure",
-      "description": "Replace a holding: the place node, the holder, the kind of holding (an empty kind keeps the held one) and since when.",
+      "description": "Replace a holding: the place node, the holder, the holder's actor id (replacing the whole holding, an update without holder_actor_id clears it), the kind of holding (an empty kind keeps the held one) and since when.",
       "args": [{"from": "body", "whole": true},
                {"from": "path", "as": "tenureID", "into": "ID", "description": "The tenure to update. The address decides, not the body."}],
       "returns": [{"body": true}]
@@ -219,7 +219,7 @@
     "list_tenures": {
       "method": "GET", "path": "/tenures", "call": "ListTenures", "action": "digitaltwin.tenure.list",
       "title": "List tenure records",
-      "description": "List the holdings matching the filter, oldest first. An empty place_id, holder or kind matches every one.",
+      "description": "List the holdings matching the filter, oldest first. An empty place_id, holder, holder_actor_id or kind matches every one.",
       "args": [{"from": "query", "whole": true}],
       "returns": [{"body": true}]
     },

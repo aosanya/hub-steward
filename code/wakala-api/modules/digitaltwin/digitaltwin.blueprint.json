@@ -424,6 +424,11 @@
           "required": true
         },
         {
+          "name": "holder_actor_id",
+          "type": "string",
+          "description": "The id of the person who holds the place, when the holder is a person; empty when the holder is a body, whose name stays in holder."
+        },
+        {
           "name": "kind",
           "type": "enum",
           "description": "In what capacity the holder holds the place.",
@@ -454,6 +459,13 @@
           "fields": [
             "place_id",
             "since"
+          ]
+        },
+        {
+          "name": "holder_actor",
+          "description": "Lists the holdings of one person.",
+          "fields": [
+            "holder_actor_id"
           ]
         }
       ]
