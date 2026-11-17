@@ -101,10 +101,10 @@ type TaskManager interface {
 	TraverseRelationshipsFor(ctx context.Context, requesterID, vertexID, label string, dir Direction) ([]Relationship, error)
 	TaskDependenciesFor(ctx context.Context, requesterID, taskID string) (TaskDependencies, error)
 	ClaimTaskAs(ctx context.Context, requesterID, taskID string) (TaskClaim, error)
-	ListBacklogAccess(ctx context.Context, backlogID string) (BacklogAccess, error)
-	GiveBacklogAccess(ctx context.Context, backlogID, groupID, level string) (BacklogAccess, error)
 	ClaimNext(ctx context.Context, requesterID string, req ClaimNextRequest) (NextClaim, error)
 	Heartbeat(ctx context.Context, requesterID string, req HeartbeatRequest) (LeaseRenewed, error)
+	ListBacklogAccess(ctx context.Context, backlogID string) (BacklogAccess, error)
+	GiveBacklogAccess(ctx context.Context, backlogID, groupID, level string) (BacklogAccess, error)
 	TakeBacklogAccess(ctx context.Context, backlogID, groupID string) (BacklogAccess, error)
 	SetBacklogOwnerGroup(ctx context.Context, groupID string) error
 	UseGroups(g Groups)

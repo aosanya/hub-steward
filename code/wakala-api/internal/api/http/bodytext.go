@@ -34,6 +34,10 @@ func refuseControlCharacters(auth callers, next http.Handler) http.Handler {
 			writeErr(w, http.StatusBadRequest, err.Error())
 			return
 		}
+		if err := checkNameFields(r.Method, r.URL.Path, raw); err != nil {
+			writeErr(w, http.StatusBadRequest, err.Error())
+			return
+		}
 		r.Body = readCloser{Reader: bytes.NewReader(raw), Closer: original}
 		next.ServeHTTP(w, r)
 	})

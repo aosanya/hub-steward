@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/throttle"
@@ -16,6 +17,9 @@ var (
 func checkInstanceRoom(ctx context.Context, reg agencies.Registry, caller, name string) error {
 	if len(name) > throttle.MaxInstanceNameBytes {
 		return errInstanceNameTooLong
+	}
+	if strings.TrimSpace(name) == "" {
+		return fmt.Errorf("%w: a name must not be blank", agencies.ErrInvalidInstanceName)
 	}
 	if err := agencies.CheckInstanceName(name); err != nil {
 		return err

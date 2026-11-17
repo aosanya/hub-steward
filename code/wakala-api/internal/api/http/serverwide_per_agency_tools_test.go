@@ -84,6 +84,15 @@ func TestCatalogAndReportsTools_EachAgencyHasItsOwnEntries(t *testing.T) {
 			if failed, text := peerB.call(t, prefix+"_entry_upsert", entry(a.idA, "Taken over")); !failed {
 				t.Errorf("agency B owner writes into agency A's %s: succeeded: %s", prefix, text)
 			}
+			notes := func(instance, readme string) map[string]any {
+				return map[string]any{"slug": "lights", "readme": readme, "instance_id": instance}
+			}
+			if failed, text := peerA.call(t, prefix+"_entry_write_private", notes(a.idA, "Agency A lights")); failed {
+				t.Fatalf("agency A owner writes its private notes: %s", text)
+			}
+			if failed, text := peerB.call(t, prefix+"_entry_write_private", notes(a.idA, "Taken over")); !failed {
+				t.Errorf("agency B owner writes private notes into agency A's %s: succeeded: %s", prefix, text)
+			}
 			failed, text := peerB.call(t, prefix+"_entry_read_private", map[string]any{"slug": "lights", "instance_id": a.idA})
 			if !failed || strings.Contains(text, "Agency A lights") {
 				t.Errorf("agency B owner reads agency A's entry: failed=%v %s", failed, text)

@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"slices"
 
 	actorroutes "wakalaserver/modules/actor/routes"
 
@@ -38,7 +39,11 @@ func (d *Deps) registerActorRoutes(mux *http.ServeMux, reg agencies.Registry, au
 				return
 			}
 			mount.Authorize = nil
-			if role == agencies.RoleResident {
+			holdsTheRole := role == agencies.RoleResident && slices.Contains(residentRoleActorActions, action) && d.residentHolds(r.Context(), instanceID, action)
+			if holdsTheRole {
+				m = roleHolderDecides{m}
+			}
+			if role == agencies.RoleResident && !holdsTheRole {
 				if err := residentLeadsTheGroupNamed(r, m, action); err != nil {
 					writeLeaderRefusal(w, err)
 					return

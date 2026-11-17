@@ -128,6 +128,27 @@ func (d *Deps) agentMayDecideJoinRequests(next http.HandlerFunc) http.HandlerFun
 				return
 			}
 		}
+		if role == agencies.RoleResident && d.residentHolds(r.Context(), instanceID, joinRequestDecideAction) {
+			r = r.WithContext(context.WithValue(r.Context(), joinDecisionPermitted{}, true))
+		}
 		next(w, r)
 	}
+}
+
+type joinDecisionPermitted struct{}
+
+func mustBeMemberOrPermitted(ctx context.Context, reg agencies.Registry, instanceID string) error {
+	if permitted, _ := ctx.Value(joinDecisionPermitted{}).(bool); permitted {
+		return nil
+	}
+	return mustBeMember(ctx, reg, instanceID)
+}
+
+func (d *Deps) residentHolds(ctx context.Context, instanceID, action string) bool {
+	role, err := d.Registry.RoleOf(ctx, instanceID, accounts.IDFromContext(ctx))
+	if err != nil || role != agencies.RoleResident {
+		return false
+	}
+	codes, err := d.callerPermissionCodes(withPartitionContext(ctx, instanceID), instanceID)
+	return err == nil && permissionsAllow(codes, action)
 }

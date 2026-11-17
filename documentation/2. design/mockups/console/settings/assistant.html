@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assistant settings page</title>
+<link rel="stylesheet" href="../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · Assistant, the settings as saved<span class="cap-mcp">Filled by: agency_list_roles, ai_get_assistant_limits, taskmanager_worker_caps_read</span><span class="cap-note">Example data: the role switches, limits and worker values are drawn for this page. The page is drawn in the Hub Steward SWE hub, which has the three Backlog roles.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="swe" data-state="ready" data-crumb="Settings / Models=settings/models.html / Assistant"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="assistant"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assistant</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="stack" style="--stack-gap:16px"><section class="card" aria-label="Who may ask the assistant">
+<div class="card-head"><h2>Who may ask the assistant</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Backlog member</span><div class="setting-control"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>May ask the assistant</label></div></div><div class="setting"><span class="setting-label">Backlog worker</span><div class="setting-control"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>May ask the assistant</label></div></div><div class="setting"><span class="setting-label">Backlog manager</span><div class="setting-control"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>May ask the assistant</label></div></div></div>
+</section>
+<section class="card" aria-label="Each person's share of the assistant">
+<div class="card-head"><h2>Each person's share of the assistant</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Tokens a day for each person</span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="50,000" placeholder="0" aria-label="Tokens a day for each person"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a month for each person</span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="1,000,000" placeholder="0" aria-label="Tokens a month for each person"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a day for you</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" aria-label="Tokens a day for you" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a month for you</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" aria-label="Tokens a month for you" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div></div>
+</section>
+<section class="card" aria-label="Workers">
+<div class="card-head"><h2>Workers</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Input tokens</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="500000" aria-label="Input tokens"></span></div></div><div class="setting"><span class="setting-label">Output tokens</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="100000" aria-label="Output tokens"></span></div></div><div class="setting"><span class="setting-label">Runtime in minutes</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="15" aria-label="Runtime in minutes"></span></div></div></div>
+</section>
+<div class="form-foot"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Assistant" data-ctx-icon="robot">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Assistant?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Add a Meta open weights model</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which agents use Muse Spark?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Test the key</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s2">
+<figcaption class="cap">2 · Assistant, no Backlog roles in the draft yet<span class="cap-mcp">Filled by: agency_list_roles, ai_get_assistant_limits, taskmanager_worker_caps_read</span><span class="cap-note">The cards below it still show the limits and the worker values.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="swe" data-state="ready" data-crumb="Settings / Models=settings/models.html / Assistant"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="assistant"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assistant</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="stack" style="--stack-gap:16px"><section class="card" aria-label="Who may ask the assistant">
+<div class="card-head"><h2>Who may ask the assistant</h2></div>
+<div class="empty">No Backlog roles are in the draft yet.</div>
+</section>
+<section class="card" aria-label="Each person's share of the assistant">
+<div class="card-head"><h2>Each person's share of the assistant</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Tokens a day for each person</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" aria-label="Tokens a day for each person" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a month for each person</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" aria-label="Tokens a month for each person" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a day for you</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" aria-label="Tokens a day for you" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a month for you</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" aria-label="Tokens a month for you" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div></div>
+</section>
+<section class="card" aria-label="Workers">
+<div class="card-head"><h2>Workers</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Input tokens</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="500000" aria-label="Input tokens"></span></div></div><div class="setting"><span class="setting-label">Output tokens</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="100000" aria-label="Output tokens"></span></div></div><div class="setting"><span class="setting-label">Runtime in minutes</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="15" aria-label="Runtime in minutes"></span></div></div></div>
+</section>
+<div class="form-foot"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Assistant" data-ctx-icon="robot">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Assistant?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Add a Meta open weights model</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which agents use Muse Spark?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Test the key</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s5">
+<figcaption class="cap">5 · Assistant, the settings could not be loaded<span class="cap-mcp">Filled by: agency_list_roles, ai_get_assistant_limits, taskmanager_worker_caps_read</span><span class="cap-note">When a read fails the page shows one error box under the title and no cards. The box sits in the page without the content padding, as the console draws it.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="swe" data-state="ready" data-crumb="Settings / Models=settings/models.html / Assistant"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="assistant"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assistant</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="empty error" role="alert">The page could not be loaded.</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Assistant" data-ctx-icon="robot">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Assistant?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Add a Meta open weights model</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which agents use Muse Spark?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Test the key</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s3">
+<figcaption class="cap">3 · Assistant, Save pressed with a worker value of zero<span class="cap-mcp">Filled by: agency_update_role, ai_set_assistant_limits, taskmanager_worker_caps_set</span><span class="cap-note">Nothing is sent: the field says what it needs.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="swe" data-state="ready" data-crumb="Settings / Models=settings/models.html / Assistant"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="assistant"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assistant</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="stack" style="--stack-gap:16px"><section class="card" aria-label="Who may ask the assistant">
+<div class="card-head"><h2>Who may ask the assistant</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Backlog member</span><div class="setting-control"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>May ask the assistant</label></div></div><div class="setting"><span class="setting-label">Backlog worker</span><div class="setting-control"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>May ask the assistant</label></div></div><div class="setting"><span class="setting-label">Backlog manager</span><div class="setting-control"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>May ask the assistant</label></div></div></div>
+</section>
+<section class="card" aria-label="Each person's share of the assistant">
+<div class="card-head"><h2>Each person's share of the assistant</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Tokens a day for each person</span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="50,000" placeholder="0" aria-label="Tokens a day for each person"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a month for each person</span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="1,000,000" placeholder="0" aria-label="Tokens a month for each person"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a day for you</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" aria-label="Tokens a day for you" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a month for you</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" aria-label="Tokens a month for you" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div></div>
+</section>
+<section class="card" aria-label="Workers">
+<div class="card-head"><h2>Workers</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Input tokens</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="500000" aria-label="Input tokens"></span></div></div><div class="setting"><span class="setting-label">Output tokens</span><div class="setting-control"><span class="control ctl bad"><input type="text" inputmode="numeric" value="0" aria-label="Output tokens" aria-invalid="true"></span><span class="field-error">A whole number above zero.</span></div></div><div class="setting"><span class="setting-label">Runtime in minutes</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="15" aria-label="Runtime in minutes"></span></div></div></div>
+</section>
+<div class="form-foot"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Assistant" data-ctx-icon="robot">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Assistant?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Add a Meta open weights model</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which agents use Muse Spark?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Test the key</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s4">
+<figcaption class="cap">4 · Assistant, after Save with a switch changed: the notice under the title<span class="cap-mcp">Filled by: agency_update_role, ai_set_assistant_limits, taskmanager_worker_caps_set, agency_list_drafts, agency_list_approvals</span><span class="cap-note">Example data: the role switches, limits and worker values are drawn for this page. The page is drawn in the Hub Steward SWE hub, which has the three Backlog roles. The role switch is saved to the draft, so the draft bar shows the change as not published and the line under the buttons says it takes effect on publish. The cards sit in a bare stack with no content padding, as the console draws them.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="swe" data-state="ready" data-crumb="Settings / Models=settings/models.html / Assistant"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="assistant"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Assistant</h1>
+<div class="top-end"></div>
+</div>
+<div class="content draft-slot"><section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>1 change not published</strong><a class="link sm" href="../agency/publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section></div>
+<div class="notice ok" role="status"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="notice-text">The assistant settings were saved.</span><button type="button" class="notice-close" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div>
+<div class="stack" style="--stack-gap:16px"><section class="card" aria-label="Who may ask the assistant">
+<div class="card-head"><h2>Who may ask the assistant</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Backlog member</span><div class="setting-control"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>May ask the assistant</label></div></div><div class="setting"><span class="setting-label">Backlog worker</span><div class="setting-control"><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>May ask the assistant</label></div></div><div class="setting"><span class="setting-label">Backlog manager</span><div class="setting-control"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>May ask the assistant</label></div></div></div>
+</section>
+<section class="card" aria-label="Each person's share of the assistant">
+<div class="card-head"><h2>Each person's share of the assistant</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Tokens a day for each person</span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="50,000" placeholder="0" aria-label="Tokens a day for each person"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a month for each person</span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="1,000,000" placeholder="0" aria-label="Tokens a month for each person"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a day for you</span><div class="setting-control"><div class="applies"><span class="control ctl"><input type="text" value="200,000" placeholder="0" aria-label="Tokens a day for you"></span><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Applies</label></div></div></div><div class="setting"><span class="setting-label">Tokens a month for you</span><div class="setting-control"><div class="applies"><span class="control ctl off"><input type="text" value="No limit" placeholder="0" aria-label="Tokens a month for you" disabled></span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Applies</label></div></div></div></div>
+</section>
+<section class="card" aria-label="Workers">
+<div class="card-head"><h2>Workers</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Input tokens</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="500000" aria-label="Input tokens"></span></div></div><div class="setting"><span class="setting-label">Output tokens</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="100000" aria-label="Output tokens"></span></div></div><div class="setting"><span class="setting-label">Runtime in minutes</span><div class="setting-control"><span class="control ctl"><input type="text" inputmode="numeric" value="15" aria-label="Runtime in minutes"></span></div></div></div>
+</section>
+<div class="form-foot"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div>
+<p class="muted">The switches take effect when the agency is published.</p></div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Assistant" data-ctx-icon="robot">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Assistant?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Add a Meta open weights model</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which agents use Muse Spark?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Test the key</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<script src="../shell.js"></script>
+</body>
+</html>

@@ -67,6 +67,20 @@ describe("the posting step card", () => {
     expect(onChange).toHaveBeenLastCalledWith({ ...value, reason: "Loan payment for the month!" });
   });
 
+  it("asks for a choice instead of showing the first option when nothing is chosen", () => {
+    show({ value: { amount: "", debitAccount: "", creditAccount: "", reason: "" } });
+    for (const label of ["Amount", "Debit account", "Credit account"]) {
+      const picker = screen.getByRole("combobox", { name: label });
+      expect(picker).toHaveValue("");
+      expect(within(picker).getAllByRole("option")[0]).toHaveTextContent("Choose one");
+    }
+  });
+
+  it("offers no empty choice once something is chosen", () => {
+    show();
+    expect(within(screen.getByRole("combobox", { name: "Debit account" })).queryByRole("option", { name: "Choose one" })).toBeNull();
+  });
+
   it("reads the whole posting back as a sentence and a short list", () => {
     show({ sample: "564.88" });
     const card = screen.getByRole("heading", { name: "What it does" }).closest("section") as HTMLElement;

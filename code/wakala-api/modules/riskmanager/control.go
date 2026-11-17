@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"wakalaserver/modules/shared/gormutil"
 	"wakalaserver/modules/shared/plaintext"
 )
 
@@ -21,6 +22,9 @@ func (m *riskManager) CreateControl(ctx context.Context, c Control) (Control, er
 	c.CreatedAt = m.now()
 	c.UpdatedAt = c.CreatedAt
 	if err := m.insert(ctx, roleControl, c); err != nil {
+		if gormutil.IsUniqueViolation(err) {
+			return Control{}, fmt.Errorf("%w: a control called %q already exists", ErrConflict, c.Name)
+		}
 		return Control{}, err
 	}
 	return c, nil

@@ -1,0 +1,51 @@
+{
+  "agency": {
+    "name": "Mounted modules fixture",
+    "description": "A small agency that mounts the chat, task manager, git and catalog modules.",
+    "enabled": true
+  },
+  "modules": [
+    {
+      "id": "25f8629e-c0f1-56e2-96a2-1059a22bb03f",
+      "code": "comm",
+      "enabled": true
+    },
+    {
+      "id": "90e3cd0d-5b28-5775-8e8a-17b5928c8962",
+      "code": "taskmanager",
+      "enabled": true
+    },
+    {
+      "id": "02128ece-3db3-4332-8246-a96b50a58c0a",
+      "code": "git",
+      "enabled": true
+    },
+    {
+      "id": "25835f39-6690-4406-8127-02797adb68d8",
+      "code": "catalog",
+      "enabled": true
+    }
+  ],
+  "roles": [],
+  "goals": [
+    {
+      "id": "2c27f78e-9e58-53ac-a3aa-a5db54109445",
+      "code": "G-1",
+      "title": "Keep the work in one place",
+      "description": "Every piece of work is recorded where the team can see it."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "964e0146-b17e-5d56-8051-782144962656",
+      "code": "O-1",
+      "goal_id": "2c27f78e-9e58-53ac-a3aa-a5db54109445",
+      "title": "Record each piece of work",
+      "description": "When someone takes on a piece of work, it is written down and kept up to date."
+    }
+  ],
+  "values": [],
+  "rules": [],
+  "value_attachments": [],
+  "rule_attachments": []
+}

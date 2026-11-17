@@ -177,6 +177,9 @@ func invokerFor(op Operation, plan []slot, props []property, method reflect.Valu
 		results := method.Call(append([]reflect.Value{reflect.ValueOf(ctx)}, args...))
 		if last := results[len(results)-1]; !last.IsNil() {
 			callErr := last.Interface().(error)
+			if isBusy(callErr) {
+				return nil, httpwire.PlainError{Cause: errBusy}
+			}
 			if refusal := plaintext.Unstorable(callErr); refusal != nil {
 				return nil, httpwire.PlainError{Cause: refusal}
 			}

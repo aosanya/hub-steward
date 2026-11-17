@@ -17,10 +17,6 @@ import (
 
 const agencyQuery = "instance_id"
 
-func (d *Deps) agencyOfRequest(r *http.Request, public bool) (string, error) {
-	return d.agencyOfCaller(r.Context(), r.URL.Query().Get(agencyQuery), public)
-}
-
 func (d *Deps) agencyOfCaller(ctx context.Context, named string, public bool) (string, error) {
 	caller := accounts.IDFromContext(ctx)
 	if public {
@@ -64,7 +60,7 @@ type agencyCatalogRoutes struct {
 
 func (a agencyCatalogRoutes) handler(index int) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		instanceID, err := a.deps.agencyOfRequest(r, a.public)
+		instanceID, err := a.deps.agencyOfRequest(r, a.public, a.deps.catalogHoldKey(a.mount))
 		if err != nil {
 			writeInstanceErr(w, err)
 			return
@@ -86,7 +82,7 @@ type agencyFormRoutes struct {
 
 func (a agencyFormRoutes) handler(index int) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		instanceID, err := a.deps.agencyOfRequest(r, a.public)
+		instanceID, err := a.deps.agencyOfRequest(r, a.public, a.deps.formsHoldKey)
 		if err != nil {
 			writeInstanceErr(w, err)
 			return
@@ -114,7 +110,7 @@ type agencyRatingsRoutes struct {
 
 func (a agencyRatingsRoutes) handler(index int) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		instanceID, err := a.deps.agencyOfRequest(r, false)
+		instanceID, err := a.deps.agencyOfRequest(r, false, nil)
 		if err != nil {
 			writeInstanceErr(w, err)
 			return

@@ -171,7 +171,7 @@ func renameInstance(reg agencies.Registry) http.HandlerFunc {
 func listJoinRequests(reg agencies.Registry) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		instanceID := r.PathValue("instanceID")
-		if err := mustBeMember(r.Context(), reg, instanceID); err != nil {
+		if err := mustBeMemberOrPermitted(r.Context(), reg, instanceID); err != nil {
 			writeInstanceErr(w, err)
 			return
 		}
@@ -187,7 +187,7 @@ func listJoinRequests(reg agencies.Registry) http.HandlerFunc {
 func decideJoinRequest(reg agencies.Registry, residents residentGrants, approve bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		instanceID := r.PathValue("instanceID")
-		if err := mustBeMember(r.Context(), reg, instanceID); err != nil {
+		if err := mustBeMemberOrPermitted(r.Context(), reg, instanceID); err != nil {
 			writeInstanceErr(w, err)
 			return
 		}

@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat</title>
+<link rel="stylesheet" href="studio.css">
+</head>
+<body>
+
+<figure id="s1">
+<figcaption class="cap">1 · Greeting, suggestion chips and the model picker closed<span class="cap-mcp">Filled by: ai_list_accounts, ai_list_chat_models</span><span class="cap-note">The greeting names the page; the chips are chat.roles.1 to 3. The picker chip shows the label of the model the chat is on.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Description</dt><dd>A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</dd><dt>Type</dt><dd><span class="tag mute">Human</span></dd></dl></section><section class="card" aria-label="Farmers' coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Type</dt><dd><div class="row" style="--row-gap:4px"><a class="link" href="people/agents.html" title="Opens: Agents"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>AI role</span></a><a class="link sm" href="people/agents.html" title="Opens: Agents" aria-label="Configure, opens: Agents">Configure</a></div></dd></dl></section><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s2">
+<figcaption class="cap">2 · A reply: the question, Called 2 tools collapsed, the answer<span class="cap-mcp">Filled by: ai_chat_account, agency_list_roles, agency_list_role_assignments</span><span class="cap-note">Example data: the assistant's words and the timings are drawn. The tool calls start collapsed; the chips are gone once the thread has a turn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Description</dt><dd>A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</dd><dt>Type</dt><dd><span class="tag mute">Human</span></dd></dl></section><section class="card" aria-label="Farmers' coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Type</dt><dd><div class="row" style="--row-gap:4px"><a class="link" href="people/agents.html" title="Opens: Agents"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>AI role</span></a><a class="link sm" href="people/agents.html" title="Opens: Agents" aria-label="Configure, opens: Agents">Configure</a></div></dd></dl></section><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Who has which role?</div></div><div class="turn-bot"><div class="tools collapsed"><div class="tools-head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Called 2 tools</span><span class="muted">329 ms</span></div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">Six people hold the four human roles: Group coordinator 1, Farmer 3, Supplier 1 and Buyer 1. The Farmers' coordinator is an AI role.</div></div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s3">
+<figcaption class="cap">3 · A change to the draft: the tool calls opened, the new card and the draft bar follow<span class="cap-mcp">Filled by: ai_chat_account, agency_list_roles, agency_create_role</span><span class="cap-note">Example data: the assistant's words and the timings are drawn. Roles has no approval step: the tool writes into the working draft at once, the page reloads and the draft bar counts it. A call's second line is its arguments. The draft bar sits above the title row; read from the console's CSS and Frame, not confirmed in a running app.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="content draft-slot"><section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>4 changes not published</strong><a class="link sm" href="agency/publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section></div>
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Description</dt><dd>A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</dd><dt>Type</dt><dd><span class="tag mute">Human</span></dd></dl></section><section class="card" aria-label="Farmers' coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Type</dt><dd><div class="row" style="--row-gap:4px"><a class="link" href="people/agents.html" title="Opens: Agents"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>AI role</span></a><a class="link sm" href="people/agents.html" title="Opens: Agents" aria-label="Configure, opens: Agents">Configure</a></div></dd></dl></section><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Treasurer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Treasurer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Add a role called Treasurer</div></div><div class="turn-bot"><div class="tools"><div class="tools-head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Called 2 tools</span><span class="muted">352 ms</span></div><div class="tool"><span class="tool-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/></svg></span><span class="tool-name">agency_list_roles</span><span class="tool-state"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tool-ms">138 ms</span><span class="tool-sum"></span></div><div class="tool"><span class="tool-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/></svg></span><span class="tool-name">agency_create_role</span><span class="tool-state"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tool-ms">214 ms</span><span class="tool-sum">name=Treasurer description=Keeps the group's accounts</span></div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">I added the role Treasurer to the draft.</div></div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s4">
+<figcaption class="cap">4 · A list in the content area: the tool list under the Answer to banner, a reference card in the thread<span class="cap-mcp">Filled by: ai_chat_account (show_my_tools)</span><span class="cap-note">The list holds the 10 read tools the Roles page offers, and the chip counts them; the tools that write, agency_create_role and agency_update_role, are not in it. Example data: the descriptions are the first sentence of each tool's own. The thread shows the reference card, not the list. The Answer to banner sits above the title row, in a slot of its own; read from the console's CSS and Frame, not confirmed in a running app.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="content answer-slot"><section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Which tools do you have?</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><div class="panel table-card"><table class="table"><thead><tr><th>Tool</th><th>What it does</th><th>Area</th></tr></thead><tbody><tr><td><code>agency_get_agency</code></td><td>Read the organization: its name, description and settings.</td><td>Agency</td></tr><tr><td><code>agency_list_goals</code></td><td>List one draft's goals in their listed order, narrowed by the filter.</td><td>Agency</td></tr><tr><td><code>agency_list_objectives</code></td><td>List one draft's objectives in their listed order, narrowed by the filter.</td><td>Agency</td></tr><tr><td><code>agency_list_roles</code></td><td>List one draft's seats, narrowed by the filter.</td><td>Agency</td></tr><tr><td><code>agency_get_role</code></td><td>Read one seat.</td><td>Agency</td></tr><tr><td><code>agency_get_role_brief</code></td><td>Gather what one seat needs from the production publication: its name and description, the work items it takes part in through RACI with the label it holds on each, the objectives their workflows serv…</td><td>Agency</td></tr><tr><td><code>agency_list_role_assignments</code></td><td>List one draft's RACI links, narrowed by the filter (label, work item or role).</td><td>Agency</td></tr><tr><td><code>agency_list_rules</code></td><td>List one draft's requirements, narrowed by the filter — including by what they are attached to.</td><td>Agency</td></tr><tr><td><code>agency_list_permissions</code></td><td>List the permission vocabulary a role may tick, each with the actions it allows and whether it is locked to owners.</td><td>Agency</td></tr><tr><td><code>agency_list_scenarios</code></td><td>List one draft's scenarios in the order they were written, each with its result, the rules its workflow shows, its actors, the fixed inputs and its blocks.</td><td>Agency</td></tr></tbody></table></div></div></section></div>
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Description</dt><dd>A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</dd><dt>Type</dt><dd><span class="tag mute">Human</span></dd></dl></section><section class="card" aria-label="Farmers' coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Type</dt><dd><div class="row" style="--row-gap:4px"><a class="link" href="people/agents.html" title="Opens: Agents"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>AI role</span></a><a class="link sm" href="people/agents.html" title="Opens: Agents" aria-label="Configure, opens: Agents">Configure</a></div></dd></dl></section><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Which tools do you have?</div></div><div class="turn-bot"><div class="tools collapsed"><div class="tools-head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Called 1 tool</span><span class="muted">4 ms</span></div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="ref-title">Which tools do you have?</span><span class="tag mute">10 results</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">The list is shown on the right.</div></div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s5">
+<figcaption class="cap">5 · A pending write as an approval card: Approve and Decline, nothing recorded yet<span class="cap-mcp">Filled by: ai_chat_account (show_limit_raise), ai_check_limits, ai_get_account</span><span class="cap-note">Example data: the assistant's words, the model and the numbers are drawn. Only the Models page offers an approval card (show_limit_raise); the Usage pages offer a figures card instead. The model calls ai_check_limits and show_limit_raise; the card itself reads the account with ai_get_account to write its text. The card reads the detail, the note, then Approve and Decline as its footer. The banner and the draft bar are slots above the title row, and the page stays under them. Read from the console's CSS and Frame, not confirmed in a running app.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Models"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="models"></nav>
+
+<div class="main">
+
+<div class="content answer-slot"><section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Why did the Farmers' agent stop answering?</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><section class="card msg-card"><div class="card-head"><h3><span class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Raise Tokens per month to 6,000,000</span></h3></div><div class="card-body"><div class="msg-detail">Meta Model API allows 4,000,000 and 4,000,000 of it is used. Runs ai_set_limits when you approve.</div><div class="msg-note">Nothing is recorded until you approve.</div></div><div class="card-foot"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></section></div></section></div>
+<div class="top">
+<h1>Models</h1>
+<div class="top-end"><a class="btn primary" href="settings/model-add.html">Add a model</a></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:28px"><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search models</span><input type="search" placeholder="Search models"></label></div></div>
+<section class="card closed" aria-label="Muse Spark 1.3"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Muse Spark 1.3</button></h2><div class="card-actions"><a class="link sm" href="settings/model-edit.html#s1" title="Opens: Muse Spark 1.3, key and test" aria-label="Edit, opens: Muse Spark 1.3, key and test">Edit</a><button type="button" class="link sm">Remove</button></div></div></section></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark 1.3</span></td><td><span class="count mk-nowrap">muse-spark-1.3</span></td><td class="row-act"><span class="tag">Added</span></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2</span></td><td><span class="count mk-nowrap">muse-spark-1.2</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.1</span></td><td><span class="count mk-nowrap">muse-spark-1.1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.1, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.3 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.3-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.3 (contributor mode), opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.2-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2 (contributor mode), opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta open weights (your own server)</strong> <span class="tag">Meta</span> <span class="muted">Your host gives the address and the model id</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark Open</span></td><td><span class="count mk-nowrap">muse-spark-open</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Spark Open, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Glimmer</span></td><td><span class="count mk-nowrap">muse-glimmer</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Glimmer, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Hugging Face</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">GLM-5.3</span></td><td><span class="count mk-nowrap">zai-org/GLM-5.3:novita</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add GLM-5.3, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Claude</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Haiku 5.5</span></td><td><span class="count mk-nowrap">claude-haiku-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Haiku 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Sonnet 5.5</span></td><td><span class="count mk-nowrap">claude-sonnet-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Sonnet 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Opus 5.5</span></td><td><span class="count mk-nowrap">claude-opus-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Opus 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Fable 5.1</span></td><td><span class="count mk-nowrap">claude-fable-5-1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Fable 5.1, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Models" data-ctx-icon="grid" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Why did the Farmers' agent stop answering?</div></div><div class="turn-bot"><div class="tools collapsed"><div class="tools-head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Called 2 tools</span><span class="muted">159 ms</span></div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="ref-title">Why did the Farmers' agent stop answering?</span><span class="tag mute">Form</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">The call was refused because the monthly limit is used up. Check the raise, then press Approve.</div></div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s6">
+<figcaption class="cap">6 · After Approve: the card is gone and the notice says the limits were saved<span class="cap-mcp">Filled by: ai_set_limits</span><span class="cap-note">Approve runs the tool shown on the card, shows the notice under the title and clears only the answer slot; the page below it and the thread do not change.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Models"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="models"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Models</h1>
+<div class="top-end"><a class="btn primary" href="settings/model-add.html">Add a model</a></div>
+</div>
+<div class="notice ok" role="status"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="notice-text">The limits were saved.</span><button type="button" class="notice-close" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:28px"><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search models</span><input type="search" placeholder="Search models"></label></div></div>
+<section class="card closed" aria-label="Muse Spark 1.3"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Muse Spark 1.3</button></h2><div class="card-actions"><a class="link sm" href="settings/model-edit.html#s1" title="Opens: Muse Spark 1.3, key and test" aria-label="Edit, opens: Muse Spark 1.3, key and test">Edit</a><button type="button" class="link sm">Remove</button></div></div></section></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark 1.3</span></td><td><span class="count mk-nowrap">muse-spark-1.3</span></td><td class="row-act"><span class="tag">Added</span></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2</span></td><td><span class="count mk-nowrap">muse-spark-1.2</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.1</span></td><td><span class="count mk-nowrap">muse-spark-1.1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.1, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.3 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.3-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.3 (contributor mode), opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.2-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2 (contributor mode), opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta open weights (your own server)</strong> <span class="tag">Meta</span> <span class="muted">Your host gives the address and the model id</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark Open</span></td><td><span class="count mk-nowrap">muse-spark-open</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Spark Open, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Glimmer</span></td><td><span class="count mk-nowrap">muse-glimmer</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Glimmer, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Hugging Face</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">GLM-5.3</span></td><td><span class="count mk-nowrap">zai-org/GLM-5.3:novita</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add GLM-5.3, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Claude</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Haiku 5.5</span></td><td><span class="count mk-nowrap">claude-haiku-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Haiku 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Sonnet 5.5</span></td><td><span class="count mk-nowrap">claude-sonnet-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Sonnet 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Opus 5.5</span></td><td><span class="count mk-nowrap">claude-opus-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Opus 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Fable 5.1</span></td><td><span class="count mk-nowrap">claude-fable-5-1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Fable 5.1, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Models" data-ctx-icon="grid" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Why did the Farmers' agent stop answering?</div></div><div class="turn-bot"><div class="tools collapsed"><div class="tools-head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Called 2 tools</span><span class="muted">159 ms</span></div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="ref-title">Why did the Farmers' agent stop answering?</span><span class="tag mute">Form</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">The call was refused because the monthly limit is used up. Check the raise, then press Approve.</div></div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s7">
+<figcaption class="cap">7 · After Decline: the card is gone and nothing is recorded<span class="cap-mcp">Filled by: ai_chat_account</span><span class="cap-note">Decline only clears the card. No notice, no message in the thread.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Models"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="models"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Models</h1>
+<div class="top-end"><a class="btn primary" href="settings/model-add.html">Add a model</a></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:28px"><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search models</span><input type="search" placeholder="Search models"></label></div></div>
+<section class="card closed" aria-label="Muse Spark 1.3"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Muse Spark 1.3</button></h2><div class="card-actions"><a class="link sm" href="settings/model-edit.html#s1" title="Opens: Muse Spark 1.3, key and test" aria-label="Edit, opens: Muse Spark 1.3, key and test">Edit</a><button type="button" class="link sm">Remove</button></div></div></section></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark 1.3</span></td><td><span class="count mk-nowrap">muse-spark-1.3</span></td><td class="row-act"><span class="tag">Added</span></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2</span></td><td><span class="count mk-nowrap">muse-spark-1.2</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.1</span></td><td><span class="count mk-nowrap">muse-spark-1.1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.1, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.3 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.3-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.3 (contributor mode), opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.2-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2 (contributor mode), opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta open weights (your own server)</strong> <span class="tag">Meta</span> <span class="muted">Your host gives the address and the model id</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark Open</span></td><td><span class="count mk-nowrap">muse-spark-open</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Spark Open, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Glimmer</span></td><td><span class="count mk-nowrap">muse-glimmer</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Glimmer, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Hugging Face</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">GLM-5.3</span></td><td><span class="count mk-nowrap">zai-org/GLM-5.3:novita</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add GLM-5.3, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Claude</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Haiku 5.5</span></td><td><span class="count mk-nowrap">claude-haiku-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Haiku 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Sonnet 5.5</span></td><td><span class="count mk-nowrap">claude-sonnet-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Sonnet 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Opus 5.5</span></td><td><span class="count mk-nowrap">claude-opus-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Opus 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Fable 5.1</span></td><td><span class="count mk-nowrap">claude-fable-5-1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Fable 5.1, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Models" data-ctx-icon="grid" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Why did the Farmers' agent stop answering?</div></div><div class="turn-bot"><div class="tools collapsed"><div class="tools-head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Called 2 tools</span><span class="muted">159 ms</span></div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="ref-title">Why did the Farmers' agent stop answering?</span><span class="tag mute">Form</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">The call was refused because the monthly limit is used up. Check the raise, then press Approve.</div></div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s8">
+<figcaption class="cap">8 · Approve fails: the card stays, the notice says why<span class="cap-mcp">Filled by: ai_set_limits</span><span class="cap-note">The buttons are enabled again so the manager can try again. When the tool gave no message the notice reads The change could not be sent. The banner and the draft bar are slots above the title row, and the page stays under them. Read from the console's CSS and Frame, not confirmed in a running app.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Models"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="models"></nav>
+
+<div class="main">
+
+<div class="content answer-slot"><section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Why did the Farmers' agent stop answering?</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><section class="card msg-card"><div class="card-head"><h3><span class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Raise Tokens per month to 6,000,000</span></h3></div><div class="card-body"><div class="msg-detail">Meta Model API allows 4,000,000 and 4,000,000 of it is used. Runs ai_set_limits when you approve.</div><div class="msg-note">Nothing is recorded until you approve.</div></div><div class="card-foot"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></section></div></section></div>
+<div class="top">
+<h1>Models</h1>
+<div class="top-end"><a class="btn primary" href="settings/model-add.html">Add a model</a></div>
+</div>
+<div class="notice bad" role="alert"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><span class="notice-text">The change could not be sent.</span><button type="button" class="notice-close" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:28px"><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search models</span><input type="search" placeholder="Search models"></label></div></div>
+<section class="card closed" aria-label="Muse Spark 1.3"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Muse Spark 1.3</button></h2><div class="card-actions"><a class="link sm" href="settings/model-edit.html#s1" title="Opens: Muse Spark 1.3, key and test" aria-label="Edit, opens: Muse Spark 1.3, key and test">Edit</a><button type="button" class="link sm">Remove</button></div></div></section></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark 1.3</span></td><td><span class="count mk-nowrap">muse-spark-1.3</span></td><td class="row-act"><span class="tag">Added</span></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2</span></td><td><span class="count mk-nowrap">muse-spark-1.2</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.1</span></td><td><span class="count mk-nowrap">muse-spark-1.1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.1, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.3 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.3-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.3 (contributor mode), opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.2-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2 (contributor mode), opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta open weights (your own server)</strong> <span class="tag">Meta</span> <span class="muted">Your host gives the address and the model id</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark Open</span></td><td><span class="count mk-nowrap">muse-spark-open</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Spark Open, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Glimmer</span></td><td><span class="count mk-nowrap">muse-glimmer</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Glimmer, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Hugging Face</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">GLM-5.3</span></td><td><span class="count mk-nowrap">zai-org/GLM-5.3:novita</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add GLM-5.3, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Claude</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Haiku 5.5</span></td><td><span class="count mk-nowrap">claude-haiku-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Haiku 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Sonnet 5.5</span></td><td><span class="count mk-nowrap">claude-sonnet-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Sonnet 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Opus 5.5</span></td><td><span class="count mk-nowrap">claude-opus-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Opus 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Fable 5.1</span></td><td><span class="count mk-nowrap">claude-fable-5-1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Fable 5.1, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Models" data-ctx-icon="grid" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Why did the Farmers' agent stop answering?</div></div><div class="turn-bot"><div class="tools collapsed"><div class="tools-head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Called 2 tools</span><span class="muted">159 ms</span></div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="ref-title">Why did the Farmers' agent stop answering?</span><span class="tag mute">Form</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">The call was refused because the monthly limit is used up. Check the raise, then press Approve.</div></div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s9">
+<figcaption class="cap">9 · A form the chat fills: the limit form with the agent and the value set, Save records it<span class="cap-mcp">Filled by: ai_chat_account (show_role_limit_form), ai_list_roles, ai_set_role_limits</span><span class="cap-note">Example data: the assistant's words and the agents are drawn. Only the agent is required; the limit is a number field. Save writes straight to the tool, then clears the form and shows the notice The limits were saved. The banner and the draft bar are slots above the title row, and the page stays under them. Read from the console's CSS and Frame, not confirmed in a running app.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Models"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="models"></nav>
+
+<div class="main">
+
+<div class="content answer-slot"><section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Raise the Farmers' agent to 150,000 tokens a day</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><div class="card"><span class="form-tool">ai_set_role_limits</span><div class="stack"><label class="field"><span class="field-label">Agent<span class="req" aria-hidden="true">*</span></span><span class="control ctl"><select><option selected>Farmers' agent</option><option>Suppliers' agent</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></label><label class="field"><span class="field-label">Tokens per day</span><span class="control ctl"><input type="number" value="150000" placeholder="0"></span></label></div><div class="form-foot"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div></div></section></div>
+<div class="top">
+<h1>Models</h1>
+<div class="top-end"><a class="btn primary" href="settings/model-add.html">Add a model</a></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:28px"><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search models</span><input type="search" placeholder="Search models"></label></div></div>
+<section class="card closed" aria-label="Muse Spark 1.3"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Muse Spark 1.3</button></h2><div class="card-actions"><a class="link sm" href="settings/model-edit.html#s1" title="Opens: Muse Spark 1.3, key and test" aria-label="Edit, opens: Muse Spark 1.3, key and test">Edit</a><button type="button" class="link sm">Remove</button></div></div></section></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark 1.3</span></td><td><span class="count mk-nowrap">muse-spark-1.3</span></td><td class="row-act"><span class="tag">Added</span></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2</span></td><td><span class="count mk-nowrap">muse-spark-1.2</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.1</span></td><td><span class="count mk-nowrap">muse-spark-1.1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.1, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.3 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.3-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.3 (contributor mode), opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.2-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2 (contributor mode), opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta open weights (your own server)</strong> <span class="tag">Meta</span> <span class="muted">Your host gives the address and the model id</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark Open</span></td><td><span class="count mk-nowrap">muse-spark-open</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Spark Open, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Glimmer</span></td><td><span class="count mk-nowrap">muse-glimmer</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Glimmer, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Hugging Face</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">GLM-5.3</span></td><td><span class="count mk-nowrap">zai-org/GLM-5.3:novita</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add GLM-5.3, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Claude</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Haiku 5.5</span></td><td><span class="count mk-nowrap">claude-haiku-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Haiku 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Sonnet 5.5</span></td><td><span class="count mk-nowrap">claude-sonnet-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Sonnet 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Opus 5.5</span></td><td><span class="count mk-nowrap">claude-opus-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Opus 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Fable 5.1</span></td><td><span class="count mk-nowrap">claude-fable-5-1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Fable 5.1, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Models" data-ctx-icon="grid" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Raise the Farmers' agent to 150,000 tokens a day</div></div><div class="turn-bot"><div class="tools collapsed"><div class="tools-head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Called 2 tools</span><span class="muted">124 ms</span></div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="ref-title">Raise the Farmers' agent to 150,000 tokens a day</span><span class="tag mute">Form</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">The form is filled in on the right. Check it, then press Save.</div></div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s10">
+<figcaption class="cap">10 · Working: the Send arrow turns into Stop<span class="cap-mcp">Filled by: ai_chat_account</span><span class="cap-note">While the assistant works the thread shows only the question and the round button is Stop. Stop cancels the call and empties the queue; the question is not kept.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Description</dt><dd>A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</dd><dt>Type</dt><dd><span class="tag mute">Human</span></dd></dl></section><section class="card" aria-label="Farmers' coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Type</dt><dd><div class="row" style="--row-gap:4px"><a class="link" href="people/agents.html" title="Opens: Agents"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>AI role</span></a><a class="link sm" href="people/agents.html" title="Opens: Agents" aria-label="Configure, opens: Agents">Configure</a></div></dd></dl></section><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Roles</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">What is not published?</div></div></div></div>
+
+<div class="chat-input"><div class="composer"><label><span class="sr">Write a message</span><textarea rows="3" placeholder="Ask about Roles…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">GLM-5.3<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Stop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s11">
+<figcaption class="cap">11 · Enhance pressed: the button shows a spinner while its message runs in the chat<span class="cap-mcp">Filled by: ai_chat_account</span><span class="cap-note">Enhance sends a fixed message about the page, with the page's draft as background. It is in the title row of every agency page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet" disabled aria-busy="true"><span class="tool-spin" aria-hidden="true"></span>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Description</dt><dd>A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</dd><dt>Type</dt><dd><span class="tag mute">Human</span></dd></dl></section><section class="card" aria-label="Farmers' coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Type</dt><dd><div class="row" style="--row-gap:4px"><a class="link" href="people/agents.html" title="Opens: Agents"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>AI role</span></a><a class="link sm" href="people/agents.html" title="Opens: Agents" aria-label="Configure, opens: Agents">Configure</a></div></dd></dl></section><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Roles</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Review the roles and make suggestions where something is missing, unclear or can be improved.</div></div></div></div>
+
+<div class="chat-input"><div class="composer"><label><span class="sr">Write a message</span><textarea rows="3" placeholder="Ask about Roles…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">GLM-5.3<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Stop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s12">
+<figcaption class="cap">12 · Enhance pressed while the assistant is busy: the message waits in the queue<span class="cap-mcp">Filled by: ai_chat_account</span><span class="cap-note">A waiting message shows under a Queued line with a cross to take it out; it is sent when the assistant is free.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet" disabled aria-busy="true"><span class="tool-spin" aria-hidden="true"></span>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Description</dt><dd>A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</dd><dt>Type</dt><dd><span class="tag mute">Human</span></dd></dl></section><section class="card" aria-label="Farmers' coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Type</dt><dd><div class="row" style="--row-gap:4px"><a class="link" href="people/agents.html" title="Opens: Agents"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>AI role</span></a><a class="link sm" href="people/agents.html" title="Opens: Agents" aria-label="Configure, opens: Agents">Configure</a></div></dd></dl></section><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Roles</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">What is not published?</div></div></div></div>
+<ul class="chat-queue" aria-label="Waiting in the chat"><li class="chat-queue-line" aria-hidden="true">Queued</li><li class="bubble"><span>Review the roles and make suggestions where something is missing, unclear or can be improved.</span><button type="button" aria-label="Remove from the queue: Review the roles and make suggestions where something is missing, unclear or can be improved."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></li></ul>
+<div class="chat-input"><div class="composer"><label><span class="sr">Write a message</span><textarea rows="3" placeholder="Ask about Roles…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="false">GLM-5.3<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><button type="button" class="chat-send" aria-label="Stop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s13">
+<figcaption class="cap">13 · The model picker open: a tick on the model the chat is on<span class="cap-mcp">Filled by: ai_list_accounts, ai_list_chat_models</span><span class="cap-note">Example data: the labels are what the admin typed under Name in the chat. The list opens over the chat box. Choosing a model calls ai_pick_chat_model.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Description</dt><dd>A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</dd><dt>Type</dt><dd><span class="tag mute">Human</span></dd></dl></section><section class="card" aria-label="Farmers' coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Type</dt><dd><div class="row" style="--row-gap:4px"><a class="link" href="people/agents.html" title="Opens: Agents"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>AI role</span></a><a class="link sm" href="people/agents.html" title="Opens: Agents" aria-label="Configure, opens: Agents">Configure</a></div></dd></dl></section><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Roles</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Write a message</span><textarea rows="3" placeholder="Ask about Roles…"></textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"><button type="button" aria-haspopup="listbox" aria-expanded="true">GLM-5.3 (Hugging Face)<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><ul class="chat-model-list" role="listbox" aria-label="Model" tabindex="-1"><li role="option" aria-selected="true" data-active="true">GLM-5.3 (Hugging Face)<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></li><li role="option" aria-selected="false" data-active="false">GLM-5.3 (second host)</li><li role="option" aria-selected="false" data-active="false">Core 5.5</li></ul></span></span><button type="submit" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s14">
+<figcaption class="cap">14 · The call failed: an error card, the question back in the box<span class="cap-mcp">Filled by: ai_chat_account</span><span class="cap-note">The question leaves the thread and returns to the box so it can be sent again. The card reads The change could not be sent. and then the reason. Here the hub has no model the chat can use, so the box has no picker.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Description</dt><dd>A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</dd><dt>Type</dt><dd><span class="tag mute">Human</span></dd></dl></section><section class="card" aria-label="Farmers' coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Type</dt><dd><div class="row" style="--row-gap:4px"><a class="link" href="people/agents.html" title="Opens: Agents"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>AI role</span></a><a class="link sm" href="people/agents.html" title="Opens: Agents" aria-label="Configure, opens: Agents">Configure</a></div></dd></dl></section><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat">
+<div class="chat-head"><h2 class="chat-label">Chat</h2><span class="chat-ctx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Roles</span><button type="button" class="chat-collapse" aria-label="Collapse chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></div>
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div><div role="alert"><div class="msg-card bad"><div class="msg-title bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>The change could not be sent. no model is ready for the chat yet: add one on the Models page and allow it in the chat</div></div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+<div class="chat-input"><div class="composer"><label><span class="sr">Write a message</span><textarea rows="3" placeholder="Ask about Roles…">Who has which role?</textarea></label><div class="composer-bar"><span class="chat-tools"><button type="button" class="chat-attach" aria-label="Attach a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><span class="chat-model"></span></span><button type="submit" class="chat-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s15">
+<figcaption class="cap">15 · The chat collapsed to the rail: a dot says a reply came in<span class="cap-mcp">Filled by: ai_chat_account</span><span class="cap-note">The collapse button shrinks the chat to a narrow rail with the chat icon and the side-panel button, and the page takes the width. The accent dot appears when a reply arrives while the rail is shut and goes when the chat is opened.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Description</dt><dd>A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</dd><dt>Type</dt><dd><span class="tag mute">Human</span></dd></dl></section><section class="card" aria-label="Farmers' coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div><dl class="kv"><dt>Type</dt><dd><div class="row" style="--row-gap:4px"><a class="link" href="people/agents.html" title="Opens: Agents"><span class="tag warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>AI role</span></a><a class="link sm" href="people/agents.html" title="Opens: Agents" aria-label="Configure, opens: Agents">Configure</a></div></dd></dl></section><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="agency/roles/roles.html#s3" title="Opens: Role, detail" aria-label="Edit, opens: Role, detail">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat rail" aria-label="Chat, collapsed"><span class="rail-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="rail-dot" role="img" aria-label="New reply"></span></span><button type="button" class="chat-collapse" aria-label="Open chat" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></aside>
+</div>
+</div>
+</figure>
+
+<figure id="s16">
+<figcaption class="cap">16 · Loading: the title row is drawn at once, a spinner sits below it in the content area<span class="cap-mcp">Filled by: agency_list_roles</span><span class="cap-note">While Roles waits for its data it already draws its title row (Roles, Enhance, Add a role); the frame puts the spinner after the page, so it sits below the title row, not in place of it. The spinner fades in after a short pause so a quick page never flashes it. The menu, the header strip and the chat stay as they are. This is how Roles loads; it is not drawn for the other pages.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+<div class="loading" role="status"><span class="tool-spin" aria-hidden="true"></span><span class="sr">Loading</span></div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s17">
+<figcaption class="cap">17 · A hub with no model: one suggestion chip on Models, no picker in the chat box<span class="cap-mcp">Filled by: ai_list_accounts</span><span class="cap-note">Models is the one page whose chips shrink to one while the hub has no model: the chat offers to add one. With no model the chat box has no picker. The other pages keep their three chips. Under the empty card the page still lists Available to add.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Models"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="models"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Models</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:28px"><div class="empty"><span>No model yet. Add one so the hub's agents can reply.</span><a class="btn primary" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add a model, opens: Add a model">Add a model</a></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark 1.3</span></td><td><span class="count mk-nowrap">muse-spark-1.3</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.3, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2</span></td><td><span class="count mk-nowrap">muse-spark-1.2</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.1</span></td><td><span class="count mk-nowrap">muse-spark-1.1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.1, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.3 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.3-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.3 (contributor mode), opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Spark 1.2 (contributor mode)</span></td><td><span class="count mk-nowrap">muse-spark-1.2-contributor</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s6" title="Opens: Add a model" aria-label="Add Muse Spark 1.2 (contributor mode), opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta open weights (your own server)</strong> <span class="tag">Meta</span> <span class="muted">Your host gives the address and the model id</span></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Muse Spark Open</span></td><td><span class="count mk-nowrap">muse-spark-open</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Spark Open, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Muse Glimmer</span></td><td><span class="count mk-nowrap">muse-glimmer</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s10" title="Opens: Add a model" aria-label="Add Muse Glimmer, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Hugging Face</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">GLM-5.3</span></td><td><span class="count mk-nowrap">zai-org/GLM-5.3:novita</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add GLM-5.3, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+<div class="mk-quiet"><div class="stack" style="--stack-gap:10px"><div class="row"><strong>Claude</strong></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Model</th><th>Model id</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><span class="mk-nowrap">Haiku 5.5</span></td><td><span class="count mk-nowrap">claude-haiku-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Haiku 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Sonnet 5.5</span></td><td><span class="count mk-nowrap">claude-sonnet-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Sonnet 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Opus 5.5</span></td><td><span class="count mk-nowrap">claude-opus-5-5</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Opus 5.5, opens: Add a model">Add</a></td></tr><tr><td><span class="mk-nowrap">Fable 5.1</span></td><td><span class="count mk-nowrap">claude-fable-5-1</span></td><td class="row-act"><a class="link sm" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add Fable 5.1, opens: Add a model">Add</a></td></tr>
+</tbody>
+</table>
+</div></div></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Models" data-ctx-icon="grid">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Models?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Add a Meta open weights model</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s18">
+<figcaption class="cap">18 · Remove role refused: the sentence and the scenarios that use the role in the content area, the same sentence in the chat<span class="cap-mcp">Filled by: agency_list_scenarios (agency_delete_role only when no scenario uses the role)</span><span class="cap-note">Example data: the role and the scenarios are drawn for this page. Pressing Remove role on the confirm card first lists the scenarios; when test scenarios still use the role, agency_delete_role is not called, nothing is removed, the confirm card closes, and the page shows the sentence and a card listing the scenarios with Open. The chat gets the same sentence as an assistant message, and the greeting and chips give way to it. The Test page is not drawn yet, so Open does not lead anywhere here. The draft bar sits above the title row; read from the console's CSS and Frame, not confirmed in a running app.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="content draft-slot"><section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="agency/publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section></div>
+<div class="top">
+<h1>Farmer</h1>
+<div class="top-end"><button type="button" class="btn primary">Edit</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="stack" style="--stack-gap:20px"><div role="alert"><div class="note">The Farmer role was not removed: 2 test scenarios use it. Take the Farmer actor out of them first.</div></div><section class="card" aria-label="Scenarios that use Farmer"><div class="card-head"><h2>Scenarios that use Farmer</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Scenario</th><th>Where it is used</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td>Buy together</td><td>Actors tab</td><td class="row-act"><a class="btn quiet sm" href="#" title="Opens: Test (not drawn yet)" aria-label="Open, opens: Test">Open</a></td></tr>
+<tr><td>A farmer stays silent</td><td>Actors tab</td><td class="row-act"><a class="btn quiet sm" href="#" title="Opens: Test (not drawn yet)" aria-label="Open, opens: Test">Open</a></td></tr>
+</tbody>
+</table>
+</div></section></div><section class="card" aria-label="Role"><div class="card-head"><h2>Role</h2><div class="card-actions"><button type="button" class="btn quiet sm">Remove</button></div></div><div class="note">A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</div><dl class="kv"><dt>Type</dt><dd><span class="tag mute">Human</span></dd><dt>What it may do</dt><dd>Asks for inputs through the group's form <span class="count">RU-1</span><br>Is bound to an order only after saying yes to their share <span class="count">RU-4</span></dd><dt>Agents</dt><dd>—</dd></dl></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">The Farmer role was not removed: 2 test scenarios use it. Take the Farmer actor out of them first.</div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s19">
+<figcaption class="cap">19 · Remove workflow refused: the sentence and the scenarios that mirror it above the cards, the same sentence in the chat<span class="cap-mcp">Filled by: agency_delete_workflow, agency_list_scenarios</span><span class="cap-note">Example data: the workflow and the scenarios are drawn for this page. When the agency refuses and scenarios mirror the workflow, nothing is removed, the confirm card closes, and the page shows the sentence and a table of those scenarios above the cards. The chat gets the same sentence. The Test page is not drawn yet, so the scenario names do not lead anywhere here.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Workflows"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="workflows"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Workflows</h1>
+<div class="top-end"><a class="btn primary" href="agency/workflows/workflow-edit.html#s6" title="Opens: Add a workflow" aria-label="Add a workflow, opens: Add a workflow">Add a workflow</a><a class="btn quiet" href="agency/workflows/workflow-edit.html#s7" title="Opens: Add a cancel workflow" aria-label="Add a cancel workflow, opens: Add a cancel workflow">Add a cancel workflow</a></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search workflows</span><input type="search" placeholder="Search workflows"></label></div></div><div class="stack" style="--stack-gap:12px"><div class="stack" style="--stack-gap:12px"><div class="note">Pool an input order was not removed: 2 test scenarios mirror it. Remove those scenarios first.</div><div class="section-head"><h2>Scenarios that mirror Pool an input order</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Scenario</th><th>Workflow it mirrors</th></tr></thead>
+<tbody>
+<tr><td><a class="link" href="#" title="Opens: Test (not drawn yet)" aria-label="Buy together, opens: Test">Buy together</a></td><td>Pool an input order</td></tr>
+<tr><td><a class="link" href="#" title="Opens: Test (not drawn yet)" aria-label="A farmer stays silent, opens: Test">A farmer stays silent</a></td><td>Pool an input order</td></tr>
+</tbody>
+</table>
+</div></div><div class="card"><div class="stack" style="--stack-gap:12px"><div class="workflow-head"><div class="cell"><span role="img" aria-label="Opens in a chat" title="Opens in a chat"><span class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></span><span class="cell-text"><a class="cell-name" href="agency/workflows/workflow-edit.html#s1" title="Opens: Workflow, detail" aria-label="Find it, opens: Workflow, detail">Find it</a><span class="cell-sub">A farmer looks for something no poster lists. Says yes: the farmer chooses whom to ask or to put up a notice; each asked poster answers for himself.</span></span></div><span class="tag mute">W-6</span><button type="button" class="btn quiet sm">Actions <span aria-hidden="true">&#9662;</span></button></div><dl class="kv"><dt>Steps</dt><dd>1</dd><dt>Roles</dt><dd>Farmers&#x27; agent</dd><dt>Chats with</dt><dd>Farmers&#x27; agent</dd><dt>Objectives</dt><dd><div class="stack" style="--stack-gap:4px"><div class="row" style="--row-gap:8px"><a class="link sm" href="agency/goals/goals.html" title="Opens: Goals" aria-label="O-4, opens: Goals">O-4<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a><span class="muted">Farmers buy from approved suppliers, alone or together</span></div></div></dd><dt>Version</dt><dd>1</dd></dl></div></div><div class="card"><div class="stack" style="--stack-gap:12px"><div class="workflow-head"><div class="cell"><span class="cell-text"><a class="cell-name" href="agency/workflows/workflow-edit.html#s1" title="Opens: Workflow, detail" aria-label="Pool an input order, opens: Workflow, detail">Pool an input order</a><span class="cell-sub">From the farmers&#x27; input questions to a supplier&#x27;s filled order.</span></span></div><span class="tag mute">W-1</span><span class="tag ok">In use</span><button type="button" class="btn quiet sm">Actions <span aria-hidden="true">&#9662;</span></button></div><dl class="kv"><dt>Steps</dt><dd>2</dd><dt>Roles</dt><dd>Farmer, Group coordinator</dd><dt>Objectives</dt><dd><div class="stack" style="--stack-gap:4px"><div class="row" style="--row-gap:8px"><a class="link sm" href="agency/goals/goals.html" title="Opens: Goals" aria-label="O-1, opens: Goals">O-1<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a><span class="muted">Gather the farmers&#x27; needs into one order</span></div><div class="row" style="--row-gap:8px"><a class="link sm" href="agency/goals/goals.html" title="Opens: Goals" aria-label="O-2, opens: Goals">O-2<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a><span class="muted">Get the supplier&#x27;s answer to the farmers</span></div></div></dd><dt>Version</dt><dd>2</dd></dl></div></div></div><p class="muted">A publish reaches members within 30 seconds.</p></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Workflows" data-ctx-icon="sliders" data-model="GLM-5.3">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">Pool an input order was not removed: 2 test scenarios mirror it. Remove those scenarios first.</div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<script src="shell.js"></script>
+</body>
+</html>

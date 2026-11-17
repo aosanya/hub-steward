@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join requests page</title>
+<link rel="stylesheet" href="../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · Landing with two requests waiting: a table above the users, Approve and Decline on each row. A request to the agency itself names "the agency" in place of a group.<span class="cap-mcp">Filled by: actor_list_join_requests_for_group (group rows), GET /instances/{hub}/join-requests (REST, the agency row), actor_list_actors and actor_list_groups (names), actor_list_actors_for_group, actor_list_role_kinds, actor_list_role_holders (the users below), actor_operator_approve_join_request and actor_operator_decline_join_request (group rows), POST /instances/{hub}/join-requests/{id}/approve and /refuse (REST, the agency row)</span><span class="cap-note">Example data: the people are the demo's synthetic ones; the requests are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Users"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="users"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Users</h1>
+<div class="top-end"><button type="button" class="btn primary">Invite a user</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack"><section aria-label="Waiting for approval"><div class="stack"><div class="panel table-card">
+<table class="table">
+<thead><tr><th>User</th><th>Groups</th><th>State</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="badge avatar">LA</span><span class="cell-text"><span class="cell-name">Lucy Awino</span></span></div></td><td><span class="tag">Siaya farmers</span></td><td><span class="tag warn">Waiting for approval</span></td><td class="row-act"><div class="row"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">KF</span><span class="cell-text"><span class="cell-name">Kisumu Feeds Ltd</span></span></div></td><td><span class="tag">the agency</span></td><td><span class="tag warn">Waiting for approval</span></td><td class="row-act"><div class="row"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></td></tr>
+</tbody>
+</table>
+</div></div></section><div class="stack"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search users</span><input type="search" placeholder="Search users"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="sr">All roles</span><select><option selected>All roles</option><option>Group coordinator</option><option>Farmer</option><option>Supplier</option><option>Buyer</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Asha Otieno</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Baraka Odhiambo</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Chebet Kiprop</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Grain Traders</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Agro Supplies</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Users" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Users?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who joined this week?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Invite someone</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which users have no card?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s2">
+<figcaption class="cap">2 · Decline of a group request: a card asks "Decline Lucy Awino's request to join Siaya farmers?" with an optional reason. Decline sends the reason, Decline quietly sends none. The reason and Decline quietly belong to group requests only: declining an agency request sends nothing beyond the refusal.<span class="cap-mcp">Filled by: actor_operator_decline_join_request (group request); POST /instances/{hub}/join-requests/{id}/refuse (REST, agency request)</span><span class="cap-note">Example data: the people are the demo's synthetic ones; the requests are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Users"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="users"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Users</h1>
+<div class="top-end"><button type="button" class="btn primary">Invite a user</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack"><section aria-label="Waiting for approval"><div class="stack"><div class="card tight">
+<div class="stack" style="--stack-gap:12px"><span>Decline Lucy Awino's request to join Siaya farmers?</span><span class="control ctl"><textarea rows="3" aria-label="Reason (optional)" placeholder="Reason (optional)"></textarea></span><div class="row"><button type="button" class="btn danger sm">Decline</button><button type="button" class="btn quiet sm">Decline quietly</button><button type="button" class="btn quiet sm">Cancel</button></div></div>
+</div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>User</th><th>Groups</th><th>State</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="badge avatar">LA</span><span class="cell-text"><span class="cell-name">Lucy Awino</span></span></div></td><td><span class="tag">Siaya farmers</span></td><td><span class="tag warn">Waiting for approval</span></td><td class="row-act"><div class="row"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">KF</span><span class="cell-text"><span class="cell-name">Kisumu Feeds Ltd</span></span></div></td><td><span class="tag">the agency</span></td><td><span class="tag warn">Waiting for approval</span></td><td class="row-act"><div class="row"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></td></tr>
+</tbody>
+</table>
+</div></div></section><div class="stack"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search users</span><input type="search" placeholder="Search users"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="sr">All roles</span><select><option selected>All roles</option><option>Group coordinator</option><option>Farmer</option><option>Supplier</option><option>Buyer</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Asha Otieno</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Baraka Odhiambo</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Chebet Kiprop</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Grain Traders</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Agro Supplies</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Users" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Users?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who joined this week?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Invite someone</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which users have no card?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s3">
+<figcaption class="cap">3 · After Approve on the agency request: the row is gone and the list reloads; one request is left.<span class="cap-mcp">Filled by: POST /instances/{hub}/join-requests/{id}/approve (REST, the agency request), then actor_list_join_requests_for_group (group rows), GET /instances/{hub}/join-requests (REST, the agency row), actor_list_actors and actor_list_groups (names)</span><span class="cap-note">Example data: the people are the demo's synthetic ones; the requests are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Users"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="users"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Users</h1>
+<div class="top-end"><button type="button" class="btn primary">Invite a user</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack"><section aria-label="Waiting for approval"><div class="stack"><div class="panel table-card">
+<table class="table">
+<thead><tr><th>User</th><th>Groups</th><th>State</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="badge avatar">LA</span><span class="cell-text"><span class="cell-name">Lucy Awino</span></span></div></td><td><span class="tag">Siaya farmers</span></td><td><span class="tag warn">Waiting for approval</span></td><td class="row-act"><div class="row"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></td></tr>
+</tbody>
+</table>
+</div></div></section><div class="stack"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search users</span><input type="search" placeholder="Search users"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="sr">All roles</span><select><option selected>All roles</option><option>Group coordinator</option><option>Farmer</option><option>Supplier</option><option>Buyer</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Asha Otieno</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Baraka Odhiambo</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Chebet Kiprop</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Grain Traders</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Agro Supplies</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Users" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Users?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who joined this week?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Invite someone</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which users have no card?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s4">
+<figcaption class="cap">4 · A decision that failed: the row stays and a red notice says why. Decline failing reads "The request could not be declined."<span class="cap-mcp">Filled by: actor_operator_approve_join_request (group request); POST /instances/{hub}/join-requests/{id}/approve (REST, agency request)</span><span class="cap-note">Example data: the people are the demo's synthetic ones; the requests are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Users"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="users"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Users</h1>
+<div class="top-end"><button type="button" class="btn primary">Invite a user</button></div>
+</div>
+
+<div class="notice bad" role="alert"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><span class="notice-text">The request could not be approved.</span><button type="button" class="notice-close" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div>
+
+<div class="content">
+
+<div class="stack"><section aria-label="Waiting for approval"><div class="stack"><div class="panel table-card">
+<table class="table">
+<thead><tr><th>User</th><th>Groups</th><th>State</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="badge avatar">LA</span><span class="cell-text"><span class="cell-name">Lucy Awino</span></span></div></td><td><span class="tag">Siaya farmers</span></td><td><span class="tag warn">Waiting for approval</span></td><td class="row-act"><div class="row"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">KF</span><span class="cell-text"><span class="cell-name">Kisumu Feeds Ltd</span></span></div></td><td><span class="tag">the agency</span></td><td><span class="tag warn">Waiting for approval</span></td><td class="row-act"><div class="row"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></td></tr>
+</tbody>
+</table>
+</div></div></section><div class="stack"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search users</span><input type="search" placeholder="Search users"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="sr">All roles</span><select><option selected>All roles</option><option>Group coordinator</option><option>Farmer</option><option>Supplier</option><option>Buyer</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Asha Otieno</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Baraka Odhiambo</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Chebet Kiprop</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Grain Traders</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Agro Supplies</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Users" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Users?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who joined this week?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Invite someone</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which users have no card?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s5">
+<figcaption class="cap">5 · Nothing waiting: the table is not drawn at all, only the users.<span class="cap-mcp">Filled by: actor_list_join_requests_for_group (group rows), GET /instances/{hub}/join-requests (REST, the agency row), actor_list_actors and actor_list_groups (names), actor_list_actors_for_group, actor_list_role_kinds, actor_list_role_holders (the users below)</span><span class="cap-note">Example data: the people are the demo's synthetic ones; the requests are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Users"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="users"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Users</h1>
+<div class="top-end"><button type="button" class="btn primary">Invite a user</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack"><div class="stack"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search users</span><input type="search" placeholder="Search users"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="sr">All roles</span><select><option selected>All roles</option><option>Group coordinator</option><option>Farmer</option><option>Supplier</option><option>Buyer</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Asha Otieno</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Baraka Odhiambo</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Chebet Kiprop</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Grain Traders</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Agro Supplies</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Users" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Users?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who joined this week?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Invite someone</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which users have no card?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s6">
+<figcaption class="cap">6 · The requests could not be read, by the group reads or the agency read: the users still list, and a red card says the page could not be loaded.<span class="cap-mcp">Filled by: actor_list_join_requests_for_group (group rows), GET /instances/{hub}/join-requests (REST, the agency row), actor_list_actors and actor_list_groups (names), actor_list_actors_for_group, actor_list_role_kinds, actor_list_role_holders (the users below)</span><span class="cap-note">Example data: the people are the demo's synthetic ones; the requests are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Users"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="users"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Users</h1>
+<div class="top-end"><button type="button" class="btn primary">Invite a user</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack"><div class="empty error" role="alert">The page could not be loaded.</div><div class="stack"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search users</span><input type="search" placeholder="Search users"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="sr">All roles</span><select><option selected>All roles</option><option>Group coordinator</option><option>Farmer</option><option>Supplier</option><option>Buyer</option></select></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Asha Otieno</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Baraka Odhiambo</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Chebet Kiprop</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Grain Traders</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section><section class="card closed">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Kisumu Agro Supplies</button></h2><div class="card-actions"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open</a></div></div>
+</section></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Users" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Users?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who joined this week?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Invite someone</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which users have no card?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<script src="../shell.js"></script>
+</body>
+</html>

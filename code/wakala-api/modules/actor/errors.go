@@ -21,6 +21,7 @@ var ErrDuplicateGroupName = errors.New("mwanachamaactor: a group already has thi
 var ErrDuplicateRoleKindName = errors.New("mwanachamaactor: a role kind already has this name")
 
 var ErrDuplicateHierarchyName = errors.New("mwanachamaactor: a hierarchy already has this name")
+var ErrDuplicateGroupTypeName = errors.New("mwanachamaactor: a group type of this hierarchy already has this name")
 
 var ErrDuplicateDisplayName = errors.New("mwanachamaactor: another member or a role already has this name")
 

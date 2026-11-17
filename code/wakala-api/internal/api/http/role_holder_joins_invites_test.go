@@ -8,6 +8,7 @@ import (
 
 	mwanachamaactor "wakalaserver/modules/actor"
 
+	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/shopauth"
 )
 
@@ -47,6 +48,9 @@ func newClerkDesk(t *testing.T) clerkDesk {
 
 func (d clerkDesk) askToJoinTheGroup(t *testing.T, name string) string {
 	t.Helper()
+	if err := d.w.deps.Registry.AddMember(context.Background(), d.w.instance, name, agencies.RoleResident); err != nil {
+		t.Fatalf("%s becomes a resident: %v", name, err)
+	}
 	applicant := d.w.cookieFor(t, name)
 	rec := d.w.call(t, "POST", d.path+"/actor/groups/"+d.groupID+"/join", map[string]any{}, applicant)
 	if rec.Code >= 400 {

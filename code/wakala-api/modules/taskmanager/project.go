@@ -5,10 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"wakalaserver/modules/shared/specstore"
 )
+
+var projectCreateLock sync.Mutex
 
 // toSlug converts a project name to a URL-safe slug: lowercase with spaces
 // replaced by underscores.
@@ -27,6 +30,8 @@ func (m *taskManager) CreateProject(ctx context.Context, p Project) (Project, er
 	p.CreatedAt = now
 	p.UpdatedAt = now
 
+	projectCreateLock.Lock()
+	defer projectCreateLock.Unlock()
 	if err := m.checkProjectNameFree(ctx, p.ProjectName, ""); err != nil {
 		return Project{}, err
 	}

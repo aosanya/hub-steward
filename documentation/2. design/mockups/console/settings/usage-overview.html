@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usage overview page</title>
+<link rel="stylesheet" href="../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · Usage, Overview, this month<span class="cap-mcp">Filled by: ai_usage_breakdown, actor_list_actors</span><span class="cap-note">Example data: the models, agents, people and token counts are drawn for this page. The span buttons are the same on the three Usage pages; the choice is kept in the address.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Usage=settings/usage-overview.html / Overview"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="usage-overview"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Usage</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><div class="row" style="--row-gap:8px"><span class="seg-label">Show</span><div class="seg" role="group" aria-label="Show"><button type="button" class="seg-item" aria-pressed="false">Today</button><button type="button" class="seg-item" aria-pressed="false">7 days</button><button type="button" class="seg-item" aria-pressed="true">This month</button><button type="button" class="seg-item" aria-pressed="false">Last month</button></div></div></div></div>
+<div class="grid" style="--grid-min:9rem;--grid-gap:12px"><div class="stat"><span class="stat-label">Tokens</span><span class="stat-value">1.94M</span><span class="stat-sub">1 Nov – 17 Nov</span></div><div class="stat"><span class="stat-label">Requests</span><span class="stat-value">618</span><span class="stat-sub">1 Nov – 17 Nov</span></div><div class="stat"><span class="stat-label">Input vs output</span><span class="stat-value">82 / 18</span><span class="stat-sub">% of tokens</span></div><div class="stat"><span class="stat-label">Top model</span><span class="stat-value">72%</span><span class="stat-sub">claude-sonnet-5-5</span></div></div>
+<section class="card" aria-label="Tokens per day, by model">
+<div class="card-head"><h2>Tokens per day, by model</h2></div>
+<div class="chart"><ul class="chart-legend"><li><span class="swatch" style="--c:var(--m1)"></span>claude-sonnet-5-5<span class="count">1.4M</span></li><li><span class="swatch" style="--c:var(--m2)"></span>zai-org/GLM-5.3:novita<span class="count">538k</span></li></ul><svg viewBox="0 0 720 270" role="img" aria-label="Tokens per day by model, 1 Nov – 17 Nov"><title>Tokens per day by model, 1 Nov – 17 Nov</title><text class="ch-axis" x="48" y="12">Tokens per day</text><line class="ch-base" x1="48" x2="712" y1="240.0" y2="240.0"/><text class="ch-tick" x="40" y="244.0" text-anchor="end">0</text><line class="ch-grid" x1="48" x2="712" y1="173.3" y2="173.3"/><text class="ch-tick" x="40" y="177.3" text-anchor="end">100k</text><line class="ch-grid" x1="48" x2="712" y1="106.7" y2="106.7"/><text class="ch-tick" x="40" y="110.7" text-anchor="end">200k</text><line class="ch-grid" x1="48" x2="712" y1="40.0" y2="40.0"/><text class="ch-tick" x="40" y="44.0" text-anchor="end">300k</text><rect class="ch-seg" fill="var(--m1)" x="54.6" y="224.4" width="25.8" height="15.6"/><path class="ch-seg" fill="var(--m2)" d="M54.6,224.4V206.5a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V224.4Z"/><text class="ch-tick" x="67.5" y="262" text-anchor="middle">1 Nov</text><rect class="ch-seg" fill="var(--m1)" x="93.7" y="233.6" width="25.8" height="6.4"/><path class="ch-seg" fill="var(--m2)" d="M93.7,233.6V222.4a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V233.6Z"/><rect class="ch-seg" fill="var(--m1)" x="132.8" y="142.6" width="25.8" height="97.4"/><path class="ch-seg" fill="var(--m2)" d="M132.8,142.6V130.4a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V142.6Z"/><rect class="ch-seg" fill="var(--m1)" x="171.8" y="208.3" width="25.8" height="31.7"/><path class="ch-seg" fill="var(--m2)" d="M171.8,208.3V198.7a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V208.3Z"/><rect class="ch-seg" fill="var(--m1)" x="210.9" y="211.6" width="25.8" height="28.4"/><path class="ch-seg" fill="var(--m2)" d="M210.9,211.6V179.6a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V211.6Z"/><rect class="ch-seg" fill="var(--m1)" x="249.9" y="119.0" width="25.8" height="121.0"/><path class="ch-seg" fill="var(--m2)" d="M249.9,119.0V81.4a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V119.0Z"/><rect class="ch-seg" fill="var(--m1)" x="289.0" y="86.7" width="25.8" height="153.3"/><path class="ch-seg" fill="var(--m2)" d="M289.0,86.7V75.5a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V86.7Z"/><rect class="ch-seg" fill="var(--m1)" x="328.1" y="233.8" width="25.8" height="6.2"/><path class="ch-seg" fill="var(--m2)" d="M328.1,233.8V222.8a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V233.8Z"/><text class="ch-tick" x="340.9" y="262" text-anchor="middle">8 Nov</text><rect class="ch-seg" fill="var(--m1)" x="367.1" y="230.1" width="25.8" height="9.9"/><path class="ch-seg" fill="var(--m2)" d="M367.1,230.1V200.8a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V230.1Z"/><rect class="ch-seg" fill="var(--m1)" x="406.2" y="172.1" width="25.8" height="67.9"/><path class="ch-seg" fill="var(--m2)" d="M406.2,172.1V146.8a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V172.1Z"/><rect class="ch-seg" fill="var(--m1)" x="445.2" y="198.4" width="25.8" height="41.6"/><path class="ch-seg" fill="var(--m2)" d="M445.2,198.4V180.6a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V198.4Z"/><rect class="ch-seg" fill="var(--m1)" x="484.3" y="207.0" width="25.8" height="33.0"/><path class="ch-seg" fill="var(--m2)" d="M484.3,207.0V196.0a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V207.0Z"/><rect class="ch-seg" fill="var(--m1)" x="523.3" y="86.4" width="25.8" height="153.6"/><path class="ch-seg" fill="var(--m2)" d="M523.3,86.4V62.4a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V86.4Z"/><path class="ch-seg" fill="var(--m1)" d="M562.4,240.0V132.2a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V240.0Z"/><rect class="ch-seg" fill="var(--m1)" x="601.5" y="221.4" width="25.8" height="18.6"/><path class="ch-seg" fill="var(--m2)" d="M601.5,221.4V204.4a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V221.4Z"/><text class="ch-tick" x="614.4" y="262" text-anchor="middle">15 Nov</text><rect class="ch-seg" fill="var(--m1)" x="640.5" y="232.3" width="25.8" height="7.7"/><path class="ch-seg" fill="var(--m2)" d="M640.5,232.3V220.7a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V232.3Z"/><rect class="ch-seg" fill="var(--m1)" x="679.6" y="207.9" width="25.8" height="32.1"/><path class="ch-seg" fill="var(--m2)" d="M679.6,207.9V176.3a3.0,3.0 0 0 1 3.0,-3.0h19.8a3.0,3.0 0 0 1 3.0,3.0V207.9Z"/><text class="ch-peak" x="536.2" y="53.4" text-anchor="middle">Peak 13 Nov: 271k</text></svg></div>
+</section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Overview" data-ctx-icon="activity">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Overview?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did test runs use so much?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who used the most this month?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which model costs the most tokens?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s2">
+<figcaption class="cap">2 · Usage, Overview, a span with no calls<span class="cap-mcp">Filled by: ai_usage_breakdown</span><span class="cap-note">The span is Today and no agent has answered yet; the button opens Models.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Usage=settings/usage-overview.html / Overview"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="usage-overview"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Usage</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><div class="row" style="--row-gap:8px"><span class="seg-label">Show</span><div class="seg" role="group" aria-label="Show"><button type="button" class="seg-item" aria-pressed="true">Today</button><button type="button" class="seg-item" aria-pressed="false">7 days</button><button type="button" class="seg-item" aria-pressed="false">This month</button><button type="button" class="seg-item" aria-pressed="false">Last month</button></div></div></div></div>
+<div class="empty"><span>No calls yet in this span. Usage appears here once an agent answers with one of the hub's models.</span><a class="btn primary" href="models.html" title="Opens: Models" aria-label="Test a model, opens: Models">Test a model</a></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Overview" data-ctx-icon="activity">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Overview?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did test runs use so much?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who used the most this month?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which model costs the most tokens?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s3">
+<figcaption class="cap">3 · Usage, the page could not be loaded<span class="cap-mcp">Filled by: ai_usage_breakdown, actor_list_actors</span><span class="cap-note">When the read fails on any of the three Usage pages the span buttons go too: the content area holds one error box.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Usage=settings/usage-overview.html / Overview"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="usage-overview"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Usage</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="empty error" role="alert">The page could not be loaded.</div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Overview" data-ctx-icon="activity">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Overview?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did test runs use so much?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who used the most this month?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which model costs the most tokens?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s4">
+<figcaption class="cap">4 · Usage, opened by staff<span class="cap-mcp">Filled by: no tool, nothing is read</span><span class="cap-note">Staff do not see Usage in the menu; when they reach it by its address, the content area says that only the hub manager sees it. It reads nothing.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Usage=settings/usage-overview.html / Overview"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="usage-overview"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Usage</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="empty">Only the hub manager sees Usage.</div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Overview" data-ctx-icon="activity">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Overview?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did test runs use so much?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who used the most this month?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which model costs the most tokens?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<script src="../shell.js"></script>
+</body>
+</html>

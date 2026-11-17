@@ -9,11 +9,11 @@ import (
 	"testing"
 )
 
-func importAndPublishSWEAgency(t *testing.T) (stepRunWalk, string) {
+func importAndPublishGitMountedAgency(t *testing.T) (stepRunWalk, string) {
 	t.Helper()
-	raw, err := os.ReadFile(filepath.Join("..", "..", "..", "..", "..", "..", "hub-steward-swe", "agency", "agency.json"))
+	raw, err := os.ReadFile(filepath.Join("testdata", "git_mounted_agency.json"))
 	if err != nil {
-		t.Fatalf("read the hub-steward-swe agency.json: %v", err)
+		t.Fatalf("read the git mounted agency fixture: %v", err)
 	}
 	w := newStepRunWalk(t, nil)
 	rec := w.call(t, "POST", "/instances/import", json.RawMessage(raw), w.owner)
@@ -36,8 +36,8 @@ func importAndPublishSWEAgency(t *testing.T) (stepRunWalk, string) {
 	return w, result.Instance.ID
 }
 
-func TestAPublishedImportedSWEAgencyListsGitAmongItsMounts(t *testing.T) {
-	w, instance := importAndPublishSWEAgency(t)
+func TestAPublishedImportedGitMountedAgencyListsGitAmongItsMounts(t *testing.T) {
+	w, instance := importAndPublishGitMountedAgency(t)
 
 	view, err := w.deps.agencyMounts(asPerson("test-owner"), w.deps.Registry, instance)
 	if err != nil {
@@ -49,13 +49,13 @@ func TestAPublishedImportedSWEAgencyListsGitAmongItsMounts(t *testing.T) {
 	}
 	for _, want := range []string{"comm", "taskmanager", "git"} {
 		if !listed[want] {
-			t.Errorf("the published SWE agency lists no %s mount, listed %v", want, view.Modules)
+			t.Errorf("the published agency lists no %s mount, listed %v", want, view.Modules)
 		}
 	}
 }
 
-func TestAPublishedImportedSWEAgencyServesTheGitToolsThroughTheModuleToolsRoute(t *testing.T) {
-	w, instance := importAndPublishSWEAgency(t)
+func TestAPublishedImportedGitMountedAgencyServesTheGitToolsThroughTheModuleToolsRoute(t *testing.T) {
+	w, instance := importAndPublishGitMountedAgency(t)
 
 	tools := moduleToolsOf(t, w, "/instances/"+instance+"/module-tools")
 
@@ -65,7 +65,7 @@ func TestAPublishedImportedSWEAgencyServesTheGitToolsThroughTheModuleToolsRoute(
 	}
 	for _, want := range []string{"forms_git_repository_init", "forms_git_repository_list"} {
 		if !served[want] {
-			t.Errorf("the published SWE agency serves no %s", want)
+			t.Errorf("the published agency serves no %s", want)
 		}
 	}
 }

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agency, add an objective</title>
+<link rel="stylesheet" href="../../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">Form: add an objective under a goal, reached from the goal's Add an objective button; nothing is filled in. Name, Goal (the goal it came from), Description and Workflow; the draft bar is hidden while a form is open.<span class="cap-mcp">Filled by: agency_list_goals, agency_list_workflows, agency_create_objective</span><span class="cap-note">Proposed: the measure and its target (the console keeps measures switched off) and a responsible role on the form (the console ties an objective to a workflow instead). Saving sends the objective for approval and returns to the goal with Waiting for approval under the title.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Goals"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="goals"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Add an objective</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="msg-card"><div class="msg-title">New objective</div><div class="msg-form"><label class="field"><span class="field-label">Name</span><span class="control"><input type="text" placeholder="What the group wants to achieve"></span></label><label class="field"><span class="field-label">Goal</span><span class="control"><select><option selected>Farmers buy inputs together</option><option>Farmers find a buyer for their produce</option></select></span></label><label class="field"><span class="field-label">Description</span><span class="control"><textarea rows="4"></textarea></span></label><label class="field"><span class="field-label">Workflow</span><span class="control"><select><option selected>Pooled input order</option><option>Loan payment</option></select></span></label></div><div class="msg-note">Nothing is recorded until you press Save.</div><div class="msg-buttons"><button type="button" class="btn primary sm">Save</button><button type="button" class="btn quiet sm">Cancel</button></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Goals" data-ctx-icon="target">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Goals?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show the agency goals</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s2">
+<figcaption class="cap">After asking: Add an objective under Farmers buy inputs together: record each farmer's payment. The goals chat has no form to fill: it writes agency_create_objective straight into the working draft, answers in one sentence, and the page reloads on Goals with the bar counting the change.<span class="cap-mcp">Filled by: agency_list_goals, agency_list_objectives, agency_create_objective, agency_list_drafts, agency_list_approvals, agency_list_publications</span><span class="cap-note">Example data: names, codes and counts are drawn for this page. The workflow link, the measure and the responsible role are not part of this write.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Goals"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="goals"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Goals</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><a class="btn primary" href="#s5" title="Opens: Add a goal" aria-label="Add a goal, opens: Add a goal">Add a goal</a></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="../publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search goals</span><input type="search" placeholder="Search goals"></label></div></div><section class="card" aria-label="G-1 · Farmers buy inputs together"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-1 · Farmers buy inputs together</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div><dl class="kv"><dt>Objectives</dt><dd>3</dd></dl></section><section class="card closed" aria-label="G-2 · Farmers find a buyer for their produce"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-2 · Farmers find a buyer for their produce</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Goals" data-ctx-icon="target">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Add an objective under Farmers buy inputs together: record each farmer's payment.</div></div><div class="tools collapsed"><div class="tools-head"><span>Called 3 tools</span><span class="muted">592 ms</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">agency_list_goals</span><span class="tool-state"></span><span class="tool-ms">171 ms</span><span class="tool-sum">2 goals; G-1 is Farmers buy inputs together</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">agency_list_objectives</span><span class="tool-state"></span><span class="tool-ms">190 ms</span><span class="tool-sum">G-1 has 2 objectives: O-1 and O-2</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">agency_create_objective</span><span class="tool-state"></span><span class="tool-ms">231 ms</span><span class="tool-sum">O-4 under G-1: Record each farmer's payment</span></div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">I added the objective Record each farmer's payment under Farmers buy inputs together; it is in the draft.</div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s3">
+<figcaption class="cap">After opening the goal from Edit on Goals: the objective the chat wrote (O-4) is a row of its goal, waiting in the draft with the other changes. The chat keeps the earlier conversation.<span class="cap-mcp">Filled by: agency_get_goal, agency_list_objectives, agency_list_drafts, agency_list_approvals, agency_list_publications</span><span class="cap-note">Example data: names, codes and counts are drawn for this page. </span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Goals"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="goals"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmers buy inputs together</h1>
+<div class="top-end"><a class="btn primary" href="objective-add.html#s1" title="Opens: Add an objective" aria-label="Add an objective, opens: Add an objective">Add an objective</a></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="../publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section><div class="stack" style="--stack-gap:20px"><section class="card" aria-label="Goal G-1"><div class="card-head"><h2>Goal G-1</h2></div><div class="note">The group's input needs reach a supplier as one order, so each farmer buys on the group's terms.</div><dl class="kv"><dt>Objectives</dt><dd>3</dd></dl></section><div class="section-head"><h2>Objectives</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Objective</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="cell-text"><a class="cell-name" href="goal-detail.html#s2" title="Opens: Objective, detail" aria-label="Gather the farmers' needs into one order, opens: Objective, detail">Gather the farmers' needs into one order</a><span class="cell-sub">O-1</span></span></div></td><td class="row-act"><a class="link sm" href="goal-detail.html#s2" title="Opens: Objective, detail" aria-label="Open, opens: Objective, detail">Open</a></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><a class="cell-name" href="goal-detail.html#s2" title="Opens: Objective, detail" aria-label="Get the supplier's answer to the farmers, opens: Objective, detail">Get the supplier's answer to the farmers</a><span class="cell-sub">O-2</span></span></div></td><td class="row-act"><a class="link sm" href="goal-detail.html#s2" title="Opens: Objective, detail" aria-label="Open, opens: Objective, detail">Open</a></td></tr>
+<tr><td><div class="cell"><span class="cell-text"><a class="cell-name" href="goal-detail.html#s3" title="Opens: Objective, detail" aria-label="Record each farmer's payment, opens: Objective, detail">Record each farmer's payment</a><span class="cell-sub">O-4</span></span></div></td><td class="row-act"><a class="link sm" href="goal-detail.html#s3" title="Opens: Objective, detail" aria-label="Open, opens: Objective, detail">Open</a></td></tr>
+</tbody>
+</table>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Goals" data-ctx-icon="target">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Add an objective under Farmers buy inputs together: record each farmer's payment.</div></div><div class="tools collapsed"><div class="tools-head"><span>Called 3 tools</span><span class="muted">592 ms</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">agency_list_goals</span><span class="tool-state"></span><span class="tool-ms">171 ms</span><span class="tool-sum">2 goals; G-1 is Farmers buy inputs together</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">agency_list_objectives</span><span class="tool-state"></span><span class="tool-ms">190 ms</span><span class="tool-sum">G-1 has 2 objectives: O-1 and O-2</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">agency_create_objective</span><span class="tool-state"></span><span class="tool-ms">231 ms</span><span class="tool-sum">O-4 under G-1: Record each farmer's payment</span></div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">I added the objective Record each farmer's payment under Farmers buy inputs together; it is in the draft.</div></div></div></div>
+</aside>
+</div>
+</div>
+</figure>
+<script src="../../shell.js"></script>
+</body>
+</html>

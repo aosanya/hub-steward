@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agency goals page</title>
+<link rel="stylesheet" href="../../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">Landing: the goals of the farmers' agency as cards, closed except the first, each with its code and title and an Edit link; three approved changes wait in the draft. A goal card holds the number of its objectives.<span class="cap-mcp">Filled by: agency_list_goals, agency_list_objectives, agency_list_drafts, agency_list_approvals, agency_list_publications</span><span class="cap-note">Example data: names and counts are drawn for this page. Add a goal opens the form in the last screen of this file. Proposed: progress and status per goal (the console shows neither).</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Goals"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="goals"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Goals</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><a class="btn primary" href="#s5" title="Opens: Add a goal" aria-label="Add a goal, opens: Add a goal">Add a goal</a></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="../publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search goals</span><input type="search" placeholder="Search goals"></label></div></div><section class="card" aria-label="G-1 · Farmers buy inputs together"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-1 · Farmers buy inputs together</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div><dl class="kv"><dt>Objectives</dt><dd>3</dd></dl></section><section class="card closed" aria-label="G-2 · Farmers find a buyer for their produce"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-2 · Farmers find a buyer for their produce</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Goals" data-ctx-icon="target">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Goals?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show the agency goals</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s2">
+<figcaption class="cap">Landing: the goals of the riders' agency, three goals with one objective each, listed by name; nothing is waiting in its draft, so no bar is drawn.<span class="cap-mcp">Filled by: agency_list_goals, agency_list_objectives</span><span class="cap-note">Example data: names and counts are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="riders" data-state="ready" data-crumb="Agency / Goals"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="riders" data-current="goals"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Goals</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><a class="btn primary" href="#s5" title="Opens: Add a goal" aria-label="Add a goal, opens: Add a goal">Add a goal</a></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search goals</span><input type="search" placeholder="Search goals"></label></div></div><section class="card closed" aria-label="G-3 · Members get answers and access"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-3 · Members get answers and access</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div></section><section class="card closed" aria-label="G-1 · The hub knows who holds what"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-1 · The hub knows who holds what</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div></section><section class="card closed" aria-label="G-2 · The hub's network works"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-2 · The hub's network works</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Goals" data-ctx-icon="target" data-model="Fast">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Goals?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show the agency goals</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s3">
+<figcaption class="cap">Landing, empty: the lab's agency before any goal exists; the console shows only the sentence, no search and no button in the card.<span class="cap-mcp">Filled by: agency_list_goals</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="lab" data-state="setting-up" data-crumb="Agency / Goals"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="lab" data-current="goals"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Goals</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><a class="btn primary" href="#s5" title="Opens: Add a goal" aria-label="Add a goal, opens: Add a goal">Add a goal</a></div>
+</div>
+
+<div class="content">
+
+<div class="card"><div class="empty">Nothing here yet.</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Goals" data-ctx-icon="target">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Goals?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show the agency goals</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s4">
+<figcaption class="cap">After asking: Create goals for this agency. The chat reads the agency and its goals, then create_goals writes each goal and its objectives into the working draft right away, with no form and no approval, and answers in one sentence. The page reloads on Goals and the bar counts the eight changes.<span class="cap-mcp">Filled by: agency_get_agency, agency_list_goals, create_goals (agency_create_goal, agency_create_objective), agency_list_objectives, agency_list_drafts, agency_list_approvals, agency_list_publications</span><span class="cap-note">Example data: the goal names and counts are drawn for this page. create_goals is a tool of the console chat; it shows no table of results, only the goals on the page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Goals"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="goals"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Goals</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><a class="btn primary" href="#s5" title="Opens: Add a goal" aria-label="Add a goal, opens: Add a goal">Add a goal</a></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>8 changes not published</strong><a class="link sm" href="../publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search goals</span><input type="search" placeholder="Search goals"></label></div></div><section class="card" aria-label="G-1 · Members get access to the lab"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-1 · Members get access to the lab</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div><dl class="kv"><dt>Objectives</dt><dd>1</dd></dl></section><section class="card closed" aria-label="G-2 · Seats are shared fairly"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-2 · Seats are shared fairly</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div></section><section class="card closed" aria-label="G-3 · Members get answers from the lab's own documents"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-3 · Members get answers from the lab's own documents</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div></section><section class="card closed" aria-label="G-4 · The lab's network works"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>G-4 · The lab's network works</button></h2><div class="card-actions"><a class="link sm" href="goal-detail.html#s1" title="Opens: Goal, detail" aria-label="Edit, opens: Goal, detail">Edit</a></div></div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Goals" data-ctx-icon="target">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Create goals for this agency.</div></div><div class="tools collapsed"><div class="tools-head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span>Called 3 tools</span><span class="muted">1840 ms</span></div><div class="tool"><span class="tool-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/></svg></span><span class="tool-name">agency_get_agency</span><span class="tool-state"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tool-ms">140 ms</span><span class="tool-sum">Siaya Community Computer Lab</span></div><div class="tool"><span class="tool-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/></svg></span><span class="tool-name">agency_list_goals</span><span class="tool-state"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tool-ms">118 ms</span><span class="tool-sum">0 goals</span></div><div class="tool"><span class="tool-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/></svg></span><span class="tool-name">create_goals</span><span class="tool-state"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tool-ms">1582 ms</span><span class="tool-sum">4 goals and 4 objectives, now in the draft</span></div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">I created four goals with one objective under each; they are in the draft.</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show the agency goals</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s5">
+<figcaption class="cap">Form: add a goal, reached from Add a goal. Name and Description; the draft bar is hidden while a form is open.<span class="cap-mcp">Filled by: agency_create_goal</span><span class="cap-note">Saving sends the goal for approval and returns to the list; nothing is recorded until Save.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Goals"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="goals"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Add a goal</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="msg-card"><div class="msg-title">New goal</div><div class="msg-form"><label class="field"><span class="field-label">Name</span><span class="control"><input type="text" placeholder=""></span></label><label class="field"><span class="field-label">Description</span><span class="control"><textarea rows="4"></textarea></span></label></div><div class="msg-buttons"><button type="button" class="btn primary sm">Save</button><button type="button" class="btn quiet sm">Cancel</button></div><div class="msg-note">Nothing is recorded until you press Save.</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Goals" data-ctx-icon="target">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Goals?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show the agency goals</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<script src="../../shell.js"></script>
+</body>
+</html>

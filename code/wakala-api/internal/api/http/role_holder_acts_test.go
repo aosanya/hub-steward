@@ -16,7 +16,7 @@ import (
 type roleHolderActs struct {
 	walk     stepRunWalk
 	path     string
-	director    *http.Cookie
+	director *http.Cookie
 	clerk    *http.Cookie
 	nobody   *http.Cookie
 	closedID string
@@ -32,7 +32,7 @@ func newRoleHolderActs(t *testing.T) roleHolderActs {
 	enableModules(t, w, "forms", "voting")
 	perms := map[string][]string{
 		w.roles["Director"]: {"report.publish"},
-		w.roles["Clerk"]: {"poll.run"},
+		w.roles["Clerk"]:    {"poll.run"},
 	}
 	w.deps.rolePermissionsOverride = func(_ context.Context, roleID string) ([]string, error) {
 		return perms[roleID], nil

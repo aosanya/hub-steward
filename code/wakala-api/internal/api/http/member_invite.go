@@ -23,6 +23,7 @@ type memberInvitations struct {
 	residents residentGrants
 	mail      *InvitationMail
 	refused   func(ctx context.Context, instanceID, action string) bool
+	holds     func(ctx context.Context, instanceID, action string) bool
 }
 
 const (
@@ -30,13 +31,17 @@ const (
 	inviteBatchAction = "actor.invitation.send_batch"
 )
 
+func (m memberInvitations) residentHolds(r *http.Request, instanceID, action string) bool {
+	return m.holds != nil && m.holds(r.Context(), instanceID, action)
+}
+
 func (m memberInvitations) refuses(r *http.Request, instanceID, action string) bool {
 	return m.refused != nil && m.refused(r.Context(), instanceID, action)
 }
 
 func (m memberInvitations) handle(w http.ResponseWriter, r *http.Request) {
 	instanceID := r.PathValue("instanceID")
-	if err := mustBeMember(r.Context(), m.reg, instanceID); err != nil {
+	if err := mustBeMember(r.Context(), m.reg, instanceID); err != nil && !m.residentHolds(r, instanceID, inviteOneAction) {
 		writeInstanceErr(w, err)
 		return
 	}

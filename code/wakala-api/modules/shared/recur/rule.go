@@ -157,6 +157,9 @@ func (r Rule) Validate() error {
 			return fmt.Errorf("%w: BYMONTH must be 1 to 12", ErrInvalidRule)
 		}
 	}
+	if !r.monthDaysCanOccur() {
+		return fmt.Errorf("%w: BYMONTHDAY names a day that none of the BYMONTH months has", ErrInvalidRule)
+	}
 	if r.Freq == Yearly && len(r.ByMonth) == 0 && (len(r.ByDay) > 0 || len(r.ByMonthDay) > 0) {
 		return fmt.Errorf("%w: a yearly rule naming days must name its months", ErrInvalidRule)
 	}
@@ -287,7 +290,35 @@ func (r Rule) dayAllowed(c civil) bool {
 	return false
 }
 
+const secondsPerDay = 24 * 60 * 60
+
+var maxIntervals = map[Frequency]int{Daily: 3652059, Weekly: 521723, Monthly: 120000, Yearly: 10000}
+
+func (r Rule) monthDaysCanOccur() bool {
+	if len(r.ByMonth) == 0 {
+		return true
+	}
+	for _, d := range r.ByMonthDay {
+		if d < 0 {
+			d = -d
+		}
+		fits := false
+		for _, m := range r.ByMonth {
+			if d <= daysIn(2000, m) {
+				fits = true
+			}
+		}
+		if !fits {
+			return false
+		}
+	}
+	return true
+}
+
 func (r Rule) period(first civil, k int) []civil {
+	if k > 0 && r.Interval > maxIntervals[r.Freq] {
+		return nil
+	}
 	var out []civil
 	switch r.Freq {
 	case Daily:
@@ -342,11 +373,11 @@ func (r Rule) periodsBetween(first, at civil) int {
 	var n int
 	switch r.Freq {
 	case Daily:
-		n = int(b.Sub(a).Hours() / 24)
+		n = int((b.Unix() - a.Unix()) / secondsPerDay)
 	case Weekly:
 		ma := a.AddDate(0, 0, -mondayOffset(a.Weekday()))
 		mb := b.AddDate(0, 0, -mondayOffset(b.Weekday()))
-		n = int(mb.Sub(ma).Hours()/24) / 7
+		n = int((mb.Unix()-ma.Unix())/secondsPerDay) / 7
 	case Monthly:
 		n = (at.y-first.y)*12 + int(at.m-first.m)
 	case Yearly:

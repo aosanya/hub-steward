@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agency, add and change a role</title>
+<link rel="stylesheet" href="../../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · Form: Add a role, the fields of agency_create_role; nothing is filled in. The Add a role button opens it above the roles.<span class="cap-mcp">Filled by: agency_create_role, agency_list_roles</span><span class="cap-note">Example data: names and counts are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="../publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section>
+
+<div class="stack" style="--stack-gap:20px"><div class="card">
+<span class="form-tool">agency_create_role</span><div class="stack"><label class="field"><span class="field-label">Name<span class="req" aria-hidden="true">*</span></span><span class="control ctl"><input type="text"></span></label><label class="field"><span class="field-label">Description</span><span class="control ctl"><textarea rows="4"></textarea></span></label></div><div class="form-foot"><button type="button" class="btn primary">Submit</button><button type="button" class="btn quiet">Cancel</button></div>
+</div><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Farmers' agent"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' agent</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s2">
+<figcaption class="cap">2 · Form: Submit pressed with the name empty; the field and the form both say what is required, and nothing is sent.<span class="cap-mcp">Filled by: agency_create_role</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="../publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section>
+
+<div class="stack" style="--stack-gap:20px"><div class="card">
+<span class="form-tool">agency_create_role</span><div class="stack"><label class="field"><span class="field-label">Name<span class="req" aria-hidden="true">*</span></span><span class="control ctl bad"><input type="text"></span><span class="field-error">Required</span></label><label class="field"><span class="field-label">Description</span><span class="control ctl"><textarea rows="4"></textarea></span></label></div><p class="field-error error" role="alert">Required: name</p><div class="form-foot"><button type="button" class="btn primary">Submit</button><button type="button" class="btn quiet">Cancel</button></div>
+</div><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Farmers' agent"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' agent</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s3">
+<figcaption class="cap">3 · After Submit: the role is created in the working draft at once (agency_create_role); the form closes, the new role Transporter is in the list and the bar counts one more change.<span class="cap-mcp">Filled by: agency_create_role, agency_list_roles</span><span class="cap-note">Example data: names and counts are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Roles</h1>
+<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>4 changes not published</strong><a class="link sm" href="../publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section>
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search roles</span><input type="search" placeholder="Search roles"></label><label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg><span class="sr">All types</span><select><option selected>All types</option><option>Human</option><option>AI role</option></select></label></div></div><section class="card closed" aria-label="Group coordinator"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Group coordinator</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Farmer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmer</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Buyer"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Buyer</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Farmers' agent"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Farmers' agent</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section><section class="card closed" aria-label="Transporter"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Transporter</button></h2><div class="card-actions"><a class="link sm" href="role-add.html#s4" title="Opens: Role, edit" aria-label="Edit, opens: Role, edit">Edit</a></div></div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s4">
+<figcaption class="cap">4 · Form: Edit a role, opened from Edit on its card; the fields of agency_update_role (Name, Description and the Works as an AI agent toggle), with the role's details under the form.<span class="cap-mcp">Filled by: agency_update_role, agency_list_roles, agency_get_role, agency_list_rules, ai_list_roles</span><span class="cap-note">Example data: names and counts are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmer</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="../publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section>
+
+<div class="stack" style="--stack-gap:20px"><div class="card">
+<span class="form-tool">agency_update_role</span><div class="stack"><label class="field"><span class="field-label">Name<span class="req" aria-hidden="true">*</span></span><span class="control ctl"><input type="text" value="Farmer"></span></label><label class="field"><span class="field-label">Description</span><span class="control ctl"><textarea rows="4">A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</textarea></span></label><div class="field"><span class="field-label">Works as an AI agent</span><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Off</label></div></div><div class="form-foot"><button type="button" class="btn primary">Submit</button><button type="button" class="btn quiet">Cancel</button></div>
+</div><section class="card" aria-label="Role"><div class="card-head"><h2>Role</h2><div class="card-actions"><button type="button" class="btn quiet sm">Remove</button></div></div><div class="note">A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</div><dl class="kv"><dt>Type</dt><dd><span class="tag mute">Human</span></dd><dt>What it may do</dt><dd>Asks for inputs through the group's form <span class="count">RU-1</span><br>Is bound to an order only after saying yes to their share <span class="count">RU-4</span></dd><dt>Agents</dt><dd><a class="link sm" href="../../people/agent-edit.html" title="Opens: Agent, edit" aria-label="Farmers' agent, opens: Agent, edit">Farmers' agent<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></dd></dl></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s5">
+<figcaption class="cap">5 · Remove: the Remove button on the role's card asks first; Remove role calls agency_delete_role at once and the page goes back to the roles without it.<span class="cap-mcp">Filled by: agency_delete_role, agency_list_scenarios</span><span class="cap-note">Example data: names and counts are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmer</h1>
+<div class="top-end"><button type="button" class="btn primary">Edit</button></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="../publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section>
+
+<div class="stack" style="--stack-gap:20px"><div class="card tight"><span>Remove the Farmer role? Its links to objectives go with it.</span><div class="row"><button type="button" class="btn danger sm">Remove role</button><button type="button" class="btn quiet sm">Cancel</button></div></div><section class="card" aria-label="Role"><div class="card-head"><h2>Role</h2><div class="card-actions"><button type="button" class="btn quiet sm">Remove</button></div></div><div class="note">A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</div><dl class="kv"><dt>Type</dt><dd><span class="tag mute">Human</span></dd><dt>What it may do</dt><dd>Asks for inputs through the group's form <span class="count">RU-1</span><br>Is bound to an order only after saying yes to their share <span class="count">RU-4</span></dd><dt>Agents</dt><dd><a class="link sm" href="../../people/agent-edit.html" title="Opens: Agent, edit" aria-label="Farmers' agent, opens: Agent, edit">Farmers' agent<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></dd></dl></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s6">
+<figcaption class="cap">6 · Remove refused: test scenarios still use the role, so nothing is sent; the scenarios are listed, and the chat repeats the reason.<span class="cap-mcp">Filled by: agency_list_scenarios, agency_delete_role</span><span class="cap-note">Example data: names and counts are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmer</h1>
+<div class="top-end"><button type="button" class="btn primary">Edit</button></div>
+</div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="../publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section>
+
+<div class="stack" style="--stack-gap:20px"><div role="alert"><div class="note">The Farmer role was not removed: 2 test scenarios use it. Take the Farmer actor out of them first.</div></div><section class="card" aria-label="Scenarios that use Farmer"><div class="card-head"><h2>Scenarios that use Farmer</h2></div><div class="panel table-card"><table class="table"><thead><tr><th>Scenario</th><th>Where it is used</th><th class="row-act"></th></tr></thead><tbody><tr><td>Three farmers pool an order</td><td>Actors tab</td><td class="row-act"><a class="btn quiet xs" href="#" title="Opens: Test, not drawn yet" aria-label="Open, opens: Test, not drawn yet">Open</a></td></tr><tr><td>A farmer says no to their share</td><td>Actors tab</td><td class="row-act"><a class="btn quiet xs" href="#" title="Opens: Test, not drawn yet" aria-label="Open, opens: Test, not drawn yet">Open</a></td></tr></tbody></table></div></section><section class="card" aria-label="Role"><div class="card-head"><h2>Role</h2><div class="card-actions"><button type="button" class="btn quiet sm">Remove</button></div></div><div class="note">A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</div><dl class="kv"><dt>Type</dt><dd><span class="tag mute">Human</span></dd><dt>What it may do</dt><dd>Asks for inputs through the group's form <span class="count">RU-1</span><br>Is bound to an order only after saying yes to their share <span class="count">RU-4</span></dd><dt>Agents</dt><dd><a class="link sm" href="../../people/agent-edit.html" title="Opens: Agent, edit" aria-label="Farmers' agent, opens: Agent, edit">Farmers' agent<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></dd></dl></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">The Farmer role was not removed: 2 test scenarios use it. Take the Farmer actor out of them first.</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<script src="../../shell.js"></script>
+</body>
+</html>

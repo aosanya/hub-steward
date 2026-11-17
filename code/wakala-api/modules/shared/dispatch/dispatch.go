@@ -176,6 +176,10 @@ func handlerFor(op Operation, method reflect.Value, table map[error]int, fallbac
 		results := method.Call(append([]reflect.Value{reflect.ValueOf(ctx)}, args...))
 		if last := results[len(results)-1]; !last.IsNil() {
 			callErr := last.Interface().(error)
+			if isBusy(callErr) {
+				httpwire.WriteErr(w, http.StatusConflict, errBusy.Error())
+				return
+			}
 			if refusal := plaintext.Unstorable(callErr); refusal != nil {
 				httpwire.WriteErr(w, http.StatusBadRequest, refusal.Error())
 				return

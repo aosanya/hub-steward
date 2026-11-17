@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usage by kind of work page</title>
+<link rel="stylesheet" href="../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · Usage, Kind of work, this month<span class="cap-mcp">Filled by: ai_usage_breakdown, actor_list_actors</span><span class="cap-note">Example data: the models, agents, people and token counts are drawn for this page. The seven kinds the console knows are Chat, Workflow run, Agency review, Test run, Background job, Connection test and Other; only the kinds with tokens are drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Usage=settings/usage-overview.html / Kind of work"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="usage-work"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Usage</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><div class="row" style="--row-gap:8px"><span class="seg-label">Show</span><div class="seg" role="group" aria-label="Show"><button type="button" class="seg-item" aria-pressed="false">Today</button><button type="button" class="seg-item" aria-pressed="false">7 days</button><button type="button" class="seg-item" aria-pressed="true">This month</button><button type="button" class="seg-item" aria-pressed="false">Last month</button></div></div></div></div>
+<section class="card" aria-label="By kind of work">
+<div class="card-head"><h2>By kind of work</h2></div>
+<div class="chart"><div class="donut"><svg viewBox="0 0 180 180" role="img" aria-label="Share of tokens by kind of work, 1 Nov – 17 Nov"><title>Share of tokens by kind of work, 1 Nov – 17 Nov</title><circle class="ch-slice" style="--c:var(--k1)" cx="90" cy="90" r="62" stroke-width="26" stroke-dasharray="187.63 201.92" stroke-dashoffset="0.00" transform="rotate(-90 90 90)"><title>Chat: 946,975 tokens, 49%</title></circle><circle class="ch-slice" style="--c:var(--k2)" cx="90" cy="90" r="62" stroke-width="26" stroke-dasharray="43.12 346.43" stroke-dashoffset="-190.13" transform="rotate(-90 90 90)"><title>Workflow run: 227,236 tokens, 12%</title></circle><circle class="ch-slice" style="--c:var(--k3)" cx="90" cy="90" r="62" stroke-width="26" stroke-dasharray="51.97 337.59" stroke-dashoffset="-235.76" transform="rotate(-90 90 90)"><title>Agency review: 271,294 tokens, 14%</title></circle><circle class="ch-slice" style="--c:var(--k4)" cx="90" cy="90" r="62" stroke-width="26" stroke-dasharray="96.83 292.73" stroke-dashoffset="-290.23" transform="rotate(-90 90 90)"><title>Test run: 494,713 tokens, 25%</title></circle><text class="ch-total" x="90" y="92" text-anchor="middle">1.94M</text><text class="ch-sub" x="90" y="110" text-anchor="middle">tokens</text></svg><ul class="donut-list"><li><span class="swatch" style="--c:var(--k1)"></span>Chat<span class="count">947k · 49%</span></li><li><span class="swatch" style="--c:var(--k2)"></span>Workflow run<span class="count">227k · 12%</span></li><li><span class="swatch" style="--c:var(--k3)"></span>Agency review<span class="count">271k · 14%</span></li><li><span class="swatch" style="--c:var(--k4)"></span>Test run<span class="count">495k · 25%</span></li></ul></div></div>
+</section>
+<section class="card" aria-label="Model by kind of work">
+<div class="card-head"><h2>Model by kind of work</h2></div>
+<div class="chart"><table class="heat" aria-label="Tokens by model and kind of work, 1 Nov – 17 Nov"><thead><tr><th></th><th scope="col"><span class="swatch" style="--c:var(--k1)"></span>Chat</th><th scope="col"><span class="swatch" style="--c:var(--k2)"></span>Workflow run</th><th scope="col"><span class="swatch" style="--c:var(--k3)"></span>Agency review</th><th scope="col"><span class="swatch" style="--c:var(--k4)"></span>Test run</th></tr></thead><tbody><tr><th scope="row">claude-sonnet-5-5</th><td class="h5" title="claude-sonnet-5-5 · Chat: 636,684 tokens">637k</td><td class="h0" title="claude-sonnet-5-5 · Workflow run: 0 tokens">–</td><td class="h3" title="claude-sonnet-5-5 · Agency review: 271,294 tokens">271k</td><td class="h5" title="claude-sonnet-5-5 · Test run: 494,713 tokens">495k</td></tr><tr><th scope="row">zai-org/GLM-5.3:novita</th><td class="h4" title="zai-org/GLM-5.3:novita · Chat: 310,291 tokens">310k</td><td class="h3" title="zai-org/GLM-5.3:novita · Workflow run: 227,236 tokens">227k</td><td class="h0" title="zai-org/GLM-5.3:novita · Agency review: 0 tokens">–</td><td class="h0" title="zai-org/GLM-5.3:novita · Test run: 0 tokens">–</td></tr></tbody></table><div class="heat-key">Fewer tokens<i style="--p:14%"></i><i style="--p:28%"></i><i style="--p:44%"></i><i style="--p:66%"></i><i style="--p:100%"></i>More tokens</div></div>
+</section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Kind of work" data-ctx-icon="activity">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Kind of work?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did test runs use so much?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who used the most this month?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which model costs the most tokens?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<script src="../shell.js"></script>
+</body>
+</html>

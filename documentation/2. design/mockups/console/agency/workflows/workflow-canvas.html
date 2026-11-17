@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agency, the workflow canvas</title>
+<link rel="stylesheet" href="../../studio.css">
+<style>
+.cv{display:block;width:100%;max-width:1000px;height:auto;margin:0 auto}
+.nd{fill:var(--card);stroke:var(--line2);stroke-width:1}
+.nd.back{fill:var(--sel)}
+.nd.calc{stroke:var(--accent)}
+.nd.post{stroke:var(--ok)}
+.nt{fill:var(--text);font-size:.875rem;font-weight:600}
+.ns{fill:var(--text3);font-size:.75rem}
+.nm{fill:var(--text2);font-size:.8125rem}
+.mo{font-family:var(--mono)}
+.lk{fill:none;stroke:var(--text3);stroke-width:1.5}
+.lk.fail{stroke:var(--accent);stroke-dasharray:6 4}
+.lk.bad{stroke:var(--bad);stroke-dasharray:3 4}
+.ll{fill:var(--text3);font-size:.6875rem;font-family:var(--mono)}
+.ll.bad{fill:var(--bad)}
+.ll.warn{fill:var(--accent)}
+.pill{fill:var(--chip)}
+.pill.ok{fill:var(--okbg)}
+.pill.bad{fill:var(--badbg)}
+.pill.warn{fill:var(--sel);stroke:var(--accent)}
+.pill.mute{fill:none;stroke:var(--line2)}
+.pt{font-size:.6875rem;fill:var(--text2)}
+.pt.ok{fill:var(--ok)}
+.pt.bad{fill:var(--bad)}
+.pt.warn{fill:var(--accent)}
+.a1{fill:var(--text3)}
+.a2{fill:var(--accent)}
+.a3{fill:var(--bad)}
+</style>
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">Landing: the Loan payment workflow on the canvas. A step that gets a person's answer, a calculating step that works out every member's payment and is confirmed by the Treasurer, a calculating step run by the agency, and a posting step for each result with the ledger account it writes to. Links carry the name of each input and each result; the dashed line is where a failure goes.<span class="cap-mcp">Filled by: agency_get_workflow, agency_list_work_items, agency_list_records, agency_list_roles</span><span class="cap-note">Proposed: the console has no canvas; its Workflows page is a list of cards and a workflow opens to a detail page of step cards (<a class="link sm" href="workflows.html">workflows.html</a>). Example data: names, figures and steps are drawn for this page. The calculating step node opens the calculating step page. Proposed: the calculating and posting steps as steps on the canvas, the states they show and the stacked card that marks a step acting on a list.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Workflows=agency/workflows/workflows.html / Workflow"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="workflows"></nav>
+
+
+<div class="main">
+
+<div class="top">
+<h1>Loan payment</h1>
+</div>
+
+<div class="content">
+
+<section class="card">
+<svg class="cv" viewBox="0 -20 1000 480" role="img" aria-label="The Loan payment workflow">
+<defs><marker id="a1-1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path class="a1" d="M0 0L8 4L0 8z"/></marker><marker id="a2-1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path class="a2" d="M0 0L8 4L0 8z"/></marker><marker id="a3-1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path class="a3" d="M0 0L8 4L0 8z"/></marker></defs>
+<rect class="nd" x="10" y="20" width="210" height="84" rx="10"/><text class="nt" x="26" y="48">Set the terms</text><text class="ns" x="26" y="68">Step, a person answers</text><text class="nm" x="26" y="90">Answer: Months</text>
+<rect class="nd" x="10" y="130" width="210" height="84" rx="10"/><text class="nt" x="26" y="158">Loan account</text><text class="ns" x="26" y="178">Ledger</text><text class="nm" x="26" y="200">Balance of the member</text>
+<rect class="nd" x="10" y="240" width="210" height="84" rx="10"/><text class="nt" x="26" y="268">Loan record</text><text class="ns" x="26" y="288">Record</text><text class="nm" x="26" y="310">Yearly rate, Days late</text>
+<a href="workflow-calculating-step.html" aria-label="Work out each member's payment, opens: Calculating step"><title>Opens: Calculating step</title><rect class="nd back" x="346" y="46" width="300" height="190" rx="10"/><rect class="nd back" x="338" y="38" width="300" height="190" rx="10"/>
+<rect class="nd calc" x="330" y="30" width="300" height="190" rx="10"/>
+<text class="nt" x="346" y="58">Work out each member's payment</text><text class="ns mo" x="346" y="80">fin.pmt@2</text>
+<rect class="pill mute" x="346" y="90" width="156" height="20" rx="10"/><text class="pt mute" x="355" y="104">Every loan in the list</text>
+<text class="nm" x="346" y="134">Keeps the result as payment</text><text class="nm" x="346" y="156">Confirmed by Treasurer</text><text class="nm" x="346" y="178">If it fails: go to Set the terms</text>
+<rect class="pill ok" x="552" y="64" width="62" height="20" rx="10"/><text class="pt ok" x="561" y="78">Working</text></a>
+<rect class="nd calc" x="330" y="290" width="300" height="150" rx="10"/>
+<text class="nt" x="346" y="318">Work out the late fee</text><text class="ns mo" x="346" y="340">fin.fee@1</text><text class="nm" x="346" y="366">Keeps the result as late_fee</text><text class="nm" x="346" y="388">Run by the agency</text><text class="nm" x="346" y="410">If it fails: stop and tell the person</text>
+<rect class="pill mute" x="458" y="324" width="156" height="20" rx="10"/><text class="pt mute" x="467" y="338">No scenario has run it</text>
+<rect class="nd post" x="730" y="30" width="260" height="120" rx="10"/><text class="nt" x="746" y="58">Post the payments</text><text class="ns" x="746" y="78">Posting step</text><text class="nm" x="746" y="104">Amount: payment</text><text class="nm" x="746" y="126">Writes to: Loan account</text>
+<rect class="nd post" x="730" y="290" width="260" height="120" rx="10"/><text class="nt" x="746" y="318">Post the late fees</text><text class="ns" x="746" y="338">Posting step</text><text class="nm" x="746" y="364">Amount: late_fee</text><text class="nm" x="746" y="386">Writes to: Late fee income</text>
+<path class="lk " d="M220 62 L330 62" marker-end="url(#a1-1)"/>
+<text class="ll" x="258" y="54">months</text>
+<path class="lk " d="M220 172 C275 172 275 130 330 130" marker-end="url(#a1-1)"/>
+<text class="ll" x="252" y="112">principal</text>
+<path class="lk " d="M220 270 C275 270 275 198 330 198" marker-end="url(#a1-1)"/>
+<text class="ll" x="262" y="232">rate</text>
+<path class="lk " d="M220 296 C275 296 275 330 330 330" marker-end="url(#a1-1)"/>
+<text class="ll" x="244" y="360">days_late</text>
+<path class="lk " d="M630 110 C680 110 680 90 730 90" marker-end="url(#a1-1)"/>
+<text class="ll" x="656" y="82">payment</text>
+<path class="lk " d="M480 220 L480 290" marker-end="url(#a1-1)"/>
+<text class="ll" x="488" y="262">payment</text>
+<path class="lk " d="M630 365 C680 365 680 350 730 350" marker-end="url(#a1-1)"/>
+<text class="ll" x="652" y="342">late_fee</text>
+<path class="lk fail" d="M400 30 C400 -14 115 -14 115 20" marker-end="url(#a2-1)"/>
+<text class="ll warn" x="238" y="16">if it fails</text>
+</svg>
+</section>
+
+</div>
+</div>
+
+<aside class="chat rail" aria-label="Chat, collapsed"><span class="rail-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><button type="button" class="chat-collapse" aria-label="Open chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></aside>
+</div>
+</div>
+</figure>
+
+<figure id="s2">
+<figcaption class="cap">After a change: the payment step has an input with no source and an input whose question was reworded, both in red, a newer version of its function exists, and the late fee step is working. The step that no scenario has run is shown on the first screen.<span class="cap-mcp">Filled by: agency_get_workflow, agency_list_work_items, agency_list_records, agency_list_roles</span><span class="cap-note">Proposed: the console has no canvas; its Workflows page is a list of cards and a workflow opens to a detail page of step cards (<a class="link sm" href="workflows.html">workflows.html</a>). Example data: names, figures and steps are drawn for this page. Proposed: the states and their words.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Workflows=agency/workflows/workflows.html / Workflow"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="workflows"></nav>
+
+
+<div class="main">
+
+<div class="top">
+<h1>Loan payment</h1>
+</div>
+
+<div class="content">
+
+<section class="card">
+<svg class="cv" viewBox="0 -20 1000 480" role="img" aria-label="The Loan payment workflow">
+<defs><marker id="a1-2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path class="a1" d="M0 0L8 4L0 8z"/></marker><marker id="a2-2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path class="a2" d="M0 0L8 4L0 8z"/></marker><marker id="a3-2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path class="a3" d="M0 0L8 4L0 8z"/></marker></defs>
+<rect class="nd" x="10" y="20" width="210" height="84" rx="10"/><text class="nt" x="26" y="48">Set the terms</text><text class="ns" x="26" y="68">Step, a person answers</text><text class="nm" x="26" y="90">Answer: Months</text>
+<rect class="nd" x="10" y="130" width="210" height="84" rx="10"/><text class="nt" x="26" y="158">Loan account</text><text class="ns" x="26" y="178">Ledger</text><text class="nm" x="26" y="200">Balance of the member</text>
+<rect class="nd" x="10" y="240" width="210" height="84" rx="10"/><text class="nt" x="26" y="268">Loan record</text><text class="ns" x="26" y="288">Record</text><text class="nm" x="26" y="310">Yearly rate, Days late</text>
+<a href="workflow-calculating-step.html" aria-label="Work out each member's payment, opens: Calculating step"><title>Opens: Calculating step</title><rect class="nd back" x="346" y="46" width="300" height="190" rx="10"/><rect class="nd back" x="338" y="38" width="300" height="190" rx="10"/>
+<rect class="nd calc" x="330" y="30" width="300" height="190" rx="10"/>
+<text class="nt" x="346" y="58">Work out each member's payment</text><text class="ns mo" x="346" y="80">fin.pmt@2</text>
+<rect class="pill mute" x="346" y="90" width="156" height="20" rx="10"/><text class="pt mute" x="355" y="104">Every loan in the list</text>
+<text class="nm" x="346" y="134">Keeps the result as payment</text><text class="nm" x="346" y="156">Confirmed by Treasurer</text><text class="nm" x="346" y="178">If it fails: go to Set the terms</text>
+<rect class="pill warn" x="346" y="190" width="169" height="20" rx="10"/><text class="pt warn" x="355" y="204">Newer version: fin.pmt@3</text>
+<rect class="pill bad" x="502" y="64" width="112" height="20" rx="10"/><text class="pt bad" x="511" y="78">Needs attention</text></a>
+<rect class="nd calc" x="330" y="290" width="300" height="150" rx="10"/>
+<text class="nt" x="346" y="318">Work out the late fee</text><text class="ns mo" x="346" y="340">fin.fee@1</text><text class="nm" x="346" y="366">Keeps the result as late_fee</text><text class="nm" x="346" y="388">Run by the agency</text><text class="nm" x="346" y="410">If it fails: stop and tell the person</text>
+<rect class="pill ok" x="552" y="324" width="62" height="20" rx="10"/><text class="pt ok" x="561" y="338">Working</text>
+<rect class="nd post" x="730" y="30" width="260" height="120" rx="10"/><text class="nt" x="746" y="58">Post the payments</text><text class="ns" x="746" y="78">Posting step</text><text class="nm" x="746" y="104">Amount: payment</text><text class="nm" x="746" y="126">Writes to: Loan account</text>
+<rect class="nd post" x="730" y="290" width="260" height="120" rx="10"/><text class="nt" x="746" y="318">Post the late fees</text><text class="ns" x="746" y="338">Posting step</text><text class="nm" x="746" y="364">Amount: late_fee</text><text class="nm" x="746" y="386">Writes to: Late fee income</text>
+<path class="lk bad" d="M220 62 L330 62" marker-end="url(#a3-2)"/>
+<text class="ll bad" x="246" y="52">months</text><text class="ll bad" x="236" y="82">reworded</text>
+<path class="lk bad" d="M330 130 L286 130"/><path class="lk bad" d="M270 122 L286 138 M286 122 L270 138"/>
+<text class="ll bad" x="236" y="112">principal</text><text class="ll bad" x="236" y="152">no source</text>
+<path class="lk " d="M220 270 C275 270 275 198 330 198" marker-end="url(#a1-2)"/>
+<text class="ll" x="262" y="232">rate</text>
+<path class="lk " d="M220 296 C275 296 275 330 330 330" marker-end="url(#a1-2)"/>
+<text class="ll" x="244" y="360">days_late</text>
+<path class="lk " d="M630 110 C680 110 680 90 730 90" marker-end="url(#a1-2)"/>
+<text class="ll" x="656" y="82">payment</text>
+<path class="lk " d="M480 220 L480 290" marker-end="url(#a1-2)"/>
+<text class="ll" x="488" y="262">payment</text>
+<path class="lk " d="M630 365 C680 365 680 350 730 350" marker-end="url(#a1-2)"/>
+<text class="ll" x="652" y="342">late_fee</text>
+<path class="lk fail" d="M400 30 C400 -14 115 -14 115 20" marker-end="url(#a2-2)"/>
+<text class="ll warn" x="238" y="16">if it fails</text>
+</svg>
+</section>
+
+</div>
+</div>
+
+<aside class="chat rail" aria-label="Chat, collapsed"><span class="rail-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><button type="button" class="chat-collapse" aria-label="Open chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></svg></button></aside>
+</div>
+</div>
+</figure>
+<script src="../../shell.js"></script>
+</body>
+</html>

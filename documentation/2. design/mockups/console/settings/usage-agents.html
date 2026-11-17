@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usage by agent and person page</title>
+<link rel="stylesheet" href="../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · Usage, Agents and people, grouped by agent, this month<span class="cap-mcp">Filled by: ai_usage_breakdown, actor_list_actors</span><span class="cap-note">Example data: the models, agents, people and token counts are drawn for this page. Each agent in the chart is a button: pressing it filters this same page to that agent, as drawn in screen 3, and does not open another screen.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Usage=settings/usage-overview.html / Agents and people"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="usage-agents"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Usage</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><div class="row" style="--row-gap:8px"><span class="seg-label">Show</span><div class="seg" role="group" aria-label="Show"><button type="button" class="seg-item" aria-pressed="false">Today</button><button type="button" class="seg-item" aria-pressed="false">7 days</button><button type="button" class="seg-item" aria-pressed="true">This month</button><button type="button" class="seg-item" aria-pressed="false">Last month</button></div></div></div><div class="toolbar-group"><div class="row" style="--row-gap:8px"><span class="seg-label">Group by</span><div class="seg" role="group" aria-label="Group by"><button type="button" class="seg-item" aria-pressed="false">Person</button><button type="button" class="seg-item" aria-pressed="true">Agent</button></div></div></div></div>
+<section class="card" aria-label="By agent">
+<div class="card-head"><h2>By agent</h2></div>
+<div class="chart"><ul class="chart-legend"><li><span class="swatch" style="--c:var(--accent)"></span>Input</li><li><span class="swatch part"></span>Output</li></ul><ul class="rank"><li><button type="button" class="rank-row" title="Farmers' agent: 956,819 tokens in, 261,450 tokens out" aria-label="Farmers' agent: 956,819 tokens in, 261,450 tokens out"><span class="rank-line"><span class="rank-name">Farmers' agent</span><span class="count">1.22M · 63%</span></span><span class="rank-track"><span class="rank-in" style="width:78.5%"></span><span class="rank-out" style="width:21.5%"></span></span></button></li><li><button type="button" class="rank-row" title="Suppliers' agent: 634,050 tokens in, 87,899 tokens out" aria-label="Suppliers' agent: 634,050 tokens in, 87,899 tokens out"><span class="rank-line"><span class="rank-name">Suppliers' agent</span><span class="count">722k · 37%</span></span><span class="rank-track"><span class="rank-in" style="width:52.0%"></span><span class="rank-out" style="width:7.2%"></span></span></button></li></ul></div>
+</section>
+<div class="section-head"><h2>Breakdown</h2></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Agent</th><th>Kind of work</th><th>Model</th><th>Input</th><th>Output</th><th>Requests</th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmers' agent</span></span></div></td><td>Chat</td><td>claude-sonnet-5-5</td><td><span class="count">485,240</span></td><td><span class="count">151,444</span></td><td><span class="count">347</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Suppliers' agent</span></span></div></td><td>Test run</td><td>claude-sonnet-5-5</td><td><span class="count">442,959</span></td><td><span class="count">51,754</span></td><td><span class="count">37</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmers' agent</span></span></div></td><td>Chat</td><td>zai-org/GLM-5.3:novita</td><td><span class="count">231,889</span></td><td><span class="count">78,402</span></td><td><span class="count">148</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmers' agent</span></span></div></td><td>Agency review</td><td>claude-sonnet-5-5</td><td><span class="count">239,690</span></td><td><span class="count">31,604</span></td><td><span class="count">13</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Suppliers' agent</span></span></div></td><td>Workflow run</td><td>zai-org/GLM-5.3:novita</td><td><span class="count">191,091</span></td><td><span class="count">36,145</span></td><td><span class="count">73</span></td></tr>
+</tbody>
+</table>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Agents and people" data-ctx-icon="activity">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Agents and people?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did test runs use so much?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who used the most this month?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which model costs the most tokens?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s2">
+<figcaption class="cap">2 · Usage, Agents and people, grouped by person, this month<span class="cap-mcp">Filled by: ai_usage_breakdown, actor_list_actors</span><span class="cap-note">Example data: the models, agents, people and token counts are drawn for this page. Calls an agent made on its own, such as a workflow run, are put under The agent itself; a person who is no longer in the hub reads Someone no longer in the hub.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Usage=settings/usage-overview.html / Agents and people"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="usage-agents"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Usage</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><div class="row" style="--row-gap:8px"><span class="seg-label">Show</span><div class="seg" role="group" aria-label="Show"><button type="button" class="seg-item" aria-pressed="false">Today</button><button type="button" class="seg-item" aria-pressed="false">7 days</button><button type="button" class="seg-item" aria-pressed="true">This month</button><button type="button" class="seg-item" aria-pressed="false">Last month</button></div></div></div><div class="toolbar-group"><div class="row" style="--row-gap:8px"><span class="seg-label">Group by</span><div class="seg" role="group" aria-label="Group by"><button type="button" class="seg-item" aria-pressed="true">Person</button><button type="button" class="seg-item" aria-pressed="false">Agent</button></div></div></div></div>
+<section class="card" aria-label="By person">
+<div class="card-head"><h2>By person</h2></div>
+<div class="chart"><ul class="chart-legend"><li><span class="swatch" style="--c:var(--accent)"></span>Input</li><li><span class="swatch part"></span>Output</li></ul><ul class="rank"><li><span class="rank-row" title="Grace Achieng: 635,170 tokens in, 106,962 tokens out" aria-label="Grace Achieng: 635,170 tokens in, 106,962 tokens out" role="group"><span class="rank-line"><span class="rank-name">Grace Achieng</span><span class="count">742k · 38%</span></span><span class="rank-track"><span class="rank-in" style="width:85.6%"></span><span class="rank-out" style="width:14.4%"></span></span></span></li><li><span class="rank-row" title="Peter Omondi: 441,545 tokens in, 95,027 tokens out" aria-label="Peter Omondi: 441,545 tokens in, 95,027 tokens out" role="group"><span class="rank-line"><span class="rank-name">Peter Omondi</span><span class="count">537k · 28%</span></span><span class="rank-track"><span class="rank-in" style="width:59.5%"></span><span class="rank-out" style="width:12.8%"></span></span></span></li><li><span class="rank-row" title="Faith Atieno: 169,646 tokens in, 59,793 tokens out" aria-label="Faith Atieno: 169,646 tokens in, 59,793 tokens out" role="group"><span class="rank-line"><span class="rank-name">Faith Atieno</span><span class="count">229k · 12%</span></span><span class="rank-track"><span class="rank-in" style="width:22.9%"></span><span class="rank-out" style="width:8.1%"></span></span></span></li><li><span class="rank-row" title="The agent itself: 191,091 tokens in, 36,145 tokens out" aria-label="The agent itself: 191,091 tokens in, 36,145 tokens out" role="group"><span class="rank-line"><span class="rank-name">The agent itself</span><span class="count">227k · 12%</span></span><span class="rank-track"><span class="rank-in" style="width:25.7%"></span><span class="rank-out" style="width:4.9%"></span></span></span></li><li><span class="rank-row" title="Akinyi Otieno: 153,417 tokens in, 51,422 tokens out" aria-label="Akinyi Otieno: 153,417 tokens in, 51,422 tokens out" role="group"><span class="rank-line"><span class="rank-name">Akinyi Otieno</span><span class="count">205k · 11%</span></span><span class="rank-track"><span class="rank-in" style="width:20.7%"></span><span class="rank-out" style="width:6.9%"></span></span></span></li></ul></div>
+</section>
+<div class="section-head"><h2>Breakdown</h2></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Person</th><th>Kind of work</th><th>Model</th><th>Input</th><th>Output</th><th>Requests</th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Grace Achieng</span></span></div></td><td>Test run</td><td>claude-sonnet-5-5</td><td><span class="count">442,959</span></td><td><span class="count">51,754</span></td><td><span class="count">37</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Peter Omondi</span></span></div></td><td>Agency review</td><td>claude-sonnet-5-5</td><td><span class="count">239,690</span></td><td><span class="count">31,604</span></td><td><span class="count">13</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">The agent itself</span></span></div></td><td>Workflow run</td><td>zai-org/GLM-5.3:novita</td><td><span class="count">191,091</span></td><td><span class="count">36,145</span></td><td><span class="count">73</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Grace Achieng</span></span></div></td><td>Chat</td><td>claude-sonnet-5-5</td><td><span class="count">168,234</span></td><td><span class="count">46,686</span></td><td><span class="count">97</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Peter Omondi</span></span></div></td><td>Chat</td><td>claude-sonnet-5-5</td><td><span class="count">121,711</span></td><td><span class="count">38,442</span></td><td><span class="count">95</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Faith Atieno</span></span></div></td><td>Chat</td><td>claude-sonnet-5-5</td><td><span class="count">114,048</span></td><td><span class="count">38,227</span></td><td><span class="count">70</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Akinyi Otieno</span></span></div></td><td>Chat</td><td>claude-sonnet-5-5</td><td><span class="count">81,247</span></td><td><span class="count">28,089</span></td><td><span class="count">85</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Peter Omondi</span></span></div></td><td>Chat</td><td>zai-org/GLM-5.3:novita</td><td><span class="count">80,144</span></td><td><span class="count">24,981</span></td><td><span class="count">42</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Akinyi Otieno</span></span></div></td><td>Chat</td><td>zai-org/GLM-5.3:novita</td><td><span class="count">72,170</span></td><td><span class="count">23,333</span></td><td><span class="count">39</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Faith Atieno</span></span></div></td><td>Chat</td><td>zai-org/GLM-5.3:novita</td><td><span class="count">55,598</span></td><td><span class="count">21,566</span></td><td><span class="count">43</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Grace Achieng</span></span></div></td><td>Chat</td><td>zai-org/GLM-5.3:novita</td><td><span class="count">23,977</span></td><td><span class="count">8,522</span></td><td><span class="count">24</span></td></tr>
+</tbody>
+</table>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Agents and people" data-ctx-icon="activity">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Agents and people?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did test runs use so much?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who used the most this month?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which model costs the most tokens?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s3">
+<figcaption class="cap">3 · Usage, Agents and people, one agent chosen: Role filter<span class="cap-mcp">Filled by: ai_usage_breakdown, actor_list_actors</span><span class="cap-note">Example data: the models, agents, people and token counts are drawn for this page. The chip removes the filter and the page goes back to every agent.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / Usage=settings/usage-overview.html / Agents and people"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="usage-agents"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Usage</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><div class="row" style="--row-gap:8px"><span class="seg-label">Show</span><div class="seg" role="group" aria-label="Show"><button type="button" class="seg-item" aria-pressed="false">Today</button><button type="button" class="seg-item" aria-pressed="false">7 days</button><button type="button" class="seg-item" aria-pressed="true">This month</button><button type="button" class="seg-item" aria-pressed="false">Last month</button></div></div><span class="filter">Role: Farmers' agent<button type="button" aria-label="Remove filter: Role: Farmers' agent"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></span></div><div class="toolbar-group"><div class="row" style="--row-gap:8px"><span class="seg-label">Group by</span><div class="seg" role="group" aria-label="Group by"><button type="button" class="seg-item" aria-pressed="false">Person</button><button type="button" class="seg-item" aria-pressed="true">Agent</button></div></div></div></div>
+<section class="card" aria-label="Who used Farmers' agent">
+<div class="card-head"><h2>Who used Farmers' agent</h2></div>
+<div class="chart"><ul class="chart-legend"><li><span class="swatch" style="--c:var(--accent)"></span>Input</li><li><span class="swatch part"></span>Output</li></ul><ul class="rank"><li><span class="rank-row" title="Peter Omondi: 441,545 tokens in, 95,027 tokens out" aria-label="Peter Omondi: 441,545 tokens in, 95,027 tokens out" role="group"><span class="rank-line"><span class="rank-name">Peter Omondi</span><span class="count">537k · 44%</span></span><span class="rank-track"><span class="rank-in" style="width:82.3%"></span><span class="rank-out" style="width:17.7%"></span></span></span></li><li><span class="rank-row" title="Grace Achieng: 192,211 tokens in, 55,208 tokens out" aria-label="Grace Achieng: 192,211 tokens in, 55,208 tokens out" role="group"><span class="rank-line"><span class="rank-name">Grace Achieng</span><span class="count">247k · 20%</span></span><span class="rank-track"><span class="rank-in" style="width:35.8%"></span><span class="rank-out" style="width:10.3%"></span></span></span></li><li><span class="rank-row" title="Faith Atieno: 169,646 tokens in, 59,793 tokens out" aria-label="Faith Atieno: 169,646 tokens in, 59,793 tokens out" role="group"><span class="rank-line"><span class="rank-name">Faith Atieno</span><span class="count">229k · 19%</span></span><span class="rank-track"><span class="rank-in" style="width:31.6%"></span><span class="rank-out" style="width:11.1%"></span></span></span></li><li><span class="rank-row" title="Akinyi Otieno: 153,417 tokens in, 51,422 tokens out" aria-label="Akinyi Otieno: 153,417 tokens in, 51,422 tokens out" role="group"><span class="rank-line"><span class="rank-name">Akinyi Otieno</span><span class="count">205k · 17%</span></span><span class="rank-track"><span class="rank-in" style="width:28.6%"></span><span class="rank-out" style="width:9.6%"></span></span></span></li></ul></div>
+</section>
+<div class="section-head"><h2>Breakdown</h2></div>
+<div class="panel table-card">
+<table class="table">
+<thead><tr><th>Agent</th><th>Kind of work</th><th>Model</th><th>Input</th><th>Output</th><th>Requests</th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmers' agent</span></span></div></td><td>Chat</td><td>claude-sonnet-5-5</td><td><span class="count">485,240</span></td><td><span class="count">151,444</span></td><td><span class="count">347</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmers' agent</span></span></div></td><td>Chat</td><td>zai-org/GLM-5.3:novita</td><td><span class="count">231,889</span></td><td><span class="count">78,402</span></td><td><span class="count">148</span></td></tr><tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmers' agent</span></span></div></td><td>Agency review</td><td>claude-sonnet-5-5</td><td><span class="count">239,690</span></td><td><span class="count">31,604</span></td><td><span class="count">13</span></td></tr>
+</tbody>
+</table>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Agents and people" data-ctx-icon="activity">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Agents and people?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did test runs use so much?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who used the most this month?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which model costs the most tokens?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<script src="../shell.js"></script>
+</body>
+</html>

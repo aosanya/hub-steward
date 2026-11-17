@@ -241,16 +241,31 @@ func TestTwoRunsWaitSeparately(t *testing.T) {
 func TestOnlyTheStepsRoleMaySend(t *testing.T) {
 	w := referral(t)
 	answers := map[string]string{"Reason": "Fever", "Minutes to the clinic": "10"}
-	if rec := w.submit(t, w.people["Liaison"], "Report a referral", answers, ""); rec.Code != http.StatusForbidden {
-		t.Errorf("a member without the role sending the step: %d %s, want 403", rec.Code, rec.Body.String())
+	if rec := w.submit(t, w.people["Liaison"], "Report a referral", answers, ""); rec.Code != http.StatusNotFound {
+		t.Errorf("a member without the role sending the step: %d %s, want 404", rec.Code, rec.Body.String())
 	}
-	if rec := w.submit(t, w.owner, "Report a referral", answers, ""); rec.Code != http.StatusForbidden {
-		t.Errorf("the owner without the role sending the step: %d %s, want 403", rec.Code, rec.Body.String())
+	if rec := w.submit(t, w.owner, "Report a referral", answers, ""); rec.Code != http.StatusNotFound {
+		t.Errorf("the owner without the role sending the step: %d %s, want 404", rec.Code, rec.Body.String())
 	}
 	sent := decodeObject(t, w.submit(t, w.people["Volunteer"], "Report a referral", answers, ""))
 	order, _ := sent["order_id"].(string)
-	if rec := w.submit(t, w.people["Volunteer"], "Confirm arrival", map[string]string{"Arrived": "yes"}, order); rec.Code != http.StatusForbidden {
-		t.Errorf("the volunteer sending the liaison's step: %d %s, want 403", rec.Code, rec.Body.String())
+	if rec := w.submit(t, w.people["Volunteer"], "Confirm arrival", map[string]string{"Arrived": "yes"}, order); rec.Code != http.StatusNotFound {
+		t.Errorf("the volunteer sending the liaison's step: %d %s, want 404", rec.Code, rec.Body.String())
+	}
+}
+
+func TestAStepTheCallerDoesNotHoldAnswersExactlyAsAStepThatDoesNotExist(t *testing.T) {
+	w := referral(t)
+	body := map[string]any{"answers": map[string]string{}}
+	missing := w.call(t, "POST", "/instances/"+w.instance+"/steps/no-such-step/answers", body, w.people["Liaison"])
+	if missing.Code != http.StatusNotFound {
+		t.Fatalf("a missing step: %d %s, want 404", missing.Code, missing.Body.String())
+	}
+	for name, as := range map[string]*http.Cookie{"a resident without the role": w.people["Liaison"], "the owner without the role": w.owner} {
+		real := w.call(t, "POST", "/instances/"+w.instance+"/steps/"+w.steps["Report a referral"]+"/answers", body, as)
+		if real.Code != missing.Code || real.Body.String() != missing.Body.String() {
+			t.Errorf("%s on a real step: %d %s, want the missing step's %d %s", name, real.Code, real.Body.String(), missing.Code, missing.Body.String())
+		}
 	}
 }
 

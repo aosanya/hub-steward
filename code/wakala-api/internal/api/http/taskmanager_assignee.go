@@ -16,7 +16,6 @@ import (
 
 const (
 	assigneeKindActor   = "actor"
-	maxAssignBodyBytes  = 1 << 16
 	assigneeRefusalText = "an assignee must be an owner or an agent of this agency"
 )
 
@@ -51,10 +50,23 @@ type assigneeClaim struct {
 	AssigneeID   string `json:"assignee_id"`
 }
 
+func readWholeBody(w http.ResponseWriter, r *http.Request) ([]byte, bool) {
+	raw, err := io.ReadAll(r.Body)
+	if err == nil {
+		return raw, true
+	}
+	var tooLarge *http.MaxBytesError
+	if errors.As(err, &tooLarge) {
+		writeErr(w, http.StatusRequestEntityTooLarge, "request body too large")
+		return nil, false
+	}
+	writeErr(w, http.StatusBadRequest, "could not read the request body")
+	return nil, false
+}
+
 func peekBody(w http.ResponseWriter, r *http.Request) ([]byte, bool) {
-	raw, err := io.ReadAll(io.LimitReader(r.Body, maxAssignBodyBytes))
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, "could not read the request body")
+	raw, ok := readWholeBody(w, r)
+	if !ok {
 		return nil, false
 	}
 	r.Body = io.NopCloser(bytes.NewReader(raw))

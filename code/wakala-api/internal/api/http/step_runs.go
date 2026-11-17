@@ -387,7 +387,7 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	}
 	step := steps[at]
 	if !slices.ContainsFunc(held.Roles, func(r agencymodels.Role) bool { return r.ID == stepActorRoleID(step) }) {
-		return stepAnswersResult{}, errRowForbidden
+		return stepAnswersResult{}, errStepNotFound
 	}
 	records, err := m.ListRecords(ctx, held.DraftID, mwanachamaagency.RecordFilter{})
 	if err != nil {

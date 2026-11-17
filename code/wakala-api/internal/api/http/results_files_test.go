@@ -98,10 +98,10 @@ func (w resultsFilesWorld) items(t *testing.T, subject, formID string) []map[str
 func (w resultsFilesWorld) subject(t *testing.T, who string) string {
 	t.Helper()
 	cookies := map[string]*http.Cookie{
-		"Director":  w.acts.director,
-		"Clerk":  w.acts.clerk,
-		"Nobody": w.acts.nobody,
-		"owner":  w.acts.walk.owner,
+		"Director": w.acts.director,
+		"Clerk":    w.acts.clerk,
+		"Nobody":   w.acts.nobody,
+		"owner":    w.acts.walk.owner,
 	}
 	return w.acts.walk.subjectOf(t, cookies[who])
 }

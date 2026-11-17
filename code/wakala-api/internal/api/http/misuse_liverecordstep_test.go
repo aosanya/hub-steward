@@ -43,8 +43,8 @@ func TestLiveRecordRow_OwnerCannotDoAnotherRolesStepOutOfTurn(t *testing.T) {
 		t.Fatalf("no register for the closing step in %v", records)
 	}
 
-	if rec := w.submit(t, w.owner, "Close the referral", map[string]string{"Note": "Closed by the owner"}, order); rec.Code != http.StatusForbidden {
-		t.Fatalf("owner answering the coordinator's step: %d %s, want 403", rec.Code, rec.Body.String())
+	if rec := w.submit(t, w.owner, "Close the referral", map[string]string{"Note": "Closed by the owner"}, order); rec.Code != http.StatusNotFound {
+		t.Fatalf("owner answering the coordinator's step: %d %s, want 404", rec.Code, rec.Body.String())
 	}
 
 	row := w.call(t, "POST", "/instances/"+w.instance+"/live-records/"+closing+"/rows", map[string]any{"answers": map[string]string{"Note": "Closed by the owner"}, "order_id": order}, w.owner)

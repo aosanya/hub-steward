@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agency, Review: Workflows</title>
+<link rel="stylesheet" href="../../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · This part has not been reviewed yet, and the button was pressed before the backend knew the review tools: the reason sits under the button.<span class="cap-mcp">Filled by: agency_get_review, agency_list_drafts, agency_run_review</span><span class="cap-note">Example data: names, dates, counts and the findings are drawn for this page; the reviewer writes the real ones.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Review=agency/publish/review.html / Workflows"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="review-workflows"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Review: Workflows</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="empty"><span>Workflows has not been reviewed yet.</span><button type="button" class="btn primary">Review Workflows</button><p class="muted foot error" role="status">Review is not available on this backend yet. Restart it so it picks up the review tools.</p></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Workflows" data-ctx-icon="sliders">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Workflows?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What did the review find?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which findings are still open?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did a part fail?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s2">
+<figcaption class="cap">2 · Apply failed: the error's own message appears on the card above the row (here the tool is not available) and the finding stays open.<span class="cap-mcp">Filled by: agency_get_review, agency_list_drafts, agency_run_review, agency_set_finding_status, agency_comment_finding, agency_create_work_item</span><span class="cap-note">Example data: names, dates, counts and the findings are drawn for this page; the reviewer writes the real ones.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Review=agency/publish/review.html / Workflows"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="review-workflows" data-badges="review-workflows:1"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Review: Workflows</h1>
+<div class="top-end"><button type="button" class="btn primary">Review Workflows again</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:16px">
+<div class="note">Pool an input order has three steps and each has a role. The last step does not say what happens when the supplier says no.</div>
+<section class="card finding">
+<div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Say what happens when the supplier declines</button></h2></div>
+<div class="cell"><span class="cell-text"><span>Confirm the order has no step after it for a supplier who says no.</span></span></div>
+<p class="muted foot error" role="status">The tool agency_create_work_item is not available</p>
+<div class="row-tools"><button type="button" class="row-tool" aria-expanded="false">Ask the chat about this</button><button type="button" class="row-tool">Apply</button><button type="button" class="row-tool" aria-expanded="false">Add a note</button><button type="button" class="row-tool">Details</button><button type="button" class="row-tool">Dismiss</button></div>
+</section>
+</div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Workflows" data-ctx-icon="sliders">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Workflows?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What did the review find?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which findings are still open?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Why did a part fail?</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<script src="../../shell.js"></script>
+</body>
+</html>

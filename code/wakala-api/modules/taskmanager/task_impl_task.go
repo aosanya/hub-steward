@@ -40,6 +40,9 @@ func (m *taskManager) CreateTask(ctx context.Context, task Task) (Task, error) {
 	if err := checkEffort(task.Effort); err != nil {
 		return Task{}, fmt.Errorf("CreateTask: %w", err)
 	}
+	if err := checkDueAt(task.DueAt); err != nil {
+		return Task{}, fmt.Errorf("CreateTask: %w", err)
+	}
 	if task.Files, err = checkFiles(task.Files); err != nil {
 		return Task{}, fmt.Errorf("CreateTask: %w", err)
 	}
@@ -124,6 +127,11 @@ func (m *taskManager) updateTask(ctx context.Context, task Task, replace bool) (
 	}
 	if err := checkEffort(task.Effort); err != nil {
 		return Task{}, fmt.Errorf("UpdateTask: %w", err)
+	}
+	if task.DueAt != current.DueAt {
+		if err := checkDueAt(task.DueAt); err != nil {
+			return Task{}, fmt.Errorf("UpdateTask: %w", err)
+		}
 	}
 	if task.Files == nil {
 		task.Files = current.Files

@@ -36,9 +36,8 @@ func pinVoterKind(fields map[string]json.RawMessage, agencyRole string) {
 }
 
 func pinVoterKindOnRequest(w http.ResponseWriter, r *http.Request, agencyRole string) bool {
-	raw, err := io.ReadAll(io.LimitReader(r.Body, maxAssignBodyBytes))
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, "could not read the request body")
+	raw, ok := readWholeBody(w, r)
+	if !ok {
 		return false
 	}
 	fields, err := decodeBodyObject(raw)

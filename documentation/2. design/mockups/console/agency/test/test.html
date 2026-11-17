@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agency test page</title>
+<link rel="stylesheet" href="../../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · Landing: the farmers' four scenarios as cards sorted by name, each with a tick box, its name, a result chip, an Actions menu, what it tries and when it last ran. Add a scenario, search, Failed only and the rules link sit above them; the footer sums the tokens of the last runs.<span class="cap-mcp">Filled by: agency_list_scenarios, agency_list_test_runs</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"><button type="button" class="btn primary">Run all scenarios</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:12px"><div class="toolbar"><div class="toolbar-group"><a class="btn quiet sm" href="test.html#s8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a scenario</a><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search scenarios</span><input type="search" placeholder="Search scenarios"></label><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Failed only</label></div><div class="toolbar-group"><a class="link" href="test.html#s7">Which rules have not been tested?</a></div></div><div class="stack" style="--stack-gap:12px"><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Farmer looks for something</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Farmer looks for something</a></span></div><div class="sc-end"><span class="tag warn">Stopped</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer looks for something no poster lists, and the Farmers' agent asks two posters.</div><p class="sc-meta">Last run Nov 16, 16:20 · Tokens 8,000</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group coordinator approves a poster</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group coordinator approves a poster</a></span></div><div class="sc-end"><span class="tag mute">Not run yet</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A supplier applies to sell, and the group coordinator approves him.</div><p class="sc-meta">Last run — · Tokens —</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group order is sent</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group order is sent</a></span></div><div class="sc-end"><span class="tag bad">Failed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">Farmers join a group order and the group coordinator sends it.</div><p class="sc-meta">Last run 10:42 · Tokens 5,210</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Poster says yes</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Poster says yes</a></span></div><div class="sc-end"><span class="tag ok">Passed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer picks a poster and buys now; the poster says yes with a date.</div><p class="sc-meta">Last run 10:38 · Tokens 3,120</p></div></div></div><p class="soft">Tokens in the last run of all scenarios: 16,330</p></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s2">
+<figcaption class="cap">2 · Two scenarios ticked: the title row button reads Run 2 selected. The Actions menu of Group order is sent is open; because it has run before it offers Run again, Open last run and Print report, then Edit and Remove.<span class="cap-mcp">Filled by: agency_list_scenarios, agency_list_test_runs, agency_run_scenario</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"><button type="button" class="btn primary">Run 2 selected</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:12px"><div class="toolbar"><div class="toolbar-group"><a class="btn quiet sm" href="test.html#s8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a scenario</a><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search scenarios</span><input type="search" placeholder="Search scenarios"></label><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Failed only</label></div><div class="toolbar-group"><a class="link" href="test.html#s7">Which rules have not been tested?</a></div></div><div class="stack" style="--stack-gap:12px"><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Farmer looks for something</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Farmer looks for something</a></span></div><div class="sc-end"><span class="tag warn">Stopped</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer looks for something no poster lists, and the Farmers' agent asks two posters.</div><p class="sc-meta">Last run Nov 16, 16:20 · Tokens 8,000</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group coordinator approves a poster</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group coordinator approves a poster</a></span></div><div class="sc-end"><span class="tag mute">Not run yet</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A supplier applies to sell, and the group coordinator approves him.</div><p class="sc-meta">Last run — · Tokens —</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt on"><input class="sr" type="checkbox" checked><span class="opt-box"></span><span class="sr">Select Group order is sent</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group order is sent</a></span></div><div class="sc-end"><span class="tag bad">Failed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="true">Actions</button><div class="act-menu" role="menu"><button type="button" role="menuitem" class="act-item">Run again</button><button type="button" role="menuitem" class="act-item">Open last run</button><button type="button" role="menuitem" class="act-item">Print report</button><button type="button" role="menuitem" class="act-item">Edit</button><button type="button" role="menuitem" class="act-item bad">Remove</button></div></div></div></div><div class="note">Farmers join a group order and the group coordinator sends it.</div><p class="sc-meta">Last run 10:42 · Tokens 5,210</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt on"><input class="sr" type="checkbox" checked><span class="opt-box"></span><span class="sr">Select Poster says yes</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Poster says yes</a></span></div><div class="sc-end"><span class="tag ok">Passed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer picks a poster and buys now; the poster says yes with a date.</div><p class="sc-meta">Last run 10:38 · Tokens 3,120</p></div></div></div><p class="soft">Tokens in the last run of all scenarios: 16,330</p></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s3">
+<figcaption class="cap">3 · Run all pressed with nothing ticked: every scenario is marked as running, so the button reads Running 4 and all four chips read Running while the page waits for the runs.<span class="cap-mcp">Filled by: agency_list_scenarios, agency_list_test_runs, agency_run_scenarios</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"><button type="button" class="btn primary">Running 4</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:12px"><div class="toolbar"><div class="toolbar-group"><a class="btn quiet sm" href="test.html#s8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a scenario</a><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search scenarios</span><input type="search" placeholder="Search scenarios"></label><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Failed only</label></div><div class="toolbar-group"><a class="link" href="test.html#s7">Which rules have not been tested?</a></div></div><div class="stack" style="--stack-gap:12px"><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Farmer looks for something</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Farmer looks for something</a></span></div><div class="sc-end"><span class="tag use">Running</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer looks for something no poster lists, and the Farmers' agent asks two posters.</div><p class="sc-meta">Last run Nov 16, 16:20 · Tokens 8,000</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group coordinator approves a poster</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group coordinator approves a poster</a></span></div><div class="sc-end"><span class="tag use">Running</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A supplier applies to sell, and the group coordinator approves him.</div><p class="sc-meta">Last run — · Tokens —</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group order is sent</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group order is sent</a></span></div><div class="sc-end"><span class="tag use">Running</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">Farmers join a group order and the group coordinator sends it.</div><p class="sc-meta">Last run 10:42 · Tokens 5,210</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Poster says yes</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Poster says yes</a></span></div><div class="sc-end"><span class="tag use">Running</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer picks a poster and buys now; the poster says yes with a date.</div><p class="sc-meta">Last run 10:38 · Tokens 3,120</p></div></div></div><p class="soft">Tokens in the last run of all scenarios: 16,330</p></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s4">
+<figcaption class="cap">4 · Failed only switched on: only the scenarios whose last run failed stay.<span class="cap-mcp">Filled by: agency_list_scenarios, agency_list_test_runs</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"><button type="button" class="btn primary">Run all scenarios</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:12px"><div class="toolbar"><div class="toolbar-group"><a class="btn quiet sm" href="test.html#s8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a scenario</a><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search scenarios</span><input type="search" placeholder="Search scenarios"></label><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Failed only</label></div><div class="toolbar-group"><a class="link" href="test.html#s7">Which rules have not been tested?</a></div></div><div class="stack" style="--stack-gap:12px"><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group order is sent</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group order is sent</a></span></div><div class="sc-end"><span class="tag bad">Failed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">Farmers join a group order and the group coordinator sends it.</div><p class="sc-meta">Last run 10:42 · Tokens 5,210</p></div></div></div><p class="soft">Tokens in the last run of all scenarios: 16,330</p></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s5">
+<figcaption class="cap">5 · Remove chosen in the Actions menu: a confirmation card appears above the toolbar and names what goes with the scenario.<span class="cap-mcp">Filled by: agency_list_scenarios, agency_list_test_runs, agency_delete_scenario</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"><button type="button" class="btn primary">Run all scenarios</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:12px"><div class="card tight"><span>Remove Group order is sent? Its actors, fixed inputs and runs go with it.</span><div class="row"><button type="button" class="btn danger sm">Remove scenario</button><button type="button" class="btn quiet sm">Cancel</button></div></div><div class="toolbar"><div class="toolbar-group"><a class="btn quiet sm" href="test.html#s8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a scenario</a><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search scenarios</span><input type="search" placeholder="Search scenarios"></label><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Failed only</label></div><div class="toolbar-group"><a class="link" href="test.html#s7">Which rules have not been tested?</a></div></div><div class="stack" style="--stack-gap:12px"><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Farmer looks for something</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Farmer looks for something</a></span></div><div class="sc-end"><span class="tag warn">Stopped</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer looks for something no poster lists, and the Farmers' agent asks two posters.</div><p class="sc-meta">Last run Nov 16, 16:20 · Tokens 8,000</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group coordinator approves a poster</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group coordinator approves a poster</a></span></div><div class="sc-end"><span class="tag mute">Not run yet</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A supplier applies to sell, and the group coordinator approves him.</div><p class="sc-meta">Last run — · Tokens —</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group order is sent</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group order is sent</a></span></div><div class="sc-end"><span class="tag bad">Failed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">Farmers join a group order and the group coordinator sends it.</div><p class="sc-meta">Last run 10:42 · Tokens 5,210</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Poster says yes</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Poster says yes</a></span></div><div class="sc-end"><span class="tag ok">Passed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer picks a poster and buys now; the poster says yes with a date.</div><p class="sc-meta">Last run 10:38 · Tokens 3,120</p></div></div></div><p class="soft">Tokens in the last run of all scenarios: 16,330</p></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s6">
+<figcaption class="cap">6 · Landing in an agency with no scenario: the sentence with Add a scenario inside it; the title row has no button.<span class="cap-mcp">Filled by: agency_list_scenarios</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="empty"><span>No scenario yet.</span><a class="btn primary" href="test.html#s8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a scenario</a></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s7">
+<figcaption class="cap">7 · After asking: Which rules have not been tested? (or the link beside the toolbar). The table lands in the content area; each rule reads Held, Failed or Not tested yet, with the scenario that shows it.<span class="cap-mcp">Filled by: agency_list_rules, agency_list_scenarios, agency_list_test_runs</span><span class="cap-note">Example data: the rules are the Farmers' demo template's own; which scenario shows which is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Which rules have not been tested?</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Code</th><th>Rule</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><span class="count">RU-1</span></td><td><div class="cell"><span class="cell-text"><span>A farmer asks for inputs through the group's form, saying the input, the amount and when they need it.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-2</span></td><td><div class="cell"><span class="cell-text"><span>The Farmers' agent pools the farmers' needs for the same input into one order, and the group coordinator approves the order before it goes to a supplier.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-3</span></td><td><div class="cell"><span class="cell-text"><span>A supplier answers a pooled order with what it can fill and the price; the Farmers' agent tells each farmer their share and the price.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-4</span></td><td><div class="cell"><span class="cell-text"><span>A farmer is bound to an order only after they have said yes to their share.</span><span class="cell-sub">Shown by Poster says yes</span></span></div></td><td><span class="tag ok">Held</span></td></tr>
+<tr><td><span class="count">RU-5</span></td><td><div class="cell"><span class="cell-text"><span>A buyer posts his price a bag and his bulk price in his own words, and a farmer says what produce she has, how much and when it is ready.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-6</span></td><td><div class="cell"><span class="cell-text"><span>The Farmers' agent asks only the one buyer a farmer picked, and only what his posted price does not already answer; each side agrees its own deal.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-7</span></td><td><div class="cell"><span class="cell-text"><span>Neither agent sets a price, takes a payment or says yes for a person, and neither approves its own draft.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-8</span></td><td><div class="cell"><span class="cell-text"><span>Both agents answer in the language the person writes in.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-9</span></td><td><div class="cell"><span class="cell-text"><span>A supplier or buyer posts his price and his bulk price in his own words, and the Farmers' agent looks at the posted prices first and asks nothing when a posted price answers.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-10</span></td><td><div class="cell"><span class="cell-text"><span>A farmer sees every approved poster's row for a product, each in the poster's own words, and picks; the agents group the rows into products and the group coordinator corrects a wrong grouping.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-11</span></td><td><div class="cell"><span class="cell-text"><span>Buy now asks the one poster the farmer picked, at once; he says yes with a date, or no; if he does not answer nothing happens; the farmer cancels at once unless the agency has a cancel workflow; the poster marks the order paid.</span><span class="cell-sub">Shown by Poster says yes</span></span></div></td><td><span class="tag ok">Held</span></td></tr>
+<tr><td><span class="count">RU-12</span></td><td><div class="cell"><span class="cell-text"><span>A group order starts from a poster's posted bulk price; the group coordinator starts it, sets the minimum and says when it is ready; it has no closing time; sending is locked below the minimum; the order keeps the price and minimum it started with.</span><span class="cell-sub">Failed in Group order is sent</span></span></div></td><td><span class="tag bad">Failed</span></td></tr>
+<tr><td><span class="count">RU-13</span></td><td><div class="cell"><span class="cell-text"><span>The poster sees the open group order with each farmer's name and amount and no contact, and may ask the farmers to revise through the Suppliers' agent; each farmer answers yes or no, and the group coordinator decides for each one who stays silent while the order waits.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-14</span></td><td><div class="cell"><span class="cell-text"><span>Nothing runs on a timer: when someone does not answer the agents do nothing and the person waiting decides.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-15</span></td><td><div class="cell"><span class="cell-text"><span>The poster is trusted to be in charge of his stock; the system keeps each yes and never works out stock, and a supplier's private stock list is seen by him alone.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-16</span></td><td><div class="cell"><span class="cell-text"><span>For something not listed the farmer chooses: ask the shops she ticks, once each, or put up a notice every poster sees; her list shows every poster asked and the answer, waiting, yes or no.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-17</span></td><td><div class="cell"><span class="cell-text"><span>The group coordinator approves each poster before he appears in the market; the Suppliers' agent holds no farmer threads and cannot open an order, because a poster's reply is outside text the agent cannot trust.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-18</span></td><td><div class="cell"><span class="cell-text"><span>An officer says yes to every request that needs the ministry's answer, such as a visit, a permit, a subsidy, a tractor or relief; the agents take the request and tell the farmer the answer, and never decide it.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-19</span></td><td><div class="cell"><span class="cell-text"><span>The template sets no fee, subsidy or relief amount; the officer who says yes states it in the officer's own words.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-20</span></td><td><div class="cell"><span class="cell-text"><span>A seasonal advisory goes out only after the agriculture director approves it, and the Farmers' agent sends it in the officer's words.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-21</span></td><td><div class="cell"><span class="cell-text"><span>A report of a sick animal or a crop disease goes to the officer at once; where the officer says it can spread, the Farmers' agent tells the other farmers who keep or grow the same, in the officer's words.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+<tr><td><span class="count">RU-22</span></td><td><div class="cell"><span class="cell-text"><span>A supplier is heard before the agriculture director decides on a complaint against him, and stays in the market until the director has decided.</span><span class="cell-sub">No scenario tries it yet</span></span></div></td><td><span class="tag mute">Not tested yet</span></td></tr>
+</tbody>
+</table>
+</div></div></section>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Which rules have not been tested?</div></div><div class="tools collapsed"><div class="tools-head"><span>Called 2 tools</span><span class="muted">340 ms</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">agency_list_rules</span><span class="tool-state"></span><span class="tool-ms">150 ms</span><span class="tool-sum">22 rules</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">agency_list_scenarios</span><span class="tool-state"></span><span class="tool-ms">190 ms</span><span class="tool-sum">4 scenarios</span></div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">Here are the rules and what each scenario shows of them.</div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M9 4v16"/></svg><span class="ref-title">Rules held</span><span class="tag mute">Table</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s8">
+<figcaption class="cap">8 · Add a scenario, Scenario tab: its name, the workflow it plays and what it tries. Save writes the scenario, with its actors and fixed inputs inside, in one call; the page returns to the list.<span class="cap-mcp">Filled by: agency_list_workflows, agency_list_work_items, agency_list_pickers, agency_create_scenario</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Add a scenario</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><a class="link" href="test.html#s1">Back</a><div class="stack"><nav class="tabs"><a class="tab" href="test.html#s8" aria-current="page">Scenario</a><a class="tab" href="test.html#s9">Actors</a><a class="tab" href="test.html#s10">Steps</a></nav><section class="card" aria-label="New scenario"><div class="card-head"><h2>New scenario</h2></div><div class="stack"><div class="stack"><label class="field"><span class="field-label">Name<span class="req" aria-hidden="true">*</span></span><span class="control"><input type="text" value="Group order is sent"></span></label><label class="field"><span class="field-label">Workflow<span class="req" aria-hidden="true">*</span></span><span class="control"><select><option>Pool an input order</option><option>Produce to a buyer</option><option>Approve a poster</option><option>Buy now</option><option selected>Create group order</option><option>Find it</option><option>Sell now</option><option>Create group sale</option><option>Change my share</option><option>Join a group</option><option>Apply as a supplier</option><option>Ask for a field visit</option><option>Report a crop pest or disease</option><option>Sign up for a training day</option><option>Request a soil test</option><option>Issue a seasonal advisory</option><option>Submit a field report</option><option>Register as a farmer</option><option>Register my plot</option><option>Register my livestock</option><option>Register a fish pond or boat</option><option>Register a farmer group or cooperative</option><option>Report a sick animal</option><option>Book a vaccination day</option><option>Request an animal movement permit</option><option>Request a produce inspection</option><option>Apply for subsidised inputs</option><option>Book a county tractor</option><option>Report a loss and apply for relief</option><option>Raise a complaint about an input supplier</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></label><label class="field"><span class="field-label">What it tries</span><span class="control"><textarea rows="4">Farmers join a group order and the group coordinator sends it.</textarea></span></label></div><div class="row"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s9">
+<figcaption class="cap">9 · Add a scenario, Actors tab: each actor has a name and the role it plays; Add an actor starts a row. Names are unique within a scenario.<span class="cap-mcp">Filled by: agency_list_workflows, agency_list_work_items, agency_list_pickers, agency_create_scenario</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Add a scenario</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><a class="link" href="test.html#s1">Back</a><div class="stack"><nav class="tabs"><a class="tab" href="test.html#s8">Scenario</a><a class="tab" href="test.html#s9" aria-current="page">Actors</a><a class="tab" href="test.html#s10">Steps</a></nav><section class="card" aria-label="New scenario"><div class="card-head"><h2>New scenario</h2></div><div class="stack"><div class="stack" style="--stack-gap:12px"><div class="row"><span class="control"><input type="text" aria-label="Actor" value="Farmer 1"></span><span class="control"><select aria-label="Role"><option>Group coordinator</option><option selected>Farmer</option><option>Supplier</option><option>Buyer</option><option>Farmers' agent</option><option>Suppliers' agent</option><option>Extension officer</option><option>Veterinary officer</option><option>Agriculture director</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><button type="button" class="btn quiet sm">Remove</button></div><div class="row"><span class="control"><input type="text" aria-label="Actor" value="Farmer 2"></span><span class="control"><select aria-label="Role"><option>Group coordinator</option><option selected>Farmer</option><option>Supplier</option><option>Buyer</option><option>Farmers' agent</option><option>Suppliers' agent</option><option>Extension officer</option><option>Veterinary officer</option><option>Agriculture director</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><button type="button" class="btn quiet sm">Remove</button></div><div class="row"><span class="control"><input type="text" aria-label="Actor" value="Coordinator"></span><span class="control"><select aria-label="Role"><option selected>Group coordinator</option><option>Farmer</option><option>Supplier</option><option>Buyer</option><option>Farmers' agent</option><option>Suppliers' agent</option><option>Extension officer</option><option>Veterinary officer</option><option>Agriculture director</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><button type="button" class="btn quiet sm">Remove</button></div><div class="row"><button type="button" class="btn quiet sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add an actor</button></div></div><div class="row"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s10">
+<figcaption class="cap">10 · Add a scenario, Steps tab: one card per step of the chosen workflow. A question with fixed options is a list that starts on Select random, with the actors who play the named role; a question without options is a free line.<span class="cap-mcp">Filled by: agency_list_workflows, agency_list_work_items, agency_list_pickers, agency_create_scenario</span><span class="cap-note">Example data: the workflow's steps are the Farmers' demo template's own; the questions are those of its Payments record; the actor names are drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Add a scenario</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><a class="link" href="test.html#s1">Back</a><div class="stack"><nav class="tabs"><a class="tab" href="test.html#s8">Scenario</a><a class="tab" href="test.html#s9">Actors</a><a class="tab" href="test.html#s10" aria-current="page">Steps</a></nav><section class="card" aria-label="New scenario"><div class="card-head"><h2>New scenario</h2></div><div class="stack"><div class="stack"><section class="card" aria-label="Step 1 Start the group order"><div class="card-head"><h2><span class="term">Step 1</span> · Start the group order</h2></div><div class="stack" style="--stack-gap:12px"><span class="muted">This step asks nothing.</span></div></section><section class="card" aria-label="Step 2 Farmers join and revise"><div class="card-head"><h2><span class="term">Step 2</span> · Farmers join and revise</h2></div><div class="stack" style="--stack-gap:12px"><label class="stack"><span>Select the farmer</span><span class="control"><select aria-label="Select the farmer"><option>Select random</option><option selected>Farmer 1</option><option>Farmer 2</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></label><label class="stack"><span>Enter the amount paid</span><span class="control"><input type="text" aria-label="Enter the amount paid" placeholder="Free"></span></label></div></section><section class="card" aria-label="Step 3 Send the order"><div class="card-head"><h2><span class="term">Step 3</span> · Send the order</h2></div><div class="stack" style="--stack-gap:12px"><span class="muted">This step asks nothing.</span></div></section></div><div class="row"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s11">
+<figcaption class="cap">11 · Open a scenario: its description in one card with an Edit button, and every run newest first, each with Open.<span class="cap-mcp">Filled by: agency_get_scenario, agency_list_test_runs</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Group order is sent</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><a class="link" href="test.html#s1">Back</a><div class="stack" style="--stack-gap:24px"><section class="card" aria-label="Scenario"><div class="card-head"><h2>Scenario</h2><div class="card-actions"><a class="btn quiet sm" href="test.html#s12">Edit</a></div></div><dl class="kv"><dt>What it tries</dt><dd>Farmers join a group order and the group coordinator sends it.</dd><dt>Workflow</dt><dd>Create group order</dd><dt>Rules it shows</dt><dd>RU-12</dd><dt>Last run</dt><dd>10:42</dd><dt>Result</dt><dd><span class="tag bad">Failed</span></dd><dt>Tokens</dt><dd>5,210</dd></dl></section><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Runs</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>When</th><th>Result</th><th>Tokens</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td>10:42</td><td><span class="tag bad">Failed</span></td><td>5,210</td><td class="row-act"><a class="link sm" href="test.html#s15" title="Opens: Run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+<tr><td>Nov 16, 09:15</td><td><span class="tag ok">Passed</span></td><td>4,980</td><td class="row-act"><a class="link sm" href="test.html#s15" title="Opens: Run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+<tr><td>Nov 15, 17:02</td><td><span class="tag warn">Stopped</span></td><td>8,000</td><td class="row-act"><a class="link sm" href="test.html#s15" title="Opens: Run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s12">
+<figcaption class="cap">12 · Edit scenario, Scenario tab: the same fields with the workflow fixed. A note says that saving sends the scenario back to Not run yet.<span class="cap-mcp">Filled by: agency_get_scenario, agency_list_test_runs, agency_list_workflows, agency_list_work_items, agency_list_pickers, agency_update_scenario</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Group order is sent</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><a class="link" href="test.html#s1">Back</a><div class="stack"><nav class="tabs"><a class="tab" href="test.html#s12" aria-current="page">Scenario</a><a class="tab" href="test.html#s13">Actors</a><a class="tab" href="test.html#s14">Steps</a></nav><div class="stack"><div class="stack"><label class="field"><span class="field-label">Name<span class="req" aria-hidden="true">*</span></span><span class="control"><input type="text" value="Group order is sent"></span></label><label class="field"><span class="field-label">Workflow</span><span class="control ctl off"><select disabled><option selected>Create group order</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></label><label class="field"><span class="field-label">What it tries</span><span class="control"><textarea rows="4">Farmers join a group order and the group coordinator sends it.</textarea></span></label></div><div class="note">Saving sends it back to Not run yet. The workflow cannot change; write a new scenario for another one.</div><div class="row"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s13">
+<figcaption class="cap">13 · Edit scenario, Actors tab: the scenario's own actors can be renamed, given another role or removed; the built-in System actor is listed and fixed.<span class="cap-mcp">Filled by: agency_get_scenario, agency_list_test_runs, agency_list_workflows, agency_list_work_items, agency_list_pickers, agency_update_scenario</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Group order is sent</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><a class="link" href="test.html#s1">Back</a><div class="stack"><nav class="tabs"><a class="tab" href="test.html#s12">Scenario</a><a class="tab" href="test.html#s13" aria-current="page">Actors</a><a class="tab" href="test.html#s14">Steps</a></nav><div class="stack"><div class="stack" style="--stack-gap:12px"><div class="row"><span class="control"><input type="text" aria-label="Actor" value="Farmer 1"></span><span class="control"><select aria-label="Role"><option>Group coordinator</option><option selected>Farmer</option><option>Supplier</option><option>Buyer</option><option>Farmers' agent</option><option>Suppliers' agent</option><option>Extension officer</option><option>Veterinary officer</option><option>Agriculture director</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><button type="button" class="btn quiet sm">Remove</button></div><div class="row"><span class="control"><input type="text" aria-label="Actor" value="Coordinator"></span><span class="control"><select aria-label="Role"><option selected>Group coordinator</option><option>Farmer</option><option>Supplier</option><option>Buyer</option><option>Farmers' agent</option><option>Suppliers' agent</option><option>Extension officer</option><option>Veterinary officer</option><option>Agriculture director</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><button type="button" class="btn quiet sm">Remove</button></div><div class="row"><span>System</span><span class="muted">Built in</span></div><div class="note">A role a scenario uses cannot be removed from the agency while it is used here.</div><div class="row"><button type="button" class="btn quiet sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add an actor</button></div></div><div class="note">Saving sends it back to Not run yet. The workflow cannot change; write a new scenario for another one.</div><div class="row"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s14">
+<figcaption class="cap">14 · Edit scenario, Steps tab: each step also has an Endpoint line, empty and showing the endpoint the test would choose.<span class="cap-mcp">Filled by: agency_get_scenario, agency_list_test_runs, agency_list_workflows, agency_list_work_items, agency_list_pickers, agency_update_scenario</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. Test is not one of the pages that show the draft bar.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Group order is sent</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><a class="link" href="test.html#s1">Back</a><div class="stack"><nav class="tabs"><a class="tab" href="test.html#s12">Scenario</a><a class="tab" href="test.html#s13">Actors</a><a class="tab" href="test.html#s14" aria-current="page">Steps</a></nav><div class="stack"><div class="stack"><section class="card" aria-label="Step 1 Start the group order"><div class="card-head"><h2><span class="term">Step 1</span> · Start the group order</h2></div><div class="stack" style="--stack-gap:12px"><label class="stack"><span>Endpoint</span><span class="control"><input type="text" aria-label="Endpoint" placeholder="market_start_group_order"></span></label><span class="muted">This step asks nothing.</span></div></section><section class="card" aria-label="Step 2 Farmers join and revise"><div class="card-head"><h2><span class="term">Step 2</span> · Farmers join and revise</h2></div><div class="stack" style="--stack-gap:12px"><label class="stack"><span>Endpoint</span><span class="control"><input type="text" aria-label="Endpoint" placeholder="market_join_group_order"></span></label><label class="stack"><span>Select the farmer</span><span class="control"><select aria-label="Select the farmer"><option>Select random</option><option selected>Farmer 1</option><option>Farmer 2</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></label><label class="stack"><span>Enter the amount paid</span><span class="control"><input type="text" aria-label="Enter the amount paid" placeholder="Free"></span></label></div></section><section class="card" aria-label="Step 3 Send the order"><div class="card-head"><h2><span class="term">Step 3</span> · Send the order</h2></div><div class="stack" style="--stack-gap:12px"><label class="stack"><span>Endpoint</span><span class="control"><input type="text" aria-label="Endpoint" placeholder="market_send_group_order"></span></label><span class="muted">This step asks nothing.</span></div></section></div><div class="note">Saving sends it back to Not run yet. The workflow cannot change; write a new scenario for another one.</div><div class="row"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s15">
+<figcaption class="cap">15 · Open a finished run, What transpired: the run in one card, then one card per step with who played it, what they did, what the agency recorded and the rules checked. The failed step shows Expected and Found, the data sent and answered, and three actions. The title row button prints a report.<span class="cap-mcp">Filled by: agency_get_test_run, agency_list_test_runs, agency_get_scenario, agency_list_rules</span><span class="cap-note">Example data: the times, tokens and what the steps did are drawn; the workflow, steps and rule are the Farmers' demo template's own.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Group order is sent</h1>
+<div class="top-end"><a class="btn primary" href="test.html#s22">Print report</a></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:24px"><a class="link" href="test.html#s11">Back</a><section class="card" aria-label="Scenario"><div class="card-head"><h2>Scenario</h2></div><dl class="kv"><dt>When</dt><dd>10:42</dd><dt>Result</dt><dd><span class="tag bad">Failed</span></dd><dt>Tokens</dt><dd>5,210 of 8,000</dd><dt>On draft</dt><dd>3</dd></dl></section><nav class="tabs"><a class="tab" href="test.html#s15" aria-current="page">What transpired</a><a class="tab" href="test.html#s18">Data trail</a></nav><div class="stack"><section class="card" aria-label="Start the group order"><div class="card-head"><h2>Start the group order</h2></div><dl class="kv"><dt>Actor</dt><dd>Group coordinator · Coordinator</dd><dt>What they did</dt><dd>Started the group order at the poster's bulk price, minimum 20 bags.</dd><dt>What the agency recorded</dt><dd>Group order GO-1 started.</dd><dt>Endpoint</dt><dd>market_start_group_order</dd><dt></dt><dd><div class="row" style="--row-gap:8px"><span class="tag ok">RU-12 held</span></div></dd><dt>Tokens</dt><dd>1,420</dd></dl></section><section class="card" aria-label="Farmers join and revise"><div class="card-head"><h2>Farmers join and revise</h2></div><dl class="kv"><dt>Actor</dt><dd>Farmer · Farmer 1</dd><dt>What they did</dt><dd>Joined with 12 bags.</dd><dt>What the agency recorded</dt><dd>Farmer 1 joined GO-1 with 12 bags.</dd><dt>Endpoint</dt><dd>market_join_group_order</dd><dt>Tokens</dt><dd>1,980</dd></dl></section><section class="card" aria-label="Send the order"><div class="card-head"><h2>Send the order <span class="tag bad">Failed</span></h2><div class="card-actions"><div class="row" style="--row-gap:8px"><a class="link sm" href="../roles/roles.html">Open the rule<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a><button type="button" class="btn quiet sm">Run again</button><a class="btn quiet sm" href="test.html#s19">Why did this fail?</a></div></div></div><dl class="kv"><dt>Actor</dt><dd>Group coordinator · Coordinator</dd><dt>What they did</dt><dd>Sent the group order.</dd><dt>Expected</dt><dd>Sending is locked below the minimum.</dd><dt>Found</dt><dd>The order was sent with 12 of 20 bags.</dd><dt>Endpoint</dt><dd>market_send_group_order</dd><dt>Sent</dt><dd><pre class="json">{
+  <span class="json-key">"group_order_id"</span>: <span class="json-string">"GO-1"</span>
+}</pre></dd><dt>Answered</dt><dd><pre class="json">{
+  <span class="json-key">"status"</span>: <span class="json-string">"sent"</span>,
+  <span class="json-key">"bags"</span>: <span class="json-number">12</span>,
+  <span class="json-key">"minimum"</span>: <span class="json-number">20</span>
+}</pre></dd><dt></dt><dd><div class="row" style="--row-gap:8px"><span class="tag bad">RU-12 failed</span></div></dd><dt>Tokens</dt><dd>1,810</dd></dl></section></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Runs</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>When</th><th>Draft</th><th>Result</th><th>Tokens</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td>10:42</td><td>3</td><td><span class="tag bad">Failed</span></td><td>5,210</td><td class="row-act"></td></tr>
+<tr><td>Nov 16, 09:15</td><td>3</td><td><span class="tag ok">Passed</span></td><td>4,980</td><td class="row-act"><a class="link sm" href="test.html#s15" title="Opens: Run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s16">
+<figcaption class="cap">16 · A run in progress: the result reads Running and steps appear as they finish; the page polls. The title row button reads Stop.<span class="cap-mcp">Filled by: agency_get_test_run, agency_list_test_runs, agency_get_scenario, agency_stop_test_run</span><span class="cap-note">Example data: the times, tokens and what the steps did are drawn; the workflow, steps and rule are the Farmers' demo template's own.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Group order is sent</h1>
+<div class="top-end"><button type="button" class="btn primary">Stop</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:24px"><a class="link" href="test.html#s11">Back</a><section class="card" aria-label="Scenario"><div class="card-head"><h2>Scenario</h2></div><dl class="kv"><dt>When</dt><dd>10:42</dd><dt>Result</dt><dd><span class="tag use">Running</span></dd><dt>Tokens</dt><dd>1,980 of 8,000</dd><dt>On draft</dt><dd>3</dd></dl></section><nav class="tabs"><a class="tab" href="test.html#s15" aria-current="page">What transpired</a><a class="tab" href="test.html#s18">Data trail</a></nav><div class="stack"><section class="card" aria-label="Start the group order"><div class="card-head"><h2>Start the group order</h2></div><dl class="kv"><dt>Actor</dt><dd>Group coordinator · Coordinator</dd><dt>What they did</dt><dd>Started the group order at the poster's bulk price, minimum 20 bags.</dd><dt>What the agency recorded</dt><dd>Group order GO-1 started.</dd><dt>Endpoint</dt><dd>market_start_group_order</dd><dt></dt><dd><div class="row" style="--row-gap:8px"><span class="tag ok">RU-12 held</span></div></dd><dt>Tokens</dt><dd>1,420</dd></dl></section><section class="card" aria-label="Farmers join and revise"><div class="card-head"><h2>Farmers join and revise</h2></div><dl class="kv"><dt>Actor</dt><dd>Farmer · Farmer 1</dd><dt>What they did</dt><dd>Joined with 12 bags.</dd><dt>What the agency recorded</dt><dd>Farmer 1 joined GO-1 with 12 bags.</dd><dt>Endpoint</dt><dd>market_join_group_order</dd><dt>Tokens</dt><dd>1,980</dd></dl></section></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Runs</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>When</th><th>Draft</th><th>Result</th><th>Tokens</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td>10:42</td><td>3</td><td><span class="tag use">Running</span></td><td>1,980</td><td class="row-act"></td></tr>
+<tr><td>Nov 16, 09:15</td><td>3</td><td><span class="tag ok">Passed</span></td><td>4,980</td><td class="row-act"><a class="link sm" href="test.html#s15" title="Opens: Run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s17">
+<figcaption class="cap">17 · A run that stopped at the token limit: the reason sits beside the result, and two buttons offer to run again or to raise the limit.<span class="cap-mcp">Filled by: agency_get_test_run, agency_list_test_runs, agency_get_scenario, agency_run_scenario</span><span class="cap-note">Example data: the times, tokens and what the steps did are drawn; the workflow, steps and rule are the Farmers' demo template's own.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmer looks for something</h1>
+<div class="top-end"><a class="btn primary" href="test.html#s22">Print report</a></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:24px"><a class="link" href="test.html#s11">Back</a><section class="card" aria-label="Scenario"><div class="card-head"><h2>Scenario</h2></div><dl class="kv"><dt>When</dt><dd>Nov 16, 16:20</dd><dt>Result</dt><dd><span class="tag warn">Stopped</span> Budget reached</dd><dt>Tokens</dt><dd>8,000 of 8,000</dd><dt>On draft</dt><dd>3</dd></dl></section><div class="row" style="--row-gap:8px"><button type="button" class="btn primary sm">Run this scenario again</button><a class="btn quiet sm" href="test.html#s20">Raise the tokens per test</a></div><nav class="tabs"><a class="tab" href="test.html#s15" aria-current="page">What transpired</a><a class="tab" href="test.html#s18">Data trail</a></nav><div class="stack"><section class="card" aria-label="Choose shops to ask or put up a notice"><div class="card-head"><h2>Choose shops to ask or put up a notice</h2></div><dl class="kv"><dt>Actor</dt><dd>Farmer · Farmer 1</dd><dt>What they did</dt><dd>Ticked two posters to ask.</dd><dt>What the agency recorded</dt><dd>Two asks sent, one to each poster.</dd><dt>Tokens</dt><dd>3,900</dd></dl></section><section class="card" aria-label="Show each answer as found for you"><div class="card-head"><h2>Show each answer as found for you</h2></div><dl class="kv"><dt>Actor</dt><dd>Farmers' agent</dd><dt>What they did</dt><dd>Showed the first answer as a row for Farmer 1.</dd><dt>What the agency recorded</dt><dd>One row found for Farmer 1.</dd><dt>Tokens</dt><dd>4,100</dd></dl></section></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Runs</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>When</th><th>Draft</th><th>Result</th><th>Tokens</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td>Nov 16, 16:20</td><td>3</td><td><span class="tag warn">Stopped</span></td><td>8,000</td><td class="row-act"></td></tr>
+<tr><td>Nov 16, 09:15</td><td>3</td><td><span class="tag ok">Passed</span></td><td>4,980</td><td class="row-act"><a class="link sm" href="test.html#s15" title="Opens: Run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s18">
+<figcaption class="cap">18 · Open a run, Data trail: what the run wrote, grouped by step with the module, the endpoint and the line written, then what each record holds at the end.<span class="cap-mcp">Filled by: agency_get_test_run, agency_list_test_runs, agency_get_scenario</span><span class="cap-note">Example data: the times, tokens and what the steps did are drawn; the workflow, steps and rule are the Farmers' demo template's own.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Group order is sent</h1>
+<div class="top-end"><a class="btn primary" href="test.html#s22">Print report</a></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:24px"><a class="link" href="test.html#s11">Back</a><section class="card" aria-label="Scenario"><div class="card-head"><h2>Scenario</h2></div><dl class="kv"><dt>When</dt><dd>10:42</dd><dt>Result</dt><dd><span class="tag bad">Failed</span></dd><dt>Tokens</dt><dd>5,210 of 8,000</dd><dt>On draft</dt><dd>3</dd></dl></section><nav class="tabs"><a class="tab" href="test.html#s15">What transpired</a><a class="tab" href="test.html#s18" aria-current="page">Data trail</a></nav><div class="stack"><section class="card" aria-label="Start the group order"><div class="card-head"><h2>Start the group order</h2></div><div class="stack"><dl class="kv"><dt>Module</dt><dd>market</dd><dt>Endpoint</dt><dd>market_start_group_order</dd><dt>Line</dt><dd><pre class="json">{
+  <span class="json-key">"group_order_id"</span>: <span class="json-string">"GO-1"</span>,
+  <span class="json-key">"minimum"</span>: <span class="json-number">20</span>
+}</pre></dd></dl></div></section><section class="card" aria-label="Send the order"><div class="card-head"><h2>Send the order</h2></div><div class="stack"><dl class="kv"><dt>Module</dt><dd>market</dd><dt>Endpoint</dt><dd>market_send_group_order</dd><dt>Line</dt><dd><pre class="json">{
+  <span class="json-key">"status"</span>: <span class="json-string">"sent"</span>,
+  <span class="json-key">"bags"</span>: <span class="json-number">12</span>,
+  <span class="json-key">"minimum"</span>: <span class="json-number">20</span>
+}</pre></dd></dl></div></section><section class="card" aria-label="Holds · RC-1"><div class="card-head"><h2>Holds · RC-1</h2></div><div class="stack" style="--stack-gap:4px"><span class="muted">Payments</span><span class="count">0</span></div></section></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Runs</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>When</th><th>Draft</th><th>Result</th><th>Tokens</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td>10:42</td><td>3</td><td><span class="tag bad">Failed</span></td><td>5,210</td><td class="row-act"></td></tr>
+<tr><td>Nov 16, 09:15</td><td>3</td><td><span class="tag ok">Passed</span></td><td>4,980</td><td class="row-act"><a class="link sm" href="test.html#s15" title="Opens: Run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s19">
+<figcaption class="cap">19 · After pressing Why did this fail? on the failed step: the step, the rule it broke, Expected and Found, and one sentence on the likely cause written by the hub's model, with links to the rule and the workflow.<span class="cap-mcp">Filled by: agency_get_test_run, agency_list_rules, ai_get_default_account, ai_chat_account</span><span class="cap-note">Example data: the times, tokens and what the steps did are drawn; the workflow, steps and rule are the Farmers' demo template's own. The likely-cause sentence is the model's and is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Group order is sent</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Why did this fail?</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><section class="card" aria-label="Why this failed"><div class="card-head"><h2>Why this failed</h2><div class="card-actions"><div class="row" style="--row-gap:8px"><a class="link sm" href="../roles/roles.html">Open the rule<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a><a class="link sm" href="../workflows/workflow-canvas.html#s1">Open the workflow<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div></div></div><dl class="kv"><dt>Step</dt><dd>3 · Send the order: Sent the group order.</dd><dt>Rule</dt><dd>RU-12: A group order starts from a poster's posted bulk price; the group coordinator starts it, sets the minimum and says when it is ready; it has no closing time; sending is locked below the minimum; the order keeps the price and minimum it started with.</dd><dt>Expected</dt><dd>Sending is locked below the minimum.</dd><dt>Found</dt><dd>The order was sent with 12 of 20 bags.</dd><dt>Likely cause</dt><dd>The send step does not check the group order's minimum before it posts.</dd></dl></section></div></section>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Why did this fail?</div></div><div class="tools collapsed"><div class="tools-head"><span>Called 3 tools</span><span class="muted">1170 ms</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">agency_get_test_run</span><span class="tool-state"></span><span class="tool-ms">120 ms</span><span class="tool-sum">step 3 failed</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">agency_list_rules</span><span class="tool-state"></span><span class="tool-ms">150 ms</span><span class="tool-sum">RU-12</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">ai_chat_account</span><span class="tool-state"></span><span class="tool-ms">900 ms</span><span class="tool-sum">one sentence</span></div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">Here is why step 3 failed.</div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M9 4v16"/></svg><span class="ref-title">Why this failed</span><span class="tag mute">Detail</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s20">
+<figcaption class="cap">20 · After pressing Raise the tokens per test: a form with the limit now and a suggested higher one. Approve changes the limit for the next run of every scenario.<span class="cap-mcp">Filled by: ai_get_default_account, ai_get_account, ai_set_limits</span><span class="cap-note">Example data: the limits are drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmer looks for something</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Raise the tokens per test</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><div class="msg-card"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Tokens per test</div><div class="msg-form"><label class="field"><span class="field-label">Tokens per test</span><span class="control"><input type="text" value="12,000"></span><span class="hint">Now 8,000. Every scenario's run stops there.</span></label></div><div class="msg-buttons"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Cancel</button></div><div class="msg-note">Nothing is recorded until you press Approve.</div></div></div></section>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Raise the tokens per test</div></div><div class="tools collapsed"><div class="tools-head"><span>Called 1 tool</span><span class="muted">110 ms</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">ai_get_default_account</span><span class="tool-state"></span><span class="tool-ms">110 ms</span><span class="tool-sum">limit 8,000</span></div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">Here is the limit, raised by half.</div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="ref-title">Tokens per test</span><span class="tag mute">Form</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s21">
+<figcaption class="cap">21 · Back on the run after Approve: a note gives the new limit and says it applies to the next run.<span class="cap-mcp">Filled by: agency_get_test_run, agency_list_test_runs, agency_get_scenario</span><span class="cap-note">Example data: the times, tokens and what the steps did are drawn; the workflow, steps and rule are the Farmers' demo template's own.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmer looks for something</h1>
+<div class="top-end"><a class="btn primary" href="test.html#s22">Print report</a></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:24px"><a class="link" href="test.html#s11">Back</a><section class="card" aria-label="Scenario"><div class="card-head"><h2>Scenario</h2></div><dl class="kv"><dt>When</dt><dd>Nov 16, 16:20</dd><dt>Result</dt><dd><span class="tag warn">Stopped</span> Budget reached</dd><dt>Tokens</dt><dd>8,000 of 8,000</dd><dt>On draft</dt><dd>3</dd></dl></section><div class="note">Tokens per test is 12,000. It applies to the next run.</div><div class="row" style="--row-gap:8px"><button type="button" class="btn primary sm">Run this scenario again</button><a class="btn quiet sm" href="test.html#s20">Raise the tokens per test</a></div><nav class="tabs"><a class="tab" href="test.html#s15" aria-current="page">What transpired</a><a class="tab" href="test.html#s18">Data trail</a></nav><div class="stack"><section class="card" aria-label="Choose shops to ask or put up a notice"><div class="card-head"><h2>Choose shops to ask or put up a notice</h2></div><dl class="kv"><dt>Actor</dt><dd>Farmer · Farmer 1</dd><dt>What they did</dt><dd>Ticked two posters to ask.</dd><dt>What the agency recorded</dt><dd>Two asks sent, one to each poster.</dd><dt>Tokens</dt><dd>3,900</dd></dl></section><section class="card" aria-label="Show each answer as found for you"><div class="card-head"><h2>Show each answer as found for you</h2></div><dl class="kv"><dt>Actor</dt><dd>Farmers' agent</dd><dt>What they did</dt><dd>Showed the first answer as a row for Farmer 1.</dd><dt>What the agency recorded</dt><dd>One row found for Farmer 1.</dd><dt>Tokens</dt><dd>4,100</dd></dl></section></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Runs</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>When</th><th>Draft</th><th>Result</th><th>Tokens</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td>Nov 16, 16:20</td><td>3</td><td><span class="tag warn">Stopped</span></td><td>8,000</td><td class="row-act"></td></tr>
+<tr><td>Nov 16, 09:15</td><td>3</td><td><span class="tag ok">Passed</span></td><td>4,980</td><td class="row-act"><a class="link sm" href="test.html#s15" title="Opens: Run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s22">
+<figcaption class="cap">22 · Print report: one page to print, in plain black on white: the run, the steps of the scenario, what transpired, what was stored and the rules held. The side menu, header and chat are left out of the print.<span class="cap-mcp">Filled by: agency_get_test_run, agency_get_scenario, agency_list_rules, agency_get_agency</span><span class="cap-note">Example data: the times, tokens and what the steps did are drawn; the workflow, steps and rule are the Farmers' demo template's own.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Report</h1>
+<div class="top-end"><button type="button" class="btn primary">Print</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:24px"><a class="link" href="test.html#s15">Back</a><section class="card" aria-label="Report"><div class="card-head"><h2>Report</h2></div><dl class="kv"><dt>Agency</dt><dd>Siaya Farmers' Group</dd><dt>Scenario</dt><dd>Group order is sent</dd><dt>Run</dt><dd>Nov 17, 2026, 10:42 AM</dd><dt>Draft</dt><dd>3</dd><dt>Result</dt><dd><span class="tag bad">Failed</span></dd><dt>Tokens</dt><dd>5,210 of 8,000</dd></dl></section><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Steps</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>#</th><th>Actor</th><th>Kind</th><th>Action</th><th>Then</th><th>Endpoint</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Coordinator</td><td><span class="tag mute">Say yes or no</span></td><td>Start the group order</td><td>Farmers join and revise</td><td><span class="muted">market_start_group_order</span></td></tr>
+<tr><td>2</td><td>Farmer 1</td><td><span class="tag mute">Fill a form</span></td><td>Join with 12 bags</td><td>Send the order</td><td><span class="muted">market_join_group_order</span></td></tr>
+<tr><td>3</td><td>Coordinator</td><td><span class="tag mute">Say yes or no</span></td><td>Send the order</td><td></td><td><span class="muted">market_send_group_order</span></td></tr>
+</tbody>
+</table>
+</div></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>What transpired</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Actor</th><th>What they did</th><th>What the agency recorded</th><th>Step</th><th>Tokens</th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Group coordinator</span><span class="cell-sub">Coordinator · Say yes or no</span></span></div></td><td>Started the group order</td><td><div class="stack" style="--stack-gap:4px"><div>Group order GO-1 started.</div><div><span class="tag ok">RU-12 held</span></div><span class="muted">Endpoint: market_start_group_order</span></div></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Start the group order</span></span></div></td><td>1,420</td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmer</span><span class="cell-sub">Farmer 1 · Fill a form</span></span></div></td><td>Joined with 12 bags</td><td><div class="stack" style="--stack-gap:4px"><div>Farmer 1 joined GO-1 with 12 bags.</div><span class="muted">Endpoint: market_join_group_order</span></div></td><td><div class="cell"><span class="cell-text"><span class="cell-name">Farmers join and revise</span></span></div></td><td>1,980</td></tr>
+<tr><td><div class="cell"><span class="cell-text"><span class="cell-name">Group coordinator</span><span class="cell-sub">Coordinator · Say yes or no</span></span></div></td><td>Sent the group order</td><td><div class="stack" style="--stack-gap:4px"><div>Expected: Sending is locked below the minimum.</div><div>Found: The order was sent with 12 of 20 bags.</div><div><span class="tag bad">RU-12 failed</span></div><span class="muted">Endpoint: market_send_group_order</span></div></td><td><div><div class="cell"><span class="cell-text"><span class="cell-name">Send the order</span></span></div><span class="tag bad">Failed</span></div></td><td>1,810</td></tr>
+</tbody>
+</table>
+</div></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>What was stored</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Record</th><th>What it holds</th><th>Rows</th></tr></thead>
+<tbody>
+<tr><td><span class="count">RC-1</span></td><td>Payments</td><td>0</td></tr>
+</tbody>
+</table>
+</div></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Rules held</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Code</th><th>Rule</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><span class="count">RU-12</span></td><td>A group order starts from a poster's posted bulk price; the group coordinator starts it, sets the minimum and says when it is ready; it has no closing time; sending is locked below the minimum; the order keeps the price and minimum it started with.</td><td><span class="tag bad">RU-12 failed</span></td></tr>
+</tbody>
+</table>
+</div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s23">
+<figcaption class="cap">23 · Landing when the scenarios could not be read: the title row has no button and the error card stands alone.<span class="cap-mcp">Filled by: agency_list_scenarios, agency_list_test_runs</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. The failure is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="empty error" role="alert">The page could not be loaded.</div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s24">
+<figcaption class="cap">24 · A scenario opened when it could not be read: the Back link, then the error card.<span class="cap-mcp">Filled by: agency_get_scenario</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. The failure is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><a class="link" href="test.html#s1">Back</a><div class="empty error" role="alert">The page could not be loaded.</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s25">
+<figcaption class="cap">25 · Rules not tested, opened from the link beside the toolbar, when the rules could not be read: the error card stands alone.<span class="cap-mcp">Filled by: agency_list_rules, agency_list_scenarios, agency_list_test_runs</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. The failure is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="empty error" role="alert">The page could not be loaded.</div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s26">
+<figcaption class="cap">26 · Add a scenario, Save pressed with the name empty: the missing field is named on a line under the form and nothing is sent.<span class="cap-mcp">Filled by: agency_list_workflows, agency_list_work_items, agency_list_pickers</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. The error line is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Add a scenario</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><a class="link" href="test.html#s1">Back</a><div class="stack"><nav class="tabs"><a class="tab" href="test.html#s8" aria-current="page">Scenario</a><a class="tab" href="test.html#s9">Actors</a><a class="tab" href="test.html#s10">Steps</a></nav><section class="card" aria-label="New scenario"><div class="card-head"><h2>New scenario</h2></div><div class="stack"><div class="stack"><label class="field"><span class="field-label">Name<span class="req" aria-hidden="true">*</span></span><span class="control"><input type="text" value=""></span></label><label class="field"><span class="field-label">Workflow<span class="req" aria-hidden="true">*</span></span><span class="control"><select><option>Pool an input order</option><option>Produce to a buyer</option><option>Approve a poster</option><option>Buy now</option><option selected>Create group order</option><option>Find it</option><option>Sell now</option><option>Create group sale</option><option>Change my share</option><option>Join a group</option><option>Apply as a supplier</option><option>Ask for a field visit</option><option>Report a crop pest or disease</option><option>Sign up for a training day</option><option>Request a soil test</option><option>Issue a seasonal advisory</option><option>Submit a field report</option><option>Register as a farmer</option><option>Register my plot</option><option>Register my livestock</option><option>Register a fish pond or boat</option><option>Register a farmer group or cooperative</option><option>Report a sick animal</option><option>Book a vaccination day</option><option>Request an animal movement permit</option><option>Request a produce inspection</option><option>Apply for subsidised inputs</option><option>Book a county tractor</option><option>Report a loss and apply for relief</option><option>Raise a complaint about an input supplier</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></label><label class="field"><span class="field-label">What it tries</span><span class="control"><textarea rows="4">Farmers join a group order and the group coordinator sends it.</textarea></span></label></div><p class="field-error error" role="alert">Required: Name</p><div class="row"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s27">
+<figcaption class="cap">27 · Add a scenario, Actors tab, two actors given the same name: a line says names are unique in a scenario and Save cannot be pressed until one is renamed.<span class="cap-mcp">Filled by: agency_list_workflows, agency_list_work_items, agency_list_pickers</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. The error line is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Add a scenario</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><a class="link" href="test.html#s1">Back</a><div class="stack"><nav class="tabs"><a class="tab" href="test.html#s8">Scenario</a><a class="tab" href="test.html#s9" aria-current="page">Actors</a><a class="tab" href="test.html#s10">Steps</a></nav><section class="card" aria-label="New scenario"><div class="card-head"><h2>New scenario</h2></div><div class="stack"><div class="stack" style="--stack-gap:12px"><div class="row"><span class="control"><input type="text" aria-label="Actor" value="Farmer 1"></span><span class="control"><select aria-label="Role"><option>Group coordinator</option><option selected>Farmer</option><option>Supplier</option><option>Buyer</option><option>Farmers' agent</option><option>Suppliers' agent</option><option>Extension officer</option><option>Veterinary officer</option><option>Agriculture director</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><button type="button" class="btn quiet sm">Remove</button></div><div class="row"><span class="control"><input type="text" aria-label="Actor" value="Farmer 1"></span><span class="control"><select aria-label="Role"><option>Group coordinator</option><option selected>Farmer</option><option>Supplier</option><option>Buyer</option><option>Farmers' agent</option><option>Suppliers' agent</option><option>Extension officer</option><option>Veterinary officer</option><option>Agriculture director</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><button type="button" class="btn quiet sm">Remove</button></div><div class="row"><span class="control"><input type="text" aria-label="Actor" value="Coordinator"></span><span class="control"><select aria-label="Role"><option selected>Group coordinator</option><option>Farmer</option><option>Supplier</option><option>Buyer</option><option>Farmers' agent</option><option>Suppliers' agent</option><option>Extension officer</option><option>Veterinary officer</option><option>Agriculture director</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><button type="button" class="btn quiet sm">Remove</button></div><p class="field-error error">Names are unique in a scenario.</p><div class="row"><button type="button" class="btn quiet sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add an actor</button></div></div><div class="row"><button type="button" class="btn primary" disabled>Save</button><button type="button" class="btn quiet">Cancel</button></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s28">
+<figcaption class="cap">28 · Run all scenarios refused without a reason: the line The run could not start. stands above the toolbar. The same line stands under the Back link of a run when Run this scenario again is refused; when the agency gives a reason, the reason replaces this line.<span class="cap-mcp">Filled by: agency_list_scenarios, agency_list_test_runs, agency_run_scenarios</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. The refusal is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"><button type="button" class="btn primary">Run all scenarios</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:12px"><div class="empty error" role="alert">The run could not start.</div><div class="toolbar"><div class="toolbar-group"><a class="btn quiet sm" href="test.html#s8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a scenario</a><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search scenarios</span><input type="search" placeholder="Search scenarios"></label><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Failed only</label></div><div class="toolbar-group"><a class="link" href="test.html#s7">Which rules have not been tested?</a></div></div><div class="stack" style="--stack-gap:12px"><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Farmer looks for something</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Farmer looks for something</a></span></div><div class="sc-end"><span class="tag warn">Stopped</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer looks for something no poster lists, and the Farmers' agent asks two posters.</div><p class="sc-meta">Last run Nov 16, 16:20 · Tokens 8,000</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group coordinator approves a poster</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group coordinator approves a poster</a></span></div><div class="sc-end"><span class="tag mute">Not run yet</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A supplier applies to sell, and the group coordinator approves him.</div><p class="sc-meta">Last run — · Tokens —</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group order is sent</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group order is sent</a></span></div><div class="sc-end"><span class="tag bad">Failed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">Farmers join a group order and the group coordinator sends it.</div><p class="sc-meta">Last run 10:42 · Tokens 5,210</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Poster says yes</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Poster says yes</a></span></div><div class="sc-end"><span class="tag ok">Passed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer picks a poster and buys now; the poster says yes with a date.</div><p class="sc-meta">Last run 10:38 · Tokens 3,120</p></div></div></div><p class="soft">Tokens in the last run of all scenarios: 16,330</p></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s29">
+<figcaption class="cap">29 · Remove confirmed and refused: Poster says yes stays in the list and a line above the toolbar names it. The console also tells the chat.<span class="cap-mcp">Filled by: agency_list_scenarios, agency_list_test_runs, agency_delete_scenario</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. The refusal is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Test</h1>
+<div class="top-end"><button type="button" class="btn primary">Run all scenarios</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:12px"><div class="empty error" role="alert">Poster says yes could not be removed.</div><div class="toolbar"><div class="toolbar-group"><a class="btn quiet sm" href="test.html#s8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a scenario</a><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search scenarios</span><input type="search" placeholder="Search scenarios"></label><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Failed only</label></div><div class="toolbar-group"><a class="link" href="test.html#s7">Which rules have not been tested?</a></div></div><div class="stack" style="--stack-gap:12px"><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Farmer looks for something</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Farmer looks for something</a></span></div><div class="sc-end"><span class="tag warn">Stopped</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer looks for something no poster lists, and the Farmers' agent asks two posters.</div><p class="sc-meta">Last run Nov 16, 16:20 · Tokens 8,000</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group coordinator approves a poster</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group coordinator approves a poster</a></span></div><div class="sc-end"><span class="tag mute">Not run yet</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A supplier applies to sell, and the group coordinator approves him.</div><p class="sc-meta">Last run — · Tokens —</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Group order is sent</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Group order is sent</a></span></div><div class="sc-end"><span class="tag bad">Failed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">Farmers join a group order and the group coordinator sends it.</div><p class="sc-meta">Last run 10:42 · Tokens 5,210</p></div></div><div class="card"><div class="stack" style="--stack-gap:10px"><div class="sc-head"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span><span class="sr">Select Poster says yes</span></label><div class="cell"><span class="cell-text"><a class="cell-name" href="test.html#s11" title="Opens: Scenario">Poster says yes</a></span></div><div class="sc-end"><span class="tag ok">Passed</span><div class="act-wrap"><button type="button" class="btn quiet sm" aria-haspopup="menu" aria-expanded="false">Actions</button></div></div></div><div class="note">A farmer picks a poster and buys now; the poster says yes with a date.</div><p class="sc-meta">Last run 10:38 · Tokens 3,120</p></div></div></div><p class="soft">Tokens in the last run of all scenarios: 16,330</p></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s30">
+<figcaption class="cap">30 · A run in progress when Stop is refused without a reason: the line The run could not be stopped. stands under the Back link and the run goes on.<span class="cap-mcp">Filled by: agency_get_test_run, agency_list_test_runs, agency_get_scenario, agency_stop_test_run</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. The refusal is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Group order is sent</h1>
+<div class="top-end"><button type="button" class="btn primary">Stop</button></div>
+</div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:24px"><a class="link" href="test.html#s11">Back</a><div class="empty error" role="alert">The run could not be stopped.</div><section class="card" aria-label="Scenario"><div class="card-head"><h2>Scenario</h2></div><dl class="kv"><dt>When</dt><dd>10:42</dd><dt>Result</dt><dd><span class="tag use">Running</span></dd><dt>Tokens</dt><dd>1,980 of 8,000</dd><dt>On draft</dt><dd>3</dd></dl></section><nav class="tabs"><a class="tab" href="test.html#s15" aria-current="page">What transpired</a><a class="tab" href="test.html#s18">Data trail</a></nav><div class="stack"><section class="card" aria-label="Start the group order"><div class="card-head"><h2>Start the group order</h2></div><dl class="kv"><dt>Actor</dt><dd>Group coordinator · Coordinator</dd><dt>What they did</dt><dd>Started the group order at the poster's bulk price, minimum 20 bags.</dd><dt>What the agency recorded</dt><dd>Group order GO-1 started.</dd><dt>Endpoint</dt><dd>market_start_group_order</dd><dt></dt><dd><div class="row" style="--row-gap:8px"><span class="tag ok">RU-12 held</span></div></dd><dt>Tokens</dt><dd>1,420</dd></dl></section><section class="card" aria-label="Farmers join and revise"><div class="card-head"><h2>Farmers join and revise</h2></div><dl class="kv"><dt>Actor</dt><dd>Farmer · Farmer 1</dd><dt>What they did</dt><dd>Joined with 12 bags.</dd><dt>What the agency recorded</dt><dd>Farmer 1 joined GO-1 with 12 bags.</dd><dt>Endpoint</dt><dd>market_join_group_order</dd><dt>Tokens</dt><dd>1,980</dd></dl></section></div><div class="stack" style="--stack-gap:10px"><div class="section-head"><h2>Runs</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>When</th><th>Draft</th><th>Result</th><th>Tokens</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td>10:42</td><td>3</td><td><span class="tag use">Running</span></td><td>1,980</td><td class="row-act"></td></tr>
+<tr><td>Nov 16, 09:15</td><td>3</td><td><span class="tag ok">Passed</span></td><td>4,980</td><td class="row-act"><a class="link sm" href="test.html#s15" title="Opens: Run">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Test?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s31">
+<figcaption class="cap">31 · Raise the tokens per test when Approve is refused without a reason: the line The limit could not be changed. stands above the form and the form stays open.<span class="cap-mcp">Filled by: ai_get_default_account, ai_get_account, ai_set_limits</span><span class="cap-note">Example data: the scenario names, times and token counts are drawn; the workflows, rules and roles are the Farmers' demo template's own. The refusal is drawn.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Test"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="test"></nav>
+
+<div class="main">
+
+<div class="top">
+<h1>Farmer looks for something</h1>
+<div class="top-end"></div>
+</div>
+
+<div class="content">
+
+<section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Raise the tokens per test</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><div class="empty error" role="alert">The limit could not be changed.</div><div class="msg-card"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Tokens per test</div><div class="msg-form"><label class="field"><span class="field-label">Tokens per test</span><span class="control"><input type="text" value="12,000"></span><span class="hint">Now 8,000. Every scenario's run stops there.</span></label></div><div class="msg-buttons"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Cancel</button></div><div class="msg-note">Nothing is recorded until you press Approve.</div></div></div></section>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Test" data-ctx-icon="clipboard">
+<div class="thread"><div class="thread-in"><div class="msg user"><div class="bubble">Raise the tokens per test</div></div><div class="tools collapsed"><div class="tools-head"><span>Called 1 tool</span><span class="muted">110 ms</span></div><div class="tool"><span class="tool-ico"></span><span class="tool-name">ai_get_default_account</span><span class="tool-state"></span><span class="tool-ms">110 ms</span><span class="tool-sum">limit 8,000</span></div></div><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">Here is the limit, raised by half.</div></div><div class="msg-card msg-ref"><div class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="ref-title">Tokens per test</span><span class="tag mute">Form</span></div><div class="msg-note ref-go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Shown in the content area</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Run all scenarios</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Which rules have not been tested?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Show what transpired in the last run</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<script src="../../shell.js"></script>
+</body>
+</html>

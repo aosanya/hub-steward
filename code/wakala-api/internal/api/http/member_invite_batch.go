@@ -27,7 +27,7 @@ type invitationBatchAnswer struct {
 func (m memberInvitations) handleBatch(w http.ResponseWriter, r *http.Request) {
 	instanceID := r.PathValue("instanceID")
 	um, role, err := actorManagerFor(r.Context(), m.reg, instanceID)
-	if err == nil && role != agencies.RoleOwner && role != agencies.RoleAgent {
+	if err == nil && role != agencies.RoleOwner && role != agencies.RoleAgent && !m.residentHolds(r, instanceID, inviteBatchAction) {
 		err = agencies.ErrInstanceNotFound
 	}
 	if err != nil {

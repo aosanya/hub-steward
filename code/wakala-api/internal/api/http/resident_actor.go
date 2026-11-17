@@ -1,6 +1,12 @@
 package http
 
-var residentRoleActorActions = []string{"actor.group.list"}
+var residentRoleActorActions = []string{
+	"actor.group.list",
+	"actor.join_request.approve",
+	"actor.join_request.decline",
+	"actor.join_request.list_for_group",
+	"actor.join_request.read",
+}
 
 var residentActorActions = []string{
 	"actor.group.list_joinable",

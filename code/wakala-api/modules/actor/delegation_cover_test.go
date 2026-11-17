@@ -99,12 +99,16 @@ func TestADelegationThatHasEndedNoLongerActs(t *testing.T) {
 	um := newManager(t)
 	ctx := context.Background()
 	delegate, subject := twoActors(t, um)
-	past := time.Now().Add(-time.Hour).UTC().Format(time.RFC3339Nano)
-	if _, err := um.CreateDelegation(ctx, "owner", models.DelegationGrant{DelegateID: delegate, SubjectID: subject, EndsAt: past}); err != nil {
-		t.Fatalf("CreateDelegation: %v", err)
+	past := time.Now().Add(-time.Hour).UTC()
+	if _, err := um.CreateDelegation(ctx, "owner", models.DelegationGrant{DelegateID: delegate, SubjectID: subject, EndsAt: past.Format(time.RFC3339Nano)}); !errors.Is(err, actor.ErrInvalidDelegation) {
+		t.Fatalf("a delegation that has already ended: err = %v, want ErrInvalidDelegation", err)
+	}
+	ended := models.Delegation{DelegateID: delegate, SubjectID: subject, EndsAt: past.Format(models.TimeLayout)}
+	if ended.LiveAt(time.Now().UTC().Format(models.TimeLayout)) {
+		t.Fatal("an ended delegation is still live")
 	}
 	if ok, _ := um.ActsFor(ctx, delegate, subject); ok {
-		t.Fatal("an ended delegation still acts")
+		t.Fatal("a refused delegation still acts")
 	}
 	future := time.Now().Add(time.Hour).UTC().Format(time.RFC3339Nano)
 	if _, err := um.CreateDelegation(ctx, "owner", models.DelegationGrant{DelegateID: delegate, SubjectID: subject, EndsAt: future}); err != nil {
