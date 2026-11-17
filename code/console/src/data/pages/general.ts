@@ -45,8 +45,12 @@ const defaultLanguageOf = (answer: unknown) => {
 };
 
 const listedOf = async (hubId: string) => {
-  const reply = await rest<unknown>("GET", `/instances/${hubId}`);
-  return reply.ok && isRecord(reply.data) && typeof reply.data.listed === "boolean" ? { listed: reply.data.listed } : {};
+  try {
+    const reply = await rest<unknown>("GET", `/instances/${hubId}`);
+    return reply.ok && isRecord(reply.data) && typeof reply.data.listed === "boolean" ? { listed: reply.data.listed } : {};
+  } catch {
+    return {};
+  }
 };
 
 const rows = async (hubId: string): Promise<PageRow[]> => {
