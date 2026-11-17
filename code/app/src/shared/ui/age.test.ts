@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { words } from "../language/words";
 import { swahili } from "../language/swahili";
 import { magyar } from "../language/magyar";
-import { ageOf, ageWords } from "./age";
+import { ageOf, ageOfSpan, ageWords } from "./age";
 
 const created = "2026-11-10T08:00:00Z";
 const after = (minutes: number) => Date.parse(created) + minutes * 60_000;
@@ -10,6 +10,14 @@ const read = (minutes: number) => {
   const age = ageOf(created, after(minutes));
   return age ? ageWords(age, words) : null;
 };
+
+describe("ageOfSpan", () => {
+  it("reads a span in milliseconds the way ageOf reads a start and an end", () => {
+    expect(ageOfSpan(5 * 60_000)).toEqual({ unit: "min", count: 5 });
+    expect(ageOfSpan(26 * 3_600_000)).toEqual({ unit: "day", count: 1 });
+    expect(ageOfSpan(-5)).toEqual({ unit: "min", count: 1 });
+  });
+});
 
 describe("ageOf and ageWords", () => {
   it("reads one minute as 1 min", () => {

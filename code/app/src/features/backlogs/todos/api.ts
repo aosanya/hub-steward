@@ -41,6 +41,8 @@ export const todoOf = (raw: any): Todo => ({
   status: text(raw?.status),
   waitsOn: Array.isArray(raw?.depends_on) ? raw.depends_on.filter((id: unknown): id is string => typeof id === "string" && id !== "") : [],
   blockedReason: text(raw?.blocked_reason),
+  doneAt: text(raw?.done_at) || undefined,
+  elapsedSeconds: typeof raw?.elapsed_seconds === "number" ? raw.elapsed_seconds : undefined,
 });
 
 export const todosOf = (reply: unknown): Todo[] =>

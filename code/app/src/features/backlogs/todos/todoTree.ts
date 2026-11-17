@@ -8,6 +8,8 @@ export type Todo = {
   status: string;
   waitsOn: string[];
   blockedReason: string;
+  doneAt?: string;
+  elapsedSeconds?: number;
 };
 
 export type TodoRowData = { todo: Todo; depth: number; waitsOn: number[]; reason: string };

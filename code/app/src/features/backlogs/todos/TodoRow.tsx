@@ -4,6 +4,7 @@ import { Chip, type ChipTone } from "../../../shared/ui/Chip";
 import { ListRow } from "../../../shared/ui/ListRow";
 import type { TodoWrites } from "./api";
 import { ReasonForm, StatusChoices, TitleForm, WaitsOnForm } from "./TodoForms";
+import { TodoTime } from "./TodoTime";
 import { useAttempt, waitChoices } from "./todoEdit";
 import { statusOf, type Todo, type TodoRowData, type TodoState } from "./todoTree";
 
@@ -46,6 +47,7 @@ export function TodoRow({ row, editing }: { row: TodoRowData; editing?: Editing 
             {row.todo.description ? <span className="details">{row.todo.description}</span> : null}
             <span className="todo-meta">
               <Chip tone={stateTones[state]}>{stateWords[state]}</Chip>
+              <TodoTime todo={row.todo} />
               {row.waitsOn.length > 0 ? <span className="line">waits on {row.waitsOn.join(", ")}</span> : null}
             </span>
             {row.reason ? <span className="why">{row.reason}</span> : null}
