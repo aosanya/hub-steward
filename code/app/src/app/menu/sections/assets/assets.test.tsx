@@ -632,6 +632,86 @@ describe("Maintenance Schedule", () => {
     });
   });
 
+  describe("last upkeep", () => {
+    const lastJob = (id: string, fields: Record<string, string>) => {
+      Object.assign(repeating.find((row) => row.id === id) as object, fields);
+    };
+
+    afterEach(() => {
+      for (const row of repeating) {
+        for (const key of ["last_task_id", "last_due_at", "last_done_at", "next_due_at"]) {
+          delete (row as Record<string, unknown>)[key];
+        }
+      }
+    });
+
+    const finished = { last_task_id: "t-1", last_due_at: "2026-11-09T08:00:00+01:00", last_done_at: "2026-11-16T09:00:00+01:00" };
+    const overdue = { last_task_id: "t-2", last_due_at: "2026-11-09T08:00:00+01:00" };
+
+    const openPane = async (title: string, paneSelector: string) => {
+      showRouted("Maintenance Schedule");
+      await userEvent.click(await screen.findByRole("button", { name: new RegExp(title) }));
+      const pane = document.querySelector(paneSelector) as HTMLElement;
+      expect(await within(pane).findByText(/^FREQ=/)).toBeInTheDocument();
+      return pane;
+    };
+
+    const paneCases = (paneSelector: string) => {
+      it("shows a Last upkeep line with the day the last job was finished", async () => {
+        lastJob("p1", finished);
+        const pane = await openPane("Grease the pumps", paneSelector);
+
+        expect(within(pane).getByText("Last upkeep")).toBeInTheDocument();
+        expect(within(pane).getByText("Monday, 16 Nov")).toBeInTheDocument();
+        expect(within(pane).queryByText("Last job due")).toBeNull();
+      });
+
+      it("shows a Last job due line with the due day when the last job is not finished", async () => {
+        lastJob("p1", overdue);
+        const pane = await openPane("Grease the pumps", paneSelector);
+
+        expect(within(pane).getByText("Last job due")).toBeInTheDocument();
+        expect(within(pane).getByText("Monday, 9 Nov")).toBeInTheDocument();
+        expect(within(pane).queryByText("Last upkeep")).toBeNull();
+      });
+
+      it("shows neither line when the schedule has made no job", async () => {
+        const pane = await openPane("Grease the pumps", paneSelector);
+
+        expect(within(pane).queryByText("Last upkeep")).toBeNull();
+        expect(within(pane).queryByText("Last job due")).toBeNull();
+      });
+    };
+
+    paneCases(".mw-detail");
+
+    it("leaves the meta text of a list row as it was when the last job is finished", async () => {
+      lastJob("p1", { ...finished, next_due_at: "2026-11-23T08:00:00+01:00" });
+      showRouted("Maintenance Schedule");
+
+      await screen.findByText("Grease the pumps", { selector: ".ttl" });
+      expect(metaOf(rowOf("Grease the pumps"))).toEqual(["Weekly · next Monday, 23 Nov"]);
+      expect(rowOf("Grease the pumps").textContent).not.toContain("Last");
+    });
+
+    it("leaves the meta text of a list row as it was when the last job is not finished", async () => {
+      lastJob("p1", overdue);
+      showRouted("Maintenance Schedule");
+
+      await screen.findByText("Grease the pumps", { selector: ".ttl" });
+      expect(metaOf(rowOf("Grease the pumps"))).toEqual(["Weekly"]);
+      expect(rowOf("Grease the pumps").textContent).not.toContain("Last");
+    });
+
+    describe("on a wide screen", () => {
+      beforeEach(() => setWide(true));
+
+      afterEach(() => forgetWidth());
+
+      paneCases(".wf-main");
+    });
+  });
+
   describe("on a wide screen", () => {
     beforeEach(() => setWide(true));
 
