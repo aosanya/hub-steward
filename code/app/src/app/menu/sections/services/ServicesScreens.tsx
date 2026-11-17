@@ -6,6 +6,8 @@ import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
 import { useWord } from "../../../../features/agency/useWord";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
+import { moneyWords } from "../finance/financeData";
+import { personNameOf } from "../residents/personName";
 import { CatalogueWindow } from "./CatalogueEntry";
 
 const paidWords = "Paid";
@@ -26,6 +28,8 @@ const listFields = { title: "name", meta: "line" };
 
 const detailFields = { "Sent on": "sent" };
 
+const feeDetailFields = { "Sent on": "sent", Amount: "amount", Payer: "payer" };
+
 const isPaid = (submission: Item) => submission.paid === true;
 
 const isWithdrawn = (submission: Item) => text(submission, "withdrawn_at") !== "";
@@ -43,13 +47,35 @@ const entryRow = (entry: Item) => ({ id: text(entry, "slug"), name: text(entry, 
 
 const loadKind = (kind: string) => async () => (await listOf(listTool, { kind })).map(entryRow);
 
-const loadSubmissions = async (slug: string) => {
+const readItem = async (tool: string, args: Record<string, unknown>): Promise<Item> => {
+  try {
+    const reply = (await callTool("", tool, args)) as { item?: unknown } | null;
+    const inner = reply?.item ?? reply;
+    return inner && typeof inner === "object" ? (inner as Item) : {};
+  } catch {
+    return {};
+  }
+};
+
+const amountWords = (form: Item) => (typeof form.amount === "number" && form.amount > 0 ? moneyWords(form.amount) : "");
+
+const feeDetails = async (submission: Item | undefined) => {
+  if (!submission) return { amount: "", payer: "" };
+  const [form, member] = await Promise.all([
+    readItem("forms_form_read", { form_id: text(submission, "form_id") }),
+    readItem("actor_get_actor", { actor_id: text(submission, "member_id") }),
+  ]);
+  return { amount: amountWords(form), payer: personNameOf(member) };
+};
+
+const loadSubmissions = (fee: boolean) => async (slug: string) => {
   const sent = (await listOf(submissionsTool, { slug })).sort(byNewest);
   return {
     id: slug,
     status: sent.length === 0 ? notSentWords : statusOf(sent[0]),
     sent: sent.map((submission) => dayWords(text(submission, "submitted_at"))).join(", "),
     owing: sent.filter(isOwing),
+    ...(fee ? await feeDetails(sent[0]) : {}),
   };
 };
 
@@ -78,7 +104,7 @@ const KindScreen = ({ generic, emptyGeneric, kind, payable }: { generic: string;
       title={title}
       detailKey={version}
       list={{ title, tool: listTool, fields: listFields, empty: homeEmpty(empty), load: loadKind(kind) }}
-      detail={{ tool: submissionsTool, fields: detailFields, status: "status", load: loadSubmissions, action }}
+      detail={{ tool: submissionsTool, fields: payable ? feeDetailFields : detailFields, status: "status", load: loadSubmissions(payable === true), action }}
       below={failed ? <LoadFailed words={actionFailedWords} /> : null}
     />
   );
