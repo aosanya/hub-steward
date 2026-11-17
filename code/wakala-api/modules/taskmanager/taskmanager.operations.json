@@ -660,6 +660,14 @@
                {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
       "returns": [{"body": true}]
     },
+    "unblock_impact": {
+      "method": "GET", "path": "/unblock-impact", "call": "UnblockImpact", "action": "taskmanager.task.unblock_impact",
+      "title": "Which open issues finishing would unblock the most others",
+      "description": "Rank the open issues by how many other open issues finishing them would unblock. An issue is listed when at least one open issue waits on it (a depends_on relationship). direct is the number of issues waiting on it, total the number down the whole chain (an issue reached by two paths is counted once, and a cycle does not loop), and dependents the codes of all of them. Completed, failed and cancelled issues are neither listed nor counted, and an issue the caller cannot see is not counted. Ordered by total, then direct, then rank. items are compact (id, code, title, step, priority, direct, total, dependents) and without the description. limit defaults to 10 and is at most 50; a larger one is refused with 400. Narrow the listed issues by backlog (id or name; a backlog the caller cannot see is refused as unknown) and tag (repeat it to require every tag). Read-only.",
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
+      "returns": [{"body": true}]
+    },
     "task_dependencies": {
       "method": "GET", "path": "/tasks/{taskID}/dependencies", "call": "TaskDependenciesFor", "action": "taskmanager.task.dependencies",
       "title": "What an issue waits on and what waits on it",
