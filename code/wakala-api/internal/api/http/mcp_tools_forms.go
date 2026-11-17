@@ -86,6 +86,9 @@ func (d *Deps) invokeFormsTool(ctx context.Context, name, action string, raw jso
 	ctx = context.WithValue(ctx, partitionKey{}, instanceID)
 	mount := d.instanceFormsMount(role)
 	if mount.Authorize != nil && mount.Authorize(ctx, action) != nil {
+		if role == agencies.RoleResident {
+			return nil, permissionRefusal(action)
+		}
 		return nil, agencies.ErrInstanceNotFound
 	}
 	mount.Authorize = nil
