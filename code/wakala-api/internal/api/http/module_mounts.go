@@ -101,6 +101,15 @@ func (d *Deps) moduleVisibility(ctx context.Context, reg agencies.Registry, inst
 	if role == agencies.RoleAgent {
 		return d.agentModuleVisibility(ctx, reg, instanceID, caller)
 	}
+	if role == agencies.RoleResident {
+		codes, err := d.callerPermissionCodes(withPartitionContext(ctx, instanceID), instanceID)
+		if err != nil {
+			return nil, err
+		}
+		if len(codes) > 0 {
+			return anyPermissionUnder(codes), nil
+		}
+	}
 	if d.Permissions == nil {
 		return func(string) bool { return true }, nil
 	}
@@ -125,12 +134,16 @@ func (d *Deps) agentModuleVisibility(ctx context.Context, reg agencies.Registry,
 	if err != nil {
 		return none, nil
 	}
+	return anyPermissionUnder(codes), nil
+}
+
+func anyPermissionUnder(codes []string) func(code string) bool {
 	held := allowedActions(codes)
 	actions := make([]string, 0, len(held))
 	for a := range held {
 		actions = append(actions, a)
 	}
-	return anyActionUnder(actions), nil
+	return anyActionUnder(actions)
 }
 
 func anyActionUnder(actions []string) func(code string) bool {
