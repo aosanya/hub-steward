@@ -552,6 +552,86 @@ describe("Maintenance Schedule", () => {
     expect(callsTo(repeatingRead)[0][2]).toEqual({ repeatingTaskID: "p4" });
   });
 
+  describe("next upkeep day", () => {
+    const comesNext = (id: string, nextDueAt: string) => {
+      Object.assign(repeating.find((row) => row.id === id) as object, { next_due_at: nextDueAt });
+    };
+
+    afterEach(() => {
+      for (const row of repeating) delete (row as Record<string, unknown>).next_due_at;
+    });
+
+    it("adds the next day to the interval on the row of a weekly schedule", async () => {
+      comesNext("p1", "2026-11-23T08:00:00+01:00");
+      showRouted("Maintenance Schedule");
+
+      await screen.findByText("Grease the pumps", { selector: ".ttl" });
+      expect(metaOf(rowOf("Grease the pumps"))).toEqual(["Weekly · next Monday, 23 Nov"]);
+    });
+
+    it("adds the next day to an every-2-weeks interval", async () => {
+      comesNext("p4", "2026-12-02T08:00:00+01:00");
+      showRouted("Maintenance Schedule");
+
+      await screen.findByText("Inspect the playground", { selector: ".ttl" });
+      expect(metaOf(rowOf("Inspect the playground"))).toEqual(["Every 2 weeks · next Wednesday, 2 Dec"]);
+    });
+
+    it("shows only the frequency, and no next day, on a row of a stopped schedule", async () => {
+      comesNext("p1", "2026-11-23T08:00:00+01:00");
+      showRouted("Maintenance Schedule");
+
+      await screen.findByText("Inspect the fire exits", { selector: ".ttl" });
+      expect(metaOf(rowOf("Inspect the fire exits"))).toEqual(["Monthly"]);
+      expect(rowOf("Inspect the fire exits").textContent).not.toContain("next");
+    });
+
+    it("shows a Next upkeep line with the day in the pane of the opened schedule", async () => {
+      comesNext("p1", "2026-11-23T08:00:00+01:00");
+      showRouted("Maintenance Schedule");
+      await userEvent.click(await screen.findByRole("button", { name: /Grease the pumps/ }));
+
+      const detail = document.querySelector(".mw-detail") as HTMLElement;
+      expect(await within(detail).findByText("Next upkeep")).toBeInTheDocument();
+      expect(within(detail).getByText("Monday, 23 Nov")).toBeInTheDocument();
+      expect(callsTo(repeatingRead)[0][2]).toEqual({ repeatingTaskID: "p1" });
+    });
+
+    it("draws no Next upkeep line in the pane of a schedule without a next day", async () => {
+      showRouted("Maintenance Schedule");
+      await userEvent.click(await screen.findByRole("button", { name: /Inspect the fire exits/ }));
+
+      const detail = document.querySelector(".mw-detail") as HTMLElement;
+      expect(await within(detail).findByText("FREQ=MONTHLY")).toBeInTheDocument();
+      expect(within(detail).queryByText("Next upkeep")).toBeNull();
+    });
+
+    describe("on a wide screen", () => {
+      beforeEach(() => setWide(true));
+
+      afterEach(() => forgetWidth());
+
+      it("shows Next upkeep and the day in the right pane", async () => {
+        comesNext("p1", "2026-11-23T08:00:00+01:00");
+        showRouted("Maintenance Schedule");
+        await userEvent.click(await screen.findByRole("button", { name: /Grease the pumps/ }));
+
+        const main = document.querySelector(".wf-main") as HTMLElement;
+        expect(await within(main).findByText("Next upkeep")).toBeInTheDocument();
+        expect(within(main).getByText("Monday, 23 Nov")).toBeInTheDocument();
+      });
+
+      it("draws no Next upkeep line in the right pane of a schedule without a next day", async () => {
+        showRouted("Maintenance Schedule");
+        await userEvent.click(await screen.findByRole("button", { name: /Inspect the fire exits/ }));
+
+        const main = document.querySelector(".wf-main") as HTMLElement;
+        expect(await within(main).findByText("FREQ=MONTHLY")).toBeInTheDocument();
+        expect(within(main).queryByText("Next upkeep")).toBeNull();
+      });
+    });
+  });
+
   describe("on a wide screen", () => {
     beforeEach(() => setWide(true));
 
