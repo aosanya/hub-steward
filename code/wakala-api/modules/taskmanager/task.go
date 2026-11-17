@@ -280,6 +280,7 @@ type TaskManager interface {
 	TaskBriefFor(ctx context.Context, filter TaskBriefFilter) (TaskBrief, error)
 	FileOverlaps(ctx context.Context, filter FileOverlapsFilter) (FileOverlaps, error)
 	NextReadyBatch(ctx context.Context, filter NextReadyBatchFilter) (NextReadyBatch, error)
+	ReadyTodosOfBoard(ctx context.Context, filter ReadyBoardFilter) (ReadyBoardTodos, error)
 	UnblockImpact(ctx context.Context, filter UnblockImpactFilter) (UnblockImpact, error)
 	Lint(ctx context.Context, filter LintFilter) (Lint, error)
 	CountTodosOfIssues(ctx context.Context, filter TodoCountsFilter) (IssueTodoCounts, error)
