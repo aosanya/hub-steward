@@ -24,7 +24,7 @@ func TestAPublishedListedAgencyIsFoundByAResidentWithoutAnyApproveCall(t *testin
 	if err != nil || len(byID) != 1 || byID[0].ID != inst.ID {
 		t.Fatalf("search by id: got %+v, %v", byID, err)
 	}
-	if !inst.Approved() {
+	if inst.Approval != ApprovalApproved {
 		t.Fatalf("a new agency must not wait for approval, got %q", inst.Approval)
 	}
 }

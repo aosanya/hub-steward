@@ -32,16 +32,15 @@ func (r *fakeRegistry) TaskManager(_ context.Context, id string) (mwanachamatask
 }
 
 func approved(id string) Instance { return Instance{ID: id, Approval: ApprovalApproved} }
-func awaiting(id string) Instance { return Instance{ID: id, Approval: ApprovalPending} }
 
-func TestSweepClosesRunsOnlyInApprovedAgenciesAndNamesTheFailures(t *testing.T) {
+func TestSweepClosesRunsInEveryAgencyAndNamesTheFailures(t *testing.T) {
 	ok := newFakeBoard()
 	ok.closed = []mwanachamataskmanager.WorkflowRun{{ID: "r1"}, {ID: "r2"}}
 	broken := newFakeBoard()
 	broken.closed = []mwanachamataskmanager.WorkflowRun{{ID: "r3"}}
 	broken.closeErr = errors.New("closing failed")
 	reg := &fakeRegistry{
-		instances: []Instance{approved("a"), awaiting("p"), approved("b"), approved("c")},
+		instances: []Instance{approved("a"), approved("b"), approved("c")},
 		boards:    map[string]*fakeBoard{"a": ok, "b": broken},
 		boardErr:  map[string]error{"c": errors.New("no board")},
 	}

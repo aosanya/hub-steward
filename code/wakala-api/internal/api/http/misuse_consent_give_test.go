@@ -34,7 +34,7 @@ func newConsentWalk(t *testing.T) consentWalk {
 func newConsentWalkOn(t *testing.T, db *gorm.DB) consentWalk {
 	t.Helper()
 	var registry agencies.Registry
-	reg, err := agencies.NewRegistry(db, agencies.StartingApproved(),
+	reg, err := agencies.NewRegistry(db,
 		agencies.WithConsentRequired(ConsentRequired(func() agencies.Registry { return registry })),
 		agencies.WithModuleMounted(ModuleMounted(func() agencies.Registry { return registry })),
 	)
