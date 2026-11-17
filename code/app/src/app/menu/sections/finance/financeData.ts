@@ -65,6 +65,11 @@ export const budgetRow = (line: Item, unit = "") => ({
   spent: numberOf(line.spent),
 });
 
+export const departmentRow = (figure: Item, unit = "") => ({
+  name: text(figure, "department") || "No department",
+  meta: `Planned ${moneyWords(numberOf(figure.planned), unit)} · Spent ${moneyWords(numberOf(figure.spent), unit)} · Difference ${moneyWords(numberOf(figure.difference), unit)}`,
+});
+
 export const daysLateWords = (bill: Item) => {
   const days = numberOf(bill.days_overdue);
   if (text(bill, "status") !== "overdue" || days <= 0) return "";

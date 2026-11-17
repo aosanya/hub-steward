@@ -7,11 +7,16 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuDetail } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
 import { figureOf, noReportWords, periodRefusal } from "./reportPeriod";
-import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, reportRow, text, tools, unitOf, type Item } from "./financeData";
+import { budgetRow, dayStart, departmentRow, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, reportRow, text, tools, unitOf, type Item } from "./financeData";
 
 const linesOf = (report: Item | null, unit: string) => (Array.isArray(report?.lines) ? (report?.lines as Item[]) : []).map((line) => budgetRow(line, unit));
 
-const linesWords = (lines: ReturnType<typeof budgetRow>[]) => lines.map((line) => `${line.name} · ${line.meta}`).join("; ");
+const linesWords = (lines: { name: string; meta: string }[]) => lines.map((line) => `${line.name} · ${line.meta}`).join("; ");
+
+const departmentsOf = (report: Item | null, unit: string) => {
+  const departments = figureOf(report, "departments");
+  return (Array.isArray(departments) ? (departments as Item[]) : []).map((figure) => departmentRow(figure, unit));
+};
 
 const loadReports = async () => (await listOf(tools.reportList)).map(reportRow);
 
@@ -25,6 +30,7 @@ const loadReport = async (id: string, unit: string) => {
     planned: moneyWords(figureOf(report, "planned") as number, unit),
     spent: moneyWords(figureOf(report, "spent") as number, unit),
     difference: moneyWords(figureOf(report, "difference") as number, unit),
+    departments: linesWords(departmentsOf(report, unit)),
     lines: linesWords(linesOf(report, unit)),
   };
 };
@@ -37,7 +43,7 @@ const loadChosen = async (id: string, unit: string) => {
   }
 };
 
-const reportFields = { Name: "name", Period: "period", Planned: "planned", Spent: "spent", Difference: "difference", "Budget lines": "lines" };
+const reportFields = { Name: "name", Period: "period", Planned: "planned", Spent: "spent", Difference: "difference", Departments: "departments", "Budget lines": "lines" };
 
 function ChoosePeriod({ unit }: { unit: string }) {
   const [start, setStart] = useState("");
