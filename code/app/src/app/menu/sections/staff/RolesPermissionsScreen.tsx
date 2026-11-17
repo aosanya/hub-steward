@@ -3,6 +3,7 @@ import { useWord } from "../../../../features/agency/useWord";
 import { currencyUnit } from "../../../../features/forms/QuestionInput";
 import { spacedAmount } from "../../../../features/steps/spacedAmount";
 import { MenuWindow } from "../../MenuWindow";
+import { ApprovalLimitEdit } from "./ApprovalLimitEdit";
 import { RolePermissions } from "./RolePermissions";
 import { homeEmpty, listOf, peopleWords, text, type Item } from "./staffData";
 
@@ -22,7 +23,9 @@ const limitWords = (standing: Item[]) => {
 const holdersOf = async (kind: Item) => {
   const seats = await listOf("actor_list_role_holders", { kind_id: text(kind, "id") });
   const standing = seats.filter((seat) => seat.active !== false && text(seat, "ended_at") === "");
-  return { count: new Set(standing.map((seat) => text(seat, "actor_id"))).size, limit: limitWords(standing) };
+  const limitOf = (seat: Item) => (typeof seat.approval_limit === "number" && Number.isFinite(seat.approval_limit) ? seat.approval_limit : null);
+  const editable = standing.map((seat) => ({ id: text(seat, "id"), actorId: text(seat, "actor_id"), limit: limitOf(seat) }));
+  return { count: new Set(standing.map((seat) => text(seat, "actor_id"))).size, limit: limitWords(standing), seats: editable };
 };
 
 const loadRoles = async () => {
@@ -34,22 +37,29 @@ const loadRoles = async () => {
     name: text(role, "name"),
     meta: peopleWords(holders.get(text(role, "code"))?.count ?? 0),
     limit: holders.get(text(role, "code"))?.limit ?? "",
+    seats: holders.get(text(role, "code"))?.seats ?? [],
     permissions: Array.isArray(role.permissions) ? role.permissions : [],
   }));
 };
 
-const loadRole = async (id: string) => (await loadRoles()).find((role) => role.id === id) ?? { id, name: "", meta: "", limit: "", permissions: [] };
+const loadRole = async (id: string) => (await loadRoles()).find((role) => role.id === id) ?? { id, name: "", meta: "", limit: "", seats: [], permissions: [] };
 
 export function RolesPermissionsScreen() {
   const word = useWord("actor");
   const [version, setVersion] = useState(0);
+  const saved = () => setVersion((was) => was + 1);
   return (
     <MenuWindow
       title={word("Roles & Permissions")}
       listKey={version}
       detailKey={version}
       list={{ title: word("Roles & Permissions"), tool: "agency_list_roles", load: loadRoles, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Roles").toLowerCase()} yet.`) }}
-      detail={{ tool: "actor_list_role_holders", load: loadRole, fields: { Name: "name", Holders: "meta", "Approval limit": "limit" }, status: "status", extra: (role) => <RolePermissions role={role} onSaved={() => setVersion((was) => was + 1)} /> }}
+      detail={{ tool: "actor_list_role_holders", load: loadRole, fields: { Name: "name", Holders: "meta", "Approval limit": "limit" }, status: "status", extra: (role) => (
+        <>
+          <ApprovalLimitEdit role={role} onSaved={saved} />
+          <RolePermissions role={role} onSaved={saved} />
+        </>
+      ) }}
     />
   );
 }
