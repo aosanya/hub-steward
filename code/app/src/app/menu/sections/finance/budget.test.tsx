@@ -179,6 +179,7 @@ describe("adding a budget line", () => {
       period_start: "2026-03-01T00:00:00Z",
       period_end: "2026-04-01T00:00:00Z",
       amount: 4000,
+      create: true,
     });
     expect(screen.queryByLabelText("Name")).toBeNull();
   });

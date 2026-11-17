@@ -21,3 +21,25 @@ var ErrRetentionHeld = errors.New("accounting: the retention cannot be released 
 var ErrRetentionReleased = errors.New("accounting: the retention has already been released")
 
 var ErrLocked = errors.New("accounting: the record can no longer be changed")
+
+type BudgetLineExistsError struct {
+	AccountID   string
+	Category    string
+	PeriodStart string
+	PeriodEnd   string
+}
+
+func (e *BudgetLineExistsError) Error() string {
+	account := e.AccountID
+	if e.Category != "" {
+		account += " (" + e.Category + ")"
+	}
+	return "account " + account + " already has a budget line for " + dateOf(e.PeriodStart) + " to " + dateOf(e.PeriodEnd)
+}
+
+func dateOf(instant string) string {
+	if len(instant) >= len("2006-01-02") {
+		return instant[:len("2006-01-02")]
+	}
+	return instant
+}

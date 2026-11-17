@@ -38,6 +38,7 @@ type Budget struct {
 	Amount      int64  `json:"amount"`
 	SetAt       string `json:"set_at"`
 	Version     string `json:"version,omitempty" spec:"-"`
+	Create      bool   `json:"create,omitempty" spec:"-"`
 }
 
 type BudgetLine struct {

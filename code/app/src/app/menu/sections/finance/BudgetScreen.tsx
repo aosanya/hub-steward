@@ -89,6 +89,7 @@ function AddLineForm({ onSaved, word }: { onSaved: () => void; word: Wording }) 
         period_start: dayStart(draft.start),
         period_end: periodEndOf(draft.end),
         amount: Number(draft.amount),
+        create: true,
       });
       onSaved();
     } catch (error) {

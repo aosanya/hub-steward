@@ -74,12 +74,16 @@ func (m *ledgerStore) SetBudget(ctx context.Context, b Budget) (Budget, error) {
 
 	var out Budget
 	err := m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if _, err := m.accountByID(ctx, tx, b.AccountID); err != nil {
+		account, err := m.accountByID(ctx, tx, b.AccountID)
+		if err != nil {
 			return err
 		}
 		existing, err := m.budgetFor(ctx, tx, b.AccountID, b.PeriodStart, b.PeriodEnd)
 		switch {
 		case err == nil:
+			if b.Create {
+				return &BudgetLineExistsError{AccountID: b.AccountID, Category: string(account.Category), PeriodStart: b.PeriodStart, PeriodEnd: b.PeriodEnd}
+			}
 			if err := staleBudget(b, existing); err != nil {
 				return err
 			}
@@ -90,6 +94,7 @@ func (m *ledgerStore) SetBudget(ctx context.Context, b Budget) (Budget, error) {
 			return err
 		}
 		b.Version = ""
+		b.Create = false
 		b.SetAt = m.now()
 
 		o := m.st.Object(roleBudget)
