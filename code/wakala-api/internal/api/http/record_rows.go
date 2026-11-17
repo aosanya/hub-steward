@@ -35,6 +35,7 @@ type recordRowRequest struct {
 
 type rowRead struct {
 	OrderID string
+	ActorID string
 	History bool
 }
 
@@ -224,7 +225,7 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 	seesAll := callerMayAddRows(ctx, reg, instanceID, m, record)
 	rows := []agencymodels.RecordRow{}
 	for _, row := range every {
-		if replaced[row.ID] == read.History && (seesAll || rowNames(record, row, caller)) {
+		if replaced[row.ID] == read.History && (seesAll || rowNames(record, row, caller)) && (read.ActorID == "" || rowNames(record, row, read.ActorID)) {
 			rows = append(rows, row)
 		}
 	}
@@ -300,7 +301,7 @@ func (d *Deps) addLiveRecordRow(w http.ResponseWriter, r *http.Request) {
 }
 
 func (d *Deps) listLiveRecordRows(w http.ResponseWriter, r *http.Request) {
-	read := rowRead{OrderID: r.URL.Query().Get("order_id"), History: r.URL.Query().Get("history") == "true"}
+	read := rowRead{OrderID: r.URL.Query().Get("order_id"), ActorID: r.URL.Query().Get("answer_actor_id"), History: r.URL.Query().Get("history") == "true"}
 	rows, err := d.liveRowsOf(r.Context(), r.PathValue("instanceID"), r.PathValue("recordCode"), read)
 	if err != nil {
 		writeRecordErr(w, err)

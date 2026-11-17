@@ -37,6 +37,7 @@ type listLiveRecordRowsParams struct {
 	InstanceID string `json:"instance_id" jsonschema:"the agency the record belongs to"`
 	RecordCode string `json:"record_code" jsonschema:"the record's code, as agency_list_live_records names it, such as RC-1"`
 	OrderID    string `json:"order_id,omitempty" jsonschema:"only the rows added from this group order"`
+	ActorID    string `json:"answer_actor_id,omitempty" jsonschema:"only the rows where a person-picked question (a single choice picked from a list such as members) holds this actor id"`
 	History    bool   `json:"history,omitempty" jsonschema:"true reads the rows that were corrected by a replacing row instead of the current ones"`
 }
 
@@ -60,7 +61,7 @@ func (d *Deps) registerLiveRecordMCPTools(server *mcp.Server) {
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        listLiveRecordRowsTool,
 		Title:       "List a live record's rows",
-		Description: "The current rows of one live record, oldest first, as the caller may see them: a role that adds rows sees all of them, anyone else only the rows that name them. Narrow to one group order with order_id. history true reads the rows that a replacing row corrected.",
+		Description: "The current rows of one live record, oldest first, as the caller may see them: a role that adds rows sees all of them, anyone else only the rows that name them. Narrow to one group order with order_id, or to the rows whose person-picked question holds one actor id with answer_actor_id. history true reads the rows that a replacing row corrected.",
 	}, d.mcpListLiveRecordRows)
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        addLiveRecordRowTool,
@@ -78,7 +79,7 @@ func (d *Deps) mcpListLiveRecords(ctx context.Context, _ *mcp.CallToolRequest, p
 }
 
 func (d *Deps) mcpListLiveRecordRows(ctx context.Context, _ *mcp.CallToolRequest, p listLiveRecordRowsParams) (*mcp.CallToolResult, agencymcp.ListResult[agencymodels.RecordRow], error) {
-	out, err := d.liveRowsOf(ctx, p.InstanceID, p.RecordCode, rowRead{OrderID: p.OrderID, History: p.History})
+	out, err := d.liveRowsOf(ctx, p.InstanceID, p.RecordCode, rowRead{OrderID: p.OrderID, ActorID: p.ActorID, History: p.History})
 	if err != nil {
 		return nil, agencymcp.ListResult[agencymodels.RecordRow]{}, err
 	}
