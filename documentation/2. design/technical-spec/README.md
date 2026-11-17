@@ -25,6 +25,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Gaps](gaps.md) | What Mwanachama already does, and what is missing |
 |  | [Hub keys](hub-keys.md) | How the agent gets into each agency |
 |  | [Access keys page](access-keys.md) | The console page to make, see and revoke the keys used as a git password |
+|  | [Calculating step screen](calculating-step-screen.md) | The console screen where a builder sets up a calculating step, and the posting step that follows it |
 |  | [Git over HTTP](../git-remote.md) | The URL, sign-in and push rules for cloning and pushing an agency's repository |
 |  | [Start: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |
 |  | [Creation journey](creation-journey.md) | How one agency gets made: the cast of roles and the stages |
