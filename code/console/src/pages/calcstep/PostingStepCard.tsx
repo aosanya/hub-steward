@@ -1,4 +1,5 @@
 import { useI18n } from "../../i18n";
+import type { ReactNode } from "react";
 import { Card, Detail, Note, SelectControl, SettingRows, Stack, TextControl } from "../../ui";
 import { OptionControl } from "../../ui/fieldControls";
 import { postingSentence, type Direction, type Posting } from "./postingSentence";
@@ -17,6 +18,12 @@ export type PostingStepCardProps = {
 };
 
 const hint = (text: string) => <span className="hint">{text}</span>;
+
+const Control = ({ children }: { children: ReactNode }) => (
+  <div className="stack" style={{ "--stack-gap": "8px", alignItems: "stretch" } as Record<string, string>}>
+    {children}
+  </div>
+);
 
 export function PostingStepCard({ title, results, accounts, value, onChange, sample }: PostingStepCardProps) {
   const { t } = useI18n();
@@ -37,36 +44,36 @@ export function PostingStepCard({ title, results, accounts, value, onChange, sam
       label: t("calcstep.posting.amount"),
       htmlFor: "posting-amount",
       control: (
-        <Stack gap={8}>
+        <Control>
           <SelectControl id="posting-amount" label={t("calcstep.posting.amount")} value={value.amount} options={amountOptions} onChange={(amount) => set({ amount })} />
           {hint(t("calcstep.posting.amountHint"))}
-        </Stack>
+        </Control>
       ),
     },
     {
       label: t("calcstep.posting.account"),
       htmlFor: "posting-account",
       control: (
-        <Stack gap={8}>
+        <Control>
           <SelectControl id="posting-account" label={t("calcstep.posting.account")} value={value.account} options={accountOptions} onChange={(account) => set({ account })} />
           {hint(t("calcstep.posting.accountHint"))}
-        </Stack>
+        </Control>
       ),
     },
     {
       label: t("calcstep.posting.otherSide"),
       htmlFor: "posting-other-side",
       control: (
-        <Stack gap={8}>
+        <Control>
           <SelectControl id="posting-other-side" label={t("calcstep.posting.otherSide")} value={value.otherSide} options={accountOptions} onChange={(otherSide) => set({ otherSide })} />
           {hint(t("calcstep.posting.otherSideHint"))}
-        </Stack>
+        </Control>
       ),
     },
     {
       label: t("calcstep.posting.direction"),
       control: (
-        <Stack gap={8}>
+        <Control>
           <span className="sr" id="posting-direction">
             {t("calcstep.posting.direction")}
           </span>
@@ -79,17 +86,17 @@ export function PostingStepCard({ title, results, accounts, value, onChange, sam
             isOn={(option) => option.value === value.direction}
             onPick={(option) => set({ direction: option.value as Direction })}
           />
-        </Stack>
+        </Control>
       ),
     },
     {
       label: t("calcstep.posting.reason"),
       htmlFor: "posting-reason",
       control: (
-        <Stack gap={8}>
+        <Control>
           <TextControl id="posting-reason" label={t("calcstep.posting.reason")} value={value.reason} onChange={(reason) => set({ reason })} />
           {hint(t("calcstep.posting.reasonHint"))}
-        </Stack>
+        </Control>
       ),
     },
   ];
