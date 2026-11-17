@@ -76,6 +76,17 @@ const answers: Answers = {
   agency_get_my_roles: () => ({ permissions: ["accounting.manage"] }),
 };
 
+const lateBills = [
+  { id: "b5", payer: "Sample Kiosk", amount: 700, settled: 0, outstanding: 700, due_at: "2026-02-20T00:00:00Z", status: "overdue", days_overdue: 1 },
+  { id: "b6", payer: "Sample Depot", amount: 640, settled: 0, outstanding: 640, due_at: "2026-02-25T00:00:00Z", status: "overdue", days_overdue: 0 },
+];
+
+const withLateBills: Answers = {
+  ...answers,
+  accounting_bill_list: (args) => ({ items: [...bills, ...lateBills].filter((bill) => !args?.status || bill.status === args.status) }),
+  accounting_bill_read: (args) => ({ ...[...bills, ...lateBills].find((bill) => bill.id === args?.billID), narration: "Fee" }),
+};
+
 const withoutManage: Answers = { ...answers, agency_get_my_roles: () => ({ permissions: ["accounting.view"] }) };
 
 const screens = (replies: Answers = answers) => {
@@ -90,7 +101,7 @@ describe("the bills list", () => {
     expect(await screen.findByText("Sample Bakery")).toBeInTheDocument();
     expect(screen.getByText("Sample Garage")).toBeInTheDocument();
     expect(screen.getByText("900 · due 2026-03-01")).toBeInTheDocument();
-    expect(screen.getByText("1,500 · due 2026-01-15")).toBeInTheDocument();
+    expect(screen.getByText("1,500 · due 2026-01-15 · 40 days late")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Revenue & Billing" })).toBeInTheDocument();
     expect(callsTo("accounting_bill_list")).toHaveLength(1);
   });
@@ -357,5 +368,72 @@ describe("Mark paid on a bill", () => {
 
     await waitFor(() => expect(callsTo("accounting_payment_mark_paid")).toHaveLength(1));
     expect(callsTo("accounting_payment_mark_paid")[0][2]).toEqual({ billID: "b3", cash_account_id: "a-cash" });
+  });
+});
+
+describe("days late on an overdue bill", () => {
+  it("says 40 days late in the row meta of an overdue bill", async () => {
+    screens(withLateBills);
+    await screen.findByText("Sample Garage");
+
+    expect(within(rowOf(/Sample Garage/)).getByText("1,500 · due 2026-01-15 · 40 days late")).toBeInTheDocument();
+  });
+
+  it("says 1 day late in the singular", async () => {
+    screens(withLateBills);
+    await screen.findByText("Sample Kiosk");
+
+    expect(within(rowOf(/Sample Kiosk/)).getByText("700 · due 2026-02-20 · 1 day late")).toBeInTheDocument();
+  });
+
+  it("shows nothing about lateness on an overdue bill with 0 days overdue", async () => {
+    screens(withLateBills);
+    await screen.findByText("Sample Depot");
+
+    expect(within(rowOf(/Sample Depot/)).getByText("640 · due 2026-02-25")).toBeInTheDocument();
+    expect(within(rowOf(/Sample Depot/)).queryByText(/\blate\b/i)).toBeNull();
+  });
+
+  it.each(["Sample Market", "Sample Bakery"])("shows nothing about lateness in the row of %s, which is open or settled", async (payer) => {
+    screens(withLateBills);
+    await screen.findByText(payer);
+
+    expect(within(rowOf(new RegExp(payer))).queryByText(/\blate\b/i)).toBeNull();
+  });
+
+  it("shows a Late field reading 40 days late in the detail of the 40 day bill", async () => {
+    screens(withLateBills);
+    await userEvent.click(await screen.findByRole("button", { name: /Sample Garage/ }));
+    await waitFor(() => expect(pane().textContent).toContain("Sample Garage"));
+
+    const detail = within(pane());
+    expect(detail.getByText("Late")).toBeInTheDocument();
+    expect(detail.getByText("40 days late")).toBeInTheDocument();
+  });
+
+  it("shows a Late field reading 1 day late in the detail of the 1 day bill", async () => {
+    screens(withLateBills);
+    await userEvent.click(await screen.findByRole("button", { name: /Sample Kiosk/ }));
+    await waitFor(() => expect(pane().textContent).toContain("Sample Kiosk"));
+
+    const detail = within(pane());
+    expect(detail.getByText("Late")).toBeInTheDocument();
+    expect(detail.getByText("1 day late")).toBeInTheDocument();
+  });
+
+  it("shows no Late field in the detail of an overdue bill with 0 days overdue", async () => {
+    screens(withLateBills);
+    await userEvent.click(await screen.findByRole("button", { name: /Sample Depot/ }));
+    await waitFor(() => expect(pane().textContent).toContain("Sample Depot"));
+
+    expect(pane().textContent).not.toMatch(/\blate\b/i);
+  });
+
+  it.each(["Sample Market", "Sample Bakery"])("shows no Late field in the detail of %s, which is open or settled", async (payer) => {
+    screens(withLateBills);
+    await userEvent.click(await screen.findByRole("button", { name: new RegExp(payer) }));
+    await waitFor(() => expect(pane().textContent).toContain(payer));
+
+    expect(pane().textContent).not.toMatch(/\blate\b/i);
   });
 });

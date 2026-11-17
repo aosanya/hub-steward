@@ -8,9 +8,12 @@ import { PaymentListScreen } from "./PaymentListScreen";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
-const lateBill = { id: "b2", payer: "Csilla Sample", amount: 800, settled: 0, outstanding: 800, due_at: "2026-10-01T00:00:00Z", status: "overdue" };
+const lateBill = { id: "b2", payer: "Csilla Sample", amount: 800, settled: 0, outstanding: 800, due_at: "2026-10-01T00:00:00Z", status: "overdue", days_overdue: 40 };
 const earlierPayment = { id: "p1", kind: "bill", amount: 450, paid_at: "2026-11-02T09:00:00Z", paid_by: "u1", bill_id: "b0", payer: "Ben Sample", narration: "Bank transfer" };
 const settledBill = { id: "b0", payer: "Ben Sample", amount: 450, settled: 450, outstanding: 0, due_at: "2026-10-20T00:00:00Z", status: "paid" };
+
+const dayLateBill = { id: "b5", payer: "Dora Sample", amount: 700, settled: 0, outstanding: 700, due_at: "2026-10-05T00:00:00Z", status: "overdue", days_overdue: 1 };
+const notYetLateBill = { id: "b6", payer: "Emil Sample", amount: 640, settled: 0, outstanding: 640, due_at: "2026-10-06T00:00:00Z", status: "overdue", days_overdue: 0 };
 
 const accounts = [
   { id: "a1", code: "1000", name: "Receivables", category: "receivable", type: "asset" },
@@ -330,5 +333,69 @@ describe("PaymentListScreen", () => {
     await userEvent.click(within(form).getByRole("button", { name: "Save" }));
 
     expect(await screen.findByText("Owed in total: 1,500 · 2 payers")).toBeInTheDocument();
+  });
+
+  it("says 40 days late in the row meta of an overdue bill", async () => {
+    openScreen();
+
+    expect(within(await rowOf("Csilla Sample")).getByText("800 · due 2026-10-01 · 40 days late")).toBeInTheDocument();
+  });
+
+  it("says 1 day late in the singular", async () => {
+    overdue = [lateBill, dayLateBill];
+    openScreen();
+
+    expect(within(await rowOf("Dora Sample")).getByText("700 · due 2026-10-05 · 1 day late")).toBeInTheDocument();
+  });
+
+  it("shows nothing about lateness on an overdue bill with 0 days overdue", async () => {
+    overdue = [lateBill, notYetLateBill];
+    openScreen();
+
+    const emil = await rowOf("Emil Sample");
+    expect(within(emil).getByText("640 · due 2026-10-06")).toBeInTheDocument();
+    expect(within(emil).queryByText(/\blate\b/i)).toBeNull();
+  });
+
+  it("shows nothing about lateness in the row of an open bill", async () => {
+    openScreen();
+
+    expect(within(await rowOf("Anna Sample")).queryByText(/\blate\b/i)).toBeNull();
+  });
+
+  it("shows a Late field reading 40 days late in the detail of the 40 day bill", async () => {
+    openScreen();
+    await userEvent.click(await rowOf("Csilla Sample"));
+
+    await waitFor(() => expect(pane().textContent).toContain("Csilla Sample"));
+    expect(within(pane()).getByText("Late")).toBeInTheDocument();
+    expect(within(pane()).getByText("40 days late")).toBeInTheDocument();
+  });
+
+  it("shows a Late field reading 1 day late in the detail of the 1 day bill", async () => {
+    overdue = [lateBill, dayLateBill];
+    openScreen();
+    await userEvent.click(await rowOf("Dora Sample"));
+
+    await waitFor(() => expect(pane().textContent).toContain("Dora Sample"));
+    expect(within(pane()).getByText("Late")).toBeInTheDocument();
+    expect(within(pane()).getByText("1 day late")).toBeInTheDocument();
+  });
+
+  it("shows no Late field in the detail of an overdue bill with 0 days overdue", async () => {
+    overdue = [lateBill, notYetLateBill];
+    openScreen();
+    await userEvent.click(await rowOf("Emil Sample"));
+
+    await waitFor(() => expect(pane().textContent).toContain("Emil Sample"));
+    expect(pane().textContent).not.toMatch(/\blate\b/i);
+  });
+
+  it("shows no Late field in the detail of an open bill", async () => {
+    openScreen();
+    await userEvent.click(await rowOf("Anna Sample"));
+
+    await waitFor(() => expect(pane().textContent).toContain("Outstanding"));
+    expect(pane().textContent).not.toMatch(/\blate\b/i);
   });
 });
