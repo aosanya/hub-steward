@@ -32,7 +32,7 @@ The API appends every error-level record, including each request that ends in a 
 
 The script expects `hub-steward-swe` as a sibling of this repository and the repos in the folder above `projects/`, and needs `go` and `jq`. Missing any of these, or the two settings, it says so and exits without loading anything. `SWE_AGENCY_FILE`, `SWE_LOADER_DIR` and `BOARDS_ROOT` point it elsewhere.
 
-Not done by this script: the Product owner group and the Triager's seat in it ([the loader page](../../../../hub-steward-swe/documentation/3.%20implementation/loader.md) says why), and people, groups or forms.
+Not done by this script: the Product owner group and the Triager's seat in it (the loader page in the hub-steward-swe repo says why), and people, groups or forms.
 
 ## Addresses
 

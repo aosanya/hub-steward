@@ -1,6 +1,6 @@
 # Questions
 
-Open questions only. Settled ones move to [decisions.md](../../../hub-steward-swe/documentation/1.%20requirements/decisions.md);
+Open questions only. Settled ones move to decisions.md in the hub-steward-swe repo;
 the research skill keeps this list
 and walks it with the owner.
 
