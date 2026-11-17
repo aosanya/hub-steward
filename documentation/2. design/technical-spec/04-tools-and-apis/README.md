@@ -152,12 +152,15 @@ The bundled API registers more tool families than the lab uses. They belong to a
 
 Whether each tool is open to an agent role is set by the agency's role permissions, not by this page.
 
+Bookings of one person: `forms_catalog_booking_list_of_person` takes `actor_id` and lists that person's standing and cancelled bookings, earliest first (action `catalog.booking.list_of_person`). It is held by the new permission `appointment.view_person`, "See one person's bookings", and by no other; `appointment.manage` does not carry it. A person's own bookings stay `forms_catalog_booking_list_mine`.
+
 ## Audit log
 
 | Operation | Method and path | Reads / writes | Who | REST | MCP |
 |---|---|---|---|---|---|
 | List the agency's audit entries | `GET /audit/entries` | reads entries, newest first, each with `id`, `instance_id`, `actor`, `action`, `subject` and `at`; only the named agency's | the agency's owner, or a role that holds the permission `audit.view` | Exists | Exists: `audit_list_entries`, action `audit.entry.list` |
 
+- **Filters.** `audit_list_entries` takes optional `actor` and `subject` (uuids). Each narrows the list to the entries whose `actor` or `subject` equals it, both together to the entries that match both. The permission check is the same `audit.view` one.
 - **Module.** `modules/audit` in `code/wakala-api`: the object `audit_entry` (table `audit_entries`) and the one list operation, declared in `audit.blueprint.json` and `audit.operations.json`. An entry is append-only; it is never edited or removed.
 - **Permission.** `audit.view`, "View the audit log", carries the single action `audit.entry.list` (`modules/agency/models/permissions_catalog.json`). A caller who is neither the owner nor holds it is refused with a message naming the permission. The check is in `internal/api/http/mcp_tools_audit.go`.
 - **Writes that record an entry.** On the MCP tool path, after the write succeeds, `internal/api/http/mcp_audit_records.go` records the caller as `actor`, a plain `action` and the thing changed as `subject`, for the agency in the call's `instance_id`:
