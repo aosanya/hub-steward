@@ -12,37 +12,39 @@ vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({
 type Failure = "none" | "refused" | "unknown";
 
 let called: MockInstance<typeof mcp.callTool>;
-let forms: Record<string, unknown>[];
-let submissions: Record<string, Record<string, unknown>[]>;
-let formListFailure: Failure;
-let refusedSubmissionForms: string[];
+let applications: Record<string, unknown>[];
+let raised: Record<string, unknown>[];
+let applicationsFailure: Failure;
+let raisedFailure: Failure;
+let mounts: Record<string, unknown>[];
 let tenures: Record<string, unknown>[];
 let nodes: Record<string, unknown>[];
 let tenureFailure: Failure;
 let nodeFailure: Failure;
 
-const refusalWords = "forms_form_list: the hub refused this";
-
 const guessedTools = ["accounting_payment_list"];
+
+const failWith = (tool: string, failure: Failure) => {
+  if (failure === "refused") throw new mcp.McpError(`${tool}: the hub refused this`);
+  if (failure === "unknown") throw new Error(`${tool}: unknown tool`);
+};
 
 const answer = async (name: string, args: unknown) => {
   const given = (args ?? {}) as Record<string, unknown>;
-  if (name === "agency_list_mounts") return { modules: [{ module: "actor" }, { module: "forms" }] };
+  if (name === "agency_list_mounts") return { modules: [{ module: "actor" }, { module: "forms", mounts }] };
   if (name === "agency_get_my_roles") return { permissions: ["member.view"] };
   if (name === "actor_list_actors") return { items: [{ id: "p1", display_name: "Sample Resident A", status: "active" }] };
   if (name === "actor_get_actor") return { id: "p1", display_name: "Sample Resident A", status: "active" };
   if (name === "actor_list_groups_for_actor") return { items: [{ group_id: "g1" }] };
   if (name === "actor_list_groups") return { items: [{ id: "g1", name: "Sample Street Group" }] };
   if (name === "actor_list_attribute_properties") return { items: [] };
-  if (name === "forms_form_list") {
-    if (formListFailure === "refused") throw new mcp.McpError(refusalWords);
-    if (formListFailure === "unknown") throw new Error("forms_form_list: unknown tool");
-    return { items: forms };
+  if (name === "forms_submission_list_of_person") {
+    failWith(name, applicationsFailure);
+    return { items: applications };
   }
-  if (name === "forms_submission_list") {
-    const formId = String(given.form_id);
-    if (refusedSubmissionForms.includes(formId)) throw new mcp.McpError("forms_submission_list: the hub refused this form");
-    return { items: (submissions[formId] ?? []).filter((row) => row.member_id === given.member_id) };
+  if (name === "forms_catalog_raised_item_list_of_person") {
+    failWith(name, raisedFailure);
+    return { items: raised };
   }
   if (name === "digitaltwin_tenure_list") {
     if (tenureFailure === "refused") throw new mcp.McpError("digitaltwin_tenure_list: the hub refused this");
@@ -60,13 +62,11 @@ const answer = async (name: string, args: unknown) => {
 
 beforeEach(() => {
   openAgency("town");
-  formListFailure = "none";
-  refusedSubmissionForms = [];
-  forms = [
-    { id: "f1", title: "Sample Stall Permit" },
-    { id: "f2", title: "Sample Parking Permit" },
-  ];
-  submissions = {};
+  applicationsFailure = "none";
+  raisedFailure = "none";
+  applications = [];
+  raised = [];
+  mounts = [];
   tenureFailure = "none";
   nodeFailure = "none";
   nodes = [
@@ -96,7 +96,9 @@ const openPerson = async () => {
   await screen.findByText("Sample Street Group");
 };
 
-const submission = (id: string, formId: string, sentAt: string) => ({ id, form_id: formId, member_id: "p1", submitted_at: sentAt });
+const application = (id: string, formTitle: string, sentAt: string) => ({ id, form_id: `f-${id}`, member_id: "p1", submitted_at: sentAt, form_title: formTitle });
+
+const raisedItem = (id: string, title: string, status: string, createdAt: string) => ({ id, title, topic: "Sample Topic", status, created_at: createdAt, street: "Sample Street", area: "Sample Area" });
 
 const calledNames = () => called.mock.calls.map((call) => call[1]);
 
@@ -116,30 +118,41 @@ const mixedTenures = () => [
   tenure("t4", "n3", undefined, "owner", "2023-09-30T00:00:00Z"),
 ];
 
+const callsTo = (tool: string) => called.mock.calls.filter((call) => call[1] === tool);
+
 describe("applications on a person's detail", () => {
-  it("shows the Applications heading and a row for a submission on one form, asked for by form and person id", async () => {
-    submissions = { f1: [submission("s1", "f1", "2026-11-03T09:30:00Z")] };
+  it("asks once, by person id, and shows the form title with the day it was sent", async () => {
+    applications = [application("s1", "Sample Stall Permit", "2026-11-03T09:30:00Z")];
 
     await openPerson();
 
     expect(await screen.findByRole("heading", { name: "Applications" })).toBeTruthy();
     expect(await screen.findByText("Sample Stall Permit")).toBeTruthy();
     expect(screen.getByText(`Sent ${dayWords("2026-11-03T09:30:00Z")}`)).toBeTruthy();
-    await waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_submission_list", { form_id: "f1", member_id: "p1" }));
+    expect(callsTo("forms_submission_list_of_person")).toEqual([["", "forms_submission_list_of_person", { member_id: "p1" }]]);
   });
 
-  it("shows one row for each form with a submission and none for a form without", async () => {
-    forms = [...forms, { id: "f3", title: "Sample Market Licence" }];
-    submissions = {
-      f1: [submission("s1", "f1", "2026-11-03T09:30:00Z")],
-      f2: [submission("s2", "f2", "2026-11-05T14:00:00Z")],
-    };
+  it("never reads the form list or the per-form submissions", async () => {
+    applications = [application("s1", "Sample Stall Permit", "2026-11-03T09:30:00Z")];
 
     await openPerson();
 
-    expect(await screen.findByText("Sample Stall Permit")).toBeTruthy();
-    expect(await screen.findByText("Sample Parking Permit")).toBeTruthy();
-    expect(screen.queryByText("Sample Market Licence")).toBeNull();
+    await screen.findByText("Sample Stall Permit");
+    expect(calledNames()).not.toContain("forms_form_list");
+    expect(calledNames()).not.toContain("forms_submission_list");
+  });
+
+  it("lists the rows newest first", async () => {
+    applications = [
+      application("s1", "Sample Stall Permit", "2026-11-03T09:30:00Z"),
+      application("s2", "Sample Parking Permit", "2026-11-05T14:00:00Z"),
+    ];
+
+    await openPerson();
+
+    await screen.findByText("Sample Stall Permit");
+    const titles = screen.getAllByText(/^Sample (Stall|Parking) Permit$/).map((node) => node.textContent);
+    expect(titles).toEqual(["Sample Parking Permit", "Sample Stall Permit"]);
     expect(screen.getAllByText(/^Sent /)).toHaveLength(2);
   });
 
@@ -154,12 +167,12 @@ describe("applications on a person's detail", () => {
   it.each<[string, Failure]>([
     ["refused", "refused"],
     ["not served", "unknown"],
-  ])("shows no Applications and no error when the form list is %s, and the Groups still show", async (_label, failure) => {
-    formListFailure = failure;
+  ])("shows no Applications and no error when the call is %s, and the Groups still show", async (_label, failure) => {
+    applicationsFailure = failure;
 
     await openPerson();
 
-    await waitFor(() => expect(calledNames()).toContain("forms_form_list"));
+    await waitFor(() => expect(calledNames()).toContain("forms_submission_list_of_person"));
     expect(screen.getByRole("heading", { name: "Groups" })).toBeTruthy();
     expect(screen.getByText("Sample Street Group")).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "Applications" })).toBeNull();
@@ -168,24 +181,8 @@ describe("applications on a person's detail", () => {
     expect(screen.queryByText(/unknown tool/)).toBeNull();
   });
 
-  it("keeps the rows of a working form when another form's submissions are refused", async () => {
-    submissions = {
-      f1: [submission("s1", "f1", "2026-11-03T09:30:00Z")],
-      f2: [submission("s2", "f2", "2026-11-05T14:00:00Z")],
-    };
-    refusedSubmissionForms = ["f2"];
-
-    await openPerson();
-
-    expect(await screen.findByText("Sample Stall Permit")).toBeTruthy();
-    await waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_submission_list", { form_id: "f2", member_id: "p1" }));
-    expect(screen.queryByText("Sample Parking Permit")).toBeNull();
-    expect(screen.queryByText(/could not be loaded/i)).toBeNull();
-    expect(screen.queryByText(/the hub refused this form/)).toBeNull();
-  });
-
   it("claims no other kind of record: no guessed list is called and no other heading appears", async () => {
-    submissions = { f1: [submission("s1", "f1", "2026-11-03T09:30:00Z")] };
+    applications = [application("s1", "Sample Stall Permit", "2026-11-03T09:30:00Z")];
 
     await openPerson();
 
@@ -194,6 +191,78 @@ describe("applications on a person's detail", () => {
     for (const heading of ["Payments"]) {
       expect(screen.queryByRole("heading", { name: heading })).toBeNull();
     }
+  });
+});
+
+describe("wishes and issues on a person's detail", () => {
+  it("asks once for what the person raised and shows title with status and day, newest first", async () => {
+    raised = [
+      raisedItem("r1", "Sample Broken Lamp", "open", "2026-11-02T08:00:00Z"),
+      raisedItem("r2", "Sample Bench Wish", "received", "2026-11-06T10:00:00Z"),
+    ];
+
+    await openPerson();
+
+    expect(await screen.findByRole("heading", { name: "Wishes and issues" })).toBeTruthy();
+    await screen.findByText("Sample Broken Lamp");
+    expect(screen.getByText(`open, raised ${dayWords("2026-11-02T08:00:00Z")}`)).toBeTruthy();
+    expect(screen.getByText(`received, raised ${dayWords("2026-11-06T10:00:00Z")}`)).toBeTruthy();
+    const titles = screen.getAllByText(/^Sample (Broken Lamp|Bench Wish)$/).map((node) => node.textContent);
+    expect(titles).toEqual(["Sample Bench Wish", "Sample Broken Lamp"]);
+    expect(callsTo("forms_catalog_raised_item_list_of_person")).toEqual([["", "forms_catalog_raised_item_list_of_person", { raised_by: "p1" }]]);
+  });
+
+  it("comes after the Applications section", async () => {
+    await openPerson();
+
+    const applicationsHeading = await screen.findByRole("heading", { name: "Applications" });
+    const raisedHeading = await screen.findByRole("heading", { name: "Wishes and issues" });
+    expect(applicationsHeading.compareDocumentPosition(raisedHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("shows an empty card when the person raised nothing", async () => {
+    await openPerson();
+
+    expect(await screen.findByRole("heading", { name: "Wishes and issues" })).toBeTruthy();
+    expect(await screen.findByText("Nothing raised yet.")).toBeTruthy();
+  });
+
+  it("takes the heading from the agency's own word for it", async () => {
+    mounts = [{ name: "Forms", words: { "Wishes and issues": "Requests" } }];
+
+    await openPerson();
+
+    expect(await screen.findByRole("heading", { name: "Requests" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Wishes and issues" })).toBeNull();
+  });
+
+  it.each<[string, Failure]>([
+    ["refused", "refused"],
+    ["not served", "unknown"],
+  ])("shows no section and no error when the call is %s, and the rest of the panel still shows", async (_label, failure) => {
+    raisedFailure = failure;
+    applications = [application("s1", "Sample Stall Permit", "2026-11-03T09:30:00Z")];
+
+    await openPerson();
+
+    await waitFor(() => expect(calledNames()).toContain("forms_catalog_raised_item_list_of_person"));
+    expect(await screen.findByText("Sample Stall Permit")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Groups" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Applications" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Wishes and issues" })).toBeNull();
+    expect(screen.queryByText("Nothing raised yet.")).toBeNull();
+    expect(screen.queryByText(/could not be loaded/i)).toBeNull();
+    expect(screen.queryByText(/the hub refused this/)).toBeNull();
+    expect(screen.queryByText(/unknown tool/)).toBeNull();
+  });
+
+  it("never reads the caller's own raised list", async () => {
+    raised = [raisedItem("r1", "Sample Broken Lamp", "open", "2026-11-02T08:00:00Z")];
+
+    await openPerson();
+
+    await screen.findByText("Sample Broken Lamp");
+    expect(calledNames()).not.toContain("forms_catalog_raised_item_list_mine");
   });
 });
 
@@ -252,7 +321,7 @@ describe("holdings on a person's detail", () => {
   ])("shows no Holdings and no error when the tenure list is %s, and the rest of the panel still shows", async (_label, failure) => {
     tenures = mixedTenures();
     tenureFailure = failure;
-    submissions = { f1: [submission("s1", "f1", "2026-11-03T09:30:00Z")] };
+    applications = [application("s1", "Sample Stall Permit", "2026-11-03T09:30:00Z")];
 
     await openPerson();
 
