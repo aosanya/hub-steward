@@ -8,6 +8,7 @@ import (
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
+	"wakalaserver/modules/shared/dispatch"
 	"wakalaserver/modules/shared/plaintext"
 )
 
@@ -108,6 +109,10 @@ func listInstances(reg agencies.Registry) http.HandlerFunc {
 func writeInstanceErr(w http.ResponseWriter, err error) {
 	if errors.Is(err, agencies.ErrInstanceNotFound) {
 		writeErr(w, http.StatusNotFound, err.Error())
+		return
+	}
+	if errors.Is(err, dispatch.ErrForbidden) {
+		writeErr(w, http.StatusForbidden, err.Error())
 		return
 	}
 	writeInternalErr(w, err)

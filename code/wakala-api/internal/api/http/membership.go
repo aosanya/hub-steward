@@ -27,6 +27,10 @@ func agencyManagerFor(ctx context.Context, reg agencies.Registry, instanceID str
 	if err := mustBeMember(ctx, reg, instanceID); err != nil {
 		return nil, err
 	}
+	return admittedAgencyManager(ctx, reg, instanceID)
+}
+
+func admittedAgencyManager(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamaagency.AgencyManager, error) {
 	m, err := reg.AgencyManager(ctx, instanceID)
 	if err != nil {
 		return nil, err

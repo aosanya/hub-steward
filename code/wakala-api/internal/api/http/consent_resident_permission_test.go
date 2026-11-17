@@ -95,8 +95,8 @@ func TestConsentResidentPermission_AResidentWhoseRoleLacksConsentPublishIsRefuse
 	cw := newConsentPermissionWalk(t)
 	for name, subject := range map[string]string{"role without the permission": cw.reader, "resident with no role": cw.actorID} {
 		t.Run(name, func(t *testing.T) {
-			cw.mcpRefused(t, subject, "custody_list_consent_versions", map[string]any{"instance_id": cw.instance}, "instance not found")
-			cw.mcpRefused(t, subject, "custody_publish_consent_version", map[string]any{"instance_id": cw.instance, "text": "mine"}, "instance not found")
+			cw.mcpRefused(t, subject, "custody_list_consent_versions", map[string]any{"instance_id": cw.instance}, "consent.publish")
+			cw.mcpRefused(t, subject, "custody_publish_consent_version", map[string]any{"instance_id": cw.instance, "text": "mine"}, "consent.publish")
 		})
 	}
 }
@@ -126,10 +126,10 @@ func TestConsentResidentPermission_RestRoutesAgreeWithTheTools(t *testing.T) {
 	if listed := cw.call(t, "GET", base+"/versions", nil, publisher); listed.Code != 200 {
 		t.Fatalf("list by the role holder: %d %s, want 200", listed.Code, listed.Body.String())
 	}
-	if refused := cw.call(t, "GET", base+"/versions", nil, reader); refused.Code != 404 {
-		t.Fatalf("list by the role without the permission: %d %s, want 404", refused.Code, refused.Body.String())
+	if refused := cw.call(t, "GET", base+"/versions", nil, reader); refused.Code != 403 {
+		t.Fatalf("list by the role without the permission: %d %s, want 403", refused.Code, refused.Body.String())
 	}
-	if refused := cw.call(t, "POST", base+"/text", map[string]any{"text": "mine"}, reader); refused.Code != 404 {
-		t.Fatalf("publish by the role without the permission: %d %s, want 404", refused.Code, refused.Body.String())
+	if refused := cw.call(t, "POST", base+"/text", map[string]any{"text": "mine"}, reader); refused.Code != 403 {
+		t.Fatalf("publish by the role without the permission: %d %s, want 403", refused.Code, refused.Body.String())
 	}
 }

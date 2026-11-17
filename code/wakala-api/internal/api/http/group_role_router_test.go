@@ -23,8 +23,8 @@ func TestGroupRolesBehindTheAccountRouter_TheOwnerGivesTheRoleAndTheGroupIsAdmit
 	_, amina := w.resident(t, "Amina", "Support")
 	group := w.group(t, "Support")
 
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("before the role is given: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("before the role is given: %d, want 403", code)
 	}
 	rec := w.call(t, "POST", w.groupRolesPath(), map[string]any{"group_id": group, "agency_role_id": w.roles["Reader"]}, w.owner)
 	if rec.Code != http.StatusCreated {
@@ -41,7 +41,7 @@ func TestGroupRolesBehindTheAccountRouter_TheOwnerGivesTheRoleAndTheGroupIsAdmit
 	if rec.Code != http.StatusOK {
 		t.Fatalf("owner takes the role through the router: %d %s", rec.Code, rec.Body.String())
 	}
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("after the role is taken: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("after the role is taken: %d, want 403", code)
 	}
 }

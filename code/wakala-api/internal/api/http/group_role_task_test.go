@@ -11,6 +11,7 @@ import (
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
+	"wakalaserver/modules/shared/dispatch"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	"wakalaserver/internal/accounts"
@@ -123,8 +124,8 @@ func (w groupRoleWalk) create(t *testing.T, as *http.Cookie) int {
 func TestGroupRoles_AResidentWithNoRoleSeesNothing(t *testing.T) {
 	w := newGroupRoleWalk(t)
 	_, amina := w.resident(t, "Amina", "Support")
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("a resident whose group holds no role lists tasks: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("a resident whose group holds no role lists tasks: %d, want 403", code)
 	}
 	stranger := w.cookieFor(t, "a-stranger")
 	if code := w.list(t, stranger); code != http.StatusNotFound {
@@ -179,8 +180,8 @@ func TestGroupRoles_LeavingTheGroupTakesTheRoleAway(t *testing.T) {
 	if _, _, err := w.directory(t).Deregister(context.Background(), id, w.group(t, "Support")); err != nil {
 		t.Fatalf("Deregister: %v", err)
 	}
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("after leaving the group: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("after leaving the group: %d, want 403", code)
 	}
 }
 
@@ -192,8 +193,8 @@ func TestGroupRoles_TakingTheRoleFromTheGroupClosesTheModule(t *testing.T) {
 	if err := holder.TakeGroupRole(context.Background(), w.instance, w.group(t, "Support"), w.roles["Reader"]); err != nil {
 		t.Fatalf("TakeGroupRole: %v", err)
 	}
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("after the role is taken from the group: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("after the role is taken from the group: %d, want 403", code)
 	}
 }
 
@@ -243,8 +244,8 @@ func TestGroupRoles_TheOwnerGivesAndTakesAGroupRoleThroughTheRoutes(t *testing.T
 	if rec.Code != http.StatusOK {
 		t.Fatalf("owner takes the role: %d %s", rec.Code, rec.Body.String())
 	}
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("after the role is taken: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("after the role is taken: %d, want 403", code)
 	}
 }
 
@@ -345,8 +346,8 @@ func TestGroupRoles_GivingAccessAlsoGivesTheMatchingRoleAndTakingItAwayTakesTheR
 	if rec := w.call(t, "PUT", w.tm("/backlog-owner-group"), map[string]any{"group_id": staff}, w.owner); rec.Code != http.StatusNoContent {
 		t.Fatalf("set owner group: %d %s", rec.Code, rec.Body.String())
 	}
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("before any access: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("before any access: %d, want 403", code)
 	}
 
 	if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+support), map[string]any{"level": "see"}, w.owner); rec.Code != http.StatusOK {
@@ -384,8 +385,8 @@ func TestGroupRoles_GivingAccessAlsoGivesTheMatchingRoleAndTakingItAwayTakesTheR
 	if len(held) != 0 {
 		t.Fatalf("after the last access is taken the group still holds %v", held)
 	}
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("after access and role are taken: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("after access and role are taken: %d, want 403", code)
 	}
 }
 
@@ -505,8 +506,8 @@ func TestGroupRoles_APersonWhoCannotSeeTasksIsStillToldNothingAboutBacklogs(t *t
 	amina, _ := w.resident(t, "Amina", "Support")
 	for _, action := range []string{"taskmanager.task.move_to_step", "taskmanager.task.list"} {
 		err := w.toolRefusal(t, amina, action)
-		if !errors.Is(err, agencies.ErrInstanceNotFound) {
-			t.Fatalf("a person with no role asking for %s gets %v, want instance not found", action, err)
+		if !errors.Is(err, dispatch.ErrForbidden) || errors.Is(err, agencies.ErrInstanceNotFound) {
+			t.Fatalf("a person with no role asking for %s gets %v, want a refusal by permission", action, err)
 		}
 	}
 }

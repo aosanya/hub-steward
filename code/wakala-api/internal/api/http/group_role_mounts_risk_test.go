@@ -39,7 +39,7 @@ func TestGroupRoleMounts_ACouncilRiskReaderWhoseRoleLacksMountListIsRefusedTheMo
 	w.riskReaderRole(t)
 	_, reader := w.resident(t, "Reader", "Analysts")
 	w.giveRole(t, "Analysts", riskReaderName)
-	if code, body := w.mountsAs(t, reader); code != http.StatusNotFound {
-		t.Fatalf("a resident whose role holds only risk.read reads the mounts: %d %s, want 404", code, body)
+	if code, body := w.mountsAs(t, reader); code != http.StatusForbidden {
+		t.Fatalf("a resident whose role holds only risk.read reads the mounts: %d %s, want 403", code, body)
 	}
 }

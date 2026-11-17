@@ -96,11 +96,11 @@ func TestJourney07_GroupRolesWalkedThroughTheRoutes(t *testing.T) {
 		t.Fatalf("set the owner group: %d %s", rec.Code, rec.Body.String())
 	}
 
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("step 1, a member of a group with no role lists issues: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("step 1, a member of a group with no role lists issues: %d, want 403", code)
 	}
-	if code := w.create(t, amina); code != http.StatusNotFound {
-		t.Fatalf("step 1, a member of a group with no role creates an issue: %d, want 404", code)
+	if code := w.create(t, amina); code != http.StatusForbidden {
+		t.Fatalf("step 1, a member of a group with no role creates an issue: %d, want 403", code)
 	}
 	if code := w.list(t, w.owner); code != http.StatusOK {
 		t.Fatalf("step 1, the owner lists issues: %d, want 200", code)
@@ -195,8 +195,8 @@ func TestJourney07_GroupRolesWalkedThroughTheRoutes(t *testing.T) {
 	if got := w.heldRoles(t, support); len(got) != 0 {
 		t.Fatalf("step 7, Support still holds %v after its last access was taken away", got)
 	}
-	if code := w.list(t, kofi); code != http.StatusNotFound {
-		t.Fatalf("step 7, a member of Support after the access and role are gone: %d, want 404", code)
+	if code := w.list(t, kofi); code != http.StatusForbidden {
+		t.Fatalf("step 7, a member of Support after the access and role are gone: %d, want 403", code)
 	}
 	if code := w.list(t, amina); code != http.StatusOK {
 		t.Fatalf("step 7, Amina still has Contributors: %d, want 200", code)
@@ -204,7 +204,7 @@ func TestJourney07_GroupRolesWalkedThroughTheRoutes(t *testing.T) {
 	if _, _, err := w.directory(t).Deregister(context.Background(), aminaID, contributors); err != nil {
 		t.Fatalf("Deregister: %v", err)
 	}
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("step 7, Amina after leaving Contributors: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("step 7, Amina after leaving Contributors: %d, want 403", code)
 	}
 }

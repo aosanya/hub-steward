@@ -67,8 +67,8 @@ func TestGroupRoleRisk_AResidentWithNoRoleListsNoRisks(t *testing.T) {
 	w := newGroupRoleWalk(t)
 	w.riskReaderRole(t)
 	_, amina := w.resident(t, "Amina", "Analysts")
-	if code := w.listRisks(t, amina); code != http.StatusNotFound {
-		t.Fatalf("a resident whose group holds no role lists risks: %d, want 404", code)
+	if code := w.listRisks(t, amina); code != http.StatusForbidden {
+		t.Fatalf("a resident whose group holds no role lists risks: %d, want 403", code)
 	}
 	if code := w.listRisks(t, w.owner); code != http.StatusOK {
 		t.Fatalf("the owner lists risks: %d, want 200", code)

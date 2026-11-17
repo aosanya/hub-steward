@@ -12,6 +12,8 @@ import (
 	dispatch "wakalaserver/modules/shared/dispatch"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
+	agencymodels "wakalaserver/modules/agency/models"
+
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 )
@@ -40,18 +42,31 @@ func (d *Deps) callerPermissionCodes(ctx context.Context, instanceID string) ([]
 }
 
 func (d *Deps) taskManagerAdmitted(ctx context.Context, instanceID string) error {
-	return d.admittedHolding(ctx, instanceID, func(codes []string) bool {
+	return d.admittedHolding(ctx, instanceID, permissionRefusal(taskListAction), func(codes []string) bool {
 		return slices.Contains(codes, taskReadPermission)
 	})
 }
 
 func (d *Deps) admittedHoldingAction(ctx context.Context, instanceID, action string) error {
-	return d.admittedHolding(ctx, instanceID, func(codes []string) bool {
+	return d.admittedHolding(ctx, instanceID, permissionRefusal(action), func(codes []string) bool {
 		return permissionsAllow(codes, action)
 	})
 }
 
-func (d *Deps) admittedHolding(ctx context.Context, instanceID string, holds func(codes []string) bool) error {
+func permissionRefusal(action string) error {
+	carrier, found := agencymodels.Permission{}, false
+	for _, p := range agencymodels.PermissionCatalog() {
+		if slices.Contains(p.Actions, action) && (!found || len(p.Actions) < len(carrier.Actions)) {
+			carrier, found = p, true
+		}
+	}
+	if !found {
+		return fmt.Errorf("%w: you need a permission that allows %s in this agency; ask its owner to give it to one of your roles", dispatch.ErrForbidden, action)
+	}
+	return fmt.Errorf("%w: you need the permission %q (%s) in this agency to do this; ask its owner to give it to one of your roles", dispatch.ErrForbidden, carrier.Name, carrier.Code)
+}
+
+func (d *Deps) admittedHolding(ctx context.Context, instanceID string, refusal error, holds func(codes []string) bool) error {
 	err := mustBeMember(ctx, d.Registry, instanceID)
 	if err == nil || !errors.Is(err, agencies.ErrInstanceNotFound) {
 		return err
@@ -66,7 +81,7 @@ func (d *Deps) admittedHolding(ctx context.Context, instanceID string, holds fun
 	}
 	codes, cerr := d.callerPermissionCodes(withPartitionContext(ctx, instanceID), instanceID)
 	if cerr != nil || !holds(codes) {
-		return agencies.ErrInstanceNotFound
+		return refusal
 	}
 	return opaqueMembershipError(adoptCallerAsActor(ctx, d.Registry, instanceID, caller))
 }
@@ -82,7 +97,7 @@ func (d *Deps) admittedByRolePermission(ctx context.Context, reg agencies.Regist
 		return agencies.ErrInstanceNotFound
 	}
 	if !d.heldRolesAllow(withPartitionContext(ctx, instanceID), reg, action) {
-		return agencies.ErrInstanceNotFound
+		return permissionRefusal(action)
 	}
 	return opaqueMembershipError(adoptCallerAsActor(ctx, reg, instanceID, caller))
 }
@@ -190,7 +205,7 @@ func (d *Deps) taskToolRefusal(ctx context.Context, raw json.RawMessage, action 
 		return nil
 	}
 	if authorize(ctx, taskListAction) != nil {
-		return agencies.ErrInstanceNotFound
+		return permissionRefusal(taskListAction)
 	}
 	if taskMoveActions[action] {
 		return fmt.Errorf("%w: %s", mwanachamataskmanager.ErrBacklogForbidden, roleTooSmallToMove)

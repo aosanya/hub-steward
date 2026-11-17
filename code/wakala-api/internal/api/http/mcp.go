@@ -34,14 +34,11 @@ import (
 	"wakalaserver/internal/dbpool"
 )
 
-// resolveAgencyManager turns a caller-supplied InstanceID into the
-// mwanachama-backend-agency manager for that Instance. A tool never sees a
-// raw agencies.ErrInstanceNotFound — the SDK reports any non-nil error as a
-// tool-level failure (IsError), which already reads clearly enough
-// ("instance not found") without this package inventing a second error
-// shape just for MCP.
 func (d *Deps) resolveAgencyManager(ctx context.Context, instanceID string) (mwanachamaagency.AgencyManager, error) {
-	return agencyManagerFor(ctx, d.Registry, instanceID)
+	if err := d.memberOrClearedResident(ctx, instanceID); err != nil {
+		return nil, err
+	}
+	return admittedAgencyManager(ctx, d.Registry, instanceID)
 }
 
 func (d *Deps) resolveSourceManager(ctx context.Context, instanceID string) (mwanachamasources.SourceManager, error) {

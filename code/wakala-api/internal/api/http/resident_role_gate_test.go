@@ -3,12 +3,14 @@ package http
 import (
 	"context"
 	"errors"
+	"strings"
 	"testing"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	ai "wakalaserver/modules/ai"
 	airoutes "wakalaserver/modules/ai/routes"
+	"wakalaserver/modules/shared/dispatch"
 )
 
 func residentGateWalk(t *testing.T) groupRoleWalk {
@@ -52,17 +54,20 @@ func TestAResidentInAGroupWhoseRoleHoldsMountListListsTheMounts(t *testing.T) {
 	}
 }
 
-func TestAResidentWhoseRoleLacksMountListIsRefusedTheMountsWithTheSameTextAsAStranger(t *testing.T) {
+func TestAResidentWhoseRoleLacksMountListIsRefusedTheMountsByPermissionAndAStrangerIsNotFound(t *testing.T) {
 	w := residentGateWalk(t)
 	reader, _ := w.resident(t, "Amina", "Support")
 	w.giveRole(t, "Support", "Reader")
 	noRole, _ := w.resident(t, "Zuri", "Ops")
 
-	for name, id := range map[string]string{"role without mount.list": reader, "group with no role": noRole, "stranger": "a-stranger"} {
+	for name, id := range map[string]string{"role without mount.list": reader, "group with no role": noRole} {
 		_, err := w.deps.agencyMounts(asPerson(id), w.deps.Registry, w.instance)
-		if !errors.Is(err, agencies.ErrInstanceNotFound) {
-			t.Errorf("%s lists the mounts: %v, want the instance-not-found refusal", name, err)
+		if !errors.Is(err, dispatch.ErrForbidden) || !strings.Contains(err.Error(), "mount.list") {
+			t.Errorf("%s lists the mounts: %v, want a refusal naming mount.list", name, err)
 		}
+	}
+	if _, err := w.deps.agencyMounts(asPerson("a-stranger"), w.deps.Registry, w.instance); !errors.Is(err, agencies.ErrInstanceNotFound) {
+		t.Errorf("a stranger lists the mounts: %v, want the instance-not-found refusal", err)
 	}
 }
 

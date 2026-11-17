@@ -13,7 +13,13 @@ import (
 )
 
 func (d *Deps) resolveTwin(ctx context.Context, instanceID string) (mwanachamadigitaltwin.TwinManager, error) {
-	return twinManagerFor(ctx, d.Registry, instanceID)
+	if err := mustBeMounted(ctx, d.Registry, instanceID, "digitaltwin"); err != nil {
+		return nil, err
+	}
+	if err := d.memberOrClearedResident(ctx, instanceID); err != nil {
+		return nil, err
+	}
+	return d.Registry.TwinManager(ctx, instanceID)
 }
 
 func digitaltwinToolMount() digitaltwinroutes.Mount {
@@ -39,4 +45,5 @@ func digitaltwinToolActions() map[string]string {
 func (d *Deps) registerDigitaltwinMCPTools(server *mcp.Server) {
 	digitaltwinmcp.RegisterResolvedTools(server, d.resolveTwin, digitaltwinToolMount())
 	d.guardToolPermissions(server, digitaltwinToolActions())
+	d.guardResidentToolPermissions(server, digitaltwinToolActions())
 }

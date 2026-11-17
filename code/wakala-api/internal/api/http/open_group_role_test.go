@@ -41,8 +41,8 @@ func TestOpenGroupRoles_AnOpenGroupCannotBeGivenARole(t *testing.T) {
 	if code := w.join(t, "Dev", outsider); code != http.StatusOK {
 		t.Fatalf("join the open group: %d, want 200", code)
 	}
-	if code := w.list(t, outsider); code != http.StatusNotFound {
-		t.Fatalf("a resident who joined an open group lists tasks: %d, want 404", code)
+	if code := w.list(t, outsider); code != http.StatusForbidden {
+		t.Fatalf("a resident who joined an open group lists tasks: %d, want 403", code)
 	}
 }
 
@@ -56,14 +56,14 @@ func TestOpenGroupRoles_SwitchingARoleGroupToOpenSuspendsTheRole(t *testing.T) {
 	}
 
 	w.setJoinMode(t, "Dev", "open")
-	if code := w.list(t, member); code != http.StatusNotFound {
-		t.Fatalf("a member of the group once it is open lists tasks: %d, want 404", code)
+	if code := w.list(t, member); code != http.StatusForbidden {
+		t.Fatalf("a member of the group once it is open lists tasks: %d, want 403", code)
 	}
 	if code := w.join(t, "Dev", outsider); code != http.StatusOK {
 		t.Fatalf("join the open group: %d, want 200", code)
 	}
-	if code := w.list(t, outsider); code != http.StatusNotFound {
-		t.Fatalf("a resident who joined the open group lists tasks: %d, want 404", code)
+	if code := w.list(t, outsider); code != http.StatusForbidden {
+		t.Fatalf("a resident who joined the open group lists tasks: %d, want 403", code)
 	}
 	rec := w.call(t, "GET", "/instances/"+w.instance+"/my-roles", nil, member)
 	if raw, _ := decodeObject(t, rec)["permissions"].([]any); len(raw) != 0 {
@@ -97,7 +97,7 @@ func TestOpenGroupRoles_BacklogAccessForAnOpenGroupGivesAccessButNoRole(t *testi
 	if got == nil || got["level"] != "see" || got["no_role"] != true {
 		t.Fatalf("access entry for the open group = %v, want level see and no_role true", got)
 	}
-	if code := w.list(t, amina); code != http.StatusNotFound {
-		t.Fatalf("a member of the open group lists tasks: %d, want 404", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("a member of the open group lists tasks: %d, want 403", code)
 	}
 }

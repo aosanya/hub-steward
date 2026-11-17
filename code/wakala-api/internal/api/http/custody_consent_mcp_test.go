@@ -119,8 +119,8 @@ func TestCustodyConsentMCP_OwnerPublishesTheTextAndAResidentReadsAgreesAndWithdr
 		t.Fatalf("resident before agreeing: %v, want status none", state)
 	}
 
-	cw.mcpRefused(t, resident, "custody_list_consent_versions", base(nil), "instance not found")
-	cw.mcpRefused(t, resident, "custody_publish_consent_version", base(map[string]any{"text": "mine"}), "instance not found")
+	cw.mcpRefused(t, resident, "custody_list_consent_versions", base(nil), "consent.publish")
+	cw.mcpRefused(t, resident, "custody_publish_consent_version", base(map[string]any{"text": "mine"}), "consent.publish")
 	cw.mcpRefused(t, owner, "custody_publish_consent_version", base(map[string]any{"text": "   "}), "text is required")
 	cw.mcpRefused(t, owner, "custody_publish_consent_version", base(map[string]any{"text": strings.Repeat("x", 2001)}), "2000")
 
