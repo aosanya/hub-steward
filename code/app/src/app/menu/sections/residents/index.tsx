@@ -2,6 +2,7 @@ import { Route } from "react-router-dom";
 import { routes as appRoutes } from "../../../routes";
 import { BusinessNewScreen } from "./BusinessNewScreen";
 import { BusinessesScreen } from "./BusinessesScreen";
+import { InformalTraderNewScreen } from "./InformalTraderNewScreen";
 import { InformalTradersScreen } from "./InformalTradersScreen";
 import { AllPeopleScreen, CommunicationsScreen, GroupsScreen, HouseholdsScreen, RegistrationsScreen } from "./PeopleScreens";
 import { residentPaths } from "./paths";
@@ -26,5 +27,6 @@ export const routes = () => (
     <Route path={residentPaths.businesses.pattern} element={<BusinessesScreen />} />
     <Route path={appRoutes.businessNew.pattern} element={<BusinessNewScreen />} />
     <Route path={residentPaths.informalTraders.pattern} element={<InformalTradersScreen />} />
+    <Route path={appRoutes.informalTraderNew.pattern} element={<InformalTraderNewScreen />} />
   </>
 );
