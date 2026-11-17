@@ -6,7 +6,7 @@ Status: the owner reviewed the drawing on 2026-11-17 and accepted it. The open q
 
 ## Where it is reached from
 
-Agency > Goals, then an objective, then its workflow, then one step. There is no page for a workflow in the console yet, so the drawing keeps Goals as the open menu row and shows the path in the breadcrumb: Agency / Goals / Loan payment / Work out the monthly payment. Because the screen edits the agency's definition it carries the draft bar under the title row, and its one filled button, Save step, sits at the right end of the title row.
+Agency > Workflows, then one workflow, then one step. The console has a Workflows row under Agency and a workflow opens from it, so the drawing keeps Workflows as the open menu row and shows the path in the breadcrumb: Agency / Workflows / Loan payment / Work out the monthly payment. Because the screen edits the agency's definition it carries the draft bar under the title row, and its one filled button, Save step, sits at the right end of the title row.
 
 ## Screens
 

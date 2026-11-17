@@ -37,7 +37,7 @@ Not found: a console mockup of the Steps tab, and any record of what the studio'
 | 1 | The workflow as it should be | Set the terms, then a bulk calculating step confirmed by the Treasurer, then a calculating step run by the agency, then two posting steps. The payment step is working. The late fee step carries the tag No scenario has run it. |
 | 2 | The same workflow after a change | The payment step has two inputs drawn in red, one with no source and one whose question was reworded, a newer version of its function exists, and its tag reads Needs attention. The late fee step is working. |
 
-The page keeps the console's menu, with Agency open on Goals, the draft bar under the title row, and the chat folded to its rail so the canvas has room.
+The page keeps the console's menu, with Agency open on Workflows (the row a workflow opens from) and the breadcrumb Agency / Workflows / Loan payment, the draft bar under the title row, and the chat folded to its rail so the canvas has room.
 
 ## The states of a step
 
