@@ -11,6 +11,8 @@ import { useBackToSection } from "../../useBackToSection";
 import { useWord } from "../../../../features/agency/useWord";
 import { listOf, text, type Item } from "../staff/staffData";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
+import { dayWords } from "../../../../shared/ui/days";
+import { decidedWords, decisionStatus, reasonWords } from "./decision";
 
 export const withdrawLabel = "Withdraw";
 
@@ -79,10 +81,20 @@ function ApplicationAnswers({ formId, version, onCorrected }: { formId: string; 
   );
 }
 
+const statusOf = (sent: Item) => (text(sent, "withdrawn_at") !== "" ? withdrawnWords : decisionStatus(text(sent, "decision")) || sentWords);
+
+const decidedLine = (sent: Item) => {
+  const by = text(sent, "decided_by");
+  const day = dayWords(text(sent, "decided_at"));
+  return [day, by].filter((part) => part !== "").join(" by ");
+};
+
 const loadApplication = async (id: string) => {
   const sent = unwrapped(await callTool("", "forms_submission_read_mine", { form_id: id }));
-  return { ...sent, form_id: id, status: text(sent, "withdrawn_at") === "" ? sentWords : withdrawnWords };
+  return { ...sent, form_id: id, status: statusOf(sent), decided_line: decisionStatus(text(sent, "decision")) === "" ? "" : decidedLine(sent) };
 };
+
+const decisionFields = { [decidedWords]: "decided_line", [reasonWords]: "decision_note" };
 
 export function useApplicationDetail() {
   const [version, setVersion] = useState(0);
@@ -94,7 +106,7 @@ export function useApplicationDetail() {
   };
   const detail = {
     tool: "forms_submission_read_mine",
-    fields: {},
+    fields: decisionFields,
     status: "status",
     load: loadApplication,
     action: { label: withdrawLabel, tool: "forms_form_withdraw", run: withdraw, when: (item: Item) => text(item, "status") !== withdrawnWords },
