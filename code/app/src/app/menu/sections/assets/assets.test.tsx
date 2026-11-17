@@ -54,6 +54,13 @@ const datedTasks: Record<string, string>[] = [
   { id: "d2", title: "Clear the gutters", state: "In progress", status: "in_progress" },
 ];
 
+const linkedTasks: Record<string, string>[] = [
+  { id: "k1", title: "Patch the Ring Road edge", state: "To do", status: "pending", due_at: "2026-11-24T00:00:00Z", linked_ref: "r1" },
+  { id: "k2", title: "Service the roller", state: "In progress", status: "in_progress", linked_ref: "e1" },
+  { id: "k3", title: "Clear the gutters", state: "In progress", status: "in_progress" },
+  { id: "k4", title: "Check the old record", state: "To do", status: "pending", linked_ref: "nothing-here" },
+];
+
 const repeating = [
   { id: "p1", title: "Grease the pumps", schedule_rule: "FREQ=WEEKLY" },
   { id: "p2", title: "Inspect the fire exits", schedule_rule: "FREQ=MONTHLY" },
@@ -334,6 +341,145 @@ describe("Work Orders with a due day", () => {
       const main = document.querySelector(".wf-main") as HTMLElement;
       await within(main).findByText("Clear the gutters");
       expect(within(main).queryByText("Due")).toBeNull();
+    });
+  });
+});
+
+describe("Work Orders linked to an asset", () => {
+  beforeEach(() => {
+    listed = linkedTasks;
+  });
+
+  const findRowIn = async (container: HTMLElement, title: string) =>
+    (await within(container).findByText(title, { selector: ".ttl" })).closest(".row") as HTMLElement;
+
+  it("adds the place of the linked asset to the row meta after the state and the due day, on one line", async () => {
+    showRouted("Work Orders");
+
+    await screen.findByText("Patch the Ring Road edge", { selector: ".ttl" });
+    expect(metaOf(rowOf("Patch the Ring Road edge"))).toEqual(["To do · due Tuesday, 24 Nov · North Depot"]);
+  });
+
+  it("adds the place straight after the state when the job has a linked asset but no due day", async () => {
+    showRouted("Work Orders");
+
+    await screen.findByText("Service the roller", { selector: ".ttl" });
+    expect(metaOf(rowOf("Service the roller"))).toEqual(["In progress · Riverside Yard"]);
+  });
+
+  it("keeps the row meta as it was for a job with no linked asset", async () => {
+    showRouted("Work Orders");
+
+    await screen.findByText("Clear the gutters", { selector: ".ttl" });
+    expect(metaOf(rowOf("Clear the gutters"))).toEqual(["In progress"]);
+  });
+
+  it("adds nothing to the row meta when the linked asset is not in the asset list", async () => {
+    showRouted("Work Orders");
+
+    await screen.findByText("Check the old record", { selector: ".ttl" });
+    expect(metaOf(rowOf("Check the old record"))).toEqual(["To do"]);
+    expect(rowTitles()).toEqual(["Patch the Ring Road edge", "Service the roller", "Clear the gutters", "Check the old record"]);
+  });
+
+  it("asks for the asset list and the location list once each for the whole list of work orders", async () => {
+    showRouted("Work Orders");
+    await screen.findByText("Patch the Ring Road edge", { selector: ".ttl" });
+
+    expect(callsTo(assetList)).toHaveLength(1);
+    expect(callsTo(locationList)).toHaveLength(1);
+    expect(callsTo(assetRead)).toHaveLength(0);
+    expect(callsTo(locationRead)).toHaveLength(0);
+  });
+
+  it("shows About with the asset's name and Place with its place, after the Due row, in the detail", async () => {
+    showRouted("Work Orders");
+    await userEvent.click(await screen.findByRole("button", { name: /Patch the Ring Road edge/ }));
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    await within(detail).findByText("Patch the Ring Road edge");
+    expect(metaOf(await findRowIn(detail, "About"))).toEqual(["Ring Road"]);
+    expect(metaOf(await findRowIn(detail, "Place"))).toEqual(["North Depot"]);
+    const titles = Array.from(detail.querySelectorAll(".row .ttl")).map((title) => title.textContent);
+    expect(titles.indexOf("About")).toBeGreaterThan(titles.indexOf("Due"));
+    expect(titles.indexOf("Place")).toBeGreaterThan(titles.indexOf("About"));
+    expect(called).toHaveBeenCalledWith("", assetRead, { assetID: "r1" });
+    expect(called).toHaveBeenCalledWith("", locationRead, { locationID: "l1" });
+  });
+
+  it("shows the other asset and its place for a job linked to another asset", async () => {
+    showRouted("Work Orders");
+    await userEvent.click(await screen.findByRole("button", { name: /Service the roller/ }));
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expect(metaOf(await findRowIn(detail, "About"))).toEqual(["Road roller"]);
+    expect(metaOf(await findRowIn(detail, "Place"))).toEqual(["Riverside Yard"]);
+    expect(called).toHaveBeenCalledWith("", assetRead, { assetID: "e1" });
+    expect(called).toHaveBeenCalledWith("", locationRead, { locationID: "l2" });
+  });
+
+  it("shows no About and no Place row, and reads no asset, for a job with no linked asset", async () => {
+    showRouted("Work Orders");
+    await userEvent.click(await screen.findByRole("button", { name: /Clear the gutters/ }));
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    await within(detail).findByText("Clear the gutters");
+    expect(await within(detail).findByText("In progress")).toBeInTheDocument();
+    expect(within(detail).queryByText("About")).toBeNull();
+    expect(within(detail).queryByText("Place")).toBeNull();
+    expect(callsTo(assetRead)).toHaveLength(0);
+    expect(callsTo(locationRead)).toHaveLength(0);
+  });
+
+  it("shows neither row, and does not crash, when the linked asset cannot be found", async () => {
+    showRouted("Work Orders");
+    await userEvent.click(await screen.findByRole("button", { name: /Check the old record/ }));
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    await within(detail).findByText("Check the old record");
+    expect(await within(detail).findByText("To do")).toBeInTheDocument();
+    expect(within(detail).queryByText("About")).toBeNull();
+    expect(within(detail).queryByText("Place")).toBeNull();
+  });
+
+  describe("on a wide screen", () => {
+    beforeEach(() => setWide(true));
+
+    afterEach(() => forgetWidth());
+
+    it("shows About and Place in the right pane after the Due row", async () => {
+      showRouted("Work Orders");
+      await userEvent.click(await screen.findByRole("button", { name: /Patch the Ring Road edge/ }));
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      await within(main).findByText("Patch the Ring Road edge");
+      expect(metaOf(await findRowIn(main, "About"))).toEqual(["Ring Road"]);
+      expect(metaOf(await findRowIn(main, "Place"))).toEqual(["North Depot"]);
+      const titles = Array.from(main.querySelectorAll(".row .ttl")).map((title) => title.textContent);
+      expect(titles.indexOf("About")).toBeGreaterThan(titles.indexOf("Due"));
+      expect(called).toHaveBeenCalledWith("", assetRead, { assetID: "r1" });
+      expect(called).toHaveBeenCalledWith("", locationRead, { locationID: "l1" });
+    });
+
+    it("shows no About and no Place row in the right pane for a job with no linked asset", async () => {
+      showRouted("Work Orders");
+      await userEvent.click(await screen.findByRole("button", { name: /Clear the gutters/ }));
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      await within(main).findByText("Clear the gutters");
+      expect(within(main).queryByText("About")).toBeNull();
+      expect(within(main).queryByText("Place")).toBeNull();
+      expect(callsTo(assetRead)).toHaveLength(0);
+    });
+
+    it("shows neither row in the right pane when the linked asset cannot be found", async () => {
+      showRouted("Work Orders");
+      await userEvent.click(await screen.findByRole("button", { name: /Check the old record/ }));
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      await within(main).findByText("Check the old record");
+      expect(within(main).queryByText("About")).toBeNull();
+      expect(within(main).queryByText("Place")).toBeNull();
     });
   });
 });
