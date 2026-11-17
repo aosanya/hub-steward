@@ -503,6 +503,15 @@ describe("an agency with no market mounted", () => {
     expect(await mcpStartedClient.listWithFailures!()).toEqual({ items: [], failed: [] });
   });
 
+  it("lists nothing and names no failed source when the actor tools answer unknown tool too", async () => {
+    answering({
+      market_list_group_orders: new mcp.McpError("market_list_group_orders: unknown tool"),
+      market_list_posters: new mcp.McpError("market_list_posters: unknown tool"),
+      actor_list_my_join_requests: new mcp.McpError("actor_list_my_join_requests: unknown tool"),
+    });
+    expect(await mcpStartedClient.listWithFailures!()).toEqual({ items: [], failed: [] });
+  });
+
   it("keeps the pending join request row", async () => {
     answering({
       ...refusingMarket,
