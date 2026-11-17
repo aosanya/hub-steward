@@ -9,6 +9,13 @@ export const joined = (parts: string[], separator = " · ") => parts.filter(Bool
 
 export const dayOf = (stamp: unknown) => textOf(stamp).slice(0, 10);
 
+export const itemOf = (reply: unknown): Record<string, unknown> => {
+  const inner = (reply as { item?: unknown } | null)?.item ?? reply;
+  return inner && typeof inner === "object" ? (inner as Record<string, unknown>) : {};
+};
+
+export const readRecord = async (tool: string, idName: string, id: string) => itemOf(await callTool("", tool, { [idName]: id }));
+
 export const loadRecords = async <Row extends Record<string, string>>(tool: string, row: (record: Record<string, unknown>) => Row) => {
   const records: Record<string, unknown>[] = itemsOf(await callTool("", tool));
   return records.map((record) => ({ id: textOf(record.id), ...row(record) }));

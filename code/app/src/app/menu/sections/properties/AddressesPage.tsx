@@ -1,6 +1,6 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { MountedMenuList } from "./MountedMenuList";
-import { digitaltwinModule, joined, loadRecords, textOf } from "./records";
+import { digitaltwinModule, joined, loadRecords, readRecord, textOf } from "./records";
 
 export const addressList = "digitaltwin_address_list";
 
@@ -12,6 +12,15 @@ export const loadAddresses = () =>
     place: joined([textOf(address.postcode), textOf(address.area)], " "),
   }));
 
+const addressRead = "digitaltwin_address_read";
+
+const detail = {
+  tool: addressRead,
+  fields: { Street: "street", Number: "number", Area: "area", Postcode: "postcode" },
+  status: "",
+  load: (id: string) => readRecord(addressRead, "addressID", id),
+};
+
 export function AddressesPage() {
   const word = useWord("digitaltwin");
   return (
@@ -22,6 +31,7 @@ export function AddressesPage() {
       fields={fields}
       empty={{ words: `No ${word("Addresses").toLowerCase()} yet.` }}
       load={loadAddresses}
+      detail={detail}
     />
   );
 }

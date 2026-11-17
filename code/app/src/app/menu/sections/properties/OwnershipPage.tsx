@@ -2,7 +2,7 @@ import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MountedMenuList } from "./MountedMenuList";
-import { dayOf, digitaltwinModule, joined, loadRecords, textOf } from "./records";
+import { dayOf, digitaltwinModule, joined, loadRecords, readRecord, textOf } from "./records";
 
 export const tenureList = "digitaltwin_tenure_list";
 const nodeList = "digitaltwin_node_list";
@@ -30,6 +30,20 @@ const loadTenures = async () => {
   }));
 };
 
+const tenureRead = "digitaltwin_tenure_read";
+
+const loadTenure = async (id: string) => {
+  const [tenure, names] = await Promise.all([readRecord(tenureRead, "tenureID", id), loadNodeNames()]);
+  return { ...tenure, property: names.get(textOf(tenure.place_id)) ?? "", began: dayOf(tenure.since) };
+};
+
+const detail = {
+  tool: tenureRead,
+  fields: { Holder: "holder", Property: "property", Kind: "kind", Since: "began" },
+  status: "",
+  load: loadTenure,
+};
+
 export function OwnershipPage() {
   const word = useWord("digitaltwin");
   return (
@@ -40,6 +54,7 @@ export function OwnershipPage() {
       fields={fields}
       empty={{ words: `No ${word("Properties").toLowerCase()} yet.` }}
       load={loadTenures}
+      detail={detail}
     />
   );
 }
