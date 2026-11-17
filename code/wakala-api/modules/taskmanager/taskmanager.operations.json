@@ -693,6 +693,14 @@
                {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
       "returns": [{"body": true}]
     },
+    "lint": {
+      "method": "GET", "path": "/lint", "call": "Lint", "action": "taskmanager.task.lint",
+      "title": "Which issues break the filing rules",
+      "description": "Check issues against the filing rules before an agent picks them up. Send taskID for one issue (404 when it does not exist or the caller cannot see it), or backlog and step (id or name, both optional) for the open issues there, in rank order. Each item is an issue (id, code, title) with its findings, each a rule and a short message; an issue that breaks nothing has an empty findings list. The rules are no_description, no_done_when (the description has no Done looks like, Pass when or Done when), no_todos, last_todo_not_documentation (the last todo's title does not say document), no_files, effort_unknown, no_priority and todo_without_description. total counts every issue that matches and clean counts the issues on this page with no findings. limit defaults to 50 and is at most 200; a larger one is refused with 400; pass offset (0 or more) for the next page. Read-only.",
+      "args": [{"from": "query", "whole": true},
+               {"from": "caller", "as": "requester_id", "into": "RequesterID", "description": "Who is asking, from the session; a person sees only the issues of the backlogs their groups can see."}],
+      "returns": [{"body": true}]
+    },
     "task_dependencies": {
       "method": "GET", "path": "/tasks/{taskID}/dependencies", "call": "TaskDependenciesFor", "action": "taskmanager.task.dependencies",
       "title": "What an issue waits on and what waits on it",
