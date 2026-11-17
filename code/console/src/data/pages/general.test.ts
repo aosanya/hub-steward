@@ -1,8 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
+import { rest } from "../../wakala/rest";
 import { generalPage } from "./general";
 
 vi.mock("../../wakala/mcp");
+vi.mock("../../wakala/rest");
+
+const reply = (ok: boolean, data: unknown) => ({ ok, status: ok ? 200 : 500, data });
 
 const answerWith = (replies: Record<string, unknown>) =>
   vi.mocked(callTool).mockImplementation(async (_hubId, tool) => {
@@ -29,6 +33,8 @@ const stored = { instance_id: "h", studio_default: "en", content: ["en", "hu"], 
 
 beforeEach(() => {
   vi.mocked(callTool).mockReset();
+  vi.mocked(rest).mockReset();
+  vi.mocked(rest).mockResolvedValue(reply(true, { listed: false }));
 });
 
 describe("the general page", () => {
@@ -207,5 +213,77 @@ describe("setting the default language", () => {
     });
 
     await expect(changeLanguage({ language: "hu" })).rejects.toThrow("boom");
+  });
+});
+
+describe("listing the hub in search", () => {
+  const listing = (values: Record<string, unknown>) => generalPage.actions!.listing("h1", values);
+
+  const readRow = async () => {
+    answerWith({ instance_get_join_mode: "open", instance_get_languages: { default: "en" } });
+    const [row] = await generalPage.rows("h1", {});
+    return row;
+  };
+
+  it.each([true, false])("reads listed %j from the hub itself", async (listed) => {
+    vi.mocked(rest).mockResolvedValue(reply(true, { id: "h1", listed }));
+
+    const row = await readRow();
+
+    expect(row.listed).toBe(listed);
+    expect(rest).toHaveBeenCalledWith("GET", "/instances/h1");
+  });
+
+  it("leaves listed out of the row when the hub could not be read", async () => {
+    vi.mocked(rest).mockResolvedValue(reply(false, { error: "no" }));
+
+    const row = await readRow();
+
+    expect(row).not.toHaveProperty("listed");
+    expect(row).toMatchObject({ joining: "open", default_language: "en" });
+  });
+
+  it.each([undefined, "true", 1, null])("leaves listed out of the row when the hub says %j", async (listed) => {
+    vi.mocked(rest).mockResolvedValue(reply(true, { listed }));
+
+    const row = await readRow();
+
+    expect(row).not.toHaveProperty("listed");
+  });
+
+  it.each([true, false])("sets listed %j with a PUT to the listing of the hub and says it is done", async (listed) => {
+    vi.mocked(rest).mockResolvedValue(reply(true, { listed }));
+
+    const result = await listing({ listed });
+
+    expect(result).toBe("done");
+    expect(rest).toHaveBeenCalledTimes(1);
+    expect(rest).toHaveBeenCalledWith("PUT", "/instances/h1/listing", { listed });
+    expect(callTool).not.toHaveBeenCalled();
+  });
+
+  it("fails when the hub does not accept the listing", async () => {
+    vi.mocked(rest).mockResolvedValue(reply(false, { error: "forbidden" }));
+
+    await expect(listing({ listed: true })).rejects.toThrow(Error);
+  });
+
+  it("fails when the request cannot be made", async () => {
+    vi.mocked(rest).mockRejectedValue(new Error("offline"));
+
+    await expect(listing({ listed: true })).rejects.toThrow("offline");
+  });
+
+  it.each([undefined, "true", 1, null])("refuses the listing value %j without calling anything", async (listed) => {
+    await expect(listing({ listed })).rejects.toThrow(Error);
+
+    expect(rest).not.toHaveBeenCalled();
+    expect(callTool).not.toHaveBeenCalled();
+  });
+
+  it("refuses a request with no listing value", async () => {
+    await expect(listing({})).rejects.toThrow(Error);
+
+    expect(rest).not.toHaveBeenCalled();
   });
 });

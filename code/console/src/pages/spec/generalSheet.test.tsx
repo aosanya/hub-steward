@@ -116,6 +116,113 @@ describe("the General sheet", () => {
   });
 });
 
+describe("listing the hub in search", () => {
+  const withListing = (listing: unknown, general: unknown = vi.fn(async () => "done"), language: unknown = vi.fn(async () => "done")) =>
+    installPage("general", { actions: { general, language, listing } as never });
+
+  const listedSwitch = () => screen.getByRole("switch", { name: "Listed in search" });
+
+  it("shows the switch off for a hub that is not listed", () => {
+    open({ listed: false });
+
+    expect(screen.getByText("Listing")).toBeInTheDocument();
+    expect(listedSwitch()).not.toBeChecked();
+    expect(screen.getByText("Residents can find a listed hub by name or place when they search.")).toBeInTheDocument();
+  });
+
+  it("shows the switch on for a hub that is listed", () => {
+    open({ listed: true });
+
+    expect(listedSwitch()).toBeChecked();
+  });
+
+  it.each([undefined, "true", 1, null])("hides the row when listed is %j", (listed) => {
+    open({ listed });
+
+    expect(screen.queryByRole("switch", { name: "Listed in search" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Listing")).not.toBeInTheDocument();
+  });
+
+  it("sends only the listing when only the switch was changed, and reloads", async () => {
+    const listing = vi.fn(async () => "done");
+    const general = vi.fn(async () => "done");
+    const language = vi.fn(async () => "done");
+    withListing(listing, general, language);
+    open({ listed: false });
+
+    await userEvent.click(listedSwitch());
+    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+
+    await waitFor(() => expect(listing).toHaveBeenCalledWith("h1", { listed: true }));
+    expect(listing).toHaveBeenCalledTimes(1);
+    expect(general).not.toHaveBeenCalled();
+    expect(language).not.toHaveBeenCalled();
+    await waitFor(() => expect(reload).toHaveBeenCalledTimes(1));
+  });
+
+  it("sends false when a listed hub is switched off", async () => {
+    const listing = vi.fn(async () => "done");
+    withListing(listing);
+    open({ listed: true });
+
+    await userEvent.click(listedSwitch());
+    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+
+    await waitFor(() => expect(listing).toHaveBeenCalledWith("h1", { listed: false }));
+  });
+
+  it("sends the listing along with the joining mode when both were changed", async () => {
+    const listing = vi.fn(async () => "done");
+    const general = vi.fn(async () => "done");
+    withListing(listing, general);
+    open({ listed: false });
+
+    await userEvent.selectOptions(screen.getByLabelText("Joining"), "confirmed");
+    await userEvent.click(listedSwitch());
+    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+
+    await waitFor(() => expect(listing).toHaveBeenCalledWith("h1", { listed: true }));
+    expect(general).toHaveBeenCalledWith("h1", { join_mode: "confirmed" });
+  });
+
+  it("sends nothing when the switch is left as it was", async () => {
+    const listing = vi.fn(async () => "done");
+    withListing(listing);
+    open({ listed: true });
+
+    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+
+    expect(listing).not.toHaveBeenCalled();
+  });
+
+  it("sends nothing when the switch is changed and changed back", async () => {
+    const listing = vi.fn(async () => "done");
+    withListing(listing);
+    open({ listed: true });
+
+    await userEvent.click(listedSwitch());
+    await userEvent.click(listedSwitch());
+    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+
+    expect(listing).not.toHaveBeenCalled();
+  });
+
+  it("says the change could not be sent when the listing is refused", async () => {
+    withListing(
+      vi.fn(async () => {
+        throw new Error("offline");
+      }),
+    );
+    open({ listed: false });
+
+    await userEvent.click(listedSwitch());
+    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+
+    expect(await screen.findByText("The change could not be sent.")).toBeInTheDocument();
+    expect(reload).not.toHaveBeenCalled();
+  });
+});
+
 describe("renaming the hub", () => {
   const openRename = async (hubname: unknown) => {
     actions(vi.fn(async () => "done"), vi.fn(async () => "done"), hubname);
