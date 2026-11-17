@@ -427,3 +427,72 @@ describe.each(groupWindows)("$title on the menu window", ({ title, screenIndex, 
     expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no");
   });
 });
+
+const rowWindows = [
+  {
+    title: "Registrations",
+    screenIndex: 2,
+    chosen: "Eli Marsh",
+    other: "Nia Brandt",
+    detailTool: "actor_get_actor",
+    detailArgs: { actor_id: "p3" },
+    shown: [dayWords(4), "Reading Circle"],
+  },
+  {
+    title: "Communications",
+    screenIndex: 4,
+    chosen: "Garden Helpers",
+    other: "Street Party Plans",
+    detailTool: "comm_chat_thread_list",
+    detailArgs: { structure_id: "g3" },
+    shown: [dayWords(10)],
+  },
+];
+
+describe.each(rowWindows)("$title on the menu window", ({ title, screenIndex, chosen, other, detailTool, detailArgs, shown }) => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("draws the Folders frame at wide size with the list beside the chosen row and no tab bar", async () => {
+    setWide(true);
+    open(screens[screenIndex].at);
+
+    await userEvent.click(await screen.findByRole("button", { name: new RegExp(chosen) }));
+
+    const frame = document.querySelector(".wf") as HTMLElement;
+    const tree = frame.querySelector(".wf-panes .wf-tree") as HTMLElement;
+    const content = frame.querySelector(".wf-main .wf-content") as HTMLElement;
+    expect(within(tree).getByRole("button", { name: new RegExp(other) })).toBeInTheDocument();
+    expect(await within(content).findByText(chosen)).toBeInTheDocument();
+    for (const one of shown) expect(await within(content).findByText(one)).toBeInTheDocument();
+    expect(called).toHaveBeenCalledWith("", detailTool, detailArgs);
+    expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
+    expect(landed).toBe(screens[screenIndex].at);
+  });
+
+  it("keeps the right pane empty and calls no detail tool until a row is chosen", async () => {
+    setWide(true);
+    open(screens[screenIndex].at);
+
+    await screen.findByRole("button", { name: new RegExp(chosen) });
+
+    expect(document.querySelector(".wf-main")?.textContent).toBe("");
+    expect(document.querySelector(".mw-detail")).toBeNull();
+    expect(called.mock.calls.filter(([, name]) => name === "actor_get_actor")).toHaveLength(0);
+  });
+
+  it("shows one pane at a time on a phone and returns to the list from the row", async () => {
+    setWide(false);
+    open(screens[screenIndex].at);
+
+    await userEvent.click(await screen.findByRole("button", { name: new RegExp(chosen) }));
+
+    expect(document.querySelector(".wf")).toBeNull();
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expect(await within(detail).findByText(chosen)).toBeInTheDocument();
+    for (const one of shown) expect(await within(detail).findByText(one)).toBeInTheDocument();
+    expect(landed).toBe(screens[screenIndex].at);
+    await userEvent.click(screen.getByRole("button", { name: new RegExp(title) }));
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no");
+  });
+});
