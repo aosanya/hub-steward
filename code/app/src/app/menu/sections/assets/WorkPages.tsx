@@ -30,10 +30,12 @@ const frequencyWords = (rule: string) => {
   return frequency.charAt(0) + frequency.slice(1).toLowerCase();
 };
 
-const dueDay = (task: Item) => {
-  const due = textOf(task.due_at);
-  return due === "" ? "" : dayWords(due);
+const dayOf = (value: unknown) => {
+  const text = textOf(value);
+  return text === "" ? "" : dayWords(text);
 };
+
+const dueDay = (task: Item) => dayOf(task.due_at);
 
 const stateAndDue = (task: Item) => {
   const day = dueDay(task);
@@ -48,12 +50,20 @@ const loadWorkOrders = async () => {
   return open.map((task) => ({ id: textOf(task.id), title: textOf(task.title), state: textOf(task.state), due_at: textOf(task.due_at), stateAndDue: metaWithPlace(task, placeOf(task)) }));
 };
 
-const scheduleOf = (task: Item) => ({
-  id: textOf(task.id),
-  title: textOf(task.title),
-  often: frequencyWords(textOf(task.schedule_rule)),
-  rule: textOf(task.schedule_rule),
-});
+const withPrefix = (prefix: string, day: string) => (day === "" ? "" : `${prefix} ${day}`);
+
+const upkeepParts = (schedule: { often: string; next: string }) => [schedule.often, withPrefix("next", schedule.next)];
+
+const scheduleOf = (task: Item) => {
+  const schedule = {
+    id: textOf(task.id),
+    title: textOf(task.title),
+    often: frequencyWords(textOf(task.schedule_rule)),
+    next: dayOf(task.next_due_at),
+    rule: textOf(task.schedule_rule),
+  };
+  return { ...schedule, oftenAndNext: upkeepParts(schedule).filter((part) => part !== "").join(" · ") };
+};
 
 const loadSchedule = async () => ((await callTool("", repeatingList).then(itemsOf)) as Item[]).map(scheduleOf);
 
@@ -109,8 +119,8 @@ export function MaintenancePage() {
   return (
     <MenuWindow
       title={title}
-      list={{ title, tool: repeatingList, fields: { title: "title", meta: "often" }, empty: { words: "No maintenance scheduled." }, load: loadSchedule }}
-      detail={{ tool: repeatingRead, fields: { Title: "title", "How often": "often", "Schedule rule": "rule" }, status: "", load: loadScheduleItem }}
+      list={{ title, tool: repeatingList, fields: { title: "title", meta: "oftenAndNext" }, empty: { words: "No maintenance scheduled." }, load: loadSchedule }}
+      detail={{ tool: repeatingRead, fields: { Title: "title", "How often": "often", "Next upkeep": "next", "Schedule rule": "rule" }, status: "", load: loadScheduleItem }}
     />
   );
 }
