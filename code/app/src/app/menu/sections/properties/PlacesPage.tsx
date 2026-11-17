@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { MountedMenuList } from "./MountedMenuList";
 import { placePaths } from "./paths";
+import { loadPlaces } from "./records";
 
 export const placesTitle = "Places";
 
@@ -19,6 +20,7 @@ export function PlacesPage() {
       tool="assetmanager_asset_list"
       fields={fields}
       empty={{ words: `No ${word("Places").toLowerCase()} yet.` }}
+      load={loadPlaces}
       onChoose={open}
     />
   );

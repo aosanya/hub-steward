@@ -6,7 +6,7 @@ export const addressList = "digitaltwin_address_list";
 
 const fields = { title: "name", meta: "place" };
 
-const loadAddresses = () =>
+export const loadAddresses = () =>
   loadRecords(addressList, (address) => ({
     name: joined([textOf(address.street), textOf(address.number)], " "),
     place: joined([textOf(address.postcode), textOf(address.area)], " "),

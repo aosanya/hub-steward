@@ -13,6 +13,10 @@ import { useBackToSection } from "./useBackToSection";
 
 export const searchWords = "Search";
 
+export const nothingMatchesWords = "Nothing matches.";
+
+export const clearSearchWords = "Clear search";
+
 export const loadFailedWords = "This list could not be loaded.";
 
 type Fields = { title: string; meta: string };
@@ -30,6 +34,7 @@ type Props = {
   add?: { label: string; to: string };
   selectedId?: string;
   onChoose?: (id: string) => void;
+  opens?: (item: Item) => boolean;
   load?: () => Promise<Item[]>;
   end?: (item: Item) => ReactNode;
   loadingWords?: string;
@@ -44,7 +49,7 @@ const textOf = (item: Record<string, unknown>, key: string) => {
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
 
-export function MenuList({ title, tool, fields, empty, bare, add, selectedId, onChoose, load, end, loadingWords, failedWords, groups, lines, reloadKey }: Props) {
+export function MenuList({ title, tool, fields, empty, bare, add, selectedId, onChoose, opens, load, end, loadingWords, failedWords, groups, lines, reloadKey }: Props) {
   const navigate = useNavigate();
   const back = useBackToSection();
   const [typed, setTyped] = useState("");
@@ -55,6 +60,7 @@ export function MenuList({ title, tool, fields, empty, bare, add, selectedId, on
   const rows = view.state === "ready" ? view.data : reloading ? kept.current : [];
   const wanted = typed.trim().toLocaleLowerCase();
   const shown = rows.filter((item) => `${textOf(item, fields.title)} ${textOf(item, fields.meta)}`.toLocaleLowerCase().includes(wanted));
+  const clickable = (item: Item) => !!onChoose && (opens?.(item) ?? true);
   const body = (
     <>
       {view.state === "loading" && !reloading ? <LoadingLine words={loadingWords} /> : null}
@@ -68,6 +74,11 @@ export function MenuList({ title, tool, fields, empty, bare, add, selectedId, on
       {rows.length > 0 ? (
         <>
           <SearchBox label={searchWords} value={typed} onChange={setTyped} />
+          {shown.length === 0 ? (
+            <EmptyCard words={nothingMatchesWords}>
+              <Button onClick={() => setTyped("")}>{clearSearchWords}</Button>
+            </EmptyCard>
+          ) : null}
           {(groups ? groups(shown) : [{ heading: "", items: shown }]).map((group) => (
             <div key={group.heading}>
               {group.heading ? <h2>{group.heading}</h2> : null}
@@ -78,8 +89,8 @@ export function MenuList({ title, tool, fields, empty, bare, add, selectedId, on
                     title={textOf(item, fields.title)}
                     meta={lines ? lines(item) : textOf(item, fields.meta)}
                     end={end?.(item)}
-                    onClick={onChoose ? () => onChoose(textOf(item, "id")) : undefined}
-                    pressed={onChoose ? selectedId === textOf(item, "id") : undefined}
+                    onClick={clickable(item) ? () => onChoose?.(textOf(item, "id")) : undefined}
+                    pressed={clickable(item) ? selectedId === textOf(item, "id") : undefined}
                   />
                 ))}
               </Rows>

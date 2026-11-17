@@ -7,13 +7,13 @@ import { useBackToSection } from "./useBackToSection";
 import "../../shared/ui/paneWindow.css";
 import "./menuWindow.css";
 
-type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "fields" | "empty" | "load" | "end" | "loadingWords" | "failedWords" | "groups">;
+type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "fields" | "empty" | "load" | "end" | "loadingWords" | "failedWords" | "groups" | "opens">;
 
 type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load" | "extra">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; detailKey?: string | number; listKey?: string | number };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; detailKey?: string | number; listKey?: string | number; elsewhere?: (id: string) => boolean };
 
-export function MenuWindow({ title, list, detail, above, below, detailKey, listKey }: Props) {
+export function MenuWindow({ title, list, detail, above, below, detailKey, listKey, elsewhere }: Props) {
   const back = useBackToSection();
   const wide = useWide();
   const [chosen, setChosen] = useState("");
@@ -22,7 +22,7 @@ export function MenuWindow({ title, list, detail, above, below, detailKey, listK
   const listPane = (
     <section className={wide ? "mw-list wf-tree" : "mw-list"} aria-label={list.title}>
       {above}
-      <MenuList key={listKey} {...list} bare selectedId={chosen} onChoose={setChosen} />
+      <MenuList key={listKey} {...list} bare selectedId={chosen} onChoose={(id) => (elsewhere?.(id) ? undefined : setChosen(id))} />
       {below}
     </section>
   );

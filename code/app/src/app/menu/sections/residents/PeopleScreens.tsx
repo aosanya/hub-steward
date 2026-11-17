@@ -17,12 +17,12 @@ type Item = Record<string, unknown>;
 
 const householdTypes = new Set(["household", "háztartás"]);
 
-const text = (item: Item, key: string) => {
+export const text = (item: Item, key: string) => {
   const value = item[key];
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
 
-const listOf = async (tool: string, args?: Record<string, unknown>) => itemsOf(await callTool("", tool, args)) as Item[];
+export const listOf = async (tool: string, args?: Record<string, unknown>) => itemsOf(await callTool("", tool, args)) as Item[];
 
 const memberCountOf = async (group: Item) => {
   const count = await populationFigure(text(group, "id"));
@@ -37,7 +37,7 @@ const perGroup = async (tool: string, idName: string) => {
   return lists.flat();
 };
 
-const homeEmpty = (words: string) => ({ words, act: "Home", to: agencyHomePath(openAgencyId()) });
+export const homeEmpty = (words: string) => ({ words, act: "Home", to: agencyHomePath(openAgencyId()) });
 
 type ListScreenProps = { title: string; tool: string; fields: { title: string; meta: string }; empty: string; load: () => Promise<Item[]>; onChoose?: (id: string) => void };
 
@@ -50,17 +50,18 @@ function ListScreen({ title, tool, fields, empty, load, onChoose }: ListScreenPr
   );
 }
 
+export const peopleRows = async () => (await listOf("actor_list_actors")).map((person) => ({ id: text(person, "id"), name: personNameOf(person), status: text(person, "status") }));
+
 export function AllPeopleScreen() {
   const word = useWord("actor");
   const peopleTitle = `All ${word("People")}`;
   const [version, setVersion] = useState(0);
-  const load = async () => (await listOf("actor_list_actors")).map((person) => ({ id: text(person, "id"), name: personNameOf(person), status: text(person, "status") }));
   return (
     <MenuWindow
       title={peopleTitle}
       listKey={version}
       detailKey={version}
-      list={{ title: peopleTitle, tool: "actor_list_actors", fields: { title: "name", meta: "status" }, empty: homeEmpty(`No ${word("People").toLowerCase()} yet.`), load }}
+      list={{ title: peopleTitle, tool: "actor_list_actors", fields: { title: "name", meta: "status" }, empty: homeEmpty(`No ${word("People").toLowerCase()} yet.`), load: peopleRows }}
       detail={{ tool: "actor_get_actor", load: loadPerson, fields: { Name: "display_name" }, status: "status", extra: (person) => <PersonPanel person={person} onSaved={() => setVersion((was) => was + 1)} /> }}
     />
   );
