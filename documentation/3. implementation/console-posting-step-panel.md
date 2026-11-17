@@ -62,13 +62,13 @@ Nothing. The list of the member accounts is to be confirmed against the accounti
 
 - `npx vitest run src/pages/calcstep/posting src/journeys/postingCard.walk.test.tsx`: 12 tests pass.
 - `npm run typecheck` in `code/console` is clean.
-- The screenshot of the card at 1440 wide with the example of the accepted drawing is in the swe repo, [iss-56/posting-card-1440.png](../4.%20qa/walk-records/iss-56/posting-card-1440.png). It was taken from the card rendered through the journey step with the console's own stylesheets in headless Chrome, not from the assembled page, which the assembly issue ISS-58 shoots. To make it again, run the journey test with `WALK_SHOTS` set to a folder and open the saved page in a browser at 1440 wide.
+- The screenshot of the card at 1440 wide with the example of the accepted drawing is in this repo (hub-steward), [iss-56/posting-card-1440.png](../4.%20qa/walk-records/iss-56/posting-card-1440.png). It was taken from the card rendered through the journey step with the console's own stylesheets in headless Chrome, not from the assembled page, which the assembly issue ISS-58 shoots. To make it again, run the journey test with `WALK_SHOTS` set to a folder and open the saved page in a browser at 1440 wide.
+- The five labels carry the required mark of the drawing, drawn by `SettingRows` from the `required` flag of a row, and a stacked control fills its row, so the whole Reason text reads in the field (ISS-12).
 
 ## What stays open
 
 - **The accounts call.** Which call lists the member accounts, and whether Other side may be any account or only some, is not decided on the accounting side. The card allows any account.
 - **The record of figures that is not money** (compute decision 7) is written by a step that is not decided yet. It is not drawn on this card.
 - **The posting step's own open questions** are on the agency's posting-step design page and are not repeated here.
-- **The Reason field is narrow.** The shared `TextControl` has no width option, so a long reason is cut in the field on the screenshot. Changing the shared control is not part of this issue.
 - **The walk of the whole step.** The journey step here fills in this card only. The walk of building the loan payment step on the assembled page is the assembly issue ISS-58.
 - **Words shared with the other cards.** `public/i18n.json` is edited by every card of this screen, so each adds only its own `calcstep.*` keys after re-reading the file. `src/i18nFiles.test.ts` checks that all 22 keys of this card are written out in the seven languages and passes.
