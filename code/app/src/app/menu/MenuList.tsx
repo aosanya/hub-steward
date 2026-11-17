@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { itemsOf } from "../../features/backlogs";
 import { useLoad } from "../../features/forms/useLoad";
@@ -35,6 +35,7 @@ type Props = {
   failedWords?: string;
   groups?: (items: Item[]) => { heading: string; items: Item[] }[];
   lines?: (item: Item) => string[];
+  reloadKey?: number;
 };
 
 const textOf = (item: Record<string, unknown>, key: string) => {
@@ -42,17 +43,20 @@ const textOf = (item: Record<string, unknown>, key: string) => {
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
 
-export function MenuList({ title, tool, fields, empty, bare, selectedId, onChoose, load, end, loadingWords, failedWords, groups, lines }: Props) {
+export function MenuList({ title, tool, fields, empty, bare, selectedId, onChoose, load, end, loadingWords, failedWords, groups, lines, reloadKey }: Props) {
   const navigate = useNavigate();
   const back = useBackToSection();
   const [typed, setTyped] = useState("");
-  const view = useLoad(load ?? (async () => itemsOf(await callTool("", tool)) as Item[]), `menu-list:${openAgencyId()}:${tool}`);
-  const rows = view.state === "ready" ? view.data : [];
+  const view = useLoad(load ?? (async () => itemsOf(await callTool("", tool)) as Item[]), `menu-list:${openAgencyId()}:${tool}:${reloadKey ?? 0}`);
+  const kept = useRef<Item[]>([]);
+  if (view.state === "ready") kept.current = view.data;
+  const reloading = view.state === "loading" && !!reloadKey;
+  const rows = view.state === "ready" ? view.data : reloading ? kept.current : [];
   const wanted = typed.trim().toLocaleLowerCase();
   const shown = rows.filter((item) => `${textOf(item, fields.title)} ${textOf(item, fields.meta)}`.toLocaleLowerCase().includes(wanted));
   const body = (
     <>
-      {view.state === "loading" ? <LoadingLine words={loadingWords} /> : null}
+      {view.state === "loading" && !reloading ? <LoadingLine words={loadingWords} /> : null}
       {view.state === "error" ? <LoadFailed words={failedWords ?? loadFailedWords} /> : null}
       {view.state === "ready" && rows.length === 0 ? (
         <EmptyCard words={empty.words}>
