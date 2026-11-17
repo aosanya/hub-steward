@@ -1,4 +1,6 @@
 import { callTool } from "../../../../shared/wakala/mcp";
+import { personNameOf } from "../residents/personName";
+import { loadPerson } from "../residents/PersonScreen";
 
 type Item = Record<string, unknown>;
 
@@ -9,6 +11,7 @@ export const assetDetailFields = {
   Code: "code",
   Category: "category",
   Condition: "condition",
+  "Kept by": "keeperName",
   Location: "place",
   "Latest movement": "movement0",
   "Before that": "movement1",
@@ -17,7 +20,7 @@ export const assetDetailFields = {
 
 export const conditionWords = ["Good", "Fair", "Poor", "Out of use"];
 
-export const attributeKeys = ["condition"];
+export const attributeKeys = ["condition", "keeper"];
 
 const newestMovements = 3;
 
@@ -61,11 +64,22 @@ const movementsOf = async (assetId: string) =>
     .slice(0, newestMovements)
     .map((movement) => textOf(movement.note) || textOf(movement.kind));
 
+const personKeeperName = async (keeperId: string) => personNameOf(await loadPerson(keeperId));
+
+const groupKeeperName = async (keeperId: string) => textOf(itemOf(await callTool("", "actor_get_group", { group_id: keeperId })).name);
+
+const nameOrNothing = (named: (keeperId: string) => Promise<string>, keeperId: string) => named(keeperId).catch(() => "");
+
+const keeperNameOf = async (keeperId: string) => {
+  if (keeperId === "") return "";
+  return (await nameOrNothing(personKeeperName, keeperId)) || nameOrNothing(groupKeeperName, keeperId);
+};
+
 export const loadAsset = async (assetId: string) => {
   const asset = itemOf(await callTool("", assetReadTool, { assetID: assetId }));
-  const [place, movements] = await Promise.all([placeOf(textOf(asset.location_id)), movementsOf(assetId)]);
-  const latest = Object.fromEntries(movements.map((note, at) => [`movement${at}`, note]));
   const attributes = attributesOf(asset) ?? {};
   const shown = Object.fromEntries(attributeKeys.map((key) => [key, textOf(attributes[key])]));
-  return { ...asset, place, ...latest, ...shown };
+  const [place, movements, keeperName] = await Promise.all([placeOf(textOf(asset.location_id)), movementsOf(assetId), keeperNameOf(textOf(shown.keeper))]);
+  const latest = Object.fromEntries(movements.map((note, at) => [`movement${at}`, note]));
+  return { ...asset, place, ...latest, ...shown, keeperName };
 };

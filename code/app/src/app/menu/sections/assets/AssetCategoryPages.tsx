@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
+import { useLoad } from "../../../../features/forms/useLoad";
+import type { Choice } from "../../../../shared/ui/SearchSelect";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
+import { loadKeeperChoices } from "./keeperChoices";
 import { assetDetailFields, assetReadTool, attributeKeys, attributesOf, conditionWords, loadAsset, withAttributes } from "./assetDetail";
 
 type Item = Record<string, unknown>;
@@ -16,10 +20,15 @@ const fields = { title: "name", meta: "place" };
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
-const editFieldsOf = (asset: Item) => [
+const editFieldsOf = (asset: Item, keepers: Choice[]) => [
   { label: "Name", key: "name", required: true },
   { label: "Category", key: "category" },
-  ...(attributesOf(asset) === null ? [] : [{ label: "Condition", key: "condition", choices: conditionWords }]),
+  ...(attributesOf(asset) === null
+    ? []
+    : [
+        { label: "Condition", key: "condition", choices: conditionWords },
+        ...(keepers.length === 0 ? [] : [{ label: "Kept by", key: "keeper", choices: keepers }]),
+      ]),
 ];
 
 const updateOf = (asset: Item) => (sent: Record<string, unknown>) => {
@@ -52,6 +61,8 @@ const categoryPage = ({ title: generic, category }: Category) =>
     const word = useWord("assetmanager");
     const title = word(generic);
     const [version, setVersion] = useState(0);
+    const keepers = useLoad(loadKeeperChoices, `keepers:${openAgencyId()}`);
+    const keeperChoices = keepers.state === "ready" ? keepers.data : [];
     return (
       <MenuWindow
         title={title}
@@ -60,7 +71,7 @@ const categoryPage = ({ title: generic, category }: Category) =>
         list={{ title, tool: assetList, fields, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadCategory(category) }}
         detail={{ tool: assetReadTool, fields: assetDetailFields, status: "", load: loadAsset,
           extra: (asset) => (
-            <MenuEditForm item={asset} id={textOf(asset.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" fields={editFieldsOf(asset)} build={updateOf(asset)} onSaved={() => setVersion((was) => was + 1)} />
+            <MenuEditForm item={asset} id={textOf(asset.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" fields={editFieldsOf(asset, keeperChoices)} build={updateOf(asset)} onSaved={() => setVersion((was) => was + 1)} />
           ),
         }}
       />

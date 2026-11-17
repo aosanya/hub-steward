@@ -4,11 +4,12 @@ import { Button } from "../../shared/ui/Button";
 import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";
 import { Field } from "../../shared/ui/Field";
 import { LoadFailed } from "../../shared/ui/LoadState";
+import type { Choice } from "../../shared/ui/SearchSelect";
 import { TextArea } from "../../shared/ui/TextArea";
 import { callTool, McpError } from "../../shared/wakala/mcp";
 import { actionFailedWords } from "./MenuDetail";
 
-export type EditField = { label: string; key: string; required?: boolean; kind?: "text" | "number" | "date" | "lines"; choices?: string[] };
+export type EditField = { label: string; key: string; required?: boolean; kind?: "text" | "number" | "date" | "lines"; choices?: (string | Choice)[] };
 
 type Item = Record<string, unknown>;
 
@@ -38,6 +39,8 @@ const textOf = (item: Item, key: string, field?: EditField) => {
   if (Array.isArray(value) && value.every((entry) => typeof entry === "string")) return value.join("\n");
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
+
+const choiceOf = (choice: string | Choice): Choice => (typeof choice === "string" ? { value: choice, label: choice } : choice);
 
 const linesOf = (text: string) =>
   text
@@ -163,8 +166,8 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
       {fields.map((field) =>
         field.choices ? (
           <ChoiceGroup key={field.key} label={field.label}>
-            {field.choices.map((word) => (
-              <ChoiceRow key={word} type="radio" name={field.key} label={word} checked={values[field.key] === word} onChange={() => setValues((was) => ({ ...was, [field.key]: word }))} />
+            {field.choices.map(choiceOf).map(({ value, label }) => (
+              <ChoiceRow key={value} type="radio" name={field.key} label={label} checked={values[field.key] === value} onChange={() => setValues((was) => ({ ...was, [field.key]: value }))} />
             ))}
           </ChoiceGroup>
         ) : field.kind === "lines" ? (
