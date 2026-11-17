@@ -15,6 +15,8 @@ import { peopleRows } from "../residents/PeopleScreens";
 import { answerWordsOf } from "./answers";
 import { decisionStatus, reasonWords, sentWords } from "./decision";
 import { announceDecision } from "./decisionSignal";
+import { InspectionForm } from "./InspectionForm";
+import { inspectionLineOf, inspectionWords } from "./inspection";
 import { readItem } from "./readItem";
 
 const sectionWords = "Applications received";
@@ -27,7 +29,7 @@ const unnamedWords = "Someone";
 
 const chevron = "›";
 
-export type Received = { memberId: string; name: string; status: string; line: string; note: string; undecided: boolean; decidedAt: string };
+export type Received = { memberId: string; name: string; status: string; line: string; note: string; inspection: string; undecided: boolean; decidedAt: string };
 
 const received = (sent: Item, names: Map<string, string>): Received => {
   const status = decisionStatus(text(sent, "decision"));
@@ -38,6 +40,7 @@ const received = (sent: Item, names: Map<string, string>): Received => {
     status: status || sentWords,
     line: `${status || sentWords} ${day}`,
     note: text(sent, "decision_note"),
+    inspection: inspectionLineOf(sent),
     undecided: status === "",
     decidedAt: text(sent, "decided_at"),
   };
@@ -86,7 +89,7 @@ function DecideButtons({ formId, memberId, onDecided }: { formId: string; member
   );
 }
 
-function ApplicationAnswers({ formId, row, mine, onDecided }: { formId: string; row: Received; mine: boolean; onDecided: () => void }) {
+function ApplicationAnswers({ formId, row, mine, onDecided, onInspected }: { formId: string; row: Received; mine: boolean; onDecided: () => void; onInspected: () => void }) {
   const view = useLoad(() => loadAnswers(formId, row.memberId), `received-answers:${openAgencyId()}:${formId}:${row.memberId}`);
   if (view.state === "loading") return <LoadingLine />;
   if (view.state === "error") return null;
@@ -97,7 +100,9 @@ function ApplicationAnswers({ formId, row, mine, onDecided }: { formId: string; 
           <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />
         ))}
         {row.note !== "" ? <ListRow title={reasonWords} meta={row.note} /> : null}
+        {row.inspection !== "" ? <ListRow title={inspectionWords} meta={row.inspection} /> : null}
       </Rows>
+      {mine ? null : <InspectionForm formId={formId} memberId={row.memberId} inspected={row.inspection !== ""} onRecorded={onInspected} />}
       {row.undecided && !mine ? <DecideButtons formId={formId} memberId={row.memberId} onDecided={onDecided} /> : null}
     </>
   );
@@ -110,6 +115,7 @@ function ReceivedList({ slug }: { slug: string }) {
   if (view.state !== "ready" || view.data.rows.length === 0) return null;
   const { formId, own, rows } = view.data;
   const open = rows.find((row) => row.memberId === chosen);
+  const inspected = () => setVersion((current) => current + 1);
   const decided = () => {
     announceDecision();
     setChosen("");
@@ -123,7 +129,7 @@ function ReceivedList({ slug }: { slug: string }) {
           <ListRow key={row.memberId} title={row.name} meta={row.line} end={chevron} pressed={row.memberId === chosen} onClick={() => setChosen(row.memberId === chosen ? "" : row.memberId)} />
         ))}
       </Rows>
-      {open ? <ApplicationAnswers key={open.memberId} formId={formId} row={open} mine={open.memberId === own} onDecided={decided} /> : null}
+      {open ? <ApplicationAnswers key={open.memberId} formId={formId} row={open} mine={open.memberId === own} onDecided={decided} onInspected={inspected} /> : null}
     </>
   );
 }

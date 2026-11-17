@@ -14,6 +14,7 @@ import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { dayWords } from "../../../../shared/ui/days";
 import { valueKeyOf } from "./answers";
 import { decidedWords, decisionStatus, reasonWords, sentWords } from "./decision";
+import { inspectionLineOf, inspectionWords } from "./inspection";
 
 export const withdrawLabel = "Withdraw";
 
@@ -86,10 +87,10 @@ const decidedLine = (sent: Item) => {
 
 const loadApplication = async (id: string) => {
   const sent = unwrapped(await callTool("", "forms_submission_read_mine", { form_id: id }));
-  return { ...sent, form_id: id, status: statusOf(sent), decided_line: decisionStatus(text(sent, "decision")) === "" ? "" : decidedLine(sent) };
+  return { ...sent, form_id: id, status: statusOf(sent), decided_line: decisionStatus(text(sent, "decision")) === "" ? "" : decidedLine(sent), inspection_line: inspectionLineOf(sent) };
 };
 
-const decisionFields = { [decidedWords]: "decided_line", [reasonWords]: "decision_note" };
+const decisionFields = { [decidedWords]: "decided_line", [reasonWords]: "decision_note", [inspectionWords]: "inspection_line" };
 
 export function useApplicationDetail() {
   const [version, setVersion] = useState(0);
