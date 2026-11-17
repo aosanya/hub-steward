@@ -22,6 +22,7 @@ const words = {
     "calcstep.step.failureEmpty": "Choose what happens when this step cannot work out a result. The agency cannot be published until every calculating step has a choice.",
     "calcstep.step.failureItself": "A step cannot send its own failure to itself. Choose another step.",
     "calcstep.step.failureUnknown": "The step chosen is no longer in this workflow. Choose another step.",
+    "calcstep.step.failureChoose": "Choose a step",
     "calcstep.step.result": "Result is kept as",
     "calcstep.step.resultName": "Result name",
     "calcstep.step.resultHint": "The posting step and later steps find the result under this name.",
