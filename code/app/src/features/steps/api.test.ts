@@ -78,6 +78,17 @@ describe("listing what a member may act on now", () => {
     expect((await mcpStepsClient.available()).map((s) => s.id)).toEqual(["s3"]);
   });
 
+  it("leaves out the start of a step the hub lists as sent, with nothing kept on the phone", async () => {
+    forgetSent();
+    localStorage.clear();
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, tool) =>
+      tool === "agency_list_my_sent_steps"
+        ? { items: [{ step_id: "s1", row_id: "row1", title: "Refer the case", sent_at: "2026-11-17T08:00:00Z" }] }
+        : { items: [raw(), raw({ id: "s2", state: "waiting", order_id: "o9", form_name: "Confirm" })] },
+    );
+    expect((await mcpStepsClient.available()).map((s) => [s.id, s.state])).toEqual([["s2", "waiting"]]);
+  });
+
   it("keeps a waiting run of a step whose start she sent, and the start of another agency's step with the same id", async () => {
     markSent({ id: "s1", orderId: "r1", title: "Refer the case" });
     vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [raw({ state: "waiting", order_id: "r2" })] });
