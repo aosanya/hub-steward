@@ -253,9 +253,9 @@ describe("the Staff window's seats", () => {
     expect(pane().textContent).toContain("Planner");
     expect(pane().textContent).toContain("Planning");
     expect(pane().textContent).toMatch(/Ended · resigned/);
-    expect(callsTo("actor_get_actor")[0][2]).toEqual({ actor_id: "a2" });
-    expect(callsTo("actor_list_role_assignments_for_actor")[0][2]).toEqual({ actor_id: "a2" });
-    expect(callsTo("actor_get_actor_standing")[0][2]).toEqual({ actor_id: "a2" });
+    expect(callsTo("actor_get_actor").at(-1)?.[2]).toEqual({ actor_id: "a2" });
+    expect(callsTo("actor_list_role_assignments_for_actor").at(-1)?.[2]).toEqual({ actor_id: "a2" });
+    expect(callsTo("actor_get_actor_standing").at(-1)?.[2]).toEqual({ actor_id: "a2" });
   });
 
   it("draws the seats in the phone's detail too", async () => {

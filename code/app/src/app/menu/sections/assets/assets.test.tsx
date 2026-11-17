@@ -485,7 +485,7 @@ describe("Work Orders linked to an asset", () => {
       await within(main).findByText("Clear the gutters");
       expect(within(main).queryByText("About")).toBeNull();
       expect(within(main).queryByText("Place")).toBeNull();
-      expect(callsTo(assetRead)).toHaveLength(0);
+      expect(callsTo(assetRead).filter(([, , args]) => (args as { assetID: string }).assetID !== "r1")).toHaveLength(0);
     });
 
     it("shows neither row in the right pane when the linked asset cannot be found", async () => {
@@ -649,12 +649,14 @@ describe("Maintenance Schedule", () => {
       expect(document.querySelector("nav.tabs")).toBeNull();
     });
 
-    it("leaves the right pane empty until a schedule is chosen", async () => {
+    it("opens the first schedule in the right pane without a tap", async () => {
       showRouted("Maintenance Schedule");
       await screen.findByText("Grease the pumps", { selector: ".ttl" });
 
-      expect(document.querySelector(".wf-main")?.textContent).toBe("");
-      expect(callsTo(repeatingRead)).toHaveLength(0);
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      expect(await within(main).findByText("FREQ=WEEKLY")).toBeInTheDocument();
+      expect(within(main).getByText("Grease the pumps")).toBeInTheDocument();
+      expect(callsTo(repeatingRead).map(([, , args]) => args)).toEqual([{ repeatingTaskID: "p1" }]);
     });
   });
 });

@@ -254,13 +254,15 @@ describe("the late matters page on the menu window", () => {
     Reflect.deleteProperty(window, "matchMedia");
   });
 
-  it("keeps the right pane empty on a wide screen until a row is chosen", async () => {
+  it("opens the first row in the right pane on a wide screen without a tap", async () => {
     setWide(true);
     at(client());
     await screen.findByText("Broken streetlight");
 
-    expect(document.querySelector(".wf-main")).toBeEmptyDOMElement();
-    expect(called).not.toHaveBeenCalled();
+    const main = document.querySelector(".wf-main") as HTMLElement;
+    expect(await within(main).findByText("A crew is booked for Monday.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Broken streetlight/ })).toHaveAttribute("aria-pressed", "true");
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "m1" }));
   });
 
   it("draws the chosen matter in the right pane beside the list on a wide screen", async () => {

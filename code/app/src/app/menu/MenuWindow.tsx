@@ -1,4 +1,4 @@
-import { useState, type ComponentProps, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react";
 import { useWide } from "../../shared/ui/useWide";
 import { Shell } from "../Shell";
 import { MenuDetail } from "./MenuDetail";
@@ -11,18 +11,26 @@ type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "field
 
 type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load" | "extra">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; detailKey?: string | number; listKey?: string | number; elsewhere?: (id: string) => boolean };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; detailKey?: string | number; listKey?: string | number; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
 
-export function MenuWindow({ title, list, detail, above, below, headEnd, detailKey, listKey, elsewhere }: Props) {
+export function MenuWindow({ title, list, detail, above, below, headEnd, detailKey, listKey, elsewhere, leave }: Props) {
   const back = useBackToSection();
   const wide = useWide();
   const [chosen, setChosen] = useState("");
-  const onBack = chosen ? () => setChosen("") : back.onBack;
-  const backLabel = chosen ? list.title : back.backLabel;
+  const [reported, setReported] = useState<string[] | null>(null);
+  const elsewhereNow = useRef(elsewhere);
+  elsewhereNow.current = elsewhere;
+  useEffect(() => {
+    if (!wide || !reported || reported.includes(chosen)) return;
+    setChosen(reported.find((id) => !elsewhereNow.current?.(id)) ?? "");
+  }, [wide, reported, chosen]);
+  const clearsChoice = !!chosen && !wide;
+  const onBack = clearsChoice ? () => setChosen("") : back.onBack;
+  const backLabel = clearsChoice ? list.title : back.backLabel;
   const listPane = (
     <section className={wide ? "mw-list wf-tree" : "mw-list"} aria-label={list.title}>
       {above}
-      <MenuList key={listKey} {...list} bare selectedId={chosen} onChoose={(id) => (elsewhere?.(id) ? undefined : setChosen(id))} />
+      <MenuList key={listKey} {...list} bare selectedId={chosen} onRows={setReported} onChoose={(id) => (elsewhere?.(id) ? leave?.(id) : setChosen(id))} />
       {below}
     </section>
   );

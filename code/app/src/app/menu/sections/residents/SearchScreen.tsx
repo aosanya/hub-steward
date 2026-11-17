@@ -50,17 +50,16 @@ export function SearchScreen() {
       { heading: "Businesses", items: items.filter((item) => startsWithAny(item.id, ["business:"])) },
       { heading: "Informal traders", items: items.filter((item) => startsWithAny(item.id, ["trader:"])) },
     ].filter((group) => group.items.length > 0);
-  const openPlace = (id: string) => {
-    if (!id.startsWith(placeKey)) return false;
+  const isPlace = (id: string) => id.startsWith(placeKey);
+  const openPlace = (id: string) =>
     navigate(placePaths.place.path({ placeId: id.slice(placeKey.length) }), { state: { from: { path: `${here.pathname}${here.search}`, title: "Search" } } });
-    return true;
-  };
   return (
     <MenuWindow
       title="Search"
       listKey={version}
       detailKey={version}
-      elsewhere={openPlace}
+      elsewhere={isPlace}
+      leave={openPlace}
       list={{ title: "Search", tool: "search", fields: { title: "title", meta: "meta" }, empty: homeEmpty("Nothing to search yet."), load: loadEverything, groups, opens: opensDetail }}
       detail={{
         tool: "actor_get_actor",

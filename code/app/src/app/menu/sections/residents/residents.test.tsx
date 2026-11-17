@@ -470,15 +470,18 @@ describe.each(rowWindows)("$title on the menu window", ({ title, screenIndex, ch
     expect(landed).toBe(screens[screenIndex].at);
   });
 
-  it("keeps the right pane empty and calls no detail tool until a row is chosen", async () => {
+  it("opens the first row in the right pane at wide size without a tap", async () => {
     setWide(true);
     open(screens[screenIndex].at);
 
     await screen.findByRole("button", { name: new RegExp(chosen) });
 
-    expect(document.querySelector(".wf-main")?.textContent).toBe("");
-    expect(document.querySelector(".mw-detail")).toBeNull();
-    expect(called.mock.calls.filter(([, name]) => name === "actor_get_actor")).toHaveLength(0);
+    await waitFor(() => expect(document.querySelector(".wf-main .wf-content")).not.toBeNull());
+    const content = document.querySelector(".wf-main .wf-content") as HTMLElement;
+    expect(await within(content).findByText(chosen)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: new RegExp(chosen) })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: new RegExp(other) })).toHaveAttribute("aria-pressed", "false");
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", detailTool, detailArgs));
   });
 
   it("shows one pane at a time on a phone and returns to the list from the row", async () => {

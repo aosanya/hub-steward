@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { itemsOf } from "../../features/backlogs";
 import { useLoad } from "../../features/forms/useLoad";
@@ -42,6 +42,7 @@ type Props = {
   groups?: (items: Item[]) => { heading: string; items: Item[] }[];
   lines?: (item: Item) => string[];
   reloadKey?: number;
+  onRows?: (ids: string[]) => void;
 };
 
 const textOf = (item: Record<string, unknown>, key: string) => {
@@ -49,7 +50,7 @@ const textOf = (item: Record<string, unknown>, key: string) => {
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
 
-export function MenuList({ title, tool, fields, empty, bare, add, selectedId, onChoose, opens, load, end, loadingWords, failedWords, groups, lines, reloadKey }: Props) {
+export function MenuList({ title, tool, fields, empty, bare, add, selectedId, onChoose, opens, load, end, loadingWords, failedWords, groups, lines, reloadKey, onRows }: Props) {
   const navigate = useNavigate();
   const back = useBackToSection();
   const [typed, setTyped] = useState("");
@@ -61,6 +62,12 @@ export function MenuList({ title, tool, fields, empty, bare, add, selectedId, on
   const wanted = typed.trim().toLocaleLowerCase();
   const shown = rows.filter((item) => `${textOf(item, fields.title)} ${textOf(item, fields.meta)}`.toLocaleLowerCase().includes(wanted));
   const clickable = (item: Item) => !!onChoose && (opens?.(item) ?? true);
+  const reportable = !!onRows && (view.state === "ready" || reloading);
+  const rowIds = reportable ? (groups ? groups(rows) : [{ heading: "", items: rows }]).flatMap((group) => group.items).filter(clickable).map((item) => textOf(item, "id")) : null;
+  const rowIdsKey = rowIds ? JSON.stringify(rowIds) : "";
+  useEffect(() => {
+    if (onRows && rowIdsKey) onRows(JSON.parse(rowIdsKey) as string[]);
+  }, [onRows, rowIdsKey]);
   const body = (
     <>
       {view.state === "loading" && !reloading ? <LoadingLine words={loadingWords} /> : null}

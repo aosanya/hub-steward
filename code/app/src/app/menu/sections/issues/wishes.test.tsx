@@ -161,11 +161,15 @@ describe("Wishes opens the chosen wish", () => {
       expect(document.querySelector("nav.tabs")).toBeNull();
     });
 
-    it("leaves the right pane empty until a wish is chosen", async () => {
+    it("opens the first wish in the right pane without a tap", async () => {
       open();
       await screen.findByText("A dog park");
 
-      expect(document.querySelector(".wf-main")?.textContent).toBe("");
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      expect(await within(main).findByText("Raised by")).toBeInTheDocument();
+      expect(within(main).getByText("A bench by the bus stop")).toBeInTheDocument();
+      const tree = document.querySelector(".wf-tree") as HTMLElement;
+      expect(within(tree).getByRole("button", { name: /A bench by the bus stop/ })).toHaveAttribute("aria-pressed", "true");
     });
   });
 });

@@ -70,13 +70,13 @@ const serve = (rows: Row[]) => {
   );
 };
 
-const openWith = (props: { list?: Partial<typeof list> & Record<string, unknown>; listKey?: number; elsewhere?: (id: string) => boolean }) =>
+const openWith = (props: { list?: Partial<typeof list> & Record<string, unknown>; listKey?: number; elsewhere?: (id: string) => boolean; leave?: (id: string) => void }) =>
   (
     <MemoryRouter initialEntries={["/a/town/menu/folders"]}>
       <Routes>
         <Route
           path="/a/:agencyId/menu/folders"
-          element={<MenuWindow title="Folder" list={{ ...list, ...props.list }} detail={detail} listKey={props.listKey} elsewhere={props.elsewhere} />}
+          element={<MenuWindow title="Folder" list={{ ...list, ...props.list }} detail={detail} listKey={props.listKey} elsewhere={props.elsewhere} leave={props.leave} />}
         />
       </Routes>
     </MemoryRouter>
@@ -202,6 +202,18 @@ describe("the first row opening by itself on a wide screen", () => {
     await waitFor(() => expect(screen.getByRole("button", { name: /Bello/ })).toHaveAttribute("aria-pressed", "true"));
     expect(await screen.findByText("Ada")).toBeInTheDocument();
     expect(readCalls()).toEqual(["f2"]);
+  });
+
+  it("leaves only when a row that opens elsewhere is tapped, never when the first row is chosen by itself", async () => {
+    setWide(true);
+    const leave = vi.fn();
+    render(openWith({ elsewhere: (id) => id === "f1", leave }));
+    await waitFor(() => expect(screen.getByRole("button", { name: /Bello/ })).toHaveAttribute("aria-pressed", "true"));
+
+    expect(leave).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole("button", { name: /Okafor/ }));
+    expect(leave).toHaveBeenCalledWith("f1");
+    expect(screen.getByRole("button", { name: /Bello/ })).toHaveAttribute("aria-pressed", "true");
   });
 
   it("skips a row the list says does not open and chooses the first row that does", async () => {

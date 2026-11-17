@@ -245,12 +245,15 @@ describe("Service Types", () => {
       expect(document.querySelector("nav.tabs")).toBeNull();
     });
 
-    it("leaves the right pane empty until a type is chosen", async () => {
+    it("opens the first type in the right pane without a tap", async () => {
       open(screens[3].at);
       await screen.findByText("Pothole report");
 
-      expect(document.querySelector(".wf-main")?.textContent).toBe("");
-      expect(called).not.toHaveBeenCalledWith("", "forms_catalog_entry_read", expect.anything());
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      expect(await within(main).findByText("request")).toBeInTheDocument();
+      expect(within(main).getByText("Pothole report")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Pothole report/ })).toHaveAttribute("aria-pressed", "true");
+      expect(screen.getByRole("button", { name: /Noise complaint/ })).toHaveAttribute("aria-pressed", "false");
     });
   });
 });
@@ -498,14 +501,17 @@ const chooseOnMap = async (name: RegExp) => {
 describe("Map View on the menu window", () => {
   afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
 
-  it("keeps the right pane empty on a wide screen until a row is chosen", async () => {
+  it("opens the first row in the right pane on a wide screen without a tap", async () => {
     setWide(true);
     open(screens[2].at);
     await screen.findByRole("button", { name: /Broken streetlight/ });
 
     expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
-    expect(document.querySelector(".wf-main")).toBeEmptyDOMElement();
-    expect(called.mock.calls.some(([, name]) => name === "forms_catalog_reply_list")).toBe(false);
+    const main = document.querySelector(".wf-main") as HTMLElement;
+    expect(await within(main).findByText("A crew is booked for Monday.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Broken streetlight/ })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: /Blocked drain/ })).toHaveAttribute("aria-pressed", "false");
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "i1" }));
   });
 
   it("draws the chosen issue in the right pane beside the list on a wide screen", async () => {
