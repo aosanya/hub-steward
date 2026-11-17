@@ -357,6 +357,8 @@ digitaltwin_land_use_create
 digitaltwin_land_use_list
 digitaltwin_land_use_read
 digitaltwin_land_use_update
+digitaltwin_node_list
+digitaltwin_node_read
 digitaltwin_tenure_create
 digitaltwin_tenure_list
 digitaltwin_tenure_read
