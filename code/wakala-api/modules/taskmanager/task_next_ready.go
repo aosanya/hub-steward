@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"gorm.io/gorm"
+
 	"wakalaserver/modules/taskmanager/models"
 )
 
@@ -18,6 +20,17 @@ type NextReadyFilter struct {
 	Tag     models.TagList `query:"tag"`
 	Backlog string         `query:"backlog"`
 	Limit   int            `query:"limit,min=1"`
+
+	Priority     models.TaskPriority `query:"priority"`
+	Repo         string              `query:"repo"`
+	Assignee     string              `query:"assignee"`
+	Unassigned   bool                `query:"unassigned"`
+	HasTodos     *bool               `query:"has_todos"`
+	TodosOpen    bool                `query:"todos_open"`
+	Effort       string              `query:"effort"`
+	CreatedSince string              `query:"created_since"`
+	UpdatedSince string              `query:"updated_since"`
+	HasFiles     *bool               `query:"has_files"`
 
 	RequesterID string `query:"-" json:"-"`
 }
@@ -73,6 +86,9 @@ func (m *taskManager) NextReady(ctx context.Context, filter NextReadyFilter) (Ne
 	}
 	query, err := m.scopedTasks(ctx, strings.TrimSpace(filter.Backlog), "", append([]string{tagReady}, filter.Tag...), filter.RequesterID)
 	if err != nil {
+		return out, fmt.Errorf("NextReady: %w", err)
+	}
+	if query, err = m.narrowNextReady(ctx, query, filter); err != nil {
 		return out, fmt.Errorf("NextReady: %w", err)
 	}
 	var rows []nextReadyRow
@@ -139,4 +155,25 @@ func nextReadyIDs(rows []nextReadyRow) []string {
 		ids[i] = r.ID
 	}
 	return ids
+}
+
+func (f NextReadyFilter) Orchestration() models.OrchestrationFilter {
+	return models.OrchestrationFilter{
+		Assignee: f.Assignee, Unassigned: f.Unassigned, HasTodos: f.HasTodos, TodosOpen: f.TodosOpen, Effort: f.Effort,
+		CreatedSince: f.CreatedSince, UpdatedSince: f.UpdatedSince, HasFiles: f.HasFiles,
+	}
+}
+
+func (m *taskManager) narrowNextReady(ctx context.Context, q *gorm.DB, filter NextReadyFilter) (*gorm.DB, error) {
+	q, err := m.narrowOrchestration(ctx, q, filter.Orchestration())
+	if err != nil {
+		return nil, err
+	}
+	if filter.Priority != "" {
+		q = q.Where("priority = ?", string(filter.Priority))
+	}
+	if filter.Repo != "" {
+		q = q.Where("project_name = ?", filter.Repo)
+	}
+	return q, nil
 }

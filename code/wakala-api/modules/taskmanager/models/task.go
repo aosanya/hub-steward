@@ -232,6 +232,19 @@ type TaskFilter struct {
 	Backlog       string       `query:"backlog"`
 	Step          string       `query:"step"`
 	UntouchedDays int          `query:"untouched_days"`
+	Assignee      string       `query:"assignee"`
+	Unassigned    bool         `query:"unassigned"`
+	Blocked       *bool        `query:"blocked"`
+	Waiting       *bool        `query:"waiting"`
+	Sinbin        *bool        `query:"sinbin"`
+	HasTodos      *bool        `query:"has_todos"`
+	TodosOpen     bool         `query:"todos_open"`
+	Effort        string       `query:"effort"`
+	CreatedSince  string       `query:"created_since"`
+	UpdatedSince  string       `query:"updated_since"`
+	HasFiles      *bool        `query:"has_files"`
+	IDs           []string     `query:"ids"`
+	Sort          string       `query:"sort"`
 	Offset        int          `query:"offset,min=0"`
 	RequesterID   string       `query:"-" json:"-"`
 
