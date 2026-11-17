@@ -62,3 +62,28 @@ func TestEveryBudgetAndReportToolActionIsUnderAnAccountingPermission(t *testing.
 		}
 	}
 }
+
+func TestTheUpwardReportListIsReadableAndTheSendNeedsAccountingManage(t *testing.T) {
+	view := permissionActions(t, "accounting.view")
+	manage := permissionActions(t, "accounting.manage")
+	for _, p := range [][]string{view, manage} {
+		if !slices.Contains(p, "accounting.upward_report.list") {
+			t.Errorf("accounting.upward_report.list missing from %v", p)
+		}
+	}
+	if slices.Contains(view, "accounting.upward_report.send") {
+		t.Error("accounting.upward_report.send must not be under accounting.view")
+	}
+	if !slices.Contains(manage, "accounting.upward_report.send") {
+		t.Error("accounting.upward_report.send missing from accounting.manage")
+	}
+	for _, name := range []string{"accounting_upward_report_send", "accounting_upward_report_list"} {
+		tool, ok := budgetTools(t, ledgerOnMemory(t))[name]
+		if !ok {
+			t.Fatalf("no tool %s", name)
+		}
+		if !slices.Contains(manage, tool.Action) {
+			t.Errorf("%s action %s is not under accounting.manage", name, tool.Action)
+		}
+	}
+}
