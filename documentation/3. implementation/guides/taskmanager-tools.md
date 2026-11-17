@@ -67,6 +67,7 @@ The answer is `total_ready`, every Ready issue at the To do step that the filter
 | `ids` | these issue ids, repeated, at most 100 | no |
 | `min_days_in_step` | issues that have sat in their step at least that many whole days (`days_in_step`) | no |
 | `sort` | `rank` (default), `priority`, `updated` or `created` | no |
+| `fields` | only those keys of each item, repeated or comma-separated, on all three tools; an unknown name is 400 naming it; `total`, `by_step` and paging do not change | yes |
 
 ## taskmanager_task_next_ready_batch
 
