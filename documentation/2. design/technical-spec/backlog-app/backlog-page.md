@@ -397,7 +397,7 @@ Who writes the list: when an agent picks up an issue that has no pieces, it writ
 Written at creation (D160, in the decisions of hub-steward-swe): whoever creates an issue, a person or a skill, writes its todos then, in the order they are done, each with what it waits on.
 The last todo is documentation, short and in place, and the issue is not Done until it is.
 
-Every todo is created with a description: what it makes, where the output goes and when it is done. The issue page shows it under the todo's title, and a todo without one shows nothing extra. Whoever creates todos, a person or a skill, never leaves it empty or copies the title into it.
+Every todo is created with a description: what it makes, where the output goes and when it is done. The issue page shows it under the todo's title, and a todo without one shows nothing extra. Whoever creates todos, a person or a skill, never leaves it empty or copies the title into it. The Add a piece form asks for the details beside the title and sends them as the description, and task_lint reports a todo without one as todo_without_description.
 
 Moving to Review: when the last piece is Done, an issue that is In progress moves to Review by itself. An issue in any other step does not move. If the issue's backlog has no Review step, nothing moves. Built (TDL-7): the API does it when a piece turns Done, adds a Log entry "Every todo is Done: moved to Review", and does not move the issue back when a piece is added or reopened.
 
