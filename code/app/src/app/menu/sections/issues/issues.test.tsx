@@ -98,8 +98,8 @@ const openIssue = async (name: RegExp) => {
 };
 
 describe("the Issues & Requests section's menu", () => {
-  it("lists the four screens under their names, in order, and leaves Overdue to its own screen", () => {
-    expect(items.map((item) => item.title)).toEqual(["All Issues", "Assigned to Me", "Map View", "Service Types"]);
+  it("lists the screens under their names, in order, and leaves Overdue to its own screen", () => {
+    expect(items.map((item) => item.title)).toEqual(["All Issues", "Assigned to Me", "Map View", "Service Types", "Wishes"]);
   });
 
   it("gives each screen its own path inside the Issues & Requests section", () => {

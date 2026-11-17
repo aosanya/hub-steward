@@ -2,7 +2,9 @@ import { Route } from "react-router-dom";
 import { AllIssuesScreen, AssignedToMeScreen, MapViewScreen, ServiceTypesScreen } from "./IssueScreens";
 import { IssueScreen } from "./IssueScreen";
 import { issuePaths } from "./paths";
+import { WishesScreen } from "./WishesScreen";
 
+export { WishesScreen } from "./WishesScreen";
 export { AllIssuesScreen, AssignedToMeScreen, MapViewScreen, ServiceTypesScreen } from "./IssueScreens";
 export { IssueScreen } from "./IssueScreen";
 export { issuePaths } from "./paths";
@@ -12,6 +14,7 @@ export const items = [
   { title: "Assigned to Me", path: () => issuePaths.assigned.path() },
   { title: "Map View", path: () => issuePaths.map.path() },
   { title: "Service Types", path: () => issuePaths.serviceTypes.path() },
+  { title: "Wishes", path: () => issuePaths.wishes.path() },
 ];
 
 export const routes = () => (
@@ -21,5 +24,6 @@ export const routes = () => (
     <Route path={issuePaths.assigned.pattern} element={<AssignedToMeScreen />} />
     <Route path={issuePaths.map.pattern} element={<MapViewScreen />} />
     <Route path={issuePaths.serviceTypes.pattern} element={<ServiceTypesScreen />} />
+    <Route path={issuePaths.wishes.pattern} element={<WishesScreen />} />
   </>
 );

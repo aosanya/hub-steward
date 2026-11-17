@@ -34,6 +34,7 @@ type Props = {
   loadingWords?: string;
   failedWords?: string;
   groups?: (items: Item[]) => { heading: string; items: Item[] }[];
+  lines?: (item: Item) => string[];
 };
 
 const textOf = (item: Record<string, unknown>, key: string) => {
@@ -41,7 +42,7 @@ const textOf = (item: Record<string, unknown>, key: string) => {
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
 
-export function MenuList({ title, tool, fields, empty, bare, selectedId, onChoose, load, end, loadingWords, failedWords, groups }: Props) {
+export function MenuList({ title, tool, fields, empty, bare, selectedId, onChoose, load, end, loadingWords, failedWords, groups, lines }: Props) {
   const navigate = useNavigate();
   const back = useBackToSection();
   const [typed, setTyped] = useState("");
@@ -70,7 +71,7 @@ export function MenuList({ title, tool, fields, empty, bare, selectedId, onChoos
                   <ListRow
                     key={textOf(item, "id") || at}
                     title={textOf(item, fields.title)}
-                    meta={textOf(item, fields.meta)}
+                    meta={lines ? lines(item) : textOf(item, fields.meta)}
                     end={end?.(item)}
                     onClick={onChoose ? () => onChoose(textOf(item, "id")) : undefined}
                     pressed={onChoose ? selectedId === textOf(item, "id") : undefined}
