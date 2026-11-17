@@ -88,7 +88,7 @@ describe("running a sample", () => {
     };
     const outcome = await runSample(clientAnswering(answer), inputs, {});
     if (outcome.kind !== "problems") throw new Error("expected problems");
-    expect(outcome.rows[0]).toEqual({ input: "payment <= balance", received: null, sentence: "The check `payment <= balance` was not true.", code: "check-failed" });
+    expect(outcome.rows[0]).toEqual({ input: "payment <= balance", received: "", sentence: "The check `payment <= balance` was not true.", code: "check-failed" });
   });
 
   it("says the sample failed when the call fails, and does not throw", async () => {
