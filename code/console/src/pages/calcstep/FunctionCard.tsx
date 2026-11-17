@@ -1,5 +1,5 @@
 import { useI18n } from "../../i18n";
-import { Button, Card, Chip, Note, SelectControl, SettingRows, Stack, Tile } from "../../ui";
+import { Button, Card, Chip, Note, Row, SelectControl, SettingRows, Stack, Tile } from "../../ui";
 import { newestOf, written, type FunctionChoice, type FunctionVersions } from "./calcStepApi";
 
 type FunctionCardProps = {
@@ -49,7 +49,7 @@ export function FunctionCard({ functions, chosen, onChange }: FunctionCardProps)
         ]}
       />
       {chosen && newer ? (
-        <>
+        <Row>
           <Tile
             state="warn"
             value={t("calcstep.newer").replace("{name}", written(newer))}
@@ -58,7 +58,7 @@ export function FunctionCard({ functions, chosen, onChange }: FunctionCardProps)
           <Button kind="quiet" size="xs" onClick={() => onChange(newer)}>
             {t("calcstep.useVersion").replace("{version}", String(newer.version))}
           </Button>
-        </>
+        </Row>
       ) : null}
     </Card>
   );
