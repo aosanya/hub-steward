@@ -23,6 +23,8 @@ const today = new Date().toISOString().slice(0, 10);
 
 let called: MockInstance<typeof mcp.callTool>;
 let owed: number;
+let alsoOpen: Record<string, unknown>[];
+let overdue: Record<string, unknown>[];
 let made: Record<string, unknown>[];
 let refusal: string;
 let chart: unknown[];
@@ -61,6 +63,8 @@ const fill = async (form: HTMLElement, label: string, value: string) => {
 beforeEach(() => {
   openAgency("town");
   owed = 1200;
+  alsoOpen = [];
+  overdue = [lateBill];
   made = [];
   refusal = "";
   chart = accounts;
@@ -69,8 +73,8 @@ beforeEach(() => {
     const given = (args ?? {}) as Record<string, unknown>;
     if (name === "agency_get_my_roles") return { permissions };
     if (name === "accounting_bill_list") {
-      if (given.status === "open") return { items: owed > 0 ? [{ id: "b1", payer: "Anna Sample", amount: 1500, settled: 1500 - owed, outstanding: owed, due_at: "2026-12-01T00:00:00Z", status: "open" }] : [] };
-      if (given.status === "overdue") return { items: [lateBill] };
+      if (given.status === "open") return { items: [...(owed > 0 ? [{ id: "b1", payer: "Anna Sample", amount: 1500, settled: 1500 - owed, outstanding: owed, due_at: "2026-12-01T00:00:00Z", status: "open" }] : []), ...alsoOpen] };
+      if (given.status === "overdue") return { items: overdue };
       return { items: [] };
     }
     if (name === "accounting_bill_read") return given.billID === "b0" ? settledBill : null;
@@ -271,5 +275,60 @@ describe("PaymentListScreen", () => {
     openScreen();
 
     expect(await screen.findByText("No payments yet.")).toBeInTheDocument();
+  });
+
+  it("shows the total owed and the number of payers above the list", async () => {
+    openScreen();
+
+    expect(await screen.findByText("Owed in total: 2,000 · 2 payers")).toBeInTheDocument();
+  });
+
+  it("counts a payer with two bills once and adds both amounts", async () => {
+    alsoOpen = [{ id: "b3", payer: "Anna Sample", amount: 300, settled: 0, outstanding: 300, due_at: "2026-12-05T00:00:00Z", status: "open" }];
+    openScreen();
+
+    expect(await screen.findByText("Owed in total: 2,300 · 2 payers")).toBeInTheDocument();
+  });
+
+  it("leaves a settled bill out of the total and the payer count", async () => {
+    alsoOpen = [{ id: "b4", payer: "Dora Sample", amount: 600, settled: 600, outstanding: 0, due_at: "2026-12-03T00:00:00Z", status: "paid" }];
+    openScreen();
+
+    expect(await screen.findByText("Owed in total: 2,000 · 2 payers")).toBeInTheDocument();
+  });
+
+  it("says 1 payer in the singular", async () => {
+    owed = 0;
+    openScreen();
+
+    expect(await screen.findByText("Owed in total: 800 · 1 payer")).toBeInTheDocument();
+  });
+
+  it("shows no total while the Paid rows still show when nothing is owed", async () => {
+    owed = 0;
+    overdue = [];
+    openScreen();
+
+    expect(await screen.findByRole("heading", { name: "Paid" })).toBeInTheDocument();
+    await rowOf("Ben Sample");
+    expect(screen.queryByText(/Owed in total/)).toBeNull();
+  });
+
+  it("shows no total on the empty state", async () => {
+    called.mockImplementation(async () => ({ items: [] }));
+    openScreen();
+
+    expect(await screen.findByText("No payments yet.")).toBeInTheDocument();
+    expect(screen.queryByText(/Owed in total/)).toBeNull();
+  });
+
+  it("shrinks the total after a part payment through Mark paid", async () => {
+    openScreen();
+    expect(await screen.findByText("Owed in total: 2,000 · 2 payers")).toBeInTheDocument();
+    const form = await openForm();
+    await fill(form, "Amount", "500");
+    await userEvent.click(within(form).getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByText("Owed in total: 1,500 · 2 payers")).toBeInTheDocument();
   });
 });

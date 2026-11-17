@@ -7,6 +7,7 @@ import {
   lastDayOf,
   periodEndOf,
   moneyWords,
+  owedTotal,
   paymentRow,
   periodWords,
   quoteRow,
@@ -160,5 +161,41 @@ describe("payment rows (accounting_payment_list is being built by MUN1042)", () 
 
   it("marks an unpaid payment", () => {
     expect(paymentRow({ id: "p2", payer: "Ben", amount: "50", paid: false })).toMatchObject({ paid: false, status: "Unpaid" });
+  });
+});
+
+describe("owedTotal", () => {
+  it("adds the outstanding amounts and counts the payers who owe", () => {
+    const bills = [
+      { id: "b1", payer: "Anna", outstanding: 1200 },
+      { id: "b2", payer: "Csilla", outstanding: 800 },
+    ];
+    expect(owedTotal(bills)).toEqual({ amount: 2000, payers: 2 });
+  });
+
+  it("counts a payer with two bills once and adds both amounts", () => {
+    const bills = [
+      { id: "b1", payer: "Anna", outstanding: 1200 },
+      { id: "b2", payer: "Anna", outstanding: 300 },
+    ];
+    expect(owedTotal(bills)).toEqual({ amount: 1500, payers: 1 });
+  });
+
+  it("leaves out a bill with nothing outstanding, even from a payer who owes on another", () => {
+    const bills = [
+      { id: "b1", payer: "Anna", outstanding: 1200 },
+      { id: "b2", payer: "Ben", outstanding: 0 },
+      { id: "b3", payer: "Anna", outstanding: 0 },
+    ];
+    expect(owedTotal(bills)).toEqual({ amount: 1200, payers: 1 });
+  });
+
+  it("reads outstanding amounts sent as numeric strings", () => {
+    expect(owedTotal([{ id: "b1", payer: "Anna", outstanding: "250" }])).toEqual({ amount: 250, payers: 1 });
+  });
+
+  it("is zero for no bills and for bills with nothing outstanding", () => {
+    expect(owedTotal([])).toEqual({ amount: 0, payers: 0 });
+    expect(owedTotal([{ id: "b1", payer: "Ben", outstanding: 0 }])).toEqual({ amount: 0, payers: 0 });
   });
 });
