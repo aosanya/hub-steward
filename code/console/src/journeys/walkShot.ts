@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
-const styles = ["design.css", "ui/ui.css", "ui/notice.css", "ui/draftBar.css"].map((file) => readFileSync(resolve(__dirname, "..", file), "utf8")).join("\n");
+const styles = ["design.css", "ui/ui.css", "ui/notice.css", "ui/draftBar.css", "ui/segmented.css"].map((file) => readFileSync(resolve(__dirname, "..", file), "utf8")).join("\n");
 
 const keepChoices = (root: HTMLElement) => {
   root.querySelectorAll("select").forEach((select) => {
