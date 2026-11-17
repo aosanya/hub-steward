@@ -75,7 +75,7 @@ func departmentFigures(lines []BudgetLine) []DepartmentFigures {
 		}
 		d.Planned += l.Planned
 		d.Spent += l.Spent
-		d.Difference = d.Spent - d.Planned
+		d.Difference = d.Planned - d.Spent
 	}
 	out := make([]DepartmentFigures, 0, len(byName))
 	for _, d := range byName {
@@ -105,7 +105,7 @@ func (m *ledgerStore) reportOf(ctx context.Context, p reportPeriod, budgets []Bu
 		figures.Planned += line.Planned
 		figures.Spent += line.Spent
 	}
-	figures.Difference = figures.Spent - figures.Planned
+	figures.Difference = figures.Planned - figures.Spent
 	figures.Departments = departmentFigures(lines)
 	figures.Balances, err = m.closingBalances(ctx, to)
 	if err != nil {

@@ -44,7 +44,7 @@ func TestSendingBudgetAndActualsStoresTheFoldedFiguresAndEveryBudgetLine(t *test
 	if sent.Planned != folded.Figures.Planned || sent.Spent != folded.Figures.Spent || sent.Difference != folded.Figures.Difference {
 		t.Fatalf("totals %d %d %d, report %+v", sent.Planned, sent.Spent, sent.Difference, folded.Figures)
 	}
-	if sent.Planned != 1400 || sent.Spent != 350 || sent.Difference != -1050 {
+	if sent.Planned != 1400 || sent.Spent != 350 || sent.Difference != 1050 {
 		t.Fatalf("totals %+v", sent)
 	}
 	if len(sent.Departments) != 2 || sent.Departments[0].Department != "Markets" || sent.Departments[1].Spent != 350 {

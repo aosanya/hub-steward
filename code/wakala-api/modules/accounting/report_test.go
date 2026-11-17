@@ -40,14 +40,14 @@ func TestAReportFoldsEveryBudgetLineOfOnePeriodIntoTotalsAndDepartments(t *testi
 		t.Fatalf("lines %+v", got.Lines)
 	}
 	figures := got.Figures
-	if figures.Planned != 1400 || figures.Spent != 350 || figures.Difference != -1050 {
+	if figures.Planned != 1400 || figures.Spent != 350 || figures.Difference != 1050 {
 		t.Fatalf("figures %+v", figures)
 	}
 	if len(figures.Departments) != 2 {
 		t.Fatalf("departments %+v", figures.Departments)
 	}
 	works := figures.Departments[1]
-	if figures.Departments[0].Department != "Markets" || works.Department != "Public works" || works.Planned != 1000 || works.Spent != 350 || works.Difference != -650 {
+	if figures.Departments[0].Department != "Markets" || works.Department != "Public works" || works.Planned != 1000 || works.Spent != 350 || works.Difference != 650 {
 		t.Fatalf("public works %+v", works)
 	}
 }
@@ -96,7 +96,7 @@ func TestAReportSpentMatchesTheVarianceOfEachLine(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if report.Figures.Spent != variance.Actual || report.Figures.Difference != variance.Difference {
+	if report.Figures.Spent != variance.Actual || report.Figures.Difference != -variance.Difference {
 		t.Fatalf("report %+v, variance %+v", report.Figures, variance)
 	}
 }

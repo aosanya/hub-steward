@@ -82,7 +82,7 @@ func TestAReportIsSentUpwardAndListedThroughTheToolsWithTheCallerRecorded(t *tes
 		t.Fatalf("send: %v", err)
 	}
 	sent := made.(accounting.UpwardReport)
-	if sent.SentBy != "officer-zoldhalom" || sent.Planned != 1000 || sent.Spent != 250 || sent.Difference != -750 || len(sent.Lines) != 1 {
+	if sent.SentBy != "officer-zoldhalom" || sent.Planned != 1000 || sent.Spent != 250 || sent.Difference != 750 || len(sent.Lines) != 1 {
 		t.Fatalf("sent %+v", sent)
 	}
 

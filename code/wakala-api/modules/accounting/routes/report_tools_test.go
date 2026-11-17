@@ -44,7 +44,7 @@ func TestAFinancialReportIsListedAndReadThroughTheTools(t *testing.T) {
 		t.Fatalf("read: %v", err)
 	}
 	report := read.(accounting.FinancialReport)
-	if report.Name != "Budget and actuals 2026-01-01 to 2026-02-01" || report.Figures.Difference != -750 || len(report.Lines) != 1 {
+	if report.Name != "Budget and actuals 2026-01-01 to 2026-02-01" || report.Figures.Difference != 750 || len(report.Lines) != 1 {
 		t.Fatalf("read %+v", report)
 	}
 }
