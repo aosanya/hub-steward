@@ -151,7 +151,7 @@ func (m *taskManager) GetTaskTodo(ctx context.Context, todoID string) (TaskTodo,
 		}
 		return TaskTodo{}, fmt.Errorf("GetTaskTodo: %w", err)
 	}
-	return withElapsed(todo, time.Now().UTC()), nil
+	return todo, nil
 }
 
 func (m *taskManager) UpdateTaskTodoStatus(ctx context.Context, todoID string, status TodoStatus) (TaskTodo, error) {
@@ -169,16 +169,11 @@ func (m *taskManager) SetTaskTodoStatus(ctx context.Context, todoID string, stat
 }
 
 func (m *taskManager) writeTodoStatus(ctx context.Context, caller, todoID string, status TodoStatus, blockedReason string) (TaskTodo, error) {
-	before, err := m.GetTaskTodo(ctx, todoID)
-	if err != nil {
+	if _, err := m.GetTaskTodo(ctx, todoID); err != nil {
 		return TaskTodo{}, err
 	}
-	now := nowStamp()
-	changes := timesForStatus(before, status, now)
-	changes["status"] = string(status)
-	changes["blocked_reason"] = blockedReason
-	changes["updated_at"] = now
-	res := m.store.Query(ctx, roleTaskTodo).Where("id = ? AND deleted = ?", todoID, false).Updates(changes)
+	res := m.store.Query(ctx, roleTaskTodo).Where("id = ? AND deleted = ?", todoID, false).
+		Updates(map[string]any{"status": string(status), "blocked_reason": blockedReason, "updated_at": nowStamp()})
 	if res.Error != nil {
 		return TaskTodo{}, fmt.Errorf("%s: %w", caller, res.Error)
 	}
@@ -197,7 +192,7 @@ func (m *taskManager) ListTaskTodos(ctx context.Context, workflowRunID string) (
 	if err != nil {
 		return nil, fmt.Errorf("ListTaskTodos: %w", err)
 	}
-	return withElapsedAll(out), nil
+	return out, nil
 }
 
 func (m *taskManager) ListIssueTodos(ctx context.Context, issueID string) ([]TaskTodo, error) {
@@ -211,7 +206,7 @@ func (m *taskManager) ListIssueTodos(ctx context.Context, issueID string) ([]Tas
 	if err != nil {
 		return nil, fmt.Errorf("ListIssueTodos: %w", err)
 	}
-	return withElapsedAll(out), nil
+	return out, nil
 }
 
 func (m *taskManager) CountIssueTodos(ctx context.Context, issueIDs []string) (map[string]TodoCount, error) {

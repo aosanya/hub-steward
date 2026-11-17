@@ -179,6 +179,8 @@ type Task struct {
 
 	HeldBy string `json:"held_by,omitempty"`
 
+	LeaseUntil string `json:"lease_until,omitempty"`
+
 	Code       string `json:"code"`
 	CodeSeries string `json:"code_series"`
 	CodeNumber int    `json:"code_number"`

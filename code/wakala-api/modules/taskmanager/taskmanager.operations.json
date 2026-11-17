@@ -363,6 +363,23 @@
                {"from": "path", "as": "taskID", "refers": "taskmanager.task", "description": "The issue to take."}],
       "returns": [{"body": true}]
     },
+    "claim_next": {
+      "method": "POST", "path": "/claim-next", "call": "ClaimNext", "action": "taskmanager.task.claim_next",
+      "title": "Take the next ready issue",
+      "description": "Pick and take the next issue a worker should do in one atomic call, so two agents never take the same one. It looks at the issues at the To do step that carry the Ready tag, lowest rank first, skips any tagged Sinbin, Blocked or Waiting, any that waits on an open dependency, and any whose files overlap an issue in progress (the rule of taskmanager_task_file_overlaps; an issue with no files overlaps nothing), and takes the first one left exactly as taskmanager_task_claim does: moves it to the In Progress step, writes the first Log entry and returns the issue compact, note_id and the caps in force. It also records the agent (default the caller) as the assignee and a lease: lease_until, lease_minutes from now (default 30, 1 to 240; 400 outside that). Narrow by backlog (id or name; one the caller cannot see is refused as unknown) and tag (repeat it to require every tag). Refused with 409 and no issue taken when none is free, 403 when issues are free but the caller lacks Can move on their backlogs. Before it looks, every issue still In Progress past its lease_until is put back at To do, its assignee cleared and a Log entry written saying the lease ran out. Keep the lease alive with taskmanager_task_heartbeat.",
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is taking it, from the session; recorded as the writer of the entry. A person needs Can move on the backlog the issue is in."},
+               {"from": "body", "whole": true}],
+      "returns": [{"body": true}]
+    },
+    "heartbeat": {
+      "method": "POST", "path": "/tasks/{taskID}/heartbeat", "call": "Heartbeat", "action": "taskmanager.task.heartbeat",
+      "title": "Renew the lease of an issue you took",
+      "description": "Extend the lease of an issue an agent took with taskmanager_task_claim_next: lease_until becomes lease_minutes from now (default 30, 1 to 240; 400 outside that). agent (default the caller) must be the assignee the claim recorded. Refused with 409 when the issue is not in progress, was taken without a lease, is held by another agent, or its lease had already run out (every lease past its lease_until is released first, so the issue is back at To do and claimable again). 403 without Can move on the backlog, 404 when the issue is unknown or not seen. Nothing is written when it is refused. Returns id, code, agent and lease_until.",
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is renewing it, from the session; a person needs Can move on the backlog the issue is in."},
+               {"from": "body", "whole": true},
+               {"from": "path", "as": "taskID", "refers": "taskmanager.task", "into": "TaskID", "description": "The issue whose lease to renew."}],
+      "returns": [{"body": true}]
+    },
     "release_task": {
       "method": "POST", "path": "/tasks/{taskID}/release", "call": "ReleaseTaskAs", "action": "taskmanager.task.release",
       "title": "Release an issue as Blocked or Sinbin",
@@ -1244,6 +1261,9 @@
     "ErrInvalidVote": 400,
     "ErrVoterNotMember": 403,
     "ErrVoteNotFound": 404,
+    "ErrNoReadyIssue": 409,
+    "ErrLeaseNotHeld": 409,
+    "ErrInvalidLease": 400,
     "ErrRequesterVoteStays": 409,
     "ErrTaskNotFound": 404,
     "ErrInvalidTaskNote": 400,

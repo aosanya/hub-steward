@@ -36,6 +36,7 @@ var operationsNotBoundToABacklog = map[string]bool{
 	"confirm_task_reference":  true,
 	"remove_task_reference":   true,
 	"set_worker_caps_default": true,
+	"claim_next":              true,
 }
 
 var readsSentAsPost = map[string]bool{
@@ -113,6 +114,7 @@ func writesOnAnIssue(f *moreWritesFixture, other string) map[string]probeCall {
 		"clear_task_caps":          {"DELETE", issue + "/caps", nil},
 		"write_task_usage":         {"PUT", issue + "/usage", map[string]any{"input_tokens": 5}},
 		"release_task":             {"POST", issue + "/release", map[string]any{"mode": "sinbin", "reason": "stopped"}},
+		"heartbeat":                {"POST", issue + "/heartbeat", map[string]any{"agent": "worker"}},
 		"generate_tasks":           {"POST", "/generated-tasks", map[string]any{"run": "r1", "template": map[string]any{"title": "per subject"}, "subjects": []string{"s1"}}},
 	}
 }

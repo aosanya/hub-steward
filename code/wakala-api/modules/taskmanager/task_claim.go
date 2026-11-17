@@ -3,6 +3,7 @@ package mwanachamataskmanager
 import (
 	"context"
 	"fmt"
+	"maps"
 	"strings"
 	"time"
 
@@ -32,6 +33,10 @@ type TaskClaim struct {
 }
 
 func (m *taskManager) ClaimTaskAs(ctx context.Context, requesterID, taskID string) (TaskClaim, error) {
+	return m.claimIssue(ctx, requesterID, taskID, leaseHold{})
+}
+
+func (m *taskManager) claimIssue(ctx context.Context, requesterID, taskID string, hold leaseHold) (TaskClaim, error) {
 	task, err := m.GetTaskFor(ctx, requesterID, taskID)
 	if err != nil {
 		return TaskClaim{}, err
@@ -49,7 +54,7 @@ func (m *taskManager) ClaimTaskAs(ctx context.Context, requesterID, taskID strin
 	if err := m.refuseOpenDependency(ctx, requesterID, task); err != nil {
 		return TaskClaim{}, err
 	}
-	claim, err := m.takeIssue(ctx, requesterID, task, target)
+	claim, err := m.takeIssue(ctx, requesterID, task, target, hold)
 	if err != nil {
 		return TaskClaim{}, err
 	}
@@ -119,7 +124,7 @@ func (m *taskManager) refuseOpenDependency(ctx context.Context, requesterID stri
 	return nil
 }
 
-func (m *taskManager) takeIssue(ctx context.Context, requesterID string, task Task, target models.BacklogStep) (TaskClaim, error) {
+func (m *taskManager) takeIssue(ctx context.Context, requesterID string, task Task, target models.BacklogStep, hold leaseHold) (TaskClaim, error) {
 	var held heldEvents
 	var claim TaskClaim
 	err := m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -128,7 +133,7 @@ func (m *taskManager) takeIssue(ctx context.Context, requesterID string, task Ta
 			return err
 		}
 		now := time.Now().UTC()
-		if err := txm.winIssue(ctx, task, target, now.Format(time.RFC3339)); err != nil {
+		if err := txm.winIssue(ctx, task, target, now.Format(time.RFC3339), hold); err != nil {
 			return err
 		}
 		reading, err := txm.capsReading(ctx, task.ID)
@@ -157,13 +162,15 @@ func (m *taskManager) takeIssue(ctx context.Context, requesterID string, task Ta
 	return claim, nil
 }
 
-func (m *taskManager) winIssue(ctx context.Context, task Task, target models.BacklogStep, now string) error {
+func (m *taskManager) winIssue(ctx context.Context, task Task, target models.BacklogStep, now string, hold leaseHold) error {
+	changes := map[string]any{
+		"backlog": task.Backlog, "step": target.ID, "status": string(TaskStatusInProgress),
+		"updated_at": now, "held_by": "",
+	}
+	maps.Copy(changes, hold.fields())
 	res := m.store.Query(ctx, roleTask).
 		Where("id = ? AND deleted = ? AND status = ? AND COALESCE(step, '') <> ?", task.ID, false, string(task.Status), target.ID).
-		Updates(map[string]any{
-			"backlog": task.Backlog, "step": target.ID, "status": string(TaskStatusInProgress),
-			"updated_at": now, "held_by": "",
-		})
+		Updates(changes)
 	if res.Error != nil {
 		return fmt.Errorf("ClaimTask: %w", res.Error)
 	}
