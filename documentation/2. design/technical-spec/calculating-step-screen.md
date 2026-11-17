@@ -2,6 +2,8 @@
 
 The console screen where a builder sets up a calculating step, and the panel of the posting step that follows it. Drawn for ISS-21. The drawing is [`agency/workflow-calculating-step.html`](../mockups/console/agency/workflow-calculating-step.html) in the console mockups, three screens. The example is one invented step, Work out the monthly payment, in the workflow Loan payment of the farmers' agency; every figure is invented.
 
+Status: the owner reviewed the drawing on 2026-11-17 and accepted it. The open questions at the end of the page are still open.
+
 ## Where it is reached from
 
 Agency > Goals, then an objective, then its workflow, then one step. There is no page for a workflow in the console yet, so the drawing keeps Goals as the open menu row and shows the path in the breadcrumb: Agency / Goals / Loan payment / Work out the monthly payment. Because the screen edits the agency's definition it carries the draft bar under the title row, and its one filled button, Save step, sits at the right end of the title row.
