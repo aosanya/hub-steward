@@ -14,6 +14,7 @@ type RepeatingTaskRecord struct {
 	AssigneeKind  AssigneeKind `json:"assignee_kind"`
 	AssigneeID    string       `json:"assignee_id"`
 	StoppedAt     string       `json:"stopped_at,omitempty"`
+	NextDueAt     string       `json:"next_due_at,omitempty" spec:"-"`
 	CreatedAt     string       `json:"created_at"`
 	UpdatedAt     string       `json:"updated_at"`
 }

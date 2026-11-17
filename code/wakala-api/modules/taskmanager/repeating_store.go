@@ -154,7 +154,12 @@ func (m *taskManager) GetRepeatingTask(ctx context.Context, id string) (Repeatin
 		}
 		return RepeatingTaskRecord{}, fmt.Errorf("GetRepeatingTask: %w", err)
 	}
-	return rec, nil
+	return m.withUpkeepDays(ctx, rec, time.Now()), nil
+}
+
+func (m *taskManager) withUpkeepDays(_ context.Context, rec RepeatingTaskRecord, now time.Time) RepeatingTaskRecord {
+	rec.NextDueAt = NextDueAt(rec, now)
+	return rec
 }
 
 func (m *taskManager) ListRepeatingTasks(ctx context.Context, filter RepeatingTaskFilter) ([]RepeatingTaskRecord, error) {
@@ -169,6 +174,10 @@ func (m *taskManager) ListRepeatingTasks(ctx context.Context, filter RepeatingTa
 	out, err := specstore.List[RepeatingTaskRecord](m.store, q, roleRepeatingTask)
 	if err != nil {
 		return nil, fmt.Errorf("ListRepeatingTasks: %w", err)
+	}
+	now := time.Now()
+	for i := range out {
+		out[i] = m.withUpkeepDays(ctx, out[i], now)
 	}
 	return out, nil
 }

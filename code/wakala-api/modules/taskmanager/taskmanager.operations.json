@@ -1206,14 +1206,14 @@
     "get_repeating_task": {
       "method": "GET", "path": "/repeating-tasks/{repeatingTaskID}", "call": "GetRepeatingTask", "action": "taskmanager.repeating_task.read",
       "title": "Read repeating task",
-      "description": "Read one repeating task: its schedule, its assignee and whether it is stopped.",
+      "description": "Read one repeating task: its schedule, its assignee and whether it is stopped. The reply carries next_due_at, the day the schedule makes its next job (the start of its next period) in the schedule's own time zone; it is empty when the schedule is stopped or has no later period.",
       "args": [{"from": "path", "as": "repeatingTaskID", "refers": "taskmanager.repeating_task", "description": "The repeating task to read."}],
       "returns": [{"body": true}]
     },
     "list_repeating_tasks": {
       "method": "GET", "path": "/repeating-tasks", "call": "ListRepeatingTasks", "action": "taskmanager.repeating_task.list",
       "title": "List repeating tasks",
-      "description": "List repeating tasks, oldest first, narrowed by assignee kind and id when given.",
+      "description": "List repeating tasks, oldest first, narrowed by assignee kind and id when given. Each one carries next_due_at, the day its schedule makes its next job (the start of its next period) in the schedule's own time zone; it is empty when the schedule is stopped or has no later period.",
       "args": [{"from": "query", "whole": true}],
       "returns": [{"body": true}]
     },
