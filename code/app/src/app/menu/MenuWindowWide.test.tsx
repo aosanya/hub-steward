@@ -123,4 +123,16 @@ describe("the shared pane rules", () => {
     expect(ruleBody("wf-tree")).toMatch(/overflow:\s*auto/);
     expect(ruleBody("wf-content")).toMatch(/overflow:\s*auto/);
   });
+
+  it("sizes the frame by what the bar leaves, not by a fixed offset", () => {
+    const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\>]/g, "\\$&");
+    const bodyOf = (selector: string) => new RegExp(`^${escape(selector)}\\s*\\{([^}]*)\\}`, "m").exec(sharedCss())?.[1] ?? "";
+
+    expect(bodyOf(".wf")).toMatch(/flex:\s*1\b/);
+    expect(bodyOf(".wf")).toMatch(/min-height:\s*0/);
+    expect(bodyOf(".wf")).not.toMatch(/height:\s*calc/);
+    expect(bodyOf(".page:has(> .body > .wf)")).toMatch(/height:\s*100dvh/);
+    expect(bodyOf(".frame .body:has(> .wf)")).toMatch(/min-height:\s*0/);
+    expect(sharedCss()).not.toMatch(/\.wf-tabbed[^{]*\{/);
+  });
 });
