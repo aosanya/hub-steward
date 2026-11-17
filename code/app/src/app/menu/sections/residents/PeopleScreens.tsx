@@ -33,9 +33,29 @@ const groupRows = async (keep: (group: Item) => boolean) => Promise.all((await l
 
 const perGroup = async (tool: string, idName: string) => {
   const groups = await listOf("actor_list_groups");
-  const lists = await Promise.all(groups.map((group) => listOf(tool, { [idName]: text(group, "id") })));
+  const lists = await Promise.all(groups.map(async (group) => (await listOf(tool, { [idName]: text(group, "id") })).map((item) => ({ ...item, group_id: text(group, "id") }))));
   return lists.flat();
 };
+
+export const registrationRows = async () => {
+  const [requests, people] = await Promise.all([perGroup("actor_list_join_requests_for_group", "group_id"), listOf("actor_list_actors")]);
+  const nameById = new Map(people.map((person) => [text(person, "id"), personNameOf(person)]));
+  return requests.map((request) => ({
+    id: text(request, "id"),
+    name: text(request, "actor_name") || nameById.get(text(request, "actor_id")) || "",
+    asked: dayWords(text(request, "requested_at")),
+    group_id: text(request, "group_id"),
+    actor_id: text(request, "actor_id"),
+  }));
+};
+
+export const conversationRows = async () =>
+  (await perGroup("comm_chat_thread_list", "structure_id")).map((thread) => ({
+    id: text(thread, "id"),
+    label: text(thread, "label"),
+    last: dayWords(text(thread, "last_message_at")),
+    group_id: text(thread, "group_id"),
+  }));
 
 export const homeEmpty = (words: string) => ({ words, act: "Home", to: agencyHomePath(openAgencyId()) });
 
@@ -95,16 +115,7 @@ export function HouseholdsScreen() {
 
 export function RegistrationsScreen() {
   const word = useWord("actor");
-  const load = async () => {
-    const [requests, people] = await Promise.all([perGroup("actor_list_join_requests_for_group", "group_id"), listOf("actor_list_actors")]);
-    const nameById = new Map(people.map((person) => [text(person, "id"), personNameOf(person)]));
-    return requests.map((request) => ({
-      id: text(request, "id"),
-      name: text(request, "actor_name") || nameById.get(text(request, "actor_id")) || "",
-      asked: dayWords(text(request, "requested_at")),
-    }));
-  };
-  return <ListScreen title={word("Registrations")} tool="actor_list_join_requests_for_group" fields={{ title: "name", meta: "asked" }} empty={`No ${word("Registrations").toLowerCase()} waiting.`} load={load} />;
+  return <ListScreen title={word("Registrations")} tool="actor_list_join_requests_for_group" fields={{ title: "name", meta: "asked" }} empty={`No ${word("Registrations").toLowerCase()} waiting.`} load={registrationRows} />;
 }
 
 export function GroupsScreen() {
@@ -116,7 +127,5 @@ export function GroupsScreen() {
 export function CommunicationsScreen() {
   const word = useWord("comm");
   const noneYet = word("Communications") === "Communications" ? "No conversations yet." : `No ${word("Communications").toLowerCase()} yet.`;
-  const load = async () =>
-    (await perGroup("comm_chat_thread_list", "structure_id")).map((thread) => ({ id: text(thread, "id"), label: text(thread, "label"), last: dayWords(text(thread, "last_message_at")) }));
-  return <ListScreen title={word("Communications")} tool="comm_chat_thread_list" fields={{ title: "label", meta: "last" }} empty={noneYet} load={load} />;
+  return <ListScreen title={word("Communications")} tool="comm_chat_thread_list" fields={{ title: "label", meta: "last" }} empty={noneYet} load={conversationRows} />;
 }
