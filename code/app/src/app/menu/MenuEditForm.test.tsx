@@ -581,3 +581,58 @@ describe("the shared menu edit form with a date field", () => {
     await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { form_id: "f1", answers: [{ question_id: "department", value: "Public Works!" }, { question_id: "amount", value: 2500 }] }]]));
   });
 });
+
+describe("the shared menu edit form with a field of choices", () => {
+  const choiceFields = [{ label: "Name", key: "name" }, { label: "Condition", key: "condition", choices: ["Good", "Fair", "Poor"] }];
+  const choiceItem = { id: "a1", name: "Road roller", condition: "Fair" };
+
+  const choiceForm = (start: Record<string, string> = choiceItem) => {
+    const onSaved = vi.fn();
+    render(<MenuEditForm item={start} id="a1" idArg="assetID" tool="accounting_budget_set" permission="accounting.manage" fields={choiceFields} onSaved={onSaved} />);
+    return onSaved;
+  };
+
+  it("renders the choices as radios in a group named after the field, with the current one picked", async () => {
+    choiceForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    const group = screen.getByRole("group", { name: "Condition" });
+
+    expect(within(group).getAllByRole("radio").map((radio) => radio.closest("label")?.textContent)).toEqual(["Good", "Fair", "Poor"]);
+    expect(within(group).getByRole("radio", { name: "Fair" })).toBeChecked();
+    expect(screen.queryByLabelText("Condition")).toBeNull();
+  });
+
+  it("saves the picked word through the normal path and reports it", async () => {
+    const onSaved = choiceForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.click(screen.getByRole("radio", { name: "Poor" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(saves()).toEqual([["", "accounting_budget_set", { assetID: "a1", condition: "Poor" }]]));
+    expect(onSaved).toHaveBeenCalledWith({ condition: "Poor" });
+  });
+
+  it("keeps Save disabled until the choice differs from the start and again once it is picked back", async () => {
+    choiceForm();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+
+    await userEvent.click(screen.getByRole("radio", { name: "Good" }));
+    expect(screen.getByRole("button", { name: "Save" })).toBeEnabled();
+
+    await userEvent.click(screen.getByRole("radio", { name: "Fair" }));
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+  });
+
+  it("starts with no radio picked when the item has no value for the field", async () => {
+    choiceForm({ id: "a1", name: "Road roller" });
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+
+    expect(screen.getAllByRole("radio").every((radio) => !(radio as HTMLInputElement).checked)).toBe(true);
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+  });
+});
