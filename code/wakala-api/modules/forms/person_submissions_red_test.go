@@ -51,8 +51,8 @@ func seedPersonSend(t *testing.T, db *gorm.DB, submissions, answers string, seed
 		t.Fatalf("seed send %s: %v", seed.id, err)
 	}
 	for i := 0; i < seed.answers; i++ {
-		err := db.Exec("insert into "+answers+" (id, form_id, question_id, member_id, value_text, answered_at) values (?, ?, ?, ?, 'yes', ?)",
-			fmt.Sprintf("%s-a%d", seed.id, i), seed.formID, fmt.Sprintf("%s-q%d", seed.id, i), seed.memberID, seed.submittedAt).Error
+		err := db.Exec("insert into "+answers+" (id, form_id, question_id, member_id, value_text, answered_at, withdrawn_at) values (?, ?, ?, ?, 'yes', ?, ?)",
+			fmt.Sprintf("%s-a%d", seed.id, i), seed.formID, fmt.Sprintf("%s-q%d", seed.id, i), seed.memberID, seed.submittedAt, seed.withdrawnAt).Error
 		if err != nil {
 			t.Fatalf("seed answer of %s: %v", seed.id, err)
 		}
