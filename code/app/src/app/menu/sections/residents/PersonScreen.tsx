@@ -7,6 +7,7 @@ import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { PersonEdit } from "./PersonEdit";
+import { PersonApplications } from "./PersonLinks";
 import { personNameOf } from "./personName";
 
 type Item = Record<string, unknown>;
@@ -51,6 +52,7 @@ export function PersonPanel({ person, onSaved }: { person: Item; onSaved: () => 
     <>
       <PersonEdit id={id} person={person} onSaved={onSaved} />
       <PersonGroups id={id} />
+      <PersonApplications id={id} />
     </>
   );
 }
