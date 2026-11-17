@@ -6,6 +6,7 @@ import { councilPaths } from "../features/council/routePaths";
 import { formsPaths } from "../features/forms/routePaths";
 import { groupsPaths } from "../features/groups/routePaths";
 import { marketPaths } from "../features/market/routePaths";
+import { pollsPaths } from "../features/polls/routePaths";
 import { menuPaths } from "./menu/routePaths";
 import { risksPaths } from "../features/risks/routePaths";
 import type { AgencyScreen } from "./screen";
@@ -25,6 +26,7 @@ export const routes = {
   ...risksPaths,
   ...councilPaths,
   ...marketPaths,
+  ...pollsPaths,
 };
 
 export const allScreens: AgencyScreen[] = Object.values(routes);

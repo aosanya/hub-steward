@@ -121,6 +121,12 @@ describe("home cards read from the agency's modules", () => {
     expect(agencyCards.farmers.some((c) => c.titleKey)).toBe(false);
   });
 
+  it("adds the question card only when the agency has the voting module", () => {
+    expect(homeCardsFor("farmers", view(["forms", "voting"]))).toContainEqual({ title: "Question", path: "/question" });
+    expect(homeCardsFor("farmers", view(["forms"])).some((c) => c.path === "/question")).toBe(false);
+    expect(agencyCards.farmers.some((c) => c.path === "/question")).toBe(false);
+  });
+
   it("keeps the literal cards when the read failed", () => {
     expect(homeCardsFor("farmers", { name: "", modules: [], modulesUnread: true })).toEqual(agencyCards.farmers);
     expect(homeCardsFor("farmers", null)).toEqual(agencyCards.farmers);

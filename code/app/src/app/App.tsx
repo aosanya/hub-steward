@@ -8,6 +8,7 @@ import { menuRoutes } from "./menu";
 import { formsRoutes } from "../features/forms";
 import { chatRoutes } from "../features/chat";
 import { risksRoutes } from "../features/risks";
+import { pollsRoutes } from "../features/polls";
 import { councilRoutes } from "../features/council";
 import { assistantRoutes } from "../features/assistant";
 import { marketRoutes, marketStandaloneRoutes } from "../features/market";
@@ -78,6 +79,7 @@ export function App() {
         {risksRoutes()}
         {councilRoutes()}
         {marketRoutes()}
+        {pollsRoutes()}
       </Route>
       {allScreens.map((screen) => (
         <Route key={screen.retired} path={screen.retired} element={<ToOpenAgencyScreen screen={screen} />} />
