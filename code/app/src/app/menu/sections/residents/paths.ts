@@ -7,4 +7,5 @@ export const residentPaths = {
   groups: screen("/menu/residents/groups"),
   communications: screen("/menu/residents/communications"),
   businesses: screen("/menu/residents/businesses"),
+  informalTraders: screen("/menu/residents/informal-traders"),
 };
