@@ -49,7 +49,7 @@ const tasks = [
   { id: "t3", title: "Replace the bridge rail", state: "Done", status: "completed" },
 ];
 
-const datedTasks = [
+const datedTasks: Record<string, string>[] = [
   { id: "d1", title: "Mend the fence", state: "To do", status: "pending", due_at: "2026-11-24T00:00:00Z" },
   { id: "d2", title: "Clear the gutters", state: "In progress", status: "in_progress" },
 ];

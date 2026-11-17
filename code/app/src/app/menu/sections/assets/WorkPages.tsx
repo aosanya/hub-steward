@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
+import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
@@ -28,10 +29,20 @@ const frequencyWords = (rule: string) => {
   return frequency.charAt(0) + frequency.slice(1).toLowerCase();
 };
 
+const dueDay = (task: Item) => {
+  const due = textOf(task.due_at);
+  return due === "" ? "" : dayWords(due);
+};
+
+const stateAndDue = (task: Item) => {
+  const day = dueDay(task);
+  return day === "" ? textOf(task.state) : `${textOf(task.state)} · due ${day}`;
+};
+
 const loadWorkOrders = async () =>
   ((await callTool("", taskList).then(itemsOf)) as Item[])
     .filter((task) => !isDone(task))
-    .map((task) => ({ id: textOf(task.id), title: textOf(task.title), state: textOf(task.state) }));
+    .map((task) => ({ id: textOf(task.id), title: textOf(task.title), state: textOf(task.state), due_at: textOf(task.due_at), stateAndDue: stateAndDue(task) }));
 
 const scheduleOf = (task: Item) => ({
   id: textOf(task.id),
@@ -54,7 +65,10 @@ const readOne = async (tool: string, args: Record<string, string>) => {
   return inner && typeof inner === "object" ? (inner as Item) : {};
 };
 
-const loadWorkOrder = (taskId: string) => readOne(taskRead, { taskID: taskId });
+const loadWorkOrder = async (taskId: string) => {
+  const task = await readOne(taskRead, { taskID: taskId });
+  return { ...task, due: dueDay(task) };
+};
 
 const loadScheduleItem = async (repeatingTaskId: string) => scheduleOf(await readOne(repeatingRead, { repeatingTaskID: repeatingTaskId }));
 
@@ -67,10 +81,10 @@ export function WorkOrdersPage() {
       title={title}
       listKey={version}
       detailKey={version}
-      list={{ title, tool: taskList, fields: { title: "title", meta: "state" }, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadWorkOrders }}
+      list={{ title, tool: taskList, fields: { title: "title", meta: "stateAndDue" }, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadWorkOrders }}
       detail={{
         tool: taskRead,
-        fields: { Title: "title", State: "state" },
+        fields: { Title: "title", State: "state", Due: "due" },
         status: "",
         load: loadWorkOrder,
         extra: (order) => (
