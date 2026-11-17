@@ -4,7 +4,7 @@ import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuWindow } from "../../MenuWindow";
-import { IssueListScreen } from "./IssueListScreen";
+import { CatalogueWindow } from "../services/CatalogueEntry";
 import { replyLabel } from "./IssueScreen";
 import { IssueThread } from "./IssueThread";
 import { nearbyIssues, nearbyTool } from "./nearbyIssues";
@@ -87,5 +87,5 @@ export function MapViewScreen() {
 
 export function ServiceTypesScreen() {
   const word = useWord("forms");
-  return <IssueListScreen title={word("Service Types")} tool="forms_catalog_entry_list" fields={{ title: "name", meta: "summary" }} empty={`No ${word("Service Types").toLowerCase()} yet.`} />;
+  return <CatalogueWindow title={word("Service Types")} listTool="forms_catalog_entry_list" empty={`No ${word("Service Types").toLowerCase()} yet.`} />;
 }

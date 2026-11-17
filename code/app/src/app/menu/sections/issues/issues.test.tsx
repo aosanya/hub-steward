@@ -21,8 +21,8 @@ const mine = [
 ];
 
 const entries = [
-  { id: "e1", name: "Pothole report", summary: "Road surface damage" },
-  { id: "e2", name: "Noise complaint", summary: "Loud music at night" },
+  { id: "e1", slug: "pothole-report", name: "Pothole report", summary: "Road surface damage", kind: "request", form_id: "f1" },
+  { id: "e2", slug: "noise-complaint", name: "Noise complaint", summary: "Loud music at night", kind: "complaint", form_id: "f2" },
 ];
 
 const replies = [
@@ -57,6 +57,7 @@ beforeEach(() => {
     forms_catalog_raised_item_list_mine: () => ({ items: mine }),
     forms_catalog_setting_read: () => ({ value: "streetlights, drains" }),
     forms_catalog_entry_list: () => ({ items: entries }),
+    forms_catalog_entry_read: (args) => ({ item: entries.find((entry) => entry.slug === args.slug) }),
     forms_catalog_reply_list: () => ({ items: replies }),
     forms_catalog_reply_send: (args) => ({ id: "r3", raised_item_id: args.raisedItemID, body: args.body }),
   };
@@ -215,6 +216,42 @@ describe("Service Types", () => {
     expect(screen.getByText("Road surface damage")).toBeInTheDocument();
     expect(screen.getByText("Loud music at night")).toBeInTheDocument();
     expect(toolsCalled()).toEqual(new Set(["forms_catalog_entry_list"]));
+  });
+
+  it("opens the chosen type in the detail with its name, kind and form id", async () => {
+    open(screens[3].at);
+    await userEvent.click(await screen.findByRole("button", { name: /Noise complaint/ }));
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expect(await within(detail).findByText("complaint")).toBeInTheDocument();
+    expect(within(detail).getByText("Noise complaint")).toBeInTheDocument();
+    expect(within(detail).getByText("f2")).toBeInTheDocument();
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_entry_read", { slug: "noise-complaint" });
+  });
+
+  describe("on a wide screen", () => {
+    beforeEach(() => setWide(true));
+
+    afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+    it("keeps the list on the left, opens the chosen type in the right pane and draws no tab bar", async () => {
+      open(screens[3].at);
+      await userEvent.click(await screen.findByRole("button", { name: /Pothole report/ }));
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      expect(await within(main).findByText("request")).toBeInTheDocument();
+      expect(within(main).getByText("Pothole report")).toBeInTheDocument();
+      expect(within(document.querySelector(".wf-tree") as HTMLElement).getByRole("button", { name: /Noise complaint/ })).toBeInTheDocument();
+      expect(document.querySelector("nav.tabs")).toBeNull();
+    });
+
+    it("leaves the right pane empty until a type is chosen", async () => {
+      open(screens[3].at);
+      await screen.findByText("Pothole report");
+
+      expect(document.querySelector(".wf-main")?.textContent).toBe("");
+      expect(called).not.toHaveBeenCalledWith("", "forms_catalog_entry_read", expect.anything());
+    });
   });
 });
 

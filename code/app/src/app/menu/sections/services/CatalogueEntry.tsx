@@ -8,7 +8,7 @@ export const servicePermission = "service.edit";
 
 const entryReadTool = "forms_catalog_entry_read";
 
-const listTool = "forms_catalog_entry_list_public";
+const publicListTool = "forms_catalog_entry_list_public";
 
 const editFields = [
   { label: "Name", key: "name", required: true },
@@ -25,7 +25,7 @@ const loadEntry = async (slug: string): Promise<Item> => {
   return { ...entry, id: slug };
 };
 
-export function CatalogueWindow({ title, empty }: { title: string; empty: string }) {
+export function CatalogueWindow({ title, empty, listTool = publicListTool }: { title: string; empty: string; listTool?: string }) {
   const [version, setVersion] = useState(0);
   return (
     <MenuWindow
@@ -35,7 +35,7 @@ export function CatalogueWindow({ title, empty }: { title: string; empty: string
       list={{ title, tool: listTool, fields: { title: "name", meta: "line" }, empty: homeEmpty(empty), load: async () => (await listOf(listTool)).map(entryRow) }}
       detail={{
         tool: entryReadTool,
-        fields: { Kind: "kind", Form: "form_id" },
+        fields: { Name: "name", Summary: "summary", Kind: "kind", Form: "form_id" },
         status: "",
         load: loadEntry,
         extra: (entry) => (
