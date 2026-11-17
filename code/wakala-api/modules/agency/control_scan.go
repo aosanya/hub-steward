@@ -6,11 +6,23 @@ import (
 	"wakalaserver/modules/agency/models"
 )
 
+var umbrellaActions = map[string][]string{
+	"engage.post.create": {"engage.post.create_notice", "engage.post.create_event", "engage.post.create_volunteer_call"},
+}
+
 func catalogueActions() map[string]bool {
 	actions := map[string]bool{}
 	for _, p := range models.PermissionCatalog() {
 		for _, a := range p.Actions {
 			actions[a] = true
+		}
+	}
+	for umbrella, kinds := range umbrellaActions {
+		for _, k := range kinds {
+			if actions[k] {
+				actions[umbrella] = true
+				break
+			}
 		}
 	}
 	return actions
