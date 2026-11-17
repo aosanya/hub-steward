@@ -52,6 +52,37 @@ func TestAReportFoldsEveryBudgetLineOfOnePeriodIntoTotalsAndDepartments(t *testi
 	}
 }
 
+func TestAReportDifferenceIsPlannedMinusSpentForTheTotalsAndEveryDepartment(t *testing.T) {
+	f := newStoreFixture(t)
+	f.postAt(t, f.rent, f.cash, 300, accounting.Entry{OccurredAt: "2026-01-10T00:00:00Z"})
+	f.postAt(t, f.rent, f.cash, 50, accounting.Entry{OccurredAt: "2026-01-20T00:00:00Z"})
+	f.setLineOn(t, f.rent, januaryStart, februaryStart, "Road repair", "Public works", 1000)
+	f.setLineOn(t, f.sales, januaryStart, februaryStart, "Market fees", "Markets", 400)
+
+	got, err := f.repo.GetReport(f.bg, januaryStart, februaryStart)
+	if err != nil {
+		t.Fatalf("GetReport: %v", err)
+	}
+	figures := got.Figures
+	if figures.Planned != 1400 || figures.Spent != 350 || figures.Difference != 1050 {
+		t.Fatalf("figures %+v", figures)
+	}
+	if figures.Planned-figures.Spent != figures.Difference {
+		t.Fatalf("planned %d minus spent %d is not difference %d", figures.Planned, figures.Spent, figures.Difference)
+	}
+	if len(figures.Departments) != 2 {
+		t.Fatalf("departments %+v", figures.Departments)
+	}
+	for _, d := range figures.Departments {
+		if d.Planned-d.Spent != d.Difference {
+			t.Fatalf("department %s planned %d minus spent %d is not difference %d", d.Department, d.Planned, d.Spent, d.Difference)
+		}
+		if d.Department == "Public works" && d.Difference != 650 {
+			t.Fatalf("public works %+v", d)
+		}
+	}
+}
+
 func TestAReportSpentMatchesTheVarianceOfEachLine(t *testing.T) {
 	f := newStoreFixture(t)
 	f.postAt(t, f.rent, f.cash, 300, accounting.Entry{OccurredAt: "2026-01-10T00:00:00Z"})
