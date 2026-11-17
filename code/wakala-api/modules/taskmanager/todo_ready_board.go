@@ -103,6 +103,9 @@ func (m *taskManager) todosGroupedByIssue(ctx context.Context, ids []string) (ma
 			byIssue[todo.ParentTaskID] = append(byIssue[todo.ParentTaskID], todo)
 		}
 	}
+	for id, todos := range byIssue {
+		byIssue[id] = withElapsedAll(todos)
+	}
 	return byIssue, nil
 }
 
@@ -120,6 +123,3 @@ func filesOrEmpty(files FileList) []string {
 	}
 	return files
 }
-	for id, todos := range byIssue {
-		byIssue[id] = withElapsedAll(todos)
-	}
