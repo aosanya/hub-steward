@@ -13,6 +13,11 @@ let permissions: string[];
 let person: Record<string, unknown>;
 let refusal: string;
 
+const attributeProperties = [
+  { name: "phone", label: "Phone", range: "text", unique: true, required: false },
+  { name: "email", label: "Email", range: "text", unique: true, required: false },
+];
+
 const answer = async (name: string, args: unknown) => {
   const given = (args ?? {}) as Record<string, unknown>;
   if (name === "agency_list_mounts") return { modules: [{ module: "actor" }] };
@@ -20,6 +25,11 @@ const answer = async (name: string, args: unknown) => {
   if (name === "actor_list_actors") return { items: [person] };
   if (name === "actor_get_actor") return person;
   if (name === "actor_list_groups_for_actor" || name === "actor_list_groups") return { items: [] };
+  if (name === "actor_list_attribute_properties") return { items: attributeProperties };
+  if (name === "actor_set_actor_attributes") {
+    person = { ...person, attributes: { ...((person.attributes as Record<string, unknown>) ?? {}), ...(given.attributes as Record<string, unknown>) } };
+    return {};
+  }
   if (name === "actor_set_actor_display_name") {
     if (refusal) throw new mcp.McpError(refusal);
     person = { ...person, display_name: given.display_name };
@@ -91,5 +101,26 @@ describe("editing a person from their detail", () => {
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
 
     expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
+  });
+
+  it("sets a phone through actor_set_actor_attributes and the detail shows it", async () => {
+    await openPerson();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit attributes" }));
+    await userEvent.type(await screen.findByLabelText("Phone"), "+254 711 000 000");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "actor_set_actor_attributes", { actor_id: "p1", attributes: { phone: "+254 711 000 000" } }));
+    expect((await screen.findAllByText("+254 711 000 000")).length).toBeGreaterThan(0);
+  });
+
+  it("shows no Edit attributes to a caller without member.edit", async () => {
+    permissions = ["member.view"];
+    await openPerson();
+
+    await screen.findAllByText("Sample Resident A");
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
+
+    expect(screen.queryByRole("button", { name: "Edit attributes" })).toBeNull();
   });
 });

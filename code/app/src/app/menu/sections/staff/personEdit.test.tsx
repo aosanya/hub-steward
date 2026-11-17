@@ -11,11 +11,21 @@ let permissions: string[];
 let actor: Record<string, unknown>;
 let refusal: string;
 
+const attributeProperties = [
+  { name: "phone", label: "Phone", range: "text", unique: true, required: false },
+  { name: "email", label: "Email", range: "text", unique: true, required: false },
+];
+
 const answer = async (name: string, args: unknown) => {
   const given = (args ?? {}) as Record<string, unknown>;
   if (name === "agency_get_my_roles") return { permissions };
   if (name === "actor_list_actors") return { items: [actor] };
   if (name === "actor_get_actor") return actor;
+  if (name === "actor_list_attribute_properties") return { items: attributeProperties };
+  if (name === "actor_set_actor_attributes") {
+    actor = { ...actor, attributes: { ...((actor.attributes as Record<string, unknown>) ?? {}), ...(given.attributes as Record<string, unknown>) } };
+    return {};
+  }
   if (name === "actor_set_actor_display_name") {
     if (refusal) throw new mcp.McpError(refusal);
     actor = { ...actor, display_name: given.display_name };
@@ -88,5 +98,26 @@ describe("editing a staff member", () => {
     await screen.findByText("Name");
 
     expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
+  });
+
+  it("sets a phone from the Staff pane through actor_set_actor_attributes and the pane shows it", async () => {
+    await showStaff();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit attributes" }));
+    await userEvent.type(await screen.findByLabelText("Phone"), "+254 711 000 000");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "actor_set_actor_attributes", { actor_id: "a1", attributes: { phone: "+254 711 000 000" } }));
+    expect((await screen.findAllByText("+254 711 000 000")).length).toBeGreaterThan(0);
+  });
+
+  it("shows no Edit attributes in the Staff pane to a caller without member.edit", async () => {
+    permissions = ["member.view"];
+    await showStaff();
+
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
+    await screen.findByText("Name");
+
+    expect(screen.queryByRole("button", { name: "Edit attributes" })).toBeNull();
   });
 });
