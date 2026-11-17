@@ -44,6 +44,12 @@
       "name": "quote",
       "table": "quotes",
       "description": "One supplier's offer for a tender."
+    },
+    {
+      "role": "upward_report",
+      "name": "upward_report",
+      "table": "upward_reports",
+      "description": "A financial report as it stood when it was sent upward."
     }
   ]
 }

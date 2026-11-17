@@ -11,6 +11,8 @@ type LedgerRepository interface {
 
 	ReportRepository
 
+	UpwardReportRepository
+
 	BillRepository
 
 	PaymentRepository
