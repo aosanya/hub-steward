@@ -108,6 +108,7 @@ Status is read from `code/app/src` on disk when this page was last written, and 
 - **The right pane belongs to `MenuWindow` (MUN1313).** `MenuList` has no `detail` prop, so a section that wants the chosen row in a right pane renders `MenuWindow`. Maintenance Schedule (`app/menu/sections/assets/WorkPages.tsx`) renders `MenuWindow` like Work Orders and reads `taskmanager_repeating_task_read` by `repeatingTaskID`.
 - **Service Types shares the catalogue pane (MUN1311).** `ServiceTypesScreen` (`app/menu/sections/issues/IssueScreens.tsx`) renders `CatalogueWindow` from `services/CatalogueEntry.tsx` with `listTool="forms_catalog_entry_list"`, so a chosen type opens the same detail (name, summary, kind, form id and the edit form) as the Service Catalogue, which lists `forms_catalog_entry_list_public`.
 - **Wishes opens its pane the same way (MUN1310).** Wishes (`app/menu/sections/issues/WishesScreen.tsx`) now renders `MenuWindow` like All Residents and Maintenance Schedule, so on a computer the right pane shows the chosen wish.
+- **Registrations and Communications use the pane (MUN1312).** `RegistrationsScreen` and `CommunicationsScreen` (`app/menu/sections/residents/PeopleScreens.tsx`) render `MenuWindow`. Their rows come from `registrationRows` and `conversationRows`, which keep the group id; a chosen registration opens the person pane of All People with the day asked, and a chosen conversation shows its label and last message day.
 
 ## Still to settle
 
