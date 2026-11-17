@@ -5,6 +5,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
 import { SeatEnd, type Seat as HeldSeat } from "./SeatEnd";
 import { SeatGive } from "./SeatGive";
+import { labelOf } from "./personLabel";
 
 type Seat = { id?: unknown; role_name?: unknown };
 
@@ -21,12 +22,6 @@ const seatsOf = (standing: unknown): HeldSeat[] => {
   return (Array.isArray(seats) ? seats : []).flatMap((seat) =>
     typeof seat.id === "string" && typeof seat.role_name === "string" && seat.role_name !== "" ? [{ id: seat.id, role: seat.role_name }] : [],
   );
-};
-
-const labelOf = (person: Record<string, unknown>) => {
-  const choices = [person.display_name, person.email, person.phone];
-  const found = choices.find((choice): choice is string => typeof choice === "string" && choice.trim() !== "");
-  return found ?? String(person.id ?? "").slice(0, 8);
 };
 
 const standingOf = (actorId: string) => callTool("", "actor_get_actor_standing", { actor_id: actorId });

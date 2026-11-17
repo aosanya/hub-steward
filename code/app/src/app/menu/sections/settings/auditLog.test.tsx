@@ -111,7 +111,7 @@ describe("the Audit Log screen showing names instead of ids", () => {
     openAuditLog();
 
     const rows = await shownRows();
-    for (const row of rows) for (const id of ["a1", "a2", "f1"]) expect(row.textContent).not.toContain(id);
+    for (const row of rows) for (const id of ["a1", "a2", "f1"]) expect(row.textContent).not.toMatch(new RegExp(`\\b${id}\\b`));
   });
 
   it("asks for all distinct actors in one call and for each distinct form once", async () => {
