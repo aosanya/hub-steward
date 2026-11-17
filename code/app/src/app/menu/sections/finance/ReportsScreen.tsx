@@ -7,18 +7,8 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuDetail } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
 import { SendReportButton } from "./SendReportSheet";
+import { figureOf, noReportWords, periodRefusal } from "./reportPeriod";
 import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, reportRow, text, tools, type Item } from "./financeData";
-
-const missingPeriodWords = "Choose both a start date and an end date.";
-
-const reversedPeriodWords = "The end date must not come before the start date.";
-
-const periodRefusal = (start: string, end: string) => {
-  if (!start || !end) return missingPeriodWords;
-  return end < start ? reversedPeriodWords : "";
-};
-
-const figureOf = (report: Item | null, key: string) => (report?.figures as Item | undefined)?.[key];
 
 const linesOf = (report: Item | null) => (Array.isArray(report?.lines) ? (report?.lines as Item[]) : []).map(budgetRow);
 
@@ -39,8 +29,6 @@ const loadReport = async (id: string) => {
     lines: linesWords(linesOf(report)),
   };
 };
-
-const noReportWords = "No report could be read for that period.";
 
 const loadChosen = async (id: string) => {
   try {

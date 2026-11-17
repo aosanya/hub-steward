@@ -23,6 +23,8 @@ describe("finance tool names", () => {
       budgetRead: "accounting_budget_read",
       reportList: "accounting_report_list",
       reportRead: "accounting_report_read",
+      upwardReportSend: "accounting_upward_report_send",
+      upwardReportList: "accounting_upward_report_list",
       billList: "accounting_bill_list",
       billRead: "accounting_bill_read",
       billUpdate: "accounting_bill_update",
