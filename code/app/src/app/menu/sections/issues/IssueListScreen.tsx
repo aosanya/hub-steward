@@ -12,13 +12,14 @@ type Props = {
   empty: string;
   load?: () => Promise<Item[]>;
   onChoose?: (id: string) => void;
+  lines?: (item: Item) => string[];
 };
 
-export function IssueListScreen({ title, tool, fields, empty, load, onChoose }: Props) {
+export function IssueListScreen({ title, tool, fields, empty, load, onChoose, lines }: Props) {
   const back = useBackToSection();
   return (
     <Shell title={title} titleUnder {...back}>
-      <MenuList bare title={title} tool={tool} fields={fields} empty={{ words: empty, act: "Home", to: agencyHomePath(openAgencyId()) }} load={load} onChoose={onChoose} />
+      <MenuList bare title={title} tool={tool} fields={fields} empty={{ words: empty, act: "Home", to: agencyHomePath(openAgencyId()) }} load={load} onChoose={onChoose} lines={lines} />
     </Shell>
   );
 }
