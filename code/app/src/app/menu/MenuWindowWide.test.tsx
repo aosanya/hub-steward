@@ -113,4 +113,14 @@ describe("the shared pane rules", () => {
   it("set no font size in pixels", () => {
     expect(sharedCss()).not.toMatch(/font-size:\s*[\d.]+px/);
   });
+
+  it("keeps the frame at the viewport height so a long list scrolls in its pane, not the page", () => {
+    const ruleBody = (selector: string) => new RegExp(`^\\.${selector}\\s*\\{([^}]*)\\}`, "m").exec(sharedCss())?.[1] ?? "";
+
+    expect(ruleBody("wf")).toMatch(/height:\s*calc\(100dvh - 3rem\)/);
+    expect(ruleBody("wf")).toMatch(/flex:\s*none/);
+    expect(ruleBody("wf")).not.toMatch(/flex:\s*1\b/);
+    expect(ruleBody("wf-tree")).toMatch(/overflow:\s*auto/);
+    expect(ruleBody("wf-content")).toMatch(/overflow:\s*auto/);
+  });
 });
