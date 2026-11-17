@@ -32,7 +32,7 @@ const answer = async (name: string, args: unknown) => {
   if (name === "actor_list_groups_for_actor") return { items: [] };
   if (name === "actor_list_groups") return { items: [] };
   if (name === "actor_list_attribute_properties") return { items: [] };
-  if (name === "forms_form_list") return { items: [] };
+  if (name === "forms_submission_list_of_person") return { items: [] };
   if (name === "audit_list_entries") {
     if (auditRefused) throw new mcp.McpError("audit_list_entries: the hub refused this");
     return { items: auditEntries.filter((entry) => entry.actor === given.actor || entry.subject === given.subject) };
@@ -151,7 +151,7 @@ describe("activity on a person's detail", () => {
 
     expect(await screen.findByText(`${dayWords("2026-11-21")} · Cancelled`)).toBeTruthy();
     expect(screen.getByText(dayWords("2026-11-20"))).toBeTruthy();
-    expect(screen.getAllByText(/Cancelled/)).toHaveLength(1);
+    expect(screen.getAllByText(/ · Cancelled$/)).toHaveLength(1);
   });
 
   it("still shows the bookings when the audit entries are refused, with no error text", async () => {

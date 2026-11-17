@@ -6,6 +6,7 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../../../shared/ui/LoadSt
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
+import { PersonActivity } from "./PersonActivity";
 import { PersonEdit } from "./PersonEdit";
 import { PersonBills } from "./PersonBills";
 import { PersonHoldings } from "./PersonHoldings";
@@ -60,6 +61,7 @@ export function PersonPanel({ person, onSaved }: { person: Item; onSaved: () => 
       <PersonBills id={id} />
       <PersonRecords id={id} />
       <PersonHoldings id={id} />
+      <PersonActivity id={id} />
     </>
   );
 }
