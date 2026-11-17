@@ -99,7 +99,7 @@ const accountingAnswers: Record<string, (args: Args) => unknown> = {
 };
 
 const answering = (listed: Record<string, string>) => {
-  const answers = { ...accountingAnswers, ...agencyWith(listed) };
+  const answers: Record<string, (args: Args) => unknown> = { ...accountingAnswers, ...agencyWith(listed) };
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => (answers[name] ? answers[name](args as Args) : { items: [] }));
 };
 
@@ -130,7 +130,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const cases = [
+const cases: { when: string; listed: Record<string, string>; unit: string }[] = [
   { when: "the accounting mount carries the word Currency = Ft", listed: { Currency: "Ft" }, unit: " Ft" },
   { when: "the accounting mount carries no word for Currency", listed: {}, unit: "" },
 ];

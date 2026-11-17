@@ -10,7 +10,7 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
-import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, text, tools, type Item } from "./financeData";
+import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, text, tools, unitOf, type Item } from "./financeData";
 
 const managePermission = "accounting.manage";
 
@@ -36,9 +36,9 @@ const shareWords = (planned: number, spent: number) => (planned > 0 ? `${Math.ro
 
 const tenderWords = (tender: Item) => [text(tender, "title"), text(tender, "status")].filter((word) => word !== "").join(" · ");
 
-const loadLines = async () => (await listOf(tools.budgetList)).map(budgetRow);
+const loadLines = async (unit: string) => (await listOf(tools.budgetList)).map((line) => budgetRow(line, unit));
 
-const loadLine = async (id: string) => {
+const loadLine = async (id: string, unit: string) => {
   const [line, tenders] = await Promise.all([callTool("", tools.budgetRead, { budgetID: id }) as Promise<Item | null>, listOf(tools.tenderList, { budget_id: id })]);
   const planned = Number(text(line, "planned")) || 0;
   const spent = Number(text(line, "spent")) || 0;
@@ -51,9 +51,9 @@ const loadLine = async (id: string) => {
     name: text(line, "name"),
     department: text(line, "department"),
     period: periodWords(text(line, "period_start"), text(line, "period_end")),
-    planned: moneyWords(planned),
-    spent: moneyWords(spent),
-    remaining: moneyWords(planned - spent),
+    planned: moneyWords(planned, unit),
+    spent: moneyWords(spent, unit),
+    remaining: moneyWords(planned - spent, unit),
     share: shareWords(planned, spent),
     tenders: tenders.map(tenderWords).join(", "),
   };
@@ -112,6 +112,7 @@ function AddLineForm({ onSaved, word }: { onSaved: () => void; word: Wording }) 
 
 export function BudgetScreen() {
   const word = useWord("accounting");
+  const unit = unitOf(word);
   const [version, setVersion] = useState(0);
   const [edited, setEdited] = useState(0);
   const [adding, setAdding] = useState(false);
@@ -124,7 +125,7 @@ export function BudgetScreen() {
     setVersion((was) => was + 1);
   };
   const load = async () => {
-    const lines = await loadLines();
+    const lines = await loadLines(unit);
     setCount(lines.length);
     return lines;
   };
@@ -132,12 +133,12 @@ export function BudgetScreen() {
     <MenuWindow
       key={version}
       title={word("Budget")}
-      listKey={edited}
-      detailKey={edited}
+      listKey={`${edited}${unit}`}
+      detailKey={`${edited}${unit}`}
       list={{ title: word("Budget"), tool: tools.budgetList, load, fields: { title: "name", meta: "meta" }, empty: { ...homeEmpty(`No ${word("Budget lines").toLowerCase()} yet.`), children: addButton } }}
       detail={{
         tool: tools.budgetRead,
-        load: loadLine,
+        load: (id: string) => loadLine(id, unit),
         fields: { Name: "name", Department: "department", Period: "period", Planned: "planned", Spent: "spent", Remaining: "remaining", "Share spent": "share", Tenders: "tenders" },
         status: "status",
         extra: (line) => (

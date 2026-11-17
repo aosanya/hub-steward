@@ -9,7 +9,7 @@ import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
-import { dayStart, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, owedTotal, owedWords, text, tools, type Item } from "./financeData";
+import { dayStart, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, owedTotal, owedWords, text, tools, unitOf, type Item } from "./financeData";
 
 const owedHeading = "To pay";
 
@@ -38,50 +38,50 @@ const holdsManage = async () => {
 
 const refusalWords = (error: unknown) => (error instanceof Error ? refusalText(error) || error.message : "") || actionFailedWords;
 
-const owedRow = (bill: Item) => ({
+const owedRow = (bill: Item, unit: string) => ({
   id: `bill:${text(bill, "id")}`,
   billID: text(bill, "id"),
   group: owedHeading,
   payer: text(bill, "payer"),
-  meta: [`${moneyWords(text(bill, "outstanding"))} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
-  outstanding: moneyWords(text(bill, "outstanding")),
+  meta: [`${moneyWords(text(bill, "outstanding"), unit)} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
+  outstanding: moneyWords(text(bill, "outstanding"), unit),
   outstandingAmount: String(Number(text(bill, "outstanding")) || 0),
   due: dayWords(text(bill, "due_at")),
   late: daysLateWords(bill),
   status: text(bill, "status") === "overdue" ? "Overdue" : "Unpaid",
 });
 
-const paidRow = (payment: Item) => ({
+const paidRow = (payment: Item, unit: string) => ({
   id: `payment:${text(payment, "id")}`,
   billID: "",
   group: paidHeading,
   payer: text(payment, "payer") || text(payment, "narration") || text(payment, "kind"),
-  meta: `${moneyWords(text(payment, "amount"))} · ${dayWords(text(payment, "paid_at"))}`,
-  amount: moneyWords(text(payment, "amount")),
+  meta: `${moneyWords(text(payment, "amount"), unit)} · ${dayWords(text(payment, "paid_at"))}`,
+  amount: moneyWords(text(payment, "amount"), unit),
   paidOn: dayWords(text(payment, "paid_at")),
   narration: text(payment, "narration"),
   settledBillID: text(payment, "bill_id"),
   status: "Paid",
 });
 
-const billWords = async (billID: string) => {
+const billWords = async (billID: string, unit: string) => {
   if (!billID) return "";
   try {
     const bill = (await callTool("", tools.billRead, { billID })) as Item | null;
     if (!bill) return "";
-    return `${text(bill, "payer")} · ${moneyWords(text(bill, "amount"))} · due ${dayWords(text(bill, "due_at"))}`;
+    return `${text(bill, "payer")} · ${moneyWords(text(bill, "amount"), unit)} · due ${dayWords(text(bill, "due_at"))}`;
   } catch {
     return "";
   }
 };
 
-const loadRows = async (): Promise<Item[]> => {
+const loadRows = async (unit: string): Promise<Item[]> => {
   const [open, overdue, payments] = await Promise.all([
     listOf(tools.billList, { status: "open" }),
     listOf(tools.billList, { status: "overdue" }),
     listOf(tools.paymentList),
   ]);
-  return [...open.map(owedRow), ...overdue.map(owedRow), ...payments.map(paidRow)];
+  return [...open.map((bill) => owedRow(bill, unit)), ...overdue.map((bill) => owedRow(bill, unit)), ...payments.map((payment) => paidRow(payment, unit))];
 };
 
 const cashAccountId = async () => {
@@ -110,6 +110,7 @@ function MarkPaidForm({ draft, refused, busy, onChange, onSave, onCancel }: Mark
 
 export function PaymentListScreen() {
   const word = useWord("accounting");
+  const unit = unitOf(word);
   const [version, setVersion] = useState(0);
   const [mayMark, setMayMark] = useState(false);
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -124,13 +125,13 @@ export function PaymentListScreen() {
     };
   }, []);
   const loadCounted = async () => {
-    const rows = await loadRows();
+    const rows = await loadRows(unit);
     setOwing(owedTotal(rows.filter((row) => text(row, "group") === owedHeading).map((row) => ({ payer: row.payer, outstanding: row.outstandingAmount }))));
     return rows;
   };
   const loadRow = async (id: string) => {
-    const row = (await loadRows()).find((found) => found.id === id) ?? { id };
-    return { ...row, bill: await billWords(text(row, "settledBillID")) };
+    const row = (await loadRows(unit)).find((found) => found.id === id) ?? { id };
+    return { ...row, bill: await billWords(text(row, "settledBillID"), unit) };
   };
   const openForm = (row: Item) => {
     setRefused("");
@@ -162,9 +163,9 @@ export function PaymentListScreen() {
   };
   return (
     <MenuWindow
-      key={version}
+      key={`${version}${unit}`}
       title={word("Payments")}
-      above={owing.amount > 0 ? <p className="sub">{owedWords(owing)}</p> : null}
+      above={owing.amount > 0 ? <p className="sub">{owedWords(owing, unit)}</p> : null}
       list={{
         title: word("Payments"),
         tool: tools.paymentList,

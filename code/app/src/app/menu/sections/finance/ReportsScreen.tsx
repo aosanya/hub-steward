@@ -7,31 +7,31 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuDetail } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
 import { figureOf, noReportWords, periodRefusal } from "./reportPeriod";
-import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, reportRow, text, tools, type Item } from "./financeData";
+import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, reportRow, text, tools, unitOf, type Item } from "./financeData";
 
-const linesOf = (report: Item | null) => (Array.isArray(report?.lines) ? (report?.lines as Item[]) : []).map(budgetRow);
+const linesOf = (report: Item | null, unit: string) => (Array.isArray(report?.lines) ? (report?.lines as Item[]) : []).map((line) => budgetRow(line, unit));
 
 const linesWords = (lines: ReturnType<typeof budgetRow>[]) => lines.map((line) => `${line.name} · ${line.meta}`).join("; ");
 
 const loadReports = async () => (await listOf(tools.reportList)).map(reportRow);
 
-const loadReport = async (id: string) => {
+const loadReport = async (id: string, unit: string) => {
   const period = reportPeriodOf(id);
   const report = (await callTool("", tools.reportRead, period)) as Item | null;
   return {
     id,
     name: text(report, "name"),
     period: periodWords(period.period_start, period.period_end),
-    planned: moneyWords(figureOf(report, "planned") as number),
-    spent: moneyWords(figureOf(report, "spent") as number),
-    difference: moneyWords(figureOf(report, "difference") as number),
-    lines: linesWords(linesOf(report)),
+    planned: moneyWords(figureOf(report, "planned") as number, unit),
+    spent: moneyWords(figureOf(report, "spent") as number, unit),
+    difference: moneyWords(figureOf(report, "difference") as number, unit),
+    lines: linesWords(linesOf(report, unit)),
   };
 };
 
-const loadChosen = async (id: string) => {
+const loadChosen = async (id: string, unit: string) => {
   try {
-    return await loadReport(id);
+    return await loadReport(id, unit);
   } catch {
     return { id, note: noReportWords };
   }
@@ -39,7 +39,7 @@ const loadChosen = async (id: string) => {
 
 const reportFields = { Name: "name", Period: "period", Planned: "planned", Spent: "spent", Difference: "difference", "Budget lines": "lines" };
 
-function ChoosePeriod() {
+function ChoosePeriod({ unit }: { unit: string }) {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [refusal, setRefusal] = useState("");
@@ -55,7 +55,7 @@ function ChoosePeriod() {
         <Field label="From" type="date" value={start} onChange={(event) => setStart(event.target.value)} />
         <Field label="To" type="date" value={end} onChange={(event) => setEnd(event.target.value)} error={refusal || undefined} />
         <Button kind="primary" onClick={read}>Read report</Button>
-        {reading ? <MenuDetail key={reading} bare id={reading} title="Financial Reports" tool={tools.reportRead} load={loadChosen} fields={{ ...reportFields, Note: "note" }} status="status" /> : null}
+        {reading ? <MenuDetail key={`${reading}${unit}`} bare id={reading} title="Financial Reports" tool={tools.reportRead} load={(id: string) => loadChosen(id, unit)} fields={{ ...reportFields, Note: "note" }} status="status" /> : null}
       </Card>
     </section>
   );
@@ -63,12 +63,14 @@ function ChoosePeriod() {
 
 export function ReportsScreen() {
   const word = useWord("accounting");
+  const unit = unitOf(word);
   return (
     <MenuWindow
       title={word("Financial Reports")}
-      above={<ChoosePeriod />}
+      detailKey={unit}
+      above={<ChoosePeriod unit={unit} />}
       list={{ title: word("Financial Reports"), tool: tools.reportList, load: loadReports, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Reports").toLowerCase()} yet.`) }}
-      detail={{ tool: tools.reportRead, load: loadReport, fields: reportFields, status: "status" }}
+      detail={{ tool: tools.reportRead, load: (id: string) => loadReport(id, unit), fields: reportFields, status: "status" }}
     />
   );
 }

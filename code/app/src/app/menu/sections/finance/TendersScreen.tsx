@@ -11,7 +11,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
-import { dayWords, homeEmpty, listOf, moneyWords, quoteRow, tenderRow, text, tools, type Item } from "./financeData";
+import { dayWords, homeEmpty, listOf, moneyWords, quoteRow, tenderRow, text, tools, unitOf, type Item } from "./financeData";
 
 const manageCode = "accounting.manage";
 
@@ -43,8 +43,8 @@ const instantOf = (day: string) => (day ? `${day}T00:00:00Z` : undefined);
 
 const withoutBlanks = (fields: Record<string, unknown>) => Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined && value !== ""));
 
-const quoteMeta = (quote: Item) =>
-  [moneyWords(text(quote, "amount")), text(quote, "valid_until") ? `valid until ${dayWords(text(quote, "valid_until"))}` : "", text(quote, "note")].filter(Boolean).join(" · ");
+const quoteMeta = (quote: Item, unit: string) =>
+  [moneyWords(text(quote, "amount"), unit), text(quote, "valid_until") ? `valid until ${dayWords(text(quote, "valid_until"))}` : "", text(quote, "note")].filter(Boolean).join(" · ");
 
 const loadTender = async (id: string) => {
   const [reply, quotes] = await Promise.all([
@@ -84,7 +84,7 @@ const quoteFields: EditField[] = [
 const readQuote = async (tenderID: string, quote: Item) =>
   (await listOf(tools.quoteList, { tenderID })).find((found) => text(found, "id") === text(quote, "id")) ?? quote;
 
-function QuoteRows({ quotes, tenderID, onEdited }: { quotes: Item[]; tenderID: string; onEdited: () => void }) {
+function QuoteRows({ quotes, tenderID, unit, onEdited }: { quotes: Item[]; tenderID: string; unit: string; onEdited: () => void }) {
   const lowest = Math.min(...quotes.map((quote) => Number(quote.amount)));
   return (
     <>
@@ -93,7 +93,7 @@ function QuoteRows({ quotes, tenderID, onEdited }: { quotes: Item[]; tenderID: s
           <Rows>
             <ListRow
               title={quoteRow(quote).supplier}
-              meta={quoteMeta(quote)}
+              meta={quoteMeta(quote, unit)}
               end={quotes.length > 1 && Number(quote.amount) === lowest ? <Chip tone="success">{lowestWords}</Chip> : undefined}
             />
           </Rows>
@@ -178,13 +178,14 @@ function OpenTender({ onOpened, onCancel, word }: { onOpened: () => void; onCanc
 
 export function TendersScreen() {
   const word = useWord("accounting");
+  const unit = unitOf(word);
   const can = useCanManage();
   const [version, setVersion] = useState(0);
   const [opening, setOpening] = useState(false);
   const [listed, setListed] = useState(-1);
   const refresh = () => setVersion((was) => was + 1);
   const loadTenders = async () => {
-    const rows = (await listOf(tools.tenderList)).map(tenderRow);
+    const rows = (await listOf(tools.tenderList)).map((tender) => tenderRow(tender, unit));
     setListed(rows.length);
     return rows;
   };
@@ -202,8 +203,8 @@ export function TendersScreen() {
   return (
     <MenuWindow
       title={word("Procurement")}
-      listKey={version}
-      detailKey={version}
+      listKey={`${version}${unit}`}
+      detailKey={`${version}${unit}`}
       above={opening ? form : can && listed > 0 ? openButton : null}
       list={{
         title: word("Procurement"),
@@ -231,7 +232,7 @@ export function TendersScreen() {
               readAgain={() => loadTender(text(tender, "id"))}
               onSaved={refresh}
             />
-            {Array.isArray(tender.quotes) && tender.quotes.length > 0 ? <QuoteRows quotes={tender.quotes as Item[]} tenderID={text(tender, "id")} onEdited={refresh} /> : null}
+            {Array.isArray(tender.quotes) && tender.quotes.length > 0 ? <QuoteRows quotes={tender.quotes as Item[]} tenderID={text(tender, "id")} unit={unit} onEdited={refresh} /> : null}
             {can ? <AddQuote tenderID={text(tender, "id")} onAdded={refresh} /> : null}
           </>
         ),

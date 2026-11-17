@@ -10,7 +10,7 @@ import { actionFailedWords } from "../../MenuDetail";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { RaiseBillSheet } from "./RaiseBillSheet";
-import { billRow, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, text, tools, type Item } from "./financeData";
+import { billRow, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, text, tools, unitOf, type Item } from "./financeData";
 import { markBillPaid } from "./markBillPaid";
 
 const manageRole = "accounting.manage";
@@ -29,26 +29,26 @@ const paymentLines = 10;
 
 const paymentLabels = Array.from({ length: paymentLines }, (_, at) => `Payment ${at + 1}`);
 
-const paymentLine = (payment: Item) => [moneyWords(text(payment, "amount")), dayWords(text(payment, "paid_at")), text(payment, "narration")].filter(Boolean).join(" · ");
+const paymentLine = (payment: Item, unit: string) => [moneyWords(text(payment, "amount"), unit), dayWords(text(payment, "paid_at")), text(payment, "narration")].filter(Boolean).join(" · ");
 
 const newestFirst = (payments: Item[]) => [...payments].sort((a, b) => text(b, "paid_at").localeCompare(text(a, "paid_at")));
 
-const loadBill = async (id: string) => {
+const loadBill = async (id: string, unit: string) => {
   const [bill, payments] = await Promise.all([callTool("", tools.billRead, { billID: id }) as Promise<Item | null>, listOf(tools.paymentList, { bill_id: id })]);
   return {
     id,
     billID: id,
     payer: text(bill, "payer"),
     amount: text(bill, "amount"),
-    amountWords: moneyWords(text(bill, "amount")),
-    settled: moneyWords(text(bill, "settled")),
-    outstanding: moneyWords(text(bill, "outstanding")),
+    amountWords: moneyWords(text(bill, "amount"), unit),
+    settled: moneyWords(text(bill, "settled"), unit),
+    outstanding: moneyWords(text(bill, "outstanding"), unit),
     due: dayWords(text(bill, "due_at")),
     due_at: text(bill, "due_at"),
     narration: text(bill, "narration"),
     late: daysLateWords(bill ?? {}),
     status: billRow(bill ?? {}).status,
-    ...Object.fromEntries(newestFirst(payments).slice(0, paymentLines).map((payment, at) => [`payment${at + 1}`, paymentLine(payment)])),
+    ...Object.fromEntries(newestFirst(payments).slice(0, paymentLines).map((payment, at) => [`payment${at + 1}`, paymentLine(payment, unit)])),
   };
 };
 
@@ -63,6 +63,7 @@ const paymentFields = Object.fromEntries(paymentLabels.map((label, at) => [label
 
 export function BillsScreen() {
   const word = useWord("accounting");
+  const unit = unitOf(word);
   const [version, setVersion] = useState(0);
   const [edited, setEdited] = useState(0);
   const [status, setStatus] = useState("");
@@ -72,7 +73,7 @@ export function BillsScreen() {
   const roles = useLoad(() => callTool("", rolesTool, {}), "bills-roles");
   const manage = roles.state === "ready" && ((roles.data as { permissions?: string[] } | null)?.permissions ?? []).includes(manageRole);
   const loadBills = async () => {
-    const bills = (await listOf(tools.billList, status ? { status } : undefined)).map(billRow);
+    const bills = (await listOf(tools.billList, status ? { status } : undefined)).map((bill) => billRow(bill, unit));
     setListed(bills.length);
     return bills;
   };
@@ -91,8 +92,8 @@ export function BillsScreen() {
     <MenuWindow
       key={`${status}:${version}`}
       title={word("Revenue & Billing")}
-      listKey={edited}
-      detailKey={edited}
+      listKey={`${edited}${unit}`}
+      detailKey={`${edited}${unit}`}
       above={
         <>
           <Segmented label="Status" items={statuses.map(({ id, label }) => ({ id, label }))} current={status} onChange={setStatus} />
@@ -118,7 +119,7 @@ export function BillsScreen() {
       }}
       detail={{
         tool: tools.billRead,
-        load: loadBill,
+        load: (id: string) => loadBill(id, unit),
         fields: { Payer: "payer", Amount: "amountWords", Settled: "settled", Outstanding: "outstanding", Due: "due", Late: "late", Narration: "narration", Status: "status", ...paymentFields },
         status: "",
         extra: (bill) => (
@@ -130,7 +131,7 @@ export function BillsScreen() {
             permission={manageRole}
             fields={editFields}
             keep={["payer", "amount", "due_at", "narration"]}
-            readAgain={() => loadBill(text(bill, "id"))}
+            readAgain={() => loadBill(text(bill, "id"), unit)}
             onSaved={() => setEdited((was) => was + 1)}
           />
         ),

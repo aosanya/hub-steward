@@ -1,3 +1,4 @@
+import type { Wording } from "../../../../features/agency/useWord";
 import { text, type Item } from "../staff/staffData";
 
 export { homeEmpty, listOf, text } from "../staff/staffData";
@@ -29,7 +30,12 @@ const numberOf = (value: unknown) => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
-export const moneyWords = (amount: number | string) => Math.round(numberOf(amount)).toLocaleString("en-US");
+export const unitOf = (word: Wording) => {
+  const own = word("Currency");
+  return own === "Currency" ? "" : ` ${own}`;
+};
+
+export const moneyWords = (amount: number | string, unit = "") => `${Math.round(numberOf(amount)).toLocaleString("en-US")}${unit}`;
 
 export const dayWords = (iso: string) => iso.slice(0, 10);
 
@@ -50,10 +56,10 @@ export const periodWords = (start: string, end: string) => `${dayWords(start)} t
 
 const capitalised = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
 
-export const budgetRow = (line: Item) => ({
+export const budgetRow = (line: Item, unit = "") => ({
   id: text(line, "id"),
   name: text(line, "name"),
-  meta: `Planned ${moneyWords(numberOf(line.planned))} · Spent ${moneyWords(numberOf(line.spent))}`,
+  meta: `Planned ${moneyWords(numberOf(line.planned), unit)} · Spent ${moneyWords(numberOf(line.spent), unit)}`,
   department: text(line, "department"),
   planned: numberOf(line.planned),
   spent: numberOf(line.spent),
@@ -65,27 +71,27 @@ export const daysLateWords = (bill: Item) => {
   return `${days} ${days === 1 ? "day" : "days"} late`;
 };
 
-export const billRow = (bill: Item) => ({
+export const billRow = (bill: Item, unit = "") => ({
   id: text(bill, "id"),
   payer: text(bill, "payer"),
-  meta: [`${moneyWords(numberOf(bill.amount))} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
+  meta: [`${moneyWords(numberOf(bill.amount), unit)} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
   status: capitalised(text(bill, "status")),
 });
 
-export const tenderRow = (tender: Item) => {
+export const tenderRow = (tender: Item, unit = "") => {
   const quotes = numberOf(tender.quote_count);
   return {
     id: text(tender, "id"),
     title: text(tender, "title"),
-    meta: quotes === 0 ? "No quotes yet" : `${quotes} ${quotes === 1 ? "quote" : "quotes"} · lowest ${moneyWords(numberOf(tender.lowest_amount))}`,
+    meta: quotes === 0 ? "No quotes yet" : `${quotes} ${quotes === 1 ? "quote" : "quotes"} · lowest ${moneyWords(numberOf(tender.lowest_amount), unit)}`,
     status: quotes === 0 ? "Waiting for quote" : "Quoted",
   };
 };
 
-export const quoteRow = (quote: Item) => ({
+export const quoteRow = (quote: Item, unit = "") => ({
   id: text(quote, "id"),
   supplier: text(quote, "supplier"),
-  meta: moneyWords(numberOf(quote.amount)),
+  meta: moneyWords(numberOf(quote.amount), unit),
 });
 
 export const reportRow = (report: Item) => ({
@@ -99,12 +105,12 @@ export const reportPeriodOf = (id: string) => {
   return { period_start, period_end };
 };
 
-export const paymentRow = (payment: Item) => {
+export const paymentRow = (payment: Item, unit = "") => {
   const paid = payment.paid === true;
   return {
     id: text(payment, "id"),
     payer: text(payment, "payer"),
-    meta: moneyWords(numberOf(payment.amount)),
+    meta: moneyWords(numberOf(payment.amount), unit),
     paid,
     status: paid ? "Paid" : "Unpaid",
   };
@@ -118,4 +124,4 @@ export const owedTotal = (bills: Item[]) => {
   };
 };
 
-export const owedWords = ({ amount, payers }: { amount: number; payers: number }) => `Owed in total: ${moneyWords(amount)} · ${payers} ${payers === 1 ? "payer" : "payers"}`;
+export const owedWords = ({ amount, payers }: { amount: number; payers: number }, unit = "") => `Owed in total: ${moneyWords(amount, unit)} · ${payers} ${payers === 1 ? "payer" : "payers"}`;
