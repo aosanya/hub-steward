@@ -57,7 +57,7 @@ describe("editing an issue from its screen", () => {
     openIssue();
     await screen.findByText("Roads");
 
-    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[0]);
+    await userEvent.click(await screen.findByRole("button", { name: "Edit department" }));
     const department = screen.getByLabelText("Department");
     await userEvent.clear(department);
     await userEvent.type(department, "Lighting");
@@ -71,8 +71,7 @@ describe("editing an issue from its screen", () => {
   it("records the outcome on the board item", async () => {
     openIssue();
 
-    await waitFor(() => expect(screen.getAllByRole("button", { name: "Edit" })).toHaveLength(2));
-    await userEvent.click(screen.getAllByRole("button", { name: "Edit" })[1]);
+    await userEvent.click(await screen.findByRole("button", { name: "Edit outcome" }));
     await userEvent.type(screen.getByLabelText("Outcome"), "Lamp replaced");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
@@ -85,7 +84,7 @@ describe("editing an issue from its screen", () => {
     openIssue();
 
     expect(await screen.findByText("Lamp ordered")).toBeTruthy();
-    await userEvent.click(screen.getAllByRole("button", { name: "Edit" })[1]);
+    await userEvent.click(await screen.findByRole("button", { name: "Edit outcome" }));
 
     expect((screen.getByLabelText("Outcome") as HTMLInputElement).value).toBe("Lamp ordered");
     expect(called).toHaveBeenCalledWith("", "forms_catalog_board_item_read", { boardItemID: "b1" });
@@ -97,7 +96,7 @@ describe("editing an issue from its screen", () => {
     openIssue();
 
     await screen.findByText("Lamp ordered");
-    await userEvent.click(screen.getAllByRole("button", { name: "Edit" })[1]);
+    await userEvent.click(await screen.findByRole("button", { name: "Edit outcome" }));
     await userEvent.type(screen.getByLabelText("Outcome"), ", fitted");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
@@ -109,8 +108,7 @@ describe("editing an issue from its screen", () => {
     readFails = true;
     openIssue();
 
-    await waitFor(() => expect(screen.getAllByRole("button", { name: "Edit" })).toHaveLength(2));
-    await userEvent.click(screen.getAllByRole("button", { name: "Edit" })[1]);
+    await userEvent.click(await screen.findByRole("button", { name: "Edit outcome" }));
 
     expect((screen.getByLabelText("Outcome") as HTMLInputElement).value).toBe("");
   });
@@ -129,12 +127,20 @@ describe("editing an issue from its screen", () => {
     refusal = "forms_catalog_raised_item_reassign: only an officer may hand an item on";
     openIssue();
 
-    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[0]);
+    await userEvent.click(await screen.findByRole("button", { name: "Edit department" }));
     await userEvent.type(screen.getByLabelText("Department"), "x");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByText("only an officer may hand an item on")).toBeTruthy();
     expect(screen.getByText("Roads")).toBeTruthy();
+  });
+
+  it("labels the two edit buttons by what each one changes", async () => {
+    openIssue();
+
+    expect(await screen.findByRole("button", { name: "Edit department" })).toBeTruthy();
+    expect(await screen.findByRole("button", { name: "Edit outcome" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
   });
 
   it("shows no Edit to a caller without board.manage, the resident who raised it included", async () => {
@@ -144,6 +150,7 @@ describe("editing an issue from its screen", () => {
     await screen.findByText("Roads");
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
 
-    expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Edit department" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Edit outcome" })).toBeNull();
   });
 });
