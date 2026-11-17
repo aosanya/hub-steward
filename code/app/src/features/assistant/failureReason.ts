@@ -1,4 +1,5 @@
 import { McpError } from "../../shared/wakala/mcp";
+import { accessRefused } from "../../shared/wakala/refusal";
 
 const longest = 120;
 
@@ -31,6 +32,6 @@ export const failureReason = (failure: unknown): string => {
   if (failure instanceof TypeError || /failed to fetch|load failed|networkerror/i.test(message)) return "We could not reach the hub";
   if (message === "slow") return "No answer came in time.";
   if (/answered 429\b/.test(message)) return "Too many requests. Try again in a minute.";
-  if (/instance not found/i.test(message)) return notAllowedWords;
+  if (accessRefused(failure)) return notAllowedWords;
   return oneLine(withoutPrefixes(message));
 };

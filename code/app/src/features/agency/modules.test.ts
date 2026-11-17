@@ -1,5 +1,5 @@
 import * as mcp from "../../shared/wakala/mcp";
-import { agencyTools, mcpAgencyClient, modulesOf, word, type AgencyView } from "./modules";
+import { agencyInstanceAbsent, agencyTools, mcpAgencyClient, modulesOf, word, type AgencyView } from "./modules";
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -112,5 +112,25 @@ describe("agency words", () => {
 
   it("does not answer for names every object has", () => {
     expect(word(municipality, "constructor")).toBe("constructor");
+  });
+});
+
+describe("an agency the member cannot read", () => {
+  const refusal = new mcp.McpError(
+    'agency_list_mounts: dispatch: the caller may not perform that action: you need the permission "See the agency\'s modules and their names" (mount.list) in this agency to do this; ask its owner to give it to one of your roles',
+  );
+
+  it("is absent for a non-member, as before", () => {
+    expect(agencyInstanceAbsent(new Error("agencies: instance not found"))).toBe(true);
+  });
+
+  it("is absent for a resident refused by permission", async () => {
+    answer({ [agencyTools.agency]: refusal, [agencyTools.modules]: refusal });
+    const failure = await mcpAgencyClient.read().catch((reason) => reason);
+    expect(agencyInstanceAbsent(failure)).toBe(true);
+  });
+
+  it("is not absent for any other failure", () => {
+    expect(agencyInstanceAbsent(new Error("down"))).toBe(false);
   });
 });

@@ -5,6 +5,7 @@ import { listAllGroupOrders } from "../market/shared/groupOrders";
 import { posterOffersOf, productNameAt, type PosterOffer } from "../market/shared/productName";
 import { mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "../market/supply/api";
 import { callTool } from "../../shared/wakala/mcp";
+import { accessRefused } from "../../shared/wakala/refusal";
 
 export type WaitsOn = "you" | "others";
 
@@ -128,10 +129,7 @@ const supplierRows = async (supply: SupplyClient, me: string): Promise<StartedIt
 
 const sourceNames = ["orders", "joinRequests", "supplier"] as const;
 
-const marketAbsentAnswers = ["instance not found", "unknown tool"];
-
-export const marketAbsent = (reason: unknown) =>
-  reason instanceof Error && marketAbsentAnswers.some((answer) => reason.message.includes(answer));
+export const marketAbsent = (reason: unknown) => accessRefused(reason) || (reason instanceof Error && reason.message.includes("unknown tool"));
 
 const emptyWhenNoMarket = <T>(rows: Promise<T[]>): Promise<T[]> =>
   rows.catch((reason) => (marketAbsent(reason) ? [] : Promise.reject(reason)));

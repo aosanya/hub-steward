@@ -489,6 +489,14 @@ describe("an agency with no market mounted", () => {
     expect(await mcpStartedClient.listWithFailures!()).toEqual({ items: [], failed: [] });
   });
 
+  it("lists nothing and names no failed source when a resident lacks the market permission", async () => {
+    const refused = new mcp.McpError(
+      'market_list_group_orders: dispatch: the caller may not perform that action: you need the permission "See the market" (market.view) in this agency to do this; ask its owner to give it to one of your roles',
+    );
+    answering({ ...refusingMarket, market_list_group_orders: refused, market_list_posters: refused });
+    expect(await mcpStartedClient.listWithFailures!()).toEqual({ items: [], failed: [] });
+  });
+
   it("lists nothing and names no failed source when the market tools answer unknown tool", async () => {
     const unknownTool = new mcp.McpError("market_list_group_orders: unknown tool");
     answering({ ...refusingMarket, market_list_group_orders: unknownTool, market_list_posters: unknownTool });

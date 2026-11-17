@@ -24,6 +24,11 @@ describe("failureReason", () => {
     expect(failureReason(new McpError("ai_chat_account: agencies: instance not found"))).toBe("You do not have access to this yet.");
   });
 
+  it("says the same words when a resident lacks a permission, without naming it", () => {
+    const refusal = 'taskmanager_task_list: dispatch: the caller may not perform that action: you need the permission "See the issues" (task.read) in this agency to do this; ask its owner to give it to one of your roles';
+    expect(failureReason(new McpError(refusal))).toBe("You do not have access to this yet.");
+  });
+
   it("gives the hub's own reason without the tool or module prefix", () => {
     expect(failureReason(new McpError("ai_chat_account: ai: the account has no model set"))).toBe("the account has no model set");
     expect(failureReason(new McpError("taskmanager_task_move_to_step: agencies: backlog access forbidden: moving needs Can move on both backlogs"))).toBe(

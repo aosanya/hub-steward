@@ -82,6 +82,23 @@ describe("the read of the member's issues", () => {
     await expect(mcpAssignedClient.assigned()).resolves.toEqual([]);
   });
 
+  const residentRefusal = (tool: string) =>
+    new Error(`${tool}: dispatch: the caller may not perform that action: you need the permission "See the issues" (task.read) in this agency to do this; ask its owner to give it to one of your roles`);
+
+  it("finds none, and asks for no issues, when a resident is refused the agency reads by permission", async () => {
+    const spy = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub: string, tool: string) => {
+      if (tool === "agency_get_agency" || tool === "agency_list_mounts") throw residentRefusal(tool);
+      throw new Error("not asked");
+    });
+    await expect(mcpAssignedClient.assigned()).resolves.toEqual([]);
+    expect(spy.mock.calls.map((c) => c[1])).not.toContain("taskmanager_task_list");
+  });
+
+  it("finds none when the modules are listed but a resident is refused the issue list by permission", async () => {
+    hub(withTaskModule, (tool) => (tool === "actor_get_my_actor" ? { id: "m1" } : residentRefusal(tool)));
+    await expect(mcpAssignedClient.assigned()).resolves.toEqual([]);
+  });
+
   it("fails when the issues cannot be read, so the count is not taken for none", async () => {
     hub(withTaskModule, (tool) => (tool === "actor_get_my_actor" ? { id: "m1" } : new Error("down")));
     await expect(mcpAssignedClient.assigned()).rejects.toThrow();

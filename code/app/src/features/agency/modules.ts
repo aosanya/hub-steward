@@ -1,4 +1,5 @@
 import { callTool } from "../../shared/wakala/mcp";
+import { accessRefused } from "../../shared/wakala/refusal";
 
 export type AgencyModule = { code: string; name: string; mountNames?: string[]; words?: Record<string, string> };
 
@@ -50,7 +51,7 @@ export const mcpAgencyClient: AgencyClient = {
 
 export const taskModule = "taskmanager";
 
-export const agencyInstanceAbsent = (reason: unknown) => reason instanceof Error && reason.message.includes("agencies: instance not found");
+export const agencyInstanceAbsent = accessRefused;
 
 export const hasModule = (view: AgencyView | null | undefined, code: string) =>
   view !== null && view !== undefined && !view.modulesUnread && view.modules.some((module) => module.code === code);
