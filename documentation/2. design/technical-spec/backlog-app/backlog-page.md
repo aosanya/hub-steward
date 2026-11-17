@@ -197,6 +197,8 @@ issues each holds, and, for a person who may manage backlogs, the groups with ac
 page listing the backlogs; the Backlogs screen is that list. Drawn in
 [backlog.html](../../mockups/app/backlog.html).
 
+A step may carry a WIP limit (SW549): the most issues it may hold. A move into a step that is at its limit is refused with 409 naming the limit, unless the person has Can edit and asks to override; a limit lowered below the count removes no issue and only refuses new ones. Every issue read carries `entered_step_at` and `days_in_step`.
+
 ## Access to a backlog (SW32, D54)
 
 A group has access to a backlog as a whole, at one level: Can see, or Can move
@@ -244,8 +246,8 @@ and [card.html](../../mockups/app/card.html#s2), where the wide window sits unde
 | Under a minute, or a created_at in the future | "1 min" | the exact time as the hub gave it |
 | No created_at, or a closed issue with no completed_at | no bubble | none |
 
-The age counts from created_at. The hub does not record when an issue entered its
-step, so an age since the step change is not offered. The first drawing read only
+The age counts from created_at. The hub now records when an issue entered its step
+(`entered_step_at` and `days_in_step`, SW549); the card does not show it yet. The first drawing read only
 minutes and days; the owner asked for hours after seeing "723 min" on a card
 (D124). The thresholds are in `ageOf` in `app/src/ui/age.ts`. The unit words are in
 the app's language words, so Swahili and Magyar read them too.

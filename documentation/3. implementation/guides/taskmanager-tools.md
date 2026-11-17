@@ -20,6 +20,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | What changed on the board after a cursor | `taskmanager_task_changes_since` | `GET /changes-since` |
 | Patch or move up to 50 issues in one call | `taskmanager_task_batch` | `POST /batch` |
 | Create an issue with its todos and their order in one call | `taskmanager_task_create_with_todos` | `POST /create-with-todos` |
+| Cap how many issues a step may hold | `taskmanager_backlog_step_wip_limit` | `PUT /backlogs/{backlogID}/steps/{stepID}/wip-limit` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
 | Everything a worker reads before starting an issue, in one call | `taskmanager_task_brief` | `GET /tasks/{taskID}/brief` |
 | Which issues in progress touch the same files as an issue or a list of paths | `taskmanager_task_file_overlaps` | `GET /file-overlaps` |
@@ -64,6 +65,7 @@ The answer is `total_ready`, every Ready issue at the To do step that the filter
 | `effort` | one of unknown, very_low, low, medium, high, very_high | yes |
 | `created_since`, `updated_since` | issues changed at or after an RFC 3339 time | yes |
 | `ids` | these issue ids, repeated, at most 100 | no |
+| `min_days_in_step` | issues that have sat in their step at least that many whole days (`days_in_step`) | no |
 | `sort` | `rank` (default), `priority`, `updated` or `created` | no |
 
 ## taskmanager_task_next_ready_batch
@@ -163,6 +165,14 @@ Inputs: the fields of `taskmanager_task_create` and `todos`, in order, each `{ti
 
 The answer is `issue` and `todos` (id, code, ordinality, `depends_on` as ids, status, state), 201. The todos are checked before the issue is made, and an issue whose todo cannot be made is taken away again, so nothing is left behind.
 
+## taskmanager_backlog_step_wip_limit
+
+Inputs: `backlogID`, `stepID` and `wip_limit`, a whole number, 0 or more; 0 clears it. Needs Can edit on the backlog. A step with a limit shows `wip_limit` in the backlog list and every backlog summary.
+
+A `taskmanager_task_move_to_step`, `taskmanager_task_claim` or `taskmanager_task_claim_next` into a step that already holds that many issues is 409 and names the limit. `taskmanager_task_move_to_step` takes `override` true, which works only with Can edit on the backlog. Lowering a limit below the count removes nothing and only refuses new issues until the count is under it. An issue moved to the step it is already at is not counted again. `taskmanager_task_batch` moves and creating an issue straight into a full step are not limit-checked, and two moves in the same instant can both pass.
+
+Every issue read and every `taskmanager_task_pending` item carries `entered_step_at` and `days_in_step`, worked out when read. The hub records `entered_step_at` on each move; an issue that has not moved since then counts from its `updated_at`, then its `created_at`.
+
 ## taskmanager_task_dependencies
 
 Input: `taskID`. The caller is taken from the session; an issue the caller cannot see is 404.
@@ -228,6 +238,7 @@ Refused, with nothing written: 409 unless the issue sits at the backlog's In Pro
 | The todo-ready-board tool | `modules/taskmanager/todo_ready_board.go`, the readiness rule in `todo_ready.go`, tests in `routes/todo_ready_board_test.go` |
 | The changes-since tool | `modules/taskmanager/task_changes_since.go`, tests in `routes/changes_since_test.go` |
 | The batch and create-with-todos tools | `modules/taskmanager/task_batch.go`, `task_create_with_todos.go`, the move rule in `task_move_path.go`, tests in `routes/task_batch_test.go` |
+| The step WIP limit and days in step | `modules/taskmanager/backlog_step_wip.go`, the move check in `backlog.go` and `task_claim.go`, `min_days_in_step` in `task_orchestration_filter.go`, tests in `routes/step_wip_test.go` |
 | The dependencies tool and its types | `modules/taskmanager/task_dependencies.go`, tests in `routes/task_dependencies_test.go` |
 | The timed-out tool and its types | `modules/taskmanager/task_timed_out.go`, tests in `routes/timed_out_test.go` |
 | The claim tool and its types | `modules/taskmanager/task_claim.go`, tests in `routes/claim_task_test.go` |
