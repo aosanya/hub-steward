@@ -7,7 +7,6 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
-	"wakalaserver/modules/shared/dispatch"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
@@ -34,7 +33,7 @@ func (d *Deps) guardRiskResidentTools(server *mcp.Server, actions map[string]str
 			}
 			action, guarded := actions[call.Params.Name]
 			if guarded && d.residentRiskToolRefused(ctx, call.Params.Arguments, action) {
-				return toolError(dispatch.ErrForbidden), nil
+				return toolError(permissionRefusal(action)), nil
 			}
 			return next(ctx, method, req)
 		}

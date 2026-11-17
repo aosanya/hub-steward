@@ -1,13 +1,13 @@
 package http
 
 import (
-	"strings"
+	"regexp"
 	"testing"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-const permissionNamedMarker = "you need the permission"
+var permissionNamedMarker = regexp.MustCompile(`you need (the|a) permission`)
 
 var riskReadTools = []string{
 	"riskmanager_risk_list",
@@ -55,8 +55,8 @@ func TestGroupRoleRisk_AResidentWithNoRoleIsToldWhichPermissionTheRiskToolsNeed(
 			if !out.IsError {
 				t.Fatalf("%s: a resident with no role was admitted", tool)
 			}
-			if !strings.Contains(text, permissionNamedMarker) {
-				t.Fatalf("%s: refusal %q names no permission, want %q", tool, text, permissionNamedMarker)
+			if !permissionNamedMarker.MatchString(text) {
+				t.Fatalf("%s: refusal %q names no permission, want a match for %q", tool, text, permissionNamedMarker)
 			}
 		})
 	}
