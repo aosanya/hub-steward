@@ -5,6 +5,7 @@ import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuEditForm } from "../../MenuEditForm";
+import { IssueWish } from "./IssueWish";
 import type { IssueRow } from "./issueRow";
 
 export const boardPermission = "board.manage";
@@ -66,6 +67,7 @@ export function IssueEdit({ issue }: { issue: IssueRow }) {
         fields={departmentFields}
         onSaved={(changed) => setDepartment(changed.department ?? department)}
       />
+      <IssueWish issue={issue} />
       {issue.boardItemId ? <IssueOutcome boardItemId={issue.boardItemId} /> : null}
     </>
   );
