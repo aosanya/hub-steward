@@ -20,6 +20,8 @@ type Submission struct {
 	DecidedBy        string           `json:"decided_by,omitempty"`
 	DecidedAt        string           `json:"decided_at,omitempty"`
 	DecisionNote     string           `json:"decision_note,omitempty"`
+	CertificateRef   string           `json:"certificate_ref,omitempty"`
+	ValidUntil       string           `json:"valid_until,omitempty"`
 	InspectionResult InspectionResult `json:"inspection_result,omitempty"`
 	InspectionNote   string           `json:"inspection_note,omitempty"`
 	InspectedBy      string           `json:"inspected_by,omitempty"`

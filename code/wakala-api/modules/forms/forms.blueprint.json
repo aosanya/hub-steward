@@ -260,6 +260,8 @@
         {"name": "decided_by", "type": "string", "description": "Who decided it, taken from the session. Empty while undecided."},
         {"name": "decided_at", "type": "timestamp", "description": "When it was decided. Empty while undecided."},
         {"name": "decision_note", "type": "string", "description": "Why. Required for a refusal."},
+        {"name": "certificate_ref", "type": "string", "description": "The certificate number the council gave a granted send. Empty when none was given, and always empty on a refusal. The applicant reads it."},
+        {"name": "valid_until", "type": "string", "description": "The day a granted send ends, as YYYY-MM-DD. Empty when it does not end, and always empty on a refusal. The applicant reads it."},
         {"name": "inspection_result", "type": "enum", "description": "What the inspector found on this send. Empty means not inspected. A later finding replaces an earlier one. The applicant does not read it.", "values": ["", "complies", "does_not_comply", "needs_more"]},
         {"name": "inspection_note", "type": "string", "description": "What was found. Required unless the result is complies."},
         {"name": "inspected_by", "type": "string", "description": "Who inspected it, taken from the session. Empty while not inspected."},

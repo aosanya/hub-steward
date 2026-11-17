@@ -16,7 +16,7 @@ type deciders struct {
 	decision                          models.Decision
 }
 
-func (d *deciders) DecideSubmission(_ context.Context, formID, memberID string, decision models.Decision, note, decidedBy string) (models.Submission, error) {
+func (d *deciders) DecideSubmission(_ context.Context, formID, memberID string, decision models.Decision, note, decidedBy string, _ ...string) (models.Submission, error) {
 	d.formID, d.memberID, d.decision, d.note, d.decidedBy = formID, memberID, decision, note, decidedBy
 	return models.Submission{FormID: formID, MemberID: memberID, Decision: decision, DecisionNote: note, DecidedBy: decidedBy}, nil
 }

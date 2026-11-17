@@ -60,6 +60,9 @@
     "ErrMissingNote": 400,
     "ErrInvalidDecision": 400,
     "ErrSelfDecision": 403,
+    "ErrGrantOnRefusal": 400,
+    "ErrInvalidValidUntil": 400,
+    "ErrValidUntilPast": 400,
     "ErrInvalidInspection": 400,
     "ErrSelfInspection": 403,
     "ErrQuestionNotOnForm": 400
@@ -630,13 +633,15 @@
       "call": "DecideSubmission",
       "action": "forms.submission.decide",
       "title": "Decide an applicant's send",
-      "description": "A clerk records the decision on what one applicant sent: approved or refused, with an optional note for an approval and a required note for a refusal. The decider is the caller, resolved from the session, and the time is now. The decision sits on the applicant's own send and the applicant reads it back with their send and in the list of what they answered. Deciding again replaces the earlier decision. An applicant cannot decide their own send. A person who sent nothing, or whose send was withdrawn, is not found.",
+      "description": "A clerk records the decision on what one applicant sent: approved or refused, with an optional note for an approval and a required note for a refusal. The decider is the caller, resolved from the session, and the time is now. The decision sits on the applicant's own send and the applicant reads it back with their send and in the list of what they answered. An approval may also carry the certificate number and the day the grant ends, which the applicant reads back with the decision; a refusal carries neither. Deciding again replaces the earlier decision, with its certificate and end day. An applicant cannot decide their own send. A person who sent nothing, or whose send was withdrawn, is not found.",
       "args": [
         {"from": "path", "as": "form_id", "refers": "forms.form", "description": "The instrument that was sent to."},
         {"from": "path", "as": "member_id", "description": "The applicant whose send is decided."},
         {"from": "body", "as": "decision", "required": true, "description": "approved or refused."},
         {"from": "body", "as": "note", "description": "Why. Required for a refusal, optional for an approval."},
-        {"from": "caller", "as": "decided_by", "description": "The clerk deciding, resolved from the session rather than the request."}
+        {"from": "caller", "as": "decided_by", "description": "The clerk deciding, resolved from the session rather than the request."},
+        {"from": "body", "as": "certificate_ref", "description": "The certificate number of a grant. Only with approved."},
+        {"from": "body", "as": "valid_until", "description": "The day the grant ends, as YYYY-MM-DD, today or later. Only with approved."}
       ],
       "returns": [{"body": true}]
     },
