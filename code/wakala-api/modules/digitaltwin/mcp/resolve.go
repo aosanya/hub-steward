@@ -18,7 +18,15 @@ type TwinResolver func(ctx context.Context, instanceID string) (mwanachamadigita
 
 var servedKinds = []string{"digitaltwin.address.", "digitaltwin.tenure.", "digitaltwin.land_use."}
 
+var servedActions = map[string]bool{
+	"digitaltwin.node.list": true,
+	"digitaltwin.node.read": true,
+}
+
 func Served(action string) bool {
+	if servedActions[action] {
+		return true
+	}
 	for _, prefix := range servedKinds {
 		if strings.HasPrefix(action, prefix) {
 			return true
