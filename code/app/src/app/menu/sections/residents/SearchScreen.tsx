@@ -18,22 +18,21 @@ const placeKey = "place:";
 
 const kinded = (kind: string, rows: Row[]) => rows.map((row) => ({ ...row, id: `${kind}${row.id}` }));
 
-const loadEverything = async () => {
-  const [people, addresses, places, businesses, traders] = await Promise.all([
-    peopleRows(),
-    loadAddresses(),
-    loadPlaces(),
-    loadRecordRows(businessesRecordCode, "Trading name", ["Kind of business", "Neighbourhood"]),
-    loadRecordRows(informalTradersRecordCode, "Name or alias", ["What is sold", "Neighbourhood"]),
-  ]);
-  return [
-    ...kinded(personKey, people.map((person) => ({ id: person.id, title: person.name, meta: "" }))),
-    ...kinded("address:", addresses.map((address) => ({ id: address.id, title: address.name, meta: address.place }))),
-    ...kinded(placeKey, places.map((place) => ({ id: place.id, title: place.name, meta: place.category }))),
-    ...kinded("business:", businesses),
-    ...kinded("trader:", traders),
-  ];
+const kindsLoaded = async (loads: Promise<Row[]>[]) => {
+  const settled = await Promise.allSettled(loads);
+  const failed = settled.filter((result): result is PromiseRejectedResult => result.status === "rejected");
+  if (failed.length === settled.length) throw failed[0].reason;
+  return settled.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
 };
+
+const loadEverything = () =>
+  kindsLoaded([
+    peopleRows().then((people) => kinded(personKey, people.map((person) => ({ id: person.id, title: person.name, meta: "" })))),
+    loadAddresses().then((addresses) => kinded("address:", addresses.map((address) => ({ id: address.id, title: address.name, meta: address.place })))),
+    loadPlaces().then((places) => kinded(placeKey, places.map((place) => ({ id: place.id, title: place.name, meta: place.category })))),
+    loadRecordRows(businessesRecordCode, "Trading name", ["Kind of business", "Neighbourhood"]).then((rows) => kinded("business:", rows)),
+    loadRecordRows(informalTradersRecordCode, "Name or alias", ["What is sold", "Neighbourhood"]).then((rows) => kinded("trader:", rows)),
+  ]);
 
 const startsWithAny = (id: unknown, kinds: string[]) => kinds.some((kind) => String(id).startsWith(kind));
 
