@@ -1,10 +1,12 @@
-import { render, screen } from "@testing-library/react";
+import { vi, type MockInstance } from "vitest";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { words } from "../../shared/language/words";
 import { forgetRuntimeConfig, setRuntimeConfig } from "../../shared/wakala/config";
 import { forgetSubject } from "../../shared/wakala/me";
+import * as mcp from "../../shared/wakala/mcp";
 import { resetMcp } from "../../shared/wakala/mcp";
 import { LateMattersPage } from "./LateMattersPage";
 import { lateMatterOf, mcpLateMattersClient, type LateMatter, type LateMattersClient } from "./lateMattersApi";
@@ -223,5 +225,86 @@ describe("the late matters page opened from a menu section", () => {
     await screen.findByText("Broken streetlight");
 
     expect(screen.queryByRole("button", { name: /‹/ })).toBeNull();
+  });
+});
+
+const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: wide,
+    media: query,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+};
+
+const replies = [{ id: "r1", raised_item_id: "m1", body: "A crew is booked for Monday.", replied_by: "s1", created_at: "2026-03-04T12:00:00Z" }];
+
+describe("the late matters page on the menu window", () => {
+  let called: MockInstance<typeof mcp.callTool>;
+
+  beforeEach(() => {
+    called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
+      if (name === "forms_catalog_reply_list") return { items: replies };
+      throw new Error(`${name} is not a tool this screen may use`);
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    Reflect.deleteProperty(window, "matchMedia");
+  });
+
+  it("keeps the right pane empty on a wide screen until a row is chosen", async () => {
+    setWide(true);
+    at(client());
+    await screen.findByText("Broken streetlight");
+
+    expect(document.querySelector(".wf-main")).toBeEmptyDOMElement();
+    expect(called).not.toHaveBeenCalled();
+  });
+
+  it("draws the chosen matter in the right pane beside the list on a wide screen", async () => {
+    setWide(true);
+    at(client({ list: async () => [matter(), matter({ id: "m2", title: "Pothole", daysLate: 3 })] }));
+    await userEvent.click(await screen.findByRole("button", { name: /Broken streetlight/ }));
+
+    const list = document.querySelector(".wf-tree") as HTMLElement;
+    const main = document.querySelector(".wf-main") as HTMLElement;
+    expect(within(list).getByRole("button", { name: /Pothole/ })).toBeInTheDocument();
+    expect(within(list).getByRole("button", { name: /Broken streetlight/ })).toHaveAttribute("aria-pressed", "true");
+    expect(within(main).getByText("Broken streetlight")).toBeInTheDocument();
+    expect(within(main).getByText("Roads")).toBeInTheDocument();
+    expect(await within(main).findByText("A crew is booked for Monday.")).toBeInTheDocument();
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "m1" }));
+  });
+
+  it("keeps the days late chip in the list row", async () => {
+    setWide(true);
+    at(client());
+
+    const row = await screen.findByRole("button", { name: /Broken streetlight/ });
+    expect(row.textContent).toContain("12");
+  });
+
+  it("opens the chosen matter on a phone", async () => {
+    setWide(false);
+    at(client());
+    await userEvent.click(await screen.findByRole("button", { name: /Broken streetlight/ }));
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expect(await within(detail).findByText("Broken streetlight")).toBeInTheDocument();
+    expect(await screen.findByText("A crew is booked for Monday.")).toBeInTheDocument();
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
+  });
+
+  it("goes back from the opened matter to the list on a phone", async () => {
+    setWide(false);
+    at(client());
+    await userEvent.click(await screen.findByRole("button", { name: /Broken streetlight/ }));
+    await screen.findByText("A crew is booked for Monday.");
+
+    await userEvent.click(screen.getByRole("button", { name: new RegExp(councilWords.lateMattersTitle) }));
+
+    await waitFor(() => expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "no"));
   });
 });

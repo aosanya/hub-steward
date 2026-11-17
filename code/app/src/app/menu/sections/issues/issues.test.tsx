@@ -452,3 +452,56 @@ describe("Assigned to Me on the menu window", () => {
     expect(screen.queryByRole("button", { name: /Fallen branch/ })).toBeNull();
   });
 });
+
+const chooseOnMap = async (name: RegExp) => {
+  open(screens[2].at);
+  await userEvent.click(await screen.findByRole("button", { name }));
+};
+
+describe("Map View on the menu window", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  it("keeps the right pane empty on a wide screen until a row is chosen", async () => {
+    setWide(true);
+    open(screens[2].at);
+    await screen.findByRole("button", { name: /Broken streetlight/ });
+
+    expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
+    expect(document.querySelector(".wf-main")).toBeEmptyDOMElement();
+    expect(called.mock.calls.some(([, name]) => name === "forms_catalog_reply_list")).toBe(false);
+  });
+
+  it("draws the chosen issue in the right pane beside the list on a wide screen", async () => {
+    setWide(true);
+    await chooseOnMap(/Broken streetlight/);
+
+    const frame = document.querySelector(".wf") as HTMLElement;
+    const list = frame.querySelector(".wf-tree") as HTMLElement;
+    const main = frame.querySelector(".wf-main") as HTMLElement;
+    expect(within(list).getByRole("button", { name: /Blocked drain/ })).toBeInTheDocument();
+    expect(within(list).getByRole("button", { name: /Broken streetlight/ })).toHaveAttribute("aria-pressed", "true");
+    expect(within(main).getByText("Broken streetlight")).toBeInTheDocument();
+    expect(await within(main).findByText("A crew is booked for Monday.")).toBeInTheDocument();
+    expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "i1" }));
+    expect(landed).toBe(screens[2].at);
+  });
+
+  it("opens the chosen issue with its status on a phone", async () => {
+    setWide(false);
+    await chooseOnMap(/Broken streetlight/);
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expect(await within(detail).findByText("open")).toBeInTheDocument();
+    expect(await screen.findByText("A crew is booked for Monday.")).toBeInTheDocument();
+    expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
+    expect(landed).toBe(screens[2].at);
+  });
+
+  it("still shows the place of each issue in the list", async () => {
+    setWide(true);
+    open(screens[2].at);
+
+    expect(await screen.findByText(/Elm Street/)).toBeInTheDocument();
+    expect(screen.getByText(/Riverside/)).toBeInTheDocument();
+  });
+});

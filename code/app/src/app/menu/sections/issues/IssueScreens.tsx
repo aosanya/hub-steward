@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
@@ -31,12 +31,22 @@ const rowOf = (issue: Item) => ({
   boardItemId: text(issue, "board_item_id"),
 });
 
-const mapRows = async () =>
-  (await nearbyIssues()).map((issue) => ({ id: text(issue, "id"), title: text(issue, "title"), place: placeOf(issue) }));
+const mapRows = async () => (await nearbyIssues()).map((issue) => ({ ...issue, place: placeOf(issue) }));
 
-type WindowProps = { title: string; tool: string; empty: string; fetch: () => Promise<Item[]> };
+const statusFields = { title: "title", meta: "status" };
 
-function IssueWindow({ title, tool, empty, fetch }: WindowProps) {
+type WindowProps = {
+  title: string;
+  tool: string;
+  empty: string;
+  fetch: () => Promise<Item[]>;
+  fields?: { title: string; meta: string };
+  end?: (item: Item) => ReactNode;
+  loadingWords?: string;
+  failedWords?: string;
+};
+
+export function IssueWindow({ title, tool, empty, fetch, fields = statusFields, end, loadingWords, failedWords }: WindowProps) {
   const seen = useRef(new Map<string, Item>());
   const replies = useReplyDrafts();
   const loadList = async () => {
@@ -45,7 +55,7 @@ function IssueWindow({ title, tool, empty, fetch }: WindowProps) {
     return issues;
   };
   const loadIssue = async (id: string) => seen.current.get(id) ?? (await loadList()).find((issue) => text(issue, "id") === id) ?? { id };
-  const list = { title, tool, fields: { title: "title", meta: "status" }, empty: { words: empty, act: "Home", to: agencyHomePath(openAgencyId()) }, load: loadList };
+  const list = { title, tool, fields, empty: { words: empty, act: "Home", to: agencyHomePath(openAgencyId()) }, load: loadList, end, loadingWords, failedWords };
   const detail = {
     tool,
     fields: { Issue: "title" },
@@ -72,7 +82,7 @@ export function AssignedToMeScreen() {
 
 export function MapViewScreen() {
   const word = useWord("forms");
-  return <IssueListScreen title="Map View" tool={nearbyTool} fields={{ title: "title", meta: "place" }} empty={`No ${word("Issues").toLowerCase()} on the map yet.`} load={mapRows} />;
+  return <IssueWindow title="Map View" tool={nearbyTool} fields={{ title: "title", meta: "place" }} empty={`No ${word("Issues").toLowerCase()} on the map yet.`} fetch={mapRows} />;
 }
 
 export function ServiceTypesScreen() {
