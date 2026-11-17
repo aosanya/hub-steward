@@ -1,5 +1,5 @@
 .frame .body:has(> .wf) { padding: 0; gap: 0; }
-.wf { flex: 1; display: flex; flex-direction: column; height: calc(100dvh - 3rem); min-height: 0; background: var(--surface); }
+.wf { flex: none; display: flex; flex-direction: column; height: calc(100dvh - 3rem); min-height: 0; background: var(--surface); }
 .wf-panes { flex: 1; display: flex; min-height: 0; }
 .wf-tree { flex: 0 1 15rem; min-width: 0; overflow: auto; padding: 0 0 .5rem; background: var(--bg); border-right: 1px solid var(--line); }
 .wf-main { flex: 1 1 24rem; display: flex; flex-direction: column; min-width: 0; }
