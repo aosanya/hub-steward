@@ -212,17 +212,26 @@ describe("the Add a piece line", () => {
     expect(screen.queryByText(/of 0/)).toBeNull();
   });
 
-  it("opens a field for the title, keeps Add off until something is typed and adds the piece to this issue", async () => {
+  it("opens a field for the title and one for the details, keeps Add off until both are filled and adds the piece to this issue", async () => {
     const client = clientOf(async () => pieces);
     show(client);
     await userEvent.click(await screen.findByRole("button", { name: "+ Add a piece" }));
     expect(screen.getByRole("button", { name: "Add" })).toBeDisabled();
     await userEvent.type(screen.getByRole("textbox", { name: "Title of the new piece" }), "  Check the links  ");
+    expect(screen.getByRole("button", { name: "Add" })).toBeDisabled();
+    await userEvent.type(screen.getByRole("textbox", { name: "Details of the new piece" }), "  Output: a list of dead links. Done when none is left.  ");
     await userEvent.click(screen.getByRole("button", { name: "Add" }));
-    expect(client.add).toHaveBeenCalledWith("i1", "Check the links");
+    expect(client.add).toHaveBeenCalledWith("i1", "Check the links", "Output: a list of dead links. Done when none is left.");
     await vi.waitFor(() => expect(client.list).toHaveBeenCalledTimes(2));
     expect(screen.queryByRole("textbox")).toBeNull();
     expect(screen.getByRole("button", { name: "+ Add a piece" })).toBeInTheDocument();
+  });
+
+  it("keeps Add off when only the details are filled", async () => {
+    show(clientOf(async () => pieces));
+    await userEvent.click(await screen.findByRole("button", { name: "+ Add a piece" }));
+    await userEvent.type(screen.getByRole("textbox", { name: "Details of the new piece" }), "Output: a list.");
+    expect(screen.getByRole("button", { name: "Add" })).toBeDisabled();
   });
 
   it("closes on Cancel without adding", async () => {
@@ -238,10 +247,12 @@ describe("the Add a piece line", () => {
     const client = clientOf(async () => pieces, { add: vi.fn(async () => Promise.reject(new Error("taskmanager_task_todo_create: you need Can move on this backlog"))) });
     show(client);
     await userEvent.click(await screen.findByRole("button", { name: "+ Add a piece" }));
-    await userEvent.type(screen.getByRole("textbox"), "Check the links");
+    await userEvent.type(screen.getByRole("textbox", { name: "Title of the new piece" }), "Check the links");
+    await userEvent.type(screen.getByRole("textbox", { name: "Details of the new piece" }), "Output: a list.");
     await userEvent.click(screen.getByRole("button", { name: "Add" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("you need Can move on this backlog");
-    expect(screen.getByRole("textbox")).toHaveValue("Check the links");
+    expect(screen.getByRole("textbox", { name: "Title of the new piece" })).toHaveValue("Check the links");
+    expect(screen.getByRole("textbox", { name: "Details of the new piece" })).toHaveValue("Output: a list.");
     expect(client.list).toHaveBeenCalledTimes(1);
   });
 });

@@ -60,10 +60,15 @@ describe("the todos client", () => {
 describe("the edit calls of the todos client", () => {
   const sent = () => vi.spyOn(mcp, "callTool").mockResolvedValue({});
 
-  it("adds a piece to the end of an issue with its title as the title and the instructions", async () => {
+  it("adds a piece to the end of an issue with its details as the description and the instructions, never the title", async () => {
     const call = sent();
-    await mcpTodosClient.add!("issue-1", "Check the links");
-    expect(call).toHaveBeenCalledWith("", "taskmanager_task_todo_create", { parent_task_id: "issue-1", title: "Check the links", instructions: "Check the links" });
+    await mcpTodosClient.add!("issue-1", "Check the links", "Output: a list of dead links. Done when none is left.");
+    expect(call).toHaveBeenCalledWith("", "taskmanager_task_todo_create", {
+      parent_task_id: "issue-1",
+      title: "Check the links",
+      description: "Output: a list of dead links. Done when none is left.",
+      instructions: "Output: a list of dead links. Done when none is left.",
+    });
   });
 
   it("renames a piece by sending only its title", async () => {

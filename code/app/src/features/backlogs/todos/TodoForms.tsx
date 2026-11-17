@@ -44,6 +44,17 @@ export function TitleForm({ label, submit, start = "", onSave, ...common }: Comm
   );
 }
 
+export function PieceForm({ submit, onSave, ...common }: Common & { submit: string; onSave: (title: string, details: string) => void }) {
+  const [title, setTitle] = useState("");
+  const [details, setDetails] = useState("");
+  return (
+    <FormShell {...common} submit={submit} ready={title.trim() !== "" && details.trim() !== ""} onSubmit={() => onSave(title.trim(), details.trim())}>
+      <Field label="Title of the new piece" value={title} onChange={(event) => setTitle(event.target.value)} autoFocus />
+      <TextArea label="Details of the new piece" value={details} onChange={(event) => setDetails(event.target.value)} />
+    </FormShell>
+  );
+}
+
 export function WaitsOnForm({ todo, choices, onSave, ...common }: Common & { todo: Todo; choices: Todo[]; onSave: (ids: string[]) => void }) {
   const [ticked, setTicked] = useState(() => todo.waitsOn.filter((id) => choices.some((one) => one.id === id)));
   const flip = (id: string, on: boolean) => setTicked(choices.map((one) => one.id).filter((one) => (one === id ? on : ticked.includes(one))));

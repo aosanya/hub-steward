@@ -13,7 +13,7 @@ export const todoTools = {
 export type SettableStatus = "To do" | "In progress" | "Done";
 
 export type TodoWrites = {
-  add: (issueId: string, title: string) => Promise<void>;
+  add: (issueId: string, title: string, details: string) => Promise<void>;
   rename: (id: string, title: string) => Promise<void>;
   setWaitsOn: (id: string, waitsOn: string[]) => Promise<void>;
   setStatus: (id: string, status: SettableStatus) => Promise<void>;
@@ -55,8 +55,8 @@ export const mcpTodosClient: TodosClient = {
   async list(issueId) {
     return todosOf(await callTool("", todoTools.list, { taskID: issueId }));
   },
-  async add(issueId, title) {
-    await callTool("", todoTools.create, { parent_task_id: issueId, title, instructions: title });
+  async add(issueId, title, details) {
+    await callTool("", todoTools.create, { parent_task_id: issueId, title, description: details, instructions: details });
   },
   async rename(id, title) {
     await callTool("", todoTools.update, { todoID: id, title });

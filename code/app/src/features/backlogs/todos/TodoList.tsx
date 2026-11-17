@@ -5,13 +5,13 @@ import { Button } from "../../../shared/ui/Button";
 import { loadingWords, tryAgainWords } from "../../../shared/ui/LoadState";
 import { ListRow } from "../../../shared/ui/ListRow";
 import { writesOf, type TodosClient } from "./api";
-import { TitleForm } from "./TodoForms";
+import { PieceForm } from "./TodoForms";
 import { TodoRow } from "./TodoRow";
 import { useAttempt } from "./todoEdit";
 import { countOf, treeOf, type Todo } from "./todoTree";
 import "./todos.css";
 
-function AddPiece({ onAdd, refresh }: { onAdd: (title: string) => Promise<void>; refresh: () => void }) {
+function AddPiece({ onAdd, refresh }: { onAdd: (title: string, details: string) => Promise<void>; refresh: () => void }) {
   const [open, setOpen] = useState(false);
   const attempt = useAttempt(refresh);
   const close = () => {
@@ -19,7 +19,7 @@ function AddPiece({ onAdd, refresh }: { onAdd: (title: string) => Promise<void>;
     setOpen(false);
   };
   if (!open) return <ListRow className="todo-add" title="+ Add a piece" onClick={() => setOpen(true)} />;
-  return <TitleForm label="Title of the new piece" submit="Add" busy={attempt.busy} message={attempt.message} onCancel={close} onSave={(title) => void attempt.run(() => onAdd(title)).then((done) => done && setOpen(false))} />;
+  return <PieceForm submit="Add" busy={attempt.busy} message={attempt.message} onCancel={close} onSave={(title, details) => void attempt.run(() => onAdd(title, details)).then((done) => done && setOpen(false))} />;
 }
 
 export function TodoList({ issueId, client }: { issueId: string; client: TodosClient }) {
@@ -59,7 +59,7 @@ export function TodoList({ issueId, client }: { issueId: string; client: TodosCl
       {treeOf(held).map((row) => (
         <TodoRow key={row.todo.id} row={row} editing={editing} />
       ))}
-      {readyNow && writes ? <AddPiece onAdd={(title) => writes.add(issueId, title)} refresh={refresh} /> : null}
+      {readyNow && writes ? <AddPiece onAdd={(title, details) => writes.add(issueId, title, details)} refresh={refresh} /> : null}
     </div>
   );
 }
