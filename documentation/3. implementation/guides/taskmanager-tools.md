@@ -98,6 +98,8 @@ Inputs: `limit` (default 10, at most 50), `backlog` and `tag`. Read-only.
 
 The answer is `items`: every open issue that another open issue waits on, with `direct` (issues waiting on it), `total` (down the whole chain, each counted once, cycles not followed) and `dependents` (their codes), ordered by `total`, then `direct`, then rank. Done, failed and cancelled issues are neither listed nor counted.
 
+Where a tool lists issues by code, an issue with no code is named by its title trimmed to 40 characters, else by its id: `dependents` of `taskmanager_task_unblock_impact`, `oldest_code`, the `codes` of `agents` and `waits_on` of `taskmanager_task_board_snapshot`, and `clashes_with` of `taskmanager_task_next_ready_batch`. The `code` field of an item stays as stored.
+
 ## taskmanager_task_lint
 
 Inputs: `taskID`, or `backlog` and `step` for the open issues there in rank order; `limit` (default 50, at most 200) and `offset`. Read-only; a `taskID` that is unknown or unseen is 404, and an unseen `backlog` is 400.
@@ -238,6 +240,7 @@ Refused, with nothing written: 409 unless the issue sits at the backlog's In Pro
 | The claim-next and heartbeat tools and the lease | `modules/taskmanager/task_claim_next.go`, `task_heartbeat.go`, `task_lease.go`, tests in `routes/claim_next_test.go` |
 | The board-snapshot tool | `modules/taskmanager/task_board_snapshot.go`, tests in `routes/board_snapshot_test.go` |
 | The unblock-impact tool | `modules/taskmanager/task_unblock_impact.go`, tests in `routes/unblock_impact_test.go` |
+| The name of an issue with no code | `modules/taskmanager/task_display_name.go`, tests in `task_display_name_test.go` |
 | The lint tool and its rule table | `modules/taskmanager/task_lint.go`, tests in `routes/task_lint_test.go` |
 | The stuck tool and its rule table | `modules/taskmanager/task_stuck.go`, tests in `routes/task_stuck_test.go` |
 | The todo-ready-board tool | `modules/taskmanager/todo_ready_board.go`, the readiness rule in `todo_ready.go`, tests in `routes/todo_ready_board_test.go` |
