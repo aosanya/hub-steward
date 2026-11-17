@@ -3,6 +3,8 @@ import type { RecordFormField } from "../../RecordRowForm";
 import { RecordRowsScreen } from "../../RecordRowsScreen";
 
 export const informalTradersRecordCode = "RC-2";
+export const informalTradersTitlePrompt = "Name or alias";
+export const informalTradersMetaPrompts = ["What is sold", "Neighbourhood"];
 
 export const informalTraderFields: RecordFormField[] = [
   { prompt: "Name or alias", required: true },
@@ -18,9 +20,9 @@ export function InformalTradersScreen() {
     <RecordRowsScreen
       title="Informal traders"
       recordCode={informalTradersRecordCode}
-      titlePrompt="Name or alias"
+      titlePrompt={informalTradersTitlePrompt}
       prompts={informalTraderFields.map((field) => field.prompt)}
-      metaPrompts={["What is sold", "Neighbourhood"]}
+      metaPrompts={informalTradersMetaPrompts}
       empty={{ words: "No informal traders yet.", act: "Add trader", to: routes.informalTraderNew.path() }}
     />
   );

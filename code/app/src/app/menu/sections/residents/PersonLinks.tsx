@@ -5,7 +5,10 @@ import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
+import { loadRecordRowsHeldBy, type RecordRow } from "../../liveRecordRows";
 import { listOf, text, type Item } from "../staff/staffData";
+import { businessesMetaPrompts, businessesRecordCode, businessesTitlePrompt } from "./BusinessesScreen";
+import { informalTradersMetaPrompts, informalTradersRecordCode, informalTradersTitlePrompt } from "./InformalTradersScreen";
 
 type Application = { key: string; title: string; sentAt: string };
 
@@ -38,6 +41,39 @@ export function PersonApplications({ id }: { id: string }) {
           ))}
         </Rows>
       ) : null}
+    </>
+  );
+}
+
+const holdings = [
+  { heading: "Businesses", recordCode: businessesRecordCode, titlePrompt: businessesTitlePrompt, metaPrompts: businessesMetaPrompts },
+  { heading: "Informal traders", recordCode: informalTradersRecordCode, titlePrompt: informalTradersTitlePrompt, metaPrompts: informalTradersMetaPrompts },
+];
+
+const loadHeldRows = (holding: (typeof holdings)[number], actorId: string) => async (): Promise<RecordRow[]> =>
+  loadRecordRowsHeldBy(holding.recordCode, holding.titlePrompt, holding.metaPrompts, actorId);
+
+function PersonHeld({ holding, id }: { holding: (typeof holdings)[number]; id: string }) {
+  const view = useLoad(loadHeldRows(holding, id), `person-held:${openAgencyId()}:${holding.recordCode}:${id}`);
+  if (view.state !== "ready" || view.data.length === 0) return null;
+  return (
+    <>
+      <SectionHeading>{holding.heading}</SectionHeading>
+      <Rows>
+        {view.data.map((row) => (
+          <ListRow key={row.id} title={row.title} meta={row.meta} />
+        ))}
+      </Rows>
+    </>
+  );
+}
+
+export function PersonHoldings({ id }: { id: string }) {
+  return (
+    <>
+      {holdings.map((holding) => (
+        <PersonHeld key={holding.recordCode} holding={holding} id={id} />
+      ))}
     </>
   );
 }

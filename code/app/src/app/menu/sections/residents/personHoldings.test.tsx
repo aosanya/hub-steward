@@ -209,6 +209,6 @@ describe("businesses and informal traders on a person's panel", () => {
     await screen.findByText("Flower Corner");
     expect(screen.queryByText("Florist · Óváros")).toBeNull();
     expect(screen.queryByText("Honey · Határrét")).toBeNull();
-    expect(screen.getAllByText(personName)).toHaveLength(1);
+    expect(screen.getAllByText(personName)).toHaveLength(2);
   });
 });

@@ -8,7 +8,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { PersonEdit } from "./PersonEdit";
 import { PersonBills } from "./PersonBills";
-import { PersonApplications } from "./PersonLinks";
+import { PersonApplications, PersonHoldings } from "./PersonLinks";
 import { personNameOf } from "./personName";
 
 type Item = Record<string, unknown>;
@@ -55,6 +55,7 @@ export function PersonPanel({ person, onSaved }: { person: Item; onSaved: () => 
       <PersonGroups id={id} />
       <PersonApplications id={id} />
       <PersonBills id={id} />
+      <PersonHoldings id={id} />
     </>
   );
 }

@@ -5,16 +5,17 @@ import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { billRow, listOf, text, tools } from "../finance/financeData";
+import { billRow, listOf, text, tools, unitOf } from "../finance/financeData";
 
-const loadBills = (personId: string) => async () => {
+const loadBills = (personId: string, unit: string) => async () => {
   const bills = await listOf(tools.billList, { actor_id: personId });
-  return [...bills].sort((a, b) => text(b, "due_at").localeCompare(text(a, "due_at"))).map(billRow);
+  return [...bills].sort((a, b) => text(b, "due_at").localeCompare(text(a, "due_at"))).map((bill) => billRow(bill, unit));
 };
 
 export function PersonBills({ id }: { id: string }) {
   const word = useWord("accounting");
-  const view = useLoad(loadBills(id), `person-bills:${openAgencyId()}:${id}`);
+  const unit = unitOf(word);
+  const view = useLoad(loadBills(id, unit), `person-bills:${openAgencyId()}:${id}:${unit}`);
   if (view.state === "error") return null;
   const bills = view.state === "ready" ? view.data : [];
   return (

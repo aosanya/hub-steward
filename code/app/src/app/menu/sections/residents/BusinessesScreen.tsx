@@ -3,6 +3,8 @@ import type { RecordFormField } from "../../RecordRowForm";
 import { RecordRowsScreen } from "../../RecordRowsScreen";
 
 export const businessesRecordCode = "RC-1";
+export const businessesTitlePrompt = "Trading name";
+export const businessesMetaPrompts = ["Kind of business", "Neighbourhood"];
 
 export const businessFields: RecordFormField[] = [
   { prompt: "Trading name", required: true },
@@ -19,9 +21,9 @@ export function BusinessesScreen() {
     <RecordRowsScreen
       title="Businesses"
       recordCode={businessesRecordCode}
-      titlePrompt="Trading name"
+      titlePrompt={businessesTitlePrompt}
       prompts={businessFields.map((field) => field.prompt)}
-      metaPrompts={["Kind of business", "Neighbourhood"]}
+      metaPrompts={businessesMetaPrompts}
       empty={{ words: "No businesses yet.", act: "Add business", to: routes.businessNew.path() }}
     />
   );
