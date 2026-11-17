@@ -13,6 +13,7 @@ const locationList = "assetmanager_location_list";
 const locationRead = "assetmanager_location_read";
 const movementList = "assetmanager_movement_list";
 const taskList = "taskmanager_task_list";
+const taskRead = "taskmanager_task_read";
 const repeatingList = "taskmanager_repeating_task_list";
 const repeatingRead = "taskmanager_repeating_task_read";
 
@@ -48,6 +49,11 @@ const tasks = [
   { id: "t3", title: "Replace the bridge rail", state: "Done", status: "completed" },
 ];
 
+const datedTasks = [
+  { id: "d1", title: "Mend the fence", state: "To do", status: "pending", due_at: "2026-11-24T00:00:00Z" },
+  { id: "d2", title: "Clear the gutters", state: "In progress", status: "in_progress" },
+];
+
 const repeating = [
   { id: "p1", title: "Grease the pumps", schedule_rule: "FREQ=WEEKLY" },
   { id: "p2", title: "Inspect the fire exits", schedule_rule: "FREQ=MONTHLY" },
@@ -63,6 +69,7 @@ const origin = { path: "/a/town/menu/assets", title: "Assets & Works" };
 
 let called: MockInstance<typeof mcp.callTool>;
 let landed = "";
+let listed: Record<string, string>[] = tasks;
 
 const Where = () => {
   landed = useLocation().pathname;
@@ -85,7 +92,8 @@ const answer = (name: string, args: unknown) => {
   if (name === locationList) return Promise.resolve({ items: locations });
   if (name === locationRead) return Promise.resolve({ item: byArgument(locations, args, "locationID") });
   if (name === movementList) return Promise.resolve({ items: movements });
-  if (name === taskList) return Promise.resolve({ items: tasks });
+  if (name === taskList) return Promise.resolve({ items: listed });
+  if (name === taskRead) return Promise.resolve({ item: byArgument(listed as { id: string }[], args, "taskID") });
   if (name === repeatingList) return Promise.resolve({ items: repeating });
   if (name === repeatingRead) return Promise.resolve({ item: byArgument(repeating, args, "repeatingTaskID") });
   return Promise.reject(new Error(`${name}: unknown tool`));
@@ -93,6 +101,7 @@ const answer = (name: string, args: unknown) => {
 
 beforeEach(() => {
   openAgency("town");
+  listed = tasks;
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
 
@@ -260,6 +269,72 @@ describe("Work Orders", () => {
     await userEvent.click(screen.getByRole("button", { name: "‹ Assets & Works" }));
 
     await waitFor(() => expect(landed).toBe(origin.path));
+  });
+});
+
+describe("Work Orders with a due day", () => {
+  beforeEach(() => {
+    listed = datedTasks;
+  });
+
+  const dueRowIn = (container: HTMLElement) => within(container).getByText("Due", { selector: ".ttl" }).closest(".row") as HTMLElement;
+
+  it("adds the due day in words to the state in the row meta, on one line", async () => {
+    showRouted("Work Orders");
+
+    await screen.findByText("Mend the fence", { selector: ".ttl" });
+    expect(metaOf(rowOf("Mend the fence"))).toEqual(["To do · due Tuesday, 24 Nov"]);
+  });
+
+  it("keeps the row meta as the state alone when there is no due day, with no blank word", async () => {
+    showRouted("Work Orders");
+
+    await screen.findByText("Clear the gutters", { selector: ".ttl" });
+    expect(metaOf(rowOf("Clear the gutters"))).toEqual(["In progress"]);
+  });
+
+  it("shows a Due row with the day in words in the detail of a work order that has one", async () => {
+    showRouted("Work Orders");
+    await userEvent.click(await screen.findByRole("button", { name: /Mend the fence/ }));
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    await within(detail).findByText("Mend the fence");
+    expect(metaOf(dueRowIn(detail))).toEqual(["Tuesday, 24 Nov"]);
+    expect(called).toHaveBeenCalledWith("", taskRead, { taskID: "d1" });
+  });
+
+  it("shows no Due row in the detail of a work order without a due day", async () => {
+    showRouted("Work Orders");
+    await userEvent.click(await screen.findByRole("button", { name: /Clear the gutters/ }));
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    await within(detail).findByText("Clear the gutters");
+    expect(await within(detail).findByText("In progress")).toBeInTheDocument();
+    expect(within(detail).queryByText("Due")).toBeNull();
+  });
+
+  describe("on a wide screen", () => {
+    beforeEach(() => setWide(true));
+
+    afterEach(() => forgetWidth());
+
+    it("shows the Due row with the day in words in the right pane", async () => {
+      showRouted("Work Orders");
+      await userEvent.click(await screen.findByRole("button", { name: /Mend the fence/ }));
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      await within(main).findByText("Mend the fence");
+      expect(metaOf(dueRowIn(main))).toEqual(["Tuesday, 24 Nov"]);
+    });
+
+    it("shows no Due row in the right pane for a work order without a due day", async () => {
+      showRouted("Work Orders");
+      await userEvent.click(await screen.findByRole("button", { name: /Clear the gutters/ }));
+
+      const main = document.querySelector(".wf-main") as HTMLElement;
+      await within(main).findByText("Clear the gutters");
+      expect(within(main).queryByText("Due")).toBeNull();
+    });
   });
 });
 
