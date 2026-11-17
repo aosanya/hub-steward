@@ -1,7 +1,7 @@
 # Load journey
 
 How the boards become issues, from the owner's side. Built from
-[decisions.md](../../../../../hub-steward-swe/documentation/1.%20requirements/decisions.md); sorting as a run with an approval was
+decisions.md in the hub-steward-swe repo; sorting as a run with an approval was
 removed (D49).
 
 ## The cast

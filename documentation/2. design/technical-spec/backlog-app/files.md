@@ -14,7 +14,7 @@ The Files screens let a person read what an agency keeps in its git module: code
 
 The module catalog has a `git` module (code `git`). `agency_list_modules` is not used: an earlier live read of it answered an empty list on 2026-11-02 ([app-agency-trace.md](../app-agency-trace.md), question 11), and the app's existing agency code and tests use `agency_list_mounts`.
 
-Who may call the git tools is a separate gate. The forms git mount answers owners and agents only; a resident, a non-member or an unknown agency gets 404, and whether residents may read it is still an open owner question ([forms-git-mount.md](../../../../../../mwanachama-wakala-api/documentation/2.%20design/forms-git-mount.md)). Until it is answered, a resident would see a Files option on Home that cannot open anything.
+Who may call the git tools is a separate gate. The forms git mount answers owners and agents only; a resident, a non-member or an unknown agency gets 404, and whether residents may read it is still an open owner question (the forms git mount design page of the Mwanachama backend). Until it is answered, a resident would see a Files option on Home that cannot open anything.
 
 ## The screens
 

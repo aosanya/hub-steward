@@ -1,6 +1,6 @@
 # Worker caps and the Sinbin tag
 
-From the owner's remark on 2026-11-11, after the backlog workers ran very long (SW197). Decided as D126 to D135, D136 to D138 (proposed, SW221), D144 to D147 (Sinbin is a tag, SW239), and D150 and D151 (the hub enforces the caps, any runner reports, SW272), in [decisions.md](../../../../../hub-steward-swe/documentation/1.%20requirements/decisions.md). Drawn in [worker-caps.html](../../mockups/app/worker-caps.html); walked in [journey 10](../../../../../hub-steward-swe/documentation/4.%20qa/user-journeys/10-worker-caps/README.md). The Caps card and both editors are built (SW242); the red card, the hook and the Sinbin mark are not (ISS-48 for the tint).
+From the owner's remark on 2026-11-11, after the backlog workers ran very long (SW197). Decided as D126 to D135, D136 to D138 (proposed, SW221), D144 to D147 (Sinbin is a tag, SW239), and D150 and D151 (the hub enforces the caps, any runner reports, SW272), in decisions.md in the hub-steward-swe repo. Drawn in [worker-caps.html](../../mockups/app/worker-caps.html); walked in journey 10 in the hub-steward-swe repo. The Caps card and both editors are built (SW242); the red card, the hook and the Sinbin mark are not (ISS-48 for the tint).
 
 ## The caps (D126, D127)
 

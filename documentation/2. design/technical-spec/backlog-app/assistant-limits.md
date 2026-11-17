@@ -1,6 +1,6 @@
 # The assistant: who may ask, and how much
 
-From the owner's remark on 2026-11-10 that assistant use should be configurable with token limits. Decided the same day as D102 to D106 in [decisions.md](../../../../../hub-steward-swe/documentation/1.%20requirements/decisions.md); the per-person count and its check (SW132) are built, described in [3. implementation/assistant-limits.md](../../../../../hub-steward-swe/documentation/3.%20implementation/assistant-limits.md); the console page and the at-the-limit card are not. Drawn as [mockups](../../mockups/app/assistant-limits.html). Task rows on the [board](../../../../../hub-steward-swe/documentation/3.%20implementation/todo.md): SW126 (this design), SW132 to SW135 and SW146, SW147 (the build).
+From the owner's remark on 2026-11-10 that assistant use should be configurable with token limits. Decided the same day as D102 to D106 in decisions.md in the hub-steward-swe repo; the per-person count and its check (SW132) are built, described in 3. implementation/assistant-limits.md in the hub-steward-swe repo; the console page and the at-the-limit card are not. Drawn as [mockups](../../mockups/app/assistant-limits.html). Task rows on the board in the hub-steward-swe repo: SW126 (this design), SW132 to SW135 and SW146, SW147 (the build).
 
 ## Where it stands today
 
@@ -44,4 +44,4 @@ None. Question 4, when a day starts, is answered: midnight UTC, the month on the
 
 ## Rows
 
-SW132 the per-person count and its check, SW133 the console Assistant page, SW134 the at-the-limit card, SW146 the owner's own numbers on the server, SW147 the owner's two fields on the console page, SW135 a step in [journey 08](../../../../../hub-steward-swe/documentation/4.%20qa/user-journeys/08-ask-the-assistant/README.md) and the tests.
+SW132 the per-person count and its check, SW133 the console Assistant page, SW134 the at-the-limit card, SW146 the owner's own numbers on the server, SW147 the owner's two fields on the console page, SW135 a step in journey 08 in the hub-steward-swe repo and the tests.

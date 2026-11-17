@@ -7,7 +7,7 @@ answer from MCP tools. The look of each reply is in
 [backlog-page.md](backlog-page.md). Whether a tool exists is read from the task
 module's operations (`taskmanager.operations.json`); its tools are generated
 from every operation in that file, so each existing operation is already a
-tool. Every gap is a row on the [board](../../../../../hub-steward-swe/documentation/3.%20implementation/todo.md).
+tool. Every gap is a row on the board in the hub-steward-swe repo.
 
 ## What the owner says
 

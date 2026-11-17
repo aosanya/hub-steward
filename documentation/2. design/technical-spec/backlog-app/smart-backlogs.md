@@ -1,6 +1,6 @@
 # Smart backlogs, and sending issues to a backlog
 
-Decided by the owner on 2026-11-10 as D90 to D100 in [decisions.md](../../../../../hub-steward-swe/documentation/1.%20requirements/decisions.md), with the requirements R35 to R44. Drawn as [mockups](../../mockups/app/smart-backlogs.html).
+Decided by the owner on 2026-11-10 as D90 to D100 in decisions.md in the hub-steward-swe repo, with the requirements R35 to R44. Drawn as [mockups](../../mockups/app/smart-backlogs.html).
 
 The idea comes from the smart playlist in a music app: rules on the issue, and the list fills itself. The backlogs the app has today are the other kind, filled by hand.
 
@@ -41,7 +41,7 @@ A rule is a field, an operator and a value. Only what an issue already has can b
 
 Mark, Backlog and Step keep their own fields, so a rule says what it means ("Mark is Ready", "Step is To do"). The repo is a tag (D13), so it is a Tag rule: "Tag has hub-steward".
 
-There is no limit and no order (D95): the list keeps its own rank order. The music app's Limit, Skips, Last Played and Genre have no equal here; Last changed is the one the owner already uses in [Find old issues](../../../../../hub-steward-swe/documentation/4.%20qa/user-journeys/05-find-old-issues/README.md).
+There is no limit and no order (D95): the list keeps its own rank order. The music app's Limit, Skips, Last Played and Genre have no equal here; Last changed is the one the owner already uses in Find old issues in the hub-steward-swe repo.
 
 The same rules cannot be saved twice. The screen says so and links to the backlog that has them.
 
