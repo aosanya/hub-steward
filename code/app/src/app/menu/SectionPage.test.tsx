@@ -38,6 +38,22 @@ describe("a menu section's screen", () => {
     ["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types"].forEach((title) => expect(screen.getByText(title)).toBeInTheDocument());
   });
 
+  it("lists Wishes as the sixth Issues & Requests row, after Service Types", () => {
+    const { container } = section("issues");
+
+    const rows = Array.from(container.querySelectorAll(".rows .ttl")).map((title) => title.textContent);
+
+    expect(rows).toEqual(["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types", "Wishes"]);
+  });
+
+  it("opens Wishes on the wishes screen of the Issues & Requests menu", async () => {
+    section("issues");
+
+    await userEvent.click(screen.getByRole("button", { name: /Wishes/ }));
+
+    expect(landed).toBe("/a/town/menu/issues/wishes");
+  });
+
   it("opens a submenu that has a screen", async () => {
     section("issues");
 
