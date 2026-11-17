@@ -352,6 +352,41 @@ describe("Applications in the menu window", () => {
   });
 });
 
+describe("Applications with a decision", () => {
+  afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
+
+  const decidedForms = [
+    { send_id: "n1", form_id: "f1", title: "Market stall application", answered_at: "2026-03-04T12:00:00Z", open: false, decision: "approved", decided_at: "2026-03-09T12:00:00Z" },
+    { send_id: "n2", form_id: "f9", title: "Fence permit application", answered_at: "2026-03-20T12:00:00Z", open: false, decision: "refused", decided_at: "2026-03-25T12:00:00Z" },
+    { send_id: "n3", form_id: "f3", title: "Dog licence application", answered_at: "2026-03-12T12:00:00Z", open: true, decision: "", decided_at: "" },
+  ];
+
+  const rowOf = (title: string) => screen.getByRole("button", { name: new RegExp(title) });
+
+  it.each([
+    ["on a phone", false],
+    ["on a wide screen", true],
+  ])("reads the decision word with the decision day, and Sent with the day for an undecided one, %s", async (_where, wide) => {
+    setWide(wide);
+    answers.forms_form_list_answered = () => ({ items: decidedForms });
+    open(screens[4].at);
+    await screen.findByText("Market stall application");
+
+    expect(within(rowOf("Market stall application")).getByText("Approved Monday, 9 Mar")).toBeInTheDocument();
+    expect(within(rowOf("Fence permit application")).getByText("Refused Wednesday, 25 Mar")).toBeInTheDocument();
+    expect(within(rowOf("Dog licence application")).getByText("Sent Thursday, 12 Mar")).toBeInTheDocument();
+  });
+
+  it("keeps Sent with the answered day for a row that has no decision fields at all", async () => {
+    open(screens[4].at);
+
+    await screen.findByText("Market stall application");
+
+    expect(within(rowOf("Market stall application")).getByText("Sent Wednesday, 4 Mar")).toBeInTheDocument();
+    expect(within(rowOf("Fence permit application")).getByText("Sent Friday, 20 Mar")).toBeInTheDocument();
+  });
+});
+
 describe("an application", () => {
   it("shows its status and the answers that were sent", async () => {
     open(applicationAt("f1"));
