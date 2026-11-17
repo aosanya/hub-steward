@@ -19,7 +19,7 @@ let refusedSubmissionForms: string[];
 
 const refusalWords = "forms_form_list: the hub refused this";
 
-const guessedTools = ["accounting_bill_list", "accounting_payment_list", "digitaltwin_tenure_list", "agency_list_live_record_rows"];
+const guessedTools = ["accounting_payment_list", "digitaltwin_tenure_list", "agency_list_live_record_rows"];
 
 const answer = async (name: string, args: unknown) => {
   const given = (args ?? {}) as Record<string, unknown>;
@@ -151,7 +151,7 @@ describe("applications on a person's detail", () => {
 
     expect(await screen.findByRole("heading", { name: "Applications" })).toBeTruthy();
     expect(calledNames().filter((name) => guessedTools.includes(String(name)))).toEqual([]);
-    for (const heading of ["Bills", "Payments", "Holdings", "Businesses"]) {
+    for (const heading of ["Payments", "Holdings", "Businesses"]) {
       expect(screen.queryByRole("heading", { name: heading })).toBeNull();
     }
   });

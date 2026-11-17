@@ -80,6 +80,7 @@ beforeEach(() => {
     actor_list_groups: () => ({ items: groups }),
     actor_get_group_population: (args) => ({ group_id: args.group_id, population: populations[String(args.group_id)] }),
     actor_list_join_requests_for_group: (args) => ({ items: args.group_id === "g1" ? joinRequests : [] }),
+    accounting_bill_list: () => ({ items: [] }),
     comm_chat_thread_list: (args) => ({ items: args.structure_id === "g3" ? threads : [] }),
   };
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
@@ -189,7 +190,7 @@ describe("a person", () => {
     expect(screen.getAllByText("Amara Kole")).toHaveLength(2);
     expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p1" });
     expect(called).toHaveBeenCalledWith("", "actor_list_groups_for_actor", { actor_id: "p1" });
-    expect(toolsCalled()).toEqual(new Set(["actor_list_actors", "actor_get_actor", "actor_list_groups_for_actor", "actor_list_groups", "forms_form_list"]));
+    expect(toolsCalled()).toEqual(new Set(["actor_list_actors", "actor_get_actor", "actor_list_groups_for_actor", "actor_list_groups", "forms_form_list", "accounting_bill_list"]));
   });
 
   it("says plainly when the person belongs to no group", async () => {
