@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
-import { useConsole } from "../../shell/context";
+import { ConsoleCtx } from "../../shell/context";
 import { Button, Empty, Stack, TitleRow } from "../../ui";
 import { calcStepApi, written, type CalcStepApi, type FunctionChoice } from "./calcStepApi";
 import { CalcStepScreen } from "./CalcStepScreen";
@@ -36,7 +36,7 @@ const withChoice = (rows: InputRow[], input: string, kind: SourceKind | null, ch
 
 export function CalcStepPage({ hubId, stepId, api = calcStepApi, setup, onSave, onSaveStep }: CalcStepPageProps) {
   const { t } = useI18n();
-  const { refreshMenu } = useConsole();
+  const refreshMenu = useContext(ConsoleCtx)?.refreshMenu;
   const { state } = useLoaded(
     () => Promise.all([api.openStep(hubId, stepId), api.listFunctions(hubId), api.chosenFunction(hubId, stepId)]),
     [hubId, stepId],
@@ -78,7 +78,7 @@ export function CalcStepPage({ hubId, stepId, api = calcStepApi, setup, onSave, 
         posting: postingValue,
       });
       setSaving(false);
-      refreshMenu();
+      refreshMenu?.();
     }
   };
   return (
