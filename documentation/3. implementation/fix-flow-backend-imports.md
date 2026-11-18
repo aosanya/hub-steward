@@ -31,6 +31,7 @@ Until a repository is public:
 - `mwanachama-wakala-api` imports it from its sibling folder with a `replace` line, as it does today. This is the only place a `replace` stays.
 - The hub cannot import it: the hub's Docker build context is one folder and a fresh clone has no siblings, so a `replace` cannot work there. The hub keeps its existing copy of that module for now, which is the one exception to "no copy". It is not synced by script. It is removed in the same change that switches the module to an import, once the repository is public and tagged.
 - A fix to one of the five is made in its own repo. Mirroring it into the hub copy by hand stays a stop-gap until the owner flips visibility.
+- The per-area tally of the board (MUN1301) is such a stop-gap copy in the hub's `modules/catalog`: `board_item_tally.go`, `board_item_tally_backing.go`, `board_item_tally_book.go`, the `AreaTally`, `BoardItemAreaTally` and `AreaPopulation` types in `models/board_item.go`, `AreaDirectory` and `UseAreaDirectory` in `catalog_manager.go`, and the `tally_board_items_by_area` operation in `catalog.operations.json`. It mirrors `mwanachama-backend-catalog` ab977c1, and `internal/agencies/area_directory.go` mirrors `mwanachama-wakala-api` 06964cb. Both commits are not on origin. The copy is removed in the change that makes catalog public and imports it.
 
 The routing layer in `mwanachama-backend-git` must not import the private catalog. It takes the catalog through an interface (G79).
 
