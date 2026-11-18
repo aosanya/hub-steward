@@ -7,6 +7,7 @@ import * as mcp from "../../../../shared/wakala/mcp";
 import { GroupEditScreen } from "../residents/GroupEditScreen";
 import { PersonEditScreen } from "../residents/PersonEditScreen";
 import { CrewsScreen, DepartmentsScreen } from "./index";
+import { refuseUndeclared } from "../../../declaredTools/refuseUndeclared";
 
 let called: MockInstance<typeof mcp.callTool>;
 let permissions: string[];
@@ -21,9 +22,10 @@ const answer = async (name: string, args: unknown) => {
   if (name === "actor_get_group_population") return { population: 4 };
   if (name === "actor_list_group_leaders") return { items: [] };
   if (name === "actor_edit_group") {
+    refuseUndeclared(name, given);
     if (refusal) throw new mcp.McpError(refusal);
     groups = groups.map((group) =>
-      group.id === given.group_id ? { ...group, name: given.name, node_type: given.NodeType, anchor_level_override: given.AnchorLevelOverrideID } : group,
+      group.id === given.group_id ? { ...group, name: given.Name, node_type: given.NodeType, anchor_level_override: given.AnchorLevelOverrideID } : group,
     );
     return {};
   }
@@ -88,7 +90,7 @@ describe("editing a department or a crew from its detail", () => {
         group_id: "g1",
         NodeType: "Department",
         AnchorLevelOverrideID: "lv1",
-        name: "Sample Works and Roads",
+        Name: "Sample Works and Roads",
       }),
     );
     expect((await screen.findAllByText("Sample Works and Roads")).length).toBeGreaterThanOrEqual(2);
@@ -102,7 +104,7 @@ describe("editing a department or a crew from its detail", () => {
     await rename("Sample Roads Crew");
 
     await waitFor(() =>
-      expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g3", NodeType: "Crew", AnchorLevelOverrideID: "lv2", name: "Sample Roads Crew" }),
+      expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g3", NodeType: "Crew", AnchorLevelOverrideID: "lv2", Name: "Sample Roads Crew" }),
     );
     expect((await screen.findAllByText("Sample Roads Crew")).length).toBeGreaterThanOrEqual(2);
   });

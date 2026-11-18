@@ -7,6 +7,7 @@ import * as mcp from "../../../../shared/wakala/mcp";
 import { CommitteesScreen } from "./CommitteesScreen";
 import { CouncilEditScreen } from "./CouncilEditScreen";
 import { councilPaths } from "./paths";
+import { refuseUndeclared } from "../../../declaredTools/refuseUndeclared";
 
 let called: MockInstance<typeof mcp.callTool>;
 let permissions: string[];
@@ -19,9 +20,10 @@ const answer = async (name: string, args: unknown) => {
   if (name === "actor_list_groups") return { items: groups };
   if (name === "actor_list_group_leaders") return { items: [{ actor_id: "a1", display_name: "Anna Sample" }] };
   if (name === "actor_edit_group") {
+    refuseUndeclared(name, given);
     if (refusal) throw new mcp.McpError(refusal);
     groups = groups.map((group) =>
-      group.id === given.group_id ? { ...group, name: given.name, node_type: given.NodeType, anchor_level_override: given.AnchorLevelOverrideID } : group,
+      group.id === given.group_id ? { ...group, name: given.Name, node_type: given.NodeType, anchor_level_override: given.AnchorLevelOverrideID } : group,
     );
     return {};
   }
@@ -65,7 +67,7 @@ describe("editing a committee from its detail", () => {
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() =>
-      expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", NodeType: "Committee", AnchorLevelOverrideID: "lv1", name: "Sample Budget Committee" }),
+      expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", NodeType: "Committee", AnchorLevelOverrideID: "lv1", Name: "Sample Budget Committee" }),
     );
     expect((await screen.findAllByText("Sample Budget Committee")).length).toBeGreaterThanOrEqual(2);
     expect(groups[0]).toMatchObject({ join_mode: "open", hidden: false });

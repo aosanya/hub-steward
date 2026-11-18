@@ -5,6 +5,7 @@ import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
+import { refuseUndeclared } from "../../../declaredTools/refuseUndeclared";
 
 let called: MockInstance<typeof mcp.callTool>;
 let permissions: string[];
@@ -20,8 +21,9 @@ const answer = async (name: string, args: unknown) => {
   if (name === "actor_list_group_populations") return { items: [] };
   if (name === "actor_get_group") return { item: group };
   if (name === "actor_edit_group") {
+    refuseUndeclared(name, given);
     if (refusal) throw new mcp.McpError(refusal);
-    group = { ...group, name: given.name ?? given.Name, node_type: given.NodeType, anchor_level_override: given.AnchorLevelOverrideID };
+    group = { ...group, name: given.Name, node_type: given.NodeType, anchor_level_override: given.AnchorLevelOverrideID };
     return {};
   }
   if (name === "actor_set_group_join_mode") {
@@ -72,7 +74,7 @@ describe("editing a group from its detail", () => {
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() =>
-      expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", NodeType: "district", AnchorLevelOverrideID: "lv1", name: "Malomsor alsó" }),
+      expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", NodeType: "district", AnchorLevelOverrideID: "lv1", Name: "Malomsor alsó" }),
     );
     expect((await within(document.querySelector(".mw-detail") as HTMLElement).findAllByText("Malomsor alsó")).length).toBeGreaterThan(0);
   });
@@ -174,7 +176,7 @@ describe("editing a group from its detail at wide size", () => {
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() =>
-      expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", NodeType: "district", AnchorLevelOverrideID: "lv1", name: "Malomsor alsó" }),
+      expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", NodeType: "district", AnchorLevelOverrideID: "lv1", Name: "Malomsor alsó" }),
     );
     expect((await within(content()).findAllByText("Malomsor alsó")).length).toBeGreaterThan(0);
   });

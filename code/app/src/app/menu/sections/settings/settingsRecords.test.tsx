@@ -11,6 +11,7 @@ import { routes as appRoutes } from "../../../routes";
 import { carriedChatAbout, forgetChatAbout } from "../../../chatAbout";
 import { items, routes } from "./index";
 import { settingsPaths } from "./paths";
+import { refuseUndeclared } from "../../../declaredTools/refuseUndeclared";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
@@ -38,6 +39,7 @@ const answer = async (name: string, args: unknown) => {
     case "actor_list_group_children":
       return { items: given.parent_id === "g1" ? children : [] };
     case "actor_edit_group":
+      refuseUndeclared("actor_edit_group", given);
       return { id: given.group_id };
     case "actor_get_group_population":
       return { group_id: "g1", population: 1200 };
@@ -253,7 +255,7 @@ describe("Boundary Edit screen also changes the name", () => {
     await userEvent.type(name, "Northern Ward");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
     await waitFor(() =>
-      expect(mcp.callTool).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", name: "Northern Ward", NodeType: "Ward", AnchorLevelOverrideID: "lvl1" }),
+      expect(mcp.callTool).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", Name: "Northern Ward", NodeType: "Ward", AnchorLevelOverrideID: "lvl1" }),
     );
     await waitFor(() => expect(screen.getByTestId("where")).toHaveTextContent("/menu/settings/boundaries-and-areas"));
   });

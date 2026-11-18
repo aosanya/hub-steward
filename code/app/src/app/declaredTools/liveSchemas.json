@@ -1,0 +1,6 @@
+{
+  "actor_edit_group": {
+    "properties": ["AnchorLevelOverrideID", "Name", "NodeType", "group_id", "instance_id", "version"],
+    "required": ["Name", "group_id", "instance_id"]
+  }
+}
