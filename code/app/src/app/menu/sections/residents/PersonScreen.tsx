@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useMay } from "../../../../features/agency/useMay";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
@@ -10,7 +12,8 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { ChooseSheet } from "./ChooseSheet";
 import { SectionAct } from "./SectionAct";
 import { PersonActivity } from "./PersonActivity";
-import { PersonEdit, PersonEditMenu } from "./PersonEdit";
+import { type PersonEditKind } from "./PersonEdit";
+import { usePersonAttributes } from "./PersonAttributesEdit";
 import { PersonBills } from "./PersonBills";
 import { PersonHoldings } from "./PersonHoldings";
 import { PersonApplications, PersonRecords } from "./PersonLinks";
@@ -90,28 +93,37 @@ export function PersonGroups({ id, full }: { id: string; full?: boolean }) {
   );
 }
 
-export function PersonHead({ person, bump }: { person: Item; bump: (key: "name" | "attributes") => void }) {
+export function PersonDetails({ id, person }: { id: string; person: Item }) {
+  const may = useMay("member.edit");
+  const navigate = useNavigate();
+  const { filled, item } = usePersonAttributes(id, person);
+  const to = (what: PersonEditKind) => () => navigate(residentPaths.personEdit.path({ id, what }));
+  const act = may ? (
+    <span className="sec-acts">
+      <button type="button" className="sec-act" onClick={to("name")}>Edit</button>
+      <button type="button" className="sec-act" onClick={to("attributes")}>Edit attributes</button>
+    </span>
+  ) : undefined;
+  return <Section word="Details" act={act} empty={{ words: "No details on file yet.", act }} rows={filled.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />)} />;
+}
+
+export function PersonHead({ person }: { person: Item }) {
   const status = typeof person.status === "string" ? person.status : "";
   return (
     <div className="title-block">
-      <div className="title-row">
-        <h1 className="person-name">{personNameOf(person)}</h1>
-        <PersonEditMenu bump={bump} />
-      </div>
+      <h1 className="person-name">{personNameOf(person)}</h1>
       {status ? <p className="quiet-line">{status}</p> : null}
     </div>
   );
 }
 
-export function PersonPanel({ person, onSaved }: { person: Item; onSaved: () => void }) {
+export function PersonPanel({ person }: { person: Item; onSaved?: () => void }) {
   const id = String(person.id ?? "");
-  const [counts, setCounts] = useState({ name: 0, attributes: 0 });
-  const bump = (key: "name" | "attributes") => setCounts((was) => ({ ...was, [key]: was[key] + 1 }));
   return (
     <div className="person-page">
-      <PersonHead person={person} bump={bump} />
-      <PersonEdit id={id} person={person} onSaved={onSaved} counts={counts} />
+      <PersonHead person={person} />
       <div className="sections">
+        <PersonDetails id={id} person={person} />
         <PersonGroups id={id} />
         <PersonApplications id={id} />
         <PersonRaised id={id} />

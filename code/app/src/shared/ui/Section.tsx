@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ListRow, Rows } from "./ListRow";
+import { Rows } from "./ListRow";
 import "./section.css";
 
 export const sectionLimit = 3;
@@ -36,16 +36,14 @@ export function Section({ word, rows, opens, act, empty, full = false }: Props) 
         {count > 0 || full ? act : null}
       </div>
       <Rows>
-        {count === 0 && empty ? (
-          <div className="row empty-row">
-            <span className="words">{empty.words}</span>
-            {empty.act}
-          </div>
-        ) : (
-          shown
-        )}
-        {more ? <ListRow className="more" title={`See all ${count}`} onClick={opens} end="›" /> : null}
+        {count === 0 && empty ? <div className="row empty-row"><span className="words">{empty.words}</span></div> : shown}
       </Rows>
+      {(count === 0 && empty?.act) || more ? (
+        <footer className="sec-foot">
+          {more ? <button type="button" className="sec-foot-item" onClick={opens}>{`See all ${count}`}</button> : null}
+          {count === 0 ? empty?.act : null}
+        </footer>
+      ) : null}
     </section>
   );
 }

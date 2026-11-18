@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { vi } from "vitest";
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -6,6 +7,7 @@ import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
+import { residentPaths } from "./paths";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
@@ -58,22 +60,66 @@ describe("the resident page is titled with the name and keeps its actions small"
     expect(within(page).queryByText("Name")).toBeNull();
   });
 
-  it("offers Edit name and Edit attributes from one small Edit menu, not two full-width buttons", async () => {
+  it("puts the resident's details in one Details section with small Edit and Edit attributes actions in its heading, no full-width buttons", async () => {
     const page = await openPerson(false);
     expect(page.querySelectorAll(".btn").length).toBe(0);
-    await userEvent.click(within(page).getByRole("button", { name: /^Edit/ }));
-    expect(screen.getByRole("button", { name: "Edit name" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Edit attributes" })).toBeTruthy();
+    const details = page.querySelector("section.sec[aria-label='Details']") as HTMLElement;
+    expect(within(details).getByText("Sample Lane 4")).toBeTruthy();
+    expect(within(details).getByRole("button", { name: "Edit" })).toBeTruthy();
+    expect(within(details).getByRole("button", { name: "Edit attributes" })).toBeTruthy();
+    expect(within(details).queryByRole("textbox")).toBeNull();
+  });
+
+  it("opens the edit screen from Edit and returns to the resident's page on Cancel", async () => {
+    const page = await openPerson(false);
+    const details = page.querySelector("section.sec[aria-label='Details']") as HTMLElement;
+    await userEvent.click(within(details).getByRole("button", { name: "Edit" }));
+    expect(await screen.findByRole("heading", { level: 1, name: "Edit details" })).toBeTruthy();
+    expect((await screen.findByLabelText("Name")) as HTMLInputElement).toHaveProperty("value", personName);
+    expect(screen.getByRole("button", { name: "Save" })).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(await screen.findByRole("heading", { level: 1, name: personName })).toBeTruthy();
+  });
+
+  it("opens the attributes edit screen from Edit attributes and Save returns to the resident's page", async () => {
+    const page = await openPerson(false);
+    const details = page.querySelector("section.sec[aria-label='Details']") as HTMLElement;
+    await userEvent.click(within(details).getByRole("button", { name: "Edit attributes" }));
+    expect(await screen.findByRole("heading", { level: 1, name: "Edit attributes" })).toBeTruthy();
+    const address = (await screen.findByLabelText("Address")) as HTMLInputElement;
+    await userEvent.clear(address);
+    await userEvent.type(address, "Sample Lane 9");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(await screen.findByRole("heading", { level: 1, name: personName })).toBeTruthy();
+  });
+});
+
+describe("the wide pane titles the resident with the name alone", () => {
+  it("draws no list title band above the resident", async () => {
+    const page = await openPerson(true);
+    expect(page.querySelector(".wf-head")).toBeNull();
+    expect(within(page).getByRole("heading", { level: 1, name: personName })).toBeTruthy();
+  });
+});
+
+describe("the section heading is the large text and rows are divided", () => {
+  it("styles the heading larger than the row titles inside a square card with divided header, rows and footer", () => {
+    const css = readFileSync("src/shared/ui/section.css", "utf8");
+    expect(css).toMatch(/\.sec-title \{[^}]*font-size: 1\.25rem/);
+    expect(css).toMatch(/\.sec \{[^}]*border-radius: 0/);
+    expect(css).toMatch(/\.sec-head \{[^}]*border-bottom: 1px solid/);
+    expect(css).toMatch(/\.sec \.row \.ttl \{[^}]*font-weight: 400/);
   });
 });
 
 describe("a section is one heading row over plain rows", () => {
-  it("makes an empty section one row holding its words and its act, with no card", async () => {
+  it("makes an empty section one row of words with its act in the card footer", async () => {
     const page = await openPerson(false);
     const groups = page.querySelector("section.sec[aria-label='Groups']") as HTMLElement;
-    const row = groups.querySelector(".row.empty-row") as HTMLElement;
+    const row = groups.querySelector(".rows > .row.empty-row") as HTMLElement;
     expect(row.textContent).toContain("Not in any group yet.");
-    expect(within(row).getByRole("button", { name: "Add to a group" })).toBeTruthy();
+    const foot = groups.querySelector("footer.sec-foot") as HTMLElement;
+    expect(within(foot).getByRole("button", { name: "Add to a group" })).toBeTruthy();
     expect(page.querySelector(".card")).toBeNull();
   });
 
@@ -83,8 +129,8 @@ describe("a section is one heading row over plain rows", () => {
     const groups = page.querySelector("section.sec[aria-label='Groups']") as HTMLElement;
     await waitFor(() => expect(within(groups).getByText("Sample Group 1")).toBeTruthy());
     expect(within(groups).getByRole("heading", { name: /Groups/ }).textContent).toContain("4");
-    expect(groups.querySelectorAll(".rows > .row:not(.more)").length).toBe(3);
-    expect(within(groups).getByRole("button", { name: /See all 4/ })).toBeTruthy();
+    expect(groups.querySelectorAll(".rows > .row").length).toBe(3);
+    expect(within(groups.querySelector("footer.sec-foot") as HTMLElement).getByRole("button", { name: /See all 4/ })).toBeTruthy();
   });
 
   it("opens the section's own screen from the heading, with every row, the act, and Back to the resident", async () => {
@@ -105,7 +151,7 @@ describe("a section is one heading row over plain rows", () => {
       cleanup();
       setWide(false);
       render(
-        <MemoryRouter initialEntries={[`/menu/residents/people/p1/${section}`]}>
+        <MemoryRouter initialEntries={[residentPaths.personSection.path({ id: "p1", section })]}>
           <Routes>{routes()}</Routes>
         </MemoryRouter>,
       );

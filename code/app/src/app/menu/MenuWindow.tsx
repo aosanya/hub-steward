@@ -11,9 +11,9 @@ type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "field
 
 type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load" | "extra">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; withTabs?: boolean; detailKey?: string | number; listKey?: string | number; startAt?: string; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; withTabs?: boolean; bandless?: boolean; detailKey?: string | number; listKey?: string | number; startAt?: string; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
 
-export function MenuWindow({ title, list, detail, above, below, headEnd, withTabs, detailKey, listKey, startAt, elsewhere, leave }: Props) {
+export function MenuWindow({ title, list, detail, above, below, headEnd, withTabs, bandless, detailKey, listKey, startAt, elsewhere, leave }: Props) {
   const back = useBackToSection();
   const wide = useWide();
   const [chosen, setChosen] = useState(startAt ?? "");
@@ -36,7 +36,7 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, withTab
   );
   const detailPane = (
     <>
-      <h2 className="wf-head">{title}</h2>
+      {bandless ? null : <h2 className="wf-head">{title}</h2>}
       <div className="wf-content">
         <MenuDetail key={detailKey} {...detail} title={title} bare id={chosen} />
       </div>

@@ -28,6 +28,7 @@ type Props = {
   onSaved?: (changed: Record<string, string>) => void;
   bare?: boolean;
   openCount?: number;
+  onCancel?: () => void;
 };
 
 type Clash = { key: string; label: string; theirs: string; mine: string };
@@ -84,7 +85,7 @@ const inputModes = { text: undefined, number: "decimal", date: undefined, lines:
 
 const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key, field)]));
 
-export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], editLabel = "Edit", readAgain, build, alsoSave, onSaved, bare = false, openCount = 0 }: Props) {
+export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], editLabel = "Edit", readAgain, build, alsoSave, onSaved, bare = false, openCount = 0, onCancel }: Props) {
   const may = useMay(permission);
   const [editing, setEditing] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
@@ -96,7 +97,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
   const opener = useRef<() => void>(() => undefined);
   useEffect(() => {
     if (openCount > 0) opener.current();
-  }, [openCount]);
+  }, [openCount, may]);
   if (!may) return null;
   const fieldOf = (key: string) => fields.find((field) => field.key === key);
   const changed = Object.fromEntries(Object.entries(values).filter(([key, value]) => !sameText(fieldOf(key), value, base[key])));
@@ -203,7 +204,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
         </div>
       ))}
       <Button kind="primary" disabled={saving || missing || invalid || clashes.length > 0 || Object.keys(changed).length === 0} onClick={save}>Save</Button>
-      <Button kind="quiet" disabled={saving} onClick={() => setEditing(false)}>Cancel</Button>
+      <Button kind="quiet" disabled={saving} onClick={() => { setEditing(false); onCancel?.(); }}>Cancel</Button>
       {refused ? <LoadFailed words={refused} /> : null}
     </>
   );

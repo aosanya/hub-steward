@@ -1,29 +1,29 @@
-import { useMay } from "../../../../features/agency/useMay";
-import { ActionsMenu } from "../../../../shared/ui/ActionsMenu";
 import { MenuEditForm } from "../../MenuEditForm";
-import { PersonAttributesEdit } from "./PersonAttributesEdit";
+import { PersonAttributesEdit, PersonAttributesInline } from "./PersonAttributesEdit";
 
 type Item = Record<string, unknown>;
 
 const nameFields = [{ label: "Name", key: "display_name", required: true }];
 
-type Counts = { name: number; attributes: number };
+export const personEditKinds = { name: "Edit details", attributes: "Edit attributes" } as const;
 
-export const personEditActions = (bump: (key: keyof Counts) => void) => [
-  { label: "Edit name", onSelect: () => bump("name") },
-  { label: "Edit attributes", onSelect: () => bump("attributes") },
-];
+export type PersonEditKind = keyof typeof personEditKinds;
 
-export function PersonEditMenu({ bump }: { bump: (key: keyof Counts) => void }) {
-  const may = useMay("member.edit");
-  return may ? <ActionsMenu label="Edit" actions={personEditActions(bump)} /> : null;
+type Props = { kind: PersonEditKind; id: string; person: Item; onDone: () => void };
+
+export function PersonEdit({ kind, id, person, onDone }: Props) {
+  return kind === "attributes" ? (
+    <PersonAttributesEdit id={id} person={person} onSaved={onDone} onCancel={onDone} />
+  ) : (
+    <MenuEditForm item={person} id={id} idArg="actor_id" tool="actor_set_actor_display_name" permission="member.edit" fields={nameFields} bare openCount={1} onSaved={onDone} onCancel={onDone} />
+  );
 }
 
-export function PersonEdit({ id, person, onSaved, counts }: { id: string; person: Item; onSaved: () => void; counts?: Counts }) {
+export function PersonEditInline({ id, person, onSaved }: { id: string; person: Item; onSaved: () => void }) {
   return (
     <>
-      <MenuEditForm item={person} id={id} idArg="actor_id" tool="actor_set_actor_display_name" permission="member.edit" fields={nameFields} onSaved={onSaved} bare={counts !== undefined} openCount={counts?.name} />
-      <PersonAttributesEdit id={id} person={person} onSaved={onSaved} openCount={counts?.attributes} />
+      <MenuEditForm item={person} id={id} idArg="actor_id" tool="actor_set_actor_display_name" permission="member.edit" fields={nameFields} onSaved={onSaved} />
+      <PersonAttributesInline id={id} person={person} onSaved={onSaved} />
     </>
   );
 }

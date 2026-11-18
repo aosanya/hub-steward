@@ -73,6 +73,7 @@ export function AllPeopleScreen() {
     <MenuWindow
       title={peopleTitle}
       withTabs
+      bandless
       headEnd={mayAdd ? <Button to={routes.personNew.path()}>Add person</Button> : undefined}
       startAt={search.get("person") ?? undefined}
       listKey={version}

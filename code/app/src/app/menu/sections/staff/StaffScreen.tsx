@@ -2,7 +2,7 @@ import { useState } from "react";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
-import { PersonEdit } from "../residents/PersonEdit";
+import { PersonEditInline } from "../residents/PersonEdit";
 import { personNameOf } from "../residents/personName";
 import { StaffSeats } from "./StaffSeats";
 import { homeEmpty, listOf, roleKindNames, seatsLine, text, type Item } from "./staffData";
@@ -50,7 +50,7 @@ export function StaffScreen() {
         status: "status",
         extra: (person) => (
           <>
-            <PersonEdit id={text(person, "id")} person={person} onSaved={() => setVersion((was) => was + 1)} />
+            <PersonEditInline id={text(person, "id")} person={person} onSaved={() => setVersion((was) => was + 1)} />
             <StaffSeats id={text(person, "id")} />
           </>
         ),

@@ -20,7 +20,7 @@ const loadTextFields = async (): Promise<EditField[]> =>
 
 const attributesOf = (person: Item): Item => (person.attributes && typeof person.attributes === "object" ? (person.attributes as Item) : {});
 
-export function PersonAttributesEdit({ id, person, onSaved, openCount }: { id: string; person: Item; onSaved: () => void; openCount?: number }) {
+export function usePersonAttributes(id: string, person: Item) {
   const may = useMay("member.edit");
   const view = useLoad(async () => (may ? loadTextFields() : []), `person-attribute-properties:${openAgencyId()}:${may}`);
   const details = useRegisterDetails(residentRecordCode, residentFields);
@@ -38,39 +38,37 @@ export function PersonAttributesEdit({ id, person, onSaved, openCount }: { id: s
     .map((field) => ({ ...field, required: field.required || detailOf(field.label)?.required === true }));
   const ownFields: EditField[] = details.filter((detail) => detail.own && detail.on).map((detail) => ({ key: ownKeyOf(detail.prompt), label: detail.prompt, required: detail.required }));
   const fields = [...attributeFields, ...ownFields];
-  if (fields.length === 0) return null;
   const attributes = attributesOf(person);
   const item: Item = { ...attributes, ...Object.fromEntries(ownFields.map((field) => [field.key, answers[field.label] ?? ""])) };
   const filled = fields.filter((field) => item[field.key] !== undefined && item[field.key] !== "");
-  const saveAttributes = (sent: Record<string, unknown>) => {
+  const build = (sent: Record<string, unknown>) => {
     const sentAttributes = Object.fromEntries(Object.entries(sent).filter(([key]) => !key.startsWith(ownKeyOf(""))));
     const held = Object.fromEntries(attributeFields.filter((field) => attributes[field.key] !== undefined).map((field) => [field.key, attributes[field.key]]));
     return { actor_id: id, attributes: Object.keys(sentAttributes).length > 0 ? sentAttributes : held };
   };
-  const saveAnswers = async (changed: Record<string, string>) => {
+  const alsoSave = async (changed: Record<string, string>) => {
     const edited = ownFields.filter((field) => field.key in changed);
     if (edited.length === 0) return;
     const merged = { ...answers, ...Object.fromEntries(edited.map((field) => [field.label, changed[field.key].trim()])) };
     await writeRegisterAnswers(residentRecordCode, id, merged);
     setAnswers(merged);
   };
+  return { fields, item, filled, build, alsoSave };
+}
+
+export function PersonAttributesEdit({ id, person, onSaved, onCancel }: { id: string; person: Item; onSaved: () => void; onCancel: () => void }) {
+  const { fields, item, build, alsoSave } = usePersonAttributes(id, person);
+  if (fields.length === 0) return null;
+  return <MenuEditForm item={item} id={id} idArg="actor_id" tool="actor_set_actor_attributes" permission="member.edit" bare openCount={1} fields={fields} build={build} alsoSave={alsoSave} onSaved={onSaved} onCancel={onCancel} />;
+}
+
+export function PersonAttributesInline({ id, person, onSaved }: { id: string; person: Item; onSaved: () => void }) {
+  const { fields, item, filled, build, alsoSave } = usePersonAttributes(id, person);
+  if (fields.length === 0) return null;
   return (
     <>
       <Section word="Details" rows={filled.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />)} />
-      <MenuEditForm
-        item={item}
-        id={id}
-        idArg="actor_id"
-        tool="actor_set_actor_attributes"
-        permission="member.edit"
-        editLabel="Edit attributes"
-        bare={openCount !== undefined}
-        openCount={openCount}
-        fields={fields}
-        build={saveAttributes}
-        alsoSave={saveAnswers}
-        onSaved={onSaved}
-      />
+      <MenuEditForm item={item} id={id} idArg="actor_id" tool="actor_set_actor_attributes" permission="member.edit" editLabel="Edit attributes" fields={fields} build={build} alsoSave={alsoSave} onSaved={onSaved} />
     </>
   );
 }
