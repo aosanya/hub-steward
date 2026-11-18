@@ -510,6 +510,15 @@ const backlog: Subject = {
   empty: "its steps and issues",
 };
 
+const smartBacklog: Subject = {
+  reads: { taskmanager_task_pending: { backlog: byId }, taskmanager_backlog_list: {} },
+  steps: { taskmanager_task_pending: "Reading the issues that match", taskmanager_backlog_list: "Reading the backlogs" },
+  choices: ["Rules", "Issues"],
+  reading: "Rules are given to you in this conversation as they stand on the page, so answer them without a tool. Issues means taskmanager_task_pending, always with a limit: a smart backlog holds the issues of other backlogs that match its rules, so it has no steps of its own.",
+  overview: "answer with its rules from this conversation, call taskmanager_task_pending and answer with how many issues match and the first few",
+  empty: "its rules and the issues that match",
+};
+
 const backlogIssue: Subject = {
   reads: { taskmanager_task_read: { taskID: byId }, taskmanager_task_note_list: { taskID: byId } },
   steps: { taskmanager_task_read: "Reading the issue", taskmanager_task_note_list: "Reading its Log" },
@@ -519,7 +528,7 @@ const backlogIssue: Subject = {
   empty: "its details and Log",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, rounds, meeting, resolution, bylaw, committee, declaration, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, agency: agencyProfile, "record-details": recordDetails, backlogs, backlog, "backlog-issue": backlogIssue };
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, rounds, meeting, resolution, bylaw, committee, declaration, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, agency: agencyProfile, "record-details": recordDetails, backlogs, backlog, "smart-backlog": smartBacklog, "backlog-issue": backlogIssue };
 
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
@@ -576,7 +585,7 @@ const invitation = (about: ChatAbout) => `What would you like to see about ${abo
 
 const factsOf = (about: ChatAbout) => {
   if (about.kind === "registration") return ` The request: ${about.name} asked to join ${about.extra?.group ?? "a group"}${about.extra?.asked ? ` on ${about.extra.asked}` : ""}.`;
-  if (about.kind === "business" || about.kind === "trader" || about.kind === "issue" || about.kind === "maintenance" || about.kind === "record-details") return about.extra?.details ? ` What is on its page: ${about.extra.details}.` : "";
+  if (about.kind === "business" || about.kind === "trader" || about.kind === "issue" || about.kind === "maintenance" || about.kind === "record-details" || about.kind === "smart-backlog") return about.extra?.details ? ` What is on its page: ${about.extra.details}.` : "";
   return "";
 };
 

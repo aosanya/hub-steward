@@ -27,6 +27,8 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState
 import { Shell } from "../../../app/Shell";
 import { mcpSmartBacklogClient } from "./api";
 import { editRulesPath } from "./paths";
+import { matchWords, ruleWords } from "./words";
+import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
 import { RulesHead } from "./RulesHead";
 import type { SmartBacklogClient } from "./types";
 
@@ -68,6 +70,7 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
     : { title: backlog.name, onBack: back, backLabel: words.backBacklogs, action: canSend ? <SelectButton onStart={selecting.start} /> : undefined };
   return (
     <Shell {...shell} headEnd={mayEdit ? <ActionsMenu actions={[{ label: "Edit rules", onSelect: edit }, { label: "Change who has access", to: backlogAccessPath(backlogId) }]} /> : undefined} tabless={selecting.on}>
+      <ChatAboutBacklog about={{ kind: "smart-backlog", id: backlogId, name: backlog.name, extra: { details: `${backlog.set.rules.map(ruleWords).join("; ")} (${matchWords(backlog.set.match).toLowerCase()})` } }} />
       <RulesHead set={backlog.set} />
       {held.length === 0 ? (
         <EmptyCard words="Nothing matches yet">{mayEdit ? <Button kind="primary" onClick={edit}>Edit rules</Button> : null}</EmptyCard>

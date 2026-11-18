@@ -53,3 +53,22 @@ describe("the chat about one issue", () => {
     expect(choicesFor(issue)).toEqual(["Details", "Log"]);
   });
 });
+
+describe("the chat about a smart backlog", () => {
+  const smart: ChatAbout = { kind: "smart-backlog", id: "open-bugs", name: "Open bugs", extra: { details: "Tag has bug; Step is not done (matches all of these rules)" } };
+
+  it("reads its issues by the backlog it is about, and the backlog list, with no id in what the owner sees", () => {
+    expect(readNamesFor(smart)).toEqual(["taskmanager_task_pending", "taskmanager_backlog_list"]);
+    expect(scopedArgs(smart, "taskmanager_task_pending", { backlog: "other", limit: 5 })).toEqual({ backlog: "open-bugs", limit: 5 });
+    expect(scopeKeysFor(smart, "taskmanager_task_pending")).toEqual(["backlog"]);
+    expect(aboutLabel(smart)).toBe("Open bugs");
+  });
+
+  it("gives every read a step word and a choice, and carries the rules in words", () => {
+    for (const name of readNamesFor(smart)) expect(stepWordsFor(smart)[name]).toBeTruthy();
+    expect(choicesFor(smart).length).toBeGreaterThan(0);
+    expect(promptFor(smart)).toContain("Tag has bug; Step is not done (matches all of these rules)");
+    expect(promptFor(smart)).toContain("about one thing, Open bugs.");
+    expect(emptyWordsFor(smart)).toContain("Open bugs");
+  });
+});

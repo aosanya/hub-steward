@@ -1,6 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
 
-export type ChatAboutKind = "resident" | "group" | "registration" | "conversation" | "business" | "trader" | "user" | "boundary" | "place" | "address" | "holding" | "land-use" | "bill" | "budget" | "tender" | "staff" | "role" | "report" | "neighbourhood" | "rounds" | "meeting" | "resolution" | "bylaw" | "committee" | "declaration" | "asset" | "workorder" | "application" | "permit" | "licence" | "fee" | "service" | "issue" | "wish" | "maintenance" | "agency" | "record-details" | "backlogs" | "backlog" | "backlog-issue";
+export type ChatAboutKind = "resident" | "group" | "registration" | "conversation" | "business" | "trader" | "user" | "boundary" | "place" | "address" | "holding" | "land-use" | "bill" | "budget" | "tender" | "staff" | "role" | "report" | "neighbourhood" | "rounds" | "meeting" | "resolution" | "bylaw" | "committee" | "declaration" | "asset" | "workorder" | "application" | "permit" | "licence" | "fee" | "service" | "issue" | "wish" | "maintenance" | "agency" | "record-details" | "backlogs" | "backlog" | "smart-backlog" | "backlog-issue";
 
 export type ChatAbout = { kind: ChatAboutKind; id: string; name: string; extra?: Record<string, string> };
 
@@ -101,6 +101,7 @@ export const subjectNouns: Record<Exclude<ChatAboutKind, "resident">, string> = 
   "record-details": "record details",
   backlogs: "list of backlogs",
   backlog: "backlog",
+  "smart-backlog": "smart backlog",
   "backlog-issue": "backlog issue",
 };
 
