@@ -111,6 +111,7 @@ comm_chat_thread_mark_read
 comm_chat_thread_unarchive
 comm_notification_list
 comm_notification_mark_read
+comm_notification_raise
 comm_notification_unread
 comm_person_reach_list
 forms_answer_list

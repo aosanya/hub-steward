@@ -23,6 +23,7 @@ var ChatActions = []string{
 	"comm.notification.list",
 	"comm.notification.unread",
 	"comm.notification.mark_read",
+	"comm.notification.raise",
 }
 
 func BuildChatTools(m *mwanachamacomm.CommManager, mount Mount) ([]Tool, error) {

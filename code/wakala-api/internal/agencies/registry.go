@@ -530,6 +530,10 @@ func formsProvisioned(db *gorm.DB, slug string) (bool, error) {
 	return db.Migrator().HasTable(s.TableFor(links)), nil
 }
 
+func reportHandedOverOnly(event commmodels.NotificationEvent) bool {
+	return event == commmodels.EventReportHandedOver
+}
+
 func (r *registry) CommManager(ctx context.Context, id string) (*mwanachamacomm.CommManager, error) {
 	return pooled(ctx, r.rooms, id, r.buildCommManager)
 }
@@ -559,6 +563,7 @@ func (r *registry) buildCommManager(ctx context.Context, id string) (*mwanachama
 	built.UseStanding(r.subjectStandingIn(id))
 	built.UseAnswerers(r.subjectAnswerersIn(id))
 	built.UseAuthorKindOf(r.authorKindIn(id))
+	built.UseRaisable(reportHandedOverOnly)
 	built.UseWebPush(r.pushSender, r.pushFailed)
 	if r.mutability != nil {
 		built.UseMutable(r.mutableIn(id))

@@ -194,6 +194,7 @@ var (
 	ErrNotificationCapSpent       = models.ErrNotificationCapSpent
 	ErrNotificationNoSuchCategory = models.ErrNotificationNoSuchCategory
 	ErrNotificationMuted          = models.ErrNotificationMuted
+	ErrNotificationNotRaisable    = models.ErrNotificationNotRaisable
 	ErrNotificationCategoryExempt = models.ErrNotificationCategoryExempt
 )
 
