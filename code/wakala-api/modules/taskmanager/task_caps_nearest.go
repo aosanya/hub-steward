@@ -83,7 +83,7 @@ func (m *taskManager) NearestCaps(ctx context.Context, filter CapsNearestFilter)
 			return CapsNearestList{}, fmt.Errorf("NearestCaps: %w", err)
 		}
 	}
-	startedOf, err := m.firstWorkerNoteTimes(ctx, ids)
+	startedOf, err := m.clockStartTimes(ctx, ids)
 	if err != nil {
 		return CapsNearestList{}, fmt.Errorf("NearestCaps: %w", err)
 	}
@@ -93,19 +93,4 @@ func (m *taskManager) NearestCaps(ctx context.Context, filter CapsNearestFilter)
 		out.Items = append(out.Items, CapsNearest{TaskID: id, InForce: inForce, Nearest: nearestCap(inForce, usedOf[id]), StartedAt: startedOf[id], Interrupted: interrupted})
 	}
 	return out, nil
-}
-
-func (m *taskManager) firstWorkerNoteTimes(ctx context.Context, ids []string) (map[string]string, error) {
-	q := m.store.Query(ctx, roleTaskNote).Where("task_id IN ?", ids).Where("kind = ?", noteByWorker).Order("created_at").Limit(maxWorkerNotesRead)
-	notes, err := specstore.List[TaskNote](m.store, q, roleTaskNote)
-	if err != nil {
-		return nil, err
-	}
-	first := map[string]string{}
-	for _, note := range notes {
-		if _, seen := first[note.TaskID]; !seen && !note.Automatic {
-			first[note.TaskID] = note.CreatedAt
-		}
-	}
-	return first, nil
 }

@@ -71,7 +71,7 @@ func (m *taskManager) TimedOut(ctx context.Context, filter TimedOutFilter) (Time
 	if err != nil {
 		return out, fmt.Errorf("TimedOut: %w", err)
 	}
-	startedOf, err := m.firstWorkerNoteTimes(ctx, ids)
+	startedOf, err := m.clockStartTimes(ctx, ids)
 	if err != nil {
 		return out, fmt.Errorf("TimedOut: %w", err)
 	}
