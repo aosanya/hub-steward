@@ -54,6 +54,7 @@ actor_list_discoverable_groups
 actor_list_group_children
 actor_list_group_invitations
 actor_list_group_leaders
+actor_list_group_members
 actor_list_group_name_translations
 actor_list_group_populations
 actor_list_group_types
