@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { groupsOfType } from "../../groupsOfType";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
 import { ChatAboutGroup } from "../residents/ChatAboutGroup";
 import { StaffGroupPage, loadStaffGroup } from "./StaffGroupPage";
@@ -32,6 +33,7 @@ export function CrewsScreen() {
       withTabs
       bandless
       startAt={search.get("group") ?? undefined}
+      above={<AddButton permission="group.manage" label={`Add ${word("Crew").toLowerCase()}`} to={staffPaths.crewNew.path()} />}
       list={{ title: word("Crews"), tool: "actor_list_groups", load: loadCrews, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Crews").toLowerCase()} yet.`) }}
       detail={{
         tool: "actor_list_group_leaders",

@@ -1,5 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
 import { groupsOfType } from "../../groupsOfType";
 import { callTool } from "../../../../shared/wakala/mcp";
@@ -28,6 +29,7 @@ export function DepartmentsScreen() {
       withTabs
       bandless
       startAt={search.get("group") ?? undefined}
+      above={<AddButton permission="group.manage" label={`Add ${word("Department").toLowerCase()}`} to={staffPaths.departmentNew.path()} />}
       list={{ title: word("Departments"), tool: "actor_list_groups", load: loadDepartments, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Departments").toLowerCase()} yet.`) }}
       detail={{
         tool: "actor_get_group",
