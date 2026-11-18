@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMay } from "../../../../features/agency/useMay";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
@@ -6,6 +7,7 @@ import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { WorkOrderAssignee } from "./WorkOrderAssignee";
 import { WorkOrderStatus } from "./WorkOrderStatus";
 import { maintenanceKeys } from "./maintenanceHistory";
+import { assetPathOf } from "./paths";
 
 type Item = Record<string, unknown>;
 
@@ -76,14 +78,15 @@ type WorkOrderPanelProps = { order: Item; onChanged: () => void };
 
 export function WorkOrderPanel({ order, onChanged }: WorkOrderPanelProps) {
   const may = useMay("task.edit");
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const detail = rowsOf([
     ["Title", textOf(order.title)],
     ["State", textOf(order.state)],
     ["Due", textOf(order.due)],
-    ["About", textOf(order.about)],
-    ["Place", textOf(order.place)],
   ]);
+  const opened = assetPathOf(textOf(order.aboutCategory), textOf(order.aboutId));
+  const about = textOf(order.about) === "" ? [] : [<ListRow key="about" title={textOf(order.about)} meta={textOf(order.place)} end="›" onClick={opened === "" ? undefined : () => navigate(opened)} />];
   const foot = (
     <>
       {may ? <EditAct onClick={() => setEditing(true)} /> : null}
@@ -98,14 +101,8 @@ export function WorkOrderPanel({ order, onChanged }: WorkOrderPanelProps) {
       ) : (
         <Section word="Work order" plain foot={foot} rows={detail} />
       )}
-      <section className="sec" aria-label="Assignee">
-        <div className="sec-head">
-          <h2 className="sec-title">Assignee</h2>
-        </div>
-        <div className="sec-body">
-          <WorkOrderAssignee order={order} onAssigned={onChanged} />
-        </div>
-      </section>
+      <Section word="About" icon="box" rows={about} />
+      <WorkOrderAssignee order={order} onAssigned={onChanged} />
     </Page>
   );
 }

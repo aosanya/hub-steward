@@ -11,11 +11,11 @@ export const linkedRefOf = (task: Item) => textOf(task.linked_ref);
 const readAsset = async (assetId: string) => itemOf(await callTool("", assetReadTool, { assetID: assetId }));
 
 export const aboutAndPlaceOf = async (task: Item) => {
-  const none = { about: "", place: "" };
+  const none = { about: "", place: "", aboutId: "", aboutCategory: "" };
   if (linkedRefOf(task) === "") return none;
   try {
     const asset = await readAsset(linkedRefOf(task));
-    return { about: textOf(asset.name), place: await placeOf(textOf(asset.location_id)) };
+    return { about: textOf(asset.name), place: await placeOf(textOf(asset.location_id)), aboutId: linkedRefOf(task), aboutCategory: textOf(asset.category) };
   } catch {
     return none;
   }

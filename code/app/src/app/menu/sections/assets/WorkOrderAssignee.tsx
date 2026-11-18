@@ -4,8 +4,9 @@ import { useLoad } from "../../../../features/forms/useLoad";
 import { useMay } from "../../../../features/agency/useMay";
 import { Button } from "../../../../shared/ui/Button";
 import { ChoiceGroup } from "../../../../shared/ui/ChoiceRow";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
+import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
+import { Section } from "../../../../shared/ui/Section";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { refusalWords } from "../../MenuEditForm";
@@ -75,25 +76,22 @@ export function WorkOrderAssignee({ order, onAssigned }: Props) {
     setRefused("");
     setChoosing(true);
   };
-  return (
-    <>
-      <Rows>
-        <ListRow title="Assignee" meta={assignee} />
-      </Rows>
-      {may && !choosing ? <Button kind="quiet" onClick={open}>Assign</Button> : null}
-      {may && choosing ? (
-        <>
-          <ChoiceGroup label="Assign to">
-            {list.map((worker) => (
-              <Button key={worker.id} kind="quiet" aria-current={isCurrent(worker) ? "true" : undefined} disabled={assigning || isCurrent(worker)} onClick={() => assign(worker)}>
-                {isCurrent(worker) ? `${worker.name} (now)` : worker.name}
-              </Button>
-            ))}
-          </ChoiceGroup>
-          {refused ? <LoadFailed words={refused} /> : null}
-          <Button kind="quiet" disabled={assigning} onClick={() => setChoosing(false)}>Cancel</Button>
-        </>
-      ) : null}
-    </>
+  const heldRows = assignee === nobodyWords ? [] : [<ListRow key="holder" title={assignee} />];
+  const chooser = (
+    <div key="chooser" className="sec-tools">
+      <ChoiceGroup label="Assign to">
+        {list.map((worker) => (
+          <Button key={worker.id} kind="quiet" aria-current={isCurrent(worker) ? "true" : undefined} disabled={assigning || isCurrent(worker)} onClick={() => assign(worker)}>
+            {isCurrent(worker) ? `${worker.name} (now)` : worker.name}
+          </Button>
+        ))}
+      </ChoiceGroup>
+      {refused ? <LoadFailed words={refused} /> : null}
+      <Button kind="quiet" disabled={assigning} onClick={() => setChoosing(false)}>Cancel</Button>
+    </div>
   );
+  const assignAct = may && !choosing ? (
+    <button type="button" className="sec-act" onClick={open}>Assign</button>
+  ) : undefined;
+  return <Section word="Assignee" icon="users" rows={may && choosing ? [...heldRows, chooser] : heldRows} empty={{ words: `${nobodyWords} yet.` }} foot={assignAct} />;
 }

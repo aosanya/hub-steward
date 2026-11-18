@@ -6,6 +6,7 @@ import type { Choice } from "../../../../shared/ui/SearchSelect";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuWindow } from "../../MenuWindow";
+import { useChosenItem } from "../settings/RecordPage";
 import { AssetPanel } from "./AssetPanels";
 import { loadKeeperChoices } from "./keeperChoices";
 import { assetReadTool, attributeKeys, attributesOf, conditionWords, loadAsset, withAttributes } from "./assetDetail";
@@ -63,11 +64,13 @@ const categoryPage = ({ title: generic, category }: Category) =>
     const [version, setVersion] = useState(0);
     const keepers = useLoad(loadKeeperChoices, `keepers:${openAgencyId()}`);
     const keeperChoices = keepers.state === "ready" ? keepers.data : [];
+    const startAt = useChosenItem();
     return (
       <MenuWindow
         title={title}
         withTabs
         bandless
+        startAt={startAt}
         listKey={version}
         detailKey={version}
         list={{ title, tool: assetList, fields, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadCategory(category) }}

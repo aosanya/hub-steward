@@ -39,6 +39,7 @@ const answer = (name: string, args: unknown): Promise<unknown> => {
   if (name === "assetmanager_movement_list") return Promise.resolve({ items: movements });
   if (name === "taskmanager_task_list") return Promise.resolve({ items: tasks });
   if (name === "taskmanager_task_read") return Promise.resolve({ item: byId(tasks, args, "taskID") });
+  if (name === "taskmanager_agent_list") return Promise.resolve({ items: [] });
   if (name === "taskmanager_repeating_task_list") return Promise.resolve({ items: repeating });
   if (name === "taskmanager_repeating_task_read") return Promise.resolve({ item: byId(repeating, args, "repeatingTaskID") });
   return Promise.reject(new Error(`${name}: unknown tool`));
@@ -124,6 +125,29 @@ describe("a work order opens as a page of cards", () => {
     expect(card.querySelector(".sec-foot")?.textContent).toMatch(/Edit/);
     expect(card.querySelector(".sec-foot")?.textContent).toMatch(/Change state/);
     expect(await screen.findByRole("region", { name: "Assignee" })).toBeInTheDocument();
+  });
+});
+
+describe("a work order's About and Assignee are cards of their own", () => {
+  it("has an About card whose row names the asset and its place and opens the asset page", async () => {
+    show("Work Orders");
+    await userEvent.click(await screen.findByRole("button", { name: /Repair the culvert/ }));
+    const about = await screen.findByRole("region", { name: "About" });
+    expect(about.querySelector(".lead")).not.toBeNull();
+    expect(about.textContent).toContain("Riverside Yard");
+    expect(screen.getByRole("region", { name: "Work order" }).textContent).not.toContain("Road roller");
+    await userEvent.click(within(about).getByRole("button", { name: /Road roller/ }));
+    expect(await screen.findByRole("heading", { level: 1, name: "Road roller" })).toBeInTheDocument();
+    expect(await screen.findByRole("region", { name: "Asset detail" })).toBeInTheDocument();
+  });
+
+  it("says Not assigned yet in the Assignee card and puts Assign in its footer for a seat that may assign", async () => {
+    permissions = ["task.edit", "task.assign"];
+    show("Work Orders");
+    await userEvent.click(await screen.findByRole("button", { name: /Repair the culvert/ }));
+    const card = await screen.findByRole("region", { name: "Assignee" });
+    expect(card.textContent).toContain("Not assigned yet.");
+    expect(card.querySelector(".sec-foot")?.textContent).toContain("Assign");
   });
 });
 

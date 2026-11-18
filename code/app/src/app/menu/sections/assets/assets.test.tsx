@@ -148,6 +148,8 @@ const showRouted = (title: string, came = true) =>
 
 const rowOf = (title: string) => screen.getByText(title, { selector: ".ttl" }).closest(".row") as HTMLElement;
 
+const firstLineOf = (card: HTMLElement) => card.querySelector(".row .ttl")?.textContent;
+
 const metaOf = (row: HTMLElement) => Array.from(row.querySelectorAll(".meta")).map((line) => line.textContent);
 
 const rowTitles = () => Array.from(document.querySelectorAll(".row .ttl")).map((title) => title.textContent);
@@ -235,8 +237,10 @@ describe("an asset detail", () => {
   it("lists the newest few movements of that asset, newest first, and not the oldest", async () => {
     await openRoller();
 
-    expect(await screen.findByText("Parked at the yard")).toBeInTheDocument();
-    expect(screen.getByText("Back from the open day")).toBeInTheDocument();
+    const movements = await screen.findByRole("region", { name: "Movements" });
+    expect(await within(movements).findByText("Parked at the yard")).toBeInTheDocument();
+    expect(within(movements).getByText("Back from the open day")).toBeInTheDocument();
+    expect(firstLineOf(movements)).toBe("Parked at the yard");
     expect(before("Parked at the yard", "Back from the open day")).toBe(true);
     expect(screen.queryByText("Delivered from the supplier")).toBeNull();
     expect(callsTo(movementList).some(([, , args]) => (args as { asset_id?: string }).asset_id === "e1")).toBe(true);
@@ -408,17 +412,15 @@ describe("Work Orders linked to an asset", () => {
     expect(callsTo(locationRead)).toHaveLength(0);
   });
 
-  it("shows About with the asset's name and Place with its place, after the Due row, in the detail", async () => {
+  it("shows an About card after the Work order card, with the asset's name and its place, in the detail", async () => {
     showRouted("Work Orders");
     await userEvent.click(await screen.findByRole("button", { name: /Patch the Ring Road edge/ }));
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
     await within(detail).findByRole("heading", { level: 1, name: "Patch the Ring Road edge" });
-    expect(metaOf(await findRowIn(detail, "About"))).toEqual(["Ring Road"]);
-    expect(metaOf(await findRowIn(detail, "Place"))).toEqual(["North Depot"]);
-    const titles = Array.from(detail.querySelectorAll(".row .ttl")).map((title) => title.textContent);
-    expect(titles.indexOf("About")).toBeGreaterThan(titles.indexOf("Due"));
-    expect(titles.indexOf("Place")).toBeGreaterThan(titles.indexOf("About"));
+    const about = await within(detail).findByRole("region", { name: "About" });
+    expect(metaOf(await findRowIn(about, "Ring Road"))).toEqual(["North Depot"]);
+    expect(within(detail).getByRole("region", { name: "Work order" }).compareDocumentPosition(about) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(called).toHaveBeenCalledWith("", assetRead, { assetID: "r1" });
     expect(called).toHaveBeenCalledWith("", locationRead, { locationID: "l1" });
   });
@@ -428,8 +430,8 @@ describe("Work Orders linked to an asset", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Service the roller/ }));
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    expect(metaOf(await findRowIn(detail, "About"))).toEqual(["Road roller"]);
-    expect(metaOf(await findRowIn(detail, "Place"))).toEqual(["Riverside Yard"]);
+    const about = await within(detail).findByRole("region", { name: "About" });
+    expect(metaOf(await findRowIn(about, "Road roller"))).toEqual(["Riverside Yard"]);
     expect(called).toHaveBeenCalledWith("", assetRead, { assetID: "e1" });
     expect(called).toHaveBeenCalledWith("", locationRead, { locationID: "l2" });
   });
@@ -463,16 +465,15 @@ describe("Work Orders linked to an asset", () => {
 
     afterEach(() => forgetWidth());
 
-    it("shows About and Place in the right pane after the Due row", async () => {
+    it("shows the About card with the asset and its place in the right pane after the Work order card", async () => {
       showRouted("Work Orders");
       await userEvent.click(await screen.findByRole("button", { name: /Patch the Ring Road edge/ }));
 
       const main = document.querySelector(".wf-main") as HTMLElement;
       await within(main).findByRole("heading", { level: 1, name: "Patch the Ring Road edge" });
-      expect(metaOf(await findRowIn(main, "About"))).toEqual(["Ring Road"]);
-      expect(metaOf(await findRowIn(main, "Place"))).toEqual(["North Depot"]);
-      const titles = Array.from(main.querySelectorAll(".row .ttl")).map((title) => title.textContent);
-      expect(titles.indexOf("About")).toBeGreaterThan(titles.indexOf("Due"));
+      const about = await within(main).findByRole("region", { name: "About" });
+      expect(metaOf(await findRowIn(about, "Ring Road"))).toEqual(["North Depot"]);
+      expect(within(main).getByRole("region", { name: "Work order" }).compareDocumentPosition(about) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(called).toHaveBeenCalledWith("", assetRead, { assetID: "r1" });
       expect(called).toHaveBeenCalledWith("", locationRead, { locationID: "l1" });
     });
@@ -848,7 +849,9 @@ describe("the maintenance history of an asset", () => {
     await open("Equipment", /Road roller/);
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    expect(await within(detail).findByText(rollerNewest)).toBeInTheDocument();
+    const history = await within(detail).findByRole("region", { name: historyLabel });
+    expect(await within(history).findByText(rollerNewest)).toBeInTheDocument();
+    expect(firstLineOf(history)).toBe(rollerNewest);
   });
 
   it("shows the next finished job after it, newest first", async () => {
@@ -871,8 +874,10 @@ describe("the maintenance history of an asset", () => {
   it("keeps the movement rows when the history is shown", async () => {
     await open("Equipment", /Road roller/);
 
-    expect(await screen.findByText("Parked at the yard")).toBeInTheDocument();
-    expect(screen.getByText("Back from the open day")).toBeInTheDocument();
+    const movements = await screen.findByRole("region", { name: "Movements" });
+    expect(await within(movements).findByText("Parked at the yard")).toBeInTheDocument();
+    expect(within(movements).getByText("Back from the open day")).toBeInTheDocument();
+    expect(firstLineOf(movements)).toBe("Parked at the yard");
   });
 
   it("shows the newest five finished jobs of an asset with six, newest first, and not the oldest", async () => {
@@ -931,7 +936,9 @@ describe("the maintenance history of an asset", () => {
       await open("Equipment", /Road roller/);
 
       const main = document.querySelector(".wf-main") as HTMLElement;
-      expect(await within(main).findByText(rollerNewest)).toBeInTheDocument();
+      const history = await within(main).findByRole("region", { name: historyLabel });
+      expect(await within(history).findByText(rollerNewest)).toBeInTheDocument();
+      expect(firstLineOf(history)).toBe(rollerNewest);
       expect(within(main).getByText(rollerNext)).toBeInTheDocument();
       expect(before(rollerNewest, rollerNext)).toBe(true);
       expect(within(main).queryByText(/Inspect the roller exhaust/)).toBeNull();

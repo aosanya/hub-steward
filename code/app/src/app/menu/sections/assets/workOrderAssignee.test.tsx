@@ -103,7 +103,7 @@ describe("giving a work order to a worker from its detail", () => {
 
     expect(await screen.findByText("Judit Szabo")).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p1" });
-    expect(screen.queryByText("Not assigned")).toBeNull();
+    expect(screen.queryByText("Not assigned yet.")).toBeNull();
     expect(screen.queryByText("p1")).toBeNull();
   });
 
@@ -135,7 +135,7 @@ describe("giving a work order to a worker from its detail", () => {
     order = { id: "w1", title: "Repaint railings", state: "Doing" };
     await openOrder();
 
-    expect(await screen.findByText("Not assigned")).toBeInTheDocument();
+    expect(await screen.findByText("Not assigned yet.")).toBeInTheDocument();
     expect(called.mock.calls.some(([, tool]) => tool === "actor_get_actor")).toBe(false);
   });
 });
