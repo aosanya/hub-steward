@@ -1,6 +1,6 @@
 import type { Wording } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { listOf, text, type Item } from "../staff/staffData";
+import { listOf, roleKindNames, text, type Item } from "../staff/staffData";
 
 export { homeEmpty, listOf, text } from "../staff/staffData";
 export type { Item } from "../staff/staffData";
@@ -85,7 +85,15 @@ export const daysLateWords = (bill: Item) => {
 
 export type LateRule = { days: number; role: string };
 
-export type LateRules = Map<string, LateRule | null>;
+export type LateRuleState = { rule: LateRule | null; unread: boolean; roleName: string };
+
+export type LateRules = Map<string, LateRuleState>;
+
+const goneRoleWords = "a role that no longer exists";
+
+const noRuleState: LateRuleState = { rule: null, unread: false, roleName: "" };
+
+const unreadState: LateRuleState = { rule: null, unread: true, roleName: "" };
 
 export const lateRuleKey = (accountId: string) => `late_rule.${accountId}`;
 
@@ -93,34 +101,53 @@ export const lateRuleOf = (value: unknown): LateRule | null => {
   if (typeof value !== "string") return null;
   try {
     const parsed = JSON.parse(value) as { days?: unknown; role?: unknown };
-    const days = Number(parsed.days);
-    if (!Number.isFinite(days) || days < 0 || typeof parsed.role !== "string") return null;
-    return { days, role: parsed.role };
+    if (typeof parsed.days !== "number" || !Number.isInteger(parsed.days) || parsed.days < 0) return null;
+    if (typeof parsed.role !== "string" || parsed.role === "") return null;
+    return { days: parsed.days, role: parsed.role };
   } catch {
     return null;
   }
 };
 
-export const readLateRule = async (accountId: string): Promise<LateRule | null> => {
+const isMissingSetting = (error: unknown) => error instanceof Error && /not found/i.test(error.message);
+
+const readLateRuleState = async (accountId: string): Promise<LateRuleState> => {
   try {
     const reply = (await callTool("", settingReadTool, { key: lateRuleKey(accountId) })) as { value?: unknown } | null;
-    return lateRuleOf(reply?.value);
+    return { ...noRuleState, rule: lateRuleOf(reply?.value) };
+  } catch (error) {
+    return isMissingSetting(error) ? noRuleState : unreadState;
+  }
+};
+
+export const readLateRule = async (accountId: string): Promise<LateRule | null> => (await readLateRuleState(accountId)).rule;
+
+const roleNamesIfAny = async (states: LateRuleState[]) => {
+  if (!states.some((state) => state.rule)) return new Map<string, string>();
+  try {
+    return await roleKindNames();
   } catch {
-    return null;
+    return new Map<string, string>();
   }
 };
 
 export const lateRulesFor = async (bills: Item[]): Promise<LateRules> => {
   const accounts = [...new Set(bills.filter((bill) => text(bill, "status") === "overdue").map((bill) => text(bill, "income_account_id")).filter(Boolean))];
-  const rules = await Promise.all(accounts.map(readLateRule));
-  return new Map(accounts.map((account, at) => [account, rules[at]]));
+  const states = await Promise.all(accounts.map(readLateRuleState));
+  const names = await roleNamesIfAny(states);
+  return new Map(accounts.map((account, at) => [account, { ...states[at], roleName: states[at].rule ? names.get(states[at].rule.role) || goneRoleWords : "" }]));
 };
 
-export const ruleOfBill = (bill: Item, rules: LateRules) => rules.get(text(bill, "income_account_id")) ?? null;
+const stateOfBill = (bill: Item, rules: LateRules) => rules.get(text(bill, "income_account_id")) ?? noRuleState;
 
-export const isLate = (bill: Item, rules: LateRules) => text(bill, "status") === "overdue" && numberOf(bill.days_overdue) > (ruleOfBill(bill, rules)?.days ?? 0);
+export const ruleOfBill = (bill: Item, rules: LateRules) => stateOfBill(bill, rules).rule;
 
-export const remindsWords = (bill: Item, rules: LateRules) => (isLate(bill, rules) ? (ruleOfBill(bill, rules)?.role ?? "") : "");
+export const isLate = (bill: Item, rules: LateRules) => {
+  const state = stateOfBill(bill, rules);
+  return text(bill, "status") === "overdue" && !state.unread && numberOf(bill.days_overdue) > (state.rule?.days ?? 0);
+};
+
+export const remindsWords = (bill: Item, rules: LateRules) => (isLate(bill, rules) ? stateOfBill(bill, rules).roleName : "");
 
 export type Charges = Map<string, string>;
 

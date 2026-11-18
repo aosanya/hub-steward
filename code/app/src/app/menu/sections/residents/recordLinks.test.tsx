@@ -261,7 +261,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       const heading = await within(pane()).findByRole("heading", { name: /^Fees and bills/ });
       expect(await within(pane()).findByText(/150,000 · due 2026-03-01/)).toBeInTheDocument();
       expect(within(pane()).getByText(/42,000 · due 2026-01-10/)).toBeInTheDocument();
-      expect(within(pane()).getByText("Overdue")).toBeInTheDocument();
+      expect(within(pane()).getByText("Late")).toBeInTheDocument();
       const owner = await within(pane()).findByRole("heading", { name: new RegExp(`^${kind.heading}`) });
       expect(owner.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(called).toHaveBeenCalledWith("", "accounting_bill_list", { record_row_id: kind.owned.id });

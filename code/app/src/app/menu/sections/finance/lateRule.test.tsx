@@ -31,10 +31,22 @@ const stallFee = overdueBill("s1", "Pál Sample", "a-stalls", 15);
 const ratesBill = overdueBill("r1", "Rózsa Sample", "a-rates", 15);
 const feeInsideItsDays = overdueBill("s2", "Ilona Sample", "a-stalls", 9);
 const feeWithoutRule = overdueBill("g1", "Gábor Sample", "a-gone", 1);
+const feeWhoseRuleWillNotRead = overdueBill("u1", "Ágnes Sample", "a-unread", 30);
+const feeWithEmptyRole = overdueBill("e1", "Béla Sample", "a-emptyrole", 20);
+const feeWithPartDays = overdueBill("p1", "Csilla Sample", "a-partdays", 20);
+const feeWithGoneRole = overdueBill("k1", "Dénes Sample", "a-gonerole", 20);
+
+const roleKinds = [
+  { id: "kind-finance", name: "Finance officer" },
+  { id: "kind-mayor", name: "Mayor" },
+];
 
 const rules: Record<string, string> = {
-  "late_rule.a-stalls": JSON.stringify({ days: 14, role: "Finance officer" }),
-  "late_rule.a-rates": JSON.stringify({ days: 60, role: "Mayor" }),
+  "late_rule.a-stalls": JSON.stringify({ days: 14, role: "kind-finance" }),
+  "late_rule.a-rates": JSON.stringify({ days: 60, role: "kind-mayor" }),
+  "late_rule.a-emptyrole": JSON.stringify({ days: 14, role: "" }),
+  "late_rule.a-partdays": JSON.stringify({ days: 14.5, role: "kind-finance" }),
+  "late_rule.a-gonerole": JSON.stringify({ days: 14, role: "kind-retired-and-gone" }),
 };
 
 let bills: Record<string, unknown>[];
@@ -46,7 +58,9 @@ const answer = (name: string, args: Args) => {
   if (name === "accounting_account_list") return { items: accounts };
   if (name === "accounting_payment_list") return { items: [] };
   if (name === "agency_get_my_roles") return { permissions: ["accounting.read"] };
+  if (name === "actor_list_role_kinds") return { items: roleKinds };
   if (name === "forms_catalog_setting_read") {
+    if (args?.key === "late_rule.a-unread") throw new Error("network down");
     const value = rules[String(args?.key)];
     if (value === undefined) throw new Error("forms_catalog_setting_read: setting not found");
     return { key: args?.key, value };
@@ -69,7 +83,7 @@ const openAt = (path: string, element: JSX.Element) =>
 
 beforeEach(() => {
   openAgency("town");
-  bills = [stallFee, ratesBill, feeInsideItsDays, feeWithoutRule];
+  bills = [stallFee, ratesBill, feeInsideItsDays, feeWithoutRule, feeWhoseRuleWillNotRead, feeWithEmptyRole, feeWithPartDays, feeWithGoneRole];
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args as Args));
 });
 
@@ -120,6 +134,51 @@ describe.each([
 
     await waitFor(() => expect(pane().textContent).toContain("Reminds"));
     expect(within(pane()).getByText("Finance officer")).toBeInTheDocument();
+    expect(pane().textContent).not.toContain("kind-finance");
+  });
+
+  it("names a role that no longer exists in neutral words, never by its id", async () => {
+    openAt(path, element);
+    await userEvent.click(await rowOf(/Dénes Sample/));
+
+    await waitFor(() => expect(pane().textContent).toContain("Reminds"));
+    expect(pane().textContent).toContain("a role that no longer exists");
+    expect(pane().textContent).not.toContain("kind-retired-and-gone");
+  });
+
+  it("does not call a bill Late when its rule could not be read", async () => {
+    openAt(path, element);
+
+    const row = await rowOf(/Ágnes Sample/);
+    expect(within(row).getByText("Overdue")).toBeInTheDocument();
+    expect(within(row).queryByText("Late")).toBeNull();
+  });
+
+  it("treats a rule with no role as no rule, as the sweep does: late from the day after, nobody reminded", async () => {
+    openAt(path, element);
+    const row = await rowOf(/Béla Sample/);
+    expect(within(row).getByText("Late")).toBeInTheDocument();
+
+    await userEvent.click(row);
+    await waitFor(() => expect(pane().textContent).toContain("Béla Sample"));
+    expect(pane().textContent).not.toContain("Reminds");
+  });
+
+  it("treats a rule with a part of a day as no rule, as the sweep does", async () => {
+    openAt(path, element);
+
+    const row = await rowOf(/Csilla Sample/);
+    expect(within(row).getByText("Late")).toBeInTheDocument();
+    await userEvent.click(row);
+    await waitFor(() => expect(pane().textContent).toContain("Csilla Sample"));
+    expect(pane().textContent).not.toContain("Reminds");
+  });
+
+  it("looks up the role kinds once however many bills are late", async () => {
+    openAt(path, element);
+    await rowOf(/Pál Sample/);
+
+    expect(called.mock.calls.filter(([, tool]) => tool === "actor_list_role_kinds")).toHaveLength(1);
   });
 
   it("reads the rule of each charge once", async () => {

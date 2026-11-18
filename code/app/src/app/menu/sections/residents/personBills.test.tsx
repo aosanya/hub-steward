@@ -105,7 +105,7 @@ describe("bills on a person's detail", () => {
     expect(await screen.findByText("900 · due 2026-03-01")).toBeTruthy();
     expect(screen.getByText("1,500 · due 2026-01-15 · 40 days late")).toBeTruthy();
     expect(screen.getByText("Settled")).toBeTruthy();
-    expect(screen.getByText("Overdue")).toBeTruthy();
+    expect(screen.getByText("Late")).toBeTruthy();
     const order = screen.getAllByText(/ · due /).map((line) => line.textContent);
     expect(order).toEqual(["900 · due 2026-03-01", "1,500 · due 2026-01-15 · 40 days late"]);
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "accounting_bill_list", { actor_id: "p1" }));
