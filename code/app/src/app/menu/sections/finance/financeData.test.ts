@@ -31,6 +31,7 @@ describe("finance tool names", () => {
       billList: "accounting_bill_list",
       billRead: "accounting_bill_read",
       billUpdate: "accounting_bill_update",
+      accountList: "accounting_account_list",
       tenderCreate: "accounting_tender_create",
       tenderList: "accounting_tender_list",
       tenderRead: "accounting_tender_read",

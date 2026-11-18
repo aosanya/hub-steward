@@ -1,5 +1,5 @@
 import type { Wording } from "../../../../features/agency/useWord";
-import { text, type Item } from "../staff/staffData";
+import { listOf, text, type Item } from "../staff/staffData";
 
 export { homeEmpty, listOf, text } from "../staff/staffData";
 export type { Item } from "../staff/staffData";
@@ -13,6 +13,7 @@ export const tools = {
   upwardReportList: "accounting_upward_report_list",
   billList: "accounting_bill_list",
   billRead: "accounting_bill_read",
+  accountList: "accounting_account_list",
   billUpdate: "accounting_bill_update",
   tenderCreate: "accounting_tender_create",
   tenderList: "accounting_tender_list",
@@ -79,10 +80,23 @@ export const daysLateWords = (bill: Item) => {
   return `${days} ${days === 1 ? "day" : "days"} late`;
 };
 
-export const billRow = (bill: Item, unit = "") => ({
+export type Charges = Map<string, string>;
+
+export const chargeNames = async (): Promise<Charges> => {
+  try {
+    const accounts = await listOf(tools.accountList);
+    return new Map(accounts.filter((account) => text(account, "type") === "income").map((account) => [text(account, "id"), text(account, "name")]));
+  } catch {
+    return new Map();
+  }
+};
+
+export const chargeWords = (bill: Item | null, charges: Charges) => charges.get(text(bill, "income_account_id")) ?? "";
+
+export const billRow = (bill: Item, unit = "", charges: Charges = new Map()) => ({
   id: text(bill, "id"),
   payer: text(bill, "payer"),
-  meta: [`${moneyWords(numberOf(bill.amount), unit)} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
+  meta: [chargeWords(bill, charges), `${moneyWords(numberOf(bill.amount), unit)} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
   status: capitalised(text(bill, "status")),
 });
 

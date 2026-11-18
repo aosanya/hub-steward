@@ -11,7 +11,7 @@ import { actionFailedWords } from "../../MenuDetail";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { RaiseBillSheet } from "./RaiseBillSheet";
-import { billRow, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, text, tools, unitOf, type Item } from "./financeData";
+import { billRow, chargeNames, chargeWords, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, text, tools, unitOf, type Item } from "./financeData";
 import { markBillPaid } from "./markBillPaid";
 
 const manageRole = "accounting.manage";
@@ -35,11 +35,12 @@ const paymentLine = (payment: Item, unit: string) => [moneyWords(text(payment, "
 const newestFirst = (payments: Item[]) => [...payments].sort((a, b) => text(b, "paid_at").localeCompare(text(a, "paid_at")));
 
 const loadBill = async (id: string, unit: string) => {
-  const [bill, payments] = await Promise.all([callTool("", tools.billRead, { billID: id }) as Promise<Item | null>, listOf(tools.paymentList, { bill_id: id })]);
+  const [bill, payments, charges] = await Promise.all([callTool("", tools.billRead, { billID: id }) as Promise<Item | null>, listOf(tools.paymentList, { bill_id: id }), chargeNames()]);
   return {
     id,
     billID: id,
     payer: text(bill, "payer"),
+    charge: chargeWords(bill, charges),
     amount: text(bill, "amount"),
     amountWords: moneyWords(text(bill, "amount"), unit),
     settled: moneyWords(text(bill, "settled"), unit),
@@ -75,7 +76,8 @@ export function BillsScreen() {
   const roles = useLoad(() => callTool("", rolesTool, {}), "bills-roles");
   const manage = roles.state === "ready" && ((roles.data as { permissions?: string[] } | null)?.permissions ?? []).includes(manageRole);
   const loadBills = async () => {
-    const bills = (await listOf(tools.billList, status ? { status } : undefined)).map((bill) => billRow(bill, unit));
+    const [listedBills, charges] = await Promise.all([listOf(tools.billList, status ? { status } : undefined), chargeNames()]);
+    const bills = listedBills.map((bill) => billRow(bill, unit, charges));
     setListed(bills.length);
     return bills;
   };
@@ -123,7 +125,7 @@ export function BillsScreen() {
       detail={{
         tool: tools.billRead,
         load: (id: string) => loadBill(id, unit),
-        fields: { Payer: "payer", Amount: "amountWords", Settled: "settled", Outstanding: "outstanding", Due: "due", Late: "late", Narration: "narration", Status: "status", ...paymentFields },
+        fields: { Payer: "payer", Charge: "charge", Amount: "amountWords", Settled: "settled", Outstanding: "outstanding", Due: "due", Late: "late", Narration: "narration", Status: "status", ...paymentFields },
         status: "",
         extra: (bill) => (
           <MenuEditForm

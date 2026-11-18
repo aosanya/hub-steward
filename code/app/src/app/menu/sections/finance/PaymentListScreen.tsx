@@ -9,13 +9,11 @@ import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
-import { dayStart, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, owedTotal, owedWords, text, tools, unitOf, type Item } from "./financeData";
+import { chargeNames, chargeWords, dayStart, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, owedTotal, owedWords, text, tools, unitOf, type Charges, type Item } from "./financeData";
 
 const owedHeading = "To pay";
 
 const paidHeading = "Paid";
-
-const accountListTool = "accounting_account_list";
 
 const myRolesTool = "agency_get_my_roles";
 
@@ -38,12 +36,13 @@ const holdsManage = async () => {
 
 const refusalWords = (error: unknown) => (error instanceof Error ? refusalText(error) || error.message : "") || actionFailedWords;
 
-const owedRow = (bill: Item, unit: string) => ({
+const owedRow = (bill: Item, unit: string, charges: Charges) => ({
   id: `bill:${text(bill, "id")}`,
   billID: text(bill, "id"),
   group: owedHeading,
   payer: text(bill, "payer"),
-  meta: [`${moneyWords(text(bill, "outstanding"), unit)} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
+  meta: [chargeWords(bill, charges), `${moneyWords(text(bill, "outstanding"), unit)} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
+  charge: chargeWords(bill, charges),
   outstanding: moneyWords(text(bill, "outstanding"), unit),
   outstandingAmount: String(Number(text(bill, "outstanding")) || 0),
   due: dayWords(text(bill, "due_at")),
@@ -76,16 +75,17 @@ const billWords = async (billID: string, unit: string) => {
 };
 
 const loadRows = async (unit: string): Promise<Item[]> => {
-  const [open, overdue, payments] = await Promise.all([
+  const [open, overdue, payments, charges] = await Promise.all([
     listOf(tools.billList, { status: "open" }),
     listOf(tools.billList, { status: "overdue" }),
     listOf(tools.paymentList),
+    chargeNames(),
   ]);
-  return [...open.map((bill) => owedRow(bill, unit)), ...overdue.map((bill) => owedRow(bill, unit)), ...payments.map((payment) => paidRow(payment, unit))];
+  return [...open.map((bill) => owedRow(bill, unit, charges)), ...overdue.map((bill) => owedRow(bill, unit, charges)), ...payments.map((payment) => paidRow(payment, unit))];
 };
 
 const cashAccountId = async () => {
-  const accounts = await listOf(accountListTool);
+  const accounts = await listOf(tools.accountList);
   return accounts.map((account) => ({ id: text(account, "id"), category: text(account, "category"), type: text(account, "type") })).find((account) => account.category === "cash" && account.type === "asset")?.id;
 };
 
@@ -179,7 +179,7 @@ export function PaymentListScreen() {
       detail={{
         tool: tools.paymentList,
         load: loadRow,
-        fields: { Payer: "payer", Outstanding: "outstanding", Due: "due", Late: "late", Amount: "amount", "Paid on": "paidOn", Narration: "narration", Bill: "bill" },
+        fields: { Payer: "payer", Charge: "charge", Outstanding: "outstanding", Due: "due", Late: "late", Amount: "amount", "Paid on": "paidOn", Narration: "narration", Bill: "bill" },
         status: "status",
         action: { label: "Mark paid", tool: tools.paymentMarkPaid, run: openForm, when: (row) => mayMark && text(row, "group") === owedHeading },
         extra: (row) =>

@@ -1,4 +1,4 @@
-import { vi } from "vitest";
+import { vi, type MockInstance } from "vitest";
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -45,7 +45,7 @@ const unlistedBill = { ...stallBill, id: "u1", income_account_id: "a-gone", paye
 
 let bills: Record<string, unknown>[];
 let accountsAnswer: () => unknown;
-let called: ReturnType<typeof vi.spyOn>;
+let called: MockInstance<typeof mcp.callTool>;
 
 const answer = (name: string, args: Args) => {
   if (name === "accounting_bill_list") return { items: bills.filter((bill) => !args?.status || bill.status === args.status) };
