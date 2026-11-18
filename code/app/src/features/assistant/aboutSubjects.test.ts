@@ -7,6 +7,8 @@ const group: ChatAbout = { kind: "group", id: "g1", name: "Szabó háztartás, �
 const registration: ChatAbout = { kind: "registration", id: "p2", name: "Kiss Ágnes", extra: { group: "Zöldhalom", asked: "Monday, 16 Nov", request: "jr9" } };
 const conversation: ChatAbout = { kind: "conversation", id: "g2", name: "Hirdetőtábla", extra: { thread: "t9" } };
 const business: ChatAbout = { kind: "business", id: "row7", name: "Szabó Pékség", extra: { owner: "o1", details: "Kind of business: Bakery. Neighbourhood: Óváros" } };
+const staff: ChatAbout = { kind: "staff", id: "a1", name: "Anna Sample" };
+const role: ChatAbout = { kind: "role", id: "k1", name: "Clerk", extra: { draft: "d4" } };
 const trader: ChatAbout = { kind: "trader", id: "row8", name: "Katalin néni a piacon", extra: { owner: "o2", details: "What is sold: Honey and jam" } };
 
 describe("the line that says what the chat is about", () => {
@@ -128,5 +130,67 @@ describe("the words and choices follow the subject", () => {
 
   it("says a refused or missing read is reported for that read", () => {
     for (const about of [group, registration, conversation, business, trader]) expect(readsWordsFor(about)).toMatch(/cannot read|could not read/i);
+  });
+});
+
+describe("a staff member and a role are subjects of their own", () => {
+  it("names each by its own name", () => {
+    expect(aboutLabel(staff)).toBe("Anna Sample");
+    expect(aboutLabel(role)).toBe("Clerk");
+  });
+
+  it("a staff member reads their seats, standing, details and groups, scoped to them, and never the resident reads", () => {
+    expect(readNamesFor(staff)).toEqual(["actor_list_role_assignments_for_actor", "actor_get_actor_standing", "actor_get_actor", "actor_list_groups_for_actor"]);
+    for (const tool of readNamesFor(staff)) {
+      expect(scopedArgs(staff, tool, {})).toEqual({ actor_id: "a1" });
+      expect(scopeKeysFor(staff, tool)).toEqual(["actor_id"]);
+    }
+    for (const tool of ["accounting_bill_list", "digitaltwin_tenure_list", "forms_submission_list_of_person", "forms_catalog_raised_item_list_of_person"]) {
+      expect(readNamesFor(staff)).not.toContain(tool);
+    }
+    expect(scopedArgs(staff, "actor_get_actor", { actor_id: "someone-else" })).toEqual({ actor_id: "a1" });
+  });
+
+  it("a role reads its holders, its permissions and the permission vocabulary, scoped to the role", () => {
+    expect(readNamesFor(role)).toEqual(["actor_list_role_holders", "agency_list_roles", "agency_list_permissions"]);
+    expect(scopedArgs(role, "actor_list_role_holders", {})).toEqual({ kind_id: "k1" });
+    expect(scopedArgs(role, "agency_list_roles", {})).toEqual({ draft_id: "d4" });
+    expect(scopedArgs(role, "agency_list_permissions", { a: 1 })).toEqual({ a: 1 });
+    expect(scopeKeysFor(role, "actor_list_role_holders")).toEqual(["kind_id"]);
+    expect(scopeKeysFor(role, "agency_list_permissions")).toEqual([]);
+  });
+
+  it("gives every read a step word", () => {
+    for (const about of [staff, role]) for (const name of readNamesFor(about)) expect(stepWordsFor(about)[name]).toBeTruthy();
+  });
+
+  it("offers Seats, Details and Groups for a staff member and Holders, Approval limits and Permissions for a role", () => {
+    expect(choicesFor(staff)).toEqual(["Seats", "Details", "Groups"]);
+    expect(choicesFor(role)).toEqual(["Holders", "Approval limits", "Permissions"]);
+  });
+
+  it("asks to tap one or write a question, with the choices, the staff and role names, and no backlog texts", () => {
+    for (const about of [staff, role]) {
+      const prompt = promptFor(about);
+      expect(prompt).toContain(`What would you like to see about ${aboutLabel(about)}? Tap one, or write your question.`);
+      for (const choice of choicesFor(about)) expect(prompt).toContain(`[[${choice}]]`);
+      expect(prompt).toMatch(/never write the same reply twice/i);
+      expect(prompt).toMatch(/tell me about|what do you know|summary/i);
+      expect(prompt).not.toMatch(/backlog/i);
+    }
+    expect(promptFor(staff)).toContain("actor_list_role_assignments_for_actor");
+    expect(promptFor(role)).toContain("actor_list_role_holders");
+  });
+
+  it("names the subject in the placeholder and the empty state", () => {
+    expect(placeholderFor(staff)).toBe("Ask about Anna Sample");
+    expect(emptyWordsFor(staff)).toBe("Ask about Anna Sample: their seats, details and groups.");
+    expect(emptyWordsFor(role)).toBe("Ask about Clerk: its holders, approval limits and permissions.");
+  });
+
+  it("reports a refused or missing read, in the subject's own noun", () => {
+    expect(readsWordsFor(staff)).toMatch(/cannot read|could not read/i);
+    expect(readsWordsFor(staff)).toContain("this staff member");
+    expect(readsWordsFor(role)).toContain("this role");
   });
 });
