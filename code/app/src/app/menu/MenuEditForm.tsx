@@ -27,6 +27,7 @@ type Props = {
   alsoSave?: (changed: Record<string, string>) => Promise<unknown>;
   onSaved?: (changed: Record<string, string>) => void;
   bare?: boolean;
+  sendVersion?: boolean;
   openCount?: number;
   onCancel?: () => void;
   visible?: (key: string, values: Record<string, string>) => boolean;
@@ -88,7 +89,7 @@ const inputModes = { text: undefined, number: "decimal", date: undefined, lines:
 
 const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key, field)]));
 
-export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], editLabel = "Edit", readAgain, build, alsoSave, onSaved, bare = false, openCount = 0, onCancel, visible, check, retryLabel }: Props) {
+export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], editLabel = "Edit", readAgain, build, alsoSave, onSaved, bare = false, sendVersion = true, openCount = 0, onCancel, visible, check, retryLabel }: Props) {
   const may = useMay(permission);
   const [editing, setEditing] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
@@ -171,7 +172,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
       }
       const sentChanges = Object.fromEntries(Object.entries(changed).map(([key, text]) => [key, sent(key, text)]));
       if (!retrying) {
-        await callTool("", tool, build ? build(sentChanges) : { [idArg]: id, ...(version ? { version } : {}), ...Object.fromEntries(keep.map((key) => [key, kept(key)])), ...sentChanges });
+        await callTool("", tool, build ? build(sentChanges) : { [idArg]: id, ...(version && sendVersion ? { version } : {}), ...Object.fromEntries(keep.map((key) => [key, kept(key)])), ...sentChanges });
         setWritten(true);
       }
       await alsoSave?.(changed);

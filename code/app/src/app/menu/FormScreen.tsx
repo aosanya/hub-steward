@@ -29,9 +29,10 @@ type Props = {
   seed?: Item;
   check?: (values: Record<string, string>) => string;
   visible?: (key: string, values: Record<string, string>) => boolean;
+  sendVersion?: boolean;
 };
 
-export function FormScreen({ id = "", word, listLabel, addedTo, editedTo, permission, load, nameOf, addTool, addBuild, editTool, idArg, editBuild, fields, keep, seed, check, visible }: Props) {
+export function FormScreen({ id = "", word, listLabel, addedTo, editedTo, permission, load, nameOf, addTool, addBuild, editTool, idArg, editBuild, fields, keep, seed, check, visible, sendVersion }: Props) {
   const navigate = useNavigate();
   const { known, may } = useMayAnswer(permission);
   const editing = id !== "";
@@ -57,6 +58,7 @@ export function FormScreen({ id = "", word, listLabel, addedTo, editedTo, permis
             build={editing ? editBuild?.(view.data) : addBuild}
             check={check}
             visible={visible}
+            sendVersion={sendVersion}
             bare
             openCount={1}
             onSaved={leave}

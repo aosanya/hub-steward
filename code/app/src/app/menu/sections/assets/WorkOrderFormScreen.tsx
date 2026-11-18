@@ -31,6 +31,7 @@ export function WorkOrderFormScreen() {
       editTool="taskmanager_task_patch"
       idArg="taskID"
       fields={fields}
+      sendVersion={false}
     />
   );
 }

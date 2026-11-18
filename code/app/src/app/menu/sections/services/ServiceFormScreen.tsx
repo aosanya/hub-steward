@@ -36,6 +36,7 @@ export function ServiceFormScreen() {
       editTool={upsertTool}
       idArg="slug"
       keep={["name", "summary", "doc"]}
+      sendVersion={false}
       fields={(entry) => editFieldsFor(entry, known)}
     />
   );
