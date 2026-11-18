@@ -831,7 +831,7 @@ describe("who keeps an asset", () => {
 });
 
 describe("the maintenance history of an asset", () => {
-  const historyLabel = "Maintenance history";
+  const historyLabel = "Finished work orders";
 
   beforeEach(() => {
     listed = historyTasks;
@@ -846,7 +846,7 @@ describe("the maintenance history of an asset", () => {
   const rollerNewest = "Replace the roller drum bearings · Tuesday, 10 Nov";
   const rollerNext = "Grease the roller hydraulics · Tuesday, 3 Nov";
 
-  it("shows the newest finished job of the asset under Maintenance history, with its title and the day it was finished", async () => {
+  it("shows the newest finished job of the asset under Finished work orders, with its title and the day it was finished", async () => {
     await open("Equipment", /Road roller/);
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
@@ -900,7 +900,7 @@ describe("the maintenance history of an asset", () => {
     expect(callsTo(taskRead)).toHaveLength(0);
   });
 
-  it("shows no Maintenance history row for an asset with no finished job", async () => {
+  it("shows no Finished work orders card for an asset with no finished job", async () => {
     await open("Routes", /Ring Road/);
 
     await screen.findByText("A-1");
@@ -908,7 +908,7 @@ describe("the maintenance history of an asset", () => {
     expect(screen.queryByText(historyLabel)).toBeNull();
   });
 
-  it("shows no Maintenance history row when the tasks are not linked to the asset at all", async () => {
+  it("shows no Finished work orders card when the tasks are not linked to the asset at all", async () => {
     listed = tasks;
     await open("Equipment", /Road roller/);
 
@@ -933,7 +933,7 @@ describe("the maintenance history of an asset", () => {
 
     afterEach(() => forgetWidth());
 
-    it("shows the finished jobs under Maintenance history in the right pane, newest first", async () => {
+    it("shows the finished jobs under Finished work orders in the right pane, newest first", async () => {
       await open("Equipment", /Road roller/);
 
       const main = document.querySelector(".wf-main") as HTMLElement;
@@ -957,7 +957,7 @@ describe("the maintenance history of an asset", () => {
       expect(callsTo(taskList)).toHaveLength(2);
     });
 
-    it("shows no Maintenance history row in the right pane for an asset with no finished job", async () => {
+    it("shows no Finished work orders card in the right pane for an asset with no finished job", async () => {
       await open("Routes", /Ring Road/);
 
       const main = document.querySelector(".wf-main") as HTMLElement;

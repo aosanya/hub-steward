@@ -87,11 +87,11 @@ describe("an asset opens as a page of cards, as the resident does", () => {
     expect(card.querySelector(".sec-foot")?.textContent).toContain("Edit");
   });
 
-  it("lists the movements and the maintenance history as cards of their own", async () => {
+  it("lists the movements and the finished work orders as cards of their own", async () => {
     show("Equipment");
     await userEvent.click(await screen.findByRole("button", { name: /Road roller/ }));
     expect(await within(await screen.findByRole("region", { name: "Movements" })).findByText("Parked at the yard")).toBeInTheDocument();
-    expect(within(cardOf("Maintenance history")).getByText(/Grease the roller hydraulics/)).toBeInTheDocument();
+    expect(within(cardOf("Finished work orders")).getByText(/Grease the roller hydraulics/)).toBeInTheDocument();
   });
 
   it("draws no act that the app does not have: no add movement and no raise work order", async () => {

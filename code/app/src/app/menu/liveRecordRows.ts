@@ -5,7 +5,7 @@ export const liveRecordRowsTool = "agency_list_live_record_rows";
 
 const liveRecordsTool = "agency_list_live_records";
 
-const registerNames: Record<string, string> = { "RC-1": "Businesses", "RC-2": "Informal traders" };
+const registerNames: Record<string, string> = { "RC-1": "Businesses", "RC-2": "Informal traders", "RC-3": "Maintenance records" };
 
 export type RecordRow = { id: string; title: string; meta: string };
 

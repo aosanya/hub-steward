@@ -8,6 +8,7 @@ import { ChatAboutAsset, ChatAboutWorkOrder } from "./ChatAboutAsset";
 import { WorkOrderAssignee } from "./WorkOrderAssignee";
 import { WorkOrderStatus } from "./WorkOrderStatus";
 import { maintenanceKeys } from "./maintenanceHistory";
+import { MaintenanceHistory } from "./MaintenanceCard";
 import { SectionGo } from "../residents/SectionAct";
 import { assetPathOf, scheduleEditPath } from "./paths";
 import { ruleWords } from "./scheduleWords";
@@ -71,7 +72,8 @@ export function AssetPanel({ asset, fields, build, onSaved }: AssetPanelProps) {
         <Section word="Asset detail" plain foot={may ? <EditAct onClick={() => setEditing(true)} /> : undefined} rows={detail} />
       )}
       <Section word="Movements" icon="clock" plain rows={linesOf(asset, movementKeys)} />
-      <Section word="Maintenance history" icon="document" plain rows={linesOf(asset, maintenanceKeys)} />
+      <MaintenanceHistory assetName={textOf(asset.name)} serialTag={textOf(asset.code)} />
+      <Section word="Finished work orders" icon="document" plain rows={linesOf(asset, maintenanceKeys)} />
     </Page>
   );
 }
