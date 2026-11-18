@@ -3,6 +3,22 @@ import { callTool } from "../../shared/wakala/mcp";
 import { resolveRecordCode } from "./liveRecordRows";
 import type { RecordFormField } from "./RecordRowForm";
 
+export const residentRecordCode = "RESIDENT";
+export const residentTitlePrompt = "Name";
+export const residentFields: RecordFormField[] = [
+  { prompt: "Name", required: true },
+  { prompt: "Phone", required: false },
+  { prompt: "Email", required: false },
+];
+
+export const holdingRecordCode = "HOLDING";
+export const holdingTitlePrompt = "Property";
+export const holdingFields: RecordFormField[] = [
+  { prompt: "Property", required: false },
+  { prompt: "Kind", required: false },
+  { prompt: "Since", required: false },
+];
+
 export type RegisterDetail = { prompt: string; on: boolean; required: boolean; own: boolean };
 
 const settingKeyOf = async (recordCode: string) => `register_details:${await resolveRecordCode(recordCode)}`;

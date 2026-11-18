@@ -5,7 +5,18 @@ import { Field } from "../../../../shared/ui/Field";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
 import { Shell } from "../../../Shell";
 import { refusalWords } from "../../MenuEditForm";
-import { detailsOf, readRegisterDetails, writeRegisterDetails, type RegisterDetail } from "../../registerDetails";
+import {
+  detailsOf,
+  holdingFields,
+  holdingRecordCode,
+  holdingTitlePrompt,
+  readRegisterDetails,
+  residentFields,
+  residentRecordCode,
+  residentTitlePrompt,
+  writeRegisterDetails,
+  type RegisterDetail,
+} from "../../registerDetails";
 import { useBackToSection } from "../../useBackToSection";
 import { businessesRecordCode, businessesTitlePrompt, businessFields } from "../residents/BusinessesScreen";
 import { informalTraderFields, informalTradersRecordCode, informalTradersTitlePrompt } from "../residents/InformalTradersScreen";
@@ -13,6 +24,8 @@ import { informalTraderFields, informalTradersRecordCode, informalTradersTitlePr
 const records = [
   { name: "Businesses", code: businessesRecordCode, fields: businessFields, titlePrompt: businessesTitlePrompt },
   { name: "Informal traders", code: informalTradersRecordCode, fields: informalTraderFields, titlePrompt: informalTradersTitlePrompt },
+  { name: "Residents", code: residentRecordCode, fields: residentFields, titlePrompt: residentTitlePrompt },
+  { name: "Holdings", code: holdingRecordCode, fields: holdingFields, titlePrompt: holdingTitlePrompt },
 ];
 
 export function RegisterDetails() {
