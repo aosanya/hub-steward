@@ -28,6 +28,19 @@ export const partsOf = (rule: string): ScheduleParts | null => {
 export const ruleOf = ({ often, weekday, monthday }: ScheduleParts) =>
   often === "monthly" ? `FREQ=MONTHLY;BYMONTHDAY=${monthday}` : `FREQ=WEEKLY;${often === "fortnightly" ? "INTERVAL=2;" : ""}BYDAY=${weekday}`;
 
+export const fieldShown = (key: string, often: string) => {
+  if (key === "weekday") return often === "weekly" || often === "fortnightly";
+  if (key === "monthday") return often === "monthly";
+  return true;
+};
+
+export const problemWith = ({ often, weekday, monthday }: { often: string; weekday: string; monthday: string }) => {
+  if (often === "weekly" || often === "fortnightly") return dayNames[weekday] ? "" : "Choose a weekday";
+  if (often !== "monthly") return "";
+  const day = Number(monthday.trim());
+  return /^\d{1,2}$/.test(monthday.trim()) && day >= 1 && day <= 31 ? "" : "Enter a day of the month from 1 to 31";
+};
+
 const ordinalOf = (day: number) => {
   const tens = day % 100;
   if (tens >= 11 && tens <= 13) return `${day}th`;

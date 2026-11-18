@@ -7,7 +7,7 @@ import { Shell } from "../../../Shell";
 import { MenuEditForm, refusalWords } from "../../MenuEditForm";
 import type { EditField } from "../../MenuEditForm";
 import { assetPaths } from "./paths";
-import { oftenChoices, partsOf, ruleOf, weekdayChoices, type Often } from "./scheduleWords";
+import { fieldShown, oftenChoices, partsOf, problemWith, ruleOf, weekdayChoices, type Often } from "./scheduleWords";
 
 type Item = Record<string, unknown>;
 
@@ -52,6 +52,18 @@ const instantOf = (value: unknown) => {
   return /^\d{4}-\d{2}-\d{2}$/.test(text) ? `${text}T00:00:00Z` : text;
 };
 
+const dayOf = (value: unknown) => textOf(value).slice(0, 10);
+
+const timeOf = (value: unknown) => /T(\d{2}:\d{2}:\d{2}Z)$/.exec(textOf(value))?.[1] ?? "00:00:00Z";
+
+const dayAfter = (day: string) => new Date(Date.parse(`${day}T00:00:00Z`) + 86_400_000).toISOString().slice(0, 10);
+
+const startOf = (task: Item, chosen: unknown) => {
+  if (dayOf(chosen) !== dayOf(task.starts)) return `${dayOf(chosen)}T${timeOf(task.starts)}`;
+  const lastJob = textOf(task.last_due_at);
+  return lastJob ? `${dayAfter(dayOf(lastJob))}T${timeOf(task.starts)}` : textOf(task.starts);
+};
+
 const newScheduleFrom = (task: Item, sent: Record<string, unknown>) => {
   const merged = { ...task, ...sent };
   const often = textOf(merged.often) as Often | "";
@@ -61,7 +73,7 @@ const newScheduleFrom = (task: Item, sent: Record<string, unknown>) => {
     title: textOf(merged.title),
     ...(textOf(task.description) ? { description: textOf(task.description) } : {}),
     ...(textOf(task.assignee_kind) ? { assignee_kind: textOf(task.assignee_kind), assignee_id: textOf(task.assignee_id) } : {}),
-    schedule: { start: instantOf(merged.starts), ...(end ? { end } : {}), zone: textOf(task.schedule_zone), rule },
+    schedule: { start: startOf(task, merged.starts), ...(end ? { end } : {}), zone: textOf(task.schedule_zone), rule },
   };
 };
 
@@ -97,6 +109,9 @@ export function ScheduleEditScreen() {
             fields={fields}
             build={(sent) => newScheduleFrom(view.data, sent)}
             alsoSave={stopOld(scheduleId)}
+            retryLabel="Stop the old schedule"
+            visible={(key, values) => fieldShown(key, values.often ?? "")}
+            check={(values) => problemWith({ often: values.often ?? "", weekday: values.weekday ?? "", monthday: values.monthday ?? "" })}
             onSaved={() => navigate(assetPaths.maintenance.path())}
             onCancel={back}
           />
