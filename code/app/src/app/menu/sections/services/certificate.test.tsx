@@ -126,10 +126,10 @@ const chooseEndDay = (day: string) => fireEvent.change(screen.getByLabelText("Va
 
 const grant = () => userEvent.click(screen.getByRole("button", { name: "Grant" }));
 
-const grantedList = () => screen.queryByRole("heading", { name: "Granted" })?.nextElementSibling as HTMLElement | undefined;
+const grantedList = () => screen.queryByRole("region", { name: "Granted" }) as HTMLElement | null;
 
 const grantedWith = async (words: string) => {
-  await screen.findByRole("heading", { name: "Granted" });
+  await screen.findByRole("region", { name: "Granted" });
   await waitFor(() => expect(grantedList()).toHaveTextContent(words));
   return grantedList() as HTMLElement;
 };
@@ -353,7 +353,7 @@ describe("the Granted section shows the day the grant ends", () => {
     const section = await grantedWith("Réka Tóth");
 
     expect(section).toHaveTextContent(dayWords("2026-03-09T12:00:00Z"));
-    expect(within(section).getAllByText(endsWords)).toHaveLength(1);
+    expect(within(section).getAllByText(new RegExp(endsWords))).toHaveLength(1);
   });
 
   it("shows nothing extra on a granted row with no end day", async () => {
@@ -362,6 +362,7 @@ describe("the Granted section shows the day the grant ends", () => {
 
     const section = await grantedWith("Réka Tóth");
 
-    expect(section).toHaveTextContent(/^Réka TóthMonday, 9 Mar$/);
+    expect(section).toHaveTextContent("Réka TóthMonday, 9 Mar");
+    expect(section).not.toHaveTextContent("Valid until");
   });
 });
