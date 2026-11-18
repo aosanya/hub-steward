@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { useWord } from "../../../../features/agency/useWord";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
+import { councilPaths } from "./paths";
 import { ChatAboutCommittee } from "./ChatAboutCouncil";
 import { CommitteeMember } from "./CommitteeMember";
 import { CommitteeMembers } from "./CommitteeMembers";
@@ -52,6 +54,7 @@ export function CommitteesScreen() {
       title={title}
       withTabs
       bandless
+      above={<AddButton permission="group.manage" label={`Add ${word("Committee").toLowerCase()}`} to={councilPaths.committeeNew.path()} />}
       startAt={search.get("id") ?? undefined}
       listKey={version}
       detailKey={version}

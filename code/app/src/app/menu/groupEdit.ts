@@ -4,6 +4,8 @@ const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
 export const groupEditTool = "actor_edit_group";
 
+export const groupCreateTool = "actor_create_group";
+
 export const groupNameFields = [{ label: "Name", key: "name", required: true }];
 
 export const groupKept = (group: Item) => ({

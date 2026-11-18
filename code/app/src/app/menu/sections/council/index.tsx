@@ -24,6 +24,10 @@ export const routes = () => (
     <Route path={councilPaths.resolutions.pattern} element={<ResolutionsScreen />} />
     <Route path={councilPaths.bylaws.pattern} element={<BylawsScreen />} />
     <Route path={councilPaths.committees.pattern} element={<CommitteesScreen />} />
+    <Route path={councilPaths.meetingNew.pattern} element={<CouncilEditScreen adding="meetings" />} />
+    <Route path={councilPaths.resolutionNew.pattern} element={<CouncilEditScreen adding="resolutions" />} />
+    <Route path={councilPaths.bylawNew.pattern} element={<CouncilEditScreen adding="bylaws" />} />
+    <Route path={councilPaths.committeeNew.pattern} element={<CouncilEditScreen adding="committees" />} />
     <Route path={councilPaths.edit.pattern} element={<CouncilEditScreen />} />
     <Route path={councilPaths.declarations.pattern} element={<DeclarationsScreen />} />
   </>

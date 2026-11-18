@@ -1,6 +1,8 @@
 import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
+import { councilPaths } from "./paths";
 import { ChatAboutResolution } from "./ChatAboutCouncil";
 import { CouncilPage, DetailCard } from "./CouncilPage";
 import { councilTools, homeEmpty, listOf, noneYet, text, type Item } from "./councilData";
@@ -33,6 +35,7 @@ export function ResolutionsScreen() {
       title={title}
       withTabs
       bandless
+      above={<AddButton permission="council.manage" label={`Add ${word("Resolution").toLowerCase()}`} to={councilPaths.resolutionNew.path()} />}
       startAt={search.get("id") ?? undefined}
       list={{ title, tool: councilTools.resolutionList, load: loadResolutions, fields: { title: "title", meta: "meta" }, empty: homeEmpty(noneYet(word, resolutionsTitle, "No resolutions yet.")) }}
       detail={{ tool: councilTools.resolutionRead, load: loadResolution, fields: {}, status: "", extra: (resolution) => <ResolutionPage resolution={resolution} /> }}

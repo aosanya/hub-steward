@@ -9,7 +9,7 @@ import { TextArea } from "../../shared/ui/TextArea";
 import { callTool, McpError } from "../../shared/wakala/mcp";
 import { actionFailedWords } from "./MenuDetail";
 
-export type EditField = { label: string; key: string; required?: boolean; kind?: "text" | "number" | "date" | "lines"; choices?: (string | Choice)[] };
+export type EditField = { label: string; key: string; required?: boolean; kind?: "text" | "number" | "date" | "lines"; day?: boolean; choices?: (string | Choice)[] };
 
 type Item = Record<string, unknown>;
 
@@ -71,7 +71,7 @@ const isNumber = (text: string) => wholeOrDecimal.test(text.trim());
 
 const sendable = (field: EditField | undefined, text: string) => {
   if (field?.kind === "lines") return linesOf(text);
-  if (field?.kind === "date") return instantOf(text.trim());
+  if (field?.kind === "date") return field.day ? text.trim() : instantOf(text.trim());
   return field?.kind === "number" && isNumber(text) ? Number(text.trim()) : text;
 };
 

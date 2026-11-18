@@ -1,6 +1,8 @@
 import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
+import { councilPaths } from "./paths";
 import { ChatAboutBylaw } from "./ChatAboutCouncil";
 import { CouncilPage, DetailCard } from "./CouncilPage";
 import { councilTools, homeEmpty, listOf, noneYet, text, type Item } from "./councilData";
@@ -29,6 +31,7 @@ export function BylawsScreen() {
       title={title}
       withTabs
       bandless
+      above={<AddButton permission="council.manage" label={`Add ${word("Bylaw").toLowerCase()}`} to={councilPaths.bylawNew.path()} />}
       startAt={search.get("id") ?? undefined}
       list={{ title, tool: councilTools.bylawList, load: loadBylaws, fields: { title: "title", meta: "year" }, empty: homeEmpty(noneYet(word, bylawsTitle, "No bylaws yet.")) }}
       detail={{ tool: councilTools.bylawRead, load: loadBylaw, fields: {}, status: "", extra: (bylaw) => <BylawPage bylaw={bylaw} /> }}

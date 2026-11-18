@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
 import { ChatAboutMeeting } from "./ChatAboutCouncil";
 import { CouncilPage, DetailCard } from "./CouncilPage";
 import { MeetingPapers } from "./MeetingPapers";
 import { councilTools, homeEmpty, listOf, noneYet, text, type Item } from "./councilData";
+import { councilPaths } from "./paths";
 import { loadMeeting, meetingOf } from "./councilRecords";
 
 export const meetingsTitle = "Meetings";
@@ -37,6 +39,7 @@ export function MeetingsScreen() {
       title={title}
       withTabs
       bandless
+      above={<AddButton permission="council.manage" label={`Add ${word("Meeting").toLowerCase()}`} to={councilPaths.meetingNew.path()} />}
       startAt={search.get("id") ?? undefined}
       listKey={version}
       detailKey={version}
