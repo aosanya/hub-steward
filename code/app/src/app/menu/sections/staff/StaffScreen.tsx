@@ -1,7 +1,9 @@
 import { useSearchParams } from "react-router-dom";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { useWord } from "../../../../features/agency/useWord";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
+import { routes as appRoutes } from "../../../routes";
 import { PersonDetails, PersonHead } from "../residents/PersonScreen";
 import { personNameOf } from "../residents/personName";
 import { ChatAboutStaff } from "./ChatAboutStaff";
@@ -47,6 +49,7 @@ export function StaffScreen() {
       withTabs
       bandless
       startAt={search.get("person") ?? undefined}
+      above={<AddButton permission="member.add" label="Add person" to={appRoutes.personNew.path()} />}
       list={{ title: word("Staff"), tool: "actor_list_actors", load: loadStaff, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Staff").toLowerCase()} yet.`) }}
       detail={{
         tool: "actor_get_actor",
