@@ -40,7 +40,12 @@ type declarationWalk struct {
 
 func newDeclarationWalk(t *testing.T) declarationWalk {
 	t.Helper()
-	w := declarationWalk{stepRunWalk: newStepRunWalk(t, declarationPlan()), members: map[string]string{}}
+	return newDeclarationWalkOf(t, "", declarationPlan())
+}
+
+func newDeclarationWalkOf(t *testing.T, workflowCode string, plan []stepSpec) declarationWalk {
+	t.Helper()
+	w := declarationWalk{stepRunWalk: newStepRunWalkCoded(t, stepRunDB(t), workflowCode, plan), members: map[string]string{}}
 	held := map[string][]string{w.roles["Data officer"]: {"declaration.read"}}
 	w.deps.rolePermissionsOverride = func(_ context.Context, roleID string) ([]string, error) {
 		return held[roleID], nil
@@ -234,6 +239,35 @@ func TestAReplacedDeclarationShowsOnlyTheCorrectedRow(t *testing.T) {
 	answers, _ := declared[0]["answers"].(map[string]any)
 	if len(declared) != 1 || declared[0]["row_id"] != corrected.ID || answers["Companies you hold a share in"] != "Zoldhalom Szolgaltato Zrt" {
 		t.Errorf("the officer sees %v, want only the corrected row", declared)
+	}
+}
+
+func importedDeclarationPlan(stepCode string) []stepSpec {
+	plan := declarationPlan()
+	plan[0].code = stepCode
+	return plan
+}
+
+func TestAnImportedAgencyWhoseStepCodesWereReMintedStillShowsTheRegister(t *testing.T) {
+	w := newDeclarationWalkOf(t, "W-56", importedDeclarationPlan("WI-191"))
+	w.declare(t, "Botond Kisretesi", "Retesi Malom Kft")
+
+	register := w.register(t, w.officer)
+	declared := objectsIn(t, register, "declared")
+	if got := namesIn(declared); !slices.Equal(got, []string{"Botond Kisretesi"}) {
+		t.Fatalf("declared = %v, want Botond on an agency whose declaration step is WI-191", got)
+	}
+	notDeclared := objectsIn(t, register, "not_declared")
+	if len(notDeclared) != 2 || register["total"] != float64(3) || register["can_read_all"] != true {
+		t.Errorf("the register = %v, want two still to declare of three", register)
+	}
+}
+
+func TestAnAgencyWhoseDeclarationWorkflowIsNotW56AndWhoseStepCodeIsNotTheTemplatesAnswersAnEmptyRegister(t *testing.T) {
+	w := newDeclarationWalkOf(t, "W-12", importedDeclarationPlan("WI-191"))
+	register := w.register(t, w.owner)
+	if len(objectsIn(t, register, "declared")) != 0 || register["total"] != float64(0) {
+		t.Errorf("the register = %v, want the empty answer when the workflow is not the declaration one", register)
 	}
 }
 

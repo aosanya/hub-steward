@@ -178,6 +178,11 @@ func stepRunDeps(t *testing.T, db *gorm.DB, options ...agencies.Option) (*Deps, 
 
 func newStepRunWalkOn(t *testing.T, db *gorm.DB, plan []stepSpec, people ...string) stepRunWalk {
 	t.Helper()
+	return newStepRunWalkCoded(t, db, "", plan, people...)
+}
+
+func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []stepSpec, people ...string) stepRunWalk {
+	t.Helper()
 	deps, reg := stepRunDeps(t, db)
 	w := stepRunWalk{handler: NewRouter(deps), deps: deps, roles: map[string]string{}, steps: map[string]string{}, people: map[string]*http.Cookie{}, db: db}
 	w.owner = w.cookieFor(t, "test-owner")
@@ -206,7 +211,11 @@ func newStepRunWalkOn(t *testing.T, db *gorm.DB, plan []stepSpec, people ...stri
 		w.draftID = draft.ID
 		goal, _ := mgr.CreateGoal(ctx, agencymodels.Goal{DraftID: draft.ID, Title: "Every referral arrives"})
 		objective, _ := mgr.CreateObjective(ctx, agencymodels.Objective{DraftID: draft.ID, GoalID: goal.ID, Title: "Follow each referral"})
-		workflow, err := mgr.CreateWorkflow(ctx, agencymodels.Workflow{DraftID: draft.ID, Name: "Case referral"})
+		workflowCtx := ctx
+		if workflowCode != "" {
+			workflowCtx = mwanachamaagency.WithKeptCode(ctx, workflowCode)
+		}
+		workflow, err := mgr.CreateWorkflow(workflowCtx, agencymodels.Workflow{DraftID: draft.ID, Name: "Case referral"})
 		if err != nil {
 			t.Fatalf("CreateWorkflow: %v", err)
 		}
