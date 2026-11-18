@@ -33,6 +33,8 @@ Until a repository is public:
 - A fix to one of the five is made in its own repo. Mirroring it into the hub copy by hand stays a stop-gap until the owner flips visibility.
 - The per-area tally of the board (MUN1301) is such a stop-gap copy in the hub's `modules/catalog`: `board_item_tally.go`, `board_item_tally_backing.go`, `board_item_tally_book.go`, the `AreaTally`, `BoardItemAreaTally` and `AreaPopulation` types in `models/board_item.go`, `AreaDirectory` and `UseAreaDirectory` in `catalog_manager.go`, and the `tally_board_items_by_area` operation in `catalog.operations.json`. It mirrors `mwanachama-backend-catalog` ab977c1, and `internal/agencies/area_directory.go` mirrors `mwanachama-wakala-api` 06964cb. Both commits are not on origin. The copy is removed in the change that makes catalog public and imports it.
 
+- The row allowance of MUN1407 is such a stop-gap copy in the hub's `modules/agency`: `row_allowance.go` and the `ctx` argument of `validateRowAnswers` in `record_impl.go`. It lets `addLiveRow` (`internal/api/http/record_rows.go`, `record_details_allowance.go`) accept the details the owner added and waive a Required question the owner switched off. It belongs in `mwanachama-backend-agency` and is removed in the change that makes agency public and imports it.
+
 The routing layer in `mwanachama-backend-git` must not import the private catalog. It takes the catalog through an interface (G79).
 
 ## What the owner decides

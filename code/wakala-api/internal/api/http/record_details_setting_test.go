@@ -8,10 +8,7 @@ import (
 	"wakalaserver/internal/agencies"
 )
 
-const (
-	registerDetailsKeyPrefix = "register_details:"
-	ownersOpeningHours       = "Opening hours"
-)
+const ownersOpeningHours = "Opening hours"
 
 func (b businessRegisterWalk) chooseDetails(t *testing.T, details string) {
 	t.Helper()

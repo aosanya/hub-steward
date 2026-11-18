@@ -270,6 +270,10 @@ func (d *Deps) addLiveRow(ctx context.Context, instanceID, recordCode string, re
 	if !real {
 		return agencymodels.RecordRow{}, badRowError(unknownRunMessage)
 	}
+	ctx, err = withChosenDetails(ctx, reg, instanceID, record.Code)
+	if err != nil {
+		return agencymodels.RecordRow{}, err
+	}
 	return m.CreateRecordRow(ctx, agencymodels.RecordRow{
 		DraftID: draftID, RecordID: record.ID, RoleID: record.RoleID,
 		AddedBy: accounts.IDFromContext(ctx), Answers: req.Answers,
