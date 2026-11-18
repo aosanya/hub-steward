@@ -1,0 +1,175 @@
+import { vi } from "vitest";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
+import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
+import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
+import * as mcp from "../../../../shared/wakala/mcp";
+import { AssistantPage } from "../../../../features/assistant/AssistantPage";
+import { type AssistantClient } from "../../../../features/assistant/api";
+import { routes as appRoutes } from "../../../routes";
+import { carriedChatAbout, forgetChatAbout } from "../../../chatAbout";
+import { items, routes } from "./index";
+
+vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
+
+let permissions: string[] = [];
+
+const answer = async (name: string, args: unknown) => {
+  const given = (args ?? {}) as Record<string, unknown>;
+  switch (name) {
+    case "agency_list_mounts":
+      return { modules: [{ module: "actor" }, { module: "comm" }, { module: "ai" }] };
+    case "agency_get_my_roles":
+      return { permissions };
+    case "actor_list_actors":
+      return { items: [{ id: "p1", display_name: "Asha Otieno" }] };
+    case "actor_get_actor_standing":
+      return { actor_id: "p1", display_name: "Asha Otieno", seats: [{ id: "s1", role_name: "Clerk" }] };
+    case "actor_list_role_kinds":
+      return { items: [{ id: "k1", name: "Treasurer" }] };
+    case "actor_list_groups":
+      return { items: [{ id: "g1", name: "North Ward" }] };
+    case "actor_get_group":
+      return { id: given.group_id, name: "North Ward", area_node_id: "n1" };
+    case "actor_get_group_population":
+      return { group_id: "g1", population: 1200 };
+    case "ai_list_roles":
+      return { items: [{ id: "r1", name: "Council helper", status: "active", description: "Reads the agenda", tokens_per_day: 500 }] };
+    case "ai_get_assistant_limits":
+      return { tokens_per_person_day: 100 };
+    case "ai_usage_breakdown":
+      return { rows: [{ person: "p1", tokens_in: 10, tokens_out: 5, requests: 1 }] };
+    default:
+      return { items: [] };
+  }
+};
+
+const assistantClient: AssistantClient = { model: async () => "acc1", ask: async () => ({ text: "ok", lists: [] }) };
+
+const Where = () => {
+  const at = useLocation();
+  return <p data-testid="where">{`${at.pathname}${at.search}`}</p>;
+};
+
+beforeEach(() => {
+  openAgency("town");
+  forgetChatAbout();
+  permissions = [];
+  vi.spyOn(mcp, "listTools").mockResolvedValue([]);
+  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
+});
+
+afterEach(() => {
+  cleanup();
+  forgetOpenAgency();
+  forgetWidth();
+  vi.restoreAllMocks();
+});
+
+const openAt = async (path: string, name: string) => {
+  setWide(true);
+  render(
+    <MemoryRouter initialEntries={[path]}>
+      <Where />
+      <Routes>
+        {routes()}
+        <Route path="/menu/residents/people" element={<p>Resident page</p>} />
+        <Route path={appRoutes.assistant.pattern} element={<AssistantPage client={assistantClient} />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+  await screen.findByRole("heading", { level: 1, name });
+};
+
+const openScreen = (title: string, query: string, name: string) => openAt(`${items.find((item) => item.title === title)?.path?.() ?? ""}?${query}`, name);
+
+describe("Boundary card has one Edit screen", () => {
+  it("names Edit in the card footer, only with group.manage, and leaves no bare form on the page", async () => {
+    permissions = ["group.manage"];
+    await openScreen("Boundaries & Areas", "item=g1", "North Ward");
+    const card = await screen.findByRole("region", { name: "Boundary" });
+    expect(within(card).getByRole("button", { name: "Edit" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Edit boundary" })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Boundary corners")).not.toBeInTheDocument();
+  });
+
+  it("hides Edit from someone without group.manage", async () => {
+    await openScreen("Boundaries & Areas", "item=g1", "North Ward");
+    const card = await screen.findByRole("region", { name: "Boundary" });
+    expect(within(card).queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
+  });
+
+  it("opens one screen with the area node and the corners, and Save writes both", async () => {
+    permissions = ["group.manage"];
+    await openScreen("Boundaries & Areas", "item=g1", "North Ward");
+    const card = await screen.findByRole("region", { name: "Boundary" });
+    await userEvent.click(within(card).getByRole("button", { name: "Edit" }));
+    expect(screen.getByTestId("where")).toHaveTextContent("/menu/settings/boundaries-and-areas/g1/edit");
+    const node = await screen.findByLabelText("Area node");
+    expect(node).toHaveValue("n1");
+    await userEvent.clear(node);
+    await userEvent.type(node, "n2");
+    await userEvent.type(screen.getByLabelText("Boundary corners"), "19, 47{enter}20, 47{enter}20, 48");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(mcp.callTool).toHaveBeenCalledWith("", "actor_set_group_area_node", { group_id: "g1", area_node_id: "n2" }));
+    await waitFor(() =>
+      expect(mcp.callTool).toHaveBeenCalledWith("", "actor_set_group_boundary", {
+        group_id: "g1",
+        boundary: { type: "Polygon", coordinates: [[[19, 47], [20, 47], [20, 48], [19, 47]]] },
+      }),
+    );
+    await waitFor(() => expect(screen.getByTestId("where")).toHaveTextContent("/menu/settings/boundaries-and-areas"));
+  });
+});
+
+describe("Users & Roles gives a role from the card footer", () => {
+  it("names Give a role in the Roles card footer for who may assign, and has no separate Give a role card", async () => {
+    permissions = ["role.assign"];
+    await openScreen("Users & Roles", "item=p1", "Asha Otieno");
+    const roles = await screen.findByRole("region", { name: "Roles" });
+    expect(within(roles).getByRole("button", { name: "Give a role" })).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Give a role" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Give role" })).not.toBeInTheDocument();
+  });
+
+  it("opens the choosers from the footer act and gives the role", async () => {
+    permissions = ["role.assign"];
+    await openScreen("Users & Roles", "item=p1", "Asha Otieno");
+    const roles = await screen.findByRole("region", { name: "Roles" });
+    await userEvent.click(within(roles).getByRole("button", { name: "Give a role" }));
+    expect(await screen.findByText("Role")).toBeInTheDocument();
+    expect(screen.getByText("Group")).toBeInTheDocument();
+  });
+
+  it("hides Give a role from someone without role.assign", async () => {
+    await openScreen("Users & Roles", "item=p1", "Asha Otieno");
+    const roles = await screen.findByRole("region", { name: "Roles" });
+    expect(within(roles).queryByRole("button", { name: "Give a role" })).not.toBeInTheDocument();
+  });
+});
+
+describe("Users & Roles opens the resident page", () => {
+  it("has a card whose act opens the resident page of the user", async () => {
+    await openScreen("Users & Roles", "item=p1", "Asha Otieno");
+    const card = await screen.findByRole("region", { name: "Resident page" });
+    await userEvent.click(within(card).getByRole("button", { name: "Open the resident page" }));
+    expect(screen.getByTestId("where")).toHaveTextContent("/menu/residents/people?person=p1");
+  });
+});
+
+describe("AI Agents & Limits", () => {
+  it("carries no chat subject for the Each person row", async () => {
+    await openScreen("AI Agents & Limits", "item=everyone", "Each person");
+    await userEvent.click(await screen.findByRole("link", { name: "Chat" }));
+    await screen.findByRole("heading", { name: /assistant/i }).catch(() => undefined);
+    expect(carriedChatAbout()).toBeNull();
+  });
+
+  it("names the people in Used by, never their ids", async () => {
+    await openScreen("AI Agents & Limits", "item=r1", "Council helper");
+    const use = await screen.findByRole("region", { name: "Use" });
+    expect(within(use).getByText(/Asha Otieno/)).toBeInTheDocument();
+    expect(within(use).queryByText(/\bp1\b/)).not.toBeInTheDocument();
+  });
+});

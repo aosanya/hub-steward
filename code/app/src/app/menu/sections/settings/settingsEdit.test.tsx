@@ -106,6 +106,11 @@ const openAsha = async () => {
   await userEvent.click(await screen.findByRole("button", { name: /Asha Otieno/ }));
 };
 
+const openGiveARole = async () => {
+  await openAsha();
+  await userEvent.click(await screen.findByRole("button", { name: "Give a role" }));
+};
+
 describe("renaming the agency and the Audit Log", () => {
   it("lists the rename in the Audit Log after the owner renames the agency", async () => {
     permissions = [...permissions, "permission.override"];
@@ -199,11 +204,11 @@ describe("editing a ward from Boundaries & Areas", () => {
   it("sends corners as a closed Polygon through actor_set_group_boundary", async () => {
     await openNorthWard();
 
-    await userEvent.click(await screen.findByRole("button", { name: "Edit boundary" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
     const corners = screen.getByLabelText("Boundary corners");
     await userEvent.clear(corners);
     await userEvent.type(corners, "20 48{enter}20.5 48{enter}20.5 48.5");
-    await userEvent.click(screen.getByRole("button", { name: "Save boundary" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() =>
       expect(called).toHaveBeenCalledWith("", "actor_set_group_boundary", {
@@ -216,12 +221,12 @@ describe("editing a ward from Boundaries & Areas", () => {
   it("refuses fewer than three corners before anything is sent", async () => {
     await openNorthWard();
 
-    await userEvent.click(await screen.findByRole("button", { name: "Edit boundary" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
     const corners = screen.getByLabelText("Boundary corners");
     await userEvent.clear(corners);
     await userEvent.type(corners, "20 48");
 
-    expect(screen.getByRole("button", { name: "Save boundary" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
     expect(called).not.toHaveBeenCalledWith("", "actor_set_group_boundary", expect.anything());
   });
 
@@ -272,7 +277,7 @@ describe("ending a role from Users & Roles", () => {
 
 describe("giving a role from Users & Roles", () => {
   it("grants the picked role kind in the picked group and shows the new seat", async () => {
-    await openAsha();
+    await openGiveARole();
     const give = await screen.findByRole("button", { name: "Give role" });
     expect(give).toBeDisabled();
 
@@ -289,7 +294,7 @@ describe("giving a role from Users & Roles", () => {
 
   it("shows the hub's words when the grant is refused", async () => {
     refusal = "that group already has a leader";
-    await openAsha();
+    await openGiveARole();
 
     await userEvent.click(await screen.findByRole("button", { name: /^Role$/ }));
     await userEvent.click(await screen.findByRole("option", { name: "Secretary" }));

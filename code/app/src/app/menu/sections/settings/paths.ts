@@ -4,6 +4,7 @@ export const settingsPaths = {
   agencyProfile: screen("/menu/settings/agency-profile"),
   usersAndRoles: screen("/menu/settings/users-and-roles"),
   boundariesAndAreas: screen("/menu/settings/boundaries-and-areas"),
+  boundaryEdit: screen("/menu/settings/boundaries-and-areas/:id/edit"),
   integrations: screen("/menu/settings/integrations"),
   aiAgents: screen("/menu/settings/ai-agents"),
   auditLog: screen("/menu/settings/audit-log"),

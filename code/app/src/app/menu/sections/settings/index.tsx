@@ -3,6 +3,7 @@ import { AiAgents } from "./AiAgents";
 import { AgencyProfile } from "./AgencyProfile";
 import { AuditLog } from "./AuditLog";
 import { BoundariesAndAreas } from "./BoundariesAndAreas";
+import { BoundaryEditScreen } from "./BoundaryEditScreen";
 import { Integrations } from "./Integrations";
 import { settingsPaths } from "./paths";
 import { RegisterDetails } from "./RegisterDetails";
@@ -24,6 +25,7 @@ export const routes = () => (
     <Route path={settingsPaths.agencyProfile.pattern} element={<AgencyProfile />} />
     <Route path={settingsPaths.usersAndRoles.pattern} element={<UsersAndRoles />} />
     <Route path={settingsPaths.boundariesAndAreas.pattern} element={<BoundariesAndAreas />} />
+    <Route path={settingsPaths.boundaryEdit.pattern} element={<BoundaryEditScreen />} />
     <Route path={settingsPaths.integrations.pattern} element={<Integrations />} />
     <Route path={settingsPaths.aiAgents.pattern} element={<AiAgents />} />
     <Route path={settingsPaths.auditLog.pattern} element={<AuditLog />} />

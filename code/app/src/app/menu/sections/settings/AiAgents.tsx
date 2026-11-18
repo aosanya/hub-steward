@@ -5,6 +5,7 @@ import { MenuWindow } from "../../MenuWindow";
 import { settingsPaths } from "./paths";
 import { ChatAboutItem, useChosenItem } from "./RecordPage";
 import { FactsCard, type Fact } from "../../FactsCard";
+import { labelOf } from "./personLabel";
 import { PageFrame } from "../../PageFrame";
 
 type Record_ = Record<string, unknown>;
@@ -60,11 +61,15 @@ const permissionsOf = async (seatId: string) => {
   return { see: wordsOf(codes.filter(seeCodes), names), change: wordsOf(codes.filter((code) => !seeCodes(code)), names) };
 };
 
-const usedBy = (rows: Record_[], key: string) => {
+const peopleNames = async () =>
+  new Map(itemsOf(await ifAllowed(() => callTool("", "actor_list_actors"), { items: [] })).map((person) => [text(person, "id"), labelOf(person)] as const));
+
+const usedBy = (rows: Record_[], key: string, names: Map<string, string>) => {
   const totals = new Map<string, number>();
   rows.forEach((row) => {
     const who = text(row, key);
-    if (who) totals.set(who, (totals.get(who) ?? 0) + tokensOf(row));
+    const named = names.get(who) ?? who;
+    if (named) totals.set(named, (totals.get(named) ?? 0) + tokensOf(row));
   });
   return [...totals.entries()].sort((a, b) => b[1] - a[1]).map(([who, tokens]) => `${who} ${grouped(tokens)}`).join("; ");
 };
@@ -76,7 +81,7 @@ const loadRows = async () => {
 
 const loadPeople = async () => {
   const limits = (await ifAllowed(() => callTool("", "ai_get_assistant_limits"), {})) as Record_;
-  const month = await ifAllowed(() => callTool("", "ai_usage_breakdown", { window: "month", group_by: "person" }), { rows: [] });
+  const [month, names] = await Promise.all([ifAllowed(() => callTool("", "ai_usage_breakdown", { window: "month", group_by: "person" }), { rows: [] }), peopleNames()]);
   const perDay = (value: unknown) => (number(value) > 0 ? grouped(number(value)) : "No limit");
   return {
     id: everyone,
@@ -85,17 +90,18 @@ const loadPeople = async () => {
     month: perDay(limits.tokens_per_person_month),
     ownerDay: perDay(limits.owner_tokens_per_person_day),
     ownerMonth: perDay(limits.owner_tokens_per_person_month),
-    usedByPerson: usedBy(rowsOf(month), "person") || "Nobody has used it this month",
+    usedByPerson: usedBy(rowsOf(month), "person", names) || "Nobody has used it this month",
   };
 };
 
 const loadAgent = async (id: string) => {
   if (id === everyone) return loadPeople();
   const agent = (itemsOf(await callTool("", "ai_list_roles")).find((entry) => text(entry, "id") === id) ?? {}) as Record_;
-  const [permissions, account, month] = await Promise.all([
+  const [permissions, account, month, names] = await Promise.all([
     permissionsOf(text(agent, "agency_role_id")),
     ifAllowed(() => callTool("", "ai_get_account", { accountID: text(agent, "account_id") }), {}) as Promise<Record_>,
     ifAllowed(() => callTool("", "ai_usage_breakdown", { window: "month", role_id: id }), { rows: [] }),
+    peopleNames(),
   ]);
   const rows = rowsOf(month);
   const spent = rows.reduce((sum, row) => sum + tokensOf(row), 0);
@@ -110,7 +116,7 @@ const loadAgent = async (id: string) => {
     account: text(account, "name"),
     accountLimits: text(account, "name") ? limitsOf(account) : "",
     used: rows.length === 0 ? "Nothing this month" : `${grouped(spent)} tokens in ${grouped(rows.reduce((sum, row) => sum + number(row.requests), 0))} requests this month`,
-    usedBy: usedBy(rows, "person"),
+    usedBy: usedBy(rows, "person", names),
   };
 };
 
@@ -135,7 +141,7 @@ export function AiAgents() {
       detail={{ tool: "ai_list_roles", load: loadAgent, fields: {}, status: "",
         extra: (agent) => (
           <>
-            <ChatAboutItem about={{ kind: "ai-agent", id: text(agent, "id"), name: text(agent, "name"), extra: { details: [text(agent, "description"), text(agent, "limits")].filter(Boolean).join("; ") } }} back={settingsPaths.aiAgents.path()} />
+            <ChatAboutItem about={{ kind: "ai-agent", id: text(agent, "id") === everyone ? "" : text(agent, "id"), name: text(agent, "name"), extra: { details: [text(agent, "description"), text(agent, "limits")].filter(Boolean).join("; ") } }} back={settingsPaths.aiAgents.path()} />
             <PageFrame title={text(agent, "name")} line={text(agent, "state") || text(agent, "description")}>
               <FactsCard word="What it may do" facts={factsOf(agent, doLabels)} />
               <FactsCard word="Limits" facts={factsOf(agent, limitLabelsOnPage)} />

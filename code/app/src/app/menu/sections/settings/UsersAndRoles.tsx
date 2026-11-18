@@ -1,15 +1,19 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
+import { Sheet } from "../../../../shared/ui/Sheet";
 import { MenuWindow } from "../../MenuWindow";
 import { settingsPaths } from "./paths";
 import { ChatAboutItem, text, useChosenItem } from "./RecordPage";
 import { PageFrame } from "../../PageFrame";
 import { SeatEnd, type Seat as HeldSeat } from "./SeatEnd";
 import { SeatGive } from "./SeatGive";
+import { SectionAct } from "../residents/SectionAct";
+import { residentPaths } from "../residents/paths";
 import { labelOf } from "./personLabel";
 
 type Seat = { id?: unknown; role_name?: unknown };
@@ -41,6 +45,18 @@ const loadPerson = async (id: string) => {
   return { id, display_name: labelOf({ id, ...(standing as Record<string, unknown> | null) }), roles: rolesOf(standing), seats: seatsOf(standing) };
 };
 
+function ResidentPageCard({ id, name }: { id: string; name: string }) {
+  const navigate = useNavigate();
+  const open = () => navigate(residentPaths.people.path({ person: id }));
+  return (
+    <Section
+      word="Resident page"
+      rows={[<ListRow key="resident" title={name} meta="Resident" end="›" onClick={open} />]}
+      foot={<button type="button" className="sec-act" onClick={open}>Open the resident page</button>}
+    />
+  );
+}
+
 export function UsersAndRoles() {
   const word = useWord();
   const title = word("Users & Roles");
@@ -62,8 +78,26 @@ export function UsersAndRoles() {
             <>
               <ChatAboutItem about={{ kind: "user", id: text(person, "id"), name: text(person, "display_name") }} back={settingsPaths.usersAndRoles.path()} />
               <PageFrame title={text(person, "display_name")} line={text(person, "roles") || "No roles yet"}>
-                <Section word="Roles" empty={{ words: "No roles yet." }} rows={seats.map((seat) => <ListRow key={seat.id} title={seat.role} />)} foot={<SeatEnd seats={seats} onEnded={ended} />} />
-                <Section word="Give a role" plain rows={[<SeatGive key="give" actorId={String(person.id)} onGiven={ended} />]} />
+                <Section
+                  word="Roles"
+                  empty={{ words: "No roles yet." }}
+                  rows={seats.map((seat) => <ListRow key={seat.id} title={seat.role} />)}
+                  foot={
+                    <>
+                      <SeatEnd seats={seats} onEnded={ended} />
+                      <SectionAct
+                        permission="role.assign"
+                        act="Give a role"
+                        sheet={(close) => (
+                          <Sheet title="Give a role" onClose={close}>
+                            <SeatGive actorId={String(person.id)} onGiven={() => { close(); ended(); }} />
+                          </Sheet>
+                        )}
+                      />
+                    </>
+                  }
+                />
+                <ResidentPageCard id={text(person, "id")} name={text(person, "display_name")} />
               </PageFrame>
             </>
           );
