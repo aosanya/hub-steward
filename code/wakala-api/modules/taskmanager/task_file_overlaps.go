@@ -104,8 +104,13 @@ func overlappingPairs(asked, theirs FileList) []FileOverlapPair {
 	return pairs
 }
 
+const evidenceFolderSegment = "documentation/3. implementation/todo/"
+
 func filesOverlap(a, b string) bool {
 	pathA, pathB := pathOfFileEntry(a), pathOfFileEntry(b)
+	if strings.Contains(pathA, evidenceFolderSegment) || strings.Contains(pathB, evidenceFolderSegment) {
+		return false
+	}
 	if a[:len(a)-len(pathA)] != b[:len(b)-len(pathB)] {
 		return false
 	}

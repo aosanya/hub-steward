@@ -221,3 +221,13 @@ func TestNextReadyBatchItemsAreCompactAndCarryTheirFiles(t *testing.T) {
 		t.Errorf("files are %v", files)
 	}
 }
+
+func TestNextReadyBatchReturnsIssuesThatShareOnlyAnEvidenceFolder(t *testing.T) {
+	h := seedNextReadyBatchHub(t,
+		ready("SW1", 1, evidenceFolder, batchMenu),
+		ready("SW2", 2, evidenceFolder, batchOther),
+		ready("SW3", 3, evidenceFolder, batchMenu),
+	)
+
+	wantBatch(t, h.expect(http.StatusOK, "owner", "GET", "/next-ready-batch?count=5", nil), "SW1,SW2", "SW3>SW1")
+}

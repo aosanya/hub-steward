@@ -170,3 +170,29 @@ func TestFileOverlapsNeedsAnIssueOrFilesAndRefusesBadEntries(t *testing.T) {
 	f.h.expect(http.StatusNotFound, "owner", "GET", "/file-overlaps?taskID=missing", nil)
 	f.h.expect(http.StatusNotFound, "nobody", "GET", "/file-overlaps?taskID="+f.issues["ASKED"], nil)
 }
+
+const evidenceFolder = "projects/hungarian-municipality/documentation/3. implementation/todo/"
+
+func TestFileOverlapsIgnoresAnEvidenceFolderTwoIssuesShare(t *testing.T) {
+	f := newOverlapFixture(t)
+	f.issue("MINE", "book", "in-progress", evidenceFolder, "hub-steward:code/app/src/one.tsx")
+	f.issue("THEIRS", "book", "in-progress", evidenceFolder, "hub-steward:code/app/src/two.tsx")
+
+	body := f.h.expect(http.StatusOK, "dev", "GET", "/file-overlaps?taskID="+f.issues["MINE"], nil)
+
+	if got := overlapCodes(body); got != "" {
+		t.Fatalf("got %s, want no clash for a shared evidence folder", got)
+	}
+}
+
+func TestFileOverlapsStillClashesOnACodeFileBesideASharedEvidenceFolder(t *testing.T) {
+	f := newOverlapFixture(t)
+	f.issue("MINE", "book", "in-progress", evidenceFolder, "hub-steward:code/app/src/one.tsx")
+	f.issue("THEIRS", "book", "in-progress", evidenceFolder, "hub-steward:code/app/src/one.tsx")
+
+	body := f.h.expect(http.StatusOK, "dev", "GET", "/file-overlaps?taskID="+f.issues["MINE"], nil)
+
+	if got := strings.Join(overlapPairs(overlapItem(t, body, "THEIRS")), "|"); got != "hub-steward:code/app/src/one.tsx ~ hub-steward:code/app/src/one.tsx" {
+		t.Fatalf("pairs = %s", got)
+	}
+}
