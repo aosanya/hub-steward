@@ -66,7 +66,7 @@ describe("Chat in the bar on Registrations", () => {
     await userEvent.click(screen.getByRole("link", { name: "Chat" }));
     await screen.findByText(`About the registration of ${askerName} for ${groupName}`);
     expect(screen.getByRole("textbox", { name: `Ask about ${askerName}` })).toBeInTheDocument();
-    expect(carriedChatAbout()).toMatchObject({ kind: "registration", id: "p1", name: askerName, extra: { group: groupName } });
+    expect(carriedChatAbout()).toMatchObject({ kind: "registration", id: "p1", name: askerName, extra: { group: groupName, request: "r1" } });
   });
 
   it("clearing the line brings the plain assistant back", async () => {

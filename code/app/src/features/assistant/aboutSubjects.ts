@@ -41,12 +41,12 @@ const group: Subject = {
 };
 
 const registration: Subject = {
-  reads: personReads,
-  steps: residentStepWords,
+  reads: { ...personReads, actor_get_join_request: { request_id: extraOf("request") } },
+  steps: { ...residentStepWords, actor_get_join_request: "Reading the request" },
   choices: ["Request", "Bills", "Holdings", "Applications", "Wishes and issues"],
   reading:
-    "Request is already known to you from this conversation, so answer it without a tool. Bills means accounting_bill_list, holdings digitaltwin_tenure_list, applications forms_submission_list_of_person, and wishes and issues forms_catalog_raised_item_list_of_person.",
-  overview: "call the four reads at once and answer with the request and, for each read, its count and the most recent item",
+    "Request means actor_get_join_request, bills means accounting_bill_list, holdings digitaltwin_tenure_list, applications forms_submission_list_of_person, and wishes and issues forms_catalog_raised_item_list_of_person.",
+  overview: "call the five reads at once and answer with the request and, for each of the other reads, its count and the most recent item",
   empty: "the request, bills, holdings, applications and raised items",
 };
 

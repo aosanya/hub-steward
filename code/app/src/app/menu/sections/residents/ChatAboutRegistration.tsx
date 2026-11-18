@@ -9,7 +9,7 @@ const words = (item: Record<string, unknown>, key: string) => (typeof item[key] 
 export function ChatAboutRegistration({ person }: { person: Record<string, unknown> }) {
   const mayRead = useMay(residentRead);
   const id = String(person.id ?? "");
-  const subject = mayRead && id !== "" ? { kind: "registration" as const, id, name: personNameOf(person), extra: { group: words(person, "group_name"), asked: words(person, "asked") } } : null;
+  const subject = mayRead && id !== "" ? { kind: "registration" as const, id, name: personNameOf(person), extra: { group: words(person, "group_name"), asked: words(person, "asked"), request: words(person, "request_id") } } : null;
   useChatAboutSubject(subject, residentPaths.registrations.path());
   return null;
 }

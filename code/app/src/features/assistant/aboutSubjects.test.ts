@@ -4,7 +4,7 @@ import { residentChoices, residentPrompt, residentReadNames, residentReadsWords 
 
 const resident: ChatAbout = { kind: "resident", id: "r1", name: "Takács Erzsébet" };
 const group: ChatAbout = { kind: "group", id: "g1", name: "Szabó háztartás, Óváros" };
-const registration: ChatAbout = { kind: "registration", id: "p2", name: "Kiss Ágnes", extra: { group: "Zöldhalom", asked: "Monday, 16 Nov" } };
+const registration: ChatAbout = { kind: "registration", id: "p2", name: "Kiss Ágnes", extra: { group: "Zöldhalom", asked: "Monday, 16 Nov", request: "jr9" } };
 const conversation: ChatAbout = { kind: "conversation", id: "g2", name: "Hirdetőtábla", extra: { thread: "t9" } };
 const business: ChatAbout = { kind: "business", id: "row7", name: "Szabó Pékség", extra: { owner: "o1", details: "Kind of business: Bakery. Neighbourhood: Óváros" } };
 const trader: ChatAbout = { kind: "trader", id: "row8", name: "Katalin néni a piacon", extra: { owner: "o2", details: "What is sold: Honey and jam" } };
@@ -47,10 +47,17 @@ describe("the reads each subject may make", () => {
     expect(scopedArgs(group, "comm_chat_message_list", { thread_id: "t1" })).toEqual({ thread_id: "t1", structure_id: "g1" });
   });
 
-  it("a registration reads the person's four resident reads, scoped to the person", () => {
-    expect(readNamesFor(registration)).toEqual(residentReadNames);
+  it("a registration reads the person's four resident reads, scoped to the person, and its own join request", () => {
+    expect(readNamesFor(registration)).toEqual([...residentReadNames, "actor_get_join_request"]);
     expect(scopedArgs(registration, "accounting_bill_list", {})).toEqual({ actor_id: "p2" });
     expect(scopedArgs(registration, "digitaltwin_tenure_list", {})).toEqual({ holder_actor_id: "p2" });
+    expect(scopedArgs(registration, "actor_get_join_request", {})).toEqual({ request_id: "jr9" });
+    expect(scopeKeysFor(registration, "actor_get_join_request")).toEqual(["request_id"]);
+  });
+
+  it("the registration prompt reads the request with actor_get_join_request", () => {
+    expect(promptFor(registration)).toContain("actor_get_join_request");
+    expect(promptFor(registration)).not.toContain("is already known to you");
   });
 
   it("a conversation reads its messages in its own thread", () => {
