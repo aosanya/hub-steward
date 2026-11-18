@@ -8,6 +8,7 @@ import { useWord } from "../../../../features/agency/useWord";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
 import { moneyWords } from "../finance/financeData";
 import { personNameOf } from "../residents/personName";
+import { RecordOwner } from "../../RecordOwner";
 import { CatalogueWindow } from "./CatalogueEntry";
 import { certificateFields, certificateOf, decisionStatus, sentWords } from "./decision";
 import { Granted } from "./Granted";
@@ -31,7 +32,7 @@ const listFields = { title: "name", meta: "line" };
 
 const detailFields = { "Sent on": "sent", ...certificateFields };
 
-const feeDetailFields = { "Sent on": "sent", Amount: "amount", Payer: "payer" };
+const feeDetailFields = { "Sent on": "sent", Amount: "amount" };
 
 const isPaid = (submission: Item) => submission.paid === true;
 
@@ -53,12 +54,12 @@ const loadKind = (kind: string) => async () => (await listOf(listTool, { kind })
 const amountWords = (form: Item) => (typeof form.amount === "number" && form.amount > 0 ? moneyWords(form.amount) : "");
 
 const feeDetails = async (submission: Item | undefined) => {
-  if (!submission) return { amount: "", payer: "" };
+  if (!submission) return { amount: "", payer: "", payer_id: "" };
   const [form, member] = await Promise.all([
     readItem("forms_form_read", { form_id: text(submission, "form_id") }),
     readItem("actor_get_actor", { actor_id: text(submission, "member_id") }),
   ]);
-  return { amount: amountWords(form), payer: personNameOf(member) };
+  return { amount: amountWords(form), payer: personNameOf(member), payer_id: text(submission, "member_id") };
 };
 
 const entryOf = async (kind: string, slug: string) => (await listOf(listTool, { kind })).find((entry) => text(entry, "slug") === slug) ?? {};
@@ -118,6 +119,7 @@ const KindScreen = ({ generic, emptyGeneric, kind, payable }: { generic: string;
               fields={payable ? feeDetailFields : detailFields}
               foot={action && action.when?.(item) ? <ServiceAct label={action.label} onClick={() => action.run?.(item)} /> : undefined}
             />
+            {payable ? <RecordOwner heading="Payer" ownerId={text(item, "payer_id")} name={text(item, "payer")} /> : null}
             {payable ? null : (
               <>
                 <ReceivedApplications slug={text(item, "id")} />

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { useMay } from "../../../../features/agency/useMay";
-import { Button } from "../../../../shared/ui/Button";
 import { dayWords } from "../../../../shared/ui/days";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
+import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
-import { SectionHeading } from "../../../../shared/ui/SectionHeading";
+import { Section } from "../../../../shared/ui/Section";
 import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
+import { RecordOwner } from "../../RecordOwner";
 import { refusalWords } from "../../MenuEditForm";
 import { listOf, text, type Item } from "../staff/staffData";
 import { peopleRows } from "../residents/PeopleScreens";
@@ -19,6 +19,7 @@ import { GrantFields, grantExtras } from "./GrantFields";
 import { InspectionForm } from "./InspectionForm";
 import { inspectionLineOf, inspectionWords } from "./inspection";
 import { readItem } from "./readItem";
+import { ServiceAct } from "./ServicePage";
 
 const sectionWords = "Applications received";
 
@@ -29,6 +30,12 @@ const refuseLabel = "Refuse";
 const unnamedWords = "Someone";
 
 const chevron = "›";
+
+const decisionWords = "Decision";
+
+const applicantWords = "Applicant";
+
+const applicationWords = "Application";
 
 export type Received = { memberId: string; name: string; status: string; line: string; note: string; inspection: string; undecided: boolean; decidedAt: string; validUntil: string };
 
@@ -83,30 +90,33 @@ function DecideButtons({ formId, memberId, onDecided }: { formId: string; member
     }
   };
   const refuse = () => (asking ? decide("refused", reason.trim()) : setAsking(true));
-  return (
+  const fields = [
+    <GrantFields key="grant" certificate={certificate} validUntil={validUntil} onCertificate={setCertificate} onValidUntil={setValidUntil} />,
+    ...(asking ? [<TextArea key="reason" label={reasonWords} value={reason} onChange={(event) => setReason(event.target.value)} />] : []),
+    ...(refused ? [<LoadFailed key="refused" words={refused} />] : []),
+  ];
+  const acts = (
     <>
-      <GrantFields certificate={certificate} validUntil={validUntil} onCertificate={setCertificate} onValidUntil={setValidUntil} />
-      {asking ? <TextArea label={reasonWords} value={reason} onChange={(event) => setReason(event.target.value)} /> : null}
-      <Button kind="primary" disabled={busy} onClick={() => decide("approved", "", grantExtras(certificate, validUntil))}>{grantLabel}</Button>
-      <Button kind="danger" disabled={busy || (asking && reason.trim() === "")} onClick={refuse}>{refuseLabel}</Button>
-      {refused ? <LoadFailed words={refused} /> : null}
+      <ServiceAct label={refuseLabel} disabled={busy || (asking && reason.trim() === "")} onClick={refuse} />
+      <ServiceAct label={grantLabel} disabled={busy} onClick={() => decide("approved", "", grantExtras(certificate, validUntil))} />
     </>
   );
+  return <Section word={decisionWords} icon="document" plain rows={fields} foot={acts} />;
 }
 
 function ApplicationAnswers({ formId, row, mine, onDecided, onInspected }: { formId: string; row: Received; mine: boolean; onDecided: () => void; onInspected: () => void }) {
   const view = useLoad(() => loadAnswers(formId, row.memberId), `received-answers:${openAgencyId()}:${formId}:${row.memberId}`);
   if (view.state === "loading") return <LoadingLine />;
   if (view.state === "error") return null;
+  const answerRows = [
+    ...view.data.map((answer) => <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />),
+    ...(row.note !== "" ? [<ListRow key="reason" title={reasonWords} meta={row.note} />] : []),
+    ...(row.inspection !== "" ? [<ListRow key="inspection" title={inspectionWords} meta={row.inspection} />] : []),
+  ];
   return (
     <>
-      <Rows>
-        {view.data.map((answer) => (
-          <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />
-        ))}
-        {row.note !== "" ? <ListRow title={reasonWords} meta={row.note} /> : null}
-        {row.inspection !== "" ? <ListRow title={inspectionWords} meta={row.inspection} /> : null}
-      </Rows>
+      <RecordOwner heading={applicantWords} ownerId={row.memberId} name={row.name} />
+      <Section word={applicationWords} plain rows={answerRows} />
       {mine ? null : <InspectionForm formId={formId} memberId={row.memberId} inspected={row.inspection !== ""} onRecorded={onInspected} />}
       {row.undecided && !mine ? <DecideButtons formId={formId} memberId={row.memberId} onDecided={onDecided} /> : null}
     </>
@@ -128,12 +138,14 @@ function ReceivedList({ slug }: { slug: string }) {
   };
   return (
     <>
-      <SectionHeading>{sectionWords}</SectionHeading>
-      <Rows>
-        {rows.map((row) => (
+      <Section
+        word={sectionWords}
+        icon="document"
+        all
+        rows={rows.map((row) => (
           <ListRow key={row.memberId} title={row.name} meta={row.line} end={chevron} pressed={row.memberId === chosen} onClick={() => setChosen(row.memberId === chosen ? "" : row.memberId)} />
         ))}
-      </Rows>
+      />
       {open ? <ApplicationAnswers key={open.memberId} formId={formId} row={open} mine={open.memberId === own} onDecided={decided} onInspected={inspected} /> : null}
     </>
   );

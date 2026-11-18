@@ -96,7 +96,7 @@ const openEntry = async (kind: keyof typeof screens = "permit") => {
   await screen.findByText("Not sent yet");
 };
 
-const rowOf = (name: string) => screen.findByRole("button", { name: new RegExp(name) });
+const rowOf = async (name: string) => within(await screen.findByRole("region", { name: "Applications received" })).findByRole("button", { name: new RegExp(name) });
 
 const decideCalls = () => called.mock.calls.filter(([, name]) => name === "forms_submission_decide");
 

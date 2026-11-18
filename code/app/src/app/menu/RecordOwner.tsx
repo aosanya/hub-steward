@@ -15,13 +15,18 @@ const loadOwnerName = (ownerId: string) => async () => {
   return person && typeof person === "object" ? personNameOf(person as Item) : "";
 };
 
-function OwnerName({ heading, ownerId }: { heading: string; ownerId: string }) {
+function OwnerRow({ heading, ownerId, name }: { heading: string; ownerId: string; name: string }) {
   const navigate = useNavigate();
-  const view = useLoad(loadOwnerName(ownerId), `record-owner:${openAgencyId()}:${ownerId}`);
-  if (view.state !== "ready" || view.data === "") return null;
-  return <Section icon="users" word={heading} rows={[<ListRow key={ownerId} title={view.data} meta="Resident" end="›" onClick={() => navigate(residentPaths.people.path({ person: ownerId }))} />]} />;
+  return <Section icon="users" word={heading} rows={[<ListRow key={ownerId} title={name} meta="Resident" end="›" onClick={() => navigate(residentPaths.people.path({ person: ownerId }))} />]} />;
 }
 
-export function RecordOwner({ heading, ownerId }: { heading: string; ownerId: string }) {
-  return ownerId ? <OwnerName heading={heading} ownerId={ownerId} /> : null;
+function OwnerName({ heading, ownerId }: { heading: string; ownerId: string }) {
+  const view = useLoad(loadOwnerName(ownerId), `record-owner:${openAgencyId()}:${ownerId}`);
+  if (view.state !== "ready" || view.data === "") return null;
+  return <OwnerRow heading={heading} ownerId={ownerId} name={view.data} />;
+}
+
+export function RecordOwner({ heading, ownerId, name }: { heading: string; ownerId: string; name?: string }) {
+  if (!ownerId) return null;
+  return name ? <OwnerRow heading={heading} ownerId={ownerId} name={name} /> : <OwnerName heading={heading} ownerId={ownerId} />;
 }
