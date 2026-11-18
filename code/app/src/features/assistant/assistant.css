@@ -22,3 +22,7 @@
 .assistant-queued { font-size: .8125rem; color: var(--ink-soft); }
 .assistant-unqueue { padding: 0 .25rem; border: 0; background: transparent; color: var(--ink-soft); line-height: 1; }
 .assistant-about { display: flex; align-items: center; gap: .25rem; margin: 0 0 .5rem; }
+.rm-choices { display: flex; flex-direction: column; gap: .5rem; max-width: 24rem; margin-top: .5rem; }
+.rm-btns.rm-choices > .btn + .btn { margin: 0; border-left-color: var(--line-strong); }
+.rm-choices .btn { justify-content: space-between; border-radius: 0; color: var(--accent); font-weight: 700; text-align: left; }
+.rm-choices .chev { font-size: 1.25rem; font-weight: 400; color: var(--ink-soft); }
