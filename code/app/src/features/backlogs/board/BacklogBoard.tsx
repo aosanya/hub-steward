@@ -20,6 +20,7 @@ import { Shell } from "../../../app/Shell";
 import { BoardColumns } from "./BoardColumns";
 import { ViewSwitch } from "./ViewSwitch";
 import { columnsOf } from "./board";
+import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
 import { useQuietRefresh } from "./useQuietRefresh";
 import "./backlogBoard.css";
 
@@ -100,6 +101,7 @@ export function BacklogBoard({ client = mcpBacklogsClient, capsClient, todoCount
 
   return (
     <Shell {...shell} tabless={selecting.on}>
+      <ChatAboutBacklog about={{ kind: "backlog", id: backlogId, name: title }} />
       {read.state === "loading" ? <LoadingLine /> : null}
       {read.state === "failed" ? <LoadFailed words="The board could not be read. Try again." /> : null}
       {loaded && !backlog ? <EmptyCard words="This backlog could not be found." /> : null}

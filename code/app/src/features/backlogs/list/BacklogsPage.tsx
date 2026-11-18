@@ -17,6 +17,7 @@ import { allIssuesId, issuesHeld, mcpBacklogsClient, type BacklogsClient } from 
 import { addBacklogPath, useMayManage, type BacklogManageClient } from "../manage";
 import { mcpBacklogManageClient } from "../manage/api";
 import { nothingSharedWords } from "../shared/access";
+import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
 import { StepBubbles } from "./StepBubbles";
 import { stepTotals, type StepCount } from "../shared/stepCounts";
 import { boardPath, issuesPath } from "../shared/paths";
@@ -46,6 +47,7 @@ export function BacklogsPage({ client = mcpBacklogsClient, manage = mcpBacklogMa
   const smartCountsOf = (id: string) => (smartCounts.state === "ready" ? smartCounts.data[id] ?? [] : []);
   const ready = backlogs.state === "ready";
   const mayAdd = ready && mayManage.state === "ready" && mayManage.data;
+  const aboutBacklogs = <ChatAboutBacklog about={{ kind: "backlogs", id: allIssuesId, name: "Backlogs" }} />;
   const noticeLine = notice ? <p role="status" className="sub">{notice}</p> : null;
   const loadState = (
     <>
@@ -87,7 +89,8 @@ export function BacklogsPage({ client = mcpBacklogsClient, manage = mcpBacklogMa
   ) : null;
   if (wide) {
     return (
-      <Shell title="Backlogs" onBack={back.onBack} backLabel={back.backLabel} tabless>
+      <Shell title="Backlogs" onBack={back.onBack} backLabel={back.backLabel}>
+        {aboutBacklogs}
         <div className="wf">
           <div className="wf-panes">
             <section className="wf-tree bl-list" aria-label="Backlogs">{list}</section>
@@ -100,7 +103,6 @@ export function BacklogsPage({ client = mcpBacklogsClient, manage = mcpBacklogMa
               </div>
             </section>
           </div>
-          <footer className="wf-status" aria-label="Status bar" />
         </div>
         {addSheet}
       </Shell>
@@ -108,6 +110,7 @@ export function BacklogsPage({ client = mcpBacklogsClient, manage = mcpBacklogMa
   }
   return (
     <Shell title="Backlogs">
+      {aboutBacklogs}
       {noticeLine}
       {loadState}
       {list}

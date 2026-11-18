@@ -30,6 +30,7 @@ import type { TodoCountsClient } from "../todoCounts/api";
 import { TodoCountScope } from "../todoCounts/TodoCountScope";
 import { effortPicker } from "../shared/effortPicker";
 import { issuesRefreshMs } from "../shared/refresh";
+import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
 import { priorityPicker } from "../shared/priorityPicker";
 import { backlogsHomePath, boardPath, issuePath, queryParam, searchOf, tagParam } from "../shared/paths";
 import { countWords, narrowed, toggled } from "../shared/tags";
@@ -86,6 +87,7 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
     : { title, onBack: () => navigate(backlogsHomePath()), backLabel: words.backBacklogs, action: canSend ? <SelectButton onStart={selecting.start} /> : undefined };
   return (
     <Shell {...shell} tabless={selecting.on}>
+      <ChatAboutBacklog about={backlogId === allIssuesId ? { kind: "backlogs", id: allIssuesId, name: title } : { kind: "backlog", id: backlogId, name: title }} />
       <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={choose} save={save} />
       <ViewSwitch current={listed} onChange={(next) => (backlogId === allIssuesId ? chooseView(next) : navigate(boardPath(backlogId, chosen, query)))} />
       {issues.state === "loading" ? <LoadingLine /> : null}

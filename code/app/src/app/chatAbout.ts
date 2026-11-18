@@ -1,6 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
 
-export type ChatAboutKind = "resident" | "group" | "registration" | "conversation" | "business" | "trader" | "user" | "boundary" | "place" | "address" | "holding" | "land-use" | "bill" | "budget" | "tender" | "staff" | "role" | "report" | "neighbourhood" | "meeting" | "resolution" | "bylaw" | "committee" | "asset" | "workorder" | "application" | "permit" | "licence" | "fee" | "service" | "issue" | "wish" | "maintenance" | "agency" | "record-details";
+export type ChatAboutKind = "resident" | "group" | "registration" | "conversation" | "business" | "trader" | "user" | "boundary" | "place" | "address" | "holding" | "land-use" | "bill" | "budget" | "tender" | "staff" | "role" | "report" | "neighbourhood" | "meeting" | "resolution" | "bylaw" | "committee" | "asset" | "workorder" | "application" | "permit" | "licence" | "fee" | "service" | "issue" | "wish" | "maintenance" | "agency" | "record-details" | "backlogs" | "backlog" | "backlog-issue";
 
 export type ChatAbout = { kind: ChatAboutKind; id: string; name: string; extra?: Record<string, string> };
 
@@ -97,6 +97,9 @@ export const subjectNouns: Record<Exclude<ChatAboutKind, "resident">, string> = 
   maintenance: "maintenance record",
   agency: "agency",
   "record-details": "record details",
+  backlogs: "list of backlogs",
+  backlog: "backlog",
+  "backlog-issue": "backlog issue",
 };
 
 export const chatAboutWords = (about: ChatAbout) =>

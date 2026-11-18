@@ -463,7 +463,34 @@ const recordDetails: Subject = {
   empty: "which details are on and which are required",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, agency: agencyProfile, "record-details": recordDetails };
+const backlogs: Subject = {
+  reads: { taskmanager_backlog_list: {}, taskmanager_task_list: {} },
+  steps: { taskmanager_backlog_list: "Reading the backlogs", taskmanager_task_list: "Reading the issues" },
+  choices: ["Backlogs", "Issues"],
+  reading: "Backlogs means taskmanager_backlog_list: each backlog with its steps and how many issues it holds. Issues means taskmanager_task_list, always with a limit.",
+  overview: "call taskmanager_backlog_list and answer with how many backlogs there are and how many issues each holds",
+  empty: "its backlogs and issues",
+};
+
+const backlog: Subject = {
+  reads: { taskmanager_task_pending: { backlog: byId }, taskmanager_backlog_list: {} },
+  steps: { taskmanager_task_pending: "Reading the backlog's issues", taskmanager_backlog_list: "Reading the backlog's steps" },
+  choices: ["Steps", "Issues"],
+  reading: "Steps means taskmanager_backlog_list: read it and answer with this backlog's steps and how many issues each holds. Issues means taskmanager_task_pending, always with a limit.",
+  overview: "call taskmanager_backlog_list and taskmanager_task_pending and answer with its steps, how many issues each holds and the first few issues",
+  empty: "its steps and issues",
+};
+
+const backlogIssue: Subject = {
+  reads: { taskmanager_task_read: { taskID: byId }, taskmanager_task_note_list: { taskID: byId } },
+  steps: { taskmanager_task_read: "Reading the issue", taskmanager_task_note_list: "Reading its Log" },
+  choices: ["Details", "Log"],
+  reading: "Details means taskmanager_task_read. Log means taskmanager_task_note_list.",
+  overview: "call taskmanager_task_read and taskmanager_task_note_list and answer with what the issue is, where it stands and the most recent Log entry",
+  empty: "its details and Log",
+};
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, agency: agencyProfile, "record-details": recordDetails, backlogs, backlog, "backlog-issue": backlogIssue };
 
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);

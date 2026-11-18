@@ -28,6 +28,7 @@ import { issuePath, issuesPath } from "../shared/paths";
 import { splitSource } from "./source";
 import { mcpTodosClient, type TodosClient } from "../todos/api";
 import { TodoList } from "../todos/TodoList";
+import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
 
 type Props = { client?: BacklogsClient; notesClient?: NotesClient; sendClient?: SendClient; referencesClient?: ReferencesClient; repoClient?: RepoClient; capsClient?: CapsClient; todosClient?: TodosClient };
 
@@ -60,6 +61,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
   };
   return (
     <Shell title={parts?.code || "Issue"} onBack={() => navigate(backTo)} backLabel={backLabel}>
+      {ready ? <ChatAboutBacklog about={{ kind: "backlog-issue", id: ready.id, name: ready.title }} /> : null}
       {issue.state === "loading" ? <LoadingLine /> : null}
       {issue.state === "error" ? <LoadFailed words="This issue could not be loaded." /> : null}
       {sent ? (

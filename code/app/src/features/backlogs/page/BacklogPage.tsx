@@ -12,6 +12,7 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
 import { SectionHeading } from "../../../shared/ui/SectionHeading";
 import { Shell } from "../../../app/Shell";
+import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
 import { issuesWords } from "../shared/tags";
 import { mcpBacklogPageClient, type BacklogPageClient } from "./api";
 
@@ -45,6 +46,7 @@ export function BacklogPage({ client = mcpBacklogPageClient, manage = mcpBacklog
   const { name, steps, noStep, access } = loaded.data;
   return (
     <Shell title={name} sub={stepsWords(steps.length)} onBack={back} backLabel={words.backList}>
+      <ChatAboutBacklog about={{ kind: "backlog", id: backlogId, name }} />
       {mayManage.state === "ready" && mayManage.data ? <Button to={editBacklogPath(backlogId)}>Edit this backlog</Button> : null}
       <SectionHeading>Steps, in order</SectionHeading>
       <Rows>
