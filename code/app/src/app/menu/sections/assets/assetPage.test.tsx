@@ -161,3 +161,15 @@ describe("the maintenance schedule card", () => {
     expect(document.querySelector(".wf-head")).toBeNull();
   });
 });
+
+describe("an asset opened on a phone has no title band above its name", () => {
+  it("shows the category title on the list and not above the opened asset", async () => {
+    setWide(false);
+    show("Equipment");
+    expect(await screen.findByRole("heading", { level: 1, name: "Equipment" })).toBeInTheDocument();
+    await userEvent.click(await screen.findByRole("button", { name: /Road roller/ }));
+    await screen.findByRole("heading", { level: 1, name: "Road roller" });
+    expect(screen.queryByRole("heading", { level: 1, name: "Equipment" })).toBeNull();
+    expect(document.querySelector(".head")).toBeNull();
+  });
+});

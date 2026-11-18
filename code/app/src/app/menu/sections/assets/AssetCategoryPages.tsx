@@ -70,6 +70,7 @@ const categoryPage = ({ title: generic, category }: Category) =>
         title={title}
         withTabs
         bandless
+        detailAlone
         startAt={startAt}
         listKey={version}
         detailKey={version}

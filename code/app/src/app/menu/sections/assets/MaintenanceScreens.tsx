@@ -1,5 +1,6 @@
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLoad } from "../../../../features/forms/useLoad";
+import { dayWords } from "../../../../shared/ui/days";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
@@ -21,13 +22,15 @@ const workOrderPrompt = "Work order";
 
 const answerOf = (row: Record<string, string>, prompt: string) => row[prompt] ?? "";
 
+const quietLineOf = (row: Record<string, string>) => [answerOf(row, "Kind"), dayWords(answerOf(row, "Date done")), answerOf(row, "Done by")].filter(Boolean).join(" · ");
+
 export function MaintenanceRecordScreen() {
   const { rowId = "" } = useParams();
   const navigate = useNavigate();
   const view = useLoad(() => loadRecordRow(maintenanceRecordCode, rowId, prompts), `maintenance-record:${openAgencyId()}:${rowId}`);
   if (view.state !== "ready" || !view.data[recordRowIdKey]) {
     return (
-      <Shell title="Maintenance" titleUnder backLabel="Assets & Works" onBack={() => navigate(assetPaths.routes.path())}>
+      <Shell title="Maintenance" backLabel="Assets & Works" onBack={() => navigate(assetPaths.routes.path())}>
         {view.state === "loading" ? <LoadingLine /> : <LoadFailed words="This could not be loaded." />}
       </Shell>
     );
@@ -36,8 +39,8 @@ export function MaintenanceRecordScreen() {
   const facts = prompts.filter((prompt) => prompt !== workOrderPrompt).map((prompt): [string, string] => [prompt, answerOf(row, prompt)]);
   const edit = <RecordEditAct recordCode={maintenanceRecordCode} to={maintenancePaths.edit.path({ id: rowId })} />;
   return (
-    <Shell title="Maintenance" titleUnder backLabel="Assets & Works" onBack={() => navigate(assetPaths.routes.path())}>
-      <PageFrame title={answerOf(row, "What was done")} line={answerOf(row, "Date done")}>
+    <Shell title="Maintenance" backLabel="Assets & Works" onBack={() => navigate(assetPaths.routes.path())}>
+      <PageFrame title={answerOf(row, "What was done")} line={quietLineOf(row)}>
         <ChatAboutRecord row={row} titlePrompt="What was done" prompts={prompts} chat={{ kind: "maintenance", back: (id) => maintenancePaths.record.path({ rowId: id }) }} />
         <FactsCard word={recordPageWord} facts={facts} foot={edit} />
         <FactsCard word={workOrderPrompt} facts={[[workOrderPrompt, answerOf(row, workOrderPrompt)]]} />

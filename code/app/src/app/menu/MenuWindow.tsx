@@ -11,9 +11,9 @@ type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "field
 
 type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load" | "extra">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; withTabs?: boolean; bandless?: boolean; detailKey?: string | number; listKey?: string | number; startAt?: string; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; withTabs?: boolean; bandless?: boolean; detailAlone?: boolean; detailKey?: string | number; listKey?: string | number; startAt?: string; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
 
-export function MenuWindow({ title, list, detail, above, below, headEnd, withTabs, bandless, detailKey, listKey, startAt, elsewhere, leave }: Props) {
+export function MenuWindow({ title, list, detail, above, below, headEnd, withTabs, bandless, detailAlone, detailKey, listKey, startAt, elsewhere, leave }: Props) {
   const back = useBackToSection();
   const wide = useWide();
   const [chosen, setChosen] = useState(startAt ?? "");
@@ -29,6 +29,7 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, withTab
   const onBack = clearsChoice ? () => setChosen("") : back.onBack;
   const backLabel = clearsChoice ? list.title : back.backLabel;
   const showsListRow = !!chosen && !wide && !clearsChoice;
+  const alone = !!detailAlone && !!chosen;
   const listPane = (
     <section className={wide ? "mw-list wf-tree" : "mw-list"} aria-label={list.title}>
       {above}
@@ -66,7 +67,7 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, withTab
     );
   }
   return (
-    <Shell title={title} titleUnder onBack={onBack} backLabel={backLabel} headEnd={headEnd}>
+    <Shell title={title} titleUnder={!alone} titleless={alone} onBack={onBack} backLabel={backLabel} headEnd={alone ? undefined : headEnd}>
       <div className="mw" data-chosen={chosen ? "yes" : "no"}>
         {listPane}
         {chosen ? (
