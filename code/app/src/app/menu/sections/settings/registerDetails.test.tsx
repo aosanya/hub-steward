@@ -67,7 +67,7 @@ describe("the Details of a record screen", () => {
     const user = userEvent.setup();
     open();
 
-    await user.click(await screen.findByRole("radio", { name: "Informal traders" }));
+    await user.click(await screen.findByRole("tab", { name: "Informal traders" }));
     await user.click(await screen.findByRole("checkbox", { name: "Usual days on" }));
     await user.click(screen.getByRole("button", { name: "Save details" }));
 
@@ -81,14 +81,14 @@ describe("the Details of a record screen for residents and holdings", () => {
     open();
 
     await screen.findByRole("checkbox", { name: "Tax number on" });
-    expect(screen.getAllByRole("radio").map((radio) => radio.closest("label")?.textContent)).toEqual(["Businesses", "Informal traders", "Residents", "Holdings"]);
+    expect(screen.getAllByRole("tab").map((tab) => tab.textContent)).toEqual(["Businesses", "Informal traders", "Residents", "Holdings"]);
   });
 
   it("lists Name required and Phone and Email optional for Residents, all on", async () => {
     const user = userEvent.setup();
     open();
 
-    await user.click(await screen.findByRole("radio", { name: "Residents" }));
+    await user.click(await screen.findByRole("tab", { name: "Residents" }));
 
     expect(await screen.findByRole("checkbox", { name: "Name required" })).toBeChecked();
     expect(screen.getByRole("checkbox", { name: "Phone on" })).toBeChecked();
@@ -100,7 +100,7 @@ describe("the Details of a record screen for residents and holdings", () => {
     const user = userEvent.setup();
     open();
 
-    await user.click(await screen.findByRole("radio", { name: "Residents" }));
+    await user.click(await screen.findByRole("tab", { name: "Residents" }));
     await user.click(await screen.findByRole("checkbox", { name: "Email on" }));
     await user.type(screen.getByLabelText("New detail"), "Preferred language");
     await user.click(screen.getByRole("button", { name: "Add detail" }));
@@ -117,7 +117,7 @@ describe("the Details of a record screen for residents and holdings", () => {
     const user = userEvent.setup();
     open();
 
-    await user.click(await screen.findByRole("radio", { name: "Holdings" }));
+    await user.click(await screen.findByRole("tab", { name: "Holdings" }));
     expect(await screen.findByRole("checkbox", { name: "Property on" })).toBeChecked();
     expect(screen.getByRole("checkbox", { name: "Kind on" })).toBeChecked();
     expect(screen.getByRole("checkbox", { name: "Since on" })).toBeChecked();
@@ -136,7 +136,7 @@ describe("the Property detail of a holding", () => {
     const user = userEvent.setup();
     open();
 
-    await user.click(await screen.findByRole("radio", { name: "Holdings" }));
+    await user.click(await screen.findByRole("tab", { name: "Holdings" }));
 
     const on = await screen.findByRole("checkbox", { name: "Property on" });
     const required = screen.getByRole("checkbox", { name: "Property required" });
@@ -152,7 +152,7 @@ describe("the Property detail of a holding", () => {
     stored["register_details:HOLDING"] = JSON.stringify({ details: [{ prompt: "Property", on: false, required: false, own: false }] });
     open();
 
-    await user.click(await screen.findByRole("radio", { name: "Holdings" }));
+    await user.click(await screen.findByRole("tab", { name: "Holdings" }));
 
     expect(await screen.findByRole("checkbox", { name: "Property on" })).toBeChecked();
     expect(screen.getByRole("checkbox", { name: "Property required" })).toBeChecked();

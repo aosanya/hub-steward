@@ -3,7 +3,7 @@ import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
+import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
@@ -11,7 +11,9 @@ import { Shell } from "../../../Shell";
 import { loadFailedWords } from "../../MenuDetail";
 import { refusalWords } from "../../MenuEditForm";
 import { useBackToSection } from "../../useBackToSection";
-import { LanguagesEdit, type Languages } from "./LanguagesEdit";
+import { PageFrame } from "../../PageFrame";
+import { Section } from "../../../../shared/ui/Section";
+import { useLanguagesEdit, type Languages } from "./LanguagesEdit";
 import { useOwner } from "./useOwner";
 
 type Profile = { name: string; languages: Languages };
@@ -39,6 +41,8 @@ export function AgencyProfile() {
   const [refused, setRefused] = useState("");
   const owner = useOwner();
   const view = useLoad(loadProfile, `agency-profile:${openAgencyId()}:${saved}`);
+  const empty = { content: [], studioDefault: "", contentDefault: "" } as Languages;
+  const languages = useLanguagesEdit(view.state === "ready" ? view.data.languages : empty, () => setSaved(saved + 1));
   const save = async () => {
     try {
       await callTool("", "instance_rename", { name: draft });
@@ -49,26 +53,37 @@ export function AgencyProfile() {
       setRefused(refusalWords(error));
     }
   };
+  const nameRows = (name: string) => [
+    <ListRow key="name" title="Name" meta={name} />,
+    ...(draft === null
+      ? []
+      : [
+          <div key="rename" className="sec-tools">
+            <Field label="Name" value={draft} onChange={(event) => setDraft(event.target.value)} />
+            <Button kind="primary" disabled={draft.trim() === ""} onClick={save}>Save</Button>
+            <Button kind="quiet" onClick={() => setDraft(null)}>Cancel</Button>
+          </div>,
+        ]),
+  ];
+  const renameAct =
+    owner && draft === null && view.state === "ready" ? (
+      <button type="button" className="sec-act" onClick={() => setDraft(view.data.name)}>Rename</button>
+    ) : undefined;
   return (
-    <Shell title={word("Agency Profile")} titleUnder {...back}>
+    <Shell title={word("Agency Profile")} onBack={back.onBack} backLabel={back.backLabel}>
       {view.state === "loading" ? <LoadingLine /> : null}
       {view.state === "error" ? <LoadFailed words={loadFailedWords} /> : null}
       {view.state === "ready" ? (
-        <>
-          <Rows>
-            <ListRow title="Name" meta={view.data.name} />
-            <ListRow title="Languages" meta={view.data.languages.content.join(", ")} />
-          </Rows>
-          {owner && draft === null ? <Button kind="primary" onClick={() => setDraft(view.data.name)}>Rename</Button> : null}
-          {owner && draft !== null ? (
-            <>
-              <Field label="Name" value={draft} onChange={(event) => setDraft(event.target.value)} />
-              <Button kind="primary" disabled={draft.trim() === ""} onClick={save}>Save</Button>
-            </>
-          ) : null}
-          {owner ? <LanguagesEdit current={view.data.languages} onSaved={() => setSaved(saved + 1)} /> : null}
+        <PageFrame title={word("Agency Profile")}>
+          <Section word="Name" plain rows={nameRows(view.data.name)} foot={renameAct} />
+          <Section
+            word="Languages"
+            plain
+            rows={[<ListRow key="languages" title="Languages" meta={view.data.languages.content.join(", ")} />, ...(languages.form ? [languages.form] : [])]}
+            foot={owner ? languages.act : undefined}
+          />
           {refused ? <LoadFailed words={refused} /> : null}
-        </>
+        </PageFrame>
       ) : null}
     </Shell>
   );

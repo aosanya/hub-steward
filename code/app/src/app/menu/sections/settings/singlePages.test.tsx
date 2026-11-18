@@ -63,7 +63,8 @@ describe("the Agency Profile page", () => {
   it("has the page title, and the name and the languages each in a card of their own", async () => {
     openAt("Agency Profile");
 
-    expect(await screen.findByRole("heading", { level: 1, name: "Agency Profile" })).toBeInTheDocument();
+    await screen.findByRole("region", { name: "Name" });
+    expect(document.querySelector(".person-name")).toHaveTextContent("Agency Profile");
     const name = await screen.findByRole("region", { name: "Name" });
     expect(within(name).getByText("Riverside Office")).toBeInTheDocument();
     const languages = screen.getByRole("region", { name: "Languages" });
@@ -122,8 +123,9 @@ describe("the Audit Log page", () => {
   it("has the page title and a strip of tabs by kind of change with their counts", async () => {
     openAt("Audit Log");
 
-    expect(await screen.findByRole("heading", { level: 1, name: "Audit Log" })).toBeInTheDocument();
-    const strip = await screen.findByRole("tablist");
+    expect(await screen.findByRole("tablist")).toBeInTheDocument();
+    expect(document.querySelector(".person-name")).toHaveTextContent("Audit Log");
+    const strip = screen.getByRole("tablist");
     expect(within(strip).getAllByRole("tab").map((tab) => tab.textContent)).toEqual(["All4", "Groups1", "Forms1", "Rows1", "Other1"]);
   });
 

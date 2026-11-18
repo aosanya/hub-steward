@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button } from "../../../../shared/ui/Button";
-import { ChoiceGroup, ChoiceRow } from "../../../../shared/ui/ChoiceRow";
 import { Field } from "../../../../shared/ui/Field";
+import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
+import { Section } from "../../../../shared/ui/Section";
 import { Shell } from "../../../Shell";
 import { refusalWords } from "../../MenuEditForm";
+import { PageFrame } from "../../PageFrame";
 import {
   detailsOf,
   holdingFields,
@@ -63,34 +64,54 @@ export function RegisterDetails() {
       setRefused(refusalWords(error));
     }
   };
-  return (
-    <Shell title="Details of a record" titleUnder {...back}>
-      <ChoiceGroup label="Record">
+  const toggles = (detail: RegisterDetail, fixed: boolean) => (
+    <>
+      <label className="chip">
+        <input type="checkbox" aria-label={`${detail.prompt} on`} checked={detail.on} disabled={fixed} onChange={(event) => change(detail.prompt, { on: event.target.checked, required: event.target.checked && detail.required })} /> On
+      </label>
+      <label className="chip">
+        <input type="checkbox" aria-label={`${detail.prompt} required`} checked={detail.required} disabled={fixed || !detail.on} onChange={(event) => change(detail.prompt, { required: event.target.checked })} /> Required
+      </label>
+    </>
+  );
+  const rows = [
+    <div key="records" className="sec-tools">
+      <div className="sec-tabs" role="tablist" aria-label="Record">
         {records.map((record) => (
-          <ChoiceRow key={record.code} type="radio" name="record" label={record.name} checked={record === chosen} onChange={() => setChosen(record)} />
+          <button key={record.code} type="button" role="tab" aria-selected={record === chosen} onClick={() => setChosen(record)}>
+            {record.name}
+          </button>
         ))}
-      </ChoiceGroup>
-      {details === null ? <LoadingLine /> : null}
-      {(details ?? []).map((detail) => {
-        const fixed = !detail.own && detail.prompt === chosen.titlePrompt;
-        return (
-          <div className="row" key={detail.prompt}>
-            <span className="ttl">{detail.prompt}</span>
-            <label className="meta">
-              <input type="checkbox" aria-label={`${detail.prompt} on`} checked={detail.on} disabled={fixed} onChange={(event) => change(detail.prompt, { on: event.target.checked, required: event.target.checked && detail.required })} /> On
-            </label>
-            <label className="meta">
-              <input type="checkbox" aria-label={`${detail.prompt} required`} checked={detail.required} disabled={fixed || !detail.on} onChange={(event) => change(detail.prompt, { required: event.target.checked })} /> Required
-            </label>
-          </div>
-        );
-      })}
+      </div>
+    </div>,
+    ...(details === null ? [<LoadingLine key="loading" />] : []),
+    ...(details ?? []).map((detail) => {
+      const fixed = !detail.own && detail.prompt === chosen.titlePrompt;
+      return <ListRow key={detail.prompt} title={detail.prompt} meta={fixed ? "Always on and required" : undefined} end={toggles(detail, fixed)} />;
+    }),
+    <div key="new" className="sec-tools">
       <Field label="New detail" value={newDetail} onChange={(event) => setNewDetail(event.target.value)} />
-      <Button kind="quiet" disabled={newDetail.trim() === "" || taken} onClick={add}>Add detail</Button>
       <p className="meta">Records saved before keep the details they were saved with.</p>
-      <Button kind="primary" disabled={details === null} onClick={save}>Save details</Button>
       {saved ? <p className="meta">Details saved.</p> : null}
       {refused ? <LoadFailed words={refused} /> : null}
+    </div>,
+  ];
+  return (
+    <Shell title="Details of a record" onBack={back.onBack} backLabel={back.backLabel}>
+      <PageFrame title="Details of a record">
+        <Section
+          word="Details"
+          plain
+          total={details?.length ?? 0}
+          rows={rows}
+          foot={
+            <>
+              <button type="button" className="sec-foot-item" disabled={newDetail.trim() === "" || taken} onClick={add}>Add detail</button>
+              <button type="button" className="sec-act" disabled={details === null} onClick={save}>Save details</button>
+            </>
+          }
+        />
+      </PageFrame>
     </Shell>
   );
 }

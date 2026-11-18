@@ -50,7 +50,7 @@ describe("the Settings screens when the agency lists its own words", () => {
     answer(true);
     openAt("Agency Profile");
 
-    expect(await screen.findByRole("heading", { name: "Municipality Profile" })).toBeInTheDocument();
+    expect((await screen.findAllByRole("heading", { name: "Municipality Profile" })).length).toBeGreaterThan(0);
     expect(screen.queryByRole("heading", { name: "Agency Profile" })).toBeNull();
     expect(await screen.findByRole("button", { name: "Rename" })).toBeInTheDocument();
   });

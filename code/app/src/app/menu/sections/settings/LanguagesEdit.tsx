@@ -7,15 +7,13 @@ import { refusalWords } from "../../MenuEditForm";
 
 export type Languages = { studioDefault: string; content: string[]; contentDefault: string };
 
-type Props = { current: Languages; onSaved: () => void };
-
 const codesOf = (text: string) =>
   text
     .split(",")
     .map((code) => code.trim())
     .filter((code) => code !== "");
 
-export function LanguagesEdit({ current, onSaved }: Props) {
+export function useLanguagesEdit(current: Languages, onSaved: () => void) {
   const [draft, setDraft] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [refused, setRefused] = useState("");
@@ -36,13 +34,20 @@ export function LanguagesEdit({ current, onSaved }: Props) {
       setSaving(false);
     }
   };
-  if (draft === null) return <Button kind="quiet" onClick={() => setDraft(current.content.join(", "))}>Change languages</Button>;
-  return (
-    <>
-      <Field label="Content languages" value={draft} onChange={(event) => setDraft(event.target.value)} />
-      <Button kind="primary" disabled={saving || codesOf(draft).length === 0} onClick={save}>Save languages</Button>
-      <Button kind="quiet" disabled={saving} onClick={() => setDraft(null)}>Cancel</Button>
-      {refused ? <LoadFailed words={refused} /> : null}
-    </>
-  );
+  const act =
+    draft === null ? (
+      <button type="button" className="sec-act" onClick={() => setDraft(current.content.join(", "))}>
+        Change languages
+      </button>
+    ) : undefined;
+  const form =
+    draft === null ? null : (
+      <div key="languages-form" className="sec-tools">
+        <Field label="Content languages" value={draft} onChange={(event) => setDraft(event.target.value)} />
+        <Button kind="primary" disabled={saving || codesOf(draft).length === 0} onClick={save}>Save languages</Button>
+        <Button kind="quiet" disabled={saving} onClick={() => setDraft(null)}>Cancel</Button>
+        {refused ? <LoadFailed words={refused} /> : null}
+      </div>
+    );
+  return { act, form };
 }
