@@ -56,6 +56,7 @@
   {"code": "board_item.hide", "name": "Hide board items", "locked": false, "module": "forms", "actions": ["catalog.board_item.set_hidden", "catalog.raised_item.remove"]},
   {"code": "board.manage", "name": "Manage the board", "locked": false, "module": "forms", "actions": ["catalog.raised_item.group", "catalog.raised_item.ungroup", "catalog.board_item.set_outcome", "catalog.raised_item.reassign", "catalog.board_item.assign", "catalog.board_item.read"]},
   {"code": "board.read", "name": "Read the board and its counts", "locked": false, "module": "forms", "actions": ["catalog.board_item.list", "catalog.board_item.tally_by_area"]},
+  {"code": "resident.read", "name": "Open a resident's name, address and bills", "locked": false, "actions": ["actor.actor.list", "actor.actor.read", "actor.actor.read_many", "accounting.bill.list", "accounting.bill.read", "accounting.payment.list"]},
   {"code": "late_matters.read", "name": "See the raised items past their answer time", "locked": false, "module": "forms", "actions": ["catalog.raised_item.list_overdue"]},
   {"code": "person_raised_items.read", "name": "See the wishes and issues one resident raised", "locked": false, "module": "forms", "actions": ["catalog.raised_item.list_of_person"]},
   {"code": "register.edit", "name": "Edit the register", "locked": false, "module": "forms", "actions": ["catalog.entry.upsert", "catalog.entry.delete", "catalog.record.list"]},
