@@ -109,7 +109,11 @@ describe("the members of an opened committee", () => {
     await userEvent.type(pane.getByRole("searchbox"), "Nagy");
     expect(pane.getByText("Nagy Zsófia", { selector: ".ttl" })).toBeInTheDocument();
     expect(pane.queryByText("Kovács Gergely", { selector: ".ttl" })).toBeNull();
-    expect(pane.queryByText("Varga József", { selector: ".ttl" })).toBeNull();
+    await userEvent.clear(pane.getByRole("searchbox"));
+    await userEvent.type(pane.getByRole("searchbox"), "Varga");
+    expect(pane.getAllByText("Varga József", { selector: ".ttl" })).toHaveLength(1);
+    await userEvent.clear(pane.getByRole("searchbox"));
+    await userEvent.type(pane.getByRole("searchbox"), "Nagy");
     await userEvent.click(pane.getByText("Nagy Márton", { selector: ".ttl" }));
     await userEvent.click(pane.getByRole("button", { name: "Add Nagy Márton" }));
 
