@@ -6,6 +6,7 @@ import { Field } from "../../../../shared/ui/Field";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuDetail } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
+import { SendReportButton } from "./SendReportSheet";
 import { figureOf, noReportWords, periodRefusal } from "./reportPeriod";
 import { budgetRow, dayStart, departmentRow, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, reportRow, text, tools, unitOf, type Item } from "./financeData";
 
@@ -76,7 +77,7 @@ export function ReportsScreen() {
       detailKey={unit}
       above={<ChoosePeriod unit={unit} />}
       list={{ title: word("Financial Reports"), tool: tools.reportList, load: loadReports, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Reports").toLowerCase()} yet.`) }}
-      detail={{ tool: tools.reportRead, load: (id: string) => loadReport(id, unit), fields: reportFields, status: "status" }}
+      detail={{ tool: tools.reportRead, load: (id: string) => loadReport(id, unit), fields: reportFields, status: "status", extra: (report) => <SendReportButton report={report} /> }}
     />
   );
 }

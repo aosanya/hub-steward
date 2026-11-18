@@ -41,7 +41,7 @@ describe("a report handed to the caller", () => {
   it("reads as the report's name, with its period and figures as the line", async () => {
     show([handedOver]);
 
-    expect(await screen.findByText("Second quarter")).toBeInTheDocument();
+    expect(await screen.findByText("Report: Second quarter")).toBeInTheDocument();
     expect(screen.getByText("2026-04-01 to 2026-06-30 · Planned 8,000 · Spent 8,300 · Difference -300")).toBeInTheDocument();
   });
 

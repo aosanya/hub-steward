@@ -23,6 +23,7 @@ export const noticeWordings = new Map<string, Wording>([
   ["survey_reached", newForm],
   ["results_published", { title: "inboxResultsPublished" }],
   ["supplier_approved", { title: "inboxSupplierApproved" }],
+  ["report_handed_over", { title: "inboxReportHandedOver", titleNamed: { from: ["name"], words: "inboxReportNamed" } }],
   ["ask_waiting", { title: "inboxAskWaiting" }],
   ["ask_answered", { title: "inboxAskAnswered" }],
   ["revision_asked", { title: "inboxRevisionAsked" }],
@@ -58,8 +59,17 @@ export const noticeTitleOf = (n: NotificationItem, words: Words): string | undef
   return wording ? spoken(n, words, wording.title, wording.titleNamed) : undefined;
 };
 
+const reportLine = (n: NotificationItem, words: Words) => {
+  const { period = "", planned = "", spent = "", difference = "" } = n.names;
+  const figures = [planned, spent, difference].some(Boolean)
+    ? words.inboxReportFigures.replace("{planned}", () => planned).replace("{spent}", () => spent).replace("{difference}", () => difference)
+    : "";
+  return [period, figures].filter(Boolean).join(" · ") || undefined;
+};
+
 export const noticeMetaOf = (n: NotificationItem, words: Words): string | undefined => {
   if (n.event === "supplier_approved") return approvedBy(n);
+  if (n.event === "report_handed_over") return reportLine(n, words);
   const wording = noticeWordings.get(n.event);
   return wording ? spoken(n, words, wording.line, wording.lineNamed) : undefined;
 };
