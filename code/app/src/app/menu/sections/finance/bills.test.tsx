@@ -140,6 +140,39 @@ describe("the bills list", () => {
   });
 });
 
+describe("a bill named in the address", () => {
+  const openAt = (search: string) => {
+    called = answering(answers);
+    return render(
+      <MemoryRouter initialEntries={[{ pathname: "/a/town/menu/finance/revenue-and-billing", search, state: { from: { path: "/a/town/menu/residents/people?person=p1", title: "Residents" } } }]}>
+        <Routes>
+          <Route path="/a/:agencyId/menu/finance/revenue-and-billing" element={<BillsScreen />} />
+          <Route path="*" element={null} />
+        </Routes>
+        <Where />
+      </MemoryRouter>,
+    );
+  };
+
+  it("opens by itself with the bill read by its id, and the back button names where it came from", async () => {
+    openAt("?bill=b2");
+
+    await waitFor(() => expect(callsTo("accounting_bill_read")).toHaveLength(1));
+    expect(callsTo("accounting_bill_read")[0][2]).toEqual({ billID: "b2" });
+    await waitFor(() => expect(pane()).not.toBeNull());
+    expect(await within(pane()).findByText("March stall fee")).toBeInTheDocument();
+    expect(backButton(/Residents/)).toBeInTheDocument();
+  });
+
+  it("opens no bill when the address names none", async () => {
+    openAt("");
+
+    await screen.findByText("Sample Garage");
+    expect(callsTo("accounting_bill_read")).toHaveLength(0);
+    expect(pane()).toBeNull();
+  });
+});
+
 describe("a bill", () => {
   it("opens beside the list when a row is pressed, asking accounting_bill_read with the billID", async () => {
     screens();

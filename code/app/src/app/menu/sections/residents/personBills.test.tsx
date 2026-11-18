@@ -1,7 +1,7 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
@@ -63,13 +63,30 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const openPerson = async () => {
-  const path = items.find((item) => item.title === "All People")?.path?.() ?? "";
+const BillPage = () => {
+  const here = useLocation();
+  const from = (here.state as { from?: { path?: string; title?: string } } | null)?.from;
+  return (
+    <p data-testid="bill-page">
+      {here.pathname}{here.search} from {from?.path} titled {from?.title}
+    </p>
+  );
+};
+
+const peoplePath = () => items.find((item) => item.title === "All People")?.path?.() ?? "";
+
+const renderPeople = (path: string) =>
   render(
     <MemoryRouter initialEntries={[path]}>
-      <Routes>{routes()}</Routes>
+      <Routes>
+        {routes()}
+        <Route path="/a/:agencyId/menu/finance/revenue-and-billing" element={<BillPage />} />
+      </Routes>
     </MemoryRouter>,
   );
+
+const openPerson = async () => {
+  renderPeople(peoplePath());
   await userEvent.click(await screen.findByRole("button", { name: /Sample Resident A/ }));
   await screen.findByText("Sample Street Group");
 };
@@ -94,17 +111,35 @@ describe("bills on a person's detail", () => {
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "accounting_bill_list", { actor_id: "p1" }));
   });
 
-  it("shows each bill as plain text: no link and no button inside the row", async () => {
-    held = [bill("b1", "p1", 900, "2026-03-01T00:00:00Z", "open")];
+  it("opens the bill when its row is pressed: Revenue & Billing with the bill id, and a way back to this resident", async () => {
+    held = [bill("b1", "p1", 900, "2026-03-01T00:00:00Z", "open"), bill("b2", "p1", 1500, "2026-01-15T00:00:00Z", "overdue", 40)];
+
+    await openPerson();
+
+    await userEvent.click(await screen.findByRole("button", { name: /1,500 · due 2026-01-15/ }));
+
+    const landed = (await screen.findByTestId("bill-page")).textContent ?? "";
+    expect(landed).toContain("/menu/finance/revenue-and-billing?bill=b2");
+    expect(landed).toContain("person=p1");
+    expect(landed).toContain("titled Residents");
+  });
+
+  it("gives every bill row a button of its own, with its status shown beside it", async () => {
+    held = [bill("b1", "p1", 900, "2026-03-01T00:00:00Z", "open"), bill("b2", "p1", 1500, "2026-01-15T00:00:00Z", "overdue", 40)];
 
     await openPerson();
 
     await screen.findByText("900 · due 2026-03-01");
-    const row = rowOf("900 · due 2026-03-01");
-    expect(row.tagName).toBe("DIV");
-    expect(row.querySelector("a, button")).toBeNull();
-    expect(screen.queryByRole("link", { name: /900/ })).toBeNull();
-    expect(screen.queryByRole("button", { name: /900/ })).toBeNull();
+    expect(rowOf("900 · due 2026-03-01").tagName).toBe("BUTTON");
+    expect(rowOf("1,500 · due 2026-01-15 · 40 days late").tagName).toBe("BUTTON");
+    expect(within(rowOf("900 · due 2026-03-01")).getByText("Open")).toBeTruthy();
+  });
+
+  it("opens the resident named in the address by itself, so a way back from a bill lands on the same person", async () => {
+    renderPeople(`${peoplePath()}?person=p1`);
+
+    expect(await screen.findByText("Sample Street Group")).toBeTruthy();
+    expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p1" });
   });
 
   it("shows an empty card when the person has no bill", async () => {
