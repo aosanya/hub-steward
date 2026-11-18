@@ -27,7 +27,7 @@ export function MountedMenuList({ module = assetModule, detail, version, ...prop
   const back = useBackToSection();
   const mounted = useLoad(() => readMounts(module), `properties-mounts:${module}:${openAgencyId()}`);
   if (mounted.state === "ready" && mounted.data) {
-    return wide && detail ? <MenuWindow title={props.title} list={props} detail={detail} listKey={version} detailKey={version} /> : <MenuList {...props} />;
+    return detail && (wide || !props.onChoose) ? <MenuWindow title={props.title} list={props} detail={detail} listKey={version} detailKey={version} /> : <MenuList {...props} />;
   }
   return (
     <Shell title={props.title} titleUnder {...back}>
