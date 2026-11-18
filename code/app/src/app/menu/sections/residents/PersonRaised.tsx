@@ -5,7 +5,9 @@ import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
+import { issuePaths } from "../issues/paths";
 import { listOf, text } from "../staff/staffData";
+import { useOpenFromPanel } from "./useOpenFromPanel";
 
 const loadRaised = (personId: string) => async () => {
   const items = await listOf("forms_catalog_raised_item_list_of_person", { raised_by: personId });
@@ -16,6 +18,7 @@ const loadRaised = (personId: string) => async () => {
 
 export function PersonRaised({ id }: { id: string }) {
   const word = useWord("forms");
+  const open = useOpenFromPanel();
   const view = useLoad(loadRaised(id), `person-raised:${openAgencyId()}:${id}`);
   if (view.state === "error") return null;
   const raised = view.state === "ready" ? view.data : [];
@@ -27,7 +30,7 @@ export function PersonRaised({ id }: { id: string }) {
       {raised.length > 0 ? (
         <Rows>
           {raised.map((item) => (
-            <ListRow key={item.key} title={item.title} meta={`${item.status}, raised ${dayWords(item.raisedAt)}`} />
+            <ListRow key={item.key} title={item.title} meta={`${item.status}, raised ${dayWords(item.raisedAt)}`} onClick={() => open(issuePaths.issue.path({ id: item.key }))} end="›" />
           ))}
         </Rows>
       ) : null}

@@ -7,6 +7,8 @@ import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { loadRecordRowsHeldBy, type RecordRow } from "../../liveRecordRows";
 import { listOf, text } from "../staff/staffData";
+import { servicesPaths } from "../services/paths";
+import { useOpenFromPanel } from "./useOpenFromPanel";
 import { businessesMetaPrompts, businessesRecordCode, businessesTitlePrompt } from "./BusinessesScreen";
 import { informalTradersMetaPrompts, informalTradersRecordCode, informalTradersTitlePrompt } from "./InformalTradersScreen";
 
@@ -19,6 +21,7 @@ const loadApplications = (memberId: string) => async () => {
 
 export function PersonApplications({ id }: { id: string }) {
   const word = useWord("forms");
+  const open = useOpenFromPanel();
   const view = useLoad(loadApplications(id), `person-applications:${openAgencyId()}:${id}`);
   if (view.state === "error") return null;
   const applications = view.state === "ready" ? view.data : [];
@@ -30,7 +33,7 @@ export function PersonApplications({ id }: { id: string }) {
       {applications.length > 0 ? (
         <Rows>
           {applications.map((application) => (
-            <ListRow key={application.key} title={application.title} meta={`Sent ${dayWords(application.sentAt)}`} />
+            <ListRow key={application.key} title={application.title} meta={`Sent ${dayWords(application.sentAt)}`} onClick={() => open(servicesPaths.application.path({ id: application.key }))} end="›" />
           ))}
         </Rows>
       ) : null}

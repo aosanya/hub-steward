@@ -348,15 +348,13 @@ describe("holdings on a person's detail", () => {
     expect(screen.queryByText(/could not be loaded/i)).toBeNull();
   });
 
-  it("shows holdings as plain rows, never as links or buttons", async () => {
+  it("shows each holding as a button that opens its property", async () => {
     tenures = mixedTenures();
 
     await openPerson();
 
     const title = await screen.findByText("Sample Plot 12");
+    expect(title.closest("button")).not.toBeNull();
     expect(title.closest("a")).toBeNull();
-    expect(title.closest("button")).toBeNull();
-    expect(screen.queryByRole("link", { name: /Sample Plot/ })).toBeNull();
-    expect(screen.queryByRole("button", { name: /Sample Plot/ })).toBeNull();
   });
 });
