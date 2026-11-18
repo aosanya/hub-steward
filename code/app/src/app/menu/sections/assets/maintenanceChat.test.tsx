@@ -74,6 +74,24 @@ describe("Chat in the bar on a maintenance record's page", () => {
     expect(carriedChatFrom()).toBe(maintenancePaths.record.path({ rowId: "m1" }));
   });
 
+  it("gives the asset's name and serial tag in the details, never its id, when the answer is an asset id", async () => {
+    vi.mocked(mcp.callTool).mockImplementation(async (_hub, tool) => {
+      if (tool === "agency_list_live_records") return { items: [{ code: "RC-268", name: "Maintenance records", can_add_rows: false }] };
+      if (tool === "agency_list_live_record_rows") return { items: [{ ...row, answers: { ...row.answers, Asset: "as1" } }] };
+      if (tool === "assetmanager_asset_list") return { items: [{ id: "as1", name: "Road roller", serial_tag: "A-12", category: "Equipment" }] };
+      if (tool === "agency_get_my_roles") return { permissions: [] };
+      if (tool === "agency_list_mounts") return { modules: [{ module: "assetmanager" }] };
+      return { items: [] };
+    });
+    open(maintenancePaths.record.path({ rowId: "m1" }));
+    await screen.findByRole("heading", { level: 1, name: "Changed the hydraulic oil" });
+    await userEvent.click(screen.getByRole("link", { name: "Chat" }));
+    await screen.findByText("About Changed the hydraulic oil");
+    const details = carriedChatAbout()?.extra?.details ?? "";
+    expect(details.startsWith("Asset: Road roller A-12. ")).toBe(true);
+    expect(details).not.toContain("as1");
+  });
+
   it("carries nothing on the list, so the Chat tab opens the plain assistant", async () => {
     open(maintenancePaths.list.path());
     await screen.findByRole("heading", { level: 1 });
