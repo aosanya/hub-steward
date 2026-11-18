@@ -175,6 +175,7 @@ type FormManager interface {
 
 	UseApprovalRequired(required bool)
 	UseApprovalLimits(l ApprovalLimits)
+	UseInspectorForms(f InspectorForms)
 	FormTypes() []models.FormType
 	UseDefaultMaxFiles(n int)
 
@@ -260,6 +261,8 @@ type FormManager interface {
 
 	ListSubmissionsOfPerson(ctx context.Context, memberID, recordRowID string) ([]models.Submission, error)
 
+	ListInspectableSubmissions(ctx context.Context, inspectorID string) ([]models.Submission, error)
+
 	MarkPaid(ctx context.Context, formID, memberID string, paid bool, markedBy string) (models.Submission, error)
 
 	DecideSubmission(ctx context.Context, formID, memberID string, decision models.Decision, note, decidedBy string, grant ...string) (models.Submission, error)
@@ -308,6 +311,7 @@ type formManager struct {
 	recordWriters RecordWriters
 
 	approvalLimits   ApprovalLimits
+	inspectorForms   InspectorForms
 	approvalRequired atomic.Bool
 	defaultMaxFiles  int
 	formTypes        []models.FormType

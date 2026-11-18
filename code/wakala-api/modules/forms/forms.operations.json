@@ -662,6 +662,18 @@
       ],
       "returns": [{"body": true}]
     },
+    "list_inspectable_submissions": {
+      "method": "GET",
+      "path": "/submissions/inspectable",
+      "call": "ListInspectableSubmissions",
+      "action": "forms.submission.list_inspectable",
+      "title": "List the sends of the permits the caller inspects",
+      "description": "Every send made to a permit whose inspector role the caller holds, across those permits, first sender first. A permit that names no inspector role is never listed, and a role never sees the sends of a permit it does not inspect. The inspector is the caller, resolved from the session. Writing a finding stays with forms.submission.inspect.",
+      "args": [
+        {"from": "caller", "as": "inspector_id", "description": "The inspector, resolved from the session rather than the request."}
+      ],
+      "returns": [{"body": true}]
+    },
     "mark_paid": {
       "method": "PUT",
       "path": "/forms/{form_id}/submissions/{member_id}/paid",
