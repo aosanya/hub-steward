@@ -158,9 +158,12 @@ func invokerFor(op Operation, plan []slot, props []property, method reflect.Valu
 		if err != nil {
 			return nil, err
 		}
+		if err := foldIssueAlias(publishedName(op), known, in); err != nil {
+			return nil, err
+		}
 		for key := range in {
 			if !known[key] {
-				return nil, fmt.Errorf("%s takes no argument %q", publishedName(op), key)
+				return nil, unknownArgument(publishedName(op), key, known)
 			}
 		}
 		for key := range required {
