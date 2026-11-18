@@ -26,7 +26,6 @@ import { loadPerson, PersonPanel } from "./PersonScreen";
 
 type Item = Record<string, unknown>;
 
-
 export const text = (item: Item, key: string) => {
   const value = item[key];
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
