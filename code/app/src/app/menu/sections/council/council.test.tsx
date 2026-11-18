@@ -5,11 +5,11 @@ import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgen
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
 
-const titles = ["Meetings", "Agendas & Minutes", "Resolutions", "Rules", "Committees"];
+const titles = ["Meetings", "Agendas & Minutes", "Resolutions", "Rules", "Committees", "Declarations of interest"];
 
 beforeEach(() => {
   openAgency("town");
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => (name.endsWith("_list") || name.endsWith("_groups") ? { items: [] } : Promise.reject(new Error(`${name}: unknown tool`))));
+  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => (name === "agency_list_declarations" ? { declared: [], not_declared: [], not_declared_count: 0, total: 0, can_read_all: false } : name.endsWith("_list") || name.endsWith("_groups") ? { items: [] } : Promise.reject(new Error(`${name}: unknown tool`))));
 });
 
 afterEach(() => {
@@ -28,7 +28,7 @@ const showItem = (title: string) =>
   );
 
 describe("the Decisions section items", () => {
-  it("lists Meetings, Agendas & Minutes, Resolutions, Rules and Committees in that order", () => {
+  it("lists Meetings, Agendas & Minutes, Resolutions, Rules, Committees and Declarations of interest in that order", () => {
     expect(items.map((item) => item.title)).toEqual(titles);
   });
 
