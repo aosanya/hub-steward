@@ -43,8 +43,18 @@ export const withParcel = (attributesJson: unknown, parcel: string) => {
   return JSON.stringify(parcel.trim() === "" ? others : { ...others, [parcelKey]: parcel.trim() });
 };
 
-export const loadPlaces = () =>
-  loadRecords("assetmanager_asset_list", (place) => ({ name: textOf(place.name), category: joined([textOf(place.category), parcelOf(place.attributes_json)]) }));
+export const propertyKinds = ["Building", "Parcel"];
+
+const isProperty = (asset: Record<string, unknown>) => propertyKinds.some((kind) => kind.toLowerCase() === textOf(asset.category).toLowerCase());
+
+export const loadPlaces = async () => {
+  const assets: Record<string, unknown>[] = itemsOf(await callTool("", "assetmanager_asset_list"));
+  return assets.filter(isProperty).map((place) => ({
+    id: textOf(place.id),
+    name: textOf(place.name),
+    category: joined([textOf(place.category), parcelOf(place.attributes_json)]),
+  }));
+};
 
 export const loadNodeNames = async () => {
   try {

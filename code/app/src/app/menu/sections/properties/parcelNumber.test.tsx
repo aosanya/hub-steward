@@ -32,7 +32,7 @@ beforeEach(() => {
   permissions = ["asset.manage"];
   assets = [
     { id: "a1", name: "Corner plot", category: "Parcel", location_id: "l1", attributes_json: JSON.stringify({ parcel_number: "0123/4/A" }) },
-    { id: "a2", name: "Market square", category: "Square", location_id: "l1" },
+    { id: "a2", name: "Market square", category: "Building", location_id: "l1" },
   ];
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });

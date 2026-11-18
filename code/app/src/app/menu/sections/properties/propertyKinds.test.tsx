@@ -19,6 +19,8 @@ const assets = [
 beforeEach(() => {
   openAgency("town");
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
+    if (name === "agency_get_my_roles") return { permissions: [] };
+    if (name === "agency_list_mounts") return { modules: [{ module: "digitaltwin" }, { module: "assetmanager" }] };
     if (name === "assetmanager_asset_list") return { items: assets };
     throw new Error(`${name}: unknown tool`);
   });

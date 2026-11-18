@@ -23,7 +23,7 @@ const addresses = [
 ];
 
 const places = [
-  { id: "a1", name: "Hársfa Community Hall", category: "Hall" },
+  { id: "a1", name: "Hársfa Community Hall", category: "Building" },
   { id: "a2", name: "Malom Barn", category: "Barn" },
 ];
 

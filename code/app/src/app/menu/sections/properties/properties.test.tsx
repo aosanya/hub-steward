@@ -18,7 +18,7 @@ const locationRead = "assetmanager_location_read";
 
 const assets = [
   { id: "a1", name: "Town hall", category: "Building", location_id: "l2" },
-  { id: "a2", name: "Market square", category: "Square", location_id: "l3" },
+  { id: "a2", name: "Market square", category: "Building", location_id: "l3" },
 ];
 
 const locations = [
@@ -134,7 +134,7 @@ describe("Places", () => {
 
     await screen.findByText("Town hall", { selector: ".ttl" });
     expect(metaOf(rowOf("Town hall"))).toEqual(["Building"]);
-    expect(metaOf(rowOf("Market square"))).toEqual(["Square"]);
+    expect(metaOf(rowOf("Market square"))).toEqual(["Building"]);
     expect(callsTo(assetList)).toHaveLength(1);
     expect(callsTo(locationList)).toHaveLength(0);
   });
