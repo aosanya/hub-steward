@@ -179,3 +179,7 @@ export const owedTotal = (bills: Item[]) => {
 };
 
 export const owedWords = ({ amount, payers }: { amount: number; payers: number }, unit = "") => `Owed in total: ${moneyWords(amount, unit)} · ${payers} ${payers === 1 ? "payer" : "payers"}`;
+
+export const instantOf = (day: string) => (day ? `${day}T00:00:00Z` : undefined);
+
+export const withoutBlanks = (fields: Record<string, unknown>) => Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined && value !== ""));

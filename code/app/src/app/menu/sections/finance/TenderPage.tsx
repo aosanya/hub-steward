@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMay } from "../../../../features/agency/useMay";
 import { Button } from "../../../../shared/ui/Button";
 import { Chip } from "../../../../shared/ui/Chip";
 import { Field } from "../../../../shared/ui/Field";
@@ -8,12 +9,16 @@ import { Section } from "../../../../shared/ui/Section";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
-import { ActButton, ChatAboutFinance, EditAct, FactsCard, FinanceHead, useFinanceEdit } from "./FinanceRecord";
-import { dayWords, listOf, moneyWords, quoteRow, text, tools, type Item } from "./financeData";
+import { useOpenFrom } from "../../useOpenFrom";
+import { ActButton, ChatAboutFinance, EditAct, FinanceHead, useFinanceEdit } from "./FinanceRecord";
+import { dayWords, instantOf, listOf, moneyWords, quoteRow, text, tools, withoutBlanks, type Item } from "./financeData";
+import { financePaths } from "./paths";
 
 export const manageCode = "accounting.manage";
 
 const lowestWords = "Lowest";
+
+const chevron = "›";
 
 const tenderFields: EditField[] = [
   { label: "Title", key: "title", required: true },
@@ -33,10 +38,6 @@ const facts: [string, string][] = [
   ["Budget line", "budgetLine"],
   ["Closes", "closes"],
 ];
-
-const instantOf = (day: string) => (day ? `${day}T00:00:00Z` : undefined);
-
-const withoutBlanks = (fields: Record<string, unknown>) => Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined && value !== ""));
 
 const quoteMeta = (quote: Item, unit: string) =>
   [moneyWords(text(quote, "amount"), unit), text(quote, "valid_until") ? `valid until ${dayWords(text(quote, "valid_until"))}` : "", text(quote, "note")].filter(Boolean).join(" · ");
@@ -73,32 +74,38 @@ type Props = { tender: Item; unit: string; back: string; reload: () => Promise<I
 
 export function TenderPage({ tender, unit, back, reload, onSaved }: Props) {
   const edit = useFinanceEdit();
+  const may = useMay(manageCode);
+  const open = useOpenFrom("Procurement");
   const [adding, setAdding] = useState(false);
+  const [quoteEditing, setQuoteEditing] = useState<Item | null>(null);
   const id = text(tender, "id");
   const quotes = Array.isArray(tender.quotes) ? (tender.quotes as Item[]) : [];
   const lowest = Math.min(...quotes.map((quote) => Number(quote.amount)));
   const closes = text(tender, "closes");
   const line = [text(tender, "status"), closes ? `Closes ${closes}` : ""].filter(Boolean).join(" · ");
-  const rows = quotes.map((quote) => (
-    <div key={text(quote, "id")}>
-      <ListRow
-        title={quoteRow(quote).supplier}
-        meta={quoteMeta(quote, unit)}
-        end={quotes.length > 1 && Number(quote.amount) === lowest ? <Chip tone="success">{lowestWords}</Chip> : undefined}
-      />
-      <MenuEditForm
-        item={quote}
-        id={text(quote, "id")}
-        idArg="quoteID"
-        tool={tools.quoteUpdate}
-        permission={manageCode}
-        fields={quoteFields}
-        keep={["supplier", "amount", "note", "valid_until"]}
-        readAgain={() => readQuote(id, quote)}
-        onSaved={onSaved}
-      />
-    </div>
-  ));
+  const budgetID = text(tender, "budget_id");
+  const factRows = facts
+    .filter(([, key]) => text(tender, key) !== "")
+    .map(([label, key]) =>
+      key === "budgetLine" && budgetID ? (
+        <ListRow key={label} title={label} meta={text(tender, key)} end={chevron} onClick={() => open(`${financePaths.budget.path()}?line=${budgetID}`)} />
+      ) : (
+        <ListRow key={label} title={label} meta={text(tender, key)} />
+      ),
+    );
+  const tail = (quote: Item) => {
+    const cheapest = quotes.length > 1 && Number(quote.amount) === lowest;
+    if (!cheapest) return may ? chevron : undefined;
+    return may ? (
+      <>
+        <Chip tone="success">{lowestWords}</Chip>
+        <span aria-hidden="true">{chevron}</span>
+      </>
+    ) : (
+      <Chip tone="success">{lowestWords}</Chip>
+    );
+  };
+  const rows = quotes.map((quote) => <ListRow key={text(quote, "id")} title={quoteRow(quote).supplier} meta={quoteMeta(quote, unit)} end={tail(quote)} onClick={may ? () => setQuoteEditing(quote) : undefined} />);
   return (
     <div className="person-page">
       <ChatAboutFinance about={{ kind: "tender", id, name: text(tender, "title") }} back={`${back}?tender=${id}`} />
@@ -123,15 +130,36 @@ export function TenderPage({ tender, unit, back, reload, onSaved }: Props) {
             onCancel={edit.stop}
           />
         ) : (
-          <FactsCard word="Tender" item={tender} facts={facts} foot={<EditAct permission={manageCode} onEdit={edit.start} />} />
+          <Section word="Tender" plain rows={factRows} foot={<EditAct permission={manageCode} onEdit={edit.start} />} />
         )}
-        <Section
-          word="Quotes"
-          plain
-          rows={rows}
-          empty={{ words: "No quotes yet." }}
-          foot={adding ? null : <ActButton permission={manageCode} label="Add quote" onAct={() => setAdding(true)} />}
-        />
+        {quoteEditing ? (
+          <MenuEditForm
+            item={quoteEditing}
+            id={text(quoteEditing, "id")}
+            idArg="quoteID"
+            tool={tools.quoteUpdate}
+            permission={manageCode}
+            fields={quoteFields}
+            keep={["supplier", "amount", "note", "valid_until"]}
+            readAgain={() => readQuote(id, quoteEditing)}
+            bare
+            openCount={1}
+            onSaved={() => {
+              setQuoteEditing(null);
+              onSaved();
+            }}
+            onCancel={() => setQuoteEditing(null)}
+          />
+        ) : (
+          <Section
+            word="Quotes"
+            icon="document"
+            all
+            rows={rows}
+            empty={{ words: "No quotes yet." }}
+            foot={adding ? null : <ActButton permission={manageCode} label="Add quote" onAct={() => setAdding(true)} />}
+          />
+        )}
         {adding ? <AddQuoteForm tenderID={id} onAdded={onSaved} /> : null}
       </div>
     </div>

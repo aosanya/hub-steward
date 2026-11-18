@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useWord, type Wording } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
@@ -106,6 +107,7 @@ function AddLineForm({ onSaved, word }: { onSaved: () => void; word: Wording }) 
 export function BudgetScreen() {
   const word = useWord("accounting");
   const unit = unitOf(word);
+  const [search] = useSearchParams();
   const [version, setVersion] = useState(0);
   const [edited, setEdited] = useState(0);
   const [adding, setAdding] = useState(false);
@@ -128,6 +130,7 @@ export function BudgetScreen() {
       title={word("Budget")}
       withTabs
       bandless
+      startAt={search.get("line") ?? undefined}
       listKey={`${edited}${unit}`}
       detailKey={`${edited}${unit}`}
       list={{ title: word("Budget"), tool: tools.budgetList, load, fields: { title: "name", meta: "meta" }, empty: { ...homeEmpty(`No ${word("Budget lines").toLowerCase()} yet.`), children: addButton } }}

@@ -144,8 +144,7 @@ describe("editing a tender and its quotes from the tender detail", () => {
   it("sends a quote with its amount as a number and its valid-until instant as recorded", async () => {
     await showTender();
 
-    const buttons = await screen.findAllByRole("button", { name: "Edit" });
-    await userEvent.click(buttons[buttons.length - 1]);
+    await userEvent.click(await screen.findByRole("button", { name: /Sample Roofers/ }));
     await replace("Amount", "7900");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
@@ -231,8 +230,7 @@ describe("correcting a date from the edit forms", () => {
   it("sends a corrected valid-until day of a quote as an instant", async () => {
     await showTender();
 
-    const buttons = await screen.findAllByRole("button", { name: "Edit" });
-    await userEvent.click(buttons[buttons.length - 1]);
+    await userEvent.click(await screen.findByRole("button", { name: /Sample Roofers/ }));
     setDay("Valid until", "2026-12-10");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
@@ -245,8 +243,7 @@ describe("correcting a date from the edit forms", () => {
     quotes = [{ ...quotes[0], valid_until: "2026-11-30T17:00:00Z" }];
     await showTender();
 
-    const buttons = await screen.findAllByRole("button", { name: "Edit" });
-    await userEvent.click(buttons[buttons.length - 1]);
+    await userEvent.click(await screen.findByRole("button", { name: /Sample Roofers/ }));
     await replace("Note", "scaffolding extra");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 

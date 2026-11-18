@@ -10,7 +10,7 @@ import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
-import { dayWords, homeEmpty, listOf, tenderRow, text, tools, unitOf, type Item } from "./financeData";
+import { dayWords, homeEmpty, instantOf, listOf, tenderRow, text, tools, unitOf, withoutBlanks, type Item } from "./financeData";
 import { financePaths } from "./paths";
 import { manageCode, TenderPage } from "./TenderPage";
 
@@ -36,10 +36,6 @@ const useCanManage = () => {
   return can;
 };
 
-const instantOf = (day: string) => (day ? `${day}T00:00:00Z` : undefined);
-
-const withoutBlanks = (fields: Record<string, unknown>) => Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined && value !== ""));
-
 const loadTender = async (id: string) => {
   const [reply, quotes] = await Promise.all([
     callTool("", tools.tenderRead, { tenderID: id }) as Promise<Item | null>,
@@ -52,6 +48,7 @@ const loadTender = async (id: string) => {
   const closes = text(tender, "closes_at");
   return {
     id,
+    budget_id: budgetID,
     title: row.title,
     description: text(tender, "description"),
     budgetLine: text(line ?? {}, "name"),
