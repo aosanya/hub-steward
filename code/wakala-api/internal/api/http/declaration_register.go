@@ -20,6 +20,7 @@ const (
 	declarationListAction = "instance.declaration.list"
 	declarationListTool   = "agency_list_declarations"
 	declarationStepCode   = "WI-56-1"
+	declarationFlowCode   = "W-56"
 )
 
 type declaredRow struct {
@@ -207,21 +208,51 @@ func declarationStepOf(ctx context.Context, m mwanachamaagency.AgencyManager) (a
 	if err != nil {
 		return none(err)
 	}
+	flows, err := m.ListWorkflows(ctx, draftID, mwanachamaagency.WorkflowFilter{})
+	if err != nil {
+		return none(err)
+	}
+	s, ok := declarationStepIn(steps, flows)
+	if !ok {
+		return none(nil)
+	}
+	record, ok := recordOfStep(records, s, names[s.ID])
+	if !ok {
+		return none(nil)
+	}
+	drafts, err := draftsOfEveryPublication(ctx, m)
+	if err != nil {
+		return none(err)
+	}
+	return s, record, drafts, true, nil
+}
+
+func declarationStepIn(steps []agencymodels.WorkItem, flows []agencymodels.Workflow) (agencymodels.WorkItem, bool) {
 	for _, s := range steps {
-		if s.Deleted || s.Code != declarationStepCode {
+		if !s.Deleted && s.Code == declarationStepCode {
+			return s, true
+		}
+	}
+	flowID := ""
+	for _, f := range flows {
+		if !f.Deleted && f.Code == declarationFlowCode {
+			flowID = f.ID
+		}
+	}
+	if flowID == "" {
+		return agencymodels.WorkItem{}, false
+	}
+	first := agencymodels.WorkItem{}
+	found := false
+	for _, s := range steps {
+		if s.Deleted || s.WorkflowID != flowID || !stepKeepsRecord(s) {
 			continue
 		}
-		record, ok := recordOfStep(records, s, names[s.ID])
-		if !ok {
-			return none(nil)
+		if !found || s.Ordinality < first.Ordinality {
+			first, found = s, true
 		}
-		drafts, err := draftsOfEveryPublication(ctx, m)
-		if err != nil {
-			return none(err)
-		}
-		return s, record, drafts, true, nil
 	}
-	return none(nil)
+	return first, found
 }
 
 func (d *Deps) declarationHolders(ctx context.Context, m mwanachamaagency.AgencyManager, instanceID, stepRoleID string) ([]string, error) {
