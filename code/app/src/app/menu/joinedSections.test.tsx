@@ -15,7 +15,7 @@ const Where = () => {
 
 beforeEach(() => {
   openAgency("town");
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => (name.includes("_list") ? { items: [] } : Promise.reject(new Error(`${name}: unknown tool`))));
+  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => (name === "agency_get_my_roles" ? { permissions: ["resident.read"] } : name.includes("_list") ? { items: [] } : Promise.reject(new Error(`${name}: unknown tool`))));
 });
 
 afterEach(() => {
@@ -63,7 +63,7 @@ describe.each(cases)("the $section submenu $submenu", ({ id, section: title, sub
   it("opens its screen and Back returns to the section", async () => {
     section(id);
 
-    await userEvent.click(screen.getByRole("button", { name: new RegExp(submenu) }));
+    await userEvent.click(await screen.findByRole("button", { name: new RegExp(submenu) }));
     await waitFor(() => expect(landed).toBe(opens));
     await userEvent.click(await screen.findByRole("button", { name: new RegExp(title.replace("&", "\\&")) }));
 

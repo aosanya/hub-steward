@@ -1,7 +1,9 @@
+import { vi } from "vitest";
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { AgencyView } from "../../features/agency/modules";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
+import * as mcp from "../../shared/wakala/mcp";
 import { MenuRows } from "./MenuRows";
 import { SectionPage } from "./SectionPage";
 
@@ -15,6 +17,7 @@ beforeEach(() => openAgency("town"));
 afterEach(() => {
   cleanup();
   forgetOpenAgency();
+  vi.restoreAllMocks();
 });
 
 const home = (agency: AgencyView) =>
@@ -58,10 +61,11 @@ describe("a section named by its mount", () => {
   });
 
   it("titles the section screen with the mount's name and keeps its submenus", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue({ permissions: ["resident.read"] });
     section("residents", school({ actor: ["Students"] }));
 
     expect(await screen.findByRole("heading", { name: "Students" })).toBeInTheDocument();
-    expect(screen.getByText("All People")).toBeInTheDocument();
+    expect(await screen.findByText("All People")).toBeInTheDocument();
   });
 
   it("titles the section screen with the old words when the mount has no name", async () => {

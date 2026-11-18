@@ -1,7 +1,9 @@
+import { vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { AgencyModule, AgencyView } from "../../../../features/agency/modules";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
+import * as mcp from "../../../../shared/wakala/mcp";
 import { SectionPage } from "../../SectionPage";
 
 const town = (modules: AgencyModule[]): AgencyView => ({ name: "Zöldhalom", modules });
@@ -19,11 +21,15 @@ const showResidentsMenu = (agency: AgencyView) =>
     </MemoryRouter>,
   );
 
-beforeEach(() => openAgency("town"));
+beforeEach(() => {
+  openAgency("town");
+  vi.spyOn(mcp, "callTool").mockResolvedValue({ permissions: ["resident.read"] });
+});
 
 afterEach(() => {
   cleanup();
   forgetOpenAgency();
+  vi.restoreAllMocks();
 });
 
 describe("the Residents submenu rows", () => {

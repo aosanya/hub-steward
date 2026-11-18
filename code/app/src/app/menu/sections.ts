@@ -11,7 +11,7 @@ import { items as servicesItems } from "./sections/services";
 import { items as settingsItems } from "./sections/settings";
 import { items as staffItems } from "./sections/staff";
 
-export type MenuItem = { title: string; label?: string; wordIn?: string; path?: () => string };
+export type MenuItem = { title: string; label?: string; wordIn?: string; needs?: string; path?: () => string };
 
 export type MenuSection = SectionHead & { items: MenuItem[] };
 

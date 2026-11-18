@@ -9,11 +9,13 @@ import { AllPeopleScreen, CommunicationsScreen, GroupsScreen, HouseholdsScreen, 
 import { residentPaths } from "./paths";
 import { SearchScreen } from "./SearchScreen";
 
+export const residentRead = "resident.read";
+
 export const items = [
-  { title: "Search", path: () => residentPaths.search.path() },
-  { title: "All People", wordIn: "People", path: () => residentPaths.people.path() },
+  { title: "Search", needs: residentRead, path: () => residentPaths.search.path() },
+  { title: "All People", wordIn: "People", needs: residentRead, path: () => residentPaths.people.path() },
   { title: "Households", path: () => residentPaths.households.path() },
-  { title: "Registrations", path: () => residentPaths.registrations.path() },
+  { title: "Registrations", needs: residentRead, path: () => residentPaths.registrations.path() },
   { title: "Groups & Associations", path: () => residentPaths.groups.path() },
   { title: "Communications", path: () => residentPaths.communications.path() },
   { title: "Businesses", path: () => residentPaths.businesses.path() },
