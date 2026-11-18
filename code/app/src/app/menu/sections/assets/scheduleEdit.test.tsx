@@ -12,8 +12,9 @@ let called: MockInstance<typeof mcp.callTool>;
 let permissions: string[];
 let stopRefusal = "";
 let landed = "";
+let landedSearch = "";
 
-const schedule = {
+const monthly = {
   id: "s1",
   title: "Monthly street light check",
   description: "Walk the main street at dusk",
@@ -24,6 +25,10 @@ const schedule = {
   assignee_id: "lighting",
   next_due_at: "2026-12-01T00:00:00Z",
 };
+
+const weekly = { ...monthly, title: "Weekly litter collection", schedule_rule: "FREQ=WEEKLY;BYDAY=MO", schedule_start: "2026-11-16T07:00:00Z" };
+
+let schedule: Record<string, string> = monthly;
 
 const answer = async (name: string, args: unknown) => {
   if (name === "agency_get_my_roles") return { permissions };
@@ -38,7 +43,9 @@ const answer = async (name: string, args: unknown) => {
 };
 
 const Where = () => {
-  landed = useLocation().pathname;
+  const here = useLocation();
+  landed = here.pathname;
+  landedSearch = here.search;
   return null;
 };
 
@@ -47,6 +54,7 @@ beforeEach(() => {
   setWide(true);
   permissions = ["task.edit"];
   stopRefusal = "";
+  schedule = monthly;
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
 
@@ -160,7 +168,138 @@ describe("the edit screen for a schedule", () => {
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
     await waitFor(() => expect(landed).toBe(assetPaths.maintenance.path()));
+    expect(landedSearch).toContain("item=s1");
     expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(0);
     expect(callsTo("taskmanager_repeating_task_stop")).toHaveLength(0);
+  });
+
+  it("creates the new schedule once and only retries the stop after a refused stop", async () => {
+    stopRefusal = "not allowed to stop it";
+    await openEdit();
+
+    await userEvent.click(screen.getByLabelText("Every 2 weeks"));
+    await userEvent.click(screen.getByLabelText("Friday"));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    await screen.findByText(/the new schedule was saved but the old one is still running/i);
+    expect(screen.queryByRole("button", { name: "Save" })).toBeNull();
+
+    stopRefusal = "";
+    await userEvent.click(screen.getByRole("button", { name: "Stop the old schedule" }));
+
+    await waitFor(() => expect(landed).toBe(assetPaths.maintenance.path()));
+    expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(1);
+    expect(callsTo("taskmanager_repeating_task_stop")).toHaveLength(2);
+  });
+
+  it("keeps refusing in plain words while the stop is still refused and never creates again", async () => {
+    stopRefusal = "not allowed to stop it";
+    await openEdit();
+
+    await userEvent.click(screen.getByLabelText("Every 2 weeks"));
+    await userEvent.click(screen.getByLabelText("Friday"));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    await screen.findByText(/the new schedule was saved/i);
+    await userEvent.click(screen.getByRole("button", { name: "Stop the old schedule" }));
+    await waitFor(() => expect(callsTo("taskmanager_repeating_task_stop")).toHaveLength(2));
+
+    expect(await screen.findByText(/the new schedule was saved/i)).toBeTruthy();
+    expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(1);
+  });
+});
+
+describe("the choice of how often", () => {
+  it("shows only the day of the month for a monthly schedule", async () => {
+    await openEdit();
+
+    expect(screen.getByLabelText("Day of the month")).toBeTruthy();
+    expect(screen.queryByLabelText("Wednesday")).toBeNull();
+  });
+
+  it("shows only the weekday for a weekly schedule and swaps the field when the choice changes", async () => {
+    schedule = weekly;
+    await openEdit();
+
+    expect(screen.getByLabelText("Monday")).toBeTruthy();
+    expect(screen.queryByLabelText("Day of the month")).toBeNull();
+
+    await userEvent.click(screen.getByLabelText("Every month"));
+
+    expect(screen.getByLabelText("Day of the month")).toBeTruthy();
+    expect(screen.queryByLabelText("Monday")).toBeNull();
+  });
+
+  it("refuses a weekly schedule with no weekday and calls nothing", async () => {
+    await openEdit();
+
+    await userEvent.click(screen.getByLabelText("Every week"));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByText("Choose a weekday")).toBeTruthy();
+    expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(0);
+    expect(callsTo("taskmanager_repeating_task_stop")).toHaveLength(0);
+  });
+
+  it("refuses a monthly schedule with no day of the month and calls nothing", async () => {
+    schedule = weekly;
+    await openEdit();
+
+    await userEvent.click(screen.getByLabelText("Every month"));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByText("Enter a day of the month from 1 to 31")).toBeTruthy();
+    expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(0);
+  });
+
+  it.each(["0", "32", "-3"])("refuses the day of the month %s and calls nothing", async (day) => {
+    await openEdit();
+
+    const field = screen.getByLabelText("Day of the month");
+    await userEvent.clear(field);
+    await userEvent.type(field, day);
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByText("Enter a day of the month from 1 to 31")).toBeTruthy();
+    expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(0);
+  });
+});
+
+describe("when the new schedule starts", () => {
+  it("keeps the time of day of the old start when the start day is changed", async () => {
+    schedule = weekly;
+    await openEdit();
+
+    const start = screen.getByLabelText("Starting on");
+    await userEvent.clear(start);
+    await userEvent.type(start, "2026-12-07");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(1));
+    const sent = callsTo("taskmanager_repeating_task_create")[0][2] as { schedule: { start: string } };
+    expect(sent.schedule.start).toBe("2026-12-07T07:00:00Z");
+  });
+
+  it("starts the day after the job the old schedule already made, so that job is not made twice", async () => {
+    schedule = { ...weekly, last_due_at: "2026-11-23T07:00:00Z", last_task_id: "j1" };
+    await openEdit();
+
+    await userEvent.click(screen.getByLabelText("Tuesday"));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(1));
+    const sent = callsTo("taskmanager_repeating_task_create")[0][2] as { schedule: { start: string; rule: string } };
+    expect(sent.schedule.start).toBe("2026-11-24T07:00:00Z");
+    expect(sent.schedule.rule).toBe("FREQ=WEEKLY;BYDAY=TU");
+  });
+
+  it("keeps the old start when the old schedule has made no job yet", async () => {
+    schedule = weekly;
+    await openEdit();
+
+    await userEvent.click(screen.getByLabelText("Tuesday"));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(1));
+    const sent = callsTo("taskmanager_repeating_task_create")[0][2] as { schedule: { start: string } };
+    expect(sent.schedule.start).toBe("2026-11-16T07:00:00Z");
   });
 });
