@@ -7,5 +7,6 @@ export const issuePaths = {
   serviceTypes: screen("/menu/issues/service-types"),
   wishes: screen("/menu/issues/wishes"),
   sendWish: screen("/menu/issues/send-wish"),
+  rounds: screen("/menu/issues/rounds-by-neighbourhood"),
   issue: screen("/menu/issues/all/:id"),
 };

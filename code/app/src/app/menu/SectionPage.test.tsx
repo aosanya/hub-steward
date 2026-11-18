@@ -35,7 +35,7 @@ describe("a menu section's screen", () => {
     section("issues");
 
     expect(screen.getByRole("heading", { name: "Issues & Requests" })).toBeInTheDocument();
-    ["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types", "Wishes", "Send a Wish"].forEach((title) => expect(screen.getByText(title)).toBeInTheDocument());
+    ["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types", "Wishes", "Send a Wish", "Rounds by Neighbourhood"].forEach((title) => expect(screen.getByText(title)).toBeInTheDocument());
   });
 
   it("lists Send a Wish as the seventh Issues & Requests row, after Wishes", () => {
@@ -43,7 +43,7 @@ describe("a menu section's screen", () => {
 
     const rows = Array.from(container.querySelectorAll(".rows .ttl")).map((title) => title.textContent);
 
-    expect(rows).toEqual(["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types", "Wishes", "Send a Wish"]);
+    expect(rows).toEqual(["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types", "Wishes", "Send a Wish", "Rounds by Neighbourhood"]);
   });
 
   it("opens Wishes on the wishes screen of the Issues & Requests menu", async () => {

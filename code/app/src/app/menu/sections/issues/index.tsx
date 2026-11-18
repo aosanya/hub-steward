@@ -2,6 +2,7 @@ import { Route } from "react-router-dom";
 import { AllIssuesScreen, AssignedToMeScreen, MapViewScreen, ServiceTypesScreen } from "./IssueScreens";
 import { IssueScreen } from "./IssueScreen";
 import { issuePaths } from "./paths";
+import { RoundsByNeighbourhoodScreen } from "./RoundsByNeighbourhoodScreen";
 import { SendWishScreen } from "./SendWishScreen";
 import { WishesScreen } from "./WishesScreen";
 
@@ -10,6 +11,7 @@ export { SendWishScreen } from "./SendWishScreen";
 export { AllIssuesScreen, AssignedToMeScreen, MapViewScreen, ServiceTypesScreen } from "./IssueScreens";
 export { IssueScreen } from "./IssueScreen";
 export { issuePaths } from "./paths";
+export { RoundsByNeighbourhoodScreen } from "./RoundsByNeighbourhoodScreen";
 
 export const items = [
   { title: "All Issues", path: () => issuePaths.all.path() },
@@ -18,6 +20,7 @@ export const items = [
   { title: "Service Types", path: () => issuePaths.serviceTypes.path() },
   { title: "Wishes", path: () => issuePaths.wishes.path() },
   { title: "Send a Wish", path: () => issuePaths.sendWish.path() },
+  { title: "Rounds by Neighbourhood", path: () => issuePaths.rounds.path() },
 ];
 
 export const routes = () => (
@@ -29,5 +32,6 @@ export const routes = () => (
     <Route path={issuePaths.serviceTypes.pattern} element={<ServiceTypesScreen />} />
     <Route path={issuePaths.wishes.pattern} element={<WishesScreen />} />
     <Route path={issuePaths.sendWish.pattern} element={<SendWishScreen />} />
+    <Route path={issuePaths.rounds.pattern} element={<RoundsByNeighbourhoodScreen />} />
   </>
 );
