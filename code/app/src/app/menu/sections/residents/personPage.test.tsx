@@ -129,7 +129,7 @@ describe("the wide pane titles the resident with the name alone", () => {
 describe("the section heading is the large text and rows are divided", () => {
   it("styles the heading larger than the row titles inside a square card with divided header, rows and footer", () => {
     const css = readFileSync("src/shared/ui/section.css", "utf8");
-    expect(css).toMatch(/\.sec-title \{[^}]*font-size: 1\.25rem/);
+    expect(css).toMatch(/\.sec-title \{[^}]*font-size: 1rem/);
     expect(css).toMatch(/\.sec \{[^}]*border-radius: 0/);
     expect(css).toMatch(/\.sec-head \{[^}]*box-shadow:/);
     expect(css).toMatch(/\.sec \.row \.ttl \{[^}]*font-weight: 400/);
