@@ -38,6 +38,7 @@ const cases = [
   { id: "council", section: "Decisions", submenu: "Rules", opens: "/a/town/menu/council/bylaws" },
   { id: "council", section: "Decisions", submenu: "Committees", opens: "/a/town/menu/council/committees" },
   { id: "finance", section: "Finance", submenu: "Budget", opens: "/a/town/menu/finance/budget" },
+  { id: "finance", section: "Finance", submenu: "Spending by Neighbourhood", opens: "/a/town/menu/finance/spending-by-neighbourhood" },
   { id: "finance", section: "Finance", submenu: "Revenue & Billing", opens: "/a/town/menu/finance/revenue-and-billing" },
   { id: "finance", section: "Finance", submenu: "Procurement", opens: "/a/town/menu/finance/procurement" },
   { id: "finance", section: "Finance", submenu: "Payments", opens: "/a/town/menu/finance/payments" },

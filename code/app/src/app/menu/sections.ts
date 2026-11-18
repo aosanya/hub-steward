@@ -29,7 +29,7 @@ const itemsOf: Record<string, MenuItem[]> = {
   assets: assetItems,
   council: joined(["Meetings", "Agendas & Minutes", "Resolutions", "Rules", "Committees"], councilItems),
   staff: staffItems,
-  finance: joined(["Budget", "Revenue & Billing", "Procurement", "Payments", "Financial Reports", "National Report"], financeItems),
+  finance: joined(["Budget", "Spending by Neighbourhood", "Revenue & Billing", "Procurement", "Payments", "Financial Reports", "National Report"], financeItems),
   settings: joined(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "Audit Log"], settingsItems),
 };
 
