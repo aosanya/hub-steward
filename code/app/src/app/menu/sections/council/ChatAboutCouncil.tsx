@@ -2,7 +2,7 @@ import { useChatAboutSubject } from "../residents/SubjectChat";
 import { text, type Item } from "./councilData";
 import { councilPaths } from "./paths";
 
-type Home = "meetings" | "agendas" | "resolutions" | "bylaws" | "committees";
+type Home = "meetings" | "agendas" | "resolutions" | "bylaws" | "committees" | "declarations";
 
 const backTo = (home: Home, id: string) => `${councilPaths[home].path()}?id=${id}`;
 
@@ -23,5 +23,10 @@ export function ChatAboutBylaw({ bylaw }: { bylaw: Item }) {
 
 export function ChatAboutCommittee({ committee }: { committee: Item }) {
   useChatAboutSubject({ kind: "committee", id: text(committee, "id"), name: text(committee, "name") }, backTo("committees", text(committee, "id")));
+  return null;
+}
+
+export function ChatAboutDeclaration({ declaration }: { declaration: Item }) {
+  useChatAboutSubject({ kind: "declaration", id: text(declaration, "id"), name: text(declaration, "name") }, backTo("declarations", text(declaration, "id")));
   return null;
 }

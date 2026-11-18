@@ -277,6 +277,15 @@ const committee: Subject = {
   empty: "its details and members",
 };
 
+const declaration: Subject = {
+  reads: { agency_list_declarations: {} },
+  steps: { agency_list_declarations: "Reading the declarations of interest" },
+  choices: ["Declaration"],
+  reading: "Declaration means agency_list_declarations: find the row whose row_id is the id given for this declaration and answer with the member, the date declared and each question with its answer, and say nothing about anyone else.",
+  overview: "call agency_list_declarations and answer with who declared, when, and what each answer says for this declaration",
+  empty: "what they declared",
+};
+
 const periodOf = (index: number): Scoped[string] => (about) => about.id.split("~")[index] ?? "";
 
 const report: Subject = {
@@ -510,7 +519,7 @@ const backlogIssue: Subject = {
   empty: "its details and Log",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, rounds, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, agency: agencyProfile, "record-details": recordDetails, backlogs, backlog, "backlog-issue": backlogIssue };
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, rounds, meeting, resolution, bylaw, committee, declaration, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, agency: agencyProfile, "record-details": recordDetails, backlogs, backlog, "backlog-issue": backlogIssue };
 
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);

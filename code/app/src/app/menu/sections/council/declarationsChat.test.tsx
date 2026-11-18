@@ -68,7 +68,7 @@ describe("the bar and Chat on the Declarations of interest screen", () => {
     await screen.findByText("About Zsofia Varga");
     expect(screen.getByRole("textbox", { name: "Ask about Zsofia Varga" })).toBeInTheDocument();
     expect(carriedChatAbout()).toEqual({ kind: "declaration", id: "d1", name: "Zsofia Varga" });
-    expect(carriedChatFrom()).toBe(councilPaths.declarations.path());
+    expect(carriedChatFrom()).toBe(`${councilPaths.declarations.path()}?id=d1`);
   });
 
   it("opens the assistant about the declaration chosen on a phone", async () => {
