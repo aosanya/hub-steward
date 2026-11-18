@@ -137,7 +137,7 @@ describe("the header line on a wide window", () => {
   it("dissolves the headline row and sends Actions to the right end of the line", () => {
     const block = wideBlock();
     expect(block).toMatch(/\.frame \.head(-line)?[^{]*\{[^}]*display: contents/);
-    expect(block).toMatch(/\.frame \.actions\s*\{[^}]*margin-left: auto/);
+    expect(block).toMatch(/\.frame \.actions:not\(\.start\)\s*\{[^}]*margin-left: auto/);
   });
 
   it("keeps the line in order: title, then Search or the Smart chip and rule, then the count, then the switch, then Actions, with the board after", () => {
@@ -145,7 +145,7 @@ describe("the header line on a wide window", () => {
     expect(block).toMatch(/\.frame \.body > \*\s*\{[^}]*order: 3/);
     expect(block).toMatch(/\.frame \.body > \.count\s*\{[^}]*order: 1[^}]*margin-left: auto/);
     expect(block).toMatch(/\.frame \.body:has\(> \.filter-bar, > \.seg\) > \.seg\s*\{[^}]*order: 1/);
-    expect(block).toMatch(/\.frame \.actions\s*\{[^}]*order: 2/);
+    expect(block).toMatch(/\.frame \.actions:not\(\.start\)\s*\{[^}]*order: 2/);
   });
 
   it("sizes the List | Board switch to its content on that line", () => {
