@@ -6,7 +6,9 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuWindow } from "../../MenuWindow";
 import { CatalogueWindow } from "../services/CatalogueEntry";
+import { useSearchParams } from "react-router-dom";
 import { IssuePage } from "./IssuePage";
+import { issueParam } from "./ChatAboutIssue";
 import { withStatus } from "./issueStatus";
 import { nearbyIssues, nearbyTool } from "./nearbyIssues";
 import { useReplyDrafts } from "./useReplyDrafts";
@@ -55,6 +57,7 @@ type WindowProps = {
 export function IssueWindow({ title, tool, empty, fetch, fields = placeFields, end = statusChip, loadingWords, failedWords }: WindowProps) {
   const seen = useRef(new Map<string, Item>());
   const replies = useReplyDrafts();
+  const startAt = useSearchParams()[0].get(issueParam) ?? undefined;
   const loadList = async () => {
     const issues = withPlace(await withStatus(await fetch()));
     seen.current = new Map(issues.map((issue) => [text(issue, "id"), issue]));
@@ -72,7 +75,7 @@ export function IssueWindow({ title, tool, empty, fetch, fields = placeFields, e
       return <IssuePage key={issue.id} item={item} issue={issue} replies={replies} />;
     },
   };
-  return <MenuWindow title={title} withTabs bandless list={list} detail={detail} />;
+  return <MenuWindow title={title} withTabs bandless startAt={startAt} list={list} detail={detail} />;
 }
 
 export function AllIssuesScreen() {

@@ -409,7 +409,39 @@ const service: Subject = {
   empty: "its summary and form",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service };
+const issue: Subject = {
+  reads: {
+    forms_catalog_reply_list: { raisedItemID: byId },
+    forms_catalog_board_item_read: { boardItemID: extraOf("board") },
+  },
+  steps: {
+    forms_catalog_reply_list: "Reading the replies",
+    forms_catalog_board_item_read: "Reading the wish it is grouped under",
+  },
+  choices: ["Details", "Replies"],
+  reading:
+    "Details are given to you in this conversation, so answer them without a tool; when it is grouped under a wish, forms_catalog_board_item_read reads that wish. Replies means forms_catalog_reply_list. Never say who raised it.",
+  overview: "call forms_catalog_reply_list and answer with its details and how many replies there are and what the most recent says",
+  empty: "its details and replies",
+};
+
+const wish: Subject = {
+  reads: {
+    forms_catalog_board_item_read: { boardItemID: byId },
+    forms_catalog_endorsement_count: { subject_id: byId },
+  },
+  steps: {
+    forms_catalog_board_item_read: "Reading the wish",
+    forms_catalog_endorsement_count: "Counting who said Me too",
+  },
+  choices: ["Details", "Raised by", "Said Me too"],
+  reading:
+    "Details and Raised by mean forms_catalog_board_item_read, which says how many people raised it and its outcome, and Said Me too means forms_catalog_endorsement_count. Never name a person.",
+  overview: "call forms_catalog_board_item_read and forms_catalog_endorsement_count at once and answer with its title, how many people raised it, how many said Me too and its outcome",
+  empty: "its details, who raised it and who said Me too",
+};
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish };
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 
@@ -455,7 +487,7 @@ const invitation = (about: ChatAbout) => `What would you like to see about ${abo
 
 const factsOf = (about: ChatAbout) => {
   if (about.kind === "registration") return ` The request: ${about.name} asked to join ${about.extra?.group ?? "a group"}${about.extra?.asked ? ` on ${about.extra.asked}` : ""}.`;
-  if (about.kind === "business" || about.kind === "trader" || about.kind === "integration" || about.kind === "ai-agent") return about.extra?.details ? ` What is on its page: ${about.extra.details}.` : "";
+  if (about.kind === "business" || about.kind === "trader" || about.kind === "integration" || about.kind === "ai-agent" || about.kind === "issue") return about.extra?.details ? ` What is on its page: ${about.extra.details}.` : "";
   return "";
 };
 

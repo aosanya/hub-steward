@@ -4,6 +4,8 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuWindow } from "../../MenuWindow";
 import { areaLinesOf, loadAreaTally } from "./AreaCounts";
+import { useSearchParams } from "react-router-dom";
+import { ChatAboutWish, wishParam } from "./ChatAboutWish";
 import { WishPage } from "./WishPage";
 
 type Item = Record<string, unknown>;
@@ -60,14 +62,21 @@ export function WishesScreen() {
   };
   const page = (item: Item) => {
     const id = String(item.id ?? "");
-    return <WishPage key={id} item={item} said={said.includes(id)} failed={failed.includes(id)} onPress={() => meToo(id)} />;
+    return (
+      <>
+        <ChatAboutWish wish={item} />
+        <WishPage key={id} item={item} said={said.includes(id)} failed={failed.includes(id)} onPress={() => meToo(id)} />
+      </>
+    );
   };
   const title = "Wishes";
+  const startAt = useSearchParams()[0].get(wishParam) ?? undefined;
   return (
     <MenuWindow
       title={title}
       withTabs
       bandless
+      startAt={startAt}
       list={{ title, tool: wishesTool, fields: { title: "title", meta: "counts" }, lines: linesOf, empty: { words: "No wishes yet.", act: "Home", to: agencyHomePath(openAgencyId()) }, load: current }}
       detail={{ tool: wishesTool, fields: {}, status: "", load: loadWish, extra: page }}
       listKey={reloads}

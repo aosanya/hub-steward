@@ -13,6 +13,7 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuEditForm } from "../../MenuEditForm";
 import { SectionAct } from "../residents/SectionAct";
+import { ChatAboutIssue } from "./ChatAboutIssue";
 import { boardPermission, departmentFields } from "./IssueEdit";
 import { IssueWish } from "./IssueWish";
 import type { IssueRow } from "./issueRow";
@@ -108,6 +109,7 @@ export function IssuePage({ item, issue, replies }: Props) {
   );
   return (
     <>
+      <ChatAboutIssue issue={issue} department={department} place={place} />
       <div className="title-block">
         <h1 className="person-name">{issue.title}</h1>
         {quiet ? <p className="quiet-line">{quiet}</p> : null}
