@@ -321,7 +321,7 @@ describe("Work Orders with a due day", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Mend the fence/ }));
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    await within(detail).findByText("Mend the fence");
+    await within(detail).findByRole("heading", { level: 1, name: "Mend the fence" });
     expect(metaOf(dueRowIn(detail))).toEqual(["Tuesday, 24 Nov"]);
     expect(called).toHaveBeenCalledWith("", taskRead, { taskID: "d1" });
   });
@@ -331,8 +331,8 @@ describe("Work Orders with a due day", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Clear the gutters/ }));
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    await within(detail).findByText("Clear the gutters");
-    expect(await within(detail).findByText("In progress")).toBeInTheDocument();
+    await within(detail).findByRole("heading", { level: 1, name: "Clear the gutters" });
+    expect((await within(detail).findAllByText("In progress")).length).toBeGreaterThan(0);
     expect(within(detail).queryByText("Due")).toBeNull();
   });
 
@@ -346,7 +346,7 @@ describe("Work Orders with a due day", () => {
       await userEvent.click(await screen.findByRole("button", { name: /Mend the fence/ }));
 
       const main = document.querySelector(".wf-main") as HTMLElement;
-      await within(main).findByText("Mend the fence");
+      await within(main).findByRole("heading", { level: 1, name: "Mend the fence" });
       expect(metaOf(dueRowIn(main))).toEqual(["Tuesday, 24 Nov"]);
     });
 
@@ -355,7 +355,7 @@ describe("Work Orders with a due day", () => {
       await userEvent.click(await screen.findByRole("button", { name: /Clear the gutters/ }));
 
       const main = document.querySelector(".wf-main") as HTMLElement;
-      await within(main).findByText("Clear the gutters");
+      await within(main).findByRole("heading", { level: 1, name: "Clear the gutters" });
       expect(within(main).queryByText("Due")).toBeNull();
     });
   });
@@ -413,7 +413,7 @@ describe("Work Orders linked to an asset", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Patch the Ring Road edge/ }));
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    await within(detail).findByText("Patch the Ring Road edge");
+    await within(detail).findByRole("heading", { level: 1, name: "Patch the Ring Road edge" });
     expect(metaOf(await findRowIn(detail, "About"))).toEqual(["Ring Road"]);
     expect(metaOf(await findRowIn(detail, "Place"))).toEqual(["North Depot"]);
     const titles = Array.from(detail.querySelectorAll(".row .ttl")).map((title) => title.textContent);
@@ -439,8 +439,8 @@ describe("Work Orders linked to an asset", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Clear the gutters/ }));
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    await within(detail).findByText("Clear the gutters");
-    expect(await within(detail).findByText("In progress")).toBeInTheDocument();
+    await within(detail).findByRole("heading", { level: 1, name: "Clear the gutters" });
+    expect((await within(detail).findAllByText("In progress")).length).toBeGreaterThan(0);
     expect(within(detail).queryByText("About")).toBeNull();
     expect(within(detail).queryByText("Place")).toBeNull();
     expect(callsTo(assetRead)).toHaveLength(0);
@@ -452,8 +452,8 @@ describe("Work Orders linked to an asset", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Check the old record/ }));
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    await within(detail).findByText("Check the old record");
-    expect(await within(detail).findByText("To do")).toBeInTheDocument();
+    await within(detail).findByRole("heading", { level: 1, name: "Check the old record" });
+    expect((await within(detail).findAllByText("To do")).length).toBeGreaterThan(0);
     expect(within(detail).queryByText("About")).toBeNull();
     expect(within(detail).queryByText("Place")).toBeNull();
   });
@@ -468,7 +468,7 @@ describe("Work Orders linked to an asset", () => {
       await userEvent.click(await screen.findByRole("button", { name: /Patch the Ring Road edge/ }));
 
       const main = document.querySelector(".wf-main") as HTMLElement;
-      await within(main).findByText("Patch the Ring Road edge");
+      await within(main).findByRole("heading", { level: 1, name: "Patch the Ring Road edge" });
       expect(metaOf(await findRowIn(main, "About"))).toEqual(["Ring Road"]);
       expect(metaOf(await findRowIn(main, "Place"))).toEqual(["North Depot"]);
       const titles = Array.from(main.querySelectorAll(".row .ttl")).map((title) => title.textContent);
@@ -482,7 +482,7 @@ describe("Work Orders linked to an asset", () => {
       await userEvent.click(await screen.findByRole("button", { name: /Clear the gutters/ }));
 
       const main = document.querySelector(".wf-main") as HTMLElement;
-      await within(main).findByText("Clear the gutters");
+      await within(main).findByRole("heading", { level: 1, name: "Clear the gutters" });
       expect(within(main).queryByText("About")).toBeNull();
       expect(within(main).queryByText("Place")).toBeNull();
       expect(callsTo(assetRead).filter(([, , args]) => (args as { assetID: string }).assetID !== "r1")).toHaveLength(0);
@@ -493,7 +493,7 @@ describe("Work Orders linked to an asset", () => {
       await userEvent.click(await screen.findByRole("button", { name: /Check the old record/ }));
 
       const main = document.querySelector(".wf-main") as HTMLElement;
-      await within(main).findByText("Check the old record");
+      await within(main).findByRole("heading", { level: 1, name: "Check the old record" });
       expect(within(main).queryByText("About")).toBeNull();
       expect(within(main).queryByText("Place")).toBeNull();
     });
@@ -546,7 +546,7 @@ describe("Maintenance Schedule", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Inspect the playground/ }));
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    expect(await within(detail).findByText("Every 2 weeks")).toBeInTheDocument();
+    expect((await within(detail).findAllByText("Every 2 weeks")).length).toBeGreaterThan(0);
     expect(within(detail).getByText("Inspect the playground")).toBeInTheDocument();
     expect(within(detail).getByText("FREQ=WEEKLY;INTERVAL=2;BYDAY=WE")).toBeInTheDocument();
     expect(callsTo(repeatingRead)[0][2]).toEqual({ repeatingTaskID: "p4" });
@@ -717,16 +717,16 @@ describe("Maintenance Schedule", () => {
 
     afterEach(() => forgetWidth());
 
-    it("keeps the list on the left, opens the chosen schedule in the right pane and draws no tab bar", async () => {
+    it("keeps the list on the left, opens the chosen schedule in the right pane and draws the bottom bar", async () => {
       showRouted("Maintenance Schedule");
       await userEvent.click(await screen.findByRole("button", { name: /Grease the pumps/ }));
 
       const main = document.querySelector(".wf-main") as HTMLElement;
-      expect(await within(main).findByText("FREQ=WEEKLY")).toBeInTheDocument();
-      expect(within(main).getByText("Weekly")).toBeInTheDocument();
+      expect((await within(main).findAllByText("FREQ=WEEKLY")).length).toBeGreaterThan(0);
+      expect(within(main).getAllByText("Weekly").length).toBeGreaterThan(0);
       expect(within(main).getByText("Grease the pumps")).toBeInTheDocument();
       expect(within(document.querySelector(".wf-tree") as HTMLElement).getByRole("button", { name: /Inspect the fire exits/ })).toBeInTheDocument();
-      expect(document.querySelector("nav.tabs")).toBeNull();
+      expect(document.querySelector("nav.tabs")).not.toBeNull();
     });
 
     it("opens the first schedule in the right pane without a tap", async () => {
@@ -734,7 +734,7 @@ describe("Maintenance Schedule", () => {
       await screen.findByText("Grease the pumps", { selector: ".ttl" });
 
       const main = document.querySelector(".wf-main") as HTMLElement;
-      expect(await within(main).findByText("FREQ=WEEKLY")).toBeInTheDocument();
+      expect((await within(main).findAllByText("FREQ=WEEKLY")).length).toBeGreaterThan(0);
       expect(within(main).getByText("Grease the pumps")).toBeInTheDocument();
       expect(callsTo(repeatingRead).map(([, , args]) => args)).toEqual([{ repeatingTaskID: "p1" }]);
     });
@@ -840,7 +840,6 @@ describe("the maintenance history of an asset", () => {
     await userEvent.click(await screen.findByRole("button", { name }));
   };
 
-  const rowIn = (container: HTMLElement, label: string) => within(container).queryByText(label, { selector: ".ttl" })?.closest(".row") as HTMLElement | null;
 
   const rollerNewest = "Replace the roller drum bearings · Tuesday, 10 Nov";
   const rollerNext = "Grease the roller hydraulics · Tuesday, 3 Nov";
@@ -850,7 +849,6 @@ describe("the maintenance history of an asset", () => {
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
     expect(await within(detail).findByText(rollerNewest)).toBeInTheDocument();
-    expect(metaOf(rowIn(detail, historyLabel) as HTMLElement)).toEqual([rollerNewest]);
   });
 
   it("shows the next finished job after it, newest first", async () => {
@@ -875,7 +873,6 @@ describe("the maintenance history of an asset", () => {
 
     expect(await screen.findByText("Parked at the yard")).toBeInTheDocument();
     expect(screen.getByText("Back from the open day")).toBeInTheDocument();
-    expect(screen.getByText("Latest movement", { selector: ".ttl" })).toBeInTheDocument();
   });
 
   it("shows the newest five finished jobs of an asset with six, newest first, and not the oldest", async () => {
@@ -935,7 +932,6 @@ describe("the maintenance history of an asset", () => {
 
       const main = document.querySelector(".wf-main") as HTMLElement;
       expect(await within(main).findByText(rollerNewest)).toBeInTheDocument();
-      expect(metaOf(rowIn(main, historyLabel) as HTMLElement)).toEqual([rollerNewest]);
       expect(within(main).getByText(rollerNext)).toBeInTheDocument();
       expect(before(rollerNewest, rollerNext)).toBe(true);
       expect(within(main).queryByText(/Inspect the roller exhaust/)).toBeNull();

@@ -3,10 +3,8 @@ import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
 import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
-import { WorkOrderAssignee } from "./WorkOrderAssignee";
-import { WorkOrderStatus } from "./WorkOrderStatus";
+import { SchedulePanel, WorkOrderPanel } from "./AssetPanels";
 import { aboutAndPlaceOf, placeLookupFor } from "./workOrderAsset";
 
 type Item = Record<string, unknown>;
@@ -73,8 +71,6 @@ const taskRead = "taskmanager_task_read";
 
 const repeatingRead = "taskmanager_repeating_task_read";
 
-const workOrderEditFields = [{ label: "Title", key: "title", required: true }];
-
 const readOne = async (tool: string, args: Record<string, string>) => {
   const reply = (await callTool("", tool, args)) as { item?: unknown } | null;
   const inner = reply?.item ?? reply;
@@ -95,22 +91,12 @@ export function WorkOrdersPage() {
   return (
     <MenuWindow
       title={title}
+      withTabs
+      bandless
       listKey={version}
       detailKey={version}
       list={{ title, tool: taskList, fields: { title: "title", meta: "stateAndDue" }, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadWorkOrders }}
-      detail={{
-        tool: taskRead,
-        fields: { Title: "title", State: "state", Due: "due", About: "about", Place: "place" },
-        status: "",
-        load: loadWorkOrder,
-        extra: (order) => (
-          <>
-            <MenuEditForm item={order} id={textOf(order.id)} idArg="taskID" tool="taskmanager_task_patch" permission="task.edit" fields={workOrderEditFields} onSaved={() => setVersion((was) => was + 1)} />
-            <WorkOrderAssignee order={order} onAssigned={() => setVersion((was) => was + 1)} />
-            <WorkOrderStatus order={order} onMoved={() => setVersion((was) => was + 1)} />
-          </>
-        ),
-      }}
+      detail={{ tool: taskRead, fields: {}, status: "", load: loadWorkOrder, extra: (order) => <WorkOrderPanel order={order} onChanged={() => setVersion((was) => was + 1)} /> }}
     />
   );
 }
@@ -121,8 +107,10 @@ export function MaintenancePage() {
   return (
     <MenuWindow
       title={title}
+      withTabs
+      bandless
       list={{ title, tool: repeatingList, fields: { title: "title", meta: "oftenAndNext" }, empty: { words: "No maintenance scheduled." }, load: loadSchedule }}
-      detail={{ tool: repeatingRead, fields: { Title: "title", "How often": "often", "Last upkeep": "lastUpkeep", "Last job due": "lastJobDue", "Next upkeep": "next", "Schedule rule": "rule" }, status: "", load: loadScheduleItem }}
+      detail={{ tool: repeatingRead, fields: {}, status: "", load: loadScheduleItem, extra: (item) => <SchedulePanel item={item} /> }}
     />
   );
 }

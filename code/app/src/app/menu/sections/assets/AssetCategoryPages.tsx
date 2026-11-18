@@ -5,10 +5,10 @@ import { useLoad } from "../../../../features/forms/useLoad";
 import type { Choice } from "../../../../shared/ui/SearchSelect";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
+import { AssetPanel } from "./AssetPanels";
 import { loadKeeperChoices } from "./keeperChoices";
-import { assetDetailFields, assetReadTool, attributeKeys, attributesOf, conditionWords, loadAsset, withAttributes } from "./assetDetail";
+import { assetReadTool, attributeKeys, attributesOf, conditionWords, loadAsset, withAttributes } from "./assetDetail";
 
 type Item = Record<string, unknown>;
 
@@ -66,13 +66,13 @@ const categoryPage = ({ title: generic, category }: Category) =>
     return (
       <MenuWindow
         title={title}
+        withTabs
+        bandless
         listKey={version}
         detailKey={version}
         list={{ title, tool: assetList, fields, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadCategory(category) }}
-        detail={{ tool: assetReadTool, fields: assetDetailFields, status: "", load: loadAsset,
-          extra: (asset) => (
-            <MenuEditForm item={asset} id={textOf(asset.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" fields={editFieldsOf(asset, keeperChoices)} build={updateOf(asset)} onSaved={() => setVersion((was) => was + 1)} />
-          ),
+        detail={{ tool: assetReadTool, fields: {}, status: "", load: loadAsset,
+          extra: (asset) => <AssetPanel asset={asset} fields={editFieldsOf(asset, keeperChoices)} build={updateOf(asset)} onSaved={() => setVersion((was) => was + 1)} />,
         }}
       />
     );
