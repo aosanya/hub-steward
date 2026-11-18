@@ -1,5 +1,6 @@
 import { Route } from "react-router-dom";
 import { AiAgents } from "./AiAgents";
+import { AiLimitsEditScreen } from "./AiLimitsEditScreen";
 import { AgencyProfile } from "./AgencyProfile";
 import { AuditLog } from "./AuditLog";
 import { BoundariesAndAreas } from "./BoundariesAndAreas";
@@ -28,6 +29,7 @@ export const routes = () => (
     <Route path={settingsPaths.boundaryEdit.pattern} element={<BoundaryEditScreen />} />
     <Route path={settingsPaths.integrations.pattern} element={<Integrations />} />
     <Route path={settingsPaths.aiAgents.pattern} element={<AiAgents />} />
+    <Route path={settingsPaths.aiAgentEdit.pattern} element={<AiLimitsEditScreen />} />
     <Route path={settingsPaths.auditLog.pattern} element={<AuditLog />} />
     <Route path={settingsPaths.registerDetails.pattern} element={<RegisterDetails />} />
   </>

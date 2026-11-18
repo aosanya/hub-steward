@@ -7,22 +7,11 @@ import { ChatAboutItem, useChosenItem } from "./RecordPage";
 import { FactsCard, type Fact } from "../../FactsCard";
 import { labelOf } from "./personLabel";
 import { PageFrame } from "../../PageFrame";
+import { SectionGo } from "../residents/SectionAct";
+import { agentLimitFields, everyoneId as everyone, limitsPermission } from "./aiLimits";
 
 type Record_ = Record<string, unknown>;
 
-const everyone = "everyone";
-
-const limitLabels: [string, string][] = [
-  ["tokens_per_call", "Tokens per call"],
-  ["tokens_per_day", "Tokens per day"],
-  ["tokens_per_week", "Tokens per week"],
-  ["tokens_per_month", "Tokens per month"],
-  ["requests_per_minute", "Requests per minute"],
-  ["requests_per_day", "Requests per day"],
-  ["requests_per_week", "Requests per week"],
-  ["tokens_per_test", "Tokens per test"],
-  ["scenarios_at_once", "Scenarios at once"],
-];
 
 const number = (value: unknown) => (typeof value === "number" ? value : 0);
 
@@ -31,7 +20,7 @@ const grouped = (value: number) => value.toLocaleString("en");
 const text = (record: Record_, key: string) => (typeof record[key] === "string" ? (record[key] as string) : "");
 
 const limitsOf = (record: Record_) => {
-  const set = limitLabels.filter(([key]) => number(record[key]) > 0);
+  const set = agentLimitFields.filter(([key]) => number(record[key]) > 0);
   return set.length === 0 ? "No limits set" : set.map(([key, label]) => `${label} ${grouped(number(record[key]))}`).join("; ");
 };
 
@@ -144,7 +133,7 @@ export function AiAgents() {
             <ChatAboutItem about={{ kind: "ai-agent", id: text(agent, "id") === everyone ? "" : text(agent, "id"), name: text(agent, "name"), extra: { details: [text(agent, "description"), text(agent, "limits")].filter(Boolean).join("; ") } }} back={settingsPaths.aiAgents.path()} />
             <PageFrame title={text(agent, "name")} line={text(agent, "state") || text(agent, "description")}>
               <FactsCard word="What it may do" facts={factsOf(agent, doLabels)} />
-              <FactsCard word="Limits" facts={factsOf(agent, limitLabelsOnPage)} />
+              <FactsCard word="Limits" facts={factsOf(agent, limitLabelsOnPage)} foot={<SectionGo permission={limitsPermission(text(agent, "id"))} act="Edit limits" to={settingsPaths.aiAgentEdit.path({ id: text(agent, "id") })} />} />
               <FactsCard word="Use" facts={factsOf(agent, useLabels)} />
             </PageFrame>
           </>
