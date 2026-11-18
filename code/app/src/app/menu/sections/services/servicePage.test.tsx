@@ -90,7 +90,10 @@ describe("a Services & Permits page is built like a resident page", () => {
     expect(await pane.findByRole("heading", { level: 1, name: "Hall Hire Fee" })).toBeInTheDocument();
     const card = within(await pane.findByRole("region", { name: "Details" }));
     expect(card.getByText("Amount")).toBeInTheDocument();
-    expect(card.getByText("Kovács Márta")).toBeInTheDocument();
+    expect(card.queryByText("Payer")).toBeNull();
+    const payer = within(await pane.findByRole("region", { name: "Payer" }));
+    expect(payer.getByRole("button", { name: /Kovács Márta/ })).toBeInTheDocument();
+    expect(payer.getByText("Resident")).toBeInTheDocument();
     expect(card.getByRole("button", { name: "Mark paid" }).closest("footer")).not.toBeNull();
     await userEvent.click(card.getByRole("button", { name: "Mark paid" }));
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_submission_mark_paid", { form_id: "f4", member_id: "m1", paid: true }));

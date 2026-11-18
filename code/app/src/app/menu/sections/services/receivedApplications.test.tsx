@@ -1,5 +1,5 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
@@ -263,5 +263,36 @@ describe("Applications received on a permit or licence entry", () => {
 
     expect(screen.queryByText(/not allowed|failed|error/i)).toBeNull();
     expect(decideCalls()).toHaveLength(0);
+  });
+});
+
+describe("Applications received are drawn as cards", () => {
+  it("holds the applicant as a resident row in its own card", async () => {
+    await openEntry();
+    await openApplicationOf("Bence Farkas");
+
+    const card = within(await screen.findByRole("region", { name: "Applicant" }));
+    expect(card.getByRole("button", { name: /Bence Farkas/ })).toBeInTheDocument();
+    expect(card.getByText("Resident")).toBeInTheDocument();
+  });
+
+  it("holds Grant and Refuse in the footer of a Decision card and nowhere else", async () => {
+    await openEntry();
+    await openApplicationOf("Bence Farkas");
+
+    const card = within(await screen.findByRole("region", { name: "Decision" }));
+    expect(card.getByRole("button", { name: "Grant" }).closest("footer")).not.toBeNull();
+    expect(card.getByRole("button", { name: "Refuse" }).closest("footer")).not.toBeNull();
+    expect(screen.getAllByRole("button", { name: "Grant" })).toHaveLength(1);
+  });
+
+  it("holds Record in the footer of an inspection card for an inspector", async () => {
+    permissions = [...deciderPermissions, "application.inspect"];
+    await openEntry();
+    await openApplicationOf("Bence Farkas");
+
+    const card = within(await screen.findByRole("region", { name: "Record an inspection" }));
+    expect(card.getByRole("radio", { name: "Complies" })).toBeInTheDocument();
+    expect(card.getByRole("button", { name: "Record" }).closest("footer")).not.toBeNull();
   });
 });
