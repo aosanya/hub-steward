@@ -4,6 +4,7 @@ import { liveRecordRowsTool, loadRecordRow, loadRecordRows, recordOwnerKey, reco
 import { MenuWindow } from "./MenuWindow";
 import { RecordMoney } from "./RecordMoney";
 import { RecordOwner } from "./RecordOwner";
+import { RowHoldings } from "./sections/residents/PersonHoldings";
 
 type Props = {
   title: string;
@@ -37,6 +38,7 @@ export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, 
           <>
             {owner ? <RecordOwner heading={owner.heading} ownerId={String(row[recordOwnerKey] ?? "")} /> : null}
             <RecordMoney rowId={String(row[recordRowIdKey] ?? "")} />
+            {row[recordRowIdKey] ? <RowHoldings rowId={String(row[recordRowIdKey])} /> : null}
           </>
         ),
       }}
