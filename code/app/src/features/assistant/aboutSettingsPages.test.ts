@@ -19,7 +19,7 @@ describe("the chat about an audit entry", () => {
   it("offers the choices that fit and says what it is about, with who did it given in the conversation", () => {
     expect(choicesFor(entry)).toEqual(["Who did this?", "What else happened to it?"]);
     const prompt = promptFor(entry);
-    expect(prompt).toContain("the audit entry granted a role: Bela Nagy");
+    expect(prompt).toContain("about one thing, granted a role: Bela Nagy.");
     expect(prompt).toContain("Asha Otieno · 12 Nov 2026");
     expect(stepWordsFor(entry).audit_list_entries).toBeTruthy();
     expect(emptyWordsFor(entry)).toContain("granted a role: Bela Nagy");
@@ -35,7 +35,7 @@ describe("the chat about the agency", () => {
   it("offers the choices that fit and tells the model to state no key or secret", () => {
     expect(choicesFor(agency)).toEqual(["Details", "What languages are on?"]);
     const prompt = promptFor(agency);
-    expect(prompt).toContain("the agency Riverside Office");
+    expect(prompt).toContain("about one thing, Riverside Office.");
     expect(prompt).toMatch(/never state a key or a secret/i);
     expect(stepWordsFor(agency).instance_get_languages).toBeTruthy();
   });
@@ -50,7 +50,7 @@ describe("the chat about the details of a record", () => {
   it("offers the choices that fit and gives the details on the page in the conversation", () => {
     expect(choicesFor(details)).toEqual(["Which details are on?", "Which details are required?"]);
     const prompt = promptFor(details);
-    expect(prompt).toContain("the record details Businesses");
+    expect(prompt).toContain("about one thing, Businesses.");
     expect(prompt).toContain("Trading name (on, required); Tax number (on)");
     expect(stepWordsFor(details).forms_catalog_setting_read).toBeTruthy();
   });

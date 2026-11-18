@@ -5,6 +5,7 @@ import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
 import { Section } from "../../../../shared/ui/Section";
 import { Shell } from "../../../Shell";
 import { refusalWords } from "../../MenuEditForm";
+import { resolveRecordCode } from "../../liveRecordRows";
 import { PageFrame } from "../../PageFrame";
 import {
   detailsOf,
@@ -21,6 +22,8 @@ import {
 import { useBackToSection } from "../../useBackToSection";
 import { businessesRecordCode, businessesTitlePrompt, businessFields } from "../residents/BusinessesScreen";
 import { informalTraderFields, informalTradersRecordCode, informalTradersTitlePrompt } from "../residents/InformalTradersScreen";
+import { useChatAboutSubject } from "../residents/SubjectChat";
+import { settingsPaths } from "./paths";
 
 const records = [
   { name: "Businesses", code: businessesRecordCode, fields: businessFields, titlePrompt: businessesTitlePrompt },
@@ -45,6 +48,17 @@ export function RegisterDetails() {
       live = false;
     };
   }, [chosen]);
+  const [kept, setKept] = useState("");
+  useEffect(() => {
+    let live = true;
+    setKept("");
+    resolveRecordCode(chosen.code).then((code) => live && setKept(code));
+    return () => {
+      live = false;
+    };
+  }, [chosen]);
+  const onPage = (detail: RegisterDetail) => `${detail.prompt} (${detail.on ? (detail.required ? "on, required" : "on") : "off"})`;
+  useChatAboutSubject(details === null || kept === "" ? null : { kind: "record-details", id: kept, name: chosen.name, extra: { details: details.map(onPage).join("; ") } }, settingsPaths.registerDetails.path());
   const change = (prompt: string, patch: Partial<RegisterDetail>) => {
     setSaved(false);
     setDetails((was) => (was ?? []).map((detail) => (detail.prompt === prompt ? { ...detail, ...patch } : detail)));

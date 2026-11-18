@@ -24,5 +24,6 @@ export const auditRowsOf = async (items: ({ id: string } & Record<string, unknow
     kind: kindOf(entry.action),
     what: [entry.action, subjectName(entry)].filter((part) => part !== "").join(": "),
     who: [actorName(entry.actor), dateTimeWords(entry.at) ?? entry.at].filter((part) => part !== "").join(" · "),
+    subject: entry.subject === "" ? entry.id : entry.subject,
   }));
 };

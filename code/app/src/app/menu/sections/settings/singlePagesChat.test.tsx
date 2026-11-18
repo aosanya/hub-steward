@@ -86,7 +86,8 @@ describe("the Details of a record page", () => {
     const about = carriedChatAbout();
     expect(about?.kind).toBe("record-details");
     expect(about?.name).toBe("Businesses");
-    expect(about?.extra?.details).toContain("Tax number (on)");
+    expect(about?.extra?.details).toContain("Trading name (on, required)");
+    expect(about?.extra?.details).toContain("Tax number (on, required)");
   });
 
   it("follows the tab: the chat is about the record whose tab is chosen", async () => {

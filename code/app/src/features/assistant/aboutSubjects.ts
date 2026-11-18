@@ -455,7 +455,44 @@ const maintenance: Subject = {
   empty: "what was done, when it is next due and what it cost",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance };
+const auditEntry: Subject = {
+  reads: { audit_list_entries: { subject: extraOf("subject") } },
+  steps: { audit_list_entries: "Reading what else happened to it" },
+  choices: ["Who did this?", "What else happened to it?"],
+  reading:
+    "Who did this? is given to you in this conversation, with the day, so answer it without a tool. What else happened to it? means audit_list_entries; if it finds nothing else, say nothing else is on file.",
+  overview: "answer with what happened, who did it and when from this conversation, then call audit_list_entries and add what else was recorded about the same thing",
+  empty: "who did this and what else happened to it",
+};
+
+const agencyProfile: Subject = {
+  reads: { agency_get_agency: {}, instance_get_languages: {} },
+  steps: { agency_get_agency: "Reading the agency's details", instance_get_languages: "Reading the languages that are on" },
+  choices: ["Details", "What languages are on?"],
+  reading:
+    "Details means agency_get_agency and What languages are on? means instance_get_languages: the studio language, the languages offered for content and the default one. Never state a key or a secret.",
+  overview: "call agency_get_agency and instance_get_languages at once and answer with the agency's name and the languages that are on",
+  empty: "its details and languages",
+};
+
+const recordDetails: Subject = {
+  reads: {
+    forms_catalog_setting_read: { key: (about) => `register_details:${about.id}` },
+    agency_list_live_records: {},
+  },
+  steps: {
+    forms_catalog_setting_read: "Reading the details that were saved",
+    agency_list_live_records: "Reading the registers",
+  },
+  choices: ["Which details are on?", "Which details are required?"],
+  reading:
+    "Which details are on? and Which details are required? are given to you in this conversation as they stand on the page, so answer them without a tool. forms_catalog_setting_read reads what was last saved for this record, and agency_list_live_records reads the registers; use them only when the owner asks what is saved.",
+  overview: "answer from this conversation with which details are on and which are required, and call forms_catalog_setting_read to say whether that is what was last saved",
+  empty: "which details are on and which are required",
+};
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, "audit-entry": auditEntry, agency: agencyProfile, "record-details": recordDetails };
+
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 
@@ -511,7 +548,7 @@ const invitation = (about: ChatAbout) => `What would you like to see about ${abo
 
 const factsOf = (about: ChatAbout) => {
   if (about.kind === "registration") return ` The request: ${about.name} asked to join ${about.extra?.group ?? "a group"}${about.extra?.asked ? ` on ${about.extra.asked}` : ""}.`;
-  if (about.kind === "business" || about.kind === "trader" || about.kind === "integration" || about.kind === "ai-agent" || about.kind === "issue" || about.kind === "maintenance") return about.extra?.details ? ` What is on its page: ${about.extra.details}.` : "";
+  if (about.kind === "business" || about.kind === "trader" || about.kind === "integration" || about.kind === "ai-agent" || about.kind === "issue" || about.kind === "maintenance" || about.kind === "audit-entry" || about.kind === "record-details") return about.extra?.details ? ` What is on its page: ${about.extra.details}.` : "";
   return "";
 };
 

@@ -14,7 +14,9 @@ import { useBackToSection } from "../../useBackToSection";
 import { PageFrame } from "../../PageFrame";
 import { Section } from "../../../../shared/ui/Section";
 import { useLanguagesEdit, type Languages } from "./LanguagesEdit";
+import { settingsPaths } from "./paths";
 import { useOwner } from "./useOwner";
+import { useChatAboutSubject } from "../residents/SubjectChat";
 
 type Profile = { name: string; languages: Languages };
 
@@ -41,6 +43,7 @@ export function AgencyProfile() {
   const [refused, setRefused] = useState("");
   const owner = useOwner();
   const view = useLoad(loadProfile, `agency-profile:${openAgencyId()}:${saved}`);
+  useChatAboutSubject(view.state === "ready" ? { kind: "agency", id: openAgencyId(), name: view.data.name } : null, settingsPaths.agencyProfile.path());
   const empty = { content: [], studioDefault: "", contentDefault: "" } as Languages;
   const languages = useLanguagesEdit(view.state === "ready" ? view.data.languages : empty, () => setSaved(saved + 1));
   const save = async () => {
