@@ -3,6 +3,7 @@ import { carriedChatAbout, chatAboutWords } from "../../app/chatAbout";
 import { callTool, listTools, type ToolInfo } from "../../shared/wakala/mcp";
 import { cancelledResult, moveTool, createTool, rulesTool, resolveMove, unconfirmedResult, writeNames, writeProblem, type Confirm } from "./confirm";
 import { backlogDraftsFor, showNamedBacklog } from "./namedBacklog";
+import { residentNamesFor, residentReadsWords, residentStepWords, scopedToResident, withoutScope } from "./residentReads";
 import { askedCountFirst, draftOf, pendingTool, readTool, type ResultDraft, type ResultList } from "./results";
 import { backlogByNameRule, blockedIsATagRule, lookUpBeforeMoveRule, manyMatchesRule, promptFrom, readsOnlyRule, triagerDescription } from "./triager";
 
@@ -98,12 +99,13 @@ const specOf = (tool: ToolInfo) => {
   const schema = tool.inputSchema;
   const properties = Object.fromEntries(Object.entries(isObject(schema.properties) ? schema.properties : {}).filter(([key]) => key !== "instance_id"));
   const required = Array.isArray(schema.required) ? schema.required.filter((key) => key !== "instance_id") : [];
-  return { name: tool.name, description: tool.description, parameters: { ...schema, type: "object", properties, required } };
+  const scoped = withoutScope(tool.name, properties, required);
+  return { name: tool.name, description: tool.description, parameters: { ...schema, type: "object", ...scoped } };
 };
 
-const offeredOf = async () => {
+const offeredOf = async (names: string[]) => {
   const all = await listTools();
-  return offeredNames.flatMap((name) => all.filter((tool) => tool.name === name).map(specOf));
+  return names.flatMap((name) => all.filter((tool) => tool.name === name).map(specOf));
 };
 
 const resultText = (result: unknown) => {
@@ -139,10 +141,11 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
     const shown = await showNamedBacklog(lastTurn.content);
     if (shown) return shown;
   }
-  const tools = await offeredOf();
-  const prompt = promptFrom(await triagerDescription(), systemPrompt);
   const about = carriedChatAbout();
-  const context: Wire[] = about ? [{ role: "system", content: chatAboutWords(about) }] : [];
+  const residentNames = residentNamesFor(about);
+  const tools = await offeredOf([...offeredNames, ...residentNames]);
+  const prompt = promptFrom(await triagerDescription(), systemPrompt);
+  const context: Wire[] = about ? [{ role: "system", content: `${chatAboutWords(about)} ${residentReadsWords}` }] : [];
   const messages: Wire[] = [{ role: "system", content: prompt }, ...context, ...turns.map(({ role, content }) => ({ role, content }))];
   const found: ResultDraft[] = [];
   const lastUserWords = [...turns].reverse().find((turn) => turn.role === "user")?.content ?? "";
@@ -167,13 +170,13 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
     }
     messages.push({ role: "assistant", content, tool_calls: calls });
     for (const call of calls) {
-      const allowed = offeredNames.includes(call.name);
+      const allowed = offeredNames.includes(call.name) || residentNames.includes(call.name);
       let result = "That tool is not available.";
       const refusal = allowed ? await refusalOf(call, found, lastUserWords, confirm) : null;
       if (allowed && refusal === null) {
-        onStep(stepWords[call.name] ?? "Looking it up");
+        onStep(stepWords[call.name] ?? residentStepWords[call.name] ?? "Looking it up");
         try {
-          const read = await callTool("", call.name, call.arguments);
+          const read = await callTool("", call.name, scopedToResident(about, call.name, call.arguments));
           const drafts = call.name === taskTools.backlogs ? backlogDraftsFor(lastUserWords, read) : [draftOf(call.name, call.arguments, read)].flatMap((one) => (one ? [one] : []));
           found.push(...drafts);
           result = resultText(read);
