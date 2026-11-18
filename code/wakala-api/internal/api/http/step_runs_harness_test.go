@@ -110,6 +110,7 @@ func decodeObjects(t *testing.T, rec *httptest.ResponseRecorder) []map[string]an
 
 type stepSpec struct {
 	title, form, role string
+	code              string
 	description       string
 	prompt            string
 	questions         []agencymodels.StepQuestion
@@ -233,7 +234,11 @@ func newStepRunWalkOn(t *testing.T, db *gorm.DB, plan []stepSpec, people ...stri
 			if item.Kind == agencymodels.StepKindSendForm {
 				item.RecipientRoleID = w.roles[s.role]
 			}
-			step, err := mgr.CreateWorkItem(ctx, item)
+			keptCtx := ctx
+			if s.code != "" {
+				keptCtx = mwanachamaagency.WithKeptCode(ctx, s.code)
+			}
+			step, err := mgr.CreateWorkItem(keptCtx, item)
 			if err != nil {
 				t.Fatalf("CreateWorkItem %s: %v", s.title, err)
 			}
