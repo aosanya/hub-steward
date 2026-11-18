@@ -72,11 +72,20 @@ function MembersSheet({ groupId, onClose, onOpen }: { groupId: string; onClose: 
   );
 }
 
-export function MembersCard({ groupId }: { groupId: string }) {
+export type MembersView = Page;
+
+export const useGroupMembers = (groupId: string) => {
   const may = useMay("member.view");
+  const view = useLoad(() => (may ? readMembers(groupId, 0, sectionLimit, "") : Promise.resolve({ members: [], total: 0 })), `group-members:${openAgencyId()}:${groupId}:${may}`);
+  return { may, view };
+};
+
+export const membersCountWords = (total: number) => `${total} ${total === 1 ? "member" : "members"}`;
+
+export function MembersSection({ groupId, members }: { groupId: string; members: ReturnType<typeof useGroupMembers> }) {
   const navigate = useNavigate();
   const [all, setAll] = useState(false);
-  const view = useLoad(() => (may ? readMembers(groupId, 0, sectionLimit, "") : Promise.resolve({ members: [], total: 0 })), `group-members:${openAgencyId()}:${groupId}:${may}`);
+  const { may, view } = members;
   if (!may || view.state !== "ready") return null;
   const open = (id: string) => navigate(residentPaths.people.path({ person: id }));
   return (
@@ -94,4 +103,8 @@ export function MembersCard({ groupId }: { groupId: string }) {
       {all ? <MembersSheet groupId={groupId} onClose={() => setAll(false)} onOpen={open} /> : null}
     </>
   );
+}
+
+export function MembersCard({ groupId }: { groupId: string }) {
+  return <MembersSection groupId={groupId} members={useGroupMembers(groupId)} />;
 }

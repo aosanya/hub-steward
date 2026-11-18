@@ -2,6 +2,7 @@ import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
 import { SectionGo } from "../residents/SectionAct";
 import { GroupHead, loadGroup } from "../residents/GroupScreen";
+import { MembersSection, membersCountWords, useGroupMembers } from "../residents/MembersCard";
 import { populationFigure } from "../../populationFigure";
 import { listOf, peopleWords, text, type Item } from "./staffData";
 
@@ -25,11 +26,15 @@ export function StaffGroupPage({ group, word, editPath }: { group: Item; word: s
     ...(text(group, "headcount") ? [<ListRow key="members" title="Head count" meta={text(group, "headcount")} />] : []),
     ...(text(group, "leaders") ? [<ListRow key="leaders" title="Leaders" meta={text(group, "leaders")} />] : []),
   ];
+  const groupId = text(group, "id");
+  const members = useGroupMembers(groupId);
+  const counted = members.may && members.view.state === "ready" ? { ...group, members: membersCountWords(members.view.data.total) } : group;
   return (
     <div className="person-page">
-      <GroupHead group={group} />
+      <GroupHead group={counted} />
       <div className="sections">
         <Section word={`${word} detail`} plain foot={<SectionGo permission="group.manage" act="Edit" to={editPath} />} rows={rows} />
+        <MembersSection groupId={groupId} members={members} />
       </div>
     </div>
   );
