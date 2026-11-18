@@ -7,7 +7,7 @@ import { useBackToSection } from "./useBackToSection";
 import "../../shared/ui/paneWindow.css";
 import "./menuWindow.css";
 
-type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "fields" | "empty" | "load" | "end" | "loadingWords" | "failedWords" | "groups" | "opens">;
+type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "fields" | "empty" | "load" | "end" | "loadingWords" | "failedWords" | "groups" | "opens" | "lines">;
 
 type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load" | "extra">;
 

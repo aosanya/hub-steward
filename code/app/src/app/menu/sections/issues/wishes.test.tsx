@@ -141,7 +141,7 @@ describe("Wishes opens the chosen wish", () => {
     await choose("A dog park");
     await within(document.querySelector(".mw-detail") as HTMLElement).findByText("Raised by");
 
-    expect(called.mock.calls.map(([, name]) => name)).toEqual([tool]);
+    expect(called.mock.calls.map(([, name]) => name)).toEqual([tool, "forms_catalog_board_item_tally_by_area"]);
   });
 
   describe("on a wide screen", () => {

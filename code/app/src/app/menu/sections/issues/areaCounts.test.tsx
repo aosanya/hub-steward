@@ -132,7 +132,7 @@ describe("Wishes by area", () => {
     await waitFor(() => expect(screen.getAllByText(/Malomsor/).length).toBeGreaterThan(0));
     const before = called.mock.calls.filter(([, name]) => name === tallyTool).length;
 
-    await userEvent.click(await screen.findByRole("button", { name: /Me too/ }));
+    await userEvent.click(await screen.findByRole("button", { name: "Me too: A bench by the bus stop" }));
 
     await waitFor(() => expect(called.mock.calls.filter(([, name]) => name === tallyTool).length).toBeGreaterThan(before));
   });

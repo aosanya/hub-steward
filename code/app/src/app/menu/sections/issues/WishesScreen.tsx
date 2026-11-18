@@ -3,6 +3,7 @@ import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuWindow } from "../../MenuWindow";
+import { areaLinesOf, loadAreaTally } from "./AreaCounts";
 import { MeTooButton } from "./MeTooButton";
 
 type Item = Record<string, unknown>;
@@ -18,7 +19,12 @@ const count = (item: Item, key: string) => {
 
 const countsOf = (item: Item) => `raised by ${count(item, "raised_by")} · ${count(item, "me_too")} said Me too`;
 
-const wishRows = async () => (itemsOf(await callTool("", wishesTool, {})) as Item[]).map((item) => ({ ...item, counts: countsOf(item) }));
+const wishRows = async () => {
+  const [wishes, areas] = await Promise.all([callTool("", wishesTool, {}), loadAreaTally()]);
+  return (itemsOf(wishes) as Item[]).map((item) => ({ ...item, counts: countsOf(item), areas: areas.get(String(item.id ?? "")) ?? [] }));
+};
+
+const linesOf = (item: Item) => [String(item.counts ?? ""), ...areaLinesOf(item)];
 
 const without = (ids: string[], id: string) => ids.filter((one) => one !== id);
 
@@ -58,7 +64,7 @@ export function WishesScreen() {
   return (
     <MenuWindow
       title={title}
-      list={{ title, tool: wishesTool, fields: { title: "title", meta: "counts" }, empty: { words: "No wishes yet.", act: "Home", to: agencyHomePath(openAgencyId()) }, load: current }}
+      list={{ title, tool: wishesTool, fields: { title: "title", meta: "counts" }, lines: linesOf, empty: { words: "No wishes yet.", act: "Home", to: agencyHomePath(openAgencyId()) }, load: current }}
       detail={{ tool: wishesTool, fields: wishFields, status: "", load: loadWish, extra: button }}
       listKey={reloads}
       detailKey={reloads}
