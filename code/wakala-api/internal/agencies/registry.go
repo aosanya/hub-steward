@@ -487,6 +487,7 @@ func (r *registry) buildFormManager(ctx context.Context, id string) (mwanachamaf
 	built.UseStandingAudience(r.standingAudienceIn(id))
 	built.UseNames(r.namesIn(id))
 	built.UseMembers(r.membersIn(id))
+	built.UseReportText(r.reportTextIn(id))
 	built.UseDeclarable(r.declarableIn(id))
 	built.UseApprovalLimits(r.approvalLimitsIn(id))
 	built.UseRecordWriters(r.recordWritersIn(id))

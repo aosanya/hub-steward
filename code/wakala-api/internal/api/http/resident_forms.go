@@ -23,7 +23,7 @@ var residentFormsActions = []string{
 	"forms.results.read",
 }
 
-var residentRoleFormsActions = []string{"forms.results.publish", "forms.form.list"}
+var residentRoleFormsActions = []string{"forms.results.publish", "forms.form.list", "forms.results.list_mine", "forms.results.read_text"}
 
 func (d *Deps) instanceFormsMount(role string) formsroutes.Mount {
 	mount := d.formsMount()

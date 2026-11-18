@@ -11,14 +11,15 @@ import (
 
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamagit "wakalaserver/modules/git"
+
+	"wakalaserver/internal/agencies"
 )
 
 const (
 	resultsFilesAction = "forms.results.files"
 	resultsFilesTool   = "forms_results_files"
 
-	reportsRepositoryName = "reports"
-	largestResultsFiles   = 200
+	largestResultsFiles = 200
 )
 
 type resultsFile struct {
@@ -80,7 +81,7 @@ func (d *Deps) resultsFilesOf(ctx context.Context, instanceID, formID string) (r
 	if err != nil {
 		return none, err
 	}
-	branchID, found, err := reportsBranchOf(ctx, gm)
+	branchID, found, err := agencies.ReportsBranch(ctx, gm)
 	if err != nil || !found {
 		return none, err
 	}
@@ -94,19 +95,6 @@ func (d *Deps) resultsFilesOf(ctx context.Context, instanceID, formID string) (r
 		none.Items = append(none.Items, v.file)
 	}
 	return none, nil
-}
-
-func reportsBranchOf(ctx context.Context, gm mwanachamagit.GitManager) (string, bool, error) {
-	repositories, err := gm.ListRepositorySummaries(ctx)
-	if err != nil {
-		return "", false, err
-	}
-	for _, r := range repositories {
-		if r.Name == reportsRepositoryName && r.DefaultBranchID != "" {
-			return r.DefaultBranchID, true, nil
-		}
-	}
-	return "", false, nil
 }
 
 func reportFileVersions(ctx context.Context, gm mwanachamagit.GitManager, branchID, formID string) ([]datedResultsFile, error) {

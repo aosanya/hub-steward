@@ -512,8 +512,10 @@ forms_question_update
 forms_question_version
 forms_respondent_claim
 forms_results_files
+forms_results_list_mine
 forms_results_publish
 forms_results_read
+forms_results_read_text
 forms_submission_correct
 forms_submission_decide
 forms_submission_inspect
