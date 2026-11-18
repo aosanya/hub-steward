@@ -111,3 +111,50 @@ func TestAuditRecords_AFailedGrantLeavesNoEntry(t *testing.T) {
 		t.Errorf("a refused grant left audit entries: %+v", entries)
 	}
 }
+
+func TestAuditRecords_RegisteringAPersonInAGroupAddsOneEntryWithTheRegistrarAndThePerson(t *testing.T) {
+	w := newDesignAgentWalk(t)
+	actorID := createdIDOf(t, w.mcpCall(t, "test-owner", "actor_create_actor", map[string]any{"instance_id": w.instance, "display_name": "Kovács Anna"}))
+	groupID := createdIDOf(t, w.mcpCall(t, "test-owner", "actor_create_group", map[string]any{"instance_id": w.instance, "name": "Council"}))
+	before := time.Now().UTC().Add(-time.Second)
+
+	out := w.mcpCall(t, "test-owner", "actor_assign_group", map[string]any{"instance_id": w.instance, "actor_id": actorID, "group_id": groupID})
+	if out.IsError {
+		t.Fatalf("owner registering the person: %s", toolErrorText(out))
+	}
+
+	entries := w.auditEntries(t)
+	if len(entries) != 1 {
+		t.Fatalf("one registration left %d audit entries, want exactly 1: %+v", len(entries), entries)
+	}
+	entry := entries[0]
+	if entry.Actor != "test-owner" {
+		t.Errorf("actor = %q, want test-owner", entry.Actor)
+	}
+	if entry.Action != "registered in a group" {
+		t.Errorf("action = %q, want %q", entry.Action, "registered in a group")
+	}
+	if entry.Subject != actorID {
+		t.Errorf("subject = %q, want the person who was registered (%q)", entry.Subject, actorID)
+	}
+	at, err := time.Parse(time.RFC3339Nano, entry.At)
+	if err != nil {
+		t.Fatalf("time %q does not read as an instant: %v", entry.At, err)
+	}
+	if at.Before(before) || at.After(time.Now().UTC().Add(time.Second)) {
+		t.Errorf("time %s is not the moment of the registration", entry.At)
+	}
+}
+
+func TestAuditRecords_ARefusedRegistrationLeavesNoEntry(t *testing.T) {
+	w := newDesignAgentWalk(t)
+
+	out := w.mcpCall(t, "test-owner", "actor_assign_group", map[string]any{"instance_id": w.instance, "actor_id": "missing", "group_id": "missing"})
+	if !out.IsError {
+		t.Fatalf("registering nobody in no group succeeded, want a refusal")
+	}
+
+	if entries := w.auditEntries(t); len(entries) != 0 {
+		t.Errorf("a refused registration left audit entries: %+v", entries)
+	}
+}

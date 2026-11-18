@@ -45,6 +45,10 @@ func auditedWrites() map[string]auditedWrite {
 			action:  "granted a role",
 			subject: func(args, result map[string]any) string { return fieldOf(args, "actor_id") },
 		},
+		"actor_assign_group": {
+			action:  "registered in a group",
+			subject: func(args, result map[string]any) string { return fieldOf(args, "actor_id") },
+		},
 		"forms_form_publish": {
 			action:  "published a form",
 			subject: func(args, result map[string]any) string { return fieldOf(args, "form_id") },
