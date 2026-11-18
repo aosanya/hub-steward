@@ -72,8 +72,8 @@ export function PersonRaised({ id, full }: { id: string; full?: boolean }) {
           word={word("Wishes and issues")}
           full={full}
           opens={opens}
-          act={act}
-          empty={{ words: "Nothing raised yet.", act }}
+          foot={act}
+          empty={{ words: "Nothing raised yet." }}
           rows={raised.map((item) => (
             <ListRow key={item.key} title={item.title} meta={`${item.status}, raised ${dayWords(item.raisedAt)}`} onClick={() => open(issuePaths.issue.path({ id: item.key }))} end="›" />
           ))}

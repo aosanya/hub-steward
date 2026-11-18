@@ -7,12 +7,13 @@
 .sec-toggle { display: flex; padding: .25rem; border: 0; background: transparent; color: var(--ink-soft); }
 .sec-toggle .icon { width: 1.25rem; height: 1.25rem; }
 .sec-toggle[aria-expanded="false"] .icon { transform: rotate(-90deg); }
-.sec-act { padding: .25rem 0; border: 0; background: transparent; font: inherit; font-size: .875rem; font-weight: 600; color: var(--accent); }
+.sec-act { border: 0; background: transparent; font: inherit; font-weight: 700; color: var(--accent); }
 .sec .rows { background: transparent; border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
 .sec-foot { display: flex; border-top: 1px solid var(--line); }
+.sec-foot:empty { display: none; }
 .sec-foot > * { flex: 1; padding: .75rem 1rem; text-align: center; }
 .sec-foot > * + * { border-left: 1px solid var(--line); }
-.sec-foot-item { border: 0; background: transparent; font: inherit; font-weight: 600; color: var(--accent); }
+.sec-foot-item { border: 0; background: transparent; font: inherit; color: var(--ink); }
 .sec .row .ttl { font-weight: 400; }
 .empty-row { justify-content: space-between; min-height: 3rem; }
 .empty-row .words { color: var(--ink-soft); }

@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useMay } from "../../../../features/agency/useMay";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
@@ -10,7 +8,7 @@ import { Section } from "../../../../shared/ui/Section";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { ChooseSheet } from "./ChooseSheet";
-import { SectionAct } from "./SectionAct";
+import { SectionAct, SectionGo } from "./SectionAct";
 import { PersonActivity } from "./PersonActivity";
 import { usePersonAttributes } from "./PersonAttributesEdit";
 import { PersonBills } from "./PersonBills";
@@ -81,8 +79,8 @@ export function PersonGroups({ id, full }: { id: string; full?: boolean }) {
           word={word("Groups")}
           full={full}
           opens={opens}
-          act={act}
-          empty={{ words: `Not in any ${word("Group").toLowerCase()} yet.`, act }}
+          foot={act}
+          empty={{ words: `Not in any ${word("Group").toLowerCase()} yet.` }}
           rows={groups.map((group) => (
             <ListRow key={group.id} title={group.name} onClick={() => open(residentPaths.groups.path({ group: group.id }))} end="›" />
           ))}
@@ -93,10 +91,8 @@ export function PersonGroups({ id, full }: { id: string; full?: boolean }) {
 }
 
 export function PersonDetails({ id, person }: { id: string; person: Item }) {
-  const may = useMay("member.edit");
-  const navigate = useNavigate();
   const { filled, item } = usePersonAttributes(id, person);
-  const edit = may ? <button type="button" className="sec-foot-item" onClick={() => navigate(residentPaths.personEdit.path({ id }))}>Edit</button> : undefined;
+  const edit = <SectionGo permission="member.edit" act="Edit" to={residentPaths.personEdit.path({ id })} />;
   return <Section word="Personal detail" foot={edit} empty={{ words: "No details on file yet." }} rows={filled.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />)} />;
 }
 

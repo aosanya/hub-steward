@@ -5,9 +5,9 @@ import "./section.css";
 
 export const sectionLimit = 3;
 
-type Props = { word: string; rows: ReactNode[]; opens?: () => void; act?: ReactNode; empty?: { words: string; act?: ReactNode }; foot?: ReactNode; full?: boolean; all?: boolean };
+type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean };
 
-export function Section({ word, rows, opens, act, empty, foot, full = false, all = false }: Props) {
+export function Section({ word, rows, opens, empty, foot, full = false, all = false }: Props) {
   const [expanded, setExpanded] = useState(true);
   const bodyId = useId();
   const count = rows.length;
@@ -36,7 +36,6 @@ export function Section({ word, rows, opens, act, empty, foot, full = false, all
             )}
           </h2>
         )}
-        {count > 0 || full ? act : null}
         {full ? null : (
           <button type="button" className="sec-toggle" aria-label={expanded ? "Collapse" : "Expand"} aria-expanded={expanded} aria-controls={bodyId} onClick={() => setExpanded(!expanded)}>
             <Icon name="chevron" />
@@ -50,10 +49,9 @@ export function Section({ word, rows, opens, act, empty, foot, full = false, all
           </Rows>
         </div>
       ) : null}
-      {expanded && ((count === 0 && empty?.act) || more || foot) ? (
+      {expanded && (more || foot) ? (
         <footer className="sec-foot">
           {more ? <button type="button" className="sec-foot-item" onClick={opens}>{`See all ${count}`}</button> : null}
-          {count === 0 ? empty?.act : null}
           {foot}
         </footer>
       ) : null}

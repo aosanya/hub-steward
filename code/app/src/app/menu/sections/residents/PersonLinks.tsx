@@ -65,8 +65,8 @@ export function PersonApplications({ id, full }: { id: string; full?: boolean })
           word={word("Applications")}
           full={full}
           opens={opens}
-          act={act}
-          empty={{ words: "No applications yet.", act }}
+          foot={act}
+          empty={{ words: "No applications yet." }}
           rows={applications.map((application) => (
             <ListRow key={application.key} title={application.title} meta={`Sent ${dayWords(application.sentAt)}`} onClick={() => open(servicesPaths.application.path({ id: application.key }))} end="›" />
           ))}
