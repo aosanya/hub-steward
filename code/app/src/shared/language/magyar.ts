@@ -177,4 +177,6 @@ export const magyar: Words = {
   consentWithdraw: "Visszavonás",
   consentAgreeAgain: "Újra elfogadom",
   consentNotWithdrawn: "A hozzájárulás visszavonása nem sikerült. Próbálja újra.",
+  groupTypeHousehold: "Háztartás",
+  groupTypeCity: "Város",
 };

@@ -175,6 +175,8 @@ export const words = {
   consentWithdraw: "Withdraw",
   consentAgreeAgain: "Agree again",
   consentNotWithdrawn: "Your consent was not withdrawn. Try again.",
+  groupTypeHousehold: "Household",
+  groupTypeCity: "City",
 } as const;
 
 export const languages = [

@@ -177,4 +177,6 @@ export const swahili: Words = {
   consentWithdraw: "Ondoa idhini",
   consentAgreeAgain: "Kubali tena",
   consentNotWithdrawn: "Idhini yako haikuondolewa. Jaribu tena.",
+  groupTypeHousehold: "Kaya",
+  groupTypeCity: "Jiji",
 };

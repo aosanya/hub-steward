@@ -7,6 +7,9 @@ import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuEditForm, refusalWords } from "../../MenuEditForm";
 import { populationFigure } from "../../populationFigure";
+import { groupTypeWord } from "../../groupTypeWords";
+import { useLanguage } from "../../../../shared/language/language";
+import type { Words } from "../../../../shared/language/words";
 
 type Item = Record<string, unknown>;
 
@@ -61,13 +64,14 @@ function EditAct({ to }: { to: string }) {
   return <button type="button" className="sec-act" onClick={() => navigate(to)}>Edit</button>;
 }
 
-const nodeWords = (group: Item) => {
+const nodeWords = (group: Item, words: Words) => {
   const type = text(group, "node_type");
-  return type ? `${type.charAt(0).toUpperCase()}${type.slice(1)}` : "";
+  return type ? groupTypeWord(type, words) : "";
 };
 
 export function GroupHead({ group }: { group: Item }) {
-  const line = [nodeWords(group), text(group, "members")].filter(Boolean).join(" · ");
+  const { words } = useLanguage();
+  const line = [nodeWords(group, words), text(group, "members")].filter(Boolean).join(" · ");
   return (
     <div className="title-block">
       <h1 className="person-name">{text(group, "name")}</h1>
