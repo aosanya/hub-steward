@@ -62,3 +62,16 @@ export const loadRecordRow = async (recordCode: string, id: string, prompts: str
   const named = { ...fields, [recordRowIdKey]: id };
   return owner ? { ...named, [recordOwnerKey]: owner } : named;
 };
+
+export const loadRowChain = async (recordCode: string, rowId: string): Promise<string[]> => {
+  const [current, older] = await Promise.all([loadRawRows(recordCode), loadRawRows(recordCode, { history: true })]);
+  const byId = new Map([...current, ...older].map((row) => [String(row.id), row]));
+  const chain: string[] = [];
+  let next = rowId;
+  while (next !== "" && !chain.includes(next)) {
+    chain.push(next);
+    const replaces = byId.get(next)?.replaces;
+    next = typeof replaces === "string" ? replaces : "";
+  }
+  return chain;
+};

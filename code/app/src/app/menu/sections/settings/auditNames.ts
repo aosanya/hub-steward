@@ -6,6 +6,7 @@ export type AuditEntry = { id: string; at: string; action: string; subject: stri
 
 const grantedRole = "granted a role";
 const publishedForm = "published a form";
+const rowActions = ["added a row", "corrected a row"];
 
 const distinct = (values: string[]) => [...new Set(values.filter((value) => value !== ""))];
 
@@ -30,7 +31,10 @@ export const auditNames = async (entries: AuditEntry[]) => {
   const [actors, titles] = await Promise.all([actorLabels(actorIdsOf(entries)), Promise.all(formIdsOf(entries).map(formTitle))]);
   const forms = new Map(titles);
   const actorName = (id: string) => (id === "" ? "" : (actors.get(id) ?? shortId(id)));
-  const subjectName = (entry: AuditEntry) =>
-    entry.action === grantedRole ? actorName(entry.subject) : entry.action === publishedForm ? (forms.get(entry.subject) ?? entry.subject) : entry.subject;
+  const subjectName = (entry: AuditEntry) => {
+    if (entry.action === grantedRole) return actorName(entry.subject);
+    if (entry.action === publishedForm) return forms.get(entry.subject) ?? entry.subject;
+    return rowActions.includes(entry.action) ? "" : entry.subject;
+  };
   return { actorName, subjectName };
 };

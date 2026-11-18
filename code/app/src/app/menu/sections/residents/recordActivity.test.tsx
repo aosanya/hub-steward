@@ -89,7 +89,8 @@ describe.each(widths)("an opened business on $name", (view) => {
     await within(pane()).findByRole("heading", { name: "Activity" });
     expect(await within(pane()).findAllByText(/a row/)).toHaveLength(1);
     const subjects = called.mock.calls.filter((call) => call[1] === "audit_list_entries").map((call) => (call[2] as { subject: string }).subject);
-    expect(subjects).toEqual(["b9"]);
+    expect(subjects).toContain("b9");
+    expect(within(pane()).queryByText(/Bakery/)).toBeNull();
   });
 
   it("shows no Activity heading and no empty card when the row has no entry, and makes nothing up", async () => {
