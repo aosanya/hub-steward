@@ -1,5 +1,9 @@
+import { useSearchParams } from "react-router-dom";
+import { useMay } from "../../../../features/agency/useMay";
+import { Button } from "../../../../shared/ui/Button";
 import { useWord } from "../../../../features/agency/useWord";
 import { MountedMenuList } from "./MountedMenuList";
+import { placePaths } from "./paths";
 import { dayOf, digitaltwinModule, joined, loadNodeNames, loadRecords, tenureList, textOf } from "./records";
 import { tenureDetail } from "./tenureDetail";
 
@@ -19,8 +23,12 @@ const loadTenures = async () => {
 
 export function OwnershipPage() {
   const word = useWord("digitaltwin");
+  const mayAdd = useMay("digitaltwin.manage");
+  const [search] = useSearchParams();
   return (
     <MountedMenuList
+      headEnd={mayAdd ? <Button to={placePaths.holdingNew.path()}>Add holding</Button> : undefined}
+      startAt={search.get("holding") ?? undefined}
       module={digitaltwinModule}
       title={word("Ownership & Tenure")}
       tool={tenureList}
