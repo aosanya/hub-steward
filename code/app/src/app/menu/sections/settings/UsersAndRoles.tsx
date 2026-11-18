@@ -6,7 +6,9 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
 import { Sheet } from "../../../../shared/ui/Sheet";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
+import { routes as appRoutes } from "../../../routes";
 import { settingsPaths } from "./paths";
 import { ChatAboutItem, text, useChosenItem } from "./RecordPage";
 import { PageFrame } from "../../PageFrame";
@@ -72,6 +74,7 @@ export function UsersAndRoles() {
       title={title}
       withTabs
       bandless
+      above={<AddButton permission="member.add" label="Add person" to={appRoutes.personNew.path()} />}
       startAt={useChosenItem()}
       listKey={version}
       detailKey={version}

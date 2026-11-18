@@ -1,6 +1,7 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
 import { SectionGo } from "../residents/SectionAct";
@@ -50,6 +51,7 @@ export function BoundariesAndAreas() {
       title={title}
       withTabs
       bandless
+      above={<AddButton permission="group.manage" label="Add area" to={settingsPaths.boundaryNew.path()} />}
       startAt={useChosenItem()}
       list={{ title, tool: "actor_list_groups", load: loadAreas, fields: { title: "name", meta: "residents" }, empty: { words: `No ${areasInSentence(title)} have been added yet.` } }}
       detail={{ tool: "actor_get_group_population", load: loadArea, fields: {}, status: "",

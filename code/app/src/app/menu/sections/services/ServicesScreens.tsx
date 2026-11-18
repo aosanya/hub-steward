@@ -155,5 +155,5 @@ export const FeesPaymentsScreen = () => <KindScreen generic="Fees & Payments" em
 
 export function ServiceCatalogueScreen() {
   const word = useWord("forms");
-  return <CatalogueWindow title={word("Service Catalogue")} empty={`No ${word("Services").toLowerCase()} yet.`} back={servicesPaths.catalogue.path()} />;
+  return <CatalogueWindow title={word("Service Catalogue")} empty={`No ${word("Services").toLowerCase()} yet.`} back={servicesPaths.catalogue.path()} add={{ label: `Add ${word("Service").toLowerCase()}`, to: servicesPaths.catalogueNew.path() }} />;
 }

@@ -2,6 +2,7 @@ import { Route } from "react-router-dom";
 import { AgencyProfile } from "./AgencyProfile";
 import { BoundariesAndAreas } from "./BoundariesAndAreas";
 import { BoundaryEditScreen } from "./BoundaryEditScreen";
+import { BoundaryNewScreen } from "./BoundaryNewScreen";
 import { LateRules } from "./LateRules";
 import { LateRulesEdit } from "./LateRulesEdit";
 import { settingsPaths } from "./paths";
@@ -23,6 +24,7 @@ export const routes = () => (
     <Route path={settingsPaths.agencyProfile.pattern} element={<AgencyProfile />} />
     <Route path={settingsPaths.usersAndRoles.pattern} element={<UsersAndRoles />} />
     <Route path={settingsPaths.boundariesAndAreas.pattern} element={<BoundariesAndAreas />} />
+    <Route path={settingsPaths.boundaryNew.pattern} element={<BoundaryNewScreen />} />
     <Route path={settingsPaths.boundaryEdit.pattern} element={<BoundaryEditScreen />} />
     <Route path={settingsPaths.registerDetails.pattern} element={<RegisterDetails />} />
     <Route path={settingsPaths.registerDetailsEdit.pattern} element={<RegisterDetailsEdit />} />

@@ -3,8 +3,10 @@ import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
 import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
 import { SchedulePanel, WorkOrderPanel } from "./AssetPanels";
+import { assetPaths } from "./paths";
 import { aboutAndPlaceOf, placeLookupFor } from "./workOrderAsset";
 
 type Item = Record<string, unknown>;
@@ -95,6 +97,7 @@ export function WorkOrdersPage() {
       title={title}
       withTabs
       bandless
+      above={<AddButton permission="task.edit" label={`Add ${word("Work Order").toLowerCase()}`} to={assetPaths.workOrderNew.path()} />}
       listKey={version}
       detailKey={version}
       list={{ title, tool: taskList, fields: { title: "title", meta: "stateAndDue" }, empty: { words: `No ${title.toLowerCase()} yet.` }, load: loadWorkOrders }}
@@ -111,6 +114,7 @@ export function MaintenancePage() {
       title={title}
       withTabs
       bandless
+      above={<AddButton permission="task.edit" label="Add schedule" to={assetPaths.maintenanceNew.path()} />}
       list={{ title, tool: repeatingList, fields: { title: "title", meta: "oftenAndNext" }, empty: { words: "No maintenance scheduled." }, load: loadSchedule }}
       detail={{ tool: repeatingRead, fields: {}, status: "", load: loadScheduleItem, extra: (item) => <SchedulePanel item={item} /> }}
     />

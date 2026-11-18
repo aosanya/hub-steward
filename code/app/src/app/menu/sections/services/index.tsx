@@ -1,6 +1,7 @@
 import { Route } from "react-router-dom";
 import { ApplicationScreen } from "./ApplicationScreen";
 import { ApplicationsScreen } from "./ApplicationsScreen";
+import { ServiceNewScreen } from "./ServiceNewScreen";
 import { FeesPaymentsScreen, LicencesScreen, PermitsScreen, ServiceCatalogueScreen } from "./ServicesScreens";
 import { servicesPaths } from "./paths";
 
@@ -22,6 +23,7 @@ export const routes = () => (
     <Route path={servicesPaths.licences.pattern} element={<LicencesScreen />} />
     <Route path={servicesPaths.fees.pattern} element={<FeesPaymentsScreen />} />
     <Route path={servicesPaths.catalogue.pattern} element={<ServiceCatalogueScreen />} />
+    <Route path={servicesPaths.catalogueNew.pattern} element={<ServiceNewScreen />} />
     <Route path={servicesPaths.application.pattern} element={<ApplicationScreen />} />
   </>
 );

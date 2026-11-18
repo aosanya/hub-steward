@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
+import { AddButton } from "../../AddButton";
 import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
@@ -58,7 +59,9 @@ function CatalogueEntryPage({ entry, back, onSaved }: { entry: Item; back?: stri
   );
 }
 
-export function CatalogueWindow({ title, empty, listTool = publicListTool, back }: { title: string; empty: string; listTool?: string; back?: string }) {
+type WindowProps = { title: string; empty: string; listTool?: string; back?: string; add?: { label: string; to: string } };
+
+export function CatalogueWindow({ title, empty, listTool = publicListTool, back, add }: WindowProps) {
   const [version, setVersion] = useState(0);
   const [search] = useSearchParams();
   return (
@@ -69,6 +72,7 @@ export function CatalogueWindow({ title, empty, listTool = publicListTool, back 
       startAt={search.get("item") ?? undefined}
       withTabs
       bandless
+      above={add ? <AddButton permission={servicePermission} label={add.label} to={add.to} /> : undefined}
       list={{ title, tool: listTool, fields: { title: "name", meta: "line" }, empty: homeEmpty(empty), load: async () => (await listOf(listTool)).map(entryRow) }}
       detail={{
         tool: entryReadTool,

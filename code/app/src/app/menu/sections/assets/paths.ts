@@ -6,7 +6,9 @@ export const assetPaths = {
   facilities: screen("/menu/assets/facilities"),
   buildings: screen("/menu/assets/buildings"),
   workOrders: screen("/menu/assets/work-orders"),
+  workOrderNew: screen("/menu/assets/work-orders/new"),
   maintenance: screen("/menu/assets/maintenance-schedule"),
+  maintenanceNew: screen("/menu/assets/maintenance-schedule/new"),
 };
 
 export const maintenancePaths = {

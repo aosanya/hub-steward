@@ -4,6 +4,8 @@ import { MaintenanceListScreen } from "./MaintenanceList";
 import { MaintenanceAddScreen, MaintenanceEditScreen, MaintenanceRecordScreen } from "./MaintenanceScreens";
 import { assetPaths, maintenancePaths, scheduleEditPath } from "./paths";
 import { ScheduleEditScreen } from "./ScheduleEdit";
+import { ScheduleNewScreen } from "./ScheduleNewScreen";
+import { WorkOrderNewScreen } from "./WorkOrderNewScreen";
 import { MaintenancePage, WorkOrdersPage } from "./WorkPages";
 
 export const items = [
@@ -22,7 +24,9 @@ export const routes = () => (
     <Route path={assetPaths.facilities.pattern} element={<FacilitiesPage />} />
     <Route path={assetPaths.buildings.pattern} element={<BuildingsPage />} />
     <Route path={assetPaths.workOrders.pattern} element={<WorkOrdersPage />} />
+    <Route path={assetPaths.workOrderNew.pattern} element={<WorkOrderNewScreen />} />
     <Route path={assetPaths.maintenance.pattern} element={<MaintenancePage />} />
+    <Route path={assetPaths.maintenanceNew.pattern} element={<ScheduleNewScreen />} />
     <Route path={scheduleEditPath.pattern} element={<ScheduleEditScreen />} />
     <Route path={maintenancePaths.list.pattern} element={<MaintenanceListScreen />} />
     <Route path={maintenancePaths.add.pattern} element={<MaintenanceAddScreen />} />
