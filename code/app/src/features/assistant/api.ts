@@ -5,7 +5,7 @@ import { cancelledResult, moveTool, createTool, rulesTool, resolveMove, unconfir
 import { backlogDraftsFor, showNamedBacklog } from "./namedBacklog";
 import { residentNamesFor, residentReadsWords, residentStepWords, scopedToResident, withoutScope } from "./residentReads";
 import { askedCountFirst, draftOf, pendingTool, readTool, type ResultDraft, type ResultList } from "./results";
-import { backlogByNameRule, blockedIsATagRule, lookUpBeforeMoveRule, manyMatchesRule, promptFrom, readsOnlyRule, triagerDescription } from "./triager";
+import { backlogByNameRule, blockedIsATagRule, lookUpBeforeMoveRule, manyMatchesRule, promptFrom, readsOnlyRule, triagerDescription, withResidentRule } from "./triager";
 
 export type Turn = { role: "user" | "assistant"; content: string; lists?: ResultList[] };
 
@@ -144,7 +144,8 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
   const about = carriedChatAbout();
   const residentNames = residentNamesFor(about);
   const tools = await offeredOf([...offeredNames, ...residentNames]);
-  const prompt = promptFrom(await triagerDescription(), systemPrompt);
+  const description = promptFrom(await triagerDescription(), systemPrompt);
+  const prompt = residentNames.length > 0 ? withResidentRule(description) : description;
   const context: Wire[] = about ? [{ role: "system", content: `${chatAboutWords(about)} ${residentReadsWords}` }] : [];
   const messages: Wire[] = [{ role: "system", content: prompt }, ...context, ...turns.map(({ role, content }) => ({ role, content }))];
   const found: ResultDraft[] = [];
