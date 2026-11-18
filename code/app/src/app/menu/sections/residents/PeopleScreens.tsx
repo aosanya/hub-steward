@@ -12,6 +12,7 @@ import { routes } from "../../../routes";
 import { residentPaths } from "./paths";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
+import { ChatAboutGroup } from "./ChatAboutGroup";
 import { ChatAboutRegistration } from "./ChatAboutRegistration";
 import { ChatAboutResident } from "./ChatAboutResident";
 import { GroupPanel, loadGroup } from "./GroupScreen";
@@ -111,9 +112,9 @@ export function AllPeopleScreen() {
   );
 }
 
-type GroupWindowProps = { title: string; empty: string; keep: (group: Item) => boolean; startAt?: string; editPath: (id: string) => string };
+type GroupWindowProps = { title: string; empty: string; keep: (group: Item) => boolean; startAt?: string; editPath: (id: string) => string; backTo: string };
 
-function GroupWindow({ title, empty, keep, startAt, editPath }: GroupWindowProps) {
+function GroupWindow({ title, empty, keep, startAt, editPath, backTo }: GroupWindowProps) {
   const [version, setVersion] = useState(0);
   return (
     <MenuWindow
@@ -129,7 +130,12 @@ function GroupWindow({ title, empty, keep, startAt, editPath }: GroupWindowProps
         load: loadGroup,
         fields: {},
         status: "",
-        extra: (group) => <GroupPanel group={group} onSaved={() => setVersion((was) => was + 1)} editPath={editPath(text(group, "id"))} />,
+        extra: (group) => (
+          <>
+            <ChatAboutGroup group={group} back={backTo} />
+            <GroupPanel group={group} onSaved={() => setVersion((was) => was + 1)} editPath={editPath(text(group, "id"))} />
+          </>
+        ),
       }}
     />
   );
@@ -138,7 +144,7 @@ function GroupWindow({ title, empty, keep, startAt, editPath }: GroupWindowProps
 export function HouseholdsScreen() {
   const word = useWord("actor");
   const [search] = useSearchParams();
-  return <GroupWindow title={word("Households")} empty={`No ${word("Households").toLowerCase()} yet.`} keep={(group) => householdTypes.has(text(group, "node_type").toLowerCase())} startAt={search.get("group") ?? undefined} editPath={(id) => residentPaths.householdEdit.path({ id })} />;
+  return <GroupWindow title={word("Households")} empty={`No ${word("Households").toLowerCase()} yet.`} keep={(group) => householdTypes.has(text(group, "node_type").toLowerCase())} startAt={search.get("group") ?? undefined} editPath={(id) => residentPaths.householdEdit.path({ id })} backTo={residentPaths.households.path()} />;
 }
 
 const rowById = <Row extends { id: string }>(rows: () => Promise<Row[]>) => async (id: string) => (await rows()).find((row) => row.id === id) ?? ({} as Partial<Row>);
@@ -187,7 +193,7 @@ export function GroupsScreen() {
   const word = useWord("actor");
   const groupsTitle = word("Groups") === "Groups" ? "Groups & Associations" : word("Groups");
   const [search] = useSearchParams();
-  return <GroupWindow title={groupsTitle} empty={`No ${word("Groups").toLowerCase()} yet.`} keep={() => true} startAt={search.get("group") ?? undefined} editPath={(id) => residentPaths.groupEdit.path({ id })} />;
+  return <GroupWindow title={groupsTitle} empty={`No ${word("Groups").toLowerCase()} yet.`} keep={() => true} startAt={search.get("group") ?? undefined} editPath={(id) => residentPaths.groupEdit.path({ id })} backTo={residentPaths.groups.path()} />;
 }
 
 export function CommunicationsScreen() {
