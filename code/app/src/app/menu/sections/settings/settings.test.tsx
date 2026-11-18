@@ -103,14 +103,14 @@ const called = (name: string) => vi.mocked(mcp.callTool).mock.calls.filter((call
 
 describe("the Settings section's items", () => {
   it("lists the five screens built here, each one openable", () => {
-    expect(items.map((item) => item.title)).toEqual(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "Audit Log"]);
+    expect(items.map((item) => item.title)).toEqual(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "AI Agents & Limits", "Audit Log"]);
     for (const item of items) expect(item.path).toBeTypeOf("function");
   });
 
   it("gives each screen its own path under the Settings section of the open agency", () => {
     const paths = items.map((item) => item.path!());
     for (const path of paths) expect(path.startsWith("/a/town/menu/settings/")).toBe(true);
-    expect(new Set(paths).size).toBe(5);
+    expect(new Set(paths).size).toBe(6);
   });
 });
 
@@ -256,7 +256,7 @@ describe("the Integrations screen", () => {
   });
 });
 
-describe.each(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "Audit Log"])("the %s screen's Back button", (title) => {
+describe.each(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "AI Agents & Limits", "Audit Log"])("the %s screen's Back button", (title) => {
   it("is named after the section it was opened from and goes back to it", async () => {
     openAt(title);
     await screen.findByRole("button", { name: /‹ Settings/ });
