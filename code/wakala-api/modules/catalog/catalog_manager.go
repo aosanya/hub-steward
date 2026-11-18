@@ -38,6 +38,9 @@ type (
 	RaisedItem             = models.RaisedItem
 	BoardItem              = models.BoardItem
 	BoardItemTally         = models.BoardItemTally
+	AreaTally              = models.AreaTally
+	BoardItemAreaTally     = models.BoardItemAreaTally
+	AreaPopulation         = models.AreaPopulation
 	SharedBoardItem        = models.SharedBoardItem
 	Reply                  = models.Reply
 	FollowKey              = models.FollowKey
@@ -281,6 +284,7 @@ type CatalogManager interface {
 	ListRaisedItemsOfSubject(ctx context.Context, subjectID string) ([]RaisedItem, error)
 
 	UseAreaResolver(resolve AreaResolver)
+	UseAreaDirectory(directory AreaDirectory)
 	UseStreetResolver(resolve StreetResolver)
 	UseLinkedEntries(linked LinkedEntries)
 
@@ -292,6 +296,7 @@ type CatalogManager interface {
 
 	ListBoardItems(ctx context.Context) ([]BoardItemTally, error)
 	ListPublicBoardItems(ctx context.Context, limit, offset int) ([]BoardItemTally, error)
+	TallyBoardItemsByArea(ctx context.Context, boardItemID string) ([]BoardItemAreaTally, error)
 
 	SetBoardItemOutcome(ctx context.Context, boardItemID, outcome string) error
 	GetBoardItem(ctx context.Context, boardItemID string) (BoardItemTally, error)
@@ -331,6 +336,7 @@ type catalogManager struct {
 	now  func() string
 
 	resolveArea   AreaResolver
+	directory     AreaDirectory
 	resolveStreet StreetResolver
 	linkedEntries LinkedEntries
 }
