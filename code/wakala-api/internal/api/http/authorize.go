@@ -26,6 +26,9 @@ func (d *Deps) authorizer(scope string) dispatch.Authorizer {
 		if subject == "" {
 			return dispatch.ErrForbidden
 		}
+		if d.admittedByAgency(ctx, subject, action) {
+			return nil
+		}
 		ok, err := d.Permissions.MayPerformIn(ctx, subject, partitionOf(ctx), scope, action)
 		if err != nil || !ok {
 			return dispatch.ErrForbidden
