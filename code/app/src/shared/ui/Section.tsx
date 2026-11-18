@@ -15,7 +15,7 @@ export function Section({ word, rows, opens, empty, foot, full = false, all = fa
   const count = rows.length;
   const filter = useSectionFilter(word, rows, full);
   if (count === 0 && !empty) return null;
-  const showAll = full || all;
+  const showAll = full || all || plain;
   const more = !showAll && count > sectionLimit;
   const shown = full ? filter.kept : showAll ? rows : rows.slice(0, sectionLimit);
   const title = (

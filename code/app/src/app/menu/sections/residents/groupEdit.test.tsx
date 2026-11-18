@@ -65,7 +65,7 @@ describe("editing a group from its detail", () => {
   it("renames it, resends the group type and anchor level, and shows the new name", async () => {
     await openGroup();
 
-    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[0]);
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
     const name = screen.getByLabelText("Name");
     await userEvent.clear(name);
     await userEvent.type(name, "Malomsor alsó");
@@ -74,13 +74,13 @@ describe("editing a group from its detail", () => {
     await waitFor(() =>
       expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", NodeType: "district", AnchorLevelOverrideID: "lv1", name: "Malomsor alsó" }),
     );
-    expect(await within(document.querySelector(".mw-detail") as HTMLElement).findByText("Malomsor alsó")).toBeTruthy();
+    expect((await within(document.querySelector(".mw-detail") as HTMLElement).findAllByText("Malomsor alsó")).length).toBeGreaterThan(0);
   });
 
   it("changes the joining and hides the group under group.settings", async () => {
     await openGroup();
 
-    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[1]);
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
     const joining = screen.getByLabelText("Joining");
     await userEvent.clear(joining);
     await userEvent.type(joining, "confirmed");
@@ -96,7 +96,7 @@ describe("editing a group from its detail", () => {
     refusal = "actor_edit_group: a group with that name already exists";
     await openGroup();
 
-    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[0]);
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
     await userEvent.type(screen.getByLabelText("Name"), "x");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
@@ -158,7 +158,7 @@ describe("editing a group from its detail at wide size", () => {
       expect(found).toBeTruthy();
       return found;
     }));
-    expect(await pane.findByText("Malomsor")).toBeInTheDocument();
+    expect((await pane.findAllByText("Malomsor")).length).toBeGreaterThan(0);
     expect(await pane.findByText("3 members")).toBeInTheDocument();
     expect(await pane.findByText("Hidden")).toBeInTheDocument();
     expect(pane.getByText("no")).toBeInTheDocument();
@@ -167,7 +167,7 @@ describe("editing a group from its detail at wide size", () => {
   it("saves a new name through actor_edit_group and shows it in the content pane", async () => {
     await openGroup();
 
-    await userEvent.click((await screen.findAllByRole("button", { name: "Edit" }))[0]);
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
     const name = screen.getByLabelText("Name");
     await userEvent.clear(name);
     await userEvent.type(name, "Malomsor alsó");
@@ -176,7 +176,7 @@ describe("editing a group from its detail at wide size", () => {
     await waitFor(() =>
       expect(called).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", NodeType: "district", AnchorLevelOverrideID: "lv1", name: "Malomsor alsó" }),
     );
-    expect(await within(content()).findByText("Malomsor alsó")).toBeInTheDocument();
+    expect((await within(content()).findAllByText("Malomsor alsó")).length).toBeGreaterThan(0);
   });
 
   it("hides the group through actor_set_group_hidden and flips the button to Show", async () => {

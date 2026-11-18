@@ -75,7 +75,7 @@ describe("choosing a group with no recorded population figure at wide size", () 
     await userEvent.click(await screen.findByRole("button", { name: new RegExp(chosen) }));
 
     const content = document.querySelector(".wf-main .wf-content") as HTMLElement;
-    expect(await within(content).findByText(chosen)).toBeInTheDocument();
+    expect((await within(content).findAllByText(chosen)).length).toBeGreaterThan(0);
     expect(await within(content).findByText("Hidden")).toBeInTheDocument();
     expect(within(content).queryByText("Members")).toBeNull();
     expect(within(content).queryByText(/members$/)).toBeNull();

@@ -287,7 +287,7 @@ describe.each(widths)("a row in the Groups section on $name", (view) => {
     await waitFor(() => expect(callsTo("actor_get_group")).toContainEqual({ group_id: "g2" }));
     const pane = document.querySelector(view.pane) as HTMLElement;
     expect(await within(pane).findByText("Joining")).toBeTruthy();
-    expect(within(pane).getByText(wardGroup)).toBeTruthy();
+    expect(within(pane).getByRole("heading", { level: 1, name: wardGroup })).toBeTruthy();
     expect(callsTo("actor_get_group")).not.toContainEqual({ group_id: "g1" });
   });
 });

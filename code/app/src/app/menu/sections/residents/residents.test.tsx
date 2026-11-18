@@ -408,7 +408,7 @@ describe.each(groupWindows)("$title on the menu window", ({ title, screenIndex, 
     const tree = frame.querySelector(".wf-panes .wf-tree") as HTMLElement;
     const content = frame.querySelector(".wf-main .wf-content") as HTMLElement;
     expect(within(tree).getByRole("button", { name: new RegExp(other) })).toBeInTheDocument();
-    expect(await within(content).findByText(chosen)).toBeInTheDocument();
+    expect(await within(content).findByRole("heading", { level: 1, name: chosen })).toBeInTheDocument();
     expect(await within(content).findByText(count)).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", "actor_get_group", { group_id: id });
     expect(landed).toBe(screens[screenIndex].at);

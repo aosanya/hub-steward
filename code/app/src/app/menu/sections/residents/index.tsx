@@ -3,6 +3,7 @@ import { routes as appRoutes } from "../../../routes";
 import { BusinessNewScreen } from "./BusinessNewScreen";
 import { BusinessesScreen } from "./BusinessesScreen";
 import { PersonNewScreen } from "./PersonNewScreen";
+import { GroupEditScreen } from "./GroupEditScreen";
 import { PersonEditScreen } from "./PersonEditScreen";
 import { PersonSectionScreen } from "./PersonSectionScreen";
 import { InformalTraderNewScreen } from "./InformalTraderNewScreen";
@@ -32,8 +33,10 @@ export const routes = () => (
     <Route path={residentPaths.personSection.pattern} element={<PersonSectionScreen />} />
     <Route path={appRoutes.personNew.pattern} element={<PersonNewScreen />} />
     <Route path={residentPaths.households.pattern} element={<HouseholdsScreen />} />
+    <Route path={residentPaths.householdEdit.pattern} element={<GroupEditScreen home="households" />} />
     <Route path={residentPaths.registrations.pattern} element={<RegistrationsScreen />} />
     <Route path={residentPaths.groups.pattern} element={<GroupsScreen />} />
+    <Route path={residentPaths.groupEdit.pattern} element={<GroupEditScreen home="groups" />} />
     <Route path={residentPaths.communications.pattern} element={<CommunicationsScreen />} />
     <Route path={residentPaths.businesses.pattern} element={<BusinessesScreen />} />
     <Route path={appRoutes.businessNew.pattern} element={<BusinessNewScreen />} />

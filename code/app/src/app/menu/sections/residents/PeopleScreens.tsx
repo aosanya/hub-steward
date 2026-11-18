@@ -9,6 +9,7 @@ import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { routes } from "../../../routes";
+import { residentPaths } from "./paths";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
 import { ChatAboutRegistration } from "./ChatAboutRegistration";
@@ -110,13 +111,15 @@ export function AllPeopleScreen() {
   );
 }
 
-type GroupWindowProps = { title: string; empty: string; keep: (group: Item) => boolean; startAt?: string };
+type GroupWindowProps = { title: string; empty: string; keep: (group: Item) => boolean; startAt?: string; editPath: (id: string) => string };
 
-function GroupWindow({ title, empty, keep, startAt }: GroupWindowProps) {
+function GroupWindow({ title, empty, keep, startAt, editPath }: GroupWindowProps) {
   const [version, setVersion] = useState(0);
   return (
     <MenuWindow
       title={title}
+      withTabs
+      bandless
       startAt={startAt}
       listKey={version}
       detailKey={version}
@@ -124,9 +127,9 @@ function GroupWindow({ title, empty, keep, startAt }: GroupWindowProps) {
       detail={{
         tool: "actor_get_group",
         load: loadGroup,
-        fields: { Name: "name", Joining: "join_mode", Members: "members", Hidden: "hiddenWords" },
-        status: "status",
-        extra: (group) => <GroupPanel group={group} onSaved={() => setVersion((was) => was + 1)} />,
+        fields: {},
+        status: "",
+        extra: (group) => <GroupPanel group={group} onSaved={() => setVersion((was) => was + 1)} editPath={editPath(text(group, "id"))} />,
       }}
     />
   );
@@ -134,7 +137,8 @@ function GroupWindow({ title, empty, keep, startAt }: GroupWindowProps) {
 
 export function HouseholdsScreen() {
   const word = useWord("actor");
-  return <GroupWindow title={word("Households")} empty={`No ${word("Households").toLowerCase()} yet.`} keep={(group) => householdTypes.has(text(group, "node_type").toLowerCase())} />;
+  const [search] = useSearchParams();
+  return <GroupWindow title={word("Households")} empty={`No ${word("Households").toLowerCase()} yet.`} keep={(group) => householdTypes.has(text(group, "node_type").toLowerCase())} startAt={search.get("group") ?? undefined} editPath={(id) => residentPaths.householdEdit.path({ id })} />;
 }
 
 const rowById = <Row extends { id: string }>(rows: () => Promise<Row[]>) => async (id: string) => (await rows()).find((row) => row.id === id) ?? ({} as Partial<Row>);
@@ -183,7 +187,7 @@ export function GroupsScreen() {
   const word = useWord("actor");
   const groupsTitle = word("Groups") === "Groups" ? "Groups & Associations" : word("Groups");
   const [search] = useSearchParams();
-  return <GroupWindow title={groupsTitle} empty={`No ${word("Groups").toLowerCase()} yet.`} keep={() => true} startAt={search.get("group") ?? undefined} />;
+  return <GroupWindow title={groupsTitle} empty={`No ${word("Groups").toLowerCase()} yet.`} keep={() => true} startAt={search.get("group") ?? undefined} editPath={(id) => residentPaths.groupEdit.path({ id })} />;
 }
 
 export function CommunicationsScreen() {
