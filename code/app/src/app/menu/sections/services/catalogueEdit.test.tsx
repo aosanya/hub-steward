@@ -36,6 +36,7 @@ beforeEach(() => {
     if (name === "forms_catalog_setting_read") return given.key === "kinds" ? { key: "kinds", value: kindsValue } : null;
     if (name === "forms_form_list") return { rows: formRows };
     if (name === "forms_catalog_entry_upsert") {
+      if ("version" in given) throw new mcp.McpError('forms_catalog_entry_upsert takes no argument "version"');
       if (given.form_id && !knownForms.includes(given.form_id)) throw new mcp.McpError("forms_catalog_entry_upsert: form_id is not a form of this agency");
       entry = { ...entry, ...given };
       return entry;
@@ -113,6 +114,25 @@ describe("editing a service catalogue entry", () => {
     expect(await screen.findByText("fee")).toBeTruthy();
     expect(await screen.findByText("Fee payment form")).toBeTruthy();
     expect(screen.queryByText("f2")).toBeNull();
+  });
+
+  it("saves an entry the hub stamped with updated_at without sending a version, which forms_catalog_entry_upsert does not take", async () => {
+    entry = { ...entry, updated_at: "2026-11-18T10:00:00Z" };
+    await openEntry();
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.click(await screen.findByRole("radio", { name: "fee" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() =>
+      expect(called).toHaveBeenCalledWith("", "forms_catalog_entry_upsert", {
+        slug: "market-stall",
+        name: "Market Stall Permit",
+        summary: "Trade on the square",
+        doc: "{\"kind\":\"permit\",\"form_id\":\"f1\"}",
+        kind: "fee",
+      }),
+    );
+    expect(screen.queryByText(/takes no argument/)).toBeNull();
   });
 
   it("shows the hub's words when the hub refuses the form", async () => {

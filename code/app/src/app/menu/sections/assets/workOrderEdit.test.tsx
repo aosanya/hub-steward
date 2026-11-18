@@ -18,6 +18,7 @@ const answer = async (name: string, args: unknown) => {
   if (name === "taskmanager_task_list") return { items: [order] };
   if (name === "taskmanager_task_read") return { item: order };
   if (name === "taskmanager_task_patch") {
+    if ("version" in given) throw new mcp.McpError('taskmanager_task_patch takes no argument "version"');
     const { taskID: _taskID, ...fields } = given;
     order = { ...order, ...fields };
     return {};
@@ -61,6 +62,22 @@ describe("editing a work order from its detail", () => {
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "taskmanager_task_patch", { taskID: "w1", title: "Repaint bridge railings" }));
+    expect((await screen.findAllByText("Repaint bridge railings")).length).toBeGreaterThan(1);
+  });
+
+  it("saves an order the hub stamped with updated_at without sending a version, which taskmanager_task_patch does not take", async () => {
+    setWide(true);
+    order = { ...order, updated_at: "2026-11-18T10:00:00Z" };
+    await openOrder();
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    const title = screen.getByLabelText("Title");
+    await userEvent.clear(title);
+    await userEvent.type(title, "Repaint bridge railings");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(called).toHaveBeenCalledWith("", "taskmanager_task_patch", { taskID: "w1", title: "Repaint bridge railings" }));
+    expect(screen.queryByText(/takes no argument/)).toBeNull();
     expect((await screen.findAllByText("Repaint bridge railings")).length).toBeGreaterThan(1);
   });
 
