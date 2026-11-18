@@ -1,5 +1,6 @@
 import { Route } from "react-router-dom";
 import { BuildingsPage, EquipmentPage, FacilitiesPage, RoutesPage } from "./AssetCategoryPages";
+import { MaintenanceListScreen } from "./MaintenanceList";
 import { MaintenanceAddScreen, MaintenanceEditScreen, MaintenanceRecordScreen } from "./MaintenanceScreens";
 import { assetPaths, maintenancePaths, scheduleEditPath } from "./paths";
 import { ScheduleEditScreen } from "./ScheduleEdit";
@@ -23,6 +24,7 @@ export const routes = () => (
     <Route path={assetPaths.workOrders.pattern} element={<WorkOrdersPage />} />
     <Route path={assetPaths.maintenance.pattern} element={<MaintenancePage />} />
     <Route path={scheduleEditPath.pattern} element={<ScheduleEditScreen />} />
+    <Route path={maintenancePaths.list.pattern} element={<MaintenanceListScreen />} />
     <Route path={maintenancePaths.add.pattern} element={<MaintenanceAddScreen />} />
     <Route path={maintenancePaths.record.pattern} element={<MaintenanceRecordScreen />} />
     <Route path={maintenancePaths.edit.pattern} element={<MaintenanceEditScreen />} />

@@ -1,6 +1,9 @@
 import { useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMay } from "../../../../features/agency/useMay";
+import { useLoad } from "../../../../features/forms/useLoad";
+import { dayWords } from "../../../../shared/ui/days";
+import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
@@ -9,6 +12,7 @@ import { WorkOrderAssignee } from "./WorkOrderAssignee";
 import { WorkOrderStatus } from "./WorkOrderStatus";
 import { maintenanceKeys } from "./maintenanceHistory";
 import { MaintenanceHistory } from "./MaintenanceCard";
+import { loadMaintenanceOf } from "./maintenanceRecords";
 import { SectionGo } from "../residents/SectionAct";
 import { assetPathOf, scheduleEditPath } from "./paths";
 import { ruleWords } from "./scheduleWords";
@@ -54,6 +58,8 @@ type AssetPanelProps = { asset: Item; fields: EditField[]; build: (sent: Record<
 export function AssetPanel({ asset, fields, build, onSaved }: AssetPanelProps) {
   const may = useMay("asset.manage");
   const [editing, setEditing] = useState(false);
+  const maintained = useLoad(() => loadMaintenanceOf(textOf(asset.name)), `maintenance-of:${openAgencyId()}:${textOf(asset.name)}`);
+  const lastDone = (maintained.state === "ready" ? maintained.data : []).find((one) => one.done !== "")?.done ?? "";
   const detail = rowsOf([
     ["Name", textOf(asset.name)],
     ["Code", textOf(asset.code)],
@@ -64,7 +70,7 @@ export function AssetPanel({ asset, fields, build, onSaved }: AssetPanelProps) {
   ]);
   const stop = () => setEditing(false);
   return (
-    <Page name={textOf(asset.name)} line={[textOf(asset.category), textOf(asset.condition)].filter(Boolean).join(" · ")}>
+    <Page name={textOf(asset.name)} line={[textOf(asset.category), textOf(asset.condition), lastDone ? `Last maintained ${dayWords(lastDone)}` : ""].filter(Boolean).join(" · ")}>
       <ChatAboutAsset asset={asset} />
       {editing ? (
         <MenuEditForm item={asset} id={textOf(asset.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" bare openCount={1} fields={fields} build={build} onSaved={() => { stop(); onSaved(); }} onCancel={stop} />

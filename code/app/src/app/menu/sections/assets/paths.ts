@@ -10,6 +10,7 @@ export const assetPaths = {
 };
 
 export const maintenancePaths = {
+  list: screen("/menu/assets/maintenance-records"),
   record: screen("/menu/assets/maintenance-records/:rowId"),
   edit: screen("/menu/assets/maintenance-records/:id/edit"),
   add: screen("/menu/assets/maintenance-records/new"),

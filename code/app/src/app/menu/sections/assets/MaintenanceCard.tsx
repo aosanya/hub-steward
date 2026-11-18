@@ -25,5 +25,6 @@ export function MaintenanceHistory({ assetName, serialTag }: Props) {
   const rows = list.map((one) => (
     <ListRow key={one.id} title={one.what} meta={lineOf(one.done, one.by)} end={<Chip>{one.kind}</Chip>} onClick={() => navigate(maintenancePaths.record.path({ rowId: one.id }))} />
   ));
-  return <Section word="Maintenance history" icon="document" rows={rows} empty={{ words: "No maintenance recorded yet." }} foot={add} all={false} />;
+  const opens = () => navigate(maintenancePaths.list.path({ name: assetName, from: here.pathname + here.search }));
+  return <Section word="Maintenance history" icon="document" rows={rows} empty={{ words: "No maintenance recorded yet." }} foot={add} opens={opens} />;
 }
