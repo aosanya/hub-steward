@@ -22,6 +22,7 @@ type Props = {
   fields: RecordFormField[];
   back: { to: string; label: string };
   edit?: { rowId: string; saved: Record<string, string> };
+  initial?: Record<string, string>;
 };
 
 const optionalWords = (field: RecordFormField) => (field.required ? field.prompt : `${field.prompt} (optional)`);
@@ -36,9 +37,9 @@ const loadPeople = async (): Promise<Choice[]> => {
   return [noOne, ...people.map((person) => ({ value: String(person.id), label: personNameOf(person) }))];
 };
 
-export function RecordRowForm({ title, recordCode, fields, back, edit }: Props) {
+export function RecordRowForm({ title, recordCode, fields, back, edit, initial }: Props) {
   const navigate = useNavigate();
-  const [values, setValues] = useState<Record<string, string>>(edit?.saved ?? {});
+  const [values, setValues] = useState<Record<string, string>>(edit?.saved ?? initial ?? {});
   const [saving, setSaving] = useState(false);
   const [refused, setRefused] = useState("");
   const [people, setPeople] = useState<Choice[]>([noOne]);

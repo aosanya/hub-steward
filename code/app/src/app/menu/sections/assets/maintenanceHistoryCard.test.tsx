@@ -93,7 +93,7 @@ describe("MaintenanceHistory", () => {
 
     await user.click(await screen.findByRole("button", { name: "Add maintenance" }));
 
-    expect(landed).toBe("/a/town/menu/assets/maintenance-records/new?asset=Road+roller+A-12");
+    expect(landed).toBe("/a/town/menu/assets/maintenance-records/new?asset=Road+roller+A-12&from=%2Fasset");
   });
 
   it("hides Add maintenance without the permission", async () => {

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Chip } from "../../../../shared/ui/Chip";
 import { ListRow } from "../../../../shared/ui/ListRow";
@@ -13,13 +13,14 @@ const lineOf = (done: string, by: string) => [done, by].filter(Boolean).join(" Â
 
 export function MaintenanceHistory({ assetName, serialTag }: Props) {
   const navigate = useNavigate();
+  const here = useLocation();
   const key = openAgencyId();
   const records = useLoad(() => loadMaintenanceOf(assetName), `maintenance-of:${key}:${assetName}`);
   const may = useLoad(loadMayAddMaintenance, `maintenance-may:${key}`);
   const list = records.state === "ready" ? records.data : [];
   const canAdd = may.state === "ready" && may.data;
   const add = canAdd ? (
-    <button type="button" className="sec-act" onClick={() => navigate(maintenancePaths.add.path({ asset: assetLabelOf(assetName, serialTag) }))}>Add maintenance</button>
+    <button type="button" className="sec-act" onClick={() => navigate(maintenancePaths.add.path({ asset: assetLabelOf(assetName, serialTag), from: here.pathname + here.search }))}>Add maintenance</button>
   ) : undefined;
   const rows = list.map((one) => (
     <ListRow key={one.id} title={one.what} meta={lineOf(one.done, one.by)} end={<Chip>{one.kind}</Chip>} onClick={() => navigate(maintenancePaths.record.path({ rowId: one.id }))} />
