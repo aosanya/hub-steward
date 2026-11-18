@@ -1,6 +1,7 @@
 package routes_test
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -230,4 +231,62 @@ func TestNextReadyBatchReturnsIssuesThatShareOnlyAnEvidenceFolder(t *testing.T) 
 	)
 
 	wantBatch(t, h.expect(http.StatusOK, "owner", "GET", "/next-ready-batch?count=5", nil), "SW1,SW2", "SW3>SW1")
+}
+
+func seedTwelveClashingWithOneInProgress(t *testing.T) *accessHub {
+	t.Helper()
+	issues := []batchIssue{doing("RUN1", 10, batchMenu)}
+	for rank := 1; rank <= 12; rank++ {
+		issues = append(issues, ready(fmt.Sprintf("SW%d", rank), rank*100, batchMenu))
+	}
+	return seedNextReadyBatchHub(t, issues...)
+}
+
+func TestNextReadyBatchListsThreeSkippedByDefaultAndCountsAllTwelve(t *testing.T) {
+	h := seedTwelveClashingWithOneInProgress(t)
+
+	body := h.expect(http.StatusOK, "owner", "GET", "/next-ready-batch?count=1", nil)
+	wantBatch(t, body, "", "SW1>RUN1,SW2>RUN1,SW3>RUN1")
+	if body["skipped_total"] != float64(12) {
+		t.Errorf("skipped_total is %v, want 12", body["skipped_total"])
+	}
+}
+
+func TestNextReadyBatchSkippedLimitCapsTheListedSkippedButNotTheTotal(t *testing.T) {
+	h := seedTwelveClashingWithOneInProgress(t)
+
+	body := h.expect(http.StatusOK, "owner", "GET", "/next-ready-batch?count=1&skipped_limit=5", nil)
+	wantBatch(t, body, "", "SW1>RUN1,SW2>RUN1,SW3>RUN1,SW4>RUN1,SW5>RUN1")
+	if body["skipped_total"] != float64(12) {
+		t.Errorf("skipped_total is %v, want 12", body["skipped_total"])
+	}
+	all := h.expect(http.StatusOK, "owner", "GET", "/next-ready-batch?skipped_limit=50", nil)
+	if got := len(all["skipped"].([]any)); got != 12 {
+		t.Errorf("%d skipped listed, want 12", got)
+	}
+}
+
+func TestNextReadyBatchWithNothingSkippedAnswersAnEmptyListAndAZeroTotal(t *testing.T) {
+	h := seedNextReadyBatchHub(t, ready("SW1", 100, batchMenu))
+
+	body := h.expect(http.StatusOK, "owner", "GET", "/next-ready-batch", nil)
+	if skipped, ok := body["skipped"].([]any); !ok || len(skipped) != 0 {
+		t.Errorf("skipped is %v, want an empty list", body["skipped"])
+	}
+	if body["skipped_total"] != float64(0) {
+		t.Errorf("skipped_total is %v, want 0", body["skipped_total"])
+	}
+}
+
+func TestNextReadyBatchSkippedLimitStaysBetweenOneAndFifty(t *testing.T) {
+	h := seedNextReadyBatchHub(t, ready("SW1", 100, batchMenu))
+
+	for _, limit := range []string{"0", "51", "-1", "many"} {
+		if status, _ := h.call("owner", "GET", "/next-ready-batch?skipped_limit="+limit, nil); status != http.StatusBadRequest {
+			t.Errorf("skipped_limit %s answered %d, want 400", limit, status)
+		}
+	}
+	if status, _ := h.call("owner", "GET", "/next-ready-batch?skipped_limit=50", nil); status != http.StatusOK {
+		t.Errorf("skipped_limit 50 answered %d, want 200", status)
+	}
 }
