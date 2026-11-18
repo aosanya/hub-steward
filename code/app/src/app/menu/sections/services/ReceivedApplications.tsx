@@ -97,7 +97,7 @@ function DecideButtons({ formId, memberId, onDecided }: { formId: string; member
   ];
   const acts = (
     <>
-      <ServiceAct label={refuseLabel} disabled={busy || (asking && reason.trim() === "")} onClick={refuse} />
+      <ServiceAct label={refuseLabel} tone="danger" disabled={busy || (asking && reason.trim() === "")} onClick={refuse} />
       <ServiceAct label={grantLabel} disabled={busy} onClick={() => decide("approved", "", grantExtras(certificate, validUntil))} />
     </>
   );

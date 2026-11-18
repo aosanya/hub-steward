@@ -8,6 +8,7 @@
 .sec-toggle .icon { width: 1.25rem; height: 1.25rem; }
 .sec-toggle[aria-expanded="false"] .icon { transform: rotate(-90deg); }
 .sec-act { border: 0; background: transparent; font: inherit; font-weight: 700; color: var(--accent); }
+.sec-act.danger { color: var(--danger); }
 .sec .rows { background: transparent; border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
 .sec-foot { display: flex; border-top: 1px solid var(--line); }
 .sec-foot:empty { display: none; }

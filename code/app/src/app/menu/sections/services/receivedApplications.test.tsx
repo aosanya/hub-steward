@@ -286,6 +286,16 @@ describe("Applications received are drawn as cards", () => {
     expect(screen.getAllByRole("button", { name: "Grant" })).toHaveLength(1);
   });
 
+  it("gives Refuse the danger tone in the Decision card footer and leaves Grant plain", async () => {
+    await openEntry();
+    await openApplicationOf("Bence Farkas");
+
+    const card = within(await screen.findByRole("region", { name: "Decision" }));
+    expect(card.getByRole("button", { name: "Refuse" })).toHaveClass("sec-act", "danger");
+    expect(card.getByRole("button", { name: "Grant" })).toHaveClass("sec-act");
+    expect(card.getByRole("button", { name: "Grant" })).not.toHaveClass("danger");
+  });
+
   it("holds Record in the footer of an inspection card for an inspector", async () => {
     permissions = [...deciderPermissions, "application.inspect"];
     await openEntry();

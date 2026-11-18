@@ -19,9 +19,10 @@ export function ServiceHead({ title, status = "", line = "" }: { title: string; 
   );
 }
 
-export function ServiceAct({ label, onClick, disabled, quiet = false }: { label: string; onClick: () => void; disabled?: boolean; quiet?: boolean }) {
+export function ServiceAct({ label, onClick, disabled, quiet = false, tone }: { label: string; onClick: () => void; disabled?: boolean; quiet?: boolean; tone?: "danger" }) {
+  const base = quiet ? "sec-foot-item" : "sec-act";
   return (
-    <button type="button" className={quiet ? "sec-foot-item" : "sec-act"} disabled={disabled} onClick={onClick}>
+    <button type="button" className={tone ? `${base} ${tone}` : base} disabled={disabled} onClick={onClick}>
       {label}
     </button>
   );
