@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
-import { callTool, McpError } from "../../../../shared/wakala/mcp";
+import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
-import { MenuEditForm, refusalWords } from "../../MenuEditForm";
+import { MenuEditForm } from "../../MenuEditForm";
 import type { EditField } from "../../MenuEditForm";
 import { assetPaths } from "./paths";
 import { fieldShown, oftenChoices, partsOf, problemWith, ruleOf, weekdayChoices, type Often } from "./scheduleWords";
@@ -13,13 +13,9 @@ type Item = Record<string, unknown>;
 
 const readTool = "taskmanager_repeating_task_read";
 
-const createTool = "taskmanager_repeating_task_create";
-
-const stopTool = "taskmanager_repeating_task_stop";
+const updateTool = "taskmanager_repeating_task_update";
 
 const permission = "task.edit";
-
-const stillRunning = "The new schedule was saved but the old one is still running";
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
@@ -56,32 +52,20 @@ const dayOf = (value: unknown) => textOf(value).slice(0, 10);
 
 const timeOf = (value: unknown) => /T(\d{2}:\d{2}:\d{2}Z)$/.exec(textOf(value))?.[1] ?? "00:00:00Z";
 
-const startOf = (task: Item, chosen: unknown) => {
-  if (dayOf(chosen) !== dayOf(task.starts)) return `${dayOf(chosen)}T${timeOf(task.starts)}`;
-  const next = textOf(task.next_due_at);
-  return next ? `${dayOf(next)}T${timeOf(task.starts)}` : textOf(task.starts);
-};
+const startOf = (task: Item, chosen: unknown) => (dayOf(chosen) === dayOf(task.starts) ? textOf(task.starts) : `${dayOf(chosen)}T${timeOf(task.starts)}`);
 
-const newScheduleFrom = (task: Item, sent: Record<string, unknown>) => {
+const changedScheduleFrom = (scheduleId: string, task: Item, sent: Record<string, unknown>) => {
   const merged = { ...task, ...sent };
   const often = textOf(merged.often) as Often | "";
   const rule = often ? ruleOf({ often, weekday: textOf(merged.weekday), monthday: String(merged.monthday ?? "") }) : textOf(task.rule);
   const end = instantOf(merged.ends);
   return {
+    repeatingTaskID: scheduleId,
     title: textOf(merged.title),
     ...(textOf(task.description) ? { description: textOf(task.description) } : {}),
     ...(textOf(task.assignee_kind) ? { assignee_kind: textOf(task.assignee_kind), assignee_id: textOf(task.assignee_id) } : {}),
     schedule: { start: startOf(task, merged.starts), ...(end ? { end } : {}), zone: textOf(task.schedule_zone), rule },
   };
-};
-
-const stopOld = (scheduleId: string) => async () => {
-  try {
-    await callTool("", stopTool, { repeatingTaskID: scheduleId });
-  } catch (error) {
-    const reason = error instanceof McpError ? refusalWords(error) : "";
-    throw new McpError(`${stopTool}: ${stillRunning}${reason ? `: ${reason}` : ""}`);
-  }
 };
 
 export function ScheduleEditScreen() {
@@ -100,14 +84,12 @@ export function ScheduleEditScreen() {
             item={view.data}
             id={scheduleId}
             idArg="repeatingTaskID"
-            tool={createTool}
+            tool={updateTool}
             permission={permission}
             bare
             openCount={1}
             fields={fields}
-            build={(sent) => newScheduleFrom(view.data, sent)}
-            alsoSave={stopOld(scheduleId)}
-            retryLabel="Stop the old schedule"
+            build={(sent) => changedScheduleFrom(scheduleId, view.data, sent)}
             visible={(key, values) => fieldShown(key, values.often ?? "")}
             check={(values) => problemWith({ often: values.often ?? "", weekday: values.weekday ?? "", monthday: values.monthday ?? "" })}
             onSaved={() => navigate(assetPaths.maintenance.path())}
