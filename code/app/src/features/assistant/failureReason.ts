@@ -3,6 +3,8 @@ import { accessRefused } from "../../shared/wakala/refusal";
 
 const longest = 120;
 
+export const slowWords = "No answer came in time.";
+
 const notAllowedWords = "You do not have access to this yet.";
 
 const prefix = /^(?:[a-z][a-z0-9]*_[a-z0-9_]*|agencies|ai|wakala answered \d+):\s*/;
@@ -30,7 +32,7 @@ export const failureReason = (failure: unknown): string => {
   const message = failure.message;
   if ((failure instanceof McpError && failure.unauthorized) || message === "not signed in") return "Your session ended. Sign in again.";
   if (failure instanceof TypeError || /failed to fetch|load failed|networkerror/i.test(message)) return "We could not reach the hub";
-  if (message === "slow") return "No answer came in time.";
+  if (message === "slow") return slowWords;
   if (/answered 429\b/.test(message)) return "Too many requests. Try again in a minute.";
   if (accessRefused(failure)) return notAllowedWords;
   return oneLine(withoutPrefixes(message));

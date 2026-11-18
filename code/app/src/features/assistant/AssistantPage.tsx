@@ -13,7 +13,7 @@ import { Markdown } from "../../shared/ui/Markdown";
 import { Shell } from "../../app/Shell";
 import { LimitReached, mcpAssistantClient, type AssistantClient, type LimitSpan } from "./api";
 import { ConfirmCard, useConfirmation } from "./ConfirmCard";
-import { failureReason } from "./failureReason";
+import { failureReason, slowWords } from "./failureReason";
 import { OptionButtons } from "./OptionButtons";
 import { splitOptions } from "./optionLines";
 import { answerAfter, historyUpTo, markSent, nextQueued, requeueUnanswered, withoutItem, type Item } from "./queue";
@@ -45,6 +45,8 @@ export const queuedWords = "Queued";
 export const unqueueWords = "Remove from the queue";
 
 export const askPlaceholder = "Ask about the backlogs";
+
+export const emptyWords = "I can read the backlogs: issues, steps, tags and what waits on what. I cannot read bills, residents or money.";
 
 type Phase = "idle" | "working" | "failed";
 
@@ -176,6 +178,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
     setStep("");
     let timer: ReturnType<typeof setTimeout> | undefined;
     let abandoned = false;
+    let lastStep = "";
     let giveUp: () => void = () => undefined;
     const tooSlow = new Promise<never>((_, reject) => {
       giveUp = () => {
@@ -196,7 +199,12 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
       return confirmed;
     };
     try {
-      const answer = await Promise.race([client.ask(accountId, historyUpTo(history, id, pickedNow.current), (words) => mine === run.current && setStep(words), confirmWrite), tooSlow]);
+      const answer = await Promise.race([client.ask(accountId, historyUpTo(history, id, pickedNow.current), (words) => {
+        if (mine !== run.current) return;
+        lastStep = words;
+        startTimer();
+        setStep(words);
+      }, confirmWrite), tooSlow]);
       if (mine !== run.current) return;
       last.current += 1;
       setItems((now) => answerAfter(now, id, { id: last.current, role: "assistant", content: answer.text, lists: withIds(answer.lists ?? [], last.current), views: viewsOf(answer.lists ?? []) }));
@@ -209,7 +217,8 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
         setItems((now) => now.filter((item) => !item.queued));
         setPhase("idle");
       } else {
-        setReason(failureReason(failure));
+        const reason = failureReason(failure);
+        setReason(lastStep !== "" && reason === slowWords ? `${reason} The last thing it was doing: ${lastStep}.` : reason);
         setPhase("failed");
       }
     } finally {
@@ -239,7 +248,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
           ) : (
             <Card>
               {items.length === 0 ? (
-                <p className="assistant-empty">{askPlaceholder}</p>
+                <p className="assistant-empty">{emptyWords}</p>
               ) : (
                 <BacklogSummariesLoader kinds={items.some((item) => (item.views ?? []).length > 0) ? [backlogViewKind] : []} client={backlogs}>
                   <Bubbles items={items} phase={phase === "working" && confirmation.pending ? "idle" : phase} current={current} step={step} reason={reason} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
