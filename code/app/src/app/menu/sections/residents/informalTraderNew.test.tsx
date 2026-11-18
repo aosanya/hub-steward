@@ -21,6 +21,11 @@ const Where = () => {
   return null;
 };
 
+const people = [
+  { id: "a1", display_name: "Szabó Katalin", status: "active" },
+  { id: "a2", display_name: "Varga Mária", status: "active" },
+];
+
 const hubWith = (rows: Row[], addError?: Error) => {
   saved = rows;
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
@@ -30,6 +35,7 @@ const hubWith = (rows: Row[], addError?: Error) => {
       saved = [...saved, row];
       return row;
     }
+    if (tool === "actor_list_actors") return { items: people };
     return { items: saved };
   });
 };
@@ -98,6 +104,23 @@ describe("the new informal trader form in Residents", () => {
     expect(addCalls()[0][2]).toEqual({
       record_code: "RC-2",
       answers: { "Name or alias": "Marika's flower stand", "What is sold": "Flowers", "Usual place": "Market square", "Usual days": "Saturday", Neighbourhood: "Óváros", Status: "Active" },
+    });
+  });
+
+  it("offers an optional Holder by name and saves the chosen person's id", async () => {
+    const user = userEvent.setup();
+    hubWith([]);
+    showForm();
+
+    await fillRequired(user);
+    await user.click(await screen.findByRole("button", { name: /Holder \(optional\)/ }));
+    await user.click(screen.getByRole("option", { name: "Szabó Katalin" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(addCalls()).toHaveLength(1));
+    expect(addCalls()[0][2]).toEqual({
+      record_code: "RC-2",
+      answers: { "Name or alias": "Marika's flower stand", "What is sold": "Flowers", Neighbourhood: "Óváros", Status: "Active", Holder: "a1" },
     });
   });
 

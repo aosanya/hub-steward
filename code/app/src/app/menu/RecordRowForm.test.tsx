@@ -20,6 +20,12 @@ const stallFields = [
   { prompt: "Stall holder", required: true },
   { prompt: "Pitch", required: true, options: ["North row", "South row"] },
   { prompt: "Note", required: false },
+  { prompt: "Stall owner", required: false, people: true },
+];
+
+const people = [
+  { id: "a1", display_name: "Szabó Katalin" },
+  { id: "a2", first_name: "Varga", last_name: "Mária" },
 ];
 
 const show = () =>
@@ -35,7 +41,7 @@ const show = () =>
 
 beforeEach(() => {
   openAgency("town");
-  called = vi.spyOn(mcp, "callTool").mockResolvedValue({ id: "r1" });
+  called = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => (tool === "actor_list_actors" ? { items: people } : { id: "r1" }));
 });
 
 afterEach(() => {
@@ -66,5 +72,36 @@ describe("RecordRowForm", () => {
     expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
     await user.click(screen.getByRole("radio", { name: "North row" }));
     expect(screen.getByRole("button", { name: "Save" })).toBeEnabled();
+  });
+
+  it("lists the agency's people by name for a person question and saves the chosen actor id", async () => {
+    const user = userEvent.setup();
+    show();
+
+    await user.type(screen.getByLabelText("Stall holder"), "Kert Stall");
+    await user.click(screen.getByRole("radio", { name: "North row" }));
+    await user.click(await screen.findByRole("button", { name: /Stall owner \(optional\)/ }));
+    expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual(["No one", "Szabó Katalin", "Varga Mária"]);
+    await user.click(screen.getByRole("option", { name: "Varga Mária" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    await screen.findByText("the stalls");
+    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-9", answers: { "Stall holder": "Kert Stall", Pitch: "North row", "Stall owner": "a2" } });
+  });
+
+  it("clears a chosen person when No one is picked again", async () => {
+    const user = userEvent.setup();
+    show();
+
+    await user.type(screen.getByLabelText("Stall holder"), "Kert Stall");
+    await user.click(screen.getByRole("radio", { name: "South row" }));
+    await user.click(await screen.findByRole("button", { name: /Stall owner \(optional\)/ }));
+    await user.click(screen.getByRole("option", { name: "Szabó Katalin" }));
+    await user.click(screen.getByRole("button", { name: /Stall owner \(optional\)/ }));
+    await user.click(screen.getByRole("option", { name: "No one" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    await screen.findByText("the stalls");
+    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-9", answers: { "Stall holder": "Kert Stall", Pitch: "South row" } });
   });
 });

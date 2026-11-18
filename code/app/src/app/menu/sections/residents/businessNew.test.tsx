@@ -21,6 +21,11 @@ const Where = () => {
   return null;
 };
 
+const people = [
+  { id: "a1", display_name: "Szabó Katalin", status: "active" },
+  { id: "a2", display_name: "Varga Mária", status: "active" },
+];
+
 const hubWith = (rows: Row[], addError?: Error) => {
   saved = rows;
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
@@ -30,6 +35,7 @@ const hubWith = (rows: Row[], addError?: Error) => {
       saved = [...saved, row];
       return row;
     }
+    if (tool === "actor_list_actors") return { items: people };
     return { items: saved };
   });
 };
@@ -105,6 +111,36 @@ describe("the new business form in Residents", () => {
       record_code: "RC-1",
       answers: { "Trading name": "Malomsor Bakery", "Kind of business": "Bakery", "Tax number": "10000000-1-01", "Registration number": "01-09-123456", Place: "Malom utca 4", Neighbourhood: "Malomsor", Status: "Active" },
     });
+  });
+
+  it("offers an optional Owner by name and saves the chosen person's id", async () => {
+    const user = userEvent.setup();
+    hubWith([]);
+    showForm();
+
+    await fillRequired(user);
+    await user.click(await screen.findByRole("button", { name: /Owner \(optional\)/ }));
+    await user.click(screen.getByRole("option", { name: "Varga Mária" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(addCalls()).toHaveLength(1));
+    expect(addCalls()[0][2]).toEqual({
+      record_code: "RC-1",
+      answers: { "Trading name": "Malomsor Bakery", "Kind of business": "Bakery", "Tax number": "10000000-1-01", Neighbourhood: "Malomsor", Status: "Active", Owner: "a2" },
+    });
+  });
+
+  it("leaves Owner out of the row when no one is chosen", async () => {
+    const user = userEvent.setup();
+    hubWith([]);
+    showForm();
+
+    await fillRequired(user);
+    await screen.findByRole("button", { name: /Owner \(optional\)/ });
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(addCalls()).toHaveLength(1));
+    expect(Object.keys((addCalls()[0][2] as { answers: object }).answers)).not.toContain("Owner");
   });
 
   it.each(["Trading name", "Kind of business", "Tax number", "Neighbourhood", "Status"])("does not let the form go while the required %s is missing", async (missing) => {
