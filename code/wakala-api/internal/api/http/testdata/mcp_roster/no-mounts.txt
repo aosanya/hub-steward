@@ -120,6 +120,7 @@ actor_set_my_forms_week_split
 actor_set_my_group_priority
 actor_set_role_kind_leads_group
 actor_step_down_role
+actor_unassign_group
 actor_unretire_role_kind
 actor_withdraw_group_population
 agency_add_agent
