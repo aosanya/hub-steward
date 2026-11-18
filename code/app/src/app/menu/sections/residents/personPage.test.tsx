@@ -128,7 +128,7 @@ describe("the section heading is the large text and rows are divided", () => {
     const css = readFileSync("src/shared/ui/section.css", "utf8");
     expect(css).toMatch(/\.sec-title \{[^}]*font-size: 1\.25rem/);
     expect(css).toMatch(/\.sec \{[^}]*border-radius: 0/);
-    expect(css).toMatch(/\.sec-head \{[^}]*border-bottom: 1px solid/);
+    expect(css).toMatch(/\.sec-head \{[^}]*box-shadow:/);
     expect(css).toMatch(/\.sec \.row \.ttl \{[^}]*font-weight: 400/);
   });
 });
@@ -203,7 +203,7 @@ describe("each section is a card with a chevron header that collapses it and a f
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
     expect(within(details).queryByText("Sample Lane 4")).toBeNull();
     expect(within(details).queryByRole("button", { name: "Edit" })).toBeNull();
-    expect(within(details).getByRole("heading", { name: "Personal detail" })).toBeTruthy();
+    expect(within(details).getByRole("heading", { name: /Personal detail/ })).toBeTruthy();
     await userEvent.click(toggle);
     expect(within(details).getByText("Sample Lane 4")).toBeTruthy();
     expect(within(details).getByRole("button", { name: "Edit" })).toBeTruthy();

@@ -117,6 +117,7 @@ const shapes = {
       <path d="m17 7 2.1-2.1" />
     </>
   ),
+  chevron: <path d="m6 9 6 6 6-6" />,
 } satisfies Record<string, ReactNode>;
 
 export type IconName = keyof typeof shapes;
