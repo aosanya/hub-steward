@@ -7,6 +7,7 @@ type Scoped = Record<string, (about: ChatAbout) => string>;
 
 type Subject = {
   reads: Record<string, Scoped>;
+  eitherOf?: Record<string, string[]>;
   steps: Record<string, string>;
   choices: string[];
   reading: string;
@@ -81,16 +82,19 @@ const user: Subject = {
   reads: {
     actor_get_actor_standing: { actor_id: byId },
     actor_get_actor: { actor_id: byId },
-    audit_list_entries: { subject: byId },
+    audit_list_entries: { subject: byId, actor: byId },
   },
+  eitherOf: { audit_list_entries: ["subject", "actor"] },
   steps: {
     actor_get_actor_standing: "Reading their roles",
     actor_get_actor: "Reading their details",
     audit_list_entries: "Reading their activity",
   },
   choices: ["Roles", "Details", "Activity"],
-  reading: "Roles means actor_get_actor_standing, Details means actor_get_actor, and Activity means audit_list_entries.",
-  overview: "call actor_get_actor_standing, actor_get_actor and audit_list_entries at once and answer with their roles, their details and the most recent activity",
+  reading:
+    "Roles means actor_get_actor_standing, Details means actor_get_actor, and Activity means audit_list_entries. For Activity call audit_list_entries with actor set to anything for what the person did, and again with subject set to anything for what was done to them; the app replaces the value with this person.",
+  overview:
+    "call actor_get_actor_standing, actor_get_actor and audit_list_entries with actor and again with subject at once and answer with their roles, their details and the most recent activity",
   empty: "their roles, details and activity",
 };
 
@@ -455,15 +459,25 @@ export const readNamesFor = (about: ChatAbout | null): string[] => {
 
 export const scopeKeysFor = (about: ChatAbout | null, tool: string): string[] => {
   const subject = subjectOf(about);
+  if (subject?.eitherOf?.[tool]) return [];
   if (subject) return Object.keys(subject.reads[tool] ?? {});
   const key = about ? residentReadScopes[tool] : undefined;
   return key ? [key] : [];
+};
+
+const onOneSide = (about: ChatAbout, scope: Scoped, sides: string[], args: Record<string, unknown>): Record<string, unknown> => {
+  const named = sides.filter((side) => args[side] !== undefined && args[side] !== "");
+  const chosen = named.length === 1 ? named[0] : sides[0];
+  const rest = Object.fromEntries(Object.entries(args).filter(([key]) => !sides.includes(key)));
+  return { ...rest, [chosen]: scope[chosen](about) };
 };
 
 export const scopedArgs = (about: ChatAbout | null, tool: string, args: Record<string, unknown>): Record<string, unknown> => {
   const subject = subjectOf(about);
   if (!about || !subject) return scopedToResident(about, tool, args);
   const scope = subject.reads[tool] ?? {};
+  const sides = subject.eitherOf?.[tool];
+  if (sides) return onOneSide(about, scope, sides, args);
   return { ...args, ...Object.fromEntries(Object.entries(scope).map(([key, value]) => [key, value(about)])) };
 };
 
