@@ -75,3 +75,58 @@ describe("the Details of a record screen", () => {
     expect(stored).not.toHaveProperty("register_details:RC-1");
   });
 });
+
+describe("the Details of a record screen for residents and holdings", () => {
+  it("offers Businesses, Informal traders, Residents and Holdings", async () => {
+    open();
+
+    await screen.findByRole("checkbox", { name: "Tax number on" });
+    expect(screen.getAllByRole("radio").map((radio) => radio.closest("label")?.textContent)).toEqual(["Businesses", "Informal traders", "Residents", "Holdings"]);
+  });
+
+  it("lists Name required and Phone and Email optional for Residents, all on", async () => {
+    const user = userEvent.setup();
+    open();
+
+    await user.click(await screen.findByRole("radio", { name: "Residents" }));
+
+    expect(await screen.findByRole("checkbox", { name: "Name required" })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Phone on" })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Phone required" })).not.toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Email on" })).toBeChecked();
+  });
+
+  it("saves a switched-off Email and an added Preferred language under the Residents setting only", async () => {
+    const user = userEvent.setup();
+    open();
+
+    await user.click(await screen.findByRole("radio", { name: "Residents" }));
+    await user.click(await screen.findByRole("checkbox", { name: "Email on" }));
+    await user.type(screen.getByLabelText("New detail"), "Preferred language");
+    await user.click(screen.getByRole("button", { name: "Add detail" }));
+    await user.click(screen.getByRole("button", { name: "Save details" }));
+
+    await waitFor(() => expect(stored).toHaveProperty("register_details:RESIDENT"));
+    const details = JSON.parse(stored["register_details:RESIDENT"]).details;
+    expect(details).toContainEqual({ prompt: "Email", on: false, required: false, own: false });
+    expect(details).toContainEqual({ prompt: "Preferred language", on: true, required: false, own: true });
+    expect(Object.keys(stored)).toEqual(["register_details:RESIDENT"]);
+  });
+
+  it("lists Property, Kind and Since for Holdings and saves an added Water meter number under the Holdings setting only", async () => {
+    const user = userEvent.setup();
+    open();
+
+    await user.click(await screen.findByRole("radio", { name: "Holdings" }));
+    expect(await screen.findByRole("checkbox", { name: "Property on" })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Kind on" })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Since on" })).toBeChecked();
+    await user.type(screen.getByLabelText("New detail"), "Water meter number");
+    await user.click(screen.getByRole("button", { name: "Add detail" }));
+    await user.click(screen.getByRole("button", { name: "Save details" }));
+
+    await waitFor(() => expect(stored).toHaveProperty("register_details:HOLDING"));
+    expect(JSON.parse(stored["register_details:HOLDING"]).details).toContainEqual({ prompt: "Water meter number", on: true, required: false, own: true });
+    expect(Object.keys(stored)).toEqual(["register_details:HOLDING"]);
+  });
+});
