@@ -53,6 +53,7 @@ Paths are relative to `/instances/{agency}/comm`. Every agency has rooms; the la
 | My notifications | `GET /notifications` | reads the caller's own notifications, newest first | member | Exists | Exists: `comm_notification_list` |
 | My unread count | `GET /notifications/unread` | reads how many of the caller's notifications are unread | member | Exists | Exists: `comm_notification_unread` |
 | Mark notifications read | `POST /notifications/read` | writes the read mark on the caller's own notifications | member | Exists | Exists: `comm_notification_mark_read` |
+| Tell one person about a report | `POST /notifications` | puts one `report_handed_over` notification, about a report named by its period, in the list of one named person; the report's name, period and figures ride in the `names` map, any other event is refused as forbidden | a role holding `notification.raise` | Exists | Exists: `comm_notification_raise` |
 
 ## Documents
 
