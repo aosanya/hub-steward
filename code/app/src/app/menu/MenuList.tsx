@@ -63,7 +63,7 @@ export function MenuList({ title, tool, fields, empty, bare, add, selectedId, on
   const shown = rows.filter((item) => `${textOf(item, fields.title)} ${textOf(item, fields.meta)}`.toLocaleLowerCase().includes(wanted));
   const clickable = (item: Item) => !!onChoose && (opens?.(item) ?? true);
   const reportable = !!onRows && (view.state === "ready" || reloading);
-  const rowIds = reportable ? (groups ? groups(rows) : [{ heading: "", items: rows }]).flatMap((group) => group.items).filter(clickable).map((item) => textOf(item, "id")) : null;
+  const rowIds = reportable ? (groups ? groups(shown) : [{ heading: "", items: shown }]).flatMap((group) => group.items).filter(clickable).map((item) => textOf(item, "id")) : null;
   const rowIdsKey = rowIds ? JSON.stringify(rowIds) : "";
   useEffect(() => {
     if (onRows && rowIdsKey) onRows(JSON.parse(rowIdsKey) as string[]);

@@ -1,13 +1,10 @@
 import { useState } from "react";
 import { Button } from "../../shared/ui/Button";
 import { Chip } from "../../shared/ui/Chip";
-import { liveRecordRowsTool, loadRecordRow, loadRecordRows, recordOwnerKey, recordRowIdKey } from "./liveRecordRows";
+import { liveRecordRowsTool, loadRecordRow, loadRecordRows } from "./liveRecordRows";
 import { MenuWindow } from "./MenuWindow";
-import { RecordMoney } from "./RecordMoney";
-import { RecordOwner } from "./RecordOwner";
-import { RowHoldings } from "./sections/residents/PersonHoldings";
+import { RecordRowExtra } from "./RecordRowExtra";
 import { loadLicensedRowIds } from "./sections/residents/licensedRows";
-import { RowActivity } from "./sections/residents/RowActivity";
 
 type Props = {
   title: string;
@@ -48,14 +45,7 @@ export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, 
         load: (id) => loadRecordRow(recordCode, id, prompts, owner?.prompt),
         fields: Object.fromEntries(prompts.map((prompt) => [prompt, prompt])),
         status: "status",
-        extra: (row) => (
-          <>
-            {owner ? <RecordOwner heading={owner.heading} ownerId={String(row[recordOwnerKey] ?? "")} /> : null}
-            <RecordMoney rowId={String(row[recordRowIdKey] ?? "")} />
-            {row[recordRowIdKey] ? <RowHoldings rowId={String(row[recordRowIdKey])} /> : null}
-            {row[recordRowIdKey] ? <RowActivity recordCode={recordCode} rowId={String(row[recordRowIdKey])} /> : null}
-          </>
-        ),
+        extra: (row) => <RecordRowExtra row={row} recordCode={recordCode} owner={owner} />,
       }}
     />
   );

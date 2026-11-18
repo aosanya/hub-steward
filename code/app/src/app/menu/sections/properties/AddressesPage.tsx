@@ -14,7 +14,7 @@ export const loadAddresses = () =>
 
 const addressRead = "digitaltwin_address_read";
 
-const detail = {
+export const addressDetail = {
   tool: addressRead,
   fields: { Street: "street", Number: "number", Area: "area", Postcode: "postcode" },
   status: "",
@@ -31,7 +31,7 @@ export function AddressesPage() {
       fields={fields}
       empty={{ words: `No ${word("Addresses").toLowerCase()} yet.` }}
       load={loadAddresses}
-      detail={detail}
+      detail={addressDetail}
     />
   );
 }
