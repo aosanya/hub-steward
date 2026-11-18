@@ -5,7 +5,7 @@ import "../../features/chat/rooms/rooms.css";
 import { useLoad } from "../../features/forms/useLoad";
 import { mcpBacklogsClient, type BacklogsClient, BacklogViewCard, BacklogSummariesLoader, backlogViewKind } from "../backlogs";
 import { chatListPath } from "../../app/routes";
-import { carriedChatFrom } from "../../app/chatAbout";
+import { carriedChatFrom, useCarriedChatAbout } from "../../app/chatAbout";
 import { AboutLine } from "./AboutLine";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
@@ -49,6 +49,10 @@ export const unqueueWords = "Remove from the queue";
 export const askPlaceholder = "Ask about the backlogs";
 
 export const emptyWords = "I can read the backlogs: issues, steps, tags and what waits on what. I cannot read bills, residents or money.";
+
+export const askPlaceholderAbout = (name: string) => `Ask about ${name}`;
+
+export const emptyWordsAbout = (name: string) => `Ask about ${name}: bills, holdings, applications and raised items.`;
 
 type Phase = "idle" | "working" | "failed";
 
@@ -143,6 +147,7 @@ function Bubbles({ items, phase, current, step, reason, retry, pick, unqueue, as
 
 export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAfter, backlogs = mcpBacklogsClient }: { client?: AssistantClient; timeoutMs?: number; backlogs?: BacklogsClient }) {
   const navigate = useNavigate();
+  const about = useCarriedChatAbout();
   const model = useLoad(() => client.model(), "assistant/model");
   const [items, setItems] = useState<Item[]>(() => requeueUnanswered(keptConversation().items));
   const [phase, setPhase] = useState<Phase>("idle");
@@ -251,7 +256,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
           ) : (
             <Card>
               {items.length === 0 ? (
-                <p className="assistant-empty">{emptyWords}</p>
+                <p className="assistant-empty">{about ? emptyWordsAbout(about.name) : emptyWords}</p>
               ) : (
                 <BacklogSummariesLoader kinds={items.some((item) => (item.views ?? []).length > 0) ? [backlogViewKind] : []} client={backlogs}>
                   <Bubbles items={items} phase={phase === "working" && confirmation.pending ? "idle" : phase} current={current} step={step} reason={reason} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
@@ -266,7 +271,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
       ) : null}
       {model.state === "ready" && !unavailable && limit === "" ? (
         <div className="assistant-compose">
-          <Composer placeholder={askPlaceholder} onSend={send} />
+          <Composer placeholder={about ? askPlaceholderAbout(about.name) : askPlaceholder} onSend={send} focusOnArrival={about !== null} />
         </div>
       ) : null}
     </Shell>

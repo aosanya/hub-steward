@@ -109,7 +109,7 @@ describe("Chat in the bar with a resident open opens the assistant about that re
     await openPeople(true, true);
     await userEvent.click(chatTab());
     await aboutLine();
-    expect(screen.getByRole("textbox", { name: "Ask about the backlogs" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: `Ask about ${resident.name}` })).toBeInTheDocument();
     expect(screen.queryByText("the general chat")).toBeNull();
   });
 

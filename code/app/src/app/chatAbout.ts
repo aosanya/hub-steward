@@ -61,4 +61,4 @@ export const forgetChatAbout = () => {
 };
 
 export const chatAboutWords = (about: ChatAbout) =>
-  `The owner is looking at the resident ${about.name} (resident id ${about.id}). Questions about this resident mean them. Use only what the owner could already see on the resident's page.`;
+  `The owner is looking at the resident ${about.name} (resident id ${about.id}). Answer about this resident and keep to them unless the owner asks about something else: a question such as "what do they owe?" means this resident. Use only what the owner could already see on the resident's page.`;

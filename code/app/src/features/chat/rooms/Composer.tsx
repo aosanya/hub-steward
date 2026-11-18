@@ -1,12 +1,15 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-type Props = { placeholder: string; onSend: (body: string) => Promise<void> };
+type Props = { placeholder: string; onSend: (body: string) => Promise<void>; focusOnArrival?: boolean };
 
-export function Composer({ placeholder, onSend }: Props) {
+export function Composer({ placeholder, onSend, focusOnArrival = false }: Props) {
   const field = useRef<HTMLInputElement>(null);
   const [body, setBody] = useState("");
   const [problem, setProblem] = useState("");
   const [sending, setSending] = useState(false);
+  useEffect(() => {
+    if (focusOnArrival) field.current?.focus();
+  }, [focusOnArrival]);
   const ready = body.trim() !== "" && !sending;
   const send = async () => {
     if (!ready) return;
