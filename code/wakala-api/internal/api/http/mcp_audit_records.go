@@ -53,6 +53,10 @@ func auditedWrites() map[string]auditedWrite {
 			action:  "published a form",
 			subject: func(args, result map[string]any) string { return fieldOf(args, "form_id") },
 		},
+		recordPaperConsentTool: {
+			action:  paperConsentAuditText,
+			subject: func(args, result map[string]any) string { return fieldOf(result, "actor_id") },
+		},
 		addLiveRecordRowTool: {
 			actionOf: rowAction,
 			subject:  func(args, result map[string]any) string { return fieldOf(result, "id") },
@@ -81,8 +85,17 @@ func (d *Deps) recordAuditedWrites(next mcp.MethodHandler) mcp.MethodHandler {
 		if instanceID == "" {
 			return result, err
 		}
-		subject := write.subject(args, structuredObject(answer.StructuredContent))
-		if _, recordErr := d.Audit.Record(ctx, instanceID, accounts.IDFromContext(ctx), write.actionFor(args), subject); recordErr != nil {
+		written := structuredObject(answer.StructuredContent)
+		subject := write.subject(args, written)
+		action := write.actionFor(args)
+		if call.Params.Name == recordPaperConsentTool {
+			text, wanted := d.paperConsentAudit(ctx, instanceID, written)
+			if !wanted {
+				return result, err
+			}
+			action = text
+		}
+		if _, recordErr := d.Audit.Record(ctx, instanceID, accounts.IDFromContext(ctx), action, subject); recordErr != nil {
 			slog.Warn("an audited write left no audit entry", "tool", call.Params.Name, "instance", instanceID, "err", recordErr)
 		}
 		return result, err
