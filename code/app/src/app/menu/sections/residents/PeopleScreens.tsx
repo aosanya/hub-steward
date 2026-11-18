@@ -4,6 +4,7 @@ import { useMay } from "../../../../features/agency/useMay";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { Button } from "../../../../shared/ui/Button";
+import { Chip } from "../../../../shared/ui/Chip";
 import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
@@ -13,6 +14,7 @@ import { populationFigure } from "../../populationFigure";
 import { ChatAboutResident } from "./ChatAboutResident";
 import { GroupPanel, loadGroup } from "./GroupScreen";
 import { personNameOf } from "./personName";
+import { RegistrationRequest } from "./RegistrationRequest";
 import { loadPerson, PersonPanel } from "./PersonScreen";
 
 type Item = Record<string, unknown>;
@@ -40,15 +42,27 @@ const perGroup = async (tool: string, idName: string) => {
 };
 
 export const registrationRows = async () => {
-  const [requests, people] = await Promise.all([perGroup("actor_list_join_requests_for_group", "group_id"), listOf("actor_list_actors")]);
+  const groups = await listOf("actor_list_groups");
+  const [lists, people] = await Promise.all([
+    Promise.all(
+      groups.map(async (group) =>
+        (await listOf("actor_list_join_requests_for_group", { group_id: text(group, "id") })).map((request) => ({ ...request, group_id: text(group, "id"), group_name: text(group, "name") })),
+      ),
+    ),
+    listOf("actor_list_actors"),
+  ]);
   const nameById = new Map(people.map((person) => [text(person, "id"), personNameOf(person)]));
-  return requests.map((request) => ({
-    id: text(request, "id"),
-    name: text(request, "actor_name") || nameById.get(text(request, "actor_id")) || "",
-    asked: dayWords(text(request, "requested_at")),
-    group_id: text(request, "group_id"),
-    actor_id: text(request, "actor_id"),
-  }));
+  return lists
+    .flat()
+    .filter((request) => ["", "pending"].includes(text(request, "state")))
+    .map((request) => ({
+      id: text(request, "id"),
+      name: text(request, "actor_name") || nameById.get(text(request, "actor_id")) || "",
+      asked: dayWords(text(request, "requested_at")),
+      group_id: text(request, "group_id"),
+      group_name: text(request, "group_name"),
+      actor_id: text(request, "actor_id"),
+    }));
 };
 
 export const conversationRows = async () =>
@@ -126,7 +140,7 @@ const rowById = <Row extends { id: string }>(rows: () => Promise<Row[]>) => asyn
 
 const registrationDetail = async (id: string) => {
   const request = await rowById(registrationRows)(id);
-  return { ...(await loadPerson(request.actor_id ?? "")), asked: request.asked ?? "" };
+  return { ...(await loadPerson(request.actor_id ?? "")), request_id: request.id ?? "", group_name: request.group_name ?? "", asked: request.asked ?? "" };
 };
 
 export function RegistrationsScreen() {
@@ -135,16 +149,29 @@ export function RegistrationsScreen() {
   const [version, setVersion] = useState(0);
   return (
     <MenuWindow
+      key={version}
       title={title}
-      listKey={version}
-      detailKey={version}
-      list={{ title, tool: "actor_list_join_requests_for_group", fields: { title: "name", meta: "asked" }, empty: homeEmpty(`No ${title.toLowerCase()} waiting.`), load: registrationRows }}
+      withTabs
+      bandless
+      list={{
+        title,
+        tool: "actor_list_join_requests_for_group",
+        fields: { title: "name", meta: "group_name" },
+        empty: homeEmpty(`No ${title.toLowerCase()} waiting.`),
+        load: registrationRows,
+        end: (request) => <Chip>{text(request, "asked")}</Chip>,
+      }}
       detail={{
         tool: "actor_get_actor",
         load: registrationDetail,
-        fields: { Asked: "asked" },
-        status: "status",
-        extra: (person) => <PersonPanel person={person} onSaved={() => setVersion((was) => was + 1)} />,
+        fields: {},
+        status: "",
+        extra: (person) => (
+          <>
+            <RegistrationRequest request={person} onAnswered={() => setVersion((was) => was + 1)} />
+            <PersonPanel person={person} />
+          </>
+        ),
       }}
     />
   );

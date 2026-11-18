@@ -438,6 +438,7 @@ const rowWindows = [
     detailTool: "actor_get_actor",
     detailArgs: { actor_id: "p3" },
     shown: [dayWords(4), "Reading Circle"],
+    tabBar: true,
   },
   {
     title: "Communications",
@@ -447,13 +448,14 @@ const rowWindows = [
     detailTool: "comm_chat_thread_list",
     detailArgs: { structure_id: "g3" },
     shown: [dayWords(10)],
+    tabBar: false,
   },
 ];
 
-describe.each(rowWindows)("$title on the menu window", ({ title, screenIndex, chosen, other, detailTool, detailArgs, shown }) => {
+describe.each(rowWindows)("$title on the menu window", ({ title, screenIndex, chosen, other, detailTool, detailArgs, shown, tabBar }) => {
   afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
 
-  it("draws the Folders frame at wide size with the list beside the chosen row and no tab bar", async () => {
+  it("draws the Folders frame at wide size with the list beside the chosen row and the tab bar only where the screen carries one", async () => {
     setWide(true);
     open(screens[screenIndex].at);
 
@@ -466,7 +468,7 @@ describe.each(rowWindows)("$title on the menu window", ({ title, screenIndex, ch
     expect((await within(content).findAllByText(chosen)).length).toBeGreaterThan(0);
     for (const one of shown) expect(await within(content).findByText(one)).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", detailTool, detailArgs);
-    expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
+    expect(Boolean(screen.queryByRole("navigation", { name: "Main" }))).toBe(tabBar);
     expect(landed).toBe(screens[screenIndex].at);
   });
 

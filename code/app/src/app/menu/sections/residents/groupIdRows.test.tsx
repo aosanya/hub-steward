@@ -37,10 +37,10 @@ afterEach(() => {
 });
 
 describe("the rows that open a record in its own group", () => {
-  it("gives each registration its group id and the asking actor's id", async () => {
+  it("gives each registration its group id and name and the asking actor's id", async () => {
     expect(await registrationRows()).toEqual([
-      { id: "r1", name: "Eli Marsh", asked: dayWords("2026-03-04T12:00:00Z"), group_id: "g1", actor_id: "p3" },
-      { id: "r2", name: "Nia B.", asked: dayWords("2026-03-09T12:00:00Z"), group_id: "g1", actor_id: "p4" },
+      { id: "r1", name: "Eli Marsh", asked: dayWords("2026-03-04T12:00:00Z"), group_id: "g1", group_name: "", actor_id: "p3" },
+      { id: "r2", name: "Nia B.", asked: dayWords("2026-03-09T12:00:00Z"), group_id: "g1", group_name: "", actor_id: "p4" },
     ]);
   });
 
