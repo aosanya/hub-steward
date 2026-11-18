@@ -3,7 +3,9 @@ import { elapsedSeconds, startedAtOf } from "./elapsed";
 import { lineOf } from "./capsFigures";
 import type { CapsReading } from "./api";
 
-const note = (kind: IssueNote["kind"], at: string, automatic = false): IssueNote => ({ id: at, author: "", kind, text: "", links: [], at, automatic });
+const note = (kind: IssueNote["kind"], at: string, automatic = false, text = ""): IssueNote => ({ id: at, author: "", kind, text, links: [], at, automatic });
+
+const movedIntoDoing = (at: string) => note("person", at, true, "Moved backlog/to-do to backlog/doing");
 
 const caps = { input: 1000, output: 400, runtimeSeconds: 900 };
 const reading: CapsReading = { inForce: caps, standard: caps, own: null, used: { input: 0, output: 0, seconds: 0, clockStopped: false } };
@@ -17,6 +19,27 @@ describe("the runtime of a running issue is worked out from its Log", () => {
   it("does not start at the hub's own automatic notes", () => {
     const started = startedAtOf([note("worker", "2026-11-11T19:00:00Z", true), note("worker", "2026-11-11T20:05:00Z")]);
     expect(started).toBe(new Date("2026-11-11T20:05:00Z").getTime());
+  });
+
+  it("does not start at a worker entry written before the issue was moved into doing", () => {
+    const started = startedAtOf([
+      note("worker", "2026-11-10T09:00:00Z"),
+      movedIntoDoing("2026-11-11T20:00:00.000Z"),
+      note("worker", "2026-11-11T20:00:00.002Z"),
+    ]);
+    expect(started).toBe(new Date("2026-11-11T20:00:00.002Z").getTime());
+  });
+
+  it("starts again at the new Taken entry when the issue is resumed after a release", () => {
+    const started = startedAtOf([
+      note("worker", "2026-11-10T09:00:00Z"),
+      movedIntoDoing("2026-11-11T20:00:00.000Z"),
+      note("worker", "2026-11-11T20:00:00.002Z"),
+      note("worker", "2026-11-11T20:30:00Z"),
+      movedIntoDoing("2026-11-12T08:00:00.000Z"),
+      note("worker", "2026-11-12T08:00:00.003Z"),
+    ]);
+    expect(started).toBe(new Date("2026-11-12T08:00:00.003Z").getTime());
   });
 
   it("has no start while no worker has written", () => {
