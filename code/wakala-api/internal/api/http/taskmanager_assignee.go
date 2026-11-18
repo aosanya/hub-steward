@@ -22,11 +22,13 @@ const (
 var assigneeGatedActions = map[string]bool{
 	"taskmanager.task.assign_holder":    true,
 	"taskmanager.repeating_task.create": true,
+	"taskmanager.repeating_task.update": true,
 }
 
 var assigneeGatedTools = map[string]bool{
 	"taskmanager_task_assign_holder":    true,
 	"taskmanager_repeating_task_create": true,
+	"taskmanager_repeating_task_update": true,
 }
 
 var assignedToGatedActions = map[string]bool{
