@@ -21,7 +21,8 @@ export const loadMeeting = async (id: string) => {
 export const meetingName = async (meetingId: string) => {
   if (meetingId === "") return "";
   try {
-    return text((await callTool("", councilTools.meetingRead, readMeetingArgs(meetingId))) as Item | null, "name");
+    const reply = (await callTool("", councilTools.meetingRead, readMeetingArgs(meetingId))) as Item | null;
+    return text((reply?.item ?? reply) as Item | null, "name");
   } catch {
     return "";
   }

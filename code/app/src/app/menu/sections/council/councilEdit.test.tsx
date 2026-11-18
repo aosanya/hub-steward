@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { BylawsScreen } from "./BylawsScreen";
+import { CouncilEditScreen } from "./CouncilEditScreen";
 import { councilTools } from "./councilData";
 import { MeetingsScreen } from "./MeetingsScreens";
 import { councilPaths } from "./paths";
@@ -61,6 +62,7 @@ const show = async (path: string, pattern: string, element: JSX.Element, row: Re
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path={pattern} element={element} />
+        <Route path={councilPaths.edit.pattern} element={<CouncilEditScreen />} />
       </Routes>
     </MemoryRouter>,
   );

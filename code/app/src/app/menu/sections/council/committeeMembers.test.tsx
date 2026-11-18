@@ -80,13 +80,15 @@ const open = async (committee: string) => {
   return within(document.querySelector(".mw-detail") as HTMLElement);
 };
 
+const membersHeading = (count: number) => new RegExp(`^Members\\s*${count}$`);
+
 const rowOf = (pane: ReturnType<typeof within>, name: string) => pane.getByText(name, { selector: ".ttl" }).closest(".row") as HTMLElement;
 
 describe("the members of an opened committee", () => {
   it("lists the chair first and the members after, each with the role of an active seat, and leaves out an ended seat", async () => {
     const pane = await open("Audit Committee");
 
-    expect(await pane.findByText("Members (3)")).toBeInTheDocument();
+    expect(await pane.findByRole("heading", { name: membersHeading(3) })).toBeInTheDocument();
     expect(within(rowOf(pane, "Balogh Anna")).getByText("Chair")).toBeInTheDocument();
     expect(within(rowOf(pane, "Varga József")).getByText("Member")).toBeInTheDocument();
     expect(within(rowOf(pane, "Takács Erzsébet")).getByText("Member")).toBeInTheDocument();
@@ -98,12 +100,12 @@ describe("the members of an opened committee", () => {
     const pane = await open("Consultation Committee");
 
     const words = await pane.findByText("No members yet.");
-    expect(within(words.closest(".card") as HTMLElement).getByRole("button", { name: "Add member" })).toBeInTheDocument();
+    expect(within(words.closest("section") as HTMLElement).getByRole("button", { name: "Add member" })).toBeInTheDocument();
   });
 
   it("adds a person found by name: registers them in the group, gives the member seat and the list follows", async () => {
     const pane = await open("Audit Committee");
-    await pane.findByText("Members (3)");
+    await pane.findByRole("heading", { name: membersHeading(3) });
 
     await userEvent.click(pane.getByRole("button", { name: "Add member" }));
     await userEvent.type(pane.getByRole("searchbox"), "Nagy");
@@ -119,14 +121,14 @@ describe("the members of an opened committee", () => {
 
     await waitFor(() => expect(callsTo("actor_grant_role")).toEqual([{ actor_id: "a4", group_id: "g1", kind_id: "k-member" }]));
     expect(callsTo("actor_assign_group")).toEqual([{ actor_id: "a4", group_id: "g1" }]);
-    expect(await pane.findByText("Members (4)")).toBeInTheDocument();
+    expect(await pane.findByRole("heading", { name: membersHeading(4) })).toBeInTheDocument();
     expect(within(rowOf(pane, "Nagy Márton")).getByText("Member")).toBeInTheDocument();
   });
 
   it("shows the hub's words and adds nobody when the hub refuses the seat", async () => {
     refusal = "actor_grant_role: the actor already holds that seat";
     const pane = await open("Audit Committee");
-    await pane.findByText("Members (3)");
+    await pane.findByRole("heading", { name: membersHeading(3) });
 
     await userEvent.click(pane.getByRole("button", { name: "Add member" }));
     await userEvent.type(pane.getByRole("searchbox"), "Nagy");
@@ -134,13 +136,13 @@ describe("the members of an opened committee", () => {
     await userEvent.click(pane.getByRole("button", { name: "Add Nagy Márton" }));
 
     expect(await pane.findByText("the actor already holds that seat")).toBeInTheDocument();
-    expect(pane.getByText("Members (3)")).toBeInTheDocument();
+    expect(pane.getByRole("heading", { name: membersHeading(3) })).toBeInTheDocument();
   });
 
   it("says so and grants nothing when the hub has no Member role kind", async () => {
     kinds = [{ id: "k-chair", name: "Chair", leads_group: true }];
     const pane = await open("Audit Committee");
-    await pane.findByText("Members (3)");
+    await pane.findByRole("heading", { name: membersHeading(3) });
 
     await userEvent.click(pane.getByRole("button", { name: "Add member" }));
     await userEvent.type(pane.getByRole("searchbox"), "Nagy");
@@ -153,12 +155,12 @@ describe("the members of an opened committee", () => {
 
   it("removes a member by ending their seat and the list follows", async () => {
     const pane = await open("Audit Committee");
-    await pane.findByText("Members (3)");
+    await pane.findByRole("heading", { name: membersHeading(3) });
 
     await userEvent.click(within(rowOf(pane, "Varga József")).getByRole("button", { name: "Remove" }));
 
     await waitFor(() => expect(callsTo("actor_revoke_role")).toEqual([{ assignment_id: "s2" }]));
-    expect(await pane.findByText("Members (2)")).toBeInTheDocument();
+    expect(await pane.findByRole("heading", { name: membersHeading(2) })).toBeInTheDocument();
     expect(pane.queryByText("Varga József", { selector: ".ttl" })).toBeNull();
   });
 
@@ -166,7 +168,7 @@ describe("the members of an opened committee", () => {
     permissions = ["member.view"];
     const pane = await open("Audit Committee");
 
-    expect(await pane.findByText("Members (3)")).toBeInTheDocument();
+    expect(await pane.findByRole("heading", { name: membersHeading(3) })).toBeInTheDocument();
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
     expect(pane.queryByRole("button", { name: "Add member" })).toBeNull();
     expect(pane.queryByRole("button", { name: "Remove" })).toBeNull();

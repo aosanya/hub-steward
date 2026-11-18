@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { AgendaMinutesScreen } from "./AgendaMinutesScreen";
+import { CouncilEditScreen } from "./CouncilEditScreen";
 import { councilTools } from "./councilData";
 import { councilPaths } from "./paths";
 
@@ -50,6 +51,7 @@ const answer = (name: string, args: unknown) => {
     return Promise.resolve(minutes[set.meetingID]);
   }
   if (name === councilTools.meetingList) return Promise.resolve({ items: listed });
+  if (name === councilTools.meetingRead) return Promise.resolve({ item: (listed as { id: string }[]).find((meeting) => meeting.id === id) });
   if (name === councilTools.agendaRead) return id in agendas ? Promise.resolve(agendas[id]) : Promise.reject(new Error("not found"));
   if (name === councilTools.minutesRead) return id in minutes ? Promise.resolve(minutes[id]) : Promise.reject(new Error("not found"));
   return Promise.reject(new Error(`${name}: unknown tool`));
@@ -77,6 +79,7 @@ const showAgendas = () =>
     <MemoryRouter initialEntries={[{ pathname: councilPaths.agendas.path(), state: { from: origin } }]}>
       <Routes>
         <Route path={councilPaths.agendas.pattern} element={<AgendaMinutesScreen />} />
+        <Route path={councilPaths.edit.pattern} element={<CouncilEditScreen />} />
       </Routes>
       <Where />
     </MemoryRouter>,
@@ -148,14 +151,14 @@ describe("the Agendas & Minutes screen", () => {
     const openMeeting = async (name: RegExp) => {
       showAgendas();
       await userEvent.click(await screen.findByRole("button", { name }));
-      await screen.findByRole("group", { name: "Minutes" });
+      await screen.findByRole("region", { name: "Minutes" });
     };
 
     it("lets a council.manage caller edit the minutes and shows the new text", async () => {
       permissions = ["council.view", "council.manage"];
       await openMeeting(/Spring Budget Meeting/);
 
-      await userEvent.click(await within(screen.getByRole("group", { name: "Minutes" })).findByRole("button", { name: "Edit" }));
+      await userEvent.click(await within(screen.getByRole("region", { name: "Minutes" })).findByRole("button", { name: "Edit minutes" }));
       const field = screen.getByLabelText("Minutes text");
       await userEvent.clear(field);
       await userEvent.type(field, "The budget was approved with one change.");
@@ -170,16 +173,16 @@ describe("the Agendas & Minutes screen", () => {
       permissions = ["council.manage"];
       await openMeeting(/Spring Budget Meeting/);
 
-      await userEvent.click(await within(screen.getByRole("group", { name: "Agenda" })).findByRole("button", { name: "Edit" }));
+      await userEvent.click(await within(screen.getByRole("region", { name: "Agenda" })).findByRole("button", { name: "Edit agenda" }));
       const field = screen.getByLabelText("Agenda items, one per line");
       expect(field).toHaveValue("Opening and apologies\nBudget review\nAny other business");
       await userEvent.clear(field);
       await userEvent.type(field, "Welcome{Enter}Road repairs{Enter}{Enter}Close");
       await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
-      await waitFor(() => expect(within(screen.getByRole("group", { name: "Agenda" })).getByText("Close")).toBeInTheDocument());
+      await waitFor(() => expect(within(screen.getByRole("region", { name: "Agenda" })).getByText("Close")).toBeInTheDocument());
       expect(callsTo(councilTools.agendaSet).map(([, , args]) => args)).toEqual([{ meetingID: "m1", items: ["Welcome", "Road repairs", "Close"] }]);
-      const lines = Array.from(screen.getByRole("group", { name: "Agenda" }).querySelectorAll(".ttl")).map((line) => line.textContent);
+      const lines = Array.from(screen.getByRole("region", { name: "Agenda" }).querySelectorAll(".ttl")).map((line) => line.textContent);
       expect(lines).toEqual(["Welcome", "Road repairs", "Close"]);
     });
 
@@ -187,11 +190,11 @@ describe("the Agendas & Minutes screen", () => {
       permissions = ["council.manage"];
       await openMeeting(/Summer Planning Meeting/);
 
-      await userEvent.click(await within(screen.getByRole("group", { name: "Agenda" })).findByRole("button", { name: "Edit" }));
+      await userEvent.click(await within(screen.getByRole("region", { name: "Agenda" })).findByRole("button", { name: "Edit agenda" }));
       await userEvent.type(screen.getByLabelText("Agenda items, one per line"), "Welcome");
       await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
-      expect(await within(screen.getByRole("group", { name: "Agenda" })).findByText("Welcome")).toBeInTheDocument();
+      expect(await within(screen.getByRole("region", { name: "Agenda" })).findByText("Welcome")).toBeInTheDocument();
       expect(callsTo(councilTools.agendaSet).map(([, , args]) => args)).toEqual([{ meetingID: "m2", items: ["Welcome"] }]);
     });
 
@@ -200,7 +203,7 @@ describe("the Agendas & Minutes screen", () => {
       await openMeeting(/Spring Budget Meeting/);
 
       await waitFor(() => expect(callsTo("agency_get_my_roles").length).toBeGreaterThan(0));
-      expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
+      expect(screen.queryByRole("button", { name: /^Edit/ })).toBeNull();
     });
 
     it("says why when the hub refuses the agenda and keeps the typed lines", async () => {
@@ -210,7 +213,7 @@ describe("the Agendas & Minutes screen", () => {
         name === councilTools.agendaSet ? Promise.reject(new mcp.McpError("council_agenda_set: the meeting is closed")) : answer(name, args),
       );
 
-      await userEvent.click(await within(screen.getByRole("group", { name: "Agenda" })).findByRole("button", { name: "Edit" }));
+      await userEvent.click(await within(screen.getByRole("region", { name: "Agenda" })).findByRole("button", { name: "Edit agenda" }));
       await userEvent.type(screen.getByLabelText("Agenda items, one per line"), "{Enter}Extra");
       await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
@@ -244,8 +247,8 @@ describe("the Agendas & Minutes screen on a wide screen", () => {
     const content = panes.querySelector(".wf-main .wf-content") as HTMLElement;
     expect(await within(content).findByText("Budget review")).toBeInTheDocument();
     expect(within(content).getByText("The budget was reviewed and approved.")).toBeInTheDocument();
-    expect(within(content).getByRole("group", { name: "Agenda" })).toBeInTheDocument();
-    expect(within(content).getByRole("group", { name: "Minutes" })).toBeInTheDocument();
+    expect(within(content).getByRole("region", { name: "Agenda" })).toBeInTheDocument();
+    expect(within(content).getByRole("region", { name: "Minutes" })).toBeInTheDocument();
   });
 
   it("draws no window frame on a phone", async () => {

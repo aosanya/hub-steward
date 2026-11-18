@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { CommitteesScreen } from "./CommitteesScreen";
+import { CouncilEditScreen } from "./CouncilEditScreen";
 import { councilPaths } from "./paths";
 
 let called: MockInstance<typeof mcp.callTool>;
@@ -46,6 +47,7 @@ const showCommittee = async () => {
     <MemoryRouter initialEntries={[councilPaths.committees.path()]}>
       <Routes>
         <Route path={councilPaths.committees.pattern} element={<CommitteesScreen />} />
+        <Route path={councilPaths.edit.pattern} element={<CouncilEditScreen />} />
       </Routes>
     </MemoryRouter>,
   );
