@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
+import { ChatAboutMeeting } from "./ChatAboutCouncil";
 import { CouncilPage, DetailCard } from "./CouncilPage";
 import { MeetingPapers } from "./MeetingPapers";
 import { councilTools, homeEmpty, listOf, noneYet, text, type Item } from "./councilData";
@@ -19,6 +20,7 @@ function MeetingPage({ meeting }: { meeting: Item }) {
   const line = [text(meeting, "date"), text(meeting, "place")].filter((part) => part !== "").join(" · ");
   return (
     <CouncilPage name={text(meeting, "name")} line={line}>
+      <ChatAboutMeeting meeting={meeting} />
       <DetailCard word="Meeting detail" item={meeting} kind="meetings" rows={[["Name", text(meeting, "name")], ["Date", text(meeting, "date")], ["Place", text(meeting, "place")], ["Committee", text(meeting, "committee")]]} />
       <MeetingPapers id={text(meeting, "id")} withResolutions />
     </CouncilPage>

@@ -36,6 +36,7 @@ export const loadResolution = async (id: string) => {
     date: text(resolution, "date"),
     outcome: text(resolution, "outcome"),
     outcomeWords: outcomeWords(text(resolution, "outcome")),
+    meetingId: text(resolution, "meeting_id"),
     meeting: await meetingName(text(resolution, "meeting_id")),
   };
 };

@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
+import { ChatAboutResolution } from "./ChatAboutCouncil";
 import { CouncilPage, DetailCard } from "./CouncilPage";
 import { councilTools, homeEmpty, listOf, noneYet, text, type Item } from "./councilData";
 import { loadResolution, outcomeWords } from "./councilRecords";
@@ -17,6 +18,7 @@ const loadResolutions = async () => {
 function ResolutionPage({ resolution }: { resolution: Item }) {
   return (
     <CouncilPage name={text(resolution, "title")} line={[text(resolution, "date"), text(resolution, "outcomeWords")].filter((part) => part !== "").join(" · ")}>
+      <ChatAboutResolution resolution={resolution} />
       <DetailCard word="Resolution detail" item={resolution} kind="resolutions" rows={[["Title", text(resolution, "title")], ["Date", text(resolution, "date")], ["Outcome", text(resolution, "outcomeWords")], ["Meeting", text(resolution, "meeting")]]} />
     </CouncilPage>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
 
-export type ChatAboutKind = "resident" | "group" | "registration" | "conversation" | "business" | "trader" | "user" | "boundary" | "integration" | "ai-agent" | "place" | "address" | "holding" | "land-use" | "bill" | "budget" | "tender" | "staff" | "role" | "report" | "neighbourhood";
+export type ChatAboutKind = "resident" | "group" | "registration" | "conversation" | "business" | "trader" | "user" | "boundary" | "integration" | "ai-agent" | "place" | "address" | "holding" | "land-use" | "bill" | "budget" | "tender" | "staff" | "role" | "report" | "neighbourhood" | "meeting" | "resolution" | "bylaw" | "committee";
 
 export type ChatAbout = { kind: ChatAboutKind; id: string; name: string; extra?: Record<string, string> };
 
@@ -83,6 +83,10 @@ export const subjectNouns: Record<Exclude<ChatAboutKind, "resident">, string> = 
   role: "role",
   report: "report",
   neighbourhood: "neighbourhood",
+  meeting: "meeting",
+  resolution: "resolution",
+  bylaw: "bylaw",
+  committee: "committee",
 };
 
 export const chatAboutWords = (about: ChatAbout) =>

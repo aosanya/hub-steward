@@ -232,6 +232,64 @@ const role: Subject = {
   empty: "its holders, approval limits and permissions",
 };
 
+const meeting: Subject = {
+  reads: {
+    council_meeting_read: { meetingID: byId },
+    council_agenda_read: { meetingID: byId },
+    council_minutes_read: { meetingID: byId },
+    council_resolution_list: { meeting_id: byId },
+  },
+  steps: {
+    council_meeting_read: "Reading the meeting",
+    council_agenda_read: "Reading the agenda",
+    council_minutes_read: "Reading the minutes",
+    council_resolution_list: "Reading the resolutions passed at the meeting",
+  },
+  choices: ["Details", "Agenda", "Minutes", "Resolutions"],
+  reading: "Details means council_meeting_read, Agenda means council_agenda_read, Minutes means council_minutes_read and Resolutions means council_resolution_list.",
+  overview: "call council_meeting_read, council_agenda_read, council_minutes_read and council_resolution_list at once and answer with the meeting's date and place, the agenda items, whether minutes are on file and the resolutions passed",
+  empty: "its details, agenda, minutes and resolutions",
+};
+
+const resolution: Subject = {
+  reads: {
+    council_resolution_read: { resolutionID: byId },
+    council_meeting_read: { meetingID: extraOf("meeting") },
+  },
+  steps: {
+    council_resolution_read: "Reading the resolution",
+    council_meeting_read: "Reading the meeting it was passed at",
+  },
+  choices: ["Details"],
+  reading: "Details means council_resolution_read, and the meeting it was passed at means council_meeting_read.",
+  overview: "call council_resolution_read and council_meeting_read at once and answer with the title, the date, the outcome and the meeting it was passed at",
+  empty: "its details and the meeting it was passed at",
+};
+
+const bylaw: Subject = {
+  reads: { council_bylaw_read: { bylawID: byId } },
+  steps: { council_bylaw_read: "Reading the bylaw" },
+  choices: ["Text"],
+  reading: "Text means council_bylaw_read.",
+  overview: "call council_bylaw_read and answer with its title, its year and what its text says",
+  empty: "its text",
+};
+
+const committee: Subject = {
+  reads: {
+    actor_get_group: { group_id: byId },
+    actor_list_role_assignments_for_group: { group_id: byId },
+  },
+  steps: {
+    actor_get_group: "Reading the committee's details",
+    actor_list_role_assignments_for_group: "Reading who sits on the committee",
+  },
+  choices: ["Details", "Members"],
+  reading: "Details means actor_get_group and Members means actor_list_role_assignments_for_group.",
+  overview: "call actor_get_group and actor_list_role_assignments_for_group at once and answer with the committee's name and who sits on it",
+  empty: "its details and members",
+};
+
 const periodOf = (index: number): Scoped[string] => (about) => about.id.split("~")[index] ?? "";
 
 const report: Subject = {
@@ -262,7 +320,7 @@ const neighbourhood: Subject = {
   empty: "its spending and entries",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood };
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee };
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 

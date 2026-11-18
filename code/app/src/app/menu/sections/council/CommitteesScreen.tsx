@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
+import { ChatAboutCommittee } from "./ChatAboutCouncil";
 import { CommitteeMember } from "./CommitteeMember";
 import { CommitteeMembers } from "./CommitteeMembers";
 import { CouncilPage, DetailCard } from "./CouncilPage";
@@ -27,6 +28,7 @@ function CommitteePage({ committee, onChanged }: { committee: Item; onChanged: (
   }
   return (
     <CouncilPage name={text(committee, "name")} line={text(committee, "chair")}>
+      <ChatAboutCommittee committee={committee} />
       <DetailCard word="Committee detail" item={committee} kind="committees" permission="group.manage" rows={[["Name", text(committee, "name")], ["Chair", text(committee, "chairNames")]]} />
       <CommitteeMembers groupId={text(committee, "id")} onChanged={onChanged} onOpen={setOpened} version={version} />
     </CouncilPage>

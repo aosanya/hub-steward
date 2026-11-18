@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
+import { ChatAboutMeeting } from "./ChatAboutCouncil";
 import { CouncilPage } from "./CouncilPage";
 import { MeetingPapers } from "./MeetingPapers";
 import { councilTools, homeEmpty, listOf, noneYet, text, type Item } from "./councilData";
@@ -13,6 +14,7 @@ const loadMeetings = () => listOf(councilTools.meetingList);
 function PapersPage({ meeting }: { meeting: Item }) {
   return (
     <CouncilPage name={text(meeting, "name")} line={text(meeting, "date")}>
+      <ChatAboutMeeting meeting={meeting} home="agendas" />
       <MeetingPapers id={text(meeting, "id")} />
     </CouncilPage>
   );
