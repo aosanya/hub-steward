@@ -353,7 +353,63 @@ const workorder: Subject = {
   empty: "its details and assignee",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder };
+const application: Subject = {
+  reads: {
+    forms_submission_read_mine: { form_id: byId },
+    forms_question_list: { form_id: byId },
+    forms_answer_list: { form_id: byId },
+  },
+  steps: {
+    forms_submission_read_mine: "Reading the application's decision",
+    forms_question_list: "Reading the application's questions",
+    forms_answer_list: "Reading the application's answers",
+  },
+  choices: ["Answers", "Decision", "Status"],
+  reading:
+    "Answers means forms_question_list and forms_answer_list, matching each answer to its question by question_id. Decision and Status mean forms_submission_read_mine: its decision, the note, who decided and when, the certificate lines, and a withdrawn_at day means it was withdrawn.",
+  overview: "call forms_submission_read_mine, forms_question_list and forms_answer_list at once and answer with the status, the decision and the answers given to each question",
+  empty: "its answers, decision and status",
+};
+
+const entryReads: Subject["reads"] = {
+  forms_catalog_entry_read: { slug: byId },
+  forms_catalog_entry_submissions_mine: { slug: byId },
+};
+
+const entryReadSteps: Subject["steps"] = {
+  forms_catalog_entry_read: "Reading the entry",
+  forms_catalog_entry_submissions_mine: "Reading the applications you sent to it",
+};
+
+const permit: Subject = {
+  reads: { ...entryReads, forms_submission_list: { form_id: extraOf("form") } },
+  steps: { ...entryReadSteps, forms_submission_list: "Reading the applications received" },
+  choices: ["Applications", "Granted", "Dates"],
+  reading:
+    "Applications means forms_catalog_entry_submissions_mine and forms_submission_list, Granted means the applications in forms_submission_list whose decision is approved, and Dates means the days in forms_catalog_entry_submissions_mine and the end days on the certificates. forms_submission_list is refused unless the owner may read the results: then say you could not read the received applications.",
+  overview: "call forms_catalog_entry_read, forms_catalog_entry_submissions_mine and forms_submission_list at once and answer with what it is, the applications sent, how many were received and how many were granted",
+  empty: "its applications, who was granted and the dates",
+};
+
+const fee: Subject = {
+  reads: { ...entryReads, forms_form_read: { form_id: extraOf("form") }, actor_get_actor: { actor_id: extraOf("payer") } },
+  steps: { ...entryReadSteps, forms_form_read: "Reading the amount", actor_get_actor: "Reading the payer's name" },
+  choices: ["Amount", "Payer", "Paid"],
+  reading: "Amount means forms_form_read, Payer means actor_get_actor, and Paid means the paid and paid_at of the send in forms_catalog_entry_submissions_mine.",
+  overview: "call forms_catalog_entry_read, forms_catalog_entry_submissions_mine, forms_form_read and actor_get_actor at once and answer with what the fee is for, the amount, who pays it and whether it is paid",
+  empty: "its amount, payer and whether it is paid",
+};
+
+const service: Subject = {
+  reads: { forms_catalog_entry_read: { slug: byId } },
+  steps: { forms_catalog_entry_read: "Reading the service" },
+  choices: ["Summary", "Form"],
+  reading: "Summary and Form both mean forms_catalog_entry_read: its summary, its kind and the form behind it.",
+  overview: "call forms_catalog_entry_read and answer with what the service is, its kind and the form behind it",
+  empty: "its summary and form",
+};
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service };
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 

@@ -1,9 +1,11 @@
 import { dayWords } from "../../../../shared/ui/days";
+import { useSearchParams } from "react-router-dom";
 import { MenuWindow } from "../../MenuWindow";
 import { useWord } from "../../../../features/agency/useWord";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
 import { useApplicationDetail } from "./ApplicationScreen";
 import { decisionStatus } from "./decision";
+import { servicesPaths } from "./paths";
 
 const withArticle = (noun: string) => `${/^[aeiou]/i.test(noun) ? "an" : "a"} ${noun}`;
 
@@ -21,11 +23,13 @@ const loadApplications = async () => (await listOf("forms_form_list_answered")).
 export function ApplicationsScreen() {
   const word = useWord("forms");
   const applicationsTitle = word("Applications");
-  const { detail, version } = useApplicationDetail();
+  const [search] = useSearchParams();
+  const { detail, version } = useApplicationDetail((id) => `${servicesPaths.applications.path()}?item=${id}`);
   return (
     <MenuWindow
       title={applicationsTitle}
       detailKey={version}
+      startAt={search.get("item") ?? undefined}
       withTabs
       bandless
       list={{

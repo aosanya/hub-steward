@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { dayWords } from "../../../../shared/ui/days";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { callTool } from "../../../../shared/wakala/mcp";
@@ -10,6 +11,8 @@ import { moneyWords } from "../finance/financeData";
 import { personNameOf } from "../residents/personName";
 import { RecordOwner } from "../../RecordOwner";
 import { CatalogueWindow } from "./CatalogueEntry";
+import { ChatAboutService } from "./ChatAboutService";
+import { servicesPaths } from "./paths";
 import { certificateFields, certificateOf, decisionStatus, sentWords } from "./decision";
 import { Granted } from "./Granted";
 import { ServiceAct, ServiceDetails, ServiceHead } from "./ServicePage";
@@ -70,6 +73,8 @@ const loadSubmissions = (fee: boolean, kind: string) => async (slug: string) => 
     id: slug,
     name: text(entry, "name"),
     summary: text(entry, "summary"),
+    form: text(entry, "form_id"),
+    payer_id: sent.length === 0 ? "" : text(sent[0], "member_id"),
     status: sent.length === 0 ? notSentWords : statusOf(sent[0]),
     sent: sent.map((submission) => dayWords(text(submission, "submitted_at"))).join(", "),
     owing: sent.filter(isOwing),
@@ -81,8 +86,14 @@ const loadSubmissions = (fee: boolean, kind: string) => async (slug: string) => 
 const markPaid = (submission: Item) =>
   callTool("", "forms_submission_mark_paid", { form_id: text(submission, "form_id"), member_id: text(submission, "member_id"), paid: true });
 
-const KindScreen = ({ generic, emptyGeneric, kind, payable }: { generic: string; emptyGeneric: string; kind: string; payable?: boolean }) => {
+const extraOf = (item: Item, payable: boolean) =>
+  Object.fromEntries([["form", text(item, "form")], ...(payable ? [["payer", text(item, "payer_id")]] : [])].filter(([, value]) => value !== ""));
+
+type Kind = "permit" | "licence" | "fee";
+
+const KindScreen = ({ generic, emptyGeneric, kind, payable, at }: { generic: string; emptyGeneric: string; kind: Kind; payable?: boolean; at: string }) => {
   const word = useWord("forms");
+  const [search] = useSearchParams();
   const title = word(generic);
   const empty = `No ${word(emptyGeneric).toLowerCase()} yet.`;
   const [version, setVersion] = useState(0);
@@ -102,6 +113,7 @@ const KindScreen = ({ generic, emptyGeneric, kind, payable }: { generic: string;
     <MenuWindow
       title={title}
       detailKey={version}
+      startAt={search.get("item") ?? undefined}
       list={{ title, tool: listTool, fields: listFields, empty: homeEmpty(empty), load: loadKind(kind) }}
       withTabs
       bandless
@@ -112,6 +124,7 @@ const KindScreen = ({ generic, emptyGeneric, kind, payable }: { generic: string;
         load: loadSubmissions(payable === true, kind),
         extra: (item: Item) => (
           <>
+            <ChatAboutService about={{ kind, id: text(item, "id"), name: text(item, "name"), extra: extraOf(item, payable === true) }} back={`${at}?item=${text(item, "id")}`} />
             <ServiceHead title={text(item, "name") || text(item, "id")} status={text(item, "status")} line={text(item, "summary")} />
             <ServiceDetails
               word="Details"
@@ -134,13 +147,13 @@ const KindScreen = ({ generic, emptyGeneric, kind, payable }: { generic: string;
   );
 };
 
-export const PermitsScreen = () => <KindScreen generic="Permits" emptyGeneric="Permits" kind="permit" />;
+export const PermitsScreen = () => <KindScreen generic="Permits" emptyGeneric="Permits" kind="permit" at={servicesPaths.permits.path()} />;
 
-export const LicencesScreen = () => <KindScreen generic="Licences" emptyGeneric="Licences" kind="licence" />;
+export const LicencesScreen = () => <KindScreen generic="Licences" emptyGeneric="Licences" kind="licence" at={servicesPaths.licences.path()} />;
 
-export const FeesPaymentsScreen = () => <KindScreen generic="Fees & Payments" emptyGeneric="Fees" kind="fee" payable />;
+export const FeesPaymentsScreen = () => <KindScreen generic="Fees & Payments" emptyGeneric="Fees" kind="fee" payable at={servicesPaths.fees.path()} />;
 
 export function ServiceCatalogueScreen() {
   const word = useWord("forms");
-  return <CatalogueWindow title={word("Service Catalogue")} empty={`No ${word("Services").toLowerCase()} yet.`} />;
+  return <CatalogueWindow title={word("Service Catalogue")} empty={`No ${word("Services").toLowerCase()} yet.`} back={servicesPaths.catalogue.path()} />;
 }

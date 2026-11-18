@@ -15,6 +15,8 @@ import { dayWords } from "../../../../shared/ui/days";
 import { valueKeyOf } from "./answers";
 import { certificateFields, certificateOf, decidedWords, decisionStatus, reasonWords, sentWords } from "./decision";
 import { inspectionLineOf, inspectionWords } from "./inspection";
+import { ChatAboutService } from "./ChatAboutService";
+import { servicesPaths } from "./paths";
 import { ServiceAct, ServiceDetails, ServiceHead } from "./ServicePage";
 import { Section } from "../../../../shared/ui/Section";
 
@@ -92,7 +94,7 @@ const loadApplication = async (id: string) => {
 
 const decisionFields = { [decidedWords]: "decided_line", [reasonWords]: "decision_note", [inspectionWords]: "inspection_line", ...certificateFields };
 
-export function useApplicationDetail() {
+export function useApplicationDetail(backOf: (id: string) => string) {
   const [version, setVersion] = useState(0);
   const [failed, setFailed] = useState(false);
   const refresh = () => setVersion((current) => current + 1);
@@ -107,6 +109,7 @@ export function useApplicationDetail() {
     load: loadApplication,
     extra: (item: Item) => (
       <>
+        <ChatAboutService about={{ kind: "application", id: text(item, "form_id"), name: text(item, "name") }} back={backOf(text(item, "form_id"))} />
         <ServiceHead title={text(item, "name") || "Application"} status={text(item, "status")} line={dayWords(text(item, "answered_at") || text(item, "sent_at"))} />
         <ServiceDetails word="Decision" item={item} fields={decisionFields} />
         {failed ? <LoadFailed words={actionFailedWords} /> : null}
@@ -126,7 +129,7 @@ export function ApplicationScreen() {
   const back = useBackToSection();
   const title = useWord("forms")("Application");
   const id = useParams().id ?? "";
-  const { detail, version } = useApplicationDetail();
+  const { detail, version } = useApplicationDetail(() => servicesPaths.application.path({ id }));
   return (
     <Shell title={title} titleUnder tabless {...back}>
       <MenuDetail key={version} bare title={title} id={id} {...detail} />

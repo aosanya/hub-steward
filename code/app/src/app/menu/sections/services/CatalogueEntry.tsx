@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
+import { ChatAboutService } from "./ChatAboutService";
 import { ServiceDetails, ServiceHead } from "./ServicePage";
 
 export const servicePermission = "service.edit";
@@ -26,13 +28,15 @@ const loadEntry = async (slug: string): Promise<Item> => {
   return { ...entry, id: slug };
 };
 
-export function CatalogueWindow({ title, empty, listTool = publicListTool }: { title: string; empty: string; listTool?: string }) {
+export function CatalogueWindow({ title, empty, listTool = publicListTool, back }: { title: string; empty: string; listTool?: string; back?: string }) {
   const [version, setVersion] = useState(0);
+  const [search] = useSearchParams();
   return (
     <MenuWindow
       title={title}
       listKey={version}
       detailKey={version}
+      startAt={search.get("item") ?? undefined}
       withTabs
       bandless
       list={{ title, tool: listTool, fields: { title: "name", meta: "line" }, empty: homeEmpty(empty), load: async () => (await listOf(listTool)).map(entryRow) }}
@@ -43,6 +47,7 @@ export function CatalogueWindow({ title, empty, listTool = publicListTool }: { t
         load: loadEntry,
         extra: (entry) => (
           <>
+            {back ? <ChatAboutService about={{ kind: "service", id: text(entry, "id"), name: text(entry, "name") }} back={`${back}?item=${text(entry, "id")}`} /> : null}
             <ServiceHead title={text(entry, "name")} line={text(entry, "summary")} />
             <ServiceDetails word="Details" item={entry} fields={{ Kind: "kind", Form: "form_id" }} />
             <MenuEditForm

@@ -1,6 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
 
-export type ChatAboutKind = "resident" | "group" | "registration" | "conversation" | "business" | "trader" | "user" | "boundary" | "integration" | "ai-agent" | "place" | "address" | "holding" | "land-use" | "bill" | "budget" | "tender" | "staff" | "role" | "report" | "neighbourhood" | "meeting" | "resolution" | "bylaw" | "committee" | "asset" | "workorder";
+export type ChatAboutKind = "resident" | "group" | "registration" | "conversation" | "business" | "trader" | "user" | "boundary" | "integration" | "ai-agent" | "place" | "address" | "holding" | "land-use" | "bill" | "budget" | "tender" | "staff" | "role" | "report" | "neighbourhood" | "meeting" | "resolution" | "bylaw" | "committee" | "asset" | "workorder" | "application" | "permit" | "licence" | "fee" | "service";
 
 export type ChatAbout = { kind: ChatAboutKind; id: string; name: string; extra?: Record<string, string> };
 
@@ -89,6 +89,11 @@ export const subjectNouns: Record<Exclude<ChatAboutKind, "resident">, string> = 
   committee: "committee",
   asset: "asset",
   workorder: "work order",
+  application: "application",
+  permit: "permit",
+  licence: "licence",
+  fee: "fee",
+  service: "service",
 };
 
 export const chatAboutWords = (about: ChatAbout) =>
