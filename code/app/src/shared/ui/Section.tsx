@@ -7,21 +7,22 @@ import "./section.css";
 
 export { sectionLimit };
 
-type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean; icon?: IconName; plain?: boolean; badge?: ReactNode };
+type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean; icon?: IconName; plain?: boolean; badge?: ReactNode; total?: number };
 
-export function Section({ word, rows, opens, empty, foot, full = false, all = false, icon, plain = false, badge }: Props) {
+export function Section({ word, rows, opens, empty, foot, full = false, all = false, icon, plain = false, badge, total }: Props) {
   const [expanded, setExpanded] = useState(true);
   const bodyId = useId();
   const count = rows.length;
   const filter = useSectionFilter(word, rows, full);
   if (count === 0 && !empty) return null;
   const showAll = full || all || plain;
-  const more = !showAll && count > sectionLimit;
+  const sum = total ?? count;
+  const more = !showAll && sum > sectionLimit;
   const shown = full ? filter.kept : showAll ? rows : rows.slice(0, sectionLimit);
   const title = (
     <>
       {word}
-      {count > 0 ? <span className="count">{count}</span> : null}
+      {count > 0 ? <span className="count">{sum}</span> : null}
     </>
   );
   const opening = count > 0 && opens && !full;
@@ -59,7 +60,7 @@ export function Section({ word, rows, opens, empty, foot, full = false, all = fa
       ) : null}
       {expanded && (more || foot) ? (
         <footer className="sec-foot">
-          {more ? <button type="button" className="sec-foot-item" onClick={opens}>{`See all ${count}`}</button> : null}
+          {more ? <button type="button" className="sec-foot-item" onClick={opens}>{`See all ${sum}`}</button> : null}
           {foot}
         </footer>
       ) : null}

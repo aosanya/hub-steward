@@ -1,7 +1,7 @@
 import { vi } from "vitest";
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Routes } from "react-router-dom";
+import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
@@ -54,10 +54,16 @@ afterEach(() => {
   Reflect.deleteProperty(window, "matchMedia");
 });
 
+function Where() {
+  const here = useLocation();
+  return <output aria-label="where">{`${here.pathname}${here.search}`}</output>;
+}
+
 const open = async () => {
   const path = items.find((item) => item.title === "Groups & Associations")?.path?.() ?? "";
   render(
     <MemoryRouter initialEntries={[path]}>
+      <Where />
       <Routes>{routes()}</Routes>
     </MemoryRouter>,
   );
@@ -121,7 +127,7 @@ describe("the Members card on a group page", () => {
   it("opens the resident from a member row", async () => {
     const pane = await open();
     await userEvent.click(await pane.findByRole("button", { name: /Resident 02/ }));
-    expect(await screen.findByRole("heading", { level: 1, name: "Resident 02" }).catch(() => null)).not.toBeUndefined();
+    await waitFor(() => expect(screen.getByLabelText("where").textContent).toMatch(/\/menu\/residents\/people\?person=a2$/));
   });
 
   it("shows the standard empty row for a group with no members", async () => {

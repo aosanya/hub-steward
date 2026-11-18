@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuEditForm, refusalWords } from "../../MenuEditForm";
+import { MembersCard } from "./MembersCard";
 import { populationFigure } from "../../populationFigure";
 import { groupTypeWord } from "../../groupTypeWords";
 import { useLanguage } from "../../../../shared/language/language";
@@ -108,6 +109,7 @@ export function GroupPanel({ group, onSaved, editPath }: { group: Item; onSaved:
       <GroupHead group={group} />
       <div className="sections">
         <GroupDetails group={group} onSaved={onSaved} editPath={editPath} />
+        <MembersCard groupId={text(group, "id")} />
       </div>
     </div>
   );
