@@ -30,6 +30,7 @@ export function BusinessesScreen() {
       prompts={fields.filter((field) => !field.people).map((field) => field.prompt)}
       metaPrompts={businessesMetaPrompts}
       owner={{ prompt: "Owner", heading: "Owner" }}
+      licence
       empty={{ words: "No businesses yet.", act: "Add business", to: routes.businessNew.path() }}
     />
   );

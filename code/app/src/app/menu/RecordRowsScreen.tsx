@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Button } from "../../shared/ui/Button";
+import { Chip } from "../../shared/ui/Chip";
 import { liveRecordRowsTool, loadRecordRow, loadRecordRows, recordOwnerKey, recordRowIdKey } from "./liveRecordRows";
 import { MenuWindow } from "./MenuWindow";
 import { RecordMoney } from "./RecordMoney";
 import { RecordOwner } from "./RecordOwner";
 import { RowHoldings } from "./sections/residents/PersonHoldings";
+import { loadLicensedRowIds } from "./sections/residents/licensedRows";
 import { RowActivity } from "./sections/residents/RowActivity";
 
 type Props = {
@@ -15,21 +17,32 @@ type Props = {
   prompts: string[];
   empty: { words: string; act: string; to: string };
   owner?: { prompt: string; heading: string };
+  licence?: boolean;
 };
 
-export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, prompts, empty, owner }: Props) {
+const licensedKey = "licensed";
+const licensedWords = "Licensed";
+const notLicensedWords = "Not licensed";
+
+const licenceChip = (item: Record<string, unknown>) =>
+  item[licensedKey] === undefined ? null : item[licensedKey] ? <Chip tone="success">{licensedWords}</Chip> : <Chip>{notLicensedWords}</Chip>;
+
+export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, prompts, empty, owner, licence }: Props) {
   const [count, setCount] = useState(0);
   const load = async () => {
-    const rows = await loadRecordRows(recordCode, titlePrompt, metaPrompts);
+    const [rows, licensed] = await Promise.all([
+      loadRecordRows(recordCode, titlePrompt, metaPrompts),
+      licence ? loadLicensedRowIds(recordCode) : Promise.resolve(null),
+    ]);
     setCount(rows.length);
-    return rows;
+    return licensed ? rows.map((row) => ({ ...row, [licensedKey]: licensed.has(row.id) })) : rows;
   };
   return (
     <MenuWindow
       key={recordCode}
       title={title}
       headEnd={count > 0 ? <Button to={empty.to}>{empty.act}</Button> : undefined}
-      list={{ title, tool: liveRecordRowsTool, fields: { title: "title", meta: "meta" }, empty, load }}
+      list={{ title, tool: liveRecordRowsTool, fields: { title: "title", meta: "meta" }, empty, load, end: licence ? licenceChip : undefined }}
       detail={{
         tool: liveRecordRowsTool,
         load: (id) => loadRecordRow(recordCode, id, prompts, owner?.prompt),

@@ -63,15 +63,26 @@ export const loadRecordRow = async (recordCode: string, id: string, prompts: str
   return owner ? { ...named, [recordOwnerKey]: owner } : named;
 };
 
-export const loadRowChain = async (recordCode: string, rowId: string): Promise<string[]> => {
-  const [current, older] = await Promise.all([loadRawRows(recordCode), loadRawRows(recordCode, { history: true })]);
-  const byId = new Map([...current, ...older].map((row) => [String(row.id), row]));
+const chainFrom = (byId: Map<string, Raw>, start: string): string[] => {
   const chain: string[] = [];
-  let next = rowId;
+  let next = start;
   while (next !== "" && !chain.includes(next)) {
     chain.push(next);
     const replaces = byId.get(next)?.replaces;
     next = typeof replaces === "string" ? replaces : "";
   }
   return chain;
+};
+
+const loadCurrentAndOlder = async (recordCode: string) => {
+  const [current, older] = await Promise.all([loadRawRows(recordCode), loadRawRows(recordCode, { history: true })]);
+  return { current, byId: new Map([...current, ...older].map((row) => [String(row.id), row])) };
+};
+
+export const loadRowChain = async (recordCode: string, rowId: string): Promise<string[]> =>
+  chainFrom((await loadCurrentAndOlder(recordCode)).byId, rowId);
+
+export const loadRowChains = async (recordCode: string): Promise<Map<string, string[]>> => {
+  const { current, byId } = await loadCurrentAndOlder(recordCode);
+  return new Map(current.map((row) => [String(row.id), chainFrom(byId, String(row.id))]));
 };
