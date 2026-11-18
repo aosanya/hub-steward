@@ -7,6 +7,7 @@ import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgen
 import * as mcp from "../../../../shared/wakala/mcp";
 import { councilPaths } from "./paths";
 import { DeclarationsScreen, declarationsTitle } from "./DeclarationsScreen";
+import { dayWords } from "../../../../shared/ui/days";
 import { items } from "./index";
 
 const tool = "agency_list_declarations";
@@ -110,8 +111,8 @@ describe.each([
 
     await screen.findByText("Zsofia Varga", { selector: ".ttl" });
     expect(screen.getByRole("heading", { name: "Declarations of interest" })).toBeInTheDocument();
-    expect(metaOf(rowOf("Zsofia Varga"))).toEqual(["2026-03-02"]);
-    expect(metaOf(rowOf("Bence Kovacs"))).toEqual(["2026-03-05"]);
+    expect(metaOf(rowOf("Zsofia Varga"))).toEqual([dayWords("2026-03-02")]);
+    expect(metaOf(rowOf("Bence Kovacs"))).toEqual([dayWords("2026-03-05")]);
     expect(screen.queryByText("Ilona Farkas", { selector: ".row .ttl" })).not.toBeNull();
     expect(called.mock.calls.filter(([, name]) => name === tool).length).toBeGreaterThan(0);
   });
@@ -125,7 +126,7 @@ describe.each([
     expect(shown).toContain("Member");
     expect(shown).toContain("Zsofia Varga");
     expect(shown).toContain("Declared on");
-    expect(shown).toContain("2026-03-02");
+    expect(shown).toContain(dayWords("2026-03-02"));
     const at = [officeQuestion, "No", relativesQuestion, "None", gardenQuestion, "Yes, one plot"].map((part) => shown.indexOf(part, shown.indexOf("Declared on")));
     expect(at.every((place) => place > 0)).toBe(true);
     expect([...at].sort((a, b) => a - b)).toEqual(at);
@@ -193,6 +194,65 @@ describe.each([
     expect(await screen.findByText("No declarations yet.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Home" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Declare" })).toBeNull();
+  });
+});
+
+const stamp = "2026-11-18T22:11:08.761949000Z";
+
+const stamped = { row_id: "d5", actor_id: "a5", name: "Aranka Zoldhalmi", declared_on: stamp, answers: { [officeQuestion]: "No" }, own: false };
+
+const noNameYet = { row_id: "d6", actor_id: "a6", name: "", declared_on: "2026-03-09", answers: { [officeQuestion]: "No" }, own: false };
+
+const idAsName = { row_id: "d7", actor_id: "a7", name: "3f2c9a1e-5b7d-4c8e-9a10-2b6d4e8f0a13", declared_on: "2026-03-10", answers: { [officeQuestion]: "No" }, own: false };
+
+const unnamedWords = "Unnamed person";
+
+describe.each([
+  ["phone", false],
+  ["wide", true],
+])("the Declarations of interest screen on a %s reads like a person wrote it", (_name, wide) => {
+  beforeEach(() => setWide(wide));
+
+  it("shows a timestamp as a day in the list and in the opened declaration, never the raw stamp", async () => {
+    reply = { ...readerReply, declared: [stamped] };
+    showDeclarations();
+
+    await screen.findByText("Aranka Zoldhalmi", { selector: ".ttl" });
+    expect(metaOf(rowOf("Aranka Zoldhalmi"))).toEqual([dayWords(stamp)]);
+    expect(dayWords(stamp)).toBe("Wednesday, 18 Nov");
+    await userEvent.click(screen.getByRole("button", { name: /Aranka Zoldhalmi/ }));
+    await waitFor(() => expect(pane()?.textContent).toContain("Declared on"));
+    expect(pane()?.textContent).toContain(dayWords(stamp));
+    expect(document.body.textContent).not.toContain("T22:11");
+    expect(document.body.textContent).not.toContain("761949");
+  });
+
+  it("names a declared member with an empty name or an id for a name Unnamed person, never an id", async () => {
+    reply = { ...readerReply, declared: [noNameYet, idAsName] };
+    showDeclarations();
+
+    await waitFor(() => expect(screen.getAllByText(unnamedWords, { selector: ".ttl" })).toHaveLength(2));
+    expect(document.body.textContent).not.toContain("3f2c9a1e");
+  });
+
+  it("names a not yet declared member with an empty name or an id for a name Unnamed person", async () => {
+    reply = { ...readerReply, not_declared: [{ actor_id: "a8", name: "" }, { actor_id: "a9", name: "9d41b7c2-0e5a-4f63-8b2c-1a7e6d3f5c90" }, tamas], not_declared_count: 3 };
+    showDeclarations();
+
+    const heading = await screen.findByRole("heading", { name: "Not yet declared (3)" });
+    const section = heading.parentElement as HTMLElement;
+    expect(within(section).getAllByText(unnamedWords)).toHaveLength(2);
+    expect(within(section).getByText("Tamas Nagy")).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain("9d41b7c2");
+  });
+
+  it("names the member of an opened declaration with no name Unnamed person", async () => {
+    reply = { ...readerReply, declared: [noNameYet] };
+    showDeclarations();
+    await userEvent.click(await screen.findByRole("button", { name: new RegExp(unnamedWords) }));
+
+    await waitFor(() => expect(pane()?.textContent).toContain("Member"));
+    expect(pane()?.textContent).toContain(unnamedWords);
   });
 });
 

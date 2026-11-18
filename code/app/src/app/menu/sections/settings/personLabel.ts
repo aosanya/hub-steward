@@ -16,4 +16,4 @@ export const nameOrUnnamed = (person: Record<string, unknown>) => {
   return label === shortId(String(person.id ?? "")) ? unnamedPerson : label;
 };
 
-export const shownName = (value: string) => (looksLikeId(value) ? unnamedPerson : value);
+export const shownName = (value: string) => (value.trim() === "" || looksLikeId(value) ? unnamedPerson : value);

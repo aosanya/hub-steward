@@ -1,6 +1,8 @@
 import { mcpStepsClient } from "../../../../features/steps/api";
 import { stepsPaths } from "../../../../features/steps/routePaths";
+import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { shownName } from "../settings/personLabel";
 import { text, type Item } from "./councilData";
 
 export const declarationsTool = "agency_list_declarations";
@@ -13,10 +15,10 @@ const listOfItems = (value: unknown): Item[] => (Array.isArray(value) ? value.fi
 
 const declarationOf = (raw: Item): Declaration => ({
   id: text(raw, "row_id"),
-  title: text(raw, "name"),
-  meta: text(raw, "declared_on"),
-  name: text(raw, "name"),
-  declaredOn: text(raw, "declared_on"),
+  title: shownName(text(raw, "name")),
+  meta: dayWords(text(raw, "declared_on")),
+  name: shownName(text(raw, "name")),
+  declaredOn: dayWords(text(raw, "declared_on")),
   answers: Object.entries((raw.answers && typeof raw.answers === "object" ? raw.answers : {}) as Record<string, unknown>).map(([prompt, answer]) => ({ prompt, answer: typeof answer === "string" ? answer : answer == null ? "" : String(answer) })),
 });
 
@@ -38,7 +40,7 @@ export const readDeclarations = async (): Promise<Declarations> => {
   const count = typeof reply.not_declared_count === "number" ? reply.not_declared_count : 0;
   return {
     declared,
-    notDeclared: readsAll && count > 0 ? listOfItems(reply.not_declared).map((member) => text(member, "name")) : [],
+    notDeclared: readsAll && count > 0 ? listOfItems(reply.not_declared).map((member) => shownName(text(member, "name"))) : [],
     notDeclaredCount: readsAll ? count : 0,
     declareTo: declared.length === 0 ? await declareStepPath() : "",
   };
