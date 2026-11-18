@@ -3,6 +3,10 @@ import { callTool } from "../../shared/wakala/mcp";
 
 export const liveRecordRowsTool = "agency_list_live_record_rows";
 
+const liveRecordsTool = "agency_list_live_records";
+
+const registerNames: Record<string, string> = { "RC-1": "Businesses", "RC-2": "Informal traders" };
+
 export type RecordRow = { id: string; title: string; meta: string };
 
 type Raw = Record<string, unknown>;
@@ -21,9 +25,20 @@ export const recordRowsOf = (rows: Raw[], titlePrompt: string, metaPrompts: stri
     meta: metaPrompts.map((prompt) => answerOf(row, prompt)).filter(Boolean).join(" · "),
   }));
 
+export const resolveRecordCode = async (recordCode: string): Promise<string> => {
+  const name = registerNames[recordCode];
+  if (!name) return recordCode;
+  try {
+    const kept = (itemsOf(await callTool("", liveRecordsTool)) as Raw[]).find((record) => record.name === name);
+    return typeof kept?.code === "string" ? kept.code : recordCode;
+  } catch {
+    return recordCode;
+  }
+};
+
 const loadRawRows = async (recordCode: string, args: Raw = {}): Promise<Raw[]> => {
   try {
-    return itemsOf(await callTool("", liveRecordRowsTool, { record_code: recordCode, ...args })) as Raw[];
+    return itemsOf(await callTool("", liveRecordRowsTool, { record_code: await resolveRecordCode(recordCode), ...args })) as Raw[];
   } catch (error) {
     if (error instanceof Error && absentRecord.test(error.message)) return [];
     throw error;

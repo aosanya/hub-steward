@@ -8,6 +8,7 @@ import { LoadFailed } from "../../shared/ui/LoadState";
 import { SearchSelect, type Choice } from "../../shared/ui/SearchSelect";
 import { callTool } from "../../shared/wakala/mcp";
 import { Shell } from "../Shell";
+import { resolveRecordCode } from "./liveRecordRows";
 import { refusalWords } from "./MenuEditForm";
 import { personNameOf } from "./sections/residents/personName";
 
@@ -51,7 +52,7 @@ export function RecordRowForm({ title, recordCode, fields, back }: Props) {
     setSaving(true);
     setRefused("");
     try {
-      await callTool("", addLiveRecordRowTool, { record_code: recordCode, answers });
+      await callTool("", addLiveRecordRowTool, { record_code: await resolveRecordCode(recordCode), answers });
       navigate(back.to);
     } catch (error) {
       setRefused(refusalWords(error));
