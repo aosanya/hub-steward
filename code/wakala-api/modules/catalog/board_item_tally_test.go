@@ -102,7 +102,7 @@ func wantRows(t *testing.T, got, want []catalog.AreaTally) {
 }
 
 func TestEveryAreaTheDirectoryListsIsARowEvenWhenNobodyThereIsBehindTheItem(t *testing.T) {
-	cm, _ := newManager(t)
+	cm := entryManager(t)
 	cm.UseAreaDirectory(fakeDirectory{areas: threeAreas(), placed: map[string]string{"amina": "North", "baraka": "East"}})
 	b := putOnBoard(t, cm, "Streetlights out")
 	raiseUnder(t, cm, b.ID, "amina", "")
@@ -115,7 +115,7 @@ func TestEveryAreaTheDirectoryListsIsARowEvenWhenNobodyThereIsBehindTheItem(t *t
 }
 
 func TestAPersonWhoRaisedAndSaidMeTooCountsOnceAsARaiser(t *testing.T) {
-	cm, _ := newManager(t)
+	cm := entryManager(t)
 	cm.UseAreaDirectory(fakeDirectory{areas: threeAreas(), placed: map[string]string{"amina": "North", "baraka": "East", "chiku": "North", "dawit": "East"}})
 	b := putOnBoard(t, cm, "Streetlights out")
 	raiseUnder(t, cm, b.ID, "amina", "")
@@ -129,7 +129,7 @@ func TestAPersonWhoRaisedAndSaidMeTooCountsOnceAsARaiser(t *testing.T) {
 }
 
 func TestAPersonWhoRaisedTwiceCountsOnce(t *testing.T) {
-	cm, _ := newManager(t)
+	cm := entryManager(t)
 	cm.UseAreaDirectory(fakeDirectory{areas: threeAreas(), placed: map[string]string{"amina": "North"}})
 	b := putOnBoard(t, cm, "Streetlights out")
 	raiseUnder(t, cm, b.ID, "amina", "")
@@ -142,7 +142,7 @@ func TestAPersonWhoRaisedTwiceCountsOnce(t *testing.T) {
 }
 
 func TestAMeTooHolderTheDirectoryCannotPlaceIsOneRowWithNoAreaLast(t *testing.T) {
-	cm, _ := newManager(t)
+	cm := entryManager(t)
 	cm.UseAreaDirectory(fakeDirectory{areas: threeAreas(), placed: map[string]string{"chiku": "North"}})
 	b := putOnBoard(t, cm, "Streetlights out")
 	saidMeToo(t, cm, b.ID, "chiku", "eshe", "farida")
@@ -155,7 +155,7 @@ func TestAMeTooHolderTheDirectoryCannotPlaceIsOneRowWithNoAreaLast(t *testing.T)
 }
 
 func TestARaiserTheDirectoryDoesNotPlaceFallsBackToTheRaisedItemsStoredArea(t *testing.T) {
-	cm, _ := newManager(t)
+	cm := entryManager(t)
 	cm.UseAreaDirectory(fakeDirectory{areas: threeAreas()})
 	b := putOnBoard(t, cm, "Streetlights out")
 	raiseUnder(t, cm, b.ID, "register-7", "east")
@@ -172,7 +172,7 @@ func TestARaiserTheDirectoryDoesNotPlaceFallsBackToTheRaisedItemsStoredArea(t *t
 }
 
 func TestTheDirectoryPlacesARaiserBeforeTheirRaisedItemsStoredArea(t *testing.T) {
-	cm, _ := newManager(t)
+	cm := entryManager(t)
 	cm.UseAreaDirectory(fakeDirectory{areas: threeAreas(), placed: map[string]string{"amina": "North"}})
 	b := putOnBoard(t, cm, "Streetlights out")
 	raiseUnder(t, cm, b.ID, "amina", "East")
@@ -184,7 +184,7 @@ func TestTheDirectoryPlacesARaiserBeforeTheirRaisedItemsStoredArea(t *testing.T)
 }
 
 func TestWithNoDirectoryRaisersSitWhereTheirItemIsAndMeTooHoldersAreUnplacedWithNoPopulation(t *testing.T) {
-	cm, _ := newManager(t)
+	cm := entryManager(t)
 	b := putOnBoard(t, cm, "Streetlights out")
 	raiseUnder(t, cm, b.ID, "amina", "North")
 	saidMeToo(t, cm, b.ID, "chiku", "dawit")
@@ -195,7 +195,7 @@ func TestWithNoDirectoryRaisersSitWhereTheirItemIsAndMeTooHoldersAreUnplacedWith
 }
 
 func TestABoardItemWithNothingBehindItStillAppearsWithTheZeroRows(t *testing.T) {
-	cm, _ := newManager(t)
+	cm := entryManager(t)
 	cm.UseAreaDirectory(fakeDirectory{areas: threeAreas()})
 	b := putOnBoard(t, cm, "Market drainage")
 	wantRows(t, tallyRows(t, cm, b.ID), []catalog.AreaTally{
@@ -206,7 +206,8 @@ func TestABoardItemWithNothingBehindItStillAppearsWithTheZeroRows(t *testing.T) 
 }
 
 func TestTheTallyIsNarrowedToOneBoardItemOnlyWhenAskedAndAnswersAllOtherwise(t *testing.T) {
-	cm, ctx := newManager(t)
+	cm := entryManager(t)
+	ctx := context.Background()
 	cm.UseAreaDirectory(fakeDirectory{areas: threeAreas(), placed: map[string]string{"amina": "North"}})
 	first := putOnBoard(t, cm, "Streetlights out")
 	second := putOnBoard(t, cm, "Market drainage")
@@ -229,7 +230,8 @@ func TestTheTallyIsNarrowedToOneBoardItemOnlyWhenAskedAndAnswersAllOtherwise(t *
 }
 
 func TestAHiddenBoardItemIsAbsentFromTheTally(t *testing.T) {
-	cm, ctx := newManager(t)
+	cm := entryManager(t)
+	ctx := context.Background()
 	cm.UseAreaDirectory(fakeDirectory{areas: threeAreas(), placed: map[string]string{"amina": "North"}})
 	shown := putOnBoard(t, cm, "Streetlights out")
 	hidden := putOnBoard(t, cm, "Rubbish at the market")
@@ -244,7 +246,8 @@ func TestAHiddenBoardItemIsAbsentFromTheTally(t *testing.T) {
 }
 
 func TestADirectoryErrorRefusesTheTallyInsteadOfGuessingAnArea(t *testing.T) {
-	cm, ctx := newManager(t)
+	cm := entryManager(t)
+	ctx := context.Background()
 	boom := errors.New("directory down")
 	cm.UseAreaDirectory(fakeDirectory{err: boom})
 	b := putOnBoard(t, cm, "Streetlights out")

@@ -1043,6 +1043,26 @@
         }
       ]
     },
+    "tally_board_items_by_area": {
+      "method": "GET",
+      "path": "/board-items/tally-by-area",
+      "call": "TallyBoardItemsByArea",
+      "action": "catalog.board_item.tally_by_area",
+      "title": "Tally the board by area",
+      "description": "For every board item that is not hidden, how many people are behind it in each area, against how many people live there: one row per area the host lists, zero where nobody is behind the item, then any area a person's own raised item names that the host does not list (population null), then one row with no area for people nobody can place, only when it has someone in it. Unlike the board lists, raised_by here counts people, not raised items, and me_too counts only people who did not raise it, so a person who both raised it and said Me too counts once, as a raiser, and raised_by plus me_too is the number of people behind the item. A person is placed by the host's directory first and by the area stored on the item they raised second. The staff read. Never anonymous.",
+      "args": [
+        {
+          "from": "query",
+          "as": "board_item_id",
+          "description": "Tally only this board item. Empty tallies every board item that is not hidden."
+        }
+      ],
+      "returns": [
+        {
+          "body": true
+        }
+      ]
+    },
     "group_under_board_item": {
       "method": "PUT",
       "path": "/raised-items/{raisedItemID}/board-item",
