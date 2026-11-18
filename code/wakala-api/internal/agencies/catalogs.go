@@ -42,5 +42,6 @@ func (r *registry) buildCatalogManager(ctx context.Context, id, mount string) (m
 		return nil, err
 	}
 	built.UseAreaResolver(wardAreaResolver(um))
+	built.UseAreaDirectory(newAreaDirectory(um))
 	return built, nil
 }

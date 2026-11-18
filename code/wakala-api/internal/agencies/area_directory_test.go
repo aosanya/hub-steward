@@ -19,7 +19,7 @@ type areaFixture struct {
 func newAreaFixture(t *testing.T) areaFixture {
 	t.Helper()
 	ctx := context.Background()
-	reg, err := NewRegistry(newTestDB(t))
+	reg, err := NewRegistry(sharedMemoryDB(t))
 	if err != nil {
 		t.Fatalf("NewRegistry: %v", err)
 	}
@@ -121,7 +121,7 @@ func TestAreaDirectory_AreasListsEveryAreaGroupWithItsLatestPopulation(t *testin
 
 func TestAreaDirectory_NoAreaLevelMeansNoAreas(t *testing.T) {
 	ctx := context.Background()
-	reg, err := NewRegistry(newTestDB(t))
+	reg, err := NewRegistry(sharedMemoryDB(t))
 	if err != nil {
 		t.Fatalf("NewRegistry: %v", err)
 	}
