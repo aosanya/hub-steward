@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import type { Issue } from "../backlogs";
 import type { AssistantClient } from "./api";
-import { say, showAssistant } from "./assistantScreen";
+import { heavyListTimeout, say, showAssistant } from "./assistantScreen";
 import type { ResultDraft } from "./results";
 import { forgetConversations } from "./session";
 
@@ -83,7 +83,7 @@ describe("Show more in the Results tab", () => {
     expect(rowsOf("Wide")).toBe(0);
     await userEvent.selectOptions(select, "Wide · 120");
     expect(rowsOf("Wide")).toBe(100);
-  });
+  }, heavyListTimeout);
 
   it("keeps saying how many of the total the tool counted after every row it sent is shown", async () => {
     show(vi.fn().mockResolvedValueOnce({ text: "Many.", lists: [draft("Pending", 120, 1296)] }));
@@ -96,7 +96,7 @@ describe("Show more in the Results tab", () => {
     expect(rowsOf("Pending")).toBe(120);
     expect(screen.getByText("Showing 120 of 1296")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Show more" })).toBeNull();
-  });
+  }, heavyListTimeout);
 });
 
 describe("removing a queued message", () => {

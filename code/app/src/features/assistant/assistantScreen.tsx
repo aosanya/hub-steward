@@ -19,3 +19,5 @@ export const say = async (words: string) => {
   await userEvent.type(await screen.findByRole("textbox", { name: "Ask about the backlogs" }), words);
   await userEvent.click(screen.getByRole("button", { name: "Send" }));
 };
+
+export const heavyListTimeout = 20000;

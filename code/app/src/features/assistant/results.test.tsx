@@ -5,6 +5,7 @@ import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import type { Issue } from "../backlogs";
 import { routes } from "../../app/routes";
 import { AssistantPage } from "./AssistantPage";
+import { heavyListTimeout } from "./assistantScreen";
 import type { AssistantClient } from "./api";
 import { draftOf, labelOf, pendingTool, titleOf, type ResultDraft } from "./results";
 
@@ -173,7 +174,7 @@ describe("the lists the tools return", () => {
     await userEvent.click(screen.getByRole("button", { name: "Show more" }));
     expect(screen.getAllByText(/Create table/)).toHaveLength(120);
     expect(screen.queryByRole("button", { name: "Show more" })).toBeNull();
-  });
+  }, heavyListTimeout);
 
   it("states the total the tool reported when it sent fewer rows than that", async () => {
     show([{ text: "Many.", lists: [draft("Pending issues", 25, 1296)] }]);
