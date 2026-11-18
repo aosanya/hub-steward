@@ -3,6 +3,7 @@ import { Section } from "../../shared/ui/Section";
 import { recordRowIdKey } from "./liveRecordRows";
 import { RecordEditAct } from "./RecordEditAct";
 import { RecordRowExtra } from "./RecordRowExtra";
+import { ChatAboutRecord, type RecordChat } from "./sections/residents/ChatAboutRecord";
 
 type Item = Record<string, unknown>;
 
@@ -15,6 +16,7 @@ type Props = {
   owner?: { prompt: string; heading: string };
   licence?: boolean;
   editPath?: (id: string) => string;
+  chat?: RecordChat;
 };
 
 const quietPrompts = ["Status", "Neighbourhood"];
@@ -24,11 +26,12 @@ const answerOf = (row: Item, prompt: string) => {
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
 };
 
-export function RecordPage({ row, recordCode, titlePrompt, prompts, detailWord, owner, licence, editPath }: Props) {
+export function RecordPage({ row, recordCode, titlePrompt, prompts, detailWord, owner, licence, editPath, chat }: Props) {
   const quiet = quietPrompts.map((prompt) => answerOf(row, prompt)).filter(Boolean).join(" · ");
   const answered = prompts.filter((prompt) => answerOf(row, prompt) !== "");
   return (
     <div className="person-page">
+      {chat ? <ChatAboutRecord row={row} titlePrompt={titlePrompt} prompts={prompts} chat={chat} /> : null}
       <div className="title-block">
         <h1 className="person-name">{answerOf(row, titlePrompt)}</h1>
         {quiet ? <p className="quiet-line">{quiet}</p> : null}

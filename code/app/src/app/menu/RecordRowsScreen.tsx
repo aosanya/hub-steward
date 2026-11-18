@@ -6,6 +6,7 @@ import { MenuWindow } from "./MenuWindow";
 import { RecordPage } from "./RecordPage";
 import { loadLicenceMarks, type LicenceMark } from "./sections/residents/licensedRows";
 import { LicenceChip } from "./sections/residents/LicenceChip";
+import type { RecordChat } from "./sections/residents/ChatAboutRecord";
 
 type Props = {
   title: string;
@@ -18,13 +19,14 @@ type Props = {
   owner?: { prompt: string; heading: string };
   licence?: boolean;
   editPath?: (id: string) => string;
+  chat?: RecordChat;
 };
 
 const licenceMarkKey = "licenceMark";
 
 const licenceChip = (item: Record<string, unknown>) => (typeof item[licenceMarkKey] === "string" ? <LicenceChip mark={item[licenceMarkKey] as LicenceMark} /> : null);
 
-export function RecordRowsScreen({ title, recordCode, titlePrompt, detailWord, metaPrompts, prompts, empty, owner, licence, editPath }: Props) {
+export function RecordRowsScreen({ title, recordCode, titlePrompt, detailWord, metaPrompts, prompts, empty, owner, licence, editPath, chat }: Props) {
   const [search] = useSearchParams();
   const [count, setCount] = useState(0);
   const load = async () => {
@@ -49,7 +51,7 @@ export function RecordRowsScreen({ title, recordCode, titlePrompt, detailWord, m
         load: (id) => loadRecordRow(recordCode, id, prompts, owner?.prompt),
         fields: {},
         status: "",
-        extra: (row) => <RecordPage row={row} recordCode={recordCode} titlePrompt={titlePrompt} prompts={prompts} detailWord={detailWord} owner={owner} licence={licence} editPath={editPath} />,
+        extra: (row) => <RecordPage row={row} recordCode={recordCode} titlePrompt={titlePrompt} prompts={prompts} detailWord={detailWord} owner={owner} licence={licence} editPath={editPath} chat={chat} />,
       }}
     />
   );

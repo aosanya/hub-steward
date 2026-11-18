@@ -35,6 +35,7 @@ export function BusinessesScreen() {
       owner={{ prompt: "Owner", heading: "Owner" }}
       licence
       editPath={(id) => residentPaths.businessEdit.path({ id })}
+      chat={{ kind: "business", back: (id) => residentPaths.businesses.path({ row: id }) }}
       empty={{ words: "No businesses yet.", act: "Add business", to: routes.businessNew.path() }}
     />
   );

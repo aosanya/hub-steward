@@ -34,6 +34,7 @@ export function InformalTradersScreen() {
       metaPrompts={informalTradersMetaPrompts}
       owner={{ prompt: "Holder", heading: "Holder" }}
       editPath={(id) => residentPaths.informalTraderEdit.path({ id })}
+      chat={{ kind: "trader", back: (id) => residentPaths.informalTraders.path({ row: id }) }}
       empty={{ words: "No informal traders yet.", act: "Add trader", to: routes.informalTraderNew.path() }}
     />
   );
