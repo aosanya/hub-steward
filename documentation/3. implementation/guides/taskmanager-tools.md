@@ -76,6 +76,12 @@ The answer is `total_ready`, every Ready issue at the To do step that the filter
 | `sort` | `rank` (default), `priority`, `updated` or `created` | no |
 | `fields` | only those keys of each item, repeated or comma-separated, on all three tools; an unknown name is 400 naming it; `total`, `by_step` and paging do not change | yes |
 
+## taskmanager_task_list
+
+Inputs: the filters of the paragraph above, `limit` and `offset`. The caller is taken from the session.
+
+The answer is `items`, an object and not a bare array: the issues in the order `sort` gives. With nothing matching, `items` is `[]`. With `fields`, each item keeps only the named keys. There is no `total`; a worker that needs a count asks `taskmanager_task_pending`.
+
 ## taskmanager_task_next_ready_batch
 
 Inputs: `count` (1 to 10, default 3), `skipped_limit` (1 to 50, default 3; 0, a negative, above 50 or a non-number is 400), `backlog`, `tag` and `include_unfiled`. Read-only.
