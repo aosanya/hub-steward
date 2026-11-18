@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useMay } from "../../../../features/agency/useMay";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
+import { Button } from "../../../../shared/ui/Button";
 import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
+import { routes } from "../../../routes";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
 import { GroupPanel, loadGroup } from "./GroupScreen";
@@ -64,9 +67,11 @@ export function AllPeopleScreen() {
   const peopleTitle = `All ${word("People")}`;
   const [version, setVersion] = useState(0);
   const [search] = useSearchParams();
+  const mayAdd = useMay("member.add");
   return (
     <MenuWindow
       title={peopleTitle}
+      headEnd={mayAdd ? <Button to={routes.personNew.path()}>Add person</Button> : undefined}
       startAt={search.get("person") ?? undefined}
       listKey={version}
       detailKey={version}

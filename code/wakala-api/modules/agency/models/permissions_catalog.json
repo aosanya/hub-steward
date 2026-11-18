@@ -52,6 +52,7 @@
   {"code": "member.edit", "name": "Change a person's name and details", "locked": false, "actions": ["actor.actor.set_display_name", "actor.actor.set_attributes", "actor.actor.list_attribute_properties"]},
   {"code": "location.edit", "name": "Change a place", "locked": false, "module": "assetmanager", "actions": ["assetmanager.location.update"]},
   {"code": "member.read", "name": "See who is in the hub", "locked": false, "actions": ["actor.actor.list"]},
+  {"code": "member.add", "name": "Add a person who lives here", "locked": false, "actions": ["actor.actor.create"]},
   {"code": "board_item.reply", "name": "Reply to board items", "locked": false, "module": "forms", "actions": ["catalog.reply.send"]},
   {"code": "board_item.hide", "name": "Hide board items", "locked": false, "module": "forms", "actions": ["catalog.board_item.set_hidden", "catalog.raised_item.remove"]},
   {"code": "board.manage", "name": "Manage the board", "locked": false, "module": "forms", "actions": ["catalog.raised_item.group", "catalog.raised_item.ungroup", "catalog.board_item.set_outcome", "catalog.raised_item.reassign", "catalog.board_item.assign", "catalog.board_item.read"]},
