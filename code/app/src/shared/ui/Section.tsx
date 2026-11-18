@@ -4,9 +4,9 @@ import "./section.css";
 
 export const sectionLimit = 3;
 
-type Props = { word: string; rows: ReactNode[]; opens?: () => void; act?: ReactNode; empty?: { words: string; act?: ReactNode }; full?: boolean };
+type Props = { word: string; rows: ReactNode[]; opens?: () => void; act?: ReactNode; empty?: { words: string; act?: ReactNode }; foot?: ReactNode; full?: boolean };
 
-export function Section({ word, rows, opens, act, empty, full = false }: Props) {
+export function Section({ word, rows, opens, act, empty, foot, full = false }: Props) {
   const count = rows.length;
   if (count === 0 && !empty) return null;
   const more = !full && count > sectionLimit;
@@ -38,10 +38,11 @@ export function Section({ word, rows, opens, act, empty, full = false }: Props) 
       <Rows>
         {count === 0 && empty ? <div className="row empty-row"><span className="words">{empty.words}</span></div> : shown}
       </Rows>
-      {(count === 0 && empty?.act) || more ? (
+      {(count === 0 && empty?.act) || more || foot ? (
         <footer className="sec-foot">
           {more ? <button type="button" className="sec-foot-item" onClick={opens}>{`See all ${count}`}</button> : null}
           {count === 0 ? empty?.act : null}
+          {foot}
         </footer>
       ) : null}
     </section>

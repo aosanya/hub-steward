@@ -3,7 +3,7 @@ import { screen } from "../../../screen";
 export const residentPaths = {
   search: screen("/menu/residents/search"),
   people: screen("/menu/residents/people"),
-  personEdit: screen("/menu/residents/people/:id/edit/:what"),
+  personEdit: screen("/menu/residents/people/:id/edit"),
   personSection: screen("/menu/residents/people/:id/:section"),
   households: screen("/menu/residents/households"),
   registrations: screen("/menu/residents/registrations"),

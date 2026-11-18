@@ -12,7 +12,6 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { ChooseSheet } from "./ChooseSheet";
 import { SectionAct } from "./SectionAct";
 import { PersonActivity } from "./PersonActivity";
-import { type PersonEditKind } from "./PersonEdit";
 import { usePersonAttributes } from "./PersonAttributesEdit";
 import { PersonBills } from "./PersonBills";
 import { PersonHoldings } from "./PersonHoldings";
@@ -97,14 +96,8 @@ export function PersonDetails({ id, person }: { id: string; person: Item }) {
   const may = useMay("member.edit");
   const navigate = useNavigate();
   const { filled, item } = usePersonAttributes(id, person);
-  const to = (what: PersonEditKind) => () => navigate(residentPaths.personEdit.path({ id, what }));
-  const act = may ? (
-    <span className="sec-acts">
-      <button type="button" className="sec-act" onClick={to("name")}>Edit</button>
-      <button type="button" className="sec-act" onClick={to("attributes")}>Edit attributes</button>
-    </span>
-  ) : undefined;
-  return <Section word="Details" act={act} empty={{ words: "No details on file yet.", act }} rows={filled.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />)} />;
+  const edit = may ? <button type="button" className="sec-foot-item" onClick={() => navigate(residentPaths.personEdit.path({ id }))}>Edit</button> : undefined;
+  return <Section word="Personal detail" foot={edit} empty={{ words: "No details on file yet." }} rows={filled.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />)} />;
 }
 
 export function PersonHead({ person }: { person: Item }) {

@@ -21,7 +21,7 @@ const answer = async (name: string) => {
   if (name === "agency_get_my_roles") return { permissions: ["member.view", "member.edit", "group.manage", "application.file", "board.manage"] };
   if (name === "actor_list_actors") return { items: [{ id: "p1", display_name: personName, status: "active" }] };
   if (name === "actor_get_actor") return { id: "p1", display_name: personName, status: "active", attributes: { address: "Sample Lane 4" } };
-  if (name === "actor_list_attribute_properties") return { items: [{ name: "address", label: "Address", range: "text" }] };
+  if (name === "actor_list_attribute_properties") return { items: [{ name: "address", label: "Address", range: "text" }, { name: "phone", label: "Phone", range: "text" }, { name: "email", label: "Email", range: "text" }] };
   if (name === "actor_list_groups_for_actor") return { items: memberships.map((group_id) => ({ group_id })) };
   if (name === "actor_list_groups") return { items: groupNames.map((groupName, index) => ({ id: `g${index + 1}`, name: groupName })) };
   return { items: [] };
@@ -60,37 +60,58 @@ describe("the resident page is titled with the name and keeps its actions small"
     expect(within(page).queryByText("Name")).toBeNull();
   });
 
-  it("puts the resident's details in one Details section with small Edit and Edit attributes actions in its heading, no full-width buttons", async () => {
+  it("puts the resident's details in one Personal detail card with an Edit button in its footer, no Edit attributes, no heading action, no full-width buttons", async () => {
     const page = await openPerson(false);
     expect(page.querySelectorAll(".btn").length).toBe(0);
-    const details = page.querySelector("section.sec[aria-label='Details']") as HTMLElement;
+    const details = page.querySelector("section.sec[aria-label='Personal detail']") as HTMLElement;
     expect(within(details).getByText("Sample Lane 4")).toBeTruthy();
-    expect(within(details).getByRole("button", { name: "Edit" })).toBeTruthy();
-    expect(within(details).getByRole("button", { name: "Edit attributes" })).toBeTruthy();
+    expect(within(details.querySelector("footer.sec-foot") as HTMLElement).getByRole("button", { name: "Edit" })).toBeTruthy();
+    expect(within(details.querySelector(".sec-head") as HTMLElement).queryByRole("button")).toBeNull();
+    expect(within(details).queryByRole("button", { name: "Edit attributes" })).toBeNull();
     expect(within(details).queryByRole("textbox")).toBeNull();
   });
 
-  it("opens the edit screen from Edit and returns to the resident's page on Cancel", async () => {
+  it("opens one edit screen from Edit holding Name, Phone, Email and the other details, and returns to the resident's page on Cancel", async () => {
     const page = await openPerson(false);
-    const details = page.querySelector("section.sec[aria-label='Details']") as HTMLElement;
+    const details = page.querySelector("section.sec[aria-label='Personal detail']") as HTMLElement;
     await userEvent.click(within(details).getByRole("button", { name: "Edit" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Edit details" })).toBeTruthy();
     expect((await screen.findByLabelText("Name")) as HTMLInputElement).toHaveProperty("value", personName);
+    expect(await screen.findByLabelText("Phone")).toBeTruthy();
+    expect(screen.getByLabelText("Email")).toBeTruthy();
+    expect((screen.getByLabelText("Address") as HTMLInputElement).value).toBe("Sample Lane 4");
     expect(screen.getByRole("button", { name: "Save" })).toBeTruthy();
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(await screen.findByRole("heading", { level: 1, name: personName })).toBeTruthy();
   });
 
-  it("opens the attributes edit screen from Edit attributes and Save returns to the resident's page", async () => {
+  it("reads the resident's name on Back from the edit screen and has no second edit route", async () => {
+    setWide(false);
+    render(
+      <MemoryRouter initialEntries={[residentPaths.personEdit.path({ id: "p1" })]}>
+        <Routes>{routes()}</Routes>
+      </MemoryRouter>,
+    );
+    expect(await screen.findByLabelText("Name")).toBeTruthy();
+    expect(screen.getByText(new RegExp(`‹ ${personName}`))).toBeTruthy();
+    expect(residentPaths.personEdit.pattern).toMatch(/\/people\/:id\/edit$/);
+  });
+
+  it("saves the name and the other details together from the one screen and returns to the resident's page", async () => {
     const page = await openPerson(false);
-    const details = page.querySelector("section.sec[aria-label='Details']") as HTMLElement;
-    await userEvent.click(within(details).getByRole("button", { name: "Edit attributes" }));
-    expect(await screen.findByRole("heading", { level: 1, name: "Edit attributes" })).toBeTruthy();
+    const details = page.querySelector("section.sec[aria-label='Personal detail']") as HTMLElement;
+    await userEvent.click(within(details).getByRole("button", { name: "Edit" }));
+    const name = (await screen.findByLabelText("Name")) as HTMLInputElement;
+    await userEvent.clear(name);
+    await userEvent.type(name, "Sample Resident B");
     const address = (await screen.findByLabelText("Address")) as HTMLInputElement;
     await userEvent.clear(address);
     await userEvent.type(address, "Sample Lane 9");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
     expect(await screen.findByRole("heading", { level: 1, name: personName })).toBeTruthy();
+    const sent = (tool: string) => vi.mocked(mcp.callTool).mock.calls.find((call) => call[1] === tool)?.[2];
+    expect(sent("actor_set_actor_display_name")).toMatchObject({ actor_id: "p1", display_name: "Sample Resident B" });
+    expect(sent("actor_set_actor_attributes")).toMatchObject({ actor_id: "p1", attributes: { address: "Sample Lane 9" } });
   });
 });
 

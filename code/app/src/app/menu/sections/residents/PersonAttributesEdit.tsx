@@ -53,13 +53,7 @@ export function usePersonAttributes(id: string, person: Item) {
     await writeRegisterAnswers(residentRecordCode, id, merged);
     setAnswers(merged);
   };
-  return { fields, item, filled, build, alsoSave };
-}
-
-export function PersonAttributesEdit({ id, person, onSaved, onCancel }: { id: string; person: Item; onSaved: () => void; onCancel: () => void }) {
-  const { fields, item, build, alsoSave } = usePersonAttributes(id, person);
-  if (fields.length === 0) return null;
-  return <MenuEditForm item={item} id={id} idArg="actor_id" tool="actor_set_actor_attributes" permission="member.edit" bare openCount={1} fields={fields} build={build} alsoSave={alsoSave} onSaved={onSaved} onCancel={onCancel} />;
+  return { fields, item, filled, build, alsoSave, ready: view.state === "ready" };
 }
 
 export function PersonAttributesInline({ id, person, onSaved }: { id: string; person: Item; onSaved: () => void }) {
