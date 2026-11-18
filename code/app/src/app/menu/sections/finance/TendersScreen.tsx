@@ -1,23 +1,20 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useWord, type Wording } from "../../../../features/agency/useWord";
 import { Button } from "../../../../shared/ui/Button";
 import { Chip } from "../../../../shared/ui/Chip";
 import { Field } from "../../../../shared/ui/Field";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { SearchSelect } from "../../../../shared/ui/SearchSelect";
 import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
-import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
-import { dayWords, homeEmpty, listOf, moneyWords, quoteRow, tenderRow, text, tools, unitOf, type Item } from "./financeData";
-
-const manageCode = "accounting.manage";
+import { dayWords, homeEmpty, listOf, tenderRow, text, tools, unitOf, type Item } from "./financeData";
+import { financePaths } from "./paths";
+import { manageCode, TenderPage } from "./TenderPage";
 
 const rolesTool = "agency_get_my_roles";
-
-const lowestWords = "Lowest";
 
 const heldBy = (reply: unknown) => {
   const permissions = (reply as { permissions?: unknown } | null)?.permissions;
@@ -43,9 +40,6 @@ const instantOf = (day: string) => (day ? `${day}T00:00:00Z` : undefined);
 
 const withoutBlanks = (fields: Record<string, unknown>) => Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined && value !== ""));
 
-const quoteMeta = (quote: Item, unit: string) =>
-  [moneyWords(text(quote, "amount"), unit), text(quote, "valid_until") ? `valid until ${dayWords(text(quote, "valid_until"))}` : "", text(quote, "note")].filter(Boolean).join(" · ");
-
 const loadTender = async (id: string) => {
   const [reply, quotes] = await Promise.all([
     callTool("", tools.tenderRead, { tenderID: id }) as Promise<Item | null>,
@@ -67,80 +61,6 @@ const loadTender = async (id: string) => {
     quotes,
   };
 };
-
-const tenderFields: EditField[] = [
-  { label: "Title", key: "title", required: true },
-  { label: "Description", key: "description" },
-  { label: "Closing day", key: "closes_at", kind: "date" },
-];
-
-const quoteFields: EditField[] = [
-  { label: "Supplier", key: "supplier", required: true },
-  { label: "Amount", key: "amount", kind: "number", required: true },
-  { label: "Note", key: "note" },
-  { label: "Valid until", key: "valid_until", kind: "date" },
-];
-
-const readQuote = async (tenderID: string, quote: Item) =>
-  (await listOf(tools.quoteList, { tenderID })).find((found) => text(found, "id") === text(quote, "id")) ?? quote;
-
-function QuoteRows({ quotes, tenderID, unit, onEdited }: { quotes: Item[]; tenderID: string; unit: string; onEdited: () => void }) {
-  const lowest = Math.min(...quotes.map((quote) => Number(quote.amount)));
-  return (
-    <>
-      {quotes.map((quote) => (
-        <div key={text(quote, "id")}>
-          <Rows>
-            <ListRow
-              title={quoteRow(quote).supplier}
-              meta={quoteMeta(quote, unit)}
-              end={quotes.length > 1 && Number(quote.amount) === lowest ? <Chip tone="success">{lowestWords}</Chip> : undefined}
-            />
-          </Rows>
-          <MenuEditForm
-            item={quote}
-            id={text(quote, "id")}
-            idArg="quoteID"
-            tool={tools.quoteUpdate}
-            permission={manageCode}
-            fields={quoteFields}
-            keep={["supplier", "amount", "note", "valid_until"]}
-            readAgain={() => readQuote(tenderID, quote)}
-            onSaved={onEdited}
-          />
-        </div>
-      ))}
-    </>
-  );
-}
-
-function AddQuote({ tenderID, onAdded }: { tenderID: string; onAdded: () => void }) {
-  const [open, setOpen] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const [supplier, setSupplier] = useState("");
-  const [amount, setAmount] = useState("");
-  const [note, setNote] = useState("");
-  const [validUntil, setValidUntil] = useState("");
-  const save = async () => {
-    try {
-      await callTool("", tools.quoteCreate, { tenderID, supplier: supplier.trim(), amount: Number(amount), ...withoutBlanks({ note: note.trim(), valid_until: instantOf(validUntil) }) });
-      onAdded();
-    } catch {
-      setFailed(true);
-    }
-  };
-  if (!open) return <Button kind="primary" onClick={() => setOpen(true)}>Add quote</Button>;
-  return (
-    <>
-      <Field label="Supplier" value={supplier} onChange={(event) => setSupplier(event.target.value)} />
-      <Field label="Amount" inputMode="numeric" value={amount} onChange={(event) => setAmount(event.target.value)} />
-      <Field label="Note" value={note} onChange={(event) => setNote(event.target.value)} />
-      <Field label="Valid until" type="date" value={validUntil} onChange={(event) => setValidUntil(event.target.value)} />
-      <Button kind="primary" disabled={supplier.trim() === "" || !(Number(amount) > 0)} onClick={save}>Save quote</Button>
-      {failed ? <LoadFailed words={actionFailedWords} /> : null}
-    </>
-  );
-}
 
 function OpenTender({ onOpened, onCancel, word }: { onOpened: () => void; onCancel: () => void; word: Wording }) {
   const [lines, setLines] = useState<{ value: string; label: string }[]>([]);
@@ -179,6 +99,7 @@ function OpenTender({ onOpened, onCancel, word }: { onOpened: () => void; onCanc
 export function TendersScreen() {
   const word = useWord("accounting");
   const unit = unitOf(word);
+  const [search] = useSearchParams();
   const can = useCanManage();
   const [version, setVersion] = useState(0);
   const [opening, setOpening] = useState(false);
@@ -203,6 +124,9 @@ export function TendersScreen() {
   return (
     <MenuWindow
       title={word("Procurement")}
+      withTabs
+      bandless
+      startAt={search.get("tender") ?? undefined}
       listKey={`${version}${unit}`}
       detailKey={`${version}${unit}`}
       above={opening ? form : can && listed > 0 ? openButton : null}
@@ -217,25 +141,9 @@ export function TendersScreen() {
       detail={{
         tool: tools.tenderRead,
         load: loadTender,
-        fields: { Tender: "title", Description: "description", "Budget line": "budgetLine", Closes: "closes" },
-        status: "status",
-        extra: (tender) => (
-          <>
-            <MenuEditForm
-              item={tender}
-              id={text(tender, "id")}
-              idArg="tenderID"
-              tool={tools.tenderUpdate}
-              permission={manageCode}
-              fields={tenderFields}
-              keep={["title", "description", "closes_at"]}
-              readAgain={() => loadTender(text(tender, "id"))}
-              onSaved={refresh}
-            />
-            {Array.isArray(tender.quotes) && tender.quotes.length > 0 ? <QuoteRows quotes={tender.quotes as Item[]} tenderID={text(tender, "id")} unit={unit} onEdited={refresh} /> : null}
-            {can ? <AddQuote tenderID={text(tender, "id")} onAdded={refresh} /> : null}
-          </>
-        ),
+        fields: {},
+        status: "",
+        extra: (tender) => <TenderPage tender={tender} unit={unit} back={financePaths.procurement.path()} reload={() => loadTender(text(tender, "id"))} onSaved={refresh} />,
       }}
     />
   );
