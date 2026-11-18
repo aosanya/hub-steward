@@ -20,6 +20,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | What changed on the board after a cursor | `taskmanager_task_changes_since` | `GET /changes-since` |
 | Patch or move up to 50 issues in one call | `taskmanager_task_batch` | `POST /batch` |
 | Create an issue with its todos and their order in one call | `taskmanager_task_create_with_todos` | `POST /create-with-todos` |
+| Which backlogs the caller can see, with their steps and counts, or just one of them | `taskmanager_backlog_list` | `GET /backlogs` (`?backlog=` for one) |
 | Cap how many issues a step may hold | `taskmanager_backlog_step_wip_limit` | `PUT /backlogs/{backlogID}/steps/{stepID}/wip-limit` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
 | Everything a worker reads before starting an issue, in one call | `taskmanager_task_brief` | `GET /tasks/{taskID}/brief` |
@@ -45,6 +46,12 @@ Inputs: `q` (required), `backlog` (id or name), `step` (id or name), `tag` (repe
 The answer is `total`, counted over everything that matches, and `items`: the same compact items as `taskmanager_task_pending` (id, code, title, state, backlog, step, priority, tags, rank, blocked, waiting, sinbin), without the description. Only issues of backlogs the caller may see are matched, as for `taskmanager_task_pending`. A blank `q` is refused with 400 and a message that names `q`; an unknown backlog or step is also a 400.
 
 Open issues only, unless `include_closed` is true. The in-tray sorter and the backlog workers use one find call for a duplicate check; a words search over the description is what finds a duplicate that names the same thing in other words.
+
+## taskmanager_backlog_list
+
+Inputs: `backlog` (optional, an id or a name; case does not matter). The caller is taken from the session.
+
+The answer is `items`: every backlog the caller can see, each with its steps and counts. With `backlog` the list holds only that backlog, so a worker that needs one backlog's step ids does not receive them all; an unknown backlog, or one the caller cannot see, gives `{"items": []}` and not an error. Without `backlog` the list is unchanged.
 
 ## taskmanager_task_next_ready
 
