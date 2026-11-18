@@ -20,6 +20,7 @@ const rows = [
 
 let may: boolean;
 let landed = "";
+let served: Record<string, unknown>[] = rows;
 
 const Where = () => {
   landed = useLocation().pathname + useLocation().search;
@@ -38,10 +39,11 @@ const show = () =>
   );
 
 beforeEach(() => {
+  served = rows;
   openAgency("town");
   vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => {
     if (tool === "agency_list_live_records") return { items: records.map((record) => ({ ...record, can_add_rows: may })) };
-    if (tool === "agency_list_live_record_rows") return { items: rows };
+    if (tool === "agency_list_live_record_rows") return { items: served };
     return {};
   });
 });
@@ -121,5 +123,22 @@ describe("MaintenanceHistory", () => {
 
     expect(await screen.findByText("No maintenance recorded yet.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Add maintenance" })).toBeInTheDocument();
+  });
+
+  it("puts the row saved last first when several rows share the same day", async () => {
+    may = true;
+    served = [
+      { ...rowOf("s1", "Road roller A-12", "2026-11-10", "Painted the frame"), created_at: "2026-11-18T10:00:01Z" },
+      { ...rowOf("s2", "Road roller A-12", "2026-11-10", "Painted the frame and cleaned it"), created_at: "2026-11-18T10:00:09Z" },
+      { ...rowOf("s3", "Road roller A-12", "2026-11-10", "Painted the wheels"), created_at: "2026-11-18T10:00:05Z" },
+      { ...rowOf("s4", "Road roller A-12", "2026-11-10", "Painted the roof"), created_at: "2026-11-18T10:00:03Z" },
+    ];
+    show();
+
+    const card = await screen.findByRole("region", { name: "Maintenance history" });
+    expect(await within(card).findByText("Painted the frame and cleaned it")).toBeInTheDocument();
+    expect(within(card).getByText("Painted the wheels")).toBeInTheDocument();
+    expect(within(card).getByText("Painted the roof")).toBeInTheDocument();
+    expect(within(card).queryByText("Painted the frame")).toBeNull();
   });
 });

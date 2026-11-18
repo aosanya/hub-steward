@@ -20,7 +20,7 @@ export const maintenanceFields: RecordFormField[] = [
   { prompt: "Notes", required: false },
 ];
 
-export type Maintenance = { id: string; asset: string; done: string; kind: string; what: string; by: string };
+export type Maintenance = { id: string; asset: string; done: string; kind: string; what: string; by: string; saved: string };
 
 const answerOf = (row: Raw, prompt: string) => {
   const value = (row.answers as Raw | undefined)?.[prompt];
@@ -34,9 +34,10 @@ const maintenanceOf = (row: Raw): Maintenance => ({
   kind: answerOf(row, "Kind"),
   what: answerOf(row, "What was done"),
   by: answerOf(row, "Done by"),
+  saved: typeof row.created_at === "string" ? row.created_at : "",
 });
 
-const newestFirst = (one: Maintenance, two: Maintenance) => two.done.localeCompare(one.done);
+const newestFirst = (one: Maintenance, two: Maintenance) => two.done.localeCompare(one.done) || two.saved.localeCompare(one.saved);
 
 export { assetLabelOf } from "../../assetChoices";
 
