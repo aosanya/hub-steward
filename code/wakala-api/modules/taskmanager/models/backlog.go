@@ -286,3 +286,22 @@ func StepNamesStatus(step BacklogStep, status TaskStatus) bool {
 	}
 	return false
 }
+
+func ImpliedStatuses(step BacklogStep, current TaskStatus) []TaskStatus {
+	switch step.ID {
+	case "done", "archive":
+		return []TaskStatus{TaskStatusCompleted}
+	case "cancelled":
+		return []TaskStatus{TaskStatusCancelled}
+	}
+	if current != TaskStatusCompleted && current != TaskStatusCancelled {
+		return nil
+	}
+	switch step.ID {
+	case "to-do", "in-coming":
+		return []TaskStatus{TaskStatusPending}
+	case "doing", "in-progress":
+		return []TaskStatus{TaskStatusInProgress}
+	}
+	return nil
+}
