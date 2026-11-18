@@ -11,8 +11,23 @@ import (
 )
 
 type auditedWrite struct {
-	action  string
-	subject func(args, result map[string]any) string
+	action   string
+	actionOf func(args map[string]any) string
+	subject  func(args, result map[string]any) string
+}
+
+func (w auditedWrite) actionFor(args map[string]any) string {
+	if w.actionOf != nil {
+		return w.actionOf(args)
+	}
+	return w.action
+}
+
+func rowAction(args map[string]any) string {
+	if fieldOf(args, "replaces") != "" {
+		return "corrected a row"
+	}
+	return "added a row"
 }
 
 func fieldOf(source map[string]any, key string) string {
@@ -33,6 +48,10 @@ func auditedWrites() map[string]auditedWrite {
 		"forms_form_publish": {
 			action:  "published a form",
 			subject: func(args, result map[string]any) string { return fieldOf(args, "form_id") },
+		},
+		addLiveRecordRowTool: {
+			actionOf: rowAction,
+			subject:  func(args, result map[string]any) string { return fieldOf(result, "id") },
 		},
 	}
 }
@@ -59,7 +78,7 @@ func (d *Deps) recordAuditedWrites(next mcp.MethodHandler) mcp.MethodHandler {
 			return result, err
 		}
 		subject := write.subject(args, structuredObject(answer.StructuredContent))
-		if _, recordErr := d.Audit.Record(ctx, instanceID, accounts.IDFromContext(ctx), write.action, subject); recordErr != nil {
+		if _, recordErr := d.Audit.Record(ctx, instanceID, accounts.IDFromContext(ctx), write.actionFor(args), subject); recordErr != nil {
 			slog.Warn("an audited write left no audit entry", "tool", call.Params.Name, "instance", instanceID, "err", recordErr)
 		}
 		return result, err
