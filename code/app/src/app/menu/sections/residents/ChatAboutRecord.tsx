@@ -3,7 +3,7 @@ import { useChatAboutSubject } from "./SubjectChat";
 
 type Item = Record<string, unknown>;
 
-export type RecordChat = { kind: "business" | "trader"; back: (id: string) => string };
+export type RecordChat = { kind: "business" | "trader" | "maintenance"; back: (id: string) => string };
 
 const words = (item: Item, key: string) => {
   const value = item[key];

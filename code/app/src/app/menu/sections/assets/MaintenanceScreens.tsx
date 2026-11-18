@@ -6,6 +6,7 @@ import { Shell } from "../../../Shell";
 import { FactsCard } from "../../FactsCard";
 import { loadRecordRow, recordRowIdKey } from "../../liveRecordRows";
 import { PageFrame } from "../../PageFrame";
+import { ChatAboutRecord } from "../residents/ChatAboutRecord";
 import { RecordEditAct } from "../../RecordEditAct";
 import { RecordEditScreen } from "../../RecordEditScreen";
 import { RecordRowForm } from "../../RecordRowForm";
@@ -37,6 +38,7 @@ export function MaintenanceRecordScreen() {
   return (
     <Shell title="Maintenance" titleUnder backLabel="Assets & Works" onBack={() => navigate(assetPaths.routes.path())}>
       <PageFrame title={answerOf(row, "What was done")} line={answerOf(row, "Date done")}>
+        <ChatAboutRecord row={row} titlePrompt="What was done" prompts={prompts} chat={{ kind: "maintenance", back: (id) => maintenancePaths.record.path({ rowId: id }) }} />
         <FactsCard word={recordPageWord} facts={facts} foot={edit} />
         <FactsCard word={workOrderPrompt} facts={[[workOrderPrompt, answerOf(row, workOrderPrompt)]]} />
       </PageFrame>

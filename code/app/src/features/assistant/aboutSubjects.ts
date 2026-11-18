@@ -446,7 +446,16 @@ const wish: Subject = {
   empty: "its details, who raised it and who said Me too",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish };
+const maintenance: Subject = {
+  reads: {},
+  steps: {},
+  choices: ["What was done", "When it is next due", "What it cost"],
+  reading: "Everything on its page is given to you in this conversation, so answer what was done, when it is next due and what it cost without a tool.",
+  overview: "answer from what is on its page with what was done and when, who did it, what it cost and when it is next due",
+  empty: "what was done, when it is next due and what it cost",
+};
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance };
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 
@@ -502,7 +511,7 @@ const invitation = (about: ChatAbout) => `What would you like to see about ${abo
 
 const factsOf = (about: ChatAbout) => {
   if (about.kind === "registration") return ` The request: ${about.name} asked to join ${about.extra?.group ?? "a group"}${about.extra?.asked ? ` on ${about.extra.asked}` : ""}.`;
-  if (about.kind === "business" || about.kind === "trader" || about.kind === "integration" || about.kind === "ai-agent" || about.kind === "issue") return about.extra?.details ? ` What is on its page: ${about.extra.details}.` : "";
+  if (about.kind === "business" || about.kind === "trader" || about.kind === "integration" || about.kind === "ai-agent" || about.kind === "issue" || about.kind === "maintenance") return about.extra?.details ? ` What is on its page: ${about.extra.details}.` : "";
   return "";
 };
 
