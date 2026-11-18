@@ -43,7 +43,7 @@ export function HoldingNewScreen() {
   const ownGiven = () => filledOnly(Object.fromEntries(asked.filter((detail) => detail.own).map((detail) => [detail.prompt, valueOf(detail.prompt)])));
   const body = () => ({
     holder: holder.trim(),
-    ...(valueOf("Property") ? { place_id: valueOf("Property") } : {}),
+    place_id: valueOf("Property"),
     ...(valueOf("Kind") ? { kind: valueOf("Kind") } : {}),
     ...(valueOf("Since") ? { since: instantOf(valueOf("Since")) } : {}),
   });

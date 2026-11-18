@@ -14,7 +14,7 @@ export const residentFields: RecordFormField[] = [
 export const holdingRecordCode = "HOLDING";
 export const holdingTitlePrompt = "Property";
 export const holdingFields: RecordFormField[] = [
-  { prompt: "Property", required: false },
+  { prompt: "Property", required: true, fixed: true },
   { prompt: "Kind", required: false },
   { prompt: "Since", required: false },
 ];
@@ -43,6 +43,7 @@ export const writeRegisterDetails = async (recordCode: string, details: Register
 
 export const detailsOf = (defaults: RecordFormField[], chosen: RegisterDetail[]): RegisterDetail[] => [
   ...defaults.map((field) => {
+    if (field.fixed) return { prompt: field.prompt, on: true, required: field.required, own: false };
     const kept = chosen.find((detail) => !detail.own && detail.prompt === field.prompt);
     return { prompt: field.prompt, on: kept?.on ?? true, required: kept ? kept.on && kept.required : field.required, own: false };
   }),

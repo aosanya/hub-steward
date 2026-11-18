@@ -14,7 +14,7 @@ import { personNameOf } from "./sections/residents/personName";
 
 const addLiveRecordRowTool = "agency_add_live_record_row";
 
-export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean };
+export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean; fixed?: boolean };
 
 type Props = {
   title: string;

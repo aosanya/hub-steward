@@ -55,6 +55,11 @@ const show = (path: string) =>
     </MemoryRouter>,
   );
 
+const chooseProperty = async (user: ReturnType<typeof userEvent.setup>, name = "Malom utca 4") => {
+  await user.click(await screen.findByRole("button", { name: /Property/ }));
+  await user.click(screen.getByRole("option", { name }));
+};
+
 const createCalls = () => called.mock.calls.filter(([, tool]) => tool === "digitaltwin_tenure_create");
 
 beforeEach(() => {
@@ -123,6 +128,7 @@ describe("the Add holding form on Ownership & Tenure", () => {
     show(placePaths.holdingNew.path());
 
     await user.type(await screen.findByLabelText("Holder"), "Varga Mária");
+    await chooseProperty(user);
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(landed).toBe(placePaths.ownership.path({ holding: "t9" })));
@@ -151,15 +157,46 @@ describe("the Add holding form on Ownership & Tenure", () => {
     expect(createCalls()).toHaveLength(0);
   });
 
+  it("asks the property even when settings had switched the Property detail off", async () => {
+    settings = settingsOf(holdingChoice({ prompt: "Property", on: false, required: false, own: false }));
+    show(placePaths.holdingNew.path());
+
+    await screen.findByLabelText("Holder");
+
+    expect(await screen.findByRole("button", { name: /Property/ })).toBeInTheDocument();
+    expect(screen.queryByText("Property (optional)")).toBeNull();
+  });
+
+  it("keeps Save disabled until a property is chosen and then sends its place_id", async () => {
+    const user = userEvent.setup();
+    settings = settingsOf(holdingChoice({ prompt: "Property", on: false, required: false, own: false }));
+    show(placePaths.holdingNew.path());
+
+    await user.type(await screen.findByLabelText("Holder"), "Varga Mária");
+    await screen.findByRole("button", { name: /Property/ });
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    expect(createCalls()).toHaveLength(0);
+
+    await chooseProperty(user, "Kossuth utca 7");
+    expect(screen.getByRole("button", { name: "Save" })).toBeEnabled();
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(createCalls()).toHaveLength(1));
+    expect(createCalls()[0][2]).toEqual({ holder: "Varga Mária", place_id: "n1" });
+  });
+
   it("shows the hub's refusal and keeps what was typed", async () => {
     const user = userEvent.setup();
     called.mockImplementation(async (_hub, tool, args) => {
       if (tool === "digitaltwin_tenure_create") throw new mcp.McpError("digitaltwin_tenure_create: place not found");
+      if (tool === "digitaltwin_node_list") return { items: [{ id: "n2", name: "Malom utca 4" }] };
       return settingReply(settings, tool, args) ?? { items: [] };
     });
     show(placePaths.holdingNew.path());
 
     await user.type(await screen.findByLabelText("Holder"), "Varga Mária");
+    await chooseProperty(user);
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("place not found");

@@ -49,10 +49,16 @@ describe("the default details of a resident", () => {
 describe("the default details of a holding", () => {
   it("are the tenure details shown today: Property, Kind and Since", () => {
     expect(named.holdingFields).toEqual([
-      { prompt: "Property", required: false },
+      { prompt: "Property", required: true, fixed: true },
       { prompt: "Kind", required: false },
       { prompt: "Since", required: false },
     ]);
+  });
+
+  it("keep Property on and required whatever a kept choice says", () => {
+    const details = registerDetails.detailsOf(named.holdingFields, [{ prompt: "Property", on: false, required: false, own: false }]);
+
+    expect(details[0]).toEqual({ prompt: "Property", on: true, required: true, own: false });
   });
 
   it("are kept under register_details:HOLDING with the owner's own detail after them", async () => {
@@ -62,7 +68,7 @@ describe("the default details of a holding", () => {
     await registerDetails.writeRegisterDetails("HOLDING", [...details, { prompt: "Water meter number", on: true, required: false, own: true }]);
 
     expect(JSON.parse(settings["register_details:HOLDING"]).details).toEqual([
-      { prompt: "Property", on: true, required: false, own: false },
+      { prompt: "Property", on: true, required: true, own: false },
       { prompt: "Kind", on: true, required: false, own: false },
       { prompt: "Since", on: true, required: false, own: false },
       { prompt: "Water meter number", on: true, required: false, own: true },

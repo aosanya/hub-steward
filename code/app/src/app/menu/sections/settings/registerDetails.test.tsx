@@ -130,3 +130,31 @@ describe("the Details of a record screen for residents and holdings", () => {
     expect(Object.keys(stored)).toEqual(["register_details:HOLDING"]);
   });
 });
+
+describe("the Property detail of a holding", () => {
+  it("shows as on and required and cannot be switched", async () => {
+    const user = userEvent.setup();
+    open();
+
+    await user.click(await screen.findByRole("radio", { name: "Holdings" }));
+
+    const on = await screen.findByRole("checkbox", { name: "Property on" });
+    const required = screen.getByRole("checkbox", { name: "Property required" });
+    expect(on).toBeChecked();
+    expect(on).toBeDisabled();
+    expect(required).toBeChecked();
+    expect(required).toBeDisabled();
+    expect(screen.getByRole("checkbox", { name: "Kind on" })).toBeEnabled();
+  });
+
+  it("shows as on even when an earlier setting had switched it off", async () => {
+    const user = userEvent.setup();
+    stored["register_details:HOLDING"] = JSON.stringify({ details: [{ prompt: "Property", on: false, required: false, own: false }] });
+    open();
+
+    await user.click(await screen.findByRole("radio", { name: "Holdings" }));
+
+    expect(await screen.findByRole("checkbox", { name: "Property on" })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Property required" })).toBeChecked();
+  });
+});
