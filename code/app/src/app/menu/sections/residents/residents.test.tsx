@@ -287,10 +287,10 @@ describe("Communications", () => {
   it("draws a row for each thread with the time of its last message", async () => {
     open(screens[4].at);
 
-    expect(await screen.findByText("Garden Helpers")).toBeInTheDocument();
-    expect(screen.getByText("Street Party Plans")).toBeInTheDocument();
-    expect(screen.getByText(dayWords(10))).toBeInTheDocument();
-    expect(screen.getByText(dayWords(12))).toBeInTheDocument();
+    expect((await screen.findAllByText("Garden Helpers")).length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Street Party Plans").length).toBeGreaterThan(0);
+    expect(screen.getAllByText(dayWords(10)).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(dayWords(12)).length).toBeGreaterThan(0);
     groups.forEach((group) => expect(called).toHaveBeenCalledWith("", "comm_chat_thread_list", { structure_id: group.id }));
     expect(toolsCalled()).toEqual(new Set(["actor_list_groups", "comm_chat_thread_list"]));
   });
@@ -443,12 +443,12 @@ const rowWindows = [
   {
     title: "Communications",
     screenIndex: 4,
-    chosen: "Garden Helpers",
-    other: "Street Party Plans",
+    chosen: "Street Party Plans",
+    other: "Garden Helpers",
     detailTool: "comm_chat_thread_list",
     detailArgs: { structure_id: "g3" },
-    shown: [dayWords(10)],
-    tabBar: false,
+    shown: [dayWords(12)],
+    tabBar: true,
   },
 ];
 

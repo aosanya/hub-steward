@@ -46,8 +46,8 @@ describe("the rows that open a record in its own group", () => {
 
   it("gives each conversation the id of the group it belongs to", async () => {
     expect(await conversationRows()).toEqual([
-      { id: "t1", label: "Garden Helpers", last: dayWords("2026-03-10T12:00:00Z"), group_id: "g3" },
-      { id: "t2", label: "Street Party Plans", last: dayWords("2026-03-12T12:00:00Z"), group_id: "g3" },
+      { id: "t2", name: "", label: "Street Party Plans", line: "Street Party Plans", at: "2026-03-12T12:00:00Z", last: dayWords("2026-03-12T12:00:00Z"), group_id: "g3" },
+      { id: "t1", name: "", label: "Garden Helpers", line: "Garden Helpers", at: "2026-03-10T12:00:00Z", last: dayWords("2026-03-10T12:00:00Z"), group_id: "g3" },
     ]);
   });
 });

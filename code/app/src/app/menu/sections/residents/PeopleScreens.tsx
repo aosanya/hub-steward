@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useMay } from "../../../../features/agency/useMay";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
+import { lastAtOf } from "../../../../features/chat/api";
 import { Button } from "../../../../shared/ui/Button";
 import { Chip } from "../../../../shared/ui/Chip";
 import { dayWords } from "../../../../shared/ui/days";
@@ -15,6 +16,7 @@ import { populationFigure } from "../../populationFigure";
 import { ChatAboutGroup } from "./ChatAboutGroup";
 import { ChatAboutRegistration } from "./ChatAboutRegistration";
 import { ChatAboutResident } from "./ChatAboutResident";
+import { GroupConversation } from "./GroupConversation";
 import { GroupPanel, loadGroup } from "./GroupScreen";
 import { personNameOf } from "./personName";
 import { RegistrationRequest } from "./RegistrationRequest";
@@ -68,13 +70,27 @@ export const registrationRows = async () => {
     }));
 };
 
-export const conversationRows = async () =>
-  (await perGroup("comm_chat_thread_list", "structure_id")).map((thread) => ({
-    id: text(thread, "id"),
-    label: text(thread, "label"),
-    last: dayWords(text(thread, "last_message_at")),
-    group_id: text(thread, "group_id"),
-  }));
+const defaultThreadLabel = "General";
+
+export const conversationRows = async () => {
+  const groups = await listOf("actor_list_groups");
+  const lists = await Promise.all(
+    groups.map(async (group) => (await listOf("comm_chat_thread_list", { structure_id: text(group, "id") })).map((thread) => ({ thread, group }))),
+  );
+  return lists
+    .flat()
+    .map(({ thread, group }) => ({
+      id: text(thread, "id"),
+      name: text(group, "name"),
+      label: text(thread, "label"),
+      line: text(thread, "label") === defaultThreadLabel ? "" : text(thread, "label"),
+      at: lastAtOf(thread),
+      last: dayWords(lastAtOf(thread)),
+      group_id: text(group, "id"),
+    }))
+    .filter((row) => row.at !== "")
+    .sort((a, b) => b.at.localeCompare(a.at));
+};
 
 export const homeEmpty = (words: string) => ({ words, act: "Home", to: agencyHomePath(openAgencyId()) });
 
@@ -203,8 +219,10 @@ export function CommunicationsScreen() {
   return (
     <MenuWindow
       title={title}
-      list={{ title, tool: "comm_chat_thread_list", fields: { title: "label", meta: "last" }, empty: homeEmpty(noneYet), load: conversationRows }}
-      detail={{ tool: "comm_chat_thread_list", load: rowById(conversationRows), fields: { Name: "label", "Last message": "last" }, status: "" }}
+      withTabs
+      bandless
+      list={{ title, tool: "comm_chat_thread_list", fields: { title: "name", meta: "line" }, empty: homeEmpty(noneYet), load: conversationRows, end: (item) => <Chip>{text(item, "last")}</Chip> }}
+      detail={{ tool: "comm_chat_thread_list", load: rowById(conversationRows), fields: {}, status: "", extra: (row) => <GroupConversation row={row} /> }}
     />
   );
 }
