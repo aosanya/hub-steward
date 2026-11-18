@@ -4,7 +4,7 @@ import "./actionsMenu.css";
 
 export type MenuAction = { label: string; onSelect?: () => void; to?: string; current?: boolean; danger?: boolean };
 
-export function ActionsMenu({ actions, label = "Actions", icon }: { actions: MenuAction[]; label?: string; icon?: string }) {
+export function ActionsMenu({ actions, label = "Actions", icon, align }: { actions: MenuAction[]; label?: string; icon?: string; align?: "start" }) {
   const [open, setOpen] = useState(false);
   const frame = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -21,12 +21,12 @@ export function ActionsMenu({ actions, label = "Actions", icon }: { actions: Men
   if (actions.length === 0) return null;
   return (
     <div className="actions" ref={frame}>
-      <button type="button" className={icon ? "actions-btn icon" : "actions-btn"} aria-label={icon ? label : undefined} aria-expanded={open} onClick={() => setOpen(!open)}>
+      <button type="button" className={icon ? "actions-btn icon" : "actions-btn"} aria-label={icon ? label : undefined} aria-haspopup="true" aria-expanded={open} onClick={() => setOpen(!open)}>
         {icon ?? label}
         {icon ? null : <span aria-hidden="true">▾</span>}
       </button>
       {open ? (
-        <div className="actions-list">
+        <div className={align === "start" ? "actions-list start" : "actions-list"}>
           {actions.map((action) =>
             action.to !== undefined ? (
               <Link key={action.label} to={action.to} onClick={() => setOpen(false)}>

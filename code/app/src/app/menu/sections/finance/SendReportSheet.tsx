@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useMay } from "../../../../features/agency/useMay";
 import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
@@ -49,7 +48,7 @@ export function SendReportSheet({ report, onClose }: Props) {
     }
   };
   return (
-    <Sheet title="Send to a person" onClose={onClose}>
+    <Sheet title="Share" onClose={onClose}>
       {sentTo ? (
         <>
           <p>Sent to {sentTo}</p>
@@ -63,17 +62,5 @@ export function SendReportSheet({ report, onClose }: Props) {
         </>
       )}
     </Sheet>
-  );
-}
-
-export function SendReportButton({ report }: { report: Item }) {
-  const may = useMay("notification.raise");
-  const [sending, setSending] = useState(false);
-  if (!may || text(report, "id") === "") return null;
-  return (
-    <>
-      <button type="button" className="sec-act" onClick={() => setSending(true)}>Send to a person</button>
-      {sending ? <SendReportSheet report={report} onClose={() => setSending(false)} /> : null}
-    </>
   );
 }

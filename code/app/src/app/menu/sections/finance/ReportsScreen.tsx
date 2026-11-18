@@ -7,7 +7,6 @@ import { MenuDetail } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
 import { financePaths } from "./paths";
 import { ReportPage, type ReportView } from "./ReportPage";
-import { SendReportButton } from "./SendReportSheet";
 import { figureOf, noReportWords, periodRefusal } from "./reportPeriod";
 import { budgetRow, dayStart, departmentRow, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, reportRow, text, tools, unitOf, type Item } from "./financeData";
 
@@ -46,7 +45,7 @@ const loadChosen = async (id: string, unit: string) => {
 const reportBack = financePaths.reports.path();
 
 const reportPage = (report: unknown) => (
-  <ReportPage report={report as ReportView} heading="Financial Reports" back={reportBack} foot={<SendReportButton report={report as ReportView} />} />
+  <ReportPage report={report as ReportView} heading="Financial Reports" back={reportBack} />
 );
 
 function ChoosePeriod({ unit }: { unit: string }) {

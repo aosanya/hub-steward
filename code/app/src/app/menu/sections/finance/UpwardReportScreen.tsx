@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMay } from "../../../../features/agency/useMay";
 import { useWord } from "../../../../features/agency/useWord";
+import { ActionsMenu } from "../../../../shared/ui/ActionsMenu";
 import { Field } from "../../../../shared/ui/Field";
 import { Section } from "../../../../shared/ui/Section";
 import { Segmented } from "../../../../shared/ui/Segmented";
@@ -66,7 +67,7 @@ const recordFacts: [string, string][] = [["Kind", "kind"], ["Period", "period"],
 
 const recordOf = (reply: unknown) => ((reply as { item?: Item } | null)?.item ?? reply) as Item;
 
-function ReportForm({ onSent, unit }: { onSent: () => void; unit: string }) {
+function useReportForm(onSent: () => void) {
   const manage = useMay(manageRole);
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -97,6 +98,13 @@ function ReportForm({ onSent, unit }: { onSent: () => void; unit: string }) {
     setSending(false);
   };
   const chatId = reading || (record ? `${text(record, "period_start")}~${text(record, "period_end")}` : "");
+  return { manage, start, setStart, end, setEnd, kind, setKind, refusal, reading, record, sending, show, send, chatId };
+}
+
+type ReportFormState = ReturnType<typeof useReportForm>;
+
+function ReportForm({ form, unit }: { form: ReportFormState; unit: string }) {
+  const { start, setStart, end, setEnd, kind, setKind, refusal, reading, record, show, chatId } = form;
   return (
     <>
       <Section
@@ -110,7 +118,6 @@ function ReportForm({ onSent, unit }: { onSent: () => void; unit: string }) {
         foot={
           <>
             <button type="button" className="sec-foot-item" onClick={show}>Show figures</button>
-            {manage ? <button type="button" className="sec-act" disabled={sending} onClick={send}>Send report</button> : null}
           </>
         }
       />
@@ -145,12 +152,17 @@ export function UpwardReportScreen() {
   const unit = unitOf(useWord("accounting"));
   const [sent, setSent] = useState(0);
   const back = useBackToSection();
+  const form = useReportForm(() => setSent((was) => was + 1));
   const records = useLoad(() => listOf(tools.upwardReportList), `sent-reports:${openAgencyId()}:${sent}`);
   const list = records.state === "ready" ? records.data : [];
   return (
     <Shell title="National Report" onBack={back.onBack} backLabel={back.backLabel}>
-      <PageFrame title="National Report" line={quietLine(list)}>
-        <ReportForm onSent={() => setSent((was) => was + 1)} unit={unit} />
+      <PageFrame
+        title="National Report"
+        line={quietLine(list)}
+        actions={<ActionsMenu align="start" actions={form.manage ? [{ label: "Send to national level", onSelect: () => (form.sending ? undefined : void form.send()) }] : []} />}
+      >
+        <ReportForm form={form} unit={unit} />
         <SentCard records={list} unit={unit} />
       </PageFrame>
     </Shell>

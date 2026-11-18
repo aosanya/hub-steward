@@ -280,20 +280,22 @@ describe("the Sent reports list", () => {
 });
 
 describe("who may send", () => {
-  it("shows the Send report button to someone who holds accounting.manage", async () => {
+  it("shows Send to national level in the Actions dropdown to someone who holds accounting.manage", async () => {
     openScreen();
+    await userEvent.click(await screen.findByRole("button", { name: "Actions" }));
 
-    expect(await within(formCard()).findByRole("button", { name: "Send report" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Send to national level" })).toBeInTheDocument();
   });
 
-  it("hides the Send report button from someone who holds accounting.view only, who can still read figures and the list", async () => {
+  it("hides the Actions dropdown from someone who holds accounting.view only, who can still read figures and the list", async () => {
     permissions = ["accounting.view"];
     openScreen();
 
     await waitFor(() => expect(sentRows()).toHaveLength(1));
     await waitFor(() => expect(callsTo("agency_get_my_roles").length).toBeGreaterThan(0));
     await new Promise((resolve) => setTimeout(resolve, 20));
-    expect(within(formCard()).queryByRole("button", { name: "Send report" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Actions" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Send to national level" })).toBeNull();
     expect(within(formCard()).getByRole("button", { name: "Show figures" })).toBeInTheDocument();
   });
 });
