@@ -1,4 +1,6 @@
 import { Route } from "react-router-dom";
+import { GroupEditScreen } from "../residents/GroupEditScreen";
+import { PersonEditScreen } from "../residents/PersonEditScreen";
 import { CrewsScreen } from "./CrewsScreen";
 import { DepartmentsScreen } from "./DepartmentsScreen";
 import { RolesPermissionsScreen } from "./RolesPermissionsScreen";
@@ -17,8 +19,11 @@ export const items = [
 export const routes = () => (
   <>
     <Route path={staffPaths.people.pattern} element={<StaffScreen />} />
+    <Route path={staffPaths.personEdit.pattern} element={<PersonEditScreen backTo={(id) => staffPaths.people.path({ person: id })} />} />
     <Route path={staffPaths.departments.pattern} element={<DepartmentsScreen />} />
+    <Route path={staffPaths.departmentEdit.pattern} element={<GroupEditScreen backTo={(id) => staffPaths.departments.path({ group: id })} />} />
     <Route path={staffPaths.crews.pattern} element={<CrewsScreen />} />
+    <Route path={staffPaths.crewEdit.pattern} element={<GroupEditScreen backTo={(id) => staffPaths.crews.path({ group: id })} />} />
     <Route path={staffPaths.roles.pattern} element={<RolesPermissionsScreen />} />
   </>
 );

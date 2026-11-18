@@ -6,13 +6,13 @@ import { Shell } from "../../../Shell";
 import { GroupEdit, loadGroup } from "./GroupScreen";
 import { residentPaths } from "./paths";
 
-type Props = { home: "groups" | "households" };
+type Props = { home?: "groups" | "households"; backTo?: (id: string) => string };
 
-export function GroupEditScreen({ home }: Props) {
+export function GroupEditScreen({ home = "groups", backTo }: Props) {
   const { id = "" } = useParams();
   const navigate = useNavigate();
   const view = useLoad(() => loadGroup(id), `group-edit:${openAgencyId()}:${id}`);
-  const back = () => navigate(residentPaths[home].path({ group: id }));
+  const back = () => navigate(backTo ? backTo(id) : residentPaths[home].path({ group: id }));
   const name = view.state === "ready" && typeof view.data.name === "string" ? view.data.name : "";
   return (
     <Shell title="Edit group" titleUnder onBack={back} backLabel={name || "Back"} tabless>

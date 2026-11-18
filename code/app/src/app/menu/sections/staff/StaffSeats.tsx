@@ -1,8 +1,8 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { EmptyCard, LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
-import { SectionHeading } from "../../../../shared/ui/SectionHeading";
+import { ListRow } from "../../../../shared/ui/ListRow";
+import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
+import { Section } from "../../../../shared/ui/Section";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { listOf, roleKindNames, seatLabel, text, type Item } from "./staffData";
@@ -22,26 +22,23 @@ const loadSeats = async (id: string) => {
   return seats.map((seat) => {
     const known = standingSeats.find((candidate) => text(candidate, "id") === text(seat, "id"));
     const ended = seat.active === false || text(seat, "ended_at") !== "" || text(known, "ended_at") !== "";
-    return { id: text(seat, "id"), title: seatLabel({ ...known, ...seat, group_name: "" }, kindNames), meta: text(seat, "group_name") || text(known, "group_name"), end: ended ? endedWords(known) : "In post" };
+    return { id: text(seat, "id"), title: seatLabel({ ...known, ...seat, group_name: "" }, kindNames), meta: text(seat, "group_name") || text(known, "group_name"), status: ended ? endedWords(known) : "In post" };
   });
 };
 
 export function StaffSeats({ id }: { id: string }) {
   const word = useWord("actor");
   const view = useLoad(() => loadSeats(id), `staff-seats:${openAgencyId()}:${id}`);
+  if (view.state === "loading") return <LoadingLine />;
+  if (view.state === "error") return <LoadFailed words="The seats could not be loaded." />;
   return (
-    <>
-      <SectionHeading>{word("Seats")}</SectionHeading>
-      {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "error" ? <LoadFailed words="The seats could not be loaded." /> : null}
-      {view.state === "ready" && view.data.length === 0 ? <EmptyCard words={`No ${word("Seats").toLowerCase()} yet.`} /> : null}
-      {view.state === "ready" && view.data.length > 0 ? (
-        <Rows>
-          {view.data.map((seat) => (
-            <ListRow key={seat.id} title={seat.title} meta={seat.meta} end={seat.end} />
-          ))}
-        </Rows>
-      ) : null}
-    </>
+    <Section
+      word={word("Seats")}
+      icon="briefcase"
+      empty={{ words: `No ${word("Seats").toLowerCase()} yet.` }}
+      rows={view.data.map((seat) => (
+        <ListRow key={seat.id} title={seat.title} meta={seat.meta} status={seat.status} />
+      ))}
+    />
   );
 }

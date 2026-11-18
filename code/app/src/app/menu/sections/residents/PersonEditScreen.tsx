@@ -8,11 +8,11 @@ import { loadPerson } from "./PersonScreen";
 import { residentPaths } from "./paths";
 import { personNameOf } from "./personName";
 
-export function PersonEditScreen() {
+export function PersonEditScreen({ backTo }: { backTo?: (id: string) => string }) {
   const { id = "" } = useParams();
   const navigate = useNavigate();
   const view = useLoad(() => loadPerson(id), `person-edit:${openAgencyId()}:${id}`);
-  const back = () => navigate(residentPaths.people.path({ person: id }));
+  const back = () => navigate(backTo ? backTo(id) : residentPaths.people.path({ person: id }));
   const name = view.state === "ready" ? personNameOf(view.data) : "";
   return (
     <Shell title="Edit details" titleUnder onBack={back} backLabel={name || "Back"} tabless>

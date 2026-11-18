@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
-import { PersonEditInline } from "../residents/PersonEdit";
+import { PersonDetails, PersonHead } from "../residents/PersonScreen";
 import { personNameOf } from "../residents/personName";
 import { StaffSeats } from "./StaffSeats";
+import { staffPaths } from "./paths";
 import { homeEmpty, listOf, roleKindNames, seatsLine, text, type Item } from "./staffData";
 
 const seatsOfGroups = async (groups: Item[]) => {
@@ -31,28 +32,34 @@ const loadPerson = async (id: string) => {
     listOf("actor_list_role_assignments_for_actor", { actor_id: id }),
     roleKindNames(),
   ]);
-  return { id, name: personNameOf(person ?? {}), display_name: personNameOf(person ?? {}), attributes: person?.attributes, role: seatsLine(seats, kindNames) };
+  const role = seatsLine(seats, kindNames);
+  const state = text(person, "status");
+  return { id, name: personNameOf(person ?? {}), display_name: personNameOf(person ?? {}), attributes: person?.attributes, role, status: [role, state].filter(Boolean).join(" · ") };
 };
 
 export function StaffScreen() {
   const word = useWord("actor");
-  const [version, setVersion] = useState(0);
+  const [search] = useSearchParams();
   return (
     <MenuWindow
       title={word("Staff")}
-      listKey={version}
-      detailKey={version}
+      withTabs
+      bandless
+      startAt={search.get("person") ?? undefined}
       list={{ title: word("Staff"), tool: "actor_list_actors", load: loadStaff, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Staff").toLowerCase()} yet.`) }}
       detail={{
         tool: "actor_get_actor",
         load: loadPerson,
-        fields: { Name: "name", Role: "role" },
-        status: "status",
+        fields: {},
+        status: "",
         extra: (person) => (
-          <>
-            <PersonEditInline id={text(person, "id")} person={person} onSaved={() => setVersion((was) => was + 1)} />
-            <StaffSeats id={text(person, "id")} />
-          </>
+          <div className="person-page">
+            <PersonHead person={person} />
+            <div className="sections">
+              <PersonDetails id={text(person, "id")} person={person} word="Staff detail" editTo={staffPaths.personEdit.path({ id: text(person, "id") })} />
+              <StaffSeats id={text(person, "id")} />
+            </div>
+          </div>
         ),
       }}
     />

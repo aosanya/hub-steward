@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
 import { groupsOfType } from "../../groupsOfType";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { GroupEdit, groupKept } from "./GroupEdit";
+import { ChatAboutGroup } from "../residents/ChatAboutGroup";
+import { StaffGroupPage, loadStaffGroup } from "./StaffGroupPage";
+import { staffPaths } from "./paths";
 import { homeEmpty, peopleWords, text, type Item } from "./staffData";
 
 const headCountOf = async (group: Item) => {
@@ -14,21 +16,31 @@ const headCountOf = async (group: Item) => {
 
 const loadDepartments = async () => {
   const groups = await groupsOfType("Department");
-  return Promise.all(groups.map(async (group) => ({ id: text(group, "id"), name: text(group, "name"), meta: await headCountOf(group), ...groupKept(group) })));
+  return Promise.all(groups.map(async (group) => ({ id: text(group, "id"), name: text(group, "name"), meta: await headCountOf(group) })));
 };
-
-const loadDepartment = async (id: string) => (await loadDepartments()).find((department) => department.id === id) ?? { id, name: "", meta: "", ...groupKept({}) };
 
 export function DepartmentsScreen() {
   const word = useWord("actor");
-  const [version, setVersion] = useState(0);
+  const [search] = useSearchParams();
   return (
     <MenuWindow
       title={word("Departments")}
-      listKey={version}
-      detailKey={version}
+      withTabs
+      bandless
+      startAt={search.get("group") ?? undefined}
       list={{ title: word("Departments"), tool: "actor_list_groups", load: loadDepartments, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Departments").toLowerCase()} yet.`) }}
-      detail={{ tool: "actor_get_group_population", load: loadDepartment, fields: { Name: "name", "Head count": "meta" }, status: "status", extra: (department) => <GroupEdit group={department} onSaved={() => setVersion((was) => was + 1)} /> }}
+      detail={{
+        tool: "actor_get_group",
+        load: loadStaffGroup("department"),
+        fields: {},
+        status: "",
+        extra: (group) => (
+          <>
+            <ChatAboutGroup group={group} back={staffPaths.departments.path()} />
+            <StaffGroupPage group={group} word={word("Department")} editPath={staffPaths.departmentEdit.path({ id: text(group, "id") })} />
+          </>
+        ),
+      }}
     />
   );
 }

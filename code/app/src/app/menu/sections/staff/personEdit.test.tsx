@@ -4,6 +4,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { GroupEditScreen } from "../residents/GroupEditScreen";
+import { PersonEditScreen } from "../residents/PersonEditScreen";
 import { StaffScreen } from "./index";
 
 let called: MockInstance<typeof mcp.callTool>;
@@ -53,6 +55,9 @@ const show = (element: JSX.Element, pattern: string, path = pattern) =>
     <MemoryRouter initialEntries={[`/a/town${path}`]}>
       <Routes>
         <Route path={`/a/:agencyId${pattern}`} element={element} />
+        <Route path="/a/:agencyId/menu/staff/people/:id/edit" element={<PersonEditScreen backTo={(id) => `/a/town/menu/staff/people?person=${id}`} />} />
+        <Route path="/a/:agencyId/menu/staff/departments/:id/edit" element={<GroupEditScreen backTo={(id) => `/a/town/menu/staff/departments?group=${id}`} />} />
+        <Route path="/a/:agencyId/menu/staff/crews/:id/edit" element={<GroupEditScreen backTo={(id) => `/a/town/menu/staff/crews?group=${id}`} />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -103,7 +108,7 @@ describe("editing a staff member", () => {
   it("sets a phone from the Staff pane through actor_set_actor_attributes and the pane shows it", async () => {
     await showStaff();
 
-    await userEvent.click(await screen.findByRole("button", { name: "Edit attributes" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
     await userEvent.type(await screen.findByLabelText("Phone"), "+254 711 000 000");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
@@ -111,13 +116,13 @@ describe("editing a staff member", () => {
     expect((await screen.findAllByText("+254 711 000 000")).length).toBeGreaterThan(0);
   });
 
-  it("shows no Edit attributes in the Staff pane to a caller without member.edit", async () => {
+  it("shows no Edit in the Staff pane to a caller without member.edit", async () => {
     permissions = ["member.view"];
     await showStaff();
 
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
     await screen.findByText("Name");
 
-    expect(screen.queryByRole("button", { name: "Edit attributes" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
   });
 });

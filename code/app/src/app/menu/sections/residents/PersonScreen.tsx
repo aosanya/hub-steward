@@ -98,16 +98,16 @@ const contactRank = (key: string) => {
   return at === -1 ? contactOrder.length : at;
 };
 
-export function PersonDetails({ id, person }: { id: string; person: Item }) {
+export function PersonDetails({ id, person, editTo, word = "Personal detail" }: { id: string; person: Item; editTo?: string; word?: string }) {
   const { filled, item } = usePersonAttributes(id, person);
-  const edit = <SectionGo permission="member.edit" act="Edit" to={residentPaths.personEdit.path({ id })} />;
+  const edit = <SectionGo permission="member.edit" act="Edit" to={editTo ?? residentPaths.personEdit.path({ id })} />;
   const name = personNameOf(person);
   const contactFirst = [...filled].sort((a, b) => contactRank(a.key) - contactRank(b.key));
   const rows = [
     ...(name ? [<ListRow key="name" title="Name" meta={name} />] : []),
     ...contactFirst.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />),
   ];
-  return <Section word="Personal detail" plain foot={edit} empty={{ words: "No details on file yet." }} rows={rows} />;
+  return <Section word={word} plain foot={edit} empty={{ words: "No details on file yet." }} rows={rows} />;
 }
 
 export function PersonHead({ person }: { person: Item }) {

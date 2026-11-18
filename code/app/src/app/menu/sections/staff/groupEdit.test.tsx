@@ -4,6 +4,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { GroupEditScreen } from "../residents/GroupEditScreen";
+import { PersonEditScreen } from "../residents/PersonEditScreen";
 import { CrewsScreen, DepartmentsScreen } from "./index";
 
 let called: MockInstance<typeof mcp.callTool>;
@@ -15,6 +17,7 @@ const answer = async (name: string, args: unknown) => {
   const given = (args ?? {}) as Record<string, unknown>;
   if (name === "agency_get_my_roles") return { permissions };
   if (name === "actor_list_groups") return { items: groups };
+  if (name === "actor_get_group") return groups.find((group) => group.id === given.group_id) ?? {};
   if (name === "actor_get_group_population") return { population: 4 };
   if (name === "actor_list_group_leaders") return { items: [] };
   if (name === "actor_edit_group") {
@@ -49,6 +52,9 @@ const show = (element: JSX.Element, pattern: string) =>
     <MemoryRouter initialEntries={[`/a/town${pattern}`]}>
       <Routes>
         <Route path={`/a/:agencyId${pattern}`} element={element} />
+        <Route path="/a/:agencyId/menu/staff/people/:id/edit" element={<PersonEditScreen backTo={(id) => `/a/town/menu/staff/people?person=${id}`} />} />
+        <Route path="/a/:agencyId/menu/staff/departments/:id/edit" element={<GroupEditScreen backTo={(id) => `/a/town/menu/staff/departments?group=${id}`} />} />
+        <Route path="/a/:agencyId/menu/staff/crews/:id/edit" element={<GroupEditScreen backTo={(id) => `/a/town/menu/staff/crews?group=${id}`} />} />
       </Routes>
     </MemoryRouter>,
   );
