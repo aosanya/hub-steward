@@ -6,7 +6,7 @@ type Item = Record<string, unknown>;
 
 export const maintenanceKeys = ["maintenance0", "maintenance1", "maintenance2", "maintenance3", "maintenance4"];
 
-const finishedJobsQuery = { status: "completed", limit: 500 };
+export const finishedJobsQuery = { status: "completed", limit: 500 };
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 

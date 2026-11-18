@@ -1,9 +1,10 @@
 import { subjectNouns, type ChatAbout } from "../../app/chatAbout";
+import { finishedJobsQuery } from "../../app/menu/sections/assets/maintenanceHistory";
 import { residentChoices, residentNamesFor, residentPrompt, residentReadScopes, residentReadsWords, residentStepWords, scopedToResident } from "./residentReads";
 
 type Kind = ChatAbout["kind"];
 
-type Scoped = Record<string, (about: ChatAbout) => string>;
+type Scoped = Record<string, (about: ChatAbout) => string | number>;
 
 type Subject = {
   reads: Record<string, Scoped>;
@@ -328,7 +329,7 @@ const asset: Subject = {
   reads: {
     assetmanager_asset_read: { assetID: byId },
     assetmanager_movement_list: { asset_id: byId },
-    taskmanager_task_list: { status: () => "completed" },
+    taskmanager_task_list: { status: () => finishedJobsQuery.status, limit: () => finishedJobsQuery.limit },
   },
   steps: {
     assetmanager_asset_read: "Reading the asset's details",
