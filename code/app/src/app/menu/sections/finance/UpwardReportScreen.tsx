@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useMay } from "../../../../features/agency/useMay";
 import { useWord } from "../../../../features/agency/useWord";
-import { Button } from "../../../../shared/ui/Button";
-import { Card } from "../../../../shared/ui/Card";
 import { Field } from "../../../../shared/ui/Field";
+import { Section } from "../../../../shared/ui/Section";
 import { Segmented } from "../../../../shared/ui/Segmented";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuDetail } from "../../MenuDetail";
 import { refusalWords } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { dayStart, dayWords, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, text, tools, unitOf, type Item } from "./financeData";
+import { ChatAboutFinance, FactsCard } from "./FinanceRecord";
+import { financePaths } from "./paths";
 import { figureOf, noReportWords, periodRefusal } from "./reportPeriod";
 
 const manageRole = "accounting.manage";
@@ -41,6 +42,11 @@ const recordView = (record: Item, unit: string) => ({
 
 const recordFields = { Kind: "kind", Period: "period", Planned: "planned", Spent: "spent", Difference: "difference", Sent: "sent" };
 
+const periodWordsOf = (id: string) => {
+  const { period_start, period_end } = reportPeriodOf(id);
+  return periodWords(period_start, period_end);
+};
+
 const loadSent = async () => (await listOf(tools.upwardReportList)).map(sentRow);
 
 const loadRecord = async (id: string, unit: string) => {
@@ -62,7 +68,9 @@ const loadFigures = async (id: string, unit: string) => {
   }
 };
 
-const figureFields = { Planned: "planned", Spent: "spent", Difference: "difference", Note: "note" };
+const figureFacts: [string, string][] = [["Planned", "planned"], ["Spent", "spent"], ["Difference", "difference"], ["Note", "note"]];
+
+const recordFacts: [string, string][] = [["Kind", "kind"], ["Period", "period"], ["Planned", "planned"], ["Spent", "spent"], ["Difference", "difference"], ["Sent", "sent"]];
 
 const recordOf = (reply: unknown) => ((reply as { item?: Item } | null)?.item ?? reply) as Item;
 
@@ -96,18 +104,28 @@ function ReportForm({ onSent, unit }: { onSent: () => void; unit: string }) {
     }
     setSending(false);
   };
+  const chatId = reading || (record ? `${text(record, "period_start")}~${text(record, "period_end")}` : "");
   return (
-    <section aria-label="Report to send">
-      <Card title="Report to send">
-        <Field label="From" type="date" value={start} onChange={(event) => setStart(event.target.value)} />
-        <Field label="To" type="date" value={end} onChange={(event) => setEnd(event.target.value)} error={refusal || undefined} />
-        <Segmented label="Kind of report" items={kinds} current={kind} onChange={setKind} />
-        <Button onClick={show}>Show figures</Button>
-        {manage ? <Button kind="primary" disabled={sending} onClick={send}>Send report</Button> : null}
-        {reading ? <MenuDetail key={`${reading}${unit}`} bare id={reading} title="National Report" tool={tools.reportRead} load={(id: string) => loadFigures(id, unit)} fields={figureFields} status="" /> : null}
-        {record ? <MenuDetail key={`${text(record, "id")}${unit}`} bare id={text(record, "id")} title="National Report" tool={tools.upwardReportSend} load={async () => recordView(record, unit)} fields={recordFields} status="" /> : null}
-      </Card>
-    </section>
+    <>
+      <Section
+        word="Report to send"
+        plain
+        rows={[
+          <Field key="from" label="From" type="date" value={start} onChange={(event) => setStart(event.target.value)} />,
+          <Field key="to" label="To" type="date" value={end} onChange={(event) => setEnd(event.target.value)} error={refusal || undefined} />,
+          <Segmented key="kind" label="Kind of report" items={kinds} current={kind} onChange={setKind} />,
+        ]}
+        foot={
+          <>
+            <button type="button" className="sec-foot-item" onClick={show}>Show figures</button>
+            {manage ? <button type="button" className="sec-act" disabled={sending} onClick={send}>Send report</button> : null}
+          </>
+        }
+      />
+      {chatId ? <ChatAboutFinance about={{ kind: "report", id: chatId, name: periodWordsOf(chatId) }} back={financePaths.nationalReport.path()} /> : null}
+      {reading ? <MenuDetail key={`${reading}${unit}`} bare id={reading} title="National Report" tool={tools.reportRead} load={(id: string) => loadFigures(id, unit)} fields={{}} status="" extra={(figures) => <FactsCard word="Report" item={figures} facts={figureFacts} />} /> : null}
+      {record ? <MenuDetail key={`${text(record, "id")}${unit}`} bare id={text(record, "id")} title="National Report" tool={tools.upwardReportSend} load={async () => recordView(record, unit)} fields={{}} status="" extra={(sent) => <FactsCard word="Sent report" item={sent} facts={recordFacts} />} /> : null}
+    </>
   );
 }
 
@@ -117,6 +135,8 @@ export function UpwardReportScreen() {
   return (
     <MenuWindow
       title="National Report"
+      withTabs
+      bandless
       listKey={sent}
       detailKey={unit}
       above={<ReportForm onSent={() => setSent((was) => was + 1)} unit={unit} />}

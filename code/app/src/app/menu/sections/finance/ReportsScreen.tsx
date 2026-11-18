@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { useWord } from "../../../../features/agency/useWord";
-import { Button } from "../../../../shared/ui/Button";
-import { Card } from "../../../../shared/ui/Card";
 import { Field } from "../../../../shared/ui/Field";
+import { Section } from "../../../../shared/ui/Section";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuDetail } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
+import { financePaths } from "./paths";
+import { ReportPage, type ReportView } from "./ReportPage";
 import { SendReportButton } from "./SendReportSheet";
 import { figureOf, noReportWords, periodRefusal } from "./reportPeriod";
 import { budgetRow, dayStart, departmentRow, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, reportRow, text, tools, unitOf, type Item } from "./financeData";
 
 const linesOf = (report: Item | null, unit: string) => (Array.isArray(report?.lines) ? (report?.lines as Item[]) : []).map((line) => budgetRow(line, unit));
-
-const linesWords = (lines: { name: string; meta: string }[]) => lines.map((line) => `${line.name} · ${line.meta}`).join("; ");
 
 const departmentsOf = (report: Item | null, unit: string) => {
   const departments = figureOf(report, "departments");
@@ -31,8 +30,8 @@ const loadReport = async (id: string, unit: string) => {
     planned: moneyWords(figureOf(report, "planned") as number, unit),
     spent: moneyWords(figureOf(report, "spent") as number, unit),
     difference: moneyWords(figureOf(report, "difference") as number, unit),
-    departments: linesWords(departmentsOf(report, unit)),
-    lines: linesWords(linesOf(report, unit)),
+    departments: departmentsOf(report, unit),
+    lines: linesOf(report, unit),
   };
 };
 
@@ -44,7 +43,13 @@ const loadChosen = async (id: string, unit: string) => {
   }
 };
 
-const reportFields = { Name: "name", Period: "period", Planned: "planned", Spent: "spent", Difference: "difference", Departments: "departments", "Budget lines": "lines" };
+const reportBack = financePaths.reports.path();
+
+const reportPage = (report: unknown) => (
+  <ReportPage report={report as ReportView} heading="Financial Reports" back={reportBack}>
+    <SendReportButton report={report as ReportView} />
+  </ReportPage>
+);
 
 function ChoosePeriod({ unit }: { unit: string }) {
   const [start, setStart] = useState("");
@@ -57,14 +62,18 @@ function ChoosePeriod({ unit }: { unit: string }) {
     setReading(words ? "" : `${dayStart(start)}~${periodEndOf(end)}`);
   };
   return (
-    <section aria-label="Choose period">
-      <Card title="Choose period">
-        <Field label="From" type="date" value={start} onChange={(event) => setStart(event.target.value)} />
-        <Field label="To" type="date" value={end} onChange={(event) => setEnd(event.target.value)} error={refusal || undefined} />
-        <Button kind="primary" onClick={read}>Read report</Button>
-        {reading ? <MenuDetail key={`${reading}${unit}`} bare id={reading} title="Financial Reports" tool={tools.reportRead} load={(id: string) => loadChosen(id, unit)} fields={{ ...reportFields, Note: "note" }} status="status" /> : null}
-      </Card>
-    </section>
+    <>
+      <Section
+        word="Choose period"
+        plain
+        rows={[
+          <Field key="from" label="From" type="date" value={start} onChange={(event) => setStart(event.target.value)} />,
+          <Field key="to" label="To" type="date" value={end} onChange={(event) => setEnd(event.target.value)} error={refusal || undefined} />,
+        ]}
+        foot={<button type="button" className="sec-act" onClick={read}>Read report</button>}
+      />
+      {reading ? <MenuDetail key={`${reading}${unit}`} bare id={reading} title="Financial Reports" tool={tools.reportRead} load={(id: string) => loadChosen(id, unit)} fields={{}} status="" extra={reportPage} /> : null}
+    </>
   );
 }
 
@@ -74,10 +83,12 @@ export function ReportsScreen() {
   return (
     <MenuWindow
       title={word("Financial Reports")}
+      withTabs
+      bandless
       detailKey={unit}
       above={<ChoosePeriod unit={unit} />}
       list={{ title: word("Financial Reports"), tool: tools.reportList, load: loadReports, fields: { title: "name", meta: "meta" }, empty: homeEmpty(`No ${word("Reports").toLowerCase()} yet.`) }}
-      detail={{ tool: tools.reportRead, load: (id: string) => loadReport(id, unit), fields: reportFields, status: "status", extra: (report) => <SendReportButton report={report} /> }}
+      detail={{ tool: tools.reportRead, load: (id: string) => loadReport(id, unit), fields: {}, status: "", extra: reportPage }}
     />
   );
 }

@@ -232,7 +232,24 @@ const role: Subject = {
   empty: "its holders, approval limits and permissions",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role };
+const periodOf = (index: number): Scoped[string] => (about) => about.id.split("~")[index] ?? "";
+
+const report: Subject = {
+  reads: {
+    accounting_report_read: { period_start: periodOf(0), period_end: periodOf(1) },
+    accounting_report_list: {},
+  },
+  steps: {
+    accounting_report_read: "Reading the report",
+    accounting_report_list: "Reading the list of reports",
+  },
+  choices: ["Figures"],
+  reading: "Figures means accounting_report_read.",
+  overview: "call accounting_report_read and answer with the period, the planned, spent and difference amounts and the departments",
+  empty: "its period, figures and departments",
+};
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report };
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 

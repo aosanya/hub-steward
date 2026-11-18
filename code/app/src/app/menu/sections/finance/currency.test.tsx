@@ -279,10 +279,11 @@ describe.each(cases)("when $when", ({ listed, unit }) => {
     fireEvent.change(within(form).getByLabelText("To"), { target: { value: "2026-09-30" } });
     await userEvent.click(within(form).getByRole("button", { name: "Show figures" }));
 
-    await waitFor(() => expect(form.textContent).toContain(`8,100,000${unit}`));
-    expect(form.textContent).toContain(`9,000,000${unit}`);
-    expect(form.textContent).toContain(`900,000${unit}`);
-    nothingElseAfterNumbers(form.textContent ?? "");
+    const figures = () => document.querySelector(".mw-list") as HTMLElement;
+    await waitFor(() => expect(figures().textContent).toContain(`8,100,000${unit}`));
+    expect(figures().textContent).toContain(`9,000,000${unit}`);
+    expect(figures().textContent).toContain(`900,000${unit}`);
+    nothingElseAfterNumbers(figures().textContent ?? "");
   });
 
   it(`draws a sent National Report with its figures as sent${unit ? " followed by the unit" : " as bare numbers"}`, async () => {

@@ -42,6 +42,8 @@ const callsTo = (name: string) => called.mock.calls.filter(([, tool]) => tool ==
 
 const formCard = () => screen.getByRole("region", { name: "Report to send" });
 
+const listPane = () => document.querySelector(".mw-list") as HTMLElement;
+
 const sentList = () => screen.getByRole("region", { name: "Sent reports" });
 
 const sentRows = () => Array.from(sentList().querySelectorAll("button.row")).map((row) => row.textContent ?? "");
@@ -131,13 +133,13 @@ describe("the National Report form", () => {
     choose("2026-07-01", "2026-09-30");
     await userEvent.click(within(formCard()).getByRole("button", { name: "Show figures" }));
 
-    await waitFor(() => expect(formCard().textContent).toContain("8,100"));
+    await waitFor(() => expect(listPane().textContent).toContain("8,100"));
     expect(callsTo("accounting_report_read")[0][2]).toEqual({ period_start: "2026-07-01T00:00:00Z", period_end: "2026-10-01T00:00:00Z" });
-    expect(formCard().textContent).toContain("9,000");
-    expect(formCard().textContent).toContain("900");
-    expect(within(formCard()).getByText("Planned")).toBeInTheDocument();
-    expect(within(formCard()).getByText("Spent")).toBeInTheDocument();
-    expect(within(formCard()).getByText("Difference")).toBeInTheDocument();
+    expect(listPane().textContent).toContain("9,000");
+    expect(listPane().textContent).toContain("900");
+    expect(within(listPane()).getByText("Planned")).toBeInTheDocument();
+    expect(within(listPane()).getByText("Spent")).toBeInTheDocument();
+    expect(within(listPane()).getByText("Difference")).toBeInTheDocument();
   });
 
   it("says so in words when no figures can be read for the period", async () => {
@@ -146,7 +148,7 @@ describe("the National Report form", () => {
     choose("2027-01-01", "2027-03-31");
     await userEvent.click(within(formCard()).getByRole("button", { name: "Show figures" }));
 
-    expect(await within(formCard()).findByText("No report could be read for that period.")).toBeInTheDocument();
+    expect(await within(listPane()).findByText("No report could be read for that period.")).toBeInTheDocument();
   });
 
   it.each([
@@ -191,8 +193,8 @@ describe("sending a report", () => {
       period_end: "2026-10-01T00:00:00Z",
       kind: "spending_by_department",
     });
-    await waitFor(() => expect(formCard().textContent).toContain("2026-10-05"));
-    expect(formCard().textContent).toContain("8,100");
+    await waitFor(() => expect(listPane().textContent).toContain("2026-10-05"));
+    expect(listPane().textContent).toContain("8,100");
     await waitFor(() => expect(sentRows()).toHaveLength(2));
     expect(sentRows()[0]).toContain("Spending by department");
     expect(sentRows()[0]).toContain("2026-07-01 to 2026-09-30 · Sent 2026-10-05");
@@ -226,7 +228,7 @@ describe("sending a report", () => {
     await screen.findByText("Sent reports");
     choose("2026-07-01", "2026-09-30");
     await userEvent.click(await within(formCard()).findByRole("button", { name: "Send report" }));
-    await waitFor(() => expect(formCard().textContent).toContain("2026-10-05"));
+    await waitFor(() => expect(listPane().textContent).toContain("2026-10-05"));
 
     expect(document.body.textContent).not.toMatch(/transmit|delivered|received by|national system/i);
   });
