@@ -21,6 +21,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | Patch or move up to 50 issues in one call | `taskmanager_task_batch` | `POST /batch` |
 | Create an issue with its todos and their order in one call | `taskmanager_task_create_with_todos` | `POST /create-with-todos` |
 | Add an ordered list of todos to an issue that already exists in one call | `taskmanager_task_add_todos` | `POST /tasks/{taskID}/add-todos` |
+| Add an ordered list of todos to an issue that already exists in one call | `taskmanager_task_add_todos` | `POST /tasks/{taskID}/add-todos` |
 | Which backlogs the caller can see, with their steps and counts, or just one of them | `taskmanager_backlog_list` | `GET /backlogs` (`?backlog=` for one) |
 | Cap how many issues a step may hold | `taskmanager_backlog_step_wip_limit` | `PUT /backlogs/{backlogID}/steps/{stepID}/wip-limit` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
@@ -187,6 +188,12 @@ The answer is `results` (one per operation in order: `index`, `op`, `task_id`, `
 Inputs: the fields of `taskmanager_task_create` and `todos`, in order, each `{title, instructions, description, can_run_parallel, waits_on}`. Needs Can move on the backlog the issue lands in. `waits_on` lists positions, 1-based (1 is the first todo sent), and each must be an earlier one: a reference to itself, a later todo or a cycle is 400. A todo that waits on others lands Blocked and turns To do when they are Done.
 
 The answer is `issue` and `todos` (id, code, ordinality, `depends_on` as ids, status, state), 201. The todos are checked before the issue is made, and an issue whose todo cannot be made is taken away again, so nothing is left behind.
+
+## taskmanager_task_add_todos
+
+Inputs: `taskID` (the existing issue) and `todos`, in order, each `{title, instructions, description, can_run_parallel, waits_on}`; `title` and `instructions` are required and `description` should always be sent. Needs Can move on the issue's backlog. `waits_on` lists positions, 1-based (1 is the first todo sent), and each must be an earlier one in the list sent: a reference to itself, a later todo or a cycle is 400 and nothing is created. The new todos take ordinalities after the issue's existing ones.
+
+The answer is only `todos` (id, code, ordinality). It replaces one `taskmanager_task_todo_create` call per todo on an issue that exists, such as one that `taskmanager_task_lint` reports as `no_todos`.
 
 ## taskmanager_task_add_todos
 
