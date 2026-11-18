@@ -24,9 +24,11 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, withTab
     if (!wide || !reported || reported.includes(chosen)) return;
     setChosen(reported.find((id) => !elsewhereNow.current?.(id)) ?? "");
   }, [wide, reported, chosen]);
-  const clearsChoice = !!chosen && !wide && !(startAt && chosen === startAt);
+  const deepLinked = !!startAt && chosen === startAt;
+  const clearsChoice = !!chosen && !wide && (!deepLinked || !back.onBack);
   const onBack = clearsChoice ? () => setChosen("") : back.onBack;
   const backLabel = clearsChoice ? list.title : back.backLabel;
+  const showsListRow = !!chosen && !wide && !clearsChoice;
   const listPane = (
     <section className={wide ? "mw-list wf-tree" : "mw-list"} aria-label={list.title}>
       {above}
@@ -36,6 +38,12 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, withTab
   );
   const detailPane = (
     <>
+      {showsListRow ? (
+        <button type="button" className="mw-all" onClick={() => setChosen("")}>
+          <span aria-hidden="true">‹</span>
+          {list.title}
+        </button>
+      ) : null}
       {bandless ? null : <h2 className="wf-head">{title}</h2>}
       <div className="wf-content">
         <MenuDetail key={detailKey} {...detail} title={title} bare id={chosen} />
