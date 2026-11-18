@@ -1,38 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useWord } from "../../../../features/agency/useWord";
 import { refusalText } from "../../../../features/backlogs";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
+import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
+import { Section } from "../../../../shared/ui/Section";
 import { Sheet } from "../../../../shared/ui/Sheet";
 import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
+import { PaymentPage } from "./PaymentPage";
 import { chargeNames, chargeWords, dayStart, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, owedTotal, owedWords, text, tools, unitOf, type Charges, type Item } from "./financeData";
 
 const owedHeading = "To pay";
 
 const paidHeading = "Paid";
 
-const myRolesTool = "agency_get_my_roles";
-
-const managePermission = "accounting.manage";
-
 const noCashAccountWords = "There is no cash account to pay from.";
 
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
 const isDay = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value));
-
-const holdsManage = async () => {
-  try {
-    const reply = (await callTool("", myRolesTool)) as { permissions?: unknown } | null;
-    return Array.isArray(reply?.permissions) && reply.permissions.includes(managePermission);
-  } catch {
-    return false;
-  }
-};
 
 const refusalWords = (error: unknown) => (error instanceof Error ? refusalText(error) || error.message : "") || actionFailedWords;
 
@@ -112,18 +102,10 @@ export function PaymentListScreen() {
   const word = useWord("accounting");
   const unit = unitOf(word);
   const [version, setVersion] = useState(0);
-  const [mayMark, setMayMark] = useState(false);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [refused, setRefused] = useState("");
   const [busy, setBusy] = useState(false);
   const [owing, setOwing] = useState({ amount: 0, payers: 0 });
-  useEffect(() => {
-    let live = true;
-    holdsManage().then((holds) => live && setMayMark(holds));
-    return () => {
-      live = false;
-    };
-  }, []);
   const loadCounted = async () => {
     const rows = await loadRows(unit);
     setOwing(owedTotal(rows.filter((row) => text(row, "group") === owedHeading).map((row) => ({ payer: row.payer, outstanding: row.outstandingAmount }))));
@@ -165,7 +147,9 @@ export function PaymentListScreen() {
     <MenuWindow
       key={`${version}${unit}`}
       title={word("Payments")}
-      above={owing.amount > 0 ? <p className="sub">{owedWords(owing, unit)}</p> : null}
+      withTabs
+      bandless
+      above={owing.amount > 0 ? <Section word="Owed" plain rows={[<ListRow key="owed" title={owedWords(owing, unit)} />]} /> : null}
       list={{
         title: word("Payments"),
         tool: tools.paymentList,
@@ -179,11 +163,16 @@ export function PaymentListScreen() {
       detail={{
         tool: tools.paymentList,
         load: loadRow,
-        fields: { Payer: "payer", Charge: "charge", Outstanding: "outstanding", Due: "due", Late: "late", Amount: "amount", "Paid on": "paidOn", Narration: "narration", Bill: "bill" },
-        status: "status",
-        action: { label: "Mark paid", tool: tools.paymentMarkPaid, run: openForm, when: (row) => mayMark && text(row, "group") === owedHeading },
-        extra: (row) =>
-          draft && draft.billID === text(row, "billID") ? <MarkPaidForm draft={draft} refused={refused} busy={busy} onChange={setDraft} onSave={save} onCancel={closeForm} /> : null,
+        fields: {},
+        status: "",
+        extra: (row) => (
+          <PaymentPage
+            row={row}
+            owed={text(row, "group") === owedHeading}
+            onMark={() => openForm(row)}
+            form={draft && draft.billID === text(row, "billID") ? <MarkPaidForm draft={draft} refused={refused} busy={busy} onChange={setDraft} onSave={save} onCancel={closeForm} /> : null}
+          />
+        ),
       }}
     />
   );
