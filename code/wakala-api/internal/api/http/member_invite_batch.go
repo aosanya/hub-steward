@@ -87,6 +87,9 @@ func (m memberInvitations) handleBatch(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		in.Rows[c.Row-1].ActorID = userID
+		if err := nameInvitedMember(r.Context(), um, userID, c.Input); err != nil {
+			slog.Default().Error("an invited member could not be named", "instance", instanceID, "error", err.Error())
+		}
 	}
 	for _, c := range checks {
 		if c.ActorID != "" {
@@ -101,6 +104,24 @@ func (m memberInvitations) handleBatch(w http.ResponseWriter, r *http.Request) {
 	}
 	go m.sendPaced(sentEmails(results), redirect)
 	writeJSON(w, http.StatusOK, invitationBatchAnswer{Results: results})
+}
+
+func nameInvitedMember(ctx context.Context, um mwanachamaactor.UserManager, actorID string, row mwanachamaactor.InvitationBatchRow) error {
+	held, err := um.GetActor(ctx, actorID)
+	if err != nil {
+		return err
+	}
+	if held.FirstName != "" || held.LastName != "" || held.DisplayName != "" {
+		return nil
+	}
+	if _, err := um.SetActorName(ctx, actorID, row.FirstName, row.LastName); err != nil {
+		return err
+	}
+	_, err = um.SetActorDisplayName(ctx, actorID, row.FirstName+" "+row.LastName)
+	if errors.Is(err, mwanachamaactor.ErrDuplicateDisplayName) {
+		return nil
+	}
+	return err
 }
 
 func leadsEveryGroupIn(ctx context.Context, um mwanachamaactor.UserManager, checks []mwanachamaactor.InvitationBatchCheck) (bool, error) {

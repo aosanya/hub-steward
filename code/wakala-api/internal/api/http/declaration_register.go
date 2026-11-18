@@ -156,7 +156,7 @@ func (d *Deps) declarationRegisterOf(ctx context.Context, instanceID string, row
 func (d *Deps) namesOfPeople(ctx context.Context, instanceID string, ids []string) map[string]string {
 	names := make(map[string]string, len(ids))
 	for _, id := range ids {
-		names[id] = id
+		names[id] = unnamedPerson
 	}
 	if len(ids) == 0 {
 		return names
@@ -170,9 +170,7 @@ func (d *Deps) namesOfPeople(ctx context.Context, instanceID string, ids []strin
 		return names
 	}
 	for _, a := range held {
-		if a.DisplayName != "" {
-			names[a.ID] = a.DisplayName
-		}
+		names[a.ID] = personNameOf(a)
 	}
 	return names
 }
