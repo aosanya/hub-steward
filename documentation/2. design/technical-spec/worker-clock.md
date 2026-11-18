@@ -4,7 +4,18 @@ A worker's runtime cap counts working time. This page is the rule for when that 
 
 ## Start
 
-The clock starts at the first Log entry that a worker or a person wrote. The hub's own entries are marked `automatic` on the Log (`task_note.automatic`) and never start it: "A dependency is open: Waiting added", "... finished: Waiting dropped" and the entries of the clock itself. `taskmanager_task_caps_nearest` returns that moment as `started_at`; an issue with no worker or person entry has none.
+The clock starts at the Taken entry of the latest claim. The hub's own entries are marked `automatic` on the Log (`task_note.automatic`) and never start it: "A dependency is open: Waiting added", "... finished: Waiting dropped" and the entries of the clock itself. `taskmanager_task_caps_nearest` returns that moment as `started_at`; an issue with no worker or person entry has none.
+
+The rule, in order:
+
+1. Take the latest automatic "Moved ... to ...doing" (or in-progress) entry. Its time is M.
+2. The start is the earliest worker entry (not automatic) at or after M minus 5 seconds. The claim stamps the Taken note about 400 microseconds before the Moved note, so the 5 second window covers either order.
+3. Entries a worker or a person wrote while the issue sat in To do, such as the "Still seen in ..." notes the run review adds, never start it.
+4. A resumed issue (released, then claimed again) starts again at its new Taken entry.
+5. An issue never moved keeps the old rule: its earliest worker entry.
+6. An issue moved into doing with no worker entry since has no start.
+
+The server (`taskmanager_task_caps_nearest`, `taskmanager_task_timed_out`) and the card (`app/src/features/backlogs/caps/elapsed.ts`) give the same start. The code is `task_clock_start.go`.
 
 Entries written before the `automatic` flag existed carry no mark and still count; only entries written after the change are skipped.
 
