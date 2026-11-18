@@ -23,6 +23,7 @@ export function InformalTradersScreen() {
       titlePrompt={informalTradersTitlePrompt}
       prompts={informalTraderFields.map((field) => field.prompt)}
       metaPrompts={informalTradersMetaPrompts}
+      owner={{ prompt: "Holder", heading: "Holder" }}
       empty={{ words: "No informal traders yet.", act: "Add trader", to: routes.informalTraderNew.path() }}
     />
   );

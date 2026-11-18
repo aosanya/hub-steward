@@ -24,6 +24,7 @@ export function BusinessesScreen() {
       titlePrompt={businessesTitlePrompt}
       prompts={businessFields.map((field) => field.prompt)}
       metaPrompts={businessesMetaPrompts}
+      owner={{ prompt: "Owner", heading: "Owner" }}
       empty={{ words: "No businesses yet.", act: "Add business", to: routes.businessNew.path() }}
     />
   );

@@ -36,7 +36,12 @@ export const loadRecordRows = async (recordCode: string, titlePrompt: string, me
 export const loadRecordRowsHeldBy = async (recordCode: string, titlePrompt: string, metaPrompts: string[], actorId: string): Promise<RecordRow[]> =>
   recordRowsOf(await loadRawRows(recordCode, { answer_actor_id: actorId }), titlePrompt, metaPrompts);
 
-export const loadRecordRow = async (recordCode: string, id: string, prompts: string[]): Promise<Record<string, string>> => {
+export const recordOwnerKey = "ownerId";
+
+export const loadRecordRow = async (recordCode: string, id: string, prompts: string[], ownerPrompt?: string): Promise<Record<string, string>> => {
   const row = (await loadRawRows(recordCode)).find((one) => one.id === id);
-  return row ? Object.fromEntries(prompts.map((prompt) => [prompt, answerOf(row, prompt)])) : {};
+  if (!row) return {};
+  const fields = Object.fromEntries(prompts.map((prompt) => [prompt, answerOf(row, prompt)]));
+  const owner = ownerPrompt ? answerOf(row, ownerPrompt) : "";
+  return owner ? { ...fields, [recordOwnerKey]: owner } : fields;
 };

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button } from "../../shared/ui/Button";
-import { liveRecordRowsTool, loadRecordRow, loadRecordRows } from "./liveRecordRows";
+import { liveRecordRowsTool, loadRecordRow, loadRecordRows, recordOwnerKey } from "./liveRecordRows";
 import { MenuWindow } from "./MenuWindow";
+import { RecordOwner } from "./RecordOwner";
 
 type Props = {
   title: string;
@@ -10,9 +11,10 @@ type Props = {
   metaPrompts: string[];
   prompts: string[];
   empty: { words: string; act: string; to: string };
+  owner?: { prompt: string; heading: string };
 };
 
-export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, prompts, empty }: Props) {
+export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, prompts, empty, owner }: Props) {
   const [count, setCount] = useState(0);
   const load = async () => {
     const rows = await loadRecordRows(recordCode, titlePrompt, metaPrompts);
@@ -27,9 +29,10 @@ export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, 
       list={{ title, tool: liveRecordRowsTool, fields: { title: "title", meta: "meta" }, empty, load }}
       detail={{
         tool: liveRecordRowsTool,
-        load: (id) => loadRecordRow(recordCode, id, prompts),
+        load: (id) => loadRecordRow(recordCode, id, prompts, owner?.prompt),
         fields: Object.fromEntries(prompts.map((prompt) => [prompt, prompt])),
         status: "status",
+        extra: owner ? (row) => <RecordOwner heading={owner.heading} ownerId={String(row[recordOwnerKey] ?? "")} /> : undefined,
       }}
     />
   );
