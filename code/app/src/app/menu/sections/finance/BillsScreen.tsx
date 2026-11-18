@@ -4,17 +4,13 @@ import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { Chip } from "../../../../shared/ui/Chip";
-import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { Segmented } from "../../../../shared/ui/Segmented";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { actionFailedWords } from "../../MenuDetail";
-import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
+import { BillPage, manageRole } from "./BillPage";
 import { RaiseBillSheet } from "./RaiseBillSheet";
 import { billRow, chargeNames, chargeWords, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, text, tools, unitOf, type Item } from "./financeData";
-import { markBillPaid } from "./markBillPaid";
-
-const manageRole = "accounting.manage";
+import { financePaths } from "./paths";
 
 const rolesTool = "agency_get_my_roles";
 
@@ -27,8 +23,6 @@ const statuses = [
 ];
 
 const paymentLines = 10;
-
-const paymentLabels = Array.from({ length: paymentLines }, (_, at) => `Payment ${at + 1}`);
 
 const paymentLine = (payment: Item, unit: string) => [moneyWords(text(payment, "amount"), unit), dayWords(text(payment, "paid_at")), text(payment, "narration")].filter(Boolean).join(" · ");
 
@@ -54,15 +48,6 @@ const loadBill = async (id: string, unit: string) => {
   };
 };
 
-const editFields: EditField[] = [
-  { label: "Payer", key: "payer" },
-  { label: "Amount", key: "amount", kind: "number", required: true },
-  { label: "Due date", key: "due_at", kind: "date" },
-  { label: "Narration", key: "narration" },
-];
-
-const paymentFields = Object.fromEntries(paymentLabels.map((label, at) => [label, `payment${at + 1}`]));
-
 export function BillsScreen() {
   const word = useWord("accounting");
   const unit = unitOf(word);
@@ -70,7 +55,6 @@ export function BillsScreen() {
   const [edited, setEdited] = useState(0);
   const [status, setStatus] = useState("");
   const [raising, setRaising] = useState(false);
-  const [refused, setRefused] = useState(false);
   const [search] = useSearchParams();
   const [listed, setListed] = useState(-1);
   const roles = useLoad(() => callTool("", rolesTool, {}), "bills-roles");
@@ -81,21 +65,14 @@ export function BillsScreen() {
     setListed(bills.length);
     return bills;
   };
-  const markPaid = async (row: Item) => {
-    setRefused(false);
-    try {
-      await markBillPaid(text(row, "billID"));
-      setVersion((was) => was + 1);
-    } catch {
-      setRefused(true);
-    }
-  };
   const noBills = `No ${word("Bills").toLowerCase()} yet.`;
   const raiseButton = <Button kind="primary" onClick={() => setRaising(true)}>Raise {word("Bill").toLowerCase()}</Button>;
   return (
     <MenuWindow
       key={`${status}:${version}`}
       title={word("Revenue & Billing")}
+      withTabs
+      bandless
       startAt={search.get("bill") ?? undefined}
       listKey={`${edited}${unit}`}
       detailKey={`${edited}${unit}`}
@@ -125,24 +102,10 @@ export function BillsScreen() {
       detail={{
         tool: tools.billRead,
         load: (id: string) => loadBill(id, unit),
-        fields: { Payer: "payer", Charge: "charge", Amount: "amountWords", Settled: "settled", Outstanding: "outstanding", Due: "due", Late: "late", Narration: "narration", Status: "status", ...paymentFields },
+        fields: {},
         status: "",
-        extra: (bill) => (
-          <MenuEditForm
-            item={bill}
-            id={text(bill, "id")}
-            idArg="billID"
-            tool={tools.billUpdate}
-            permission={manageRole}
-            fields={editFields}
-            keep={["payer", "amount", "due_at", "narration"]}
-            readAgain={() => loadBill(text(bill, "id"), unit)}
-            onSaved={() => setEdited((was) => was + 1)}
-          />
-        ),
-        action: { label: "Mark paid", tool: tools.paymentMarkPaid, run: markPaid, when: (row) => manage && ["Open", "Overdue"].includes(text(row, "status")) },
+        extra: (bill) => <BillPage bill={bill} back={financePaths.revenueAndBilling.path()} reload={() => loadBill(text(bill, "id"), unit)} onSaved={() => setEdited((was) => was + 1)} />,
       }}
-      below={refused ? <LoadFailed words={actionFailedWords} /> : null}
     />
   );
 }

@@ -183,18 +183,19 @@ describe("a bill", () => {
     expect(callsTo("accounting_bill_read")[0][2]).toEqual({ billID: "b2" });
   });
 
-  it("shows Payer, Amount, Settled, Outstanding, Due and Status for the bill", async () => {
+  it("shows the Payer as the title, the Status as the quiet line and Amount, Settled, Outstanding and Due as rows", async () => {
     screens();
     await userEvent.click(await screen.findByRole("button", { name: /Sample Garage/ }));
     await waitFor(() => expect(pane().textContent).toContain("Sample Garage"));
 
     const detail = within(pane());
-    ["Payer", "Amount", "Settled", "Outstanding", "Due", "Status"].forEach((label) => expect(detail.getByText(label)).toBeInTheDocument());
+    expect(detail.getByRole("heading", { level: 1, name: "Sample Garage" })).toBeInTheDocument();
+    ["Amount", "Settled", "Outstanding", "Due"].forEach((label) => expect(detail.getByText(label)).toBeInTheDocument());
     expect(detail.getByText("1,500")).toBeInTheDocument();
     expect(detail.getByText("500")).toBeInTheDocument();
     expect(detail.getByText("1,000")).toBeInTheDocument();
     expect(detail.getByText("2026-01-15")).toBeInTheDocument();
-    expect(detail.getByText("Overdue")).toBeInTheDocument();
+    expect(detail.getByText("Overdue · 40 days late")).toBeInTheDocument();
   });
 
   it("reads Settled as the status of a settled bill in its detail, beside the Settled label", async () => {

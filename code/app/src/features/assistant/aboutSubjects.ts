@@ -153,7 +153,52 @@ const holding = oneRecord("digitaltwin_tenure_read", "tenureID", "Reading the ho
 const landUse = oneRecord("digitaltwin_land_use_read", "landUseID", "Reading the land use", "its zone, use and area");
 
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse };
+const bill: Subject = {
+  reads: {
+    accounting_bill_read: { billID: byId },
+    accounting_payment_list: { bill_id: byId },
+  },
+  steps: {
+    accounting_bill_read: "Reading the bill",
+    accounting_payment_list: "Reading the payments on the bill",
+  },
+  choices: ["Details", "Payments"],
+  reading: "Details means accounting_bill_read and Payments means accounting_payment_list.",
+  overview: "call accounting_bill_read and accounting_payment_list at once and answer with the payer, the amount, what is outstanding, when it is due and the most recent payment",
+  empty: "its details and payments",
+};
+
+const budget: Subject = {
+  reads: {
+    accounting_budget_read: { budgetID: byId },
+    accounting_tender_list: { budget_id: byId },
+  },
+  steps: {
+    accounting_budget_read: "Reading the budget line",
+    accounting_tender_list: "Reading the tenders against the budget line",
+  },
+  choices: ["Details", "Tenders"],
+  reading: "Details means accounting_budget_read and Tenders means accounting_tender_list.",
+  overview: "call accounting_budget_read and accounting_tender_list at once and answer with the planned, spent and remaining amounts and the tenders",
+  empty: "its details and tenders",
+};
+
+const tender: Subject = {
+  reads: {
+    accounting_tender_read: { tenderID: byId },
+    accounting_quote_list: { tenderID: byId },
+  },
+  steps: {
+    accounting_tender_read: "Reading the tender",
+    accounting_quote_list: "Reading the quotes on the tender",
+  },
+  choices: ["Details", "Quotes"],
+  reading: "Details means accounting_tender_read and Quotes means accounting_quote_list.",
+  overview: "call accounting_tender_read and accounting_quote_list at once and answer with the description, when it closes and the quotes",
+  empty: "its details and quotes",
+};
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender };
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 
