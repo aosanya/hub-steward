@@ -2,6 +2,7 @@ import { vi, type MockInstance } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
+import { carriedChatAbout, carryChatAbout, forgetChatAbout } from "../../../chatAbout";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items } from "./index";
@@ -97,6 +98,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  forgetChatAbout();
   forgetOpenAgency();
   vi.restoreAllMocks();
 });
@@ -297,5 +299,39 @@ describe("who may send", () => {
     expect(screen.queryByRole("button", { name: "Actions" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Send to national level" })).toBeNull();
     expect(within(formCard()).getByRole("button", { name: "Show figures" })).toBeInTheDocument();
+  });
+});
+
+describe("Chat on the National Report", () => {
+  it("is about nothing before a period is shown or sent", async () => {
+    openScreen();
+    await screen.findByText("Sent reports");
+    carryChatAbout();
+
+    expect(carriedChatAbout()).toBeNull();
+  });
+
+  it("is about the shown period once its figures are read", async () => {
+    openScreen();
+    await screen.findByText("Sent reports");
+    choose("2026-07-01", "2026-09-30");
+    await userEvent.click(within(formCard()).getByRole("button", { name: "Show figures" }));
+    await waitFor(() => expect(listPane().textContent).toContain("8,100"));
+    carryChatAbout();
+
+    expect(carriedChatAbout()).toMatchObject({ kind: "report", id: "2026-07-01T00:00:00Z~2026-10-01T00:00:00Z" });
+    expect(carriedChatAbout()?.name).toMatch(/2026/);
+    expect(carriedChatAbout()?.name).not.toMatch(/T00|~/);
+  });
+
+  it("is about the sent period once a report is sent", async () => {
+    openScreen();
+    await screen.findByText("Sent reports");
+    choose("2026-07-01", "2026-09-30");
+    await sendNow();
+    await waitFor(() => expect(sentRows()).toHaveLength(2));
+    carryChatAbout();
+
+    expect(carriedChatAbout()).toMatchObject({ kind: "report", id: "2026-07-01T00:00:00Z~2026-10-01T00:00:00Z" });
   });
 });
