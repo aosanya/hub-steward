@@ -2,6 +2,7 @@ import { Route } from "react-router-dom";
 import { AgendaMinutesScreen, agendaMinutesTitle } from "./AgendaMinutesScreen";
 import { BylawsScreen, bylawsTitle } from "./BylawsScreen";
 import { CommitteesScreen, committeesTitle } from "./CommitteesScreen";
+import { DeclarationsScreen, declarationsTitle } from "./DeclarationsScreen";
 import { MeetingsScreen, meetingsTitle } from "./MeetingsScreens";
 import { ResolutionsScreen, resolutionsTitle } from "./ResolutionsScreen";
 import { CouncilEditScreen } from "./CouncilEditScreen";
@@ -13,6 +14,7 @@ export const items = [
   { title: resolutionsTitle, path: () => councilPaths.resolutions.path() },
   { title: bylawsTitle, path: () => councilPaths.bylaws.path() },
   { title: committeesTitle, path: () => councilPaths.committees.path() },
+  { title: declarationsTitle, path: () => councilPaths.declarations.path() },
 ];
 
 export const routes = () => (
@@ -23,5 +25,6 @@ export const routes = () => (
     <Route path={councilPaths.bylaws.pattern} element={<BylawsScreen />} />
     <Route path={councilPaths.committees.pattern} element={<CommitteesScreen />} />
     <Route path={councilPaths.edit.pattern} element={<CouncilEditScreen />} />
+    <Route path={councilPaths.declarations.pattern} element={<DeclarationsScreen />} />
   </>
 );
