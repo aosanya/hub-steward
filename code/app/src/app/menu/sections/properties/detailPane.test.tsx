@@ -98,3 +98,32 @@ describe.each(screens)("$title on a wide screen", ({ Page, listTool, list, row, 
     expect(called).toHaveBeenCalledWith("", readTool, readArgs);
   });
 });
+
+const phoneScreens = screens.filter((screen) => screen.title !== "Places");
+
+describe.each(phoneScreens)("$title on a phone", ({ Page, listTool, list, row, readTool, readArgs, read, shown }) => {
+  it("opens the chosen row as a page with what its read tool replies", async () => {
+    setWide(false);
+    called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
+      if (name === "agency_list_mounts") return mounted;
+      if (name === listTool) return { items: list };
+      if (name === readTool) return { item: read };
+      return { items: [] };
+    });
+    render(
+      <MemoryRouter initialEntries={["/a/zoldhalom/menu/properties/page"]}>
+        <Routes>
+          <Route path="/a/:agencyId/menu/properties/page" element={<Page />} />
+          <Route path="*" element={null} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    await userEvent.click(await screen.findByText(row, { selector: ".ttl" }));
+
+    const page = document.querySelector(".mw-detail") as HTMLElement;
+    expect(page).not.toBeNull();
+    expect(await within(page).findByText(shown)).toBeInTheDocument();
+    expect(called).toHaveBeenCalledWith("", readTool, readArgs);
+  });
+});
