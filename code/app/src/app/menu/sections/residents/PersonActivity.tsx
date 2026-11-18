@@ -2,9 +2,9 @@ import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { dayWords } from "../../../../shared/ui/days";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
-import { SectionHeading } from "../../../../shared/ui/SectionHeading";
+import { ListRow } from "../../../../shared/ui/ListRow";
+import { LoadingLine } from "../../../../shared/ui/LoadState";
+import { Section } from "../../../../shared/ui/Section";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { auditRowsOf } from "../settings/auditRows";
@@ -51,16 +51,8 @@ export function PersonActivity({ id }: { id: string }) {
   const rows = view.state === "ready" ? view.data : [];
   return (
     <>
-      <SectionHeading>{word("Activity")}</SectionHeading>
       {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "ready" && rows.length === 0 ? <EmptyCard words="No other activity yet." /> : null}
-      {rows.length > 0 ? (
-        <Rows>
-          {rows.map((row) => (
-            <ListRow key={row.key} title={row.title} meta={row.meta} />
-          ))}
-        </Rows>
-      ) : null}
+      {view.state === "ready" ? <Section word={word("Activity")} empty={{ words: "No other activity yet." }} rows={rows.map((row) => <ListRow key={row.key} title={row.title} meta={row.meta} />)} full /> : null}
     </>
   );
 }

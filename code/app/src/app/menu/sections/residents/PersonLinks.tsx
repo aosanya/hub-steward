@@ -3,6 +3,7 @@ import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { dayWords } from "../../../../shared/ui/days";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
+import { Section } from "../../../../shared/ui/Section";
 import { LoadingLine } from "../../../../shared/ui/LoadState";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
@@ -11,7 +12,8 @@ import { listOf, text } from "../staff/staffData";
 import { servicesPaths } from "../services/paths";
 import { ApplicationSheet } from "./ApplicationSheet";
 import { ChooseSheet } from "./ChooseSheet";
-import { EmptyActCard } from "./EmptyActCard";
+import { SectionAct } from "./SectionAct";
+import { useOpenSection } from "./personSections";
 import { useOpenFromPanel } from "./useOpenFromPanel";
 import { businessesMetaPrompts, businessesRecordCode, businessesTitlePrompt } from "./BusinessesScreen";
 import { informalTradersMetaPrompts, informalTradersRecordCode, informalTradersTitlePrompt } from "./InformalTradersScreen";
@@ -46,25 +48,29 @@ function ApplicationFlow({ personId, onClose, onFiled }: { personId: string; onC
   return <ChooseSheet title={startTitle} loadKey="person-application-forms" load={loadFormChoices} onClose={onClose} onChoose={async (chosen) => setFormId(chosen)} />;
 }
 
-export function PersonApplications({ id }: { id: string }) {
+export function PersonApplications({ id, full }: { id: string; full?: boolean }) {
+  const opens = useOpenSection(id, "applications");
   const word = useWord("forms");
   const [version, setVersion] = useState(0);
   const view = useLoad(loadApplications(id), `person-applications:${openAgencyId()}:${id}:${version}`);
   if (view.state === "error") return null;
   const applications = view.state === "ready" ? view.data : [];
+  const act = <SectionAct permission="application.file" act={startTitle} sheet={(close) => <ApplicationFlow personId={id} onClose={close} onFiled={() => setVersion((was) => was + 1)} />} />;
   return (
     <>
-      <SectionHeading>{word("Applications")}</SectionHeading>
       {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "ready" && applications.length === 0 ? (
-        <EmptyActCard
-          words="No applications yet."
-          permission="application.file"
-          act={startTitle}
-          sheet={(close) => <ApplicationFlow personId={id} onClose={close} onFiled={() => setVersion((was) => was + 1)} />}
+      {view.state === "ready" ? (
+        <Section
+          word={word("Applications")}
+          full={full}
+          opens={opens}
+          act={act}
+          empty={{ words: "No applications yet.", act }}
+          rows={applications.map((application) => (
+            <ListRow key={application.key} title={application.title} meta={`Sent ${dayWords(application.sentAt)}`} onClick={() => open(servicesPaths.application.path({ id: application.key }))} end="›" />
+          ))}
         />
       ) : null}
-      {applications.length > 0 ? <ApplicationRows applications={applications} /> : null}
     </>
   );
 }

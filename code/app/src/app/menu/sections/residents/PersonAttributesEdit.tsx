@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useMay } from "../../../../features/agency/useMay";
 import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
+import { ListRow } from "../../../../shared/ui/ListRow";
+import { Section } from "../../../../shared/ui/Section";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
@@ -19,7 +20,7 @@ const loadTextFields = async (): Promise<EditField[]> =>
 
 const attributesOf = (person: Item): Item => (person.attributes && typeof person.attributes === "object" ? (person.attributes as Item) : {});
 
-export function PersonAttributesEdit({ id, person, onSaved }: { id: string; person: Item; onSaved: () => void }) {
+export function PersonAttributesEdit({ id, person, onSaved, openCount }: { id: string; person: Item; onSaved: () => void; openCount?: number }) {
   const may = useMay("member.edit");
   const view = useLoad(async () => (may ? loadTextFields() : []), `person-attribute-properties:${openAgencyId()}:${may}`);
   const details = useRegisterDetails(residentRecordCode, residentFields);
@@ -55,11 +56,7 @@ export function PersonAttributesEdit({ id, person, onSaved }: { id: string; pers
   };
   return (
     <>
-      <Rows>
-        {filled.map((field) => (
-          <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />
-        ))}
-      </Rows>
+      <Section word="Details" rows={filled.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />)} />
       <MenuEditForm
         item={item}
         id={id}
@@ -67,6 +64,8 @@ export function PersonAttributesEdit({ id, person, onSaved }: { id: string; pers
         tool="actor_set_actor_attributes"
         permission="member.edit"
         editLabel="Edit attributes"
+        bare={openCount !== undefined}
+        openCount={openCount}
         fields={fields}
         build={saveAttributes}
         alsoSave={saveAnswers}

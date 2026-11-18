@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
+import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
-import { SectionHeading } from "../../../../shared/ui/SectionHeading";
+import { Section } from "../../../../shared/ui/Section";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { ChooseSheet } from "./ChooseSheet";
-import { EmptyActCard } from "./EmptyActCard";
+import { SectionAct } from "./SectionAct";
 import { PersonActivity } from "./PersonActivity";
-import { PersonEdit } from "./PersonEdit";
+import { PersonEdit, PersonEditMenu } from "./PersonEdit";
 import { PersonBills } from "./PersonBills";
 import { PersonHoldings } from "./PersonHoldings";
 import { PersonApplications, PersonRecords } from "./PersonLinks";
@@ -18,6 +18,7 @@ import { PersonRaised } from "./PersonRaised";
 import { residentPaths } from "./paths";
 import { personNameOf } from "./personName";
 import { useOpenFromPanel } from "./useOpenFromPanel";
+import { useOpenSection } from "./personSections";
 
 type Item = Record<string, unknown>;
 
@@ -42,61 +43,83 @@ const loadMemberships = (id: string) => async () => {
   });
 };
 
-function PersonGroups({ id }: { id: string }) {
+export function PersonGroups({ id, full }: { id: string; full?: boolean }) {
+  const opens = useOpenSection(id, "groups");
   const word = useWord("actor");
   const open = useOpenFromPanel();
   const [version, setVersion] = useState(0);
   const view = useLoad(loadMemberships(id), `person-groups:${openAgencyId()}:${id}:${version}`);
   const groups = view.state === "ready" ? view.data : [];
   const addTitle = `Add to a ${word("Group").toLowerCase()}`;
+  const act = (
+    <SectionAct
+      permission="group.manage"
+      act={addTitle}
+      sheet={(close) => (
+        <ChooseSheet
+          title={addTitle}
+          loadKey="person-group-choices"
+          load={loadGroupChoices}
+          onClose={close}
+          onChoose={async (groupId) => {
+            await callTool("", "actor_assign_group", { actor_id: id, group_id: groupId });
+            close();
+            setVersion((was) => was + 1);
+          }}
+        />
+      )}
+    />
+  );
   return (
     <>
-      <SectionHeading>{word("Groups")}</SectionHeading>
       {view.state === "loading" ? <LoadingLine /> : null}
       {view.state === "error" ? <LoadFailed words={`The ${word("Groups").toLowerCase()} could not be loaded.`} /> : null}
-      {view.state === "ready" && groups.length === 0 ? (
-        <EmptyActCard
-          words={`Not in any ${word("Group").toLowerCase()} yet.`}
-          permission="group.manage"
-          act={addTitle}
-          sheet={(close) => (
-            <ChooseSheet
-              title={addTitle}
-              loadKey="person-group-choices"
-              load={loadGroupChoices}
-              onClose={close}
-              onChoose={async (groupId) => {
-                await callTool("", "actor_assign_group", { actor_id: id, group_id: groupId });
-                close();
-                setVersion((was) => was + 1);
-              }}
-            />
-          )}
-        />
-      ) : null}
-      {groups.length > 0 ? (
-        <Rows>
-          {groups.map((group) => (
+      {view.state === "ready" ? (
+        <Section
+          word={word("Groups")}
+          full={full}
+          opens={opens}
+          act={act}
+          empty={{ words: `Not in any ${word("Group").toLowerCase()} yet.`, act }}
+          rows={groups.map((group) => (
             <ListRow key={group.id} title={group.name} onClick={() => open(residentPaths.groups.path({ group: group.id }))} end="›" />
           ))}
-        </Rows>
+        />
       ) : null}
     </>
   );
 }
 
+export function PersonHead({ person, bump }: { person: Item; bump: (key: "name" | "attributes") => void }) {
+  const status = typeof person.status === "string" ? person.status : "";
+  return (
+    <div className="title-block">
+      <div className="title-row">
+        <h1 className="person-name">{personNameOf(person)}</h1>
+        <PersonEditMenu bump={bump} />
+      </div>
+      {status ? <p className="quiet-line">{status}</p> : null}
+    </div>
+  );
+}
+
 export function PersonPanel({ person, onSaved }: { person: Item; onSaved: () => void }) {
   const id = String(person.id ?? "");
+  const [counts, setCounts] = useState({ name: 0, attributes: 0 });
+  const bump = (key: "name" | "attributes") => setCounts((was) => ({ ...was, [key]: was[key] + 1 }));
   return (
-    <>
-      <PersonEdit id={id} person={person} onSaved={onSaved} />
-      <PersonGroups id={id} />
-      <PersonApplications id={id} />
-      <PersonRaised id={id} />
-      <PersonBills id={id} />
-      <PersonRecords id={id} />
-      <PersonHoldings id={id} />
-      <PersonActivity id={id} />
-    </>
+    <div className="person-page">
+      <PersonHead person={person} bump={bump} />
+      <PersonEdit id={id} person={person} onSaved={onSaved} counts={counts} />
+      <div className="sections">
+        <PersonGroups id={id} />
+        <PersonApplications id={id} />
+        <PersonRaised id={id} />
+        <PersonBills id={id} />
+        <PersonRecords id={id} />
+        <PersonHoldings id={id} />
+        <PersonActivity id={id} />
+      </div>
+    </div>
   );
 }

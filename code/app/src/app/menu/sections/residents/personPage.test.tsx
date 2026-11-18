@@ -38,15 +38,15 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const openPerson = async (wide: boolean, path?: string) => {
+const openPerson = async (wide: boolean) => {
   setWide(wide);
-  const start = path ?? items.find((item) => item.title === "All People")?.path?.() ?? "";
+  const start = items.find((item) => item.title === "All People")?.path?.() ?? "";
   render(
     <MemoryRouter initialEntries={[start]}>
       <Routes>{routes()}</Routes>
     </MemoryRouter>,
   );
-  if (!path && !wide) await userEvent.click(await screen.findByRole("button", { name: new RegExp(personName) }));
+  if (!wide) await userEvent.click(await screen.findByRole("button", { name: new RegExp(personName) }));
   await screen.findByRole("heading", { name: "Bills" });
   return document.querySelector(".mw-detail") as HTMLElement;
 };
@@ -100,12 +100,17 @@ describe("a section is one heading row over plain rows", () => {
   });
 
   it("opens the same screen at the one route pattern for every section", async () => {
-    for (const section of ["groups", "applications", "wishes", "bills", "holdings"]) {
+    const words = { groups: "Groups", applications: "Applications", wishes: "Wishes and issues", bills: "Bills", holdings: "Holdings" };
+    for (const [section, word] of Object.entries(words)) {
       cleanup();
       setWide(false);
-      await openPerson(false, `/menu/residents/people/p1/${section}`).catch(() => undefined);
-      expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
-      expect(document.body.textContent).toContain(personName);
+      render(
+        <MemoryRouter initialEntries={[`/menu/residents/people/p1/${section}`]}>
+          <Routes>{routes()}</Routes>
+        </MemoryRouter>,
+      );
+      expect(await screen.findByRole("heading", { level: 1, name: word })).toBeTruthy();
+      expect(await screen.findByText(new RegExp(personName))).toBeTruthy();
     }
   });
 });

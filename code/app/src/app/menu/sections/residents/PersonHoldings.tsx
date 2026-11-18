@@ -2,7 +2,8 @@ import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
+import { LoadingLine } from "../../../../shared/ui/LoadState";
+import { Section } from "../../../../shared/ui/Section";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
@@ -10,6 +11,7 @@ import { dayOf, digitaltwinModule, loadNodeNames, placeIdOf, tenureList, textOf 
 import { listOf } from "../staff/staffData";
 import { loadHoldingDetails, loadOwnAnswers, withOwnAnswers } from "../properties/holdingDetails";
 import { placePaths } from "../properties/paths";
+import { useOpenSection } from "./personSections";
 import { useOpenFromPanel } from "./useOpenFromPanel";
 
 const loadAssetIdsByPlace = async () => {
@@ -54,17 +56,20 @@ function HoldingRows({ holdings }: { holdings: Holding[] }) {
   );
 }
 
-export function PersonHoldings({ id }: { id: string }) {
+const holdingRows = (holdings: Holding[], open: (path: string) => void) =>
+  holdings.map((holding) => <ListRow key={holding.key} title={holding.title} meta={holding.meta} onClick={() => open(holding.opens)} end="›" />);
+
+export function PersonHoldings({ id, full }: { id: string; full?: boolean }) {
   const word = useWord(digitaltwinModule);
+  const open = useOpenFromPanel();
+  const opens = useOpenSection(id, "holdings");
   const view = useLoad(loadHoldings({ holder_actor_id: id }), `person-holdings:${openAgencyId()}:${id}`);
   if (view.state === "error") return null;
   const holdings = view.state === "ready" ? view.data : [];
   return (
     <>
-      <SectionHeading>{word("Holdings")}</SectionHeading>
       {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "ready" && holdings.length === 0 ? <EmptyCard words="No holdings yet." /> : null}
-      {holdings.length > 0 ? <HoldingRows holdings={holdings} /> : null}
+      {view.state === "ready" ? <Section word={word("Holdings")} full={full} opens={opens} empty={{ words: "No holdings yet." }} rows={holdingRows(holdings, open)} /> : null}
     </>
   );
 }

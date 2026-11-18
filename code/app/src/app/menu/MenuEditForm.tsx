@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMay } from "../../features/agency/useMay";
 import { Button } from "../../shared/ui/Button";
 import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";
@@ -26,6 +26,8 @@ type Props = {
   build?: (sent: Record<string, unknown>) => Record<string, unknown>;
   alsoSave?: (changed: Record<string, string>) => Promise<unknown>;
   onSaved?: (changed: Record<string, string>) => void;
+  bare?: boolean;
+  openCount?: number;
 };
 
 type Clash = { key: string; label: string; theirs: string; mine: string };
@@ -82,7 +84,7 @@ const inputModes = { text: undefined, number: "decimal", date: undefined, lines:
 
 const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key, field)]));
 
-export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], editLabel = "Edit", readAgain, build, alsoSave, onSaved }: Props) {
+export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], editLabel = "Edit", readAgain, build, alsoSave, onSaved, bare = false, openCount = 0 }: Props) {
   const may = useMay(permission);
   const [editing, setEditing] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
@@ -91,6 +93,10 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
   const [base, setBase] = useState<Record<string, string>>({});
   const [clashes, setClashes] = useState<Clash[]>([]);
   const [version, setVersion] = useState<string | undefined>(undefined);
+  const opener = useRef<() => void>(() => undefined);
+  useEffect(() => {
+    if (openCount > 0) opener.current();
+  }, [openCount]);
   if (!may) return null;
   const fieldOf = (key: string) => fields.find((field) => field.key === key);
   const changed = Object.fromEntries(Object.entries(values).filter(([key, value]) => !sameText(fieldOf(key), value, base[key])));
@@ -118,6 +124,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
     setVersion(versionOf(item));
     setEditing(true);
   };
+  opener.current = open;
   const settle = (key: string, theirs: string, useTheirs: boolean) => {
     setBase((was) => ({ ...was, [key]: theirs }));
     if (useTheirs) setValues((was) => ({ ...was, [key]: theirs }));
@@ -162,7 +169,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
       setSaving(false);
     }
   };
-  if (!editing) return <Button kind="quiet" onClick={open}>{editLabel}</Button>;
+  if (!editing) return bare ? null : <Button kind="quiet" onClick={open}>{editLabel}</Button>;
   return (
     <>
       {fields.map((field) =>

@@ -81,8 +81,8 @@ export function AllPeopleScreen() {
       detail={{
         tool: "actor_get_actor",
         load: loadPerson,
-        fields: { Name: "display_name" },
-        status: "status",
+        fields: {},
+        status: "",
         extra: (person) => (
           <>
             <ChatAboutResident person={person} />
@@ -141,7 +141,7 @@ export function RegistrationsScreen() {
       detail={{
         tool: "actor_get_actor",
         load: registrationDetail,
-        fields: { Name: "display_name", Asked: "asked" },
+        fields: { Asked: "asked" },
         status: "status",
         extra: (person) => <PersonPanel person={person} onSaved={() => setVersion((was) => was + 1)} />,
       }}
