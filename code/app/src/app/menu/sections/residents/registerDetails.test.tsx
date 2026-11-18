@@ -1,4 +1,4 @@
-import { vi, type MockInstance } from "vitest";
+import { vi } from "vitest";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes } from "react-router-dom";
@@ -12,7 +12,6 @@ vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({
 
 type Row = { id: string; answers: Record<string, string> };
 
-let called: MockInstance<typeof mcp.callTool>;
 let saved: Row[];
 
 const chosen = {
@@ -25,7 +24,7 @@ const chosen = {
 
 const hubWith = (rows: Row[], settings: Record<string, unknown>) => {
   saved = rows;
-  called = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
+  vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
     const given = (args ?? {}) as Record<string, unknown>;
     if (tool === "forms_catalog_setting_read") {
       const value = settings[String(given.key)];

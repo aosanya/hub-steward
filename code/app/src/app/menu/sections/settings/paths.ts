@@ -7,4 +7,5 @@ export const settingsPaths = {
   integrations: screen("/menu/settings/integrations"),
   aiAgents: screen("/menu/settings/ai-agents"),
   auditLog: screen("/menu/settings/audit-log"),
+  registerDetails: screen("/menu/settings/details-of-a-record"),
 };

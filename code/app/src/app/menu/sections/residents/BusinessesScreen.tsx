@@ -1,6 +1,7 @@
 import { routes } from "../../../routes";
 import type { RecordFormField } from "../../RecordRowForm";
 import { RecordRowsScreen } from "../../RecordRowsScreen";
+import { useRegisterFields } from "../../registerDetails";
 
 export const businessesRecordCode = "RC-1";
 export const businessesTitlePrompt = "Trading name";
@@ -17,13 +18,16 @@ export const businessFields: RecordFormField[] = [
   { prompt: "Owner", required: false, people: true },
 ];
 
+export const useBusinessFields = () => useRegisterFields(businessesRecordCode, businessFields);
+
 export function BusinessesScreen() {
+  const fields = useBusinessFields();
   return (
     <RecordRowsScreen
       title="Businesses"
       recordCode={businessesRecordCode}
       titlePrompt={businessesTitlePrompt}
-      prompts={businessFields.filter((field) => !field.people).map((field) => field.prompt)}
+      prompts={fields.filter((field) => !field.people).map((field) => field.prompt)}
       metaPrompts={businessesMetaPrompts}
       owner={{ prompt: "Owner", heading: "Owner" }}
       empty={{ words: "No businesses yet.", act: "Add business", to: routes.businessNew.path() }}

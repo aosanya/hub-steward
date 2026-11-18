@@ -5,6 +5,7 @@ import { AuditLog } from "./AuditLog";
 import { BoundariesAndAreas } from "./BoundariesAndAreas";
 import { Integrations } from "./Integrations";
 import { settingsPaths } from "./paths";
+import { RegisterDetails } from "./RegisterDetails";
 import { UsersAndRoles } from "./UsersAndRoles";
 import type { MenuItem } from "../../sections";
 
@@ -15,6 +16,7 @@ export const items: MenuItem[] = [
   { title: "Integrations", path: () => settingsPaths.integrations.path() },
   { title: "AI Agents & Limits", path: () => settingsPaths.aiAgents.path() },
   { title: "Audit Log", path: () => settingsPaths.auditLog.path() },
+  { title: "Details of a record", path: () => settingsPaths.registerDetails.path() },
 ];
 
 export const routes = () => (
@@ -25,5 +27,6 @@ export const routes = () => (
     <Route path={settingsPaths.integrations.pattern} element={<Integrations />} />
     <Route path={settingsPaths.aiAgents.pattern} element={<AiAgents />} />
     <Route path={settingsPaths.auditLog.pattern} element={<AuditLog />} />
+    <Route path={settingsPaths.registerDetails.pattern} element={<RegisterDetails />} />
   </>
 );

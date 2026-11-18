@@ -1,6 +1,7 @@
 import { routes } from "../../../routes";
 import type { RecordFormField } from "../../RecordRowForm";
 import { RecordRowsScreen } from "../../RecordRowsScreen";
+import { useRegisterFields } from "../../registerDetails";
 
 export const informalTradersRecordCode = "RC-2";
 export const informalTradersTitlePrompt = "Name or alias";
@@ -17,13 +18,16 @@ export const informalTraderFields: RecordFormField[] = [
   { prompt: "Holder", required: false, people: true },
 ];
 
+export const useInformalTraderFields = () => useRegisterFields(informalTradersRecordCode, informalTraderFields);
+
 export function InformalTradersScreen() {
+  const fields = useInformalTraderFields();
   return (
     <RecordRowsScreen
       title="Informal traders"
       recordCode={informalTradersRecordCode}
       titlePrompt={informalTradersTitlePrompt}
-      prompts={informalTraderFields.filter((field) => !field.people).map((field) => field.prompt)}
+      prompts={fields.filter((field) => !field.people).map((field) => field.prompt)}
       metaPrompts={informalTradersMetaPrompts}
       owner={{ prompt: "Holder", heading: "Holder" }}
       empty={{ words: "No informal traders yet.", act: "Add trader", to: routes.informalTraderNew.path() }}
