@@ -15,6 +15,7 @@ type Props = {
   detailWord: string;
   metaPrompts: string[];
   prompts: string[];
+  assetPrompts?: string[];
   empty: { words: string; act: string; to: string };
   owner?: { prompt: string; heading: string };
   licence?: boolean;
@@ -26,12 +27,12 @@ const licenceMarkKey = "licenceMark";
 
 const licenceChip = (item: Record<string, unknown>) => (typeof item[licenceMarkKey] === "string" ? <LicenceChip mark={item[licenceMarkKey] as LicenceMark} /> : null);
 
-export function RecordRowsScreen({ title, recordCode, titlePrompt, detailWord, metaPrompts, prompts, empty, owner, licence, editPath, chat }: Props) {
+export function RecordRowsScreen({ title, recordCode, titlePrompt, detailWord, metaPrompts, prompts, assetPrompts, empty, owner, licence, editPath, chat }: Props) {
   const [search] = useSearchParams();
   const [count, setCount] = useState(0);
   const load = async () => {
     const [rows, marks] = await Promise.all([
-      loadRecordRows(recordCode, titlePrompt, metaPrompts),
+      loadRecordRows(recordCode, titlePrompt, metaPrompts, assetPrompts),
       licence ? loadLicenceMarks(recordCode) : Promise.resolve(null),
     ]);
     setCount(rows.length);
@@ -48,7 +49,7 @@ export function RecordRowsScreen({ title, recordCode, titlePrompt, detailWord, m
       list={{ title, tool: liveRecordRowsTool, fields: { title: "title", meta: "meta" }, empty, load, end: licence ? licenceChip : undefined }}
       detail={{
         tool: liveRecordRowsTool,
-        load: (id) => loadRecordRow(recordCode, id, prompts, owner?.prompt),
+        load: (id) => loadRecordRow(recordCode, id, prompts, owner?.prompt, assetPrompts),
         fields: {},
         status: "",
         extra: (row) => <RecordPage row={row} recordCode={recordCode} titlePrompt={titlePrompt} prompts={prompts} detailWord={detailWord} owner={owner} licence={licence} editPath={editPath} chat={chat} />,

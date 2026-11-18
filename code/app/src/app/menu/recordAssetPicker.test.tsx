@@ -67,7 +67,7 @@ describe("an asset question in a record form", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     await screen.findByText("the records");
-    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-3", answers: { Asset: "as1", "What was done": "Oil change" } });
+    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-268", answers: { Asset: "as1", "What was done": "Oil change" } });
   });
 
   it("reads the asset list once and does not ask for the assets when no question needs them", async () => {

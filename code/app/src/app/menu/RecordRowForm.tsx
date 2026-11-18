@@ -9,12 +9,13 @@ import { SearchSelect, type Choice } from "../../shared/ui/SearchSelect";
 import { callTool } from "../../shared/wakala/mcp";
 import { Shell } from "../Shell";
 import { resolveRecordCode } from "./liveRecordRows";
+import { loadAssetChoices, noAsset } from "./assetChoices";
 import { refusalWords } from "./MenuEditForm";
 import { personNameOf } from "./sections/residents/personName";
 
 const addLiveRecordRowTool = "agency_add_live_record_row";
 
-export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean; fixed?: boolean; kind?: "date" | "number" };
+export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean; assets?: boolean; fixed?: boolean; kind?: "date" | "number" };
 
 type Props = {
   title: string;
@@ -43,10 +44,15 @@ export function RecordRowForm({ title, recordCode, fields, back, edit, initial }
   const [saving, setSaving] = useState(false);
   const [refused, setRefused] = useState("");
   const [people, setPeople] = useState<Choice[]>([noOne]);
+  const [assets, setAssets] = useState<Choice[]>([noAsset]);
   const asksForPeople = fields.some((field) => field.people);
+  const asksForAssets = fields.some((field) => field.assets);
   useEffect(() => {
     if (asksForPeople) loadPeople().then(setPeople, () => setPeople([noOne]));
   }, [asksForPeople]);
+  useEffect(() => {
+    if (asksForAssets) loadAssetChoices().then(setAssets, () => setAssets([noAsset]));
+  }, [asksForAssets]);
   const answers = answersOf(fields, values);
   const complete = fields.every((field) => !field.required || field.prompt in answers);
   const set = (prompt: string, value: string) => setValues((was) => ({ ...was, [prompt]: value }));
@@ -64,7 +70,9 @@ export function RecordRowForm({ title, recordCode, fields, back, edit, initial }
   return (
     <Shell title={title} titleUnder backLabel={back.label} onBack={() => navigate(back.to)} tabless>
       {fields.map((field) =>
-        field.people ? (
+        field.assets ? (
+          <SearchSelect key={field.prompt} label={optionalWords(field)} choices={assets} value={values[field.prompt] ?? ""} onChange={(value) => set(field.prompt, value)} />
+        ) : field.people ? (
           <SearchSelect key={field.prompt} label={optionalWords(field)} choices={people} value={values[field.prompt] ?? ""} onChange={(value) => set(field.prompt, value)} />
         ) : field.options ? (
           <ChoiceGroup key={field.prompt} label={optionalWords(field)}>

@@ -1,5 +1,6 @@
 import { itemsOf } from "../../features/backlogs";
 import { callTool } from "../../shared/wakala/mcp";
+import { loadAssetLabels } from "./assetChoices";
 
 export const liveRecordRowsTool = "agency_list_live_record_rows";
 
@@ -51,8 +52,17 @@ const loadRawRows = async (recordCode: string, args: Raw = {}): Promise<Raw[]> =
   }
 };
 
-export const loadRecordRows = async (recordCode: string, titlePrompt: string, metaPrompts: string[]): Promise<RecordRow[]> =>
-  recordRowsOf(await loadRawRows(recordCode), titlePrompt, metaPrompts);
+const withAssetNames = async (rows: Raw[], assetPrompts: string[]): Promise<Raw[]> => {
+  if (assetPrompts.length === 0 || rows.length === 0) return rows;
+  const labels = await loadAssetLabels().catch(() => new Map<string, string>());
+  return rows.map((row) => ({
+    ...row,
+    answers: { ...(row.answers as Raw | undefined), ...Object.fromEntries(assetPrompts.map((prompt) => [prompt, labels.get(answerOf(row, prompt))]).filter(([, label]) => label !== undefined)) },
+  }));
+};
+
+export const loadRecordRows = async (recordCode: string, titlePrompt: string, metaPrompts: string[], assetPrompts: string[] = []): Promise<RecordRow[]> =>
+  recordRowsOf(await withAssetNames(await loadRawRows(recordCode), assetPrompts), titlePrompt, metaPrompts);
 
 export const loadRecordRowsHeldBy = async (recordCode: string, titlePrompt: string, metaPrompts: string[], actorId: string): Promise<RecordRow[]> =>
   recordRowsOf(await loadRawRows(recordCode, { answer_actor_id: actorId }), titlePrompt, metaPrompts);
@@ -60,8 +70,8 @@ export const loadRecordRowsHeldBy = async (recordCode: string, titlePrompt: stri
 export const recordOwnerKey = "ownerId";
 export const recordRowIdKey = "rowId";
 
-export const loadRecordRow = async (recordCode: string, id: string, prompts: string[], ownerPrompt?: string): Promise<Record<string, string>> => {
-  const row = (await loadRawRows(recordCode)).find((one) => one.id === id);
+export const loadRecordRow = async (recordCode: string, id: string, prompts: string[], ownerPrompt?: string, assetPrompts: string[] = []): Promise<Record<string, string>> => {
+  const row = (await withAssetNames(await loadRawRows(recordCode), assetPrompts)).find((one) => one.id === id);
   if (!row) return {};
   const fields = Object.fromEntries(prompts.map((prompt) => [prompt, answerOf(row, prompt)]));
   const owner = ownerPrompt ? answerOf(row, ownerPrompt) : "";

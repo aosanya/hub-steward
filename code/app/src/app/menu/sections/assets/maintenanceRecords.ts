@@ -38,7 +38,7 @@ const maintenanceOf = (row: Raw): Maintenance => ({
 
 const newestFirst = (one: Maintenance, two: Maintenance) => two.done.localeCompare(one.done);
 
-export const assetLabelOf = (name: string, serialTag: string) => [name, serialTag].filter(Boolean).join(" ");
+export { assetLabelOf } from "../../assetChoices";
 
 export const loadMaintenanceOf = async (assetName: string): Promise<Maintenance[]> => {
   try {
