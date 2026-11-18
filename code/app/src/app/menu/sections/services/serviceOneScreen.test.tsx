@@ -66,7 +66,6 @@ describe("the service screen", () => {
         summary: "Trade on the square",
         doc: "{\"kind\":\"permit\",\"form_id\":\"f1\"}",
         kind: "fee",
-        form_id: "f1",
       }),
     );
     await waitFor(() => expect(landed).toBe(servicesPaths.catalogue.path({ item: "market-stall" })));

@@ -2,6 +2,7 @@ import { vi, type MockInstance } from "vitest";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes } from "react-router-dom";
+import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
@@ -33,6 +34,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  forgetWidth();
   forgetOpenAgency();
   vi.restoreAllMocks();
 });
@@ -49,6 +51,7 @@ const openOrder = async () => {
 
 describe("editing a work order from its detail", () => {
   it("lets a caller with task.edit retitle it and shows the new title in the list", async () => {
+    setWide(true);
     await openOrder();
 
     await userEvent.click(await screen.findByRole("button", { name: "Edit" }));

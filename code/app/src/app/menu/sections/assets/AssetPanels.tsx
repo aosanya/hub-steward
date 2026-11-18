@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMay } from "../../../../features/agency/useMay";
 import { useLoad } from "../../../../features/forms/useLoad";
@@ -6,7 +6,6 @@ import { dayWords } from "../../../../shared/ui/days";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
-import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { ChatAboutAsset, ChatAboutWorkOrder } from "./ChatAboutAsset";
 import { WorkOrderAssignee } from "./WorkOrderAssignee";
 import { WorkOrderStatus } from "./WorkOrderStatus";
@@ -14,7 +13,7 @@ import { maintenanceKeys } from "./maintenanceHistory";
 import { MaintenanceHistory } from "./MaintenanceCard";
 import { loadMaintenanceOf } from "./maintenanceRecords";
 import { SectionGo } from "../residents/SectionAct";
-import { assetPathOf, scheduleEditPath } from "./paths";
+import { assetEditPath, assetPathOf, scheduleEditPath, workOrderEditPath } from "./paths";
 import { ruleWords } from "./scheduleWords";
 
 type Item = Record<string, unknown>;
@@ -27,9 +26,10 @@ const linesOf = (item: Item, keys: string[]) => keys.map((key) => textOf(item[ke
 
 const movementKeys = ["movement0", "movement1", "movement2"];
 
-function EditAct({ onClick }: { onClick: () => void }) {
+function EditAct({ to }: { to: string }) {
+  const navigate = useNavigate();
   return (
-    <button type="button" className="sec-act" onClick={onClick}>
+    <button type="button" className="sec-act" onClick={() => navigate(to)}>
       Edit
     </button>
   );
@@ -53,11 +53,8 @@ function Page({ name, line, children }: { name: string; line: string; children: 
   );
 }
 
-type AssetPanelProps = { asset: Item; fields: EditField[]; build: (sent: Record<string, unknown>) => Record<string, unknown>; onSaved: () => void };
-
-export function AssetPanel({ asset, fields, build, onSaved }: AssetPanelProps) {
+export function AssetPanel({ asset }: { asset: Item }) {
   const may = useMay("asset.manage");
-  const [editing, setEditing] = useState(false);
   const maintained = useLoad(() => loadMaintenanceOf({ id: textOf(asset.id), name: textOf(asset.name) }), `maintenance-of:${openAgencyId()}:${textOf(asset.id)}`);
   const lastDone = (maintained.state === "ready" ? maintained.data : []).find((one) => one.done !== "")?.done ?? "";
   const detail = rowsOf([
@@ -68,15 +65,10 @@ export function AssetPanel({ asset, fields, build, onSaved }: AssetPanelProps) {
     ["Kept by", textOf(asset.keeperName)],
     ["Location", textOf(asset.place)],
   ]);
-  const stop = () => setEditing(false);
   return (
     <Page name={textOf(asset.name)} line={[textOf(asset.category), textOf(asset.condition), lastDone ? `Last maintained ${dayWords(lastDone)}` : ""].filter(Boolean).join(" · ")}>
       <ChatAboutAsset asset={asset} />
-      {editing ? (
-        <MenuEditForm item={asset} id={textOf(asset.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" bare openCount={1} fields={fields} build={build} onSaved={() => { stop(); onSaved(); }} onCancel={stop} />
-      ) : (
-        <Section word="Asset detail" plain foot={may ? <EditAct onClick={() => setEditing(true)} /> : undefined} rows={detail} />
-      )}
+      <Section word="Asset detail" plain foot={may ? <EditAct to={assetEditPath.path({ id: textOf(asset.id) })} /> : undefined} rows={detail} />
       <Section word="Movements" icon="clock" plain rows={linesOf(asset, movementKeys)} />
       <MaintenanceHistory assetId={textOf(asset.id)} assetName={textOf(asset.name)} />
       <Section word="Finished work orders" icon="document" plain rows={linesOf(asset, maintenanceKeys)} />
@@ -84,14 +76,11 @@ export function AssetPanel({ asset, fields, build, onSaved }: AssetPanelProps) {
   );
 }
 
-const workOrderEditFields: EditField[] = [{ label: "Title", key: "title", required: true }];
-
 type WorkOrderPanelProps = { order: Item; onChanged: () => void };
 
 export function WorkOrderPanel({ order, onChanged }: WorkOrderPanelProps) {
   const may = useMay("task.edit");
   const navigate = useNavigate();
-  const [editing, setEditing] = useState(false);
   const detail = rowsOf([
     ["Title", textOf(order.title)],
     ["State", textOf(order.state)],
@@ -101,19 +90,14 @@ export function WorkOrderPanel({ order, onChanged }: WorkOrderPanelProps) {
   const about = textOf(order.about) === "" ? [] : [<ListRow key="about" title={textOf(order.about)} meta={textOf(order.place)} end="›" onClick={opened === "" ? undefined : () => navigate(opened)} />];
   const foot = (
     <>
-      {may ? <EditAct onClick={() => setEditing(true)} /> : null}
+      {may ? <EditAct to={workOrderEditPath.path({ id: textOf(order.id) })} /> : null}
       <WorkOrderStatus order={order} onMoved={onChanged} />
     </>
   );
-  const stop = () => setEditing(false);
   return (
     <Page name={textOf(order.title)} line={textOf(order.state)}>
       <ChatAboutWorkOrder order={order} />
-      {editing ? (
-        <MenuEditForm item={order} id={textOf(order.id)} idArg="taskID" tool="taskmanager_task_patch" permission="task.edit" bare openCount={1} fields={workOrderEditFields} onSaved={() => { stop(); onChanged(); }} onCancel={stop} />
-      ) : (
-        <Section word="Work order" plain foot={foot} rows={detail} />
-      )}
+      <Section word="Work order" plain foot={foot} rows={detail} />
       <Section word="About" icon="box" rows={about} />
       <WorkOrderAssignee order={order} onAssigned={onChanged} />
     </Page>

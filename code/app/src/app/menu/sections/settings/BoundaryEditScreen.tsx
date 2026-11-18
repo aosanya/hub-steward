@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMayAnswer } from "../../../../features/agency/useMay";
+import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
@@ -9,8 +10,8 @@ import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
-import { groupEditArgs, groupEditTool } from "../../groupEdit";
-import { refusalWords } from "../../MenuEditForm";
+import { groupCreateTool, groupEditArgs, groupEditTool, groupNameFields } from "../../groupEdit";
+import { MenuEditForm, refusalWords } from "../../MenuEditForm";
 import { boundaryArgs, cornersFromText, outerRingOf, textFromCorners } from "./boundary";
 import { settingsPaths } from "./paths";
 
@@ -63,22 +64,39 @@ function BoundaryEditForm({ id, group, done }: { id: string; group: Group | null
   );
 }
 
-export function BoundaryEditScreen() {
+type Level = Record<string, unknown>;
+
+const areaLevelName = async () => {
+  const level = (itemsOf(await callTool("", "actor_list_levels")) as Level[]).find((candidate) => candidate.is_area === true);
+  return textOf(level?.name);
+};
+
+const noLevelWords = "This agency has no level for areas yet.";
+
+function BoundaryAddForm({ done }: { done: () => void }) {
+  const level = useLoad(areaLevelName, `area-level:${openAgencyId()}`);
+  const nodeType = level.state === "ready" ? level.data : "";
+  const build = (sent: Record<string, unknown>) => ({ name: String(sent.name ?? "").trim(), node_type: nodeType });
+  return <MenuEditForm item={{}} id="" idArg="" tool={groupCreateTool} permission="group.manage" fields={groupNameFields} build={build} check={() => (nodeType === "" ? noLevelWords : "")} bare openCount={1} onSaved={done} onCancel={done} />;
+}
+
+export function BoundaryEditScreen({ adding = false }: { adding?: boolean }) {
   const { id = "" } = useParams();
   const navigate = useNavigate();
   const { known, may } = useMayAnswer("group.manage");
-  const view = useLoad(() => loadGroup(id), `boundary-edit:${openAgencyId()}:${id}`);
-  const back = () => navigate(settingsPaths.boundariesAndAreas.path({ item: id }));
+  const view = useLoad(() => (adding ? Promise.resolve(null) : loadGroup(id)), `boundary-edit:${openAgencyId()}:${adding}:${id}`);
+  const back = () => navigate(adding ? settingsPaths.boundariesAndAreas.path() : settingsPaths.boundariesAndAreas.path({ item: id }));
   const name = view.state === "ready" ? textOf(view.data?.name) : "";
+  const denied = adding ? "You may not add this." : notAllowedWords;
   return (
-    <Shell title="Edit boundary" titleUnder onBack={back} backLabel={name || "Back"} tabless>
+    <Shell title={adding ? "Add area" : "Edit boundary"} titleUnder onBack={back} backLabel={adding ? "Boundaries & Areas" : name || "Back"} tabless>
       {view.state === "loading" ? <LoadingLine /> : null}
       {view.state === "error" ? <LoadFailed words="This could not be loaded." /> : null}
-      {view.state === "ready" && known && may ? <div className="person-page"><BoundaryEditForm id={id} group={view.data} done={back} /></div> : null}
+      {view.state === "ready" && known && may ? <div className="person-page">{adding ? <BoundaryAddForm done={back} /> : <BoundaryEditForm id={id} group={view.data} done={back} />}</div> : null}
       {view.state === "ready" && known && !may ? (
         <div className="person-page">
-          <p className="quiet-line">{notAllowedWords}</p>
-          <Button kind="quiet" onClick={back}>Back</Button>
+          {adding ? <LoadFailed words={denied} /> : <p className="quiet-line">{denied}</p>}
+          {adding ? null : <Button kind="quiet" onClick={back}>Back</Button>}
         </div>
       ) : null}
     </Shell>

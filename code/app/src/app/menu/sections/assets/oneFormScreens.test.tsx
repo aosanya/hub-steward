@@ -5,7 +5,7 @@ import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { routes } from "./index";
-import { assetPaths } from "./paths";
+import { assetEditPath, assetPaths, workOrderEditPath } from "./paths";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
@@ -56,7 +56,7 @@ const callsTo = (tool: string) => called.mock.calls.filter(([, name]) => name ==
 
 describe("the work order screen", () => {
   it("is the same screen for Add and for Edit: the Edit route shows the order's title and Save patches it", async () => {
-    show(assetPaths.workOrderEdit.path({ id: "w1" }));
+    show(workOrderEditPath.path({ id: "w1" }));
 
     expect(await screen.findByText("Edit work order")).toBeTruthy();
     const title = await screen.findByLabelText("Title");
@@ -82,7 +82,7 @@ describe("the work order screen", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Repaint railings/ }));
     await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
 
-    await waitFor(() => expect(landed).toBe(assetPaths.workOrderEdit.path({ id: "w1" })));
+    await waitFor(() => expect(landed).toBe(workOrderEditPath.path({ id: "w1" })));
   });
 });
 
@@ -140,7 +140,7 @@ describe("the asset screen", () => {
   });
 
   it("is the same screen for Edit: the Edit route shows the asset's name and Save updates it", async () => {
-    show(assetPaths.assetEdit.path({ id: "e1" }));
+    show(assetEditPath.path({ id: "e1" }));
 
     expect(await screen.findByText("Edit asset")).toBeTruthy();
     const name = await screen.findByLabelText("Name");

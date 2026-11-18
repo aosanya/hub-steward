@@ -1,11 +1,11 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
-import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { Shell } from "../../../Shell";
-import { MenuEditForm } from "../../MenuEditForm";
+import { FormScreen } from "../../FormScreen";
 import type { EditField } from "../../MenuEditForm";
+import { personNameOf } from "../residents/personName";
 import { assetPaths } from "./paths";
 import { fieldShown, oftenChoices, partsOf, problemWith, ruleOf, weekdayChoices, type Often } from "./scheduleWords";
 
@@ -15,18 +15,40 @@ const readTool = "taskmanager_repeating_task_read";
 
 const updateTool = "taskmanager_repeating_task_update";
 
+const createTool = "taskmanager_repeating_task_create";
+
 const permission = "task.edit";
+
+const zone = "UTC";
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
-const fields: EditField[] = [
+const fieldsFor = (adding: boolean, people: { value: string; label: string }[]): EditField[] => [
   { label: "Title", key: "title", required: true },
-  { label: "How often", key: "often", choices: oftenChoices },
+  { label: "How often", key: "often", choices: oftenChoices, ...(adding ? { required: true } : {}) },
   { label: "Weekday", key: "weekday", choices: weekdayChoices },
   { label: "Day of the month", key: "monthday", kind: "number" },
   { label: "Starting on", key: "starts", kind: "date", required: true },
   { label: "Ends on", key: "ends", kind: "date" },
+  ...(adding ? [{ label: "Assigned to (you if left)", key: "assignee", choices: people }] : []),
 ];
+
+const loadPeople = async () =>
+  ((await callTool("", "actor_list_actors").then(itemsOf)) as Item[]).map((person) => ({ value: textOf(person.id), label: personNameOf(person) }));
+
+const loadMyId = async () => textOf(((await callTool("", "actor_get_my_actor")) as Item | null)?.id);
+
+const scheduleArgs = (myId: string) => (sent: Record<string, unknown>) => {
+  const often = textOf(sent.often) as Often;
+  const rule = ruleOf({ often, weekday: textOf(sent.weekday), monthday: String(sent.monthday ?? "") });
+  const end = textOf(sent.ends);
+  return {
+    title: textOf(sent.title).trim(),
+    schedule: { start: textOf(sent.starts), ...(end ? { end } : {}), zone, rule },
+    assignee_kind: "actor",
+    assignee_id: textOf(sent.assignee) || myId,
+  };
+};
 
 const loadSchedule = async (scheduleId: string): Promise<Item> => {
   const reply = (await callTool("", readTool, { repeatingTaskID: scheduleId })) as Item | null;
@@ -70,33 +92,27 @@ const changedScheduleFrom = (scheduleId: string, task: Item, sent: Record<string
 
 export function ScheduleEditScreen() {
   const { scheduleId = "" } = useParams();
-  const navigate = useNavigate();
-  const view = useLoad(() => loadSchedule(scheduleId), `schedule-edit:${openAgencyId()}:${scheduleId}`);
-  const back = () => navigate(assetPaths.maintenance.path({ item: scheduleId }));
-  const title = view.state === "ready" ? textOf(view.data.title) : "";
+  const adding = scheduleId === "";
+  const people = useLoad(adding ? loadPeople : async () => [], `schedule-people:${openAgencyId()}:${adding}`);
+  const mine = useLoad(adding ? loadMyId : async () => "", `schedule-me:${openAgencyId()}:${adding}`);
   return (
-    <Shell title="Edit schedule" titleUnder onBack={back} backLabel={title || "Back"} tabless>
-      {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "error" ? <LoadFailed words="This could not be loaded." /> : null}
-      {view.state === "ready" ? (
-        <div className="person-page">
-          <MenuEditForm
-            item={view.data}
-            id={scheduleId}
-            idArg="repeatingTaskID"
-            tool={updateTool}
-            permission={permission}
-            bare
-            openCount={1}
-            fields={fields}
-            build={(sent) => changedScheduleFrom(scheduleId, view.data, sent)}
-            visible={(key, values) => fieldShown(key, values.often ?? "")}
-            check={(values) => problemWith({ often: values.often ?? "", weekday: values.weekday ?? "", monthday: values.monthday ?? "" })}
-            onSaved={() => navigate(assetPaths.maintenance.path())}
-            onCancel={back}
-          />
-        </div>
-      ) : null}
-    </Shell>
+    <FormScreen
+      id={scheduleId}
+      word="schedule"
+      listLabel="Maintenance Schedule"
+      addedTo={assetPaths.maintenance.path()}
+      editedTo={assetPaths.maintenance.path({ item: scheduleId })}
+      permission={permission}
+      load={loadSchedule}
+      nameOf={(task) => textOf(task.title)}
+      addTool={createTool}
+      addBuild={scheduleArgs(mine.state === "ready" ? mine.data : "")}
+      editTool={updateTool}
+      idArg="repeatingTaskID"
+      editBuild={(task) => (sent) => changedScheduleFrom(scheduleId, task, sent)}
+      fields={fieldsFor(adding, people.state === "ready" ? people.data : [])}
+      visible={(key, values) => fieldShown(key, values.often ?? "")}
+      check={(values) => problemWith({ often: values.often ?? "", weekday: values.weekday ?? "", monthday: values.monthday ?? "" })}
+    />
   );
 }

@@ -7,6 +7,7 @@ export const assetPaths = {
   buildings: screen("/menu/assets/buildings"),
   workOrders: screen("/menu/assets/work-orders"),
   workOrderNew: screen("/menu/assets/work-orders/new"),
+  assetNew: screen("/menu/assets/assets/new"),
   maintenance: screen("/menu/assets/maintenance-schedule"),
   maintenanceNew: screen("/menu/assets/maintenance-schedule/new"),
 };
@@ -18,6 +19,10 @@ export const maintenancePaths = {
   add: screen("/menu/assets/maintenance-records/new"),
 };
 
+export const workOrderEditPath = screen("/menu/assets/work-orders/:id/edit");
+
+export const assetEditPath = screen("/menu/assets/assets/:id/edit");
+
 export const scheduleEditPath = screen("/menu/assets/maintenance-schedule/:scheduleId/edit");
 
 const pathOfCategory: Record<string, (query: Record<string, string>) => string> = {
@@ -28,3 +33,5 @@ const pathOfCategory: Record<string, (query: Record<string, string>) => string> 
 };
 
 export const assetPathOf = (category: string, assetId: string) => pathOfCategory[category]?.({ item: assetId }) ?? "";
+
+export const assetListPath = (category: string) => pathOfCategory[category]?.({}) ?? assetPaths.routes.path();

@@ -7,5 +7,6 @@ export const servicesPaths = {
   fees: screen("/menu/services/fees"),
   catalogue: screen("/menu/services/catalogue"),
   catalogueNew: screen("/menu/services/catalogue/new"),
+  catalogueEdit: screen("/menu/services/catalogue/:slug/edit"),
   application: screen("/menu/services/applications/:id"),
 };

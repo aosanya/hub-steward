@@ -5,6 +5,7 @@ import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
+import { useChosenItem } from "../settings/RecordPage";
 import { SchedulePanel, WorkOrderPanel } from "./AssetPanels";
 import { assetPaths } from "./paths";
 import { aboutAndPlaceOf, placeLookupFor } from "./workOrderAsset";
@@ -109,11 +110,13 @@ export function WorkOrdersPage() {
 export function MaintenancePage() {
   const word = useWord("assetmanager");
   const title = word("Maintenance Schedule");
+  const startAt = useChosenItem();
   return (
     <MenuWindow
       title={title}
       withTabs
       bandless
+      startAt={startAt}
       above={<AddButton permission="task.edit" label="Add schedule" to={assetPaths.maintenanceNew.path()} />}
       list={{ title, tool: repeatingList, fields: { title: "title", meta: "oftenAndNext" }, empty: { words: "No maintenance scheduled." }, load: loadSchedule }}
       detail={{ tool: repeatingRead, fields: {}, status: "", load: loadScheduleItem, extra: (item) => <SchedulePanel item={item} /> }}

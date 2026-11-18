@@ -1,11 +1,11 @@
 import { Route } from "react-router-dom";
+import { AssetFormScreen } from "./AssetFormScreen";
 import { BuildingsPage, EquipmentPage, FacilitiesPage, RoutesPage } from "./AssetCategoryPages";
 import { MaintenanceListScreen } from "./MaintenanceList";
 import { MaintenanceAddScreen, MaintenanceEditScreen, MaintenanceRecordScreen } from "./MaintenanceScreens";
-import { assetPaths, maintenancePaths, scheduleEditPath } from "./paths";
+import { assetEditPath, assetPaths, maintenancePaths, scheduleEditPath, workOrderEditPath } from "./paths";
 import { ScheduleEditScreen } from "./ScheduleEdit";
-import { ScheduleNewScreen } from "./ScheduleNewScreen";
-import { WorkOrderNewScreen } from "./WorkOrderNewScreen";
+import { WorkOrderFormScreen } from "./WorkOrderFormScreen";
 import { MaintenancePage, WorkOrdersPage } from "./WorkPages";
 
 export const items = [
@@ -23,10 +23,13 @@ export const routes = () => (
     <Route path={assetPaths.equipment.pattern} element={<EquipmentPage />} />
     <Route path={assetPaths.facilities.pattern} element={<FacilitiesPage />} />
     <Route path={assetPaths.buildings.pattern} element={<BuildingsPage />} />
+    <Route path={assetPaths.assetNew.pattern} element={<AssetFormScreen />} />
+    <Route path={assetEditPath.pattern} element={<AssetFormScreen />} />
     <Route path={assetPaths.workOrders.pattern} element={<WorkOrdersPage />} />
-    <Route path={assetPaths.workOrderNew.pattern} element={<WorkOrderNewScreen />} />
+    <Route path={assetPaths.workOrderNew.pattern} element={<WorkOrderFormScreen />} />
+    <Route path={workOrderEditPath.pattern} element={<WorkOrderFormScreen />} />
     <Route path={assetPaths.maintenance.pattern} element={<MaintenancePage />} />
-    <Route path={assetPaths.maintenanceNew.pattern} element={<ScheduleNewScreen />} />
+    <Route path={assetPaths.maintenanceNew.pattern} element={<ScheduleEditScreen />} />
     <Route path={scheduleEditPath.pattern} element={<ScheduleEditScreen />} />
     <Route path={maintenancePaths.list.pattern} element={<MaintenanceListScreen />} />
     <Route path={maintenancePaths.add.pattern} element={<MaintenanceAddScreen />} />

@@ -137,11 +137,12 @@ describe("a Services & Permits page is built like a resident page", () => {
     expect(pane.getAllByRole("button", { name: "Edit" })).toHaveLength(1);
   });
 
-  it("opens the entry form from that Edit in place of the card", async () => {
+  it("opens the entry's one edit screen from that Edit", async () => {
     const pane = await openRow("Service Catalogue", /Bulk Waste Collection/);
     await userEvent.click(within(await pane.findByRole("region", { name: "Details" })).getByRole("button", { name: "Edit" }));
-    expect(await pane.findByLabelText("Name")).toBeInTheDocument();
-    expect(pane.queryByRole("region", { name: "Details" })).toBeNull();
+    expect(await screen.findByLabelText("Name")).toBeInTheDocument();
+    expect(screen.getByText("Edit service")).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Details" })).toBeNull();
   });
 
   it("titles a catalogue entry with its name and draws no band", async () => {

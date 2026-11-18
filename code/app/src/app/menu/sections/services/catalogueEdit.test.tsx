@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { ServiceFormScreen } from "./ServiceFormScreen";
 import { ServiceCatalogueScreen } from "./ServicesScreens";
 
 let called: MockInstance<typeof mcp.callTool>;
@@ -54,6 +55,7 @@ const openEntry = async () => {
     <MemoryRouter initialEntries={["/a/town/menu/services/catalogue"]}>
       <Routes>
         <Route path="/a/:agencyId/menu/services/catalogue" element={<ServiceCatalogueScreen />} />
+        <Route path="/a/:agencyId/menu/services/catalogue/:slug/edit" element={<ServiceFormScreen />} />
       </Routes>
     </MemoryRouter>,
   );
