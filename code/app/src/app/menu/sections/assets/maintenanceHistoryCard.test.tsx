@@ -86,6 +86,16 @@ describe("MaintenanceHistory", () => {
     expect(landed).toBe("/a/town/menu/assets/maintenance-records/m1");
   });
 
+  it("opens the list of every maintenance record of this asset from See all", async () => {
+    may = true;
+    const user = userEvent.setup();
+    show();
+
+    await user.click(await screen.findByRole("button", { name: "See all 4" }));
+
+    expect(landed).toBe("/a/town/menu/assets/maintenance-records?name=Road+roller&from=%2Fasset");
+  });
+
   it("offers Add maintenance only to someone who may add rows, and opens the one add screen for this asset", async () => {
     may = true;
     const user = userEvent.setup();
