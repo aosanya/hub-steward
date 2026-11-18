@@ -7,9 +7,9 @@ const validUntilPrompt = "Valid until";
 
 export type LicenceMark = "Licensed" | "Expired" | "Not licensed";
 
-type ApprovedLicence = { rowId: string; validUntil: string };
+export type ApprovedLicence = { rowId: string; validUntil: string };
 
-const todayIso = () => new Date().toLocaleDateString("sv-SE");
+export const todayIso = () => new Date().toLocaleDateString("sv-SE");
 
 const approvedLicencesOf = async (formId: string): Promise<ApprovedLicence[]> => {
   const [sends, questions, answers] = await Promise.all([
@@ -31,7 +31,7 @@ const approvedLicences = async (): Promise<ApprovedLicence[]> => {
   return (await Promise.all(formIds.map(approvedLicencesOf))).flat();
 };
 
-const markOf = (licences: ApprovedLicence[], today: string): LicenceMark => {
+export const markOf = (licences: ApprovedLicence[], today: string): LicenceMark => {
   if (licences.length === 0) return "Not licensed";
   return licences.some((licence) => licence.validUntil === "" || licence.validUntil >= today) ? "Licensed" : "Expired";
 };

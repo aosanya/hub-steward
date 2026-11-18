@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useMay } from "../../../../features/agency/useMay";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
 import { text, type Item } from "../staff/staffData";
@@ -18,12 +19,16 @@ export function ServiceHead({ title, status = "", line = "" }: { title: string; 
   );
 }
 
-export function ServiceAct({ label, onClick, disabled }: { label: string; onClick: () => void; disabled?: boolean }) {
+export function ServiceAct({ label, onClick, disabled, quiet = false }: { label: string; onClick: () => void; disabled?: boolean; quiet?: boolean }) {
   return (
-    <button type="button" className="sec-act" disabled={disabled} onClick={onClick}>
+    <button type="button" className={quiet ? "sec-foot-item" : "sec-act"} disabled={disabled} onClick={onClick}>
       {label}
     </button>
   );
+}
+
+export function ServiceEditAct({ permission, onEdit }: { permission: string; onEdit: () => void }) {
+  return useMay(permission) ? <ServiceAct label="Edit" onClick={onEdit} /> : null;
 }
 
 export function ServiceDetails({ word, item, fields, foot }: { word: string; item: Item; fields: Record<string, string>; foot?: ReactNode }) {

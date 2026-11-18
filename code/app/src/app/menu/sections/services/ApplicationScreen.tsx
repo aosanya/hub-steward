@@ -1,5 +1,6 @@
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useMay } from "../../../../features/agency/useMay";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
@@ -42,39 +43,49 @@ const loadAnswers = async (formId: string) => {
   return { sent, memberId: answers.map((answer) => text(answer, "member_id")).find((id) => id !== "") ?? "" };
 };
 
-function ApplicationCorrection({ formId, memberId, answers, onSaved }: { formId: string; memberId: string; answers: SentAnswer[]; onSaved: () => void }) {
-  const editable = answers.filter((answer) => answer.valueKey !== "");
-  if (!memberId || editable.length === 0) return null;
-  const fields: EditField[] = editable.map((answer) => ({ label: answer.prompt, key: answer.id, kind: answer.valueKey === "value_number" ? "number" : "text" }));
-  const build = (sent: Record<string, unknown>) => ({
-    form_id: formId,
-    member_id: memberId,
-    answers: editable.filter((answer) => answer.id in sent).map((answer) => ({ question_id: answer.questionId, [answer.valueKey]: sent[answer.id] })),
-  });
-  return (
-    <MenuEditForm
-      item={Object.fromEntries(editable.map((answer) => [answer.id, answer.value]))}
-      id={formId}
-      idArg="form_id"
-      tool={correctTool}
-      permission={correctPermission}
-      fields={fields}
-      build={build}
-      onSaved={onSaved}
-    />
-  );
-}
-
-function ApplicationAnswers({ formId, version, onCorrected, foot }: { formId: string; version: number; onCorrected: () => void; foot?: ReactNode }) {
+function ApplicationAnswers({ formId, version, onCorrected, withdrawable, onWithdraw }: { formId: string; version: number; onCorrected: () => void; withdrawable: boolean; onWithdraw: () => void }) {
   const view = useLoad(() => loadAnswers(formId), `application-answers:${openAgencyId()}:${formId}:${version}`);
+  const mayCorrect = useMay(correctPermission);
+  const [editing, setEditing] = useState(false);
   if (view.state === "loading") return <LoadingLine />;
   if (view.state === "error") return <LoadFailed words={loadFailedWords} />;
-  return (
-    <>
-      <Section word="Application" plain foot={foot} empty={{ words: "No answers were sent." }} rows={view.data.sent.map((answer) => <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />)} />
-      <ApplicationCorrection formId={formId} memberId={view.data.memberId} answers={view.data.sent} onSaved={onCorrected} />
-    </>
-  );
+  const { sent, memberId } = view.data;
+  const editable = sent.filter((answer) => answer.valueKey !== "");
+  const canCorrect = mayCorrect && memberId !== "" && editable.length > 0;
+  if (editing && canCorrect) {
+    const fields: EditField[] = editable.map((answer) => ({ label: answer.prompt, key: answer.id, kind: answer.valueKey === "value_number" ? "number" : "text" }));
+    const build = (changed: Record<string, unknown>) => ({
+      form_id: formId,
+      member_id: memberId,
+      answers: editable.filter((answer) => answer.id in changed).map((answer) => ({ question_id: answer.questionId, [answer.valueKey]: changed[answer.id] })),
+    });
+    return (
+      <MenuEditForm
+        item={Object.fromEntries(editable.map((answer) => [answer.id, answer.value]))}
+        id={formId}
+        idArg="form_id"
+        tool={correctTool}
+        permission={correctPermission}
+        fields={fields}
+        build={build}
+        bare
+        openCount={1}
+        onSaved={() => {
+          setEditing(false);
+          onCorrected();
+        }}
+        onCancel={() => setEditing(false)}
+      />
+    );
+  }
+  const foot =
+    withdrawable || canCorrect ? (
+      <>
+        {withdrawable ? <ServiceAct label={withdrawLabel} onClick={onWithdraw} quiet /> : null}
+        {canCorrect ? <ServiceAct label="Edit" onClick={() => setEditing(true)} /> : null}
+      </>
+    ) : undefined;
+  return <Section word="Application" plain foot={foot} empty={{ words: "No answers were sent." }} rows={sent.map((answer) => <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />)} />;
 }
 
 const statusOf = (sent: Item) => (text(sent, "withdrawn_at") !== "" ? withdrawnWords : decisionStatus(text(sent, "decision")) || sentWords);
@@ -117,7 +128,8 @@ export function useApplicationDetail(backOf: (id: string) => string) {
           formId={text(item, "form_id")}
           version={version}
           onCorrected={refresh}
-          foot={text(item, "status") !== withdrawnWords ? <ServiceAct label={withdrawLabel} onClick={() => withdraw(item)} /> : undefined}
+          withdrawable={text(item, "status") !== withdrawnWords}
+          onWithdraw={() => withdraw(item)}
         />
       </>
     ),

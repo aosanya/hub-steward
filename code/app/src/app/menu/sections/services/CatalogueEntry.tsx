@@ -5,7 +5,7 @@ import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
 import { ChatAboutService } from "./ChatAboutService";
-import { ServiceDetails, ServiceHead } from "./ServicePage";
+import { ServiceDetails, ServiceEditAct, ServiceHead } from "./ServicePage";
 
 export const servicePermission = "service.edit";
 
@@ -28,6 +28,38 @@ const loadEntry = async (slug: string): Promise<Item> => {
   return { ...entry, id: slug };
 };
 
+const detailFields = { Name: "name", Summary: "summary", Kind: "kind", Form: "form_id" };
+
+function CatalogueEntryPage({ entry, back, onSaved }: { entry: Item; back?: string; onSaved: () => void }) {
+  const [editing, setEditing] = useState(false);
+  return (
+    <>
+      {back ? <ChatAboutService about={{ kind: "service", id: text(entry, "id"), name: text(entry, "name") }} back={`${back}?item=${text(entry, "id")}`} /> : null}
+      <ServiceHead title={text(entry, "name")} line={text(entry, "summary")} />
+      {editing ? (
+        <MenuEditForm
+          item={entry}
+          id={text(entry, "id")}
+          idArg="slug"
+          tool="forms_catalog_entry_upsert"
+          permission={servicePermission}
+          fields={editFields}
+          keep={["name", "summary", "doc"]}
+          bare
+          openCount={1}
+          onSaved={() => {
+            setEditing(false);
+            onSaved();
+          }}
+          onCancel={() => setEditing(false)}
+        />
+      ) : (
+        <ServiceDetails word="Details" item={entry} fields={detailFields} foot={<ServiceEditAct permission={servicePermission} onEdit={() => setEditing(true)} />} />
+      )}
+    </>
+  );
+}
+
 export function CatalogueWindow({ title, empty, listTool = publicListTool, back }: { title: string; empty: string; listTool?: string; back?: string }) {
   const [version, setVersion] = useState(0);
   const [search] = useSearchParams();
@@ -45,23 +77,7 @@ export function CatalogueWindow({ title, empty, listTool = publicListTool, back 
         fields: {},
         status: "",
         load: loadEntry,
-        extra: (entry) => (
-          <>
-            {back ? <ChatAboutService about={{ kind: "service", id: text(entry, "id"), name: text(entry, "name") }} back={`${back}?item=${text(entry, "id")}`} /> : null}
-            <ServiceHead title={text(entry, "name")} line={text(entry, "summary")} />
-            <ServiceDetails word="Details" item={entry} fields={{ Kind: "kind", Form: "form_id" }} />
-            <MenuEditForm
-            item={entry}
-            id={text(entry, "id")}
-            idArg="slug"
-            tool="forms_catalog_entry_upsert"
-            permission={servicePermission}
-            fields={editFields}
-            keep={["name", "summary", "doc"]}
-            onSaved={() => setVersion((was) => was + 1)}
-            />
-          </>
-        ),
+        extra: (entry) => <CatalogueEntryPage entry={entry} back={back} onSaved={() => setVersion((was) => was + 1)} />,
       }}
     />
   );

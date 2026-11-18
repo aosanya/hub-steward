@@ -113,10 +113,12 @@ const openEntryWithOwnSend = async () => {
   await screen.findByText("Sent on");
 };
 
-const grantedList = () => screen.queryByRole("heading", { name: "Granted" })?.nextElementSibling as HTMLElement | undefined;
+const grantedList = () => screen.queryByRole("region", { name: "Granted" }) as HTMLElement | null;
+
+const rowButtons = (card: HTMLElement) => within(card).queryAllByRole("button").filter((button) => button.getAttribute("aria-label") !== "Collapse");
 
 const grantedWith = async (words: string) => {
-  await screen.findByRole("heading", { name: "Granted" });
+  await screen.findByRole("region", { name: "Granted" });
   await waitFor(() => expect(grantedList()).toHaveTextContent(words));
   return grantedList() as HTMLElement;
 };
@@ -170,7 +172,7 @@ describe("The Granted section on a permit or licence entry", () => {
     submissions = submissions.map((submission) => ({ ...submission, form_id: formId }));
     await openEntry(kind);
 
-    expect(await screen.findByRole("heading", { name: "Granted" })).toBeInTheDocument();
+    expect(await screen.findByRole("region", { name: "Granted" })).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", "forms_submission_list", { form_id: formId });
   });
 
@@ -230,26 +232,24 @@ describe("The Granted section on a permit or licence entry", () => {
     submissions = sentAndRefusedOnly();
     await openEntry();
 
-    await screen.findByRole("heading", { name: "Granted" });
+    await screen.findByRole("region", { name: "Granted" });
     await waitFor(() => expect(grantedList()).toHaveTextContent("No one has been granted this yet."));
     const card = grantedList() as HTMLElement;
 
-    expect(card).toHaveClass("card");
-    expect(card).toHaveTextContent(/^No one has been granted this yet\.$/);
-    expect(within(card).queryAllByRole("button")).toHaveLength(0);
+    expect(card).toHaveTextContent(/^GrantedNo one has been granted this yet\.$/);
+    expect(rowButtons(card)).toHaveLength(0);
   });
 
   it("shows an empty card with No one has been granted this yet. when nobody has sent anything", async () => {
     submissions = [];
     await openEntry();
 
-    await screen.findByRole("heading", { name: "Granted" });
+    await screen.findByRole("region", { name: "Granted" });
     await waitFor(() => expect(grantedList()).toHaveTextContent("No one has been granted this yet."));
     const card = grantedList() as HTMLElement;
 
-    expect(card).toHaveClass("card");
-    expect(card).toHaveTextContent(/^No one has been granted this yet\.$/);
-    expect(within(card).queryAllByRole("button")).toHaveLength(0);
+    expect(card).toHaveTextContent(/^GrantedNo one has been granted this yet\.$/);
+    expect(rowButtons(card)).toHaveLength(0);
   });
 
   it("shows no Granted section and never lists submissions to a caller without form.results", async () => {
@@ -257,7 +257,7 @@ describe("The Granted section on a permit or licence entry", () => {
     await openEntry();
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
 
-    expect(screen.queryByRole("heading", { name: "Granted" })).toBeNull();
+    expect(screen.queryByRole("region", { name: "Granted" })).toBeNull();
     expect(screen.queryByText("No one has been granted this yet.")).toBeNull();
     expect(called).not.toHaveBeenCalledWith("", "forms_submission_list", expect.anything());
   });
@@ -266,8 +266,34 @@ describe("The Granted section on a permit or licence entry", () => {
     await openEntry("fee");
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_catalog_entry_submissions_mine", { slug: "hall-hire-fee" }));
 
-    expect(screen.queryByRole("heading", { name: "Granted" })).toBeNull();
+    expect(screen.queryByRole("region", { name: "Granted" })).toBeNull();
     expect(screen.queryByText("No one has been granted this yet.")).toBeNull();
+  });
+
+  it("tags each person with Licensed while the permit runs and Expired once it has run out, and says until when", async () => {
+    submissions = submissions.map((submission) =>
+      submission.member_id === "m1" ? { ...submission, valid_until: "2999-12-31T00:00:00Z" } : submission.member_id === "m2" ? { ...submission, valid_until: "2020-01-31T00:00:00Z" } : submission,
+    );
+    await openEntry();
+
+    const section = await grantedWith("Réka Tóth");
+    const first = within(within(section).getByText("Bence Farkas").closest(".row") as HTMLElement);
+    const second = within(within(section).getByText("Réka Tóth").closest(".row") as HTMLElement);
+
+    expect(first.getByText("Licensed")).toHaveClass("success");
+    expect(first.getByText(/^Valid until/)).toBeInTheDocument();
+    expect(second.getByText("Expired")).toHaveClass("danger");
+    expect(second.getByText(/^Valid until/)).toBeInTheDocument();
+  });
+
+  it("keeps every granted row inside the Granted card, as media rows with no loose caption above them", async () => {
+    await openEntry();
+
+    const section = await grantedWith("Réka Tóth");
+
+    expect(section.tagName).toBe("SECTION");
+    expect(section.querySelectorAll(".row .lead").length).toBeGreaterThanOrEqual(2);
+    expect(screen.queryByRole("heading", { name: "Granted" })).toBeNull();
   });
 
   it("shows a person under Granted with the day of the decision once Grant is pressed on their row", async () => {

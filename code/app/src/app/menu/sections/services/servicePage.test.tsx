@@ -109,6 +109,41 @@ describe("a Services & Permits page is built like a resident page", () => {
     expect(document.querySelector(".wf-head")).toBeNull();
   });
 
+  it("puts Edit in the footer of the Application card, beside Withdraw, with no Edit bar anywhere else", async () => {
+    tools.forms_form_withdraw = () => ({});
+    const pane = await openRow("Applications", /Market stall application/);
+    const card = within(await pane.findByRole("region", { name: "Application" }));
+    const edit = card.getByRole("button", { name: "Edit" });
+    expect(edit.closest("footer")).not.toBeNull();
+    expect(card.getByRole("button", { name: "Withdraw" }).closest("footer")).toBe(edit.closest("footer"));
+    expect(pane.getAllByRole("button", { name: "Edit" })).toHaveLength(1);
+  });
+
+  it("opens the answers form from that Edit in place of the card, and Cancel brings the card back", async () => {
+    const pane = await openRow("Applications", /Market stall application/);
+    await userEvent.click(within(await pane.findByRole("region", { name: "Application" })).getByRole("button", { name: "Edit" }));
+    expect(await pane.findByLabelText("Stall location")).toBeInTheDocument();
+    expect(pane.queryByRole("region", { name: "Application" })).toBeNull();
+    await userEvent.click(pane.getByRole("button", { name: "Cancel" }));
+    expect(await pane.findByRole("region", { name: "Application" })).toBeInTheDocument();
+  });
+
+  it("holds a catalogue entry's name, summary, kind and form in a Details card with Edit in its footer and no Edit bar anywhere else", async () => {
+    const pane = await openRow("Service Catalogue", /Bulk Waste Collection/);
+    const card = within(await pane.findByRole("region", { name: "Details" }));
+    expect(card.getByText("Summary")).toBeInTheDocument();
+    expect(card.getByText("Book a collection for large items")).toBeInTheDocument();
+    expect(card.getByRole("button", { name: "Edit" }).closest("footer")).not.toBeNull();
+    expect(pane.getAllByRole("button", { name: "Edit" })).toHaveLength(1);
+  });
+
+  it("opens the entry form from that Edit in place of the card", async () => {
+    const pane = await openRow("Service Catalogue", /Bulk Waste Collection/);
+    await userEvent.click(within(await pane.findByRole("region", { name: "Details" })).getByRole("button", { name: "Edit" }));
+    expect(await pane.findByLabelText("Name")).toBeInTheDocument();
+    expect(pane.queryByRole("region", { name: "Details" })).toBeNull();
+  });
+
   it("titles a catalogue entry with its name and draws no band", async () => {
     const pane = await openRow("Service Catalogue", /Bulk Waste Collection/);
     expect(await pane.findByRole("heading", { level: 1, name: "Bulk Waste Collection" })).toBeInTheDocument();

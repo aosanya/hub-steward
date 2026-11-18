@@ -1,11 +1,12 @@
 import { useLoad } from "../../../../features/forms/useLoad";
 import { useMay } from "../../../../features/agency/useMay";
 import { dayWords } from "../../../../shared/ui/days";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { EmptyCard } from "../../../../shared/ui/LoadState";
-import { SectionHeading } from "../../../../shared/ui/SectionHeading";
+import { ListRow } from "../../../../shared/ui/ListRow";
+import { Section } from "../../../../shared/ui/Section";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { approvedWords } from "./decision";
+import { LicenceChip } from "../residents/LicenceChip";
+import { markOf, todayIso } from "../residents/licensedRows";
+import { approvedWords, validUntilWords } from "./decision";
 import { useDecisionCount } from "./decisionSignal";
 import { loadReceived } from "./ReceivedApplications";
 
@@ -24,20 +25,15 @@ function GrantedList({ slug }: { slug: string }) {
   const decisions = useDecisionCount();
   const view = useLoad(() => loadGranted(slug), `granted:${openAgencyId()}:${slug}:${decisions}`);
   if (view.state !== "ready") return null;
-  return (
-    <>
-      <SectionHeading>{sectionWords}</SectionHeading>
-      {view.data.length === 0 ? (
-        <EmptyCard words={emptyWords} />
-      ) : (
-        <Rows>
-          {view.data.map((row) => (
-            <ListRow key={row.memberId} title={row.name} meta={dayWords(row.decidedAt)} end={dayWords(row.validUntil)} />
-          ))}
-        </Rows>
-      )}
-    </>
-  );
+  const rows = view.data.map((row) => (
+    <ListRow
+      key={row.memberId}
+      title={row.name}
+      meta={[dayWords(row.decidedAt), row.validUntil === "" ? "" : `${validUntilWords} ${dayWords(row.validUntil)}`]}
+      end={<LicenceChip mark={markOf([{ rowId: row.memberId, validUntil: row.validUntil }], todayIso())} />}
+    />
+  ));
+  return <Section word={sectionWords} icon="users" all rows={rows} empty={{ words: emptyWords }} />;
 }
 
 export function Granted({ slug }: { slug: string }) {
