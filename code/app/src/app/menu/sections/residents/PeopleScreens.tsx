@@ -13,6 +13,7 @@ import { routes } from "../../../routes";
 import { residentPaths } from "./paths";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
+import { ChatAboutConversation } from "./ChatAboutConversation";
 import { ChatAboutGroup } from "./ChatAboutGroup";
 import { ChatAboutRegistration } from "./ChatAboutRegistration";
 import { ChatAboutResident } from "./ChatAboutResident";
@@ -210,13 +211,26 @@ export function CommunicationsScreen() {
   const word = useWord("comm");
   const title = word("Communications");
   const noneYet = title === "Communications" ? "No conversations yet." : `No ${title.toLowerCase()} yet.`;
+  const [search] = useSearchParams();
   return (
     <MenuWindow
       title={title}
       withTabs
       bandless
+      startAt={search.get("thread") ?? undefined}
       list={{ title, tool: "comm_chat_thread_list", fields: { title: "name", meta: "line" }, empty: homeEmpty(noneYet), load: conversationRows, end: (item) => <Chip>{text(item, "last")}</Chip> }}
-      detail={{ tool: "comm_chat_thread_list", load: rowById(conversationRows), fields: {}, status: "", extra: (row) => <GroupConversation row={row} /> }}
+      detail={{
+        tool: "comm_chat_thread_list",
+        load: rowById(conversationRows),
+        fields: {},
+        status: "",
+        extra: (row) => (
+          <>
+            <ChatAboutConversation row={row} />
+            <GroupConversation row={row} />
+          </>
+        ),
+      }}
     />
   );
 }
