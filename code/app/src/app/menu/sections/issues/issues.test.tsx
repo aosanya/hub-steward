@@ -234,7 +234,7 @@ describe("Service Types", () => {
 
     afterEach(() => Reflect.deleteProperty(window, "matchMedia"));
 
-    it("keeps the list on the left, opens the chosen type in the right pane and draws no tab bar", async () => {
+    it("keeps the list on the left, opens the chosen type in the right pane and draws the main tab bar", async () => {
       open(screens[3].at);
       await userEvent.click(await screen.findByRole("button", { name: /Pothole report/ }));
 
@@ -242,7 +242,7 @@ describe("Service Types", () => {
       expect(await within(main).findByText("request")).toBeInTheDocument();
       expect(within(main).getByText("Pothole report")).toBeInTheDocument();
       expect(within(document.querySelector(".wf-tree") as HTMLElement).getByRole("button", { name: /Noise complaint/ })).toBeInTheDocument();
-      expect(document.querySelector("nav.tabs")).toBeNull();
+      expect(screen.getByRole("navigation", { name: "Main" })).toBeInTheDocument();
     });
 
     it("opens the first type in the right pane without a tap", async () => {
