@@ -174,6 +174,9 @@ Applications that name a business: `forms_answer_submit` takes an optional `reco
 | `instance_rename` | renamed the agency | the new name |
 | `actor_grant_role` | granted a role | the `actor_id` argument |
 | `forms_form_publish` | published a form | the `form_id` argument |
+| `actor_assign_group` | registered in a group | the `actor_id` argument |
+
+`actor_assign_group` takes the `group_id` of the group the actor is registered in as a required argument (it had none, so the tool could not register anyone); the audit row names the person, not the group.
 
 A failed write records nothing, and no other write records an entry yet. A failure to record is logged and does not undo the write.
 
@@ -324,6 +327,27 @@ Three tools change a record that already exists, and each carries its own permis
 - **Catalogue.** Both codes are in `modules/agency/models/permissions_catalog.json`, so `agency_list_permissions` lists them.
 - **Grants.** No role of the municipality agency files is given either code: none of them could change a person or a place before, and a grant is the owner's to make on the permissions page.
 - **Tests.** `internal/api/http/change_permissions_test.go` (owner, agent and resident, with and without the code, the refusal naming it) and `modules/agency/models/permission_edit_test.go`.
+
+## Filing an application for a resident
+
+`forms_submission_file` lets a clerk file the answers of a resident who has no sign-in, taken on paper or in the field (MUN1373). It runs the same pipeline as `forms_answer_submit` for the named person.
+
+| Item | Value |
+|---|---|
+| Tool | `forms_submission_file` |
+| Route | `POST /forms/{form_id}/submissions/{member_id}/answers`, which shares its path with the `PUT` of `forms_submission_correct` |
+| Action | `forms.submission.file` |
+| Permission | `application.file`, "File an application for a resident" (module forms) |
+| Arguments | `instance_id`, `form_id`, `member_id`, `answers`; optional `as`, `language`, `period_key`, `channel`, `record_row_id` |
+| Returns | the stored answers, each carrying the `send_id` |
+
+- **Channel.** `channel` is `paper` or `field`; absent is `paper`. Any other value, including `app` and `link`, which the module assigns itself, is refused with `ErrInvalidChannel` (400) and nothing is kept. The send is stamped with the channel and with the clerk, taken from the session, as its collector.
+- **Whose rules apply.** The open window, the audience check, the required prompts and the consent gate are all asked about `member_id`, never the clerk. A person no group of the form reaches is refused with 400, even when the clerk is reached or the mount narrows reads to what the caller reaches. A call with no caller is refused with 400.
+- **Filing again.** Filing again for the same person, form, group and period edits the one send, keeping the `send_id`; the collector and channel become those of the last filing. A form that locks after sending refuses it with `ErrLockedAfterSend`; `forms_submission_correct` is the way to change such a send.
+- **A business row.** `record_row_id` is accepted only for a row of the agency that names `member_id`, not the clerk, as its owner; any other row is refused as `forms_answer_submit` refuses it (`sendsNamingRows.FileSubmission` in `internal/api/http/form_send_row_owner.go`).
+- **Who may.** The agency's owner, and any role that holds `application.file`. It is not a resident action; `internal/api/http/resident_file_for_another_test.go` pins that. The same change put `actor.assignment.create` under `group.manage` and `catalog.raised_item.file` under `board.manage`.
+- **Where.** `FileSubmission` and `submitAnswers` in `modules/forms/public_impl.go`, `refuseUnreachedPerson` in `modules/forms/reach_impl.go`, the declaration in `modules/forms/forms.operations.json`.
+- **Tests.** `modules/forms/routes/mun1373_clerk_files_for_a_resident_test.go` (the route), `internal/api/http/forms_submission_file_mcp_test.go` (the mounted tool as the owner, a refused channel, a person outside the audience) and `internal/api/http/record_row_applications_test.go`; the roster pin counts rose by one.
 
 ## Setting what a role may do
 

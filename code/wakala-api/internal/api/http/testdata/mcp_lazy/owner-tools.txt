@@ -267,6 +267,7 @@ forms_results_read
 forms_results_read_text
 forms_submission_correct
 forms_submission_decide
+forms_submission_file
 forms_submission_inspect
 forms_submission_list
 forms_submission_list_missed
