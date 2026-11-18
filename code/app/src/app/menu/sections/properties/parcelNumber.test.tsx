@@ -16,6 +16,7 @@ let assets: Record<string, string>[];
 const answer = async (name: string, args: unknown) => {
   const given = (args ?? {}) as Record<string, string>;
   if (name === "agency_get_my_roles") return { permissions };
+  if (name === "agency_list_mounts") return { modules: [{ module: "digitaltwin" }, { module: "assetmanager" }] };
   if (name === "assetmanager_asset_list") return { items: assets };
   if (name === "assetmanager_asset_read") return { item: assets.find((asset) => asset.id === given.assetID) };
   if (name === "assetmanager_location_read") return { item: { id: "l1", name: "Old Town" } };

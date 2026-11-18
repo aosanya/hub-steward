@@ -25,7 +25,26 @@ export const loadRecords = async <Row extends Record<string, string>>(tool: stri
   return records.map((record) => ({ id: textOf(record.id), ...row(record) }));
 };
 
-export const loadPlaces = () => loadRecords("assetmanager_asset_list", (place) => ({ name: textOf(place.name), category: textOf(place.category) }));
+const parcelKey = "parcel_number";
+
+const attributesOf = (attributesJson: unknown): Record<string, unknown> => {
+  try {
+    const parsed: unknown = JSON.parse(textOf(attributesJson));
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? (parsed as Record<string, unknown>) : {};
+  } catch {
+    return {};
+  }
+};
+
+export const parcelOf = (attributesJson: unknown) => textOf(attributesOf(attributesJson)[parcelKey]);
+
+export const withParcel = (attributesJson: unknown, parcel: string) => {
+  const { [parcelKey]: _dropped, ...others } = attributesOf(attributesJson);
+  return JSON.stringify(parcel.trim() === "" ? others : { ...others, [parcelKey]: parcel.trim() });
+};
+
+export const loadPlaces = () =>
+  loadRecords("assetmanager_asset_list", (place) => ({ name: textOf(place.name), category: joined([textOf(place.category), parcelOf(place.attributes_json)]) }));
 
 export const loadNodeNames = async () => {
   try {
