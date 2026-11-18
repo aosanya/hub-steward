@@ -131,6 +131,53 @@ func (m *ledgerStore) SetBudget(ctx context.Context, b Budget) (Budget, error) {
 	return out, nil
 }
 
+func (m *ledgerStore) DeleteBudgetLine(ctx context.Context, id, version string) (BudgetLine, error) {
+	var removed BudgetLine
+	err := m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var b Budget
+		if err := m.take(m.on(ctx, tx, roleBudget).Where("id = ?", id), roleBudget, &b, ErrNotFound); err != nil {
+			return err
+		}
+		if version != "" {
+			setAt, err := time.Parse(time.RFC3339Nano, b.SetAt)
+			if err == nil {
+				if err := versioncheck.Stale(version, setAt, nil); err != nil {
+					return err
+				}
+			}
+		}
+		from, to, err := parsePeriod(b.PeriodStart, b.PeriodEnd)
+		if err != nil {
+			return err
+		}
+		entries, err := m.entriesTouching(ctx, tx, b.AccountID, 0)
+		if err != nil {
+			return err
+		}
+		for _, e := range entries {
+			if withinPeriod(e, from, to) {
+				return ErrBudgetLineInUse
+			}
+		}
+		var drawing int64
+		if err := m.on(ctx, tx, roleTender).Where("budget_id = ?", id).Count(&drawing).Error; err != nil {
+			return err
+		}
+		if drawing > 0 {
+			return ErrBudgetLineInUse
+		}
+		removed = BudgetLine{
+			ID: b.ID, Name: b.Name, Department: b.Department, AccountID: b.AccountID,
+			PeriodStart: b.PeriodStart, PeriodEnd: b.PeriodEnd, Planned: b.Amount, SetAt: b.SetAt,
+		}
+		return m.on(ctx, tx, roleBudget).Where("id = ?", id).Delete(nil).Error
+	})
+	if err != nil {
+		return BudgetLine{}, err
+	}
+	return removed, nil
+}
+
 func (m *ledgerStore) Variance(ctx context.Context, accountID, periodStart, periodEnd string) (Variance, error) {
 	from, to, err := parsePeriod(periodStart, periodEnd)
 	if err != nil {

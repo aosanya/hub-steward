@@ -3,6 +3,7 @@ accounting_bill_create
 accounting_bill_list
 accounting_bill_read
 accounting_bill_update
+accounting_budget_delete
 accounting_budget_list
 accounting_budget_read
 accounting_budget_set

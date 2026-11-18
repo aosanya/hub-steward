@@ -31,7 +31,7 @@ func TestAccountingViewReadsAndAccountingManageAlsoWrites(t *testing.T) {
 	writeActions := []string{
 		"accounting.account.open", "accounting.account.close",
 		"accounting.entry.post",
-		"accounting.budget.set",
+		"accounting.budget.set", "accounting.budget.delete",
 	}
 	view := permissionActions(t, "accounting.view")
 	manage := permissionActions(t, "accounting.manage")

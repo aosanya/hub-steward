@@ -33,6 +33,8 @@ type LedgerRepository interface {
 
 	SetBudget(ctx context.Context, b Budget) (Budget, error)
 
+	DeleteBudgetLine(ctx context.Context, id, version string) (BudgetLine, error)
+
 	ListBudgetLines(ctx context.Context, filter BudgetLineFilter) ([]BudgetLine, error)
 
 	GetBudgetLine(ctx context.Context, id string) (BudgetLine, error)

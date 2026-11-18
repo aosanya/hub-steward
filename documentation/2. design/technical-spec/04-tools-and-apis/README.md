@@ -189,6 +189,7 @@ Served from `modules/accounting` in `code/wakala-api` (MUN983, hub MUN1045). Eve
 | Tool | Action | Arguments besides `instance_id` | Reads / writes | Permission |
 |---|---|---|---|---|
 | `accounting_budget_set` | `accounting.budget.set` | `account_id`, `period_start`, `period_end`, `amount`, optional `name`, `department` | writes one budget line per account and period; setting it again replaces name, department and amount | `accounting.manage` |
+| `accounting_budget_delete` | `accounting.budget.delete` | `budgetID`, optional `version` (the line's `set_at`) | deletes one budget line and returns it; refused with 409 when any entry of its account falls inside its period or a tender draws on it, and when `version` is old | `accounting.manage` |
 | `accounting_budget_list` | `accounting.budget.list` | optional `account_id`, `department`, `limit` | reads lines with `planned` and `spent` (the account's balance over the period, debits minus credits) | `accounting.manage`, `accounting.view` |
 | `accounting_budget_read` | `accounting.budget.read` | `budgetID` | reads one line | `accounting.manage`, `accounting.view` |
 | `accounting_report_list` | `accounting.report.list` | optional `limit` | reads one report per period that has budget lines, oldest first; the difference is planned minus spent | `accounting.manage`, `accounting.view` |

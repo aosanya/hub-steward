@@ -32,7 +32,7 @@ func TestOnlyTheBudgetLineToolsAreServed(t *testing.T) {
 		}
 	}
 	sort.Strings(got)
-	want := []string{"accounting_budget_list", "accounting_budget_read", "accounting_budget_set"}
+	want := []string{"accounting_budget_delete", "accounting_budget_list", "accounting_budget_read", "accounting_budget_set"}
 	if len(got) != len(want) {
 		t.Fatalf("served %v, want %v", got, want)
 	}

@@ -22,6 +22,8 @@ var ErrRetentionReleased = errors.New("accounting: the retention has already bee
 
 var ErrLocked = errors.New("accounting: the record can no longer be changed")
 
+var ErrBudgetLineInUse = errors.New("accounting: a budget line with spending in its period, or a tender drawing on it, cannot be deleted")
+
 type BudgetLineExistsError struct {
 	AccountID   string
 	Category    string
