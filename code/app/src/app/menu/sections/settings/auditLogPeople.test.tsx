@@ -90,19 +90,19 @@ describe("the Audit Log naming the people an entry is about", () => {
     expect(within(row).getByText(`Asha Otieno · ${dateTimeWords(consentAt)}`)).toBeInTheDocument();
   });
 
-  it("says Someone for an actor and a person nothing can name, and prints no id", async () => {
+  it("says Unnamed person for an actor and a person nothing can name, and prints no id", async () => {
     openAuditLog();
 
-    const row = rowOf((await screen.findAllByText(/registered in a group: Someone/))[0]);
-    expect(within(row).getByText(`Someone · ${dateTimeWords(strangerAt)}`)).toBeInTheDocument();
+    const row = rowOf((await screen.findAllByText(/registered in a group: Unnamed person/))[0]);
+    expect(within(row).getByText(`Unnamed person · ${dateTimeWords(strangerAt)}`)).toBeInTheDocument();
     expect(screen.queryByText(new RegExp(unreadableId.slice(0, 8)))).toBeNull();
   });
 
-  it("says Someone for a person who is known but has no name, email or phone", async () => {
+  it("says Unnamed person for a person who is known but has no name, email or phone", async () => {
     openAuditLog();
 
-    const row = rowOf(await screen.findByText("granted a role: Someone"));
-    expect(within(row).getByText(`Someone · ${dateTimeWords(namelessAt)}`)).toBeInTheDocument();
+    const row = rowOf(await screen.findByText("granted a role: Unnamed person"));
+    expect(within(row).getByText(`Unnamed person · ${dateTimeWords(namelessAt)}`)).toBeInTheDocument();
     expect(screen.queryByText(new RegExp(nameless.slice(0, 8)))).toBeNull();
   });
 
@@ -110,8 +110,8 @@ describe("the Audit Log naming the people an entry is about", () => {
     readsRefused = true;
     openAuditLog();
 
-    await screen.findAllByText(/registered in a group: Someone/);
-    expect(screen.getAllByText(/Someone · /)).toHaveLength(entries.length);
+    await screen.findAllByText(/registered in a group: Unnamed person/);
+    expect(screen.getAllByText(/Unnamed person · /)).toHaveLength(entries.length);
     expect(document.body.textContent).not.toMatch(idPattern);
   });
 

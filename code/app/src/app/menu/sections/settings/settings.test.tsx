@@ -223,8 +223,9 @@ describe("the Audit Log screen", () => {
     openAt("Audit Log");
 
     const newest = (await screen.findByText(/granted a role/)).closest("button, .row") as HTMLElement;
-    expect(within(newest).getByText(/p1/)).toBeInTheDocument();
-    expect(within(newest).getByText(/acct-2/)).toBeInTheDocument();
+    expect(within(newest).getByText("granted a role: Unnamed person")).toBeInTheDocument();
+    expect(within(newest).getByText(/^Unnamed person · /)).toBeInTheDocument();
+    expect(newest.textContent).not.toMatch(/p1|acct-2/);
     const older = screen.getByText(/renamed the agency/).closest("button, .row") as HTMLElement;
     expect(within(older).getByText(/Riverside Office/)).toBeInTheDocument();
     expect(newest.compareDocumentPosition(older) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();

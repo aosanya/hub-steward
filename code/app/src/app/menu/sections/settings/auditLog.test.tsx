@@ -102,7 +102,7 @@ describe("the Audit Log screen showing names instead of ids", () => {
     await screen.findByText(/granted a role/);
     const row = screen.getAllByText(/published a form/)[1].closest("button, .row") as HTMLElement;
     expect(within(row).getByText("published a form: 7d41e8b2")).toBeInTheDocument();
-    expect(within(row).getByText(`9f3c2a10 · ${dateTimeWords(strangerAt)}`)).toBeInTheDocument();
+    expect(within(row).getByText(`Unnamed person · ${dateTimeWords(strangerAt)}`)).toBeInTheDocument();
     expect(screen.queryByText(new RegExp(strangerActorId))).toBeNull();
     expect(screen.queryByText(new RegExp(strangerFormId))).toBeNull();
   });

@@ -1,10 +1,11 @@
 export const shortId = (id: string) => id.slice(0, 8);
 
-export const labelOf = (person: Record<string, unknown>) => {
+export const nameOf = (person: Record<string, unknown>) => {
   const choices = [person.display_name, person.email, person.phone];
-  const found = choices.find((choice): choice is string => typeof choice === "string" && choice.trim() !== "");
-  return found ?? shortId(String(person.id ?? ""));
+  return choices.find((choice): choice is string => typeof choice === "string" && choice.trim() !== "");
 };
+
+export const labelOf = (person: Record<string, unknown>) => nameOf(person) ?? shortId(String(person.id ?? ""));
 
 export const unnamedPerson = "Unnamed person";
 
