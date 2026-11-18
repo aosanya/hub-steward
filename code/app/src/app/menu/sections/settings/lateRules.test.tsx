@@ -13,6 +13,8 @@ let stored: Record<string, string> = {};
 
 let refuseWrites = false;
 
+let failReads = false;
+
 const noRule = "No rule: late from the day after the due date, nobody is reminded";
 
 const answer = async (name: string, args: unknown) => {
@@ -38,6 +40,7 @@ const answer = async (name: string, args: unknown) => {
         ],
       };
     case "forms_catalog_setting_read":
+      if (failReads) throw new mcp.McpError("setting.read: the hub could not be reached");
       return given.key in stored ? { key: given.key, value: stored[given.key] } : null;
     case "forms_catalog_setting_write":
       if (refuseWrites) throw new mcp.McpError("setting.write: the setting could not be saved");
@@ -54,6 +57,7 @@ beforeEach(() => {
   openAgency("town");
   permissions = [];
   refuseWrites = false;
+  failReads = false;
   stored = {
     "late_rule.a-stall": JSON.stringify({ days: 14, role: "k-fin" }),
     "late_rule.a-rates": JSON.stringify({ days: 60, role: "k-mayor" }),
@@ -192,7 +196,7 @@ describe("the Late rules edit screen", () => {
     expect(writes()).toHaveLength(0);
   });
 
-  it("refuses emptying a charge that already has a rule", async () => {
+  it("refuses clearing the days of a charge that has a rule, the role kept", async () => {
     await openEdit();
 
     await userEvent.clear(screen.getByRole("textbox", { name: "Market stalls days" }));
@@ -241,5 +245,42 @@ describe("the Late rules edit screen", () => {
     await waitFor(() => expect(vi.mocked(mcp.callTool).mock.calls.some(([, tool]) => tool === "agency_get_my_roles")).toBe(true));
     await new Promise((done) => setTimeout(done, 20));
     expect(screen.queryByRole("textbox", { name: "Market stalls days" })).not.toBeInTheDocument();
+  });
+});
+
+describe("when a rule could not be read", () => {
+  it("says it could not be loaded, shows no charge as having no rule and offers no Edit, even to someone who may write settings", async () => {
+    failReads = true;
+    permissions = ["permission.override"];
+    openAt(listPath());
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("This could not be loaded.");
+    expect(screen.queryByText(noRule)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Edit late rules" })).not.toBeInTheDocument();
+  });
+
+  it("loads the page once the hub answers and Try again is pressed", async () => {
+    failReads = true;
+    permissions = ["permission.override"];
+    openAt(listPath());
+    await screen.findByRole("alert");
+
+    failReads = false;
+    await userEvent.click(screen.getByRole("button", { name: "Try again" }));
+
+    const card = await screen.findByRole("region", { name: "Charges" });
+    expect(within(card).getByText("Late after 14 days · reminds Finance officer")).toBeInTheDocument();
+    expect(within(card).getByRole("button", { name: "Edit late rules" })).toBeInTheDocument();
+  });
+
+  it("shows no form on the edit screen, so a Save cannot overwrite a rule it never saw", async () => {
+    failReads = true;
+    permissions = ["permission.override"];
+    openAt(editPath());
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("This could not be loaded.");
+    expect(screen.queryByRole("textbox", { name: "Market stalls days" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
+    expect(writes()).toHaveLength(0);
   });
 });
