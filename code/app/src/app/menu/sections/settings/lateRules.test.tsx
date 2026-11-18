@@ -1,7 +1,7 @@
 import { vi } from "vitest";
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
+import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
@@ -190,6 +190,17 @@ describe("the Late rules edit screen", () => {
     expect(screen.getByText(words)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
     expect(writes()).toHaveLength(0);
+  });
+
+  it("refuses emptying a charge that already has a rule", async () => {
+    await openEdit();
+
+    await userEvent.clear(screen.getByRole("textbox", { name: "Market stalls days" }));
+    await userEvent.click(screen.getByRole("button", { name: /Market stalls role/ }));
+    await userEvent.click(await screen.findByRole("option", { name: "Finance officer" }));
+
+    expect(screen.getByText("Give Market stalls the days after the due date.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
   });
 
   it("refuses a role without days before saving", async () => {

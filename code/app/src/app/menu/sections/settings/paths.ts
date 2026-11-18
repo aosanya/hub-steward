@@ -10,4 +10,6 @@ export const settingsPaths = {
   aiAgentEdit: screen("/menu/settings/ai-agents/:id/edit"),
   auditLog: screen("/menu/settings/audit-log"),
   registerDetails: screen("/menu/settings/details-of-a-record"),
+  lateRules: screen("/menu/settings/late-rules"),
+  lateRulesEdit: screen("/menu/settings/late-rules/edit"),
 };

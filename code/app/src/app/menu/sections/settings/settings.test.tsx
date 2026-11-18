@@ -103,14 +103,14 @@ const called = (name: string) => vi.mocked(mcp.callTool).mock.calls.filter((call
 
 describe("the Settings section's items", () => {
   it("lists the screens built here, each one openable", () => {
-    expect(items.map((item) => item.title)).toEqual(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "AI Agents & Limits", "Audit Log", "Details of a record"]);
+    expect(items.map((item) => item.title)).toEqual(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "AI Agents & Limits", "Audit Log", "Details of a record", "Late rules"]);
     for (const item of items) expect(item.path).toBeTypeOf("function");
   });
 
   it("gives each screen its own path under the Settings section of the open agency", () => {
     const paths = items.map((item) => item.path!());
     for (const path of paths) expect(path.startsWith("/a/town/menu/settings/")).toBe(true);
-    expect(new Set(paths).size).toBe(7);
+    expect(new Set(paths).size).toBe(8);
   });
 });
 

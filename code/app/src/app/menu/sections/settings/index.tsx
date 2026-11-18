@@ -6,6 +6,8 @@ import { AuditLog } from "./AuditLog";
 import { BoundariesAndAreas } from "./BoundariesAndAreas";
 import { BoundaryEditScreen } from "./BoundaryEditScreen";
 import { Integrations } from "./Integrations";
+import { LateRules } from "./LateRules";
+import { LateRulesEdit } from "./LateRulesEdit";
 import { settingsPaths } from "./paths";
 import { RegisterDetails } from "./RegisterDetails";
 import { UsersAndRoles } from "./UsersAndRoles";
@@ -19,6 +21,7 @@ export const items: MenuItem[] = [
   { title: "AI Agents & Limits", path: () => settingsPaths.aiAgents.path() },
   { title: "Audit Log", path: () => settingsPaths.auditLog.path() },
   { title: "Details of a record", path: () => settingsPaths.registerDetails.path() },
+  { title: "Late rules", path: () => settingsPaths.lateRules.path() },
 ];
 
 export const routes = () => (
@@ -32,5 +35,7 @@ export const routes = () => (
     <Route path={settingsPaths.aiAgentEdit.pattern} element={<AiLimitsEditScreen />} />
     <Route path={settingsPaths.auditLog.pattern} element={<AuditLog />} />
     <Route path={settingsPaths.registerDetails.pattern} element={<RegisterDetails />} />
+    <Route path={settingsPaths.lateRules.pattern} element={<LateRules />} />
+    <Route path={settingsPaths.lateRulesEdit.pattern} element={<LateRulesEdit />} />
   </>
 );
