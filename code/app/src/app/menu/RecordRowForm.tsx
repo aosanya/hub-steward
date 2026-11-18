@@ -14,7 +14,7 @@ import { personNameOf } from "./sections/residents/personName";
 
 const addLiveRecordRowTool = "agency_add_live_record_row";
 
-export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean; fixed?: boolean };
+export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean; fixed?: boolean; kind?: "date" | "number" };
 
 type Props = {
   title: string;
@@ -72,7 +72,7 @@ export function RecordRowForm({ title, recordCode, fields, back, edit }: Props) 
             ))}
           </ChoiceGroup>
         ) : (
-          <Field key={field.prompt} label={optionalWords(field)} value={values[field.prompt] ?? ""} onChange={(event) => set(field.prompt, event.target.value)} />
+          <Field key={field.prompt} type={field.kind ?? "text"} label={optionalWords(field)} value={values[field.prompt] ?? ""} onChange={(event) => set(field.prompt, event.target.value)} />
         ),
       )}
       {refused ? <LoadFailed words={refused} /> : null}
