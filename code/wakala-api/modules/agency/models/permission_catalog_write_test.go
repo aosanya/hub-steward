@@ -42,3 +42,20 @@ func TestPermissionCatalog_BoardReadReadsTheListAndTheCountByAreaAndNothingMore(
 		}
 	}
 }
+
+func TestPermissionCatalog_ResidentReadOpensTheListTheRecordAndTheBills(t *testing.T) {
+	read, ok := LookupPermission("resident.read")
+	if !ok {
+		t.Fatal("catalogue lacks resident.read")
+	}
+	for _, a := range []string{"actor.actor.list", "actor.actor.read", "actor.actor.read_many", "accounting.bill.list", "accounting.bill.read", "accounting.payment.list"} {
+		if !slices.Contains(read.Actions, a) {
+			t.Errorf("resident.read lacks action %s, has %v", a, read.Actions)
+		}
+	}
+	for _, a := range []string{"actor.actor.set_display_name", "actor.actor.set_attributes", "accounting.bill.create", "accounting.bill.update", "accounting.payment.mark_paid"} {
+		if slices.Contains(read.Actions, a) {
+			t.Errorf("resident.read holds the write action %s", a)
+		}
+	}
+}
