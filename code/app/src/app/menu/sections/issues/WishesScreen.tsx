@@ -4,7 +4,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuWindow } from "../../MenuWindow";
 import { areaLinesOf, loadAreaTally } from "./AreaCounts";
-import { MeTooButton } from "./MeTooButton";
+import { WishPage } from "./WishPage";
 
 type Item = Record<string, unknown>;
 
@@ -32,8 +32,6 @@ const linesOf = (item: Item) => [String(item.counts ?? ""), ...areaLinesOf(item)
 
 const without = (ids: string[], id: string) => ids.filter((one) => one !== id);
 
-const wishFields = { Title: "title", Kind: "kindWord", "Raised by": "raised_by", "Said Me too": "me_too" };
-
 export function WishesScreen() {
   const [said, setSaid] = useState<string[]>([]);
   const [failed, setFailed] = useState<string[]>([]);
@@ -60,16 +58,18 @@ export function WishesScreen() {
       () => setFailed((now) => [...without(now, id), id]),
     );
   };
-  const button = (item: Item) => {
+  const page = (item: Item) => {
     const id = String(item.id ?? "");
-    return <MeTooButton title={String(item.title ?? "")} said={said.includes(id)} failed={failed.includes(id)} onPress={() => meToo(id)} />;
+    return <WishPage key={id} item={item} said={said.includes(id)} failed={failed.includes(id)} onPress={() => meToo(id)} />;
   };
   const title = "Wishes";
   return (
     <MenuWindow
       title={title}
+      withTabs
+      bandless
       list={{ title, tool: wishesTool, fields: { title: "title", meta: "counts" }, lines: linesOf, empty: { words: "No wishes yet.", act: "Home", to: agencyHomePath(openAgencyId()) }, load: current }}
-      detail={{ tool: wishesTool, fields: wishFields, status: "", load: loadWish, extra: button }}
+      detail={{ tool: wishesTool, fields: {}, status: "", load: loadWish, extra: page }}
       listKey={reloads}
       detailKey={reloads}
     />

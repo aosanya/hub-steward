@@ -9,11 +9,11 @@ const number = (value: unknown) => (typeof value === "number" ? value : 0);
 
 const live = (area: Item) => (number(area.population) > 0 ? ` · ${number(area.population)} live there` : "");
 
-const behind = (area: Item) => number(area.raised_by) + number(area.me_too) > 0;
+export const behindAny = (area: Item) => number(area.raised_by) + number(area.me_too) > 0;
 
 const areaLine = (area: Item) => `${String(area.area ?? "") || "No area"} · raised by ${number(area.raised_by)} · ${number(area.me_too)} said Me too${live(area)}`;
 
-export const areaLinesOf = (item: Item) => (Array.isArray(item.areas) ? (item.areas as Item[]) : []).filter(behind).map(areaLine);
+export const areaLinesOf = (item: Item) => (Array.isArray(item.areas) ? (item.areas as Item[]) : []).filter(behindAny).map(areaLine);
 
 export const loadAreaTally = async () => {
   try {

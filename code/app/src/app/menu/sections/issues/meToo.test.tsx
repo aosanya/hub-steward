@@ -138,7 +138,7 @@ describe("Me too on the Wishes screen", () => {
     open();
     const first = await chooseWish(bench);
     await userEvent.click(await meTooIn(first, bench));
-    await screen.findByText(/3 said Me too/);
+    await within(await listRowOf(bench)).findByText(/3 said Me too/);
     cleanup();
 
     open();

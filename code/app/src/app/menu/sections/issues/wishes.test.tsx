@@ -129,10 +129,8 @@ describe("Wishes opens the chosen wish", () => {
     expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
     const detail = document.querySelector(".mw-detail") as HTMLElement;
     expect(await within(detail).findByText("A bench by the bus stop")).toBeInTheDocument();
-    expect(within(detail).getByText("Raised by")).toBeInTheDocument();
-    expect(within(detail).getByText("3")).toBeInTheDocument();
-    expect(within(detail).getByText("Said Me too")).toBeInTheDocument();
-    expect(within(detail).getByText("2")).toBeInTheDocument();
+    expect((within(detail).getByText("Raised by").closest(".txt") as HTMLElement).textContent).toBe("Raised by3");
+    expect((within(detail).getByText("Said Me too").closest(".txt") as HTMLElement).textContent).toBe("Said Me too2");
     expect(within(detail).getByRole("button", { name: "Me too: A bench by the bus stop" })).toBeEnabled();
   });
 
@@ -149,7 +147,7 @@ describe("Wishes opens the chosen wish", () => {
 
     afterEach(() => forgetWidth());
 
-    it("keeps the list on the left, opens the chosen wish in the right pane and draws no tab bar", async () => {
+    it("keeps the list on the left, opens the chosen wish in the right pane and draws the main tab bar", async () => {
       open();
       await choose("Longer library hours");
 
@@ -158,7 +156,7 @@ describe("Wishes opens the chosen wish", () => {
       expect(within(main).getByText("Longer library hours")).toBeInTheDocument();
       expect(within(main).getByRole("button", { name: "Me too: Longer library hours" })).toBeInTheDocument();
       expect(within(document.querySelector(".wf-tree") as HTMLElement).getByRole("button", { name: /A dog park/ })).toBeInTheDocument();
-      expect(document.querySelector("nav.tabs")).toBeNull();
+      expect(document.querySelector("nav.tabs")).not.toBeNull();
     });
 
     it("opens the first wish in the right pane without a tap", async () => {

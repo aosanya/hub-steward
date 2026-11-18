@@ -1,5 +1,3 @@
-import { Button } from "../../../../shared/ui/Button";
-
 export const meTooWords = "Me too";
 
 export const saidMeTooWords = "You said Me too";
@@ -11,7 +9,11 @@ type Props = { title: string; said: boolean; failed: boolean; onPress: () => voi
 export function MeTooButton({ title, said, failed, onPress }: Props) {
   return (
     <>
-      {said ? <Button disabled>{saidMeTooWords}</Button> : <Button aria-label={`${meTooWords}: ${title}`} onClick={onPress}>{meTooWords}</Button>}
+      {said ? (
+        <button type="button" className="sec-act" disabled>{saidMeTooWords}</button>
+      ) : (
+        <button type="button" className="sec-act" aria-label={`${meTooWords}: ${title}`} onClick={onPress}>{meTooWords}</button>
+      )}
       {failed ? <p role="alert">{meTooFailedWords}</p> : null}
     </>
   );
