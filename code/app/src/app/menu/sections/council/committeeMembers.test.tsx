@@ -188,12 +188,44 @@ describe("the members of an opened committee", () => {
     await userEvent.click(rowOf(pane, "Varga József"));
 
     await userEvent.click(await pane.findByRole("button", { name: "Remove from committee" }));
+    await userEvent.click(await pane.findByRole("button", { name: "Remove Varga József" }));
 
     await waitFor(() => expect(callsTo("actor_unassign_group")).toEqual([{ actor_id: "a2", group_id: "g1" }]));
     expect(callsTo("actor_revoke_role")).toEqual([]);
     expect(await pane.findByRole("heading", { name: membersHeading(2) })).toBeInTheDocument();
     expect(pane.queryByText("Varga József", { selector: ".ttl" })).toBeNull();
     expect(pane.getByRole("heading", { level: 1, name: "Audit Committee" })).toBeInTheDocument();
+  });
+
+  it("asks first when Remove from committee is pressed: no call is made, the question names the person and the committee, and the footer offers Cancel and Remove <name>", async () => {
+    const pane = await open("Audit Committee");
+    await pane.findByRole("heading", { name: membersHeading(3) });
+    await userEvent.click(rowOf(pane, "Varga József"));
+
+    await userEvent.click(await pane.findByRole("button", { name: "Remove from committee" }));
+
+    expect(await pane.findByText("Remove Varga József from Audit Committee?")).toBeInTheDocument();
+    expect(pane.getByText("They also leave the committee's member list.")).toBeInTheDocument();
+    const foot = pane.getByRole("region", { name: "Member" }).querySelector(".sec-foot") as HTMLElement;
+    expect(within(foot).getByRole("button", { name: "Cancel" })).toBeInTheDocument();
+    expect(within(foot).getByRole("button", { name: "Remove Varga József" })).toBeInTheDocument();
+    expect(foot.children).toHaveLength(2);
+    expect(callsTo("actor_unassign_group")).toEqual([]);
+  });
+
+  it("changes nothing when the question is cancelled and brings the Back and Remove from committee footer back", async () => {
+    const pane = await open("Audit Committee");
+    await pane.findByRole("heading", { name: membersHeading(3) });
+    await userEvent.click(rowOf(pane, "Varga József"));
+    await userEvent.click(await pane.findByRole("button", { name: "Remove from committee" }));
+
+    await userEvent.click(await pane.findByRole("button", { name: "Cancel" }));
+
+    expect(pane.queryByText("Remove Varga József from Audit Committee?")).toBeNull();
+    const foot = pane.getByRole("region", { name: "Member" }).querySelector(".sec-foot") as HTMLElement;
+    expect(within(foot).getByRole("button", { name: "Back" })).toBeInTheDocument();
+    expect(within(foot).getByRole("button", { name: "Remove from committee" })).toBeInTheDocument();
+    expect(callsTo("actor_unassign_group")).toEqual([]);
   });
 
   it("shows Remove from committee only to a caller holding member.remove, and Add member still follows group.manage", async () => {
