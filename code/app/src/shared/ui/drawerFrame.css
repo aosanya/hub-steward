@@ -19,8 +19,8 @@
   .frame .body > * { order: 3; }
   .frame .headline, .frame .body > .smart-head, .frame .body > .filter-bar { order: 0; }
   .frame .body > .count { order: 1; margin-left: auto; }
-  .frame .actions { order: 2; margin-left: auto; }
-  .frame .body:has(> .seg) .actions { margin-left: 0; }
+  .frame .actions:not(.start) { order: 2; margin-left: auto; }
+  .frame .body:has(> .seg) .actions:not(.start) { margin-left: 0; }
   .frame .body:has(> .filter-bar, > .seg) > .seg { flex: 0 0 auto; order: 1; max-width: none; }
   .frame .seg > button { flex: none; min-height: 2.5rem; padding: 0 1.25rem; }
   .frame .body > .filter-bar ~ .seg { position: sticky; top: 3rem; z-index: 1; box-shadow: 0 0 0 .5rem var(--bg); }

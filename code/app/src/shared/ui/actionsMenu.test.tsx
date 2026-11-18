@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -69,6 +71,7 @@ describe("the Actions dropdown opened from the left", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: "Actions" }));
     expect(document.querySelector(".actions-list")).toHaveClass("start");
+    expect(document.querySelector(".actions")).toHaveClass("start");
   });
 
   it("keeps the list on the right edge by default", async () => {
@@ -79,5 +82,13 @@ describe("the Actions dropdown opened from the left", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: "Actions" }));
     expect(document.querySelector(".actions-list")).not.toHaveClass("start");
+  });
+});
+
+describe("the wide frame leaves a left-anchored Actions button where the page put it", () => {
+  it("does not push the button to the right edge or to the end of the page in the frame stylesheet", () => {
+    const css = readFileSync(join(__dirname, "drawerFrame.css"), "utf8");
+    expect(css).not.toMatch(/\.frame \.actions\s*\{/);
+    expect(css).toMatch(/\.frame \.actions:not\(\.start\)\s*\{[^}]*order: 2/);
   });
 });

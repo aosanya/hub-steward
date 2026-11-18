@@ -20,7 +20,7 @@ export function ActionsMenu({ actions, label = "Actions", icon, align }: { actio
   }, [open]);
   if (actions.length === 0) return null;
   return (
-    <div className="actions" ref={frame}>
+    <div className={align === "start" ? "actions start" : "actions"} ref={frame}>
       <button type="button" className={icon ? "actions-btn icon" : "actions-btn"} aria-label={icon ? label : undefined} aria-haspopup="true" aria-expanded={open} onClick={() => setOpen(!open)}>
         {icon ?? label}
         {icon ? null : <span aria-hidden="true">▾</span>}
