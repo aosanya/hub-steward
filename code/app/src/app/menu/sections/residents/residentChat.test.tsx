@@ -5,7 +5,9 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
-import { askAssistant } from "../../../../features/assistant/api";
+import { askAssistant, type AssistantClient } from "../../../../features/assistant/api";
+import { AssistantPage } from "../../../../features/assistant/AssistantPage";
+import { routes as appRoutes } from "../../../routes";
 import { carriedChatAbout, chatAboutWords, forgetChatAbout } from "../../../chatAbout";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
@@ -53,6 +55,8 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+const assistantClient: AssistantClient = { model: async () => "acc1", ask: async () => ({ text: "ok", lists: [] }) };
+
 function ChatList() {
   return <p>the general chat</p>;
 }
@@ -65,6 +69,7 @@ const openPeople = async (wide: boolean, pick: boolean) => {
       <Routes>
         {routes()}
         <Route path="/a/:agencyId/chat" element={<ChatList />} />
+        <Route path={appRoutes.assistant.pattern} element={<AssistantPage client={assistantClient} />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -97,11 +102,21 @@ describe("the All Residents page carries the bottom navigation bar", () => {
   });
 });
 
-describe("Chat in the bar carries the resident that is open", () => {
-  it("opens the usual chat and hands the assistant the resident's id and name", async () => {
+const aboutLine = () => screen.findByText(`About ${resident.name}`);
+
+describe("Chat in the bar with a resident open opens the assistant about that resident", () => {
+  it("lands on the assistant conversation with the About line and the composer ready", async () => {
     await openPeople(true, true);
     await userEvent.click(chatTab());
-    await screen.findByText("the general chat");
+    await aboutLine();
+    expect(screen.getByRole("textbox", { name: "Ask about the backlogs" })).toBeInTheDocument();
+    expect(screen.queryByText("the general chat")).toBeNull();
+  });
+
+  it("hands the assistant the resident's id and name", async () => {
+    await openPeople(true, true);
+    await userEvent.click(chatTab());
+    await aboutLine();
     expect(carriedChatAbout()).toEqual({ kind: "resident", id: resident.id, name: resident.name });
     const sent = await sentToTheModel();
     expect(sent).toContain(resident.name);
@@ -112,15 +127,33 @@ describe("Chat in the bar carries the resident that is open", () => {
   it("creates no thread about the resident", async () => {
     await openPeople(true, true);
     await userEvent.click(chatTab());
-    await screen.findByText("the general chat");
+    await aboutLine();
     expect(calls.filter((call) => call.name === "comm_chat_thread_create")).toEqual([]);
   });
 
   it("works from the phone bar too", async () => {
     await openPeople(false, true);
     await userEvent.click(chatTab());
-    await screen.findByText("the general chat");
+    await aboutLine();
     expect(carriedChatAbout()?.id).toBe(resident.id);
+  });
+
+  it("clearing the line removes it and the assistant no longer holds the resident", async () => {
+    await openPeople(false, true);
+    await userEvent.click(chatTab());
+    await aboutLine();
+    await userEvent.click(screen.getByRole("button", { name: `Clear About ${resident.name}` }));
+    await waitFor(() => expect(screen.queryByText(`About ${resident.name}`)).toBeNull());
+    expect(carriedChatAbout()).toBeNull();
+    expect(await sentToTheModel()).not.toContain(resident.name);
+  });
+
+  it("Back returns to the resident's page", async () => {
+    await openPeople(false, true);
+    await userEvent.click(chatTab());
+    await aboutLine();
+    await userEvent.click(screen.getByRole("button", { name: /Back/ }));
+    await screen.findByText("Bills");
   });
 });
 
@@ -130,6 +163,7 @@ describe("Chat in the bar with no resident to carry", () => {
     await userEvent.click(chatTab());
     await screen.findByText("the general chat");
     expect(carriedChatAbout()).toBeNull();
+    expect(screen.queryByText(/^About /)).toBeNull();
     expect(await sentToTheModel()).not.toContain(resident.name);
   });
 
