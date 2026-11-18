@@ -371,3 +371,10 @@ Three tools change a record that already exists, and each carries its own permis
 - **A draft change.** It is refused once the draft is archived, and a role's permissions are part of the publish hash (MUN1158), so a permissions change alone publishes as a new version and changes what the live roles hold only then.
 - **Where.** `SetRolePermissions` in `modules/agency/role_impl.go`; the declaration in `modules/agency/agency.operations.json`; the registry's cache is told through `internal/agencies/role_edits.go`.
 - **Tests.** `modules/agency/mcp/role_permissions_tool_test.go` (replace, clear, de-duplicate, each locked code, unknown codes, archived draft, the catalogue entry), `internal/api/http/role_permissions_set_test.go` (owner, agent without the code, resident and stranger, a locked code, publish) and `internal/agencies/role_permissions_edits_test.go`; the roster pin counts rose by one.
+
+## Editing a group's name from the app (ISS-2)
+
+`actor_edit_group` declares its body arguments with a capital first letter: `Name` (required), `NodeType` and `AnchorLevelOverrideID`, beside `group_id` and an optional `version`. The hub refuses any other spelling with `actor_edit_group takes no argument "name"`, and an edit that leaves `NodeType` or `AnchorLevelOverrideID` empty clears it.
+
+- **One helper.** `code/app/src/app/menu/groupEdit.ts` holds the tool name, the Name field, `groupKept` (the type and anchor level a group item carries), `groupEditArgs` and `groupNameBuild`. The group page, the department and crew edit, the committee edit and the boundary edit all save through it.
+- **Tests against the declared tool.** `code/app/src/app/declaredTools/liveSchemas.json` is the declared argument list taken from the QA hub's `tools/list`, and `refuseUndeclared` makes a test mock refuse what the hub would refuse, so a mock can no longer agree with a wrong spelling. Add a tool's entry there when a screen's mock needs it.
