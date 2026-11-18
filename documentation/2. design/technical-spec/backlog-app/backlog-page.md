@@ -68,6 +68,8 @@ The hub orders the list and the screens show it as given. Every step is in rank 
 The priority is shown as a tag after the repo (D139). Tapping a tag twice, or its cross, clears it.
 Tags chosen together narrow the list (Docs and Blocked is both).
 
+Waiting clears by itself (SW236, SW594). When an issue reaches Done or Cancelled in any way, the hub looks at every issue that depends on it. A dependent tagged Waiting whose dependencies are now all Done or Cancelled loses Waiting, gains Ready and gets one worker Log entry naming the issue that finished; a dependent with another open dependency keeps Waiting and gets no entry. Removing the last open dependency does the same, and a new dependency on an open issue adds Waiting and drops Ready. Blocked and Sinbin are never touched, a Waiting tag on an issue with no dependency (an owner decision) is never dropped, and the issue's todo list is untouched. It happens in the same write as the close; nobody unblocks the dependents by hand. Written in [taskmanager-tools.md](../../../3.%20implementation/guides/taskmanager-tools.md#when-waiting-clears).
+
 ## One task opened (SW10, D14)
 
 Tapping a row opens the task on its own screen, one step in from the list: the title, the description,

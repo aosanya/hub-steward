@@ -11,7 +11,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | Which issue should a worker take next | `taskmanager_task_next_ready` | `GET /next-ready` |
 | Which issues can start together because their files do not clash | `taskmanager_task_next_ready_batch` | `GET /next-ready-batch` |
 | Take the next ready issue and hold it under a lease | `taskmanager_task_claim_next` | `POST /claim-next` |
-| Keep the lease of an issue taken with claim_next alive | `taskmanager_task_heartbeat` | `POST /tasks/{taskID}/heartbeat` |
+| Keep the lease of an issue taken with claim_next, or with claim and a holder, alive | `taskmanager_task_heartbeat` | `POST /tasks/{taskID}/heartbeat` |
 | The state of the board in one read | `taskmanager_task_board_snapshot` | `GET /board-snapshot` |
 | Which open issues finishing would unblock the most others | `taskmanager_task_unblock_impact` | `GET /unblock-impact` |
 | Which issues break the filing rules | `taskmanager_task_lint` | `GET /lint` |
@@ -25,7 +25,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | Everything a worker reads before starting an issue, in one call | `taskmanager_task_brief` | `GET /tasks/{taskID}/brief` |
 | Which issues in progress touch the same files as an issue or a list of paths | `taskmanager_task_file_overlaps` | `GET /file-overlaps` |
 | Which issues in progress are past their working-time cap | `taskmanager_task_timed_out` | `GET /timed-out` |
-| Take an issue: move it to In Progress, write the taken entry, record the caps | `taskmanager_task_claim` | `POST /tasks/{taskID}/claim` |
+| Take an issue: move it to In Progress, write the taken entry, record the caps (and the holder and lease when a `holder` is sent) | `taskmanager_task_claim` | `POST /tasks/{taskID}/claim` |
 | Stop work on an issue as Blocked or Sinbin, with the tags and the move done right | `taskmanager_task_release` | `POST /tasks/{taskID}/release` |
 | The whole issue | `taskmanager_task_read` | `GET /tasks/{taskID}` |
 | Page through every issue | `taskmanager_task_list` | `GET /tasks` |
@@ -85,7 +85,7 @@ The lease rule: an issue still In Progress past its `lease_until` is put back at
 
 ## taskmanager_task_heartbeat
 
-Inputs: `taskID`, `agent` (default the caller) and `lease_minutes` (as above). `lease_until` becomes `lease_minutes` from now, not added to the old one. The answer is `id`, `code`, `agent` and `lease_until`. 409, writing nothing, when the issue is not In Progress, was taken without a lease, is held by another agent or its lease had already run out.
+Inputs: `taskID`, `agent` (default the caller) and `lease_minutes` (as above). It renews the lease taken by `taskmanager_task_claim_next` and also one taken by `taskmanager_task_claim` with a `holder`, when `agent` is that holder. `lease_until` becomes `lease_minutes` from now, not added to the old one. The answer is `id`, `code`, `agent` and `lease_until`. 409, writing nothing, when the issue is not In Progress, was taken without a lease, is held by another agent or its lease had already run out.
 
 ## taskmanager_task_board_snapshot
 
@@ -130,9 +130,9 @@ The answer is `items` and `total` (every stuck issue). Each item is an In Progre
 | `no_todo_started` | it has todos and none is In progress or Done |
 | `all_remaining_todos_blocked` | open todos exist, none is In progress, and none can start |
 | `only_documentation_left_open` | every open todo has document in its title and none is In progress |
-| `lease_expired` | `lease_until` is in the past |
+| `lease_expired` | `lease_until` is in the past: the holder of a lease (from `taskmanager_task_claim_next`, or `taskmanager_task_claim` with a `holder`) stopped heartbeating |
 | `no_activity` | `days_since_activity` has reached `stalled_days` |
-| `unassigned_in_progress` | `assigned_to` and `held_by` are both empty, so a plain `taskmanager_task_claim` counts as unassigned |
+| `unassigned_in_progress` | `assigned_to` and `held_by` are both empty, so the issue was taken without a holder (`taskmanager_task_claim` with no `holder`) or never given one |
 | `files_clash_with_another_in_progress` | its files overlap those of another open In Progress issue |
 
 `days_since_activity` counts from the latest of the issue's own update, its todos' updates and its newest note. `days_in_step` is whole days since the issue entered its step (`entered_step_at`); an issue that has not moved since the hub began recording it counts from its `updated_at`, then its `created_at`.
@@ -197,9 +197,11 @@ The tool names no cause. Whether the run was interrupted, idle or too big stays 
 
 ## taskmanager_task_claim
 
-Input: `taskID`. The caller is taken from the session and needs Can move on the backlog the issue is in; an issue the caller cannot see is 404 and one they can only see is 403.
+Inputs: `taskID`, and optionally `holder` and `lease_minutes`. The caller is taken from the session and needs Can move on the backlog the issue is in; an issue the caller cannot see is 404 and one they can only see is 403.
 
 The tool finds the backlog's In Progress step by what it holds, not by its id: the step that names the in_progress status, else the step called In Progress or Doing (the default Backlog uses `doing`, the Journey Book `in-progress`). It then, in one transaction, moves the issue there, sets its status to in_progress and writes the first Log entry, `Taken by <caller>. Caps in force: <input> input, <output> output, <minutes> minutes`, with the caps as `taskmanager_task_caps_read` reports them (the issue's own, else the default). The answer is `issue` (id, code, title, status, priority, effort, tags, backlog, step), `note_id` and `caps`.
+
+`holder` is a short agent label such as `take-up-2`, trimmed; blank or longer than 64 characters counts as no holder. `lease_minutes` is 1 to 240, default 30, and 400 outside that. With a holder the claim also records it as the assignee (`assigned_to`) and sets `lease_until`, and the answer adds `agent` and `lease_until`; the issue then shows under that holder in `taskmanager_task_board_snapshot` `agents` and as `assignee` in `taskmanager_task_stuck`, and `taskmanager_task_heartbeat` with `agent` set to the holder renews the lease. Without a holder nothing is recorded: no assignee and no lease, and `taskmanager_task_stuck` lists the issue as `unassigned_in_progress`.
 
 Atomic: the first statement of the transaction updates the issue only while its status is still the one the claimer read, so of two claims at once exactly one writes the move and the entry, and the other is refused 409 as already in progress and leaves no entry. An issue tagged Sinbin, Blocked or Waiting, one that waits on an open dependency, one already at the In Progress step and one that has left To do are refused 409 with the reason.
 
@@ -226,6 +228,22 @@ Inputs: `taskID`, `mode` (`blocked` or `sinbin`), `reason` (not blank), and opti
 It replaces the four calls a worker made by hand when it could not finish (set the todo Blocked, write the note, patch the whole tag list, move to To do). In one transaction it writes the Log entry (kind worker: `Released as Blocked` or `Released as Sinbin`, then the reason, with the links), sets the tags to the issue's own tags minus Ready, Waiting, Blocked and Sinbin plus the one mark for the mode, sets the named todo Blocked, moves the issue to the To do step of its backlog and sets its status back to pending (a card's step and its status move independently, so the status is set whatever the To do step holds). Because the old marks are removed first, an issue that carried Ready and Waiting ends with only Blocked or only Sinbin, and every other tag stays. The answer is `id`, `code`, `title`, `mode`, `tags`, `backlog`, `step`, `status`, `note_id` and `todo_id`.
 
 Refused, with nothing written: 409 unless the issue sits at the backlog's In Progress step (the step named In Progress without regard to case, or with the id doing or in-progress), whatever its status, 403 without Can move, 400 for another mode, a blank reason, a todo that belongs to another issue or a todo sent with mode `sinbin`, 404 for an issue that is unknown or unseen or a todo that is unknown.
+
+## When Waiting clears
+
+Nobody calls `taskmanager_task_unblock_dependents` by hand for this (SW236, SW594; the closing move itself was fixed by SW591). When an issue reaches Done or Cancelled by any way (a move to the Done, Archive or Cancelled step, `taskmanager_task_move` to a state, a patch or replace with status completed or cancelled, `taskmanager_task_batch`, the HTTP routes), the hub looks at every issue that depends on it, in the same write as the close.
+
+| Case | Result |
+|---|---|
+| A dependent tagged Waiting whose `depends_on` issues are now all Done or Cancelled | Waiting is dropped, Ready is added, and one worker Log entry names the issue that finished |
+| A dependent with another open dependency | Keeps Waiting, no entry |
+| The last open `depends_on` edge is removed | The same as above |
+| A new `depends_on` edge to an open issue | Waiting is added and Ready is dropped |
+| Blocked and Sinbin | Never touched |
+| Waiting on an issue with no `depends_on` edge (an owner decision) | Never dropped by this |
+| The todo list of the dependent | Untouched; a todo waiting on another todo turns To do by itself when that todo is Done |
+
+The design is in [backlog-page.md](../../2.%20design/technical-spec/backlog-app/backlog-page.md).
 
 ## Where the code is
 
