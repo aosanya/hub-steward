@@ -4,7 +4,9 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
-import { RolesPermissionsScreen } from "./index";
+import { RoleLimitsEditScreen, RolePermissionsEditScreen, RolesPermissionsScreen } from "./index";
+
+vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
 let seats: Record<string, unknown>[];
 let held: string[];
@@ -65,6 +67,8 @@ const showClerk = async () => {
     <MemoryRouter initialEntries={["/a/town/menu/staff/roles"]}>
       <Routes>
         <Route path="/a/:agencyId/menu/staff/roles" element={<RolesPermissionsScreen />} />
+        <Route path="/a/:agencyId/menu/staff/roles/:id/limits" element={<RoleLimitsEditScreen />} />
+        <Route path="/a/:agencyId/menu/staff/roles/:id/permissions" element={<RolePermissionsEditScreen />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -130,8 +134,15 @@ const standingSeats = () => [
 const showClerkAsAssigner = async () => {
   held = ["role.assign"];
   await showClerk();
-  await screen.findByRole("heading", { name: "Approval limits" });
+  await screen.findByRole("region", { name: "Approval limits" });
 };
+
+const openLimits = async () => {
+  await userEvent.click(screen.getByRole("button", { name: "Edit approval limits" }));
+  await screen.findAllByRole("button", { name: "Save limit" });
+};
+
+const inDetail = async () => within(await screen.findByRole("region", { name: "Role detail" }));
 
 const seatRow = async (holder: string) => within(await screen.findByRole("group", { name: holder }));
 
@@ -153,19 +164,21 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
       { id: "s2", actor_id: "a2", active: true, approval_limit: 50000 },
     ];
     await showClerkAsAssigner();
-    expect(screen.getByText("No upper limit is written.")).toBeInTheDocument();
+    expect((await inDetail()).getByText("No upper limit is written.")).toBeInTheDocument();
+    await openLimits();
 
     await fillLimit("Ilona Kovacs", "75 000");
     await saveLimit("Ilona Kovacs");
 
     expect(called).toHaveBeenCalledWith("", "actor_set_approval_limit", { assignment_id: "s1", limit: 75000 });
-    expect(await screen.findByText("75 000 Ft")).toBeInTheDocument();
-    expect(screen.queryByText("No upper limit is written.")).toBeNull();
+    expect(await (await inDetail()).findByText("75 000 Ft")).toBeInTheDocument();
+    expect((await inDetail()).queryByText("No upper limit is written.")).toBeNull();
   });
 
   it("shows each standing seat with its holder's name and its current limit", async () => {
     seats = standingSeats();
     await showClerkAsAssigner();
+    await openLimits();
 
     const ilona = await seatRow("Ilona Kovacs");
     const bela = await seatRow("Bela Szabo");
@@ -177,18 +190,20 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
   it("changes the limit of a seat and shows the new largest limit at once", async () => {
     seats = standingSeats();
     await showClerkAsAssigner();
-    expect(screen.getByText("80 000 Ft")).toBeInTheDocument();
+    expect((await inDetail()).getByText("80 000 Ft")).toBeInTheDocument();
+    await openLimits();
 
     await fillLimit("Ilona Kovacs", "120000");
     await saveLimit("Ilona Kovacs");
 
     expect(called).toHaveBeenCalledWith("", "actor_set_approval_limit", { assignment_id: "s1", limit: 120000 });
-    expect(await screen.findByText("120 000 Ft")).toBeInTheDocument();
+    expect(await (await inDetail()).findByText("120 000 Ft")).toBeInTheDocument();
   });
 
   it("clears the limit of a seat by sending no limit and reads No upper limit is written", async () => {
     seats = standingSeats();
     await showClerkAsAssigner();
+    await openLimits();
 
     await fillLimit("Ilona Kovacs", "");
     await saveLimit("Ilona Kovacs");
@@ -197,12 +212,13 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
     expect(calls).toHaveLength(1);
     expect(calls[0][2]).toEqual({ assignment_id: "s1" });
     expect("limit" in (calls[0][2] as Record<string, unknown>)).toBe(false);
-    expect(await screen.findByText("No upper limit is written.")).toBeInTheDocument();
+    expect(await (await inDetail()).findByText("No upper limit is written.")).toBeInTheDocument();
   });
 
   it("keeps Save limit disabled until the value differs from the seat's current limit", async () => {
     seats = standingSeats();
     await showClerkAsAssigner();
+    await openLimits();
     const row = await seatRow("Ilona Kovacs");
     expect(row.getByRole("button", { name: "Save limit" })).toBeDisabled();
 
@@ -217,6 +233,7 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
   it("rejects an entry that is not a whole number or is negative and keeps Save limit disabled", async () => {
     seats = standingSeats();
     await showClerkAsAssigner();
+    await openLimits();
     const row = await seatRow("Ilona Kovacs");
 
     await fillLimit("Ilona Kovacs", "12.5");
@@ -233,13 +250,15 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
     seats = standingSeats();
     refusal = "that seat has ended";
     await showClerkAsAssigner();
+    await openLimits();
 
     const field = await fillLimit("Ilona Kovacs", "75000");
     await saveLimit("Ilona Kovacs");
 
     expect(await screen.findByText("that seat has ended")).toBeInTheDocument();
     expect(field.value.replace(/\s/g, "")).toBe("75000");
-    expect(screen.getByText("80 000 Ft")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: /Clerk/ }));
+    expect((await inDetail()).getByText("80 000 Ft")).toBeInTheDocument();
   });
 
   it("offers no edit and loads no names to a caller without role.assign even with permission.override", async () => {
@@ -248,7 +267,8 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
     await showClerk();
 
     expect(await screen.findByText("80 000 Ft")).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Approval limits" })).toBeNull();
+    expect(screen.queryByRole("region", { name: "Approval limits" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Edit approval limits" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Save limit" })).toBeNull();
     expect(called.mock.calls.some(([, name]) => name === "actor_list_actors")).toBe(false);
   });
@@ -259,6 +279,7 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
       { id: "s2", actor_id: "a2", active: false, ended_at: "2026-10-01T00:00:00Z", approval_limit: 900000 },
     ];
     await showClerkAsAssigner();
+    await openLimits();
 
     expect(await screen.findByRole("group", { name: "Ilona Kovacs" })).toBeInTheDocument();
     expect(screen.queryByRole("group", { name: "Bela Szabo" })).toBeNull();
@@ -269,7 +290,8 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
     held = ["role.assign"];
     await showClerk();
 
-    expect(screen.queryByRole("heading", { name: "Approval limits" })).toBeNull();
+    expect(screen.queryByRole("region", { name: "Approval limits" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Edit approval limits" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Save limit" })).toBeNull();
   });
 });

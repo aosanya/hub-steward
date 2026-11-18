@@ -3,11 +3,12 @@ import { GroupEditScreen } from "../residents/GroupEditScreen";
 import { PersonEditScreen } from "../residents/PersonEditScreen";
 import { CrewsScreen } from "./CrewsScreen";
 import { DepartmentsScreen } from "./DepartmentsScreen";
+import { RoleLimitsEditScreen, RolePermissionsEditScreen } from "./RoleEditScreens";
 import { RolesPermissionsScreen } from "./RolesPermissionsScreen";
 import { StaffScreen } from "./StaffScreen";
 import { staffPaths } from "./paths";
 
-export { CrewsScreen, DepartmentsScreen, RolesPermissionsScreen, StaffScreen };
+export { CrewsScreen, DepartmentsScreen, RoleLimitsEditScreen, RolePermissionsEditScreen, RolesPermissionsScreen, StaffScreen };
 
 export const items = [
   { title: "Staff", path: () => staffPaths.people.path() },
@@ -25,5 +26,7 @@ export const routes = () => (
     <Route path={staffPaths.crews.pattern} element={<CrewsScreen />} />
     <Route path={staffPaths.crewEdit.pattern} element={<GroupEditScreen backTo={(id) => staffPaths.crews.path({ group: id })} />} />
     <Route path={staffPaths.roles.pattern} element={<RolesPermissionsScreen />} />
+    <Route path={staffPaths.roleLimits.pattern} element={<RoleLimitsEditScreen />} />
+    <Route path={staffPaths.rolePermissions.pattern} element={<RolePermissionsEditScreen />} />
   </>
 );

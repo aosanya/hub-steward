@@ -1,10 +1,12 @@
 import { vi, type MockInstance } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
-import { RolesPermissionsScreen } from "./index";
+import { RoleLimitsEditScreen, RolePermissionsEditScreen, RolesPermissionsScreen } from "./index";
+
+vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
 let called: MockInstance<typeof mcp.callTool>;
 let held: string[];
@@ -61,15 +63,22 @@ const showClerk = async () => {
     <MemoryRouter initialEntries={["/a/town/menu/staff/roles"]}>
       <Routes>
         <Route path="/a/:agencyId/menu/staff/roles" element={<RolesPermissionsScreen />} />
+        <Route path="/a/:agencyId/menu/staff/roles/:id/limits" element={<RoleLimitsEditScreen />} />
+        <Route path="/a/:agencyId/menu/staff/roles/:id/permissions" element={<RolePermissionsEditScreen />} />
       </Routes>
     </MemoryRouter>,
   );
   await userEvent.click(await screen.findByRole("button", { name: /Clerk/ }));
 };
 
+const showTicks = async () => {
+  await showClerk();
+  await userEvent.click(await screen.findByRole("button", { name: "Edit permissions" }));
+};
+
 describe("ticking what a role may do on Roles & Permissions", () => {
   it("shows the owner a tick for each permission the catalogue offers, ticked where the role holds it, and none for a locked code", async () => {
-    await showClerk();
+    await showTicks();
 
     expect(await screen.findByRole("checkbox", { name: "Read tasks" })).toBeChecked();
     expect(screen.getByRole("checkbox", { name: "Post a notice" })).not.toBeChecked();
@@ -78,7 +87,7 @@ describe("ticking what a role may do on Roles & Permissions", () => {
   });
 
   it("saves the whole list of ticked codes in one call and shows the saved ticks", async () => {
-    await showClerk();
+    await showTicks();
 
     await userEvent.click(await screen.findByRole("checkbox", { name: "Post a notice" }));
     await userEvent.click(screen.getByRole("button", { name: "Save permissions" }));
@@ -86,12 +95,14 @@ describe("ticking what a role may do on Roles & Permissions", () => {
     await waitFor(() =>
       expect(called).toHaveBeenCalledWith("", "agency_set_role_permissions", { role_id: "r1", permissions: ["task.read", "notice.post"] }),
     );
-    expect(await screen.findByRole("checkbox", { name: "Post a notice" })).toBeChecked();
-    expect(screen.getByRole("checkbox", { name: "Read tasks" })).toBeChecked();
+    const card = await screen.findByRole("region", { name: "Permissions" });
+    expect(await within(card).findByText("Post a notice")).toBeInTheDocument();
+    expect(within(card).getByText("Read tasks")).toBeInTheDocument();
+    expect(within(card).queryByRole("checkbox")).toBeNull();
   });
 
   it("sends an empty list when every tick is taken off", async () => {
-    await showClerk();
+    await showTicks();
 
     await userEvent.click(await screen.findByRole("checkbox", { name: "Read tasks" }));
     await userEvent.click(screen.getByRole("button", { name: "Save permissions" }));
@@ -100,14 +111,14 @@ describe("ticking what a role may do on Roles & Permissions", () => {
   });
 
   it("keeps Save off until a tick has changed", async () => {
-    await showClerk();
+    await showTicks();
 
     expect(await screen.findByRole("button", { name: "Save permissions" })).toBeDisabled();
   });
 
   it("shows the hub's own words when the save is refused and keeps the ticks as they were chosen", async () => {
     refusal = "agency.delete belongs to the owner alone and cannot be given to a role";
-    await showClerk();
+    await showTicks();
 
     await userEvent.click(await screen.findByRole("checkbox", { name: "Post a notice" }));
     await userEvent.click(screen.getByRole("button", { name: "Save permissions" }));

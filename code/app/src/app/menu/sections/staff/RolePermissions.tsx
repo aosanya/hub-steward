@@ -7,17 +7,16 @@ import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { refusalWords } from "../../MenuEditForm";
-import { useOwner } from "../settings/useOwner";
 import { listOf, text, type Item } from "./staffData";
 
 type Offered = { code: string; name: string };
 
-const offeredPermissions = async (): Promise<Offered[]> =>
+export const offeredPermissions = async (): Promise<Offered[]> =>
   (await listOf("agency_list_permissions"))
     .filter((permission) => permission.locked !== true)
     .map((permission) => ({ code: text(permission, "code"), name: text(permission, "name") || text(permission, "code") }));
 
-const heldCodes = (role: Item) => (Array.isArray(role.permissions) ? role.permissions.filter((code): code is string => typeof code === "string") : []);
+export const heldCodes = (role: Item) => (Array.isArray(role.permissions) ? role.permissions.filter((code): code is string => typeof code === "string") : []);
 
 const sameCodes = (one: string[], other: string[]) => one.length === other.length && one.every((code) => other.includes(code));
 
@@ -54,14 +53,9 @@ function Ticks({ role, offered, onSaved }: { role: Item; offered: Offered[]; onS
   );
 }
 
-function OwnerTicks({ role, onSaved }: { role: Item; onSaved: () => void }) {
+export function RolePermissions({ role, onSaved }: { role: Item; onSaved: () => void }) {
   const catalogue = useLoad(offeredPermissions, `permission-catalogue:${openAgencyId()}`);
   if (catalogue.state === "loading") return <LoadingLine />;
   if (catalogue.state === "error") return <LoadFailed words="The permissions could not be loaded." />;
   return <Ticks role={role} offered={catalogue.data} onSaved={onSaved} />;
-}
-
-export function RolePermissions({ role, onSaved }: { role: Item; onSaved: () => void }) {
-  const owner = useOwner();
-  return owner ? <OwnerTicks role={role} onSaved={onSaved} /> : null;
 }

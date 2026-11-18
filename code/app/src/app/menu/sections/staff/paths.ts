@@ -8,4 +8,6 @@ export const staffPaths = {
   crews: screen("/menu/staff/crews"),
   crewEdit: screen("/menu/staff/crews/:id/edit"),
   roles: screen("/menu/staff/roles"),
+  roleLimits: screen("/menu/staff/roles/:id/limits"),
+  rolePermissions: screen("/menu/staff/roles/:id/permissions"),
 };
