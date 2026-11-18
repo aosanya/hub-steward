@@ -273,6 +273,10 @@ Nine tools keep what the Places & Addresses screens show beyond a place's name: 
 - **Serving.** `modules/digitaltwin/mcp/resolve.go` registers only the address, tenure and land use operations and resolves the agency's twin manager per call, as the accounting tools do; `internal/api/http/mcp_tools_digitaltwin.go` guards them with the shared permission check. The other digitaltwin operations (nodes, links, observations) stay on the HTTP routes and are not tools. The nine names are pinned in `testdata/mcp_roster/no-mounts.txt`.
 - **Screens.** Addresses, Ownership & Tenure and Land Use read these tools (MUN1116, commit `b5dbb10b`); Places and the place detail still read assetmanager.
 
+## Naming an issue in a taskmanager tool
+
+Every taskmanager tool that takes one issue names it `taskID`, and accepts `id` for it too. The two are one argument: sending both with the same value is fine, sending both with different values is refused, and a refusal for an unknown argument says that `taskID` is the issue and `id` is accepted for it. The alias is made once, in the shared tool binding (`modules/shared/dispatch/issue_alias.go`), so no tool does it by itself. The relationship tools keep `from_id` and `to_id`.
+
 ## Issues and votes (stretch)
 
 | Operation | Reads / writes | Who | REST | MCP |
