@@ -8,21 +8,18 @@ import { SearchSelect } from "../../../../shared/ui/SearchSelect";
 import { callTool, McpError } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { actionFailedWords } from "../../MenuDetail";
-import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
+import { BudgetPage, budgetManage, budgetSetTool } from "./BudgetPage";
 import { lineStages } from "./lineStages";
+import { financePaths } from "./paths";
 import { accountListTool } from "./markBillPaid";
 import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, text, tools, unitOf, type Item } from "./financeData";
 
-const managePermission = "accounting.manage";
-
 const rolesTool = "agency_get_my_roles";
-
-const budgetSetTool = "accounting_budget_set";
 
 const mayManage = async () => {
   const reply = (await callTool("", rolesTool)) as { permissions?: unknown } | null;
-  return Array.isArray(reply?.permissions) && reply.permissions.includes(managePermission);
+  return Array.isArray(reply?.permissions) && reply.permissions.includes(budgetManage);
 };
 
 const refusalWords = (error: unknown) => {
@@ -69,12 +66,6 @@ const accountChoices = async () =>
   (await listOf(accountListTool)).map((account) => ({ value: text(account, "id"), label: [text(account, "category"), text(account, "code")].filter((word) => word !== "").join(" ") }));
 
 const complete = (draft: Draft) => draft.account !== "" && draft.name.trim() !== "" && draft.start !== "" && draft.end !== "" && Number(draft.amount) > 0;
-
-const editFields: EditField[] = [
-  { label: "Name", key: "name", required: true },
-  { label: "Department", key: "department" },
-  { label: "Planned amount", key: "amount", kind: "number", required: true },
-];
 
 function AddLineForm({ onSaved, word }: { onSaved: () => void; word: Wording }) {
   const [draft, setDraft] = useState(blank);
@@ -135,26 +126,17 @@ export function BudgetScreen() {
     <MenuWindow
       key={version}
       title={word("Budget")}
+      withTabs
+      bandless
       listKey={`${edited}${unit}`}
       detailKey={`${edited}${unit}`}
       list={{ title: word("Budget"), tool: tools.budgetList, load, fields: { title: "name", meta: "meta" }, empty: { ...homeEmpty(`No ${word("Budget lines").toLowerCase()} yet.`), children: addButton } }}
       detail={{
         tool: tools.budgetRead,
         load: (id: string) => loadLine(id, unit),
-        fields: { Name: "name", Department: "department", Period: "period", Planned: "planned", Spent: "spent", Remaining: "remaining", "Share spent": "share", Tenders: "tenders", Milestones: "milestones", "Payment certificates": "certificates" },
-        status: "status",
-        extra: (line) => (
-          <MenuEditForm
-            item={line}
-            id={String(line.account_id ?? "")}
-            idArg="account_id"
-            tool={budgetSetTool}
-            permission={managePermission}
-            fields={editFields}
-            keep={["name", "department", "amount", "period_start", "period_end"]}
-            onSaved={() => setEdited((was) => was + 1)}
-          />
-        ),
+        fields: {},
+        status: "",
+        extra: (line) => <BudgetPage line={line} back={financePaths.budget.path()} onSaved={() => setEdited((was) => was + 1)} />,
       }}
       above={may && adding ? <AddLineForm onSaved={saved} word={word} /> : count > 0 ? addButton : null}
     />

@@ -110,7 +110,7 @@ describe("editing a bill from its detail", () => {
     permissions = ["accounting.view"];
     await showBill();
 
-    await screen.findByText("Payer");
+    await screen.findByRole("heading", { level: 1, name: "Sample Garage" });
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
 
     expect(editButtons()).toHaveLength(0);
