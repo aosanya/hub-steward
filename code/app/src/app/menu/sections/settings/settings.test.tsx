@@ -168,12 +168,22 @@ describe("the Users & Roles screen with unnamed people and repeated seats", () =
     delete standings.p5;
   });
 
-  it("labels a person without a display name by email, or else by a short id", async () => {
+  it("labels a person without a display name by email, or else by a neutral word and never an id", async () => {
     openAt("Users & Roles");
 
     expect(await screen.findByRole("button", { name: /mate@example\.org/ })).toBeInTheDocument();
     const nameless = screen.getByRole("button", { name: /Town clerk/ });
-    expect(within(nameless).getByText(/p4/)).toBeInTheDocument();
+    expect(within(nameless).getByText("Unnamed person")).toBeInTheDocument();
+    expect(nameless.textContent).not.toMatch(/p4/);
+  });
+
+  it("titles the page of a person without a name by the neutral word and never an id", async () => {
+    openAt("Users & Roles");
+
+    await userEvent.click(await screen.findByRole("button", { name: /Town clerk/ }));
+
+    expect((await screen.findAllByText("Unnamed person")).length).toBeGreaterThan(0);
+    expect(document.body.textContent).not.toMatch(/p4abcdef|\bp4\b/);
   });
 
   it("names a role once for a person who holds it in two seats", async () => {

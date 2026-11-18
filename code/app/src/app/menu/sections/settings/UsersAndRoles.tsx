@@ -14,7 +14,7 @@ import { SeatEnd, type Seat as HeldSeat } from "./SeatEnd";
 import { SeatGive } from "./SeatGive";
 import { SectionAct } from "../residents/SectionAct";
 import { residentPaths } from "../residents/paths";
-import { labelOf } from "./personLabel";
+import { nameOrUnnamed } from "./personLabel";
 import { useMay } from "../../../../features/agency/useMay";
 
 const residentRead = "resident.read";
@@ -40,12 +40,12 @@ const standingOf = (actorId: string) => callTool("", "actor_get_actor_standing",
 
 const loadPeople = async () => {
   const people = itemsOf(await callTool("", "actor_list_actors"));
-  return Promise.all(people.map(async (person) => ({ id: person.id, display_name: labelOf(person), roles: rolesOf(await standingOf(person.id)) })));
+  return Promise.all(people.map(async (person) => ({ id: person.id, display_name: nameOrUnnamed(person), roles: rolesOf(await standingOf(person.id)) })));
 };
 
 const loadPerson = async (id: string) => {
   const standing = await standingOf(id);
-  return { id, display_name: labelOf({ id, ...(standing as Record<string, unknown> | null) }), roles: rolesOf(standing), seats: seatsOf(standing) };
+  return { id, display_name: nameOrUnnamed({ id, ...(standing as Record<string, unknown> | null) }), roles: rolesOf(standing), seats: seatsOf(standing) };
 };
 
 function ResidentPageCard({ id, name }: { id: string; name: string }) {
