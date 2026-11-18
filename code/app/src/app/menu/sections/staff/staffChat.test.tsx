@@ -90,6 +90,27 @@ describe("Chat in the bar on a role's page", () => {
     expect(carriedChatAbout()).toEqual({ kind: "role", id: "k1", name: "Clerk", extra: { draft: "d1" } });
   });
 
+  it("opens the assistant about the chosen role even while its page is still loading", async () => {
+    let calls = 0;
+    let release: () => void = () => undefined;
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
+      if (name === "agency_list_roles") {
+        calls += 1;
+        if (calls > 1) await held;
+      }
+      return answer(name);
+    });
+    openRoles("");
+    await userEvent.click(await screen.findByRole("button", { name: /Clerk/ }));
+    await userEvent.click(screen.getByRole("link", { name: "Chat" }));
+    await screen.findByText("About Clerk");
+    expect(carriedChatAbout()).toEqual({ kind: "role", id: "k1", name: "Clerk", extra: { draft: "d1" } });
+    release();
+  });
+
   it("carries nothing while no role is chosen", async () => {
     openRoles("");
     await screen.findByRole("button", { name: /Clerk/ });

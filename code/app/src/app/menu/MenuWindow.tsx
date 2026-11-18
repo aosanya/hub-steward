@@ -11,13 +11,14 @@ type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "field
 
 type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load" | "extra">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; withTabs?: boolean; bandless?: boolean; detailAlone?: boolean; detailKey?: string | number; listKey?: string | number; startAt?: string; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; withTabs?: boolean; bandless?: boolean; detailAlone?: boolean; detailKey?: string | number; listKey?: string | number; startAt?: string; onChosen?: (id: string) => void; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
 
-export function MenuWindow({ title, list, detail, above, below, headEnd, withTabs, bandless, detailAlone, detailKey, listKey, startAt, elsewhere, leave }: Props) {
+export function MenuWindow({ title, list, detail, above, below, headEnd, withTabs, bandless, detailAlone, detailKey, listKey, startAt, onChosen, elsewhere, leave }: Props) {
   const back = useBackToSection();
   const wide = useWide();
   const [chosen, setChosen] = useState(startAt ?? "");
   const [reported, setReported] = useState<string[] | null>(null);
+  useEffect(() => onChosen?.(chosen), [chosen, onChosen]);
   const elsewhereNow = useRef(elsewhere);
   elsewhereNow.current = elsewhere;
   useEffect(() => {
