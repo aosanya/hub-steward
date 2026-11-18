@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { callTool } from "../../shared/wakala/mcp";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../forms/useLoad";
-import { reportMayFailed, useMayVersion } from "./mayStore";
+import { reportMayFailed, reportMayRead, useMayVersion } from "./mayStore";
 
 const rolesTool = "agency_get_my_roles";
 
@@ -17,9 +17,11 @@ export function useMayAnswer(permission: string) {
   const version = useMayVersion();
   const answer = useLoad(() => holds(permission), `may:${openAgencyId()}:${permission}:${version}`);
   const failed = answer.state === "error";
+  const read = answer.state === "ready";
   useEffect(() => {
     if (failed) reportMayFailed();
-  }, [failed]);
+    if (read) reportMayRead();
+  }, [failed, read]);
   return { known: answer.state !== "loading", may: answer.state === "ready" && answer.data, failed };
 }
 

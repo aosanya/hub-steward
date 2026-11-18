@@ -1,6 +1,7 @@
 import { openAgencyId } from "./openAgency";
 import { runtimeConfig } from "./config";
 import { renewedAuthHeaders } from "./renewal";
+import { announceSessionReset } from "./sessionReset";
 import { authHeaders } from "./token";
 
 export class McpError extends Error {
@@ -31,6 +32,7 @@ export const closeMcp = () => {
   const id = openSessionId;
   const endpoint = openEndpoint;
   forgetMcp();
+  announceSessionReset();
   if (!id || !endpoint) return;
   fetch(endpoint, { method: "DELETE", credentials: "include", keepalive: true, headers: { ...authHeaders(), "Mcp-Session-Id": id } }).catch(() => {});
 };

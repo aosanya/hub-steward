@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { forgetReads } from "../../shared/wakala/mcp";
+import { onSessionReset } from "../../shared/wakala/sessionReset";
 
 let version = 0;
 let failed = false;
@@ -28,3 +29,15 @@ export const retryMay = () => {
   forgetReads();
   notify();
 };
+
+export const reportMayRead = () => {
+  if (!failed) return;
+  failed = false;
+  notify();
+};
+
+onSessionReset(() => {
+  failed = false;
+  version += 1;
+  notify();
+});

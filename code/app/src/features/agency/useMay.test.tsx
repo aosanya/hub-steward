@@ -96,4 +96,16 @@ describe("useMay and useMayAnswer", () => {
     await waitFor(() => expect(screen.getAllByText("true true true").length).toBe(1));
     expect(screen.queryByText(/Could not check what you may do/)).toBeNull();
   });
+
+  it("clears the line when a later page reads the permissions again and it works", async () => {
+    failures = 100;
+    render(<MayFailedLine />);
+    const first = render(<Both permission="resident.read" />);
+    await waitFor(() => expect(screen.getAllByText(/Could not check what you may do/).length).toBe(1));
+    first.unmount();
+    failures = 0;
+    render(<Both permission="group.manage" />);
+    await waitFor(() => expect(screen.getByText("false false true")).toBeTruthy());
+    expect(screen.queryByText(/Could not check what you may do/)).toBeNull();
+  });
 });
