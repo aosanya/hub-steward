@@ -116,6 +116,7 @@ type stepSpec struct {
 	questions         []agencymodels.StepQuestion
 	kind              agencymodels.StepKind
 	fork              *forkSpec
+	approvesAbove     bool
 }
 
 type forkSpec struct {
@@ -215,7 +216,7 @@ func newStepRunWalkOn(t *testing.T, db *gorm.DB, plan []stepSpec, people ...stri
 		}
 		for i, s := range plan {
 			if _, ok := w.roles[s.role]; !ok && s.role != "" {
-				role, err := mgr.CreateRole(ctx, agencymodels.Role{DraftID: draft.ID, Name: s.role})
+				role, err := mgr.CreateRole(ctx, agencymodels.Role{DraftID: draft.ID, Name: s.role, ApprovesAboveLimit: s.approvesAbove})
 				if err != nil {
 					t.Fatalf("CreateRole %s: %v", s.role, err)
 				}

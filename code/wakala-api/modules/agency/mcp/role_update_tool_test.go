@@ -125,3 +125,22 @@ func TestUpdateRoleToolReplacesPermissionsWhenGivenAList(t *testing.T) {
 		t.Fatalf("permissions = %v description = %q", got.Permissions, got.Description)
 	}
 }
+
+func TestUpdateRoleToolSetsAndKeepsTheSettingToApproveAboveTheLimit(t *testing.T) {
+	w := newRoleToolWalk(t)
+	if w.stored(t).ApprovesAboveLimit {
+		t.Fatal("a role nobody set approves above its limit")
+	}
+	w.call(t, `{"draft_id":"`+w.draftID+`","role_id":"`+w.roleID+`","name":"Triager","approves_above_limit":true}`)
+	if !w.stored(t).ApprovesAboveLimit {
+		t.Fatal("the setting was not stored")
+	}
+	w.call(t, `{"draft_id":"`+w.draftID+`","role_id":"`+w.roleID+`","name":"Triager","description":"Answers asks"}`)
+	if !w.stored(t).ApprovesAboveLimit {
+		t.Fatal("the setting was cleared by a call that did not carry it")
+	}
+	w.call(t, `{"draft_id":"`+w.draftID+`","role_id":"`+w.roleID+`","name":"Triager","approves_above_limit":false}`)
+	if w.stored(t).ApprovesAboveLimit {
+		t.Fatal("the setting stayed after it was turned off")
+	}
+}
