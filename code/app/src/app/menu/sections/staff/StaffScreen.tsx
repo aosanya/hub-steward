@@ -4,6 +4,7 @@ import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
 import { PersonDetails, PersonHead } from "../residents/PersonScreen";
 import { personNameOf } from "../residents/personName";
+import { ChatAboutStaff } from "./ChatAboutStaff";
 import { StaffSeats } from "./StaffSeats";
 import { staffPaths } from "./paths";
 import { homeEmpty, listOf, roleKindNames, seatsLine, text, type Item } from "./staffData";
@@ -54,6 +55,7 @@ export function StaffScreen() {
         status: "",
         extra: (person) => (
           <div className="person-page">
+            <ChatAboutStaff person={person} back={staffPaths.people.path()} />
             <PersonHead person={person} />
             <div className="sections">
               <PersonDetails id={text(person, "id")} person={person} word="Staff detail" editTo={staffPaths.personEdit.path({ id: text(person, "id") })} />

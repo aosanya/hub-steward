@@ -196,7 +196,43 @@ const tender: Subject = {
   empty: "its details and quotes",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender };
+
+const staff: Subject = {
+  reads: Object.fromEntries(
+    ["actor_list_role_assignments_for_actor", "actor_get_actor_standing", "actor_get_actor", "actor_list_groups_for_actor"].map((tool) => [tool, { actor_id: byId }]),
+  ),
+  steps: {
+    actor_list_role_assignments_for_actor: "Reading their seats",
+    actor_get_actor_standing: "Reading their standing",
+    actor_get_actor: "Reading their details",
+    actor_list_groups_for_actor: "Reading their groups",
+  },
+  choices: ["Seats", "Details", "Groups"],
+  reading:
+    "Seats means actor_list_role_assignments_for_actor and actor_get_actor_standing, Details means actor_get_actor, and Groups means actor_list_groups_for_actor. Never speak of their bills, holdings or applications: they are not part of this page.",
+  overview: "call actor_list_role_assignments_for_actor, actor_get_actor and actor_list_groups_for_actor at once and answer with their seats, their contact details and the groups they belong to",
+  empty: "their seats, details and groups",
+};
+
+const role: Subject = {
+  reads: {
+    actor_list_role_holders: { kind_id: byId },
+    agency_list_roles: { draft_id: extraOf("draft") },
+    agency_list_permissions: {},
+  },
+  steps: {
+    actor_list_role_holders: "Reading who holds the role",
+    agency_list_roles: "Reading the role's permissions",
+    agency_list_permissions: "Reading the permission names",
+  },
+  choices: ["Holders", "Approval limits", "Permissions"],
+  reading:
+    "Holders means actor_list_role_holders, Approval limits means the approval_limit on each seat that actor_list_role_holders returns, and Permissions means agency_list_roles for this role's permissions with agency_list_permissions for what each one means.",
+  overview: "call actor_list_role_holders and agency_list_roles at once and answer with who holds the role, each seat's approval limit and the role's permissions",
+  empty: "its holders, approval limits and permissions",
+};
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role };
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 
