@@ -490,6 +490,7 @@ func (r *registry) buildFormManager(ctx context.Context, id string) (mwanachamaf
 	built.UseReportText(r.reportTextIn(id))
 	built.UseDeclarable(r.declarableIn(id))
 	built.UseApprovalLimits(r.approvalLimitsIn(id))
+	built.UseInspectorForms(r.inspectorFormsIn(id))
 	built.UseRecordWriters(r.recordWritersIn(id))
 	if r.formsApproval != nil {
 		required, err := r.formsApproval(ctx, id)
