@@ -1,6 +1,6 @@
 # Custody consent tools
 
-Six MCP tools put the consent sheet on the same surface as the other modules'
+Six MCP tools (and, since MUN1447, a seventh for a clerk, described below) put the consent sheet on the same surface as the other modules'
 tools: the owner writes the text residents agree to, and a resident reads it,
 agrees to it, reads their own state and withdraws. They were added in commit
 `36920a5` and are served from `code/wakala-api/internal/api/http/mcp_tools_custody.go`.
@@ -120,6 +120,29 @@ call the four resident tools. Their effect on the gate:
 | Answer | `actor_id` and `withdrawn_at` |
 | Who | owner, resident |
 | Gate | none; it is what closes the gate |
+
+### custody_record_paper_consent
+
+Added for MUN1447 so a clerk can file an application for a resident who has no
+sign-in (`forms_submission_file`, MUN1373): the agency mounts custody, so the
+gate refuses a resident with no consent record until one is recorded here. It is
+a seventh tool and is not behind the gate.
+
+| | |
+|---|---|
+| Route it wraps | `POST /instances/{agency}/custody/consent/recorded` |
+| Action and permission | `custody.consent.record`, held through `consent.record`, "Record a person's consent given on paper" (module custody) |
+| Input | `instance_id`, `actor_id` (the resident); optional `language` (the agency's content default when left out), optional `structure_id` |
+| What it does | records that the resident agreed to the sheet now in force. It keeps the resident, the clerk (`recorded_by`, the signed-in caller, never sent), the date (`agreed_at`) and the version read (`mechanics_version_id`). No scan, photo, witness or channel is kept (owner decision of 2026-11-18). A resident whose standing agreement is for the version in force gets that record back and nothing new is written, so the seed can run twice |
+| Answer | the record: `id`, `actor_id`, `recorded_by`, `mechanics_version_id`, `agreed_at`, `language`, `structure_id` |
+| Refusals | no `actor_id` or no caller: 400; no mechanics version in force in that language: 409; the caller holds neither `consent.record` nor the owner role: 403 naming `consent.record` |
+| Who | the owner and any role that holds `consent.record`; not a resident action |
+| Activity | the hub leaves one audit entry about the resident, "recorded consent given on paper, text v<N>", with the clerk as actor and the time, so it shows in the resident's Activity (`internal/api/http/mcp_audit_paper_consent.go`). Recording again for a standing agreement adds none |
+
+The module code is `modules/custody/consent_paper.go` in the hub and the same
+file in `mwanachama-backend-custody` (commits `7bfebdc` and `f32255d`); the tests are
+`modules/custody/routes/paper_consent_routes_test.go` and
+`internal/api/http/custody_record_paper_consent_mcp_test.go`. The roster pins rose by one.
 
 ## Reading the tools from a screen
 

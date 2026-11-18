@@ -349,6 +349,10 @@ Three tools change a record that already exists, and each carries its own permis
 - **Where.** `FileSubmission` and `submitAnswers` in `modules/forms/public_impl.go`, `refuseUnreachedPerson` in `modules/forms/reach_impl.go`, the declaration in `modules/forms/forms.operations.json`.
 - **Tests.** `modules/forms/routes/mun1373_clerk_files_for_a_resident_test.go` (the route), `internal/api/http/forms_submission_file_mcp_test.go` (the mounted tool as the owner, a refused channel, a person outside the audience) and `internal/api/http/record_row_applications_test.go`; the roster pin counts rose by one.
 
+## Recording a resident's consent given on paper
+
+`custody_record_paper_consent` lets a clerk record that a resident agreed to the consent sheet on paper, so `forms_submission_file` is not refused by the consent gate for a resident with no sign-in (MUN1447). It keeps the resident, the clerk, the date and the version read, and leaves one audit entry that shows in the resident's Activity. Its action is `custody.consent.record` and its permission is `consent.record`, "Record a person's consent given on paper" (module custody). The full entry is in [custody-consent-tools.md](custody-consent-tools.md); the roster pin counts rose by one.
+
 ## Setting what a role may do
 
 `agency_set_role_permissions` replaces the whole list of permission codes a role holds in an open draft (MUN1167, the owner's decision of 2026-11-16). `agency_update_role` stays the tool for a role's name and description.
