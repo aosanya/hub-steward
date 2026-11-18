@@ -3,6 +3,7 @@ package models
 type BoardItem struct {
 	ID           string `json:"id"`
 	Title        string `json:"title"`
+	Kind         string `json:"kind"`
 	Outcome      string `json:"outcome"`
 	Hidden       bool   `json:"hidden"`
 	AssigneeKind string `json:"assignee_kind"`
@@ -16,6 +17,15 @@ const (
 	AssigneeActor = "actor"
 	AssigneeRole  = "role"
 )
+
+const (
+	KindComplaint = "complaint"
+	KindIdea      = "idea"
+)
+
+func IsBoardItemKind(kind string) bool {
+	return kind == "" || kind == KindComplaint || kind == KindIdea
+}
 
 func IsAssigneeKind(kind string) bool {
 	return kind == AssigneeActor || kind == AssigneeRole

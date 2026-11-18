@@ -887,6 +887,11 @@
           "required": true
         },
         {
+          "name": "kind",
+          "type": "string",
+          "description": "Whether the board item is a complaint or an idea, as the staff set it when they put it on the board; empty when not said."
+        },
+        {
           "name": "outcome",
           "type": "string",
           "description": "What came of it, public text, empty until there is one."
