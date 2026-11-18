@@ -22,7 +22,7 @@ input::placeholder { color: var(--ink-soft); }
 .tab[aria-current="page"] .pill { background: var(--accent-wash); }
 .card { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 .25rem .75rem -.25rem var(--line); }
 .card.empty { align-items: center; text-align: center; color: var(--ink-soft); min-height: 8rem; justify-content: center; }
-.chip { display: inline-flex; align-items: center; gap: .25rem; padding: 0 .625rem; border: 0; border-radius: var(--r-pill); background: var(--bg-alt); color: var(--ink-soft); font-family: inherit; font-size: .8125rem; font-weight: 500; line-height: 1.5rem; white-space: nowrap; }
+.chip { display: inline-flex; align-items: center; gap: .25rem; padding: 0 .625rem; border: 0; border-radius: var(--r-pill); background: var(--bg-alt); color: var(--ink-soft); font-family: inherit; font-size: .875rem; font-weight: 500; line-height: 1.5rem; white-space: nowrap; }
 .chip.accent { background: var(--accent-wash); color: var(--accent-strong); }
 .chip.info { background: var(--info-wash); color: var(--info); }
 .chip.success { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
@@ -53,9 +53,9 @@ input::placeholder { color: var(--ink-soft); }
 .row[aria-pressed="true"] { background: var(--accent-wash); }
 .row .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .row .ttl { font-weight: 600; overflow-wrap: anywhere; }
-.row .meta { font-size: .8125rem; color: var(--ink-soft); overflow-wrap: anywhere; }
+.row .meta { font-size: 1rem; line-height: 1.4; color: var(--ink-soft); overflow-wrap: anywhere; }
 .row .meta.code { font-family: var(--mono); }
-.row .end { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: .25rem; font-size: .8125rem; color: var(--ink-soft); }
+.row .end { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: .25rem; font-size: .875rem; color: var(--ink-soft); }
 .field { display: flex; flex-direction: column; gap: .375rem; }
 .flabel { font-size: .8125rem; font-weight: 500; color: var(--ink-soft); }
 .ferr { font-size: .8125rem; color: var(--danger); }
@@ -73,7 +73,7 @@ input::placeholder { color: var(--ink-soft); }
 .head-line { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
 .head-line:not(:has(.headline)) { justify-content: flex-end; }
 .headline { font-size: 1.5rem; font-weight: 700; line-height: 1.2; letter-spacing: -.015em; overflow-wrap: break-word; }
-.sub { font-size: .8125rem; color: var(--ink-soft); }
+.sub { font-size: .875rem; color: var(--ink-soft); }
 .dot { flex: none; width: .5rem; height: .5rem; border-radius: var(--r-pill); background: var(--accent); }
 .dot.off { background: transparent; }
 .row > .mark { flex: none; color: var(--ink-soft); }

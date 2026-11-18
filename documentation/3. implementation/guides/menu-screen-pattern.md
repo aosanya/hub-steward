@@ -17,6 +17,10 @@ How a screen in the menu is built once it has been restyled. The reference is th
 - On a phone a record opened from a link has a Back arrow named after the list (when there is no origin), or an "All <list>" row above the page (when there is one), so the list is always reachable.
 - **Chat:** the Chat tab opens the assistant about what is on screen, with an "About <name>" line that can be cleared. The carried subject (`app/chatAbout.ts`) names its kind: resident, group, registration, conversation, business, trader, and later the kinds of the other sections. The assistant reads the subject only through existing read tools and the asking user's own permissions, offers pressable choices for that kind, and answers a general question with an overview.
 
+## Type scale
+
+A card page uses three sizes and no others, all in rem against the 90% root: the page title at 1.5rem, and everything that carries content at 1rem (card heading, row title, the value under a label, the lighter line of a media-object row in list panes and detail panes alike, the quiet line under the title); counts, tags, the right-hand text of a row and tab counts sit one step below at .875rem. The value under a label is told apart from its label by weight and the soft ink, not by being smaller: the soft ink holds a contrast of 9.29 to 1 on the light surface and 7.28 to 1 on the dark one, so only the size was the problem. A multi-line value takes a line height of 1.4. The scale is set once in `section.css` and the row rules of `app.css`; a screen never sets its own font size.
+
 ## Where it was settled
 
 The resident page and its cards are ISS-20 to ISS-25 and MUN1452 to MUN1465; the Households, Groups, Registrations, Communications, Businesses and Informal traders screens are ISS-28 to ISS-33; the chat subject is ISS-34. The other menu sections follow in ISS-35 (Properties & Addresses), ISS-36 (Issues & Requests), ISS-37 (Services & Permits), ISS-38 (Assets & Works), ISS-39 (Council & Decisions), ISS-40 (Staff & Departments), ISS-41 (Finance) and ISS-42 (Settings); each starts by walking its screens and recording which of them show a record.
