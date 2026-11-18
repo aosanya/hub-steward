@@ -92,12 +92,13 @@ type DocumentAgency struct {
 }
 
 type DocumentRole struct {
-	ID          string   `json:"id"`
-	Code        string   `json:"code"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Permissions []string `json:"permissions,omitempty"`
-	Staff       bool     `json:"staff,omitempty"`
+	ID                 string   `json:"id"`
+	Code               string   `json:"code"`
+	Name               string   `json:"name"`
+	Description        string   `json:"description"`
+	Permissions        []string `json:"permissions,omitempty"`
+	Staff              bool     `json:"staff,omitempty"`
+	ApprovesAboveLimit bool     `json:"approves_above_limit,omitempty"`
 }
 
 type DocumentGoal struct {

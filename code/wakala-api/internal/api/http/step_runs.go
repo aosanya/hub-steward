@@ -405,7 +405,8 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
-	if err := d.refuseAmountAboveLimit(ctx, instanceID, chain[index].record.Questions, answers); err != nil {
+	overLimit, err := d.refuseAmountAboveLimit(ctx, instanceID, chain[index].record.Questions, answers)
+	if err != nil {
 		return stepAnswersResult{}, err
 	}
 	if isApprovalStep(step) {
@@ -414,6 +415,7 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 			return stepAnswersResult{}, err
 		}
 		maps.Copy(answers, stamp)
+		maps.Copy(answers, overLimit)
 	}
 	if req.AnotherSheet && isApprovalStep(step) {
 		return stepAnswersResult{}, badRowError("an approval step is decided once, so it takes no other sheet")

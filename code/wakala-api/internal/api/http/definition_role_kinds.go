@@ -65,7 +65,7 @@ func syncDefinitionRoleKinds(ctx context.Context, um mwanachamaactor.UserManager
 		if id == "" {
 			continue
 		}
-		defs = append(defs, mwanachamaactor.DefinitionRole{ID: id, Name: r.Name, Staff: r.Staff})
+		defs = append(defs, mwanachamaactor.DefinitionRole{ID: id, Name: r.Name, Staff: r.Staff, ApprovesAboveLimit: r.ApprovesAboveLimit})
 		kind, err := um.RoleKindForDefinitionRole(ctx, id)
 		if err == nil {
 			if kind.Retired() {
@@ -79,10 +79,11 @@ func syncDefinitionRoleKinds(ctx context.Context, um mwanachamaactor.UserManager
 			return err
 		}
 		if _, err := um.CreateRoleKind(ctx, mwanachamaactor.RoleKind{
-			Name:             r.Name,
-			Description:      r.Description,
-			DefinitionRoleID: id,
-			Staff:            r.Staff,
+			Name:               r.Name,
+			Description:        r.Description,
+			DefinitionRoleID:   id,
+			Staff:              r.Staff,
+			ApprovesAboveLimit: r.ApprovesAboveLimit,
 		}); err != nil {
 			return err
 		}

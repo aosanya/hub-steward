@@ -309,6 +309,7 @@
         {"name": "description", "type": "text", "description": "What whoever holds this seat is there to do."},
         {"name": "permissions", "type": "json", "description": "The named permissions whoever holds this seat may use, each a code from the platform's permission vocabulary. Empty declares none, and an organization whose seats declare none keeps the platform's default behaviour."},
         {"name": "staff", "type": "bool", "description": "Whether whoever holds this seat counts as staff: may be handed a task and reads replies on the board, as owners and agents do."},
+        {"name": "approves_above_limit", "type": "bool", "description": "Whether whoever holds this seat may approve an amount above the approval limit written to the seat, the approval being flagged for the council. Off, an amount above the limit is refused."},
         {"name": "created_at", "type": "timestamp", "description": "When the seat was written.", "immutable": true},
         {"name": "last_updated", "type": "timestamp", "description": "When it last changed."},
         {"name": "deleted", "type": "bool", "description": "Whether it has been retired from every listing."}

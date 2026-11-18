@@ -29,7 +29,9 @@
         {"name": "approved_at", "type": "timestamp", "description": "When it was last cleared."},
         {"name": "approved_by", "type": "string", "description": "Who last cleared it."},
         {"name": "approval_roles", "type": "json", "description": "The distinct approval slots that must each be granted, by different approvers, before a round clears it. Empty means one plain approval clears it."},
-        {"name": "amount", "type": "int", "description": "What the instrument commits, in the deployment's smallest denominated unit. Zero means it commits nothing. When it is above zero, whoever clears it must hold a live seat whose approval limit covers it."},
+        {"name": "amount", "type": "int", "description": "What the instrument commits, in the deployment's smallest denominated unit. Zero means it commits nothing. When it is above zero, whoever clears it must hold a live seat whose approval limit covers it, or a seat of a role that may approve above its limit."},
+        {"name": "over_limit", "type": "bool", "description": "Whether the approval that cleared it was above the approval limit of the seat that approved, which a role that may approve above its limit is let do. Flagged for the council. Cleared when it goes back to draft."},
+        {"name": "limit_in_force", "type": "int", "description": "The approval limit in force when it was cleared over the limit, in the same unit as the amount. Zero when it was not over the limit."},
         {"name": "results_published_at", "type": "timestamp", "description": "When what it collected was made readable to those who answered."},
         {"name": "created_by", "type": "string", "description": "Who composed it."},
         {"name": "audience", "type": "enum", "description": "Whether it is aimed at known members or at anyone holding its link.", "default": "member", "values": ["member", "public"]},
@@ -116,6 +118,8 @@
         {"name": "decided_at", "type": "timestamp", "description": "When it was decided. Empty is what makes a round the open one."},
         {"name": "decision", "type": "enum", "description": "Which way it went. Empty while the round is still open.", "values": ["", "approved", "refused"]},
         {"name": "note", "type": "text", "description": "Why it went that way. Required to refuse."},
+        {"name": "over_limit", "type": "bool", "description": "Whether this approval was above the approval limit of the seat that gave it."},
+        {"name": "limit_in_force", "type": "int", "description": "The approval limit in force when this approval was given over the limit. Zero when it was not over the limit."},
         {"name": "slot", "type": "string", "description": "The approval slot this row grants within the round it names by requested_at. Empty for the round itself."}
       ],
       "indexes": [

@@ -40,16 +40,16 @@ func TestAnApprovalAboveTheLimitIsStoredWithTheFlagAndTheLimitThatApplied(t *tes
 	if err != nil {
 		t.Fatalf("Approve above the limit = %v, want it accepted", err)
 	}
-	if approved.Status != models.StatusApproved || !approved.OverLimit || approved.LimitApplied != 500_000 {
-		t.Fatalf("approved form = status %s over %v limit %d, want approved, over, 500000", approved.Status, approved.OverLimit, approved.LimitApplied)
+	if approved.Status != models.StatusApproved || !approved.OverLimit || approved.LimitInForce != 500_000 {
+		t.Fatalf("approved form = status %s over %v limit %d, want approved, over, 500000", approved.Status, approved.OverLimit, approved.LimitInForce)
 	}
 	read, _ := m.Get(ctx, f.ID)
-	if !read.OverLimit || read.LimitApplied != 500_000 {
-		t.Fatalf("read back = over %v limit %d, want the flag kept", read.OverLimit, read.LimitApplied)
+	if !read.OverLimit || read.LimitInForce != 500_000 {
+		t.Fatalf("read back = over %v limit %d, want the flag kept", read.OverLimit, read.LimitInForce)
 	}
 	round := approvalRowOf(t, m, f.ID)
-	if !round.OverLimit || round.LimitApplied != 500_000 {
-		t.Fatalf("approval row = over %v limit %d, want the flag and the limit", round.OverLimit, round.LimitApplied)
+	if !round.OverLimit || round.LimitInForce != 500_000 {
+		t.Fatalf("approval row = over %v limit %d, want the flag and the limit", round.OverLimit, round.LimitInForce)
 	}
 }
 
@@ -62,11 +62,11 @@ func TestAnApprovalWithinTheLimitCarriesNoFlag(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Approve within the limit = %v", err)
 	}
-	if approved.OverLimit || approved.LimitApplied != 0 {
-		t.Fatalf("approved form = over %v limit %d, want no flag", approved.OverLimit, approved.LimitApplied)
+	if approved.OverLimit || approved.LimitInForce != 0 {
+		t.Fatalf("approved form = over %v limit %d, want no flag", approved.OverLimit, approved.LimitInForce)
 	}
-	if round := approvalRowOf(t, m, f.ID); round.OverLimit || round.LimitApplied != 0 {
-		t.Fatalf("approval row = over %v limit %d, want no flag", round.OverLimit, round.LimitApplied)
+	if round := approvalRowOf(t, m, f.ID); round.OverLimit || round.LimitInForce != 0 {
+		t.Fatalf("approval row = over %v limit %d, want no flag", round.OverLimit, round.LimitInForce)
 	}
 }
 
@@ -89,8 +89,8 @@ func TestASlotGrantedAboveTheLimitFlagsTheFormOnceItClears(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ApproveSlot above the limit = %v", err)
 	}
-	if cleared.Status != models.StatusApproved || !cleared.OverLimit || cleared.LimitApplied != 500_000 {
-		t.Fatalf("cleared form = status %s over %v limit %d", cleared.Status, cleared.OverLimit, cleared.LimitApplied)
+	if cleared.Status != models.StatusApproved || !cleared.OverLimit || cleared.LimitInForce != 500_000 {
+		t.Fatalf("cleared form = status %s over %v limit %d", cleared.Status, cleared.OverLimit, cleared.LimitInForce)
 	}
 }
 
@@ -106,7 +106,7 @@ func TestAResentFormStartsWithoutTheEarlierFlag(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Withdraw = %v", err)
 	}
-	if withdrawn.OverLimit || withdrawn.LimitApplied != 0 {
-		t.Fatalf("withdrawn form = over %v limit %d, want the flag cleared", withdrawn.OverLimit, withdrawn.LimitApplied)
+	if withdrawn.OverLimit || withdrawn.LimitInForce != 0 {
+		t.Fatalf("withdrawn form = over %v limit %d, want the flag cleared", withdrawn.OverLimit, withdrawn.LimitInForce)
 	}
 }

@@ -9,20 +9,18 @@ import (
 )
 
 func (r *registry) approvalLimitsIn(instanceID string) mwanachamaforms.ApprovalLimits {
-	return func(ctx context.Context, approverID string, amount int) error {
+	return func(ctx context.Context, approverID string, amount int) (mwanachamaforms.ApprovalCover, error) {
 		directory, err := r.ActorManager(ctx, instanceID)
 		if err != nil {
-			return fmt.Errorf("approvalLimitsIn: %w", err)
+			return mwanachamaforms.ApprovalCover{}, fmt.Errorf("approvalLimitsIn: %w", err)
 		}
-		seats, err := directory.ListRoleAssignmentsForActor(ctx, approverID, true)
+		outcome, err := mwanachamaactor.ApprovalOutcomeFor(ctx, directory, approverID, amount)
 		if err != nil {
-			return fmt.Errorf("approvalLimitsIn: %w", err)
+			return mwanachamaforms.ApprovalCover{}, fmt.Errorf("approvalLimitsIn: %w", err)
 		}
-		for _, s := range seats {
-			if mwanachamaactor.WithinLimit(s, amount) {
-				return nil
-			}
+		if !outcome.Allowed {
+			return mwanachamaforms.ApprovalCover{}, mwanachamaforms.ErrOverApprovalLimit
 		}
-		return mwanachamaforms.ErrOverApprovalLimit
+		return mwanachamaforms.ApprovalCover{OverLimit: outcome.OverLimit, Limit: outcome.Limit}, nil
 	}
 }

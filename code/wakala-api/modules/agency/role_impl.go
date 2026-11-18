@@ -76,6 +76,9 @@ func (m *agencyManager) UpdateRole(ctx context.Context, r models.Role) (models.R
 		if !r.Carries("staff") {
 			r.Staff = existing.Staff
 		}
+		if !r.Carries("approves_above_limit") {
+			r.ApprovesAboveLimit = existing.ApprovesAboveLimit
+		}
 		if r.Name == "" {
 			return fmt.Errorf("%w: Role.Name is required", ErrInvalidRole)
 		}

@@ -94,8 +94,8 @@ func TestAuditRecords_ApprovingAPaymentAboveTheLimitNamesTheLimitAndFlagsThePaym
 
 	form := w.approve(t, formID)
 
-	if !form.OverLimit || form.LimitApplied != 500000 {
-		t.Fatalf("payment = over %v limit %d, want the flag and 500000", form.OverLimit, form.LimitApplied)
+	if !form.OverLimit || form.LimitInForce != 500000 {
+		t.Fatalf("payment = over %v limit %d, want the flag and 500000", form.OverLimit, form.LimitInForce)
 	}
 	entries := w.auditEntries(t)
 	if len(entries) != 1 {
@@ -112,8 +112,8 @@ func TestAuditRecords_ApprovingAPaymentWithinTheLimitCarriesNoFlag(t *testing.T)
 
 	form := w.approve(t, formID)
 
-	if form.OverLimit || form.LimitApplied != 0 {
-		t.Fatalf("payment = over %v limit %d, want no flag", form.OverLimit, form.LimitApplied)
+	if form.OverLimit || form.LimitInForce != 0 {
+		t.Fatalf("payment = over %v limit %d, want no flag", form.OverLimit, form.LimitInForce)
 	}
 	entries := w.auditEntries(t)
 	if len(entries) != 1 || entries[0].Action != "approved a form" || entries[0].Subject != formID {

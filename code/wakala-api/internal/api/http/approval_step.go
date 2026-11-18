@@ -16,6 +16,9 @@ const (
 	stampedByPrompt = mwanachamaagency.ApprovedByPrompt
 	stampedAtPrompt = mwanachamaagency.ApprovedAtPrompt
 
+	stampedOverLimitPrompt = mwanachamaagency.ApprovedOverLimitPrompt
+	stampedLimitPrompt     = mwanachamaagency.LimitInForcePrompt
+
 	approvalStampMissingName = "set your name in your profile before approving"
 )
 
@@ -51,7 +54,7 @@ func approvesInOwnName(sentence string) bool {
 }
 
 func refuseStampedPrompts[V any](answers map[string]V) error {
-	for _, prompt := range []string{stampedByPrompt, stampedAtPrompt} {
+	for _, prompt := range []string{stampedByPrompt, stampedAtPrompt, stampedOverLimitPrompt, stampedLimitPrompt} {
 		if _, forged := answers[prompt]; forged {
 			return badRowError(prompt + " is written by the server when an approval is sent, so it cannot be answered")
 		}

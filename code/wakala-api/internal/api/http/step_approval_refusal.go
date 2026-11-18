@@ -7,7 +7,10 @@ import (
 	"strings"
 	"unicode"
 
+	mwanachamaactor "wakalaserver/modules/actor"
 	agencymodels "wakalaserver/modules/agency/models"
+
+	"wakalaserver/internal/accounts"
 )
 
 type approvalAboveLimitError struct {
@@ -49,7 +52,11 @@ func wholeAmount(text string) (int, bool) {
 	return n, err == nil
 }
 
-func (d *Deps) refuseAmountAboveLimit(ctx context.Context, instanceID string, questions []agencymodels.StepQuestion, answers map[string]string) error {
+func overLimitStamp(limit int) map[string]string {
+	return map[string]string{stampedOverLimitPrompt: "yes", stampedLimitPrompt: strconv.Itoa(limit)}
+}
+
+func (d *Deps) refuseAmountAboveLimit(ctx context.Context, instanceID string, questions []agencymodels.StepQuestion, answers map[string]string) (map[string]string, error) {
 	var checked []agencymodels.StepQuestion
 	for _, q := range questions {
 		if q.ChecksApprovalLimit {
@@ -57,12 +64,13 @@ func (d *Deps) refuseAmountAboveLimit(ctx context.Context, instanceID string, qu
 		}
 	}
 	if len(checked) == 0 {
-		return nil
+		return nil, nil
 	}
 	limit, err := d.callerApprovalLimit(ctx, instanceID)
 	if err != nil {
-		return err
+		return nil, err
 	}
+	var stamp map[string]string
 	for _, q := range checked {
 		text, given := answers[q.Prompt]
 		if !given {
@@ -70,11 +78,23 @@ func (d *Deps) refuseAmountAboveLimit(ctx context.Context, instanceID string, qu
 		}
 		amount, ok := wholeAmount(text)
 		if !ok {
-			return badRowError("the answer to " + q.Prompt + " is a whole number of forints, not negative")
+			return nil, badRowError("the answer to " + q.Prompt + " is a whole number of forints, not negative")
 		}
-		if limit.Amount != nil && amount > *limit.Amount {
-			return approvalAboveLimitError{amount: amount, limit: *limit.Amount}
+		if limit.Amount == nil || amount <= *limit.Amount {
+			continue
 		}
+		directory, err := d.Registry.ActorManager(ctx, instanceID)
+		if err != nil {
+			return nil, err
+		}
+		outcome, err := mwanachamaactor.ApprovalOutcomeFor(ctx, directory, accounts.IDFromContext(ctx), amount)
+		if err != nil {
+			return nil, err
+		}
+		if !outcome.Allowed {
+			return nil, approvalAboveLimitError{amount: amount, limit: *limit.Amount}
+		}
+		stamp = overLimitStamp(outcome.Limit)
 	}
-	return nil
+	return stamp, nil
 }

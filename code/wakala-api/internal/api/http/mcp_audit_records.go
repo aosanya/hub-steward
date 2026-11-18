@@ -12,23 +12,33 @@ import (
 
 type auditedWrite struct {
 	action   string
-	actionOf func(args map[string]any) string
+	actionOf func(args, result map[string]any) string
 	subject  func(args, result map[string]any) string
 }
 
-func (w auditedWrite) actionFor(args map[string]any) string {
+func (w auditedWrite) actionFor(args, result map[string]any) string {
 	if w.actionOf != nil {
-		return w.actionOf(args)
+		return w.actionOf(args, result)
 	}
 	return w.action
 }
 
-func rowAction(args map[string]any) string {
+func rowAction(args, _ map[string]any) string {
 	if fieldOf(args, "replaces") != "" {
 		return "corrected a row"
 	}
 	return "added a row"
 }
+
+func approvalAction(_, result map[string]any) string {
+	if over, _ := result["over_limit"].(bool); !over {
+		return "approved a form"
+	}
+	limit, _ := result["limit_in_force"].(float64)
+	return "approved a form over its limit of " + groupedThousands(int(limit)) + " Ft"
+}
+
+func approvedForm(args, _ map[string]any) string { return fieldOf(args, "form_id") }
 
 func fieldOf(source map[string]any, key string) string {
 	value, _ := source[key].(string)
@@ -57,6 +67,8 @@ func auditedWrites() map[string]auditedWrite {
 			action:  paperConsentAuditText,
 			subject: func(args, result map[string]any) string { return fieldOf(result, "actor_id") },
 		},
+		"forms_approval_approve":      {actionOf: approvalAction, subject: approvedForm},
+		"forms_approval_approve_slot": {actionOf: approvalAction, subject: approvedForm},
 		addLiveRecordRowTool: {
 			actionOf: rowAction,
 			subject:  func(args, result map[string]any) string { return fieldOf(result, "id") },
@@ -87,7 +99,7 @@ func (d *Deps) recordAuditedWrites(next mcp.MethodHandler) mcp.MethodHandler {
 		}
 		written := structuredObject(answer.StructuredContent)
 		subject := write.subject(args, written)
-		action := write.actionFor(args)
+		action := write.actionFor(args, written)
 		if call.Params.Name == recordPaperConsentTool {
 			text, wanted := d.paperConsentAudit(ctx, instanceID, written)
 			if !wanted {

@@ -2,6 +2,7 @@ package mwanachamaactor_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	actor "wakalaserver/modules/actor"
@@ -20,12 +21,12 @@ func approverWith(t *testing.T, um actor.UserManager, seats ...outcomeSeat) stri
 	if err != nil {
 		t.Fatalf("CreateActor: %v", err)
 	}
-	for _, s := range seats {
-		group, err := um.CreateGroup(ctx, actor.Group{Name: "Városi tanács"})
+	for at, s := range seats {
+		group, err := um.CreateGroup(ctx, actor.Group{Name: fmt.Sprintf("Városi tanács %d", at)})
 		if err != nil {
 			t.Fatalf("CreateGroup: %v", err)
 		}
-		kind, err := um.CreateRoleKind(ctx, actor.RoleKind{Name: "Pénzügyi vezető", ApprovesAboveLimit: s.mayApproveAbove})
+		kind, err := um.CreateRoleKind(ctx, actor.RoleKind{Name: fmt.Sprintf("Pénzügyi vezető %d", at), ApprovesAboveLimit: s.mayApproveAbove})
 		if err != nil {
 			t.Fatalf("CreateRoleKind: %v", err)
 		}
