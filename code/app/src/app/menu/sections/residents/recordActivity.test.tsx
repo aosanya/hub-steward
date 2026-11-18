@@ -74,7 +74,7 @@ describe.each(widths)("an opened business on $name", (view) => {
   it("lists who added and who corrected it, across the older rows it replaced, newest first", async () => {
     const pane = await open("Malomsor Bakery Ltd");
 
-    const heading = await within(pane()).findByRole("heading", { name: "Activity" });
+    const heading = await within(pane()).findByRole("heading", { name: /^Activity/ });
     const rows = await within(pane()).findAllByText(/a row/);
     expect(rows.map((row) => row.textContent)).toEqual(["corrected a row", "corrected a row", "added a row"]);
     expect(within(pane()).getAllByText(new RegExp(clerkName))).toHaveLength(3);
@@ -86,7 +86,7 @@ describe.each(widths)("an opened business on $name", (view) => {
   it("lists only the entries of the opened row's own chain", async () => {
     const pane = await open("Zöldkert Grocer");
 
-    await within(pane()).findByRole("heading", { name: "Activity" });
+    await within(pane()).findByRole("heading", { name: /^Activity/ });
     expect(await within(pane()).findAllByText(/a row/)).toHaveLength(1);
     const subjects = called.mock.calls.filter((call) => call[1] === "audit_list_entries").map((call) => (call[2] as { subject: string }).subject);
     expect(subjects).toContain("b9");
@@ -98,7 +98,7 @@ describe.each(widths)("an opened business on $name", (view) => {
     const pane = await open("Malomsor Bakery Ltd");
 
     await vi.waitFor(() => expect(called.mock.calls.filter((call) => call[1] === "audit_list_entries").length).toBeGreaterThan(0));
-    expect(within(pane()).queryByRole("heading", { name: "Activity" })).toBeNull();
+    expect(within(pane()).queryByRole("heading", { name: /^Activity/ })).toBeNull();
     expect(within(pane()).queryByText(/no activity|nothing/i)).toBeNull();
   });
 
@@ -110,8 +110,8 @@ describe.each(widths)("an opened business on $name", (view) => {
     const pane = await open("Malomsor Bakery Ltd");
 
     await vi.waitFor(() => expect(called.mock.calls.filter((call) => call[1] === "audit_list_entries").length).toBeGreaterThan(0));
-    expect(within(pane()).queryByRole("heading", { name: "Activity" })).toBeNull();
+    expect(within(pane()).queryByRole("heading", { name: /^Activity/ })).toBeNull();
     expect(within(pane()).queryByText(/could not be loaded|refused|unknown tool|did not go through/i)).toBeNull();
-    expect(within(pane()).getByText("Active")).toBeInTheDocument();
+    expect(within(pane()).getAllByText("Active").length).toBeGreaterThan(0);
   });
 });

@@ -27,6 +27,7 @@ export function InformalTradersScreen() {
       title="Informal traders"
       recordCode={informalTradersRecordCode}
       titlePrompt={informalTradersTitlePrompt}
+      detailWord="Trader detail"
       prompts={fields.filter((field) => !field.people).map((field) => field.prompt)}
       metaPrompts={informalTradersMetaPrompts}
       owner={{ prompt: "Holder", heading: "Holder" }}

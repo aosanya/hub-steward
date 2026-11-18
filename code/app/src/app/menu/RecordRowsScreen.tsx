@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../../shared/ui/Button";
 import { liveRecordRowsTool, loadRecordRow, loadRecordRows } from "./liveRecordRows";
 import { MenuWindow } from "./MenuWindow";
-import { RecordRowExtra } from "./RecordRowExtra";
+import { RecordPage } from "./RecordPage";
 import { loadLicenceMarks, type LicenceMark } from "./sections/residents/licensedRows";
 import { LicenceChip } from "./sections/residents/LicenceChip";
 
@@ -10,6 +10,7 @@ type Props = {
   title: string;
   recordCode: string;
   titlePrompt: string;
+  detailWord: string;
   metaPrompts: string[];
   prompts: string[];
   empty: { words: string; act: string; to: string };
@@ -21,7 +22,7 @@ const licenceMarkKey = "licenceMark";
 
 const licenceChip = (item: Record<string, unknown>) => (typeof item[licenceMarkKey] === "string" ? <LicenceChip mark={item[licenceMarkKey] as LicenceMark} /> : null);
 
-export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, prompts, empty, owner, licence }: Props) {
+export function RecordRowsScreen({ title, recordCode, titlePrompt, detailWord, metaPrompts, prompts, empty, owner, licence }: Props) {
   const [count, setCount] = useState(0);
   const load = async () => {
     const [rows, marks] = await Promise.all([
@@ -35,14 +36,16 @@ export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, 
     <MenuWindow
       key={recordCode}
       title={title}
+      withTabs
+      bandless
       headEnd={count > 0 ? <Button to={empty.to}>{empty.act}</Button> : undefined}
       list={{ title, tool: liveRecordRowsTool, fields: { title: "title", meta: "meta" }, empty, load, end: licence ? licenceChip : undefined }}
       detail={{
         tool: liveRecordRowsTool,
         load: (id) => loadRecordRow(recordCode, id, prompts, owner?.prompt),
-        fields: Object.fromEntries(prompts.map((prompt) => [prompt, prompt])),
-        status: "status",
-        extra: (row) => <RecordRowExtra row={row} recordCode={recordCode} owner={owner} licence={licence} />,
+        fields: {},
+        status: "",
+        extra: (row) => <RecordPage row={row} recordCode={recordCode} titlePrompt={titlePrompt} prompts={prompts} detailWord={detailWord} owner={owner} licence={licence} />,
       }}
     />
   );

@@ -1,8 +1,8 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { SectionHeading } from "../../../../shared/ui/SectionHeading";
+import { ListRow } from "../../../../shared/ui/ListRow";
+import { Section } from "../../../../shared/ui/Section";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { loadRowChain } from "../../liveRecordRows";
@@ -20,14 +20,5 @@ export function RowActivity({ recordCode, rowId }: { recordCode: string; rowId: 
   const word = useWord();
   const view = useLoad(loadRowActivity(recordCode, rowId), `row-activity:${openAgencyId()}:${recordCode}:${rowId}`);
   if (view.state !== "ready" || view.data.length === 0) return null;
-  return (
-    <>
-      <SectionHeading>{word("Activity")}</SectionHeading>
-      <Rows>
-        {view.data.map((row) => (
-          <ListRow key={row.key} title={row.title} meta={row.meta} />
-        ))}
-      </Rows>
-    </>
-  );
+  return <Section icon="clock" all word={word("Activity")} rows={view.data.map((row) => <ListRow key={row.key} title={row.title} meta={row.meta} />)} />;
 }

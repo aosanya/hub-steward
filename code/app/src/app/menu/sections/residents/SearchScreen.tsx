@@ -90,8 +90,8 @@ export function SearchScreen() {
         extra: (item) => {
           const kind = item[kindKey];
           if (kind === personKey) return <PersonPanel person={item} onSaved={() => setVersion((was) => was + 1)} />;
-          if (kind === businessKey) return <RecordRowExtra row={item} recordCode={businessesRecordCode} owner={{ prompt: "Owner", heading: "Owner" }} />;
-          if (kind === traderKey) return <RecordRowExtra row={item} recordCode={informalTradersRecordCode} owner={{ prompt: "Holder", heading: "Holder" }} />;
+          if (kind === businessKey) return <div className="sections"><RecordRowExtra row={item} recordCode={businessesRecordCode} owner={{ prompt: "Owner", heading: "Owner" }} /></div>;
+          if (kind === traderKey) return <div className="sections"><RecordRowExtra row={item} recordCode={informalTradersRecordCode} owner={{ prompt: "Holder", heading: "Holder" }} /></div>;
           return null;
         },
       }}

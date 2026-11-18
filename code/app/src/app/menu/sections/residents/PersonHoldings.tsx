@@ -1,10 +1,9 @@
 import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
+import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadingLine } from "../../../../shared/ui/LoadState";
 import { Section } from "../../../../shared/ui/Section";
-import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { dayOf, digitaltwinModule, loadNodeNames, placeIdOf, tenureList, textOf } from "../properties/records";
@@ -46,17 +45,6 @@ const loadHoldings = (filter: Record<string, string>) => async () => {
 
 type Holding = { key: string; opens: string; title: string; meta: string };
 
-function HoldingRows({ holdings }: { holdings: Holding[] }) {
-  const open = useOpenFromPanel();
-  return (
-    <Rows>
-      {holdings.map((holding) => (
-        <ListRow key={holding.key} title={holding.title} meta={holding.meta} onClick={() => open(holding.opens)} end="›" />
-      ))}
-    </Rows>
-  );
-}
-
 const holdingRows = (holdings: Holding[], open: (path: string) => void) =>
   holdings.map((holding) => <ListRow key={holding.key} title={holding.title} meta={holding.meta} onClick={() => open(holding.opens)} end="›" />);
 
@@ -77,12 +65,8 @@ export function PersonHoldings({ id, full }: { id: string; full?: boolean }) {
 
 export function RowHoldings({ rowId }: { rowId: string }) {
   const word = useWord(digitaltwinModule);
+  const open = useOpenFromPanel();
   const view = useLoad(loadHoldings({ holder_record_row_id: rowId }), `record-holdings:${openAgencyId()}:${rowId}`);
   if (view.state !== "ready" || view.data.length === 0) return null;
-  return (
-    <>
-      <SectionHeading>{word("Holdings")}</SectionHeading>
-      <HoldingRows holdings={view.data} />
-    </>
-  );
+  return <Section icon="box" word={word("Holdings")} foot={<SectionGo permission="digitaltwin.manage" act="Add holding" to={placePaths.holdingNew.path()} />} rows={holdingRows(view.data, open)} />;
 }

@@ -1,25 +1,22 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
-import { SectionHeading } from "../../../../shared/ui/SectionHeading";
+import { Section } from "../../../../shared/ui/Section";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { ApplicationRows, loadApplications } from "./applicationRows";
+import { applicationRowList, loadApplications } from "./applicationRows";
 import { LicenceChip } from "./LicenceChip";
 import { loadLicenceMarks } from "./licensedRows";
+import { useOpenFromPanel } from "./useOpenFromPanel";
 
 type Props = { ownerId: string; rowId: string; licenceRecord?: string };
 
 function LicencesAndPermits({ ownerId, rowId, licenceRecord }: Props) {
   const word = useWord("forms");
+  const open = useOpenFromPanel();
   const view = useLoad(loadApplications(ownerId, rowId), `record-applications:${openAgencyId()}:${rowId}`);
   const marks = useLoad(async () => (licenceRecord ? loadLicenceMarks(licenceRecord) : null), `record-licence-mark:${openAgencyId()}:${licenceRecord ?? ""}:${rowId}`);
   if (view.state !== "ready" || view.data.length === 0) return null;
   const mark = marks.state === "ready" ? marks.data?.get(rowId) : undefined;
-  return (
-    <>
-      <SectionHeading action={mark ? <LicenceChip mark={mark} /> : undefined}>{word("Licences and permits")}</SectionHeading>
-      <ApplicationRows applications={view.data} />
-    </>
-  );
+  return <Section icon="document" word={word("Licences and permits")} badge={mark ? <LicenceChip mark={mark} /> : undefined} rows={applicationRowList(view.data, open)} />;
 }
 
 export function RecordApplications({ ownerId, rowId, licenceRecord }: Props) {

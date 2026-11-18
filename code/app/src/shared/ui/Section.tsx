@@ -7,9 +7,9 @@ import "./section.css";
 
 export { sectionLimit };
 
-type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean; icon?: IconName; plain?: boolean };
+type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean; icon?: IconName; plain?: boolean; badge?: ReactNode };
 
-export function Section({ word, rows, opens, empty, foot, full = false, all = false, icon, plain = false }: Props) {
+export function Section({ word, rows, opens, empty, foot, full = false, all = false, icon, plain = false, badge }: Props) {
   const [expanded, setExpanded] = useState(true);
   const bodyId = useId();
   const count = rows.length;
@@ -39,6 +39,7 @@ export function Section({ word, rows, opens, empty, foot, full = false, all = fa
             )}
           </h2>
         )}
+        {badge}
         {full ? null : (
           <button type="button" className="sec-toggle" aria-label={expanded ? "Collapse" : "Expand"} aria-expanded={expanded} aria-controls={bodyId} onClick={() => setExpanded(!expanded)}>
             <Icon name="chevron" />

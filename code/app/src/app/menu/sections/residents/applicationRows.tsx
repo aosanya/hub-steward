@@ -13,13 +13,12 @@ export const loadApplications = (memberId: string, rowId?: string) => async (): 
     .sort((a, b) => b.sentAt.localeCompare(a.sentAt));
 };
 
+export const applicationRowList = (applications: Application[], open: (path: string) => void) =>
+  applications.map((application) => (
+    <ListRow key={application.key} title={application.title} meta={`Sent ${dayWords(application.sentAt)}`} onClick={() => open(servicesPaths.application.path({ id: application.key }))} end="›" />
+  ));
+
 export function ApplicationRows({ applications }: { applications: Application[] }) {
   const open = useOpenFromPanel();
-  return (
-    <Rows>
-      {applications.map((application) => (
-        <ListRow key={application.key} title={application.title} meta={`Sent ${dayWords(application.sentAt)}`} onClick={() => open(servicesPaths.application.path({ id: application.key }))} end="›" />
-      ))}
-    </Rows>
-  );
+  return <Rows>{applicationRowList(applications, open)}</Rows>;
 }

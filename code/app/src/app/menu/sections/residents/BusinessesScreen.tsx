@@ -27,6 +27,7 @@ export function BusinessesScreen() {
       title="Businesses"
       recordCode={businessesRecordCode}
       titlePrompt={businessesTitlePrompt}
+      detailWord="Business detail"
       prompts={fields.filter((field) => !field.people).map((field) => field.prompt)}
       metaPrompts={businessesMetaPrompts}
       owner={{ prompt: "Owner", heading: "Owner" }}

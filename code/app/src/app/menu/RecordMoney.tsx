@@ -1,8 +1,8 @@
 import { useWord } from "../../features/agency/useWord";
 import { useLoad } from "../../features/forms/useLoad";
 import { Chip } from "../../shared/ui/Chip";
-import { ListRow, Rows } from "../../shared/ui/ListRow";
-import { SectionHeading } from "../../shared/ui/SectionHeading";
+import { ListRow } from "../../shared/ui/ListRow";
+import { Section } from "../../shared/ui/Section";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { listOf, paymentLine, tools, unitOf } from "./sections/finance/financeData";
 import { loadBillRows } from "./sections/residents/PersonBills";
@@ -12,31 +12,13 @@ const loadPaymentRows = (rowId: string, unit: string) => async () => (await list
 function FeesAndBills({ rowId, unit }: { rowId: string; unit: string }) {
   const view = useLoad(loadBillRows({ record_row_id: rowId }, unit), `record-bills:${openAgencyId()}:${rowId}:${unit}`);
   if (view.state !== "ready" || view.data.length === 0) return null;
-  return (
-    <>
-      <SectionHeading>Fees and bills</SectionHeading>
-      <Rows>
-        {view.data.map((bill) => (
-          <ListRow key={bill.id} title={bill.meta} end={<Chip>{bill.status}</Chip>} />
-        ))}
-      </Rows>
-    </>
-  );
+  return <Section icon="wallet" word="Fees and bills" rows={view.data.map((bill) => <ListRow key={bill.id} title={bill.meta} end={<Chip>{bill.status}</Chip>} />)} />;
 }
 
 function Payments({ rowId, unit }: { rowId: string; unit: string }) {
   const view = useLoad(loadPaymentRows(rowId, unit), `record-payments:${openAgencyId()}:${rowId}:${unit}`);
   if (view.state !== "ready" || view.data.length === 0) return null;
-  return (
-    <>
-      <SectionHeading>Payments</SectionHeading>
-      <Rows>
-        {view.data.map((payment) => (
-          <ListRow key={payment.id} title={payment.meta} />
-        ))}
-      </Rows>
-    </>
-  );
+  return <Section icon="wallet" word="Payments" rows={view.data.map((payment) => <ListRow key={payment.id} title={payment.meta} />)} />;
 }
 
 export function RecordMoney({ rowId }: { rowId: string }) {

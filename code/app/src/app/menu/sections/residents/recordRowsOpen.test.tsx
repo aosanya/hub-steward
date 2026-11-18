@@ -59,7 +59,7 @@ const showScreen = (path: string) =>
 const expectEveryAnswer = (pane: HTMLElement, answers: Record<string, string>) => {
   Object.entries(answers).forEach(([prompt, answer]) => {
     expect(within(pane).getByText(prompt)).toBeInTheDocument();
-    expect(within(pane).getByText(answer)).toBeInTheDocument();
+    expect(within(pane).getAllByText(answer).length).toBeGreaterThan(0);
   });
 };
 

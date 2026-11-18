@@ -132,9 +132,9 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([kind.owned, kind.other]);
       const { pane } = await openRow(kind.owned);
 
-      const heading = await within(pane()).findByRole("heading", { name: kind.heading });
+      const heading = await within(pane()).findByRole("heading", { name: new RegExp(`^${kind.heading}`) });
       const nameRow = await within(pane()).findByText(personName, { selector: ".ttl" });
-      expect(within(pane()).getAllByRole("heading", { name: kind.heading })).toHaveLength(1);
+      expect(within(pane()).getAllByRole("heading", { name: new RegExp(`^${kind.heading}`) })).toHaveLength(1);
       expect(within(pane()).getAllByText(personName)).toHaveLength(1);
       expect(heading.compareDocumentPosition(nameRow) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(nameRow.closest(".row")).not.toBeNull();
@@ -145,8 +145,8 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       expect(within(pane()).queryByText(kind.ownerPrompt, { selector: ".ttl" })).toBeNull();
       Object.values(kind.owned.answers)
         .filter((value) => value !== ownerId)
-        .forEach((value) => expect(within(pane()).getByText(value)).toBeInTheDocument());
-      const lastField = within(pane()).getByText(kind.owned.answers.Neighbourhood);
+        .forEach((value) => expect(within(pane()).getAllByText(value).length).toBeGreaterThan(0));
+      const lastField = within(pane()).getAllByText(kind.owned.answers.Neighbourhood).at(-1) as HTMLElement;
       expect(lastField.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 
@@ -154,7 +154,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([kind.owned, kind.other]);
       const { pane } = await openRow(kind.owned);
 
-      await within(pane()).findByRole("heading", { name: kind.heading });
+      await within(pane()).findByRole("heading", { name: new RegExp(`^${kind.heading}`) });
       expect(actorCalls()).toHaveLength(1);
       expect(actorCalls()[0][2]).toEqual({ actor_id: ownerId });
     });
@@ -167,7 +167,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([row, kind.other]);
       const { pane } = await openRow(row);
 
-      expect(within(pane()).queryByRole("heading", { name: kind.heading })).toBeNull();
+      expect(within(pane()).queryByRole("heading", { name: new RegExp(`^${kind.heading}`) })).toBeNull();
       expect(within(pane()).queryByRole("link")).toBeNull();
       expect(actorCalls()).toHaveLength(0);
       expect(document.body.textContent).not.toContain(ownerId);
@@ -182,12 +182,12 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       const { pane } = await openRow(kind.owned);
 
       await vi.waitFor(() => expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: ownerId }));
-      expect(within(pane()).queryByRole("heading", { name: kind.heading })).toBeNull();
+      expect(within(pane()).queryByRole("heading", { name: new RegExp(`^${kind.heading}`) })).toBeNull();
       expect(within(pane()).queryByRole("link")).toBeNull();
       expect(within(pane()).queryByText(/could not be loaded|refused|unknown tool|not found|did not go through/i)).toBeNull();
       Object.values(kind.owned.answers)
         .filter((value) => value !== ownerId)
-        .forEach((value) => expect(within(pane()).getByText(value)).toBeInTheDocument());
+        .forEach((value) => expect(within(pane()).getAllByText(value).length).toBeGreaterThan(0));
       expect(document.body.textContent).not.toContain(ownerId);
     });
 
@@ -200,7 +200,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       const { pane } = await openRow(kind.owned);
 
       await vi.waitFor(() => expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: ownerId }));
-      expect(within(pane()).queryByRole("heading", { name: kind.heading })).toBeNull();
+      expect(within(pane()).queryByRole("heading", { name: new RegExp(`^${kind.heading}`) })).toBeNull();
       expect(within(pane()).queryByRole("link")).toBeNull();
       expect(document.body.textContent).not.toContain(ownerId);
     });
@@ -209,7 +209,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([kind.sameName, kind.owned]);
       const { pane } = await openRow(kind.sameName);
 
-      expect(within(pane()).queryByRole("heading", { name: kind.heading })).toBeNull();
+      expect(within(pane()).queryByRole("heading", { name: new RegExp(`^${kind.heading}`) })).toBeNull();
       expect(within(pane()).queryByRole("link")).toBeNull();
       expect(actorCalls()).toHaveLength(0);
       expect(called.mock.calls.filter((call) => call[1] === "actor_list_actors")).toHaveLength(0);
@@ -223,9 +223,9 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([kind.owned, kind.other]);
       const { pane } = await openRow(kind.owned);
 
-      const heading = await within(pane()).findByRole("heading", { name: "Licences and permits" });
+      const heading = await within(pane()).findByRole("heading", { name: /^Licences and permits/ });
       expect(await within(pane()).findByText("Sample Stall Permit", { selector: ".ttl" })).toBeInTheDocument();
-      const holdings = await within(pane()).findByRole("heading", { name: "Holdings" });
+      const holdings = await within(pane()).findByRole("heading", { name: /^Holdings/ });
       expect(holdings.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(called).toHaveBeenCalledWith("", "forms_submission_list_of_person", { member_id: ownerId, record_row_id: kind.owned.id });
     });
@@ -235,7 +235,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       const { pane } = await openRow(kind.owned);
 
       await vi.waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_submission_list_of_person", { member_id: ownerId, record_row_id: kind.owned.id }));
-      expect(within(pane()).queryByRole("heading", { name: "Licences and permits" })).toBeNull();
+      expect(within(pane()).queryByRole("heading", { name: /^Licences and permits/ })).toBeNull();
       expect(within(pane()).queryByText(/No .* yet|Start an application/i)).toBeNull();
     });
 
@@ -243,7 +243,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([kind.owned, kind.unowned]);
       const { pane } = await openRow(kind.owned);
 
-      await within(pane()).findByRole("heading", { name: kind.heading });
+      await within(pane()).findByRole("heading", { name: new RegExp(`^${kind.heading}`) });
       const names = called.mock.calls.map((call) => call[1]);
       unlinkedTools.forEach((tool) => expect(names).not.toContain(tool));
       expect(within(pane()).queryByText(/permit|inspection|booking/i)).toBeNull();
@@ -258,11 +258,11 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([kind.owned, kind.other]);
       const { pane } = await openRow(kind.owned);
 
-      const heading = await within(pane()).findByRole("heading", { name: "Fees and bills" });
+      const heading = await within(pane()).findByRole("heading", { name: /^Fees and bills/ });
       expect(await within(pane()).findByText(/150,000 · due 2026-03-01/)).toBeInTheDocument();
       expect(within(pane()).getByText(/42,000 · due 2026-01-10/)).toBeInTheDocument();
       expect(within(pane()).getByText("Overdue")).toBeInTheDocument();
-      const owner = await within(pane()).findByRole("heading", { name: kind.heading });
+      const owner = await within(pane()).findByRole("heading", { name: new RegExp(`^${kind.heading}`) });
       expect(owner.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(called).toHaveBeenCalledWith("", "accounting_bill_list", { record_row_id: kind.owned.id });
       expect(called.mock.calls.filter((call) => String(call[1]).startsWith("accounting_") && (call[2] as Record<string, unknown> | undefined)?.actor_id !== undefined)).toHaveLength(0);
@@ -273,7 +273,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([kind.owned, kind.other]);
       const { pane } = await openRow(kind.owned);
 
-      await within(pane()).findByRole("heading", { name: "Payments" });
+      await within(pane()).findByRole("heading", { name: /^Payments/ });
       expect(await within(pane()).findByText(/90,000 · paid 2026-02-04/)).toBeInTheDocument();
       expect(called).toHaveBeenCalledWith("", "accounting_payment_list", { record_row_id: kind.owned.id });
     });
@@ -283,7 +283,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([kind.owned, kind.other]);
       const { pane } = await openRow(kind.owned);
 
-      await within(pane()).findByRole("heading", { name: "Fees and bills" });
+      await within(pane()).findByRole("heading", { name: /^Fees and bills/ });
       expect(within(pane()).queryByText(/42,000/)).toBeNull();
     });
 
@@ -295,10 +295,10 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([kind.owned, kind.other]);
       const { pane } = await openRow(kind.owned);
 
-      const heading = await within(pane()).findByRole("heading", { name: "Holdings" });
+      const heading = await within(pane()).findByRole("heading", { name: /^Holdings/ });
       expect(await within(pane()).findByText("Stall 4, Market square")).toBeInTheDocument();
       expect(within(pane()).getByText(/tenant · since 2025-04-01/)).toBeInTheDocument();
-      const payments = await within(pane()).findByRole("heading", { name: "Payments" });
+      const payments = await within(pane()).findByRole("heading", { name: /^Payments/ });
       expect(payments.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(called).toHaveBeenCalledWith("", "digitaltwin_tenure_list", { holder_record_row_id: kind.owned.id });
       expect(called.mock.calls.filter((call) => call[1] === "digitaltwin_tenure_list" && (call[2] as Record<string, unknown> | undefined)?.holder_actor_id !== undefined)).toHaveLength(0);
@@ -309,7 +309,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       setUp([kind.owned, kind.other]);
       const { pane } = await openRow(kind.owned);
 
-      await within(pane()).findByRole("heading", { name: "Holdings" });
+      await within(pane()).findByRole("heading", { name: /^Holdings/ });
       expect(within(pane()).queryByText(/owner · since/)).toBeNull();
     });
 
@@ -323,7 +323,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       const { pane } = await openRow(kind.owned);
 
       await vi.waitFor(() => expect(called).toHaveBeenCalledWith("", "digitaltwin_tenure_list", { holder_record_row_id: kind.owned.id }));
-      expect(within(pane()).queryByRole("heading", { name: "Holdings" })).toBeNull();
+      expect(within(pane()).queryByRole("heading", { name: /^Holdings/ })).toBeNull();
       expect(within(pane()).queryByText(/No .* yet|could not be loaded|refused|unknown tool|not found/i)).toBeNull();
     });
 
@@ -338,8 +338,8 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       const { pane } = await openRow(kind.owned);
 
       await vi.waitFor(() => expect(called).toHaveBeenCalledWith("", "accounting_bill_list", { record_row_id: kind.owned.id }));
-      expect(within(pane()).queryByRole("heading", { name: "Fees and bills" })).toBeNull();
-      expect(within(pane()).queryByRole("heading", { name: "Payments" })).toBeNull();
+      expect(within(pane()).queryByRole("heading", { name: /^Fees and bills/ })).toBeNull();
+      expect(within(pane()).queryByRole("heading", { name: /^Payments/ })).toBeNull();
       expect(within(pane()).queryByText(/No .* yet|could not be loaded|refused|unknown tool|not found/i)).toBeNull();
     });
   });
@@ -367,7 +367,7 @@ describe("the Licences and permits section of an opened record", () => {
   it("lists the applications of the row under Licences and permits, asked by the owner and the row", async () => {
     showSection();
 
-    expect(await screen.findByRole("heading", { name: "Licences and permits" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /^Licences and permits/ })).toBeInTheDocument();
     expect(await screen.findByText("Sample Stall Permit", { selector: ".ttl" })).toBeInTheDocument();
     expect(applicationCalls()).toEqual([["", "forms_submission_list_of_person", { member_id: ownerId, record_row_id: rowId }]]);
   });
@@ -377,7 +377,7 @@ describe("the Licences and permits section of an opened record", () => {
     showSection();
 
     await vi.waitFor(() => expect(applicationCalls()).toHaveLength(1));
-    expect(screen.queryByRole("heading", { name: "Licences and permits" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: /^Licences and permits/ })).toBeNull();
     expect(screen.queryByText(/No .* yet|Start an application/i)).toBeNull();
     expect(document.body.textContent).toBe("");
   });
@@ -390,7 +390,7 @@ describe("the Licences and permits section of an opened record", () => {
     showSection();
 
     await vi.waitFor(() => expect(applicationCalls()).toHaveLength(1));
-    expect(screen.queryByRole("heading", { name: "Licences and permits" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: /^Licences and permits/ })).toBeNull();
     expect(document.body.textContent).toBe("");
   });
 
@@ -412,7 +412,7 @@ describe("the Licences and permits section of an opened record", () => {
       showSection(ownerId, "RC-1");
 
       const mark = await screen.findByText("Expired");
-      expect(mark.closest(".heading-row")).toContainElement(screen.getByRole("heading", { name: "Licences and permits" }));
+      expect(mark.closest(".sec-head")).toContainElement(screen.getByRole("heading", { name: /^Licences and permits/ }));
     });
 
     it("shows Licensed beside the heading when the licence is valid, and no mark without a licence record", async () => {
@@ -420,14 +420,14 @@ describe("the Licences and permits section of an opened record", () => {
       showSection(ownerId, "RC-1");
 
       const mark = await screen.findByText("Licensed");
-      expect(mark.closest(".heading-row")).toContainElement(screen.getByRole("heading", { name: "Licences and permits" }));
+      expect(mark.closest(".sec-head")).toContainElement(screen.getByRole("heading", { name: /^Licences and permits/ }));
     });
 
     it("draws no mark when the record is not a licence record", async () => {
       serveLicence("2020-01-31");
       showSection();
 
-      await screen.findByRole("heading", { name: "Licences and permits" });
+      await screen.findByRole("heading", { name: /^Licences and permits/ });
       expect(screen.queryByText("Expired")).toBeNull();
       expect(screen.queryByText("Licensed")).toBeNull();
     });
