@@ -2,6 +2,8 @@ import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
+import { settingsPaths } from "./paths";
+import { ChatAboutItem, FactsCard, RecordPage, text as shown, useChosenItem } from "./RecordPage";
 
 type Account = Record<string, unknown>;
 
@@ -53,11 +55,24 @@ const readAccount = async (id: string): Promise<Account> => {
 
 export function Integrations() {
   const word = useWord();
+  const startAt = useChosenItem();
   return (
     <MenuWindow
       title={word("Integrations")}
+      withTabs
+      bandless
+      startAt={startAt}
       list={{ title: word("Integrations"), tool: "ai_list_accounts", load: loadAccounts, fields: { title: "name", meta: "state" }, empty: { words: "No services have been set up yet." } }}
-      detail={{ tool: "ai_get_account", load: loadAccount, fields: { Name: "name", Provider: "provider", Address: "address", Model: "model", Status: "state", Limits: "limits" }, status: "state" }}
+      detail={{ tool: "ai_get_account", load: loadAccount, fields: {}, status: "",
+        extra: (account) => (
+          <>
+            <ChatAboutItem about={{ kind: "integration", id: shown(account, "id"), name: shown(account, "name"), extra: { details: [shown(account, "provider"), shown(account, "state"), shown(account, "limits")].filter(Boolean).join("; ") } }} back={settingsPaths.integrations.path()} />
+            <RecordPage name={shown(account, "name")} line={shown(account, "state")}>
+              <FactsCard word="Integration" facts={[["Provider", shown(account, "provider")], ["Address", shown(account, "address")], ["Model", shown(account, "model")], ["Status", shown(account, "state")], ["Limits", shown(account, "limits")]]} />
+            </RecordPage>
+          </>
+        ),
+      }}
     />
   );
 }

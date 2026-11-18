@@ -2,6 +2,8 @@ import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
+import { settingsPaths } from "./paths";
+import { ChatAboutItem, FactsCard, RecordPage, useChosenItem, type Fact } from "./RecordPage";
 
 type Record_ = Record<string, unknown>;
 
@@ -110,31 +112,36 @@ const loadAgent = async (id: string) => {
   };
 };
 
-const agentFields = {
-  Name: "name",
-  Description: "description",
-  Status: "state",
-  "May see": "see",
-  "May change": "change",
-  "Its limits": "limits",
-  Account: "account",
-  "Account limits": "accountLimits",
-  "Used this month": "used",
-  "Used by": "usedBy",
-  "Each person a day": "day",
-  "Each person a month": "month",
-  "The owner a day": "ownerDay",
-  "The owner a month": "ownerMonth",
-  "Used by each person this month": "usedByPerson",
-};
+const factsOf = (agent: Record_, labels: [string, string][]): Fact[] => labels.map(([label, key]) => [label, text(agent, key)]);
+
+const doLabels: [string, string][] = [["May see", "see"], ["May change", "change"]];
+
+const limitLabelsOnPage: [string, string][] = [["Its limits", "limits"], ["Account", "account"], ["Account limits", "accountLimits"], ["Each person a day", "day"], ["Each person a month", "month"], ["The owner a day", "ownerDay"], ["The owner a month", "ownerMonth"]];
+
+const useLabels: [string, string][] = [["Used this month", "used"], ["Used by", "usedBy"], ["Used by each person this month", "usedByPerson"]];
 
 export function AiAgents() {
   const word = useWord();
+  const startAt = useChosenItem();
   return (
     <MenuWindow
       title={word("AI Agents & Limits")}
+      withTabs
+      bandless
+      startAt={startAt}
       list={{ title: word("AI Agents & Limits"), tool: "ai_list_roles", load: loadRows, fields: { title: "name", meta: "state" }, empty: { words: "No AI agents have been set up yet." } }}
-      detail={{ tool: "ai_list_roles", load: loadAgent, fields: agentFields, status: "state" }}
+      detail={{ tool: "ai_list_roles", load: loadAgent, fields: {}, status: "",
+        extra: (agent) => (
+          <>
+            <ChatAboutItem about={{ kind: "ai-agent", id: text(agent, "id"), name: text(agent, "name"), extra: { details: [text(agent, "description"), text(agent, "limits")].filter(Boolean).join("; ") } }} back={settingsPaths.aiAgents.path()} />
+            <RecordPage name={text(agent, "name")} line={text(agent, "state") || text(agent, "description")}>
+              <FactsCard word="What it may do" facts={factsOf(agent, doLabels)} />
+              <FactsCard word="Limits" facts={factsOf(agent, limitLabelsOnPage)} />
+              <FactsCard word="Use" facts={factsOf(agent, useLabels)} />
+            </RecordPage>
+          </>
+        ),
+      }}
     />
   );
 }

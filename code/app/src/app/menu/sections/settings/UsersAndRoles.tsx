@@ -2,7 +2,11 @@ import { useState } from "react";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { ListRow } from "../../../../shared/ui/ListRow";
+import { Section } from "../../../../shared/ui/Section";
 import { MenuWindow } from "../../MenuWindow";
+import { settingsPaths } from "./paths";
+import { ChatAboutItem, RecordPage, text, useChosenItem } from "./RecordPage";
 import { SeatEnd, type Seat as HeldSeat } from "./SeatEnd";
 import { SeatGive } from "./SeatGive";
 import { labelOf } from "./personLabel";
@@ -44,16 +48,25 @@ export function UsersAndRoles() {
   return (
     <MenuWindow
       title={title}
+      withTabs
+      bandless
+      startAt={useChosenItem()}
       listKey={version}
       detailKey={version}
       list={{ title, tool: "actor_list_actors", load: loadPeople, fields: { title: "display_name", meta: "roles" }, empty: { words: "No one has joined this agency yet." } }}
-      detail={{ tool: "actor_get_actor_standing", load: loadPerson, fields: { Name: "display_name", Roles: "roles" }, status: "status",
-        extra: (person) => (
-          <>
-            <SeatEnd seats={(person.seats as HeldSeat[] | undefined) ?? []} onEnded={ended} />
-            <SeatGive actorId={String(person.id)} onGiven={ended} />
-          </>
-        ),
+      detail={{ tool: "actor_get_actor_standing", load: loadPerson, fields: {}, status: "",
+        extra: (person) => {
+          const seats = (person.seats as HeldSeat[] | undefined) ?? [];
+          return (
+            <>
+              <ChatAboutItem about={{ kind: "user", id: text(person, "id"), name: text(person, "display_name") }} back={settingsPaths.usersAndRoles.path()} />
+              <RecordPage name={text(person, "display_name")} line={text(person, "roles") || "No roles yet"}>
+                <Section word="Roles" empty={{ words: "No roles yet." }} rows={seats.map((seat) => <ListRow key={seat.id} title={seat.role} />)} foot={<SeatEnd seats={seats} onEnded={ended} />} />
+                <Section word="Give a role" plain rows={[<SeatGive key="give" actorId={String(person.id)} onGiven={ended} />]} />
+              </RecordPage>
+            </>
+          );
+        },
       }}
     />
   );

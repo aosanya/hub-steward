@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMay } from "../../../../features/agency/useMay";
-import { Button } from "../../../../shared/ui/Button";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { refusalWords } from "../../MenuEditForm";
@@ -29,7 +28,7 @@ export function SeatEnd({ seats, onEnded }: Props) {
   return (
     <>
       {seats.map((seat) => (
-        <Button key={seat.id} kind="quiet" disabled={busy !== ""} onClick={() => end(seat)}>{`End role: ${seat.role}`}</Button>
+        <button key={seat.id} type="button" className="sec-act" disabled={busy !== ""} onClick={() => end(seat)}>{`End role: ${seat.role}`}</button>
       ))}
       {refused ? <LoadFailed words={refused} /> : null}
     </>
