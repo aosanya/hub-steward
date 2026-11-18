@@ -273,6 +273,7 @@ func TestToolList_AnAgentHoldingOnlyACatalogOrMountPermissionSeesTheToolItGrants
 		{"board.manage", "forms_catalog_board_item_set_outcome"},
 		{"board.manage", "forms_catalog_board_item_assign"},
 		{"board.read", "forms_catalog_board_item_list"},
+		{"board.read", "forms_catalog_board_item_tally_by_area"},
 		{"service.edit", "forms_catalog_entry_upsert"},
 		{"service.edit", "forms_catalog_entry_read"},
 		{"mount.list", "agency_list_mounts"},
