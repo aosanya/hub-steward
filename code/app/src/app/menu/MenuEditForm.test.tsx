@@ -437,6 +437,52 @@ describe("the shared menu edit form", () => {
   });
 });
 
+describe("the shared menu edit form when the second write fails", () => {
+  it("writes the main change again on a retry when no retry label is given, with the value typed in between", async () => {
+    let attempts = 0;
+    const alsoSave = vi.fn(async () => {
+      attempts += 1;
+      if (attempts === 1) throw new mcp.McpError("accounting_budget_set: the second write was refused");
+    });
+    render(<MenuEditForm item={item} id="b1" idArg="budgetID" tool="accounting_budget_set" permission="accounting.manage" fields={fields} alsoSave={alsoSave} />);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Department"), " East");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(await screen.findByText("the second write was refused")).toBeInTheDocument();
+
+    const department = screen.getByLabelText("Department");
+    await userEvent.clear(department);
+    await userEvent.type(department, "Roads");
+    expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(alsoSave).toHaveBeenCalledTimes(2));
+    expect(saves()).toEqual([
+      ["", "accounting_budget_set", { budgetID: "b1", department: "Public Works East" }],
+      ["", "accounting_budget_set", { budgetID: "b1", department: "Roads" }],
+    ]);
+  });
+
+  it("repeats only the second write and shows the retry label when one is given", async () => {
+    let attempts = 0;
+    const alsoSave = vi.fn(async () => {
+      attempts += 1;
+      if (attempts === 1) throw new mcp.McpError("accounting_budget_set: the second write was refused");
+    });
+    render(<MenuEditForm item={item} id="b1" idArg="budgetID" tool="accounting_budget_set" permission="accounting.manage" fields={fields} alsoSave={alsoSave} retryLabel="Do the second part again" />);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    await userEvent.type(screen.getByLabelText("Department"), " East");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(await screen.findByText("the second write was refused")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Do the second part again" }));
+
+    await waitFor(() => expect(alsoSave).toHaveBeenCalledTimes(2));
+    expect(saves()).toHaveLength(1);
+  });
+});
+
 describe("the shared menu edit form with a list-of-lines field", () => {
   const listItem = { id: "m1", name: "Spring meeting", items: ["Welcome", "Road repairs"] };
   const listFields = [

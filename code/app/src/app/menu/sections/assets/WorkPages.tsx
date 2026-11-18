@@ -65,7 +65,9 @@ const scheduleOf = (task: Item) => {
   return { ...schedule, oftenAndNext: upkeepParts(schedule).filter((part) => part !== "").join(" · ") };
 };
 
-const loadSchedule = async () => ((await callTool("", repeatingList).then(itemsOf)) as Item[]).map(scheduleOf);
+const isRunning = (task: Item) => textOf(task.stopped_at) === "";
+
+const loadSchedule = async () => ((await callTool("", repeatingList).then(itemsOf)) as Item[]).filter(isRunning).map(scheduleOf);
 
 const taskRead = "taskmanager_task_read";
 

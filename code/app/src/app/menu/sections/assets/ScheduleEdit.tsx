@@ -56,12 +56,10 @@ const dayOf = (value: unknown) => textOf(value).slice(0, 10);
 
 const timeOf = (value: unknown) => /T(\d{2}:\d{2}:\d{2}Z)$/.exec(textOf(value))?.[1] ?? "00:00:00Z";
 
-const dayAfter = (day: string) => new Date(Date.parse(`${day}T00:00:00Z`) + 86_400_000).toISOString().slice(0, 10);
-
 const startOf = (task: Item, chosen: unknown) => {
   if (dayOf(chosen) !== dayOf(task.starts)) return `${dayOf(chosen)}T${timeOf(task.starts)}`;
-  const lastJob = textOf(task.last_due_at);
-  return lastJob ? `${dayAfter(dayOf(lastJob))}T${timeOf(task.starts)}` : textOf(task.starts);
+  const next = textOf(task.next_due_at);
+  return next ? `${dayOf(next)}T${timeOf(task.starts)}` : textOf(task.starts);
 };
 
 const newScheduleFrom = (task: Item, sent: Record<string, unknown>) => {

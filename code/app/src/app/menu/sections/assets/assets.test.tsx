@@ -588,6 +588,18 @@ describe("Maintenance Schedule", () => {
       expect(rowOf("Inspect the fire exits").textContent).not.toContain("next");
     });
 
+    it("lists no schedule that was stopped, such as the one a changed schedule replaced", async () => {
+      repeating.push({ id: "p7", title: "Replaced schedule", schedule_rule: "FREQ=WEEKLY", stopped_at: "2026-11-18T19:43:52Z" } as (typeof repeating)[number]);
+      try {
+        showRouted("Maintenance Schedule");
+
+        await screen.findByText("Grease the pumps", { selector: ".ttl" });
+        expect(screen.queryByText("Replaced schedule", { selector: ".ttl" })).toBeNull();
+      } finally {
+        repeating.pop();
+      }
+    });
+
     it("shows a Next upkeep line with the day in the pane of the opened schedule", async () => {
       comesNext("p1", "2026-11-23T08:00:00+01:00");
       showRouted("Maintenance Schedule");

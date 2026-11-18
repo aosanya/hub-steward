@@ -88,7 +88,7 @@ const inputModes = { text: undefined, number: "decimal", date: undefined, lines:
 
 const startValues = (item: Item, fields: EditField[]) => Object.fromEntries(fields.map((field) => [field.key, textOf(item, field.key, field)]));
 
-export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], editLabel = "Edit", readAgain, build, alsoSave, onSaved, bare = false, openCount = 0, onCancel, visible, check, retryLabel = "Save" }: Props) {
+export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep = [], editLabel = "Edit", readAgain, build, alsoSave, onSaved, bare = false, openCount = 0, onCancel, visible, check, retryLabel }: Props) {
   const may = useMay(permission);
   const [editing, setEditing] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
@@ -98,6 +98,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
   const [clashes, setClashes] = useState<Clash[]>([]);
   const [version, setVersion] = useState<string | undefined>(undefined);
   const [written, setWritten] = useState(false);
+  const retrying = written && retryLabel !== undefined;
   const opener = useRef<() => void>(() => undefined);
   useEffect(() => {
     if (openCount > 0) opener.current();
@@ -151,7 +152,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
     return true;
   };
   const save = async () => {
-    const problem = written ? "" : (check?.(values) ?? "");
+    const problem = retrying ? "" : (check?.(values) ?? "");
     if (problem) {
       setRefused(problem);
       return;
@@ -159,7 +160,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
     setSaving(true);
     setRefused("");
     try {
-      if (readAgain && !written) {
+      if (readAgain && !retrying) {
         const reread = await readAgain();
         const found = clashesAgainst(startValues(reread, fields), fields.filter((field) => field.key in changed));
         if (found.length > 0) {
@@ -169,7 +170,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
         }
       }
       const sentChanges = Object.fromEntries(Object.entries(changed).map(([key, text]) => [key, sent(key, text)]));
-      if (!written) {
+      if (!retrying) {
         await callTool("", tool, build ? build(sentChanges) : { [idArg]: id, ...(version ? { version } : {}), ...Object.fromEntries(keep.map((key) => [key, kept(key)])), ...sentChanges });
         setWritten(true);
       }
@@ -217,7 +218,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
           <Button kind="quiet" onClick={() => settle(clash.key, clash.theirs, true)}>Use theirs</Button>
         </div>
       ))}
-      <Button kind="primary" disabled={saving || missing || invalid || clashes.length > 0 || Object.keys(changed).length === 0} onClick={save}>{written ? retryLabel : "Save"}</Button>
+      <Button kind="primary" disabled={saving || missing || invalid || clashes.length > 0 || Object.keys(changed).length === 0} onClick={save}>{retrying ? retryLabel : "Save"}</Button>
       <Button kind="quiet" disabled={saving} onClick={() => { setEditing(false); onCancel?.(); }}>Cancel</Button>
       {refused ? <LoadFailed words={refused} /> : null}
     </>

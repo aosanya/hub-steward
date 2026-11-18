@@ -128,7 +128,7 @@ describe("the edit screen for a schedule", () => {
       description: "Walk the main street at dusk",
       assignee_kind: "role",
       assignee_id: "lighting",
-      schedule: { start: "2026-11-01T00:00:00Z", zone: "Europe/Budapest", rule: "FREQ=WEEKLY;INTERVAL=2;BYDAY=WE" },
+      schedule: { start: "2026-12-01T00:00:00Z", zone: "Europe/Budapest", rule: "FREQ=WEEKLY;INTERVAL=2;BYDAY=WE" },
     });
     expect(callsTo("taskmanager_repeating_task_stop")[0][2]).toEqual({ repeatingTaskID: "s1" });
     const order = called.mock.calls.map(([, tool]) => tool);
@@ -278,8 +278,8 @@ describe("when the new schedule starts", () => {
     expect(sent.schedule.start).toBe("2026-12-07T07:00:00Z");
   });
 
-  it("starts the day after the job the old schedule already made, so that job is not made twice", async () => {
-    schedule = { ...weekly, last_due_at: "2026-11-23T07:00:00Z", last_task_id: "j1" };
+  it("starts on the day the old schedule would make its next job, so that job is not skipped", async () => {
+    schedule = { ...weekly, last_due_at: "2026-11-23T07:00:00Z", last_task_id: "j1", next_due_at: "2026-11-23T08:00:00+01:00" };
     await openEdit();
 
     await userEvent.click(screen.getByLabelText("Tuesday"));
@@ -287,12 +287,13 @@ describe("when the new schedule starts", () => {
 
     await waitFor(() => expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(1));
     const sent = callsTo("taskmanager_repeating_task_create")[0][2] as { schedule: { start: string; rule: string } };
-    expect(sent.schedule.start).toBe("2026-11-24T07:00:00Z");
+    expect(sent.schedule.start).toBe("2026-11-23T07:00:00Z");
     expect(sent.schedule.rule).toBe("FREQ=WEEKLY;BYDAY=TU");
   });
 
   it("keeps the old start when the old schedule has made no job yet", async () => {
-    schedule = weekly;
+    const { next_due_at: _next, ...withoutNext } = weekly;
+    schedule = withoutNext;
     await openEdit();
 
     await userEvent.click(screen.getByLabelText("Tuesday"));
