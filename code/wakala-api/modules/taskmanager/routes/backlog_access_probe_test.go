@@ -85,6 +85,7 @@ func writesOnAnIssue(f *moreWritesFixture, other string) map[string]probeCall {
 	return map[string]probeCall{
 		"edit_task_todo":           {"PATCH", "/todos/" + todo, map[string]any{"title": "edited"}},
 		"update_task_todo_status":  {"PUT", "/todos/" + todo + "/status", map[string]any{"status": "Done"}},
+		"finish_task_todo":         {"POST", "/todos/" + todo + "/finish", map[string]any{"text": "finished"}},
 		"delete_task_todo":         {"DELETE", "/todos/" + todo, nil},
 		"reorder_issue_todos":      {"PUT", issue + "/todos/order", map[string]any{"ids": []string{todo}}},
 		"create_task":              {"POST", "/tasks", map[string]any{"title": "new", "backlog": f.docs, "step": "write"}},

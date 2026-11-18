@@ -299,6 +299,7 @@ type TaskManager interface {
 	ReorderTodosOfIssue(ctx context.Context, requesterID, issueID string, order TodoOrder) (IssueTodoList, error)
 	DeleteTodoFor(ctx context.Context, requesterID, todoID string) error
 	SetTodoStateFor(ctx context.Context, requesterID, todoID, state, blockedReason string) (TodoView, error)
+	FinishTodoFor(ctx context.Context, requesterID, todoID, text string, links []string) (TodoFinished, error)
 	GetWorkerCapsDefault(ctx context.Context) (WorkerCaps, error)
 	SetWorkerCapsDefault(ctx context.Context, requesterID string, change TaskCapsChange) (WorkerCaps, error)
 	GetTaskCaps(ctx context.Context, requesterID, taskID string) (TaskCaps, error)

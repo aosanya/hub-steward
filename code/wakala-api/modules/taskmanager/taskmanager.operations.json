@@ -854,6 +854,16 @@
                {"from": "body", "as": "blocked_reason", "description": "Why it is blocked. Required when status is Blocked, ignored otherwise."}],
       "returns": [{"body": true}]
     },
+    "finish_task_todo": {
+      "method": "POST", "path": "/todos/{todoID}/finish", "call": "FinishTodoFor", "action": "taskmanager.task_todo.finish",
+      "title": "Finish a todo and log it",
+      "description": "Set one todo of an issue to Done and add one Log entry (kind worker, your text and links) to the issue it belongs to, in one call; it replaces taskmanager_task_todo_set_status with Done followed by taskmanager_task_note_add. The status is set exactly as taskmanager_task_todo_set_status sets it, so the last todo set Done moves an issue in progress to Review. The Log entry is written only when the todo was set Done, so a refusal writes nothing: 400 for a blank text, 403 without Can move on the backlog, 404 for a todo that is not found or not seen. Returns only the todo code and its state, such as {\"code\":\"TD-1\",\"state\":\"Done\"}.",
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is writing, from the session; a person needs Can move on the backlog the issue is in."},
+               {"from": "path", "as": "todoID", "refers": "taskmanager.task_todo", "description": "The todo to finish."},
+               {"from": "body", "as": "text", "required": true, "description": "The Log entry: a line or a longer write-up of what was done."},
+               {"from": "body", "as": "links", "description": "Links to the work, as a list of strings."}],
+      "returns": [{"body": true}]
+    },
     "list_issue_todos": {
       "method": "GET", "path": "/tasks/{taskID}/todos", "call": "ListTodosOfIssue", "action": "taskmanager.task_todo.list_for_issue",
       "title": "List the todos of an issue",
