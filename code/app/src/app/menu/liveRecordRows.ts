@@ -25,6 +25,12 @@ export const recordRowsOf = (rows: Raw[], titlePrompt: string, metaPrompts: stri
     meta: metaPrompts.map((prompt) => answerOf(row, prompt)).filter(Boolean).join(" · "),
   }));
 
+export const loadMayAddRows = async (recordCode: string): Promise<boolean> => {
+  const name = registerNames[recordCode];
+  const records = itemsOf(await callTool("", liveRecordsTool)) as Raw[];
+  return records.find((record) => (name ? record.name === name : record.code === recordCode))?.can_add_rows === true;
+};
+
 export const resolveRecordCode = async (recordCode: string): Promise<string> => {
   const name = registerNames[recordCode];
   if (!name) return recordCode;

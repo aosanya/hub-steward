@@ -21,6 +21,7 @@ type Props = {
   recordCode: string;
   fields: RecordFormField[];
   back: { to: string; label: string };
+  edit?: { rowId: string; saved: Record<string, string> };
 };
 
 const optionalWords = (field: RecordFormField) => (field.required ? field.prompt : `${field.prompt} (optional)`);
@@ -35,9 +36,9 @@ const loadPeople = async (): Promise<Choice[]> => {
   return [noOne, ...people.map((person) => ({ value: String(person.id), label: personNameOf(person) }))];
 };
 
-export function RecordRowForm({ title, recordCode, fields, back }: Props) {
+export function RecordRowForm({ title, recordCode, fields, back, edit }: Props) {
   const navigate = useNavigate();
-  const [values, setValues] = useState<Record<string, string>>({});
+  const [values, setValues] = useState<Record<string, string>>(edit?.saved ?? {});
   const [saving, setSaving] = useState(false);
   const [refused, setRefused] = useState("");
   const [people, setPeople] = useState<Choice[]>([noOne]);
@@ -52,7 +53,7 @@ export function RecordRowForm({ title, recordCode, fields, back }: Props) {
     setSaving(true);
     setRefused("");
     try {
-      await callTool("", addLiveRecordRowTool, { record_code: await resolveRecordCode(recordCode), answers });
+      await callTool("", addLiveRecordRowTool, { record_code: await resolveRecordCode(recordCode), answers, ...(edit ? { replaces: edit.rowId } : {}) });
       navigate(back.to);
     } catch (error) {
       setRefused(refusalWords(error));

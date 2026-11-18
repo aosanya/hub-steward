@@ -12,5 +12,7 @@ export const residentPaths = {
   groupEdit: screen("/menu/residents/groups/:id/edit"),
   communications: screen("/menu/residents/communications"),
   businesses: screen("/menu/residents/businesses"),
+  businessEdit: screen("/menu/residents/businesses/:id/edit"),
   informalTraders: screen("/menu/residents/informal-traders"),
+  informalTraderEdit: screen("/menu/residents/informal-traders/:id/edit"),
 };

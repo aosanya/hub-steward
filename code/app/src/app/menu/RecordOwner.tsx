@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { useLoad } from "../../features/forms/useLoad";
 import { ListRow } from "../../shared/ui/ListRow";
 import { Section } from "../../shared/ui/Section";
 import { callTool } from "../../shared/wakala/mcp";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { personNameOf } from "./sections/residents/personName";
+import { residentPaths } from "./sections/residents/paths";
 
 type Item = Record<string, unknown>;
 
@@ -14,9 +16,10 @@ const loadOwnerName = (ownerId: string) => async () => {
 };
 
 function OwnerName({ heading, ownerId }: { heading: string; ownerId: string }) {
+  const navigate = useNavigate();
   const view = useLoad(loadOwnerName(ownerId), `record-owner:${openAgencyId()}:${ownerId}`);
   if (view.state !== "ready" || view.data === "") return null;
-  return <Section icon="users" word={heading} rows={[<ListRow key={ownerId} title={view.data} meta="Resident" />]} />;
+  return <Section icon="users" word={heading} rows={[<ListRow key={ownerId} title={view.data} meta="Resident" end="›" onClick={() => navigate(residentPaths.people.path({ person: ownerId }))} />]} />;
 }
 
 export function RecordOwner({ heading, ownerId }: { heading: string; ownerId: string }) {

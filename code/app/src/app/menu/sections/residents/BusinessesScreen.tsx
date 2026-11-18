@@ -2,6 +2,8 @@ import { routes } from "../../../routes";
 import type { RecordFormField } from "../../RecordRowForm";
 import { RecordRowsScreen } from "../../RecordRowsScreen";
 import { useRegisterFields } from "../../registerDetails";
+import { RecordEditScreen } from "../../RecordEditScreen";
+import { residentPaths } from "./paths";
 
 export const businessesRecordCode = "RC-1";
 export const businessesTitlePrompt = "Trading name";
@@ -32,7 +34,12 @@ export function BusinessesScreen() {
       metaPrompts={businessesMetaPrompts}
       owner={{ prompt: "Owner", heading: "Owner" }}
       licence
+      editPath={(id) => residentPaths.businessEdit.path({ id })}
       empty={{ words: "No businesses yet.", act: "Add business", to: routes.businessNew.path() }}
     />
   );
+}
+
+export function BusinessEditScreen() {
+  return <RecordEditScreen title="Edit business" recordCode={businessesRecordCode} fields={useBusinessFields()} back={{ to: (id) => residentPaths.businesses.path({ row: id }), label: "Businesses" }} />;
 }
