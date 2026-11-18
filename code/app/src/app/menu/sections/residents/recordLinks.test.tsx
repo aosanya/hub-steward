@@ -54,7 +54,6 @@ const widths = [
 const unlinkedTools = [
   "forms_submission_list",
   "forms_submission_list_of_person",
-  "audit_list_entries",
   "forms_catalog_booking_list_of_person",
 ];
 
