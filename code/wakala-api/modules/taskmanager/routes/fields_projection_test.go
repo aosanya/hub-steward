@@ -67,7 +67,7 @@ func fieldsHub(t *testing.T) *accessHub {
 func TestFieldsKeepsOnlyTheNamedKeysOnEachOfTheThreeTools(t *testing.T) {
 	h := fieldsHub(t)
 	for _, c := range []struct{ path, envelope string }{
-		{"/tasks?fields=id,code,title", ""},
+		{"/tasks?fields=id,code,title", "items"},
 		{"/pending-tasks?fields=id,code,title", "items"},
 		{"/next-ready?limit=5&fields=id,code,title", "items"},
 	} {
@@ -120,7 +120,7 @@ func TestWithoutFieldsEachToolAnswersAsBefore(t *testing.T) {
 			t.Errorf("pending without fields lacks %s: %v", key, withAll[0])
 		}
 	}
-	listed := h.rawItems("owner", "/tasks", "")
+	listed := h.rawItems("owner", "/tasks", "items")
 	for _, key := range []string{"id", "title", "status", "priority", "effort", "tags", "files"} {
 		if _, ok := listed[0][key]; !ok {
 			t.Errorf("list without fields lacks %s: %v", key, listed[0])

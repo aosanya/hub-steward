@@ -151,15 +151,19 @@ func TestListTasksRoute_OffsetPagesAndANegativeOffsetIs400(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		b.create(map[string]any{"title": fmt.Sprintf("issue %d", i)})
 	}
-	var all, page []map[string]any
+	type tasksReply struct {
+		Items []map[string]any `json:"items"`
+	}
+	var whole, window tasksReply
 	code, raw := b.call(http.MethodGet, "/tasks", nil)
-	if code != http.StatusOK || json.Unmarshal(raw, &all) != nil || len(all) != 5 {
+	if code != http.StatusOK || json.Unmarshal(raw, &whole) != nil || len(whole.Items) != 5 {
 		t.Fatalf("GET /tasks = %d %s", code, raw)
 	}
 	code, raw = b.call(http.MethodGet, "/tasks?offset=3&limit=10", nil)
-	if code != http.StatusOK || json.Unmarshal(raw, &page) != nil || len(page) != 2 {
+	if code != http.StatusOK || json.Unmarshal(raw, &window) != nil || len(window.Items) != 2 {
 		t.Fatalf("GET /tasks?offset=3 = %d %s", code, raw)
 	}
+	all, page := whole.Items, window.Items
 	if page[0]["id"] != all[3]["id"] || page[1]["id"] != all[4]["id"] {
 		t.Fatalf("offset page is not the tail of the whole list")
 	}

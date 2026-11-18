@@ -76,12 +76,14 @@ func (b *board) titles(query string) []string {
 	if code != http.StatusOK {
 		b.t.Fatalf("GET /tasks%s = %d %s", query, code, raw)
 	}
-	var tasks []map[string]any
-	if err := json.Unmarshal(raw, &tasks); err != nil {
-		b.t.Fatalf("GET /tasks%s: body is not a list: %s", query, raw)
+	var page struct {
+		Items []map[string]any `json:"items"`
 	}
-	out := make([]string, 0, len(tasks))
-	for _, task := range tasks {
+	if err := json.Unmarshal(raw, &page); err != nil {
+		b.t.Fatalf("GET /tasks%s: body is not an items object: %s", query, raw)
+	}
+	out := make([]string, 0, len(page.Items))
+	for _, task := range page.Items {
 		out = append(out, task["title"].(string))
 	}
 	return out

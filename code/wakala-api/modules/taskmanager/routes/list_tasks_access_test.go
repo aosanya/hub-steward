@@ -17,12 +17,14 @@ func (h *accessHub) titlesAs(caller string) []string {
 	if rec.Code != http.StatusOK {
 		h.t.Fatalf("GET /tasks as %q = %d %s", caller, rec.Code, rec.Body.String())
 	}
-	var tasks []map[string]any
-	if err := json.Unmarshal(rec.Body.Bytes(), &tasks); err != nil {
+	var page struct {
+		Items []map[string]any `json:"items"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &page); err != nil {
 		h.t.Fatalf("GET /tasks body %s: %v", rec.Body.String(), err)
 	}
 	titles := []string{}
-	for _, task := range tasks {
+	for _, task := range page.Items {
 		titles = append(titles, task["title"].(string))
 	}
 	return titles

@@ -206,12 +206,14 @@ func (h *accessHub) listedIDs(caller, path string) []string {
 	if rec.Code != http.StatusOK {
 		h.t.Fatalf("GET %s = %d %s", path, rec.Code, rec.Body.String())
 	}
-	var tasks []map[string]any
-	if err := json.Unmarshal(rec.Body.Bytes(), &tasks); err != nil {
+	var page struct {
+		Items []map[string]any `json:"items"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &page); err != nil {
 		h.t.Fatalf("GET %s body %s: %v", path, rec.Body.String(), err)
 	}
 	var ids []string
-	for _, task := range tasks {
+	for _, task := range page.Items {
 		ids = append(ids, task["id"].(string))
 	}
 	return ids

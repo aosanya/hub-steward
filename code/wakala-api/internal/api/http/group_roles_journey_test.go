@@ -66,11 +66,13 @@ func (w groupRoleWalk) visibleIssues(t *testing.T, as *http.Cookie) int {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("list issues: %d %s", rec.Code, rec.Body.String())
 	}
-	var items []map[string]any
-	if err := json.Unmarshal(rec.Body.Bytes(), &items); err != nil {
+	var page struct {
+		Items []map[string]any `json:"items"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &page); err != nil {
 		t.Fatalf("decode issues %q: %v", rec.Body.String(), err)
 	}
-	return len(items)
+	return len(page.Items)
 }
 
 func (w groupRoleWalk) heldRoles(t *testing.T, group string) []string {

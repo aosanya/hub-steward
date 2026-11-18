@@ -575,7 +575,7 @@ func TestCreateWithTodosStillAcceptsTheIssueFieldsNestedUnderTask(t *testing.T) 
 
 func TestCreateWithTodosRefusesAnIssueWithoutATitleAndCreatesNothing(t *testing.T) {
 	h := newBatchHub(t)
-	before := h.expect(http.StatusOK, "owner", "GET", "/tasks?limit=100", nil)["total"]
+	before := len(h.expect(http.StatusOK, "owner", "GET", "/tasks?limit=100", nil)["items"].([]any))
 	code, _ := h.call("owner", "POST", "/create-with-todos", map[string]any{
 		"backlog": "software", "step": "to-do",
 		"todos": []map[string]any{{"title": "one", "description": "d", "instructions": "i"}},
@@ -583,8 +583,8 @@ func TestCreateWithTodosRefusesAnIssueWithoutATitleAndCreatesNothing(t *testing.
 	if code != http.StatusBadRequest {
 		t.Errorf("an issue without a title answered %d, want 400", code)
 	}
-	if after := h.expect(http.StatusOK, "owner", "GET", "/tasks?limit=100", nil)["total"]; after != before {
-		t.Errorf("%v issues after, %v before: a titleless issue was created", after, before)
+	if after := len(h.expect(http.StatusOK, "owner", "GET", "/tasks?limit=100", nil)["items"].([]any)); after != before {
+		t.Errorf("%d issues after, %d before: a titleless issue was created", after, before)
 	}
 }
 

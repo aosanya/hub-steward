@@ -14,14 +14,23 @@ type TaskPage struct {
 }
 
 func (p TaskPage) MarshalJSON() ([]byte, error) {
-	if len(p.Fields) == 0 {
-		return json.Marshal(p.Tasks)
+	tasks := p.Tasks
+	if tasks == nil {
+		tasks = []Task{}
 	}
-	kept, err := models.KeepFieldsOfEach(p.Tasks, p.Fields)
+	var items json.RawMessage
+	var err error
+	if len(p.Fields) == 0 {
+		items, err = json.Marshal(tasks)
+	} else {
+		items, err = models.KeepFieldsOfEach(tasks, p.Fields)
+	}
 	if err != nil {
 		return nil, err
 	}
-	return kept, nil
+	return json.Marshal(struct {
+		Items json.RawMessage `json:"items"`
+	}{Items: items})
 }
 
 func chooseFields(asked []string, item any) ([]string, error) {
