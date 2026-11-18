@@ -108,7 +108,7 @@ describe("PaymentListScreen", () => {
     const anna = await rowOf("Anna Sample");
     expect(within(anna).getByText("1,200 · due 2026-12-01")).toBeInTheDocument();
     expect(within(anna).getByText("Unpaid")).toBeInTheDocument();
-    expect(within(await rowOf("Csilla Sample")).getByText("Overdue")).toBeInTheDocument();
+    expect(within(await rowOf("Csilla Sample")).getByText("Late")).toBeInTheDocument();
   });
 
   it("asks for open and overdue bills separately and merges them", async () => {

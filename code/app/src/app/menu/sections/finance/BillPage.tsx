@@ -26,6 +26,7 @@ const facts: [string, string][] = [
   ["Outstanding", "outstanding"],
   ["Due", "due"],
   ["Late", "late"],
+  ["Reminds", "reminds"],
   ["Narration", "narration"],
 ];
 
@@ -38,7 +39,7 @@ export function BillPage({ bill, back, reload, onSaved }: Props) {
   const [refused, setRefused] = useState(false);
   const id = text(bill, "id");
   const status = text(bill, "status");
-  const open = ["Open", "Overdue"].includes(status);
+  const open = ["Open", "Overdue", "Late"].includes(status);
   const markPaid = async () => {
     setRefused(false);
     try {

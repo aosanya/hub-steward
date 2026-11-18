@@ -9,6 +9,7 @@ const owedFacts: [string, string][] = [
   ["Outstanding", "outstanding"],
   ["Due", "due"],
   ["Late", "late"],
+  ["Reminds", "reminds"],
 ];
 
 const paidFacts: [string, string][] = [

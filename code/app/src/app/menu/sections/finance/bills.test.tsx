@@ -106,12 +106,12 @@ describe("the bills list", () => {
     expect(callsTo("accounting_bill_list")).toHaveLength(1);
   });
 
-  it("reads Settled on a settled bill and Overdue on an overdue one", async () => {
+  it("reads Settled on a settled bill and Late on an overdue one with no rule", async () => {
     screens();
     await screen.findByText("Sample Bakery");
 
     expect(within(rowOf(/Sample Bakery/)).getByText("Settled")).toBeInTheDocument();
-    expect(within(rowOf(/Sample Garage/)).getByText("Overdue")).toBeInTheDocument();
+    expect(within(rowOf(/Sample Garage/)).getByText("Late")).toBeInTheDocument();
   });
 
   it("reads Open on an open bill and Reversed on a reversed one", async () => {
@@ -195,7 +195,7 @@ describe("a bill", () => {
     expect(detail.getByText("500")).toBeInTheDocument();
     expect(detail.getByText("1,000")).toBeInTheDocument();
     expect(detail.getByText("2026-01-15")).toBeInTheDocument();
-    expect(detail.getByText("Overdue · 40 days late")).toBeInTheDocument();
+    expect(detail.getByText("Late · 40 days late")).toBeInTheDocument();
   });
 
   it("reads Settled as the status of a settled bill in its detail, beside the Settled label", async () => {

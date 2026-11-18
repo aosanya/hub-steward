@@ -12,7 +12,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
 import { PaymentPage } from "./PaymentPage";
-import { chargeNames, chargeWords, dayStart, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, owedTotal, owedWords, text, tools, unitOf, type Charges, type Item } from "./financeData";
+import { billStatusWords, chargeNames, chargeWords, dayStart, dayWords, daysLateWords, homeEmpty, lateRulesFor, listOf, moneyWords, owedTotal, owedWords, remindsWords, text, tools, unitOf, type Charges, type Item, type LateRules } from "./financeData";
 
 const owedHeading = "To pay";
 
@@ -26,7 +26,7 @@ const isDay = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.is
 
 const refusalWords = (error: unknown) => (error instanceof Error ? refusalText(error) || error.message : "") || actionFailedWords;
 
-const owedRow = (bill: Item, unit: string, charges: Charges) => ({
+const owedRow = (bill: Item, unit: string, charges: Charges, rules: LateRules) => ({
   id: `bill:${text(bill, "id")}`,
   billID: text(bill, "id"),
   group: owedHeading,
@@ -37,7 +37,8 @@ const owedRow = (bill: Item, unit: string, charges: Charges) => ({
   outstandingAmount: String(Number(text(bill, "outstanding")) || 0),
   due: dayWords(text(bill, "due_at")),
   late: daysLateWords(bill),
-  status: text(bill, "status") === "overdue" ? "Overdue" : "Unpaid",
+  reminds: remindsWords(bill, rules),
+  status: text(bill, "status") === "overdue" ? billStatusWords(bill, rules) : "Unpaid",
 });
 
 const paidRow = (payment: Item, unit: string) => ({
@@ -71,7 +72,8 @@ const loadRows = async (unit: string): Promise<Item[]> => {
     listOf(tools.paymentList),
     chargeNames(),
   ]);
-  return [...open.map((bill) => owedRow(bill, unit, charges)), ...overdue.map((bill) => owedRow(bill, unit, charges)), ...payments.map((payment) => paidRow(payment, unit))];
+  const rules = await lateRulesFor(overdue);
+  return [...open.map((bill) => owedRow(bill, unit, charges, rules)), ...overdue.map((bill) => owedRow(bill, unit, charges, rules)), ...payments.map((payment) => paidRow(payment, unit))];
 };
 
 const cashAccountId = async () => {

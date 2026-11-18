@@ -9,7 +9,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
 import { BillPage, manageRole } from "./BillPage";
 import { RaiseBillSheet } from "./RaiseBillSheet";
-import { billRow, chargeNames, chargeWords, dayWords, daysLateWords, homeEmpty, listOf, moneyWords, text, tools, unitOf, type Item } from "./financeData";
+import { billRow, billStatusWords, chargeNames, chargeWords, dayWords, daysLateWords, homeEmpty, lateRulesFor, listOf, moneyWords, remindsWords, text, tools, unitOf, type Item } from "./financeData";
 import { financePaths } from "./paths";
 
 const rolesTool = "agency_get_my_roles";
@@ -30,6 +30,7 @@ const newestFirst = (payments: Item[]) => [...payments].sort((a, b) => text(b, "
 
 const loadBill = async (id: string, unit: string) => {
   const [bill, payments, charges] = await Promise.all([callTool("", tools.billRead, { billID: id }) as Promise<Item | null>, listOf(tools.paymentList, { bill_id: id }), chargeNames()]);
+  const rules = await lateRulesFor(bill ? [bill] : []);
   return {
     id,
     billID: id,
@@ -43,7 +44,8 @@ const loadBill = async (id: string, unit: string) => {
     due_at: text(bill, "due_at"),
     narration: text(bill, "narration"),
     late: daysLateWords(bill ?? {}),
-    status: billRow(bill ?? {}).status,
+    status: billStatusWords(bill ?? {}, rules),
+    reminds: remindsWords(bill ?? {}, rules),
     ...Object.fromEntries(newestFirst(payments).slice(0, paymentLines).map((payment, at) => [`payment${at + 1}`, paymentLine(payment, unit)])),
   };
 };
@@ -61,7 +63,8 @@ export function BillsScreen() {
   const manage = roles.state === "ready" && ((roles.data as { permissions?: string[] } | null)?.permissions ?? []).includes(manageRole);
   const loadBills = async () => {
     const [listedBills, charges] = await Promise.all([listOf(tools.billList, status ? { status } : undefined), chargeNames()]);
-    const bills = listedBills.map((bill) => billRow(bill, unit, charges));
+    const rules = await lateRulesFor(listedBills);
+    const bills = listedBills.map((bill) => billRow(bill, unit, charges, rules));
     setListed(bills.length);
     return bills;
   };

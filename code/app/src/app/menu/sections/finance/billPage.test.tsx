@@ -60,7 +60,7 @@ describe("the bill page is built like a resident", () => {
   it("titles the page with the payer, puts the status on one quiet line and draws no band", async () => {
     const pane = await open();
     expect(await pane.findByRole("heading", { level: 1, name: "Sample Garage" })).toBeInTheDocument();
-    expect(document.querySelector(".quiet-line")?.textContent).toContain("Overdue");
+    expect(document.querySelector(".quiet-line")?.textContent).toContain("Late");
     expect(document.querySelector(".wf-head")).toBeNull();
   });
 

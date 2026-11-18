@@ -1,4 +1,5 @@
 import type { Wording } from "../../../../features/agency/useWord";
+import { callTool } from "../../../../shared/wakala/mcp";
 import { listOf, text, type Item } from "../staff/staffData";
 
 export { homeEmpty, listOf, text } from "../staff/staffData";
@@ -28,6 +29,8 @@ export const tools = {
   certificateList: "accounting_certificate_list",
   dimensionTotals: "accounting_dimension_totals",
 };
+
+const settingReadTool = "forms_catalog_setting_read";
 
 const numberOf = (value: unknown) => {
   const parsed = Number(value);
@@ -80,6 +83,45 @@ export const daysLateWords = (bill: Item) => {
   return `${days} ${days === 1 ? "day" : "days"} late`;
 };
 
+export type LateRule = { days: number; role: string };
+
+export type LateRules = Map<string, LateRule | null>;
+
+export const lateRuleKey = (accountId: string) => `late_rule.${accountId}`;
+
+export const lateRuleOf = (value: unknown): LateRule | null => {
+  if (typeof value !== "string") return null;
+  try {
+    const parsed = JSON.parse(value) as { days?: unknown; role?: unknown };
+    const days = Number(parsed.days);
+    if (!Number.isFinite(days) || days < 0 || typeof parsed.role !== "string") return null;
+    return { days, role: parsed.role };
+  } catch {
+    return null;
+  }
+};
+
+export const readLateRule = async (accountId: string): Promise<LateRule | null> => {
+  try {
+    const reply = (await callTool("", settingReadTool, { key: lateRuleKey(accountId) })) as { value?: unknown } | null;
+    return lateRuleOf(reply?.value);
+  } catch {
+    return null;
+  }
+};
+
+export const lateRulesFor = async (bills: Item[]): Promise<LateRules> => {
+  const accounts = [...new Set(bills.filter((bill) => text(bill, "status") === "overdue").map((bill) => text(bill, "income_account_id")).filter(Boolean))];
+  const rules = await Promise.all(accounts.map(readLateRule));
+  return new Map(accounts.map((account, at) => [account, rules[at]]));
+};
+
+export const ruleOfBill = (bill: Item, rules: LateRules) => rules.get(text(bill, "income_account_id")) ?? null;
+
+export const isLate = (bill: Item, rules: LateRules) => text(bill, "status") === "overdue" && numberOf(bill.days_overdue) > (ruleOfBill(bill, rules)?.days ?? 0);
+
+export const remindsWords = (bill: Item, rules: LateRules) => (isLate(bill, rules) ? (ruleOfBill(bill, rules)?.role ?? "") : "");
+
 export type Charges = Map<string, string>;
 
 export const chargeNames = async (): Promise<Charges> => {
@@ -93,11 +135,13 @@ export const chargeNames = async (): Promise<Charges> => {
 
 export const chargeWords = (bill: Item | null, charges: Charges) => charges.get(text(bill, "income_account_id")) ?? "";
 
-export const billRow = (bill: Item, unit = "", charges: Charges = new Map()) => ({
+export const billStatusWords = (bill: Item, rules: LateRules = new Map()) => (isLate(bill, rules) ? "Late" : capitalised(text(bill, "status")));
+
+export const billRow = (bill: Item, unit = "", charges: Charges = new Map(), rules: LateRules = new Map()) => ({
   id: text(bill, "id"),
   payer: text(bill, "payer"),
   meta: [chargeWords(bill, charges), `${moneyWords(numberOf(bill.amount), unit)} · due ${dayWords(text(bill, "due_at"))}`, daysLateWords(bill)].filter(Boolean).join(" · "),
-  status: capitalised(text(bill, "status")),
+  status: billStatusWords(bill, rules),
 });
 
 export const paymentLine = (payment: Item, unit = "") => `${moneyWords(numberOf(payment.amount), unit)} · paid ${dayWords(text(payment, "paid_at"))}`;

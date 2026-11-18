@@ -76,7 +76,7 @@ describe("the payments page is built like a resident", () => {
   it("titles an owed bill with the payer and puts the status and lateness on one quiet line", async () => {
     const pane = await open("Csilla Sample");
     expect(await pane.findByRole("heading", { level: 1, name: "Csilla Sample" })).toBeInTheDocument();
-    expect(document.querySelector(".quiet-line")?.textContent).toContain("Overdue");
+    expect(document.querySelector(".quiet-line")?.textContent).toContain("Late");
     expect(document.querySelector(".quiet-line")?.textContent).toContain("40 days late");
   });
 
