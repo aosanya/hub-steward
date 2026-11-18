@@ -7,6 +7,7 @@ import { SectionGo } from "../residents/SectionAct";
 import { settingsPaths } from "./paths";
 import { ChatAboutItem, text, useChosenItem } from "./RecordPage";
 import { FactsCard } from "../../FactsCard";
+import { HouseholdsCard } from "./HouseholdsCard";
 import { PageFrame } from "../../PageFrame";
 import { outerRingOf, textFromCorners } from "./boundary";
 
@@ -61,6 +62,7 @@ export function BoundariesAndAreas() {
                 facts={[["Residents", text(area, "residents")], ["Area node", text(area, "area_node_id")], ["Boundary", text(area, "boundary")]]}
                 foot={<SectionGo permission="group.manage" act="Edit" to={settingsPaths.boundaryEdit.path({ id: text(area, "id") })} />}
               />
+              <HouseholdsCard areaId={text(area, "id")} />
             </PageFrame>
           </>
         ),

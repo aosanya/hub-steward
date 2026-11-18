@@ -15,6 +15,8 @@ vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({
 
 let permissions: string[] = [];
 
+let children: Record<string, unknown>[] = [];
+
 const answer = async (name: string, args: unknown) => {
   const given = (args ?? {}) as Record<string, unknown>;
   switch (name) {
@@ -31,7 +33,11 @@ const answer = async (name: string, args: unknown) => {
     case "actor_list_groups":
       return { items: [{ id: "g1", name: "North Ward" }] };
     case "actor_get_group":
-      return { id: given.group_id, name: "North Ward", area_node_id: "n1" };
+      return { id: given.group_id, name: "North Ward", area_node_id: "n1", node_type: "Ward", anchor_level_override: "lvl1" };
+    case "actor_list_group_children":
+      return { items: given.parent_id === "g1" ? children : [] };
+    case "actor_edit_group":
+      return { id: given.group_id };
     case "actor_get_group_population":
       return { group_id: "g1", population: 1200 };
     case "ai_list_roles":
@@ -56,6 +62,11 @@ beforeEach(() => {
   openAgency("town");
   forgetChatAbout();
   permissions = [];
+  children = [
+    { id: "h1", name: "Otieno household, North Ward", node_type: "Household" },
+    { id: "h2", name: "Wanjiru household, North Ward", node_type: "háztartás" },
+    { id: "d1", name: "Works Department", node_type: "Department" },
+  ];
   vi.spyOn(mcp, "listTools").mockResolvedValue([]);
   vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
@@ -171,5 +182,71 @@ describe("AI Agents & Limits", () => {
     const use = await screen.findByRole("region", { name: "Use" });
     expect(within(use).getByText(/Asha Otieno/)).toBeInTheDocument();
     expect(within(use).queryByText(/\bp1\b/)).not.toBeInTheDocument();
+  });
+});
+
+describe("Boundary page lists the households in the area", () => {
+  it("shows a Households card of the household groups only, read once from the area's children", async () => {
+    await openScreen("Boundaries & Areas", "item=g1", "North Ward");
+    const card = await screen.findByRole("region", { name: "Households" });
+    expect(within(card).getByText("Otieno household, North Ward")).toBeInTheDocument();
+    expect(within(card).getByText("Wanjiru household, North Ward")).toBeInTheDocument();
+    expect(within(card).queryByText("Works Department")).not.toBeInTheDocument();
+    expect(within(card).getByText("2")).toBeInTheDocument();
+    expect(mcp.callTool).toHaveBeenCalledWith("", "actor_list_group_children", { parent_id: "g1" });
+  });
+
+  it("opens the household page from a row", async () => {
+    await openScreen("Boundaries & Areas", "item=g1", "North Ward");
+    const card = await screen.findByRole("region", { name: "Households" });
+    await userEvent.click(within(card).getByText("Otieno household, North Ward"));
+    expect(screen.getByTestId("where")).toHaveTextContent("/menu/residents/households?group=h1");
+  });
+
+  it("names See all with the count past three rows and opens the Households list", async () => {
+    children = ["a", "b", "c", "d", "e"].map((letter) => ({ id: `h-${letter}`, name: `Household ${letter}`, node_type: "Household" }));
+    await openScreen("Boundaries & Areas", "item=g1", "North Ward");
+    const card = await screen.findByRole("region", { name: "Households" });
+    expect(within(card).queryByText("Household d")).not.toBeInTheDocument();
+    await userEvent.click(within(card).getByRole("button", { name: "See all 5" }));
+    expect(screen.getByTestId("where")).toHaveTextContent("/menu/residents/households");
+  });
+
+  it("says there are no households when the area has none", async () => {
+    children = [{ id: "d1", name: "Works Department", node_type: "Department" }];
+    await openScreen("Boundaries & Areas", "item=g1", "North Ward");
+    const card = await screen.findByRole("region", { name: "Households" });
+    expect(within(card).getByText("No households yet.")).toBeInTheDocument();
+  });
+});
+
+describe("Boundary Edit screen also changes the name", () => {
+  it("shows the name, and Save writes it with actor_edit_group keeping the type, then goes back", async () => {
+    permissions = ["group.manage"];
+    await openScreen("Boundaries & Areas", "item=g1", "North Ward");
+    const card = await screen.findByRole("region", { name: "Boundary" });
+    await userEvent.click(within(card).getByRole("button", { name: "Edit" }));
+    const name = await screen.findByLabelText("Name");
+    expect(name).toHaveValue("North Ward");
+    await userEvent.clear(name);
+    await userEvent.type(name, "Northern Ward");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() =>
+      expect(mcp.callTool).toHaveBeenCalledWith("", "actor_edit_group", { group_id: "g1", name: "Northern Ward", NodeType: "Ward", AnchorLevelOverrideID: "lvl1" }),
+    );
+    await waitFor(() => expect(screen.getByTestId("where")).toHaveTextContent("/menu/settings/boundaries-and-areas"));
+  });
+
+  it("does not write the name when only the area node changed", async () => {
+    permissions = ["group.manage"];
+    await openScreen("Boundaries & Areas", "item=g1", "North Ward");
+    const card = await screen.findByRole("region", { name: "Boundary" });
+    await userEvent.click(within(card).getByRole("button", { name: "Edit" }));
+    const node = await screen.findByLabelText("Area node");
+    await userEvent.clear(node);
+    await userEvent.type(node, "n9");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(mcp.callTool).toHaveBeenCalledWith("", "actor_set_group_area_node", { group_id: "g1", area_node_id: "n9" }));
+    expect(mcp.callTool).not.toHaveBeenCalledWith("", "actor_edit_group", expect.anything());
   });
 });

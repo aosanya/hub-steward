@@ -10,6 +10,7 @@ import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { routes } from "../../../routes";
+import { householdTypes } from "./householdTypes";
 import { residentPaths } from "./paths";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
@@ -25,7 +26,6 @@ import { loadPerson, PersonPanel } from "./PersonScreen";
 
 type Item = Record<string, unknown>;
 
-const householdTypes = new Set(["household", "háztartás"]);
 
 export const text = (item: Item, key: string) => {
   const value = item[key];

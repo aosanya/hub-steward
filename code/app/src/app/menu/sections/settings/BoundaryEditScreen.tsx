@@ -22,19 +22,22 @@ const loadGroup = async (id: string) => (await callTool("", "actor_get_group", {
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
 function BoundaryEditForm({ id, group, done }: { id: string; group: Group | null; done: () => void }) {
+  const shownName = textOf(group?.name);
   const shownNode = textOf(group?.area_node_id);
   const shownCorners = textFromCorners(outerRingOf(group));
+  const [name, setName] = useState(shownName);
   const [node, setNode] = useState(shownNode);
   const [corners, setCorners] = useState(shownCorners);
   const [saving, setSaving] = useState(false);
   const [refused, setRefused] = useState("");
   const parsed = cornersFromText(corners);
   const readable = corners.trim() === "" || parsed !== null;
-  const changed = node !== shownNode || corners !== shownCorners;
+  const changed = name !== shownName || node !== shownNode || corners !== shownCorners;
   const save = async () => {
     setSaving(true);
     setRefused("");
     try {
+      if (name !== shownName) await callTool("", "actor_edit_group", { group_id: id, name, NodeType: textOf(group?.node_type), AnchorLevelOverrideID: textOf(group?.anchor_level_override) });
       if (node !== shownNode) await callTool("", "actor_set_group_area_node", { group_id: id, area_node_id: node });
       if (corners !== shownCorners) await callTool("", "actor_set_group_boundary", boundaryArgs(id, parsed));
       done();
@@ -46,10 +49,11 @@ function BoundaryEditForm({ id, group, done }: { id: string; group: Group | null
   };
   return (
     <>
+      <Field label="Name" value={name} onChange={(event) => setName(event.target.value)} />
       <Field label="Area node" value={node} onChange={(event) => setNode(event.target.value)} />
       <TextArea label="Boundary corners" rows={6} value={corners} onChange={(event) => setCorners(event.target.value)} />
       {readable ? null : <LoadFailed words={unreadableWords} />}
-      <Button kind="primary" disabled={saving || !readable || !changed} onClick={save}>Save</Button>
+      <Button kind="primary" disabled={saving || !readable || !changed || name.trim() === ""} onClick={save}>Save</Button>
       <Button kind="quiet" disabled={saving} onClick={done}>Cancel</Button>
       {refused ? <LoadFailed words={refused} /> : null}
     </>
