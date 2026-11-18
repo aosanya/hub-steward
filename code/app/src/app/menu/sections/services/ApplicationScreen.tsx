@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { useLoad } from "../../../../features/forms/useLoad";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
+import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
@@ -15,6 +15,8 @@ import { dayWords } from "../../../../shared/ui/days";
 import { valueKeyOf } from "./answers";
 import { certificateFields, certificateOf, decidedWords, decisionStatus, reasonWords, sentWords } from "./decision";
 import { inspectionLineOf, inspectionWords } from "./inspection";
+import { ServiceAct, ServiceDetails, ServiceHead } from "./ServicePage";
+import { Section } from "../../../../shared/ui/Section";
 
 export const withdrawLabel = "Withdraw";
 
@@ -61,17 +63,13 @@ function ApplicationCorrection({ formId, memberId, answers, onSaved }: { formId:
   );
 }
 
-function ApplicationAnswers({ formId, version, onCorrected }: { formId: string; version: number; onCorrected: () => void }) {
+function ApplicationAnswers({ formId, version, onCorrected, foot }: { formId: string; version: number; onCorrected: () => void; foot?: ReactNode }) {
   const view = useLoad(() => loadAnswers(formId), `application-answers:${openAgencyId()}:${formId}:${version}`);
   if (view.state === "loading") return <LoadingLine />;
   if (view.state === "error") return <LoadFailed words={loadFailedWords} />;
   return (
     <>
-      <Rows>
-        {view.data.sent.map((answer) => (
-          <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />
-        ))}
-      </Rows>
+      <Section word="Application" plain foot={foot} empty={{ words: "No answers were sent." }} rows={view.data.sent.map((answer) => <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />)} />
       <ApplicationCorrection formId={formId} memberId={view.data.memberId} answers={view.data.sent} onSaved={onCorrected} />
     </>
   );
@@ -85,9 +83,11 @@ const decidedLine = (sent: Item) => {
   return [day, by].filter((part) => part !== "").join(" by ");
 };
 
+const titleOf = async (formId: string) => text((await listOf("forms_form_list_answered").catch(() => [])).find((form) => text(form, "form_id") === formId) ?? {}, "title");
+
 const loadApplication = async (id: string) => {
-  const sent = unwrapped(await callTool("", "forms_submission_read_mine", { form_id: id }));
-  return { ...sent, form_id: id, status: statusOf(sent), decided_line: decisionStatus(text(sent, "decision")) === "" ? "" : decidedLine(sent), inspection_line: inspectionLineOf(sent), ...certificateOf(sent) };
+  const [sent, title] = await Promise.all([callTool("", "forms_submission_read_mine", { form_id: id }).then(unwrapped), titleOf(id)]);
+  return { ...sent, form_id: id, name: title, status: statusOf(sent), decided_line: decisionStatus(text(sent, "decision")) === "" ? "" : decidedLine(sent), inspection_line: inspectionLineOf(sent), ...certificateOf(sent) };
 };
 
 const decisionFields = { [decidedWords]: "decided_line", [reasonWords]: "decision_note", [inspectionWords]: "inspection_line", ...certificateFields };
@@ -102,14 +102,20 @@ export function useApplicationDetail() {
   };
   const detail = {
     tool: "forms_submission_read_mine",
-    fields: decisionFields,
-    status: "status",
+    fields: {},
+    status: "",
     load: loadApplication,
-    action: { label: withdrawLabel, tool: "forms_form_withdraw", run: withdraw, when: (item: Item) => text(item, "status") !== withdrawnWords },
     extra: (item: Item) => (
       <>
+        <ServiceHead title={text(item, "name") || "Application"} status={text(item, "status")} line={dayWords(text(item, "answered_at") || text(item, "sent_at"))} />
+        <ServiceDetails word="Decision" item={item} fields={decisionFields} />
         {failed ? <LoadFailed words={actionFailedWords} /> : null}
-        <ApplicationAnswers formId={text(item, "form_id")} version={version} onCorrected={refresh} />
+        <ApplicationAnswers
+          formId={text(item, "form_id")}
+          version={version}
+          onCorrected={refresh}
+          foot={text(item, "status") !== withdrawnWords ? <ServiceAct label={withdrawLabel} onClick={() => withdraw(item)} /> : undefined}
+        />
       </>
     ),
   };

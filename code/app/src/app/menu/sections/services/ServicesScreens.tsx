@@ -11,6 +11,7 @@ import { personNameOf } from "../residents/personName";
 import { CatalogueWindow } from "./CatalogueEntry";
 import { certificateFields, certificateOf, decisionStatus, sentWords } from "./decision";
 import { Granted } from "./Granted";
+import { ServiceAct, ServiceDetails, ServiceHead } from "./ServicePage";
 import { ReceivedApplications } from "./ReceivedApplications";
 import { readItem } from "./readItem";
 
@@ -60,10 +61,14 @@ const feeDetails = async (submission: Item | undefined) => {
   return { amount: amountWords(form), payer: personNameOf(member) };
 };
 
-const loadSubmissions = (fee: boolean) => async (slug: string) => {
-  const sent = (await listOf(submissionsTool, { slug })).sort(byNewest);
+const entryOf = async (kind: string, slug: string) => (await listOf(listTool, { kind })).find((entry) => text(entry, "slug") === slug) ?? {};
+
+const loadSubmissions = (fee: boolean, kind: string) => async (slug: string) => {
+  const [sent, entry] = await Promise.all([listOf(submissionsTool, { slug }).then((all) => all.sort(byNewest)), entryOf(kind, slug)]);
   return {
     id: slug,
+    name: text(entry, "name"),
+    summary: text(entry, "summary"),
     status: sent.length === 0 ? notSentWords : statusOf(sent[0]),
     sent: sent.map((submission) => dayWords(text(submission, "submitted_at"))).join(", "),
     owing: sent.filter(isOwing),
@@ -97,7 +102,31 @@ const KindScreen = ({ generic, emptyGeneric, kind, payable }: { generic: string;
       title={title}
       detailKey={version}
       list={{ title, tool: listTool, fields: listFields, empty: homeEmpty(empty), load: loadKind(kind) }}
-      detail={{ tool: submissionsTool, fields: payable ? feeDetailFields : detailFields, status: "status", load: loadSubmissions(payable === true), action, extra: payable ? undefined : (item: Item) => <><ReceivedApplications slug={text(item, "id")} /><Granted slug={text(item, "id")} /></> }}
+      withTabs
+      bandless
+      detail={{
+        tool: submissionsTool,
+        fields: {},
+        status: "",
+        load: loadSubmissions(payable === true, kind),
+        extra: (item: Item) => (
+          <>
+            <ServiceHead title={text(item, "name") || text(item, "id")} status={text(item, "status")} line={text(item, "summary")} />
+            <ServiceDetails
+              word="Details"
+              item={item}
+              fields={payable ? feeDetailFields : detailFields}
+              foot={action && action.when?.(item) ? <ServiceAct label={action.label} onClick={() => action.run?.(item)} /> : undefined}
+            />
+            {payable ? null : (
+              <>
+                <ReceivedApplications slug={text(item, "id")} />
+                <Granted slug={text(item, "id")} />
+              </>
+            )}
+          </>
+        ),
+      }}
       below={failed ? <LoadFailed words={actionFailedWords} /> : null}
     />
   );

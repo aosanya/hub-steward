@@ -3,6 +3,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
+import { ServiceDetails, ServiceHead } from "./ServicePage";
 
 export const servicePermission = "service.edit";
 
@@ -32,14 +33,19 @@ export function CatalogueWindow({ title, empty, listTool = publicListTool }: { t
       title={title}
       listKey={version}
       detailKey={version}
+      withTabs
+      bandless
       list={{ title, tool: listTool, fields: { title: "name", meta: "line" }, empty: homeEmpty(empty), load: async () => (await listOf(listTool)).map(entryRow) }}
       detail={{
         tool: entryReadTool,
-        fields: { Name: "name", Summary: "summary", Kind: "kind", Form: "form_id" },
+        fields: {},
         status: "",
         load: loadEntry,
         extra: (entry) => (
-          <MenuEditForm
+          <>
+            <ServiceHead title={text(entry, "name")} line={text(entry, "summary")} />
+            <ServiceDetails word="Details" item={entry} fields={{ Kind: "kind", Form: "form_id" }} />
+            <MenuEditForm
             item={entry}
             id={text(entry, "id")}
             idArg="slug"
@@ -48,7 +54,8 @@ export function CatalogueWindow({ title, empty, listTool = publicListTool }: { t
             fields={editFields}
             keep={["name", "summary", "doc"]}
             onSaved={() => setVersion((was) => was + 1)}
-          />
+            />
+          </>
         ),
       }}
     />

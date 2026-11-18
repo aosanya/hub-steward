@@ -26,6 +26,8 @@ export function ApplicationsScreen() {
     <MenuWindow
       title={applicationsTitle}
       detailKey={version}
+      withTabs
+      bandless
       list={{
         title: applicationsTitle,
         tool: "forms_form_list_answered",
