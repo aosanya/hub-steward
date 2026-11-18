@@ -76,8 +76,8 @@ const openIssue = () =>
   );
 
 const wishRow = async () => {
-  const title = await screen.findByText("Wish");
-  return title.closest(".row") as HTMLElement;
+  const card = await screen.findByRole("region", { name: "Wish" });
+  return card.querySelector(".row") as HTMLElement;
 };
 
 const listReads = () => called.mock.calls.filter((call) => call[1] === "forms_catalog_board_item_list");

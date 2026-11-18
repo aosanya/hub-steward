@@ -1,11 +1,13 @@
 import { useRef, type ReactNode } from "react";
 import { itemsOf } from "../../../../features/backlogs";
 import { useWord } from "../../../../features/agency/useWord";
+import { Chip, statusTone } from "../../../../shared/ui/Chip";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuWindow } from "../../MenuWindow";
 import { CatalogueWindow } from "../services/CatalogueEntry";
 import { IssuePage } from "./IssuePage";
+import { withStatus } from "./issueStatus";
 import { nearbyIssues, nearbyTool } from "./nearbyIssues";
 import { useReplyDrafts } from "./useReplyDrafts";
 
@@ -30,9 +32,14 @@ const rowOf = (issue: Item) => ({
   boardItemId: text(issue, "board_item_id"),
 });
 
-const mapRows = async () => (await nearbyIssues()).map((issue) => ({ ...issue, place: placeOf(issue) }));
+const withPlace = (issues: Item[]) => issues.map((issue) => ({ ...issue, place: placeOf(issue) }));
 
-const statusFields = { title: "title", meta: "status" };
+const statusChip = (item: Item) => {
+  const status = text(item, "status");
+  return status ? <Chip tone={statusTone(status)}>{status}</Chip> : null;
+};
+
+const placeFields = { title: "title", meta: "place" };
 
 type WindowProps = {
   title: string;
@@ -45,11 +52,11 @@ type WindowProps = {
   failedWords?: string;
 };
 
-export function IssueWindow({ title, tool, empty, fetch, fields = statusFields, end, loadingWords, failedWords }: WindowProps) {
+export function IssueWindow({ title, tool, empty, fetch, fields = placeFields, end = statusChip, loadingWords, failedWords }: WindowProps) {
   const seen = useRef(new Map<string, Item>());
   const replies = useReplyDrafts();
   const loadList = async () => {
-    const issues = await fetch();
+    const issues = withPlace(await withStatus(await fetch()));
     seen.current = new Map(issues.map((issue) => [text(issue, "id"), issue]));
     return issues;
   };
@@ -80,7 +87,7 @@ export function AssignedToMeScreen() {
 
 export function MapViewScreen() {
   const word = useWord("forms");
-  return <IssueWindow title="Map View" tool={nearbyTool} fields={{ title: "title", meta: "place" }} empty={`No ${word("Issues").toLowerCase()} on the map yet.`} fetch={mapRows} />;
+  return <IssueWindow title="Map View" tool={nearbyTool} empty={`No ${word("Issues").toLowerCase()} on the map yet.`} fetch={nearbyIssues} />;
 }
 
 export function ServiceTypesScreen() {

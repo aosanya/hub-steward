@@ -2,6 +2,7 @@ import { useState } from "react";
 import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
+import { dayWords } from "../../../../shared/ui/days";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { Section } from "../../../../shared/ui/Section";
@@ -12,9 +13,10 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuEditForm } from "../../MenuEditForm";
 import { SectionAct } from "../residents/SectionAct";
-import { boardPermission, departmentFields, IssueOutcome } from "./IssueEdit";
+import { boardPermission, departmentFields } from "./IssueEdit";
 import { IssueWish } from "./IssueWish";
 import type { IssueRow } from "./issueRow";
+import { RaisedByCard } from "./RaisedByCard";
 import type { ReplyDrafts } from "./useReplyDrafts";
 
 type Item = Record<string, unknown>;
@@ -79,7 +81,7 @@ function ReplyCard({ id, replies }: { id: string; replies: ReplyDrafts }) {
         foot={act}
         empty={{ words: view.state === "error" ? "The replies could not be loaded." : "No replies yet." }}
         rows={found.map((reply, at) => (
-          <ListRow key={textOf(reply, "id") || at} title={textOf(reply, "body")} meta={textOf(reply, "created_at").slice(0, 10)} />
+          <ListRow key={textOf(reply, "id") || at} title={textOf(reply, "body")} meta={dayWords(textOf(reply, "created_at"))} />
         ))}
       />
       {replies.failed ? <LoadFailed words={actionFailedWords} /> : null}
@@ -112,8 +114,8 @@ export function IssuePage({ item, issue, replies }: Props) {
       </div>
       <div className="sections">
         <Section word="Issue" plain foot={act} empty={{ words: "Nothing is recorded on this issue yet." }} rows={rows} />
+        <RaisedByCard item={item} />
         <IssueWish issue={issue} />
-        {issue.boardItemId ? <IssueOutcome boardItemId={issue.boardItemId} /> : null}
         <ReplyCard id={issue.id} replies={replies} />
       </div>
     </>
