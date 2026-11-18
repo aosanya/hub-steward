@@ -351,9 +351,21 @@ func namesAStranger(ctx context.Context, reg agencies.Registry, instanceID strin
 		if !isPickedFromAList(q) || person == "" {
 			continue
 		}
-		if role, err := reg.RoleOf(ctx, instanceID, person); err != nil || role == "" {
+		if !isPersonOfAgency(ctx, reg, instanceID, person) {
 			return q.Prompt + " is not a member of this agency"
 		}
 	}
 	return ""
+}
+
+func isPersonOfAgency(ctx context.Context, reg agencies.Registry, instanceID, person string) bool {
+	if role, err := reg.RoleOf(ctx, instanceID, person); err == nil && role != "" {
+		return true
+	}
+	directory, err := reg.ActorManager(ctx, instanceID)
+	if err != nil {
+		return false
+	}
+	_, err = directory.GetActor(ctx, person)
+	return err == nil
 }
