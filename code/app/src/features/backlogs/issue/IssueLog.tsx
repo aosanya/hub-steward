@@ -1,27 +1,22 @@
 import { useState } from "react";
 import { useLoad } from "../../../features/forms/useLoad";
-import { callTool } from "../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../shared/wakala/openAgency";
-import { listPeople, namesOf, type Names } from "../../../features/people/api";
+import { listAgents, listPeople, namesOf, type Names } from "../../../features/people/api";
 import { Button } from "../../../shared/ui/Button";
 import { Card } from "../../../shared/ui/Card";
 import { Chip } from "../../../shared/ui/Chip";
 import { TextArea } from "../../../shared/ui/TextArea";
 import "./issueLog.css";
-import { itemsOf, type NotesClient } from "../shared/api";
-import { linkOf, namedText, noteTime, type IssueNote } from "../shared/issueNotes";
+import type { NotesClient } from "../shared/api";
+import { linkOf, noteTime, shownText, type IssueNote } from "../shared/issueNotes";
 
 const noNames: Names = new Map();
 
-const textOf = (value: unknown) => (typeof value === "string" ? value : "");
-
 const loadNames = async (): Promise<Names> => {
-  const people = await listPeople().then(namesOf, () => noNames);
-  const agents = await callTool("", "taskmanager_agent_list", {}).then(itemsOf, () => [] as any[]);
-  const named = new Map(people);
-  for (const agent of agents) {
-    const name = textOf(agent?.display_name) || textOf(agent?.agent_id);
-    for (const key of [textOf(agent?.id), textOf(agent?.agent_id)]) if (key !== "" && name !== "") named.set(key, name);
+  const named = new Map(await listPeople().then(namesOf, () => noNames));
+  for (const agent of await listAgents().catch(() => [])) {
+    if (agent.name === "") continue;
+    for (const key of [agent.id, agent.agentId]) if (key !== "") named.set(key, agent.name);
   }
   return named;
 };
@@ -55,7 +50,7 @@ function Entry({ note, names }: { note: IssueNote; names: Names }) {
         <Chip tone={note.kind === "worker" ? "info" : undefined}>{note.kind === "worker" ? "Worker" : "Person"}</Chip>
         <span>{noteTime(note.at)}</span>
       </div>
-      {namedText(note.text, names).split(/\n{2,}/).map((paragraph, at) => (
+      {shownText(note, names).split(/\n{2,}/).map((paragraph, at) => (
         <p key={at}>{paragraph}</p>
       ))}
       <Links links={note.links} />

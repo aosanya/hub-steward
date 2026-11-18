@@ -1,4 +1,5 @@
 import { subjectNouns, type ChatAbout } from "../../app/chatAbout";
+import { agentListTool } from "../people/api";
 import { finishedJobsQuery } from "../../app/menu/sections/assets/maintenanceHistory";
 import { residentChoices, residentNamesFor, residentPrompt, residentReadScopes, residentReadsWords, residentStepWords, scopedToResident } from "./residentReads";
 
@@ -357,15 +358,15 @@ const asset: Subject = {
 const workorder: Subject = {
   reads: {
     taskmanager_task_read: { taskID: byId },
-    taskmanager_agent_list: {},
+    [agentListTool]: {},
   },
   steps: {
     taskmanager_task_read: "Reading the work order",
-    taskmanager_agent_list: "Reading who can be assigned",
+    [agentListTool]: "Reading who can be assigned",
   },
   choices: ["Details", "Assignee"],
-  reading: "Details means taskmanager_task_read, and Assignee means the assigned_to and assignee_kind of taskmanager_task_read, with the name taken from taskmanager_agent_list when the assignee is a worker.",
-  overview: "call taskmanager_task_read and taskmanager_agent_list at once and answer with the work order's title, state, due day and who it is assigned to",
+  reading: `Details means taskmanager_task_read, and Assignee means the assigned_to and assignee_kind of taskmanager_task_read, with the name taken from ${agentListTool} when the assignee is a worker.`,
+  overview: `call taskmanager_task_read and ${agentListTool} at once and answer with the work order's title, state, due day and who it is assigned to`,
   empty: "its details and assignee",
 };
 

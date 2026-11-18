@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { useMay } from "../../../../features/agency/useMay";
+import { listAgents } from "../../../../features/people/api";
 import { Button } from "../../../../shared/ui/Button";
 import { ChoiceGroup } from "../../../../shared/ui/ChoiceRow";
 import { ListRow } from "../../../../shared/ui/ListRow";
@@ -19,8 +19,6 @@ type Worker = { id: string; name: string };
 
 type Props = { order: Item; onAssigned: () => void };
 
-const workersTool = "taskmanager_agent_list";
-
 const assignTool = "taskmanager_task_assign";
 
 const assignPermission = "task.assign";
@@ -33,11 +31,7 @@ const nobodyWords = "Not assigned";
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
-const loadWorkers = async (): Promise<Worker[]> =>
-  ((await callTool("", workersTool, {}).then(itemsOf)) as Item[]).map((worker) => ({
-    id: textOf(worker.id),
-    name: textOf(worker.display_name) || textOf(worker.agent_id),
-  }));
+const loadWorkers = async (): Promise<Worker[]> => (await listAgents()).map((agent) => ({ id: agent.id, name: agent.name }));
 
 const holderNameLoaders: Record<string, (id: string) => Promise<string>> = {
   [actorKind]: async (id) => personNameOf(await loadPerson(id)),

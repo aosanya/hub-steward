@@ -41,3 +41,7 @@ const idPattern = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 export const unnamedHolder = "someone no longer listed";
 
 export const namedText = (words: string, names: Map<string, string>) => words.replace(idPattern, (id) => names.get(id) ?? names.get(id.toLowerCase()) ?? unnamedHolder);
+
+const assigneeEntry = /^Assignee\b/;
+
+export const shownText = (note: IssueNote, names: Map<string, string>) => (note.automatic && assigneeEntry.test(note.text) ? namedText(note.text, names) : note.text);

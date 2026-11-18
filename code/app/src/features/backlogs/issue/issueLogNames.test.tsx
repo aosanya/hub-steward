@@ -9,10 +9,10 @@ import type { NotesClient } from "../shared/api";
 const agentId = "dbc62e71-77d3-4b32-91f0-3b17778f0903";
 const strangerId = "0a1b2c3d-1111-4222-8333-444455556666";
 
-const note = (text: string) => ({ id: "n1", author: "a1", kind: "person" as const, text, links: [], at: "2026-11-18T20:00:00Z", automatic: true });
+const note = (text: string, over: { kind?: "person" | "worker"; automatic?: boolean } = {}) => ({ id: "n1", author: "a1", kind: over.kind ?? ("person" as const), text, links: [], at: "2026-11-18T20:00:00Z", automatic: over.automatic ?? true });
 
-const logWith = async (text: string) => {
-  const client: NotesClient = { notes: async () => [note(text)], addNote: async () => Promise.reject(new Error("unused")) };
+const logWith = async (text: string, over: { kind?: "person" | "worker"; automatic?: boolean } = {}) => {
+  const client: NotesClient = { notes: async () => [note(text, over)], addNote: async () => Promise.reject(new Error("unused")) };
   render(<IssueLog issueId="1" client={client} />);
   await userEvent.click(screen.getByRole("button", { expanded: false }));
 };
@@ -45,5 +45,20 @@ describe("the Log names who an issue was assigned to", () => {
   it("leaves an entry without an id as it was", async () => {
     await logWith("Moved to Review with the fix.");
     expect(await screen.findByText("Moved to Review with the fix.")).toBeInTheDocument();
+  });
+
+  it("leaves a worker note that cites an issue id as it was written", async () => {
+    await logWith(`Reviewed issue ${strangerId}: Approved`, { kind: "worker", automatic: false });
+    expect(await screen.findByText(`Reviewed issue ${strangerId}: Approved`)).toBeInTheDocument();
+  });
+
+  it("leaves a person's note that cites an id as it was written", async () => {
+    await logWith(`See ${strangerId} for the evidence.`, { automatic: false });
+    expect(await screen.findByText(`See ${strangerId} for the evidence.`)).toBeInTheDocument();
+  });
+
+  it("leaves an automatic entry that is not an assignee change as it was written", async () => {
+    await logWith(`Moved after ${strangerId} landed.`, { automatic: true });
+    expect(await screen.findByText(`Moved after ${strangerId} landed.`)).toBeInTheDocument();
   });
 });
