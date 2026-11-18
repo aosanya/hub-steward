@@ -40,12 +40,6 @@ const memberCountOf = async (group: Item) => {
 
 const groupRows = async (keep: (group: Item) => boolean) => Promise.all((await listOf("actor_list_groups")).filter(keep).map(memberCountOf));
 
-const perGroup = async (tool: string, idName: string) => {
-  const groups = await listOf("actor_list_groups");
-  const lists = await Promise.all(groups.map(async (group) => (await listOf(tool, { [idName]: text(group, "id") })).map((item) => ({ ...item, group_id: text(group, "id") }))));
-  return lists.flat();
-};
-
 export const registrationRows = async () => {
   const groups = await listOf("actor_list_groups");
   const [lists, people] = await Promise.all([
