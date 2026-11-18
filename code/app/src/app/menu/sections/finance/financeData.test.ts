@@ -42,6 +42,7 @@ describe("finance tool names", () => {
       paymentMarkPaid: "accounting_payment_mark_paid",
       milestoneList: "accounting_milestone_list",
       certificateList: "accounting_certificate_list",
+      dimensionTotals: "accounting_dimension_totals",
     });
   });
 });
