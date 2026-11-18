@@ -103,14 +103,14 @@ const called = (name: string) => vi.mocked(mcp.callTool).mock.calls.filter((call
 
 describe("the Settings section's items", () => {
   it("lists the screens built here, each one openable", () => {
-    expect(items.map((item) => item.title)).toEqual(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "AI Agents & Limits", "Audit Log", "Details of a record", "Late rules"]);
+    expect(items.map((item) => item.title)).toEqual(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Details of a record", "Late rules"]);
     for (const item of items) expect(item.path).toBeTypeOf("function");
   });
 
   it("gives each screen its own path under the Settings section of the open agency", () => {
     const paths = items.map((item) => item.path!());
     for (const path of paths) expect(path.startsWith("/a/town/menu/settings/")).toBe(true);
-    expect(new Set(paths).size).toBe(8);
+    expect(new Set(paths).size).toBe(5);
   });
 });
 
@@ -224,50 +224,7 @@ describe("the Boundaries & Areas screen when a group has no population figure", 
   });
 });
 
-describe("the Audit Log screen", () => {
-  it("lists entries newest first with who did what to what, and when", async () => {
-    auditEntries = [
-      { id: "e1", actor: "acct-1", action: "renamed the agency", subject: "Riverside Office", at: "2026-11-10T09:00:00Z" },
-      { id: "e2", actor: "acct-2", action: "granted a role", subject: "p1", at: "2026-11-12T14:30:00Z" },
-    ];
-    openAt("Audit Log");
-
-    const newest = (await screen.findByText(/granted a role/)).closest("button, .row") as HTMLElement;
-    expect(within(newest).getByText("granted a role: Unnamed person")).toBeInTheDocument();
-    expect(within(newest).getByText(/^Unnamed person · /)).toBeInTheDocument();
-    expect(newest.textContent).not.toMatch(/p1|acct-2/);
-    const older = screen.getByText(/renamed the agency/).closest("button, .row") as HTMLElement;
-    expect(within(older).getByText(/Riverside Office/)).toBeInTheDocument();
-    expect(newest.compareDocumentPosition(older) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(called("audit_list_entries").length).toBeGreaterThan(0);
-  });
-
-  it("says so when nothing has been recorded yet", async () => {
-    openAt("Audit Log");
-
-    expect(await screen.findByText("Nothing has been recorded yet.")).toBeInTheDocument();
-  });
-
-  it("says the log could not be loaded when the hub refuses it", async () => {
-    vi.spyOn(mcp, "callTool").mockRejectedValue(new mcp.McpError("not allowed"));
-    openAt("Audit Log");
-
-    expect(await screen.findByText("This list could not be loaded.")).toBeInTheDocument();
-  });
-});
-
-describe("the Integrations screen", () => {
-  it("lists each service with whether it is connected", async () => {
-    openAt("Integrations");
-
-    const writing = (await screen.findByText("Writing helper")).closest("button, .row") as HTMLElement;
-    expect(within(writing).getByText("Connected")).toBeInTheDocument();
-    const translation = screen.getByText("Translation helper").closest("button, .row") as HTMLElement;
-    expect(within(translation).getByText("Not connected")).toBeInTheDocument();
-  });
-});
-
-describe.each(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "AI Agents & Limits", "Audit Log"])("the %s screen's Back button", (title) => {
+describe.each(["Agency Profile", "Users & Roles", "Boundaries & Areas"])("the %s screen's Back button", (title) => {
   it("is named after the section it was opened from and goes back to it", async () => {
     openAt(title);
     await screen.findByRole("button", { name: /‹ Settings/ });

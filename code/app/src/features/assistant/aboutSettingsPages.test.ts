@@ -1,30 +1,8 @@
 import type { ChatAbout } from "../../app/chatAbout";
-import { choicesFor, emptyWordsFor, promptFor, readNamesFor, scopedArgs, stepWordsFor } from "./aboutSubjects";
+import { choicesFor, promptFor, readNamesFor, scopedArgs, stepWordsFor } from "./aboutSubjects";
 
-const entry: ChatAbout = { kind: "audit-entry", id: "e1", name: "granted a role: Bela Nagy", extra: { subject: "a2", details: "Asha Otieno · 12 Nov 2026" } };
-const entryWithoutSubject: ChatAbout = { kind: "audit-entry", id: "e3", name: "added a row", extra: { subject: "e3", details: "Asha Otieno · 10 Nov 2026" } };
 const agency: ChatAbout = { kind: "agency", id: "town", name: "Riverside Office" };
 const details: ChatAbout = { kind: "record-details", id: "RC-1", name: "Businesses", extra: { details: "Trading name (on, required); Tax number (on)" } };
-
-describe("the chat about an audit entry", () => {
-  it("reads only the audit log, narrowed to the entry's own subject", () => {
-    expect(readNamesFor(entry)).toEqual(["audit_list_entries"]);
-    expect(scopedArgs(entry, "audit_list_entries", { subject: "anything", actor: "someone", limit: 5 })).toEqual({ subject: "a2", actor: "someone", limit: 5 });
-  });
-
-  it("narrows to nothing, never to everything, when the entry has no subject of its own", () => {
-    expect(scopedArgs(entryWithoutSubject, "audit_list_entries", {})).toEqual({ subject: "e3" });
-  });
-
-  it("offers the choices that fit and says what it is about, with who did it given in the conversation", () => {
-    expect(choicesFor(entry)).toEqual(["Who did this?", "What else happened to it?"]);
-    const prompt = promptFor(entry);
-    expect(prompt).toContain("about one thing, granted a role: Bela Nagy.");
-    expect(prompt).toContain("Asha Otieno · 12 Nov 2026");
-    expect(stepWordsFor(entry).audit_list_entries).toBeTruthy();
-    expect(emptyWordsFor(entry)).toContain("granted a role: Bela Nagy");
-  });
-});
 
 describe("the chat about the agency", () => {
   it("reads the agency and its languages and nothing else, with no argument to widen them", () => {

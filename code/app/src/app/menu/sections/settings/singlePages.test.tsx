@@ -118,29 +118,3 @@ describe("the Details of a record page", () => {
     expect(within(card).getByRole("tab", { name: "Residents" })).toHaveAttribute("aria-selected", "true");
   });
 });
-
-describe("the Audit Log page", () => {
-  it("has the page title and a strip of tabs by kind of change with their counts", async () => {
-    openAt("Audit Log");
-
-    expect(await screen.findByRole("tablist")).toBeInTheDocument();
-    expect(document.querySelector(".person-name")).toHaveTextContent("Audit Log");
-    const strip = screen.getByRole("tablist");
-    expect(within(strip).getAllByRole("tab").map((tab) => tab.textContent)).toEqual(["All4", "Groups1", "Forms1", "Rows1", "Other1"]);
-  });
-
-  it("keeps only the changes of the chosen kind when a tab is chosen", async () => {
-    openAt("Audit Log");
-
-    await userEvent.click(await screen.findByRole("tab", { name: /^Forms/ }));
-    expect(screen.getByText(/published a form: Market stall fee/)).toBeInTheDocument();
-    expect(screen.queryByText(/granted a role/)).toBeNull();
-  });
-
-  it("shows each change as a row with what happened and who did it and when, as the lighter line", async () => {
-    openAt("Audit Log");
-
-    const row = (await screen.findByText("granted a role: Bela Nagy")).closest(".row") as HTMLElement;
-    expect(within(row).getByText(/^Asha Otieno · /)).toBeInTheDocument();
-  });
-});

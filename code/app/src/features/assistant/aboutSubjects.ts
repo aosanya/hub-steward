@@ -114,24 +114,6 @@ const boundary: Subject = {
   empty: "its details and residents",
 };
 
-const integration: Subject = {
-  reads: { ai_get_account: { accountID: byId } },
-  steps: { ai_get_account: "Reading the integration's details" },
-  choices: ["Details", "Limits"],
-  reading: "Details and Limits both mean ai_get_account. Never state a key or a secret; say only whether a key is connected.",
-  overview: "call ai_get_account and answer with its provider, address, model, whether it is connected and its limits",
-  empty: "its details and limits",
-};
-
-const aiAgent: Subject = {
-  reads: { ai_usage_breakdown: { role_id: byId } },
-  steps: { ai_usage_breakdown: "Reading what the agent used this month" },
-  choices: ["Use this month", "Limits"],
-  reading: "Use this month means ai_usage_breakdown with window month. Its limits are given to you in this conversation, so answer them without a tool.",
-  overview: "call ai_usage_breakdown with window month and answer with the tokens and requests it used and who used them",
-  empty: "its limits and use this month",
-};
-
 const oneRecord = (tool: string, scope: string, step: string, overview: string): Subject => ({
   reads: { [tool]: { [scope]: byId } },
   steps: { [tool]: step },
@@ -455,16 +437,6 @@ const maintenance: Subject = {
   empty: "what was done, when it is next due and what it cost",
 };
 
-const auditEntry: Subject = {
-  reads: { audit_list_entries: { subject: extraOf("subject") } },
-  steps: { audit_list_entries: "Reading what else happened to it" },
-  choices: ["Who did this?", "What else happened to it?"],
-  reading:
-    "Who did this? is given to you in this conversation, with the day, so answer it without a tool. What else happened to it? means audit_list_entries; if it finds nothing else, say nothing else is on file.",
-  overview: "answer with what happened, who did it and when from this conversation, then call audit_list_entries and add what else was recorded about the same thing",
-  empty: "who did this and what else happened to it",
-};
-
 const agencyProfile: Subject = {
   reads: { agency_get_agency: {}, instance_get_languages: {} },
   steps: { agency_get_agency: "Reading the agency's details", instance_get_languages: "Reading the languages that are on" },
@@ -491,7 +463,7 @@ const recordDetails: Subject = {
   empty: "which details are on and which are required",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, "audit-entry": auditEntry, agency: agencyProfile, "record-details": recordDetails };
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, agency: agencyProfile, "record-details": recordDetails };
 
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
@@ -548,7 +520,7 @@ const invitation = (about: ChatAbout) => `What would you like to see about ${abo
 
 const factsOf = (about: ChatAbout) => {
   if (about.kind === "registration") return ` The request: ${about.name} asked to join ${about.extra?.group ?? "a group"}${about.extra?.asked ? ` on ${about.extra.asked}` : ""}.`;
-  if (about.kind === "business" || about.kind === "trader" || about.kind === "integration" || about.kind === "ai-agent" || about.kind === "issue" || about.kind === "maintenance" || about.kind === "audit-entry" || about.kind === "record-details") return about.extra?.details ? ` What is on its page: ${about.extra.details}.` : "";
+  if (about.kind === "business" || about.kind === "trader" || about.kind === "issue" || about.kind === "maintenance" || about.kind === "record-details") return about.extra?.details ? ` What is on its page: ${about.extra.details}.` : "";
   return "";
 };
 

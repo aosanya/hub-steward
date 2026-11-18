@@ -30,8 +30,6 @@ const cases = [
   { id: "assets", section: "Assets & Works", submenu: "Equipment", opens: "/a/town/menu/assets/equipment" },
   { id: "staff", section: "Staff & Departments", submenu: "Departments", opens: "/a/town/menu/staff/departments" },
   { id: "issues", section: "Issues & Requests", submenu: "All Issues", opens: "/a/town/menu/issues/all" },
-  { id: "settings", section: "Settings", submenu: "Integrations", opens: "/a/town/menu/settings/integrations" },
-  { id: "settings", section: "Settings", submenu: "Audit Log", opens: "/a/town/menu/settings/audit-log" },
   { id: "council", section: "Decisions", submenu: "Meetings", opens: "/a/town/menu/council/meetings" },
   { id: "council", section: "Decisions", submenu: "Agendas & Minutes", opens: "/a/town/menu/council/agendas" },
   { id: "council", section: "Decisions", submenu: "Resolutions", opens: "/a/town/menu/council/resolutions" },

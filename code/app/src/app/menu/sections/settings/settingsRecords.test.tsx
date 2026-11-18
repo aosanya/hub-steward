@@ -8,7 +8,7 @@ import * as mcp from "../../../../shared/wakala/mcp";
 import { AssistantPage } from "../../../../features/assistant/AssistantPage";
 import { type AssistantClient } from "../../../../features/assistant/api";
 import { routes as appRoutes } from "../../../routes";
-import { carriedChatAbout, forgetChatAbout } from "../../../chatAbout";
+import { forgetChatAbout } from "../../../chatAbout";
 import { items, routes } from "./index";
 import { settingsPaths } from "./paths";
 import { refuseUndeclared } from "../../../declaredTools/refuseUndeclared";
@@ -189,22 +189,6 @@ describe("Boundary edit screen without group.manage", () => {
     expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Back" }));
     await waitFor(() => expect(screen.getByTestId("where")).toHaveTextContent("/menu/settings/boundaries-and-areas?item=g1"));
-  });
-});
-
-describe("AI Agents & Limits", () => {
-  it("carries no chat subject for the Each person row", async () => {
-    await openScreen("AI Agents & Limits", "item=everyone", "Each person");
-    await userEvent.click(await screen.findByRole("link", { name: "Chat" }));
-    await screen.findByRole("heading", { name: /assistant/i }).catch(() => undefined);
-    expect(carriedChatAbout()).toBeNull();
-  });
-
-  it("names the people in Used by, never their ids", async () => {
-    await openScreen("AI Agents & Limits", "item=r1", "Council helper");
-    const use = await screen.findByRole("region", { name: "Use" });
-    expect(within(use).getByText(/Asha Otieno/)).toBeInTheDocument();
-    expect(within(use).queryByText(/\bp1\b/)).not.toBeInTheDocument();
   });
 });
 

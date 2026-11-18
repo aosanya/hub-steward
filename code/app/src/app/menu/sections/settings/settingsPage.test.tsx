@@ -77,11 +77,9 @@ const openScreen = async (title: string, query: string, name: string) => {
 const screens = [
   { title: "Users & Roles", query: "item=p1", name: "Asha Otieno", kind: "user", id: "p1" },
   { title: "Boundaries & Areas", query: "item=g1", name: "North Ward", kind: "boundary", id: "g1" },
-  { title: "Integrations", query: "item=a1", name: "Writing helper", kind: "integration", id: "a1", extra: { details: "Anthropic; Connected; Tokens per day 1,000" } },
-  { title: "AI Agents & Limits", query: "item=r1", name: "Council helper", kind: "ai-agent", id: "r1", extra: { details: "Reads the agenda; Tokens per day 500" } },
 ];
 
-describe.each(screens)("$title page", ({ title, query, name, kind, id, extra }) => {
+describe.each(screens)("$title page", ({ title, query, name, kind, id }) => {
   it("is titled by the chosen record, with no header band", async () => {
     await openScreen(title, query, name);
     expect(screen.queryByRole("heading", { level: 2, name: title })).not.toBeInTheDocument();
@@ -97,7 +95,7 @@ describe.each(screens)("$title page", ({ title, query, name, kind, id, extra }) 
     await openScreen(title, query, name);
     await userEvent.click(screen.getByRole("link", { name: "Chat" }));
     await screen.findByText(`About ${name}`);
-    expect(carriedChatAbout()).toEqual({ kind, id, name, ...(extra ? { extra } : {}) });
+    expect(carriedChatAbout()).toEqual({ kind, id, name });
   });
 });
 

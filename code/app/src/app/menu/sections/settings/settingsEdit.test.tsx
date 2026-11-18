@@ -111,8 +111,8 @@ const openGiveARole = async () => {
   await userEvent.click(await screen.findByRole("button", { name: "Give a role" }));
 };
 
-describe("renaming the agency and the Audit Log", () => {
-  it("lists the rename in the Audit Log after the owner renames the agency", async () => {
+describe("renaming the agency", () => {
+  it("renames the agency when the owner saves a new name", async () => {
     permissions = [...permissions, "permission.override"];
     open("Agency Profile");
     await screen.findByText("Riverside Office");
@@ -122,12 +122,6 @@ describe("renaming the agency and the Audit Log", () => {
     await userEvent.type(name, "Lakeside Office");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "instance_rename", { name: "Lakeside Office" }));
-
-    cleanup();
-    open("Audit Log");
-
-    expect(await screen.findByText("renamed the agency: Lakeside Office")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
   });
 });
 

@@ -30,7 +30,7 @@ const itemsOf: Record<string, MenuItem[]> = {
   council: joined(["Meetings", "Agendas & Minutes", "Resolutions", "Rules", "Committees"], councilItems),
   staff: staffItems,
   finance: joined(["Budget", "Spending by Neighbourhood", "Revenue & Billing", "Procurement", "Payments", "Financial Reports", "National Report"], financeItems),
-  settings: joined(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Integrations", "AI Agents & Limits", "Audit Log", "Details of a record"], settingsItems),
+  settings: joined(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Details of a record"], settingsItems),
 };
 
 export const menuSections: MenuSection[] = sectionHeads.map((head) => ({ ...head, items: itemsOf[head.id] }));

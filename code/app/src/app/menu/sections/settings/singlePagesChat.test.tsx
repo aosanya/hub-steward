@@ -100,31 +100,3 @@ describe("the Details of a record page", () => {
     expect(carriedChatAbout()?.name).toBe("Residents");
   });
 });
-
-describe("the Audit Log page", () => {
-  it("carries nothing while no entry is chosen", async () => {
-    openAt("Audit Log");
-    await screen.findByText("granted a role: Bela Nagy");
-    await userEvent.click(screen.getByRole("link", { name: "Chat" }));
-    expect(carriedChatAbout()).toBeNull();
-  });
-
-  it("opens the assistant about the chosen entry, named by what happened and by whom, never by an id", async () => {
-    openAt("Audit Log");
-    await userEvent.click(await screen.findByRole("button", { name: /granted a role: Bela Nagy/ }));
-    await userEvent.click(screen.getByRole("link", { name: "Chat" }));
-    await screen.findByText("About granted a role: Bela Nagy");
-    const about = carriedChatAbout();
-    expect(about).toMatchObject({ kind: "audit-entry", id: "e1", name: "granted a role: Bela Nagy" });
-    expect(about?.extra?.subject).toBe("a2");
-    expect(about?.extra?.details).toContain("Asha Otieno");
-    expect(JSON.stringify(about)).not.toContain("a1");
-  });
-
-  it("reopens on the same entry from ?item", async () => {
-    openAt("Audit Log", "?item=e1");
-    await screen.findByText("granted a role: Bela Nagy");
-    await userEvent.click(screen.getByRole("link", { name: "Chat" }));
-    await screen.findByText("About granted a role: Bela Nagy");
-  });
-});
