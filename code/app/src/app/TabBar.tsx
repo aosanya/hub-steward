@@ -8,7 +8,8 @@ import { thingsToDoLabel } from "../features/inbox/thingsToDo";
 import { useNeedsYou } from "../features/inbox/useNeedsYou";
 import { mcpStartClient, type StartClient } from "../features/market/start/api";
 import { Icon } from "../shared/ui/Icon";
-import { mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "./tabs";
+import { carryChatAbout } from "./chatAbout";
+import { chatTab, mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "./tabs";
 
 type Props = { inbox?: InboxClient; start?: StartClient; assigned?: AssignedClient };
 
@@ -27,7 +28,7 @@ export function TabBar({ inbox = mcpInboxClient, start = mcpStartClient, assigne
   return (
     <nav className="tabs" aria-label="Main">
       {mainBar.map((tab) => (
-        <NavLink key={tab.id} to={tabPathIn(tab, agencyId)} end className="tab">
+        <NavLink key={tab.id} to={tabPathIn(tab, agencyId)} end className="tab" onClick={tab.id === chatTab.id ? carryChatAbout : undefined}>
           <span className="pill">
             <Icon name={tab.icon} />
             {tab.id === notificationsTab.id && things ? (

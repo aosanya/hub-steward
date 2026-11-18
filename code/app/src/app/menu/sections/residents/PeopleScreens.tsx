@@ -10,6 +10,7 @@ import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgen
 import { routes } from "../../../routes";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
+import { ChatAboutResident } from "./ChatAboutResident";
 import { GroupPanel, loadGroup } from "./GroupScreen";
 import { personNameOf } from "./personName";
 import { loadPerson, PersonPanel } from "./PersonScreen";
@@ -71,12 +72,24 @@ export function AllPeopleScreen() {
   return (
     <MenuWindow
       title={peopleTitle}
+      withTabs
       headEnd={mayAdd ? <Button to={routes.personNew.path()}>Add person</Button> : undefined}
       startAt={search.get("person") ?? undefined}
       listKey={version}
       detailKey={version}
       list={{ title: peopleTitle, tool: "actor_list_actors", fields: { title: "name", meta: "status" }, empty: homeEmpty(`No ${word("People").toLowerCase()} yet.`), load: peopleRows }}
-      detail={{ tool: "actor_get_actor", load: loadPerson, fields: { Name: "display_name" }, status: "status", extra: (person) => <PersonPanel person={person} onSaved={() => setVersion((was) => was + 1)} /> }}
+      detail={{
+        tool: "actor_get_actor",
+        load: loadPerson,
+        fields: { Name: "display_name" },
+        status: "status",
+        extra: (person) => (
+          <>
+            <ChatAboutResident person={person} />
+            <PersonPanel person={person} onSaved={() => setVersion((was) => was + 1)} />
+          </>
+        ),
+      }}
     />
   );
 }

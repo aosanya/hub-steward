@@ -1,4 +1,5 @@
 import { taskTools } from "../backlogs";
+import { carriedChatAbout, chatAboutWords } from "../../app/chatAbout";
 import { callTool, listTools, type ToolInfo } from "../../shared/wakala/mcp";
 import { cancelledResult, moveTool, createTool, rulesTool, resolveMove, unconfirmedResult, writeNames, writeProblem, type Confirm } from "./confirm";
 import { backlogDraftsFor, showNamedBacklog } from "./namedBacklog";
@@ -140,7 +141,9 @@ export async function askAssistant(accountId: string, turns: Turn[], onStep: (wo
   }
   const tools = await offeredOf();
   const prompt = promptFrom(await triagerDescription(), systemPrompt);
-  const messages: Wire[] = [{ role: "system", content: prompt }, ...turns.map(({ role, content }) => ({ role, content }))];
+  const about = carriedChatAbout();
+  const context: Wire[] = about ? [{ role: "system", content: chatAboutWords(about) }] : [];
+  const messages: Wire[] = [{ role: "system", content: prompt }, ...context, ...turns.map(({ role, content }) => ({ role, content }))];
   const found: ResultDraft[] = [];
   const lastUserWords = [...turns].reverse().find((turn) => turn.role === "user")?.content ?? "";
   let wrote = false;

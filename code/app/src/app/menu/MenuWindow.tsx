@@ -11,9 +11,9 @@ type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "field
 
 type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load" | "extra">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; detailKey?: string | number; listKey?: string | number; startAt?: string; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; withTabs?: boolean; detailKey?: string | number; listKey?: string | number; startAt?: string; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
 
-export function MenuWindow({ title, list, detail, above, below, headEnd, detailKey, listKey, startAt, elsewhere, leave }: Props) {
+export function MenuWindow({ title, list, detail, above, below, headEnd, withTabs, detailKey, listKey, startAt, elsewhere, leave }: Props) {
   const back = useBackToSection();
   const wide = useWide();
   const [chosen, setChosen] = useState(startAt ?? "");
@@ -44,7 +44,7 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, detailK
   );
   if (wide) {
     return (
-      <Shell title={title} onBack={onBack} backLabel={backLabel} headEnd={headEnd} tabless>
+      <Shell title={title} onBack={onBack} backLabel={backLabel} headEnd={headEnd} tabless={!withTabs}>
         <div className="wf">
           <div className="wf-panes">
             {listPane}
@@ -52,7 +52,7 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, detailK
               {chosen ? detailPane : null}
             </section>
           </div>
-          <footer className="wf-status" aria-label="Status bar" />
+          {withTabs ? null : <footer className="wf-status" aria-label="Status bar" />}
         </div>
       </Shell>
     );
