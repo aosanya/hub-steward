@@ -17,18 +17,22 @@ const count = (item: Item, key: string) => {
   return typeof value === "number" ? value : 0;
 };
 
-const countsOf = (item: Item) => `raised by ${count(item, "raised_by")} · ${count(item, "me_too")} said Me too`;
+const kindWords: Record<string, string> = { complaint: "Complaint", idea: "Idea" };
+
+const kindOf = (item: Item) => kindWords[String(item.kind ?? "")] ?? "";
+
+const countsOf = (item: Item) => `${kindOf(item) ? `${kindOf(item)} · ` : ""}raised by ${count(item, "raised_by")} · ${count(item, "me_too")} said Me too`;
 
 const wishRows = async () => {
   const [wishes, areas] = await Promise.all([callTool("", wishesTool, {}), loadAreaTally()]);
-  return (itemsOf(wishes) as Item[]).map((item) => ({ ...item, counts: countsOf(item), areas: areas.get(String(item.id ?? "")) ?? [] }));
+  return (itemsOf(wishes) as Item[]).map((item) => ({ ...item, kindWord: kindOf(item), counts: countsOf(item), areas: areas.get(String(item.id ?? "")) ?? [] }));
 };
 
 const linesOf = (item: Item) => [String(item.counts ?? ""), ...areaLinesOf(item)];
 
 const without = (ids: string[], id: string) => ids.filter((one) => one !== id);
 
-const wishFields = { Title: "title", "Raised by": "raised_by", "Said Me too": "me_too" };
+const wishFields = { Title: "title", Kind: "kindWord", "Raised by": "raised_by", "Said Me too": "me_too" };
 
 export function WishesScreen() {
   const [said, setSaid] = useState<string[]>([]);
