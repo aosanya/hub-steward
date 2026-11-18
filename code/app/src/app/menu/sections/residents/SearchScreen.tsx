@@ -4,7 +4,7 @@ import { useWord } from "../../../../features/agency/useWord";
 import { loadRecordRow, loadRecordRows } from "../../liveRecordRows";
 import { MenuWindow } from "../../MenuWindow";
 import { RecordRowExtra } from "../../RecordRowExtra";
-import { addressDetail, loadAddresses } from "../properties/AddressesPage";
+import { addressDetail, addressFields, loadAddresses } from "../properties/AddressesPage";
 import { placePaths } from "../properties/paths";
 import { loadPlaces } from "../properties/records";
 import { businessesRecordCode, useBusinessFields } from "./BusinessesScreen";
@@ -63,7 +63,7 @@ export function SearchScreen() {
       : {};
     return { ...loaded, [kindKey]: kind };
   };
-  const detailFields = Object.fromEntries([["Name", "display_name"], ...Object.entries(addressDetail.fields), ...[...businessPrompts, ...traderPrompts].map((prompt) => [prompt, prompt])]);
+  const detailFields = Object.fromEntries([["Name", "display_name"], ...Object.entries(addressFields), ...[...businessPrompts, ...traderPrompts].map((prompt) => [prompt, prompt])]);
   const groups = (items: Record<string, unknown>[]) =>
     [
       { heading: word("People"), items: items.filter((item) => startsWithAny(item.id, [personKey])) },

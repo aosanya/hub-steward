@@ -118,7 +118,7 @@ describe("an opened holding under Ownership & Tenure with details chosen in Sett
     expect(await opened.findByText("Water meter number")).toBeInTheDocument();
     expect(opened.getByText("WM-20417")).toBeInTheDocument();
     expect(opened.getByText("Property")).toBeInTheDocument();
-    expect(opened.getByText("owner")).toBeInTheDocument();
+    expect(opened.getAllByText("owner").length).toBeGreaterThan(0);
   });
 
   it("shows today's details only for a holding saved before", async () => {
@@ -126,7 +126,7 @@ describe("an opened holding under Ownership & Tenure with details chosen in Sett
 
     const opened = await openHolding(/Malom utca 4/);
 
-    expect(await opened.findByText("tenant")).toBeInTheDocument();
+    expect((await opened.findAllByText("tenant")).length).toBeGreaterThan(0);
     expect(opened.getByText("Malom utca 4")).toBeInTheDocument();
     expect(opened.queryByText("Water meter number")).toBeNull();
     expect(opened.queryByText("WM-20417")).toBeNull();

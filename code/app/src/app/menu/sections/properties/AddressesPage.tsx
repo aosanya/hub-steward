@@ -32,6 +32,8 @@ function AddressCards({ address }: { address: Record<string, unknown> }) {
   );
 }
 
+export const addressFields = { Street: "street", Number: "number", Area: "area", Postcode: "postcode" };
+
 export const addressDetail = {
   tool: addressRead,
   fields: {},
