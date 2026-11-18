@@ -86,6 +86,8 @@ export const billRow = (bill: Item, unit = "") => ({
   status: capitalised(text(bill, "status")),
 });
 
+export const paymentLine = (payment: Item, unit = "") => `${moneyWords(numberOf(payment.amount), unit)} · paid ${dayWords(text(payment, "paid_at"))}`;
+
 export const tenderRow = (tender: Item, unit = "") => {
   const quotes = numberOf(tender.quote_count);
   return {

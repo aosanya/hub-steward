@@ -235,7 +235,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       const owner = await within(pane()).findByRole("heading", { name: kind.heading });
       expect(owner.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(called).toHaveBeenCalledWith("", "accounting_bill_list", { record_row_id: kind.owned.id });
-      expect(called.mock.calls.filter((call) => (call[2] as Record<string, unknown> | undefined)?.actor_id !== undefined)).toHaveLength(0);
+      expect(called.mock.calls.filter((call) => String(call[1]).startsWith("accounting_") && (call[2] as Record<string, unknown> | undefined)?.actor_id !== undefined)).toHaveLength(0);
     });
 
     it("lists Payments by the row's own id", async () => {

@@ -8,8 +8,8 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { billRow, listOf, text, tools, unitOf } from "../finance/financeData";
 import { useOpenBill } from "./useOpenBill";
 
-const loadBills = (personId: string, unit: string) => async () => {
-  const bills = await listOf(tools.billList, { actor_id: personId });
+export const loadBillRows = (filter: Record<string, string>, unit: string) => async () => {
+  const bills = await listOf(tools.billList, filter);
   return [...bills].sort((a, b) => text(b, "due_at").localeCompare(text(a, "due_at"))).map((bill) => billRow(bill, unit));
 };
 
@@ -17,7 +17,7 @@ export function PersonBills({ id }: { id: string }) {
   const word = useWord("accounting");
   const unit = unitOf(word);
   const openBill = useOpenBill(id, useWord("actor")("Residents"));
-  const view = useLoad(loadBills(id, unit), `person-bills:${openAgencyId()}:${id}:${unit}`);
+  const view = useLoad(loadBillRows({ actor_id: id }, unit), `person-bills:${openAgencyId()}:${id}:${unit}`);
   if (view.state === "error") return null;
   const bills = view.state === "ready" ? view.data : [];
   return (

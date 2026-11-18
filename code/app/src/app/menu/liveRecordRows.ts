@@ -52,11 +52,13 @@ export const loadRecordRowsHeldBy = async (recordCode: string, titlePrompt: stri
   recordRowsOf(await loadRawRows(recordCode, { answer_actor_id: actorId }), titlePrompt, metaPrompts);
 
 export const recordOwnerKey = "ownerId";
+export const recordRowIdKey = "rowId";
 
 export const loadRecordRow = async (recordCode: string, id: string, prompts: string[], ownerPrompt?: string): Promise<Record<string, string>> => {
   const row = (await loadRawRows(recordCode)).find((one) => one.id === id);
   if (!row) return {};
   const fields = Object.fromEntries(prompts.map((prompt) => [prompt, answerOf(row, prompt)]));
   const owner = ownerPrompt ? answerOf(row, ownerPrompt) : "";
-  return owner ? { ...fields, [recordOwnerKey]: owner } : fields;
+  const named = { ...fields, [recordRowIdKey]: id };
+  return owner ? { ...named, [recordOwnerKey]: owner } : named;
 };

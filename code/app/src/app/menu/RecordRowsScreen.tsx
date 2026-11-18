@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button } from "../../shared/ui/Button";
-import { liveRecordRowsTool, loadRecordRow, loadRecordRows, recordOwnerKey } from "./liveRecordRows";
+import { liveRecordRowsTool, loadRecordRow, loadRecordRows, recordOwnerKey, recordRowIdKey } from "./liveRecordRows";
 import { MenuWindow } from "./MenuWindow";
+import { RecordMoney } from "./RecordMoney";
 import { RecordOwner } from "./RecordOwner";
 
 type Props = {
@@ -32,7 +33,12 @@ export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, 
         load: (id) => loadRecordRow(recordCode, id, prompts, owner?.prompt),
         fields: Object.fromEntries(prompts.map((prompt) => [prompt, prompt])),
         status: "status",
-        extra: owner ? (row) => <RecordOwner heading={owner.heading} ownerId={String(row[recordOwnerKey] ?? "")} /> : undefined,
+        extra: (row) => (
+          <>
+            {owner ? <RecordOwner heading={owner.heading} ownerId={String(row[recordOwnerKey] ?? "")} /> : null}
+            <RecordMoney rowId={String(row[recordRowIdKey] ?? "")} />
+          </>
+        ),
       }}
     />
   );
