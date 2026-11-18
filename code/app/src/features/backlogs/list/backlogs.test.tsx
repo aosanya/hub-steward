@@ -398,7 +398,7 @@ describe("one issue", () => {
     expect(document.querySelector(".card-head .issue-code")).toBeNull();
     const details = screen.getByRole("region", { name: "Details" });
     expect(Array.from(details.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(expect.arrayContaining(["Docs"]));
-    expect(within(details).getByText("Backlog · To do")).toBeInTheDocument();
+    expect(screen.getByText("Backlog · To do")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Docs" })).toBeNull();
     const detailTags = Array.from(details.querySelectorAll(".issue-tags > :not(.actions)"));
     expect(detailTags.length).toBeGreaterThan(0);

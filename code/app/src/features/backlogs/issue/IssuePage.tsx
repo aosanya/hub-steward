@@ -84,14 +84,13 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
         </p>
       ) : null}
       {ready && parts ? (
-        <PageFrame title={parts.rest} line={[parts.code, ready.step].filter((part) => part !== "").join(" · ")}>
+        <PageFrame wide title={parts.rest} line={[parts.code, ready.step].filter((part) => part !== "").join(" · ")}>
         <div className="issue-wide">
           <div className={found ? "issue-main cap-tinted" : "issue-main"} style={tintStyle(found)}>
             <Section
               word="Details"
               plain
               rows={[
-                ready.backlog ? <ListRow key="backlog" title="Backlog" meta={[ready.backlog, ready.step].filter((part) => part !== "").join(" · ")} /> : null,
                 ready.priority ? <ListRow key="priority" title="Priority" meta={capitalised(ready.priority)} /> : null,
                 effortKnown(ready.effort) ? <ListRow key="effort" title="Effort" meta={effortWords(ready.effort ?? "")} /> : null,
                 tagsOf(ready).length > 0 ? (
@@ -131,7 +130,9 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
             <ReferencesCard key={ready.id} issueId={ready.id} client={referencesClient} repoClient={repoClient} />
             <CapsCard key={ready.id} issueId={ready.id} client={capsClient} notesClient={notesClient} running={ready.step === "Doing"} onReading={(reading) => setCaps({ issueId: ready.id, reading })} />
             <IssueLog key={ready.id} issueId={ready.id} client={notesClient} />
-            <SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />
+            <Card title="Backlog" footer={<SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />}>
+              <ListRow title={[ready.backlog, ready.step].filter((part) => part !== "").join(" · ")} />
+            </Card>
             {[
               { heading: "Waits on", issues: ready.waitsOn },
               { heading: "Waited on by", issues: ready.waitedOnBy },

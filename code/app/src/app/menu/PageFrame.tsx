@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 
-type Props = { title: string; line?: string; actions?: ReactNode; children: ReactNode };
+type Props = { title: string; line?: string; actions?: ReactNode; wide?: boolean; children: ReactNode };
 
-export function PageFrame({ title, line, actions, children }: Props) {
+export function PageFrame({ title, line, actions, wide = false, children }: Props) {
   return (
-    <div className="person-page">
+    <div className={wide ? "person-page wide" : "person-page"}>
       {actions}
       <div className="title-block">
         <h1 className="person-name">{title}</h1>

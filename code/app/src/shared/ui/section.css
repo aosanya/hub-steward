@@ -27,6 +27,7 @@
 .person-name { margin: 0; font-size: 1.5rem; font-weight: 700; line-height: 1.2; letter-spacing: -.015em; overflow-wrap: break-word; }
 .quiet-line { margin: 0; font-size: 1rem; color: var(--ink-soft); }
 .person-page { display: flex; flex-direction: column; gap: .75rem; max-width: 48rem; }
+.person-page.wide { max-width: none; }
 .sec-tools { display: flex; flex-direction: column; gap: .5rem; padding: .75rem 1rem; }
 .sec-tabs { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
 .sec-tabs > button { flex: 1 1 auto; min-width: 0; justify-content: center; display: flex; align-items: baseline; gap: .375rem; padding: .5rem .75rem; margin-bottom: -1px; border: 0; border-bottom: 2px solid transparent; background: transparent; font: inherit; font-size: .875rem; color: var(--ink-soft); }

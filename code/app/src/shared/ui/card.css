@@ -7,6 +7,7 @@
 .card-head.closed .card-chevron { transform: rotate(-90deg); }
 .card-body { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; }
 .card-foot { display: flex; border-top: 1px solid var(--line); }
+.card-foot:empty { display: none; }
 .card-foot > * { flex: 1; min-height: 2.75rem; padding: .625rem; border: 0; background: transparent; color: var(--accent); font: inherit; text-align: center; text-decoration: none; }
 .card .card-foot > .btn { width: auto; border: 0; border-radius: 0; color: var(--accent); }
 .card-foot > * + * { border-left: 1px solid var(--line); }

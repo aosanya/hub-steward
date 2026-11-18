@@ -129,7 +129,7 @@ export function CapsCard({ issueId, client = mcpCapsClient, notesClient = mcpNot
   }, [reading, quantised]);
   const updated = reading ? updatedWords(reading) : null;
   return (
-    <Card title="Caps" collapsible defaultOpen={false} flush>
+    <Card title="Caps" collapsible defaultOpen={false} flush footer={reading && !editing ? <Button onClick={() => setEditing(true)}>Edit</Button> : undefined}>
       {loaded.state === "error" && saved === null ? (
         <p className="cap-none" role="alert">
           The caps could not be read.
@@ -145,9 +145,6 @@ export function CapsCard({ issueId, client = mcpCapsClient, notesClient = mcpNot
             ))}
             {updated ? <p className="cap-updated">{updated}</p> : null}
             <p className="cap-owner">{ownershipOf(reading)}</p>
-            <div className="cap-actions">
-              <Button onClick={() => setEditing(true)}>Edit</Button>
-            </div>
           </>
         )
       ) : null}

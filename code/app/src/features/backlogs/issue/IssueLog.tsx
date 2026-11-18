@@ -67,6 +67,7 @@ export function IssueLog({ issueId, client }: { issueId: string; client: NotesCl
   const [version, setVersion] = useState(0);
   const [text, setText] = useState("");
   const [failed, setFailed] = useState(false);
+  const [adding, setAdding] = useState(false);
   const notes = useLoad(() => client.notes(issueId), `notes:${openAgencyId()}:${issueId}:${version}`);
   const people = useLoad(loadNames, `notes-people:${openAgencyId()}`);
   const names = people.state === "ready" ? people.data : noNames;
@@ -82,19 +83,33 @@ export function IssueLog({ issueId, client }: { issueId: string; client: NotesCl
     }
   };
   return (
-    <Card title="Log" collapsible defaultOpen={false} flush>
+    <Card
+      title="Log"
+      collapsible
+      defaultOpen={false}
+      flush
+      footer={
+        adding ? (
+          <>
+            <Button onClick={() => { setText(""); setFailed(false); setAdding(false); }}>Cancel</Button>
+            <Button disabled={text.trim() === ""} onClick={add}>Add</Button>
+          </>
+        ) : (
+          <Button onClick={() => setAdding(true)}>Add a note</Button>
+        )
+      }
+    >
       {notes.state === "ready" && held.length === 0 ? <p className="log-none">Nothing logged yet.</p> : null}
       {notes.state === "error" ? <p className="log-none" role="alert">The Log could not be loaded.</p> : null}
       {held.map((note) => (
         <Entry key={note.id} note={note} names={names} />
       ))}
-      <div className="log-add">
-        <TextArea label="Add a note" value={text} onChange={(event) => setText(event.target.value)} />
-        {failed ? <p className="ferr" role="alert">The note could not be added.</p> : null}
-        <Button disabled={text.trim() === ""} onClick={add}>
-          Add
-        </Button>
-      </div>
+      {adding ? (
+        <div className="log-add">
+          <TextArea label="Add a note" value={text} onChange={(event) => setText(event.target.value)} />
+          {failed ? <p className="ferr" role="alert">The note could not be added.</p> : null}
+        </div>
+      ) : null}
     </Card>
   );
 }

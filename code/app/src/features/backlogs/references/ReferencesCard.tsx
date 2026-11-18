@@ -77,7 +77,7 @@ export function ReferencesCard({ issueId, client, repoClient }: { issueId: strin
     if (id) navigate(issuePath(id), backState(here.pathname + here.search));
   };
   return (
-    <Card title="References" collapsible defaultOpen={false} flush>
+    <Card title="References" collapsible defaultOpen={false} flush footer={<Button to={addReferencePath(issueId)}>Add a reference</Button>}>
       {loaded.state === "error" ? (
         <p className="ref-none" role="alert">
           The references could not be loaded.
@@ -103,9 +103,6 @@ export function ReferencesCard({ issueId, client, repoClient }: { issueId: strin
           That could not be done.
         </p>
       ) : null}
-      <div className="ref-add">
-        <Button to={addReferencePath(issueId)}>Add a reference</Button>
-      </div>
     </Card>
   );
 }

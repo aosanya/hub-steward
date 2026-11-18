@@ -186,6 +186,7 @@ describe("journey 03, work the backlogs", () => {
       inFarmers("/backlogs/issue/t1", withLog([]));
       const log = await logSection();
       expect(within(log).getByText("Nothing logged yet.")).toBeInTheDocument();
+      await userEvent.click(within(log).getByRole("button", { name: "Add a note" }));
       expect(within(log).getByLabelText("Add a note")).toBeInTheDocument();
     });
 
@@ -193,6 +194,7 @@ describe("journey 03, work the backlogs", () => {
       const held = logged();
       const world = inFarmers("/backlogs/issue/t1", withLog(held));
       const log = await logSection();
+      await userEvent.click(within(log).getByRole("button", { name: "Add a note" }));
       const add = within(log).getByRole("button", { name: "Add" });
       expect(add).toBeDisabled();
       await userEvent.type(within(log).getByLabelText("Add a note"), "All 46 workflows show.");
@@ -208,7 +210,7 @@ describe("journey 03, work the backlogs", () => {
     it("a reader who cannot move the issue still gets the box", async () => {
       inFarmers("/backlogs/issue/t1", { ...withLog([]), [backlogTools.myRoles]: () => ({ permissions: ["task.read"] }) });
       const log = await logSection();
-      expect(within(log).getByRole("button", { name: "Add" })).toBeInTheDocument();
+      expect(within(log).getByRole("button", { name: "Add a note" })).toBeInTheDocument();
     });
 
     it("the list shows nothing of the Log", async () => {
