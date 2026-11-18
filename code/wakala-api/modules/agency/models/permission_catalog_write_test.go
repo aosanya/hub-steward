@@ -21,3 +21,24 @@ func TestPermissionCatalog_ServiceEditAndBoardManageCarryTheCatalogueWrites(t *t
 		}
 	}
 }
+
+func TestPermissionCatalog_BoardReadReadsTheListAndTheCountByAreaAndNothingMore(t *testing.T) {
+	read, ok := LookupPermission("board.read")
+	if !ok {
+		t.Fatal("catalogue lacks board.read")
+	}
+	if read.Module != "forms" {
+		t.Errorf("board.read module = %q, want forms", read.Module)
+	}
+	for _, a := range []string{"catalog.board_item.list", "catalog.board_item.tally_by_area"} {
+		if !slices.Contains(read.Actions, a) {
+			t.Errorf("board.read lacks action %s, has %v", a, read.Actions)
+		}
+	}
+	manage, _ := LookupPermission("board.manage")
+	for _, a := range read.Actions {
+		if slices.Contains(manage.Actions, a) {
+			t.Errorf("board.manage also holds %s, so board.read adds nothing apart from it", a)
+		}
+	}
+}
