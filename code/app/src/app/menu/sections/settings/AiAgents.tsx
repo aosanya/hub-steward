@@ -5,7 +5,7 @@ import { MenuWindow } from "../../MenuWindow";
 import { settingsPaths } from "./paths";
 import { ChatAboutItem, useChosenItem } from "./RecordPage";
 import { FactsCard, type Fact } from "../../FactsCard";
-import { labelOf } from "./personLabel";
+import { nameOrUnnamed, shownName } from "./personLabel";
 import { PageFrame } from "../../PageFrame";
 import { SectionGo } from "../residents/SectionAct";
 import { agentLimitFields, everyoneId as everyone, limitsPermission } from "./aiLimits";
@@ -51,13 +51,13 @@ const permissionsOf = async (seatId: string) => {
 };
 
 const peopleNames = async () =>
-  new Map(itemsOf(await ifAllowed(() => callTool("", "actor_list_actors"), { items: [] })).map((person) => [text(person, "id"), labelOf(person)] as const));
+  new Map(itemsOf(await ifAllowed(() => callTool("", "actor_list_actors"), { items: [] })).map((person) => [text(person, "id"), nameOrUnnamed(person)] as const));
 
 const usedBy = (rows: Record_[], key: string, names: Map<string, string>) => {
   const totals = new Map<string, number>();
   rows.forEach((row) => {
     const who = text(row, key);
-    const named = names.get(who) ?? who;
+    const named = names.get(who) ?? shownName(who);
     if (named) totals.set(named, (totals.get(named) ?? 0) + tokensOf(row));
   });
   return [...totals.entries()].sort((a, b) => b[1] - a[1]).map(([who, tokens]) => `${who} ${grouped(tokens)}`).join("; ");

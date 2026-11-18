@@ -42,6 +42,8 @@ const account = { id: "a1", name: "Muse Spark 1.3", tokens_per_day: 200000, toke
 
 let called: MockInstance<typeof mcp.callTool>;
 let refuse: string[];
+let actors: unknown[] | null;
+let extraRows: Record<string, unknown>[];
 
 const pane = () => document.querySelector(".mw-detail") as HTMLElement;
 
@@ -52,14 +54,17 @@ const setWide = (wide: boolean) => {
 beforeEach(() => {
   openAgency("town");
   refuse = [];
+  actors = null;
+  extraRows = [];
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     if (refuse.includes(name)) throw new mcp.McpError("not allowed");
     if (name === "ai_list_roles") return { items: agents };
     if (name === "ai_get_assistant_limits") return limits;
     if (name === "ai_usage_breakdown") {
       const wanted = (args as { role_id?: string }).role_id;
-      return { ...breakdown, rows: breakdown.rows.filter((row) => !wanted || row.role_id === wanted) };
+      return { ...breakdown, rows: [...breakdown.rows, ...extraRows].filter((row) => !wanted || row.role_id === wanted) };
     }
+    if (name === "actor_list_actors" && actors) return { items: actors };
     if (name === "agency_get_role") return seats[(args as { role_id: string }).role_id];
     if (name === "agency_list_permissions") return { items: vocabulary };
     if (name === "ai_get_account") return account;
@@ -119,6 +124,24 @@ describe("AI agents and limits", () => {
     expect(text).toContain("Kiss Péter");
     expect(text).toContain("1,500");
     expect(text).toContain("3,000");
+  });
+
+  it("names an actor with no display name by a neutral word, never by an id", async () => {
+    const nameless = "dbc62e71-1111-4222-8333-444455556666";
+    const stranger = "9f3a77c2-aaaa-4bbb-8ccc-ddddeeeeffff";
+    actors = [{ id: nameless }];
+    extraRows = [
+      { day: "2026-11-18", role_id: "r1", person: nameless, tokens_in: 100, tokens_out: 50, requests: 1 },
+      { day: "2026-11-18", role_id: "r1", person: stranger, tokens_in: 20, tokens_out: 10, requests: 1 },
+    ];
+    open();
+    await userEvent.click(await screen.findByRole("button", { name: /Each person/ }));
+
+    await waitFor(() => expect(pane().textContent).toContain("Unnamed person"));
+    const text = pane().textContent ?? "";
+    expect(text).not.toContain("dbc62e71");
+    expect(text).not.toContain("9f3a77c2");
+    expect(text).toContain("Unnamed person 180");
   });
 
   it("opens an AI agent to what it may see and change, its limits, its account's limits and its use", async () => {

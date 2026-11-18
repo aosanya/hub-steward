@@ -15,6 +15,9 @@ import { SeatGive } from "./SeatGive";
 import { SectionAct } from "../residents/SectionAct";
 import { residentPaths } from "../residents/paths";
 import { labelOf } from "./personLabel";
+import { useMay } from "../../../../features/agency/useMay";
+
+const residentRead = "resident.read";
 
 type Seat = { id?: unknown; role_name?: unknown };
 
@@ -47,6 +50,8 @@ const loadPerson = async (id: string) => {
 
 function ResidentPageCard({ id, name }: { id: string; name: string }) {
   const navigate = useNavigate();
+  const may = useMay(residentRead);
+  if (!may) return null;
   const open = () => navigate(residentPaths.people.path({ person: id }));
   return (
     <Section

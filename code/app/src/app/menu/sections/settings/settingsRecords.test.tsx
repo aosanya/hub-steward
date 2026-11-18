@@ -10,6 +10,7 @@ import { type AssistantClient } from "../../../../features/assistant/api";
 import { routes as appRoutes } from "../../../routes";
 import { carriedChatAbout, forgetChatAbout } from "../../../chatAbout";
 import { items, routes } from "./index";
+import { settingsPaths } from "./paths";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
@@ -162,10 +163,30 @@ describe("Users & Roles gives a role from the card footer", () => {
 
 describe("Users & Roles opens the resident page", () => {
   it("has a card whose act opens the resident page of the user", async () => {
+    permissions = ["resident.read"];
     await openScreen("Users & Roles", "item=p1", "Asha Otieno");
     const card = await screen.findByRole("region", { name: "Resident page" });
     await userEvent.click(within(card).getByRole("button", { name: "Open the resident page" }));
     expect(screen.getByTestId("where")).toHaveTextContent("/menu/residents/people?person=p1");
+  });
+
+  it("shows no Resident page card to someone without resident.read", async () => {
+    permissions = ["role.assign"];
+    await openScreen("Users & Roles", "item=p1", "Asha Otieno");
+    await screen.findByRole("region", { name: "Roles" });
+    await waitFor(() => expect(mcp.callTool).toHaveBeenCalledWith("", "agency_get_my_roles"));
+    expect(screen.queryByRole("region", { name: "Resident page" })).not.toBeInTheDocument();
+  });
+});
+
+describe("Boundary edit screen without group.manage", () => {
+  it("says the caller may not change it, offers a way back, and shows no form", async () => {
+    await openAt(settingsPaths.boundaryEdit.path({ id: "g1" }), "Edit boundary");
+    expect(await screen.findByText("You may not change this.")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Boundary corners")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+    await waitFor(() => expect(screen.getByTestId("where")).toHaveTextContent("/menu/settings/boundaries-and-areas?item=g1"));
   });
 });
 

@@ -13,3 +13,8 @@ export function useMay(permission: string) {
   const answer = useLoad(() => holds(permission), `may:${openAgencyId()}:${permission}`);
   return answer.state === "ready" && answer.data;
 }
+
+export function useMayAnswer(permission: string) {
+  const answer = useLoad(() => holds(permission), `may:${openAgencyId()}:${permission}`);
+  return { known: answer.state !== "loading", may: answer.state === "ready" && answer.data };
+}

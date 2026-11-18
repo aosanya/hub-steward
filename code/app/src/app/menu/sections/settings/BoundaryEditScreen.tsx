@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMay } from "../../../../features/agency/useMay";
+import { useMayAnswer } from "../../../../features/agency/useMay";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
@@ -14,6 +14,8 @@ import { boundaryArgs, cornersFromText, outerRingOf, textFromCorners } from "./b
 import { settingsPaths } from "./paths";
 
 type Group = Record<string, unknown>;
+
+const notAllowedWords = "You may not change this.";
 
 const unreadableWords = "Give at least three corners, one longitude and latitude to a line.";
 
@@ -63,7 +65,7 @@ function BoundaryEditForm({ id, group, done }: { id: string; group: Group | null
 export function BoundaryEditScreen() {
   const { id = "" } = useParams();
   const navigate = useNavigate();
-  const may = useMay("group.manage");
+  const { known, may } = useMayAnswer("group.manage");
   const view = useLoad(() => loadGroup(id), `boundary-edit:${openAgencyId()}:${id}`);
   const back = () => navigate(settingsPaths.boundariesAndAreas.path({ item: id }));
   const name = view.state === "ready" ? textOf(view.data?.name) : "";
@@ -71,7 +73,13 @@ export function BoundaryEditScreen() {
     <Shell title="Edit boundary" titleUnder onBack={back} backLabel={name || "Back"} tabless>
       {view.state === "loading" ? <LoadingLine /> : null}
       {view.state === "error" ? <LoadFailed words="This could not be loaded." /> : null}
-      {view.state === "ready" && may ? <div className="person-page"><BoundaryEditForm id={id} group={view.data} done={back} /></div> : null}
+      {view.state === "ready" && known && may ? <div className="person-page"><BoundaryEditForm id={id} group={view.data} done={back} /></div> : null}
+      {view.state === "ready" && known && !may ? (
+        <div className="person-page">
+          <p className="quiet-line">{notAllowedWords}</p>
+          <Button kind="quiet" onClick={back}>Back</Button>
+        </div>
+      ) : null}
     </Shell>
   );
 }
