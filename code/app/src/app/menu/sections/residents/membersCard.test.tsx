@@ -5,6 +5,7 @@ import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { items, routes } from "./index";
+import { MembersCard } from "./MembersCard";
 
 let permissions: string[];
 
@@ -153,5 +154,23 @@ describe("the Members card on a group page", () => {
     await pane.findByRole("region", { name: "Group detail" });
     expect(pane.queryByRole("region", { name: "Members" })).toBeNull();
     expect(memberCalls).toHaveLength(0);
+  });
+  it("closes the full list and reads the new group's members when the page moves to another group", async () => {
+    const { rerender } = render(
+      <MemoryRouter>
+        <MembersCard groupId="g1" />
+      </MemoryRouter>,
+    );
+    await userEvent.click(await screen.findByRole("button", { name: "See all 5" }));
+    await screen.findByRole("dialog", { name: "Members" });
+
+    rerender(
+      <MemoryRouter>
+        <MembersCard groupId="g2" />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => expect(memberCalls[memberCalls.length - 1]).toMatchObject({ group_id: "g2" }));
+    expect(screen.queryByRole("dialog", { name: "Members" })).toBeNull();
   });
 });

@@ -82,7 +82,9 @@ export const useGroupMembers = (groupId: string) => {
 
 export const membersCountWords = (total: number) => `${total} ${total === 1 ? "member" : "members"}`;
 
-export function MembersSection({ groupId, members }: { groupId: string; members: ReturnType<typeof useGroupMembers> }) {
+type MembersSectionProps = { groupId: string; members: ReturnType<typeof useGroupMembers> };
+
+function MembersSectionBody({ groupId, members }: MembersSectionProps) {
   const navigate = useNavigate();
   const [all, setAll] = useState(false);
   const { may, view } = members;
@@ -103,6 +105,10 @@ export function MembersSection({ groupId, members }: { groupId: string; members:
       {all ? <MembersSheet groupId={groupId} onClose={() => setAll(false)} onOpen={open} /> : null}
     </>
   );
+}
+
+export function MembersSection(props: MembersSectionProps) {
+  return <MembersSectionBody key={props.groupId} {...props} />;
 }
 
 export function MembersCard({ groupId }: { groupId: string }) {

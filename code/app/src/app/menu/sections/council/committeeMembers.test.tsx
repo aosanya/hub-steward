@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
-import { CommitteesScreen } from "./CommitteesScreen";
+import { CommitteePage, CommitteesScreen } from "./CommitteesScreen";
 import { councilPaths } from "./paths";
 
 type Row = Record<string, unknown>;
@@ -230,5 +230,67 @@ describe("the members of an opened committee", () => {
     expect(within(chairRow).getByText("Balogh Anna", { selector: ".meta" })).toBeInTheDocument();
     expect(within(chairRow).queryByText("Chair: Balogh Anna")).toBeNull();
     expect(pane.getByText("Chair: Balogh Anna", { selector: ".quiet-line" })).toBeInTheDocument();
+  });
+  it("forgets an opened member page when another committee is chosen, so Remove never acts on the wrong committee", async () => {
+    const pane = await open("Audit Committee");
+    await pane.findByRole("heading", { name: membersHeading(3) });
+    await userEvent.click(rowOf(pane, "Varga József"));
+    await pane.findByRole("button", { name: "Remove from committee" });
+
+    await userEvent.click(screen.getByRole("button", { name: /Consultation Committee/ }));
+
+    const next = within(document.querySelector(".mw-detail") as HTMLElement);
+    expect(await next.findByRole("heading", { level: 1, name: "Consultation Committee" })).toBeInTheDocument();
+    expect(next.queryByRole("button", { name: "Remove from committee" })).toBeNull();
+    expect(next.queryByText("Varga József")).toBeNull();
+    expect(callsTo("actor_revoke_role")).toEqual([]);
+  });
+
+  it("closes an open Add member form when another committee is chosen", async () => {
+    const pane = await open("Audit Committee");
+    await pane.findByRole("heading", { name: membersHeading(3) });
+    await userEvent.click(pane.getByRole("button", { name: "Add member" }));
+    await userEvent.type(pane.getByRole("searchbox"), "Nagy");
+
+    await userEvent.click(screen.getByRole("button", { name: /Consultation Committee/ }));
+
+    const next = within(document.querySelector(".mw-detail") as HTMLElement);
+    expect(await next.findByText("No members yet.")).toBeInTheDocument();
+    expect(next.queryByRole("searchbox")).toBeNull();
+  });
+  it("drops an opened member page the moment the page is given another committee, even before anything reloads", async () => {
+    const audit = { id: "g1", name: "Audit Committee", chair: "Chair: Balogh Anna", chairNames: "Balogh Anna" };
+    const consultation = { id: "g2", name: "Consultation Committee", chair: "", chairNames: "" };
+    const draw = (committee: Row) => (
+      <MemoryRouter>
+        <CommitteePage committee={committee} onChanged={() => undefined} />
+      </MemoryRouter>
+    );
+    const { rerender } = render(draw(audit));
+    await userEvent.click(await screen.findByText("Varga József", { selector: ".ttl" }));
+    await screen.findByRole("button", { name: "Remove from committee" });
+
+    rerender(draw(consultation));
+
+    expect(await screen.findByRole("heading", { level: 1, name: "Consultation Committee" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Remove from committee" })).toBeNull();
+  });
+
+  it("drops an open Add member form the moment the page is given another committee", async () => {
+    const audit = { id: "g1", name: "Audit Committee", chair: "", chairNames: "" };
+    const consultation = { id: "g2", name: "Consultation Committee", chair: "", chairNames: "" };
+    const draw = (committee: Row) => (
+      <MemoryRouter>
+        <CommitteePage committee={committee} onChanged={() => undefined} />
+      </MemoryRouter>
+    );
+    const { rerender } = render(draw(audit));
+    await userEvent.click(await screen.findByRole("button", { name: "Add member" }));
+    await userEvent.type(screen.getByRole("searchbox"), "Nagy");
+
+    rerender(draw(consultation));
+
+    expect(await screen.findByText("No members yet.")).toBeInTheDocument();
+    expect(screen.queryByRole("searchbox")).toBeNull();
   });
 });

@@ -15,7 +15,9 @@ export const committeesTitle = "Committees";
 
 const empty = (words: string) => ({ words, act: "Home", to: agencyHomePath(openAgencyId()) });
 
-function CommitteePage({ committee, onChanged }: { committee: Item; onChanged: () => void }) {
+type CommitteePageProps = { committee: Item; onChanged: () => void };
+
+function CommitteePageBody({ committee, onChanged }: CommitteePageProps) {
   const [opened, setOpened] = useState<Member | null>(null);
   const [version, setVersion] = useState(0);
   if (opened) {
@@ -33,6 +35,10 @@ function CommitteePage({ committee, onChanged }: { committee: Item; onChanged: (
       <CommitteeMembers groupId={text(committee, "id")} onChanged={onChanged} onOpen={setOpened} version={version} />
     </CouncilPage>
   );
+}
+
+export function CommitteePage(props: CommitteePageProps) {
+  return <CommitteePageBody key={text(props.committee, "id")} {...props} />;
 }
 
 export function CommitteesScreen() {
