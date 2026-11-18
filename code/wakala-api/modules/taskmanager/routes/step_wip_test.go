@@ -256,7 +256,7 @@ func TestDaysInStepCountFromTheLastMoveNotFromTheLastEdit(t *testing.T) {
 	now := time.Now()
 	h.backdate(id, now.Add(-5*24*time.Hour), now.Add(-5*24*time.Hour))
 
-	h.expect(http.StatusOK, "boss", "PATCH", "/tasks/"+id, map[string]any{"priority": "high"})
+	h.expect(http.StatusOK, "boss", "PATCH", "/tasks/"+id, map[string]any{"title": "renamed after it closed"})
 	if got := h.expect(http.StatusOK, "boss", "GET", "/tasks/"+id, nil); got["days_in_step"] != float64(5) {
 		t.Fatalf("an edit changed days_in_step to %v, want 5", got["days_in_step"])
 	}
