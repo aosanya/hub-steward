@@ -42,7 +42,7 @@ const callsTo = (name: string) => called.mock.calls.filter(([, tool]) => tool ==
 
 const formCard = () => screen.getByRole("region", { name: "Report to send" });
 
-const listPane = () => document.querySelector(".mw-list") as HTMLElement;
+const listPane = () => document.querySelector(".person-page") as HTMLElement;
 
 const sentList = () => screen.getByRole("region", { name: "Sent reports" });
 
@@ -109,7 +109,8 @@ describe("the National Report form", () => {
   it("names the screen, lists both kinds in plain words and starts on budget and actuals", async () => {
     openScreen();
 
-    expect(await screen.findByRole("heading", { name: "National Report" })).toBeInTheDocument();
+    await screen.findByRole("region", { name: "Report to send" });
+    expect(document.querySelector(".person-name")?.textContent).toBe("National Report");
     const budget = within(formCard()).getByRole("button", { name: "Budget and actuals" });
     const spending = within(formCard()).getByRole("button", { name: "Spending by department" });
     expect(budget).toHaveAttribute("aria-pressed", "true");
@@ -249,7 +250,7 @@ describe("the Sent reports list", () => {
     await waitFor(() => expect(sentRows()).toHaveLength(1));
     await userEvent.click(sentList().querySelector("button.row") as HTMLElement);
 
-    const pane = () => document.querySelector(".mw-detail") as HTMLElement;
+    const pane = () => document.querySelector(".person-page") as HTMLElement;
     await waitFor(() => expect(pane()?.textContent).toContain("12,000"));
     expect(pane().textContent).toContain("9,500");
     expect(pane().textContent).toContain("2,500");

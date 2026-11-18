@@ -87,6 +87,12 @@ const pane = () => document.querySelector(".mw-detail") as HTMLElement;
 
 const listPane = () => document.querySelector(".mw-list") as HTMLElement;
 
+const departmentLine = (name: string) => {
+  const rows = Array.from(within(pane()).getByRole("region", { name: "Departments" }).querySelectorAll(".row"));
+  const row = rows.find((one) => one.querySelector(".ttl")?.textContent === name);
+  return row ? [row.querySelector(".ttl")?.textContent, ...Array.from(row.querySelectorAll(".meta")).map((meta) => meta.textContent)].join(" · ") : "";
+};
+
 const backButton = (name: RegExp) => screen.getByRole("button", { name });
 
 const openReports = () =>
@@ -205,10 +211,8 @@ describe("the departments of an opened report", () => {
 
     await waitFor(() => expect(pane().textContent).toContain("9,500"));
     expect(pane().textContent).toContain("Departments");
-    expect(pane().textContent).toContain("Public works");
-    expect(pane().textContent).toContain("Planned 7,000 · Spent 5,000 · Difference 2,000");
-    expect(pane().textContent).toContain("Culture");
-    expect(pane().textContent).toContain("Planned 5,000 · Spent 4,500 · Difference 500");
+    expect(departmentLine("Public works")).toBe("Public works · Planned 7,000 · Spent 5,000 · Difference 2,000");
+    expect(departmentLine("Culture")).toBe("Culture · Planned 5,000 · Spent 4,500 · Difference 500");
   });
 
   it("reads a department with an empty name as No department", async () => {
@@ -216,10 +220,8 @@ describe("the departments of an opened report", () => {
     openReports();
     await userEvent.click(await screen.findByRole("button", { name: /Third quarter/ }));
 
-    await waitFor(() => expect(pane().textContent).toContain("Parks"));
-    expect(pane().textContent).toContain("Planned 4,000 · Spent 3,000 · Difference 1,000");
-    expect(pane().textContent).toContain("No department");
-    expect(pane().textContent).toContain("Planned 2,000 · Spent 1,000 · Difference 1,000");
+    await waitFor(() => expect(departmentLine("Parks")).toBe("Parks · Planned 4,000 · Spent 3,000 · Difference 1,000"));
+    expect(departmentLine("No department")).toBe("No department · Planned 2,000 · Spent 1,000 · Difference 1,000");
   });
 
   it.each(["2026-01-01", "2026-04-01", "2026-07-01"])(
@@ -237,10 +239,8 @@ describe("the departments of an opened report", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Second quarter/ }));
 
     await waitFor(() => expect(pane().textContent).toContain("8,300"));
-    expect(pane().textContent).toContain("Transport");
-    expect(pane().textContent).toContain("Planned 3,000 · Spent 3,100 · Difference -100");
-    expect(pane().textContent).toContain("Public works");
-    expect(pane().textContent).toContain("Planned 5,000 · Spent 5,200 · Difference -200");
+    expect(departmentLine("Transport")).toBe("Transport · Planned 3,000 · Spent 3,100 · Difference -100");
+    expect(departmentLine("Public works")).toBe("Public works · Planned 5,000 · Spent 5,200 · Difference -200");
   });
 });
 

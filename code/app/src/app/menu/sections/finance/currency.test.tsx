@@ -279,7 +279,7 @@ describe.each(cases)("when $when", ({ listed, unit }) => {
     fireEvent.change(within(form).getByLabelText("To"), { target: { value: "2026-09-30" } });
     await userEvent.click(within(form).getByRole("button", { name: "Show figures" }));
 
-    const figures = () => document.querySelector(".mw-list") as HTMLElement;
+    const figures = () => document.querySelector(".person-page") as HTMLElement;
     await waitFor(() => expect(figures().textContent).toContain(`8,100,000${unit}`));
     expect(figures().textContent).toContain(`9,000,000${unit}`);
     expect(figures().textContent).toContain(`900,000${unit}`);
@@ -287,6 +287,7 @@ describe.each(cases)("when $when", ({ listed, unit }) => {
   });
 
   it(`draws a sent National Report with its figures as sent${unit ? " followed by the unit" : " as bare numbers"}`, async () => {
+    const page = () => document.querySelector(".person-page") as HTMLElement;
     answering(listed);
     show("national-report", <UpwardReportScreen />);
     const sent = await screen.findByRole("region", { name: "Sent reports" });
@@ -294,10 +295,10 @@ describe.each(cases)("when $when", ({ listed, unit }) => {
     await userEvent.click(sent.querySelector("button.row") as HTMLElement);
     await act(async () => undefined);
 
-    await waitFor(() => expect(pane()?.textContent).toContain(`12,000,000${unit}`));
-    expect(pane().textContent).toContain(`9,500,000${unit}`);
-    expect(pane().textContent).toContain(`2,500,000${unit}`);
-    nothingElseAfterNumbers(pane().textContent ?? "");
+    await waitFor(() => expect(page()?.textContent).toContain(`12,000,000${unit}`));
+    expect(page().textContent).toContain(`9,500,000${unit}`);
+    expect(page().textContent).toContain(`2,500,000${unit}`);
+    nothingElseAfterNumbers(page().textContent ?? "");
   });
 });
 

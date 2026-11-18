@@ -72,7 +72,7 @@ export function SendReportButton({ report }: { report: Item }) {
   if (!may || text(report, "id") === "") return null;
   return (
     <>
-      <Button onClick={() => setSending(true)}>Send to a person</Button>
+      <button type="button" className="sec-act" onClick={() => setSending(true)}>Send to a person</button>
       {sending ? <SendReportSheet report={report} onClose={() => setSending(false)} /> : null}
     </>
   );

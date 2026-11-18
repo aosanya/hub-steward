@@ -7,8 +7,13 @@ import { Segmented } from "../../../../shared/ui/Segmented";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuDetail } from "../../MenuDetail";
 import { refusalWords } from "../../MenuEditForm";
-import { MenuWindow } from "../../MenuWindow";
-import { dayStart, dayWords, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, text, tools, unitOf, type Item } from "./financeData";
+import { PageFrame } from "../../PageFrame";
+import { useBackToSection } from "../../useBackToSection";
+import { Shell } from "../../../Shell";
+import { ListRow } from "../../../../shared/ui/ListRow";
+import { useLoad } from "../../../../features/forms/useLoad";
+import { openAgencyId } from "../../../../shared/wakala/openAgency";
+import { dayStart, dayWords, listOf, moneyWords, periodEndOf, periodWords, reportPeriodOf, text, tools, unitOf, type Item } from "./financeData";
 import { ChatAboutFinance, FactsCard } from "./FinanceRecord";
 import { financePaths } from "./paths";
 import { figureOf, noReportWords, periodRefusal } from "./reportPeriod";
@@ -24,11 +29,7 @@ const kindWords = (kind: string) => kinds.find((one) => one.id === kind)?.label 
 
 const recordPeriod = (record: Item) => periodWords(text(record, "period_start"), text(record, "period_end"));
 
-const sentRow = (record: Item) => ({
-  id: text(record, "id"),
-  kind: kindWords(text(record, "kind")),
-  meta: `${recordPeriod(record)} · Sent ${dayWords(text(record, "sent_at"))}`,
-});
+const sentMeta = (record: Item) => `${recordPeriod(record)} · Sent ${dayWords(text(record, "sent_at"))}`;
 
 const recordView = (record: Item, unit: string) => ({
   id: text(record, "id"),
@@ -40,18 +41,9 @@ const recordView = (record: Item, unit: string) => ({
   sent: dayWords(text(record, "sent_at")),
 });
 
-const recordFields = { Kind: "kind", Period: "period", Planned: "planned", Spent: "spent", Difference: "difference", Sent: "sent" };
-
 const periodWordsOf = (id: string) => {
   const { period_start, period_end } = reportPeriodOf(id);
   return periodWords(period_start, period_end);
-};
-
-const loadSent = async () => (await listOf(tools.upwardReportList)).map(sentRow);
-
-const loadRecord = async (id: string, unit: string) => {
-  const found = (await listOf(tools.upwardReportList)).find((record) => text(record, "id") === id);
-  return found ? recordView(found, unit) : { id };
 };
 
 const loadFigures = async (id: string, unit: string) => {
@@ -129,26 +121,38 @@ function ReportForm({ onSent, unit }: { onSent: () => void; unit: string }) {
   );
 }
 
+const quietLine = (records: Item[]) => (records.length === 0 ? "Nothing has been sent yet" : `Last sent ${dayWords(text(records[0], "sent_at"))}`);
+
+function SentCard({ records, unit }: { records: Item[]; unit: string }) {
+  const [chosen, setChosen] = useState("");
+  const open = records.find((record) => text(record, "id") === chosen);
+  return (
+    <>
+      <Section
+        word="Sent reports"
+        plain
+        empty={{ words: "Nothing has been sent yet." }}
+        rows={records.map((record) => (
+          <ListRow key={text(record, "id")} title={kindWords(text(record, "kind"))} meta={sentMeta(record)} onClick={() => setChosen(text(record, "id"))} pressed={text(record, "id") === chosen} />
+        ))}
+      />
+      {open ? <FactsCard word="Sent report" item={recordView(open, unit)} facts={recordFacts} /> : null}
+    </>
+  );
+}
+
 export function UpwardReportScreen() {
   const unit = unitOf(useWord("accounting"));
   const [sent, setSent] = useState(0);
+  const back = useBackToSection();
+  const records = useLoad(() => listOf(tools.upwardReportList), `sent-reports:${openAgencyId()}:${sent}`);
+  const list = records.state === "ready" ? records.data : [];
   return (
-    <MenuWindow
-      title="National Report"
-      withTabs
-      bandless
-      listKey={sent}
-      detailKey={unit}
-      above={<ReportForm onSent={() => setSent((was) => was + 1)} unit={unit} />}
-      list={{
-        title: "Sent reports",
-        tool: tools.upwardReportList,
-        load: loadSent,
-        fields: { title: "kind", meta: "meta" },
-        empty: homeEmpty("Nothing has been sent yet."),
-        groups: (rows) => [{ heading: "Sent reports", items: rows }],
-      }}
-      detail={{ tool: tools.upwardReportList, load: (id: string) => loadRecord(id, unit), fields: recordFields, status: "" }}
-    />
+    <Shell title="National Report" onBack={back.onBack} backLabel={back.backLabel}>
+      <PageFrame title="National Report" line={quietLine(list)}>
+        <ReportForm onSent={() => setSent((was) => was + 1)} unit={unit} />
+        <SentCard records={list} unit={unit} />
+      </PageFrame>
+    </Shell>
   );
 }

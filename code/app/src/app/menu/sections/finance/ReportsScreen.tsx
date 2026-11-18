@@ -46,9 +46,7 @@ const loadChosen = async (id: string, unit: string) => {
 const reportBack = financePaths.reports.path();
 
 const reportPage = (report: unknown) => (
-  <ReportPage report={report as ReportView} heading="Financial Reports" back={reportBack}>
-    <SendReportButton report={report as ReportView} />
-  </ReportPage>
+  <ReportPage report={report as ReportView} heading="Financial Reports" back={reportBack} foot={<SendReportButton report={report as ReportView} />} />
 );
 
 function ChoosePeriod({ unit }: { unit: string }) {

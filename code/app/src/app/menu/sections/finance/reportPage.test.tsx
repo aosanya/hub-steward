@@ -124,3 +124,41 @@ describe("the national report is built like a resident", () => {
     expect(card.queryByRole("button", { name: "Send report" })).toBeNull();
   });
 });
+
+describe("the national report is one column with a title, a form and a Sent card", () => {
+  it("names the page and says nothing has been sent in its quiet line", async () => {
+    openNational();
+    await screen.findByRole("region", { name: "Report to send" });
+    expect(document.querySelector(".person-name")?.textContent).toBe("National Report");
+    expect(await screen.findByText("Nothing has been sent yet", { selector: ".quiet-line" })).toBeInTheDocument();
+  });
+
+  it("holds an empty Sent card inside the page and no list pane or Home button", async () => {
+    openNational();
+    const sent = within(await screen.findByRole("region", { name: "Sent reports" }));
+    expect(await sent.findByText("Nothing has been sent yet.")).toBeInTheDocument();
+    expect(sent.queryByRole("button", { name: "Home" })).toBeNull();
+    expect(document.querySelector(".mw-list")).toBeNull();
+    expect(document.querySelector(".wf-panes")).toBeNull();
+  });
+
+  it("draws the shown figures as a Report card in the same column", async () => {
+    openNational();
+    const form = within(await screen.findByRole("region", { name: "Report to send" }));
+    await userEvent.type(form.getByLabelText("From"), "2026-01-01");
+    await userEvent.type(form.getByLabelText("To"), "2026-03-31");
+    await userEvent.click(form.getByRole("button", { name: "Show figures" }));
+    const figuresCard = within(await screen.findByRole("region", { name: "Report" }));
+    expect(await figuresCard.findByText("Planned")).toBeInTheDocument();
+    expect(document.querySelector(".wf-panes")).toBeNull();
+  });
+});
+
+describe("Send to a person is the right-hand act of the Report card", () => {
+  it("sits in the footer of the Report card", async () => {
+    permissions = [...permissions, "notification.raise"];
+    await openReport();
+    const card = within(await screen.findByRole("region", { name: "Report" }));
+    expect(card.getByRole("button", { name: "Send to a person" }).closest("footer")).not.toBeNull();
+  });
+});
