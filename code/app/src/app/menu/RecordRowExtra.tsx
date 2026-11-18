@@ -5,16 +5,16 @@ import { RowHoldings } from "./sections/residents/PersonHoldings";
 import { RecordApplications } from "./sections/residents/RecordLinks";
 import { RowActivity } from "./sections/residents/RowActivity";
 
-type Props = { row: Record<string, unknown>; recordCode: string; owner?: { prompt: string; heading: string } };
+type Props = { row: Record<string, unknown>; recordCode: string; owner?: { prompt: string; heading: string }; licence?: boolean };
 
-export function RecordRowExtra({ row, recordCode, owner }: Props) {
+export function RecordRowExtra({ row, recordCode, owner, licence }: Props) {
   const rowId = String(row[recordRowIdKey] ?? "");
   return (
     <>
       {owner ? <RecordOwner heading={owner.heading} ownerId={String(row[recordOwnerKey] ?? "")} /> : null}
       <RecordMoney rowId={rowId} />
       {rowId ? <RowHoldings rowId={rowId} /> : null}
-      <RecordApplications ownerId={String(row[recordOwnerKey] ?? "")} rowId={rowId} />
+      <RecordApplications ownerId={String(row[recordOwnerKey] ?? "")} rowId={rowId} licenceRecord={licence ? recordCode : undefined} />
       {rowId ? <RowActivity recordCode={recordCode} rowId={rowId} /> : null}
     </>
   );

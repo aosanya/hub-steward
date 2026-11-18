@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Button } from "../../shared/ui/Button";
-import { Chip } from "../../shared/ui/Chip";
 import { liveRecordRowsTool, loadRecordRow, loadRecordRows } from "./liveRecordRows";
 import { MenuWindow } from "./MenuWindow";
 import { RecordRowExtra } from "./RecordRowExtra";
-import { loadLicensedRowIds } from "./sections/residents/licensedRows";
+import { loadLicenceMarks, type LicenceMark } from "./sections/residents/licensedRows";
+import { LicenceChip } from "./sections/residents/LicenceChip";
 
 type Props = {
   title: string;
@@ -17,22 +17,19 @@ type Props = {
   licence?: boolean;
 };
 
-const licensedKey = "licensed";
-const licensedWords = "Licensed";
-const notLicensedWords = "Not licensed";
+const licenceMarkKey = "licenceMark";
 
-const licenceChip = (item: Record<string, unknown>) =>
-  item[licensedKey] === undefined ? null : item[licensedKey] ? <Chip tone="success">{licensedWords}</Chip> : <Chip>{notLicensedWords}</Chip>;
+const licenceChip = (item: Record<string, unknown>) => (typeof item[licenceMarkKey] === "string" ? <LicenceChip mark={item[licenceMarkKey] as LicenceMark} /> : null);
 
 export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, prompts, empty, owner, licence }: Props) {
   const [count, setCount] = useState(0);
   const load = async () => {
-    const [rows, licensed] = await Promise.all([
+    const [rows, marks] = await Promise.all([
       loadRecordRows(recordCode, titlePrompt, metaPrompts),
-      licence ? loadLicensedRowIds(recordCode) : Promise.resolve(null),
+      licence ? loadLicenceMarks(recordCode) : Promise.resolve(null),
     ]);
     setCount(rows.length);
-    return licensed ? rows.map((row) => ({ ...row, [licensedKey]: licensed.has(row.id) })) : rows;
+    return marks ? rows.map((row) => ({ ...row, [licenceMarkKey]: marks.get(row.id) ?? "Not licensed" })) : rows;
   };
   return (
     <MenuWindow
@@ -45,7 +42,7 @@ export function RecordRowsScreen({ title, recordCode, titlePrompt, metaPrompts, 
         load: (id) => loadRecordRow(recordCode, id, prompts, owner?.prompt),
         fields: Object.fromEntries(prompts.map((prompt) => [prompt, prompt])),
         status: "status",
-        extra: (row) => <RecordRowExtra row={row} recordCode={recordCode} owner={owner} />,
+        extra: (row) => <RecordRowExtra row={row} recordCode={recordCode} owner={owner} licence={licence} />,
       }}
     />
   );

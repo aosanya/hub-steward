@@ -42,6 +42,8 @@ let history: Row[];
 let entries: Row[];
 let sends: Row[];
 let submissionsRefused: boolean;
+let questions: Row[];
+let answers: Row[];
 
 const serve = () => {
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency: string, name: string, args?: unknown) => {
@@ -53,6 +55,8 @@ const serve = () => {
       if (submissionsRefused) throw new Error("forms_submission_list: permission denied: form.results");
       return { items: sends.filter((one) => one.form_id === given.form_id) };
     }
+    if (name === "forms_question_list") return { items: questions };
+    if (name === "forms_answer_list") return { items: answers };
     return { items: [] };
   });
 };
@@ -73,6 +77,8 @@ const showBusinesses = () =>
     </MemoryRouter>,
   );
 
+const validUntil = (sendId: string, date: string): Row => ({ send_id: sendId, question_id: "q-valid", value_date: date });
+
 const rowOf = (title: string) => {
   const list = document.querySelector(".mw-list") as HTMLElement;
   const row = within(list).getByText(title).closest(".row") as HTMLElement;
@@ -86,6 +92,8 @@ beforeEach(() => {
   entries = [licenceEntry, permitEntry];
   sends = [];
   submissionsRefused = false;
+  questions = [{ id: "q-valid", prompt: "Valid until" }];
+  answers = [];
   serve();
 });
 
@@ -184,5 +192,29 @@ describe("the licence mark on a row of the Businesses list", () => {
     expect(rowOf("Zöldkert Grocer").getByText("Not licensed")).toBeInTheDocument();
     const list = document.querySelector(".mw-list") as HTMLElement;
     expect(list.classList.contains("wf-tree")).toBe(true);
+  });
+});
+
+describe("the Expired mark on a row of the Businesses list", () => {
+  it("a business whose approved licence ran out before today reads Expired and one valid until a later date reads Licensed", async () => {
+    current = [bakery, grocer, smithy];
+    sends = [approvedFor("s1", "b1"), approvedFor("s2", "b2")];
+    answers = [validUntil("s1", "2020-01-31"), validUntil("s2", "2999-12-31")];
+    showBusinesses();
+
+    expect(await screen.findByText("Malomsor Bakery")).toBeInTheDocument();
+    await waitFor(() => expect(rowOf("Malomsor Bakery").getByText("Expired")).toBeInTheDocument());
+    expect(rowOf("Malomsor Bakery").queryByText("Licensed")).toBeNull();
+    expect(rowOf("Zöldkert Grocer").getByText("Licensed")).toBeInTheDocument();
+    expect(rowOf("Határrét Smithy").getByText("Not licensed")).toBeInTheDocument();
+  });
+
+  it("a licence with no valid-until answer still reads Licensed", async () => {
+    sends = [approvedFor("s1", "b1")];
+    showBusinesses();
+
+    expect(await screen.findByText("Malomsor Bakery")).toBeInTheDocument();
+    await waitFor(() => expect(rowOf("Malomsor Bakery").getByText("Licensed")).toBeInTheDocument());
+    expect(screen.queryByText("Expired")).toBeNull();
   });
 });

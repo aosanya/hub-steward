@@ -350,10 +350,10 @@ describe("the Licences and permits section of an opened record", () => {
   const permit = { id: "s1", form_id: "f1", form_title: "Sample Stall Permit", member_id: ownerId, submitted_at: "2026-11-03T09:30:00Z" };
   let applicationsReply: () => Promise<unknown>;
 
-  const showSection = (owner: string = ownerId) =>
+  const showSection = (owner: string = ownerId, licenceRecord?: string) =>
     render(
       <MemoryRouter>
-        <RecordApplications ownerId={owner} rowId={rowId} />
+        <RecordApplications ownerId={owner} rowId={rowId} licenceRecord={licenceRecord} />
       </MemoryRouter>,
     );
 
@@ -392,6 +392,45 @@ describe("the Licences and permits section of an opened record", () => {
     await vi.waitFor(() => expect(applicationCalls()).toHaveLength(1));
     expect(screen.queryByRole("heading", { name: "Licences and permits" })).toBeNull();
     expect(document.body.textContent).toBe("");
+  });
+
+  describe("with the licence mark of the opened row", () => {
+    const serveLicence = (validUntil: string) =>
+      called.mockImplementation(async (_agency, name, args) => {
+        const given = (args ?? {}) as Record<string, unknown>;
+        if (name === "forms_submission_list_of_person") return { items: [permit] };
+        if (name === "agency_list_live_record_rows") return { items: given.history ? [] : [{ id: rowId, answers: {} }] };
+        if (name === "forms_catalog_entry_list_public") return { items: [{ kind: "licence", form_id: "f1" }] };
+        if (name === "forms_submission_list") return { items: [{ id: "s1", form_id: "f1", record_row_id: rowId, decision: "approved" }] };
+        if (name === "forms_question_list") return { items: [{ id: "q1", prompt: "Valid until" }] };
+        if (name === "forms_answer_list") return { items: [{ send_id: "s1", question_id: "q1", value_date: validUntil }] };
+        return { items: [] };
+      });
+
+    it("shows Expired beside the heading when the licence ran out before today", async () => {
+      serveLicence("2020-01-31");
+      showSection(ownerId, "RC-1");
+
+      const mark = await screen.findByText("Expired");
+      expect(mark.closest(".heading-row")).toContainElement(screen.getByRole("heading", { name: "Licences and permits" }));
+    });
+
+    it("shows Licensed beside the heading when the licence is valid, and no mark without a licence record", async () => {
+      serveLicence("2999-12-31");
+      showSection(ownerId, "RC-1");
+
+      const mark = await screen.findByText("Licensed");
+      expect(mark.closest(".heading-row")).toContainElement(screen.getByRole("heading", { name: "Licences and permits" }));
+    });
+
+    it("draws no mark when the record is not a licence record", async () => {
+      serveLicence("2020-01-31");
+      showSection();
+
+      await screen.findByRole("heading", { name: "Licences and permits" });
+      expect(screen.queryByText("Expired")).toBeNull();
+      expect(screen.queryByText("Licensed")).toBeNull();
+    });
   });
 
   it("asks for nothing and draws nothing when the row holds no owner", async () => {
