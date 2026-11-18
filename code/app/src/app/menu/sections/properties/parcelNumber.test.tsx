@@ -49,7 +49,7 @@ const openPlace = async (placeId: string, title: string) => {
       <Routes>{routes()}</Routes>
     </MemoryRouter>,
   );
-  await screen.findByText(title);
+  await screen.findByRole("heading", { level: 1, name: title });
 };
 
 describe("the parcel number kept in a property's attributes", () => {

@@ -127,7 +127,33 @@ const aiAgent: Subject = {
   empty: "its limits and use this month",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent };
+
+const oneRecord = (tool: string, scope: string, step: string, overview: string): Subject => ({
+  reads: { [tool]: { [scope]: byId } },
+  steps: { [tool]: step },
+  choices: ["Details"],
+  reading: `Details means ${tool}.`,
+  overview: `call ${tool} and answer with ${overview}`,
+  empty: "its details",
+});
+
+const place: Subject = {
+  reads: { assetmanager_asset_read: { assetID: byId }, digitaltwin_tenure_list: { place_id: extraOf("place") } },
+  steps: { assetmanager_asset_read: "Reading the place's details", digitaltwin_tenure_list: "Reading the place's holdings" },
+  choices: ["Details", "Holdings"],
+  reading: "Details means assetmanager_asset_read and Holdings means digitaltwin_tenure_list.",
+  overview: "call assetmanager_asset_read and digitaltwin_tenure_list at once and answer with the place's name, type, location and parcel number and the count and most recent holding",
+  empty: "its details and holdings",
+};
+
+const address = oneRecord("digitaltwin_address_read", "addressID", "Reading the address", "its street, number, area and postcode");
+
+const holding = oneRecord("digitaltwin_tenure_read", "tenureID", "Reading the holding", "its holder, property, kind and the day it began");
+
+const landUse = oneRecord("digitaltwin_land_use_read", "landUseID", "Reading the land use", "its zone, use and area");
+
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse };
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 

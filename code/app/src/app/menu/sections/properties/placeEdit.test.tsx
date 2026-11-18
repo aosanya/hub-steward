@@ -45,7 +45,7 @@ const openPlace = async () => {
       <Routes>{routes()}</Routes>
     </MemoryRouter>,
   );
-  await screen.findByText("Market square");
+  await screen.findByRole("heading", { level: 1, name: "Market square" });
 };
 
 describe("editing a place from its detail", () => {
@@ -59,7 +59,7 @@ describe("editing a place from its detail", () => {
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "assetmanager_asset_update", { assetID: "a2", name: "Main square" }));
-    expect(await screen.findByText("Main square")).toBeTruthy();
+    expect(await screen.findByRole("heading", { level: 1, name: "Main square" })).toBeTruthy();
   });
 
   it("shows no Edit to a caller without asset.manage", async () => {

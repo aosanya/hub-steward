@@ -94,7 +94,7 @@ describe.each(screens)("$title on a wide screen", ({ Page, listTool, list, row, 
 
     const content = document.querySelector(".wf .wf-main .wf-content") as HTMLElement;
     expect(content).not.toBeNull();
-    expect(await within(content).findByText(shown)).toBeInTheDocument();
+    expect((await within(content).findAllByText(shown)).length).toBeGreaterThan(0);
     expect(called).toHaveBeenCalledWith("", readTool, readArgs);
   });
 });
@@ -123,7 +123,7 @@ describe.each(phoneScreens)("$title on a phone", ({ Page, listTool, list, row, r
 
     const page = document.querySelector(".mw-detail") as HTMLElement;
     expect(page).not.toBeNull();
-    expect(await within(page).findByText(shown)).toBeInTheDocument();
+    expect((await within(page).findAllByText(shown)).length).toBeGreaterThan(0);
     expect(called).toHaveBeenCalledWith("", readTool, readArgs);
   });
 });

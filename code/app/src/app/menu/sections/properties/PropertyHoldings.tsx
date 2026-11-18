@@ -1,8 +1,7 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
-import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
-import { SectionHeading } from "../../../../shared/ui/SectionHeading";
+import { ListRow } from "../../../../shared/ui/ListRow";
+import { Section } from "../../../../shared/ui/Section";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { useOpenFrom } from "../../useOpenFrom";
 import { listOf } from "../staff/staffData";
@@ -24,20 +23,16 @@ export function PropertyHoldings({ assetId, placeId }: { assetId: string; placeI
   const word = useWord(digitaltwinModule);
   const open = useOpenFrom(word(placesTitle));
   const view = useLoad(loadHoldings(placeId), `property-holdings:${openAgencyId()}:${assetId}`);
-  if (view.state === "error") return null;
-  const holdings = view.state === "ready" ? view.data : [];
+  if (view.state === "error" || view.state === "loading") return null;
   return (
-    <>
-      <SectionHeading>{word("Holdings")}</SectionHeading>
-      {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "ready" && holdings.length === 0 ? <EmptyCard words="No holdings yet." /> : null}
-      {holdings.length > 0 ? (
-        <Rows>
-          {holdings.map((holding) => (
-            <ListRow key={holding.key} title={holding.title} meta={holding.meta} onClick={() => open(`${placePaths.ownership.path()}/${holding.key}`)} end="›" />
-          ))}
-        </Rows>
-      ) : null}
-    </>
+    <Section
+      word={word("Holdings")}
+      all
+      icon="box"
+      empty={{ words: "No holdings yet." }}
+      rows={view.data.map((holding) => (
+        <ListRow key={holding.key} title={holding.title} meta={holding.meta} onClick={() => open(`${placePaths.ownership.path()}/${holding.key}`)} end="›" />
+      ))}
+    />
   );
 }

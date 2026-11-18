@@ -4,7 +4,7 @@ import { HoldingNewScreen } from "./HoldingNewScreen";
 import { HoldingPage } from "./HoldingPage";
 import { LandUsePage } from "./LandUsePage";
 import { OwnershipPage } from "./OwnershipPage";
-import { PlacePage } from "./PlacePage";
+import { PlaceEditScreen, PlacePage } from "./PlacePage";
 import { PlacesPage } from "./PlacesPage";
 import { placePaths } from "./paths";
 
@@ -21,6 +21,7 @@ export const routes = () => (
   <>
     <Route path={placePaths.places.pattern} element={<PlacesPage />} />
     <Route path={placePaths.place.pattern} element={<PlacePage />} />
+    <Route path={placePaths.placeEdit.pattern} element={<PlaceEditScreen />} />
     <Route path={placePaths.addresses.pattern} element={<AddressesPage />} />
     <Route path={placePaths.ownership.pattern} element={<OwnershipPage />} />
     <Route path={placePaths.holdingNew.pattern} element={<HoldingNewScreen />} />

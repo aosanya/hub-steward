@@ -111,7 +111,7 @@ describe.each(surfaces)("a property with a place, a holding and work orders on $
   it("lists the holding with its holder, kind and since day under Holdings", async () => {
     await open();
 
-    expect(await screen.findByRole("heading", { name: "Holdings" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /^Holdings/ })).toBeInTheDocument();
     await screen.findByText("Bela Szabo", { selector: ".ttl" });
     expect(rowOf("Bela Szabo").textContent).toContain("owner · since 2019-03-01");
     expect(screen.queryByText("Anna Kovacs")).toBeNull();
@@ -129,7 +129,7 @@ describe.each(surfaces)("a property with a place, a holding and work orders on $
   it("lists the open and the done work orders that name the property under Works with their state and due day", async () => {
     await open();
 
-    expect(await screen.findByRole("heading", { name: "Works" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /^Works/ })).toBeInTheDocument();
     await screen.findByText("Repaint the reading room", { selector: ".ttl" });
     expect(rowOf("Repaint the reading room").textContent).toContain("open · due Friday, 20 Nov");
     expect(rowOf("Replace the gutter").textContent).toContain("done");
@@ -156,9 +156,9 @@ describe.each(surfaces)("a property with no place and no work orders on $surface
   it("shows an empty card under Holdings and under Works", async () => {
     await openUnlinked();
 
-    expect(await screen.findByRole("heading", { name: "Holdings" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /^Holdings/ })).toBeInTheDocument();
     expect(await screen.findByText("No holdings yet.")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Works" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /^Works/ })).toBeInTheDocument();
     expect(await screen.findByText("No works yet.")).toBeInTheDocument();
   });
 
@@ -176,15 +176,15 @@ describe("the holding route", () => {
   it("shows the holding it is opened for with what its read tool replies", async () => {
     show({ pathname: holdingPath(), state: { from: cameFrom() } });
 
-    expect(await screen.findByText("Bela Szabo")).toBeInTheDocument();
-    expect(screen.getByText("owner")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Bela Szabo" })).toBeInTheDocument();
+    expect(screen.getAllByText("owner").length).toBeGreaterThan(0);
     expect(screen.getByText("2019-03-01")).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", tenureRead, { tenureID: "t1" });
   });
 
   it("names the page it came from on the Back button, not Residents, and returns there", async () => {
     show({ pathname: holdingPath(), state: { from: cameFrom() } });
-    await screen.findByText("Bela Szabo");
+    await screen.findByRole("heading", { level: 1, name: "Bela Szabo" });
 
     expect(screen.queryByRole("button", { name: /Residents/ })).toBeNull();
     await userEvent.click(screen.getByRole("button", { name: /Places/ }));

@@ -1,4 +1,8 @@
 import { useWord } from "../../../../features/agency/useWord";
+import { PageFrame } from "../../PageFrame";
+import { ChatAboutProperty } from "./ChatAboutProperty";
+import { PropertyFacts } from "./PropertyFacts";
+import { placePaths } from "./paths";
 import { MountedMenuList } from "./MountedMenuList";
 import { digitaltwinModule, joined, loadRecords, readRecord, textOf } from "./records";
 
@@ -14,11 +18,25 @@ const loadLandUses = () =>
 
 const landUseRead = "digitaltwin_land_use_read";
 
+function LandUseCards({ landUse }: { landUse: Record<string, unknown> }) {
+  const word = useWord("digitaltwin");
+  const zone = textOf(landUse.zone);
+  return (
+    <>
+      <ChatAboutProperty kind="land-use" id={textOf(landUse.id)} name={zone} back={placePaths.landUse.path()} />
+      <PageFrame title={zone} line={textOf(landUse.use)}>
+        <PropertyFacts word={`${word("Land Use")} detail`} facts={[["Zone", zone], ["Use", textOf(landUse.use)], ["Area", textOf(landUse.area)]]} />
+      </PageFrame>
+    </>
+  );
+}
+
 const detail = {
   tool: landUseRead,
-  fields: { Zone: "zone", Use: "use", Area: "area" },
+  fields: {},
   status: "",
   load: (id: string) => readRecord(landUseRead, "landUseID", id),
+  extra: (landUse: Record<string, unknown>) => <LandUseCards landUse={landUse} />,
 };
 
 export function LandUsePage() {
