@@ -11,6 +11,7 @@ Working on a part:
 - [Console](console.md): the manager's and designer's web app
 - [Phone app](phone-app.md): the member's web app
 - [Phone app: how `src` is organised](phone-app-structure.md): the folder strategy (features, `shared/`, `app/`) and the order of the move
+- [Menu screen pattern](menu-screen-pattern.md): the page, the cards, the footer, the rows, the bottom bar and the chat that every restyled menu screen follows
 - [Write an agency](write-an-agency.md): how a demo agency template is put together
 - [Taskmanager tools that read the backlog](taskmanager-tools.md): pending, find, read and list, and what `taskmanager_task_find` matches
 - [Attribute properties](attribute-properties.md): the attribute names a person's record accepts, who may list them, and where they come from
