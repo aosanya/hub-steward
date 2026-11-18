@@ -1,6 +1,7 @@
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
+import { loadRoleKinds, roleNamesOf } from "../../roleKinds";
 
 export type Item = Record<string, unknown>;
 
@@ -15,10 +16,7 @@ export const homeEmpty = (words: string) => ({ words, act: "Home", to: agencyHom
 
 export const peopleWords = (count: number) => `${count} ${count === 1 ? "person" : "people"}`;
 
-export const roleKindNames = async () => {
-  const kinds = await listOf("actor_list_role_kinds");
-  return new Map(kinds.map((kind) => [text(kind, "id"), text(kind, "name")]));
-};
+export const roleKindNames = async () => roleNamesOf(await loadRoleKinds());
 
 export const seatLabel = (seat: Item, kindNames: Map<string, string>) => {
   const role = text(seat, "role_name") || kindNames.get(text(seat, "kind_id")) || "";

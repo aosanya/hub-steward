@@ -8,13 +8,14 @@ import { SearchSelect, type Choice } from "../../../../shared/ui/SearchSelect";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { refusalWords } from "../../MenuEditForm";
+import { loadRoleKinds, openRoleChoices } from "../../roleKinds";
 
 type Props = { actorId: string; onGiven: () => void };
 
-const choicesOf = (items: Record<string, unknown>[], keep: (item: Record<string, unknown>) => boolean = () => true): Choice[] =>
-  items.flatMap((item) => (typeof item.id === "string" && typeof item.name === "string" && item.name !== "" && keep(item) ? [{ value: item.id, label: item.name }] : []));
+const choicesOf = (items: Record<string, unknown>[]): Choice[] =>
+  items.flatMap((item) => (typeof item.id === "string" && typeof item.name === "string" && item.name !== "" ? [{ value: item.id, label: item.name }] : []));
 
-const roleChoices = async () => choicesOf(itemsOf(await callTool("", "actor_list_role_kinds")), (kind) => !kind.retired_at);
+const roleChoices = async () => openRoleChoices(await loadRoleKinds());
 
 const groupChoices = async () => choicesOf(itemsOf(await callTool("", "actor_list_groups")));
 

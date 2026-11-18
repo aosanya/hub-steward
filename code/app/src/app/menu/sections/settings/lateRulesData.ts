@@ -1,38 +1,26 @@
-import { chargeNames, listOf, readLateRule, text } from "../finance/financeData";
+import { loadRoleKinds, roleKindName, type RoleKind } from "../../roleKinds";
+import { chargeNames, readLateRuleState } from "../finance/financeData";
 
 export type Charge = { id: string; name: string; days: string; role: string };
 
-export type Kinds = { all: Map<string, string>; open: { value: string; label: string }[] };
+export type LateRulesView = { charges: Charge[]; kinds: RoleKind[] };
 
-export type LateRulesView = { charges: Charge[]; kinds: Kinds };
+export const lateRulesUnread = "the late rules could not be read";
 
 export const noRuleWords = "No rule: late from the day after the due date, nobody is reminded";
 
-const unknownRole = "a role no longer in use";
-
-export const loadKinds = async (): Promise<Kinds> => {
-  const kinds = await listOf("actor_list_role_kinds");
-  return {
-    all: new Map(kinds.map((kind) => [text(kind, "id"), text(kind, "name")])),
-    open: kinds.filter((kind) => !kind.retired_at && text(kind, "name") !== "").map((kind) => ({ value: text(kind, "id"), label: text(kind, "name") })),
-  };
-};
-
 export const loadLateRules = async (): Promise<LateRulesView> => {
-  const [names, kinds] = await Promise.all([chargeNames(), loadKinds()]);
-  const charges = await Promise.all(
-    [...names].map(async ([id, name]) => {
-      const rule = await readLateRule(id);
-      return { id, name, days: rule ? String(rule.days) : "", role: rule?.role ?? "" };
-    }),
-  );
+  const [names, kinds] = await Promise.all([chargeNames(), loadRoleKinds()]);
+  const states = await Promise.all([...names].map(async ([id, name]) => ({ id, name, state: await readLateRuleState(id) })));
+  if (states.some(({ state }) => state.unread)) throw new Error(lateRulesUnread);
+  const charges = states.map(({ id, name, state }) => ({ id, name, days: state.rule ? String(state.rule.days) : "", role: state.rule?.role ?? "" }));
   return { charges, kinds };
 };
 
-export const ruleWords = (charge: Charge, kinds: Kinds) => {
+export const ruleWords = (charge: Charge, kinds: RoleKind[]) => {
   if (charge.days === "" || charge.role === "") return noRuleWords;
   const days = Number(charge.days);
-  return `Late after ${days} ${days === 1 ? "day" : "days"} · reminds ${kinds.all.get(charge.role) ?? unknownRole}`;
+  return `Late after ${days} ${days === 1 ? "day" : "days"} · reminds ${roleKindName(kinds, charge.role)}`;
 };
 
 const wholeDays = /^\d+$/;

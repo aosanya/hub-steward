@@ -1,5 +1,6 @@
 import { currencyUnit } from "../../../../features/forms/QuestionInput";
 import { spacedAmount } from "../../../../features/steps/spacedAmount";
+import { loadRoleKinds } from "../../roleKinds";
 import { listOf, peopleWords, text, type Item } from "./staffData";
 
 const liveDraftOf = async () => {
@@ -27,8 +28,8 @@ const holdersOf = async (kind: Item) => {
 
 export const loadRoles = async () => {
   const draft = await liveDraftOf();
-  const [roles, kinds] = await Promise.all([listOf("agency_list_roles", { draft_id: draft }), listOf("actor_list_role_kinds")]);
-  const holders = new Map(await Promise.all(kinds.map(async (kind) => [text(kind, "definition_role_id"), await holdersOf(kind)] as const)));
+  const [roles, kinds] = await Promise.all([listOf("agency_list_roles", { draft_id: draft }), loadRoleKinds()]);
+  const holders = new Map(await Promise.all(kinds.map(async (kind) => [kind.definitionRoleId, await holdersOf(kind.item)] as const)));
   return roles.map((role) => ({
     id: text(role, "id"),
     name: text(role, "name"),

@@ -1,15 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { useLoad } from "../../../../features/forms/useLoad";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
 import { Section } from "../../../../shared/ui/Section";
-import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
 import { loadFailedWords } from "../../MenuDetail";
 import { PageFrame } from "../../PageFrame";
 import { useBackToSection } from "../../useBackToSection";
-import { loadLateRules, ruleWords } from "./lateRulesData";
+import { ruleWords } from "./lateRulesData";
 import { settingsPaths } from "./paths";
+import { useLateRules } from "./useLateRules";
 import { useOwner } from "./useOwner";
 
 const title = "Late rules";
@@ -20,14 +19,14 @@ export function LateRules() {
   const back = useBackToSection();
   const navigate = useNavigate();
   const owner = useOwner();
-  const view = useLoad(loadLateRules, `late-rules:${openAgencyId()}`);
+  const { view, retry } = useLateRules("late-rules");
   const edit = owner ? (
     <button type="button" className="sec-act" onClick={() => navigate(settingsPaths.lateRulesEdit.path())}>Edit late rules</button>
   ) : undefined;
   return (
     <Shell title={title} onBack={back.onBack} backLabel={back.backLabel}>
       {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "error" ? <LoadFailed words={loadFailedWords} /> : null}
+      {view.state === "error" ? <LoadFailed words={loadFailedWords} onRetry={retry} /> : null}
       {view.state === "ready" ? (
         <PageFrame title={title} line={line}>
           <Section

@@ -1,6 +1,7 @@
 import type { Wording } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { listOf, roleKindNames, text, type Item } from "../staff/staffData";
+import { loadRoleKinds, roleKindName, type RoleKind } from "../../roleKinds";
+import { listOf, text, type Item } from "../staff/staffData";
 
 export { homeEmpty, listOf, text } from "../staff/staffData";
 export type { Item } from "../staff/staffData";
@@ -89,8 +90,6 @@ export type LateRuleState = { rule: LateRule | null; unread: boolean; roleName: 
 
 export type LateRules = Map<string, LateRuleState>;
 
-const goneRoleWords = "a role that no longer exists";
-
 const noRuleState: LateRuleState = { rule: null, unread: false, roleName: "" };
 
 const unreadState: LateRuleState = { rule: null, unread: true, roleName: "" };
@@ -111,7 +110,7 @@ export const lateRuleOf = (value: unknown): LateRule | null => {
 
 const isMissingSetting = (error: unknown) => error instanceof Error && /not found/i.test(error.message);
 
-const readLateRuleState = async (accountId: string): Promise<LateRuleState> => {
+export const readLateRuleState = async (accountId: string): Promise<LateRuleState> => {
   try {
     const reply = (await callTool("", settingReadTool, { key: lateRuleKey(accountId) })) as { value?: unknown } | null;
     return { ...noRuleState, rule: lateRuleOf(reply?.value) };
@@ -122,20 +121,20 @@ const readLateRuleState = async (accountId: string): Promise<LateRuleState> => {
 
 export const readLateRule = async (accountId: string): Promise<LateRule | null> => (await readLateRuleState(accountId)).rule;
 
-const roleNamesIfAny = async (states: LateRuleState[]) => {
-  if (!states.some((state) => state.rule)) return new Map<string, string>();
+const roleKindsIfAny = async (states: LateRuleState[]): Promise<RoleKind[]> => {
+  if (!states.some((state) => state.rule)) return [];
   try {
-    return await roleKindNames();
+    return await loadRoleKinds();
   } catch {
-    return new Map<string, string>();
+    return [];
   }
 };
 
 export const lateRulesFor = async (bills: Item[]): Promise<LateRules> => {
   const accounts = [...new Set(bills.filter((bill) => text(bill, "status") === "overdue").map((bill) => text(bill, "income_account_id")).filter(Boolean))];
   const states = await Promise.all(accounts.map(readLateRuleState));
-  const names = await roleNamesIfAny(states);
-  return new Map(accounts.map((account, at) => [account, { ...states[at], roleName: states[at].rule ? names.get(states[at].rule.role) || goneRoleWords : "" }]));
+  const kinds = await roleKindsIfAny(states);
+  return new Map(accounts.map((account, at) => [account, { ...states[at], roleName: states[at].rule ? roleKindName(kinds, states[at].rule.role) : "" }]));
 };
 
 const stateOfBill = (bill: Item, rules: LateRules) => rules.get(text(bill, "income_account_id")) ?? noRuleState;
