@@ -20,6 +20,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | What changed on the board after a cursor | `taskmanager_task_changes_since` | `GET /changes-since` |
 | Patch or move up to 50 issues in one call | `taskmanager_task_batch` | `POST /batch` |
 | Create an issue with its todos and their order in one call | `taskmanager_task_create_with_todos` | `POST /create-with-todos` |
+| Add an ordered list of todos to an issue that already exists in one call | `taskmanager_task_add_todos` | `POST /tasks/{taskID}/add-todos` |
 | Which backlogs the caller can see, with their steps and counts, or just one of them | `taskmanager_backlog_list` | `GET /backlogs` (`?backlog=` for one) |
 | Cap how many issues a step may hold | `taskmanager_backlog_step_wip_limit` | `PUT /backlogs/{backlogID}/steps/{stepID}/wip-limit` |
 | Why an issue is Waiting: what it waits on and what waits on it | `taskmanager_task_dependencies` | `GET /tasks/{taskID}/dependencies` |
@@ -28,6 +29,7 @@ The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes
 | Which issues in progress are past their working-time cap | `taskmanager_task_timed_out` | `GET /timed-out` |
 | Take an issue: move it to In Progress, write the taken entry, record the caps (and the holder and lease when a `holder` is sent) | `taskmanager_task_claim` | `POST /tasks/{taskID}/claim` |
 | Stop work on an issue as Blocked or Sinbin, with the tags and the move done right | `taskmanager_task_release` | `POST /tasks/{taskID}/release` |
+| Finish a todo: set it Done and write its "Todo n of m done" Log entry in one call | `taskmanager_task_todo_finish` | `POST /todos/{todoID}/finish` |
 | The whole issue | `taskmanager_task_read` | `GET /tasks/{taskID}` |
 | Page through every issue | `taskmanager_task_list` | `GET /tasks` |
 
@@ -186,6 +188,12 @@ Inputs: the fields of `taskmanager_task_create` and `todos`, in order, each `{ti
 
 The answer is `issue` and `todos` (id, code, ordinality, `depends_on` as ids, status, state), 201. The todos are checked before the issue is made, and an issue whose todo cannot be made is taken away again, so nothing is left behind.
 
+## taskmanager_task_add_todos
+
+Inputs: `taskID` (the existing issue) and `todos`, in order, each `{title, instructions, description, can_run_parallel, waits_on}`; `title` and `instructions` are required and `description` should always be sent. Needs Can move on the issue's backlog. `waits_on` lists positions, 1-based (1 is the first todo sent), and each must be an earlier one in the list sent: a reference to itself, a later todo or a cycle is 400 and nothing is created. The new todos take ordinalities after the issue's existing ones.
+
+The answer is only `todos` (id, code, ordinality). It replaces one `taskmanager_task_todo_create` call per todo on an issue that exists, such as one that `taskmanager_task_lint` reports as `no_todos`.
+
 ## taskmanager_backlog_step_wip_limit
 
 Inputs: `backlogID`, `stepID` and `wip_limit`, a whole number, 0 or more; 0 clears it. Needs Can edit on the backlog. A step with a limit shows `wip_limit` in the backlog list and every backlog summary.
@@ -244,6 +252,16 @@ It replaces the four calls a worker made by hand when it could not finish (set t
 
 Refused, with nothing written: 409 unless the issue sits at the backlog's In Progress step (the step named In Progress without regard to case, or with the id doing or in-progress), whatever its status, 403 without Can move, 400 for another mode, a blank reason, a todo that belongs to another issue or a todo sent with mode `sinbin`, 404 for an issue that is unknown or unseen or a todo that is unknown.
 
+## taskmanager_task_todo_finish
+
+Inputs: `todoID`, `text` (the Log entry, not blank) and optionally `links` (a list of strings for the entry). The caller is taken from the session and needs Can move on the backlog the issue is in.
+
+Use it whenever a todo is finished. It replaces `taskmanager_task_todo_set_status` with Done followed by `taskmanager_task_note_add`: the todo is set Done and one Log entry (kind worker, your `text` and `links`, the `Todo n of m done` line a worker writes) is added to the issue it belongs to, in one call. The status is set exactly as `taskmanager_task_todo_set_status` sets it, so the last todo set Done moves an issue in progress to Review.
+
+The answer is only the todo code and its state, such as `{"code":"TD-1","state":"Done"}`; it does not echo the todo or the entry.
+
+The entry is written only when the todo was set Done, so a refusal writes nothing: 400 for a blank `text`, 403 without Can move on the backlog, 404 for a todo that is not found or not seen.
+
 ## When Waiting clears
 
 Nobody calls `taskmanager_task_unblock_dependents` by hand for this (SW236, SW594; the closing move itself was fixed by SW591). When an issue reaches Done or Cancelled by any way (a move to the Done, Archive or Cancelled step, `taskmanager_task_move` to a state, a patch or replace with status completed or cancelled, `taskmanager_task_batch`, the HTTP routes), the hub looks at every issue that depends on it, in the same write as the close.
@@ -287,3 +305,4 @@ The design is in [backlog-page.md](../../2.%20design/technical-spec/backlog-app/
 | The release tool and its types | `modules/taskmanager/task_release.go`, tests in `routes/release_task_test.go` |
 | The brief tool and its types | `modules/taskmanager/task_brief.go`, tests in `routes/task_brief_test.go` |
 | The file-overlaps tool and its types | `modules/taskmanager/task_file_overlaps.go`, tests in `routes/file_overlaps_test.go` |
+| The todo-finish tool | `modules/taskmanager/todo_finish.go`, tests in `routes/todo_finish_routes_test.go` |
