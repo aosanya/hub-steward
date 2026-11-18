@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { routes } from "../../app/routes";
-import { AssistantPage, failedWords, unavailableWords } from "./AssistantPage";
-import { askAssistant, mcpAssistantClient, offeredNames, type AssistantClient } from "./api";
+import { AssistantPage, emptyWords, failedWords, unavailableWords } from "./AssistantPage";
+import { askAssistant, couldNotReadSentence, mcpAssistantClient, offeredNames, type AssistantClient } from "./api";
 
 const mcp = vi.hoisted(() => ({ callTool: vi.fn(), listTools: vi.fn() }));
 
@@ -203,13 +203,13 @@ describe("messages written while an answer is pending", () => {
 describe("the conversation panel", () => {
   it("is one card between the bar and the writing box, with one muted line and nothing else while it is empty", async () => {
     show({ model: async () => "acc1", ask: vi.fn() });
-    const line = await screen.findByText("Ask about the backlogs", { selector: "p" });
+    const line = await screen.findByText(emptyWords, { selector: "p" });
     const panel = line.closest(".assistant-panel") as HTMLElement;
     expect(panel).not.toBeNull();
     const card = line.closest(".card") as HTMLElement;
     expect(card).not.toBeNull();
     expect(card.querySelectorAll("button, a")).toHaveLength(0);
-    expect(card.textContent).toBe("Ask about the backlogs");
+    expect(card.textContent).toBe(emptyWords);
     expect(within(panel).getAllByRole("button").map((button) => button.textContent)).toEqual(["Chat", "Results"]);
     expect(screen.getByRole("textbox").closest(".assistant-compose")).not.toBeNull();
   });
@@ -223,7 +223,7 @@ describe("the conversation panel", () => {
     expect(mine).toHaveClass("mine");
     const theirs = (await screen.findByText("1 issue is Blocked")).closest(".rm-msg") as HTMLElement;
     expect(theirs).not.toHaveClass("mine");
-    expect(screen.queryByText("Ask about the backlogs", { selector: "p" })).toBeNull();
+    expect(screen.queryByText(emptyWords, { selector: "p" })).toBeNull();
   });
 
   it("scrolls the newest message into view inside the panel as the conversation grows", async () => {
@@ -312,7 +312,7 @@ describe("how the assistant answers through the tools", () => {
       }
       throw new Error("forbidden");
     });
-    expect((await askAssistant("acc1", [{ role: "user", content: "list" }])).text).toBe("The call failed: forbidden");
+    expect((await askAssistant("acc1", [{ role: "user", content: "list" }])).text).toBe(`The call failed: forbidden\n\n${couldNotReadSentence}`);
   });
 
   it("stops after a few rounds when the model only keeps asking for tools", async () => {
