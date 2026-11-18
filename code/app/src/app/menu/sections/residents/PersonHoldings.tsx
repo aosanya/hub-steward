@@ -6,8 +6,9 @@ import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { dayOf, digitaltwinModule, joined, loadNodeNames, placeIdOf, tenureList, textOf } from "../properties/records";
+import { dayOf, digitaltwinModule, loadNodeNames, placeIdOf, tenureList, textOf } from "../properties/records";
 import { listOf } from "../staff/staffData";
+import { loadHoldingDetails, loadOwnAnswers, withOwnAnswers } from "../properties/holdingDetails";
 import { placePaths } from "../properties/paths";
 import { useOpenFromPanel } from "./useOpenFromPanel";
 
@@ -23,13 +24,21 @@ const loadAssetIdsByPlace = async () => {
 const pathOf = (assetId: string | undefined, tenureId: string) => (assetId ? placePaths.place.path({ placeId: assetId }) : placePaths.holding.path({ tenureId }));
 
 const loadHoldings = (filter: Record<string, string>) => async () => {
-  const [tenures, names, assetIds] = await Promise.all([listOf(tenureList, filter), loadNodeNames(), loadAssetIdsByPlace()]);
-  return tenures.map((tenure) => ({
-    key: textOf(tenure.id),
-    opens: pathOf(assetIds.get(textOf(tenure.place_id)), textOf(tenure.id)),
-    title: names.get(textOf(tenure.place_id)) || textOf(tenure.kind),
-    meta: joined([textOf(tenure.kind), dayOf(tenure.since) ? `since ${dayOf(tenure.since)}` : ""]),
-  }));
+  const [tenures, names, assetIds, details] = await Promise.all([listOf(tenureList, filter), loadNodeNames(), loadAssetIdsByPlace(), loadHoldingDetails()]);
+  return Promise.all(
+    tenures.map(async (tenure) => {
+      const own = await loadOwnAnswers(details, textOf(tenure.id));
+      return {
+        key: textOf(tenure.id),
+        opens: pathOf(assetIds.get(textOf(tenure.place_id)), textOf(tenure.id)),
+        title: (details.isOn("Property") ? names.get(textOf(tenure.place_id)) : "") || textOf(tenure.kind),
+        meta: withOwnAnswers(
+          [details.isOn("Kind") ? textOf(tenure.kind) : "", details.isOn("Since") && dayOf(tenure.since) ? `since ${dayOf(tenure.since)}` : ""],
+          own,
+        ),
+      };
+    }),
+  );
 };
 
 type Holding = { key: string; opens: string; title: string; meta: string };
