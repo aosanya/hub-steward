@@ -12,10 +12,16 @@ const year = new Date().getFullYear();
 const lastYear = year - 1;
 
 const groups = [
-  { id: "g-mal", name: "Malomsor", node_type: "Neighbourhood" },
-  { id: "g-ova", name: "Óváros", node_type: "Neighbourhood" },
-  { id: "g-ker", name: "Kertváros", node_type: "Neighbourhood" },
-  { id: "g-fam", name: "Kovacs Family", node_type: "Household" },
+  { id: "g-mal", name: "Malomsor", node_type: "Városrész" },
+  { id: "g-ova", name: "Óváros", node_type: "Városrész" },
+  { id: "g-ker", name: "Kertváros", node_type: "Városrész" },
+  { id: "g-fam", name: "Kovacs Family", node_type: "Háztartás" },
+];
+
+const levels = [
+  { id: "l1", name: "Város", depth: 0 },
+  { id: "l2", name: "Városrész", depth: 1, is_area: true },
+  { id: "l3", name: "Háztartás", depth: 2 },
 ];
 
 const forms = [
@@ -44,6 +50,7 @@ const populations: Record<string, number> = { "g-mal": 8, "g-ova": 12 };
 let called: MockInstance<typeof mcp.callTool>;
 let formsAnswer: unknown;
 let groupsAnswer: unknown;
+let levelsAnswer: unknown;
 
 const pane = () => document.querySelector(".mw-detail") as HTMLElement;
 
@@ -51,9 +58,11 @@ beforeEach(() => {
   openAgency("town");
   formsAnswer = { rows: forms.map((form) => ({ form, questions: 3, respondents: 2 })), total: forms.length };
   groupsAnswer = { items: groups };
+  levelsAnswer = { items: levels };
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     const formId = (args as { form_id?: string } | undefined)?.form_id ?? "";
     if (name === "actor_list_groups") return groupsAnswer;
+    if (name === "actor_list_levels") return levelsAnswer;
     if (name === "forms_form_list") return formsAnswer;
     if (name === "forms_propagation_list") return { items: (reached[formId] ?? []).map((chapter_id) => ({ form_id: formId, chapter_id })) };
     if (name === "forms_submission_list") return { items: sends[formId] ?? [] };
@@ -130,6 +139,14 @@ describe("Rounds by Neighbourhood", () => {
     await waitFor(() => expect(pane()).not.toBeNull());
     await waitFor(() => expect(pane().textContent).toContain("Malomsor"));
     expect(pane().textContent).toContain("38%");
+  });
+
+  it("finds the neighbourhoods by the level the agency marks as an area, whatever it calls that level", async () => {
+    levelsAnswer = { items: [{ id: "l9", name: "Háztartás", depth: 2, is_area: true }] };
+    open();
+
+    expect(await screen.findByText("Kovacs Family")).toBeInTheDocument();
+    expect(screen.queryByText("Malomsor")).toBeNull();
   });
 
   it("says plainly that no neighbourhoods are set up when the hub lists none", async () => {
