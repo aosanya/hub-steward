@@ -8,3 +8,19 @@ Shots of QA 5181 (preview built from hub-steward dev at e4a7aec6 on 2026-11-18, 
 - The other buttons the check lists on People, Committees and Users & Roles (Add to a group, Start an application, Raise on their behalf, Add holding, Add member, Open the resident page) are acts in the open record's cards, not list Adds.
 
 Not tried on QA: pressing Save on the Departments, Crews and the council Adds (the unit tests cover the calls; the area create and the work order, schedule and catalogue creates were accepted live earlier and their throwaways removed, and there is no group delete tool, so no throwaway department was made).
+
+## One screen for Add and Edit (second pass)
+
+The shots in `one-screen/` were taken on QA 5181 built from the dev tip after Add and Edit became one screen for Departments, Crews, Maintenance Schedule, Boundaries, work orders, catalogue entries and assets. Throwaway rows named "zz iss9fin2" were made and deleted afterwards.
+
+| Shot | What it shows |
+|---|---|
+| work-order-add-wide, work-order-add-phone | Add work order: heading, empty Title, Save, Cancel |
+| work-order-edit-wide, work-order-edit-phone | Edit work order: the same screen with the order's own title filled in |
+| asset-list-wide, asset-list-phone | Add asset above the list, full width |
+| asset-add-wide, asset-add-phone | Add asset: Name and Tag |
+| asset-edit-wide | Edit asset: the same screen with the asset's own fields |
+
+Pressed live: Save on a work order Add and on an asset Add listed the new row, and Save on each Edit changed it in the hub. Departments, Crews and Boundaries create groups and there is no group delete tool, so their Save is covered by the unit tests only.
+
+A live Save on the work order Edit showed that the shared form sent `version` to `taskmanager_task_patch`, which takes none, so the screen stayed put. The catalogue entry Edit had the same fault with `forms_catalog_entry_upsert`. Both screens now send no version.
