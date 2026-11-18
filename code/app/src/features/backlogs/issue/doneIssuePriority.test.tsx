@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../../../shared/wakala/openAgency";
@@ -45,9 +45,10 @@ describe("the priority of an issue in Done", () => {
     expect(screen.getByRole("button", { name: /Priority: High/ })).toBeInTheDocument();
   });
 
-  it("is a plain pill on the issue page of a Done issue", async () => {
+  it("is a plain row, with no menu, on the issue page of a Done issue", async () => {
     pageOf(issue({ status: "completed", step: "Done" }), []);
-    expect(await screen.findByText("Priority: High")).toBeInTheDocument();
+    const details = await screen.findByRole("region", { name: "Details" });
+    expect(within(details).getByText("High")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Priority/ })).toBeNull();
   });
 

@@ -222,7 +222,7 @@ describe("the list of issues", () => {
     answering(board);
     openAt(issuePath("t2"));
     await screen.findByText("Waits on");
-    const top = document.querySelector(".issue-main .card-body .issue-tags") as HTMLElement;
+    const top = document.querySelector(".issue-main .sec-body .issue-tags") as HTMLElement;
     const pill = within(top).getByText("Blocked");
     expect(pill.tagName).toBe("SPAN");
     await userEvent.click(pill);
@@ -384,7 +384,7 @@ describe("the list of issues", () => {
 });
 
 describe("one issue", () => {
-  it("opens on its title, code first, with its tags, the description without markdown marks and the source apart", async () => {
+  it("opens on its title, its code in the quiet line, with its tags, the description without markdown marks and the source apart", async () => {
     answering([
       task("t9", "DEV-009 Create the party plane's tables", 1, {
         tags: ["Docs"],
@@ -393,19 +393,15 @@ describe("one issue", () => {
     ]);
     openAt(issuePath("t9"));
     await screen.findByText("Docs");
-    const head = document.querySelector(".issue-main .card-head") as HTMLElement;
-    expect(head).toHaveTextContent("DEV-009");
-    expect(head).not.toHaveTextContent("Create the party plane's tables");
-    expect(head.querySelector(".card-title .issue-code")?.textContent).toBe("DEV-009");
-    expect(head.closest(".card")?.querySelector(":scope > .card-body")?.firstElementChild).toHaveTextContent("Create the party plane's tables");
-    expect(head.closest(".card")).not.toBeNull();
-    expect(within(head).queryByRole("link")).toBeNull();
-    const top = document.querySelector(".issue-main .card-body") as HTMLElement;
-    expect(Array.from(top.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(expect.arrayContaining(["Docs", "Backlog · To do"]));
-    expect(within(screen.getByRole("banner")).getByRole("heading", { level: 1 })).toHaveTextContent("DEV-009");
+    expect(screen.getByRole("heading", { level: 1, name: "Create the party plane's tables" })).toBeInTheDocument();
+    expect(document.querySelector(".quiet-line")?.textContent).toMatch(/^DEV-009/);
+    expect(document.querySelector(".card-head .issue-code")).toBeNull();
+    const details = screen.getByRole("region", { name: "Details" });
+    expect(Array.from(details.querySelectorAll(".chip")).map((one) => one.textContent)).toEqual(expect.arrayContaining(["Docs"]));
+    expect(within(details).getByText("Backlog · To do")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Docs" })).toBeNull();
-    const detailTags = Array.from(document.querySelectorAll(".issue-main .issue-tags > :not(.actions)"));
-    expect(detailTags.length).toBeGreaterThan(1);
+    const detailTags = Array.from(details.querySelectorAll(".issue-tags > :not(.actions)"));
+    expect(detailTags.length).toBeGreaterThan(0);
     expect(detailTags.every((one) => one.classList.contains("chip"))).toBe(true);
     const text = document.body.textContent ?? "";
     expect(text).not.toContain("**");

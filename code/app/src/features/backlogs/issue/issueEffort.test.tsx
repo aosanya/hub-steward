@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -52,11 +52,11 @@ describe("the effort of an issue on the issue page", () => {
     expect(await screen.findByRole("button", { name: /Effort: Very low/ })).toBeInTheDocument();
   });
 
-  it("puts the effort pill in the chip row at the bottom of the card, not in the header", async () => {
+  it("shows the effort as a row and puts its menu in the footer of the Details card", async () => {
     pageWith("high", async () => undefined);
-    const header = (await screen.findByText("SW9", { selector: ".issue-code" })).closest(".card-head") as HTMLElement;
-    expect(header).not.toHaveTextContent("Effort");
-    expect(document.querySelector(".issue-main .issue-tags")).toHaveTextContent("Effort: High");
+    const details = await screen.findByRole("region", { name: "Details" });
+    expect(details).toHaveTextContent("Effort");
+    expect(within(details.querySelector(".sec-foot") as HTMLElement).getByRole("button", { name: /Effort: High/ })).toBeInTheDocument();
   });
 
   it("says the effort was not changed when the hub refuses it", async () => {

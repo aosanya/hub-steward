@@ -36,22 +36,19 @@ beforeEach(() => openAgency({ id: "hub-1", name: "Hub" } as never));
 afterEach(() => vi.restoreAllMocks());
 
 describe("setting an issue's priority from the issue card", () => {
-  it("has one button, in the chip row at the bottom of the card, and none in the header", async () => {
+  it("has one button, in the footer of the Details card", async () => {
     pageWith(async () => undefined);
-    const header = (await screen.findByText("SW9", { selector: ".issue-code" })).closest(".card-head") as HTMLElement;
-    const card = header.closest(".card") as HTMLElement;
-    expect(within(header).queryByRole("button")).toBeNull();
-    expect(within(card.querySelector(".issue-tags") as HTMLElement).getByRole("button", { name: /Priority: Medium/ })).toBeInTheDocument();
-    expect(within(card).getAllByRole("button")).toHaveLength(1);
-    expect(card.querySelector(".card-foot")).toBeNull();
+    const details = await screen.findByRole("region", { name: "Details" });
+    const foot = details.querySelector(".sec-foot") as HTMLElement;
+    expect(within(foot).getByRole("button", { name: /Priority: Medium/ })).toBeInTheDocument();
+    expect(within(foot).getAllByRole("button")).toHaveLength(1);
   });
 
-  it("has the code, not the title, in the header and the title first in the content", async () => {
+  it("has the title as the page title and the code in the quiet line", async () => {
     pageWith(async () => undefined);
-    const header = (await screen.findByText("SW9", { selector: ".issue-code" })).closest(".card-head") as HTMLElement;
-    expect(header.querySelector(".issue-code")).toHaveTextContent("SW9");
-    expect(header).not.toHaveTextContent("Write the manual");
-    expect((header.closest(".card") as HTMLElement).querySelector(":scope > .card-body")?.firstElementChild).toHaveTextContent("Write the manual");
+    expect(await screen.findByRole("heading", { level: 1, name: "Write the manual" })).toBeInTheDocument();
+    expect(document.querySelector(".quiet-line")).toHaveTextContent(/^SW9/);
+    expect(document.querySelector(".card-head .issue-code")).toBeNull();
   });
 
   it("opens the four values and sets the one chosen, then shows it", async () => {

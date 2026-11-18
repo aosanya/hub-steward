@@ -56,24 +56,20 @@ describe("every place that shows an issue draws it through the one shared row", 
   it("the top of an issue's page, what it waits on and what waits on it", async () => {
     at("/a/hub-1/backlogs/issue/1", <IssuePage client={client} />, "/a/:agencyId/backlogs/issue/:issueId");
     await screen.findByText("Waits on");
-    expect(document.querySelectorAll(".issue-main > .card > .card-head .issue-code")).toHaveLength(1);
+    expect(screen.getByRole("heading", { level: 1, name: "Create the tables" })).toBeInTheDocument();
+    expect(document.querySelectorAll(".issue-main > .sec")).toHaveLength(1);
     expect(document.querySelectorAll(".issue-row.static")).toHaveLength(0);
     expect(document.querySelectorAll(".issue-side .card .issue-row")).toHaveLength(2);
     expect(screen.getByText("Waited on by")).toBeInTheDocument();
   });
 
-  it("the top of an issue's page is the header of the one shared Card, over its tags and description", async () => {
+  it("the top of an issue's page is the Details card of the one shared Section, over its tags", async () => {
     at("/a/hub-1/backlogs/issue/1", <IssuePage client={client} />, "/a/:agencyId/backlogs/issue/:issueId");
     await screen.findByText("Waits on");
-    const head = document.querySelector(".issue-main .card-head") as HTMLElement;
-    const card = head.closest("section") as HTMLElement;
-    expect(card).toHaveClass("card");
-    expect(head.querySelector(".card-title")).toHaveTextContent("DEV-009");
-    expect(card.querySelector(":scope > .card-body")?.firstElementChild).toHaveTextContent("Create the tables");
-    expect(card.querySelector(":scope > .card-body .issue-tags")).not.toBeNull();
-    expect(card.querySelector(":scope > .card-body .issue-body")).toHaveTextContent("Text");
-    expect(card.querySelector(".card-foot")).toBeNull();
-    expect(card.querySelector(".issue-row")).toBeNull();
-    expect(head.querySelector("a, button")).toBeNull();
+    const details = document.querySelector(".issue-main > .sec") as HTMLElement;
+    expect(details.querySelector(".sec-title")).toHaveTextContent("Details");
+    expect(details.querySelector(".sec-body .issue-tags")).not.toBeNull();
+    expect(document.querySelector(".issue-main .issue-body")).toHaveTextContent("Text");
+    expect(details.querySelector(".issue-row")).toBeNull();
   });
 });

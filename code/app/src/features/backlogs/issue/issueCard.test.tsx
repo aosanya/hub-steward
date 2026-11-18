@@ -92,10 +92,15 @@ describe("every issue card has a header with the code, a rule and a body", () =>
     cards.forEach(shapeOf);
   });
 
-  it("the top of the issue page", async () => {
+  it("the top of the issue page is a Details card under the issue's own title", async () => {
     page(clientWith(async () => undefined));
     await screen.findByText("Waits on");
-    shapeOf(document.querySelector(".issue-main > .card") as Element);
+    expect(screen.getByRole("heading", { level: 1, name: "Create the tables" })).toBeInTheDocument();
+    const details = document.querySelector(".issue-main > .sec") as HTMLElement;
+    expect(details).not.toBeNull();
+    expect(details.querySelector(".sec-head")).toHaveTextContent("Details");
+    expect(within(details.querySelector(".sec-foot") as HTMLElement).getAllByRole("button")).toHaveLength(1);
+    expect(details).toHaveTextContent("Blocked");
   });
 });
 

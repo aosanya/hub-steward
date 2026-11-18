@@ -4,6 +4,10 @@ import { useLanguage } from "../../../shared/language/language";
 import { useLoad } from "../../../features/forms/useLoad";
 import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { Card } from "../../../shared/ui/Card";
+import { ListRow } from "../../../shared/ui/ListRow";
+import { TextChip } from "../../../shared/ui/TextChip";
+import { Section } from "../../../shared/ui/Section";
+import { PageFrame } from "../../../app/menu/PageFrame";
 import { LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
 import { Markdown } from "../../../shared/ui/Markdown";
 import { backState, useBackLabel, useBackTo } from "../../../shared/ui/backTo";
@@ -23,7 +27,13 @@ import { ReferencesCard } from "../references/ReferencesCard";
 import { CapTintScope } from "../caps/CapTintScope";
 import { IssueCard } from "../shared/IssueCard";
 import { priorityPicker } from "../shared/priorityPicker";
-import { IssueCode, IssueName, IssueTags, titleParts } from "../shared/IssueTitle";
+import { titleParts } from "../shared/IssueTitle";
+import { tagsOf } from "../shared/tags";
+import { capitalised } from "../shared/capitalised";
+import { effortKnown, effortWords } from "../shared/effort";
+import { EffortMenu } from "../shared/EffortMenu";
+import { PriorityMenu } from "../shared/PriorityMenu";
+import { inDone } from "../shared/IssuePills";
 import { issuePath, issuesPath } from "../shared/paths";
 import { splitSource } from "./source";
 import { mcpTodosClient, type TodosClient } from "../todos/api";
@@ -45,7 +55,6 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
   const [caps, setCaps] = useState<{ issueId: string; reading: CapsReading } | null>(null);
   const issue = useLoad(() => client.issue(id), `issue:${openAgencyId()}:${id}:${version}`);
   const ready = issue.state === "ready" ? issue.data : null;
-  const place = ready ? [ready.backlog, ready.step].filter((part) => part !== "").join(" · ") : "";
   const parts = ready ? titleParts(ready.title, ready.code) : null;
   const found = ready && !settled.has(ready.status) && caps?.issueId === ready.id ? tintOf(caps.reading) : null;
   const { body, source } = splitSource(ready?.description ?? "");
@@ -60,7 +69,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
     );
   };
   return (
-    <Shell title={parts?.code || "Issue"} onBack={() => navigate(backTo)} backLabel={backLabel}>
+    <Shell title={parts?.rest || "Issue"} titleless onBack={() => navigate(backTo)} backLabel={backLabel}>
       {ready ? <ChatAboutBacklog about={{ kind: "backlog-issue", id: ready.id, name: ready.title }} /> : null}
       {issue.state === "loading" ? <LoadingLine /> : null}
       {issue.state === "error" ? <LoadFailed words="This issue could not be loaded." /> : null}
@@ -75,19 +84,48 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
         </p>
       ) : null}
       {ready && parts ? (
+        <PageFrame title={parts.rest} line={[parts.code, ready.step].filter((part) => part !== "").join(" · ")}>
         <div className="issue-wide">
           <div className={found ? "issue-main cap-tinted" : "issue-main"} style={tintStyle(found)}>
-            <Card title={<IssueCode title={ready.title} code={ready.code} />}>
-              <IssueName title={ready.title} code={ready.code} full />
-              <IssueTags issue={ready} chosen={[]} extra={[place]} onPriority={setPriority && change("priority", setPriority)} onEffort={setEffort && change("effort", setEffort)} />
-              {found ? (
-                <span className="issue-tags">
-                  <CapTintChip found={found} />
-                </span>
-              ) : null}
-              {body ? <Markdown text={body} className="issue-body" /> : null}
-              <TodoList key={ready.id} issueId={ready.id} client={todosClient} />
-            </Card>
+            <Section
+              word="Details"
+              plain
+              rows={[
+                ready.backlog ? <ListRow key="backlog" title="Backlog" meta={[ready.backlog, ready.step].filter((part) => part !== "").join(" · ")} /> : null,
+                ready.priority ? <ListRow key="priority" title="Priority" meta={capitalised(ready.priority)} /> : null,
+                effortKnown(ready.effort) ? <ListRow key="effort" title="Effort" meta={effortWords(ready.effort ?? "")} /> : null,
+                tagsOf(ready).length > 0 ? (
+                  <ListRow
+                    key="tags"
+                    title="Tags"
+                    below={
+                      <span className="issue-tags">
+                        {tagsOf(ready).map((tag) => (
+                          <TextChip key={tag} text={tag} />
+                        ))}
+                      </span>
+                    }
+                  />
+                ) : null,
+              ].filter((row) => row !== null)}
+              foot={
+                <>
+                  {setPriority && !inDone(ready) ? <PriorityMenu priority={ready.priority ?? ""} onPick={change("priority", setPriority)} /> : null}
+                  {setEffort ? <EffortMenu effort={ready.effort ?? ""} onPick={change("effort", setEffort)} /> : null}
+                </>
+              }
+            />
+            {found ? (
+              <span className="issue-tags">
+                <CapTintChip found={found} />
+              </span>
+            ) : null}
+            {body ? (
+              <Card title="Description">
+                <Markdown text={body} className="issue-body" />
+              </Card>
+            ) : null}
+            <TodoList key={ready.id} issueId={ready.id} client={todosClient} />
           </div>
           <div className="issue-side">
             <ReferencesCard key={ready.id} issueId={ready.id} client={referencesClient} repoClient={repoClient} />
@@ -115,6 +153,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
             ) : null}
           </div>
         </div>
+        </PageFrame>
       ) : null}
     </Shell>
   );

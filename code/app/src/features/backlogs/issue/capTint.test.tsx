@@ -184,7 +184,7 @@ describe("the issue page header turns red the same way", () => {
     expect((await screen.findAllByText("Runtime 80%")).length).toBeGreaterThan(0);
     const header = document.querySelector(".cap-tinted") as HTMLElement;
     expect(header.style.getPropertyValue("--cap-tint")).toBe("0.68");
-    expect(header.querySelector(".issue-title")).not.toBeNull();
+    expect(header.querySelector(".sec")).not.toBeNull();
   });
 });
 
