@@ -92,6 +92,7 @@ but the lab's Hub Steward does so only after the manager has approved its draft.
 | Join requests across the agency | `GET /join-requests?pending_only=true` | reads every group's join requests, newest first | agent or manager; members are refused | Exists | Not generated yet |
 | Approve or decline a join request as the agency | `POST /join-requests/{request}/operator-approve`, `/operator-decline` | writes the decision; a decline is told with a reason or made quietly, and a told one reaches the member's Notifications page | manager or agent, whether or not they lead the group; members are refused | Exists | Exists: `actor_operator_approve_join_request`, `actor_operator_decline_join_request` |
 | Approve or decline a join request as a group leader | `POST /join-requests/{request}/approve`, `/decline` | writes the decision | a leader of that group | Exists | Exists: `actor_approve_join_request`, `actor_decline_join_request` |
+| End one person's registration in a group | `DELETE /actors/{actor_id}/assignments/{group_id}` | takes the person off the group's list, ends every seat they hold in that group as an eviction, and records the removal against the caller; their other groups and their record are kept; a person not registered there answers 404 | the owner, or an agent whose role holds `member.remove`; a resident is refused | Exists | Exists: `actor_unassign_group` (action `actor.assignment.unassign`, SW609) |
 
 ## Approvals, tasks and the agent
 
