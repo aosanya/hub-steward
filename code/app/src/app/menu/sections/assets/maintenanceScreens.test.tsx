@@ -15,6 +15,9 @@ const row = {
 
 let may: boolean;
 let landed = "";
+let saved = false;
+
+const editedRow = { id: "m2", answers: { ...row.answers, "What was done": "Changed the oil and the filter" } };
 
 const Where = () => {
   landed = useLocation().pathname + useLocation().search;
@@ -30,11 +33,15 @@ const show = (path: string) =>
   );
 
 beforeEach(() => {
+  saved = false;
   openAgency("town");
   vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => {
     if (tool === "agency_list_live_records") return { items: [{ code: "RC-268", name: "Maintenance records", can_add_rows: may }] };
-    if (tool === "agency_list_live_record_rows") return { items: [row] };
-    if (tool === "agency_add_live_record_row") return { id: "m2" };
+    if (tool === "agency_list_live_record_rows") return { items: [saved ? editedRow : row] };
+    if (tool === "agency_add_live_record_row") {
+      saved = true;
+      return { id: "m2" };
+    }
     return {};
   });
 });
@@ -83,7 +90,7 @@ describe("the maintenance record page", () => {
 });
 
 describe("the one maintenance edit screen", () => {
-  it("opens filled from the record and saves a replacing row, then returns to the record", async () => {
+  it("opens filled from the record and saves a replacing row, then returns to the record the replacing row made", async () => {
     may = true;
     const user = userEvent.setup();
     show("/a/town/menu/assets/maintenance-records/m1/edit");
@@ -96,7 +103,9 @@ describe("the one maintenance edit screen", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(vi.mocked(mcp.callTool)).toHaveBeenCalledWith("", "agency_add_live_record_row", expect.objectContaining({ record_code: "RC-268", replaces: "m1", answers: expect.objectContaining({ "What was done": "Changed the oil and the filter" }) }));
-    expect(landed).toBe("/a/town/menu/assets/maintenance-records/m1");
+    expect(await screen.findByRole("heading", { name: "Changed the oil and the filter" })).toBeInTheDocument();
+    expect(landed).toBe("/a/town/menu/assets/maintenance-records/m2");
+    expect(screen.queryByText("This could not be loaded.")).toBeNull();
   });
 
   it("adds a row for the asset it was opened from and returns to the page it came from", async () => {

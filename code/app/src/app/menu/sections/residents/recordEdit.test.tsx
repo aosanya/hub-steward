@@ -119,7 +119,7 @@ describe.each(screens)("the $name record edit", (one) => {
     expect(await screen.findByDisplayValue(one.changed.was)).toBeInTheDocument();
   });
 
-  it("saves a replacing row with the changed answer and returns to the record", async () => {
+  it("saves a replacing row with the changed answer and returns to the record the replacing row made", async () => {
     const calls = hub(one, true);
     show(one.editPath(one.row.id));
     const field = await screen.findByDisplayValue(one.changed.was);
@@ -127,7 +127,7 @@ describe.each(screens)("the $name record edit", (one) => {
     await userEvent.type(field, one.changed.to);
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
     await waitFor(() => expect(calls).toHaveBeenCalledWith("", "agency_add_live_record_row", expect.objectContaining({ record_code: one.code, replaces: one.row.id, answers: expect.objectContaining({ [one.changed.prompt]: one.changed.to, [one.holder]: ownerId }) })));
-    await waitFor(() => expect(landed).toContain(`row=${one.row.id}`));
+    await waitFor(() => expect(landed).toContain("row=new"));
     expect(landed).toContain(one.path());
   });
 

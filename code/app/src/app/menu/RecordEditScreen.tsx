@@ -28,5 +28,5 @@ export function RecordEditScreen({ title, recordCode, fields, back }: Props) {
       </Shell>
     );
   }
-  return <RecordRowForm title={title} recordCode={recordCode} fields={fields} back={{ to, label: back.label }} edit={{ rowId: id, saved: savedAnswers(view.data) }} />;
+  return <RecordRowForm title={title} recordCode={recordCode} fields={fields} back={{ to, label: back.label, toSaved: back.to }} edit={{ rowId: id, saved: savedAnswers(view.data) }} />;
 }

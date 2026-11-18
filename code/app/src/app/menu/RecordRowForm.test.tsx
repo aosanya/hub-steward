@@ -104,4 +104,50 @@ describe("RecordRowForm", () => {
     await screen.findByText("the stalls");
     expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-9", answers: { "Stall holder": "Kert Stall", Pitch: "South row" } });
   });
+
+  it("returns an edit to the page of the row that replaced the old one, from the id the save answers with", async () => {
+    called.mockImplementation(async () => ({ id: "r2" }));
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter initialEntries={["/form"]}>
+        <Where />
+        <Routes>
+          <Route
+            path="/form"
+            element={<RecordRowForm title="Edit stall" recordCode="RC-9" fields={[{ prompt: "Stall holder", required: true }]} back={{ to: "/rows/r1", toSaved: (id) => `/rows/${id}`, label: "Stalls" }} edit={{ rowId: "r1", saved: { "Stall holder": "Kert Stall" } }} />}
+          />
+          <Route path="/rows/:id" element={<p>a row</p>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    await user.type(screen.getByLabelText("Stall holder"), " Two");
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByText("a row")).toBeInTheDocument();
+    expect(landed).toBe("/rows/r2");
+  });
+
+  it("keeps the old page when the save answers with no id", async () => {
+    called.mockImplementation(async () => ({}));
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter initialEntries={["/form"]}>
+        <Where />
+        <Routes>
+          <Route
+            path="/form"
+            element={<RecordRowForm title="Edit stall" recordCode="RC-9" fields={[{ prompt: "Stall holder", required: true }]} back={{ to: "/rows/r1", toSaved: (id) => `/rows/${id}`, label: "Stalls" }} edit={{ rowId: "r1", saved: { "Stall holder": "Kert Stall" } }} />}
+          />
+          <Route path="/rows/:id" element={<p>a row</p>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    await user.type(screen.getByLabelText("Stall holder"), " Two");
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByText("a row")).toBeInTheDocument();
+    expect(landed).toBe("/rows/r1");
+  });
 });

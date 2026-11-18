@@ -21,9 +21,14 @@ type Props = {
   title: string;
   recordCode: string;
   fields: RecordFormField[];
-  back: { to: string; label: string };
+  back: { to: string; label: string; toSaved?: (id: string) => string };
   edit?: { rowId: string; saved: Record<string, string> };
   initial?: Record<string, string>;
+};
+
+const savedRowId = (reply: unknown) => {
+  const id = (reply as { id?: unknown } | null)?.id;
+  return typeof id === "string" ? id : "";
 };
 
 const optionalWords = (field: RecordFormField) => (field.required ? field.prompt : `${field.prompt} (optional)`);
@@ -60,8 +65,9 @@ export function RecordRowForm({ title, recordCode, fields, back, edit, initial }
     setSaving(true);
     setRefused("");
     try {
-      await callTool("", addLiveRecordRowTool, { record_code: await resolveRecordCode(recordCode), answers, ...(edit ? { replaces: edit.rowId } : {}) });
-      navigate(back.to);
+      const reply = await callTool("", addLiveRecordRowTool, { record_code: await resolveRecordCode(recordCode), answers, ...(edit ? { replaces: edit.rowId } : {}) });
+      const newId = edit ? savedRowId(reply) : "";
+      navigate(newId && back.toSaved ? back.toSaved(newId) : back.to);
     } catch (error) {
       setRefused(refusalWords(error));
       setSaving(false);
