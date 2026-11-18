@@ -18,6 +18,7 @@ import (
 
 var consentLanguageActions = []string{
 	"custody.consent.give",
+	"custody.consent.record",
 	"custody.consent_version.list",
 	"custody.consent_text.read",
 	"custody.consent_text.publish",

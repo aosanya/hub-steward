@@ -352,6 +352,7 @@ custody_get_in_force_consent
 custody_get_my_consent
 custody_list_consent_versions
 custody_publish_consent_version
+custody_record_paper_consent
 custody_withdraw_consent
 digitaltwin_address_create
 digitaltwin_address_list

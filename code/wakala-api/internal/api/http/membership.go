@@ -233,7 +233,7 @@ func (d *Deps) custodyAdmitted(ctx context.Context, reg agencies.Registry, insta
 
 var residentCustodyConsentActions = []string{"custody.consent.give", "custody.consent.withdraw", "custody.consent.mine", "custody.consent_text.read"}
 
-var permissionedCustodyActions = []string{"custody.consent_version.list", "custody.consent_text.publish"}
+var permissionedCustodyActions = []string{"custody.consent_version.list", "custody.consent_text.publish", "custody.consent.record"}
 
 var residentCustodyActions = append(slices.Clone(residentCustodyConsentActions), "custody.consent_version.in_force")
 
