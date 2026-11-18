@@ -13,7 +13,7 @@ import (
 )
 
 type personSubmissionLister interface {
-	ListSubmissionsOfPerson(ctx context.Context, memberID string) ([]models.Submission, error)
+	ListSubmissionsOfPerson(ctx context.Context, memberID, recordRowID string) ([]models.Submission, error)
 }
 
 type personSendSeed struct {
@@ -85,7 +85,7 @@ func personSendsAcrossTwoForms(t *testing.T) personRound {
 
 func TestAPersonsSendsAcrossFormsComeBackNewestFirstAndNothingOfAnotherMember(t *testing.T) {
 	r := personSendsAcrossTwoForms(t)
-	got, err := personLister(t, r.m).ListSubmissionsOfPerson(context.Background(), "mem-1")
+	got, err := personLister(t, r.m).ListSubmissionsOfPerson(context.Background(), "mem-1", "")
 	if err != nil {
 		t.Fatalf("ListSubmissionsOfPerson: %v", err)
 	}
@@ -110,7 +110,7 @@ func TestAPersonsSendsAcrossFormsComeBackNewestFirstAndNothingOfAnotherMember(t 
 
 func TestAPersonsSendsCarryTheTitleOfTheFormTheyWentTo(t *testing.T) {
 	r := personSendsAcrossTwoForms(t)
-	got, err := personLister(t, r.m).ListSubmissionsOfPerson(context.Background(), "mem-1")
+	got, err := personLister(t, r.m).ListSubmissionsOfPerson(context.Background(), "mem-1", "")
 	if err != nil {
 		t.Fatalf("ListSubmissionsOfPerson: %v", err)
 	}
@@ -132,7 +132,7 @@ func TestAPersonsSendsCarryTheTitleOfTheFormTheyWentTo(t *testing.T) {
 
 func TestAWithdrawnSendIsLeftOutOfAPersonsSends(t *testing.T) {
 	r := personSendsAcrossTwoForms(t)
-	got, err := personLister(t, r.m).ListSubmissionsOfPerson(context.Background(), "mem-1")
+	got, err := personLister(t, r.m).ListSubmissionsOfPerson(context.Background(), "mem-1", "")
 	if err != nil {
 		t.Fatalf("ListSubmissionsOfPerson: %v", err)
 	}
@@ -145,7 +145,7 @@ func TestAWithdrawnSendIsLeftOutOfAPersonsSends(t *testing.T) {
 
 func TestAPersonWhoSentNothingHasNoSendsAndNoError(t *testing.T) {
 	r := personSendsAcrossTwoForms(t)
-	got, err := personLister(t, r.m).ListSubmissionsOfPerson(context.Background(), "mem-9")
+	got, err := personLister(t, r.m).ListSubmissionsOfPerson(context.Background(), "mem-9", "")
 	if err != nil || len(got) != 0 {
 		t.Fatalf("sends of mem-9 = %+v (%v), want none and no error", got, err)
 	}
@@ -153,7 +153,7 @@ func TestAPersonWhoSentNothingHasNoSendsAndNoError(t *testing.T) {
 
 func TestAPersonsSendsNeedAMemberId(t *testing.T) {
 	r := personSendsAcrossTwoForms(t)
-	if _, err := personLister(t, r.m).ListSubmissionsOfPerson(context.Background(), ""); err == nil {
+	if _, err := personLister(t, r.m).ListSubmissionsOfPerson(context.Background(), "", ""); err == nil {
 		t.Fatal("an empty member id listed sends without error")
 	}
 }

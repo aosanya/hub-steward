@@ -157,7 +157,7 @@ func TestDecidingAgainReplacesTheEarlierDecisionAndItsNote(t *testing.T) {
 	if mine.Decision != models.DecisionApproved || mine.DecidedBy != "clerk-2" || mine.DecisionNote != "" {
 		t.Fatalf("send after deciding again = %+v, want the second decision alone", mine)
 	}
-	sent, err := r.m.ListSubmissions(ctx, r.form.ID, "mem-1", "")
+	sent, err := r.m.ListSubmissions(ctx, r.form.ID, "mem-1", "", "")
 	if err != nil || len(sent) != 1 {
 		t.Fatalf("sends after deciding twice = %+v (%v), want one", sent, err)
 	}

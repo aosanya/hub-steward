@@ -27,8 +27,8 @@ type sendsLandedInThreads struct {
 	instanceID string
 }
 
-func (s sendsLandedInThreads) SubmitAnswersFor(ctx context.Context, formID, memberID, answeringAs, language, periodKey string, in []formsmodels.Answer) ([]formsmodels.Answer, error) {
-	stored, err := s.FormManager.SubmitAnswersFor(ctx, formID, memberID, answeringAs, language, periodKey, in)
+func (s sendsLandedInThreads) SubmitAnswersFor(ctx context.Context, formID, memberID, answeringAs, language, periodKey, recordRowID string, in []formsmodels.Answer) ([]formsmodels.Answer, error) {
+	stored, err := s.FormManager.SubmitAnswersFor(ctx, formID, memberID, answeringAs, language, periodKey, recordRowID, in)
 	if err != nil {
 		return stored, err
 	}

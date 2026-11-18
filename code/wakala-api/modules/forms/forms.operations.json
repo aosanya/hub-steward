@@ -515,6 +515,7 @@
         {"from": "query", "as": "as", "description": "The group being answered as. Absent picks the first group the instrument was aimed at that the caller belongs to."},
         {"from": "query", "as": "language", "description": "The language tag the caller answered in, recorded on the send. Absent records none."},
         {"from": "query", "as": "period_key", "description": "The period of a repeating instrument this send was opened for, keyed by the day it opened. The send is refused when that period is no longer open, even because the next one opened. Absent sends to the period open now."},
+        {"from": "query", "as": "record_row_id", "description": "The business or trader row of the agency this send is for, such as a licence application for a stall. Only a row that names the caller as its owner is accepted; any other row is refused. Absent names none."},
         {"from": "body", "as": "answers", "description": "One answer per prompt being answered."}
       ],
       "returns": [{"body": true}]
@@ -596,7 +597,8 @@
       "args": [
         {"from": "path", "as": "form_id", "refers": "forms.form", "description": "The instrument sent to."},
         {"from": "query", "as": "member_id", "description": "Only this person's send. Absent reads everyone's."},
-        {"from": "query", "as": "period_key", "description": "Only the sends made in this period of a repeating instrument, keyed by the day it opened. Absent reads every period."}
+        {"from": "query", "as": "period_key", "description": "Only the sends made in this period of a repeating instrument, keyed by the day it opened. Absent reads every period."},
+        {"from": "query", "as": "record_row_id", "description": "Only the sends that name this business or trader row, or an older row it replaced by correction. Absent reads every send; a send naming no row is never listed for a row."}
       ],
       "returns": [{"body": true}]
     },
@@ -608,7 +610,8 @@
       "title": "List what one person sent across forms",
       "description": "Every send one person has made, across every instrument, newest first, each with the title of the instrument it went to, when it was sent and how many answers it carried. A withdrawn send is left out. Staff's read of another person's sends; the person is named in the request, never taken from the session.",
       "args": [
-        {"from": "query", "as": "member_id", "required": true, "description": "The person whose sends to list."}
+        {"from": "query", "as": "member_id", "required": true, "description": "The person whose sends to list."},
+        {"from": "query", "as": "record_row_id", "description": "Only the sends that name this business or trader row, or an older row it replaced by correction. Absent lists every send."}
       ],
       "returns": [{"body": true}]
     },

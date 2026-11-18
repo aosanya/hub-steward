@@ -11,7 +11,7 @@ import (
 
 func councilRowOf(t *testing.T, r voiceRound) models.Submission {
 	t.Helper()
-	rows, err := r.m.ListSubmissions(context.Background(), r.form.ID, "", "")
+	rows, err := r.m.ListSubmissions(context.Background(), r.form.ID, "", "", "")
 	if err != nil || len(rows) != 1 {
 		t.Fatalf("council list = %+v (%v), want one send", rows, err)
 	}

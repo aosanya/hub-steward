@@ -9,7 +9,7 @@ import (
 	"wakalaserver/modules/forms/models"
 )
 
-func (m *formManager) ListSubmissionsOfPerson(ctx context.Context, memberID string) ([]models.Submission, error) {
+func (m *formManager) ListSubmissionsOfPerson(ctx context.Context, memberID, recordRowID string) ([]models.Submission, error) {
 	if memberID == "" {
 		return nil, fmt.Errorf("ListSubmissionsOfPerson: a member id is required: %w", ErrInvalidAnswer)
 	}
@@ -21,6 +21,9 @@ func (m *formManager) ListSubmissionsOfPerson(ctx context.Context, memberID stri
 	counted := map[string]map[sentAs]int{}
 	out := make([]models.Submission, 0, len(sends))
 	for _, send := range sends {
+		if recordRowID != "" && send.RecordRowID != recordRowID {
+			continue
+		}
 		title, readable, err := m.titleOfForm(ctx, titles, send.FormID)
 		if err != nil {
 			return nil, fmt.Errorf("ListSubmissionsOfPerson: %w", err)

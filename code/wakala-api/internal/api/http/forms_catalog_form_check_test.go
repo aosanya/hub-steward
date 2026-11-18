@@ -67,7 +67,7 @@ type recordedSubmissions struct {
 	sent  []formsmodels.Submission
 }
 
-func (r *recordedSubmissions) ListSubmissions(_ context.Context, formID, memberID, periodKey string) ([]formsmodels.Submission, error) {
+func (r *recordedSubmissions) ListSubmissions(_ context.Context, formID, memberID, periodKey, _ string) ([]formsmodels.Submission, error) {
 	r.asked = append(r.asked, formID+"/"+memberID+"/"+periodKey)
 	return r.sent, nil
 }

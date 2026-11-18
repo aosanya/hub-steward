@@ -17,7 +17,7 @@ type sendRecordsForms struct {
 	err    error
 }
 
-func (f sendRecordsForms) SubmitAnswersFor(context.Context, string, string, string, string, string, []formsmodels.Answer) ([]formsmodels.Answer, error) {
+func (f sendRecordsForms) SubmitAnswersFor(context.Context, string, string, string, string, string, string, []formsmodels.Answer) ([]formsmodels.Answer, error) {
 	return f.stored, f.err
 }
 
@@ -59,7 +59,7 @@ func TestSubmittedAnswersLeaveACountableRecord(t *testing.T) {
 		catalogs:    sendRecordsCatalogs{manager: cm},
 		instanceID:  "i",
 	}
-	stored, err := sends.SubmitAnswersFor(context.Background(), "form1", "member1", "", "en", "", nil)
+	stored, err := sends.SubmitAnswersFor(context.Background(), "form1", "member1", "", "en", "", "", nil)
 	if err != nil || len(stored) != 4 {
 		t.Fatalf("stored %d err %v: the answers must come back as the form kept them", len(stored), err)
 	}
@@ -89,7 +89,7 @@ func TestARefusedSubmissionLeavesNoRecord(t *testing.T) {
 		FormManager: sendRecordsForms{err: refused},
 		catalogs:    sendRecordsCatalogs{manager: cm},
 	}
-	if _, err := sends.SubmitAnswersFor(context.Background(), "f", "m", "", "en", "", nil); !errors.Is(err, refused) {
+	if _, err := sends.SubmitAnswersFor(context.Background(), "f", "m", "", "en", "", "", nil); !errors.Is(err, refused) {
 		t.Fatalf("the refusal must reach the caller, got %v", err)
 	}
 	if len(cm.put) != 0 {
@@ -102,14 +102,14 @@ func TestSendsStillSucceedWhereRecordsAreNotKept(t *testing.T) {
 		FormManager: sendRecordsForms{stored: recordedAnswers()},
 		catalogs:    sendRecordsCatalogs{err: errors.New("catalog not mounted")},
 	}
-	if _, err := noCatalog.SubmitAnswersFor(context.Background(), "f", "m", "", "en", "", nil); err != nil {
+	if _, err := noCatalog.SubmitAnswersFor(context.Background(), "f", "m", "", "en", "", "", nil); err != nil {
 		t.Fatalf("an agency with no record catalog must still accept answers, got %v", err)
 	}
 	notKept := sendsRecorded{
 		FormManager: sendRecordsForms{stored: recordedAnswers()},
 		catalogs:    sendRecordsCatalogs{manager: &sendRecordsCatalog{putErr: catalog.ErrRecordsNotKept}},
 	}
-	if _, err := notKept.SubmitAnswersFor(context.Background(), "f", "m", "", "en", "", nil); err != nil {
+	if _, err := notKept.SubmitAnswersFor(context.Background(), "f", "m", "", "en", "", "", nil); err != nil {
 		t.Fatalf("a catalog that keeps no records must not fail the send, got %v", err)
 	}
 }
@@ -120,7 +120,7 @@ func TestAStoreErrorWhileRecordingIsReported(t *testing.T) {
 		FormManager: sendRecordsForms{stored: recordedAnswers()},
 		catalogs:    sendRecordsCatalogs{manager: &sendRecordsCatalog{putErr: down}},
 	}
-	if _, err := sends.SubmitAnswersFor(context.Background(), "f", "m", "", "en", "", nil); !errors.Is(err, down) {
+	if _, err := sends.SubmitAnswersFor(context.Background(), "f", "m", "", "en", "", "", nil); !errors.Is(err, down) {
 		t.Fatalf("a failed record write must be reported, got %v", err)
 	}
 }

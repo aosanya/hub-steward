@@ -21,7 +21,7 @@ const (
 )
 
 type submissionLister interface {
-	ListSubmissions(ctx context.Context, formID, memberID, periodKey string) ([]formsmodels.Submission, error)
+	ListSubmissions(ctx context.Context, formID, memberID, periodKey, recordRowID string) ([]formsmodels.Submission, error)
 }
 
 func entrySubmissionsOf(ctx context.Context, entry catalog.Entry, forms submissionLister, memberID string) ([]formsmodels.Submission, error) {
@@ -29,7 +29,7 @@ func entrySubmissionsOf(ctx context.Context, entry catalog.Entry, forms submissi
 	if formID == "" {
 		return []formsmodels.Submission{}, nil
 	}
-	sent, err := forms.ListSubmissions(ctx, formID, memberID, "")
+	sent, err := forms.ListSubmissions(ctx, formID, memberID, "", "")
 	if err != nil {
 		return nil, err
 	}

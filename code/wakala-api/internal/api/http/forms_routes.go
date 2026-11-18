@@ -79,7 +79,8 @@ func (d *Deps) registerInstanceFormsRoutes(mux *http.ServeMux, reg agencies.Regi
 			}
 			landed := sendsLanded(fm, reg, r.PathValue("instanceID"))
 			recorded := sendsRecorded{FormManager: landed, catalogs: reg, instanceID: r.PathValue("instanceID")}
-			announced := surveysAnnounced{FormManager: recorded, audience: reg, instanceID: r.PathValue("instanceID"), rules: d.NotifyRules, agency: reg, promises: promises}
+			named := sendsNamingRows{FormManager: recorded, read: liveRowsOfTheAgency(reg, r.PathValue("instanceID"))}
+			announced := surveysAnnounced{FormManager: named, audience: reg, instanceID: r.PathValue("instanceID"), rules: d.NotifyRules, agency: reg, promises: promises}
 			formsroutes.OperatorRoutesFor(announced, mount)[idx].Handler(w, r)
 		}))
 	}

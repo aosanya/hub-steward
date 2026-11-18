@@ -196,10 +196,10 @@ func (m *formManager) SubmitAnswersAs(ctx context.Context, formID, memberID, ans
 }
 
 func (m *formManager) SubmitAnswersIn(ctx context.Context, formID, memberID, answeringAs, language string, in []models.Answer) ([]models.Answer, error) {
-	return m.SubmitAnswersFor(ctx, formID, memberID, answeringAs, language, "", in)
+	return m.SubmitAnswersFor(ctx, formID, memberID, answeringAs, language, "", "", in)
 }
 
-func (m *formManager) SubmitAnswersFor(ctx context.Context, formID, memberID, answeringAs, language, periodKey string, in []models.Answer) ([]models.Answer, error) {
+func (m *formManager) SubmitAnswersFor(ctx context.Context, formID, memberID, answeringAs, language, periodKey, recordRowID string, in []models.Answer) ([]models.Answer, error) {
 	if memberID == "" {
 		return nil, fmt.Errorf("%w: nobody is answering", ErrInvalidAnswer)
 	}
@@ -252,7 +252,7 @@ func (m *formManager) SubmitAnswersFor(ctx context.Context, formID, memberID, an
 		return nil, fmt.Errorf("SubmitAnswers: %w", err)
 	}
 	kept, err := m.keepSend(ctx, sendToKeep{
-		form: f, memberID: memberID, chapterID: chapterID, period: period, channel: channel, language: language, answers: in,
+		form: f, memberID: memberID, chapterID: chapterID, period: period, channel: channel, language: language, recordRowID: recordRowID, answers: in,
 	})
 	if err != nil {
 		return nil, err

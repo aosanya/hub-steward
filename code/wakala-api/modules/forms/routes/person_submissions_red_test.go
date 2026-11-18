@@ -22,7 +22,7 @@ type personLister struct {
 	asked []string
 }
 
-func (p *personLister) ListSubmissionsOfPerson(_ context.Context, memberID string) ([]models.Submission, error) {
+func (p *personLister) ListSubmissionsOfPerson(_ context.Context, memberID, _ string) ([]models.Submission, error) {
 	p.asked = append(p.asked, memberID)
 	return []models.Submission{
 		{ID: "s-2", FormID: "f-2", MemberID: memberID, Answers: 1},

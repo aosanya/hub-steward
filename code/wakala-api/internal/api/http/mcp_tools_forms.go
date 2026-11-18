@@ -94,7 +94,8 @@ func (d *Deps) invokeFormsTool(ctx context.Context, name, action string, raw jso
 	mount.Authorize = nil
 	landed := sendsLanded(fm, d.Registry, instanceID)
 	recorded := sendsRecorded{FormManager: landed, catalogs: d.Registry, instanceID: instanceID}
-	announced := surveysAnnounced{FormManager: recorded, audience: d.Registry, instanceID: instanceID, rules: d.NotifyRules, agency: d.Registry}
+	named := sendsNamingRows{FormManager: recorded, read: liveRowsOfTheAgency(d.Registry, instanceID)}
+	announced := surveysAnnounced{FormManager: named, audience: d.Registry, instanceID: instanceID, rules: d.NotifyRules, agency: d.Registry}
 	tools, err := formsroutes.BuildGatedTools(announced, mount)
 	if err != nil {
 		return nil, err

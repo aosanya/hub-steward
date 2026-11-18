@@ -147,7 +147,7 @@ func TestAWithdrawalTravelsFromCustodyToEngageFormsAndCommInPostgres(t *testing.
 	if n := rowCount(t, db, fs, "answer", "member_id = 'mem-1' and withdrawn_at <> ''"); n != 1 {
 		t.Errorf("forms: withdrawn answers kept = %d, want 1 (kept, not erased)", n)
 	}
-	submissions, err := fm.ListSubmissions(ctx, "f-1", "", "")
+	submissions, err := fm.ListSubmissions(ctx, "f-1", "", "", "")
 	if err != nil {
 		t.Fatalf("ListSubmissions: %v", err)
 	}

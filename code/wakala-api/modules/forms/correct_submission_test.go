@@ -43,7 +43,7 @@ func TestACorrectionChangesTheNamedAnswersAndKeepsTheRest(t *testing.T) {
 	if seen[r.question.ID] != "street lighting" || seen[r.reason.ID] != "missed twice" {
 		t.Fatalf("answers after the correction = %v", seen)
 	}
-	sent, err := r.m.ListSubmissions(ctx, r.form.ID, "mem-1", "")
+	sent, err := r.m.ListSubmissions(ctx, r.form.ID, "mem-1", "", "")
 	if err != nil || len(sent) != 1 || sent[0].EditedAt == "" || sent[0].Answers != 2 {
 		t.Fatalf("send after the correction = %+v (%v), want one send stamped edited carrying 2 answers", sent, err)
 	}

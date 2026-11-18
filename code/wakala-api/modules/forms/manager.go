@@ -236,7 +236,7 @@ type FormManager interface {
 	SubmitAnswers(ctx context.Context, formID, memberID string, answers []models.Answer) ([]models.Answer, error)
 	SubmitAnswersAs(ctx context.Context, formID, memberID, answeringAs string, answers []models.Answer) ([]models.Answer, error)
 	SubmitAnswersIn(ctx context.Context, formID, memberID, answeringAs, language string, answers []models.Answer) ([]models.Answer, error)
-	SubmitAnswersFor(ctx context.Context, formID, memberID, answeringAs, language, periodKey string, answers []models.Answer) ([]models.Answer, error)
+	SubmitAnswersFor(ctx context.Context, formID, memberID, answeringAs, language, periodKey, recordRowID string, answers []models.Answer) ([]models.Answer, error)
 
 	ListAnswers(ctx context.Context, formID, memberID string) ([]models.Answer, error)
 	ListPreviousAnswers(ctx context.Context, formID, memberID string) ([]models.Answer, error)
@@ -246,9 +246,9 @@ type FormManager interface {
 	GetSubmission(ctx context.Context, formID, memberID string) (models.Submission, error)
 	ShowMySubmission(ctx context.Context, formID, memberID string) (models.Submission, error)
 
-	ListSubmissions(ctx context.Context, formID, memberID, periodKey string) ([]models.Submission, error)
+	ListSubmissions(ctx context.Context, formID, memberID, periodKey, recordRowID string) ([]models.Submission, error)
 
-	ListSubmissionsOfPerson(ctx context.Context, memberID string) ([]models.Submission, error)
+	ListSubmissionsOfPerson(ctx context.Context, memberID, recordRowID string) ([]models.Submission, error)
 
 	MarkPaid(ctx context.Context, formID, memberID string, paid bool, markedBy string) (models.Submission, error)
 
