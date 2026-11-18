@@ -249,10 +249,10 @@ describe("the Integrations screen", () => {
   it("lists each service with whether it is connected", async () => {
     openAt("Integrations");
 
-    const anthropic = (await screen.findByText("Anthropic")).closest("button, .row") as HTMLElement;
-    expect(within(anthropic).getByText("Connected")).toBeInTheDocument();
-    const deepl = screen.getByText("DeepL").closest("button, .row") as HTMLElement;
-    expect(within(deepl).getByText("Not connected")).toBeInTheDocument();
+    const writing = (await screen.findByText("Writing helper")).closest("button, .row") as HTMLElement;
+    expect(within(writing).getByText("Connected")).toBeInTheDocument();
+    const translation = screen.getByText("Translation helper").closest("button, .row") as HTMLElement;
+    expect(within(translation).getByText("Not connected")).toBeInTheDocument();
   });
 });
 
