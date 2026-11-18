@@ -11,7 +11,7 @@ import { MenuEditForm } from "../../MenuEditForm";
 import { PageFrame } from "../../PageFrame";
 import { SectionGo } from "../residents/SectionAct";
 import { ChatAboutProperty } from "./ChatAboutProperty";
-import { PropertyFacts } from "./PropertyFacts";
+import { FactsCard } from "../../FactsCard";
 import { PropertyHoldings } from "./PropertyHoldings";
 import { PropertyWorks } from "./PropertyWorks";
 import { placePaths } from "./paths";
@@ -52,7 +52,7 @@ function PlaceCards({ place }: { place: Record<string, unknown> }) {
     <>
       <ChatAboutProperty kind="place" id={id} name={textOf(place.name)} back={placePaths.place.path({ placeId: id })} extra={{ place: placeIdOf(place.attributes_json) || "none" }} />
       <PageFrame title={textOf(place.name)} line={textOf(place.category)}>
-        <PropertyFacts
+        <FactsCard
           word={`${word("Place")} detail`}
           facts={[["Name", textOf(place.name)], ["Type", textOf(place.category)], ["Location", textOf(place.location)], ["Parcel number", textOf(place.parcel_number)]]}
           foot={edit}

@@ -7,7 +7,9 @@ import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
 import { BoundaryForm } from "./BoundaryForm";
 import { settingsPaths } from "./paths";
-import { ChatAboutItem, FactsCard, RecordPage, text, useChosenItem } from "./RecordPage";
+import { ChatAboutItem, text, useChosenItem } from "./RecordPage";
+import { FactsCard } from "../../FactsCard";
+import { PageFrame } from "../../PageFrame";
 import { outerRingOf, textFromCorners } from "./boundary";
 
 const populationOf = async (groupId: string) => {
@@ -61,11 +63,11 @@ export function BoundariesAndAreas() {
         extra: (area) => (
           <>
             <ChatAboutItem about={{ kind: "boundary", id: text(area, "id"), name: text(area, "name") }} back={settingsPaths.boundariesAndAreas.path()} />
-            <RecordPage name={text(area, "name")} line={text(area, "residents")}>
+            <PageFrame title={text(area, "name")} line={text(area, "residents")}>
               <FactsCard word="Boundary" facts={[["Residents", text(area, "residents")], ["Area node", text(area, "area_node_id")], ["Boundary", text(area, "boundary")]]} />
               <MenuEditForm item={area} id={String(area.id)} idArg="group_id" tool="actor_set_group_area_node" permission="group.manage" fields={areaFields} onSaved={saved} />
               <BoundaryForm groupId={String(area.id)} shown={String(area.corners ?? "")} onSaved={saved} />
-            </RecordPage>
+            </PageFrame>
           </>
         ),
       }}

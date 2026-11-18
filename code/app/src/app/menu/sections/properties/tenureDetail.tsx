@@ -1,7 +1,7 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { PageFrame } from "../../PageFrame";
 import { ChatAboutProperty } from "./ChatAboutProperty";
-import { PropertyFacts } from "./PropertyFacts";
+import { FactsCard } from "../../FactsCard";
 import { placePaths } from "./paths";
 import { loadHoldingDetails, loadOwnAnswers, type OwnAnswer } from "./holdingDetails";
 import { dayOf, loadNodeNames, readRecord, textOf } from "./records";
@@ -30,7 +30,7 @@ function HoldingCards({ holding }: { holding: Record<string, unknown> }) {
     <>
       <ChatAboutProperty kind="holding" id={id} name={holder} back={`${placePaths.ownership.path()}?holding=${id}`} />
       <PageFrame title={holder} line={textOf(holding.kind)}>
-        <PropertyFacts word={`${word("Holding")} detail`} facts={facts} />
+        <FactsCard word={`${word("Holding")} detail`} facts={facts} />
       </PageFrame>
     </>
   );

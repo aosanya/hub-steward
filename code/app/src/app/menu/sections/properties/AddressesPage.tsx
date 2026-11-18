@@ -1,7 +1,7 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { PageFrame } from "../../PageFrame";
 import { ChatAboutProperty } from "./ChatAboutProperty";
-import { PropertyFacts } from "./PropertyFacts";
+import { FactsCard } from "../../FactsCard";
 import { placePaths } from "./paths";
 import { MountedMenuList } from "./MountedMenuList";
 import { digitaltwinModule, joined, loadRecords, readRecord, textOf } from "./records";
@@ -26,7 +26,7 @@ function AddressCards({ address }: { address: Record<string, unknown> }) {
     <>
       <ChatAboutProperty kind="address" id={id} name={title} back={placePaths.addresses.path()} />
       <PageFrame title={title} line={joined([textOf(address.postcode), textOf(address.area)], " ")}>
-        <PropertyFacts word={`${word("Address")} detail`} facts={[["Street", textOf(address.street)], ["Number", textOf(address.number)], ["Area", textOf(address.area)], ["Postcode", textOf(address.postcode)]]} />
+        <FactsCard word={`${word("Address")} detail`} facts={[["Street", textOf(address.street)], ["Number", textOf(address.number)], ["Area", textOf(address.area)], ["Postcode", textOf(address.postcode)]]} />
       </PageFrame>
     </>
   );

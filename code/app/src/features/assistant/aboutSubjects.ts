@@ -127,7 +127,6 @@ const aiAgent: Subject = {
   empty: "its limits and use this month",
 };
 
-
 const oneRecord = (tool: string, scope: string, step: string, overview: string): Subject => ({
   reads: { [tool]: { [scope]: byId } },
   steps: { [tool]: step },
@@ -151,7 +150,6 @@ const address = oneRecord("digitaltwin_address_read", "addressID", "Reading the 
 const holding = oneRecord("digitaltwin_tenure_read", "tenureID", "Reading the holding", "its holder, property, kind and the day it began");
 
 const landUse = oneRecord("digitaltwin_land_use_read", "landUseID", "Reading the land use", "its zone, use and area");
-
 
 const bill: Subject = {
   reads: {

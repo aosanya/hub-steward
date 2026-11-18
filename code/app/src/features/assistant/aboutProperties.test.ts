@@ -9,6 +9,12 @@ const landUse: ChatAbout = { kind: "land-use", id: "u1", name: "Residential" };
 const all = [place, address, holding, landUse];
 
 describe("the property subjects", () => {
+  it("a place with no linked place id scopes its holdings read to none, which returns nothing", () => {
+    const unlinked: ChatAbout = { kind: "place", id: "a2", name: "Old Mill", extra: { place: "none" } };
+    expect(scopedArgs(unlinked, "digitaltwin_tenure_list", {})).toEqual({ place_id: "none" });
+    expect(scopeKeysFor(unlinked, "digitaltwin_tenure_list")).toEqual(["place_id"]);
+  });
+
   it("a place reads its record and its holdings, scoped to itself", () => {
     expect(readNamesFor(place)).toEqual(["assetmanager_asset_read", "digitaltwin_tenure_list"]);
     expect(scopedArgs(place, "assetmanager_asset_read", {})).toEqual({ assetID: "a1" });

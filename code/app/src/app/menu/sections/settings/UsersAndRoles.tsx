@@ -6,7 +6,8 @@ import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
 import { MenuWindow } from "../../MenuWindow";
 import { settingsPaths } from "./paths";
-import { ChatAboutItem, RecordPage, text, useChosenItem } from "./RecordPage";
+import { ChatAboutItem, text, useChosenItem } from "./RecordPage";
+import { PageFrame } from "../../PageFrame";
 import { SeatEnd, type Seat as HeldSeat } from "./SeatEnd";
 import { SeatGive } from "./SeatGive";
 import { labelOf } from "./personLabel";
@@ -60,10 +61,10 @@ export function UsersAndRoles() {
           return (
             <>
               <ChatAboutItem about={{ kind: "user", id: text(person, "id"), name: text(person, "display_name") }} back={settingsPaths.usersAndRoles.path()} />
-              <RecordPage name={text(person, "display_name")} line={text(person, "roles") || "No roles yet"}>
+              <PageFrame title={text(person, "display_name")} line={text(person, "roles") || "No roles yet"}>
                 <Section word="Roles" empty={{ words: "No roles yet." }} rows={seats.map((seat) => <ListRow key={seat.id} title={seat.role} />)} foot={<SeatEnd seats={seats} onEnded={ended} />} />
                 <Section word="Give a role" plain rows={[<SeatGive key="give" actorId={String(person.id)} onGiven={ended} />]} />
-              </RecordPage>
+              </PageFrame>
             </>
           );
         },

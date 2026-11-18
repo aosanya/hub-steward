@@ -3,7 +3,9 @@ import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
 import { settingsPaths } from "./paths";
-import { ChatAboutItem, FactsCard, RecordPage, useChosenItem, type Fact } from "./RecordPage";
+import { ChatAboutItem, useChosenItem } from "./RecordPage";
+import { FactsCard, type Fact } from "../../FactsCard";
+import { PageFrame } from "../../PageFrame";
 
 type Record_ = Record<string, unknown>;
 
@@ -134,11 +136,11 @@ export function AiAgents() {
         extra: (agent) => (
           <>
             <ChatAboutItem about={{ kind: "ai-agent", id: text(agent, "id"), name: text(agent, "name"), extra: { details: [text(agent, "description"), text(agent, "limits")].filter(Boolean).join("; ") } }} back={settingsPaths.aiAgents.path()} />
-            <RecordPage name={text(agent, "name")} line={text(agent, "state") || text(agent, "description")}>
+            <PageFrame title={text(agent, "name")} line={text(agent, "state") || text(agent, "description")}>
               <FactsCard word="What it may do" facts={factsOf(agent, doLabels)} />
               <FactsCard word="Limits" facts={factsOf(agent, limitLabelsOnPage)} />
               <FactsCard word="Use" facts={factsOf(agent, useLabels)} />
-            </RecordPage>
+            </PageFrame>
           </>
         ),
       }}

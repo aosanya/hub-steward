@@ -93,6 +93,20 @@ describe("a place is built like a resident", () => {
     expect(works.querySelector("footer")).toBeNull();
   });
 
+  it("builds the page of a place with no linked place id and reads no holdings for it", async () => {
+    const unlinked = { ...library, attributes_json: JSON.stringify({ parcel_number: "0412/7" }) };
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
+      if (name === "assetmanager_asset_list") return { items: [unlinked] };
+      if (name === "assetmanager_asset_read") return { item: unlinked };
+      return answer(name);
+    });
+    const pane = within(await open(placePaths.places.path(), /Zoldhalom Library/));
+    expect(await pane.findByRole("heading", { level: 1, name: "Zoldhalom Library" })).toBeInTheDocument();
+    const holdings = await pane.findByRole("region", { name: "Holdings" });
+    expect(within(holdings).getByText("No holdings yet.")).toBeInTheDocument();
+    expect(mcp.callTool).not.toHaveBeenCalledWith(expect.anything(), "digitaltwin_tenure_list", expect.anything());
+  });
+
   it("opens one edit screen from Edit, holding the fields under a single Save", async () => {
     const pane = within(await open(placePaths.places.path(), /Zoldhalom Library/));
     await userEvent.click(await pane.findByRole("button", { name: "Edit" }));

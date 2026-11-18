@@ -3,7 +3,9 @@ import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
 import { settingsPaths } from "./paths";
-import { ChatAboutItem, FactsCard, RecordPage, text as shown, useChosenItem } from "./RecordPage";
+import { ChatAboutItem, text as shown, useChosenItem } from "./RecordPage";
+import { FactsCard } from "../../FactsCard";
+import { PageFrame } from "../../PageFrame";
 
 type Account = Record<string, unknown>;
 
@@ -67,9 +69,9 @@ export function Integrations() {
         extra: (account) => (
           <>
             <ChatAboutItem about={{ kind: "integration", id: shown(account, "id"), name: shown(account, "name"), extra: { details: [shown(account, "provider"), shown(account, "state"), shown(account, "limits")].filter(Boolean).join("; ") } }} back={settingsPaths.integrations.path()} />
-            <RecordPage name={shown(account, "name")} line={shown(account, "state")}>
+            <PageFrame title={shown(account, "name")} line={shown(account, "state")}>
               <FactsCard word="Integration" facts={[["Provider", shown(account, "provider")], ["Address", shown(account, "address")], ["Model", shown(account, "model")], ["Status", shown(account, "state")], ["Limits", shown(account, "limits")]]} />
-            </RecordPage>
+            </PageFrame>
           </>
         ),
       }}

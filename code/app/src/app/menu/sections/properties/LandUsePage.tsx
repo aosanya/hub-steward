@@ -1,7 +1,7 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { PageFrame } from "../../PageFrame";
 import { ChatAboutProperty } from "./ChatAboutProperty";
-import { PropertyFacts } from "./PropertyFacts";
+import { FactsCard } from "../../FactsCard";
 import { placePaths } from "./paths";
 import { MountedMenuList } from "./MountedMenuList";
 import { digitaltwinModule, joined, loadRecords, readRecord, textOf } from "./records";
@@ -25,7 +25,7 @@ function LandUseCards({ landUse }: { landUse: Record<string, unknown> }) {
     <>
       <ChatAboutProperty kind="land-use" id={textOf(landUse.id)} name={zone} back={placePaths.landUse.path()} />
       <PageFrame title={zone} line={textOf(landUse.use)}>
-        <PropertyFacts word={`${word("Land Use")} detail`} facts={[["Zone", zone], ["Use", textOf(landUse.use)], ["Area", textOf(landUse.area)]]} />
+        <FactsCard word={`${word("Land Use")} detail`} facts={[["Zone", zone], ["Use", textOf(landUse.use)], ["Area", textOf(landUse.area)]]} />
       </PageFrame>
     </>
   );
