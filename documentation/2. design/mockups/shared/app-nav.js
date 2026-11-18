@@ -28,12 +28,13 @@
       ['workflow.html', 'Workflow']
     ] }
   ];
+  var base = '';
   var homeIcon = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/></svg>';
   var css = ".jnav{position:sticky;top:0;z-index:20;display:flex;align-items:stretch;gap:.125rem;min-height:3.25rem;padding:0 .5rem;background:var(--surface);border-bottom:1px solid var(--line);font-size:.8125rem}\n.jnav .nb-item,.jnav .nb-link{position:relative;display:flex;align-items:center;gap:.375rem;padding:0 .875rem;border:0;background:transparent;color:var(--ink-soft);font-weight:500;white-space:nowrap}\n.jnav .nb-link:hover,.jnav .nb-drop.is-active>.nb-link,.jnav .nb-drop:focus-within>.nb-link{background:var(--accent-wash);color:var(--accent-strong)}\n.jnav .nb-link[aria-current]{color:var(--accent-strong);font-weight:600;box-shadow:inset 0 -.1875rem 0 var(--accent)}\n.jnav .nb-drop{position:relative;display:flex}\n.jnav .nb-drop>.nb-link::after{content:\"\";width:.4375rem;height:.4375rem;margin:-.25rem 0 0 .125rem;border:solid currentColor;border-width:0 .125rem .125rem 0;transform:rotate(45deg)}\n.jnav .nb-menu{position:absolute;top:100%;left:0;z-index:21;display:none;flex-direction:column;min-width:13rem;padding:.375rem 0;background:var(--surface);border:1px solid var(--line);border-top:.125rem solid var(--accent);border-radius:0 0 var(--r-md) var(--r-md);box-shadow:0 .5rem 1.5rem var(--line)}\n.jnav .nb-end{margin-left:auto}\n.jnav .nb-end .nb-menu{left:auto;right:0}\n.jnav .nb-drop.is-active>.nb-menu{display:flex}\n.jnav .nb-menu a{display:block;padding:.5rem 1rem;color:var(--ink-soft)}\n.jnav .nb-menu a:hover{background:var(--accent-wash);color:var(--accent-strong)}\n.jnav .nb-menu a[aria-current]{color:var(--accent-strong);font-weight:600;background:var(--accent-wash)}\n@media(hover:hover){.jnav .nb-drop:hover>.nb-menu{display:flex}}\n@media(max-width:48rem){.jnav{overflow-x:auto}.jnav .nb-menu{position:fixed;top:3.25rem;left:.5rem;right:.5rem}.jnav .nb-end .nb-menu{left:.5rem;right:.5rem}}";
 
   function link(page, label, current, inner) {
     var mark = page === current ? ' aria-current="page"' : '';
-    return '<a href="' + page + '"' + mark + '>' + (inner || label) + '</a>';
+    return '<a href="' + base + page + '"' + mark + '>' + (inner || label) + '</a>';
   }
 
   function drop(label, links, end, holds) {
@@ -43,13 +44,14 @@
 
   function draw(nav) {
     var current = nav.getAttribute('data-current') || '';
+    base = nav.getAttribute('data-base') || '';
     var local = Array.prototype.map.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
       return '<a href="' + a.getAttribute('href') + '">' + a.innerHTML + '</a>';
     }).join('');
-    var html = '<a class="nb-item" href="index.html" aria-label="Home"' + (current === 'index.html' ? ' aria-current="page"' : '') + '>' + homeIcon + '</a>';
+    var html = '<a class="nb-item" href="' + base + 'index.html" aria-label="Home"' + (current === 'index.html' ? ' aria-current="page"' : '') + '>' + homeIcon + '</a>';
     menu.forEach(function (entry) {
       if (entry.page) {
-        html += '<a class="nb-link" href="' + entry.page + '"' + (entry.page === current ? ' aria-current="page"' : '') + '>' + entry.label + '</a>';
+        html += '<a class="nb-link" href="' + base + entry.page + '"' + (entry.page === current ? ' aria-current="page"' : '') + '>' + entry.label + '</a>';
         return;
       }
       var holds = entry.items.some(function (item) { return item[0] === current; });
