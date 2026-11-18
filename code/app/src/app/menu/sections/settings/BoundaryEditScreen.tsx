@@ -9,6 +9,7 @@ import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
+import { groupEditArgs, groupEditTool } from "../../groupEdit";
 import { refusalWords } from "../../MenuEditForm";
 import { boundaryArgs, cornersFromText, outerRingOf, textFromCorners } from "./boundary";
 import { settingsPaths } from "./paths";
@@ -39,7 +40,7 @@ function BoundaryEditForm({ id, group, done }: { id: string; group: Group | null
     setSaving(true);
     setRefused("");
     try {
-      if (name !== shownName) await callTool("", "actor_edit_group", { group_id: id, name, NodeType: textOf(group?.node_type), AnchorLevelOverrideID: textOf(group?.anchor_level_override) });
+      if (name !== shownName) await callTool("", groupEditTool, groupEditArgs(id, group ?? {}, name));
       if (node !== shownNode) await callTool("", "actor_set_group_area_node", { group_id: id, area_node_id: node });
       if (corners !== shownCorners) await callTool("", "actor_set_group_boundary", boundaryArgs(id, parsed));
       done();

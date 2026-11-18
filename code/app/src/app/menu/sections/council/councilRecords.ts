@@ -1,5 +1,6 @@
 import { callTool } from "../../../../shared/wakala/mcp";
 import type { EditField } from "../../MenuEditForm";
+import { groupEditTool, groupNameBuild, groupNameFields } from "../../groupEdit";
 import { loadCommittee } from "./committeesData";
 import { councilTools, listOf, manageCouncil, readBylawArgs, readMeetingArgs, readResolutionArgs, text, type Agenda, type Bylaw, type Item, type Minutes } from "./councilData";
 
@@ -71,7 +72,7 @@ export const loadMeetingResolutions = async (meetingId: string) =>
 
 export type EditKind = "meetings" | "resolutions" | "bylaws" | "agenda" | "minutes" | "committees";
 
-type Form = { tool: string; idArg: string; permission: string; fields: EditField[]; keep?: string[]; item: (loaded: Item) => Item };
+type Form = { tool: string; idArg: string; permission: string; fields: EditField[]; keep?: string[]; build?: (id: string, item: Item) => (sent: Record<string, unknown>) => Record<string, unknown>; item: (loaded: Item) => Item };
 
 export type CouncilEdit = { word: string; home: "meetings" | "agendas" | "resolutions" | "bylaws" | "committees"; load: (id: string) => Promise<Item>; nameOf: (loaded: Item) => string; form: Form };
 
@@ -104,7 +105,7 @@ export const councilEdits: Record<EditKind, CouncilEdit> = {
   bylaws: { word: "bylaw", home: "bylaws", load: loadBylaw, nameOf: (loaded) => text(loaded, "title"), form: { tool: councilTools.bylawUpdate, idArg: "bylawID", permission: manageCouncil, fields: bylawFields, keep: ["title", "year", "text"], item: same } },
   agenda: { word: "agenda", home: "agendas", load: withMeeting, nameOf: (loaded) => text(loaded, "name"), form: { tool: councilTools.agendaSet, idArg: "meetingID", permission: manageCouncil, fields: [{ label: "Agenda items, one per line", key: "items", kind: "lines" }], item: (loaded) => ({ items: loaded.items }) } },
   minutes: { word: "minutes", home: "agendas", load: withMeeting, nameOf: (loaded) => text(loaded, "name"), form: { tool: councilTools.minutesSet, idArg: "meetingID", permission: manageCouncil, fields: [{ label: "Minutes text", key: "text", required: true }], item: (loaded) => ({ text: loaded.minutes }) } },
-  committees: { word: "committee", home: "committees", load: loadCommittee, nameOf: (loaded) => text(loaded, "name"), form: { tool: "actor_edit_group", idArg: "group_id", permission: "group.manage", fields: [{ label: "Name", key: "name", required: true }], keep: ["NodeType", "AnchorLevelOverrideID"], item: same } },
+  committees: { word: "committee", home: "committees", load: loadCommittee, nameOf: (loaded) => text(loaded, "name"), form: { tool: groupEditTool, idArg: "group_id", permission: "group.manage", fields: groupNameFields, build: groupNameBuild, item: same } },
 };
 
 export const isEditKind = (kind: string): kind is EditKind => kind in councilEdits;

@@ -20,7 +20,7 @@ export function CouncilEditScreen() {
       {view.state === "error" || !edit ? <LoadFailed words="This could not be loaded." /> : null}
       {edit && view.state === "ready" ? (
         <div className="person-page">
-          <MenuEditForm item={edit.form.item(view.data)} id={id} idArg={edit.form.idArg} tool={edit.form.tool} permission={edit.form.permission} fields={edit.form.fields} keep={edit.form.keep} bare openCount={1} onSaved={back} onCancel={back} />
+          <MenuEditForm item={edit.form.item(view.data)} id={id} build={edit.form.build?.(id, edit.form.item(view.data))} idArg={edit.form.idArg} tool={edit.form.tool} permission={edit.form.permission} fields={edit.form.fields} keep={edit.form.keep} bare openCount={1} onSaved={back} onCancel={back} />
         </div>
       ) : null}
     </Shell>

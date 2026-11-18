@@ -1,4 +1,4 @@
-import { groupKept } from "../staff/GroupEdit";
+import { groupKept } from "../../groupEdit";
 import { groupsOfType } from "../../groupsOfType";
 import { listOf, text } from "./councilData";
 

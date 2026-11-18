@@ -9,6 +9,7 @@ import { MenuEditForm, refusalWords } from "../../MenuEditForm";
 import { MembersCard } from "./MembersCard";
 import { populationFigure } from "../../populationFigure";
 import { groupTypeWord } from "../../groupTypeWords";
+import { groupEditTool, groupKept, groupNameBuild, groupNameFields } from "../../groupEdit";
 import { useLanguage } from "../../../../shared/language/language";
 import type { Words } from "../../../../shared/language/words";
 
@@ -26,14 +27,11 @@ export const loadGroup = async (id: string): Promise<Item> => {
   return {
     ...group,
     id,
-    NodeType: text(group, "node_type"),
-    AnchorLevelOverrideID: text(group, "anchor_level_override"),
+    ...groupKept(group),
     members: count === null ? "" : `${count} members`,
     hiddenWords: group.hidden === true ? "yes" : "no",
   };
 };
-
-const nameFields = [{ label: "Name", key: "name", required: true }];
 
 const joinFields = [{ label: "Joining", key: "join_mode", required: true }];
 
@@ -122,10 +120,10 @@ export function GroupEdit({ group, onDone }: { group: Item; onDone: () => void }
   if (!mayName) {
     return <MenuEditForm item={group} id={id} idArg="group_id" tool="actor_set_group_join_mode" permission="group.settings" bare openCount={1} fields={joinFields} onSaved={onDone} onCancel={onDone} />;
   }
-  const fields = mayJoin ? [...nameFields, ...joinFields] : nameFields;
-  const build = (sent: Record<string, unknown>) => ({ group_id: id, NodeType: text(group, "NodeType"), AnchorLevelOverrideID: text(group, "AnchorLevelOverrideID"), name: sent.name });
+  const fields = mayJoin ? [...groupNameFields, ...joinFields] : groupNameFields;
+  const build = groupNameBuild(id, group);
   const alsoSave = async (changed: Record<string, string>) => {
     if ("join_mode" in changed) await callTool("", "actor_set_group_join_mode", { group_id: id, join_mode: changed.join_mode });
   };
-  return <MenuEditForm item={group} id={id} idArg="group_id" tool="actor_edit_group" permission="group.manage" bare openCount={1} fields={fields} build={build} alsoSave={alsoSave} onSaved={onDone} onCancel={onDone} />;
+  return <MenuEditForm item={group} id={id} idArg="group_id" tool={groupEditTool} permission="group.manage" bare openCount={1} fields={fields} build={build} alsoSave={alsoSave} onSaved={onDone} onCancel={onDone} />;
 }
