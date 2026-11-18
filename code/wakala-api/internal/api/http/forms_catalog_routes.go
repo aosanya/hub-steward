@@ -192,6 +192,14 @@ func (c agencyOwnedCatalog) UpdateEntry(ctx context.Context, e catalog.Entry) (c
 	return c.CatalogManager.UpdateEntry(catalog.AsAgencyOwner(ctx), e)
 }
 
+func (c agencyOwnedCatalog) ListRaisedItemsOfPerson(ctx context.Context, raisedBy string) ([]catalog.MyRaisedItem, error) {
+	return c.CatalogManager.ListRaisedItemsOfPerson(catalog.AsAgencyOwner(ctx), raisedBy)
+}
+
+func (c agencyOwnedCatalog) ListRaisedItemsOfSubject(ctx context.Context, subjectID string) ([]catalog.RaisedItem, error) {
+	return c.CatalogManager.ListRaisedItemsOfSubject(catalog.AsAgencyOwner(ctx), subjectID)
+}
+
 func (c agencyOwnedCatalog) DeleteEntry(ctx context.Context, slug, deletedBy string) error {
 	return c.CatalogManager.DeleteEntry(catalog.AsAgencyOwner(ctx), slug, deletedBy)
 }

@@ -17,5 +17,9 @@ func (m *catalogManager) ListRaisedItemsOfSubject(ctx context.Context, subjectID
 	if subjectID == "" {
 		return nil, ErrInvalidRaisedItem
 	}
-	return listOf[RaisedItem](m, m.q(ctx, roleRaisedItem).Where("subject_id = ?", subjectID).Order("created_at, id"), roleRaisedItem)
+	q := m.q(ctx, roleRaisedItem).Where("subject_id = ?", subjectID)
+	if !isAgencyOwner(ctx) {
+		q = q.Where("anonymous = ?", false)
+	}
+	return listOf[RaisedItem](m, q.Order("created_at, id"), roleRaisedItem)
 }

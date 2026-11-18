@@ -8,6 +8,7 @@ type RaisedItem struct {
 	Topic         string        `json:"topic"`
 	Publishable   bool          `json:"publishable"`
 	RaisedBy      string        `json:"raised_by"`
+	Anonymous     bool          `json:"anonymous"`
 	FiledBy       string        `json:"filed_by"`
 	Channel       string        `json:"channel"`
 	Pin           *geo.Geometry `json:"pin"`
@@ -34,6 +35,9 @@ func (r RaisedItem) PinIsAPoint() bool {
 func (r RaisedItem) AsSeenByOthers() RaisedItem {
 	seen := r
 	seen.Address = ""
+	if r.Anonymous {
+		seen.RaisedBy = ""
+	}
 	if r.Pin != nil {
 		rounded := geo.NewPoint(geo.RoundForPublic(r.Pin.Point).Lon(), geo.RoundForPublic(r.Pin.Point).Lat())
 		seen.Pin = &rounded

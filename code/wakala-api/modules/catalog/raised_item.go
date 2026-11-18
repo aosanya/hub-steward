@@ -84,3 +84,17 @@ func (m *catalogManager) ListRaisedItems(ctx context.Context, raisedBy string) (
 	}
 	return out, nil
 }
+
+func (m *catalogManager) ListRaisedItemsOfPerson(ctx context.Context, raisedBy string) ([]MyRaisedItem, error) {
+	items, err := m.ListRaisedItems(ctx, raisedBy)
+	if err != nil || isAgencyOwner(ctx) {
+		return items, err
+	}
+	shown := make([]MyRaisedItem, 0, len(items))
+	for _, item := range items {
+		if !item.Anonymous {
+			shown = append(shown, item)
+		}
+	}
+	return shown, nil
+}

@@ -775,6 +775,11 @@
           "required": true
         },
         {
+          "name": "anonymous",
+          "type": "bool",
+          "description": "Whether the raiser chose to stay anonymous: the host keeps who raised it, but every read other than the raiser's own and the host owner's leaves the raiser out."
+        },
+        {
           "name": "filed_by",
           "type": "string",
           "description": "Who filed it on the raiser's behalf, empty when the raiser filed it."
