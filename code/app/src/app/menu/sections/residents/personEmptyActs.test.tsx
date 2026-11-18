@@ -57,7 +57,7 @@ const answer = async (name: string, args: unknown) => {
     return {};
   }
   if (name === "forms_submission_list_of_person") return { items: applications };
-  if (name === "forms_form_list") return { items: [{ id: "f1", title: permitForm, status: "open" }] };
+  if (name === "forms_form_list") return { rows: [{ form: { id: "f1", title: permitForm, status: "open" } }] };
   if (name === "forms_question_list") return { items: formQuestions };
   if (name === "forms_submission_file") {
     applications = [...applications, { id: "s9", form_id: given.form_id, form_title: permitForm, member_id: given.member_id, submitted_at: "2026-11-18T09:30:00Z" }];

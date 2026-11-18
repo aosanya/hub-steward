@@ -7,8 +7,8 @@ import { Section } from "../../../../shared/ui/Section";
 import { LoadingLine } from "../../../../shared/ui/LoadState";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
+import { loadFormList } from "../../formList";
 import { loadRecordRowsHeldBy, type RecordRow } from "../../liveRecordRows";
-import { listOf, text } from "../staff/staffData";
 import { servicesPaths } from "../services/paths";
 import { ApplicationSheet } from "./ApplicationSheet";
 import { ChooseSheet } from "./ChooseSheet";
@@ -21,12 +21,10 @@ import { informalTradersMetaPrompts, informalTradersRecordCode, informalTradersT
 
 const startTitle = "Start an application";
 
-const loadFormChoices = async () => (await listOf("forms_form_list")).map((form) => ({ id: text(form, "id"), title: text(form, "title") })).filter((choice) => choice.id && choice.title);
-
 function ApplicationFlow({ personId, onClose, onFiled }: { personId: string; onClose: () => void; onFiled: () => void }) {
   const [formId, setFormId] = useState("");
   if (formId) return <ApplicationSheet title={startTitle} formId={formId} personId={personId} onClose={onClose} onFiled={onFiled} />;
-  return <ChooseSheet title={startTitle} loadKey="person-application-forms" load={loadFormChoices} onClose={onClose} onChoose={async (chosen) => setFormId(chosen)} />;
+  return <ChooseSheet title={startTitle} loadKey="person-application-forms" load={loadFormList} onClose={onClose} onChoose={async (chosen) => setFormId(chosen)} />;
 }
 
 export function PersonApplications({ id, full }: { id: string; full?: boolean }) {

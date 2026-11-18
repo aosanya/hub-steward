@@ -1,5 +1,6 @@
 import type { Choice } from "../../../../shared/ui/SearchSelect";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { loadFormList } from "../../formList";
 import type { EditField } from "../../MenuEditForm";
 import { text, type Item } from "../staff/staffData";
 
@@ -20,14 +21,8 @@ const kindNamesOf = (value: unknown): string[] => {
 
 const loadKindNames = async () => kindNamesOf(((await callTool("", "forms_catalog_setting_read", { key: kindsKey }).catch(() => null)) as Item | null)?.value);
 
-const loadForms = async (): Promise<Choice[]> => {
-  const reply = (await callTool("", "forms_form_list").catch(() => null)) as { rows?: unknown } | null;
-  const rows = Array.isArray(reply?.rows) ? reply.rows.filter(isItem) : [];
-  return rows
-    .map((row) => (isItem(row.form) ? row.form : row))
-    .map((form) => ({ value: text(form, "id"), label: text(form, "title") }))
-    .filter((form) => form.value !== "" && form.label !== "");
-};
+const loadForms = async (): Promise<Choice[]> =>
+  (await loadFormList().catch(() => [])).map((form) => ({ value: form.id, label: form.title }));
 
 export type CatalogueChoices = { kinds: string[]; forms: Choice[] };
 
