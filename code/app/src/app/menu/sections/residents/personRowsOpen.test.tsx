@@ -48,7 +48,7 @@ const openPerson = async () => {
         {routes()}
         <Route path={servicesPaths.application.pattern} element={<p>Application page</p>} />
         <Route path={issuePaths.issue.pattern} element={<p>Issue page</p>} />
-        <Route path={placePaths.place.pattern} element={<p>Place page</p>} />
+        <Route path={placePaths.holding.pattern} element={<p>Holding page</p>} />
       </Routes>
     </MemoryRouter>,
   );
@@ -69,9 +69,9 @@ describe("a row on a person's panel opens what it names", () => {
     expect(await screen.findByText("Issue page")).toBeTruthy();
   });
 
-  it("opens the property from a Holdings row", async () => {
+  it("opens the holding from a Holdings row whose place has no asset", async () => {
     await openPerson();
     await userEvent.click(await screen.findByRole("button", { name: /Sample Corner Plot/ }));
-    expect(await screen.findByText("Place page")).toBeTruthy();
+    expect(await screen.findByText("Holding page")).toBeTruthy();
   });
 });
