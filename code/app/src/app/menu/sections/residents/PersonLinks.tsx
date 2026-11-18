@@ -1,13 +1,17 @@
+import { useState } from "react";
 import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { dayWords } from "../../../../shared/ui/days";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { EmptyCard, LoadingLine } from "../../../../shared/ui/LoadState";
+import { LoadingLine } from "../../../../shared/ui/LoadState";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
+import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { loadRecordRowsHeldBy, type RecordRow } from "../../liveRecordRows";
 import { listOf, text } from "../staff/staffData";
 import { servicesPaths } from "../services/paths";
+import { ChooseSheet } from "./ChooseSheet";
+import { EmptyActCard } from "./EmptyActCard";
 import { useOpenFromPanel } from "./useOpenFromPanel";
 import { businessesMetaPrompts, businessesRecordCode, businessesTitlePrompt } from "./BusinessesScreen";
 import { informalTradersMetaPrompts, informalTradersRecordCode, informalTradersTitlePrompt } from "./InformalTradersScreen";
@@ -19,17 +23,41 @@ const loadApplications = (memberId: string) => async () => {
     .sort((a, b) => b.sentAt.localeCompare(a.sentAt));
 };
 
+const startTitle = "Start an application";
+
+const loadFormChoices = async () => (await listOf("forms_form_list")).map((form) => ({ id: text(form, "id"), title: text(form, "title") })).filter((choice) => choice.id && choice.title);
+
 export function PersonApplications({ id }: { id: string }) {
   const word = useWord("forms");
   const open = useOpenFromPanel();
-  const view = useLoad(loadApplications(id), `person-applications:${openAgencyId()}:${id}`);
+  const [version, setVersion] = useState(0);
+  const view = useLoad(loadApplications(id), `person-applications:${openAgencyId()}:${id}:${version}`);
   if (view.state === "error") return null;
   const applications = view.state === "ready" ? view.data : [];
   return (
     <>
       <SectionHeading>{word("Applications")}</SectionHeading>
       {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "ready" && applications.length === 0 ? <EmptyCard words="No applications yet." /> : null}
+      {view.state === "ready" && applications.length === 0 ? (
+        <EmptyActCard
+          words="No applications yet."
+          permission="application.file"
+          act={startTitle}
+          sheet={(close) => (
+            <ChooseSheet
+              title={startTitle}
+              loadKey="person-application-forms"
+              load={loadFormChoices}
+              onClose={close}
+              onChoose={async (formId) => {
+                await callTool("", "forms_submission_file", { form_id: formId, member_id: id, channel: "paper", answers: [] });
+                close();
+                setVersion((was) => was + 1);
+              }}
+            />
+          )}
+        />
+      ) : null}
       {applications.length > 0 ? (
         <Rows>
           {applications.map((application) => (

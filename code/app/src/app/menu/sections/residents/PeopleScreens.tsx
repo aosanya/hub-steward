@@ -81,13 +81,14 @@ export function AllPeopleScreen() {
   );
 }
 
-type GroupWindowProps = { title: string; empty: string; keep: (group: Item) => boolean };
+type GroupWindowProps = { title: string; empty: string; keep: (group: Item) => boolean; startAt?: string };
 
-function GroupWindow({ title, empty, keep }: GroupWindowProps) {
+function GroupWindow({ title, empty, keep, startAt }: GroupWindowProps) {
   const [version, setVersion] = useState(0);
   return (
     <MenuWindow
       title={title}
+      startAt={startAt}
       listKey={version}
       detailKey={version}
       list={{ title, tool: "actor_list_groups", fields: { title: "name", meta: "meta" }, empty: homeEmpty(empty), load: () => groupRows(keep) }}
@@ -138,7 +139,8 @@ export function RegistrationsScreen() {
 export function GroupsScreen() {
   const word = useWord("actor");
   const groupsTitle = word("Groups") === "Groups" ? "Groups & Associations" : word("Groups");
-  return <GroupWindow title={groupsTitle} empty={`No ${word("Groups").toLowerCase()} yet.`} keep={() => true} />;
+  const [search] = useSearchParams();
+  return <GroupWindow title={groupsTitle} empty={`No ${word("Groups").toLowerCase()} yet.`} keep={() => true} startAt={search.get("group") ?? undefined} />;
 }
 
 export function CommunicationsScreen() {
