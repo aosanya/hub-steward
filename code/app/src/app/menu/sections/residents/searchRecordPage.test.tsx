@@ -55,6 +55,8 @@ const kinds: Kind[] = [
   },
 ];
 
+const permitSend = { id: "s1", form_id: "f1", form_title: "Sample Stall Permit", member_id: ownerId, submitted_at: "2026-11-03T09:30:00Z" };
+
 let landed = "";
 
 const Where = () => {
@@ -69,6 +71,7 @@ const hub = (one: Kind, mayAdd: boolean) =>
     if (name === "agency_list_live_record_rows") return { items: (args as { record_code?: string }).record_code === one.code ? [one.row] : [] };
     if (name === "actor_get_actor") return { item: { id: ownerId, display_name: "Szabó Katalin" } };
     if (name === "actor_list_actors") return { items: [{ id: ownerId, display_name: "Szabó Katalin" }] };
+    if (name === "forms_submission_list_of_person") return { items: [permitSend] };
     return { items: [] };
   });
 
@@ -121,7 +124,7 @@ describe.each(kinds)("a $name opened from the combined search", (one) => {
     expect(edit).toHaveClass("sec-act");
     expect(card.querySelector(".sec-foot")).toContainElement(edit);
     await userEvent.click(edit);
-    expect(landed).toBe(one.editPath);
+    expect(landed).toBe(`/a/town${one.editPath}`);
   });
 
   it("shows no Edit act to someone who may not add rows", async () => {

@@ -3,14 +3,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { loadRecordRow, loadRecordRows } from "../../liveRecordRows";
 import { MenuWindow } from "../../MenuWindow";
-import { RecordRowExtra } from "../../RecordRowExtra";
+import { RecordPage } from "../../RecordPage";
 import { addressDetail, addressFields, loadAddresses } from "../properties/AddressesPage";
 import { placePaths } from "../properties/paths";
 import { loadPlaces } from "../properties/records";
-import { businessesRecordCode, useBusinessFields } from "./BusinessesScreen";
-import { informalTradersRecordCode, useInformalTraderFields } from "./InformalTradersScreen";
+import { businessesRecordCode, businessesTitlePrompt, useBusinessFields } from "./BusinessesScreen";
+import { informalTradersRecordCode, informalTradersTitlePrompt, useInformalTraderFields } from "./InformalTradersScreen";
 import { homeEmpty, peopleRows } from "./PeopleScreens";
 import { loadPerson, PersonPanel } from "./PersonScreen";
+import { residentPaths } from "./paths";
 
 type Row = { id: string; title: string; meta: string };
 
@@ -63,7 +64,7 @@ export function SearchScreen() {
       : {};
     return { ...loaded, [kindKey]: kind };
   };
-  const detailFields = Object.fromEntries([["Name", "display_name"], ...Object.entries(addressFields), ...[...businessPrompts, ...traderPrompts].map((prompt) => [prompt, prompt])]);
+  const detailFields = Object.fromEntries([["Name", "display_name"], ...Object.entries(addressFields)]);
   const groups = (items: Record<string, unknown>[]) =>
     [
       { heading: word("People"), items: items.filter((item) => startsWithAny(item.id, [personKey])) },
@@ -90,8 +91,35 @@ export function SearchScreen() {
         extra: (item) => {
           const kind = item[kindKey];
           if (kind === personKey) return <PersonPanel person={item} onSaved={() => setVersion((was) => was + 1)} />;
-          if (kind === businessKey) return <div className="sections"><RecordRowExtra row={item} recordCode={businessesRecordCode} owner={{ prompt: "Owner", heading: "Owner" }} /></div>;
-          if (kind === traderKey) return <div className="sections"><RecordRowExtra row={item} recordCode={informalTradersRecordCode} owner={{ prompt: "Holder", heading: "Holder" }} /></div>;
+          if (kind === businessKey) {
+            return (
+              <RecordPage
+                row={item}
+                recordCode={businessesRecordCode}
+                titlePrompt={businessesTitlePrompt}
+                prompts={businessPrompts}
+                detailWord="Business detail"
+                owner={{ prompt: "Owner", heading: "Owner" }}
+                licence
+                editPath={(id) => residentPaths.businessEdit.path({ id })}
+                chat={{ kind: "business", back: (id) => residentPaths.businesses.path({ row: id }) }}
+              />
+            );
+          }
+          if (kind === traderKey) {
+            return (
+              <RecordPage
+                row={item}
+                recordCode={informalTradersRecordCode}
+                titlePrompt={informalTradersTitlePrompt}
+                prompts={traderPrompts}
+                detailWord="Trader detail"
+                owner={{ prompt: "Holder", heading: "Holder" }}
+                editPath={(id) => residentPaths.informalTraderEdit.path({ id })}
+                chat={{ kind: "trader", back: (id) => residentPaths.informalTraders.path({ row: id }) }}
+              />
+            );
+          }
           return null;
         },
       }}
