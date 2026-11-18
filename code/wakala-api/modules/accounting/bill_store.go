@@ -3,6 +3,7 @@ package accounting
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -24,15 +25,18 @@ const (
 
 	dimensionPayer      = "payer"
 	dimensionPayerActor = "payer_actor_id"
+	dimensionPayerRow   = "payer_record_row_id"
 )
 
 type BillFilter struct {
-	IncomeAccountID string `query:"income_account_id"`
-	Status          string `query:"status"`
-	Payer           string `query:"payer"`
-	ActorID         string `query:"actor_id"`
-	AsOf            string `query:"as_of"`
-	Limit           int    `query:"limit"`
+	IncomeAccountID string   `query:"income_account_id"`
+	Status          string   `query:"status"`
+	Payer           string   `query:"payer"`
+	ActorID         string   `query:"actor_id"`
+	RecordRowID     string   `query:"record_row_id"`
+	RecordRowIDs    []string `query:"-"`
+	AsOf            string   `query:"as_of"`
+	Limit           int      `query:"limit"`
 }
 
 type BillRepository interface {
@@ -56,13 +60,16 @@ func (m *ledgerStore) accountOfType(ctx context.Context, id, field string, want 
 	return a, nil
 }
 
-func payerDimensions(payer, payerActorID string) map[string]string {
+func payerDimensions(payer, payerActorID, payerRecordRowID string) map[string]string {
 	dimensions := map[string]string{}
 	if payer = strings.TrimSpace(payer); payer != "" {
 		dimensions[dimensionPayer] = payer
 	}
 	if payerActorID = strings.TrimSpace(payerActorID); payerActorID != "" {
 		dimensions[dimensionPayerActor] = payerActorID
+	}
+	if payerRecordRowID = strings.TrimSpace(payerRecordRowID); payerRecordRowID != "" {
+		dimensions[dimensionPayerRow] = payerRecordRowID
 	}
 	if len(dimensions) == 0 {
 		return nil
@@ -81,8 +88,22 @@ func checkPayerActorID(payerActorID string) error {
 	return nil
 }
 
+func checkPayerRecordRowID(payerRecordRowID string) error {
+	payerRecordRowID = strings.TrimSpace(payerRecordRowID)
+	if payerRecordRowID == "" {
+		return nil
+	}
+	if _, err := uuid.Parse(payerRecordRowID); err != nil || len(payerRecordRowID) != uuidLength {
+		return fmt.Errorf("%w: payer_record_row_id %q is not a record row id", ErrInvalid, payerRecordRowID)
+	}
+	return nil
+}
+
 func checkBillInput(in BillInput) error {
 	if err := checkPayerActorID(in.PayerActorID); err != nil {
+		return err
+	}
+	if err := checkPayerRecordRowID(in.PayerRecordRowID); err != nil {
 		return err
 	}
 	if strings.TrimSpace(in.IncomeAccountID) == "" {
@@ -119,7 +140,7 @@ func (m *ledgerStore) CreateBill(ctx context.Context, in BillInput) (Bill, error
 		DocumentID:      newID(),
 		ActorID:         in.BilledBy,
 		Narration:       in.Narration,
-		Dimensions:      payerDimensions(in.Payer, in.PayerActorID),
+		Dimensions:      payerDimensions(in.Payer, in.PayerActorID, in.PayerRecordRowID),
 	})
 	if err != nil {
 		return Bill{}, err
@@ -167,6 +188,9 @@ func (m *ledgerStore) billEntries(ctx context.Context, filter BillFilter) ([]Ent
 		if filter.ActorID != "" && e.Dimensions[dimensionPayerActor] != filter.ActorID {
 			continue
 		}
+		if !namesAnyRow(e.Dimensions, filter.RecordRowID, filter.RecordRowIDs) {
+			continue
+		}
 		bills = append(bills, e)
 	}
 	return bills, nil
@@ -198,6 +222,7 @@ func billOf(e Entry, reversed bool, paid int64, at time.Time) Bill {
 		ReceivableAccountID: e.DebitAccountID,
 		Payer:               e.Dimensions[dimensionPayer],
 		PayerActorID:        e.Dimensions[dimensionPayerActor],
+		PayerRecordRowID:    e.Dimensions[dimensionPayerRow],
 		Amount:              e.Amount,
 		Settled:             paid,
 		Outstanding:         outstanding,
@@ -280,4 +305,18 @@ func (m *ledgerStore) GetBill(ctx context.Context, id string) (Bill, error) {
 		return Bill{}, err
 	}
 	return bills[0], nil
+}
+
+func namesAnyRow(dimensions map[string]string, recordRowID string, recordRowIDs []string) bool {
+	if recordRowID == "" && len(recordRowIDs) == 0 {
+		return true
+	}
+	got := dimensions[dimensionPayerRow]
+	if got == "" {
+		return false
+	}
+	if len(recordRowIDs) > 0 {
+		return slices.Contains(recordRowIDs, got)
+	}
+	return got == recordRowID
 }

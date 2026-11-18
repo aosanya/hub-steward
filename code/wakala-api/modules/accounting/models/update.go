@@ -1,12 +1,13 @@
 package models
 
 type BillUpdate struct {
-	ID           string `json:"id"`
-	Payer        string `json:"payer,omitempty"`
-	PayerActorID string `json:"payer_actor_id,omitempty"`
-	Amount       int64  `json:"amount"`
-	DueAt        string `json:"due_at"`
-	Narration    string `json:"narration,omitempty"`
+	ID               string `json:"id"`
+	Payer            string `json:"payer,omitempty"`
+	PayerActorID     string `json:"payer_actor_id,omitempty"`
+	PayerRecordRowID string `json:"payer_record_row_id,omitempty"`
+	Amount           int64  `json:"amount"`
+	DueAt            string `json:"due_at"`
+	Narration        string `json:"narration,omitempty"`
 }
 
 type TenderUpdate struct {

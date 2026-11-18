@@ -19,11 +19,13 @@ type (
 const DocumentPayment DocumentKind = "payment"
 
 type PaymentFilter struct {
-	Kind    string `query:"kind"`
-	BillID  string `query:"bill_id"`
-	Payer   string `query:"payer"`
-	ActorID string `query:"actor_id"`
-	Limit   int    `query:"limit"`
+	Kind         string   `query:"kind"`
+	BillID       string   `query:"bill_id"`
+	Payer        string   `query:"payer"`
+	ActorID      string   `query:"actor_id"`
+	RecordRowID  string   `query:"record_row_id"`
+	RecordRowIDs []string `query:"-"`
+	Limit        int      `query:"limit"`
 }
 
 type PaymentRepository interface {
@@ -79,7 +81,7 @@ func (m *ledgerStore) MarkBillPaid(ctx context.Context, in MarkPaidInput) (Payme
 		DocumentID:      newID(),
 		ActorID:         in.PaidBy,
 		Narration:       in.Narration,
-		Dimensions:      payerDimensions(bill.Payer, bill.PayerActorID),
+		Dimensions:      payerDimensions(bill.Payer, bill.PayerActorID, bill.PayerRecordRowID),
 		SettlesEntryID:  bill.ID,
 	})
 	if err != nil {
@@ -90,17 +92,18 @@ func (m *ledgerStore) MarkBillPaid(ctx context.Context, in MarkPaidInput) (Payme
 
 func billPaymentOf(e Entry) Payment {
 	return Payment{
-		ID:              e.ID,
-		Kind:            models.PaymentOfBill,
-		DebitAccountID:  e.DebitAccountID,
-		CreditAccountID: e.CreditAccountID,
-		Amount:          e.Amount,
-		PaidAt:          e.PostedAt,
-		PaidBy:          e.ActorID,
-		Narration:       e.Narration,
-		BillID:          e.SettlesEntryID,
-		Payer:           e.Dimensions[dimensionPayer],
-		PayerActorID:    e.Dimensions[dimensionPayerActor],
+		ID:               e.ID,
+		Kind:             models.PaymentOfBill,
+		DebitAccountID:   e.DebitAccountID,
+		CreditAccountID:  e.CreditAccountID,
+		Amount:           e.Amount,
+		PaidAt:           e.PostedAt,
+		PaidBy:           e.ActorID,
+		Narration:        e.Narration,
+		BillID:           e.SettlesEntryID,
+		Payer:            e.Dimensions[dimensionPayer],
+		PayerActorID:     e.Dimensions[dimensionPayerActor],
+		PayerRecordRowID: e.Dimensions[dimensionPayerRow],
 	}
 }
 
@@ -128,6 +131,9 @@ func (m *ledgerStore) billPayments(ctx context.Context, filter PaymentFilter) ([
 		}
 		p := billPaymentOf(e)
 		if filter.Payer != "" && p.Payer != filter.Payer {
+			continue
+		}
+		if !namesAnyRow(map[string]string{dimensionPayerRow: p.PayerRecordRowID}, filter.RecordRowID, filter.RecordRowIDs) {
 			continue
 		}
 		if filter.ActorID != "" && p.PayerActorID != filter.ActorID {
@@ -213,7 +219,7 @@ func (m *ledgerStore) ListPayments(ctx context.Context, filter PaymentFilter) ([
 		}
 		all = append(all, bills...)
 	}
-	if kind != models.PaymentOfBill && filter.BillID == "" && filter.Payer == "" && filter.ActorID == "" {
+	if kind != models.PaymentOfBill && filter.BillID == "" && filter.Payer == "" && filter.ActorID == "" && filter.RecordRowID == "" && len(filter.RecordRowIDs) == 0 {
 		certificates, err := m.certificatePayments(ctx)
 		if err != nil {
 			return nil, err

@@ -45,7 +45,11 @@ func ledgerFor(ctx context.Context, reg agencies.Registry, instanceID string) (m
 	if err := mustBeMember(ctx, reg, instanceID); err != nil {
 		return nil, err
 	}
-	return reg.LedgerRepository(ctx, instanceID)
+	repo, err := reg.LedgerRepository(ctx, instanceID)
+	if err != nil {
+		return nil, err
+	}
+	return withRowLineage(repo, liveRowLineage(reg, instanceID)), nil
 }
 
 func taskManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamataskmanager.TaskManager, error) {

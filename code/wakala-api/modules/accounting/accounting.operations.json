@@ -429,7 +429,7 @@
       "call": "UpdateBill",
       "action": "accounting.bill.update",
       "title": "Correct bill",
-      "description": "Correct a bill that is not yet settled: send its payer, payer_actor_id (the payer's person id), amount, due_at and narration as they should now read; a correction that leaves payer_actor_id out clears the link. A bill that already has a payment keeps its amount, and a settled or reversed bill is refused.",
+      "description": "Correct a bill that is not yet settled: send its payer, payer_actor_id (the payer's person id), payer_record_row_id (the payer's business or trader record row id), amount, due_at and narration as they should now read; a correction that leaves payer_actor_id or payer_record_row_id out clears that link. A bill that already has a payment keeps its amount, and a settled or reversed bill is refused.",
       "args": [
         {"from": "body", "whole": true},
         {"from": "path", "as": "billID", "into": "ID", "description": "The bill to correct."}
@@ -482,7 +482,7 @@
       "action": "accounting.bill.create",
       "status": 201,
       "title": "Create bill",
-      "description": "Raise a bill: an amount owed to an income account, due on a date. It is posted as a debit to the receivable account and a credit to the income account, with due_at set, so the overdue read ages it. Name the income account, the receivable account (an asset account), the amount, due_at and, if known, the payer (display text) and payer_actor_id (the payer's person id, a uuid; bills can then be listed by actor_id). A payment settles a bill by naming it in settles_entry_id.",
+      "description": "Raise a bill: an amount owed to an income account, due on a date. It is posted as a debit to the receivable account and a credit to the income account, with due_at set, so the overdue read ages it. Name the income account, the receivable account (an asset account), the amount, due_at and, if known, the payer (display text) payer_actor_id (the payer's person id, a uuid; bills can then be listed by actor_id) and payer_record_row_id (the payer's business or informal trader record row id, a uuid; bills can then be listed by record_row_id). A payment settles a bill by naming it in settles_entry_id.",
       "args": [
         { "from": "body", "whole": true },
         { "from": "caller", "as": "billed_by", "into": "BilledBy", "description": "Who raised the bill, supplied by the mount. Never read from the request." }
@@ -495,7 +495,7 @@
       "call": "ListBills",
       "action": "accounting.bill.list",
       "title": "List bills",
-      "description": "List bills by due date, each with its amount, what was settled, what is outstanding and its status: open, overdue (past due_at as of as_of, default now, and not fully settled), settled or reversed. Narrow by income_account_id, status, payer (the name as written) or actor_id (the payer's person id, set as payer_actor_id when the bill was raised); limit caps the page.",
+      "description": "List bills by due date, each with its amount, what was settled, what is outstanding and its status: open, overdue (past due_at as of as_of, default now, and not fully settled), settled or reversed. Narrow by income_account_id, status, payer (the name as written) actor_id (the payer's person id, set as payer_actor_id when the bill was raised) or record_row_id (a business or trader record row id, set as payer_record_row_id when the bill was raised; bills raised against an older row it replaced are listed too); limit caps the page.",
       "args": [
         { "from": "query", "whole": true }
       ],
@@ -520,7 +520,7 @@
       "action": "accounting.payment.mark_paid",
       "status": 201,
       "title": "Mark bill paid",
-      "description": "Record that a bill was paid: posts a debit to the cash account (an asset account) and a credit to the bill's receivable account, naming the bill in settles_entry_id, so the bill reads as settled. The payment carries the bill's payer and payer_actor_id. Leave amount out to pay what is outstanding; a smaller amount is a part payment. Refused when the bill is already settled or reversed, or the amount is more than is outstanding. paid_on is when the money arrived, if not now.",
+      "description": "Record that a bill was paid: posts a debit to the cash account (an asset account) and a credit to the bill's receivable account, naming the bill in settles_entry_id, so the bill reads as settled. The payment carries the bill's payer, payer_actor_id and payer_record_row_id. Leave amount out to pay what is outstanding; a smaller amount is a part payment. Refused when the bill is already settled or reversed, or the amount is more than is outstanding. paid_on is when the money arrived, if not now.",
       "args": [
         { "from": "body", "whole": true },
         { "from": "path", "as": "billID", "into": "BillID", "description": "The bill paid. The address decides, not the body." },
@@ -534,7 +534,7 @@
       "call": "ListPayments",
       "action": "accounting.payment.list",
       "title": "List payments",
-      "description": "List payments, oldest first: the payments that settled bills (kind bill, each naming its bill_id) and the milestone payment certificates (kind certificate, each naming its certificate, milestone and contract, the amount being what was paid after retention). A reversed payment is left out. Narrow by kind, bill_id, payer (the name as written) or actor_id (the payer's person id; certificate payments carry none and are left out); limit caps the page.",
+      "description": "List payments, oldest first: the payments that settled bills (kind bill, each naming its bill_id) and the milestone payment certificates (kind certificate, each naming its certificate, milestone and contract, the amount being what was paid after retention). A reversed payment is left out. Narrow by kind, bill_id, payer (the name as written) actor_id (the payer's person id) or record_row_id (a business or trader record row id; bills against an older row it replaced are listed too); certificate payments carry none of these and are left out when one is named; limit caps the page.",
       "args": [
         { "from": "query", "whole": true }
       ],
