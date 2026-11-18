@@ -12,7 +12,8 @@ import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
 import { BudgetPage, budgetManage, budgetSetTool } from "./BudgetPage";
 import { loadAccountChoices } from "../../referenceChoices";
-import { lineStages } from "./lineStages";
+import { shareLinesOf, shareWordsOf, sharesOf } from "./costShares";
+import { lineStages, noStages } from "./lineStages";
 import { financePaths } from "./paths";
 import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, text, tools, unitOf, type Item } from "./financeData";
 
@@ -38,7 +39,9 @@ const loadLines = async (unit: string) => (await listOf(tools.budgetList)).map((
 
 const loadLine = async (id: string, unit: string) => {
   const [line, tenders] = await Promise.all([callTool("", tools.budgetRead, { budgetID: id }) as Promise<Item | null>, listOf(tools.tenderList, { budget_id: id })]);
-  const stages = await lineStages(text(line, "account_id"), unit);
+  const follows = line?.follow_milestones === true;
+  const shares = sharesOf(line?.cost_shares);
+  const stages = follows ? await lineStages(text(line, "account_id"), unit) : noStages;
   const planned = Number(text(line, "planned")) || 0;
   const spent = Number(text(line, "spent")) || 0;
   return {
@@ -55,6 +58,10 @@ const loadLine = async (id: string, unit: string) => {
     remaining: moneyWords(planned - spent, unit),
     share: shareWords(planned, spent),
     tenders: tenders.map(tenderWords).join(", "),
+    follow: follows ? "on" : "off",
+    cost: Object.keys(shares).length > 0 ? "shared" : "one",
+    shares: shareLinesOf(shares),
+    cost_words: shareWordsOf(shares),
     ...stages,
   };
 };

@@ -1,7 +1,7 @@
 import { accountListTool } from "./markBillPaid";
 import { certificateWords, listOf, milestoneWords, text, tools, type Item } from "./financeData";
 
-const noStages = { milestones: "", certificates: "" };
+export const noStages = { milestones: "", certificates: "" };
 
 const payeeNames = async () => new Map((await listOf(accountListTool)).map((account) => [text(account, "id"), text(account, "name") || text(account, "code")]));
 

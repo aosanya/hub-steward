@@ -1,5 +1,6 @@
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { ChatAboutFinance, EditAct, FactsCard, FinanceHead, useFinanceEdit } from "./FinanceRecord";
+import { parsedShares } from "./costShares";
 import { text, type Item } from "./financeData";
 
 export const budgetManage = "accounting.manage";
@@ -10,7 +11,24 @@ const editFields: EditField[] = [
   { label: "Name", key: "name", required: true },
   { label: "Department", key: "department" },
   { label: "Planned amount", key: "amount", kind: "number", required: true },
+  { label: "Follow milestones", key: "follow", choices: [{ value: "off", label: "Off" }, { value: "on", label: "On" }] },
+  { label: "Cost", key: "cost", choices: [{ value: "one", label: "Counted in one" }, { value: "shared", label: "Shared" }] },
+  { label: "Cost shares", key: "shares", kind: "lines" },
 ];
+
+const budgetArguments = (line: Item, sent: Record<string, unknown>) => {
+  const current = (key: string) => (key in sent ? sent[key] : line[key]);
+  return {
+    account_id: line.account_id,
+    name: current("name"),
+    department: current("department"),
+    amount: Number(current("amount")),
+    period_start: line.period_start,
+    period_end: line.period_end,
+    follow_milestones: current("follow") === "on",
+    cost_shares: current("cost") === "shared" ? parsedShares(current("shares")) : {},
+  };
+};
 
 const figures: [string, string][] = [
   ["Department", "department"],
@@ -18,6 +36,7 @@ const figures: [string, string][] = [
   ["Spent", "spent"],
   ["Remaining", "remaining"],
   ["Share spent", "share"],
+  ["Cost shared", "cost_words"],
 ];
 
 const progress: [string, string][] = [
@@ -45,7 +64,7 @@ export function BudgetPage({ line, back, onSaved }: Props) {
             tool={budgetSetTool}
             permission={budgetManage}
             fields={editFields}
-            keep={["name", "department", "amount", "period_start", "period_end"]}
+            build={(sent) => budgetArguments(line, sent)}
             bare
             openCount={1}
             onSaved={() => {

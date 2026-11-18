@@ -66,11 +66,22 @@ func sideTotal(e Entry, selected accountSelection) (int64, bool) {
 	return total, touched
 }
 
-func foldByValue(entries []Entry, key string, selected accountSelection, w dimensionWindow) ([]DimensionTotal, DimensionTotal) {
+func portionsOf(e Entry, key string, total int64, shared sharedLines, selected accountSelection) []portion {
+	if key == NeighbourhoodKey {
+		if shares, ok := shared.sharesOf(e, selected); ok {
+			return apportion(total, shares)
+		}
+	}
+	if value, carries := e.Dimensions[key]; carries {
+		return []portion{{value: value, amount: total}}
+	}
+	return nil
+}
+
+func foldByValue(entries []Entry, key string, selected accountSelection, w dimensionWindow, shared sharedLines) ([]DimensionTotal, DimensionTotal) {
 	byValue := map[string]*DimensionTotal{}
 	var without DimensionTotal
 	for _, e := range entries {
-		value, carries := e.Dimensions[key]
 		if !w.admits(e) {
 			continue
 		}
@@ -78,18 +89,21 @@ func foldByValue(entries []Entry, key string, selected accountSelection, w dimen
 		if !touched {
 			continue
 		}
-		if !carries {
+		parts := portionsOf(e, key, total, shared, selected)
+		if len(parts) == 0 {
 			without.Total += total
 			without.Entries++
 			continue
 		}
-		row, seen := byValue[value]
-		if !seen {
-			row = &DimensionTotal{Value: value}
-			byValue[value] = row
+		for _, part := range parts {
+			row, seen := byValue[part.value]
+			if !seen {
+				row = &DimensionTotal{Value: part.value}
+				byValue[part.value] = row
+			}
+			row.Total += part.amount
+			row.Entries++
 		}
-		row.Total += total
-		row.Entries++
 	}
 	return sortedTotals(byValue), without
 }
@@ -119,7 +133,11 @@ func (m *ledgerStore) DimensionTotals(ctx context.Context, key, accountType, per
 	if err != nil {
 		return DimensionTotals{}, err
 	}
-	totals, without := foldByValue(entries, key, selected, window)
+	budgets, err := specstore.List[Budget](m.st, m.q(ctx, roleBudget), roleBudget)
+	if err != nil {
+		return DimensionTotals{}, err
+	}
+	totals, without := foldByValue(entries, key, selected, window, sharedLinesOf(budgets))
 	return DimensionTotals{
 		Key:         key,
 		AccountType: accountType,

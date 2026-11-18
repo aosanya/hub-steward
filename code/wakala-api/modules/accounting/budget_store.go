@@ -74,6 +74,9 @@ func (m *ledgerStore) SetBudget(ctx context.Context, b Budget) (Budget, error) {
 	if _, _, err := parsePeriod(b.PeriodStart, b.PeriodEnd); err != nil {
 		return Budget{}, err
 	}
+	if err := checkCostShares(b.CostShares); err != nil {
+		return Budget{}, err
+	}
 
 	var out Budget
 	err := m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -224,6 +227,9 @@ func (m *ledgerStore) lineOf(ctx context.Context, b Budget) (BudgetLine, error) 
 		Planned:     b.Amount,
 		Spent:       balanceWithin(b.AccountID, entries, from, to),
 		SetAt:       b.SetAt,
+
+		FollowMilestones: b.FollowMilestones,
+		CostShares:       b.CostShares,
 	}, nil
 }
 
