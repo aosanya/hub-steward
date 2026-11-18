@@ -54,7 +54,6 @@ const widths = [
 
 const unlinkedTools = [
   "forms_submission_list",
-  "forms_submission_list_of_person",
   "forms_catalog_booking_list_of_person",
 ];
 
@@ -67,6 +66,7 @@ let billsReply: (() => Promise<unknown>) | null;
 let paymentsReply: (() => Promise<unknown>) | null;
 let holdingsByRow: Record<string, Person[]>;
 let holdingsReply: (() => Promise<unknown>) | null;
+let applicationsByRow: Record<string, Person[]>;
 
 const actorCalls = () => called.mock.calls.filter((call) => call[1] === "actor_get_actor");
 
@@ -80,6 +80,7 @@ const answer = async (name: string, args: unknown) => {
   if (name === "accounting_bill_list") return billsReply ? billsReply() : { items: billsByRow[String(given.record_row_id)] ?? [] };
   if (name === "accounting_payment_list") return paymentsReply ? paymentsReply() : { items: paymentsByRow[String(given.record_row_id)] ?? [] };
   if (name === "digitaltwin_tenure_list") return holdingsReply ? holdingsReply() : { items: holdingsByRow[String(given.holder_record_row_id)] ?? [] };
+  if (name === "forms_submission_list_of_person") return { items: applicationsByRow[String(given.record_row_id)] ?? [] };
   if (name === "digitaltwin_node_list") return { items: [{ id: "stall1", name: "Stall 4, Market square" }] };
   return { items: [] };
 };
@@ -100,6 +101,7 @@ beforeEach(() => {
   paymentsReply = null;
   holdingsByRow = {};
   holdingsReply = null;
+  applicationsByRow = {};
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
 
@@ -213,7 +215,31 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       expect(called.mock.calls.filter((call) => call[1] === "actor_list_actors")).toHaveLength(0);
     });
 
-    it("lists no holdings, applications, audit entries or bookings for the record", async () => {
+    const permitSend = { id: "s1", form_id: "f1", form_title: "Sample Stall Permit", member_id: ownerId, submitted_at: "2026-11-03T09:30:00Z" };
+
+    it("lists the applications of the opened row under Licences and permits, asked by the owner and the row, after the Holdings", async () => {
+      applicationsByRow = { [kind.owned.id]: [permitSend] };
+      holdingsByRow = { [kind.owned.id]: [{ id: "ten9", place_id: "stall1", holder: "Trading account", kind: "tenant", since: "2025-04-01" }] };
+      setUp([kind.owned, kind.other]);
+      const { pane } = await openRow(kind.owned);
+
+      const heading = await within(pane()).findByRole("heading", { name: "Licences and permits" });
+      expect(await within(pane()).findByText("Sample Stall Permit", { selector: ".ttl" })).toBeInTheDocument();
+      const holdings = await within(pane()).findByRole("heading", { name: "Holdings" });
+      expect(holdings.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(called).toHaveBeenCalledWith("", "forms_submission_list_of_person", { member_id: ownerId, record_row_id: kind.owned.id });
+    });
+
+    it("draws no Licences and permits heading and no empty card when the opened row has no applications", async () => {
+      setUp([kind.owned, kind.other]);
+      const { pane } = await openRow(kind.owned);
+
+      await vi.waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_submission_list_of_person", { member_id: ownerId, record_row_id: kind.owned.id }));
+      expect(within(pane()).queryByRole("heading", { name: "Licences and permits" })).toBeNull();
+      expect(within(pane()).queryByText(/No .* yet|Start an application/i)).toBeNull();
+    });
+
+    it("lists no holdings, audit entries or bookings for the record", async () => {
       setUp([kind.owned, kind.unowned]);
       const { pane } = await openRow(kind.owned);
 

@@ -15,28 +15,9 @@ import { ChooseSheet } from "./ChooseSheet";
 import { SectionAct } from "./SectionAct";
 import { useOpenSection } from "./personSections";
 import { useOpenFromPanel } from "./useOpenFromPanel";
+import { loadApplications } from "./applicationRows";
 import { businessesMetaPrompts, businessesRecordCode, businessesTitlePrompt } from "./BusinessesScreen";
 import { informalTradersMetaPrompts, informalTradersRecordCode, informalTradersTitlePrompt } from "./InformalTradersScreen";
-
-type Application = { key: string; title: string; sentAt: string };
-
-export const loadApplications = (memberId: string, rowId?: string) => async (): Promise<Application[]> => {
-  const submissions = await listOf("forms_submission_list_of_person", rowId ? { member_id: memberId, record_row_id: rowId } : { member_id: memberId });
-  return submissions
-    .map((submission) => ({ key: text(submission, "id"), title: text(submission, "form_title"), sentAt: text(submission, "submitted_at") }))
-    .sort((a, b) => b.sentAt.localeCompare(a.sentAt));
-};
-
-export function ApplicationRows({ applications }: { applications: Application[] }) {
-  const open = useOpenFromPanel();
-  return (
-    <Rows>
-      {applications.map((application) => (
-        <ListRow key={application.key} title={application.title} meta={`Sent ${dayWords(application.sentAt)}`} onClick={() => open(servicesPaths.application.path({ id: application.key }))} end="›" />
-      ))}
-    </Rows>
-  );
-}
 
 const startTitle = "Start an application";
 

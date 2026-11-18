@@ -2,7 +2,7 @@ import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { ApplicationRows, loadApplications } from "./PersonLinks";
+import { ApplicationRows, loadApplications } from "./applicationRows";
 
 function LicencesAndPermits({ ownerId, rowId }: { ownerId: string; rowId: string }) {
   const word = useWord("forms");
