@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useLoad } from "../../../../features/forms/useLoad";
 import { callTool } from "../../../../shared/wakala/mcp";
+import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuEditForm } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
 import { ChatAboutService } from "./ChatAboutService";
+import { editFieldsFor, formTitleOf, loadCatalogueChoices } from "./catalogueChoices";
 import { ServiceDetails, ServiceEditAct, ServiceHead } from "./ServicePage";
 
 export const servicePermission = "service.edit";
@@ -12,13 +15,6 @@ export const servicePermission = "service.edit";
 const entryReadTool = "forms_catalog_entry_read";
 
 const publicListTool = "forms_catalog_entry_list_public";
-
-const editFields = [
-  { label: "Name", key: "name", required: true },
-  { label: "Line", key: "summary" },
-  { label: "Kind", key: "kind" },
-  { label: "Form id", key: "form_id" },
-];
 
 const entryRow = (entry: Item) => ({ id: text(entry, "slug") || text(entry, "id"), name: text(entry, "name"), line: text(entry, "summary") });
 
@@ -28,22 +24,24 @@ const loadEntry = async (slug: string): Promise<Item> => {
   return { ...entry, id: slug };
 };
 
-const detailFields = { Name: "name", Summary: "summary", Kind: "kind", Form: "form_id" };
+const detailFields = { Name: "name", Summary: "summary", Kind: "kind", Form: "form_title" };
 
 function CatalogueEntryPage({ entry, back, onSaved }: { entry: Item; back?: string; onSaved: () => void }) {
   const [editing, setEditing] = useState(false);
+  const choices = useLoad(loadCatalogueChoices, `catalogue-choices:${openAgencyId()}`);
+  const shown = choices.state === "ready" ? { ...entry, form_title: formTitleOf(text(entry, "form_id"), choices.data.forms) } : entry;
   return (
     <>
       {back ? <ChatAboutService about={{ kind: "service", id: text(entry, "id"), name: text(entry, "name") }} back={`${back}?item=${text(entry, "id")}`} /> : null}
       <ServiceHead title={text(entry, "name")} line={text(entry, "summary")} />
-      {editing ? (
+      {editing && choices.state === "ready" ? (
         <MenuEditForm
           item={entry}
           id={text(entry, "id")}
           idArg="slug"
           tool="forms_catalog_entry_upsert"
           permission={servicePermission}
-          fields={editFields}
+          fields={editFieldsFor(entry, choices.data)}
           keep={["name", "summary", "doc"]}
           bare
           openCount={1}
@@ -54,7 +52,7 @@ function CatalogueEntryPage({ entry, back, onSaved }: { entry: Item; back?: stri
           onCancel={() => setEditing(false)}
         />
       ) : (
-        <ServiceDetails word="Details" item={entry} fields={detailFields} foot={<ServiceEditAct permission={servicePermission} onEdit={() => setEditing(true)} />} />
+        <ServiceDetails word="Details" item={shown} fields={detailFields} foot={<ServiceEditAct permission={servicePermission} onEdit={() => setEditing(true)} />} />
       )}
     </>
   );
