@@ -54,10 +54,13 @@ const openPerson = async (wide: boolean) => {
 };
 
 describe("the resident page is titled with the name and keeps its actions small", () => {
-  it("makes the name the page title and draws no Name row", async () => {
+  it("makes the name the page title and the first row of the Personal detail card, with no Name card", async () => {
     const page = await openPerson(false);
     expect(within(page).getByRole("heading", { level: 1, name: personName })).toBeTruthy();
-    expect(within(page).queryByText("Name")).toBeNull();
+    expect(page.querySelector("section.sec[aria-label='Name']")).toBeNull();
+    const details = page.querySelector("section.sec[aria-label='Personal detail']") as HTMLElement;
+    expect(within(details).getByText("Name")).toBeTruthy();
+    expect(within(details).getByText(personName)).toBeTruthy();
   });
 
   it("puts the resident's details in one Personal detail card with an Edit button in its footer, no Edit attributes, no heading action, no full-width buttons", async () => {

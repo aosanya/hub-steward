@@ -90,10 +90,23 @@ export function PersonGroups({ id, full }: { id: string; full?: boolean }) {
   );
 }
 
+const contactOrder = ["email", "phone"];
+
+const contactRank = (key: string) => {
+  const at = contactOrder.indexOf(key);
+  return at === -1 ? contactOrder.length : at;
+};
+
 export function PersonDetails({ id, person }: { id: string; person: Item }) {
   const { filled, item } = usePersonAttributes(id, person);
   const edit = <SectionGo permission="member.edit" act="Edit" to={residentPaths.personEdit.path({ id })} />;
-  return <Section word="Personal detail" foot={edit} empty={{ words: "No details on file yet." }} rows={filled.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />)} />;
+  const name = personNameOf(person);
+  const contactFirst = [...filled].sort((a, b) => contactRank(a.key) - contactRank(b.key));
+  const rows = [
+    ...(name ? [<ListRow key="name" title="Name" meta={name} />] : []),
+    ...contactFirst.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />),
+  ];
+  return <Section word="Personal detail" foot={edit} empty={{ words: "No details on file yet." }} rows={rows} />;
 }
 
 export function PersonHead({ person }: { person: Item }) {

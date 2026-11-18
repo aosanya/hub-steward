@@ -172,7 +172,7 @@ describe("All People with no display name", () => {
 
     await userEvent.click(await screen.findByRole("button", { name: /AC-15/ }));
 
-    await waitFor(() => expect(screen.getAllByText("AC-15")).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText("AC-15")).toHaveLength(3));
   });
 });
 
@@ -187,7 +187,7 @@ describe("a person", () => {
 
     expect(await screen.findByText("Reading Circle")).toBeInTheDocument();
     expect(screen.getByText("Football Club")).toBeInTheDocument();
-    expect(screen.getAllByText("Amara Kole")).toHaveLength(2);
+    expect(screen.getAllByText("Amara Kole")).toHaveLength(3);
     expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p1" });
     expect(called).toHaveBeenCalledWith("", "actor_list_groups_for_actor", { actor_id: "p1" });
     expect(toolsCalled()).toEqual(new Set(["actor_list_actors", "actor_get_actor", "actor_list_groups_for_actor", "actor_list_groups", "forms_submission_list_of_person", "forms_catalog_raised_item_list_of_person", "accounting_bill_list", "digitaltwin_tenure_list", "digitaltwin_node_list", "assetmanager_asset_list", "audit_list_entries", "forms_catalog_booking_list_of_person", "forms_catalog_setting_read"]));
@@ -366,7 +366,7 @@ describe("All People on the menu window", () => {
     const tree = frame.querySelector(".wf-panes .wf-tree") as HTMLElement;
     const content = frame.querySelector(".wf-main .wf-content") as HTMLElement;
     expect(within(tree).getByRole("button", { name: /Dana Reyes/ })).toBeInTheDocument();
-    expect(await within(content).findByText("Amara Kole")).toBeInTheDocument();
+    expect(await within(content).findByRole("heading", { level: 1, name: "Amara Kole" })).toBeInTheDocument();
     expect(await within(content).findByText("Reading Circle")).toBeInTheDocument();
     expect(landed).toBe(screens[0].at);
   });
@@ -463,7 +463,7 @@ describe.each(rowWindows)("$title on the menu window", ({ title, screenIndex, ch
     const tree = frame.querySelector(".wf-panes .wf-tree") as HTMLElement;
     const content = frame.querySelector(".wf-main .wf-content") as HTMLElement;
     expect(within(tree).getByRole("button", { name: new RegExp(other) })).toBeInTheDocument();
-    expect(await within(content).findByText(chosen)).toBeInTheDocument();
+    expect((await within(content).findAllByText(chosen)).length).toBeGreaterThan(0);
     for (const one of shown) expect(await within(content).findByText(one)).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", detailTool, detailArgs);
     expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
@@ -478,7 +478,7 @@ describe.each(rowWindows)("$title on the menu window", ({ title, screenIndex, ch
 
     await waitFor(() => expect(document.querySelector(".wf-main .wf-content")).not.toBeNull());
     const content = document.querySelector(".wf-main .wf-content") as HTMLElement;
-    expect(await within(content).findByText(chosen)).toBeInTheDocument();
+    expect((await within(content).findAllByText(chosen)).length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: new RegExp(chosen) })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("button", { name: new RegExp(other) })).toHaveAttribute("aria-pressed", "false");
     await waitFor(() => expect(called).toHaveBeenCalledWith("", detailTool, detailArgs));
@@ -493,7 +493,7 @@ describe.each(rowWindows)("$title on the menu window", ({ title, screenIndex, ch
     expect(document.querySelector(".wf")).toBeNull();
     expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    expect(await within(detail).findByText(chosen)).toBeInTheDocument();
+    expect((await within(detail).findAllByText(chosen)).length).toBeGreaterThan(0);
     for (const one of shown) expect(await within(detail).findByText(one)).toBeInTheDocument();
     expect(landed).toBe(screens[screenIndex].at);
     await userEvent.click(screen.getByRole("button", { name: new RegExp(title) }));
