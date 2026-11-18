@@ -3,7 +3,6 @@ import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { dayWords } from "../../../../shared/ui/days";
 import { Button } from "../../../../shared/ui/Button";
-import { Chip, statusTone } from "../../../../shared/ui/Chip";
 import { Field } from "../../../../shared/ui/Field";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
@@ -77,7 +76,7 @@ export function PersonRaised({ id, full }: { id: string; full?: boolean }) {
           foot={act}
           empty={{ words: "Nothing raised yet." }}
           rows={raised.map((item) => (
-            <ListRow key={item.key} title={item.title} meta={`Raised ${dayWords(item.raisedAt)}`} onClick={() => open(issuePaths.issue.path({ id: item.key }))} end={<Chip tone={statusTone(item.status)}>{item.status}</Chip>} />
+            <ListRow key={item.key} title={item.title} meta={`Raised ${dayWords(item.raisedAt)}`} onClick={() => open(issuePaths.issue.path({ id: item.key }))} status={item.status} />
           ))}
         />
       ) : null}

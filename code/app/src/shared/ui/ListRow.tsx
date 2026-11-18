@@ -1,7 +1,8 @@
 import { createContext, useContext, type ReactNode } from "react";
+import { Chip, statusTone } from "./Chip";
 import { Icon, type IconName } from "./Icon";
 
-type Props = { title: string; code?: string; meta?: string | string[]; end?: ReactNode; onClick?: () => void; lead?: boolean; start?: ReactNode; below?: ReactNode; className?: string; role?: string; pressed?: boolean };
+type Props = { title: string; code?: string; meta?: string | string[]; end?: ReactNode; onClick?: () => void; lead?: boolean; start?: ReactNode; below?: ReactNode; className?: string; role?: string; pressed?: boolean; status?: string };
 
 const chevron = "›";
 
@@ -11,10 +12,11 @@ export const SectionRows = createContext<SectionRowsLook | null>(null);
 
 export const leadLetter = (title: string) => Array.from(title.trim()).find((c) => /[\p{L}\p{N}]/u.test(c))?.toLocaleUpperCase() ?? "";
 
-export function ListRow({ title, code, meta, end, onClick, lead, start, below, className, role, pressed }: Props) {
+export function ListRow({ title, code, meta, end, onClick, lead, start, below, className, role, pressed, status }: Props) {
   const look = useContext(SectionRows);
   const tiled = lead ?? (look !== null && !look.plain);
   const letter = tiled && !look?.icon ? leadLetter(title) : "";
+  const tail = end ?? (status ? <Chip tone={statusTone(status)}>{status}</Chip> : null);
   const rowClass = className ? `row ${className}` : "row";
   const inner = (
     <>
@@ -28,7 +30,7 @@ export function ListRow({ title, code, meta, end, onClick, lead, start, below, c
         ))}
         {below}
       </span>
-      {end ? <span className="end" aria-hidden={end === chevron ? true : undefined}>{end}</span> : null}
+      {tail ? <span className="end" aria-hidden={tail === chevron ? true : undefined}>{tail}</span> : null}
     </>
   );
   return onClick ? (

@@ -1,6 +1,5 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
-import { Chip, statusTone } from "../../../../shared/ui/Chip";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadingLine } from "../../../../shared/ui/LoadState";
 import { Section } from "../../../../shared/ui/Section";
@@ -33,7 +32,7 @@ export function PersonBills({ id, full }: { id: string; full?: boolean }) {
           opens={opens}
           empty={{ words: `No ${word("Bills").toLowerCase()} yet.` }}
           rows={bills.map((bill) => (
-            <ListRow key={bill.id} title={bill.meta} end={<Chip tone={statusTone(bill.status)}>{bill.status}</Chip>} onClick={() => openBill(bill.id)} />
+            <ListRow key={bill.id} title={bill.meta} status={bill.status} onClick={() => openBill(bill.id)} />
           ))}
         />
       ) : null}

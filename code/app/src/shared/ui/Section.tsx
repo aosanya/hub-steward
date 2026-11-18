@@ -1,9 +1,11 @@
 import { useId, useState, type ReactNode } from "react";
 import { Icon, type IconName } from "./Icon";
 import { Rows, SectionRows } from "./ListRow";
+import { sectionLimit } from "./sectionLimit";
+import { useSectionFilter } from "./SectionFilter";
 import "./section.css";
 
-export const sectionLimit = 3;
+export { sectionLimit };
 
 type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean; icon?: IconName; plain?: boolean };
 
@@ -11,10 +13,11 @@ export function Section({ word, rows, opens, empty, foot, full = false, all = fa
   const [expanded, setExpanded] = useState(true);
   const bodyId = useId();
   const count = rows.length;
+  const filter = useSectionFilter(word, rows, full);
   if (count === 0 && !empty) return null;
   const showAll = full || all;
   const more = !showAll && count > sectionLimit;
-  const shown = showAll ? rows : rows.slice(0, sectionLimit);
+  const shown = full ? filter.kept : showAll ? rows : rows.slice(0, sectionLimit);
   const title = (
     <>
       {word}
@@ -44,9 +47,11 @@ export function Section({ word, rows, opens, empty, foot, full = false, all = fa
       </div>
       {expanded ? (
         <div id={bodyId} className="sec-body">
+          {filter.tools}
           <SectionRows.Provider value={{ plain, icon }}>
             <Rows>
               {count === 0 && empty ? <div className="row empty-row"><span className="words">{empty.words}</span></div> : shown}
+              {filter.noMatch}
             </Rows>
           </SectionRows.Provider>
         </div>
