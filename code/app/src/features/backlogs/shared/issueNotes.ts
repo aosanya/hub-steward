@@ -35,3 +35,9 @@ export const noteTime = (iso: string) => {
   if (Number.isNaN(date.getTime())) return iso;
   return `${date.getDate()} ${months[date.getMonth()]}, ${twoDigits(date.getHours())}:${twoDigits(date.getMinutes())}`;
 };
+
+const idPattern = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
+
+export const unnamedHolder = "someone no longer listed";
+
+export const namedText = (words: string, names: Map<string, string>) => words.replace(idPattern, (id) => names.get(id) ?? names.get(id.toLowerCase()) ?? unnamedHolder);

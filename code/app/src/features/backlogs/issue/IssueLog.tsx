@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLoad } from "../../../features/forms/useLoad";
+import { callTool } from "../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { listPeople, namesOf, type Names } from "../../../features/people/api";
 import { Button } from "../../../shared/ui/Button";
@@ -7,10 +8,23 @@ import { Card } from "../../../shared/ui/Card";
 import { Chip } from "../../../shared/ui/Chip";
 import { TextArea } from "../../../shared/ui/TextArea";
 import "./issueLog.css";
-import type { NotesClient } from "../shared/api";
-import { linkOf, noteTime, type IssueNote } from "../shared/issueNotes";
+import { itemsOf, type NotesClient } from "../shared/api";
+import { linkOf, namedText, noteTime, type IssueNote } from "../shared/issueNotes";
 
 const noNames: Names = new Map();
+
+const textOf = (value: unknown) => (typeof value === "string" ? value : "");
+
+const loadNames = async (): Promise<Names> => {
+  const people = await listPeople().then(namesOf, () => noNames);
+  const agents = await callTool("", "taskmanager_agent_list", {}).then(itemsOf, () => [] as any[]);
+  const named = new Map(people);
+  for (const agent of agents) {
+    const name = textOf(agent?.display_name) || textOf(agent?.agent_id);
+    for (const key of [textOf(agent?.id), textOf(agent?.agent_id)]) if (key !== "" && name !== "") named.set(key, name);
+  }
+  return named;
+};
 
 function Links({ links }: { links: string[] }) {
   if (links.length === 0) return null;
@@ -41,7 +55,7 @@ function Entry({ note, names }: { note: IssueNote; names: Names }) {
         <Chip tone={note.kind === "worker" ? "info" : undefined}>{note.kind === "worker" ? "Worker" : "Person"}</Chip>
         <span>{noteTime(note.at)}</span>
       </div>
-      {note.text.split(/\n{2,}/).map((paragraph, at) => (
+      {namedText(note.text, names).split(/\n{2,}/).map((paragraph, at) => (
         <p key={at}>{paragraph}</p>
       ))}
       <Links links={note.links} />
@@ -54,7 +68,7 @@ export function IssueLog({ issueId, client }: { issueId: string; client: NotesCl
   const [text, setText] = useState("");
   const [failed, setFailed] = useState(false);
   const notes = useLoad(() => client.notes(issueId), `notes:${openAgencyId()}:${issueId}:${version}`);
-  const people = useLoad(() => listPeople().then(namesOf, () => noNames), `notes-people:${openAgencyId()}`);
+  const people = useLoad(loadNames, `notes-people:${openAgencyId()}`);
   const names = people.state === "ready" ? people.data : noNames;
   const held = notes.state === "ready" ? notes.data : [];
   const add = async () => {
