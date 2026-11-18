@@ -293,6 +293,7 @@ type TaskManager interface {
 	StuckIssues(ctx context.Context, filter StuckFilter) (Stuck, error)
 	Batch(ctx context.Context, requesterID string, req BatchRequest) (BatchOutcome, error)
 	CreateWithTodos(ctx context.Context, requesterID string, req CreateWithTodosRequest) (IssueWithTodos, error)
+	AddTodos(ctx context.Context, requesterID, issueID string, req AddTodosRequest) (AddedTodos, error)
 	CountTodosOfIssues(ctx context.Context, filter TodoCountsFilter) (IssueTodoCounts, error)
 	EditTodoFor(ctx context.Context, requesterID, todoID string, change TodoChange) (TodoView, error)
 	ReorderTodosOfIssue(ctx context.Context, requesterID, issueID string, order TodoOrder) (IssueTodoList, error)

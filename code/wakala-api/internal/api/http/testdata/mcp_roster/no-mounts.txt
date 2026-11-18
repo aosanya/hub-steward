@@ -696,6 +696,7 @@ taskmanager_repeating_task_list
 taskmanager_repeating_task_read
 taskmanager_repeating_task_stop
 taskmanager_sourced_task_open
+taskmanager_task_add_todos
 taskmanager_task_assign
 taskmanager_task_assign_holder
 taskmanager_task_batch
