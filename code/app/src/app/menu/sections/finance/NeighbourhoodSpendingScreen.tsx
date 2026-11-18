@@ -1,6 +1,8 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
+import { NeighbourhoodPage } from "./NeighbourhoodPage";
+import { financePaths } from "./paths";
 import { homeEmpty, moneyWords, text, tools, unitOf, type Item } from "./financeData";
 
 const totalsArguments = { key: "neighbourhood", account_type: "expense" };
@@ -27,10 +29,12 @@ export function NeighbourhoodSpendingScreen() {
   return (
     <MenuWindow
       title={title}
+      withTabs
+      bandless
       detailKey={unit}
       listKey={unit}
       list={{ title, tool: tools.dimensionTotals, load, fields: { title: "name", meta: "meta" }, empty: homeEmpty("No spending by neighbourhood yet.") }}
-      detail={{ tool: tools.dimensionTotals, load: loadOne, fields: { Neighbourhood: "name", Spent: "spent", Entries: "entries" }, status: "status" }}
+      detail={{ tool: tools.dimensionTotals, load: loadOne, fields: {}, status: "", extra: (row) => <NeighbourhoodPage row={row} back={financePaths.spendingByNeighbourhood.path()} /> }}
     />
   );
 }

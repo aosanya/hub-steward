@@ -249,7 +249,20 @@ const report: Subject = {
   empty: "its period, figures and departments",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report };
+const neighbourhood: Subject = {
+  reads: {
+    accounting_dimension_totals: { key: () => "neighbourhood", account_type: () => "expense" },
+  },
+  steps: {
+    accounting_dimension_totals: "Reading the spending by neighbourhood",
+  },
+  choices: ["Spending"],
+  reading: "Spending means accounting_dimension_totals; the row whose value is this neighbourhood's name is the one to answer from.",
+  overview: "call accounting_dimension_totals and answer from the row for this neighbourhood with what was spent and how many entries make it up",
+  empty: "its spending and entries",
+};
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood };
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 
