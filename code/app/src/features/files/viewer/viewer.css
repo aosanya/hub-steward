@@ -26,7 +26,7 @@
 .doc-page th, .doc-page td { border: 1px solid var(--line); padding: .375rem .75rem; text-align: left; }
 .doc-page th { background: var(--bg-alt); }
 .doc-page pre { overflow-x: auto; padding: .75rem; background: var(--bg-alt); border: 1px solid var(--line); }
-.doc-page code { font-family: var(--mono); font-size: .75rem; background: var(--bg-alt); padding: 0 .25rem; }
+.doc-page code { font-family: var(--mono); font-size: .875rem; background: var(--bg-alt); padding: 0 .25rem; }
 .doc-page pre code { padding: 0; background: none; line-height: 1.6; }
 .doc-page blockquote { padding-left: 1rem; border-left: 3px solid var(--line); color: var(--ink-soft); }
 .doc-page hr { border: 0; border-top: 1px solid var(--line); margin: 1.5rem 0; }

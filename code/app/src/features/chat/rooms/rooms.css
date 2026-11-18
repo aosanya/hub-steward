@@ -1,18 +1,18 @@
 .rm-start { padding: 1rem; border-top: 1px solid var(--line); }
-.rm-note { font-size: .8125rem; color: var(--ink-soft); }
+.rm-note { font-size: .875rem; color: var(--ink-soft); }
 .rm-thread { display: flex; flex-direction: column; gap: .25rem; margin-top: auto; }
 .rm-entry { display: flex; flex-direction: column; gap: .25rem; }
-.rm-day { align-self: center; padding: .5rem 0; font-size: .8125rem; color: var(--ink-soft); }
+.rm-day { align-self: center; padding: .5rem 0; font-size: .875rem; color: var(--ink-soft); }
 .rm-msg { display: flex; flex-direction: column; align-items: flex-start; gap: .125rem; max-width: 85%; }
 .rm-msg.mine { align-self: flex-end; align-items: flex-end; }
-.rm-who { display: flex; align-items: center; gap: .5rem; margin-top: .5rem; font-size: .8125rem; color: var(--ink-soft); }
+.rm-who { display: flex; align-items: center; gap: .5rem; margin-top: .5rem; font-size: .875rem; color: var(--ink-soft); }
 .rm-who b { font-weight: 600; color: var(--ink); }
 .rm-msg.mine .rm-who b { font-weight: 400; color: var(--ink-soft); }
 .rm-bubble { font-size: var(--content); padding: .625rem .875rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); overflow-wrap: anywhere; white-space: pre-line; }
 .mine .rm-bubble { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .rm-slot { align-self: flex-start; width: 90%; }
 .rm-ttl { font-weight: 600; }
-.rm-line { font-size: .8125rem; color: var(--ink-soft); }
+.rm-line { font-size: .875rem; color: var(--ink-soft); }
 .rm-btns { display: flex; }
 .rm-btns .btn { flex: 1 1 auto; }
 .rm-composer { display: flex; flex-direction: column; gap: .5rem; position: sticky; bottom: 0; padding-top: .5rem; background: var(--bg); }
