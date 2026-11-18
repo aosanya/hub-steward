@@ -212,6 +212,7 @@ agency_list_approvals
 agency_list_consequences
 agency_list_control_attachments
 agency_list_controls
+agency_list_declarations
 agency_list_default_workflows
 agency_list_drafts
 agency_list_event_flow_steps
