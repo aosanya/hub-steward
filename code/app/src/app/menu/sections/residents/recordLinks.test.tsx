@@ -52,8 +52,6 @@ const widths = [
 ];
 
 const unlinkedTools = [
-  "accounting_bill_list",
-  "accounting_payment_list",
   "digitaltwin_tenure_list",
   "forms_submission_list",
   "forms_submission_list_of_person",
@@ -64,6 +62,10 @@ const unlinkedTools = [
 let called: MockInstance<typeof mcp.callTool>;
 let rowsByCode: Record<string, Row[]>;
 let actorReply: () => Promise<unknown>;
+let billsByRow: Record<string, Person[]>;
+let paymentsByRow: Record<string, Person[]>;
+let billsReply: (() => Promise<unknown>) | null;
+let paymentsReply: (() => Promise<unknown>) | null;
 
 const actorCalls = () => called.mock.calls.filter((call) => call[1] === "actor_get_actor");
 
@@ -74,8 +76,8 @@ const answer = async (name: string, args: unknown) => {
   if (name === "agency_list_live_record_rows") return { items: rowsByCode[String(given.record_code)] ?? [] };
   if (name === "actor_get_actor") return actorReply();
   if (name === "actor_list_actors") return { items: [{ id: ownerId, display_name: personName, status: "active" }] };
-  if (name === "accounting_bill_list") return { items: [{ id: "bill1", payer: personName }] };
-  if (name === "accounting_payment_list") return { items: [{ id: "pay1", payer: personName }] };
+  if (name === "accounting_bill_list") return billsReply ? billsReply() : { items: billsByRow[String(given.record_row_id)] ?? [] };
+  if (name === "accounting_payment_list") return paymentsReply ? paymentsReply() : { items: paymentsByRow[String(given.record_row_id)] ?? [] };
   if (name === "digitaltwin_tenure_list") return { items: [{ id: "ten1", holder: personName }] };
   return { items: [] };
 };
@@ -90,6 +92,10 @@ const showScreen = (path: string) =>
 beforeEach(() => {
   openAgency("town");
   actorReply = async () => ({ id: ownerId, display_name: personName, status: "active" });
+  billsByRow = {};
+  paymentsByRow = {};
+  billsReply = null;
+  paymentsReply = null;
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
 
@@ -203,14 +209,68 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       expect(called.mock.calls.filter((call) => call[1] === "actor_list_actors")).toHaveLength(0);
     });
 
-    it("lists no bills, payments, holdings, applications, audit entries or bookings for the record", async () => {
+    it("lists no holdings, applications, audit entries or bookings for the record", async () => {
       setUp([kind.owned, kind.unowned]);
       const { pane } = await openRow(kind.owned);
 
       await within(pane()).findByRole("heading", { name: kind.heading });
       const names = called.mock.calls.map((call) => call[1]);
       unlinkedTools.forEach((tool) => expect(names).not.toContain(tool));
-      expect(within(pane()).queryByText(/bill|payment|permit|inspection|booking|holding/i)).toBeNull();
+      expect(within(pane()).queryByText(/permit|inspection|booking|holding/i)).toBeNull();
+    });
+
+    const bill = { id: "bill1", payer: "Trading account", amount: 150000, due_at: "2026-03-01T00:00:00Z", status: "open" };
+    const overdue = { id: "bill2", payer: "Trading account", amount: 42000, due_at: "2026-01-10T00:00:00Z", status: "overdue", days_overdue: 12 };
+    const payment = { id: "pay1", kind: "bill", amount: 90000, paid_at: "2026-02-04T09:00:00Z", payer: "Trading account" };
+
+    it("lists Fees and bills by the row's own id, after the Owner section, and never by the owner's person id", async () => {
+      billsByRow = { [kind.owned.id]: [bill, overdue] };
+      setUp([kind.owned, kind.other]);
+      const { pane } = await openRow(kind.owned);
+
+      const heading = await within(pane()).findByRole("heading", { name: "Fees and bills" });
+      expect(await within(pane()).findByText(/150,000 · due 2026-03-01/)).toBeInTheDocument();
+      expect(within(pane()).getByText(/42,000 · due 2026-01-10/)).toBeInTheDocument();
+      expect(within(pane()).getByText("Overdue")).toBeInTheDocument();
+      const owner = await within(pane()).findByRole("heading", { name: kind.heading });
+      expect(owner.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(called).toHaveBeenCalledWith("", "accounting_bill_list", { record_row_id: kind.owned.id });
+      expect(called.mock.calls.filter((call) => (call[2] as Record<string, unknown> | undefined)?.actor_id !== undefined)).toHaveLength(0);
+    });
+
+    it("lists Payments by the row's own id", async () => {
+      paymentsByRow = { [kind.owned.id]: [payment] };
+      setUp([kind.owned, kind.other]);
+      const { pane } = await openRow(kind.owned);
+
+      await within(pane()).findByRole("heading", { name: "Payments" });
+      expect(await within(pane()).findByText(/90,000 · paid 2026-02-04/)).toBeInTheDocument();
+      expect(called).toHaveBeenCalledWith("", "accounting_payment_list", { record_row_id: kind.owned.id });
+    });
+
+    it("shows the bills of the opened row only", async () => {
+      billsByRow = { [kind.owned.id]: [bill], [kind.other.id]: [overdue] };
+      setUp([kind.owned, kind.other]);
+      const { pane } = await openRow(kind.owned);
+
+      await within(pane()).findByRole("heading", { name: "Fees and bills" });
+      expect(within(pane()).queryByText(/42,000/)).toBeNull();
+    });
+
+    it.each([
+      ["no rows", () => Promise.resolve({ items: [] })],
+      ["a refused reply", () => Promise.reject(new mcp.McpError("accounting_bill_list: the hub refused this"))],
+      ["an unserved tool", () => Promise.reject(new Error("accounting_bill_list: unknown tool"))],
+    ])("draws no Fees and bills or Payments heading, no empty card and no error after %s", async (_label, reply) => {
+      billsReply = reply;
+      paymentsReply = reply;
+      setUp([kind.owned, kind.other]);
+      const { pane } = await openRow(kind.owned);
+
+      await vi.waitFor(() => expect(called).toHaveBeenCalledWith("", "accounting_bill_list", { record_row_id: kind.owned.id }));
+      expect(within(pane()).queryByRole("heading", { name: "Fees and bills" })).toBeNull();
+      expect(within(pane()).queryByRole("heading", { name: "Payments" })).toBeNull();
+      expect(within(pane()).queryByText(/No .* yet|could not be loaded|refused|unknown tool|not found/i)).toBeNull();
     });
   });
 });
