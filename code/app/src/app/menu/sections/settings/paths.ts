@@ -6,6 +6,7 @@ export const settingsPaths = {
   boundariesAndAreas: screen("/menu/settings/boundaries-and-areas"),
   boundaryEdit: screen("/menu/settings/boundaries-and-areas/:id/edit"),
   registerDetails: screen("/menu/settings/details-of-a-record"),
+  registerDetailsEdit: screen("/menu/settings/details-of-a-record/:id/edit"),
   lateRules: screen("/menu/settings/late-rules"),
   lateRulesEdit: screen("/menu/settings/late-rules/edit"),
 };

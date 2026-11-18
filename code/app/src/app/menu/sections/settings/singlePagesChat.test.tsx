@@ -78,9 +78,9 @@ describe("the Agency Profile page", () => {
 
 describe("the Details of a record page", () => {
   it("opens the assistant about the chosen record, with the details on the page given to it", async () => {
-    openAt("Details of a record");
+    openAt("Details of a record", "?item=RC-1");
     const card = await screen.findByRole("region", { name: "Details" });
-    await within(card).findByRole("checkbox", { name: "Tax number on" });
+    await within(card).findByText("Tax number");
     await userEvent.click(screen.getByRole("link", { name: "Chat" }));
     await screen.findByText("About Businesses");
     const about = carriedChatAbout();
@@ -90,11 +90,11 @@ describe("the Details of a record page", () => {
     expect(about?.extra?.details).toContain("Tax number (on, required)");
   });
 
-  it("follows the tab: the chat is about the record whose tab is chosen", async () => {
+  it("follows the list: the chat is about the record chosen on the left", async () => {
     openAt("Details of a record");
+    await userEvent.click(await screen.findByRole("button", { name: /Residents/ }));
     const card = await screen.findByRole("region", { name: "Details" });
-    await userEvent.click(within(card).getByRole("tab", { name: "Residents" }));
-    await within(card).findByRole("checkbox", { name: "Phone on" });
+    await within(card).findByText("Phone");
     await userEvent.click(screen.getByRole("link", { name: "Chat" }));
     await screen.findByText("About Residents");
     expect(carriedChatAbout()?.name).toBe("Residents");

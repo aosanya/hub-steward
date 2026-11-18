@@ -90,31 +90,3 @@ describe("the Agency Profile page", () => {
   });
 });
 
-describe("the Details of a record page", () => {
-  it("is one card whose record is chosen by tabs, with the detail rows inside it", async () => {
-    openAt("Details of a record");
-
-    const card = await screen.findByRole("region", { name: "Details" });
-    expect(within(card).getAllByRole("tab").map((tab) => tab.textContent)).toEqual(["Businesses", "Informal traders", "Residents", "Holdings"]);
-    expect(within(card).getByRole("tab", { name: "Businesses" })).toHaveAttribute("aria-selected", "true");
-    expect(await within(card).findByRole("checkbox", { name: "Tax number on" })).toBeChecked();
-  });
-
-  it("puts Add detail and Save details in the footer of the card", async () => {
-    openAt("Details of a record");
-
-    const card = await screen.findByRole("region", { name: "Details" });
-    await within(card).findByRole("checkbox", { name: "Tax number on" });
-    expect(within(card).getByRole("button", { name: "Add detail" }).closest("footer")).not.toBeNull();
-    expect(within(card).getByRole("button", { name: "Save details" }).closest("footer")).not.toBeNull();
-  });
-
-  it("switches to the details of another record when its tab is chosen", async () => {
-    openAt("Details of a record");
-
-    const card = await screen.findByRole("region", { name: "Details" });
-    await userEvent.click(within(card).getByRole("tab", { name: "Residents" }));
-    expect(await within(card).findByRole("checkbox", { name: "Phone on" })).toBeChecked();
-    expect(within(card).getByRole("tab", { name: "Residents" })).toHaveAttribute("aria-selected", "true");
-  });
-});

@@ -6,6 +6,7 @@ import { LateRules } from "./LateRules";
 import { LateRulesEdit } from "./LateRulesEdit";
 import { settingsPaths } from "./paths";
 import { RegisterDetails } from "./RegisterDetails";
+import { RegisterDetailsEdit } from "./RegisterDetailsEdit";
 import { UsersAndRoles } from "./UsersAndRoles";
 import type { MenuItem } from "../../sections";
 
@@ -24,6 +25,7 @@ export const routes = () => (
     <Route path={settingsPaths.boundariesAndAreas.pattern} element={<BoundariesAndAreas />} />
     <Route path={settingsPaths.boundaryEdit.pattern} element={<BoundaryEditScreen />} />
     <Route path={settingsPaths.registerDetails.pattern} element={<RegisterDetails />} />
+    <Route path={settingsPaths.registerDetailsEdit.pattern} element={<RegisterDetailsEdit />} />
     <Route path={settingsPaths.lateRules.pattern} element={<LateRules />} />
     <Route path={settingsPaths.lateRulesEdit.pattern} element={<LateRulesEdit />} />
   </>
