@@ -126,7 +126,7 @@ describe("applications on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Applications" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Applications/ })).toBeTruthy();
     expect(await screen.findByText("Sample Stall Permit")).toBeTruthy();
     expect(screen.getByText(`Sent ${dayWords("2026-11-03T09:30:00Z")}`)).toBeTruthy();
     expect(callsTo("forms_submission_list_of_person")).toEqual([["", "forms_submission_list_of_person", { member_id: "p1" }]]);
@@ -159,7 +159,7 @@ describe("applications on a person's detail", () => {
   it("shows an empty card when the person has sent no application", async () => {
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Applications" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Applications/ })).toBeTruthy();
     expect(await screen.findByText("No applications yet.")).toBeTruthy();
     expect(screen.queryByText(/^Sent /)).toBeNull();
   });
@@ -173,9 +173,9 @@ describe("applications on a person's detail", () => {
     await openPerson();
 
     await waitFor(() => expect(calledNames()).toContain("forms_submission_list_of_person"));
-    expect(screen.getByRole("heading", { name: "Groups" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /^Groups/ })).toBeTruthy();
     expect(screen.getByText("Sample Street Group")).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Applications" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: /^Applications/ })).toBeNull();
     expect(screen.queryByText(/could not be loaded/i)).toBeNull();
     expect(screen.queryByText(/the hub refused this/)).toBeNull();
     expect(screen.queryByText(/unknown tool/)).toBeNull();
@@ -186,7 +186,7 @@ describe("applications on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Applications" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Applications/ })).toBeTruthy();
     expect(calledNames().filter((name) => guessedTools.includes(String(name)))).toEqual([]);
     for (const heading of ["Payments"]) {
       expect(screen.queryByRole("heading", { name: heading })).toBeNull();
@@ -203,7 +203,7 @@ describe("wishes and issues on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Wishes and issues" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Wishes and issues/ })).toBeTruthy();
     await screen.findByText("Sample Broken Lamp");
     expect(screen.getByText(`open, raised ${dayWords("2026-11-02T08:00:00Z")}`)).toBeTruthy();
     expect(screen.getByText(`received, raised ${dayWords("2026-11-06T10:00:00Z")}`)).toBeTruthy();
@@ -215,15 +215,15 @@ describe("wishes and issues on a person's detail", () => {
   it("comes after the Applications section", async () => {
     await openPerson();
 
-    const applicationsHeading = await screen.findByRole("heading", { name: "Applications" });
-    const raisedHeading = await screen.findByRole("heading", { name: "Wishes and issues" });
+    const applicationsHeading = await screen.findByRole("heading", { name: /^Applications/ });
+    const raisedHeading = await screen.findByRole("heading", { name: /^Wishes and issues/ });
     expect(applicationsHeading.compareDocumentPosition(raisedHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("shows an empty card when the person raised nothing", async () => {
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Wishes and issues" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Wishes and issues/ })).toBeTruthy();
     expect(await screen.findByText("Nothing raised yet.")).toBeTruthy();
   });
 
@@ -232,8 +232,8 @@ describe("wishes and issues on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Requests" })).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Wishes and issues" })).toBeNull();
+    expect(await screen.findByRole("heading", { name: /^Requests/ })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: /^Wishes and issues/ })).toBeNull();
   });
 
   it.each<[string, Failure]>([
@@ -247,9 +247,9 @@ describe("wishes and issues on a person's detail", () => {
 
     await waitFor(() => expect(calledNames()).toContain("forms_catalog_raised_item_list_of_person"));
     expect(await screen.findByText("Sample Stall Permit")).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Groups" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Applications" })).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Wishes and issues" })).toBeNull();
+    expect(screen.getByRole("heading", { name: /^Groups/ })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /^Applications/ })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: /^Wishes and issues/ })).toBeNull();
     expect(screen.queryByText("Nothing raised yet.")).toBeNull();
     expect(screen.queryByText(/could not be loaded/i)).toBeNull();
     expect(screen.queryByText(/the hub refused this/)).toBeNull();
@@ -272,7 +272,7 @@ describe("holdings on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Holdings" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Holdings/ })).toBeTruthy();
     expect(await screen.findByText("Sample Plot 12")).toBeTruthy();
     expect(screen.getByText("tenant · since 2026-03-01")).toBeTruthy();
     expect(screen.getByText("Sample Plot 14")).toBeTruthy();
@@ -310,7 +310,7 @@ describe("holdings on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Holdings" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Holdings/ })).toBeTruthy();
     expect(await screen.findByText("No holdings yet.")).toBeTruthy();
     expect(screen.queryByText("Sample Plot 99")).toBeNull();
   });
@@ -326,10 +326,10 @@ describe("holdings on a person's detail", () => {
     await openPerson();
 
     await waitFor(() => expect(calledNames()).toContain("digitaltwin_tenure_list"));
-    expect(await screen.findByRole("heading", { name: "Applications" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Groups" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Applications/ })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /^Groups/ })).toBeTruthy();
     expect(screen.getByText("Sample Street Group")).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Holdings" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: /^Holdings/ })).toBeNull();
     expect(screen.queryByText(/could not be loaded/i)).toBeNull();
     expect(screen.queryByText(/the hub refused this/)).toBeNull();
     expect(screen.queryByText(/unknown tool/)).toBeNull();
@@ -341,7 +341,7 @@ describe("holdings on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Holdings" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Holdings/ })).toBeTruthy();
     expect(await screen.findByText("tenant")).toBeTruthy();
     expect(screen.getByText("owner")).toBeTruthy();
     expect(screen.queryByText("Sample Plot 12")).toBeNull();

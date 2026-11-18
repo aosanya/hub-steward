@@ -110,8 +110,8 @@ describe("businesses and informal traders on a person's panel", () => {
   it("never asks for the rows of a record without the person's actor id", async () => {
     await openPerson();
 
-    await screen.findByRole("heading", { name: "Businesses" });
-    await screen.findByRole("heading", { name: "Informal traders" });
+    await screen.findByRole("heading", { name: /^Businesses/ });
+    await screen.findByRole("heading", { name: /^Informal traders/ });
     expect(rowCalls().length).toBeGreaterThan(0);
     for (const call of rowCalls()) {
       expect((call[2] as Record<string, unknown>).answer_actor_id).toBe(personId);
@@ -121,7 +121,7 @@ describe("businesses and informal traders on a person's panel", () => {
   it("shows a Businesses section with the trading name, kind of business and neighbourhood of each row held", async () => {
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Businesses" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Businesses/ })).toBeTruthy();
     expect(await screen.findByText("Malomsor Bakery")).toBeTruthy();
     expect(screen.getByText("Bakery · Malomsor")).toBeTruthy();
   });
@@ -129,7 +129,7 @@ describe("businesses and informal traders on a person's panel", () => {
   it("shows an Informal traders section with the name, what is sold and neighbourhood of each row held", async () => {
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Informal traders" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Informal traders/ })).toBeTruthy();
     expect(await screen.findByText("Flower Corner")).toBeTruthy();
     expect(screen.getByText("Flowers · Kertváros")).toBeTruthy();
   });
@@ -139,9 +139,9 @@ describe("businesses and informal traders on a person's panel", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Informal traders" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Informal traders/ })).toBeTruthy();
     expect(screen.getByText("Flower Corner")).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Businesses" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: /^Businesses/ })).toBeNull();
     expect(screen.queryByText(/No businesses/i)).toBeNull();
   });
 
@@ -150,11 +150,11 @@ describe("businesses and informal traders on a person's panel", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Applications" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Applications/ })).toBeTruthy();
     await waitFor(() => expect(rowCalls()).toHaveLength(2));
-    expect(screen.getByRole("heading", { name: "Groups" })).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Businesses" })).toBeNull();
-    expect(screen.queryByRole("heading", { name: "Informal traders" })).toBeNull();
+    expect(screen.getByRole("heading", { name: /^Groups/ })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: /^Businesses/ })).toBeNull();
+    expect(screen.queryByRole("heading", { name: /^Informal traders/ })).toBeNull();
     expect(screen.queryByText(/No businesses|No informal traders/i)).toBeNull();
   });
 
@@ -167,12 +167,12 @@ describe("businesses and informal traders on a person's panel", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Informal traders" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Informal traders/ })).toBeTruthy();
     expect(screen.getByText("Flower Corner")).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Groups" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /^Groups/ })).toBeTruthy();
     expect(screen.getByText("Sample Street Group")).toBeTruthy();
-    expect(await screen.findByRole("heading", { name: "Applications" })).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Businesses" })).toBeNull();
+    expect(await screen.findByRole("heading", { name: /^Applications/ })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: /^Businesses/ })).toBeNull();
     expect(screen.queryByText("Malomsor Bakery")).toBeNull();
     expect(screen.queryByText(/could not be loaded/i)).toBeNull();
     expect(screen.queryByText(/the hub refused this/)).toBeNull();
@@ -184,11 +184,11 @@ describe("businesses and informal traders on a person's panel", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Applications" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Applications/ })).toBeTruthy();
     await waitFor(() => expect(rowCalls()).toHaveLength(2));
-    expect(screen.getByRole("heading", { name: "Groups" })).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Businesses" })).toBeNull();
-    expect(screen.queryByRole("heading", { name: "Informal traders" })).toBeNull();
+    expect(screen.getByRole("heading", { name: /^Groups/ })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: /^Businesses/ })).toBeNull();
+    expect(screen.queryByRole("heading", { name: /^Informal traders/ })).toBeNull();
     expect(screen.queryByText(/could not be loaded/i)).toBeNull();
   });
 
