@@ -6,6 +6,7 @@ catalog_board_item_put
 catalog_board_item_read
 catalog_board_item_set_hidden
 catalog_board_item_set_outcome
+catalog_board_item_tally_by_area
 catalog_board_item_unassign
 catalog_booking_book
 catalog_booking_cancel
@@ -72,6 +73,7 @@ reports_board_item_put
 reports_board_item_read
 reports_board_item_set_hidden
 reports_board_item_set_outcome
+reports_board_item_tally_by_area
 reports_board_item_unassign
 reports_booking_book
 reports_booking_cancel
