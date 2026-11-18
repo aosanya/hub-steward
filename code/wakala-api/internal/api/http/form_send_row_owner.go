@@ -64,17 +64,32 @@ func rowOwnedBy(rows []agencymodels.RecordRow, records []agencymodels.Record, re
 	return false
 }
 
+func (s sendsNamingRows) refuseRowNotOwned(ctx context.Context, recordRowID, person string) error {
+	if recordRowID == "" {
+		return nil
+	}
+	rows, records, err := s.read(ctx)
+	if err != nil {
+		return err
+	}
+	if !rowOwnedBy(rows, records, recordRowID, person) {
+		return errRecordRowNotOwned
+	}
+	return nil
+}
+
 func (s sendsNamingRows) SubmitAnswersFor(ctx context.Context, formID, memberID, answeringAs, language, periodKey, recordRowID string, in []formsmodels.Answer) ([]formsmodels.Answer, error) {
-	if recordRowID != "" {
-		rows, records, err := s.read(ctx)
-		if err != nil {
-			return nil, err
-		}
-		if !rowOwnedBy(rows, records, recordRowID, memberID) {
-			return nil, errRecordRowNotOwned
-		}
+	if err := s.refuseRowNotOwned(ctx, recordRowID, memberID); err != nil {
+		return nil, err
 	}
 	return s.FormManager.SubmitAnswersFor(ctx, formID, memberID, answeringAs, language, periodKey, recordRowID, in)
+}
+
+func (s sendsNamingRows) FileSubmission(ctx context.Context, formID, memberID, answeringAs, language, periodKey, channel, recordRowID, filedBy string, in []formsmodels.Answer) ([]formsmodels.Answer, error) {
+	if err := s.refuseRowNotOwned(ctx, recordRowID, memberID); err != nil {
+		return nil, err
+	}
+	return s.FormManager.FileSubmission(ctx, formID, memberID, answeringAs, language, periodKey, channel, recordRowID, filedBy, in)
 }
 
 func (s sendsNamingRows) lineage(ctx context.Context, recordRowID string) ([]string, error) {

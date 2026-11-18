@@ -66,6 +66,7 @@ var sentinels = map[string]error{
 	"ErrInvalidForm":           forms.ErrInvalidForm,
 	"ErrInvalidQuestion":       forms.ErrInvalidQuestion,
 	"ErrInvalidAnswer":         forms.ErrInvalidAnswer,
+	"ErrInvalidChannel":        forms.ErrInvalidChannel,
 	"ErrMissingTitle":          forms.ErrMissingTitle,
 	"ErrMissingClosesAt":       forms.ErrMissingClosesAt,
 	"ErrClosesInPast":          forms.ErrClosesInPast,

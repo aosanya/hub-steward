@@ -21,7 +21,7 @@ func (m *formManager) writeSubmission(tx *gorm.DB, s sendToKeep, repeatOf, now s
 		return "", ErrLockedAfterSend
 	case err == nil:
 		held.EditedAt = now
-		held.Collector, held.CollectedAt, held.Channel, held.Language = s.memberID, now, s.channel, s.language
+		held.Collector, held.CollectedAt, held.Channel, held.Language = s.collector, now, s.channel, s.language
 		if s.recordRowID != "" {
 			held.RecordRowID = s.recordRowID
 		}
@@ -29,7 +29,7 @@ func (m *formManager) writeSubmission(tx *gorm.DB, s sendToKeep, repeatOf, now s
 	case errors.Is(err, ErrSubmissionNotFound):
 		sent := models.Submission{
 			ID: newID(), FormID: s.form.ID, MemberID: s.memberID, ChapterID: s.chapterID, PeriodKey: s.period, RepeatOf: repeatOf, SubmittedAt: now,
-			Collector: s.memberID, CollectedAt: now, Channel: s.channel, Language: s.language, RecordRowID: s.recordRowID,
+			Collector: s.collector, CollectedAt: now, Channel: s.channel, Language: s.language, RecordRowID: s.recordRowID,
 			VoiceKey: voiceKeyOf(s, repeatOf),
 		}
 		return sent.ID, m.insertTx(tx, roleSubmission, sent)
