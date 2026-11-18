@@ -77,13 +77,14 @@ describe("adding a person who lives in the town from All People", () => {
   it("shows an Add person button to a holder of member.add and none to anyone else", async () => {
     hub();
     showList();
-    expect(await screen.findByRole("link", { name: "Add person" })).toBeInTheDocument();
+    const button = await screen.findByRole("button", { name: "Add person" });
+    expect(button.compareDocumentPosition(await screen.findByLabelText("Search")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     cleanup();
     permissions = ["member.read"];
     hub();
     showList();
     await screen.findByText("Szabó Katalin");
-    expect(screen.queryByRole("link", { name: "Add person" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Add person" })).toBeNull();
   });
 
   it("asks for the Name and every text property of the hub, the Name being required", async () => {

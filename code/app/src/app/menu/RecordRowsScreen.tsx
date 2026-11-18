@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "../../shared/ui/Button";
 import { liveRecordRowsTool, loadRecordRow, loadRecordRows } from "./liveRecordRows";
 import { MenuWindow } from "./MenuWindow";
+import { RecordAddButton } from "./RecordAddButton";
 import { RecordPage } from "./RecordPage";
 import { loadLicenceMarks, type LicenceMark } from "./sections/residents/licensedRows";
 import { LicenceChip } from "./sections/residents/LicenceChip";
@@ -45,7 +45,7 @@ export function RecordRowsScreen({ title, recordCode, titlePrompt, detailWord, m
       withTabs
       bandless
       startAt={search.get("row") ?? undefined}
-      headEnd={count > 0 ? <Button to={empty.to}>{empty.act}</Button> : undefined}
+      above={count > 0 ? <RecordAddButton recordCode={recordCode} label={empty.act} to={empty.to} /> : undefined}
       list={{ title, tool: liveRecordRowsTool, fields: { title: "title", meta: "meta" }, empty, load, end: licence ? licenceChip : undefined }}
       detail={{
         tool: liveRecordRowsTool,

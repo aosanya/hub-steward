@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useMay } from "../../../../features/agency/useMay";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { lastAtOf } from "../../../../features/chat/api";
-import { Button } from "../../../../shared/ui/Button";
 import { Chip } from "../../../../shared/ui/Chip";
 import { dayWords } from "../../../../shared/ui/days";
 import { callTool } from "../../../../shared/wakala/mcp";
@@ -12,6 +10,7 @@ import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgen
 import { routes } from "../../../routes";
 import { householdTypes } from "./householdTypes";
 import { residentPaths } from "./paths";
+import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
 import { ChatAboutConversation } from "./ChatAboutConversation";
@@ -95,13 +94,12 @@ export function AllPeopleScreen() {
   const peopleTitle = `All ${word("People")}`;
   const [version, setVersion] = useState(0);
   const [search] = useSearchParams();
-  const mayAdd = useMay("member.add");
   return (
     <MenuWindow
       title={peopleTitle}
       withTabs
       bandless
-      headEnd={mayAdd ? <Button to={routes.personNew.path()}>Add person</Button> : undefined}
+      above={<AddButton permission="member.add" label="Add person" to={routes.personNew.path()} />}
       startAt={search.get("person") ?? undefined}
       listKey={version}
       detailKey={version}

@@ -2,7 +2,9 @@ import { useRef, useState } from "react";
 import { itemsOf } from "../../../../features/backlogs";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
+import { AddAct } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
+import { issuePaths } from "./paths";
 import { areaLinesOf, loadAreaTally } from "./AreaCounts";
 import { useSearchParams } from "react-router-dom";
 import { ChatAboutWish, wishParam } from "./ChatAboutWish";
@@ -77,6 +79,7 @@ export function WishesScreen() {
       withTabs
       bandless
       startAt={startAt}
+      above={<AddAct label="Send a wish" to={issuePaths.sendWish.path()} />}
       list={{ title, tool: wishesTool, fields: { title: "title", meta: "counts" }, lines: linesOf, empty: { words: "No wishes yet.", act: "Home", to: agencyHomePath(openAgencyId()) }, load: current }}
       detail={{ tool: wishesTool, fields: {}, status: "", load: loadWish, extra: page }}
       listKey={reloads}

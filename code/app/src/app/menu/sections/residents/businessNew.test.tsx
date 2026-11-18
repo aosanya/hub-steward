@@ -36,6 +36,7 @@ const hubWith = (rows: Row[], addError?: Error) => {
       return row;
     }
     if (tool === "actor_list_actors") return { items: people };
+    if (tool === "agency_list_live_records") return { items: [{ code: "RC-1", name: "Businesses", can_add_rows: true }] };
     return { items: saved };
   });
 };
@@ -193,23 +194,22 @@ describe("the new business form in Residents", () => {
     expect(addCalls()).toHaveLength(0);
   });
 
-  it("is reached from the Businesses list by an Add business link when the list is not empty", async () => {
+  it("is reached from the Businesses list by the Add business button above Search when the list is not empty", async () => {
     const user = userEvent.setup();
     hubWith([{ id: "b1", answers: { "Trading name": "Malomsor Bakery", "Kind of business": "Bakery", Neighbourhood: "Malomsor" } }]);
     showList();
 
     await screen.findByText("Malomsor Bakery");
-    await user.click(screen.getByRole("link", { name: "Add business" }));
+    await user.click(await screen.findByRole("button", { name: "Add business" }));
 
     expect(landed).toBe(appRoutes.businessNew.path());
   });
 
-  it("does not show the Add business link beside the empty card, whose own button goes to the form", async () => {
+  it("shows only the empty card's own Add business button on an empty list", async () => {
     hubWith([]);
     showList();
 
     expect(await screen.findByText("No businesses yet.")).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Add business" })).toBeNull();
     expect(screen.getAllByRole("button", { name: "Add business" })).toHaveLength(1);
   });
 });

@@ -83,7 +83,8 @@ describe("the Add holding form on Ownership & Tenure", () => {
     show(placePaths.ownership.path());
 
     await screen.findByText("Szabó Katalin", { selector: ".ttl" });
-    expect(await screen.findByRole("link", { name: "Add holding" })).toBeInTheDocument();
+    const button = await screen.findByRole("button", { name: "Add holding" });
+    expect(button.compareDocumentPosition(await screen.findByLabelText("Search")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("shows no Add holding button to a person without that permission", async () => {
@@ -92,14 +93,14 @@ describe("the Add holding form on Ownership & Tenure", () => {
 
     await screen.findByText("Szabó Katalin", { selector: ".ttl" });
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
-    expect(screen.queryByRole("link", { name: "Add holding" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Add holding" })).toBeNull();
   });
 
   it("leads from the button to the form", async () => {
     const user = userEvent.setup();
     show(placePaths.ownership.path());
 
-    await user.click(await screen.findByRole("link", { name: "Add holding" }));
+    await user.click(await screen.findByRole("button", { name: "Add holding" }));
 
     expect(landed).toBe(placePaths.holdingNew.path());
     expect(await screen.findByLabelText("Holder")).toBeInTheDocument();

@@ -36,6 +36,7 @@ const hubWith = (rows: Row[], addError?: Error) => {
       return row;
     }
     if (tool === "actor_list_actors") return { items: people };
+    if (tool === "agency_list_live_records") return { items: [{ code: "RC-2", name: "Informal traders", can_add_rows: true }] };
     return { items: saved };
   });
 };

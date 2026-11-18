@@ -43,8 +43,11 @@ const screens: { name: string; code: string; path: () => string; rows: Row[]; ot
   },
 ];
 
+const recordNames: Record<string, string> = { "RC-1": "Businesses", "RC-2": "Informal traders" };
+
 const listRows = (code: string, rows: unknown[]) =>
   vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
+    if (name === "agency_list_live_records") return { items: [{ code, name: recordNames[code], can_add_rows: true }] };
     if (name === "agency_list_live_record_rows" && (args as { record_code?: string }).record_code === code) return { items: rows };
     return { items: [] };
   });
@@ -76,13 +79,13 @@ describe.each(screens)("the $name rows", ({ code, path, rows, other, add }) => {
   const first = rows[0];
   const firstTitle = Object.values(first.answers)[0];
 
-  it("keep the add button beside the title while there are rows", async () => {
+  it("keep the Add button above Search while there are rows", async () => {
     setWide(false);
     listRows(code, rows);
     showScreen(path());
 
     await screen.findByText(firstTitle, { selector: ".ttl" });
-    expect(screen.getByRole("link", { name: add })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: add })).toBeInTheDocument();
   });
 
   it("open the listed record as a page of its own on a phone", async () => {
