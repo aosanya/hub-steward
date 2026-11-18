@@ -92,6 +92,7 @@ type TaskManager interface {
 	GiveBacklogAccessAs(ctx context.Context, requesterID, backlogID, groupID, level string) (BacklogAccess, error)
 	TakeBacklogAccessAs(ctx context.Context, requesterID, backlogID, groupID string) (BacklogAccess, error)
 	ListBacklogsFor(ctx context.Context, requesterID string) (BacklogList, error)
+	ListBacklogsMatching(ctx context.Context, requesterID, backlog string) (BacklogList, error)
 	GetTaskFor(ctx context.Context, requesterID, taskID string) (Task, error)
 	GetTaskByNameFor(ctx context.Context, requesterID, projectName, taskName string) (Task, error)
 	ListTaskAssignmentsFor(ctx context.Context, requesterID, taskID string) ([]Assignment, error)

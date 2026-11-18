@@ -173,6 +173,25 @@ func (m *taskManager) ListBacklogsFor(ctx context.Context, requesterID string) (
 	return models.BacklogList{Items: kept}, nil
 }
 
+func (m *taskManager) ListBacklogsMatching(ctx context.Context, requesterID, backlog string) (models.BacklogList, error) {
+	list, err := m.ListBacklogsFor(ctx, requesterID)
+	if err != nil || strings.TrimSpace(backlog) == "" {
+		return list, err
+	}
+	backlogs, err := m.backlogs(ctx)
+	if err != nil {
+		return models.BacklogList{}, err
+	}
+	named, found := backlogNamed(backlogs, strings.TrimSpace(backlog))
+	kept := []models.BacklogSummary{}
+	for _, item := range list.Items {
+		if found && item.ID == named.ID {
+			kept = append(kept, item)
+		}
+	}
+	return models.BacklogList{Items: kept}, nil
+}
+
 func (m *taskManager) MoveTaskToStepAs(ctx context.Context, requesterID, taskID, backlogID, stepID string) (Task, error) {
 	return m.MoveTaskToStepOverrideAs(ctx, requesterID, taskID, backlogID, stepID, false)
 }

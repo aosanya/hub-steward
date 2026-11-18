@@ -232,10 +232,11 @@
       "returns": [{"body": true}]
     },
     "list_backlogs": {
-      "method": "GET", "path": "/backlogs", "call": "ListBacklogsFor", "action": "taskmanager.backlog.list",
+      "method": "GET", "path": "/backlogs", "call": "ListBacklogsMatching", "action": "taskmanager.backlog.list",
       "title": "List backlogs",
       "description": "List the backlogs the caller can see, in order, each with its steps in order and the number of issues in the backlog and at each step, so a board can draw one column per step. A person sees a backlog only when one of their groups has access to it.",
-      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session."}],
+      "args": [{"from": "caller", "as": "requester_id", "description": "Who is asking, from the session."},
+               {"from": "query", "as": "backlog", "description": "Optional. A backlog id or name (case does not matter): the list then holds only that backlog with its steps. An unknown backlog, or one the caller cannot see, gives an empty list. Leave it out to list every backlog the caller can see."}],
       "returns": [{"body": true}]
     },
     "create_backlog": {
