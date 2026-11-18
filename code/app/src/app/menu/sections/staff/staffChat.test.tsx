@@ -111,6 +111,14 @@ describe("Chat in the bar on a role's page", () => {
     release();
   });
 
+  it("opens the assistant about a role nobody holds, which has no role kind, by its role id", async () => {
+    openRoles("?role=r2");
+    await screen.findByRole("heading", { level: 1, name: "Treasurer" });
+    await userEvent.click(screen.getByRole("link", { name: "Chat" }));
+    await screen.findByText("About Treasurer");
+    expect(carriedChatAbout()).toEqual({ kind: "role", id: "r2", name: "Treasurer", extra: { draft: "d1" } });
+  });
+
   it("carries nothing while no role is chosen", async () => {
     openRoles("");
     await screen.findByRole("button", { name: /Clerk/ });
