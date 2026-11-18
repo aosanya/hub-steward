@@ -16,12 +16,25 @@ import { useOpenFromPanel } from "./useOpenFromPanel";
 import { businessesMetaPrompts, businessesRecordCode, businessesTitlePrompt } from "./BusinessesScreen";
 import { informalTradersMetaPrompts, informalTradersRecordCode, informalTradersTitlePrompt } from "./InformalTradersScreen";
 
-const loadApplications = (memberId: string) => async () => {
-  const submissions = await listOf("forms_submission_list_of_person", { member_id: memberId });
+type Application = { key: string; title: string; sentAt: string };
+
+export const loadApplications = (memberId: string, rowId?: string) => async (): Promise<Application[]> => {
+  const submissions = await listOf("forms_submission_list_of_person", rowId ? { member_id: memberId, record_row_id: rowId } : { member_id: memberId });
   return submissions
     .map((submission) => ({ key: text(submission, "id"), title: text(submission, "form_title"), sentAt: text(submission, "submitted_at") }))
     .sort((a, b) => b.sentAt.localeCompare(a.sentAt));
 };
+
+export function ApplicationRows({ applications }: { applications: Application[] }) {
+  const open = useOpenFromPanel();
+  return (
+    <Rows>
+      {applications.map((application) => (
+        <ListRow key={application.key} title={application.title} meta={`Sent ${dayWords(application.sentAt)}`} onClick={() => open(servicesPaths.application.path({ id: application.key }))} end="›" />
+      ))}
+    </Rows>
+  );
+}
 
 const startTitle = "Start an application";
 
@@ -35,7 +48,6 @@ function ApplicationFlow({ personId, onClose, onFiled }: { personId: string; onC
 
 export function PersonApplications({ id }: { id: string }) {
   const word = useWord("forms");
-  const open = useOpenFromPanel();
   const [version, setVersion] = useState(0);
   const view = useLoad(loadApplications(id), `person-applications:${openAgencyId()}:${id}:${version}`);
   if (view.state === "error") return null;
@@ -52,13 +64,7 @@ export function PersonApplications({ id }: { id: string }) {
           sheet={(close) => <ApplicationFlow personId={id} onClose={close} onFiled={() => setVersion((was) => was + 1)} />}
         />
       ) : null}
-      {applications.length > 0 ? (
-        <Rows>
-          {applications.map((application) => (
-            <ListRow key={application.key} title={application.title} meta={`Sent ${dayWords(application.sentAt)}`} onClick={() => open(servicesPaths.application.path({ id: application.key }))} end="›" />
-          ))}
-        </Rows>
-      ) : null}
+      {applications.length > 0 ? <ApplicationRows applications={applications} /> : null}
     </>
   );
 }

@@ -5,6 +5,7 @@ import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { RecordApplications } from "./RecordLinks";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
 
@@ -315,5 +316,62 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       expect(within(pane()).queryByRole("heading", { name: "Payments" })).toBeNull();
       expect(within(pane()).queryByText(/No .* yet|could not be loaded|refused|unknown tool|not found/i)).toBeNull();
     });
+  });
+});
+
+describe("the Licences and permits section of an opened record", () => {
+  const rowId = "b1";
+  const permit = { id: "s1", form_id: "f1", form_title: "Sample Stall Permit", member_id: ownerId, submitted_at: "2026-11-03T09:30:00Z" };
+  let applicationsReply: () => Promise<unknown>;
+
+  const showSection = (owner: string = ownerId) =>
+    render(
+      <MemoryRouter>
+        <RecordApplications ownerId={owner} rowId={rowId} />
+      </MemoryRouter>,
+    );
+
+  const applicationCalls = () => called.mock.calls.filter((call) => call[1] === "forms_submission_list_of_person");
+
+  beforeEach(() => {
+    applicationsReply = async () => ({ items: [permit] });
+    called.mockImplementation(async (_agency, name) => (name === "forms_submission_list_of_person" ? applicationsReply() : { items: [] }));
+  });
+
+  it("lists the applications of the row under Licences and permits, asked by the owner and the row", async () => {
+    showSection();
+
+    expect(await screen.findByRole("heading", { name: "Licences and permits" })).toBeInTheDocument();
+    expect(await screen.findByText("Sample Stall Permit", { selector: ".ttl" })).toBeInTheDocument();
+    expect(applicationCalls()).toEqual([["", "forms_submission_list_of_person", { member_id: ownerId, record_row_id: rowId }]]);
+  });
+
+  it("draws no heading, no empty card and no start act when the row has no applications", async () => {
+    applicationsReply = async () => ({ items: [] });
+    showSection();
+
+    await vi.waitFor(() => expect(applicationCalls()).toHaveLength(1));
+    expect(screen.queryByRole("heading", { name: "Licences and permits" })).toBeNull();
+    expect(screen.queryByText(/No .* yet|Start an application/i)).toBeNull();
+    expect(document.body.textContent).toBe("");
+  });
+
+  it.each([
+    ["a refused reply", () => Promise.reject(new mcp.McpError("forms_submission_list_of_person: the hub refused this"))],
+    ["an unserved tool", () => Promise.reject(new Error("forms_submission_list_of_person: unknown tool"))],
+  ])("draws nothing after %s", async (_label, reply) => {
+    applicationsReply = reply;
+    showSection();
+
+    await vi.waitFor(() => expect(applicationCalls()).toHaveLength(1));
+    expect(screen.queryByRole("heading", { name: "Licences and permits" })).toBeNull();
+    expect(document.body.textContent).toBe("");
+  });
+
+  it("asks for nothing and draws nothing when the row holds no owner", async () => {
+    showSection("");
+
+    expect(applicationCalls()).toHaveLength(0);
+    expect(document.body.textContent).toBe("");
   });
 });
