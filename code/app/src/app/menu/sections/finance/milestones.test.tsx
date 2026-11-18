@@ -13,9 +13,9 @@ type Args = Record<string, unknown> | undefined;
 const origin = { path: "/a/town/menu/finance", title: "Finance" };
 
 const lines = [
-  { id: "b1", name: "Sample Road Repairs", department: "Public Works", account_id: "ac1", period_start: "2026-01-01", period_end: "2026-02-01", planned: 1000, spent: 250 },
-  { id: "b2", name: "Sample Library Books", department: "Library", account_id: "ac2", period_start: "2026-01-01", period_end: "2026-02-01", planned: 12500, spent: 0 },
-  { id: "b3", name: "Sample Park Benches", department: "Parks", account_id: "ac5", period_start: "2026-01-01", period_end: "2026-02-01", planned: 800, spent: 0 },
+  { id: "b1", name: "Sample Road Repairs", department: "Public Works", account_id: "ac1", period_start: "2026-01-01", period_end: "2026-02-01", planned: 1000, spent: 250, follow_milestones: true },
+  { id: "b2", name: "Sample Library Books", department: "Library", account_id: "ac2", period_start: "2026-01-01", period_end: "2026-02-01", planned: 12500, spent: 0, follow_milestones: true },
+  { id: "b3", name: "Sample Park Benches", department: "Parks", account_id: "ac5", period_start: "2026-01-01", period_end: "2026-02-01", planned: 800, spent: 0, follow_milestones: true },
 ];
 
 const accounts = [

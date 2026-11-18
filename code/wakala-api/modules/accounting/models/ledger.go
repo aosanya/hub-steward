@@ -39,6 +39,9 @@ type Budget struct {
 	SetAt       string `json:"set_at"`
 	Version     string `json:"version,omitempty" spec:"-"`
 	Create      bool   `json:"create,omitempty" spec:"-"`
+
+	FollowMilestones bool             `json:"follow_milestones,omitempty"`
+	CostShares       map[string]int64 `json:"cost_shares,omitempty"`
 }
 
 type BudgetLine struct {
@@ -51,6 +54,9 @@ type BudgetLine struct {
 	Planned     int64  `json:"planned"`
 	Spent       int64  `json:"spent"`
 	SetAt       string `json:"set_at"`
+
+	FollowMilestones bool             `json:"follow_milestones"`
+	CostShares       map[string]int64 `json:"cost_shares,omitempty"`
 }
 
 type Variance struct {
