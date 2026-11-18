@@ -68,3 +68,32 @@ export function useRegisterFields(recordCode: string, defaults: RecordFormField[
   }, [recordCode]);
   return useMemo(() => fieldsOf(defaults, chosen), [defaults, chosen]);
 }
+
+export type RegisterAnswers = Record<string, string>;
+
+const answersKeyOf = (recordCode: string, id: string) => `register_answers:${recordCode}:${id}`;
+
+export const readRegisterAnswers = async (recordCode: string, id: string): Promise<RegisterAnswers> => {
+  try {
+    const reply = (await callTool("", "forms_catalog_setting_read", { key: answersKeyOf(recordCode, id) })) as { value?: unknown } | null;
+    const kept = JSON.parse(typeof reply?.value === "string" ? reply.value : "{}").answers;
+    return Object.fromEntries(Object.entries(kept ?? {}).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
+  } catch {
+    return {};
+  }
+};
+
+export const writeRegisterAnswers = (recordCode: string, id: string, answers: RegisterAnswers) =>
+  callTool("", "forms_catalog_setting_write", { key: answersKeyOf(recordCode, id), value: JSON.stringify({ answers }) });
+
+export function useRegisterDetails(recordCode: string, defaults: RecordFormField[]): RegisterDetail[] {
+  const [chosen, setChosen] = useState<RegisterDetail[]>([]);
+  useEffect(() => {
+    let live = true;
+    readRegisterDetails(recordCode).then((details) => live && setChosen(details));
+    return () => {
+      live = false;
+    };
+  }, [recordCode]);
+  return useMemo(() => detailsOf(defaults, chosen), [defaults, chosen]);
+}

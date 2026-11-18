@@ -190,7 +190,7 @@ describe("a person", () => {
     expect(screen.getAllByText("Amara Kole")).toHaveLength(2);
     expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p1" });
     expect(called).toHaveBeenCalledWith("", "actor_list_groups_for_actor", { actor_id: "p1" });
-    expect(toolsCalled()).toEqual(new Set(["actor_list_actors", "actor_get_actor", "actor_list_groups_for_actor", "actor_list_groups", "forms_submission_list_of_person", "forms_catalog_raised_item_list_of_person", "accounting_bill_list", "digitaltwin_tenure_list", "digitaltwin_node_list", "audit_list_entries", "forms_catalog_booking_list_of_person"]));
+    expect(toolsCalled()).toEqual(new Set(["actor_list_actors", "actor_get_actor", "actor_list_groups_for_actor", "actor_list_groups", "forms_submission_list_of_person", "forms_catalog_raised_item_list_of_person", "accounting_bill_list", "digitaltwin_tenure_list", "digitaltwin_node_list", "audit_list_entries", "forms_catalog_booking_list_of_person", "forms_catalog_setting_read"]));
   });
 
   it("says plainly when the person belongs to no group", async () => {
