@@ -307,6 +307,26 @@ const neighbourhood: Subject = {
   empty: "its spending and entries",
 };
 
+const rounds: Subject = {
+  reads: {
+    forms_form_list: {},
+    forms_propagation_list: {},
+    forms_submission_list: {},
+    actor_get_group_population: { group_id: byId },
+  },
+  steps: {
+    forms_form_list: "Reading the rounds",
+    forms_propagation_list: "Reading which neighbourhoods a round reached",
+    forms_submission_list: "Reading who answered",
+    actor_get_group_population: "Counting the neighbourhood's people",
+  },
+  choices: ["Rounds asked", "Who answered", "Population"],
+  reading:
+    "Rounds asked means forms_form_list and then forms_propagation_list with each form id from that list: a round was asked of this neighbourhood when a row's chapter_id is this neighbourhood's id. Who answered means forms_submission_list with the same form ids: count the distinct member_id of the rows whose chapter_id is this neighbourhood's id. Population means actor_get_group_population.",
+  overview: "call forms_form_list, then forms_propagation_list and forms_submission_list for each round, and actor_get_group_population, and answer with how many rounds were asked of this neighbourhood, how many people answered out of how many live there, and the share",
+  empty: "rounds asked, who answered and the population",
+};
+
 const asset: Subject = {
   reads: {
     assetmanager_asset_read: { assetID: byId },
@@ -490,7 +510,7 @@ const backlogIssue: Subject = {
   empty: "its details and Log",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, agency: agencyProfile, "record-details": recordDetails, backlogs, backlog, "backlog-issue": backlogIssue };
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, rounds, meeting, resolution, bylaw, committee, asset, workorder, application, permit, licence: permit, fee, service, issue, wish, maintenance, agency: agencyProfile, "record-details": recordDetails, backlogs, backlog, "backlog-issue": backlogIssue };
 
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);

@@ -1,6 +1,7 @@
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuWindow } from "../../MenuWindow";
 import { homeEmpty } from "../staff/staffData";
+import { ChatAboutRounds } from "./ChatAboutRounds";
 import { loadNeighbourhoodRows, roundsTools } from "./roundsData";
 
 export function RoundsByNeighbourhoodScreen() {
@@ -10,8 +11,10 @@ export function RoundsByNeighbourhoodScreen() {
   return (
     <MenuWindow
       title={title}
+      withTabs
+      bandless
       list={{ title, tool: roundsTools.forms, load: loadNeighbourhoodRows, fields: { title: "name", meta: "meta" }, empty: homeEmpty("No neighbourhoods yet.") }}
-      detail={{ tool: roundsTools.forms, load: loadOne, fields: { Neighbourhood: "name", "Rounds asked": "asked", Answered: "answered", Population: "population", Share: "share" }, status: "status" }}
+      detail={{ tool: roundsTools.forms, load: loadOne, fields: { Neighbourhood: "name", "Rounds asked": "asked", Answered: "answered", Population: "population", Share: "share" }, status: "status", extra: (row) => <ChatAboutRounds row={row} /> }}
     />
   );
 }

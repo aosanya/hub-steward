@@ -1,6 +1,6 @@
 import { listOf, text, type Item } from "../staff/staffData";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { groupsOfType } from "../../groupsOfType";
+import { areaGroups } from "../../areaGroups";
 
 export const roundsTools = { forms: "forms_form_list", reach: "forms_propagation_list", sends: "forms_submission_list", groups: "actor_list_groups" };
 
@@ -56,7 +56,7 @@ const rowOf = (group: Item, rounds: Round[], population: number | null): Neighbo
 };
 
 export const loadNeighbourhoodRows = async (): Promise<NeighbourhoodRow[]> => {
-  const [neighbourhoods, forms] = await Promise.all([groupsOfType("Neighbourhood"), roundsOf()]);
+  const [neighbourhoods, forms] = await Promise.all([areaGroups(), roundsOf()]);
   if (neighbourhoods.length === 0) return [];
   const rounds = await Promise.all(forms.filter(askedThisYear).map(readRound));
   const populations = await Promise.all(neighbourhoods.map((group) => populationOf(text(group, "id"))));
