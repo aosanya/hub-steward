@@ -31,7 +31,7 @@ const show = () =>
     <MemoryRouter initialEntries={["/asset"]}>
       <Where />
       <Routes>
-        <Route path="/asset" element={<MaintenanceHistory assetName="Road roller" serialTag="A-12" />} />
+        <Route path="/asset" element={<MaintenanceHistory assetId="e1" assetName="Road roller" />} />
         <Route path="*" element={<p>elsewhere</p>} />
       </Routes>
     </MemoryRouter>,
@@ -93,7 +93,7 @@ describe("MaintenanceHistory", () => {
 
     await user.click(await screen.findByRole("button", { name: "See all 4" }));
 
-    expect(landed).toBe("/a/town/menu/assets/maintenance-records?name=Road+roller&from=%2Fasset");
+    expect(landed).toBe("/a/town/menu/assets/maintenance-records?name=Road+roller&id=e1&from=%2Fasset");
   });
 
   it("offers Add maintenance only to someone who may add rows, and opens the one add screen for this asset", async () => {
@@ -103,7 +103,7 @@ describe("MaintenanceHistory", () => {
 
     await user.click(await screen.findByRole("button", { name: "Add maintenance" }));
 
-    expect(landed).toBe("/a/town/menu/assets/maintenance-records/new?asset=Road+roller+A-12&from=%2Fasset");
+    expect(landed).toBe("/a/town/menu/assets/maintenance-records/new?asset=e1&from=%2Fasset");
   });
 
   it("hides Add maintenance without the permission", async () => {

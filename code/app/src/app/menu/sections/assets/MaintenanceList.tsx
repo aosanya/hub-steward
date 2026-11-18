@@ -15,8 +15,9 @@ export function MaintenanceListScreen() {
   const [query] = useSearchParams();
   const navigate = useNavigate();
   const name = query.get("name") ?? "";
+  const id = query.get("id") ?? "";
   const from = query.get("from") ?? assetPaths.equipment.path();
-  const records = useLoad(() => loadMaintenanceOf(name), `maintenance-of:${openAgencyId()}:${name}`);
+  const records = useLoad(() => loadMaintenanceOf({ id, name }), `maintenance-of:${openAgencyId()}:${id}:${name}`);
   const rows = (records.state === "ready" ? records.data : []).map((one) => (
     <ListRow key={one.id} title={one.what} meta={lineOf(one.done, one.by)} status={one.kind} onClick={() => navigate(maintenancePaths.record.path({ rowId: one.id }))} />
   ));

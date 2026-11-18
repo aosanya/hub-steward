@@ -38,6 +38,7 @@ beforeEach(() => {
   vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => {
     if (tool === "agency_list_live_records") return { items: [{ code: "RC-268", name: "Maintenance records", can_add_rows: may }] };
     if (tool === "agency_list_live_record_rows") return { items: [saved ? editedRow : row] };
+    if (tool === "assetmanager_asset_list") return { items: [{ id: "e1", name: "Road roller", serial_tag: "A-12", category: "Equipment" }] };
     if (tool === "agency_add_live_record_row") {
       saved = true;
       return { id: "m2" };
@@ -111,15 +112,15 @@ describe("the one maintenance edit screen", () => {
   it("adds a row for the asset it was opened from and returns to the page it came from", async () => {
     may = true;
     const user = userEvent.setup();
-    show("/a/town/menu/assets/maintenance-records/new?asset=Road+roller+A-12&from=%2Fa%2Ftown%2Fmenu%2Fassets%2Fequipment%3Fitem%3De1");
+    show("/a/town/menu/assets/maintenance-records/new?asset=e1&from=%2Fa%2Ftown%2Fmenu%2Fassets%2Fequipment%3Fitem%3De1");
 
-    expect(await screen.findByLabelText("Asset")).toHaveValue("Road roller A-12");
+    expect(await screen.findByRole("button", { name: /^Asset.*Road roller A-12/ })).toBeInTheDocument();
     await user.type(screen.getByLabelText("Date done"), "2026-11-15");
     await user.click(screen.getByRole("radio", { name: "Routine" }));
     await user.type(screen.getByLabelText("What was done"), "Greased the joints");
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(vi.mocked(mcp.callTool)).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-268", answers: { Asset: "Road roller A-12", "Date done": "2026-11-15", Kind: "Routine", "What was done": "Greased the joints" } });
+    expect(vi.mocked(mcp.callTool)).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-268", answers: { Asset: "e1", "Date done": "2026-11-15", Kind: "Routine", "What was done": "Greased the joints" } });
     expect(landed).toBe("/a/town/menu/assets/equipment?item=e1");
   });
 });

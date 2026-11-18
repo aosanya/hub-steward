@@ -1,6 +1,6 @@
 import { itemsOf } from "../../features/backlogs";
 import { callTool } from "../../shared/wakala/mcp";
-import { loadAssetLabels } from "./assetChoices";
+import { assetIdKey, goneAssetWords, loadAssetLabels, unreadAssetWords } from "./assetChoices";
 
 export const liveRecordRowsTool = "agency_list_live_record_rows";
 
@@ -52,12 +52,22 @@ const loadRawRows = async (recordCode: string, args: Raw = {}): Promise<Raw[]> =
   }
 };
 
+const looksLikeAnId = (answer: string) => /^\S+$/.test(answer);
+
+const assetWordsOf = (answer: string, labels: Map<string, string> | undefined) => {
+  if (answer === "") return undefined;
+  const label = labels?.get(answer);
+  if (label !== undefined) return label;
+  if (!looksLikeAnId(answer)) return undefined;
+  return labels ? goneAssetWords : unreadAssetWords;
+};
+
 const withAssetNames = async (rows: Raw[], assetPrompts: string[]): Promise<Raw[]> => {
   if (assetPrompts.length === 0 || rows.length === 0) return rows;
-  const labels = await loadAssetLabels().catch(() => new Map<string, string>());
+  const labels = await loadAssetLabels().catch(() => undefined);
   return rows.map((row) => ({
     ...row,
-    answers: { ...(row.answers as Raw | undefined), ...Object.fromEntries(assetPrompts.map((prompt) => [prompt, labels.get(answerOf(row, prompt))]).filter(([, label]) => label !== undefined)) },
+    answers: { ...(row.answers as Raw | undefined), ...Object.fromEntries(assetPrompts.map((prompt) => [prompt, assetWordsOf(answerOf(row, prompt), labels)]).filter(([, words]) => words !== undefined)) },
   }));
 };
 
@@ -71,11 +81,14 @@ export const recordOwnerKey = "ownerId";
 export const recordRowIdKey = "rowId";
 
 export const loadRecordRow = async (recordCode: string, id: string, prompts: string[], ownerPrompt?: string, assetPrompts: string[] = []): Promise<Record<string, string>> => {
-  const row = (await withAssetNames(await loadRawRows(recordCode), assetPrompts)).find((one) => one.id === id);
+  const raw = await loadRawRows(recordCode);
+  const row = (await withAssetNames(raw, assetPrompts)).find((one) => one.id === id);
   if (!row) return {};
+  const saved = raw.find((one) => one.id === id) ?? row;
   const fields = Object.fromEntries(prompts.map((prompt) => [prompt, answerOf(row, prompt)]));
+  const assetIds = Object.fromEntries(assetPrompts.map((prompt) => [assetIdKey(prompt), answerOf(saved, prompt)]));
   const owner = ownerPrompt ? answerOf(row, ownerPrompt) : "";
-  const named = { ...fields, [recordRowIdKey]: id };
+  const named = { ...fields, ...assetIds, [recordRowIdKey]: id };
   return owner ? { ...named, [recordOwnerKey]: owner } : named;
 };
 

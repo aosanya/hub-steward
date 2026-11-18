@@ -58,7 +58,7 @@ type AssetPanelProps = { asset: Item; fields: EditField[]; build: (sent: Record<
 export function AssetPanel({ asset, fields, build, onSaved }: AssetPanelProps) {
   const may = useMay("asset.manage");
   const [editing, setEditing] = useState(false);
-  const maintained = useLoad(() => loadMaintenanceOf(textOf(asset.name)), `maintenance-of:${openAgencyId()}:${textOf(asset.name)}`);
+  const maintained = useLoad(() => loadMaintenanceOf({ id: textOf(asset.id), name: textOf(asset.name) }), `maintenance-of:${openAgencyId()}:${textOf(asset.id)}`);
   const lastDone = (maintained.state === "ready" ? maintained.data : []).find((one) => one.done !== "")?.done ?? "";
   const detail = rowsOf([
     ["Name", textOf(asset.name)],
@@ -78,7 +78,7 @@ export function AssetPanel({ asset, fields, build, onSaved }: AssetPanelProps) {
         <Section word="Asset detail" plain foot={may ? <EditAct onClick={() => setEditing(true)} /> : undefined} rows={detail} />
       )}
       <Section word="Movements" icon="clock" plain rows={linesOf(asset, movementKeys)} />
-      <MaintenanceHistory assetName={textOf(asset.name)} serialTag={textOf(asset.code)} />
+      <MaintenanceHistory assetId={textOf(asset.id)} assetName={textOf(asset.name)} />
       <Section word="Finished work orders" icon="document" plain rows={linesOf(asset, maintenanceKeys)} />
     </Page>
   );

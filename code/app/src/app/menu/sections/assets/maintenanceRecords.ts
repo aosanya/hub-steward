@@ -8,7 +8,7 @@ type Raw = Record<string, unknown>;
 export const maintenanceRecordCode = "RC-3";
 
 export const maintenanceFields: RecordFormField[] = [
-  { prompt: "Asset", required: true },
+  { prompt: "Asset", required: true, assets: true },
   { prompt: "Date done", required: true, kind: "date" },
   { prompt: "Kind", required: true, options: ["Routine", "Repair", "Inspection"] },
   { prompt: "What was done", required: true },
@@ -40,10 +40,15 @@ const newestFirst = (one: Maintenance, two: Maintenance) => two.done.localeCompa
 
 export { assetLabelOf } from "../../assetChoices";
 
-export const loadMaintenanceOf = async (assetName: string): Promise<Maintenance[]> => {
+type OfAsset = { id: string; name: string };
+
+const isOfAsset = (asset: OfAsset) => (one: Maintenance) =>
+  one.asset === asset.id || one.asset === asset.name || one.asset.startsWith(`${asset.name} `);
+
+export const loadMaintenanceOf = async (asset: OfAsset): Promise<Maintenance[]> => {
   try {
     const rows = itemsOf(await callTool("", liveRecordRowsTool, { record_code: await resolveRecordCode(maintenanceRecordCode) })) as Raw[];
-    return rows.map(maintenanceOf).filter((one) => one.asset === assetName || one.asset.startsWith(`${assetName} `)).sort(newestFirst);
+    return rows.map(maintenanceOf).filter(isOfAsset(asset)).sort(newestFirst);
   } catch {
     return [];
   }
