@@ -111,4 +111,17 @@ describe.each(screens)("the $name rows", ({ code, path, rows, other, add }) => {
     expectEveryAnswer(content, first.answers);
     expect(within(content).queryByText(other)).toBeNull();
   });
+
+  it("never print the owner or holder person id in the opened record", async () => {
+    setWide(false);
+    const answers = { ...first.answers, [code === "RC-1" ? "Owner" : "Holder"]: "7d3c9a52-1b44-4f0e-9a37-5c1e8b2f6d10" };
+    listRows(code, [{ ...first, answers }]);
+    showScreen(path());
+
+    await userEvent.click(await screen.findByText(firstTitle, { selector: ".ttl" }));
+
+    const detail = document.querySelector(".mw-detail") as HTMLElement;
+    expectEveryAnswer(detail, first.answers);
+    expect(within(detail).queryByText("7d3c9a52-1b44-4f0e-9a37-5c1e8b2f6d10")).toBeNull();
+  });
 });

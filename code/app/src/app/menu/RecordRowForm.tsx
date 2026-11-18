@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { itemsOf } from "../../features/backlogs";
 import { Button } from "../../shared/ui/Button";
 import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";
 import { Field } from "../../shared/ui/Field";
 import { LoadFailed } from "../../shared/ui/LoadState";
+import { SearchSelect, type Choice } from "../../shared/ui/SearchSelect";
 import { callTool } from "../../shared/wakala/mcp";
 import { Shell } from "../Shell";
 import { refusalWords } from "./MenuEditForm";
+import { personNameOf } from "./sections/residents/personName";
 
 const addLiveRecordRowTool = "agency_add_live_record_row";
 
-export type RecordFormField = { prompt: string; required: boolean; options?: string[] };
+export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean };
 
 type Props = {
   title: string;
@@ -24,11 +27,23 @@ const optionalWords = (field: RecordFormField) => (field.required ? field.prompt
 const answersOf = (fields: RecordFormField[], values: Record<string, string>) =>
   Object.fromEntries(fields.map((field) => [field.prompt, (values[field.prompt] ?? "").trim()]).filter(([, answer]) => answer !== ""));
 
+const noOne: Choice = { value: "", label: "No one" };
+
+const loadPeople = async (): Promise<Choice[]> => {
+  const people = itemsOf(await callTool("", "actor_list_actors")) as Record<string, unknown>[];
+  return [noOne, ...people.map((person) => ({ value: String(person.id), label: personNameOf(person) }))];
+};
+
 export function RecordRowForm({ title, recordCode, fields, back }: Props) {
   const navigate = useNavigate();
   const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [refused, setRefused] = useState("");
+  const [people, setPeople] = useState<Choice[]>([noOne]);
+  const asksForPeople = fields.some((field) => field.people);
+  useEffect(() => {
+    if (asksForPeople) loadPeople().then(setPeople, () => setPeople([noOne]));
+  }, [asksForPeople]);
   const answers = answersOf(fields, values);
   const complete = fields.every((field) => !field.required || field.prompt in answers);
   const set = (prompt: string, value: string) => setValues((was) => ({ ...was, [prompt]: value }));
@@ -46,7 +61,9 @@ export function RecordRowForm({ title, recordCode, fields, back }: Props) {
   return (
     <Shell title={title} titleUnder backLabel={back.label} onBack={() => navigate(back.to)} tabless>
       {fields.map((field) =>
-        field.options ? (
+        field.people ? (
+          <SearchSelect key={field.prompt} label={optionalWords(field)} choices={people} value={values[field.prompt] ?? ""} onChange={(value) => set(field.prompt, value)} />
+        ) : field.options ? (
           <ChoiceGroup key={field.prompt} label={optionalWords(field)}>
             {field.options.map((option) => (
               <ChoiceRow key={option} type="radio" name={field.prompt} label={option} checked={values[field.prompt] === option} onChange={() => set(field.prompt, option)} />

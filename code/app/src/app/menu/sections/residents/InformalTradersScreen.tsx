@@ -13,6 +13,7 @@ export const informalTraderFields: RecordFormField[] = [
   { prompt: "Usual days", required: false },
   { prompt: "Neighbourhood", required: true, options: ["Óváros", "Kertváros", "Malomsor", "Határrét"] },
   { prompt: "Status", required: true, options: ["Active", "Suspended", "Closed"] },
+  { prompt: "Holder", required: false, people: true },
 ];
 
 export function InformalTradersScreen() {
@@ -21,7 +22,7 @@ export function InformalTradersScreen() {
       title="Informal traders"
       recordCode={informalTradersRecordCode}
       titlePrompt={informalTradersTitlePrompt}
-      prompts={informalTraderFields.map((field) => field.prompt)}
+      prompts={informalTraderFields.filter((field) => !field.people).map((field) => field.prompt)}
       metaPrompts={informalTradersMetaPrompts}
       owner={{ prompt: "Holder", heading: "Holder" }}
       empty={{ words: "No informal traders yet.", act: "Add trader", to: routes.informalTraderNew.path() }}

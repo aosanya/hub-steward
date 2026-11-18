@@ -14,6 +14,7 @@ export const businessFields: RecordFormField[] = [
   { prompt: "Place", required: false },
   { prompt: "Neighbourhood", required: true, options: ["Óváros", "Kertváros", "Malomsor", "Határrét"] },
   { prompt: "Status", required: true, options: ["Active", "Suspended", "Closed"] },
+  { prompt: "Owner", required: false, people: true },
 ];
 
 export function BusinessesScreen() {
@@ -22,7 +23,7 @@ export function BusinessesScreen() {
       title="Businesses"
       recordCode={businessesRecordCode}
       titlePrompt={businessesTitlePrompt}
-      prompts={businessFields.map((field) => field.prompt)}
+      prompts={businessFields.filter((field) => !field.people).map((field) => field.prompt)}
       metaPrompts={businessesMetaPrompts}
       owner={{ prompt: "Owner", heading: "Owner" }}
       empty={{ words: "No businesses yet.", act: "Add business", to: routes.businessNew.path() }}
