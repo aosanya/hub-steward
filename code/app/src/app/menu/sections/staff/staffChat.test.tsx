@@ -9,11 +9,14 @@ import { AssistantPage } from "../../../../features/assistant/AssistantPage";
 import { type AssistantClient } from "../../../../features/assistant/api";
 import { routes as appRoutes } from "../../../routes";
 import { carriedChatAbout, forgetChatAbout } from "../../../chatAbout";
-import { StaffScreen } from "./index";
+import { RolesPermissionsScreen, StaffScreen } from "./index";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
 const answer = async (name: string) => {
+  if (name === "agency_list_publications") return { items: [{ channel: "production", version: 2, draft_id: "d1" }] };
+  if (name === "agency_list_roles") return { items: [{ id: "r1", code: "R-1", name: "Clerk", permissions: [] }, { id: "r2", code: "R-2", name: "Treasurer", permissions: [] }] };
+  if (name === "actor_list_role_kinds") return { items: [{ id: "k1", definition_role_id: "R-1", name: "Clerk" }] };
   if (name === "agency_get_my_roles") return { permissions: ["member.view", "member.edit"] };
   if (name === "actor_list_actors") return { items: [{ id: "a1", display_name: "Anna Sample", status: "active" }] };
   if (name === "actor_get_actor") return { id: "a1", display_name: "Anna Sample", status: "active", attributes: {} };
@@ -61,6 +64,35 @@ describe("Chat in the bar on a staff member's page", () => {
   it("carries nothing while no member is chosen, so the Chat tab opens the plain assistant", async () => {
     openStaff("");
     await screen.findByRole("button", { name: /Anna Sample/ });
+    expect(carriedChatAbout()).toBeNull();
+  });
+});
+
+const openRoles = (search: string) => {
+  setWide(true);
+  render(
+    <MemoryRouter initialEntries={[`/a/town/menu/staff/roles${search}`]}>
+      <Routes>
+        <Route path="/a/:agencyId/menu/staff/roles" element={<RolesPermissionsScreen />} />
+        <Route path={appRoutes.assistant.pattern} element={<AssistantPage client={assistantClient} />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+};
+
+describe("Chat in the bar on a role's page", () => {
+  it("opens the assistant about the chosen role, with Holders, Approval limits and Permissions", async () => {
+    openRoles("?role=r1");
+    await screen.findByRole("heading", { level: 1, name: "Clerk" });
+    await userEvent.click(screen.getByRole("link", { name: "Chat" }));
+    await screen.findByText("About Clerk");
+    expect(screen.getByRole("textbox", { name: "Ask about Clerk" })).toBeInTheDocument();
+    expect(carriedChatAbout()).toEqual({ kind: "role", id: "k1", name: "Clerk", extra: { draft: "d1" } });
+  });
+
+  it("carries nothing while no role is chosen", async () => {
+    openRoles("");
+    await screen.findByRole("button", { name: /Clerk/ });
     expect(carriedChatAbout()).toBeNull();
   });
 });

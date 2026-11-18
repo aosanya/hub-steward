@@ -22,7 +22,7 @@ const holdersOf = async (kind: Item) => {
   const standing = seats.filter((seat) => seat.active !== false && text(seat, "ended_at") === "");
   const limitOf = (seat: Item) => (typeof seat.approval_limit === "number" && Number.isFinite(seat.approval_limit) ? seat.approval_limit : null);
   const editable = standing.map((seat) => ({ id: text(seat, "id"), actorId: text(seat, "actor_id"), limit: limitOf(seat) }));
-  return { count: new Set(standing.map((seat) => text(seat, "actor_id"))).size, limit: limitWords(standing), seats: editable };
+  return { kindId: text(kind, "id"), count: new Set(standing.map((seat) => text(seat, "actor_id"))).size, limit: limitWords(standing), seats: editable };
 };
 
 export const loadRoles = async () => {
@@ -35,8 +35,10 @@ export const loadRoles = async () => {
     meta: peopleWords(holders.get(text(role, "code"))?.count ?? 0),
     limit: holders.get(text(role, "code"))?.limit ?? "",
     seats: holders.get(text(role, "code"))?.seats ?? [],
+    kindId: holders.get(text(role, "code"))?.kindId ?? "",
+    draft,
     permissions: Array.isArray(role.permissions) ? role.permissions : [],
   }));
 };
 
-export const loadRole = async (id: string) => (await loadRoles()).find((role) => role.id === id) ?? { id, name: "", meta: "", limit: "", seats: [], permissions: [] };
+export const loadRole = async (id: string) => (await loadRoles()).find((role) => role.id === id) ?? { id, name: "", meta: "", limit: "", seats: [], kindId: "", draft: "", permissions: [] };
