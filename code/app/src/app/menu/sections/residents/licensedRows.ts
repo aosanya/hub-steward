@@ -15,11 +15,11 @@ const approvedLicencesOf = async (formId: string): Promise<ApprovedLicence[]> =>
   const [sends, questions, answers] = await Promise.all([
     listOf("forms_submission_list", { form_id: formId }),
     listOf("forms_question_list", { form_id: formId }),
-    listOf("forms_answer_list", { form_id: formId }),
+    listOf("forms_answer_list_all", { form_id: formId }),
   ]);
   const validQuestionId = text(questions.find((question) => text(question, "prompt") === validUntilPrompt), "id");
   const validUntilOf = (sent: Item) =>
-    text(answers.find((answer) => text(answer, "send_id") === text(sent, "id") && text(answer, "question_id") === validQuestionId), "value_date");
+    text(answers.find((answer) => text(answer, "member_id") === text(sent, "member_id") && text(answer, "question_id") === validQuestionId), "value_date");
   return sends
     .filter((sent) => decisionStatus(text(sent, "decision")) === approvedWords && text(sent, "record_row_id") !== "")
     .map((sent) => ({ rowId: text(sent, "record_row_id"), validUntil: validQuestionId ? validUntilOf(sent) : "" }));

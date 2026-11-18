@@ -401,9 +401,9 @@ describe("the Licences and permits section of an opened record", () => {
         if (name === "forms_submission_list_of_person") return { items: [permit] };
         if (name === "agency_list_live_record_rows") return { items: given.history ? [] : [{ id: rowId, answers: {} }] };
         if (name === "forms_catalog_entry_list_public") return { items: [{ kind: "licence", form_id: "f1" }] };
-        if (name === "forms_submission_list") return { items: [{ id: "s1", form_id: "f1", record_row_id: rowId, decision: "approved" }] };
+        if (name === "forms_submission_list") return { items: [{ id: "s1", form_id: "f1", member_id: "m1", record_row_id: rowId, decision: "approved" }] };
         if (name === "forms_question_list") return { items: [{ id: "q1", prompt: "Valid until" }] };
-        if (name === "forms_answer_list") return { items: [{ send_id: "s1", question_id: "q1", value_date: validUntil }] };
+        if (name === "forms_answer_list_all") return { items: [{ member_id: "m1", question_id: "q1", value_date: validUntil }] };
         return { items: [] };
       });
 

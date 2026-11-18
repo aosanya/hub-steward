@@ -10,9 +10,9 @@ const entry = { slug: "trading-licence", name: "Trading Licence", kind: "licence
 const validQuestion = { id: "q-valid", form_id: "f-licence", prompt: "Valid until" };
 const otherQuestion = { id: "q-premises", form_id: "f-licence", prompt: "Name of the premises" };
 
-const approved = (id: string, rowId: string): Row => ({ id, form_id: "f-licence", record_row_id: rowId, decision: "approved", decided_at: "2026-03-09T12:00:00Z" });
-const validUntil = (sendId: string, value: string): Row => ({ id: `a-${sendId}`, send_id: sendId, question_id: validQuestion.id, value_date: value });
-const premises = (sendId: string): Row => ({ id: `p-${sendId}`, send_id: sendId, question_id: otherQuestion.id, value_text: "Fő tér 2" });
+const approved = (id: string, rowId: string): Row => ({ id, form_id: "f-licence", member_id: `m-${id}`, record_row_id: rowId, decision: "approved", decided_at: "2026-03-09T12:00:00Z" });
+const validUntil = (sendId: string, value: string): Row => ({ id: `a-${sendId}`, member_id: `m-${sendId}`, question_id: validQuestion.id, value_date: value });
+const premises = (sendId: string): Row => ({ id: `p-${sendId}`, member_id: `m-${sendId}`, question_id: otherQuestion.id, value_text: "Fő tér 2" });
 
 let sends: Row[];
 let answers: Row[];
@@ -35,9 +35,9 @@ beforeEach(() => {
     if (name === refused) throw new Error(`${name}: permission denied`);
     if (name === "agency_list_live_record_rows") return { items: given.history ? history : [business("b1"), business("b2"), business("b3")] };
     if (name === "forms_catalog_entry_list_public") return { items: [entry] };
-    if (name === "forms_submission_list") return { items: sends };
-    if (name === "forms_question_list") return { items: questions };
-    if (name === "forms_answer_list") return { items: answers };
+    if (name === "forms_submission_list") return { items: sends.filter((row) => row.form_id === given.form_id) };
+    if (name === "forms_question_list") return { items: given.form_id === "f-licence" ? questions : [] };
+    if (name === "forms_answer_list_all") return { items: given.form_id === "f-licence" ? answers : [] };
     return { items: [] };
   });
 });
@@ -108,9 +108,9 @@ describe("the three words a business can read", () => {
       const given = (args ?? {}) as Args;
       if (name === "agency_list_live_record_rows") return { items: given.history ? history : [{ ...business("b9"), replaces: "b1" }] };
       if (name === "forms_catalog_entry_list_public") return { items: [entry] };
-      if (name === "forms_submission_list") return { items: sends };
-      if (name === "forms_question_list") return { items: questions };
-      if (name === "forms_answer_list") return { items: answers };
+      if (name === "forms_submission_list") return { items: sends.filter((row) => row.form_id === given.form_id) };
+      if (name === "forms_question_list") return { items: given.form_id === "f-licence" ? questions : [] };
+      if (name === "forms_answer_list_all") return { items: given.form_id === "f-licence" ? answers : [] };
       return { items: [] };
     });
 
@@ -125,7 +125,7 @@ describe("the three words a business can read", () => {
 
   it("a refused lookup of the answers gives no marks", async () => {
     sends = [approved("s1", "b1")];
-    refused = "forms_answer_list";
+    refused = "forms_answer_list_all";
 
     expect(await loadLicenceMarks("RC-1", "2026-11-18")).toBeNull();
   });

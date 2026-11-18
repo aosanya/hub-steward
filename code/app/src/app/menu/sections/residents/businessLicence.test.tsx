@@ -28,7 +28,7 @@ const permitEntry = { slug: "market-stall-permit", name: "Market Stall Permit", 
 const send = (id: string, formId: string, extra: Row = {}): Row => ({
   id,
   form_id: formId,
-  member_id: "m1",
+  member_id: `m-${id}`,
   submitted_at: "2026-03-04T12:00:00Z",
   ...extra,
 });
@@ -53,10 +53,10 @@ const serve = () => {
     if (name === "forms_catalog_entry_list_public") return { items: entries.filter((entry) => entry.kind === given.kind) };
     if (name === "forms_submission_list") {
       if (submissionsRefused) throw new Error("forms_submission_list: permission denied: form.results");
-      return { items: sends.filter((one) => one.form_id === given.form_id) };
+      return { items: sends.filter((one) => one.form_id === given.form_id).map((one) => ({ ...one, member_id: one.member_id ?? `m-${String(one.id)}` })) };
     }
     if (name === "forms_question_list") return { items: questions };
-    if (name === "forms_answer_list") return { items: answers };
+    if (name === "forms_answer_list_all") return { items: answers };
     return { items: [] };
   });
 };
@@ -77,7 +77,7 @@ const showBusinesses = () =>
     </MemoryRouter>,
   );
 
-const validUntil = (sendId: string, date: string): Row => ({ send_id: sendId, question_id: "q-valid", value_date: date });
+const validUntil = (sendId: string, date: string): Row => ({ member_id: `m-${sendId}`, question_id: "q-valid", value_date: date });
 
 const rowOf = (title: string) => {
   const list = document.querySelector(".mw-list") as HTMLElement;
