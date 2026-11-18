@@ -542,14 +542,15 @@ describe("Maintenance Schedule", () => {
     expect(document.querySelector("h1.headline")).toHaveTextContent("Maintenance Schedule");
   });
 
-  it("opens the chosen schedule in the detail with its title, how often and the raw rule", async () => {
+  it("opens the chosen schedule in the detail with its title, how often and the rule in words", async () => {
     showRouted("Maintenance Schedule");
     await userEvent.click(await screen.findByRole("button", { name: /Inspect the playground/ }));
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
     expect((await within(detail).findAllByText("Every 2 weeks")).length).toBeGreaterThan(0);
     expect(within(detail).getByText("Inspect the playground")).toBeInTheDocument();
-    expect(within(detail).getByText("FREQ=WEEKLY;INTERVAL=2;BYDAY=WE")).toBeInTheDocument();
+    expect(within(detail).getByText("Every 2 weeks on Wednesday")).toBeInTheDocument();
+    expect(within(detail).queryByText("FREQ=WEEKLY;INTERVAL=2;BYDAY=WE")).toBeNull();
     expect(callsTo(repeatingRead)[0][2]).toEqual({ repeatingTaskID: "p4" });
   });
 

@@ -7,7 +7,9 @@ import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { WorkOrderAssignee } from "./WorkOrderAssignee";
 import { WorkOrderStatus } from "./WorkOrderStatus";
 import { maintenanceKeys } from "./maintenanceHistory";
-import { assetPathOf } from "./paths";
+import { SectionGo } from "../residents/SectionAct";
+import { assetPathOf, scheduleEditPath } from "./paths";
+import { ruleWords } from "./scheduleWords";
 
 type Item = Record<string, unknown>;
 
@@ -113,11 +115,11 @@ export function SchedulePanel({ item }: { item: Item }) {
     ["Last upkeep", textOf(item.lastUpkeep)],
     ["Last job due", textOf(item.lastJobDue)],
     ["Next upkeep", textOf(item.next)],
-    ["Schedule rule", textOf(item.rule)],
+    ["Repeats", ruleWords(textOf(item.rule))],
   ]);
   return (
     <Page name={textOf(item.title)} line={textOf(item.oftenAndNext)}>
-      <Section word="Schedule" plain rows={rows} />
+      <Section word="Schedule" plain rows={rows} foot={<SectionGo permission="task.edit" act="Edit" to={scheduleEditPath.path({ scheduleId: textOf(item.id) })} />} />
     </Page>
   );
 }

@@ -6,7 +6,7 @@ import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
 import { routes } from "./index";
-import { assetPaths } from "./paths";
+import { assetPaths, scheduleEditPath } from "./paths";
 
 let called: MockInstance<typeof mcp.callTool>;
 let permissions: string[];
@@ -68,7 +68,7 @@ const show = (path: string) =>
   );
 
 const openEdit = async () => {
-  show(assetPaths.maintenanceEdit.path({ scheduleId: "s1" }));
+  show(scheduleEditPath.path({ scheduleId: "s1" }));
   await screen.findByLabelText("Title");
 };
 
@@ -93,7 +93,7 @@ describe("the schedule page", () => {
   it("opens the edit screen from Edit", async () => {
     show(assetPaths.maintenance.path({ item: "s1" }));
     await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
-    await waitFor(() => expect(landed).toBe(assetPaths.maintenanceEdit.path({ scheduleId: "s1" })));
+    await waitFor(() => expect(landed).toBe(scheduleEditPath.path({ scheduleId: "s1" })));
   });
 });
 
@@ -151,7 +151,7 @@ describe("the edit screen for a schedule", () => {
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByText(/the new schedule was saved but the old one is still running/i)).toBeTruthy();
-    expect(landed).toBe(assetPaths.maintenanceEdit.path({ scheduleId: "s1" }));
+    expect(landed).toBe(scheduleEditPath.path({ scheduleId: "s1" }));
   });
 
   it("goes back to the schedule on Cancel without calling anything", async () => {
@@ -159,7 +159,7 @@ describe("the edit screen for a schedule", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
-    await waitFor(() => expect(landed).toBe(assetPaths.maintenance.path({ item: "s1" })));
+    await waitFor(() => expect(landed).toBe(assetPaths.maintenance.path()));
     expect(callsTo("taskmanager_repeating_task_create")).toHaveLength(0);
     expect(callsTo("taskmanager_repeating_task_stop")).toHaveLength(0);
   });

@@ -9,6 +9,8 @@ export const assetPaths = {
   maintenance: screen("/menu/assets/maintenance-schedule"),
 };
 
+export const scheduleEditPath = screen("/menu/assets/maintenance-schedule/:scheduleId/edit");
+
 const pathOfCategory: Record<string, (query: Record<string, string>) => string> = {
   Route: (query) => assetPaths.routes.path(query),
   Equipment: (query) => assetPaths.equipment.path(query),

@@ -151,13 +151,13 @@ describe("a work order's About and Assignee are cards of their own", () => {
   });
 });
 
-describe("the maintenance schedule is one read-only card", () => {
-  it("has a Schedule card with no footer", async () => {
+describe("the maintenance schedule card", () => {
+  it("has a Schedule card with Edit in its footer", async () => {
     show("Maintenance Schedule");
     await userEvent.click(await screen.findByRole("button", { name: /Grease the pumps/ }));
     const card = await screen.findByRole("region", { name: "Schedule" });
     expect(card.textContent).toContain("Weekly");
-    expect(card.querySelector(".sec-foot")).toBeNull();
+    expect(card.querySelector(".sec-foot button")?.textContent).toBe("Edit");
     expect(document.querySelector(".wf-head")).toBeNull();
   });
 });
