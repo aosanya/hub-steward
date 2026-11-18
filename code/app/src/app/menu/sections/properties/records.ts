@@ -27,6 +27,8 @@ export const loadRecords = async <Row extends Record<string, string>>(tool: stri
 
 const parcelKey = "parcel_number";
 
+const placeIdKey = "place_id";
+
 const attributesOf = (attributesJson: unknown): Record<string, unknown> => {
   try {
     const parsed: unknown = JSON.parse(textOf(attributesJson));
@@ -37,6 +39,8 @@ const attributesOf = (attributesJson: unknown): Record<string, unknown> => {
 };
 
 export const parcelOf = (attributesJson: unknown) => textOf(attributesOf(attributesJson)[parcelKey]);
+
+export const placeIdOf = (attributesJson: unknown) => textOf(attributesOf(attributesJson)[placeIdKey]);
 
 export const withParcel = (attributesJson: unknown, parcel: string) => {
   const { [parcelKey]: _dropped, ...others } = attributesOf(attributesJson);

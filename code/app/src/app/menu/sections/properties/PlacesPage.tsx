@@ -5,8 +5,7 @@ import { MountedMenuList } from "./MountedMenuList";
 import { placePaths } from "./paths";
 import { placeDetail } from "./PlacePage";
 import { loadPlaces } from "./records";
-
-export const placesTitle = "Places";
+import { placesTitle } from "./words";
 
 const fields = { title: "name", meta: "category" };
 

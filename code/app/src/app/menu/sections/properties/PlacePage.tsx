@@ -4,7 +4,9 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { useWord } from "../../../../features/agency/useWord";
 import { MenuDetail } from "../../MenuDetail";
 import { MenuEditForm } from "../../MenuEditForm";
-import { itemOf, parcelOf, textOf, withParcel } from "./records";
+import { PropertyHoldings } from "./PropertyHoldings";
+import { PropertyWorks } from "./PropertyWorks";
+import { itemOf, parcelOf, placeIdOf, textOf, withParcel } from "./records";
 
 const editFields = [
   { label: "Name", key: "name", required: true },
@@ -41,7 +43,11 @@ export const placeDetail = (onSaved: () => void) => ({
   status: "",
   load: loadPlace,
   extra: (place: Record<string, unknown>) => (
-    <MenuEditForm item={place} id={textOf(place.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" fields={editFields} keep={["name"]} build={(sent) => parcelBody(sent, place)} onSaved={onSaved} />
+    <>
+      <PropertyHoldings assetId={textOf(place.id)} placeId={placeIdOf(place.attributes_json)} />
+      <PropertyWorks assetId={textOf(place.id)} />
+      <MenuEditForm item={place} id={textOf(place.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" fields={editFields} keep={["name"]} build={(sent) => parcelBody(sent, place)} onSaved={onSaved} />
+    </>
   ),
 });
 

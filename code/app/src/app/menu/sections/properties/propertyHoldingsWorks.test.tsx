@@ -32,6 +32,7 @@ let called: MockInstance<typeof mcp.callTool>;
 let landed: { pathname: string; state: unknown };
 let permissions: string[];
 let asset: Record<string, unknown>;
+let listed: Record<string, unknown>[];
 
 const Where = () => {
   const here = useLocation();
@@ -43,7 +44,7 @@ const answer = async (name: string, args: unknown) => {
   const given = (args ?? {}) as Record<string, unknown>;
   if (name === "agency_list_mounts") return mounted;
   if (name === "agency_get_my_roles") return { permissions };
-  if (name === "assetmanager_asset_list") return { items: [library, unlinked] };
+  if (name === "assetmanager_asset_list") return { items: listed };
   if (name === "assetmanager_asset_read") return { item: given.assetID === "a2" ? unlinked : asset };
   if (name === "assetmanager_location_read") return { item: { id: "l1", name: "Kossuth utca 7" } };
   if (name === "assetmanager_asset_update") return {};
@@ -58,6 +59,7 @@ beforeEach(() => {
   openAgency("zoldhalom");
   permissions = ["asset.manage"];
   asset = library;
+  listed = [library, unlinked];
   landed = { pathname: "", state: null };
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
@@ -147,6 +149,10 @@ describe.each(surfaces)("a property with a place, a holding and work orders on $
 });
 
 describe.each(surfaces)("a property with no place and no work orders on $surface", ({ openUnlinked }) => {
+  beforeEach(() => {
+    listed = [unlinked, library];
+  });
+
   it("shows an empty card under Holdings and under Works", async () => {
     await openUnlinked();
 

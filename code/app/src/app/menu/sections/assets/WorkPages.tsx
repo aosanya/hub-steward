@@ -11,7 +11,7 @@ import { aboutAndPlaceOf, placeLookupFor } from "./workOrderAsset";
 
 type Item = Record<string, unknown>;
 
-const taskList = "taskmanager_task_list";
+export const taskList = "taskmanager_task_list";
 
 const repeatingList = "taskmanager_repeating_task_list";
 
@@ -37,7 +37,7 @@ const dayOf = (value: unknown) => {
 
 const dueDay = (task: Item) => dayOf(task.due_at);
 
-const stateAndDue = (task: Item) => {
+export const stateAndDue = (task: Item) => {
   const day = dueDay(task);
   return day === "" ? textOf(task.state) : `${textOf(task.state)} · due ${day}`;
 };
