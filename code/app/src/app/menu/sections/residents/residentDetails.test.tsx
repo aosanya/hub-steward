@@ -62,7 +62,7 @@ const openPerson = async () => {
     </MemoryRouter>,
   );
   await userEvent.click(await screen.findByRole("button", { name: /Szabó Katalin/ }));
-  await screen.findByRole("button", { name: "Edit attributes" });
+  await screen.findByRole("button", { name: "Edit" });
 };
 
 const writesTo = (key: string) => called.mock.calls.filter(([, tool, args]) => tool === "forms_catalog_setting_write" && (args as Item).key === key);
@@ -174,7 +174,7 @@ describe("an opened resident with details chosen in Settings", () => {
     hub();
     await openPerson();
 
-    await user.click(screen.getByRole("button", { name: "Edit attributes" }));
+    await user.click(screen.getByRole("button", { name: "Edit" }));
     const field = await screen.findByLabelText("Preferred language");
     expect(field).toHaveValue("Hungarian");
     await user.clear(field);
@@ -215,7 +215,7 @@ describe("an opened resident with details chosen in Settings", () => {
     expect(screen.queryByText("Preferred language")).toBeNull();
     expect(screen.queryByText(/could not be loaded|did not go through/i)).toBeNull();
 
-    await user.click(screen.getByRole("button", { name: "Edit attributes" }));
+    await user.click(screen.getByRole("button", { name: "Edit" }));
     expect(await screen.findByLabelText("Preferred language")).toHaveValue("");
   });
 });

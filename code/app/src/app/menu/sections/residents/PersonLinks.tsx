@@ -50,6 +50,7 @@ function ApplicationFlow({ personId, onClose, onFiled }: { personId: string; onC
 
 export function PersonApplications({ id, full }: { id: string; full?: boolean }) {
   const opens = useOpenSection(id, "applications");
+  const open = useOpenFromPanel();
   const word = useWord("forms");
   const [version, setVersion] = useState(0);
   const view = useLoad(loadApplications(id), `person-applications:${openAgencyId()}:${id}:${version}`);

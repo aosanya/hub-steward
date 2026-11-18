@@ -101,7 +101,7 @@ describe("bills on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Bills" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Bills/ })).toBeTruthy();
     expect(await screen.findByText("900 · due 2026-03-01")).toBeTruthy();
     expect(screen.getByText("1,500 · due 2026-01-15 · 40 days late")).toBeTruthy();
     expect(screen.getByText("Settled")).toBeTruthy();
@@ -145,7 +145,7 @@ describe("bills on a person's detail", () => {
   it("shows an empty card when the person has no bill", async () => {
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Bills" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Bills/ })).toBeTruthy();
     expect(await screen.findByText("No bills yet.")).toBeTruthy();
     expect(screen.queryByText(/ · due /)).toBeNull();
   });
@@ -159,9 +159,9 @@ describe("bills on a person's detail", () => {
     await openPerson();
 
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "accounting_bill_list", { actor_id: "p1" }));
-    expect(screen.getByRole("heading", { name: "Groups" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /^Groups/ })).toBeTruthy();
     expect(screen.getByText("Sample Street Group")).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Bills" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: /^Bills/ })).toBeNull();
     expect(screen.queryByText(/could not be loaded/i)).toBeNull();
     expect(screen.queryByText(/the hub refused this/)).toBeNull();
     expect(screen.queryByText(/unknown tool/)).toBeNull();

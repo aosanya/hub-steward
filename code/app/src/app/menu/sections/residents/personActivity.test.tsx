@@ -83,7 +83,7 @@ const openPerson = async () => {
     </MemoryRouter>,
   );
   await userEvent.click(await screen.findByRole("button", { name: /Sample Resident A/ }));
-  await screen.findByRole("heading", { name: "Groups" });
+  await screen.findByRole("heading", { name: /^Groups/ });
 };
 
 const calledNames = () => called.mock.calls.map((call) => String(call[1]));
@@ -103,7 +103,7 @@ describe("activity on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Activity" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Activity/ })).toBeTruthy();
     expect(await screen.findByText("closed a request: req-1")).toBeTruthy();
     expect(screen.getByText(`Sample Resident A · ${dateTimeWords("2026-11-12T14:30:00Z")}`)).toBeTruthy();
     expect(await screen.findByText("Sample Clinic Visit")).toBeTruthy();
@@ -160,7 +160,7 @@ describe("activity on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Activity" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Activity/ })).toBeTruthy();
     expect(await screen.findByText("Sample Clinic Visit")).toBeTruthy();
     expect(screen.queryByText(/the hub refused this/)).toBeNull();
     expect(screen.queryByText(/could not be loaded/i)).toBeNull();
@@ -172,7 +172,7 @@ describe("activity on a person's detail", () => {
 
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Activity" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Activity/ })).toBeTruthy();
     expect(await screen.findByText("closed a request: req-1")).toBeTruthy();
     expect(screen.queryByText(/the hub refused this/)).toBeNull();
     expect(screen.queryByText(/could not be loaded/i)).toBeNull();
@@ -185,8 +185,8 @@ describe("activity on a person's detail", () => {
     await openPerson();
 
     await settledOn("audit_list_entries", "forms_catalog_booking_list_of_person");
-    expect(screen.getByRole("heading", { name: "Groups" })).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Activity" })).toBeNull();
+    expect(screen.getByRole("heading", { name: /^Groups/ })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: /^Activity/ })).toBeNull();
     expect(screen.queryByText("No other activity yet.")).toBeNull();
     expect(screen.queryByText(/the hub refused this/)).toBeNull();
     expect(screen.queryByText(/could not be loaded/i)).toBeNull();
@@ -195,7 +195,7 @@ describe("activity on a person's detail", () => {
   it("shows an empty card when both sources answer with nothing", async () => {
     await openPerson();
 
-    expect(await screen.findByRole("heading", { name: "Activity" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /^Activity/ })).toBeTruthy();
     expect(await screen.findByText("No other activity yet.")).toBeTruthy();
   });
 

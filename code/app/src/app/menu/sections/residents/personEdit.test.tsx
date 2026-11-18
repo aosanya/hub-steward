@@ -80,8 +80,8 @@ describe("editing a person from their detail", () => {
     expect((await screen.findAllByText("Sample Resident Z")).length).toBeGreaterThan(0);
     expect(screen.queryByText("Sample Resident A")).toBeNull();
 
-    await userEvent.click(screen.getByRole("button", { name: /All People/ }));
     expect(await screen.findByRole("button", { name: /Sample Resident Z/ })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Sample Resident A/ })).toBeNull();
   });
 
   it("shows the hub's words when the save is refused", async () => {
@@ -106,7 +106,7 @@ describe("editing a person from their detail", () => {
   it("sets a phone through actor_set_actor_attributes and the detail shows it", async () => {
     await openPerson();
 
-    await userEvent.click(await screen.findByRole("button", { name: "Edit attributes" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
     await userEvent.type(await screen.findByLabelText("Phone"), "+254 711 000 000");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 

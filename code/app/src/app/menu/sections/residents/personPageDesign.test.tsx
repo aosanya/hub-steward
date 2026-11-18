@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
@@ -56,11 +56,13 @@ const openPersonPage = async (wide: boolean) => {
 const headingsOf = (page: HTMLElement) => Array.from(page.querySelectorAll("h2, h3")).map((heading) => heading.textContent);
 
 describe("the resident page has one design on a phone and on a computer", () => {
-  it("heads the page with the title band, as the computer panel does", async () => {
-    const phone = await openPersonPage(false);
-    const heading = phone.querySelector("h2.wf-head");
-    expect(heading?.textContent).toBe("All People");
-    expect(phone.querySelector(".wf-content")).toBeTruthy();
+  it.each([false, true])("titles the page with the name alone and no title band above the resident (wide: %s)", async (wide) => {
+    const page = await openPersonPage(wide);
+    expect(page.querySelector(".wf-head")).toBeNull();
+    expect(page.querySelector("h2.wf-head")).toBeNull();
+    expect(within(page).queryByText("All People")).toBeNull();
+    expect(within(page).getByRole("heading", { level: 1, name: personName })).toBeTruthy();
+    expect(page.querySelector(".wf-content")).toBeTruthy();
   });
 
   it("lists the same headings in the same order on a phone as on a computer", async () => {
