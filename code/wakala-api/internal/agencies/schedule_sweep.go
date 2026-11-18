@@ -13,6 +13,7 @@ type SweepReport struct {
 	PeriodsMade    int
 	MessagesSent   int
 	DeliveriesGone int64
+	LateReminders  int
 	FailedAgencies []string
 }
 
@@ -33,11 +34,14 @@ func Sweep(ctx context.Context, reg Registry, now time.Time, logger *slog.Logger
 		report.MessagesSent += sent
 		pruned, pruneErr := prunePushDeliveries(ctx, reg, inst.ID, now)
 		report.DeliveriesGone += pruned
-		if taskErr != nil || commErr != nil || pruneErr != nil {
+		reminded, lateErr := sweepLateBills(ctx, reg, inst.ID, now)
+		report.LateReminders += reminded
+		if taskErr != nil || commErr != nil || pruneErr != nil || lateErr != nil {
 			report.FailedAgencies = append(report.FailedAgencies, inst.ID)
 			logSweepFailure(logger, inst.ID, "repeating tasks", taskErr)
 			logSweepFailure(logger, inst.ID, "standing messages", commErr)
 			logSweepFailure(logger, inst.ID, "push deliveries", pruneErr)
+			logSweepFailure(logger, inst.ID, "late bills", lateErr)
 		}
 	}
 	return report, nil
