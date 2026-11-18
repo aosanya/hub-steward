@@ -71,9 +71,9 @@ The answer is `total_ready`, every Ready issue at the To do step that the filter
 
 ## taskmanager_task_next_ready_batch
 
-Inputs: `count` (1 to 10, default 3), `backlog`, `tag` and `include_unfiled`. Read-only.
+Inputs: `count` (1 to 10, default 3), `skipped_limit` (1 to 50, default 3; 0, a negative, above 50 or a non-number is 400), `backlog`, `tag` and `include_unfiled`. Read-only.
 
-The answer is `items` (the chosen Ready issues at To do, lowest rank first, each with id, code, title, priority, effort and files), `skipped` (each passed-over issue with `clashes_with`, the code of the issue in progress or the earlier chosen issue its files overlap) and `unfiled_left_out`. The choice is greedy: no two items overlap and none overlaps an issue in progress, by the rule of `taskmanager_task_file_overlaps`. An issue with no files is left out and counted, unless `include_unfiled` is true, then it clashes with nothing.
+The answer is `items` (the chosen Ready issues at To do, lowest rank first, each with id, code, title, priority, effort and files), `skipped` (the first `skipped_limit` passed-over issues in rank order, each with `clashes_with`, the code of the issue in progress or the earlier chosen issue its files overlap), `skipped_total` (the full number passed over because they clash) and `unfiled_left_out`. The choice is greedy: no two items overlap and none overlaps an issue in progress, by the rule of `taskmanager_task_file_overlaps`. An issue with no files is left out and counted, unless `include_unfiled` is true, then it clashes with nothing.
 
 ## taskmanager_task_claim_next
 
