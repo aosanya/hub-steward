@@ -40,8 +40,8 @@ const answer = async (name: string, args: unknown) => {
     seats = [...seats, seat("s-new", String(given.actor_id), String(given.kind_id), String(given.group_id))];
     return {};
   }
-  if (name === "actor_revoke_role") {
-    seats = seats.map((row) => (row.id === given.assignment_id ? { ...row, active: false, ended_at: "2026-11-18T10:00:00Z" } : row));
+  if (name === "actor_unassign_group") {
+    seats = seats.map((row) => (row.actor_id === given.actor_id && row.group_id === given.group_id ? { ...row, active: false, ended_at: "2026-11-18T10:00:00Z" } : row));
     return {};
   }
   throw new Error(`${name}: unknown tool`);
@@ -49,7 +49,7 @@ const answer = async (name: string, args: unknown) => {
 
 beforeEach(() => {
   openAgency("town");
-  permissions = ["group.manage"];
+  permissions = ["group.manage", "member.remove"];
   refusal = "";
   kinds = [
     { id: "k-chair", name: "Chair", leads_group: true },
@@ -179,20 +179,34 @@ describe("the members of an opened committee", () => {
     expect(within(foot).getByRole("button", { name: "Back" })).toBeInTheDocument();
     expect(within(foot).getByRole("button", { name: "Remove from committee" })).toBeInTheDocument();
     expect(foot.children).toHaveLength(2);
-    expect(callsTo("actor_revoke_role")).toEqual([]);
+    expect(callsTo("actor_unassign_group")).toEqual([]);
   });
 
-  it("removes a member from their page by ending their seat and returns to the committee with the list following", async () => {
+  it("removes a member from their page by unassigning them from the committee's group and returns to the committee with the list following", async () => {
     const pane = await open("Audit Committee");
     await pane.findByRole("heading", { name: membersHeading(3) });
     await userEvent.click(rowOf(pane, "Varga József"));
 
     await userEvent.click(await pane.findByRole("button", { name: "Remove from committee" }));
 
-    await waitFor(() => expect(callsTo("actor_revoke_role")).toEqual([{ assignment_id: "s2" }]));
+    await waitFor(() => expect(callsTo("actor_unassign_group")).toEqual([{ actor_id: "a2", group_id: "g1" }]));
+    expect(callsTo("actor_revoke_role")).toEqual([]);
     expect(await pane.findByRole("heading", { name: membersHeading(2) })).toBeInTheDocument();
     expect(pane.queryByText("Varga József", { selector: ".ttl" })).toBeNull();
     expect(pane.getByRole("heading", { level: 1, name: "Audit Committee" })).toBeInTheDocument();
+  });
+
+  it("shows Remove from committee only to a caller holding member.remove, and Add member still follows group.manage", async () => {
+    permissions = ["group.manage"];
+    const pane = await open("Audit Committee");
+    await pane.findByRole("heading", { name: membersHeading(3) });
+    await waitFor(() => expect(pane.getByRole("button", { name: "Add member" })).toBeInTheDocument());
+
+    await userEvent.click(rowOf(pane, "Varga József"));
+
+    expect(await pane.findByRole("heading", { level: 1, name: "Varga József" })).toBeInTheDocument();
+    expect(pane.queryByRole("button", { name: "Remove from committee" })).toBeNull();
+    expect(callsTo("actor_unassign_group")).toEqual([]);
   });
 
   it("goes back to the committee from a member's page without changing anything", async () => {
@@ -203,7 +217,7 @@ describe("the members of an opened committee", () => {
     await userEvent.click(await pane.findByRole("button", { name: "Back" }));
 
     expect(await pane.findByRole("heading", { name: membersHeading(3) })).toBeInTheDocument();
-    expect(callsTo("actor_revoke_role")).toEqual([]);
+    expect(callsTo("actor_unassign_group")).toEqual([]);
   });
 
   it("shows no Add member and no Remove to a caller without group.manage, and still lists and opens the members", async () => {
@@ -243,7 +257,7 @@ describe("the members of an opened committee", () => {
     expect(await next.findByRole("heading", { level: 1, name: "Consultation Committee" })).toBeInTheDocument();
     expect(next.queryByRole("button", { name: "Remove from committee" })).toBeNull();
     expect(next.queryByText("Varga József")).toBeNull();
-    expect(callsTo("actor_revoke_role")).toEqual([]);
+    expect(callsTo("actor_unassign_group")).toEqual([]);
   });
 
   it("closes an open Add member form when another committee is chosen", async () => {

@@ -26,7 +26,7 @@ function CommitteePageBody({ committee, onChanged }: CommitteePageProps) {
       setVersion((was) => was + 1);
       onChanged();
     };
-    return <CommitteeMember member={opened} onBack={() => setOpened(null)} onRemoved={removed} />;
+    return <CommitteeMember groupId={text(committee, "id")} member={opened} onBack={() => setOpened(null)} onRemoved={removed} />;
   }
   return (
     <CouncilPage name={text(committee, "name")} line={text(committee, "chair")}>

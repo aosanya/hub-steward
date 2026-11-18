@@ -9,17 +9,19 @@ import { removeMember, type Member } from "./committeeMembersData";
 
 export const manageGroup = "group.manage";
 
-type Props = { member: Member; onBack: () => void; onRemoved: () => void };
+const removeMemberPermission = "member.remove";
 
-export function CommitteeMember({ member, onBack, onRemoved }: Props) {
-  const may = useMay(manageGroup);
+type Props = { groupId: string; member: Member; onBack: () => void; onRemoved: () => void };
+
+export function CommitteeMember({ groupId, member, onBack, onRemoved }: Props) {
+  const may = useMay(removeMemberPermission);
   const [busy, setBusy] = useState(false);
   const [refused, setRefused] = useState("");
   const remove = async () => {
     setBusy(true);
     setRefused("");
     try {
-      await removeMember(member.seat);
+      await removeMember(groupId, member.actor);
       onRemoved();
     } catch (error) {
       setRefused(refusalWords(error));

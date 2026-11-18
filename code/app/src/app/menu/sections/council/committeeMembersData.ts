@@ -35,4 +35,4 @@ export const addMember = async (groupId: string, actorId: string, kindId: string
   await callTool("", "actor_grant_role", { actor_id: actorId, group_id: groupId, kind_id: kindId });
 };
 
-export const removeMember = (seatId: string) => callTool("", "actor_revoke_role", { assignment_id: seatId });
+export const removeMember = (groupId: string, actorId: string) => callTool("", "actor_unassign_group", { actor_id: actorId, group_id: groupId });
