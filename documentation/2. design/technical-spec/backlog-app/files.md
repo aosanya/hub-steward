@@ -1,6 +1,6 @@
 # Files
 
-Decided by the owner on 2026-11-13 (hub issue ISS-1). Drawn as [mockups](../../mockups/app/files.html).
+Decided by the owner on 2026-11-13 (hub issue ISS-1). Drawn as [mockups](../../mockups/app/files/files.html).
 
 The Files screens let a person read what an agency keeps in its git module: code, and also documents. They are read only. The screens never say repository, branch, commit, diff or merge request.
 
@@ -10,7 +10,7 @@ The Files screens let a person read what an agency keeps in its git module: code
 |---|---|
 | Who gets Files | Any agency that mounts the git module. An agency without git never sees it. |
 | Where is it | An option called Files on Home, beside Start, Ongoing and Backlogs, shown only when the agency mounts git, as Backlogs is shown only when the task module is on. The bottom bar is unchanged (Home, Chat, Notifications): there is no Files tab |
-| How the app knows | The agency read the app already makes for Home ([tabs.html](../../mockups/app/tabs.html)): `agency_get_agency` and `agency_list_mounts`. The Files option shows when that read lists the module with code `git`, and is left out otherwise, so the check fails closed. See [The data layer](#the-data-layer). |
+| How the app knows | The agency read the app already makes for Home ([tabs.html](../../mockups/app/home/tabs.html)): `agency_get_agency` and `agency_list_mounts`. The Files option shows when that read lists the module with code `git`, and is left out otherwise, so the check fails closed. See [The data layer](#the-data-layer). |
 
 The module catalog has a `git` module (code `git`). `agency_list_modules` is not used: an earlier live read of it answered an empty list on 2026-11-02 ([app-agency-trace.md](../app-agency-trace.md), question 11), and the app's existing agency code and tests use `agency_list_mounts`.
 
@@ -165,7 +165,7 @@ Other documents (word processor, spreadsheet, PDF) are not in this design and fa
 
 ## Wide window
 
-Drawn in [files.html](../../mockups/app/files.html) under each phone screen: the Folders and a Folder's top level ([3](../../mockups/app/files.html#s3)), a code file ([5](../../mockups/app/files.html#s5)), a document file ([6](../../mockups/app/files.html#s6)) and an empty Folder ([7](../../mockups/app/files.html#s7)).
+Drawn in [files.html](../../mockups/app/files/files.html) under each phone screen: the Folders and a Folder's top level ([3](../../mockups/app/files/files.html#s3)), a code file ([5](../../mockups/app/files/files.html#s5)), a document file ([6](../../mockups/app/files/files.html#s6)) and an empty Folder ([7](../../mockups/app/files/files.html#s7)).
 
 The wide window is laid out like a code editor: a tree of the open Folder's files at the left, a strip of tabs over the content in the middle, and the Properties of the selection at the right. The three parts fill the window edge to edge with no margin, no gap and no inner frame, separated only by 1px lines. Corners and scrollbars are square.
 

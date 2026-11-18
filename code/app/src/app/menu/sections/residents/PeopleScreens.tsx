@@ -11,6 +11,7 @@ import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgen
 import { routes } from "../../../routes";
 import { MenuWindow } from "../../MenuWindow";
 import { populationFigure } from "../../populationFigure";
+import { ChatAboutRegistration } from "./ChatAboutRegistration";
 import { ChatAboutResident } from "./ChatAboutResident";
 import { GroupPanel, loadGroup } from "./GroupScreen";
 import { personNameOf } from "./personName";
@@ -168,6 +169,7 @@ export function RegistrationsScreen() {
         status: "",
         extra: (person) => (
           <>
+            <ChatAboutRegistration person={person} />
             <RegistrationRequest request={person} onAnswered={() => setVersion((was) => was + 1)} />
             <PersonPanel person={person} />
           </>

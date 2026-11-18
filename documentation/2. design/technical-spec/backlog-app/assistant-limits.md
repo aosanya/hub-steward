@@ -1,6 +1,6 @@
 # The assistant: who may ask, and how much
 
-From the owner's remark on 2026-11-10 that assistant use should be configurable with token limits. Decided the same day as D102 to D106 in decisions.md in the hub-steward-swe repo; the per-person count and its check (SW132) are built, described in 3. implementation/assistant-limits.md in the hub-steward-swe repo; the console page and the at-the-limit card are not. Drawn as [mockups](../../mockups/app/assistant-limits.html). Task rows on the board in the hub-steward-swe repo: SW126 (this design), SW132 to SW135 and SW146, SW147 (the build).
+From the owner's remark on 2026-11-10 that assistant use should be configurable with token limits. Decided the same day as D102 to D106 in decisions.md in the hub-steward-swe repo; the per-person count and its check (SW132) are built, described in 3. implementation/assistant-limits.md in the hub-steward-swe repo; the console page and the at-the-limit card are not. Drawn as [mockups](../../mockups/app/chat/assistant-limits.html). Task rows on the board in the hub-steward-swe repo: SW126 (this design), SW132 to SW135 and SW146, SW147 (the build).
 
 ## Where it stands today
 
@@ -20,13 +20,13 @@ One page in the console, Assistant, next to the page for the model:
 - **A switch for each Backlog role.** May ask, or not (the switch gives or takes away the chat-only permission on the role). The owner always may.
 - **Two numbers, tokens a day and tokens a month for each person (D102, D103).** Every person who may ask has their own count for the day and for the month. A number left empty means no limit, as every other limit does.
 - **Two numbers for the owner, tokens a day and tokens a month for you (D105).** The owner's own pair, kept apart from the people's, so setting the people's number small never stops the owner. Empty means the owner has no limit.
-- **Save** writes the switches and all four numbers in one call. Drawn in [screen 1](../../mockups/app/assistant-limits.html#s1).
+- **Save** writes the switches and all four numbers in one call. Drawn in [screen 1](../../mockups/app/chat/assistant-limits.html#s1).
 
 A call through the gateway that names a person (the usage-person header) is held to that person's numbers in the same way as a chat, and refused with status 429 and the chat's own words; its tokens are counted against the same person. A gateway call that names no person is held only to the role's and account's limits, as before.
 
 Only the owner sets them, in the console (D104). The Usage page keeps its totals by model and does not list people.
 
-The person-at-the-limit sentences are the same for the owner. When a person has used their tokens for the day, the Assistant page shows the empty card it already shows when the assistant is not available, with one sentence: "You have used today's share of the assistant. It comes back tomorrow." For the month it says "You have used this month's share of the assistant. It comes back on the 1st." There is no writing box. A person whose role is switched off still sees "The assistant is not available yet." as built. Drawn in [screens 2 and 3](../../mockups/app/assistant-limits.html#s2).
+The person-at-the-limit sentences are the same for the owner. When a person has used their tokens for the day, the Assistant page shows the empty card it already shows when the assistant is not available, with one sentence: "You have used today's share of the assistant. It comes back tomorrow." For the month it says "You have used this month's share of the assistant. It comes back on the 1st." There is no writing box. A person whose role is switched off still sees "The assistant is not available yet." as built. Drawn in [screens 2 and 3](../../mockups/app/chat/assistant-limits.html#s2).
 
 ## What is decided
 

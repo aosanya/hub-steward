@@ -4,7 +4,7 @@ How the roles' answers look in the Chat tab of the phone app. A reply is
 either one plain line or one card. The card is the chat room's existing card
 (`rm-card` in `hub-steward/code/app/src/features/chat/rooms/cards.tsx`): a title, a few
 plain lines, and a row of buttons at the bottom. No new card kind is drawn.
-This is a drawing for the owner to change, drawn as [mockups](../../mockups/app/chat-replies.html); the decisions it rests on are D40
+This is a drawing for the owner to change, drawn as [mockups](../../mockups/app/chat/chat-replies.html); the decisions it rests on are D40
 to D49 and the conversations are in [chat-and-mcp.md](chat-and-mcp.md).
 
 ## Show all issues (D40, D46)
@@ -55,7 +55,7 @@ A button opens that backlog's board. Only the backlogs the person can see are li
 
 ## Smart backlogs (SW78)
 
-Written in [smart-backlogs.md](smart-backlogs.md); drawn in [chat-replies.html](../../mockups/app/chat-replies.html) section 4. Nothing is made until Create.
+Written in [smart-backlogs.md](smart-backlogs.md); drawn in [chat-replies.html](../../mockups/app/chat/chat-replies.html) section 4. Nothing is made until Create.
 
 ```text
 You: make a smart backlog of ready issues at To do

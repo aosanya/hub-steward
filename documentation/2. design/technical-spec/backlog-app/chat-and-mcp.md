@@ -3,7 +3,7 @@
 Every use of the backlog is a conversation in the Chat tab (D23). The roles
 answer from MCP tools. The look of each reply is in
 [chat-replies.md](chat-replies.md) and drawn in
-[mockups](../../mockups/app/chat-replies.html); the screens they open are drawn in
+[mockups](../../mockups/app/chat/chat-replies.html); the screens they open are drawn in
 [backlog-page.md](backlog-page.md). Whether a tool exists is read from the task
 module's operations (`taskmanager.operations.json`); its tools are generated
 from every operation in that file, so each existing operation is already a
@@ -80,4 +80,4 @@ look at the backlog but is refused when it writes.
 ## What this leaves out
 
 Sorting as a run with approval, counts and send back (D49),
-a Move button and swipe. Managing backlogs on screens is in the app too (D59, [manage-backlogs.html](../../mockups/app/manage-backlogs.html)).
+a Move button and swipe. Managing backlogs on screens is in the app too (D59, [manage-backlogs.html](../../mockups/app/backlogs/manage-backlogs.html)).

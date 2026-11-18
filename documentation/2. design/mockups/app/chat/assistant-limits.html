@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Assistant limits</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../shared/app-real.css">
-<link rel="stylesheet" href="../../../../code/app/src/features/assistant/assistant.css">
+<link rel="stylesheet" href="../../shared/app-real.css">
+<link rel="stylesheet" href="../../../../../code/app/src/features/assistant/assistant.css">
 <style>
 body{background:var(--bg-alt)}
 figure,dl,dd{margin:0}
@@ -30,14 +30,14 @@ figure{display:flex;flex-direction:column;gap:.75rem;min-width:0;max-width:100%}
 .sw.on{background:var(--accent-wash);border-color:var(--accent);color:var(--accent-strong)}
 .num{min-width:7rem;padding:.375rem .75rem;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface);text-align:right;font-family:var(--mono);font-size:1.1rem}
 </style>
-<link rel="stylesheet" href="../shared/app-kit.css">
+<link rel="stylesheet" href="../../shared/app-kit.css">
 </head>
 <body>
-<nav class="jnav" data-pages data-current="assistant-limits.html" aria-label="Mockups"><span class="sep"></span><a href="#s1">1 · The owner sets it</a><a href="#s2">2 · A person at the limit</a></nav>
-<p class="intro">Who may ask the assistant, and how much each person may use in a day and in a month. Decided by the owner on 2026-11-10 as D102 to D104; no code behind it yet. The words and the open questions are in <a href="../../technical-spec/backlog-app/assistant-limits.md">assistant-limits.md</a>.</p>
+<nav class="jnav" data-pages data-current="chat/assistant-limits.html" data-base="../" aria-label="Mockups"><span class="sep"></span><a href="#s1">1 · The owner sets it</a><a href="#s2">2 · A person at the limit</a></nav>
+<p class="intro">Who may ask the assistant, and how much each person may use in a day and in a month. Decided by the owner on 2026-11-10 as D102 to D104; no code behind it yet. The words and the open questions are in <a href="../../../technical-spec/backlog-app/assistant-limits.md">assistant-limits.md</a>.</p>
 <h2 class="state" id="s1">1 · The owner sets it</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>a page called Assistant in the console, next to the page for the model. One switch for each Backlog role says whether its people may ask the assistant, and two numbers say how many tokens each person may use in a day and in a month, and two more are the owner's own. A number left empty means no limit. The owner always may ask.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">not built (SW133, SW146, SW147)</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The role names are the hub's; the number is drawn for this page.</dd></div></dl></figcaption><div class="console"><h3>Assistant</h3><div class="setrow"><span>Backlog manager</span><span class="sw on">May ask</span></div><div class="setrow"><span>Backlog worker</span><span class="sw on">May ask</span></div><div class="setrow"><span>Backlog member</span><span class="sw on">May ask</span></div><div class="setrow"><span>Tokens a day for each person</span><span class="num">20,000</span></div><div class="setrow"><span>Tokens a month for each person</span><span class="num">300,000</span></div><div class="setrow"><span>Tokens a day for you</span><span class="num">No limit</span></div><div class="setrow"><span>Tokens a month for you</span><span class="num">No limit</span></div><button type="button" class="btn primary">Save</button></div></figure></main>
 <h2 class="state" id="s2">2 · A person at the limit</h2><main class="screens"><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>the Assistant page for a person who has used their day's tokens (this screen) or their month's (the next). It is the empty card the page already shows when the assistant is not available, with a sentence that says why and when it comes back, and no writing box. A person whose role is switched off still sees "The assistant is not available yet." as built.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">ai_get_my_assistant_usage</span></dd></div><div class="cap-row"><dt>Example data</dt><dd>The sentences are drawn for this page.</dd></div></dl></figcaption><div class="phone"><header class="bar" data-back="Chat" data-title="Hub Steward" data-agency="Hub Steward SWE"></header><div class="body"><div class="assistant-panel"><div class="seg" role="group" aria-label="Conversation"><button type="button" aria-pressed="true">Chat</button><button type="button" aria-pressed="false">Results</button></div><section class="card"><p class="assistant-empty">Ask about the backlogs</p></section><section class="card empty"><p>You have used today's share of the assistant. It comes back tomorrow.</p></section></div></div></div></figure><figure><figcaption class="cap"><dl class="cap-rows"><div class="cap-row"><dt>Landing</dt><dd>the same card for a person who has used their month's tokens, with the month's sentence.</dd></div><div class="cap-row"><dt>Filled by</dt><dd><span class="code">ai_get_my_assistant_usage</span></dd></div></dl></figcaption><div class="phone"><header class="bar" data-back="Chat" data-title="Hub Steward" data-agency="Hub Steward SWE"></header><div class="body"><div class="assistant-panel"><div class="seg" role="group" aria-label="Conversation"><button type="button" aria-pressed="true">Chat</button><button type="button" aria-pressed="false">Results</button></div><section class="card"><p class="assistant-empty">Ask about the backlogs</p></section><section class="card empty"><p>You have used this month's share of the assistant. It comes back on the 1st.</p></section></div></div></div></figure></main>
-<script src="../shared/app-nav.js" defer></script>
-<script src="../shared/app-top.js"></script>
+<script src="../../shared/app-nav.js" defer></script>
+<script src="../../shared/app-top.js"></script>
 </body>
 </html>

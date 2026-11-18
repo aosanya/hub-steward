@@ -1,31 +1,31 @@
 (function () {
   var menu = window.mockupPages || [
-    { page: 'tabs.html', label: 'Tabs' },
+    { page: 'home/tabs.html', label: 'Tabs' },
     { label: 'Chat', items: [
-      ['chat-list.html', 'Chat list'],
-      ['chat-replies.html', 'Chat replies'],
-      ['assistant-limits.html', 'Assistant limits']
+      ['chat/chat-list.html', 'Chat list'],
+      ['chat/chat-replies.html', 'Chat replies'],
+      ['chat/assistant-limits.html', 'Assistant limits']
     ] },
     { label: 'Backlogs', items: [
-      ['lists.html', 'Lists'],
-      ['kanban.html', 'Boards'],
-      ['backlog.html', 'Backlog'],
-      ['manage-backlogs.html', 'Manage backlogs'],
-      ['smart-backlogs.html', 'Smart backlogs']
+      ['backlogs/lists.html', 'Lists'],
+      ['backlogs/kanban.html', 'Boards'],
+      ['backlogs/backlog.html', 'Backlog'],
+      ['backlogs/manage-backlogs.html', 'Manage backlogs'],
+      ['backlogs/smart-backlogs.html', 'Smart backlogs']
     ] },
     { label: 'Issues', items: [
-      ['card.html', 'Card and issue page'],
-      ['issue-priority.html', 'Priority'],
-      ['issue-todos.html', 'Todos'],
-      ['issue-log.html', 'Log'],
-      ['issue-references.html', 'References'],
-      ['issue-waits-on.html', 'Waits on'],
-      ['worker-caps.html', 'Worker caps']
+      ['issues/card.html', 'Card and issue page'],
+      ['issues/issue-priority.html', 'Priority'],
+      ['issues/issue-todos.html', 'Todos'],
+      ['issues/issue-log.html', 'Log'],
+      ['issues/issue-references.html', 'References'],
+      ['issues/issue-waits-on.html', 'Waits on'],
+      ['issues/worker-caps.html', 'Worker caps']
     ] },
-    { page: 'files.html', label: 'Folders' },
+    { page: 'files/files.html', label: 'Folders' },
     { label: 'Forms', items: [
-      ['form.html', 'Forms'],
-      ['workflow.html', 'Workflow']
+      ['forms/form.html', 'Forms'],
+      ['forms/workflow.html', 'Workflow']
     ] }
   ];
   var base = '';

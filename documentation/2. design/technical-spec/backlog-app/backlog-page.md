@@ -3,7 +3,7 @@
 The bottom bar is Home, Chat and Notifications on every screen; there is no Do Something button and no second bar (D155, which changed D154, D60 and D66). The Notifications button is a bell and carries the unread count (D155, which replaced D78). The app opens on the Home screen, which holds only the options Start, Ongoing and Backlogs, as option rows. The notifications, the invitations, the waiting steps, Mark all read and the "You are all caught up" card are on their own page, Notifications. A screen opened from an option keeps the Home, Chat and Notifications bar with none chosen, and Home is the way back. Start and Ongoing hold the workflow steps for the person
 to do, which load as the app already does, and Backlogs holds the backlogs to browse. The Backlogs screen has an All issues row, which opens the list
 of every issue the person can see, and a row for each backlog they can see, which
-opens that backlog's Kanban board. Each row carries small grey bubbles with its issues in each step, the five most populous steps first and none for a step with no issues, for example To do 1301, In Progress 81, Done 4 (D120, [drawn](../../mockups/app/smart-backlogs.html#s1)). All issues adds the steps of the backlogs up by name; a smart backlog shows the hub's own count for each step, Done and Cancelled included (D125), asked of the pending list with `include_closed`. The Backlogs option shows only when the task module is
+opens that backlog's Kanban board. Each row carries small grey bubbles with its issues in each step, the five most populous steps first and none for a step with no issues, for example To do 1301, In Progress 81, Done 4 (D120, [drawn](../../mockups/app/backlogs/smart-backlogs.html#s1)). All issues adds the steps of the backlogs up by name; a smart backlog shows the hub's own count for each step, Done and Cancelled included (D125), asked of the pending list with `include_closed`. The Backlogs option shows only when the task module is
 on. A board has a List | Board switch to the backlog's list and a Backlog link to
 the backlog's page. Everything else is done in Chat (D23, see
 [chat-and-mcp.md](chat-and-mcp.md)); a chat card ("show all issues", "show the
@@ -92,7 +92,7 @@ it opens that task.
 +------------------------------------+
 ```
 
-Each row of the Waits on card, and of the Waited on by card, carries the issue's current step as a bubble beside its repo and priority bubbles: To do, In Progress, Done or Cancelled. A finished dependency reads Done, so the owner sees at once why it no longer holds the issue. The bubble is the shared tag bubble coloured from the step's name by the same rule as the board's step names, and the step comes from the issue read that already fills the row, not from a call per row. Drawn in [issue-waits-on.html](../../mockups/app/issue-waits-on.html) (SW248).
+Each row of the Waits on card, and of the Waited on by card, carries the issue's current step as a bubble beside its repo and priority bubbles: To do, In Progress, Done or Cancelled. A finished dependency reads Done, so the owner sees at once why it no longer holds the issue. The bubble is the shared tag bubble coloured from the step's name by the same rule as the board's step names, and the step comes from the issue read that already fills the row, not from a call per row. Drawn in [issue-waits-on.html](../../mockups/app/issues/issue-waits-on.html) (SW248).
 
 A task that waits on nothing has no Waits on section. Where the task came
 from, where else it appears and why it is ranked are not shown (D14); the
@@ -100,7 +100,7 @@ repo is already a tag on the list. They are the task's `depends_on` links (D31).
 
 ## The Log on an issue (D109 to D113, built)
 
-An issue's page gains a Log section under the description: a running list of dated entries, oldest first with the newest last, nothing overwritten or removed. Drawn in [issue-log.html](../../mockups/app/issue-log.html) as a Log with four entries and as an empty Log. The Log is there so that a worker whose session is cut off can be followed by the next one, and so that a person who is about to pick an issue, or who reviews a In Progress or Done issue, can see what was tried and what was done.
+An issue's page gains a Log section under the description: a running list of dated entries, oldest first with the newest last, nothing overwritten or removed. Drawn in [issue-log.html](../../mockups/app/issues/issue-log.html) as a Log with four entries and as an empty Log. The Log is there so that a worker whose session is cut off can be followed by the next one, and so that a person who is about to pick an issue, or who reviews a In Progress or Done issue, can see what was tried and what was done.
 
 ```text
 +------------------------------------+
@@ -136,7 +136,7 @@ The add-a-note box shows for anyone who can see the issue, a read-only Backlog m
 
 ## References on an issue (built; D115 to D118 proposed, not yet agreed by the owner)
 
-An issue's page gains a References section under the description and above the Log: what the issue is talking about. Drawn in [issue-references.html](../../mockups/app/issue-references.html) with seven entries, an empty section, and the five pages of adding one. The References, Log and Caps cards always load collapsed (chevron to the right), whatever the owner did on the last issue or the last visit; opening one lasts for that visit only, and nothing remembers it across issues, reloads or sessions. The Waits on and Waited on by cards keep opening when they have rows (SW251). The Log says what was done; References says what it was done to, so the two sit together under the description with References first. Today an issue carries only its repo as a tag.
+An issue's page gains a References section under the description and above the Log: what the issue is talking about. Drawn in [issue-references.html](../../mockups/app/issues/issue-references.html) with seven entries, an empty section, and the five pages of adding one. The References, Log and Caps cards always load collapsed (chevron to the right), whatever the owner did on the last issue or the last visit; opening one lasts for that visit only, and nothing remembers it across issues, reloads or sessions. The Waits on and Waited on by cards keep opening when they have rows (SW251). The Log says what was done; References says what it was done to, so the two sit together under the description with References first. Today an issue carries only its repo as a tag.
 
 ```text
 +------------------------------------+
@@ -174,7 +174,7 @@ The tools are `taskmanager_task_reference_list`, `_add`, `_remove`, `_propose` a
 
 ## Worker caps and the Sinbin tag (D126 to D135, D144 to D147)
 
-A worker that passes a cap leaves its issue in To do tagged Sinbin, a mark beside Waiting and Blocked and not a step; the issue page gains a Caps card under References and above the Log, and the card turns red as the nearest cap fills. Written in [worker-caps.md](worker-caps.md), drawn in [worker-caps.html](../../mockups/app/worker-caps.html).
+A worker that passes a cap leaves its issue in To do tagged Sinbin, a mark beside Waiting and Blocked and not a step; the issue page gains a Caps card under References and above the Log, and the card turns red as the nearest cap fills. Written in [worker-caps.md](worker-caps.md), drawn in [worker-caps.html](../../mockups/app/issues/worker-caps.html).
 
 ## The board (SW30, D51, D58, D60)
 
@@ -190,14 +190,14 @@ bar, so a long name wraps and never crowds the buttons (SW117, SW125). A List | 
 switch under the headline flips to this backlog's list. Tapping a tag filters every column at once, and a column with
 nothing left says "Nothing here". The chat opens it from a card ("show the
 Software board", then Open). Moving a card stays in Chat ("move 2 to In Progress");
-dragging is not drawn. Drawn in [kanban.html](../../mockups/app/kanban.html).
+dragging is not drawn. Drawn in [kanban.html](../../mockups/app/backlogs/kanban.html).
 
 ## A backlog's page (SW31, D53, D58, D60)
 
 Opened by the Backlog link on a board: the backlog's steps in order with how many
 issues each holds, and, for a person who may manage backlogs, the groups with access and their level; a worker or member sees the steps and counts only (D76). There is no
 page listing the backlogs; the Backlogs screen is that list. Drawn in
-[backlog.html](../../mockups/app/backlog.html).
+[backlog.html](../../mockups/app/backlogs/backlog.html).
 
 A step may carry a WIP limit (SW549): the most issues it may hold. A move into a step that is at its limit is refused with 409 naming the limit, unless the person has Can edit and asks to override; a limit lowered below the count removes no issue and only refuses new ones. Every issue read carries `entered_step_at` and `days_in_step`.
 
@@ -222,13 +222,13 @@ page, and its access screen. A role without it sees none of these.
 | Edit a backlog | Rename the backlog, move its steps up or down, add a step, remove a step, delete the backlog; a step that holds issues has its remove button off and says how many it holds, and a backlog that holds issues cannot be deleted |
 | Access to a backlog | One row for each group with No access, Can see or Can move; Add a group lists the groups with none yet; a change is saved when a level is chosen |
 
-Drawn in [manage-backlogs.html](../../mockups/app/manage-backlogs.html).
+Drawn in [manage-backlogs.html](../../mockups/app/backlogs/manage-backlogs.html).
 
 Saving an edited backlog makes one call for each change, in a safe order: rename the backlog, remove the old steps, rename the kept steps, add the new steps, then put the steps in order. The one-call replace is not used, because it would overwrite the list of someone editing at the same time. The hub refuses two steps with the same name and a backlog with no steps, so: a step removed and added again under the same name is kept as it is; renames run so that no name is used twice (B to C before A to B); two steps that swap names are refused before anything is sent, and the person is told to rename one first; and when every step is replaced, the new steps are added before the old ones are removed, so the backlog never has no steps. A step is renamed from its pencil button, which opens a field for the new name. If a call is refused, the screen says which change failed and what was already saved, and the person can save again. Deleting asks first ("Delete Support?" with Delete and Cancel).
 
 ## Smart backlogs and sending
 
-A second kind of backlog fills itself from rules, and issues can be selected and sent to a backlog with steps. Written in [smart-backlogs.md](smart-backlogs.md), drawn in [smart-backlogs.html](../../mockups/app/smart-backlogs.html); decided as D90 to D100, which include a Can edit access level (D96).
+A second kind of backlog fills itself from rules, and issues can be selected and sent to a backlog with steps. Written in [smart-backlogs.md](smart-backlogs.md), drawn in [smart-backlogs.html](../../mockups/app/backlogs/smart-backlogs.html); decided as D90 to D100, which include a Can edit access level (D96).
 
 ## The age of an issue (D124)
 
@@ -236,8 +236,8 @@ Every issue card on a board, every issue row in a list and the issue's page end
 the tag line with a plain grey bubble that says how long the issue has waited. It
 is the app's Chip in its one neutral style, not coloured from its text, and it
 shares the tag line, so a card or a row on a phone is no taller. It is not a
-filter. Drawn in [kanban.html](../../mockups/app/kanban.html), [lists.html](../../mockups/app/lists.html)
-and [card.html](../../mockups/app/card.html#s2), where the wide window sits under the phone.
+filter. Drawn in [kanban.html](../../mockups/app/backlogs/kanban.html), [lists.html](../../mockups/app/backlogs/lists.html)
+and [card.html](../../mockups/app/issues/card.html#s2), where the wide window sits under the phone.
 
 | Case | Reads | Hover or tap text |
 |---|---|---|
@@ -280,7 +280,7 @@ confirmed.
 
 ## The priority of an issue (D139, D140, SW215; moved to the chip row by D152)
 
-Mockup: [issue-priority.html](../../mockups/app/issue-priority.html).
+Mockup: [issue-priority.html](../../mockups/app/issues/issue-priority.html).
 
 The issue's card has one button: the priority, at the right end of the card's top
 row, which is the card's header (the Bulma card shape: header with the title and
@@ -342,7 +342,7 @@ where the field is sent with the rest.
 
 ## The card (D149, SW257)
 
-Mockup: [card.html](../../mockups/app/card.html).
+Mockup: [card.html](../../mockups/app/issues/card.html).
 
 Every card on every screen is the one shared `Card`, in the Bulma shape
 (https://bulma.io/documentation/components/card/): a header with the title at the
@@ -373,7 +373,7 @@ class of their own are gone.
 
 ## Todo list of an issue (D159, TDL-1)
 
-Mockup: [issue-todos.html](../../mockups/app/issue-todos.html).
+Mockup: [issue-todos.html](../../mockups/app/issues/issue-todos.html).
 
 An issue holds a todo list: its work cut into smaller pieces, each of which can wait on other pieces, so the list is a dependency tree. Issues keep the steps they have today; the list sits inside an issue and adds no step.
 
@@ -468,7 +468,7 @@ Something list (`src/home/StartRows.tsx`) is the reference.
 
 ## Using the full width of a window
 
-Drawn at phone width, at 42rem and at 84rem, each beside its phone screen: an issue's page ([card.html](../../mockups/app/card.html#s2)), All issues as a list ([lists.html](../../mockups/app/lists.html#s1)) and as a board ([kanban.html](../../mockups/app/kanban.html#s2)), a backlog's board ([kanban.html](../../mockups/app/kanban.html#s1)), and a smart backlog's page as a list and as a board ([smart-backlogs.html](../../mockups/app/smart-backlogs.html#s3)). The owner chose one wide row for each issue for the List on 2026-11-11 (D108). The Board drawings, columns of at least 15rem that share the spare width, stand as drawn and were not questioned.
+Drawn at phone width, at 42rem and at 84rem, each beside its phone screen: an issue's page ([card.html](../../mockups/app/issues/card.html#s2)), All issues as a list ([lists.html](../../mockups/app/backlogs/lists.html#s1)) and as a board ([kanban.html](../../mockups/app/backlogs/kanban.html#s2)), a backlog's board ([kanban.html](../../mockups/app/backlogs/kanban.html#s1)), and a smart backlog's page as a list and as a board ([smart-backlogs.html](../../mockups/app/backlogs/smart-backlogs.html#s3)). The owner chose one wide row for each issue for the List on 2026-11-11 (D108). The Board drawings, columns of at least 15rem that share the spare width, stand as drawn and were not questioned.
 
 The width of the window decides the layout through flex, `clamp()` and grow and shrink rules, with no fixed pixel width, so a window of any width gets a layout that fits it. The one breakpoint is `min-width: 48rem`: below it the header keeps the stacked layout of the phone, and from it up the header is a single line. The phone looks as it does today.
 
@@ -487,7 +487,7 @@ Not drawn because it is not built: a Search box on a smart backlog's page.
 
 ### Every other screen (D123)
 
-Drawn in [tabs.html](../../mockups/app/tabs.html#s5) with Chat and the Backlogs list as the two examples. The frame of every screen, backlog or not, is as wide as the window at every width: the earlier phone-width column and the separate `fluid` frame are gone. The only breakpoint is still `min-width: 48rem`, and it changes the header line, never the width of the frame.
+Drawn in [tabs.html](../../mockups/app/home/tabs.html#s5) with Chat and the Backlogs list as the two examples. The frame of every screen, backlog or not, is as wide as the window at every width: the earlier phone-width column and the separate `fluid` frame are gone. The only breakpoint is still `min-width: 48rem`, and it changes the header line, never the width of the frame.
 
 | Part | Strategy |
 |---|---|
@@ -502,7 +502,7 @@ Screens whose wide layout needs more than rows spreading across the width, such 
 
 ### An issue's page
 
-Drawn in [card.html](../../mockups/app/card.html#s2) at phone width, at 42rem and at 84rem (D119). The page is a wrapping flex row from `min-width: 48rem`, and the single column of today below it.
+Drawn in [card.html](../../mockups/app/issues/card.html#s2) at phone width, at 42rem and at 84rem (D119). The page is a wrapping flex row from `min-width: 48rem`, and the single column of today below it.
 
 | Part | Strategy |
 |---|---|

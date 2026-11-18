@@ -1,6 +1,6 @@
 # Home options
 
-The Home screen of the phone app opens with up to three option rows, in this order: Start, Ongoing, Backlogs (decisions 154, 156 and 158; drawing `2. design/mockups/app/tabs.html`, section 1). Each row has its icon (play, clock, list), its name and a chevron, with no subtitle and no count. The code is `code/app/src/app/home/HomeOptions.tsx`.
+The Home screen of the phone app opens with up to three option rows, in this order: Start, Ongoing, Backlogs (decisions 154, 156 and 158; drawing `2. design/mockups/app/home/tabs.html`, section 1). Each row has its icon (play, clock, list), its name and a chevron, with no subtitle and no count. The code is `code/app/src/app/home/HomeOptions.tsx`.
 
 | Row | Shown when | Opens |
 |---|---|---|

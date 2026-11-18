@@ -7,6 +7,7 @@ import { mcpBacklogsClient, type BacklogsClient, BacklogViewCard, BacklogSummari
 import { chatListPath } from "../../app/routes";
 import { carriedChatFrom, useCarriedChatAbout } from "../../app/chatAbout";
 import { AboutLine } from "./AboutLine";
+import { emptyWordsFor, placeholderFor } from "./aboutSubjects";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
 import { Chip } from "../../shared/ui/Chip";
@@ -256,7 +257,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
           ) : (
             <Card>
               {items.length === 0 ? (
-                <p className="assistant-empty">{about ? emptyWordsAbout(about.name) : emptyWords}</p>
+                <p className="assistant-empty">{about ? emptyWordsFor(about) : emptyWords}</p>
               ) : (
                 <BacklogSummariesLoader kinds={items.some((item) => (item.views ?? []).length > 0) ? [backlogViewKind] : []} client={backlogs}>
                   <Bubbles items={items} phase={phase === "working" && confirmation.pending ? "idle" : phase} current={current} step={step} reason={reason} retry={() => void answerTo(items, current)} pick={found.pick} unqueue={(id) => setItems((now) => withoutItem(now, id))} ask={(words) => void send(words)} />
@@ -271,7 +272,7 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
       ) : null}
       {model.state === "ready" && !unavailable && limit === "" ? (
         <div className="assistant-compose">
-          <Composer placeholder={about ? askPlaceholderAbout(about.name) : askPlaceholder} onSend={send} focusOnArrival={about !== null} />
+          <Composer placeholder={about ? placeholderFor(about) : askPlaceholder} onSend={send} focusOnArrival={about !== null} />
         </div>
       ) : null}
     </Shell>
