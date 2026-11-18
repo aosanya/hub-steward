@@ -6,4 +6,5 @@ export const councilPaths = {
   agendas: screen("/menu/council/agendas"),
   resolutions: screen("/menu/council/resolutions"),
   bylaws: screen("/menu/council/bylaws"),
+  edit: screen("/menu/council/:kind/:id/edit"),
 };

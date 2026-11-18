@@ -3,9 +3,9 @@ import { useMay } from "../../../../features/agency/useMay";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { ListRow, Rows } from "../../../../shared/ui/ListRow";
-import { EmptyCard, LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
+import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
 import { SearchBox } from "../../../../shared/ui/SearchBox";
-import { SectionHeading } from "../../../../shared/ui/SectionHeading";
+import { Section } from "../../../../shared/ui/Section";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { refusalWords } from "../../MenuEditForm";
 import { addMember, loadRoster, removeMember, type Person, type Roster } from "./committeeMembersData";
@@ -64,17 +64,19 @@ export function CommitteeMembers({ groupId, onChanged }: { groupId: string; onCh
   const roster = view.data;
   const add = (person: Person) =>
     roster.memberKind === "" ? setRefused(noMemberSeatWords) : act(() => addMember(groupId, person.id, roster.memberKind), () => setAdding(false));
-  const addButton = may && !adding ? <Button kind="primary" onClick={() => setAdding(true)}>Add member</Button> : null;
+  const addAct = may && !adding ? <button type="button" className="sec-act" onClick={() => setAdding(true)}>Add member</button> : null;
   return (
     <>
-      <SectionHeading>{`Members (${roster.members.length})`}</SectionHeading>
-      {roster.members.length === 0 ? <EmptyCard words="No members yet.">{addButton}</EmptyCard> : null}
-      <Rows>
-        {roster.members.map((member) => (
+      <Section
+        word="Members"
+        icon="users"
+        all
+        foot={addAct}
+        empty={{ words: "No members yet." }}
+        rows={roster.members.map((member) => (
           <ListRow key={member.seat} title={member.name} meta={member.role} end={may ? <Button kind="quiet" disabled={busy} onClick={() => act(() => removeMember(member.seat))}>Remove</Button> : undefined} />
         ))}
-      </Rows>
-      {roster.members.length > 0 ? addButton : null}
+      />
       {may && adding ? <PersonPicker roster={roster} busy={busy} refused={refused} onAdd={add} onCancel={() => setAdding(false)} /> : null}
       {!adding && refused ? <LoadFailed words={refused} /> : null}
     </>

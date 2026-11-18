@@ -1,13 +1,11 @@
-import { useState } from "react";
-import { callTool } from "../../../../shared/wakala/mcp";
+import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
-import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
-import { councilTools, homeEmpty, listOf, manageCouncil, noneYet, readMeetingArgs, readResolutionArgs, text, type Item } from "./councilData";
+import { CouncilPage, DetailCard } from "./CouncilPage";
+import { councilTools, homeEmpty, listOf, noneYet, text, type Item } from "./councilData";
+import { loadResolution, outcomeWords } from "./councilRecords";
 
 export const resolutionsTitle = "Resolutions";
-
-const outcomeWords = (outcome: string) => outcome.charAt(0).toUpperCase() + outcome.slice(1);
 
 const metaOf = (resolution: Item) => [text(resolution, "date"), outcomeWords(text(resolution, "outcome"))].filter((part) => part !== "").join(" · ");
 
@@ -16,59 +14,26 @@ const loadResolutions = async () => {
   return resolutions.map((resolution) => ({ id: text(resolution, "id"), title: text(resolution, "title"), meta: metaOf(resolution) }));
 };
 
-const meetingName = async (meetingId: string) => {
-  if (meetingId === "") return "";
-  try {
-    return text((await callTool("", councilTools.meetingRead, readMeetingArgs(meetingId))) as Item | null, "name");
-  } catch {
-    return "";
-  }
-};
-
-const loadResolution = async (id: string) => {
-  const resolution = (await callTool("", councilTools.resolutionRead, readResolutionArgs(id))) as Item | null;
-  return {
-    id,
-    title: text(resolution, "title"),
-    date: text(resolution, "date"),
-    outcome: text(resolution, "outcome"),
-    outcomeWords: outcomeWords(text(resolution, "outcome")),
-    meeting: await meetingName(text(resolution, "meeting_id")),
-  };
-};
-
-const editFields: EditField[] = [
-  { label: "Title", key: "title", required: true },
-  { label: "Date", key: "date", kind: "date", required: true },
-  { label: "Outcome", key: "outcome", required: true },
-];
+function ResolutionPage({ resolution }: { resolution: Item }) {
+  return (
+    <CouncilPage name={text(resolution, "title")} line={[text(resolution, "date"), text(resolution, "outcomeWords")].filter((part) => part !== "").join(" · ")}>
+      <DetailCard word="Resolution detail" item={resolution} kind="resolutions" rows={[["Title", text(resolution, "title")], ["Date", text(resolution, "date")], ["Outcome", text(resolution, "outcomeWords")], ["Meeting", text(resolution, "meeting")]]} />
+    </CouncilPage>
+  );
+}
 
 export function ResolutionsScreen() {
   const word = useWord("council");
   const title = word(resolutionsTitle);
-  const [version, setVersion] = useState(0);
+  const [search] = useSearchParams();
   return (
     <MenuWindow
       title={title}
-      listKey={version}
-      detailKey={version}
+      withTabs
+      bandless
+      startAt={search.get("id") ?? undefined}
       list={{ title, tool: councilTools.resolutionList, load: loadResolutions, fields: { title: "title", meta: "meta" }, empty: homeEmpty(noneYet(word, resolutionsTitle, "No resolutions yet.")) }}
-      detail={{ tool: councilTools.resolutionRead, load: loadResolution, fields: { Title: "title", Date: "date", Outcome: "outcomeWords", Meeting: "meeting" },
-        status: "status",
-        extra: (resolution) => (
-          <MenuEditForm
-            item={resolution}
-            id={text(resolution, "id")}
-            idArg="resolutionID"
-            tool={councilTools.resolutionUpdate}
-            permission={manageCouncil}
-            fields={editFields}
-            keep={["title", "date", "outcome"]}
-            readAgain={() => loadResolution(text(resolution, "id"))}
-            onSaved={() => setVersion((was) => was + 1)}
-          />
-        ),
-      }}
+      detail={{ tool: councilTools.resolutionRead, load: loadResolution, fields: {}, status: "", extra: (resolution) => <ResolutionPage resolution={resolution} /> }}
     />
   );
 }

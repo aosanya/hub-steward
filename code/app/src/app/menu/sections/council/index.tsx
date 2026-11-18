@@ -4,6 +4,7 @@ import { BylawsScreen, bylawsTitle } from "./BylawsScreen";
 import { CommitteesScreen, committeesTitle } from "./CommitteesScreen";
 import { MeetingsScreen, meetingsTitle } from "./MeetingsScreens";
 import { ResolutionsScreen, resolutionsTitle } from "./ResolutionsScreen";
+import { CouncilEditScreen } from "./CouncilEditScreen";
 import { councilPaths } from "./paths";
 
 export const items = [
@@ -21,5 +22,6 @@ export const routes = () => (
     <Route path={councilPaths.resolutions.pattern} element={<ResolutionsScreen />} />
     <Route path={councilPaths.bylaws.pattern} element={<BylawsScreen />} />
     <Route path={councilPaths.committees.pattern} element={<CommitteesScreen />} />
+    <Route path={councilPaths.edit.pattern} element={<CouncilEditScreen />} />
   </>
 );

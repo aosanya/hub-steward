@@ -1,19 +1,13 @@
 import { useState } from "react";
-import { callTool } from "../../../../shared/wakala/mcp";
+import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
-import { MenuEditForm, type EditField } from "../../MenuEditForm";
 import { MenuWindow } from "../../MenuWindow";
-import { councilTools, homeEmpty, listOf, manageCouncil, noneYet, readMeetingArgs, text, type Item } from "./councilData";
+import { CouncilPage, DetailCard } from "./CouncilPage";
+import { MeetingPapers } from "./MeetingPapers";
+import { councilTools, homeEmpty, listOf, noneYet, text, type Item } from "./councilData";
+import { loadMeeting, meetingOf } from "./councilRecords";
 
 export const meetingsTitle = "Meetings";
-
-const meetingOf = (meeting: Item | null | undefined) => ({
-  id: text(meeting, "id"),
-  name: text(meeting, "name"),
-  date: text(meeting, "date"),
-  place: text(meeting, "place"),
-  committee: text(meeting, "committee"),
-});
 
 const loadMeetings = async () =>
   (await listOf(councilTools.meetingList)).map((item) => {
@@ -21,44 +15,31 @@ const loadMeetings = async () =>
     return { ...meeting, meta: [meeting.date, meeting.place].filter((part) => part !== "").join(" · ") };
   });
 
-const loadMeeting = async (id: string) => {
-  const reply = (await callTool("", councilTools.meetingRead, readMeetingArgs(id))) as Item | null;
-  return meetingOf((reply?.item ?? reply) as Item | null);
-};
-
-const editFields: EditField[] = [
-  { label: "Name", key: "name", required: true },
-  { label: "Date", key: "date", kind: "date", required: true },
-  { label: "Place", key: "place" },
-  { label: "Committee", key: "committee" },
-];
+function MeetingPage({ meeting }: { meeting: Item }) {
+  const line = [text(meeting, "date"), text(meeting, "place")].filter((part) => part !== "").join(" · ");
+  return (
+    <CouncilPage name={text(meeting, "name")} line={line}>
+      <DetailCard word="Meeting detail" item={meeting} kind="meetings" rows={[["Name", text(meeting, "name")], ["Date", text(meeting, "date")], ["Place", text(meeting, "place")], ["Committee", text(meeting, "committee")]]} />
+      <MeetingPapers id={text(meeting, "id")} withResolutions />
+    </CouncilPage>
+  );
+}
 
 export function MeetingsScreen() {
   const word = useWord("council");
   const title = word(meetingsTitle);
-  const [version, setVersion] = useState(0);
+  const [version] = useState(0);
+  const [search] = useSearchParams();
   return (
     <MenuWindow
       title={title}
+      withTabs
+      bandless
+      startAt={search.get("id") ?? undefined}
       listKey={version}
       detailKey={version}
       list={{ title, tool: councilTools.meetingList, load: loadMeetings, fields: { title: "name", meta: "meta" }, empty: homeEmpty(noneYet(word, meetingsTitle, "No meetings yet.")) }}
-      detail={{ tool: councilTools.meetingRead, load: loadMeeting, fields: { Name: "name", Date: "date", Place: "place", Committee: "committee" },
-        status: "status",
-        extra: (meeting) => (
-          <MenuEditForm
-            item={meeting}
-            id={text(meeting, "id")}
-            idArg="meetingID"
-            tool={councilTools.meetingUpdate}
-            permission={manageCouncil}
-            fields={editFields}
-            keep={["name", "date", "place", "committee"]}
-            readAgain={() => loadMeeting(text(meeting, "id"))}
-            onSaved={() => setVersion((was) => was + 1)}
-          />
-        ),
-      }}
+      detail={{ tool: councilTools.meetingRead, load: loadMeeting, fields: {}, status: "", extra: (meeting) => <MeetingPage meeting={meeting} /> }}
     />
   );
 }
