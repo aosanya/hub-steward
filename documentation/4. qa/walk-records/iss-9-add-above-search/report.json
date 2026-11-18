@@ -1,0 +1,650 @@
+[
+ {
+  "viewport": "wide",
+  "screen": "departments",
+  "expected": "Add department",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add department",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "crews",
+  "expected": "Add crew",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add crew",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "staff",
+  "expected": "Add person",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add person",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "roles-permissions",
+  "expected": null,
+  "search": true,
+  "adds": [],
+  "matches": 0,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "people",
+  "expected": "Add person",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add person",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   },
+   {
+    "text": "Add to a group",
+    "tag": "BUTTON",
+    "abovesearch": false,
+    "widthShare": 100,
+    "inHeader": false
+   },
+   {
+    "text": "Start an application",
+    "tag": "BUTTON",
+    "abovesearch": false,
+    "widthShare": 100,
+    "inHeader": false
+   },
+   {
+    "text": "Raise on their behalf",
+    "tag": "BUTTON",
+    "abovesearch": false,
+    "widthShare": 100,
+    "inHeader": false
+   },
+   {
+    "text": "Add holding",
+    "tag": "BUTTON",
+    "abovesearch": false,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "businesses",
+  "expected": "Add business",
+  "search": true,
+  "adds": [],
+  "matches": 0,
+  "ok": false
+ },
+ {
+  "viewport": "wide",
+  "screen": "informal-traders",
+  "expected": "Add trader",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add trader",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "holdings",
+  "expected": "Add holding",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add holding",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "wishes",
+  "expected": "Send a wish",
+  "search": true,
+  "adds": [
+   {
+    "text": "Send a wish",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "meetings",
+  "expected": "Add meeting",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add meeting",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "resolutions",
+  "expected": "Add resolution",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add resolution",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "bylaws",
+  "expected": "Add bylaw",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add bylaw",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "committees",
+  "expected": "Add committee",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add committee",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   },
+   {
+    "text": "Add member",
+    "tag": "BUTTON",
+    "abovesearch": false,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "work-orders",
+  "expected": "Add work order",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add work order",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "maintenance-schedule",
+  "expected": "Add schedule",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add schedule",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "service-catalogue",
+  "expected": "Add service",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add service",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "applications",
+  "expected": null,
+  "search": true,
+  "adds": [],
+  "matches": 0,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "boundaries",
+  "expected": "Add area",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add area",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "wide",
+  "screen": "users-and-roles",
+  "expected": "Add person",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add person",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 92,
+    "inHeader": false
+   },
+   {
+    "text": "Open the resident page",
+    "tag": "BUTTON",
+    "abovesearch": false,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "departments",
+  "expected": "Add department",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add department",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "crews",
+  "expected": "Add crew",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add crew",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "staff",
+  "expected": "Add person",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add person",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "roles-permissions",
+  "expected": null,
+  "search": true,
+  "adds": [],
+  "matches": 0,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "people",
+  "expected": "Add person",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add person",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "businesses",
+  "expected": "Add business",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add business",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "informal-traders",
+  "expected": "Add trader",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add trader",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "holdings",
+  "expected": "Add holding",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add holding",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "wishes",
+  "expected": "Send a wish",
+  "search": true,
+  "adds": [
+   {
+    "text": "Send a wish",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "meetings",
+  "expected": "Add meeting",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add meeting",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "resolutions",
+  "expected": "Add resolution",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add resolution",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "bylaws",
+  "expected": "Add bylaw",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add bylaw",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "committees",
+  "expected": "Add committee",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add committee",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "work-orders",
+  "expected": "Add work order",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add work order",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "maintenance-schedule",
+  "expected": "Add schedule",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add schedule",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "service-catalogue",
+  "expected": "Add service",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add service",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "applications",
+  "expected": null,
+  "search": true,
+  "adds": [],
+  "matches": 0,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "boundaries",
+  "expected": "Add area",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add area",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ },
+ {
+  "viewport": "phone",
+  "screen": "users-and-roles",
+  "expected": "Add person",
+  "search": true,
+  "adds": [
+   {
+    "text": "Add person",
+    "tag": "BUTTON",
+    "abovesearch": true,
+    "widthShare": 100,
+    "inHeader": false
+   }
+  ],
+  "matches": 1,
+  "ok": true
+ }
+]
