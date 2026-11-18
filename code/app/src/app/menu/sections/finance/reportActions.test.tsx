@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { pdfTextOf } from "../../../../shared/ui/pdfTestKit";
 import { ReportsScreen } from "./ReportsScreen";
 
 const reports = [{ name: "Second quarter", period_start: "2026-04-01", period_end: "2026-07-01" }];
@@ -16,17 +17,17 @@ const figures = {
   balances: [],
 };
 
-const lines = [{ id: "line-id-9", name: "Road repair", department: "Transport", planned: 8000, spent: 8300 }];
+const lines = [{ id: "line-id-9", name: "Szűcs út javítás Road repair", department: "Transport", planned: 8000, spent: 8300 }];
 
 let permissions: string[];
 let blobs: Blob[];
 let downloads: string[];
 
-const textOf = (blob: Blob) =>
-  new Promise<string>((resolve) => {
+const bytesOf = (blob: Blob) =>
+  new Promise<Uint8Array>((resolve) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.readAsBinaryString(blob);
+    reader.onload = () => resolve(new Uint8Array(reader.result as ArrayBuffer));
+    reader.readAsArrayBuffer(blob);
   });
 
 const openSecondQuarter = async () => {
@@ -116,12 +117,13 @@ describe("the Actions dropdown on an opened financial report", () => {
     await waitFor(() => expect(blobs).toHaveLength(1));
     expect(downloads).toEqual(["Second quarter.pdf"]);
     expect(blobs[0].type).toBe("application/pdf");
-    const body = await textOf(blobs[0]);
-    expect(body.startsWith("%PDF")).toBe(true);
-    expect(body).toContain("Second quarter");
-    expect(body).toContain("Road repair");
-    expect(body).toContain("8,300");
-    expect(body).not.toContain("line-id-9");
-    expect(body).not.toContain("2026-04-01~2026-07-01");
+    const bytes = await bytesOf(blobs[0]);
+    expect(String.fromCharCode(...bytes.slice(0, 4))).toBe("%PDF");
+    const shown = await pdfTextOf(bytes);
+    expect(shown).toContain("Second quarter");
+    expect(shown).toContain("Szűcs út javítás Road repair");
+    expect(shown).toContain("8,300");
+    expect(shown).not.toContain("line-id-9");
+    expect(shown).not.toContain("2026-04-01~2026-07-01");
   });
 });
