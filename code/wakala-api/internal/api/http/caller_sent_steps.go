@@ -171,6 +171,20 @@ func callerSentSteps(ctx context.Context, m mwanachamaagency.AgencyManager, call
 }
 
 func currentRowsAddedBy(ctx context.Context, m mwanachamaagency.AgencyManager, drafts []string, recordCode, person string) ([]agencymodels.RecordRow, error) {
+	current, err := currentRowsOfRecord(ctx, m, drafts, recordCode)
+	if err != nil {
+		return nil, err
+	}
+	var mine []agencymodels.RecordRow
+	for _, row := range current {
+		if row.AddedBy == person {
+			mine = append(mine, row)
+		}
+	}
+	return mine, nil
+}
+
+func currentRowsOfRecord(ctx context.Context, m mwanachamaagency.AgencyManager, drafts []string, recordCode string) ([]agencymodels.RecordRow, error) {
 	var every []agencymodels.RecordRow
 	for _, id := range drafts {
 		found, err := m.ListRecordRows(ctx, id, mwanachamaagency.RecordRowFilter{RecordCode: recordCode})
@@ -185,13 +199,13 @@ func currentRowsAddedBy(ctx context.Context, m mwanachamaagency.AgencyManager, d
 			replaced[row.Replaces] = true
 		}
 	}
-	var mine []agencymodels.RecordRow
+	var current []agencymodels.RecordRow
 	for _, row := range every {
-		if !row.Deleted && !replaced[row.ID] && row.AddedBy == person {
-			mine = append(mine, row)
+		if !row.Deleted && !replaced[row.ID] {
+			current = append(current, row)
 		}
 	}
-	return mine, nil
+	return current, nil
 }
 
 func answersOf(row agencymodels.RecordRow) map[string]string {

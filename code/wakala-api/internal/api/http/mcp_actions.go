@@ -8,6 +8,7 @@ func LocalActions() map[string]string {
 		"agency_get_my_roles":       "instance.my_roles.read",
 		"agency_list_my_open_steps": "instance.my_open_steps.read",
 		callerSentStepsTool:         callerSentStepsAction,
+		declarationListTool:         declarationListAction,
 		submitStepAnswersTool:       submitStepAnswersAction,
 		resultsFilesTool:            resultsFilesAction,
 		"agency_grant_service":      "instance.service.grant",

@@ -18,6 +18,7 @@ var selfServiceActions = []string{
 	"instance.my_roles.read",
 	"instance.my_open_steps.read",
 	callerSentStepsAction,
+	declarationListAction,
 	"instance.step_answers.submit",
 	"instance.live_record.list",
 	"instance.live_record_row.list",
