@@ -34,7 +34,14 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, detailK
       {below}
     </section>
   );
-  const detailBody = <MenuDetail key={detailKey} {...detail} title={title} bare id={chosen} />;
+  const detailPane = (
+    <>
+      <h2 className="wf-head">{title}</h2>
+      <div className="wf-content">
+        <MenuDetail key={detailKey} {...detail} title={title} bare id={chosen} />
+      </div>
+    </>
+  );
   if (wide) {
     return (
       <Shell title={title} onBack={onBack} backLabel={backLabel} headEnd={headEnd} tabless>
@@ -42,12 +49,7 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, detailK
           <div className="wf-panes">
             {listPane}
             <section className={chosen ? "mw-detail wf-main" : "wf-main"} aria-label={chosen ? title : undefined}>
-              {chosen ? (
-                <>
-                  <h2 className="wf-head">{title}</h2>
-                  <div className="wf-content">{detailBody}</div>
-                </>
-              ) : null}
+              {chosen ? detailPane : null}
             </section>
           </div>
           <footer className="wf-status" aria-label="Status bar" />
@@ -60,8 +62,8 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, detailK
       <div className="mw" data-chosen={chosen ? "yes" : "no"}>
         {listPane}
         {chosen ? (
-          <section className="mw-detail" aria-label={title}>
-            {detailBody}
+          <section className="mw-detail mw-page" aria-label={title}>
+            {detailPane}
           </section>
         ) : null}
       </div>

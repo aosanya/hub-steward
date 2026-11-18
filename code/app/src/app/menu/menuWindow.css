@@ -3,3 +3,6 @@
 .mw-list, .mw-detail { display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
 .wf-tree.mw-list { flex-basis: 20rem; padding: .75rem; }
 .wf-tree .row[aria-pressed="true"] { color: var(--accent-strong); }
+.mw[data-chosen="yes"] { margin: calc(var(--gutter, 1rem) * -1); gap: 0; background: var(--surface); }
+.mw-page { gap: 0; }
+.mw-page .wf-content { flex: none; overflow: visible; }
