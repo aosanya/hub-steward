@@ -155,6 +155,8 @@ Whether each tool is open to an agent role is set by the agency's role permissio
 
 Bookings of one person: `forms_catalog_booking_list_of_person` takes `actor_id` and lists that person's standing and cancelled bookings, earliest first (action `catalog.booking.list_of_person`). It is held by the new permission `appointment.view_person`, "See one person's bookings", and by no other; `appointment.manage` does not carry it. A person's own bookings stay `forms_catalog_booking_list_mine`.
 
+Applications that name a business: `forms_answer_submit` takes an optional `record_row_id`, the business or trader row the send is for; only a row that names the caller as its owner is accepted and any other row is refused. The send keeps it. `forms_submission_list` and `forms_submission_list_of_person` take an optional `record_row_id` and list only the sends that name that row or an older row it replaced by correction; a send naming no row is never listed for a row.
+
 ## Audit log
 
 | Operation | Method and path | Reads / writes | Who | REST | MCP |
