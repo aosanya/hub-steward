@@ -19,7 +19,7 @@ func (d *Deps) resolveTwin(ctx context.Context, instanceID string) (mwanachamadi
 	if err := d.memberOrClearedResident(ctx, instanceID); err != nil {
 		return nil, err
 	}
-	return d.Registry.TwinManager(ctx, instanceID)
+	return twinFollowingCorrections(ctx, d.Registry, instanceID)
 }
 
 func digitaltwinToolMount() digitaltwinroutes.Mount {

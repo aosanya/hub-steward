@@ -190,7 +190,15 @@ func twinManagerFor(ctx context.Context, reg agencies.Registry, instanceID strin
 	if err := mustBeMember(ctx, reg, instanceID); err != nil {
 		return nil, err
 	}
-	return reg.TwinManager(ctx, instanceID)
+	return twinFollowingCorrections(ctx, reg, instanceID)
+}
+
+func twinFollowingCorrections(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamadigitaltwin.TwinManager, error) {
+	twin, err := reg.TwinManager(ctx, instanceID)
+	if err != nil {
+		return nil, err
+	}
+	return withTenureRowLineage(twin, liveRowLineage(reg, instanceID)), nil
 }
 
 func postManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamaengage.PostManager, error) {

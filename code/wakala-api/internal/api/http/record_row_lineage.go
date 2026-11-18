@@ -6,6 +6,7 @@ import (
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
+	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 
 	"wakalaserver/internal/agencies"
 )
@@ -59,15 +60,19 @@ func withRowLineage(repo mwanachamaaccounting.LedgerRepository, lineage rowLinea
 	return ledgerFollowingRowCorrections{LedgerRepository: repo, lineage: lineage}
 }
 
-func (l ledgerFollowingRowCorrections) lineageOf(ctx context.Context, recordRowID string) []string {
+func lineageOrSelf(ctx context.Context, read rowLineageReader, recordRowID string) []string {
 	if recordRowID == "" {
 		return nil
 	}
-	lineage, err := l.lineage(ctx, recordRowID)
+	lineage, err := read(ctx, recordRowID)
 	if err != nil || len(lineage) == 0 {
 		return []string{recordRowID}
 	}
 	return lineage
+}
+
+func (l ledgerFollowingRowCorrections) lineageOf(ctx context.Context, recordRowID string) []string {
+	return lineageOrSelf(ctx, l.lineage, recordRowID)
 }
 
 func (l ledgerFollowingRowCorrections) ListBills(ctx context.Context, filter mwanachamaaccounting.BillFilter) ([]mwanachamaaccounting.Bill, error) {
@@ -78,4 +83,18 @@ func (l ledgerFollowingRowCorrections) ListBills(ctx context.Context, filter mwa
 func (l ledgerFollowingRowCorrections) ListPayments(ctx context.Context, filter mwanachamaaccounting.PaymentFilter) ([]mwanachamaaccounting.Payment, error) {
 	filter.RecordRowIDs = l.lineageOf(ctx, filter.RecordRowID)
 	return l.LedgerRepository.ListPayments(ctx, filter)
+}
+
+type twinFollowingRowCorrections struct {
+	mwanachamadigitaltwin.TwinManager
+	lineage rowLineageReader
+}
+
+func withTenureRowLineage(twin mwanachamadigitaltwin.TwinManager, lineage rowLineageReader) mwanachamadigitaltwin.TwinManager {
+	return twinFollowingRowCorrections{TwinManager: twin, lineage: lineage}
+}
+
+func (t twinFollowingRowCorrections) ListTenures(ctx context.Context, filter mwanachamadigitaltwin.TenureFilter) ([]mwanachamadigitaltwin.Tenure, error) {
+	filter.HolderRecordRowIDs = lineageOrSelf(ctx, t.lineage, filter.HolderRecordRowID)
+	return t.TwinManager.ListTenures(ctx, filter)
 }

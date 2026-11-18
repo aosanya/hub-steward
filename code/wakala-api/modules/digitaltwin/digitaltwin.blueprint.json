@@ -429,6 +429,11 @@
           "description": "The id of the person who holds the place, when the holder is a person; empty when the holder is a body, whose name stays in holder."
         },
         {
+          "name": "holder_record_row_id",
+          "type": "string",
+          "description": "The id of the business or informal trader record row that holds the place, such as a market stall; empty when the holder is a person or a body. A corrected row is a new row, so a read by this id follows the correction chain."
+        },
+        {
           "name": "kind",
           "type": "enum",
           "description": "In what capacity the holder holds the place.",
@@ -466,6 +471,13 @@
           "description": "Lists the holdings of one person.",
           "fields": [
             "holder_actor_id"
+          ]
+        },
+        {
+          "name": "holder_record_row",
+          "description": "Lists the holdings of one business or informal trader row.",
+          "fields": [
+            "holder_record_row_id"
           ]
         }
       ]

@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	mwanachamaaccounting "wakalaserver/modules/accounting"
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 	agencymodels "wakalaserver/modules/agency/models"
+	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 )
 
 func rowReplacing(id, replaces string) agencymodels.RecordRow {

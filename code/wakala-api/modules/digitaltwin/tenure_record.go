@@ -5,7 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
+
+const uuidLength = 36
 
 func (m *twinManager) CreateTenure(ctx context.Context, t Tenure) (Tenure, error) {
 	if t.Kind == "" {
@@ -50,6 +54,11 @@ func (m *twinManager) tenureFits(ctx context.Context, t Tenure) error {
 		}
 		return err
 	}
+	if t.HolderRecordRowID != "" {
+		if _, err := uuid.Parse(t.HolderRecordRowID); err != nil || len(t.HolderRecordRowID) != uuidLength {
+			return fmt.Errorf("%w: holder_record_row_id %q is not a record row id", ErrInvalid, t.HolderRecordRowID)
+		}
+	}
 	if t.Since != "" && !isDate(t.Since) {
 		return fmt.Errorf("%w: since must be RFC3339 or YYYY-MM-DD (%q given)", ErrInvalid, t.Since)
 	}
@@ -72,6 +81,11 @@ func (m *twinManager) ListTenures(ctx context.Context, filter TenureFilter) ([]T
 	}
 	if filter.HolderActorID != "" {
 		q = q.Where("holder_actor_id = ?", filter.HolderActorID)
+	}
+	if len(filter.HolderRecordRowIDs) > 0 {
+		q = q.Where("holder_record_row_id IN ?", filter.HolderRecordRowIDs)
+	} else if filter.HolderRecordRowID != "" {
+		q = q.Where("holder_record_row_id = ?", filter.HolderRecordRowID)
 	}
 	if filter.Kind != "" {
 		q = q.Where("kind = ?", filter.Kind)
