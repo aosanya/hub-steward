@@ -59,3 +59,25 @@ describe("the Actions dropdown as an icon button", () => {
     expect(screen.getByRole("button", { name: "Rename" })).not.toHaveClass("danger");
   });
 });
+
+describe("the Actions dropdown opened from the left", () => {
+  it("anchors its list to the left edge of the button when asked", async () => {
+    render(
+      <MemoryRouter>
+        <ActionsMenu align="start" actions={[{ label: "Share", onSelect: () => {} }]} />
+      </MemoryRouter>,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Actions" }));
+    expect(document.querySelector(".actions-list")).toHaveClass("start");
+  });
+
+  it("keeps the list on the right edge by default", async () => {
+    render(
+      <MemoryRouter>
+        <ActionsMenu actions={[{ label: "Share", onSelect: () => {} }]} />
+      </MemoryRouter>,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Actions" }));
+    expect(document.querySelector(".actions-list")).not.toHaveClass("start");
+  });
+});

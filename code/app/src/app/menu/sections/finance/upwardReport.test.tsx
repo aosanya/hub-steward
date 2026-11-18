@@ -64,6 +64,11 @@ const choose = (start: string, end: string) => {
   fireEvent.change(within(formCard()).getByLabelText("To"), { target: { value: end } });
 };
 
+const sendNow = async () => {
+  await userEvent.click(await screen.findByRole("button", { name: "Actions" }));
+  await userEvent.click(screen.getByRole("button", { name: "Send to national level" }));
+};
+
 const pickKind = (name: string) => userEvent.click(within(formCard()).getByRole("button", { name }));
 
 beforeEach(() => {
@@ -173,7 +178,7 @@ describe("the National Report form", () => {
     openScreen();
     await screen.findByText("Sent reports");
     choose(start, end);
-    await userEvent.click(await within(formCard()).findByRole("button", { name: "Send report" }));
+    await sendNow();
 
     expect(await screen.findByText(words)).toBeInTheDocument();
     expect(callsTo("accounting_upward_report_send")).toHaveLength(0);
@@ -186,7 +191,7 @@ describe("sending a report", () => {
     await screen.findByText("Sent reports");
     choose("2026-07-01", "2026-09-30");
     await pickKind("Spending by department");
-    await userEvent.click(await within(formCard()).findByRole("button", { name: "Send report" }));
+    await sendNow();
 
     await waitFor(() => expect(callsTo("accounting_upward_report_send")).toHaveLength(1));
     expect(callsTo("accounting_upward_report_send")[0][2]).toEqual({
@@ -206,7 +211,7 @@ describe("sending a report", () => {
     openScreen();
     await screen.findByText("Sent reports");
     choose("2026-07-01", "2026-09-30");
-    await userEvent.click(await within(formCard()).findByRole("button", { name: "Send report" }));
+    await sendNow();
 
     await waitFor(() => expect(callsTo("accounting_upward_report_send")).toHaveLength(1));
     expect(callsTo("accounting_upward_report_send")[0][2]).toMatchObject({ kind: "budget_and_actuals" });
@@ -217,7 +222,7 @@ describe("sending a report", () => {
     openScreen();
     await screen.findByText("Sent reports");
     choose("2027-01-01", "2027-03-31");
-    await userEvent.click(await within(formCard()).findByRole("button", { name: "Send report" }));
+    await sendNow();
 
     expect(await within(formCard()).findByText("no budget lines were set for that period")).toBeInTheDocument();
     expect(sent).toHaveLength(1);
@@ -228,7 +233,7 @@ describe("sending a report", () => {
     openScreen();
     await screen.findByText("Sent reports");
     choose("2026-07-01", "2026-09-30");
-    await userEvent.click(await within(formCard()).findByRole("button", { name: "Send report" }));
+    await sendNow();
     await waitFor(() => expect(listPane().textContent).toContain("2026-10-05"));
 
     expect(document.body.textContent).not.toMatch(/transmit|delivered|received by|national system/i);

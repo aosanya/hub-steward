@@ -109,19 +109,25 @@ describe("the choose period form is a card", () => {
 });
 
 describe("the national report is built like a resident", () => {
-  it("draws a Report to send card with Show figures and Send report in its footer", async () => {
+  it("draws a Report to send card with Show figures in its footer and no loose Send report button", async () => {
     openNational();
     const card = within(await screen.findByRole("region", { name: "Report to send" }));
     expect(card.getByRole("button", { name: "Show figures" }).closest("footer")).not.toBeNull();
-    expect(card.getByRole("button", { name: "Send report" }).closest("footer")).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Send report" })).toBeNull();
     expect(document.querySelector(".wf-head")).toBeNull();
   });
 
-  it("shows no Send report to a reader without accounting.manage", async () => {
+  it("offers Send to national level in the Actions dropdown to a reader with accounting.manage", async () => {
+    openNational();
+    await userEvent.click(await screen.findByRole("button", { name: "Actions" }));
+    expect(screen.getByRole("button", { name: "Send to national level" })).toBeInTheDocument();
+  });
+
+  it("shows no Actions dropdown to a reader without accounting.manage", async () => {
     permissions = ["accounting.view"];
     openNational();
-    const card = within(await screen.findByRole("region", { name: "Report to send" }));
-    expect(card.queryByRole("button", { name: "Send report" })).toBeNull();
+    await screen.findByRole("region", { name: "Report to send" });
+    expect(screen.queryByRole("button", { name: "Actions" })).toBeNull();
   });
 });
 
@@ -154,11 +160,13 @@ describe("the national report is one column with a title, a form and a Sent card
   });
 });
 
-describe("Send to a person is the right-hand act of the Report card", () => {
-  it("sits in the footer of the Report card", async () => {
+describe("the report page carries its acts in the Actions dropdown at the top left", () => {
+  it("has no Send to a person bar and no act in the footer of the Report card", async () => {
     permissions = [...permissions, "notification.raise"];
     await openReport();
     const card = within(await screen.findByRole("region", { name: "Report" }));
-    expect(card.getByRole("button", { name: "Send to a person" }).closest("footer")).not.toBeNull();
+    expect(card.queryByRole("button", { name: "Send to a person" })).toBeNull();
+    expect(card.queryByRole("button", { name: "Share" })).toBeNull();
+    expect(document.querySelector(".person-page footer.sec-foot")).toBeNull();
   });
 });

@@ -30,6 +30,11 @@ let called: MockInstance<typeof mcp.callTool>;
 
 const raises = () => called.mock.calls.filter(([, tool]) => tool === "comm_notification_raise");
 
+const openShare = async () => {
+  await userEvent.click(await screen.findByRole("button", { name: "Actions" }));
+  await userEvent.click(screen.getByRole("button", { name: "Share" }));
+};
+
 const openSecondQuarter = async () => {
   render(
     <MemoryRouter initialEntries={[{ pathname: "/a/town/menu/finance/reports", state: { from: origin } }]}>
@@ -63,15 +68,17 @@ afterEach(() => {
 });
 
 describe("handing an opened report to a person", () => {
-  it("offers Send to a person on an opened report to a caller who may raise a notification", async () => {
+  it("offers Share in the Actions dropdown on an opened report to a caller who may raise a notification", async () => {
     await openSecondQuarter();
+    await userEvent.click(await screen.findByRole("button", { name: "Actions" }));
 
-    expect(await screen.findByRole("button", { name: "Send to a person" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Share" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Send to a person" })).toBeNull();
   });
 
   it("raises one report_handed_over notification for the chosen person, carrying the report's name, period and figures", async () => {
     await openSecondQuarter();
-    await userEvent.click(await screen.findByRole("button", { name: "Send to a person" }));
+    await openShare();
     await userEvent.click(await screen.findByRole("button", { name: /Person/ }));
     await userEvent.click(screen.getByRole("option", { name: "Varga Mária" }));
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
@@ -90,7 +97,7 @@ describe("handing an opened report to a person", () => {
 
   it("does not send until a person is chosen", async () => {
     await openSecondQuarter();
-    await userEvent.click(await screen.findByRole("button", { name: "Send to a person" }));
+    await openShare();
 
     expect(screen.getByRole("button", { name: "Send" })).toBeDisabled();
     expect(raises()).toHaveLength(0);
@@ -105,7 +112,7 @@ describe("handing an opened report to a person", () => {
       throw new Error("forbidden");
     });
     await openSecondQuarter();
-    await userEvent.click(await screen.findByRole("button", { name: "Send to a person" }));
+    await openShare();
     await userEvent.click(await screen.findByRole("button", { name: /Person/ }));
     await userEvent.click(screen.getByRole("option", { name: "Kiss Ágnes" }));
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
@@ -113,11 +120,11 @@ describe("handing an opened report to a person", () => {
     expect(await screen.findByText("That did not go through.")).toBeInTheDocument();
   });
 
-  it("shows no Send to a person to a caller who may not raise a notification", async () => {
+  it("shows no Share to a caller who may not raise a notification", async () => {
     permissions = [];
     await openSecondQuarter();
 
     await waitFor(() => expect(called.mock.calls.some(([, tool]) => tool === "agency_get_my_roles")).toBe(true));
-    expect(screen.queryByRole("button", { name: "Send to a person" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Share" })).toBeNull();
   });
 });
