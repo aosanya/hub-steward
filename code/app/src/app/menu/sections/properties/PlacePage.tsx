@@ -25,7 +25,7 @@ const editFields = [
 
 const placeRead = "assetmanager_asset_read";
 
-export const loadPlace = async (placeId: string) => {
+export const loadPlace = async (placeId: string): Promise<Record<string, unknown>> => {
   const asset = itemOf(await callTool("", placeRead, { assetID: placeId }));
   const locationId = textOf(asset.location_id);
   const location = locationId ? itemOf(await callTool("", "assetmanager_location_read", { locationID: locationId })) : {};
