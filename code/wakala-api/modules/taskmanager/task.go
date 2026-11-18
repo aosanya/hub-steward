@@ -100,7 +100,7 @@ type TaskManager interface {
 	ListCaseTasksFor(ctx context.Context, requesterID, caseID string) ([]Task, error)
 	TraverseRelationshipsFor(ctx context.Context, requesterID, vertexID, label string, dir Direction) ([]Relationship, error)
 	TaskDependenciesFor(ctx context.Context, requesterID, taskID string) (TaskDependencies, error)
-	ClaimTaskAs(ctx context.Context, requesterID, taskID string) (TaskClaim, error)
+	ClaimTaskAs(ctx context.Context, requesterID string, req ClaimRequest) (NextClaim, error)
 	ClaimNext(ctx context.Context, requesterID string, req ClaimNextRequest) (NextClaim, error)
 	Heartbeat(ctx context.Context, requesterID string, req HeartbeatRequest) (LeaseRenewed, error)
 	ListBacklogAccess(ctx context.Context, backlogID string) (BacklogAccess, error)

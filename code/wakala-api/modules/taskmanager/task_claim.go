@@ -12,7 +12,16 @@ import (
 	"wakalaserver/modules/taskmanager/models"
 )
 
-const claimNoteFormat = "Taken by %s. Caps in force: %d input, %d output, %s"
+const (
+	claimNoteFormat = "Taken by %s. Caps in force: %d input, %d output, %s"
+	holderMaxLength = 64
+)
+
+type ClaimRequest struct {
+	TaskID       string `json:"task_id"`
+	Holder       string `json:"holder"`
+	LeaseMinutes int    `json:"lease_minutes"`
+}
 
 type ClaimedIssue struct {
 	ID       string       `json:"id"`
@@ -32,8 +41,30 @@ type TaskClaim struct {
 	Caps   WorkerCaps   `json:"caps"`
 }
 
-func (m *taskManager) ClaimTaskAs(ctx context.Context, requesterID, taskID string) (TaskClaim, error) {
-	return m.claimIssue(ctx, requesterID, taskID, leaseHold{})
+func (m *taskManager) ClaimTaskAs(ctx context.Context, requesterID string, req ClaimRequest) (NextClaim, error) {
+	length, err := leaseLength(req.LeaseMinutes)
+	if err != nil {
+		return NextClaim{}, err
+	}
+	holder := holderLabel(req.Holder)
+	if holder == "" {
+		claim, err := m.claimIssue(ctx, requesterID, req.TaskID, leaseHold{})
+		return NextClaim{TaskClaim: claim}, err
+	}
+	hold := leaseHold{Agent: holder, Until: leaseEnd(time.Now(), length)}
+	claim, err := m.claimIssue(ctx, requesterID, req.TaskID, hold)
+	if err != nil {
+		return NextClaim{}, err
+	}
+	return NextClaim{TaskClaim: claim, Agent: holder, LeaseUntil: hold.Until}, nil
+}
+
+func holderLabel(holder string) string {
+	holder = strings.TrimSpace(holder)
+	if len(holder) > holderMaxLength {
+		return ""
+	}
+	return holder
 }
 
 func (m *taskManager) claimIssue(ctx context.Context, requesterID, taskID string, hold leaseHold) (TaskClaim, error) {

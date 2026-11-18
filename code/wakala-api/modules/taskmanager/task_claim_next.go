@@ -19,8 +19,8 @@ type ClaimNextRequest struct {
 
 type NextClaim struct {
 	TaskClaim
-	Agent      string `json:"agent"`
-	LeaseUntil string `json:"lease_until"`
+	Agent      string `json:"agent,omitempty"`
+	LeaseUntil string `json:"lease_until,omitempty"`
 }
 
 func (m *taskManager) ClaimNext(ctx context.Context, requesterID string, req ClaimNextRequest) (NextClaim, error) {

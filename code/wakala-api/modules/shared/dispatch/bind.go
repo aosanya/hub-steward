@@ -1,9 +1,11 @@
 package dispatch
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -214,7 +216,16 @@ func wholeValue(a Arg, want reflect.Type, r *http.Request) (reflect.Value, error
 	if a.From == FromQuery {
 		return wholeQuery(want, r)
 	}
+	if a.Optional && bodyIsEmpty(r) {
+		return reflect.New(want).Elem(), nil
+	}
 	return wholeBody(want, r)
+}
+
+func bodyIsEmpty(r *http.Request) bool {
+	raw, err := io.ReadAll(r.Body)
+	r.Body = io.NopCloser(bytes.NewReader(raw))
+	return err == nil && len(bytes.TrimSpace(raw)) == 0
 }
 
 func bindOne(a Arg, want reflect.Type, r *http.Request, body map[string]json.RawMessage, caller, device Caller) (reflect.Value, error) {
