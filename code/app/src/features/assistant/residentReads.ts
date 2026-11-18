@@ -1,4 +1,5 @@
 import type { ChatAbout } from "../../app/chatAbout";
+import { residentReadsOnlyRule } from "./triager";
 
 export const residentReadScopes: Record<string, string> = {
   accounting_bill_list: "actor_id",
@@ -33,3 +34,8 @@ export const withoutScope = (name: string, properties: Record<string, unknown>, 
     required: required.filter((key) => key !== scope),
   };
 };
+
+export const residentChoices = ["Bills", "Holdings", "Applications", "Wishes and issues"];
+
+export const residentPrompt = (about: ChatAbout) =>
+  `You are the Hub Steward, talking with the owner about one resident, ${about.name}. Everything in this conversation is about ${about.name}: answer about them, and never ask the owner what they want to find or offer search readings as choices. Answer briefly in the language the owner writes in. Bills means accounting_bill_list, holdings digitaltwin_tenure_list, applications forms_submission_list_of_person, and wishes and issues forms_catalog_raised_item_list_of_person; call the one the owner asks for at once and never name a fact you did not read from a tool. When the owner greets you or writes something vague, call no tool: answer in one short sentence about ${about.name} and give the choices, each on its own line, as ${residentChoices.map((choice) => `[[${choice}]]`).join(" ")}. ${residentReadsOnlyRule}`;

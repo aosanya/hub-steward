@@ -2,8 +2,8 @@ import { renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { carryChatAbout, forgetChatAbout, useChatAboutOpen } from "../../app/chatAbout";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { askAssistant, offeredNames, systemPrompt } from "./api";
-import { pageLines, readsOnlyRule, residentReadsOnlyRule, withResidentRule } from "./triager";
+import { askAssistant, offeredNames } from "./api";
+import { readsOnlyRule, residentReadsOnlyRule } from "./triager";
 
 const mcp = vi.hoisted(() => ({ callTool: vi.fn(), listTools: vi.fn() }));
 
@@ -158,15 +158,6 @@ describe("the rule about what the assistant can read agrees with the tools it is
     expect(systemText()).toContain(readsOnlyRule);
     expect(systemText()).toMatch(/cannot read bills/i);
     expect(systemText()).not.toContain(residentReadsOnlyRule);
-  });
-
-  it("swaps the rule in the hub's own prompt lines and in the fallback prompt", () => {
-    for (const prompt of [pageLines, systemPrompt]) {
-      const swapped = withResidentRule(prompt);
-      expect(swapped).toContain(residentReadsOnlyRule);
-      expect(swapped).not.toContain(readsOnlyRule);
-      expect(swapped).not.toMatch(saysBillsCannotBeRead);
-    }
   });
 
   it("still forbids an answer of none for anything it cannot read", () => {

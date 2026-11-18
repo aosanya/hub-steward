@@ -7,7 +7,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { routes } from "../../app/routes";
 import { carryChatAbout, clearCarriedChatAbout, forgetChatAbout, useChatAboutOpen } from "../../app/chatAbout";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { askAssistant, offeredNames, type AssistantClient } from "./api";
+import { askAssistant, offeredNames, systemPrompt, type AssistantClient } from "./api";
+import { residentReadNames } from "./residentReads";
 import { AssistantPage, askPlaceholder, emptyWords } from "./AssistantPage";
 
 const mcp = vi.hoisted(() => ({ callTool: vi.fn(), listTools: vi.fn() }));
@@ -38,7 +39,7 @@ beforeEach(() => {
   forgetChatAbout();
   mcp.callTool.mockReset();
   mcp.listTools.mockReset();
-  mcp.listTools.mockResolvedValue(offeredNames.map((name) => ({ name, description: name, inputSchema: { type: "object", properties: {}, required: [] } })));
+  mcp.listTools.mockResolvedValue([...offeredNames, ...residentReadNames].map((name) => ({ name, description: name, inputSchema: { type: "object", properties: {}, required: [] } })));
   mcp.callTool.mockImplementation(async (_hub: string, name: string) => (name === "ai_chat_account" ? { message: { content: "done" } } : { items: [] }));
 });
 
@@ -108,6 +109,47 @@ describe("the system line for the carried resident keeps the assistant on the to
     const text = systemLines();
     expect(text).not.toContain(resident.name);
     expect(text).not.toMatch(/keep to/i);
+  });
+});
+
+describe("with a resident carried the whole conversation is about the resident", () => {
+  const sentMessages = () => {
+    const chat = mcp.callTool.mock.calls.find(([, name]) => name === "ai_chat_account");
+    return chat?.[2] as { messages: { role: string; content: string }[]; tools?: { name: string }[] };
+  };
+  const firstSystemLine = () => sentMessages().messages.find((message) => message.role === "system")?.content ?? "";
+
+  it("replaces the backlog role lines: no find question, no tag, repo, title word or code choices, no backlog tools", async () => {
+    carryResident();
+    await askAssistant("acc1", [{ role: "user", content: "hi" }]);
+    const first = firstSystemLine();
+    expect(first).toContain(resident.name);
+    expect(first).not.toMatch(/Triager|backlog|title word|\[\[option\]\]|taskmanager_/i);
+    expect(sentMessages().tools?.map((tool) => tool.name).sort()).toEqual([...residentReadNames].sort());
+  });
+
+  it("answers a greeting with one short line about the resident and the choices drawn from the four reads", async () => {
+    carryResident();
+    await askAssistant("acc1", [{ role: "user", content: "hi" }]);
+    const first = firstSystemLine();
+    for (const choice of ["Bills", "Holdings", "Applications", "Wishes and issues"]) expect(first).toContain(`[[${choice}]]`);
+    expect(first).toMatch(/one short sentence/i);
+  });
+
+  it("looks no backlog up and asks the hub for no role lines", async () => {
+    carryResident();
+    await askAssistant("acc1", [{ role: "user", content: "hi" }]);
+    const names = mcp.callTool.mock.calls.map(([, name]) => name);
+    expect(names).not.toContain("taskmanager_backlog_list");
+    expect(names).not.toContain("agency_list_publications");
+  });
+
+  it("is the backlog Triager again when the About line is cleared", async () => {
+    carryResident();
+    act(() => clearCarriedChatAbout());
+    await askAssistant("acc1", [{ role: "user", content: "hi" }]);
+    expect(firstSystemLine()).toBe(systemPrompt);
+    expect(sentMessages().tools?.map((tool) => tool.name)).toEqual(expect.arrayContaining(offeredNames));
   });
 });
 
