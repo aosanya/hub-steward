@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useMay } from "../../../../features/agency/useMay";
 import { ActionsMenu, type MenuAction } from "../../../../shared/ui/ActionsMenu";
 import { downloadPdf } from "../../../../shared/ui/downloadPdf";
-import { textPdf } from "../../../../shared/ui/textPdf";
 import { text } from "./financeData";
 import type { FigureRow, ReportView } from "./ReportPage";
 import { SendReportSheet } from "./SendReportSheet";
@@ -24,7 +23,7 @@ export function ReportActions({ report }: { report: ReportView }) {
   const loaded = text(report, "id") !== "" && !report.note;
   const name = report.name || "Financial report";
   const actions: MenuAction[] = loaded
-    ? [...(may ? [{ label: "Share", onSelect: () => setSharing(true) }] : []), { label: "Create PDF", onSelect: () => downloadPdf(name, textPdf(name, reportLines(report))) }]
+    ? [...(may ? [{ label: "Share", onSelect: () => setSharing(true) }] : []), { label: "Create PDF", onSelect: async () => downloadPdf(name, await (await import("../../../../shared/ui/reportPdf")).reportPdf(name, reportLines(report))) }]
     : [];
   return (
     <>

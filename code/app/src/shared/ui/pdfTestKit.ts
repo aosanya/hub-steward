@@ -34,8 +34,12 @@ const fontMaps = (doc: PDFDocument, resources: PDFDict) => {
 
 const contentsOf = (doc: PDFDocument, page: PDFDict) => {
   const contents = page.get(PDFName.of("Contents"));
-  const refs = contents instanceof PDFRef && doc.context.lookup(contents) instanceof PDFArray ? (doc.context.lookup(contents) as PDFArray).asArray() : [contents];
-  return refs.map((ref) => streamOf(doc, ref)).flatMap((stream) => (stream ? [streamText(stream)] : [])).join("\n");
+  const found = contents instanceof PDFRef ? doc.context.lookup(contents) : contents;
+  const parts = found instanceof PDFArray ? found.asArray() : [contents];
+  return parts.flatMap((part) => {
+    const stream = streamOf(doc, part);
+    return stream ? [streamText(stream)] : [];
+  }).join("\n");
 };
 
 export async function pdfTextOf(bytes: Uint8Array) {

@@ -50,13 +50,13 @@ describe("the PDF library is loaded only when Create PDF is pressed", () => {
         </Routes>
       </MemoryRouter>,
     );
-    await userEvent.click(await screen.findByRole("button", { name: /Second quarter/ }));
-    await userEvent.click(await screen.findByRole("button", { name: "Actions" }));
+    await userEvent.click(await screen.findByRole("button", { name: /Second quarter/ }, { timeout: 10000 }));
+    await userEvent.click(await screen.findByRole("button", { name: "Actions" }, { timeout: 10000 }));
     expect(loaded).toEqual({ pdfLib: 0, fontkit: 0 });
 
     await userEvent.click(screen.getByRole("button", { name: "Create PDF" }));
-    await waitFor(() => expect(URL.createObjectURL).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(URL.createObjectURL).toHaveBeenCalledTimes(1), { timeout: 20000 });
     expect(loaded.pdfLib).toBe(1);
     expect(loaded.fontkit).toBe(1);
-  });
+  }, 30000);
 });

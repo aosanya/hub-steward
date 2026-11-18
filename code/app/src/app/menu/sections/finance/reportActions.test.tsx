@@ -114,7 +114,7 @@ describe("the Actions dropdown on an opened financial report", () => {
     await userEvent.click(await screen.findByRole("button", { name: "Actions" }));
     await userEvent.click(screen.getByRole("button", { name: "Create PDF" }));
 
-    await waitFor(() => expect(blobs).toHaveLength(1));
+    await waitFor(() => expect(blobs).toHaveLength(1), { timeout: 20000 });
     expect(downloads).toEqual(["Second quarter.pdf"]);
     expect(blobs[0].type).toBe("application/pdf");
     const bytes = await bytesOf(blobs[0]);
@@ -125,5 +125,5 @@ describe("the Actions dropdown on an opened financial report", () => {
     expect(shown).toContain("8,300");
     expect(shown).not.toContain("line-id-9");
     expect(shown).not.toContain("2026-04-01~2026-07-01");
-  });
+  }, 30000);
 });
