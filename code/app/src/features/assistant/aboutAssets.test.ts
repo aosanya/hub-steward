@@ -14,7 +14,7 @@ describe("an asset and a work order are subjects of their own", () => {
     expect(readNamesFor(asset)).toEqual(["assetmanager_asset_read", "assetmanager_movement_list", "taskmanager_task_list"]);
     expect(scopedArgs(asset, "assetmanager_asset_read", {})).toEqual({ assetID: "e1" });
     expect(scopedArgs(asset, "assetmanager_movement_list", {})).toEqual({ asset_id: "e1" });
-    expect(scopedArgs(asset, "taskmanager_task_list", { status: "open" })).toEqual({ status: "completed", limit: 500 });
+    expect(scopedArgs(asset, "taskmanager_task_list", { status: "open" })).toEqual({ status: "completed" });
     expect(scopeKeysFor(asset, "assetmanager_asset_read")).toEqual(["assetID"]);
     expect(scopeKeysFor(asset, "assetmanager_movement_list")).toEqual(["asset_id"]);
   });

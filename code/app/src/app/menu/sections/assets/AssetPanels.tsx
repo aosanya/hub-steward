@@ -4,6 +4,7 @@ import { useMay } from "../../../../features/agency/useMay";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
 import { MenuEditForm, type EditField } from "../../MenuEditForm";
+import { ChatAboutAsset, ChatAboutWorkOrder } from "./ChatAboutAsset";
 import { WorkOrderAssignee } from "./WorkOrderAssignee";
 import { WorkOrderStatus } from "./WorkOrderStatus";
 import { maintenanceKeys } from "./maintenanceHistory";
@@ -63,6 +64,7 @@ export function AssetPanel({ asset, fields, build, onSaved }: AssetPanelProps) {
   const stop = () => setEditing(false);
   return (
     <Page name={textOf(asset.name)} line={[textOf(asset.category), textOf(asset.condition)].filter(Boolean).join(" · ")}>
+      <ChatAboutAsset asset={asset} />
       {editing ? (
         <MenuEditForm item={asset} id={textOf(asset.id)} idArg="assetID" tool="assetmanager_asset_update" permission="asset.manage" bare openCount={1} fields={fields} build={build} onSaved={() => { stop(); onSaved(); }} onCancel={stop} />
       ) : (
@@ -98,6 +100,7 @@ export function WorkOrderPanel({ order, onChanged }: WorkOrderPanelProps) {
   const stop = () => setEditing(false);
   return (
     <Page name={textOf(order.title)} line={textOf(order.state)}>
+      <ChatAboutWorkOrder order={order} />
       {editing ? (
         <MenuEditForm item={order} id={textOf(order.id)} idArg="taskID" tool="taskmanager_task_patch" permission="task.edit" bare openCount={1} fields={workOrderEditFields} onSaved={() => { stop(); onChanged(); }} onCancel={stop} />
       ) : (

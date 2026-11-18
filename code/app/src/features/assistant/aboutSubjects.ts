@@ -320,7 +320,40 @@ const neighbourhood: Subject = {
   empty: "its spending and entries",
 };
 
-const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee };
+const asset: Subject = {
+  reads: {
+    assetmanager_asset_read: { assetID: byId },
+    assetmanager_movement_list: { asset_id: byId },
+    taskmanager_task_list: { status: () => "completed" },
+  },
+  steps: {
+    assetmanager_asset_read: "Reading the asset's details",
+    assetmanager_movement_list: "Reading the asset's movements",
+    taskmanager_task_list: "Reading the finished jobs",
+  },
+  choices: ["Details", "Movements", "Maintenance history"],
+  reading:
+    "Details means assetmanager_asset_read, Movements means assetmanager_movement_list, and Maintenance history means taskmanager_task_list with status completed, keeping only the jobs whose linked_ref is this asset's id, newest first.",
+  overview: "call assetmanager_asset_read, assetmanager_movement_list and taskmanager_task_list at once and answer with the asset's name, code, category and condition, its latest movement and its latest finished job",
+  empty: "its details, movements and maintenance history",
+};
+
+const workorder: Subject = {
+  reads: {
+    taskmanager_task_read: { taskID: byId },
+    taskmanager_agent_list: {},
+  },
+  steps: {
+    taskmanager_task_read: "Reading the work order",
+    taskmanager_agent_list: "Reading who can be assigned",
+  },
+  choices: ["Details", "Assignee"],
+  reading: "Details means taskmanager_task_read, and Assignee means the assigned_to and assignee_kind of taskmanager_task_read, with the name taken from taskmanager_agent_list when the assignee is a worker.",
+  overview: "call taskmanager_task_read and taskmanager_agent_list at once and answer with the work order's title, state, due day and who it is assigned to",
+  empty: "its details and assignee",
+};
+
+const subjects: Record<Exclude<Kind, "resident">, Subject> = { group, registration, conversation, business: record, trader: record, user, boundary, integration, "ai-agent": aiAgent, place, address, holding, "land-use": landUse, bill, budget, tender, staff, role, report, neighbourhood, meeting, resolution, bylaw, committee, asset, workorder };
 
 const subjectOf = (about: ChatAbout | null) => (about && about.kind !== "resident" ? subjects[about.kind] : null);
 
