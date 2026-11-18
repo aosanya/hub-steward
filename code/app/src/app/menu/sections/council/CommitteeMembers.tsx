@@ -8,9 +8,8 @@ import { SearchBox } from "../../../../shared/ui/SearchBox";
 import { Section } from "../../../../shared/ui/Section";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { refusalWords } from "../../MenuEditForm";
-import { addMember, loadRoster, removeMember, type Person, type Roster } from "./committeeMembersData";
-
-const manageGroup = "group.manage";
+import { manageGroup } from "./CommitteeMember";
+import { addMember, loadRoster, type Member, type Person, type Roster } from "./committeeMembersData";
 
 const noMemberSeatWords = "This hub has no Member seat to give.";
 
@@ -38,13 +37,13 @@ function PersonPicker({ roster, busy, refused, onAdd, onCancel }: PickerProps) {
   );
 }
 
-export function CommitteeMembers({ groupId, onChanged }: { groupId: string; onChanged?: () => void }) {
+export function CommitteeMembers({ groupId, onChanged, onOpen, version: outside = 0 }: { groupId: string; onChanged?: () => void; onOpen?: (member: Member) => void; version?: number }) {
   const may = useMay(manageGroup);
   const [version, setVersion] = useState(0);
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState(false);
   const [refused, setRefused] = useState("");
-  const view = useLoad(() => loadRoster(groupId), `committee-members:${openAgencyId()}:${groupId}:${version}`);
+  const view = useLoad(() => loadRoster(groupId), `committee-members:${openAgencyId()}:${groupId}:${version}:${outside}`);
   const act = async (run: () => Promise<unknown>, done?: () => void) => {
     setBusy(true);
     setRefused("");
@@ -74,7 +73,7 @@ export function CommitteeMembers({ groupId, onChanged }: { groupId: string; onCh
         foot={addAct}
         empty={{ words: "No members yet." }}
         rows={roster.members.map((member) => (
-          <ListRow key={member.seat} title={member.name} meta={member.role} end={may ? <Button kind="quiet" disabled={busy} onClick={() => act(() => removeMember(member.seat))}>Remove</Button> : undefined} />
+          <ListRow key={member.seat} title={member.name} meta={member.role} end="›" onClick={() => onOpen?.(member)} />
         ))}
       />
       {may && adding ? <PersonPicker roster={roster} busy={busy} refused={refused} onAdd={add} onCancel={() => setAdding(false)} /> : null}

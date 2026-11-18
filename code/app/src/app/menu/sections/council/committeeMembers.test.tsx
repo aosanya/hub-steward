@@ -153,18 +153,60 @@ describe("the members of an opened committee", () => {
     expect(callsTo("actor_grant_role")).toEqual([]);
   });
 
-  it("removes a member by ending their seat and the list follows", async () => {
+  it("draws no Remove button inside a member's row and ends each row with a chevron that opens the member", async () => {
     const pane = await open("Audit Committee");
     await pane.findByRole("heading", { name: membersHeading(3) });
 
-    await userEvent.click(within(rowOf(pane, "Varga József")).getByRole("button", { name: "Remove" }));
+    for (const name of ["Balogh Anna", "Varga József", "Takács Erzsébet"]) {
+      const row = rowOf(pane, name);
+      expect(within(row).queryByRole("button", { name: "Remove" })).toBeNull();
+      expect(row.querySelector(".end")?.textContent).toBe("\u203a");
+    }
+  });
+
+  it("opens a member as a page: the name as title, the role as the quiet line, a Member card with plain rows and Remove from committee as its named footer act", async () => {
+    const pane = await open("Audit Committee");
+    await pane.findByRole("heading", { name: membersHeading(3) });
+
+    await userEvent.click(rowOf(pane, "Varga József"));
+
+    expect(await pane.findByRole("heading", { level: 1, name: "Varga József" })).toBeInTheDocument();
+    expect(pane.getByText("Member", { selector: ".quiet-line" })).toBeInTheDocument();
+    const card = pane.getByRole("region", { name: "Member" });
+    expect(within(card).getByText("Name", { selector: ".ttl" })).toBeInTheDocument();
+    expect(within(card).getByText("Role", { selector: ".ttl" })).toBeInTheDocument();
+    const foot = card.querySelector(".sec-foot") as HTMLElement;
+    expect(within(foot).getByRole("button", { name: "Back" })).toBeInTheDocument();
+    expect(within(foot).getByRole("button", { name: "Remove from committee" })).toBeInTheDocument();
+    expect(foot.children).toHaveLength(2);
+    expect(callsTo("actor_revoke_role")).toEqual([]);
+  });
+
+  it("removes a member from their page by ending their seat and returns to the committee with the list following", async () => {
+    const pane = await open("Audit Committee");
+    await pane.findByRole("heading", { name: membersHeading(3) });
+    await userEvent.click(rowOf(pane, "Varga József"));
+
+    await userEvent.click(await pane.findByRole("button", { name: "Remove from committee" }));
 
     await waitFor(() => expect(callsTo("actor_revoke_role")).toEqual([{ assignment_id: "s2" }]));
     expect(await pane.findByRole("heading", { name: membersHeading(2) })).toBeInTheDocument();
     expect(pane.queryByText("Varga József", { selector: ".ttl" })).toBeNull();
+    expect(pane.getByRole("heading", { level: 1, name: "Audit Committee" })).toBeInTheDocument();
   });
 
-  it("shows no Add member and no Remove to a caller without group.manage, and still lists the members", async () => {
+  it("goes back to the committee from a member's page without changing anything", async () => {
+    const pane = await open("Audit Committee");
+    await pane.findByRole("heading", { name: membersHeading(3) });
+    await userEvent.click(rowOf(pane, "Takács Erzsébet"));
+
+    await userEvent.click(await pane.findByRole("button", { name: "Back" }));
+
+    expect(await pane.findByRole("heading", { name: membersHeading(3) })).toBeInTheDocument();
+    expect(callsTo("actor_revoke_role")).toEqual([]);
+  });
+
+  it("shows no Add member and no Remove to a caller without group.manage, and still lists and opens the members", async () => {
     permissions = ["member.view"];
     const pane = await open("Audit Committee");
 
@@ -172,5 +214,21 @@ describe("the members of an opened committee", () => {
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
     expect(pane.queryByRole("button", { name: "Add member" })).toBeNull();
     expect(pane.queryByRole("button", { name: "Remove" })).toBeNull();
+
+    await userEvent.click(rowOf(pane, "Varga József"));
+
+    expect(await pane.findByRole("heading", { level: 1, name: "Varga József" })).toBeInTheDocument();
+    expect(pane.queryByRole("button", { name: "Remove from committee" })).toBeNull();
+    expect(pane.getByRole("button", { name: "Back" })).toBeInTheDocument();
+  });
+
+  it("holds the chair in the committee detail card as the person's name only, with the chair's word kept on the quiet line", async () => {
+    const pane = await open("Audit Committee");
+
+    const card = await pane.findByRole("region", { name: "Committee detail" });
+    const chairRow = within(card).getByText("Chair", { selector: ".ttl" }).closest(".row") as HTMLElement;
+    expect(within(chairRow).getByText("Balogh Anna", { selector: ".meta" })).toBeInTheDocument();
+    expect(within(chairRow).queryByText("Chair: Balogh Anna")).toBeNull();
+    expect(pane.getByText("Chair: Balogh Anna", { selector: ".quiet-line" })).toBeInTheDocument();
   });
 });
