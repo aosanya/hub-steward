@@ -281,8 +281,9 @@ describe("an issue", () => {
     await openIssue(/Broken streetlight/);
     await screen.findByText("A crew is booked for Monday.");
 
-    await userEvent.type(screen.getByRole("textbox"), "Thank you, noted.");
-    await userEvent.click(screen.getByRole("button", { name: /^Reply/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Reply" }));
+    await userEvent.type(screen.getByRole("textbox", { name: "Your reply" }), "Thank you, noted.");
+    await userEvent.click(screen.getByRole("button", { name: "Send reply" }));
 
     await waitFor(() =>
       expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_send", expect.objectContaining({ raisedItemID: "i1", body: "Thank you, noted." })),
@@ -393,7 +394,7 @@ describe("All Issues on the menu window", () => {
     await chooseIssue(/Broken streetlight/);
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    expect(await within(detail).findByText("open")).toBeInTheDocument();
+    expect(await within(detail).findAllByText("open")).not.toHaveLength(0);
     expect(within(detail).getByText("Roads")).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_list", expect.objectContaining({ raisedItemID: "i1" }));
   });
@@ -417,8 +418,9 @@ describe("All Issues on the menu window", () => {
     const asked = () => called.mock.calls.filter(([, name]) => name === "forms_catalog_reply_list").length;
     const before = asked();
 
+    await userEvent.click(screen.getByRole("button", { name: "Reply" }));
     await userEvent.type(screen.getByRole("textbox", { name: "Your reply" }), "Thank you, noted.");
-    await userEvent.click(screen.getByRole("button", { name: /^Reply/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Send reply" }));
 
     await waitFor(() =>
       expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_send", expect.objectContaining({ raisedItemID: "i1", body: "Thank you, noted." })),
@@ -464,7 +466,7 @@ describe("Assigned to Me on the menu window", () => {
     await chooseAssigned(/Fallen branch/);
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
-    expect(await within(detail).findByText("open")).toBeInTheDocument();
+    expect(await within(detail).findAllByText("open")).not.toHaveLength(0);
     expect(await screen.findByText("A crew is booked for Monday.")).toBeInTheDocument();
     expect(document.querySelector(".mw")).toHaveAttribute("data-chosen", "yes");
   });
@@ -476,8 +478,9 @@ describe("Assigned to Me on the menu window", () => {
     const asked = () => called.mock.calls.filter(([, name]) => name === "forms_catalog_reply_list").length;
     const before = asked();
 
+    await userEvent.click(screen.getByRole("button", { name: "Reply" }));
     await userEvent.type(screen.getByRole("textbox", { name: "Your reply" }), "On my way.");
-    await userEvent.click(screen.getByRole("button", { name: /^Reply/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Send reply" }));
 
     await waitFor(() => expect(called).toHaveBeenCalledWith("", "forms_catalog_reply_send", expect.objectContaining({ raisedItemID: "i3", body: "On my way." })));
     await waitFor(() => expect(asked()).toBeGreaterThan(before));
@@ -506,7 +509,7 @@ describe("Map View on the menu window", () => {
     open(screens[2].at);
     await screen.findByRole("button", { name: /Broken streetlight/ });
 
-    expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
+    expect(screen.getByRole("navigation", { name: "Main" })).toBeInTheDocument();
     const main = document.querySelector(".wf-main") as HTMLElement;
     expect(await within(main).findByText("A crew is booked for Monday.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Broken streetlight/ })).toHaveAttribute("aria-pressed", "true");

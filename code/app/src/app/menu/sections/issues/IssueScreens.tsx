@@ -5,8 +5,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgency";
 import { MenuWindow } from "../../MenuWindow";
 import { CatalogueWindow } from "../services/CatalogueEntry";
-import { replyLabel } from "./IssueScreen";
-import { IssueThread } from "./IssueThread";
+import { IssuePage } from "./IssuePage";
 import { nearbyIssues, nearbyTool } from "./nearbyIssues";
 import { useReplyDrafts } from "./useReplyDrafts";
 
@@ -58,16 +57,15 @@ export function IssueWindow({ title, tool, empty, fetch, fields = statusFields, 
   const list = { title, tool, fields, empty: { words: empty, act: "Home", to: agencyHomePath(openAgencyId()) }, load: loadList, end, loadingWords, failedWords };
   const detail = {
     tool,
-    fields: { Issue: "title" },
-    status: "status",
+    fields: {},
+    status: "",
     load: loadIssue,
-    action: { label: replyLabel, tool: "forms_catalog_reply_send", run: (item: Item) => replies.send(text(item, "id")) },
     extra: (item: Item) => {
       const issue = rowOf(item);
-      return <IssueThread issue={issue} version={replies.version} draft={replies.draftOf(issue.id)} onDraft={(body) => replies.setDraft(issue.id, body)} failed={replies.failed} />;
+      return <IssuePage key={issue.id} item={item} issue={issue} replies={replies} />;
     },
   };
-  return <MenuWindow title={title} list={list} detail={detail} />;
+  return <MenuWindow title={title} withTabs bandless list={list} detail={detail} />;
 }
 
 export function AllIssuesScreen() {

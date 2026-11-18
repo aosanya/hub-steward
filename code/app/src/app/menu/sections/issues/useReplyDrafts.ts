@@ -21,3 +21,5 @@ export function useReplyDrafts() {
   };
   return { draftOf, setDraft, send, version, failed };
 }
+
+export type ReplyDrafts = ReturnType<typeof useReplyDrafts>;

@@ -10,7 +10,7 @@ import type { IssueRow } from "./issueRow";
 
 export const boardPermission = "board.manage";
 
-const departmentFields = [{ label: "Department", key: "department", required: true }];
+export const departmentFields = [{ label: "Department", key: "department", required: true }];
 
 const outcomeFields = [{ label: "Outcome", key: "outcome" }];
 
@@ -49,7 +49,7 @@ function OutcomeEdit({ boardItemId }: { boardItemId: string }) {
   );
 }
 
-function IssueOutcome({ boardItemId }: { boardItemId: string }) {
+export function IssueOutcome({ boardItemId }: { boardItemId: string }) {
   const may = useMay(boardPermission);
   return may ? <OutcomeEdit boardItemId={boardItemId} /> : null;
 }
