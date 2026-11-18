@@ -139,7 +139,7 @@ describe.each(widths)("the empty Groups card on $name", (view) => {
 });
 
 describe.each(widths)("the empty Applications card on $name", (view) => {
-  it("carries Start an application, which lists the forms, files the chosen one for the person by phone and then lists it", async () => {
+  it("carries Start an application, which lists the forms, files the chosen one for the person on paper and then lists it", async () => {
     await openPerson(view.wide);
 
     const card = await cardOf(/No applications yet/);
@@ -147,7 +147,7 @@ describe.each(widths)("the empty Applications card on $name", (view) => {
     const picker = await screen.findByRole("dialog", { name: "Start an application" });
     await userEvent.click(await within(picker).findByRole("button", { name: new RegExp(permitForm) }));
 
-    await waitFor(() => expect(callsTo("forms_submission_file")).toEqual([expect.objectContaining({ form_id: "f1", member_id: personId, channel: "phone", answers: expect.anything() })]));
+    await waitFor(() => expect(callsTo("forms_submission_file")).toEqual([expect.objectContaining({ form_id: "f1", member_id: personId, channel: "paper", answers: expect.anything() })]));
     const pane = document.querySelector(view.pane) as HTMLElement;
     expect(await within(pane).findByText(permitForm)).toBeTruthy();
     expect(within(pane).queryByText(/No applications yet/)).toBeNull();
