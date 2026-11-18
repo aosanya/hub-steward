@@ -66,7 +66,7 @@ describe("the resident page is titled with the name and keeps its actions small"
     const details = page.querySelector("section.sec[aria-label='Personal detail']") as HTMLElement;
     expect(within(details).getByText("Sample Lane 4")).toBeTruthy();
     expect(within(details.querySelector("footer.sec-foot") as HTMLElement).getByRole("button", { name: "Edit" })).toBeTruthy();
-    expect(within(details.querySelector(".sec-head") as HTMLElement).queryByRole("button")).toBeNull();
+    expect(within(details.querySelector(".sec-head") as HTMLElement).getAllByRole("button").length).toBe(1);
     expect(within(details).queryByRole("button", { name: "Edit attributes" })).toBeNull();
     expect(within(details).queryByRole("textbox")).toBeNull();
   });
@@ -179,5 +179,78 @@ describe("a section is one heading row over plain rows", () => {
       expect(await screen.findByRole("heading", { level: 1, name: word })).toBeTruthy();
       expect(await screen.findByText(new RegExp(personName))).toBeTruthy();
     }
+  });
+});
+
+describe("each section is a card with a chevron header that collapses it and a footer that holds the act", () => {
+  it("gives every section header one chevron button, open by default, that names what it does", async () => {
+    const page = await openPerson(false);
+    const cards = Array.from(page.querySelectorAll("section.sec")) as HTMLElement[];
+    expect(cards.length).toBeGreaterThan(1);
+    for (const card of cards) {
+      const toggle = within(card.querySelector(".sec-head") as HTMLElement).getByRole("button", { name: "Collapse" });
+      expect(toggle.getAttribute("aria-expanded")).toBe("true");
+      expect(toggle.querySelector("svg[data-icon='chevron']")).toBeTruthy();
+    }
+  });
+
+  it("hides the rows and the footer when the chevron is pressed and shows them again when it is pressed again", async () => {
+    const page = await openPerson(false);
+    const details = page.querySelector("section.sec[aria-label='Personal detail']") as HTMLElement;
+    const head = details.querySelector(".sec-head") as HTMLElement;
+    await userEvent.click(within(head).getByRole("button", { name: "Collapse" }));
+    const toggle = within(head).getByRole("button", { name: "Expand" });
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(within(details).queryByText("Sample Lane 4")).toBeNull();
+    expect(within(details).queryByRole("button", { name: "Edit" })).toBeNull();
+    expect(within(details).getByRole("heading", { name: "Personal detail" })).toBeTruthy();
+    await userEvent.click(toggle);
+    expect(within(details).getByText("Sample Lane 4")).toBeTruthy();
+    expect(within(details).getByRole("button", { name: "Edit" })).toBeTruthy();
+  });
+
+  it("collapses one section without touching the others", async () => {
+    const page = await openPerson(false);
+    const details = page.querySelector("section.sec[aria-label='Personal detail']") as HTMLElement;
+    const groups = page.querySelector("section.sec[aria-label='Groups']") as HTMLElement;
+    await userEvent.click(within(details.querySelector(".sec-head") as HTMLElement).getByRole("button", { name: "Collapse" }));
+    expect(within(groups.querySelector(".sec-head") as HTMLElement).getByRole("button", { name: "Collapse" }).getAttribute("aria-expanded")).toBe("true");
+    expect(within(groups).getByText("Not in any group yet.")).toBeTruthy();
+  });
+
+  it("keeps the section screen's own card without a collapse button", async () => {
+    setWide(false);
+    render(
+      <MemoryRouter initialEntries={[residentPaths.personSection.path({ id: "p1", section: "groups" })]}>
+        <Routes>{routes()}</Routes>
+      </MemoryRouter>,
+    );
+    await screen.findByRole("heading", { level: 1, name: "Groups" });
+    expect(screen.queryByRole("button", { name: "Collapse" })).toBeNull();
+  });
+});
+
+describe("the card look is the Bulma card in the app's own tokens", () => {
+  const css = () => readFileSync("src/shared/ui/section.css", "utf8");
+
+  it("has square corners, a hairline and a soft outer shadow", () => {
+    expect(css()).toMatch(/\.sec \{[^}]*border-radius: 0/);
+    expect(css()).toMatch(/\.sec \{[^}]*box-shadow: [^;]*var\(--line\)/);
+    expect(css()).not.toMatch(/border-radius: (?!0)/);
+  });
+
+  it("puts a small shadow under the header and a hairline above the footer", () => {
+    expect(css()).toMatch(/\.sec-head \{[^}]*box-shadow:/);
+    expect(css()).toMatch(/\.sec-foot \{[^}]*border-top: 1px solid/);
+  });
+
+  it("divides the footer items with vertical hairlines, each filling an equal share", () => {
+    expect(css()).toMatch(/\.sec-foot > \* \{[^}]*flex: 1/);
+    expect(css()).toMatch(/\.sec-foot > \* \+ \* \{[^}]*border-left: 1px solid/);
+  });
+
+  it("turns the chevron a quarter when the card is collapsed and sizes everything in rem", () => {
+    expect(css()).toMatch(/\.sec-toggle\[aria-expanded="false"\] \.icon \{[^}]*rotate\(-90deg\)/);
+    expect(css()).not.toMatch(/font-size: [\d.]+px/);
   });
 });
