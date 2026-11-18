@@ -323,3 +323,86 @@ func TestATenureUpdateStoresTheHolderActorIdAndAnUpdateWithoutItClearsIt(t *test
 		t.Fatalf("after clearing the actor filter returned %+v, %v", none, err)
 	}
 }
+
+const businessRowID = "5d0c7b1e-3a42-4c8f-b6d1-92e4f7a30c11"
+const olderBusinessRowID = "8e1f4a2b-6c93-4d05-a7b8-13c5d9e60f22"
+const otherBusinessRowID = "b2a6d8f0-1e47-4b39-8c5a-70d3e4f91a33"
+
+func TestATenureCreatedWithAHolderRecordRowIdIsReadBackWithIt(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	stall := seedNode(t, tm, ctx, "Stall 4", "place")
+
+	made, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: stall.ID, Holder: "Flower Corner", HolderRecordRowID: businessRowID, Kind: "tenant"})
+	if err != nil {
+		t.Fatalf("create: %v", err)
+	}
+	got, err := tm.GetTenure(ctx, made.ID)
+	if err != nil {
+		t.Fatalf("get: %v", err)
+	}
+	if got.HolderRecordRowID != businessRowID || got.HolderActorID != "" {
+		t.Fatalf("read back %+v", got)
+	}
+}
+
+func TestATenureNamingNoRealRecordRowIdIsRefused(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	stall := seedNode(t, tm, ctx, "Stall 4", "place")
+
+	_, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: stall.ID, Holder: "Flower Corner", HolderRecordRowID: "Flower Corner", Kind: "tenant"})
+	if !errors.Is(err, digitaltwin.ErrInvalid) {
+		t.Fatalf("err = %v, want ErrInvalid", err)
+	}
+}
+
+func TestListTenuresFiltersByHolderRecordRowIdAndNeverListsAHoldingThatNamesNone(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	stall := seedNode(t, tm, ctx, "Stall 4", "place")
+	pitch := seedNode(t, tm, ctx, "Pitch 2", "place")
+	mine, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: stall.ID, Holder: "Flower Corner", HolderRecordRowID: businessRowID, Kind: "tenant"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: pitch.ID, Holder: "Flower Corner", Kind: "tenant"}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: pitch.ID, Holder: "Chestnut Roaster", HolderRecordRowID: otherBusinessRowID, Kind: "tenant"}); err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := tm.ListTenures(ctx, digitaltwin.TenureFilter{HolderRecordRowID: businessRowID})
+	if err != nil {
+		t.Fatalf("list: %v", err)
+	}
+	if len(got) != 1 || got[0].ID != mine.ID {
+		t.Fatalf("by row: %+v, want only %s", got, mine.ID)
+	}
+}
+
+func TestTheHolderRecordRowIdFilterFindsAHoldingStoredAgainstAnOlderRowOfTheLineage(t *testing.T) {
+	tm, ctx := newManagerFor(t, "place")
+	stall := seedNode(t, tm, ctx, "Stall 4", "place")
+	older, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: stall.ID, Holder: "Flower Corner", HolderRecordRowID: olderBusinessRowID, Kind: "tenant"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	newer, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: stall.ID, Holder: "Flower Corner", HolderRecordRowID: businessRowID, Kind: "owner"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tm.CreateTenure(ctx, digitaltwin.Tenure{PlaceID: stall.ID, Holder: "Chestnut Roaster", HolderRecordRowID: otherBusinessRowID, Kind: "tenant"}); err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := tm.ListTenures(ctx, digitaltwin.TenureFilter{HolderRecordRowID: businessRowID, HolderRecordRowIDs: []string{businessRowID, olderBusinessRowID}})
+	if err != nil {
+		t.Fatalf("list: %v", err)
+	}
+	if len(got) != 2 {
+		t.Fatalf("lineage list: %+v, want the older and the newer holding", got)
+	}
+	ids := map[string]bool{got[0].ID: true, got[1].ID: true}
+	if !ids[older.ID] || !ids[newer.ID] {
+		t.Fatalf("lineage list: %+v, want %s and %s", got, older.ID, newer.ID)
+	}
+}

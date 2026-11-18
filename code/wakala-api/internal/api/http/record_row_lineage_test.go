@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	mwanachamaaccounting "wakalaserver/modules/accounting"
+	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 	agencymodels "wakalaserver/modules/agency/models"
 )
 
@@ -90,5 +91,52 @@ func TestTheLedgerLeavesAFilterWithNoRecordRowAlone(t *testing.T) {
 	}
 	if len(inner.bills.RecordRowIDs) != 0 || inner.bills.ActorID != "someone" {
 		t.Fatalf("filter changed: %+v", inner.bills)
+	}
+}
+
+type capturingTwin struct {
+	mwanachamadigitaltwin.TwinManager
+	tenures mwanachamadigitaltwin.TenureFilter
+}
+
+func (c *capturingTwin) ListTenures(_ context.Context, filter mwanachamadigitaltwin.TenureFilter) ([]mwanachamadigitaltwin.Tenure, error) {
+	c.tenures = filter
+	return nil, nil
+}
+
+func TestTheTwinExpandsAHolderRecordRowFilterIntoItsLineage(t *testing.T) {
+	inner := &capturingTwin{}
+	twin := withTenureRowLineage(inner, func(_ context.Context, id string) ([]string, error) { return []string{id, "older"}, nil })
+
+	if _, err := twin.ListTenures(context.Background(), mwanachamadigitaltwin.TenureFilter{HolderRecordRowID: "newest"}); err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Equal(inner.tenures.HolderRecordRowIDs, []string{"newest", "older"}) {
+		t.Fatalf("tenure filter rows = %v", inner.tenures.HolderRecordRowIDs)
+	}
+}
+
+func TestTheTwinLeavesAFilterWithNoHolderRecordRowAlone(t *testing.T) {
+	inner := &capturingTwin{}
+	twin := withTenureRowLineage(inner, func(context.Context, string) ([]string, error) {
+		t.Fatal("the lineage was read for a filter that names no row")
+		return nil, nil
+	})
+	if _, err := twin.ListTenures(context.Background(), mwanachamadigitaltwin.TenureFilter{HolderActorID: "someone"}); err != nil {
+		t.Fatal(err)
+	}
+	if inner.tenures.HolderRecordRowIDs != nil {
+		t.Fatalf("rows = %v, want none", inner.tenures.HolderRecordRowIDs)
+	}
+}
+
+func TestTheTwinFallsBackToTheRowItselfWhenTheLineageCannotBeRead(t *testing.T) {
+	inner := &capturingTwin{}
+	twin := withTenureRowLineage(inner, func(context.Context, string) ([]string, error) { return nil, context.DeadlineExceeded })
+	if _, err := twin.ListTenures(context.Background(), mwanachamadigitaltwin.TenureFilter{HolderRecordRowID: "newest"}); err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Equal(inner.tenures.HolderRecordRowIDs, []string{"newest"}) {
+		t.Fatalf("rows = %v, want only newest", inner.tenures.HolderRecordRowIDs)
 	}
 }

@@ -52,7 +52,6 @@ const widths = [
 ];
 
 const unlinkedTools = [
-  "digitaltwin_tenure_list",
   "forms_submission_list",
   "forms_submission_list_of_person",
   "audit_list_entries",
@@ -66,6 +65,8 @@ let billsByRow: Record<string, Person[]>;
 let paymentsByRow: Record<string, Person[]>;
 let billsReply: (() => Promise<unknown>) | null;
 let paymentsReply: (() => Promise<unknown>) | null;
+let holdingsByRow: Record<string, Person[]>;
+let holdingsReply: (() => Promise<unknown>) | null;
 
 const actorCalls = () => called.mock.calls.filter((call) => call[1] === "actor_get_actor");
 
@@ -78,7 +79,8 @@ const answer = async (name: string, args: unknown) => {
   if (name === "actor_list_actors") return { items: [{ id: ownerId, display_name: personName, status: "active" }] };
   if (name === "accounting_bill_list") return billsReply ? billsReply() : { items: billsByRow[String(given.record_row_id)] ?? [] };
   if (name === "accounting_payment_list") return paymentsReply ? paymentsReply() : { items: paymentsByRow[String(given.record_row_id)] ?? [] };
-  if (name === "digitaltwin_tenure_list") return { items: [{ id: "ten1", holder: personName }] };
+  if (name === "digitaltwin_tenure_list") return holdingsReply ? holdingsReply() : { items: holdingsByRow[String(given.holder_record_row_id)] ?? [] };
+  if (name === "digitaltwin_node_list") return { items: [{ id: "stall1", name: "Stall 4, Market square" }] };
   return { items: [] };
 };
 
@@ -96,6 +98,8 @@ beforeEach(() => {
   paymentsByRow = {};
   billsReply = null;
   paymentsReply = null;
+  holdingsByRow = {};
+  holdingsReply = null;
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
 
@@ -216,7 +220,7 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
       await within(pane()).findByRole("heading", { name: kind.heading });
       const names = called.mock.calls.map((call) => call[1]);
       unlinkedTools.forEach((tool) => expect(names).not.toContain(tool));
-      expect(within(pane()).queryByText(/permit|inspection|booking|holding/i)).toBeNull();
+      expect(within(pane()).queryByText(/permit|inspection|booking/i)).toBeNull();
     });
 
     const bill = { id: "bill1", payer: "Trading account", amount: 150000, due_at: "2026-03-01T00:00:00Z", status: "open" };
@@ -255,6 +259,46 @@ describe.each(kinds)("an opened $name ($code)", (kind) => {
 
       await within(pane()).findByRole("heading", { name: "Fees and bills" });
       expect(within(pane()).queryByText(/42,000/)).toBeNull();
+    });
+
+    const stall = { id: "ten9", place_id: "stall1", holder: "Trading account", kind: "tenant", since: "2025-04-01" };
+
+    it("lists the Holdings of the opened row by its own id, stalls included, after the Payments", async () => {
+      holdingsByRow = { [kind.owned.id]: [stall] };
+      paymentsByRow = { [kind.owned.id]: [payment] };
+      setUp([kind.owned, kind.other]);
+      const { pane } = await openRow(kind.owned);
+
+      const heading = await within(pane()).findByRole("heading", { name: "Holdings" });
+      expect(await within(pane()).findByText("Stall 4, Market square")).toBeInTheDocument();
+      expect(within(pane()).getByText(/tenant · since 2025-04-01/)).toBeInTheDocument();
+      const payments = await within(pane()).findByRole("heading", { name: "Payments" });
+      expect(payments.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(called).toHaveBeenCalledWith("", "digitaltwin_tenure_list", { holder_record_row_id: kind.owned.id });
+      expect(called.mock.calls.filter((call) => call[1] === "digitaltwin_tenure_list" && (call[2] as Record<string, unknown> | undefined)?.holder_actor_id !== undefined)).toHaveLength(0);
+    });
+
+    it("shows the holdings of the opened row only", async () => {
+      holdingsByRow = { [kind.owned.id]: [stall], [kind.other.id]: [{ ...stall, id: "ten10", place_id: "elsewhere", kind: "owner" }] };
+      setUp([kind.owned, kind.other]);
+      const { pane } = await openRow(kind.owned);
+
+      await within(pane()).findByRole("heading", { name: "Holdings" });
+      expect(within(pane()).queryByText(/owner · since/)).toBeNull();
+    });
+
+    it.each([
+      ["no rows", () => Promise.resolve({ items: [] })],
+      ["a refused reply", () => Promise.reject(new mcp.McpError("digitaltwin_tenure_list: the hub refused this"))],
+      ["an unserved tool", () => Promise.reject(new Error("digitaltwin_tenure_list: unknown tool"))],
+    ])("draws no Holdings heading, no empty card and no error after %s", async (_label, reply) => {
+      holdingsReply = reply;
+      setUp([kind.owned, kind.other]);
+      const { pane } = await openRow(kind.owned);
+
+      await vi.waitFor(() => expect(called).toHaveBeenCalledWith("", "digitaltwin_tenure_list", { holder_record_row_id: kind.owned.id }));
+      expect(within(pane()).queryByRole("heading", { name: "Holdings" })).toBeNull();
+      expect(within(pane()).queryByText(/No .* yet|could not be loaded|refused|unknown tool|not found/i)).toBeNull();
     });
 
     it.each([
