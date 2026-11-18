@@ -1,8 +1,19 @@
 import { act, render, screen } from "@testing-library/react";
-import { Profiler } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { Backlog, BacklogsClient, Issue } from "../shared/api";
 import { BacklogBoard } from "./BacklogBoard";
+
+const columnsDrawn = vi.hoisted(() => vi.fn());
+
+vi.mock("./BoardColumns", async () => {
+  const actual = await vi.importActual<typeof import("./BoardColumns")>("./BoardColumns");
+  return {
+    BoardColumns: (props: Parameters<typeof actual.BoardColumns>[0]) => {
+      columnsDrawn();
+      return actual.BoardColumns(props);
+    },
+  };
+});
 
 const issue = (id: string, title: string, step: string): Issue => ({
   id,
@@ -31,18 +42,11 @@ const clientOver = (reads: Issue[][]): BacklogsClient & { calls: () => number } 
   };
 };
 
-const open = (client: BacklogsClient, at = "/a/x/backlogs/default/board", onRender: () => void = () => undefined) =>
+const open = (client: BacklogsClient, at = "/a/x/backlogs/default/board") =>
   render(
     <MemoryRouter initialEntries={[at]}>
       <Routes>
-        <Route
-          path="/a/x/backlogs/:backlogId/board"
-          element={
-            <Profiler id="board" onRender={onRender}>
-              <BacklogBoard client={client} />
-            </Profiler>
-          }
-        />
+        <Route path="/a/x/backlogs/:backlogId/board" element={<BacklogBoard client={client} />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -60,7 +64,10 @@ const moved = [issue("1", "Record the clips", "Doing"), issue("2", "Fix the impo
 const importDone = [issue("1", "Record the clips", "Doing"), issue("2", "Fix the import route", "Done")];
 
 describe("the board reads again by itself", () => {
-  beforeEach(() => vi.useFakeTimers());
+  beforeEach(() => {
+    columnsDrawn.mockClear();
+    vi.useFakeTimers();
+  });
   afterEach(() => vi.useRealTimers());
 
   it("shows a card that moved after 15 seconds without a loading line", async () => {
@@ -104,14 +111,13 @@ describe("the board reads again by itself", () => {
   });
 
   it("does not draw the board again when nothing changed", async () => {
-    const renders = vi.fn();
     const client = clientOver([first]);
-    open(client, undefined, renders);
+    open(client);
     await settle();
-    const before = renders.mock.calls.length;
+    const before = columnsDrawn.mock.calls.length;
     await settle(15000);
     expect(client.calls()).toBe(2);
-    expect(renders.mock.calls.length).toBe(before);
+    expect(columnsDrawn.mock.calls.length).toBe(before);
   });
 
   it("keeps the words typed in the search", async () => {

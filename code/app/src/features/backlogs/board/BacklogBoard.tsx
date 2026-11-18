@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { mcpBacklogsClient, type Backlog, type BacklogsClient, type Issue } from "../shared/api";
 import { FilterBar } from "../shared/FilterBar";
@@ -20,11 +20,14 @@ import { Shell } from "../../../app/Shell";
 import { BoardColumns } from "./BoardColumns";
 import { ViewSwitch } from "./ViewSwitch";
 import { columnsOf } from "./board";
+import { useQuietRefresh } from "./useQuietRefresh";
 import "./backlogBoard.css";
 
 type Loaded = { backlog: Backlog | null; issues: Issue[] };
 
 type Read = { state: "loading" } | { state: "failed" } | ({ state: "ready" } & Loaded);
+
+const sameBoard = (before: Loaded, after: Loaded) => JSON.stringify([before.backlog, before.issues]) === JSON.stringify([after.backlog, after.issues]);
 
 const countWords = (shown: number, steps: number) => `${shown} ${shown === 1 ? "issue" : "issues"} · ${steps} ${steps === 1 ? "step" : "steps"}`;
 
@@ -42,9 +45,13 @@ export function BacklogBoard({ client = mcpBacklogsClient, capsClient, todoCount
   const [outcome, setOutcome] = useState("");
   const selecting = useSelection();
   const targets = useTargets();
+  const generation = useRef(0);
+  const shownRead = useRef(read);
+  shownRead.current = read;
 
   useEffect(() => {
     let current = true;
+    generation.current += 1;
     setRead({ state: "loading" });
     Promise.all([client.backlogs(), client.issues(backlogId)]).then(
       ([backlogs, issues]) => current && setRead({ state: "ready", backlog: backlogs.find((backlog) => backlog.id === backlogId) ?? null, issues }),
@@ -52,8 +59,20 @@ export function BacklogBoard({ client = mcpBacklogsClient, capsClient, todoCount
     );
     return () => {
       current = false;
+      generation.current += 1;
     };
   }, [client, backlogId, version]);
+
+  useQuietRefresh(() => {
+    const started = generation.current;
+    Promise.all([client.backlogs(), client.issues(backlogId)]).then(([backlogs, issues]) => {
+      if (generation.current !== started) return;
+      const next: Loaded = { backlog: backlogs.find((backlog) => backlog.id === backlogId) ?? null, issues };
+      const before = shownRead.current;
+      if (before.state === "loading" || (before.state === "ready" && sameBoard(before, next))) return;
+      setRead({ state: "ready", ...next });
+    }, () => undefined);
+  }, selecting.on || sending);
 
   const choose = (next: string[]) => setSearch(searchOf(next, query), { replace: true });
   const typed = (text: string) => setSearch(searchOf(chosen, text), { replace: true });
