@@ -105,10 +105,10 @@ const openPerson = async (wide: boolean) => {
     </MemoryRouter>,
   );
   if (!wide) await userEvent.click(await screen.findByRole("button", { name: new RegExp(personName) }));
-  await screen.findByRole("heading", { name: "Groups" });
+  await screen.findByRole("heading", { name: /^Groups/ });
 };
 
-const cardOf = async (words: RegExp) => (await screen.findByText(words)).closest(".card") as HTMLElement;
+const cardOf = async (words: RegExp) => (await screen.findByText(words)).closest("section.sec") as HTMLElement;
 
 const rolesAnswered = async () => waitFor(() => expect(called).toHaveBeenCalledWith("", "agency_get_my_roles"));
 
