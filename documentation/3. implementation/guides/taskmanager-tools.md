@@ -211,6 +211,8 @@ Inputs: `taskID` and optionally `log_limit` (1 to 50, default 10; another value 
 
 It replaces the five reads a worker made at the start of an issue (the issue, its caps, its Log, its todos and its dependencies with their Logs). The answer is `issue` (the whole record, description included), `caps` (exactly what `taskmanager_task_caps_read` gives), `log` (the newest `log_limit` entries, oldest first, plus every entry of kind person older than those, because a person note is an instruction), `todos` (`items`, `done`, `total`, as `taskmanager_task_todo_list_for_issue` gives them), `depends_on` (each `id`, `code`, `title`, `step`, `state`, `open` and `last_entries`, the last 3 Log entries of that issue, oldest first) and `needed_by` (each `id`, `code`, `title`, `step`, `state`, `open`). An issue in a backlog the caller cannot see is never named and its Log is never read: `hidden_depends_on` and `hidden_needed_by` count them.
 
+The worker's start-of-run Log read is the brief's `log`. With `log_limit` 50 it holds every entry, so a run calls `taskmanager_task_brief` once and does not follow it with an unfiltered `taskmanager_task_note_list`; the Log list tool is for the entries since, called with `after` set to the id of the last entry seen (SW603).
+
 It composes the code of its siblings and holds none of its own: the dependency sides are `taskmanager_task_dependencies`, the caps the caps reading, the Log the paged Log read and the todos the todo list.
 
 ## taskmanager_task_file_overlaps
