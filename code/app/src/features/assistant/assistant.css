@@ -20,3 +20,4 @@
 .assistant-reason { font-size: .8125rem; color: var(--ink-soft); }
 .assistant-queued { font-size: .8125rem; color: var(--ink-soft); }
 .assistant-unqueue { padding: 0 .25rem; border: 0; background: transparent; color: var(--ink-soft); line-height: 1; }
+.assistant-about { display: flex; align-items: center; gap: .25rem; margin: 0 0 .5rem; }

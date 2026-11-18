@@ -5,6 +5,8 @@ import "../../features/chat/rooms/rooms.css";
 import { useLoad } from "../../features/forms/useLoad";
 import { mcpBacklogsClient, type BacklogsClient, BacklogViewCard, BacklogSummariesLoader, backlogViewKind } from "../backlogs";
 import { chatListPath } from "../../app/routes";
+import { carriedChatFrom } from "../../app/chatAbout";
+import { AboutLine } from "./AboutLine";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
 import { Chip } from "../../shared/ui/Chip";
@@ -238,7 +240,8 @@ export function AssistantPage({ client = mcpAssistantClient, timeoutMs = slowAft
     setItems((now) => [...now, { id: last.current, role: "user", content: body, queued: true }]);
   };
   return (
-    <Shell title={assistantName} backLabel="Chat" tabless onBack={() => navigate(chatListPath())}>
+    <Shell title={assistantName} backLabel={carriedChatFrom() ? "Back" : "Chat"} tabless onBack={() => navigate(carriedChatFrom() || chatListPath())}>
+      <AboutLine />
       {unavailable ? <EmptyCard words={unavailableWords} /> : null}
       {!unavailable ? (
         <div className="assistant-panel">

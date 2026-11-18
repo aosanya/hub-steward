@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, type MouseEvent } from "react";
+import { NavLink, useLocation, useNavigate, type NavigateFunction } from "react-router-dom";
 import { openAgencyId } from "../shared/wakala/openAgency";
 import "../features/chat/unread.css";
 import { type InboxClient, mcpInboxClient } from "../features/inbox/api";
@@ -8,7 +8,8 @@ import { thingsToDoLabel } from "../features/inbox/thingsToDo";
 import { useNeedsYou } from "../features/inbox/useNeedsYou";
 import { mcpStartClient, type StartClient } from "../features/market/start/api";
 import { Icon } from "../shared/ui/Icon";
-import { carryChatAbout } from "./chatAbout";
+import { carriedChatAbout, carryChatAbout } from "./chatAbout";
+import { routes } from "./routes";
 import { chatTab, mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "./tabs";
 
 type Props = { inbox?: InboxClient; start?: StartClient; assigned?: AssignedClient };
@@ -20,15 +21,23 @@ function useRememberedSide() {
   }, [side]);
 }
 
+const openChat = (navigate: NavigateFunction) => (event: MouseEvent<HTMLAnchorElement>) => {
+  carryChatAbout();
+  if (!carriedChatAbout()) return;
+  event.preventDefault();
+  navigate(routes.assistant.path());
+};
+
 export function TabBar({ inbox = mcpInboxClient, start = mcpStartClient, assigned = mcpAssignedClient }: Props) {
   const agencyId = openAgencyId();
   const { count, newsUnread } = useNeedsYou(inbox, start, assigned);
   const things = thingsToDoLabel(count);
   useRememberedSide();
+  const navigate = useNavigate();
   return (
     <nav className="tabs" aria-label="Main">
       {mainBar.map((tab) => (
-        <NavLink key={tab.id} to={tabPathIn(tab, agencyId)} end className="tab" onClick={tab.id === chatTab.id ? carryChatAbout : undefined}>
+        <NavLink key={tab.id} to={tabPathIn(tab, agencyId)} end className="tab" onClick={tab.id === chatTab.id ? openChat(navigate) : undefined}>
           <span className="pill">
             <Icon name={tab.icon} />
             {tab.id === notificationsTab.id && things ? (

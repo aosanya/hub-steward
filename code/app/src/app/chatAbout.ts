@@ -4,12 +4,17 @@ export type ChatAbout = { kind: "resident"; id: string; name: string };
 
 let open: ChatAbout | null = null;
 
+let openBack = "";
+
 let carried: ChatAbout | null = null;
+
+let carriedFrom = "";
 
 const listeners = new Set<() => void>();
 
-const publish = (next: ChatAbout | null) => {
+const publish = (next: ChatAbout | null, back = "") => {
   open = next;
+  openBack = next ? back : "";
   listeners.forEach((listener) => listener());
 };
 
@@ -22,24 +27,37 @@ const subscribe = (listener: () => void) => {
 
 export const useChatAbout = () => useSyncExternalStore(subscribe, () => open);
 
-export const useChatAboutOpen = (about: ChatAbout | null) => {
+export const useChatAboutOpen = (about: ChatAbout | null, back = "") => {
   const key = about ? `${about.kind}:${about.id}:${about.name}` : "";
   useEffect(() => {
     if (!about) return undefined;
-    publish(about);
+    publish(about, back);
     return () => publish(null);
-  }, [key]);
+  }, [key, back]);
 };
 
-export const carryChatAbout = () => {
-  carried = open;
+const settle = (about: ChatAbout | null, from: string) => {
+  carried = about;
+  carriedFrom = about ? from : "";
+  listeners.forEach((listener) => listener());
 };
+
+export const carryChatAbout = () => settle(open, openBack);
 
 export const carriedChatAbout = () => carried;
 
+export const carriedChatFrom = () => carriedFrom;
+
+export const useCarriedChatAbout = () => useSyncExternalStore(subscribe, () => carried);
+
+export const clearCarriedChatAbout = () => {
+  carried = null;
+  listeners.forEach((listener) => listener());
+};
+
 export const forgetChatAbout = () => {
   open = null;
-  carried = null;
+  settle(null, "");
 };
 
 export const chatAboutWords = (about: ChatAbout) =>
