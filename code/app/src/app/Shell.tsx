@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { MayFailedLine } from "../features/agency/MayFailedLine";
 import type { InboxClient } from "../features/inbox/api";
 import { AccountMenu } from "../shared/ui/AccountMenu";
 import { DrawerFrame } from "../shared/ui/DrawerFrame";
@@ -15,6 +16,7 @@ export function Shell({ title, sub, onBack, backLabel, action, headEnd, inbox, t
       {onBack ? <TopBar back={{ onClick: onBack, label: backLabel }} title={backLabel && !titleUnder && !titleless ? title : undefined} {...bar} /> : <TopBar title={title} {...bar} />}
       <main className="body">
         <ScreenHead title={onBack && !titleless && (!backLabel || titleUnder) ? title : undefined} sub={sub} end={headEnd} />
+        <MayFailedLine />
         {children}
       </main>
       {tabless ? null : <TabBar inbox={inbox} />}

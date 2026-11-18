@@ -41,6 +41,15 @@ afterEach(() => {
   resetMcp();
 });
 
+describe("the roles read the page's cards share", () => {
+  it("makes one tools/call for the caller's roles however many cards ask at once", async () => {
+    openAgency("agency-7");
+    const fetcher = stub(() => ({ body: rpc({ structuredContent: { permissions: ["resident.read"] } }) }));
+    await Promise.all([1, 2, 3, 4].map(() => callTool("", "agency_get_my_roles")));
+    expect(callsOf(fetcher, "tools/call").length).toBe(1);
+  });
+});
+
 describe("what a tool call sends", () => {
   it("adds the open agency as instance_id", async () => {
     openAgency("agency-7");
