@@ -43,6 +43,7 @@ export function PersonApplications({ id, full }: { id: string; full?: boolean })
       {view.state === "loading" ? <LoadingLine /> : null}
       {view.state === "ready" ? (
         <Section
+          icon="document"
           word={word("Applications")}
           full={full}
           opens={opens}

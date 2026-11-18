@@ -76,6 +76,7 @@ export function PersonGroups({ id, full }: { id: string; full?: boolean }) {
       {view.state === "error" ? <LoadFailed words={`The ${word("Groups").toLowerCase()} could not be loaded.`} /> : null}
       {view.state === "ready" ? (
         <Section
+          icon="users"
           word={word("Groups")}
           full={full}
           opens={opens}
@@ -106,7 +107,7 @@ export function PersonDetails({ id, person }: { id: string; person: Item }) {
     ...(name ? [<ListRow key="name" title="Name" meta={name} />] : []),
     ...contactFirst.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />),
   ];
-  return <Section word="Personal detail" foot={edit} empty={{ words: "No details on file yet." }} rows={rows} />;
+  return <Section word="Personal detail" plain foot={edit} empty={{ words: "No details on file yet." }} rows={rows} />;
 }
 
 export function PersonHead({ person }: { person: Item }) {

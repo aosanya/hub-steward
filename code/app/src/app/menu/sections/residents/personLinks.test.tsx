@@ -205,8 +205,10 @@ describe("wishes and issues on a person's detail", () => {
 
     expect(await screen.findByRole("heading", { name: /^Wishes and issues/ })).toBeTruthy();
     await screen.findByText("Sample Broken Lamp");
-    expect(screen.getByText(`open, raised ${dayWords("2026-11-02T08:00:00Z")}`)).toBeTruthy();
-    expect(screen.getByText(`received, raised ${dayWords("2026-11-06T10:00:00Z")}`)).toBeTruthy();
+    expect(screen.getByText(`Raised ${dayWords("2026-11-02T08:00:00Z")}`)).toBeTruthy();
+    expect(screen.getByText(`Raised ${dayWords("2026-11-06T10:00:00Z")}`)).toBeTruthy();
+    expect(screen.getByText("open").className).toBe("chip waiting");
+    expect(screen.getByText("received").className).toBe("chip waiting");
     const titles = screen.getAllByText(/^Sample (Broken Lamp|Bench Wish)$/).map((node) => node.textContent);
     expect(titles).toEqual(["Sample Bench Wish", "Sample Broken Lamp"]);
     expect(callsTo("forms_catalog_raised_item_list_of_person")).toEqual([["", "forms_catalog_raised_item_list_of_person", { raised_by: "p1" }]]);

@@ -1,18 +1,25 @@
-import type { ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
+import { Icon, type IconName } from "./Icon";
 
 type Props = { title: string; code?: string; meta?: string | string[]; end?: ReactNode; onClick?: () => void; lead?: boolean; start?: ReactNode; below?: ReactNode; className?: string; role?: string; pressed?: boolean };
 
 const chevron = "›";
 
+export type SectionRowsLook = { plain: boolean; icon?: IconName };
+
+export const SectionRows = createContext<SectionRowsLook | null>(null);
+
 export const leadLetter = (title: string) => Array.from(title.trim()).find((c) => /[\p{L}\p{N}]/u.test(c))?.toLocaleUpperCase() ?? "";
 
 export function ListRow({ title, code, meta, end, onClick, lead, start, below, className, role, pressed }: Props) {
-  const letter = lead ? leadLetter(title) : "";
+  const look = useContext(SectionRows);
+  const tiled = lead ?? (look !== null && !look.plain);
+  const letter = tiled && !look?.icon ? leadLetter(title) : "";
   const rowClass = className ? `row ${className}` : "row";
   const inner = (
     <>
       {start}
-      {letter ? <span className="lead" aria-hidden="true">{letter}</span> : null}
+      {tiled && (look?.icon || letter) ? <span className="lead" aria-hidden="true">{look?.icon ? <Icon name={look.icon} /> : letter}</span> : null}
       <span className="txt">
         <span className="ttl">{title}</span>
         {code ? <span className="meta code">{code}</span> : null}

@@ -132,7 +132,7 @@ describe("the section heading is the large text and rows are divided", () => {
     expect(css).toMatch(/\.sec-title \{[^}]*font-size: 1rem/);
     expect(css).toMatch(/\.sec \{[^}]*border-radius: 0/);
     expect(css).toMatch(/\.sec-head \{[^}]*box-shadow:/);
-    expect(css).toMatch(/\.sec \.row \.ttl \{[^}]*font-weight: 400/);
+    expect(css).toMatch(/\.sec \.row \.ttl \{[^}]*font-weight: 500/);
   });
 });
 

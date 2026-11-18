@@ -52,7 +52,7 @@ export function PersonActivity({ id }: { id: string }) {
   return (
     <>
       {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "ready" ? <Section word={word("Activity")} empty={{ words: "No other activity yet." }} rows={rows.map((row) => <ListRow key={row.key} title={row.title} meta={row.meta} />)} all /> : null}
+      {view.state === "ready" ? <Section icon="clock" word={word("Activity")} empty={{ words: "No other activity yet." }} rows={rows.map((row) => <ListRow key={row.key} title={row.title} meta={row.meta} />)} all /> : null}
     </>
   );
 }

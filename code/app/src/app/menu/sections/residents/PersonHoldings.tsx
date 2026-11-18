@@ -70,7 +70,7 @@ export function PersonHoldings({ id, full }: { id: string; full?: boolean }) {
   return (
     <>
       {view.state === "loading" ? <LoadingLine /> : null}
-      {view.state === "ready" ? <Section word={word("Holdings")} full={full} opens={opens} foot={<SectionGo permission="digitaltwin.manage" act="Add holding" to={placePaths.holdingNew.path()} />} empty={{ words: "No holdings yet." }} rows={holdingRows(holdings, open)} /> : null}
+      {view.state === "ready" ? <Section icon="box" word={word("Holdings")} full={full} opens={opens} foot={<SectionGo permission="digitaltwin.manage" act="Add holding" to={placePaths.holdingNew.path()} />} empty={{ words: "No holdings yet." }} rows={holdingRows(holdings, open)} /> : null}
     </>
   );
 }

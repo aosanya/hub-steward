@@ -61,7 +61,7 @@ export function PersonAttributesInline({ id, person, onSaved }: { id: string; pe
   if (fields.length === 0) return null;
   return (
     <>
-      <Section word="Details" rows={filled.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />)} />
+      <Section word="Details" plain rows={filled.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />)} />
       <MenuEditForm item={item} id={id} idArg="actor_id" tool="actor_set_actor_attributes" permission="member.edit" editLabel="Edit attributes" fields={fields} build={build} alsoSave={alsoSave} onSaved={onSaved} />
     </>
   );

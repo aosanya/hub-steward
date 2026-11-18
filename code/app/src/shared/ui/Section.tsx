@@ -1,13 +1,13 @@
 import { useId, useState, type ReactNode } from "react";
-import { Icon } from "./Icon";
-import { Rows } from "./ListRow";
+import { Icon, type IconName } from "./Icon";
+import { Rows, SectionRows } from "./ListRow";
 import "./section.css";
 
 export const sectionLimit = 3;
 
-type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean };
+type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean; icon?: IconName; plain?: boolean };
 
-export function Section({ word, rows, opens, empty, foot, full = false, all = false }: Props) {
+export function Section({ word, rows, opens, empty, foot, full = false, all = false, icon, plain = false }: Props) {
   const [expanded, setExpanded] = useState(true);
   const bodyId = useId();
   const count = rows.length;
@@ -44,9 +44,11 @@ export function Section({ word, rows, opens, empty, foot, full = false, all = fa
       </div>
       {expanded ? (
         <div id={bodyId} className="sec-body">
-          <Rows>
-            {count === 0 && empty ? <div className="row empty-row"><span className="words">{empty.words}</span></div> : shown}
-          </Rows>
+          <SectionRows.Provider value={{ plain, icon }}>
+            <Rows>
+              {count === 0 && empty ? <div className="row empty-row"><span className="words">{empty.words}</span></div> : shown}
+            </Rows>
+          </SectionRows.Provider>
         </div>
       ) : null}
       {expanded && (more || foot) ? (
