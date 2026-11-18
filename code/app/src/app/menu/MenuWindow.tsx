@@ -11,12 +11,12 @@ type ListProps = Pick<ComponentProps<typeof MenuList>, "title" | "tool" | "field
 
 type DetailProps = Pick<ComponentProps<typeof MenuDetail>, "tool" | "fields" | "status" | "action" | "load" | "extra">;
 
-type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; detailKey?: string | number; listKey?: string | number; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
+type Props = { title: string; list: ListProps; detail: DetailProps; above?: ReactNode; below?: ReactNode; headEnd?: ReactNode; detailKey?: string | number; listKey?: string | number; startAt?: string; elsewhere?: (id: string) => boolean; leave?: (id: string) => void };
 
-export function MenuWindow({ title, list, detail, above, below, headEnd, detailKey, listKey, elsewhere, leave }: Props) {
+export function MenuWindow({ title, list, detail, above, below, headEnd, detailKey, listKey, startAt, elsewhere, leave }: Props) {
   const back = useBackToSection();
   const wide = useWide();
-  const [chosen, setChosen] = useState("");
+  const [chosen, setChosen] = useState(startAt ?? "");
   const [reported, setReported] = useState<string[] | null>(null);
   const elsewhereNow = useRef(elsewhere);
   elsewhereNow.current = elsewhere;
@@ -24,7 +24,7 @@ export function MenuWindow({ title, list, detail, above, below, headEnd, detailK
     if (!wide || !reported || reported.includes(chosen)) return;
     setChosen(reported.find((id) => !elsewhereNow.current?.(id)) ?? "");
   }, [wide, reported, chosen]);
-  const clearsChoice = !!chosen && !wide;
+  const clearsChoice = !!chosen && !wide && !(startAt && chosen === startAt);
   const onBack = clearsChoice ? () => setChosen("") : back.onBack;
   const backLabel = clearsChoice ? list.title : back.backLabel;
   const listPane = (

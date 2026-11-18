@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { itemsOf } from "../../../../features/backlogs";
 import { dayWords } from "../../../../shared/ui/days";
@@ -62,9 +63,11 @@ export function AllPeopleScreen() {
   const word = useWord("actor");
   const peopleTitle = `All ${word("People")}`;
   const [version, setVersion] = useState(0);
+  const [search] = useSearchParams();
   return (
     <MenuWindow
       title={peopleTitle}
+      startAt={search.get("person") ?? undefined}
       listKey={version}
       detailKey={version}
       list={{ title: peopleTitle, tool: "actor_list_actors", fields: { title: "name", meta: "status" }, empty: homeEmpty(`No ${word("People").toLowerCase()} yet.`), load: peopleRows }}

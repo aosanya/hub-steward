@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useWord } from "../../../../features/agency/useWord";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
@@ -69,6 +70,7 @@ export function BillsScreen() {
   const [status, setStatus] = useState("");
   const [raising, setRaising] = useState(false);
   const [refused, setRefused] = useState(false);
+  const [search] = useSearchParams();
   const [listed, setListed] = useState(-1);
   const roles = useLoad(() => callTool("", rolesTool, {}), "bills-roles");
   const manage = roles.state === "ready" && ((roles.data as { permissions?: string[] } | null)?.permissions ?? []).includes(manageRole);
@@ -92,6 +94,7 @@ export function BillsScreen() {
     <MenuWindow
       key={`${status}:${version}`}
       title={word("Revenue & Billing")}
+      startAt={search.get("bill") ?? undefined}
       listKey={`${edited}${unit}`}
       detailKey={`${edited}${unit}`}
       above={
