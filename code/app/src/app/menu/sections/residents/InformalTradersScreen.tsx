@@ -4,10 +4,11 @@ import { RecordRowsScreen } from "../../RecordRowsScreen";
 
 export const informalTradersRecordCode = "RC-2";
 export const informalTradersTitlePrompt = "Name or alias";
-export const informalTradersMetaPrompts = ["What is sold", "Neighbourhood"];
+export const informalTradersMetaPrompts = ["Kind of trader", "What is sold", "Neighbourhood"];
 
 export const informalTraderFields: RecordFormField[] = [
   { prompt: "Name or alias", required: true },
+  { prompt: "Kind of trader", required: true, options: ["Stall holder at the market", "Street seller"] },
   { prompt: "What is sold", required: true },
   { prompt: "Usual place", required: false },
   { prompt: "Usual days", required: false },

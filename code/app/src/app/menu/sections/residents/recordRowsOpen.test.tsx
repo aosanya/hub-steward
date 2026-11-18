@@ -34,9 +34,9 @@ const screens: { name: string; code: string; path: () => string; rows: Row[]; ot
     rows: [
       {
         id: "t1",
-        answers: { "Name or alias": "Marika's flower stand", "What is sold": "Flowers", "Usual place": "Market square", "Usual days": "Saturday", Neighbourhood: "Óváros", Status: "Active" },
+        answers: { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", "Usual place": "Market square", "Usual days": "Saturday", Neighbourhood: "Óváros", Status: "Active" },
       },
-      { id: "t2", answers: { "Name or alias": "Ferenc the chestnut roaster", "What is sold": "Roasted chestnuts", "Usual place": "Station steps", Neighbourhood: "Határrét", Status: "Suspended" } },
+      { id: "t2", answers: { "Name or alias": "Ferenc the chestnut roaster", "Kind of trader": "Street seller", "What is sold": "Roasted chestnuts", "Usual place": "Station steps", Neighbourhood: "Határrét", Status: "Suspended" } },
     ],
     other: "Station steps",
     add: "Add trader",

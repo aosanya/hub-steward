@@ -53,6 +53,7 @@ const showForm = () => showAt(appRoutes.informalTraderNew.path());
 const fillRequired = async (user: ReturnType<typeof userEvent.setup>, skip = "") => {
   const text: Record<string, string> = { "Name or alias": "Marika's flower stand", "What is sold": "Flowers" };
   for (const [label, value] of Object.entries(text)) if (label !== skip) await user.type(screen.getByLabelText(label), value);
+  if (skip !== "Kind of trader") await user.click(screen.getByRole("radio", { name: "Stall holder at the market" }));
   if (skip !== "Neighbourhood") await user.click(screen.getByRole("radio", { name: "Óváros" }));
   if (skip !== "Status") await user.click(screen.getByRole("radio", { name: "Active" }));
 };
@@ -68,12 +69,12 @@ afterEach(() => {
 });
 
 describe("the new informal trader form in Residents", () => {
-  it("asks the six questions of the Informal trader form, marking the optional ones and choosing Neighbourhood and Status from their options", () => {
+  it("asks the questions of the Informal trader form, marking the optional ones and choosing Kind of trader, Neighbourhood and Status from their options", () => {
     hubWith([]);
     showForm();
 
     for (const label of ["Name or alias", "What is sold", "Usual place (optional)", "Usual days (optional)"]) expect(screen.getByLabelText(label)).toBeInTheDocument();
-    expect(screen.getAllByRole("radio").map((radio) => radio.closest("label")?.textContent)).toEqual(["Óváros", "Kertváros", "Malomsor", "Határrét", "Active", "Suspended", "Closed"]);
+    expect(screen.getAllByRole("radio").map((radio) => radio.closest("label")?.textContent)).toEqual(["Stall holder at the market", "Street seller", "Óváros", "Kertváros", "Malomsor", "Határrét", "Active", "Suspended", "Closed"]);
   });
 
   it("adds one row of record RC-2 with only the answered questions and lands on the Informal traders list", async () => {
@@ -85,8 +86,8 @@ describe("the new informal trader form in Residents", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByText("Marika's flower stand")).toBeInTheDocument();
-    expect(screen.getByText("Flowers · Óváros")).toBeInTheDocument();
-    expect(addCalls()).toEqual([["", "agency_add_live_record_row", { record_code: "RC-2", answers: { "Name or alias": "Marika's flower stand", "What is sold": "Flowers", Neighbourhood: "Óváros", Status: "Active" } }]]);
+    expect(screen.getByText("Stall holder at the market · Flowers · Óváros")).toBeInTheDocument();
+    expect(addCalls()).toEqual([["", "agency_add_live_record_row", { record_code: "RC-2", answers: { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", Neighbourhood: "Óváros", Status: "Active" } }]]);
     expect(landed).toBe(residentPaths.informalTraders.path());
   });
 
@@ -103,7 +104,7 @@ describe("the new informal trader form in Residents", () => {
     await waitFor(() => expect(addCalls()).toHaveLength(1));
     expect(addCalls()[0][2]).toEqual({
       record_code: "RC-2",
-      answers: { "Name or alias": "Marika's flower stand", "What is sold": "Flowers", "Usual place": "Market square", "Usual days": "Saturday", Neighbourhood: "Óváros", Status: "Active" },
+      answers: { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", "Usual place": "Market square", "Usual days": "Saturday", Neighbourhood: "Óváros", Status: "Active" },
     });
   });
 
@@ -120,11 +121,11 @@ describe("the new informal trader form in Residents", () => {
     await waitFor(() => expect(addCalls()).toHaveLength(1));
     expect(addCalls()[0][2]).toEqual({
       record_code: "RC-2",
-      answers: { "Name or alias": "Marika's flower stand", "What is sold": "Flowers", Neighbourhood: "Óváros", Status: "Active", Holder: "a1" },
+      answers: { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", Neighbourhood: "Óváros", Status: "Active", Holder: "a1" },
     });
   });
 
-  it.each(["Name or alias", "What is sold", "Neighbourhood", "Status"])("does not let the form go while the required %s is missing", async (missing) => {
+  it.each(["Name or alias", "Kind of trader", "What is sold", "Neighbourhood", "Status"])("does not let the form go while the required %s is missing", async (missing) => {
     const user = userEvent.setup();
     hubWith([]);
     showForm();
@@ -176,13 +177,14 @@ describe("entering an informal trader from the empty list to the list showing th
 
     await user.type(screen.getByLabelText("Name or alias"), "Ferenc the chestnut roaster");
     await user.type(screen.getByLabelText("What is sold"), "Roasted chestnuts");
+    await user.click(screen.getByRole("radio", { name: "Street seller" }));
     await user.click(screen.getByRole("radio", { name: "Határrét" }));
     await user.click(screen.getByRole("radio", { name: "Active" }));
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByText("Ferenc the chestnut roaster")).toBeInTheDocument();
-    expect(screen.getByText("Roasted chestnuts · Határrét")).toBeInTheDocument();
+    expect(screen.getByText("Street seller · Roasted chestnuts · Határrét")).toBeInTheDocument();
     expect(landed).toBe(residentPaths.informalTraders.path());
-    expect(saved).toEqual([{ id: "t1", answers: { "Name or alias": "Ferenc the chestnut roaster", "What is sold": "Roasted chestnuts", Neighbourhood: "Határrét", Status: "Active" } }]);
+    expect(saved).toEqual([{ id: "t1", answers: { "Name or alias": "Ferenc the chestnut roaster", "Kind of trader": "Street seller", "What is sold": "Roasted chestnuts", Neighbourhood: "Határrét", Status: "Active" } }]);
   });
 });

@@ -12,12 +12,12 @@ vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({
 
 const flowerStand = {
   id: "t1",
-  answers: { "Name or alias": "Marika's flower stand", "What is sold": "Flowers", "Usual place": "Market square", "Usual days": "Saturday", Neighbourhood: "Óváros", Status: "Active" },
+  answers: { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", "Usual place": "Market square", "Usual days": "Saturday", Neighbourhood: "Óváros", Status: "Active" },
 };
 
 const chestnutRoaster = {
   id: "t2",
-  answers: { "Name or alias": "Ferenc the chestnut roaster", "What is sold": "Roasted chestnuts", Neighbourhood: "Határrét" },
+  answers: { "Name or alias": "Ferenc the chestnut roaster", "Kind of trader": "Street seller", "What is sold": "Roasted chestnuts", Neighbourhood: "Határrét" },
 };
 
 let landed = "";
@@ -50,14 +50,14 @@ describe("the Informal traders screen in Residents", () => {
     expect(item?.path?.()).toBe("/a/town/menu/residents/informal-traders");
   });
 
-  it("lists each row of the Informal traders record with its name or alias, what is sold and neighbourhood", async () => {
+  it("lists each row of the Informal traders record with its name or alias, kind of trader, what is sold and neighbourhood", async () => {
     called = vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [flowerStand, chestnutRoaster] });
     showInformalTraders();
 
     expect(await screen.findByText("Marika's flower stand")).toBeInTheDocument();
-    expect(screen.getByText("Flowers · Óváros")).toBeInTheDocument();
+    expect(screen.getByText("Stall holder at the market · Flowers · Óváros")).toBeInTheDocument();
     expect(screen.getByText("Ferenc the chestnut roaster")).toBeInTheDocument();
-    expect(screen.getByText("Roasted chestnuts · Határrét")).toBeInTheDocument();
+    expect(screen.getByText("Street seller · Roasted chestnuts · Határrét")).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", "agency_list_live_record_rows", { record_code: "RC-2" });
   });
 
