@@ -109,10 +109,11 @@ describe.each([
     showDeclarations();
 
     await screen.findByText("Zsofia Varga", { selector: ".ttl" });
-    expect(screen.getAllByRole("heading", { name: "Declarations of interest" }).length).toBeGreaterThan(0);
+    expect(screen.getByRole("heading", { name: "Declarations of interest" })).toBeInTheDocument();
     expect(metaOf(rowOf("Zsofia Varga"))).toEqual(["2026-03-02"]);
     expect(metaOf(rowOf("Bence Kovacs"))).toEqual(["2026-03-05"]);
-        expect(called.mock.calls.filter(([, name]) => name === tool).length).toBeGreaterThan(0);
+    expect(screen.queryByText("Ilona Farkas", { selector: ".row .ttl" })).not.toBeNull();
+    expect(called.mock.calls.filter(([, name]) => name === tool).length).toBeGreaterThan(0);
   });
 
   it("opens the declaration with the member, the date and every answer in the order given", async () => {
