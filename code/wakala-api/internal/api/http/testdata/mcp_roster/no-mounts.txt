@@ -526,6 +526,7 @@ forms_submission_decide
 forms_submission_file
 forms_submission_inspect
 forms_submission_list
+forms_submission_list_inspectable
 forms_submission_list_missed
 forms_submission_list_of_person
 forms_submission_mark_paid
