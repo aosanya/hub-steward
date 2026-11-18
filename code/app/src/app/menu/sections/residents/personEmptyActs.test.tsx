@@ -35,6 +35,7 @@ let permissions: string[];
 let memberships: string[];
 let applications: Row[];
 let raised: Row[];
+let formQuestions: Row[];
 
 const answer = async (name: string, args: unknown) => {
   const given = (args ?? {}) as Record<string, unknown>;
@@ -57,6 +58,7 @@ const answer = async (name: string, args: unknown) => {
   }
   if (name === "forms_submission_list_of_person") return { items: applications };
   if (name === "forms_form_list") return { items: [{ id: "f1", title: permitForm, status: "open" }] };
+  if (name === "forms_question_list") return { items: formQuestions };
   if (name === "forms_submission_file") {
     applications = [...applications, { id: "s9", form_id: given.form_id, form_title: permitForm, member_id: given.member_id, submitted_at: "2026-11-18T09:30:00Z" }];
     return {};
@@ -75,6 +77,7 @@ beforeEach(() => {
   memberships = [];
   applications = [];
   raised = [];
+  formQuestions = [];
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
 
@@ -146,11 +149,53 @@ describe.each(widths)("the empty Applications card on $name", (view) => {
     await userEvent.click(await within(card).findByRole("button", { name: "Start an application" }));
     const picker = await screen.findByRole("dialog", { name: "Start an application" });
     await userEvent.click(await within(picker).findByRole("button", { name: new RegExp(permitForm) }));
+    await userEvent.click(await within(await screen.findByRole("dialog", { name: "Start an application" })).findByRole("button", { name: "File application" }));
 
-    await waitFor(() => expect(callsTo("forms_submission_file")).toEqual([expect.objectContaining({ form_id: "f1", member_id: personId, channel: "paper", answers: expect.anything() })]));
+    await waitFor(() => expect(callsTo("forms_submission_file")).toEqual([{ form_id: "f1", member_id: personId, channel: "paper", answers: [] }]));
     const pane = document.querySelector(view.pane) as HTMLElement;
     expect(await within(pane).findByText(permitForm)).toBeTruthy();
     expect(within(pane).queryByText(/No applications yet/)).toBeNull();
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("asks the chosen form's questions, keeps File application disabled until the required ones are answered and files the answers", async () => {
+    formQuestions = [
+      { id: "q1", prompt: "Fence height in metres", answer_type: "number", required: true },
+      { id: "q2", prompt: "Plot address", answer_type: "short_text", required: true },
+      { id: "q3", prompt: "Anything else", answer_type: "short_text", required: false },
+    ];
+    await openPerson(view.wide);
+
+    const card = await cardOf(/No applications yet/);
+    await userEvent.click(await within(card).findByRole("button", { name: "Start an application" }));
+    await userEvent.click(await within(await screen.findByRole("dialog", { name: "Start an application" })).findByRole("button", { name: new RegExp(permitForm) }));
+    const sheet = await screen.findByRole("dialog", { name: "Start an application" });
+    const file = await within(sheet).findByRole("button", { name: "File application" });
+
+    expect(callsTo("forms_question_list")).toEqual([{ form_id: "f1" }]);
+    expect(callsTo("forms_submission_file")).toEqual([]);
+    expect(file).toBeDisabled();
+    await userEvent.type(within(sheet).getByLabelText("Fence height in metres"), "1.8");
+    expect(file).toBeDisabled();
+    await userEvent.type(within(sheet).getByLabelText("Plot address"), "Sample Lane 4");
+    expect(file).toBeEnabled();
+    await userEvent.click(file);
+
+    await waitFor(() =>
+      expect(callsTo("forms_submission_file")).toEqual([
+        {
+          form_id: "f1",
+          member_id: personId,
+          channel: "paper",
+          answers: [
+            { question_id: "q1", value_number: 1.8 },
+            { question_id: "q2", value_text: "Sample Lane 4" },
+          ],
+        },
+      ]),
+    );
+    const pane = document.querySelector(view.pane) as HTMLElement;
+    expect(await within(pane).findByText(permitForm)).toBeTruthy();
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
