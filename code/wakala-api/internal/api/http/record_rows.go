@@ -122,13 +122,23 @@ func liveRecordByCode(ctx context.Context, m mwanachamaagency.AgencyManager, dra
 	return agencymodels.Record{}, mwanachamaagency.ErrRecordNotFound
 }
 
+const assetsOptionsFrom = "assets"
+
 func isPickedFromAList(q agencymodels.StepQuestion) bool {
 	return q.AnswerType == agencymodels.AnswerSingleChoice && q.OptionsFrom != ""
 }
 
+func picksAnAsset(q agencymodels.StepQuestion) bool {
+	return isPickedFromAList(q) && strings.EqualFold(q.OptionsFrom, assetsOptionsFrom)
+}
+
+func picksAPerson(q agencymodels.StepQuestion) bool {
+	return isPickedFromAList(q) && !picksAnAsset(q)
+}
+
 func rowNames(record agencymodels.Record, row agencymodels.RecordRow, person string) bool {
 	for _, q := range record.Questions {
-		if isPickedFromAList(q) && row.Answers[q.Prompt] == person {
+		if picksAPerson(q) && row.Answers[q.Prompt] == person {
 			return true
 		}
 	}
@@ -355,11 +365,26 @@ func namesAStranger(ctx context.Context, reg agencies.Registry, instanceID strin
 		if !isPickedFromAList(q) || person == "" {
 			continue
 		}
+		if picksAnAsset(q) {
+			if !isAssetOfAgency(ctx, reg, instanceID, person) {
+				return q.Prompt + " is not an asset of this agency"
+			}
+			continue
+		}
 		if !isPersonOfAgency(ctx, reg, instanceID, person) {
 			return q.Prompt + " is not a member of this agency"
 		}
 	}
 	return ""
+}
+
+func isAssetOfAgency(ctx context.Context, reg agencies.Registry, instanceID, asset string) bool {
+	assets, err := reg.AssetManager(ctx, instanceID)
+	if err != nil {
+		return false
+	}
+	_, err = assets.GetAsset(ctx, asset)
+	return err == nil
 }
 
 func isPersonOfAgency(ctx context.Context, reg agencies.Registry, instanceID, person string) bool {

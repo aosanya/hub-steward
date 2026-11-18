@@ -65,6 +65,7 @@ func businessRegister(t *testing.T) businessRegisterWalk {
 			{Prompt: "Business", AnswerType: agencymodels.AnswerFreeText, Required: true},
 			{Prompt: "Owner", AnswerType: agencymodels.AnswerSingleChoice, OptionsFrom: "members", Required: true},
 			{Prompt: "Contact", AnswerType: agencymodels.AnswerFreeText},
+			{Prompt: "Asset", AnswerType: agencymodels.AnswerSingleChoice, OptionsFrom: "assets"},
 		},
 	})
 	if err != nil {
