@@ -153,7 +153,8 @@ describe("Open tender and Add quote", () => {
 
     await userEvent.click(await screen.findByRole("button", { name: "Open tender" }));
     await userEvent.click(await screen.findByLabelText("Budget line"));
-    await userEvent.click(await screen.findByRole("option", { name: "Street lighting" }));
+    expect(await screen.findByRole("dialog", { name: "Budget line" })).toBeInTheDocument();
+    await userEvent.click(await screen.findByRole("option", { name: /Street lighting/ }));
     await fill("Title", "LED lamps");
     await fill("Description", "Forty lamps for the ring road");
     await fill("Closes on", "2026-06-01");

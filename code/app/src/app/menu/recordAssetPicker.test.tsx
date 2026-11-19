@@ -62,7 +62,7 @@ describe("an asset question in a record form", () => {
 
     await user.type(screen.getByLabelText("What was done"), "Oil change");
     await user.click(await screen.findByRole("button", { name: /^Asset/ }));
-    expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual(["No asset", "Road roller SN-4471", "Water pump"]);
+    expect(screen.getAllByRole("option").map((option) => option.textContent?.replace(/[✓›]/g, ""))).toEqual(["No asset", "Road roller SN-4471", "Water pump"]);
     await user.click(screen.getByRole("option", { name: "Road roller SN-4471" }));
     await user.click(screen.getByRole("button", { name: "Save" }));
 
@@ -85,11 +85,46 @@ describe("an asset question in a record form", () => {
     expect(called.mock.calls.filter(([, tool]) => tool === "assetmanager_asset_list")).toHaveLength(0);
   });
 
-  it("leaves a person question as it was", async () => {
+  it("opens a person question and an asset question as the shared list titled by the question", async () => {
     const user = userEvent.setup();
     show();
     await user.click(await screen.findByRole("button", { name: /Done by/ }));
-    expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual(["No one", "Szabó Katalin"]);
+    expect(screen.getByRole("dialog", { name: "Done by (optional)" })).toBeInTheDocument();
+    expect(screen.getAllByRole("option").map((option) => option.textContent?.replace(/[✓›]/g, ""))).toEqual(["No one", "Szabó Katalin"]);
+  });
+
+  it("offers a question that refers to a business, a trader, a neighbourhood or a role kind through the same list, by name", async () => {
+    const user = userEvent.setup();
+    called.mockImplementation(async (_hub, tool) => {
+      if (tool === "agency_list_live_records") return { items: [{ name: "Businesses", code: "RC-1" }] };
+      if (tool === "agency_list_live_record_rows") return { items: [{ id: "b1", answers: { "Trading name": "Mill Corner Garage" } }] };
+      if (tool === "actor_list_levels") return { items: [{ name: "Neighbourhood", is_area: true }] };
+      if (tool === "actor_list_groups") return { items: [{ id: "g1", name: "Óváros", node_type: "neighbourhood" }] };
+      if (tool === "actor_list_role_kinds") return { items: [{ id: "k1", name: "Mayor" }] };
+      return { id: "r1" };
+    });
+    render(
+      <MemoryRouter>
+        <RecordRowForm
+          title="Add"
+          recordCode="RC-3"
+          fields={[
+            { prompt: "Business", required: false, refers: "business" },
+            { prompt: "Area", required: false, refers: "neighbourhood" },
+            { prompt: "Role", required: false, refers: "roleKind" },
+          ]}
+          back={{ to: "/list", label: "Records" }}
+        />
+      </MemoryRouter>,
+    );
+    await user.click(await screen.findByRole("button", { name: /Business/ }));
+    await user.click(await screen.findByRole("option", { name: /Mill Corner Garage/ }));
+    await user.click(await screen.findByRole("button", { name: /Area/ }));
+    await user.click(await screen.findByRole("option", { name: /Óváros/ }));
+    await user.click(await screen.findByRole("button", { name: /Role/ }));
+    await user.click(await screen.findByRole("option", { name: /Mayor/ }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-3", answers: { Business: "b1", Area: "g1", Role: "k1" } });
   });
 });
 

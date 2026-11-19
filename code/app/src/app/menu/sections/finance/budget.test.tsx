@@ -16,7 +16,7 @@ const lines = [
 ];
 
 const accounts = [
-  { id: "ac1", code: "5000", category: "roads", type: "expense" },
+  { id: "ac1", code: "5000", name: "Road maintenance", category: "roads", type: "expense" },
   { id: "ac2", code: "5100", category: "books", type: "expense" },
 ];
 
@@ -157,13 +157,22 @@ describe("adding a budget line", () => {
   const fillIn = async () => {
     await userEvent.click(await screen.findByRole("button", { name: "Add budget line" }));
     await userEvent.click(await screen.findByRole("button", { name: /Account/ }));
-    await userEvent.click(await screen.findByRole("option", { name: /roads/ }));
+    await userEvent.click(await screen.findByRole("option", { name: /Road maintenance/ }));
     await userEvent.type(screen.getByLabelText("Name"), "Winter Salt");
     await userEvent.type(screen.getByLabelText("Department"), "Public Works");
     await userEvent.type(screen.getByLabelText("Period start"), "2026-03-01");
     await userEvent.type(screen.getByLabelText("Period end"), "2026-03-31");
     await userEvent.type(screen.getByLabelText("Amount"), "4000");
   };
+
+  it("opens the account as a list titled Account with names a person knows, not a category and a code", async () => {
+    open();
+    await userEvent.click(await screen.findByRole("button", { name: "Add budget line" }));
+    await userEvent.click(await screen.findByRole("button", { name: /Account/ }));
+    expect(await screen.findByRole("dialog", { name: "Account" })).toBeInTheDocument();
+    expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual(expect.arrayContaining([expect.stringContaining("Road maintenance"), expect.stringContaining("Books 5100")]));
+    expect(screen.queryByRole("option", { name: /roads 5000/ })).toBeNull();
+  });
 
   it("sets the line on accounting_budget_set and lists it with its planned and spent", async () => {
     open();
@@ -188,7 +197,7 @@ describe("adding a budget line", () => {
     open();
     await userEvent.click(await screen.findByRole("button", { name: "Add budget line" }));
     await userEvent.click(await screen.findByRole("button", { name: /Account/ }));
-    await userEvent.click(await screen.findByRole("option", { name: /roads/ }));
+    await userEvent.click(await screen.findByRole("option", { name: /Road maintenance/ }));
     await userEvent.type(screen.getByLabelText("Name"), "Year Salt");
     await userEvent.type(screen.getByLabelText("Period start"), "2026-01-01");
     await userEvent.type(screen.getByLabelText("Period end"), "2026-12-31");
@@ -224,7 +233,7 @@ describe("adding a budget line", () => {
     open();
     await userEvent.click(await screen.findByRole("button", { name: "Add budget line" }));
     await userEvent.click(await screen.findByRole("button", { name: /Account/ }));
-    await userEvent.click(await screen.findByRole("option", { name: /roads/ }));
+    await userEvent.click(await screen.findByRole("option", { name: /Road maintenance/ }));
     await userEvent.type(screen.getByLabelText("Name"), "Winter Salt");
     await userEvent.type(screen.getByLabelText("Period start"), "2026-01-01");
     await userEvent.type(screen.getByLabelText("Period end"), "2026-01-31");

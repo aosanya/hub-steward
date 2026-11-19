@@ -13,5 +13,6 @@
 .reference-row .row { border-top: 0; }
 .reference-empty { margin: 0; padding: 1rem; text-align: center; color: var(--ink-soft); }
 @media (min-width: 56rem) {
+  body.reference-open { padding-left: min(26rem, 40vw); }
   .reference-list { inset: 0 auto 0 0; width: 26rem; max-width: 40vw; border-right: 1px solid var(--line); box-shadow: 0 0 1rem var(--line); }
 }

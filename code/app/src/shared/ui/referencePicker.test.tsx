@@ -70,4 +70,31 @@ describe("ReferencePicker", () => {
     await userEvent.type(screen.getByRole("searchbox", { name: "Search" }), "zzz");
     expect(screen.getByText("No match.")).toBeInTheDocument();
   });
+
+  it("while open on a wide screen the page is marked so the form moves right of the list, and unmarked when it closes", async () => {
+    setup();
+    await userEvent.click(screen.getByLabelText("Holder"));
+    expect(document.body).toHaveClass("reference-open");
+    await userEvent.click(screen.getByRole("button", { name: "Back" }));
+    expect(document.body).not.toHaveClass("reference-open");
+  });
+
+  it("unmarks the page when it is removed while open", async () => {
+    const { unmount } = render(<ReferencePicker label="Holder" choices={choices} value="" onChange={vi.fn()} />);
+    await userEvent.click(screen.getAllByLabelText("Holder").at(-1)!);
+    expect(document.body).toHaveClass("reference-open");
+    unmount();
+    expect(document.body).not.toHaveClass("reference-open");
+  });
+
+  it("says Loading while the list is still being read and says it could not be read when it failed, never that there is nothing to choose", async () => {
+    const { rerender } = render(<ReferencePicker label="Holder" choices={[]} status="loading" value="" onChange={vi.fn()} />);
+    await userEvent.click(screen.getAllByLabelText("Holder").at(-1)!);
+    expect(screen.getByText("Loading…")).toBeInTheDocument();
+    expect(screen.queryByText("Nothing to choose from yet.")).toBeNull();
+    rerender(<ReferencePicker label="Holder" choices={[]} status="error" value="" onChange={vi.fn()} />);
+    expect(screen.getByText("The list could not be read.")).toBeInTheDocument();
+    rerender(<ReferencePicker label="Holder" choices={choices} value="" onChange={vi.fn()} />);
+    expect(screen.getAllByRole("option")).toHaveLength(3);
+  });
 });

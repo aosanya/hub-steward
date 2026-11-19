@@ -5,15 +5,15 @@ import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
-import { SearchSelect } from "../../../../shared/ui/SearchSelect";
+import { ReferencePicker } from "../../../../shared/ui/ReferencePicker";
 import { callTool, McpError } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
 import { BudgetPage, budgetManage, budgetSetTool } from "./BudgetPage";
+import { loadAccountChoices } from "../../referenceChoices";
 import { lineStages } from "./lineStages";
 import { financePaths } from "./paths";
-import { accountListTool } from "./markBillPaid";
 import { budgetRow, dayStart, homeEmpty, listOf, moneyWords, periodEndOf, periodWords, text, tools, unitOf, type Item } from "./financeData";
 
 const rolesTool = "agency_get_my_roles";
@@ -63,15 +63,12 @@ type Draft = { account: string; name: string; department: string; start: string;
 
 const blank: Draft = { account: "", name: "", department: "", start: "", end: "", amount: "" };
 
-const accountChoices = async () =>
-  (await listOf(accountListTool)).map((account) => ({ value: text(account, "id"), label: [text(account, "category"), text(account, "code")].filter((word) => word !== "").join(" ") }));
-
 const complete = (draft: Draft) => draft.account !== "" && draft.name.trim() !== "" && draft.start !== "" && draft.end !== "" && Number(draft.amount) > 0;
 
 function AddLineForm({ onSaved, word }: { onSaved: () => void; word: Wording }) {
   const [draft, setDraft] = useState(blank);
   const [refused, setRefused] = useState("");
-  const accounts = useLoad(accountChoices, `budget-accounts:${openAgencyId()}`);
+  const accounts = useLoad(loadAccountChoices, `budget-accounts:${openAgencyId()}`);
   const set = (key: keyof Draft) => (value: string) => setDraft((was) => ({ ...was, [key]: value }));
   const save = async () => {
     setRefused("");
@@ -92,7 +89,7 @@ function AddLineForm({ onSaved, word }: { onSaved: () => void; word: Wording }) 
   };
   return (
     <>
-      <SearchSelect label="Account" choices={accounts.state === "ready" ? accounts.data : []} value={draft.account} onChange={set("account")} />
+      <ReferencePicker label="Account" status={accounts.state === "ready" ? undefined : accounts.state} choices={accounts.state === "ready" ? accounts.data : []} value={draft.account} onChange={set("account")} />
       <Field label="Name" value={draft.name} onChange={(event) => set("name")(event.target.value)} />
       <Field label="Department" value={draft.department} onChange={(event) => set("department")(event.target.value)} />
       <Field label="Period start" placeholder="2026-01-01" value={draft.start} onChange={(event) => set("start")(event.target.value)} />

@@ -5,17 +5,19 @@ import { Button } from "../../shared/ui/Button";
 import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";
 import { Field } from "../../shared/ui/Field";
 import { LoadFailed } from "../../shared/ui/LoadState";
-import { SearchSelect, type Choice } from "../../shared/ui/SearchSelect";
+import { ReferencePicker } from "../../shared/ui/ReferencePicker";
+import type { Choice } from "../../shared/ui/SearchSelect";
 import { callTool } from "../../shared/wakala/mcp";
 import { Shell } from "../Shell";
 import { resolveRecordCode } from "./liveRecordRows";
 import { loadAssetChoices, noAsset } from "./assetChoices";
+import { loadReferenceChoices, type Reference } from "./referenceChoices";
 import { refusalWords } from "./MenuEditForm";
 import { personNameOf } from "./sections/residents/personName";
 
 const addLiveRecordRowTool = "agency_add_live_record_row";
 
-export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean; assets?: boolean; fixed?: boolean; kind?: "date" | "number" };
+export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean; assets?: boolean; refers?: Reference; fixed?: boolean; kind?: "date" | "number" };
 
 type Props = {
   title: string;
@@ -50,6 +52,8 @@ export function RecordRowForm({ title, recordCode, fields, back, edit, initial }
   const [refused, setRefused] = useState("");
   const [people, setPeople] = useState<Choice[]>([noOne]);
   const [assets, setAssets] = useState<Choice[]>([noAsset]);
+  const [referred, setReferred] = useState<Partial<Record<Reference, Choice[]>>>({});
+  const referencesAsked = [...new Set(fields.flatMap((field) => (field.refers ? [field.refers] : [])))].join(",");
   const asksForPeople = fields.some((field) => field.people);
   const asksForAssets = fields.some((field) => field.assets);
   useEffect(() => {
@@ -58,6 +62,14 @@ export function RecordRowForm({ title, recordCode, fields, back, edit, initial }
   useEffect(() => {
     if (asksForAssets) loadAssetChoices().then(setAssets, () => setAssets([noAsset]));
   }, [asksForAssets]);
+  useEffect(() => {
+    referencesAsked.split(",").filter((reference) => reference !== "").forEach((reference) => {
+      loadReferenceChoices(reference as Reference).then(
+        (choices) => setReferred((was) => ({ ...was, [reference]: choices })),
+        () => setReferred((was) => ({ ...was, [reference]: [] })),
+      );
+    });
+  }, [referencesAsked]);
   const answers = answersOf(fields, values);
   const complete = fields.every((field) => !field.required || field.prompt in answers);
   const set = (prompt: string, value: string) => setValues((was) => ({ ...was, [prompt]: value }));
@@ -77,9 +89,11 @@ export function RecordRowForm({ title, recordCode, fields, back, edit, initial }
     <Shell title={title} titleUnder backLabel={back.label} onBack={() => navigate(back.to)} tabless>
       {fields.map((field) =>
         field.assets ? (
-          <SearchSelect key={field.prompt} label={optionalWords(field)} choices={assets} value={values[field.prompt] ?? ""} onChange={(value) => set(field.prompt, value)} />
+          <ReferencePicker key={field.prompt} label={optionalWords(field)} choices={assets} value={values[field.prompt] ?? ""} onChange={(value) => set(field.prompt, value)} />
         ) : field.people ? (
-          <SearchSelect key={field.prompt} label={optionalWords(field)} choices={people} value={values[field.prompt] ?? ""} onChange={(value) => set(field.prompt, value)} />
+          <ReferencePicker key={field.prompt} label={optionalWords(field)} choices={people} value={values[field.prompt] ?? ""} onChange={(value) => set(field.prompt, value)} />
+        ) : field.refers ? (
+          <ReferencePicker key={field.prompt} label={optionalWords(field)} choices={referred[field.refers] ?? []} status={referred[field.refers] ? undefined : "loading"} value={values[field.prompt] ?? ""} onChange={(value) => set(field.prompt, value)} />
         ) : field.options ? (
           <ChoiceGroup key={field.prompt} label={optionalWords(field)}>
             {field.options.map((option) => (

@@ -1,5 +1,5 @@
 import { beforeEach, expect, test, vi } from "vitest";
-import { holderArgs, loadHolderChoices, loadPersonIdChoices } from "./referenceChoices";
+import { holderArgs, loadAccountChoices, loadBusinessChoices, loadHolderChoices, loadNeighbourhoodChoices, loadPersonIdChoices, loadRoleKindChoices, loadTraderChoices } from "./referenceChoices";
 
 const callTool = vi.fn();
 
@@ -38,4 +38,46 @@ test("a chosen person is sent by name and id, a chosen body by name alone", asyn
   expect(holderArgs("person:p2", choices)).toEqual({ holder: "Varga Mária", holder_actor_id: "p2" });
   expect(holderArgs("body:Zöldhalom Parish", choices)).toEqual({ holder: "Zöldhalom Parish" });
   expect(holderArgs("", choices)).toEqual({ holder: "" });
+});
+
+const answerTable: Record<string, unknown> = {
+  accounting_account_list: [
+    { id: "ac1", code: "5000", name: "Road maintenance", category: "roads" },
+    { id: "ac2", code: "5100", name: "", category: "books" },
+    { id: "ac3", code: "", name: "", category: "salaries" },
+  ],
+  agency_list_live_records: [{ name: "Businesses", code: "RC-1" }, { name: "Informal traders", code: "RC-2" }],
+  agency_list_live_record_rows: [
+    { id: "r1", answers: { "Trading name": "Mill Corner Garage", "Name or alias": "Lemonade Anna" } },
+    { id: "r2", answers: { "Trading name": "", "Name or alias": "" } },
+  ],
+  actor_list_levels: [{ name: "Neighbourhood", is_area: true }],
+  actor_list_groups: [
+    { id: "g1", name: "Óváros", node_type: "neighbourhood" },
+    { id: "g2", name: "Zöldhalom Parish", node_type: "parish" },
+  ],
+  actor_list_role_kinds: [{ id: "k1", name: "Mayor" }, { id: "k2", name: "Clerk", retired_at: "2026-01-01" }],
+};
+
+const answerFromTable = async (_hub: string, tool: string) => ({ items: answerTable[tool] ?? [] });
+
+test("a budget account reads by its name, then its category and code, never a bare code", async () => {
+  callTool.mockImplementation(answerFromTable);
+  expect(await loadAccountChoices()).toEqual([
+    { value: "ac1", label: "Road maintenance" },
+    { value: "ac2", label: "Books 5100" },
+    { value: "ac3", label: "Salaries" },
+  ]);
+});
+
+test("businesses and informal traders are offered by the name they trade under, and a nameless row is left out", async () => {
+  callTool.mockImplementation(answerFromTable);
+  expect(await loadBusinessChoices()).toEqual([{ value: "r1", label: "Mill Corner Garage" }]);
+  expect(await loadTraderChoices()).toEqual([{ value: "r1", label: "Lemonade Anna" }]);
+});
+
+test("neighbourhoods are the area groups by name and role kinds are the open ones by name", async () => {
+  callTool.mockImplementation(answerFromTable);
+  expect(await loadNeighbourhoodChoices()).toEqual([{ value: "g1", label: "Óváros" }]);
+  expect(await loadRoleKindChoices()).toEqual([{ value: "k1", label: "Mayor" }]);
 });

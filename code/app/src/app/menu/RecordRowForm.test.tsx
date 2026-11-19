@@ -81,7 +81,7 @@ describe("RecordRowForm", () => {
     await user.type(screen.getByLabelText("Stall holder"), "Kert Stall");
     await user.click(screen.getByRole("radio", { name: "North row" }));
     await user.click(await screen.findByRole("button", { name: /Stall owner \(optional\)/ }));
-    expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual(["No one", "Szabó Katalin", "Varga Mária"]);
+    expect(screen.getAllByRole("option").map((option) => option.textContent?.replace(/[✓›]/g, ""))).toEqual(["No one", "Szabó Katalin", "Varga Mária"]);
     await user.click(screen.getByRole("option", { name: "Varga Mária" }));
     await user.click(screen.getByRole("button", { name: "Save" }));
 

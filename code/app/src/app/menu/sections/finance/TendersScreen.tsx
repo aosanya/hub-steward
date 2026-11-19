@@ -5,7 +5,7 @@ import { Button } from "../../../../shared/ui/Button";
 import { Chip } from "../../../../shared/ui/Chip";
 import { Field } from "../../../../shared/ui/Field";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
-import { SearchSelect } from "../../../../shared/ui/SearchSelect";
+import { ReferencePicker } from "../../../../shared/ui/ReferencePicker";
 import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
@@ -60,7 +60,8 @@ const loadTender = async (id: string) => {
 };
 
 function OpenTender({ onOpened, onCancel, word }: { onOpened: () => void; onCancel: () => void; word: Wording }) {
-  const [lines, setLines] = useState<{ value: string; label: string }[]>([]);
+  const [lines, setLines] = useState<{ value: string; label: string }[] | null>(null);
+  const [linesFailed, setLinesFailed] = useState(false);
   const [budgetID, setBudgetID] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -69,7 +70,7 @@ function OpenTender({ onOpened, onCancel, word }: { onOpened: () => void; onCanc
   useEffect(() => {
     listOf(tools.budgetList).then(
       (items) => setLines(items.map((line) => ({ value: text(line, "id"), label: text(line, "name") }))),
-      () => undefined,
+      () => setLinesFailed(true),
     );
   }, []);
   const save = async () => {
@@ -82,7 +83,7 @@ function OpenTender({ onOpened, onCancel, word }: { onOpened: () => void; onCanc
   };
   return (
     <>
-      <SearchSelect label="Budget line" choices={lines} value={budgetID} onChange={setBudgetID} />
+      <ReferencePicker label="Budget line" status={linesFailed ? "error" : lines === null ? "loading" : undefined} choices={lines ?? []} value={budgetID} onChange={setBudgetID} />
       <Field label="Title" value={title} onChange={(event) => setTitle(event.target.value)} />
       <TextArea label="Description" value={description} onChange={(event) => setDescription(event.target.value)} />
       <Field label="Closes on" type="date" value={closes} onChange={(event) => setCloses(event.target.value)} />

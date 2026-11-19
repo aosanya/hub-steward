@@ -4,13 +4,13 @@ import { SearchBox } from "./SearchBox";
 import { ChevronDown, type Choice } from "./SearchSelect";
 import "./referencePicker.css";
 
-type Props = { label: string; choices: Choice[]; value: string; onChange: (value: string) => void; error?: string };
+type Props = { label: string; choices: Choice[]; value: string; onChange: (value: string) => void; error?: string; status?: "loading" | "error" };
 
 const containsText = (label: string, query: string) => label.toLowerCase().includes(query.toLowerCase());
 
 const chosenMark = "✓";
 
-export function ReferencePicker({ label, choices, value, onChange, error }: Props) {
+export function ReferencePicker({ label, choices, value, onChange, error, status }: Props) {
   const id = useId();
   const labelId = `${id}-label`;
   const valueId = `${id}-value`;
@@ -29,6 +29,12 @@ export function ReferencePicker({ label, choices, value, onChange, error }: Prop
 
   useEffect(() => {
     if (!open && reopened.current) opener.current?.focus();
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    document.body.classList.add("reference-open");
+    return () => document.body.classList.remove("reference-open");
   }, [open]);
 
   const choose = (next: string) => {
@@ -54,8 +60,10 @@ export function ReferencePicker({ label, choices, value, onChange, error }: Prop
             <SearchBox label="Search" value={query} onChange={setQuery} />
           </div>
           <div className="reference-rows" role="listbox" aria-label={label}>
-            {choices.length === 0 ? <p className="reference-empty">Nothing to choose from yet.</p> : null}
-            {choices.length > 0 && matching.length === 0 ? <p className="reference-empty">No match.</p> : null}
+            {status === "loading" ? <p className="reference-empty">Loading…</p> : null}
+            {status === "error" ? <p className="reference-empty">The list could not be read.</p> : null}
+            {!status && choices.length === 0 ? <p className="reference-empty">Nothing to choose from yet.</p> : null}
+            {!status && choices.length > 0 && matching.length === 0 ? <p className="reference-empty">No match.</p> : null}
             {matching.map((choice) => {
               const on = choice.value === value;
               return (
