@@ -48,6 +48,17 @@ describe("question input", () => {
     expect(screen.getByLabelText("Hour")).toHaveAttribute("type", "time");
   });
 
+  it("takes a time range as a From and a To time under the prompt", () => {
+    const onChange = vi.fn();
+    render(<QuestionInput q={question({ answer_type: "time_range", prompt: "Between which hours?" })} value={{ text: "09:00-", options: [] }} onChange={onChange} />);
+    expect(screen.getByRole("group", { name: "Between which hours?" })).toBeInTheDocument();
+    expect(screen.getByLabelText("From")).toHaveAttribute("type", "time");
+    expect(screen.getByLabelText("From")).toHaveValue("09:00");
+    expect(screen.getByLabelText("To")).toHaveAttribute("type", "time");
+    fireEvent.change(screen.getByLabelText("To"), { target: { value: "22:00" } });
+    expect(onChange).toHaveBeenCalledWith({ text: "09:00-22:00" });
+  });
+
   it("sends typed words for a text question and shows its error", async () => {
     const onChange = vi.fn();
     render(<QuestionInput q={question({ prompt: "Name" })} value={empty} error="Required" onChange={onChange} />);

@@ -1,6 +1,7 @@
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import type { Answer, FormQuestion } from "./api";
 import { readKept, removeKept, writeKept } from "../../shared/storage/kept";
+import { isTimeRange, rangeWords, splitRange } from "./timeRange";
 
 export type Given = { text: string; options: string[]; files?: string[] };
 export type Draft = Record<string, Given>;
@@ -15,9 +16,15 @@ export const filesOf = (v: Given): string[] => v.files ?? (v.text.trim() !== "" 
 
 export const fileLimit = (q: FormQuestion) => (q.max_files && q.max_files > 0 ? q.max_files : 1);
 
+const rangeIsComplete = (text: string) => {
+  const { from, to } = splitRange(text);
+  return from !== "" && to !== "";
+};
+
 export const filled = (q: FormQuestion, d: Draft) => {
   const v = given(q, d);
   if (isFile(q)) return filesOf(v).length > 0;
+  if (isTimeRange(q.answer_type)) return rangeIsComplete(v.text);
   return isChoice(q) ? v.options.length > 0 : v.text.trim() !== "";
 };
 
@@ -30,6 +37,7 @@ export const toAnswer = (q: FormQuestion, d: Draft): Answer => {
   if (q.answer_type === "number" || q.answer_type === "currency") return { question_id: q.id, value_number: Number(text) };
   if (q.answer_type === "date") return { question_id: q.id, value_date: text };
   if (q.answer_type === "time") return { question_id: q.id, value_time: text };
+  if (isTimeRange(q.answer_type)) return { question_id: q.id, value_time: splitRange(text).from, value_time_to: splitRange(text).to };
   return { question_id: q.id, value_text: text };
 };
 
@@ -39,6 +47,7 @@ export const shown = (q: FormQuestion, d: Draft) => {
   const v = given(q, d);
   if (isChoice(q)) return q.options.filter((o) => v.options.includes(o.id)).map((o) => o.label).join(", ");
   if (isFile(q)) return filesOf(v).join(", ");
+  if (isTimeRange(q.answer_type)) return rangeIsComplete(v.text) ? rangeWords(splitRange(v.text).from, splitRange(v.text).to) : "";
   if (q.answer_type === "yes_no") return v.text === "yes" ? (q.yes_label ?? "Yes") : v.text === "no" ? (q.no_label ?? "No") : "";
   return v.text.trim();
 };

@@ -47,6 +47,7 @@ export type Answer = {
   value_bool?: boolean;
   value_date?: string;
   value_time?: string;
+  value_time_to?: string;
   option_ids?: string[];
   file_ids?: string[];
 };

@@ -2,6 +2,7 @@ import type { FormQuestion } from "./api";
 import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";
 import { Field } from "../../shared/ui/Field";
 import { fileLimit, filesOf, isChoice, isFile, type Given } from "./answers";
+import { isTimeRange, joinRange, splitRange } from "./timeRange";
 
 export const currencyUnit = "Ft";
 
@@ -64,6 +65,18 @@ export function QuestionInput({ q, value, error, onChange }: QuestionEntry) {
           {names.map((name) => (
             <p key={name} className="meta">{name}</p>
           ))}
+      </>
+    );
+  }
+  if (isTimeRange(q.answer_type)) {
+    const { from, to } = splitRange(value.text);
+    return (
+      <>
+        <ChoiceGroup label={q.prompt} error={error}>
+          <Field label="From" type="time" value={from} onChange={(e) => onChange({ text: joinRange(e.target.value, to) })} />
+          <Field label="To" type="time" value={to} onChange={(e) => onChange({ text: joinRange(from, e.target.value) })} />
+        </ChoiceGroup>
+        {helper}
       </>
     );
   }
