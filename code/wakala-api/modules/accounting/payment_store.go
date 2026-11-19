@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 
 	"wakalaserver/modules/accounting/models"
 	"wakalaserver/modules/shared/specstore"
@@ -51,6 +52,10 @@ func (m *ledgerStore) MarkBillPaid(ctx context.Context, in MarkPaidInput) (Payme
 		if err := checkInstant("paid_on", in.PaidOn); err != nil {
 			return Payment{}, err
 		}
+		paidOn, _ := time.Parse(time.RFC3339Nano, strings.TrimSpace(in.PaidOn))
+		if now, err := time.Parse(time.RFC3339Nano, m.now()); err == nil && paidOn.After(now) {
+			return Payment{}, fmt.Errorf("%w: paid_on %q is in the future", ErrInvalid, in.PaidOn)
+		}
 	}
 	bill, err := m.GetBill(ctx, in.BillID)
 	if err != nil {
@@ -81,13 +86,35 @@ func (m *ledgerStore) MarkBillPaid(ctx context.Context, in MarkPaidInput) (Payme
 		DocumentID:      newID(),
 		ActorID:         in.PaidBy,
 		Narration:       in.Narration,
-		Dimensions:      payerDimensions(bill.Payer, bill.PayerActorID, bill.PayerRecordRowID),
+		Dimensions:      paymentDimensions(payerDimensions(bill.Payer, bill.PayerActorID, bill.PayerRecordRowID), in.Method, in.Reference),
 		SettlesEntryID:  bill.ID,
 	})
 	if err != nil {
 		return Payment{}, err
 	}
 	return billPaymentOf(posted), nil
+}
+
+const (
+	dimensionMethod    = "payment_method"
+	dimensionReference = "payment_reference"
+)
+
+func paymentDimensions(dimensions map[string]string, method, reference string) map[string]string {
+	method, reference = strings.TrimSpace(method), strings.TrimSpace(reference)
+	if method == "" && reference == "" {
+		return dimensions
+	}
+	if dimensions == nil {
+		dimensions = map[string]string{}
+	}
+	if method != "" {
+		dimensions[dimensionMethod] = method
+	}
+	if reference != "" {
+		dimensions[dimensionReference] = reference
+	}
+	return dimensions
 }
 
 func billPaymentOf(e Entry) Payment {
@@ -100,6 +127,8 @@ func billPaymentOf(e Entry) Payment {
 		PaidAt:           e.PostedAt,
 		PaidBy:           e.ActorID,
 		Narration:        e.Narration,
+		Method:           e.Dimensions[dimensionMethod],
+		Reference:        e.Dimensions[dimensionReference],
 		BillID:           e.SettlesEntryID,
 		Payer:            e.Dimensions[dimensionPayer],
 		PayerActorID:     e.Dimensions[dimensionPayerActor],

@@ -545,7 +545,7 @@
       "action": "accounting.payment.mark_paid",
       "status": 201,
       "title": "Mark bill paid",
-      "description": "Record that a bill was paid: posts a debit to the cash account (an asset account) and a credit to the bill's receivable account, naming the bill in settles_entry_id, so the bill reads as settled. The payment carries the bill's payer, payer_actor_id and payer_record_row_id. Leave amount out to pay what is outstanding; a smaller amount is a part payment. Refused when the bill is already settled or reversed, or the amount is more than is outstanding. paid_on is when the money arrived, if not now.",
+      "description": "Record that a bill was paid: posts a debit to the cash account (an asset account) and a credit to the bill's receivable account, naming the bill in settles_entry_id, so the bill reads as settled. The payment carries the bill's payer, payer_actor_id and payer_record_row_id. Leave amount out to pay what is outstanding; a smaller amount is a part payment. Refused when the bill is already settled or reversed, or the amount is more than is outstanding. paid_on is when the money arrived, if not now, and is refused when it is in the future; method (how it was paid, such as cash or bank transfer) and reference are kept with the payment and listed back.",
       "args": [
         { "from": "body", "whole": true },
         { "from": "path", "as": "billID", "into": "BillID", "description": "The bill paid. The address decides, not the body." },

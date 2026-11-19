@@ -155,3 +155,29 @@ func TestPaymentsAlsoListTheMilestonePaymentCertificates(t *testing.T) {
 		t.Fatalf("by bill %+v", byBill)
 	}
 }
+
+func TestAPaymentCarriesHowItWasPaidAndItsReference(t *testing.T) {
+	f := newStoreFixture(t)
+	rec := f.receivable(t)
+	b := f.bill(t, rec, "stall-7", 900, "2999-01-01T00:00:00Z")
+
+	p, err := f.repo.MarkBillPaid(f.bg, accounting.MarkPaidInput{BillID: b.ID, CashAccountID: f.cash.ID, Amount: 300, Method: "bank transfer", Reference: "TR-2026-77", PaidBy: "clerk-2"})
+	if err != nil || p.Method != "bank transfer" || p.Reference != "TR-2026-77" {
+		t.Fatalf("payment %+v %v", p, err)
+	}
+	listed, err := f.repo.ListPayments(f.bg, accounting.PaymentFilter{BillID: b.ID})
+	if err != nil || len(listed) != 1 || listed[0].Method != "bank transfer" || listed[0].Reference != "TR-2026-77" || listed[0].Payer != "stall-7" {
+		t.Fatalf("listed %+v %v", listed, err)
+	}
+}
+
+func TestAPaymentDatedInTheFutureIsRefused(t *testing.T) {
+	f := newStoreFixture(t)
+	rec := f.receivable(t)
+	b := f.bill(t, rec, "stall-7", 900, "2999-01-01T00:00:00Z")
+
+	_, err := f.repo.MarkBillPaid(f.bg, accounting.MarkPaidInput{BillID: b.ID, CashAccountID: f.cash.ID, Amount: 100, PaidOn: "2999-01-01T00:00:00Z", PaidBy: "clerk-2"})
+	if !errors.Is(err, accounting.ErrInvalid) {
+		t.Fatalf("err %v", err)
+	}
+}

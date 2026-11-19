@@ -17,6 +17,8 @@ type MarkPaidInput struct {
 	Amount        int64  `json:"amount,omitempty"`
 	PaidOn        string `json:"paid_on,omitempty"`
 	Narration     string `json:"narration,omitempty"`
+	Method        string `json:"method,omitempty"`
+	Reference     string `json:"reference,omitempty"`
 	PaidBy        string `json:"paid_by"`
 }
 
@@ -29,6 +31,8 @@ type Payment struct {
 	PaidAt           string      `json:"paid_at"`
 	PaidBy           string      `json:"paid_by"`
 	Narration        string      `json:"narration,omitempty"`
+	Method           string      `json:"method,omitempty"`
+	Reference        string      `json:"reference,omitempty"`
 	BillID           string      `json:"bill_id,omitempty"`
 	Payer            string      `json:"payer,omitempty"`
 	PayerActorID     string      `json:"payer_actor_id,omitempty"`
