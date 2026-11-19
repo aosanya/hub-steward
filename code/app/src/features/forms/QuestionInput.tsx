@@ -2,6 +2,8 @@ import type { FormQuestion } from "./api";
 import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";
 import { Field } from "../../shared/ui/Field";
 import { fileLimit, filesOf, isChoice, isFile, type Given } from "./answers";
+import { AddressInput } from "./AddressInput";
+import { addressAnswerType } from "./places";
 import { isTimeRange, joinRange, splitRange } from "./timeRange";
 
 export const currencyUnit = "Ft";
@@ -68,6 +70,7 @@ export function QuestionInput({ q, value, error, onChange }: QuestionEntry) {
       </>
     );
   }
+  if (q.answer_type === addressAnswerType) return <AddressInput q={q} value={value} error={error} onChange={onChange} />;
   if (isTimeRange(q.answer_type)) {
     const { from, to } = splitRange(value.text);
     return (

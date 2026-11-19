@@ -35,6 +35,7 @@ export type FormQuestion = {
   no_label?: string;
   max_files?: number;
   require_capture?: boolean;
+  allow_free_text?: boolean;
   options: Choice[];
 };
 
@@ -48,6 +49,7 @@ export type Answer = {
   value_date?: string;
   value_time?: string;
   value_time_to?: string;
+  place_ref?: string;
   option_ids?: string[];
   file_ids?: string[];
 };
@@ -90,6 +92,7 @@ export const liveClient: FormsClient = {
         no_label: q.no_label,
         max_files: typeof q.max_files === "number" ? q.max_files : undefined,
         require_capture: q.require_capture ? true : undefined,
+        allow_free_text: q.allow_free_text ? true : undefined,
         options: (entry.options ?? q.options ?? []).map((o: any) => ({ id: o.id, label: o.label })),
       };
     });

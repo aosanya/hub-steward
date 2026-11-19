@@ -1,9 +1,10 @@
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import type { Answer, FormQuestion } from "./api";
 import { readKept, removeKept, writeKept } from "../../shared/storage/kept";
+import { addressAnswerType } from "./places";
 import { isTimeRange, rangeWords, splitRange } from "./timeRange";
 
-export type Given = { text: string; options: string[]; files?: string[] };
+export type Given = { text: string; options: string[]; files?: string[]; placeRef?: string };
 export type Draft = Record<string, Given>;
 
 export const given = (q: FormQuestion, d: Draft): Given => d[q.id] ?? { text: "", options: [] };
@@ -37,6 +38,7 @@ export const toAnswer = (q: FormQuestion, d: Draft): Answer => {
   if (q.answer_type === "number" || q.answer_type === "currency") return { question_id: q.id, value_number: Number(text) };
   if (q.answer_type === "date") return { question_id: q.id, value_date: text };
   if (q.answer_type === "time") return { question_id: q.id, value_time: text };
+  if (q.answer_type === addressAnswerType) return { question_id: q.id, value_text: text, ...(v.placeRef ? { place_ref: v.placeRef } : {}) };
   if (isTimeRange(q.answer_type)) return { question_id: q.id, value_time: splitRange(text).from, value_time_to: splitRange(text).to };
   return { question_id: q.id, value_text: text };
 };
