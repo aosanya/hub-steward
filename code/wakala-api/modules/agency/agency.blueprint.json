@@ -593,6 +593,7 @@
         {"name": "role_id", "type": "string", "description": "The role the person adding the row acted as."},
         {"name": "added_by", "type": "string", "description": "Who added the row, as the app names them."},
         {"name": "answers", "type": "json", "description": "The answer to each question of the record's form, by the question's prompt."},
+        {"name": "place_refs", "type": "json", "description": "For an address question answered from the town's own list, the street or address the words name, by the question's prompt. Empty for an answer typed as words."},
         {"name": "order_id", "type": "string", "description": "The one group order the row was added from. Empty for a row that belongs to no order."},
         {"name": "replaces", "type": "string", "description": "The row this one corrects. The replaced row stays, and reads as history."},
         {"name": "corrected_on", "type": "timestamp", "description": "When this row replaced the earlier one. Empty for a row that corrects nothing."},

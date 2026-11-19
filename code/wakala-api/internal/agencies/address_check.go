@@ -21,11 +21,11 @@ func (r *registry) addressCheckIn(instanceID string) mwanachamaforms.AddressChec
 		if err != nil {
 			return false, fmt.Errorf("addressCheckIn: %w", err)
 		}
-		return placeIsHeld(ctx, twin, placeRef)
+		return PlaceIsHeld(ctx, twin, placeRef)
 	}
 }
 
-func placeIsHeld(ctx context.Context, twin placesHeld, placeRef string) (bool, error) {
+func PlaceIsHeld(ctx context.Context, twin placesHeld, placeRef string) (bool, error) {
 	if id, ok := strings.CutPrefix(placeRef, "address:"); ok {
 		_, err := twin.GetAddress(ctx, id)
 		if errors.Is(err, mwanachamadigitaltwin.ErrAddressNotFound) {

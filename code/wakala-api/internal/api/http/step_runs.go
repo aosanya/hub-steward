@@ -61,9 +61,10 @@ func (a *stepAnswer) UnmarshalJSON(data []byte) error {
 }
 
 type stepAnswersRequest struct {
-	Answers map[string]stepAnswer `json:"answers"`
-	OrderID string                `json:"order_id,omitempty"`
-	SendKey string                `json:"send_key,omitempty"`
+	Answers   map[string]stepAnswer `json:"answers"`
+	PlaceRefs map[string]string     `json:"place_refs,omitempty"`
+	OrderID   string                `json:"order_id,omitempty"`
+	SendKey   string                `json:"send_key,omitempty"`
 
 	AnotherSheet bool `json:"another_sheet,omitempty"`
 }
@@ -170,6 +171,7 @@ type mcpSubmitStepAnswersParams struct {
 	InstanceID   string            `json:"instance_id" jsonschema:"the Agency Instance"`
 	StepID       string            `json:"step_id" jsonschema:"the step's id, as agency_list_my_open_steps names it"`
 	Answers      map[string]string `json:"answers" jsonschema:"the answer to each question of the step's form, by the question's prompt; a multi-select answer is its chosen options joined by a comma and a space"`
+	PlaceRefs    map[string]string `json:"place_refs,omitempty" jsonschema:"for an address question answered from the town's list, the street or address the words name, as address:<id> or street:<name>, by the question's prompt"`
 	OrderID      string            `json:"order_id,omitempty" jsonschema:"the run the step belongs to: empty on a workflow's first step, which starts a new run, and the run's order_id on every later step"`
 	SendKey      string            `json:"send_key,omitempty" jsonschema:"a key made once per opening of the form; sending a workflow's first step again with the same key is refused as already sent instead of starting a second run; with another_sheet it names the sheet, and sending the same key again is refused as already sent"`
 	AnotherSheet bool              `json:"another_sheet,omitempty" jsonschema:"true to add one more sheet to a record step this run has already sent: needs order_id, and the step must already be sent for that run"`
@@ -200,7 +202,7 @@ func (d *Deps) registerSubmitStepAnswersMCPTool(server *mcp.Server) {
 }
 
 func (d *Deps) mcpSubmitStepAnswers(ctx context.Context, _ *mcp.CallToolRequest, p mcpSubmitStepAnswersParams) (*mcp.CallToolResult, stepAnswersResult, error) {
-	out, err := d.submitStepAnswers(ctx, p.InstanceID, p.StepID, stepAnswersRequest{Answers: textAnswers(p.Answers), OrderID: p.OrderID, SendKey: p.SendKey, AnotherSheet: p.AnotherSheet})
+	out, err := d.submitStepAnswers(ctx, p.InstanceID, p.StepID, stepAnswersRequest{Answers: textAnswers(p.Answers), PlaceRefs: p.PlaceRefs, OrderID: p.OrderID, SendKey: p.SendKey, AnotherSheet: p.AnotherSheet})
 	if err != nil {
 		return nil, stepAnswersResult{}, err
 	}
@@ -405,6 +407,10 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
+	placeRefs, err := d.checkedPlaceRefs(ctx, instanceID, chain[index].record.Questions, answers, req.PlaceRefs)
+	if err != nil {
+		return stepAnswersResult{}, err
+	}
 	overLimit, err := d.refuseAmountAboveLimit(ctx, instanceID, chain[index].record.Questions, answers)
 	if err != nil {
 		return stepAnswersResult{}, err
@@ -430,7 +436,7 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	}
 	row, err := m.CreateRecordRow(ctx, agencymodels.RecordRow{
 		DraftID: held.DraftID, RecordID: chain[index].record.ID, RoleID: chain[index].record.RoleID,
-		AddedBy: accounts.IDFromContext(ctx), Answers: answers, OrderID: orderID,
+		AddedBy: accounts.IDFromContext(ctx), Answers: answers, PlaceRefs: placeRefs, OrderID: orderID,
 		SendKey: rowSendKey(chain[index].record.Code, orderID, req),
 	})
 	if errors.Is(err, mwanachamaagency.ErrStepAlreadySent) {

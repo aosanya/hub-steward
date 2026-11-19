@@ -42,7 +42,7 @@ func TestAPlaceIsHeldOnlyWhenTheTownListsTheAddressOrTheStreet(t *testing.T) {
 		{"", false},
 	}
 	for _, c := range cases {
-		got, err := placeIsHeld(context.Background(), town, c.ref)
+		got, err := PlaceIsHeld(context.Background(), town, c.ref)
 		if err != nil || got != c.want {
 			t.Errorf("%q: held = %v (%v), want %v", c.ref, got, err, c.want)
 		}
