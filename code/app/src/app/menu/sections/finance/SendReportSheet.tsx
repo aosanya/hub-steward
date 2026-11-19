@@ -1,23 +1,18 @@
 import { useState } from "react";
-import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
-import { SearchSelect, type Choice } from "../../../../shared/ui/SearchSelect";
+import { SearchSelect } from "../../../../shared/ui/SearchSelect";
 import { Sheet } from "../../../../shared/ui/Sheet";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { refusalWords } from "../../MenuEditForm";
-import { personNameOf } from "../residents/personName";
+import { loadPersonIdChoices } from "../../referenceChoices";
 import { text, type Item } from "./financeData";
 
 const raiseTool = "comm_notification_raise";
 
-const loadPeople = async (): Promise<Choice[]> =>
-  (itemsOf(await callTool("", "actor_list_actors")) as Item[]).flatMap((person) => {
-    const name = personNameOf(person);
-    return typeof person.id === "string" && name !== "" ? [{ value: person.id, label: name }] : [];
-  });
+const loadPeople = loadPersonIdChoices;
 
 type Props = { report: Item; onClose: () => void };
 

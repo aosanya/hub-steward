@@ -1,11 +1,10 @@
 import { useParams } from "react-router-dom";
-import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { FormScreen } from "../../FormScreen";
 import type { EditField } from "../../MenuEditForm";
-import { personNameOf } from "../residents/personName";
+import { loadPersonIdChoices } from "../../referenceChoices";
 import { assetPaths } from "./paths";
 import { fieldShown, oftenChoices, partsOf, problemWith, ruleOf, weekdayChoices, type Often } from "./scheduleWords";
 
@@ -33,8 +32,7 @@ const fieldsFor = (adding: boolean, people: { value: string; label: string }[]):
   ...(adding ? [{ label: "Assigned to (you if left)", key: "assignee", choices: people }] : []),
 ];
 
-const loadPeople = async () =>
-  ((await callTool("", "actor_list_actors").then(itemsOf)) as Item[]).map((person) => ({ value: textOf(person.id), label: personNameOf(person) }));
+const loadPeople = loadPersonIdChoices;
 
 const loadMyId = async () => textOf(((await callTool("", "actor_get_my_actor")) as Item | null)?.id);
 
