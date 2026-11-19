@@ -3,7 +3,7 @@ package throttle
 import (
 	"sync"
 
-	mwanachamaauth "wakalaserver/modules/auth"
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
 )
 
 var passwordHashes = make(chan struct{}, MaxConcurrentPasswordHashes)

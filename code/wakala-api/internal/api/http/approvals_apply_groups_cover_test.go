@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	mwanachamasources "wakalaserver/modules/sources"
+	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 )
 
 func TestApprovedDocumentIsFiledAsASourceWithItsText(t *testing.T) {

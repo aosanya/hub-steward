@@ -11,6 +11,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
+	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
 	accountingroutes "wakalaserver/modules/accounting/routes"
 	actorroutes "wakalaserver/modules/actor/routes"
 	agencyroutes "wakalaserver/modules/agency/routes"
@@ -23,8 +25,6 @@ import (
 	gitroutes "wakalaserver/modules/git/routes"
 	marketroutes "wakalaserver/modules/market/routes"
 	riskroutes "wakalaserver/modules/riskmanager/routes"
-	"github.com/aosanya/mwanachama-backend-shared/httpwire"
-	sourcesroutes "wakalaserver/modules/sources/routes"
 	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
 	votingroutes "wakalaserver/modules/voting/routes"
 

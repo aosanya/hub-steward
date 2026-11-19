@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	mwanachamaauth "wakalaserver/modules/auth"
-	authmodels "wakalaserver/modules/auth/models"
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
+	authmodels "github.com/aosanya/mwanachama-backend-auth/models"
 
 	"wakalaserver/internal/session"
 )

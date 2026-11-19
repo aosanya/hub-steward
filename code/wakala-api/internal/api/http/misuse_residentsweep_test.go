@@ -8,14 +8,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	sources "github.com/aosanya/mwanachama-backend-sources"
 	accounting "wakalaserver/modules/accounting"
 	ai "wakalaserver/modules/ai"
 	assetmanager "wakalaserver/modules/assetmanager"
 	catalog "wakalaserver/modules/catalog"
 	comm "wakalaserver/modules/comm"
 	forms "wakalaserver/modules/forms"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	sources "wakalaserver/modules/sources"
 )
 
 func sweptReads(t *testing.T, w *sweepWorld) []declaredOperation {

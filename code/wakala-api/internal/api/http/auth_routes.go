@@ -23,8 +23,8 @@ import (
 	"strconv"
 	"time"
 
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
 	"github.com/google/uuid"
-	mwanachamaauth "wakalaserver/modules/auth"
 
 	"wakalaserver/internal/session"
 	"wakalaserver/internal/throttle"

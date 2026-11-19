@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
@@ -17,7 +18,6 @@ import (
 	"wakalaserver/modules/agency/models"
 	mwanachamamarket "wakalaserver/modules/market"
 	riskmodels "wakalaserver/modules/riskmanager/models"
-	mwanachamasources "wakalaserver/modules/sources"
 )
 
 var ErrApplyFailed = errors.New("the approved write could not be carried out")

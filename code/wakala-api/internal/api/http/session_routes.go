@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	mwanachamaauth "wakalaserver/modules/auth"
-	authmodels "wakalaserver/modules/auth/models"
-	authroutes "wakalaserver/modules/auth/routes"
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
+	authmodels "github.com/aosanya/mwanachama-backend-auth/models"
+	authroutes "github.com/aosanya/mwanachama-backend-auth/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

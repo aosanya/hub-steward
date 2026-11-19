@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
@@ -18,7 +19,6 @@ import (
 	mwanachamagit "wakalaserver/modules/git"
 	mwanachamamarket "wakalaserver/modules/market"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
-	mwanachamasources "wakalaserver/modules/sources"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 	mwanachamavoting "wakalaserver/modules/voting"
 

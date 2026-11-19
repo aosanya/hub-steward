@@ -15,6 +15,7 @@ import (
 
 	"wakalaserver/internal/authz"
 
+	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
@@ -30,7 +31,6 @@ import (
 	mwanachamamarket "wakalaserver/modules/market"
 	mwanachamaratings "wakalaserver/modules/ratings"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
-	mwanachamasources "wakalaserver/modules/sources"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 	mwanachamavoting "wakalaserver/modules/voting"
 )

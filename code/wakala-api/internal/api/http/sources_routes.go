@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	sourcesroutes "wakalaserver/modules/sources/routes"
+	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"time"
 
-	mwanachamaauth "wakalaserver/modules/auth"
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
 
 	"wakalaserver/internal/authz"
 )

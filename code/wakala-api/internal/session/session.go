@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	mwanachamaauth "wakalaserver/modules/auth"
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
 )
 
 var ErrInvalidToken = errors.New("session: invalid token")

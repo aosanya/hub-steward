@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	mwanachamaauth "wakalaserver/modules/auth"
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
 
 	"wakalaserver/internal/shopauth"
 )

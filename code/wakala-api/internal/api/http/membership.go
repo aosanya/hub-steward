@@ -5,6 +5,7 @@ import (
 	"errors"
 	"slices"
 
+	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
@@ -15,7 +16,6 @@ import (
 	mwanachamaengage "wakalaserver/modules/engage"
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
-	mwanachamasources "wakalaserver/modules/sources"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 	mwanachamavoting "wakalaserver/modules/voting"
 

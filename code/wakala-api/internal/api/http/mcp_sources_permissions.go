@@ -7,9 +7,9 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	mwanachamasources "wakalaserver/modules/sources"
-	sourcesmcp "wakalaserver/modules/sources/mcp"
-	sourcesroutes "wakalaserver/modules/sources/routes"
+	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
+	sourcesmcp "github.com/aosanya/mwanachama-backend-sources/mcp"
+	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
