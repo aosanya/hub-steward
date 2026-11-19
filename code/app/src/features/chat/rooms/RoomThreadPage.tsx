@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useLanguage } from "../../../shared/language/language";
 import { useLoad } from "../../../features/forms/useLoad";
 import { chatListPath, routes } from "../../../app/routes";
 import { Card } from "../../../shared/ui/Card";
@@ -40,6 +41,7 @@ function useMessages(client: RoomsClient, roomId: string, threadId: string) {
 export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Props) {
   const { roomId = "", threadId = "" } = useParams();
   const navigate = useNavigate();
+  const { words } = useLanguage();
   const { messages, failed, reload } = useMessages(client, roomId, threadId);
   const threads = useLoad(() => client.listThreads(roomId), `threads/${roomId}`);
   const roomName = useLoad(() => client.roomName(roomId), `name/${roomId}`);
@@ -48,11 +50,14 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
   const thread = list.find((t) => t.id === threadId);
   const room = roomName.state === "ready" ? roomName.data : "";
   const label = thread?.label ?? "";
-  const roomFirst = heading === "room" || (thread !== undefined && thread === generalOf(list));
+  const leader = list.some((t) => t.leader);
+  const ownQuestion = thread?.audience === "leads" && thread.questionRoom && !leader;
+  const memberAsking = !leader && list.some((t) => t.questionRoom);
+  const roomFirst = !ownQuestion && (heading === "room" || (thread !== undefined && thread === generalOf(list)));
   const title = roomFirst ? room : label;
   const sub = roomFirst ? label : room;
   const me = subject.state === "ready" ? subject.data : "";
-  const leader = list.some((t) => t.leader);
+  const openAsk = thread?.audience === "group" && thread.questionRoom;
   const [switched, setSwitched] = useState<boolean | null>(null);
   const takesQuestions = switched ?? list.some((t) => t.takesQuestions);
   const setTakesQuestions = (on: boolean) => setSwitched(on);
@@ -70,9 +75,15 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
       {threads.state === "ready" && list.length > 0 ? (
         <Card title={`Threads · ${list.length}`} collapsible flush>
           <ThreadRows threads={list} subject={me} onOpen={(id) => navigate(routes.roomThread.path({ roomId, threadId: id }))} />
-          <div className="rm-start">
-            <StartThread bare onStart={async (label) => navigate(routes.roomThread.path({ roomId, threadId: await client.startThread(roomId, label) }))} />
-          </div>
+          {memberAsking && openAsk ? null : (
+            <div className="rm-start">
+              <StartThread
+                bare
+                words={memberAsking ? questionWords : undefined}
+                onStart={async (label) => navigate(routes.roomThread.path({ roomId, threadId: await client.startThread(roomId, label) }))}
+              />
+            </div>
+          )}
         </Card>
       ) : null}
       {thread?.audience === "leads" ? <p className="rm-note">{thread.questionRoom ? "Only you and the room's leaders read this question." : "Leaders only · members cannot see this yet"}</p> : null}
@@ -83,7 +94,7 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
           <Timeline messages={messages} threadLabel={label} client={client} openAsk={(askId) => navigate(askPath(roomId, threadId, askId))} />
         </BacklogSummariesLoader>
       ) : null}
-      {thread?.audience === "group" && thread.questionRoom ? (
+      {openAsk ? (
         <div className="rm-start">
           <p className="rm-note">This room takes questions. Only you and the room's leaders read yours.</p>
           <StartThread bare words={questionWords} onStart={async (subject) => navigate(routes.roomThread.path({ roomId, threadId: await client.startThread(roomId, subject) }))} />
@@ -91,7 +102,7 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
       ) : thread?.declined ? (
         <p className="rm-note">This request was declined. You can read it, not write in it.</p>
       ) : (
-        <Composer placeholder={`Write to ${room || "the room"}`} onSend={send} />
+        <Composer placeholder={ownQuestion ? words.writeYourQuestion : `Write to ${room || "the room"}`} onSend={send} />
       )}
     </Shell>
   );

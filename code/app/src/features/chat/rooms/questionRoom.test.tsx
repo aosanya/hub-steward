@@ -119,3 +119,55 @@ describe("the switch for a room that takes questions", () => {
     expect(screen.queryByRole("checkbox")).toBeNull();
   });
 });
+
+describe("a member's own question thread", () => {
+  const own = () =>
+    clientWith([
+      thread({ id: "t0", questionRoom: true }),
+      thread({ id: "t1", label: "Permit office hours", audience: "leads", requestedBy: "u1", questionRoom: true }),
+    ]);
+
+  afterEach(() => window.localStorage.removeItem("hub.language"));
+
+  it("asks for the question, not a message to the room", async () => {
+    show(own());
+    expect(await screen.findByPlaceholderText("Write your question")).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/Write to/)).toBeNull();
+  });
+
+  it("asks for the question in Hungarian when the language is Hungarian", async () => {
+    window.localStorage.setItem("hub.language", "hu");
+    show(own());
+    expect(await screen.findByPlaceholderText("Írja meg a kérdését")).toBeInTheDocument();
+  });
+
+  it("is titled by the question, with the room beside it", async () => {
+    show(own());
+    expect(await screen.findByRole("heading", { level: 1, name: "Permit office hours" })).toBeInTheDocument();
+    expect(screen.getByText("Services Desk")).toBeInTheDocument();
+  });
+
+  it("offers Ask a question in the thread list, never Start a thread", async () => {
+    show(own());
+    expect(await screen.findByRole("button", { name: "Ask a question" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Start a thread" })).toBeNull();
+  });
+
+  it("offers exactly one Ask a question on the open thread", async () => {
+    show(clientWith([thread({ questionRoom: true }), thread({ id: "t2", label: "Permit office hours", audience: "leads", questionRoom: true })]));
+    await screen.findByRole("button", { name: "Ask a question" });
+    expect(screen.getAllByRole("button", { name: "Ask a question" })).toHaveLength(1);
+  });
+
+  it("leaves the leader's view of the same thread as it was", async () => {
+    show(
+      clientWith([
+        thread({ id: "t0", leader: true, questionRoom: false, takesQuestions: true }),
+        thread({ id: "t1", label: "Permit office hours", audience: "leads", requestedBy: "u7", askerName: "Sipos Hanna", leader: true, questionRoom: false }),
+      ]),
+    );
+    expect(await screen.findByPlaceholderText("Write to Services Desk")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Start a thread" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Services Desk" })).toBeInTheDocument();
+  });
+});

@@ -184,4 +184,5 @@ export const magyar: Words = {
   consentNotWithdrawn: "A hozzájárulás visszavonása nem sikerült. Próbálja újra.",
   groupTypeHousehold: "Háztartás",
   groupTypeCity: "Város",
+  writeYourQuestion: "Írja meg a kérdését",
 };

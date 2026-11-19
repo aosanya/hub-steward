@@ -182,6 +182,7 @@ export const words = {
   consentNotWithdrawn: "Your consent was not withdrawn. Try again.",
   groupTypeHousehold: "Household",
   groupTypeCity: "City",
+  writeYourQuestion: "Write your question",
 } as const;
 
 export const languages = [
