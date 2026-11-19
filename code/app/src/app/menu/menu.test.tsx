@@ -99,4 +99,11 @@ describe("the menu rows on Home", () => {
     expect(new Set(menuSections.map((one) => one.id)).size).toBe(menuSections.length);
     expect(new Set(menuSections.map((one) => one.title)).size).toBe(menuSections.length);
   });
+
+  it("lists every Settings screen the section declares, Late rules included, each with its path", () => {
+    const settings = menuSections.find((one) => one.id === "settings");
+
+    expect(settings?.items.map((item) => item.title)).toEqual(["Agency Profile", "Users & Roles", "Boundaries & Areas", "Details of a record", "Late rules"]);
+    expect(settings?.items.every((item) => typeof item.path === "function")).toBe(true);
+  });
 });
