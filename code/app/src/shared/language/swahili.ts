@@ -185,4 +185,5 @@ export const swahili: Words = {
   groupTypeHousehold: "Kaya",
   groupTypeCity: "Jiji",
   writeYourQuestion: "Andika swali lako",
+  questionReadersLeader: "Ni aliyeuliza na viongozi wa chumba tu wanaosoma swali hili.",
 };

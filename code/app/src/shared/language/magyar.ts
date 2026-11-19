@@ -185,4 +185,5 @@ export const magyar: Words = {
   groupTypeHousehold: "Háztartás",
   groupTypeCity: "Város",
   writeYourQuestion: "Írja meg a kérdését",
+  questionReadersLeader: "Csak a kérdező és a szoba vezetői olvassák ezt a kérdést.",
 };
