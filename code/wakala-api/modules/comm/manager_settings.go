@@ -2,6 +2,9 @@ package mwanachamacomm
 
 import (
 	"context"
+	"encoding/json"
+	"slices"
+	"time"
 
 	"wakalaserver/modules/comm/models"
 	"wakalaserver/modules/shared/spec"
@@ -39,4 +42,42 @@ func (m *CommManager) NotificationRule(ctx context.Context, event string) (model
 		}
 	}
 	return models.NotificationRule{}, false, nil
+}
+
+const questionRoomsSetting = "question_rooms"
+
+func (m *CommManager) QuestionRooms(ctx context.Context) ([]string, error) {
+	effective, err := spec.ResolveStored(m.db.WithContext(ctx), m.spec, questionRoomsSetting)
+	if err != nil {
+		return nil, err
+	}
+	raw, err := json.Marshal(effective.Value)
+	if err != nil {
+		return nil, err
+	}
+	rooms := []string{}
+	if string(raw) == "null" {
+		return rooms, nil
+	}
+	if err := json.Unmarshal(raw, &rooms); err != nil {
+		return nil, err
+	}
+	return rooms, nil
+}
+
+func (m *CommManager) SetQuestionRooms(ctx context.Context, structureIDs []string, by string) error {
+	value := make([]any, 0, len(structureIDs))
+	for _, id := range structureIDs {
+		value = append(value, id)
+	}
+	_, err := spec.StoreOverride(m.db.WithContext(ctx), m.spec, questionRoomsSetting, value, by, m.clockNow().UTC().Format(time.RFC3339))
+	return err
+}
+
+func (m *CommManager) isQuestionRoom(ctx context.Context, structureID string) (bool, error) {
+	rooms, err := m.QuestionRooms(ctx)
+	if err != nil {
+		return false, err
+	}
+	return slices.Contains(rooms, structureID), nil
 }

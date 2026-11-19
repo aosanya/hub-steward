@@ -227,6 +227,9 @@ func (m *CommManager) PostChatMessageFor(ctx context.Context, structureID, threa
 	if t.Declined() {
 		return models.ChatMessage{}, models.ErrChatThreadDeclined
 	}
+	if err := m.refuseOpenThreadQuestion(ctx, structureID, t, callerID); err != nil {
+		return models.ChatMessage{}, err
+	}
 	kind, err := m.kindOfAuthor(ctx, callerID)
 	if err != nil {
 		return models.ChatMessage{}, err
@@ -235,4 +238,22 @@ func (m *CommManager) PostChatMessageFor(ctx context.Context, structureID, threa
 		StructureID: structureID, ThreadID: threadID, AuthorID: callerID, AuthorKind: kind, Body: body,
 		AttachmentKind: attachmentKind, AttachmentID: attachmentID,
 	})
+}
+
+func (m *CommManager) refuseOpenThreadQuestion(ctx context.Context, structureID string, t models.ChatThread, callerID string) error {
+	if t.Audience != models.ChatAudienceGroup {
+		return nil
+	}
+	question, err := m.isQuestionRoom(ctx, structureID)
+	if err != nil || !question {
+		return err
+	}
+	callerLeads, err := m.leads(ctx, structureID, callerID)
+	if err != nil {
+		return err
+	}
+	if callerLeads {
+		return nil
+	}
+	return models.ErrChatQuestionRoom
 }
