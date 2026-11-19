@@ -23,7 +23,12 @@ var selfServiceActions = []string{
 	"instance.live_record.list",
 	"instance.live_record_row.list",
 	"instance.live_record_row.add",
+	addressListAction,
 }
+
+const addressListAction = "digitaltwin.address.list"
+
+var residentMayActions = []string{addressListAction}
 
 var seatedMayActions = append(append([]string{}, ownInboxActions...), selfServiceActions...)
 

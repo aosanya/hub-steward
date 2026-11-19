@@ -76,10 +76,21 @@ describe("an address question", () => {
     expect(onChange).toHaveBeenLastCalledWith({ text: "the car park behind the mill", placeRef: "" });
   });
 
-  it("says so when the town's places cannot be read, and still takes free text where allowed", async () => {
+  it("says so when the town's places cannot be read, what to do, and still takes free text where allowed", async () => {
     mocked.mockRejectedValue(new Error("no"));
     render(<QuestionInput q={question({ allow_free_text: true })} value={empty} onChange={vi.fn()} />);
-    expect(await screen.findByText("The streets and addresses could not be loaded.")).toBeInTheDocument();
+    expect(await screen.findByText(/The streets and addresses could not be loaded\./)).toHaveTextContent(
+      "The streets and addresses could not be loaded. Open this step again, or ask the council office to check that you may answer it. You can type the place in Something else.",
+    );
     expect(screen.getByRole("textbox", { name: "Something else" })).toBeInTheDocument();
+  });
+
+  it("tells a person who cannot type the place to ask the council office, with no pointer to a box that is not there", async () => {
+    mocked.mockRejectedValue(new Error("no"));
+    render(<QuestionInput q={question()} value={empty} onChange={vi.fn()} />);
+    expect(await screen.findByText(/The streets and addresses could not be loaded\./)).toHaveTextContent(
+      "The streets and addresses could not be loaded. Open this step again, or ask the council office to check that you may answer it.",
+    );
+    expect(screen.queryByText(/Something else/)).not.toBeInTheDocument();
   });
 });

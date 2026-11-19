@@ -21,7 +21,7 @@ type residentLookupCall struct {
 var residentLookupCalls = []residentLookupCall{
 	{tool: "agency_get_agency", permission: "agency.agency.read", action: "agency.agency.read"},
 	{tool: "taskmanager_task_list", permission: "task.read", action: "taskmanager.task.list"},
-	{tool: "digitaltwin_address_list", permission: "digitaltwin.view", action: "digitaltwin.address.list"},
+	{tool: "digitaltwin_tenure_list", permission: "digitaltwin.view", action: "digitaltwin.tenure.list"},
 	{tool: "agency_list_mounts", permission: "mount.list", action: "instance.mount.list"},
 }
 
@@ -87,7 +87,7 @@ func TestResidentLookup_AResidentHoldingThePermissionIsAdmitted(t *testing.T) {
 	w := residentLookupWalk(t)
 	id, _ := w.resident(t, "Amina", "Support")
 	w.giveRole(t, "Support", "Reader")
-	for _, tool := range []string{"digitaltwin_address_list", "agency_list_mounts"} {
+	for _, tool := range []string{"digitaltwin_tenure_list", "agency_list_mounts"} {
 		if out := w.lookup(t, id, tool); out.IsError {
 			t.Errorf("%s: a resident holding the permission got %q", tool, toolErrorText(out))
 		}

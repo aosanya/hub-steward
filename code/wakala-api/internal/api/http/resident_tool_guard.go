@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"slices"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
@@ -46,7 +47,7 @@ func (d *Deps) residentToolClearance(ctx context.Context, raw json.RawMessage, a
 	if err != nil || role != agencies.RoleResident {
 		return ctx, nil
 	}
-	if d.residentPermissioned(nil)(withPartitionContext(ctx, instanceID), action) != nil {
+	if !slices.Contains(residentMayActions, action) && d.residentPermissioned(nil)(withPartitionContext(ctx, instanceID), action) != nil {
 		return ctx, permissionRefusal(action)
 	}
 	return context.WithValue(ctx, residentClearedKey{}, instanceID), nil
