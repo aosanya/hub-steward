@@ -134,7 +134,20 @@ func (d *Deps) agentModuleVisibility(ctx context.Context, reg agencies.Registry,
 	if err != nil {
 		return none, nil
 	}
-	return anyPermissionUnder(codes), nil
+	return seatedModuleVisibility(codes), nil
+}
+
+func seatedModuleVisibility(codes []string) func(code string) bool {
+	if len(codes) == 0 {
+		return func(string) bool { return false }
+	}
+	held := allowedActions(codes)
+	actions := make([]string, 0, len(held)+len(seatedMayActions))
+	for a := range held {
+		actions = append(actions, a)
+	}
+	actions = append(actions, seatedMayActions...)
+	return anyActionUnder(actions)
 }
 
 func anyPermissionUnder(codes []string) func(code string) bool {
