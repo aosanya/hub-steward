@@ -19,6 +19,7 @@ const hub = () =>
     if (setting !== undefined) return setting;
     if (tool === "agency_list_mounts") return { modules: [{ module: "digitaltwin" }] };
     if (tool === "agency_get_my_roles") return { permissions: ["digitaltwin.manage"] };
+    if (tool === "actor_list_groups") return { items: [{ id: "g1", name: "Zöldhalom Town Council" }, { id: "g2", name: "Zöldhalom Parish" }] };
     if (tool === "actor_list_actors") return { items: [{ id: "a1", display_name: "Varga Mária" }, { id: "a2", display_name: "Szabó Katalin" }] };
     if (tool === "assetmanager_asset_list") {
       return {
@@ -88,6 +89,22 @@ describe("Add holding looks its references up", () => {
 
     const created = () => called.mock.calls.filter(([, tool]) => tool === "digitaltwin_tenure_create");
     await waitFor(() => expect(created()).toHaveLength(1));
-    expect(created()[0][2]).toEqual({ holder: "Varga Mária", place_id: "n2" });
+    expect(created()[0][2]).toEqual({ holder: "Varga Mária", holder_actor_id: "a1", place_id: "n2" });
+  });
+
+  it("offers the council and the parish as holders and saves a body by name alone", async () => {
+    const user = userEvent.setup();
+    show();
+
+    await user.click(await screen.findByRole("button", { name: /Holder/ }));
+    expect(screen.getByRole("option", { name: "Zöldhalom Parish" })).toBeInTheDocument();
+    await user.click(screen.getByRole("option", { name: "Zöldhalom Town Council" }));
+    await user.click(await screen.findByRole("button", { name: /Property/ }));
+    await user.click(screen.getByRole("option", { name: /Malom utca 4/ }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    const created = () => called.mock.calls.filter(([, tool]) => tool === "digitaltwin_tenure_create");
+    await waitFor(() => expect(created()).toHaveLength(1));
+    expect(created()[0][2]).toEqual({ holder: "Zöldhalom Town Council", place_id: "n2" });
   });
 });

@@ -6,14 +6,15 @@ import { Button } from "../../../../shared/ui/Button";
 import { ChoiceGroup, ChoiceRow } from "../../../../shared/ui/ChoiceRow";
 import { Field } from "../../../../shared/ui/Field";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
-import { SearchSelect, type Choice } from "../../../../shared/ui/SearchSelect";
+import { ReferencePicker } from "../../../../shared/ui/ReferencePicker";
+import type { Choice } from "../../../../shared/ui/SearchSelect";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { Shell } from "../../../Shell";
 import { refusalWords } from "../../MenuEditForm";
 import { holdingFields, holdingRecordCode, useRegisterDetails, writeRegisterAnswers } from "../../registerDetails";
 import { placePaths } from "./paths";
-import { loadPersonNameChoices } from "../../referenceChoices";
+import { holderArgs, loadHolderChoices } from "../../referenceChoices";
 import { itemOf, loadNodeNames, loadPropertyChoices, textOf } from "./records";
 
 export const holdingKinds = ["owner", "tenant", "leaseholder", "occupant", "custodian"];
@@ -38,7 +39,7 @@ export function HoldingNewScreen() {
   const word = useWord("digitaltwin");
   const details = useRegisterDetails(holdingRecordCode, holdingFields);
   const places = useLoad(loadPlaceChoices, `holding-new-places:${openAgencyId()}`);
-  const people = useLoad(loadPersonNameChoices, `holding-new-people:${openAgencyId()}`);
+  const people = useLoad(loadHolderChoices, `holding-new-people:${openAgencyId()}`);
   const [holder, setHolder] = useState("");
   const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -49,7 +50,7 @@ export function HoldingNewScreen() {
   const complete = holder.trim() !== "" && asked.every((detail) => !detail.required || valueOf(detail.prompt) !== "");
   const ownGiven = () => filledOnly(Object.fromEntries(asked.filter((detail) => detail.own).map((detail) => [detail.prompt, valueOf(detail.prompt)])));
   const body = () => ({
-    holder: holder.trim(),
+    ...holderArgs(holder, people.state === "ready" ? people.data : []),
     place_id: valueOf("Property"),
     ...(valueOf("Kind") ? { kind: valueOf("Kind") } : {}),
     ...(valueOf("Since") ? { since: instantOf(valueOf("Since")) } : {}),
@@ -70,7 +71,7 @@ export function HoldingNewScreen() {
   const ask = (detail: (typeof asked)[number]) => {
     const label = labelOf(detail.prompt, detail.required);
     if (!detail.own && detail.prompt === "Property") {
-      return <SearchSelect key={detail.prompt} label={label} choices={places.state === "ready" ? places.data : []} value={values.Property ?? ""} onChange={(value) => set("Property", value)} />;
+      return <ReferencePicker key={detail.prompt} label={label} choices={places.state === "ready" ? places.data : []} value={values.Property ?? ""} onChange={(value) => set("Property", value)} />;
     }
     if (!detail.own && detail.prompt === "Kind") {
       return (
@@ -86,7 +87,7 @@ export function HoldingNewScreen() {
   };
   return (
     <Shell title="Add holding" titleUnder backLabel={word("Ownership & Tenure")} onBack={() => navigate(placePaths.ownership.path())} tabless>
-      <SearchSelect label="Holder" choices={people.state === "ready" ? people.data : []} value={holder} onChange={setHolder} />
+      <ReferencePicker label="Holder" choices={people.state === "ready" ? people.data : []} value={holder} onChange={setHolder} />
       {asked.map(ask)}
       {refused ? <LoadFailed words={refused} /> : null}
       <Button kind="primary" disabled={saving || !complete} onClick={save}>Save</Button>

@@ -126,7 +126,7 @@ describe("the Add holding form on Ownership & Tenure", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(createCalls()).toHaveLength(1));
-    expect(createCalls()[0][2]).toEqual({ holder: "Varga Mária", place_id: "n2", kind: "tenant", since: "2024-05-01T00:00:00Z" });
+    expect(createCalls()[0][2]).toEqual({ holder: "Varga Mária", holder_actor_id: "a1", place_id: "n2", kind: "tenant", since: "2024-05-01T00:00:00Z" });
     await waitFor(() => expect(JSON.parse(settings["register_answers:HOLDING:t9"]).answers).toEqual({ "Water meter number": "WM-4412" }));
   });
 
@@ -190,7 +190,7 @@ describe("the Add holding form on Ownership & Tenure", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(createCalls()).toHaveLength(1));
-    expect(createCalls()[0][2]).toEqual({ holder: "Varga Mária", place_id: "n1" });
+    expect(createCalls()[0][2]).toEqual({ holder: "Varga Mária", holder_actor_id: "a1", place_id: "n1" });
   });
 
   it("shows the hub's refusal and keeps what was typed", async () => {
