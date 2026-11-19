@@ -9,7 +9,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	dispatch "wakalaserver/modules/shared/dispatch"
+	dispatch "github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	agencymodels "wakalaserver/modules/agency/models"

@@ -7,9 +7,9 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/events"
-	"wakalaserver/modules/shared/identity"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/events"
+	"github.com/aosanya/mwanachama-backend-shared/identity"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 // TaskManager is the primary interface for task lifecycle management.

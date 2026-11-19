@@ -3,7 +3,7 @@ package routes
 import (
 	"testing"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 var namesAnotherPersonByDesign = map[string]bool{

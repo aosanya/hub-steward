@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"wakalaserver/modules/ratings/models"
-	"wakalaserver/modules/shared/spec"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 func Check(s *spec.Spec, role string, v any) error {

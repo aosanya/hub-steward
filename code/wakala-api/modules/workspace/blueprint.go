@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"sync"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 //go:embed workspace.blueprint.json

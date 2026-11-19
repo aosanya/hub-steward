@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"wakalaserver/modules/custody/models"
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 )
 
 var ErrConsentRequired = consent.ErrRequired

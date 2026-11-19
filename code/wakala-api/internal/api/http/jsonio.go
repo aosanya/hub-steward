@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"wakalaserver/modules/shared/httpwire"
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
 )
 
 // writeJSON writes v as the response body with the given status code.

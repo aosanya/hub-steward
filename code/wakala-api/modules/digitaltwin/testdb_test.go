@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm/logger"
 
 	digitaltwin "wakalaserver/modules/digitaltwin"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func examplePath(domain string) string {

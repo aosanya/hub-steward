@@ -8,8 +8,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/gormutil"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/gormutil"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 
 	"wakalaserver/modules/assetmanager/models"
 )

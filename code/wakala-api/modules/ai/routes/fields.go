@@ -1,6 +1,6 @@
 package routes
 
-import "wakalaserver/modules/shared/dispatch"
+import "github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 var serverOwnedAccountFields = []string{
 	"id", "agency_id", "key_set", "default",

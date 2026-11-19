@@ -14,7 +14,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func publishedPollFixture(t *testing.T) (PollManager, *gorm.DB, *spec.Spec, string) {

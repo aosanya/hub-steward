@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 type BacklogStep struct {

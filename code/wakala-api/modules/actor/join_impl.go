@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 
 	"wakalaserver/modules/actor/models"
 )

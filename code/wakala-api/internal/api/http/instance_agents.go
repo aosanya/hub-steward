@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

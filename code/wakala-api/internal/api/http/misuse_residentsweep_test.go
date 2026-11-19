@@ -14,7 +14,7 @@ import (
 	catalog "wakalaserver/modules/catalog"
 	comm "wakalaserver/modules/comm"
 	forms "wakalaserver/modules/forms"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	sources "wakalaserver/modules/sources"
 )
 

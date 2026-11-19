@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"wakalaserver/modules/comm/models"
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 )
 
 type Belonging func(ctx context.Context, actorID, structureID string) (bool, error)

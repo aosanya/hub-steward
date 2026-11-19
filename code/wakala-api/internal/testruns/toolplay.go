@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 func playTool(ctx context.Context, module string, tools []dispatch.Tool, call Call) (Outcome, error) {

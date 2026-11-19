@@ -10,7 +10,7 @@ import (
 	"wakalaserver/internal/agencies"
 	ai "wakalaserver/modules/ai"
 	airoutes "wakalaserver/modules/ai/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 func residentGateWalk(t *testing.T) groupRoleWalk {

@@ -1,6 +1,6 @@
 package models
 
-import "wakalaserver/modules/shared/geo"
+import "github.com/aosanya/mwanachama-backend-shared/geo"
 
 type Location struct {
 	Lat float64 `json:"lat"`

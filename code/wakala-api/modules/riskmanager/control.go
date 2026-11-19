@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"wakalaserver/modules/shared/gormutil"
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/gormutil"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 func (m *riskManager) CreateControl(ctx context.Context, c Control) (Control, error) {

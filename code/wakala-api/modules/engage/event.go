@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"wakalaserver/modules/shared/consent"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 
 	"wakalaserver/modules/engage/models"
 )

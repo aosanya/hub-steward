@@ -12,7 +12,7 @@ import (
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamaforms "wakalaserver/modules/forms"
 	formsmodels "wakalaserver/modules/forms/models"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func sqliteDB(t *testing.T) *gorm.DB {

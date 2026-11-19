@@ -9,7 +9,7 @@ import (
 
 	agencymodels "wakalaserver/modules/agency/models"
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

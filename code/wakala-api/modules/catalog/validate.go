@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"strings"
 
-	"wakalaserver/modules/shared/plaintext"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 // The roles a caller may name when checking a value against a spec without

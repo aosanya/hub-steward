@@ -23,7 +23,7 @@ import (
 	gitroutes "wakalaserver/modules/git/routes"
 	marketroutes "wakalaserver/modules/market/routes"
 	riskroutes "wakalaserver/modules/riskmanager/routes"
-	"wakalaserver/modules/shared/httpwire"
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
 	sourcesroutes "wakalaserver/modules/sources/routes"
 	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
 	votingroutes "wakalaserver/modules/voting/routes"

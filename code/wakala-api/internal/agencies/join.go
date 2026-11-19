@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 const (

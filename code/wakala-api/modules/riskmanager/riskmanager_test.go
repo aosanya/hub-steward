@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm/logger"
 
 	rm "wakalaserver/modules/riskmanager"
-	"wakalaserver/modules/shared/identity"
+	"github.com/aosanya/mwanachama-backend-shared/identity"
 )
 
 type fakeOwners map[string]bool

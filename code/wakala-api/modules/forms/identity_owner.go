@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"wakalaserver/modules/shared/identity"
+	"github.com/aosanya/mwanachama-backend-shared/identity"
 )
 
 const identityModule = "forms"

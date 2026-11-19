@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/actor/models"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 func (m *userManager) SetRoleKindLeadsGroup(ctx context.Context, kindID string, leads bool) (RoleKind, error) {

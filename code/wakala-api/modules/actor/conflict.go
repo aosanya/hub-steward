@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"wakalaserver/modules/shared/gormutil"
+	"github.com/aosanya/mwanachama-backend-shared/gormutil"
 )
 
 var busyMessages = []string{

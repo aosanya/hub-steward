@@ -12,7 +12,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	catalog "wakalaserver/modules/catalog"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 const rosterDir = "testdata/mcp_roster"

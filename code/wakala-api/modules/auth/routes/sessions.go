@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"wakalaserver/modules/shared/httpwire"
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
 
 	mwanachamaauth "wakalaserver/modules/auth"
 )

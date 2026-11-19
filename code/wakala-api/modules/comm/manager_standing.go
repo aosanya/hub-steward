@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"wakalaserver/modules/comm/models"
-	"wakalaserver/modules/shared/recur"
+	"github.com/aosanya/mwanachama-backend-shared/recur"
 )
 
 func (m *CommManager) standingFence(ctx context.Context, structureID, threadID, callerID string) error {

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	actor "wakalaserver/modules/actor"
-	"wakalaserver/modules/shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
 )
 
 func boundedGroup(t *testing.T, um actor.UserManager, name string, b *geo.Geometry) actor.Group {

@@ -6,7 +6,7 @@ import (
 	"sort"
 
 	"wakalaserver/modules/insights/models"
-	"wakalaserver/modules/shared/disclosure"
+	"github.com/aosanya/mwanachama-backend-shared/disclosure"
 )
 
 type SubjectCount struct {

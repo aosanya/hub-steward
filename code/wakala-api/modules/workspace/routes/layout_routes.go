@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	workspace "wakalaserver/modules/workspace"
 )

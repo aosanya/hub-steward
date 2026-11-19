@@ -12,8 +12,8 @@ import (
 
 	comm "wakalaserver/modules/comm"
 	"wakalaserver/modules/comm/models"
-	"wakalaserver/modules/shared/consent"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 type noActs struct{}

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"gorm.io/gorm"
-	"wakalaserver/modules/shared/recur"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/recur"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 	"wakalaserver/modules/taskmanager/models"
 )
 

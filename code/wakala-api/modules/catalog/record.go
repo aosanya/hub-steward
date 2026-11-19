@@ -7,7 +7,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/gormutil"
+	"github.com/aosanya/mwanachama-backend-shared/gormutil"
 )
 
 const recordAttempts = 5

@@ -3,7 +3,7 @@ package mwanachamaactor
 import (
 	"fmt"
 
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 func checkName(refusal error, label, name string) error {

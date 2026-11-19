@@ -3,8 +3,8 @@ package mwanachamagit
 import (
 	"context"
 
-	"wakalaserver/modules/shared/events"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/events"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func RegistrationCheckFromCatalog(c RepositoryCatalog) RegistrationCheck {

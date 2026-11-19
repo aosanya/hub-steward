@@ -3,7 +3,7 @@ package ai
 import (
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 type heldName struct {

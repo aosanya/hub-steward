@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 var repeatingTaskWrites = []string{

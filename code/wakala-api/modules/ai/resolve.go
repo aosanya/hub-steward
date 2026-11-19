@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"wakalaserver/modules/ai/models"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 const (

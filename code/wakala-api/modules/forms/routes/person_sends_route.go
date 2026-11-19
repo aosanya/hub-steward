@@ -3,8 +3,8 @@ package routes
 import (
 	"net/http"
 
-	"wakalaserver/modules/shared/dispatch"
-	"wakalaserver/modules/shared/httpwire"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
 )
 
 const personSendsAction = "forms.submission.list_of_person"

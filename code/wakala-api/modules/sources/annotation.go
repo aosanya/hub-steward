@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 func (m *sourceManager) CreateAnnotation(ctx context.Context, in Annotation) (Annotation, error) {

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"wakalaserver/modules/council/models"
-	"wakalaserver/modules/shared/versioncheck"
+	"github.com/aosanya/mwanachama-backend-shared/versioncheck"
 )
 
 const roleMinutes = "minutes"

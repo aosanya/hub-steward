@@ -7,7 +7,7 @@ import (
 	commroutes "wakalaserver/modules/comm/routes"
 	mwanachamaforms "wakalaserver/modules/forms"
 	formsroutes "wakalaserver/modules/forms/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	mwanachamaai "wakalaserver/modules/ai"
 )

@@ -7,8 +7,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	"wakalaserver/modules/shared/plaintext"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 type store struct {

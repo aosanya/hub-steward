@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/spec"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 
 	"wakalaserver/modules/engage/models"
 )

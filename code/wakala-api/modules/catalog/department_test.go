@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm/logger"
 
 	catalog "wakalaserver/modules/catalog"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func routedManager(t *testing.T, routing any) catalog.CatalogManager {

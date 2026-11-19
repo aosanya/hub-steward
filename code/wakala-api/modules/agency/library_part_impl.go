@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/agency/models"
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 type LibraryPartFilter struct {

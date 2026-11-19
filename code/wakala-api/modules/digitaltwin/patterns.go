@@ -1,6 +1,6 @@
 package digitaltwin
 
-import "wakalaserver/modules/shared/spec"
+import "github.com/aosanya/mwanachama-backend-shared/spec"
 
 func isName(s string) bool { return spec.NamePattern.MatchString(s) }
 

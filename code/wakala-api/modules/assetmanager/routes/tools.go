@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 )

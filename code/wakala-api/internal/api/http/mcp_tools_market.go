@@ -10,7 +10,7 @@ import (
 
 	market "wakalaserver/modules/market"
 	marketroutes "wakalaserver/modules/market/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"
 )

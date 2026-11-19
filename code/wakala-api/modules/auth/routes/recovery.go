@@ -8,7 +8,7 @@ import (
 	"time"
 
 	mwanachamaauth "wakalaserver/modules/auth"
-	"wakalaserver/modules/shared/httpwire"
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
 )
 
 // RecoveryRequest handles POST /recovery/request.

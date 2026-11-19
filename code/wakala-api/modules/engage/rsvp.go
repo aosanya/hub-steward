@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 
 	"wakalaserver/modules/engage/models"
 )

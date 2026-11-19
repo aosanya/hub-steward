@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 //go:embed agency.catalogue.json

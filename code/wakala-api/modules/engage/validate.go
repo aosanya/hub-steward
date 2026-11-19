@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func Check(s *spec.Spec, object string, v any) error {

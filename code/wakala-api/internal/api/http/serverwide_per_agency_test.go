@@ -10,7 +10,7 @@ import (
 	catalog "wakalaserver/modules/catalog"
 	forms "wakalaserver/modules/forms"
 	permissions "wakalaserver/modules/permissions"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 type permitEveryone struct{ permissions.PermissionsManager }

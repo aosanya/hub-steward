@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	digitaltwin "wakalaserver/modules/digitaltwin"
-	"wakalaserver/modules/shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
 )
 
 func square(minLon, minLat, maxLon, maxLat float64) *geo.Geometry {

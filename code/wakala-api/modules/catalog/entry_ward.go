@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"wakalaserver/modules/shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
 )
 
 const (

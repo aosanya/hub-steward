@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"wakalaserver/modules/shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
 )
 
 type AreaResolver func(ctx context.Context, pin *geo.Position, address string) (string, error)

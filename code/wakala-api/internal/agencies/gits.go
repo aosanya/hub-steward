@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	mwanachamagit "wakalaserver/modules/git"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 
 	"wakalaserver/internal/specs"
 )

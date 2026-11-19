@@ -3,7 +3,7 @@ package digitaltwin
 import (
 	"context"
 
-	"wakalaserver/modules/shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
 )
 
 func (m *twinManager) DeepestHolding(ctx context.Context, kind string, at geo.Position) (Node, error) {

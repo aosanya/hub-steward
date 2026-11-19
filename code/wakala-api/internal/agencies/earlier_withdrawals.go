@@ -5,7 +5,7 @@ import (
 	"log/slog"
 
 	mwanachamaforms "wakalaserver/modules/forms"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func (r *registry) hideEarlierWithdrawals(ctx context.Context, instanceID string, s *spec.Spec) {

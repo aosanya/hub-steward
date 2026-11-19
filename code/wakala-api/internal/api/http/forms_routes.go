@@ -8,7 +8,7 @@ import (
 	forms "wakalaserver/modules/forms"
 	formsmodels "wakalaserver/modules/forms/models"
 	formsroutes "wakalaserver/modules/forms/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

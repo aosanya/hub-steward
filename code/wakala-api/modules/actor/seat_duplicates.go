@@ -9,7 +9,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 var ErrSchemaName = errors.New("actor: not a schema name")

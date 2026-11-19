@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"wakalaserver/modules/shared/answerrules"
+	"github.com/aosanya/mwanachama-backend-shared/answerrules"
 )
 
 func checkAddress(q Question, a Answer) error {

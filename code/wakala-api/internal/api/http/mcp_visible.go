@@ -13,7 +13,7 @@ import (
 	ai "wakalaserver/modules/ai"
 	airoutes "wakalaserver/modules/ai/routes"
 	catalogroutes "wakalaserver/modules/catalog/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"
 )

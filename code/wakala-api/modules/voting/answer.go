@@ -7,7 +7,7 @@ import (
 	"slices"
 	"time"
 
-	"wakalaserver/modules/shared/gormutil"
+	"github.com/aosanya/mwanachama-backend-shared/gormutil"
 	"wakalaserver/modules/voting/models"
 )
 

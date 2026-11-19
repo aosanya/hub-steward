@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 func plainText(invalid error, label, text string) error {

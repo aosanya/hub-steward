@@ -3,7 +3,7 @@ package mwanachamainsights
 import (
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 var legacy = spec.Legacy{

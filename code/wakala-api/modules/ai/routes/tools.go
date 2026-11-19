@@ -3,7 +3,7 @@ package routes
 import (
 	"fmt"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	ai "wakalaserver/modules/ai"
 )

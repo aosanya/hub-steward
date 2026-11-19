@@ -24,7 +24,7 @@ import (
 	assetroutes "wakalaserver/modules/assetmanager/routes"
 	catalogroutes "wakalaserver/modules/catalog/routes"
 	gitroutes "wakalaserver/modules/git/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	sourcesroutes "wakalaserver/modules/sources/routes"
 )
 

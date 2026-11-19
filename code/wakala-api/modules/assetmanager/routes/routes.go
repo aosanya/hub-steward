@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"wakalaserver/modules/shared/dispatch"
-	"wakalaserver/modules/shared/httpwire"
-	"wakalaserver/modules/shared/versioncheck"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
+	"github.com/aosanya/mwanachama-backend-shared/versioncheck"
 
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 )

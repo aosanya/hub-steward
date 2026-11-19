@@ -16,7 +16,7 @@ import (
 	mwanachamaforms "wakalaserver/modules/forms"
 	"wakalaserver/modules/forms/models"
 	"wakalaserver/modules/forms/routes"
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 )
 
 type callerKey struct{}

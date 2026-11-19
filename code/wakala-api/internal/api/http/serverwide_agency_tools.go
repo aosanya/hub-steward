@@ -7,7 +7,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	catalogroutes "wakalaserver/modules/catalog/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 func (d *Deps) registerAgencyCatalogMCPTools(server *mcp.Server, mountName string, m catalogroutes.Mount, toolName func(string) string) {

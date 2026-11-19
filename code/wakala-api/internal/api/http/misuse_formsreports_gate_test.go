@@ -12,7 +12,7 @@ import (
 
 	catalog "wakalaserver/modules/catalog"
 	forms "wakalaserver/modules/forms"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 
 	"wakalaserver/internal/agencies"
 )

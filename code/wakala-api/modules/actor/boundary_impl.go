@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"wakalaserver/modules/shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
 )
 
 func checkBoundary(b *geo.Geometry) error {

@@ -10,7 +10,7 @@ import (
 
 	mwanachamagit "wakalaserver/modules/git"
 	gitroutes "wakalaserver/modules/git/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 const (

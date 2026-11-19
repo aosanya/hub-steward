@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 // ListDeliverablesForTask returns all Deliverable rows linked to taskID via

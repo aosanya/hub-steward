@@ -11,8 +11,8 @@ import (
 	"gorm.io/gorm/logger"
 
 	catalog "wakalaserver/modules/catalog"
-	"wakalaserver/modules/shared/geo"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func wardManager(t *testing.T) catalog.CatalogManager {

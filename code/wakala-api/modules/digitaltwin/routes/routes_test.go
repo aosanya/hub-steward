@@ -15,8 +15,8 @@ import (
 
 	digitaltwin "wakalaserver/modules/digitaltwin"
 	"wakalaserver/modules/digitaltwin/routes"
-	"wakalaserver/modules/shared/geo"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func newManager(t *testing.T) (digitaltwin.TwinManager, context.Context) {

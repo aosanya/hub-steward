@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 func refuseControlCharactersInAddress(next http.Handler) http.Handler {

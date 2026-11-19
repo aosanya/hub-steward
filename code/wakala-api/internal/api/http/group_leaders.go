@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	mwanachamaactor "wakalaserver/modules/actor"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"
 )

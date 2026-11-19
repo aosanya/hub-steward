@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	engage "wakalaserver/modules/engage"
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 )
 
 type gateFor map[string]error

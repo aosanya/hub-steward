@@ -12,7 +12,7 @@ import (
 	formsroutes "wakalaserver/modules/forms/routes"
 	mwanachamainsights "wakalaserver/modules/insights"
 	insightsroutes "wakalaserver/modules/insights/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamasources "wakalaserver/modules/sources"
 	sourcesroutes "wakalaserver/modules/sources/routes"
 	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"

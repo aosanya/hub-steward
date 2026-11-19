@@ -8,8 +8,8 @@ import (
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
-	"wakalaserver/modules/shared/dispatch"
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 // createInstanceRequest is the wire shape for POST /instances.

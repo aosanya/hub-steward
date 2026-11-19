@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 	"wakalaserver/modules/taskmanager/routes"
 )

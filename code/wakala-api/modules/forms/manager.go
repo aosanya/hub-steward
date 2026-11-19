@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"sync/atomic"
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/identity"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/identity"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 
 	"wakalaserver/modules/forms/models"
 )

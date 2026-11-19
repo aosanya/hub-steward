@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sort"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 func DeclaredActions(operations ...[]byte) ([]string, error) {

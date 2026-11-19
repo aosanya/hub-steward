@@ -3,7 +3,7 @@ package engage
 import (
 	"errors"
 
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 )
 
 var (

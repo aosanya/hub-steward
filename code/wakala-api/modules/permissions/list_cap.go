@@ -1,5 +1,5 @@
 package mwanachamapermissions
 
-import "wakalaserver/modules/shared/specstore"
+import "github.com/aosanya/mwanachama-backend-shared/specstore"
 
 const listCap = specstore.DefaultListCap

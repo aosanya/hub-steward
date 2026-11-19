@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 
 	"github.com/jackc/pgx/v5/pgconn"
 	"gorm.io/gorm"

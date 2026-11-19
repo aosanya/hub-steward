@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"wakalaserver/modules/shared/recur"
+	"github.com/aosanya/mwanachama-backend-shared/recur"
 	"wakalaserver/modules/taskmanager/models"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func resolveFitting[T any](ctx context.Context, m *catalogManager, name string, parse func(any) (T, error)) (T, error) {

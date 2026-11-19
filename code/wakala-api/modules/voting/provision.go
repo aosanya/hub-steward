@@ -3,7 +3,7 @@ package voting
 import (
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func Provision(db *gorm.DB, s *spec.Spec) error {

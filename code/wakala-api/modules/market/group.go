@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm/clause"
 
 	"wakalaserver/modules/market/models"
-	"wakalaserver/modules/shared/gormutil"
+	"github.com/aosanya/mwanachama-backend-shared/gormutil"
 )
 
 type terms struct {

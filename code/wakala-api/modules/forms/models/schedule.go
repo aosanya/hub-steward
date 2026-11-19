@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"wakalaserver/modules/shared/recur"
+	"github.com/aosanya/mwanachama-backend-shared/recur"
 )
 
 var ErrNoPeriod = errors.New("forms: no period at that time")

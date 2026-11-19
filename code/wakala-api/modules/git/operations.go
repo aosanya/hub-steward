@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"sync"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 //go:embed git.operations.json

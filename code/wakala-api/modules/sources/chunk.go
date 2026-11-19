@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 func (m *sourceManager) AddChunk(ctx context.Context, in Chunk) (Chunk, error) {

@@ -12,7 +12,7 @@ import (
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 const (

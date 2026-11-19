@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"wakalaserver/modules/shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
 )
 
 func (m *userManager) GroupWardIndex(ctx context.Context) (*geo.WardIndex, map[string]Group, error) {

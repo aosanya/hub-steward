@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 func (m *taskManager) withLastUpkeep(ctx context.Context, recs []RepeatingTaskRecord) error {

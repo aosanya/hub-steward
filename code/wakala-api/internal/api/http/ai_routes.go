@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	ai "wakalaserver/modules/ai"
 	airoutes "wakalaserver/modules/ai/routes"

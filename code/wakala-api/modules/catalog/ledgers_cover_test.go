@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm/logger"
 
 	catalog "wakalaserver/modules/catalog"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func overriddenManager(t *testing.T, overrides map[string]any) catalog.CatalogManager {

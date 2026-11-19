@@ -3,7 +3,7 @@ package agencies
 import (
 	"context"
 
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 )
 
 type ConsentRequiredOf func(ctx context.Context, instanceID string) (bool, error)

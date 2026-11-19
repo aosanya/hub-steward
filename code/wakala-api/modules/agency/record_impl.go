@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/agency/models"
-	"wakalaserver/modules/shared/answerrules"
+	"github.com/aosanya/mwanachama-backend-shared/answerrules"
 )
 
 func invalidRecord(format string, args ...any) error {

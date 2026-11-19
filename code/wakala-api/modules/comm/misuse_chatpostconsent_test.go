@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	comm "wakalaserver/modules/comm"
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 )
 
 func TestChatPost_MemberWithoutConsentCannotDoPostChatMessage(t *testing.T) {

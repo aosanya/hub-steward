@@ -16,7 +16,7 @@ import (
 	"gorm.io/gorm/logger"
 
 	"wakalaserver/modules/assetmanager/models"
-	"wakalaserver/modules/shared/gormutil"
+	"github.com/aosanya/mwanachama-backend-shared/gormutil"
 )
 
 const reverseRaceDeclaration = `{

@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func keepLatestBallotOfEachResponse(db *gorm.DB, s *spec.Spec) (int64, error) {

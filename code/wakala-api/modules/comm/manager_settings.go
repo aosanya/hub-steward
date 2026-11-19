@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"wakalaserver/modules/comm/models"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 const notificationRulesSetting = "notification_rules"

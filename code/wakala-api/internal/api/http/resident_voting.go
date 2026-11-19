@@ -4,7 +4,7 @@ import (
 	"context"
 	"slices"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamavoting "wakalaserver/modules/voting"
 
 	"wakalaserver/internal/accounts"

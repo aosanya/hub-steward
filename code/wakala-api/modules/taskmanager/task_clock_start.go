@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 const (

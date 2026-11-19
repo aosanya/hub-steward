@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm/logger"
 
 	"wakalaserver/modules/comm/models"
-	"wakalaserver/modules/shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 )
 
 type cover13Acts struct {

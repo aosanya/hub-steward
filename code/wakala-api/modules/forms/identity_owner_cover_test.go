@@ -8,7 +8,7 @@ import (
 
 	forms "wakalaserver/modules/forms"
 	"wakalaserver/modules/forms/models"
-	"wakalaserver/modules/shared/identity"
+	"github.com/aosanya/mwanachama-backend-shared/identity"
 )
 
 type identityOwner interface {

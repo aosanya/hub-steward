@@ -1,6 +1,6 @@
 package models
 
-import "wakalaserver/modules/shared/recur"
+import "github.com/aosanya/mwanachama-backend-shared/recur"
 
 type RepeatingTaskRecord struct {
 	ID            string       `json:"id"`

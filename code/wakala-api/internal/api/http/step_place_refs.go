@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	agencymodels "wakalaserver/modules/agency/models"
-	"wakalaserver/modules/shared/answerrules"
+	"github.com/aosanya/mwanachama-backend-shared/answerrules"
 
 	"wakalaserver/internal/agencies"
 )

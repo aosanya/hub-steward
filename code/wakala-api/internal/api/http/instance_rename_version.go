@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"wakalaserver/internal/agencies"
-	"wakalaserver/modules/shared/versioncheck"
+	"github.com/aosanya/mwanachama-backend-shared/versioncheck"
 )
 
 func refuseStaleRename(ctx context.Context, reg agencies.Registry, instanceID, version, name string) error {

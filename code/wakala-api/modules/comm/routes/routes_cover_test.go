@@ -8,7 +8,7 @@ import (
 	"sort"
 	"testing"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 func TestEveryCommSentinelHasADeclaredStatus(t *testing.T) {

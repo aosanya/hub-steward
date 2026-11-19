@@ -14,7 +14,7 @@ import (
 	"sort"
 	"strings"
 	"time"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 // runNameSuffixBytes is the number of random bytes that feed the

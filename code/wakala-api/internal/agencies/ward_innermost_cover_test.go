@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	mwanachamaactor "wakalaserver/modules/actor"
-	"wakalaserver/modules/shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
 )
 
 func boxedGroup(name string, minLon, minLat, maxLon, maxLat float64) mwanachamaactor.Group {

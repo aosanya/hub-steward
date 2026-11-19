@@ -7,7 +7,7 @@ import (
 
 	"gorm.io/gorm"
 	ratings "wakalaserver/modules/ratings"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 
 	"wakalaserver/internal/specs"
 )

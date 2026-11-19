@@ -11,8 +11,8 @@ import (
 	"gorm.io/gorm/logger"
 
 	"wakalaserver/modules/market/models"
-	"wakalaserver/modules/shared/gormutil"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/gormutil"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func newJoinFixture(t *testing.T) (*marketManager, string) {

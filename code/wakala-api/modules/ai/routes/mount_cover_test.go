@@ -17,7 +17,7 @@ import (
 
 	ai "wakalaserver/modules/ai"
 	"wakalaserver/modules/ai/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 const coverAgency = "agency-9"

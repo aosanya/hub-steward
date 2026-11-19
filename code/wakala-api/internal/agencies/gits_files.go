@@ -8,7 +8,7 @@ import (
 	"sync"
 
 	mwanachamagit "wakalaserver/modules/git"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 var ErrImportNeedsRepositoryFile = errors.New("importing a repository is not supported on per-repository files")

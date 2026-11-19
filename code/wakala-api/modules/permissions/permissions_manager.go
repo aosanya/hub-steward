@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/permissions/models"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 type (

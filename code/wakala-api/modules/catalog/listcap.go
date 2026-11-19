@@ -3,7 +3,7 @@ package mwanachamacatalog
 import (
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 var cappedRoles = map[string]bool{

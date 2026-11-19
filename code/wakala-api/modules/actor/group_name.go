@@ -8,8 +8,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/plaintext"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 const groupNameKeyColumn = "name_key"

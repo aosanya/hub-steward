@@ -12,8 +12,8 @@ import (
 
 	forms "wakalaserver/modules/forms"
 	"wakalaserver/modules/forms/models"
-	"wakalaserver/modules/shared/consent"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 type gateFor map[string]error

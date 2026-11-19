@@ -12,7 +12,7 @@ import (
 	mwanachamamarket "wakalaserver/modules/market"
 	marketmodels "wakalaserver/modules/market/models"
 	marketroutes "wakalaserver/modules/market/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 const (

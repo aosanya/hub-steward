@@ -9,8 +9,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/plaintext"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 
 	"wakalaserver/modules/actor/models"
 )

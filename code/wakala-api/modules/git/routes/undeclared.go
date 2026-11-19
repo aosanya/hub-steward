@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	"wakalaserver/modules/shared/httpwire"
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
 
 	mwanachamagit "wakalaserver/modules/git"
 )

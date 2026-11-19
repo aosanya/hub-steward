@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	actor "wakalaserver/modules/actor"
-	"wakalaserver/modules/shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
 )
 
 func ring(minLon, minLat, maxLon, maxLat float64) geo.Ring {

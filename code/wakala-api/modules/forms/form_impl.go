@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/forms/models"
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 func validateFrame(f models.Form) error {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"slices"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 func (m *pollManager) ListOpenPolls(ctx context.Context, caller string) ([]OpenPoll, error) {

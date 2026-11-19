@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 	"wakalaserver/modules/sources/models"
 )
 

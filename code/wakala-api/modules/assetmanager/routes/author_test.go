@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	"wakalaserver/modules/assetmanager/models"

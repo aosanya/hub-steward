@@ -9,7 +9,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 func (m *userManager) recordDecision(tx *gorm.DB, req GroupJoinRequest, state string, silent bool, decidedBy, now, reason string) error {

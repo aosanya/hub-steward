@@ -19,7 +19,7 @@ import (
 	custodymodels "wakalaserver/modules/custody/models"
 	mwanachamaengage "wakalaserver/modules/engage"
 	mwanachamaforms "wakalaserver/modules/forms"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func localDatabaseOrSkip(t *testing.T) string {

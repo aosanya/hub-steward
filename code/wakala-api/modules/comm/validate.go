@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 
 	"wakalaserver/modules/comm/models"
 )

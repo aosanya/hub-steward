@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"wakalaserver/modules/shared/recur"
+	"github.com/aosanya/mwanachama-backend-shared/recur"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 	"wakalaserver/modules/taskmanager/models"
 )

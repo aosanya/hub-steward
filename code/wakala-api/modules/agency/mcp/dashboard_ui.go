@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
-	"wakalaserver/modules/shared/mcpui"
+	"github.com/aosanya/mwanachama-backend-shared/mcpui"
 )
 
 // dashboardUIResourceURI is the ui:// resource agency_get_agency,

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"slices"
 
-	"wakalaserver/modules/shared/identity"
+	"github.com/aosanya/mwanachama-backend-shared/identity"
 )
 
 type Option func(*riskManager)

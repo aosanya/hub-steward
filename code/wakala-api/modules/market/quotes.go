@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"wakalaserver/modules/market/models"
-	"wakalaserver/modules/shared/gormutil"
+	"github.com/aosanya/mwanachama-backend-shared/gormutil"
 )
 
 func (m *marketManager) openNotice(ctx context.Context, id string) (Notice, error) {

@@ -7,8 +7,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/geo"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 
 	"wakalaserver/modules/actor/models"
 )

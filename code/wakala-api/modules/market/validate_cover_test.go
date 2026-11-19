@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func marketSpec(t *testing.T) *spec.Spec {

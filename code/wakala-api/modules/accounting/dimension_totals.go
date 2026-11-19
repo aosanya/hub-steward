@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 type accountSelection func(accountID string) bool

@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"wakalaserver/modules/insights/models"
-	"wakalaserver/modules/shared/disclosure"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/disclosure"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func settingLayers(value any) SettingsLayers {

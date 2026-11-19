@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 var projectCreateLock sync.Mutex

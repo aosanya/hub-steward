@@ -4,7 +4,7 @@ import (
 	"context"
 
 	formsroutes "wakalaserver/modules/forms/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/agencies"
 )

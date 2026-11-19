@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"wakalaserver/modules/shared/disclosure"
+	"github.com/aosanya/mwanachama-backend-shared/disclosure"
 )
 
 const DefaultMinimumCount = 5

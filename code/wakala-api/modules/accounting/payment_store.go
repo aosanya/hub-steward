@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"wakalaserver/modules/accounting/models"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 type (

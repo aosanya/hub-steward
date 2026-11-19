@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	mwanachamaauth "wakalaserver/modules/auth"
-	"wakalaserver/modules/shared/httpwire"
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
 )
 
 // SetVerification handles PUT /members/{subjectID}/verification — how an

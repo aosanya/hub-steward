@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"wakalaserver/modules/shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 const bodySniffBytes = 512

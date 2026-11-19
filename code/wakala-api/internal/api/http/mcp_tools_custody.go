@@ -11,7 +11,7 @@ import (
 
 	mwanachamacustody "wakalaserver/modules/custody"
 	custodyroutes "wakalaserver/modules/custody/routes"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"
 )

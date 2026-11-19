@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/catalog/models"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func (m *catalogManager) ListPublicEntries(ctx context.Context, f ListFilter) ([]Entry, error) {

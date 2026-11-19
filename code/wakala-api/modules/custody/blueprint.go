@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sync"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 //go:embed custody.blueprint.json

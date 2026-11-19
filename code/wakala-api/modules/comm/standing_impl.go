@@ -9,8 +9,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/recur"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/recur"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 
 	"wakalaserver/modules/comm/models"
 )

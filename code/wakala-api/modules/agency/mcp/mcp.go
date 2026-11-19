@@ -20,7 +20,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	mwanachamaagency "wakalaserver/modules/agency"
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 // ManagerResolver turns a caller-supplied id into the AgencyManager that id

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"wakalaserver/modules/shared/identity"
+	"github.com/aosanya/mwanachama-backend-shared/identity"
 )
 
 const identityModule = "comm"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 	"wakalaserver/modules/taskmanager/models"
 )
 

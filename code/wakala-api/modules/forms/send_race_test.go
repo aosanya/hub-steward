@@ -9,7 +9,7 @@ import (
 
 	forms "wakalaserver/modules/forms"
 	"wakalaserver/modules/forms/models"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 type raceRound struct {

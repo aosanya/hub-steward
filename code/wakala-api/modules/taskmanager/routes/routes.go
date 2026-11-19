@@ -5,8 +5,8 @@ import (
 	"sort"
 	"sync"
 
-	"wakalaserver/modules/shared/dispatch"
-	"wakalaserver/modules/shared/httpwire"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
 
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )

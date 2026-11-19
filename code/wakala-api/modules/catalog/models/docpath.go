@@ -3,7 +3,7 @@ package models
 import (
 	"strings"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 // DocFilter keeps only the Entries whose document holds Value at Path.

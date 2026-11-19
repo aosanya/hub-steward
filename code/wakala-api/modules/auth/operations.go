@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"sync"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/modules/auth/models"
 )

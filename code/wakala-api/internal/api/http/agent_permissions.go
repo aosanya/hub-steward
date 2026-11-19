@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"slices"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	agencymodels "wakalaserver/modules/agency/models"
 

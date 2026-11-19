@@ -3,7 +3,7 @@ package mwanachamacouncil
 import (
 	"time"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 type Clock func() time.Time

@@ -5,7 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 const BlobFTSExpr = `to_tsvector('english', coalesce(name, '') || ' ' || coalesce(content, ''))`

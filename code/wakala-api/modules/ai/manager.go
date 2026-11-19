@@ -7,9 +7,9 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/identity"
-	"wakalaserver/modules/shared/spec"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/identity"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 
 	"wakalaserver/modules/ai/models"
 )

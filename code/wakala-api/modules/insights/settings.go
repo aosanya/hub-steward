@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"wakalaserver/modules/shared/disclosure"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/disclosure"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 type SettingsLayers func(ctx context.Context) (definition map[string]any, overrides map[string]spec.Override, err error)

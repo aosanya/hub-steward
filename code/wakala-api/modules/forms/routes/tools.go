@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"slices"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	forms "wakalaserver/modules/forms"
 )

@@ -10,7 +10,7 @@ import (
 	"context"
 	"time"
 
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 // ListWorkflowRunsStaleSince returns all non-terminal, unpaused WorkflowRuns

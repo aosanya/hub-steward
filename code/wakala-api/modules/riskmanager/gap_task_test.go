@@ -7,7 +7,7 @@ import (
 
 	rm "wakalaserver/modules/riskmanager"
 	"wakalaserver/modules/riskmanager/models"
-	"wakalaserver/modules/shared/identity"
+	"github.com/aosanya/mwanachama-backend-shared/identity"
 )
 
 type fakeTasks map[string]bool

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"wakalaserver/modules/shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 func TestServerWideMounts_RefuseEveryActionWhenNoPermissionsModuleIsMounted(t *testing.T) {

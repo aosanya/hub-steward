@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"wakalaserver/modules/shared/versioncheck"
+	"github.com/aosanya/mwanachama-backend-shared/versioncheck"
 )
 
 var ErrStaleVersion = errors.New("mwanachamaactor: the record changed since you read it")

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"wakalaserver/modules/shared/answerrules"
+	"github.com/aosanya/mwanachama-backend-shared/answerrules"
 )
 
 const DateLayout = "2006-01-02"

@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"strings"
 
-	"wakalaserver/modules/shared/plaintext"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 const (

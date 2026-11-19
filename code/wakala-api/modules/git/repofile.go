@@ -7,8 +7,8 @@ import (
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/events"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/events"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 const repoFileBusyTimeoutMillis = 10000

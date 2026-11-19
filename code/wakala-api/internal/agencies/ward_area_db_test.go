@@ -15,8 +15,8 @@ import (
 
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamacatalog "wakalaserver/modules/catalog"
-	"wakalaserver/modules/shared/geo"
-	"wakalaserver/modules/shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/geo"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func square(minLon, minLat, maxLon, maxLat float64) *geo.Geometry {

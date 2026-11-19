@@ -3,8 +3,8 @@ package mwanachamaworkspace
 import (
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/shared/spec"
-	"wakalaserver/modules/shared/specstore"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 const (

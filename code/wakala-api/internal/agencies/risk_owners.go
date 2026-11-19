@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	mwanachamaactor "wakalaserver/modules/actor"
-	"wakalaserver/modules/shared/identity"
+	"github.com/aosanya/mwanachama-backend-shared/identity"
 )
 
 const actorObject = "actor"

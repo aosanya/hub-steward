@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"wakalaserver/modules/shared/dispatch"
-	"wakalaserver/modules/shared/httpwire"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	"github.com/aosanya/mwanachama-backend-shared/httpwire"
 
 	riskmanager "wakalaserver/modules/riskmanager"
 )
