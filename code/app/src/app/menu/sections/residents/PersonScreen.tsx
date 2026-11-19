@@ -22,10 +22,14 @@ import { useOpenSection } from "./personSections";
 
 type Item = Record<string, unknown>;
 
-export const loadPerson = async (id: string) => {
+export const readActor = async (id: string) => {
   const reply = (await callTool("", "actor_get_actor", { actor_id: id })) as { item?: Item } | Item | null;
   const person = (reply as { item?: Item } | null)?.item ?? reply;
-  const found = (person && typeof person === "object" ? person : {}) as Item;
+  return (person && typeof person === "object" ? person : {}) as Item;
+};
+
+export const loadPerson = async (id: string) => {
+  const found = await readActor(id);
   return { ...found, id, display_name: personNameOf(found) };
 };
 

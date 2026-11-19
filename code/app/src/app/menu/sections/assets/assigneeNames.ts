@@ -1,6 +1,6 @@
 import { listAgents } from "../../../../features/people/api";
-import { loadPerson } from "../residents/PersonScreen";
-import { personNameOf } from "../residents/personName";
+import { readActor } from "../residents/PersonScreen";
+import { namedPersonOf } from "../residents/personName";
 import { unnamedPerson } from "../settings/personLabel";
 
 type Item = Record<string, unknown>;
@@ -11,11 +11,7 @@ const actorKind = "actor";
 
 const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
-export const actorNameOf = async (id: string) => {
-  const person: Item = await loadPerson(id);
-  const name = personNameOf(person);
-  return name === textOf(person.code) ? unnamedPerson : name;
-};
+export const actorNameOf = async (id: string) => namedPersonOf(await readActor(id)) || unnamedPerson;
 
 const settled = async (read: () => Promise<string>) => {
   try {
