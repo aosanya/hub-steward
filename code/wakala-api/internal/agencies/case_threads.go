@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	commmodels "wakalaserver/modules/comm/models"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 	taskmodels "wakalaserver/modules/taskmanager/models"
 )

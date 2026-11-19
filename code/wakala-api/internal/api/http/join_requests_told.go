@@ -4,9 +4,9 @@ import (
 	"context"
 	"log/slog"
 
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	mwanachamaactor "wakalaserver/modules/actor"
 	actormodels "wakalaserver/modules/actor/models"
-	commmodels "wakalaserver/modules/comm/models"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/notifyrules"

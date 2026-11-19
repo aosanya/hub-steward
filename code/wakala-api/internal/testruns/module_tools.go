@@ -3,11 +3,11 @@ package testruns
 import (
 	"sync"
 
-	mwanachamacomm "wakalaserver/modules/comm"
-	commroutes "wakalaserver/modules/comm/routes"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commroutes "github.com/aosanya/mwanachama-backend-comm/routes"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamaforms "wakalaserver/modules/forms"
 	formsroutes "wakalaserver/modules/forms/routes"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	mwanachamaai "wakalaserver/modules/ai"
 )

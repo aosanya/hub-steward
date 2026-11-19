@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 	mwanachamaforms "wakalaserver/modules/forms"
 )
 

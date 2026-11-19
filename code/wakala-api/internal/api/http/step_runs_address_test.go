@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"testing"
 
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 )
 
 func addressWalk(t *testing.T, allowFreeText bool) (stepRunWalk, string) {

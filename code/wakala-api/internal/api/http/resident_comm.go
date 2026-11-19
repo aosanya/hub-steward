@@ -1,7 +1,7 @@
 package http
 
 import (
-	commroutes "wakalaserver/modules/comm/routes"
+	commroutes "github.com/aosanya/mwanachama-backend-comm/routes"
 
 	"wakalaserver/internal/agencies"
 )

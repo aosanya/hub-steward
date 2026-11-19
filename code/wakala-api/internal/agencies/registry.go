@@ -15,15 +15,15 @@ import (
 
 	"wakalaserver/internal/authz"
 
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	mwanachamacatalog "wakalaserver/modules/catalog"
-	mwanachamacomm "wakalaserver/modules/comm"
-	commmodels "wakalaserver/modules/comm/models"
 	mwanachamacustody "wakalaserver/modules/custody"
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 	mwanachamaengage "wakalaserver/modules/engage"
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamagit "wakalaserver/modules/git"

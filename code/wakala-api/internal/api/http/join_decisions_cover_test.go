@@ -6,9 +6,9 @@ import (
 	"slices"
 	"testing"
 
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	mwanachamaactor "wakalaserver/modules/actor"
 	actormodels "wakalaserver/modules/actor/models"
-	mwanachamacomm "wakalaserver/modules/comm"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/notifyrules"

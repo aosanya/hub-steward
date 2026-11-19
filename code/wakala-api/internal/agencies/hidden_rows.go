@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	mwanachamaengage "wakalaserver/modules/engage"
 	"wakalaserver/modules/forms/models"
 )

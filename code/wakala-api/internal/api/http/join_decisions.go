@@ -5,10 +5,10 @@ import (
 	"errors"
 	"log/slog"
 
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	mwanachamaactor "wakalaserver/modules/actor"
 	actormodels "wakalaserver/modules/actor/models"
-	mwanachamacomm "wakalaserver/modules/comm"
-	commmodels "wakalaserver/modules/comm/models"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/notifyrules"

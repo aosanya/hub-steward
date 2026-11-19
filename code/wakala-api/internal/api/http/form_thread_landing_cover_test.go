@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	"wakalaserver/internal/accounts"
-	commmodels "wakalaserver/modules/comm/models"
 	forms "wakalaserver/modules/forms"
 	formsmodels "wakalaserver/modules/forms/models"
 )

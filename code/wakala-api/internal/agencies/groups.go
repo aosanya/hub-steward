@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamacomm "wakalaserver/modules/comm"
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )

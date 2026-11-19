@@ -330,6 +330,7 @@ comm_chat_thread_create
 comm_chat_thread_list
 comm_chat_thread_list_archived
 comm_chat_thread_mark_read
+comm_chat_thread_read
 comm_chat_thread_unarchive
 comm_notification_list
 comm_notification_mark_read

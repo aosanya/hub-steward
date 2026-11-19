@@ -3,10 +3,10 @@ package http
 import (
 	"context"
 
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 
 	"wakalaserver/internal/agencies"
 )

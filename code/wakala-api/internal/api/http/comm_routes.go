@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	commroutes "wakalaserver/modules/comm/routes"
+	commroutes "github.com/aosanya/mwanachama-backend-comm/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	mwanachamacustody "wakalaserver/modules/custody"
 	mwanachamaforms "wakalaserver/modules/forms"
 )

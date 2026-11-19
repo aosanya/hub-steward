@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	twinroutes "wakalaserver/modules/digitaltwin/routes"
+	twinroutes "github.com/aosanya/mwanachama-backend-digitaltwin/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

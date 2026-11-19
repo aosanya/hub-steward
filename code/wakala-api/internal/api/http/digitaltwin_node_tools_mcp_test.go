@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 )
 
 func TestDigitaltwinNodeTools_ListAndReadServeTheNodes(t *testing.T) {

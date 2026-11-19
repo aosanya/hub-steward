@@ -6,8 +6,8 @@ import (
 	"errors"
 	"net/http"
 
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	mwanachamaactor "wakalaserver/modules/actor"
-	commmodels "wakalaserver/modules/comm/models"
 
 	"wakalaserver/internal/agencies"
 )

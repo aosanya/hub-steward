@@ -5,12 +5,12 @@ import (
 	"testing"
 	"time"
 
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	accountingmodels "wakalaserver/modules/accounting/models"
 	actormodels "wakalaserver/modules/actor/models"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	catalogmodels "wakalaserver/modules/catalog/models"
-	commmodels "wakalaserver/modules/comm/models"
 )
 
 type lateLedger struct{ bills []accountingmodels.Bill }

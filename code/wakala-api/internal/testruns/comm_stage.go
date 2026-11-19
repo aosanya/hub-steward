@@ -3,8 +3,8 @@ package testruns
 import (
 	"context"
 
-	mwanachamacomm "wakalaserver/modules/comm"
-	commroutes "wakalaserver/modules/comm/routes"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commroutes "github.com/aosanya/mwanachama-backend-comm/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 

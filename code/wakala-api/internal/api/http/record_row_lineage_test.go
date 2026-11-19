@@ -5,9 +5,9 @@ import (
 	"slices"
 	"testing"
 
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 )
 
 func rowReplacing(id, replaces string) agencymodels.RecordRow {

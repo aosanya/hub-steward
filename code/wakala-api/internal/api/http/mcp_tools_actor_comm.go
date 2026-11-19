@@ -10,10 +10,10 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commroutes "github.com/aosanya/mwanachama-backend-comm/routes"
 	mwanachamaactor "wakalaserver/modules/actor"
 	actorroutes "wakalaserver/modules/actor/routes"
-	mwanachamacomm "wakalaserver/modules/comm"
-	commroutes "wakalaserver/modules/comm/routes"
 
 	"wakalaserver/internal/agencies"
 )
