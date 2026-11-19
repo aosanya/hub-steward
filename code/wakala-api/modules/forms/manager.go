@@ -180,6 +180,7 @@ type FormManager interface {
 	UseInspectorForms(f InspectorForms)
 	FormTypes() []models.FormType
 	UseDefaultMaxFiles(n int)
+	UseAddressCheck(c AddressCheck)
 
 	Submit(ctx context.Context, id, submittedBy string) (models.Form, error)
 
@@ -316,6 +317,7 @@ type formManager struct {
 	inspectorForms   InspectorForms
 	approvalRequired atomic.Bool
 	defaultMaxFiles  int
+	addressCheck     AddressCheck
 	formTypes        []models.FormType
 }
 

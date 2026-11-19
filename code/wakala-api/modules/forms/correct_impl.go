@@ -30,6 +30,9 @@ func (m *formManager) CorrectSubmission(ctx context.Context, formID, memberID, c
 			return nil, fmt.Errorf("%w: question %s: %v", ErrInvalidAnswer, a.QuestionID, err)
 		}
 	}
+	if err := m.checkPlaceRefs(ctx, in); err != nil {
+		return nil, err
+	}
 	out := make([]models.Answer, 0, len(in))
 	err = m.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		out = out[:0]

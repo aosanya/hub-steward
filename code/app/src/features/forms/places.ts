@@ -6,7 +6,7 @@ const addressTool = "digitaltwin_address_list";
 
 export const addressAnswerType = "address";
 
-export const shownLimit = 12;
+export const shownLimit = 6;
 
 const textOf = (value: unknown) => (typeof value === "string" ? value.trim() : "");
 

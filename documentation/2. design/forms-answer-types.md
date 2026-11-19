@@ -24,8 +24,8 @@ A form question has a type that fits what it asks, so the answer is entered with
 
 ## Address
 
-- The list is read from the digital twin's addresses; each street is offered once, then each address as street and number. A search narrows it, and at most twelve rows show at a time.
+- The list is read from the digital twin's addresses; each street is offered once, then each address as street and number. A search narrows it, and at most six rows show at a time, with a line asking the person to keep typing while more match.
 - value_text holds the words that read back ("Fő tér 2", "Fő tér" or the typed words). place_ref is a link, never shown: address: with the address's id, street: with the street's name, empty where the words were typed.
 - allow_free_text is a setting of the question, off by default, and only an address question carries it. Without it an answer with no place_ref is refused; with it the form shows a "Something else" box beside the list.
-- The forms module does not look an address up, because the digital twin is another module; the picker offers only known places.
+- The forms module keeps no list of places, because the digital twin is another module. The registry hands each forms manager a check (AddressCheck) that asks the twin whether a place_ref names a held address or a street with at least one address; a send or a correction naming any other place_ref is refused as an invalid answer. Typed words with no place_ref are not looked up.
 - The workflow designer's own answer type set (agency work item steps) has neither time_range nor address yet.

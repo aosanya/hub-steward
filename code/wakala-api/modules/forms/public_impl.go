@@ -275,6 +275,9 @@ func (m *formManager) submitAnswers(ctx context.Context, formID string, who send
 			return nil, fmt.Errorf("%w: question %s: %v", ErrInvalidAnswer, a.QuestionID, err)
 		}
 	}
+	if err := m.checkPlaceRefs(ctx, in); err != nil {
+		return nil, err
+	}
 	if err := m.requiredAnswered(ctx, formID, in); err != nil {
 		return nil, err
 	}
