@@ -107,6 +107,18 @@
       ],
       "returns": [{"body": true}]
     },
+    "list_forms_reaching_person": {
+      "method": "GET",
+      "path": "/forms/reaching",
+      "call": "ListReachingPerson",
+      "action": "forms.form.list_reaching_person",
+      "title": "Forms that reach a person",
+      "description": "The published instruments that reach one person by the same rule that decides who may answer them: a group the person is in that the instrument was sent to, a group reached by propagation, or the standing audience of a standing instrument. Drafts are never listed. It is how a clerk is offered only the applications a resident can make.",
+      "args": [
+        {"from": "query", "as": "person_id", "required": true, "description": "The person the instruments must reach."}
+      ],
+      "returns": [{"body": true}]
+    },
     "list_answered_forms": {
       "method": "GET",
       "path": "/forms/answered",

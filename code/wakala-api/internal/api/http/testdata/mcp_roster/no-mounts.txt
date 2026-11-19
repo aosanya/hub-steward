@@ -457,6 +457,7 @@ forms_form_create
 forms_form_delete
 forms_form_list
 forms_form_list_answered
+forms_form_list_reaching_person
 forms_form_list_waiting
 forms_form_publish
 forms_form_read

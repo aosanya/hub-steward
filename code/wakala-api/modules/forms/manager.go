@@ -152,6 +152,8 @@ type FormManager interface {
 
 	ListWaiting(ctx context.Context, callerID string) ([]models.WaitingForm, error)
 
+	ListReachingPerson(ctx context.Context, personID string) ([]models.Form, error)
+
 	ListAnswered(ctx context.Context, callerID string) ([]models.AnsweredForm, error)
 
 	UseGroups(g Groups)
