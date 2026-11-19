@@ -11,10 +11,17 @@ const liveDraftOf = async () => {
 
 export const amountWords = (limit: number) => `${spacedAmount(limit)} ${currencyUnit}`;
 
+const isLimit = (limit: unknown): limit is number => typeof limit === "number" && Number.isFinite(limit);
+
+const withoutLimitWords = (without: number, all: number) => {
+  if (without === all) return "No limit set.";
+  return without === 1 ? "One holder has no limit set." : `${without} holders have no limit set.`;
+};
+
 const limitWords = (standing: Item[]) => {
   if (standing.length === 0) return "";
-  const limits = standing.map((seat) => seat.approval_limit);
-  if (!limits.every((limit): limit is number => typeof limit === "number" && Number.isFinite(limit))) return "No upper limit is written.";
+  const limits = standing.map((seat) => seat.approval_limit).filter(isLimit);
+  if (limits.length < standing.length) return withoutLimitWords(standing.length - limits.length, standing.length);
   return amountWords(Math.max(...limits));
 };
 

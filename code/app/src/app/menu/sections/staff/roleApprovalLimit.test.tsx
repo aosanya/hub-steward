@@ -88,14 +88,33 @@ describe("the approval limit on a role's page in Roles & Permissions", () => {
     expect(screen.getByText("120 000 Ft")).toBeInTheDocument();
   });
 
-  it("reads No upper limit is written when one standing seat carries no limit", async () => {
+  it("says one holder has no limit set when one of two standing seats carries none", async () => {
     seats = [
       { actor_id: "a1", active: true, approval_limit: 50000 },
       { actor_id: "a2", active: true },
     ];
     await showClerk();
 
-    expect(await screen.findByText("No upper limit is written.")).toBeInTheDocument();
+    expect(await screen.findByText("One holder has no limit set.")).toBeInTheDocument();
+    expect(screen.queryByText("No upper limit is written.")).toBeNull();
+  });
+
+  it("counts the holders without a limit when several carry none", async () => {
+    seats = [
+      { actor_id: "a1", active: true, approval_limit: 50000 },
+      { actor_id: "a2", active: true },
+      { actor_id: "a3", active: true },
+    ];
+    await showClerk();
+
+    expect(await screen.findByText("2 holders have no limit set.")).toBeInTheDocument();
+  });
+
+  it("says no limit is set when no standing seat carries one", async () => {
+    seats = [{ actor_id: "a1", active: true }];
+    await showClerk();
+
+    expect(await screen.findByText("No limit set.")).toBeInTheDocument();
   });
 
   it("ignores the limit of a seat that has ended", async () => {
@@ -107,7 +126,7 @@ describe("the approval limit on a role's page in Roles & Permissions", () => {
     await showClerk();
 
     expect(await screen.findByText("50 000 Ft")).toBeInTheDocument();
-    expect(screen.queryByText("No upper limit is written.")).toBeNull();
+    expect(screen.queryByText(/no limit set/i)).toBeNull();
   });
 
   it("shows a limit of zero as zero, not as no limit", async () => {
@@ -122,7 +141,7 @@ describe("the approval limit on a role's page in Roles & Permissions", () => {
 
     expect(screen.queryByText("Approval limit")).toBeNull();
     expect(screen.queryByText(/Ft$/)).toBeNull();
-    expect(screen.queryByText("No upper limit is written.")).toBeNull();
+    expect(screen.queryByText(/no limit set/i)).toBeNull();
   });
 });
 
@@ -164,7 +183,7 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
       { id: "s2", actor_id: "a2", active: true, approval_limit: 50000 },
     ];
     await showClerkAsAssigner();
-    expect((await inDetail()).getByText("No upper limit is written.")).toBeInTheDocument();
+    expect((await inDetail()).getByText("One holder has no limit set.")).toBeInTheDocument();
     await openLimits();
 
     await fillLimit("Ilona Kovacs", "75 000");
@@ -172,7 +191,7 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
 
     expect(called).toHaveBeenCalledWith("", "actor_set_approval_limit", { assignment_id: "s1", limit: 75000 });
     expect(await (await inDetail()).findByText("75 000 Ft")).toBeInTheDocument();
-    expect((await inDetail()).queryByText("No upper limit is written.")).toBeNull();
+    expect((await inDetail()).queryByText(/(has|have) no limit set/)).toBeNull();
   });
 
   it("shows each standing seat with its holder's name and its current limit", async () => {
@@ -200,7 +219,7 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
     expect(await (await inDetail()).findByText("120 000 Ft")).toBeInTheDocument();
   });
 
-  it("clears the limit of a seat by sending no limit and reads No upper limit is written", async () => {
+  it("clears the limit of a seat by sending no limit and reads One holder has no limit set", async () => {
     seats = standingSeats();
     await showClerkAsAssigner();
     await openLimits();
@@ -212,7 +231,7 @@ describe("setting an approval limit per seat on a role's page in Roles & Permiss
     expect(calls).toHaveLength(1);
     expect(calls[0][2]).toEqual({ assignment_id: "s1" });
     expect("limit" in (calls[0][2] as Record<string, unknown>)).toBe(false);
-    expect(await (await inDetail()).findByText("No upper limit is written.")).toBeInTheDocument();
+    expect(await (await inDetail()).findByText("One holder has no limit set.")).toBeInTheDocument();
   });
 
   it("keeps Save limit disabled until the value differs from the seat's current limit", async () => {
