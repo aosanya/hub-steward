@@ -220,6 +220,7 @@ agency_list_event_flow_steps
 agency_list_goals
 agency_list_group_roles
 agency_list_hazards
+agency_list_input_sources
 agency_list_instances
 agency_list_issues
 agency_list_live_record_rows
