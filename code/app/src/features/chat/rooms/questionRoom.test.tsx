@@ -17,6 +17,8 @@ const thread = (over: Partial<RoomThread>): RoomThread => ({
   requestedBy: "",
   askerName: "",
   questionRoom: false,
+  takesQuestions: false,
+  leader: false,
   declined: false,
   unread: 0,
   lastMessageAt: "",
@@ -34,6 +36,7 @@ const clientWith = (threads: RoomThread[]): RoomsClient => ({
   getOrder: vi.fn(),
   answerRevision: vi.fn(),
   getAsk: vi.fn().mockResolvedValue(null),
+  setQuestionRoom: vi.fn().mockResolvedValue(undefined),
 });
 
 const show = (client: RoomsClient) =>
@@ -76,5 +79,43 @@ describe("a question room", () => {
     show(clientWith([thread({}), thread({ id: "t2", label: "Opening hours", audience: "leads", requestedBy: "u7", askerName: "" })]));
     expect(await screen.findByText(/Asked by Unnamed person/)).toBeInTheDocument();
     expect(screen.queryByText(/u7/)).toBeNull();
+  });
+
+  it("tells the member who asked that only they and the room's leaders read the question", async () => {
+    show(clientWith([thread({ id: "t0" }), thread({ id: "t1", label: "Permit office hours", audience: "leads", requestedBy: "u1", questionRoom: true })]));
+    expect(await screen.findByText("Only you and the room's leaders read this question.")).toBeInTheDocument();
+    expect(screen.queryByText(/members cannot see this yet/)).toBeNull();
+  });
+
+  it("keeps the old note on a leaders-only request in a room that takes no questions", async () => {
+    show(clientWith([thread({ id: "t0" }), thread({ id: "t1", label: "Ask for a seat", audience: "leads", requestedBy: "u1" })]));
+    expect(await screen.findByText("Leaders only · members cannot see this yet")).toBeInTheDocument();
+  });
+});
+
+describe("the switch for a room that takes questions", () => {
+  it("shows a leader the switch in words, off when the room takes no questions", async () => {
+    show(clientWith([thread({ leader: true })]));
+    expect(await screen.findByText("This room takes questions")).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: "This room takes questions" })).not.toBeChecked();
+  });
+
+  it("shows the switch on when the room takes questions", async () => {
+    show(clientWith([thread({ leader: true, takesQuestions: true })]));
+    expect(await screen.findByRole("checkbox", { name: "This room takes questions" })).toBeChecked();
+  });
+
+  it("calls the tool with the room and the new state when the leader flips it", async () => {
+    const client = clientWith([thread({ leader: true })]);
+    show(client);
+    await userEvent.click(await screen.findByRole("checkbox", { name: "This room takes questions" }));
+    expect(client.setQuestionRoom).toHaveBeenCalledWith("r1", true);
+    expect(await screen.findByRole("checkbox", { name: "This room takes questions" })).toBeChecked();
+  });
+
+  it("hides the switch from a member", async () => {
+    show(clientWith([thread({ questionRoom: true })]));
+    await screen.findByRole("button", { name: "Ask a question" });
+    expect(screen.queryByRole("checkbox")).toBeNull();
   });
 });

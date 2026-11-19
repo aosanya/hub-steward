@@ -11,6 +11,8 @@ export type RoomThread = {
   requestedBy: string;
   askerName: string;
   questionRoom: boolean;
+  takesQuestions: boolean;
+  leader: boolean;
   declined: boolean;
   unread: number;
   lastMessageAt: string;
@@ -52,6 +54,7 @@ export type RoomsClient = {
   getOrder: (orderId: string) => Promise<RoomOrder>;
   answerRevision: (orderId: string, answer: "yes" | "no") => Promise<void>;
   getAsk: (askId: string) => Promise<RoomAsk | null>;
+  setQuestionRoom: (roomId: string, on: boolean) => Promise<void>;
 };
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
@@ -67,6 +70,8 @@ export const threadOf = (subject: string) => (raw: any): RoomThread => ({
   requestedBy: text(raw?.requested_by),
   askerName: text(raw?.requested_by_name),
   questionRoom: raw?.question_room === true,
+  takesQuestions: raw?.takes_questions === true,
+  leader: raw?.leader === true,
   declined: text(raw?.declined_at) !== "",
   unread: count(raw?.unread),
   lastMessageAt: lastAtOf(raw),
@@ -172,5 +177,8 @@ export const mcpRoomsClient: RoomsClient = {
     ]);
     const found = itemsOf(asks).find((raw) => text(raw?.id) === askId);
     return found ? askFor(subject, names, found, yeses, offers) : null;
+  },
+  async setQuestionRoom(roomId, on) {
+    await callTool("", "comm_chat_room_set_question", { structure_id: roomId, on });
   },
 };

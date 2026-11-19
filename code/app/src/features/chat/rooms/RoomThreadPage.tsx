@@ -12,6 +12,7 @@ import { askPath } from "./cards";
 import { Composer } from "./Composer";
 import { questionWords, StartThread } from "./StartThread";
 import { ThreadRows } from "./ThreadRows";
+import { QuestionRoomSwitch } from "./QuestionRoomSwitch";
 import { Timeline } from "./Timeline";
 import "./rooms.css";
 
@@ -51,6 +52,10 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
   const title = roomFirst ? room : label;
   const sub = roomFirst ? label : room;
   const me = subject.state === "ready" ? subject.data : "";
+  const leader = list.some((t) => t.leader);
+  const [switched, setSwitched] = useState<boolean | null>(null);
+  const takesQuestions = switched ?? list.some((t) => t.takesQuestions);
+  const setTakesQuestions = (on: boolean) => setSwitched(on);
   const send = async (body: string) => {
     await client.post(roomId, threadId, body);
     reload();
@@ -70,7 +75,8 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
           </div>
         </Card>
       ) : null}
-      {thread?.audience === "leads" ? <p className="rm-note">Leaders only · members cannot see this yet</p> : null}
+      {thread?.audience === "leads" ? <p className="rm-note">{thread.questionRoom ? "Only you and the room's leaders read this question." : "Leaders only · members cannot see this yet"}</p> : null}
+      {leader ? <QuestionRoomSwitch on={takesQuestions} onChange={async (on) => { await client.setQuestionRoom(roomId, on); setTakesQuestions(on); }} /> : null}
       {failed ? <LoadFailed words="The room could not be loaded." /> : null}
       {messages ? (
         <BacklogSummariesLoader kinds={messages.map((m) => m.kind)}>

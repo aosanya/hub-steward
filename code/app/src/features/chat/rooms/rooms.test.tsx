@@ -56,7 +56,7 @@ const thread = (over: Partial<RoomThread>): RoomThread => ({
   audience: "group",
   requestedBy: "",
   askerName: "",
-  questionRoom: false,
+  questionRoom: false, takesQuestions: false, leader: false,
   declined: false,
   unread: 0,
   lastMessageAt: "",
@@ -82,6 +82,7 @@ const fake = (f: Fixture): RoomsClient => ({
   getOrder: vi.fn().mockResolvedValue(f.order ?? roomOrder()),
   answerRevision: vi.fn().mockResolvedValue(undefined),
   getAsk: vi.fn().mockResolvedValue(f.ask ?? null),
+  setQuestionRoom: vi.fn().mockResolvedValue(undefined),
 });
 
 function BuyStub() {

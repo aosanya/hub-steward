@@ -157,13 +157,14 @@ describe("the Back of a screen that shows its data", () => {
     const client: RoomsClient = {
       subject: async () => "u1",
       roomName: async () => "Street group",
-      listThreads: async () => [{ id: "t1", label: "General", audience: "group", requestedBy: "", askerName: "", questionRoom: false, declined: false } as never],
+      listThreads: async () => [{ id: "t1", label: "General", audience: "group", requestedBy: "", askerName: "", questionRoom: false, takesQuestions: false, leader: false, declined: false } as never],
       listMessages: async () => [{ id: "m1", author: "Szabó Katalin", agent: false, mine: false, body: "Good morning", at: "2026-10-28T09:12:00Z", kind: "", targetId: "" }],
       post: async () => undefined,
       startThread: async () => "t9",
       getOrder: async () => ({}) as never,
       answerRevision: async () => undefined,
       getAsk: async () => null,
+      setQuestionRoom: async () => undefined,
     };
     render(
       <MemoryRouter initialEntries={[appRoutes.roomThread.path({ roomId: "r1", threadId: "t1" })]}>

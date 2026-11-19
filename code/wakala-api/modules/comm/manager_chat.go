@@ -139,7 +139,7 @@ func (m *CommManager) threadViews(ctx context.Context, structureID, callerID str
 		if archived[t.ID] != archivedOnes || !t.ReadableBy(callerID, leads) {
 			continue
 		}
-		view := models.ChatThreadView{ChatThread: t, Unread: unread[t.ID], QuestionRoom: question && !leads}
+		view := models.ChatThreadView{ChatThread: t, Unread: unread[t.ID], QuestionRoom: question && !leads, TakesQuestions: question && leads, Leader: leads}
 		if post, ok := latest[t.ID]; ok {
 			at := post.CreatedAt
 			last := post.Last()

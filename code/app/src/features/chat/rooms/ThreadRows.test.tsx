@@ -10,7 +10,7 @@ const thread = (over: Partial<RoomThread>): RoomThread => ({
   audience: "group",
   requestedBy: "",
   askerName: "",
-  questionRoom: false,
+  questionRoom: false, takesQuestions: false, leader: false,
   declined: false,
   unread: 0,
   lastMessageAt: "",

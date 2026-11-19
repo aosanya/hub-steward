@@ -139,10 +139,12 @@ type ChatLastMessage struct {
 
 type ChatThreadView struct {
 	ChatThread
-	Unread        int              `json:"unread"`
-	QuestionRoom  bool             `json:"question_room,omitempty"`
-	LastMessageAt *time.Time       `json:"last_message_at,omitempty"`
-	LastMessage   *ChatLastMessage `json:"last_message,omitempty"`
+	Unread         int              `json:"unread"`
+	QuestionRoom   bool             `json:"question_room,omitempty"`
+	TakesQuestions bool             `json:"takes_questions,omitempty"`
+	Leader         bool             `json:"leader,omitempty"`
+	LastMessageAt  *time.Time       `json:"last_message_at,omitempty"`
+	LastMessage    *ChatLastMessage `json:"last_message,omitempty"`
 }
 
 func (m ChatMessage) Last() ChatLastMessage {

@@ -28,6 +28,7 @@ const ways: Record<string, Way> = {
   "/a/:agencyId/forms/:id": { to: "/a/town/forms" },
   "/a/:agencyId/chat/:roomId/threads": { to: "/a/town/chat" },
   "/a/:agencyId/chat/:roomId/:threadId": { to: "/a/town/chat" },
+  "/a/:agencyId/chat/:roomId/:threadId/asks/:askId": { to: "/a/town/chat/x/x" },
   "/a/:agencyId/question/new": { to: "/a/town/question" },
   "/a/:agencyId/question": { to: "/a/town/home" },
   "/a/:agencyId/risks": { to: "/a/town/home" },

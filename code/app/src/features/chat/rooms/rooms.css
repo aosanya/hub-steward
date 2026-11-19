@@ -21,3 +21,4 @@
 .rm-send { flex: none; display: grid; place-items: center; width: 3rem; height: 3rem; padding: 0; border: 0; border-radius: var(--r-pill); background: var(--bg-alt); color: var(--ink-soft); }
 .rm-send.ready { background: var(--accent); color: var(--on-accent); }
 .wf-tree.rm-tree { display: flex; flex-direction: column; gap: .75rem; flex-basis: 20rem; padding: .75rem; }
+.rm-switch { display: flex; align-items: center; gap: .5rem; font-size: 1rem; }

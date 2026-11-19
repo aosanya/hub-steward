@@ -25,6 +25,7 @@ const rooms = {
 const chat = {
   listRooms: async () => [{ id: "r1", name: "Siaya farmers", threadId: "t1", threadName: "General", unread: 0 }],
   getAsk: async () => ({ id: "a1", asker: "Asha", question: "2 bags of urea", answer: "waiting", detail: "" }),
+  setQuestionRoom: async () => undefined,
   answerAsk: async () => undefined,
 } as unknown as ChatClient;
 

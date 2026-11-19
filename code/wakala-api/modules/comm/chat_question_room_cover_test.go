@@ -208,3 +208,31 @@ func TestAQuestionRoomIsNotMarkedForItsLeadersWhoStillPostInTheOpenThread(t *tes
 		}
 	}
 }
+
+func TestThreadViewsTellALeaderThatTheyLeadAndWhetherTheRoomTakesQuestions(t *testing.T) {
+	f, _ := questionRoomFixture(t)
+	ctx := context.Background()
+	lead := func() models.ChatThreadView {
+		views, err := f.m.ListChatThreadsFor(ctx, "s-1", "lead-1")
+		if err != nil || len(views) == 0 {
+			t.Fatalf("ListChatThreadsFor: %v, %d views", err, len(views))
+		}
+		return views[0]
+	}
+	if first := lead(); !first.Leader || first.TakesQuestions {
+		t.Fatalf("leader view before the switch = leader %v takes questions %v, want a leader and no questions", first.Leader, first.TakesQuestions)
+	}
+	if err := f.m.SetQuestionRooms(ctx, []string{"s-1"}, "owner-1"); err != nil {
+		t.Fatalf("SetQuestionRooms: %v", err)
+	}
+	if after := lead(); !after.Leader || !after.TakesQuestions {
+		t.Fatalf("leader view after the switch = leader %v takes questions %v, want both true", after.Leader, after.TakesQuestions)
+	}
+	members, err := f.m.ListChatThreadsFor(ctx, "s-1", "mem-1")
+	if err != nil || len(members) == 0 {
+		t.Fatalf("ListChatThreadsFor: %v", err)
+	}
+	if members[0].Leader {
+		t.Fatal("a member's view says they lead the room")
+	}
+}
