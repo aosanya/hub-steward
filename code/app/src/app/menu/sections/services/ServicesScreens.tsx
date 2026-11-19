@@ -8,7 +8,8 @@ import { MenuWindow } from "../../MenuWindow";
 import { useWord } from "../../../../features/agency/useWord";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
 import { moneyWords, unitOf } from "../finance/financeData";
-import { personNameOf } from "../residents/personName";
+import { namedPersonOf } from "../residents/personName";
+import { unnamedPerson } from "../settings/personLabel";
 import { RecordOwner } from "../../RecordOwner";
 import { CatalogueWindow } from "./CatalogueEntry";
 import { ChatAboutService } from "./ChatAboutService";
@@ -62,7 +63,7 @@ const feeDetails = async (submission: Item | undefined, unit: string) => {
     readItem("forms_form_read", { form_id: text(submission, "form_id") }),
     readItem("actor_get_actor", { actor_id: text(submission, "member_id") }),
   ]);
-  return { amount: amountWords(form, unit), payer: personNameOf(member), payer_id: text(submission, "member_id") };
+  return { amount: amountWords(form, unit), payer: namedPersonOf(member) || unnamedPerson, payer_id: text(submission, "member_id") };
 };
 
 const entryOf = async (kind: string, slug: string) => (await listOf(listTool, { kind })).find((entry) => text(entry, "slug") === slug) ?? {};

@@ -239,6 +239,16 @@ describe("Fees & Payments", () => {
     expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "m1" });
   });
 
+  it("names a payer who has no name as an unnamed person and never by the code", async () => {
+    answers.actor_get_actor = () => ({ id: "m1", code: "AC-1" });
+    open(screens[2].at);
+
+    await userEvent.click(await screen.findByText("Hall Hire Fee"));
+
+    expect(await screen.findByText("Unnamed person")).toBeInTheDocument();
+    expect(screen.queryByText(/AC-1/)).toBeNull();
+  });
+
   it("prints a fee's amount followed by the Currency word of the accounting mount", async () => {
     answers.agency_list_mounts = () => ({ modules: [{ module: "accounting", mounts: [{ name: "Finance", key: "finance", words: { Currency: "Ft" } }] }] });
     open(screens[2].at);
