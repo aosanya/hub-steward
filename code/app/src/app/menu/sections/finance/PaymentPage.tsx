@@ -3,6 +3,7 @@ import { manageRole } from "./BillPage";
 import { ActButton, ChatAboutFinance, FactsCard, FinanceHead } from "./FinanceRecord";
 import { text, type Item } from "./financeData";
 import { financePaths } from "./paths";
+import { ReversePaymentAct } from "./ReversePaymentAct";
 
 const owedFacts: [string, string][] = [
   ["Charge", "charge"],
@@ -21,9 +22,9 @@ const paidFacts: [string, string][] = [
   ["Bill", "bill"],
 ];
 
-type Props = { row: Item; owed: boolean; onMark: () => void; form: ReactNode };
+type Props = { row: Item; owed: boolean; onMark: () => void; onReversed: () => void; form: ReactNode };
 
-export function PaymentPage({ row, owed, onMark, form }: Props) {
+export function PaymentPage({ row, owed, onMark, onReversed, form }: Props) {
   const payer = text(row, "payer");
   const billID = owed ? text(row, "billID") : text(row, "settledBillID");
   const line = [text(row, "status"), owed ? text(row, "late") : ""].filter(Boolean).join(" · ");
@@ -35,7 +36,7 @@ export function PaymentPage({ row, owed, onMark, form }: Props) {
         {owed ? (
           <FactsCard word="Bill detail" item={row} facts={owedFacts} foot={<ActButton permission={manageRole} label="Add payment" onAct={onMark} />} />
         ) : (
-          <FactsCard word="Payment detail" item={row} facts={paidFacts} />
+          <FactsCard word="Payment detail" item={row} facts={paidFacts} foot={billID ? <ReversePaymentAct paymentID={text(row, "paymentID")} onReversed={onReversed} /> : undefined} />
         )}
         {form}
       </div>

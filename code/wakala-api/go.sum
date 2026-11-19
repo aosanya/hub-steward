@@ -11,12 +11,12 @@ github.com/SherClockHolmes/webpush-go v1.4.0 h1:ocnzNKWN23T9nvHi6IfyrQjkIc0oJWv1
 github.com/SherClockHolmes/webpush-go v1.4.0/go.mod h1:XSq8pKX11vNV8MJEMwjrlTkxhAj1zKfxmyhdV7Pd6UA=
 github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be h1:9AeTilPcZAjCFIImctFaOjnTIavg87rW78vTPkQqLI8=
 github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be/go.mod h1:ySMOLuWl6zY27l47sB3qLNK6tF2fkHG55UZxx8oIVo4=
-github.com/aosanya/mwanachama-backend-accounting v0.2.0 h1:GsKEHM0lO+2y4dKx0lG/zldEv8WrcIMrgGsFACRImQE=
-github.com/aosanya/mwanachama-backend-accounting v0.2.0/go.mod h1:yy26WgMucawGIEThXuF+xgVcC1m16yLpvrmnjq8Tnv8=
+github.com/aosanya/mwanachama-backend-accounting v0.2.1 h1:CA3XlDnCSKTbDdX6MR6u8L79AMbJzAtQ/+6KzFvzk0s=
+github.com/aosanya/mwanachama-backend-accounting v0.2.1/go.mod h1:yy26WgMucawGIEThXuF+xgVcC1m16yLpvrmnjq8Tnv8=
 github.com/aosanya/mwanachama-backend-actor v0.1.0 h1:O9Za1eJ9pLlG4barvamE1X5fHWCy36g2NiUGslVp8/w=
 github.com/aosanya/mwanachama-backend-actor v0.1.0/go.mod h1:/HRePK/rojLHcCs7MPkUlw5ZU+nRVxA4ZhSu251Tvmc=
-github.com/aosanya/mwanachama-backend-agency v0.1.1 h1:4oGpja9yliqIz0bdawEjrmCc1lfJWdAo7L3B9/NbiIg=
-github.com/aosanya/mwanachama-backend-agency v0.1.1/go.mod h1:2d3ZI0EQnXb8uCKUkbUT49knaz4FN0Rka/BEiBHiNnM=
+github.com/aosanya/mwanachama-backend-agency v0.1.2 h1:Dagwh8JirR5xn/NS5zKTHEJSO2rOh1jfK15RqIpEtTU=
+github.com/aosanya/mwanachama-backend-agency v0.1.2/go.mod h1:2d3ZI0EQnXb8uCKUkbUT49knaz4FN0Rka/BEiBHiNnM=
 github.com/aosanya/mwanachama-backend-ai v0.1.0 h1:NXA5ENRfbP96JpBEDFDcoXpZgc7N5anfRohA0/CAb80=
 github.com/aosanya/mwanachama-backend-ai v0.1.0/go.mod h1:S66Wr90gMP+y5LQwX+ty01HUKE/n9ZOEFIfsafFm9Rk=
 github.com/aosanya/mwanachama-backend-assetmanager v0.1.0 h1:bg8Bvkq5T8ajqKcB8pdj/z2ywQbqd1iCzi4ALze6vBA=
@@ -27,8 +27,8 @@ github.com/aosanya/mwanachama-backend-auth v0.1.0 h1:sL6iF47xyeV2YQsiv8Y1OqsFTQp
 github.com/aosanya/mwanachama-backend-auth v0.1.0/go.mod h1:inNPS9ZxCJRhCHLaM8Jmg+rUZ4SAyDCrTDMeV/p+bMo=
 github.com/aosanya/mwanachama-backend-catalog v0.1.0 h1:9TOEjl0q4WOdNC13lBZ1QcNoWMyufpcPnEuEv3FYSMA=
 github.com/aosanya/mwanachama-backend-catalog v0.1.0/go.mod h1:9VbM7DIGKS8NIVpqFlZ2joCWpqWQmBkgaJpyPmB8pwk=
-github.com/aosanya/mwanachama-backend-comm v0.1.0 h1:GGFSwYEjL2+duXMwUuv1a6duBJtXh31vLKNMFYgHINI=
-github.com/aosanya/mwanachama-backend-comm v0.1.0/go.mod h1:SUlQtUXmkYnI5LTVM3euMJ1sJVIGywjv7Bsoxl/3pvo=
+github.com/aosanya/mwanachama-backend-comm v0.1.1 h1:x/V14V8bMhX7RxrAJGKI7L3/GqDzvZK/JWxhb0scvGQ=
+github.com/aosanya/mwanachama-backend-comm v0.1.1/go.mod h1:SUlQtUXmkYnI5LTVM3euMJ1sJVIGywjv7Bsoxl/3pvo=
 github.com/aosanya/mwanachama-backend-council v0.1.0 h1:K2zbzKN54vdXV7LqXWqMnIZpNZhh2A/Bbx2xne3ST+Y=
 github.com/aosanya/mwanachama-backend-council v0.1.0/go.mod h1:+c7LQPcRtTRxWm+s8V56d7FpDUvZN/U7nnI250P+uro=
 github.com/aosanya/mwanachama-backend-custody v0.1.0 h1:MVUmpqkgxmKYKDTWOh56AiivNY7FCMJXwAXh/ykgaMw=

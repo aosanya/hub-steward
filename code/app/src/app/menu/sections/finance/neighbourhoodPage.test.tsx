@@ -104,6 +104,27 @@ describe("the neighbourhood page is built like a resident", () => {
     expect(mcp.callTool).toHaveBeenCalledWith("", "accounting_dimension_entries", { key: "neighbourhood", value: "Malomsor", account_type: "expense" });
   });
 
+  it("shows a shared entry with its share of the whole, so the rows add up to what was spent", async () => {
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
+      if (name === "accounting_dimension_totals") return { key: "neighbourhood", account_type: "expense", totals: [{ value: "Malomsor", total: 4600000, entries: 3 }] };
+      if (name === "accounting_dimension_entries") {
+        return {
+          entries: [
+            { id: "e3", occurred_at: "2026-01-15T09:00:00Z", amount: 400000, whole: 1000000, share_percent: 40, narration: "Resurfacing of Fő utca", account: "repairs" },
+            ...entriesOfMalomsor,
+          ],
+        };
+      }
+      return { items: [] };
+    });
+    const pane = await open();
+    const region = await pane.findByRole("region", { name: "Entries" });
+    const rows = Array.from(region.querySelectorAll(".row"));
+    expect(rows[0].textContent).toContain("Resurfacing of Fő utca");
+    expect(rows[0].textContent).toContain("2026-01-15 · 40% of 1,000,000 · 400,000");
+    expect(rows[1].textContent).not.toContain("% of");
+  });
+
   it("draws no Entries card for the row of spending with no neighbourhood", async () => {
     vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
       if (name === "accounting_dimension_totals") return { key: "neighbourhood", account_type: "expense", totals: [], without: { total: 7400000, entries: 2 } };

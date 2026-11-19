@@ -1,21 +1,14 @@
 import { useState } from "react";
 import { useMay } from "../../../../features/agency/useMay";
 import { useWord } from "../../../../features/agency/useWord";
-import { refusalText } from "../../../../features/backlogs";
-import { Button } from "../../../../shared/ui/Button";
-import { Field } from "../../../../shared/ui/Field";
 import { ListRow } from "../../../../shared/ui/ListRow";
-import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { Section } from "../../../../shared/ui/Section";
-import { Segmented } from "../../../../shared/ui/Segmented";
-import { Sheet } from "../../../../shared/ui/Sheet";
-import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
-import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
+import { AddPaymentSheet } from "./AddPaymentSheet";
 import { HandOverSheet } from "./HandOverSheet";
 import { PaymentPage } from "./PaymentPage";
-import { billStatusWords, capitalised, chargeNames, chargeWords, dayStart, dayWords, daysLateWords, homeEmpty, lateRulesFor, listOf, moneyWords, owedTotal, owedWords, remindsWords, text, tools, unitOf, type Charges, type Item, type LateRules } from "./financeData";
+import { billStatusWords, capitalised, chargeNames, chargeWords, dayWords, daysLateWords, homeEmpty, lateRulesFor, listOf, moneyWords, owedTotal, owedWords, remindsWords, text, tools, unitOf, type Charges, type Item, type LateRules } from "./financeData";
 
 const owedHeading = "To pay";
 
@@ -26,14 +19,6 @@ const chaserKey = "unpaid_list_chaser";
 const unpaidLine = (row: Item) => `${text(row, "payer")} · ${text(row, "meta")}`;
 
 const paidHeading = "Paid";
-
-const noCashAccountWords = "There is no cash account to pay from.";
-
-const todayIso = () => new Date().toISOString().slice(0, 10);
-
-const isDay = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value));
-
-const refusalWords = (error: unknown) => (error instanceof Error ? refusalText(error) || error.message : "") || actionFailedWords;
 
 const owedRow = (bill: Item, unit: string, charges: Charges, rules: LateRules) => ({
   id: `bill:${text(bill, "id")}`,
@@ -53,6 +38,7 @@ const owedRow = (bill: Item, unit: string, charges: Charges, rules: LateRules) =
 const paidRow = (payment: Item, unit: string) => ({
   id: `payment:${text(payment, "id")}`,
   billID: "",
+  paymentID: text(payment, "id"),
   group: paidHeading,
   payer: text(payment, "payer") || text(payment, "narration") || text(payment, "kind"),
   meta: `${moneyWords(text(payment, "amount"), unit)} · ${dayWords(text(payment, "paid_at"))}`,
@@ -87,41 +73,11 @@ const loadRows = async (unit: string): Promise<Item[]> => {
   return [...open.map((bill) => owedRow(bill, unit, charges, rules)), ...overdue.map((bill) => owedRow(bill, unit, charges, rules)), ...payments.map((payment) => paidRow(payment, unit))];
 };
 
-const cashAccountId = async () => {
-  const accounts = await listOf(tools.accountList);
-  return accounts.map((account) => ({ id: text(account, "id"), category: text(account, "category"), type: text(account, "type") })).find((account) => account.category === "cash" && account.type === "asset")?.id;
-};
-
-const paymentMethods = ["Cash", "Bank transfer", "Card", "Other"];
-
-type Draft = { billID: string; payer: string; amount: string; paidOn: string; method: string; reference: string; narration: string };
-
-type MarkPaidFormProps = { draft: Draft; refused: string; busy: boolean; onChange: (next: Draft) => void; onSave: () => void; onCancel: () => void };
-
-function MarkPaidForm({ draft, refused, busy, onChange, onSave, onCancel }: MarkPaidFormProps) {
-  const amount = Number(draft.amount);
-  const valid = draft.amount.trim() !== "" && Number.isFinite(amount) && amount > 0 && isDay(draft.paidOn);
-  return (
-    <Sheet title="Add payment" onClose={onCancel}>
-      <Field label="Amount" inputMode="decimal" value={draft.amount} onChange={(event) => onChange({ ...draft, amount: event.target.value })} />
-      <Field label="Paid on" value={draft.paidOn} onChange={(event) => onChange({ ...draft, paidOn: event.target.value })} />
-      <Segmented label="How it was paid" items={paymentMethods.map((way) => ({ id: way, label: way }))} current={draft.method} onChange={(method) => onChange({ ...draft, method })} />
-      <Field label="Reference" value={draft.reference} onChange={(event) => onChange({ ...draft, reference: event.target.value })} />
-      <TextArea label="Narration" value={draft.narration} onChange={(event) => onChange({ ...draft, narration: event.target.value })} />
-      {refused ? <LoadFailed words={refused} /> : null}
-      <Button kind="primary" disabled={!valid || busy} onClick={onSave}>Save</Button>
-      <Button onClick={onCancel}>Cancel</Button>
-    </Sheet>
-  );
-}
-
 export function PaymentListScreen() {
   const word = useWord("accounting");
   const unit = unitOf(word);
   const [version, setVersion] = useState(0);
-  const [draft, setDraft] = useState<Draft | null>(null);
-  const [refused, setRefused] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [adding, setAdding] = useState("");
   const [owing, setOwing] = useState({ amount: 0, payers: 0 });
   const [unpaidLines, setUnpaidLines] = useState<string[]>([]);
   const [handingOver, setHandingOver] = useState(false);
@@ -137,36 +93,9 @@ export function PaymentListScreen() {
     const row = (await loadRows(unit)).find((found) => found.id === id) ?? { id };
     return { ...row, bill: await billWords(text(row, "settledBillID"), unit) };
   };
-  const openForm = (row: Item) => {
-    setRefused("");
-    setDraft({ billID: text(row, "billID"), payer: text(row, "payer"), amount: text(row, "outstandingAmount"), paidOn: todayIso(), method: paymentMethods[0], reference: "", narration: "" });
-  };
-  const closeForm = () => setDraft(null);
-  const save = async () => {
-    if (!draft) return;
-    setRefused("");
-    setBusy(true);
-    try {
-      const cash = await cashAccountId();
-      if (!cash) throw new Error(noCashAccountWords);
-      const narration = draft.narration.trim();
-      const reference = draft.reference.trim();
-      await callTool("", tools.paymentMarkPaid, {
-        billID: draft.billID,
-        cash_account_id: cash,
-        amount: Number(draft.amount),
-        paid_on: dayStart(draft.paidOn),
-        method: draft.method.toLowerCase(),
-        ...(reference ? { reference } : {}),
-        ...(narration ? { narration } : {}),
-      });
-      setDraft(null);
-      setVersion((was) => was + 1);
-    } catch (error) {
-      setRefused(refusalWords(error));
-    } finally {
-      setBusy(false);
-    }
+  const saved = () => {
+    setAdding("");
+    setVersion((was) => was + 1);
   };
   return (
     <MenuWindow
@@ -217,8 +146,9 @@ export function PaymentListScreen() {
           <PaymentPage
             row={row}
             owed={text(row, "group") === owedHeading}
-            onMark={() => openForm(row)}
-            form={draft && draft.billID === text(row, "billID") ? <MarkPaidForm draft={draft} refused={refused} busy={busy} onChange={setDraft} onSave={save} onCancel={closeForm} /> : null}
+            onMark={() => setAdding(text(row, "billID"))}
+            onReversed={() => setVersion((was) => was + 1)}
+            form={adding !== "" && adding === text(row, "billID") ? <AddPaymentSheet billID={adding} outstanding={text(row, "outstandingAmount")} onSaved={saved} onCancel={() => setAdding("")} /> : null}
           />
         ),
       }}

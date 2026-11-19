@@ -4,13 +4,13 @@ go 1.25.0
 
 require (
 	github.com/aosanya/mwanachama-backend-actor v0.1.0
-	github.com/aosanya/mwanachama-backend-agency v0.1.1
+	github.com/aosanya/mwanachama-backend-agency v0.1.2
 	github.com/aosanya/mwanachama-backend-ai v0.1.0
 	github.com/aosanya/mwanachama-backend-assetmanager v0.1.0
 	github.com/aosanya/mwanachama-backend-audit v0.1.0
 	github.com/aosanya/mwanachama-backend-auth v0.1.0
 	github.com/aosanya/mwanachama-backend-catalog v0.1.0
-	github.com/aosanya/mwanachama-backend-comm v0.1.0
+	github.com/aosanya/mwanachama-backend-comm v0.1.1
 	github.com/aosanya/mwanachama-backend-council v0.1.0
 	github.com/aosanya/mwanachama-backend-custody v0.1.0
 	github.com/aosanya/mwanachama-backend-digitaltwin v0.1.0
@@ -63,7 +63,7 @@ require (
 )
 
 require (
-	github.com/aosanya/mwanachama-backend-accounting v0.2.0
+	github.com/aosanya/mwanachama-backend-accounting v0.2.1
 	github.com/aosanya/mwanachama-backend-shared v0.3.1
 	github.com/aosanya/mwanachama-backend-taskmanager v0.2.0
 	github.com/dustin/go-humanize v1.0.1 // indirect

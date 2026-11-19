@@ -13,7 +13,7 @@ const bill = { id: "b2", payer: "Sample Garage", amount: 1500, settled: 500, out
 
 const payments = [
   { id: "p1", kind: "bill", amount: 300, paid_at: "2026-01-20T00:00:00Z", narration: "First part", bill_id: "b2" },
-  { id: "p2", kind: "bill", amount: 200, paid_at: "2026-02-10T00:00:00Z", narration: "Second part", bill_id: "b2" },
+  { id: "p2", kind: "bill", amount: 200, paid_at: "2026-02-10T00:00:00Z", narration: "Second part", bill_id: "b2", method: "bank transfer", paid_by: "u1" },
 ];
 
 const answer = async (name: string) => {
@@ -21,6 +21,8 @@ const answer = async (name: string) => {
   if (name === "accounting_bill_read") return bill;
   if (name === "accounting_payment_list") return { items: payments };
   if (name === "agency_get_my_roles") return { permissions };
+  if (name === "actor_get_actor") return { id: "u1", display_name: "Farkas Zoltán" };
+  if (name === "accounting_account_list") return { items: [{ id: "c1", category: "cash", type: "asset" }] };
   return { items: [] };
 };
 
@@ -72,11 +74,28 @@ describe("the bill page is built like a resident", () => {
     expect(card.getByRole("button", { name: "Edit" }).closest("footer")).not.toBeNull();
   });
 
-  it("lists the payments as rows of a Payments card with Mark paid in its footer", async () => {
+  it("lists the payments as rows of a Payments card with Add payment in its footer", async () => {
     const pane = await open();
     const card = within(await pane.findByRole("region", { name: "Payments" }));
-    expect(card.getByText("200 · 2026-02-10 · Second part")).toBeInTheDocument();
-    expect(card.getByRole("button", { name: "Mark paid" }).closest("footer")).not.toBeNull();
+    expect(await card.findByText("200 · 2026-02-10 · Bank transfer · Recorded by Farkas Zoltán · Second part")).toBeInTheDocument();
+    expect(card.getByRole("button", { name: "Add payment" }).closest("footer")).not.toBeNull();
+    expect(card.queryByRole("button", { name: "Mark paid" })).toBeNull();
+  });
+
+  it("names Unnamed person as the one who recorded a payment that names nobody", async () => {
+    const pane = await open();
+    const card = within(await pane.findByRole("region", { name: "Payments" }));
+    expect(await card.findByText("300 · 2026-01-20 · Recorded by Unnamed person · First part")).toBeInTheDocument();
+  });
+
+  it("opens the Add payment sheet from the bill and sends the payment with how it was paid", async () => {
+    const pane = await open();
+    await userEvent.click(await pane.findByRole("button", { name: "Add payment" }));
+    const sheet = within(await screen.findByRole("dialog", { name: "Add payment" }));
+    await userEvent.click(sheet.getByRole("button", { name: "Card" }));
+    await userEvent.click(sheet.getByRole("button", { name: "Save" }));
+    const sent = vi.mocked(mcp.callTool).mock.calls.find(([, name]) => name === "accounting_payment_mark_paid");
+    expect(sent?.[2]).toMatchObject({ billID: "b2", cash_account_id: "c1", amount: 1000, method: "card" });
   });
 
   it("shows neither act to a reader without accounting.manage", async () => {
@@ -84,7 +103,7 @@ describe("the bill page is built like a resident", () => {
     const pane = await open();
     await pane.findByRole("region", { name: "Bill detail" });
     expect(pane.queryByRole("button", { name: "Edit" })).toBeNull();
-    expect(pane.queryByRole("button", { name: "Mark paid" })).toBeNull();
+    expect(pane.queryByRole("button", { name: "Add payment" })).toBeNull();
   });
 
   it("carries the bill to the chat", async () => {
