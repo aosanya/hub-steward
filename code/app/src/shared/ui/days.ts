@@ -17,6 +17,13 @@ export const dayWords = (value: string) => {
   return date ? `${dayNames[date.getUTCDay()]}, ${date.getUTCDate()} ${monthNames[date.getUTCMonth()]}` : value;
 };
 
+export const endDayWords = (value: string) => {
+  const date = dayOf(value);
+  if (!date) return value;
+  const words = dayWords(value);
+  return date.getUTCFullYear() === new Date().getUTCFullYear() ? words : `${words} ${date.getUTCFullYear()}`;
+};
+
 export const shortDayWords = (value: string) => {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : `${shortDayNames[date.getDay()]} ${date.getDate()} ${monthNames[date.getMonth()]}`;

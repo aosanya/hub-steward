@@ -1,6 +1,6 @@
 import { useLoad } from "../../../../features/forms/useLoad";
 import { useMay } from "../../../../features/agency/useMay";
-import { dayWords } from "../../../../shared/ui/days";
+import { dayWords, endDayWords } from "../../../../shared/ui/days";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
@@ -29,7 +29,7 @@ function GrantedList({ slug }: { slug: string }) {
     <ListRow
       key={row.memberId}
       title={row.name}
-      meta={[dayWords(row.decidedAt), row.validUntil === "" ? "" : `${validUntilWords} ${dayWords(row.validUntil)}`]}
+      meta={[dayWords(row.decidedAt), row.validUntil === "" ? "" : `${validUntilWords} ${endDayWords(row.validUntil)}`]}
       end={<LicenceChip mark={markOf([{ rowId: row.memberId, validUntil: row.validUntil }], todayIso())} />}
     />
   ));

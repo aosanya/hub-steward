@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { dayWords, isoDay, shortDayWords } from "./days";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { dayWords, endDayWords, isoDay, shortDayWords } from "./days";
 
 describe("isoDay", () => {
   it("keeps the date part of a timestamp", () => {
@@ -47,5 +47,27 @@ describe("shortDayWords", () => {
   it("answers null for an empty or unreadable value", () => {
     expect(shortDayWords("")).toBeNull();
     expect(shortDayWords("soon")).toBeNull();
+  });
+});
+
+describe("endDayWords", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("reads a day in the current year as dayWords does", () => {
+    vi.useFakeTimers({ now: new Date("2026-11-19T10:00:00Z") });
+    expect(endDayWords("2026-12-31")).toBe("Thursday, 31 Dec");
+  });
+
+  it("adds the year to a day in another year", () => {
+    vi.useFakeTimers({ now: new Date("2026-11-19T10:00:00Z") });
+    expect(endDayWords("2027-11-30T00:00:00Z")).toBe("Tuesday, 30 Nov 2027");
+    expect(endDayWords("2025-06-30")).toBe("Monday, 30 Jun 2025");
+  });
+
+  it("gives back what it cannot read, and an empty value stays empty", () => {
+    expect(endDayWords("next week")).toBe("next week");
+    expect(endDayWords("")).toBe("");
   });
 });

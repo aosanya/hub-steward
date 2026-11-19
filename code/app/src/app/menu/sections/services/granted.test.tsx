@@ -286,6 +286,18 @@ describe("The Granted section on a permit or licence entry", () => {
     expect(second.getByText(/^Valid until/)).toBeInTheDocument();
   });
 
+  it("writes the year on an end day that is not in the current year", async () => {
+    submissions = submissions.map((submission) =>
+      submission.member_id === "m1" ? { ...submission, valid_until: "2999-12-31T00:00:00Z" } : submission.member_id === "m2" ? { ...submission, valid_until: "2020-01-31T00:00:00Z" } : submission,
+    );
+    await openEntry();
+
+    const section = await grantedWith("Réka Tóth");
+
+    expect(within(section).getByText(/Valid until Tuesday, 31 Dec 2999/)).toBeInTheDocument();
+    expect(within(section).getByText(/Valid until Friday, 31 Jan 2020/)).toBeInTheDocument();
+  });
+
   it("keeps every granted row inside the Granted card, as media rows with no loose caption above them", async () => {
     await openEntry();
 

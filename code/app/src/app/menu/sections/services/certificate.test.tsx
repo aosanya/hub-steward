@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
-import { dayWords } from "../../../../shared/ui/days";
+import { dayWords, endDayWords } from "../../../../shared/ui/days";
 import { ApplicationScreen } from "./ApplicationScreen";
 import { LicencesScreen, PermitsScreen } from "./ServicesScreens";
 
@@ -18,7 +18,7 @@ const certificateRef = "PRM-2026-0417";
 
 const endsOn = "2099-12-31";
 
-const endsWords = dayWords(endsOn);
+const endsWords = endDayWords(endsOn);
 
 const entries = [
   { id: "e1", slug: "market-stall-permit", name: "Market Stall Permit", summary: "Trade on the square", kind: "permit", form_id: "f1" },
