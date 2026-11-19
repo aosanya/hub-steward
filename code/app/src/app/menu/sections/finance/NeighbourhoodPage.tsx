@@ -18,11 +18,14 @@ const entriesOf = async (value: string) => {
   return Array.isArray(reply?.entries) ? (reply.entries as Item[]) : [];
 };
 
+const shareWords = (entry: Item, unit: string) =>
+  typeof entry.share_percent === "number" && typeof entry.whole === "number" ? `${entry.share_percent}% of ${moneyWords(entry.whole, unit)} · ` : "";
+
 function EntriesCard({ value, unit }: { value: string; unit: string }) {
   const entries = useLoad(() => entriesOf(value), `neighbourhood-entries:${openAgencyId()}:${value}`);
   if (entries.state !== "ready" || entries.data.length === 0) return null;
   const rows = entries.data.map((entry) => (
-    <ListRow key={text(entry, "id")} title={text(entry, "narration") || text(entry, "account")} meta={`${dayWords(text(entry, "occurred_at"))} · ${moneyWords(entry.amount as number, unit)}`} />
+    <ListRow key={text(entry, "id")} title={text(entry, "narration") || text(entry, "account")} meta={`${dayWords(text(entry, "occurred_at"))} · ${shareWords(entry, unit)}${moneyWords(entry.amount as number, unit)}`} />
   ));
   return <Section word="Entries" icon="wallet" all rows={rows} />;
 }
