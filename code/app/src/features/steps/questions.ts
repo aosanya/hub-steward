@@ -1,6 +1,7 @@
 import type { FormQuestion } from "../forms/api";
 import type { StartStep } from "../market";
 import { filled, given, isChoice, isFile, type Draft } from "../forms/answers";
+import { addressAnswerType } from "../forms/places";
 import { isTimeRange, rangeWords, splitRange } from "../forms/timeRange";
 
 export const formQuestionsOf = (step: Pick<StartStep, "questions">): FormQuestion[] =>
@@ -24,3 +25,10 @@ const answerText = (q: FormQuestion, draft: Draft): string => {
 
 export const answersOf = (questions: FormQuestion[], draft: Draft): Record<string, string> =>
   Object.fromEntries(questions.filter((q) => !unsendable(q) && filled(q, draft)).map((q) => [q.prompt, answerText(q, draft)]));
+
+export const placeRefsOf = (questions: FormQuestion[], draft: Draft): Record<string, string> =>
+  Object.fromEntries(
+    questions
+      .filter((q) => q.answer_type === addressAnswerType && filled(q, draft) && given(q, draft).placeRef)
+      .map((q) => [q.prompt, given(q, draft).placeRef as string]),
+  );

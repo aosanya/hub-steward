@@ -20,7 +20,7 @@ import { ApprovalLimitNote } from "./ApprovalLimitNote";
 import { amendmentsOf, type Edits } from "./amend";
 import { PublishReport } from "./PublishReport";
 import type { PublishClient } from "./publishApi";
-import { answersOf, formQuestionsOf, unsendable } from "./questions";
+import { answersOf, formQuestionsOf, placeRefsOf, unsendable } from "./questions";
 import { afterWords, markSent } from "./sent";
 
 const recordsSheets = (questions: FormQuestion[]) => questions.find((q) => q.prompt.startsWith("On whose behalf"));
@@ -93,9 +93,13 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
     setRefusedFor("");
     try {
       const answers = { ...answersOf(questions, draft), ...amendmentsOf(step.earlier, edits) };
-      const reply = await (sheets > 0
-        ? steps.submit(step, answers, sendKey, { orderId: recorded.orderId })
-        : steps.submit(step, answers, sendKey));
+      const refs = placeRefsOf(questions, draft);
+      const another = sheets > 0 ? { orderId: recorded.orderId } : undefined;
+      const reply = await (Object.keys(refs).length > 0
+        ? steps.submit(step, answers, sendKey, another, refs)
+        : another
+          ? steps.submit(step, answers, sendKey, another)
+          : steps.submit(step, answers, sendKey));
       clearDraft(draftKey);
       const after = afterWords(reply);
       if (!recordsSheets(questions)) {

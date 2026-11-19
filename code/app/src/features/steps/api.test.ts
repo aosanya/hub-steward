@@ -121,6 +121,14 @@ describe("sending a step's answers", () => {
     expect(sent.next).toMatchObject({ id: "s2", state: "waiting", orderId: "o1", roleName: "Liaison" });
   });
 
+  it("sends the place reference of an address answer beside the answers, and nothing when there is none", async () => {
+    const fetch = fetched(201, { done: true, next_step: null });
+    await mcpStepsClient.submit({ id: "s1", state: "start", orderId: "" }, { "Which street": "Fő tér 2" }, "k1", undefined, { "Which street": "address:a1" });
+    await mcpStepsClient.submit({ id: "s1", state: "start", orderId: "" }, { Reason: "Because" }, "k2", undefined, {});
+    expect(JSON.parse(String(fetch.mock.calls[0][1]?.body))).toEqual({ answers: { "Which street": "Fő tér 2" }, place_refs: { "Which street": "address:a1" }, send_key: "k1" });
+    expect(JSON.parse(String(fetch.mock.calls[1][1]?.body))).toEqual({ answers: { Reason: "Because" }, send_key: "k2" });
+  });
+
   it("sends the run with a waiting step and reports no next step after the last", async () => {
     const fetch = fetched(201, { done: true, next_step: null });
     const sent = await mcpStepsClient.submit({ id: "s2", state: "waiting", orderId: "o1" }, { Arrived: "yes" }, "k2");

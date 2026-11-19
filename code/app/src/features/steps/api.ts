@@ -42,7 +42,7 @@ export type AnotherSheet = { orderId: string };
 
 export type StepsClient = {
   available: () => Promise<MemberStep[]>;
-  submit: (step: Pick<MemberStep, "id" | "state" | "orderId">, answers: Record<string, string>, sendKey: string, another?: AnotherSheet) => Promise<Sent>;
+  submit: (step: Pick<MemberStep, "id" | "state" | "orderId">, answers: Record<string, string>, sendKey: string, another?: AnotherSheet, placeRefs?: Record<string, string>) => Promise<Sent>;
 };
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
@@ -91,11 +91,12 @@ export const mcpStepsClient: StepsClient = {
       .flatMap((raw) => memberStepOf(raw) ?? [])
       .filter((step) => !(step.state === "start" && (wasStarted(step.id) || sent.has(step.id))));
   },
-  async submit(step, answers, sendKey, another) {
+  async submit(step, answers, sendKey, another, placeRefs) {
     const { wakala } = await runtimeConfig();
+    const refs = placeRefs && Object.keys(placeRefs).length > 0 ? { place_refs: placeRefs } : {};
     const body = another
-      ? { answers, order_id: another.orderId, another_sheet: true, send_key: sendKey }
-      : { answers, ...(step.state === "waiting" ? { order_id: step.orderId } : { send_key: sendKey }) };
+      ? { answers, ...refs, order_id: another.orderId, another_sheet: true, send_key: sendKey }
+      : { answers, ...refs, ...(step.state === "waiting" ? { order_id: step.orderId } : { send_key: sendKey }) };
     const limit = new AbortController();
     const timer = setTimeout(() => limit.abort(), sendTimeoutMs);
     let res: Response;

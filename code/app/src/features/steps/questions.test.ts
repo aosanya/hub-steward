@@ -1,4 +1,4 @@
-import { formQuestionsOf, answersOf, unsendable } from "./questions";
+import { formQuestionsOf, answersOf, placeRefsOf, unsendable } from "./questions";
 
 const questions = formQuestionsOf({
   questions: [
@@ -67,5 +67,28 @@ describe("a step's time range and street or address questions", () => {
 
   it("leaves out a half-filled time range", () => {
     expect(answersOf(asked, { "0": { text: "09:00-", options: [] } })).toEqual({});
+  });
+});
+
+describe("the place references sent beside the words of an address question", () => {
+  const asked = formQuestionsOf({
+    questions: [
+      { prompt: "Which street", answerType: "address", helper: "", allowFreeText: true },
+      { prompt: "Which door", answerType: "address", helper: "" },
+      { prompt: "Reason", answerType: "free_text", helper: "" },
+    ],
+  });
+
+  it("names the street or address picked, by prompt, and leaves out what was typed or not answered", () => {
+    const draft = {
+      "0": { text: "Fő tér 2", options: [], placeRef: "address:a1" },
+      "1": { text: "Behind the mill", options: [], placeRef: "" },
+      "2": { text: "Because", options: [] },
+    };
+    expect(placeRefsOf(asked, draft)).toEqual({ "Which street": "address:a1" });
+  });
+
+  it("is empty when no place was picked", () => {
+    expect(placeRefsOf(asked, { "0": { text: "Behind the mill", options: [] } })).toEqual({});
   });
 });
