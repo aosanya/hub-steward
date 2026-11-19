@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"slices"
 
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

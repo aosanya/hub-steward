@@ -5,10 +5,9 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	mwanachamaaccounting "wakalaserver/modules/accounting"
-	accountingmcp "wakalaserver/modules/accounting/mcp"
-	accountingroutes "wakalaserver/modules/accounting/routes"
+	mwanachamaaccounting "github.com/aosanya/mwanachama-backend-accounting"
 
+	"wakalaserver/internal/accountingtools"
 	"wakalaserver/internal/accounts"
 )
 
@@ -16,14 +15,14 @@ func (d *Deps) resolveLedger(ctx context.Context, instanceID string) (mwanachama
 	return ledgerFor(ctx, d.Registry, instanceID)
 }
 
-func accountingToolMount() accountingroutes.Mount {
-	return accountingroutes.Mount{Caller: accounts.IDFromContext}
+func accountingToolMount() accountingtools.Mount {
+	return accountingtools.Mount{Caller: accounts.IDFromContext}
 }
 
 func accountingToolActions() map[string]string {
-	tools, err := accountingroutes.BuildTools(struct {
+	tools, err := accountingtools.BuildTools(struct {
 		mwanachamaaccounting.LedgerRepository
-	}{}, accountingroutes.Mount{})
+	}{}, accountingtools.Mount{})
 	if err != nil {
 		panic(err)
 	}
@@ -35,6 +34,6 @@ func accountingToolActions() map[string]string {
 }
 
 func (d *Deps) registerAccountingMCPTools(server *mcp.Server) {
-	accountingmcp.RegisterResolvedTools(server, d.resolveLedger, accountingToolMount())
+	accountingtools.RegisterResolvedTools(server, d.resolveLedger, accountingToolMount())
 	d.guardToolPermissions(server, accountingToolActions())
 }

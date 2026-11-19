@@ -11,8 +11,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	catalog "wakalaserver/modules/catalog"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	catalog "wakalaserver/modules/catalog"
 )
 
 const rosterDir = "testdata/mcp_roster"
@@ -34,12 +34,12 @@ var rosterConfigurations = []optionalMounts{
 }
 
 var pinnedRosterCounts = map[string]int{
-	"no-mounts":          808,
-	"catalog":            877,
-	"reports":            876,
-	"ai":                 842,
-	"catalog-reports":    945,
-	"catalog-reports-ai": 979,
+	"no-mounts":          809,
+	"catalog":            878,
+	"reports":            877,
+	"ai":                 843,
+	"catalog-reports":    946,
+	"catalog-reports-ai": 980,
 }
 
 func rosterCatalogManager(t *testing.T, name string) catalog.CatalogManager {

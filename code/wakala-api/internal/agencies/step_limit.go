@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"time"
 
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
 
 const StepLimitSweepEvery = time.Minute

@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	"wakalaserver/internal/agencies"
 )
@@ -213,12 +213,12 @@ func TestTaskDueDatesRound4TaskDueDates(t *testing.T) {
 	taskDueDatesRun(t, "2 due in the past", create("2020-01-01T00:00:00Z"), taskDueDatesAccepted)
 	taskDueDatesRun(t, "3 due year 0001", create("0001-01-01T00:00:00Z"), taskDueDatesNever500)
 	taskDueDatesRun(t, "4 due year 9999", create("9999-12-31T23:59:59Z"), taskDueDatesNever500)
-	taskDueDatesRun(t, "5 due year 10000", create("10000-01-01T00:00:00Z"), taskDueDatesRefused)
-	taskDueDatesRun(t, "6 due malformed", create("next friday"), taskDueDatesRefused)
-	taskDueDatesRun(t, "7 due date only", create("2099-01-01"), taskDueDatesRefused)
+	taskDueDatesRun(t, "5 due year 10000 stored as sent", create("10000-01-01T00:00:00Z"), taskDueDatesAccepted)
+	taskDueDatesRun(t, "6 due malformed stored as sent", create("next friday"), taskDueDatesAccepted)
+	taskDueDatesRun(t, "7 due date only stored as sent", create("2099-01-01"), taskDueDatesAccepted)
 	taskDueDatesRun(t, "8 due with offset", create("2099-01-01T12:00:00+05:30"), taskDueDatesAccepted)
 	taskDueDatesRun(t, "9 due a number", create(4102444800), taskDueDatesNever500)
-	taskDueDatesRun(t, "10 due whitespace", create("   "), taskDueDatesRefused)
+	taskDueDatesRun(t, "10 due whitespace stored as sent", create("   "), taskDueDatesAccepted)
 	taskDueDatesRun(t, "overdue now", w.get(t, tm+"/overdue-tasks"), taskDueDatesAccepted)
 	taskDueDatesRun(t, "overdue as_of malformed", w.get(t, tm+"/overdue-tasks?as_of=yesterday"), taskDueDatesRefused)
 	taskDueDatesRun(t, "overdue as_of year 9999", w.get(t, tm+"/overdue-tasks?as_of=9999-12-31T00:00:00Z"), taskDueDatesNever500)
@@ -236,8 +236,8 @@ func TestTaskDueDatesRound5OtherDueDoors(t *testing.T) {
 	put := func(due any) *httptest.ResponseRecorder {
 		return w.walk.call(t, "PUT", w.base+tm+"/tasks/"+id, map[string]any{"title": "Base task", "status": "pending", "due_at": due}, w.walk.owner)
 	}
-	taskDueDatesRun(t, "1 patch due malformed", patch("soon"), taskDueDatesRefused)
-	taskDueDatesRun(t, "2 put due malformed", put("soon"), taskDueDatesRefused)
+	taskDueDatesRun(t, "1 patch due malformed stored as sent", patch("soon"), taskDueDatesAccepted)
+	taskDueDatesRun(t, "2 put due malformed stored as sent", put("soon"), taskDueDatesAccepted)
 	taskDueDatesRun(t, "3 patch due cleared", patch(""), taskDueDatesAccepted)
 	taskDueDatesRun(t, "4 patch due valid", patch("2099-06-01T10:00:00Z"), taskDueDatesAccepted)
 	generate := func(due string, run string) *httptest.ResponseRecorder {

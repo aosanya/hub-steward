@@ -7,7 +7,7 @@ import (
 
 	"gorm.io/gorm"
 
-	mwanachamaaccounting "wakalaserver/modules/accounting"
+	mwanachamaaccounting "github.com/aosanya/mwanachama-backend-accounting"
 	mwanachamaforms "wakalaserver/modules/forms"
 )
 

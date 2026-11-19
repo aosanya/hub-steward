@@ -4,10 +4,10 @@ import (
 	"context"
 	"log"
 
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
+	taskmodels "github.com/aosanya/mwanachama-backend-taskmanager/models"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commmodels "wakalaserver/modules/comm/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
-	taskmodels "wakalaserver/modules/taskmanager/models"
 )
 
 type caseNotices struct {

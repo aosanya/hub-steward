@@ -3,6 +3,8 @@ package http
 import (
 	"fmt"
 
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	taskmanagerroutes "github.com/aosanya/mwanachama-backend-taskmanager/routes"
 	actorroutes "wakalaserver/modules/actor/routes"
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	assetroutes "wakalaserver/modules/assetmanager/routes"
@@ -12,10 +14,8 @@ import (
 	formsroutes "wakalaserver/modules/forms/routes"
 	mwanachamainsights "wakalaserver/modules/insights"
 	insightsroutes "wakalaserver/modules/insights/routes"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamasources "wakalaserver/modules/sources"
 	sourcesroutes "wakalaserver/modules/sources/routes"
-	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
 )
 
 func sameToolName(name string) string { return name }

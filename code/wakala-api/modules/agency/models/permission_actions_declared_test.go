@@ -16,6 +16,7 @@ func declaredOperationActions(t *testing.T) map[string]bool {
 	if err != nil || len(files) == 0 {
 		t.Fatalf("no operations files found: %v", err)
 	}
+	files = append(files, siblingOperationsFiles(t)...)
 	out := map[string]bool{}
 	for _, f := range files {
 		raw, err := os.ReadFile(f)

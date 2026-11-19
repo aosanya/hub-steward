@@ -1,10 +1,9 @@
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { taskmanagerModuleFile } from "../../../shared/testing/taskmanagerModule";
 import { PRIORITIES } from "./fields";
 
 const serverPriorities = (): string[] => {
-  const source = readFileSync(resolve(process.cwd(), "../wakala-api/modules/taskmanager/models/task.go"), "utf8");
+  const source = taskmanagerModuleFile("models/task.go");
   return [...source.matchAll(/TaskPriority\w+\s+TaskPriority = "(\w+)"/g)].map((match) => match[1]);
 };
 

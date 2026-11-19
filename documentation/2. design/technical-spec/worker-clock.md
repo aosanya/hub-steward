@@ -1,6 +1,6 @@
 # The working-time clock
 
-A worker's runtime cap counts working time. This page is the rule for when that clock starts, stops and restarts, and what a stop means. The code is `code/wakala-api/modules/taskmanager` (`task_caps_nearest.go`, `task_clock_idle.go`, `task_caps_stop.go`).
+A worker's runtime cap counts working time. This page is the rule for when that clock starts, stops and restarts, and what a stop means. The code is in the repository `mwanachama-backend-taskmanager` (`task_caps_nearest.go`, `task_clock_idle.go`, `task_caps_stop.go`), which `code/wakala-api` requires at a tag. Tag `v0.1.0` starts the clock at the first worker note; the hub's earlier rule, start at the latest claim, is listed in that repository's hub-import-drift page and is not in the tag.
 
 ## Start
 

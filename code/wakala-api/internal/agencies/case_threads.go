@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
+	taskmodels "github.com/aosanya/mwanachama-backend-taskmanager/models"
 	commmodels "wakalaserver/modules/comm/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
-	taskmodels "wakalaserver/modules/taskmanager/models"
 )
 
 const SubjectCase = "case"

@@ -6,9 +6,9 @@ import (
 	"slices"
 	"strings"
 
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
 
 type backlogRoles struct {

@@ -8,8 +8,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
-	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
+	taskmanagerroutes "github.com/aosanya/mwanachama-backend-taskmanager/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

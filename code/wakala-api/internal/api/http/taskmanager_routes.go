@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 
-	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
+	taskmanagerroutes "github.com/aosanya/mwanachama-backend-taskmanager/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

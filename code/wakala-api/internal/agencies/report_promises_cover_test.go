@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 func TestPromisesBecomeTasksCarryingTheirReportAndWhoAnswers(t *testing.T) {

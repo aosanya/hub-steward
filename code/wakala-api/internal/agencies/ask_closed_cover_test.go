@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"testing"
 
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 	"wakalaserver/internal/notifyrules"
 	mwanachamamarket "wakalaserver/modules/market"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
 
 func TestAskRunTriggerNamesTheAskAndAskOfRunReadsItBack(t *testing.T) {

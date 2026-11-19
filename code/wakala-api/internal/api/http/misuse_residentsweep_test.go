@@ -8,13 +8,13 @@ import (
 	"strings"
 	"testing"
 
-	accounting "wakalaserver/modules/accounting"
+	accounting "github.com/aosanya/mwanachama-backend-accounting"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	ai "wakalaserver/modules/ai"
 	assetmanager "wakalaserver/modules/assetmanager"
 	catalog "wakalaserver/modules/catalog"
 	comm "wakalaserver/modules/comm"
 	forms "wakalaserver/modules/forms"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	sources "wakalaserver/modules/sources"
 )
 

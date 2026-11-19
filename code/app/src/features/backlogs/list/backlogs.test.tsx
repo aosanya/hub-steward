@@ -6,6 +6,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { openAgency } from "../../../shared/wakala/openAgency";
 import * as mcp from "../../../shared/wakala/mcp";
+import { taskmanagerModuleFile } from "../../../shared/testing/taskmanagerModule";
 import { BacklogsPage } from "./BacklogsPage";
 import { mayReadIn, noRoleWords, nothingSharedWords } from "../shared/access";
 import { BacklogsRoutes } from "../BacklogsRoutes";
@@ -506,7 +507,7 @@ describe("reading the task module's answers", () => {
 
 describe("talking to the hub", () => {
   const actions = () => {
-    const operations = JSON.parse(readFileSync(resolve(process.cwd(), "../wakala-api/modules/taskmanager/taskmanager.operations.json"), "utf8"));
+    const operations = JSON.parse(taskmanagerModuleFile("taskmanager.operations.json"));
     return new Set<string>(Object.values<any>(operations.operations ?? operations).map((one) => String(one.action).replaceAll(".", "_")));
   };
 
