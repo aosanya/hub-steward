@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { refusalText } from "../../../../features/backlogs";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
@@ -10,8 +10,7 @@ import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { cashAccountId } from "./markBillPaid";
 import { dayStart, tools } from "./financeData";
-
-export const paymentMethods = ["Cash", "Bank transfer", "Card", "Other"];
+import { defaultPaymentMethods, loadPaymentMethods } from "./paymentSettings";
 
 const noCashAccountWords = "There is no cash account to pay from.";
 
@@ -26,11 +25,18 @@ type Props = { billID: string; outstanding: string; onSaved: () => void; onCance
 export function AddPaymentSheet({ billID, outstanding, onSaved, onCancel }: Props) {
   const [amount, setAmount] = useState(outstanding);
   const [paidOn, setPaidOn] = useState(todayIso());
-  const [method, setMethod] = useState(paymentMethods[0]);
+  const [methods, setMethods] = useState(defaultPaymentMethods);
+  const [method, setMethod] = useState(defaultPaymentMethods[0]);
   const [reference, setReference] = useState("");
   const [narration, setNarration] = useState("");
   const [refused, setRefused] = useState("");
   const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    loadPaymentMethods().then((ways) => {
+      setMethods(ways);
+      setMethod(ways[0]);
+    });
+  }, []);
   const figure = Number(amount);
   const valid = amount.trim() !== "" && Number.isFinite(figure) && figure > 0 && isDay(paidOn);
   const save = async () => {
@@ -59,7 +65,7 @@ export function AddPaymentSheet({ billID, outstanding, onSaved, onCancel }: Prop
     <Sheet title="Add payment" onClose={onCancel}>
       <Field label="Amount" inputMode="decimal" value={amount} onChange={(event) => setAmount(event.target.value)} />
       <Field label="Paid on" value={paidOn} onChange={(event) => setPaidOn(event.target.value)} />
-      <Segmented label="How it was paid" items={paymentMethods.map((way) => ({ id: way, label: way }))} current={method} onChange={setMethod} />
+      <Segmented label="How it was paid" items={methods.map((way) => ({ id: way, label: way }))} current={method} onChange={setMethod} />
       <Field label="Reference" value={reference} onChange={(event) => setReference(event.target.value)} />
       <TextArea label="Narration" value={narration} onChange={(event) => setNarration(event.target.value)} />
       {refused ? <LoadFailed words={refused} /> : null}

@@ -10,4 +10,5 @@ export const settingsPaths = {
   registerDetailsEdit: screen("/menu/settings/details-of-a-record/:id/edit"),
   lateRules: screen("/menu/settings/late-rules"),
   lateRulesEdit: screen("/menu/settings/late-rules/edit"),
+  paymentSettings: screen("/menu/settings/payments"),
 };
