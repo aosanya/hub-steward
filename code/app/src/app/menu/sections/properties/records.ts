@@ -1,4 +1,5 @@
 import { itemsOf } from "../../../../features/backlogs";
+import type { Choice } from "../../../../shared/ui/SearchSelect";
 import { callTool } from "../../../../shared/wakala/mcp";
 
 export const digitaltwinModule = "digitaltwin";
@@ -67,4 +68,12 @@ export const loadNodeNames = async () => {
   } catch {
     return new Map<string, string>();
   }
+};
+
+export const loadPropertyChoices = async (): Promise<Choice[]> => {
+  const assets: Record<string, unknown>[] = itemsOf(await callTool("", "assetmanager_asset_list"));
+  return assets
+    .filter(isProperty)
+    .map((asset) => ({ value: placeIdOf(asset.attributes_json), label: joined([textOf(asset.name), textOf(asset.category)]) }))
+    .filter((choice) => choice.value !== "");
 };

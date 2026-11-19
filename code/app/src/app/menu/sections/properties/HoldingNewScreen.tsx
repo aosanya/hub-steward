@@ -13,13 +13,19 @@ import { Shell } from "../../../Shell";
 import { refusalWords } from "../../MenuEditForm";
 import { holdingFields, holdingRecordCode, useRegisterDetails, writeRegisterAnswers } from "../../registerDetails";
 import { placePaths } from "./paths";
-import { itemOf, loadNodeNames, textOf } from "./records";
+import { loadPersonNameChoices } from "../../referenceChoices";
+import { itemOf, loadNodeNames, loadPropertyChoices, textOf } from "./records";
 
 export const holdingKinds = ["owner", "tenant", "leaseholder", "occupant", "custodian"];
 
 const tenureCreate = "digitaltwin_tenure_create";
 
-const loadPlaceChoices = async (): Promise<Choice[]> => [...(await loadNodeNames())].map(([value, label]) => ({ value, label }));
+const loadNodeChoices = async (): Promise<Choice[]> => [...(await loadNodeNames())].map(([value, label]) => ({ value, label }));
+
+const loadPlaceChoices = async (): Promise<Choice[]> => {
+  const properties = await loadPropertyChoices().catch((): Choice[] => []);
+  return properties.length > 0 ? properties : loadNodeChoices();
+};
 
 const labelOf = (prompt: string, required: boolean) => (required ? prompt : `${prompt} (optional)`);
 
@@ -32,6 +38,7 @@ export function HoldingNewScreen() {
   const word = useWord("digitaltwin");
   const details = useRegisterDetails(holdingRecordCode, holdingFields);
   const places = useLoad(loadPlaceChoices, `holding-new-places:${openAgencyId()}`);
+  const people = useLoad(loadPersonNameChoices, `holding-new-people:${openAgencyId()}`);
   const [holder, setHolder] = useState("");
   const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -79,7 +86,7 @@ export function HoldingNewScreen() {
   };
   return (
     <Shell title="Add holding" titleUnder backLabel={word("Ownership & Tenure")} onBack={() => navigate(placePaths.ownership.path())} tabless>
-      <Field label="Holder" value={holder} onChange={(event) => setHolder(event.target.value)} />
+      <SearchSelect label="Holder" choices={people.state === "ready" ? people.data : []} value={holder} onChange={setHolder} />
       {asked.map(ask)}
       {refused ? <LoadFailed words={refused} /> : null}
       <Button kind="primary" disabled={saving || !complete} onClick={save}>Save</Button>

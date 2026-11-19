@@ -36,6 +36,7 @@ const hub = () =>
     if (setting !== undefined) return setting;
     if (tool === "agency_list_mounts") return { modules: [{ module: "digitaltwin" }] };
     if (tool === "agency_get_my_roles") return { permissions };
+    if (tool === "actor_list_actors") return { items: [{ id: "a1", display_name: "Varga Mária" }] };
     if (tool === "digitaltwin_node_list") return { items: [{ id: "n1", name: "Kossuth utca 7" }, { id: "n2", name: "Malom utca 4" }] };
     if (tool === "digitaltwin_tenure_list") return { items: tenures };
     if (tool === "digitaltwin_tenure_read") return { item: tenures.find((tenure) => tenure.id === given.tenureID) };
@@ -54,6 +55,11 @@ const show = (path: string) =>
       <Routes>{routes()}</Routes>
     </MemoryRouter>,
   );
+
+const chooseHolder = async (user: ReturnType<typeof userEvent.setup>, name = "Varga Mária") => {
+  await user.click(await screen.findByRole("button", { name: /Holder/ }));
+  await user.click(screen.getByRole("option", { name }));
+};
 
 const chooseProperty = async (user: ReturnType<typeof userEvent.setup>, name = "Malom utca 4") => {
   await user.click(await screen.findByRole("button", { name: /Property/ }));
@@ -103,7 +109,7 @@ describe("the Add holding form on Ownership & Tenure", () => {
     await user.click(await screen.findByRole("button", { name: "Add holding" }));
 
     expect(landed).toBe(placePaths.holdingNew.path());
-    expect(await screen.findByLabelText("Holder")).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /Holder/ })).toBeInTheDocument();
   });
 
   it("saves the holder, property, kind and since through digitaltwin_tenure_create and keeps the own detail answer under the new holding", async () => {
@@ -111,7 +117,7 @@ describe("the Add holding form on Ownership & Tenure", () => {
     settings = settingsOf(holdingChoice(waterMeter));
     show(placePaths.holdingNew.path());
 
-    await user.type(await screen.findByLabelText("Holder"), "Varga Mária");
+    await chooseHolder(user);
     await user.click(await screen.findByRole("button", { name: /Property/ }));
     await user.click(screen.getByRole("option", { name: "Malom utca 4" }));
     await user.click(screen.getByRole("radio", { name: "tenant" }));
@@ -128,7 +134,7 @@ describe("the Add holding form on Ownership & Tenure", () => {
     const user = userEvent.setup();
     show(placePaths.holdingNew.path());
 
-    await user.type(await screen.findByLabelText("Holder"), "Varga Mária");
+    await chooseHolder(user);
     await chooseProperty(user);
     await user.click(screen.getByRole("button", { name: "Save" }));
 
@@ -140,7 +146,7 @@ describe("the Add holding form on Ownership & Tenure", () => {
     settings = settingsOf(holdingChoice({ prompt: "Since", on: false, required: false, own: false }));
     show(placePaths.holdingNew.path());
 
-    await screen.findByLabelText("Holder");
+    await screen.findByRole("button", { name: /Holder/ });
     await waitFor(() => expect(screen.queryByLabelText(/^Since/)).toBeNull());
     expect(screen.getByRole("button", { name: /Property/ })).toBeInTheDocument();
   });
@@ -150,7 +156,7 @@ describe("the Add holding form on Ownership & Tenure", () => {
     settings = settingsOf(holdingChoice(waterMeter));
     show(placePaths.holdingNew.path());
 
-    await user.type(await screen.findByLabelText("Holder"), "Varga Mária");
+    await chooseHolder(user);
     await screen.findByLabelText("Water meter number");
 
     expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
@@ -162,7 +168,7 @@ describe("the Add holding form on Ownership & Tenure", () => {
     settings = settingsOf(holdingChoice({ prompt: "Property", on: false, required: false, own: false }));
     show(placePaths.holdingNew.path());
 
-    await screen.findByLabelText("Holder");
+    await screen.findByRole("button", { name: /Holder/ });
 
     expect(await screen.findByRole("button", { name: /Property/ })).toBeInTheDocument();
     expect(screen.queryByText("Property (optional)")).toBeNull();
@@ -173,7 +179,7 @@ describe("the Add holding form on Ownership & Tenure", () => {
     settings = settingsOf(holdingChoice({ prompt: "Property", on: false, required: false, own: false }));
     show(placePaths.holdingNew.path());
 
-    await user.type(await screen.findByLabelText("Holder"), "Varga Mária");
+    await chooseHolder(user);
     await screen.findByRole("button", { name: /Property/ });
     expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
     await user.click(screen.getByRole("button", { name: "Save" }));
@@ -191,17 +197,18 @@ describe("the Add holding form on Ownership & Tenure", () => {
     const user = userEvent.setup();
     called.mockImplementation(async (_hub, tool, args) => {
       if (tool === "digitaltwin_tenure_create") throw new mcp.McpError("digitaltwin_tenure_create: place not found");
+      if (tool === "actor_list_actors") return { items: [{ id: "a1", display_name: "Varga Mária" }] };
       if (tool === "digitaltwin_node_list") return { items: [{ id: "n2", name: "Malom utca 4" }] };
       return settingReply(settings, tool, args) ?? { items: [] };
     });
     show(placePaths.holdingNew.path());
 
-    await user.type(await screen.findByLabelText("Holder"), "Varga Mária");
+    await chooseHolder(user);
     await chooseProperty(user);
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("place not found");
-    expect(screen.getByLabelText("Holder")).toHaveValue("Varga Mária");
+    expect(screen.getByRole("button", { name: /Holder/ })).toHaveTextContent("Varga Mária");
     expect(landed).toBe(placePaths.holdingNew.path());
   });
 });
