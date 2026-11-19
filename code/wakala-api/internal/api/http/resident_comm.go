@@ -11,6 +11,7 @@ var residentCommActions = []string{
 	"comm.chat_thread.create",
 	"comm.chat_thread.open",
 	"comm.chat_thread.decline",
+	"comm.chat_room.set_question",
 	"comm.chat_thread.mark_read",
 	"comm.chat_thread.archive",
 	"comm.chat_thread.unarchive",

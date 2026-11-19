@@ -81,3 +81,21 @@ func (m *CommManager) isQuestionRoom(ctx context.Context, structureID string) (b
 	}
 	return slices.Contains(rooms, structureID), nil
 }
+
+func (m *CommManager) SetChatQuestionRoomFor(ctx context.Context, structureID, callerID string, on bool) (models.ChatQuestionRoom, error) {
+	if err := m.asLead(ctx, structureID, callerID); err != nil {
+		return models.ChatQuestionRoom{}, err
+	}
+	rooms, err := m.QuestionRooms(ctx)
+	if err != nil {
+		return models.ChatQuestionRoom{}, err
+	}
+	rooms = slices.DeleteFunc(rooms, func(id string) bool { return id == structureID })
+	if on {
+		rooms = append(rooms, structureID)
+	}
+	if err := m.SetQuestionRooms(ctx, rooms, callerID); err != nil {
+		return models.ChatQuestionRoom{}, err
+	}
+	return models.ChatQuestionRoom{StructureID: structureID, QuestionRoom: on}, nil
+}

@@ -35,6 +35,11 @@ type ChatThread struct {
 	CreatedAt   time.Time    `json:"created_at"`
 }
 
+type ChatQuestionRoom struct {
+	StructureID  string `json:"structure_id"`
+	QuestionRoom bool   `json:"question_room"`
+}
+
 type ChatAudience string
 
 const (
@@ -135,6 +140,7 @@ type ChatLastMessage struct {
 type ChatThreadView struct {
 	ChatThread
 	Unread        int              `json:"unread"`
+	QuestionRoom  bool             `json:"question_room,omitempty"`
 	LastMessageAt *time.Time       `json:"last_message_at,omitempty"`
 	LastMessage   *ChatLastMessage `json:"last_message,omitempty"`
 }

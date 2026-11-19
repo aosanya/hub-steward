@@ -126,6 +126,10 @@ func (m *CommManager) threadViews(ctx context.Context, structureID, callerID str
 	if err != nil {
 		return nil, err
 	}
+	question, err := m.isQuestionRoom(ctx, structureID)
+	if err != nil {
+		return nil, err
+	}
 	out := make([]models.ChatThreadView, 0, len(threads))
 	archived, err := m.ChatStore.ArchivedThreads(ctx, structureID, callerID)
 	if err != nil {
@@ -135,7 +139,7 @@ func (m *CommManager) threadViews(ctx context.Context, structureID, callerID str
 		if archived[t.ID] != archivedOnes || !t.ReadableBy(callerID, leads) {
 			continue
 		}
-		view := models.ChatThreadView{ChatThread: t, Unread: unread[t.ID]}
+		view := models.ChatThreadView{ChatThread: t, Unread: unread[t.ID], QuestionRoom: question && !leads}
 		if post, ok := latest[t.ID]; ok {
 			at := post.CreatedAt
 			last := post.Last()

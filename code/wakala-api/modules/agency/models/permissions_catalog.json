@@ -79,7 +79,7 @@
   {"code": "appointment.manage", "name": "Manage appointments", "locked": false, "module": "forms", "actions": ["catalog.slot.offer", "catalog.booking.cancel_as_staff"]},
   {"code": "appointment.view_person", "name": "See one person's bookings", "locked": false, "module": "forms", "actions": ["catalog.booking.list_of_person"]},
   {"code": "chat.post", "name": "Post in chat", "locked": false, "module": "comm", "actions": ["comm.chat_message.post", "comm.chat_message.list", "comm.chat_message.read"]},
-  {"code": "chat.thread", "name": "Open and keep up with chat threads", "locked": false, "module": "comm", "actions": ["comm.chat_thread.list", "comm.chat_thread.create", "comm.chat_thread.mark_read"]},
+  {"code": "chat.thread", "name": "Open and keep up with chat threads", "locked": false, "module": "comm", "actions": ["comm.chat_thread.list", "comm.chat_thread.create", "comm.chat_thread.mark_read", "comm.chat_room.set_question"]},
   {"code": "chat.archive", "name": "Archive a chat thread for yourself and bring it back", "locked": false, "module": "comm", "actions": ["comm.chat_thread.archive", "comm.chat_thread.unarchive", "comm.chat_thread.list_archived"]},
   {"code": "notification.read", "name": "Read notifications and their deliveries", "locked": false, "module": "comm", "actions": ["comm.notification.list", "comm.push_delivery.list"]},
   {"code": "notification.raise", "name": "Tell one person about a report", "locked": false, "module": "comm", "actions": ["comm.notification.raise"]},
