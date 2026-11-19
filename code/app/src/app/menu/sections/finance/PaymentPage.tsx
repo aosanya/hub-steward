@@ -15,6 +15,8 @@ const owedFacts: [string, string][] = [
 const paidFacts: [string, string][] = [
   ["Amount", "amount"],
   ["Paid on", "paidOn"],
+  ["How it was paid", "method"],
+  ["Reference", "reference"],
   ["Narration", "narration"],
   ["Bill", "bill"],
 ];
@@ -31,7 +33,7 @@ export function PaymentPage({ row, owed, onMark, form }: Props) {
       <FinanceHead name={payer} line={line} />
       <div className="sections">
         {owed ? (
-          <FactsCard word="Bill detail" item={row} facts={owedFacts} foot={<ActButton permission={manageRole} label="Mark paid" onAct={onMark} />} />
+          <FactsCard word="Bill detail" item={row} facts={owedFacts} foot={<ActButton permission={manageRole} label="Add payment" onAct={onMark} />} />
         ) : (
           <FactsCard word="Payment detail" item={row} facts={paidFacts} />
         )}

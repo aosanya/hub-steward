@@ -13,7 +13,7 @@ let permissions: string[];
 
 const owedBill = { id: "b1", payer: "Anna Sample", amount: 1500, settled: 300, outstanding: 1200, due_at: "2026-12-01T00:00:00Z", status: "open" };
 const lateBill = { id: "b2", payer: "Csilla Sample", amount: 800, settled: 0, outstanding: 800, due_at: "2026-10-01T00:00:00Z", status: "overdue", days_overdue: 40 };
-const earlierPayment = { id: "p1", kind: "bill", amount: 450, paid_at: "2026-11-02T09:00:00Z", paid_by: "u1", bill_id: "b0", payer: "Ben Sample", narration: "Bank transfer" };
+const earlierPayment = { id: "p1", kind: "bill", amount: 450, paid_at: "2026-11-02T09:00:00Z", paid_by: "u1", bill_id: "b0", payer: "Ben Sample", narration: "Bank transfer", method: "bank transfer", reference: "TR-77" };
 const settledBill = { id: "b0", payer: "Ben Sample", amount: 450, settled: 450, outstanding: 0, due_at: "2026-10-20T00:00:00Z", status: "paid" };
 
 const setWide = (wide: boolean) => {
@@ -80,12 +80,12 @@ describe("the payments page is built like a resident", () => {
     expect(document.querySelector(".quiet-line")?.textContent).toContain("40 days late");
   });
 
-  it("holds the owed bill as rows of a Bill detail card with Mark paid in its footer", async () => {
+  it("holds the owed bill as rows of a Bill detail card with Add payment in its footer", async () => {
     const pane = await open("Anna Sample");
     const card = within(await pane.findByRole("region", { name: "Bill detail" }));
     for (const label of ["Outstanding", "Due"]) expect(card.getByText(label)).toBeInTheDocument();
     expect(card.getByText("2026-12-01")).toBeInTheDocument();
-    expect(card.getByRole("button", { name: "Mark paid" }).closest("footer")).not.toBeNull();
+    expect(card.getByRole("button", { name: "Add payment" }).closest("footer")).not.toBeNull();
   });
 
   it("holds a payment as rows of a Payment detail card with no act", async () => {
@@ -93,15 +93,15 @@ describe("the payments page is built like a resident", () => {
     expect(await pane.findByRole("heading", { level: 1, name: "Ben Sample" })).toBeInTheDocument();
     const card = within(await pane.findByRole("region", { name: "Payment detail" }));
     for (const label of ["Amount", "Paid on", "Narration"]) expect(card.getByText(label)).toBeInTheDocument();
-    expect(card.getByText("Bank transfer")).toBeInTheDocument();
-    expect(card.queryByRole("button", { name: "Mark paid" })).toBeNull();
+    expect(card.getAllByText("Bank transfer").length).toBeGreaterThan(0);
+    expect(card.queryByRole("button", { name: "Add payment" })).toBeNull();
   });
 
-  it("shows no Mark paid to a reader without accounting.manage", async () => {
+  it("shows no Add payment to a reader without accounting.manage", async () => {
     permissions = ["accounting.read"];
     const pane = await open("Anna Sample");
     await pane.findByRole("region", { name: "Bill detail" });
-    expect(pane.queryByRole("button", { name: "Mark paid" })).toBeNull();
+    expect(pane.queryByRole("button", { name: "Add payment" })).toBeNull();
   });
 
   it("carries the owed bill to the chat", async () => {
@@ -116,5 +116,40 @@ describe("the payments page is built like a resident", () => {
     await pane.findByRole("region", { name: "Payment detail" });
     carryChatAbout();
     expect(carriedChatAbout()).toMatchObject({ kind: "bill", id: "b0", name: "Ben Sample" });
+  });
+
+  it("calls a part-paid bill Part paid and a bill with nothing paid Unpaid", async () => {
+    openScreen();
+    const anna = await screen.findByRole("button", { name: /Anna Sample/ });
+    expect(within(anna).getByText("Part paid")).toBeInTheDocument();
+    expect(within(screen.getByRole("button", { name: /Csilla Sample/ })).queryByText("Part paid")).toBeNull();
+  });
+
+  it("shows how a payment was made and its reference on the Payment detail card", async () => {
+    const pane = await open("Ben Sample");
+    const card = within(await pane.findByRole("region", { name: "Payment detail" }));
+    for (const label of ["How it was paid", "Reference"]) expect(card.getByText(label)).toBeInTheDocument();
+    expect(card.getByText("TR-77")).toBeInTheDocument();
+  });
+
+  it("adds a payment with the amount, the day, how it was paid and a reference", async () => {
+    const pane = await open("Anna Sample");
+    await userEvent.click(await pane.findByRole("button", { name: "Add payment" }));
+    const sheet = within(await screen.findByRole("dialog", { name: "Add payment" }));
+    const amount = sheet.getByLabelText("Amount");
+    await userEvent.clear(amount);
+    await userEvent.type(amount, "500");
+    await userEvent.click(sheet.getByRole("button", { name: "Bank transfer" }));
+    await userEvent.type(sheet.getByLabelText("Reference"), "TR-9");
+    await userEvent.click(sheet.getByRole("button", { name: "Save" }));
+    const sent = vi.mocked(mcp.callTool).mock.calls.find(([, name]) => name === "accounting_payment_mark_paid");
+    expect(sent?.[2]).toMatchObject({ billID: "b1", cash_account_id: "c1", amount: 500, method: "bank transfer", reference: "TR-9" });
+  });
+
+  it("offers the ways a payment can be made as cash, bank transfer, card and other", async () => {
+    const pane = await open("Anna Sample");
+    await userEvent.click(await pane.findByRole("button", { name: "Add payment" }));
+    const sheet = within(await screen.findByRole("dialog", { name: "Add payment" }));
+    for (const way of ["Cash", "Bank transfer", "Card", "Other"]) expect(sheet.getByRole("button", { name: way })).toBeInTheDocument();
   });
 });

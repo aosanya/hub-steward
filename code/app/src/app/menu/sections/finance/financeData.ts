@@ -63,7 +63,7 @@ export const lastDayOf = (end: string) => dayShifted(dayWords(end), -1);
 
 export const periodWords = (start: string, end: string) => `${dayWords(start)} to ${lastDayOf(end)}`;
 
-const capitalised = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
+export const capitalised = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
 
 export const budgetRow = (line: Item, unit = "") => ({
   id: text(line, "id"),

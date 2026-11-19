@@ -7,6 +7,7 @@ import { Field } from "../../../../shared/ui/Field";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { Section } from "../../../../shared/ui/Section";
+import { Segmented } from "../../../../shared/ui/Segmented";
 import { Sheet } from "../../../../shared/ui/Sheet";
 import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
@@ -14,7 +15,7 @@ import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
 import { HandOverSheet } from "./HandOverSheet";
 import { PaymentPage } from "./PaymentPage";
-import { billStatusWords, chargeNames, chargeWords, dayStart, dayWords, daysLateWords, homeEmpty, lateRulesFor, listOf, moneyWords, owedTotal, owedWords, remindsWords, text, tools, unitOf, type Charges, type Item, type LateRules } from "./financeData";
+import { billStatusWords, capitalised, chargeNames, chargeWords, dayStart, dayWords, daysLateWords, homeEmpty, lateRulesFor, listOf, moneyWords, owedTotal, owedWords, remindsWords, text, tools, unitOf, type Charges, type Item, type LateRules } from "./financeData";
 
 const owedHeading = "To pay";
 
@@ -46,7 +47,7 @@ const owedRow = (bill: Item, unit: string, charges: Charges, rules: LateRules) =
   due: dayWords(text(bill, "due_at")),
   late: daysLateWords(bill),
   reminds: remindsWords(bill, rules),
-  status: text(bill, "status") === "overdue" ? billStatusWords(bill, rules) : "Unpaid",
+  status: text(bill, "status") === "overdue" ? billStatusWords(bill, rules) : Number(text(bill, "settled")) > 0 ? "Part paid" : "Unpaid",
 });
 
 const paidRow = (payment: Item, unit: string) => ({
@@ -58,6 +59,8 @@ const paidRow = (payment: Item, unit: string) => ({
   amount: moneyWords(text(payment, "amount"), unit),
   paidOn: dayWords(text(payment, "paid_at")),
   narration: text(payment, "narration"),
+  method: capitalised(text(payment, "method")),
+  reference: text(payment, "reference"),
   settledBillID: text(payment, "bill_id"),
   status: "Paid",
 });
@@ -89,7 +92,9 @@ const cashAccountId = async () => {
   return accounts.map((account) => ({ id: text(account, "id"), category: text(account, "category"), type: text(account, "type") })).find((account) => account.category === "cash" && account.type === "asset")?.id;
 };
 
-type Draft = { billID: string; payer: string; amount: string; paidOn: string; narration: string };
+const paymentMethods = ["Cash", "Bank transfer", "Card", "Other"];
+
+type Draft = { billID: string; payer: string; amount: string; paidOn: string; method: string; reference: string; narration: string };
 
 type MarkPaidFormProps = { draft: Draft; refused: string; busy: boolean; onChange: (next: Draft) => void; onSave: () => void; onCancel: () => void };
 
@@ -97,9 +102,11 @@ function MarkPaidForm({ draft, refused, busy, onChange, onSave, onCancel }: Mark
   const amount = Number(draft.amount);
   const valid = draft.amount.trim() !== "" && Number.isFinite(amount) && amount > 0 && isDay(draft.paidOn);
   return (
-    <Sheet title="Mark paid" onClose={onCancel}>
+    <Sheet title="Add payment" onClose={onCancel}>
       <Field label="Amount" inputMode="decimal" value={draft.amount} onChange={(event) => onChange({ ...draft, amount: event.target.value })} />
       <Field label="Paid on" value={draft.paidOn} onChange={(event) => onChange({ ...draft, paidOn: event.target.value })} />
+      <Segmented label="How it was paid" items={paymentMethods.map((way) => ({ id: way, label: way }))} current={draft.method} onChange={(method) => onChange({ ...draft, method })} />
+      <Field label="Reference" value={draft.reference} onChange={(event) => onChange({ ...draft, reference: event.target.value })} />
       <TextArea label="Narration" value={draft.narration} onChange={(event) => onChange({ ...draft, narration: event.target.value })} />
       {refused ? <LoadFailed words={refused} /> : null}
       <Button kind="primary" disabled={!valid || busy} onClick={onSave}>Save</Button>
@@ -132,7 +139,7 @@ export function PaymentListScreen() {
   };
   const openForm = (row: Item) => {
     setRefused("");
-    setDraft({ billID: text(row, "billID"), payer: text(row, "payer"), amount: text(row, "outstandingAmount"), paidOn: todayIso(), narration: "" });
+    setDraft({ billID: text(row, "billID"), payer: text(row, "payer"), amount: text(row, "outstandingAmount"), paidOn: todayIso(), method: paymentMethods[0], reference: "", narration: "" });
   };
   const closeForm = () => setDraft(null);
   const save = async () => {
@@ -143,11 +150,14 @@ export function PaymentListScreen() {
       const cash = await cashAccountId();
       if (!cash) throw new Error(noCashAccountWords);
       const narration = draft.narration.trim();
+      const reference = draft.reference.trim();
       await callTool("", tools.paymentMarkPaid, {
         billID: draft.billID,
         cash_account_id: cash,
         amount: Number(draft.amount),
         paid_on: dayStart(draft.paidOn),
+        method: draft.method.toLowerCase(),
+        ...(reference ? { reference } : {}),
         ...(narration ? { narration } : {}),
       });
       setDraft(null);

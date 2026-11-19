@@ -39,7 +39,7 @@ const pane = () => document.querySelector(".mw-detail") as HTMLElement;
 
 const rowOf = async (payer: string) => (await screen.findByRole("button", { name: new RegExp(payer) })) as HTMLElement;
 
-const owedRows = () => screen.queryAllByRole("button", { name: /Anna Sample/ }).filter((row) => within(row).queryByText("Unpaid") !== null);
+const owedRows = () => screen.queryAllByRole("button", { name: /Anna Sample/ }).filter((row) => within(row).queryByText(/Unpaid|Part paid/) !== null);
 
 const openScreen = () =>
   render(
@@ -53,8 +53,8 @@ const openScreen = () =>
 const openForm = async () => {
   await waitFor(() => expect(owedRows()).toHaveLength(1));
   await userEvent.click(owedRows()[0]);
-  await userEvent.click(await screen.findByRole("button", { name: "Mark paid" }));
-  return screen.findByRole("dialog", { name: "Mark paid" });
+  await userEvent.click(await screen.findByRole("button", { name: "Add payment" }));
+  return screen.findByRole("dialog", { name: "Add payment" });
 };
 
 const fill = async (form: HTMLElement, label: string, value: string) => {
@@ -107,7 +107,7 @@ describe("PaymentListScreen", () => {
     expect(await screen.findByRole("heading", { name: "To pay" })).toBeInTheDocument();
     const anna = await rowOf("Anna Sample");
     expect(within(anna).getByText("1,200 · due 2026-12-01")).toBeInTheDocument();
-    expect(within(anna).getByText("Unpaid")).toBeInTheDocument();
+    expect(within(anna).getByText("Part paid")).toBeInTheDocument();
     expect(within(await rowOf("Csilla Sample")).getByText("Late")).toBeInTheDocument();
   });
 
@@ -127,24 +127,24 @@ describe("PaymentListScreen", () => {
     expect(within(ben).getByText("Paid")).toBeInTheDocument();
   });
 
-  it("opens an owed bill with payer, outstanding and due, and offers Mark paid", async () => {
+  it("opens an owed bill with payer, outstanding and due, and offers Add payment", async () => {
     openScreen();
     await userEvent.click(await rowOf("Anna Sample"));
 
-    expect(await screen.findByRole("button", { name: "Mark paid" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Add payment" })).toBeInTheDocument();
     expect(pane().textContent).toContain("Outstanding");
     expect(pane().textContent).toContain("1,200");
     expect(pane().textContent).toContain("2026-12-01");
   });
 
-  it("opens a payment with payer, amount and paid on, without Mark paid", async () => {
+  it("opens a payment with payer, amount and paid on, without Add payment", async () => {
     openScreen();
     await userEvent.click(await rowOf("Ben Sample"));
 
     await waitFor(() => expect(pane().textContent).toContain("Paid on"));
     expect(pane().textContent).toContain("2026-11-02");
     expect(pane().textContent).toContain("450");
-    expect(screen.queryByRole("button", { name: "Mark paid" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Add payment" })).toBeNull();
   });
 
   it("opens a payment with payer, amount, paid on, narration and the bill it settled", async () => {
@@ -167,12 +167,12 @@ describe("PaymentListScreen", () => {
     expect(callsTo("accounting_payment_mark_paid")).toHaveLength(0);
   });
 
-  it("shows the Mark paid form inside the bill's detail screen, not behind the list", async () => {
+  it("shows the Add payment form inside the bill's detail screen, not behind the list", async () => {
     openScreen();
     const form = await openForm();
 
     expect(pane()).toContainElement(form);
-    const inPane = within(pane()).getByRole("dialog", { name: "Mark paid" });
+    const inPane = within(pane()).getByRole("dialog", { name: "Add payment" });
     expect(within(inPane).getByLabelText("Amount")).toBeInTheDocument();
     expect(within(inPane).getByLabelText("Paid on")).toBeInTheDocument();
     expect(within(inPane).getByLabelText("Narration")).toBeInTheDocument();
@@ -187,7 +187,7 @@ describe("PaymentListScreen", () => {
     await userEvent.click(within(form).getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(callsTo("accounting_payment_mark_paid")).toHaveLength(1));
-    expect(callsTo("accounting_payment_mark_paid")[0]).toEqual(["", "accounting_payment_mark_paid", { billID: "b1", cash_account_id: "a2", amount: 500, paid_on: "2026-11-10T00:00:00Z", narration: "Cash at the counter" }]);
+    expect(callsTo("accounting_payment_mark_paid")[0]).toEqual(["", "accounting_payment_mark_paid", { billID: "b1", cash_account_id: "a2", amount: 500, paid_on: "2026-11-10T00:00:00Z", method: "cash", narration: "Cash at the counter" }]);
   });
 
   it("leaves the row in To pay with the smaller outstanding amount after a part payment, then moves it to Paid when the rest is paid", async () => {
@@ -241,7 +241,7 @@ describe("PaymentListScreen", () => {
 
     expect(await within(form).findByText("payment of 5000 is more than the outstanding 1200")).toBeInTheDocument();
     expect(screen.queryByText(/did not go through/i)).toBeNull();
-    expect(within(await rowOf("Anna Sample")).getByText("Unpaid")).toBeInTheDocument();
+    expect(within(await rowOf("Anna Sample")).getByText("Part paid")).toBeInTheDocument();
   });
 
   it("shows the words of the refusal when the caller is not permitted", async () => {
@@ -261,16 +261,16 @@ describe("PaymentListScreen", () => {
 
     expect(await within(form).findByText("There is no cash account to pay from.")).toBeInTheDocument();
     expect(callsTo("accounting_payment_mark_paid")).toHaveLength(0);
-    expect(within(await rowOf("Anna Sample")).getByText("Unpaid")).toBeInTheDocument();
+    expect(within(await rowOf("Anna Sample")).getByText("Part paid")).toBeInTheDocument();
   });
 
-  it("offers Mark paid only to a caller who holds accounting.manage", async () => {
+  it("offers Add payment only to a caller who holds accounting.manage", async () => {
     permissions = ["accounting.read"];
     openScreen();
     await userEvent.click(await rowOf("Anna Sample"));
 
     await waitFor(() => expect(pane().textContent).toContain("Outstanding"));
-    expect(screen.queryByRole("button", { name: "Mark paid" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Add payment" })).toBeNull();
   });
 
   it("says so when nothing is owed and nothing was paid", async () => {
@@ -325,7 +325,7 @@ describe("PaymentListScreen", () => {
     expect(screen.queryByText(/Owed in total/)).toBeNull();
   });
 
-  it("shrinks the total after a part payment through Mark paid", async () => {
+  it("shrinks the total after a part payment through Add payment", async () => {
     openScreen();
     expect(await screen.findByText("Owed in total: 2,000 · 2 payers")).toBeInTheDocument();
     const form = await openForm();
