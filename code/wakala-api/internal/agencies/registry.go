@@ -26,7 +26,7 @@ import (
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamagit "wakalaserver/modules/git"
 	mwanachamamarket "wakalaserver/modules/market"
 	mwanachamaratings "wakalaserver/modules/ratings"
@@ -474,7 +474,7 @@ func (r *registry) buildFormManager(ctx context.Context, id string) (mwanachamaf
 	if err != nil {
 		return nil, fmt.Errorf("FormManager: spec for instance %s: %w", id, err)
 	}
-	if err := mwanachamaforms.Provision(r.db, s); err != nil {
+	if err := mwanachamaforms.Provision(r.db, s, mwanachamaforms.WithAgencyApprovals(approvals.FormsStore{})); err != nil {
 		return nil, fmt.Errorf("FormManager: provision instance %s: %w", id, err)
 	}
 	r.hideEarlierWithdrawals(ctx, id, s)

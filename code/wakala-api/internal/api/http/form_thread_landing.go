@@ -8,8 +8,8 @@ import (
 
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
-	forms "wakalaserver/modules/forms"
-	formsmodels "wakalaserver/modules/forms/models"
+	forms "github.com/aosanya/mwanachama-backend-forms"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 
 	"wakalaserver/internal/accounts"
 )

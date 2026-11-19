@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 )
 
 type roleNamesHeld func(ctx context.Context, actorID string) ([]string, error)

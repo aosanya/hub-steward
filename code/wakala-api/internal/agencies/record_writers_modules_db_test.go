@@ -10,8 +10,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
-	formsmodels "wakalaserver/modules/forms/models"
 )
 
 func TestARegistryFormLandsAPaymentInTheLedgerAndARatingInRatingsInPostgres(t *testing.T) {

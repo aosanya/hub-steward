@@ -8,8 +8,8 @@ import (
 
 	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	"wakalaserver/internal/accounts"
-	forms "wakalaserver/modules/forms"
-	formsmodels "wakalaserver/modules/forms/models"
+	forms "github.com/aosanya/mwanachama-backend-forms"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 )
 
 func TestOnlyAStandingFormThatLandsInAThreadOpensOne(t *testing.T) {

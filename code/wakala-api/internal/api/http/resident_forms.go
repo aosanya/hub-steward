@@ -3,8 +3,8 @@ package http
 import (
 	"context"
 
+	formsroutes "github.com/aosanya/mwanachama-backend-forms/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	formsroutes "wakalaserver/modules/forms/routes"
 
 	"wakalaserver/internal/agencies"
 )

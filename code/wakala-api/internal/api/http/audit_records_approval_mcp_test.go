@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	formsmodels "wakalaserver/modules/forms/models"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 )
 
 type mayorApprovalWalk struct {

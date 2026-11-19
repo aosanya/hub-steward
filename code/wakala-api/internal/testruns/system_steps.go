@@ -8,7 +8,7 @@ import (
 	"time"
 
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	formsmodels "wakalaserver/modules/forms/models"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 )
 
 const (

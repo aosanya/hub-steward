@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 )
 
 type placesHeld interface {

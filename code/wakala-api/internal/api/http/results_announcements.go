@@ -7,7 +7,7 @@ import (
 
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
-	formsmodels "wakalaserver/modules/forms/models"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 )
 
 func (m surveysAnnounced) PublishResults(ctx context.Context, formID, gitPath, gitCommit string, chapterIDs []string, publishedBy string) (formsmodels.ResultReport, error) {

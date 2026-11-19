@@ -6,8 +6,8 @@ import (
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	commroutes "github.com/aosanya/mwanachama-backend-comm/routes"
-	mwanachamaforms "wakalaserver/modules/forms"
-	formsroutes "wakalaserver/modules/forms/routes"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
+	formsroutes "github.com/aosanya/mwanachama-backend-forms/routes"
 
 	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
 )

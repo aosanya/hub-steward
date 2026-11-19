@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	mwanachamaaudit "wakalaserver/modules/audit"
+	mwanachamaaudit "github.com/aosanya/mwanachama-backend-audit"
 )
 
 const (

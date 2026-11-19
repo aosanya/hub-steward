@@ -10,9 +10,9 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamacouncil "wakalaserver/modules/council"
-	councilmcp "wakalaserver/modules/council/mcp"
-	councilroutes "wakalaserver/modules/council/routes"
+	mwanachamacouncil "github.com/aosanya/mwanachama-backend-council"
+	councilmcp "github.com/aosanya/mwanachama-backend-council/mcp"
+	councilroutes "github.com/aosanya/mwanachama-backend-council/routes"
 
 	"wakalaserver/internal/agencies"
 )

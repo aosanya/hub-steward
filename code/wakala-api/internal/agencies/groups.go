@@ -8,7 +8,7 @@ import (
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
 

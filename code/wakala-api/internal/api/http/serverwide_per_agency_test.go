@@ -9,7 +9,8 @@ import (
 
 	"github.com/aosanya/mwanachama-backend-shared/spec"
 	catalog "github.com/aosanya/mwanachama-backend-catalog"
-	forms "wakalaserver/modules/forms"
+	forms "github.com/aosanya/mwanachama-backend-forms"
+	"wakalaserver/internal/approvals"
 	permissions "wakalaserver/modules/permissions"
 )
 
@@ -44,7 +45,7 @@ func newTwoAgencies(t *testing.T) twoAgencies {
 	if err != nil {
 		t.Fatalf("forms SpecFor: %v", err)
 	}
-	if err := forms.Provision(fdb, fs); err != nil {
+	if err := forms.Provision(fdb, fs, forms.WithAgencyApprovals(approvals.FormsStore{})); err != nil {
 		t.Fatalf("forms Provision: %v", err)
 	}
 	fm, err := forms.NewFormManager(fdb, fs)

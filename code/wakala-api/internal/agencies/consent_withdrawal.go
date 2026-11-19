@@ -6,7 +6,7 @@ import (
 
 	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 )
 
 type WithdrawalPolicy string

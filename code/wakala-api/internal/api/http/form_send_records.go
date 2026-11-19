@@ -6,8 +6,8 @@ import (
 	"errors"
 
 	catalog "github.com/aosanya/mwanachama-backend-catalog"
-	forms "wakalaserver/modules/forms"
-	formsmodels "wakalaserver/modules/forms/models"
+	forms "github.com/aosanya/mwanachama-backend-forms"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 )
 
 type formsCatalogs interface {

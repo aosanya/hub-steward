@@ -4,10 +4,11 @@ import (
 	"log/slog"
 	"os"
 
+	forms "github.com/aosanya/mwanachama-backend-forms"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	forms "wakalaserver/modules/forms"
+	"wakalaserver/internal/approvals"
 )
 
 func buildForms(log *slog.Logger) forms.FormManager {
@@ -31,7 +32,7 @@ func buildForms(log *slog.Logger) forms.FormManager {
 		os.Exit(1)
 	}
 	limitModulePool(db)
-	if err := forms.Provision(db, s); err != nil {
+	if err := forms.Provision(db, s, forms.WithAgencyApprovals(approvals.FormsStore{})); err != nil {
 		log.Error("could not provision the forms tables", "error", err.Error())
 		os.Exit(1)
 	}

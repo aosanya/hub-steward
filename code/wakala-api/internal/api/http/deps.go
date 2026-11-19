@@ -5,10 +5,10 @@ import (
 	"time"
 
 	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
-	mwanachamaaudit "wakalaserver/modules/audit"
 	catalog "github.com/aosanya/mwanachama-backend-catalog"
-	mwanachamacouncil "wakalaserver/modules/council"
-	forms "wakalaserver/modules/forms"
+	mwanachamaaudit "github.com/aosanya/mwanachama-backend-audit"
+	mwanachamacouncil "github.com/aosanya/mwanachama-backend-council"
+	forms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamainsights "wakalaserver/modules/insights"
 	permissions "wakalaserver/modules/permissions"
 	ratings "wakalaserver/modules/ratings"

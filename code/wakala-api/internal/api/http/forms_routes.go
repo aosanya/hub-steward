@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	forms "wakalaserver/modules/forms"
-	formsmodels "wakalaserver/modules/forms/models"
-	formsroutes "wakalaserver/modules/forms/routes"
+	forms "github.com/aosanya/mwanachama-backend-forms"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
+	formsroutes "github.com/aosanya/mwanachama-backend-forms/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

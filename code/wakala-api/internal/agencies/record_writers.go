@@ -6,7 +6,7 @@ import (
 
 	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamaratings "wakalaserver/modules/ratings"
 )
 

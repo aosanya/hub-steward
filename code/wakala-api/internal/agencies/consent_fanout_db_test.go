@@ -19,7 +19,7 @@ import (
 	mwanachamaengage "github.com/aosanya/mwanachama-backend-engage"
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	"github.com/aosanya/mwanachama-backend-comm/models"
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 )
 
 func localDatabaseOrSkip(t *testing.T) string {

@@ -17,7 +17,7 @@ import (
 	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
 	custodymodels "github.com/aosanya/mwanachama-backend-custody/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 )
 
 var earlierWithdrawalDatabases atomic.Int64

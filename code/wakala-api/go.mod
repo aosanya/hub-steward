@@ -7,12 +7,15 @@ require (
 	github.com/aosanya/mwanachama-backend-agency v0.1.0
 	github.com/aosanya/mwanachama-backend-ai v0.1.0
 	github.com/aosanya/mwanachama-backend-assetmanager v0.1.0
+	github.com/aosanya/mwanachama-backend-audit v0.1.0
 	github.com/aosanya/mwanachama-backend-auth v0.1.0
 	github.com/aosanya/mwanachama-backend-catalog v0.1.0
 	github.com/aosanya/mwanachama-backend-comm v0.1.0
+	github.com/aosanya/mwanachama-backend-council v0.1.0
 	github.com/aosanya/mwanachama-backend-custody v0.1.0
 	github.com/aosanya/mwanachama-backend-digitaltwin v0.1.0
 	github.com/aosanya/mwanachama-backend-engage v0.1.0
+	github.com/aosanya/mwanachama-backend-forms v0.1.0
 	github.com/aosanya/mwanachama-backend-sources v0.1.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/go-git/go-billy/v5 v5.6.2

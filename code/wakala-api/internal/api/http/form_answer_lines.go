@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	formsmodels "wakalaserver/modules/forms/models"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 )
 
 func answerLines(questions []formsmodels.Question, optionLabels map[string]string, stored []formsmodels.Answer) string {

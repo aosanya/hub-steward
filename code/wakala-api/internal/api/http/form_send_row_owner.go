@@ -7,8 +7,8 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	forms "wakalaserver/modules/forms"
-	formsmodels "wakalaserver/modules/forms/models"
+	forms "github.com/aosanya/mwanachama-backend-forms"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 
 	"wakalaserver/internal/agencies"
 )

@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	mwanachamaforms "wakalaserver/modules/forms"
-	formsmodels "wakalaserver/modules/forms/models"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 )
 
 func TestARegistryFormLandsItsAnswersInTheCatalogInPostgres(t *testing.T) {

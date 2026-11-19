@@ -17,8 +17,8 @@ import (
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamaaudit "wakalaserver/modules/audit"
-	mwanachamacouncil "wakalaserver/modules/council"
+	mwanachamaaudit "github.com/aosanya/mwanachama-backend-audit"
+	mwanachamacouncil "github.com/aosanya/mwanachama-backend-council"
 	mwanachamainsights "wakalaserver/modules/insights"
 
 	"wakalaserver/internal/agencies"
