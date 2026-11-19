@@ -36,7 +36,7 @@ let memberships: string[];
 let applications: Row[];
 let raised: Row[];
 let formQuestions: Row[];
-let formTargets: string[];
+let formReachesPerson: boolean;
 let refusal: string;
 
 const answer = async (name: string, args: unknown) => {
@@ -59,9 +59,8 @@ const answer = async (name: string, args: unknown) => {
     return {};
   }
   if (name === "forms_submission_list_of_person") return { items: applications };
-  if (name === "forms_form_list") return { rows: [{ form: { id: "f1", title: permitForm, status: "open" } }] };
+  if (name === "forms_form_list_reaching_person") return { items: formReachesPerson ? [{ id: "f1", title: permitForm, status: "open" }] : [] };
   if (name === "forms_question_list") return { items: formQuestions };
-  if (name === "forms_target_list") return { items: formTargets.map((chapter_id) => ({ form_id: given.form_id, chapter_id })) };
   if (name === "forms_submission_file" && refusal) throw new mcp.McpError(refusal);
   if (name === "forms_submission_file") {
     applications = [...applications, { id: "s9", form_id: given.form_id, form_title: permitForm, member_id: given.member_id, submitted_at: "2026-11-18T09:30:00Z" }];
@@ -82,7 +81,7 @@ beforeEach(() => {
   applications = [];
   raised = [];
   formQuestions = [];
-  formTargets = ["g1"];
+  formReachesPerson = true;
   refusal = "";
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
@@ -213,13 +212,26 @@ describe.each(widths)("the empty Applications card on $name", (view) => {
     await openPerson(view.wide);
 
     const card = await cardOf(/No applications yet/);
-    expect(callsTo("forms_form_list")).toEqual([]);
+    expect(callsTo("forms_form_list_reaching_person")).toEqual([]);
     await userEvent.click(await within(card).findByRole("button", { name: "Start an application" }));
 
-    await waitFor(() => expect(callsTo("forms_form_list")).toHaveLength(1));
+    await waitFor(() => expect(callsTo("forms_form_list_reaching_person")).toEqual([{ person_id: personId }]));
   });
 
-  it("leaves out a form that was sent only to groups the person is not in", async () => {
+  it("leaves out a form the hub says does not reach the person", async () => {
+    formReachesPerson = false;
+    await openPerson(view.wide);
+
+    const card = await cardOf(/No applications yet/);
+    await userEvent.click(await within(card).findByRole("button", { name: "Start an application" }));
+    const picker = await screen.findByRole("dialog", { name: "Start an application" });
+
+    await waitFor(() => expect(callsTo("forms_form_list_reaching_person")).toEqual([{ person_id: personId }]));
+    expect(within(picker).queryByRole("button", { name: new RegExp(permitForm) })).toBeNull();
+    expect(within(picker).getByText(`There is no application for ${personName} to start.`)).toBeTruthy();
+  });
+
+  it("offers a form the hub says reaches the person even when the person is in none of its target groups", async () => {
     memberships = ["g2"];
     await openPerson(view.wide);
 
@@ -227,9 +239,9 @@ describe.each(widths)("the empty Applications card on $name", (view) => {
     await userEvent.click(await within(card).findByRole("button", { name: "Start an application" }));
     const picker = await screen.findByRole("dialog", { name: "Start an application" });
 
-    await waitFor(() => expect(callsTo("forms_target_list")).toEqual([{ form_id: "f1" }]));
-    expect(within(picker).queryByRole("button", { name: new RegExp(permitForm) })).toBeNull();
-    expect(within(picker).getByText(`There is no application for ${personName} to start.`)).toBeTruthy();
+    expect(await within(picker).findByRole("button", { name: new RegExp(permitForm) })).toBeTruthy();
+    expect(callsTo("forms_target_list")).toEqual([]);
+    expect(callsTo("forms_form_list")).toEqual([]);
   });
 
   it("says in plain words, with the person's name, that the person is not in the group when the hub still refuses", async () => {
