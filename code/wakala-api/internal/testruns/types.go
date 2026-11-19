@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamaai "wakalaserver/modules/ai"
 )
 
 const BudgetReached = "Budget reached"

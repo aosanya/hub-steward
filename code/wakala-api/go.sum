@@ -11,6 +11,10 @@ github.com/SherClockHolmes/webpush-go v1.4.0 h1:ocnzNKWN23T9nvHi6IfyrQjkIc0oJWv1
 github.com/SherClockHolmes/webpush-go v1.4.0/go.mod h1:XSq8pKX11vNV8MJEMwjrlTkxhAj1zKfxmyhdV7Pd6UA=
 github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be h1:9AeTilPcZAjCFIImctFaOjnTIavg87rW78vTPkQqLI8=
 github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be/go.mod h1:ySMOLuWl6zY27l47sB3qLNK6tF2fkHG55UZxx8oIVo4=
+github.com/aosanya/mwanachama-backend-ai v0.1.0 h1:NXA5ENRfbP96JpBEDFDcoXpZgc7N5anfRohA0/CAb80=
+github.com/aosanya/mwanachama-backend-ai v0.1.0/go.mod h1:S66Wr90gMP+y5LQwX+ty01HUKE/n9ZOEFIfsafFm9Rk=
+github.com/aosanya/mwanachama-backend-assetmanager v0.1.0 h1:bg8Bvkq5T8ajqKcB8pdj/z2ywQbqd1iCzi4ALze6vBA=
+github.com/aosanya/mwanachama-backend-assetmanager v0.1.0/go.mod h1:PnvK0AemrvnNJr2KOd7MyYie/7p8HZsja8IXUNxgXD0=
 github.com/aosanya/mwanachama-backend-shared v0.3.1 h1:k9ZXL0gGy14Vj+jLfzHtUpj/UdOOIjQODfL0WITdji8=
 github.com/aosanya/mwanachama-backend-shared v0.3.1/go.mod h1:YePPawJxq4ASWv/bLKBBWHvB+vnJ3kf9/ccJE98nkGU=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5 h1:0CwZNZbxp69SHPdPJAN/hZIm0C4OItdklCFmMRWYpio=

@@ -5,10 +5,10 @@ import (
 	"log/slog"
 	"time"
 
+	ai "github.com/aosanya/mwanachama-backend-ai"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymcp "wakalaserver/modules/agency/mcp"
-	ai "wakalaserver/modules/ai"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/reviewruns"

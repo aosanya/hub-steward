@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	ai "wakalaserver/modules/ai"
+	ai "github.com/aosanya/mwanachama-backend-ai"
 )
 
 func (s seatBriefSource) AgencyInstructionParts(ctx context.Context, agencyID, roleID string) ([]ai.InstructionPart, error) {

@@ -3,13 +3,13 @@ package testruns
 import (
 	"sync"
 
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commroutes "wakalaserver/modules/comm/routes"
 	mwanachamaforms "wakalaserver/modules/forms"
 	formsroutes "wakalaserver/modules/forms/routes"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
-	mwanachamaai "wakalaserver/modules/ai"
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
 )
 
 type formsShape struct{ mwanachamaforms.FormManager }

@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
+	aimodels "github.com/aosanya/mwanachama-backend-ai/models"
 	mwanachamaagency "wakalaserver/modules/agency"
 	"wakalaserver/modules/agency/models"
-	mwanachamaai "wakalaserver/modules/ai"
-	aimodels "wakalaserver/modules/ai/models"
 )
 
 func TestRosterExplainsAnAreaWithNoReviewer(t *testing.T) {

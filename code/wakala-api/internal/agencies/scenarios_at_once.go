@@ -3,8 +3,8 @@ package agencies
 import (
 	"context"
 
+	ai "github.com/aosanya/mwanachama-backend-ai"
 	mwanachamaagency "wakalaserver/modules/agency"
-	ai "wakalaserver/modules/ai"
 )
 
 type ScenariosAtOnce func(ctx context.Context, instanceID string) (int, error)

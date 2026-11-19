@@ -5,8 +5,8 @@ import (
 	"slices"
 	"testing"
 
+	ai "github.com/aosanya/mwanachama-backend-ai"
 	agencymodels "wakalaserver/modules/agency/models"
-	ai "wakalaserver/modules/ai"
 )
 
 func withAITools(d *Deps) {

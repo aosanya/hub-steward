@@ -5,10 +5,10 @@ import (
 	"strings"
 	"time"
 
+	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
-	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamacomm "wakalaserver/modules/comm"
 	mwanachamacustody "wakalaserver/modules/custody"

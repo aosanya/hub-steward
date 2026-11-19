@@ -7,8 +7,8 @@ import (
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
-	ai "wakalaserver/modules/ai"
-	airoutes "wakalaserver/modules/ai/routes"
+	ai "github.com/aosanya/mwanachama-backend-ai"
+	airoutes "github.com/aosanya/mwanachama-backend-ai/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

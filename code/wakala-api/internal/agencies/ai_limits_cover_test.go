@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	ai "wakalaserver/modules/ai"
-	aimodels "wakalaserver/modules/ai/models"
+	ai "github.com/aosanya/mwanachama-backend-ai"
+	aimodels "github.com/aosanya/mwanachama-backend-ai/models"
 )
 
 type fakeAI struct {

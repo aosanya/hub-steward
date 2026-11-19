@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamaai "wakalaserver/modules/ai"
 )
 
 const replyTokens = 16384

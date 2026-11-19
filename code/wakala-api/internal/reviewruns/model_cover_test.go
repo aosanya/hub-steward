@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	mwanachamaai "wakalaserver/modules/ai"
-	aimodels "wakalaserver/modules/ai/models"
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
+	aimodels "github.com/aosanya/mwanachama-backend-ai/models"
 )
 
 type fakeManager struct {

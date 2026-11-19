@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	assetmodels "wakalaserver/modules/assetmanager/models"
+	assetmodels "github.com/aosanya/mwanachama-backend-assetmanager/models"
 )
 
 func (b businessRegisterWalk) addBusinessWithAsset(t *testing.T, business, asset string) *httptest.ResponseRecorder {

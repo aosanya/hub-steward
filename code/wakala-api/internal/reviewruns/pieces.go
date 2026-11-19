@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
 	mwanachamaagency "wakalaserver/modules/agency"
-	mwanachamaai "wakalaserver/modules/ai"
 )
 
 var errNoAIBackend = errors.New("The review has no AI backend on this server")

@@ -5,10 +5,10 @@ import (
 	"errors"
 	"slices"
 
+	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
-	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	mwanachamacomm "wakalaserver/modules/comm"
 	mwanachamacustody "wakalaserver/modules/custody"
 	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"

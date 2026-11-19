@@ -6,9 +6,9 @@ import (
 	"log/slog"
 	"time"
 
+	ai "github.com/aosanya/mwanachama-backend-ai"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	ai "wakalaserver/modules/ai"
 	mwanachamamarket "wakalaserver/modules/market"
 
 	"wakalaserver/internal/accounts"

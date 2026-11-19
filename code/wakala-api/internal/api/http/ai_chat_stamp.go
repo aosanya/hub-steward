@@ -7,10 +7,10 @@ import (
 	"io"
 	"net/http"
 
+	aimodels "github.com/aosanya/mwanachama-backend-ai/models"
+	airoutes "github.com/aosanya/mwanachama-backend-ai/routes"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
-	aimodels "wakalaserver/modules/ai/models"
-	airoutes "wakalaserver/modules/ai/routes"
 )
 
 const aiChatAction = "ai.account.chat"

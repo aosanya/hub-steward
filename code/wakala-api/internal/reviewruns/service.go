@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	mwanachamaai "wakalaserver/modules/ai"
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
 )
 
 type AccountCheck func(ctx context.Context, instanceID string) error

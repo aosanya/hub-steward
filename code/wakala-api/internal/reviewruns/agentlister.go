@@ -3,9 +3,9 @@ package reviewruns
 import (
 	"context"
 
+	aimodels "github.com/aosanya/mwanachama-backend-ai/models"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	aimodels "wakalaserver/modules/ai/models"
 )
 
 type AIRoleLister interface {
