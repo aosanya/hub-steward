@@ -3,8 +3,8 @@ package testruns
 import (
 	"context"
 
-	mwanachamaai "wakalaserver/modules/ai"
-	aimodels "wakalaserver/modules/ai/models"
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
+	aimodels "github.com/aosanya/mwanachama-backend-ai/models"
 )
 
 type AIModel struct {

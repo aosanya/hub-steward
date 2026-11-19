@@ -9,7 +9,7 @@ import (
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
+	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

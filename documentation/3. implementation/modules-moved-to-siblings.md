@@ -6,6 +6,8 @@ A module listed here is no longer a folder under `code/wakala-api/modules`. The 
 |---|---|---|---|---|
 | `actor` | `github.com/aosanya/mwanachama-backend-actor` | v0.1.0 | 2026-11-19 | The package is named `mwanachamaactor`, as the hub copy was; the subpackages are `models` and `routes`. The sibling refuses a malformed or an empty name before the plaintext check and treats a delegation whose `ends_at` is in the past as created and already ended, where the hub copy refused it. |
 | `custody` | `github.com/aosanya/mwanachama-backend-custody` | v0.1.0 | 2026-11-19 | The package is named `mwanachamacustody`, where the hub copy was `custody`; the hub files that imported it as `custody` keep that name through an import alias. The error prefix is `mwanachamacustody:`. Publishing a consent text retries and numbers the next label from the highest `v<number>`; a duplicate consent version answers 409 and names the fields, where the hub copy answered 500. |
+| `ai` | `github.com/aosanya/mwanachama-backend-ai` | v0.1.0 | 2026-11-19 | Imported under the aliases the hub already used (`ai`, `mwanachamaai`, `aimodels`, `airoutes`). The sibling carries the `connection_test` usage kind the hub copy lacked, so a working Test connection click counts as one `connection_test` request in the usage breakdown. The sibling's `mcp` package is not used; the hub builds its AI tools in `internal/api/http/mcp_tools_ai.go`. |
+| `assetmanager` | `github.com/aosanya/mwanachama-backend-assetmanager` | v0.1.0 | 2026-11-19 | The package is named `mwanachamaassetmanager`, so the hub imports it under that alias (and under `assetmanager` in one file). Asset updates take `models.AssetUpdate` with an optional `version`, as before; the sibling adds the refusal of a serial tag race (`ErrAssetSerialTagExists`). |
 
 Each sibling lists every difference from the hub copy it replaced in its own `documentation/3. implementation/hub-import-drift.md`.
 
@@ -24,3 +26,9 @@ Each row is a hub module whose in-tree copy under `code/wakala-api/modules/<name
 ## What to do when a sibling needs a change
 
 Change the sibling, tag it, and raise the version in `code/wakala-api/go.mod` with `go get github.com/aosanya/mwanachama-backend-<name>@<tag>`. Never edit a module in the hub, and never add a `replace` line to a committed `go.mod`.
+| `ai` | `internal/api/http/ai_routes.go`, `ai_chat_stamp.go`, `ai_manager.go`, `ai_parts.go`, `ai_gateway.go`, `ai_base_policy.go`, `mcp_tools_ai.go`, `mcp_visible.go`; the AI entries of `modules/agency/models/permissions_catalog.json`; `internal/testruns`, `internal/reviewruns`, `internal/agencies` as callers |
+| `assetmanager` | `internal/api/http/assetmanager_routes.go`, `mcp_assets_permissions.go`, `mcp.go`, `mcp_tool_actions.go`, `change_permissions.go`, `membership.go`; `internal/agencies/assetmanager_spec.go`, `registry.go`, `caches.go`; the entries of `modules/agency/models/modules_catalog.json` and `permissions_catalog.json` |
+
+## Shared version
+
+Both siblings require `mwanachama-backend-shared` v0.3.0. The hub requires v0.3.1, which the module graph selects, so the siblings and the hub's other imports read one copy of shared.

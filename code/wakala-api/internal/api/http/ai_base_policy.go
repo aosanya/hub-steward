@@ -12,7 +12,7 @@ import (
 	"syscall"
 	"time"
 
-	ai "wakalaserver/modules/ai"
+	ai "github.com/aosanya/mwanachama-backend-ai"
 )
 
 var (

@@ -11,8 +11,8 @@ import (
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
-	ai "wakalaserver/modules/ai"
-	airoutes "wakalaserver/modules/ai/routes"
+	ai "github.com/aosanya/mwanachama-backend-ai"
+	airoutes "github.com/aosanya/mwanachama-backend-ai/routes"
 	catalogroutes "wakalaserver/modules/catalog/routes"
 
 	"wakalaserver/internal/accounts"

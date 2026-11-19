@@ -7,7 +7,7 @@ import (
 
 	"github.com/aosanya/mwanachama-backend-shared/spec"
 
-	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
+	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
 )
 
 //go:embed assetmanager.wakala.json

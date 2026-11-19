@@ -14,6 +14,8 @@ import (
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	agencyroutes "github.com/aosanya/mwanachama-backend-agency/routes"
+	airoutes "github.com/aosanya/mwanachama-backend-ai/routes"
+	assetroutes "github.com/aosanya/mwanachama-backend-assetmanager/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"
@@ -21,8 +23,6 @@ import (
 	"wakalaserver/internal/languages"
 	"wakalaserver/internal/notifyrules"
 	accountingroutes "wakalaserver/modules/accounting/routes"
-	airoutes "wakalaserver/modules/ai/routes"
-	assetroutes "wakalaserver/modules/assetmanager/routes"
 	catalogroutes "wakalaserver/modules/catalog/routes"
 	gitroutes "wakalaserver/modules/git/routes"
 	sourcesroutes "wakalaserver/modules/sources/routes"

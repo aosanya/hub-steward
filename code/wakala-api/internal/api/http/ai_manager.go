@@ -7,7 +7,7 @@ import (
 
 	"gorm.io/gorm"
 
-	ai "wakalaserver/modules/ai"
+	ai "github.com/aosanya/mwanachama-backend-ai"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/authz"

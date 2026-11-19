@@ -26,7 +26,7 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymcp "github.com/aosanya/mwanachama-backend-agency/mcp"
-	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
+	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
 	insightsmcp "wakalaserver/modules/insights/mcp"
 	mwanachamasources "wakalaserver/modules/sources"
 

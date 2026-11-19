@@ -8,8 +8,8 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	"github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamaai "wakalaserver/modules/ai"
-	aimodels "wakalaserver/modules/ai/models"
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
+	aimodels "github.com/aosanya/mwanachama-backend-ai/models"
 )
 
 func TestRosterExplainsAnAreaWithNoReviewer(t *testing.T) {

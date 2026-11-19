@@ -4,7 +4,7 @@ import (
 	"context"
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
-	ai "wakalaserver/modules/ai"
+	ai "github.com/aosanya/mwanachama-backend-ai"
 )
 
 type ScenariosAtOnce func(ctx context.Context, instanceID string) (int, error)

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"slices"
 
-	ai "wakalaserver/modules/ai"
+	ai "github.com/aosanya/mwanachama-backend-ai"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

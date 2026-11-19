@@ -5,8 +5,8 @@ import (
 
 	actorroutes "github.com/aosanya/mwanachama-backend-actor/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
-	assetroutes "wakalaserver/modules/assetmanager/routes"
+	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
+	assetroutes "github.com/aosanya/mwanachama-backend-assetmanager/routes"
 	catalogroutes "wakalaserver/modules/catalog/routes"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commroutes "wakalaserver/modules/comm/routes"

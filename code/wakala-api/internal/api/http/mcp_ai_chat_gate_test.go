@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	ai "wakalaserver/modules/ai"
+	ai "github.com/aosanya/mwanachama-backend-ai"
 )
 
 func withAITools(d *Deps) {

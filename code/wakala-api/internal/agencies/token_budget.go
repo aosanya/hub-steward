@@ -3,7 +3,7 @@ package agencies
 import (
 	"context"
 
-	ai "wakalaserver/modules/ai"
+	ai "github.com/aosanya/mwanachama-backend-ai"
 )
 
 type TokensPerTest func(ctx context.Context, instanceID string) (int, error)

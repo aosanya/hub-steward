@@ -9,7 +9,7 @@ import (
 	mwanachamaforms "wakalaserver/modules/forms"
 	formsroutes "wakalaserver/modules/forms/routes"
 
-	mwanachamaai "wakalaserver/modules/ai"
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
 )
 
 type formsShape struct{ mwanachamaforms.FormManager }

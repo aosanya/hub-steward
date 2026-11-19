@@ -5,7 +5,7 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	aimodels "wakalaserver/modules/ai/models"
+	aimodels "github.com/aosanya/mwanachama-backend-ai/models"
 )
 
 type AIRoleLister interface {

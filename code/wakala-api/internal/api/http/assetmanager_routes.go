@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	assetroutes "wakalaserver/modules/assetmanager/routes"
+	assetroutes "github.com/aosanya/mwanachama-backend-assetmanager/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

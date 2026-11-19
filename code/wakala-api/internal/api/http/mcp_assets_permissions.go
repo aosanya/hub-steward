@@ -3,9 +3,9 @@ package http
 import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
-	assetmcp "wakalaserver/modules/assetmanager/mcp"
-	assetroutes "wakalaserver/modules/assetmanager/routes"
+	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
+	assetmcp "github.com/aosanya/mwanachama-backend-assetmanager/mcp"
+	assetroutes "github.com/aosanya/mwanachama-backend-assetmanager/routes"
 )
 
 func (d *Deps) registerAssetMCPTools(server *mcp.Server, resolve assetmcp.ManagerResolver) {

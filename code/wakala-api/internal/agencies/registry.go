@@ -19,7 +19,7 @@ import (
 	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
-	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
+	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commmodels "wakalaserver/modules/comm/models"

@@ -9,7 +9,7 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamaai "wakalaserver/modules/ai"
+	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
 )
 
 const refusedPrefix = "refused: "
