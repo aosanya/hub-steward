@@ -8,7 +8,9 @@ require (
 	github.com/aosanya/mwanachama-backend-agency v0.1.0
 	github.com/aosanya/mwanachama-backend-ai v0.1.0
 	github.com/aosanya/mwanachama-backend-assetmanager v0.1.0
+	github.com/aosanya/mwanachama-backend-auth v0.1.0
 	github.com/aosanya/mwanachama-backend-custody v0.1.0
+	github.com/aosanya/mwanachama-backend-sources v0.1.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/go-git/go-billy/v5 v5.6.2
 	github.com/go-git/go-git/v5 v5.16.5
@@ -56,12 +58,12 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
-	github.com/nyaruka/phonenumbers v1.8.1
+	github.com/nyaruka/phonenumbers v1.8.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/segmentio/asm v1.1.3 // indirect
 	github.com/segmentio/encoding v0.5.4 // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
-	golang.org/x/crypto v0.45.0
+	golang.org/x/crypto v0.45.0 // indirect
 	golang.org/x/oauth2 v0.35.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect

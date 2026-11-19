@@ -12,11 +12,11 @@ import (
 	"syscall"
 	"time"
 
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
 	"github.com/glebarez/sqlite"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	mwanachamaaudit "wakalaserver/modules/audit"
-	mwanachamaauth "wakalaserver/modules/auth"
 	mwanachamacouncil "wakalaserver/modules/council"
 	mwanachamainsights "wakalaserver/modules/insights"
 

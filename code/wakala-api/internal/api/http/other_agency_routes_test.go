@@ -17,6 +17,7 @@ import (
 	airoutes "github.com/aosanya/mwanachama-backend-ai/routes"
 	assetroutes "github.com/aosanya/mwanachama-backend-assetmanager/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"
 	"wakalaserver/internal/formsettings"
@@ -25,7 +26,6 @@ import (
 	accountingroutes "wakalaserver/modules/accounting/routes"
 	catalogroutes "wakalaserver/modules/catalog/routes"
 	gitroutes "wakalaserver/modules/git/routes"
-	sourcesroutes "wakalaserver/modules/sources/routes"
 )
 
 const (

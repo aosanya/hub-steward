@@ -17,6 +17,7 @@ import (
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
+	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
@@ -30,7 +31,6 @@ import (
 	mwanachamamarket "wakalaserver/modules/market"
 	mwanachamaratings "wakalaserver/modules/ratings"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
-	mwanachamasources "wakalaserver/modules/sources"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 	mwanachamavoting "wakalaserver/modules/voting"
 )

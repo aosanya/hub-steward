@@ -11,13 +11,13 @@ import (
 	actorroutes "github.com/aosanya/mwanachama-backend-actor/routes"
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	"github.com/aosanya/mwanachama-backend-agency/models"
+	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
 	"wakalaserver/internal/languages"
 	mwanachamamarket "wakalaserver/modules/market"
 	riskmodels "wakalaserver/modules/riskmanager/models"
-	mwanachamasources "wakalaserver/modules/sources"
 )
 
 var ErrApplyFailed = errors.New("the approved write could not be carried out")

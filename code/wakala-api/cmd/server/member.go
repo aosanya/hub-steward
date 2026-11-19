@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
 	"gorm.io/gorm"
-	mwanachamaauth "wakalaserver/modules/auth"
 
 	apihttp "wakalaserver/internal/api/http"
 	"wakalaserver/internal/provision"

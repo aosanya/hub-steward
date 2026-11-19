@@ -12,10 +12,10 @@ import (
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/authz"
 	"wakalaserver/internal/throttle"
-	mwanachamaauth "wakalaserver/modules/auth"
 )
 
 var coverDatabases atomic.Int64

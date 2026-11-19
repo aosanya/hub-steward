@@ -18,9 +18,9 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
+	authmodels "github.com/aosanya/mwanachama-backend-auth/models"
 	"wakalaserver/internal/specs"
-	mwanachamaauth "wakalaserver/modules/auth"
-	authmodels "wakalaserver/modules/auth/models"
 )
 
 const twoProcessRounds = 40

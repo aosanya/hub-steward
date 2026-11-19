@@ -32,7 +32,7 @@ PORT=8082 WAKALA_SQLITE_PATH=/tmp/wakala.db /tmp/wakala-server
 | `internal/approvals/` | The proposal store behind approvals |
 | `internal/authz/`, `internal/session/`, `internal/apikeys/` | Permission caches, signed sessions, API and service keys |
 | `internal/shopauth/` | Sending and checking the emailed sign-in link |
-| `modules/` | One folder per module: `agency`, `actor`, `comm`, `forms`, `catalog`, `market`, `riskmanager`, `voting`, `custody`, `digitaltwin`, `engage`, `taskmanager`, `sources`, `assetmanager`, `ai` and others |
+| `modules/` | One folder per module: `agency`, `actor`, `comm`, `forms`, `catalog`, `market`, `riskmanager`, `voting`, `custody`, `digitaltwin`, `engage`, `taskmanager`, `assetmanager`, `ai` and others |
 | `modules/shared/` | The engine the modules share: `spec`, `specstore`, `dispatch`, `httpwire` |
 
 ## How a module becomes routes and tools
@@ -60,13 +60,8 @@ A module declares its objects and its operations in JSON, and writes only the be
 
 - **Approvals.** The routes are in `internal/api/http/approvals_routes.go`: propose, list, decide, amend. Deciding is for an agency owner (`mustOwnAgency`, line 50). A decided proposal is carried out only if its kind is in the `approvalAppliers` map in `approvals_apply.go`; any other kind is recorded and nothing is written. A decision carries `seen_amendments`, the number of amendments the approver read (the length of the `amendments` list); the store refuses it with 409 if the proposal has a different number now, so an owner never approves content they did not read. A decision that omits it counts as `0`, so it is accepted only on a proposal nobody has amended; this holds over the route and over the MCP tool `agency_decide_approval`, for approving and for refusing.
 - **Accounts and sign-in.** `POST /auth/magic-link` is in `member_signin.go`; the link is sent and checked by `internal/shopauth/`. [local-database.md](local-database.md) says how to run it.
-<<<<<<< HEAD
-- **The AI gateway.** `POST /instances/{instanceID}/ai/v1/chat/completions` is in `ai_gateway.go`. Accounts, roles, instructions and limits are in `modules/ai/` and `ai_routes.go`. A provider is `openai_compatible`, `anthropic` or `gemini` (`modules/ai/models/models.go`). A stored key is sealed with `AI_MASTER_KEY` (`modules/ai/seal.go`). [other-models.md](other-models.md) covers the choice of model.
-- **Permissions.** A role holds permission codes; each code lists the actions it opens (`mwanachama-backend-agency/models/permissions_catalog.json`). An agent's tool calls are checked against its role (`internal/api/http/agent_permissions.go`).
-=======
 - **The AI gateway.** `POST /instances/{instanceID}/ai/v1/chat/completions` is in `ai_gateway.go`. Accounts, roles, instructions and limits are in the `mwanachama-backend-ai` module (imported at its tagged version; see [modules-moved-to-siblings.md](../modules-moved-to-siblings.md)) and in the hub's `ai_routes.go`. A provider is `openai_compatible`, `anthropic` or `gemini` (`models/models.go` of that module). A stored key is sealed with `AI_MASTER_KEY` (`seal.go` of that module). [other-models.md](other-models.md) covers the choice of model.
-- **Permissions.** A role holds permission codes; each code lists the actions it opens (`modules/agency/models/permissions_catalog.json`). An agent's tool calls are checked against its role (`internal/api/http/agent_permissions.go`).
->>>>>>> import-ai
+- **Permissions.** A role holds permission codes; each code lists the actions it opens (`mwanachama-backend-agency/models/permissions_catalog.json`). An agent's tool calls are checked against its role (`internal/api/http/agent_permissions.go`).
 - **Agent keys.** Service keys are in `service_keys.go` and `service_grants.go`.
 
 ## Add an operation to a module

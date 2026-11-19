@@ -7,14 +7,14 @@ import (
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
 	assetroutes "github.com/aosanya/mwanachama-backend-assetmanager/routes"
+	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
+	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
 	catalogroutes "wakalaserver/modules/catalog/routes"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commroutes "wakalaserver/modules/comm/routes"
 	formsroutes "wakalaserver/modules/forms/routes"
 	mwanachamainsights "wakalaserver/modules/insights"
 	insightsroutes "wakalaserver/modules/insights/routes"
-	mwanachamasources "wakalaserver/modules/sources"
-	sourcesroutes "wakalaserver/modules/sources/routes"
 	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
 )
 

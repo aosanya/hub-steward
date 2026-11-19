@@ -14,6 +14,7 @@ import (
 	actorroutes "github.com/aosanya/mwanachama-backend-actor/routes"
 	custodyroutes "github.com/aosanya/mwanachama-backend-custody/routes"
 	"github.com/aosanya/mwanachama-backend-shared/httpwire"
+	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
 	accountingroutes "wakalaserver/modules/accounting/routes"
 	agencyroutes "github.com/aosanya/mwanachama-backend-agency/routes"
 	airoutes "github.com/aosanya/mwanachama-backend-ai/routes"
@@ -24,7 +25,6 @@ import (
 	gitroutes "wakalaserver/modules/git/routes"
 	marketroutes "wakalaserver/modules/market/routes"
 	riskroutes "wakalaserver/modules/riskmanager/routes"
-	sourcesroutes "wakalaserver/modules/sources/routes"
 	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
 	votingroutes "wakalaserver/modules/voting/routes"
 
