@@ -19,7 +19,7 @@ func TestThePaymentToolsAreServed(t *testing.T) {
 		}
 	}
 	sort.Strings(got)
-	want := []string{"accounting_payment_list", "accounting_payment_mark_paid"}
+	want := []string{"accounting_payment_list", "accounting_payment_mark_paid", "accounting_payment_reverse"}
 	if strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Fatalf("served %v, want %v", got, want)
 	}
