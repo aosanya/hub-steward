@@ -13,6 +13,9 @@ export const behindAny = (area: Item) => number(area.raised_by) + number(area.me
 
 const areaLine = (area: Item) => `${String(area.area ?? "") || "No area"} · raised by ${number(area.raised_by)} · ${number(area.me_too)} said Me too${live(area)}`;
 
+export const countedAsPeople = (item: Item, areas: Item[]): Item =>
+  areas.length === 0 ? item : { ...item, raised_by: areas.reduce((sum, area) => sum + number(area.raised_by), 0) };
+
 export const areaLinesOf = (item: Item) => (Array.isArray(item.areas) ? (item.areas as Item[]) : []).filter(behindAny).map(areaLine);
 
 export const loadAreaTally = async () => {

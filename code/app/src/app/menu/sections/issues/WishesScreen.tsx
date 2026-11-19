@@ -5,7 +5,7 @@ import { agencyHomePath, openAgencyId } from "../../../../shared/wakala/openAgen
 import { AddAct } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
 import { issuePaths } from "./paths";
-import { areaLinesOf, loadAreaTally } from "./AreaCounts";
+import { areaLinesOf, countedAsPeople, loadAreaTally } from "./AreaCounts";
 import { useSearchParams } from "react-router-dom";
 import { ChatAboutWish, wishParam } from "./ChatAboutWish";
 import { WishPage } from "./WishPage";
@@ -29,7 +29,11 @@ const countsOf = (item: Item) => `${kindOf(item) ? `${kindOf(item)} · ` : ""}ra
 
 const wishRows = async () => {
   const [wishes, areas] = await Promise.all([callTool("", wishesTool, {}), loadAreaTally()]);
-  return (itemsOf(wishes) as Item[]).map((item) => ({ ...item, kindWord: kindOf(item), counts: countsOf(item), areas: areas.get(String(item.id ?? "")) ?? [] }));
+  return (itemsOf(wishes) as Item[]).map((board) => {
+    const placed = areas.get(String(board.id ?? "")) ?? [];
+    const item = countedAsPeople(board, placed);
+    return { ...item, kindWord: kindOf(item), counts: countsOf(item), areas: placed };
+  });
 };
 
 const linesOf = (item: Item) => [String(item.counts ?? ""), ...areaLinesOf(item)];

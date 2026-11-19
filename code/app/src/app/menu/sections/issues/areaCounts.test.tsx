@@ -113,6 +113,17 @@ describe("Wishes by area", () => {
     expect(calls[0][2] ?? {}).not.toHaveProperty("board_item_id");
   });
 
+  it("reads the head figure as the people behind the wish, so one person who sent three reports reads raised by 1", async () => {
+    answers[listTool] = () => ({ items: [{ id: "w9", title: "Lights out on Kossuth utca", raised_by: 3, me_too: 0 }] });
+    answers[tallyTool] = () => ({ items: [{ id: "w9", title: "Lights out on Kossuth utca", areas: [{ area: "Kertváros", raised_by: 1, me_too: 0, population: 4875 }] }] });
+    open();
+    const row = await rowOf("Lights out on Kossuth utca");
+
+    await waitFor(() => expect(within(row).getByText(/Kertváros/)).toBeInTheDocument());
+    expect(within(row).getByText(/^raised by 1 · 0 said Me too$/)).toBeInTheDocument();
+    expect(within(row).queryByText(/raised by 3/)).toBeNull();
+  });
+
   it("leaves the wishes as they are, with no area lines and no error, when the tally is refused", async () => {
     answers[tallyTool] = () => {
       throw new Error("this role may not read the tally");

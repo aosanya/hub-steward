@@ -31,6 +31,7 @@ const tally = [
     areas: [
       { area: "Malomsor", raised_by: 2, me_too: 1, population: 1200 },
       { area: "Kertváros", raised_by: 0, me_too: 0, population: 900 },
+      { area: "Óváros", raised_by: 1, me_too: 0, population: 0 },
     ],
   },
   { id: "w2", areas: [] },
