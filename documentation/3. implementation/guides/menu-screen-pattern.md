@@ -39,3 +39,5 @@ A standalone screen that sits under a list or a section (the risk gaps under the
 The shared `Sheet` keeps every child at its full height (`.sheet > * { flex-shrink: 0 }`) and scrolls instead of squeezing a row, so a row whose due day wraps to a second line is never clipped, and its Close (the scrim and the Close button of the hand-over sheets) reads `words.close`, in English, Kiswahili (Funga) and Hungarian (Bezárás) (MUN1533).
 
 The wording of the card guide for screens built in code is in [phone-app-structure.md](phone-app-structure.md).
+
+The sheet that hands a list of residents' debts to a person (Payments, Send the list) offers only the people the hub names through comm_notification_recipients: the holders of the payment.receive_unpaid_list permission, the owner included, or everyone when the owner setting unpaid_list_recipients reads anyone; the server refuses any other recipient, so the picker is a courtesy and the rule is the hub's.
