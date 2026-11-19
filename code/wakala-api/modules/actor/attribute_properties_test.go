@@ -7,7 +7,7 @@ import (
 	"wakalaserver/modules/actor/models"
 )
 
-func TestAttributePropertiesListsPhoneAndEmailWithLabels(t *testing.T) {
+func TestAttributePropertiesListsPhoneEmailAndDateOfBirthWithLabels(t *testing.T) {
 	um := newManager(t)
 
 	got, err := um.AttributeProperties(context.Background())
@@ -18,6 +18,7 @@ func TestAttributePropertiesListsPhoneAndEmailWithLabels(t *testing.T) {
 	want := []models.Property{
 		{Name: "phone", Label: "Phone", Range: models.RangeText, Unique: true, Required: false},
 		{Name: "email", Label: "Email", Range: models.RangeText, Unique: true, Required: false},
+		{Name: "date_of_birth", Label: "Date of birth", Range: models.RangeDate, Unique: false, Required: false},
 	}
 	if len(got) != len(want) {
 		t.Fatalf("AttributeProperties returned %d entries, want %d: %+v", len(got), len(want), got)
