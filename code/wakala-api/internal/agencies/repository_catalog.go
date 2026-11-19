@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 	mwanachamacatalog "wakalaserver/modules/catalog"
-	mwanachamagit "wakalaserver/modules/git"
 )
 
 const RepositoriesMount = "repositories"

@@ -301,7 +301,7 @@ An unknown or missing extension with text is plain text.
 
 `forms_git_file_read` gives `encoding` (`base64` for a non-text file) and `content` (the bytes as base64), so the tool can return image bytes. Not verified against a live hub.
 
-Source: hub issue ISS-9. The hub encodes a file as `base64` when it holds a null byte or is not valid UTF-8 and as `utf-8` otherwise (`code/wakala-api/modules/git/git_impl_blobcache.go`), so a png, jpg, gif or webp arrives as `base64` and an svg arrives as `utf-8` text. The data layer (`code/app/src/features/files/api.ts`) answers any of them under the 1 MiB limit with `status` `image` and `bytes`; `FilePage` and `WideContent` hand `bytes` and `extension` to `FileViewer`, which draws an `img` from a `data:` URL, so an svg with a script element shows as a picture and no script element reaches the page. An image over the limit stays withheld "too large", and a binary that is not an image stays withheld "not text". Not verified against a live hub.
+Source: hub issue ISS-9. The hub encodes a file as `base64` when it holds a null byte or is not valid UTF-8 and as `utf-8` otherwise (`mwanachama-backend-git/git_impl_blobcache.go`), so a png, jpg, gif or webp arrives as `base64` and an svg arrives as `utf-8` text. The data layer (`code/app/src/features/files/api.ts`) answers any of them under the 1 MiB limit with `status` `image` and `bytes`; `FilePage` and `WideContent` hand `bytes` and `extension` to `FileViewer`, which draws an `img` from a `data:` URL, so an svg with a script element shows as a picture and no script element reaches the page. An image over the limit stays withheld "too large", and a binary that is not an image stays withheld "not text". Not verified against a live hub.
 
 ### Tests
 

@@ -9,13 +9,13 @@ import (
 
 	"gorm.io/gorm"
 
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/languages"
 	"wakalaserver/internal/session"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamacustody "wakalaserver/modules/custody"
 	custodymodels "wakalaserver/modules/custody/models"
-	mwanachamainsights "wakalaserver/modules/insights"
 )
 
 type consentWalk struct {

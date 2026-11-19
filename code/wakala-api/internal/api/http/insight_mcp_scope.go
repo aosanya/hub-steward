@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	mwanachamainsights "wakalaserver/modules/insights"
-	"wakalaserver/modules/insights/models"
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
+	"github.com/aosanya/mwanachama-backend-insights/models"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

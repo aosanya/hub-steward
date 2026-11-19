@@ -2,7 +2,7 @@
 
 Hub issue ISS-94. Before this change every request, even the ref advertisement, copied every commit, tree and blob row of the repository into a go-git memory storage.
 
-The tests are in `code/wakala-api/modules/git/git_smarthttp_file_memory_test.go` and `git_smarthttp_file_limit_test.go`. The repository is six files of 10 MiB each (60 MiB), written to the default branch through `WriteFile`. The handler runs in the test process, a real `git` binary clones and pushes against it, and the test reads `runtime.MemStats` while the request runs: `allocated` is the growth of `TotalAlloc` (every byte allocated, garbage included), `peak` is the highest `HeapAlloc` seen minus the heap before the request, sampled every 2 ms with the garbage collector set to 20 percent. Run with `go test -count=1 -run TestRepoFileGitHTTPMemory -v ./modules/git/` from `code/wakala-api`.
+The tests are in `mwanachama-backend-git/git_smarthttp_file_memory_test.go` and `git_smarthttp_file_limit_test.go`. The repository is six files of 10 MiB each (60 MiB), written to the default branch through `WriteFile`. The handler runs in the test process, a real `git` binary clones and pushes against it, and the test reads `runtime.MemStats` while the request runs: `allocated` is the growth of `TotalAlloc` (every byte allocated, garbage included), `peak` is the highest `HeapAlloc` seen minus the heap before the request, sampled every 2 ms with the garbage collector set to 20 percent. Run with `go test -count=1 -run TestRepoFileGitHTTPMemory -v ./modules/git/` from `code/wakala-api`.
 
 ## Results
 

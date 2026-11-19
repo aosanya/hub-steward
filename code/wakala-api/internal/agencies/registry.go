@@ -15,6 +15,7 @@ import (
 
 	"wakalaserver/internal/authz"
 
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
@@ -26,7 +27,6 @@ import (
 	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 	mwanachamaengage "wakalaserver/modules/engage"
 	mwanachamaforms "wakalaserver/modules/forms"
-	mwanachamagit "wakalaserver/modules/git"
 	mwanachamamarket "wakalaserver/modules/market"
 	mwanachamaratings "wakalaserver/modules/ratings"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"

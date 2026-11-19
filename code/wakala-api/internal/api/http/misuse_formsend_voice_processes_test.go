@@ -12,10 +12,10 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/languages"
 	"wakalaserver/internal/session"
-	mwanachamainsights "wakalaserver/modules/insights"
 )
 
 const voiceProcessRounds = 6

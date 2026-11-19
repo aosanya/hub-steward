@@ -8,11 +8,11 @@ import (
 	"strings"
 	"testing"
 
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
+	insightmodels "github.com/aosanya/mwanachama-backend-insights/models"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamainsights "wakalaserver/modules/insights"
-	insightmodels "wakalaserver/modules/insights/models"
 )
 
 type insightScopeDirectory struct {

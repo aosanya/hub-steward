@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"slices"
 
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 	mwanachamaforms "wakalaserver/modules/forms"
-	mwanachamagit "wakalaserver/modules/git"
 )
 
 const ReportsRepositoryName = "reports"

@@ -6,8 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 	"wakalaserver/internal/agencies"
-	mwanachamagit "wakalaserver/modules/git"
 )
 
 type servingManager struct {

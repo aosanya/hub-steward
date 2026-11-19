@@ -2,7 +2,7 @@
 
 Part of ISS-88 (todo TD-1464, the concurrent-pushes part). The tag-push and push-size-cap parts of that todo wait for owner answers and are not covered here.
 
-The tests are in `code/wakala-api/modules/git/git_smarthttp_file_concurrency_test.go`. Each one starts the real handler (`RepoFile.GitHTTPHandler`) on a temp per-repository `.db` file and drives it with a real `git` binary: clone, commit, push, fetch, `fsck --strict`. Run with `go test -race -count=1 -run TestRepoFileGitHTTPConcurrency ./modules/git/` from `code/wakala-api`.
+The tests are in `mwanachama-backend-git/git_smarthttp_file_concurrency_test.go`. Each one starts the real handler (`RepoFile.GitHTTPHandler`) on a temp per-repository `.db` file and drives it with a real `git` binary: clone, commit, push, fetch, `fsck --strict`. Run with `go test -race -count=1 -run TestRepoFileGitHTTPConcurrency .` from a checkout of `mwanachama-backend-git`.
 
 ## How the file is shared
 
