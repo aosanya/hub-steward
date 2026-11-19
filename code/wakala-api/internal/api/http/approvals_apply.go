@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	riskmodels "github.com/aosanya/mwanachama-backend-riskmanager/models"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
@@ -16,7 +17,6 @@ import (
 	mwanachamaagency "wakalaserver/modules/agency"
 	"wakalaserver/modules/agency/models"
 	mwanachamamarket "wakalaserver/modules/market"
-	riskmodels "wakalaserver/modules/riskmanager/models"
 	mwanachamasources "wakalaserver/modules/sources"
 )
 

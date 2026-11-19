@@ -5,9 +5,9 @@ import (
 	"log/slog"
 	"os"
 
-	"gorm.io/gorm"
-	ratings "wakalaserver/modules/ratings"
+	ratings "github.com/aosanya/mwanachama-backend-ratings"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"gorm.io/gorm"
 
 	"wakalaserver/internal/specs"
 )

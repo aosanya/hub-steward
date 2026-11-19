@@ -6,6 +6,8 @@ import (
 	"strings"
 	"sync"
 
+	riskmanager "github.com/aosanya/mwanachama-backend-riskmanager"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
 	catalog "wakalaserver/modules/catalog"
@@ -13,8 +15,6 @@ import (
 	digitaltwin "wakalaserver/modules/digitaltwin"
 	engage "wakalaserver/modules/engage"
 	market "wakalaserver/modules/market"
-	riskmanager "wakalaserver/modules/riskmanager"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	taskmanager "wakalaserver/modules/taskmanager"
 	voting "wakalaserver/modules/voting"
 	workspace "wakalaserver/modules/workspace"

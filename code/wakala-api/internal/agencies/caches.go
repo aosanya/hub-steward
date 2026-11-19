@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	mwanachamariskmanager "github.com/aosanya/mwanachama-backend-riskmanager"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
@@ -17,7 +18,6 @@ import (
 	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamagit "wakalaserver/modules/git"
 	mwanachamamarket "wakalaserver/modules/market"
-	mwanachamariskmanager "wakalaserver/modules/riskmanager"
 	mwanachamasources "wakalaserver/modules/sources"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 	mwanachamavoting "wakalaserver/modules/voting"

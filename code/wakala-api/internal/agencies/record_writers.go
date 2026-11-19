@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 
+	mwanachamaratings "github.com/aosanya/mwanachama-backend-ratings"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamaforms "wakalaserver/modules/forms"
-	mwanachamaratings "wakalaserver/modules/ratings"
 )
 
 type catalogRecordWriter struct {

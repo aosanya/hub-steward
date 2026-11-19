@@ -7,9 +7,9 @@ import (
 
 	"gorm.io/gorm"
 
+	mwanachamaratings "github.com/aosanya/mwanachama-backend-ratings"
 	"wakalaserver/internal/specs"
 	mwanachamaforms "wakalaserver/modules/forms"
-	mwanachamaratings "wakalaserver/modules/ratings"
 )
 
 func newRatingsFixture(t *testing.T, db *gorm.DB) (mwanachamaratings.RatingsManager, ratingWriter) {

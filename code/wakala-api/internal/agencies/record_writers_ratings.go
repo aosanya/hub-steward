@@ -8,9 +8,9 @@ import (
 
 	"gorm.io/gorm"
 
+	mwanachamaratings "github.com/aosanya/mwanachama-backend-ratings"
 	"wakalaserver/internal/specs"
 	mwanachamaforms "wakalaserver/modules/forms"
-	mwanachamaratings "wakalaserver/modules/ratings"
 )
 
 const (
