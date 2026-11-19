@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoad } from "../../forms/useLoad";
-import { doSomethingPath } from "../../../app/routes";
+import { doSomethingBackPath, doSomethingPath } from "../../../app/routes";
 import { Button } from "../../../shared/ui/Button";
 import { Card } from "../../../shared/ui/Card";
 import { EmptyCard, LoadFailed } from "../../../shared/ui/LoadState";
@@ -72,7 +72,7 @@ export function StartPage({ client = mcpStartClient, products = mcpProductsClien
   const posterLoaded = useLoad(() => client.poster(), `${stepId}:${attempt}`);
   const step = loaded.state === "ready" ? loaded.data.find((s) => s.id === stepId) : undefined;
   return (
-    <Shell title={step?.title ?? ""} onBack={() => navigate(-1)}>
+    <Shell title={step?.title ?? ""} onBack={() => navigate(doSomethingBackPath())}>
       {loaded.state === "error" ? <LoadFailed words="This task could not be opened." onRetry={retry} /> : null}
       {loaded.state === "ready" && !step ? <EmptyCard words="This task has closed." /> : null}
       {step && posterLoaded.state === "error" ? <LoadFailed words="This task could not be opened." onRetry={retry} /> : null}

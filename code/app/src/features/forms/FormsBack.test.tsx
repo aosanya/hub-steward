@@ -53,10 +53,12 @@ describe("the forms list opened from a menu section", () => {
     expect(landed).toBe(section.path);
   });
 
-  it("offers no Back button when it was not opened from a section", async () => {
+  it("offers a Back button named Home and goes to Home when it was not opened from a section", async () => {
     formsOpenedWith();
     await screen.findByText("Nothing is waiting for you");
 
-    expect(screen.queryByRole("button", { name: /‹/ })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: "‹ Home" }));
+
+    expect(landed).toBe("/a/town/home");
   });
 });

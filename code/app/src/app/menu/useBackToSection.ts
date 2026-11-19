@@ -27,6 +27,8 @@ const homeOrigin = (base: string): Origin => ({ path: `${base}/${homeSegment}`, 
 const standaloneParents: { pattern: RegExp; origin: (base: string, risksTitle: string) => Origin }[] = [
   { pattern: /^(\/a\/[^/]+)\/risks$/, origin: (base) => homeOrigin(base) },
   { pattern: /^(\/a\/[^/]+)\/backlogs$/, origin: (base) => homeOrigin(base) },
+  { pattern: /^(\/a\/[^/]+)\/forms$/, origin: (base) => homeOrigin(base) },
+  { pattern: /^(\/a\/[^/]+)\/council\/late-matters$/, origin: (base) => ({ path: `${base}/menu/council`, title: "", sectionId: "council" }) },
   { pattern: /^(\/a\/[^/]+)\/risk-gaps$/, origin: (base, risksTitle) => ({ path: `${base}/risks`, title: risksTitle }) },
   { pattern: /^(\/a\/[^/]+)\/council\/risks$/, origin: (base) => ({ path: `${base}/menu/council`, title: "", sectionId: "council" }) },
 ];
