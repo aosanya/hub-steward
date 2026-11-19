@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	catalog "wakalaserver/modules/catalog"
-	catalogroutes "wakalaserver/modules/catalog/routes"
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
+	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
 	forms "wakalaserver/modules/forms"
 	formsroutes "wakalaserver/modules/forms/routes"
 	ratings "wakalaserver/modules/ratings"

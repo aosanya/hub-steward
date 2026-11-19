@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	mwanachamacatalog "wakalaserver/modules/catalog"
+	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 

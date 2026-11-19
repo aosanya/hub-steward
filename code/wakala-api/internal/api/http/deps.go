@@ -4,9 +4,9 @@ import (
 	"sync"
 	"time"
 
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	mwanachamaaudit "wakalaserver/modules/audit"
 	mwanachamaauth "wakalaserver/modules/auth"
-	catalog "wakalaserver/modules/catalog"
 	mwanachamacouncil "wakalaserver/modules/council"
 	forms "wakalaserver/modules/forms"
 	mwanachamainsights "wakalaserver/modules/insights"

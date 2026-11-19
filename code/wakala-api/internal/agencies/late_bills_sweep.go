@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"time"
 
+	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
+	catalogmodels "github.com/aosanya/mwanachama-backend-catalog/models"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	accountingmodels "wakalaserver/modules/accounting/models"
 	actormodels "wakalaserver/modules/actor/models"
-	mwanachamacatalog "wakalaserver/modules/catalog"
-	catalogmodels "wakalaserver/modules/catalog/models"
 	commmodels "wakalaserver/modules/comm/models"
 )
 

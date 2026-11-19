@@ -10,9 +10,9 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	catalog "wakalaserver/modules/catalog"
-	forms "wakalaserver/modules/forms"
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	forms "wakalaserver/modules/forms"
 
 	"wakalaserver/internal/agencies"
 )

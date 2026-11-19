@@ -3,8 +3,8 @@ package http
 import (
 	"net/http"
 
-	catalog "wakalaserver/modules/catalog"
-	catalogroutes "wakalaserver/modules/catalog/routes"
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
+	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

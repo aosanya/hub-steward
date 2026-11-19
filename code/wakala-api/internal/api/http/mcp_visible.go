@@ -9,11 +9,11 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamaagency "wakalaserver/modules/agency"
 	ai "wakalaserver/modules/ai"
 	airoutes "wakalaserver/modules/ai/routes"
-	catalogroutes "wakalaserver/modules/catalog/routes"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"
 )

@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	engageroutes "wakalaserver/modules/engage/routes"
+	engageroutes "github.com/aosanya/mwanachama-backend-engage/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

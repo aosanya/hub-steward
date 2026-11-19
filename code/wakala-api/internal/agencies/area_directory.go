@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamacatalog "wakalaserver/modules/catalog"
 )
 
 type areaDirectory struct {

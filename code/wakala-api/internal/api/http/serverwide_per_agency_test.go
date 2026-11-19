@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	catalog "wakalaserver/modules/catalog"
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 	forms "wakalaserver/modules/forms"
 	permissions "wakalaserver/modules/permissions"
-	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 type permitEveryone struct{ permissions.PermissionsManager }

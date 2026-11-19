@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	catalog "wakalaserver/modules/catalog"
-	catalogroutes "wakalaserver/modules/catalog/routes"
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
+	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
 	formsmodels "wakalaserver/modules/forms/models"
 
 	"wakalaserver/internal/accounts"

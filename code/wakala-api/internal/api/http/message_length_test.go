@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	mwanachamaactor "wakalaserver/modules/actor"
-	catalog "wakalaserver/modules/catalog"
 
 	"wakalaserver/internal/agencies"
 )
