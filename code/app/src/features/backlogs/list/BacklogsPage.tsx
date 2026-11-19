@@ -109,7 +109,7 @@ export function BacklogsPage({ client = mcpBacklogsClient, manage = mcpBacklogMa
     );
   }
   return (
-    <Shell title="Backlogs">
+    <Shell title="Backlogs" onBack={back.onBack} backLabel={back.backLabel}>
       {aboutBacklogs}
       {noticeLine}
       {loadState}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useBackOrHome } from "../../app/useBackOrHome";
 import { useLanguage } from "../../shared/language/language";
 import { Button } from "../../shared/ui/Button";
 import { Field } from "../../shared/ui/Field";
@@ -15,7 +15,7 @@ type Saving = "idle" | "saved" | "failed" | "taken";
 
 export function ProfilePage() {
   const { words } = useLanguage();
-  const navigate = useNavigate();
+  const back = useBackOrHome();
   const [loaded, setLoaded] = useState<Loaded>({ kind: "loading" });
   const [phone, setPhone] = useState("");
   const [saving, setSaving] = useState<Saving>("idle");
@@ -44,7 +44,7 @@ export function ProfilePage() {
   };
 
   return (
-    <Shell tabless title={words.profileTitle} onBack={() => navigate(-1)}>
+    <Shell tabless title={words.profileTitle} onBack={back}>
       {loaded.kind === "loading" ? <LoadingLine words={words.profileLoading} /> : null}
       {loaded.kind === "unreached" ? <LoadFailed words={words.profileUnreached} /> : null}
       {loaded.kind === "ready" ? (

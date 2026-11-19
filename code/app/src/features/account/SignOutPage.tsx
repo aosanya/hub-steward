@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useBackOrHome } from "../../app/useBackOrHome";
 import { useLanguage } from "../../shared/language/language";
 import { Button } from "../../shared/ui/Button";
 import { Shell } from "../../app/Shell";
@@ -9,6 +10,7 @@ import { signOut } from "./signOut";
 export function SignOutPage() {
   const { words } = useLanguage();
   const navigate = useNavigate();
+  const back = useBackOrHome();
   const [name, setName] = useState("");
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export function SignOutPage() {
   };
 
   return (
-    <Shell tabless title={words.signOutTitle} onBack={() => navigate(-1)}>
+    <Shell tabless title={words.signOutTitle} onBack={back}>
       {name ? <p className="note">{words.signOutSignedInAs.replace("{name}", name)}</p> : null}
       <Button kind="danger" onClick={leave}>
         {words.signOutTitle}

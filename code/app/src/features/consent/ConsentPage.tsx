@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useBackOrHome } from "../../app/useBackOrHome";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLanguage } from "../../shared/language/language";
 import { filled } from "../../features/risks/labels";
@@ -17,6 +18,7 @@ type Failure = "none" | "agree" | "withdraw";
 export function ConsentPage() {
   const { words } = useLanguage();
   const navigate = useNavigate();
+  const goBack = useBackOrHome();
   const agencyId = openAgencyId();
   const [loaded, setLoaded] = useState<Loaded>({ kind: "loading" });
   const [failure, setFailure] = useState<Failure>("none");
@@ -72,7 +74,7 @@ export function ConsentPage() {
       : mine === "withdrawn"
         ? words.consentWithdrew
         : undefined;
-  const back = mine === "none" ? undefined : () => navigate(-1);
+  const back = mine === "none" ? undefined : goBack;
 
   return (
     <Shell tabless title={words.consentTitle} sub={sub} onBack={back}>
