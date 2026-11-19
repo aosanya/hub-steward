@@ -15,7 +15,7 @@ export function QuestionScreen() {
   const polls = useLoad(listOpenPolls, `question:${openAgencyId()}:${attempt}`);
   return (
     <Shell title="Question" backLabel="Home" tabless onBack={() => navigate(agencyHomePath(openAgencyId()))}>
-      <AddButton permission="poll.run" label="Ask a question" to={pollsPaths.ask.path()} />
+      <AddButton permission="poll.run" label="Ask a question" to={pollsPaths.askQuestion.path()} />
       {polls.state === "loading" ? <LoadingLine /> : null}
       {polls.state === "error" ? <LoadFailed words="The question could not be loaded." onRetry={() => setAttempt(attempt + 1)} /> : null}
       {polls.state === "ready" && polls.data.length === 0 ? <EmptyCard words="No question is open" /> : null}

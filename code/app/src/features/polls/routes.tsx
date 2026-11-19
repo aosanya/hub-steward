@@ -6,6 +6,6 @@ import { pollsPaths } from "./routePaths";
 export const pollsRoutes = () => (
   <>
     <Route path={pollsPaths.question.pattern} element={<QuestionScreen />} />
-    <Route path={pollsPaths.ask.pattern} element={<AskQuestionScreen />} />
+    <Route path={pollsPaths.askQuestion.pattern} element={<AskQuestionScreen />} />
   </>
 );
