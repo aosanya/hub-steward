@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMay } from "../../../../features/agency/useMay";
 import { useWord } from "../../../../features/agency/useWord";
 import { refusalText } from "../../../../features/backlogs";
 import { Button } from "../../../../shared/ui/Button";
@@ -11,10 +12,17 @@ import { TextArea } from "../../../../shared/ui/TextArea";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
+import { HandOverSheet } from "./HandOverSheet";
 import { PaymentPage } from "./PaymentPage";
 import { billStatusWords, chargeNames, chargeWords, dayStart, dayWords, daysLateWords, homeEmpty, lateRulesFor, listOf, moneyWords, owedTotal, owedWords, remindsWords, text, tools, unitOf, type Charges, type Item, type LateRules } from "./financeData";
 
 const owedHeading = "To pay";
+
+const raisePermission = "notification.raise";
+
+const chaserKey = "unpaid_list_chaser";
+
+const unpaidLine = (row: Item) => `${text(row, "payer")} · ${text(row, "meta")}`;
 
 const paidHeading = "Paid";
 
@@ -108,9 +116,14 @@ export function PaymentListScreen() {
   const [refused, setRefused] = useState("");
   const [busy, setBusy] = useState(false);
   const [owing, setOwing] = useState({ amount: 0, payers: 0 });
+  const [unpaidLines, setUnpaidLines] = useState<string[]>([]);
+  const [handingOver, setHandingOver] = useState(false);
+  const mayHandOver = useMay(raisePermission);
   const loadCounted = async () => {
     const rows = await loadRows(unit);
-    setOwing(owedTotal(rows.filter((row) => text(row, "group") === owedHeading).map((row) => ({ payer: row.payer, outstanding: row.outstandingAmount }))));
+    const owedRows = rows.filter((row) => text(row, "group") === owedHeading);
+    setOwing(owedTotal(owedRows.map((row) => ({ payer: row.payer, outstanding: row.outstandingAmount }))));
+    setUnpaidLines(owedRows.map(unpaidLine));
     return rows;
   };
   const loadRow = async (id: string) => {
@@ -151,7 +164,30 @@ export function PaymentListScreen() {
       title={word("Payments")}
       withTabs
       bandless
-      above={owing.amount > 0 ? <Section word="Owed" plain rows={[<ListRow key="owed" title={owedWords(owing, unit)} />]} /> : null}
+      above={
+        owing.amount > 0 ? (
+          <>
+            <Section
+              word="Owed"
+              plain
+              rows={[<ListRow key="owed" title={owedWords(owing, unit)} />]}
+              foot={mayHandOver ? <button type="button" className="sec-act" onClick={() => setHandingOver(true)}>Send the list</button> : undefined}
+            />
+            {handingOver ? (
+              <HandOverSheet
+                title="Hand over the list"
+                category="payment"
+                event="payment_list_handed_over"
+                subjectKind="payment"
+                subjectId="unpaid"
+                names={{ total: moneyWords(owing.amount, unit), payers: String(owing.payers), list: unpaidLines.join("\n") }}
+                rememberAs={chaserKey}
+                onClose={() => setHandingOver(false)}
+              />
+            ) : null}
+          </>
+        ) : null
+      }
       list={{
         title: word("Payments"),
         tool: tools.paymentList,
