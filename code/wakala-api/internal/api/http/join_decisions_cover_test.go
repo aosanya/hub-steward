@@ -8,7 +8,7 @@ import (
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	actormodels "github.com/aosanya/mwanachama-backend-actor/models"
-	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/notifyrules"

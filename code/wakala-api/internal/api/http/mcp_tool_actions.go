@@ -10,11 +10,11 @@ import (
 	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
 	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
-	mwanachamacomm "wakalaserver/modules/comm"
-	commroutes "wakalaserver/modules/comm/routes"
 	formsroutes "wakalaserver/modules/forms/routes"
 	mwanachamainsights "wakalaserver/modules/insights"
 	insightsroutes "wakalaserver/modules/insights/routes"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commroutes "github.com/aosanya/mwanachama-backend-comm/routes"
 	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
 )
 

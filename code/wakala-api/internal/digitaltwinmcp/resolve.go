@@ -1,4 +1,4 @@
-package mcp
+package digitaltwinmcp
 
 import (
 	"context"
@@ -10,8 +10,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
-	"wakalaserver/modules/digitaltwin/routes"
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
+	"github.com/aosanya/mwanachama-backend-digitaltwin/routes"
 )
 
 type TwinResolver func(ctx context.Context, instanceID string) (mwanachamadigitaltwin.TwinManager, error)

@@ -3,7 +3,7 @@ package notifyrules
 import (
 	"context"
 
-	commmodels "wakalaserver/modules/comm/models"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 )
 
 var commEvents = map[commmodels.NotificationEvent]Event{

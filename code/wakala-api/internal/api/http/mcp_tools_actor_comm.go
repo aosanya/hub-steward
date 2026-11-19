@@ -12,8 +12,8 @@ import (
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	actorroutes "github.com/aosanya/mwanachama-backend-actor/routes"
-	mwanachamacomm "wakalaserver/modules/comm"
-	commroutes "wakalaserver/modules/comm/routes"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commroutes "github.com/aosanya/mwanachama-backend-comm/routes"
 
 	"wakalaserver/internal/agencies"
 )

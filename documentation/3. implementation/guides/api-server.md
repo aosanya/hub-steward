@@ -85,7 +85,7 @@ Copy the shape of a small module, such as `modules/riskmanager`: a blueprint, an
 ## What is not here
 
 - **The reply loop.** Nothing in `code/` reads a room, decides and posts a reply. The roles, rooms, keys and tools it would use exist. [hub-keys.md](../../2.%20design/technical-spec/hub-keys.md) says what is built.
-- **The digital twin.** It is a catalog entry that is off and has no mount, and there is no `modules/digitaltwin`.
+- **The digital twin.** It is a catalog entry that is off and has no mount, and the module is not under `code/wakala-api/modules`: the hub imports `mwanachama-backend-digitaltwin` at v0.1.0.
 
 ## Mistakes to avoid
 

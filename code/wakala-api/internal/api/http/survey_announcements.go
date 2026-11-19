@@ -7,8 +7,8 @@ import (
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"wakalaserver/internal/notifyrules"
-	mwanachamacomm "wakalaserver/modules/comm"
-	commmodels "wakalaserver/modules/comm/models"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	forms "wakalaserver/modules/forms"
 	formsmodels "wakalaserver/modules/forms/models"
 )

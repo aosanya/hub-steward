@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	commmodels "wakalaserver/modules/comm/models"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 
 	"wakalaserver/internal/agencies"
 )

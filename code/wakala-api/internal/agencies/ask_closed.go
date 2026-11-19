@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"strings"
 
-	mwanachamacomm "wakalaserver/modules/comm"
-	commmodels "wakalaserver/modules/comm/models"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	mwanachamamarket "wakalaserver/modules/market"
 	"wakalaserver/modules/market/models"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"

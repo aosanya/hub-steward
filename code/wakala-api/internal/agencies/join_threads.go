@@ -8,7 +8,7 @@ import (
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	actormodels "github.com/aosanya/mwanachama-backend-actor/models"
-	commmodels "wakalaserver/modules/comm/models"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 )
 
 const (

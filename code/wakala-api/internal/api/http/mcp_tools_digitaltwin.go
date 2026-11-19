@@ -5,9 +5,9 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
-	digitaltwinmcp "wakalaserver/modules/digitaltwin/mcp"
-	digitaltwinroutes "wakalaserver/modules/digitaltwin/routes"
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
+	digitaltwinroutes "github.com/aosanya/mwanachama-backend-digitaltwin/routes"
+	"wakalaserver/internal/digitaltwinmcp"
 
 	"wakalaserver/internal/accounts"
 )

@@ -12,7 +12,7 @@ import (
 	accountingmodels "wakalaserver/modules/accounting/models"
 	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 	catalogmodels "github.com/aosanya/mwanachama-backend-catalog/models"
-	commmodels "wakalaserver/modules/comm/models"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 )
 
 const (

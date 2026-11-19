@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"os"
 
-	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 
 	"wakalaserver/internal/agencies"
 )

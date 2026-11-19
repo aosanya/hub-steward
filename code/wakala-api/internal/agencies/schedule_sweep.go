@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"time"
 
-	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 )
 
 type SweepReport struct {

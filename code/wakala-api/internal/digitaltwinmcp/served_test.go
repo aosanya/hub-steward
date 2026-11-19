@@ -1,9 +1,9 @@
-package mcp_test
+package digitaltwinmcp_test
 
 import (
 	"testing"
 
-	digitaltwinmcp "wakalaserver/modules/digitaltwin/mcp"
+	"wakalaserver/internal/digitaltwinmcp"
 )
 
 func TestOnlyTheNodeListAndNodeReadActionsAreServedOfTheNodes(t *testing.T) {

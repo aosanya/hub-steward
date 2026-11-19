@@ -3,9 +3,9 @@ package agencies
 import (
 	"context"
 
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	"wakalaserver/internal/notifyrules"
-	mwanachamacomm "wakalaserver/modules/comm"
-	commmodels "wakalaserver/modules/comm/models"
 )
 
 const (

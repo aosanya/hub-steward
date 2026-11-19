@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"slices"
 
-	mwanachamacomm "wakalaserver/modules/comm"
-	commmodels "wakalaserver/modules/comm/models"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 
 	"wakalaserver/internal/notifyrules"
 )

@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	mwanachamacomm "wakalaserver/modules/comm"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 
 	"wakalaserver/internal/notifyrules"
 )

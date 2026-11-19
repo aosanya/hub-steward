@@ -6,7 +6,7 @@ import (
 	"slices"
 	"testing"
 
-	commmodels "wakalaserver/modules/comm/models"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 )
 
 func TestEveryListedEventHasADefaultThatItsOwnValidationAccepts(t *testing.T) {

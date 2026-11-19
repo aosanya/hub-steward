@@ -4,8 +4,8 @@ import (
 	"sync"
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	mwanachamacomm "wakalaserver/modules/comm"
-	commroutes "wakalaserver/modules/comm/routes"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	commroutes "github.com/aosanya/mwanachama-backend-comm/routes"
 	mwanachamaforms "wakalaserver/modules/forms"
 	formsroutes "wakalaserver/modules/forms/routes"
 

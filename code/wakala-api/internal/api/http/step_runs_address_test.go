@@ -7,7 +7,7 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 )
 
 func addressWalk(t *testing.T, allowFreeText bool) (stepRunWalk, string) {

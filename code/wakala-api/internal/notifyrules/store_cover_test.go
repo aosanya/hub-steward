@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	commmodels "wakalaserver/modules/comm/models"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"

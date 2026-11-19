@@ -16,9 +16,9 @@ import (
 	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
 	custodymodels "github.com/aosanya/mwanachama-backend-custody/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
-	mwanachamacomm "wakalaserver/modules/comm"
-	"wakalaserver/modules/comm/models"
 	mwanachamaengage "github.com/aosanya/mwanachama-backend-engage"
+	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	"github.com/aosanya/mwanachama-backend-comm/models"
 	mwanachamaforms "wakalaserver/modules/forms"
 )
 

@@ -6,7 +6,7 @@ import (
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 
 	"wakalaserver/internal/agencies"
 )

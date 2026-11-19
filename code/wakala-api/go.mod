@@ -3,14 +3,15 @@ module wakalaserver
 go 1.25.0
 
 require (
-	github.com/SherClockHolmes/webpush-go v1.4.0
 	github.com/aosanya/mwanachama-backend-actor v0.1.0
 	github.com/aosanya/mwanachama-backend-agency v0.1.0
 	github.com/aosanya/mwanachama-backend-ai v0.1.0
 	github.com/aosanya/mwanachama-backend-assetmanager v0.1.0
 	github.com/aosanya/mwanachama-backend-auth v0.1.0
 	github.com/aosanya/mwanachama-backend-catalog v0.1.0
+	github.com/aosanya/mwanachama-backend-comm v0.1.0
 	github.com/aosanya/mwanachama-backend-custody v0.1.0
+	github.com/aosanya/mwanachama-backend-digitaltwin v0.1.0
 	github.com/aosanya/mwanachama-backend-engage v0.1.0
 	github.com/aosanya/mwanachama-backend-sources v0.1.0
 	github.com/glebarez/sqlite v1.11.0
@@ -28,6 +29,7 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.1.6 // indirect
+	github.com/SherClockHolmes/webpush-go v1.4.0 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/cyphar/filepath-securejoin v0.4.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect

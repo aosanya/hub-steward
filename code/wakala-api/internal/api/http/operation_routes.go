@@ -12,7 +12,7 @@ import (
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	engage "github.com/aosanya/mwanachama-backend-engage"
-	digitaltwin "wakalaserver/modules/digitaltwin"
+	digitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 	market "wakalaserver/modules/market"
 	riskmanager "wakalaserver/modules/riskmanager"
 	taskmanager "wakalaserver/modules/taskmanager"

@@ -7,7 +7,7 @@ import (
 
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
-	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
+	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 )
 
 func rowReplacing(id, replaces string) agencymodels.RecordRow {

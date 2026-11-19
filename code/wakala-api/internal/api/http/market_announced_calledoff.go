@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 
-	commmodels "wakalaserver/modules/comm/models"
+	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	mwanachamamarket "wakalaserver/modules/market"
 
 	"wakalaserver/internal/notifyrules"

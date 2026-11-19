@@ -13,9 +13,9 @@ import (
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	sources "github.com/aosanya/mwanachama-backend-sources"
 	accounting "wakalaserver/modules/accounting"
-	comm "wakalaserver/modules/comm"
 	forms "wakalaserver/modules/forms"
 	catalog "github.com/aosanya/mwanachama-backend-catalog"
+	comm "github.com/aosanya/mwanachama-backend-comm"
 )
 
 func sweptReads(t *testing.T, w *sweepWorld) []declaredOperation {
