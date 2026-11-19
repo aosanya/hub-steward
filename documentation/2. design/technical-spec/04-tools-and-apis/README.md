@@ -168,7 +168,7 @@ Applications that name a business: `forms_answer_submit` takes an optional `reco
 | List the agency's audit entries | `GET /audit/entries` | reads entries, newest first, each with `id`, `instance_id`, `actor`, `action`, `subject` and `at`; only the named agency's | the agency's owner, or a role that holds the permission `audit.view` | Exists | Exists: `audit_list_entries`, action `audit.entry.list` |
 
 - **Filters.** `audit_list_entries` takes optional `actor` and `subject` (uuids). Each narrows the list to the entries whose `actor` or `subject` equals it, both together to the entries that match both. The permission check is the same `audit.view` one.
-- **Module.** `modules/audit` in `code/wakala-api`: the object `audit_entry` (table `audit_entries`) and the one list operation, declared in `audit.blueprint.json` and `audit.operations.json`. An entry is append-only; it is never edited or removed.
+- **Module.** `mwanachama-backend-audit` (imported by `code/wakala-api` at v0.1.0): the object `audit_entry` (table `audit_entries`) and the one list operation, declared in `audit.blueprint.json` and `audit.operations.json`. An entry is append-only; it is never edited or removed.
 - **Permission.** `audit.view`, "View the audit log", carries the single action `audit.entry.list` (`modules/agency/models/permissions_catalog.json`). A caller who is neither the owner nor holds it is refused with a message naming the permission. The check is in `internal/api/http/mcp_tools_audit.go`.
 - **Writes that record an entry.** On the MCP tool path, after the write succeeds, `internal/api/http/mcp_audit_records.go` records the caller as `actor`, a plain `action` and the thing changed as `subject`, for the agency in the call's `instance_id`:
 
@@ -249,7 +249,7 @@ Sixteen tools keep what a council does: its meetings, each meeting's agenda and 
 | `council_bylaw_list` | `GET /council/bylaws` | optional `year`; earliest year first, then title | `council.view` |
 | `council_bylaw_read` | `GET /council/bylaws/{bylawID}` | `bylawID` | `council.view` |
 
-- **Module.** `modules/council` in `code/wakala-api`: the objects `meeting`, `agenda`, `minutes`, `resolution` and `bylaw`, declared in `council.blueprint.json`, `council.wakala.json` and `council.operations.json`. A meeting has one agenda and one set of minutes (unique on agency and meeting).
+- **Module.** `mwanachama-backend-council` (imported by `code/wakala-api` at v0.1.0): the objects `meeting`, `agenda`, `minutes`, `resolution` and `bylaw`, declared in `council.blueprint.json`, `council.wakala.json` and `council.operations.json`. A meeting has one agenda and one set of minutes (unique on agency and meeting).
 - **Permissions.** `council.manage` ("Put council meetings on record and read them") carries all sixteen actions, `council.<object>.<verb>`, one for each tool; `council.view` ("Read council meetings") carries the eight list and read actions. Both are in `modules/agency/models/permissions_catalog.json`.
 - **Guard.** `internal/api/http/mcp_tools_council.go` runs before any `council_*` call and refuses it when:
   - the call names no agency (`instance_id`);
@@ -351,8 +351,8 @@ Three tools change a record that already exists, and each carries its own permis
 - **Filing again.** Filing again for the same person, form, group and period edits the one send, keeping the `send_id`; the collector and channel become those of the last filing. A form that locks after sending refuses it with `ErrLockedAfterSend`; `forms_submission_correct` is the way to change such a send.
 - **A business row.** `record_row_id` is accepted only for a row of the agency that names `member_id`, not the clerk, as its owner; any other row is refused as `forms_answer_submit` refuses it (`sendsNamingRows.FileSubmission` in `internal/api/http/form_send_row_owner.go`).
 - **Who may.** The agency's owner, and any role that holds `application.file`. It is not a resident action; `internal/api/http/resident_file_for_another_test.go` pins that. The same change put `actor.assignment.create` under `group.manage` and `catalog.raised_item.file` under `board.manage`.
-- **Where.** `FileSubmission` and `submitAnswers` in `modules/forms/public_impl.go`, `refuseUnreachedPerson` in `modules/forms/reach_impl.go`, the declaration in `modules/forms/forms.operations.json`.
-- **Tests.** `modules/forms/routes/mun1373_clerk_files_for_a_resident_test.go` (the route), `internal/api/http/forms_submission_file_mcp_test.go` (the mounted tool as the owner, a refused channel, a person outside the audience) and `internal/api/http/record_row_applications_test.go`; the roster pin counts rose by one.
+- **Where.** `FileSubmission` and `submitAnswers` in `public_impl.go`, `refuseUnreachedPerson` in `reach_impl.go` and the declaration in `forms.operations.json`, all in `mwanachama-backend-forms`.
+- **Tests.** `routes/mun1373_clerk_files_for_a_resident_test.go` in `mwanachama-backend-forms` (the route), `internal/api/http/forms_submission_file_mcp_test.go` (the mounted tool as the owner, a refused channel, a person outside the audience) and `internal/api/http/record_row_applications_test.go`; the roster pin counts rose by one.
 
 ## Recording a resident's consent given on paper
 

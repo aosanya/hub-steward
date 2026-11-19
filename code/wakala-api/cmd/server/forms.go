@@ -8,6 +8,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"wakalaserver/internal/approvals"
 )
 
 func buildForms(log *slog.Logger) forms.FormManager {
