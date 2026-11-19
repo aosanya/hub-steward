@@ -7,7 +7,7 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamamarket "wakalaserver/modules/market"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
 

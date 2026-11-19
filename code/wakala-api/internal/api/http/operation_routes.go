@@ -13,11 +13,11 @@ import (
 	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	engage "github.com/aosanya/mwanachama-backend-engage"
 	digitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
-	market "wakalaserver/modules/market"
+	market "github.com/aosanya/mwanachama-backend-market"
+	workspace "github.com/aosanya/mwanachama-backend-workspace"
 	riskmanager "wakalaserver/modules/riskmanager"
 	taskmanager "wakalaserver/modules/taskmanager"
 	voting "wakalaserver/modules/voting"
-	workspace "wakalaserver/modules/workspace"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

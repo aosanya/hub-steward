@@ -9,8 +9,8 @@ import (
 	"time"
 
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamamarket "wakalaserver/modules/market"
-	marketmodels "wakalaserver/modules/market/models"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	marketmodels "github.com/aosanya/mwanachama-backend-market/models"
 )
 
 const (

@@ -7,8 +7,8 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamamarket "wakalaserver/modules/market"
-	"wakalaserver/modules/market/models"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	"github.com/aosanya/mwanachama-backend-market/models"
 )
 
 type groupOrderRegisterWalk struct {

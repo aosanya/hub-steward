@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"testing"
 
-	workspace "wakalaserver/modules/workspace"
-	workspacemodels "wakalaserver/modules/workspace/models"
+	workspace "github.com/aosanya/mwanachama-backend-workspace"
+	workspacemodels "github.com/aosanya/mwanachama-backend-workspace/models"
 )
 
 type workbooksKept struct {

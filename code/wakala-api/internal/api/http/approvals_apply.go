@@ -12,11 +12,11 @@ import (
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	"github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
 	"wakalaserver/internal/languages"
-	mwanachamamarket "wakalaserver/modules/market"
 	riskmodels "wakalaserver/modules/riskmanager/models"
 )
 

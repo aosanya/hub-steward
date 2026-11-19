@@ -41,10 +41,14 @@ github.com/aosanya/mwanachama-backend-git v0.1.0 h1:v6XAo5CpUD53Tg5LSL8tm93HXR17
 github.com/aosanya/mwanachama-backend-git v0.1.0/go.mod h1:6BFwM9IJty0YJDab7rKhqsjt1bR4UAIarFavz+XklD0=
 github.com/aosanya/mwanachama-backend-insights v0.1.0 h1:LQhjCibEqY+gcqcwz65wZuGrhqAeHsoEPAUXqWX9k88=
 github.com/aosanya/mwanachama-backend-insights v0.1.0/go.mod h1:BROktfQxNXGDghZiSMBBQAiW7iCil9SqvcX+ydEfp7M=
+github.com/aosanya/mwanachama-backend-market v0.1.0 h1:6bFgMLE2QhTGNN2FPpdrI2jr/7/TuWB6SLBiJBMk+vs=
+github.com/aosanya/mwanachama-backend-market v0.1.0/go.mod h1:P2i+4XtdSNrDwjqOhgwGDB1rSvvCNMIV6CccnxvS26s=
 github.com/aosanya/mwanachama-backend-shared v0.3.1 h1:k9ZXL0gGy14Vj+jLfzHtUpj/UdOOIjQODfL0WITdji8=
 github.com/aosanya/mwanachama-backend-shared v0.3.1/go.mod h1:YePPawJxq4ASWv/bLKBBWHvB+vnJ3kf9/ccJE98nkGU=
 github.com/aosanya/mwanachama-backend-sources v0.1.0 h1:a0TsP8NV3iDrjIkeKVWQNaTyHtMmc6I7mBIKWUwpQhY=
 github.com/aosanya/mwanachama-backend-sources v0.1.0/go.mod h1:XIC/hmYuyxRY9s5D+Ts7jf/f9ngWfJVgyLkqdnBrObc=
+github.com/aosanya/mwanachama-backend-workspace v0.1.0 h1:A5WXm4a4EqYNSZ7W1CsVCjrSUCAtBuTfPuErOQcaukI=
+github.com/aosanya/mwanachama-backend-workspace v0.1.0/go.mod h1:B/CSgL7CGr8ffUQL5CpR08izDPJGyszvPJrdjTOSddw=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5 h1:0CwZNZbxp69SHPdPJAN/hZIm0C4OItdklCFmMRWYpio=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5/go.mod h1:wHh0iHkYZB8zMSxRWpUBQtwG5a7fFgvEO+odwuTv2gs=
 github.com/cloudflare/circl v1.6.1 h1:zqIqSPIndyBh1bjLVVDHMPpVKqp8Su/V+6MeDzzQBQ0=

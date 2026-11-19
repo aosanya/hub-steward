@@ -9,8 +9,8 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	market "wakalaserver/modules/market"
-	marketroutes "wakalaserver/modules/market/routes"
+	market "github.com/aosanya/mwanachama-backend-market"
+	marketroutes "github.com/aosanya/mwanachama-backend-market/routes"
 
 	"wakalaserver/internal/accounts"
 )

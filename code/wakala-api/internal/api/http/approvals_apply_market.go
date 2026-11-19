@@ -5,9 +5,9 @@ import (
 	"errors"
 	"strings"
 
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
-	mwanachamamarket "wakalaserver/modules/market"
 )
 
 func announcedMarketManager(ctx context.Context, reg agencies.Registry, instanceID, name string) (mwanachamamarket.MarketManager, error) {

@@ -9,8 +9,8 @@ import (
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
-	mwanachamamarket "wakalaserver/modules/market"
-	"wakalaserver/modules/market/models"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	"github.com/aosanya/mwanachama-backend-market/models"
 )
 
 type actorDirectory interface {

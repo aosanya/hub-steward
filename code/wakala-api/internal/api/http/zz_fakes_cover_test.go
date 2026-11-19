@@ -10,7 +10,7 @@ import (
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
-	mwanachamamarket "wakalaserver/modules/market"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 )
 
 type applyWorld struct {

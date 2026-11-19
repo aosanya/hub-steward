@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	marketroutes "wakalaserver/modules/market/routes"
+	marketroutes "github.com/aosanya/mwanachama-backend-market/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

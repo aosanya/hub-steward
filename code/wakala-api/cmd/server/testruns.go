@@ -9,7 +9,7 @@ import (
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	ai "github.com/aosanya/mwanachama-backend-ai"
-	mwanachamamarket "wakalaserver/modules/market"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

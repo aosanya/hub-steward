@@ -4,7 +4,7 @@ import (
 	"context"
 
 	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
-	mwanachamamarket "wakalaserver/modules/market"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 
 	"wakalaserver/internal/notifyrules"
 )

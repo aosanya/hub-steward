@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	workspaceroutes "wakalaserver/modules/workspace/routes"
+	workspaceroutes "github.com/aosanya/mwanachama-backend-workspace/routes"
 
 	"wakalaserver/internal/accounts"
 )

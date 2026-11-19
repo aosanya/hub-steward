@@ -8,8 +8,8 @@ import (
 
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
-	mwanachamamarket "wakalaserver/modules/market"
-	"wakalaserver/modules/market/models"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	"github.com/aosanya/mwanachama-backend-market/models"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	"wakalaserver/internal/notifyrules"

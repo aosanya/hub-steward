@@ -571,9 +571,13 @@ market_create_wanted
 market_decide_silent_line
 market_decline_poster
 market_draft_counter
+market_get_ask
+market_get_draft
 market_get_group_order
 market_get_group_order_poster
+market_get_notice
 market_get_order
+market_get_quote
 market_get_request
 market_get_stock
 market_group_order_trail

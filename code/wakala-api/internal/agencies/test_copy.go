@@ -17,7 +17,7 @@ import (
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
-	mwanachamamarket "wakalaserver/modules/market"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 	mwanachamavoting "wakalaserver/modules/voting"

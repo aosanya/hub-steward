@@ -10,9 +10,9 @@ import (
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
-	mwanachamamarket "wakalaserver/modules/market"
-	marketmodels "wakalaserver/modules/market/models"
-	marketroutes "wakalaserver/modules/market/routes"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	marketmodels "github.com/aosanya/mwanachama-backend-market/models"
+	marketroutes "github.com/aosanya/mwanachama-backend-market/routes"
 )
 
 const (

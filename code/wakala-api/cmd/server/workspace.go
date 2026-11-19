@@ -4,10 +4,10 @@ import (
 	"log/slog"
 	"os"
 
+	workspace "github.com/aosanya/mwanachama-backend-workspace"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	workspace "wakalaserver/modules/workspace"
 )
 
 type mountedWorkspace struct {

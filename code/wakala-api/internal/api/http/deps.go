@@ -10,9 +10,9 @@ import (
 	mwanachamacouncil "github.com/aosanya/mwanachama-backend-council"
 	forms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
+	workspace "github.com/aosanya/mwanachama-backend-workspace"
 	permissions "wakalaserver/modules/permissions"
 	ratings "wakalaserver/modules/ratings"
-	workspace "wakalaserver/modules/workspace"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"
