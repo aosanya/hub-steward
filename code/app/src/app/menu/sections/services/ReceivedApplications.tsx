@@ -11,7 +11,8 @@ import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { RecordOwner } from "../../RecordOwner";
 import { refusalWords } from "../../MenuEditForm";
 import { listOf, text, type Item } from "../staff/staffData";
-import { peopleRows } from "../residents/PeopleScreens";
+import { namedPersonOf } from "../residents/personName";
+import { unnamedPerson } from "../settings/personLabel";
 import { answerWordsOf } from "./answers";
 import { certificateOf, certificateWords, decidedWords, decisionStatus, reasonWords, sentWords, validUntilWords } from "./decision";
 import { announceDecision } from "./decisionSignal";
@@ -63,8 +64,8 @@ const ownId = async () => text(await readItem("actor_get_my_actor", {}), "id");
 export const loadReceived = async (slug: string) => {
   const formId = text(await readItem("forms_catalog_entry_read", { slug }), "form_id");
   if (formId === "") throw new Error("entry without a form");
-  const [sent, people, own] = await Promise.all([listOf("forms_submission_list", { form_id: formId }), peopleRows(), ownId()]);
-  const names = new Map(people.map((person) => [person.id, person.name]));
+  const [sent, people, own] = await Promise.all([listOf("forms_submission_list", { form_id: formId }), listOf("actor_list_actors"), ownId()]);
+  const names = new Map(people.map((person) => [text(person, "id"), namedPersonOf(person) || unnamedPerson]));
   return { formId, own, rows: sent.map((one) => received(one, names)) };
 };
 

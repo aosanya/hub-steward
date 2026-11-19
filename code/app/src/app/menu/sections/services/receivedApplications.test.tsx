@@ -135,6 +135,17 @@ describe("Applications received on a permit or licence entry", () => {
     expect(screen.queryByText(/\bm1\b|\bm2\b|\bm3\b/)).toBeNull();
   });
 
+  it("names an applicant who holds no name Unnamed person on the row and in the opened application, never the account code", async () => {
+    answers.actor_list_actors = () => ({ items: [...people, { id: "m4", code: "AC-1", display_name: "", first_name: "", last_name: "" }] });
+    submissions = [...submissions, { id: "s4", form_id: "f1", member_id: "m4", submitted_at: "2026-03-05T12:00:00Z", paid: false }];
+    await openEntry();
+
+    await userEvent.click(await rowOf("Unnamed person"));
+
+    expect(within(await screen.findByRole("region", { name: "Applicant" })).getByRole("button", { name: /Unnamed person/ })).toBeInTheDocument();
+    expect(screen.queryByText(/AC-1/)).toBeNull();
+  });
+
   it("reads Sent with the day sent on a row that has no decision", async () => {
     await openEntry();
 
