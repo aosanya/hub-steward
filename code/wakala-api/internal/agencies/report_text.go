@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"slices"
 
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamagit "wakalaserver/modules/git"
 )
 

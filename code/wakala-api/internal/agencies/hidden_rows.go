@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/aosanya/mwanachama-backend-forms/models"
 	mwanachamacomm "wakalaserver/modules/comm"
 	mwanachamaengage "wakalaserver/modules/engage"
-	"wakalaserver/modules/forms/models"
 )
 
 type HiddenRows struct {

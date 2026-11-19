@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 	catalog "wakalaserver/modules/catalog"
 	catalogroutes "wakalaserver/modules/catalog/routes"
-	formsmodels "wakalaserver/modules/forms/models"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

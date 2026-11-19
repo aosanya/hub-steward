@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	mwanachamaforms "wakalaserver/modules/forms"
-	formsmodels "wakalaserver/modules/forms/models"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

@@ -9,8 +9,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	forms "wakalaserver/modules/forms"
-	formsroutes "wakalaserver/modules/forms/routes"
+	forms "github.com/aosanya/mwanachama-backend-forms"
+	formsroutes "github.com/aosanya/mwanachama-backend-forms/routes"
 
 	"wakalaserver/internal/agencies"
 )

@@ -10,9 +10,9 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	catalog "wakalaserver/modules/catalog"
-	forms "wakalaserver/modules/forms"
+	forms "github.com/aosanya/mwanachama-backend-forms"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	catalog "wakalaserver/modules/catalog"
 
 	"wakalaserver/internal/agencies"
 )
@@ -50,7 +50,7 @@ func TestReportsAndForms_PersonWithoutPermissionCannotDoPublishOrReadPrivate(t *
 	if err != nil {
 		t.Fatalf("forms SpecFor: %v", err)
 	}
-	if err := forms.Provision(fdb, fs); err != nil {
+	if err := forms.Provision(fdb, fs, forms.WithAgencyApprovals(approvals.FormsStore{})); err != nil {
 		t.Fatalf("forms Provision: %v", err)
 	}
 	fm, err := forms.NewFormManager(fdb, fs)

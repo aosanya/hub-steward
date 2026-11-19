@@ -3,7 +3,7 @@ package http
 import (
 	"testing"
 
-	formsmodels "wakalaserver/modules/forms/models"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 )
 
 func answerFloat(v float64) *float64 { return &v }

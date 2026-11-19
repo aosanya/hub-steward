@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
+	forms "github.com/aosanya/mwanachama-backend-forms"
+	formsroutes "github.com/aosanya/mwanachama-backend-forms/routes"
 	catalog "wakalaserver/modules/catalog"
 	catalogroutes "wakalaserver/modules/catalog/routes"
-	forms "wakalaserver/modules/forms"
-	formsroutes "wakalaserver/modules/forms/routes"
 	ratings "wakalaserver/modules/ratings"
 	ratingsroutes "wakalaserver/modules/ratings/routes"
 

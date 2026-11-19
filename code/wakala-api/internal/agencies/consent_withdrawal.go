@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamacomm "wakalaserver/modules/comm"
 	mwanachamacustody "wakalaserver/modules/custody"
-	mwanachamaforms "wakalaserver/modules/forms"
 )
 
 type WithdrawalPolicy string

@@ -6,6 +6,9 @@ import (
 
 	"gorm.io/gorm"
 
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
 	"wakalaserver/modules/agency/models"
@@ -14,11 +17,8 @@ import (
 	mwanachamacustody "wakalaserver/modules/custody"
 	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 	mwanachamaengage "wakalaserver/modules/engage"
-	mwanachamaforms "wakalaserver/modules/forms"
 	mwanachamamarket "wakalaserver/modules/market"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
-	"github.com/aosanya/mwanachama-backend-shared/spec"
-	"github.com/aosanya/mwanachama-backend-shared/specstore"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 	mwanachamavoting "wakalaserver/modules/voting"
 )

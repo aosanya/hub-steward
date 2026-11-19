@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 

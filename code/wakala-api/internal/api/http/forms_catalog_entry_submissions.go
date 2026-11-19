@@ -7,8 +7,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 	catalog "wakalaserver/modules/catalog"
-	formsmodels "wakalaserver/modules/forms/models"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

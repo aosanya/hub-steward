@@ -12,8 +12,8 @@ import (
 	"strconv"
 	"strings"
 
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
-	mwanachamaforms "wakalaserver/modules/forms"
 )
 
 const (

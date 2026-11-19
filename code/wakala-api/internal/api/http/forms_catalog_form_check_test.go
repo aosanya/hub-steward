@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 	catalog "wakalaserver/modules/catalog"
-	formsmodels "wakalaserver/modules/forms/models"
 )
 
 type fixedForms map[string]bool

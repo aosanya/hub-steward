@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 	mwanachamaactor "wakalaserver/modules/actor"
-	formsmodels "wakalaserver/modules/forms/models"
 )
 
 type mayorApprovalWalk struct {

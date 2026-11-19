@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 
+	forms "github.com/aosanya/mwanachama-backend-forms"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 	catalog "wakalaserver/modules/catalog"
-	forms "wakalaserver/modules/forms"
-	formsmodels "wakalaserver/modules/forms/models"
 )
 
 type formsCatalogs interface {

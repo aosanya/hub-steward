@@ -9,10 +9,10 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	mwanachamacatalog "wakalaserver/modules/catalog"
-	mwanachamaforms "wakalaserver/modules/forms"
-	formsmodels "wakalaserver/modules/forms/models"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	mwanachamacatalog "wakalaserver/modules/catalog"
 )
 
 func sqliteDB(t *testing.T) *gorm.DB {
@@ -111,7 +111,7 @@ func TestASubmittedAnswerLandsInTheCatalogAndAResendUpdatesIt(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := mwanachamaforms.Provision(db, fs); err != nil {
+	if err := mwanachamaforms.Provision(db, fs, mwanachamaforms.WithAgencyApprovals(approvals.FormsStore{})); err != nil {
 		t.Fatal(err)
 	}
 	fm, err := mwanachamaforms.NewFormManager(db, fs)

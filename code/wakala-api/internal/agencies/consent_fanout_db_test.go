@@ -13,13 +13,13 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 	mwanachamacomm "wakalaserver/modules/comm"
 	"wakalaserver/modules/comm/models"
 	mwanachamacustody "wakalaserver/modules/custody"
 	custodymodels "wakalaserver/modules/custody/models"
 	mwanachamaengage "wakalaserver/modules/engage"
-	mwanachamaforms "wakalaserver/modules/forms"
-	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func localDatabaseOrSkip(t *testing.T) string {

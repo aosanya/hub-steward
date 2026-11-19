@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamaforms "wakalaserver/modules/forms"
 )
 
 func (r *registry) approvalLimitsIn(instanceID string) mwanachamaforms.ApprovalLimits {

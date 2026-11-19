@@ -3,8 +3,8 @@ package testruns
 import (
 	"context"
 
-	mwanachamaforms "wakalaserver/modules/forms"
-	formsroutes "wakalaserver/modules/forms/routes"
+	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
+	formsroutes "github.com/aosanya/mwanachama-backend-forms/routes"
 )
 
 const moduleForms = "forms"

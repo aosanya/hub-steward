@@ -5,9 +5,9 @@ import (
 	"errors"
 	"log/slog"
 
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commmodels "wakalaserver/modules/comm/models"
-	formsmodels "wakalaserver/modules/forms/models"
 )
 
 func (m surveysAnnounced) PublishResults(ctx context.Context, formID, gitPath, gitCommit string, chapterIDs []string, publishedBy string) (formsmodels.ResultReport, error) {

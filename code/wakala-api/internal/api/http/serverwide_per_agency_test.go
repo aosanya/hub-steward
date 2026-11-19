@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	catalog "wakalaserver/modules/catalog"
-	forms "wakalaserver/modules/forms"
-	permissions "wakalaserver/modules/permissions"
+	forms "github.com/aosanya/mwanachama-backend-forms"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	catalog "wakalaserver/modules/catalog"
+	permissions "wakalaserver/modules/permissions"
 )
 
 type permitEveryone struct{ permissions.PermissionsManager }
@@ -44,7 +44,7 @@ func newTwoAgencies(t *testing.T) twoAgencies {
 	if err != nil {
 		t.Fatalf("forms SpecFor: %v", err)
 	}
-	if err := forms.Provision(fdb, fs); err != nil {
+	if err := forms.Provision(fdb, fs, forms.WithAgencyApprovals(approvals.FormsStore{})); err != nil {
 		t.Fatalf("forms Provision: %v", err)
 	}
 	fm, err := forms.NewFormManager(fdb, fs)

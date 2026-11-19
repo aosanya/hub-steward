@@ -11,6 +11,12 @@ github.com/SherClockHolmes/webpush-go v1.4.0 h1:ocnzNKWN23T9nvHi6IfyrQjkIc0oJWv1
 github.com/SherClockHolmes/webpush-go v1.4.0/go.mod h1:XSq8pKX11vNV8MJEMwjrlTkxhAj1zKfxmyhdV7Pd6UA=
 github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be h1:9AeTilPcZAjCFIImctFaOjnTIavg87rW78vTPkQqLI8=
 github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be/go.mod h1:ySMOLuWl6zY27l47sB3qLNK6tF2fkHG55UZxx8oIVo4=
+github.com/aosanya/mwanachama-backend-audit v0.1.0 h1:IbzgL4do9GxcbtCGwWQErR/8UYoU5zhM/mq3uQ13N1k=
+github.com/aosanya/mwanachama-backend-audit v0.1.0/go.mod h1:ks5oti+TrN9tari7adVxQ7p6QeH2+VMegW95Aw6DfrE=
+github.com/aosanya/mwanachama-backend-council v0.1.0 h1:K2zbzKN54vdXV7LqXWqMnIZpNZhh2A/Bbx2xne3ST+Y=
+github.com/aosanya/mwanachama-backend-council v0.1.0/go.mod h1:+c7LQPcRtTRxWm+s8V56d7FpDUvZN/U7nnI250P+uro=
+github.com/aosanya/mwanachama-backend-forms v0.1.0 h1:uioc4CN8ecUjTjaFX1YYmtu3BcV5vKvNN1parP67Y44=
+github.com/aosanya/mwanachama-backend-forms v0.1.0/go.mod h1:mHMWcZ2thv7uQpw/pU5zoD54PU/muPBb0jLdQP9ZKxo=
 github.com/aosanya/mwanachama-backend-shared v0.3.1 h1:k9ZXL0gGy14Vj+jLfzHtUpj/UdOOIjQODfL0WITdji8=
 github.com/aosanya/mwanachama-backend-shared v0.3.1/go.mod h1:YePPawJxq4ASWv/bLKBBWHvB+vnJ3kf9/ccJE98nkGU=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5 h1:0CwZNZbxp69SHPdPJAN/hZIm0C4OItdklCFmMRWYpio=

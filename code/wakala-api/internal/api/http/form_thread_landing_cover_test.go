@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
+	forms "github.com/aosanya/mwanachama-backend-forms"
+	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
 	"wakalaserver/internal/accounts"
 	commmodels "wakalaserver/modules/comm/models"
-	forms "wakalaserver/modules/forms"
-	formsmodels "wakalaserver/modules/forms/models"
 )
 
 func TestOnlyAStandingFormThatLandsInAThreadOpensOne(t *testing.T) {

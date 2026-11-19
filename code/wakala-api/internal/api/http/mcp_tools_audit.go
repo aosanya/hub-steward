@@ -8,10 +8,10 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	mwanachamaaudit "github.com/aosanya/mwanachama-backend-audit"
+	auditmcp "github.com/aosanya/mwanachama-backend-audit/mcp"
+	auditroutes "github.com/aosanya/mwanachama-backend-audit/routes"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamaaudit "wakalaserver/modules/audit"
-	auditmcp "wakalaserver/modules/audit/mcp"
-	auditroutes "wakalaserver/modules/audit/routes"
 
 	"wakalaserver/internal/agencies"
 )
