@@ -1679,6 +1679,7 @@
     "ErrChatInvalid": 400,
     "ErrChatNotDeclinable": 409,
     "ErrChatThreadDeclined": 409,
+    "ErrChatQuestionRoom": 409,
     "ErrSubjectNotFound": 404,
     "ErrSubjectInvalid": 400,
     "ErrDMNotFound": 404,

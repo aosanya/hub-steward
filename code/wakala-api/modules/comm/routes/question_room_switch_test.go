@@ -32,3 +32,18 @@ func TestTheQuestionRoomSwitchTakesItsArgumentsInTheOrderOfItsMethod(t *testing.
 		}
 	}
 }
+
+func TestARefusedPostIntoAQuestionRoomAnswersAsAConflictNotAnInternalError(t *testing.T) {
+	var spec struct {
+		Errors map[string]int `json:"errors"`
+	}
+	if err := json.Unmarshal(mwanachamacomm.Operations(), &spec); err != nil {
+		t.Fatalf("operations: %v", err)
+	}
+	if spec.Errors["ErrChatQuestionRoom"] != 409 {
+		t.Fatalf("ErrChatQuestionRoom answers %d, want 409", spec.Errors["ErrChatQuestionRoom"])
+	}
+	if Sentinels["ErrChatQuestionRoom"] != mwanachamacomm.ErrChatQuestionRoom {
+		t.Fatal("the sentinel table does not name ErrChatQuestionRoom")
+	}
+}
