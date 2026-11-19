@@ -10,12 +10,17 @@ The list comes from `models.DefaultActorProperties()` in `modules/actor/models/a
 |---|---|
 | `name` | The key used when a value is written, such as `phone` |
 | `label` | The words a screen shows for it, such as Phone |
-| `range` | `text`, `number`, `boolean` or `enumeration` |
+| `range` | `text`, `number`, `boolean`, `enumeration` or `date` |
 | `unique` | Whether two people may not hold the same value |
 | `required` | Whether a person must have a value |
 | `options` | The allowed values, only for an enumeration |
+| `not_future` | Only for a date: a day that has not come yet is refused, as for a date of birth |
 
-Today there are two entries, `phone` (Phone) and `email` (Email). Both are text, unique and not required.
+Today there are three entries. `phone` (Phone) and `email` (Email) are text, unique and not required. `date_of_birth` (Date of birth, MUN1518) is a date, not unique, not required and never in the future.
+
+## A date
+
+A date is a real day written `YYYY-MM-DD`; `1984-02-30` or `09/03/1984` is refused. The phone app shows a date picker for it on Edit details and Add person (`personProperties.ts` in `app/menu/sections/residents`) and reads it on the Personal detail card as a day in words with its year, such as Friday, 9 Mar 1984. Two people may share a day. For the backend custodian: `mwanachama-backend-actor` mirrors this module and needs the same range.
 
 ## Who may call it
 
