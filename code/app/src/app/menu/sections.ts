@@ -11,7 +11,7 @@ import { items as servicesItems } from "./sections/services";
 import { items as settingsItems } from "./sections/settings";
 import { items as staffItems } from "./sections/staff";
 
-export type MenuItem = { title: string; label?: string; wordIn?: string; needs?: string; path?: () => string };
+export type MenuItem = { title: string; label?: string; wordIn?: string; needs?: string; module?: string; path?: () => string };
 
 export type MenuSection = SectionHead & { items: MenuItem[] };
 
@@ -24,7 +24,7 @@ const joined = (titles: string[], covering: MenuItem[]): MenuItem[] => titles.ma
 const itemsOf: Record<string, MenuItem[]> = {
   residents: residentItems,
   properties: propertyItems,
-  issues: joined(["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types", "Wishes", "Send a Wish", "Rounds by Neighbourhood"], [...issueItems, opens("Overdue", routes.lateMatters.path)]),
+  issues: joined(["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types", "Wishes", "Send a Wish", "Question", "Rounds by Neighbourhood"], [...issueItems, opens("Overdue", routes.lateMatters.path)]),
   services: joined(["Applications", "Permits", "Licences", "Fees & Payments", "Service Catalogue"], servicesItems),
   assets: assetItems,
   council: joined(["Meetings", "Agendas & Minutes", "Resolutions", "Rules", "Committees"], councilItems),

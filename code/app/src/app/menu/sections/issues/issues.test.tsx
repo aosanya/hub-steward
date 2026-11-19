@@ -100,14 +100,17 @@ const openIssue = async (name: RegExp) => {
 
 describe("the Issues & Requests section's menu", () => {
   it("lists the screens under their names, in order, and leaves Overdue to its own screen", () => {
-    expect(items.map((item) => item.title)).toEqual(["All Issues", "Assigned to Me", "Map View", "Service Types", "Wishes", "Send a Wish", "Rounds by Neighbourhood"]);
+    expect(items.map((item) => item.title)).toEqual(["All Issues", "Assigned to Me", "Map View", "Service Types", "Wishes", "Send a Wish", "Question", "Rounds by Neighbourhood"]);
   });
 
-  it("gives each screen its own path inside the Issues & Requests section", () => {
-    const paths = items.map(pathOf);
+  it("gives each screen its own path inside the Issues & Requests section, except Question, which opens its own screen and shows only with the voting module", () => {
+    const inSection = items.filter((item) => item.title !== "Question");
+    const paths = inSection.map(pathOf);
 
     paths.forEach((path) => expect(path).toMatch(/^\/a\/town\/menu\/issues\/[a-z-]+$/));
     expect(new Set(paths).size).toBe(paths.length);
+    expect(pathOf(items.find((item) => item.title === "Question")!)).toBe("/a/town/question");
+    expect(items.find((item) => item.title === "Question")).toMatchObject({ module: "voting" });
   });
 
   it("exports the routes that serve those screens", () => {

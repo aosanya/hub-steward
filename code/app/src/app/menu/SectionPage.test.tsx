@@ -2,6 +2,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
+import type { AgencyView } from "../../features/agency/modules";
 import { SectionPage } from "./SectionPage";
 
 let landed = "";
@@ -29,6 +30,39 @@ const section = (id: string) =>
       <Where />
     </MemoryRouter>,
   );
+
+const withVoting: AgencyView = { name: "Town", modules: [{ code: "voting", name: "Voting" }] };
+
+const withoutVoting: AgencyView = { name: "Town", modules: [{ code: "taskmanager", name: "Tasks" }] };
+
+const issuesOf = (view: AgencyView) =>
+  render(
+    <MemoryRouter initialEntries={["/a/town/menu/issues"]}>
+      <Routes>
+        <Route path="/a/:agencyId/menu/:sectionId" element={<SectionPage agency={{ read: async () => view }} />} />
+        <Route path="*" element={null} />
+      </Routes>
+      <Where />
+    </MemoryRouter>,
+  );
+
+describe("the Question row of Issues & Requests", () => {
+  it("lists Question after Send a Wish when the agency has the voting module, and opens the Question screen", async () => {
+    const { container } = issuesOf(withVoting);
+
+    await screen.findByText("Question");
+    expect(Array.from(container.querySelectorAll(".rows .ttl")).map((title) => title.textContent)).toEqual(["All Issues", "Assigned to Me", "Overdue", "Map View", "Service Types", "Wishes", "Send a Wish", "Question", "Rounds by Neighbourhood"]);
+    await userEvent.click(screen.getByText("Question"));
+    expect(landed).toBe("/a/town/question");
+  });
+
+  it("leaves Question out when the agency has no voting module", async () => {
+    issuesOf(withoutVoting);
+
+    await screen.findByText("Wishes");
+    expect(screen.queryByText("Question")).toBeNull();
+  });
+});
 
 describe("a menu section's screen", () => {
   it("lists the section's submenus under its name", () => {

@@ -1,4 +1,5 @@
 import { Route } from "react-router-dom";
+import { pollsPaths } from "../../../../features/polls/routePaths";
 import { AllIssuesScreen, AssignedToMeScreen, MapViewScreen, ServiceTypesScreen } from "./IssueScreens";
 import { IssueScreen } from "./IssueScreen";
 import { issuePaths } from "./paths";
@@ -20,6 +21,7 @@ export const items = [
   { title: "Service Types", path: () => issuePaths.serviceTypes.path() },
   { title: "Wishes", path: () => issuePaths.wishes.path() },
   { title: "Send a Wish", path: () => issuePaths.sendWish.path() },
+  { title: "Question", module: "voting", path: () => pollsPaths.question.path() },
   { title: "Rounds by Neighbourhood", path: () => issuePaths.rounds.path() },
 ];
 
