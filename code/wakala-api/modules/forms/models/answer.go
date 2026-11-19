@@ -23,6 +23,7 @@ type Answer struct {
 	ValueNumber *float64 `json:"value_number,omitempty"`
 	ValueDate   string   `json:"value_date,omitempty"`
 	ValueTime   string   `json:"value_time,omitempty"`
+	ValueTimeTo string   `json:"value_time_to,omitempty"`
 	ValueBool   *bool    `json:"value_bool,omitempty"`
 
 	AnsweredAt string `json:"answered_at"`
@@ -76,6 +77,8 @@ func ValidateAnswerWithin(q Question, options []QuestionOption, a Answer, defaul
 		if _, err := time.Parse("15:04", a.ValueTime); err != nil {
 			return fmt.Errorf("time answer requires value_time as HH:MM: %w", err)
 		}
+	case AnswerTimeRange:
+		return checkTimeRange(a)
 	case AnswerNumber, AnswerCurrency:
 		if a.ValueNumber == nil {
 			return fmt.Errorf("%s answer requires value_number", q.AnswerType)

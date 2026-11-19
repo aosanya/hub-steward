@@ -21,6 +21,7 @@ func TestAnswerLinesReadsEachAnswerTypeTheWayAPersonWouldSayIt(t *testing.T) {
 		{ID: "q8", Prompt: "Photos", AnswerType: formsmodels.AnswerPhoto},
 		{ID: "q9", Prompt: "Notes", AnswerType: formsmodels.AnswerFreeText},
 		{ID: "q10", Prompt: "Never answered", AnswerType: formsmodels.AnswerFreeText},
+		{ID: "q11", Prompt: "Between which hours", AnswerType: formsmodels.AnswerTimeRange},
 	}
 	labels := map[string]string{"a": "Spade", "b": "Rake"}
 	stored := []formsmodels.Answer{
@@ -33,8 +34,9 @@ func TestAnswerLinesReadsEachAnswerTypeTheWayAPersonWouldSayIt(t *testing.T) {
 		{QuestionID: "q7", ValueNumber: answerFloat(40)},
 		{QuestionID: "q8", FileIDs: []string{"f1", "f2"}},
 		{QuestionID: "q9", ValueText: "  all fine  "},
+		{QuestionID: "q11", ValueTime: "09:00", ValueTimeTo: "22:00"},
 	}
-	want := "Was it open: Yes\nWas it clean: Dirty\nWhich tool: Spade, Rake\nWhen: 2026-11-10\nAt: 08:30\nHow far: 12.5 km\nCost: EUR 40\nPhotos: 2 attached\nNotes: all fine"
+	want := "Was it open: Yes\nWas it clean: Dirty\nWhich tool: Spade, Rake\nWhen: 2026-11-10\nAt: 08:30\nHow far: 12.5 km\nCost: EUR 40\nPhotos: 2 attached\nNotes: all fine\nBetween which hours: from 09:00 to 22:00"
 	if got := answerLines(questions, labels, stored); got != want {
 		t.Fatalf("answer lines:\n%s\nwant:\n%s", got, want)
 	}

@@ -9,6 +9,7 @@ const (
 	AnswerFreeText     AnswerType = "free_text"
 	AnswerDate         AnswerType = "date"
 	AnswerTime         AnswerType = "time"
+	AnswerTimeRange    AnswerType = "time_range"
 	AnswerNumber       AnswerType = "number"
 	AnswerCurrency     AnswerType = "currency"
 	AnswerPhoto        AnswerType = "photo"

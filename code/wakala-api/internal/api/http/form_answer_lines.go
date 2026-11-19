@@ -36,6 +36,8 @@ func answerText(q formsmodels.Question, a formsmodels.Answer, optionLabels map[s
 		return a.ValueDate
 	case formsmodels.AnswerTime:
 		return a.ValueTime
+	case formsmodels.AnswerTimeRange:
+		return formsmodels.TimeRangeWords(a.ValueTime, a.ValueTimeTo)
 	case formsmodels.AnswerNumber:
 		return measuredText(q, a)
 	case formsmodels.AnswerCurrency:
