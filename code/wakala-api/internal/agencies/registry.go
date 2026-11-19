@@ -352,6 +352,7 @@ func (r *registry) buildLedgerRepository(ctx context.Context, id string) (mwanac
 	if err != nil {
 		return nil, err
 	}
+	built.UseOverpaymentAllowed(r.overpaymentAllowedIn(id))
 
 	return built, nil
 }
