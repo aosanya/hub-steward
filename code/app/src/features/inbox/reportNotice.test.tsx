@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { NotificationsPage } from "./NotificationsPage";
@@ -68,6 +69,43 @@ describe("the list of who has not paid, handed to the caller", () => {
 
     expect(await screen.findByText("The list of who has not paid was handed to you")).toBeInTheDocument();
     expect(screen.getByText("Owed in total: 2,000 Ft")).toBeInTheDocument();
+  });
+
+  it("opens to the payers and the total when tapped, and goes back to the notices when closed", async () => {
+    show([unpaid]);
+
+    await userEvent.click(await screen.findByText("The list of who has not paid was handed to you"));
+
+    const sheet = await screen.findByRole("dialog", { name: "Who has not paid" });
+    expect(within(sheet).getByText("Owed in total: 2,000 Ft")).toBeInTheDocument();
+    expect(within(sheet).getByText("Anna Sample")).toBeInTheDocument();
+    expect(within(sheet).getByText("Csilla Sample")).toBeInTheDocument();
+    await userEvent.click(within(sheet).getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("shows the charge, the amount and the due day of each payer beside the name", async () => {
+    show([{ ...unpaid, names: { total: "21,100 Ft", list: "Anna Sample · Market stall fees · 9,600 Ft · due 2026-11-26\nCsilla Sample · Resident service fees · 11,500 Ft · due 2026-11-30" } }]);
+
+    await userEvent.click(await screen.findByText("The list of who has not paid was handed to you"));
+
+    const sheet = await screen.findByRole("dialog", { name: "Who has not paid" });
+    expect(within(sheet).getByText("Anna Sample")).toBeInTheDocument();
+    expect(within(sheet).getByText("Market stall fees · 9,600 Ft · due 2026-11-26")).toBeInTheDocument();
+    expect(within(sheet).getByText("Resident service fees · 11,500 Ft · due 2026-11-30")).toBeInTheDocument();
+  });
+
+  it("marks the notice read when it is opened", async () => {
+    const marked = vi.fn().mockResolvedValue(1);
+    render(
+      <MemoryRouter>
+        <NotificationsPage client={{ ...client([unpaid]), markRead: marked }} start={{ waiting: async () => [] } as unknown as StartClient} read={stillThere} />
+      </MemoryRouter>,
+    );
+
+    await userEvent.click(await screen.findByText("The list of who has not paid was handed to you"));
+
+    await vi.waitFor(() => expect(marked).toHaveBeenCalledWith(["n2"]));
   });
 
   it("still reads as an unpaid list when the sender gave no total", async () => {

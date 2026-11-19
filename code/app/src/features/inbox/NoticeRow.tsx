@@ -3,6 +3,7 @@ import { isoDay } from "../../shared/ui/days";
 import { ListRow, SelectableRow } from "../../shared/ui/ListRow";
 import type { NotificationItem } from "./api";
 import { metaOf, pathOf, titleOf } from "./noticeWords";
+import { isUnpaidList } from "./unpaidList";
 
 export type Choice = { checked: boolean; onChange: (checked: boolean) => void };
 
@@ -10,14 +11,14 @@ type Props = { notice: NotificationItem; choice?: Choice; onOpen: (notice: Notif
 
 export function NoticeRow({ notice, choice, onOpen }: Props) {
   const { words } = useLanguage();
-  const path = pathOf(notice);
+  const path = pathOf(notice) ?? (isUnpaidList(notice) ? "" : undefined);
   const title = titleOf(notice, words);
   const row = {
     title,
     meta: metaOf(notice, words),
-    start: notice.read || !path ? <span className="dot off" aria-hidden="true" /> : <span className="dot" role="img" aria-label="Unread" />,
+    start: notice.read || path === undefined ? <span className="dot off" aria-hidden="true" /> : <span className="dot" role="img" aria-label="Unread" />,
     end: isoDay(notice.createdAt),
-    onClick: path ? () => onOpen(notice, path) : undefined,
+    onClick: path !== undefined ? () => onOpen(notice, path) : undefined,
   };
   return choice === undefined ? <ListRow {...row} /> : <SelectableRow selection={notice.read ? null : { ...choice, label: `Select ${title}` }} {...row} />;
 }

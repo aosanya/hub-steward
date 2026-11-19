@@ -69,6 +69,7 @@ export const magyar: Words = {
   inboxReportFigures: "Tervezett {planned} · Elköltött {spent} · Különbség {difference}",
   inboxPaymentListHandedOver: "Megkapta a nem fizetők listáját",
   inboxPaymentListTotal: "Összes tartozás: {name}",
+  inboxPaymentListSheet: "Kik nem fizettek",
   inboxAskWaiting: "Egy kérdés a válaszára vár",
   inboxAskAnswered: "A kérdésére válaszoltak",
   inboxRevisionAsked: "A bolt kérte a csoportos rendelés módosítását",

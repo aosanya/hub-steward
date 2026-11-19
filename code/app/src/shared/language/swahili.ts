@@ -69,6 +69,7 @@ export const swahili: Words = {
   inboxReportFigures: "Iliyopangwa {planned} · Iliyotumika {spent} · Tofauti {difference}",
   inboxPaymentListHandedOver: "Orodha ya wasiolipa imekabidhiwa kwako",
   inboxPaymentListTotal: "Jumla inayodaiwa: {name}",
+  inboxPaymentListSheet: "Nani hajalipa",
   inboxAskWaiting: "Kuna ombi linalosubiri jibu lako",
   inboxAskAnswered: "Ombi lako limejibiwa",
   inboxRevisionAsked: "Duka limeomba agizo la kikundi lirekebishwe",

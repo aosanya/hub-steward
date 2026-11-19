@@ -9,6 +9,8 @@ import { useClearDone } from "./clearDone";
 import { NeedsYouSection } from "./NeedsYouSection";
 import { needsYouCount, needsYouNotes, updatesOf } from "./needsYou";
 import { mcpReader, openChecked, type Reader } from "./subjectCheck";
+import { UnpaidListSheet } from "./UnpaidListSheet";
+import { isUnpaidList } from "./unpaidList";
 import { UpdatesSection } from "./UpdatesSection";
 import { useAssignedIssues } from "./useAssignedIssues";
 import { unreadOf, useNotifications } from "./useNotifications";
@@ -34,6 +36,7 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
   const [invitationsOutage, setInvitationsOutage] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [problem, setProblem] = useState("");
+  const [reading, setReading] = useState<NotificationItem | null>(null);
   const [working, setWorking] = useState<"join" | "decline" | null>(null);
 
   useEffect(() => {
@@ -168,7 +171,11 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
   const updatesState = sectionState("Updates", updatesParts, updates.length > 0);
   const empty = allAnswered([...needsYouParts, ...updatesParts]) && !waitsOnYou && updates.length === 0;
 
-  const openNotice = (n: NotificationItem, path: string) => openChecked(n, path, { read, markOneRead, navigate, say: setProblem });
+  const openNotice = (n: NotificationItem, path: string) => {
+    if (!isUnpaidList(n)) return openChecked(n, path, { read, markOneRead, navigate, say: setProblem });
+    if (!n.read) markOneRead(n.id);
+    setReading(n);
+  };
 
   const problemLine = problem ? <LoadFailed words={problem} /> : null;
   const emptyCard = empty ? (
@@ -183,6 +190,8 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
     ) : null;
   const updatesSection =
     updates.length > 0 || updatesState.loading || updatesState.words ? <UpdatesSection notices={updates} state={updatesState} onRetry={retryNotifications} chosen={chosen} onTick={tick} onMarkRead={markRead} onOpenNotice={openNotice} /> : null;
+
+  const unpaidSheet = reading ? <UnpaidListSheet notice={reading} onClose={() => setReading(null)} /> : null;
 
   if (wide && !above) {
     return (
@@ -203,6 +212,7 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
           </div>
           <footer className="wf-status" aria-label="Status bar" />
         </div>
+        {unpaidSheet}
       </Shell>
     );
   }
@@ -214,6 +224,7 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
       {emptyCard}
       {needsYouSection}
       {updatesSection}
+      {unpaidSheet}
     </Shell>
   );
 }
