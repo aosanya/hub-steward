@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 func runRouteOrderDocument() agencymodels.AgencyDocument {

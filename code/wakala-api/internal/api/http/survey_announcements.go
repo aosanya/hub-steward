@@ -6,11 +6,11 @@ import (
 	"log/slog"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	"wakalaserver/internal/notifyrules"
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	forms "github.com/aosanya/mwanachama-backend-forms"
 	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
+	"wakalaserver/internal/notifyrules"
 )
 
 type surveyAudience interface {

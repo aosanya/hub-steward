@@ -12,20 +12,20 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	accountingroutes "github.com/aosanya/mwanachama-backend-accounting/routes"
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	agencyroutes "github.com/aosanya/mwanachama-backend-agency/routes"
 	airoutes "github.com/aosanya/mwanachama-backend-ai/routes"
 	assetroutes "github.com/aosanya/mwanachama-backend-assetmanager/routes"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
 	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
 	gitroutes "github.com/aosanya/mwanachama-backend-git/routes"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"
 	"wakalaserver/internal/formsettings"
 	"wakalaserver/internal/languages"
 	"wakalaserver/internal/notifyrules"
-	accountingroutes "wakalaserver/modules/accounting/routes"
 )
 
 const (

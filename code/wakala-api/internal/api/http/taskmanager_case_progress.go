@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 
 	"wakalaserver/internal/agencies"
 )

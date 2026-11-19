@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

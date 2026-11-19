@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/aosanya/mwanachama-backend-shared/spec"
 	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	forms "github.com/aosanya/mwanachama-backend-forms"
-	"wakalaserver/internal/approvals"
 	permissions "github.com/aosanya/mwanachama-backend-permissions"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/internal/approvals"
 )
 
 type permitEveryone struct{ permissions.PermissionsManager }

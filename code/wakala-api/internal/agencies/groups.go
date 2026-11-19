@@ -9,7 +9,7 @@ import (
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 var ErrNoActLog = errors.New("comm: no act log is mounted, so a moderation act cannot be recorded")

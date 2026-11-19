@@ -7,7 +7,7 @@ import (
 
 	forms "github.com/aosanya/mwanachama-backend-forms"
 	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 const (

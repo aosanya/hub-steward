@@ -6,8 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	taskmanagerroutes "github.com/aosanya/mwanachama-backend-taskmanager/routes"
 	"wakalaserver/internal/agencies"
-	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
 )
 
 type voteWithdrawalWalk struct {

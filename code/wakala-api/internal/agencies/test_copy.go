@@ -7,20 +7,20 @@ import (
 	"gorm.io/gorm"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
-	"github.com/aosanya/mwanachama-backend-shared/spec"
-	"github.com/aosanya/mwanachama-backend-shared/specstore"
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	"github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
-	mwanachamaengage "github.com/aosanya/mwanachama-backend-engage"
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
+	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
 	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
+	mwanachamaengage "github.com/aosanya/mwanachama-backend-engage"
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
-	mwanachamavoting "github.com/aosanya/mwanachama-backend-voting"
 	mwanachamariskmanager "github.com/aosanya/mwanachama-backend-riskmanager"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
+	mwanachamavoting "github.com/aosanya/mwanachama-backend-voting"
 )
 
 const (

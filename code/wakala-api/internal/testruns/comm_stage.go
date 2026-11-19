@@ -3,9 +3,9 @@ package testruns
 import (
 	"context"
 
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	commroutes "github.com/aosanya/mwanachama-backend-comm/routes"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 const moduleComm = "comm"

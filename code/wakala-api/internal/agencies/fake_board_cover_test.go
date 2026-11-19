@@ -7,7 +7,7 @@ import (
 	"sort"
 	"time"
 
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 type fakeBoard struct {

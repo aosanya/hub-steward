@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
+	ai "github.com/aosanya/mwanachama-backend-ai"
+	airoutes "github.com/aosanya/mwanachama-backend-ai/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
-	ai "github.com/aosanya/mwanachama-backend-ai"
-	airoutes "github.com/aosanya/mwanachama-backend-ai/routes"
 )
 
 func residentGateWalk(t *testing.T) groupRoleWalk {

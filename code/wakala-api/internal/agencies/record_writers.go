@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
+	mwanachamaaccounting "github.com/aosanya/mwanachama-backend-accounting"
 	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
-	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamaratings "github.com/aosanya/mwanachama-backend-ratings"
 )

@@ -12,10 +12,10 @@ import (
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
 	custodymodels "github.com/aosanya/mwanachama-backend-custody/models"
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/languages"
 	"wakalaserver/internal/session"
-	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 )
 
 type consentWalk struct {

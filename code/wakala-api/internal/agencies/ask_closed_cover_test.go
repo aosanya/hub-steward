@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 	"wakalaserver/internal/notifyrules"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
 
 func TestAskRunTriggerNamesTheAskAndAskOfRunReadsItBack(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 const askRunNamePrefix = "ask-"

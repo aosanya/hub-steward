@@ -7,8 +7,8 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymcp "github.com/aosanya/mwanachama-backend-agency/mcp"
-	"github.com/modelcontextprotocol/go-sdk/mcp"
 	ai "github.com/aosanya/mwanachama-backend-ai"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/reviewruns"

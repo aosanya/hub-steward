@@ -7,10 +7,10 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
-	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 )
 
 type applyWorld struct {

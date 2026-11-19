@@ -9,10 +9,10 @@ import (
 	"testing"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

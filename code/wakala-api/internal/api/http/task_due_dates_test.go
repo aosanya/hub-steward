@@ -10,7 +10,7 @@ import (
 	"time"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 
 	"wakalaserver/internal/agencies"
 )

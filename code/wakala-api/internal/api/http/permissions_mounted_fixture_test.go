@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/aosanya/mwanachama-backend-shared/spec"
 	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 	mwanachamapermissions "github.com/aosanya/mwanachama-backend-permissions"
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func mountPermissionsAndReports(t *testing.T, deps *Deps) http.Handler {

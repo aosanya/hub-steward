@@ -10,7 +10,7 @@ import (
 	commmodels "github.com/aosanya/mwanachama-backend-comm/models"
 	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 	"github.com/aosanya/mwanachama-backend-market/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 
 	"wakalaserver/internal/notifyrules"
 )

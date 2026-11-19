@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	accountingroutes "wakalaserver/modules/accounting/routes"
+	accountingroutes "github.com/aosanya/mwanachama-backend-accounting/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

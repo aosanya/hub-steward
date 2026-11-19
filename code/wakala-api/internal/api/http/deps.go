@@ -4,15 +4,15 @@ import (
 	"sync"
 	"time"
 
+	mwanachamaaudit "github.com/aosanya/mwanachama-backend-audit"
 	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
 	catalog "github.com/aosanya/mwanachama-backend-catalog"
-	mwanachamaaudit "github.com/aosanya/mwanachama-backend-audit"
 	mwanachamacouncil "github.com/aosanya/mwanachama-backend-council"
 	forms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
-	workspace "github.com/aosanya/mwanachama-backend-workspace"
 	permissions "github.com/aosanya/mwanachama-backend-permissions"
 	ratings "github.com/aosanya/mwanachama-backend-ratings"
+	workspace "github.com/aosanya/mwanachama-backend-workspace"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"

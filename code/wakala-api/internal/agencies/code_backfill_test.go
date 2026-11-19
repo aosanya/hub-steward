@@ -7,7 +7,7 @@ import (
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 func boardWithOneUncodedIssue(t *testing.T) (mwanachamataskmanager.TaskManager, *gorm.DB, string) {

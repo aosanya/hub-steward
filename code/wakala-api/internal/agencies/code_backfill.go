@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"os"
 
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 const (

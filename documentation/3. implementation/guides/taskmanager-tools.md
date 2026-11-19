@@ -1,6 +1,6 @@
 # Taskmanager tools that read the backlog
 
-The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes and MCP tools from one declared file, `taskmanager.operations.json`. A tool is named from its action, so `taskmanager.task.find` is `taskmanager_task_find`. Each action is listed under `task.read` in `mwanachama-backend-agency/models/permissions_catalog.json`, and each tool is on the pinned roster in `internal/api/http/testdata/mcp_roster/no-mounts.txt`.
+The taskmanager module (the repository `mwanachama-backend-taskmanager`, required by `code/wakala-api` at a tag; see [modules-moved-to-siblings.md](../modules-moved-to-siblings.md)) serves its routes and MCP tools from one declared file, `taskmanager.operations.json`. A tool is named from its action, so `taskmanager.task.find` is `taskmanager_task_find`. Each action is listed under `task.read` in `mwanachama-backend-agency/models/permissions_catalog.json`, and each tool is on the pinned roster in `internal/api/http/testdata/mcp_roster/no-mounts.txt`.
 
 ## Which tool answers what
 
@@ -280,29 +280,31 @@ The design is in [backlog-page.md](../../2.%20design/technical-spec/backlog-app/
 
 ## Where the code is
 
+The files below are in the sibling repository, paths relative to its root. Tag `v0.1.0` does not yet carry the add-todos tool, the todo-finish tool and the other behaviour that `documentation/3. implementation/hub-import-drift.md` of the sibling lists as hub only; the rows for them describe the code as the hub had it before the import.
+
 | Part | File |
 |---|---|
-| The tool | `modules/taskmanager/task_find.go` |
-| The place, access and tag narrowing, the word match and the compact items it shares with pending | `modules/taskmanager/task_pending.go` |
-| Input and answer types | `modules/taskmanager/models/find.go` |
+| The tool | `mwanachama-backend-taskmanager/task_find.go` |
+| The place, access and tag narrowing, the word match and the compact items it shares with pending | `mwanachama-backend-taskmanager/task_pending.go` |
+| Input and answer types | `mwanachama-backend-taskmanager/models/find.go` |
 | Tests | `task_find_test.go` and `routes/find_tasks_test.go` |
-| The next-ready tool and its types | `modules/taskmanager/task_next_ready.go`, tests in `routes/next_ready_test.go` |
-| The orchestration filters | `modules/taskmanager/task_orchestration_filter.go`, `models/orchestration.go`, tests in `routes/orchestration_filters_test.go` |
-| The next-ready-batch tool | `modules/taskmanager/task_next_ready_batch.go`, tests in `routes/next_ready_batch_test.go` |
-| The claim-next and heartbeat tools and the lease | `modules/taskmanager/task_claim_next.go`, `task_heartbeat.go`, `task_lease.go`, tests in `routes/claim_next_test.go` |
-| The board-snapshot tool | `modules/taskmanager/task_board_snapshot.go`, tests in `routes/board_snapshot_test.go` |
-| The unblock-impact tool | `modules/taskmanager/task_unblock_impact.go`, tests in `routes/unblock_impact_test.go` |
-| The name of an issue with no code | `modules/taskmanager/task_display_name.go`, tests in `task_display_name_test.go` |
-| The lint tool and its rule table | `modules/taskmanager/task_lint.go`, tests in `routes/task_lint_test.go` |
-| The stuck tool and its rule table | `modules/taskmanager/task_stuck.go`, tests in `routes/task_stuck_test.go` |
-| The todo-ready-board tool | `modules/taskmanager/todo_ready_board.go`, the readiness rule in `todo_ready.go`, tests in `routes/todo_ready_board_test.go` |
-| The changes-since tool | `modules/taskmanager/task_changes_since.go`, tests in `routes/changes_since_test.go` |
-| The batch and create-with-todos tools | `modules/taskmanager/task_batch.go`, `task_create_with_todos.go`, the move rule in `task_move_path.go`, tests in `routes/task_batch_test.go` |
-| The step WIP limit and days in step | `modules/taskmanager/backlog_step_wip.go`, the move check in `backlog.go` and `task_claim.go`, `min_days_in_step` in `task_orchestration_filter.go`, tests in `routes/step_wip_test.go` |
-| The dependencies tool and its types | `modules/taskmanager/task_dependencies.go`, tests in `routes/task_dependencies_test.go` |
-| The timed-out tool and its types | `modules/taskmanager/task_timed_out.go`, tests in `routes/timed_out_test.go` |
-| The claim tool and its types | `modules/taskmanager/task_claim.go`, tests in `routes/claim_task_test.go` |
-| The release tool and its types | `modules/taskmanager/task_release.go`, tests in `routes/release_task_test.go` |
-| The brief tool and its types | `modules/taskmanager/task_brief.go`, tests in `routes/task_brief_test.go` |
-| The file-overlaps tool and its types | `modules/taskmanager/task_file_overlaps.go`, tests in `routes/file_overlaps_test.go` |
-| The todo-finish tool | `modules/taskmanager/todo_finish.go`, tests in `routes/todo_finish_routes_test.go` |
+| The next-ready tool and its types | `mwanachama-backend-taskmanager/task_next_ready.go`, tests in `routes/next_ready_test.go` |
+| The orchestration filters | `mwanachama-backend-taskmanager/task_orchestration_filter.go`, `models/orchestration.go`, tests in `routes/orchestration_filters_test.go` |
+| The next-ready-batch tool | `mwanachama-backend-taskmanager/task_next_ready_batch.go`, tests in `routes/next_ready_batch_test.go` |
+| The claim-next and heartbeat tools and the lease | `mwanachama-backend-taskmanager/task_claim_next.go`, `task_heartbeat.go`, `task_lease.go`, tests in `routes/claim_next_test.go` |
+| The board-snapshot tool | `mwanachama-backend-taskmanager/task_board_snapshot.go`, tests in `routes/board_snapshot_test.go` |
+| The unblock-impact tool | `mwanachama-backend-taskmanager/task_unblock_impact.go`, tests in `routes/unblock_impact_test.go` |
+| The name of an issue with no code | `mwanachama-backend-taskmanager/task_display_name.go`, tests in `task_display_name_test.go` |
+| The lint tool and its rule table | `mwanachama-backend-taskmanager/task_lint.go`, tests in `routes/task_lint_test.go` |
+| The stuck tool and its rule table | `mwanachama-backend-taskmanager/task_stuck.go`, tests in `routes/task_stuck_test.go` |
+| The todo-ready-board tool | `mwanachama-backend-taskmanager/todo_ready_board.go`, the readiness rule in `todo_ready.go`, tests in `routes/todo_ready_board_test.go` |
+| The changes-since tool | `mwanachama-backend-taskmanager/task_changes_since.go`, tests in `routes/changes_since_test.go` |
+| The batch and create-with-todos tools | `mwanachama-backend-taskmanager/task_batch.go`, `task_create_with_todos.go`, the move rule in `task_move_path.go`, tests in `routes/task_batch_test.go` |
+| The step WIP limit and days in step | `mwanachama-backend-taskmanager/backlog_step_wip.go`, the move check in `backlog.go` and `task_claim.go`, `min_days_in_step` in `task_orchestration_filter.go`, tests in `routes/step_wip_test.go` |
+| The dependencies tool and its types | `mwanachama-backend-taskmanager/task_dependencies.go`, tests in `routes/task_dependencies_test.go` |
+| The timed-out tool and its types | `mwanachama-backend-taskmanager/task_timed_out.go`, tests in `routes/timed_out_test.go` |
+| The claim tool and its types | `mwanachama-backend-taskmanager/task_claim.go`, tests in `routes/claim_task_test.go` |
+| The release tool and its types | `mwanachama-backend-taskmanager/task_release.go`, tests in `routes/release_task_test.go` |
+| The brief tool and its types | `mwanachama-backend-taskmanager/task_brief.go`, tests in `routes/task_brief_test.go` |
+| The file-overlaps tool and its types | `mwanachama-backend-taskmanager/task_file_overlaps.go`, tests in `routes/file_overlaps_test.go` |
+| The todo-finish tool | `mwanachama-backend-taskmanager/todo_finish.go`, tests in `routes/todo_finish_routes_test.go` |

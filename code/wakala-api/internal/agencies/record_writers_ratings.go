@@ -9,8 +9,8 @@ import (
 	"gorm.io/gorm"
 
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
-	"wakalaserver/internal/specs"
 	mwanachamaratings "github.com/aosanya/mwanachama-backend-ratings"
+	"wakalaserver/internal/specs"
 )
 
 const (

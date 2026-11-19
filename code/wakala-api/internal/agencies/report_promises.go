@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 type PromiseOutcome string

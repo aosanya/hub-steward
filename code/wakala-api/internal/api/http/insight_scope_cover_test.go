@@ -9,10 +9,10 @@ import (
 	"testing"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	"wakalaserver/internal/accounts"
-	"wakalaserver/internal/agencies"
 	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 	insightmodels "github.com/aosanya/mwanachama-backend-insights/models"
+	"wakalaserver/internal/accounts"
+	"wakalaserver/internal/agencies"
 )
 
 type insightScopeDirectory struct {

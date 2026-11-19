@@ -8,9 +8,9 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 	gitroutes "github.com/aosanya/mwanachama-backend-git/routes"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 const (

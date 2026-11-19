@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	formsmodels "github.com/aosanya/mwanachama-backend-forms/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 
 	"wakalaserver/internal/agencies"
 )

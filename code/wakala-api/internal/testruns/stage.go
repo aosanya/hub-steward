@@ -7,12 +7,12 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaai "github.com/aosanya/mwanachama-backend-ai"
 	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 	marketmodels "github.com/aosanya/mwanachama-backend-market/models"
 	marketroutes "github.com/aosanya/mwanachama-backend-market/routes"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 const (

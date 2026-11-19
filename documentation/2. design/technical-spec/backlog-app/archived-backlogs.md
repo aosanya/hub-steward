@@ -25,7 +25,7 @@ Both tools belong to the `backlog.manage` permission. The first backlog cannot b
 
 ## Checks
 
-- `wakala-api/modules/taskmanager/backlog_archive_test.go`: marked in the list, unmarked again, issues and codes kept, first backlog refused, Can edit needed.
-- `wakala-api/modules/taskmanager/routes/backlog_ops_test.go`: the two routes and the `archived` field in the list reply.
+- `mwanachama-backend-taskmanager/backlog_archive_test.go`: marked in the list, unmarked again, issues and codes kept, first backlog refused, Can edit needed.
+- `mwanachama-backend-taskmanager/routes/backlog_ops_test.go`: the two routes and the `archived` field in the list reply.
 - `app/src/features/backlogs/list/archivedBacklogs.test.tsx`: hidden, brought back by Show archived and marked Archived, no toggle when nothing is archived.
 - `app/src/features/backlogs/manage/backlogManage.test.tsx` and `api.test.ts`: the Edit backlog actions and the two tool calls.

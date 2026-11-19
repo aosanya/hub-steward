@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 func (r *registry) groupExistsIn(instanceID string) mwanachamataskmanager.GroupExists {

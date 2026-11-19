@@ -7,7 +7,7 @@ import (
 	"time"
 
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-	mwanachamataskmanager "wakalaserver/modules/taskmanager"
+	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 )
 
 type fakeRegistry struct {
