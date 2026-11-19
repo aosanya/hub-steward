@@ -4,7 +4,7 @@ import { isRefusal, reportRefused } from "../../shared/wakala/mcp";
 
 export type PollChoice = { id: string; label: string; position: number };
 
-export type OpenPoll = { id: string; question: string; answered: boolean; choices: PollChoice[] };
+export type OpenPoll = { id: string; question: string; answered: boolean; mine: boolean; inAudience: boolean; choices: PollChoice[] };
 
 export type CountChoice = { choiceId: string; label: string; votes: number };
 
@@ -24,6 +24,8 @@ const pollOf = (raw: any): OpenPoll => ({
   id: text(raw?.id),
   question: text(raw?.question),
   answered: raw?.answered === true,
+  mine: raw?.mine === true,
+  inAudience: raw?.in_audience !== false,
   choices: (Array.isArray(raw?.choices) ? raw.choices : []).map(choiceOf).sort((a: PollChoice, b: PollChoice) => a.position - b.position),
 });
 

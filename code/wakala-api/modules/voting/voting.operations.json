@@ -20,7 +20,7 @@
       "call": "ListOpenPolls",
       "action": "voting.poll.list_open",
       "title": "List open questions",
-      "description": "The polls open now to the groups of the caller, each with its choices in order and whether the caller has answered it. A respondent's view: it names neither who made a poll nor who published it.",
+      "description": "The polls open now to the groups of the caller, each with its choices in order and whether the caller has answered it. A respondent's view: it names neither who made a poll nor who published it, only whether the caller asked it (mine) and whether the caller is in its audience (in_audience). A caller also sees the open polls they asked, whatever their groups.",
       "args": [{ "from": "caller", "as": "caller" }],
       "returns": [{ "body": true }]
     },

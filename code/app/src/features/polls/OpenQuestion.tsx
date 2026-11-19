@@ -22,12 +22,24 @@ export function OpenQuestion({ poll }: { poll: OpenPoll }) {
     }
   };
   const sent = sending.state === "sent";
+  const asked = poll.mine ? <Chip>You asked this</Chip> : null;
   return (
     <Card>
       {poll.answered ? (
-        <ListRow title={poll.question} end={<Chip>Answered</Chip>} />
+        <ListRow
+          title={poll.question}
+          end={
+            <>
+              <Chip>Answered</Chip>
+              {asked}
+            </>
+          }
+        />
+      ) : !poll.inAudience ? (
+        <ListRow title={poll.question} end={asked} />
       ) : (
         <>
+          {asked}
           <ChoiceGroup label={poll.question} error={sending.state === "refused" ? sending.words : undefined}>
             {poll.choices.map((choice) => (
               <ChoiceRow key={choice.id} type="radio" name={poll.id} label={choice.label} checked={picked === choice.id} onChange={() => setPicked(choice.id)} />

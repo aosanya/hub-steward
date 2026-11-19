@@ -80,6 +80,8 @@ func (p Poll) RespondentView() PollRespondentView {
 
 type OpenPoll struct {
 	PollRespondentView
-	Choices  []Choice `json:"choices"`
-	Answered bool     `json:"answered"`
+	Choices    []Choice `json:"choices"`
+	Answered   bool     `json:"answered"`
+	Mine       bool     `json:"mine"`
+	InAudience bool     `json:"in_audience"`
 }

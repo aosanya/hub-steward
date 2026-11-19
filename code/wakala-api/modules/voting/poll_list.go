@@ -17,10 +17,7 @@ func (m *pollManager) ListOpenPolls(ctx context.Context, caller string) ([]OpenP
 		return nil, fmt.Errorf("ListOpenPolls: %w", err)
 	}
 	out := []OpenPoll{}
-	if len(groups) == 0 {
-		return out, nil
-	}
-	polls, err := m.openPollsOf(ctx, groups)
+	polls, err := m.openPollsOf(ctx, groups, caller)
 	if err != nil || len(polls) == 0 {
 		return out, err
 	}
@@ -34,7 +31,13 @@ func (m *pollManager) ListOpenPolls(ctx context.Context, caller string) ([]OpenP
 		return nil, err
 	}
 	for _, p := range polls {
-		view := OpenPoll{PollRespondentView: p.RespondentView(), Choices: choices[p.ID], Answered: answered[p.ID]}
+		view := OpenPoll{
+			PollRespondentView: p.RespondentView(),
+			Choices:            choices[p.ID],
+			Answered:           answered[p.ID],
+			Mine:               p.CreatedBy == caller,
+			InAudience:         sharesAGroup(p.GroupIDs, groups),
+		}
 		if view.Choices == nil {
 			view.Choices = []Choice{}
 		}
@@ -43,7 +46,7 @@ func (m *pollManager) ListOpenPolls(ctx context.Context, caller string) ([]OpenP
 	return out, nil
 }
 
-func (m *pollManager) openPollsOf(ctx context.Context, groups []string) ([]Poll, error) {
+func (m *pollManager) openPollsOf(ctx context.Context, groups []string, caller string) ([]Poll, error) {
 	all, err := specstore.List[Poll](m.st, m.st.Query(ctx, objectPoll).Order("created_at, id"), objectPoll)
 	if err != nil {
 		return nil, fmt.Errorf("ListOpenPolls: %w", err)
@@ -51,7 +54,7 @@ func (m *pollManager) openPollsOf(ctx context.Context, groups []string) ([]Poll,
 	now := m.now()
 	open := []Poll{}
 	for _, p := range all {
-		if insideWindow(p, now) && sharesAGroup(p.GroupIDs, groups) {
+		if insideWindow(p, now) && (sharesAGroup(p.GroupIDs, groups) || p.CreatedBy == caller) {
 			open = append(open, p)
 		}
 	}
