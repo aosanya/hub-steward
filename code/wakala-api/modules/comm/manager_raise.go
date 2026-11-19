@@ -12,6 +12,25 @@ type Raisable func(event models.NotificationEvent) bool
 
 type RecipientRule func(ctx context.Context, event models.NotificationEvent, recipientID string) error
 
+type RecipientRoster func(ctx context.Context, event models.NotificationEvent) ([]string, error)
+
+func (m *CommManager) UseRecipientRoster(r RecipientRoster) { m.recipientRoster = r }
+
+func (m *CommManager) ListRaiseRecipients(ctx context.Context, event string) ([]models.NotificationRecipient, error) {
+	if m.recipientRoster == nil {
+		return nil, fmt.Errorf("%w: %q", models.ErrNotificationNotRaisable, event)
+	}
+	ids, err := m.recipientRoster(ctx, models.NotificationEvent(event))
+	if err != nil {
+		return nil, err
+	}
+	out := make([]models.NotificationRecipient, 0, len(ids))
+	for _, id := range ids {
+		out = append(out, models.NotificationRecipient{ActorID: id})
+	}
+	return out, nil
+}
+
 func (m *CommManager) UseRaisable(r Raisable) { m.raisable = r }
 
 func (m *CommManager) UseRecipientRule(r RecipientRule) { m.recipientRule = r }

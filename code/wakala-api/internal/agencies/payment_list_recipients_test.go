@@ -50,3 +50,27 @@ func TestAFailedPermissionReadRefusesTheUnpaidList(t *testing.T) {
 		t.Fatalf("a failed read accepted the recipient, want a refusal")
 	}
 }
+
+func TestTheRosterOfTheUnpaidListHoldsOnlyStaffUnlessTheSettingWidensIt(t *testing.T) {
+	people := func(context.Context) ([]string, error) { return []string{"clerk", "neighbour", "mayor"}, nil }
+	staff := map[string]bool{"clerk": true, "mayor": true}
+	holds := func(_ context.Context, _ string, actor string) (bool, error) { return staff[actor], nil }
+	ctx := context.Background()
+
+	roster := PaymentListRoster(people, holds, func(context.Context, string) (bool, error) { return false, nil })
+	got, err := roster(ctx, "i-1", commmodels.EventPaymentListHandedOver)
+	if err != nil || len(got) != 2 || got[0] != "clerk" || got[1] != "mayor" {
+		t.Fatalf("staff roster = %v, %v, want clerk and mayor", got, err)
+	}
+
+	wide := PaymentListRoster(people, holds, func(context.Context, string) (bool, error) { return true, nil })
+	got, err = wide(ctx, "i-1", commmodels.EventPaymentListHandedOver)
+	if err != nil || len(got) != 3 {
+		t.Fatalf("widened roster = %v, %v, want all three", got, err)
+	}
+
+	other, err := roster(ctx, "i-1", commmodels.EventReportHandedOver)
+	if err != nil || other != nil {
+		t.Fatalf("roster of another event = %v, %v, want none", other, err)
+	}
+}

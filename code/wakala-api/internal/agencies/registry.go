@@ -573,6 +573,10 @@ func (r *registry) buildCommManager(ctx context.Context, id string) (*mwanachama
 		built.UseRecipientRule(func(ctx context.Context, event commmodels.NotificationEvent, recipientID string) error {
 			return rule(ctx, id, event, recipientID)
 		})
+		roster := PaymentListRoster(r.actorIDsIn(id), r.paymentListHolds, r.paymentListWidenedIn)
+		built.UseRecipientRoster(func(ctx context.Context, event commmodels.NotificationEvent) ([]string, error) {
+			return roster(ctx, id, event)
+		})
 	}
 	built.UseWebPush(r.pushSender, r.pushFailed)
 	if r.mutability != nil {

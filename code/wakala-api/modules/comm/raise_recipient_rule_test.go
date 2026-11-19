@@ -44,3 +44,27 @@ func TestWithNoRecipientRuleEveryRaisableEventStillGoesToAnyone(t *testing.T) {
 		t.Fatalf("raising with no recipient rule = %v, want accepted", err)
 	}
 }
+
+func TestTheRosterOfRecipientsNamesOnlyThePeopleTheHostAllowsForAnEvent(t *testing.T) {
+	m, _, _ := gatedManagerOn(t, nil)
+	m.UseRecipientRoster(func(_ context.Context, event models.NotificationEvent) ([]string, error) {
+		if event != models.EventPaymentListHandedOver {
+			return nil, nil
+		}
+		return []string{"staff-1", "staff-2"}, nil
+	})
+	got, err := m.ListRaiseRecipients(context.Background(), string(models.EventPaymentListHandedOver))
+	if err != nil {
+		t.Fatalf("ListRaiseRecipients: %v", err)
+	}
+	if len(got) != 2 || got[0].ActorID != "staff-1" || got[1].ActorID != "staff-2" {
+		t.Fatalf("recipients = %v, want staff-1 and staff-2", got)
+	}
+}
+
+func TestWithNoRosterTheRecipientsOfAnEventAreRefused(t *testing.T) {
+	m, _, _ := gatedManagerOn(t, nil)
+	if _, err := m.ListRaiseRecipients(context.Background(), string(models.EventPaymentListHandedOver)); !errors.Is(err, models.ErrNotificationNotRaisable) {
+		t.Fatalf("recipients with no roster = %v, want ErrNotificationNotRaisable", err)
+	}
+}

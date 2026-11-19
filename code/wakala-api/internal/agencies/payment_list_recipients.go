@@ -62,3 +62,55 @@ func (r *registry) paymentListWidenedIn(ctx context.Context, instanceID string) 
 	}
 	return setting.Value == paymentListRecipientsAnyone, nil
 }
+
+type PeopleOf func(ctx context.Context) ([]string, error)
+
+type RaiseRosterRule func(ctx context.Context, instanceID string, event commmodels.NotificationEvent) ([]string, error)
+
+func PaymentListRoster(people PeopleOf, holds HoldsPermission, widened RecipientsWidened) RaiseRosterRule {
+	return func(ctx context.Context, instanceID string, event commmodels.NotificationEvent) ([]string, error) {
+		if event != commmodels.EventPaymentListHandedOver {
+			return nil, nil
+		}
+		everyone, err := people(ctx)
+		if err != nil {
+			return nil, err
+		}
+		open, err := widened(ctx, instanceID)
+		if err != nil {
+			return nil, err
+		}
+		if open {
+			return everyone, nil
+		}
+		staff := []string{}
+		for _, id := range everyone {
+			held, err := holds(ctx, instanceID, id)
+			if err != nil {
+				return nil, err
+			}
+			if held {
+				staff = append(staff, id)
+			}
+		}
+		return staff, nil
+	}
+}
+
+func (r *registry) actorIDsIn(instanceID string) PeopleOf {
+	return func(ctx context.Context) ([]string, error) {
+		directory, err := r.ActorManager(ctx, instanceID)
+		if err != nil {
+			return nil, err
+		}
+		actors, err := directory.ListActors(ctx)
+		if err != nil {
+			return nil, err
+		}
+		ids := make([]string, 0, len(actors))
+		for _, a := range actors {
+			ids = append(ids, a.ID)
+		}
+		return ids, nil
+	}
+}

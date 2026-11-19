@@ -82,7 +82,7 @@
   {"code": "chat.thread", "name": "Open and keep up with chat threads", "locked": false, "module": "comm", "actions": ["comm.chat_thread.list", "comm.chat_thread.create", "comm.chat_thread.mark_read", "comm.chat_room.set_question"]},
   {"code": "chat.archive", "name": "Archive a chat thread for yourself and bring it back", "locked": false, "module": "comm", "actions": ["comm.chat_thread.archive", "comm.chat_thread.unarchive", "comm.chat_thread.list_archived"]},
   {"code": "notification.read", "name": "Read notifications and their deliveries", "locked": false, "module": "comm", "actions": ["comm.notification.list", "comm.push_delivery.list"]},
-  {"code": "notification.raise", "name": "Tell one person about a report", "locked": false, "module": "comm", "actions": ["comm.notification.raise"]},
+  {"code": "notification.raise", "name": "Tell one person about a report", "locked": false, "module": "comm", "actions": ["comm.notification.raise", "comm.notification.recipients"]},
   {"code": "payment.receive_unpaid_list", "name": "Receive the list of who has not paid", "locked": false, "module": "comm", "actions": []},
   {"code": "chat.reach", "name": "See which rooms and threads one person can read", "locked": false, "module": "comm", "actions": ["comm.person_reach.list"]},
   {"code": "document.search", "name": "Search documents", "locked": false, "module": "sources", "actions": ["sources.chunk.search", "sources.source.list", "sources.source.read"]},
