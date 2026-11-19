@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { magyar } from "../../shared/language/magyar";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { NotificationsPage } from "./NotificationsPage";
 import type { InboxClient, NotificationItem } from "./api";
@@ -82,6 +83,18 @@ describe("the list of who has not paid, handed to the caller", () => {
     expect(within(sheet).getByText("Csilla Sample")).toBeInTheDocument();
     await userEvent.click(within(sheet).getByRole("button", { name: "Close" }));
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("words its Close button in the chosen language", async () => {
+    window.localStorage.setItem("hub.language", "hu");
+    show([unpaid]);
+
+    await userEvent.click(await screen.findByText(magyar.inboxPaymentListHandedOver));
+
+    const sheet = await screen.findByRole("dialog", { name: magyar.inboxPaymentListSheet });
+    expect(within(sheet).getAllByRole("button", { name: magyar.close })).toHaveLength(1);
+    expect(screen.queryByRole("button", { name: "Close" })).toBeNull();
+    window.localStorage.removeItem("hub.language");
   });
 
   it("shows the charge, the amount and the due day of each payer beside the name", async () => {

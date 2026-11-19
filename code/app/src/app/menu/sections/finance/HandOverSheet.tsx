@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLoad } from "../../../../features/forms/useLoad";
+import { useLanguage } from "../../../../shared/language/language";
 import { Button } from "../../../../shared/ui/Button";
 import { LoadFailed } from "../../../../shared/ui/LoadState";
 import { SearchSelect } from "../../../../shared/ui/SearchSelect";
@@ -42,6 +43,7 @@ const rememberPerson = async (key: string | undefined, person: string) => {
 };
 
 export function HandOverSheet({ title, category, event, subjectKind, subjectId, names, rememberAs, onClose }: Props) {
+  const { words } = useLanguage();
   const people = useLoad(loadPersonIdChoices, `hand-over-people:${openAgencyId()}`);
   const remembered = useLoad(() => rememberedPerson(rememberAs), `hand-over-chaser:${openAgencyId()}:${rememberAs ?? ""}`);
   const choices = people.state === "ready" ? people.data : [];
@@ -69,7 +71,7 @@ export function HandOverSheet({ title, category, event, subjectKind, subjectId, 
       {sentTo ? (
         <>
           <p>Sent to {sentTo}</p>
-          <Button kind="primary" onClick={onClose}>Close</Button>
+          <Button kind="primary" onClick={onClose}>{words.close}</Button>
         </>
       ) : (
         <>

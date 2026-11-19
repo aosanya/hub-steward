@@ -18,7 +18,7 @@ export function UnpaidListSheet({ notice, onClose }: Props) {
           <ListRow key={`${index}:${row.payer}`} title={row.payer} meta={row.detail || undefined} />
         ))}
       </Rows>
-      <Button onClick={onClose}>Close</Button>
+      <Button onClick={onClose}>{words.close}</Button>
     </Sheet>
   );
 }

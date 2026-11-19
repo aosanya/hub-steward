@@ -133,6 +133,7 @@ export const magyar: Words = {
   evidenceSending: "Küldés",
   evidenceSent: "A bizonyítékot rögzítettük",
   evidenceFailed: "A bizonyítékot nem sikerült rögzíteni. Próbálja újra.",
+  close: "Bezárás",
   evidenceBack: "Vissza a kockázathoz",
   standingProven: "Bizonyított",
   standingWeak: "Gyenge",

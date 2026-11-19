@@ -1,4 +1,5 @@
 export const words = {
+  close: "Close",
   signInTitle: "Sign in",
   signInEmail: "Email",
   signInSend: "Email me a sign-in link",

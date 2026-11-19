@@ -133,6 +133,7 @@ export const swahili: Words = {
   evidenceSending: "Inatuma",
   evidenceSent: "Ushahidi umerekodiwa",
   evidenceFailed: "Ushahidi haukurekodiwa. Jaribu tena.",
+  close: "Funga",
   evidenceBack: "Rudi kwenye hatari",
   standingProven: "Imethibitishwa",
   standingWeak: "Dhaifu",
