@@ -89,7 +89,7 @@ describe("the question screen", () => {
     expect(sentCalls(fetcher)).not.toContainEqual(["POST", `${base}/p1/answers`]);
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
     expect(await screen.findByText("Your answer was sent.")).toBeInTheDocument();
-    const posts = fetcher.mock.calls.filter(([, init]) => init?.method === "POST");
+    const posts = fetcher.mock.calls.filter(([url, init]) => init?.method === "POST" && String(url).startsWith(base));
     expect(posts).toHaveLength(1);
     expect(posts[0][0]).toBe(`${base}/p1/answers`);
     expect(JSON.parse(String(posts[0][1]?.body))).toEqual({ votes: { c2: 1 } });

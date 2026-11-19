@@ -57,3 +57,32 @@ export const readCount = async (pollId: string): Promise<PollCount | null> => {
       .map((raw: any) => ({ choiceId: text(raw?.choice_id), label: text(raw?.label), votes: number(raw?.votes) })),
   };
 };
+
+export type NewQuestion = { question: string; choices: string[]; groupId: string; days: number };
+
+export const askFailedWords = "Your question could not be opened. Try again.";
+
+const dayMilliseconds = 86_400_000;
+
+const postJson = async (path: string, body: unknown): Promise<Response> => {
+  const res = await wakalaFetch(pollsPath(path), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (res.status === 401) reportRefused();
+  if (!res.ok) throw new Error((await refusalText(res)) || askFailedWords);
+  return res;
+};
+
+export const openQuestion = async (input: NewQuestion): Promise<string> => {
+  const opens = new Date();
+  const closes = new Date(opens.getTime() + input.days * dayMilliseconds);
+  const created = await postJson("", {
+    question: input.question,
+    mode: "one",
+    per_group: "once",
+    group_ids: [input.groupId],
+    opens_at: opens.toISOString(),
+    closes_at: closes.toISOString(),
+  });
+  const pollId = text((await created.json())?.id);
+  for (const label of input.choices) await postJson(`/${encodeURIComponent(pollId)}/choices`, { label });
+  return pollId;
+};
