@@ -15,20 +15,31 @@ const personPrefix = "person:";
 
 const bodyPrefix = "body:";
 
+const rowPrefix = "row:";
+
 const listGroups = async () => (await callTool("", "actor_list_groups").then(itemsOf)) as Item[];
 
 const nameOfGroup = (group: Item) => (typeof group.name === "string" ? group.name : "");
 
+const withHint = (choices: Choice[], hint: string, prefix: string): Choice[] => choices.map((choice) => ({ value: `${prefix}${choice.value}`, label: choice.label, hint }));
+
 export const loadHolderChoices = async (): Promise<Choice[]> => {
-  const [people, groups] = await Promise.all([listPeople(), listGroups().catch((): Item[] => [])]);
+  const [people, groups, businesses, traders] = await Promise.all([
+    listPeople(),
+    listGroups().catch((): Item[] => []),
+    loadBusinessChoices().catch((): Choice[] => []),
+    loadTraderChoices().catch((): Choice[] => []),
+  ]);
   const persons = people.flatMap((person) => (typeof person.id === "string" && person.id !== "" ? [{ value: `${personPrefix}${person.id}`, label: namedPersonOf(person) || unnamedPerson }] : []));
   const bodies = groups.map(nameOfGroup).filter((name) => name !== "").map((name) => ({ value: `${bodyPrefix}${name}`, label: name }));
-  return [...persons, ...bodies];
+  return [...persons, ...bodies, ...withHint(businesses, "Business", rowPrefix), ...withHint(traders, "Informal trader", rowPrefix)];
 };
 
 export const holderArgs = (value: string, choices: Choice[]) => {
   const label = choices.find((choice) => choice.value === value)?.label ?? "";
-  return value.startsWith(personPrefix) ? { holder: label, holder_actor_id: value.slice(personPrefix.length) } : { holder: label };
+  if (value.startsWith(personPrefix)) return { holder: label, holder_actor_id: value.slice(personPrefix.length) };
+  if (value.startsWith(rowPrefix)) return { holder: label, holder_record_row_id: value.slice(rowPrefix.length) };
+  return { holder: label };
 };
 
 export const loadPersonIdChoices = async (): Promise<Choice[]> =>

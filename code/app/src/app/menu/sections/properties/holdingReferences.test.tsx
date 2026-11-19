@@ -30,6 +30,8 @@ const hub = () =>
         ],
       };
     }
+    if (tool === "agency_list_live_records") return { items: [{ name: "Businesses", code: "RC-1" }, { name: "Informal traders", code: "RC-2" }] };
+    if (tool === "agency_list_live_record_rows") return { items: (args as { record_code?: string }).record_code === "RC-1" ? [{ id: "5b1e0c1a-0000-4000-8000-000000000001", answers: { "Trading name": "Mill Corner Garage" } }] : [] };
     if (tool === "digitaltwin_node_list") return { items: [] };
     if (tool === "digitaltwin_tenure_create") return { item: { id: "t9", ...(args as object) } };
     return { items: [] };
@@ -106,5 +108,21 @@ describe("Add holding looks its references up", () => {
     const created = () => called.mock.calls.filter(([, tool]) => tool === "digitaltwin_tenure_create");
     await waitFor(() => expect(created()).toHaveLength(1));
     expect(created()[0][2]).toEqual({ holder: "Zöldhalom Town Council", place_id: "n2" });
+  });
+
+  it("offers a business as holder with its kind and saves its name and record row id", async () => {
+    const user = userEvent.setup();
+    show();
+
+    await user.click(await screen.findByRole("button", { name: /Holder/ }));
+    expect(await screen.findByText("Business")).toBeInTheDocument();
+    await user.click(screen.getByRole("option", { name: /Mill Corner Garage/ }));
+    await user.click(await screen.findByRole("button", { name: /Property/ }));
+    await user.click(screen.getByRole("option", { name: /Malom utca 4/ }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    const created = () => called.mock.calls.filter(([, tool]) => tool === "digitaltwin_tenure_create");
+    await waitFor(() => expect(created()).toHaveLength(1));
+    expect(created()[0][2]).toEqual({ holder: "Mill Corner Garage", holder_record_row_id: "5b1e0c1a-0000-4000-8000-000000000001", place_id: "n2" });
   });
 });

@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import "./searchSelect.css";
 
-export type Choice = { value: string; label: string };
+export type Choice = { value: string; label: string; hint?: string };
 
 type Props = { label: string; choices: Choice[]; value: string; onChange: (value: string) => void; error?: string };
 

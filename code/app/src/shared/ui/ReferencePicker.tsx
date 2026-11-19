@@ -68,7 +68,7 @@ export function ReferencePicker({ label, choices, value, onChange, error, status
               const on = choice.value === value;
               return (
                 <div key={choice.value} role="option" aria-selected={on} tabIndex={0} className={on ? "reference-row on" : "reference-row"} onClick={() => choose(choice.value)} onKeyDown={(event) => (event.key === "Enter" || event.key === " ") && choose(choice.value)}>
-                  <ListRow title={choice.label} end={on ? chosenMark : "›"} />
+                  <ListRow title={choice.label} meta={choice.hint} end={on ? chosenMark : "›"} />
                 </div>
               );
             })}

@@ -81,3 +81,29 @@ test("neighbourhoods are the area groups by name and role kinds are the open one
   expect(await loadNeighbourhoodChoices()).toEqual([{ value: "g1", label: "Óváros" }]);
   expect(await loadRoleKindChoices()).toEqual([{ value: "k1", label: "Mayor" }]);
 });
+
+test("the holder choices also offer the businesses and the informal traders by name with their kind", async () => {
+  callTool.mockImplementation(async (_hub: string, tool: string, args?: { record_code?: string }) => {
+    if (tool === "actor_list_groups") return { items: groups };
+    if (tool === "agency_list_live_records") return { items: [{ name: "Businesses", code: "RC-1" }, { name: "Informal traders", code: "RC-2" }] };
+    if (tool === "agency_list_live_record_rows") return { items: args?.record_code === "RC-1" ? [{ id: "b1", answers: { "Trading name": "Mill Corner Garage" } }] : [{ id: "t1", answers: { "Name or alias": "Lemonade Anna" } }] };
+    return { items: people };
+  });
+  const choices = await loadHolderChoices();
+  expect(choices).toContainEqual({ value: "row:b1", label: "Mill Corner Garage", hint: "Business" });
+  expect(choices).toContainEqual({ value: "row:t1", label: "Lemonade Anna", hint: "Informal trader" });
+  expect(choices.slice(0, 2).map((choice) => choice.label)).toEqual(["Unnamed person", "Varga Mária"]);
+});
+
+test("a chosen business or trader is sent by name and record row id", async () => {
+  const choices = [{ value: "row:b1", label: "Mill Corner Garage", hint: "Business" }];
+  expect(holderArgs("row:b1", choices)).toEqual({ holder: "Mill Corner Garage", holder_record_row_id: "b1" });
+});
+
+test("a holder list still loads when the businesses cannot be read", async () => {
+  callTool.mockImplementation(async (_hub: string, tool: string) => {
+    if (tool.startsWith("agency_list_live")) throw new Error("denied");
+    return { items: tool === "actor_list_groups" ? groups : people };
+  });
+  expect((await loadHolderChoices()).map((choice) => choice.label)).toEqual(["Unnamed person", "Varga Mária", "Zöldhalom Town Council", "Zöldhalom Parish"]);
+});
