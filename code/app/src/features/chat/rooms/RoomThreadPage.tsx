@@ -86,7 +86,7 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
           )}
         </Card>
       ) : null}
-      {thread?.audience === "leads" ? <p className="rm-note">{thread.questionRoom ? "Only you and the room's leaders read this question." : "Leaders only · members cannot see this yet"}</p> : null}
+      {thread?.audience === "leads" ? <p className="rm-note">{thread.questionRoom ? "Only you and the room's leaders read this question." : leader && takesQuestions ? words.questionReadersLeader : "Leaders only · members cannot see this yet"}</p> : null}
       {leader ? <QuestionRoomSwitch on={takesQuestions} onChange={async (on) => { await client.setQuestionRoom(roomId, on); setTakesQuestions(on); }} /> : null}
       {failed ? <LoadFailed words="The room could not be loaded." /> : null}
       {messages ? (

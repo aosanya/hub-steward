@@ -171,3 +171,45 @@ describe("a member's own question thread", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Services Desk" })).toBeInTheDocument();
   });
 });
+
+describe("a leader reading a member's question thread", () => {
+  afterEach(() => window.localStorage.removeItem("hub.language"));
+
+  const asked = (takesQuestions: boolean) =>
+    clientWith([
+      thread({ id: "t0", leader: true, takesQuestions }),
+      thread({ id: "t1", label: "Permit office hours", audience: "leads", requestedBy: "u7", askerName: "Sipos Hanna", leader: true, takesQuestions }),
+    ]);
+
+  const open = () =>
+    render(
+      <MemoryRouter initialEntries={["/a/council/chat/r1/t1"]}>
+        <Routes>
+          <Route path={routes.roomThread.pattern} element={<RoomThreadPage client={asked(true)} />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+  it("says only the asker and the room's leaders read the question", async () => {
+    open();
+    expect(await screen.findByText("Only the asker and the room's leaders read this question.")).toBeInTheDocument();
+    expect(screen.queryByText(/members cannot see this yet/)).toBeNull();
+  });
+
+  it("says it in Hungarian when the language is Hungarian", async () => {
+    window.localStorage.setItem("hub.language", "hu");
+    open();
+    expect(await screen.findByText("Csak a kérdező és a szoba vezetői olvassák ezt a kérdést.")).toBeInTheDocument();
+  });
+
+  it("keeps the old note on a leaders-only request in a room that takes no questions", async () => {
+    render(
+      <MemoryRouter initialEntries={["/a/council/chat/r1/t1"]}>
+        <Routes>
+          <Route path={routes.roomThread.pattern} element={<RoomThreadPage client={asked(false)} />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    expect(await screen.findByText("Leaders only · members cannot see this yet")).toBeInTheDocument();
+  });
+});

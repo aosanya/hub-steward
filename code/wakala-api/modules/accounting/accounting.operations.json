@@ -553,6 +553,21 @@
       ],
       "returns": [{ "body": true }]
     },
+    "reverse_payment": {
+      "method": "POST",
+      "path": "/payments/{paymentID}/reversal",
+      "call": "ReversePayment",
+      "action": "accounting.payment.reverse",
+      "status": 201,
+      "title": "Reverse payment",
+      "description": "Reverse one payment of a bill that was recorded by mistake or in the wrong amount: a new line is posted that undoes it and names it in reverses_entry_id, so the bill owes what it owed before and the payment is left out of the list of payments. The original stays in the ledger, nothing is deleted. A payment is reversed once, only a payment of a bill can be reversed, and the line records who reversed it and the narration, if one is given.",
+      "args": [
+        { "from": "body", "whole": true },
+        { "from": "path", "as": "paymentID", "into": "PaymentID", "description": "The payment reversed. The address decides, not the body." },
+        { "from": "caller", "as": "reversed_by", "into": "ReversedBy", "description": "Who reversed the payment, supplied by the mount. Never read from the request." }
+      ],
+      "returns": [{ "body": true }]
+    },
     "list_payments": {
       "method": "GET",
       "path": "/payments",

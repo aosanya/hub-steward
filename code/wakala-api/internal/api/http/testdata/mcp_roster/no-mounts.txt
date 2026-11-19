@@ -13,6 +13,7 @@ accounting_dimension_totals
 accounting_milestone_list
 accounting_payment_list
 accounting_payment_mark_paid
+accounting_payment_reverse
 accounting_quote_create
 accounting_quote_list
 accounting_quote_update
