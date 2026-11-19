@@ -136,11 +136,12 @@ type registry struct {
 	withdrawalPolicy WithdrawalPolicy
 	recordGrants     RecordGrantOf
 
-	actorOptions []mwanachamaactor.Option
-	pushSender   mwanachamacomm.PushSender
-	pushFailed   func(error)
-	mutability   Mutability
-	rules        RuleOf
+	actorOptions     []mwanachamaactor.Option
+	pushSender       mwanachamacomm.PushSender
+	pushFailed       func(error)
+	mutability       Mutability
+	paymentListHolds HoldsPermission
+	rules            RuleOf
 
 	gitFolder    string
 	gitOpenFiles int
@@ -567,6 +568,12 @@ func (r *registry) buildCommManager(ctx context.Context, id string) (*mwanachama
 	built.UseAnswerers(r.subjectAnswerersIn(id))
 	built.UseAuthorKindOf(r.authorKindIn(id))
 	built.UseRaisable(raisableEvent)
+	if r.paymentListHolds != nil {
+		rule := PaymentListRecipientRule(r.paymentListHolds, r.paymentListWidenedIn)
+		built.UseRecipientRule(func(ctx context.Context, event commmodels.NotificationEvent, recipientID string) error {
+			return rule(ctx, id, event, recipientID)
+		})
+	}
 	built.UseWebPush(r.pushSender, r.pushFailed)
 	if r.mutability != nil {
 		built.UseMutable(r.mutableIn(id))
