@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { itemsOf } from "../../../../features/backlogs";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
@@ -11,15 +10,9 @@ import { Shell } from "../../../Shell";
 import { refusalWords } from "../../MenuEditForm";
 import { residentFields, residentRecordCode, useRegisterDetails, writeRegisterAnswers } from "../../registerDetails";
 import { residentPaths } from "./paths";
+import { loadPersonProperties } from "./personProperties";
 
 type Item = Record<string, unknown>;
-
-type TextProperty = { key: string; label: string };
-
-const loadTextProperties = async (): Promise<TextProperty[]> =>
-  (itemsOf(await callTool("", "actor_list_attribute_properties")) as Item[])
-    .filter((property) => property.range === "text" && typeof property.name === "string")
-    .map((property) => ({ key: String(property.name), label: String(property.label ?? property.name) }));
 
 const filledOnly = (values: Record<string, string>) => Object.fromEntries(Object.entries(values).map(([key, value]) => [key, value.trim()]).filter(([, value]) => value !== ""));
 
@@ -32,7 +25,7 @@ const labelOf = (prompt: string, required: boolean) => (required ? prompt : `${p
 
 export function PersonNewScreen() {
   const navigate = useNavigate();
-  const properties = useLoad(loadTextProperties, `person-new-properties:${openAgencyId()}`);
+  const properties = useLoad(loadPersonProperties, `person-new-properties:${openAgencyId()}`);
   const details = useRegisterDetails(residentRecordCode, residentFields);
   const [name, setName] = useState("");
   const [values, setValues] = useState<Record<string, string>>({});
@@ -67,7 +60,7 @@ export function PersonNewScreen() {
     <Shell title="Add person" titleUnder backLabel="All People" onBack={() => navigate(residentPaths.people.path())} tabless>
       <Field label="Name" value={name} onChange={(event) => setName(event.target.value)} />
       {fields.map((field) => (
-        <Field key={field.key} label={labelOf(field.label, field.required)} value={values[field.key] ?? ""} onChange={(event) => setValues((was) => ({ ...was, [field.key]: event.target.value }))} />
+        <Field key={field.key} type={field.kind === "date" ? "date" : "text"} label={labelOf(field.label, field.required)} value={values[field.key] ?? ""} onChange={(event) => setValues((was) => ({ ...was, [field.key]: event.target.value }))} />
       ))}
       {own.map((detail) => (
         <Field key={detail.prompt} label={labelOf(detail.prompt, detail.required)} value={answers[detail.prompt] ?? ""} onChange={(event) => setAnswers((was) => ({ ...was, [detail.prompt]: event.target.value }))} />

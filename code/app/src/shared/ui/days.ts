@@ -24,6 +24,11 @@ export const endDayWords = (value: string) => {
   return date.getUTCFullYear() === new Date().getUTCFullYear() ? words : `${words} ${date.getUTCFullYear()}`;
 };
 
+export const dayWithYearWords = (value: string) => {
+  const date = dayOf(value);
+  return date ? `${dayWords(value)} ${date.getUTCFullYear()}` : value;
+};
+
 export const shortDayWords = (value: string) => {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : `${shortDayNames[date.getDay()]} ${date.getDate()} ${monthNames[date.getMonth()]}`;

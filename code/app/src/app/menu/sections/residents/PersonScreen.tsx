@@ -11,6 +11,7 @@ import { ChooseSheet } from "./ChooseSheet";
 import { SectionAct, SectionGo } from "./SectionAct";
 import { PersonActivity } from "./PersonActivity";
 import { usePersonAttributes } from "./PersonAttributesEdit";
+import { propertyWords } from "./personProperties";
 import { PersonBills } from "./PersonBills";
 import { PersonHoldings } from "./PersonHoldings";
 import { PersonApplications, PersonRecords } from "./PersonLinks";
@@ -109,7 +110,7 @@ export function PersonDetails({ id, person, editTo, word = "Personal detail" }: 
   const contactFirst = [...filled].sort((a, b) => contactRank(a.key) - contactRank(b.key));
   const rows = [
     ...(name ? [<ListRow key="name" title="Name" meta={name} />] : []),
-    ...contactFirst.map((field) => <ListRow key={field.key} title={field.label} meta={String(item[field.key])} />),
+    ...contactFirst.map((field) => <ListRow key={field.key} title={field.label} meta={propertyWords(field, item[field.key])} />),
   ];
   return <Section word={word} plain foot={edit} empty={{ words: "No details on file yet." }} rows={rows} />;
 }
