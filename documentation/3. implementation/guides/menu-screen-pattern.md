@@ -15,6 +15,7 @@ How a screen in the menu is built once it has been restyled. The reference is th
 
 - The screen is a `MenuWindow` with `withTabs` and `bandless`: the usual bottom bar (Home, Chat, Notifications) sits under it, and the list stays beside the page on a wide screen.
 - On a phone a record opened from a link has a Back arrow named after the list (when there is no origin), or an "All <list>" row above the page (when there is one), so the list is always reachable.
+- Every screen under a menu section has a Back arrow, wide or phone: it goes to where the person came from, and when the page was opened by its address, after a reload or from a link with no origin it goes to the section the address names (`backOriginOf` in `useBackToSection.ts`). Only the section page itself and the bottom-bar roots have none; `useBackToSection.test.tsx` walks every section path and fails when a new page has no way back.
 - **Chat:** the Chat tab opens the assistant about what is on screen, with an "About <name>" line that can be cleared. The carried subject (`app/chatAbout.ts`) names its kind: resident, group, registration, conversation, business, trader, and later the kinds of the other sections. The assistant reads the subject only through existing read tools and the asking user's own permissions, offers pressable choices for that kind, and answers a general question with an overview.
 
 ## The Add act on a list

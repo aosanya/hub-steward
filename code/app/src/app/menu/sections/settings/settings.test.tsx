@@ -234,10 +234,12 @@ describe.each(["Agency Profile", "Users & Roles", "Boundaries & Areas"])("the %s
     expect(landed).toBe(section.path);
   });
 
-  it("offers no named Back button when it was not opened from a section", async () => {
+  it("still goes back to the Settings section when it was opened by its address, with no origin", async () => {
     openAt(title, null);
-    await screen.findByRole("main");
+    await screen.findByRole("button", { name: /‹ Settings/ });
 
-    expect(screen.queryByRole("button", { name: /Settings/ })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: /‹ Settings/ }));
+
+    expect(landed).toBe(section.path);
   });
 });
