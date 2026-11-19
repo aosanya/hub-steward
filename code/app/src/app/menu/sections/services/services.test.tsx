@@ -239,6 +239,15 @@ describe("Fees & Payments", () => {
     expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "m1" });
   });
 
+  it("prints a fee's amount followed by the Currency word of the accounting mount", async () => {
+    answers.agency_list_mounts = () => ({ modules: [{ module: "accounting", mounts: [{ name: "Finance", key: "finance", words: { Currency: "Ft" } }] }] });
+    open(screens[2].at);
+
+    await userEvent.click(await screen.findByText("Hall Hire Fee"));
+
+    expect(await screen.findByText("4,500 Ft")).toBeInTheDocument();
+  });
+
   it("shows the amount and the payer of a paid fee too", async () => {
     open(screens[2].at);
 

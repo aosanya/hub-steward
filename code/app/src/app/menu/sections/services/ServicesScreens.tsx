@@ -7,7 +7,7 @@ import { actionFailedWords } from "../../MenuDetail";
 import { MenuWindow } from "../../MenuWindow";
 import { useWord } from "../../../../features/agency/useWord";
 import { homeEmpty, listOf, text, type Item } from "../staff/staffData";
-import { moneyWords } from "../finance/financeData";
+import { moneyWords, unitOf } from "../finance/financeData";
 import { personNameOf } from "../residents/personName";
 import { RecordOwner } from "../../RecordOwner";
 import { CatalogueWindow } from "./CatalogueEntry";
@@ -54,20 +54,20 @@ const entryRow = (entry: Item) => ({ id: text(entry, "slug"), name: text(entry, 
 
 const loadKind = (kind: string) => async () => (await listOf(listTool, { kind })).map(entryRow);
 
-const amountWords = (form: Item) => (typeof form.amount === "number" && form.amount > 0 ? moneyWords(form.amount) : "");
+const amountWords = (form: Item, unit: string) => (typeof form.amount === "number" && form.amount > 0 ? moneyWords(form.amount, unit) : "");
 
-const feeDetails = async (submission: Item | undefined) => {
+const feeDetails = async (submission: Item | undefined, unit: string) => {
   if (!submission) return { amount: "", payer: "", payer_id: "" };
   const [form, member] = await Promise.all([
     readItem("forms_form_read", { form_id: text(submission, "form_id") }),
     readItem("actor_get_actor", { actor_id: text(submission, "member_id") }),
   ]);
-  return { amount: amountWords(form), payer: personNameOf(member), payer_id: text(submission, "member_id") };
+  return { amount: amountWords(form, unit), payer: personNameOf(member), payer_id: text(submission, "member_id") };
 };
 
 const entryOf = async (kind: string, slug: string) => (await listOf(listTool, { kind })).find((entry) => text(entry, "slug") === slug) ?? {};
 
-const loadSubmissions = (fee: boolean, kind: string) => async (slug: string) => {
+const loadSubmissions = (fee: boolean, kind: string, unit: string) => async (slug: string) => {
   const [sent, entry] = await Promise.all([listOf(submissionsTool, { slug }).then((all) => all.sort(byNewest)), entryOf(kind, slug)]);
   return {
     id: slug,
@@ -79,7 +79,7 @@ const loadSubmissions = (fee: boolean, kind: string) => async (slug: string) => 
     sent: sent.map((submission) => dayWords(text(submission, "submitted_at"))).join(", "),
     owing: sent.filter(isOwing),
     ...(fee || sent.length === 0 ? {} : certificateOf(sent[0])),
-    ...(fee ? await feeDetails(sent[0]) : {}),
+    ...(fee ? await feeDetails(sent[0], unit) : {}),
   };
 };
 
@@ -93,6 +93,7 @@ type Kind = "permit" | "licence" | "fee";
 
 const KindScreen = ({ generic, emptyGeneric, kind, payable, at }: { generic: string; emptyGeneric: string; kind: Kind; payable?: boolean; at: string }) => {
   const word = useWord("forms");
+  const unit = unitOf(useWord("accounting"));
   const [search] = useSearchParams();
   const title = word(generic);
   const empty = `No ${word(emptyGeneric).toLowerCase()} yet.`;
@@ -121,7 +122,7 @@ const KindScreen = ({ generic, emptyGeneric, kind, payable, at }: { generic: str
         tool: submissionsTool,
         fields: {},
         status: "",
-        load: loadSubmissions(payable === true, kind),
+        load: loadSubmissions(payable === true, kind, unit),
         extra: (item: Item) => (
           <>
             <ChatAboutService about={{ kind, id: text(item, "id"), name: text(item, "name"), extra: extraOf(item, payable === true) }} back={`${at}?item=${text(item, "id")}`} />
