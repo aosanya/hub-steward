@@ -2,11 +2,13 @@ import { vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
+import { forgetOpenAgency, homeSegment, openAgency } from "../../shared/wakala/openAgency";
 import * as mcp from "../../shared/wakala/mcp";
 import { CouncilRisksPage } from "../../features/council/CouncilRisksPage";
 import type { CouncilRisksClient } from "../../features/council/councilRisksApi";
+import { NeedsRole } from "../../features/backlogs/shared/NeedsRole";
 import { GapsPage } from "../../features/risks/GapsPage";
+import { RisksPage } from "../../features/risks/RisksPage";
 import type { RisksClient } from "../../features/risks/api";
 import { allScreens } from "../routes";
 import type { AgencyScreen } from "../screen";
@@ -82,7 +84,7 @@ describe("the back control of a menu screen opened without an origin", () => {
   });
 });
 
-const risksClient = { myGaps: async () => [] } as unknown as RisksClient;
+const risksClient = { myGaps: async () => [], myRisks: async () => [], myActions: async () => [] } as unknown as RisksClient;
 
 const councilClient = { load: async () => ({ risks: [], overdueActions: [] }) } as unknown as CouncilRisksClient;
 
@@ -91,6 +93,7 @@ const openStandalone = (path: string) =>
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/a/:agencyId/risks" element={<p>The risk list</p>} />
+        <Route path={`/a/:agencyId/${homeSegment}`} element={<p>The home page</p>} />
         <Route path="/a/:agencyId/risk-gaps" element={<GapsPage client={risksClient} />} />
         <Route path="/a/:agencyId/menu/council" element={<p>The council section</p>} />
         <Route path="/a/:agencyId/council/risks" element={<CouncilRisksPage client={councilClient} />} />
@@ -102,7 +105,7 @@ describe("the standalone screens that sit under a list or a section", () => {
   it("gives the gaps page a Back to the risk list", async () => {
     openStandalone("/a/town/risk-gaps");
 
-    await userEvent.click(await screen.findByRole("button", { name: /Back.*Risks|Risks/i }));
+    await userEvent.click(await screen.findByRole("button", { name: "‹ Risks" }));
 
     expect(await screen.findByText("The risk list")).toBeInTheDocument();
   });
@@ -110,8 +113,70 @@ describe("the standalone screens that sit under a list or a section", () => {
   it("gives the council risks page a Back to the council section", async () => {
     openStandalone("/a/town/council/risks");
 
-    await userEvent.click(await screen.findByRole("button", { name: /Back.*Decisions|Decisions/i }));
+    await userEvent.click(await screen.findByRole("button", { name: "‹ Decisions" }));
 
     expect(await screen.findByText("The council section")).toBeInTheDocument();
+  });
+});
+
+const openRisks = (path: string) =>
+  render(
+    <MemoryRouter initialEntries={[path]}>
+      <Routes>
+        <Route path="/a/:agencyId/risks" element={<RisksPage client={risksClient} />} />
+        <Route path={`/a/:agencyId/${homeSegment}`} element={<p>The home page</p>} />
+      </Routes>
+    </MemoryRouter>,
+  );
+
+describe("the screens that sit under Home", () => {
+  it("gives the risk list a Back to Home, as it is reached from a Home card", async () => {
+    openRisks("/a/town/risks");
+
+    await userEvent.click(await screen.findByRole("button", { name: "‹ Home" }));
+
+    expect(await screen.findByText("The home page")).toBeInTheDocument();
+  });
+
+  it("gives the backlogs gate a Back to Home while the person has no role", async () => {
+    render(
+      <MemoryRouter initialEntries={["/a/town/backlogs"]}>
+        <Routes>
+          <Route path="/a/:agencyId/backlogs" element={<NeedsRole ask={async () => false}>The backlogs</NeedsRole>} />
+          <Route path={`/a/:agencyId/${homeSegment}`} element={<p>The home page</p>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    await userEvent.click(await screen.findByRole("button", { name: "‹ Home" }));
+
+    expect(await screen.findByText("The home page")).toBeInTheDocument();
+  });
+});
+
+const sources = import.meta.glob<string>(["../../**/*.tsx", "!../../**/*.test.tsx"], { query: "?raw", import: "default", eager: true });
+
+const rootScreens = ["app/TabPage.tsx", "app/home/HomePage.tsx", "features/chat/ChatPage.tsx"];
+
+const fileOf = (key: string) => new URL(key, import.meta.url).pathname.split("/src/")[1] ?? key;
+
+const wiresItsBack = (source: string) => /onBack|useBackToSection|\.\.\.back/.test(source);
+
+describe("every screen that draws a Shell", () => {
+  it("is a root of the bottom bar or wires a back control", () => {
+    const withoutBack = Object.entries(sources)
+      .map(([key, source]) => ({ file: fileOf(key), source }))
+      .filter(({ source }) => source.includes("<Shell"))
+      .filter(({ file, source }) => !rootScreens.includes(file) && !wiresItsBack(source))
+      .map(({ file }) => file);
+
+    expect(withoutBack).toEqual([]);
+  });
+
+  it("names only roots that still draw a Shell", () => {
+    const drawing = Object.entries(sources).filter(([, source]) => source.includes("<Shell")).map(([key]) => fileOf(key));
+    const stale = rootScreens.filter((file) => !drawing.includes(file));
+
+    expect(stale).toEqual([]);
   });
 });

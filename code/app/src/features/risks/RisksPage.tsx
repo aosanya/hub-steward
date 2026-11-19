@@ -9,6 +9,7 @@ import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { isoDay } from "../../shared/ui/days";
 import { Segmented } from "../../shared/ui/Segmented";
 import { useWide } from "../../shared/ui/useWide";
+import { useBackToSection } from "../../app/menu/useBackToSection";
 import { Shell } from "../../app/Shell";
 import { mcpRisksClient, type RisksClient } from "./api";
 import { RiskPane } from "./RiskBody";
@@ -21,6 +22,7 @@ type View = "risks" | "actions";
 export function RisksPage({ client = mcpRisksClient, riskId = "" }: { client?: RisksClient; riskId?: string }) {
   const { words } = useLanguage();
   const go = useNavigate();
+  const back = useBackToSection();
   const wide = useWide();
   const [chosen, setChosen] = useState(riskId);
   const [view, setView] = useState<View>("risks");
@@ -85,9 +87,9 @@ export function RisksPage({ client = mcpRisksClient, riskId = "" }: { client?: R
       )}
     </>
   );
-  if (!wide) return <Shell title={words.risksTitle}>{list}</Shell>;
+  if (!wide) return <Shell title={words.risksTitle} {...back}>{list}</Shell>;
   return (
-    <Shell title={words.risksTitle} tabless>
+    <Shell title={words.risksTitle} tabless {...back}>
       <div className="wf">
         <div className="wf-panes">
           <section className="wf-tree mw-list" aria-label={words.risksTitle}>

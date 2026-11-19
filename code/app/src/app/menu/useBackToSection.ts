@@ -2,8 +2,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { mcpAgencyClient, type AgencyView } from "../../features/agency/modules";
 import { useLoad } from "../../features/forms/useLoad";
 import { useLanguage } from "../../shared/language/language";
-import { openAgencyId } from "../../shared/wakala/openAgency";
+import { homeSegment, openAgencyId } from "../../shared/wakala/openAgency";
 import { headById, titleOf } from "./sectionHeads";
+import { homeTab } from "../tabs";
 
 type Origin = { path: string; title: string; sectionId?: string };
 
@@ -21,7 +22,11 @@ export const backOriginOf = (pathname: string): Origin | null => {
   return found && head ? { path: `${found[1]}${head.id}`, title: head.title, sectionId: head.id } : null;
 };
 
+const homeOrigin = (base: string): Origin => ({ path: `${base}/${homeSegment}`, title: homeTab.label });
+
 const standaloneParents: { pattern: RegExp; origin: (base: string, risksTitle: string) => Origin }[] = [
+  { pattern: /^(\/a\/[^/]+)\/risks$/, origin: (base) => homeOrigin(base) },
+  { pattern: /^(\/a\/[^/]+)\/backlogs$/, origin: (base) => homeOrigin(base) },
   { pattern: /^(\/a\/[^/]+)\/risk-gaps$/, origin: (base, risksTitle) => ({ path: `${base}/risks`, title: risksTitle }) },
   { pattern: /^(\/a\/[^/]+)\/council\/risks$/, origin: (base) => ({ path: `${base}/menu/council`, title: "", sectionId: "council" }) },
 ];
