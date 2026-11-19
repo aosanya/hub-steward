@@ -7,6 +7,7 @@ import { AddButton } from "../../AddButton";
 import { MenuWindow } from "../../MenuWindow";
 import { useChosenItem } from "../settings/RecordPage";
 import { SchedulePanel, WorkOrderPanel } from "./AssetPanels";
+import { assigneeLookupFor } from "./assigneeNames";
 import { assetPaths } from "./paths";
 import { aboutAndPlaceOf, placeLookupFor } from "./workOrderAsset";
 
@@ -43,12 +44,12 @@ export const stateAndDue = (task: Item) => {
   return day === "" ? textOf(task.state) : `${textOf(task.state)} · due ${day}`;
 };
 
-const metaWithPlace = (task: Item, place: string) => [stateAndDue(task), place].filter((part) => part !== "").join(" · ");
+const metaWithPlace = (task: Item, place: string, holder: string) => [stateAndDue(task), place, holder].filter((part) => part !== "").join(" · ");
 
 const loadWorkOrders = async () => {
   const open = ((await callTool("", taskList).then(itemsOf)) as Item[]).filter((task) => !isDone(task));
-  const placeOf = await placeLookupFor(open);
-  return open.map((task) => ({ id: textOf(task.id), title: textOf(task.title), state: textOf(task.state), due_at: textOf(task.due_at), stateAndDue: metaWithPlace(task, placeOf(task)) }));
+  const [placeOf, holderOf] = await Promise.all([placeLookupFor(open), assigneeLookupFor(open)]);
+  return open.map((task) => ({ id: textOf(task.id), title: textOf(task.title), state: textOf(task.state), due_at: textOf(task.due_at), stateAndDue: metaWithPlace(task, placeOf(task), holderOf(task)) }));
 };
 
 const withPrefix = (prefix: string, day: string) => (day === "" ? "" : `${prefix} ${day}`);
