@@ -26,6 +26,8 @@ type Answer struct {
 	ValueTimeTo string   `json:"value_time_to,omitempty"`
 	ValueBool   *bool    `json:"value_bool,omitempty"`
 
+	PlaceRef string `json:"place_ref,omitempty"`
+
 	AnsweredAt string `json:"answered_at"`
 	EditedAt   string `json:"edited_at,omitempty"`
 
@@ -40,6 +42,9 @@ func ValidateAnswer(q Question, options []QuestionOption, a Answer) error {
 func ValidateAnswerWithin(q Question, options []QuestionOption, a Answer, defaultMaxFiles int) error {
 	if len(a.FileIDs) > 0 && !q.AnswerType.HoldsFiles() {
 		return fmt.Errorf("file_ids do not fit a %s question", q.AnswerType)
+	}
+	if a.PlaceRef != "" && q.AnswerType != AnswerAddress {
+		return fmt.Errorf("place_ref does not fit a %s question", q.AnswerType)
 	}
 	switch q.AnswerType {
 	case AnswerPhoto, AnswerFile:
@@ -79,6 +84,8 @@ func ValidateAnswerWithin(q Question, options []QuestionOption, a Answer, defaul
 		}
 	case AnswerTimeRange:
 		return checkTimeRange(a)
+	case AnswerAddress:
+		return checkAddress(q, a)
 	case AnswerNumber, AnswerCurrency:
 		if a.ValueNumber == nil {
 			return fmt.Errorf("%s answer requires value_number", q.AnswerType)
