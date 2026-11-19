@@ -4,6 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import * as mcp from "../../shared/wakala/mcp";
+import { CouncilRisksPage } from "../../features/council/CouncilRisksPage";
+import type { CouncilRisksClient } from "../../features/council/councilRisksApi";
+import { GapsPage } from "../../features/risks/GapsPage";
+import type { RisksClient } from "../../features/risks/api";
 import { allScreens } from "../routes";
 import type { AgencyScreen } from "../screen";
 import { sectionHeads } from "./sectionHeads";
@@ -75,5 +79,39 @@ describe("the back control of a menu screen opened without an origin", () => {
 
     expect(origin).not.toBeNull();
     expect(sectionIds).toContain(origin?.sectionId);
+  });
+});
+
+const risksClient = { myGaps: async () => [] } as unknown as RisksClient;
+
+const councilClient = { load: async () => ({ risks: [], overdueActions: [] }) } as unknown as CouncilRisksClient;
+
+const openStandalone = (path: string) =>
+  render(
+    <MemoryRouter initialEntries={[path]}>
+      <Routes>
+        <Route path="/a/:agencyId/risks" element={<p>The risk list</p>} />
+        <Route path="/a/:agencyId/risk-gaps" element={<GapsPage client={risksClient} />} />
+        <Route path="/a/:agencyId/menu/council" element={<p>The council section</p>} />
+        <Route path="/a/:agencyId/council/risks" element={<CouncilRisksPage client={councilClient} />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+
+describe("the standalone screens that sit under a list or a section", () => {
+  it("gives the gaps page a Back to the risk list", async () => {
+    openStandalone("/a/town/risk-gaps");
+
+    await userEvent.click(await screen.findByRole("button", { name: /Back.*Risks|Risks/i }));
+
+    expect(await screen.findByText("The risk list")).toBeInTheDocument();
+  });
+
+  it("gives the council risks page a Back to the council section", async () => {
+    openStandalone("/a/town/council/risks");
+
+    await userEvent.click(await screen.findByRole("button", { name: /Back.*Decisions|Decisions/i }));
+
+    expect(await screen.findByText("The council section")).toBeInTheDocument();
   });
 });

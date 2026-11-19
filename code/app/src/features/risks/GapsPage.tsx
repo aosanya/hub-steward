@@ -6,14 +6,16 @@ import { Chip } from "../../shared/ui/Chip";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { Shell } from "../../app/Shell";
+import { useBackToSection } from "../../app/menu/useBackToSection";
 import { mcpRisksClient, type RisksClient } from "./api";
 
 export function GapsPage({ client = mcpRisksClient }: { client?: RisksClient }) {
   const { words } = useLanguage();
+  const back = useBackToSection();
   const go = useNavigate();
   const gaps = useLoad(() => client.myGaps(), "gaps");
   return (
-    <Shell title={words.gapsTitle}>
+    <Shell title={words.gapsTitle} {...back}>
       {gaps.state === "loading" ? <LoadingLine words={words.gapsLoading} /> : null}
       {gaps.state === "error" ? <LoadFailed words={words.gapsFailed} /> : null}
       {gaps.state === "ready" && gaps.data.length === 0 ? <EmptyCard words={words.gapsEmpty} /> : null}

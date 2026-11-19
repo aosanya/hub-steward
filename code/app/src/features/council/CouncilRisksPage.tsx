@@ -7,14 +7,16 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { SectionHeading } from "../../shared/ui/SectionHeading";
 import { Shell } from "../../app/Shell";
+import { useBackToSection } from "../../app/menu/useBackToSection";
 import { mcpCouncilRisksClient, type CouncilRisksClient } from "./councilRisksApi";
 
 export function CouncilRisksPage({ client = mcpCouncilRisksClient }: { client?: CouncilRisksClient }) {
   const { words } = useLanguage();
+  const back = useBackToSection();
   const council = useLoad(() => client.load(), "council-risks");
   const empty = council.state === "ready" && council.data.risks.length === 0 && council.data.overdueActions.length === 0;
   return (
-    <Shell title={words.councilRisksTitle}>
+    <Shell title={words.councilRisksTitle} {...back}>
       {council.state === "loading" ? <LoadingLine words={words.councilRisksLoading} /> : null}
       {council.state === "error" ? <LoadFailed words={words.councilRisksFailed} /> : null}
       {empty ? <EmptyCard words={words.councilRisksEmpty} /> : null}

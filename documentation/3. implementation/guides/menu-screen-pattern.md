@@ -34,4 +34,6 @@ A form field that points at a person, a property, an asset or a group is a searc
 
 The resident page and its cards are ISS-20 to ISS-25 and MUN1452 to MUN1465; the Households, Groups, Registrations, Communications, Businesses and Informal traders screens are ISS-28 to ISS-33; the chat subject is ISS-34. The other menu sections follow in ISS-35 (Properties & Addresses), ISS-36 (Issues & Requests), ISS-37 (Services & Permits), ISS-38 (Assets & Works), ISS-39 (Council & Decisions), ISS-40 (Staff & Departments), ISS-41 (Finance) and ISS-42 (Settings); each starts by walking its screens and recording which of them show a record.
 
+A standalone screen that sits under a list or a section (the risk gaps under the risk list, the council risks under Decisions) gets its Back from the same `useBackToSection` hook, through its entry in `standaloneParents`, and never through an `onBack` written on the page (MUN1521).
+
 The wording of the card guide for screens built in code is in [phone-app-structure.md](phone-app-structure.md).
