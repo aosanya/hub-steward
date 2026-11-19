@@ -7,7 +7,7 @@ import (
 
 	"github.com/aosanya/mwanachama-backend-shared/spec"
 	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
-	mwanachamapermissions "wakalaserver/modules/permissions"
+	mwanachamapermissions "github.com/aosanya/mwanachama-backend-permissions"
 )
 
 func mountPermissionsAndReports(t *testing.T, deps *Deps) http.Handler {

@@ -25,8 +25,8 @@ import (
 	twinroutes "github.com/aosanya/mwanachama-backend-digitaltwin/routes"
 	gitroutes "github.com/aosanya/mwanachama-backend-git/routes"
 	marketroutes "github.com/aosanya/mwanachama-backend-market/routes"
+	votingroutes "github.com/aosanya/mwanachama-backend-voting/routes"
 	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
-	votingroutes "wakalaserver/modules/voting/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

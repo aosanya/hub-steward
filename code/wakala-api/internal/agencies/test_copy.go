@@ -18,9 +18,9 @@ import (
 	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	mwanachamavoting "github.com/aosanya/mwanachama-backend-voting"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
-	mwanachamavoting "wakalaserver/modules/voting"
 )
 
 const (

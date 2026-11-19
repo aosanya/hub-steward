@@ -11,7 +11,7 @@ import (
 	forms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 	workspace "github.com/aosanya/mwanachama-backend-workspace"
-	permissions "wakalaserver/modules/permissions"
+	permissions "github.com/aosanya/mwanachama-backend-permissions"
 	ratings "wakalaserver/modules/ratings"
 
 	"wakalaserver/internal/agencies"

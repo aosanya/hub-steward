@@ -9,6 +9,7 @@ import (
 	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
 	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 	mwanachamaengage "github.com/aosanya/mwanachama-backend-engage"
+	mwanachamavoting "github.com/aosanya/mwanachama-backend-voting"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
@@ -17,7 +18,6 @@ import (
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamariskmanager "wakalaserver/modules/riskmanager"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
-	mwanachamavoting "wakalaserver/modules/voting"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

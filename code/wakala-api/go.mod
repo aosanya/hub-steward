@@ -19,7 +19,9 @@ require (
 	github.com/aosanya/mwanachama-backend-git v0.1.0
 	github.com/aosanya/mwanachama-backend-insights v0.1.0
 	github.com/aosanya/mwanachama-backend-market v0.1.0
+	github.com/aosanya/mwanachama-backend-permissions v0.1.0
 	github.com/aosanya/mwanachama-backend-sources v0.1.0
+	github.com/aosanya/mwanachama-backend-voting v0.1.0
 	github.com/aosanya/mwanachama-backend-workspace v0.1.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/google/uuid v1.6.0

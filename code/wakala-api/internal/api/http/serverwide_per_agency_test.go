@@ -11,7 +11,7 @@ import (
 	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	forms "github.com/aosanya/mwanachama-backend-forms"
 	"wakalaserver/internal/approvals"
-	permissions "wakalaserver/modules/permissions"
+	permissions "github.com/aosanya/mwanachama-backend-permissions"
 )
 
 type permitEveryone struct{ permissions.PermissionsManager }

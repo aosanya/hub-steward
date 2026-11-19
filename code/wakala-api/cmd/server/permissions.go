@@ -4,10 +4,10 @@ import (
 	"log/slog"
 	"os"
 
+	permissions "github.com/aosanya/mwanachama-backend-permissions"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	permissions "wakalaserver/modules/permissions"
 )
 
 var permissionsMount = specMount{

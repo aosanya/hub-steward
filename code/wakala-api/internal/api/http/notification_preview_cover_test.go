@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	permissions "wakalaserver/modules/permissions"
+	permissions "github.com/aosanya/mwanachama-backend-permissions"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

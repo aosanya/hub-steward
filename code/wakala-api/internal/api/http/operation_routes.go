@@ -17,7 +17,7 @@ import (
 	workspace "github.com/aosanya/mwanachama-backend-workspace"
 	riskmanager "wakalaserver/modules/riskmanager"
 	taskmanager "wakalaserver/modules/taskmanager"
-	voting "wakalaserver/modules/voting"
+	voting "github.com/aosanya/mwanachama-backend-voting"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
