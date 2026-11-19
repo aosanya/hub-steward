@@ -105,6 +105,7 @@ agency_list_instances
 audit_list_entries
 comm_chat_message_list
 comm_chat_message_post
+comm_chat_room_set_question
 comm_chat_thread_archive
 comm_chat_thread_create
 comm_chat_thread_list
