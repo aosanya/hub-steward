@@ -90,3 +90,45 @@ func TestNotificationRaise_ARoleWithoutThePermissionCannotRaise(t *testing.T) {
 		t.Fatalf("a notification.raise holder raising: %s", toolErrorText(out))
 	}
 }
+
+func paymentListHandedOverArgs(instance, recipient string) map[string]any {
+	return map[string]any{
+		"instance_id":  instance,
+		"recipient_id": recipient,
+		"category":     "task",
+		"event":        "payment_list_handed_over",
+		"subject_kind": "report",
+		"subject_id":   "unpaid",
+		"names":        map[string]string{"total": "2,000", "payers": "2", "list": "Anna Sample\nCsilla Sample"},
+	}
+}
+
+func TestNotificationRaise_ANotificationRaiseHolderHandsOverTheListOfWhoHasNotPaid(t *testing.T) {
+	w := newDesignAgentWalk(t)
+	givesTheRole(t, w, "notification.raise")
+
+	raised := w.mcpCall(t, "agent-chat", "comm_notification_raise", paymentListHandedOverArgs(w.instance, "test-owner"))
+	if raised.IsError {
+		t.Fatalf("a notification.raise holder handing over the unpaid list: %s", toolErrorText(raised))
+	}
+	got := notificationEventsOf(t, w.mcpCall(t, "test-owner", "comm_notification_list", map[string]any{"instance_id": w.instance}))
+	found := false
+	for _, event := range got {
+		if event == "payment_list_handed_over" {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatalf("the recipient lists %v, want a payment_list_handed_over", got)
+	}
+}
+
+func TestNotificationRaise_TheUnpaidListEventUnderTheWrongCategoryIsRefused(t *testing.T) {
+	w := newDesignAgentWalk(t)
+	args := paymentListHandedOverArgs(w.instance, "agent-chat")
+	args["category"] = "payment"
+
+	if out := w.mcpCall(t, "test-owner", "comm_notification_raise", args); !out.IsError {
+		t.Fatalf("payment_list_handed_over under category payment was accepted, want a refusal")
+	}
+}

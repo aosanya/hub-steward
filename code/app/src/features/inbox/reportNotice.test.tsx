@@ -51,3 +51,28 @@ describe("a report handed to the caller", () => {
     expect(await screen.findByText("A report was handed to you")).toBeInTheDocument();
   });
 });
+
+describe("the list of who has not paid, handed to the caller", () => {
+  const unpaid: NotificationItem = {
+    id: "n2",
+    event: "payment_list_handed_over",
+    subjectKind: "report",
+    subjectId: "unpaid",
+    names: { total: "2,000 Ft", payers: "2", list: "Anna Sample\nCsilla Sample" },
+    createdAt: "2026-11-19T09:00:00Z",
+    read: false,
+  };
+
+  it("reads as an unpaid list with the total owed as the line", async () => {
+    show([unpaid]);
+
+    expect(await screen.findByText("The list of who has not paid was handed to you")).toBeInTheDocument();
+    expect(screen.getByText("Owed in total: 2,000 Ft")).toBeInTheDocument();
+  });
+
+  it("still reads as an unpaid list when the sender gave no total", async () => {
+    show([{ ...unpaid, names: {} }]);
+
+    expect(await screen.findByText("The list of who has not paid was handed to you")).toBeInTheDocument();
+  });
+});

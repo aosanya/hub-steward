@@ -67,6 +67,8 @@ export const magyar: Words = {
   inboxReportHandedOver: "Jelentést kapott",
   inboxReportNamed: "Jelentés: {name}",
   inboxReportFigures: "Tervezett {planned} · Elköltött {spent} · Különbség {difference}",
+  inboxPaymentListHandedOver: "Megkapta a nem fizetők listáját",
+  inboxPaymentListTotal: "Összes tartozás: {name}",
   inboxAskWaiting: "Egy kérdés a válaszára vár",
   inboxAskAnswered: "A kérdésére válaszoltak",
   inboxRevisionAsked: "A bolt kérte a csoportos rendelés módosítását",

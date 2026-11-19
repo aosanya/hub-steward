@@ -215,7 +215,7 @@ describe("the Inbox words the events other modules raise, over the live answer",
 
   it("holds the table to the events a Siaya farmers member can receive, and the names the screen kept", () => {
     expect([...noticeWordings.keys()].sort()).toEqual(
-      [...raisedEvents.map(([event]) => event), "joined", "request_approved", "invited", "form_published", "new_form", "report_handed_over"].sort(),
+      [...raisedEvents.map(([event]) => event), "joined", "request_approved", "invited", "form_published", "new_form", "report_handed_over", "payment_list_handed_over"].sort(),
     );
   });
 

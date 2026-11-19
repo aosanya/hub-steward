@@ -65,6 +65,8 @@ export const words = {
   inboxReportHandedOver: "A report was handed to you",
   inboxReportNamed: "Report: {name}",
   inboxReportFigures: "Planned {planned} · Spent {spent} · Difference {difference}",
+  inboxPaymentListHandedOver: "The list of who has not paid was handed to you",
+  inboxPaymentListTotal: "Owed in total: {name}",
   inboxAskWaiting: "An ask is waiting for your answer",
   inboxAskAnswered: "Your ask was answered",
   inboxRevisionAsked: "The shop asked to revise the group order",

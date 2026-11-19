@@ -24,6 +24,7 @@ export const noticeWordings = new Map<string, Wording>([
   ["results_published", { title: "inboxResultsPublished" }],
   ["supplier_approved", { title: "inboxSupplierApproved" }],
   ["report_handed_over", { title: "inboxReportHandedOver", titleNamed: { from: ["name"], words: "inboxReportNamed" } }],
+  ["payment_list_handed_over", { title: "inboxPaymentListHandedOver", lineNamed: { from: ["total"], words: "inboxPaymentListTotal" } }],
   ["ask_waiting", { title: "inboxAskWaiting" }],
   ["ask_answered", { title: "inboxAskAnswered" }],
   ["revision_asked", { title: "inboxRevisionAsked" }],

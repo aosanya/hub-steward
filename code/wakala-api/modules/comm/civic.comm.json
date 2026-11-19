@@ -183,7 +183,8 @@
             "ask_closed",
             "group_order_called_off",
             "report_handed_over",
-            "payment_late"
+            "payment_late",
+            "payment_list_handed_over"
           ]
         },
         {

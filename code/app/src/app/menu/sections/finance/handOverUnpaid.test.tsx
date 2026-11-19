@@ -93,7 +93,7 @@ describe("handing the list of who has not paid to a person", () => {
 
     await waitFor(() => expect(callsTo("comm_notification_raise")).toHaveLength(1));
     const sent = callsTo("comm_notification_raise")[0][2] as Record<string, unknown>;
-    expect(sent).toMatchObject({ recipient_id: "a2", category: "payment", event: "payment_list_handed_over", subject_kind: "payment" });
+    expect(sent).toMatchObject({ recipient_id: "a2", category: "task", event: "payment_list_handed_over", subject_kind: "report" });
     const names = sent.names as Record<string, string>;
     expect(names.total).toBe("2,000");
     expect(names.payers).toBe("2");

@@ -176,9 +176,9 @@ export function PaymentListScreen() {
             {handingOver ? (
               <HandOverSheet
                 title="Hand over the list"
-                category="payment"
+                category="task"
                 event="payment_list_handed_over"
-                subjectKind="payment"
+                subjectKind="report"
                 subjectId="unpaid"
                 names={{ total: moneyWords(owing.amount, unit), payers: String(owing.payers), list: unpaidLines.join("\n") }}
                 rememberAs={chaserKey}

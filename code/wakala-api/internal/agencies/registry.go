@@ -533,7 +533,7 @@ func formsProvisioned(db *gorm.DB, slug string) (bool, error) {
 }
 
 func raisableEvent(event commmodels.NotificationEvent) bool {
-	return event == commmodels.EventReportHandedOver || event == commmodels.EventPaymentLate
+	return event == commmodels.EventReportHandedOver || event == commmodels.EventPaymentLate || event == commmodels.EventPaymentListHandedOver
 }
 
 func (r *registry) CommManager(ctx context.Context, id string) (*mwanachamacomm.CommManager, error) {
