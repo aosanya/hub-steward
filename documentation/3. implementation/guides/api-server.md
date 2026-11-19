@@ -75,7 +75,7 @@ A module declares its objects and its operations in JSON, and writes only the be
 
 ## Add a module
 
-Copy the shape of a small module, such as `modules/riskmanager`: a blueprint, an operations file, a manager, `provision.go`, `routes/` and `mcp/`. Then:
+Copy the shape of a small module, such as `modules/council`: a blueprint, an operations file, a manager, `provision.go`, `routes/` and `mcp/`. Then:
 
 1. Add its entry to `modules_catalog.json`.
 2. Register its routes in `internal/api/http/router.go` and its tools in `newMCPServer`.
