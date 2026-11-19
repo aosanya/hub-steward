@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	mwanachamamarket "wakalaserver/modules/market"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 
 	"wakalaserver/internal/agencies"
 )

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	marketroutes "wakalaserver/modules/market/routes"
+	marketroutes "github.com/aosanya/mwanachama-backend-market/routes"
 
 	mwanachamaagency "wakalaserver/modules/agency"
 	"wakalaserver/modules/agency/models"

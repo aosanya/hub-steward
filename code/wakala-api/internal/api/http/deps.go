@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	workspace "github.com/aosanya/mwanachama-backend-workspace"
 	mwanachamaaudit "wakalaserver/modules/audit"
 	mwanachamaauth "wakalaserver/modules/auth"
 	catalog "wakalaserver/modules/catalog"
@@ -12,7 +13,6 @@ import (
 	mwanachamainsights "wakalaserver/modules/insights"
 	permissions "wakalaserver/modules/permissions"
 	ratings "wakalaserver/modules/ratings"
-	workspace "wakalaserver/modules/workspace"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"

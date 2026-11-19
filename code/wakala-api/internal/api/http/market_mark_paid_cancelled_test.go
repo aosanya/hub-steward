@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"wakalaserver/modules/market"
+	market "github.com/aosanya/mwanachama-backend-market"
 )
 
 func TestMarketMarkPaidRefusesCancelledOrder(t *testing.T) {

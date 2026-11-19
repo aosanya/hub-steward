@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"testing"
 
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamamarket "wakalaserver/modules/market"
 )
 
 type applyWorld struct {

@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 	"wakalaserver/internal/notifyrules"
-	mwanachamamarket "wakalaserver/modules/market"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
 

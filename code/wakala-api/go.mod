@@ -4,6 +4,8 @@ go 1.25.0
 
 require (
 	github.com/SherClockHolmes/webpush-go v1.4.0
+	github.com/aosanya/mwanachama-backend-market v0.1.0
+	github.com/aosanya/mwanachama-backend-workspace v0.1.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/go-git/go-billy/v5 v5.6.2
 	github.com/go-git/go-git/v5 v5.16.5

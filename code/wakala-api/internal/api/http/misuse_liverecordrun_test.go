@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"testing"
 
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	"github.com/aosanya/mwanachama-backend-market/models"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamamarket "wakalaserver/modules/market"
-	"wakalaserver/modules/market/models"
 )
 
 type groupOrderRegisterWalk struct {

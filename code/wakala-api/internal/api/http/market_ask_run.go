@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	mwanachamamarket "wakalaserver/modules/market"
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 
 	"wakalaserver/internal/agencies"
 )

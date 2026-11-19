@@ -8,8 +8,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	market "wakalaserver/modules/market"
-	marketroutes "wakalaserver/modules/market/routes"
+	market "github.com/aosanya/mwanachama-backend-market"
+	marketroutes "github.com/aosanya/mwanachama-backend-market/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"

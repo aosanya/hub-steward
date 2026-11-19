@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	marketmodels "github.com/aosanya/mwanachama-backend-market/models"
 	agencymodels "wakalaserver/modules/agency/models"
-	mwanachamamarket "wakalaserver/modules/market"
-	marketmodels "wakalaserver/modules/market/models"
 )
 
 func asksTheBuyer(block agencymodels.ScenarioBlock) bool {

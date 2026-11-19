@@ -6,10 +6,10 @@ import (
 	"log/slog"
 	"strings"
 
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	"github.com/aosanya/mwanachama-backend-market/models"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commmodels "wakalaserver/modules/comm/models"
-	mwanachamamarket "wakalaserver/modules/market"
-	"wakalaserver/modules/market/models"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	"wakalaserver/internal/notifyrules"

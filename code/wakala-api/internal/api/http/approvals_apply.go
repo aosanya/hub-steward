@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
@@ -15,7 +16,6 @@ import (
 	actorroutes "wakalaserver/modules/actor/routes"
 	mwanachamaagency "wakalaserver/modules/agency"
 	"wakalaserver/modules/agency/models"
-	mwanachamamarket "wakalaserver/modules/market"
 	riskmodels "wakalaserver/modules/riskmanager/models"
 	mwanachamasources "wakalaserver/modules/sources"
 )

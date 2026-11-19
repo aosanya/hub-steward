@@ -6,11 +6,11 @@ import (
 	"log/slog"
 	"strconv"
 
+	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	"github.com/aosanya/mwanachama-backend-market/models"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commmodels "wakalaserver/modules/comm/models"
-	mwanachamamarket "wakalaserver/modules/market"
-	"wakalaserver/modules/market/models"
 )
 
 type actorDirectory interface {
