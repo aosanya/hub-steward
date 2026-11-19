@@ -10,8 +10,7 @@ import { Section } from "../../../../shared/ui/Section";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { refusalWords } from "../../MenuEditForm";
-import { personNameOf } from "../residents/personName";
-import { loadPerson } from "../residents/PersonScreen";
+import { actorNameOf } from "./assigneeNames";
 
 type Item = Record<string, unknown>;
 
@@ -34,7 +33,7 @@ const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 const loadWorkers = async (): Promise<Worker[]> => (await listAgents()).map((agent) => ({ id: agent.id, name: agent.name }));
 
 const holderNameLoaders: Record<string, (id: string) => Promise<string>> = {
-  [actorKind]: async (id) => personNameOf(await loadPerson(id)),
+  [actorKind]: actorNameOf,
 };
 
 const loadHolderName = (kind: string, id: string) => async () => (id ? ((await holderNameLoaders[kind]?.(id)) ?? "") : "");

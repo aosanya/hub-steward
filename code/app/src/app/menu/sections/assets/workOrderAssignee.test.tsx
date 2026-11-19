@@ -124,6 +124,15 @@ describe("giving a work order to a worker from its detail", () => {
     expect(called).toHaveBeenCalledWith("", "actor_get_actor", { actor_id: "p2" });
   });
 
+  it("says Unnamed person, never the actor's code, for an assignee who holds no name", async () => {
+    people = { p3: { id: "p3", code: "AC-1" } };
+    order = { id: "w1", title: "Repaint railings", state: "Doing", assigned_to: "p3", assignee_kind: "actor" };
+    await openOrder();
+
+    expect(await screen.findByText("Unnamed person")).toBeInTheDocument();
+    expect(screen.queryByText("AC-1")).toBeNull();
+  });
+
   it("does not look up an actor for an order given to a worker", async () => {
     await openOrder();
     await screen.findByText("Mari Kovacs");
