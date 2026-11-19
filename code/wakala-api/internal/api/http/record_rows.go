@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
@@ -41,14 +42,37 @@ type rowRead struct {
 	Where   []rowCondition
 }
 
+const (
+	maxWhereConditions      = 20
+	maxConditionValueLength = 200
+)
+
 type rowConstraint struct {
 	question agencymodels.StepQuestion
 	rule     agencymodels.RouteRule
+	option   string
+}
+
+func (c rowConstraint) holdsOptions() bool {
+	if c.question.AnswerType != agencymodels.AnswerMultiSelect {
+		return false
+	}
+	return c.rule.Operator == agencymodels.RouteIs || c.rule.Operator == agencymodels.RouteIsNot || c.rule.Operator == agencymodels.RouteContains
 }
 
 var whereOperators = []agencymodels.RouteOperator{
 	agencymodels.RouteIs, agencymodels.RouteIsNot, agencymodels.RouteContains,
 	agencymodels.RouteMoreThan, agencymodels.RouteLessThan, routeOnOrBefore, routeOnOrAfter,
+}
+
+const echoedLength = 40
+
+func echoed(text string) string {
+	runes := []rune(text)
+	if len(runes) <= echoedLength {
+		return strconv.Quote(text)
+	}
+	return strconv.Quote(string(runes[:echoedLength])) + " (cut)"
 }
 
 func questionOfRecord(record agencymodels.Record, prompt string) (agencymodels.StepQuestion, bool) {
@@ -66,31 +90,61 @@ func questionOfRecord(record agencymodels.Record, prompt string) (agencymodels.S
 	return agencymodels.StepQuestion{}, false
 }
 
+func refusedCondition(number int, reason string) error {
+	return badRowError("condition " + strconv.Itoa(number) + " " + reason)
+}
+
 func constraintsOf(record agencymodels.Record, where []rowCondition) ([]rowConstraint, error) {
+	if len(where) > maxWhereConditions {
+		return nil, badRowError("where holds at most " + strconv.Itoa(maxWhereConditions) + " conditions, got " + strconv.Itoa(len(where)))
+	}
 	out := make([]rowConstraint, 0, len(where))
 	for i, c := range where {
 		n := i + 1
 		q, ok := questionOfRecord(record, c.Question)
 		if !ok {
-			return nil, badRowError("condition " + strconv.Itoa(n) + " names " + strconv.Quote(c.Question) + ", which is not a question of " + record.Name)
+			return nil, refusedCondition(n, "names "+echoed(c.Question)+", which is not a question of "+record.Name)
 		}
-		operator := agencymodels.RouteOperator(strings.TrimSpace(c.Operator))
+		operator := agencymodels.RouteOperator(strings.ToLower(strings.TrimSpace(c.Operator)))
 		if !slices.Contains(whereOperators, operator) {
-			return nil, badRowError("condition " + strconv.Itoa(n) + " has operator " + strconv.Quote(c.Operator) + ", which is not one of " + joinedOperators())
+			return nil, refusedCondition(n, "has operator "+echoed(c.Operator)+", which is not one of "+joinedOperators())
 		}
 		value := strings.TrimSpace(c.Value)
 		if value == "" {
-			return nil, badRowError("condition " + strconv.Itoa(n) + " has no value")
+			return nil, refusedCondition(n, "has no value")
 		}
-		if _, err := strconv.ParseFloat(value, 64); operator.Numeric() && err != nil {
-			return nil, badRowError("condition " + strconv.Itoa(n) + " compares with " + strconv.Quote(c.Value) + ", which is not a number")
+		if utf8.RuneCountInString(value) > maxConditionValueLength {
+			return nil, refusedCondition(n, "has a value longer than "+strconv.Itoa(maxConditionValueLength)+" characters")
 		}
-		if (operator == routeOnOrBefore || operator == routeOnOrAfter) && !isWrittenDay(value) {
-			return nil, badRowError("condition " + strconv.Itoa(n) + " compares with " + strconv.Quote(c.Value) + ", which is not a day written as " + writtenDayLayout)
+		constraint := rowConstraint{question: q, rule: agencymodels.RouteRule{Question: q.Prompt, Operator: operator, Value: value}}
+		if reason := constraint.unreadable(); reason != "" {
+			return nil, refusedCondition(n, reason)
 		}
-		out = append(out, rowConstraint{question: q, rule: agencymodels.RouteRule{Question: q.Prompt, Operator: operator, Value: value}})
+		constraint.option = strings.ToLower(value)
+		out = append(out, constraint)
 	}
 	return out, nil
+}
+
+func (c rowConstraint) unreadable() string {
+	q, operator, value := c.question, c.rule.Operator, c.rule.Value
+	isDay := operator == routeOnOrBefore || operator == routeOnOrAfter
+	switch {
+	case operator.Numeric() && q.AnswerType != agencymodels.AnswerNumber && q.AnswerType != agencymodels.AnswerCurrency:
+		return "uses " + string(operator) + " on " + echoed(q.Prompt) + ", which does not hold a number"
+	case isDay && q.AnswerType != agencymodels.AnswerDate:
+		return "uses " + string(operator) + " on " + echoed(q.Prompt) + ", which does not hold a day"
+	}
+	if _, err := strconv.ParseFloat(value, 64); operator.Numeric() && err != nil {
+		return "compares with " + echoed(value) + ", which is not a number"
+	}
+	if isDay && !isWrittenDay(value) {
+		return "compares with " + echoed(value) + ", which is not a day written as " + writtenDayLayout
+	}
+	if c.holdsOptions() && strings.Contains(value, multiSelectSeparator) {
+		return "compares " + echoed(q.Prompt) + " with " + echoed(value) + ", which holds " + strconv.Quote(multiSelectSeparator) + " and so is not one option"
+	}
+	return ""
 }
 
 func joinedOperators() string {
@@ -102,8 +156,21 @@ func joinedOperators() string {
 }
 
 func rowMeets(row agencymodels.RecordRow, constraints []rowConstraint) bool {
+	held := map[string][]string{}
 	for _, c := range constraints {
-		if !ruleHoldsFor(c.question, c.rule, row.Answers[c.question.Prompt]) {
+		answer := row.Answers[c.question.Prompt]
+		if !c.holdsOptions() {
+			if !ruleHolds(c.rule, answer) {
+				return false
+			}
+			continue
+		}
+		choices, parsed := held[c.question.Prompt]
+		if !parsed {
+			choices = multiSelectChoices(answer)
+			held[c.question.Prompt] = choices
+		}
+		if slices.Contains(choices, c.option) == (c.rule.Operator == agencymodels.RouteIsNot) {
 			return false
 		}
 	}
@@ -390,6 +457,10 @@ func (d *Deps) addLiveRecordRow(w http.ResponseWriter, r *http.Request) {
 }
 
 func (d *Deps) listLiveRecordRows(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Query().Has("where") {
+		writeErr(w, http.StatusBadRequest, "where narrows the "+listLiveRecordRowsTool+" tool only; this route lists every row the caller may see")
+		return
+	}
 	read := rowRead{OrderID: r.URL.Query().Get("order_id"), ActorID: r.URL.Query().Get("answer_actor_id"), History: r.URL.Query().Get("history") == "true"}
 	rows, err := d.liveRowsOf(r.Context(), r.PathValue("instanceID"), r.PathValue("recordCode"), read)
 	if err != nil {

@@ -69,8 +69,6 @@ type stepAnswersRequest struct {
 	AnotherSheet bool `json:"another_sheet,omitempty"`
 }
 
-const multiSelectSeparator = ", "
-
 func textAnswers(answers map[string]string) map[string]stepAnswer {
 	out := make(map[string]stepAnswer, len(answers))
 	for prompt, text := range answers {
@@ -100,10 +98,10 @@ func resolveStepAnswers(questions []agencymodels.StepQuestion, given map[string]
 		}
 		for _, label := range labels {
 			if len(q.Options) > 0 && !slices.Contains(q.Options, label) {
-				return nil, badRowError("the answer to " + prompt + " is some of " + strings.Join(q.Options, multiSelectSeparator) + ", got " + label)
+				return nil, badRowError("the answer to " + prompt + " is some of " + strings.Join(q.Options, ", ") + ", got " + label)
 			}
 		}
-		out[prompt] = strings.Join(labels, multiSelectSeparator)
+		out[prompt] = strings.Join(labels, multiSelectJoiner)
 	}
 	return out, nil
 }
@@ -115,7 +113,14 @@ func splitChosen(q agencymodels.StepQuestion, text string) []string {
 	if slices.Contains(q.Options, text) {
 		return []string{text}
 	}
-	return strings.Split(text, multiSelectSeparator)
+	if !strings.Contains(text, multiSelectSeparator) {
+		return strings.Split(text, ", ")
+	}
+	labels := strings.Split(text, multiSelectSeparator)
+	for i, label := range labels {
+		labels[i] = strings.TrimSpace(label)
+	}
+	return labels
 }
 
 type sendLocks struct {
@@ -170,7 +175,7 @@ type stepAnswersResult struct {
 type mcpSubmitStepAnswersParams struct {
 	InstanceID   string            `json:"instance_id" jsonschema:"the Agency Instance"`
 	StepID       string            `json:"step_id" jsonschema:"the step's id, as agency_list_my_open_steps names it"`
-	Answers      map[string]string `json:"answers" jsonschema:"the answer to each question of the step's form, by the question's prompt; a multi-select answer is its chosen options joined by a comma and a space"`
+	Answers      map[string]string `json:"answers" jsonschema:"the answer to each question of the step's form, by the question's prompt; a multi-select answer is its chosen options joined by a semicolon and a space, which is how the row keeps them and how a search reads them (a comma and a space is read too when no option holds a comma)"`
 	PlaceRefs    map[string]string `json:"place_refs,omitempty" jsonschema:"for an address question answered from the town's list, the street or address the words name, as address:<id> or street:<name>, by the question's prompt"`
 	OrderID      string            `json:"order_id,omitempty" jsonschema:"the run the step belongs to: empty on a workflow's first step, which starts a new run, and the run's order_id on every later step"`
 	SendKey      string            `json:"send_key,omitempty" jsonschema:"a key made once per opening of the form; sending a workflow's first step again with the same key is refused as already sent instead of starting a second run; with another_sheet it names the sheet, and sending the same key again is refused as already sent"`

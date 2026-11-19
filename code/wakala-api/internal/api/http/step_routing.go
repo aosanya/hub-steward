@@ -1,7 +1,6 @@
 package http
 
 import (
-	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -15,12 +14,13 @@ const (
 )
 
 const (
-	writtenDayLayout        = "2006-01-02"
-	multiSelectRowSeparator = ";"
+	writtenDayLayout     = "2006-01-02"
+	multiSelectSeparator = ";"
+	multiSelectJoiner    = multiSelectSeparator + " "
 )
 
 func multiSelectChoices(answer string) []string {
-	choices := strings.Split(answer, multiSelectRowSeparator)
+	choices := strings.Split(answer, multiSelectSeparator)
 	for i, choice := range choices {
 		choices[i] = strings.ToLower(strings.TrimSpace(choice))
 	}
@@ -42,13 +42,6 @@ func dayRuleHolds(operator agencymodels.RouteOperator, got, want string) bool {
 		return !left.After(right)
 	}
 	return !left.Before(right)
-}
-
-func ruleHoldsFor(q agencymodels.StepQuestion, rule agencymodels.RouteRule, answer string) bool {
-	if rule.Operator == agencymodels.RouteContains && q.AnswerType == agencymodels.AnswerMultiSelect {
-		return slices.Contains(multiSelectChoices(answer), strings.ToLower(strings.TrimSpace(rule.Value)))
-	}
-	return ruleHolds(rule, answer)
 }
 
 func stepActorRoleID(s agencymodels.WorkItem) string {

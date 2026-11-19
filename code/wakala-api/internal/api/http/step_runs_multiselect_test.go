@@ -56,8 +56,10 @@ func TestAMultiSelectAnswerIsAcceptedAsAListOrAsOneJoinedString(t *testing.T) {
 		answer any
 		want   string
 	}{
-		{"a list of labels", []string{"Fever", "Cough"}, "Fever, Cough"},
-		{"a joined string", "Fever, Cough", "Fever, Cough"},
+		{"a list of labels", []string{"Fever", "Cough"}, "Fever; Cough"},
+		{"a string joined with a comma", "Fever, Cough", "Fever; Cough"},
+		{"a string joined with a semicolon", "Fever; Cough", "Fever; Cough"},
+		{"a list holding an option with a comma", []string{"Fever", "Rash, itchy"}, "Fever; Rash, itchy"},
 		{"one label", "Fever", "Fever"},
 		{"a label that holds the separator, as a list", []string{"Rash, itchy"}, "Rash, itchy"},
 		{"a label that holds the separator, as a string", "Rash, itchy", "Rash, itchy"},

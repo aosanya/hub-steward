@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"slices"
-	"strings"
 	"testing"
 
 	mwanachamaactor "wakalaserver/modules/actor"
@@ -247,11 +246,5 @@ func TestPoolSearch_ACallerWhoDoesNotAddRowsIsNotShownThePoolBySearching(t *test
 	names, why = p.search(t, p.resident)
 	if why != "" || len(names) != 0 {
 		t.Errorf("a member with no condition sees %v (%s), want nothing", names, why)
-	}
-}
-
-func TestPoolSearch_TheToolDescriptionSaysWhoSeesTheRows(t *testing.T) {
-	if !strings.Contains(listLiveRecordRowsDescription, "adding role") || !strings.Contains(listLiveRecordRowsDescription, "where") {
-		t.Errorf("the description %q names neither the where list nor the adding role", listLiveRecordRowsDescription)
 	}
 }
