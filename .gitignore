@@ -10,3 +10,4 @@ playwright-report/
 !.env.example
 !.env.qa.example
 deployment/local/backups/
+/code/wakala-api/server
