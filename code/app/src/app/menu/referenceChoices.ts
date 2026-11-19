@@ -45,6 +45,11 @@ export const holderArgs = (value: string, choices: Choice[]) => {
 export const loadPersonIdChoices = async (): Promise<Choice[]> =>
   (await listPeople()).flatMap((person) => (typeof person.id === "string" && person.id !== "" ? [{ value: person.id, label: namedPersonOf(person) || unnamedPerson }] : []));
 
+export const loadRecipientChoices = async (event: string): Promise<Choice[]> => {
+  const allowed = new Set(((await callTool("", "comm_notification_recipients", { event }).then(itemsOf)) as Item[]).map((recipient) => wordOf(recipient.actor_id)).filter((id) => id !== ""));
+  return (await loadPersonIdChoices()).filter((choice) => allowed.has(choice.value));
+};
+
 const wordOf = (value: unknown) => (typeof value === "string" ? value.trim() : "");
 
 const capitalised = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);

@@ -24,6 +24,7 @@ const chaserKey = "unpaid_list_chaser";
 let called: MockInstance<typeof mcp.callTool>;
 let permissions: string[];
 let savedChaser: string;
+let recipients: string[];
 
 const callsTo = (name: string) => called.mock.calls.filter(([, tool]) => tool === name);
 
@@ -45,6 +46,7 @@ beforeEach(() => {
   openAgency("town");
   permissions = ["accounting.read", "accounting.manage", "notification.raise"];
   savedChaser = "";
+  recipients = ["a1", "a2", "a3"];
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     const given = (args ?? {}) as Record<string, unknown>;
     if (name === "agency_get_my_roles") return { permissions };
@@ -52,6 +54,7 @@ beforeEach(() => {
     if (name === "accounting_payment_list") return { items: [] };
     if (name === "accounting_account_list") return { items: [] };
     if (name === "actor_list_actors") return { items: people };
+    if (name === "comm_notification_recipients") return { items: recipients.map((actor_id) => ({ actor_id })) };
     if (name === "forms_catalog_setting_read") return given.key === chaserKey && savedChaser ? { value: savedChaser } : null;
     if (name === "forms_catalog_setting_write") {
       savedChaser = String(given.value);
@@ -125,5 +128,26 @@ describe("handing the list of who has not paid to a person", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Person/ }));
 
     expect(screen.getByRole("option", { name: "Unnamed person" })).toBeInTheDocument();
+  });
+
+  it("asks the hub who may be sent the list and offers only those people", async () => {
+    recipients = ["a2"];
+    openScreen();
+    await openSheet();
+    await userEvent.click(await screen.findByRole("button", { name: /Person/ }));
+
+    expect(callsTo("comm_notification_recipients")[0][2]).toEqual({ event: "payment_list_handed_over" });
+    expect(screen.getByRole("option", { name: "Varga Mária" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "Kiss Ágnes" })).toBeNull();
+    expect(screen.queryByRole("option", { name: "Unnamed person" })).toBeNull();
+  });
+
+  it("says so in words when nobody holds a seat that receives the list, and offers no Send", async () => {
+    recipients = [];
+    openScreen();
+    await openSheet();
+
+    expect(await screen.findByText("No one holds a seat that receives this list yet.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Send" })).toBeNull();
   });
 });

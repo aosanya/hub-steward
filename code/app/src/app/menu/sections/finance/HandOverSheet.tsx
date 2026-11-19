@@ -8,7 +8,9 @@ import { Sheet } from "../../../../shared/ui/Sheet";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { refusalWords } from "../../MenuEditForm";
-import { loadPersonIdChoices } from "../../referenceChoices";
+import { loadPersonIdChoices, loadRecipientChoices } from "../../referenceChoices";
+
+const eventsToStaffOnly = ["payment_list_handed_over"];
 
 const raiseTool = "comm_notification_raise";
 
@@ -44,7 +46,8 @@ const rememberPerson = async (key: string | undefined, person: string) => {
 
 export function HandOverSheet({ title, category, event, subjectKind, subjectId, names, rememberAs, onClose }: Props) {
   const { words } = useLanguage();
-  const people = useLoad(loadPersonIdChoices, `hand-over-people:${openAgencyId()}`);
+  const staffOnly = eventsToStaffOnly.includes(event);
+  const people = useLoad(() => (staffOnly ? loadRecipientChoices(event) : loadPersonIdChoices()), `hand-over-people:${openAgencyId()}:${staffOnly ? event : ""}`);
   const remembered = useLoad(() => rememberedPerson(rememberAs), `hand-over-chaser:${openAgencyId()}:${rememberAs ?? ""}`);
   const choices = people.state === "ready" ? people.data : [];
   const [chosen, setChosen] = useState<string | undefined>(undefined);
@@ -73,6 +76,8 @@ export function HandOverSheet({ title, category, event, subjectKind, subjectId, 
           <p>Sent to {sentTo}</p>
           <Button kind="primary" onClick={onClose}>{words.close}</Button>
         </>
+      ) : staffOnly && people.state === "ready" && choices.length === 0 ? (
+        <p>No one holds a seat that receives this list yet.</p>
       ) : (
         <>
           <SearchSelect label="Person" choices={choices} value={person} onChange={setChosen} />
