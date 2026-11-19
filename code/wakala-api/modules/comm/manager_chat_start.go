@@ -6,8 +6,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/comm/models"
 	"github.com/aosanya/mwanachama-backend-shared/consent"
+	"wakalaserver/modules/comm/models"
 )
 
 type Leads func(ctx context.Context, structureID string) ([]string, error)

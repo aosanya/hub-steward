@@ -4,12 +4,12 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 	"github.com/glebarez/sqlite"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	catalog "wakalaserver/modules/catalog"
-	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 var catalogMount = specMount{

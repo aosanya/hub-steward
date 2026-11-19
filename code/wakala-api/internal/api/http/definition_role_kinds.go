@@ -5,7 +5,7 @@ import (
 	"errors"
 	"log/slog"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
 

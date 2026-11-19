@@ -7,8 +7,8 @@ import (
 	"strings"
 	"sync"
 
-	mwanachamagit "wakalaserver/modules/git"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	mwanachamagit "wakalaserver/modules/git"
 )
 
 var ErrImportNeedsRepositoryFile = errors.New("importing a repository is not supported on per-repository files")

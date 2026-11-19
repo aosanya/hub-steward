@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
-	actormodels "wakalaserver/modules/actor/models"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
+	actormodels "github.com/aosanya/mwanachama-backend-actor/models"
 
 	"wakalaserver/internal/accounts"
 )

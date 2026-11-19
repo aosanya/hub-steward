@@ -9,8 +9,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	digitaltwin "wakalaserver/modules/digitaltwin"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	digitaltwin "wakalaserver/modules/digitaltwin"
 )
 
 func examplePath(domain string) string {

@@ -10,10 +10,10 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	forms "wakalaserver/modules/forms"
-	"wakalaserver/modules/forms/models"
 	"github.com/aosanya/mwanachama-backend-shared/consent"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	forms "wakalaserver/modules/forms"
+	"wakalaserver/modules/forms/models"
 )
 
 type gateFor map[string]error

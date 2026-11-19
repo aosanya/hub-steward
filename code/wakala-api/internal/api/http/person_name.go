@@ -3,7 +3,7 @@ package http
 import (
 	"strings"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 )
 
 const unnamedPerson = "Unnamed person"

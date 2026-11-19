@@ -8,11 +8,11 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 
+	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
-	"github.com/aosanya/mwanachama-backend-shared/plaintext"
 )
 
 const (

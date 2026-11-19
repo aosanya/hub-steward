@@ -3,8 +3,8 @@ package digitaltwin
 import (
 	"context"
 	"fmt"
-	"time"
 	"github.com/aosanya/mwanachama-backend-shared/geo"
+	"time"
 
 	"gorm.io/gorm"
 

@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 )
 
 var ErrGroupRoleInvalid = errors.New("agencies: a group role needs an instance, a group and a role")

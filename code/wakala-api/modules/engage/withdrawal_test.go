@@ -8,8 +8,8 @@ import (
 
 	"gorm.io/gorm"
 
-	engage "wakalaserver/modules/engage"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	engage "wakalaserver/modules/engage"
 )
 
 func rowsFor(t *testing.T, db *gorm.DB, s *spec.Spec, object, participant string) int64 {

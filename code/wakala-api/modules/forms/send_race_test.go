@@ -7,9 +7,9 @@ import (
 
 	"gorm.io/gorm"
 
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 	forms "wakalaserver/modules/forms"
 	"wakalaserver/modules/forms/models"
-	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 type raceRound struct {

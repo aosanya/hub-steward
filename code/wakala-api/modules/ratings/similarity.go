@@ -9,8 +9,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/ratings/models"
 	"github.com/aosanya/mwanachama-backend-shared/specstore"
+	"wakalaserver/modules/ratings/models"
 )
 
 var errNoRow = errors.New("no row")

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	mwanachamacatalog "wakalaserver/modules/catalog"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	mwanachamacatalog "wakalaserver/modules/catalog"
 )
 
 var ErrCatalogMountRequired = errors.New("agencies: catalog mount required")

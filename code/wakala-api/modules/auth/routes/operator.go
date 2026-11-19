@@ -12,8 +12,8 @@ import (
 	"net/http"
 	"time"
 
-	mwanachamaauth "wakalaserver/modules/auth"
 	"github.com/aosanya/mwanachama-backend-shared/httpwire"
+	mwanachamaauth "wakalaserver/modules/auth"
 )
 
 // operatorLockFor is how long five consecutive wrong passwords bar an

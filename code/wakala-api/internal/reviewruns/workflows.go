@@ -8,9 +8,9 @@ import (
 	"regexp"
 	"sync"
 
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 const (

@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	mwanachamacatalog "wakalaserver/modules/catalog"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	mwanachamacatalog "wakalaserver/modules/catalog"
 )
 
 func TestCatalogRoutesAndReassignsReportsInTheDatabase(t *testing.T) {

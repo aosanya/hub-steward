@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	digitaltwin "wakalaserver/modules/digitaltwin"
 	"github.com/aosanya/mwanachama-backend-shared/geo"
+	digitaltwin "wakalaserver/modules/digitaltwin"
 )
 
 func square(minLon, minLat, maxLon, maxLat float64) *geo.Geometry {

@@ -11,10 +11,10 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 	"sort"
 	"strings"
 	"time"
-	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 // runNameSuffixBytes is the number of random bytes that feed the

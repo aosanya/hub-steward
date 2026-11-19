@@ -7,8 +7,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/ai/models"
 	"github.com/aosanya/mwanachama-backend-shared/specstore"
+	"wakalaserver/modules/ai/models"
 )
 
 const roleTestRunUsage = "test_run_usage"

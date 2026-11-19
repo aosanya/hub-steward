@@ -7,8 +7,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/internal/approvals"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/internal/approvals"
 )
 
 const moveBatch = 200

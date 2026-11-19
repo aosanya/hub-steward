@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"slices"
 
-	actorroutes "wakalaserver/modules/actor/routes"
+	actorroutes "github.com/aosanya/mwanachama-backend-actor/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

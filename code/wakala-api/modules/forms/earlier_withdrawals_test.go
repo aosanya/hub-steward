@@ -5,8 +5,8 @@ import (
 
 	"gorm.io/gorm"
 
-	forms "wakalaserver/modules/forms"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	forms "wakalaserver/modules/forms"
 )
 
 const (

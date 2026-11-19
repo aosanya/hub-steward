@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
-	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamainsights "wakalaserver/modules/insights"
 	insightmodels "wakalaserver/modules/insights/models"
 )

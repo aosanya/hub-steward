@@ -8,9 +8,9 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 	"sort"
 	"time"
-	"github.com/aosanya/mwanachama-backend-shared/consent"
 
 	"gorm.io/gorm"
 

@@ -1,10 +1,10 @@
 # Attribute properties
 
-`actor_list_attribute_properties` lists the attribute names a person's record accepts. It is served at `GET /actors/attribute-properties`, from the action `actor.actor.list_attribute_properties`, by `UserManager.AttributeProperties` in `code/wakala-api/modules/actor/attribute_properties_impl.go`.
+`actor_list_attribute_properties` lists the attribute names a person's record accepts. It is served at `GET /actors/attribute-properties`, from the action `actor.actor.list_attribute_properties`, by `UserManager.AttributeProperties` in `attribute_properties_impl.go` of `github.com/aosanya/mwanachama-backend-actor` (the hub imports it at v0.1.0).
 
 ## What it returns
 
-The list comes from `models.DefaultActorProperties()` in `modules/actor/models/actor.go`. Each entry has:
+The list comes from `models.DefaultActorProperties()` in `models/actor.go` of that repository. Each entry has:
 
 | Field | Meaning |
 |---|---|
@@ -40,4 +40,4 @@ MUN1188, editing a person's attributes in People and Staff.
 
 ## Where to look
 
-The tool arrived in commit 25ba7f46 and its test in commit 3f6e8a32. The test is `modules/actor/attribute_properties_test.go`.
+The tool arrived in commit 25ba7f46 and its test in commit 3f6e8a32. The test is `attribute_properties_test.go` in `mwanachama-backend-actor`.

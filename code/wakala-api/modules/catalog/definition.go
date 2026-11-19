@@ -5,8 +5,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/catalog/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/modules/catalog/models"
 )
 
 func PutDefinition(db *gorm.DB, s *spec.Spec, values map[string]any) error {

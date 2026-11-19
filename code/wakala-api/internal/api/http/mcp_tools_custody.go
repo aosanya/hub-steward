@@ -9,8 +9,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	mwanachamacustody "wakalaserver/modules/custody"
-	custodyroutes "wakalaserver/modules/custody/routes"
+	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
+	custodyroutes "github.com/aosanya/mwanachama-backend-custody/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
 	"wakalaserver/internal/accounts"

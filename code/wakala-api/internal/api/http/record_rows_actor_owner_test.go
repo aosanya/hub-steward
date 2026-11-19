@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 )
 
 func (b businessRegisterWalk) residentWithoutAnAccount(t *testing.T, name string) string {

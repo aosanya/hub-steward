@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	"wakalaserver/internal/agencies"

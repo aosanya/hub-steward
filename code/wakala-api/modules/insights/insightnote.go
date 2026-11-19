@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"wakalaserver/modules/insights/models"
 	"github.com/aosanya/mwanachama-backend-shared/specstore"
+	"wakalaserver/modules/insights/models"
 )
 
 type InsightNote = models.InsightNote

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 )
 
 func rosterIncludes(t *testing.T, w stepRunWalk, groupID, actorID string) bool {

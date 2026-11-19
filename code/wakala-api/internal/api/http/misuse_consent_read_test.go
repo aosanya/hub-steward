@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"testing"
 
-	mwanachamacustody "wakalaserver/modules/custody"
-	custodymodels "wakalaserver/modules/custody/models"
+	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
+	custodymodels "github.com/aosanya/mwanachama-backend-custody/models"
 )
 
 func publishedMechanicsID(t *testing.T, cw consentWalk) string {

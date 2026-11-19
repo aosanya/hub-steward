@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"wakalaserver/modules/catalog/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/modules/catalog/models"
 )
 
 const cataloguesSetting = "catalogues"

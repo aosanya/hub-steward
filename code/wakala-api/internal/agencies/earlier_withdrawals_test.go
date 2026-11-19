@@ -14,10 +14,10 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	mwanachamacustody "wakalaserver/modules/custody"
-	custodymodels "wakalaserver/modules/custody/models"
-	mwanachamaforms "wakalaserver/modules/forms"
+	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
+	custodymodels "github.com/aosanya/mwanachama-backend-custody/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	mwanachamaforms "wakalaserver/modules/forms"
 )
 
 var earlierWithdrawalDatabases atomic.Int64

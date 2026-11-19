@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 	engage "wakalaserver/modules/engage"
 	"wakalaserver/modules/engage/routes"
-	"github.com/aosanya/mwanachama-backend-shared/consent"
 )
 
 type gateFor map[string]error

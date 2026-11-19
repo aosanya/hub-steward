@@ -15,9 +15,9 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	ai "wakalaserver/modules/ai"
 	"wakalaserver/modules/ai/routes"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 const coverAgency = "agency-9"

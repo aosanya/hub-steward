@@ -4,7 +4,7 @@ Six MCP tools (and, since MUN1447, a seventh for a clerk, described below) put t
 tools: the owner writes the text residents agree to, and a resident reads it,
 agrees to it, reads their own state and withdraws. They were added in commit
 `36920a5` and are served from `code/wakala-api/internal/api/http/mcp_tools_custody.go`.
-Each is a custody operation declared in `code/wakala-api/modules/custody/custody.operations.json`,
+Each is a custody operation declared in `custody.operations.json` of `github.com/aosanya/mwanachama-backend-custody`,
 so the tool and its REST route are one declaration.
 
 The studio page for the consent text and the phone screens for agreeing and
@@ -139,9 +139,8 @@ a seventh tool and is not behind the gate.
 | Who | the owner and any role that holds `consent.record`; not a resident action |
 | Activity | the hub leaves one audit entry about the resident, "recorded consent given on paper, text v<N>", with the clerk as actor and the time, so it shows in the resident's Activity (`internal/api/http/mcp_audit_paper_consent.go`). Recording again for a standing agreement adds none |
 
-The module code is `modules/custody/consent_paper.go` in the hub and the same
-file in `mwanachama-backend-custody` (commits `7bfebdc` and `f32255d`); the tests are
-`modules/custody/routes/paper_consent_routes_test.go` and
+The module code is `consent_paper.go` in `mwanachama-backend-custody`, which the hub imports at v0.1.0 (commits `7bfebdc` and `f32255d`); the tests are
+`routes/paper_consent_routes_test.go` in that repository and
 `internal/api/http/custody_record_paper_consent_mcp_test.go`. The roster pins rose by one.
 
 ## Reading the tools from a screen

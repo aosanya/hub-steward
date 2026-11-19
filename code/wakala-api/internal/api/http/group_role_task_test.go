@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamaagency "wakalaserver/modules/agency"
 	agencymodels "wakalaserver/modules/agency/models"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	"wakalaserver/internal/accounts"

@@ -11,8 +11,8 @@ import (
 	"net/http"
 	"time"
 
-	mwanachamaauth "wakalaserver/modules/auth"
 	"github.com/aosanya/mwanachama-backend-shared/httpwire"
+	mwanachamaauth "wakalaserver/modules/auth"
 )
 
 // authStatusFor maps this repo's auth error sentinels to a status code.

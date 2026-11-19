@@ -5,8 +5,8 @@ import (
 	"errors"
 	"log/slog"
 
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"wakalaserver/internal/notifyrules"
-	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commmodels "wakalaserver/modules/comm/models"
 	forms "wakalaserver/modules/forms"

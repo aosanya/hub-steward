@@ -8,9 +8,9 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/audit/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
 	"github.com/aosanya/mwanachama-backend-shared/specstore"
+	"wakalaserver/modules/audit/models"
 )
 
 type Entry = models.Entry

@@ -8,9 +8,9 @@ package mwanachamacomm
 import (
 	"errors"
 	"fmt"
+	"github.com/aosanya/mwanachama-backend-shared/consent"
 	"strings"
 	"time"
-	"github.com/aosanya/mwanachama-backend-shared/consent"
 
 	"github.com/jackc/pgx/v5/pgconn"
 	"gorm.io/gorm"

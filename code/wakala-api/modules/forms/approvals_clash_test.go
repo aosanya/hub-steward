@@ -10,9 +10,9 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 	"wakalaserver/internal/approvals"
 	forms "wakalaserver/modules/forms"
-	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 const clashSlug = "agency1"

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"wakalaserver/modules/assetmanager/models"
 	"github.com/aosanya/mwanachama-backend-shared/versioncheck"
+	"wakalaserver/modules/assetmanager/models"
 )
 
 const longAgo = "2001-01-01T00:00:00Z"

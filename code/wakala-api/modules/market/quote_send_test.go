@@ -14,9 +14,9 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"wakalaserver/modules/market/models"
 	"github.com/aosanya/mwanachama-backend-shared/gormutil"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/modules/market/models"
 )
 
 type quoteFixture struct {

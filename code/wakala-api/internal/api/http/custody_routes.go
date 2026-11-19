@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	custodyroutes "wakalaserver/modules/custody/routes"
+	custodyroutes "github.com/aosanya/mwanachama-backend-custody/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

@@ -7,8 +7,8 @@ import (
 	"slices"
 	"testing"
 
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"wakalaserver/internal/agencies"
-	mwanachamaactor "wakalaserver/modules/actor"
 )
 
 type journeyIssues struct {

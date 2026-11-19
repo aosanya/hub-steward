@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 )
 
 type residentReadWalk struct {

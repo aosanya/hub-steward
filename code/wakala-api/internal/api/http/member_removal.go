@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commmodels "wakalaserver/modules/comm/models"
 

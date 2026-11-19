@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
+	actormodels "github.com/aosanya/mwanachama-backend-actor/models"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/invitemail"
 	"wakalaserver/internal/shopauth"
-	actormodels "wakalaserver/modules/actor/models"
 )
 
 type captureSender struct {

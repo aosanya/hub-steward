@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"gorm.io/gorm/clause"
 
-	"wakalaserver/modules/market/models"
 	"github.com/aosanya/mwanachama-backend-shared/gormutil"
+	"wakalaserver/modules/market/models"
 )
 
 type terms struct {

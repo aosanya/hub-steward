@@ -10,10 +10,10 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	comm "wakalaserver/modules/comm"
-	"wakalaserver/modules/comm/models"
 	"github.com/aosanya/mwanachama-backend-shared/consent"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	comm "wakalaserver/modules/comm"
+	"wakalaserver/modules/comm/models"
 )
 
 type noActs struct{}

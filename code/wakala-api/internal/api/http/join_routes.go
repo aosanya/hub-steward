@@ -6,9 +6,9 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/aosanya/mwanachama-backend-shared/versioncheck"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
-	"github.com/aosanya/mwanachama-backend-shared/versioncheck"
 )
 
 type joinBody struct {

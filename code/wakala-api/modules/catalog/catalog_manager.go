@@ -7,9 +7,9 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/catalog/models"
 	"github.com/aosanya/mwanachama-backend-shared/geo"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/modules/catalog/models"
 )
 
 // Entry, EntryPrivate, ShareLink and their enum types are aliases of their

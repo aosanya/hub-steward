@@ -3,9 +3,9 @@ package agencies
 import (
 	"context"
 
-	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamacatalog "wakalaserver/modules/catalog"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"github.com/aosanya/mwanachama-backend-shared/geo"
+	mwanachamacatalog "wakalaserver/modules/catalog"
 )
 
 func wardAreaResolver(um mwanachamaactor.UserManager) mwanachamacatalog.AreaResolver {

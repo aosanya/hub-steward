@@ -3,7 +3,7 @@ package agencies
 import (
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"github.com/aosanya/mwanachama-backend-shared/geo"
 )
 

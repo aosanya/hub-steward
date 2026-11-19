@@ -7,7 +7,7 @@ import (
 	"strings"
 	"unicode"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	agencymodels "wakalaserver/modules/agency/models"
 
 	"wakalaserver/internal/accounts"

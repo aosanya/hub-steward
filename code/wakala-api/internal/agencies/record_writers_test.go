@@ -9,10 +9,10 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	"github.com/aosanya/mwanachama-backend-shared/spec"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamaforms "wakalaserver/modules/forms"
 	formsmodels "wakalaserver/modules/forms/models"
-	"github.com/aosanya/mwanachama-backend-shared/spec"
 )
 
 func sqliteDB(t *testing.T) *gorm.DB {

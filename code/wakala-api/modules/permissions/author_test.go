@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"wakalaserver/modules/permissions/models"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	"wakalaserver/modules/permissions/models"
 )
 
 type recordedAuthors struct {

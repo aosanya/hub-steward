@@ -9,8 +9,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/agency/models"
 	"github.com/aosanya/mwanachama-backend-shared/plaintext"
+	"wakalaserver/modules/agency/models"
 )
 
 const agentPermission = "ai.use"

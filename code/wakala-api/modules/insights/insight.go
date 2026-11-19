@@ -7,9 +7,9 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/insights/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
 	"github.com/aosanya/mwanachama-backend-shared/specstore"
+	"wakalaserver/modules/insights/models"
 )
 
 type Insight = models.Insight

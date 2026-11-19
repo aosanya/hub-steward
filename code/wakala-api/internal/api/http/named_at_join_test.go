@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 )
 
 func (w declarationWalk) seatPerson(t *testing.T, key string, person mwanachamaactor.Actor, role string) string {

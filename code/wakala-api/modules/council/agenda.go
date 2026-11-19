@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"wakalaserver/modules/council/models"
 	"github.com/aosanya/mwanachama-backend-shared/versioncheck"
+	"wakalaserver/modules/council/models"
 )
 
 const roleAgenda = "agenda"

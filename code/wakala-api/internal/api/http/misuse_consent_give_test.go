@@ -9,12 +9,12 @@ import (
 
 	"gorm.io/gorm"
 
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
+	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
+	custodymodels "github.com/aosanya/mwanachama-backend-custody/models"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/languages"
 	"wakalaserver/internal/session"
-	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamacustody "wakalaserver/modules/custody"
-	custodymodels "wakalaserver/modules/custody/models"
 	mwanachamainsights "wakalaserver/modules/insights"
 )
 

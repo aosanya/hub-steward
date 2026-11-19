@@ -6,8 +6,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

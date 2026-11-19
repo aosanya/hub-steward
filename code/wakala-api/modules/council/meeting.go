@@ -7,9 +7,9 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/council/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
 	"github.com/aosanya/mwanachama-backend-shared/specstore"
+	"wakalaserver/modules/council/models"
 )
 
 type Meeting = models.Meeting

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	mwanachamacustody "wakalaserver/modules/custody"
+	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
 )
 
 type notifierCount struct {

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"wakalaserver/modules/git/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/modules/git/models"
 )
 
 func engineeringSpec(t *testing.T) *spec.Spec {

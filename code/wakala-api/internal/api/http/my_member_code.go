@@ -3,8 +3,8 @@ package http
 import (
 	"context"
 
-	mwanachamaactor "wakalaserver/modules/actor"
-	actormodels "wakalaserver/modules/actor/models"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
+	actormodels "github.com/aosanya/mwanachama-backend-actor/models"
 )
 
 const readMyActor = "actor.actor.read_mine"

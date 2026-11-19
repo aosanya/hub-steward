@@ -7,8 +7,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/accounting/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/modules/accounting/models"
 )
 
 const LegacyEntityTable = "acct_entities"

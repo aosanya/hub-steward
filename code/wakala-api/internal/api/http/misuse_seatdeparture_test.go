@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 )
 
 func TestRoleSeat_DepartedResidentCannotDoKeepSeatAfterLeaving(t *testing.T) {

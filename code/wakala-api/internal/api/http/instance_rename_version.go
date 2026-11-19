@@ -3,8 +3,8 @@ package http
 import (
 	"context"
 
-	"wakalaserver/internal/agencies"
 	"github.com/aosanya/mwanachama-backend-shared/versioncheck"
+	"wakalaserver/internal/agencies"
 )
 
 func refuseStaleRename(ctx context.Context, reg agencies.Registry, instanceID, version, name string) error {

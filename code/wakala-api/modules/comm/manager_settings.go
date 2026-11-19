@@ -6,8 +6,8 @@ import (
 	"slices"
 	"time"
 
-	"wakalaserver/modules/comm/models"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/modules/comm/models"
 )
 
 const notificationRulesSetting = "notification_rules"

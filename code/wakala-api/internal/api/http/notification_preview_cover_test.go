@@ -6,7 +6,7 @@ import (
 	"slices"
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	permissions "wakalaserver/modules/permissions"
 
 	"wakalaserver/internal/accounts"

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"testing"
 
-	catalog "wakalaserver/modules/catalog"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	catalog "wakalaserver/modules/catalog"
 
 	"wakalaserver/internal/agencies"
 )

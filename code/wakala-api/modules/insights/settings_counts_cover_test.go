@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"wakalaserver/modules/insights/models"
 	"github.com/aosanya/mwanachama-backend-shared/disclosure"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/modules/insights/models"
 )
 
 func settingLayers(value any) SettingsLayers {

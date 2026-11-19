@@ -10,8 +10,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/agency/models"
 	"github.com/aosanya/mwanachama-backend-shared/answerrules"
+	"wakalaserver/modules/agency/models"
 )
 
 func invalidRecord(format string, args ...any) error {

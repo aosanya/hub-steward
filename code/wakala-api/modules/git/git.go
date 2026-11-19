@@ -8,9 +8,9 @@ import (
 
 	"gorm.io/gorm"
 
-	"wakalaserver/modules/git/models"
 	"github.com/aosanya/mwanachama-backend-shared/events"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	"wakalaserver/modules/git/models"
 )
 
 type (

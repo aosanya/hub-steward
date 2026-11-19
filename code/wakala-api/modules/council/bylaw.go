@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"wakalaserver/modules/council/models"
 	"github.com/aosanya/mwanachama-backend-shared/specstore"
+	"wakalaserver/modules/council/models"
 )
 
 const roleBylaw = "bylaw"

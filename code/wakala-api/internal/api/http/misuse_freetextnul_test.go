@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"wakalaserver/internal/agencies"
-	mwanachamaactor "wakalaserver/modules/actor"
 )
 
 type freeTextWalk struct {

@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/aosanya/mwanachama-backend-shared/specstore"
 	"gorm.io/gorm"
 	"wakalaserver/modules/ratings/models"
-	"github.com/aosanya/mwanachama-backend-shared/specstore"
 )
 
 const (

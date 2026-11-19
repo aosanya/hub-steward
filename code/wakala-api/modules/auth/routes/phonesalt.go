@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"time"
 
-	mwanachamaauth "wakalaserver/modules/auth"
 	"github.com/aosanya/mwanachama-backend-shared/httpwire"
+	mwanachamaauth "wakalaserver/modules/auth"
 )
 
 // saltView is one row of the salt register — every field an admin screen

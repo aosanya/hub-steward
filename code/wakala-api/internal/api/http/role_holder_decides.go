@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 )
 
 type roleHolderDecides struct {

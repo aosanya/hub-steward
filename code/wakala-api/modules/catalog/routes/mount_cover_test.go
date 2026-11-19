@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	catalog "wakalaserver/modules/catalog"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	catalog "wakalaserver/modules/catalog"
 )
 
 type openedEntries struct {

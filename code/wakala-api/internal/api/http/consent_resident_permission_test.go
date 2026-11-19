@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"wakalaserver/internal/agencies"
-	mwanachamaactor "wakalaserver/modules/actor"
 )
 
 const (

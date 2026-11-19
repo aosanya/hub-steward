@@ -3,7 +3,8 @@ package http
 import (
 	"fmt"
 
-	actorroutes "wakalaserver/modules/actor/routes"
+	actorroutes "github.com/aosanya/mwanachama-backend-actor/routes"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	assetroutes "wakalaserver/modules/assetmanager/routes"
 	catalogroutes "wakalaserver/modules/catalog/routes"
@@ -12,7 +13,6 @@ import (
 	formsroutes "wakalaserver/modules/forms/routes"
 	mwanachamainsights "wakalaserver/modules/insights"
 	insightsroutes "wakalaserver/modules/insights/routes"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamasources "wakalaserver/modules/sources"
 	sourcesroutes "wakalaserver/modules/sources/routes"
 	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"

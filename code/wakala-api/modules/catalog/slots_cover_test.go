@@ -11,8 +11,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	catalog "wakalaserver/modules/catalog"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	catalog "wakalaserver/modules/catalog"
 )
 
 func bookingManager(t *testing.T) catalog.CatalogManager {

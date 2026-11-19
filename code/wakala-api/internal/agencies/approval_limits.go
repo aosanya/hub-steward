@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamaforms "wakalaserver/modules/forms"
 )
 

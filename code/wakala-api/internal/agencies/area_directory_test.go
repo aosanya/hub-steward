@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 )
 

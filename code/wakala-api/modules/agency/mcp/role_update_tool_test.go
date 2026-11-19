@@ -11,9 +11,9 @@ import (
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamaagency "wakalaserver/modules/agency"
 	"wakalaserver/modules/agency/models"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 var roleToolDatabases atomic.Int64

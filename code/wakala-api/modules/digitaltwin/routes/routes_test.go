@@ -13,10 +13,10 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	digitaltwin "wakalaserver/modules/digitaltwin"
-	"wakalaserver/modules/digitaltwin/routes"
 	"github.com/aosanya/mwanachama-backend-shared/geo"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	digitaltwin "wakalaserver/modules/digitaltwin"
+	"wakalaserver/modules/digitaltwin/routes"
 )
 
 func newManager(t *testing.T) (digitaltwin.TwinManager, context.Context) {

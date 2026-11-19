@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	mwanachamaactor "wakalaserver/modules/actor"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 )
 
 func TestResultsRead_OwnerInTargetedGroupStillReadsWhoPublishedTheReport(t *testing.T) {

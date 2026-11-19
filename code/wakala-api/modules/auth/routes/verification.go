@@ -9,8 +9,8 @@ package routes
 import (
 	"net/http"
 
-	mwanachamaauth "wakalaserver/modules/auth"
 	"github.com/aosanya/mwanachama-backend-shared/httpwire"
+	mwanachamaauth "wakalaserver/modules/auth"
 )
 
 // SetVerification handles PUT /members/{subjectID}/verification — how an

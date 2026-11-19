@@ -13,10 +13,10 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamacatalog "wakalaserver/modules/catalog"
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"github.com/aosanya/mwanachama-backend-shared/geo"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	mwanachamacatalog "wakalaserver/modules/catalog"
 )
 
 func square(minLon, minLat, maxLon, maxLat float64) *geo.Geometry {
