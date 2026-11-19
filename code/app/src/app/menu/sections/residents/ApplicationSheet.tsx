@@ -6,13 +6,14 @@ import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { LoadFailed, LoadingLine } from "../../../../shared/ui/LoadState";
 import { Sheet } from "../../../../shared/ui/Sheet";
-import { callTool } from "../../../../shared/wakala/mcp";
+import { callTool, McpError } from "../../../../shared/wakala/mcp";
+import { audienceWords } from "../../../../shared/wakala/audienceWords";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
 import { refusalWords } from "../../MenuEditForm";
 
-type Props = { title: string; formId: string; personId: string; onClose: () => void; onFiled: () => void };
+type Props = { title: string; formId: string; personId: string; personName: string; onClose: () => void; onFiled: () => void };
 
-export function ApplicationSheet({ title, formId, personId, onClose, onFiled }: Props) {
+export function ApplicationSheet({ title, formId, personId, personName, onClose, onFiled }: Props) {
   const view = useLoad(() => liveClient.questions(formId), `application-questions:${openAgencyId()}:${formId}`);
   const [draft, setDraft] = useState<Draft>({});
   const [saving, setSaving] = useState(false);
@@ -25,7 +26,7 @@ export function ApplicationSheet({ title, formId, personId, onClose, onFiled }: 
       onClose();
       onFiled();
     } catch (error) {
-      setRefused(refusalWords(error));
+      setRefused((error instanceof McpError && audienceWords(error.message, personName)) || refusalWords(error));
       setSaving(false);
     }
   };

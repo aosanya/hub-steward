@@ -7,11 +7,13 @@ import { Section } from "../../../../shared/ui/Section";
 import { LoadingLine } from "../../../../shared/ui/LoadState";
 import { SectionHeading } from "../../../../shared/ui/SectionHeading";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
-import { loadFormList } from "../../formList";
+import { loadFormsReaching } from "../../formList";
 import { loadRecordRowsHeldBy, type RecordRow } from "../../liveRecordRows";
 import { servicesPaths } from "../services/paths";
 import { ApplicationSheet } from "./ApplicationSheet";
 import { ChooseSheet } from "./ChooseSheet";
+import { loadPerson } from "./PersonScreen";
+import { personNameOf } from "./personName";
 import { SectionAct } from "./SectionAct";
 import { useOpenSection } from "./personSections";
 import { useOpenFromPanel } from "./useOpenFromPanel";
@@ -23,8 +25,19 @@ const startTitle = "Start an application";
 
 function ApplicationFlow({ personId, onClose, onFiled }: { personId: string; onClose: () => void; onFiled: () => void }) {
   const [formId, setFormId] = useState("");
-  if (formId) return <ApplicationSheet title={startTitle} formId={formId} personId={personId} onClose={onClose} onFiled={onFiled} />;
-  return <ChooseSheet title={startTitle} loadKey="person-application-forms" load={loadFormList} onClose={onClose} onChoose={async (chosen) => setFormId(chosen)} />;
+  const person = useLoad(() => loadPerson(personId), `person-application-name:${openAgencyId()}:${personId}`);
+  const name = person.state === "ready" ? personNameOf(person.data) : "";
+  if (formId) return <ApplicationSheet title={startTitle} formId={formId} personId={personId} personName={name} onClose={onClose} onFiled={onFiled} />;
+  return (
+    <ChooseSheet
+      title={startTitle}
+      loadKey={`person-application-forms:${personId}`}
+      load={() => loadFormsReaching(personId)}
+      empty={name ? `There is no application for ${name} to start.` : "There is no application to start."}
+      onClose={onClose}
+      onChoose={async (chosen) => setFormId(chosen)}
+    />
+  );
 }
 
 export function PersonApplications({ id, full }: { id: string; full?: boolean }) {

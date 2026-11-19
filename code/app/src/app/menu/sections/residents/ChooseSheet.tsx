@@ -8,9 +8,9 @@ import { refusalWords } from "../../MenuEditForm";
 
 export type Choice = { id: string; title: string };
 
-type Props = { title: string; loadKey: string; load: () => Promise<Choice[]>; onChoose: (id: string) => Promise<void>; onClose: () => void };
+type Props = { title: string; loadKey: string; load: () => Promise<Choice[]>; onChoose: (id: string) => Promise<void>; onClose: () => void; empty?: string };
 
-export function ChooseSheet({ title, loadKey, load, onChoose, onClose }: Props) {
+export function ChooseSheet({ title, loadKey, load, onChoose, onClose, empty }: Props) {
   const view = useLoad(load, `${loadKey}:${openAgencyId()}`);
   const [refused, setRefused] = useState("");
   const choose = async (id: string) => {
@@ -25,7 +25,8 @@ export function ChooseSheet({ title, loadKey, load, onChoose, onClose }: Props) 
     <Sheet title={title} onClose={onClose}>
       {view.state === "loading" ? <LoadingLine /> : null}
       {view.state === "error" ? <LoadFailed words="The choices could not be loaded." /> : null}
-      {view.state === "ready" ? (
+      {view.state === "ready" && view.data.length === 0 && empty ? <p className="quiet-line">{empty}</p> : null}
+      {view.state === "ready" && (view.data.length > 0 || !empty) ? (
         <Rows>
           {view.data.map((choice) => (
             <ListRow key={choice.id} title={choice.title} onClick={() => choose(choice.id)} end="›" />
