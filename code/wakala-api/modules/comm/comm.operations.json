@@ -152,15 +152,15 @@
           "description": "The structure whose room this is."
         },
         {
+          "from": "caller",
+          "as": "caller_id",
+          "description": "The caller, from the session."
+        },
+        {
           "from": "body",
           "as": "on",
           "required": true,
           "description": "True to make the room a question room, false to make it an ordinary room again."
-        },
-        {
-          "from": "caller",
-          "as": "caller_id",
-          "description": "The caller, from the session."
         }
       ],
       "returns": [
