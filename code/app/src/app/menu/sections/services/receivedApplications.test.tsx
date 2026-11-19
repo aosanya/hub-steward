@@ -22,6 +22,7 @@ const people = [
   { id: "m1", display_name: "Bence Farkas" },
   { id: "m2", display_name: "Réka Tóth" },
   { id: "m3", display_name: "Dániel Kiss" },
+  { id: "m8", display_name: "Anna Kovács" },
 ];
 
 const questions = [
@@ -263,6 +264,54 @@ describe("Applications received on a permit or licence entry", () => {
 
     expect(screen.queryByText(/not allowed|failed|error/i)).toBeNull();
     expect(decideCalls()).toHaveLength(0);
+  });
+});
+
+describe("An opened application reads its decision", () => {
+  beforeEach(() => {
+    submissions = [
+      { id: "s1", form_id: "f1", member_id: "m1", submitted_at: "2026-03-04T12:00:00Z", paid: false, decision: "approved", decided_by: "m8", decided_at: "2026-03-09T12:00:00Z", decision_note: "", certificate_ref: "PRM-2026-0417", valid_until: "2999-12-31" },
+      { id: "s3", form_id: "f1", member_id: "m3", submitted_at: "2026-03-03T12:00:00Z", paid: false, decision: "refused", decided_by: "m8", decided_at: "2026-03-10T12:00:00Z", decision_note: "Too close to the fountain" },
+      { id: "s2", form_id: "f1", member_id: "m2", submitted_at: "2026-03-02T12:00:00Z", paid: false },
+    ];
+  });
+
+  it("says Approved, who decided it and the day, with the certificate and the end day, on an approved application", async () => {
+    await openEntry();
+
+    await openApplicationOf("Bence Farkas");
+
+    expect(screen.getByText("Approved by Anna Kovács on Monday, 9 Mar")).toBeInTheDocument();
+    expect(within(screen.getByText("Certificate").closest(".row") as HTMLElement).getByText("PRM-2026-0417")).toBeInTheDocument();
+    expect(within(screen.getAllByText("Valid until").map((one) => one.closest(".row") as HTMLElement)[0]).getByText(/31 Dec 2999/)).toBeInTheDocument();
+    expect(screen.queryByText(/\bm8\b/)).toBeNull();
+  });
+
+  it("says Refused, who refused it, the day and the reason, and no certificate, on a refused application", async () => {
+    await openEntry();
+
+    await openApplicationOf("Dániel Kiss");
+
+    expect(screen.getByText("Refused by Anna Kovács on Tuesday, 10 Mar")).toBeInTheDocument();
+    expect(screen.getByText("Too close to the fountain")).toBeInTheDocument();
+    expect(screen.queryByText("Certificate")).toBeNull();
+  });
+
+  it("shows no decision row on an application nobody has decided", async () => {
+    await openEntry();
+
+    await openApplicationOf("Réka Tóth");
+
+    expect(screen.queryByText(/^(Approved|Refused) by /)).toBeNull();
+    expect(screen.queryByText("Decided")).toBeNull();
+  });
+
+  it("shows the certificate beside the holder on the Granted row", async () => {
+    await openEntry();
+
+    const row = await screen.findByRole("region", { name: "Granted" });
+
+    await waitFor(() => expect(row).toHaveTextContent("PRM-2026-0417"));
   });
 });
 

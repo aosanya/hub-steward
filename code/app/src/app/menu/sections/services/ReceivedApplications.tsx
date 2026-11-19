@@ -13,7 +13,7 @@ import { refusalWords } from "../../MenuEditForm";
 import { listOf, text, type Item } from "../staff/staffData";
 import { peopleRows } from "../residents/PeopleScreens";
 import { answerWordsOf } from "./answers";
-import { decisionStatus, reasonWords, sentWords } from "./decision";
+import { certificateOf, certificateWords, decidedWords, decisionStatus, reasonWords, sentWords, validUntilWords } from "./decision";
 import { announceDecision } from "./decisionSignal";
 import { GrantFields, grantExtras } from "./GrantFields";
 import { InspectionForm } from "./InspectionForm";
@@ -37,7 +37,7 @@ const applicantWords = "Applicant";
 
 const applicationWords = "Application";
 
-export type Received = { memberId: string; name: string; status: string; line: string; note: string; inspection: string; undecided: boolean; decidedAt: string; validUntil: string };
+export type Received = { memberId: string; name: string; status: string; line: string; note: string; inspection: string; undecided: boolean; decidedAt: string; validUntil: string; decidedLine: string; certificate: string; endLine: string };
 
 const received = (sent: Item, names: Map<string, string>): Received => {
   const status = decisionStatus(text(sent, "decision"));
@@ -52,6 +52,9 @@ const received = (sent: Item, names: Map<string, string>): Received => {
     undecided: status === "",
     decidedAt: text(sent, "decided_at"),
     validUntil: text(sent, "valid_until"),
+    decidedLine: status === "" ? "" : `${status} by ${names.get(text(sent, "decided_by")) ?? unnamedWords} on ${day}`,
+    certificate: certificateOf(sent).certificate_ref,
+    endLine: certificateOf(sent).valid_until_line,
   };
 };
 
@@ -110,7 +113,10 @@ function ApplicationAnswers({ formId, row, mine, onDecided, onInspected }: { for
   if (view.state === "error") return null;
   const answerRows = [
     ...view.data.map((answer) => <ListRow key={answer.id || answer.prompt} title={answer.prompt} meta={answer.value} />),
+    ...(row.decidedLine !== "" ? [<ListRow key="decided" title={decidedWords} meta={row.decidedLine} />] : []),
     ...(row.note !== "" ? [<ListRow key="reason" title={reasonWords} meta={row.note} />] : []),
+    ...(row.certificate !== "" ? [<ListRow key="certificate" title={certificateWords} meta={row.certificate} />] : []),
+    ...(row.validUntil !== "" ? [<ListRow key="valid-until" title={validUntilWords} meta={row.endLine} />] : []),
     ...(row.inspection !== "" ? [<ListRow key="inspection" title={inspectionWords} meta={row.inspection} />] : []),
   ];
   return (

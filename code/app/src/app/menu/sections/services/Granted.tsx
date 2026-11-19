@@ -29,7 +29,7 @@ function GrantedList({ slug }: { slug: string }) {
     <ListRow
       key={row.memberId}
       title={row.name}
-      meta={[dayWords(row.decidedAt), row.validUntil === "" ? "" : `${validUntilWords} ${endDayWords(row.validUntil)}`]}
+      meta={[dayWords(row.decidedAt), row.certificate, row.validUntil === "" ? "" : `${validUntilWords} ${endDayWords(row.validUntil)}`]}
       end={<LicenceChip mark={markOf([{ rowId: row.memberId, validUntil: row.validUntil }], todayIso())} />}
     />
   ));
