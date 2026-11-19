@@ -59,7 +59,7 @@ export function PersonNewScreen() {
       if (id && Object.keys(given).length > 0) await writeRegisterAnswers(residentRecordCode, id, given);
       navigate(residentPaths.people.path());
     } catch (error) {
-      setRefused(refusalWords(error));
+      setRefused(refusalWords(error, fields));
       setSaving(false);
     }
   };

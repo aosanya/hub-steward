@@ -5,11 +5,13 @@ import { Button } from "../../shared/ui/Button";
 import { Field } from "../../shared/ui/Field";
 import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
+import { duplicateWords } from "../../shared/wakala/duplicateWords";
+import { McpError } from "../../shared/wakala/mcp";
 import { Shell } from "../../app/Shell";
 import { correctPhone, readProfile, type Profile } from "./profile";
 
 type Loaded = { kind: "loading" } | { kind: "unreached" } | { kind: "ready"; profile: Profile };
-type Saving = "idle" | "saved" | "failed";
+type Saving = "idle" | "saved" | "failed" | "taken";
 
 export function ProfilePage() {
   const { words } = useLanguage();
@@ -36,8 +38,8 @@ export function ProfilePage() {
     try {
       setPhone((await correctPhone(phone.trim())).phone);
       setSaving("saved");
-    } catch {
-      setSaving("failed");
+    } catch (error) {
+      setSaving(error instanceof McpError && duplicateWords(error.message) ? "taken" : "failed");
     }
   };
 
@@ -58,7 +60,7 @@ export function ProfilePage() {
               setPhone(e.target.value);
               setSaving("idle");
             }}
-            error={saving === "failed" ? words.profileNotSaved : undefined}
+            error={saving === "failed" ? words.profileNotSaved : saving === "taken" ? words.profilePhoneTaken : undefined}
           />
           <Button kind="primary" onClick={save}>
             {words.profileSave}

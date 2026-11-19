@@ -6,6 +6,7 @@ import { Field } from "../../shared/ui/Field";
 import { LoadFailed } from "../../shared/ui/LoadState";
 import type { Choice } from "../../shared/ui/SearchSelect";
 import { TextArea } from "../../shared/ui/TextArea";
+import { duplicateWords } from "../../shared/wakala/duplicateWords";
 import { callTool, McpError } from "../../shared/wakala/mcp";
 import { actionFailedWords } from "./MenuDetail";
 
@@ -59,11 +60,11 @@ const linesOf = (text: string) =>
 const sameText = (field: EditField | undefined, one: string, other: string) =>
   field?.kind === "lines" ? linesOf(one).join("\n") === linesOf(other).join("\n") : one === other;
 
-export const refusalWords = (error: unknown) => {
+export const refusalWords = (error: unknown, fields: { key: string; label: string }[] = []) => {
   const message = error instanceof McpError ? error.message : "";
   const colon = message.indexOf(": ");
   const words = colon >= 0 ? message.slice(colon + 2) : message;
-  return words || actionFailedWords;
+  return duplicateWords(message, fields) || words || actionFailedWords;
 };
 
 const wholeOrDecimal = /^-?\d+(\.\d+)?$/;
@@ -181,7 +182,7 @@ export function MenuEditForm({ item, id, idArg, tool, permission, fields, keep =
     } catch (error) {
       const stale = namedStale(error, fields);
       const shown = stale ? await settleStale(stale).catch(() => false) : false;
-      if (!shown) setRefused(refusalWords(error));
+      if (!shown) setRefused(refusalWords(error, fields));
     } finally {
       setSaving(false);
     }

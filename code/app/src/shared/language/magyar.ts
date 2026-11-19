@@ -165,6 +165,7 @@ export const magyar: Words = {
   profileSave: "Mentés",
   profileSaved: "A telefonszám mentve",
   profileNotSaved: "A telefonszám nem lett mentve. Ellenőrizze, és próbálja újra.",
+  profilePhoneTaken: "Ez a telefonszám már egy másik személyé.",
   signOutTitle: "Kijelentkezés",
   signOutSignedInAs: "Bejelentkezve mint {name}.",
   consentTitle: "Hozzájárulás",

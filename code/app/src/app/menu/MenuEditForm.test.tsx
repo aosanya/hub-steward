@@ -187,6 +187,21 @@ describe("the shared menu edit form", () => {
     expect(onSaved).not.toHaveBeenCalled();
   });
 
+  it("says which field another person already holds instead of the hub's raw words", async () => {
+    refusal = 'mwanachamaactor: attribute value already in use: "phone" = +36 20 555 1011';
+    render(<MenuEditForm item={{ id: "p1", phone: "+36 20 555 1010" }} id="p1" idArg="actor_id" tool="accounting_budget_set" permission="accounting.manage" fields={[{ label: "Phone", key: "phone" }]} />);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Edit" }));
+    const phone = screen.getByLabelText("Phone");
+    await userEvent.clear(phone);
+    await userEvent.type(phone, "+36 20 555 1011");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByText("Phone already in use by another person.")).toBeInTheDocument();
+    expect(screen.queryByText(/attribute value already in use/)).toBeNull();
+    expect(screen.getByLabelText("Phone")).toHaveValue("+36 20 555 1011");
+  });
+
   describe("when the save carries the version the form loaded", () => {
     const loaded = { ...item, updated_at: "2026-11-16T10:00:00Z" };
     const changedSince = "amount changed since you read it";

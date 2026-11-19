@@ -165,6 +165,7 @@ export const swahili: Words = {
   profileSave: "Hifadhi",
   profileSaved: "Namba yako ya simu imehifadhiwa",
   profileNotSaved: "Namba yako ya simu haikuhifadhiwa. Iangalie kisha ujaribu tena.",
+  profilePhoneTaken: "Namba ya simu tayari inatumiwa na mtu mwingine.",
   signOutTitle: "Toka",
   signOutSignedInAs: "Umeingia kama {name}.",
   consentTitle: "Idhini",

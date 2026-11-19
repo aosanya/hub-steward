@@ -68,6 +68,17 @@ describe("My profile", () => {
     expect(field).toHaveValue("+254 711 000 000");
   });
 
+  it("says another person holds the number when the hub reports it already in use", async () => {
+    stubActor(() => {
+      throw new mcp.McpError('actor_correct_my_attributes: mwanachamaactor: attribute value already in use: "phone" = +254 711 000 000');
+    });
+    opened("/profile");
+    await screen.findByLabelText(words.profilePhone);
+    await userEvent.click(screen.getByRole("button", { name: words.profileSave }));
+    expect(await screen.findByText(words.profilePhoneTaken)).toBeInTheDocument();
+    expect(screen.queryByText(words.profileNotSaved)).toBeNull();
+  });
+
   it("says the number was not saved when the hub refuses it, and drops the saved line on the next edit", async () => {
     stubActor(() => {
       throw new Error("phone already held");

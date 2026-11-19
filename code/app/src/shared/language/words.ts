@@ -163,6 +163,7 @@ export const words = {
   profileSave: "Save",
   profileSaved: "Your phone number was saved",
   profileNotSaved: "Your phone number was not saved. Check it and try again.",
+  profilePhoneTaken: "Phone already in use by another person.",
   signOutTitle: "Sign out",
   signOutSignedInAs: "You are signed in as {name}.",
   consentTitle: "Consent",
