@@ -6,3 +6,4 @@
 .lopt.active { background: var(--bg-alt); }
 .lopt.on { background: var(--accent-wash); color: var(--accent-strong); font-weight: 500; }
 .search-clear { flex: none; padding: 0 .25rem; border: 0; background: transparent; color: var(--ink-soft); font: inherit; font-size: 1.25rem; line-height: 1; }
+.search-box input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
