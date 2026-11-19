@@ -17,10 +17,10 @@ type namedBy struct {
 	nameField string
 }
 
-var screenNamedLists = map[string]namedBy{
-	"comm.chat_message.list":            {idField: "author_id", nameField: "author_name"},
-	"comm.chat_thread.list":             {within: "last_message", idField: "author_id", nameField: "author_name"},
-	"actor.join_request.list_for_group": {idField: "actor_id", nameField: "actor_name"},
+var screenNamedLists = map[string][]namedBy{
+	"comm.chat_message.list":            {{idField: "author_id", nameField: "author_name"}},
+	"comm.chat_thread.list":             {{within: "last_message", idField: "author_id", nameField: "author_name"}, {idField: "requested_by", nameField: "requested_by_name"}},
+	"actor.join_request.list_for_group": {{idField: "actor_id", nameField: "actor_name"}},
 }
 
 type bufferedResponse struct {
@@ -47,12 +47,18 @@ func withScreenNames(reg agencies.Registry, action string, serve http.HandlerFun
 }
 
 func screenNamesRewrite(reg agencies.Registry, action string) rowRewrite {
-	field, named := screenNamedLists[action]
+	fields, named := screenNamedLists[action]
 	if !named {
 		return nil
 	}
 	return func(r *http.Request, rows []map[string]json.RawMessage) ([]map[string]json.RawMessage, error) {
-		return field.nameEach(r.Context(), reg, r.PathValue("instanceID"), rows)
+		var err error
+		for _, field := range fields {
+			if rows, err = field.nameEach(r.Context(), reg, r.PathValue("instanceID"), rows); err != nil {
+				return nil, err
+			}
+		}
+		return rows, nil
 	}
 }
 
