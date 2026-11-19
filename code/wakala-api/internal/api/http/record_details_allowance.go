@@ -6,7 +6,7 @@ import (
 	"errors"
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
-	catalog "wakalaserver/modules/catalog"
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 
 	"wakalaserver/internal/agencies"
 )

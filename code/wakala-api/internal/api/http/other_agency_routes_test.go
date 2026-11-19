@@ -18,13 +18,13 @@ import (
 	assetroutes "github.com/aosanya/mwanachama-backend-assetmanager/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
+	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"
 	"wakalaserver/internal/formsettings"
 	"wakalaserver/internal/languages"
 	"wakalaserver/internal/notifyrules"
 	accountingroutes "wakalaserver/modules/accounting/routes"
-	catalogroutes "wakalaserver/modules/catalog/routes"
 	gitroutes "wakalaserver/modules/git/routes"
 )
 

@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	mwanachamacatalog "wakalaserver/modules/catalog"
+	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 )
 
 type areaFixture struct {

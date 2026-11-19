@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/aosanya/mwanachama-backend-shared/spec"
-	catalog "wakalaserver/modules/catalog"
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	forms "wakalaserver/modules/forms"
 	permissions "wakalaserver/modules/permissions"
 )

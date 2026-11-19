@@ -8,8 +8,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
-	catalog "wakalaserver/modules/catalog"
 )
 
 func TestTheOwnerReadsAnAnonymousItemOfAPersonAndAStaffReaderDoesNot(t *testing.T) {

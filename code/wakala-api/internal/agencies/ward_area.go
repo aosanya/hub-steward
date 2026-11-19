@@ -5,7 +5,7 @@ import (
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"github.com/aosanya/mwanachama-backend-shared/geo"
-	mwanachamacatalog "wakalaserver/modules/catalog"
+	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 )
 
 func wardAreaResolver(um mwanachamaactor.UserManager) mwanachamacatalog.AreaResolver {

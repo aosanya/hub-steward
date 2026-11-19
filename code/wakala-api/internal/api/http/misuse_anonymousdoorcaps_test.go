@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
-	catalog "wakalaserver/modules/catalog"
 )
 
 type anonymousDoorCase struct {

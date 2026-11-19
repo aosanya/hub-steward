@@ -21,8 +21,12 @@ github.com/aosanya/mwanachama-backend-assetmanager v0.1.0 h1:bg8Bvkq5T8ajqKcB8pd
 github.com/aosanya/mwanachama-backend-assetmanager v0.1.0/go.mod h1:PnvK0AemrvnNJr2KOd7MyYie/7p8HZsja8IXUNxgXD0=
 github.com/aosanya/mwanachama-backend-auth v0.1.0 h1:sL6iF47xyeV2YQsiv8Y1OqsFTQpZea+KX+TDNpHokpY=
 github.com/aosanya/mwanachama-backend-auth v0.1.0/go.mod h1:inNPS9ZxCJRhCHLaM8Jmg+rUZ4SAyDCrTDMeV/p+bMo=
+github.com/aosanya/mwanachama-backend-catalog v0.1.0 h1:9TOEjl0q4WOdNC13lBZ1QcNoWMyufpcPnEuEv3FYSMA=
+github.com/aosanya/mwanachama-backend-catalog v0.1.0/go.mod h1:9VbM7DIGKS8NIVpqFlZ2joCWpqWQmBkgaJpyPmB8pwk=
 github.com/aosanya/mwanachama-backend-custody v0.1.0 h1:MVUmpqkgxmKYKDTWOh56AiivNY7FCMJXwAXh/ykgaMw=
 github.com/aosanya/mwanachama-backend-custody v0.1.0/go.mod h1:4uOCqQjFWswm2pKhGXfaP+OE28SOzCHZBKB2B9veL7Q=
+github.com/aosanya/mwanachama-backend-engage v0.1.0 h1:hKN9NRngMlF/UtslZ77NKc+fHaDdmMqehcc+JClEDW0=
+github.com/aosanya/mwanachama-backend-engage v0.1.0/go.mod h1:5x+ClAvgA+nUTyZh9gGz+IqJFVny+p2uJUTPal12L7c=
 github.com/aosanya/mwanachama-backend-shared v0.3.1 h1:k9ZXL0gGy14Vj+jLfzHtUpj/UdOOIjQODfL0WITdji8=
 github.com/aosanya/mwanachama-backend-shared v0.3.1/go.mod h1:YePPawJxq4ASWv/bLKBBWHvB+vnJ3kf9/ccJE98nkGU=
 github.com/aosanya/mwanachama-backend-sources v0.1.0 h1:a0TsP8NV3iDrjIkeKVWQNaTyHtMmc6I7mBIKWUwpQhY=

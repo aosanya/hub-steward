@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	mwanachamacatalog "wakalaserver/modules/catalog"
+	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 	mwanachamagit "wakalaserver/modules/git"
 )
 

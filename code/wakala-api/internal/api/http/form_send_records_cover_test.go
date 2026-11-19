@@ -6,7 +6,7 @@ import (
 	"errors"
 	"testing"
 
-	catalog "wakalaserver/modules/catalog"
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	forms "wakalaserver/modules/forms"
 	formsmodels "wakalaserver/modules/forms/models"
 )

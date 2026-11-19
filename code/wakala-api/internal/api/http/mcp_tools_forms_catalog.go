@@ -8,7 +8,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	catalogroutes "wakalaserver/modules/catalog/routes"
+	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
 
 	"wakalaserver/internal/agencies"
 )

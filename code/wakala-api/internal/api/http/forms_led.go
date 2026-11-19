@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	catalog "wakalaserver/modules/catalog"
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

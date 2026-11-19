@@ -9,7 +9,7 @@ import (
 	assetroutes "github.com/aosanya/mwanachama-backend-assetmanager/routes"
 	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
-	catalogroutes "wakalaserver/modules/catalog/routes"
+	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
 	mwanachamacomm "wakalaserver/modules/comm"
 	commroutes "wakalaserver/modules/comm/routes"
 	formsroutes "wakalaserver/modules/forms/routes"

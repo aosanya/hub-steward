@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
-	catalog "wakalaserver/modules/catalog"
 
 	"wakalaserver/internal/specs"
 )
@@ -312,7 +312,6 @@ func TestSlotEventDates_EventEndIsComparedWithStartAsAnInstant(t *testing.T) {
 }
 
 func TestSlotEventDates_EventTimeZoneMustBeAKnownZone(t *testing.T) {
-	t.Skip("Known defect: Mars/Olympus and +02:00 are stored; remove this line with the fix")
 	w := newSlotEventDatesEventWalk(t)
 	for _, zone := range []string{"Mars/Olympus", "+02:00"} {
 		rec := w.post(t, "2030-05-01T10:00:00Z", "2030-05-01T12:00:00Z", zone)

@@ -18,7 +18,7 @@ import (
 	"github.com/aosanya/mwanachama-backend-shared/spec"
 	mwanachamacomm "wakalaserver/modules/comm"
 	"wakalaserver/modules/comm/models"
-	mwanachamaengage "wakalaserver/modules/engage"
+	mwanachamaengage "github.com/aosanya/mwanachama-backend-engage"
 	mwanachamaforms "wakalaserver/modules/forms"
 )
 

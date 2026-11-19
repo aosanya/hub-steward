@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	mwanachamacatalog "wakalaserver/modules/catalog"
+	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 )
 
 func permitEntry(t *testing.T, slug, formID, inspector string) mwanachamacatalog.Entry {

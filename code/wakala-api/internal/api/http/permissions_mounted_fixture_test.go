@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/aosanya/mwanachama-backend-shared/spec"
-	mwanachamacatalog "wakalaserver/modules/catalog"
+	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 	mwanachamapermissions "wakalaserver/modules/permissions"
 )
 

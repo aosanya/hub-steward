@@ -13,7 +13,7 @@ import (
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	ai "github.com/aosanya/mwanachama-backend-ai"
 	airoutes "github.com/aosanya/mwanachama-backend-ai/routes"
-	catalogroutes "wakalaserver/modules/catalog/routes"
+	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
 
 	"wakalaserver/internal/accounts"
 )

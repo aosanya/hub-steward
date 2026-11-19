@@ -6,7 +6,7 @@ import (
 
 	mwanachamaauth "github.com/aosanya/mwanachama-backend-auth"
 	mwanachamaaudit "wakalaserver/modules/audit"
-	catalog "wakalaserver/modules/catalog"
+	catalog "github.com/aosanya/mwanachama-backend-catalog"
 	mwanachamacouncil "wakalaserver/modules/council"
 	forms "wakalaserver/modules/forms"
 	mwanachamainsights "wakalaserver/modules/insights"
