@@ -78,6 +78,25 @@ describe("Spending by Neighbourhood", () => {
     expect(callsTo("accounting_dimension_totals")[0][2]).toEqual({ key: "neighbourhood", account_type: "expense" });
   });
 
+  it("ends the list with the spending that carries no neighbourhood, so the rows add up to the report", async () => {
+    answer = { key: "neighbourhood", account_type: "expense", totals, without: { value: "", total: 7400000, entries: 3 } };
+    open();
+
+    const row = await screen.findByRole("button", { name: /No neighbourhood/ });
+    expect(row.textContent).toContain("Spent 7,400,000");
+    const names = screen.getAllByRole("button").map((button) => button.textContent ?? "");
+    const last = names.filter((name) => /Spent/.test(name)).at(-1) ?? "";
+    expect(last).toContain("No neighbourhood");
+  });
+
+  it("shows no such row when every entry carries a neighbourhood", async () => {
+    answer = { key: "neighbourhood", account_type: "expense", totals, without: { value: "", total: 0, entries: 0 } };
+    open();
+
+    expect(await screen.findByText("Malomsor")).toBeInTheDocument();
+    expect(screen.queryByText(/No neighbourhood/)).toBeNull();
+  });
+
   it("opens a neighbourhood with its name, what was spent and how many entries", async () => {
     open();
     await userEvent.click(await screen.findByRole("button", { name: /Malomsor/ }));

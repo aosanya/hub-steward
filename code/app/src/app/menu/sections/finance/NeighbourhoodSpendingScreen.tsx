@@ -7,9 +7,13 @@ import { homeEmpty, moneyWords, text, tools, unitOf, type Item } from "./finance
 
 const totalsArguments = { key: "neighbourhood", account_type: "expense" };
 
+const withoutWords = "No neighbourhood";
+
 const totalsOf = async () => {
-  const reply = (await callTool("", tools.dimensionTotals, totalsArguments)) as { totals?: unknown } | null;
-  return Array.isArray(reply?.totals) ? (reply.totals as Item[]) : [];
+  const reply = (await callTool("", tools.dimensionTotals, totalsArguments)) as { totals?: unknown; without?: Item } | null;
+  const named = Array.isArray(reply?.totals) ? (reply.totals as Item[]) : [];
+  const without = reply?.without;
+  return without && Number(without.entries) > 0 ? [...named, { ...without, value: withoutWords }] : named;
 };
 
 const rowOf = (total: Item, unit: string) => ({

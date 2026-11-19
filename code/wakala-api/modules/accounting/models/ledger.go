@@ -74,6 +74,7 @@ type DimensionTotals struct {
 	PeriodStart string           `json:"period_start,omitempty"`
 	PeriodEnd   string           `json:"period_end,omitempty"`
 	Totals      []DimensionTotal `json:"totals"`
+	Without     DimensionTotal   `json:"without"`
 }
 
 type AgeBasis string

@@ -182,6 +182,19 @@ func TestDimensionTotalsSkipsEntriesThatDoNotCarryTheKey(t *testing.T) {
 	}
 }
 
+func TestDimensionTotalsSaysHowMuchCarriesNoValueForTheKey(t *testing.T) {
+	l := zoldhalomYear(t)
+
+	got, err := l.repo.DimensionTotals(t.Context(), "neighbourhood", string(accounting.AccountTypeExpense), "", "")
+	if err != nil {
+		t.Fatalf("DimensionTotals: %v", err)
+	}
+	want := accounting.DimensionTotal{Total: 1004, Entries: 2}
+	if got.Without != want {
+		t.Fatalf("without = %+v, want %+v", got.Without, want)
+	}
+}
+
 func TestDimensionTotalsPeriodStartsInclusiveEndsExclusiveAndFallsBackToPostedAt(t *testing.T) {
 	l := zoldhalomYear(t)
 

@@ -66,15 +66,21 @@ func sideTotal(e Entry, selected accountSelection) (int64, bool) {
 	return total, touched
 }
 
-func foldByValue(entries []Entry, key string, selected accountSelection, w dimensionWindow) []DimensionTotal {
+func foldByValue(entries []Entry, key string, selected accountSelection, w dimensionWindow) ([]DimensionTotal, DimensionTotal) {
 	byValue := map[string]*DimensionTotal{}
+	var without DimensionTotal
 	for _, e := range entries {
 		value, carries := e.Dimensions[key]
-		if !carries || !w.admits(e) {
+		if !w.admits(e) {
 			continue
 		}
 		total, touched := sideTotal(e, selected)
 		if !touched {
+			continue
+		}
+		if !carries {
+			without.Total += total
+			without.Entries++
 			continue
 		}
 		row, seen := byValue[value]
@@ -85,7 +91,7 @@ func foldByValue(entries []Entry, key string, selected accountSelection, w dimen
 		row.Total += total
 		row.Entries++
 	}
-	return sortedTotals(byValue)
+	return sortedTotals(byValue), without
 }
 
 func sortedTotals(byValue map[string]*DimensionTotal) []DimensionTotal {
@@ -113,11 +119,13 @@ func (m *ledgerStore) DimensionTotals(ctx context.Context, key, accountType, per
 	if err != nil {
 		return DimensionTotals{}, err
 	}
+	totals, without := foldByValue(entries, key, selected, window)
 	return DimensionTotals{
 		Key:         key,
 		AccountType: accountType,
 		PeriodStart: periodStart,
 		PeriodEnd:   periodEnd,
-		Totals:      foldByValue(entries, key, selected, window),
+		Totals:      totals,
+		Without:     without,
 	}, nil
 }
