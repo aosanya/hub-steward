@@ -7,7 +7,7 @@ import (
 	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
-	mwanachamaratings "wakalaserver/modules/ratings"
+	mwanachamaratings "github.com/aosanya/mwanachama-backend-ratings"
 )
 
 type catalogRecordWriter struct {

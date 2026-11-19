@@ -13,11 +13,11 @@ import (
 	"github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamasources "github.com/aosanya/mwanachama-backend-sources"
 	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
+	riskmodels "github.com/aosanya/mwanachama-backend-riskmanager/models"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
 	"wakalaserver/internal/languages"
-	riskmodels "wakalaserver/modules/riskmanager/models"
 )
 
 var ErrApplyFailed = errors.New("the approved write could not be carried out")

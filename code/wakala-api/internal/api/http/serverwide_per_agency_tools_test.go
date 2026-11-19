@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	ratings "wakalaserver/modules/ratings"
+	ratings "github.com/aosanya/mwanachama-backend-ratings"
 
 	"wakalaserver/internal/specs"
 )

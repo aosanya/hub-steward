@@ -12,7 +12,7 @@ import (
 	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 	workspace "github.com/aosanya/mwanachama-backend-workspace"
 	permissions "github.com/aosanya/mwanachama-backend-permissions"
-	ratings "wakalaserver/modules/ratings"
+	ratings "github.com/aosanya/mwanachama-backend-ratings"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"wakalaserver/modules/riskmanager/models"
+	"github.com/aosanya/mwanachama-backend-riskmanager/models"
 
 	"wakalaserver/internal/agencies"
 )

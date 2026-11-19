@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	ratingsroutes "wakalaserver/modules/ratings/routes"
+	ratingsroutes "github.com/aosanya/mwanachama-backend-ratings/routes"
 
 	"wakalaserver/internal/accounts"
 )

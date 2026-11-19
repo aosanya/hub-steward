@@ -6,7 +6,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	mwanachamariskmanager "wakalaserver/modules/riskmanager"
+	mwanachamariskmanager "github.com/aosanya/mwanachama-backend-riskmanager"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

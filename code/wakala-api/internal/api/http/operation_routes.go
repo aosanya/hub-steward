@@ -15,7 +15,7 @@ import (
 	digitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 	market "github.com/aosanya/mwanachama-backend-market"
 	workspace "github.com/aosanya/mwanachama-backend-workspace"
-	riskmanager "wakalaserver/modules/riskmanager"
+	riskmanager "github.com/aosanya/mwanachama-backend-riskmanager"
 	taskmanager "wakalaserver/modules/taskmanager"
 	voting "github.com/aosanya/mwanachama-backend-voting"
 

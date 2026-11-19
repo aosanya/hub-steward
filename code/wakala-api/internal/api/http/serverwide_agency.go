@@ -8,8 +8,8 @@ import (
 	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
 	forms "github.com/aosanya/mwanachama-backend-forms"
 	formsroutes "github.com/aosanya/mwanachama-backend-forms/routes"
-	ratings "wakalaserver/modules/ratings"
-	ratingsroutes "wakalaserver/modules/ratings/routes"
+	ratings "github.com/aosanya/mwanachama-backend-ratings"
+	ratingsroutes "github.com/aosanya/mwanachama-backend-ratings/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

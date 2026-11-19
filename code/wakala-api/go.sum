@@ -45,6 +45,10 @@ github.com/aosanya/mwanachama-backend-market v0.1.0 h1:6bFgMLE2QhTGNN2FPpdrI2jr/
 github.com/aosanya/mwanachama-backend-market v0.1.0/go.mod h1:P2i+4XtdSNrDwjqOhgwGDB1rSvvCNMIV6CccnxvS26s=
 github.com/aosanya/mwanachama-backend-permissions v0.1.0 h1:JZUvSfo0SxI6UBxB+PoH9V/P5I8TpgNebzZWgCC1EVA=
 github.com/aosanya/mwanachama-backend-permissions v0.1.0/go.mod h1:9RidyKWuioqXS4oZgOiOZ1hm9f1T1xiWsqhtlzwm6xo=
+github.com/aosanya/mwanachama-backend-ratings v0.1.0 h1:1oLb9yI9LvK44UrQUXAWM7m+EDD0qOfGA7FrzEzafhQ=
+github.com/aosanya/mwanachama-backend-ratings v0.1.0/go.mod h1:2ZTgYw4dekk42aYwRPddY4ihFg65ayOcCT1XRRKJW8Y=
+github.com/aosanya/mwanachama-backend-riskmanager v0.1.0 h1:Surj6QBHCnt6URXBzD7SkAy23k6EQ1KCfu4hMzgKwwI=
+github.com/aosanya/mwanachama-backend-riskmanager v0.1.0/go.mod h1:zSuaSm/g7H9w6PsRY+qIW1U+YXYsmGbyPlo8h0Z5cy0=
 github.com/aosanya/mwanachama-backend-shared v0.3.1 h1:k9ZXL0gGy14Vj+jLfzHtUpj/UdOOIjQODfL0WITdji8=
 github.com/aosanya/mwanachama-backend-shared v0.3.1/go.mod h1:YePPawJxq4ASWv/bLKBBWHvB+vnJ3kf9/ccJE98nkGU=
 github.com/aosanya/mwanachama-backend-sources v0.1.0 h1:a0TsP8NV3iDrjIkeKVWQNaTyHtMmc6I7mBIKWUwpQhY=

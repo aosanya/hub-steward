@@ -10,7 +10,7 @@ import (
 
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	"wakalaserver/internal/specs"
-	mwanachamaratings "wakalaserver/modules/ratings"
+	mwanachamaratings "github.com/aosanya/mwanachama-backend-ratings"
 )
 
 const (

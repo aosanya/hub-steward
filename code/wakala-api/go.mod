@@ -20,6 +20,8 @@ require (
 	github.com/aosanya/mwanachama-backend-insights v0.1.0
 	github.com/aosanya/mwanachama-backend-market v0.1.0
 	github.com/aosanya/mwanachama-backend-permissions v0.1.0
+	github.com/aosanya/mwanachama-backend-ratings v0.1.0
+	github.com/aosanya/mwanachama-backend-riskmanager v0.1.0
 	github.com/aosanya/mwanachama-backend-sources v0.1.0
 	github.com/aosanya/mwanachama-backend-voting v0.1.0
 	github.com/aosanya/mwanachama-backend-workspace v0.1.0

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	riskroutes "wakalaserver/modules/riskmanager/routes"
+	riskroutes "github.com/aosanya/mwanachama-backend-riskmanager/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

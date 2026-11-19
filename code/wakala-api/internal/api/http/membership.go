@@ -16,7 +16,7 @@ import (
 	mwanachamacomm "github.com/aosanya/mwanachama-backend-comm"
 	mwanachamadigitaltwin "github.com/aosanya/mwanachama-backend-digitaltwin"
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
-	mwanachamariskmanager "wakalaserver/modules/riskmanager"
+	mwanachamariskmanager "github.com/aosanya/mwanachama-backend-riskmanager"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	"wakalaserver/internal/accounts"

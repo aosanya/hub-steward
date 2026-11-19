@@ -5,9 +5,9 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	mwanachamariskmanager "wakalaserver/modules/riskmanager"
-	riskmcp "wakalaserver/modules/riskmanager/mcp"
-	riskroutes "wakalaserver/modules/riskmanager/routes"
+	mwanachamariskmanager "github.com/aosanya/mwanachama-backend-riskmanager"
+	riskmcp "github.com/aosanya/mwanachama-backend-riskmanager/mcp"
+	riskroutes "github.com/aosanya/mwanachama-backend-riskmanager/routes"
 )
 
 type riskToolShape struct {

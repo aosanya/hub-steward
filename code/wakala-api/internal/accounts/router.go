@@ -26,8 +26,8 @@ import (
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
 	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 	mwanachamamarket "github.com/aosanya/mwanachama-backend-market"
-	mwanachamaratings "wakalaserver/modules/ratings"
-	mwanachamariskmanager "wakalaserver/modules/riskmanager"
+	mwanachamaratings "github.com/aosanya/mwanachama-backend-ratings"
+	mwanachamariskmanager "github.com/aosanya/mwanachama-backend-riskmanager"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
 	"wakalaserver/internal/agencies"
