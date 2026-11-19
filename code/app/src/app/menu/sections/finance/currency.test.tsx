@@ -243,7 +243,7 @@ describe.each(cases)("when $when", ({ listed, unit }) => {
     await waitFor(() => expect(within(pane()).getByText(`1,500,000${unit}`)).toBeInTheDocument());
     expect(within(pane()).getByText(`500,000${unit}`)).toBeInTheDocument();
     expect(within(pane()).getByText(`1,000,000${unit}`)).toBeInTheDocument();
-    await waitFor(() => expect(within(pane()).getByText(`200,000${unit} · 2026-02-10 · Second part`)).toBeInTheDocument());
+    await waitFor(() => expect(within(pane()).getByText(`200,000${unit} · 2026-02-10 · Recorded by Unnamed person · Second part`)).toBeInTheDocument());
     nothingElseAfterNumbers(pane().textContent ?? "");
   });
 

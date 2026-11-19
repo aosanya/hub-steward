@@ -41,6 +41,7 @@ describe("finance tool names", () => {
       quoteUpdate: "accounting_quote_update",
       paymentList: "accounting_payment_list",
       paymentMarkPaid: "accounting_payment_mark_paid",
+      paymentReverse: "accounting_payment_reverse",
       milestoneList: "accounting_milestone_list",
       certificateList: "accounting_certificate_list",
       dimensionTotals: "accounting_dimension_totals",

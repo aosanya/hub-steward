@@ -31,6 +31,7 @@ beforeEach(() => {
     if (name === "accounting_bill_read") return given.billID === "b0" ? settledBill : null;
     if (name === "accounting_payment_list") return { items: [earlierPayment] };
     if (name === "accounting_account_list") return { items: [{ id: "c1", category: "cash", type: "asset" }] };
+    if (name === "accounting_payment_reverse") return {};
     throw new Error(`${name} is not a tool this screen may use`);
   });
 });
@@ -151,5 +152,23 @@ describe("the payments page is built like a resident", () => {
     await userEvent.click(await pane.findByRole("button", { name: "Add payment" }));
     const sheet = within(await screen.findByRole("dialog", { name: "Add payment" }));
     for (const way of ["Cash", "Bank transfer", "Card", "Other"]) expect(sheet.getByRole("button", { name: way })).toBeInTheDocument();
+  });
+
+  it("reverses a payment of a bill after a confirmation, with accounting_payment_reverse", async () => {
+    const pane = await open("Ben Sample");
+    const card = within(await pane.findByRole("region", { name: "Payment detail" }));
+    await userEvent.click(card.getByRole("button", { name: "Reverse payment" }));
+    expect(card.queryByRole("button", { name: "Reverse payment" })).toBeNull();
+    expect(vi.mocked(mcp.callTool).mock.calls.some(([, name]) => name === "accounting_payment_reverse")).toBe(false);
+    await userEvent.click(await within(document.body).findByRole("button", { name: "Reverse" }));
+    const sent = vi.mocked(mcp.callTool).mock.calls.find(([, name]) => name === "accounting_payment_reverse");
+    expect(sent?.[2]).toEqual({ paymentID: "p1" });
+  });
+
+  it("offers Reverse payment only to a caller who holds accounting.manage", async () => {
+    permissions = ["accounting.read"];
+    const pane = await open("Ben Sample");
+    await pane.findByRole("region", { name: "Payment detail" });
+    expect(pane.queryByRole("button", { name: "Reverse payment" })).toBeNull();
   });
 });

@@ -7,6 +7,8 @@ import { Chip } from "../../../../shared/ui/Chip";
 import { Segmented } from "../../../../shared/ui/Segmented";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { MenuWindow } from "../../MenuWindow";
+import { actorNameOf } from "../assets/assigneeNames";
+import { unnamedPerson } from "../settings/personLabel";
 import { BillPage, manageRole } from "./BillPage";
 import { RaiseBillSheet } from "./RaiseBillSheet";
 import { billRow, billStatusWords, chargeNames, chargeWords, dayWords, daysLateWords, homeEmpty, lateRulesFor, listOf, moneyWords, remindsWords, text, tools, unitOf, type Item } from "./financeData";
@@ -24,13 +26,30 @@ const statuses = [
 
 const paymentLines = 10;
 
-const paymentLine = (payment: Item, unit: string) => [moneyWords(text(payment, "amount"), unit), dayWords(text(payment, "paid_at")), text(payment, "narration")].filter(Boolean).join(" · ");
+const methodWords = (payment: Item) => {
+  const method = text(payment, "method");
+  return method === "" ? "" : method.charAt(0).toUpperCase() + method.slice(1);
+};
+
+const recordedByName = async (id: string) => {
+  if (id === "") return unnamedPerson;
+  try {
+    return await actorNameOf(id);
+  } catch {
+    return unnamedPerson;
+  }
+};
+
+const paymentLine = (payment: Item, unit: string, by: string) =>
+  [moneyWords(text(payment, "amount"), unit), dayWords(text(payment, "paid_at")), methodWords(payment), `Recorded by ${by}`, text(payment, "narration")].filter(Boolean).join(" · ");
 
 const newestFirst = (payments: Item[]) => [...payments].sort((a, b) => text(b, "paid_at").localeCompare(text(a, "paid_at")));
 
 const loadBill = async (id: string, unit: string) => {
   const [bill, payments, charges] = await Promise.all([callTool("", tools.billRead, { billID: id }) as Promise<Item | null>, listOf(tools.paymentList, { bill_id: id }), chargeNames()]);
   const rules = await lateRulesFor(bill ? [bill] : []);
+  const shown = newestFirst(payments).slice(0, paymentLines);
+  const names = await Promise.all(shown.map((payment) => recordedByName(text(payment, "paid_by"))));
   return {
     id,
     billID: id,
@@ -40,13 +59,14 @@ const loadBill = async (id: string, unit: string) => {
     amountWords: moneyWords(text(bill, "amount"), unit),
     settled: moneyWords(text(bill, "settled"), unit),
     outstanding: moneyWords(text(bill, "outstanding"), unit),
+    outstandingAmount: String(Number(text(bill, "outstanding")) || 0),
     due: dayWords(text(bill, "due_at")),
     due_at: text(bill, "due_at"),
     narration: text(bill, "narration"),
     late: daysLateWords(bill ?? {}),
     status: billStatusWords(bill ?? {}, rules),
     reminds: remindsWords(bill ?? {}, rules),
-    ...Object.fromEntries(newestFirst(payments).slice(0, paymentLines).map((payment, at) => [`payment${at + 1}`, paymentLine(payment, unit)])),
+    ...Object.fromEntries(shown.map((payment, at) => [`payment${at + 1}`, paymentLine(payment, unit, names[at])])),
   };
 };
 

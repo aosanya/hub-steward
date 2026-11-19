@@ -355,8 +355,8 @@ describe("what was paid against a bill", () => {
     expect(detail.getByText("March stall fee")).toBeInTheDocument();
     const text = pane().textContent ?? "";
     expect(text.indexOf("Second part")).toBeLessThan(text.indexOf("First part"));
-    expect(detail.getByText("200 · 2026-02-10 · Second part")).toBeInTheDocument();
-    expect(detail.getByText("300 · 2026-01-20 · First part")).toBeInTheDocument();
+    expect(detail.getByText("200 · 2026-02-10 · Recorded by Unnamed person · Second part")).toBeInTheDocument();
+    expect(detail.getByText("300 · 2026-01-20 · Recorded by Unnamed person · First part")).toBeInTheDocument();
   });
 
   it("shows no payment lines for a bill nothing was paid against", async () => {
@@ -368,13 +368,13 @@ describe("what was paid against a bill", () => {
   });
 });
 
-describe("Mark paid on a bill", () => {
+describe("Add payment on a bill", () => {
   it.each(["Sample Market", "Sample Garage"])("is offered on %s, which is open or overdue", async (payer) => {
     screens();
     await userEvent.click(await screen.findByRole("button", { name: new RegExp(payer) }));
     await waitFor(() => expect(pane().textContent).toContain(payer));
 
-    expect(within(pane()).getByRole("button", { name: "Mark paid" })).toBeInTheDocument();
+    expect(within(pane()).getByRole("button", { name: "Add payment" })).toBeInTheDocument();
   });
 
   it.each(["Sample Bakery", "Sample School"])("is not offered on %s, which is settled or reversed", async (payer) => {
@@ -382,7 +382,7 @@ describe("Mark paid on a bill", () => {
     await userEvent.click(await screen.findByRole("button", { name: new RegExp(payer) }));
     await waitFor(() => expect(pane().textContent).toContain(payer));
 
-    expect(within(pane()).queryByRole("button", { name: "Mark paid" })).toBeNull();
+    expect(within(pane()).queryByRole("button", { name: "Add payment" })).toBeNull();
   });
 
   it("is not offered to a caller without accounting.manage", async () => {
@@ -390,18 +390,19 @@ describe("Mark paid on a bill", () => {
     await userEvent.click(await screen.findByRole("button", { name: /Sample Market/ }));
     await waitFor(() => expect(pane().textContent).toContain("Sample Market"));
 
-    expect(within(pane()).queryByRole("button", { name: "Mark paid" })).toBeNull();
+    expect(within(pane()).queryByRole("button", { name: "Add payment" })).toBeNull();
   });
 
-  it("posts accounting_payment_mark_paid with the billID and the cash account", async () => {
+  it("posts accounting_payment_mark_paid with the billID, the cash account and the outstanding amount once saved in the sheet", async () => {
     screens({ ...answers, accounting_payment_mark_paid: () => ({}) });
     await userEvent.click(await screen.findByRole("button", { name: /Sample Market/ }));
     await waitFor(() => expect(pane().textContent).toContain("Sample Market"));
 
-    await userEvent.click(within(pane()).getByRole("button", { name: "Mark paid" }));
+    await userEvent.click(within(pane()).getByRole("button", { name: "Add payment" }));
+    await userEvent.click(within(await screen.findByRole("dialog", { name: "Add payment" })).getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(callsTo("accounting_payment_mark_paid")).toHaveLength(1));
-    expect(callsTo("accounting_payment_mark_paid")[0][2]).toEqual({ billID: "b3", cash_account_id: "a-cash" });
+    expect(callsTo("accounting_payment_mark_paid")[0][2]).toMatchObject({ billID: "b3", cash_account_id: "a-cash", amount: 250 });
   });
 });
 
