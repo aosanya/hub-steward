@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymodels "wakalaserver/modules/agency/models"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 var ErrNoFactory = errors.New("testruns: no factory builds the Test agent")

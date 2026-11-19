@@ -12,9 +12,9 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"gorm.io/gorm"
 
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymcp "wakalaserver/modules/agency/mcp"
-	agencymodels "wakalaserver/modules/agency/models"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymcp "github.com/aosanya/mwanachama-backend-agency/mcp"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 type carryDesk struct {

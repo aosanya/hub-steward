@@ -5,9 +5,9 @@ import (
 	"log/slog"
 	"time"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymcp "github.com/aosanya/mwanachama-backend-agency/mcp"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymcp "wakalaserver/modules/agency/mcp"
 	ai "wakalaserver/modules/ai"
 
 	"wakalaserver/internal/agencies"

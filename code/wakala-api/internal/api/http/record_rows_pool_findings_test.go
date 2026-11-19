@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 func poolIsNot(question, value string) poolCondition {

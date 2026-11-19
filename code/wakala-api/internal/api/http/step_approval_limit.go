@@ -4,7 +4,7 @@ import (
 	"context"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 
 	"wakalaserver/internal/accounts"
 )

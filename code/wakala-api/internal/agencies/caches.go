@@ -8,7 +8,7 @@ import (
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamacustody "github.com/aosanya/mwanachama-backend-custody"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamacomm "wakalaserver/modules/comm"

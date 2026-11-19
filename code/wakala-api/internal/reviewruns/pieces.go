@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	mwanachamaai "wakalaserver/modules/ai"
 )
 

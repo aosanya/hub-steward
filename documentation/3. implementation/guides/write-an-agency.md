@@ -26,7 +26,7 @@ References between sections use an `id` or a `code` (`G-1`, `O-1`, `R-3`, `W-1`,
 
 ## Roles and permissions
 
-A role is a name, a description and a list of permission names. The names come from `code/wakala-api/modules/agency/models/permissions_catalog.json`, which lists 74, for example `chat.post`, `group.join`, `form.send`, `document.search`, `risk.read` and `ai.use`. In Siaya:
+A role is a name, a description and a list of permission names. The names come from `mwanachama-backend-agency/models/permissions_catalog.json`, which lists 74, for example `chat.post`, `group.join`, `form.send`, `document.search`, `risk.read` and `ai.use`. In Siaya:
 
 | Code | Role | Permissions |
 |---|---|---|

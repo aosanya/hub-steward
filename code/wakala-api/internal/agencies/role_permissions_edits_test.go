@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 type fakePermissionSetter struct {

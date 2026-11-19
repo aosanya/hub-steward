@@ -4,7 +4,7 @@ import (
 	"context"
 	"regexp"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 )
 
 var keepableCode = regexp.MustCompile(`^[A-Z]{1,2}(?:-[A-Z]+)?-[0-9]{1,6}$`)

@@ -10,10 +10,10 @@ import (
 	"testing"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	"wakalaserver/internal/agencies"
-	mwanachamaagency "wakalaserver/modules/agency"
 )
 
 var approvalDesks atomic.Int64

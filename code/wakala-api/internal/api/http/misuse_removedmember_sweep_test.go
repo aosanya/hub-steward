@@ -15,7 +15,7 @@ import (
 	custodyroutes "github.com/aosanya/mwanachama-backend-custody/routes"
 	"github.com/aosanya/mwanachama-backend-shared/httpwire"
 	accountingroutes "wakalaserver/modules/accounting/routes"
-	agencyroutes "wakalaserver/modules/agency/routes"
+	agencyroutes "github.com/aosanya/mwanachama-backend-agency/routes"
 	airoutes "wakalaserver/modules/ai/routes"
 	assetroutes "wakalaserver/modules/assetmanager/routes"
 	catalogroutes "wakalaserver/modules/catalog/routes"

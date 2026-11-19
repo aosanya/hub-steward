@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"time"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 )
 

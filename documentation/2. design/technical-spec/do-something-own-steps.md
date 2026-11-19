@@ -54,7 +54,7 @@ Decided with the owner on 2026-11-13. A step that asks the member to approve in 
 
 - **Which step.** A form step whose title, description or prompt has `approv*` before "own name" or "by name" in one sentence (`isApprovalStep`, `wakala-api/internal/api/http/approval_step.go`). No template change is needed.
 - **What the member sees.** The open-steps reply carries `approval: true`. The step page shows `ApproveInOwnName.tsx`, `You approve this in your own name, as <name>.`, and the Send button reads Approve. The Done list shows `Approved by <name>` (`started/done.ts`).
-- **What the server adds.** On send the row gets the answers `Approved by`, the signed-in member's display name (the actor of the session), and `Approved at`, the time in UTC RFC3339. A request that answers either prompt is refused with 400, and so is an approver without a display name. `modules/agency/approval_stamp.go` lets the two prompts past `validateRowAnswers`.
+- **What the server adds.** On send the row gets the answers `Approved by`, the signed-in member's display name (the actor of the session), and `Approved at`, the time in UTC RFC3339. A request that answers either prompt is refused with 400, and so is an approver without a display name. `mwanachama-backend-agency/approval_stamp.go` lets the two prompts past `validateRowAnswers`.
 - **Who sees it next.** The next role's `earlier` and `agency_list_my_sent_steps` carry both answers.
 - **Before it can be seen.** wakala-api and the app need a restart, and the approving member's actor needs a display name.
 

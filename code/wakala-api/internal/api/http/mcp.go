@@ -24,8 +24,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymcp "wakalaserver/modules/agency/mcp"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymcp "github.com/aosanya/mwanachama-backend-agency/mcp"
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	insightsmcp "wakalaserver/modules/insights/mcp"
 	mwanachamasources "wakalaserver/modules/sources"

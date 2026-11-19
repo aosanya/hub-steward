@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	mwanachamaagencymodels "wakalaserver/modules/agency/models"
+	mwanachamaagencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	"github.com/aosanya/mwanachama-backend-shared/plaintext"

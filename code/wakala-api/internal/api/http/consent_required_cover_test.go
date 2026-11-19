@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/aosanya/mwanachama-backend-agency/models"
 	"wakalaserver/internal/agencies"
-	"wakalaserver/modules/agency/models"
 )
 
 func cacheMountedSet(t *testing.T, instance string, set mountedSet) {

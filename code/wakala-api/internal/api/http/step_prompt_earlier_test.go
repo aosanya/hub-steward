@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 func promptedPlan() []stepSpec {

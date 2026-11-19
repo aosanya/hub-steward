@@ -3,9 +3,9 @@ package http
 import (
 	"context"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymodels "wakalaserver/modules/agency/models"
 	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 
 	"wakalaserver/internal/agencies"

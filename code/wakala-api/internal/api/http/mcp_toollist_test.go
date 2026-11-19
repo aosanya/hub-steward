@@ -11,9 +11,9 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	"github.com/aosanya/mwanachama-backend-agency/models"
 	"wakalaserver/internal/agencies"
-	mwanachamaagency "wakalaserver/modules/agency"
-	"wakalaserver/modules/agency/models"
 )
 
 type sessionCookie struct{ cookie *http.Cookie }

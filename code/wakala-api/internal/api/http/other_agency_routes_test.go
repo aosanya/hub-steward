@@ -13,6 +13,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
+	agencyroutes "github.com/aosanya/mwanachama-backend-agency/routes"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"
@@ -20,7 +21,6 @@ import (
 	"wakalaserver/internal/languages"
 	"wakalaserver/internal/notifyrules"
 	accountingroutes "wakalaserver/modules/accounting/routes"
-	agencyroutes "wakalaserver/modules/agency/routes"
 	airoutes "wakalaserver/modules/ai/routes"
 	assetroutes "wakalaserver/modules/assetmanager/routes"
 	catalogroutes "wakalaserver/modules/catalog/routes"

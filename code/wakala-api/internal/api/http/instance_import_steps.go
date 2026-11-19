@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"wakalaserver/modules/agency/models"
+	"github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 type importedStep struct {

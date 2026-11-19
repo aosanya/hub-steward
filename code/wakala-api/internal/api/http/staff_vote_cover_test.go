@@ -12,8 +12,8 @@ import (
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	actormodels "github.com/aosanya/mwanachama-backend-actor/models"
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymodels "wakalaserver/modules/agency/models"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

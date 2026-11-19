@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	"github.com/aosanya/mwanachama-backend-shared/answerrules"
-	agencymodels "wakalaserver/modules/agency/models"
 
 	"wakalaserver/internal/agencies"
 )

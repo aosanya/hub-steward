@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"testing"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 )
 
 var textCodePattern = regexp.MustCompile(`\b(?:RU|V|W|WI|R|C|G|O|RC|RK)(?:-[A-Z]+)?-\d+\b`)

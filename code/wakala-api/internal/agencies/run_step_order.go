@@ -3,7 +3,7 @@ package agencies
 import (
 	"slices"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 func followsInOrder(steps []agencymodels.DocumentWorkItem, current, at int) bool {

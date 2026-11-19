@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 )
 
 var ErrRolesAgentsNoDraft = errors.New("The roles and agents cannot be read without a draft")

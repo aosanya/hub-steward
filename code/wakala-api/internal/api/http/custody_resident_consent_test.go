@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"wakalaserver/modules/agency/models"
+	"github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 func TestResidentConsent_AResidentHoldsTheFourReadAgreeAndWithdrawActionsOnly(t *testing.T) {

@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"testing"
 
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymodels "wakalaserver/modules/agency/models"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 func (w stepRunWalk) sentSteps(t *testing.T, as *http.Cookie, query string) []map[string]any {

@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"testing"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymodels "wakalaserver/modules/agency/models"
 	mwanachamamarket "wakalaserver/modules/market"
 )
 

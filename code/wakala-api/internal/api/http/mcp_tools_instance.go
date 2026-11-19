@@ -15,10 +15,10 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	agencymcp "github.com/aosanya/mwanachama-backend-agency/mcp"
+	mwanachamaagencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
-	agencymcp "wakalaserver/modules/agency/mcp"
-	mwanachamaagencymodels "wakalaserver/modules/agency/models"
 )
 
 func (d *Deps) registerInstanceMCPTools(server *mcp.Server) {

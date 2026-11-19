@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamamarket "wakalaserver/modules/market"
 	marketmodels "wakalaserver/modules/market/models"
 )

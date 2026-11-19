@@ -9,7 +9,7 @@ import (
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	custody "github.com/aosanya/mwanachama-backend-custody"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	catalog "wakalaserver/modules/catalog"
 	digitaltwin "wakalaserver/modules/digitaltwin"
 	engage "wakalaserver/modules/engage"

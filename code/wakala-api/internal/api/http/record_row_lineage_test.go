@@ -5,8 +5,8 @@ import (
 	"slices"
 	"testing"
 
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
-	agencymodels "wakalaserver/modules/agency/models"
 	mwanachamadigitaltwin "wakalaserver/modules/digitaltwin"
 )
 

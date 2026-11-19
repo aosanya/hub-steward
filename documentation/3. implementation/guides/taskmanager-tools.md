@@ -1,6 +1,6 @@
 # Taskmanager tools that read the backlog
 
-The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes and MCP tools from one declared file, `taskmanager.operations.json`. A tool is named from its action, so `taskmanager.task.find` is `taskmanager_task_find`. Each action is listed under `task.read` in `modules/agency/models/permissions_catalog.json`, and each tool is on the pinned roster in `internal/api/http/testdata/mcp_roster/no-mounts.txt`.
+The taskmanager module (`code/wakala-api/modules/taskmanager`) serves its routes and MCP tools from one declared file, `taskmanager.operations.json`. A tool is named from its action, so `taskmanager.task.find` is `taskmanager_task_find`. Each action is listed under `task.read` in `mwanachama-backend-agency/models/permissions_catalog.json`, and each tool is on the pinned roster in `internal/api/http/testdata/mcp_roster/no-mounts.txt`.
 
 ## Which tool answers what
 

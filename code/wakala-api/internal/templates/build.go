@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
-	mwanachamaagencymodels "wakalaserver/modules/agency/models"
+	mwanachamaagencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 var raciLabels = map[string]bool{"responsible": true, "accountable": true, "consulted": true, "informed": true}

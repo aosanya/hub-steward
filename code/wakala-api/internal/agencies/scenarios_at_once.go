@@ -3,7 +3,7 @@ package agencies
 import (
 	"context"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	ai "wakalaserver/modules/ai"
 )
 

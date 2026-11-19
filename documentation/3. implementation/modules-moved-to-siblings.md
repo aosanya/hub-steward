@@ -15,3 +15,12 @@ Each sibling lists every difference from the hub copy it replaced in its own `do
 |---|---|
 | `actor` | `internal/api/http/step_approval_refusal.go`, `definition_role_kinds.go`, `resident_actor.go`, `membership.go`, `join_routes.go`, `mcp_visible.go`, `mcp_tool_actions.go`; `internal/agencies/approval_limits.go`, `registry.go`, `caches.go`; the actor entries of `modules/agency/models/permissions_catalog.json` |
 | `custody` | `internal/api/http/custody_routes.go`, `operation_routes.go`, `mcp_tools_custody.go`, `mcp_audit_paper_consent.go`, `custody_consent_language.go`, `consent_required.go`, `resident_grants.go`; `internal/agencies/registry.go`, `caches.go`, `mounts.go`, `consent_gate.go`, `consent_withdrawal.go`, `earlier_withdrawals.go`; `internal/accounts/router.go`; the custody entries of `modules/agency/models/permissions_catalog.json` and `modules_catalog.json` |
+Each row is a hub module whose in-tree copy under `code/wakala-api/modules/<name>` was deleted and replaced by a tagged import of its sibling repository. The import path is `github.com/aosanya/mwanachama-backend-<name>`, required in `code/wakala-api/go.mod` at the tag shown, with no `replace` line.
+
+| Module | Sibling repo | Tag | Date | Notes |
+|---|---|---|---|---|
+| agency (HUB2) | `mwanachama-backend-agency` | v0.1.0 | 2026-11-19 | Package name is `mwanachamaagency`, kept as the import alias everywhere; `models`, `mcp` and `routes` are aliased `agencymodels`, `agencymcp` and `agencyroutes` in the hub. The repository is private, so a build outside a machine with access needs `GOPRIVATE=github.com/aosanya/mwanachama-backend-agency`. The sibling adds `ListInputSources` to `AgencyManager`, the calculating, posting and holding step kinds and the `FunctionCatalog`; a hub fake of the manager must carry the method. The permissions catalogue the hub loads is the sibling's `models/permissions_catalog.json`, embedded in the module. Hub-only wiring stays in the hub: `internal/agencies`, `internal/api/http` (agency routes, module switch, step runs, approvals, role permissions), `internal/reviewruns`, `internal/testruns`, `internal/accounts`, `internal/templates`, `cmd/server`. Drift record: the sibling's `documentation/3. implementation/hub-import-drift.md`. |
+
+## What to do when a sibling needs a change
+
+Change the sibling, tag it, and raise the version in `code/wakala-api/go.mod` with `go get github.com/aosanya/mwanachama-backend-<name>@<tag>`. Never edit a module in the hub, and never add a `replace` line to a committed `go.mod`.

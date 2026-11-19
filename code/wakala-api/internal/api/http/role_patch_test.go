@@ -6,8 +6,8 @@ import (
 	"slices"
 	"testing"
 
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymodels "wakalaserver/modules/agency/models"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 type rolePatchWalk struct {

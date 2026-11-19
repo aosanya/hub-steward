@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 )
 
 const (

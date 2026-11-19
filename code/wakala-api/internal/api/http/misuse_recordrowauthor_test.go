@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 )
 
 func TestAgencyRecordRowAuthorIsTheCallerNotTheBody(t *testing.T) {
