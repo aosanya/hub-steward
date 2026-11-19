@@ -11,8 +11,8 @@ import (
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
-	mwanachamainsights "wakalaserver/modules/insights"
-	insightmodels "wakalaserver/modules/insights/models"
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
+	insightmodels "github.com/aosanya/mwanachama-backend-insights/models"
 )
 
 type insightScopeDirectory struct {

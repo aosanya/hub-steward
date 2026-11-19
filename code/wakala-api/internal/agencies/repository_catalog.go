@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
-	mwanachamagit "wakalaserver/modules/git"
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 )
 
 const RepositoriesMount = "repositories"

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	mwanachamacatalog "github.com/aosanya/mwanachama-backend-catalog"
-	mwanachamagit "wakalaserver/modules/git"
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 )
 
 func newRepositoryCatalogFixture(t *testing.T) (mwanachamagit.RepositoryCatalog, mwanachamacatalog.CatalogManager, context.Context) {

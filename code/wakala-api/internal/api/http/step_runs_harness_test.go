@@ -19,7 +19,7 @@ import (
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaaudit "github.com/aosanya/mwanachama-backend-audit"
 	mwanachamacouncil "github.com/aosanya/mwanachama-backend-council"
-	mwanachamainsights "wakalaserver/modules/insights"
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/session"

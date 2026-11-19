@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	mwanachamainsights "wakalaserver/modules/insights"
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/session"

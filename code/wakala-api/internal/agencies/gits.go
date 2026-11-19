@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strconv"
 
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
-	mwanachamagit "wakalaserver/modules/git"
 
 	"wakalaserver/internal/specs"
 )
@@ -85,7 +85,7 @@ func (r *registry) buildFolderGitManager(ctx context.Context, inst Instance, s *
 	if err != nil {
 		return nil, fmt.Errorf("GitManager: repository catalog of instance %s: %w", inst.ID, err)
 	}
-	built, err := newRepositoryFolderGit(filepath.Join(r.gitFolder, inst.TableSlug), r.gitOpenFiles, s, NewRepositoryCatalog(manager))
+	built, err := mwanachamagit.NewRoutedGitManager(filepath.Join(r.gitFolder, inst.TableSlug), r.gitOpenFiles, s, NewRepositoryCatalog(manager))
 	if err != nil {
 		return nil, fmt.Errorf("GitManager: repository folder of instance %s: %w", inst.ID, err)
 	}

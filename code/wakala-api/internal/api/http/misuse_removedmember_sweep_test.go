@@ -21,10 +21,10 @@ import (
 	assetroutes "github.com/aosanya/mwanachama-backend-assetmanager/routes"
 	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
 	engageroutes "github.com/aosanya/mwanachama-backend-engage/routes"
-	gitroutes "wakalaserver/modules/git/routes"
 	marketroutes "wakalaserver/modules/market/routes"
 	riskroutes "wakalaserver/modules/riskmanager/routes"
 	twinroutes "github.com/aosanya/mwanachama-backend-digitaltwin/routes"
+	gitroutes "github.com/aosanya/mwanachama-backend-git/routes"
 	taskmanagerroutes "wakalaserver/modules/taskmanager/routes"
 	votingroutes "wakalaserver/modules/voting/routes"
 

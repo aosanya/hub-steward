@@ -10,7 +10,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	mwanachamaforms "github.com/aosanya/mwanachama-backend-forms"
-	mwanachamagit "wakalaserver/modules/git"
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 
 	"wakalaserver/internal/agencies"
 )

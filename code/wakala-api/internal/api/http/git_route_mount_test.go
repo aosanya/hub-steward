@@ -12,10 +12,10 @@ import (
 	"strings"
 	"testing"
 
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"
-	mwanachamagit "wakalaserver/modules/git"
 )
 
 const (

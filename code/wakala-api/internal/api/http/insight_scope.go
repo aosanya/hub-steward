@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	mwanachamainsights "wakalaserver/modules/insights"
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 
 	"wakalaserver/internal/agencies"
 )

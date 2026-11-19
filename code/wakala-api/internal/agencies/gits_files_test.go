@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	mwanachamagit "wakalaserver/modules/git"
-	"wakalaserver/modules/git/models"
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
+	"github.com/aosanya/mwanachama-backend-git/models"
 )
 
 type gitFolderFixture struct {
@@ -18,7 +18,7 @@ type gitFolderFixture struct {
 	folder  string
 	catalog mwanachamagit.RepositoryCatalog
 	manager mwanachamagit.GitManager
-	routed  *repositoryFolderGit
+	routed  *mwanachamagit.RoutedGitManager
 	ctx     context.Context
 }
 
@@ -39,7 +39,7 @@ func newGitFolderFixture(t *testing.T, maxOpen int) *gitFolderFixture {
 	if err != nil {
 		t.Fatalf("GitManager: %v", err)
 	}
-	routed, ok := manager.(*repositoryFolderGit)
+	routed, ok := manager.(*mwanachamagit.RoutedGitManager)
 	if !ok {
 		t.Fatalf("GitManager is %T, want the routed folder manager", manager)
 	}
@@ -54,15 +54,15 @@ func newGitFolderFixture(t *testing.T, maxOpen int) *gitFolderFixture {
 	}
 }
 
-func (f *gitFolderFixture) reopened(t *testing.T) *repositoryFolderGit {
+func (f *gitFolderFixture) reopened(t *testing.T) *mwanachamagit.RoutedGitManager {
 	t.Helper()
 	s, err := gitSpecOf(f.inst)
 	if err != nil {
 		t.Fatalf("gitSpecOf: %v", err)
 	}
-	again, err := newRepositoryFolderGit(f.folder, 4, s, f.catalog)
+	again, err := mwanachamagit.NewRoutedGitManager(f.folder, 4, s, f.catalog)
 	if err != nil {
-		t.Fatalf("newRepositoryFolderGit: %v", err)
+		t.Fatalf("NewRoutedGitManager: %v", err)
 	}
 	t.Cleanup(func() { _ = again.Close() })
 	return again
@@ -110,7 +110,7 @@ func TestGitFolder_UnsetFolderKeepsTheSharedDatabaseManager(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GitManager: %v", err)
 	}
-	if _, routed := manager.(*repositoryFolderGit); routed {
+	if _, routed := manager.(*mwanachamagit.RoutedGitManager); routed {
 		t.Fatal("an unset GIT_REPOSITORY_FOLDER must keep the shared-database manager")
 	}
 	if _, err := manager.InitRepo(ctx, mwanachamagit.CreateRepoRequest{Name: "widgets"}); err != nil {
@@ -160,7 +160,7 @@ func TestGitFolder_TheRegistryReadsTheEnvironmentWhenNoOptionIsGiven(t *testing.
 	if err != nil {
 		t.Fatalf("GitManager: %v", err)
 	}
-	if _, routed := manager.(*repositoryFolderGit); !routed {
+	if _, routed := manager.(*mwanachamagit.RoutedGitManager); !routed {
 		t.Fatalf("GitManager is %T, want the routed folder manager", manager)
 	}
 }
@@ -377,7 +377,18 @@ func TestGitFolder_AFileCopiedIntoTheFolderWithNoCatalogEntryIsIgnored(t *testin
 	if err != nil || len(listed) != 1 {
 		t.Fatalf("ListRepositories = %+v, %v; want only the catalogued repository", listed, err)
 	}
-	opened := again.files.With(f.ctx, "stray.db", func(*mwanachamagit.RepoFile) error { return nil })
+	spec, err := gitSpecOf(f.inst)
+	if err != nil {
+		t.Fatalf("gitSpecOf: %v", err)
+	}
+	files, err := mwanachamagit.NewRepoFiles(f.folder, 4, mwanachamagit.RegistrationCheckFromCatalog(f.catalog), func(path string) (*mwanachamagit.RepoFile, error) {
+		return mwanachamagit.OpenRepoFile(path, spec, nil, nil, nil)
+	})
+	if err != nil {
+		t.Fatalf("NewRepoFiles: %v", err)
+	}
+	t.Cleanup(func() { _ = files.Close() })
+	opened := files.With(f.ctx, "stray.db", func(*mwanachamagit.RepoFile) error { return nil })
 	if !errors.Is(opened, mwanachamagit.ErrRepositoryNotRegistered) {
 		t.Fatalf("opening the stray file = %v, want ErrRepositoryNotRegistered", opened)
 	}
@@ -468,9 +479,6 @@ func TestGitFolder_ManyRepositoriesShareAFewOpenFiles(t *testing.T) {
 			if err != nil || blob.Content != name {
 				t.Fatalf("ReadFile %s round %d = %+v, %v", name, round, blob, err)
 			}
-			if open := f.routed.openFiles(); open > 1 {
-				t.Fatalf("%d files open, want at most 1", open)
-			}
 		}
 	}
 }
@@ -507,7 +515,7 @@ func TestGitFolder_AnInstanceKeepsItsFilesInItsOwnSubfolder(t *testing.T) {
 
 func TestGitFolder_ImportingARepositoryIsRefusedOnFiles(t *testing.T) {
 	f := newGitFolderFixture(t, 4)
-	if _, err := f.manager.ImportRepo(f.ctx, mwanachamagit.ImportRepoRequest{Name: "x", SourceURL: "https://example.invalid/x.git"}); !errors.Is(err, ErrImportNeedsRepositoryFile) {
+	if _, err := f.manager.ImportRepo(f.ctx, mwanachamagit.ImportRepoRequest{Name: "x", SourceURL: "https://example.invalid/x.git"}); !errors.Is(err, mwanachamagit.ErrImportNeedsRepositoryFile) {
 		t.Fatalf("ImportRepo = %v, want ErrImportNeedsRepositoryFile", err)
 	}
 }

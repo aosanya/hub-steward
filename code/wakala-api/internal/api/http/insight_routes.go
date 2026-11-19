@@ -3,8 +3,8 @@ package http
 import (
 	"net/http"
 
-	mwanachamainsights "wakalaserver/modules/insights"
-	insightsroutes "wakalaserver/modules/insights/routes"
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
+	insightsroutes "github.com/aosanya/mwanachama-backend-insights/routes"
 
 	"wakalaserver/internal/agencies"
 )

@@ -9,8 +9,8 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	mwanachamagit "wakalaserver/modules/git"
-	gitroutes "wakalaserver/modules/git/routes"
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
+	gitroutes "github.com/aosanya/mwanachama-backend-git/routes"
 )
 
 const (

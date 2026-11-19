@@ -19,13 +19,13 @@ import (
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	sourcesroutes "github.com/aosanya/mwanachama-backend-sources/routes"
 	catalogroutes "github.com/aosanya/mwanachama-backend-catalog/routes"
+	gitroutes "github.com/aosanya/mwanachama-backend-git/routes"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"
 	"wakalaserver/internal/formsettings"
 	"wakalaserver/internal/languages"
 	"wakalaserver/internal/notifyrules"
 	accountingroutes "wakalaserver/modules/accounting/routes"
-	gitroutes "wakalaserver/modules/git/routes"
 )
 
 const (

@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	mwanachamagit "wakalaserver/modules/git"
-	gitroutes "wakalaserver/modules/git/routes"
+	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
+	gitroutes "github.com/aosanya/mwanachama-backend-git/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

@@ -15,7 +15,7 @@ import (
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/languages"
 	"wakalaserver/internal/session"
-	mwanachamainsights "wakalaserver/modules/insights"
+	mwanachamainsights "github.com/aosanya/mwanachama-backend-insights"
 )
 
 type consentWalk struct {
