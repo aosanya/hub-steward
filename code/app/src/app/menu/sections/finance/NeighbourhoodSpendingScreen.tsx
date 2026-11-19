@@ -17,6 +17,7 @@ const totalsOf = async () => {
 };
 
 const rowOf = (total: Item, unit: string) => ({
+  named: total.value === withoutWords ? "" : "yes",
   id: text(total, "value"),
   name: text(total, "value"),
   meta: `Spent ${moneyWords(total.total as number, unit)}`,
@@ -38,7 +39,7 @@ export function NeighbourhoodSpendingScreen() {
       detailKey={unit}
       listKey={unit}
       list={{ title, tool: tools.dimensionTotals, load, fields: { title: "name", meta: "meta" }, empty: homeEmpty("No spending by neighbourhood yet.") }}
-      detail={{ tool: tools.dimensionTotals, load: loadOne, fields: {}, status: "", extra: (row) => <NeighbourhoodPage row={row} back={financePaths.spendingByNeighbourhood.path()} /> }}
+      detail={{ tool: tools.dimensionTotals, load: loadOne, fields: {}, status: "", extra: (row) => <NeighbourhoodPage row={row} back={financePaths.spendingByNeighbourhood.path()} unit={unit} /> }}
     />
   );
 }

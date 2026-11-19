@@ -29,6 +29,7 @@ export const tools = {
   milestoneList: "accounting_milestone_list",
   certificateList: "accounting_certificate_list",
   dimensionTotals: "accounting_dimension_totals",
+  dimensionEntries: "accounting_dimension_entries",
 };
 
 const settingReadTool = "forms_catalog_setting_read";

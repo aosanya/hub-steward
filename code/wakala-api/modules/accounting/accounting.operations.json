@@ -674,6 +674,22 @@
         { "from": "query", "as": "period_end", "description": "The period's end, exclusive. Required with period_start." }
       ],
       "returns": [{ "body": true }]
+    },
+    "dimension_entries": {
+      "method": "GET",
+      "path": "/dimension-entries",
+      "call": "DimensionEntries",
+      "action": "accounting.dimension.entries",
+      "title": "List the entries of one dimension value",
+      "description": "Every entry whose dimensions carry the given key with exactly the given value, across all accounts, each with the day it happened (occurred_at, or posted_at where that is absent), its amount on the entry sides that fall on accounts of the given type (debit minus credit; every account when no type is given), its narration and the category of the account it fell on, newest first. The period is optional; when given both bounds are required, start inclusive and end exclusive.",
+      "args": [
+        { "from": "query", "as": "key", "description": "The dimension key to read by." },
+        { "from": "query", "as": "value", "description": "The value that key must carry." },
+        { "from": "query", "as": "account_type", "description": "Only count entry sides on accounts of this type. Absent means every account." },
+        { "from": "query", "as": "period_start", "description": "The period's first instant, inclusive. Required with period_end." },
+        { "from": "query", "as": "period_end", "description": "The period's end, exclusive. Required with period_start." }
+      ],
+      "returns": [{ "body": true }]
     }
   },
   "errors": {

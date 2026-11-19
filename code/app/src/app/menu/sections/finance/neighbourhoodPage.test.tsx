@@ -14,6 +14,11 @@ const totals = [
   { value: "Malomsor", total: 4200000, entries: 2 },
 ];
 
+const entriesOfMalomsor = [
+  { id: "e2", occurred_at: "2026-03-02T09:00:00Z", amount: 3000000, narration: "Pothole repair, spring round", account: "repairs" },
+  { id: "e1", occurred_at: "2026-01-10T09:00:00Z", amount: 1200000, narration: "Winter gritting", account: "repairs" },
+];
+
 const setWide = (wide: boolean) => {
   window.matchMedia = ((query: string) => ({ matches: wide, media: query, addEventListener: () => undefined, removeEventListener: () => undefined })) as unknown as typeof window.matchMedia;
 };
@@ -23,6 +28,7 @@ beforeEach(() => {
   setWide(true);
   vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
     if (name === "accounting_dimension_totals") return { key: "neighbourhood", account_type: "expense", totals };
+    if (name === "accounting_dimension_entries") return { entries: entriesOfMalomsor };
     return { items: [] };
   });
 });
@@ -85,5 +91,34 @@ describe("the neighbourhood page is built like a resident", () => {
     await pane.findByRole("region", { name: "Spending" });
     carryChatAbout();
     expect(carriedChatAbout()).toMatchObject({ kind: "neighbourhood", id: "Malomsor", name: "Malomsor" });
+  });
+
+  it("lists the entries of the opened neighbourhood, newest first, each with what it was for, its day and its amount", async () => {
+    const pane = await open();
+    const region = await pane.findByRole("region", { name: "Entries" });
+    const rows = Array.from(region.querySelectorAll(".row"));
+    expect(rows).toHaveLength(2);
+    expect(rows[0].textContent).toContain("Pothole repair, spring round");
+    expect(rows[0].textContent).toContain("2026-03-02 · 3,000,000");
+    expect(rows[1].textContent).toContain("Winter gritting");
+    expect(mcp.callTool).toHaveBeenCalledWith("", "accounting_dimension_entries", { key: "neighbourhood", value: "Malomsor", account_type: "expense" });
+  });
+
+  it("draws no Entries card for the row of spending with no neighbourhood", async () => {
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => {
+      if (name === "accounting_dimension_totals") return { key: "neighbourhood", account_type: "expense", totals: [], without: { total: 7400000, entries: 2 } };
+      return { items: [] };
+    });
+    render(
+      <MemoryRouter initialEntries={["/a/town/menu/finance/spending-by-neighbourhood"]}>
+        <Routes>
+          <Route path="/a/:agencyId/menu/finance/spending-by-neighbourhood" element={<NeighbourhoodSpendingScreen />} />
+          <Route path="*" element={null} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    await userEvent.click(await screen.findByRole("button", { name: /No neighbourhood/ }));
+    await screen.findByRole("heading", { level: 1, name: "No neighbourhood" });
+    expect(screen.queryByRole("region", { name: "Entries" })).toBeNull();
   });
 });

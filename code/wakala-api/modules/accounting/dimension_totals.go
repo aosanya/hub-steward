@@ -129,3 +129,53 @@ func (m *ledgerStore) DimensionTotals(ctx context.Context, key, accountType, per
 		Without:     without,
 	}, nil
 }
+
+func happenedAt(e Entry) string {
+	if e.OccurredAt != "" {
+		return e.OccurredAt
+	}
+	return e.PostedAt
+}
+
+func categoryOnSelectedSide(e Entry, selected accountSelection, categories map[string]string) string {
+	if selected(e.DebitAccountID) {
+		return categories[e.DebitAccountID]
+	}
+	return categories[e.CreditAccountID]
+}
+
+func (m *ledgerStore) DimensionEntries(ctx context.Context, key, value, accountType, periodStart, periodEnd string) (DimensionEntries, error) {
+	if err := checkDimensionQuery(key, value); err != nil {
+		return DimensionEntries{}, err
+	}
+	window, err := parseDimensionWindow(periodStart, periodEnd)
+	if err != nil {
+		return DimensionEntries{}, err
+	}
+	selected, err := m.accountsOfType(ctx, accountType)
+	if err != nil {
+		return DimensionEntries{}, err
+	}
+	accounts, err := specstore.List[Account](m.st, m.q(ctx, roleAccount), roleAccount)
+	if err != nil {
+		return DimensionEntries{}, err
+	}
+	categories := make(map[string]string, len(accounts))
+	for _, a := range accounts {
+		categories[a.ID] = string(a.Category)
+	}
+	entries, err := specstore.List[Entry](m.st, m.q(ctx, roleEntry), roleEntry)
+	if err != nil {
+		return DimensionEntries{}, err
+	}
+	rows := []DimensionEntry{}
+	for _, e := range carrying(entries, key, value) {
+		amount, touched := sideTotal(e, selected)
+		if !touched || !window.admits(e) {
+			continue
+		}
+		rows = append(rows, DimensionEntry{ID: e.ID, OccurredAt: happenedAt(e), Amount: amount, Narration: e.Narration, Account: categoryOnSelectedSide(e, selected, categories)})
+	}
+	sort.SliceStable(rows, func(i, j int) bool { return rows[i].OccurredAt > rows[j].OccurredAt })
+	return DimensionEntries{Key: key, Value: value, AccountType: accountType, PeriodStart: periodStart, PeriodEnd: periodEnd, Entries: rows}, nil
+}

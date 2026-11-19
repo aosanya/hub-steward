@@ -25,7 +25,7 @@ func TestAccountingViewReadsAndAccountingManageAlsoWrites(t *testing.T) {
 		"accounting.entry.list",
 		"accounting.budget.list", "accounting.budget.read",
 		"accounting.report.list", "accounting.report.read",
-		"accounting.dimension.totals",
+		"accounting.dimension.totals", "accounting.dimension.entries",
 		"accounting.milestone.list", "accounting.certificate.list",
 	}
 	writeActions := []string{
@@ -54,7 +54,7 @@ func TestEveryBudgetAndReportToolActionIsUnderAnAccountingPermission(t *testing.
 	for _, name := range []string{
 		"accounting_budget_set", "accounting_budget_list", "accounting_budget_read",
 		"accounting_report_list", "accounting_report_read",
-		"accounting_dimension_totals",
+		"accounting_dimension_totals", "accounting_dimension_entries",
 		"accounting_milestone_list", "accounting_certificate_list",
 	} {
 		tool, ok := budgetTools(t, ledgerOnMemory(t))[name]

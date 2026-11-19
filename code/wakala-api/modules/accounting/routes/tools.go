@@ -24,6 +24,8 @@ const accountListAction = "accounting.account.list"
 
 const dimensionTotalsAction = "accounting.dimension.totals"
 
+const dimensionEntriesAction = "accounting.dimension.entries"
+
 const milestoneListAction = "accounting.milestone.list"
 
 const certificateListAction = "accounting.certificate.list"
@@ -47,7 +49,7 @@ func BuildTools(repo accounting.LedgerRepository, m Mount) ([]Tool, error) {
 		if strings.HasPrefix(t.Action, billActionPrefix) {
 			served = append(served, t)
 		}
-		if t.Action == accountListAction || t.Action == dimensionTotalsAction ||
+		if t.Action == accountListAction || t.Action == dimensionTotalsAction || t.Action == dimensionEntriesAction ||
 			t.Action == milestoneListAction || t.Action == certificateListAction {
 			served = append(served, t)
 		}

@@ -48,4 +48,5 @@ type LedgerRepository interface {
 	DimensionBalance(ctx context.Context, accountID, key, value string) (int64, error)
 
 	DimensionTotals(ctx context.Context, key, accountType, periodStart, periodEnd string) (DimensionTotals, error)
+	DimensionEntries(ctx context.Context, key, value, accountType, periodStart, periodEnd string) (DimensionEntries, error)
 }
