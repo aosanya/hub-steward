@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 )
 
 func TestLiveRecordRow_OwnerCannotDoAnotherRolesStepOutOfTurn(t *testing.T) {

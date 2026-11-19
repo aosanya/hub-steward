@@ -5,9 +5,9 @@ import (
 	"errors"
 	"slices"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamaagency "wakalaserver/modules/agency"
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	mwanachamacomm "wakalaserver/modules/comm"
 	mwanachamacustody "wakalaserver/modules/custody"

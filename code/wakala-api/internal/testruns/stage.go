@@ -7,12 +7,12 @@ import (
 	"strings"
 	"sync"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamaai "wakalaserver/modules/ai"
 	mwanachamamarket "wakalaserver/modules/market"
 	marketmodels "wakalaserver/modules/market/models"
 	marketroutes "wakalaserver/modules/market/routes"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 
 const (

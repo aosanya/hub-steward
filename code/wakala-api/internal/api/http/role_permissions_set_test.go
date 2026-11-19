@@ -2,9 +2,9 @@ package http
 
 import (
 	"context"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	"slices"
 	"testing"
-	mwanachamaagency "wakalaserver/modules/agency"
 
 	"wakalaserver/internal/agencies"
 )

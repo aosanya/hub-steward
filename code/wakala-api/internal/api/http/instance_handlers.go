@@ -4,12 +4,12 @@ import (
 	"errors"
 	"net/http"
 
-	mwanachamaagencymodels "wakalaserver/modules/agency/models"
+	mwanachamaagencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 
-	"wakalaserver/internal/accounts"
-	"wakalaserver/internal/agencies"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	"github.com/aosanya/mwanachama-backend-shared/plaintext"
+	"wakalaserver/internal/accounts"
+	"wakalaserver/internal/agencies"
 )
 
 // createInstanceRequest is the wire shape for POST /instances.

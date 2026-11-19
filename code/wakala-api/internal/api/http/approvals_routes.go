@@ -6,13 +6,13 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	agencymcp "github.com/aosanya/mwanachama-backend-agency/mcp"
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/approvals"
-	agencymcp "wakalaserver/modules/agency/mcp"
 )
 
 func approvalsFor(ctx context.Context, reg agencies.Registry, instanceID string) (*approvals.Store, error) {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	mwanachamaagency "wakalaserver/modules/agency"
-	"wakalaserver/modules/agency/models"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	"github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 type ObjectivesAgency interface {

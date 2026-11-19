@@ -10,10 +10,10 @@ import (
 	"strings"
 	"testing"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaactor "wakalaserver/modules/actor"
 	actormodels "wakalaserver/modules/actor/models"
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymodels "wakalaserver/modules/agency/models"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

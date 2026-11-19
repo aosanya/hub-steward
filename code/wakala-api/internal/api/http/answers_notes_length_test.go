@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 var answersNotesLengthSizes = []int{1, 1000, 10000, 100000, 1000000}

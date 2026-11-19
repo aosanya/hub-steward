@@ -5,8 +5,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	agencymcp "wakalaserver/modules/agency/mcp"
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymcp "github.com/aosanya/mwanachama-backend-agency/mcp"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 const (

@@ -9,11 +9,11 @@ import (
 	"sync/atomic"
 	"testing"
 
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaactor "wakalaserver/modules/actor"
-	agencymodels "wakalaserver/modules/agency/models"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	"wakalaserver/internal/agencies"
-	mwanachamaagency "wakalaserver/modules/agency"
 )
 
 var approvalDesks atomic.Int64

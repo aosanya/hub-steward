@@ -3,7 +3,7 @@ package agencies
 import (
 	"testing"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 func TestBacklogRoleCodeOfReadsTheCodeOrTheNameInSnakeCase(t *testing.T) {

@@ -12,7 +12,7 @@ import (
 	dispatch "github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamataskmanager "wakalaserver/modules/taskmanager"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aosanya/mwanachama-backend-agency/models"
 	"wakalaserver/internal/agencies"
-	"wakalaserver/modules/agency/models"
 )
 
 func applySetRaci(ctx context.Context, reg agencies.Registry, instanceID, payload string) error {

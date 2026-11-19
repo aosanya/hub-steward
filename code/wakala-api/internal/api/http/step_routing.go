@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 const (

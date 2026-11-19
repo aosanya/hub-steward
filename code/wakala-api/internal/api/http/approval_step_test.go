@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymodels "wakalaserver/modules/agency/models"
 
 	"wakalaserver/internal/agencies"
 )

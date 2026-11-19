@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	forms "wakalaserver/modules/forms"
 	formsmodels "wakalaserver/modules/forms/models"
 )

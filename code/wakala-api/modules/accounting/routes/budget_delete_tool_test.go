@@ -8,8 +8,8 @@ import (
 	"slices"
 	"testing"
 
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	accounting "wakalaserver/modules/accounting"
-	agencymodels "wakalaserver/modules/agency/models"
 )
 
 func TestTheBudgetDeleteToolRemovesALineAndReturnsIt(t *testing.T) {

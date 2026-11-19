@@ -14,9 +14,9 @@ import (
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamaagency "wakalaserver/modules/agency"
-	agencymodels "wakalaserver/modules/agency/models"
 	mwanachamaaudit "wakalaserver/modules/audit"
 	mwanachamacouncil "wakalaserver/modules/council"
 	mwanachamainsights "wakalaserver/modules/insights"

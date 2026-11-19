@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	"github.com/aosanya/mwanachama-backend-agency/models"
 	"wakalaserver/internal/approvals"
-	mwanachamaagency "wakalaserver/modules/agency"
-	"wakalaserver/modules/agency/models"
 )
 
 func openDraftID(t *testing.T, w applyWorld) string {

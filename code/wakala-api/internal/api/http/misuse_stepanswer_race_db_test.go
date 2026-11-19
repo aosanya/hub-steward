@@ -6,7 +6,7 @@ import (
 	"sync"
 	"testing"
 
-	agencymodels "wakalaserver/modules/agency/models"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 func TestStepAnswers_FifteenSendsAtOnceOnPostgresGiveOneCreatedAndTheRestConflict(t *testing.T) {

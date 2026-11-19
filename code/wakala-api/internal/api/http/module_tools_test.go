@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"wakalaserver/modules/agency/models"
+	"github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 func runsModules(t *testing.T, instance string, codes ...string) {

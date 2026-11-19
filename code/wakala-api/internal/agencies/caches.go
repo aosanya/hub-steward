@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	mwanachamaaccounting "wakalaserver/modules/accounting"
 	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamaagency "wakalaserver/modules/agency"
 	mwanachamaassetmanager "wakalaserver/modules/assetmanager"
 	mwanachamacatalog "wakalaserver/modules/catalog"
 	mwanachamacomm "wakalaserver/modules/comm"

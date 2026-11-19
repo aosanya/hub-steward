@@ -169,7 +169,7 @@ Applications that name a business: `forms_answer_submit` takes an optional `reco
 
 - **Filters.** `audit_list_entries` takes optional `actor` and `subject` (uuids). Each narrows the list to the entries whose `actor` or `subject` equals it, both together to the entries that match both. The permission check is the same `audit.view` one.
 - **Module.** `modules/audit` in `code/wakala-api`: the object `audit_entry` (table `audit_entries`) and the one list operation, declared in `audit.blueprint.json` and `audit.operations.json`. An entry is append-only; it is never edited or removed.
-- **Permission.** `audit.view`, "View the audit log", carries the single action `audit.entry.list` (`modules/agency/models/permissions_catalog.json`). A caller who is neither the owner nor holds it is refused with a message naming the permission. The check is in `internal/api/http/mcp_tools_audit.go`.
+- **Permission.** `audit.view`, "View the audit log", carries the single action `audit.entry.list` (`mwanachama-backend-agency/models/permissions_catalog.json`). A caller who is neither the owner nor holds it is refused with a message naming the permission. The check is in `internal/api/http/mcp_tools_audit.go`.
 - **Writes that record an entry.** On the MCP tool path, after the write succeeds, `internal/api/http/mcp_audit_records.go` records the caller as `actor`, a plain `action` and the thing changed as `subject`, for the agency in the call's `instance_id`:
 
 | Tool | Action | Subject |
@@ -217,7 +217,7 @@ Served from `modules/accounting` in `code/wakala-api` (MUN983, hub MUN1045). Eve
 | `accounting_quote_update` | `accounting.quote.update` | `quoteID`, `supplier`, `amount`, optional `note`, `valid_until` | corrects one quote in place; the tender stays; refused as locked once its tender has closed | `accounting.manage` |
 | `accounting_quote_list` | `accounting.quote.list` | `tenderID`, optional `limit` | reads the tender's quotes, lowest price first | `accounting.manage`, `accounting.view` |
 
-- **Permissions.** `accounting.manage`, "Keep the books and set budgets", carries every action above and the account and entry actions; `accounting.view`, "Read accounts, budgets and reports", carries the list and read actions only (`modules/agency/models/permissions_catalog.json`, MUN1052). `guardToolPermissions` in `internal/api/http/mcp_sources_permissions.go` applies the actions to an agent caller: an agent whose agency roles hold neither permission is refused as for any agency tool. A caller who is not an agent is not held to the catalog by that guard.
+- **Permissions.** `accounting.manage`, "Keep the books and set budgets", carries every action above and the account and entry actions; `accounting.view`, "Read accounts, budgets and reports", carries the list and read actions only (`mwanachama-backend-agency/models/permissions_catalog.json`, MUN1052). `guardToolPermissions` in `internal/api/http/mcp_sources_permissions.go` applies the actions to an agent caller: an agent whose agency roles hold neither permission is refused as for any agency tool. A caller who is not an agent is not held to the catalog by that guard.
 - **Nothing derived is stored.** `spent`, the figures of `accounting_dimension_totals`, a report's figures, a bill's `settled`, `outstanding` and `status`, the payment list and a tender's `lowest_amount` are folded on every call from entries and quotes.
 - **Refusals.** An unknown budget line, bill, tender or cash account answers not found. A missing required argument, a non-positive amount, a malformed instant, a cash or receivable account of the wrong type, and paying a settled or reversed bill or more than is outstanding answer invalid.
 - **Storage.** Budget lines, bills and payments live in the ledger's budget lines and entries; tenders and quotes are the blueprint objects `tender` and `quote`, whose tables `Provision` creates.
@@ -228,7 +228,7 @@ Served from `modules/accounting` in `code/wakala-api` (MUN983, hub MUN1045). Eve
 
 ## Council records
 
-Sixteen tools keep what a council does: its meetings, each meeting's agenda and minutes, the resolutions it takes and its bylaws. They exist for an agency that runs the `council` module (a mountable entry in `modules/agency/models/modules_catalog.json`). Every tool takes the agency as `instance_id`, and every read, list and write is narrowed to that agency.
+Sixteen tools keep what a council does: its meetings, each meeting's agenda and minutes, the resolutions it takes and its bylaws. They exist for an agency that runs the `council` module (a mountable entry in `mwanachama-backend-agency/models/modules_catalog.json`). Every tool takes the agency as `instance_id`, and every read, list and write is narrowed to that agency.
 
 | Tool | Method and path | Arguments | Permission |
 |---|---|---|---|
@@ -250,7 +250,7 @@ Sixteen tools keep what a council does: its meetings, each meeting's agenda and 
 | `council_bylaw_read` | `GET /council/bylaws/{bylawID}` | `bylawID` | `council.view` |
 
 - **Module.** `modules/council` in `code/wakala-api`: the objects `meeting`, `agenda`, `minutes`, `resolution` and `bylaw`, declared in `council.blueprint.json`, `council.wakala.json` and `council.operations.json`. A meeting has one agenda and one set of minutes (unique on agency and meeting).
-- **Permissions.** `council.manage` ("Put council meetings on record and read them") carries all sixteen actions, `council.<object>.<verb>`, one for each tool; `council.view` ("Read council meetings") carries the eight list and read actions. Both are in `modules/agency/models/permissions_catalog.json`.
+- **Permissions.** `council.manage` ("Put council meetings on record and read them") carries all sixteen actions, `council.<object>.<verb>`, one for each tool; `council.view` ("Read council meetings") carries the eight list and read actions. Both are in `mwanachama-backend-agency/models/permissions_catalog.json`.
 - **Guard.** `internal/api/http/mcp_tools_council.go` runs before any `council_*` call and refuses it when:
   - the call names no agency (`instance_id`);
   - the caller is not a member of the agency (the refusal is the same not-found as for an unknown agency, so the agency is not confirmed);
@@ -281,7 +281,7 @@ Nine tools keep what the Places & Addresses screens show beyond a place's name: 
 - **Module.** `modules/digitaltwin` in `code/wakala-api`: the roles `address`, `tenure` and `land_use` in `digitaltwin.blueprint.json`, filled by `digitaltwin.wakala.json` (tables `addresses`, `tenures`, `land_uses`) and the four testdata domains; operations in `digitaltwin.operations.json`; the records in `address_record.go`, `tenure_record.go` and `land_use_record.go`. A place named by `place_id` must exist as a node, otherwise the record is refused as invalid.
 - **Holder by person id.** `holder` stays the required display name and is the only name of a body such as a parish. `holder_actor_id` is optional on create and on update and names a person by actor id; `digitaltwin_tenure_list` filters on it by exact match, which is how a person's holdings are found without matching a name. An update replaces the whole holding, so an update without `holder_actor_id` clears it. Holdings created before the field existed carry none until they are updated.
 - **Holder by business or trader row.** `holder_record_row_id` is optional on create and on update, must be a record row id (anything else is refused), and names a row of the Businesses or Informal traders record; a stall or pitch is a holding whose place is that stall. `digitaltwin_tenure_list` filters on it and follows the correction chain: a correction is a new row that names the older one in `replaces`, so a holding stored against an older row is still listed for the corrected row. A holding that names no row is never listed for any business.
-- **Permissions.** `digitaltwin.manage` carries all nine actions, `digitaltwin.view` the six list and read actions; both are in `modules/agency/models/permissions_catalog.json`. In the Hungarian municipality the clerk (Jegyzo) holds `digitaltwin.manage` and the council member `digitaltwin.view`.
+- **Permissions.** `digitaltwin.manage` carries all nine actions, `digitaltwin.view` the six list and read actions; both are in `mwanachama-backend-agency/models/permissions_catalog.json`. In the Hungarian municipality the clerk (Jegyzo) holds `digitaltwin.manage` and the council member `digitaltwin.view`.
 - **Serving.** `modules/digitaltwin/mcp/resolve.go` registers only the address, tenure and land use operations and resolves the agency's twin manager per call, as the accounting tools do; `internal/api/http/mcp_tools_digitaltwin.go` guards them with the shared permission check. The other digitaltwin operations (nodes, links, observations) stay on the HTTP routes and are not tools. The nine names are pinned in `testdata/mcp_roster/no-mounts.txt`.
 - **Screens.** Addresses, Ownership & Tenure and Land Use read these tools (MUN1116, commit `b5dbb10b`); Places and the place detail still read assetmanager.
 
@@ -329,9 +329,9 @@ Three tools change a record that already exists, and each carries its own permis
 | `assetmanager_location_update` | `assetmanager.location.update` | `location.edit`, "Change a place" |
 
 - **Who may.** The agency's owner always may. Any other caller, an agent or a resident, may only when one of the roles they hold carries the permission; a resident holds a role through a group the agency gave it to. Without it the tool answers with a message naming the permission, for example `you need the permission "Change a place" (location.edit) in this agency to do this`. The check is `guardChangeTools` in `internal/api/http/change_permissions.go`; the same file lets a resident who holds `member.edit` through the actor routes and a resident who holds `location.edit` through the asset manager routes, and refuses the asset manager's place update on the HTTP route the same way.
-- **Catalogue.** Both codes are in `modules/agency/models/permissions_catalog.json`, so `agency_list_permissions` lists them.
+- **Catalogue.** Both codes are in `mwanachama-backend-agency/models/permissions_catalog.json`, so `agency_list_permissions` lists them.
 - **Grants.** No role of the municipality agency files is given either code: none of them could change a person or a place before, and a grant is the owner's to make on the permissions page.
-- **Tests.** `internal/api/http/change_permissions_test.go` (owner, agent and resident, with and without the code, the refusal naming it) and `modules/agency/models/permission_edit_test.go`.
+- **Tests.** `internal/api/http/change_permissions_test.go` (owner, agent and resident, with and without the code, the refusal naming it) and `mwanachama-backend-agency/models/permission_edit_test.go`.
 
 ## Filing an application for a resident
 
@@ -371,11 +371,11 @@ Three tools change a record that already exists, and each carries its own permis
 | Returns | the role, with its stored `permissions` |
 
 - **Replaces, never adds.** A code left out is unticked and an empty list unticks everything; a repeated code is kept once. The role's name, description and staff flag are untouched.
-- **Who may.** The action is listed under the locked code `permission.override` in `modules/agency/models/permissions_catalog.json` and under no other code. The owner holds every code, so the owner may; an agent may only through a role that holds `permission.override`; a resident or a stranger is refused by the same membership check as every other `agency_*` tool.
+- **Who may.** The action is listed under the locked code `permission.override` in `mwanachama-backend-agency/models/permissions_catalog.json` and under no other code. The owner holds every code, so the owner may; an agent may only through a role that holds `permission.override`; a resident or a stranger is refused by the same membership check as every other `agency_*` tool.
 - **Refused in words.** The locked codes `agent.manage`, `api_key.manage`, `agency.go_live`, `agency.delete` and `permission.override` answer 400 `... belongs to the owner alone and cannot be given to a role`; a code the catalogue does not list answers 400 `... is not a permission the catalogue knows`. Both name every offending code, and a refused call changes nothing.
 - **A draft change.** It is refused once the draft is archived, and a role's permissions are part of the publish hash (MUN1158), so a permissions change alone publishes as a new version and changes what the live roles hold only then.
-- **Where.** `SetRolePermissions` in `modules/agency/role_impl.go`; the declaration in `modules/agency/agency.operations.json`; the registry's cache is told through `internal/agencies/role_edits.go`.
-- **Tests.** `modules/agency/mcp/role_permissions_tool_test.go` (replace, clear, de-duplicate, each locked code, unknown codes, archived draft, the catalogue entry), `internal/api/http/role_permissions_set_test.go` (owner, agent without the code, resident and stranger, a locked code, publish) and `internal/agencies/role_permissions_edits_test.go`; the roster pin counts rose by one.
+- **Where.** `SetRolePermissions` in `mwanachama-backend-agency/role_impl.go`; the declaration in `mwanachama-backend-agency/agency.operations.json`; the registry's cache is told through `internal/agencies/role_edits.go`.
+- **Tests.** `mwanachama-backend-agency/mcp/role_permissions_tool_test.go` (replace, clear, de-duplicate, each locked code, unknown codes, archived draft, the catalogue entry), `internal/api/http/role_permissions_set_test.go` (owner, agent without the code, resident and stranger, a locked code, publish) and `internal/agencies/role_permissions_edits_test.go`; the roster pin counts rose by one.
 
 ## Editing a group's name from the app (ISS-2)
 

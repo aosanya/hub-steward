@@ -37,12 +37,12 @@ PORT=8082 WAKALA_SQLITE_PATH=/tmp/wakala.db /tmp/wakala-server
 
 ## How a module becomes routes and tools
 
-A module declares its objects and its operations in JSON, and writes only the behaviour in Go. `modules/agency/doc.go` sets out the layout:
+A module declares its objects and its operations in JSON, and writes only the behaviour in Go. `mwanachama-backend-agency/doc.go` sets out the layout:
 
 - `<module>.blueprint.json` names the objects, fields and indexes.
-- `<module>.operations.json` names the operations. One entry holds the HTTP `method` and `path`, the `call` (a method on the module's manager), the `action`, the `args`, what it `returns`, and the `tool` name (see `modules/agency/agency.operations.json`).
+- `<module>.operations.json` names the operations. One entry holds the HTTP `method` and `path`, the `call` (a method on the module's manager), the `action`, the `args`, what it `returns`, and the `tool` name (see `mwanachama-backend-agency/agency.operations.json`).
 - `*_impl.go` holds the manager methods the operations call.
-- `routes/` builds the HTTP routes: `dispatch.Dispatch` binds each operation's `call` to the manager by reflection (`modules/shared/dispatch/dispatch.go`, `modules/agency/routes/routes.go`).
+- `routes/` builds the HTTP routes: `dispatch.Dispatch` binds each operation's `call` to the manager by reflection (`modules/shared/dispatch/dispatch.go`, `mwanachama-backend-agency/routes/routes.go`).
 - `mcp/` builds the MCP tools from the same file with `dispatch.Tools` (`modules/shared/dispatch/tools.go`).
 
 `Spec.Validate` (`modules/shared/dispatch/spec.go`) tracks the action, the address and the tool name of every operation, so a duplicate is reported when the spec loads.
@@ -52,16 +52,16 @@ A module declares its objects and its operations in JSON, and writes only the be
 ## Agencies and the module switch
 
 - An agency is an instance. `internal/agencies/registry.go` gives each one its own tables from `mwanachamaagency.SpecFor(TableSlug)`.
-- Which modules an agency has is switched in its draft. `modules/agency/models/modules_catalog.json` lists every module with `enabled`, `locked`, `mount` and `requires`.
+- Which modules an agency has is switched in its draft. `mwanachama-backend-agency/models/modules_catalog.json` lists every module with `enabled`, `locked`, `mount` and `requires`.
 - `internal/api/http/module_switch.go` caches an agency's switched-on set for 30 seconds (`mountedModulesExpiry`), so a change can take that long to show.
-- A module can be mounted under a name the agency chooses (`module_mounts.go`, `modules/agency/module_mounts.go`).
+- A module can be mounted under a name the agency chooses (`module_mounts.go`, `mwanachama-backend-agency/module_mounts.go`).
 
 ## Where the large parts are
 
 - **Approvals.** The routes are in `internal/api/http/approvals_routes.go`: propose, list, decide, amend. Deciding is for an agency owner (`mustOwnAgency`, line 50). A decided proposal is carried out only if its kind is in the `approvalAppliers` map in `approvals_apply.go`; any other kind is recorded and nothing is written. A decision carries `seen_amendments`, the number of amendments the approver read (the length of the `amendments` list); the store refuses it with 409 if the proposal has a different number now, so an owner never approves content they did not read. A decision that omits it counts as `0`, so it is accepted only on a proposal nobody has amended; this holds over the route and over the MCP tool `agency_decide_approval`, for approving and for refusing.
 - **Accounts and sign-in.** `POST /auth/magic-link` is in `member_signin.go`; the link is sent and checked by `internal/shopauth/`. [local-database.md](local-database.md) says how to run it.
 - **The AI gateway.** `POST /instances/{instanceID}/ai/v1/chat/completions` is in `ai_gateway.go`. Accounts, roles, instructions and limits are in `modules/ai/` and `ai_routes.go`. A provider is `openai_compatible`, `anthropic` or `gemini` (`modules/ai/models/models.go`). A stored key is sealed with `AI_MASTER_KEY` (`modules/ai/seal.go`). [other-models.md](other-models.md) covers the choice of model.
-- **Permissions.** A role holds permission codes; each code lists the actions it opens (`modules/agency/models/permissions_catalog.json`). An agent's tool calls are checked against its role (`internal/api/http/agent_permissions.go`).
+- **Permissions.** A role holds permission codes; each code lists the actions it opens (`mwanachama-backend-agency/models/permissions_catalog.json`). An agent's tool calls are checked against its role (`internal/api/http/agent_permissions.go`).
 - **Agent keys.** Service keys are in `service_keys.go` and `service_grants.go`.
 
 ## Add an operation to a module

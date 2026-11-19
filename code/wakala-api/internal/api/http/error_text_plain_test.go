@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 )
 
 func TestRecordRowRefusalsAnswerWithoutPackageOrFunctionNames(t *testing.T) {

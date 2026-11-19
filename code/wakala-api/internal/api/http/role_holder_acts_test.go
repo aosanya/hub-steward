@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	mwanachamaactor "wakalaserver/modules/actor"
-	mwanachamaagency "wakalaserver/modules/agency"
 
 	"wakalaserver/internal/agencies"
 )

@@ -1,6 +1,6 @@
 package agencies
 
-import "wakalaserver/modules/agency/models"
+import "github.com/aosanya/mwanachama-backend-agency/models"
 
 func WorkingDraft(drafts []models.Draft) (models.Draft, bool) {
 	var working models.Draft

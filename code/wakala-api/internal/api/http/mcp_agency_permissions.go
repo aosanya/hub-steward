@@ -3,7 +3,7 @@ package http
 import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 )
 

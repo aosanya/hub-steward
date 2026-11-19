@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	mwanachamaagency "wakalaserver/modules/agency"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	catalog "wakalaserver/modules/catalog"
 
 	"wakalaserver/internal/agencies"

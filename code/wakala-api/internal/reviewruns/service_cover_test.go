@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	mwanachamaagency "wakalaserver/modules/agency"
-	"wakalaserver/modules/agency/models"
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	"github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamaai "wakalaserver/modules/ai"
 	aimodels "wakalaserver/modules/ai/models"
 )
