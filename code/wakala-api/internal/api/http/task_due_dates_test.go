@@ -160,8 +160,8 @@ func TestTaskDueDatesRound2Delegations(t *testing.T) {
 		return w.post(t, "/actor/delegations", body)
 	}
 	taskDueDatesRun(t, "1 ends 2099", grant(0, map[string]any{"ends_at": "2099-01-01T00:00:00Z"}), taskDueDatesAccepted)
-	taskDueDatesRun(t, "2 ends in the past", grant(1, map[string]any{"ends_at": "2020-01-01T00:00:00Z"}), taskDueDatesRefused)
-	taskDueDatesRun(t, "3 ends year 0001", grant(2, map[string]any{"ends_at": "0001-01-01T00:00:00Z"}), taskDueDatesRefused)
+	taskDueDatesRun(t, "2 ends in the past is taken as already ended", grant(1, map[string]any{"ends_at": "2020-01-01T00:00:00Z"}), taskDueDatesAccepted)
+	taskDueDatesRun(t, "3 ends year 0001 is taken as already ended", grant(2, map[string]any{"ends_at": "0001-01-01T00:00:00Z"}), taskDueDatesAccepted)
 	taskDueDatesRun(t, "4 ends year 9999", grant(3, map[string]any{"ends_at": "9999-12-31T23:59:59Z"}), taskDueDatesNever500)
 	taskDueDatesRun(t, "5 ends malformed", grant(4, map[string]any{"ends_at": "soon"}), taskDueDatesRefused, taskDueDatesNamesField("ends_at"))
 	taskDueDatesRun(t, "6 ends date only", grant(5, map[string]any{"ends_at": "2099-01-01"}), taskDueDatesRefused, taskDueDatesNamesField("ends_at"))
