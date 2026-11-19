@@ -19,6 +19,7 @@ import { ChatAboutRegistration } from "./ChatAboutRegistration";
 import { ChatAboutResident } from "./ChatAboutResident";
 import { GroupConversation } from "./GroupConversation";
 import { GroupPanel, loadGroup } from "./GroupScreen";
+import { unnamedPerson } from "../settings/personLabel";
 import { personNameOf } from "./personName";
 import { RegistrationRequest } from "./RegistrationRequest";
 import { loadPerson, PersonPanel } from "./PersonScreen";
@@ -65,6 +66,13 @@ export const registrationRows = async () => {
 
 const defaultThreadLabel = "General";
 
+const askedBy = (thread: Item) => (text(thread, "requested_by") === "" ? undefined : text(thread, "requested_by_name") || unnamedPerson);
+
+const askedLine = (thread: Item, group: Item) => {
+  if (askedBy(thread) !== undefined) return `${text(group, "name")} · ${text(thread, "label")}`;
+  return text(thread, "label") === defaultThreadLabel ? "" : text(thread, "label");
+};
+
 export const conversationRows = async () => {
   const groups = await listOf("actor_list_groups");
   const lists = await Promise.all(
@@ -74,9 +82,9 @@ export const conversationRows = async () => {
     .flat()
     .map(({ thread, group }) => ({
       id: text(thread, "id"),
-      name: text(group, "name"),
+      name: askedBy(thread) ?? text(group, "name"),
       label: text(thread, "label"),
-      line: text(thread, "label") === defaultThreadLabel ? "" : text(thread, "label"),
+      line: askedLine(thread, group),
       at: lastAtOf(thread),
       last: dayWords(lastAtOf(thread)),
       group_id: text(group, "id"),

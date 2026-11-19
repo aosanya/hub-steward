@@ -1,12 +1,14 @@
 import { Chip } from "../../../shared/ui/Chip";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
+import { unnamedPerson } from "../../../app/menu/sections/settings/personLabel";
 import type { RoomThread } from "./api";
 import { timeOf } from "./time";
 
 const whoMeta = (thread: RoomThread, subject: string) => {
   if (thread.declined) return "Declined";
   if (thread.audience !== "leads") return undefined;
-  return thread.requestedBy !== "" && thread.requestedBy === subject ? "Your request · with the leaders" : "With the leaders";
+  if (thread.requestedBy === "") return "With the leaders";
+  return thread.requestedBy === subject ? "Your request · with the leaders" : `Asked by ${thread.askerName || unnamedPerson} · with the leaders`;
 };
 
 const metaOf = (thread: RoomThread, subject: string) => [whoMeta(thread, subject), thread.preview].filter((line): line is string => !!line);

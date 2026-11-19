@@ -9,6 +9,8 @@ export type RoomThread = {
   label: string;
   audience: "leads" | "group";
   requestedBy: string;
+  askerName: string;
+  questionRoom: boolean;
   declined: boolean;
   unread: number;
   lastMessageAt: string;
@@ -63,6 +65,8 @@ export const threadOf = (subject: string) => (raw: any): RoomThread => ({
   label: text(raw?.label),
   audience: raw?.audience === "leads" ? "leads" : "group",
   requestedBy: text(raw?.requested_by),
+  askerName: text(raw?.requested_by_name),
+  questionRoom: raw?.question_room === true,
   declined: text(raw?.declined_at) !== "",
   unread: count(raw?.unread),
   lastMessageAt: lastAtOf(raw),

@@ -26,6 +26,8 @@ describe("the shapes of comm and the market", () => {
       label: "Ask",
       audience: "leads",
       requestedBy: "u1",
+      askerName: "",
+      questionRoom: false,
       declined: true,
       unread: 2,
       lastMessageAt: "x",

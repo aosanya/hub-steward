@@ -55,6 +55,8 @@ const thread = (over: Partial<RoomThread>): RoomThread => ({
   label: "General",
   audience: "group",
   requestedBy: "",
+  askerName: "",
+  questionRoom: false,
   declined: false,
   unread: 0,
   lastMessageAt: "",
@@ -404,7 +406,7 @@ describe("the lab's room", () => {
   it("shows another member's leads thread as with the leaders, not as hers", async () => {
     const threads = [thread({ id: "t2", label: "Ask for a seat", audience: "leads", requestedBy: "u7" })];
     show(fake({ ...lab, threads }), "/a/farmers/chat/r1/threads");
-    expect(await screen.findByText("With the leaders")).toBeInTheDocument();
+    expect(await screen.findByText("Asked by Unnamed person · with the leaders")).toBeInTheDocument();
     expect(screen.queryByText("Your request · with the leaders")).toBeNull();
   });
 

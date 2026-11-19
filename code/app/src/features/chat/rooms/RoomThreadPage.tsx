@@ -10,7 +10,7 @@ import { generalOf, mcpRoomsClient, type RoomMessage, type RoomsClient } from ".
 import { BacklogSummariesLoader } from "../../backlogs";
 import { askPath } from "./cards";
 import { Composer } from "./Composer";
-import { StartThread } from "./StartThread";
+import { questionWords, StartThread } from "./StartThread";
 import { ThreadRows } from "./ThreadRows";
 import { Timeline } from "./Timeline";
 import "./rooms.css";
@@ -77,7 +77,12 @@ export function RoomThreadPage({ client = mcpRoomsClient, heading = "room" }: Pr
           <Timeline messages={messages} threadLabel={label} client={client} openAsk={(askId) => navigate(askPath(roomId, threadId, askId))} />
         </BacklogSummariesLoader>
       ) : null}
-      {thread?.declined ? (
+      {thread?.audience === "group" && thread.questionRoom ? (
+        <div className="rm-start">
+          <p className="rm-note">This room takes questions. Only you and the room's leaders read yours.</p>
+          <StartThread bare words={questionWords} onStart={async (subject) => navigate(routes.roomThread.path({ roomId, threadId: await client.startThread(roomId, subject) }))} />
+        </div>
+      ) : thread?.declined ? (
         <p className="rm-note">This request was declined. You can read it, not write in it.</p>
       ) : (
         <Composer placeholder={`Write to ${room || "the room"}`} onSend={send} />

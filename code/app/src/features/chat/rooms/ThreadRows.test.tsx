@@ -9,6 +9,8 @@ const thread = (over: Partial<RoomThread>): RoomThread => ({
   label: "Seed delivery",
   audience: "group",
   requestedBy: "",
+  askerName: "",
+  questionRoom: false,
   declined: false,
   unread: 0,
   lastMessageAt: "",
@@ -43,14 +45,15 @@ describe("thread rows", () => {
         subject="grace"
         threads={[
           thread({ id: "a", label: "Mine", audience: "leads", requestedBy: "grace" }),
-          thread({ id: "b", label: "Theirs", audience: "leads", requestedBy: "otieno" }),
+          thread({ id: "b", label: "Theirs", audience: "leads", requestedBy: "otieno", askerName: "Otieno" }),
           thread({ id: "c", label: "Nobody asked", audience: "leads", requestedBy: "" }),
         ]}
         onOpen={vi.fn()}
       />,
     );
     expect(screen.getByText("Your request · with the leaders")).toBeInTheDocument();
-    expect(screen.getAllByText("With the leaders")).toHaveLength(2);
+    expect(screen.getByText("Asked by Otieno · with the leaders")).toBeInTheDocument();
+    expect(screen.getAllByText("With the leaders")).toHaveLength(1);
   });
 
   it("says a declined thread is declined, whoever it is with", () => {
