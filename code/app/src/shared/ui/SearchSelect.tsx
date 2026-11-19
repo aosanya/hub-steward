@@ -11,7 +11,7 @@ const Icon = ({ children }: { children: ReactNode }) => (
   </svg>
 );
 
-const ChevronDown = () => (
+export const ChevronDown = () => (
   <Icon>
     <path d="m6 9 6 6 6-6" />
   </Icon>
