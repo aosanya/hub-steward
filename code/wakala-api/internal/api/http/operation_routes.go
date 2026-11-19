@@ -6,6 +6,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/aosanya/mwanachama-backend-shared/dispatch"
+	voting "github.com/aosanya/mwanachama-backend-voting"
 	mwanachamaactor "wakalaserver/modules/actor"
 	mwanachamaagency "wakalaserver/modules/agency"
 	catalog "wakalaserver/modules/catalog"
@@ -14,9 +16,7 @@ import (
 	engage "wakalaserver/modules/engage"
 	market "wakalaserver/modules/market"
 	riskmanager "wakalaserver/modules/riskmanager"
-	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	taskmanager "wakalaserver/modules/taskmanager"
-	voting "wakalaserver/modules/voting"
 	workspace "wakalaserver/modules/workspace"
 
 	"wakalaserver/internal/accounts"

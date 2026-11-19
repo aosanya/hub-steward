@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"slices"
 
-	permissions "wakalaserver/modules/permissions"
+	permissions "github.com/aosanya/mwanachama-backend-permissions"
 
 	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"

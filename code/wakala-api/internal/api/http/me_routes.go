@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sort"
 
-	permissions "wakalaserver/modules/permissions"
+	permissions "github.com/aosanya/mwanachama-backend-permissions"
 
 	"wakalaserver/internal/accounts"
 )

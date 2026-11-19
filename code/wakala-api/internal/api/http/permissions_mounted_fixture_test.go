@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
-	mwanachamacatalog "wakalaserver/modules/catalog"
-	mwanachamapermissions "wakalaserver/modules/permissions"
+	mwanachamapermissions "github.com/aosanya/mwanachama-backend-permissions"
 	"github.com/aosanya/mwanachama-backend-shared/spec"
+	mwanachamacatalog "wakalaserver/modules/catalog"
 )
 
 func mountPermissionsAndReports(t *testing.T, deps *Deps) http.Handler {

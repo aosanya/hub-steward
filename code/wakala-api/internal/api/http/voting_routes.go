@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	votingroutes "wakalaserver/modules/voting/routes"
+	votingroutes "github.com/aosanya/mwanachama-backend-voting/routes"
 
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"

@@ -11,8 +11,12 @@ github.com/SherClockHolmes/webpush-go v1.4.0 h1:ocnzNKWN23T9nvHi6IfyrQjkIc0oJWv1
 github.com/SherClockHolmes/webpush-go v1.4.0/go.mod h1:XSq8pKX11vNV8MJEMwjrlTkxhAj1zKfxmyhdV7Pd6UA=
 github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be h1:9AeTilPcZAjCFIImctFaOjnTIavg87rW78vTPkQqLI8=
 github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be/go.mod h1:ySMOLuWl6zY27l47sB3qLNK6tF2fkHG55UZxx8oIVo4=
+github.com/aosanya/mwanachama-backend-permissions v0.1.0 h1:JZUvSfo0SxI6UBxB+PoH9V/P5I8TpgNebzZWgCC1EVA=
+github.com/aosanya/mwanachama-backend-permissions v0.1.0/go.mod h1:9RidyKWuioqXS4oZgOiOZ1hm9f1T1xiWsqhtlzwm6xo=
 github.com/aosanya/mwanachama-backend-shared v0.3.1 h1:k9ZXL0gGy14Vj+jLfzHtUpj/UdOOIjQODfL0WITdji8=
 github.com/aosanya/mwanachama-backend-shared v0.3.1/go.mod h1:YePPawJxq4ASWv/bLKBBWHvB+vnJ3kf9/ccJE98nkGU=
+github.com/aosanya/mwanachama-backend-voting v0.1.0 h1:1neH1+HrZXoaQBgZyae6XXw8RQy5ftSSUemz7pTx94g=
+github.com/aosanya/mwanachama-backend-voting v0.1.0/go.mod h1:SDocquazX/yHh18ZfZrtoeolQoJB4autbg0r5Kyplck=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5 h1:0CwZNZbxp69SHPdPJAN/hZIm0C4OItdklCFmMRWYpio=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5/go.mod h1:wHh0iHkYZB8zMSxRWpUBQtwG5a7fFgvEO+odwuTv2gs=
 github.com/cloudflare/circl v1.6.1 h1:zqIqSPIndyBh1bjLVVDHMPpVKqp8Su/V+6MeDzzQBQ0=

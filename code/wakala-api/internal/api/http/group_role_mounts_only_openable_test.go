@@ -7,7 +7,7 @@ import (
 	"slices"
 	"testing"
 
-	mwanachamapermissions "wakalaserver/modules/permissions"
+	mwanachamapermissions "github.com/aosanya/mwanachama-backend-permissions"
 )
 
 type residentBaselinePermissions struct {

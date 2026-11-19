@@ -5,7 +5,7 @@ import (
 	"slices"
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
-	mwanachamavoting "wakalaserver/modules/voting"
+	mwanachamavoting "github.com/aosanya/mwanachama-backend-voting"
 
 	"wakalaserver/internal/accounts"
 )

@@ -4,13 +4,13 @@ import (
 	"sync"
 	"time"
 
+	permissions "github.com/aosanya/mwanachama-backend-permissions"
 	mwanachamaaudit "wakalaserver/modules/audit"
 	mwanachamaauth "wakalaserver/modules/auth"
 	catalog "wakalaserver/modules/catalog"
 	mwanachamacouncil "wakalaserver/modules/council"
 	forms "wakalaserver/modules/forms"
 	mwanachamainsights "wakalaserver/modules/insights"
-	permissions "wakalaserver/modules/permissions"
 	ratings "wakalaserver/modules/ratings"
 	workspace "wakalaserver/modules/workspace"
 

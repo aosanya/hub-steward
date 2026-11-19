@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"testing"
 
+	mwanachamapermissions "github.com/aosanya/mwanachama-backend-permissions"
 	catalog "wakalaserver/modules/catalog"
-	mwanachamapermissions "wakalaserver/modules/permissions"
 
 	"wakalaserver/internal/agencies"
 )
