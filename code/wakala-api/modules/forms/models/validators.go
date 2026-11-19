@@ -3,6 +3,8 @@ package models
 import (
 	"fmt"
 	"time"
+
+	"wakalaserver/modules/shared/answerrules"
 )
 
 const DateLayout = "2006-01-02"
@@ -122,23 +124,10 @@ func UnansweredRequired(questions []Question, answers []Answer) []Question {
 	return out
 }
 
-const timeLayout = "15:04"
-
 func checkTimeRange(a Answer) error {
-	from, err := time.Parse(timeLayout, a.ValueTime)
-	if err != nil {
-		return fmt.Errorf("time_range answer requires value_time as HH:MM: %w", err)
-	}
-	to, err := time.Parse(timeLayout, a.ValueTimeTo)
-	if err != nil {
-		return fmt.Errorf("time_range answer requires value_time_to as HH:MM: %w", err)
-	}
-	if !to.After(from) {
-		return fmt.Errorf("value_time_to %s must be after value_time %s", a.ValueTimeTo, a.ValueTime)
-	}
-	return nil
+	return answerrules.CheckTimeRange(a.ValueTime, a.ValueTimeTo)
 }
 
 func TimeRangeWords(from, to string) string {
-	return "from " + from + " to " + to
+	return answerrules.TimeRangeWords(from, to)
 }

@@ -156,6 +156,9 @@ func validateFormQuestion(invalid func(string, ...any) error, number int, q mode
 	if !picks && (len(q.Options) > 0 || q.OptionsFrom != "") {
 		return invalid("question %d has options but is not a pick question", number)
 	}
+	if q.AllowFreeText && q.AnswerType != models.AnswerAddress {
+		return invalid("question %d allows free text but is not an address question", number)
+	}
 	return nil
 }
 

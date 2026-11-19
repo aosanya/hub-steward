@@ -4,7 +4,7 @@ import type { QuestionDraft, RouteDraft, StepDraft } from "../../data/pages/work
 import { I18nProvider } from "../../i18n";
 import { RouteFields } from "./RouteFields";
 
-const question = (prompt: string, answerType = "free_text"): QuestionDraft => ({ prompt, answerType, required: false, helper: "", options: [], optionsFrom: "", fixed: "" });
+const question = (prompt: string, answerType = "free_text"): QuestionDraft => ({ prompt, answerType, required: false, helper: "", options: [], optionsFrom: "", fixed: "", allowFreeText: false });
 
 const step = (over: Partial<StepDraft> = {}): StepDraft => ({
   key: "r",

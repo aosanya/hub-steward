@@ -81,6 +81,9 @@ function QuestionCard({ id, number, count, question, lists, answerTypes, fixedTe
           ) : null}
         </>
       ) : null}
+      {question.answerType === "address" ? (
+        <Toggle label={t("workflows.allowFreeText")} on={question.allowFreeText} onChange={(allowFreeText) => set({ allowFreeText })} />
+      ) : null}
       {fixedText ? <TextLabelled id={id + "-fixed"} label={t("workflows.fixedText")} value={question.fixed} onChange={(fixed) => set({ fixed })} /> : null}
       <Toggle label={t("required")} on={question.required} onChange={(required) => set({ required })} />
       <Button kind="quiet" size="xs" onClick={onRemove}>

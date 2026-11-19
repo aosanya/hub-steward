@@ -37,9 +37,9 @@ func TestStepKind_TakesFormAndAgencyOnly(t *testing.T) {
 	}
 }
 
-func TestAnswerTypes_ListsTenAndOnlyChoicesHaveOptions(t *testing.T) {
+func TestAnswerTypes_ListsTwelveAndOnlyChoicesHaveOptions(t *testing.T) {
 	types := AnswerTypes()
-	if len(types) != 10 {
+	if len(types) != 12 {
 		t.Fatalf("got %d types", len(types))
 	}
 	types[0] = "tampered"

@@ -3,11 +3,8 @@ package models
 import (
 	"fmt"
 	"strings"
-)
 
-const (
-	placeRefAddress = "address:"
-	placeRefStreet  = "street:"
+	"wakalaserver/modules/shared/answerrules"
 )
 
 func checkAddress(q Question, a Answer) error {
@@ -26,11 +23,4 @@ func checkAddress(q Question, a Answer) error {
 	return nil
 }
 
-func placeRefFits(ref string) bool {
-	for _, prefix := range []string{placeRefAddress, placeRefStreet} {
-		if strings.HasPrefix(ref, prefix) && strings.TrimSpace(strings.TrimPrefix(ref, prefix)) != "" {
-			return true
-		}
-	}
-	return false
-}
+func placeRefFits(ref string) bool { return answerrules.PlaceRefFits(ref) }

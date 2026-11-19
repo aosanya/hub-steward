@@ -61,6 +61,8 @@ const lab: Record<string, unknown> = {
       "currency",
       "photo",
       "file",
+      "time_range",
+      "address",
     ],
   },
   agency_list_workflows: {
@@ -222,7 +224,7 @@ describe("Add a workflow", () => {
     expect(await screen.findByText("No records yet.")).toBeInTheDocument();
   });
 
-  it("offers a question the forms module's ten answer types, named in the page's language", async () => {
+  it("offers a question the forms module's twelve answer types, named in the page's language", async () => {
     const user = userEvent.setup();
     open("/h/h1/workflow-edit/new/steps");
     await user.click(await screen.findByRole("button", { name: "Add a step" }));
@@ -241,9 +243,45 @@ describe("Add a workflow", () => {
       "Amount of money",
       "Photo",
       "File",
+      "Time range",
+      "Street or address",
     ]);
     await user.selectOptions(screen.getByLabelText("Type"), "Pick several");
     expect(screen.getByLabelText("Picks from")).toBeInTheDocument();
+  });
+
+  it("offers Also allow free text on a street or address question only, and saves it", async () => {
+    const user = userEvent.setup();
+    open("/h/h1/workflow-edit/new/workflow");
+    await user.type(await screen.findByLabelText("Name"), "Street event");
+    await user.type(screen.getByLabelText("What it is for"), "A resident asks to close a street");
+
+    await user.click(screen.getByRole("link", { name: "Steps" }));
+    await user.click(await screen.findByRole("button", { name: "Add a step" }));
+    await user.type(screen.getByLabelText("Name"), "Ask");
+    await user.selectOptions(screen.getByLabelText("Actor"), "Farmer");
+    await user.type(screen.getByLabelText("Question"), "Which street needs to be closed?");
+
+    expect(screen.queryByLabelText("Also allow free text")).not.toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText("Type"), "Street or address");
+    await user.click(screen.getByLabelText("Also allow free text"));
+    await user.click(screen.getByRole("link", { name: "Workflow" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByTestId("where")).toHaveTextContent("/h/h1/workflows");
+    expect(callsTo("agency_create_work_item")[0]).toMatchObject({
+      questions: [{ prompt: "Which street needs to be closed?", answer_type: "address", allow_free_text: true }],
+    });
+  });
+
+  it("drops the free text switch when the question stops being an address", async () => {
+    const user = userEvent.setup();
+    open("/h/h1/workflow-edit/new/steps");
+    await user.click(await screen.findByRole("button", { name: "Add a step" }));
+    await user.selectOptions(screen.getByLabelText("Type"), "Street or address");
+    expect(screen.getByLabelText("Also allow free text")).toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText("Type"), "Time range");
+    expect(screen.queryByLabelText("Also allow free text")).not.toBeInTheDocument();
   });
 
   it("keeps what was typed on one tab while another is open, and saves the workflow, its step and its record", async () => {

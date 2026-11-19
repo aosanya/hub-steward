@@ -43,3 +43,29 @@ describe("the answers sent, keyed by prompt, every value a string", () => {
     });
   });
 });
+
+describe("a step's time range and street or address questions", () => {
+  const asked = formQuestionsOf({
+    questions: [
+      { prompt: "Between which hours", answerType: "time_range", helper: "" },
+      { prompt: "Which street", answerType: "address", helper: "", allowFreeText: true },
+      { prompt: "Which door", answerType: "address", helper: "" },
+    ],
+  });
+
+  it("carries the free text setting of an address question to the form question", () => {
+    expect(asked.map((q) => q.allow_free_text)).toEqual([undefined, true, undefined]);
+  });
+
+  it("sends a time range as its words, and an address as the words picked or typed", () => {
+    const draft = {
+      "0": { text: "09:00-17:30", options: [] },
+      "1": { text: "Fő tér 2", options: [], placeRef: "address:a1" },
+    };
+    expect(answersOf(asked, draft)).toEqual({ "Between which hours": "from 09:00 to 17:30", "Which street": "Fő tér 2" });
+  });
+
+  it("leaves out a half-filled time range", () => {
+    expect(answersOf(asked, { "0": { text: "09:00-", options: [] } })).toEqual({});
+  });
+});

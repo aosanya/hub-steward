@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 
 	"wakalaserver/modules/agency/models"
+	"wakalaserver/modules/shared/answerrules"
 )
 
 func invalidRecord(format string, args ...any) error {
@@ -216,6 +217,14 @@ func validateRowAnswer(q models.StepQuestion, answer string) error {
 	case models.AnswerDate:
 		if _, err := time.Parse("2006-01-02", answer); err != nil {
 			return invalidRow("the answer to %q is a date as 2006-01-02, got %q", q.Prompt, answer)
+		}
+	case models.AnswerTimeRange:
+		from, to, ok := answerrules.TimeRangeOfWords(answer)
+		if !ok {
+			return invalidRow("the answer to %q is a time range as from HH:MM to HH:MM, got %q", q.Prompt, answer)
+		}
+		if err := answerrules.CheckTimeRange(from, to); err != nil {
+			return invalidRow("the answer to %q: %v", q.Prompt, err)
 		}
 	case models.AnswerSingleChoice:
 		if len(q.Options) > 0 && !slices.Contains(q.Options, answer) {

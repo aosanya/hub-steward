@@ -1,7 +1,7 @@
 import { routes } from "../../../app/routes";
 import { callTool } from "../../../shared/wakala/mcp";
 
-export type StartQuestion = { prompt: string; answerType: string; helper: string; required?: boolean; options?: string[] };
+export type StartQuestion = { prompt: string; answerType: string; helper: string; required?: boolean; options?: string[]; allowFreeText?: boolean };
 
 export type OpensIn = "chat" | "form";
 
@@ -53,6 +53,7 @@ export const stepOf = (agencyName: string) => (raw: any): StartStep => ({
     helper: text(q?.helper),
     ...(q?.required === true ? { required: true } : {}),
     ...(Array.isArray(q?.options) && q.options.length > 0 ? { options: q.options.map(text) } : {}),
+    ...(q?.allow_free_text === true ? { allowFreeText: true } : {}),
   })),
 });
 

@@ -51,12 +51,14 @@ const (
 	AnswerCurrency     AnswerType = "currency"
 	AnswerPhoto        AnswerType = "photo"
 	AnswerFile         AnswerType = "file"
+	AnswerTimeRange    AnswerType = "time_range"
+	AnswerAddress      AnswerType = "address"
 )
 
 var answerTypes = []AnswerType{
 	AnswerYesNo, AnswerSingleChoice, AnswerMultiSelect, AnswerFreeText,
 	AnswerDate, AnswerTime, AnswerNumber, AnswerCurrency,
-	AnswerPhoto, AnswerFile,
+	AnswerPhoto, AnswerFile, AnswerTimeRange, AnswerAddress,
 }
 
 func AnswerTypes() []AnswerType { return append([]AnswerType(nil), answerTypes...) }
@@ -80,6 +82,7 @@ type StepQuestion struct {
 	Options             []string   `json:"options,omitempty"`
 	OptionsFrom         string     `json:"options_from,omitempty"`
 	Fixed               string     `json:"fixed,omitempty"`
+	AllowFreeText       bool       `json:"allow_free_text,omitempty"`
 	ChecksApprovalLimit bool       `json:"checks_approval_limit,omitempty"`
 }
 

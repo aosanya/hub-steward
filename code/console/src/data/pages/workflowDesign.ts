@@ -20,6 +20,7 @@ export type QuestionDraft = {
   options: string[];
   optionsFrom: string;
   fixed: string;
+  allowFreeText: boolean;
 };
 
 export type RuleDraft = { question: string; operator: RouteOperator; value: string };
@@ -97,6 +98,7 @@ export const emptyQuestion = (): QuestionDraft => ({
   options: [],
   optionsFrom: "",
   fixed: "",
+  allowFreeText: false,
 });
 
 export const emptyStep = (kind: StepKind = "fill_form"): StepDraft => ({
@@ -163,6 +165,7 @@ const questionOf = (raw: Item): QuestionDraft => {
     options: textsOf(raw.options),
     optionsFrom: textOf(raw, "options_from"),
     fixed: textOf(raw, "fixed"),
+    allowFreeText: raw.allow_free_text === true,
   };
 };
 
@@ -277,6 +280,7 @@ const questionBody = (question: QuestionDraft) => ({
   options: hasOptions(question.answerType) && question.optionsFrom === "" ? question.options.map((option) => option.trim()).filter(Boolean) : [],
   options_from: hasOptions(question.answerType) ? question.optionsFrom : "",
   fixed: question.fixed.trim(),
+  allow_free_text: question.answerType === "address" && question.allowFreeText,
 });
 
 const formNameOf = (step: StepDraft) => (step.formName || (step.name.trim() ? step.name.trim() + " form" : ""));
