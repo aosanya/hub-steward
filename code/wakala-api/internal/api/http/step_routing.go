@@ -1,11 +1,55 @@
 package http
 
 import (
+	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	agencymodels "wakalaserver/modules/agency/models"
 )
+
+const (
+	routeOnOrBefore agencymodels.RouteOperator = "on_or_before"
+	routeOnOrAfter  agencymodels.RouteOperator = "on_or_after"
+)
+
+const (
+	writtenDayLayout        = "2006-01-02"
+	multiSelectRowSeparator = ";"
+)
+
+func multiSelectChoices(answer string) []string {
+	choices := strings.Split(answer, multiSelectRowSeparator)
+	for i, choice := range choices {
+		choices[i] = strings.ToLower(strings.TrimSpace(choice))
+	}
+	return choices
+}
+
+func isWrittenDay(text string) bool {
+	_, err := time.Parse(writtenDayLayout, strings.TrimSpace(text))
+	return err == nil
+}
+
+func dayRuleHolds(operator agencymodels.RouteOperator, got, want string) bool {
+	left, errLeft := time.Parse(writtenDayLayout, got)
+	right, errRight := time.Parse(writtenDayLayout, want)
+	if errLeft != nil || errRight != nil {
+		return false
+	}
+	if operator == routeOnOrBefore {
+		return !left.After(right)
+	}
+	return !left.Before(right)
+}
+
+func ruleHoldsFor(q agencymodels.StepQuestion, rule agencymodels.RouteRule, answer string) bool {
+	if rule.Operator == agencymodels.RouteContains && q.AnswerType == agencymodels.AnswerMultiSelect {
+		return slices.Contains(multiSelectChoices(answer), strings.ToLower(strings.TrimSpace(rule.Value)))
+	}
+	return ruleHolds(rule, answer)
+}
 
 func stepActorRoleID(s agencymodels.WorkItem) string {
 	if s.Kind == agencymodels.StepKindSendForm {
@@ -65,6 +109,8 @@ func ruleHolds(rule agencymodels.RouteRule, answer string) bool {
 		return got != want
 	case agencymodels.RouteContains:
 		return strings.Contains(got, want)
+	case routeOnOrBefore, routeOnOrAfter:
+		return dayRuleHolds(rule.Operator, got, want)
 	}
 	left, errLeft := strconv.ParseFloat(got, 64)
 	right, errRight := strconv.ParseFloat(want, 64)

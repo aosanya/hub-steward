@@ -17,6 +17,7 @@ Working on a part:
 - [Attribute properties](attribute-properties.md): the attribute names a person's record accepts, who may list them, and where they come from
 - [Commit with commit-own-paths.sh](commit-own-paths.md): the one command agents commit with in the shared working tree, and what it refuses
 - [Reads for the Ongoing Done tab](ongoing-done-reads.md): what the API lists for finished orders and sent answers, and what is missing
+- [Search a live record's rows](search-live-record-rows.md): the `where` conditions of `agency_list_live_record_rows`, the operators and who sees the rows
 
 How it fits and how to run it:
 

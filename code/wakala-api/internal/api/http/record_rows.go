@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 
 	mwanachamaagency "wakalaserver/modules/agency"
@@ -37,6 +38,76 @@ type rowRead struct {
 	OrderID string
 	ActorID string
 	History bool
+	Where   []rowCondition
+}
+
+type rowConstraint struct {
+	question agencymodels.StepQuestion
+	rule     agencymodels.RouteRule
+}
+
+var whereOperators = []agencymodels.RouteOperator{
+	agencymodels.RouteIs, agencymodels.RouteIsNot, agencymodels.RouteContains,
+	agencymodels.RouteMoreThan, agencymodels.RouteLessThan, routeOnOrBefore, routeOnOrAfter,
+}
+
+func questionOfRecord(record agencymodels.Record, prompt string) (agencymodels.StepQuestion, bool) {
+	prompt = strings.TrimSpace(prompt)
+	for _, q := range record.Questions {
+		if q.Prompt == prompt {
+			return q, true
+		}
+	}
+	for _, q := range record.Questions {
+		if strings.EqualFold(q.Prompt, prompt) {
+			return q, true
+		}
+	}
+	return agencymodels.StepQuestion{}, false
+}
+
+func constraintsOf(record agencymodels.Record, where []rowCondition) ([]rowConstraint, error) {
+	out := make([]rowConstraint, 0, len(where))
+	for i, c := range where {
+		n := i + 1
+		q, ok := questionOfRecord(record, c.Question)
+		if !ok {
+			return nil, badRowError("condition " + strconv.Itoa(n) + " names " + strconv.Quote(c.Question) + ", which is not a question of " + record.Name)
+		}
+		operator := agencymodels.RouteOperator(strings.TrimSpace(c.Operator))
+		if !slices.Contains(whereOperators, operator) {
+			return nil, badRowError("condition " + strconv.Itoa(n) + " has operator " + strconv.Quote(c.Operator) + ", which is not one of " + joinedOperators())
+		}
+		value := strings.TrimSpace(c.Value)
+		if value == "" {
+			return nil, badRowError("condition " + strconv.Itoa(n) + " has no value")
+		}
+		if _, err := strconv.ParseFloat(value, 64); operator.Numeric() && err != nil {
+			return nil, badRowError("condition " + strconv.Itoa(n) + " compares with " + strconv.Quote(c.Value) + ", which is not a number")
+		}
+		if (operator == routeOnOrBefore || operator == routeOnOrAfter) && !isWrittenDay(value) {
+			return nil, badRowError("condition " + strconv.Itoa(n) + " compares with " + strconv.Quote(c.Value) + ", which is not a day written as " + writtenDayLayout)
+		}
+		out = append(out, rowConstraint{question: q, rule: agencymodels.RouteRule{Question: q.Prompt, Operator: operator, Value: value}})
+	}
+	return out, nil
+}
+
+func joinedOperators() string {
+	names := make([]string, len(whereOperators))
+	for i, o := range whereOperators {
+		names[i] = string(o)
+	}
+	return strings.Join(names, ", ")
+}
+
+func rowMeets(row agencymodels.RecordRow, constraints []rowConstraint) bool {
+	for _, c := range constraints {
+		if !ruleHoldsFor(c.question, c.rule, row.Answers[c.question.Prompt]) {
+			return false
+		}
+	}
+	return true
 }
 
 type badRowError string
@@ -213,6 +284,10 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 	if err != nil {
 		return nil, err
 	}
+	constraints, err := constraintsOf(record, read.Where)
+	if err != nil {
+		return nil, err
+	}
 	drafts, err := draftsOfEveryPublication(ctx, m)
 	if err != nil {
 		return nil, err
@@ -235,7 +310,7 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 	seesAll := callerMayAddRows(ctx, reg, instanceID, m, record)
 	rows := []agencymodels.RecordRow{}
 	for _, row := range every {
-		if replaced[row.ID] == read.History && (seesAll || rowNames(record, row, caller)) && (read.ActorID == "" || rowNames(record, row, read.ActorID)) {
+		if replaced[row.ID] == read.History && (seesAll || rowNames(record, row, caller)) && (read.ActorID == "" || rowNames(record, row, read.ActorID)) && rowMeets(row, constraints) {
 			rows = append(rows, row)
 		}
 	}

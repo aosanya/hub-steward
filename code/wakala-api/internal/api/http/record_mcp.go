@@ -29,16 +29,25 @@ func liveRecordToolActions() map[string]string {
 	}
 }
 
+const listLiveRecordRowsDescription = "The current rows of one live record, oldest first, as the caller may see them: the role that adds rows to the record sees all of them, anyone else only the rows that name them, so a lead who searches a pool must hold the record's adding role (the record's viewer role is not read here). Narrow to one group order with order_id, or to the rows whose person-picked question holds one actor id with answer_actor_id. history true reads the rows that a replacing row corrected. where narrows by answers: a list of {question, operator, value}, every one of which must hold; operators are is, is_not, contains, more_than, less_than, on_or_before and on_or_after. contains on a multi-select question matches one whole option (several options are stored joined with a semicolon and a space), contains on any other question matches a piece of the text; on_or_before and on_or_after compare written days (2027-03-01) and include the day itself. A condition that names no question of the record or cannot be read is refused."
+
+type rowCondition struct {
+	Question string `json:"question" jsonschema:"the prompt of one of the record's questions, as agency_list_live_records names it"`
+	Operator string `json:"operator" jsonschema:"is, is_not, contains, more_than, less_than, on_or_before or on_or_after"`
+	Value    string `json:"value" jsonschema:"what the answer is compared with; a day is written as 2027-03-01 and a number in digits"`
+}
+
 type listLiveRecordsParams struct {
 	InstanceID string `json:"instance_id" jsonschema:"the agency whose live records to list"`
 }
 
 type listLiveRecordRowsParams struct {
-	InstanceID string `json:"instance_id" jsonschema:"the agency the record belongs to"`
-	RecordCode string `json:"record_code" jsonschema:"the record's code, as agency_list_live_records names it, such as RC-1"`
-	OrderID    string `json:"order_id,omitempty" jsonschema:"only the rows added from this group order"`
-	ActorID    string `json:"answer_actor_id,omitempty" jsonschema:"only the rows where a person-picked question (a single choice picked from a list such as members) holds this actor id"`
-	History    bool   `json:"history,omitempty" jsonschema:"true reads the rows that were corrected by a replacing row instead of the current ones"`
+	InstanceID string         `json:"instance_id" jsonschema:"the agency the record belongs to"`
+	RecordCode string         `json:"record_code" jsonschema:"the record's code, as agency_list_live_records names it, such as RC-1"`
+	OrderID    string         `json:"order_id,omitempty" jsonschema:"only the rows added from this group order"`
+	ActorID    string         `json:"answer_actor_id,omitempty" jsonschema:"only the rows where a person-picked question (a single choice picked from a list such as members) holds this actor id"`
+	History    bool           `json:"history,omitempty" jsonschema:"true reads the rows that were corrected by a replacing row instead of the current ones"`
+	Where      []rowCondition `json:"where,omitempty" jsonschema:"conditions on the answers, every one of which must hold; only the rows that meet them are returned"`
 }
 
 type addLiveRecordRowParams struct {
@@ -61,7 +70,7 @@ func (d *Deps) registerLiveRecordMCPTools(server *mcp.Server) {
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        listLiveRecordRowsTool,
 		Title:       "List a live record's rows",
-		Description: "The current rows of one live record, oldest first, as the caller may see them: a role that adds rows sees all of them, anyone else only the rows that name them. Narrow to one group order with order_id, or to the rows whose person-picked question holds one actor id with answer_actor_id. history true reads the rows that a replacing row corrected.",
+		Description: listLiveRecordRowsDescription,
 	}, d.mcpListLiveRecordRows)
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        addLiveRecordRowTool,
@@ -79,7 +88,7 @@ func (d *Deps) mcpListLiveRecords(ctx context.Context, _ *mcp.CallToolRequest, p
 }
 
 func (d *Deps) mcpListLiveRecordRows(ctx context.Context, _ *mcp.CallToolRequest, p listLiveRecordRowsParams) (*mcp.CallToolResult, agencymcp.ListResult[agencymodels.RecordRow], error) {
-	out, err := d.liveRowsOf(ctx, p.InstanceID, p.RecordCode, rowRead{OrderID: p.OrderID, ActorID: p.ActorID, History: p.History})
+	out, err := d.liveRowsOf(ctx, p.InstanceID, p.RecordCode, rowRead{OrderID: p.OrderID, ActorID: p.ActorID, History: p.History, Where: p.Where})
 	if err != nil {
 		return nil, agencymcp.ListResult[agencymodels.RecordRow]{}, err
 	}
