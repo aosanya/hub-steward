@@ -106,6 +106,13 @@ describe("your agencies with forms waiting", () => {
     expect(screen.queryByRole("button", { name: words.findAgencyTitle })).not.toBeInTheDocument();
   });
 
+  it("hints in the search bar what it searches for", async () => {
+    at("/agencies", [lab, farmers, riders]);
+    expect(await screen.findByPlaceholderText(words.findAgencyPlaceholder)).toBe(
+      screen.getByRole("searchbox", { name: words.findAgencyQuery }),
+    );
+  });
+
   it("puts the search bar above the list of agencies", async () => {
     at("/agencies", [lab, farmers, riders]);
     const search = await screen.findByRole("searchbox", { name: words.findAgencyQuery });

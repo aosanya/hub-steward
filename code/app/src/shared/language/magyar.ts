@@ -26,6 +26,7 @@ export const magyar: Words = {
   agenciesUnreached: "A szervezetei nem töltődtek be. Ellenőrizze a kapcsolatot, majd próbálja újra.",
   findAgencyTitle: "Szervezet keresése",
   findAgencyQuery: "A szervezet neve, helye vagy azonosítója",
+  findAgencyPlaceholder: "Keressen szervezetet, amelyhez csatlakozna",
   findAgencySearch: "Keresés",
   findAgencyNoneTitle: "Nem található szervezet",
   findAgencyUnreached: "A névjegyzék nem töltődött be. Ellenőrizze a kapcsolatot, majd próbálja újra.",

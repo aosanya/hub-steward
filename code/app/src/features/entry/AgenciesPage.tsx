@@ -141,6 +141,7 @@ export function AgenciesPage() {
       <Field
         label={words.findAgencyQuery}
         type="search"
+        placeholder={words.findAgencyPlaceholder}
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
         onKeyDown={(e) => {

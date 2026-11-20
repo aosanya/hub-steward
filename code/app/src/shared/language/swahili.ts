@@ -26,6 +26,7 @@ export const swahili: Words = {
   agenciesUnreached: "Mashirika yako hayakupakia. Angalia muunganisho wako kisha ujaribu tena.",
   findAgencyTitle: "Tafuta shirika",
   findAgencyQuery: "Jina, mahali au kitambulisho cha shirika",
+  findAgencyPlaceholder: "Tafuta shirika la kujiunga nalo",
   findAgencySearch: "Tafuta",
   findAgencyNoneTitle: "Hakuna shirika lililopatikana",
   findAgencyUnreached: "Orodha haikupakia. Angalia muunganisho wako kisha ujaribu tena.",

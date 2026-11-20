@@ -25,6 +25,7 @@ export const words = {
   agenciesUnreached: "Your agencies did not load. Check your connection and try again.",
   findAgencyTitle: "Find an agency",
   findAgencyQuery: "Name, place or agency id",
+  findAgencyPlaceholder: "Search for an agency to join",
   findAgencySearch: "Search",
   findAgencyNoneTitle: "No agencies found",
   findAgencyUnreached: "The directory did not load. Check your connection and try again.",
