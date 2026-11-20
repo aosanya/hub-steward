@@ -49,7 +49,7 @@ describe("the in-page Back of the sign-in and agencies pages", () => {
 
   it("an agency found in the directory goes back to the search, and the search back to the list", async () => {
     at("/agencies");
-    await userEvent.click(await screen.findByRole("button", { name: words.findAgencyTitle }));
+    await userEvent.type(await screen.findByRole("searchbox", { name: words.findAgencyQuery }), "{enter}");
     await userEvent.click(await screen.findByRole("button", { name: new RegExp(siaya.name) }));
     expect(await screen.findByRole("heading", { name: siaya.name })).toBeInTheDocument();
 

@@ -27,6 +27,9 @@ const mount = (path: string, agencies: Agency[] = [farmers, riders]) => {
 const bar = () => screen.getByRole("banner");
 const menuIn = (element: HTMLElement) => within(element).queryByRole("button", { name: "Menu" });
 
+const searchFor = async (text: string) =>
+  userEvent.type(await screen.findByRole("searchbox", { name: words.findAgencyQuery }), `${text}{enter}`);
+
 describe("the Menu button on the entry screens", () => {
   beforeEach(() => {
     window.localStorage.clear();
@@ -58,7 +61,7 @@ describe("the Menu button on the entry screens", () => {
 
   it("is on Find an agency, which has a back link", async () => {
     mount("/agencies");
-    await userEvent.click(await screen.findByRole("button", { name: words.findAgencyTitle }));
+    await searchFor("");
     expect(await screen.findByText(listed.name)).toBeInTheDocument();
     expect(within(bar()).getByRole("button", { name: "Back" })).toBeInTheDocument();
     expect(menuIn(bar())).not.toBeNull();
@@ -66,7 +69,7 @@ describe("the Menu button on the entry screens", () => {
 
   it("is on the agency's own page, which has a back link", async () => {
     mount("/agencies");
-    await userEvent.click(await screen.findByRole("button", { name: words.findAgencyTitle }));
+    await searchFor("");
     await userEvent.click(await screen.findByText(listed.name));
     expect(await screen.findByText(listed.purpose)).toBeInTheDocument();
     expect(within(bar()).getByRole("button", { name: "Back" })).toBeInTheDocument();

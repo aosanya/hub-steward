@@ -10,8 +10,9 @@ import { EmptyCard, LoadFailed } from "../../shared/ui/LoadState";
 import { Field } from "../../shared/ui/Field";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { Shell } from "../../app/Shell";
+import { signOut } from "../account/signOut";
 
-type View = { name: "list" } | { name: "find" } | { name: "agency"; agency: DirectoryAgency };
+type View = { name: "list" } | { name: "find"; query: string } | { name: "agency"; agency: DirectoryAgency };
 const retryDelay = 300;
 
 const listWithOneRetry = async (): Promise<Agency[]> => {
@@ -25,9 +26,9 @@ const listWithOneRetry = async (): Promise<Agency[]> => {
 
 type Loaded = { kind: "loading" } | { kind: "ready"; agencies: Agency[] } | { kind: "unreached" };
 
-function Find({ onPick }: { onPick: (a: DirectoryAgency) => void }) {
+function Find({ initialQuery, onPick }: { initialQuery: string; onPick: (a: DirectoryAgency) => void }) {
   const { words } = useLanguage();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [found, setFound] = useState<DirectoryAgency[] | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -41,7 +42,7 @@ function Find({ onPick }: { onPick: (a: DirectoryAgency) => void }) {
   };
 
   useEffect(() => {
-    void search("");
+    void search(initialQuery.trim());
   }, []);
 
   return (
@@ -90,6 +91,8 @@ export function AgenciesPage() {
   const [view, setView] = useState<View>({ name: "list" });
   const [loaded, setLoaded] = useState<Loaded>({ kind: "loading" });
   const [waiting, setWaiting] = useState<Record<string, number>>({});
+  const [lastQuery, setLastQuery] = useState("");
+  const [searchText, setSearchText] = useState("");
   const navigate = useNavigate();
   const chosen = (useLocation().state as typeof pickAgencyState | null)?.pickAgency === true;
 
@@ -121,7 +124,7 @@ export function AgenciesPage() {
   }
   if (view.name === "agency") {
     return (
-      <Shell tabless unnamed title={view.agency.name} onBack={() => setView({ name: "find" })}>
+      <Shell tabless unnamed title={view.agency.name} onBack={() => setView({ name: "find", query: lastQuery })}>
         <AgencyDetail agency={view.agency} />
       </Shell>
     );
@@ -129,7 +132,7 @@ export function AgenciesPage() {
   if (view.name === "find") {
     return (
       <Shell tabless unnamed title={words.findAgencyTitle} onBack={() => setView({ name: "list" })}>
-        <Find onPick={(agency) => setView({ name: "agency", agency })} />
+        <Find initialQuery={view.query} onPick={(agency) => setView({ name: "agency", agency })} />
       </Shell>
     );
   }
@@ -155,7 +158,25 @@ export function AgenciesPage() {
           ))}
         </Rows>
       ) : null}
-      <Button onClick={() => setView({ name: "find" })}>{words.findAgencyTitle}</Button>
+      <Field
+        label={words.findAgencyQuery}
+        type="search"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key !== "Enter") return;
+          setLastQuery(searchText);
+          setView({ name: "find", query: searchText });
+        }}
+      />
+      <Button
+        onClick={async () => {
+          await signOut();
+          navigate("/sign-in", { replace: true });
+        }}
+      >
+        {words.signOutTitle}
+      </Button>
     </Shell>
   );
 }

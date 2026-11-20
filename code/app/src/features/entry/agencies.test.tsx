@@ -95,8 +95,34 @@ describe("your agencies with forms waiting", () => {
     at({ pathname: "/agencies", state: pickAgencyState }, [farmers]);
     expect(await screen.findByRole("heading", { name: words.agenciesTitle })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: new RegExp(farmers.name) })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: words.findAgencyTitle })).toBeInTheDocument();
+    expect(screen.getByRole("searchbox", { name: words.findAgencyQuery })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Home" })).not.toBeInTheDocument();
+  });
+
+  it("offers a search bar and Sign out on the list, and no Find an agency button", async () => {
+    at("/agencies", [lab, farmers, riders]);
+    expect(await screen.findByRole("searchbox", { name: words.findAgencyQuery })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: words.signOutTitle })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: words.findAgencyTitle })).not.toBeInTheDocument();
+  });
+
+  it("searches the directory for what was typed in the search bar", async () => {
+    const searchDirectory = vi.fn(async () => []);
+    provideEntryClient({ ...client([lab, farmers]), searchDirectory });
+    render(
+      <MemoryRouter initialEntries={["/agencies"]}>
+        <App />
+      </MemoryRouter>,
+    );
+    await userEvent.type(await screen.findByRole("searchbox", { name: words.findAgencyQuery }), "Siaya{enter}");
+    expect(await screen.findByRole("heading", { name: words.findAgencyTitle })).toBeInTheDocument();
+    expect(searchDirectory).toHaveBeenCalledWith("Siaya");
+  });
+
+  it("signs the person out from the list and shows the sign-in screen", async () => {
+    at("/agencies", [lab, farmers]);
+    await userEvent.click(await screen.findByRole("button", { name: words.signOutTitle }));
+    expect(await screen.findByRole("heading", { name: words.signInTitle })).toBeInTheDocument();
   });
 
   it("still lists a member of none", async () => {

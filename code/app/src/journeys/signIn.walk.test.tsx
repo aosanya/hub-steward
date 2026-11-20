@@ -119,7 +119,7 @@ describe("journey 21: sign in and choose an agency", () => {
     expect(await screen.findByText(formsWaiting(2, words))).toBeInTheDocument();
     expect(screen.getAllByText(/forms? waiting/)).toHaveLength(1);
 
-    await userEvent.click(screen.getByRole("button", { name: words.findAgencyTitle }));
+    await userEvent.type(await screen.findByRole("searchbox", { name: words.findAgencyQuery }), "{enter}");
     await heading(words.findAgencyTitle);
     expect(await screen.findByText(nakuru.name)).toBeInTheDocument();
     expect(screen.getByText(eldoret.name)).toBeInTheDocument();

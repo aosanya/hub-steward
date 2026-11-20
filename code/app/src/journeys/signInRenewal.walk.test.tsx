@@ -122,7 +122,7 @@ describe("journey 21, step 6: a link session that lasts an hour", () => {
     expect(new Set(wakala.bearersAt("/me/agencies"))).toEqual(new Set(["a1"]));
 
     timePasses(hour - aMinuteToGo);
-    await userEvent.click(screen.getByRole("button", { name: words.findAgencyTitle }));
+    await userEvent.type(await screen.findByRole("searchbox", { name: words.findAgencyQuery }), "{enter}");
     expect(await screen.findByText(nakuru.name)).toBeInTheDocument();
     expect(wakala.refreshesAsked).toEqual(["r1"]);
     expect(wakala.bearersAfterwards("/directory")).toBe("a2");
@@ -179,7 +179,7 @@ describe("journey 21, step 6: a link session that lasts an hour", () => {
 
     wakala.refreshFrom("answers nothing");
     timePasses(hour - aMinuteToGo);
-    await userEvent.click(screen.getByRole("button", { name: words.findAgencyTitle }));
+    await userEvent.type(await screen.findByRole("searchbox", { name: words.findAgencyQuery }), "{enter}");
     expect(await screen.findByText(nakuru.name)).toBeInTheDocument();
     expect(wakala.refreshesAsked).toEqual(["r1"]);
     expect(wakala.bearersAfterwards("/directory")).toBe("a1");

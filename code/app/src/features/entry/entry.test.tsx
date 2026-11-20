@@ -32,6 +32,9 @@ const at = (path: string, client: EntryClient) => {
   );
 };
 
+const searchFor = async (text: string) =>
+  userEvent.type(await screen.findByRole("searchbox", { name: words.findAgencyQuery }), `${text}{enter}`);
+
 describe("sign in", () => {
   it("has no tab bar on the form or on the language choice", async () => {
     at("/sign-in", fake());
@@ -97,7 +100,7 @@ describe("your agencies", () => {
 
   it("lists the agencies found by name and kind with a lead letter and no id on screen", async () => {
     const { container } = at("/agencies", fake());
-    await userEvent.click(await screen.findByRole("button", { name: words.findAgencyTitle }));
+    await searchFor("");
     const row = await screen.findByRole("button", { name: new RegExp(siaya.name) });
     expect(within(row).getByText(siaya.kind)).toBeInTheDocument();
     expect(screen.queryByText(new RegExp(siaya.id))).toBeNull();
@@ -129,7 +132,7 @@ describe("your agencies", () => {
   it("finds an agency and asks to join", async () => {
     const join = vi.fn(async () => "requested" as const);
     at("/agencies", fake({ join }));
-    await userEvent.click(await screen.findByRole("button", { name: words.findAgencyTitle }));
+    await searchFor("");
     await userEvent.click(await screen.findByRole("button", { name: new RegExp(siaya.name) }));
     expect(screen.getByText(siaya.purpose)).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: words.agencyAskToJoin }));
@@ -139,7 +142,7 @@ describe("your agencies", () => {
 
   it("reads Join when the agency is open and says joined", async () => {
     at("/agencies", fake({ searchDirectory: async () => [{ ...siaya, joinMode: "open" }], join: async () => "joined" }));
-    await userEvent.click(await screen.findByRole("button", { name: words.findAgencyTitle }));
+    await searchFor("");
     await userEvent.click(await screen.findByRole("button", { name: new RegExp(siaya.name) }));
     await userEvent.click(screen.getByRole("button", { name: words.agencyJoin }));
     expect(await screen.findByText(words.agencyJoined)).toBeInTheDocument();
@@ -147,13 +150,13 @@ describe("your agencies", () => {
 
   it("says when nothing is found and when the directory fails", async () => {
     at("/agencies", fake({ searchDirectory: async () => [] }));
-    await userEvent.click(await screen.findByRole("button", { name: words.findAgencyTitle }));
+    await searchFor("");
     expect(await screen.findByText(words.findAgencyNoneTitle)).toBeInTheDocument();
   });
 
   it("says the directory did not load", async () => {
     at("/agencies", fake({ searchDirectory: async () => Promise.reject(new Error("down")) }));
-    await userEvent.click(await screen.findByRole("button", { name: words.findAgencyTitle }));
+    await searchFor("");
     expect(await screen.findByText(words.findAgencyUnreached)).toBeInTheDocument();
   });
 });
