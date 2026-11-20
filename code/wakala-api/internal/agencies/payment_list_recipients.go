@@ -49,7 +49,7 @@ func PaymentListRecipientRule(holds HoldsPermission, widened RecipientsWidened) 
 }
 
 func (r *registry) paymentListWidenedIn(ctx context.Context, instanceID string) (bool, error) {
-	catalog, err := r.CatalogManager(ctx, instanceID, MountCatalog)
+	catalog, err := settingsCatalog(ctx, r, instanceID)
 	if err != nil {
 		return false, err
 	}

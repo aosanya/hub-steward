@@ -109,12 +109,16 @@ func remindRoleOfBill(ctx context.Context, src lateBillSources, rule lateRule, b
 	return sent, firstErr
 }
 
+func settingsCatalog(ctx context.Context, reg Registry, instanceID string) (mwanachamacatalog.CatalogManager, error) {
+	return reg.CatalogManager(ctx, instanceID, MountFormRecords)
+}
+
 func sweepLateBills(ctx context.Context, reg Registry, instanceID string, now time.Time) (int, error) {
 	ledger, err := reg.LedgerRepository(ctx, instanceID)
 	if err != nil {
 		return 0, err
 	}
-	rules, err := reg.CatalogManager(ctx, instanceID, MountCatalog)
+	rules, err := settingsCatalog(ctx, reg, instanceID)
 	if err != nil {
 		return 0, err
 	}
