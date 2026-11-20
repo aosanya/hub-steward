@@ -138,6 +138,17 @@ export function AgenciesPage() {
   }
   return (
     <Shell tabless unnamed title={words.agenciesTitle}>
+      <Field
+        label={words.findAgencyQuery}
+        type="search"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key !== "Enter") return;
+          setLastQuery(searchText);
+          setView({ name: "find", query: searchText });
+        }}
+      />
       {loaded.kind === "unreached" ? <LoadFailed words={words.agenciesUnreached} /> : null}
       {loaded.kind === "ready" && loaded.agencies.length === 0 ? (
         <Card empty>
@@ -158,17 +169,6 @@ export function AgenciesPage() {
           ))}
         </Rows>
       ) : null}
-      <Field
-        label={words.findAgencyQuery}
-        type="search"
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key !== "Enter") return;
-          setLastQuery(searchText);
-          setView({ name: "find", query: searchText });
-        }}
-      />
       <Button
         onClick={async () => {
           await signOut();
