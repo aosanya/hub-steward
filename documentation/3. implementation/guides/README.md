@@ -14,6 +14,7 @@ Working on a part:
 - [Menu screen pattern](menu-screen-pattern.md): the page, the cards, the footer, the rows, the bottom bar and the chat that every restyled menu screen follows
 - [Write an agency](write-an-agency.md): how a demo agency template is put together
 - [Taskmanager tools that read the backlog](taskmanager-tools.md): pending, find, read and list, and what `taskmanager_task_find` matches
+- [Who can be handed a task](who-can-hold-a-task.md): the assignee rule, the staff seat that lets a person with no login hold a task, and how she is told
 - [Attribute properties](attribute-properties.md): the attribute names a person's record accepts, who may list them, and where they come from
 - [Commit with commit-own-paths.sh](commit-own-paths.md): the one command agents commit with in the shared working tree, and what it refuses
 - [Reads for the Ongoing Done tab](ongoing-done-reads.md): what the API lists for finished orders and sent answers, and what is missing
