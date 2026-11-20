@@ -30,6 +30,10 @@ The taskmanager module (the repository `mwanachama-backend-taskmanager`, require
 | Take an issue: move it to In Progress, write the taken entry, record the caps (and the holder and lease when a `holder` is sent) | `taskmanager_task_claim` | `POST /tasks/{taskID}/claim` |
 | Stop work on an issue as Blocked or Sinbin, with the tags and the move done right | `taskmanager_task_release` | `POST /tasks/{taskID}/release` |
 | Finish a todo: set it Done and write its "Todo n of m done" Log entry in one call | `taskmanager_task_todo_finish` | `POST /todos/{todoID}/finish` |
+| Record that a party takes part in a project in a role, such as client or donor | `taskmanager_project_party_add` | `POST /projects/{projectID}/parties` |
+| Drop a party's role in a project | `taskmanager_project_party_remove` | `DELETE /projects/{projectID}/parties/{role}/{recordRowID}` |
+| The parties of one project | `taskmanager_project_party_list` | `GET /projects/{projectID}/parties` |
+| Projects, narrowed by party row, party role and contract reference | `taskmanager_project_list` | `GET /projects` |
 | The whole issue | `taskmanager_task_read` | `GET /tasks/{taskID}` |
 | Page through every issue | `taskmanager_task_list` | `GET /tasks` |
 
@@ -261,6 +265,21 @@ Use it whenever a todo is finished. It replaces `taskmanager_task_todo_set_statu
 The answer is only the todo code and its state, such as `{"code":"TD-1","state":"Done"}`; it does not echo the todo or the entry.
 
 The entry is written only when the todo was set Done, so a refusal writes nothing: 400 for a blank `text`, 403 without Can move on the backlog, 404 for a todo that is not found or not seen.
+
+## Project parties
+
+A project holds one optional `contract_reference` (text of the issuer's own wording, at most 200 characters) and any number of parties. A party is a `role` (a lower-case word such as `client` or `donor`), the `record_row_id` of the party's row in an agency record, and the `party_name` as written when it was added. A project holds a party once per role and may hold several in one role. Removing a party leaves the record row.
+
+`taskmanager_project_list` takes `party_row_id`, `party_role` and `contract_reference` (exact), joined by AND. With `party_row_id` and `party_role` together, the same party must hold that role. A row id that is not a uuid, or is the nil uuid, is 400.
+
+The module only checks that a row id is well formed. The hub's HTTP and MCP board (`taskManagerFor` in `internal/api/http/membership.go`) wraps the module with `boardFollowingRowCorrections` in `internal/api/http/record_row_lineage.go`, built over the live record rows of every publication of the agency:
+
+| Call | What the hub adds |
+|---|---|
+| `taskmanager_project_party_add` | A `record_row_id` that no live record row holds is 400 naming the id. A failed read of the rows is an error, never a yes |
+| `taskmanager_project_list` with `party_row_id` | The id is lower-cased and expanded through the `replaces` chain with `rowLineage`, the same chain bills use, so a list by a corrected row's old id or new id returns the project whichever id the party was added under |
+
+The wiring is tested in `internal/api/http/project_party_rows_test.go` with real record rows. The actions `taskmanager.project.*` and `taskmanager.project_party.*` are not listed in the permission catalogue of the agency sibling, so only the agency's owner can call these tools until the catalogue names them; whether a role may hold them is the owner's decision.
 
 ## When Waiting clears
 
