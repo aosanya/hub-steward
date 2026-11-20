@@ -4,7 +4,7 @@ import "testing"
 
 func TestSeatedRoleKeepsTheModulesOfSelfServiceActions(t *testing.T) {
 	visible := seatedModuleVisibility([]string{"digitaltwin.view"})
-	for _, module := range []string{"instance", "forms", "actor", "digitaltwin"} {
+	for _, module := range []string{"instance", "forms", "actor", "digitaltwin", "agency"} {
 		if !visible(module) {
 			t.Errorf("a seat whose role holds only digitaltwin.view cannot see the %s module, so its own open steps and forms are unknown tools", module)
 		}

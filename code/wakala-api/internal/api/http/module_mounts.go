@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"net/http"
+	"slices"
 	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -141,13 +142,14 @@ func seatedModuleVisibility(codes []string) func(code string) bool {
 	if len(codes) == 0 {
 		return func(string) bool { return false }
 	}
-	held := allowedActions(codes)
-	actions := make([]string, 0, len(held)+len(seatedMayActions))
-	for a := range held {
-		actions = append(actions, a)
-	}
-	actions = append(actions, seatedMayActions...)
-	return anyActionUnder(actions)
+	held := anyPermissionUnder(codes)
+	return func(code string) bool { return held(code) || selfServiceModule(code) }
+}
+
+var seatedMayModule = anyActionUnder(seatedMayActions)
+
+func selfServiceModule(code string) bool {
+	return slices.Contains(seatedToolModules, code) || seatedMayModule(code)
 }
 
 func anyPermissionUnder(codes []string) func(code string) bool {
@@ -157,6 +159,19 @@ func anyPermissionUnder(codes []string) func(code string) bool {
 		actions = append(actions, a)
 	}
 	return anyActionUnder(actions)
+}
+
+var seatedToolModules = modulesOfSeatedMayTools()
+
+func modulesOfSeatedMayTools() []string {
+	modules := []string{}
+	for tool, action := range LocalActions() {
+		module, _, found := strings.Cut(tool, "_")
+		if found && everySeatedAgentMay(action) && !slices.Contains(modules, module) {
+			modules = append(modules, module)
+		}
+	}
+	return modules
 }
 
 func anyActionUnder(actions []string) func(code string) bool {

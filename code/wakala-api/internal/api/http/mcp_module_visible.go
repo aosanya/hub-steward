@@ -80,9 +80,13 @@ func (m *mcpServers) addModulesShownIn(ctx context.Context, shown map[string]boo
 	}
 	may := func(string) bool { return true }
 	if membership.Role != agencies.RoleOwner {
-		may, err = m.deps.moduleVisibility(ctx, m.deps.Registry, membership.ID)
+		mounted, err := m.deps.moduleVisibility(ctx, m.deps.Registry, membership.ID)
 		if err != nil {
 			return err
+		}
+		may = mounted
+		if membership.Role == agencies.RoleResident {
+			may = func(code string) bool { return mounted(code) || selfServiceModule(code) }
 		}
 	}
 	for _, entry := range models.ModuleCatalog {
