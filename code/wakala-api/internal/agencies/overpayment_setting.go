@@ -25,7 +25,7 @@ func settingAllows(value string, err error, allowed string) (bool, error) {
 
 func (r *registry) overpaymentAllowedIn(instanceID string) mwanachamaaccounting.OverpaymentAllowed {
 	return func(ctx context.Context) (bool, error) {
-		catalog, err := r.CatalogManager(ctx, instanceID, MountCatalog)
+		catalog, err := r.CatalogManager(ctx, instanceID, MountFormRecords)
 		if err != nil {
 			return false, err
 		}
