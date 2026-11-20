@@ -17,6 +17,9 @@ accounting_payment_reverse
 accounting_quote_create
 accounting_quote_list
 accounting_quote_update
+accounting_rate_create
+accounting_rate_list
+accounting_report_converted
 accounting_report_list
 accounting_report_read
 accounting_tender_create

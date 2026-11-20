@@ -13,6 +13,8 @@ github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be h1:9AeTilPcZAjCFI
 github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be/go.mod h1:ySMOLuWl6zY27l47sB3qLNK6tF2fkHG55UZxx8oIVo4=
 github.com/aosanya/mwanachama-backend-accounting v0.2.1 h1:CA3XlDnCSKTbDdX6MR6u8L79AMbJzAtQ/+6KzFvzk0s=
 github.com/aosanya/mwanachama-backend-accounting v0.2.1/go.mod h1:yy26WgMucawGIEThXuF+xgVcC1m16yLpvrmnjq8Tnv8=
+github.com/aosanya/mwanachama-backend-accounting v0.3.0 h1:zPcLO2W4dcwak5wM9BvSYJFluDa5z9EHl1LieKv2iiE=
+github.com/aosanya/mwanachama-backend-accounting v0.3.0/go.mod h1:yy26WgMucawGIEThXuF+xgVcC1m16yLpvrmnjq8Tnv8=
 github.com/aosanya/mwanachama-backend-actor v0.1.0 h1:O9Za1eJ9pLlG4barvamE1X5fHWCy36g2NiUGslVp8/w=
 github.com/aosanya/mwanachama-backend-actor v0.1.0/go.mod h1:/HRePK/rojLHcCs7MPkUlw5ZU+nRVxA4ZhSu251Tvmc=
 github.com/aosanya/mwanachama-backend-agency v0.1.2 h1:Dagwh8JirR5xn/NS5zKTHEJSO2rOh1jfK15RqIpEtTU=

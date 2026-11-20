@@ -63,7 +63,7 @@ require (
 )
 
 require (
-	github.com/aosanya/mwanachama-backend-accounting v0.2.1
+	github.com/aosanya/mwanachama-backend-accounting v0.3.0
 	github.com/aosanya/mwanachama-backend-shared v0.3.1
 	github.com/aosanya/mwanachama-backend-taskmanager v0.2.0
 	github.com/dustin/go-humanize v1.0.1 // indirect

@@ -19,6 +19,7 @@ var servedPrefixes = []string{
 	"accounting.bill.",
 	"accounting.payment.",
 	"accounting.report.",
+	"accounting.rate.",
 	"accounting.upward_report.",
 	"accounting.tender.",
 	"accounting.quote.",
